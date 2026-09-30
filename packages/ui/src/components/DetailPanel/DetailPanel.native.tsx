@@ -46,6 +46,7 @@ export function DetailPanel({
   errorTitle = "Couldn't load this record",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
   onRetry,
+  retryLabel,
   emptyTitle = 'Nothing here yet',
   emptyMessage,
   emptyAction = null,
@@ -132,6 +133,7 @@ export function DetailPanel({
               errorMessage={errorMessage}
               errorTitle={errorTitle}
               onRetry={onRetry}
+              retryLabel={retryLabel}
               skeleton={<PanelSkeleton />}
               state={state}
               unavailableAction={unavailableAction}

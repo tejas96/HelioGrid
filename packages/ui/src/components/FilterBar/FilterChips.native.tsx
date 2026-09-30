@@ -14,7 +14,7 @@ interface NativeFilterChipsProps extends FilterChipsProps {
 }
 
 /**
- * Stage chips. Active = accent fill; the rest are white pills that separate by shadow.
+ * Stage chips. Active = accent fill; the rest take the control fill, flat.
  *
  * **One-of-N by construction** — `accessibilityRole="tablist"` with each chip a `tab` carrying
  * `selected`, the RN reading of the web half's `role="tablist"` + `aria-selected`. A dimension

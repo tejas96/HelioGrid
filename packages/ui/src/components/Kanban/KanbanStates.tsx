@@ -1,4 +1,4 @@
-import { Pressable } from '../../primitives/Pressable';
+import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
 import type { KanbanBoardState } from './Kanban.logic';
 import { KANBAN_SKELETON_BARS, KANBAN_SKELETON_COLUMNS } from './KanbanStates.logic';
@@ -30,10 +30,11 @@ interface BoardMessageProps {
   title: string;
   message?: string;
   onRetry?: () => void;
+  retryLabel?: string;
 }
 
 /** The board's own empty and error surfaces. `unavailable` is `UnavailableNote`'s, never this. */
-export function BoardMessage({ tone, title, message, onRetry }: BoardMessageProps) {
+export function BoardMessage({ tone, title, message, onRetry, retryLabel }: BoardMessageProps) {
   return (
     <div className="hg-kanban-message">
       <span className="hg-kanban-message-mark" data-tone={tone}>
@@ -64,11 +65,7 @@ export function BoardMessage({ tone, title, message, onRetry }: BoardMessageProp
       </span>
       <div className="hg-kanban-message-title">{title}</div>
       {message ? <div className="hg-kanban-message-text">{message}</div> : null}
-      {onRetry ? (
-        <Pressable className="hg-kanban-message-retry" onPress={onRetry}>
-          Try again
-        </Pressable>
-      ) : null}
+      <RetryButton onRetry={onRetry} label={retryLabel} />
     </div>
   );
 }
@@ -79,6 +76,7 @@ export interface BoardStateViewProps {
   errorTitle: string;
   errorMessage: string;
   onRetry?: () => void;
+  retryLabel?: string;
   unavailableTitle: string;
   unavailableMessage?: string;
   emptyTitle: string;
@@ -96,6 +94,7 @@ export function BoardStateView({
   errorTitle,
   errorMessage,
   onRetry,
+  retryLabel,
   unavailableTitle,
   unavailableMessage,
   emptyTitle,
@@ -103,7 +102,13 @@ export function BoardStateView({
 }: BoardStateViewProps) {
   if (state === 'error') {
     return (
-      <BoardMessage tone="warning" title={errorTitle} message={errorMessage} onRetry={onRetry} />
+      <BoardMessage
+        tone="warning"
+        title={errorTitle}
+        message={errorMessage}
+        onRetry={onRetry}
+        retryLabel={retryLabel}
+      />
     );
   }
   if (state === 'unavailable') {

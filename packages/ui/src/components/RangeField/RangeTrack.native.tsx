@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { formatEnd, roundToStep } from './RangeField.logic';
 
 export interface RangeTrackProps {
@@ -38,7 +39,6 @@ const styles = StyleSheet.create({
     width: THUMB,
     height: THUMB,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
     borderWidth: 1.5,
     borderColor: theme.colors.accent,
     ...theme.elevation.e3,
@@ -65,6 +65,8 @@ export function RangeTrack({
   format,
   onDrag,
 }: RangeTrackProps) {
+  /* The thumb's centre is the ground it sits over (`F7-15`). */
+  const { ground } = useGround();
   const [width, setWidth] = useState(0);
   const geo = useRef({ lo, hi, width: 0 });
   const held = useRef<{ end: 'lo' | 'hi'; from: number }>({ end: 'lo', from: min });
@@ -134,7 +136,11 @@ export function RangeTrack({
       {thumbs.map((t) => (
         <View
           key={t.key}
-          style={[styles.thumb, disabled ? styles.thumbDisabled : null, { left: pos(t.value) }]}
+          style={[
+            styles.thumb,
+            disabled ? styles.thumbDisabled : null,
+            { left: pos(t.value), backgroundColor: ground },
+          ]}
           accessible
           accessibilityRole="adjustable"
           accessibilityLabel={t.name}

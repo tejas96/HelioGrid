@@ -30,6 +30,7 @@ export function Card({
   errorTitle = "Couldn't load this",
   errorMessage = 'Try again. If it keeps failing, tell your admin what you were doing.',
   onRetry,
+  retryLabel,
   unavailableTitle = 'Not available here',
   unavailableMessage,
   onClick,
@@ -45,6 +46,7 @@ export function Card({
       errorTitle={errorTitle}
       errorMessage={errorMessage}
       onRetry={onRetry}
+      retryLabel={retryLabel}
       unavailableTitle={unavailableTitle}
       unavailableMessage={unavailableMessage}
     >

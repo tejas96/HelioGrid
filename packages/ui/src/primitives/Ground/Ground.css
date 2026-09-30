@@ -21,14 +21,41 @@
 .hg-detail-panel,
 .hg-menu-list,
 .hg-coach-mark,
-.hg-explainer-bubble {
+.hg-explainer-bubble,
+/* The white containers `F7-49` turns into tiles or headings (T-FPLAT-078). Until then each is a
+   page, so a control inside one reads the page's fill even when the container sits in a tile. */
+.hg-block:not([data-flat="true"]),
+.hg-checklist,
+.hg-dt,
+.hg-compare,
+.hg-kanban-message,
+.hg-stat-card,
+.hg-paged-document-card,
+.hg-source-doc,
+.hg-finding-list,
+.hg-record-card,
+.hg-accordion-item,
+.hg-banded[data-variant="card"],
+.hg-reorder-row,
+.hg-date-set-row,
+.hg-option-card {
   --hg-ground: var(--surface);
   --hg-control-fill: var(--bg-well);
 }
 
 .hg-card,
 .hg-surface[data-background="canvas"],
-.hg-surface[data-background="canvas-sunken"] {
+.hg-surface[data-background="canvas-sunken"],
+/* A tinted panel holds its controls as a tile does: the well on a tint is about 1.01:1 on the
+   neutral one and muddy on the others, and white reads on every tone. */
+.hg-banner,
+.hg-banner-pill,
+.hg-source-doc-message,
+.hg-image-missing,
+.hg-audio-panel,
+.hg-transcript-error,
+.hg-compare-option-head[data-selected="true"],
+.hg-compare-cell[data-selected="true"] {
   --hg-ground: var(--canvas-sunken);
   --hg-control-fill: var(--surface);
 }

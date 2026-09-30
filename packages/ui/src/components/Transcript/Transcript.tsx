@@ -49,6 +49,7 @@ export function Transcript({
   emptyDescription = "The call connected but nothing was transcribed. The recording and the rep's notes are on this record.",
   errorMessage = "Couldn't load the transcript. Nothing has been lost — try again.",
   onRetry,
+  retryLabel,
   unavailableTitle = 'No transcript on this call',
   unavailableMessage = 'This call was not transcribed. The recording is the only record of it.',
   density = 'expressive',
@@ -102,6 +103,7 @@ export function Transcript({
         emptyDescription={emptyDescription}
         errorMessage={errorMessage}
         onRetry={onRetry}
+        retryLabel={retryLabel}
         unavailableTitle={unavailableTitle}
         unavailableMessage={unavailableMessage}
       />,

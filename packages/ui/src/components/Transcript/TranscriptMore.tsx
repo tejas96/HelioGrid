@@ -2,7 +2,7 @@
    not shown, pressing it widens the window; once it has shown them all, it asks the caller for the
    next page. The word on it says which. */
 
-import { TranscriptPlainButton } from './TranscriptChrome';
+import { Button } from '../Button/Button';
 
 interface TranscriptMoreProps {
   /** Turns already handed over but not yet shown. Above zero, the press is local. */
@@ -20,9 +20,11 @@ export function TranscriptMore({
 }: TranscriptMoreProps) {
   return (
     <div className="hg-transcript-more">
-      <TranscriptPlainButton
+      <Button
+        variant="secondary"
+        size="md"
         disabled={loadingMore}
-        onPress={() => {
+        onClick={() => {
           if (remaining > 0) {
             onReveal();
           } else {
@@ -35,7 +37,7 @@ export function TranscriptMore({
           : remaining > 0
             ? `Show the rest of the call · ${remaining} more`
             : 'Show more of the call'}
-      </TranscriptPlainButton>
+      </Button>
     </div>
   );
 }

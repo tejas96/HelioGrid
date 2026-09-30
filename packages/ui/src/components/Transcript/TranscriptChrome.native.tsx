@@ -1,23 +1,9 @@
 /* Transcript's small shared furniture (native) — the globe glyph on the language line and on the
-   in-flow switch marker, the plain pill button that the error state and the reveal control both
-   press, and the rhythm they all sit on. One declaration each, so they never drift apart. */
+   in-flow switch marker, and the rhythm the turns sit on. One declaration each, so they never
+   drift apart. */
 
 import { theme } from '@heliogrid/theme';
-import type { ReactNode } from 'react';
-import { StyleSheet } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { Text } from '../../primitives/Text/Text.native';
-
-const styles = StyleSheet.create({
-  plain: {
-    paddingHorizontal: 18,
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    ...theme.elevation.e2,
-  },
-  plainWord: { fontWeight: '500' },
-});
 
 /** The rhythm between turns — and between the skeleton bars that hold their footprint. */
 export const TRANSCRIPT_GAP = { expressive: 10, functional: theme.spacing['sp-2'] };
@@ -35,24 +21,5 @@ export function GlobeGlyph({ size = 14 }: { size?: number }) {
         strokeLinejoin="round"
       />
     </Svg>
-  );
-}
-
-/** "Try again" and "Show the rest of the call" are the same target: a real 44dp plain pill. */
-export function TranscriptPlainButton({
-  disabled,
-  onPress,
-  children,
-}: {
-  disabled?: boolean;
-  onPress: () => void;
-  children: ReactNode;
-}) {
-  return (
-    <Pressable disabled={disabled} onPress={onPress} style={styles.plain}>
-      <Text variant="body-sm" style={styles.plainWord}>
-        {children}
-      </Text>
-    </Pressable>
   );
 }

@@ -43,6 +43,7 @@ export interface PendingActionSpec {
   slowNote?: ReactNode;
   /** A 44px retry on a returned act. The act is the caller's to re-fire, not the row's. */
   onRetry?: () => void;
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   /**
    * Clears the returned line. Without it the line is permanent — which is correct for a failure

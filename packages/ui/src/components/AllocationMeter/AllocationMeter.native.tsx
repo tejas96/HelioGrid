@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { AllocationModel } from './AllocationMeter.model';
 import { allocationModel, formatAllocation, partValue } from './AllocationMeter.model';
@@ -98,6 +99,7 @@ function Track({
   density: 'expressive' | 'functional';
   valueText?: string;
 }) {
+  const { ground } = useGround();
   return (
     <View
       accessibilityRole={model.sum === null ? undefined : 'progressbar'}
@@ -124,7 +126,12 @@ function Track({
         />
       ))}
       {model.state === 'over' ? (
-        <View style={[styles.tick, { left: `${model.tickAt}%` as `${number}%` }]} />
+        <View
+          style={[
+            styles.tick,
+            { left: `${model.tickAt}%` as `${number}%`, backgroundColor: ground },
+          ]}
+        />
       ) : null}
     </View>
   );
@@ -249,7 +256,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     marginLeft: -1,
     width: 2,
-    backgroundColor: theme.colors.surface,
   },
   wordsRow: {
     flexDirection: 'row',

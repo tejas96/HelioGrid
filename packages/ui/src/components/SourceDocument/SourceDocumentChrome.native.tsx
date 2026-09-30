@@ -1,5 +1,5 @@
-/* SourceDocument's chrome (native): paging/fit controls, the state panel, and the plain button
-   that opens the real file.
+/* SourceDocument's chrome (native): paging/fit controls, the state panel, and the act that opens
+   the real file.
 
    The fit controls (fit width / fit whole page) say which one is in force, and they say it through
    the primitive: `accessibilityState.selected` is `accessibilityState.selected` here and
@@ -10,6 +10,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { Linking, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -31,16 +32,6 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
   },
   iconBtnPressed: { backgroundColor: theme.colors['accent-subtle'] },
-  plain: {
-    minHeight: MIN_TOUCH_TARGET,
-    justifyContent: 'center',
-    paddingHorizontal: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
-  plainWord: { fontWeight: '500' },
   message: {
     position: 'absolute',
     top: 0,
@@ -131,16 +122,6 @@ export function IconBtn({
   );
 }
 
-export function PlainButton({ children, onPress }: { children: string; onPress: () => void }) {
-  return (
-    <Pressable onPress={onPress} style={styles.plain}>
-      <Text variant="body-sm" style={styles.plainWord}>
-        {children}
-      </Text>
-    </Pressable>
-  );
-}
-
 export function Message({
   tone,
   title,
@@ -156,37 +137,41 @@ export function Message({
   const mark = warning ? theme.colors['warning-text'] : theme.colors['text-tertiary'];
   return (
     <View style={[styles.message, warning ? styles.messageWarning : null]}>
-      <View style={styles.mark}>
-        <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-          {warning ? <Circle cx={12} cy={12} r={9} stroke={mark} strokeWidth={1.5} /> : null}
-          <Path
-            d={
-              warning
-                ? 'M12 8v4M12 16h.01'
-                : 'M14 3v5h5M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8Z'
-            }
-            stroke={mark}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </Svg>
-      </View>
-      <Text variant="body-sm" align="center" style={styles.messageTitle}>
-        {title}
-      </Text>
-      {/* --text-tertiary is under the 4.5 floor on --canvas-sunken, so the words take secondary. */}
-      {message ? (
-        <Text
-          variant="caption"
-          color={warning ? 'warning' : 'secondary'}
-          align="center"
-          style={styles.messageBody}
-        >
-          {message}
+      {/* The panel is --canvas-sunken or a tint, the well's own grey or near it: a control on it
+          takes the tile's fill, as on a Banner's tint, or it vanishes into the panel. */}
+      <GroundProvider ground="tile">
+        <View style={styles.mark}>
+          <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
+            {warning ? <Circle cx={12} cy={12} r={9} stroke={mark} strokeWidth={1.5} /> : null}
+            <Path
+              d={
+                warning
+                  ? 'M12 8v4M12 16h.01'
+                  : 'M14 3v5h5M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8Z'
+              }
+              stroke={mark}
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </Svg>
+        </View>
+        <Text variant="body-sm" align="center" style={styles.messageTitle}>
+          {title}
         </Text>
-      ) : null}
-      {action ? <View style={styles.actions}>{action}</View> : null}
+        {/* --text-tertiary is under the 4.5 floor on --canvas-sunken, so the words take secondary. */}
+        {message ? (
+          <Text
+            variant="caption"
+            color={warning ? 'warning' : 'secondary'}
+            align="center"
+            style={styles.messageBody}
+          >
+            {message}
+          </Text>
+        ) : null}
+        {action ? <View style={styles.actions}>{action}</View> : null}
+      </GroundProvider>
     </View>
   );
 }

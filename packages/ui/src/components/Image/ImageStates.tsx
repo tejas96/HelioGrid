@@ -1,4 +1,4 @@
-import { Pressable } from '../../primitives/Pressable';
+import { RetryButton } from '../Button/RetryButton';
 import type { ImageLoad } from './Image.load';
 import type { ImageState } from './Image.logic';
 import { isCompact, missingSpec, showsMissingLabel } from './Image.logic';
@@ -12,7 +12,7 @@ export interface ImageMissingProps {
   missingLabel?: string;
   missingDetail?: string;
   onRetry?: () => void;
-  retryLabel: string;
+  retryLabel?: string;
 }
 
 /**
@@ -50,10 +50,8 @@ export function ImageMissing({
         {showsMissingLabel(width) ? <span className="hg-image-missing-label">{text}</span> : null}
       </div>
       {!compact && detail ? <span className="hg-image-missing-detail">{detail}</span> : null}
-      {!compact && reason === 'unavailable' && onRetry ? (
-        <Pressable className="hg-image-retry" onPress={onRetry}>
-          {retryLabel}
-        </Pressable>
+      {!compact && reason === 'unavailable' ? (
+        <RetryButton onRetry={onRetry} label={retryLabel} />
       ) : null}
     </div>
   );

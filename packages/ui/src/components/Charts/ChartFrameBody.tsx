@@ -1,15 +1,16 @@
 import type { ReactNode } from 'react';
 import { Icon } from '../../primitives/Icon';
-import { Pressable } from '../../primitives/Pressable';
+import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
 import type { ChartNote, ChartSurfaceState } from './chart-state';
-import { CHART_LOADING_LABEL, CHART_RETRY_LABEL, CHART_UNAVAILABLE_TITLE } from './chart-state';
+import { CHART_LOADING_LABEL, CHART_UNAVAILABLE_TITLE } from './chart-state';
 
 interface ChartFrameBodyProps {
   state: ChartSurfaceState;
   height: number;
   note: ChartNote | null;
   onRetry?: () => void;
+  retryLabel?: string;
   children?: ReactNode;
 }
 
@@ -34,7 +35,14 @@ const AlertGlyph = (
  * The plot area, or the state that replaces it. Loading shimmers, `unavailable` states the
  * absence with no retry, and error / empty / not-enough-data share one note.
  */
-export function ChartFrameBody({ state, height, note, onRetry, children }: ChartFrameBodyProps) {
+export function ChartFrameBody({
+  state,
+  height,
+  note,
+  onRetry,
+  retryLabel,
+  children,
+}: ChartFrameBodyProps) {
   if (state === 'loading') {
     return (
       <div
@@ -71,11 +79,7 @@ export function ChartFrameBody({ state, height, note, onRetry, children }: Chart
         {note.message === undefined ? null : (
           <div className="hg-charts-note-message">{note.message}</div>
         )}
-        {state === 'error' && onRetry !== undefined ? (
-          <Pressable className="hg-charts-retry" onPress={onRetry}>
-            {CHART_RETRY_LABEL}
-          </Pressable>
-        ) : null}
+        {state === 'error' ? <RetryButton onRetry={onRetry} label={retryLabel} /> : null}
       </div>
     );
   }

@@ -47,6 +47,8 @@ export interface SourceDocumentProps {
   onOpenOriginal?: () => void;
   openLabel?: string;
   onRetry?: () => void;
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
+  retryLabel?: string;
   unsupportedTitle?: string;
   unsupportedMessage?: string;
   failedTitle?: string;

@@ -40,6 +40,7 @@ export function Checklist({
   errorTitle = "Couldn't load the checklist",
   errorMessage = 'Tap Try again — no tick is lost while this fails.',
   onRetry,
+  retryLabel,
   unavailableTitle = 'No checklist for this job',
   unavailableMessage,
   note,
@@ -59,6 +60,7 @@ export function Checklist({
           errorTitle={errorTitle}
           errorMessage={errorMessage}
           onRetry={onRetry}
+          retryLabel={retryLabel}
           unavailableTitle={unavailableTitle}
           unavailableMessage={unavailableMessage}
         />

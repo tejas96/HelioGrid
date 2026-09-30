@@ -39,6 +39,7 @@ export function Kanban({
   errorTitle = "Couldn't load the board",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
   onRetry,
+  retryLabel,
   unavailableTitle = 'No pipeline here',
   unavailableMessage,
   columnWidth = 260,
@@ -103,6 +104,7 @@ export function Kanban({
           errorTitle={errorTitle}
           errorMessage={errorMessage}
           onRetry={onRetry}
+          retryLabel={retryLabel}
           unavailableTitle={unavailableTitle}
           unavailableMessage={unavailableMessage}
           emptyTitle={emptyTitle}

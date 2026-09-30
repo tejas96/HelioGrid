@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { Text as RNText, StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
@@ -83,41 +84,45 @@ export function DateSetRow({
         blocked ? styles.rowBlocked : undefined,
       ]}
     >
-      <View style={styles.body}>
-        <View style={styles.head}>
-          <RNText style={styles.date}>{mkt.date(d)}</RNText>
-          <Text variant="caption" color="tertiary">
-            {weekdayOf(d, mkt.weekdayNames('long'), mkt.firstDayOfWeek)}
-          </Text>
+      {/* A row is white, so its controls take the page's fill until T-FPLAT-078 settles its
+          ground. */}
+      <GroundProvider ground="page">
+        <View style={styles.body}>
+          <View style={styles.head}>
+            <RNText style={styles.date}>{mkt.date(d)}</RNText>
+            <Text variant="caption" color="tertiary">
+              {weekdayOf(d, mkt.weekdayNames('long'), mkt.firstDayOfWeek)}
+            </Text>
+          </View>
+          {entry.name === undefined ? null : <RNText style={styles.name}>{entry.name}</RNText>}
+          {/* Origin as persistent content — the same which-layer-supplied-this the rates panel
+              renders, so it is the same component. Never a tone and never a tooltip (`F8-07`). */}
+          <ValueSource
+            level={pack ? 'inherited' : 'own'}
+            layerName={pack ? packName : 'Added by you'}
+            source={pack ? 'Market holiday' : (entry.addedBy ?? 'Tenant holiday')}
+          />
+          {/* Deletability follows origin: the floor takes the delete's place. */}
+          {pack ? <ComplianceFloor {...floorFor(entry, packName, floor)} /> : null}
         </View>
-        {entry.name === undefined ? null : <RNText style={styles.name}>{entry.name}</RNText>}
-        {/* Origin as persistent content — the same which-layer-supplied-this the rates panel
-            renders, so it is the same component. Never a tone and never a tooltip (`F8-07`). */}
-        <ValueSource
-          level={pack ? 'inherited' : 'own'}
-          layerName={pack ? packName : 'Added by you'}
-          source={pack ? 'Market holiday' : (entry.addedBy ?? 'Tenant holiday')}
-        />
-        {/* Deletability follows origin: the floor takes the delete's place. */}
-        {pack ? <ComplianceFloor {...floorFor(entry, packName, floor)} /> : null}
-      </View>
-      {!pack && onRemove !== undefined ? (
-        <Pressable
-          accessibilityLabel={`Remove ${spoken}`}
-          onPress={() => onRemove(entry.date, spoken)}
-          style={styles.delete}
-        >
-          <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
-            <Path
-              d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6"
-              stroke={theme.colors['text-secondary']}
-              strokeWidth={1.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </Svg>
-        </Pressable>
-      ) : null}
+        {!pack && onRemove !== undefined ? (
+          <Pressable
+            accessibilityLabel={`Remove ${spoken}`}
+            onPress={() => onRemove(entry.date, spoken)}
+            style={styles.delete}
+          >
+            <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
+              <Path
+                d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6"
+                stroke={theme.colors['text-secondary']}
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </Svg>
+          </Pressable>
+        ) : null}
+      </GroundProvider>
     </View>
   );
 }

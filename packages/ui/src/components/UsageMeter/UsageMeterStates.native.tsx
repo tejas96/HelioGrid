@@ -2,8 +2,8 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import type { DimensionValue, TextStyle } from 'react-native';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import type { UsageMeterProps } from './UsageMeter.types';
 
@@ -81,18 +81,19 @@ export function UsageMeterError({
   period,
   errorMessage,
   onRetry,
-}: Pick<UsageMeterProps, 'label' | 'period' | 'onRetry'> & { errorMessage: string }) {
+  retryLabel,
+}: Pick<UsageMeterProps, 'label' | 'period' | 'onRetry' | 'retryLabel'> & {
+  errorMessage: string;
+}) {
   return (
     <View style={styles.shell}>
       <Head label={words} period={period} />
       <Text variant="caption" color="warning" style={styles.emphasis}>
         {errorMessage}
       </Text>
-      {onRetry !== undefined ? (
+      {onRetry !== undefined && retryLabel !== undefined ? (
         <View style={styles.retry}>
-          <Pressable style={styles.pill} onPress={onRetry}>
-            <Text style={label}>Try again</Text>
-          </Pressable>
+          <RetryButton onRetry={onRetry} label={retryLabel} />
         </View>
       ) : null}
     </View>
@@ -153,11 +154,4 @@ const styles = StyleSheet.create({
   },
   emphasis: { fontWeight: '500' },
   retry: { flexDirection: 'row' },
-  pill: {
-    paddingHorizontal: 18,
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
 });

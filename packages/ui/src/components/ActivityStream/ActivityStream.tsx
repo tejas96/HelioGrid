@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { Button } from '../Button/Button';
 import { useFormat } from '../MarketProvider';
 import { UnavailableNote } from '../UnavailableNote';
 import { applyFilter, filterDimensions } from './ActivityStream.filter';
@@ -44,6 +45,7 @@ export function ActivityStream({
   errorTitle = "Couldn't load the activity",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
   onRetry,
+  retryLabel,
   unavailableTitle = 'No activity is kept here',
   unavailableMessage,
   density = 'expressive',
@@ -75,7 +77,13 @@ export function ActivityStream({
   if (state === 'error') {
     return (
       <div {...frame}>
-        <StreamMessage tone="warning" title={errorTitle} message={errorMessage} onRetry={onRetry} />
+        <StreamMessage
+          tone="warning"
+          title={errorTitle}
+          message={errorMessage}
+          onRetry={onRetry}
+          retryLabel={retryLabel}
+        />
       </div>
     );
   }
@@ -104,9 +112,9 @@ export function ActivityStream({
           message={filteredEmptyDescription}
           action={
             onClearFilters !== undefined ? (
-              <button type="button" className="hg-stream-button" onClick={onClearFilters}>
+              <Button variant="secondary" size="md" onClick={onClearFilters}>
                 Clear filters
-              </button>
+              </Button>
             ) : null
           }
         />

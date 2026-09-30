@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, Text, View } from 'react-native';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote';
 import { AudioGlyph } from './AudioGlyph.native';
 import type { AudioPlayerProps, AudioUnavailableReason } from './AudioPlayer.types';
@@ -25,6 +26,7 @@ const styles = StyleSheet.create({
   panelError: {
     flexDirection: 'column',
     alignItems: 'flex-start',
+    gap: theme.spacing['sp-2'],
     backgroundColor: theme.colors['warning-bg'],
   },
   errorText: {
@@ -56,20 +58,6 @@ const styles = StyleSheet.create({
     color: theme.colors['text-tertiary'],
   },
   door: { flexDirection: 'row', marginTop: theme.spacing['sp-3'] },
-  retry: {
-    minHeight: 44,
-    paddingHorizontal: 18,
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
-  retryText: {
-    fontFamily: theme.type.families.sans,
-    fontSize: type['body-sm'].fontSize,
-    fontWeight: '500',
-    color: theme.colors['text-primary'],
-  },
   skeleton: {
     height: 96,
     borderRadius: theme.radius['r-sm'],
@@ -97,23 +85,23 @@ export function AudioLoading() {
 export function AudioError({
   errorMessage,
   onRetry,
+  retryLabel,
   onOpenTranscript,
   transcriptLabel,
 }: Required<Pick<AudioPlayerProps, 'errorMessage' | 'transcriptLabel'>> &
-  Pick<AudioPlayerProps, 'onRetry' | 'onOpenTranscript'>) {
+  Pick<AudioPlayerProps, 'onRetry' | 'retryLabel' | 'onOpenTranscript'>) {
   return (
     <View style={[styles.panel, styles.panelError]}>
       <Text style={styles.errorText}>{errorMessage}</Text>
-      <View style={styles.actions}>
-        {onRetry !== undefined ? (
-          <Pressable onPress={onRetry} style={styles.retry}>
-            <Text style={styles.retryText}>Try again</Text>
-          </Pressable>
-        ) : null}
-        {onOpenTranscript !== undefined ? (
-          <TranscriptDoor label={transcriptLabel} onPress={onOpenTranscript} />
-        ) : null}
-      </View>
+      {/* A tinted panel holds its controls as a tile does — see `Ground.css`. */}
+      <GroundProvider ground="tile">
+        <View style={styles.actions}>
+          <RetryButton onRetry={onRetry} label={retryLabel} />
+          {onOpenTranscript !== undefined ? (
+            <TranscriptDoor label={transcriptLabel} onPress={onOpenTranscript} />
+          ) : null}
+        </View>
+      </GroundProvider>
     </View>
   );
 }
@@ -159,7 +147,11 @@ export function AudioUnavailable({
         <Text style={styles.title}>{copy.title}</Text>
         <Text style={styles.text}>{copy.body}</Text>
         {note !== '' ? <Text style={styles.note}>{note}</Text> : null}
-        {door !== null ? <View style={styles.door}>{door}</View> : null}
+        {door !== null ? (
+          <GroundProvider ground="tile">
+            <View style={styles.door}>{door}</View>
+          </GroundProvider>
+        ) : null}
       </View>
     </View>
   );

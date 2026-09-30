@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { renderMarks } from '../ChipGroup';
 import { renderProvenance } from '../Provenance';
@@ -160,33 +161,37 @@ export function Accordion({
               errored ? styles.itemErrors : null,
             ]}
           >
-            <View style={styles.head}>
-              {/* The header's expanded state goes through the primitive — one declaration, the
-                  web half's `aria-expanded` and this half's `accessibilityState.expanded` — so
-                  the 44px floor and the pressed treatment come with it. */}
-              <Pressable
-                accessibilityState={{ expanded: isOpen }}
-                onPress={() => toggle(item.key)}
-                style={[
-                  styles.toggle,
-                  { padding: pad, paddingRight: item.action !== undefined ? 8 : pad },
-                ]}
-              >
-                <Chevron open={isOpen} color={quiet} />
-                <View style={styles.titleWrap}>
-                  <Text style={styles.title}>{item.title}</Text>
-                  {renderMarks(item.marks)}
-                </View>
-                <HeaderFacts item={item} quiet={quiet} />
-              </Pressable>
-              {/* A sibling of the toggle, never inside it. */}
-              {item.action !== undefined ? (
-                <View style={[styles.action, { paddingRight: pad }]}>{item.action}</View>
+            {/* An item is white, so its controls take the page's fill until T-FPLAT-078 settles
+                its ground. */}
+            <GroundProvider ground="page">
+              <View style={styles.head}>
+                {/* The header's expanded state goes through the primitive — one declaration, the
+                    web half's `aria-expanded` and this half's `accessibilityState.expanded` — so
+                    the 44px floor and the pressed treatment come with it. */}
+                <Pressable
+                  accessibilityState={{ expanded: isOpen }}
+                  onPress={() => toggle(item.key)}
+                  style={[
+                    styles.toggle,
+                    { padding: pad, paddingRight: item.action !== undefined ? 8 : pad },
+                  ]}
+                >
+                  <Chevron open={isOpen} color={quiet} />
+                  <View style={styles.titleWrap}>
+                    <Text style={styles.title}>{item.title}</Text>
+                    {renderMarks(item.marks)}
+                  </View>
+                  <HeaderFacts item={item} quiet={quiet} />
+                </Pressable>
+                {/* A sibling of the toggle, never inside it. */}
+                {item.action !== undefined ? (
+                  <View style={[styles.action, { paddingRight: pad }]}>{item.action}</View>
+                ) : null}
+              </View>
+              {isOpen ? (
+                <View style={{ paddingHorizontal: pad, paddingBottom: pad }}>{item.content}</View>
               ) : null}
-            </View>
-            {isOpen ? (
-              <View style={{ paddingHorizontal: pad, paddingBottom: pad }}>{item.content}</View>
-            ) : null}
+            </GroundProvider>
           </View>
         );
       })}

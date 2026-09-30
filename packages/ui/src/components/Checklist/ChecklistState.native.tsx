@@ -1,10 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
+import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import type { ChecklistProps } from './Checklist.types';
 
@@ -16,6 +15,7 @@ type StateProps = Required<Pick<ChecklistProps, 'state'>> &
     | 'errorTitle'
     | 'errorMessage'
     | 'onRetry'
+    | 'retryLabel'
     | 'unavailableTitle'
     | 'unavailableMessage'
   >;
@@ -26,14 +26,6 @@ const styles = StyleSheet.create({
     height: 90,
     borderRadius: theme.radius['rf-md'],
     backgroundColor: theme.colors['canvas-sunken'],
-  },
-  retry: {
-    minHeight: MIN_TOUCH_TARGET,
-    paddingHorizontal: 18,
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
   },
 });
 
@@ -53,6 +45,7 @@ export function ChecklistStateBody({
   errorTitle,
   errorMessage,
   onRetry,
+  retryLabel,
   unavailableTitle,
   unavailableMessage,
 }: StateProps) {
@@ -95,11 +88,7 @@ export function ChecklistStateBody({
       <Text variant="body-sm" color="warning">
         {errorMessage}
       </Text>
-      {onRetry === undefined ? null : (
-        <Pressable onPress={onRetry} style={styles.retry}>
-          <Text variant="body">Try again</Text>
-        </Pressable>
-      )}
+      <RetryButton onRetry={onRetry} label={retryLabel} />
     </View>
   );
 }

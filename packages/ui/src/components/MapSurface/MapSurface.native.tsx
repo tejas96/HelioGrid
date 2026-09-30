@@ -58,6 +58,7 @@ export function MapSurface({
   errorTitle = "Couldn't load the map",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
   onRetry,
+  retryLabel,
   controls = true,
   onZoomIn,
   onZoomOut,
@@ -172,6 +173,7 @@ export function MapSurface({
         errorTitle={errorTitle}
         errorMessage={errorMessage}
         onRetry={onRetry}
+        retryLabel={retryLabel}
       />
     </View>
   );

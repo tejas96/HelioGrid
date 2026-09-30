@@ -1,5 +1,5 @@
 import { Icon } from '../../primitives/Icon';
-import { Pressable } from '../../primitives/Pressable';
+import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
 
 const AlertGlyph = (
@@ -37,13 +37,14 @@ interface MapNoteProps {
   title: string;
   message: string;
   onRetry?: () => void;
+  retryLabel?: string;
 }
 
 /**
  * A failed tile fetch is `error` and offers a retry; nothing to show yet is `empty` and does
  * not. Neither ever leaves blank space that reads as "no sites".
  */
-export function MapNote({ kind, title, message, onRetry }: MapNoteProps) {
+export function MapNote({ kind, title, message, onRetry, retryLabel }: MapNoteProps) {
   return (
     <div className="hg-map-surface-note">
       <span className="hg-map-surface-mark" data-tone={kind === 'empty' ? 'neutral' : 'warning'}>
@@ -51,11 +52,7 @@ export function MapNote({ kind, title, message, onRetry }: MapNoteProps) {
       </span>
       <div className="hg-map-surface-note-title">{title}</div>
       <div className="hg-map-surface-note-message">{message}</div>
-      {kind === 'error' && onRetry !== undefined ? (
-        <Pressable className="hg-map-surface-retry" onPress={onRetry}>
-          Try again
-        </Pressable>
-      ) : null}
+      {kind === 'error' ? <RetryButton onRetry={onRetry} label={retryLabel} /> : null}
     </div>
   );
 }
@@ -74,6 +71,7 @@ export interface MapStateLayerProps {
   errorTitle: string;
   errorMessage: string;
   onRetry?: () => void;
+  retryLabel?: string;
 }
 
 /** Every state that replaces the tiles, in one place. `ready` draws nothing here. */
@@ -91,6 +89,7 @@ export function MapStateLayer(props: MapStateLayerProps) {
         title={props.errorTitle}
         message={props.errorMessage}
         onRetry={props.onRetry}
+        retryLabel={props.retryLabel}
       />
     );
   }

@@ -1,7 +1,8 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { isValidElement } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { Pressable } from '../../primitives/Pressable';
+import { Button } from '../Button/Button';
+import { RetryButton } from '../Button/RetryButton';
 import { IndeterminateRail } from './IndeterminateRail';
 import type { PendingActionProps, PendingActionSpec } from './PendingAction.types';
 
@@ -47,7 +48,7 @@ export function PendingAction({
   reason,
   slowNote,
   onRetry,
-  retryLabel = 'Try again',
+  retryLabel,
   onDismiss,
   dismissLabel = 'Dismiss',
   size = 12,
@@ -56,6 +57,7 @@ export function PendingAction({
   style,
 }: WebPendingActionProps) {
   const returned = state === 'returned';
+  const retrying = onRetry !== undefined && retryLabel !== undefined;
   const words = returned ? reason : label;
   if (words === undefined || words === null || words === false || words === '') {
     return null;
@@ -83,22 +85,13 @@ export function PendingAction({
           <span className="hg-pending-action-slow">{slowNote}</span>
         ) : null}
       </span>
-      {returned && (onRetry !== undefined || onDismiss !== undefined) ? (
+      {returned && (retrying || onDismiss !== undefined) ? (
         <span className="hg-pending-action-actions">
-          {onRetry !== undefined ? (
-            <Pressable className="hg-pending-action-pill" onPress={onRetry}>
-              {retryLabel}
-            </Pressable>
-          ) : null}
-          {/* Ghost profile: transparent, --text-secondary. Not an inline `none` — that beats field
-              mode's rule and leaves the dismiss with no edge in sunlight. */}
+          <RetryButton onRetry={onRetry} label={retryLabel} />
           {onDismiss !== undefined ? (
-            <Pressable
-              className="hg-pending-action-pill hg-pending-action-pill-ghost"
-              onPress={onDismiss}
-            >
+            <Button variant="ghost" size="md" onClick={onDismiss}>
               {dismissLabel}
-            </Pressable>
+            </Button>
           ) : null}
         </span>
       ) : null}

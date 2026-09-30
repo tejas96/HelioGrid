@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { RetryButton } from '../Button/RetryButton';
 
 /** `sheet` bodies are 280px wide and 28/24 padded; `panel` bodies 300px and 48 padded. */
 export type OverlayStateVariant = 'sheet' | 'panel';
@@ -15,7 +16,7 @@ interface OverlayErrorProps {
   message?: string;
   onRetry?: () => void;
   variant: OverlayStateVariant;
-  /** The retry's words. The reference hardcodes them; no prop on the contract carries them. */
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
 }
 
@@ -39,13 +40,7 @@ export function OverlayEmpty({ title, message, action, variant }: OverlayEmptyPr
  * retry — because trying again may work. `unavailable` is the state that gets neither, and it
  * renders through `UnavailableNote` instead.
  */
-export function OverlayError({
-  title,
-  message,
-  onRetry,
-  variant,
-  retryLabel = 'Try again',
-}: OverlayErrorProps) {
+export function OverlayError({ title, message, onRetry, variant, retryLabel }: OverlayErrorProps) {
   return (
     <div className="hg-overlay-state" data-variant={variant}>
       <span className="hg-overlay-state-mark">
@@ -65,12 +60,8 @@ export function OverlayError({
         </svg>
       </span>
       <div className="hg-overlay-state-title">{title}</div>
-      <div className="hg-overlay-state-message">{message}</div>
-      {onRetry !== undefined ? (
-        <button className="hg-overlay-state-retry" onClick={onRetry} type="button">
-          {retryLabel}
-        </button>
-      ) : null}
+      {message !== undefined ? <div className="hg-overlay-state-message">{message}</div> : null}
+      <RetryButton onRetry={onRetry} label={retryLabel} />
     </div>
   );
 }

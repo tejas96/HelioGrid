@@ -51,6 +51,7 @@ export interface ImageProps {
   missingLabel?: string;
   missingDetail?: string;
   onRetry?: () => void;
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   onClick?: () => void;
   /**

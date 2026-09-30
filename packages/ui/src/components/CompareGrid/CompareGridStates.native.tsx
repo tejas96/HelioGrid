@@ -2,9 +2,8 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
-import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { RetryButton } from '../Button/RetryButton.native';
 
 const styles = StyleSheet.create({
   skeleton: { padding: theme.spacing['sp-4'], gap: theme.spacing['sp-3'] },
@@ -31,15 +30,6 @@ const styles = StyleSheet.create({
   },
   markWarning: { backgroundColor: theme.colors['warning-bg'] },
   body: { maxWidth: 340 },
-  retry: {
-    marginTop: 10,
-    minHeight: MIN_TOUCH_TARGET,
-    paddingHorizontal: theme.spacing['sp-5'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
 });
 
 /**
@@ -73,11 +63,13 @@ export function CompareMessage({
   title,
   message,
   onRetry,
+  retryLabel,
 }: {
   tone?: 'warning';
   title: ReactNode;
   message?: ReactNode;
   onRetry?: () => void;
+  retryLabel?: string;
 }) {
   const stroke = tone === 'warning' ? theme.colors['warning-text'] : theme.colors['text-tertiary'];
   return (
@@ -105,13 +97,7 @@ export function CompareMessage({
           {message}
         </Text>
       )}
-      {onRetry === undefined ? null : (
-        <Pressable onPress={onRetry} style={styles.retry}>
-          <Text variant="body" style={{ fontWeight: '500' }}>
-            Try again
-          </Text>
-        </Pressable>
-      )}
+      <RetryButton onRetry={onRetry} label={retryLabel} />
     </View>
   );
 }

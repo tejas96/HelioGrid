@@ -1,6 +1,7 @@
 import { Pressable } from '../../primitives/Pressable';
 import type { StatusTone } from '../../primitives/StatusMark';
 import { StatusMark } from '../../primitives/StatusMark';
+import { Button } from '../Button/Button';
 import { renderPending } from '../PendingAction';
 import type { Finding, FindingStatus } from './FindingList.types';
 import { FINDING_LABEL, statusOf } from './FindingList.verdict';
@@ -37,7 +38,7 @@ function Mark({ status }: { status: FindingStatus }) {
 interface FindingListRowProps {
   finding: Finding;
   onJump?: (finding: Finding) => void;
-  jumpLabel?: string;
+  jumpLabel: string;
 }
 
 /** One finding: the mark, the check, its meaning in plain language, and the act that fixes it. */
@@ -71,22 +72,28 @@ export function FindingListRow({ finding, onJump, jumpLabel }: FindingListRowPro
         {jump === undefined && finding.fix === undefined ? null : (
           <div className="hg-finding-acts">
             {jump === undefined ? null : (
-              <Pressable className="hg-finding-jump" onPress={jump}>
+              <Button
+                variant="secondary"
+                size="md"
+                onClick={jump}
+                iconRight={
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M5 12h13M13 6l6 6-6 6" />
+                  </svg>
+                }
+              >
                 {jumpWords}
-                <svg
-                  width="15"
-                  height="15"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M5 12h13M13 6l6 6-6 6" />
-                </svg>
-              </Pressable>
+              </Button>
             )}
             {/* The second, inline one-tap fix — MS6-27's "Auto-string now". Optional by design:
                 most findings have no such act, and inventing one promises a fix that isn't there. */}

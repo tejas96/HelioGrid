@@ -1,7 +1,8 @@
+import { RetryButton } from '../Button/RetryButton';
 import { ImageFrame } from '../Image';
 import type { ResolvedDocumentState } from './SourceDocument.logic';
 import type { SourceDocumentFit, SourceDocumentPage } from './SourceDocument.types';
-import { Message, PlainButton } from './SourceDocumentChrome';
+import { Message, OpenOriginal } from './SourceDocumentChrome';
 
 export interface SourceDocumentBodyProps {
   resolved: ResolvedDocumentState;
@@ -17,6 +18,7 @@ export interface SourceDocumentBodyProps {
   onOpenOriginal?: () => void;
   openLabel: string;
   onRetry?: () => void;
+  retryLabel?: string;
   unsupportedTitle: string;
   unsupportedMessage: string;
   failedTitle: string;
@@ -43,6 +45,7 @@ export function SourceDocumentBody({
   onOpenOriginal,
   openLabel,
   onRetry,
+  retryLabel,
   unsupportedTitle,
   unsupportedMessage,
   failedTitle,
@@ -51,10 +54,11 @@ export function SourceDocumentBody({
   emptyMessage,
 }: SourceDocumentBodyProps) {
   const canOpen = Boolean(originalUrl || onOpenOriginal);
+  const retrying = onRetry !== undefined && retryLabel !== undefined;
   const openAction = canOpen ? (
-    <PlainButton href={originalUrl} onClick={onOpenOriginal}>
+    <OpenOriginal href={originalUrl} onClick={onOpenOriginal}>
       {openLabel}
-    </PlainButton>
+    </OpenOriginal>
   ) : null;
 
   if (resolved === 'loading') {
@@ -80,9 +84,9 @@ export function SourceDocumentBody({
         title={failedTitle}
         message={failedMessage}
         action={
-          onRetry || canOpen ? (
+          retrying || canOpen ? (
             <span className="hg-source-doc-actions">
-              {onRetry ? <PlainButton onClick={onRetry}>Try again</PlainButton> : null}
+              <RetryButton onRetry={onRetry} label={retryLabel} />
               {openAction}
             </span>
           ) : null
@@ -104,6 +108,7 @@ export function SourceDocumentBody({
       density="functional"
       missingReason="unavailable"
       onRetry={onRetry}
+      retryLabel={retryLabel}
     />
   );
 }

@@ -74,6 +74,8 @@ export interface UsageMeterProps {
   errorMessage?: string;
   /** Draws the retry under `error`. No other state offers one. */
   onRetry?: () => void;
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
+  retryLabel?: string;
   /** `unavailable`: this meter does not apply to this plan. No bar, no figure, no retry. */
   unavailableTitle?: string;
   unavailableMessage?: string;

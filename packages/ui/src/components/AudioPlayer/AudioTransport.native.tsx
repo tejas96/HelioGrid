@@ -8,7 +8,9 @@ import type {
   ViewStyle,
 } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { Button } from '../Button/Button.native';
 import { AudioGlyph } from './AudioGlyph.native';
 import { formatClock } from './AudioPlayer.types';
 
@@ -25,7 +27,6 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     backgroundColor: theme.colors['action-primary'],
-    ...theme.elevation.e2,
   },
   skip: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   skipCount: {
@@ -61,7 +62,6 @@ const styles = StyleSheet.create({
     height: 18,
     marginLeft: -9,
     borderRadius: 9,
-    backgroundColor: theme.colors.surface,
     borderWidth: 1.5,
     borderColor: theme.colors.accent,
     ...theme.elevation.e3,
@@ -72,11 +72,8 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
   },
-  speedChanged: { backgroundColor: theme.colors['accent-subtle'], shadowOpacity: 0, elevation: 0 },
+  speedChanged: { backgroundColor: theme.colors['accent-subtle'] },
   speedText: {
     fontFamily: theme.type.families.mono,
     fontSize: type['body-sm'].fontSize,
@@ -84,24 +81,6 @@ const styles = StyleSheet.create({
     color: theme.colors['text-primary'],
   },
   speedTextChanged: { color: theme.colors.accent },
-  door: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 7,
-    minHeight: 44,
-    paddingLeft: 14,
-    paddingRight: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
-  doorText: {
-    fontFamily: theme.type.families.sans,
-    fontSize: type['body-sm'].fontSize,
-    fontWeight: '500',
-    color: theme.colors['text-primary'],
-  },
 });
 
 export function RoundButton({
@@ -195,6 +174,8 @@ export function Scrubber({
     if (event.nativeEvent.actionName === 'increment') onSeek(at + 5);
     if (event.nativeEvent.actionName === 'decrement') onSeek(at - 5);
   };
+  /* The knob is the opposite of the track it rides: the ground (`F7-15`). */
+  const { ground } = useGround();
   const fill: ViewStyle = {
     width: ratio * width,
     backgroundColor: live ? theme.colors.accent : theme.colors['text-disabled'],
@@ -217,7 +198,9 @@ export function Scrubber({
     >
       <View style={styles.rail} />
       <View style={[styles.fill, fill]} />
-      {live ? <View style={[styles.thumb, { left: ratio * width }]} /> : null}
+      {live ? (
+        <View style={[styles.thumb, { left: ratio * width, backgroundColor: ground }]} />
+      ) : null}
     </View>
   );
 }
@@ -239,12 +222,19 @@ export function SpeedButton({
     if (value !== undefined) onChange(value);
   };
   const changed = rate !== 1;
+  /* A control is the opposite of what holds it (`F7-15`): the well on the page, white in a tile. */
+  const { controlFill } = useGround();
   return (
     <Pressable
       accessibilityLabel={`Playback speed ${rate}×. Tap to change.`}
       disabled={disabled}
       onPress={next}
-      style={[styles.speed, changed ? styles.speedChanged : null, disabled ? styles.dimmed : null]}
+      style={[
+        styles.speed,
+        { backgroundColor: controlFill },
+        changed ? styles.speedChanged : null,
+        disabled ? styles.dimmed : null,
+      ]}
     >
       <Text style={[styles.speedText, changed ? styles.speedTextChanged : null]}>{`${rate}×`}</Text>
     </Pressable>
@@ -254,9 +244,13 @@ export function SpeedButton({
 /** The door to the transcript. It is offered in EVERY state, including error. */
 export function TranscriptDoor({ label, onPress }: { label: string; onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} style={styles.door}>
-      <AudioGlyph name="doc" size={16} color={theme.colors['text-primary']} />
-      <Text style={styles.doorText}>{label}</Text>
-    </Pressable>
+    <Button
+      variant="secondary"
+      size="md"
+      icon={<AudioGlyph name="doc" size={16} color={theme.colors['text-primary']} />}
+      onClick={onPress}
+    >
+      {label}
+    </Button>
   );
 }

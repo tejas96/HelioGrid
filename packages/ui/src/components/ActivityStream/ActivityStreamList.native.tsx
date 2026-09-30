@@ -1,8 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import { Fragment } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import type { MarketFormat } from '../../utils/format';
+import { Button } from '../Button/Button.native';
 import { dayKey, groupEntries } from './ActivityStream.kinds';
 import type { ActivityEntry, ActivityStreamProps } from './ActivityStream.types';
 import { StreamEntry } from './ActivityStreamEntry.native';
@@ -35,21 +35,6 @@ const styles = StyleSheet.create({
     color: theme.colors['text-tertiary'],
   },
   more: { flexDirection: 'row', justifyContent: 'center' },
-  button: {
-    minHeight: 44,
-    paddingHorizontal: theme.spacing['sp-5'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
-  buttonBusy: { opacity: 0.6 },
-  buttonText: {
-    fontFamily: theme.type.families.sans,
-    fontSize: 14,
-    fontWeight: '500',
-    color: theme.colors['text-primary'],
-  },
 });
 
 export interface ActivityStreamListProps
@@ -150,16 +135,14 @@ export function ActivityStreamList({
 
       {localMore || hasMore ? (
         <View style={styles.more}>
-          <Pressable
-            accessibilityLabel={`Show more activity. ${visible.length} of ${wholeTotal} shown.`}
+          <Button
+            variant="secondary"
+            size="md"
             disabled={loadingMore}
-            onPress={() => (localMore ? reveal(step) : onLoadMore?.())}
-            style={[styles.button, loadingMore ? styles.buttonBusy : null]}
+            onClick={() => (localMore ? reveal(step) : onLoadMore?.())}
           >
-            <Text style={styles.buttonText}>
-              {loadingMore ? 'Loading…' : `Show ${remaining === 0 ? step : remaining} more`}
-            </Text>
-          </Pressable>
+            {loadingMore ? 'Loading…' : `Show ${remaining === 0 ? step : remaining} more`}
+          </Button>
         </View>
       ) : null}
     </>

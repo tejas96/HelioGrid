@@ -61,6 +61,7 @@ export function ChartFrame({
   errorTitle = CHART_ERROR_TITLE,
   errorMessage = CHART_ERROR_MESSAGE,
   onRetry,
+  retryLabel,
   children,
   style,
 }: NativeChartFrameProps) {
@@ -98,7 +99,13 @@ export function ChartFrame({
         </View>
       ) : null}
 
-      <ChartFrameBody state={state} height={height} note={stateNote} onRetry={onRetry}>
+      <ChartFrameBody
+        state={state}
+        height={height}
+        note={stateNote}
+        onRetry={onRetry}
+        retryLabel={retryLabel}
+      >
         {children}
       </ChartFrameBody>
 

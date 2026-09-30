@@ -129,10 +129,10 @@
   flex-shrink: 0;
   display: grid;
   place-items: center;
-  background: var(--surface);
-  box-shadow:
-    var(--e1),
-    inset 0 0 0 1.5px var(--mark-subtle);
+  /* The opposite of what holds it (F7-15, primitives/Ground): the well on the page, white inside a
+     tile. Flat — the mark's own ring draws the box, never a shadow. */
+  background: var(--hg-control-fill);
+  box-shadow: inset 0 0 0 1.5px var(--mark-subtle);
   color: var(--text-inverse);
 }
 
@@ -216,20 +216,6 @@
   font-size: var(--fs-body);
   font-weight: 600;
   color: var(--text-primary);
-}
-
-.hg-checklist-retry {
-  min-height: var(--hg-checklist-touch);
-  padding: 0 18px;
-  border: none;
-  border-radius: var(--r-pill);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
-  font-family: var(--font-sans);
-  font-size: var(--fs-body);
-  color: var(--text-primary);
-  cursor: pointer;
 }
 
 .hg-checklist-skeleton {

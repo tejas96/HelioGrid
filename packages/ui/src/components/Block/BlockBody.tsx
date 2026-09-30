@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Pressable } from '../../primitives/Pressable';
+import { RetryButton } from '../Button/RetryButton';
 import type { BlockProps } from './Block.types';
 
 function Shimmer({ width }: { width: '72' | '94' | '58' }) {
@@ -38,7 +38,13 @@ export type BlockBodyProps = Required<
 > &
   Pick<
     BlockProps,
-    'children' | 'title' | 'emptyTitle' | 'emptyAction' | 'onRetry' | 'unavailableMessage'
+    | 'children'
+    | 'title'
+    | 'emptyTitle'
+    | 'emptyAction'
+    | 'onRetry'
+    | 'retryLabel'
+    | 'unavailableMessage'
   >;
 
 /** The body is the only part that moves between states; the header and the frame stay put. */
@@ -52,6 +58,7 @@ export function BlockBody({
   errorTitle,
   errorMessage,
   onRetry,
+  retryLabel,
   unavailableTitle,
   unavailableMessage,
 }: BlockBodyProps) {
@@ -74,13 +81,7 @@ export function BlockBody({
         tone="warning"
         title={errorTitle}
         message={errorMessage}
-        action={
-          onRetry !== undefined ? (
-            <Pressable className="hg-block-retry" onPress={onRetry}>
-              Try again
-            </Pressable>
-          ) : null
-        }
+        action={<RetryButton onRetry={onRetry} label={retryLabel} />}
       />
     );
   }

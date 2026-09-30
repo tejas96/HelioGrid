@@ -53,6 +53,7 @@ function PagedDocumentRoot<Row>({
   errorTitle = "Couldn't build this document",
   errorMessage = 'Try again. If it keeps failing, tell your admin what you were doing.',
   onRetry,
+  retryLabel,
   unavailableTitle = 'No document for this proposal',
   unavailableMessage,
   className,
@@ -162,6 +163,7 @@ function PagedDocumentRoot<Row>({
         title={errorTitle}
         message={errorMessage}
         onRetry={onRetry}
+        retryLabel={retryLabel}
         style={style}
       />
     );

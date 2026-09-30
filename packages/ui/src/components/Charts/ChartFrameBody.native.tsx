@@ -3,18 +3,19 @@ import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Circle, Path, Svg } from 'react-native-svg';
 import { Icon } from '../../primitives/Icon/Icon.native';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import { ChartSkeleton } from './ChartSkeleton.native';
 import type { ChartNote, ChartNoteTone, ChartSurfaceState } from './chart-state';
-import { CHART_LOADING_LABEL, CHART_RETRY_LABEL, CHART_UNAVAILABLE_TITLE } from './chart-state';
+import { CHART_LOADING_LABEL, CHART_UNAVAILABLE_TITLE } from './chart-state';
 
 interface ChartFrameBodyProps {
   state: ChartSurfaceState;
   height: number;
   note: ChartNote | null;
   onRetry?: () => void;
+  retryLabel?: string;
   children?: ReactNode;
 }
 
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
   note: {
     alignItems: 'center',
     justifyContent: 'center',
-    gap: theme.spacing['sp-1'],
+    gap: theme.spacing['sp-2'],
     padding: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-md'],
     backgroundColor: theme.colors['surface-alt'],
@@ -51,14 +52,6 @@ const styles = StyleSheet.create({
   /* The region note's own padding is a full surface's (sp-12 / sp-6); inside a 200dp plot plate
      that is taller than the plate. sp-4 is the DS's own override here. */
   unavailable: { paddingVertical: theme.spacing['sp-4'], paddingHorizontal: theme.spacing['sp-4'] },
-  retry: {
-    marginTop: theme.spacing['sp-2'],
-    paddingHorizontal: theme.spacing['sp-5'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
 });
 
 /* The exclamation-in-a-circle `error` and `empty` share. The fourth state's slashed circle is
@@ -76,7 +69,14 @@ function AlertGlyph() {
  * The plot area, or the state that replaces it. Loading shimmers, `unavailable` states the
  * absence with no retry, and error / empty / not-enough-data share one note.
  */
-export function ChartFrameBody({ state, height, note, onRetry, children }: ChartFrameBodyProps) {
+export function ChartFrameBody({
+  state,
+  height,
+  note,
+  onRetry,
+  retryLabel,
+  children,
+}: ChartFrameBodyProps) {
   if (state === 'loading') {
     return <ChartSkeleton height={height} label={CHART_LOADING_LABEL} />;
   }
@@ -112,11 +112,7 @@ export function ChartFrameBody({ state, height, note, onRetry, children }: Chart
             {note.message}
           </Text>
         )}
-        {state === 'error' && onRetry !== undefined ? (
-          <Pressable onPress={onRetry} style={styles.retry}>
-            <Text variant="body">{CHART_RETRY_LABEL}</Text>
-          </Pressable>
-        ) : null}
+        {state === 'error' ? <RetryButton onRetry={onRetry} label={retryLabel} /> : null}
       </View>
     );
   }

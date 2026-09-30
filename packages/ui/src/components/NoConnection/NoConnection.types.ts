@@ -20,8 +20,11 @@ export interface NoConnectionProps {
    */
   // biome-ignore lint/suspicious/noConfusingVoidType: the DS contract is exactly this union — a retry may return nothing at all, an explicit false, or a promise, and each is read differently.
   onRetry?: () => void | boolean | Promise<unknown>;
-  /** Verb. Default "Try again". */
-  retryLabel?: string;
+  /**
+   * The retry's words, from `packages/i18n` — required: the retry is this screen's only action, and
+   * an English default would reach a Hindi or Marathi reader.
+   */
+  retryLabel: string;
   /** Shown when a retry came back with nothing. */
   failedMessage?: string;
   /** Shown when a retry never answered inside `retryTimeout`. */

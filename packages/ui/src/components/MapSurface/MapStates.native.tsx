@@ -2,8 +2,8 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Circle, Path, Svg } from 'react-native-svg';
 import { Icon } from '../../primitives/Icon/Icon.native';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import { MapSkeleton } from './MapSkeleton.native';
 
@@ -33,14 +33,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: theme.colors['surface-alt'],
-  },
-  retry: {
-    marginTop: theme.spacing['sp-2'],
-    paddingHorizontal: theme.spacing['sp-5'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
   },
 });
 
@@ -75,13 +67,14 @@ interface MapNoteProps {
   title: string;
   message: string;
   onRetry?: () => void;
+  retryLabel?: string;
 }
 
 /**
  * A failed tile fetch is `error` and offers a retry; nothing to show yet is `empty` and does
  * not. Neither ever leaves blank space that reads as "no sites".
  */
-export function MapNote({ kind, title, message, onRetry }: MapNoteProps) {
+export function MapNote({ kind, title, message, onRetry, retryLabel }: MapNoteProps) {
   const empty = kind === 'empty';
   return (
     <View style={styles.note}>
@@ -106,11 +99,7 @@ export function MapNote({ kind, title, message, onRetry }: MapNoteProps) {
       <Text variant="body-sm" color="secondary" align="center" style={styles.message}>
         {message}
       </Text>
-      {kind === 'error' && onRetry !== undefined ? (
-        <Pressable onPress={onRetry} style={styles.retry}>
-          <Text variant="body">Try again</Text>
-        </Pressable>
-      ) : null}
+      {kind === 'error' ? <RetryButton onRetry={onRetry} label={retryLabel} /> : null}
     </View>
   );
 }
@@ -129,6 +118,7 @@ export interface MapStateLayerProps {
   errorTitle: string;
   errorMessage: string;
   onRetry?: () => void;
+  retryLabel?: string;
 }
 
 /** Every state that replaces the tiles, in one place. `ready` draws nothing here. */
@@ -146,6 +136,7 @@ export function MapStateLayer(props: MapStateLayerProps) {
         title={props.errorTitle}
         message={props.errorMessage}
         onRetry={props.onRetry}
+        retryLabel={props.retryLabel}
       />
     );
   }

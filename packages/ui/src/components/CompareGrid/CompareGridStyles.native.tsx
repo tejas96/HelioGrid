@@ -34,11 +34,8 @@ export const compareStyles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     backgroundColor: theme.colors['action-primary'],
   },
-  chooseSelected: {
-    backgroundColor: theme.colors.surface,
-    borderWidth: 2,
-    borderColor: theme.colors.accent,
-  },
+  /* Its fill is the control fill from `useGround()`, set where it is drawn. */
+  chooseSelected: { borderWidth: 2, borderColor: theme.colors.accent },
   valueRow: { flexDirection: 'row', alignItems: 'baseline', flexWrap: 'wrap' },
 });
 

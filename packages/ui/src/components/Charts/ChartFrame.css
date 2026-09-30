@@ -187,20 +187,6 @@
   color: var(--text-secondary);
 }
 
-/* Composed on the Pressable primitive, which owns the 44px floor and the focus ring. */
-.hg-charts-retry {
-  margin-top: var(--sp-2);
-  padding: 0 var(--sp-5);
-  border-radius: var(--r-pill);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
-  font-family: var(--font-sans);
-  font-size: var(--fs-body);
-  font-weight: var(--fw-medium);
-  color: var(--text-primary);
-}
-
 .hg-charts-legend-slot {
   margin-top: var(--sp-3);
 }

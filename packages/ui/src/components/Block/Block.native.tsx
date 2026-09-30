@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { useFormat } from '../MarketProvider';
 import { renderProvenance } from '../Provenance';
 import type { BlockProps } from './Block.types';
@@ -51,6 +52,7 @@ export function Block({
   errorTitle = "Couldn't load this",
   errorMessage = 'Try again. If it keeps failing, tell your admin what you were doing.',
   onRetry,
+  retryLabel,
   unavailableTitle = 'Not available',
   unavailableMessage,
   badge,
@@ -68,20 +70,10 @@ export function Block({
     market.number(n, { maximumFractionDigits: 0 }),
   );
 
-  return (
-    /* The web half is `<section aria-label={title}>` — a landmark RN has no counterpart for. The
-       title is not lost by dropping the label: `BlockHeader` renders it as an
-       `accessibilityRole="header"` Text, which is the node a screen reader actually lands on, and
-       it draws whenever `title` is defined. A role here would name the frame a second time, and
-       `accessible` would swallow the header, the body and every action inside it. */
-    <View
-      style={[
-        styles.block,
-        density === 'functional' ? styles.functional : styles.expressive,
-        flat ? styles.flat : null,
-        style,
-      ]}
-    >
+  /* A block is white and holds controls, so its controls take the page's fill until T-FPLAT-078
+     makes it a tile or a heading. A flat block has no white of its own: it reads what holds it. */
+  const content = (
+    <>
       <BlockHeader
         overline={overline}
         title={title}
@@ -102,6 +94,7 @@ export function Block({
         errorTitle={errorTitle}
         errorMessage={errorMessage}
         onRetry={onRetry}
+        retryLabel={retryLabel}
         unavailableTitle={unavailableTitle}
         unavailableMessage={unavailableMessage}
       >
@@ -114,6 +107,24 @@ export function Block({
           {footer !== undefined ? <View style={styles.footEnd}>{footer}</View> : null}
         </View>
       ) : null}
+    </>
+  );
+
+  return (
+    /* The web half is `<section aria-label={title}>` — a landmark RN has no counterpart for. The
+       title is not lost by dropping the label: `BlockHeader` renders it as an
+       `accessibilityRole="header"` Text, which is the node a screen reader actually lands on, and
+       it draws whenever `title` is defined. A role here would name the frame a second time, and
+       `accessible` would swallow the header, the body and every action inside it. */
+    <View
+      style={[
+        styles.block,
+        density === 'functional' ? styles.functional : styles.expressive,
+        flat ? styles.flat : null,
+        style,
+      ]}
+    >
+      {flat ? content : <GroundProvider ground="page">{content}</GroundProvider>}
     </View>
   );
 }

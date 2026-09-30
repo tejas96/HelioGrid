@@ -8,6 +8,7 @@ export interface EditorStateProps {
   errorTitle?: string;
   errorMessage?: string;
   onRetry?: () => void;
+  retryLabel?: string;
   emptyTitle?: string;
   emptyMessage?: string;
   emptyAction?: ReactNode;
@@ -21,7 +22,7 @@ export interface EditorStateProps {
  * `unavailable` stays neutral with no retry, and `empty` still invites, whichever form renders.
  *
  * Bundled in one place because `Sheet` and `DetailPanel` both take the whole block and repeating
- * ten prop lines twice per platform is how a state quietly goes missing from one of the forms.
+ * its prop lines twice per platform is how a state quietly goes missing from one of the forms.
  */
 export function editorStateProps(props: EditorSurfaceProps): EditorStateProps {
   return {
@@ -29,6 +30,7 @@ export function editorStateProps(props: EditorSurfaceProps): EditorStateProps {
     errorTitle: props.errorTitle,
     errorMessage: props.errorMessage,
     onRetry: props.onRetry,
+    retryLabel: props.retryLabel,
     emptyTitle: props.emptyTitle,
     emptyMessage: props.emptyMessage,
     emptyAction: props.emptyAction,

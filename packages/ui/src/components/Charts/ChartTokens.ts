@@ -12,6 +12,7 @@ export function chartVar(index: number): string {
 }
 
 export const CHART_GRIDLINE_VAR = 'var(--chart-gridline)';
-export const CHART_SURFACE_VAR = 'var(--surface)';
+/** The end dot's cut-out: whatever holds the chart, so the ring reads in a tile as on the page. */
+export const CHART_GROUND_VAR = 'var(--hg-ground)';
 /** The unfilled remainder of a donut ring. */
 export const CHART_TRACK_VAR = 'var(--canvas-sunken)';

@@ -228,16 +228,8 @@
   color: var(--text-secondary);
 }
 
-.hg-paged-document-retry {
-  margin-top: 14px;
-  padding: 0 var(--sp-5);
-  border-radius: var(--r-pill);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
-  font-family: var(--font-sans);
-  font-size: var(--fs-button);
-  font-weight: var(--fw-medium);
+.hg-paged-document-card-action {
+  margin-top: var(--sp-2);
 }
 
 .hg-paged-document-unavailable {

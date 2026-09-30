@@ -1,6 +1,6 @@
 /* Timeline (native) — the same sequence, the same rail, the same five states. A continuous rail
    runs through the nodes, lit up to the current step and dim beyond it. Display only: nothing in
-   this component is pressable except the error state's retry (which is a Pressable). */
+   this component is pressable except the error state's retry (a `Button`). */
 
 import type { StyleProp, ViewStyle } from 'react-native';
 import { View } from 'react-native';
@@ -23,6 +23,7 @@ export function Timeline({
   errorTitle = "Couldn't load the activity",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
   onRetry,
+  retryLabel,
   unavailableTitle = 'No sequence here',
   unavailableMessage,
   style,
@@ -42,6 +43,7 @@ export function Timeline({
           title={errorTitle}
           message={errorMessage}
           onRetry={onRetry}
+          retryLabel={retryLabel}
         />
       </View>
     );

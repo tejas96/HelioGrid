@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { RetryButton } from '../Button/RetryButton.native';
 
 /* DataTable — the loading skeleton, the blocked-state message and the row's own line. Split out
    of DataTableChrome.native.tsx so no file runs past 300 lines. */
@@ -29,15 +29,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors['neutral-bg'],
   },
   markWarning: { backgroundColor: theme.colors['warning-bg'] },
-  retry: {
-    marginTop: 10,
-    minHeight: MIN_TOUCH_TARGET,
-    paddingHorizontal: theme.spacing['sp-5'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
   skeletonStack: { padding: theme.spacing['sp-2'] },
   skeletonHead: { height: MIN_TOUCH_TARGET, backgroundColor: theme.colors.canvas },
   skeletonRow: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-5'] },
@@ -112,12 +103,14 @@ export function TableMessage({
   title,
   message,
   onRetry,
+  retryLabel,
   action,
 }: {
   tone?: 'warning';
   title: ReactNode;
   message?: ReactNode;
   onRetry?: () => void;
+  retryLabel?: string;
   action?: ReactNode;
 }) {
   const stroke = tone === 'warning' ? theme.colors['warning-text'] : theme.colors['text-tertiary'];
@@ -148,13 +141,7 @@ export function TableMessage({
           {message}
         </Text>
       )}
-      {onRetry === undefined ? null : (
-        <Pressable onPress={onRetry} style={styles.retry}>
-          <Text variant="body" style={{ fontWeight: '500' }}>
-            Try again
-          </Text>
-        </Pressable>
-      )}
+      <RetryButton onRetry={onRetry} label={retryLabel} />
       {action}
     </View>
   );

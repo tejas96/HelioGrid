@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { Pressable } from '../../primitives/Pressable';
+import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote';
 import type { UsageMeterProps } from './UsageMeter.types';
 
@@ -41,16 +41,17 @@ export function UsageMeterError({
   period,
   errorMessage,
   onRetry,
-}: Pick<UsageMeterProps, 'label' | 'period' | 'onRetry'> & { errorMessage: string }) {
+  retryLabel,
+}: Pick<UsageMeterProps, 'label' | 'period' | 'onRetry' | 'retryLabel'> & {
+  errorMessage: string;
+}) {
   return (
     <section className="hg-usage-meter">
       <Head label={label} period={period} />
       <p className="hg-usage-meter-error">{errorMessage}</p>
-      {onRetry !== undefined ? (
+      {onRetry !== undefined && retryLabel !== undefined ? (
         <div className="hg-usage-meter-retry">
-          <Pressable className="hg-usage-meter-pill" onPress={onRetry}>
-            Try again
-          </Pressable>
+          <RetryButton onRetry={onRetry} label={retryLabel} />
         </div>
       ) : null}
     </section>

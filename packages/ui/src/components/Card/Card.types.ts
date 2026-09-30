@@ -23,6 +23,8 @@ export interface CardProps {
   errorMessage?: string;
   /** Draws the retry. `error` is the only state that ever offers one. */
   onRetry?: () => void;
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
+  retryLabel?: string;
   unavailableTitle?: string;
   unavailableMessage?: string;
   /**

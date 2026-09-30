@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { BandChip } from './BandChip.native';
 import type { BandSpec, BandToneStyle } from './BandedFigure.types';
 
@@ -124,28 +125,36 @@ export function BandedCard({
   };
   return (
     <View accessible accessibilityLabel={accessibilityLabel} style={[styles.card, size.pad, style]}>
-      {big ? <View style={[styles.edge, { backgroundColor: tone.mark }]} /> : null}
-      <Text style={[styles.overline, { fontSize: size.overline }]}>{label}</Text>
-      <View style={styles.figureRow}>
-        <View style={styles.figure}>
-          <Text style={[styles.value, VALUE_TYPE[big ? 'box' : 'card']]}>{shown}</Text>
-          {unit !== undefined ? (
-            <Text style={[styles.unit, { fontSize: size.unit }]}>{unit}</Text>
-          ) : null}
+      <CardGround big={big}>
+        {big ? <View style={[styles.edge, { backgroundColor: tone.mark }]} /> : null}
+        <Text style={[styles.overline, { fontSize: size.overline }]}>{label}</Text>
+        <View style={styles.figureRow}>
+          <View style={styles.figure}>
+            <Text style={[styles.value, VALUE_TYPE[big ? 'box' : 'card']]}>{shown}</Text>
+            {unit !== undefined ? (
+              <Text style={[styles.unit, { fontSize: size.unit }]}>{unit}</Text>
+            ) : null}
+          </View>
+          {band !== null ? <BandChip band={band} size={size.chip} /> : null}
         </View>
-        {band !== null ? <BandChip band={band} size={size.chip} /> : null}
-      </View>
-      {bound !== undefined ? <Text style={styles.bound}>{bound}</Text> : null}
-      {/* The remedy: a sentence, in the fault's own block, never a tint on its own. */}
-      {move !== undefined && move !== null ? (
-        <View style={styles.remedyRow}>
-          <RemedyGlyph color={tone.fg} />
-          <Text style={[styles.remedy, remedyType]}>{move}</Text>
-        </View>
-      ) : null}
-      {provenance}
-      {note !== undefined ? <Text style={styles.note}>{note}</Text> : null}
-      {children}
+        {bound !== undefined ? <Text style={styles.bound}>{bound}</Text> : null}
+        {/* The remedy: a sentence, in the fault's own block, never a tint on its own. */}
+        {move !== undefined && move !== null ? (
+          <View style={styles.remedyRow}>
+            <RemedyGlyph color={tone.fg} />
+            <Text style={[styles.remedy, remedyType]}>{move}</Text>
+          </View>
+        ) : null}
+        {provenance}
+        {note !== undefined ? <Text style={styles.note}>{note}</Text> : null}
+        {children}
+      </CardGround>
     </View>
   );
+}
+
+/* The card is white, so its controls take the page's fill until T-FPLAT-078 settles its ground.
+   The inspector's box keeps reading what holds it. */
+function CardGround({ big, children }: { big: boolean; children: ReactNode }) {
+  return big ? children : <GroundProvider ground="page">{children}</GroundProvider>;
 }

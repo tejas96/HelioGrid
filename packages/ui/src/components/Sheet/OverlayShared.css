@@ -116,26 +116,3 @@
 .hg-overlay-state[data-variant="panel"] .hg-overlay-state-message {
   max-width: 300px;
 }
-
-/* 10px of top margin has no spacing token; it is the reference's own nudge. */
-.hg-overlay-state-retry {
-  margin-top: 10px;
-  min-height: 44px;
-  padding: 0 var(--sp-5);
-  border: none;
-  border-radius: var(--r-pill);
-  /* Try again is a CONTROL on a --surface overlay, so it is the opposite of its ground (F7-15):
-     the well, darker than the overlay, never a white pill on white. */
-  background: var(--bg-well);
-  box-shadow: none;
-  font-family: var(--font-sans);
-  font-size: var(--fs-body);
-  font-weight: var(--fw-medium);
-  color: var(--text-primary);
-  cursor: pointer;
-}
-
-.hg-overlay-state-retry:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
-}

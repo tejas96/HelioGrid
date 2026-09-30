@@ -89,7 +89,8 @@
   width: var(--hg-usage-meter-over, 0%);
   background: var(--info);
   opacity: 0.55;
-  border-left: 2px solid var(--surface);
+  /* A cut-out: the edge is the ground showing through, so it reads on the page and in a tile. */
+  border-left: 2px solid var(--hg-ground);
   transition: width var(--dur-emphasised) var(--ease-standard);
 }
 
@@ -99,7 +100,8 @@
   top: -1px;
   bottom: -1px;
   width: 2px;
-  background: var(--surface);
+  /* A cut-out, like the overage edge: the ground showing through the track. */
+  background: var(--hg-ground);
   opacity: 0.9;
 }
 
@@ -152,19 +154,6 @@
 
 .hg-usage-meter-retry {
   display: flex;
-}
-
-/* The 44px floor comes from Pressable; this is the pill profile on top of it. */
-.hg-usage-meter-pill.hg-pressable {
-  padding: 0 18px;
-  border-radius: var(--r-pill);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
-  font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: var(--fw-medium);
-  color: var(--text-primary);
 }
 
 /* ── the unresolved shimmer, in the figure's OWN footprint ─────────────────── */

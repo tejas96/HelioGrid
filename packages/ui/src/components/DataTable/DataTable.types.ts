@@ -134,6 +134,8 @@ export interface DataTableProps<Row = Record<string, unknown>> {
   errorTitle?: string;
   errorMessage?: string;
   onRetry?: () => void;
+  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
+  retryLabel?: string;
   /** `unavailable`: these records were never going to be here. Neutral, and no retry. */
   unavailableTitle?: string;
   unavailableMessage?: string;

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { RetryButton } from '../Button/RetryButton';
 
 /** Six shimmer bars — the loading form. Never a placeholder value presented as a real one. */
 export function CompareSkeleton() {
@@ -27,11 +28,13 @@ export function CompareMessage({
   title,
   message,
   onRetry,
+  retryLabel,
 }: {
   tone?: 'warning';
   title: ReactNode;
   message?: ReactNode;
   onRetry?: () => void;
+  retryLabel?: string;
 }) {
   return (
     <div className="hg-compare-message">
@@ -60,11 +63,7 @@ export function CompareMessage({
       </span>
       <div className="hg-compare-message-title">{title}</div>
       {message === undefined ? null : <div className="hg-compare-message-body">{message}</div>}
-      {onRetry === undefined ? null : (
-        <button type="button" className="hg-compare-retry" onClick={onRetry}>
-          Try again
-        </button>
-      )}
+      <RetryButton onRetry={onRetry} label={retryLabel} />
     </div>
   );
 }

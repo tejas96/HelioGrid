@@ -1,3 +1,4 @@
+import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
 import type { ChecklistProps } from './Checklist.types';
 
@@ -9,6 +10,7 @@ type StateProps = Required<Pick<ChecklistProps, 'state'>> &
     | 'errorTitle'
     | 'errorMessage'
     | 'onRetry'
+    | 'retryLabel'
     | 'unavailableTitle'
     | 'unavailableMessage'
   >;
@@ -26,6 +28,7 @@ export function ChecklistStateBody({
   errorTitle,
   errorMessage,
   onRetry,
+  retryLabel,
   unavailableTitle,
   unavailableMessage,
 }: StateProps) {
@@ -50,11 +53,7 @@ export function ChecklistStateBody({
     <div className="hg-checklist-note">
       <p className="hg-checklist-state-title">{errorTitle}</p>
       <p className="hg-checklist-detail hg-checklist-detail--warning">{errorMessage}</p>
-      {onRetry === undefined ? null : (
-        <button type="button" className="hg-checklist-retry" onClick={onRetry}>
-          Try again
-        </button>
-      )}
+      <RetryButton onRetry={onRetry} label={retryLabel} />
     </div>
   );
 }

@@ -27,6 +27,7 @@ export function AudioPlayer({
   retentionBound,
   errorMessage = "Couldn't load this recording. Tap Try again — the transcript is on this record either way.",
   onRetry,
+  retryLabel,
   onOpenTranscript,
   transcriptLabel = 'Open transcript',
   speeds = [1, 1.25, 1.5, 2],
@@ -59,6 +60,7 @@ export function AudioPlayer({
         <AudioError
           errorMessage={errorMessage}
           onRetry={onRetry}
+          retryLabel={retryLabel}
           onOpenTranscript={onOpenTranscript}
           transcriptLabel={transcriptLabel}
         />

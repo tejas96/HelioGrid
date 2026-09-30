@@ -1,9 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { Button } from '../Button/Button.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import type { OperationProgressProps } from './OperationProgress.types';
 import type { CancelCopy } from './operation-progress-model';
 
@@ -46,39 +46,21 @@ export function OperationActions({
   return (
     <View style={styles.actions}>
       {running && cancel !== null ? (
-        <Pressable style={styles.pill} onPress={onCancel}>
-          <Text variant="body-sm" style={pillLabel}>
-            {cancelLabel ?? cancel.label}
-          </Text>
-        </Pressable>
+        <Button variant="secondary" size="md" onClick={onCancel}>
+          {cancelLabel ?? cancel.label}
+        </Button>
       ) : null}
       {running && cancel !== null ? (
         <View style={styles.cancelNote}>{renderNote(cancelNote ?? cancel.note)}</View>
       ) : null}
-      {state === 'failed' && onRetry !== undefined ? (
-        <Pressable style={styles.pill} onPress={onRetry}>
-          <Text variant="body-sm" style={pillLabel}>
-            {retryLabel}
-          </Text>
-        </Pressable>
-      ) : null}
+      {state === 'failed' ? <RetryButton onRetry={onRetry} label={retryLabel} /> : null}
       {destination !== undefined ? <View style={styles.destination}>{destination}</View> : null}
     </View>
   );
 }
 
-const pillLabel: TextStyle = { fontWeight: '500' };
-
 const styles = StyleSheet.create({
   actions: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 10 },
-  /* Pressable owns the 44px floor; this is the pill profile on top of it. */
-  pill: {
-    paddingHorizontal: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
   cancelNote: { flexShrink: 1, flexGrow: 1, minWidth: 140 },
   destination: {
     flexDirection: 'row',

@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text.native';
 import { PILL_HEIGHT } from './FilterBar.types';
@@ -41,20 +42,20 @@ export const filterStyles = StyleSheet.create({
   },
 });
 
-/** Scope is near-black when active (the primary-action marker); chips and sort are accent. */
-const ACTIVE_FILL: Record<PillKind, string> = {
+/** Scope is near-black when active (the primary-action marker); chips and sort are accent. The
+    Filters pill opens a sheet and is never active, so it keeps its resting fill. */
+const ACTIVE_FILL: Partial<Record<PillKind, string>> = {
   scope: theme.colors['action-primary'],
   chip: theme.colors.accent,
   sort: theme.colors.accent,
-  filters: theme.colors.surface,
 };
 
-/** Chips and the Filters pill are white pills separated by shadow; scope and sort are bare. */
-const RESTING: Record<PillKind, ViewStyle> = {
-  scope: { backgroundColor: 'transparent' },
-  chip: { backgroundColor: theme.colors.surface, ...theme.elevation.e2 },
-  sort: { backgroundColor: 'transparent' },
-  filters: { backgroundColor: theme.colors.surface, ...theme.elevation.e2 },
+/** Chips and the Filters pill take the control fill, flat (`F7-15`); scope and sort are bare. */
+const TAKES_CONTROL_FILL: Record<PillKind, boolean> = {
+  scope: false,
+  chip: true,
+  sort: false,
+  filters: true,
 };
 
 const PADDING: Record<PillKind, number> = {
@@ -81,12 +82,17 @@ export function FilterPill({
   children: ReactNode;
   style?: ViewStyle;
 }) {
+  const { controlFill } = useGround();
+  const resting = TAKES_CONTROL_FILL[kind] ? controlFill : 'transparent';
   return (
     <View
       style={[
         filterStyles.pill,
-        { height: PILL_HEIGHT[kind], paddingHorizontal: PADDING[kind] },
-        active ? { backgroundColor: ACTIVE_FILL[kind] } : RESTING[kind],
+        {
+          height: PILL_HEIGHT[kind],
+          paddingHorizontal: PADDING[kind],
+          backgroundColor: (active ? ACTIVE_FILL[kind] : undefined) ?? resting,
+        },
         style,
       ]}
     >

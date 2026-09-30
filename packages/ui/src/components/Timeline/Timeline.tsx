@@ -28,6 +28,7 @@ export function Timeline({
   errorTitle = "Couldn't load the activity",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
   onRetry,
+  retryLabel,
   unavailableTitle = 'No sequence here',
   unavailableMessage,
   className,
@@ -43,6 +44,7 @@ export function Timeline({
         title={errorTitle}
         message={errorMessage}
         onRetry={onRetry}
+        retryLabel={retryLabel}
         className={className}
         style={style}
       />

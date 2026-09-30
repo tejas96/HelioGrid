@@ -1,7 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
-import { StyleSheet, Text, View } from 'react-native';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { StyleSheet, View } from 'react-native';
+import { Button } from '../Button/Button.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import { useFormat } from '../MarketProvider';
 import { UnavailableNote } from '../UnavailableNote';
 import { applyFilter, filterDimensions } from './ActivityStream.filter';
@@ -18,21 +19,6 @@ interface NativeActivityStreamProps extends ActivityStreamProps {
 const styles = StyleSheet.create({
   shell: { minWidth: 0, gap: theme.spacing['sp-4'] },
   shellFunctional: { gap: theme.spacing['sp-3'] },
-  button: {
-    minHeight: 44,
-    paddingHorizontal: theme.spacing['sp-5'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.surface,
-    // A control is raised, not outlined — `surface` at e2.
-    ...theme.elevation.e2,
-  },
-  buttonText: {
-    fontFamily: theme.type.families.sans,
-    fontSize: 14,
-    fontWeight: '500',
-    color: theme.colors['text-primary'],
-  },
-  spaced: { marginTop: 10 },
 });
 
 /**
@@ -64,6 +50,7 @@ export function ActivityStream({
   errorTitle = "Couldn't load the activity",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
   onRetry,
+  retryLabel,
   unavailableTitle = 'No activity is kept here',
   unavailableMessage,
   density = 'expressive',
@@ -95,13 +82,7 @@ export function ActivityStream({
           tone="warning"
           title={errorTitle}
           message={errorMessage}
-          retry={
-            onRetry !== undefined ? (
-              <Pressable onPress={onRetry} style={[styles.button, styles.spaced]}>
-                <Text style={styles.buttonText}>Try again</Text>
-              </Pressable>
-            ) : null
-          }
+          retry={<RetryButton onRetry={onRetry} label={retryLabel} />}
         />
       </View>
     );
@@ -130,9 +111,9 @@ export function ActivityStream({
           message={filteredEmptyDescription}
           action={
             onClearFilters !== undefined ? (
-              <Pressable onPress={onClearFilters} style={styles.button}>
-                <Text style={styles.buttonText}>Clear filters</Text>
-              </Pressable>
+              <Button variant="secondary" size="md" onClick={onClearFilters}>
+                Clear filters
+              </Button>
             ) : null
           }
         />

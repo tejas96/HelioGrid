@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { RetryButton } from '../Button/RetryButton';
 
 /** A shimmer bar; width and height are per-line measurements, not scale steps. */
 export function StreamShimmer({ width, height }: { width: string; height: number }) {
@@ -64,12 +65,14 @@ export function StreamMessage({
   message,
   action,
   onRetry,
+  retryLabel,
 }: {
   tone?: 'warning';
   title: string;
   message?: string;
   action?: ReactNode;
   onRetry?: () => void;
+  retryLabel?: string;
 }) {
   return (
     <div className="hg-stream-message">
@@ -78,11 +81,7 @@ export function StreamMessage({
       </span>
       <div className="hg-stream-message-title">{title}</div>
       {message !== undefined ? <div className="hg-stream-message-text">{message}</div> : null}
-      {onRetry !== undefined ? (
-        <button type="button" className="hg-stream-button" onClick={onRetry}>
-          Try again
-        </button>
-      ) : null}
+      <RetryButton onRetry={onRetry} label={retryLabel} />
       {action !== undefined && action !== null ? (
         <div className="hg-stream-message-extra">{action}</div>
       ) : null}

@@ -25,7 +25,7 @@ export function NoConnection({
   title = "You're not connected",
   message = 'HelioGrid needs a connection to load this. Check your mobile data or Wi-Fi, then try again.',
   onRetry,
-  retryLabel = 'Try again',
+  retryLabel,
   failedMessage = 'Still no connection.',
   timeoutMessage = "That's taking too long to answer.",
   retryTimeout = 10000,

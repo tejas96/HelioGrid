@@ -5,18 +5,14 @@
    THE CANCEL SENTENCE IS NOT OPTIONAL CHROME — it is the difference between a cancel and a lie, so
    it sits beside the button and never wraps away from it.
 
-   13px marks, the 7px waiting dot and the pill's 16px inline padding are the component's own
-   dimensions; every colour, radius, type size and duration below is a token. */
+   13px marks and the 7px waiting dot are the component's own dimensions; every colour, radius,
+   type size and duration below is a token. */
 
 .hg-operation-progress {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  font-family: var(--font-sans);
-}
-
-.hg-operation-progress[data-size="inline"] {
   gap: var(--sp-2);
+  font-family: var(--font-sans);
 }
 
 .hg-operation-progress-head {
@@ -182,19 +178,6 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
-}
-
-/* The 44px floor comes from Pressable; this is the pill profile on top of it. */
-.hg-operation-progress-pill.hg-pressable {
-  padding: 0 var(--sp-4);
-  border-radius: var(--r-pill);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
-  font-family: var(--font-sans);
-  font-size: var(--fs-body-sm);
-  font-weight: var(--fw-medium);
-  color: var(--text-primary);
 }
 
 .hg-operation-progress-cancel-note {

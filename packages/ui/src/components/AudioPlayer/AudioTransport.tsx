@@ -1,4 +1,5 @@
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
+import { Button } from '../Button/Button';
 import { AudioGlyph } from './AudioGlyph';
 import { AUDIO_SEEK_KEYS, formatClock } from './AudioPlayer.types';
 
@@ -134,9 +135,13 @@ export function SpeedButton({
 /** The door to the transcript. It is offered in EVERY state, including error. */
 export function TranscriptDoor({ label, onPress }: { label: string; onPress: () => void }) {
   return (
-    <button type="button" className="hg-audio-text-action" onClick={onPress}>
-      <AudioGlyph name="doc" size={16} />
+    <Button
+      variant="secondary"
+      size="md"
+      icon={<AudioGlyph name="doc" size={16} />}
+      onClick={onPress}
+    >
       {label}
-    </button>
+    </Button>
   );
 }

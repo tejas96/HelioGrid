@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
 import type { MarketFormat } from '../../utils/format';
+import { Button } from '../Button/Button';
 import { dayKey, groupEntries } from './ActivityStream.kinds';
 import type { ActivityEntry, ActivityStreamProps } from './ActivityStream.types';
 import { StreamEntry } from './ActivityStreamEntry';
@@ -102,16 +103,14 @@ export function ActivityStreamList({
 
       {localMore || hasMore ? (
         <div className="hg-stream-more">
-          <button
-            type="button"
-            className="hg-stream-button"
-            data-busy={loadingMore ? 'true' : undefined}
-            onClick={() => (localMore ? reveal(step) : onLoadMore?.())}
+          <Button
+            variant="secondary"
+            size="md"
             disabled={loadingMore}
-            aria-label={`Show more activity. ${visible.length} of ${wholeTotal} shown.`}
+            onClick={() => (localMore ? reveal(step) : onLoadMore?.())}
           >
             {loadingMore ? 'Loading…' : `Show ${remaining === 0 ? step : remaining} more`}
-          </button>
+          </Button>
         </div>
       ) : null}
     </>

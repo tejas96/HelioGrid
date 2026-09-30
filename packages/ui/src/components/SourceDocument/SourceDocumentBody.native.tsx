@@ -2,10 +2,12 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
+import { Button } from '../Button/Button.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import { ImageFrame } from '../Image/Image.native';
 import type { ResolvedDocumentState } from './SourceDocument.logic';
 import type { SourceDocumentFit, SourceDocumentPage } from './SourceDocument.types';
-import { Message, openOriginalFile, PlainButton } from './SourceDocumentChrome.native';
+import { Message, openOriginalFile } from './SourceDocumentChrome.native';
 
 export interface SourceDocumentBodyProps {
   resolved: ResolvedDocumentState;
@@ -21,6 +23,7 @@ export interface SourceDocumentBodyProps {
   onOpenOriginal?: () => void;
   openLabel: string;
   onRetry?: () => void;
+  retryLabel?: string;
   unsupportedTitle: string;
   unsupportedMessage: string;
   failedTitle: string;
@@ -50,6 +53,7 @@ export function SourceDocumentBody({
   onOpenOriginal,
   openLabel,
   onRetry,
+  retryLabel,
   unsupportedTitle,
   unsupportedMessage,
   failedTitle,
@@ -58,8 +62,11 @@ export function SourceDocumentBody({
   emptyMessage,
 }: SourceDocumentBodyProps) {
   const canOpen = Boolean(originalUrl || onOpenOriginal);
+  const retrying = onRetry !== undefined && retryLabel !== undefined;
   const openAction = canOpen ? (
-    <PlainButton onPress={openOriginalFile(originalUrl, onOpenOriginal)}>{openLabel}</PlainButton>
+    <Button variant="secondary" size="md" onClick={openOriginalFile(originalUrl, onOpenOriginal)}>
+      {openLabel}
+    </Button>
   ) : null;
 
   if (resolved === 'loading') {
@@ -90,9 +97,9 @@ export function SourceDocumentBody({
         title={failedTitle}
         message={failedMessage}
         action={
-          onRetry || canOpen ? (
+          retrying || canOpen ? (
             <>
-              {onRetry ? <PlainButton onPress={onRetry}>Try again</PlainButton> : null}
+              <RetryButton onRetry={onRetry} label={retryLabel} />
               {openAction}
             </>
           ) : null
@@ -114,6 +121,7 @@ export function SourceDocumentBody({
       density="functional"
       missingReason="unavailable"
       onRetry={onRetry}
+      retryLabel={retryLabel}
     />
   );
 }

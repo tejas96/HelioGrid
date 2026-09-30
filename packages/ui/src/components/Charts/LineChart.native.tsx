@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Circle, G, Line, Polygon, Polyline, Svg } from 'react-native-svg';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ChartFrame } from './ChartFrame.native';
 import type { LineChartProps } from './Charts.types';
@@ -34,6 +35,8 @@ export function LineChart({
   gridlines = 4,
   ...frame
 }: NativeLineChartProps) {
+  /* The end dot is cut out of whatever holds the chart (`F7-15`). */
+  const { ground } = useGround();
   const [width, setWidth] = useState(0);
   const onLayout = (e: LayoutChangeEvent) => setWidth(e.nativeEvent.layout.width);
   const sets = toLineSeries(series);
@@ -94,7 +97,7 @@ export function LineChart({
                       cx={geo.x(set.points.length - 1, set.points.length)}
                       cy={geo.y(last.y)}
                       r={4}
-                      fill={theme.colors.surface}
+                      fill={ground}
                       stroke={stroke}
                       strokeWidth={2}
                     />

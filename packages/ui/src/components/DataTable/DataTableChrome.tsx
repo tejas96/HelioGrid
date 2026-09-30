@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { RetryButton } from '../Button/RetryButton';
 
 /* THE TICK IS THE SYSTEM `Checkbox` (see `DataTableHead`, `DataTableBodyRow`, `DataTableCard`).
    A private `SelectBox` lived here behind the note "until the forms Checkbox folder lands"; the
@@ -121,12 +122,14 @@ export function TableMessage({
   title,
   message,
   onRetry,
+  retryLabel,
   action,
 }: {
   tone?: 'warning';
   title: ReactNode;
   message?: ReactNode;
   onRetry?: () => void;
+  retryLabel?: string;
   action?: ReactNode;
 }) {
   return (
@@ -153,11 +156,7 @@ export function TableMessage({
       </span>
       <div className="hg-dt-message-title">{title}</div>
       {message === undefined ? null : <div className="hg-dt-message-body">{message}</div>}
-      {onRetry === undefined ? null : (
-        <button type="button" className="hg-dt-retry" onClick={onRetry}>
-          Try again
-        </button>
-      )}
+      <RetryButton onRetry={onRetry} label={retryLabel} />
       {action === undefined ? null : <div className="hg-dt-message-action">{action}</div>}
     </div>
   );

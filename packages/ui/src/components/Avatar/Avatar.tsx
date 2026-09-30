@@ -34,7 +34,7 @@ export function Avatar({ src, name = '', size = 40, className, style }: WebAvata
   );
 }
 
-/** Overlapping avatar group with a 2px --surface ring; the stack overlaps 30% of the diameter. */
+/** Overlapping avatar group with a 2px ring in the ground; the stack overlaps 30% of the diameter. */
 export function AvatarGroup({
   people = [],
   size = 32,

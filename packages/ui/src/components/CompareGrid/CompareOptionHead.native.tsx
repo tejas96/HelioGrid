@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { type StyleProp, View, type ViewStyle } from 'react-native';
+import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderMarks } from '../ChipGroup/ChipGroup.native';
 import type { CompareOption } from './CompareGrid.types';
@@ -47,15 +48,26 @@ export function CompareOptionHead<Opt extends CompareOption>({
             </View>
           ) : null}
           {selected ? (
-            <View style={[compareStyles.pill, compareStyles.plain]}>
-              <Text variant="caption" color="accent">
-                {selectedLabel}
-              </Text>
-            </View>
+            /* The selected column's tint holds its pill as a tile does — see `Ground.css`. */
+            <GroundProvider ground="tile">
+              <SelectedPill label={selectedLabel} />
+            </GroundProvider>
           ) : null}
         </View>
         {option.marks === undefined ? null : renderMarks(option.marks)}
       </View>
+    </View>
+  );
+}
+
+/** A control part: the opposite of what holds it (`F7-15`), flat. */
+function SelectedPill({ label }: { label: string }) {
+  const { controlFill } = useGround();
+  return (
+    <View style={[compareStyles.pill, { backgroundColor: controlFill }]}>
+      <Text variant="caption" color="accent">
+        {label}
+      </Text>
     </View>
   );
 }

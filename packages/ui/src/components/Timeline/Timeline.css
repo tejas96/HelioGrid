@@ -1,6 +1,9 @@
 /* Timeline — a sequence. The rail is continuous, lit up to the current step and dim beyond it, so
    the eye reads a progression rather than a list of dots. Status is never colour alone: every state
-   carries its own glyph inside the node, and `upcoming` is hollow, which is its own shape.
+   carries its own glyph inside the node, and `upcoming` is an empty disc, which is its own shape.
+
+   A node not yet done — current and upcoming — takes the control fill, the opposite of what holds
+   it (F7-15): the well on the page, white inside a tile. Never an outline ring.
 
    The node ladder (28 page / 20 compact) is the DS's own, and the type scale has no 16px step, so
    the page label's 16px is written out here rather than borrowed from a wrong token. */
@@ -73,7 +76,7 @@
   place-items: center;
   position: relative;
   z-index: 1;
-  background: var(--surface);
+  background: var(--hg-control-fill);
   color: var(--text-inverse);
 }
 
@@ -96,12 +99,8 @@
 .hg-timeline-node[data-status="failed"] {
   background: var(--danger);
 }
-.hg-timeline-node[data-status="upcoming"] {
-  background: var(--surface);
-  box-shadow: inset 0 0 0 2px var(--canvas-sunken);
-}
 
-/* Current is a white node with an accent core in a soft ring — the one lit step. */
+/* Current carries an accent core in a soft ring — the one lit step. */
 .hg-timeline[data-variant="page"] .hg-timeline-node[data-status="current"] {
   box-shadow: 0 0 0 5px var(--accent-subtle);
 }
@@ -285,16 +284,4 @@
   color: var(--text-secondary);
   max-width: 300px;
   line-height: var(--lh-body-sm);
-}
-
-.hg-pressable.hg-timeline-retry {
-  margin-top: 10px;
-  padding-inline: var(--sp-5);
-  border-radius: var(--r-pill);
-  background: var(--surface);
-  /* A control is raised, not outlined — --surface at --e2. */
-  box-shadow: var(--e2);
-  font-size: var(--fs-body);
-  font-weight: var(--fw-medium);
-  color: var(--text-primary);
 }
