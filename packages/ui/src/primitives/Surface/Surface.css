@@ -4,6 +4,7 @@
    through the density mode: expressive takes --r-*, functional takes --rf-*. */
 
 .hg-surface[data-background="surface"] {
+  /* biome-ignore lint/plugin/raw-white-css: ground — the ground itself, and Surface, which sets it */
   background: var(--surface);
 }
 .hg-surface[data-background="surface-alt"] {

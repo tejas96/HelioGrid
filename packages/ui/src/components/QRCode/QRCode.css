@@ -13,6 +13,7 @@
 
 .hg-qrcode-svg {
   display: block;
+  /* biome-ignore lint/plugin/raw-white-css: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen */
   background: var(--surface);
   border-radius: var(--r-sm);
   padding: 0;
@@ -20,6 +21,7 @@
 }
 
 .hg-qrcode-quiet {
+  /* biome-ignore lint/plugin/raw-white-css: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen */
   fill: var(--surface);
 }
 

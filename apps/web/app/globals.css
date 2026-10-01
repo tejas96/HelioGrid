@@ -15,6 +15,7 @@
  */
 html,
 body {
+  /* biome-ignore lint/plugin/raw-white-css: page-ground — an app's page or door: the page is white */
   background: var(--surface);
 }
 

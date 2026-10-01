@@ -42,6 +42,7 @@ function Mark({ state }: { state: AllocationState }) {
         height={9}
         viewBox={met ? '0 0 12 12' : '0 0 24 24'}
         fill="none"
+        // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
         stroke={theme.colors['text-inverse']}
         strokeWidth={met ? 2.4 : 3}
         strokeLinecap="round"

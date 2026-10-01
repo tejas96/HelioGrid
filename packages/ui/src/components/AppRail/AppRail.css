@@ -12,6 +12,7 @@
   width: var(--hg-app-rail-width, var(--rail-w, 72px));
   height: 100%;
   padding: var(--sp-4) 0;
+  /* biome-ignore lint/plugin/raw-white-css: owed-T-SHELL — the shell's parts, moved by T-SHELL-001 and T-SHELL-008 */
   background: var(--surface);
 }
 
@@ -75,6 +76,7 @@
   height: var(--hg-pill-height);
   padding: 0 var(--sp-2);
   border-radius: var(--r-pill);
+  /* biome-ignore lint/plugin/raw-white-css: owed-T-SHELL — the shell's parts, moved by T-SHELL-001 and T-SHELL-008 */
   background: var(--surface);
   box-shadow: var(--e4);
 }
@@ -152,6 +154,7 @@ div.hg-bottom-nav-plate {
   position: absolute;
   inset: 0;
   border-radius: var(--r-lg) var(--r-lg) 0 0;
+  /* biome-ignore lint/plugin/raw-white-css: owed-T-SHELL — the shell's parts, moved by T-SHELL-001 and T-SHELL-008 */
   background: var(--surface);
 }
 

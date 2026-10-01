@@ -105,6 +105,7 @@ export function Switch({
  */
 function knobColor(on: boolean, disabled: boolean, ground: string): string {
   if (disabled) return theme.colors['text-disabled'];
+  // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
   return on ? theme.colors.surface : ground;
 }
 

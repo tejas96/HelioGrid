@@ -32,6 +32,7 @@ export function StepperMarker({ index, size = 28, step }: NativeStepperMarkerPro
             height={13}
             viewBox="0 0 12 12"
             fill="none"
+            // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
             stroke={theme.colors['text-inverse']}
             strokeWidth={2.2}
             strokeLinecap="round"
@@ -45,6 +46,7 @@ export function StepperMarker({ index, size = 28, step }: NativeStepperMarkerPro
             height={13}
             viewBox="0 0 24 24"
             fill="none"
+            // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
             stroke={theme.colors['text-inverse']}
             strokeWidth={2.4}
             strokeLinecap="round"

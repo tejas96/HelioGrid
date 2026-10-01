@@ -24,6 +24,7 @@
 }
 
 .hg-preview-frame-window[data-surface="sheet"] {
+  /* biome-ignore lint/plugin/raw-white-css: full-screen-ground — a screen that is its own page */
   background: var(--surface);
   box-shadow: var(--e3);
   border-radius: var(--r-lg);
@@ -36,6 +37,7 @@
 }
 
 .hg-preview-frame-window[data-surface="band"] {
+  /* biome-ignore lint/plugin/raw-white-css: full-screen-ground — a screen that is its own page */
   background: var(--surface);
   box-shadow: var(--e1);
   border-radius: var(--r-md);

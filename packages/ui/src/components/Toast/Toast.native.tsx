@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     maxWidth: 420,
     paddingVertical: theme.spacing['sp-3'],
     paddingHorizontal: theme.spacing['sp-4'],
+    // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
     backgroundColor: theme.colors.surface,
     borderRadius: theme.radius['r-md'],
     ...theme.elevation.e5,

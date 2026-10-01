@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-2'],
     height: '100%',
     paddingVertical: theme.spacing['sp-4'],
+    // biome-ignore lint/plugin/raw-white: owed-T-SHELL — the shell's parts, moved by T-SHELL-001 and T-SHELL-008
     backgroundColor: theme.colors.surface,
   },
   brand: {

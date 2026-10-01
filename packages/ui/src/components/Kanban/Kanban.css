@@ -255,6 +255,7 @@
    through --canvas. */
 .hg-kanban-skeleton-bar {
   border-radius: var(--rf-lg);
+  /* biome-ignore lint/plugin/raw-white-css: shimmer — a loading bar's shimmer */
   background: linear-gradient(90deg, var(--canvas) 25%, var(--surface) 50%, var(--canvas) 75%);
   background-size: 320px 100%;
   animation: hg-sheet-shimmer 1.4s linear infinite;

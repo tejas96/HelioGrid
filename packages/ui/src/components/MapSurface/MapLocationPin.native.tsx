@@ -81,6 +81,7 @@ export function MapLocationPin({ pin, pinState, fixed, draggable, onDragTo }: Ma
           <Svg width={26} height={26} viewBox="0 0 24 24" fill="none">
             <Path
               d="M12 22s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"
+              // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
               fill={confirmed ? colour : theme.colors.surface}
               stroke={colour}
               strokeWidth={1.8}
@@ -88,6 +89,7 @@ export function MapLocationPin({ pin, pinState, fixed, draggable, onDragTo }: Ma
             {confirmed ? (
               <Path
                 d="M8.6 10.9l2.4 2.3 4-4.3"
+                // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
                 stroke={theme.colors.surface}
                 strokeWidth={2}
                 strokeLinecap="round"

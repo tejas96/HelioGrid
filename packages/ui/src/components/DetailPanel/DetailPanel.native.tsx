@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: '100%',
+    // biome-ignore lint/plugin/raw-white: panel — a sheet, a modal, a detail panel: a page ground over the page
     backgroundColor: theme.colors.surface,
     ...theme.elevation.e5,
   },

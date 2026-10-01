@@ -47,6 +47,7 @@
   display: flex;
   flex-direction: column;
   outline: none;
+  /* biome-ignore lint/plugin/raw-white-css: panel — a sheet, a modal, a detail panel: a page ground over the page */
   background: var(--surface);
   border-radius: var(--hg-sheet-radius) var(--hg-sheet-radius) 0 0;
   box-shadow: var(--e5);
@@ -123,6 +124,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--sp-3);
+  /* biome-ignore lint/plugin/raw-white-css: panel — a sheet, a modal, a detail panel: a page ground over the page */
   background: var(--surface);
   position: relative;
   z-index: 1;
@@ -202,6 +204,7 @@
   flex-shrink: 0;
   position: relative;
   padding: var(--sp-3) var(--hg-sheet-pad-x) var(--hg-sheet-pad-bottom);
+  /* biome-ignore lint/plugin/raw-white-css: panel — a sheet, a modal, a detail panel: a page ground over the page */
   background: var(--surface);
 }
 
@@ -213,6 +216,7 @@
   left: 0;
   right: 0;
   height: var(--hg-sheet-footer-fade);
+  /* biome-ignore lint/plugin/raw-white-css: panel — a sheet, a modal, a detail panel: a page ground over the page */
   background: linear-gradient(to top, var(--surface), transparent);
   pointer-events: none;
 }

@@ -31,12 +31,14 @@
 /* The system ring, outside the well: a --surface gap, then --accent. A shadow, so it moves nothing.
    With a verdict it ADDS to the inset ring — a focused field in error shows both. */
 [data-field-box][data-fb-focused] {
+  /* biome-ignore lint/plugin/raw-white-css: field — FieldBox's focus gap: a field never sits in a tile */
   box-shadow:
     0 0 0 2px var(--surface),
     0 0 0 4px var(--accent);
 }
 
 [data-field-box][data-fb-focused][data-fb-tone="error"] {
+  /* biome-ignore lint/plugin/raw-white-css: field — FieldBox's focus gap: a field never sits in a tile */
   box-shadow:
     inset 0 0 0 1.5px var(--danger),
     0 0 0 2px var(--surface),

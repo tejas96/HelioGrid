@@ -17,6 +17,7 @@
   flex-direction: column;
   overflow: hidden;
   border-radius: var(--r-md);
+  /* biome-ignore lint/plugin/raw-white-css: over-media — a chip, a thumbnail or a control drawn over a photograph or a map */
   background: var(--surface);
   box-shadow: var(--e3);
 }
@@ -25,6 +26,7 @@
   width: 44px;
   height: 44px;
   border-radius: 0;
+  /* biome-ignore lint/plugin/raw-white-css: over-media — a chip, a thumbnail or a control drawn over a photograph or a map */
   background: var(--surface);
   color: var(--text-primary);
 }
@@ -40,6 +42,7 @@
 .hg-map-surface-zoom-level {
   padding: var(--sp-1) var(--sp-2);
   border-radius: var(--r-pill);
+  /* biome-ignore lint/plugin/raw-white-css: over-media — a chip, a thumbnail or a control drawn over a photograph or a map */
   background: var(--surface);
   box-shadow: var(--e2);
   font-family: var(--font-mono);

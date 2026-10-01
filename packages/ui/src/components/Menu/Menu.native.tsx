@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 60,
     padding: 6,
+    // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
     backgroundColor: theme.colors.surface,
     borderRadius: theme.radius['r-md'],
     ...theme.elevation.e4,

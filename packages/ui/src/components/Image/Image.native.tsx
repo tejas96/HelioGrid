@@ -183,6 +183,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 1,
+    // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
     backgroundColor: theme.colors['text-inverse'],
     opacity: 0.45,
   },
@@ -196,6 +197,7 @@ const styles = StyleSheet.create({
     height: theme.spacing['sp-6'],
     paddingHorizontal: 10,
     borderRadius: theme.radius['r-pill'],
+    // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
     backgroundColor: theme.colors.surface,
     ...theme.elevation.e2,
   },

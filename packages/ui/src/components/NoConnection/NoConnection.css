@@ -123,6 +123,7 @@
 
 .hg-no-connection-cloud > span {
   position: absolute;
+  /* biome-ignore lint/plugin/raw-white-css: full-screen-ground — a screen that is its own page */
   background: var(--surface);
   border-radius: var(--r-pill);
 }

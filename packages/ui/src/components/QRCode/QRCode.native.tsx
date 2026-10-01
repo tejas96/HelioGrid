@@ -17,6 +17,7 @@ import type { QRCodeProps } from './QRCode.types';
 
 const styles = StyleSheet.create({
   root: { alignItems: 'center', gap: theme.spacing['sp-2'] },
+  // biome-ignore lint/plugin/raw-white: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen
   code: { backgroundColor: theme.colors.surface, borderRadius: theme.radius['r-sm'] },
   failed: {
     alignItems: 'center',
@@ -137,6 +138,7 @@ export function QRCode({
         accessibilityLabel={label || `QR code for ${value}`}
         style={styles.code}
       >
+        {/* biome-ignore lint/plugin/raw-white: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen */}
         <Rect width={total} height={total} fill={theme.colors.surface} />
         <Path d={modulePath(matrix, quietZone)} fill={theme.colors['text-primary']} />
       </Svg>

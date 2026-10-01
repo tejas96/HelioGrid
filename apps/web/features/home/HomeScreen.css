@@ -6,5 +6,6 @@
   align-items: center;
   justify-content: center;
   min-height: 100dvh;
+  /* biome-ignore lint/plugin/raw-white-css: page-ground — an app's page or door: the page is white */
   background-color: var(--surface);
 }

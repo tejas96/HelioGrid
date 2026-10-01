@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
   label: { marginBottom: 6 },
   frame: {
     borderRadius: theme.radius['r-input-expressive'],
+    // biome-ignore lint/plugin/raw-white: deferred — owed by a row in docs/tasks/deferred.md
     backgroundColor: theme.colors.surface,
     overflow: 'hidden',
     ...theme.elevation.e2,
@@ -49,6 +50,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-input-functional'],
     // A control is `surface` at e2 — this is a text field.
+    // biome-ignore lint/plugin/raw-white: deferred — owed by a row in docs/tasks/deferred.md
     backgroundColor: theme.colors.surface,
     ...theme.elevation.e2,
     fontFamily: theme.type.families.mono,

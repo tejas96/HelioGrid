@@ -35,6 +35,7 @@ function Mark({ status }: { status: FindingStatus }) {
         height={11}
         viewBox="0 0 24 24"
         fill="none"
+        // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
         stroke={theme.colors['text-inverse']}
         strokeWidth={3}
         strokeLinecap="round"

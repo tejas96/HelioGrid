@@ -21,6 +21,7 @@ interface NativePreviewFrameGroupProps extends PreviewFrameGroupProps {
 
 const SURFACE: Record<PreviewSurface, ViewStyle> = {
   sheet: {
+    // biome-ignore lint/plugin/raw-white: full-screen-ground — a screen that is its own page
     backgroundColor: theme.colors.surface,
     borderRadius: theme.radius['r-lg'],
     ...theme.elevation.e3,
@@ -31,6 +32,7 @@ const SURFACE: Record<PreviewSurface, ViewStyle> = {
     ...theme.elevation.e2,
   },
   band: {
+    // biome-ignore lint/plugin/raw-white: full-screen-ground — a screen that is its own page
     backgroundColor: theme.colors.surface,
     borderRadius: theme.radius['r-md'],
     ...theme.elevation.e1,

@@ -86,6 +86,7 @@
 }
 
 .hg-chip[data-active="true"] .hg-chip-dot {
+  /* biome-ignore lint/plugin/raw-white-css: on-accent — a knob or a mark on the accent or the dark fill */
   background: var(--text-inverse);
 }
 

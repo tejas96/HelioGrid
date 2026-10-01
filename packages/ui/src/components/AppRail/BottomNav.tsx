@@ -80,6 +80,7 @@ export function BottomNav({
           >
             <path
               d={`M0 ${rise}Q 50 ${-rise} 100 ${rise}L100 ${height}L0 ${height}Z`}
+              // biome-ignore lint/plugin/raw-white: owed-T-SHELL — the shell's parts, moved by T-SHELL-001 and T-SHELL-008
               fill="var(--surface)"
             />
           </svg>

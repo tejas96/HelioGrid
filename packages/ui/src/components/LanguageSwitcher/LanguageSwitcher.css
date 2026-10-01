@@ -119,10 +119,12 @@
 }
 
 .hg-language-switcher-glyph[data-active="true"][data-state="authored"] {
+  /* biome-ignore lint/plugin/raw-white-css: on-accent — a knob or a mark on the accent or the dark fill */
   background: var(--text-inverse);
 }
 
 .hg-language-switcher-glyph[data-active="true"][data-state="empty"] {
+  /* biome-ignore lint/plugin/raw-white-css: on-accent — a knob or a mark on the accent or the dark fill */
   box-shadow: inset 0 0 0 1.5px var(--text-inverse);
 }
 

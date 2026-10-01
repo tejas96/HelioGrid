@@ -17,10 +17,12 @@ export const docStyles = StyleSheet.create({
   window: {
     borderRadius: theme.radius['r-lg'],
     overflow: 'hidden',
+    // biome-ignore lint/plugin/raw-white: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen
     backgroundColor: theme.colors.surface,
     ...theme.elevation.e3,
   },
   sheet: {
+    // biome-ignore lint/plugin/raw-white: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen
     backgroundColor: theme.colors.surface,
     flexDirection: 'column',
   },

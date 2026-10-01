@@ -373,6 +373,41 @@
         "!**/android/**",
         "!**/_generated/**"
       ]
+    },
+    {
+      "path": "./packages/config/biome/raw-white.grit",
+      "includes": [
+        "**/apps/mobile/src/**/*.{ts,tsx}",
+        "**/apps/web/app/**/*.{ts,tsx}",
+        "**/apps/web/features/**/*.{ts,tsx}",
+        "**/apps/web/lib/**/*.{ts,tsx}",
+        "**/packages/theme/src/**/*.{ts,tsx}",
+        "**/packages/ui/src/**/*.{ts,tsx}",
+        "**/apps/mobile/App.tsx",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/raw-white-css.grit",
+      "includes": [
+        "**/apps/mobile/src/**/*.css",
+        "**/apps/web/app/**/*.css",
+        "**/apps/web/features/**/*.css",
+        "**/apps/web/lib/**/*.css",
+        "**/packages/theme/src/**/*.css",
+        "**/packages/ui/src/**/*.css",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
     }
   ],
   "javascript": {

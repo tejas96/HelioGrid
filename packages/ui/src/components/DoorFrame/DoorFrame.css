@@ -15,6 +15,7 @@
   min-height: 100dvh;
   overflow: hidden;
   /* The page is --surface (F7-15, F7-49): the fields on it are wells, darker than it. */
+  /* biome-ignore lint/plugin/raw-white-css: full-screen-ground — a screen that is its own page */
   background: var(--surface);
 }
 

@@ -567,52 +567,5 @@ if [ -n "$banned" ]; then
   fail=1
 fi
 
-# ── 20. The raw white is named only by a file whose reason is listed (M150) ───
-# A component that writes the white itself, where it means "the fill a control takes here", cannot
-# be reached by a change to that rule: `Ground` decides it once, and a copy keeps the old answer.
-# So the white — in every spelling the theme gives it — is named only by a file on the list, and
-# each file there carries ONE reason from the closed set below. The list only shrinks: a file that
-# stops naming the white fails until its line goes, so the list cannot rot into a blanket pass.
-# `--text-inverse` is the white only where it paints a surface, a ring or an edge — as a word's
-# colour it is the ink on a dark fill. Unseen, at this grain: a white reached through a local name, and
-# a new white part added to a file already listed — `break-it-reviewer` reads those in the diff.
-WHITE_LIST='scripts/raw-white-allowed.tsv'
-WHITE_REASONS=' ground panel float over-media paper full-screen-ground page-ground on-accent illustration measure field shimmer owed-T-SHELL deferred '
-WHITE='var\(--surface(-card)?\)|(background(-color)?|fill|stroke|box-shadow|border(-[a-z]+)*|outline(-color)?) *:[^;]*var\(--text-inverse\)|theme\.colors\.surface([^A-Za-z0-9_]|$)|theme\.colors\[.surface(-card)?.\]|(backgroundColor|border[A-Za-z]*Color|shadowColor|fill|stroke)[^,;]*theme\.colors\[.text-inverse.\]|(backgroundColor|boxShadow|border[A-Za-z]*|outline[A-Za-z]*|fill|stroke)[^,;]*var\(--text-inverse\)'
-[ -e "$WHITE_LIST" ] || { printf 'CONFIG ROT: check 20 names "%s", which does not exist.\n' "$WHITE_LIST"; fail=1; }
-white_files=$(grep -rlE "$WHITE" $UI_DIRS --include='*.ts' --include='*.tsx' --include='*.css' \
-                --exclude-dir='_generated' --exclude-dir='node_modules' --exclude-dir='dist' --exclude-dir='.next' 2>/dev/null)
-white_hits=$(
-  code=$(printf '%s\n' "$white_files" | grep -E "$CODE_FILE")
-  if [ -n "$code" ]; then
-    printf '%s\n' "$code" | node -e "$BLANK_CODE_COMMENTS" "$WHITE" \
-      || echo 'check 20: the comment scan CRASHED — its findings are incomplete; the error is above'
-  fi
-  printf '%s\n' "$white_files" | grep -vE "$CODE_FILE" | grep . | while IFS= read -r f; do
-    perl -e "$BLANK_OTHER_COMMENTS" "$f" | grep -nE "$WHITE" | sed "s|^|$f:|"
-  done)
-white_named=$(printf '%s\n' "$white_hits" | grep . | cut -d: -f1 | sort -u)
-white_listed=$(grep -vE '^[[:space:]]*(#|$)' "$WHITE_LIST" 2>/dev/null | cut -f1 | sort -u)
-white_reason=$(grep -vE '^[[:space:]]*(#|$)' "$WHITE_LIST" 2>/dev/null \
-                 | awk -F'\t' -v ok="$WHITE_REASONS" 'NF != 2 || index(ok, " " $2 " ") == 0')
-white_off=$(comm -23 <(printf '%s\n' "$white_named" | grep .) <(printf '%s\n' "$white_listed" | grep .))
-white_stale=$(comm -13 <(printf '%s\n' "$white_named" | grep .) <(printf '%s\n' "$white_listed" | grep .))
-if [ -n "$white_off" ]; then
-  printf 'RAW WHITE in a file off %s — read the ground, or draw the shared part:\n' "$WHITE_LIST"
-  printf '%s\n' "$white_off" | while IFS= read -r f; do printf '%s\n' "$white_hits" | grep -F "$f:"; done
-  echo '  A control part takes var(--hg-control-fill) / useGround().controlFill; a knob or a ring'
-  echo '  var(--hg-ground) / useGround().ground; a Try again is RetryButton. A file that truly'
-  echo '  needs the white joins the list with its reason, in review (M150).'
-  fail=1
-fi
-if [ -n "$white_stale" ]; then
-  printf 'STALE LINE in %s — this file no longer names the white; delete its line:\n%s\n' "$WHITE_LIST" "$white_stale"
-  fail=1
-fi
-if [ -n "$white_reason" ]; then
-  printf 'BAD LINE in %s — each line is "<path><TAB><reason>", the reason one of:%s\n%s\n' "$WHITE_LIST" "$WHITE_REASONS" "$white_reason"
-  fail=1
-fi
-
-[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw colour in UI, domain pure, tenant pin transaction-local, no app-declared vocabulary, no role name or SQL outside its owner, no brand obtained by a cast, images unprivileged, no raw size on a screen, no empty label, light-only, no banned word, the raw white only where listed'
+[ "$fail" = "0" ] && echo 'adherence OK — unit tests correctly placed, no raw colour in UI, domain pure, tenant pin transaction-local, no app-declared vocabulary, no role name or SQL outside its owner, no brand obtained by a cast, images unprivileged, no raw size on a screen, no empty label, light-only, no banned word'
 exit $fail

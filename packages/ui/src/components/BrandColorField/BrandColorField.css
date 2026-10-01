@@ -112,6 +112,7 @@
 
 .hg-brand-color-specimen-body {
   padding: var(--sp-2) 14px;
+  /* biome-ignore lint/plugin/raw-white-css: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen */
   background: var(--surface);
 }
 

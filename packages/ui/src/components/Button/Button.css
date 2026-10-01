@@ -148,7 +148,9 @@
   width: var(--sp-4);
   height: var(--sp-4);
   border-radius: 50%;
+  /* biome-ignore lint/plugin/raw-white-css: on-accent — a knob or a mark on the accent or the dark fill */
   border: 2px solid color-mix(in srgb, var(--text-inverse) 35%, transparent);
+  /* biome-ignore lint/plugin/raw-white-css: on-accent — a knob or a mark on the accent or the dark fill */
   border-top-color: var(--text-inverse);
   display: inline-block;
   animation: hg-spin 0.7s linear infinite;

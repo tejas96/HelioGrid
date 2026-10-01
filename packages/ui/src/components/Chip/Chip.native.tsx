@@ -95,6 +95,7 @@ export function Chip({
         <View
           style={[
             styles.dot,
+            // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
             { backgroundColor: active ? theme.colors['text-inverse'] : DOT_COLOR[tone] },
           ]}
         />

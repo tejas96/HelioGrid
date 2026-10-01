@@ -110,6 +110,7 @@
   height: 7px;
   border-radius: 50%;
   /* White on the accent dot — a mark on the accent, the same on every ground. */
+  /* biome-ignore lint/plugin/raw-white-css: on-accent — a knob or a mark on the accent or the dark fill */
   background: var(--text-inverse);
 }
 

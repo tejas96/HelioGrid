@@ -67,6 +67,7 @@
   transform: translateX(-50%);
   padding: var(--sp-2) var(--sp-3);
   border-radius: var(--r-pill);
+  /* biome-ignore lint/plugin/raw-white-css: over-media — a chip, a thumbnail or a control drawn over a photograph or a map */
   background: var(--surface);
   box-shadow: var(--e3);
   font-family: var(--font-sans);
