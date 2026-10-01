@@ -72,7 +72,9 @@ prompt holds: the plan's checks that name its surface, with their ids; its accou
 name; the server ids,
 **only to read logs**; its device (udid or serial); its results file,
 `<scratchpad>/qa-<T-id>/<surface>.md`; the path of the api log; and the common rules below, word for
-word. Then tell the owner: "QA is running — please do not click in the browser pane, the simulator
+word. A surface with more than about 15 checks gets them in batches of about 15, grouped by screen:
+the first batch at dispatch, each next one by `SendMessage` to the SAME agent when it returns — one
+agent run stops at its turn limit, and a check it never reached is lost. Then tell the owner: "QA is running — please do not click in the browser pane, the simulator
 or the emulator."
 
 ### The common rules — paste these into every QA agent's prompt

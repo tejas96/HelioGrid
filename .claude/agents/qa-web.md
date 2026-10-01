@@ -47,6 +47,9 @@ vision alone shows — clipping, overlap, broken Devanagari — and you write wh
 
 **Keyboard** — use real key presses: Tab order, visible focus, Enter and Escape.
 
+**No connection** — the browser pane cannot drop the network. A "no connection" check is proven by
+the web spec the build added (`context.setOffline(true)`); here it is `not run: the spec covers it`.
+
 **Signing in and out** — use only the account your prompt gives you; a company you create is named
 as your prompt says (`QA <T-id> <surface>`). The pane keeps its session
 between runs. To sign out: from any page on the app's origin, `javascript_tool`

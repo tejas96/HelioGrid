@@ -39,9 +39,11 @@ Do steps 1–7 in order. Write no code. Step 7 ends in a stop.
      the brief `docs/ux/briefs/<SCR-id>-….md`; (3) draw it and export to `HelioGrid-UX/`; (4) put the
      link on the `DESIGN:` line at `docs/tasks/<file>.md:<line>`. Stop.
    - None of these → build it. Go on to step 3.
-5. Print three lines — `NEXT` the step · `AHEAD` the next undrawn screen on the walk · `DONE` how many
+5. Print four lines — `NEXT` the step · `AHEAD` the next undrawn screen on the walk · `DONE` how many
    of the 99 V1 screens are drawn, which this counts:
-   `comm -12 <(grep -h '^\*\*DESIGN:\*\* SCR-' docs/tasks/*.md | grep -v PENDING | grep -oE 'SCR-[A-Z0-9]+-[0-9]+' | sort -u) <(awk -F'|' '/^\| SCR-/ && $7 ~ /V1/ {gsub(/ /,"",$2); print $2}' docs/prd/registers/screens.md | sort -u) | wc -l`
+   `comm -12 <(grep -h '^\*\*DESIGN:\*\* SCR-' docs/tasks/*.md | grep -v PENDING | grep -oE 'SCR-[A-Z0-9]+-[0-9]+' | sort -u) <(awk -F'|' '/^\| SCR-/ && $7 ~ /V1/ {gsub(/ /,"",$2); print $2}' docs/prd/registers/screens.md | sort -u) | wc -l` · `DEFERRED` how many rows wait in `docs/tasks/deferred.md`
+   (`grep -c '^| D[0-9]' docs/tasks/deferred.md`) and the three lowest ids with their one-line issue —
+   the build order never picks them, so the owner sees them here and can name one.
 
 When the owner names a task that is not the next one, say so in one line and go on.
 
@@ -171,7 +173,9 @@ Skipped: S2 (no list on this screen) · W3 (no form)
 **Every changed screen** — web, iOS and Android
 - S1 · the happy path end to end → the success state shows
 - S2 · loading, empty, one row, many rows
-- S3 · a server error and no connection → a message in the user's language; retry works
+- S3 · a server error and no connection → a message in the user's language; retry works. The web's
+  "no connection" is a Playwright spec case the build adds (`context.setOffline(true)`) — the browser
+  pane cannot drop the network; the iPhone cannot either, so Android covers the phone
 - S4 · a double tap, or a tap while sending → one action only
 - S5 · go back, then submit again
 - S6 · the session ends mid-flow → sign in, then return to the same place
