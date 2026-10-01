@@ -42,7 +42,28 @@ the wall clock.
 `AXLabel`; on Android no `clickable="true"` node with both `text` and `content-desc` empty.
 
 **Look** — compare heights, padding and gaps in points (iOS frames) or dp (Android bounds divided
-by the density your prompt names) — never an x position — and check the safe areas.
+by the density your prompt names). Never compare an absolute x across phone widths; compare each
+element's margins to the screen edges instead.
+
+**Screen health** — measure it from the view tree's frames or bounds, never by eye:
+- visible: each element's frame lies inside the screen, and no other element's frame covers it;
+- aligned: its left and right margins match the export; a centred element has equal margins;
+- overlap: no two text or control frames intersect, unless the export layers them;
+- bars: no element's frame sits under the status bar or the home indicator; scroll a list to its
+  end and its last item ends above the bottom navigation's frame;
+- states: read disabled and selected from the tree; the error state from its words and one screenshot;
+- large text: iOS `xcrun simctl ui <udid> content_size extra-extra-extra-large`, Android
+  `adb -s <serial> shell settings put system font_scale 2.0`; check again, then set it back
+  (`content_size large`, `font_scale 1.0`) before the check ends, whatever its result;
+- tap targets: every tappable frame is at least 44 × 44;
+- dark mode: iOS `xcrun simctl ui <udid> appearance dark`, Android `adb -s <serial> shell cmd uimode
+  night yes`; the screen must look the same as in light; set it back (`light`, `night no`) before the
+  check ends;
+- fonts: one shrunk screenshot; Devanagari drawn in the app's Noto face, never a system fallback;
+- console: the Metro log (`preview_logs`, the metro server id your prompt names) for JavaScript, and
+  `adb -s <serial> logcat -d *:W` on Android or `xcrun simctl spawn <udid> log show --last 2m
+  --predicate 'process == "HelioGridMobile"' --style compact` on iOS — an error fails the check, a
+  new warning is a finding.
 
 **Not drivable** — the iPhone's network cannot be dropped: an iOS "no connection" check is
 `not run`; Android covers it.

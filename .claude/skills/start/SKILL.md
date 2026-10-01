@@ -181,6 +181,22 @@ Skipped: S2 (no list on this screen) · W3 (no form)
 - S10 · every icon-only button has a label
 - S11 · it looks like the export: spacing, sizes, icons, order
 
+**Screen health** — every changed screen, at each width and on both phones
+- H1 · every element the export shows is visible: on screen, not clipped, covered or pushed off
+- H2 · each element sits where the export puts it — left, right or centre, measured as its margins
+  to the screen edges
+- H3 · no two elements overlap, unless the design layers them on purpose
+- H4 · nothing sits under the status bar or the home bar; the last item scrolls fully above the
+  bottom navigation
+- H5 · no console error (it fails the check); a new console warning is a finding
+- H6 · pressed, focused, disabled, selected and error states look as the design shows them
+- H7 · large text — 200% on web, the largest phone text size — nothing clips or overlaps
+- H8 · every tap target measures at least 44 on the built screen
+- H9 · on a phone set to dark mode, the app still looks exactly as in light mode
+- H10 · the right fonts render — Devanagari in its own face, never a system fallback
+- H11 · walked as a first-time user: the job is finished without hesitation; each moment of doubt
+  is a finding
+
 **Web only**
 - W1 · width 375 and 1536
 - W2 · keyboard only: tab order, visible focus, Enter and Escape
@@ -190,7 +206,7 @@ Skipped: S2 (no list on this screen) · W3 (no form)
 **Phone only**
 - M1 · the smallest and the largest supported phone
 - M2 · the app goes to the background and returns; the app is killed mid-action
-- M3 · the keyboard covers no field; the safe areas hold
+- M3 · the keyboard covers no field
 - M4 · the Android back button
 
 **Money** — when money is in scope

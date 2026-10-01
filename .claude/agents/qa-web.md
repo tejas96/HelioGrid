@@ -30,6 +30,21 @@ action (`read_console_messages`) fails the check.
 styles against the export: gaps, sizes, type and alignment, in pixels. A screenshot is only for what
 vision alone shows — clipping, overlap, broken Devanagari — and you write what you saw in words.
 
+**Screen health** — measure it with `javascript_tool`, never by eye:
+- visible: each element's `getBoundingClientRect()` lies inside the viewport, its text is not cut
+  (`scrollWidth <= clientWidth`), and `document.elementFromPoint` at its centre returns the element
+  or a child — anything else covers it;
+- aligned: its left margin (`rect.left`) and right margin (`innerWidth - rect.right`) match the
+  export; a centred element has equal margins within 2px;
+- overlap: no two visible text or control boxes intersect, unless the export layers them;
+- states: reach focus with Tab, and read disabled, selected and error from the tree and the
+  computed styles;
+- large text: `document.documentElement.style.zoom = '2'`, check again, then set it back to `''`;
+- tap targets: every control's box is at least 44 × 44;
+- fonts: `document.fonts.check` for each face, and the computed `font-family` of Hindi and Marathi
+  text;
+- console: `read_console_messages` — an error fails the check, a new warning is a finding.
+
 **Keyboard** — use real key presses: Tab order, visible focus, Enter and Escape.
 
 **Signing in and out** — use only the account your prompt gives you; a company you create is named

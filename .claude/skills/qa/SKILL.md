@@ -151,7 +151,10 @@ another way, or change the plan.
 ## 9. Close
 
 Whoever started a thing stops it: `preview_stop` each server; turn Android's airplane mode off
-(`adb -s <serial> shell cmd connectivity airplane-mode disable`); shut each device
+(`adb -s <serial> shell cmd connectivity airplane-mode disable`); set each phone's text size and
+appearance back (`xcrun simctl ui <udid> content_size large`, `xcrun simctl ui <udid> appearance
+light`, `adb -s <serial> shell settings put system font_scale 1.0`, `adb -s <serial> shell cmd uimode
+night no`); shut each device
 (`xcrun simctl shutdown <udid>`, `adb -s <serial> emu kill`). Then prove it — each prints nothing:
 `lsof -nP -iTCP:3002 -iTCP:8084 -iTCP:8081 -sTCP:LISTEN -t` · `pgrep -f '@heliogrid/worker'` ·
 `xcrun simctl list devices booted | grep -F <udid>` · `adb devices | grep emulator`.
