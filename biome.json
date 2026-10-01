@@ -508,12 +508,7 @@
       }
     },
     {
-      "includes": [
-        "packages/env/src/**",
-        "apps/web/lib/env.ts",
-        "scripts/check-openapi-breaking.mjs",
-        "infra/temporal/spike/**"
-      ],
+      "includes": ["packages/env/src/**", "apps/web/lib/env.ts", "infra/temporal/spike/**"],
       "linter": {
         "rules": {
           "style": {
