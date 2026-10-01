@@ -183,7 +183,7 @@ Every line, every app, every package.
   every OLDER reader still running reads the NEW shape, and the new code reads everything the old
   one wrote. What cannot be read both ways ships in two releases: expand, then contract.
 - **A bug you find is reported at once.** Inside the task's scope it is fixed now. Outside it, it
-  goes to `docs/tasks/deferred.md` — the issue, why not now, what it depends on, who picks it up —
+  goes to `docs/tasks/deferred.md` as one row — the issue, the next step and who picks it up —
   never inside the current change, and never parked.
 - **Dependencies change only through `pnpm add`/`pnpm remove`** — never a hand-edited dependency
   block or lockfile. **The database is read-only to you**: schema through a migration, data through

@@ -115,7 +115,7 @@ Suites: web 12/12 ✓ · components 4/4 ✓ · phone ios 3/3 ✓ android 3/3 ✓
 - G2.3 · ios — the iPhone's network cannot be dropped; Android covers it
 
 ## Deferred
-- D1 — <out-of-scope issue> → its deferred.md row
+- <out-of-scope issue> → its `deferred.md` row, `D<n>`
 ```
 
 The web and phone columns side by side are the parity check: a check that differs between them is
