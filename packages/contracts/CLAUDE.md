@@ -1,7 +1,6 @@
 # @heliogrid/contracts — ts-rest + Zod 3, the API review surface
 
-Traps: `.claude/landmines.md` · deps: `architecture.md` §2 contracts. Changing a
-contract has a sequence: run `/contract-change`.
+Deps: `architecture.md` §2 contracts. Changing a contract has a sequence: run `/contract-change`.
 
 ## What lives here / what must never live here
 
@@ -28,7 +27,7 @@ src/workflows/              Temporal workflow message schemas — the ./workflow
 src/ports/<capability>.ts   a provider port interface and its DI token; its implementation
                             lives with its consumer, never here
 src/index.ts                the only entry consumers import
-openapi/openapi.json        emitted, committed, checked by M25 — never hand-edited
+openapi/openapi.json        emitted, committed, checked by `pnpm check:openapi` — never hand-edited
 ```
 
 ## Commands
@@ -51,7 +50,8 @@ pnpm --filter @heliogrid/contracts openapi    # emit openapi/openapi.json, AFTER
   `extensibleEnum(...)` where a RESPONSE carries it**, its reader keeps a fallback, and the closed
   `z.enum` stays beside it for writes and the pgEnum mirror. A FIXED set stays closed on both sides.
 - pgEnum values in `packages/db` hand-mirror these lists, because `db-no-upward` forbids the
-  import. Change both sides in the same slice, via `/migration` (`M17`).
+  import. Change both sides in the same slice, via `/migration`; the `enum-parity` invariant
+  proves they match.
 - Every route declares its error union via `errorEnvelope(z.enum([...]))`; codes are UPPER_SNAKE
   and the HTTP mapping is `errorHttpStatusByCode`. Do not invent a mapping. A route declaring a
   NON-base code needs `ContractException` with that literal on the server, or the wire silently
@@ -59,7 +59,7 @@ pnpm --filter @heliogrid/contracts openapi    # emit openapi/openapi.json, AFTER
 - **`errorDetailSchema`'s inferred `ErrorDetail` is exported — import it.** Two hand-written
   copies of one wire shape is the Law 5 defect this package exists to prevent.
 - **Tenant identity NEVER crosses the wire** — no `tenant_id`/`tenantId` in any body or query
-  schema at any depth; it comes from verified session claims (`M14`). Workflow payloads DO carry
+  schema at any depth; it comes from verified session claims. Workflow payloads DO carry
   `tenantId`: a durable workflow has no session to derive it from.
 - Money crosses the wire as a decimal string scaled to the currency's minor unit, never a float;
   a money-bearing payload carries `currency_code` at document level.
@@ -83,3 +83,9 @@ these is a repo-wide sweep.
 
 The change builds, OpenAPI emits, AND the consuming app slice ships against it in the same change
 — a contract-only merge is allowed only when explicitly staged.
+
+## Traps
+
+- A new BASE error code that no route's union names is invisible to the emitted OpenAPI, so "spec unchanged" is not evidence that nothing happened → check the three edits by hand: `baseErrorCodes`, `errorHttpStatusByCode`, then the i18n copy `Record`, which fails to compile until the code is there.
+- Zod 3 runs a `.refine` even after an earlier check on the same string failed, so a refine that can THROW on malformed input (`toISOString()` on an invalid date, `JSON.parse`) turns a 400 into an opaque 500 → guard the refine so it returns false instead of throwing.
+- Every name in `src/workflows/` is permanent once a durable history exists: a type name is written into history, a task queue is what a running worker polls, a workflow id is an outbox dedupe key → choose each once; renaming one later is a migration, not a rename.

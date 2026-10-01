@@ -23,11 +23,11 @@ pnpm --filter @heliogrid/env build | typecheck
 
 ## Where real values come from
 
-Production is Fly secrets; local is `.env.local` (git-ignored), loaded by Node's
-`--env-file-if-exists` on the api and worker scripts and by Next for web. A real environment
-variable always WINS over the file, so CI and Fly are never overridden. `db migrate` and the
-invariants runner take the URL from the SHELL — the value is expanded before Node starts, so the
-flag cannot help: `set -a; . ./.env.local; set +a` for a session.
+Production reads the production host's secrets; local is `.env.local` (git-ignored), loaded by
+Node's `--env-file-if-exists` on the api and worker scripts and by Next for web. A real environment
+variable always WINS over the file, so CI and the production host are never overridden.
+`db migrate` takes the URL from the SHELL — the value is expanded before Node starts, so the flag
+cannot help: `set -a; . ./.env.local; set +a` for a session.
 
 This package is the source of truth for WHICH variables exist and their shape; `.env.example`
 documents them; neither ever holds a real secret.
@@ -44,7 +44,7 @@ documents them; neither ever holds a real secret.
 - Audited exceptions to the repo-wide read ban are the `noProcessEnv` override in `biome.json`,
   each path named there. That override is the authority — do not "fix" an entry you find there.
 - A dedicated port is written ONCE: `API_PORT_DEFAULT` here is what the api's default, the web's
-  dev origin and the phone's fallbacks read (`CLAUDE.md` §5) — review-only.
+  dev origin and the phone's fallbacks read (`CLAUDE.md` §5); no check holds this, review does.
 - **This package was NOT merged into `packages/config`** (owner question). Every tag's allowlist
   includes `config` because every package needs the presets, `domain` included — env living there
   would let a pure package read the environment with no gate objecting.
@@ -52,4 +52,4 @@ documents them; neither ever holds a real secret.
 ## Done means
 
 Every variable declared in a schema and documented in `.env.example` · no `process.env` read
-outside this package (`M5`) · a missing required value fails at STARTUP, naming the key.
+outside this package · a missing required value fails at STARTUP, naming the key.

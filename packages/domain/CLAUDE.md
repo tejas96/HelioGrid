@@ -14,18 +14,16 @@ derives from it (`z.enum(ROLE_PRESETS)`); importing contracts from here is a pac
   permission check quietly becoming a query.
 - NEVER: NestJS, React, React Native, storage, fetch, an env read, `packages/db`, `packages/ui`,
   any app import, a `node:` import, a timer, `performance` or `crypto`. No side effects, no I/O,
-  no clock read at module scope (`M57`).
+  no clock read at module scope.
 - Rules, catalogs and market config arrive as INJECTED parameters. A module-level global is the
   specific anti-pattern this package exists to prevent.
-- Unit tests live in `tests/`, never in `src/` — the build compiles everything under `src/` into
-  `dist/`, so a colocated test ships.
 - **Two entries: the index every device bundles, and `./server` (`src/server.ts`) for `apps/api` and
-  `apps/worker` alone** (`F4-04`: no device computes a money figure — `M148`). A function that works
+  `apps/worker` alone** (`F4-04`: no device computes a money figure). A function that works
   out a NEW money figure goes on `./server` only, even one that returns just a verdict about it
   (`clearsCogsFloor`), and so does a business-identifier formatter when one is written. Its TYPES
   stay on the index, because a screen renders what the server sent. Minting the brand, reading a
   figure out of a pack and labelling a figure one is handed compute nothing and stay on the index,
-  each named with its reason on the guard's reviewed list.
+  each named with its reason on the reviewed list in `tests/money/device-entry.test.ts`.
 
 ## Commands
 
@@ -40,34 +38,35 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
 - **Time enters as a parameter (`now: number`)**, never `Date.now()` inside a reducer. That is
   what makes behaviour reproducible and stops RN's suspended-timer behaviour becoming a platform
   special case. `new Date(…)` is banned here, parsing included: use `Date.parse` and pass the
-  epoch to Intl (`M57`).
+  epoch to Intl.
 - **A capability matrix with a default is a matrix with a hole.** Every cell is written out, and
   `Record` is what makes a thirteenth preset a compile error in every row rather than a quiet
   `undefined`. The rows `F2` §F2.5 fixes live in `authz/<area>.ts`, one file per product area named for
   what it holds (`survey.ts`, never the PRD's `m04`), joined in `capabilities.ts` and
   `visibility.ts`; a module appends its placeholder rows to ITS file when its slice begins
-  (Law 9), and the PRD-reading invariant holds every cell to the book (`M108`).
+  (Law 9), and the `matrix-mirrors-f2` invariant holds every cell to the book.
 - **`format/pack.ts` is FLAT, and that is not a style choice.** The design system's pulled
   `MarketProvider` contract fixes `id`, `locale`, `currency`, `currencyFractionDigits`, `clock`
-  and `taxIdLabel` as names, and `ds:contract` fails on a dropped one. Grouping them into
-  sub-objects would make the design system and this package each declare a pack.
+  and `taxIdLabel` as names, and the `design-system-props` invariant fails on a dropped one.
+  Grouping them into sub-objects would make the design system and this package each declare a pack.
 - **A market fact is a key on `MarketPack` (`market/pack.ts`), never a constant.** A key task
   adds its folder beside `format/`, its property on `MarketPack` and its India values on
   `IN_PACK`, and reaches `MarketCode` through `market/code` by path, never the market index;
   `market/launch.ts` reports what is still unauthored (`F1-05`). `MarketCode` and
-  `PackVersion` are brands: obtain them from a pack, never by a cast (`M60`).
+  `PackVersion` are brands: obtain them from a pack, never by a cast.
 - **`commerce/` is packaging, not a pack key** — the one folder beside the keys that is NOT one, so
   it sits outside `MarketPack`. It holds structure every market prices against, never a market fact.
-  `costs.ts` is its other half: what the platform pays for instead of selling (`M97`), and
-  `trial.ts` the one non-paying motion there will ever be (`M98`), and `soft-block.ts` what a
-  tenant may still do when they have not (`M100`), and `grandfathering.ts` what a repricing may
-  do to them (`M102`, `M103`). A change that cannot be PROVEN generous waits for the horizon.
+  `costs.ts` is its other half: what the platform pays for instead of selling, and `trial.ts` the
+  one non-paying motion there will ever be, and `soft-block.ts` what a tenant may still do when
+  they have not, and `grandfathering.ts` what a repricing may do to them. A change that cannot be
+  PROVEN generous waits for the horizon.
 - **This package holds no clock, so a billing fact is authored in its own unit, never as an
   instant.** The trial is DAYS; the soft-block matrix is keyed by PHASE, because `past_due` behaves
-  as two. Turning either into a moment needs the TENANT's clock (`F1-10`), which `M12` holds.
+  as two. Turning either into a moment needs the TENANT's clock (`F1-10`), which the PRD's
+  platform-billing module (`M12`) holds.
 - **A rate carries the cost it must clear** (`pricing/`). `WorstCaseCogs` sits on `UnitRate` and on
   each `ChannelRate`, never in a table beside them, so a rate cannot be authored without the figure
-  that judges it (`M96`). It has no `verified` field and never gains one (`BM-26`).
+  that judges it. It has no `verified` field and never gains one (`BM-26`).
 - **A ruleset item declares `floor()` or `tenantDefault()`** (`calling/`), so an unclassified one
   is a compile error rather than a silent default-to-editable (`F1-17`). A time of day is
   `ClockTime`, minutes past midnight, carrying no zone — `F1-10` puts every comparison on the
@@ -83,7 +82,7 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
   authored yet (Law 9). A never-translated name (`DISCOM`, `ALMM`, `GSTIN`) carries `en` alone.
   A TENANT's own words resolve through `authoredIn`, which names the language shown, never
   through `inLanguage`, whose silent English fallback is a pack label's law (`F3-05`) and not a
-  tenant's (`F3-10`) — review-only.
+  tenant's (`F3-10`); no check holds this, review does.
 - **An amount is `MinorUnits` and a rate is `BasisPoints`** (`money/`), brands with one constructor
   each, and `money/` is the ONLY slice that rounds — `applyRate` for a fraction of an
   amount, `amountForQuantity` for a quantity at a per-unit price — so BOM, proposal and invoice can
@@ -93,5 +92,5 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
 
 ## Done means
 
-Pure (`M57`) · consumed by BOTH platforms where a mobile surface exists
+Pure · consumed by BOTH platforms where a mobile surface exists
 (Law 7) · typecheck and lint green.

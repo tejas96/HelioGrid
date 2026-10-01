@@ -1,11 +1,13 @@
 # @heliogrid/e2e — the regression suite
 
-Deps: `architecture.md` §2 tests/e2e. The law is `.claude/rules/testing.md`; the coverage gate is `M152`.
+Deps: `architecture.md` §2 tests/e2e. The law is `.claude/rules/testing.md`; the
+`e2e-flow-per-screen` invariant holds that every web route and phone screen has its flow.
 
 ## What lives here / what must never live here
 
-- `web/<route>.spec.ts` — one per web route, named as gate 33 names it (`/login` → `login.spec.ts`,
-  `/` → `root.spec.ts`, a `(group)` folder dropped). Each runs at 375 and 1536 (`F7-43` item 1).
+- `web/<route>.spec.ts` — one per web route, named as `e2e-flow-per-screen` names it (`/login` →
+  `login.spec.ts`, `/` → `root.spec.ts`, a `(group)` folder dropped). Each runs at 375 and 1536
+  (`F7-43` item 1).
 - `components/<Name>.spec.tsx` — the real `@heliogrid/ui` web halves, mounted with the app's
   stylesheets (`playwright/index.tsx`). A mounted component is imported from the `@heliogrid/ui`
   index; a plain value from `@heliogrid/ui` is read through `support/`, since the component
@@ -36,7 +38,7 @@ pnpm --filter @heliogrid/e2e exec playwright show-trace <trace.zip>   # replay a
 ```
 
 The web suite and the whole component suite run in CI (`e2e-web`). The phone suite runs in
-`/verify`: CI has no simulator. It needs Metro, the api and the app installed on each device.
+`/qa`: CI has no simulator. It needs Metro, the api and the app installed on each device.
 
 ## Local conventions
 
