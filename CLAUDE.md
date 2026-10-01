@@ -5,35 +5,32 @@ Multi-tenant SaaS for solar EPC companies — India-first, global-capable: CRM �
 Studio is the flagship. Light-only v1 · EN/HI/MR · tenant-currency money (INR v1).
 
 **This file states the invariants.** `docs/engineering/architecture.md` places every file ·
-`.claude/mechanisms.md` is the ONLY place enforcement is described, cited by row (`M12`) ·
-`.claude/landmines.md` holds the live traps. Everything else loads when it applies.
+`.claude/protections.md` says which tool, rule or test holds each protection · each package's
+`CLAUDE.md` holds its own rules and traps and loads when you work there.
 
 ## 1. Core principles
 
-**Think before coding.** State assumptions. Two readings of a request → present both. **Two readings
-the PRD supports → decide:** the simplest, most standard one, folded into its PRD row with one
-reason, and said out loud. A feature or a number no row implies is the owner's: stop and ask.
+**Think before coding.** State assumptions. Two readings the PRD supports → take the simplest, write
+it into the task with one reason, and say it out loud. A feature or a number no PRD row implies is
+the owner's: stop and ask.
 
-**Propose a better approach when you see one** — with an example in *this* codebase and the cost
-to switch. A recommendation you withheld is a decision made for the owner. Never switch silently.
+**Propose a better approach when you see one** — with an example in *this* codebase and the cost to
+switch. Never switch silently.
 
 **Keep changes minimal.** Solve the requested problem only. Remove what your change orphaned.
 
-**Verify reality.** **A claim about this repo names the file and line that proves it** — "nothing
-imports X" is a finding only once the grep is shown, and reading a rule is not checking the code.
-A bug is reproduced on the RUNNING app, never a mock. Read failures, not exit codes, and call
-sites, not declarations. **A gate this change adds or alters proves nothing until it goes red on
-this change** (Law 12); every other gate must still run, and its output is read, not its exit code.
+**Verify reality.** A claim about this repo names the file and line that proves it. A bug is
+reproduced on the RUNNING app, never a mock. Read failures, not exit codes, and call sites, not
+declarations. A check you add or change is trusted only after it fires on a planted bad line.
 
-**Every mistake leaves a record.** A mistake found in the work — yours, or caught by a reviewer, a
-gate or the owner — is fixed at once and listed in the PR body by its KIND. One that a rule could have
-prevented goes to `docs/tasks/deferred.md`, and a harness PR writes the general rule where it fires
-(`CLAUDE.md`, a skill, `.claude/rules/`) — as a type, lint rule or gate wherever one can decide it.
-Never fix only the instance. A lesson is written into the repo, where the work meets it — never kept
-only in an agent's memory, which nothing enforces. **The harness earns its size:** a rule, gate or
-agent is added only with the one it replaces or the cost it saves, named in the PR, and a rule written
-for a repeat replaces text rather than joining it. A harness fault met during a task goes to
-`docs/tasks/deferred.md` and is fixed in its own batched change, never inside the task.
+**Every mistake leaves a record.** A mistake found in the work — yours, a reviewer's, a check's or
+the owner's — is fixed at once and listed in the PR body by its kind. One a rule could have
+prevented gets that rule where it fires, as a type, a lint rule or a test wherever one can decide it.
+A harness fault met during a task goes to `docs/tasks/deferred.md` and is fixed in its own change.
+
+**The harness earns its size.** A rule, check or agent is added only with what it replaces or the
+cost it saves. **No new script:** a code fact goes into a type, Biome, dependency-cruiser or a test;
+anything else is a skill step. Ask the owner before adding a script or a command.
 
 ## 2. The Laws
 
@@ -46,96 +43,77 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
 7. **One prop contract per shared component.** Both platform files implement the one
    `<Name>.types.ts`; a prop belongs to that contract, never to a single platform.
 8. **Fix the docs your change made wrong** — same commit. A change that DELETES or MOVES files
-   greps `.claude/`, `docs/`, `scripts/`, `.github/`, configs and `.env.example` for the dead paths.
+   searches `.claude/`, `docs/`, `.github/`, the configs and `.env.example` for the dead paths.
 9. **Incremental schema & API growth.** Tables, enums, contracts and endpoints are authored only
    when their owning module's slice begins.
 10. **Platform purity.** Shared packages hold no DOM, no React Native, no Node-only API outside a
     declared server entry.
 11. **Flows are authored once.** Shared state vocabulary and view-model types live in a shared
     package before either screen consumes them. Screens render; they don't hold policy.
-12. **A new CODE fact joins its guard, and silence is never evidence.** Anything your change ADDS to a
-    guarded kind — a brand, enum, token, route, table, error code — is enrolled in its
-    `mechanisms.md` row in the SAME change. A gate your change ADDS or ALTERS is proven RED in that
-    change: a check that printed OK is worth nothing until you have made it FIRE. An existing gate
-    that never named your fact is read, not re-proven. A kind with no guard is said out loud, never
-    assumed safe.
-    Prose and design have no guard: a search for words proves the words exist, never that they are
-    true or obeyed. They are held by a reviewer that reads the real thing, and by the owner.
+12. **A new fact joins its guard.** A brand, an enum, a token, a route, a table or an error code
+    your change adds is enrolled with the check that holds its kind, in the same change. A kind no
+    check holds is said out loud, never assumed safe. Prose and design have no check: a reviewer and
+    the owner hold them.
 
 ## 3. Workflow
 
-**`/start` → build, tests first → tidy → `/verify` (HIGH), which stamps the ticket → `/ship`, whose
-commit git's pre-commit refuses without that stamp on a HIGH task.** All the thinking happens at
-`/start`, once, and is written into the ticket — the tier, the scope, the placement, the cases and,
-for HIGH, the WHOLE QA plan — so the build executes and `/verify` runs that plan without planning
-again. `/ship` has a second actor review the diff as a PR before anything is pushed, commits on a yes,
-pushes and raises the PR (owner ruling); the owner merges. **The work follows ONE order: the NEXT
-step the build-order line prints** (`M126`) — build a task, the owner draws a screen at its turn, or
-the owner clears a blocker. Inside a module it is design → backend → UI: the screens a backend serves
-are drawn before it is built, and it is built before those screens. An undrawn screen is drawn at its
-turn, never skipped for work that is ready; a blocker is the next step until it is cleared, moved or
-parked with a recorded reason.
+One fresh session per task, and one task per PR. The work follows ONE order: the next step `/start`
+picks from `docs/build-order.md` — build a task, the owner draws a screen, or the owner clears a
+blocker. Inside a module it is design → backend → UI.
 
-**Two risk tiers, on the ticket's `Risk:` line.** LOW — pure logic no caller reaches yet, docs,
-config: `break-it-reviewer` at `/ship`, no `/verify`, no stamp. HIGH — the database, the API, money,
-tenancy, permissions, any screen: `case-reviewer` before code, the QA agents at `/verify`,
-`design-reviewer` for a screen. No line reads as HIGH; git's pre-commit and CI read HIGH by path for
-the database, the API and its client, a service, a screen, domain's money and permission rules,
-and the env, copy, component, theme and form packages (`M113`), and `break-it-reviewer` checks the rest of the tier was honest.
+| step | who | stops for the owner |
+|---|---|---|
+| `/start` | picks the step, critiques the task, writes the plan, the acceptance criteria and the QA plan; `design-reviewer` for a screen, `plan-reviewer` for money, tenancy, permissions or schema | yes — the go |
+| build | the main session, inside the plan | only when the scope changes |
+| `/qa` | the suites, then one QA agent per surface the change reaches, in parallel; fix and re-check what failed | when a check fails three times |
+| `/ship` | `code-reviewer` once, the fixes and red proofs, the commit, the push, the PR, CI | yes — every commit |
 
-**One fresh session per task, and a budget.** A task run in a long session re-reads the whole old
-chat on every step. `/start` states which agents the task will pay for. Long command output goes to a
-scratch file and only its verdict lines are read.
+**Build:**
 
-Before writing code, say three things: **which package owns each new file** (§6), **which facts are
-new and where their TYPE lives** (§8) — every fact the done-when lines need, beside the row that
-carries it, and the ONE package that owns each (the ticket's Placement) — and **what will prove it
-works**. A fact no row carries is ruled into the row (§1) before a line is written.
+1. Tests first: each acceptance line's test before its code (`.claude/rules/testing.md`).
+2. Stay in the plan's scope. A new behaviour, table, route, contract or package → stop and ask.
+3. After each change, `pnpm check`.
+4. A schema change runs `/migration`; a contract change runs `/contract-change`.
+5. A bug outside the scope goes to `docs/tasks/deferred.md`, never into this diff.
+6. When done, one tidy pass over the diff — reuse, names, dead code — then `pnpm check:all` once,
+   then `/qa`.
+7. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code
+   that is gone: `pnpm turbo build --force`.
 
-The whole kit. Nothing outside this table fires, and a plugin skill fires only when it names one.
-
-| stage | kit | LOW | HIGH adds |
-|---|---|---|---|
-| design | `docs/start-here.md` · `scripts/next-screen.py` · Claude Design | — | the script names the next brief; the brief is the prompt; the owner draws the screen in Claude Design and the record is checked against it |
-| 0–2 `/start` | the ticket · `case-reviewer` · `design-reviewer` | clean start and branch · understand, conflicts · the tier, the scope · placement, cases, used-by, done-when · explain, stop for the go | the data model, the contract, the diagram, the whole QA plan · `case-reviewer` reads it, `design-reviewer` for a screen |
-| 3 build | `/migration` · `/contract-change` · hooks · `.claude/rules/` · `pnpm check:touched` | tests first; the procedure when schema or the contract changes; the guards, loaded by path or run by hand; a scope change goes back to `/start` | — |
-| 4 tidy | the author · `pnpm check:all` · `scripts/break-and-run.sh` | one readability pass over the diff — reuse, names, dead code — then every gate once; a red proof for a gate the change adds or alters | — |
-| 5 `/verify` | `qa-api` · `qa-web` · `qa-mobile` · `qa-parity` · `scripts/record-proof.sh` · `scripts/break-and-run.sh` | not run | the QA plan on the surfaces the change reaches, over seeded data; the red proofs for money, tenancy, permission and safety rules, last; the stamp |
-| 6 `/ship` | `break-it-reviewer` | the PR review of every code change before push — it checks the tier — commit on a yes, push, the PR, its one CI run | the stamp against the verdicts |
+**A PR is one complete task:** every acceptance line met and proven before it opens; a task that is
+really two is split at `/start`. **One review per change:** findings are fixed and the work ships.
 
 ## 4. Stop and ask the owner before
 
-- Anything billable or external-account-shaped (Fly, store accounts, paid APIs).
+- Anything billable or external-account-shaped (cloud, store accounts, paid APIs).
 - Schema or API work outside the current module (Law 9).
 - A layer conflict §7 does not resolve.
-- A decision that belongs to a LATER module is not an ask and not a blocker: write it into that
-  module's task in `docs/tasks/`, where its `/start` meets it, and carry on.
-- A feature or a number no PRD row implies. A finding BETWEEN readings the PRD supports is not an
-  ask: rule it into the row (§1) and continue.
+- A feature or a number no PRD row implies. A decision that belongs to a LATER module is not an ask:
+  write it into that module's task in `docs/tasks/`, and carry on.
 - **Committing.** Every commit waits for its own yes, given to the shown file list and message; a
-  go, a green gate, an event, or the yes to an earlier commit is never that yes. The ledger flip
-  rides that same commit, carrying the number the PR will take (`/ship` §4); after it: push and
-  raise the PR. The owner merges. `main` is PR-only; never `--no-verify`, never a force-push.
+  go, a green check or the yes to an earlier commit is never that yes. The task's Status turns
+  `shipped` in that commit; then push and raise the PR. The owner merges. `main` is PR-only; never
+  `--no-verify`, never a force-push.
 
 ## 5. Commands
 
 | | |
 |---|---|
-| `pnpm infra:up` | **Before anything.** One Postgres container (3 databases) + Temporal, from a clean clone. |
-| `pnpm check:touched` | **While building.** Lint, typecheck and the related unit tests for what differs from `origin/main` (deletions included), plus adherence and the docs gates. Run it after each change. It is a fast subset and never the proof: it says so when no unit test ran, and `pnpm check:all` runs every test. |
-| `pnpm check:all` | Every gate that runs without a database, ONCE when the build is done, before `/verify`. It builds, because typecheck does. It never rewrites a file: run `pnpm lint:fix` first to format. |
-| `pnpm test:unit` | Unit tests; `pnpm test:watch` while writing. |
-| `pnpm test:coverage` | Which edge cases you MISSED. Read this, not the pass count. |
-| `pnpm db:migration:new` | Where a migration starts: generate, review, move it in. Never hand-author one. |
+| `pnpm infra:up` · `pnpm infra:down` | **Before anything.** One Postgres container (3 databases) + Temporal, from a clean clone. |
+| `pnpm check` | **While building.** Biome on what differs from `origin/main`, the typecheck of the changed packages, and the related unit tests. Fast, and never the proof. |
+| `pnpm check:all` | **Once, when the build is done.** Build → lint (Biome and its plugins, dependency-cruiser, sherif, turbo boundaries) → typecheck → duplication → OpenAPI freshness → catalog freshness → every unit test → the invariants. The two freshness checks rewrite a stale file before they fail — commit the fresh one. |
+| `pnpm lint:fix` | Format and auto-fix. |
+| `pnpm test:watch` · `pnpm test:coverage` | Tests while writing · the edge cases you missed (read it, not the pass count). |
+| `pnpm db:migration:new` · `pnpm db:migrate` | Where a migration starts; never hand-author one. |
 
-The db-backed invariants need a live postgres; without one they SKIP loudly, and over an empty
-schema they report VACUOUS. Neither is a pass. **Read gate output, not exit codes**, and never
-weaken a gate to make a change pass.
+The database invariants need the local Postgres; without it they SKIP loudly, and over an empty
+schema they report VACUOUS. Neither is a pass. Never weaken a check to make a change pass.
 
 **Ports are dedicated, never reassigned** — web `3002` · api `8084` · metro `8081` · postgres
-`5544` · object store `9000` · temporal `7233` · design exports `3004` · component tests `3100` · worker has no listener; the Temporal UI is deployed-only. A busy port is a stale service: kill it,
-never fall back to another. Start web/api/metro through the browser preview tool;
-`pnpm --filter @heliogrid/mobile ios|android` drives metro.
+`5544` · object store `9000` · temporal `7233` · design exports `3004` · component tests `3100` ·
+the worker has no listener. A busy port is a stale service: kill it, never fall back to another.
+Start web, api and metro through the browser preview tool; `pnpm --filter @heliogrid/mobile
+ios|android` drives metro.
 
 ## 6. Where everything lives
 
@@ -151,99 +129,70 @@ import, §4 where a new file goes. Run §4 before creating one. This is the dige
 | `db` | schema and append-only migrations. |
 | `i18n` | every user-visible string. |
 | `env` | the only reader of `process.env`. |
-| `forms` · `data` · `config` | the form layer · the typed client · shared build config. |
+| `forms` · `data` · `config` | the form layer · the typed client · shared build config and the Biome plugins. |
 
 | tree | what it is |
 |---|---|
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
-| `docs/engineering/` | how this repo is built, dissolving: each file carries its fate at its top and folds into the package files and the tasks. Ranked **below** `docs/prd/`. |
-| `.claude/` | the agent's own instructions — `skills/`, `agents/`, `hooks/`, `rules/` and the two ledgers `mechanisms.md` and `landmines.md`, a closed set. `rules/` is law that spans MORE than one package; a rule for exactly one package lives in that package's own `CLAUDE.md`. |
-| `infra/` · `HelioGrid-UX/` | deployment and local-stack material that is NOT application code · the exported Claude Design artboards and decisions records, one pair per screen, rendering from disk with the bundle in `_ds/`, beside the design system's own source export in `_ds-source/` — the pixel-perfect reference a screen is built and measured against; never edited, re-exported when a design changes, kept at the repo root and ignored by git (each machine holds its own export). |
+| `docs/engineering/` | how this repo is built, ranked **below** `docs/prd/`. |
+| `.claude/` | the agent's own instructions — `skills/`, `agents/`, `hooks/`, `rules/` and `protections.md`, a closed set. `rules/` is law that spans MORE than one package; a rule for exactly one package lives in that package's own `CLAUDE.md`. |
+| `infra/` · `HelioGrid-UX/` | deployment and local-stack material that is NOT application code · the exported Claude Design artboards and decisions records, one pair per screen — the pixel-perfect reference a screen is built and measured against; never edited, re-exported when a design changes, ignored by git. |
 
 Everything public is re-exported from a package's `src/index.ts`; consumers import the index, never
-a deep path. Each app and package has its own `CLAUDE.md`, loaded with that folder. **Never invent a
-folder**: every tree is a closed set, and a new category is a plan-time decision. `docs/README.md`
-maps every document; `docs/tasks/<module>.md` holds the work.
+a deep path. **Never invent a folder**: every tree is a closed set, and a new category is a
+plan-time decision. `docs/README.md` maps every document.
 
 ## 7. When rules conflict
 
-Higher wins, and don't re-declare at a lower level what a higher one already fixes:
-
-**the product spec (`docs/prd/`; a row carries its own ruling, and the row IS the ruling) →
+Higher wins: **the product spec (`docs/prd/`; a row carries its own ruling) →
 `docs/engineering/architecture.md` → contracts → design system → this file → package `CLAUDE.md`
-→ implementation detail.**
-
-Two tiebreakers: a **package `CLAUDE.md` beats a cross-cutting rule**, being closer to the code;
-and between two records the **later-dated** one wins. If a doc and the code disagree, fix the doc
-or ask.
+→ implementation detail.** A package `CLAUDE.md` beats a cross-cutting rule, being closer to the
+code; between two records the later-dated one wins. If a doc and the code disagree, fix the doc or
+ask.
 
 ## 8. Coding standards
 
-Every line, every app, every package. No exceptions for "just this once".
+Every line, every app, every package.
 
-- **A shared fact is UNSPEAKABLE outside its owner.** If a consumer could simply type the value
-  themselves, it will be typed twice: give it a branded type in its owner, so importing is the only
-  way to obtain one. Never `as <Brand>` outside that package — the one hole a brand has. Owners:
-  money and policy numbers → `domain` · user-visible copy → `i18n` · vocabularies → `domain`, derived in `contracts` ·
-  visual values → `theme` · queries → `db` · wire calls → `data`.
+- **A shared fact is UNSPEAKABLE outside its owner.** If a consumer could type the value itself, it
+  will be typed twice: give it a branded type in its owner, so importing is the only way to obtain
+  one. Never `as <Brand>` outside that package. Owners: money and policy numbers → `domain` ·
+  user-visible copy → `i18n` · vocabularies → `domain`, derived in `contracts` · visual values →
+  `theme` · queries → `db` · wire calls → `data`.
 - **Zero duplication.** Search before you write. A second copy of a definition, a formula or a
   shape is a defect even when both copies are correct — they will diverge.
 - **Code reads like English or it is rewritten.** Names say WHAT, never how; a reader new to this
   codebase follows a function top to bottom without scrolling back. Needing a comment to explain it
   means the code is wrong. A comment states the CONSTRAINT — what breaks if you change this — and
-  never a date. When and why we changed it goes in the commit, undated and un-rotting.
+  never a date; when and why it changed goes in the commit.
 - **Solve today's problem.** No speculative abstraction, no config for one caller, no indirection
   for a future that has not been specified.
 - **Shape.** Files ≲300 lines, split by responsibility and named for what they do — never
-  `*2`/`*-extra`, never for a layer or a document id (`survey.ts`, not `m04.ts`) · no `any`, `!`,
-  `==`, or `console.log` in anything SERVED · style outside the component file · no app-declared
-  enum, union, lookup or policy number · `process.env` read only in `packages/env` · a package
-  compiles and typechecks with `tsc -p`, never `tsc -b`.
+  `*2`/`*-extra`, never for a layer or a document id · no `any`, `!`, `==`, or `console.log` in
+  anything SERVED · style outside the component file · no app-declared enum, union, lookup or
+  policy number · `process.env` read only in `packages/env` · a package compiles and typechecks
+  with `tsc -p`, never `tsc -b`.
 - **Queries are correct the first time.** Index-backed, no N+1, no `select *`, no unbounded scan,
-  every tenant-scoped read carrying its tenant predicate. One written to be fixed later never is.
+  every tenant-scoped read carrying its tenant predicate.
 - **Every boundary has a contract.** Nothing crosses a package or process edge on an inferred or
   `any` shape; where two sides must agree, the agreement is a type in `packages/contracts`.
-- **A release is safe at every step of its roll, not only at its end.** Machines roll one by one
-  (`docs/engineering/09-observability-and-ops.md`), apps in the field update weeks late, and a
-  workflow or job started before a release runs on after it. So a change to anything stored or
-  sent between runtimes — a row, a column, an enum value, a response, a workflow message, a queued
-  job, a cached payload, a pack — names who reads it and proves both directions: every OLDER reader
-  still running reads the NEW shape, and the new code reads everything the old one wrote. What
-  cannot be read both ways ships in two releases: expand, then contract.
-- **A bug you find is reported at once.** Inside the task's scope it is fixed now and its area
-  re-reviewed. Outside it, it goes to `docs/tasks/deferred.md` — the issue, why not now, what it
-  depends on, who picks it up — and becomes the next task; never inside the current change, which
-  hides it in an unrelated diff, and never parked.
+- **A release is safe at every step of its roll.** Machines roll one by one, apps in the field
+  update weeks late, and a workflow or job started before a release runs on after it. A change to
+  anything stored or sent between runtimes — a row, a column, an enum value, a response, a workflow
+  message, a queued job, a cached payload, a pack — names who reads it and proves both directions:
+  every OLDER reader still running reads the NEW shape, and the new code reads everything the old
+  one wrote. What cannot be read both ways ships in two releases: expand, then contract.
+- **A bug you find is reported at once.** Inside the task's scope it is fixed now. Outside it, it
+  goes to `docs/tasks/deferred.md` — the issue, why not now, what it depends on, who picks it up —
+  never inside the current change, and never parked.
 - **Dependencies change only through `pnpm add`/`pnpm remove`** — never a hand-edited dependency
   block or lockfile. **The database is read-only to you**: schema through a migration, data through
   the application.
-- **Testing law is `.claude/rules/testing.md`** — which layers get unit tests, the one name and
-  place a test has, what a test proves, and why it never replaces `tests/invariants/`.
+- **Testing law is `.claude/rules/testing.md`.**
 
-Writing rules, not code:
-
-- **A rule states an invariant, and carries NO DATE** — not a leading one, and not one buried
-  mid-sentence in a `hit …`, `measured …` or `since …` clause. A dated sentence is a war story,
-  and war stories are how this corpus doubled before. The trap goes to `landmines.md`; when and
-  why we changed something is the commit's job. `mechanisms.md` is the one exception: a date there
-  is the day a gate was proven red, which is the only date that stays true.
-- **One fact, one file.** Cite a rule by its id; never restate it. When a file goes, its stories go
-  with it — Law 8's sweep covers the ledgers too.
-- **Say the instruction plainly.** Write what to do and what to run, in words a new reader can act
-  on without opening a second file. A row id (`M12`) may follow as the pointer to the detail; it
-  never stands in for the instruction.
-- **Mechanism before rule — for CODE: type → lint rule → invariant.** A check earns its place only
-  when a machine decides the fact completely: an id exists, two values are equal, a type holds, a
-  test passes. Its name says that one fact and nothing more. Never a text search that stands in for
-  judgment — whether a brief is complete, a design is good or a rule is obeyed is a reviewer's call.
-- **Short, never cut.** Before deleting a sentence as a duplicate, show it beside the one that stays.
-  Keep a file small by moving what belongs elsewhere, never by dropping a
-  rule or squeezing it until it is unclear. A missed instruction costs more than a long file.
-- **One review per change.** Findings get fixed and the work ships; multi-round adversarial review
-  only when asked for by name.
-- **A PR is one complete task.** Every done-when line is met and proven before the PR opens; a
-  task that is really two is split at `/start`, never shipped half. The PR is the one human gate,
-  so its body carries the design, the done-when proof and the verification record.
+Writing rules, not code: a rule carries no date (a trap goes to its package's `CLAUDE.md`, and when
+and why something changed is the commit's job) · one fact lives in one file — cite it, never restate
+it · say the instruction plainly, in words a new reader can act on.
 
 ## 9. Product law
 
