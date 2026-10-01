@@ -227,7 +227,6 @@ All run from the repo root unless noted. Per-package equivalents: `pnpm --filter
 | `pnpm boundaries` | `turbo boundaries` — enforces the package-tag dependency allowlists |
 | `pnpm check:all` | **Every gate that runs without a database, DURING the work:** `lint:fix`, then typecheck (which builds), `lint`, boundaries, dupes, openapi, catalogs, the doc gates, unit tests, and the invariants — the db-backed ones skip loudly without `DATABASE_URL` |
 | `pnpm verify` | The full local gate: `turbo build && lint && boundaries && turbo typecheck && check:dupes && check:openapi && check:catalogs && check:docs && test:unit && turbo test`. Build runs first — dependency-cruiser resolves workspace edges through `dist/`, so linting an unbuilt checkout is partially blind. This is what "green" means before you call something done |
-| `pnpm verify:clean` | **The proof, in CI's room:** a fresh clone of what git would commit, CI's own environment, then `pnpm verify`. What `/ship` runs before a commit |
 | `pnpm precommit` | What the git hook runs automatically: Biome (staged files only, zero warnings) + full typecheck + `check:adherence` + the secret scan (`check:secrets`, which needs gitleaks) |
 | `pnpm check:adherence` | UI/design-token/i18n adherence scan (also part of `pnpm lint`) — test files, source size, raw hex, domain purity, unwrapped copy, untranslated messages, and that every contract UI language is registered in `packages/i18n` |
 | `pnpm check:openapi` | Re-emits and diffs `packages/contracts/openapi/openapi.json` — run after any contract change |

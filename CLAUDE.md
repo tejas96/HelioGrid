@@ -124,7 +124,6 @@ The whole kit. Nothing outside this table fires, and a plugin skill fires only w
 | `pnpm infra:up` | **Before anything.** One Postgres container (3 databases) + Temporal, from a clean clone. |
 | `pnpm check:touched` | **While building.** Lint, typecheck and the related unit tests for what differs from `origin/main` (deletions included), plus adherence and the docs gates. Run it after each change. It is a fast subset and never the proof: it says so when no unit test ran, and `pnpm check:all` runs every test. |
 | `pnpm check:all` | Every gate that runs without a database, ONCE when the build is done, before `/verify`. It builds, because typecheck does. It never rewrites a file: run `pnpm lint:fix` first to format. |
-| `pnpm verify:clean` | **CI's room, locally.** A fresh clone of what git would commit, CI's environment, then `pnpm verify`: build · lint · boundaries · typecheck · gates · unit tests · invariants. Run it when the diff deletes or moves a file or changes a `package.json`, a tsconfig or a build config — the faults a warm tree hides — and to reproduce a CI failure; otherwise CI is the clean room. |
 | `pnpm test:unit` | Unit tests; `pnpm test:watch` while writing. |
 | `pnpm test:coverage` | Which edge cases you MISSED. Read this, not the pass count. |
 | `pnpm db:migration:new` | Where a migration starts: generate, review, move it in. Never hand-author one. |

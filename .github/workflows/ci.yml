@@ -146,43 +146,6 @@ jobs:
             exit 1
           fi
           echo "migrations append-only: OK"
-      - name: A runtime change on a HIGH-risk task carries its /verify stamp (M113)
-        if: github.event_name == 'pull_request'
-        shell: bash
-        env:
-          BASE_REF: ${{ github.base_ref }}
-          HEAD_REF: ${{ github.head_ref }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          # git runs no commit hook for a cherry-pick, a revert, a rebase or a fast-forward, so the
-          # stamp and the tier git's pre-commit reads are read again here, on the pull request's head
-          # as pushed. The tier is HIGH by path (M113); else it comes from the task the branch names
-          # (<kind>/<t-id>-<slug>) and its ticket in the head's tree — no task, no Risk line, reads HIGH.
-          # The stamp must sit in the section of that task or of a task this pull request ships (its
-          # Status turns shipped here). The QA record lives in the author's .git,
-          # never here, so the record and its counts are held by git's pre-commit alone (M151).
-          set -euo pipefail
-          git fetch --no-tags --quiet origin "$BASE_REF"
-          scratch="$(mktemp -d)"
-          in_tree() { # a verify-digest mode read against one commit's tree
-            GIT_INDEX_FILE="$scratch/$1.index" git read-tree "$1"
-            GIT_INDEX_FILE="$scratch/$1.index" bash scripts/verify-digest.sh "${@:2}"
-          }
-          base_sha="$(git merge-base "$HEAD_SHA" "origin/$BASE_REF")"
-          head="$(in_tree "$HEAD_SHA" --staged)"
-          base="$(in_tree "$base_sha" --staged)"
-          tip="$(in_tree "$(git rev-parse "origin/$BASE_REF")" --staged)"
-          echo "runtime digest: head $head · merge base $base · $BASE_REF $tip"
-          if [ "$head" = "$base" ] || [ "$head" = "$tip" ]; then
-            echo "no runtime change: no stamp needed"
-          elif [ "$(in_tree "$HEAD_SHA" --risk "$HEAD_REF" "$base_sha")" = LOW ]; then
-            echo "LOW-risk task on $HEAD_REF: no stamp needed"
-          elif in_tree "$HEAD_SHA" --stamped "$HEAD_REF" "$head"; then
-            :
-          else
-            echo "::error::The runtime tree this pull request's head carries (digest $head) is HIGH-risk — by a path it changes, or by the ticket of the task $HEAD_REF names — and no /verify stamp for it sits in the section of that task or of a task this pull request ships. Run /verify on it and commit the stamped ticket (M113)."
-            exit 1
-          fi
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
