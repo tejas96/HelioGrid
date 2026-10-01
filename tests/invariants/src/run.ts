@@ -1,7 +1,15 @@
 import { loadInvariantsEnv } from '@heliogrid/env/server';
+import { runBannedWordOtherFiles } from './banned-word-other-files';
+import { runBiomePluginScopes } from './biome-plugin-scopes';
 import { runBrandRegistry } from './brand-registry';
+import { runDesignSystemProps } from './design-system-props';
+import { runDockerfileUnprivileged } from './dockerfile-unprivileged';
+import { runE2eFlowPerScreen } from './e2e-flow-per-screen';
 import { runEnumParity } from './enum-parity';
+import { runEnvExampleComplete } from './env-example-complete';
 import { runFormatInvariants } from './format-rendering';
+import { runLanguageFonts } from './language-fonts';
+import { runLightOnlyPlatformFiles } from './light-only-platform-files';
 import { runMatrixMirrorsF2 } from './matrix-mirrors-f2';
 import { REPO_ROOT } from './repo-root';
 import { runSchemaParity } from './schema-parity';
@@ -9,11 +17,17 @@ import { runTableTenancyScan } from './table-tenancy-scan';
 import { runTemplateKeysMirrorF6 } from './template-keys-mirror-f6';
 import { runTenancyInvariants } from './tenancy-rls';
 import { runTenantIdOnTheWire } from './tenant-id-on-the-wire';
+import { runTenantPin, runTenantPinCallSites } from './tenant-pin';
+import { runVocabularyCopies } from './vocabulary-copies';
 
 /**
  * Locked invariant runner. Sets: tenancy (live), table scoping (live), enum parity (live),
- * schema parity (live), tenant-id-on-the-wire (static), format rendering (static, F3-19…F3-24), matrix-mirrors-f2 (static,
- * F2-25), brand-registry (static, M125), template-keys-mirror-f6 (static, F6-26).
+ * schema parity (live), tenant-pin (live, and static over its call sites), tenant-id-on-the-wire
+ * (static), format rendering (static, F3-19…F3-24), matrix-mirrors-f2 (static, F2-25),
+ * brand-registry (static, M125), template-keys-mirror-f6 (static, F6-26), and the static repo
+ * checks: vocabulary-copies, dockerfile-unprivileged, light-only-platform-files,
+ * banned-word-other-files, env-example-complete, language-fonts, e2e-flow-per-screen,
+ * design-system-props, biome-plugin-scopes.
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
@@ -23,6 +37,16 @@ async function main() {
   runMatrixMirrorsF2(); // static — the permission matrices equal the PRD, cell for cell
   runBrandRegistry(REPO_ROOT); // static — every brand is enrolled with the cast check
   runTemplateKeysMirrorF6(); // static — the message-template keys equal F6-26's exhaustive list
+  runTenantPinCallSites(REPO_ROOT); // static — every tenant pin call is transaction-local
+  runVocabularyCopies(REPO_ROOT); // static — no package copies an owner's vocabulary
+  runDockerfileUnprivileged(REPO_ROOT); // static — every server image drops root
+  runLightOnlyPlatformFiles(REPO_ROOT); // static — web, iOS and Android hold light-only
+  runBannedWordOtherFiles(REPO_ROOT); // static — no "quote" in catalogs, SQL or markup
+  runEnvExampleComplete(REPO_ROOT); // static — .env.example names every schema variable
+  await runLanguageFonts(REPO_ROOT); // static — reads the BUILT i18n and theme packages
+  runE2eFlowPerScreen(REPO_ROOT); // static — every route and screen has its regression flow
+  runDesignSystemProps(REPO_ROOT); // static — no design-system prop dropped by its port
+  runBiomePluginScopes(REPO_ROOT); // static — every lint plugin covers a place that exists
   const env = loadInvariantsEnv();
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;
   if (!url) {
@@ -76,6 +100,7 @@ async function main() {
   await runTableTenancyScan(url);
   await runEnumParity(url);
   await runSchemaParity(url);
+  await runTenantPin(url);
   console.log(
     tenantTables === 0
       ? 'invariants green — tenancy vacuously (see the banner above)'

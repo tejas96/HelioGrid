@@ -21,8 +21,9 @@ const COMPLETE = { statements: 100, branches: 100, functions: 100, lines: 100 };
  *     negative, the value one below the threshold. It runs against a pure function.
  *
  * Tests live at `<package>/tests/**`, never inside `src/`: a test under `src/` is compiled
- * into the package's own `dist/` by its build and ships. `scripts/check-adherence.sh` check 1
- * holds that, plus the `*.test.ts` name and the package list, over the same corpus file.
+ * into the package's own `dist/` by its build and ships. dependency-cruiser's
+ * `no-tests-outside-the-tests-tree` holds that, plus the `*.test.ts` name and the package list,
+ * over the same corpus file.
  */
 /*
  * `.env.local` reaches the tests, exactly as it reaches the invariants (whose runner passes

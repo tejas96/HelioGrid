@@ -6,15 +6,20 @@ an invariant proves the seam between them.
 ## What lives here / what must never live here
 
 - The locked invariant set: tenancy RLS, RLS armed, tenancy write paths, table tenancy scan,
-  enum parity, schema parity, tenant-id-on-the-wire, format rendering, matrix-mirrors-f2, brand
-  registry, template-keys-mirror-f6 — one name
+  enum parity, schema parity, tenant pin, tenant-id-on-the-wire, format rendering,
+  matrix-mirrors-f2, brand registry, template-keys-mirror-f6, vocabulary copies, dockerfile
+  unprivileged, light-only platform files, banned word in other files, env example complete,
+  language fonts, e2e flow per screen, design-system props, biome plugin scopes — one name
   per file in `src/`, so a file added here without a name added there is visible. **Additions require explicit owner
   approval** — the set is deliberately small so a green run means something.
 - NEVER a unit test. Those live at `<package>/tests/**/*.test.ts` and prove one DECISION at its
   edges; an invariant proves a property of the SYSTEM against real state. Neither replaces the
   other.
 - Never a fixture factory, a mock, or a helper library. An invariant that needs scaffolding to be
-  readable is testing the wrong thing.
+  readable is testing the wrong thing. The two shared files are `repo-root.ts` and
+  `repo-files.ts`, the one file lister every static invariant reads the tree through.
+- Each static invariant is a pure `find…(repo)` that returns its findings and a `run…(repo)` that
+  throws them, and it refuses an empty scan, so a renamed folder fails instead of passing.
 
 ## Commands
 

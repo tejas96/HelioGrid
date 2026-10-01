@@ -11,12 +11,18 @@
  * for ones the importer does not declare — a pattern covering only one form is inert in
  * exactly the case it exists to catch. Four rules in this file were inert on that basis.
  */
-/* The apps a unit test may live in, from the one file that states the corpus — so this rule
+/* The packages a unit test may live in, from the one file that states the corpus — so this rule
  * cannot fence a different set than the runner collects or the guard admits. */
-const TEST_APPS = require('./packages/config/unit-test-packages.json')
-  .packages.filter((p) => p.startsWith('apps/'))
-  .map((p) => p.slice('apps/'.length));
-if (TEST_APPS.length === 0) throw new Error('unit-test-packages.json names no app');
+const UNIT_TEST_PACKAGES = require('./packages/config/unit-test-packages.json').packages;
+if (UNIT_TEST_PACKAGES.length === 0) throw new Error('unit-test-packages.json names no package');
+/* A test file outside the one place for its kind: anything under a `__tests__` or `__mocks__`
+ * folder; a `*.test.*` outside a listed package's `tests/`; a `*.spec.*` anywhere but where the
+ * regression suite's two runners read them. */
+const MISPLACED_TEST = [
+  '(^|/)__(tests|mocks)__/',
+  `^(?!(${UNIT_TEST_PACKAGES.join('|')})/tests/).*\\.test\\.[^/]*$`,
+  '^(?!tests/e2e/web/.*\\.spec\\.ts$|tests/e2e/components/.*\\.spec\\.tsx$).*\\.spec\\.[^/]*$',
+].join('|');
 
 module.exports = {
   forbidden: [
@@ -473,12 +479,13 @@ module.exports = {
       name: 'no-tests-outside-the-tests-tree',
       severity: 'error',
       comment:
-        'Unit tests are welcome in the LOGIC layers, but only at `<package>/tests/**/*.test.ts`. An app test anywhere else — beside a screen, inside src/ — is either testing the frontend (proven by RUNNING it) or sitting where the app build will compile it. apps/api and apps/worker tests are exempted by path, not by filename, so a stray `Screen.test.tsx` under apps/web is still an error. check-adherence.sh check 1 says the same thing about files that import nothing.',
-      from: {
-        path: '^apps/.*\\.(test|spec)\\.(ts|tsx)$',
-        pathNot: `^apps/(${TEST_APPS.join('|')})/tests/`,
+        'One name, one place (.claude/rules/testing.md). A unit test is `*.test.*` under `<package>/tests/` of a package named in packages/config/unit-test-packages.json — anywhere else it is testing a layer this repo proves by running, or sitting inside src/ where the package build compiles it into dist/. A `*.spec.*` is the regression suite\'s, at tests/e2e/web/*.spec.ts or tests/e2e/components/*.spec.tsx, where its two runners read it, so a spec anywhere else never runs. `__tests__/` and `__mocks__/` are conventions this repo does not use. The rule judges the FILE, whatever it imports: a dependency-cruiser rule selects every module on a path by its dependents count, and "fewer than 100" is every test file, which nothing imports.',
+      module: {
+        path: MISPLACED_TEST,
+        pathNot: '(^|/)(node_modules|dist|\\.next|ios|android)/',
+        numberOfDependentsLessThan: 100,
       },
-      to: { path: '.*' },
+      from: {},
     },
     {
       name: 'adapters-no-domain-internals',
