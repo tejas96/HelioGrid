@@ -36,7 +36,8 @@ docker exec heliogrid-pg-local psql -U qa_readonly -d heliogrid_dev -qtAc "BEGIN
 `POST /auth/otp/request` `{"phoneE164", "channel": "sms"}` and `POST /auth/otp/verify`
 `{"challengeId", "code", "platform": "web"}`. For a fresh `+91` number, read its code from the api
 log: `grep 'via sms'` in the log path your prompt names. A first-time number has no company:
-`POST /tenants` `{"companyName", "ownerName", "city"}` creates one and rotates the token. Three
+`POST /tenants` `{"companyName", "ownerName", "city"}` creates one and rotates the token; use the
+company name your prompt gives (`QA <T-id> <surface>`). Three
 requests per fifteen minutes and eight per day per number are real caps — use a fresh number rather
 than wait.
 

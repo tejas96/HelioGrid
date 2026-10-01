@@ -39,7 +39,8 @@ step 3 are the QA.
    that person, so two surfaces on one account sign each other out. The development number in
    `.env.local` (`DEV_OTP_PHONE`, code `DEV_OTP_CODE`) goes to ONE surface; every other signs up a
    fresh `+91` number, reading its code from the api log (`grep 'via sms'`), then creates its company
-   with `POST /tenants`.
+   with `POST /tenants`. Every QA company is named `QA <T-id> <surface>` (for example
+   `QA T-M02-001 web`), so the test records it leaves in the local database can be found later.
 5. **Seed only through the module's own writer**, into that surface's own company — never SQL by
    hand, never a file added to the repo. A check over an empty list proves nothing. The shape:
    ```bash
@@ -67,7 +68,8 @@ A failure here is fixed before any agent starts.
 ## 4. Dispatch — one agent per surface, all in ONE message, in the background
 
 `qa-api`, `qa-web`, `qa-mobile` (ios) and `qa-mobile` (android) — only the surfaces reached. Each
-prompt holds: the plan's checks that name its surface, with their ids; its account; the server ids,
+prompt holds: the plan's checks that name its surface, with their ids; its account and its company
+name; the server ids,
 **only to read logs**; its device (udid or serial); its results file,
 `<scratchpad>/qa-<T-id>/<surface>.md`; the path of the api log; and the common rules below, word for
 word. Then tell the owner: "QA is running — please do not click in the browser pane, the simulator

@@ -54,11 +54,13 @@ exactly that list and message — a yes to an earlier commit is not this yes.
 ## 8. Commit, push, open the PR
 
 - `git commit` with the message `feat|fix|chore: T-ID — summary`, ending with the co-author line.
-  Never `--no-verify`: the pre-commit runs Biome on the staged files, gitleaks and a typecheck of
-  the changed packages.
+  Never `--no-verify`: the pre-commit runs Biome on the staged files, gitleaks and a cached
+  typecheck of every package.
 - The first push is `git push -u origin <branch>`. Never to `main`, never a force-push.
 - `gh pr create` with the body below. Then bind the PR with the app's PR tools (`get_status`, and
   `bind_pr` if it is not listed). Never poll CI yourself.
+- Then delete the session's QA files — `<scratchpad>/qa-<T-id>.md` and `<scratchpad>/qa-<T-id>/` —
+  because the PR body now holds the report.
 
 ## 9. CI on the same PR
 

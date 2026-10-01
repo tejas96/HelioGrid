@@ -48,4 +48,5 @@ by the density your prompt names) — never an x position — and check the safe
 `not run`; Android covers it.
 
 **The api log** — your requests carry the phone's user agent; read only those lines. Use only the
-account your prompt gives you.
+account your prompt gives you; a company you create is named as your prompt says
+(`QA <T-id> <surface>`).
