@@ -10,8 +10,9 @@
  * Per-USER, not per-tenant (`D25`), and distinct from the tenant's MARKET: a Marathi-reading user
  * in an Indian tenant still reads INR in lakh/crore grouping. Never derive one from the other.
  *
- * Adding a language is the playbook in `packages/i18n/CLAUDE.md`, and `pnpm check:languages`
- * refuses the build until the language is ready (`F3-26`, `F3-27`).
+ * Adding a language is the playbook in `packages/i18n/CLAUDE.md`, and `pnpm check:all` refuses
+ * it until the language is ready (`F3-26`, `F3-27`): the typecheck holds its registration and the
+ * invariant `language-fonts` its fonts.
  */
 export const UI_LANGUAGES = ['en', 'hi', 'mr'] as const;
 export type UiLanguage = (typeof UI_LANGUAGES)[number];

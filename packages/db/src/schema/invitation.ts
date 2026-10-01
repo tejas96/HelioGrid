@@ -6,7 +6,7 @@ import { creationKeyColumns } from './creation-key';
 import { rolePreset, userAccount } from './identity';
 import { tenant } from './tenant';
 
-/** pgEnum hand-mirrors domain's tuple (`M17` proves the pair equal). `expired` is never written. */
+/** pgEnum hand-mirrors domain's tuple (invariant `enum-parity` proves the pair equal). `expired` is never written. */
 export const invitationStatus = pgEnum('invitation_status', INVITATION_STATUSES);
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });

@@ -57,10 +57,9 @@ __pycache__/
 # never drops process scratch into the tree.
 .superpowers/
 
-# QA writes nothing to the tree (owner ruling): /verify keeps its artifacts in the
-# session scratchpad and deletes them when the run ends. The verification record lives in the
-# PR body.
-# These entries are legacy guards only — the retired /qa system wrote here, and its leftovers
+# QA writes nothing to the tree (owner ruling): /qa keeps its report in the session scratchpad,
+# and the report's final copy lives in the PR body.
+# These entries are legacy guards only — an earlier QA system wrote here, and its leftovers
 # were deleted from this machine. Nothing recreates either path; they stay
 # ignored so a stale checkout elsewhere cannot commit one or make Biome lint generated JSON.
 .qa/

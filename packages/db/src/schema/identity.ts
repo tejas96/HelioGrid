@@ -22,7 +22,7 @@ import {
 import { uuidv7 } from '../uuid';
 import { tenant, uiLanguage } from './tenant';
 
-/** pgEnums hand-mirror domain's tuples (`M17` proves each pair equal). */
+/** pgEnums hand-mirror domain's tuples (invariant `enum-parity` proves each pair equal). */
 export const measurementSystem = pgEnum('measurement_system', MEASUREMENT_SYSTEMS);
 export const rolePreset = pgEnum('role_preset', ROLE_PRESETS);
 export const membershipStatus = pgEnum('membership_status', MEMBERSHIP_STATUSES);

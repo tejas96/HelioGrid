@@ -17,9 +17,9 @@ const c = initContract();
 
 /**
  * Where an invitation stands (`M01-12`). Built from `INVITATION_STATUSES` in `@heliogrid/domain`,
- * never restated; the migration mirrors the same tuple as a pgEnum (`M17`). `expired` is a
- * reading of a pending invitation past its expiry — the server derives it, the store never
- * writes it.
+ * never restated; the migration mirrors the same tuple as a pgEnum (invariant `enum-parity`).
+ * `expired` is a reading of a pending invitation past its expiry — the server derives it, the store
+ * never writes it.
  */
 export const invitationStatusSchema = z.enum(INVITATION_STATUSES);
 export type InvitationStatus = z.infer<typeof invitationStatusSchema>;

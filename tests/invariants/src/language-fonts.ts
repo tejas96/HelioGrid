@@ -16,7 +16,7 @@ import { UI_LANGUAGES } from '@heliogrid/domain';
  *
  * It reads the BUILT i18n and theme packages — the compiled catalogs and the generated type
  * tokens — by path, since neither is a dependency of this package, so they must be built first:
- * `pnpm verify` builds before anything, and `pnpm check:all` builds through typecheck.
+ * `pnpm check:all` builds before anything.
  * `turbo test` alone builds only this package's own dependencies, which do not include them.
  */
 const BUILT = {

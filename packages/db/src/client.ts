@@ -77,7 +77,7 @@ export type TenantScopedDb = DbTransaction & { readonly [tenantScoped]: true };
 /**
  * The runtime pool as a tenant repository sees it: it carries NO query of its own. The door to a
  * tenant's rows is the transaction that pins them, and there is no second door — `this.db.select()`
- * does not compile, which is the whole point (mechanisms.md M11). Before this, a repository held
+ * does not compile, which is the whole point. Before this, a repository held
  * the entire database and was merely EXPECTED to wrap each read; a forgotten wrapper read every
  * company's rows and only review or RLS stood behind it.
  */

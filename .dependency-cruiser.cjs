@@ -287,9 +287,9 @@ module.exports = {
         'apps/web and apps/mobile reach the API through @heliogrid/data ONLY — the sole ' +
         'initClient call is packages/data/src/client/client.ts (ADR-0023). A third-party ' +
         'HTTP client bypasses the contract, so contract drift stops being a compile error ' +
-        'and becomes a runtime surprise. Complements — does NOT replace — the prose rule ' +
-        'in apps/web/CLAUDE.md: that landmine was a native fetch() via an untyped api<T>(), ' +
-        'which has no import for a bundler graph to catch. No exemptions: the four app-local ' +
+        'and becomes a runtime surprise. Complements — does NOT replace — the Biome fetch ban ' +
+        'in apps/** (noRestrictedGlobals): a native fetch() via an untyped api<T>() has no ' +
+        'import for a bundler graph to catch. No exemptions: the four app-local ' +
         'client files this rule once anchored were deleted by ADR-0023/0024 (better-auth is ' +
         'banned outright by apps-never-touch-the-wire, not exempt).',
       from: {

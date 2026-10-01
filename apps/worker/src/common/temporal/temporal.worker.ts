@@ -25,7 +25,7 @@ export class TemporalWorkerHost implements OnModuleInit, OnApplicationShutdown {
   private workers: Worker[] = [];
   private running: Promise<void>[] = [];
 
-  // Explicit token: tsx (esbuild) emits no decorator metadata (apps/worker/CLAUDE.md landmine).
+  // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md, `## Traps`).
   constructor(
     @Inject(TEMPORAL_WORKER_REGISTRATIONS)
     private readonly registrations: readonly TemporalWorkerRegistration[],

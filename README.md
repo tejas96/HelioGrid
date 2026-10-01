@@ -79,12 +79,13 @@ authoritative doc for that layer; this table is only the index.
 - **pnpm** — pinned via `packageManager: pnpm@10.34.5` in root `package.json`; `.npmrc` sets
   `manage-package-manager-versions=true` so pnpm self-installs the pinned version. You don't
   need to install a specific pnpm globally, just have any recent pnpm/Corepack available.
-- **Docker** (or a local Postgres 16) — for `DATABASE_URL`. Most gates skip loudly without it;
-  they never silently pass.
-- **Python 3** — `pnpm verify` and `pnpm check:all` run the doc gates (`pnpm check:docs`) with it.
+- **Docker** (or a local Postgres 16) — for `DATABASE_URL`. The database invariants skip loudly
+  without it; they never silently pass.
+- **Python 3** — the agent hooks in `.claude/hooks/` read their input with it and refuse to run
+  without it.
 - **openssl** — `pnpm infra:up` mints the development PKI with it.
-- **gitleaks** and the pinned **oasdiff** — installed in the cold start below; the pre-commit hook
-  and `pnpm verify` refuse to run without them.
+- **gitleaks** — installed in the cold start below; the pre-commit secret scan fails closed without
+  it. The breaking-change judge, a pinned `oasdiff`, runs only in CI.
 - **Xcode + Android Studio** — only if you're running `apps/mobile` on a simulator/emulator. iOS
   also needs Ruby 3.1 with Bundler and CocoaPods: `bundle install` in `apps/mobile`, then
   `bundle exec pod install` in `apps/mobile/ios`, with a git-ignored `apps/mobile/.bundle/config`
@@ -115,9 +116,8 @@ set -a; . ./.env.local; set +a            # db migrate and the invariants read t
 pnpm --filter @heliogrid/db migrate       # schema: 0001 is the market pack
 pnpm --filter @heliogrid/api pack:publish # seeds the India pack as revision 1
 brew install gitleaks                      # the pre-commit secret scan needs it; the hook refuses to run without it
-pnpm tools:oasdiff                        # the pinned breaking-change judge; `pnpm verify` is red without it
 # Sign in locally with any +91 number: the code is in the api log (`Message for +91…`), no SMS.
-pnpm verify                               # build · lint · boundaries · typecheck · gates · unit tests · invariants
+pnpm check:all                            # build · lint · typecheck · duplication · freshness · unit tests · invariants
 ```
 
 The header of `.env.example` carries this same order; that header is the canonical one, and this
@@ -181,11 +181,10 @@ in sync by hand when the local port changes; there's no shared source between th
 ## Environment variables
 
 **`@heliogrid/env` (`packages/env`) is the only package in this repo allowed to read a raw
-`process.env`.** This is enforced by three independent mechanisms — Biome's `noProcessEnv`
-rule, a repo-wide grep gate (`pnpm check:env` → `scripts/check-env-access.mjs`), and
-Turborepo's `boundaries` tags (the `env` tag is only importable from the `app` tag) — so you
-cannot accidentally read an env var from the wrong place; you'll get a build failure naming
-exactly where.
+`process.env`.** This is enforced by Biome's `noProcessEnv` rule, whose override in `biome.json`
+names the few allowed paths, and by Turborepo's `boundaries` tags (the `env` tag is only
+importable from the `app` tag) — both run in `pnpm lint`, so you cannot accidentally read an env
+var from the wrong place; lint fails naming exactly where.
 
 **To add or change a variable:**
 1. Edit the relevant schema in `packages/env/src/schema/` (`api.ts`, `web.ts`, `worker.ts`,
@@ -222,28 +221,25 @@ All run from the repo root unless noted. Per-package equivalents: `pnpm --filter
 | `pnpm test` | `turbo run test` — runs `tests/invariants/` against real state |
 | `pnpm test:unit` | vitest over `<package>/tests/**/*.test.ts` — the LOGIC layers only, never the frontend (owner ruling 2026-09-03) |
 | `pnpm test:coverage` | the same with a coverage report — read it to find the edge cases you missed |
-| `pnpm lint` | `scripts/lint-all.sh` — Biome (zero warnings, zero errors), dependency-cruiser, sherif, repo adherence, `.env.example` completeness, the design-system contract (`ds:contract`). Runs every gate and reports all failures, not just the first |
-| `pnpm lint:fix` | `biome check --write .` — auto-fixes what Biome can fix |
-| `pnpm boundaries` | `turbo boundaries` — enforces the package-tag dependency allowlists |
-| `pnpm check:all` | **Every gate that runs without a database, DURING the work:** `lint:fix`, then typecheck (which builds), `lint`, boundaries, dupes, openapi, catalogs, the doc gates, unit tests, and the invariants — the db-backed ones skip loudly without `DATABASE_URL` |
-| `pnpm verify` | The full local gate: `turbo build && lint && boundaries && turbo typecheck && check:dupes && check:openapi && check:catalogs && check:docs && test:unit && turbo test`. Build runs first — dependency-cruiser resolves workspace edges through `dist/`, so linting an unbuilt checkout is partially blind. This is what "green" means before you call something done |
-| `pnpm precommit` | What the git hook runs automatically: Biome (staged files only, zero warnings) + full typecheck + `check:adherence` + the secret scan (`check:secrets`, which needs gitleaks) |
-| `pnpm check:adherence` | UI/design-token/i18n adherence scan (also part of `pnpm lint`) — test files, source size, raw hex, domain purity, unwrapped copy, untranslated messages, and that every contract UI language is registered in `packages/i18n` |
-| `pnpm check:openapi` | Re-emits and diffs `packages/contracts/openapi/openapi.json` — run after any contract change |
-| `pnpm check:env` | The env-centralisation gate standalone (also part of `pnpm lint`) |
-| `pnpm ds:contract` | The design-system contract gate standalone (also part of `pnpm lint`) — prop contracts vs the design system, and web↔RN semantic drift. It REPLACED `check:ui-parity`, which was deleted with the v1 design system (docs/engineering/17 §6); the script no longer exists |
-| `pnpm check:dupes` | `jscpd` — the duplicate-code ratchet (part of `pnpm verify` and `pnpm check:all`) |
+| `pnpm lint` | Biome with its plugins (zero warnings, zero errors), dependency-cruiser, sherif and `turbo boundaries` (the package-tag dependency allowlists) |
+| `pnpm lint:fix` | `biome check --write .` — formats and auto-fixes what Biome can fix |
+| `pnpm check` | **While building**, after each change: Biome on what differs from `origin/main`, the typecheck of the changed packages, and the related unit tests. Fast, and never the proof |
+| `pnpm check:all` | **Once, when the build is done:** build → lint → typecheck → `check:dupes` → `check:openapi` → `check:catalogs` → `test:unit` → `test` (the invariants; the database ones skip loudly without `DATABASE_URL`). Build runs first — dependency-cruiser resolves workspace edges through `dist/`, so linting an unbuilt checkout is partially blind. This is what "green" means before you call something done |
+| `pnpm precommit` | What the git hook runs automatically: Biome on the staged files (zero warnings), gitleaks on the staged change (fails closed without gitleaks), and a typecheck of the packages the commit changes |
+| `pnpm check:openapi` | Re-emits `packages/contracts/openapi/openapi.json` and fails when it changed — run after any contract change, then commit the fresh spec |
+| `pnpm check:catalogs` | Re-extracts the i18n catalogs and fails when they changed — commit the fresh catalogs |
+| `pnpm check:dupes` | `jscpd` — the duplicate-code ratchet (part of `pnpm check:all`) |
 
 CI (`.github/workflows/ci.yml`) has one job that always runs, `quality`: a Gitleaks secret
-scan, the append-only migration guard, migrations applied to a real CI Postgres, then
-`pnpm verify:ci` (build first, so dependency-cruiser can resolve workspace `dist/`) with
-`oasdiff` installed so the OpenAPI breaking-change check fails closed instead of skipping.
-Three mobile lanes are switched on by path by a `changes` job: `mobile-js` (the Metro bundle,
-whenever `apps/mobile` or a package mobile bundles changes) and `android` / `ios` (native
-builds, only when native files, the mobile `package.json` or the lockfile change). Markdown
-never counts. A skipped lane reports success, so all four are safe to require on `main`. If
-`quality` is not green, `pnpm verify` locally should already have told you (except the
-DB-dependent and i18n-extraction steps, which need real Postgres to run).
+scan, the append-only migration guard, the cluster roles and migrations applied to a real CI
+Postgres, then `pnpm check:all`, and on a pull request the OpenAPI breaking-change judge
+(`oasdiff`, pinned by version and sha256). A `changes` job switches the other lanes on by path:
+`e2e-web` (the web flows and component tests, whenever the web, the api, a package or the suite
+changes), `mobile-js` (the Metro bundle, whenever `apps/mobile` or a package mobile bundles
+changes) and `android` / `ios` (native builds on pull requests, only when native files, the mobile
+`package.json` or the lockfile change). Markdown never counts. A skipped lane reports success, so
+every lane is safe to require on `main`. If `quality` is not green, `pnpm check:all` locally should
+already have told you.
 
 ## Working with packages (add / update / remove)
 
@@ -274,7 +270,8 @@ change showing up" confusion. Read it once.
    If it's a genuinely new tag (not reusing `domain`/`db`/`ui`/`contracts`/`env`/`i18n`/
    `tokens`/`app`), also add that tag's allowed-dependencies block to root `turbo.json`'s
    `boundaries.tags`, and add it to any other tag's `allow` array that should be permitted to
-   depend on it. `pnpm boundaries` enforces this — it will tell you exactly what's missing.
+   depend on it. `pnpm lint` enforces this through `turbo boundaries` — it will tell you exactly
+   what's missing.
 4. Run `pnpm install` (links the new package into `node_modules`), then `pnpm turbo build`.
 5. If the new package should be off-limits to `packages/domain` (pure, no workspace imports)
    or restricted to exports-only access from outside, check `.dependency-cruiser.cjs` — most
@@ -333,14 +330,15 @@ committing:
 - Installed via `simple-git-hooks` (a root devDependency), wired up by the root `prepare`
   script — so it's installed automatically the moment you run `pnpm install`, no manual step.
 - Runs `pnpm precommit` → `biome check --error-on-warnings --no-errors-on-unmatched --staged .`
-  (only the files you staged) + `pnpm turbo typecheck` (the full project — always fast, always
-  cached when nothing relevant changed).
+  (only the files you staged) + `gitleaks` on the staged change + `turbo typecheck` of the
+  packages the commit changes (cached when nothing relevant changed).
 - **Don't work around it** — not by narrowing what you stage, not by dropping
-  `--error-on-warnings`, not by `git commit --no-verify`. Fix the diagnostic. If a gate is
+  `--error-on-warnings`, not by `git commit --no-verify`. Fix the diagnostic. If a check is
   wrong, that's a conversation to have explicitly, not a flag to quietly drop.
 
-`pnpm verify` is the full local gate (lint + boundaries + typecheck + test + build) — run it
-before considering any non-trivial change done. See [Commands reference](#commands-reference).
+`pnpm check:all` is the full local check (build + lint + typecheck + duplication + freshness +
+every test) — run it once before considering any non-trivial change done. See
+[Commands reference](#commands-reference).
 
 ## Schema, contract & cross-cutting changes
 
@@ -352,15 +350,15 @@ it is how drift enters the repo silently:
 | `packages/contracts` (any endpoint, schema, or type) | `/contract-change` | Re-emits `packages/contracts/openapi/openapi.json`, sweeps every typed client (`apps/web`, `apps/mobile`) for breakage via typecheck, and judges whether the change is breaking |
 | `packages/db` (new table, new/changed column, pgEnum) | `/migration` | Authors a new append-only SQL file (never edit an applied one), wires tenancy/RLS/grants, applies it twice to prove idempotency, and runs the invariants against a real database |
 | A `z.enum` that's also a Postgres `pgEnum` | Both of the above, same slice | `packages/db` hand-mirrors contract enums (dependency-cruiser forbids `db` importing `contracts`) — `tests/invariants/src/enum-parity.ts` catches drift, but only if you run it |
-| Any feature/bugfix slice, before calling it done | `/verify` | Green gates (`pnpm verify`) prove code correctness, never UI or cross-surface behavior. `/verify` drives the real app — browser for web, simulator for iOS, adb for Android, curl for the API — across only the surfaces the change reaches, and loops until clean |
-| Any task or bug, before a line is written | `/start` | Reads only the task's own section, states the three things (CLAUDE.md §3), names the files it will reach and splits a task that is really two, creates the branch, and stops for the go |
-| A completed task, before review | `/ship` | Gates once, a review sized to the diff, the size and done-when checks, then a commit on a yes and the push and PR without one. Merge is the owner's |
+| Any feature/bugfix slice, after `pnpm check:all` passes | `/qa` | A green `pnpm check:all` proves code correctness, never UI or cross-surface behavior. `/qa` runs the task's QA plan: the regression suites first, then one QA agent per surface the change reaches — browser for web, simulator for iOS, emulator for Android, curl for the API — and re-checks only what failed |
+| Any task or bug, before a line is written | `/start` | Picks the next step in the build order (or takes the task you name), creates the branch, reads the task, its brief, its design and the code it touches, writes the plan, the acceptance criteria and the QA plan into the task, and stops for the go |
+| A completed task, after `/qa` | `/ship` | Catches up with main, runs `pnpm check:all` once, has `code-reviewer` review the diff, runs the red proofs it names, then commits on a yes, pushes and raises the PR. Merge is the owner's |
 
 ## Git workflow
 
 Work starts with `/start` on a branch off `main` and ends with `/ship`, which commits on a yes,
-pushes, and prints the PR body; the owner raises the PR and merges. `main` is PR-only. A PR is one
-complete task, never half of one. Full detail: [`CLAUDE.md`](CLAUDE.md) §4, §8.
+pushes and raises the PR; the owner merges. `main` is PR-only. A PR is one complete task, never
+half of one. Full detail: [`CLAUDE.md`](CLAUDE.md) §3, §4.
 
 ## Where to find things
 
@@ -370,7 +368,7 @@ complete task, never half of one. Full detail: [`CLAUDE.md`](CLAUDE.md) §4, §8
 | [`.claude/rules/`](.claude/rules/) | Path-scoped rules that load automatically for the paths they name |
 | [`docs/start-here.md`](docs/start-here.md) | **Designing a screen** — the one file a design session starts from |
 | [`docs/prd/01-product-overview.md`](docs/prd/01-product-overview.md) | Product vision, V1 scope, non-goals — and the **glossary** (EPC, tenant, market pack, tranche, provenance tier) |
-| [`docs/prd/registers/screens.md`](docs/prd/registers/screens.md) | **The screen register** — 150 screens, 99 locked to V1, and which are designed |
+| [`docs/prd/registers/screens.md`](docs/prd/registers/screens.md) | **The screen register** — 150 screens and the 99 locked to V1; a screen is drawn when its task's `DESIGN:` line holds a link |
 | [`docs/build-order.md`](docs/build-order.md) | Build order across modules |
 | [`docs/engineering/architecture.md`](docs/engineering/architecture.md) | **The spine** — package registry, dependency direction, platform rules (RN/Next.js), and where new code goes |
 | `docs/engineering/02-system-architecture.md` | How the system runs — request path, tenancy, background work, storage, studio data flow |
@@ -382,17 +380,18 @@ complete task, never half of one. Full detail: [`CLAUDE.md`](CLAUDE.md) §4, §8
 | `docs/engineering/forward-compat.md` | What each module's first migration must satisfy so later modules aren't blocked |
 | `docs/engineering/adr/` | Why each architecture choice was made — reference only |
 | [`docs/README.md`](docs/README.md) | **The docs map** — every file under `docs/`, and whether it is pinned or live |
-| `.claude/skills/` | `/start`, `/verify`, `/ship`, `/contract-change`, `/migration` — see [above](#schema-contract--cross-cutting-changes) |
-| `.claude/agents/` | QA executors (web · mobile · api · parity) and the architecture reviewer — Sonnet 5, medium effort, a turn cap each |
-| [`.claude/landmines.md`](.claude/landmines.md) | **Troubleshooting** — the live traps, one line each, every one with its fix |
+| `.claude/skills/` | `/start`, `/qa`, `/ship`, `/contract-change`, `/migration` — see [above](#schema-contract--cross-cutting-changes) |
+| `.claude/agents/` | The QA agents (`qa-api` · `qa-web` · `qa-mobile`) and the three reviewers (`plan-reviewer` · `design-reviewer` · `code-reviewer`) — none can edit a file, and each has a turn cap |
+| [`.claude/protections.md`](.claude/protections.md) | Which tool, rule, test, hook, CI step or reviewer holds each protection |
+| each package's `CLAUDE.md` → `## Traps` | **Troubleshooting** — the live traps where they bite, each with its fix |
 | `packages/contracts/openapi/openapi.json` | The API surface as OpenAPI 3.0.2 — emitted from the contract and gate-checked; no Swagger UI is served |
 | `HelioGrid-UX/` | The pixel-perfect design exports every screen task is measured against — git-ignored; each machine exports its own from the design system (`docs/tasks/README.md`) |
 
 ## Per-package gotchas index
 
 The single most load-bearing thing to know per package before you touch it. Each package's own
-`CLAUDE.md` has the full list under "Landmines" — this is only the one most likely to bite a
-newcomer immediately.
+`CLAUDE.md` has the full list under `## Traps`, where it has any — this is only the one most
+likely to bite a newcomer immediately.
 
 | Package | Watch out for |
 |---|---|

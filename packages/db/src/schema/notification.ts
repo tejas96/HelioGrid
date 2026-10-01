@@ -15,13 +15,13 @@ import { userAccount } from './identity';
 import { subjectKind } from './subject';
 import { tenant, uiLanguage } from './tenant';
 
-/** pgEnum hand-mirrors domain's tuple (`M17` proves the pair equal). */
+/** pgEnum hand-mirrors domain's tuple (invariant `enum-parity` proves the pair equal). */
 export const notificationType = pgEnum('notification_type', NOTIFICATION_TYPES);
 
-/** The five groups a person mutes push for (`F6-15`), mirrored the same way (`M17`). */
+/** The five groups a person mutes push for (`F6-15`), mirrored the same way (invariant `enum-parity`). */
 export const notificationTypeGroup = pgEnum('notification_type_group', NOTIFICATION_TYPE_GROUPS);
 
-/** What a handset runs, so the transport can shape its payload (`M17`). */
+/** What a handset runs, so the transport can shape its payload (invariant `enum-parity`). */
 export const pushPlatform = pgEnum('push_platform', PUSH_PLATFORMS);
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
@@ -98,8 +98,8 @@ export const notification = pgTable(
  *
  * Tenant-scoped, all four always. `user_ref` keys `user_account` and the pair with this row's
  * own `tenant_id` IS the membership, bound exactly as `notification.recipient_user_ref` is.
- * The unique key leads with `tenant_id` (`M12`), so the same person in two companies keeps two
- * sets of preferences, which is what a per-tenant setting means.
+ * The unique key leads with `tenant_id` (invariant `table-tenancy-scan`), so the same person in two
+ * companies keeps two sets of preferences, which is what a per-tenant setting means.
  *
  * The rule that some groups may not be muted is POLICY and lives in `packages/domain`; this
  * table stores what was written, and the read applies the rule again (`F6-15`).

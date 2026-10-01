@@ -7,7 +7,7 @@ import { marketCode } from './code';
 
 /**
  * The stored forms a pack key is built from, each re-minted through its OWNER's constructor, so
- * the parser never writes `as <Brand>` (`M60`). A constructor that refuses a value reports through
+ * the parser never writes `as <Brand>`. A constructor that refuses a value reports through
  * zod with its own words, so a failure reads exactly as the owner would have thrown it.
  */
 export function minted<In, Out>(

@@ -2,7 +2,7 @@
  * WCAG 2.x contrast (`F7-11`, `N4`): relative luminance, the ratio between two colours, and the
  * two floors the product holds — words, and marks that carry meaning. Every measurement in the
  * product goes through here; `packages/theme` carries the same formula for its own build because
- * it imports nothing in the workspace (`M1`), so a change here is a change there.
+ * it imports nothing in the workspace, so a change here is a change there.
  */
 import { hexToRgb, type Rgb } from './hex-colour';
 

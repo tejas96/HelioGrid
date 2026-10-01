@@ -89,7 +89,8 @@ gets written), and
 Temporal workflow messages (`workflows/`, published as the `./workflows` subpath — a
 process-to-process contract that must never reach the OpenAPI artifact or a frontend
 bundle). Emits the committed
-openapi/openapi.json, gated by scripts/check-openapi-breaking.mjs. Also owns the HelioGrid
+openapi/openapi.json, kept fresh by `pnpm check:openapi` and judged for breaking changes by oasdiff
+in CI. Also owns the HelioGrid
 SESSION PROJECTION (session.ts — actor, membership with its held roles and authorization
 version, expiry) so replacing the identity provider changes no guard, repository, screen or
 contract. Allowed deps: domain (LIVE since 2026-08-25 — rolePresetSchema is
@@ -114,7 +115,8 @@ constant two screens read; a flow state machine; a permission rule. Never: fetch
 rendering; a session, a tenant or a request (the API resolves those and passes roles IN).
 TWO entry points: `.` for everyone, and `./server` (`src/server.ts`) for `apps/api` and `apps/worker`
 alone — the functions that compute a money figure (`F4-04`), and a business-identifier formatter
-when one is written. No package a device bundles imports `./server` (`M148`).
+when one is written. No package a device bundles imports `./server` (dependency-cruiser
+`devices-never-compute-money`).
 Extension point: one folder per module slice (authz/, auth/, branding/, tenancy/, calling/, catalog/, certification/, commerce/, format/, market/, messaging/, money/, pricing/, projects/, rails/, shell/, subsidy/, tax/ today); each
 module appends its own capability rows when its slice begins.
 
@@ -189,7 +191,7 @@ status-never-by-colour-alone) and `components/<Name>/` where `<Name>.types.ts` i
 prop contract, `<Name>.tsx` is web and `<Name>.native.tsx` is RN. Allowed deps: contracts,
 domain, theme, config. Platform scope: BOTH. Belongs: a new shared visual component — one
 folder, three files, one change (Law 7). Never: screens/routes; data access; navigation;
-raw colour (adherence gate). Extension point: a folder under `src/components/`.
+raw colour (Biome plugins `raw-colour`, `raw-colour-css`). Extension point: a folder under `src/components/`.
 
 Replaces the v1 split of `packages/ui` (web) + `apps/mobile/src/ui` (RN) +
 a separate types package. That arrangement stated one prop list
@@ -292,7 +294,7 @@ the built api and web), `components/<Name>.spec.tsx` (Playwright component tests
 `packages/ui` web halves, mounted with the app's stylesheets) and `mobile/<screen>.yaml` (Maestro, on
 the simulator and the emulator). Allowed deps: contracts, domain, i18n, theme, ui, config — the words a
 spec expects come from `i18n` and the colours from `theme`, never typed. Platform scope: a Node runner
-and the devices. Belongs: one flow per web route and per phone screen (`M152`). Never: a unit test, a
+and the devices. Belongs: one flow per web route and per phone screen (invariant `e2e-flow-per-screen`). Never: a unit test, a
 mock of anything this repo owns, a server or a device started by a spec itself outside the runner's
 own `webServer`. Extension point: a spec or a flow per new route or screen, named for it.
 
@@ -314,7 +316,7 @@ per-glob coverage threshold in `vitest.config.mts`, landing with the slice it co
   component folder (docs/engineering/17 §2). Interactive RN primitives (Text, Pressable, TextInput…)
   are lint-banned in screens; layout primitives (View, ScrollView) allowed.
 - No web-only dependencies, no DOM APIs. No expo, no EAS, no AsyncStorage (owner rulings;
-  see apps/mobile/CLAUDE.md landmines for the dated reasons).
+  apps/mobile/CLAUDE.md states them).
 - Platform APIs (camera, storage, notifications, keychain) stay isolated in dedicated
   modules under apps/mobile/src/ (today: auth/ — push/ was deleted 2026-08-25 and returns
   with the notifications slice; adapter packages land with their modules).
@@ -380,14 +382,17 @@ Walk top-down; first match wins. `/start` §3 records the answer per new file.
    tree, composing the layers above. Screens hold rendering, not policy.
 10. Is it environment/config? → a schema in packages/env + .env.example. A raw process.env
     read anywhere else needs an entry in biome.json's `noProcessEnv` override (§2 env).
-11. Is it the agent's own instruction or a gate — a skill, an agent, a hook, a rule, a gate
-    script, a CI lane? → `.claude/<skills|agents|hooks|rules>/`, `scripts/`, `.github/workflows/`.
-    Closed sets; a new script is admitted only by the ruling `mechanisms.md`'s order demands.
+11. Is it the agent's own instruction or a check — a skill, an agent, a hook, a rule, a lint
+    plugin, an invariant, a CI lane? → `.claude/<skills|agents|hooks|rules>/`,
+    `packages/config/biome/`, `tests/invariants/`, `.github/workflows/`. Closed sets, and a new
+    holder gets its row in `.claude/protections.md`. There is no `scripts/`: a new script or
+    command waits for the owner's yes (CLAUDE.md §1).
 12. None of the above fits → STOP. Name the mismatch to the owner before creating a new
     package or directory (CLAUDE.md §4 stop-and-ask).
 
 **Branding a shared fact** (CLAUDE.md §8). The symbol stays unexported, so the owner's constructor
-is the only door in, and `as <Brand>` outside the owner is the cast `M60` looks for:
+is the only door in, and `as <Brand>` outside the owner is the cast the Biome plugins
+`brand-cast-domain` and `brand-cast-db` refuse:
 
 ```ts
 declare const MONEY: unique symbol;                    // not exported

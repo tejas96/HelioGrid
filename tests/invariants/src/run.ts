@@ -24,7 +24,7 @@ import { runVocabularyCopies } from './vocabulary-copies';
  * Locked invariant runner. Sets: tenancy (live), table scoping (live), enum parity (live),
  * schema parity (live), tenant-pin (live, and static over its call sites), tenant-id-on-the-wire
  * (static), format rendering (static, F3-19…F3-24), matrix-mirrors-f2 (static, F2-25),
- * brand-registry (static, M125), template-keys-mirror-f6 (static, F6-26), and the static repo
+ * brand-registry (static), template-keys-mirror-f6 (static, F6-26), and the static repo
  * checks: vocabulary-copies, dockerfile-unprivileged, light-only-platform-files,
  * banned-word-other-files, env-example-complete, language-fonts, e2e-flow-per-screen,
  * design-system-props, biome-plugin-scopes.

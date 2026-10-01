@@ -1,33 +1,46 @@
-## What and why
+## What
 
-<!-- One paragraph and the impact — who gains what. The task id is in the title. Explicit non-goals
-     here — not a file list. -->
+<!-- The task id and name, then one short paragraph in simple words: who gains what. Explicit
+     non-goals here — not a file list. -->
 
-## Design
+## Plan
 
-<!-- The Risk tier and why. The three things as decided (CLAUDE.md §3): the package per new file ·
-     the new facts and where each TYPE lives · what proves it — and the Placement table, each new fact
-     beside the one package that owns it. Any owner ruling applied, stated as the rule it became —
-     never by the open-question id it was answered under, which the tree no longer carries. -->
+<!-- From the task's `#### Plan`: Where (packages) · How it works (the flow line) · Example. Any
+     owner ruling applied, stated as the rule it became. -->
 
-## Done-when
+## Acceptance criteria → proof
 
-| line | proof | where |
+| line | ✓ | proof |
 |---|---|---|
 
-<!-- Every case and done-when line of the task. A line with no proof is not done, and this PR is
-     not open. -->
+<!-- Every acceptance line of the task, each with its test by file and name or its QA check id. A
+     line with no proof is not done, and this PR is not open. -->
 
-## Verification
+## QA report
 
-<!-- HIGH: the `## Verification` section /verify produced, verbatim — the depth, per-surface verdicts
-     with observed values, parity comparisons, and what was NOT run. LOW: `Risk: LOW — no /verify`
-     and the gates that ran. Specifics, not adjectives. -->
+<!-- The full report /qa produced: per-surface results with observed values, and what was NOT run
+     and why. Specifics, not adjectives. -->
 
-## Review and risks
+## Review
 
-<!-- break-it-reviewer's findings (the PR review before push) and their fate · the mistakes made in
-     this work, as their kind, even when none · every `none` claim · for a change that moves
-     instructions, each one KEPT / MERGED / DROPPED with where it now lives · the cost line: agents,
-     minutes, fix rounds, the stage that found each bug. What is deliberately not handled yet —
-     omitting it is how reviewers get surprised. -->
+| finding | fix |
+|---|---|
+
+<!-- code-reviewer's findings (the review before push) and what was done about each. -->
+
+## Red proofs
+
+| rule | break | red line |
+|---|---|---|
+
+<!-- Each money, tenancy or permission rule the reviewer named: the break applied and the test's
+     FAIL line. -->
+
+## Mistakes found
+
+<!-- One line per mistake found in this work — by the author, the review, QA or a check — named by
+     its kind, with where it is now prevented. Say "none" when there were none. -->
+
+## Deferred
+
+<!-- The docs/tasks/deferred.md rows this task added, and what is deliberately not handled yet. -->

@@ -2,7 +2,7 @@
  * A time of day on a 24-hour clock, as minutes past midnight — `09:00` is `540`. A market's
  * statutory calling window and its scheduled-send hour are policy numbers (`F1-36`, `F1-62`),
  * so `clockTime()` and, for a stored row, `clockTimeOfMinutes()` are the only doors in, and a
- * consuming gate can neither compose one nor guess one (`M60`).
+ * consuming gate can neither compose one nor guess one.
  *
  * Minutes rather than `"HH:MM"` because every rule that reads one COMPARES it: a floor against
  * a tenant's narrowing, a send slot against a window's close. `packages/ui`'s `TimeField` keeps

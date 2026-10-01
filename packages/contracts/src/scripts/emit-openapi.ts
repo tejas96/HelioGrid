@@ -34,7 +34,7 @@ const doc = generateOpenApi(apiContract, {
 /*
  * The too-old refusal is answered outside every route, so no router declares it — written onto
  * every operation HERE, so a breaking edit to the body every shipped phone reads is one oasdiff
- * judges (`M26`) rather than one no gate can see.
+ * judges in CI rather than one no check can see.
  */
 const CLIENT_UPGRADE_REQUIRED_SCHEMA = 'ClientUpgradeRequired';
 const withComponents = doc as typeof doc & { components?: { schemas?: Record<string, object> } };

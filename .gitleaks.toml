@@ -1,7 +1,7 @@
 # gitleaks — the default rule set, plus the one shape this repo knows is not a secret.
 # CI runs it on every commit (ci.yml "Secret scan"); the pre-commit hook runs it on the staged
-# change (scripts/check-secrets.sh), so a false positive is answered HERE, once, never by a
-# rename or a skip.
+# change (`pnpm precommit` in package.json), so a false positive is answered HERE, once, never by
+# a rename or a skip.
 
 title = "HelioGrid"
 

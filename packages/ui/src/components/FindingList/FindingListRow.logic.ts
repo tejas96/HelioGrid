@@ -2,7 +2,7 @@ import type { FindingStatus } from './FindingList.types';
 
 /**
  * The status marks, as geometry rather than markup: the web half draws each `d` with `<path>`
- * and the native half with `react-native-svg`'s `<Path>`, so ONE drawing serves both (`M118`).
+ * and the native half with `react-native-svg`'s `<Path>`, so ONE drawing serves both.
  * A copy in each half is how a corrected outline lands on one platform only.
  *
  * The strings are SVG path data on a 24x24 grid, not identifiers: `M x y` moves the pen,

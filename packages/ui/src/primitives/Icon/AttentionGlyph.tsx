@@ -1,6 +1,9 @@
 import type { AttentionGlyphProps } from './AttentionGlyph.types';
 
-/** The attention mark — an upright stroke over a dot. Drawn here because `M118` keeps glyphs in this package. */
+/**
+ * The attention mark — an upright stroke over a dot. Drawn here because every glyph is drawn in
+ * this package, never taken from an icon package.
+ */
 export function AttentionGlyph(props: AttentionGlyphProps) {
   return (
     <svg

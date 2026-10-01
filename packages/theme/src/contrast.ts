@@ -7,7 +7,7 @@
  * colour cannot silently drop a pair under its floor.
  *
  * The maths below is `packages/domain`'s `branding/contrast.ts`, written out a second time
- * because this package depends on nothing in the workspace (`M1`) — it is generated from the
+ * because this package depends on nothing in the workspace — it is generated from the
  * live design system and its build must run before any package is built. The two are one
  * formula: a change to WCAG's constants is a change to both files.
  *

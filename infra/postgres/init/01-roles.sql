@@ -34,7 +34,7 @@ DO $$ BEGIN
   END IF;
 END $$;
 
--- /verify's qa-api read path. Membership in app_user is the trap: every tenant table is RLS
+-- The qa-api agent's read path at /qa. Membership in app_user is the trap: every tenant table is RLS
 -- ENABLED and FORCEd with policies written for app_user, so a read-only role with no applicable
 -- policy reads ZERO ROWS FROM EVERY TENANT TABLE — and an agent reports those empty results as
 -- observed values. That is a confident green proving nothing.

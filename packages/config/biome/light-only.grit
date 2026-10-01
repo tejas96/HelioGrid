@@ -1,7 +1,7 @@
 // v1 is light-only (scripts): no prefers-color-scheme, no useColorScheme / Appearance / colorScheme,
 // no `color-scheme:` set to dark or normal, and no Tailwind `dark:` in a class string. Comments are
 // never read. The native and web light-only settings (Info.plist, styles.xml, globals.css :root,
-// the colors.css alias chain) are checked by scripts/check-adherence.sh.
+// the colors.css alias chain) are held by the invariant light-only-platform-files.
 // Each regex sits behind `includes` checks that are cheaper and never narrower.
 or {
   or {
