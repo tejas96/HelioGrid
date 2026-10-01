@@ -28,6 +28,7 @@
 @import "./components/AllocationMeter/AllocationMeter.css";
 @import "./components/AppRail/AppRail.css";
 @import "./components/AppShell/AppShell.css";
+@import "./components/AppShell/ShellGlyph.css";
 @import "./components/AudioPlayer/AudioPlayer.css";
 @import "./components/AudioPlayer/AudioTransport.css";
 @import "./components/Avatar/Avatar.css";

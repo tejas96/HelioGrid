@@ -26,6 +26,15 @@ export { explainerPagerWords } from './copy/explainer';
 export { freshnessLabel } from './copy/freshness';
 export { homeTitle } from './copy/homes';
 export { standingLabel, tierLabel } from './copy/provenance';
+export {
+  destinationLabel,
+  presetLine,
+  presetName,
+  SHELL,
+  switchMarkWords,
+  verbLabel,
+  verbMarkWords,
+} from './copy/shell';
 export type { SignInCopyKey } from './copy/sign-in';
 export { SIGN_IN } from './copy/sign-in';
 export type { SignInFacts, SignInLabels, SignInWords } from './copy/sign-in-frames';

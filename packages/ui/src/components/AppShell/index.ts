@@ -4,3 +4,4 @@ export * from './AppShell.types';
 export { CountBadge } from './CountBadge';
 export { MobileTopBar } from './MobileTopBar';
 export { ShellAction } from './ShellAction';
+export { ShellGlyph } from './ShellGlyph';

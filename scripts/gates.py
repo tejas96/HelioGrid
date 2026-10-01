@@ -44,9 +44,10 @@ SCREEN_ID_RE = re.compile(r"\bSCR-([A-Z0-9]+)-(\d{2})\b")
 # screen that is gone or has its flow, so the list empties as flows land; ADDING a screen here is a
 # harness change, which review holds (M152).
 PHONE_SCREENS_HELD = {
-    # Reached only by pressing Create company, and that press inside a Maestro flow never reaches the
-    # api on iOS, while the same tap on a still screen does — qa-mobile drives it (T-FPLAT-079, R9).
-    "home": "qa-mobile",
+    # The shell. Reached only by a member with a company: no flow yet signs a seeded member in, and
+    # the sign-up flow's Create company press never reaches the api on iOS inside Maestro, while the
+    # same tap on a still screen does — qa-mobile drives it (T-FPLAT-079, R9; T-SHELL-001).
+    "shell": "qa-mobile",
 }
 
 results = []

@@ -64,6 +64,68 @@
   right: 0;
 }
 
+/* ── PillNav — the phone shell's footer (F7-22) ───────────────────────────────────────────
+   A float: separated by its shadow, never a line (F7-15). The screen places it over the insets. */
+
+.hg-pill-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: var(--hg-pill-height);
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--e4);
+}
+
+.hg-pill-nav-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  box-sizing: border-box;
+  min-width: var(--hg-pill-slot-width);
+  height: var(--hg-pill-slot-height);
+  padding: 0;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.hg-pill-nav-item[data-in-view="true"] {
+  padding: 0 var(--sp-4);
+  background: var(--action-primary);
+  color: var(--text-inverse);
+}
+
+.hg-pill-nav-item:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-pill-nav-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.hg-pill-nav-badge {
+  position: absolute;
+  top: -6px;
+  right: -14px;
+}
+
+.hg-pill-nav-label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-button);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tr-button);
+  white-space: nowrap;
+}
+
 /* ── BottomNav ─────────────────────────────────────────────────────────────────────────── */
 
 .hg-bottom-nav {

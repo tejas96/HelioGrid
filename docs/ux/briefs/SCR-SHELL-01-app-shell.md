@@ -1,12 +1,12 @@
 # SCR-SHELL-01 · App Shell & Navigation
 
-The permanent frame of the product: mobile arc bar with a raised centre action in the near-black primary-action role (not a brand colour), carrying a role-adaptive verb; desktop sidebar-and-header shell.
+The permanent frame of the product: mobile floating pill footer — the destination in view a near-black pill with its name (the primary-action role, not a brand colour), the add action in its middle carrying a role-adaptive verb; desktop sidebar-and-header shell.
 
 **Module:** SHELL · **Personas:** All tenant users — every operator, sales, studio, field and employee persona (Sales Executive, Sales Manager, EPC Owner, Survey Engineer, Field Technician, Installation Team Member, and all others) · **Context of use:** the shell is present on every screen on both platforms. Field personas use it on a phone held in one hand outdoors; sales personas arrive "phone, almost always" — in a customer's living room, in a car, on a call, rarely at a desk; owner, manager and studio personas also work the desktop sidebar-and-header shell at a desk.
 
 ## Entry & exit
 
-Reached from: first-run onboarding ends **on** the role-decided home inside this shell, never on a generic dashboard (M01-17); thereafter the shell is the permanent chrome around every screen. Leads to: the role home chosen by the preset-precedence ladder, with a switcher listing the home of every held preset (M13-10); one-tap quick add from the elevated centre action (M02-06 → SCR-M02-01); the shell also hosts the global search box (SCR-SHELL-02) and the notification bell (SCR-SHELL-03). Placement of the availability toggle (M07-46), the grievance contact (F1-59) and the sign-out control (MS12-19) within the shell: not pinned by PRD — designer decides, note the decision.
+Reached from: first-run onboarding ends **on** the role-decided home inside this shell, never on a generic dashboard (M01-17); thereafter the shell is the permanent chrome around every screen. Leads to: the role home chosen by the preset-precedence ladder, with a switcher listing the home of every held preset (M13-10); one-tap quick add from the pill's add action (M02-06 → SCR-M02-01); the shell also hosts the global search box (SCR-SHELL-02) and the notification bell (SCR-SHELL-03). Placement of the availability toggle (M07-46), the grievance contact (F1-59) and the sign-out control (MS12-19) within the shell: not pinned by PRD — designer decides, note the decision.
 
 **Decisions made in design (2026-08-19) — the brief left these open; the next screen inherits them.**
 
@@ -32,7 +32,7 @@ Reached from: first-run onboarding ends **on** the role-decided home inside this
 
 ### docs/prd/foundations/F7-design-language.md
 
-- **F7-22** (P0) — **The mobile shell is an arc bar with an elevated centre action; the desktop shell is a sidebar.** Mobile navigation is not a flat tab rectangle: it is an arc with a raised centre action that is **near-black — the primary-action colour, not a brand colour** — carrying an ink glyph that never changes per screen, while the **verb it performs adapts to the person's role** (a sales persona adds a lead; a surveyor starts a survey). The surrounding slots are the persona's few standing destinations. Desktop uses the sidebar-and-header shell. Both shells are part of the design system rather than per-module inventions. _(non-UI half, build-side: centre-verb resolution reads role presets (F2-01); composition rule for multi-preset users deferred to M13 — for awareness, not for drawing)_
+- **F7-22** (P0) — **The mobile shell is a floating pill footer; the desktop shell is a sidebar.** Mobile navigation is not a flat tab rectangle: it is one white pill floating over the page, above the home-indicator band (`F7-50`), holding the persona's few standing destinations and the primary add action. The destination in view is a **near-black pill — the primary-action colour, not a brand colour —** carrying its filled icon and its name; every other slot is an outlined icon whose name is its accessible label (`F7-26`). The add action sits in the pill's middle as a glyph that never changes per screen, while the **verb it performs adapts to the person's role** (a sales persona adds a lead; a surveyor starts a survey). Desktop uses the sidebar-and-header shell. Both shells are part of the design system rather than per-module inventions. **The pill replaces the arc bar and its raised centre** (owner ruling 2026-09-29, mockup "A · Open page"). _(non-UI half, build-side: centre-verb resolution reads role presets (F2-01); composition rule for multi-preset users deferred to M13 — for awareness, not for drawing)_
 
 ### docs/prd/modules/M01-onboarding-and-tenant-config.md
 
@@ -41,7 +41,7 @@ Reached from: first-run onboarding ends **on** the role-decided home inside this
 
 ### docs/prd/modules/M02-crm-and-leads.md
 
-- **M02-06** (P0) — **Quick add is one tap from the primary add action on every surface.** On mobile it is the shell's elevated centre action; on web it is the primary action on the leads surface. The capture screen itself is a single screen with the duplicate check running live on the phone field as it is typed (M02-07).
+- **M02-06** (P0) — **Quick add is one tap from the primary add action on every surface.** On mobile it is the add action in the middle of the shell's pill footer; on web it is the primary action on the leads surface. The capture screen itself is a single screen with the duplicate check running live on the phone field as it is typed (M02-07).
 
 ### docs/prd/modules/M07-sales-execution.md
 
@@ -72,7 +72,7 @@ never quite worked.)*
 - **empty** — teaching empty: a role home with nothing assigned yet says what will appear here and who to ask, never a blank screen (M01 edge `S1.wrong.3` via M01-17's handoff). *(Absorbs the former `teaching-empty` bullet, which restated this one.)*
 - **error**
 - **normal** — signed-in shell with real work present, which is also the first-run landing showing the work already assigned (M01-17). *(Absorbs the former `real-work-present` bullet — same frame, first-run reading.)*
-- **role-adaptive-centre-action** — the elevated centre action: its verb changes per the signed-in person's role (F7-22) and it is the one-tap quick-add entry (M02-06). *(Merges the former `role-adaptive-verb-per-persona` and `centre-add-action` bullets — one button, two requirements on it. Show the verb at more than one role so the adaptivity is visible.)*
+- **role-adaptive-centre-action** — the add action in the pill's middle: its verb changes per the signed-in person's role (F7-22) and it is the one-tap quick-add entry (M02-06). *(Merges the former `role-adaptive-verb-per-persona` and `centre-add-action` bullets — one button, two requirements on it. Show the verb at more than one role so the adaptivity is visible.)*
 - **single-preset-trivial** — one held preset: the ladder is trivial, home is that preset's, switcher lists one (M13-10)
 - **coach-marks-max-3-dismissible** — at most three coach marks, on the screen actually landed on, each dismissible, never a carousel (M01-16). The design system ships `CoachMark` / `CoachMarkSequence` for this — do not invent one.
 - **access-removed-graceful** — "your access was removed" shown gracefully, no crash, no data loss on device (M01 edge `S1.wrong.4`)
@@ -84,7 +84,7 @@ The shell looks the same for every tenant: the operator application is never res
 
 ## Data volume
 
-Design the switcher at multiple held presets — the PRD's own worked examples are a rep + surveyor, and a Field Technician + Survey Engineer + Installation Team Member holding three homes (M13-10); arc-bar slots hold only "the persona's few standing destinations" (F7-22); coach marks cap at three (M01-16).
+Design the switcher at multiple held presets — the PRD's own worked examples are a rep + surveyor, and a Field Technician + Survey Engineer + Installation Team Member holding three homes (M13-10); the pill's slots hold only "the persona's few standing destinations" (F7-22); coach marks cap at three (M01-16).
 
 ## Numbers carrying provenance
 

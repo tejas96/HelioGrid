@@ -27,6 +27,7 @@ packages/ui/src/primitives/Surface/Surface.native.tsx	ground
 # page-ground
 apps/mobile/src/screens/shared/door-styles.ts	page-ground
 apps/mobile/src/screens/shared/styles.ts	page-ground
+apps/mobile/src/screens/shell/styles.ts	page-ground
 apps/web/app/globals.css	page-ground
 apps/web/features/home/HomeScreen.css	page-ground
 
@@ -53,6 +54,7 @@ packages/ui/src/components/Explainer/ExplainerBubble.native.tsx	float
 packages/ui/src/components/Explainer/ExplainerParts.native.tsx	float
 packages/ui/src/components/JobTray/JobTray.css	float
 packages/ui/src/components/JobTray/JobTray.native.tsx	float
+packages/ui/src/components/AppRail/PillNav.native.tsx	float
 packages/ui/src/components/Menu/Menu.css	float
 packages/ui/src/components/Menu/Menu.native.tsx	float
 packages/ui/src/components/Select/Select.css	float
@@ -137,6 +139,4 @@ packages/ui/src/components/AppRail/BottomNav.native.tsx	owed-T-SHELL
 packages/ui/src/components/AppRail/BottomNav.tsx	owed-T-SHELL
 packages/ui/src/components/AppShell/AppHeader.native.tsx	owed-T-SHELL
 packages/ui/src/components/AppShell/AppShell.css	owed-T-SHELL
-packages/ui/src/components/AppShell/CountBadge.native.tsx	owed-T-SHELL
-packages/ui/src/components/AppShell/MobileTopBar.native.tsx	owed-T-SHELL
 

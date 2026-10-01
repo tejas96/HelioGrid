@@ -117,3 +117,14 @@
 .hg-text[data-align="end"] {
   text-align: end;
 }
+
+/* A name a bar keeps to one line (`oneLine`) — never translated copy. */
+.hg-text[data-one-line="true"] {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hg-text[data-bold="true"] {
+  font-weight: var(--fw-bold);
+}

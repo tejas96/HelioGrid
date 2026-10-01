@@ -36,6 +36,7 @@ export function CoachMark({
   body,
   step,
   total,
+  counterLabel,
   open = true,
   placement = 'auto',
   padding = 6,
@@ -51,7 +52,7 @@ export function CoachMark({
 }: NativeCoachMarkProps) {
   const rect = useAnchorRect(anchor, open, onAnchorMissing);
   const [cardHeight, setCardHeight] = useState(0);
-  const { steps, counter, isLast } = coachMarkCounter(total, step, MAX_STEPS);
+  const { steps, counter, isLast } = coachMarkCounter(total, step, MAX_STEPS, counterLabel);
 
   useEffect(() => {
     if (open && autoFocus) {

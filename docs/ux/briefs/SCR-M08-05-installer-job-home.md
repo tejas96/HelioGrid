@@ -21,7 +21,7 @@ figure that is commercial — and no sentence saying any of that.
 | The photographs expected (`M08-45`) | data · status | one per checklist step: steps with a photo of all steps, as two counts. The next steps still without a photo as rows, at most three, each leading to its step in the checklist. There is no named shot list |
 | No commercial figure (`M13-36`) | — | nothing is drawn and nothing is said. It holds wherever this job's today-block is composed into another home |
 | The site's access constraints, their words (`M04-43`) | data | the survey's Access group only — stairs, lift, crane, lane. No other field and no contact's phone number |
-| The raised centre action (`SCR-SHELL-01`) | action | `Add photo`, opening the checklist at the next step still without a photo (owner ruling 2026-09-26). Absent while there is no job or no step |
+| The pill's add action (`SCR-SHELL-01`) | action | `Add photo`, opening the checklist at the next step still without a photo (owner ruling 2026-09-26). Absent while there is no job or no step |
 | This person's destinations | — | the bar and rail hold Home and More only: this preset holds no leads or proposals grant (F2) |
 | No installation today | teaching | at most two short sentences — what will appear here |
 | The job failed to load | error | one banner — what failed and what to do |

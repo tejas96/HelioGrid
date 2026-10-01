@@ -89,11 +89,12 @@ export function coachMarkCounter(
   total: number | undefined,
   step: number | undefined,
   cap: number,
+  label?: string,
 ): CoachMarkCounter {
   const steps = total === undefined ? 0 : Math.min(total, cap);
   return {
     steps,
-    counter: steps > 1 && step !== undefined ? `Step ${step} of ${steps}` : null,
+    counter: steps > 1 && step !== undefined ? (label ?? `Step ${step} of ${steps}`) : null,
     isLast: total === undefined || step === steps,
   };
 }

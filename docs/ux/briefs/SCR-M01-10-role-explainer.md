@@ -30,7 +30,7 @@ Screen-specific:
    name, who assigned it, both halves of what it carries — and nothing load-bearing lives in the
    first-run chrome around it.
 2. **The act names the destination, not the step.** *Go to my leads*, never *Continue*: the home is
-   decided by the role, and a person told where they are going does not have to read the arc bar to
+   decided by the role, and a person told where they are going does not have to read the pill footer to
    find out.
 3. **The second life is a sheet, not a page** (`F7-21`). Re-opening the card from profile is seeing
    something in context without navigating away from it; the card inside the sheet is byte-for-byte

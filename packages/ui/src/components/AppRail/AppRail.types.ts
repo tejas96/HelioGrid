@@ -1,4 +1,7 @@
+import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
+import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
+import type { CoachMarkAnchor } from '../CoachMark/CoachMark.types';
 
 export interface RailItem {
   key: string;
@@ -16,6 +19,12 @@ export interface RailItem {
    */
   badge?: number | boolean;
   onClick?: () => void;
+  /**
+   * What a coach mark points at to name this item (`M01-16`): a ref the item binds to its
+   * pressable — on the phone a ref to a View, on the web a ref to an element. A mark cannot find
+   * an item it was not handed, so a marked item must carry one.
+   */
+  anchor?: CoachMarkAnchor;
 }
 
 export interface AppRailProps {
@@ -44,10 +53,12 @@ export interface BottomNavFabSlot {
 export type BottomNavItem = RailItem | BottomNavFabSlot;
 
 /**
- * curve = one parabolic sweep across the full width, icons and labels riding it (default, the
- * signature of the phone shell) · notch = concave cut · flat = plain bar.
+ * pill = the phone shell (`F7-22`): one white pill floating over the page, the item in view a
+ * near-black pill with its icon and label, every other item an icon named by its label · curve =
+ * one parabolic sweep, icons and labels riding it · notch = concave cut · flat = plain bar. The
+ * last three are the retired arc's, kept while the design system's contract still names them.
  */
-export type BottomNavShape = 'curve' | 'notch' | 'flat';
+export type BottomNavShape = 'pill' | 'curve' | 'notch' | 'flat';
 
 export interface BottomNavProps {
   items: BottomNavItem[];
@@ -93,6 +104,16 @@ export function slotDrop(k: number, count: number, rise: number): number {
   const u = ((k + 0.5) / count - 0.5) * 2;
   return rise * u * u;
 }
+
+/**
+ * The pill's numbers, ONE declaration for both halves. A slot is the touch floor wide and 48
+ * tall — wider flex slots fall under 44 once a long label is in view (`SCR-SHELL-01`) — and the
+ * pill is a slot plus `--sp-2` above and below. A screen pads its scroll by `PILL_NAV_HEIGHT`, so it
+ * is exported rather than retyped.
+ */
+export const PILL_NAV_SLOT_WIDTH = MIN_TOUCH_TARGET;
+export const PILL_NAV_SLOT_HEIGHT = theme.spacing['sp-12'];
+export const PILL_NAV_HEIGHT = PILL_NAV_SLOT_HEIGHT + 2 * theme.spacing['sp-2'];
 
 export function isFabSlot(item: BottomNavItem): item is BottomNavFabSlot {
   return 'fab' in item && item.fab === true;

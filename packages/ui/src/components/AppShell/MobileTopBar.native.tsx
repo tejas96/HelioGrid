@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { MobileTopBarProps } from './AppShell.types';
 import { ShellAction } from './ShellAction.native';
@@ -19,6 +20,8 @@ interface NativeMobileTopBarProps extends MobileTopBarProps {
  */
 export function MobileTopBar({
   title,
+  searchLabel,
+  notificationsLabel,
   brand,
   tenant,
   onSearchClick,
@@ -30,11 +33,12 @@ export function MobileTopBar({
   actions,
   style,
 }: NativeMobileTopBarProps) {
+  const { ground } = useGround();
   return (
-    <View style={[styles.bar, style]}>
+    <View style={[styles.bar, { backgroundColor: ground }, style]}>
       {leading}
       {brand !== undefined ? <View style={styles.slot}>{brand}</View> : null}
-      {tenant !== undefined ? <View style={styles.slot}>{tenant}</View> : null}
+      {tenant !== undefined ? <View style={styles.tenant}>{tenant}</View> : null}
       {title !== undefined ? (
         <View style={styles.titleClip}>
           <Text variant="h3" style={styles.title}>
@@ -48,11 +52,11 @@ export function MobileTopBar({
         {actions}
         {jobs}
         {onSearchClick !== undefined ? (
-          <ShellAction label="Search" onClick={onSearchClick} icon={<SearchIcon />} />
+          <ShellAction label={searchLabel} onClick={onSearchClick} icon={<SearchIcon />} />
         ) : null}
         {onNotificationsClick !== undefined ? (
           <ShellAction
-            label="Notifications"
+            label={notificationsLabel}
             badge={notifications}
             onClick={onNotificationsClick}
             icon={<BellIcon />}
@@ -70,12 +74,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing['sp-2'],
     minHeight: theme.layout['topbar-h-mobile'],
-    paddingLeft: theme.spacing['sp-4'],
-    paddingRight: theme.spacing['sp-3'],
-    backgroundColor: theme.colors.surface,
+    paddingHorizontal: theme.layout['screen-pad-mobile'],
   },
   slot: {
     flexShrink: 0,
+    justifyContent: 'center',
+  },
+  /* The tenant's words give way first, so Search, the bell and the avatar keep their 44. */
+  tenant: {
+    flexShrink: 1,
+    minWidth: 0,
     justifyContent: 'center',
   },
   /* The Text primitive carries no numberOfLines, so a long title clips rather than ellipsising
@@ -96,6 +104,6 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: theme.spacing['sp-0-5'],
+    gap: theme.spacing['sp-2'],
   },
 });

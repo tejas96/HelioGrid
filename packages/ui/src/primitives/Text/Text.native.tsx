@@ -103,6 +103,8 @@ const COLOR: Record<TextColor, string> = {
   info: theme.colors['info-text'],
 };
 
+const BOLD: TextStyle = { fontWeight: '700' };
+
 const ALIGN: Record<TextAlign, TextStyle['textAlign']> = {
   start: 'left',
   center: 'center',
@@ -149,6 +151,8 @@ export function Text({
   align,
   lang,
   live,
+  oneLine,
+  bold,
   style,
 }: NativeTextProps) {
   /* Appended only when the scale would clip, and appended LAST so it also outranks a consumer's
@@ -162,11 +166,14 @@ export function Text({
         VARIANT[variant],
         { color: COLOR[color] },
         align !== undefined ? { textAlign: ALIGN[align] } : undefined,
+        bold === true ? BOLD : undefined,
         style,
         raised === undefined ? undefined : { lineHeight: raised },
       ]}
       accessibilityLanguage={lang}
       accessibilityLiveRegion={live === true ? 'assertive' : 'none'}
+      numberOfLines={oneLine === true ? 1 : undefined}
+      ellipsizeMode={oneLine === true ? 'tail' : undefined}
     >
       {drawRuns(children, variant)}
     </RNText>

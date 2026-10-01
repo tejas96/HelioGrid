@@ -3,6 +3,8 @@
  * directory and nothing else: repositories and screens are unaffected.
  */
 export { useRepositories } from './context';
+export type { HostLifecycle } from './host-lifecycle';
+export { followHostLifecycle } from './host-lifecycle';
 export { DataProvider } from './provider';
 export type { CompanyCreation, CompanySignup } from './use-company-signup';
 export { useCompanySignup } from './use-company-signup';

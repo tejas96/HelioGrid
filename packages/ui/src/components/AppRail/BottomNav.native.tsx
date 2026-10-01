@@ -9,6 +9,7 @@ import { badgeName, showsBadge } from '../AppShell/AppShell.types';
 import { CountBadge } from '../AppShell/CountBadge.native';
 import type { BottomNavProps, RailItem } from './AppRail.types';
 import { ICON_BOX, ICON_GAP, ICON_TOP, isFabSlot, LABEL_TOP, slotDrop } from './AppRail.types';
+import { PillNav } from './PillNav.native';
 
 interface NativeBottomNavProps extends BottomNavProps {
   style?: StyleProp<ViewStyle>;
@@ -47,6 +48,8 @@ export function BottomNav({
   style,
 }: NativeBottomNavProps) {
   const [barWidth, setBarWidth] = useState(0);
+  if (shape === 'pill')
+    return <PillNav items={items} value={value} onChange={onChange} style={style} />;
   const count = items.length === 0 ? 1 : items.length;
   const curved = shape === 'curve';
   const rise = curved ? curveHeight : 0;

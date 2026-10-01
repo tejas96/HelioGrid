@@ -33,6 +33,7 @@ export function CoachMark({
   body,
   step,
   total,
+  counterLabel,
   open = true,
   placement = 'auto',
   padding = 6,
@@ -85,7 +86,7 @@ export function CoachMark({
     return null;
   }
 
-  const { steps, counter, isLast } = coachMarkCounter(total, step, MAX_STEPS);
+  const { steps, counter, isLast } = coachMarkCounter(total, step, MAX_STEPS, counterLabel);
   const placed =
     rect === null
       ? null

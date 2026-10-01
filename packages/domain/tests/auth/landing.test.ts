@@ -33,6 +33,17 @@ describe('landingFor', () => {
     ],
     ['signedIn with nobody cannot be home', 'signedIn', null, 'company-step'],
   ] as const)('%s', (_name, phase, user, expected) => {
-    expect(landingFor(phase, user)).toBe(expected);
+    expect(landingFor(phase, user, null)).toBe(expected);
+  });
+
+  it('lands a held removal on access-removed', () => {
+    expect(landingFor('signedIn', withCompany, { tenantId: 't1' })).toBe('access-removed');
+  });
+
+  it.each([
+    ['booting', 'wait'],
+    ['signedOut', 'door'],
+  ] as const)('keeps a removal found before sign-in at %s', (phase, expected) => {
+    expect(landingFor(phase, null, { tenantId: null })).toBe(expected);
   });
 });

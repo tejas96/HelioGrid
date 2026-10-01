@@ -42,23 +42,27 @@ export function sessionAfter(current: SessionSnapshot, event: SessionEvent): Ses
 }
 
 /**
- * Every loss opens the door; a removal carries its reason there (`S1.wrong.4`), with the company
- * it was removed from when the device knew it. Nothing renders the removal inside the shell yet,
- * so holding the person there would strand them behind a home whose every call fails. Once at the
- * door, a later loss changes nothing — two reads refused together report twice, and the second
- * refresh can go out with a cookie the first answer already cleared and come back `signed-out`.
+ * A removal while signed in HOLDS the person, with its reason, so the shell can say what happened
+ * (`S1.wrong.4`) instead of dropping them at a door that says nothing; they leave by signing out.
+ * A removal found by the boot check has nobody to hold, so it goes to the door with the reason.
+ * Every other loss opens the door. Once held or at the door, a later loss changes nothing — two
+ * reads refused together report twice, and the second refresh can go out with a cookie the first
+ * answer already cleared and come back `signed-out`.
  */
 function afterLoss(current: SessionSnapshot, loss: SessionLoss): SessionSnapshot {
-  if (current.status === 'anonymous') return current;
+  if (current.status === 'anonymous' || current.ended !== null) return current;
   if (loss === 'signed-out') return SIGNED_OUT;
-  return { ...SIGNED_OUT, ended: { tenantId: current.user?.tenant?.id ?? null } };
+  if (current.status === 'authenticated') {
+    return { ...current, ended: { tenantId: current.user?.tenant?.id ?? null } };
+  }
+  return { ...SIGNED_OUT, ended: { tenantId: null } };
 }
 
 /**
  * Whether a refused call is worth one refresh. Not once signed out or ended — a wrong OTP code
- * answers 401, and five tries would post five doomed refreshes. The boot check says yes: a lapsed
- * token comes back that way.
+ * answers 401, and five tries would post five doomed refreshes; a held removal's cookies are
+ * already cleared. The boot check says yes: a lapsed token comes back that way.
  */
 export function canRenew(snapshot: SessionSnapshot): boolean {
-  return snapshot.status !== 'anonymous';
+  return snapshot.status !== 'anonymous' && snapshot.ended === null;
 }

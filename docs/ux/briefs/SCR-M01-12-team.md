@@ -37,8 +37,8 @@ Screen-specific:
 1. **Entry is More → Team**, not pinned by the PRD. The shell fixes settings and administration to
    *More*; Team is reached the same way. *More* is the destination in force, no fifth slot.
 2. **The invite act is a full-width primary at the top of the scroll, not sticky.** A sticky band
-   costs ~100px permanently on a screen that is a list, a footer act collides with the arc bar's
-   raised centre, and a text act in the top bar is the smallest target furthest from a thumb.
+   costs ~100px permanently on a screen that is a list, a footer act collides with the shell's
+   pill footer, and a text act in the top bar is the smallest target furthest from a thumb.
 3. **One tap means ON the row.** *Deactivate* and *Revoke invite* sit in the card's action line, not
    behind a kebab — a menu is a second tap on an act the module calls first-class. **Ghost is the
    only legal weight**: `secondary` is white at `--e2` on a card that is already white, `destructive`

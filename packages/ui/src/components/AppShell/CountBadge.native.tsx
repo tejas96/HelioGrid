@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { clampCount } from '../../utils/count';
 import type { CountBadgeProps, CountBadgeTone } from './AppShell.types';
@@ -59,6 +60,8 @@ export function CountBadge({
   tone = 'danger',
   style,
 }: NativeCountBadgeProps) {
+  // The ring cuts the badge out of what it rides on, so it is that ground's colour.
+  const { ground } = useGround();
   const n = typeof count === 'number' ? count : null;
   if (n !== null && n <= 0) {
     return null;
@@ -89,7 +92,7 @@ export function CountBadge({
     <View
       accessibilityRole="text"
       accessibilityLabel={words}
-      style={[styles.pill, { backgroundColor: pair.bg }, style]}
+      style={[styles.pill, { backgroundColor: pair.bg, borderColor: ground }, style]}
     >
       <Text variant="caption" style={[styles.digits, { color: pair.fg }]}>
         {shown}
@@ -105,7 +108,6 @@ const styles = StyleSheet.create({
     minWidth: theme.spacing['sp-5'],
     height: theme.spacing['sp-5'],
     borderWidth: 2,
-    borderColor: theme.colors.surface,
     borderRadius: theme.radius['r-pill'],
     paddingHorizontal: 6,
   },

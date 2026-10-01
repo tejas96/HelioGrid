@@ -69,6 +69,8 @@ every block is flat — and leaves its contract; `SourceDocument`'s density roun
 its one surface; `Accordion`'s contract stops saying an errored section is tinted. A printed checklist's rows
 are paper, not tiles. `PagedDocument`'s cards stay paper.
 
+**Owed to the design system by the shell (`T-SHELL-001`), repo side done.** `SCR-SHELL-01`'s export draws the pill footer; the build differs from it where it measured wrong, and the design system takes the same: the company's name as words beside `LogoTile`, no chip fill (a grey pill on the page reads as a control, `F7-15`); the pill 64 high with no border and the `--e4` shadow, its slots 44 wide laid out space-between, the item in view padded `--sp-4`, its label `--fs-button` / `--fw-medium`, icons `Icon lg` at the one stroke; the top bar `--topbar-h-mobile`; the error frame's Try again the secondary `Button`; `BottomNav`'s `RailItem.anchor` and `MobileTopBar`'s `searchLabel` and `notificationsLabel`. The arc's shapes and props (`curve`, `notch`, `flat`, `fab`, `curveHeight`, `notchRadius`, `fabOffset`) leave the design system, and then the repo.
+
 | Component | Gap | Found by |
 |---|---|---|
 | `OtpInput` · `Input` | Helper is fixed `--text-tertiary` 12px, which `N4` forbids for anything load-bearing — so every screen with a load-bearing sentence beside a field draws its own `--text-secondary` line outside the component and the spacing becomes a per-screen decision. | `SCR-M01-08` · `SCR-M01-09` |
@@ -76,6 +78,7 @@ are paper, not tiles. `PagedDocument`'s cards stay paper.
 | `NumberField` · `OptionCardGroup` | Field `error` is described, not announced. The `Text` primitive now carries `live` (`PhoneField` uses it); these two still need it wired to their own error props. | `SCR-M01-04` |
 | `Provenance` | Its line is fixed `--text-tertiary` — wrong where the tier IS the screen's honesty contract. Wants an `emphasis` prop. | `SCR-M01-04` |
 | `Stepper` | The `progress` counter ("Step 1 of 3") and the fallback names ("Steps", "Progress") are English inside the component on both halves, so a Hindi screen reads an English counter. Needs the counter as a caller-supplied sentence, or a `counter` prop the caller translates. | `SCR-M01-02` |
+| `CoachMark` | **The counter still falls back to English** — "Step n of m" (`coach-mark-place.ts`) where a caller passes no `counterLabel`, which `CoachMarkSequence` never does. Make `counterLabel` required wherever a counter shows once a sequence has a caller. | `T-SHELL-001` |
 | `Banner` | No `kind` for a signed-out steer — `suggestion`'s spark reads as AI. One action pill where two full-size routes are wanted. | `SCR-M01-02` |
 | `Input` | No loading form. `StatCard`, `DataTable`, `Timeline`, `Sheet` and `DetailPanel` all take `state="loading"`; `Input` takes none and no `Shimmer` is exported, so each screen hand-draws a differently-shaped waiting field. | `SCR-M01-09` |
 | `Avatar` | No nameless state. Its fallback derives initials from `name`, so an empty name renders an empty tinted circle — a rendering fault, not "no name yet". | `SCR-M01-09` |

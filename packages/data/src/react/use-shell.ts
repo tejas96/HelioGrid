@@ -25,6 +25,12 @@ export type ShellLoad = 'loading' | 'failed' | 'ready';
  */
 export interface Shell extends ShellView {
   readonly load: ShellLoad;
+  /**
+   * The company removed this person while signed in (`S1.wrong.4`): the shell shows that and
+   * nothing else, and reads nothing more — every read would be refused. Checked before `load`,
+   * since a read already in flight comes back refused.
+   */
+  readonly accessRemoved: boolean;
   readonly companyName: string | null;
   /** How many of `coachMarks` are passed; the marks after it are the ones still to show. */
   readonly coachMarksPassed: number | null;
@@ -44,22 +50,24 @@ export interface Shell extends ShellView {
  * `load` stays `loading`.
  */
 export function useShell(): Shell {
-  const { user, chosenHome, chooseHome } = useSession();
+  const { user, chosenHome, chooseHome, ended } = useSession();
   const repositories = useRepositories();
   const queryClient = useQueryClient();
   const tenantId = user?.tenant?.id ?? '';
   const roles = user?.tenant?.roles;
   const membershipKey = queryKeys.shell.membership(tenantId);
+  const accessRemoved = ended !== null;
+  const reading = tenantId !== '' && !accessRemoved;
 
   const company = useQuery({
     queryKey: queryKeys.shell.tenant(tenantId),
     queryFn: ({ signal }) => repositories.tenant.me(signal),
-    enabled: tenantId !== '',
+    enabled: reading,
   });
   const membership = useQuery({
     queryKey: membershipKey,
     queryFn: ({ signal }) => repositories.tenant.myMembership(signal),
-    enabled: tenantId !== '',
+    enabled: reading,
   });
 
   // The count moves at once and the server catches up. A refusal means another device is ahead,
@@ -109,6 +117,7 @@ export function useShell(): Shell {
     return {
       ...view,
       load: shellLoad(company.status, membership.status),
+      accessRemoved,
       companyName: company.data?.companyName ?? null,
       coachMarksPassed: passed,
       coachMarksToShow: marksToShow(view.coachMarks, passed),
@@ -120,6 +129,7 @@ export function useShell(): Shell {
   }, [
     roles,
     chosenHome,
+    accessRemoved,
     company.status,
     company.data,
     membership.status,

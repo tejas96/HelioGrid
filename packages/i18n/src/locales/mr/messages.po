@@ -18,6 +18,11 @@ msgid "{chain} codes were invalidated in a row"
 msgstr "सलग {chain} कोड अवैध झाले"
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:23
+msgid "{home}, switch home"
+msgstr "{home}, होम बदला"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:71
 msgid "{left, plural, one {# try left} other {# tries left}} on this code. HelioGrid invalidates a code after {tries} wrong tries, and then you need a new one."
 msgstr "या कोडवर {left, plural, one {# प्रयत्न शिल्लक आहे} other {# प्रयत्न शिल्लक आहेत}}. HelioGrid {tries} चुकीच्या प्रयत्नांनंतर कोड अवैध करते, आणि मग तुम्हाला नवीन कोड लागतो."
@@ -28,6 +33,11 @@ msgid "{n}-digit code"
 msgstr "{n} अंकी कोड"
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:16
+msgid "{name} — account, grievance contact and sign out"
+msgstr "{name} — खाते, तक्रार संपर्क आणि साइन आउट"
+
+#. js-lingui-explicit-id
 #: src/copy/explainer.ts:8
 msgid "{page} of {total}"
 msgstr "{total} पैकी {page}"
@@ -36,6 +46,26 @@ msgstr "{total} पैकी {page}"
 #: src/copy/sign-in.ts:102
 msgid "{perWindow} codes in {windowMinutes} minutes is the limit"
 msgstr "{windowMinutes} मिनिटांत {perWindow} कोड ही मर्यादा आहे"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:26
+msgid "{preset} home · {highest} is your highest preset"
+msgstr "{preset} होम · {highest} हा तुमचा सर्वात वरचा प्रीसेट आहे"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:25
+msgid "{preset} home · you also hold {others}"
+msgstr "{preset} होम · तुमच्याकडे {others} देखील आहे"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:24
+msgid "{preset} home · your only preset"
+msgstr "{preset} होम · तुमचा एकमेव प्रीसेट"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:38
+msgid "{step} of {total}"
+msgstr "{total} पैकी {step}"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:114
@@ -71,6 +101,21 @@ msgstr "कंपनीचे नाव आवश्यक आहे — ते 
 #: src/copy/sign-in.ts:136
 msgid "A rep must never reach another rep’s customer photographs, so nothing captured survives the identity that captured it."
 msgstr "कोणत्याही प्रतिनिधीने दुसऱ्या प्रतिनिधीच्या ग्राहकाच्या फोटोंपर्यंत कधीही पोहोचू नये, म्हणून काढलेले काहीही ते काढणाऱ्या ओळखीनंतर टिकत नाही."
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:15
+msgid "Account"
+msgstr "खाते"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:84
+msgid "Add a lead from any screen"
+msgstr "कोणत्याही स्क्रीनवरून लीड जोडा"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:77
+msgid "Add lead"
+msgstr "लीड जोडा"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:19
@@ -124,6 +169,7 @@ msgstr "कॉलिंग नियम"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:15
+#: src/copy/shell.ts:71
 msgid "Campaigns"
 msgstr "कॅम्पेन"
 
@@ -188,6 +234,11 @@ msgid "Confirmed"
 msgstr "पुष्टी झालेले"
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:31
+msgid "Couldn't load your work"
+msgstr "तुमचे काम लोड होऊ शकले नाही"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:21
 msgid "Create a company"
 msgstr "कंपनी तयार करा"
@@ -228,6 +279,11 @@ msgid "design"
 msgstr "डिझाइन"
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:58
+msgid "Design Engineer"
+msgstr "डिझाइन इंजिनिअर"
+
+#. js-lingui-explicit-id
 #: src/copy/homes.ts:19
 msgid "Design Queue"
 msgstr "डिझाइन क्यू"
@@ -248,14 +304,29 @@ msgid "Enter the code"
 msgstr "कोड टाका"
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:50
+msgid "EPC Owner"
+msgstr "EPC मालक"
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:12
 msgid "Estimated"
 msgstr "अंदाजित"
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:60
+msgid "Field Technician"
+msgstr "फील्ड तंत्रज्ञ"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:50
 msgid "Filled from the SMS on this phone. Check it, or type over it."
 msgstr "या फोनवरील SMS मधून भरला. तपासा, किंवा त्यावर टाइप करा."
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:55
+msgid "Finance"
+msgstr "वित्त"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:16
@@ -266,6 +337,16 @@ msgstr "फायनान्स होम"
 #: src/copy/sign-in.ts:38
 msgid "Get the code by call"
 msgstr "कॉलवर कोड मिळवा"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:36
+msgid "Got it"
+msgstr "ठीक आहे"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:17
+msgid "Grievance officer"
+msgstr "तक्रार अधिकारी"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:82
@@ -283,6 +364,16 @@ msgid "HelioGrid's answer could not be read. If you were saving, check whether i
 msgstr "HelioGrid चे उत्तर वाचता आले नाही. तुम्ही काही सेव्ह करत असाल, तर पुन्हा प्रयत्न करण्यापूर्वी ते सेव्ह झाले का ते तपासा."
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:66
+msgid "Home"
+msgstr "होम"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:56
+msgid "HR/Admin"
+msgstr "HR/अ‍ॅडमिन"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:60
 msgid "If your company already has a workspace and you want your own login inside it, ask its owner to invite you — that keeps one company, one workspace."
 msgstr "तुमच्या कंपनीचे वर्कस्पेस आधीच असेल आणि तुम्हाला त्यात तुमचे स्वतःचे लॉगिन हवे असेल, तर त्याच्या मालकाला तुम्हाला आमंत्रित करायला सांगा — म्हणजे एक कंपनी, एक वर्कस्पेस राहते."
@@ -298,9 +389,19 @@ msgid "Indicative proposal. Generation and savings are estimated from system siz
 msgstr "सूचक प्रस्ताव. वीजनिर्मिती आणि बचतीचा अंदाज सिस्टमच्या आकारावरून आणि ठिकाणावरून केला आहे. साइट सर्व्हे आणि सावली विश्लेषणातून अंतिम आकडे निश्चित होतील."
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:61
+msgid "Installation Team Member"
+msgstr "इन्स्टॉलेशन टीम सदस्य"
+
+#. js-lingui-explicit-id
 #: src/copy/homes.ts:22
 msgid "Installer Job Home"
 msgstr "इन्स्टॉलर जॉब होम"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:67
+msgid "Leads"
+msgstr "लीड्स"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:31
@@ -323,6 +424,11 @@ msgid "market prices"
 msgstr "बाजारभाव"
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:54
+msgid "Marketing"
+msgstr "मार्केटिंग"
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:10
 msgid "Measured"
 msgstr "मोजलेले"
@@ -331,6 +437,11 @@ msgstr "मोजलेले"
 #: src/copy/sign-in.ts:13
 msgid "Mobile number"
 msgstr "मोबाइल नंबर"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:72
+msgid "More"
+msgstr "आणखी"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:18
@@ -350,6 +461,7 @@ msgstr "HelioGrid वर नवीन कंपनी?"
 
 #. js-lingui-explicit-id
 #: src/copy/explainer.ts:6
+#: src/copy/shell.ts:37
 msgid "Next"
 msgstr "पुढे"
 
@@ -404,6 +516,11 @@ msgid "Not your number and not your code — the step after them did not complet
 msgstr "तुमच्या नंबरची चूक नाही, कोडचीही नाही — त्यानंतरची पायरी पूर्ण झाली नाही."
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:27
+msgid "Nothing assigned to you yet"
+msgstr "तुम्हाला अजून काहीही सोपवलेले नाही"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:16
 msgid "Nothing else is asked for here — no tax registration, no logo, no price book, no team, no card."
 msgstr "इथे आणखी काहीही मागितले जात नाही — टॅक्स नोंदणी नाही, लोगो नाही, प्राइस बुक नाही, टीम नाही, कार्ड नाही."
@@ -429,6 +546,16 @@ msgid "Nothing was created, so trying again cannot make two companies. Your numb
 msgstr "काहीही तयार झाले नाही, त्यामुळे पुन्हा प्रयत्न केल्याने दोन कंपन्या होऊ शकत नाहीत. तुमचा नंबर अजूनही तपासलेला आहे आणि तुमचे तीन तपशील अजूनही इथेच आहेत."
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:41
+msgid "Nothing you captured on this device is lost. Ask your admin to restore your access, or sign in with another account."
+msgstr "या डिव्हाइसवर तुम्ही नोंदवलेले काहीही हरवलेले नाही. तुमचा प्रवेश परत मिळवण्यासाठी तुमच्या अ‍ॅडमिनला सांगा, किंवा दुसऱ्या खात्याने साइन इन करा."
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:14
+msgid "Notifications"
+msgstr "सूचना"
+
+#. js-lingui-explicit-id
 #: src/copy/freshness.ts:36
 msgid "number formats"
 msgstr "संख्या स्वरूप"
@@ -437,6 +564,11 @@ msgstr "संख्या स्वरूप"
 #: src/copy/sign-in.ts:52
 msgid "Only some phones fill this in. On the rest it is typed, and nothing else about the step changes."
 msgstr "फक्त काही फोन हे आपोआप भरतात. बाकीच्यांवर ते टाइप केले जाते, आणि या पायरीत बाकी काही बदलत नाही."
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:52
+msgid "Operations"
+msgstr "ऑपरेशन्स"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:13
@@ -465,6 +597,11 @@ msgid "payment methods"
 msgstr "पेमेंट पद्धती"
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:70
+msgid "People"
+msgstr "लोक"
+
+#. js-lingui-explicit-id
 #: src/copy/homes.ts:17
 msgid "People Today"
 msgstr "आजचे लोक"
@@ -483,6 +620,21 @@ msgstr "किंमती आणि अनुदान बदलतात"
 #: src/copy/homes.ts:14
 msgid "Project Board"
 msgstr "प्रोजेक्ट बोर्ड"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:53
+msgid "Project Manager"
+msgstr "प्रोजेक्ट मॅनेजर"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:69
+msgid "Projects"
+msgstr "प्रोजेक्ट्स"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:68
+msgid "Proposals"
+msgstr "प्रस्ताव"
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:22
@@ -523,6 +675,21 @@ msgstr "कोड पुन्हा पाठवा"
 #: src/copy/document-basis.ts:14
 msgid "Roof measured from satellite imagery. A site visit will confirm dimensions, shading and electrical access."
 msgstr "छताचे मोजमाप उपग्रह प्रतिमांवरून घेतले आहे. साइट भेटीत मापे, सावली आणि वीज जोडणीची सोय निश्चित होईल."
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:57
+msgid "Sales Executive"
+msgstr "सेल्स एक्झिक्युटिव्ह"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:51
+msgid "Sales Manager"
+msgstr "सेल्स मॅनेजर"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:13
+msgid "Search"
+msgstr "शोधा"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:33
@@ -585,9 +752,19 @@ msgid "Sign in instead"
 msgstr "त्याऐवजी साइन इन करा"
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:44
+msgid "Sign in with another account"
+msgstr "दुसऱ्या खात्याने साइन इन करा"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:63
 msgid "Sign in with this number"
 msgstr "या नंबरने साइन इन करा"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:18
+msgid "Sign out"
+msgstr "साइन आउट करा"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:131
@@ -625,9 +802,24 @@ msgid "Something went wrong on our side. Try again."
 msgstr "आमच्याकडून काहीतरी चूक झाली. पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:88
+msgid "Start a survey from any screen"
+msgstr "कोणत्याही स्क्रीनवरून सर्व्हे सुरू करा"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:78
+msgid "Start survey"
+msgstr "सर्व्हे सुरू करा"
+
+#. js-lingui-explicit-id
 #: src/copy/freshness.ts:32
 msgid "subsidy rules"
 msgstr "अनुदान नियम"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:59
+msgid "Survey Engineer"
+msgstr "सर्व्हे इंजिनिअर"
 
 #. js-lingui-explicit-id
 #: src/copy/disclosure.ts:27
@@ -638,6 +830,11 @@ msgstr "दूरून सर्व्हे केलेले"
 #: src/copy/company-signup.ts:36
 msgid "Suryodaya Solar Solutions"
 msgstr "सूर्योदय सोलर सोल्युशन्स"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:22
+msgid "Switch home"
+msgstr "होम बदला"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:129
@@ -765,6 +962,16 @@ msgid "They were captured on this phone on {date} and have not reached HelioGrid
 msgstr "हे या फोनवर {date} रोजी काढले होते आणि अजून HelioGrid पर्यंत पोहोचलेले नाहीत. दुसऱ्या कोणी म्हणून साइन इन केल्यास ते नष्ट होतात, आणि हे परत आणता येत नाही."
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:85
+msgid "This button is on every screen. Tap it to add a lead."
+msgstr "हे बटण प्रत्येक स्क्रीनवर आहे. लीड जोडण्यासाठी त्यावर टॅप करा."
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:89
+msgid "This button is on every screen. Tap it to start a survey."
+msgstr "हे बटण प्रत्येक स्क्रीनवर आहे. सर्व्हे सुरू करण्यासाठी त्यावर टॅप करा."
+
+#. js-lingui-explicit-id
 #: src/copy/validation.ts:9
 msgid "This field is required."
 msgstr "हे फील्ड आवश्यक आहे."
@@ -810,6 +1017,11 @@ msgid "This person is the only EPC Owner. A company always keeps at least one EP
 msgstr "ही व्यक्ती कंपनीची एकमेव EPC Owner आहे. कंपनीत नेहमी किमान एक EPC Owner आणि टीम सांभाळू शकणारी एक व्यक्ती असणे आवश्यक आहे."
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:45
+msgid "This screen arrives in a later update."
+msgstr "ही स्क्रीन पुढच्या एखाद्या अपडेटमध्ये येईल."
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:91
 msgid "This stopped before HelioGrid answered. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid ने उत्तर देण्यापूर्वी हे थांबले. तुम्ही काही सेव्ह करत असाल, तर पुन्हा प्रयत्न करण्यापूर्वी ते सेव्ह झाले का ते तपासा."
@@ -843,6 +1055,16 @@ msgstr "खूप प्रयत्न झाले. थोडा वेळ थ
 #: src/copy/sign-in.ts:41
 msgid "Try again"
 msgstr "पुन्हा प्रयत्न करा"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:32
+msgid "Try again. If it keeps failing, tell your admin what you were doing."
+msgstr "पुन्हा प्रयत्न करा. वारंवार अयशस्वी होत असल्यास, तुम्ही काय करत होता ते तुमच्या अ‍ॅडमिनला सांगा."
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:94
+msgid "Two presets, one home"
+msgstr "दोन प्रीसेट, एक होम"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:139
@@ -940,6 +1162,11 @@ msgid "Where you're based."
 msgstr "तुम्ही कुठे आहात."
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:28
+msgid "Work assigned to you shows here. Ask your manager for your first one."
+msgstr "तुम्हाला सोपवलेले काम इथे दिसते. तुमचे पहिले काम तुमच्या मॅनेजरकडे मागा."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:128
 msgid "You are in"
 msgstr "तुम्ही आत आहात"
@@ -981,6 +1208,16 @@ msgid "You're signed out. Sign in to continue."
 msgstr "तुम्ही साइन आउट आहात. सुरू ठेवण्यासाठी साइन इन करा."
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:39
+msgid "Your access to {company} was removed"
+msgstr "{company} मधील तुमचा प्रवेश काढून टाकला आहे"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:40
+msgid "Your access was removed"
+msgstr "तुमचा प्रवेश काढून टाकला आहे"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:33
 msgid "Your account"
 msgstr "तुमचे खाते"
@@ -997,6 +1234,11 @@ msgid "Your company"
 msgstr "तुमची कंपनी"
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:19
+msgid "Your company has not published its grievance officer yet. Ask your admin who handles questions about your data."
+msgstr "तुमच्या कंपनीने अजून तिचा तक्रार अधिकारी प्रकाशित केलेला नाही. तुमच्या डेटाविषयीचे प्रश्न कोण पाहते ते तुमच्या अ‍ॅडमिनला विचारा."
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:61
 msgid "Your company has sent today’s invites. Try again tomorrow."
 msgstr "तुमच्या कंपनीने आजची आमंत्रणे पाठवली आहेत. उद्या पुन्हा प्रयत्न करा."
@@ -1005,6 +1247,11 @@ msgstr "तुमच्या कंपनीने आजची आमंत्
 #: src/copy/api-error.ts:30
 msgid "Your current plan doesn't include this."
 msgstr "तुमच्या सध्याच्या प्लॅनमध्ये हे समाविष्ट नाही."
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:95
+msgid "Your home is the {preset} one. Tap the title to switch."
+msgstr "तुमचे होम {preset} चे आहे. बदलण्यासाठी शीर्षकावर टॅप करा."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:13

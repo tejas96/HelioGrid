@@ -4,6 +4,7 @@ import { badgeName, showsBadge } from '../AppShell/AppShell.types';
 import { CountBadge } from '../AppShell/CountBadge';
 import type { BottomNavProps, RailItem } from './AppRail.types';
 import { ICON_BOX, ICON_GAP, ICON_TOP, isFabSlot, LABEL_TOP, slotDrop } from './AppRail.types';
+import { PillNav } from './PillNav';
 
 type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
 
@@ -38,6 +39,17 @@ export function BottomNav({
   className,
   style,
 }: WebBottomNavProps) {
+  if (shape === 'pill') {
+    return (
+      <PillNav
+        items={items}
+        value={value}
+        onChange={onChange}
+        className={className}
+        style={style}
+      />
+    );
+  }
   const count = items.length === 0 ? 1 : items.length;
   const curved = shape === 'curve';
   const rise = curved ? curveHeight : 0;
