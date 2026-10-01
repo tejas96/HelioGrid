@@ -1,18 +1,22 @@
-# @heliogrid/config — shared tsconfig presets
+# @heliogrid/config — shared build config: tsconfig presets and Biome plugins
 
 Traps: `.claude/landmines.md` · deps: `architecture.md` §2 config.
 
 ## What lives here / what must never live here
 
-- tsconfig presets only, consumed as `"extends": "@heliogrid/config/tsconfig/<preset>.json"`.
+- tsconfig presets, consumed as `"extends": "@heliogrid/config/tsconfig/<preset>.json"`.
   `tsconfig/base.json` holds the shared compiler options, and the repo-root `tsconfig.base.json`
   extends IT — so there is one copy and the packages that extend the root file keep working.
-- NEVER: runtime code, a dependency, or a `//` comment. Anything executable belongs in a real
-  package; a comment turns the build red, so reasons live in this file.
+- `biome/*.grit` — the repo's Biome lint plugins, one per rule, named for what it holds. The root
+  `biome.json` registers each one with the files it reads; every `includes` glob starts with `**/`,
+  because a glob anchored at the root silently matches nothing. A plugin's diagnostic is silenced
+  with `// biome-ignore lint/plugin/<file name>: <reason>`, and an unused one fails `pnpm lint`.
+- NEVER: runtime code, a dependency, or a `//` comment in a JSON preset. Anything executable belongs
+  in a real package; a comment in a preset turns the build red, so its reasons live in this file.
 
 ## Commands
 
-None — JSON only. Consumers typecheck against these.
+None. Consumers typecheck against the presets; `pnpm lint` runs the plugins.
 
 ## Local conventions
 

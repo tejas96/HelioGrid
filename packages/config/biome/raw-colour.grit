@@ -1,0 +1,94 @@
+// A UI script names no literal colour: hex, rgb()/rgba()/hsl()/hsla()/oklch()/lab() opened by a
+// digit, or a named colour on a colour-bearing key. Comments are trivia and never read.
+// Not a styling value, so silent: a quoted string that starts sentence-case and holds a space
+// (UI copy showing the format, e.g. 'Enter a hex like #1F5FA9'), and an rgba()/hsla() stop whose
+// alpha is exactly 0 (the transparent end of a gradient). color-mix() over tokens is not matched.
+// Each regex sits behind `includes` checks that are cheaper and never narrower: Biome rebuilds a
+// plugin regex every time it is tried, so a regex tried on every node is slow.
+or {
+  or {
+    JsStringLiteralExpression(),
+    JsxString(),
+    TsStringLiteralType(),
+    JsLiteralMemberName()
+  } as $text where {
+    $text <: or {
+      includes "#",
+      includes "rgb",
+      includes "hsl",
+      includes "oklch",
+      includes "lab(",
+      includes "olor",
+      includes "background",
+      includes "fill",
+      includes "stroke"
+    },
+    $text <: r"(?s).*(?:#[0-9a-fA-F]{3,8}\b|\b(?:rgb|hsl|oklch|lab)\(\s*[0-9.]|\b(?:rgba|hsla)\(\s*[0-9.](?:[^()]*\(|[^(),]*\)|[^()]*,(?:\s*|\s*[^(),\s0][^(),]*|\s*0[^(),\s.][^(),]*|\s*0\s+[^(),\s][^(),]*|\s*0\.0*[^(),\s0][^(),]*|\s*0\.0*\s+[^(),\s][^(),]*|\s*0\.\s*)\)|[^()]*$)|\b(?:[A-Za-z-]*[cC]olor|background|fill|stroke)\s*[:=]\s*[\x22\x27{]?\s*[\x22\x27]?(?:black|white|red|green|blue|gray|grey|orange|yellow|purple|pink|brown|cyan|magenta|navy|teal|olive|maroon|lime|aqua|fuchsia|silver|gold|indigo|violet)\b).*",
+    not $text <: r"(?s)(?:\x22[A-Z][a-z][^\x22\n]* [^\x22\n]*\x22|\x27[A-Z][a-z][^\x27\n]* [^\x27\n]*\x27)",
+    register_diagnostic(span=$text, message="Raw colour in a UI path — use a token from @heliogrid/theme; color-mix() over tokens is fine.")
+  },
+  or {
+    JsTemplateChunkElement(),
+    JsxText()
+  } as $text where {
+    $text <: or {
+      includes "#",
+      includes "rgb",
+      includes "hsl",
+      includes "oklch",
+      includes "lab(",
+      includes "olor",
+      includes "background",
+      includes "fill",
+      includes "stroke"
+    },
+    $text <: r"(?s).*(?:#[0-9a-fA-F]{3,8}\b|\b(?:rgb|hsl|oklch|lab)\(\s*[0-9.]|\b(?:rgba|hsla)\(\s*[0-9.](?:[^()]*\(|[^(),]*\)|[^()]*,(?:\s*|\s*[^(),\s0][^(),]*|\s*0[^(),\s.][^(),]*|\s*0\s+[^(),\s][^(),]*|\s*0\.0*[^(),\s0][^(),]*|\s*0\.0*\s+[^(),\s][^(),]*|\s*0\.\s*)\)|[^()]*$)|\b(?:[A-Za-z-]*[cC]olor|background|fill|stroke)\s*[:=]\s*[\x22\x27{]?\s*[\x22\x27]?(?:black|white|red|green|blue|gray|grey|orange|yellow|purple|pink|brown|cyan|magenta|navy|teal|olive|maroon|lime|aqua|fuchsia|silver|gold|indigo|violet)\b).*",
+    register_diagnostic(span=$text, message="Raw colour in a UI path — use a token from @heliogrid/theme; color-mix() over tokens is fine.")
+  },
+  or {
+    JsPropertyObjectMember(),
+    JsxAttribute(),
+    JsVariableDeclarator(),
+    JsAssignmentExpression(),
+    JsObjectBindingPatternShorthandProperty(),
+    JsFormalParameter(),
+    JsPropertyClassMember(),
+    TsPropertySignatureTypeMember()
+  } as $pair where {
+    $pair <: or {
+      includes "olor",
+      includes "background",
+      includes "fill",
+      includes "stroke"
+    },
+    $pair <: or {
+      includes "black",
+      includes "white",
+      includes "red",
+      includes "green",
+      includes "blue",
+      includes "gray",
+      includes "grey",
+      includes "orange",
+      includes "yellow",
+      includes "purple",
+      includes "pink",
+      includes "brown",
+      includes "cyan",
+      includes "magenta",
+      includes "navy",
+      includes "teal",
+      includes "olive",
+      includes "maroon",
+      includes "lime",
+      includes "aqua",
+      includes "fuchsia",
+      includes "silver",
+      includes "gold",
+      includes "indigo",
+      includes "violet"
+    },
+    $pair <: r"(?s)(?:[\w$]+\.)*[\x22\x27]?(?:[A-Za-z-]*[cC]olor|background|fill|stroke)[\x22\x27]?\s*[:=]\s*[\x22\x27{]?\s*[\x22\x27]?(?:black|white|red|green|blue|gray|grey|orange|yellow|purple|pink|brown|cyan|magenta|navy|teal|olive|maroon|lime|aqua|fuchsia|silver|gold|indigo|violet)\b.*",
+    register_diagnostic(span=$pair, message="Raw colour in a UI path — use a token from @heliogrid/theme; color-mix() over tokens is fine.")
+  }
+}

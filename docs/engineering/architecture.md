@@ -57,18 +57,19 @@ between a reader and the code. Split ONLY for:
 two packages joined by a cycle. If a split would need both halves to import each other, the
 boundary is in the wrong place — move the shared fact down a layer instead (§1).
 
-### config — shared tsconfig presets
-Owns: the shared compiler options (`tsconfig/base.json`) and the presets that extend them
-(node-package, nest-app) — nothing else. The repo-root `tsconfig.base.json` extends this
+### config — shared build config: tsconfig presets and Biome plugins
+Owns: the shared compiler options (`tsconfig/base.json`), the presets that extend them
+(node-package, nest-app), and the Biome lint plugins (`biome/*.grit`), which the root
+`biome.json` registers with the files each one reads — nothing else. The repo-root `tsconfig.base.json` extends this
 package's `base.json`, not the other way round: **every `extends` inside this package must be
 package-relative.** A consumer reads these files through `node_modules/@heliogrid/config/`, a
 pnpm symlink, so a path climbing out of the package resolves to
 `packages/<consumer>/node_modules/` for any tool that does not realpath first. `tsc` does
 realpath, which hid this for months; Vite's transform does not, and no unit test in the repo
 could compile until it was fixed (2026-09-03). Allowed deps: none.
-Platform scope: all. Belongs: a new compiler preset. Never: a comment — Biome parses these as
-strict JSON, so the reason lives here; runtime code, lint config
-(biome.json is root-owned). Extension point: a new preset per new runtime class. A package with no matching preset
+Platform scope: all. Belongs: a new compiler preset, a new lint plugin. Never: a comment in a
+JSON preset — Biome parses these as strict JSON, so the reason lives here; runtime code; the Biome
+configuration itself (biome.json is root-owned). Extension point: a new preset per new runtime class. A package with no matching preset
 extends `tsconfig.base.json` directly; apps/mobile extends this package's `base.json` and then
 `@react-native/typescript-config`, in that order (`apps/mobile/CLAUDE.md`).
 

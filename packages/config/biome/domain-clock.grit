@@ -1,0 +1,18 @@
+// packages/domain reads no ambient clock and no randomness: Date.now and Math.random (called or
+// passed as a value) and new Date. Date.parse is the parser the package uses, so it passes; the
+// rest of the platform (fetch, timers, crypto, globalThis…) is refused by biome.json's domain override.
+or {
+  JsStaticMemberExpression() as $read where {
+    $read <: or {
+      includes "now",
+      includes "random"
+    },
+    $read <: r"(?s)(?:Date\s*\??\.\s*now|Math\s*\??\.\s*random)",
+    register_diagnostic(span=$read, message="packages/domain reads no clock and no randomness — take the time as a parameter (now: number) and an injected id source.")
+  },
+  JsNewExpression() as $read where {
+    $read <: includes "Date",
+    $read <: r"(?s)new\s+Date\b.*",
+    register_diagnostic(span=$read, message="packages/domain reads no clock and no randomness — take the time as a parameter (now: number) and an injected id source.")
+  }
+}

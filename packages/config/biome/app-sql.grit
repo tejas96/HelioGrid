@@ -1,0 +1,12 @@
+// An app writes no SQL: a string, or a template literal (tagged or not), that opens with
+// select / insert into / update … set / delete from. Queries belong to packages/db.
+or {
+  JsStringLiteralExpression() as $query where {
+    $query <: r"(?is)[\x22\x27](?:select |insert into |update [^\n]* set |delete from ).*",
+    register_diagnostic(span=$query, message="SQL in an app — queries belong to packages/db, which owns the schema, the tenant predicate and the index-backed read.")
+  },
+  JsTemplateExpression() as $query where {
+    $query <: r"(?is)[^\x60]*\x60\s*(?:select\s|insert\s+into\s|update\s.*?\sset\s|delete\s+from\s).*",
+    register_diagnostic(span=$query, message="SQL in an app — queries belong to packages/db, which owns the schema, the tenant predicate and the index-backed read.")
+  }
+}

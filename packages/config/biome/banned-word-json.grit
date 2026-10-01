@@ -1,0 +1,15 @@
+language json
+
+// The commercial document is a Proposal (JSON): the banned word in a key or a value.
+or {
+  JsonMemberName(),
+  JsonStringValue()
+} as $word where {
+  $lower = lowercase($word),
+  $lower <: or {
+    includes "quot",
+    includes "क"
+  },
+  $word <: r"(?is).*(?:quot(?:e|ation|ing)|कोटेश|क्वोट|क्वॉट).*",
+  register_diagnostic(span=$word, message="Banned word — the commercial document is a Proposal in every language: say 'proposal' (प्रस्ताव).")
+}

@@ -1,0 +1,72 @@
+language css
+
+// A UI stylesheet names no literal colour: a hex, rgb()/rgba()/hsl()/hsla()/oklch()/lab() opened by
+// a digit, or a named colour leading the value of a colour-bearing property. Comments are trivia and
+// never read. Silent: an rgba()/hsla() stop whose alpha is exactly 0 (the transparent end of a
+// gradient), a quoted string that starts sentence-case and holds a space, and color-mix() over tokens.
+// Each regex sits behind `includes` checks that are cheaper and never narrower.
+or {
+  CssColor() as $colour where {
+    register_diagnostic(span=$colour, message="Raw colour in a UI path — use a token from @heliogrid/theme; color-mix() over tokens is fine.")
+  },
+  CssFunction() as $call where {
+    $call <: or {
+      includes "rgb",
+      includes "hsl",
+      includes "oklch",
+      includes "lab"
+    },
+    $call <: r"(?s)(?:rgb|hsl|oklch|lab|rgba|hsla)\(\s*[0-9.].*",
+    not $call <: r"(?s)(?:rgba|hsla)\([^()]*,\s*0(?:\.0+)?\s*\)",
+    register_diagnostic(span=$call, message="Raw colour in a UI path — use a token from @heliogrid/theme; color-mix() over tokens is fine.")
+  },
+  CssGenericProperty() as $declaration where {
+    $declaration <: or {
+      includes "olor",
+      includes "background",
+      includes "fill",
+      includes "stroke"
+    },
+    $declaration <: or {
+      includes "black",
+      includes "white",
+      includes "red",
+      includes "green",
+      includes "blue",
+      includes "gray",
+      includes "grey",
+      includes "orange",
+      includes "yellow",
+      includes "purple",
+      includes "pink",
+      includes "brown",
+      includes "cyan",
+      includes "magenta",
+      includes "navy",
+      includes "teal",
+      includes "olive",
+      includes "maroon",
+      includes "lime",
+      includes "aqua",
+      includes "fuchsia",
+      includes "silver",
+      includes "gold",
+      includes "indigo",
+      includes "violet"
+    },
+    $declaration <: r"(?s)(?:[A-Za-z-]*[cC]olor|background|fill|stroke)\s*:\s*[\x22\x27]?\s*[\x22\x27]?(?:black|white|red|green|blue|gray|grey|orange|yellow|purple|pink|brown|cyan|magenta|navy|teal|olive|maroon|lime|aqua|fuchsia|silver|gold|indigo|violet)\b.*",
+    register_diagnostic(span=$declaration, message="Raw colour in a UI path — use a token from @heliogrid/theme; color-mix() over tokens is fine.")
+  },
+  CssString() as $text where {
+    $text <: or {
+      includes "#",
+      includes "rgb",
+      includes "hsl",
+      includes "oklch",
+      includes "lab("
+    },
+    $text <: r"(?s).*(?:#[0-9a-fA-F]{3,8}\b|\b(?:rgb|hsl|oklch|lab|rgba|hsla)\(\s*[0-9.]).*",
+    not $text <: r"(?s)(?:\x22[A-Z][a-z][^\x22\n]* [^\x22\n]*\x22|\x27[A-Z][a-z][^\x27\n]* [^\x27\n]*\x27)",
+    register_diagnostic(span=$text, message="Raw colour in a UI path — use a token from @heliogrid/theme; color-mix() over tokens is fine.")
+  }
+}

@@ -1,0 +1,35 @@
+// The commercial document is a Proposal, in every language: "quote", "quotation", "quoting" (any
+// case, inside a word too — `quoteTotal`) and the Devanagari कोटेश / क्वोट / क्वॉट are refused in
+// names, strings, templates and JSX text. Comments are never read; `quota` is a different word.
+// The regex sits behind `includes` checks on the lower-cased text, cheaper and never narrower.
+or {
+  JsReferenceIdentifier(),
+  JsIdentifierBinding(),
+  JsIdentifierAssignment(),
+  JsName(),
+  JsLiteralMemberName(),
+  JsxName(),
+  JsxReferenceIdentifier(),
+  JsLiteralExportName(),
+  TsIdentifierBinding(),
+  TsTypeParameterName(),
+  JsPrivateName(),
+  JsPrivateClassMemberName(),
+  JsLabel(),
+  JsStringLiteralExpression(),
+  JsTemplateChunkElement(),
+  JsxString(),
+  JsxText(),
+  TsStringLiteralType(),
+  JsModuleSource(),
+  JsRegexLiteralExpression(),
+  JsDirective()
+} as $word where {
+  $lower = lowercase($word),
+  $lower <: or {
+    includes "quot",
+    includes "क"
+  },
+  $word <: r"(?is).*(?:quot(?:e|ation|ing)|कोटेश|क्वोट|क्वॉट).*",
+  register_diagnostic(span=$word, message="Banned word — the commercial document is a Proposal in every language: say 'proposal' (प्रस्ताव).")
+}

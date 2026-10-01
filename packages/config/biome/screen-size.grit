@@ -1,0 +1,112 @@
+// A screen writes no size; every size reaches it through a token. Three shapes, comments never read:
+//   · a non-zero length (px, rem, em, pt) in a string, a template, JSX text — 0, %, vw and vh pass;
+//   · a non-zero number on a size key: `width: 12`, `width={12}`, `size = 24`;
+//   · a Tailwind size class in a class string (className, class, clsx, classNames, cn).
+// A px value equal to a breakpoint passes inside a matchMedia() call or an @media string. The one
+// breakpoint today is --bp-desktop: 968px, read from packages/theme/src/_generated/tokens/spacing.css
+// (Grit cannot read a file). The second length regex spells the px length as every number but 968,
+// so a new --bp-* token there must be carved out of it the same way.
+// Each regex sits behind `includes` checks that are cheaper and never narrower.
+or {
+  or {
+    JsStringLiteralExpression(),
+    JsTemplateChunkElement(),
+    JsxString(),
+    JsxText(),
+    TsStringLiteralType()
+  } as $text where {
+    or {
+      and {
+        $text <: or {
+          includes "px",
+          includes "em",
+          includes "pt"
+        },
+        $text <: r"(?s)(?:.*[^\w.#-])?-?(?:\d*[1-9]\d*|\d*\.\d*[1-9]\d*|\d*[1-9]\d*\.\d+)(?:px|rem|em|pt)\b.*",
+        or {
+          $text <: r"(?s)(?:.*[^\w.#-])?(?:-(?:\d*[1-9]\d*|\d*\.\d*[1-9]\d*|\d*[1-9]\d*\.\d+)(?:px|rem|em|pt)|(?:\d*[1-9]\d*|\d*\.\d*[1-9]\d*|\d*[1-9]\d*\.\d+)(?:rem|em|pt)|(?:\d*\.\d*[1-9]\d*|0*(?:[1-9]\d?|[1-9]\d{3,}|[1-8]\d\d|9[0-57-9]\d|96[0-79])(?:\.0+)?)px)\b.*",
+          and {
+            not $text <: includes "@media",
+            not $text <: within JsCallExpression(callee=or {
+              "matchMedia",
+              JsStaticMemberExpression(member="matchMedia")
+            })
+          }
+        }
+      },
+      and {
+        $text <: includes "-",
+        or {
+          $text <: within JsxAttribute(name=or {
+            "className",
+            "classNames",
+            "class"
+          }) ,
+          $text <: within JsCallExpression(callee=or {
+            "clsx",
+            "classNames",
+            "cn",
+            JsStaticMemberExpression(member=or {
+              "clsx",
+              "classNames",
+              "cn"
+            })
+          }) ,
+          $text <: within JsPropertyObjectMember(name=or {
+            "className",
+            "'className'"
+          }) ,
+          $text <: within JsVariableDeclarator(id="className")
+        },
+        $text <: r"(?s)(?:.*[^\w-])?-?(?:p[xytblrse]?|m[xytblrse]?|w|h|size|gap(?:-[xy])?|space-[xy]|top|left|right|bottom|inset(?:-[xy])?|min-[wh]|max-[wh]|rounded(?:-[a-z]+)?|leading|tracking|basis|translate-[xy]|text)-(?:\[[^\]]+\]|\d+(?:\.\d+)?|px)(?:[^\w-].*)?"
+      }
+    },
+    register_diagnostic(span=$text, message="Raw size on a screen — use a token from @heliogrid/theme: var(--sp-*), var(--r-*), var(--fs-*) on web, theme.spacing[…] on native.")
+  },
+  or {
+    JsPropertyObjectMember(),
+    JsxAttribute(),
+    JsVariableDeclarator(),
+    JsAssignmentExpression(),
+    JsObjectBindingPatternShorthandProperty(),
+    JsFormalParameter(),
+    JsPropertyClassMember(),
+    TsPropertySignatureTypeMember()
+  } as $pair where {
+    $pair <: or {
+      includes "width",
+      includes "Width",
+      includes "height",
+      includes "Height",
+      includes "size",
+      includes "Size",
+      includes "hitSlop",
+      includes "gap",
+      includes "Gap",
+      includes "padding",
+      includes "margin",
+      includes "top",
+      includes "left",
+      includes "right",
+      includes "bottom",
+      includes "inset",
+      includes "letterSpacing",
+      includes "Radius",
+      includes "flexBasis",
+      includes "translate"
+    },
+    $pair <: or {
+      includes "1",
+      includes "2",
+      includes "3",
+      includes "4",
+      includes "5",
+      includes "6",
+      includes "7",
+      includes "8",
+      includes "9"
+    },
+    $pair <: r"(?s)(?:[\w$]+\.)*[\x22\x27]?(?:width|height|size|strokeWidth|hitSlop|gap|rowGap|columnGap|padding\w*|margin\w*|top|left|right|bottom|inset|fontSize|lineHeight|letterSpacing|border\w*Radius|border\w*Width|minWidth|maxWidth|minHeight|maxHeight|flexBasis|translateX|translateY)[\x22\x27]?\s*[:=]\s*\{?\s*-?(?:\d*[1-9]\d*|\d*\.\d*[1-9]\d*|\d*[1-9]\d*\.\d+)(?:[^\w.%].*)?",
+    register_diagnostic(span=$pair, message="Raw size on a screen — use a token from @heliogrid/theme: var(--sp-*), var(--r-*), var(--fs-*) on web, theme.spacing[…] on native.")
+  }
+}

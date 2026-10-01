@@ -1,0 +1,37 @@
+language css
+
+// A screen stylesheet writes no size: a non-zero px, rem, em or pt length. 0, %, vw and vh pass,
+// and comments are never read. A px value equal to a breakpoint passes inside an @media query. The
+// one breakpoint today is --bp-desktop: 968px, read from
+// packages/theme/src/_generated/tokens/spacing.css (Grit cannot read a file); a new --bp-* token
+// there is added beside 968 below.
+or {
+  CssRegularDimension() as $size where {
+    $size <: or {
+      includes "px",
+      includes "em",
+      includes "pt"
+    },
+    $size <: r"-?(?:\d*[1-9]\d*|\d*\.\d*[1-9]\d*|\d*[1-9]\d*\.\d+)(?:px|rem|em|pt)",
+    not and {
+      $size <: r"968(?:\.0+)?px",
+      $size <: within CssMediaAtRule() ,
+      $size <: within or {
+        CssQueryFeaturePlain(),
+        CssQueryFeatureRange(),
+        CssQueryFeatureReverseRange(),
+        CssQueryFeatureRangeInterval()
+      }
+    },
+    register_diagnostic(span=$size, message="Raw size on a screen — use a token from @heliogrid/theme: var(--sp-*), var(--r-*), var(--fs-*) on web, theme.spacing[…] on native.")
+  },
+  CssString() as $text where {
+    $text <: or {
+      includes "px",
+      includes "em",
+      includes "pt"
+    },
+    $text <: r"(?s)(?:.*[^\w.#-])?-?(?:\d*[1-9]\d*|\d*\.\d*[1-9]\d*|\d*[1-9]\d*\.\d+)(?:px|rem|em|pt)\b.*",
+    register_diagnostic(span=$text, message="Raw size on a screen — use a token from @heliogrid/theme: var(--sp-*), var(--r-*), var(--fs-*) on web, theme.spacing[…] on native.")
+  }
+}

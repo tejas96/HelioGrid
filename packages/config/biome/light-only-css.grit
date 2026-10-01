@@ -1,0 +1,15 @@
+language css
+
+// v1 is light-only (stylesheets): no prefers-color-scheme query and no `color-scheme:` set to dark or
+// normal. Comments are never read.
+or {
+  CssIdentifier() as $name where {
+    $name <: "prefers-color-scheme",
+    register_diagnostic(span=$name, message="v1 is light-only — no dark mode, colour-scheme API or dark scope; the theme has only the light set.")
+  },
+  CssGenericProperty() as $declaration where {
+    $declaration <: includes "color-scheme",
+    $declaration <: r"(?s)color-scheme\s*:[^;}]*\b(?:dark|normal)\b.*",
+    register_diagnostic(span=$declaration, message="v1 is light-only — no dark mode, colour-scheme API or dark scope; the theme has only the light set.")
+  }
+}
