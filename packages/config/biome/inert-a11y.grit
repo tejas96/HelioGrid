@@ -1,0 +1,33 @@
+// A React Native View is an accessibility element only with `accessible` (not `={false}`), an
+// `accessibilityRole` or a `role`; accessibilityState, accessibilityLabel or accessibilityValue on a
+// View or Animated.View with none of them is never read. A tag with a {...spread} is skipped: the
+// spread may supply the missing prop. Only the tag's own attributes are read, never a nested tag's.
+or {
+  JsxOpeningElement(name=$name, attributes=$attrs),
+  JsxSelfClosingElement(name=$name, attributes=$attrs)
+} as $tag where {
+  $tag <: includes "accessibility",
+  $name <: or {
+    "View",
+    "Animated.View"
+  },
+  $attrs <: some JsxAttribute(name=$trigger) where {
+    $trigger <: or {
+      "accessibilityState",
+      "accessibilityLabel",
+      "accessibilityValue"
+    }
+  },
+  not $attrs <: some JsxSpreadAttribute(),
+  not $attrs <: some JsxAttribute(name=$role) where {
+    $role <: or {
+      "accessibilityRole",
+      "role"
+    }
+  },
+  not $attrs <: some JsxAttribute(name=$accessible) as $flag where {
+    $accessible <: "accessible",
+    not $flag <: r"accessible\s*=\s*\{\s*false\s*\}"
+  },
+  register_diagnostic(span=$tag, message="This View is not an accessibility element, so its accessibility state, label or value is never read — put them on the Pressable or Text the user lands on, or give the View a role; adding accessible instead would hide every control inside it.")
+}

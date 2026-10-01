@@ -23,9 +23,6 @@ run 'dependency-cruiser'      pnpm exec dependency-cruiser --config .dependency-
 run 'sherif (dep drift)'      pnpm exec sherif
 run 'repo adherence'          bash scripts/check-adherence.sh
 run '.env.example complete'    node scripts/check-env-access.mjs
-# Gate 6 — the only gate that reads MEANING rather than shape: prop contracts vs the design system,
-# false "it belongs to another folder" excuses, and inert React Native accessibility state.
-run 'ds:contract (meaning)'   node scripts/ds-contract.mjs
 
 if [ ${#failed[@]} -gt 0 ]; then
   printf '\n%s of %s lint gates FAILED:\n' "${#failed[@]}" "$total"

@@ -28,7 +28,6 @@
     "tools:oasdiff": "bash scripts/install-oasdiff.sh",
     "check:dupes": "jscpd --config .jscpd.json apps packages",
     "check:env": "node scripts/check-env-access.mjs",
-    "ds:contract": "node scripts/ds-contract.mjs",
     "check:docs": "python3 scripts/gates.py",
     "check:all": "pnpm turbo typecheck && pnpm lint && pnpm boundaries && pnpm check:dupes && pnpm check:openapi && pnpm check:catalogs && pnpm check:languages && pnpm check:docs && pnpm test:unit && pnpm turbo test",
     "db:migration:new": "pnpm --filter @heliogrid/db migration:new",

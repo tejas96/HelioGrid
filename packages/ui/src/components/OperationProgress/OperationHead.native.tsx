@@ -73,7 +73,7 @@ export function OperationHead({
            without a labelled parent "work is happening" reaches nobody. Web wraps the same hidden
            rail in `role="progressbar"` + `aria-label`, and ARIA reads a progressbar with no
            `aria-valuenow` as indeterminate. RN DOES NOT: check (g) of this repo's own contract
-           (scripts/ds-contract/native-role.mjs) fails `progressbar` with no `accessibilityValue`
+           (the `progressbar-value` Biome plugin) fails `progressbar` with no `accessibilityValue`
            outright, because TalkBack and VoiceOver announce a percentage for the role and an
            INDETERMINATE operation has no position to give them. Its prescribed remedy for this
            exact shape is to drop the role and announce the activity in words — which is what this

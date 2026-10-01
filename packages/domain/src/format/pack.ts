@@ -14,7 +14,7 @@ import { type DisplayVocabulary, IN_VOCABULARY } from './vocabulary';
  * **The shape is FLAT because the design system declares it flat.** `MarketProvider`'s pulled
  * contract (`packages/theme/src/_generated/contracts/data/MarketProvider.d.ts.txt`) fixes
  * `id`, `locale`, `currency`, `currencyFractionDigits`, `clock` and `taxIdLabel` as prop names,
- * and `check:ds-contract` fails on a dropped one. Grouping them into sub-objects here would
+ * and the `design-system-props` invariant fails on a dropped one. Grouping them into sub-objects here would
  * mean the design system and this package each declaring their own pack — the second copy this
  * slice exists to remove. Fields the PRD adds (the minor unit, the timezone, the phone spec)
  * sit beside them.

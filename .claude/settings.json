@@ -29,7 +29,6 @@
       "Bash(pnpm test:unit)",
       "Bash(pnpm test:coverage)",
       "Bash(pnpm infra:token)",
-      "Bash(pnpm ds:contract)",
       "Bash(pnpm dupes:*)",
       "Bash(gh pr checks *)",
       "Bash(gh pr view *)",

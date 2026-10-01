@@ -408,6 +408,18 @@
         "!**/android/**",
         "!**/_generated/**"
       ]
+    },
+    {
+      "path": "./packages/config/biome/inert-a11y.grit",
+      "includes": ["**/packages/ui/src/**/*.{ts,tsx}"]
+    },
+    {
+      "path": "./packages/config/biome/folded-control.grit",
+      "includes": ["**/packages/ui/src/**/*.{ts,tsx}"]
+    },
+    {
+      "path": "./packages/config/biome/progressbar-value.grit",
+      "includes": ["**/packages/ui/src/**/*.{ts,tsx}"]
     }
   ],
   "javascript": {

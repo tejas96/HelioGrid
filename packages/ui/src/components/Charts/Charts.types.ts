@@ -13,8 +13,7 @@ import type { SurfaceState } from '../UnavailableNote';
  * A tier: one of `contracts`' four (`F8-02`), or `'unmarked'` — which renders nothing and records
  * that the absence is deliberate. Closed, as `components/Provenance`'s is (`F8-03`).
  *
- * Declared here rather than imported: a chart draws its own provenance line (`ChartProvenance`),
- * and `pnpm ds:contract` (c) reads an imported `Provenance` spec as owing `renderProvenance`.
+ * Declared here rather than imported: a chart draws its own provenance line (`ChartProvenance`).
  */
 type ProvenanceTierSpec = ProvenanceTier | 'unmarked';
 
