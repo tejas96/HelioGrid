@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import type { ShellActionProps } from './AppShell.types';
 import { badgeName, showsBadge } from './AppShell.types';
@@ -26,11 +27,17 @@ export function ShellAction({
   /* A zero badge keeps the plain name here (the source's `badge ?` test) while it still reaches
      CountBadge, which renders nothing at zero. */
   const name = badge === 0 ? label : badgeName(label, badge);
+  const { controlFill } = useGround();
   return (
     <Pressable
       accessibilityLabel={name}
       onPress={onClick}
-      style={[styles.action, active ? styles.active : undefined, style]}
+      style={[
+        styles.action,
+        { backgroundColor: controlFill },
+        active ? styles.active : undefined,
+        style,
+      ]}
     >
       {icon}
       {showsBadge(badge) ? (
@@ -46,7 +53,9 @@ const styles = StyleSheet.create({
   action: {
     width: 44,
     height: 44,
-    borderRadius: theme.radius['r-md'],
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: theme.radius['r-pill'],
   },
   active: {
     backgroundColor: theme.colors['accent-subtle'],

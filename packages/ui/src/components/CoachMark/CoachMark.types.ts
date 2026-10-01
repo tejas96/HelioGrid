@@ -39,6 +39,11 @@ export interface CoachMarkProps extends CoachMarkStep {
   open?: boolean;
   step?: number;
   total?: number;
+  /**
+   * The counter's words in the reader's language — "1 of 2". Shown only with `step` and a
+   * `total` above one; the English "Step n of m" stands in where a caller passes none.
+   */
+  counterLabel?: string;
   /** Ring inset around the anchor. The ring is the system's 2px accent ring — there is no scrim. */
   padding?: number;
   width?: number;

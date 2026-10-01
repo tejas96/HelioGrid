@@ -19,8 +19,8 @@ const removed = sessionAfter(signedIn, { kind: 'lost', loss: 'access-removed' })
 const removedAtBoot = sessionAfter(CHECKING, { kind: 'lost', loss: 'access-removed' });
 
 describe('sessionAfter — why a session ended, and what the device keeps of it (M01-07, S1.wrong.4)', () => {
-  it('sends a signed-in session whose access was removed to the door, carrying the reason', () => {
-    expect(removed).toEqual({ ...SIGNED_OUT, ended: { tenantId: TENANT_ID } });
+  it('holds a signed-in person whose access was removed, with the reason', () => {
+    expect(removed).toEqual({ ...signedIn, ended: { tenantId: TENANT_ID } });
     expect(sessionAfter(removed, { kind: 'signed-out' })).toEqual(SIGNED_OUT);
   });
 
@@ -44,7 +44,11 @@ describe('sessionAfter — why a session ended, and what the device keeps of it 
   });
 
   it.each([
-    { from: removed, loss: 'signed-out', why: 'a signed-out loss after access removed' },
+    {
+      from: removed,
+      loss: 'signed-out',
+      why: 'a signed-out refresh after the removal cleared the cookies',
+    },
     { from: removed, loss: 'access-removed', why: 'the same removal twice' },
     { from: removedAtBoot, loss: 'signed-out', why: 'a signed-out loss after one found at boot' },
     { from: SIGNED_OUT, loss: 'access-removed', why: 'a late removal once signed out' },

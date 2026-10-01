@@ -1,6 +1,6 @@
 import { CompanySignupScreen } from '../../screens/company-signup';
-import { HomeScreen } from '../../screens/home';
-import { useHasNoTenant, useHasTenant } from '../guards';
+import { PlaceholderScreen, ShellScreen } from '../../screens/shell';
+import { useHasHome, useHasNoTenant, useShowsShell } from '../guards';
 
 /**
  * Authenticated routes.
@@ -12,12 +12,21 @@ import { useHasNoTenant, useHasTenant } from '../guards';
  * When roles land, group by CAPABILITY — never by role. Roles are stackable, so a role-keyed
  * group would declare a shared screen twice, and duplicate route names are a hard throw.
  *
- * The tab navigator lived here; it was built on the v1 design system and
- * was removed with it. The new shell is `AppShell` + `BottomNav` from the V2 design system
- * (docs/engineering/17-ui-architecture-v2.md) and re-enters here when it is built.
+ * Every door the shell opens exists, so no control is dead: each module's screen replaces its
+ * placeholder when it lands (`T-SHELL-001`'s Used by).
  */
 export const appScreens = {
-  Home: { screen: HomeScreen, if: useHasTenant },
+  Shell: { screen: ShellScreen, if: useShowsShell },
   /** A verified number with no company yet lands on the company step (`SCR-M01-01` decision 1, `M01-10`). */
   CompanySetup: { screen: CompanySignupScreen, if: useHasNoTenant },
+  Leads: { screen: PlaceholderScreen, if: useHasHome },
+  Proposals: { screen: PlaceholderScreen, if: useHasHome },
+  Projects: { screen: PlaceholderScreen, if: useHasHome },
+  People: { screen: PlaceholderScreen, if: useHasHome },
+  Campaigns: { screen: PlaceholderScreen, if: useHasHome },
+  More: { screen: PlaceholderScreen, if: useHasHome },
+  QuickAddLead: { screen: PlaceholderScreen, if: useHasHome },
+  StartSurvey: { screen: PlaceholderScreen, if: useHasHome },
+  Search: { screen: PlaceholderScreen, if: useHasHome },
+  Notifications: { screen: PlaceholderScreen, if: useHasHome },
 };

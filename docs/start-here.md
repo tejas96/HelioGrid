@@ -143,7 +143,7 @@ reason is "it explains…" is Help — push back before looking at the frame.
 >
 > Two things are genuinely different at this width, and you should let them be:
 >
-> 1. **The shell is a different object** (`F7-22`) — an arc bar with a raised centre action on
+> 1. **The shell is a different object** (`F7-22`) — a floating pill footer on
 >    mobile, a rail-and-header shell on desktop.
 > 2. **Desktop has room the phone does not.** More rows on screen at once, more columns, a
 >    persistent side panel where the phone needed an overlay, the full comparison where the phone

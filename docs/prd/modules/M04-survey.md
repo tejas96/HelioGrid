@@ -115,7 +115,7 @@ and deliberately.
   capture, the camera, the shading sketch and the review screen are designed at 375 px first
   (`F7-30`) and are what the product looks like to a person holding a phone on a roof in sunlight.
   Every one of them renders on web for review and correction; none of them assumes a desk.
-- The surveyor's shell centre action is **Start survey** — the arc bar's elevated centre with its
+- The surveyor's shell centre action is **Start survey** — the add action in the pill footer, with its
   role-adaptive verb (`F7-22`).
 
 *Section removed 2026-08-07 by owner decision: the offline/sync capability was deleted. The one

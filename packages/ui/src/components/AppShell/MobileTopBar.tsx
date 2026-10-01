@@ -18,6 +18,8 @@ interface WebMobileTopBarProps extends MobileTopBarProps {
  */
 export function MobileTopBar({
   title,
+  searchLabel,
+  notificationsLabel,
   brand,
   tenant,
   onSearchClick,
@@ -39,18 +41,18 @@ export function MobileTopBar({
     >
       {leading}
       {brand !== undefined ? <div className="hg-app-shell-header-slot">{brand}</div> : null}
-      {tenant !== undefined ? <div className="hg-app-shell-header-slot">{tenant}</div> : null}
+      {tenant !== undefined ? <div className="hg-app-shell-topbar-tenant">{tenant}</div> : null}
       {title !== undefined ? <h1 className="hg-app-shell-topbar-title">{title}</h1> : null}
       {title === undefined ? <div className="hg-app-shell-topbar-spacer" /> : null}
       <div className="hg-app-shell-topbar-actions">
         {actions}
         {jobs}
         {onSearchClick !== undefined ? (
-          <ShellAction label="Search" onClick={onSearchClick} icon={<SearchIcon />} />
+          <ShellAction label={searchLabel} onClick={onSearchClick} icon={<SearchIcon />} />
         ) : null}
         {onNotificationsClick !== undefined ? (
           <ShellAction
-            label="Notifications"
+            label={notificationsLabel}
             badge={notifications}
             onClick={onNotificationsClick}
             icon={<BellIcon />}

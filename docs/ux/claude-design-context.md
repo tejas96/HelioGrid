@@ -339,7 +339,7 @@ page (`--canvas`) → a container that holds controls (`--surface-form`) → a c
   FIELD MODE column for the ghost button.
 
 **The shell is drawn once, in `SCR-SHELL-01`, and every other screen reuses it (`F7-22`).** At 375
-an arc bar with a **raised centre action** and the persona's standing destinations — **Home, at most
+one **floating white pill footer** — the destination in view a near-black pill with its name, the others outlined icons, the add action in its middle — holding the persona's standing destinations — **Home, at most
 two lists the role can read, and More**, exactly as `F7-48`'s table gives them per preset (a Sales
 Executive: Home · Leads · Proposals · More; Finance: Home · Projects · More; an installer: Home ·
 More). Never draw a tab the persona's role cannot read. At 1536 the icon rail carries **the same**, with the **bell and the account at the rail's foot**, plus

@@ -125,8 +125,8 @@
   gap: var(--sp-2);
   box-sizing: border-box;
   min-height: var(--topbar-h-mobile, 56px);
-  padding: 0 var(--sp-3) 0 var(--sp-4);
-  background: var(--surface);
+  padding: 0 var(--screen-pad-mobile);
+  background: var(--hg-ground);
   font-family: var(--font-sans);
 }
 
@@ -147,6 +147,12 @@
   text-overflow: ellipsis;
 }
 
+/* The tenant's words give way first, so Search, the bell and the avatar keep their 44. */
+.hg-app-shell-topbar-tenant {
+  flex-shrink: 1;
+  min-width: 0;
+}
+
 .hg-app-shell-topbar-spacer {
   flex: 1;
 }
@@ -155,7 +161,7 @@
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: var(--sp-0-5);
+  gap: var(--sp-2);
 }
 
 /* ── the 44px shell button ─────────────────────────────────────────────────────────────── */
@@ -169,8 +175,8 @@
   min-width: 44px;
   height: 44px;
   border: none;
-  border-radius: var(--r-md);
-  background: transparent;
+  border-radius: var(--r-pill);
+  background: var(--hg-control-fill);
   color: var(--text-secondary);
   cursor: pointer;
   transition: background var(--dur-standard) var(--ease-standard);
@@ -215,7 +221,7 @@
   height: var(--sp-5);
   border-radius: var(--r-pill);
   padding: 0 6px;
-  box-shadow: 0 0 0 2px var(--surface);
+  box-shadow: 0 0 0 2px var(--hg-ground);
   font-family: var(--font-sans);
   font-size: var(--fs-caption);
   font-weight: var(--fw-bold);

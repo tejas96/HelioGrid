@@ -1,0 +1,13 @@
+/* ── the shell's own glyphs ────────────────────────────────────────────────────────────── */
+
+.hg-shell-glyph[data-tone="secondary"] {
+  color: var(--text-secondary);
+}
+
+.hg-shell-glyph[data-tone="inverse"] {
+  color: var(--text-inverse);
+}
+
+.hg-shell-glyph[data-tone="primary"] {
+  color: var(--text-primary);
+}

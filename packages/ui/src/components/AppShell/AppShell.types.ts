@@ -74,6 +74,10 @@ export interface AppHeaderProps {
 
 export interface MobileTopBarProps {
   title?: string;
+  /** The Search button's name, in the reader's language — the bar holds no English of its own. */
+  searchLabel: string;
+  /** The bell's name, in the reader's language; the unread count is added to it. */
+  notificationsLabel: string;
   /** The product mark. The phone has no rail, so **this** is where it rides. */
   brand?: ReactNode;
   /** The tenant's `TenantMark`. With a title present pass `showName={false}` — one set of words. */
@@ -89,6 +93,31 @@ export interface MobileTopBarProps {
   leading?: ReactNode;
   actions?: ReactNode;
   sticky?: boolean;
+}
+
+/** The shapes the shell draws itself — named for the shape, never the product word. */
+export type ShellGlyphName =
+  | 'house'
+  | 'people'
+  | 'document'
+  | 'board'
+  | 'pair'
+  | 'megaphone'
+  | 'dots'
+  | 'plus-circle'
+  | 'chevron'
+  | 'shield'
+  | 'sign-out'
+  | 'lock';
+
+export interface ShellGlyphProps {
+  name: ShellGlyphName;
+  /** The filled form, for the pill's item in view only (`F7-19`). Outlined otherwise. */
+  filled?: boolean;
+  /** `lg` (24) on the pill, `md` (20) in a menu, `xl` (32) on a full-screen state. */
+  size?: 'md' | 'lg' | 'xl';
+  /** `secondary` at rest, `inverse` on the near-black pill, `primary` on a state's mark. */
+  tone?: 'primary' | 'secondary' | 'inverse';
 }
 
 export interface AppShellProps {

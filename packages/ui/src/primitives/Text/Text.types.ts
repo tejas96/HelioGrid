@@ -57,4 +57,13 @@ export interface TextProps {
    * Web: `role="alert"`. Native: `accessibilityLiveRegion="assertive"`.
    */
   live?: boolean;
+  /**
+   * Keep the words on ONE line, cut with an ellipsis at the end — for a NAME a bar has one line
+   * for, like the company's in the phone's top bar (`SCR-SHELL-01`). Never translated copy: a
+   * translation that fits in English clips in Hindi and Marathi (ui-adherence).
+   * Web: `white-space: nowrap` with `text-overflow: ellipsis`. Native: `numberOfLines={1}`.
+   */
+  oneLine?: boolean;
+  /** The variant at the bold weight — a name that must stand out in a line of its own size. */
+  bold?: boolean;
 }

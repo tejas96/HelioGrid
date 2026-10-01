@@ -32,6 +32,8 @@ export function Text({
   align,
   lang,
   live,
+  oneLine,
+  bold,
   as,
   className,
 }: WebTextProps) {
@@ -46,6 +48,8 @@ export function Text({
       data-variant={variant}
       data-color={color}
       data-align={align}
+      data-one-line={oneLine === true ? 'true' : undefined}
+      data-bold={bold === true ? 'true' : undefined}
       lang={lang}
       role={live === true ? 'alert' : undefined}
       style={lineHeight === undefined ? undefined : { lineHeight: `${lineHeight}px` }}

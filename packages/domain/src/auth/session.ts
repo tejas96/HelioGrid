@@ -81,9 +81,10 @@ export interface KnownAccount {
 export type SessionLoss = 'access-removed' | 'signed-out';
 
 /**
- * The company removed this person's access while the device held the session (`S1.wrong.4`). The
- * snapshot is at the door with this set, until the person signs in again or signs out. `tenantId`
- * is null when the removal was found by the boot check, before the device knew who was signed in.
+ * The company removed this person's access (`S1.wrong.4`). Found while signed in, the snapshot
+ * stays `authenticated` with this set — the person held in the shell, which says so — until they
+ * sign out; found by the boot check, it is `anonymous`, at the door. `tenantId` is null when the
+ * removal was found by the boot check, before the device knew who was signed in.
  */
 export interface EndedAccess {
   readonly tenantId: string | null;
@@ -104,7 +105,7 @@ export interface SessionSnapshot {
    * memory only and gone with the session, so the next sign-in lands on the ladder's home again.
    */
   chosenHome: RolePreset | null;
-  /** Set, on an `anonymous` snapshot, when the server removed this person's access. */
+  /** Set when the server removed this person's access: held while signed in, else at the door. */
   ended: EndedAccess | null;
 }
 
