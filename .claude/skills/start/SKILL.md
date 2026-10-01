@@ -1,157 +1,202 @@
 ---
 name: start
-description: Begin a task or a bug fix the controlled way — a clean start in a fresh session on its own branch, the task understood and its conflicts found, the risk tier and the scope fixed, the design broken into cases, and for a HIGH task the data model, the contract, the diagram, the whole QA plan and one second actor's review — then a simple explanation and a stop for the go. Use at the start of every piece of work.
+description: Begin a task in a fresh session. Picks the next step in the build order (or takes the task the owner names), reads the task, its brief, its design and the code it touches, critiques them, writes the plan, the acceptance criteria and the QA plan into the task, and stops for the owner's go. Use at the start of every piece of work.
 ---
 
-# `/start [T-id | bug]` — understand, tier, scope, cases, (HIGH: plan and review), explain, stop
+# /start — pick, understand, plan, stop
 
-All the thinking happens here, once, and goes into the ticket in the shape `docs/tasks/README.md`
-gives, so the build executes and `/verify` runs without planning again. A ticket still in the earlier
-grammar — `→ proof:`, `**n/a**` or `**S<n>**` lines, unnumbered done-when lines — is rewritten into
-that shape here, before the go.
+Do steps 1–7 in order. Write no code. Step 7 ends in a stop.
 
-## 0. A clean start
+## 1. Clean start
 
-- **One fresh session per task.** If this one already did other work, say so and ask for a new one.
-- **Which task: the build-order line's NEXT step** (`M126`), or the one the owner names, recorded in
-  the ticket as theirs. Never from memory; never a task further along the order because it is ready.
-  With no task named, read NEXT off `main`, never off the branch this folder happens to be on: on a
-  clean tree (`git status --short` empty), `git fetch origin && git checkout --detach origin/main &&
-  python3 scripts/gates.py`. A dirty tree is shown to the owner first, and NEXT is never read off the
-  branch it sits on. When NEXT is the owner's — a screen to draw, a blocker to clear — say so
-  and stop: that is the step, and `/start` takes the task once it is done. A ticket with no `Depends
-  on:` line reads as waiting on nothing: write it on the task's branch, then run the gates again,
-  since the line can pull another task ahead. If NEXT now names another task, start that one
-  instead: rename the branch for it (`git branch -m <kind>/<t-id>-<slug>`), MOVE the proof record to
-  the new id (`mv` its folder, then write the new branch name into its `branch` file) so no record is
-  left bound to a branch that is gone, and the line already written rides in that task's change.
-- **The branch, before the first edit — ticket text included.** `main` green (`gh run list --branch
-  main --limit 1`), the tree clean (`git status --short`), then `git fetch origin && git checkout -b
-  <kind>/<t-id>-<slug> origin/main && git branch --unset-upstream` — `feat`, `fix`, or `ci` / `chore` /
-  `docs` for work with no task rows. git's pre-commit and CI read the tier from the task id in the
-  name (`M113`). Bind the proof record — `r="$(git rev-parse --git-common-dir)/heliogrid-harness/<T-id>";
-  mkdir -p "$r"; git branch --show-current > "$r/branch"` — and read the `proof records:` line the
-  checkout prints (`M141`). A task whose branch exists is resumed on it, its uncommitted files shown
-  to the owner first.
-- A bug is a task whose rows are the report: reproduce it on the running app, and the failing test
-  comes before the fix (`CLAUDE.md` §1, §8).
+- `git status` must be clean. If it is not, stop and ask the owner.
+- `git fetch origin`, then branch from main: `git checkout -b <kind>/<t-id>-<slug> origin/main`
+  (`feat`, `fix` or `chore`). Work in this folder, never a worktree.
+- Every branch shares one local database. A migration from a branch that has not merged puts it
+  ahead of main, and this branch's `pnpm db:migrate` then fails. Ask the owner to merge that
+  branch first.
 
-## 1. Understand — read only what the task carries
+## 2. Pick the step — only when the owner names no task
 
-1. The task's own section of `docs/tasks/<module>.md`, heading to the next `---`; its rows are
-   verbatim PRD copies and carry their own rulings.
-2. The PRD only for what the section does not quote: the feature area's **Behavior detail** and
-   **Edge cases**, by heading — a ruling read from the row alone has contradicted them before.
-3. For a screen, the design the `DESIGN:` line links; none means not drawn, and the build line names
-   the drawing as the step before this task. For an engine a designed screen will
-   call, that screen's export: a number or vocabulary the drawing states is a fact the engine serves.
-4. The worked example the task names, in full — shape is copied from code.
-5. `.claude/landmines.md`, the sections for the packages the task reaches.
+1. Read the block table in `docs/build-order.md` and the notes under it, which say when a file's
+   tasks sit in more than one block.
+2. Walk ONE block at a time — the whole list costs about 40k tokens, one block about 8k. Take the
+   lowest block that still has a `planned` or `designed` task, and list its files' header lines:
+   `grep -nE '^### T-|^\*\*(Type|Status|Blocked|Parked|Depends on|DESIGN|Design):' <its files> | cut -c1-200`.
+   The V column of `docs/prd/registers/screens.md` §2 says which screens are V2.
+3. Walk the tasks in order: inside the block, its cells in the table's order (a task
+   file, or a task placed apart from its file); inside a file, the backend tasks first (any Type but
+   `screen`), then the screens, each as the file writes them. A `Depends on:` task in the same block
+   goes before the task that names it. Skip a task that is shipped, struck or parked, or whose
+   screens are all V2.
+4. The first open task decides the step:
+   - It has a `Blocked:` line → print it; the owner clears it. Stop.
+   - It waits on an open task → that task goes first when it is in the same block; otherwise (a later
+     block, or a parked task) the owner clears the wait. Stop.
+   - It is a screen whose `DESIGN:` line holds no link, or a backend task whose block still has an
+     undrawn screen it serves (a screen of its own file, or one whose `Depends on:` names it) → the
+     owner draws. Print: (1) paste `docs/ux/claude-design-context.md` into Claude Design; (2) paste
+     the brief `docs/ux/briefs/<SCR-id>-….md`; (3) draw it and export to `HelioGrid-UX/`; (4) put the
+     link on the `DESIGN:` line at `docs/tasks/<file>.md:<line>`. Stop.
+   - None of these → build it. Go on to step 3.
+5. Print three lines — `NEXT` the step · `AHEAD` the next undrawn screen on the walk · `DONE` how many
+   of the 99 V1 screens are drawn, which this counts:
+   `comm -12 <(grep -h '^\*\*DESIGN:\*\* SCR-' docs/tasks/*.md | grep -v PENDING | grep -oE 'SCR-[A-Z0-9]+-[0-9]+' | sort -u) <(awk -F'|' '/^\| SCR-/ && $7 ~ /V1/ {gsub(/ /,"",$2); print $2}' docs/prd/registers/screens.md | sort -u) | wc -l`
 
-**Buildable now?** Two facts, each with the file and line that proves it: the data it reads or writes
-exists on `main`, and the code it asks for is not already there — grep the names AND the behaviour
-(the route, the entity, the words a screen shows). Data in a later block → the task moves; already
-built → closed as built; `**Parked:**` → never started; something only the owner can clear — a ruling,
-an account → a `**Blocked:**` line naming it, and the build line stops there until it is cleared. Each
-is the owner's ruling, with a pick.
+When the owner names a task that is not the next one, say so in one line and go on.
 
-**Conflicts, before the go — two searches, each named with what it found:** (1) every gate and test
-stricter than the rows and every gate the change will meet — `grep -n` over `.claude/mechanisms.md`,
-`.claude/hooks/`, `scripts/` and the tests; (2) every use of each type, set or shape the task changes,
-over the WHOLE repo, `tests/` included.
+## 3. Read
 
-A question is open only after `docs/engineering/` and `docs/tasks/` are grepped for it; memory and
-`deferred.md` are pointers, not facts. A credential is never left as "needs a key": generate it into
-`.env.local`, or give it a named placeholder that passes `packages/env`, and build the whole path.
-Read the ticket as an EPC expert and a senior engineer — kW vs kWp, provenance tiers, money rounding,
-market rules, tenancy, platform parity — and fix it where it is wrong: a choice between readings the
-PRD supports is ruled into the row (`CLAUDE.md` §1); a new feature or number is asked, with a pick.
+- The task section. Its PRD rows — the whole row, from `docs/prd/`. Its brief. For a screen, its
+  export in `HelioGrid-UX/`.
+- Check the task's own references: every row id it cites exists in the PRD, and every quoted row
+  still matches its PRD cell. A mismatch is a finding for step 5.
+- The `CLAUDE.md` of each package the task will touch.
+- The code the task will touch — its call sites, not only its declarations.
 
-## 2. Tier and scope — decided now, locked by the go
+## 4. A screen task starts design-reviewer now
 
-- **`**Risk:**`** — `LOW — <why>` or `HIGH — <why>`, by `CLAUDE.md` §3's two tiers; no line reads as
-  HIGH. LOW pays for `break-it-reviewer` at `/ship` alone. HIGH adds `case-reviewer` here, the QA
-  agents at `/verify`, `design-reviewer` for a screen, `qa-parity` for a screen with a twin. **Say the
-  budget**: the agents and the rough minutes.
-- **`**Scope:**`** — In: the behaviours and the layers they touch (a screen names its twin and where
-  each shared part lives) · Out: what is left out, with why · Size: files and lines.
-- **Size is a signal, never a gate.** Past 25 files, 1,500 lines, one migration or one contract
-  router, ask ONE question: one task or two? Split at a layer seam in Law 3's order. Nothing is ever
-  removed to land under a count.
+Dispatch `design-reviewer` in the background with the screen id and the task file. It works while
+you do step 5.
 
-## 3. Design and cases — every task
+## 5. Critique the task
 
-**The three things** (`CLAUDE.md` §3), then the flow: which `packages/domain` reducer decides any
-state and which `packages/data` hook drives it (Law 11), or "none — the screen holds only its form
-fields" (`M80`). Contract before code (Law 3).
+Answer each, with file:line:
 
-**`**Placement:**`** — one row per new fact: the ONE package `architecture.md` §2 gives it, why, how
-others reach it, and the guard it joins (Law 12: a brand `M60`, an enum `M17`, a route `M15`, a table
-`M12`), enrolled in the same change. A kind with no row is said out loud. A gate this task adds or
-alters is proven red; an existing one is read, not re-proven.
+- **Gaps** — a row with no behaviour; a missing state: loading, empty, error, no permission, slow
+  network.
+- **Missing detail** — a number, a rule or a line of copy that no row gives.
+- **Over-engineering** — a part no row asks for.
+- **Conflicts** — with existing code, another task, the brief or the design.
+- **Size** — more than one screen on both platforms, or more than one backend slice (its tables and
+  its endpoints) → propose the split and stop.
 
-**`**Cases:**` — break it yourself**, one line per REAL risk, `- **C1** · <risk> → <fix> → <proof>`,
-nothing for a risk that cannot occur here. Try: the same request twice at once · two actors on one
-record · a state change whose sibling changes take a lock it does not · the process dying between two
-writes · a call that succeeded after it timed out, or arrives twice, late or out of order · the roll
-(`CLAUDE.md` §8): older readers on the new shape, new code on old rows · a secret sent back, a caller
-who lost access, a read or write across tenants · anything unbounded, N+1 · empty, maximum,
-malformed and duplicate input, other scripts, money at the minor unit, the tenant's clock · web and
-mobile, the app killed mid-action, a lost network · the log line that says it failed in production.
-Proofs are `docs/tasks/README.md`'s; a money, tenancy, permission or safety rule names a test that
-will be proven red (`.claude/rules/testing.md`), and a test title says only what that test decides.
+Two readings the PRD allows → take the simplest, and write it under "Decided at /start" with one
+reason. A feature or a number no PRD row implies → ask the owner.
 
-**`**Used by:**`** — the later tasks that consume what this lands, one line here, never an edit to
-their tickets. **`**DONE WHEN:**`** — the rows' own Given/When/Then, verbatim, each with its proof. A
-fix that changes what is built also becomes a done-when line, a ruling or an Out line. A task that
-adds a web route or a phone screen adds its regression flow as a done-when line (`M152`).
+## 6. Write into the task section
 
-## 4. HIGH adds: data model, contract, diagram, the whole QA plan, one second actor
+Below the task's header lines, which stay as they are, add the three sections in the format at the
+end of this file: `#### Plan`, `#### Acceptance criteria` (the task's `DONE WHEN` lines, renamed and
+extended) and `#### QA plan`.
 
-**`**Data model:**`** and **`**Contract:**`** lines. **Draw the architecture**: one diagram of the path
-a request or a job takes through the layers — which package does what, where state is stored, which
-step writes and which reads.
+## 7. Review, then stop
 
-**`**QA plan:**` — the whole plan, now**: the steps a person would notice plus ONE `landing` per
-surface the Scope reaches — `bash scripts/verify-digest.sh --surfaces --paths <each layer the Scope
-names>` prints them, the same table `/verify` §1 reads over the diff — behaviour-level: what a person
-does and sees, the copy from `i18n`, never a selector or a seed. A step names ONE platform, `ios` or
-`android`; only a `landing` may say `mobile`, meaning both. A landing the regression suite already
-drives reads `landing · suite <spec file>` and needs no agent. Every step's action is one its agent can
-DO and its `observe` one it can SEE (test-matrix §"What each agent can see and do"). Walk `.claude/skills/verify/references/test-matrix.md`'s edge checklist as an
-attack. The always-on API core (cross-tenant 404, no session refused, money reconciles) is in the plan
-when `apps/api`, `packages/db`, `packages/contracts` or `packages/data` is in the Scope. `expected` is
-a literal; where the rows are silent, the step RECORDS the value for a ruling. `severity` is set
-here: money, tenancy or provenance → `blocker`. A screen adds one `layout` step per platform and
-width — web at 375 and at 1536; `ios` and `android` on the device at its own width — measuring
-`design-reviewer.md`'s measure list against the export: `expect no measured difference beyond the
-ticket's ruled ones`, the measured values in `observed`, `observe computed-style` on the web and the
-tree's element frames on a phone, `severity major`. A phone compares heights, padding, gaps and
-sizes, never an x position: the device is not 375 wide. Its action renders, in Hindi and Marathi,
-the three longest labels the reviewer named. The reviewer's `MEASURE` findings go into the ticket as
-differences from the export, built to the design system.
+- The plan touches money, tenancy, permissions or the database schema → dispatch `plan-reviewer`
+  with the task file. Fix every finding once; do not run it again.
+- Wait for `design-reviewer`.
+- Show the owner, in simple words: what changes and where, the example, the risks, how many QA
+  checks, design-reviewer's MUST FIX and BETTER findings, each plan-reviewer finding with its fix,
+  and every open question. **Stop for the go.**
+- Design changes the owner approves are made in Claude Design: read the board with `DesignSync`
+  from the Claude Design project (never from `HelioGrid-UX/`), edit a copy in the scratchpad, show
+  the owner pictures, and write it back with `DesignSync` after the owner's yes. The owner
+  re-exports `HelioGrid-UX/`. Then the build starts.
+- After the go, the plan changes only through the owner: a new behaviour, table, route, contract or
+  package means stop and ask.
 
-**One second actor: `case-reviewer`**, with the task id. For a SCREEN, also `design-reviewer` in the
-same message: it renders the export, measures, and returns blockers and a better design; a `BETTER`
-the owner accepts goes into the ticket as a difference from the export, and no state may depend on
-hover. Fold each finding into the ticket; one you reject goes to the owner with its reason.
+---
 
-## 5. Explain, stop
+## The task format
 
-ONE screen, simple words: what we build · the tier and why · the diagram (HIGH) · scope in and out ·
-each case beside its fix, and every `none` · the QA plan as a short table (HIGH) · the budget. Nothing
-"to decide at build". **Stop for the go.** A go authorises the build on this branch; it is never a
-commit — that yes is given in `/ship`.
+````
+#### Plan
+**Scope** — In: … · Out: … (why) · Size: ~N files, ~N lines
+**Where**
+| package | what changes |
+|---|---|
+| domain | leads/quick-add.ts — the duplicate-phone rule |
+**How it works**
+  screen → useQuickAddLead (data) → POST /leads (api) → LeadService → leads table
+**Example**
+  Priya taps + → types a name and a phone → Save → the lead is first in the list, "Added".
+  ```ts
+  quickAddLead({ name, phone }): Promise<Lead>
+  ```
+**Data / API** — only when they change: the tables and the migration number; the routes and schemas
+**Risks** — only real ones: the risk → how the plan stops it → the test that proves it
+**Decided at /start** — each reading taken, with one reason
+**For you** — open questions and design recommendations
 
-## 6. After the go — the scope holds
+#### Acceptance criteria
+- A1 · Given … when … then … (M02-03) → proof: quick-add.test.ts › "…" · QA G1.1
+- A5 · added at /start (missing error state) · Given … → proof: QA G2.3
+````
 
-A new behaviour, layer, table, route or contract, or more than 1.5× the stated size, stops the build
-and goes to the owner; on a yes the Scope, the cases and the QA plan change in ONE edit, and for a
-HIGH task `case-reviewer` reads that change (`git diff` of the section). A tier that turns out HIGH
-comes back here the same way. A new file inside an In layer for In behaviour needs no ask. A harness
-problem met during the task goes to `docs/tasks/deferred.md`, never fixed inside the task.
+Each acceptance line names its proof: a test by file and name, or a QA check id. The PRD's own lines
+stay word for word.
 
-## What this skill never does
+## The QA plan format
 
-Read a whole task file, PRD or ledger "for context" · invent a requirement the rows do not state ·
-show a solution before trying to break it · call a task LOW because it is small · build before the go.
+````
+#### QA plan
+Surfaces: api · web · ios · android        (from what the change reaches)
+
+Smoke — every surface
+- S1 · sign in as owner → Leads list shows "Leads"
+
+G1 · Phone field — web · ios · android
+- G1.1 · empty, Save → "Enter a phone number", no request sent
+- G1.2 · 9 digits → "Phone must be 10 digits"
+
+API — api
+- P1 · POST /leads with no session → 401
+
+Look — web 375 + 1536 · ios · android
+- L1 · Quick Add matches the export: spacing, sizes, icons, order
+
+Regression — machine
+- R1 · tests/e2e/web/leads.spec.ts · tests/e2e/mobile/leads.yaml · unit tests
+
+Skipped: S2 (no list on this screen) · W3 (no form)
+````
+
+- A group holds every check of one field or one flow, so one agent runs it in one pass.
+- Each check names its platforms, so the web and phone results sit side by side in the report.
+- Each check is an action and the exact text or state expected. Copy an expected word from its
+  `packages/i18n` file, never from memory.
+- No severity: every in-scope issue QA finds is fixed in this branch.
+
+### The standard checks — copy every one that applies; list the rest on the Skipped line
+
+**API** — when `apps/api`, `db`, `contracts` or `data` changes
+- A1 · no session → 401
+- A2 · another tenant's id → 404, never 403
+- A3 · each role against each changed route → a role without the right gets 403
+- A4 · bad input (a missing field, a wrong type, too long) → 400 in the standard error shape
+- A5 · a create sent twice with the same key → one row, the same id
+- A6 · no 5xx and no error line in the API log
+- A7 · the database holds what is expected (read-only)
+
+**Every changed screen** — web, iOS and Android
+- S1 · the happy path end to end → the success state shows
+- S2 · loading, empty, one row, many rows
+- S3 · a server error and no connection → a message in the user's language; retry works
+- S4 · a double tap, or a tap while sending → one action only
+- S5 · go back, then submit again
+- S6 · the session ends mid-flow → sign in, then return to the same place
+- S7 · Hindi and Marathi: the longest labels fit; the language changes mid-flow
+- S8 · strange input: the maximum length, emoji, Devanagari, spaces, 0, negative numbers
+- S9 · a role that may not do it → the action is hidden or refused
+- S10 · every icon-only button has a label
+- S11 · it looks like the export: spacing, sizes, icons, order
+
+**Web only**
+- W1 · width 375 and 1536
+- W2 · keyboard only: tab order, visible focus, Enter and Escape
+- W3 · reload the page mid-flow
+- W4 · axe reports no serious problem (the web regression suite runs it)
+
+**Phone only**
+- M1 · the smallest and the largest supported phone
+- M2 · the app goes to the background and returns; the app is killed mid-action
+- M3 · the keyboard covers no field; the safe areas hold
+- M4 · the Android back button
+
+**Money** — when money is in scope
+- $1 · BOM, proposal and tranches agree to the paisa
+- $2 · lakh and crore grouping in every language
+- $3 · every figure shows its provenance tier; a stale figure reads provisional
+
+**Side effects** — SMS, push, payment, webhook
+- E1 · sent to a sandbox only, and safe when sent twice

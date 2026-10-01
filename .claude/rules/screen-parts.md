@@ -13,7 +13,7 @@ what leaves a screen, what stays, and the two moments the question is asked.
 ## The twin question
 
 A screen task names the screen's twin — the same screen on the other platform, built or not — or
-says it has none (review-only). Before a part is written, answer for each part: does the
+says it has none. Before a part is written, answer for each part: does the
 other platform draw the same thing? If yes, the part is authored ONCE and both screens import it.
 "Not built over there yet" is not a no: the phone's number step and the web's are one door.
 
@@ -48,8 +48,9 @@ hook's state — and the screen, which may import both sides, supplies it.
 
 - **`/start`**: the reach names the twin and, part by part, where each shared part lives. A part
   that would exist in both app trees is split out there, before the go.
-- **`/verify`**: `qa-parity` runs on every screen that has a twin, a change to one platform
-  included — a single-platform change to a twinned screen is where drift starts.
+- **`/qa` and `/ship`**: a twinned screen's QA checks name both platforms, so the report shows any
+  drift side by side — a single-platform change to a twinned screen is where drift starts — and the
+  code review checks that a part both apps draw is authored once.
 
 A pair that already exists is a finding, not a rule to bend: it goes to `docs/tasks/deferred.md`
 with what blocks the lift, and the next screen task on either twin lifts it.
