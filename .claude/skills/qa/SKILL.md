@@ -5,7 +5,8 @@ description: Run a task's QA plan after the build — the regression suites firs
 
 # /qa — run the plan, report, fix, re-check
 
-The QA plan was written at `/start`; run it as written. No probes, no rounds. The report lives in the
+The QA plan was written at `/start`, before the code, so it tests what should happen rather than what
+was built; run it as written after the refresh in step 1. No probes, no rounds. The report lives in the
 session scratchpad, `qa-<T-id>.md`, and its final copy goes into the PR body at `/ship`.
 
 ## 1. Surfaces
@@ -15,6 +16,14 @@ Take the plan's `Surfaces:` line and check it against what the diff reaches:
 Android, `@heliogrid/api` is api, `@heliogrid/worker` is the worker. A surface the plan does not
 cover is a scope change: stop and ask the owner. No surface reached means no agents; the suites in
 step 3 are the QA.
+
+**Refresh the plan — one pass, before anything runs:**
+
+- Fill each expected text with the exact words from its `packages/i18n` file, now that they exist.
+- **Add** a check for anything the build added that the plan does not cover — a new state, a new
+  error message, a new route or screen — in the plan's own format, and list it in the report.
+- Never remove or weaken a check. A check that no longer fits the code is a scope change: stop and
+  ask the owner.
 
 ## 2. Prepare — the main session owns every server and device
 
