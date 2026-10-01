@@ -1,15 +1,12 @@
 'use client';
 import type { MyMembership } from '@heliogrid/contracts';
 import {
-  type CentreVerb,
-  type ComposedHome,
-  centreVerbFor,
-  composedHome,
   FIRST_RUN_COACH_MARKS,
-  homesOf,
+  type FirstRunMark,
+  marksToShow,
   type RolePreset,
-  type StandingDestinationSet,
-  standingDestinationsFor,
+  type ShellView,
+  shellViewFor,
 } from '@heliogrid/domain';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'react';
@@ -22,21 +19,17 @@ import { useSession } from './use-session';
 export type ShellLoad = 'loading' | 'failed' | 'ready';
 
 /**
- * The app shell's facts, as both platforms render them (Law 11): which company, the home in force
- * and the presets composed into it, the switcher's list, the centre verb and the four slots, and
- * the first-run coach marks passed. Each platform renders this; neither computes any of it.
+ * The app shell's facts, as both platforms render them (Law 11): which company, the view the
+ * person's presets decide (`shellViewFor` — the home, the switcher, the verb, the slots and the
+ * marks), and how many marks are passed. Each platform renders this; neither computes any of it.
  */
-export interface Shell {
+export interface Shell extends ShellView {
   readonly load: ShellLoad;
   readonly companyName: string | null;
-  /** Null only for a person who holds no preset — no home to land on. */
-  readonly home: ComposedHome | null;
-  /** The switcher's list, in ladder order; one entry means no switcher (`M13-10`). */
-  readonly homes: readonly RolePreset[];
-  readonly centreVerb: CentreVerb | null;
-  readonly destinations: StandingDestinationSet | null;
-  /** How many of the first-run marks are passed; the marks after it are the ones still to show. */
+  /** How many of `coachMarks` are passed; the marks after it are the ones still to show. */
   readonly coachMarksPassed: number | null;
+  /** The marks after the passed ones — what the shell shows, one at a time; none while loading. */
+  readonly coachMarksToShow: readonly FirstRunMark[];
   chooseHome(preset: RolePreset): void;
   /** The person moved past mark `count` (1-based). A count at or below the stored one sends nothing. */
   passCoachMark(count: number): void;
@@ -112,15 +105,13 @@ export function useShell(): Shell {
   }, [refetchCompany, refetchMembership]);
 
   return useMemo(() => {
-    const home = composedHome(roles ?? [], chosenHome);
+    const view = shellViewFor(roles ?? [], chosenHome);
     return {
+      ...view,
       load: shellLoad(company.status, membership.status),
       companyName: company.data?.companyName ?? null,
-      home,
-      homes: homesOf(roles ?? []),
-      centreVerb: home === null ? null : centreVerbFor(home.home),
-      destinations: home === null ? null : standingDestinationsFor(home.home),
       coachMarksPassed: passed,
+      coachMarksToShow: marksToShow(view.coachMarks, passed),
       chooseHome,
       passCoachMark,
       dismissCoachMarks,
