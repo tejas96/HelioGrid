@@ -60,6 +60,13 @@ describe('plural forms — every category the language names (F3-05)', () => {
     },
   );
 
+  it.each(UI_LANGUAGES)(
+    '%s: the runtime has plural rules of its own, never a silent fallback to another language',
+    (language) => {
+      expect(Intl.PluralRules.supportedLocalesOf([language])).toEqual([language]);
+    },
+  );
+
   it('reads plural messages at all — the source catalog holds at least one', async () => {
     expect((await missingForms(UI_SOURCE_LOCALE)).plurals).toBeGreaterThan(0);
   });

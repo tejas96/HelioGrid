@@ -199,12 +199,18 @@ jobs:
           curl -fsSL -o "$tool/oasdiff.tar.gz" \
             https://github.com/oasdiff/oasdiff/releases/download/v1.31.0/oasdiff_1.31.0_linux_amd64.tar.gz
           echo "0177d4bc0bf04f4061e9277795b77335ee100a43b508e94fce5c46de083bbede  $tool/oasdiff.tar.gz" | sha256sum -c -
-          tar -xzf "$tool/oasdiff.tar.gz" -C "$tool" oasdiff
+          tar -xzf "$tool/oasdiff.tar.gz" -C "$tool"
+          bin="$(find "$tool" -type f -name oasdiff | head -1)"
+          [ -n "$bin" ] || { echo "::error::no oasdiff binary in the release archive"; exit 1; }
+          # A base that cannot be read is a failure; only a spec the base does not have yet passes.
+          git rev-parse --verify --quiet "origin/$BASE_REF^{commit}" >/dev/null \
+            || { echo "::error::origin/$BASE_REF is not fetched, so nothing can be compared"; exit 1; }
           spec=packages/contracts/openapi/openapi.json
-          if ! git show "origin/$BASE_REF:$spec" > "$tool/base.json" 2>/dev/null; then
+          if ! git cat-file -e "origin/$BASE_REF:$spec" 2>/dev/null; then
             echo "no spec on $BASE_REF yet: nothing to break"; exit 0
           fi
-          "$tool/oasdiff" breaking "$tool/base.json" "$spec" --fail-on ERR
+          git show "origin/$BASE_REF:$spec" > "$tool/base.json"
+          "$bin" breaking "$tool/base.json" "$spec" --fail-on ERR
       # No native splash-colour freshness gate: the splash artifacts are FROZEN (see the $comment
       # in SplashCanvas.colorset/Contents.json) and the gate returns when packages/theme re-emits
       # them. Never gate on `pnpm --filter <pkg> build` for a package that can be deleted: pnpm

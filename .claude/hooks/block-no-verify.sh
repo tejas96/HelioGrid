@@ -14,19 +14,22 @@ set -euo pipefail
 # A guard that cannot run fails closed: only exit 2 blocks, so a missing tool must not exit 127.
 command -v python3 >/dev/null || { echo "Blocked: this guard needs python3 on PATH and cannot run without it." >&2; exit 2; }
 
-cmd="$(cat | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tool_input",{}).get("command",""))')"
+cmd="$(cat | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tool_input",{}).get("command",""))')" \
+  || { echo "Blocked: this guard could not read its input." >&2; exit 2; }
 
 verdict="$(printf '%s' "$cmd" | python3 -c '
 import re, sys
 s = sys.stdin.read()
-# Drop heredoc bodies; a quoted string becomes the word Q, so a quoted value still counts as one.
+# Drop heredoc bodies: they are text, never arguments.
 s = re.sub(r"<<-?\x27?\"?(\w+)\x27?\"?.*?^\1", " ", s, flags=re.S | re.M)
+# A hooks path passed to git on its command line, quoted or not, joined by = or a space.
+if re.search(r"(?:-c|--config-env)(?:=|\s*)[\"\x27]?core\.hookspath=", s, re.I):
+    print("a redirected hooks path"); sys.exit()
+# A quoted string becomes the word Q, so a quoted value still counts as one.
 s = re.sub(r"\"(?:[^\"\\\\]|\\\\.)*\"", " Q ", s)
 s = re.sub(r"\x27[^\x27]*\x27", " Q ", s)
 if re.search(r"(^|\s)--no-verify(\s|=|$)", s):
     print("--no-verify"); sys.exit()
-if re.search(r"(-c\s*|--config-env=)core\.hookspath=", s, re.I):
-    print("a redirected hooks path"); sys.exit()
 if re.search(r"SKIP_SIMPLE_GIT_HOOKS|SIMPLE_GIT_HOOKS_RC|GIT_CONFIG_(COUNT|KEY_\d+|VALUE_\d+|PARAMETERS)", s):
     print("the hook runner'"'"'s or git'"'"'s config variables"); sys.exit()
 git = r"(?:^|\s)git(?:\s+(?:-[cC]\s+\S+|--\S+|-\S+))*\s+"
@@ -49,10 +52,10 @@ for segment in re.split(r"[;&|\n]+", s):
         print("a prefix of --no-verify"); sys.exit()
     if re.search(r"(^|\s)-[A-Za-z]*n[A-Za-z]*(\s|$)", args):
         print("-n, which is --no-verify,"); sys.exit()
-')"
+')" || { echo "Blocked: this guard could not judge the command." >&2; exit 2; }
 
 if [ -n "$verdict" ]; then
-  echo "Blocked: $verdict skips git's commit gate. Fix the lint, typecheck or stamp diagnostic instead (CLAUDE.md §4)." >&2
+  echo "Blocked: $verdict skips git's commit gate. Fix the lint, typecheck or secret-scan diagnostic instead (CLAUDE.md §4)." >&2
   exit 2
 fi
 exit 0

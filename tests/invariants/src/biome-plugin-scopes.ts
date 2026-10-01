@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 /**
@@ -9,9 +9,11 @@ import { join } from 'node:path';
  * green. This holds the fixed folder of every positive glob — the part after a leading any-depth
  * segment and before the first wildcard, so a glob over `apps/web/features/**` fixes
  * `apps/web/features` — to exist in the repo, and every plugin file to exist. A glob that is all
- * wildcards fixes no folder.
+ * wildcards fixes no folder. And every .grit file in the plugin folder is named in biome.json:
+ * a file left out is never run, while anything that reads the folder would count it as live.
  */
 const BIOME_CONFIG = 'biome.json';
+const PLUGIN_FOLDER = 'packages/config/biome';
 const WILDCARD = /[*?[{]/;
 
 interface Plugin {
@@ -78,7 +80,24 @@ function scanPluginScopes(repo: string): { findings: string[]; plugins: number; 
       }
     }
   }
+  findings.push(...unregisteredPluginFiles(repo, plugins));
   return { findings, plugins: plugins.length, places };
+}
+
+/** A .grit file in the plugin folder that biome.json does not name: Biome never runs it. */
+function unregisteredPluginFiles(repo: string, plugins: readonly Plugin[]): string[] {
+  const folder = join(repo, PLUGIN_FOLDER);
+  if (!existsSync(folder)) return [];
+  const registered = new Set(plugins.map((plugin) => plugin.path.replace(/^\.\//, '')));
+  return readdirSync(folder)
+    .filter((name) => name.endsWith('.grit'))
+    .map((name) => `${PLUGIN_FOLDER}/${name}`)
+    .filter((file) => !registered.has(file))
+    .map(
+      (file) =>
+        `${file} is not named in ${BIOME_CONFIG} plugins — Biome never runs it, yet a check that ` +
+        'reads the folder would count it as live',
+    );
 }
 
 export function findDeadPluginScopes(repo: string): string[] {

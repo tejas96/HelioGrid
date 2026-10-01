@@ -51,12 +51,21 @@ def runs_a_client(text, depth=0):
     return depth < 3 and any(runs_a_client(unquote(m.group(1)), depth + 1) for m in SHELL_STRING.finditer(text))
 
 
+SHELL_READS_STDIN = re.compile(rf"(?:{POSITION}|{WRAPPER})(?:ba|z)?sh\b(?!\s+-c)", re.M)
+
+
 def without_text_heredocs(cmd):
-    """The command with every heredoc body dropped unless the command it feeds runs a client."""
+    """The command with a heredoc body dropped only when its whole command line runs no client and
+    no shell: a body piped or fed to a client is SQL, a body fed to a shell is commands, and a body
+    fed to anything else (cat, tee, python) is text. A line continued with a backslash is one line."""
+    cmd = cmd.replace("\\\n", " ")
+
     def keep_or_drop(match):
         line_start = cmd.rfind("\n", 0, match.start()) + 1
-        owner = re.split(r"[;&|]", cmd[line_start:match.start()])[-1]
-        return match.group(0) if runs_a_client(owner) else "<<" + match.group(2) + match.group(3) + "\n"
+        line = cmd[line_start:match.start()] + " " + match.group(3)
+        if runs_a_client(line) or SHELL_READS_STDIN.search(re.sub(QUOTED, " Q ", line)):
+            return match.group(0)
+        return "<<" + match.group(2) + match.group(3) + "\n"
     return HEREDOC.sub(keep_or_drop, cmd)
 
 

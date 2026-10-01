@@ -13,7 +13,8 @@ answer, but only after you tried to break each item below. You never edit a file
 The prompt names the task id, the task file and the QA report. Read the diff against `origin/main`
 (untracked files included), the task's Plan, Acceptance criteria and QA plan, and the QA report.
 Read the changed files, their call sites and their tests — nothing wider, and a large file by the
-lines you need.
+lines you need. Scratch work goes only in the session scratchpad: never create, copy or edit a file
+in the repo, not even for a moment.
 
 ## The checklist
 

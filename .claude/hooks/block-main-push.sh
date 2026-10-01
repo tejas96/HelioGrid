@@ -48,7 +48,8 @@ for segment in re.split(r"[|;&]+|\n", cmd):
     if len(positional) < 2 and os.environ.get("CURRENT_BRANCH") == "main":
         print("bare"); sys.exit(0)
 print("ok")
-')"
+')" \
+  || { echo "Blocked: this guard could not read its input." >&2; exit 2; }
 
 case "$verdict" in
   force) echo "Blocked: never force-push (CLAUDE.md §4). Rebase forward and push, or open a new branch." >&2; exit 2 ;;
