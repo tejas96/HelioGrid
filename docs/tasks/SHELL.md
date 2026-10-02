@@ -363,7 +363,7 @@ No new fact joins a `mechanisms.md` row: the slot and mark vocabularies are doma
 
 ### T-SHELL-010 · Update required — the phone told plainly which version to get
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped
 **Why:** A surveyor on an old build who opens the app after an api release sees a plain screen naming the version to install and a button to the store, instead of a door or a shell whose every call fails; without it the server's refusal (`T-FPLAT-033`) reaches the person as a bare error (`F4-36`).
 **PRD rows:** F4-36 (P0)
 **BRIEF:** docs/ux/briefs/SCR-SHELL-01-app-shell.md (the update-required bullet)
@@ -376,8 +376,86 @@ No new fact joins a `mechanisms.md` row: the slot and mark vocabularies are doma
 
 - *Row removed 2026-08-07 by owner decision: `F4-22` (Surface 1 — the persistent global sync indicator) was deleted with the offline/sync capability. `docs/prd/foundations/F4-data-integrity.md` §5 forbids a global connection indicator, and the shell shows no connectivity state at all; the one surviving carve-out — field photographs held on the device — states its waiting count and retry on the capture screen (SCR-M04-07) and nowhere else (`F4-21`, `M04-55`).*
 
-**DONE WHEN:**
-- **D1** · Given that refusal, when the app receives it, then the forced-upgrade screen replaces the requested surface, names the required version and routes to the store (`F4-36`). → proof: qa-mobile with the api's minimum above the build's version, the app shows the update-required state in place of every surface — the sign-in door included — naming the required version, and its action opens this platform's store link from the refusal; the state holds until the app restarts. Moved here from `T-FPLAT-033` through `T-SHELL-001` (owner, split at each `/start`).
+#### Plan
+**Scope** — In: the phone transport notices a 426 and reports it; the data layer holds it until the
+app restarts; one hook reads it; the phone's root draws Frame 10 in place of every surface, the door
+included; the words in EN/HI/MR. · Out: the web — it sends no `x-client-version`, so the api never
+refuses it (`T-FPLAT-033` C3, `apps/api/tests/common/client-version.test.ts › "a request with no
+client version is served"`); the refusal itself — `T-FPLAT-033`. · Size: ~12 files, ~220 lines.
+**Where**
+| package | what changes |
+|---|---|
+| data | `transport/transport.ts` — a required `UpgradeSignals` beside `SessionSignals` on the mobile mode; the final answer of a call (the refresh's own answer included, C9 of `T-FPLAT-033`) is checked for 426 and parsed with `clientUpgradeRequiredSchema` before ts-rest throws |
+| data | `session/upgrade.ts` (new) — the upgrade store: `null` until a refusal, then `{ currentVersion, requiredVersion, storePlatform, storeUrl }`, sticky; `storeUrl` picked from `storeUrls` by the build's `StorePlatform` |
+| data | `composition.ts`, `data-layer.ts` — the mobile config gains `storePlatform: StorePlatform`; `DataLayer` gains `upgrade` (the web's never fires) |
+| data | `react/use-update-required.ts` (new) — `useUpdateRequired()`, read through `useSyncExternalStore` |
+| i18n | `copy/shell.ts` — the title, the version line, and the button as a `Record<StorePlatform, …>`; the three `.po` catalogs and their compiled files |
+| ui | `AppShell/ShellGlyph.logic.ts` + `AppShell.types.ts` — the `download` glyph Frame 10 draws, one drawing for both halves (added in the build: the set had none) |
+| mobile | `App.tsx` — passes `storePlatform`; `navigation/index.tsx` — renders the state in place of the navigator; `screens/shell/components/UpdateRequired.tsx` (new) — Frame 10: the `EmptyState` alone, no top bar, no nav |
+**How it works**
+  any phone call → api 426 → transport parses it → `upgrade.signals.onUpgradeRequired()` → the
+  upgrade store holds it → `useUpdateRequired()` in `AppNavigation` → `UpdateRequired` replaces the
+  navigator → the button opens `storeUrl` with `Linking.openURL`.
+**Example**
+  Ravi's phone runs 1.0. The company's api now needs 1.2. Ravi opens the app. The very first call
+  (`GET /auth/session`) answers 426. The door never shows. He sees "Update HelioGrid", "This is version 1.0. HelioGrid now needs version 1.2 or later." and "Update on Google
+  Play". He taps it. The Play Store opens.
+  ```ts
+  useUpdateRequired(): { currentVersion: string; requiredVersion: string; storePlatform: StorePlatform; storeUrl: string } | null
+  ```
+**Data / API** — no table, no route, no contract change. `clientUpgradeRequiredSchema` is read as it is.
+**Risks**
+- Every phone call passes the changed transport → the check runs only when the status is 426, and a
+  426 body that does not parse reports nothing and is handed back as before → QA G1.1 and the
+  regression flows `tests/e2e/mobile/*.yaml`.
+- A later call served by a machine on the old minimum hides the screen again → the store never
+  clears; only a restart does → QA G1.4.
+**Decided at /start**
+- No top bar and no company name, redrawn so in Claude Design (owner, design-reviewer MUST FIX 1 and
+  BETTER 1–3): at a cold start the refused call IS the session read, so the phone never learns the
+  company. The title is "Update HelioGrid"; Frame 10 is drawn once per store.
+- The screen lives in `screens/shell/components/`, not a new `*Screen.tsx`: it is `SCR-SHELL-01`'s
+  Frame 10, like `AccessRemoved` (Frame 8), and a new screen folder would owe a Maestro flow that
+  cannot raise the api's minimum.
+- At a cold start the words are English: the refusal arrives before the person's language is read,
+  as on the door's first paint. Mid-session the person's language stays.
+- The store platform is the build's (`Platform.OS`), passed by `App.tsx` as `thisPlatform` is for push.
+- A store link that fails to open leaves the screen as it is; the person can tap again.
+**For you** — answered at /start: the redraw, the doc fixes on this branch, BETTER 1–3, English at a cold start.
+
+#### Acceptance criteria
+- A1 · Given that refusal, when the app receives it, then the forced-upgrade screen replaces the requested surface, names the required version and routes to the store (`F4-36`). → proof: QA G1.1 · G1.2 · G1.3
+- A2 · added at /start (the hold) · Given the screen is up, when later calls are served again, then it stays until the app is killed; after a restart on a supported version the person is back where the session puts them, still signed in → proof: QA G1.4
+- A3 · added at /start (the words) · Given each language, then the title, the version line with both versions, and the platform's store name show from `SHELL` in `packages/i18n`, and fit → proof: QA G1.5 · `pnpm check:catalogs`
+- A4 · added at /start (the web is untouched) · Given a web session, when the minimum is raised, then the web keeps working → proof: `apps/api/tests/common/client-version.test.ts › "a request with no client version is served"` · QA R1
+
+#### QA plan
+Surfaces: ios · android  (the api only to set the minimum; the web cannot be refused)
+
+Every step that sets a minimum puts `MOBILE_MIN_VERSION=99.0`, `MOBILE_STORE_URL_IOS=https://apps.apple.com/app/id000000000` and `MOBILE_STORE_URL_ANDROID=https://play.google.com/store/apps/details?id=com.heliogrid` in `.env.local`, restarts the api, and restores `.env.local` when the run ends.
+
+Smoke — every surface
+- S1 · no minimum set → the app opens to the door or the shell as before
+
+G1 · Update required — ios · android
+- G1.1 · minimum set, cold start, signed out → Frame 10 in place of the door: "Update HelioGrid", "This is version <the build's version>. HelioGrid now needs version 99.0 or later.", button "Update on the App Store" (ios) / "Update on Google Play" (android); no top bar, no bottom nav
+- G1.2 · signed in on the shell, minimum set, the app sent to the background and back (a refetch) → Frame 10 replaces the shell
+- G1.3 · tap the button → this platform's store link from the refusal opens (Safari on the iOS simulator, the browser or Play on Android); a double tap opens it once (S4)
+- G1.4 · screen up, minimum unset, api restarted, the app backgrounded and back → the screen stays; kill and relaunch → the door or the shell, still signed in
+- G1.5 · signed in, language Hindi, then Marathi, minimum set, G1.2's trigger → every word in that language, nothing clipped (S7)
+
+API — api
+- A6 · no 5xx; one `warn` line per refusal in `.qa/api.log`, no error line
+
+Look — ios · android
+- L1 · Frame 10 matches the export (`HelioGrid-UX/SCR-SHELL-01 App Shell - Mobile.dc.html`, frames `update` and `update-ios`): the download icon, the centred block, spacing and sizes (S11, H1–H3)
+- L2 · H4 nothing under the status or home bar · H5 no console error · H6 the button's pressed state · H7 the largest text size · H8 the button is at least 44 tall · H9 dark mode looks as light · H10 Devanagari in its own face
+- L3 · M1 the smallest and largest phone · M2 background and return keep the screen · M4 Android back never shows the door or the shell behind it
+
+Regression — machine
+- R1 · `tests/e2e/mobile/*.yaml` · `tests/e2e/web/*.spec.ts` · unit tests
+
+Skipped: S2 (no list) · S3 (the screen IS the refusal; it makes no call) · S5, S6 (no flow, no session needed) · S8 (no input) · S9 (every role sees the same) · S10 (no icon-only button) · H11 (one button) · M3 (no field) · W1–W4 (the web is never refused) · A1–A5, A7 (no route, no row) · $ (no money) · E1 (no side effect)
 
 ---
 
@@ -411,7 +489,7 @@ No new fact joins a `mechanisms.md` row: the slot and mark vocabularies are doma
 - Given a valid invite, when the invitee verifies the OTP, then user + membership + roles exist atomically and the next screen is name/photo, then the role card, then their role's home with their real assigned work (M01-13, M01-14, M01-17). → proof: qa-web accept an invite as a Sales Executive: the first screen after the role card is the home in force inside this shell, its region showing the teaching empty state until M07's My Day lands, never a generic dashboard or a blank; the atomic write is unit-proven at `T-M01-028`
 - Given any combination of held presets, when the person signs in, then their home is the highest-ladder preset's home with every other held preset's today-block composed inside, and a switcher lists each held preset's home (M13-10). → proof: qa-web sign in holding Sales Executive + Survey Engineer: the home is My Day's route with the Survey Engineer's block region composed in, the title switcher lists both homes, and switching swaps which body of work is the home's own; the derivation is unit-proven at `T-M13-006`
 - Given sign-in, Then mobile OTP and Google work and establish tenant/role context with no dead controls (MS12-17); language and units persist per user with real catalogs (MS12-18); sign-out preserves work (MS12-19). → proof: qa-web sign out from the avatar menu with a draft open: the app returns to the door, `GET /auth/session` answers no session, and the draft is intact on signing back in; the OTP, Google, language and units halves are proven at `T-M01-001` and `T-M01-011`
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: qa-web every listed state at 1536px · QA web · ios · android every state against `T-SHELL-001`'s at 375px, the same facts from the same hook and the same copy
+- Three base states + brief-listed states present at 375px and 1536px with full parity, except update-required, which is phone only (the web sends no version, so the api never refuses it — `T-SHELL-010`); zero raw colour literals/off-scale values. → proof: qa-web every listed state at 1536px · QA web · ios · android every state against `T-SHELL-001`'s at 375px, the same facts from the same hook and the same copy
 
 ---
 

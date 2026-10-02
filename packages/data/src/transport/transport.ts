@@ -1,7 +1,10 @@
 import {
   ACCESS_REMOVED,
   AUTH_PATH_PREFIX,
+  CLIENT_UPGRADE_REQUIRED_STATUS,
   CLIENT_VERSION_HEADER,
+  type ClientUpgradeRequired,
+  clientUpgradeRequiredSchema,
   REQUEST_ID_HEADER,
 } from '@heliogrid/contracts';
 import type { SessionLoss } from '@heliogrid/domain';
@@ -40,6 +43,16 @@ export interface SessionSignals {
   couldHoldSession(): boolean;
 }
 
+/**
+ * What the transport tells the layer above when the api turns this build away as too old
+ * (`F4-36`). REQUIRED on the mobile mode for the reason `SessionSignals` is: unwired, a too-old
+ * phone would meet a bare error on every call and nothing would fail to compile. The web sends no
+ * version and is never refused, so it declares none.
+ */
+export interface UpgradeSignals {
+  onUpgradeRequired(upgrade: ClientUpgradeRequired['error']['upgrade']): void;
+}
+
 type TransportConfig =
   | { mode: 'browser'; baseUrl: string; session: SessionSignals }
   | {
@@ -49,6 +62,7 @@ type TransportConfig =
       appVersion: string;
       baseUrl: string;
       session: SessionSignals;
+      upgrade: UpgradeSignals;
     }
   | { mode: 'server'; headers: RequestHeaders };
 
@@ -278,6 +292,20 @@ async function refreshedOnce(
 }
 
 /**
+ * A 426 is read HERE, before ts-rest sees it: its `throwOnUnknownStatus` keeps only the envelope's
+ * four fields and drops `upgrade`. A body that does not parse reports nothing, and the call fails
+ * as any unknown status does.
+ */
+function reportUpgradeRequired(
+  config: TransportConfig,
+  answer: Awaited<ReturnType<ApiFetcher>>,
+): void {
+  if (config.mode !== 'mobile' || answer.status !== CLIENT_UPGRADE_REQUIRED_STATUS) return;
+  const refusal = clientUpgradeRequiredSchema.safeParse(answer.body);
+  if (refusal.success) config.upgrade.onUpgradeRequired(refusal.data.error.upgrade);
+}
+
+/**
  * EVERY request in both apps passes through here. Retry, logging, tracing and token refresh
  * land in THIS function and nowhere else — that is the whole reason this layer exists.
  *
@@ -300,7 +328,9 @@ export function createTransport(config: TransportConfig): ApiFetcher {
     const deadline = openRequestDeadline(callerSignal);
     try {
       const first = await sendRequest(config, args, deadline.signal);
-      return await refreshedOnce(config, args, deadline.signal, first);
+      const answer = await refreshedOnce(config, args, deadline.signal, first);
+      reportUpgradeRequired(config, answer);
+      return answer;
     } catch (error) {
       // ts-rest runs client response validation INSIDE the fetcher, so a contract mismatch
       // surfaces here as a raw ZodError. It is a bad response, not a bad network: pass it

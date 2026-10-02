@@ -1,5 +1,5 @@
 import type { RolePreset } from '@heliogrid/contracts';
-import type { CentreVerb, StandingDestination } from '@heliogrid/domain';
+import type { CentreVerb, StandingDestination, StorePlatform } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { SIGN_IN } from './sign-in';
 
@@ -43,6 +43,10 @@ export const SHELL = {
   },
   signInWithAnother: /*i18n*/ { id: 'Sign in with another account' },
   comingLater: /*i18n*/ { id: 'This screen arrives in a later update.' },
+  updateRequired: /*i18n*/ { id: 'Update HelioGrid' },
+  updateVersions: /*i18n*/ {
+    id: 'This is version {current}. HelioGrid now needs version {required} or later.',
+  },
 } as const;
 
 /** The twelve presets by name — the switcher's second line and a composed block's overline. */
@@ -70,6 +74,12 @@ const DESTINATION_LABEL: Record<StandingDestination, { id: string }> = {
   people: /*i18n*/ { id: 'People' },
   campaigns: /*i18n*/ { id: 'Campaigns' },
   more: /*i18n*/ { id: 'More' },
+};
+
+/** The update-required screen's one button, named for the store this phone updates from (`F4-36`). */
+const UPDATE_ON_STORE: Record<StorePlatform, { id: string }> = {
+  ios: /*i18n*/ { id: 'Update on the App Store' },
+  android: /*i18n*/ { id: 'Update on Google Play' },
 };
 
 /** The add action's name: the verb it performs (`F7-22`). */
@@ -104,6 +114,10 @@ export function destinationLabel(
   destination: StandingDestination,
 ): string {
   return translate(DESTINATION_LABEL[destination]);
+}
+
+export function updateOnStoreLabel(translate: Translator['t'], store: StorePlatform): string {
+  return translate(UPDATE_ON_STORE[store]);
 }
 
 export function verbLabel(translate: Translator['t'], verb: CentreVerb): string {

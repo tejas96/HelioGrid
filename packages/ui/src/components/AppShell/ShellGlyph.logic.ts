@@ -57,6 +57,7 @@ export const SHELL_GLYPHS: Record<ShellGlyphName, readonly GlyphMark[]> = {
     ),
     path('M8 10.5V8a4 4 0 0 1 8 0v2.5'),
   ],
+  download: [path('M12 3v12'), path('m7 10 5 5 5-5'), path('M5 20h14')],
 };
 
 /** The filled forms; a glyph with none stays outlined in view. */

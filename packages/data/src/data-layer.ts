@@ -1,26 +1,34 @@
+import type { StorePlatform } from '@heliogrid/domain';
 import { createRepositoryRegistry, type Repositories } from './composition';
 import { type HeldWork, NO_HELD_WORK } from './session/held-work';
 import { createSessionStore } from './session/store';
 import type { SessionStore } from './session/types';
+import { createUpgradeStore, NEVER_REFUSED, type UpgradeStore } from './session/upgrade';
 import type { TokenStorage } from './transport/storage';
 import type { SessionSignals } from './transport/transport';
 
 export type { Repositories } from './composition';
 
 /**
- * A jar means React Native, and a phone always says which build it is (`F4-36`) — so the two come
- * together or not at all, and a mobile layer without its version does not compile. Web sends
- * neither: its session is an HttpOnly cookie the browser attaches, and it deploys with the api.
+ * A jar means React Native, and a phone always says which build it is and which store it updates
+ * from (`F4-36`) — so the three come together or not at all, and a mobile layer without them does
+ * not compile. Web sends none: its session is an HttpOnly cookie the browser attaches, and it
+ * deploys with the api.
  */
 export type DataLayerConfig = {
   baseUrl: string;
   /** What the device holds for its user (`F4-37`); nothing, until a capture feature lands. */
   heldWork?: HeldWork;
-} & ({ storage: TokenStorage; appVersion: string } | { storage?: undefined });
+} & (
+  | { storage: TokenStorage; appVersion: string; storePlatform: StorePlatform }
+  | { storage?: undefined }
+);
 
 export interface DataLayer {
   repositories: Repositories;
   session: SessionStore;
+  /** Whether the api has turned this build away as too old (`F4-36`); never, on the web. */
+  upgrade: UpgradeStore;
 }
 
 /**
@@ -43,6 +51,9 @@ export function createDataLayer(config: DataLayerConfig): DataLayer {
     couldHoldSession: () => session?.signals.couldHoldSession() ?? true,
   };
 
+  const upgrade = config.storage
+    ? createUpgradeStore({ appVersion: config.appVersion, storePlatform: config.storePlatform })
+    : NEVER_REFUSED;
   const repositories = config.storage
     ? createRepositoryRegistry({
         baseUrl,
@@ -50,6 +61,7 @@ export function createDataLayer(config: DataLayerConfig): DataLayer {
         storage: config.storage,
         appVersion: config.appVersion,
         session: signals,
+        upgrade: upgrade.signals,
       })
     : createRepositoryRegistry({ baseUrl, mode: 'browser', session: signals });
   session = createSessionStore({
@@ -59,5 +71,5 @@ export function createDataLayer(config: DataLayerConfig): DataLayer {
     platform: storage ? 'mobile' : 'web',
     heldWork: heldWork ?? NO_HELD_WORK,
   });
-  return { repositories, session };
+  return { repositories, session, upgrade };
 }

@@ -1,4 +1,6 @@
+import { useUpdateRequired } from '@heliogrid/data/react';
 import { usePushRegistration } from '../push/usePushRegistration';
+import { UpdateRequired } from '../screens/shell';
 import { linkingOptions } from './linking';
 import { NavigationPhaseProvider } from './phase';
 import { Navigation } from './root';
@@ -17,6 +19,10 @@ import { Navigation } from './root';
  */
 export function AppNavigation() {
   usePushRegistration();
+  const refusal = useUpdateRequired();
+  /* In place of the navigator, not a route in it: the api answers this build nothing, so no door
+     and no shell can work, and none may show behind it (`F4-36`). */
+  if (refusal !== null) return <UpdateRequired refusal={refusal} />;
   return (
     <NavigationPhaseProvider>
       <Navigation linking={linkingOptions} />

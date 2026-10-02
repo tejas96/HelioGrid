@@ -118,8 +118,10 @@ extended) and `#### QA plan`.
   and every open question. **Stop for the go.**
 - Design changes the owner approves are made in Claude Design: read the board with `DesignSync`
   from the Claude Design project (never from `HelioGrid-UX/`), edit a copy in the scratchpad, show
-  the owner pictures, and write it back with `DesignSync` after the owner's yes. The owner
-  re-exports `HelioGrid-UX/`. Then the build starts.
+  the owner pictures, and write it back with `DesignSync` after the owner's yes. Then pull the
+  board back with `DesignSync` `get_file` and write it over its file in `HelioGrid-UX/`, and show
+  the owner its name and size. A board over 256 KB is beyond `get_file`: the owner re-exports it.
+  Then the build starts.
 - After the go, the plan changes only through the owner: a new behaviour, table, route, contract or
   package means stop and ask.
 
