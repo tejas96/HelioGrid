@@ -59,14 +59,9 @@ Reached from: first-run onboarding ends **on** the role-decided home inside this
 
 ## States
 
-Three base states, then every screen-specific state from the slice and the rows. **Nine distinct
-frames** — draw each once, and the nine bullets below are exactly those nine. *(History, and it
-does not fully reconcile: the pre-flight pass of 2026-08-07 de-duplicated a list of sixteen
-bullets in which four restated another bullet under a second name, and recorded the result as
-"ten frames"; the offline removal of the same day then cut two more. Nine is the count that
-matches the list you are reading — it was verified by counting the bullets on 2026-08-16 — and
-the intermediate figures are left as written rather than retro-fitted into an arithmetic that
-never quite worked.)*
+Three base states, then every screen-specific state from the slice and the rows. **Ten distinct
+frames** — draw each once, and the ten bullets below are exactly those ten. Update-required is
+drawn once per store, because only its button changes.
 
 - **loading**
 - **empty** — teaching empty: a role home with nothing assigned yet says what will appear here and who to ask, never a blank screen (M01 edge `S1.wrong.3` via M01-17's handoff). *(Absorbs the former `teaching-empty` bullet, which restated this one.)*
@@ -77,8 +72,8 @@ never quite worked.)*
 - **coach-marks-max-3-dismissible** — at most three coach marks, on the screen actually landed on, each dismissible, never a carousel (M01-16). The design system ships `CoachMark` / `CoachMarkSequence` for this — do not invent one.
 - **access-removed-graceful** — "your access was removed" shown gracefully, no crash, no data loss on device (M01 edge `S1.wrong.4`)
 - **available** / **busy** / **off-until-time** — the manual routing-availability toggle's three values, with the optional until-time (M07-46). One frame with three settings, not three frames.
-- **update-required** — the client is below the server-declared minimum version: a plain full-screen block that NAMES the required version and routes to the store, in place of the surface asked for. Never a bare error and never a screen pretending to work; there is no cached data being withheld, because v1 keeps no local store (F4-36).
   - *Component note (superseded 2026-08-18):* this bullet used to say the system shipped no time picker and told you to compose one from a `Select` of half-hour slots. **That is no longer true and must not be followed.** The system ships **`TimeField`**, built for exactly this row — and it does more than take a time: a value outside `min`/`max` is **refused with the window named, never clamped**, which is the pattern the calling-window screens (`SCR-M07-05`, `SCR-M07-06`) depend on and which money entry later copied. Use it. `TimeRangeField` is its two-ended form. Do **not** invent a slot picker, and do not write a chosen pattern into this bullet — the pattern is the component.
+- **update-required** — phone only: the client is below the server-declared minimum version: a plain full-screen block that NAMES this build's version and the required one, and routes to this phone's store, in place of the surface asked for, the sign-in door included. No top bar and no company name: the refused call is the one that would have said whose HelioGrid this is. Never a bare error and never a screen pretending to work; there is no cached data being withheld, because v1 keeps no local store (F4-36). The web sends no version, so it is never refused and has no frame for this.
 
 The shell looks the same for every tenant: the operator application is never restyled per tenant — there is no tenant stylesheet, no theme upload and no per-tenant palette anywhere in the web or mobile application, so no state above has a tenant-branded variant. Tenant branding lives on customer-facing documents and link pages; here the tenant appears by name (F7-07, MS12-19).
 

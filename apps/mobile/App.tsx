@@ -12,6 +12,7 @@ import { keychainStorage } from './src/auth/keychain-storage';
 import { API_URL } from './src/env';
 import { createFormsValidationMessage, createI18nRuntime, LanguageFollowsUser } from './src/i18n';
 import { AppNavigation } from './src/navigation';
+import { thisPlatform } from './src/push/messaging';
 import { ReactQueryHost } from './src/react-query-host';
 
 /**
@@ -21,7 +22,7 @@ import { ReactQueryHost } from './src/react-query-host';
  * gate and every route live in `src/navigation/`; this file used to be a
  * 216-line hand-rolled router with a screen defined inline.
  *
- * `storage` and `appVersion` are the ONLY platform-specific pieces of the data path — everything above them
+ * `storage`, `appVersion` and `storePlatform` are the ONLY platform-specific pieces of the data path — everything above them
  * (transport, client, repositories, session) is the same code web runs.
  */
 const dataLayer = createDataLayer({
@@ -30,6 +31,9 @@ const dataLayer = createDataLayer({
   // The store version — Android's versionName, iOS's MARKETING_VERSION — which a person compares
   // against the one a too-old refusal names (F4-36).
   appVersion: getVersion(),
+  // The store this build updates from, whose link a too-old refusal's button opens — the same
+  // platform push registers as, read once.
+  storePlatform: thisPlatform,
 });
 
 export default function App() {

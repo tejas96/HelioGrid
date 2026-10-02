@@ -108,7 +108,8 @@ export type ShellGlyphName =
   | 'chevron'
   | 'shield'
   | 'sign-out'
-  | 'lock';
+  | 'lock'
+  | 'download';
 
 export interface ShellGlyphProps {
   name: ShellGlyphName;

@@ -32,6 +32,7 @@ export {
   presetName,
   SHELL,
   switchMarkWords,
+  updateOnStoreLabel,
   verbLabel,
   verbMarkWords,
 } from './copy/shell';

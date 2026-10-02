@@ -34,6 +34,7 @@ export type {
 export type { HeldWork } from './session/held-work';
 export { NO_HELD_WORK } from './session/held-work';
 export type { SessionApi, SessionStore } from './session/types';
+export type { UpdateRequired, UpgradeStore } from './session/upgrade';
 export type { SimilarTenant, TenantRepository } from './tenant/repository';
 export type { TokenStorage } from './transport/storage';
 export type { UserRepository } from './user/repository';

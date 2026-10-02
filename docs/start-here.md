@@ -249,7 +249,8 @@ decision is how two screens end up disagreeing about the same flow.
 
 A fix to a screen already drawn is made on its board and record in the Claude Design project —
 never in `HelioGrid-UX/`, which is your own export and is re-exported once, after every design is
-done. A fix to a screen not drawn yet goes into its brief. When a designed screen's brief itself
+done. A fix Claude makes at a screen's `/start` is the one exception: after your yes, Claude pulls
+that board into `HelioGrid-UX/` itself when it is 256 KB or less; a bigger one you re-export. A fix to a screen not drawn yet goes into its brief. When a designed screen's brief itself
 must change, the next section applies.
 
 ## When a brief changes after its screen was designed

@@ -9,7 +9,12 @@ import {
 } from './notification/repository';
 import { createTenantRepository, type TenantRepository } from './tenant/repository';
 import type { TokenStorage } from './transport/storage';
-import { createTransport, type RequestHeaders, type SessionSignals } from './transport/transport';
+import {
+  createTransport,
+  type RequestHeaders,
+  type SessionSignals,
+  type UpgradeSignals,
+} from './transport/transport';
 import { createUserRepository, type UserRepository } from './user/repository';
 
 /** Every repository an app can reach. One entry per contract router. */
@@ -25,7 +30,13 @@ export interface Repositories {
 
 type RepositoryRegistryConfig = { baseUrl: string } & (
   | { mode: 'browser'; session: SessionSignals }
-  | { mode: 'mobile'; storage: TokenStorage; appVersion: string; session: SessionSignals }
+  | {
+      mode: 'mobile';
+      storage: TokenStorage;
+      appVersion: string;
+      session: SessionSignals;
+      upgrade: UpgradeSignals;
+    }
   | { mode: 'server'; headers: RequestHeaders }
 );
 
@@ -44,6 +55,7 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
           appVersion: config.appVersion,
           baseUrl: config.baseUrl,
           session: config.session,
+          upgrade: config.upgrade,
         })
       : config.mode === 'server'
         ? createTransport({ mode: 'server', headers: config.headers })

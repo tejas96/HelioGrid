@@ -19,3 +19,4 @@ export type { SignIn } from './use-sign-in';
 export { useSignIn } from './use-sign-in';
 export type { SignInDwell } from './use-sign-in-dwell';
 export { useSignInDwell } from './use-sign-in-dwell';
+export { useUpdateRequired } from './use-update-required';

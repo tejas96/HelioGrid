@@ -28,6 +28,14 @@ export const styles = StyleSheet.create({
     paddingTop: theme.spacing['sp-4'],
     gap: theme.spacing['sp-6'],
   },
+  // Frame 10 has no bar and no pill: its block is centred in the whole page, and scrolls when
+  // the largest text makes it taller than the screen.
+  updateScroll: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingHorizontal: theme.layout['screen-pad-mobile'],
+    paddingVertical: theme.spacing['sp-6'],
+  },
   pill: {
     position: 'absolute',
     left: theme.layout['screen-pad-mobile'],
