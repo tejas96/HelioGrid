@@ -1,10 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { AppHeaderProps } from './AppShell.types';
 import { ShellAction } from './ShellAction.native';
-import { BellIcon } from './ShellIcons.native';
+import { ShellGlyph } from './ShellGlyph.native';
 
 interface NativeAppHeaderProps extends AppHeaderProps {
   style?: StyleProp<ViewStyle>;
@@ -31,8 +32,9 @@ export function AppHeader({
   breadcrumb,
   style,
 }: NativeAppHeaderProps) {
+  const { ground } = useGround();
   return (
-    <View style={[styles.header, style]}>
+    <View style={[styles.header, { backgroundColor: ground }, style]}>
       {brand !== undefined ? <View style={styles.slot}>{brand}</View> : null}
       {tenant !== undefined ? (
         <View style={styles.tenant}>
@@ -69,7 +71,7 @@ export function AppHeader({
             label="Notifications"
             badge={notifications}
             onClick={onNotificationsClick}
-            icon={<BellIcon />}
+            icon={<ShellGlyph name="bell" size="md" />}
           />
         ) : null}
         {avatar}
@@ -85,8 +87,6 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-4'],
     minHeight: theme.layout['header-h'],
     paddingHorizontal: theme.spacing['sp-6'],
-    // biome-ignore lint/plugin/raw-white: owed-T-SHELL — the shell's parts, moved by T-SHELL-001 and T-SHELL-008
-    backgroundColor: theme.colors.surface,
     ...theme.elevation.e1,
   },
   slot: {

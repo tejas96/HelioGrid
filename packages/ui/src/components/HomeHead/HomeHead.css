@@ -39,6 +39,16 @@
   text-align: start;
 }
 
+/* Hover tints and a press gives, as a ghost control's do; the focus ring is base.css's. */
+.hg-home-head-trigger:hover {
+  border-radius: var(--r-md);
+  background: var(--neutral-bg);
+}
+
+.hg-home-head-trigger:active {
+  transform: scale(0.98);
+}
+
 .hg-home-head-action {
   display: flex;
   align-items: center;

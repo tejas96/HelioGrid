@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { badgeName, showsBadge } from '../AppShell/AppShell.types';
 import { CountBadge } from '../AppShell/CountBadge.native';
@@ -30,14 +31,15 @@ export function AppRail({
   brand,
   style,
 }: NativeAppRailProps) {
+  const { ground } = useGround();
   const railWidth = typeof width === 'number' ? width : theme.layout['rail-w'];
   return (
-    /* THE RAIL IS A NAVIGATION LANDMARK, NOT A MENUBAR. The DS half is `<nav aria-label="Primary">`
+    /* THE RAIL IS A NAVIGATION LANDMARK, NOT A MENUBAR. The web half is `<nav aria-label={label}>`
        (ds-v2 navigation/AppRail.jsx) and every item carries `aria-current="page"` — destinations,
        not menu commands, so a `menubar` here would both contradict the DS and demand `menuitem`
        children it does not have. React Native models no landmark roles at all, so the honest native
        form of a `<nav>` is a plain View: the drift was the invented role, not a missing one. */
-    <View style={[styles.rail, { width: railWidth }, style]}>
+    <View style={[styles.rail, { width: railWidth, backgroundColor: ground }, style]}>
       <View style={styles.brand}>{brand}</View>
       {items.map((item) => (
         <RailButton
@@ -87,8 +89,6 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-2'],
     height: '100%',
     paddingVertical: theme.spacing['sp-4'],
-    // biome-ignore lint/plugin/raw-white: owed-T-SHELL — the shell's parts, moved by T-SHELL-001 and T-SHELL-008
-    backgroundColor: theme.colors.surface,
   },
   brand: {
     marginBottom: theme.spacing['sp-3'],

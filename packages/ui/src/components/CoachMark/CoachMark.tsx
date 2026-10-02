@@ -62,8 +62,10 @@ export function CoachMark({
     if (!open) {
       return;
     }
+    // An Escape a menu or a field already handled was meant for it: closing the home switcher
+    // the mark points at must not pass the first-run marks for good.
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && !event.defaultPrevented) {
         onDismiss?.();
       }
     };

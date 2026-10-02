@@ -21,6 +21,7 @@ interface WebAppRailProps extends AppRailProps {
  * about; a raw number still overrides it for a caller that needs one.
  */
 export function AppRail({
+  label,
   items,
   value,
   onChange,
@@ -36,7 +37,7 @@ export function AppRail({
     ...style,
   };
   return (
-    <nav aria-label="Primary" className={classNames('hg-app-rail', className)} style={railStyle}>
+    <nav aria-label={label} className={classNames('hg-app-rail', className)} style={railStyle}>
       <div className="hg-app-rail-brand">{brand}</div>
       {items.map((item) => (
         <RailButton

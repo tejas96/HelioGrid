@@ -5,7 +5,7 @@ import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { MobileTopBarProps } from './AppShell.types';
 import { ShellAction } from './ShellAction.native';
-import { BellIcon, SearchIcon } from './ShellIcons.native';
+import { ShellGlyph } from './ShellGlyph.native';
 
 interface NativeMobileTopBarProps extends MobileTopBarProps {
   style?: StyleProp<ViewStyle>;
@@ -52,14 +52,18 @@ export function MobileTopBar({
         {actions}
         {jobs}
         {onSearchClick !== undefined ? (
-          <ShellAction label={searchLabel} onClick={onSearchClick} icon={<SearchIcon />} />
+          <ShellAction
+            label={searchLabel}
+            onClick={onSearchClick}
+            icon={<ShellGlyph name="search" size="md" />}
+          />
         ) : null}
         {onNotificationsClick !== undefined ? (
           <ShellAction
             label={notificationsLabel}
             badge={notifications}
             onClick={onNotificationsClick}
-            icon={<BellIcon />}
+            icon={<ShellGlyph name="bell" size="md" />}
           />
         ) : null}
         {avatar}

@@ -62,7 +62,7 @@ check reads the waivers; review does. A `PRINT SURFACE` part is exported from `s
 
 - **An icon is DRAWN here, never imported from an icon package** — one SVG per glyph,
   `currentColor`, 1.5px stroke, one drawing serving the web half and the native half.
-  `AppShell/ShellIcons.tsx` is the shape to copy.
+  `AppShell/ShellGlyph.logic.ts` is the shape to copy.
 - **A prop belongs to `<Name>.types.ts`, never to a platform half.** A platform-local props
   interface above the shared base is how the halves drift. The `design-system-props` invariant
   checks only that each design-system prop is declared; nothing compares the two halves, so the

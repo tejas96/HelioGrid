@@ -1,7 +1,7 @@
 import type { Shell } from '@heliogrid/data/react';
-import { firstRunMarkWords, SHELL } from '@heliogrid/i18n';
+import { firstRunMarkLabels, firstRunMarkWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { CoachMark } from '@heliogrid/ui';
+import { CoachMark, firstRunMarkProps } from '@heliogrid/ui';
 import type { RefObject } from 'react';
 import type { View } from 'react-native';
 
@@ -22,23 +22,15 @@ export function FirstRunMark({ shell, anchors }: FirstRunMarkProps) {
   if (inView === null || home === undefined) return null;
   const words = firstRunMarkWords(t, inView.mark, home, shell.centreVerb);
   if (words === null) return null;
-  const { step, total } = inView;
-  const counted = total > 1;
   return (
     <CoachMark
-      open
+      {...firstRunMarkProps(
+        inView,
+        { ...words, ...firstRunMarkLabels(t, inView) },
+        { onPass: shell.passCoachMark, onDismiss: shell.dismissCoachMarks },
+      )}
       anchor={inView.mark === 'switch-home' ? anchors.switchHome : anchors.action}
-      title={words.title}
-      body={words.body}
       placement={inView.mark === 'switch-home' ? 'bottom' : 'top'}
-      step={counted ? step : undefined}
-      total={counted ? total : undefined}
-      counterLabel={t(SHELL.markCount, { step, total })}
-      dismissLabel={t(SHELL.gotIt)}
-      nextLabel={step < total ? t(SHELL.next) : t(SHELL.gotIt)}
-      onNext={step < total ? () => shell.passCoachMark(step) : undefined}
-      onDismiss={shell.dismissCoachMarks}
-      ring
     />
   );
 }

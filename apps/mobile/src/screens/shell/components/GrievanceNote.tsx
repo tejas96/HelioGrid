@@ -10,7 +10,7 @@ export function GrievanceNote({ open, onClose }: { open: boolean; onClose: () =>
   const t = useTranslate();
   return (
     <Sheet open={open} onClose={onClose} title={t(SHELL.grievanceOfficer)} size="auto">
-      <UnavailableNote message={t(SHELL.grievanceNotPublished)} />
+      <UnavailableNote title={t(SHELL.notPublishedYet)} message={t(SHELL.grievanceNotPublished)} />
     </Sheet>
   );
 }

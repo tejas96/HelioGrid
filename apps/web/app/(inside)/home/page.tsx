@@ -1,6 +1,6 @@
-import { HomeScreen } from '../../../features/home';
+import { HomeScreen } from '../../../features/shell';
 
-/** Route entry for /home — routing only; all composition is in features/home, the gate in this group's layout. */
+/** Route entry for /home — routing only; the shell is this group's layout, the home features/shell's. */
 export default function HomePage() {
   return <HomeScreen />;
 }

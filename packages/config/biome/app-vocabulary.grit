@@ -1,5 +1,8 @@
 // An app declares no shared vocabulary. EXPORTED only: a type or a constant nothing can import
-// cannot become a second source of truth, so a file-local state machine passes.
+// cannot become a second source of truth, so a file-local state machine passes. An app's own map
+// passes when its type is a Record keyed by a type the file imports from @heliogrid/domain or
+// @heliogrid/contracts — a domain word to the app's own URL or handler: the key is the shared
+// fact, the value is the app's.
 or {
   JsExport(export_clause=TsTypeAliasDeclaration(ty=TsUnionType(types=[
     TsStringLiteralType(), ...
@@ -8,9 +11,16 @@ or {
   },
   JsExport(export_clause=JsVariableDeclarationClause(declaration=JsVariableDeclaration(declarators=$declarators) as $declaration)) as $export where {
     $declaration <: r"(?s)const\s.*",
-    $declarators <: some JsVariableDeclarator(id=$name, initializer=JsInitializerClause(expression=$value)) where {
+    $declarators <: some JsVariableDeclarator(id=$name, variable_annotation=$annotation, initializer=JsInitializerClause(expression=$value)) where {
       $name <: r"[A-Z][A-Z0-9_]+",
-      $value <: r"(?s)\{.*"
+      $value <: r"(?s)\{.*",
+      not and {
+        $annotation <: r"(?s):\s*(?:Readonly<\s*)?Record<\s*(?:Exclude<\s*)?([A-Za-z0-9_]+)(?:\s*,\s*'[^>]*>)?\s*,[\s\S]*"($key),
+        $program <: contains JsImport() as $import where {
+          $import <: r"(?s).*'@heliogrid/(?:domain|contracts)'.*",
+          $import <: contains $key
+        }
+      }
     },
     register_diagnostic(span=$export, message="An app declares no shared vocabulary — a SCREAMING_CASE lookup belongs in packages/domain (policy) or packages/contracts (wire); import it from there.")
   },
