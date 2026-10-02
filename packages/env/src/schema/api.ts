@@ -5,7 +5,7 @@ import {
   adminPoolMaxSchema,
   databaseUrlSchema,
   developmentCodeSchema,
-  developmentPhoneSchema,
+  developmentPhonesSchema,
   filePathSchema,
   nodeEnvSchema,
   originSchema,
@@ -61,12 +61,6 @@ const apiEnvObject = z.object({
   TEMPORAL_TLS_SERVER_NAME: z.string().min(1).default('temporal'),
 
   /**
-   * ONE development number whose sign-in code is fixed, so a local sign-in and a QA run never read
-   * a log or wait out a cap (`M01-04`'s caps and `M01-05`'s single use still hold for every other
-   * number). Both or neither, and refused outright in production: the boot stops, the door never
-   * carries a known code. The number must be one the market packs resolve.
-   */
-  /**
    * The FCM credential a push leaves through (`F6-13`). Optional on purpose: absent binds the
    * development adapter, which writes the push to the log — so a machine with no Firebase
    * project still runs the whole path, and CI does too.
@@ -90,7 +84,13 @@ const apiEnvObject = z.object({
     .enum(['true', 'false'])
     .default('true')
     .transform((value) => value === 'true'),
-  DEV_OTP_PHONE: developmentPhoneSchema.optional(),
+  /**
+   * The development numbers whose sign-in code is the one fixed code, so a local sign-in and a QA
+   * run never read a log or wait out a cap (`M01-04`'s caps and `M01-05`'s single use still hold
+   * for every other number). Both or neither, and refused outright in production: the boot stops,
+   * the door never carries a known code. Each number must be one the market packs resolve.
+   */
+  DEV_OTP_PHONES: developmentPhonesSchema.optional(),
   DEV_OTP_CODE: developmentCodeSchema.optional(),
 
   /**
@@ -125,20 +125,20 @@ export const apiEnvSchema = apiEnvObject.superRefine((env, ctx) => {
         'The OBJECT_STORE_ provider, endpoint, region, bucket and both keys are set together, or not at all.',
     });
   }
-  const declared = [env.DEV_OTP_PHONE, env.DEV_OTP_CODE].filter((v) => v !== undefined).length;
+  const declared = [env.DEV_OTP_PHONES, env.DEV_OTP_CODE].filter((v) => v !== undefined).length;
   if (declared === 1) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      path: ['DEV_OTP_PHONE'],
-      message: 'DEV_OTP_PHONE and DEV_OTP_CODE are set together, or not at all.',
+      path: ['DEV_OTP_PHONES'],
+      message: 'DEV_OTP_PHONES and DEV_OTP_CODE are set together, or not at all.',
     });
   }
   if (declared > 0 && env.NODE_ENV === 'production') {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      path: ['DEV_OTP_PHONE'],
+      path: ['DEV_OTP_PHONES'],
       message:
-        'A fixed sign-in code never runs in production. Remove DEV_OTP_PHONE and DEV_OTP_CODE.',
+        'A fixed sign-in code never runs in production. Remove DEV_OTP_PHONES and DEV_OTP_CODE.',
     });
   }
 });

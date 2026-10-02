@@ -1621,6 +1621,100 @@ tests/e2e/components/<Name>.spec.tsx ─► mounts the web half with the app's s
 - **D5** · `--api-errors` and the `wall:` measure fire on this change → `recorded M151` (C1, C3, C5)
 
 ---
+### T-FPLAT-081 · Development numbers — a list of numbers with the one fixed code
+**Type:** engine · **Tier:** P0
+**Status:** shipped
+**Why:** QA gives each surface its own account, because two surfaces on one person can end each other's sessions. Only ONE number has the fixed code today (`DEV_OTP_PHONE`), so every other surface signs up a fresh number by tapping and reads its code from the api log, and waits out `M01-04`'s caps. A list of fixed-code numbers lets every surface keep its own account and sign in at once.
+**PRD rows:** none — a development facility. `M01-04`'s caps and `M01-05`'s single use still bind every number outside the list.
+**Design:** none — no screen.
+**Chosen by the owner** ("/start new T-FPLAT task"): Step 0 of the QA harness plan; the harness PR's standing accounts (its C4) sign in on these numbers.
+**Depends on:** none.
+
+#### Plan
+**Scope** — In: `DEV_OTP_PHONE` (one number) becomes `DEV_OTP_PHONES` (a comma list), all with the one `DEV_OTP_CODE`; no request cap for any listed number; refused at boot in production, as today; every live reference renamed · Out: the standing QA accounts and the `/qa` account steps (the harness PR's C4) · Out: shipped task records that name `DEV_OTP_PHONE` (`M01-onboarding.md:135`, this file's `T-FPLAT-064` follow-up) — they record what shipped then · Size: ~9 files, ~120 lines
+
+**Where**
+| package | what changes |
+|---|---|
+| env | `schema/fragments.ts` — `developmentPhonesSchema`: a comma list, each item trimmed, each an E.164 number (an empty item fails that pattern) · `schema/api.ts` — `DEV_OTP_PHONES` replaces `DEV_OTP_PHONE`; the two refusals name it; the variable's doc comment moves back above it (it sits above `FCM_SERVICE_ACCOUNT_JSON_BASE64` today, `api.ts:63-68`) |
+| api | `modules/auth/internal/otp.service.ts:152-157` — `developmentCode` asks whether the list holds the number · `tests/auth/otp-development-number.test.ts` — two listed numbers, and the env refusals · `tests/support/http.ts:26` — the wire harness signs in with the FIRST listed number |
+| root | `.env.example:111-116` — the list, its form and an example · `.github/workflows/ci.yml:117`, `:256` — the key renamed, one number |
+| harness | `.claude/skills/start/SKILL.md:21`, `:35` — cleanup keeps every listed person · `.claude/skills/qa/SKILL.md:41` — the name only (C4 rewrites the step) |
+| local | `.env.local` (git-ignored, not committed) — `+919999999999` plus four numbers for the harness PR's standing accounts |
+
+**How it works**
+  `.env.local` `DEV_OTP_PHONES=+919999999999,+919999999991` → `apiEnvSchema` parses it to `['+919999999999', '+919999999991']` → `POST /auth/otp/request` → `OtpService.request` → `developmentCode(phone)` finds the number in the list → a challenge with the fixed code's hash, nothing sent, no cap counted → `POST /auth/otp/verify` with `DEV_OTP_CODE` → a session.
+
+**Example**
+  QA signs the iPhone in on `+919999999991` and the web on `+919999999992`. Both type `000000`. Both land on their own home at once. Neither reads the log, and a tenth sign-in that hour still works.
+  ```ts
+  DEV_OTP_PHONES: developmentPhonesSchema.optional(), // readonly string[] | undefined
+  function developmentCode(phoneE164: string): string | null {
+    const { DEV_OTP_PHONES, DEV_OTP_CODE } = ENV;
+    if (DEV_OTP_PHONES === undefined || DEV_OTP_CODE === undefined) return null;
+    return DEV_OTP_PHONES.includes(phoneE164) ? DEV_OTP_CODE : null;
+  }
+  ```
+
+**Data / API** — none. No table, no route, no contract.
+
+**Risks**
+- An old `.env.local` keeps `DEV_OTP_PHONE`; zod drops the unknown key, so only `DEV_OTP_CODE` remains → the "set together" refusal stops the boot and names `DEV_OTP_PHONES` → `otp-development-number.test.ts` › "refuses the code without the numbers" · QA P2.1
+- A CI lane keeps the old key and its wire suites skip → `skipWithoutHarness` already THROWS under CI with no number (`http.ts:69-79`), so a missed rename turns the lane red → after the build, `grep -rn 'DEV_OTP_PHONE\b'` over live files returns nothing · R2
+- The production refusal has no test today (`grep` finds none) → a new test parses the schema with `NODE_ENV=production` → `otp-development-number.test.ts` › "refuses the numbers in production"
+
+**Decided at /start**
+- **A comma list in one variable**, not numbered variables: one key to read, one to refuse in production, the form `.env` files and CI both write.
+- **"No limits" means the request caps, as today.** A listed number's request sends nothing and counts against no cap (`otp.service.ts:44-54`). Its verify keeps `M01-04`'s wrong-code rules and `M01-05`'s single use — a right code never meets them, and QA's wrong-code checks need them.
+- **No shim for the old name.** No production host sets it; CI is renamed in this change; a local file with the old name stops at boot with a message naming the new one.
+- **Shipped task records keep the old name.** They record what shipped; rewriting history is not Law 8's "docs your change made wrong".
+- **The wire harness takes the first listed number** — it needs one person, and the first is the one every machine already has.
+
+**For you**
+- The four extra local numbers: `+919999999991` to `+919999999994`, one per standing account (web, ios, android, api). They go in your `.env.local` only. Say if you want other numbers.
+
+#### Acceptance criteria
+- A1 · Given `DEV_OTP_PHONES` holds two numbers and `DEV_OTP_CODE` is set, when either number requests a code, then nothing is sent, no cap is read, and the fixed code verifies → proof: `otp-development-number.test.ts` › "sends nothing and accepts the fixed code for every listed number" · QA G1.1, G1.2
+- A2 · Given a listed number, when it requests a code ten times in a row, then every request answers 200 → proof: QA G1.3
+- A3 · Given a number not in the list, when it requests a code, then the real path runs (a random code, sent) and the fixed code is refused → proof: `otp-development-number.test.ts` › "leaves every other number on the real path" · QA G1.4
+- A4 · Given a listed number, when a wrong code is sent, then it is refused like any other → proof: `otp-development-number.test.ts` › "refuses a wrong code for a listed number like any other" · QA G1.5
+- A5 · Given `NODE_ENV=production` and the pair set, when the env parses, then it refuses with "A fixed sign-in code never runs in production" → proof: `otp-development-number.test.ts` › "refuses the numbers in production" · QA P2.3
+- A6 · Given only one of `DEV_OTP_PHONES` and `DEV_OTP_CODE`, when the env parses, then it refuses and names both → proof: `otp-development-number.test.ts` › "refuses the code without the numbers" and "refuses the numbers without the code" · QA P2.1
+- A7 · Given `DEV_OTP_PHONES=+919999999999, +91abc`, when the env parses, then it refuses on `DEV_OTP_PHONES`; spaces around a comma are trimmed → proof: `otp-development-number.test.ts` › "trims each number and refuses one that is not E.164, an empty one included" · QA P2.2
+- A8 · Neither variable set → every number takes the real path → proof: `otp-development-number.test.ts` › "treats every number as any other when the variables are absent"
+- A9 · No live file names `DEV_OTP_PHONE`; the api wire suites sign in with the first listed number → proof: `grep -rn 'DEV_OTP_PHONE\b'` over everything but the shipped records · R1, R2
+
+#### QA plan
+Surfaces: api        (no screen, no client package changes; the phones and the web sign in through the same unchanged route)
+
+Setup
+- Account: fresh, by curl — the checks ARE the sign-in. Each listed number that verifies creates its company `QA T-FPLAT-081 api` with `POST /tenants`. `/start` cleanup keeps the listed persons.
+- Phase 1 (default): `.env.local` with the five numbers → G1, A6, A7, R1.
+- Phase 2: `DEV_OTP_PHONES` removed, `DEV_OTP_CODE` kept → P2.1. Phase 3: `DEV_OTP_PHONES=+919999999999,+91abc` → P2.2. Phase 4: shell `NODE_ENV=production` with the default file → P2.3. Then back to phase 1; `.env.local` proven equal to its start.
+
+G1 · Development numbers — api (phase 1)
+- G1.1 · `POST /auth/otp/request` `+919999999999` → 200 with a `challengeId`; no new `Message for +919999999999` line in `.qa/api.log`; `POST /auth/otp/verify` with `000000` → 200 and a session
+- G1.2 · the same for `+919999999991` → 200, no message line, verify 200
+- G1.3 · ten requests in a row for `+919999999991` → ten 200s, never 429
+- G1.4 · `+919845027746` (unlisted) → 200 and one `Message for +919845027746 via sms` line; verify with `000000` → 401 `OTP_MISMATCH`
+- G1.5 · `+919999999992`, verify with `123456` → 401 `OTP_MISMATCH`
+
+P2 · Boot refusals — api
+- P2.1 · phase 2: the api does not start; the error names `DEV_OTP_PHONES and DEV_OTP_CODE are set together, or not at all.`
+- P2.2 · phase 3: the api does not start; the error path is `DEV_OTP_PHONES`
+- P2.3 · phase 4: the api does not start; the error reads `A fixed sign-in code never runs in production. Remove DEV_OTP_PHONES and DEV_OTP_CODE.`
+
+API — api
+- A6 · no 5xx and no error line in `.qa/api.log` during phase 1
+- A7 · the database (read-only): `otp_challenge` rows for `+919999999991` from G1.3 number ten; none has `delivery_failed_at`
+
+Regression — machine
+- R1 · `pnpm --filter @heliogrid/api test` — the wire suites sign in through `http.ts` with the first listed number and do not skip
+- R2 · CI's two lanes with `DEV_OTP_PHONES` (`ci.yml:117`, `:256`) green on the PR
+
+Not in: A1 · A2 · A3 · A4 · A5 — no route, role, input shape or create changes · S1–S11, H1–H11, W1–W4, M1–M4 — no screen changes · $1–$3 — no money · E1 — the change sends LESS: a listed number sends nothing
+
+---
 ### T-FPLAT-027 · Energy source labelling and the fallback chain
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#169)

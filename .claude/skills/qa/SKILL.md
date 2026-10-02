@@ -37,10 +37,10 @@ step 3 are the QA.
    `attach`) and the Android emulator with its window. Open the app once on each, and the browser
    tab once, so every bundle is warm.
 4. **Each surface gets its own account and its own company.** One sign-out ends every session of
-   that person, so two surfaces on one account sign each other out. The development number in
-   `.env.local` (`DEV_OTP_PHONE`, code `DEV_OTP_CODE`) goes to ONE surface; every other signs up a
-   fresh `+91` number, reading its code from the api log (`grep 'via sms'`), then creates its company
-   with `POST /tenants`. Every QA company is named `QA <T-id> <surface>` (for example
+   that person, so two surfaces on one account sign each other out. The first development number
+   in `.env.local` (`DEV_OTP_PHONES`, code `DEV_OTP_CODE`) goes to ONE surface; every other signs
+   up a fresh `+91` number, reading its code from the api log (`grep 'via sms'`), then creates its
+   company with `POST /tenants`. Every QA company is named `QA <T-id> <surface>` (for example
    `QA T-M02-001 web`), so the test records it leaves in the local database can be found later.
 5. **Seed only through the module's own writer**, into that surface's own company — never SQL by
    hand, never a file added to the repo. A check over an empty list proves nothing. The shape:

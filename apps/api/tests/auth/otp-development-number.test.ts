@@ -1,7 +1,9 @@
 import { IN_PACK } from '@heliogrid/domain';
+import { apiEnvSchema } from '@heliogrid/env';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const DEV_PHONE = '+919999999999';
+const SECOND_DEV_PHONE = '+919999999991';
 const DEV_CODE = '000000';
 const OTHER_PHONE = '+919845027746';
 /** A verify a second after its request — inside every code's life. */
@@ -15,7 +17,7 @@ const A_SECOND_LATER = 1000;
 const env = vi.hoisted(() => ({
   ENV: {
     AUTH_TOKEN_SECRET: 'a-test-only-signing-secret-of-thirty-two-plus',
-    DEV_OTP_PHONE: undefined as string | undefined,
+    DEV_OTP_PHONES: undefined as readonly string[] | undefined,
     DEV_OTP_CODE: undefined as string | undefined,
   },
 }));
@@ -61,25 +63,28 @@ function service() {
 }
 
 beforeEach(() => {
-  env.ENV.DEV_OTP_PHONE = DEV_PHONE;
+  env.ENV.DEV_OTP_PHONES = [DEV_PHONE, SECOND_DEV_PHONE];
   env.ENV.DEV_OTP_CODE = DEV_CODE;
 });
 
-describe('the one development number (DEV_OTP_PHONE) — a fixed code, no delivery, no cap', () => {
-  it('sends nothing and accepts the fixed code for the development number', async () => {
-    const { otp, delivery, markets, codes } = service();
-    const now = Date.now();
-    const challenge = await otp.request(DEV_PHONE, 'sms', 'en', now);
-    expect(delivery.send).not.toHaveBeenCalled();
-    expect(markets.deliverablePack).not.toHaveBeenCalled();
-    expect(codes.challengesSince).not.toHaveBeenCalled();
-    expect(challenge.resendAvailableAt).toBe(new Date(now).toISOString());
-    await expect(
-      otp.verify(challenge.challengeId, DEV_CODE, now + A_SECOND_LATER),
-    ).resolves.toEqual({ phoneE164: DEV_PHONE });
-  });
+describe('the development numbers (DEV_OTP_PHONES) — a fixed code, no delivery, no cap', () => {
+  it.each([DEV_PHONE, SECOND_DEV_PHONE])(
+    'sends nothing and accepts the fixed code for every listed number — %s',
+    async (phone) => {
+      const { otp, delivery, markets, codes } = service();
+      const now = Date.now();
+      const challenge = await otp.request(phone, 'sms', 'en', now);
+      expect(delivery.send).not.toHaveBeenCalled();
+      expect(markets.deliverablePack).not.toHaveBeenCalled();
+      expect(codes.challengesSince).not.toHaveBeenCalled();
+      expect(challenge.resendAvailableAt).toBe(new Date(now).toISOString());
+      await expect(
+        otp.verify(challenge.challengeId, DEV_CODE, now + A_SECOND_LATER),
+      ).resolves.toEqual({ phoneE164: phone });
+    },
+  );
 
-  it('refuses a wrong code for the development number like any other', async () => {
+  it('refuses a wrong code for a listed number like any other', async () => {
     const { otp } = service();
     const now = Date.now();
     const challenge = await otp.request(DEV_PHONE, 'sms', 'en', now);
@@ -99,11 +104,66 @@ describe('the one development number (DEV_OTP_PHONE) — a fixed code, no delive
     ).rejects.toThrow();
   });
 
-  it('treats the number as any other when the variables are absent', async () => {
-    env.ENV.DEV_OTP_PHONE = undefined;
+  it('treats every number as any other when the variables are absent', async () => {
+    env.ENV.DEV_OTP_PHONES = undefined;
     env.ENV.DEV_OTP_CODE = undefined;
     const { otp, delivery } = service();
     await otp.request(DEV_PHONE, 'sms', 'en', Date.now());
     expect(delivery.send).toHaveBeenCalledTimes(1);
+  });
+});
+
+/** The keys the api refuses to boot without, so each case below varies only the pair. */
+const BOOTABLE = {
+  DATABASE_URL: 'postgres://app_runtime:app_runtime@localhost:5544/heliogrid',
+  AUTH_TOKEN_SECRET: 'a-test-only-signing-secret-of-thirty-two-plus',
+  TEMPORAL_ADDRESS: '127.0.0.1:7233',
+  TEMPORAL_NAMESPACE: 'heliogrid',
+  TEMPORAL_TLS_CA_FILE: '/dev/null',
+  TEMPORAL_TLS_CERT_FILE: '/dev/null',
+  TEMPORAL_TLS_KEY_FILE: '/dev/null',
+  TEMPORAL_AUTH_TOKEN_FILE: '/dev/null',
+};
+
+function refusals(source: Record<string, string>): string[] {
+  const parsed = apiEnvSchema.safeParse({ ...BOOTABLE, ...source });
+  if (parsed.success) return [];
+  return parsed.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`);
+}
+
+describe('the development numbers at boot', () => {
+  it('trims each number and refuses one that is not E.164, an empty one included', () => {
+    const parsed = apiEnvSchema.parse({
+      ...BOOTABLE,
+      DEV_OTP_PHONES: `${DEV_PHONE}, ${SECOND_DEV_PHONE}`,
+      DEV_OTP_CODE: DEV_CODE,
+    });
+    expect(parsed.DEV_OTP_PHONES).toEqual([DEV_PHONE, SECOND_DEV_PHONE]);
+    const refused = refusals({ DEV_OTP_PHONES: `${DEV_PHONE},+91abc`, DEV_OTP_CODE: DEV_CODE });
+    expect(refused).toHaveLength(1);
+    expect(refused[0]).toMatch(/^DEV_OTP_PHONES/);
+    expect(refusals({ DEV_OTP_PHONES: '', DEV_OTP_CODE: DEV_CODE })[0]).toMatch(
+      /^DEV_OTP_PHONES\.0/,
+    );
+  });
+
+  it('refuses the code without the numbers', () => {
+    expect(refusals({ DEV_OTP_CODE: DEV_CODE })).toEqual([
+      'DEV_OTP_PHONES: DEV_OTP_PHONES and DEV_OTP_CODE are set together, or not at all.',
+    ]);
+  });
+
+  it('refuses the numbers without the code', () => {
+    expect(refusals({ DEV_OTP_PHONES: DEV_PHONE })).toEqual([
+      'DEV_OTP_PHONES: DEV_OTP_PHONES and DEV_OTP_CODE are set together, or not at all.',
+    ]);
+  });
+
+  it('refuses the numbers in production', () => {
+    expect(
+      refusals({ NODE_ENV: 'production', DEV_OTP_PHONES: DEV_PHONE, DEV_OTP_CODE: DEV_CODE }),
+    ).toEqual([
+      'DEV_OTP_PHONES: A fixed sign-in code never runs in production. Remove DEV_OTP_PHONES and DEV_OTP_CODE.',
+    ]);
   });
 });
