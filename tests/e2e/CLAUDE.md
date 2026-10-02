@@ -24,6 +24,8 @@ Deps: `architecture.md` §2 tests/e2e. The law is `.claude/rules/testing.md`; th
 - Never a shared account: every flow signs up its own fresh number (`support/phone.ts`), so no spec
   reads another's data or the developer's, and no count or empty state is asserted. `/qa`'s
   standing `QA <surface>` accounts are for its agents only; a flow never signs in to one.
+- A flow names the company it creates `E2E <its 10-digit number>`: `/start` removes every such
+  company once it is an hour old, so a flow that names it otherwise leaves it behind for good.
 - Never a retry: a flake is a bug and is fixed.
 - Every web spec ends its landing with `support/axe.ts`'s `expectNoSeriousViolations` once the
   landing's words are visible: a `serious` or `critical` violation fails the suite (`F7-26`).

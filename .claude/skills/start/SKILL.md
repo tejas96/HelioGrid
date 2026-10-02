@@ -16,19 +16,27 @@ Do steps 1–7 in order. Write no code. Step 7 ends in a stop.
   ahead of main, and this branch's `pnpm db:migrate` then fails. Ask the owner to merge that
   branch first.
 - Delete the QA workspace of every task that now reads `shipped`: for each folder in `.qa/`, look
-  up its task's `**Status:**` line and remove `.qa/<T-id>/` when it is `shipped`. Leave `.qa/api.log`.
-  Remove that task's QA records too — its companies `QA <T-id> …`, their rows, and every person
-  whose only memberships are in them; every `DEV_OTP_PHONES` person always stays. The infra must be
-  up. It runs in one transaction, refuses any database but the local one, and prints what it removed:
+  up its task's `**Status:**` line and remove `.qa/<T-id>/` when it is `shipped`. Leave `.qa/api.log`,
+  `.qa/accounts.md` and `.qa/accounts/`.
+- Remove the QA and suite records, every `/start`, even when no task shipped — `shipped` lists the
+  ids just removed, or stays empty: those tasks' companies `QA <T-id> …`, and the suites' companies
+  `E2E <10 digits>` made more than an hour ago (a younger one may belong to a suite still running);
+  their rows; and every person whose only memberships are in them. Every `DEV_OTP_PHONES` person
+  always stays, and so do the standing `QA <surface>` companies, which neither name matches. The
+  infra must be up. It runs in one transaction, refuses any database but the local one, and prints
+  what it removed:
   ```bash
   pnpm --filter @heliogrid/api exec tsx --env-file-if-exists=<repo>/.env.local -e "(async () => {
+    const shipped = [/* 'T-M02-001', … */];
     const { openPools, unseed, adminUrl } = await import('./tests/support/fixture.ts');
     const { tenant, tenantMembership, userAccount } = await import('@heliogrid/db');
-    const { and, inArray, like, notInArray } = await import('drizzle-orm');
+    const { and, inArray, like, lt, notInArray, or, sql } = await import('drizzle-orm');
     if (new URL(adminUrl).host === 'localhost:5544' === false) throw new Error('refused: not the local database');
     const pools = openPools();
     const db = pools.admin.db;
-    const companies = await db.select({ tenantId: tenant.id }).from(tenant).where(like(tenant.companyName, 'QA <T-id> %'));
+    const anHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    const suiteCompany = and(sql\`\${tenant.companyName} ~ '^E2E [0-9]{10}$'\`, lt(tenant.createdAt, anHourAgo));
+    const companies = await db.select({ tenantId: tenant.id }).from(tenant).where(or(suiteCompany, ...shipped.map((id) => like(tenant.companyName, 'QA ' + id + ' %'))));
     const ids = companies.map((c) => c.tenantId);
     const members = ids.length === 0 ? [] : await db.selectDistinct({ userId: tenantMembership.userAccountId }).from(tenantMembership).where(inArray(tenantMembership.tenantId, ids));
     const elsewhere = members.length === 0 ? [] : await db.selectDistinct({ userId: tenantMembership.userAccountId }).from(tenantMembership).where(and(inArray(tenantMembership.userAccountId, members.map((m) => m.userId)), notInArray(tenantMembership.tenantId, ids)));
