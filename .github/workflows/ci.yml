@@ -482,8 +482,10 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           # One line: the action runs each line of `script` in its own shell. The device's log is
-          # read before the emulator stops, which is when this step ends.
-          script: adb install -r apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk && bash tests/e2e/mobile/run.sh emulator-5554 || { adb logcat -d > .qa/device.log; exit 1; }
+          # read before the emulator stops, which is when this step ends. React Native does not
+          # take the ATD image for an emulator, so the app asks localhost:8081 for its bundle, not
+          # 10.0.2.2: `adb reverse` points the device's 8081 at this job's Metro.
+          script: adb reverse tcp:8081 tcp:8081 && adb install -r apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk && bash tests/e2e/mobile/run.sh emulator-5554 || { adb logcat -d > .qa/device.log; exit 1; }
       - name: Keep the flows' screenshots and the logs of a failure
         if: failure() && vars.PHONE_E2E != 'off'
         uses: actions/upload-artifact@v4
