@@ -28,6 +28,8 @@ export interface RailItem {
 }
 
 export interface AppRailProps {
+  /** The navigation landmark's name, in the reader's language. */
+  label: string;
   items: RailItem[];
   value?: string;
   onChange?: (key: string) => void;

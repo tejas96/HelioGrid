@@ -19,11 +19,16 @@ import { SIGN_IN } from './sign-in';
  */
 export const SHELL = {
   search: /*i18n*/ { id: 'Search' },
+  /** The web header's search box (`SCR-SHELL-02`'s words): what a search finds, never invoices (`F6-20`). */
+  searchPlaceholder: /*i18n*/ { id: 'Name, phone or city' },
+  /** The web rail's landmark name; a screen reader adds "navigation" itself. */
+  mainNavigation: /*i18n*/ { id: 'Main' },
   notifications: /*i18n*/ { id: 'Notifications' },
   account: /*i18n*/ { id: 'Account' },
   accountOf: /*i18n*/ { id: '{name} — account, grievance contact and sign out' },
   grievanceOfficer: /*i18n*/ { id: 'Grievance officer' },
   signOut: /*i18n*/ { id: 'Sign out' },
+  notPublishedYet: /*i18n*/ { id: 'Not published yet' },
   grievanceNotPublished: /*i18n*/ {
     id: 'Your company has not published its grievance officer yet. Ask your admin who handles questions about your data.',
   },
@@ -131,6 +136,22 @@ export function updateOnStoreLabel(translate: Translator['t'], store: StorePlatf
 
 export function verbLabel(translate: Translator['t'], verb: CentreVerb): string {
   return translate(VERB_LABEL[verb]);
+}
+
+/**
+ * The run's own words (`M01-16`): the counter, and the forward button, which closes the run on the
+ * last mark — so "Next" never offers a mark that is not there. The dismiss is always "Got it".
+ */
+export function firstRunMarkLabels(
+  translate: Translator['t'],
+  { step, total }: { step: number; total: number },
+) {
+  const done = translate(SHELL.gotIt);
+  return {
+    counterLabel: translate(SHELL.markCount, { step, total }),
+    nextLabel: step < total ? translate(SHELL.next) : done,
+    dismissLabel: done,
+  };
 }
 
 /**

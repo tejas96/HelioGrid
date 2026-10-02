@@ -29,5 +29,9 @@ export function useSignInDwell(status: SessionStatus): SignInDwell {
     return () => clearTimeout(timer);
   }, [status]);
 
+  // A boot that finds the session already signed in has no door to dwell on: `over` in the very
+  // render it is known, never one render later — that one render read as signed out, and a
+  // signed-in page's gate sent the person to the door and back home, losing the page they were on.
+  if (status === 'authenticated' && !sawSignedOut.current) return 'over';
   return dwell;
 }

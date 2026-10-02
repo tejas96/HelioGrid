@@ -1,6 +1,6 @@
-import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import type { AppShellProps } from './AppShell.types';
 
 interface NativeAppShellProps extends AppShellProps {
@@ -13,8 +13,9 @@ interface NativeAppShellProps extends AppShellProps {
  * flex region and never a second scroll container.
  */
 export function AppShell({ rail, header, children, style }: NativeAppShellProps) {
+  const { ground } = useGround();
   return (
-    <View style={[styles.shell, style]}>
+    <View style={[styles.shell, { backgroundColor: ground }, style]}>
       {rail}
       <View style={styles.column}>
         {header}
@@ -29,7 +30,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     minHeight: 0,
-    backgroundColor: theme.colors.canvas,
   },
   column: {
     flex: 1,

@@ -42,6 +42,9 @@ export const SHELL_GLYPHS: Record<ShellGlyphName, readonly GlyphMark[]> = {
   ],
   dots: [circle(5, 12, 1.7), circle(12, 12, 1.7), circle(19, 12, 1.7)],
   'plus-circle': [circle(12, 12, 9), path('M12 8v8M8 12h8')],
+  plus: [path('M12 5v14M5 12h14')],
+  search: [circle(11, 11, 7), path('m20 20-3.5-3.5')],
+  bell: [path('M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8'), path('M13.7 21a2 2 0 0 1-3.4 0')],
   chevron: [path('m6 9 6 6 6-6')],
   shield: [
     path('M12 3.2 18.5 5.8v5.4c0 4.2-2.7 7.2-6.5 8.6-3.8-1.4-6.5-4.4-6.5-8.6V5.8z'),

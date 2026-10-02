@@ -1,0 +1,61 @@
+/* The web shell — screen-level layout only; every part's pixels are @heliogrid/ui's. */
+
+/* The shell fills the window; the page scrolls inside AppShell's main, never the window. */
+.hg-shell {
+  height: 100dvh;
+}
+
+/* The page region: the home or a door, inside --content-max. The first-run mark is drawn inside
+   it, so the region is what a mark is placed in and clamped to — never the rail. */
+.hg-shell-page {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  max-width: var(--content-max);
+  min-height: 100%;
+  padding: var(--sp-8) var(--screen-pad-mobile) var(--sp-10);
+}
+
+/* The page's one heading, for a screen reader: the title it names is already on screen. */
+.hg-shell-heading {
+  position: absolute;
+  width: var(--sp-0-5);
+  height: var(--sp-0-5);
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The home switcher's list keeps inside the window at 375: its drawn width is wider than the room
+   right of the rail and the page's sides there. */
+.hg-shell-page .hg-menu-list {
+  max-width: calc(100vw - var(--rail-w) - 2 * var(--screen-pad-mobile));
+}
+
+/* The company's name gives way first, so the search keeps its room. */
+.hg-shell-company {
+  max-width: 30vw;
+  text-overflow: ellipsis;
+}
+
+/* Below --bp-desktop the rail and the name leave no room for a field: the search is a button. */
+.hg-shell-search-field {
+  display: none;
+}
+
+@media (min-width: 968px) {
+  .hg-shell-page {
+    padding-inline: var(--screen-pad-desktop);
+  }
+
+  .hg-shell-search-field {
+    display: block;
+  }
+
+  .hg-shell-search-button {
+    display: none;
+  }
+}

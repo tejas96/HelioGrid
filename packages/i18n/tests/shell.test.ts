@@ -4,6 +4,7 @@ import {
   accessRemovedWords,
   accountMenuWords,
   doorTitle,
+  firstRunMarkLabels,
   firstRunMarkWords,
   homeBlocksWords,
   homeHeadWords,
@@ -103,6 +104,29 @@ describe('firstRunMarkWords — each mark names its own control, true on both pl
   ] as const)('$mark with verb $verb', async ({ mark, verb, words }) => {
     const { t } = await createTranslator('en');
     expect(firstRunMarkWords(t, mark, OWNER, verb)).toEqual(words);
+  });
+});
+
+describe('firstRunMarkLabels — the run reads as a count, and its last mark closes it (M01-16)', () => {
+  it.each([
+    {
+      step: 1,
+      total: 2,
+      labels: { counterLabel: '1 of 2', nextLabel: 'Next', dismissLabel: 'Got it' },
+    },
+    {
+      step: 2,
+      total: 2,
+      labels: { counterLabel: '2 of 2', nextLabel: 'Got it', dismissLabel: 'Got it' },
+    },
+    {
+      step: 1,
+      total: 1,
+      labels: { counterLabel: '1 of 1', nextLabel: 'Got it', dismissLabel: 'Got it' },
+    },
+  ] as const)('mark $step of $total', async ({ step, total, labels }) => {
+    const { t } = await createTranslator('en');
+    expect(firstRunMarkLabels(t, { step, total })).toEqual(labels);
   });
 });
 

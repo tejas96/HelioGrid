@@ -1,0 +1,6 @@
+/* HomeBlocks — the home's blocks sit flush with the head: the page pads the region, so a block's
+   own section padding would set its overline in from the title above it (SCR-SHELL-01). */
+
+.hg-home-blocks > .hg-block {
+  padding: 0;
+}

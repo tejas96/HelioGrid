@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import type { AppHeaderProps } from './AppShell.types';
 import { ShellAction } from './ShellAction';
-import { BellIcon } from './ShellIcons';
+import { ShellGlyph } from './ShellGlyph';
 
 interface WebAppHeaderProps extends AppHeaderProps {
   className?: string;
@@ -70,7 +70,7 @@ export function AppHeader({
             label="Notifications"
             badge={notifications}
             onClick={onNotificationsClick}
-            icon={<BellIcon />}
+            icon={<ShellGlyph name="bell" size="md" />}
           />
         ) : null}
         {avatar}

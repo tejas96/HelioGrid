@@ -77,7 +77,7 @@ export function BottomNav({
                   ? `M0 ${rise}Q 50 ${-rise} 100 ${rise}L100 ${height}L0 ${height}Z`
                   : notchPath(barWidth, height, notchRadius)
               }
-              // biome-ignore lint/plugin/raw-white: owed-T-SHELL — the shell's parts, moved by T-SHELL-001 and T-SHELL-008
+              // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
               fill={theme.colors.surface}
             />
           </Svg>
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     left: 0,
     borderTopLeftRadius: theme.radius['r-lg'],
     borderTopRightRadius: theme.radius['r-lg'],
-    // biome-ignore lint/plugin/raw-white: owed-T-SHELL — the shell's parts, moved by T-SHELL-001 and T-SHELL-008
+    // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
     backgroundColor: theme.colors.surface,
     ...theme.elevation.e2,
   },

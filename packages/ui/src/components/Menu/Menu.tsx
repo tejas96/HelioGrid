@@ -3,7 +3,7 @@
    program, so it declares the lib it needs instead of failing there. */
 /// <reference lib="dom" />
 import type { CSSProperties, KeyboardEvent } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import type { MenuItem, MenuProps } from './Menu.types';
 import { MenuItemRow } from './MenuItemRow';
@@ -20,6 +20,9 @@ interface WebMenuProps extends MenuProps {
 
 const FOCUSABLE = 'button,[href],[tabindex]:not([tabindex="-1"])';
 
+/** The list's gap from its trigger — `Menu.css`'s `calc(100% + 6px)`, both ways. */
+const GAP = 6;
+
 /**
  * Actions / overflow menu with real menu semantics (`MS12-12`): button → menu → menuitem roles,
  * arrow-key navigation with wrap, Home/End, type-ahead, Escape, and focus returned to the trigger.
@@ -31,6 +34,9 @@ const FOCUSABLE = 'button,[href],[tabindex]:not([tabindex="-1"])';
  * a tick as the non-colour channel, and a reserved tick column so labels stay put whichever entry
  * is current. Every later picker — language, tenant, saved view — takes this rather than copying
  * whatever the shell did.
+ *
+ * The list drops under its trigger, and rises above it when it would not fit below and there is
+ * more room above — the account menu at the rail's foot, as the phone half already does.
  */
 export function Menu({
   items = [],
@@ -46,7 +52,9 @@ export function Menu({
 }: WebMenuProps) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
+  const [rises, setRises] = useState(false);
   const wrapRef = useRef<HTMLSpanElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLSpanElement>(null);
   const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const entries = walkableItems(items);
@@ -81,6 +89,20 @@ export function Menu({
     };
     document.addEventListener('mousedown', onDoc);
     return () => document.removeEventListener('mousedown', onDoc);
+  }, [open]);
+
+  // Measured before the first paint, so an open list never shows on the side it leaves.
+  useLayoutEffect(() => {
+    const wrap = wrapRef.current;
+    const list = listRef.current;
+    if (!open || wrap === null || list === null) {
+      setRises(false);
+      return;
+    }
+    const trigger = wrap.getBoundingClientRect();
+    const below = window.innerHeight - trigger.bottom - GAP;
+    const above = trigger.top - GAP;
+    setRises(below < list.offsetHeight && above > below);
   }, [open]);
 
   useEffect(() => {
@@ -136,7 +158,9 @@ export function Menu({
           aria-label={label}
           className="hg-menu-list"
           data-align={align}
+          data-rises={rises ? 'true' : undefined}
           onKeyDown={onKey}
+          ref={listRef}
           role="menu"
           style={vars}
         >

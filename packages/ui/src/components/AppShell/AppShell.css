@@ -5,7 +5,7 @@
   display: flex;
   height: 100%;
   min-height: 0;
-  background: var(--canvas);
+  background: var(--hg-ground);
 }
 
 .hg-app-shell-column {
@@ -34,8 +34,7 @@
   box-sizing: border-box;
   min-height: var(--header-h, 64px);
   padding: 0 var(--sp-6);
-  /* biome-ignore lint/plugin/raw-white-css: owed-T-SHELL — the shell's parts, moved by T-SHELL-001 and T-SHELL-008 */
-  background: var(--surface);
+  background: var(--hg-ground);
   box-shadow: var(--e1);
   font-family: var(--font-sans);
 }
@@ -201,11 +200,6 @@
   position: absolute;
   top: 6px;
   right: var(--sp-1);
-}
-
-.hg-app-shell-glyph {
-  width: 20px;
-  height: 20px;
 }
 
 /* ── the count badge ───────────────────────────────────────────────────────────────────────

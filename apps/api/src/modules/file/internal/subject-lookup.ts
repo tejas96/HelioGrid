@@ -7,7 +7,6 @@ import type { FileSubjectKind } from '@heliogrid/domain';
  */
 export type SubjectLookup = (tenantId: string, subjectRef: string) => Promise<boolean>;
 
-// biome-ignore lint/plugin/app-vocabulary: lookup functions keyed by a contracts kind; ruling owed (docs/tasks/deferred.md, app vocabulary row)
 export const SUBJECT_LOOKUPS: Readonly<Record<FileSubjectKind, SubjectLookup>> = {
   /** The company itself: only ever the caller's own. The wire takes a uuid in either case. */
   tenant: async (tenantId, subjectRef) => subjectRef.toLowerCase() === tenantId.toLowerCase(),

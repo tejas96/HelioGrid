@@ -31,6 +31,7 @@ export {
   accountMenuWords,
   destinationLabel,
   doorTitle,
+  firstRunMarkLabels,
   firstRunMarkWords,
   homeBlocksWords,
   homeHeadWords,

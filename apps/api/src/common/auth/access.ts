@@ -10,7 +10,7 @@ import type { Request } from 'express';
  * roles grant. Declared per route, beside the contract it serves, as a COMPLETE map — a route
  * the map does not name is denied, so silence is denial rather than a hole.
  */
-// biome-ignore lint/plugin/app-vocabulary: the API's own route-access type; ruling owed (docs/tasks/deferred.md, app vocabulary row)
+// biome-ignore lint/plugin/app-vocabulary: the API's own route-access type, a guard's and not a map; its home is owed (docs/tasks/deferred.md D71)
 export type RouteAccess =
   | 'public'
   | 'session-cookie'

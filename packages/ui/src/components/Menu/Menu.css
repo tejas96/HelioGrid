@@ -53,6 +53,11 @@
   animation: hg-pop-in var(--dur-standard) var(--ease-enter);
 }
 
+.hg-menu-list[data-rises="true"] {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+
 .hg-menu-list[data-align="end"] {
   right: 0;
 }

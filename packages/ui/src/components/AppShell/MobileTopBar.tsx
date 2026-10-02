@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import type { MobileTopBarProps } from './AppShell.types';
 import { ShellAction } from './ShellAction';
-import { BellIcon, SearchIcon } from './ShellIcons';
+import { ShellGlyph } from './ShellGlyph';
 
 interface WebMobileTopBarProps extends MobileTopBarProps {
   className?: string;
@@ -48,14 +48,18 @@ export function MobileTopBar({
         {actions}
         {jobs}
         {onSearchClick !== undefined ? (
-          <ShellAction label={searchLabel} onClick={onSearchClick} icon={<SearchIcon />} />
+          <ShellAction
+            label={searchLabel}
+            onClick={onSearchClick}
+            icon={<ShellGlyph name="search" size="md" />}
+          />
         ) : null}
         {onNotificationsClick !== undefined ? (
           <ShellAction
             label={notificationsLabel}
             badge={notifications}
             onClick={onNotificationsClick}
-            icon={<BellIcon />}
+            icon={<ShellGlyph name="bell" size="md" />}
           />
         ) : null}
         {avatar}
