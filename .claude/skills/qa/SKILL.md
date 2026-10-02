@@ -20,7 +20,11 @@ step 3 are the QA.
 
 **Refresh the plan — one pass, before anything runs:**
 
-- Fill each expected text with the exact words from its `packages/i18n` file, now that they exist.
+- Fill each expected text with the exact words from its `packages/i18n` file, now that they exist —
+  every `new copy — filled at /qa step 1` among them.
+- **Apply the `when` lines again**, to the whole built diff (`git diff --stat origin/main`): a
+  standard check whose `when` the diff now meets joins the plan with its `why:`; a check on the
+  `Not in:` line stays out only while its reason still holds.
 - **Add** a check for anything the build added that the plan does not cover — a new state, a new
   error message, a new route or screen — in the plan's own format, and list it in the report.
 - Never remove or weaken a check. A check that no longer fits the code is a scope change: stop and
@@ -148,7 +152,8 @@ Wait until every agent has returned. Then sort each failure:
 - **environment** → fix it; the agent runs the check again.
 
 Re-check with `SendMessage` to the SAME agent — only the failed checks — and run the suites from
-step 3 again. A check that still fails after its third fix → stop and ask the owner: fix the code
+step 3 again. A fix that adds a file → apply the `when` lines to that file only; a check it now meets
+joins the re-check. A check that still fails after its third fix → stop and ask the owner: fix the code
 another way, or change the plan.
 
 ## 9. Close
