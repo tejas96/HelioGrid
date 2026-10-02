@@ -78,6 +78,11 @@ in the repo, not even for a moment.
 27. Every doc the change made wrong is fixed in the same change, dead paths after a delete or a
     move included.
 
+**H. QA report**
+28. Every `re-judged` row is checked against its evidence: the words the agent saw equal the
+    corrected expected words of its PRD row or `packages/i18n`, and the row is not a look, a
+    screen-health check or a defect.
+
 ## Report
 
 ```
@@ -87,7 +92,7 @@ in the repo, not even for a moment.
 ## Red proofs to run
 | rule | smallest break | test that must go red |
 
-## Checked and fine — one line per group A–G
+## Checked and fine — one line per group A–H
 ```
 
 A finding you did not verify by reading the code is not a finding.

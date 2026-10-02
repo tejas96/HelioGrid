@@ -63,7 +63,7 @@ blocker. Inside a module it is design → backend → UI.
 
 | step | who | stops for the owner |
 |---|---|---|
-| `/start` | picks the step, critiques the task, writes the plan, the acceptance criteria and the QA plan; `design-reviewer` for a screen, `plan-reviewer` for money, tenancy, permissions or schema | yes — the go |
+| `/start` | picks the step, critiques the task, writes the plan, the acceptance criteria and the QA plan; `design-reviewer` for a screen; `plan-reviewer` on every plan — its QA-plan checks, or every check for money, tenancy, permissions or schema | yes — the go |
 | build | the main session, inside the plan | only when the scope changes |
 | `/qa` | the suites, then one QA agent per surface the change reaches, in parallel; fix and re-check what failed | when a check fails three times |
 | `/ship` | `code-reviewer` once, the fixes and red proofs, the commit, the push, the PR, CI | yes — every commit |
@@ -76,7 +76,8 @@ blocker. Inside a module it is design → backend → UI.
 4. A schema change runs `/migration`; a contract change runs `/contract-change`.
 5. A bug outside the scope goes to `docs/tasks/deferred.md`, never into this diff.
 6. When done, one tidy pass over the diff — reuse, names, dead code — then `pnpm check:all` once,
-   then `/qa`.
+   noting its tree stamp (`/qa`, "The QA report"), then `/qa`. `/ship` runs it again only when the tree
+   changed.
 7. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code
    that is gone: `pnpm turbo build --force`.
 
@@ -136,7 +137,7 @@ import, §4 where a new file goes. Run §4 before creating one. This is the dige
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
 | `docs/engineering/` | how this repo is built, ranked **below** `docs/prd/`. |
 | `.claude/` | the agent's own instructions — `skills/`, `agents/`, `hooks/`, `rules/` and `protections.md`, a closed set. `rules/` is law that spans MORE than one package; a rule for exactly one package lives in that package's own `CLAUDE.md`. |
-| `.qa/` | the local QA workspace, git-ignored: the api log, and one folder per task — its QA report, each agent's results and its evidence. `/start` deletes a shipped task's folder. |
+| `.qa/` | the local QA workspace, git-ignored: the api log; the standing QA accounts — `accounts.md` names each surface's number, `accounts/<surface>.jar` holds its curl session; and one folder per task — its QA report, each agent's results and its evidence. `/start` deletes a shipped task's folder, never the accounts. |
 | `infra/` · `HelioGrid-UX/` | deployment and local-stack material that is NOT application code · the exported Claude Design artboards and decisions records, one pair per screen — the pixel-perfect reference a screen is built and measured against; never edited by hand, re-exported when a design changes (a board of 256 KB or less Claude pulls itself after the owner's yes, through `DesignSync`), ignored by git. |
 
 Everything public is re-exported from a package's `src/index.ts`; consumers import the index, never

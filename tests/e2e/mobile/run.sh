@@ -10,6 +10,8 @@ cd "$(dirname "$0")"
 [ $# -eq 1 ] || { echo 'usage: bash mobile/run.sh <device id>' >&2; exit 2; }
 device="$1"
 export MAESTRO_CLI_NO_ANALYTICS=1 MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true
+# Milliseconds the driver may take to start. iOS's 120000 default timed out on a cold simulator.
+export MAESTRO_DRIVER_STARTUP_TIMEOUT=180000
 
 words=()
 while IFS= read -r line; do words+=(-e "$line"); done < <(node ../support/mobile-cli.ts words)

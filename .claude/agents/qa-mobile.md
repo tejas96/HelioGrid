@@ -16,7 +16,8 @@ tree: `idb ui describe-all --udid <udid> | grep -o '<the expected words>'`. When
 screenshot, take it with `xcrun simctl io <udid> screenshot <file>` and shrink it to the point
 frame BEFORE you read it — `sips -z <height> <width> <file>` — so a pixel you read is a point you
 tap. Never read a full-size simulator image. To sign out: `xcrun simctl keychain <udid> reset`, then
-a cold relaunch.
+a cold relaunch. Never run `xcrun simctl get_app_container` or `simctl listapps`: they hang. To see if
+the app is open and on which screen, read the view tree. To start or reinstall it, use `launch`.
 
 **Android — adb, always `adb -s <serial>`.** `shell input tap X Y`, `shell input text`,
 `shell input keyevent KEYCODE_BACK` for the back button. Read words from the view tree:
@@ -26,7 +27,7 @@ a cold relaunch.
 (`shell cmd connectivity airplane-mode enable`) turns it off (`… disable`) before it ends, whatever
 its result. The emulator reaches the api at `10.0.2.2:8084`.
 
-**Typing** — tap the centre of the field first, then type at most 16 characters per call on iOS and
+**Typing** — **a sign-in code goes in one digit per `input text` call.** Tap the centre of the field first, then type at most 16 characters per call on iOS and
 3 per `input text` on Android: a faster burst drops characters on a debug build. A tap that shows
 no caret had the wrong coordinate — work it out again from the shrunk screenshot; never retry blind.
 
@@ -57,7 +58,9 @@ element's margins to the screen edges instead.
 - states: read disabled and selected from the tree; the error state from its words and one screenshot;
 - large text: iOS `xcrun simctl ui <udid> content_size extra-extra-extra-large`, Android
   `adb -s <serial> shell settings put system font_scale 2.0`; check again, then set it back
-  (`content_size large`, `font_scale 1.0`) before the check ends, whatever its result;
+  (`content_size large`, `font_scale 1.0`) before the check ends, whatever its result. On Android,
+  a change to `font_scale` restarts the app: run this check LAST in its phase, never before a check
+  that needs the same app process;
 - tap targets: every tappable frame is at least 44 × 44;
 - dark mode: iOS `xcrun simctl ui <udid> appearance dark`, Android `adb -s <serial> shell cmd uimode
   night yes`; the screen must look the same as in light; set it back (`light`, `night no`) before the
@@ -69,8 +72,13 @@ element's margins to the screen edges instead.
   new warning is a finding.
 
 **Not drivable** — the iPhone's network cannot be dropped: an iOS "no connection" check is
-`not run`; Android covers it.
+`not run`; Android covers it. A true double tap cannot be driven on iOS either: an iOS double-tap
+check is `not run`; Android covers it.
 
-**The api log** — your requests carry the phone's user agent; read only those lines. Use only the
-account your prompt gives you; a company you create is named as your prompt says
-(`QA <T-id> <surface>`).
+**The api log** — your requests carry the phone's user agent; read only those lines.
+
+**Account** — the main session has signed the phone in to the account your prompt gives you. A
+check that ends the session (S6) uses the app's own sign-out, or the keychain reset above on iOS —
+never "sign out everywhere"; sign back in with the number and the fixed code your prompt gives. A
+language your prompt says was set for you shows after a relaunch. A company you create is named as
+your prompt says (`QA <T-id> <surface>`).

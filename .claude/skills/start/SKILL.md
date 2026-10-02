@@ -16,19 +16,27 @@ Do steps 1–7 in order. Write no code. Step 7 ends in a stop.
   ahead of main, and this branch's `pnpm db:migrate` then fails. Ask the owner to merge that
   branch first.
 - Delete the QA workspace of every task that now reads `shipped`: for each folder in `.qa/`, look
-  up its task's `**Status:**` line and remove `.qa/<T-id>/` when it is `shipped`. Leave `.qa/api.log`.
-  Remove that task's QA records too — its companies `QA <T-id> …`, their rows, and every person
-  whose only memberships are in them; every `DEV_OTP_PHONES` person always stays. The infra must be
-  up. It runs in one transaction, refuses any database but the local one, and prints what it removed:
+  up its task's `**Status:**` line and remove `.qa/<T-id>/` when it is `shipped`. Leave `.qa/api.log`,
+  `.qa/accounts.md` and `.qa/accounts/`.
+- Remove the QA and suite records, every `/start`, even when no task shipped — `shipped` lists the
+  ids just removed, or stays empty: those tasks' companies `QA <T-id> …`, and the suites' companies
+  `E2E <10 digits>` made more than an hour ago (a younger one may belong to a suite still running);
+  their rows; and every person whose only memberships are in them. Every `DEV_OTP_PHONES` person
+  always stays, and so do the standing `QA <surface>` companies, which neither name matches. The
+  infra must be up. It runs in one transaction, refuses any database but the local one, and prints
+  what it removed:
   ```bash
   pnpm --filter @heliogrid/api exec tsx --env-file-if-exists=<repo>/.env.local -e "(async () => {
+    const shipped = [/* 'T-M02-001', … */];
     const { openPools, unseed, adminUrl } = await import('./tests/support/fixture.ts');
     const { tenant, tenantMembership, userAccount } = await import('@heliogrid/db');
-    const { and, inArray, like, notInArray } = await import('drizzle-orm');
+    const { and, inArray, like, lt, notInArray, or, sql } = await import('drizzle-orm');
     if (new URL(adminUrl).host === 'localhost:5544' === false) throw new Error('refused: not the local database');
     const pools = openPools();
     const db = pools.admin.db;
-    const companies = await db.select({ tenantId: tenant.id }).from(tenant).where(like(tenant.companyName, 'QA <T-id> %'));
+    const anHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    const suiteCompany = and(sql\`\${tenant.companyName} ~ '^E2E [0-9]{10}$'\`, lt(tenant.createdAt, anHourAgo));
+    const companies = await db.select({ tenantId: tenant.id }).from(tenant).where(or(suiteCompany, ...shipped.map((id) => like(tenant.companyName, 'QA ' + id + ' %'))));
     const ids = companies.map((c) => c.tenantId);
     const members = ids.length === 0 ? [] : await db.selectDistinct({ userId: tenantMembership.userAccountId }).from(tenantMembership).where(inArray(tenantMembership.tenantId, ids));
     const elsewhere = members.length === 0 ? [] : await db.selectDistinct({ userId: tenantMembership.userAccountId }).from(tenantMembership).where(and(inArray(tenantMembership.userAccountId, members.map((m) => m.userId)), notInArray(tenantMembership.tenantId, ids)));
@@ -110,8 +118,9 @@ extended) and `#### QA plan`.
 
 ## 7. Review, then stop
 
-- The plan touches money, tenancy, permissions or the database schema → dispatch `plan-reviewer`
-  with the task file. Fix every finding once; do not run it again.
+- Dispatch `plan-reviewer` with the task file, for every task. The plan touches money, tenancy,
+  permissions or the database schema → every check, on its own model. Any other plan → checks 5–7
+  only, with `model: sonnet`. Fix every finding once; do not run it again.
 - Wait for `design-reviewer`.
 - Show the owner, in simple words: what changes and where, the example, the risks, how many QA
   checks, design-reviewer's MUST FIX and BETTER findings, each plan-reviewer finding with its fix,
@@ -162,37 +171,61 @@ stay word for word.
 #### QA plan
 Surfaces: api · web · ios · android        (from what the change reaches)
 
-Smoke — every surface
+Setup
+- Accounts: the standing `QA web` · `QA ios` · `QA android` · `QA api`; a fresh `QA <T-id> web` for
+  G2 — S2 needs an empty list
+- Phase 1 · default — the suites, and every check that needs no setting
+- Phase 2 · `MOBILE_MIN_VERSION=99.0.0` in `.env.local` — G3
+- Phase 3 · default again — G3.4, the app opens as usual
+
+Smoke — every surface · phase 1
 - S1 · sign in as owner → Leads list shows "Leads"
 
-G1 · Phone field — web · ios · android
+G1 · Phone field — web · ios · android · phase 1
 - G1.1 · empty, Save → "Enter a phone number", no request sent
 - G1.2 · 9 digits → "Phone must be 10 digits"
 
-API — api
+API — api · phase 1
 - P1 · POST /leads with no session → 401
 
-Look — web 375 + 1536 · ios · android
+Look — web 375 + 1536 · ios · android · phase 1
 - L1 · Quick Add matches the export: spacing, sizes, icons, order
 
-Regression — machine
+Standard — web · ios · android · phase 1
+- S2 · the list: loading, empty, one row, many rows — why: a saved lead joins the list
+- H7 · the largest text size → no label clips — why: the form's labels are new
+
+Regression — machine · phase 1
 - R1 · tests/e2e/web/leads.spec.ts · tests/e2e/mobile/leads.yaml · unit tests
 
-Skipped: S2 (no list on this screen) · W3 (no form)
+Not in: S6 — no step of this flow holds a session · H9 — no theme, app root or native change
 ````
 
 - A group holds every check of one field or one flow, so one agent runs it in one pass.
 - Each check names its platforms, so the web and phone results sit side by side in the report.
-- Each check is an action and the exact text or state expected. Copy an expected word from its
-  `packages/i18n` file, never from memory.
+- Each check is an action and what a person then sees, or what the api answers — taken from the PRD
+  row or from its `packages/i18n` file, never from memory, and never how the code works ("no request
+  sent" is seen in the network panel; "the hook retries" is not seen by anyone). Words not yet in
+  `packages/i18n` read `new copy — filled at /qa step 1`.
+- Each standard check carries `why:` — one line that meets its `when`.
+- **Setup** names the accounts and the phases. Accounts: the standing `QA <surface>` account, or a
+  fresh `QA <T-id> <surface>` with its reason. Phases, in order: the default first (the suites and
+  every check that needs no setting), then each setting phase, then back to the default. Every group
+  names its phase; a check that crosses a setting names both (`phase 2→3`).
+- More than about 15 checks on one surface for one screen → one line under the group says why.
 - No severity: every in-scope issue QA finds is fixed in this branch.
 
-### The standard checks — copy every one that applies; list the rest on the Skipped line
+### The standard checks — put a check in when the change can affect it, with a one-line reason
+
+Each check's `when` says what change can affect it. Every check left out goes on the `Not in:` line
+with its reason. A change to a shared package — `ui`, `theme`, `i18n` or `data` — also runs H1–H8 on
+one or two screens per surface that import the changed part (found by grep), named in the plan.
 
 **API** — when `apps/api`, `db`, `contracts` or `data` changes
 - A1 · no session → 401
 - A2 · another tenant's id → 404, never 403
 - A3 · each role against each changed route → a role without the right gets 403
+  when: also a permission change in `domain`
 - A4 · bad input (a missing field, a wrong type, too long) → 400 in the standard error shape
 - A5 · a create sent twice with the same key → one row, the same id
 - A6 · no 5xx and no error line in the API log
@@ -200,20 +233,31 @@ Skipped: S2 (no list on this screen) · W3 (no form)
 
 **Every changed screen** — web, iOS and Android
 - S1 · the happy path end to end → the success state shows
+  when: every changed screen
 - S2 · loading, empty, one row, many rows
+  when: the screen shows data
 - S3 · a server error and no connection → a message in the user's language; retry works. The web's
   "no connection" is a Playwright spec case the build adds (`context.setOffline(true)`) — the browser
   pane cannot drop the network; the iPhone cannot either, so Android covers the phone
+  when: the screen calls the server
 - S4 · a double tap, or a tap while sending → one action only
+  when: an action sends something
 - S5 · go back, then submit again
+  when: the flow has steps
 - S6 · the session ends mid-flow → sign in, then return to the same place
+  when: a step of the flow holds a session
 - S7 · Hindi and Marathi: the longest labels fit; the language changes mid-flow
+  when: the screen's words change
 - S8 · strange input: the maximum length, emoji, Devanagari, spaces, 0, negative numbers
+  when: the screen takes typed input
 - S9 · a role that may not do it → the action is hidden or refused
+  when: an action is gated by a permission
 - S10 · every icon-only button has a label
+  when: the screen has an icon-only button
 - S11 · it looks like the export: spacing, sizes, icons, order
+  when: every changed screen
 
-**Screen health** — every changed screen, at each width and on both phones
+**Screen health** — at each width and on both phones; H1–H6 and H8 when the screen's look changes
 - H1 · every element the export shows is visible: on screen, not clipped, covered or pushed off
 - H2 · each element sits where the export puts it — left, right or centre, measured as its margins
   to the screen edges
@@ -222,29 +266,41 @@ Skipped: S2 (no list on this screen) · W3 (no form)
   bottom navigation
 - H5 · no console error (it fails the check); a new console warning is a finding
 - H6 · pressed, focused, disabled, selected and error states look as the design shows them
-- H7 · large text — 200% on web, the largest phone text size — nothing clips or overlaps
 - H8 · every tap target measures at least 44 on the built screen
+- H7 · large text — 200% on web, the largest phone text size — nothing clips or overlaps
+  when: text or layout changes
 - H9 · on a phone set to dark mode, the app still looks exactly as in light mode
+  when: only a change to the theme, the app root or the native config
 - H10 · the right fonts render — Devanagari in its own face, never a system fallback
+  when: with S7
 - H11 · walked as a first-time user: the job is finished without hesitation; each moment of doubt
   is a finding
+  when: a new screen or a new flow
 
 **Web only**
 - W1 · width 375 and 1536
+  when: every changed web screen
 - W2 · keyboard only: tab order, visible focus, Enter and Escape
+  when: the screen has controls
 - W3 · reload the page mid-flow
+  when: the screen holds state a reload can lose
 - W4 · axe reports no serious problem (the web regression suite runs it)
+  when: every changed web screen
 
 **Phone only**
 - M1 · the smallest and the largest supported phone
+  when: a new screen or a layout change
 - M2 · the app goes to the background and returns; the app is killed mid-action
+  when: a request in flight, or state the screen holds
 - M3 · the keyboard covers no field
+  when: the screen takes typed input
 - M4 · the Android back button
+  when: a new Android screen
 
 **Money** — when money is in scope
 - $1 · BOM, proposal and tranches agree to the paisa
 - $2 · lakh and crore grouping in every language
 - $3 · every figure shows its provenance tier; a stale figure reads provisional
 
-**Side effects** — SMS, push, payment, webhook
+**Side effects** — when the change sends an SMS, a push, a payment or a webhook
 - E1 · sent to a sandbox only, and safe when sent twice

@@ -11,9 +11,9 @@ Run the checks your prompt gives you, under the common rules your prompt gives y
 how to drive the api, the worker and the database.
 
 **The api** — port 8084. Write `curl -i http://localhost:8084/<path>` with the URL FIRST and every
-other flag after it (`-c jar -b jar -H … -d …`): that form runs without a permission prompt. Never
-`-o`, `-O`, `-T` or `-K`. Assert on the status line and on the exact body bytes — for an error, the
-`code` in the error envelope. Keep cookies in a curl jar under `.qa/<T-id>/`.
+other flag after it (`-c jar -b jar -H … -d …`). A hook refuses a curl to any other host, and any
+file it writes but `/dev/null` or one under `.qa/`. Assert on the status line and on the exact body bytes — for an error, the
+`code` in the error envelope. Keep cookies in the curl jar your prompt names, under `.qa/`.
 
 **The worker** — it has no port. Read its log with `preview_logs` and the server id your prompt
 gives you.
@@ -31,17 +31,24 @@ docker exec heliogrid-pg-local psql -U qa_readonly -d heliogrid_dev -qtAc "BEGIN
   read a privilege, select `has_table_privilege(…)` as a column.
 - Never create a container, clone a database, run a migration or write a row. A container that is
   not running is `not run`, naming it.
+- A table only the admin pool reads, such as `otp_challenge`, is not granted to `qa_readonly`: the
+  plan marks its check `main session`, and the main session reads it as `app_admin` inside
+  `BEGIN READ ONLY`. A `permission denied` on a check without that mark is `not run`, naming the
+  table.
 
-**Signing in** — use only the account your prompt gives you. The development number signs in with
-`POST /auth/otp/request` `{"phoneE164", "channel": "sms"}` and `POST /auth/otp/verify`
-`{"challengeId", "code", "platform": "web"}`. For a fresh `+91` number, read its code from the api
-log: `grep 'via sms'` in the log path your prompt names. A first-time number has no company:
-`POST /tenants` `{"companyName", "ownerName", "city"}` creates one and rotates the token; use the
-company name your prompt gives (`QA <T-id> <surface>`). Three
-requests per fifteen minutes and eight per day per number are real caps — use a fresh number rather
-than wait.
+**Signing in** — use only the account your prompt gives you. Your standing `QA api` account is
+already signed in through its jar; its token lives ten minutes, so a 401 on it is first answered by
+`POST /auth/refresh` `{"foreground": true}`, never read as a finding. To sign in again, the
+development number uses `POST /auth/otp/request` `{"phoneE164", "channel": "sms"}` and
+`POST /auth/otp/verify` `{"challengeId", "code", "platform": "web"}` with the fixed code your prompt
+gives; it has no caps. A fresh `+91` number reads its code from the api log (`grep 'via sms'` in the
+log path your prompt names), has no company, and `POST /tenants`
+`{"companyName", "ownerName", "city"}` creates one and rotates the token — named as your prompt says
+(`QA <T-id> <surface>`). A fresh number has real caps: three requests per fifteen minutes and eight
+per day — use another fresh number rather than wait. Never `POST /auth/sign-out-everywhere` on a
+standing account.
 
-**Seeding** — run only the seed command your prompt names, into your own company. Its output is
+**Seeding** — run only the seed command your prompt names, into your fresh company — never a standing one. Its output is
 the check's evidence. A check that needed a seed and had none is `not run`.
 
 **What matters most here:**

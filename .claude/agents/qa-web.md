@@ -53,8 +53,9 @@ row; a log or measured values you save go under `.qa/<T-id>/evidence/`, named by
 **No connection** — the browser pane cannot drop the network. A "no connection" check is proven by
 the web spec the build added (`context.setOffline(true)`); here it is `not run: the spec covers it`.
 
-**Signing in and out** — use only the account your prompt gives you; a company you create is named
-as your prompt says (`QA <T-id> <surface>`). The pane keeps its session
-between runs. To sign out: from any page on the app's origin, `javascript_tool`
+**Signing in and out** — use only the account your prompt gives you: the standing `QA web`, signed in
+on `/login` with its number and the fixed code your prompt gives, or a fresh one; a company you
+create is named as your prompt says (`QA <T-id> <surface>`). The pane keeps its session between
+runs. Never "sign out everywhere" on a standing account. To sign out: from any page on the app's origin, `javascript_tool`
 `await fetch('http://localhost:8084/auth/sign-out', {method: 'POST', credentials: 'include'})`, then
 open `/login`; it must show "Sign in" before a check that signs in.

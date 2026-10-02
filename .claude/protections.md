@@ -120,7 +120,7 @@ catalog freshness checks, the unit tests and the invariants. CI job `quality` ru
 | what is protected | what holds it |
 |---|---|
 | A unit test is `<package>/tests/**/*.test.ts` in a package `unit-test-packages.json` names; a `*.spec.*` lives only where the e2e runners read it | dependency-cruiser `no-tests-outside-the-tests-tree` · the vitest `include` (both read `packages/config/unit-test-packages.json`) |
-| Every web route and phone screen has its regression flow, by file name | invariant `e2e-flow-per-screen` |
+| Every web route and phone screen has its regression flow, by file name; `tests/e2e/mobile/run.sh` runs every top-level phone flow, and every `steps/` flow is called | invariant `e2e-flow-per-screen` |
 | Every Biome plugin file exists, and every folder its globs name exists | invariant `biome-plugin-scopes` |
 | The invariants run against a real database, and fail closed in CI without one | CI job `quality` (`tests/invariants/src/run.ts`) |
 | The regression suite runs on what a change reaches: the web flows and component tests, the phone's JavaScript bundle and both native builds in CI; the phone flows at `/qa`, since CI has no simulator | CI jobs `e2e-web` · `mobile-js` · `android` · `ios` · `/qa` step 3 |
@@ -134,7 +134,11 @@ catalog freshness checks, the unit tests and the invariants. CI job `quality` ru
 | An agent never edits a lockfile | hook `block-lockfile-edit.sh` · CI's `pnpm install --frozen-lockfile` |
 | An agent never pushes to `main` and never force-pushes | hook `block-main-push.sh` |
 | An agent never skips git's pre-commit hook | hook `block-no-verify.sh` |
-| A reviewer or QA agent is given no Edit or Write tool, and `curl` never writes or uploads a file | the `tools:` line of each file in `.claude/agents/` · the `deny` list in `.claude/settings.json` |
+| A reviewer or QA agent is given no Edit or Write tool | the `tools:` line of each file in `.claude/agents/` |
+| `curl` talks only to this machine (`localhost`, `127.0.0.1`, `10.0.2.2`), and writes a file only to `/dev/null` or under `.qa/` | hook `block-curl-file-io.sh` |
+| Every hook still passes and blocks what it must, and every hook is enrolled with its cases | invariant `hook-cases` |
+| `wget`, `python`, `node` and any other program that can send or write a file | nothing — only `curl` is guarded |
+| A command that wipes a device — `adb uninstall`, `xcrun simctl erase` | nothing — no hook guards a device |
 
 ## Process
 
@@ -143,8 +147,9 @@ catalog freshness checks, the unit tests and the invariants. CI job `quality` ru
 | Every commit passes Biome on its staged files, the secret scan and a typecheck of the changed packages | git pre-commit (`simple-git-hooks` → `pnpm run precommit`) |
 | Every pull request passes the full check on Linux | CI job `quality` (step `Quality gate`) |
 | The next step is the one the build order picks | `/start` step 2 |
-| A plan touching money, tenancy, permissions or schema is attacked, and a screen's design judged, before any code | `/start` steps 4 and 7 (`design-reviewer`, `plan-reviewer`) |
+| A plan touching money, tenancy, permissions or schema is attacked, every QA plan is checked against its change, and a screen's design judged, before any code | `/start` steps 4 and 7 (`design-reviewer`, `plan-reviewer` checks 5–7, or every check) |
 | A change is QA'd on every surface it reaches | `/qa` step 1 |
+| Each QA surface runs on its own standing account, alive and at its baseline before the run; a standing company never gets a seeded row; a QA row is re-judged only when the words seen equal the corrected words | `/qa` steps 2 and 8 · `code-reviewer` item 28 |
 | A second agent reviews every change before it is pushed | `/ship` step 3 (`code-reviewer`) |
 | Every commit waits for the owner's yes to its file list and message | `/ship` step 7 |
 | A doc the change made wrong is fixed in the same change | review — `code-reviewer` item 27 |
