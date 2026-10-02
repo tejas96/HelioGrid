@@ -49,18 +49,36 @@ def curl_options():
 
 
 def inner_commands(text):
-    """Every `$(…)`, `<(…)`, `>(…)` and backtick body, so a curl inside one is judged too."""
-    found, i = [], 0
-    while (m := SUBSHELL.search(text, i)):
-        if m.group(0) == "`":
-            end = text.find("`", m.end())
-            end = len(text) if end < 0 else end
-            found.append(text[m.end():end]); i = end + 1; continue
-        depth, j = 1, m.end()
-        while j < len(text) and depth:
-            depth += {"(": 1, ")": -1}.get(text[j], 0); j += 1
-        found.append(text[m.end():j - 1]); i = j
+    """Every `$(…)`, `<(…)`, `>(…)` and backtick body the shell would run, so a curl inside one is
+    judged too. One inside single quotes, or escaped with a backslash, is text."""
+    found, i, quote = [], 0, None
+    while i < len(text):
+        c = text[i]
+        if c == "\\" and quote != "'":
+            i += 2; continue
+        if c in "'\"" and quote in (None, c):
+            quote = None if quote else c
+        elif quote != "'" and (c == "`" or (c in "$<>" and text[i + 1:i + 2] == "(")):
+            start = i + (1 if c == "`" else 2)
+            end = body_end(text, start, c == "`")
+            found.append(text[start:end]); i = end + 1; continue
+        i += 1
     return found
+
+
+def body_end(text, start, backtick):
+    j, depth = start, 1
+    while j < len(text):
+        if text[j] == "\\":
+            j += 2; continue
+        if backtick and text[j] == "`":
+            return j
+        if not backtick:
+            depth += {"(": 1, ")": -1}.get(text[j], 0)
+            if depth == 0:
+                return j
+        j += 1
+    return len(text)
 
 
 def simple_commands(text):
@@ -182,11 +200,13 @@ def judge(text, cwd, options, depth=0):
 
 
 def drop_text_heredocs(cmd):
+    cmd = cmd.replace("\\\n", " ")
+
     def keep_or_drop(m):
         line = cmd[cmd.rfind("\n", 0, m.start()) + 1:m.start()] + " " + m.group(3)
         feeds_shell = re.search(r"(?:^|[|;&(]\s*)(?:\S*/)?(?:ba|z)?sh\b(?!\s+-c)", line)
         return m.group(0) if feeds_shell else "<<" + m.group(2) + m.group(3) + "\n"
-    return HEREDOC.sub(keep_or_drop, cmd.replace("\\\n", " "))
+    return HEREDOC.sub(keep_or_drop, cmd)
 
 
 try:

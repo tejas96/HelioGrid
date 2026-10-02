@@ -134,7 +134,11 @@ catalog freshness checks, the unit tests and the invariants. CI job `quality` ru
 | An agent never edits a lockfile | hook `block-lockfile-edit.sh` · CI's `pnpm install --frozen-lockfile` |
 | An agent never pushes to `main` and never force-pushes | hook `block-main-push.sh` |
 | An agent never skips git's pre-commit hook | hook `block-no-verify.sh` |
-| A reviewer or QA agent is given no Edit or Write tool, and `curl` never writes or uploads a file | the `tools:` line of each file in `.claude/agents/` · the `deny` list in `.claude/settings.json` |
+| A reviewer or QA agent is given no Edit or Write tool | the `tools:` line of each file in `.claude/agents/` |
+| `curl` talks only to this machine (`localhost`, `127.0.0.1`, `10.0.2.2`), and writes a file only to `/dev/null` or under `.qa/` | hook `block-curl-file-io.sh` |
+| Every hook still passes and blocks what it must, and every hook is enrolled with its cases | invariant `hook-cases` |
+| `wget`, `python`, `node` and any other program that can send or write a file | nothing — only `curl` is guarded |
+| A command that wipes a device — `adb uninstall`, `xcrun simctl erase` | nothing — no hook guards a device |
 
 ## Process
 

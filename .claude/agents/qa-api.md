@@ -11,8 +11,8 @@ Run the checks your prompt gives you, under the common rules your prompt gives y
 how to drive the api, the worker and the database.
 
 **The api** — port 8084. Write `curl -i http://localhost:8084/<path>` with the URL FIRST and every
-other flag after it (`-c jar -b jar -H … -d …`): that form runs without a permission prompt. Never
-`-o`, `-O`, `-T` or `-K`. Assert on the status line and on the exact body bytes — for an error, the
+other flag after it (`-c jar -b jar -H … -d …`). A hook refuses a curl to any other host, and any
+file it writes but `/dev/null` or one under `.qa/`. Assert on the status line and on the exact body bytes — for an error, the
 `code` in the error envelope. Keep cookies in the curl jar your prompt names, under `.qa/`.
 
 **The worker** — it has no port. Read its log with `preview_logs` and the server id your prompt

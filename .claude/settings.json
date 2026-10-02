@@ -59,16 +59,6 @@
       "Bash(pgrep -f *)",
       "Bash(perl -e 'sleep shift' *)",
       "Bash(date -u +%FT%TZ)"
-    ],
-    "deny": [
-      "Bash(curl * -o*)",
-      "Bash(curl * --output*)",
-      "Bash(curl * -O*)",
-      "Bash(curl * --remote-name*)",
-      "Bash(curl * -T*)",
-      "Bash(curl * --upload-file*)",
-      "Bash(curl * -K*)",
-      "Bash(curl * --config*)"
     ]
   },
   "hooks": {
