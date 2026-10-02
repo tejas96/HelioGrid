@@ -45,7 +45,8 @@ gives; it has no caps. A fresh `+91` number reads its code from the api log (`gr
 log path your prompt names), has no company, and `POST /tenants`
 `{"companyName", "ownerName", "city"}` creates one and rotates the token — named as your prompt says
 (`QA <T-id> <surface>`). A fresh number has real caps: three requests per fifteen minutes and eight
-per day — use another fresh number rather than wait. Never `POST /auth/sign-out-everywhere` on a
+per day — use another fresh number rather than wait. An invited member is on a member number, which
+takes the fixed code and has no caps. Never `POST /auth/sign-out-everywhere` on a
 standing account.
 
 **Seeding** — run only the seed command your prompt names, into your fresh company — never a standing one. Its output is

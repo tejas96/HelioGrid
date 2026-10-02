@@ -39,7 +39,10 @@ step 3 are the QA.
    its log to `.qa/api.log`.
 3. Boot each device: the simulator (`xcrun simctl boot <udid>`, then the simulator tool's
    `attach`) and the Android emulator with its window. Open the app once on each, and the browser
-   tab once, so every bundle is warm.
+   tab once, so every bundle is warm. Right before dispatch (step 4), sign each phone in, through
+   the app's own door, to the account its first check needs — its standing account, or the fresh
+   one the Setup names — with that number's code, and leave it on the home. An agent starts from
+   there; it never resets a phone to reach its start.
 4. **Standing accounts — one per surface:** `QA web`, `QA ios`, `QA android`, `QA api`, each its
    own person and its own company, on the development numbers in `.env.local` (`DEV_OTP_PHONES`,
    the one fixed code `DEV_OTP_CODE`, no caps). `.qa/accounts.md` names each surface's number; the
@@ -66,6 +69,12 @@ step 3 are the QA.
      data; H11's first-time user; S2's empty list or one row; a count or a uniqueness; a first-run
      element; S9's other roles. A fresh `+91` number signs in with its code from the api log
      (`grep 'via sms'`), then `POST /tenants`. A standing company never gets a seeded row.
+   - **Members** — a person the plan invites into a fresh company takes a member number:
+     `DEV_OTP_PHONES` from the sixth number on, one per member, in order, listed in
+     `.qa/<T-id>/accounts.md`; fewer than the plan's members → stop and ask the owner to add more.
+     The fixed code has no caps, so no agent waits out a limit. The main session accepts each invite
+     by curl and sets the member's language to `en`. `/start` removes the company and keeps the
+     person, so the same numbers serve the next task.
 5. **Seed only through the module's own writer**, into that surface's fresh company — never SQL by
    hand, never a file added to the repo. A check over an empty list proves nothing. The shape:
    ```bash
@@ -92,8 +101,7 @@ Run what the plan's `Regression` lines name, on the servers and devices just sta
   `bash tests/e2e/mobile/run.sh <udid>`, then `bash tests/e2e/mobile/run.sh <serial>`
 
 A failure here is fixed before any agent starts. The phone suite clears the app and its keychain
-(`tests/e2e/mobile/boot.yaml`), so after it the main session signs each phone in to its standing
-account with the fixed code.
+(`tests/e2e/mobile/boot.yaml`), so the phones are signed in after it (step 2.3).
 
 ## 4. Dispatch — one agent per surface, all in ONE message, in the background, one phase at a time
 
@@ -129,7 +137,8 @@ or the emulator."
 8. Write each result to your results file the moment the check ends, one row:
    `| G1.1 | pass/fail/not run | expected "…" | observed "…" | evidence |`
 9. Run only your checks, in the order that keeps state flowing.
-10. When done, return your results file's path and the counts: pass, fail, not run.
+10. When done, return your results file's path and the counts: pass, fail, not run, and blocks —
+    each command a hook or a permission refused you.
 
 ## 5. Watch
 
@@ -177,7 +186,9 @@ android 1 · accounts made by tapping 0 · blocks 0 · re-runs 2 · agents 3
 ```
 
 The web and phone columns side by side are the parity check: a check that differs between them is
-an issue. The Run line is how one task's QA is compared with the next. Its `check:all green at` is
+an issue. The Run line is how one task's QA is compared with the next. Its `blocks` is every command
+a hook or a permission refused — the main session's own, counted as they happen, and each agent's.
+Its `check:all green at` is
 the **tree stamp** of the last green `pnpm check:all` — the commit and every changed or new file, in one
 hash; `/ship` step 2 reads it:
 ```bash
