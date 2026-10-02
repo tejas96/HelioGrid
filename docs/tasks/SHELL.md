@@ -363,12 +363,11 @@ No new fact joins a `mechanisms.md` row: the slot and mark vocabularies are doma
 
 ### T-SHELL-010 · Update required — the phone told plainly which version to get
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **Why:** A surveyor on an old build who opens the app after an api release sees a plain screen naming the version to install and a button to the store, instead of a door or a shell whose every call fails; without it the server's refusal (`T-FPLAT-033`) reaches the person as a bare error (`F4-36`).
 **PRD rows:** F4-36 (P0)
 **BRIEF:** docs/ux/briefs/SCR-SHELL-01-app-shell.md (the update-required bullet)
-**Design:** SCR-SHELL-01's canvas (`T-SHELL-001`) — the update-required frame, not drawn yet.
-**Blocked:** the update-required state is not drawn — the owner draws it on the SCR-SHELL-01 canvas in the Claude Design project and re-exports `HelioGrid-UX/`; split from `T-SHELL-001` at its `/start` (owner, 2026-09-28).
+**DESIGN:** SCR-SHELL-01 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-SHELL-01+App+Shell+-+Mobile.dc.html — Frame 10 · update required
 **Depends on:** `T-FPLAT-033` (shipped, #185 — the 426 refusal and `clientUpgradeRequiredSchema`) · `T-SHELL-001` (the shell it replaces).
 **Ruled at `T-FPLAT-033`'s `/start` (owner, the split), carried here from `T-SHELL-001`:** the transport parses a 426 with `clientUpgradeRequiredSchema` BEFORE ts-rest throws (its `throwOnUnknownStatus` keeps only the envelope's four fields) and reports it through a required signal beside `SessionSignals` (`packages/data/src/transport/`); the data layer holds it, sticky until the app restarts, and picks this platform's link from `storeUrls` by `STORE_PLATFORMS` (`packages/data/src/session/`); a hook reads it (`packages/data/src/react/`); the words are `i18n`'s; the app root renders the state in place of every surface, the sign-in door included.
 **Out of scope:** the server's refusal and the version the phone sends — `T-FPLAT-033`; the shell itself — `T-SHELL-001`. The risk tier, the scope, the placement, the cases and the QA plan are written at this task's `/start`.
