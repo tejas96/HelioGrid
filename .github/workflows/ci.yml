@@ -511,6 +511,26 @@ jobs:
       BUNDLE_VERSION: system
     steps:
       - uses: actions/checkout@v4
+      - name: Boot an iPhone simulator, before the build
+        # The newest plain "iPhone <n>" on the runtime of the selected Xcode's simulator SDK: Maestro
+        # drives the simulator through that Xcode, which cannot test a newer runtime. The runner
+        # image decides which exist, so the choice is printed and a missing one fails by name.
+        # Booted first so it settles during the build: on a simulator booted just before the flows,
+        # Maestro's driver took 50 s, 73 s, then over its 180 s limit.
+        if: vars.PHONE_E2E != 'off'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdk="$(xcrun --sdk iphonesimulator --show-sdk-version)"
+          runtime="com.apple.CoreSimulator.SimRuntime.iOS-${sdk//./-}"
+          pick="$(xcrun simctl list devices available --json | jq -r --arg rt "$runtime" '
+            [.devices[$rt] // [] | .[] | select(.name | test("^iPhone [0-9]+$"))]
+            | sort_by(.name | ltrimstr("iPhone ") | tonumber) | last // empty | "\(.udid) \(.name)"')"
+          [ -n "$pick" ] || { echo "::error::no plain iPhone simulator on $runtime"; exit 1; }
+          read -r udid name <<< "$pick"
+          echo "simulator: $name on iOS $sdk ($udid) · $(xcodebuild -version | sed -n 1p)"
+          echo "SIMULATOR=$udid" >> "$GITHUB_ENV"
+          xcrun simctl boot "$udid"
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
@@ -611,26 +631,11 @@ jobs:
         if: vars.PHONE_E2E != 'off'
         shell: bash
         run: *install-maestro
-      - name: Boot an iPhone simulator and install the app
-        # The newest plain "iPhone <n>" on the runtime of the selected Xcode's simulator SDK: Maestro
-        # drives the simulator through that Xcode, which cannot test a newer runtime. The runner
-        # image decides which exist, so the choice is printed and a missing one fails by name.
+      - name: Install the app on the simulator, once it has finished booting
         if: vars.PHONE_E2E != 'off'
-        shell: bash
         run: |
-          set -euo pipefail
-          sdk="$(xcrun --sdk iphonesimulator --show-sdk-version)"
-          runtime="com.apple.CoreSimulator.SimRuntime.iOS-${sdk//./-}"
-          pick="$(xcrun simctl list devices available --json | jq -r --arg rt "$runtime" '
-            [.devices[$rt] // [] | .[] | select(.name | test("^iPhone [0-9]+$"))]
-            | sort_by(.name | ltrimstr("iPhone ") | tonumber) | last // empty | "\(.udid) \(.name)"')"
-          [ -n "$pick" ] || { echo "::error::no plain iPhone simulator on $runtime"; exit 1; }
-          read -r udid name <<< "$pick"
-          echo "simulator: $name on iOS $sdk ($udid) · $(xcodebuild -version | head -1)"
-          echo "SIMULATOR=$udid" >> "$GITHUB_ENV"
-          xcrun simctl boot "$udid"
-          xcrun simctl bootstatus "$udid" -b
-          xcrun simctl install "$udid" apps/mobile/ios/build/Build/Products/Debug-iphonesimulator/HelioGridMobile.app
+          xcrun simctl bootstatus "$SIMULATOR" -b
+          xcrun simctl install "$SIMULATOR" apps/mobile/ios/build/Build/Products/Debug-iphonesimulator/HelioGridMobile.app
       - name: Phone flows (tests/e2e/mobile) on the simulator
         if: vars.PHONE_E2E != 'off'
         run: bash tests/e2e/mobile/run.sh "$SIMULATOR"
