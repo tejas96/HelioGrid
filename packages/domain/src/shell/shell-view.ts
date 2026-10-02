@@ -36,3 +36,9 @@ export function shellViewFor(held: readonly RolePreset[], chosen: RolePreset | n
     coachMarks: firstRunMarksFor({ homes: homes.length, centreVerb }),
   };
 }
+
+/**
+ * Where the shell's reads stand — the company and the membership. Both shells render their
+ * loading, error or normal state from it, and the home's blocks take it as it is.
+ */
+export type ShellLoad = 'loading' | 'failed' | 'ready';

@@ -2,9 +2,10 @@
 import type { MyMembership } from '@heliogrid/contracts';
 import {
   FIRST_RUN_COACH_MARKS,
-  type FirstRunMark,
-  marksToShow,
+  type MarkInView,
+  markInView,
   type RolePreset,
+  type ShellLoad,
   type ShellView,
   shellViewFor,
 } from '@heliogrid/domain';
@@ -14,9 +15,6 @@ import { queryKeys } from '../cache/keys';
 import { ApiError } from '../errors/errors';
 import { useRepositories } from './context';
 import { useSession } from './use-session';
-
-/** Where the shell's two reads stand: the frame renders its loading, error or normal state from this. */
-export type ShellLoad = 'loading' | 'failed' | 'ready';
 
 /**
  * The app shell's facts, as both platforms render them (Law 11): which company, the view the
@@ -34,8 +32,8 @@ export interface Shell extends ShellView {
   readonly companyName: string | null;
   /** How many of `coachMarks` are passed; the marks after it are the ones still to show. */
   readonly coachMarksPassed: number | null;
-  /** The marks after the passed ones — what the shell shows, one at a time; none while loading. */
-  readonly coachMarksToShow: readonly FirstRunMark[];
+  /** The one mark to show and its place in the run (`M01-16`) — none while the count loads or once all are passed. */
+  readonly coachMarkInView: MarkInView | null;
   chooseHome(preset: RolePreset): void;
   /** The person moved past mark `count` (1-based). A count at or below the stored one sends nothing. */
   passCoachMark(count: number): void;
@@ -120,7 +118,7 @@ export function useShell(): Shell {
       accessRemoved,
       companyName: company.data?.companyName ?? null,
       coachMarksPassed: passed,
-      coachMarksToShow: marksToShow(view.coachMarks, passed),
+      coachMarkInView: markInView(view.coachMarks, passed),
       chooseHome,
       passCoachMark,
       dismissCoachMarks,

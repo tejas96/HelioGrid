@@ -459,6 +459,111 @@ Skipped: S2 (no list) · S3 (the screen IS the refusal; it makes no call) · S5,
 
 ---
 
+### T-SHELL-012 · The shell's parts, authored once — the home's head, its blocks, Frame 8 and the account menu leave the phone app
+**Type:** screen · **Tier:** P0
+**Status:** shipped
+**Why:** The web shell (`T-SHELL-008`) draws the same home head, teaching blocks, Frame 8 and account menu as the phone. Kept in `apps/mobile` they would be written twice and drift (`.claude/rules/screen-parts.md`). Split from `T-SHELL-008` at its `/start` (owner, 2026-10-02), so the phone's change ships and is checked on its own.
+**PRD rows:** F1-59, M01-16, M13-10, MS12-19 — the rows the moved parts carry; their phone proofs are `T-SHELL-001`'s, run again here
+**BRIEF:** docs/ux/briefs/SCR-SHELL-01-app-shell.md
+**DESIGN:** SCR-SHELL-01 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-SHELL-01+App+Shell+-+Mobile.dc.html · export `HelioGrid-UX/SCR-SHELL-01 App Shell - Mobile.dc.html` — its 375 frames, with `T-SHELL-001`'s DESIGN DIFFERENCES
+
+**PRD rows (verbatim):**
+
+- **F1-59** (P0, `docs/prd/foundations/F1-global-market-framework.md`) — **IN breach duty:** notify the Data Protection Board and affected data principals; a grievance contact is published in-app.
+- **M01-16** (P1, `docs/prd/modules/M01-onboarding-and-tenant-config.md`) — **First-run coach marks: maximum three, on the screen they actually landed on, dismissible. Never a carousel.**
+- **M13-10** (P0, `docs/prd/modules/M13-dashboards-and-reporting.md`) — **The composition rule: one person, one home, chosen by a fixed preset-precedence ladder, with the other presets' today-work composed in as blocks.** The ladder orders the twelve presets by the breadth of the decision surface their home summarises, using `F2-14`'s domain lattice as the input — All-scope first, Team/Portfolio next, Own-scope working presets, then Assigned-only execution presets: **EPC Owner · Sales Manager · Operations · Project Manager · Marketing · Finance · HR/Admin · Sales Executive · Design Engineer · Survey Engineer · Field Technician · Installation Team Member.** A person's home is the home of their highest-ladder preset; every other held preset contributes its today-block inside that home (the source's own worked example: a rep + surveyor lands on My Day with today's visits shown inside it — "not two competing home screens"); and the person **can switch** — a switcher lists the home of every held preset. The ladder is a product constant, not tenant configuration.
+- **MS12-19** (P0, `docs/prd/modules/M05-studio/11-shell-and-platform.md`) — Sign-out clears session state without destroying work (`.36`); brand and tenant identity appear in the top bar (`.35`, M01 branding).
+
+**Data model:** none. **Contract:** none.
+**Depends on:** `T-SHELL-001` (shipped, #209 — the parts this moves) · `T-SHELL-010` (shipped, #211) · `T-SHELL-011` (shipped, #208).
+**Out of scope:** the web shell and everything only the web draws (`T-SHELL-008`).
+
+#### Plan
+**Scope** — In: four parts both apps draw move from `apps/mobile/src/screens/shell/components/` into `packages/ui`, each with its web half; the words chosen by state into `packages/i18n`; the mark in view into `packages/domain`; the phone imports them · Out: the web shell (`T-SHELL-008`) · Deferred rows closed here: `D77` (Frame 8 centred in the page on both phones) · Size: ~30 files, ~1,100 lines (about a third tests and catalogs), no migration, no contract
+**Where**
+| package | what changes |
+|---|---|
+| domain | `shell/coach-marks.ts` — `markInView(marks, passed)` → `{ mark, step, total }` or none: the step the phone counts in its screen today (`FirstRunMark.tsx:23`) · `shell/doors.ts` (new) — `ShellDoor`, the closed list of doors the shell opens: a standing destination less home, a verb, search, notifications · `shell/shell-view.ts` — `ShellLoad`, moved from `data` so `ui`'s blocks take the shell's own load (review) |
+| data | `react/use-shell.ts` — `Shell.coachMarkInView` (`markInView` over the view and the passed count) replaces `coachMarksToShow`, so neither screen works out the mark (review) |
+| i18n | `copy/shell.ts` — one words function per moved part, so neither screen picks words: `homeHeadWords(t, home, homes)`, `homeBlocksWords(t, composedHome)` (the blocks and their overlines too), `accessRemovedWords(t, company)` (`AccessRemoved.tsx:21-24`), `accountMenuWords(t, name)`; `firstRunMarkWords(t, mark, home, verb)` (`FirstRunMark.tsx:27-33`) replaces `switchMarkWords` and `verbMarkWords`; `doorTitle(t, door)` (`PlaceholderScreen.tsx:45-52`); `todayLine(t, date)`; the three marks' new words (Decided 3); HI, MR |
+| ui | new, one `<Name>.types.ts` and both halves each: `HomeHead` (the date line, the title that is the switcher, the preset line, an action slot), `HomeBlocks` (one `Block` per preset, overline and state), `AccessRemoved` (Frame 8's body; its action turns off after the first press, keeping its name, so a double press signs out once — `packages/data` holds no tests, so the guard is the part's), `AccountMenu` (the avatar and its two items, with `align`) — each takes its words as props · `AppShell/ShellGlyph.logic.ts` — `DESTINATION_GLYPH` moves here from `apps/mobile/src/screens/shell/doors.ts:38` (its own comment says the web needs it) |
+| apps/mobile | `ShellScreen.tsx`, `PlaceholderScreen.tsx` import the moved parts; `components/HomeHead.tsx`, `HomeBlocks.tsx`, `AccessRemoved.tsx`, `AccountMenu.tsx` deleted; `FirstRunMark.tsx` keeps only the `CoachMark` wiring, reading `shell.coachMarkInView`; `doors.ts` loses the glyph map; `components/ShellFrame.tsx` — the scroll grows to the page, and with no pill (Frame 8) drops the home's top gap, so Frame 8 centres (`D77`) |
+| tests | `tests/e2e/components/HomeHead.spec.tsx`, `HomeBlocks.spec.tsx`, `AccessRemoved.spec.tsx`, `AccountMenu.spec.tsx` — the four parts' web halves; unit tests beside each domain and i18n function |
+**How it works**
+  `ShellScreen` → `useShell()` (unchanged) → `markInView` (domain) and the i18n words → `HomeHead` · `HomeBlocks` · `AccessRemoved` · `AccountMenu` (ui) — the same parts `T-SHELL-008`'s web screens import.
+**Example**
+  Priya opens the phone app → the same shell as yesterday, with "Today · 2 Oct 2026" over "My Day". Her first mark reads "Use this button to add a lead." Her admin removes her → "Your access was removed" now sits in the middle of the page.
+  ```ts
+  markInView(marks: readonly FirstRunMark[], passed: number | null): MarkInView | null
+  doorTitle(t: Translator['t'], door: ShellDoor): string
+  <HomeHead dateLine title switchName switchLabel entries onChoose presetLine titleAnchor action? />
+  ```
+**Data / API** — none.
+**Risks**
+- The move changes a shipped screen → every phone frame is driven again against `T-SHELL-001`'s (G1–G3, L1) → any drift is a finding.
+- A web half no screen renders yet could be wrong unseen → each is mounted in a component test on port 3100 (R1).
+**Decided at /start**
+1. **Four parts move; two stay as wiring.** `HomeHead`, `HomeBlocks`, `AccessRemoved` and `AccountMenu` each arrange several parts, so each is one `ui` component. The `CoachMark` and the grievance note stay in each app: each is one ui component, configured — a container, as `screen-parts.md` allows (the phone's note is a `Sheet`, the web's a `Modal`).
+2. **The "Today · {date}" line is built** — the drawing shows it at both widths and `T-SHELL-001` left it out, a mistake listed in the PR. The date is in the market's format; the clock is the screen's (domain holds none).
+3. **The three marks' words change** (owner, this `/start`) — "on every screen" is false on the desktop and "Tap" is a phone word: "Add a lead from your home" / "Use this button to add a lead.", "Start a survey from your home" / "Use this button to start a survey.", and the switch mark's body "Your home is the {preset} one. Open the title to switch."
+4. **`AccessRemoved` guards its own action, and turns it off rather than loading** (review: a loading `Button` loses its name, `D84`) — two quick presses sent two `POST /auth/sign-out` (`packages/data/src/session/store.ts:186-189` has no in-flight guard), and `packages/data` has no test runner to prove a store guard.
+5. **The web title is not a heading** (review) — the web `Menu` draws its open list inside its wrapper, so an `<h1>` around the switcher named the heading with every home; the page's heading is `T-SHELL-008`'s to place.
+6. **The switcher's trigger stays a plain button on the web** (review asked for `Pressable`) — `Menu` clones its trigger with `aria-expanded`, `aria-haspopup` and the ArrowDown handler, which `Pressable` does not pass on; the button keeps `base.css`'s focus ring and a 48px height.
+7. **The blocks take `BlockGrid`'s own minimum** (review: no raw 520) — two blocks still sit side by side at 1536 and stack at 375 (`HomeBlocks.spec.tsx`).
+
+#### Acceptance criteria
+- A1 · added at /start (`screen-parts.md`) · Given the four parts both apps draw, when the phone renders them, then it imports one `packages/ui` component each, and no app tree holds a copy. → proof: `git ls-files apps/mobile/src/screens/shell/components` lists none of the four, and `grep -rn "function HomeHead\|function HomeBlocks\|function AccessRemoved\|function AccountMenu" apps/` finds nothing; `tsc` on the phone
+- A2 · Given a first-run landing, when coach marks render, then there are at most three, on that screen, each dismissible, and no carousel exists (M01-16). → proof: QA G2.1, G2.2; `packages/domain/tests/shell/coach-marks.test.ts` › "names the mark in view with its step"
+- A3 · Given any combination of held presets, when the person signs in, then their home is the highest-ladder preset's home with every other held preset's today-block composed inside, and a switcher lists each held preset's home (M13-10). → proof: QA G1.1, G1.2
+- A4 · Given a breach event, when duties trigger, then the Data Protection Board and affected principals are notified and the grievance contact is published in-app (F1-59). → proof: QA G1.3 — the avatar menu opens the unauthored note; the duty is `T-FCORE-009`'s
+- A5 · Given sign-in … sign-out preserves work (MS12-19). → proof: QA G1.4 — sign out from the avatar menu → the door; signing back in finds the marks still passed
+- A6 · added at /start (`D77`, the S1.wrong.4 frame) · Given a member removed with the shell open, when Frame 8 shows, then it sits centred in the page, and a double press of "Sign in with another account" signs out once. → proof: QA G3.1, G3.2, G3.1-R3 on the smallest phones (1pt and 1dp from centre); `tests/e2e/components/AccessRemoved.spec.tsx` › "signs out once on a double press" (proven red: 2 sign-outs with the guard removed)
+- A7 · added at /start (Decided 2) · Given a home, when it renders, then "Today · {date}" sits over its title in the market's date format. → proof: `packages/i18n/tests/shell.test.ts` › "writes today's line around the market's date"; QA G1.1
+- A8 · added at /start · Given each moved part's web half, when it is mounted, then it renders its words, states and actions. → proof: `tests/e2e/components/HomeHead.spec.tsx`, `HomeBlocks.spec.tsx` (side by side at 1536, stacked at 375), `AccessRemoved.spec.tsx`, `AccountMenu.spec.tsx`
+
+#### QA plan
+Surfaces: ios · android          (no web screen renders the parts yet — their web halves are the component tests')
+
+Setup
+- Accounts: the standing `QA ios`, `QA android`; a fresh `QA T-SHELL-012 ios` and `QA T-SHELL-012 android`, each owner inviting through the api `m1` Sales Executive + Survey Engineer (first-run marks unseen) and `m2` Sales Executive (to remove). Why: first-run marks, several presets and a removal — each spent once.
+- The removal is the tenant module's own deactivate, run from `apps/api` inside the step that names it.
+- Phase 1 · default — every check
+
+Smoke — ios · android · phase 1
+- S1 · sign in as the standing account → the shell opens with the company's name in the bar
+
+G1 · The home — ios · android · phase 1
+- G1.1 · `m1`'s first sign-in → the top bar, "Today · {today in the market's date format}", "My Day", "Sales Executive home · you also hold Survey Engineer", a block for the home's own work and one overlined "SURVEY ENGINEER", each "Nothing assigned to you yet"; the pill Home · Leads · Add lead · Proposals · More
+- G1.2 · after G2, open the title, choose "My Visits Today" → the title changes, the action is named "Start survey", a Sales Executive block is composed in
+- G1.3 · the avatar → "Grievance officer", "Sign out", neither red; "Grievance officer" → a note that the contact is not published yet, naming no person
+- G1.4 · "Sign out" → the door; sign back in as `m1` → "My Day", no mark
+
+G2 · First-run marks — ios · android · phase 1
+- G2.1 · `m1` → "1 of 2" at the title, with "Your home is the Sales Executive one. Open the title to switch."; Next → "2 of 2" at the pill's action with "Use this button to add a lead."
+- G2.2 · Got it → none; relaunch → none
+
+G3 · Access removed — ios · android · phase 1
+- G3.1 · `m2` has the shell open; run the deactivation; send the app home past 35 seconds and bring it back → "Your access to {company} was removed", centred in the page, the tile and the name in the bar, no pill, no bell
+- G3.2 · double-tap "Sign in with another account" → the api log shows one `POST /auth/sign-out`; the door
+
+Look — ios · android · phase 1
+- L1 · every frame above against the export and `T-SHELL-001`'s DESIGN DIFFERENCES, plus the date line and Frame 8 centred
+
+Standard — ios · android · phase 1
+- S4 · Frame 8's action double-tapped → one sign-out — why: it acts (G3.2)
+- S7 · Hindi and Marathi, set by `PATCH /users/me` and a relaunch: the date line, the preset line and the marks' new words fit — why: the words change
+- H1–H6, H8 — why: the head gains a line and Frame 8 moves
+- H7 · the largest text size → the date line and the preset line do not clip — why: new text
+- H10 · with S7 — Devanagari in its own face
+- M1 · the smallest and largest phone: the date line fits, Frame 8 centred — why: a layout change
+
+Regression — machine · phase 1
+- R1 · `tests/e2e/components/` · `tests/e2e/mobile/` flows · every unit test
+
+Not in: A1–A7 — no api, db, contracts or data change · S2, S3 — the blocks' load states are unchanged and were driven at `T-SHELL-001` (Q19, Q20) · S5 — no steps · S6 — no step holds a session beyond sign-in · S8, M3 — no typed input · S9 — no gate changes · S10 — no new icon-only button · H9 — no theme, app root or native config change · H11 — no new screen or flow · M2 — the removal on return is G3.1; nothing else held · M4 — no new Android screen · $1–$3 — no money · E1 — no side effect
+
+---
+
 ### T-SHELL-008 · App Shell & Navigation — web
 **Type:** screen · **Tier:** P0
 **Status:** planned
@@ -478,18 +583,133 @@ Skipped: S2 (no list) · S3 (the screen IS the refusal; it makes no call) · S5,
 
 **Data model:** none — as `T-SHELL-001`, through `T-SHELL-007`'s `useShell()`.
 **Contract:** none of its own — as `T-SHELL-001`.
-**Depends on:** `T-SHELL-007` · `T-SHELL-009` · `T-SHELL-001` (the phone shell it must match, state for state) · `T-M13-006` (PR #52) · `T-FPLAT-025` (shipped, #51) · `T-M01-025` (shipped, #40) · `T-M01-001` (the sign-in door on web; until it lands QA establishes the session through the API from the app's origin) · `packages/ui` `AppShell`, `AppRail`, `AppHeader`, `TenantHeader`, `Menu`, `CoachMark`, `LogoTile`, `EmptyState` (landed).
+**Depends on:** `T-SHELL-012` (the parts both apps draw, split from this task at its `/start`) · `T-SHELL-007` · `T-SHELL-009` · `T-SHELL-001` (the phone shell it must match, state for state) · `T-M13-006` (PR #52) · `T-FPLAT-025` (shipped, #51) · `T-M01-025` (shipped, #40) · `T-M01-001` (shipped, #53 — the sign-in door on web) · `packages/ui` `AppShell`, `AppRail`, `AppHeader`, `TenantHeader`, `Menu`, `CoachMark`, `LogoTile`, `EmptyState` (landed).
 **Out of scope:** everything `T-SHELL-001` lists, plus the phone shell itself; the web primary add action on the leads surface (`M02-06`'s web half) — `T-M02-001`'s leads surface, not the shell.
 **Owed from `T-SHELL-001`** (its C4; owner, its `/verify`) — at this task's `/start` it becomes a case and a QA step: a member removed while a web screen that reads is open meets the hold on the next read; the gate renders nothing and signs out ONCE to the door — exactly one `POST /auth/sign-out`, never "You are in", no blank page.
-**DONE WHEN:**
-- Given a breach event, when duties trigger, then the Data Protection Board and affected principals are notified and the grievance contact is published in-app (F1-59). → proof: qa-web the avatar menu at 1536px carries the grievance contact read from the pack's `dataRights` key, rendering the unauthored-key state while the key is absent; the notification duty is proven at `T-FCORE-009`
-- **Given** the mobile application, **when** the shell renders for any persona, **then** the footer is one floating pill whose destination in view is the near-black pill with its name, and whose add action carries a fixed glyph and a role-appropriate verb (`F7-22`). → proof: qa-mobile sign in as a Sales Executive and again as a Survey Engineer: the pill's add action carries the same plus glyph, and the verb reads Add lead then Start survey; the resolution is unit-proven at `T-FPLAT-025`
-- Given a first-run landing, when coach marks render, then there are at most three, on that screen, each dismissible, and no carousel exists (M01-16). → proof: qa-web at 1536px the shell is the rail-and-header frame carrying the same four destinations as the phone and no fifth slot, with no pill footer; the phone half is proven at `T-SHELL-001`
-- Given a first-run landing, when coach marks render, then there are at most three, on that screen, each dismissible, and no carousel exists (M01-16). → proof: qa-web a first sign-in shows at most three `CoachMark` items on the screen landed on, each dismissed on its own and absent after a reload — the count is the membership's, so a mark dismissed on the phone is absent here — and no carousel exists on the route
-- Given a valid invite, when the invitee verifies the OTP, then user + membership + roles exist atomically and the next screen is name/photo, then the role card, then their role's home with their real assigned work (M01-13, M01-14, M01-17). → proof: qa-web accept an invite as a Sales Executive: the first screen after the role card is the home in force inside this shell, its region showing the teaching empty state until M07's My Day lands, never a generic dashboard or a blank; the atomic write is unit-proven at `T-M01-028`
-- Given any combination of held presets, when the person signs in, then their home is the highest-ladder preset's home with every other held preset's today-block composed inside, and a switcher lists each held preset's home (M13-10). → proof: qa-web sign in holding Sales Executive + Survey Engineer: the home is My Day's route with the Survey Engineer's block region composed in, the title switcher lists both homes, and switching swaps which body of work is the home's own; the derivation is unit-proven at `T-M13-006`
-- Given sign-in, Then mobile OTP and Google work and establish tenant/role context with no dead controls (MS12-17); language and units persist per user with real catalogs (MS12-18); sign-out preserves work (MS12-19). → proof: qa-web sign out from the avatar menu with a draft open: the app returns to the door, `GET /auth/session` answers no session, and the draft is intact on signing back in; the OTP, Google, language and units halves are proven at `T-M01-001` and `T-M01-011`
-- Three base states + brief-listed states present at 375px and 1536px with full parity, except update-required, which is phone only (the web sends no version, so the api never refuses it — `T-SHELL-010`); zero raw colour literals/off-scale values. → proof: qa-web every listed state at 1536px · QA web · ios · android every state against `T-SHELL-001`'s at 375px, the same facts from the same hook and the same copy
+#### Plan
+**Scope** — In: the web shell at every width — `AppRail` + `AppHeader`, the home's head and its teaching blocks, the first-run marks, the account menu, Frame 8 and one placeholder route for every door — on the parts `T-SHELL-012` moves into the packages · Out: the parts themselves (`T-SHELL-012`); the availability pill and its line (`T-M07-027`); every home's content (the owning modules); the search and bell surfaces (`T-SHELL-002`, `T-SHELL-003`); the grievance contact itself (`T-FCORE-009`, parked); the web quick add on the leads surface (`T-M02-001`); the phone form of the web below `--bp-desktop` (Decided 1) · Deferred rows closed here: `D61` (the rail and header paint the page's ground, as `T-FPLAT-076`'s `Ground` asks — `F-platform.md`'s Used by), `D71` (ruled A: an app's own routing map keyed by a domain type is allowed; the plugin narrows and the shell's `biome-ignore`s go); `D66` is moot while Decided 1 holds — the web draws no pill — and its row says so · Size: ~25 files, ~900 lines (about a third tests and catalogs), no migration, no contract
+**Where**
+| package | what changes |
+|---|---|
+| i18n | `copy/shell.ts` — the search box's words (Decided 7); HI, MR |
+| ui | `AppRail` gains a required `label` (`AppRail.tsx:39` types "Primary" in English) · `Menu.tsx` rises when the list would not fit below, as `Menu.native.tsx:37` already does — no new prop · `AppShell.css`, `AppRail.css`, `AppRail.native.tsx` — the page's ground (`D61`) |
+| config | the `app-vocabulary` Biome plugin allows an app's routing map keyed by a domain type (`D71`, ruled A); the `biome-ignore`s that pointed at `D71` for such maps go |
+| apps/web | `app/(inside)/layout.tsx` mounts the shell around every inside route · `app/(inside)/[door]/page.tsx` (new) — one placeholder for every door, an unknown one a 404 · `features/shell/` (new) — `ShellLayout.tsx` (the frame, Frame 8), `HomeScreen.tsx`, `PlaceholderScreen.tsx`, `components/ShellHeader.tsx`, `components/FirstRunMark.tsx`, `components/GrievanceNote.tsx` (a `Modal`; the phone's is a `Sheet`), `use-rail-items.ts`, `hooks/use-go-to.ts` (one navigation per burst of clicks), `doors.ts` (the URL of each door), `shell.css`, `index.ts` · `features/home/` deleted · `features/auth/SessionGate.tsx`, `constants.ts` — the signed-in group keeps a held removal where it is, so the shell shows Frame 8 on any route; only the door group sends it to `/home` |
+| tests | `tests/e2e/web/shell.spec.ts` replaces `home.spec.ts`; `tests/e2e/components/menu.spec.tsx` for the rising list; a planted map the plugin still refuses |
+**How it works**
+  `(inside)/layout` → `SessionGate` → `ShellLayout` → `useShell()` (`data`, unchanged) → `AppShell` with `AppRail` (its items from `shell.destinations`) and `AppHeader`; the page → `HomeScreen` (`HomeHead` + `HomeBlocks` + the verb `Button` + the mark) or `PlaceholderScreen`. `shell.accessRemoved` → `ShellLayout` renders `AccessRemoved` in place of the rail and the page.
+**Example**
+  Priya holds Sales Executive and Survey Engineer. She signs in on her laptop → the rail shows Home · Leads · Proposals · More, the header her company's name → "My Day", "Sales Executive home · you also hold Survey Engineer", an "Add lead" button, and two blocks that say "Nothing assigned to you yet". She opens the title and picks "My Visits Today" → the button reads "Start survey"; the rail does not move. Her admin removes her → she comes back to the tab → "Your access to Suryodaya Solar was removed", no rail.
+  ```ts
+  useGoTo(): (path: string) => void   // apps/web/features/shell/hooks/use-go-to.ts
+  ```
+**Data / API** — none: no table, no route, no contract; `useShell()` and the session are read as they are.
+**Risks**
+- The web no longer signs a held removal out by itself; a held tab that kept reading would loop → `useShell()` already stops its reads while `ended` is set (`use-shell.ts:60`) → G4.2 reads the network after Frame 8.
+- A placeholder for every door could swallow a mistyped URL, or open a verb the preset may not perform (`F7-48`) → `[door]` answers `notFound()` unless the door is search, notifications, one of `shell.destinations` or the person's `centreVerb` → G1.7, S9.
+- A held removal met on a placeholder route could be redirected to `/home` and blank there → the signed-in group returns no destination for `access-removed` → G4.5, G4.6.
+- At 375 the rail and header leave 303px → the search box shrinks first, the name ellipsizes → L2 at 375, no sideways scroll.
+- Narrowing the plugin could let an app's own vocabulary back in → it allows only a `Record` keyed by a type imported from `@heliogrid/domain` or `@heliogrid/contracts`; a planted app union still fails (R1).
+**Decided at /start**
+1. **The web shell is the rail and header at every width** (owner, this `/start`) — the other reading was the phone's top bar and pill below `--bp-desktop`, as the door does. `F7-22` names the sidebar the desktop's shell while the phone app serves phones. At 375 it must fit (L2).
+2. **A held removal shows Frame 8 on the web** — `T-SHELL-001`'s Used by and the parity line ask for it; the interim sign-out (the Owed line) goes. The signed-in group keeps a held person on the route they are on, where the shell shows it; only the door group sends one to `/home`. Its action and link are the phone's ("Sign in with another account", "Grievance officer"), never the drawing's "Contact your admin", which opens nothing.
+3. **The task is split** (owner, this `/start`): `T-SHELL-012` moves the parts both apps draw into the packages first; this task builds the web on them.
+4. **The design's desktop gaps are redrawn in Claude Design** (owner, this `/start`, design-reviewer's MUST FIX): the empty home at 1536 in two columns (brief decision 9), the marks at 1536 (the title, then the head's verb button), Frame 8 with the phone's action and link, "My Visits Today", the account menu open and rising at the rail's foot, the search words.
+5. **The account menu stays at the rail's foot**, as the drawing and the shared desktop chrome of every other export place it; it opens to the avatar's right (`AccountMenu`'s `align`), and the web `Menu` rises when there is no room below, as the phone's already does.
+6. **The bell sits at the rail's foot with no count** and opens the notifications placeholder, as the phone's does.
+7. **The search box** shows SCR-SHELL-02's words, "Name, phone or city" — the drawing's "invoices" names a record search never finds (`F6-20`); Enter opens the search placeholder until `T-SHELL-002`.
+8. **One placeholder route for every door** — a module's own route later wins over `[door]` (Next matches a fixed segment first).
+9. **One navigation per burst of clicks** — a click on the route already open, or while a navigation to the same place is pending, does nothing: the web's form of the phone's `navigate`.
+10. **App routing maps are the app's** (owner, this `/start`, `D71` option A) — a URL is the app's own fact; a map keyed by a domain type is allowed, and the plugin narrows to say so.
+11. **Sign-out keeps no draft** — the web, like the phone, holds none in v1 (`T-SHELL-001`'s ruling); sign-out proves the server's work and the marks passed survive.
+12. **The invite path's name/photo and role-card screens are `T-M01-009`'s and `T-M01-010`'s**, not built on the web; here an invited member's first sign-in lands on the home in force inside this shell.
+13. **The page's heading is placed here** — `HomeHead`'s title is not a heading, because the web `Menu` draws its open list inside the title's wrapper (`T-SHELL-012` Decided 5); this task gives each web page its one `<h1>`, and W4's axe run reads it.
+
+#### Acceptance criteria
+- A1 · Given a breach event, when duties trigger, then the Data Protection Board and affected principals are notified and the grievance contact is published in-app (F1-59). → proof: QA G2.2 — the avatar menu at 1536 opens the unauthored note while the pack's `dataRights` key is absent; G4.3 from Frame 8; the duty itself is `T-FCORE-009`'s
+- A2 · **Given** the mobile application, **when** the shell renders for any persona, **then** the footer is one floating pill whose destination in view is the near-black pill with its name, and whose add action carries a fixed glyph and a role-appropriate verb (`F7-22`). → proof: proven at `T-SHELL-001` and driven again at `T-SHELL-012`; this task changes no phone code
+- A3 · added at /start (the line read M01-16 but proved `F7-22`'s desktop half) · Given the web at 1536, when the shell renders for any persona, then it is the sidebar-and-header shell carrying the same destinations as the phone and no fifth slot, with no pill footer (`F7-22`, `F7-48`). → proof: QA G1.1, G1.2, S9
+- A4 · Given a first-run landing, when coach marks render, then there are at most three, on that screen, each dismissible, and no carousel exists (M01-16). → proof: QA G3.1–G3.3 — one mark at a time on the web, the second on the head's verb button, each dismissed, absent after a reload and on the phone
+- A5 · Given a valid invite, when the invitee verifies the OTP, then user + membership + roles exist atomically and the next screen is name/photo, then the role card, then their role's home with their real assigned work (M01-13, M01-14, M01-17). → proof: QA G1.2 — an invited member's first sign-in lands on the home in force inside this shell, its blocks teaching, never a generic dashboard or a blank; the atomic write is `T-M01-028`'s, the two screens between `T-M01-009`'s and `T-M01-010`'s
+- A6 · Given any combination of held presets, when the person signs in, then their home is the highest-ladder preset's home with every other held preset's today-block composed inside, and a switcher lists each held preset's home (M13-10). → proof: QA G1.2, G1.3; the derivation is unit-proven at `T-M13-006` and `T-SHELL-011`
+- A7 · Given sign-in, Then mobile OTP and Google work and establish tenant/role context with no dead controls (MS12-17); language and units persist per user with real catalogs (MS12-18); sign-out preserves work (MS12-19). → proof: QA G2.3 — sign out from the avatar menu → the door, `GET /auth/session` answers no session; signing back in finds the same company and the marks still passed; G1.4–G1.7 no dead control; the OTP, Google, language and units halves are `T-M01-001`'s and `T-M01-011`'s
+- A8 · Three base states + brief-listed states present at 375px and 1536px with full parity, except update-required, which is phone only (the web sends no version, so the api never refuses it — `T-SHELL-010`); zero raw colour literals/off-scale values. → proof: QA S2, G4, L1, L2 on the web at 1536 and 375; the phone's at `T-SHELL-012`; `pnpm check:all` (Biome's colour and scale rules)
+- A9 · added at /start (`T-SHELL-001`'s owed C4, now Frame 8) · Given a member's web shell is open, when the company removes them and the tab reads again, then Frame 8 shows with no rail on the route they are on, and "Sign in with another account" signs out once to the door, however fast it is pressed. → proof: QA G4.1–G4.6, S4
+- A10 · added at /start (design-reviewer MUST FIX 5) · Given the avatar at the rail's foot, when its menu opens, then the whole list shows above it, inside the window. → proof: QA G2.1 at 1536 and 375; H1–H8 on `/login`'s language menu, which still drops; `tests/e2e/components/menu.spec.tsx` › "rises when the list would not fit below"
+- A11 · added at /start (`D71`, ruled A) · Given an app's routing map keyed by a domain type, when Biome runs, then it passes with no `biome-ignore`, and an app-declared union still fails. → proof: `pnpm check:all` green with the ignores gone; the planted union red
+
+#### QA plan
+Surfaces: web · ios          (ios for one check: the marks' count is the membership's on every device; no api, db, contracts or data change)
+
+Setup
+- Accounts: the standing `QA web` (EPC Owner); a fresh `QA T-SHELL-008 web` whose owner invites, through the api, one member per step that uses one up — the marks and the removal belong to the membership, so a member is never reused across them:
+  - `m1` Sales Executive + Survey Engineer — G1.2, G1.3, G3.2, G2.3, G3.3
+  - `m2` Sales Executive alone — G3.1, H11
+  - `m3` Project Manager — S9
+  - `m4` Sales Executive — G4.1–G4.4 (removed on the home)
+  - `m5` Sales Executive — G4.5, G4.6 (removed on Leads)
+  Each signs in by its code from the api log. Why: first-run marks, several presets, other roles and removals.
+- The removal is the tenant module's own deactivate, run from `apps/api` inside the step that names it.
+- A tab "comes back" when the agent opens a second tab for 35 seconds and selects this one again — the page is hidden and shown, so its reads, stale after 30 seconds, run again.
+- Phase 1 · default — every check
+
+Smoke — web · phase 1
+- S1 · sign in as `QA web` → the home opens inside the shell with the company's name in the bar
+
+G1 · The frame and its doors — web 1536 · phase 1
+- G1.1 · as `QA web` → the rail: the product tile, Home · Leads · Projects · More, the bell and the avatar at its foot; the header: the company's name as words, the search box reading "Name, phone or city"; no pill
+- G1.2 · `m1`'s first sign-in → "Today · {today in the market's date format}", the title "My Day", "Sales Executive home · you also hold Survey Engineer", an "Add lead" button, a block for the home's own work and one overlined "SURVEY ENGINEER", each "Nothing assigned to you yet"; the first mark open at the title
+- G1.3 · pass the marks (G3.2), open the title, choose "My Visits Today" → the title changes, the button reads "Start survey", a Sales Executive block is composed in, the rail is unchanged
+- G1.4 · click Leads, Proposals, More → each opens inside the shell titled with its name and "This screen arrives in a later update.", the item in view marked; click it again → Back returns to the page before, once
+- G1.5 · click "Add lead" once, then twice fast → the "Add lead" placeholder, one history entry
+- G1.6 · the bell → the "Notifications" placeholder; type in the search box and press Enter → the "Search" placeholder
+- G1.7 · open `/no-such-door` → the not-found page, not a placeholder
+
+G2 · The account menu — web 1536 + 375 · phase 1
+- G2.1 · click the avatar → the menu opens above it and to its right, both items wholly inside the window (left edge ≥ 0, bottom ≤ the window): "Grievance officer", "Sign out", neither red
+- G2.2 · "Grievance officer" → a note that the contact is not published yet, naming no person or address; Escape closes it
+- G2.3 · as `m1`, right after G3.2's Got it: "Sign out" → the door; `GET /auth/session` answers no session; sign back in → the same company, "My Day" (the ladder's home), no mark
+
+G3 · First-run marks — web · ios · phase 1
+- G3.1 · web, `m2`'s first sign-in → one mark, at the "Add lead" button, no counter, "Use this button to add a lead."; Got it → none
+- G3.2 · web, `m1` → "1 of 2" at the title; Next → "2 of 2" at the button; Got it → none; reload → none
+- G3.3 · ios, `m1` signs in → no mark (the count is the membership's)
+
+G4 · Access removed — web 1536 · phase 1
+- G4.1 · `m4` has the home open; run the deactivation; the tab comes back → "Your access to {company} was removed", centred, the product tile and the name in the bar, no rail, no bell, no avatar
+- G4.2 · the network after G4.1 → one or two `POST /auth/refresh` answered `ACCESS_REMOVED`, then no `GET /tenants/me` or `/tenants/me/membership`
+- G4.3 · "Grievance officer" under the action → the same note as G2.2
+- G4.4 · double-click "Sign in with another account" → exactly one `POST /auth/sign-out`, then the door's phone step — never "You are in", never a blank page; reload → the plain door
+- G4.5 · `m5` has Leads open; run the deactivation; the tab comes back → Frame 8 on `/leads`, never a blank page
+- G4.6 · on that Frame 8, open `/login`, then press Back → Frame 8 on `/home`, never "You are in", never a blank page
+
+G5 · Load — web 1536 · phase 1
+- G5.1 · stop the api with the home open; the tab comes back → within 30 seconds each block "Couldn't load your work" with Try again, the company's name still shown; start the api, click Try again → the teaching blocks
+
+Look — web 1536 + 375 · phase 1
+- L1 · web 1536: rail, header, the home's head and blocks, the open menu, the mark and Frame 8 against the redrawn export, with Decided 2, 5 and 7
+- L2 · web 375: nothing clips or overlaps, no sideways scroll, the search box narrowed and the name ellipsized
+
+Standard — web · phase 1
+- S2 · loading, empty (teaching), error — why: the blocks read the server (G5 covers error)
+- S3 · a server error — a Playwright case in `shell.spec.ts` aborts `**/tenants/me*` and sees the error blocks; why: the shell reads the server
+- S4 · a double click on the verb button, a rail item and Frame 8's action → one navigation, one sign-out — why: they act (G1.4, G1.5, G4.4)
+- S7 · Hindi and Marathi at 1536 and 375, set by `PATCH /users/me` and a reload — "Survey Engineer home · Sales Executive is your highest preset" fits — why: the shell's words are new on the web
+- S8 · the search box with 200 characters, emoji, Devanagari, spaces + Enter → the placeholder, nothing breaks; a company name at the 120-character maximum → ellipsized — why: typed input
+- S9 · `m3`, the Project Manager → the rail Home · More, no verb button, no action mark; open `/add-lead` → the not-found page — why: the verb follows the preset (`F7-48`)
+- S10 · every rail item, the bell and the avatar named in the accessibility tree, in Hindi too — why: icon-only buttons
+- S11 · see L1, L2
+- H1–H6, H8 · 1536 + 375 — why: a new screen; and on `/login`'s language menu at 1536 and 375 — why: `Menu` changes for every web caller
+- H7 · at 200% → no label clips — why: new text and layout
+- H10 · with S7 — Devanagari in its own face
+- H11 · `m2`, as a first-time user, opens Leads and comes home — each moment of doubt is a finding — why: a new screen
+- W1 · see L1, L2 · W2 · keyboard only: Tab through the rail, the search box, the title switcher, the verb button; Enter opens, Escape closes each menu; focus always visible — why: new controls · W3 · reload on a placeholder and after a home switch → the same route; the ladder's home again (the choice is held in memory, as on the phone) — why: a reload loses state · W4 · axe in `shell.spec.ts`
+
+Regression — machine · phase 1
+- R1 · `tests/e2e/web/shell.spec.ts` · `tests/e2e/web/login.spec.ts` · `tests/e2e/components/menu.spec.tsx` · the plugin's planted map · every unit test
+
+Not in: A1–A7 — no api, db, contracts or data change · S3's no-connection half — the query layer pauses while offline and the web mounts no shared offline screen yet (`D80`) · S5 — no steps · S6 — no step holds a session beyond sign-in, which G2.3 drives · S7's mid-session switch — the shell holds no language control (it is `SCR-M01-11`'s) · H9 — no theme, app root or native config change · M1–M4 — no phone screen changes · $1–$3 — no money · E1 — no side effect
+More than 15 web checks: the shell is every web person's frame at two widths, with its first-run marks, its menu and Frame 8.
 
 ---
 

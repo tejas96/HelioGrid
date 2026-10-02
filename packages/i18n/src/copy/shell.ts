@@ -1,10 +1,18 @@
 import type { RolePreset } from '@heliogrid/contracts';
-import type { CentreVerb, StandingDestination, StorePlatform } from '@heliogrid/domain';
+import type {
+  CentreVerb,
+  ComposedHome,
+  FirstRunMark,
+  ShellDoor,
+  StandingDestination,
+  StorePlatform,
+} from '@heliogrid/domain';
 import type { Translator } from '../runtime';
+import { homeTitle } from './homes';
 import { SIGN_IN } from './sign-in';
 
 /**
- * Every word the phone shell shows (`SCR-SHELL-01`), authored once for both platforms (Law 11)
+ * Every word the shell shows (`SCR-SHELL-01`), authored once for both platforms (Law 11)
  * in three languages (`F3-07`). The export's frames are the source; where they name a person
  * the shell cannot read yet (the manager) or a control with nothing behind it ("Contact your
  * admin"), `T-SHELL-001` records the change. Values in braces are the screen's to fill.
@@ -43,6 +51,7 @@ export const SHELL = {
   },
   signInWithAnother: /*i18n*/ { id: 'Sign in with another account' },
   comingLater: /*i18n*/ { id: 'This screen arrives in a later update.' },
+  today: /*i18n*/ { id: 'Today · {date}' },
   updateRequired: /*i18n*/ { id: 'Update HelioGrid' },
   updateVersions: /*i18n*/ {
     id: 'This is version {current}. HelioGrid now needs version {required} or later.',
@@ -91,18 +100,18 @@ const VERB_LABEL: Record<CentreVerb, { id: string }> = {
 /** The add action's coach mark, one whole sentence pair per verb. */
 const VERB_MARK: Record<CentreVerb, { title: { id: string }; body: { id: string } }> = {
   add_lead: {
-    title: /*i18n*/ { id: 'Add a lead from any screen' },
-    body: /*i18n*/ { id: 'This button is on every screen. Tap it to add a lead.' },
+    title: /*i18n*/ { id: 'Add a lead from your home' },
+    body: /*i18n*/ { id: 'Use this button to add a lead.' },
   },
   start_survey: {
-    title: /*i18n*/ { id: 'Start a survey from any screen' },
-    body: /*i18n*/ { id: 'This button is on every screen. Tap it to start a survey.' },
+    title: /*i18n*/ { id: 'Start a survey from your home' },
+    body: /*i18n*/ { id: 'Use this button to start a survey.' },
   },
 };
 
 const SWITCH_MARK = {
   title: /*i18n*/ { id: 'Two presets, one home' },
-  body: /*i18n*/ { id: 'Your home is the {preset} one. Tap the title to switch.' },
+  body: /*i18n*/ { id: 'Your home is the {preset} one. Open the title to switch.' },
 };
 
 export function presetName(translate: Translator['t'], preset: RolePreset): string {
@@ -124,21 +133,105 @@ export function verbLabel(translate: Translator['t'], verb: CentreVerb): string 
   return translate(VERB_LABEL[verb]);
 }
 
-/** The switcher's mark names the home in force (`SCR-SHELL-01` Frame 7). */
-export function switchMarkWords(
+/**
+ * A mark's words name its own control (`SCR-SHELL-01` Frame 7): the switcher's names the home in
+ * force, the add action's what it does. They are true on both platforms — the desktop's verb
+ * button sits on the home only, so no mark says "every screen", and none says "tap". The action's
+ * mark is listed only with a verb (`firstRunMarksFor`), so a null verb has no words.
+ */
+export function firstRunMarkWords(
   translate: Translator['t'],
+  mark: FirstRunMark,
   home: RolePreset,
-): { title: string; body: string } {
-  const preset = presetName(translate, home);
-  return { title: translate(SWITCH_MARK.title), body: translate(SWITCH_MARK.body, { preset }) };
+  verb: CentreVerb | null,
+): { title: string; body: string } | null {
+  if (mark === 'switch-home') {
+    const preset = presetName(translate, home);
+    return { title: translate(SWITCH_MARK.title), body: translate(SWITCH_MARK.body, { preset }) };
+  }
+  if (verb === null) return null;
+  return { title: translate(VERB_MARK[verb].title), body: translate(VERB_MARK[verb].body) };
 }
 
-/** The add action's mark names what it does. */
-export function verbMarkWords(
+/**
+ * Frame 8's words (`S1.wrong.4`): the company by name, or plainly when its name never loaded; the
+ * one way on; the grievance contact.
+ */
+export function accessRemovedWords(translate: Translator['t'], company: string | null) {
+  return {
+    title:
+      company === null
+        ? translate(SHELL.accessRemoved)
+        : translate(SHELL.accessRemovedFrom, { company }),
+    description: translate(SHELL.nothingLost),
+    actionLabel: translate(SHELL.signInWithAnother),
+    grievanceLabel: translate(SHELL.grievanceOfficer),
+  };
+}
+
+/** The avatar's menu words: whose account it opens, and its two items. */
+export function accountMenuWords(translate: Translator['t'], name: string) {
+  return {
+    triggerName: translate(SHELL.accountOf, { name }),
+    menuLabel: translate(SHELL.account),
+    grievanceLabel: translate(SHELL.grievanceOfficer),
+    signOutLabel: translate(SHELL.signOut),
+  };
+}
+
+/**
+ * The home head's words (`M13-10`): the title in force, which is the switcher, and each held
+ * preset's home with its preset beside it — two presets share "My Day" — the one in force ticked.
+ */
+export function homeHeadWords(
   translate: Translator['t'],
-  verb: CentreVerb,
-): { title: string; body: string } {
-  return { title: translate(VERB_MARK[verb].title), body: translate(VERB_MARK[verb].body) };
+  home: RolePreset,
+  homes: readonly RolePreset[],
+) {
+  const title = homeTitle(translate, home);
+  return {
+    title,
+    switchName: translate(SHELL.switchFrom, { home: title }),
+    switchLabel: translate(SHELL.switchHome),
+    presetLine: presetLine(translate, home, homes),
+    entries: homes.map((preset) => ({
+      preset,
+      label: homeTitle(translate, preset),
+      meta: presetName(translate, preset),
+      selected: preset === home,
+    })),
+  };
+}
+
+/**
+ * The home's blocks and their words (`M13-10`, `M01-17`): one for the home's own work and one per
+ * composed preset, each overlined with its preset; the teaching and failing words are every block's.
+ */
+export function homeBlocksWords(translate: Translator['t'], home: ComposedHome) {
+  return {
+    blocks: [home.home, ...home.composed].map((preset) => ({
+      key: preset,
+      overline: presetName(translate, preset),
+    })),
+    emptyTitle: translate(SHELL.nothingAssigned),
+    emptyMessage: translate(SHELL.workShowsHere),
+    errorTitle: translate(SHELL.couldNotLoad),
+    errorMessage: translate(SHELL.keepsFailing),
+    retryLabel: translate(SHELL.tryAgain),
+  };
+}
+
+/** A door's title — the screen it opens is named for what it is, until its module draws it. */
+export function doorTitle(translate: Translator['t'], door: ShellDoor): string {
+  if (door === 'add_lead' || door === 'start_survey') return verbLabel(translate, door);
+  if (door === 'search') return translate(SHELL.search);
+  if (door === 'notifications') return translate(SHELL.notifications);
+  return destinationLabel(translate, door);
+}
+
+/** The line over the home's title; `date` is today, already in the market's style. */
+export function todayLine(translate: Translator['t'], date: string): string {
+  return translate(SHELL.today, { date });
 }
 
 /**

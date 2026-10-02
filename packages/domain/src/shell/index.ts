@@ -9,8 +9,9 @@ export type { CentreVerb } from './centre-verb';
 export { CENTRE_VERB_REQUIRES, CENTRE_VERBS, centreVerbFor } from './centre-verb';
 export type { ClientVersion, StorePlatform } from './client-version';
 export { isBelowMinimum, parseClientVersion, STORE_PLATFORMS } from './client-version';
-export type { FirstRunMark, MarkedControls } from './coach-marks';
-export { FIRST_RUN_COACH_MARKS, firstRunMarksFor, marksToShow } from './coach-marks';
+export type { FirstRunMark, MarkedControls, MarkInView } from './coach-marks';
+export { FIRST_RUN_COACH_MARKS, firstRunMarksFor, markInView, marksToShow } from './coach-marks';
+export type { ShellDoor } from './doors';
 export type {
   ExplainerMove,
   ExplainerPagerWords,
@@ -26,7 +27,7 @@ export {
 } from './explainer';
 export type { ComposedHome } from './home';
 export { composedHome, HOME_LADDER, homeFor, homesOf } from './home';
-export type { ShellView } from './shell-view';
+export type { ShellLoad, ShellView } from './shell-view';
 export { shellViewFor } from './shell-view';
 export type {
   StandingDestination,

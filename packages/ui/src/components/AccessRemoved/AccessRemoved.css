@@ -1,0 +1,19 @@
+/* AccessRemoved — Frame 8 centred in whatever region holds it (SCR-SHELL-01). */
+
+.hg-access-removed {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  box-sizing: border-box;
+  padding: var(--sp-6) var(--screen-pad-mobile);
+}
+
+.hg-access-removed-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+}

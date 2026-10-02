@@ -1,22 +1,27 @@
 import { useSession, useShell } from '@heliogrid/data/react';
+import { accessRemovedWords, homeBlocksWords, homeHeadWords, todayLine } from '@heliogrid/i18n';
+import { useTranslate } from '@heliogrid/i18n/react';
+import { AccessRemoved, HomeBlocks, HomeHead, useFormat } from '@heliogrid/ui';
 import { useRef, useState } from 'react';
-import type { View } from 'react-native';
-import { AccessRemoved } from './components/AccessRemoved';
+import { useWindowDimensions, type View } from 'react-native';
 import { FirstRunMark } from './components/FirstRunMark';
 import { GrievanceNote } from './components/GrievanceNote';
-import { HomeBlocks } from './components/HomeBlocks';
-import { HomeHead } from './components/HomeHead';
 import { ShellFrame } from './components/ShellFrame';
 import { ShellTopBar } from './components/ShellTopBar';
+import { switcherWidth } from './styles';
 import { usePillItems } from './use-pill-items';
 
 /**
  * The phone shell (`SCR-SHELL-01`): the person's home inside the top bar and the pill. Every fact
- * is `useShell()`'s — the home, the switcher, the verb, the slots, the marks (Law 11); this
- * composes. A removal is checked before anything loaded, since a read in flight comes back
- * refused once the company has removed the person.
+ * is `useShell()`'s — the home, the switcher, the verb, the slots, the marks (Law 11) — and every
+ * part is `packages/ui`'s, shared with the web; this composes. A removal is checked before
+ * anything loaded, since a read in flight comes back refused once the company has removed the
+ * person.
  */
 export function ShellScreen() {
+  const t = useTranslate();
+  const format = useFormat();
+  const { width } = useWindowDimensions();
   const session = useSession();
   const shell = useShell();
   const titleRef = useRef<View>(null);
@@ -30,8 +35,8 @@ export function ShellScreen() {
     return (
       <ShellFrame topBar={<ShellTopBar companyName={shell.companyName} />} items={[]}>
         <AccessRemoved
-          companyName={shell.companyName}
-          onSignInAgain={signOut}
+          {...accessRemovedWords(t, shell.companyName)}
+          onAction={signOut}
           onGrievance={showGrievance}
         />
         <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />
@@ -39,6 +44,8 @@ export function ShellScreen() {
     );
   }
 
+  const home = shell.home;
+  const head = home === null ? null : homeHeadWords(t, home.home, shell.homes);
   return (
     <ShellFrame
       topBar={
@@ -54,15 +61,20 @@ export function ShellScreen() {
       items={items}
       inView="home"
     >
-      {shell.home === null ? null : (
+      {home === null || head === null ? null : (
         <>
           <HomeHead
-            home={shell.home.home}
-            homes={shell.homes}
-            onChoose={shell.chooseHome}
-            titleRef={titleRef}
+            {...head}
+            dateLine={todayLine(t, format.date(new Date()))}
+            entries={head.entries.map((entry) => ({
+              ...entry,
+              key: entry.preset,
+              onSelect: () => shell.chooseHome(entry.preset),
+            }))}
+            switcherWidth={switcherWidth(width)}
+            titleAnchor={titleRef}
           />
-          <HomeBlocks home={shell.home} load={shell.load} onRetry={shell.retry} />
+          <HomeBlocks {...homeBlocksWords(t, home)} load={shell.load} onRetry={shell.retry} />
         </>
       )}
       <FirstRunMark shell={shell} anchors={{ switchHome: titleRef, action: actionRef }} />

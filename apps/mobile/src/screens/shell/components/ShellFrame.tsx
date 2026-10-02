@@ -27,7 +27,11 @@ export function ShellFrame({ topBar, items, inView, children }: ShellFrameProps)
       <ScrollView
         contentContainerStyle={[
           styles.scroll,
-          { paddingBottom: pill ? underPill(insets.bottom) : insets.bottom },
+          // With no pill the page is Frame 8, centred in the whole region: the home's top gap
+          // would push it 16 below the middle (`D77`).
+          pill
+            ? { paddingBottom: underPill(insets.bottom) }
+            : { paddingTop: 0, paddingBottom: insets.bottom },
         ]}
       >
         {children}

@@ -1,6 +1,6 @@
 import { useSession, useShell } from '@heliogrid/data/react';
-import type { StandingDestination } from '@heliogrid/domain';
-import { destinationLabel, SHELL, verbLabel } from '@heliogrid/i18n';
+import type { ShellDoor } from '@heliogrid/domain';
+import { doorTitle, SHELL } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { EmptyState } from '@heliogrid/ui';
 import { useRoute } from '@react-navigation/native';
@@ -13,10 +13,7 @@ import type { DoorRoute } from './doors';
 import { usePillItems } from './use-pill-items';
 
 /** Each door: the destination it is on the pill, if any, and its title. */
-const DOOR: Record<
-  DoorRoute,
-  StandingDestination | 'add_lead' | 'start_survey' | 'search' | 'notifications'
-> = {
+const DOOR: Record<DoorRoute, ShellDoor> = {
   Leads: 'leads',
   Proposals: 'proposals',
   Projects: 'projects',
@@ -42,14 +39,7 @@ export function PlaceholderScreen() {
   const [grievance, setGrievance] = useState(false);
   const items = usePillItems(shell, actionRef);
   const door = DOOR[route.name as DoorRoute];
-  const title =
-    door === 'add_lead' || door === 'start_survey'
-      ? verbLabel(t, door)
-      : door === 'search'
-        ? t(SHELL.search)
-        : door === 'notifications'
-          ? t(SHELL.notifications)
-          : destinationLabel(t, door);
+  const title = doorTitle(t, door);
   const inView = items.some((item) => item.key === door) ? door : undefined;
 
   return (

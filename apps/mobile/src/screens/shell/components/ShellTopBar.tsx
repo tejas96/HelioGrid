@@ -1,9 +1,8 @@
-import { SHELL } from '@heliogrid/i18n';
+import { accountMenuWords, SHELL } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
-import { LogoTile, MobileTopBar, Text } from '@heliogrid/ui';
+import { AccountMenu, LogoTile, MobileTopBar, Text } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
-import { AccountMenu } from './AccountMenu';
 
 interface ShellTopBarProps {
   /** The company's name, or none while it loads or after it failed — the bar then shows none. */
@@ -39,7 +38,9 @@ export function ShellTopBar({ companyName, account }: ShellTopBarProps) {
       avatar={
         account === undefined ? undefined : (
           <AccountMenu
+            {...accountMenuWords(t, account.personName)}
             name={account.personName}
+            align="end"
             onGrievance={account.onGrievance}
             onSignOut={account.onSignOut}
           />
