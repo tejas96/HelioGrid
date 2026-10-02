@@ -12,6 +12,8 @@ main changed a package this task touches, run the regression suites from `/qa` s
 
 ## 2. The full check, once
 
+Take the tree stamp (`/qa` step 7). It equals the QA report's `check:all green at` → print
+`check:all unchanged since <stamp>` and go on. Otherwise — a fix, a merge from main, any edit —
 `pnpm check:all` on the final tree. Read its output, not only its exit code. Never weaken a check to
 make it pass — fix the cause.
 
@@ -23,7 +25,8 @@ against `origin/main`. It reviews once; it is not run again after the fixes.
 ## 4. Fix every finding
 
 Fix each finding. A fix that changes what a screen or a route does → the QA checks that cover it
-run again, with the same agent (`/qa` step 8), and the suites run again.
+run again, with the same agent, and the suites the fix reaches run again (`/qa` step 8). Then
+`pnpm check:all` once more, on the fixed tree.
 
 ## 5. Run the red proofs the reviewer named
 

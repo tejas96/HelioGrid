@@ -151,8 +151,8 @@ spot-check that contradicts its row makes that surface's run untrusted, and it r
 ```
 # QA report — T-M02-001 · Quick Add Lead
 Suites: web 12/12 ✓ · components 4/4 ✓ · phone ios 3/3 ✓ android 3/3 ✓ · unit ✓
-Run: 38 min · api starts 3 (phases 2 + 1) · suite runs ios 1 android 1 · accounts made by tapping 0 ·
-blocks 0 · re-runs 2 · agents 3
+Run: 38 min · check:all green at a1b2c3d4e5f6 · api starts 3 (phases 2 + 1) · suite runs ios 1
+android 1 · accounts made by tapping 0 · blocks 0 · re-runs 2 · agents 3
 
 ## Results
 | check                          | web | ios | android | api |
@@ -175,7 +175,12 @@ blocks 0 · re-runs 2 · agents 3
 ```
 
 The web and phone columns side by side are the parity check: a check that differs between them is
-an issue. The Run line is how one task's QA is compared with the next.
+an issue. The Run line is how one task's QA is compared with the next. Its `check:all green at` is
+the tree stamp of the last green `pnpm check:all` — the commit and every changed or new file, in one
+hash; `/ship` step 2 reads it:
+```bash
+{ git rev-parse HEAD; git diff HEAD; git ls-files -o --exclude-standard -z | xargs -0 shasum; } | shasum | cut -c1-12
+```
 
 ## 8. Fix and re-check
 
@@ -193,8 +198,10 @@ Wait until every agent has returned. Then sort each failure:
 - **environment** → fix it; the agent runs the check again. At close it becomes a harness row in
   `docs/tasks/deferred.md`, unless this branch fixed it.
 
-Re-check with `SendMessage` to the SAME agent — only the failed checks — and run the suites from
-step 3 again. A fix that adds a file → apply the `when` lines to that file only; a check it now meets
+Re-check with `SendMessage` to the SAME agent — only the failed checks. Run again only the suites
+the fixes reach, from `pnpm turbo ls --filter='...[<the commit before the first fix>]'`: the web
+specs of the routes they touch when `@heliogrid/web` is listed; the phone suite, on each device, only
+when `@heliogrid/mobile` is. A fix that adds a file → apply the `when` lines to that file only; a check it now meets
 joins the re-check. A check that still fails after its third fix → stop and ask the owner: fix the code
 another way, or change the plan.
 
