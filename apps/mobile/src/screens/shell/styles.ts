@@ -23,7 +23,9 @@ export const styles = StyleSheet.create({
     // biome-ignore lint/plugin/raw-white: page-ground — an app's page or door: the page is white
     backgroundColor: theme.colors.surface,
   },
+  // Grows to the page, so Frame 8 centres in it (`D77`); the home's rows still start at the top.
   scroll: {
+    flexGrow: 1,
     paddingHorizontal: theme.layout['screen-pad-mobile'],
     paddingTop: theme.spacing['sp-4'],
     gap: theme.spacing['sp-6'],
@@ -40,28 +42,5 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     left: theme.layout['screen-pad-mobile'],
     right: theme.layout['screen-pad-mobile'],
-  },
-  head: {
-    gap: theme.spacing['sp-1'],
-  },
-  // What the switcher's mark points at: the title alone, not the row it sits in.
-  titleAnchor: {
-    alignSelf: 'flex-start',
-  },
-  titleTrigger: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    gap: theme.spacing['sp-1'],
-    minHeight: theme.spacing['sp-12'],
-  },
-  blockHeading: {
-    gap: theme.spacing['sp-6'],
-  },
-  centre: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: theme.layout['screen-pad-mobile'],
-    gap: theme.spacing['sp-4'],
   },
 });

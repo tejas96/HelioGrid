@@ -3,11 +3,11 @@ import type { StandingDestination } from '@heliogrid/domain';
 import { destinationLabel, verbLabel } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import type { RailItem } from '@heliogrid/ui';
-import { ShellGlyph } from '@heliogrid/ui';
+import { DESTINATION_GLYPH, ShellGlyph } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
 import { createElement, type RefObject } from 'react';
 import type { View } from 'react-native';
-import { DESTINATION_GLYPH, DESTINATION_ROUTE, VERB_ROUTE } from './doors';
+import { DESTINATION_ROUTE, VERB_ROUTE } from './doors';
 
 const glyph = (destination: StandingDestination, filled: boolean) =>
   createElement(ShellGlyph, {

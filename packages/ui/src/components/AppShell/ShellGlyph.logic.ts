@@ -1,3 +1,4 @@
+import type { StandingDestination } from '@heliogrid/domain';
 import type { ShellGlyphName } from './AppShell.types';
 
 /** One mark of a glyph, on a 24-unit square: a path, or a circle. */
@@ -78,3 +79,14 @@ export function glyphMarks(
     ? { marks: SHELL_GLYPHS[name], solid: false }
     : { marks: solid, solid: true };
 }
+
+/** Which shape stands for which standing destination — the export's choice, drawn by both shells. */
+export const DESTINATION_GLYPH: Record<StandingDestination, ShellGlyphName> = {
+  home: 'house',
+  leads: 'people',
+  proposals: 'document',
+  projects: 'board',
+  people: 'pair',
+  campaigns: 'megaphone',
+  more: 'dots',
+};

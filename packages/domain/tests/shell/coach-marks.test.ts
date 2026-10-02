@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { FIRST_RUN_COACH_MARKS, firstRunMarksFor, marksToShow } from '../../src/shell/coach-marks';
+import {
+  FIRST_RUN_COACH_MARKS,
+  firstRunMarksFor,
+  markInView,
+  marksToShow,
+} from '../../src/shell/coach-marks';
 
 describe('firstRunMarksFor — a mark only for a control on screen (M01-16)', () => {
   it.each([
@@ -46,4 +51,28 @@ describe('marksToShow — the marks after the passed count (M01-16)', () => {
       marksToShow(firstRunMarksFor({ homes: 2, centreVerb: 'add_lead' }), passedAlone),
     ).toEqual(['centre-action']);
   });
+});
+
+describe('markInView — the one mark on screen and its place in the run (M01-16)', () => {
+  it.each([
+    { marks: ['switch-home', 'centre-action'], passed: null, inView: null },
+    {
+      marks: ['switch-home', 'centre-action'],
+      passed: 0,
+      inView: { mark: 'switch-home', step: 1, total: 2 },
+    },
+    {
+      marks: ['switch-home', 'centre-action'],
+      passed: 1,
+      inView: { mark: 'centre-action', step: 2, total: 2 },
+    },
+    { marks: ['switch-home', 'centre-action'], passed: 2, inView: null },
+    { marks: ['centre-action'], passed: 0, inView: { mark: 'centre-action', step: 1, total: 1 } },
+    { marks: [], passed: 0, inView: null },
+  ] as const)(
+    'names the mark in view with its step: passed $passed of $marks',
+    ({ marks, passed, inView }) => {
+      expect(markInView(marks, passed)).toEqual(inView);
+    },
+  );
 });

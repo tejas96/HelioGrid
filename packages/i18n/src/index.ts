@@ -27,14 +27,19 @@ export { freshnessLabel } from './copy/freshness';
 export { homeTitle } from './copy/homes';
 export { standingLabel, tierLabel } from './copy/provenance';
 export {
+  accessRemovedWords,
+  accountMenuWords,
   destinationLabel,
+  doorTitle,
+  firstRunMarkWords,
+  homeBlocksWords,
+  homeHeadWords,
   presetLine,
   presetName,
   SHELL,
-  switchMarkWords,
+  todayLine,
   updateOnStoreLabel,
   verbLabel,
-  verbMarkWords,
 } from './copy/shell';
 export type { SignInCopyKey } from './copy/sign-in';
 export { SIGN_IN } from './copy/sign-in';

@@ -8,7 +8,9 @@
 // BEGIN COMPONENT EXPORTS — kept in alphabetical order by hand, like the primitives above. An
 // earlier plan regenerated this block from the folder list; no such step exists, so a new
 // component is exported HERE, by you, or it is not exported at all.
+export * from './components/AccessRemoved';
 export * from './components/Accordion';
+export * from './components/AccountMenu';
 export * from './components/ActionReason';
 export * from './components/ActivityStream';
 export * from './components/ActorClass';
@@ -50,6 +52,8 @@ export * from './components/FieldOverride';
 export * from './components/FilterBar';
 export * from './components/FilterPanel';
 export * from './components/FindingList';
+export * from './components/HomeBlocks';
+export * from './components/HomeHead';
 export * from './components/IconButton';
 export * from './components/Image';
 export * from './components/Input';

@@ -1,5 +1,4 @@
 import type { CentreVerb, StandingDestination } from '@heliogrid/domain';
-import type { ShellGlyphName } from '@heliogrid/ui';
 
 /** The placeholder routes the shell opens, until each module's own screen replaces one. */
 // biome-ignore lint/plugin/app-vocabulary: the phone's own route names; whether app routing vocabulary stays here is owed (docs/tasks/deferred.md, app vocabulary row)
@@ -31,16 +30,4 @@ export const DESTINATION_ROUTE: Record<Exclude<StandingDestination, 'home'>, Doo
 export const VERB_ROUTE: Record<CentreVerb, DoorRoute> = {
   add_lead: 'QuickAddLead',
   start_survey: 'StartSurvey',
-};
-
-/** Which shape stands for which destination — the export's choice. */
-// biome-ignore lint/plugin/app-vocabulary: the web shell needs this map too, so it likely moves to a package; owed (docs/tasks/deferred.md, app vocabulary row)
-export const DESTINATION_GLYPH: Record<StandingDestination, ShellGlyphName> = {
-  home: 'house',
-  leads: 'people',
-  proposals: 'document',
-  projects: 'board',
-  people: 'pair',
-  campaigns: 'megaphone',
-  more: 'dots',
 };

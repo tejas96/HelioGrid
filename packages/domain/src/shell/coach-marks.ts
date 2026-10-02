@@ -48,3 +48,23 @@ export function marksToShow(
 ): readonly FirstRunMark[] {
   return passed === null ? [] : marks.slice(passed);
 }
+
+/** The one mark a shell shows, and where it sits in the run — the counter's "1 of 2". */
+export interface MarkInView {
+  readonly mark: FirstRunMark;
+  readonly step: number;
+  readonly total: number;
+}
+
+/**
+ * The first mark still to show, numbered within the whole run, or none — one at a time, never a
+ * carousel (`M01-16`). Both shells count it here, so the phone's "2 of 2" is the web's.
+ */
+export function markInView(
+  marks: readonly FirstRunMark[],
+  passed: number | null,
+): MarkInView | null {
+  const [mark] = marksToShow(marks, passed);
+  if (mark === undefined) return null;
+  return { mark, step: marks.indexOf(mark) + 1, total: marks.length };
+}
