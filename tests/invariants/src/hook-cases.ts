@@ -83,6 +83,9 @@ function casesFor(repo: string): ReadonlyMap<string, HookCases> {
           run('curl -i http://localhost:8084/x -c .qa/T-X/jar -b .qa/T-X/jar'),
           run('grep -n curl .claude/hooks/block-curl-file-io.sh'),
           run('for p in a b; do curl -s -o /dev/null http://localhost:8084/$p; done'),
+          run(
+            'for s in ios android; do curl -i http://localhost:8084/x -c .qa/accounts/$s.jar; done',
+          ),
           run('grep -rn "curl\\|\\`deny\\`" .claude'),
         ],
         block: [
@@ -94,6 +97,7 @@ function casesFor(repo: string): ReadonlyMap<string, HookCases> {
           run('echo "$(curl -o f http://localhost:8084/x)"'),
           run('if true; then curl -o f http://localhost:8084/x; fi'),
           run('c=curl; $c -o f http://localhost:8084/x'),
+          run('for s in ios ../../x; do curl -i http://localhost:8084/x -c .qa/$s.jar; done'),
         ],
       },
     ],

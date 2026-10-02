@@ -8,7 +8,9 @@ description: Close out a task — catch up with main, run the full check once, h
 ## 1. Catch up with main
 
 `git fetch origin`. If the branch is behind, `git merge origin/main` and resolve any conflict. When
-main changed a package this task touches, run the regression suites from `/qa` step 3 again.
+main changed a package this task touches, start the servers and devices as `/qa` step 2 does and
+run the regression suites from `/qa` step 3 again. For a part, `T-ID` below is the part's id
+(`docs/tasks/README.md` rule 0).
 
 ## 2. The full check, once
 
@@ -19,13 +21,14 @@ make it pass — fix the cause.
 
 ## 3. Code review — one review, by a second agent
 
-Dispatch `code-reviewer` with the task id, the task file and the QA report's path. It reads the diff
+Dispatch `code-reviewer` with the task id (a part's id for a part), the task file and the QA report's path. It reads the diff
 against `origin/main`. It reviews once; it is not run again after the fixes.
 
 ## 4. Fix every finding
 
 Fix each finding. A fix that changes what a screen or a route does → the QA checks that cover it
-run again, with the same agent, and the suites the fix reaches run again (`/qa` step 8). Then
+run again — servers and devices started as `/qa` step 2 does, the same agent — and the suites the fix
+reaches run again (`/qa` step 8). Then
 `pnpm check:all` once more, on the fixed tree.
 
 ## 5. Run the red proofs the reviewer named
@@ -45,9 +48,10 @@ A test that stays green with its rule broken guards nothing: fix the test, then 
 
 ## 6. Mark the task shipped, and fix the docs the change made wrong
 
-- The task's `**Status:**` line becomes `shipped`. The squash commit on main carries the PR number.
-- A doc this change made wrong is fixed in the same commit. A change that deletes or moves a file
-  searches `.claude/`, `docs/`, `.github/`, the configs and `.env.example` for the dead path.
+- The task's `**Status:**` line becomes `shipped`. A part instead turns its row of the task's
+  `#### Parts` table to `shipped`; the task's `**Status:**` turns `shipped` with its last part
+  (`docs/tasks/README.md` rule 0).
+- A doc this change made wrong is fixed in the same commit (`CLAUDE.md` Law 8).
 
 ## 7. Show the owner, and wait for the yes
 
@@ -83,7 +87,7 @@ T-M02-001 · Quick Add Lead — one short paragraph in simple words
 Where (packages) · How it works (the flow line) · Example
 
 ## Acceptance criteria → proof
-| A1 | ✓ | quick-add.test.ts › "…" · QA G1.1 |
+| AC1 | ✓ | quick-add.test.ts › "…" · QA G1.1 |
 
 ## QA report
 (the full report from /qa)

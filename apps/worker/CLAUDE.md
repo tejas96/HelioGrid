@@ -1,13 +1,12 @@
 # @heliogrid/worker — NestJS standalone: durable orchestration and heavy compute
 
-Deps: `architecture.md` §2 apps/worker. Runs TEMPORAL (ADR-0025); BullMQ is gone and re-adding it
-is a build failure. The local stack, its runbooks and its measured traps live in
+Deps: `architecture.md` §2 apps/worker. Orchestration is Temporal (ADR-0025); BullMQ is banned by
+dependency-cruiser `no-bullmq`. The local stack, its runbooks and its measured traps live in
 `infra/temporal/README.md`.
 
 ## What lives here / what must never live here
 
-- Deterministic WORKFLOWS and their ACTIVITIES, one folder per business area; worker_threads for
-  shading and Playwright PDF.
+- Deterministic WORKFLOWS and their ACTIVITIES, one folder per business area.
 - NEVER: an HTTP surface, business rules that belong in `packages/domain`, a direct call into
   another module's repositories, or a second Temporal connection.
 
@@ -24,8 +23,6 @@ src/modules/<area>/<area>.workflows.ts         DETERMINISTIC. The sequence.
 `platform` is the only area today and is the shape to copy.
 
 ## Commands
-
-`dev` and `start` pass `--env-file-if-exists=../../.env.local`, so a REAL env var still wins.
 
 ```
 pnpm --filter @heliogrid/worker dev | build | typecheck    # build also emits the workflow bundle
@@ -51,9 +48,6 @@ pnpm infra:up                                              # the local Temporal 
   task. Each `<area>.public.ts` asserts it with `satisfies`.
 - **One Temporal connection per process**, owned by `common/temporal`. A module hands the host a
   `TemporalWorkerRegistration`; `common/` never imports a module.
-- Provider webhook processing (Razorpay, Exotel) happens HERE, not in the api: the api verifies,
-  dedupes on the provider event id, hands off durably and answers 2xx fast; this app applies the
-  effects.
 
 ## Done means
 

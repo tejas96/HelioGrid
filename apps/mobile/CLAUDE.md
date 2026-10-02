@@ -15,7 +15,7 @@ share: `CLAUDE.md` §6 · UI law: `.claude/rules/ui-adherence.md`.
 ## Where files go — a closed set; never invent a folder
 
 `src/` is `{auth, navigation, push, screens}` plus root `env.ts`, `i18n.ts` and `react-query-host.tsx`.
-A new category is a plan-time call, and it changes this line and `CLAUDE.md` §6 together.
+A new category is a plan-time call, and it changes this line.
 
 ```
 src/screens/<name>/       same shape as web's feature, in RN's location
@@ -24,7 +24,7 @@ src/screens/<name>/       same shape as web's feature, in RN's location
   hooks/use-<thing>.ts    the platform adapter only — keyboard, focus, clipboard, navigation
   styles.ts               screen-level layout; component geometry stays with its component
   types.ts                when two files here share a type
-src/screens/shared/       parts BOTH doors draw — TEMPORARY, until `T-M01-035` lifts them to ui
+src/screens/shared/       parts two screens here share, until web draws them (`screen-parts.md`)
 src/navigation/           React Navigation static config
 src/auth/ · src/push/     native adapters, one per capability; push isolates Firebase/Notifee
 src/react-query-host.tsx  the ONE host-lifecycle adapter (AppState → focus, NetInfo → online)
@@ -34,8 +34,8 @@ src/react-query-host.tsx  the ONE host-lifecycle adapter (AppState → focus, Ne
 
 ```
 pnpm --filter @heliogrid/mobile start | ios | android | typecheck
-cd apps/mobile/ios && LANG=en_US.UTF-8 pod install    # after a native dep change; without the
-                                                      # UTF-8 locale it fails on Unicode Normalization
+cd apps/mobile/ios && LANG=en_US.UTF-8 bundle exec pod install
+    # after a native dep change; without the UTF-8 locale it fails on Unicode Normalization
 ```
 
 ## Rules
@@ -47,9 +47,9 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 pod install    # after a native dep chang
   `.native.tsx` file in the same component folder. `View`, `ScrollView`, `StyleSheet` and
   `Platform` are layout and stay allowed.
 - **`src/i18n.ts` is imported FIRST** — it pulls `@heliogrid/i18n/rn`, whose side effects install
-  the Hermes Intl polyfills. Language comes from `@heliogrid/i18n/react`, never `@lingui/react`.
-  `App.tsx` builds ONE runtime per mount; a screen never calls `i18n.activate` itself, because it
-  cannot know whether that catalog is loaded.
+  the Hermes Intl polyfills. Language comes from `@heliogrid/i18n/react`. `App.tsx` builds the
+  runtime (one per mount: `packages/i18n/CLAUDE.md`); a screen never calls `i18n.activate`
+  itself, because it cannot know whether that catalog is loaded.
 - **Native capability** — camera, storage, notifications, keychain — is isolated in its own module
   under `src/`, never called inline from a screen. Auth tokens go through
   `src/auth/keychain-storage.ts` and nowhere else.
@@ -78,10 +78,6 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 pod install    # after a native dep chang
   grab-bag** — a file named for its layer instead of its job is the same defect as `*-part2`.
 - Paginated screens: `FlatList` + `usePaginatedList`, never inside a `ScrollView`. API failures
   render a shared error component; `ApiErrorText` is owed to `packages/ui`.
-- This app extends BOTH configs, `@heliogrid/config/tsconfig/base.json` then
-  `@react-native/typescript-config` in that order — a workspace strictness flag arrives on its
-  own, and React Native's own settings win where the two overlap.
-- Firebase is LIVE. Geist and Noto TTFs are bundled; verify Devanagari on BOTH simulators.
 
 ## Done means
 

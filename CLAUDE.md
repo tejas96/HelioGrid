@@ -57,9 +57,9 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
 
 ## 3. Workflow
 
-One fresh session per task, and one task per PR. The work follows ONE order: the next step `/start`
-picks from `docs/build-order.md` — build a task, the owner draws a screen, or the owner clears a
-blocker. Inside a module it is design → backend → UI.
+One fresh session per task or part, and one task or part per PR. The work follows ONE order: the
+next step `/start` picks from `docs/build-order.md` — the next open part of a split task, build a
+task, the owner draws a screen, or the owner clears a blocker. Inside a module it is design → backend → UI.
 
 | step | who | stops for the owner |
 |---|---|---|
@@ -67,6 +67,10 @@ blocker. Inside a module it is design → backend → UI.
 | build | the main session, inside the plan | only when the scope changes |
 | `/qa` | the suites, then one QA agent per surface the change reaches, in parallel; fix and re-check what failed | when a check fails three times |
 | `/ship` | `code-reviewer` once, the fixes and red proofs, the commit, the push, the PR, CI | yes — every commit |
+
+**One turn, many calls.** In every step and every agent, each read, search and check that does not
+wait on another's result goes in ONE turn. A turn re-reads the whole session, so one lookup per turn
+is the slowest and costliest way to work.
 
 **Build:**
 
@@ -81,8 +85,9 @@ blocker. Inside a module it is design → backend → UI.
 7. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code
    that is gone: `pnpm turbo build --force`.
 
-**A PR is one complete task:** every acceptance line met and proven before it opens; a task that is
-really two is split at `/start`. **One review per change:** findings are fixed and the work ships.
+**A PR is one complete task or part:** every acceptance line it carries met and proven before it
+opens; a plan over about 30 files is split at `/start` into parts inside the task, web and phone
+together. **One review per change:** findings are fixed and the work ships.
 
 ## 4. Stop and ask the owner before
 
@@ -92,8 +97,8 @@ really two is split at `/start`. **One review per change:** findings are fixed a
 - A feature or a number no PRD row implies. A decision that belongs to a LATER module is not an ask:
   write it into that module's task in `docs/tasks/`, and carry on.
 - **Committing.** Every commit waits for its own yes, given to the shown file list and message; a
-  go, a green check or the yes to an earlier commit is never that yes. The task's Status turns
-  `shipped` in that commit; then push and raise the PR. The owner merges. `main` is PR-only; never
+  go, a green check or the yes to an earlier commit is never that yes. The task's Status — or, for a part,
+  its row in the task's Parts table — turns `shipped` in that commit; then push and raise the PR. The owner merges. `main` is PR-only; never
   `--no-verify`, never a force-push.
 
 ## 5. Commands
@@ -111,7 +116,7 @@ The database invariants need the local Postgres; without it they SKIP loudly, an
 schema they report VACUOUS. Neither is a pass. Never weaken a check to make a change pass.
 
 **Ports are dedicated, never reassigned** — web `3002` · api `8084` · metro `8081` · postgres
-`5544` · object store `9000` · temporal `7233` · design exports `3004` · component tests `3100` ·
+`5544` · object store `9000` · temporal `7233` · component tests `3100` ·
 the worker has no listener. A busy port is a stale service: kill it, never fall back to another.
 Start web, api and metro through the browser preview tool; `pnpm --filter @heliogrid/mobile
 ios|android` drives metro.
@@ -138,10 +143,11 @@ import, §4 where a new file goes. Run §4 before creating one. This is the dige
 | `docs/engineering/` | how this repo is built, ranked **below** `docs/prd/`. |
 | `.claude/` | the agent's own instructions — `skills/`, `agents/`, `hooks/`, `rules/` and `protections.md`, a closed set. `rules/` is law that spans MORE than one package; a rule for exactly one package lives in that package's own `CLAUDE.md`. |
 | `.qa/` | the local QA workspace, git-ignored: the api log; the standing QA accounts — `accounts.md` names each surface's number, `accounts/<surface>.jar` holds its curl session; and one folder per task — its QA report, each agent's results and its evidence. `/start` deletes a shipped task's folder, never the accounts. |
-| `infra/` · `HelioGrid-UX/` | deployment and local-stack material that is NOT application code · the exported Claude Design artboards and decisions records, one pair per screen — the pixel-perfect reference a screen is built and measured against; never edited by hand, re-exported when a design changes (a board of 256 KB or less Claude pulls itself after the owner's yes, through `DesignSync`), ignored by git. |
+| `infra/` | deployment and local-stack material that is NOT application code. |
+| the Claude Design project | NOT in the repo: every screen's board and decisions record, one pair per screen — the pixel-perfect reference a screen is built and measured against. It is the one source of a design: a task's `DESIGN:` line links it, `DesignSync` reads it at the task's turn, the owner edits it there, and no copy is kept on disk. |
 
-Everything public is re-exported from a package's `src/index.ts`; consumers import the index, never
-a deep path. The one other entry is `@heliogrid/ui/print`, the web's print parts. **Never invent a folder**: every tree is a closed set, and a new category is a
+Everything public is an entry a package's `package.json` `exports` declares — `src/index.ts`, or a
+subpath such as `@heliogrid/data/react` or `@heliogrid/ui/print`; consumers never import a deep path. **Never invent a folder**: every tree is a closed set, and a new category is a
 plan-time decision. `docs/README.md` maps every document.
 
 ## 7. When rules conflict
@@ -185,11 +191,12 @@ Every line, every app, every package.
   every OLDER reader still running reads the NEW shape, and the new code reads everything the old
   one wrote. What cannot be read both ways ships in two releases: expand, then contract.
 - **A bug you find is reported at once.** Inside the task's scope it is fixed now. Outside it, it
-  goes to `docs/tasks/deferred.md` as one row — the issue, the next step and who picks it up —
+  goes to `docs/tasks/deferred.md` as one row — the issue, the next step and the `reopens when` condition —
   never inside the current change, and never parked.
 - **Dependencies change only through `pnpm add`/`pnpm remove`** — never a hand-edited dependency
   block or lockfile. **The database is read-only to you**: schema through a migration, data through
-  the application.
+  the application — except the two scripts the skills run against the local database: `/start`'s
+  QA-record cleanup and `/qa`'s seed.
 - **Testing law is `.claude/rules/testing.md`.**
 
 Writing rules, not code: a rule carries no date (a trap goes to its package's `CLAUDE.md`, and when

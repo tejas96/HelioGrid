@@ -1,8 +1,8 @@
 # Tasks — SHELL (app shell & platform surfaces)
 
-Task-id prefix: `T-SHELL-`. One screen task per shell screen — a screen whose reach exceeds the size signal (`/start` §2) is split by platform, the DESIGN line staying with the first slice. Rules per `docs/tasks/README.md`:
-acceptance criteria are copied verbatim from the PRD, never rewritten; `DESIGN: PENDING`
-blocks build, not start. Briefs live in `docs/ux/briefs/`.
+Task-id prefix: `T-SHELL-`. A task whose plan is over about 30 files is split into parts inside it,
+web and phone together (`/start` step 6). Rules per `docs/tasks/README.md`. Briefs live in
+`docs/ux/briefs/`.
 
 ---
 

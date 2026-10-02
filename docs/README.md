@@ -1,6 +1,6 @@
 # docs/ — everything written lives here
 
-One folder, four trees. Root holds only `README.md`, `CLAUDE.md` and the code.
+One folder, four trees. Root holds only `README.md`, `CLAUDE.md` (with `AGENTS.md`, a link to it) and the code.
 
 | | |
 |---|---|
@@ -12,7 +12,7 @@ One folder, four trees. Root holds only `README.md`, `CLAUDE.md` and the code.
 | Tree | What it is | Authority |
 |---|---|---|
 | [`prd/`](prd/) | The product spec — the owner brief, foundations, modules, and the screens register; every row carries its own ruling | **Source of truth** |
-| [`ux/`](ux/) | One design brief per screen, plus the Claude Design session context; the exported artboards and decisions records live in `HelioGrid-UX/` at the repo root, ignored by git — each machine holds its own export | **Source of truth** |
+| [`ux/`](ux/) | One design brief per screen, plus the Claude Design session context; the boards and decisions records live in the Claude Design project that each task's `DESIGN:` line links, and are read from there — the repo holds no copy | **Source of truth** |
 | [`tasks/`](tasks/) | Engineering work, one file per module, derived from the PRD registers | **Source of truth** |
 | [`engineering/`](engineering/) | How this repo is built — dissolving into the package files and the tasks; each file carries its fate | Support, ranked below `prd/` |
 
@@ -42,8 +42,8 @@ convention `CLAUDE.md` §2 uses for the Laws and `engineering/adr/` uses for ADR
 Moving one of these breaks a tool silently.
 
 `/start` step 2 reads `build-order.md`, the `**DESIGN:**` lines of `tasks/*.md` and the `V` column
-of `prd/registers/screens.md` §2 as each row's sixth cell, and names `ux/briefs/` and
-`ux/claude-design-context.md`. `design-reviewer` reads `tasks/`, `ux/briefs/` and `prd/`.
+of `prd/registers/screens.md` §2 as each row's sixth cell, and names `ux/briefs/`; through
+`start-here.md` Steps 1–3 it names `ux/claude-design-context.md`. `design-reviewer` reads `tasks/`, `ux/briefs/` and `prd/`.
 `engineering/forward-compat.md` and `engineering/data-model.md` are both named by the
 `/migration` skill's first step. Two invariants read a PRD file: `matrix-mirrors-f2` reads
 `prd/foundations/F2-roles-and-permissions.md` and `template-keys-mirror-f6` reads

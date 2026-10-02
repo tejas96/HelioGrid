@@ -28,13 +28,11 @@ src/migrate.ts              the sha256-locked runner
 src/uuid.ts                 the ./uuid subpath — backend use only
 ```
 
-A migration is named for what it does (`0002_lead_capture.sql`), never `0002_update.sql`.
-
 ## Commands
 
 ```
 pnpm --filter @heliogrid/db build | migrate
-pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT into drizzle-draft/ — review, then move
+pnpm db:migration:new                # DRAFT into drizzle-draft/ — review, then move
 ```
 
 `migrate` takes the URL as `argv[1]`; this package reads no environment, so it stays reusable.
@@ -70,19 +68,13 @@ pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT into drizzle-dra
   invariant asserts it from the catalog over every RLS-subject role.
 - pgEnum values hand-mirror the contract `z.enum`s; change both sides in the same slice. The
   `enum-parity` invariant proves they match.
-- `usage_events` dedupe is `(idempotency_key, period_key)`; a producer MUST derive `period_key`
-  from `occurred_at` or retries stop being no-ops.
 - An identity provider's own tables are owned by ITS migrator, never authored here.
 - `tenant` INSERT is deliberately NOT granted to `app_user` — signup crosses tenancy and runs on
   the explicit admin path; so do every account, code and session write.
-- **Schema grows module-wise only** (Law 9): a module authors its own tables when its slice
-  begins, and satisfies its `forward-compat.md` row while doing so. A table belonging to a module
-  that has not started is a violation — stop and ask.
 
 ## Done means
 
-The migration applies fresh AND on an already-migrated database (idempotent skip) · the RLS
-cross-tenant invariant green against real state · typecheck and lint green.
+`/migration` step 8 — applied twice, the invariants run against the real database.
 
 ## Traps
 

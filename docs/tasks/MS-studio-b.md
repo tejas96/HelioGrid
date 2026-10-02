@@ -8,9 +8,9 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 
 ### T-MS-201 · Step 4 Components — port + UI rebuild
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** M05-20 (P0), MS4-01 (P0), MS4-02 (P0), MS4-03 (P0), MS4-06 (P0), MS4-07 (P0), MS4-08 (P0), MS4-09 (P0), MS4-10 (P0), MS4-11 (P0), MS4-12 (P0), MS4-14 (P0), MS4-15 (P0), MS4-16 (P0), MS4-17 (P1), MS4-18 (P0), MS4-19 (P0), MS4-20 (P0), MS4-21 (P0), MS4-22 (P0), MS4-24 (P0), MS4-27 (P0), MS4-28 (P0), MS4-29 (P0), MS4-30 (P0), MS4-31 (P0), MS4-32 (P0), MS4-33 (P0)
-**DESIGN:** SCR-MS-07 → PENDING
+**DESIGN:** SCR-MS-07 → ported from the POC
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step4Components.tsx` · `3d_design_studio/src/features/solar-studio/data/catalog.ts` · `3d_design_studio/src/features/solar-studio/data/panels.ts` · `3d_design_studio/src/features/solar-studio/data/inverters.ts` · `3d_design_studio/src/features/solar-studio/lib/__tests__/catalog.test.ts`
 **DEFECTS:**
 - `CODE.step4-components.20` — panel swap silently resizes placed modules (S4-2: guard dialog both paths → MS4-12).
@@ -114,9 +114,9 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 
 ### T-MS-205 · Step 6 Layout Editor — port + UI rebuild
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** MS6-01 (P0), MS6-02 (P0), MS6-05 (P0), MS6-06 (P0), MS6-07 (P0), MS6-08 (P0), MS6-09 (P0), MS6-10 (P0), MS6-11 (P1), MS6-12 (P0), MS6-13 (P0), MS6-14 (P0), MS6-16 (P0), MS6-17 (P0), MS6-18 (P0), MS6-19 (P0), MS6-20 (P0), MS6-21 (P0), MS6-22 (P0), MS6-23 (P1), MS6-24 (P0), MS6-26 (P1), MS6-27 (P0), MS6-28 (P0), MS6-29 (P0), MS6-51 (P0), MS6-52 (P0)
-**DESIGN:** SCR-MS-08 → PENDING
+**DESIGN:** SCR-MS-08 → ported from the POC
 **Owed by `T-FPLAT-027` (`F8-11`, a law):** every shading output this screen prints carries `M05-94`'s limit text beside it — beam-only, linear in unshaded area, no bypass-diode cliff, no string mismatch, so partial-shade losses read optimistic — at every scale.
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step6Editor.tsx` · `3d_design_studio/src/features/solar-studio/screens/step6-erase.ts` · `3d_design_studio/src/features/solar-studio/components/StructurePreview.tsx` · `3d_design_studio/src/features/solar-studio/lib/health.ts` · `3d_design_studio/src/features/solar-studio/store/useHealthSync.ts` · `3d_design_studio/src/features/solar-studio/lib/panel-move.ts` · tests `3d_design_studio/src/features/solar-studio/screens/__tests__/step6-erase.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/health.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/health-coverage.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/panel-move.test.ts`
 **DEFECTS:**
@@ -162,9 +162,9 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-206 · Step 6 3D scene & in-scene structure card — port + UI rebuild
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** MS6-30 (P0), MS6-31 (P0), MS6-32 (P0), MS6-33 (P0), MS6-34 (P0), MS6-35 (P0), MS6-36 (P0), MS6-37 (P0), MS6-44 (P0), MS6-45 (P1), MS6-46 (P0), MS6-47 (P0), MS6-48 (P0), MS6-49 (P0)
-**DESIGN:** SCR-MS-09 → PENDING
+**DESIGN:** SCR-MS-09 → ported from the POC
 **PORT:** `3d_design_studio/src/features/solar-studio/three/Scene3D.tsx` · `3d_design_studio/src/features/solar-studio/three/HeatmapLayer.tsx` · `3d_design_studio/src/features/solar-studio/three/PanelsInstanced.tsx` · `3d_design_studio/src/features/solar-studio/three/StructEditPanel.tsx` · `3d_design_studio/src/features/solar-studio/three/StructureInstanced.tsx` · `3d_design_studio/src/features/solar-studio/three/StructureNodesInstanced.tsx` · `3d_design_studio/src/features/solar-studio/three/LegPlanEditor.tsx` · `3d_design_studio/src/features/solar-studio/three/profile-geometry.ts` · `3d_design_studio/src/features/solar-studio/lib/sun.ts` · `3d_design_studio/src/features/solar-studio/lib/sim-time.ts` · `3d_design_studio/src/features/solar-studio/lib/solar-heatmap.ts` · `3d_design_studio/src/features/solar-studio/lib/structure-view.ts` · `3d_design_studio/src/features/solar-studio/lib/structure-edit.ts` · `3d_design_studio/src/features/solar-studio/lib/leg-plan-edit.ts` · `3d_design_studio/src/features/solar-studio/lib/scene-model.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/sim-time.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/solar-heatmap.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/structure-view.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/structure-edit.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/structure-parametrics.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/leg-plan.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/leg-plan-edit.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/mms-customize.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/monorail.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/foundation-clamp.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/panel-inspector.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/scene-model.test.ts`, `3d_design_studio/src/features/solar-studio/three/__tests__/LegPlanEditor.dom.test.tsx`
 **DEFECTS:**
 - `CODE.step6-scene3d.6` — no visible orbit/zoom controls in 3D (S5-3: control cluster added → MS6-30).
@@ -307,9 +307,9 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-260 · Step 7 Proposal — port + UI rebuild
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** MS7-01 (P0), MS7-02 (P0), MS7-03 (P0), MS7-04 (P0), MS7-06 (P0), MS7-07 (P1), MS7-08 (P0), MS7-10 (P0), MS7-11 (P0), MS7-13 (P0), MS7-14 (P0), MS7-20 (P0), MS7-22 (P0), MS7-31 (P0), MS7-34 (P0), MS7-40 (P0), MS7-41 (P0), MS7-42 (P0), MS7-47 (P0), MS7-49 (P0), MS7-51 (P0)
-**DESIGN:** SCR-MS-10 → PENDING
+**DESIGN:** SCR-MS-10 → ported from the POC
 **Owed by `T-FPLAT-027` (`F8-11`, a law):** every shading output this screen prints carries `M05-94`'s limit text beside it — beam-only, linear in unshaded area, no bypass-diode cliff, no string mismatch, so partial-shade losses read optimistic — at every scale.
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step7Proposal.tsx` · `3d_design_studio/src/features/solar-studio/components/EnergyReportSheet.tsx` · `3d_design_studio/src/features/solar-studio/lib/financing.ts` · `3d_design_studio/src/features/solar-studio/lib/poa.ts` · `3d_design_studio/src/features/solar-studio/lib/comparison.ts` (shared with T-MS-203 and T-MS-267 — this task owns the compare surface, not the ranking core) · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/financing.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/poa.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/comparison.test.ts`
 **DEFECTS:**
@@ -518,9 +518,9 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-268 · Step 8 SLD & Drawings — port + UI rebuild
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** MS8-01 (P0), MS8-02 (P0), MS8-03 (P0), MS8-04 (P0), MS8-05 (P1), MS8-06 (P0), MS8-07 (P0), MS8-08 (P0), MS8-09 (P0), MS8-10 (P0), MS8-11 (P0), MS8-12 (P0), MS8-13 (P0), MS8-14 (P0), MS8-15 (P0), MS8-16 (P0), MS8-17 (P0), MS8-18 (P0), MS8-19 (P0), MS8-21 (P0), MS8-23 (P0)
-**DESIGN:** SCR-MS-11 → PENDING
+**DESIGN:** SCR-MS-11 → ported from the POC
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step8Sld.tsx` · `3d_design_studio/src/features/solar-studio/lib/sld.ts` · `3d_design_studio/src/features/solar-studio/lib/electrical/temps.ts` (the provenance read-out half; the resolver core is T-MS-270's) · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/sld.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/earthing.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/electrical-temps.test.ts` · `3d_design_studio/src/features/solar-studio/components/drawing/index.tsx` (sitting 2 — the sheet renderers this step hosts) · `3d_design_studio/src/features/solar-studio/components/drawing/StructureSheet.tsx` (sitting 2 — the structure tab's sheet, shared with T-MS-212) · `3d_design_studio/src/features/solar-studio/components/__tests__/drawing.dom.test.tsx` (sitting 2) · `3d_design_studio/src/features/solar-studio/lib/drawing-project.ts` + `3d_design_studio/src/features/solar-studio/lib/__tests__/drawing-project.test.ts` (sitting 10 — the shared plan transform MS8-15 rides on)
 **DEFECTS:**
 - `CODE.step8-sld.2/.13/.37/.39/.41/.42/.43` — drawing accuracy (7): fake zoom, contradictory paper/scale, wrong footprints, phantom legend, static detail, numbering (S7-2 batch → MS8-02/16/17).

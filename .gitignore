@@ -57,12 +57,7 @@ __pycache__/
 # never drops process scratch into the tree.
 .superpowers/
 
-# QA writes nothing to the tree (owner ruling): /qa keeps its report in the session scratchpad,
-# and the report's final copy lives in the PR body.
-# These entries are legacy guards only — an earlier QA system wrote here, and its leftovers
-# were deleted from this machine. Nothing recreates either path; they stay
-# ignored so a stale checkout elsewhere cannot commit one or make Biome lint generated JSON.
-.qa/
+# The Playwright MCP's scratch output.
 .playwright-mcp/
 
 # graphify — generated knowledge-graph cache, never committed
@@ -79,8 +74,6 @@ coverage/
 
 # Tools installed locally by hand (never committed).
 .tools/
-
-HelioGrid-UX/
 
 # The local QA workspace: one folder per task (report, agent results, evidence) and the api log.
 .qa/

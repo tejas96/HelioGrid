@@ -50,15 +50,6 @@
       "name": "worker",
       "runtimeExecutable": "bash",
       "runtimeArgs": ["-c", "pnpm infra:token && exec pnpm --filter @heliogrid/worker dev"]
-    },
-    {
-      "name": "design-exports",
-      "runtimeExecutable": "bash",
-      "runtimeArgs": [
-        "-c",
-        "lsof -ti tcp:3004 -sTCP:LISTEN | xargs -r kill -9; exec python3 -m http.server 3004 --directory HelioGrid-UX --bind 127.0.0.1"
-      ],
-      "port": 3004
     }
   ]
 }

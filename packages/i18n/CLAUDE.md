@@ -1,6 +1,6 @@
 # @heliogrid/i18n — ONE Lingui catalog (EN/HI/MR) for Next.js AND bare RN
 
-Deps: `architecture.md` §2 i18n. `packages/ui` stays string-free: copy arrives as props.
+Deps: `architecture.md` §2 i18n. `packages/ui` takes its copy as props.
 
 ## What lives here / what must never live here
 

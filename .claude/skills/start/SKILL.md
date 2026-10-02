@@ -1,25 +1,26 @@
 ---
 name: start
-description: Begin a task in a fresh session. Picks the next step in the build order (or takes the task the owner names), reads the task, its brief, its design and the code it touches, critiques them, writes the plan, the acceptance criteria and the QA plan into the task, and stops for the owner's go. Use at the start of every piece of work.
+description: Begin a task, or the next part of a split task, in a fresh session. Picks the step strictly from the build order (or takes the task the owner names), reads what the ticket already decided, checks the task fully, runs the design check once in Claude Design, splits a plan over about 30 files into parts, writes the plan and the QA plan of the part that starts now, and stops for the owner's go with a short summary. Use at the start of every piece of work.
 ---
 
-# /start — pick, understand, plan, stop
+# /start — pick, read, check, design, size, plan, stop
 
-Do steps 1–7 in order. Write no code. Step 7 ends in a stop.
+Do steps 1–9 in order. Write no code. Step 9 ends in a stop.
 
 ## 1. Clean start
 
 - `git status` must be clean. If it is not, stop and ask the owner.
 - `git fetch origin`, then branch from main: `git checkout -b <kind>/<t-id>-<slug> origin/main`
-  (`feat`, `fix` or `chore`). Work in this folder, never a worktree.
+  (`feat`, `fix` or `chore`); a part adds its letter: `feat/t-shell-003a-<slug>`. Work in this
+  folder, never a worktree.
+- A task or part whose PR is still open (`gh pr list --state open`) is not planned again, and a later
+  part waits for the part before it to merge: ask the owner to merge it first.
 - Every branch shares one local database. A migration from a branch that has not merged puts it
   ahead of main, and this branch's `pnpm db:migrate` then fails. Ask the owner to merge that
   branch first.
-- Delete the QA workspace of every task that now reads `shipped`: for each folder in `.qa/`, look
-  up its task's `**Status:**` line and remove `.qa/<T-id>/` when it is `shipped`. Leave `.qa/api.log`,
-  `.qa/accounts.md` and `.qa/accounts/`.
-- Remove the QA and suite records, every `/start`, even when no task shipped — `shipped` lists the
-  ids just removed, or stays empty: those tasks' companies `QA <T-id> …`, and the suites' companies
+- `shipped` is every id with a folder in `.qa/` that now reads `shipped` — its task's `**Status:**`
+  line, or, for a part (`T-SHELL-003a`), its row in the task's `#### Parts` table.
+- Remove the QA and suite records, every `/start`, even when `shipped` is empty: those tasks' companies `QA <T-id> …`, and the suites' companies
   `E2E <10 digits>` made more than an hour ago (a younger one may belong to a suite still running);
   their rows; and every person whose only memberships are in them. Every `DEV_OTP_PHONES` person
   always stays, and so do the standing `QA <surface>` companies, which neither name matches. The
@@ -27,7 +28,7 @@ Do steps 1–7 in order. Write no code. Step 7 ends in a stop.
   what it removed:
   ```bash
   pnpm --filter @heliogrid/api exec tsx --env-file-if-exists=<repo>/.env.local -e "(async () => {
-    const shipped = [/* 'T-M02-001', … */];
+    const shipped = [/* 'T-M02-001', 'T-SHELL-003a', … */];
     const { openPools, unseed, adminUrl } = await import('./tests/support/fixture.ts');
     const { tenant, tenantMembership, userAccount } = await import('@heliogrid/db');
     const { and, inArray, like, lt, notInArray, or, sql } = await import('drizzle-orm');
@@ -48,91 +49,147 @@ Do steps 1–7 in order. Write no code. Step 7 ends in a stop.
     await pools.close();
   })()"
   ```
-  The files those rows point at stay in the local object store.
+- Only after it succeeds, delete `.qa/<T-id>/` for each id in `shipped`. Leave `.qa/api.log`,
+  `.qa/accounts.md` and `.qa/accounts/`.
 
-## 2. Pick the step — only when the owner names no task
+## 2. Pick the step
 
-1. Read the block table in `docs/build-order.md` and the notes under it, which say when a file's
-   tasks sit in more than one block.
-2. Walk ONE block at a time — the whole list costs about 40k tokens, one block about 8k. Take the
-   lowest block that still has a `planned` or `designed` task, and list its files' header lines:
+The step comes from `docs/build-order.md` and the tickets, never from memory, and never a later
+task because it is ready.
+
+1. **The owner names a task** → take it. When it is not the next step, say so in one line.
+2. **A split task has an open part** → that part is the step, before any new task:
+   `grep -nE '^\| [a-z] \| .* \| open \|$' docs/tasks/*.md`. Take the first open part of the first
+   task the walk below reaches, then go to item 5.
+3. **Otherwise, walk the build order** exactly as `docs/build-order.md` "One order, walked one step at
+   a time" says — its walk and its table of steps — ONE block at a time: the lowest block that still
+   has a `planned` or `designed` task, its files' header lines listed with
    `grep -nE '^### T-|^\*\*(Type|Status|Blocked|Parked|Depends on|DESIGN|Design):' <its files> | cut -c1-200`.
    The V column of `docs/prd/registers/screens.md` §2 says which screens are V2.
-3. Walk the tasks in order: inside the block, its cells in the table's order (a task
-   file, or a task placed apart from its file); inside a file, the backend tasks first (any Type but
-   `screen`), then the screens, each as the file writes them. A `Depends on:` task in the same block
-   goes before the task that names it. Skip a task that is shipped, struck or parked, or whose
-   screens are all V2.
-4. The first open task decides the step:
-   - It has a `Blocked:` line → print it; the owner clears it. Stop.
-   - It waits on an open task → that task goes first when it is in the same block; otherwise (a later
-     block, or a parked task) the owner clears the wait. Stop.
-   - It is a screen whose `DESIGN:` line holds no link, or a backend task whose block still has an
-     undrawn screen it serves (a screen of its own file, or one whose `Depends on:` names it) → the
-     owner draws. Print: (1) paste `docs/ux/claude-design-context.md` into Claude Design; (2) paste
-     the brief `docs/ux/briefs/<SCR-id>-….md`; (3) draw it and export to `HelioGrid-UX/`; (4) put the
-     link on the `DESIGN:` line at `docs/tasks/<file>.md:<line>`. Stop.
-   - None of these → build it. Go on to step 3.
-5. Print four lines — `NEXT` the step · `AHEAD` the next undrawn screen on the walk · `DONE` how many
-   of the 99 V1 screens are drawn, which this counts:
-   `comm -12 <(grep -h '^\*\*DESIGN:\*\* SCR-' docs/tasks/*.md | grep -v PENDING | grep -oE 'SCR-[A-Z0-9]+-[0-9]+' | sort -u) <(awk -F'|' '/^\| SCR-/ && $7 ~ /V1/ {gsub(/ /,"",$2); print $2}' docs/prd/registers/screens.md | sort -u) | wc -l` · `DEFERRED` how many rows wait in `docs/tasks/deferred.md`
-   (`grep -c '^| D[0-9]' docs/tasks/deferred.md`) and the three lowest ids with their one-line issue —
-   the build order never picks them, so the owner sees them here and can name one.
+4. **The first open task decides the step**, by that table. `build` → item 5, then step 3 (Read). Any
+   other step → item 5, then stop; for `owner draws`, print `docs/start-here.md` Steps 1–3, one line each, with
+   the brief `docs/ux/briefs/<SCR-id>-….md` and the line to fill, `docs/tasks/<file>.md:<line>`.
+5. Print four lines, then go to step 3 (Read) — or stop, when item 4 said stop:
+   - `NEXT` the step.
+   - `AHEAD` the next `PENDING` screen on the walk.
+   - `DONE` how many V1 screens are drawn:
+     `comm -12 <(grep -h '^\*\*DESIGN:\*\* SCR-' docs/tasks/*.md | grep -vE 'PENDING|ported' | grep -oE 'SCR-[A-Z0-9]+-[0-9]+' | sort -u) <(awk -F'|' '/^\| SCR-/ && $7 ~ /V1/ {gsub(/ /,"",$2); print $2}' docs/prd/registers/screens.md | sort -u) | wc -l`
+   - `DEFERRED` the rows of `docs/tasks/deferred.md` whose `reopens when` is met now — `<T-id> starts`
+     for the task picked, on its first `/start` only, never again for a later part
+     (`grep -n '<T-id> starts' docs/tasks/deferred.md`), and `<T-id> ships` for a task that reads
+     `shipped`:
+     `for id in $(grep -oE 'T-[A-Z0-9]+-[0-9]+ ships' docs/tasks/deferred.md | cut -d' ' -f1 | sort -u); do grep -A3 "^### $id " docs/tasks/*.md | grep -q 'Status:\*\* shipped' && grep -n "$id ships" docs/tasks/deferred.md; done`
+     — then how many rows hold an `owner:` condition, with their ids:
+     `awk -F'|' '/^\| D[0-9]/ && $(NF-1) ~ /owner:/ {print $2}' docs/tasks/deferred.md`.
 
-When the owner names a task that is not the next one, say so in one line and go on.
+## 3. Read — what is already decided comes first
 
-## 3. Read
+1. **The ticket's own decisions.** Its header lines, every ruling written in it ("ruled at …",
+   "Decided at /start"), and its `#### Plan`, `#### Parts` and `#### Design check` when they exist.
+   They are settled: never redo that analysis and never ask again what a ruling answers.
+   - **A later part** (b, c, …) reads the parent's Plan, Acceptance criteria, Parts and Design check,
+     and skips steps 5 and 6. It plans only its own row of the Parts table.
+2. Its PRD rows — the whole row, from `docs/prd/`. Its brief.
+3. The `CLAUDE.md` of each package the task will touch.
+4. The code the task will touch — its call sites, not only its declarations.
 
-- The task section. Its PRD rows — the whole row, from `docs/prd/`. Its brief. For a screen, its
-  export in `HelioGrid-UX/`.
-- Check the task's own references: every row id it cites exists in the PRD, and every quoted row
-  still matches its PRD cell. A mismatch is a finding for step 5.
-- The `CLAUDE.md` of each package the task will touch.
-- The code the task will touch — its call sites, not only its declarations.
+The board is not read here: the design reviewer reads it in step 5, so it never fills this session.
 
-## 4. A screen task starts design-reviewer now
+## 4. Check the task
 
-Dispatch `design-reviewer` in the background with the screen id and the task file. It works while
-you do step 5.
+Answer each, with file:line. **Dependencies**, **Blockers** and **Missing information** stop the task
+when they fail: print what is wrong and who clears it. The rest are findings the plan answers.
 
-## 5. Critique the task
-
-Answer each, with file:line:
-
+- **Scope** — what the task builds and what it leaves are clear; the Plan's `Scope` line records both.
+- **Requirements** — every PRD row id it cites exists, and every quoted row still matches its PRD
+  cell.
+- **Acceptance** — every `DONE WHEN` line is there and can be proven by a test or a QA check.
+- **Dependencies** — every task on its `Depends on:` line reads `shipped`
+  (`grep -A3 '^### <T-id> ' docs/tasks/*.md | grep Status`); every outside need it names (an
+  account, an owner action) is met. No `Depends on:` line → write one (`none` when it waits on
+  nothing).
+- **Blockers** — a `Blocked:` line, or a condition written in its text ("corrected before this screen
+  builds", "the owner's … ids") that is not met yet.
+- **Missing information** — a number, a rule or a line of copy no row gives → ask the owner.
 - **Gaps** — a row with no behaviour; a missing state: loading, empty, error, no permission, slow
   network.
-- **Missing detail** — a number, a rule or a line of copy that no row gives.
 - **Over-engineering** — a part no row asks for.
 - **Conflicts** — with existing code, another task, the brief or the design.
-- **Size** — more than one screen on both platforms, or more than one backend slice (its tables and
-  its endpoints) → propose the split and stop.
 
-Two readings the PRD allows → take the simplest, and write it under "Decided at /start" with one
-reason. A feature or a number no PRD row implies → ask the owner.
+## 5. Design — once for the whole task, in Claude Design
 
-## 6. Write into the task section
+A screen task whose `DESIGN:` line holds a board link, and only when the ticket has no
+`#### Design check` yet. A studio screen (`ported from the POC`) has no board: its Look values come
+from the POC screen it ports. This step pauses `/start` until the board is right.
 
-Below the task's header lines, which stay as they are, add the three sections in the format at the
-end of this file: `#### Plan`, `#### Acceptance criteria` (the task's `DONE WHEN` lines, renamed and
-extended) and `#### QA plan`.
+1. Dispatch a `general-purpose` agent in the FOREGROUND (`run_in_background: false`, `model: opus`), told to read
+   `.claude/agents/design-reviewer.md` first, follow it, and never edit or write a file — a custom
+   agent and a background agent cannot load `DesignSync` — with the screen id,
+   the task file and every frame the task builds — all its parts, web and phone, every state. It reads the board and its decisions record as text
+   and returns its findings, ONE prompt for Claude Design and the values QA needs.
+2. When the board must change, show the owner the prompt in a fenced block, ready to paste. It names
+   the board, each frame, what changes and what stays.
+3. The owner pastes it and says it is done → a fresh dispatch, the same way, with the word
+   **verify** and the list of asked changes: each change is on the board, nothing else moved, and
+   the Values for QA read again from the changed board. Anything still wrong → a new, shorter prompt.
+   Repeat until the board is right.
+4. Write `#### Design check` into the ticket (the format below), with the values from the last read. Every later part reads it and never
+   runs this step again.
 
-## 7. Review, then stop
 
-- Dispatch `plan-reviewer` with the task file, for every task. The plan touches money, tenancy,
+## 6. Size — a plan over about 30 files is split into parts
+
+A task is one complete piece: one screen on BOTH platforms with its states, or one backend slice
+(its tables and its endpoints). A task holding more than that, or a plan of more than about 30
+files, is split:
+
+- Each part is complete by itself and ships as its own PR, in its own fresh session.
+- What both platforms share — the `ui` parts, the `domain` logic, the copy — is part `a`.
+- Web and phone stay together in one part. Never split by platform: the pair is the parity check.
+- `docs/build-order.md` is not edited.
+- Name the twin screen and where each shared part lives (`.claude/rules/screen-parts.md`).
+- The 30 sizes the plan only. No test, state, edge or fix is dropped to stay under it; a build that
+  grows past it is finished, and the PR says by how much.
+
+## 7. Write into the ticket
+
+Below the header lines, which stay as they are, in the formats at the end of this file:
+
+- A task not split: `#### Plan`, `#### Acceptance criteria` and `#### QA plan`.
+- A task split now: `#### Plan` and `#### Acceptance criteria` for the whole task, `#### Parts`, then
+  `#### Part a · Plan` (its Where and its size) and `#### Part a · QA plan`.
+- A later part: only `#### Part <x> · Plan` and `#### Part <x> · QA plan`.
+
+The QA plan is written for the part that starts now, never ahead for a later part.
+
+## 8. Review
+
+- Dispatch `plan-reviewer` with the task file and the part. The plan touches money, tenancy,
   permissions or the database schema → every check, on its own model. Any other plan → checks 5–7
   only, with `model: sonnet`. Fix every finding once; do not run it again.
-- Wait for `design-reviewer`.
-- Show the owner, in simple words: what changes and where, the example, the risks, how many QA
-  checks, design-reviewer's MUST FIX and BETTER findings, each plan-reviewer finding with its fix,
-  and every open question. **Stop for the go.**
-- Design changes the owner approves are made in Claude Design: read the board with `DesignSync`
-  from the Claude Design project (never from `HelioGrid-UX/`), edit a copy in the scratchpad, show
-  the owner pictures, and write it back with `DesignSync` after the owner's yes. Then pull the
-  board back with `DesignSync` `get_file` and write it over its file in `HelioGrid-UX/`, and show
-  the owner its name and size. A board over 256 KB is beyond `get_file`: the owner re-exports it.
-  Then the build starts.
-- After the go, the plan changes only through the owner: a new behaviour, table, route, contract or
-  package means stop and ask.
+- Add to `DEFERRED` every row whose `reopens when` reads `touches <path>` where a file this plan
+  changes sits under that path. List the conditions only, not whole rows:
+  `awk -F'|' '/^\| D[0-9]/ && $(NF-1) ~ /touches/ {print $2, $(NF-1)}' docs/tasks/deferred.md`.
+
+## 9. Show the owner, then stop
+
+At most about 15 lines, in simple words:
+
+````
+WHAT      one sentence: what the person gets
+FLOW      the Plan's "How it works" line
+EXAMPLE   the Plan's "Example": one journey line and one signature
+SIZE      ~N files — or: part a (~N files) now · part b next
+QA        N checks: api · web · ios · android
+RISKS     only real ones, each with the test that proves it
+DESIGN    "verified — <the Asked line>", or "checked — no change" (step 5 already ran); and each
+          MUST FIX or BETTER that is not a board change
+REVIEW    each plan-reviewer finding and its fix
+DEFERRED  the rows met now — add each to this task? (the owner's yes)
+ASK       open questions: at most 2 options each, and your pick
+````
+
+**Stop for the go.** A deferred row joins the task only on the owner's yes.
 
 ---
 
@@ -158,12 +215,39 @@ extended) and `#### QA plan`.
 **For you** — open questions and design recommendations
 
 #### Acceptance criteria
-- A1 · Given … when … then … (M02-03) → proof: quick-add.test.ts › "…" · QA G1.1
-- A5 · added at /start (missing error state) · Given … → proof: QA G2.3
+- AC1 · Given … when … then … (M02-03) → proof: quick-add.test.ts › "…" · QA G1.1
+- AC5 · added at /start (missing error state) · Given … → proof: QA G2.3
 ````
 
 Each acceptance line names its proof: a test by file and name, or a QA check id. The PRD's own lines
-stay word for word.
+stay word for word. Keep the plan short: cite a PRD row by its id, never copy it again.
+
+### A split task
+
+````
+#### Parts
+| part | ships | acceptance lines | status |
+|---|---|---|---|
+| a | the shared parts: NotificationRow, NotificationGroup, the grouping view-model, the copy | AC4, AC5 | open |
+| b | the centre and the bell badge, on web and phone | AC1–AC3, AC6 | open |
+
+#### Part a · Plan
+**Where** — the rows of the Plan's Where table this part lands · **Size** — ~N files
+
+#### Part a · QA plan
+(the QA plan format below)
+````
+
+### The design check
+
+````
+#### Design check
+Board: SCR-SHELL-03 Notification Center - Mobile.dc.html, read through DesignSync
+Asked: the filter chips are the five type-groups, not seven
+Verified: five chips on m-default, d-default and m-filtered; nothing else moved
+Values for QA: row gap --sp-3 (12) · title --fs-body-sm · badge 20 × 20 · chip height 32
+Not checked from text: clipping, overlap, Hindi fit → QA H1, H3, S7
+````
 
 ## The QA plan format
 
@@ -179,7 +263,7 @@ Setup
 - Phase 3 · default again — G3.4, the app opens as usual
 
 Smoke — every surface · phase 1
-- S1 · sign in as owner → Leads list shows "Leads"
+- SM1 · sign in as owner → Leads list shows "Leads"
 
 G1 · Phone field — web · ios · android · phase 1
 - G1.1 · empty, Save → "Enter a phone number", no request sent
@@ -189,7 +273,8 @@ API — api · phase 1
 - P1 · POST /leads with no session → 401
 
 Look — web 375 + 1536 · ios · android · phase 1
-- L1 · Quick Add matches the export: spacing, sizes, icons, order
+- L1 · Quick Add matches the design: sheet padding `--sp-4` (16) · field gap `--sp-3` (12) · Save 48
+  high · order name, phone, Save
 
 Standard — web · ios · android · phase 1
 - S2 · the list: loading, empty, one row, many rows — why: a saved lead joins the list
@@ -207,18 +292,19 @@ Not in: S6 — no step of this flow holds a session · H9 — no theme, app root
   row or from its `packages/i18n` file, never from memory, and never how the code works ("no request
   sent" is seen in the network panel; "the hook retries" is not seen by anyone). Words not yet in
   `packages/i18n` read `new copy — filled at /qa step 1`.
+- A Look or screen-health check names what the design says — the part, its token and its pixels, or
+  its place and order — taken from the task's `#### Design check` values (a studio screen: from the
+  POC screen it ports). A QA agent holds no design
+  file: it measures the built screen against the values its check names.
 - Each standard check carries `why:` — one line that meets its `when`.
-- **Setup** names the accounts and the phases. Accounts: the standing `QA <surface>` account, or a
-  fresh `QA <T-id> <surface>` with its reason. Phases, in order: the default first (the suites and
-  every check that needs no setting), then each setting phase, then back to the default. Every group
-  names its phase; a check that crosses a setting names both (`phase 2→3`).
+- **Setup**: a fresh account always gives its reason; phases run default first, each setting, then
+  default again; every group names its phase, and a check that crosses a setting names both
+  (`phase 2→3`).
 - More than about 15 checks on one surface for one screen → one line under the group says why.
-- No severity: every in-scope issue QA finds is fixed in this branch.
 
-### The standard checks — put a check in when the change can affect it, with a one-line reason
+### The standard checks — put a check in when its `when` meets the change
 
-Each check's `when` says what change can affect it. Every check left out goes on the `Not in:` line
-with its reason. A change to a shared package — `ui`, `theme`, `i18n` or `data` — also runs H1–H8 on
+Every check left out goes on the `Not in:` line with its reason. A change to a shared package — `ui`, `theme`, `i18n` or `data` — also runs H1–H8 on
 one or two screens per surface that import the changed part (found by grep), named in the plan.
 
 **API** — when `apps/api`, `db`, `contracts` or `data` changes
@@ -233,7 +319,6 @@ one or two screens per surface that import the changed part (found by grep), nam
 
 **Every changed screen** — web, iOS and Android
 - S1 · the happy path end to end → the success state shows
-  when: every changed screen
 - S2 · loading, empty, one row, many rows
   when: the screen shows data
 - S3 · a server error and no connection → a message in the user's language; retry works. The web's
@@ -254,12 +339,11 @@ one or two screens per surface that import the changed part (found by grep), nam
   when: an action is gated by a permission
 - S10 · every icon-only button has a label
   when: the screen has an icon-only button
-- S11 · it looks like the export: spacing, sizes, icons, order
-  when: every changed screen
+- S11 · it looks like the design: spacing, sizes, icons, order
 
 **Screen health** — at each width and on both phones; H1–H6 and H8 when the screen's look changes
-- H1 · every element the export shows is visible: on screen, not clipped, covered or pushed off
-- H2 · each element sits where the export puts it — left, right or centre, measured as its margins
+- H1 · every element the design shows is visible: on screen, not clipped, covered or pushed off
+- H2 · each element sits where the design puts it — left, right or centre, measured as its margins
   to the screen edges
 - H3 · no two elements overlap, unless the design layers them on purpose
 - H4 · nothing sits under the status bar or the home bar; the last item scrolls fully above the

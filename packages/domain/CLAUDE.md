@@ -92,5 +92,4 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
 
 ## Done means
 
-Pure · consumed by BOTH platforms where a mobile surface exists
-(Law 7) · typecheck and lint green.
+Pure · consumed by BOTH platforms where a mobile surface exists · typecheck and lint green.

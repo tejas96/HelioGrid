@@ -381,11 +381,10 @@ half of one. Full detail: [`CLAUDE.md`](CLAUDE.md) §3, §4.
 | `docs/engineering/adr/` | Why each architecture choice was made — reference only |
 | [`docs/README.md`](docs/README.md) | **The docs map** — every file under `docs/`, and whether it is pinned or live |
 | `.claude/skills/` | `/start`, `/qa`, `/ship`, `/contract-change`, `/migration` — see [above](#schema-contract--cross-cutting-changes) |
-| `.claude/agents/` | The QA agents (`qa-api` · `qa-web` · `qa-mobile`) and the three reviewers (`plan-reviewer` · `design-reviewer` · `code-reviewer`) — none can edit a file, and each has a turn cap |
+| `.claude/agents/` | The QA agents (`qa-api` · `qa-web` · `qa-mobile`) and the three reviewers (`plan-reviewer` · `design-reviewer` · `code-reviewer`) — none edits a file, and each has a turn cap; `/start` runs `design-reviewer`'s instructions in a foreground `general-purpose` agent (only that agent can read Claude Design), read-only by its prompt |
 | [`.claude/protections.md`](.claude/protections.md) | Which tool, rule, test, hook, CI step or reviewer holds each protection |
 | each package's `CLAUDE.md` → `## Traps` | **Troubleshooting** — the live traps where they bite, each with its fix |
 | `packages/contracts/openapi/openapi.json` | The API surface as OpenAPI 3.0.2 — emitted from the contract and gate-checked; no Swagger UI is served |
-| `HelioGrid-UX/` | The pixel-perfect design exports every screen task is measured against — git-ignored; each machine exports its own from the design system (`docs/tasks/README.md`) |
 
 ## Per-package gotchas index
 

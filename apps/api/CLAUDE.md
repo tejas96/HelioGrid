@@ -14,7 +14,7 @@ Deps: `architecture.md` §2 apps/api.
 ```
 src/app.ts · main.ts  createApp() is the ONE boot path; main.ts listens, a test listens on port 0
 src/common/auth/    the guard, the route-access map, the cookies, the session context
-src/modules/<m>/    <m>.module|public|controller|service|repository.ts · tokens.ts · internal/
+src/modules/<m>/    <m>.module|public|controller|service|repository.ts · internal/
 src/scripts/<verb>-<noun>.ts   a command: boots the application context, calls ONE service, exits
 ```
 
@@ -22,12 +22,9 @@ src/scripts/<verb>-<noun>.ts   a command: boots the application context, calls O
 outside may import. One repository and one service need none; `auth`'s seven files do.
 
 A file nearing Biome's 300-line cap splits by SUBAREA in the same folder (for example
-`auth.invites.service.ts`). `apps/worker` uses the same shape.
+`settings.templates.service.ts`).
 
 ## Commands
-
-`dev` and `start` pass `--env-file-if-exists=../../.env.local`, so local values load and a REAL
-env var still wins — the production host's secrets and CI are never overridden.
 
 ```
 pnpm --filter @heliogrid/api dev | build | typecheck     # dev = tsx watch, API_PORT 8084
@@ -72,8 +69,9 @@ curl localhost:8084/health                               # liveness · /health/r
 - **In development the sign-in code and the invite link are written to the log**
   (`Message for +91…`), because the message rail is bound to the development adapter; the SMS
   adapter replaces it and the development one refuses to run in production.
-- List endpoints: `orderBy(<sort key> DESC, id DESC)`, limit/offset from `paginationQuerySchema`,
-  `totalCount` counted with the SAME `where` — never a divergent count query.
+- List endpoints: `orderBy(<sort key> DESC, id DESC)`, `limit` and `page` from
+  `paginationQuerySchema` (the service derives the offset), `totalCount` counted with the SAME
+  `where` — never a divergent count query.
 
 ## Done means
 
