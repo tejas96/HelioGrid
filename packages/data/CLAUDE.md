@@ -41,7 +41,7 @@ pnpm --filter @heliogrid/data build | typecheck     # tsc -p (composite; emits d
 - **Read methods take an `AbortSignal` and forward it.** A repository that ignores it makes
   cancellation a lie all the way up.
 - `server` mode forwards an ALLOWLIST (`cookie`, `authorization`, `REQUEST_ID_HEADER` from
-  `@heliogrid/contracts` — never the literal), never a spread: the browser's `host` and
+  `@heliogrid/contracts`), never a spread: the browser's `host` and
   `content-length` corrupt our request, and everything else risks carrying one caller's identity
   into another's. Never a tenant header.
 - Paginated screens use `usePaginatedList` (accumulating) or `usePagedList` (numbered pager),
@@ -56,7 +56,7 @@ pnpm --filter @heliogrid/data build | typecheck     # tsc -p (composite; emits d
 
 ## Done means
 
-Build, typecheck and lint green · consumed by BOTH platforms (Law 7) · transport, error and retry
+Build, typecheck and lint green · consumed by BOTH platforms · transport, error and retry
 behaviour proven by driving the real client against a controllable origin — malformed body,
 unknown status, non-envelope, timeout, cancellation, refused connection — never by reading it.
 

@@ -31,9 +31,9 @@ is still on earlier work.
 The eight blocks, in order, with the V1 count in each:
 
 ```
- 1. App shell + entry & tenant           23   SHELL-01/-02/-03, and 20 of M01
+ 1. App shell + entry & tenant           22   SHELL-01/-03, and 20 of M01
  2. Billing & plans                       5   M12 (4) + SHELL-06
- 3. M02 · CRM & leads                     6
+ 3. M02 · CRM & leads                     7   6 of M02 + SHELL-02
  4. M08 · Projects                        6
  5. M11 · Payments & collections          4
  6. Sales exec, calling core + owner home 12  11 of M07 + M13-01
@@ -83,8 +83,7 @@ several screens starts forgetting the laws.
 
 > **There are TWO Claude Design projects called exactly "HelioGrid Design System".**
 > The live one is **`c8aa4326-21bf-453a-8d11-749cc81dee12`**. The other,
-> `dcb4bbee-2b0c-4b9a-845d-cf1e15ad8a7a`, is a different system: it has no contrast fix, no
-> `--text-inverse`, no `NoConnection` screen, and it still has `OfflineBanner`.
+> `dcb4bbee-2b0c-4b9a-845d-cf1e15ad8a7a`, is an older, different system.
 >
 > Tell them apart by date in the picker: the live one is the **more recently updated** of the two.
 > Every screen drawn against the wrong one is wrong.
@@ -239,18 +238,16 @@ AFTER   DESIGN: SCR-… → <main link> · also: States <link> · Language <link
 
 Once every `DESIGN:` line a task carries holds a link, its `Status:` turns `designed`.
 
-Ignore any hit inside `docs/tasks/README.md` — that file only documents what a `DESIGN:` line looks like.
-
 **Edit 2 — only if the brief said "designer decides".** If you made a choice the brief left open,
 write it into the brief in the section it belongs to, so the next screen inherits it. An unrecorded
 decision is how two screens end up disagreeing about the same flow.
 
 ## Fixing a screen that is already designed
 
-A fix to a screen already drawn is made on its board and record in the Claude Design project —
-never in `HelioGrid-UX/`, which is your own export and is re-exported once, after every design is
-done. A fix Claude makes at a screen's `/start` is the one exception: after your yes, Claude pulls
-that board into `HelioGrid-UX/` itself when it is 256 KB or less; a bigger one you re-export. A fix to a screen not drawn yet goes into its brief. When a designed screen's brief itself
+A fix to a screen already drawn is made on its board and record in the Claude Design project, by
+you — the project is the one source of a design, and the repo holds no copy. A fix Claude asks for
+at a screen's `/start` comes as an exact instruction to paste there; Claude then reads the board
+again and checks it. A fix to a screen not drawn yet goes into its brief. When a designed screen's brief itself
 must change, the next section applies.
 
 ## When a brief changes after its screen was designed
@@ -280,9 +277,9 @@ A redesign EDITS the drawing that exists. Nothing here starts a new file.
    self-audit, the word inventory first, and rewrite the record so it says only what the design is
    now — never a second inventory, never the old wording. At the end, list every change you made,
    one line each, in your reply."*
-4. Read that list against the export: the fault is gone, and nothing else moved.
-5. Re-export the screen's pair into `HelioGrid-UX/`, REPLACING both files — never a bundled page,
-   and one pair per screen afterwards.
+4. Read that list against the board: the fault is gone, and nothing else moved.
+5. Keep one pair per screen in the project — the board and its record — never a bundled page or a
+   second copy.
 6. Delete the brief's `## Redesign owed` section.
 7. A BUILT screen: check the built screen against the redesign too; when it no longer matches,
    write the task that changes it into `docs/tasks/`.

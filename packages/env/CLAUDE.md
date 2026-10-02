@@ -45,11 +45,11 @@ documents them; neither ever holds a real secret.
   each path named there. That override is the authority — do not "fix" an entry you find there.
 - A dedicated port is written ONCE: `API_PORT_DEFAULT` here is what the api's default, the web's
   dev origin and the phone's fallbacks read (`CLAUDE.md` §5); no check holds this, review does.
-- **This package was NOT merged into `packages/config`** (owner question). Every tag's allowlist
-  includes `config` because every package needs the presets, `domain` included — env living there
-  would let a pure package read the environment with no gate objecting.
+- **Never move env into `packages/config`**: every tag may import `config`, `domain` included, so
+  a pure package could then read the environment with no gate objecting.
 
 ## Done means
 
 Every variable declared in a schema and documented in `.env.example` · no `process.env` read
-outside this package · a missing required value fails at STARTUP, naming the key.
+outside this package and the `noProcessEnv` overrides in `biome.json` (`apps/web/lib/env.ts`,
+`infra/temporal/spike/**`) · a missing required value fails at STARTUP, naming the key.

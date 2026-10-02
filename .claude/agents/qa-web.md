@@ -1,7 +1,7 @@
 ---
 name: qa-web
 description: Runs the web checks of a QA plan in the browser pane — behaviour, text, layout at 375 and 1536, keyboard, and the network calls each action makes — and writes one result row per check. Dispatched by /qa when a change reaches the web app.
-tools: mcp__Claude_Browser__preview_logs, mcp__Claude_Browser__tabs_context, mcp__Claude_Browser__tabs_select, mcp__Claude_Browser__navigate, mcp__Claude_Browser__read_page, mcp__Claude_Browser__find, mcp__Claude_Browser__computer, mcp__Claude_Browser__form_input, mcp__Claude_Browser__read_console_messages, mcp__Claude_Browser__read_network_requests, mcp__Claude_Browser__resize_window, mcp__Claude_Browser__javascript_tool, Bash, Read, Grep
+tools: mcp__Claude_Browser__preview_logs, mcp__Claude_Browser__tabs_context, mcp__Claude_Browser__tabs_select, mcp__Claude_Browser__navigate, mcp__Claude_Browser__read_page, mcp__Claude_Browser__find, mcp__Claude_Browser__computer, mcp__Claude_Browser__form_input, mcp__Claude_Browser__read_console_messages, mcp__Claude_Browser__read_network_requests, mcp__Claude_Browser__resize_window, mcp__Claude_Browser__javascript_tool, mcp__Claude_Browser__browser_batch, Bash, Read, Grep
 model: sonnet
 effort: high
 maxTurns: 100
@@ -12,7 +12,9 @@ how to drive the web app.
 
 **Open it** — `navigate` to `http://localhost:3002`. Bring your tab to the front (`tabs_context`,
 `tabs_select`) before any click or typing: a hidden pane or a background tab drops input silently.
-Prefer `form_input` and a scripted click through `javascript_tool`.
+Prefer `form_input` and a scripted click through `javascript_tool`. Run one check's steps — open,
+fill, click, read the page, read the calls — as ONE `browser_batch`: a step sent alone costs a whole
+turn.
 
 **Read the result as text** — `read_page`, the accessibility tree, never a screenshot. The expected
 value is a literal string: the tree holds it, or the check fails. "Renders correctly" is not a
@@ -27,7 +29,7 @@ action (`read_console_messages`) fails the check.
 **The api log** — your requests carry your browser's user agent; read only those lines.
 
 **Layout** — `resize_window` to 375 and to 1536 for width checks. A Look check measures computed
-styles against the export: gaps, sizes, type and alignment, in pixels. A screenshot is only for what
+styles against the values the check names: gaps, sizes, type and alignment, in pixels. A screenshot is only for what
 vision alone shows — clipping, overlap, broken Devanagari — and you write what you saw in words.
 
 **Screen health** — measure it with `javascript_tool`, never by eye:
@@ -35,8 +37,8 @@ vision alone shows — clipping, overlap, broken Devanagari — and you write wh
   (`scrollWidth <= clientWidth`), and `document.elementFromPoint` at its centre returns the element
   or a child — anything else covers it;
 - aligned: its left margin (`rect.left`) and right margin (`innerWidth - rect.right`) match the
-  export; a centred element has equal margins within 2px;
-- overlap: no two visible text or control boxes intersect, unless the export layers them;
+  values the check names; a centred element has equal margins within 2px;
+- overlap: no two visible text or control boxes intersect, unless the check says the design layers them;
 - states: reach focus with Tab, and read disabled, selected and error from the tree and the
   computed styles;
 - large text: `document.documentElement.style.zoom = '2'`, check again, then set it back to `''`;

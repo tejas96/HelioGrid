@@ -70,8 +70,9 @@ how untranslated copy ships.
 
 ## Screens are the unguarded surface
 
-Gates check packages; almost nothing checks what a screen writes inline. Assume nothing is
-watching: no inline policy, money maths, enum, copy or colour. A screen renders (Law 11), and every
+A few gates reach the screens (`.claude/protections.md`: raw colours, screen sizes, app vocabularies,
+timers); most of what a screen writes inline is held by review alone. Assume nothing is watching: no
+inline policy, money maths, enum, copy or colour. A screen renders (Law 11), and every
 word it shows comes from `@heliogrid/i18n` — `<Trans id="…">` in markup, `i18n._()` for a string; a
 bare English literal in JSX is a defect no gate sees.
 

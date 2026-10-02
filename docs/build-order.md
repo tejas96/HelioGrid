@@ -6,15 +6,13 @@ different orders and mixing them up is the main way this goes wrong:
 | | order | source of truth | unit |
 |---|---|---|---|
 | **Design** | the eight blocks below, V1 rows only | `docs/prd/registers/screens.md` §2 (`V` column) | **99** of 150 screens |
-| **Build** | the same eight blocks | this file | 394 tasks |
+| **Build** | the same eight blocks | this file | every task in `docs/tasks/` |
 
-Since 2026-08-15 the two orders are **the same order** — the design run follows the build blocks,
-V1 rows only. That is the whole point of the scope lock.
+The two orders are **the same order** — the design run follows the build blocks, V1 rows only.
+That is the whole point of the scope lock.
 
-**The design-system gap register is closed.** The 2026-08-17 pass returned zero open
-blockers — every component sent in rounds 13–17 exists and does substantially what was
-asked. No block is gated on it. If a screen finds a new gap, it is designed at
-implementation time inside the owning module's slice (`docs/prd/foundations/F7` `F7-45`).
+A design-system gap a screen finds is designed at implementation time inside the owning module's
+slice (`docs/prd/foundations/F7` `F7-45`).
 
 Nothing here invents scope. Every task already exists in `docs/tasks/`, generated from the
 requirement register; this file only says what order to take them in and why.
@@ -23,17 +21,14 @@ requirement register; this file only says what order to take them in and why.
 
 ## The V1 scope lock
 
-**99 of the 150 screens are V1.** *(84 on 2026-08-15; 95 on 2026-08-16; 98 the same day, after the V1 readiness audit found three scope holes the gates could not see; 99 when `SCR-M01-11` followed — V1 had no user-owned preferences screen at all, so the language picker, the per-user units, the notification mute and the high-contrast field mode had nowhere to live.)* The `V` column in `docs/prd/registers/screens.md` §2 is the lock,
+**99 of the 150 screens are V1.** The `V` column in `docs/prd/registers/screens.md` §2 is the lock,
 and only an owner decision moves it. V2 is real scope that is deliberately not blocking launch —
 the architecture keeps its extension points, but nothing V2 is designed or built until V1 ships.
 
-**234 of the 394 tasks are backend tasks: none carries a drawing of its own, and each still waits for
-the drawings of the screens it serves.**
-
-| | tasks | waits on |
-|---|---|---|
-| Screen tasks (carry `DESIGN: SCR-… → PENDING`) | 154 | their turn, and their screen drawn |
-| Engine · policy · integration · port tasks | 234 — eight of them the struck F-platform stubs, which only name where their rows went | their turn, and the never-drawn screens they serve in their block |
+| | waits on |
+|---|---|
+| Screen tasks | their turn, and their screen drawn in Claude Design — except a studio screen, which reads `ported from the POC` and is never drawn |
+| Engine · policy · integration · port tasks | their turn, and the drawings of the screens they serve in their block; none carries a drawing of its own |
 
 ## One order, walked one step at a time
 
@@ -49,20 +44,22 @@ check holds the order. The order is walked, never chosen:
 4. a task's `Depends on:` pulls a task of its own block ahead of it; a later-block wait is recorded
    below instead.
 
-The step is the first open V1 task on that walk:
+The step is the first open part of a split task, else the first open V1 task on that walk. A part
+lives in its task's `#### Parts` table; this file never lists parts.
 
 | the task | the step printed |
 |---|---|
 | ready | `build <task>` — `/start` takes it |
-| a screen whose `DESIGN:` line holds no link | `owner draws <SCR>` from its brief — `/start` prints how — then `/start` takes it |
+| a screen whose `DESIGN:` line reads `PENDING` | `owner draws <SCR>` from its brief — `/start` prints how — then `/start` takes it |
 | a backend task whose screens in its block are not all drawn — its own file's, and any whose `Depends on:` names it | `owner draws <SCR>, …` before the backend is built: a drawing states facts the backend serves. A redraw `design-reviewer` asks for does not hold it — that drawing exists, and the redraw stops only the screen task |
 | carries a `**Blocked:**` line — a ruling, an account | `owner clears` it; nothing after it is taken until it is cleared, or the task is moved or parked with a recorded reason |
 | waits on a parked task | `owner clears` it: unpark that task, or move or park this one |
+| waits on an open task of a later block | `owner clears` it: move one of the two tasks, with a recorded reason |
 | carries a `**Parked:**` line | stepped over; it pulls nothing ahead |
 
 So a module runs design → backend → UI. A screen that is not drawn is never skipped for one that is. `/start` also prints `AHEAD` —
 the next screen to draw on the same walk — so the owner draws while the build runs, and `DONE`, how
-many of the 99 V1 screens are drawn.
+many V1 screens are drawn.
 
 Note the `V` column lives on screens, not tasks. A task is V1 if the V1 workflow needs it —
 which for the foundations means all of them, since permissions, formats and honesty underpin
@@ -70,14 +67,12 @@ every block below.
 
 ---
 
-## The order, and why the studio is sixth
-
-Decided 2026-08-15 after inspecting both codebases.
+## The order, and why the studio is seventh
 
 | # | Block | V1 screens | Task files |
 |---|---|---|---|
-| **0** | **Foundations** | 0 | `F-core` (15 of its 16 — see below) · `F-platform` (25 of its 28 — see below) |
-| **1** | **Shell + entry & tenant** | 22 | `SHELL` (2 of its 4 — see below) · `M01-onboarding` (27) |
+| **0** | **Foundations** | 0 | `F-core` (all but `T-FCORE-009` — see below) · `F-platform` (all but `T-FPLAT-020`, `T-FPLAT-066`, `T-FPLAT-074` — see below) |
+| **1** | **Shell + entry & tenant** | 22 | `SHELL` (all but `T-SHELL-002`, `T-SHELL-006` — see below) · `M01-onboarding` (37) |
 | **2** | **Billing & plans** | 5 | `M12-platform-billing` (13) · `SHELL` → `T-SHELL-006` |
 | **3** | **CRM & leads** | 7 | `M02-crm-leads` (17) · `SHELL` → `T-SHELL-002` · `F-platform` → `T-FPLAT-020`, `T-FPLAT-066` |
 | **4** | **Projects** | 6 | `M08-projects` (15) |
@@ -126,20 +121,12 @@ purpose (`M12` §2: Finance's money scope is the tenant's customers' money, neve
 bill). Owner decision 2026-08-16: self-serve billing ships in V1, so `M12` sits early — a
 prospect meets the pricing page before they have an account.
 
-**Phase 0 starts today.** 52 foundation tasks, zero screens: roles and the twelve presets,
-permission resolution, the audit log, the message catalog, the four format implementations,
-script rendering, notification delivery, the data-honesty engine. Everything else consumes them.
-**Six F-platform tasks were struck 2026-09-04 and their rows moved to the modules that consume
-them** (Law 9): the conflict-policy engine, nothing-captured-is-unrecoverable, the version-kept
-notice, the photograph queue, billing continuity and the shared-device switch. Every requirement
-survives — survey and visit rules now sit in `M04`, lead concurrency in `M02`, the design version
-check in the studio, the user switch in `M01`'s session engine, and the billing rows were already
-carried by `M12` or marked LAW. Each struck task keeps a stub naming where its rows went.
-
-A module that computes money before the format implementation exists will grow its own, and then
+**Block 0 builds what everything else consumes**: roles and the twelve presets, permission
+resolution, the audit log, the message catalog, the four format implementations, script rendering,
+notification delivery, the data-honesty engine. A module that computes money before the format implementation exists will grow its own, and then
 there are two.
 
-**Why the studio is sixth, not first.** It is the primary product and it already exists —
+**Why the studio is seventh, not first.** It is the primary product and it already exists —
 **63,527 working lines** in `/Volumes/works-space/Solar-App-POC`. But:
 
 - it is **frontend-only**, and this repo's backend and schema are built block by block before it
@@ -209,11 +196,11 @@ task that builds what it needs. A record here keeps the order honest; it does no
 
 ## Checking the suite
 
-No script checks the documents any more. `/start` step 3 checks the task it takes: every row id
+No script checks the documents any more. `/start` step 4 checks the task it takes: every row id
 the task cites exists in the PRD, and every quoted row still matches its PRD cell. `design-reviewer`
 checks a screen's product facts against their whole PRD rows and its design against its brief.
 What nothing checks — a dangling id in a task not yet started, the V1 count, a row dispositioned
 twice in the screens register — is held by review and the owner.
 
-Design progress is `/start` step 2's `DONE` line: how many of the 99 V1 screens have a link on
-their task's `DESIGN:` line.
+Design progress is `/start` step 2's `DONE` line: how many V1 screens have a link on their task's
+`DESIGN:` line.

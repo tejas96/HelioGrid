@@ -27,6 +27,10 @@ REFUSED = {"config", "remote-name", "remote-name-all", "proxy", "preproxy", "soc
 REFUSED_PREFIX = re.compile(r"^(CURL_HOME|XDG_CONFIG_HOME|[A-Za-z_]*_proxy|[A-Za-z_]*_PROXY)=")
 HEREDOC = re.compile(r"<<-?\s*(['\"]?)(\w+)\1([^\n]*)\n(.*?)(?:\n[ \t]*\2[ \t]*(?=\n|$)|\Z)", re.S)
 REDIRECT = re.compile(r"[<>&|]+")
+VARIABLE = re.compile(r"\$\{?([A-Za-z_][A-Za-z0-9_]*)\}?")
+# The variables this command sets to literal values — `J=.qa/x`, `for s in ios android` — so a path
+# built from one is judged by every value it takes. A variable set any other way stays unknown.
+KNOWN = {}
 
 
 class Refused(Exception):
@@ -98,10 +102,32 @@ def simple_commands(text):
     yield words
 
 
+def remember(name, values):
+    if all("$" not in v and "`" not in v for v in values):
+        KNOWN[name] = values
+    else:
+        KNOWN.pop(name, None)
+
+
+def expansions(path):
+    """Every path `path` becomes over the values of its variables, or None when one is unknown."""
+    names = set(VARIABLE.findall(path))
+    if not names <= KNOWN.keys():
+        return None
+    paths = [path]
+    for name in names:
+        paths = [VARIABLE.sub(lambda m: value if m.group(1) == name else m.group(0), p)
+                 for p in paths for value in KNOWN[name]]
+    return paths
+
+
 def safe_path(path, cwd):
+    if "$" in path:
+        paths = expansions(path)
+        return paths is not None and all(safe_path(p, cwd) for p in paths)
     if path == "/dev/null":
         return True
-    if "$" in path or "~" in path or ".." in path.split("/"):
+    if "~" in path or ".." in path.split("/"):
         return False
     full = os.path.normpath(os.path.join(cwd, path))
     return full.startswith(os.path.join(os.environ.get("CLAUDE_PROJECT_DIR", cwd), ".qa") + os.sep)
@@ -175,11 +201,20 @@ def judge(text, cwd, options, depth=0):
     commands = list(simple_commands(outer))
     runs_curl = False
     for words in commands:
+        assigned = []
         while words and (words[0] in KEYWORDS or ("=" in words[0] and not words[0].startswith("="))):
             if REFUSED_PREFIX.match(words[0]):
                 raise Refused(f"curl may not run under {words[0].split('=')[0]}")
+            if words[0] not in KEYWORDS:
+                assigned.append(words[0])
             words = words[1:]
-        if not words:
+        if not words or words[0] in ("export", "readonly", "local", "declare"):
+            for assignment in assigned + [w for w in words[1:] if "=" in w]:
+                name, value = assignment.split("=", 1)
+                remember(name, [value])
+            continue
+        if words[0] == "for" and len(words) > 2 and words[2] == "in":
+            remember(words[1], words[3:])
             continue
         if "$" in words[0]:
             raise Refused(f"the command name {words[0]} is built at run time, so it may be curl")

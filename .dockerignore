@@ -55,7 +55,5 @@ coverage
 docs
 README.md
 
-# Local material no image needs: the design exports read from disk at build time by a person,
-# and the pinned tools a gate downloads. Both are large and neither is application code.
-HelioGrid-UX
+# The pinned tools a gate downloads: large, and not application code.
 .tools

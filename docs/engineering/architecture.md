@@ -318,8 +318,8 @@ per-glob coverage threshold in `vitest.config.mts`, landing with the slice it co
 - No web-only dependencies, no DOM APIs. No expo, no EAS, no AsyncStorage (owner rulings;
   apps/mobile/CLAUDE.md states them).
 - Platform APIs (camera, storage, notifications, keychain) stay isolated in dedicated
-  modules under apps/mobile/src/ (today: auth/ — push/ was deleted 2026-08-25 and returns
-  with the notifications slice; adapter packages land with their modules).
+  modules under apps/mobile/src/ (today: auth/ and push/; adapter packages land with their
+  modules).
 - Host lifecycle belongs to ONE root adapter, not to screens: src/react-query-host.tsx
   bridges AppState → React Query focus and NetInfo → its online state, refcounted so a
   Strict-Mode double mount installs one listener set and a remount leaks none. It is NOT
@@ -335,7 +335,7 @@ per-glob coverage threshold in `vitest.config.mts`, landing with the slice it co
 - Server/Client boundary: product screens are client components ("use client" at the
   screen/feature level, not sprinkled per-widget); server components are the default only
   for pure-render routes. DOM-only APIs (window, navigator) live in
-  hooks under features/*/shared/, never in shared packages, never at module top level
+  hooks under features/*/hooks/, never in shared packages, never at module top level
   (SSR executes it).
 - No React Native imports of any kind. Web-specific optimization (SSR/RSC/caching)
   never leaks into shared packages.
@@ -356,7 +356,7 @@ per-glob coverage threshold in `vitest.config.mts`, landing with the slice it co
 
 ## §4 Placement procedure — run BEFORE writing any new file
 
-Walk top-down; first match wins. `/start` §3 records the answer per new file.
+Walk top-down; first match wins. `/start` records the answer per new file in the plan's Where table.
 
 1. Is it a wire shape (request/response/enum crossing HTTP)? → packages/contracts
    (+ /contract-change).

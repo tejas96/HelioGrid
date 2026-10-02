@@ -37,8 +37,8 @@ The schema law — what every table needs, tenancy in depth, what a module may a
    git-ignored and holds the WHOLE schema, never a delta: copy out only this change's statements.
 6. **Add what Drizzle never writes:** `tenant_id`, a composite index that leads with it, a fail-closed
    row-level-security policy for `app_user`, and explicit grants. A genuinely global table goes on
-   `GLOBAL_TABLES` in `tests/invariants/src/table-tenancy-scan.ts` with its reason — there is no
-   third option.
+   `GLOBAL_TABLES` in `tests/invariants/src/table-tenancy-scan.ts` with its reason, or on
+   `GLOBAL_READABLE_TABLES` there when it is reference data every tenant reads.
 7. **Move it in** as the next number above the highest in `packages/db/migrations/`
    (`ls packages/db/migrations/`). An applied migration is never edited: a hook blocks it, and the
    runner is sha-locked.
@@ -46,5 +46,5 @@ The schema law — what every table needs, tenancy in depth, what a module may a
    cleanly), then `pnpm turbo test` with the database — the invariants must RUN, not skip: they
    prove a cross-tenant read sees nothing, a cross-tenant write fails, a missing tenant fails
    closed, and the schema mirrors the migrations.
-9. **Fix the docs** — where the tables you built differ from `data-model.md` or `forward-compat.md`,
-   correct them in the same commit.
+9. **Fix the docs** — a table you built leaves `data-model.md` and `forward-compat.md` as their
+   `Fate` lines say, in the same commit; the schema in `packages/db/src/schema/` answers for it.

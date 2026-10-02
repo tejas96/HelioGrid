@@ -5,8 +5,9 @@ description: Run a task's QA plan after the build — the regression suites firs
 
 # /qa — run the plan, report, fix, re-check
 
-The QA plan was written at `/start`, before the code, so it tests what should happen rather than what
-was built; run it as written after the refresh in step 1. No probes, no rounds. Everything a run writes lives in
+For a part, `<T-id>` is the part's id (`T-SHELL-003a`, `docs/tasks/README.md` rule 0) and its plan
+is the part's `#### Part <x> · QA plan`. The QA plan was written at `/start`, before the code, so it tests what should happen rather than what
+was built; run it as written after the refresh in step 1. Everything a run writes lives in
 the git-ignored workspace `.qa/<T-id>/` — `report.md`, each agent's results, `evidence/` — and the
 report's final copy goes into the PR body at `/ship`.
 
@@ -39,12 +40,15 @@ step 3 are the QA.
    its log to `.qa/api.log`.
 3. Boot each device: the simulator (`xcrun simctl boot <udid>`, then the simulator tool's
    `attach`) and the Android emulator with its window. Open the app once on each, and the browser
-   tab once, so every bundle is warm.
+   tab once, so every bundle is warm. Right before dispatch (step 4), sign each phone in, through
+   the app's own door, to the account its first check needs — its standing account, or the fresh
+   one the Setup names — with that number's code, and leave it on the home. An agent starts from
+   there; it never resets a phone to reach its start.
 4. **Standing accounts — one per surface:** `QA web`, `QA ios`, `QA android`, `QA api`, each its
    own person and its own company, on the development numbers in `.env.local` (`DEV_OTP_PHONES`,
    the one fixed code `DEV_OTP_CODE`, no caps). `.qa/accounts.md` names each surface's number; the
    main session's curl session for each lives in `.qa/accounts/<surface>.jar`. No `accounts.md` →
-   write it, giving each surface its own number from `DEV_OTP_PHONES` — the last four; fewer than
+   write it, giving each surface its own number from `DEV_OTP_PHONES` — the second to the fifth; fewer than
    five numbers there → stop and ask the owner to add them. Every run, for each surface the plan
    reaches:
    - **Alive?** `curl -i http://localhost:8084/tenants/me -b .qa/accounts/<surface>.jar -c
@@ -66,6 +70,12 @@ step 3 are the QA.
      data; H11's first-time user; S2's empty list or one row; a count or a uniqueness; a first-run
      element; S9's other roles. A fresh `+91` number signs in with its code from the api log
      (`grep 'via sms'`), then `POST /tenants`. A standing company never gets a seeded row.
+   - **Members** — a person the plan invites into a fresh company takes a member number:
+     `DEV_OTP_PHONES` from the sixth number on, one per member, in order, listed in
+     `.qa/<T-id>/accounts.md`; fewer than the plan's members → stop and ask the owner to add more.
+     The fixed code has no caps, so no agent waits out a limit. The main session accepts each invite
+     by curl and sets the member's language to `en`. `/start` removes the company and keeps the
+     person, so the same numbers serve the next task.
 5. **Seed only through the module's own writer**, into that surface's fresh company — never SQL by
    hand, never a file added to the repo. A check over an empty list proves nothing. The shape:
    ```bash
@@ -113,7 +123,7 @@ or the emulator."
 
 1. Never edit source. Never start, restart or stop a server or a device. Never write to the
    database.
-2. Use only the account you are given.
+2. Use only the account you are given. Never `POST /auth/sign-out-everywhere` on a standing account.
 3. For each check: do the action → read the result as TEXT (the page tree, the view tree, the
    response or the database value) → compare it with the exact expected text → pass or fail.
 4. A screenshot is evidence, never the verdict — except a Look check, where you measure.
@@ -126,7 +136,8 @@ or the emulator."
 8. Write each result to your results file the moment the check ends, one row:
    `| G1.1 | pass/fail/not run | expected "…" | observed "…" | evidence |`
 9. Run only your checks, in the order that keeps state flowing.
-10. When done, return your results file's path and the counts: pass, fail, not run.
+10. When done, return your results file's path and the counts: pass, fail, not run, and blocks —
+    each command a hook or a permission refused you.
 
 ## 5. Watch
 
@@ -156,7 +167,7 @@ tapping 0 · blocks 0 · re-runs 2 · agents 3
 ## Results
 | check                          | web | ios | android | api |
 |--------------------------------|-----|-----|---------|-----|
-| S1 sign in → "Leads"           | ✓   | ✓   | ✓       | —   |
+| SM1 sign in → "Leads"          | ✓   | ✓   | ✓       | —   |
 | G1.1 empty → "Enter a phone…"  | ✓   | ✓   | ✗ I1    | —   |
 
 ## Issues
@@ -174,7 +185,9 @@ tapping 0 · blocks 0 · re-runs 2 · agents 3
 ```
 
 The web and phone columns side by side are the parity check: a check that differs between them is
-an issue. The Run line is how one task's QA is compared with the next. Its `check:all green at` is
+an issue. The Run line is how one task's QA is compared with the next. Its `blocks` is every command
+a hook or a permission refused — the main session's own, counted as they happen, and each agent's.
+Its `check:all green at` is
 the **tree stamp** of the last green `pnpm check:all` — the commit and every changed or new file, in one
 hash; `/ship` step 2 reads it:
 ```bash

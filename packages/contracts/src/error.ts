@@ -144,7 +144,7 @@ export const unauthenticatedEnvelope = errorEnvelope(extensibleEnum(AUTHENTICATI
  *
  * EXPLICIT, and that is the whole point. Several codes share a status — 401 is both
  * `UNAUTHENTICATED` and `NO_CREDENTIAL`, 403 both `FORBIDDEN` and `ENTITLEMENT_BLOCKED` — so a
- * reverse `find` over `errorHttpStatusByCode` answers with whichever happens to be declared
+ * reverse `find` over `HTTP_STATUS_BY_CODE` answers with whichever happens to be declared
  * FIRST, and re-ordering that map then silently changes what every 401 in the API says. It did:
  * adding `NO_CREDENTIAL` above `UNAUTHENTICATED` turned every ordinary refusal into
  * "you sent nothing", and only a real request showed it.

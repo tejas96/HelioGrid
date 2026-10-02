@@ -25,9 +25,9 @@ file's slice exactly once.
 ### T-MS-101 · Studio Step 1 — Site Setup (port + UI rebuild)
 
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** M05-14 (P0), M05-15 (P0), M05-16 (P0), M05-17 (P0), M05-18 (P0), M05-19 (P0), M05-20 (P0), MS1-01 (P0), MS1-02 (P0), MS1-03 (P0), MS1-04 (P0), MS1-05 (P0), MS1-06 (P0), MS1-08 (P1), MS1-09 (P0), MS1-10 (P0), MS1-11 (P0), MS1-12 (P0), MS1-13 (P0), MS1-14 (P0), MS1-15 (P0), MS1-16 (P0), MS1-17 (P0), MS1-18 (P0), MS1-20 (P0), MS1-21 (P0), MS1-22 (P0), MS1-23 (P0)
-**DESIGN:** SCR-MS-04 → PENDING
+**DESIGN:** SCR-MS-04 → ported from the POC
 **Owed by `T-FPLAT-027`:** the first energy figure is built here, so its builder lands in `packages/domain/src/format/qualified.ts` with `energySource` REQUIRED and its unit ladder (kWh, and MWh or GWh at scale, `M05-94`); the adapter maps PVGIS's `PVGIS-SARAH3` / `PVGIS-ERA5` to `ENERGY_DATABASES`, `EnergySource`'s wire schema derives in `contracts` with the card's route, and the card emits `F8` §F8.2's events — energy figure rendered by source, fallback window entered and exited.
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step1Setup.tsx` · `3d_design_studio/src/features/solar-studio/lib/maps.ts` · `3d_design_studio/src/features/solar-studio/lib/geo.ts` · `3d_design_studio/src/features/solar-studio/lib/solarApi.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/maps.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/geo.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/solarApi.test.ts`
 **DEFECTS:**
@@ -63,9 +63,9 @@ file's slice exactly once.
 ### T-MS-102 · Studio Step 2 — Roof drawing surface (port + UI rebuild)
 
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** M05-22 (P0), M05-23 (P0), M05-24 (P0), M05-25 (P0), M05-26 (P0), M05-27 (P0), M05-28 (P0), M05-29 (P0), MS1-29 (P0), MS1-30 (P0), MS2-01 (P0), MS2-02 (P0), MS2-03 (P0), MS2-04 (P0), MS2-05 (P0), MS2-06 (P0), MS2-07 (P0), MS2-08 (P0), MS2-09 (P0), MS2-10 (P1), MS2-11 (P0), MS2-12 (P0), MS2-14 (P0), MS2-15 (P0), MS2-16 (P0), MS2-17 (P0), MS2-18 (P0), MS2-19 (P0), MS2-21 (P0), MS2-23 (P0), MS2-27 (P0), MS2-28 (P0), MS2-29 (P0), MS2-31 (P0), MS2-32 (P0), MS2-34 (P0), MS2-35 (P0), MS2-36 (P0), MS2-37 (P0), MS2-38 (P0), MS2-39 (P0)
-**DESIGN:** SCR-MS-05 → PENDING
+**DESIGN:** SCR-MS-05 → ported from the POC
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step2Roof.tsx` · `3d_design_studio/src/features/solar-studio/components/EdgeLabels.tsx` · `3d_design_studio/src/features/solar-studio/components/MeasureTool.tsx` · `3d_design_studio/src/features/solar-studio/lib/roof-factory.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-colors.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-face-group.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/detect-client.ts` · `3d_design_studio/src/features/solar-studio/components/SatCanvas.tsx` (sitting 1 — the shared canvas this step consumes) · tests `3d_design_studio/src/features/solar-studio/components/__tests__/drawing.dom.test.tsx`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-face-group.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-edge-cases.test.ts`
 **DEFECTS:**
 - `CODE.step2-roof-drawing.87` — pinch-zoom/two-finger pan absent (ruling S2-1: touch pack added → MS2-03).
@@ -109,9 +109,9 @@ file's slice exactly once.
 ### T-MS-103 · Studio Step 3 — Obstructions (port + UI rebuild)
 
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** M05-30 (P0), M05-31 (P0), M05-32 (P0), M05-33 (P0), M05-34 (P0), M05-35 (P0), MS3-01 (P0), MS3-02 (P0), MS3-03 (P0), MS3-04 (P0), MS3-05 (P0), MS3-07 (P0), MS3-08 (P1), MS3-09 (P0), MS3-10 (P1), MS3-11 (P0), MS3-12 (P0), MS3-13 (P0), MS3-16 (P1), MS3-17 (P0), MS3-18 (P0), MS3-19 (P0), MS3-20 (P0), MS3-21 (P0), MS3-22 (P0), MS3-23 (P1), MS3-24 (P0), MS3-25 (P0), MS3-26 (P0), MS3-27 (P0), MS3-28 (P0), MS3-29 (P0), MS3-30 (P0), MS3-32 (P0), MS3-33 (P0)
-**DESIGN:** SCR-MS-06 → PENDING
+**DESIGN:** SCR-MS-06 → ported from the POC
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step3Obstructions.tsx` · `3d_design_studio/src/features/solar-studio/components/SatCanvas.tsx` (sitting 1 — the shared canvas contract) · `3d_design_studio/src/features/solar-studio/components/ui.tsx` (sitting 10 — the shared slider/number-field primitives the S3-3 rulings correct) · `3d_design_studio/src/features/solar-studio/lib/capabilities.ts` (sitting 4 — the capability resolver these sheets write through)
 **DEFECTS:**
 - `CODE.step3-obstructions.32` — Casts-shadow toggle dead for all factory objects (live repro) (ruling S3-1: switch made real → MS3-28).
