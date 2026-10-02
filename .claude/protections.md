@@ -120,7 +120,7 @@ catalog freshness checks, the unit tests and the invariants. CI job `quality` ru
 | what is protected | what holds it |
 |---|---|
 | A unit test is `<package>/tests/**/*.test.ts` in a package `unit-test-packages.json` names; a `*.spec.*` lives only where the e2e runners read it | dependency-cruiser `no-tests-outside-the-tests-tree` · the vitest `include` (both read `packages/config/unit-test-packages.json`) |
-| Every web route and phone screen has its regression flow, by file name | invariant `e2e-flow-per-screen` |
+| Every web route and phone screen has its regression flow, by file name; `tests/e2e/mobile/run.sh` runs every top-level phone flow, and every `steps/` flow is called | invariant `e2e-flow-per-screen` |
 | Every Biome plugin file exists, and every folder its globs name exists | invariant `biome-plugin-scopes` |
 | The invariants run against a real database, and fail closed in CI without one | CI job `quality` (`tests/invariants/src/run.ts`) |
 | The regression suite runs on what a change reaches: the web flows and component tests, the phone's JavaScript bundle and both native builds in CI; the phone flows at `/qa`, since CI has no simulator | CI jobs `e2e-web` · `mobile-js` · `android` · `ios` · `/qa` step 3 |

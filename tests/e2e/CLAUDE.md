@@ -1,7 +1,8 @@
 # @heliogrid/e2e — the regression suite
 
 Deps: `architecture.md` §2 tests/e2e. The law is `.claude/rules/testing.md`; the
-`e2e-flow-per-screen` invariant holds that every web route and phone screen has its flow.
+`e2e-flow-per-screen` invariant holds that every web route and phone screen has its flow, and that
+`mobile/run.sh` runs every phone flow.
 
 ## What lives here / what must never live here
 
@@ -16,7 +17,8 @@ Deps: `architecture.md` §2 tests/e2e. The law is `.claude/rules/testing.md`; th
   calls while it renders: a function handed to `mount` answers from the test process as a promise,
   so the story binds it in the browser. Never a spec itself (`testMatch` is `*.spec.tsx`).
 - `mobile/<screen>.yaml` — one Maestro flow per phone screen, run in order by `mobile/run.sh`;
-  `mobile/steps/` holds a step two flows share and is not a screen.
+  `mobile/steps/` holds a step two flows share and is not a screen. A flow `run.sh` does not run,
+  or a step nothing calls, fails `e2e-flow-per-screen`.
 - Never a typed word or colour: words come from `@heliogrid/i18n`, colours from the page's own
   tokens (`support/token.ts`), the touch floor from `@heliogrid/ui`.
 - Never a shared account: every flow signs up its own fresh number (`support/phone.ts`), so no spec
