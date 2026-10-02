@@ -76,7 +76,7 @@ blocker. Inside a module it is design → backend → UI.
 4. A schema change runs `/migration`; a contract change runs `/contract-change`.
 5. A bug outside the scope goes to `docs/tasks/deferred.md`, never into this diff.
 6. When done, one tidy pass over the diff — reuse, names, dead code — then `pnpm check:all` once,
-   noting its tree stamp (`/qa` step 7), then `/qa`. `/ship` runs it again only when the tree
+   noting its tree stamp (`/qa`, "The QA report"), then `/qa`. `/ship` runs it again only when the tree
    changed.
 7. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code
    that is gone: `pnpm turbo build --force`.

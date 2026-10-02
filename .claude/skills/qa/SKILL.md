@@ -43,8 +43,10 @@ step 3 are the QA.
 4. **Standing accounts — one per surface:** `QA web`, `QA ios`, `QA android`, `QA api`, each its
    own person and its own company, on the development numbers in `.env.local` (`DEV_OTP_PHONES`,
    the one fixed code `DEV_OTP_CODE`, no caps). `.qa/accounts.md` names each surface's number; the
-   main session's curl session for each lives in `.qa/accounts/<surface>.jar`. Every run, for each
-   surface the plan reaches:
+   main session's curl session for each lives in `.qa/accounts/<surface>.jar`. No `accounts.md` →
+   write it, giving each surface its own number from `DEV_OTP_PHONES` — the last four; fewer than
+   five numbers there → stop and ask the owner to add them. Every run, for each surface the plan
+   reaches:
    - **Alive?** `curl -i http://localhost:8084/tenants/me -b .qa/accounts/<surface>.jar -c
      .qa/accounts/<surface>.jar` answers 200 with `"companyName":"QA <surface>"`. A 401 → `POST
      /auth/refresh` with `{"foreground":true}` first (the token lives ten minutes); still 401 → sign
@@ -176,7 +178,7 @@ android 1 · accounts made by tapping 0 · blocks 0 · re-runs 2 · agents 3
 
 The web and phone columns side by side are the parity check: a check that differs between them is
 an issue. The Run line is how one task's QA is compared with the next. Its `check:all green at` is
-the tree stamp of the last green `pnpm check:all` — the commit and every changed or new file, in one
+the **tree stamp** of the last green `pnpm check:all` — the commit and every changed or new file, in one
 hash; `/ship` step 2 reads it:
 ```bash
 { git rev-parse HEAD; git diff HEAD; git ls-files -o --exclude-standard -z | xargs -0 shasum; } | shasum | cut -c1-12
@@ -199,10 +201,11 @@ Wait until every agent has returned. Then sort each failure:
   `docs/tasks/deferred.md`, unless this branch fixed it.
 
 Re-check with `SendMessage` to the SAME agent — only the failed checks. Run again only the suites
-the fixes reach, from `pnpm turbo ls --filter='...[<the commit before the first fix>]'`: the web
-specs of the routes they touch when `@heliogrid/web` is listed; the phone suite, on each device, only
-when `@heliogrid/mobile` is. A fix that adds a file → apply the `when` lines to that file only; a check it now meets
-joins the re-check. A check that still fails after its third fix → stop and ask the owner: fix the code
+the fixes reach. Nothing is committed before `/ship`, so name the packages the fixes changed:
+`pnpm turbo ls --filter='...@heliogrid/<each one>'` lists them and every package that imports them —
+the web specs of the routes the fixes touch when `@heliogrid/web` is listed; the phone suite, on each
+device, only when `@heliogrid/mobile` is. Each file a fix changes that step 1's diff did not hold →
+apply the `when` lines to it; a check it now meets joins the re-check. A check that still fails after its third fix → stop and ask the owner: fix the code
 another way, or change the plan.
 
 ## 9. Close

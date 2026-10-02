@@ -15,7 +15,9 @@ from urllib.parse import urlsplit
 
 ALLOWED = "Allowed: curl -i http://localhost:8084/<path> …, the URL first; a file only /dev/null or under .qa/."
 LOCAL_HOSTS = {"localhost", "127.0.0.1", "10.0.2.2"}
-WRAPPERS = {"env", "command", "exec", "xargs", "timeout", "nice", "nohup", "sudo", "time", "stdbuf", "caffeinate"}
+WRAPPERS = {"env", "command", "exec", "xargs", "timeout", "nice", "nohup", "sudo", "doas", "time", "stdbuf",
+            "caffeinate", "find", "watch", "parallel", "flock", "ionice", "taskset", "unbuffer", "script", "arch"}
+KEYWORDS = {"{", "}", "!", "if", "then", "else", "elif", "do", "while", "until", "time"}
 SHELLS = {"sh", "bash", "zsh", "eval"}
 SEPARATORS = {"|", "||", "&", "&&", ";", ";;", "|&", "(", ")", "\n"}
 WRITES_PATH = {"output", "output-dir", "cookie-jar", "dump-header", "trace", "trace-ascii", "stderr",
@@ -24,7 +26,6 @@ REFUSED = {"config", "remote-name", "remote-name-all", "proxy", "preproxy", "soc
            "socks5-hostname", "resolve", "connect-to", "doh-url"}
 REFUSED_PREFIX = re.compile(r"^(CURL_HOME|XDG_CONFIG_HOME|[A-Za-z_]*_proxy|[A-Za-z_]*_PROXY)=")
 HEREDOC = re.compile(r"<<-?\s*(['\"]?)(\w+)\1([^\n]*)\n(.*?)(?:\n[ \t]*\2[ \t]*(?=\n|$)|\Z)", re.S)
-SUBSHELL = re.compile(r"[$<>]\(|`")
 REDIRECT = re.compile(r"[<>&|]+")
 
 
@@ -48,10 +49,10 @@ def curl_options():
     return short, known, takes_value
 
 
-def inner_commands(text):
-    """Every `$(…)`, `<(…)`, `>(…)` and backtick body the shell would run, so a curl inside one is
-    judged too. One inside single quotes, or escaped with a backslash, is text."""
-    found, i, quote = [], 0, None
+def split_subshells(text):
+    """The text with each `$(…)`, `<(…)`, `>(…)` and backtick span replaced by the word `$SUB`, and
+    the bodies, so a curl inside one is judged too. One inside single quotes, or escaped, is text."""
+    outer, bodies, i, kept, quote = [], [], 0, 0, None
     while i < len(text):
         c = text[i]
         if c == "\\" and quote != "'":
@@ -61,9 +62,11 @@ def inner_commands(text):
         elif quote != "'" and (c == "`" or (c in "$<>" and text[i + 1:i + 2] == "(")):
             start = i + (1 if c == "`" else 2)
             end = body_end(text, start, c == "`")
-            found.append(text[start:end]); i = end + 1; continue
+            bodies.append(text[start:end])
+            outer.append(text[kept:i] + "$SUB")
+            i = kept = end + 1; continue
         i += 1
-    return found
+    return "".join(outer) + text[kept:], bodies
 
 
 def body_end(text, start, backtick):
@@ -166,17 +169,20 @@ def without_redirects(args, cwd):
 def judge(text, cwd, options, depth=0):
     if depth > 4:
         raise Refused("the command nests too deep to judge")
-    for inner in inner_commands(text):
-        judge(inner, cwd, options, depth + 1)
-    commands = list(simple_commands(SUBSHELL.sub(" ", text)))
+    outer, bodies = split_subshells(text)
+    for body in bodies:
+        judge(body, cwd, options, depth + 1)
+    commands = list(simple_commands(outer))
     runs_curl = False
     for words in commands:
-        while words and "=" in words[0] and not words[0].startswith("="):
+        while words and (words[0] in KEYWORDS or ("=" in words[0] and not words[0].startswith("="))):
             if REFUSED_PREFIX.match(words[0]):
                 raise Refused(f"curl may not run under {words[0].split('=')[0]}")
             words = words[1:]
         if not words:
             continue
+        if "$" in words[0]:
+            raise Refused(f"the command name {words[0]} is built at run time, so it may be curl")
         name = os.path.basename(words[0])
         if name in ("cd", "pushd") and len(words) > 1:
             cwd = os.path.normpath(os.path.join(cwd, words[1]))

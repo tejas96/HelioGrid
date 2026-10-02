@@ -13,8 +13,9 @@ import { walkFiles } from './repo-files';
  * `tests/e2e/mobile/<screen>.yaml`.
  *
  * And no phone flow is forgotten: every top-level `tests/e2e/mobile/*.yaml` is run by `run.sh`, and
- * every `steps/*.yaml` is called by `run.sh` or by a flow — a file named only in a comment counts as
- * not called. `run.sh` lists its flows by hand, so a flow left off it never runs.
+ * every `steps/*.yaml` is called by `run.sh` or by a flow. Only a call counts — a `flow …` line of
+ * `run.sh`, a `runFlow:` or `file:` line of a flow — never a comment or an echo. `run.sh` lists its
+ * flows by hand, so a flow left off it never runs.
  */
 const WEB_APP = 'apps/web/app';
 const PHONE_SCREENS = 'apps/mobile/src/screens';
@@ -82,20 +83,21 @@ function scanFlows(repo: string): { findings: string[]; routes: number; screens:
   return { findings: [...missing, ...staleHolds], routes: routes.size, screens: screens.size };
 }
 
-/** `text` with every `#` comment removed — a comment that names a flow does not run it. */
-function withoutComments(text: string): string {
-  return text.replace(/(^|\s)#.*$/gm, '$1');
-}
+const RUNNER_CALL = /^\s*flow\s.*$/gm;
+const FLOW_CALL = /^\s*-?\s*(?:runFlow|file):.*$/gm;
 
-function callsFlow(text: string, flow: string): boolean {
+/** Whether one of `text`'s call lines names `flow`; a `#` comment on the line is dropped first. */
+function callsFlow(text: string, call: RegExp, flow: string): boolean {
   const escaped = flow.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(`(^|[\\s"'=])${escaped}($|[\\s"'])`, 'm').test(withoutComments(text));
+  const named = new RegExp(`(^|[\\s"'=])${escaped}($|[\\s"'])`);
+  return (text.match(call) ?? []).some((line) => named.test(line.replace(/(^|\s)#.*$/, '$1')));
 }
 
 function scanPhoneSuite(repo: string): { findings: string[]; flows: number } {
   const all = filesNamed(repo, PHONE_SUITE, FLOW).map((file) => relative(PHONE_SUITE, file));
   const topLevel = all.filter((flow) => !flow.includes('/'));
-  const steps = all.filter((flow) => flow.startsWith('steps/'));
+  const steps = all.filter((flow) => flow.startsWith('steps/') && flow.split('/').length === 2);
+  const stray = all.filter((flow) => flow.includes('/') && !steps.includes(flow));
   if (!existsSync(join(repo, PHONE_RUNNER)) || topLevel.length === 0) {
     throw new Error(
       `e2e-flow-per-screen: found ${topLevel.length} phone flows under ${PHONE_SUITE} and ` +
@@ -106,12 +108,19 @@ function scanPhoneSuite(repo: string): { findings: string[]; flows: number } {
   const runner = readFileSync(join(repo, PHONE_RUNNER), 'utf8');
   const flowTexts = all.map((flow) => readFileSync(join(repo, PHONE_SUITE, flow), 'utf8'));
   const notRun = topLevel
-    .filter((flow) => !callsFlow(runner, flow))
+    .filter((flow) => !callsFlow(runner, RUNNER_CALL, flow))
     .map((flow) => `${PHONE_SUITE}/${flow}: never run — ${PHONE_RUNNER} does not run it`);
   const notCalled = steps
-    .filter((step) => !callsFlow(runner, step) && !flowTexts.some((text) => callsFlow(text, step)))
+    .filter(
+      (step) =>
+        !callsFlow(runner, RUNNER_CALL, step) &&
+        !flowTexts.some((text) => callsFlow(text, FLOW_CALL, step)),
+    )
     .map((step) => `${PHONE_SUITE}/${step}: never called — neither run.sh nor a flow calls it`);
-  return { findings: [...notRun, ...notCalled], flows: all.length };
+  const strays = stray.map(
+    (flow) => `${PHONE_SUITE}/${flow}: neither a top-level flow nor a step — move it`,
+  );
+  return { findings: [...notRun, ...notCalled, ...strays], flows: all.length };
 }
 
 export function findScreensWithoutFlow(repo: string): string[] {

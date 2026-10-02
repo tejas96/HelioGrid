@@ -13,6 +13,8 @@ import { join } from 'node:path';
  */
 const HOOKS = '.claude/hooks';
 const BLOCKS = 2;
+/** Each hook answers in well under a second; one that takes this long is stuck. */
+const HOOK_TIMEOUT_MS = 20_000;
 
 type ToolInput = { readonly command: string } | { readonly file_path: string };
 interface HookCases {
@@ -80,6 +82,7 @@ function casesFor(repo: string): ReadonlyMap<string, HookCases> {
           run("curl -s -o /dev/null -w '%{http_code}' http://localhost:8084/x"),
           run('curl -i http://localhost:8084/x -c .qa/T-X/jar -b .qa/T-X/jar'),
           run('grep -n curl .claude/hooks/block-curl-file-io.sh'),
+          run('for p in a b; do curl -s -o /dev/null http://localhost:8084/$p; done'),
           run('grep -rn "curl\\|\\`deny\\`" .claude'),
         ],
         block: [
@@ -89,6 +92,8 @@ function casesFor(repo: string): ReadonlyMap<string, HookCases> {
           run('curl -K f http://localhost:8084/x'),
           run('bash -c "curl -o f http://localhost:8084/x"'),
           run('echo "$(curl -o f http://localhost:8084/x)"'),
+          run('if true; then curl -o f http://localhost:8084/x; fi'),
+          run('c=curl; $c -o f http://localhost:8084/x'),
         ],
       },
     ],
@@ -96,12 +101,32 @@ function casesFor(repo: string): ReadonlyMap<string, HookCases> {
 }
 
 /** Run from the repo root: a hook with no `CLAUDE_PROJECT_DIR` reads the project from where it runs. */
-function exitCode(repo: string, hook: string, input: string): number | null {
-  return spawnSync('bash', [join(repo, HOOKS, hook)], {
+function runHook(repo: string, hook: string, input: string): { blocked: boolean; said: string } {
+  const result = spawnSync('bash', [join(repo, HOOKS, hook)], {
     cwd: repo,
     input,
     encoding: 'utf8',
-  }).status;
+    timeout: HOOK_TIMEOUT_MS,
+  });
+  if (result.error) throw new Error(`hook-cases: ${hook} did not answer: ${result.error.message}`);
+  return { blocked: result.status === BLOCKS, said: result.stderr.split('\n')[0] ?? '' };
+}
+
+/** The findings for one hook: each case it answered wrongly, with what it said. */
+function judgeHook(repo: string, hook: string, { pass, block }: HookCases): string[] {
+  const asInput = (input: ToolInput) => JSON.stringify({ tool_input: input, cwd: repo });
+  const expected = [
+    ...pass.map((input) => ({ input: asInput(input), blocks: false })),
+    ...block.map((input) => ({ input: asInput(input), blocks: true })),
+    { input: '{not json', blocks: true },
+  ];
+  return expected.flatMap(({ input, blocks }) => {
+    const { blocked, said } = runHook(repo, hook, input);
+    if (blocked === blocks) return [];
+    return [
+      `${hook}: should ${blocks ? 'block' : 'pass'} ${input}${said ? ` — it said: ${said}` : ''}`,
+    ];
+  });
 }
 
 function scanHooks(repo: string): { findings: string[]; hooks: number; cases: number } {
@@ -112,6 +137,7 @@ function scanHooks(repo: string): { findings: string[]; hooks: number; cases: nu
     );
   }
   const cases = casesFor(repo);
+  const enrolled = [...cases].filter(([hook]) => hooks.includes(hook));
   const findings = [
     ...hooks
       .filter((hook) => !cases.has(hook))
@@ -119,28 +145,12 @@ function scanHooks(repo: string): { findings: string[]; hooks: number; cases: nu
     ...[...cases.keys()]
       .filter((hook) => !hooks.includes(hook))
       .map((hook) => `${hook}: has cases but no hook`),
+    ...enrolled.flatMap(([hook, hookCases]) => judgeHook(repo, hook, hookCases)),
   ];
-  let count = 0;
-  for (const [hook, { pass, block }] of cases) {
-    if (!hooks.includes(hook)) continue;
-    const expected = [
-      ...pass.map((input) => ({
-        input: JSON.stringify({ tool_input: input, cwd: repo }),
-        blocks: false,
-      })),
-      ...block.map((input) => ({
-        input: JSON.stringify({ tool_input: input, cwd: repo }),
-        blocks: true,
-      })),
-      { input: '{not json', blocks: true },
-    ];
-    for (const { input, blocks } of expected) {
-      count += 1;
-      if ((exitCode(repo, hook, input) === BLOCKS) !== blocks) {
-        findings.push(`${hook}: should ${blocks ? 'block' : 'pass'} ${input}`);
-      }
-    }
-  }
+  const count = enrolled.reduce(
+    (sum, [, { pass, block }]) => sum + pass.length + block.length + 1,
+    0,
+  );
   return { findings, hooks: hooks.length, cases: count };
 }
 

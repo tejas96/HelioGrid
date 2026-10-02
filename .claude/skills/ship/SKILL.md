@@ -12,7 +12,7 @@ main changed a package this task touches, run the regression suites from `/qa` s
 
 ## 2. The full check, once
 
-Take the tree stamp (`/qa` step 7). It equals the QA report's `check:all green at` → print
+Take the tree stamp (`/qa`, "The QA report"). It equals the QA report's `check:all green at` → print
 `check:all unchanged since <stamp>` and go on. Otherwise — a fix, a merge from main, any edit —
 `pnpm check:all` on the final tree. Read its output, not only its exit code. Never weaken a check to
 make it pass — fix the cause.
