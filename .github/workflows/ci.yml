@@ -540,12 +540,15 @@ jobs:
         run: bundle exec pod install
       # Before every flow step, so the switch never skips the build: a Debug configuration loads
       # its JavaScript from Metro and `react-native-xcode.sh` bundles nothing.
-      - name: Build for simulator (no signing)
+      - name: Build for simulator (signed to run locally)
         working-directory: apps/mobile/ios
         # `shell: bash` turns on `-o pipefail`. Without it the step's exit status is
         # `tail`'s (always 0), so a Swift compile error, a missing Pod or a bad Info.plist
         # produced a GREEN job — the only mechanical proof the RN app still builds for iOS
         # (Law 7) could never fail.
+        # Signed as Xcode signs a simulator build (`-`, no team): an unsigned app carries no
+        # entitlements, and the keychain refuses it (-34018), so the session never stores and
+        # "Send code" fails before any request leaves the app.
         shell: bash
         run: |
           xcodebuild -workspace HelioGridMobile.xcworkspace \
@@ -554,7 +557,6 @@ jobs:
             -sdk iphonesimulator \
             -destination 'generic/platform=iOS Simulator' \
             -derivedDataPath build \
-            CODE_SIGNING_ALLOWED=NO \
             build | tail -50
       - name: Phone flows OFF
         if: vars.PHONE_E2E == 'off'
