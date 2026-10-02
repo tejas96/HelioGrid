@@ -13,7 +13,7 @@ how to drive the api, the worker and the database.
 **The api** — port 8084. Write `curl -i http://localhost:8084/<path>` with the URL FIRST and every
 other flag after it (`-c jar -b jar -H … -d …`): that form runs without a permission prompt. Never
 `-o`, `-O`, `-T` or `-K`. Assert on the status line and on the exact body bytes — for an error, the
-`code` in the error envelope. Keep cookies in a curl jar in your scratch folder.
+`code` in the error envelope. Keep cookies in a curl jar under `.qa/<T-id>/`.
 
 **The worker** — it has no port. Read its log with `preview_logs` and the server id your prompt
 gives you.

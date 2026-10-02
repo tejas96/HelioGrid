@@ -299,7 +299,7 @@ jobs:
           path: |
             tests/e2e/test-results/
             tests/e2e/playwright-report/
-            .git/heliogrid-harness/api.log
+            .qa/api.log
           include-hidden-files: true
           retention-days: 14
 

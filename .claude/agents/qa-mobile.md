@@ -30,6 +30,9 @@ its result. The emulator reaches the api at `10.0.2.2:8084`.
 3 per `input text` on Android: a faster burst drops characters on a debug build. A tap that shows
 no caret had the wrong coordinate — work it out again from the shrunk screenshot; never retry blind.
 
+**Files** — every screenshot and log excerpt goes under `.qa/<T-id>/evidence/`, named by the check id
+(`G1.1-ios.png`); the results file names it as the evidence.
+
 **Reading** — grep the view tree for the words the check names; never page a whole tree into your
 context. One screenshot per check, taken when the expected frame should be on screen. A frame not
 reached after four screenshots is `not run: could not reach <what was seen>`.

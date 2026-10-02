@@ -45,6 +45,9 @@ vision alone shows — clipping, overlap, broken Devanagari — and you write wh
   text;
 - console: `read_console_messages` — an error fails the check, a new warning is a finding.
 
+**Files** — the web screenshot tool returns an image, not a file: write what you saw in the result
+row; a log or measured values you save go under `.qa/<T-id>/evidence/`, named by the check id.
+
 **Keyboard** — use real key presses: Tab order, visible focus, Enter and Escape.
 
 **No connection** — the browser pane cannot drop the network. A "no connection" check is proven by

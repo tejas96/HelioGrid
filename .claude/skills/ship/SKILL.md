@@ -59,8 +59,8 @@ exactly that list and message — a yes to an earlier commit is not this yes.
 - The first push is `git push -u origin <branch>`. Never to `main`, never a force-push.
 - `gh pr create` with the body below. Then bind the PR with the app's PR tools (`get_status`, and
   `bind_pr` if it is not listed). Never poll CI yourself.
-- Then delete the session's QA files — `<scratchpad>/qa-<T-id>.md` and `<scratchpad>/qa-<T-id>/` —
-  because the PR body now holds the report.
+- Keep `.qa/<T-id>/` until the PR merges: a CI fix may need its checks again. The next `/start`
+  deletes it once the task reads `shipped`.
 
 ## 9. CI on the same PR
 

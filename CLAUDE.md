@@ -136,6 +136,7 @@ import, §4 where a new file goes. Run §4 before creating one. This is the dige
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
 | `docs/engineering/` | how this repo is built, ranked **below** `docs/prd/`. |
 | `.claude/` | the agent's own instructions — `skills/`, `agents/`, `hooks/`, `rules/` and `protections.md`, a closed set. `rules/` is law that spans MORE than one package; a rule for exactly one package lives in that package's own `CLAUDE.md`. |
+| `.qa/` | the local QA workspace, git-ignored: the api log, and one folder per task — its QA report, each agent's results and its evidence. `/start` deletes a shipped task's folder. |
 | `infra/` · `HelioGrid-UX/` | deployment and local-stack material that is NOT application code · the exported Claude Design artboards and decisions records, one pair per screen — the pixel-perfect reference a screen is built and measured against; never edited, re-exported when a design changes, ignored by git. |
 
 Everything public is re-exported from a package's `src/index.ts`; consumers import the index, never

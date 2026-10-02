@@ -6,8 +6,9 @@ description: Run a task's QA plan after the build — the regression suites firs
 # /qa — run the plan, report, fix, re-check
 
 The QA plan was written at `/start`, before the code, so it tests what should happen rather than what
-was built; run it as written after the refresh in step 1. No probes, no rounds. The report lives in the
-session scratchpad, `qa-<T-id>.md`, and its final copy goes into the PR body at `/ship`.
+was built; run it as written after the refresh in step 1. No probes, no rounds. Everything a run writes lives in
+the git-ignored workspace `.qa/<T-id>/` — `report.md`, each agent's results, `evidence/` — and the
+report's final copy goes into the PR body at `/ship`.
 
 ## 1. Surfaces
 
@@ -31,7 +32,7 @@ step 3 are the QA.
 2. Start the servers the surfaces need with `preview_start`: `api`, `web`, `mobile-metro`, `worker`.
    One instance of each serves every surface — the iOS simulator reaches the api at
    `localhost:8084`, the Android emulator at `10.0.2.2:8084`. Note each server id. The api writes
-   its log to `$(git rev-parse --git-common-dir)/heliogrid-harness/api.log`.
+   its log to `.qa/api.log`.
 3. Boot each device: the simulator (`xcrun simctl boot <udid>`, then the simulator tool's
    `attach`) and the Android emulator with its window. Open the app once on each, and the browser
    tab once, so every bundle is warm.
@@ -71,7 +72,7 @@ A failure here is fixed before any agent starts.
 prompt holds: the plan's checks that name its surface, with their ids; its account and its company
 name; the server ids,
 **only to read logs**; its device (udid or serial); its results file,
-`<scratchpad>/qa-<T-id>/<surface>.md`; the path of the api log; and the common rules below, word for
+`.qa/<T-id>/<surface>.md`, with screenshots under `.qa/<T-id>/evidence/`; the path of the api log; and the common rules below, word for
 word. A surface with more than about 15 checks gets them in batches of about 15, grouped by screen:
 the first batch at dispatch, each next one by `SendMessage` to the SAME agent when it returns — one
 agent run stops at its turn limit, and a check it never reached is lost. Then tell the owner: "QA is running — please do not click in the browser pane, the simulator
@@ -108,7 +109,7 @@ Read every results file in full. Read each pass's evidence for a workaround — 
 sign-in, a precondition the agent made for itself. Spot-check two passes against their evidence; a
 spot-check that contradicts its row makes that surface's run untrusted, and it runs again.
 
-## 7. The QA report — `<scratchpad>/qa-<T-id>.md`
+## 7. The QA report — `.qa/<T-id>/report.md`
 
 ```
 # QA report — T-M02-001 · Quick Add Lead

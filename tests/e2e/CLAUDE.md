@@ -42,7 +42,7 @@ The web suite and the whole component suite run in CI (`e2e-web`). The phone sui
 
 ## Local conventions
 
-- A new number's code is read from the api's log, `.git/heliogrid-harness/api.log`, which the `api`
+- A new number's code is read from the api's log, `.qa/api.log`, which the `api`
   launch configurations and `playwright.config.ts` both write (`support/api-log.ts`). A running api
   is reused as it is, so it must be one of those: an api started any other way writes no log here.
 - Maestro types faster than the phone's fields take keys: a flow waits for the tap to settle before

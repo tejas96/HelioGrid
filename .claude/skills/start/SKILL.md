@@ -15,6 +15,8 @@ Do steps 1–7 in order. Write no code. Step 7 ends in a stop.
 - Every branch shares one local database. A migration from a branch that has not merged puts it
   ahead of main, and this branch's `pnpm db:migrate` then fails. Ask the owner to merge that
   branch first.
+- Delete the QA workspace of every task that now reads `shipped`: for each folder in `.qa/`, look
+  up its task's `**Status:**` line and remove `.qa/<T-id>/` when it is `shipped`. Leave `.qa/api.log`.
 
 ## 2. Pick the step — only when the owner names no task
 
