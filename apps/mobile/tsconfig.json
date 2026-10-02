@@ -2,6 +2,7 @@
   "extends": ["@heliogrid/config/tsconfig/base.json", "@react-native/typescript-config"],
   "compilerOptions": {
     "types": [],
+    "moduleSuffixes": [".native", ""],
     "forceConsistentCasingInFileNames": true
   },
   "include": ["**/*.ts", "**/*.tsx"],

@@ -140,7 +140,7 @@ import, §4 where a new file goes. Run §4 before creating one. This is the dige
 | `infra/` · `HelioGrid-UX/` | deployment and local-stack material that is NOT application code · the exported Claude Design artboards and decisions records, one pair per screen — the pixel-perfect reference a screen is built and measured against; never edited, re-exported when a design changes, ignored by git. |
 
 Everything public is re-exported from a package's `src/index.ts`; consumers import the index, never
-a deep path. **Never invent a folder**: every tree is a closed set, and a new category is a
+a deep path. The one other entry is `@heliogrid/ui/print`, the web's print parts. **Never invent a folder**: every tree is a closed set, and a new category is a
 plan-time decision. `docs/README.md` maps every document.
 
 ## 7. When rules conflict

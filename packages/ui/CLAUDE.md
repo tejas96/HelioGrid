@@ -54,7 +54,9 @@ src/components/<Name>/
 
 A component with only one platform half is incomplete, not "web-only" — unless its types file
 opens with one of the two waivers, `PRINT SURFACE` or `POINTER SURFACE`, and gives the reason. No
-check reads the waivers; review does.
+check reads the waivers; review does. A `PRINT SURFACE` part is exported from `src/print.ts`
+(`@heliogrid/ui/print`), never from `src/index.ts`: the phone typechecks the main entry with its
+`.native` halves first, and a print part there fails it.
 
 ## Local conventions
 

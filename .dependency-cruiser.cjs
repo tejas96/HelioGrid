@@ -314,11 +314,12 @@ module.exports = {
       name: 'package-index-only',
       severity: 'error',
       comment:
-        'apps reach a package ONLY through a path its package.json `exports` declares — never a deep source path (docs/engineering/02 §2). Generalises the former ui-index-only. theme is omitted deliberately: every one of its entry points is a declared subpath export. @heliogrid/ui declares a `./styles.css` subpath export (resolved to `src/styles.css`), so it is permitted alongside index. @heliogrid/i18n declares `.`, `./react` and `./rn` — `./rn` is separate because importing it installs global Intl polyfills that must never enter a web bundle. `packages/contracts/src/locale.ts` needs no subpath: it is re-exported from index, which is how `lingui.config.js` reads the language set. The `@heliogrid/*/src/` arm is LOAD-BEARING, not belt-and-braces: every package restricts its `exports`, so a deep source import does NOT resolve to a file — `resolved` stays the BARE SPECIFIER and a `^packages/` regex can never match it. With only the path arms this rule was INERT in exactly the case it exists to catch (found by injection, Track 9) — the same failure mode as the old `bullmq-fenced`.',
+        'apps reach a package ONLY through a path its package.json `exports` declares — never a deep source path (docs/engineering/02 §2). Generalises the former ui-index-only. theme is omitted deliberately: every one of its entry points is a declared subpath export. @heliogrid/ui declares a `./styles.css` subpath export (resolved to `src/styles.css`) and a `./print` one (`src/print.ts`, the web print parts), so both are permitted alongside index. @heliogrid/i18n declares `.`, `./react` and `./rn` — `./rn` is separate because importing it installs global Intl polyfills that must never enter a web bundle. `packages/contracts/src/locale.ts` needs no subpath: it is re-exported from index, which is how `lingui.config.js` reads the language set. The `@heliogrid/*/src/` arm is LOAD-BEARING, not belt-and-braces: every package restricts its `exports`, so a deep source import does NOT resolve to a file — `resolved` stays the BARE SPECIFIER and a `^packages/` regex can never match it. With only the path arms this rule was INERT in exactly the case it exists to catch (found by injection, Track 9) — the same failure mode as the old `bullmq-fenced`.',
       from: { path: '^apps/' },
       to: {
         path: [
-          '^packages/(ui|theme|db|domain|adapters)/src/(?!index|styles\\.css$)',
+          '^packages/ui/src/(?!index|print\\.ts$|styles\\.css$)',
+          '^packages/(theme|db|domain|adapters)/src/(?!index|styles\\.css$)',
           '^packages/contracts/src/(?!index|workflows/index)',
           '^packages/data/src/(?!index|react/index|server/index)',
           '^packages/i18n/src/(?!index|react/index|rn/index)',
