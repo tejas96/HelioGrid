@@ -110,8 +110,9 @@ extended) and `#### QA plan`.
 
 ## 7. Review, then stop
 
-- The plan touches money, tenancy, permissions or the database schema → dispatch `plan-reviewer`
-  with the task file. Fix every finding once; do not run it again.
+- Dispatch `plan-reviewer` with the task file, for every task. The plan touches money, tenancy,
+  permissions or the database schema → every check, on its own model. Any other plan → checks 5–7
+  only, with `model: sonnet`. Fix every finding once; do not run it again.
 - Wait for `design-reviewer`.
 - Show the owner, in simple words: what changes and where, the example, the risks, how many QA
   checks, design-reviewer's MUST FIX and BETTER findings, each plan-reviewer finding with its fix,

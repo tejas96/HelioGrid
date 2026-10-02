@@ -63,7 +63,7 @@ blocker. Inside a module it is design → backend → UI.
 
 | step | who | stops for the owner |
 |---|---|---|
-| `/start` | picks the step, critiques the task, writes the plan, the acceptance criteria and the QA plan; `design-reviewer` for a screen, `plan-reviewer` for money, tenancy, permissions or schema | yes — the go |
+| `/start` | picks the step, critiques the task, writes the plan, the acceptance criteria and the QA plan; `design-reviewer` for a screen; `plan-reviewer` on every plan — its QA-plan checks, or every check for money, tenancy, permissions or schema | yes — the go |
 | build | the main session, inside the plan | only when the scope changes |
 | `/qa` | the suites, then one QA agent per surface the change reaches, in parallel; fix and re-check what failed | when a check fails three times |
 | `/ship` | `code-reviewer` once, the fixes and red proofs, the commit, the push, the PR, CI | yes — every commit |

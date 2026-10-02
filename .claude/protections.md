@@ -143,7 +143,7 @@ catalog freshness checks, the unit tests and the invariants. CI job `quality` ru
 | Every commit passes Biome on its staged files, the secret scan and a typecheck of the changed packages | git pre-commit (`simple-git-hooks` → `pnpm run precommit`) |
 | Every pull request passes the full check on Linux | CI job `quality` (step `Quality gate`) |
 | The next step is the one the build order picks | `/start` step 2 |
-| A plan touching money, tenancy, permissions or schema is attacked, and a screen's design judged, before any code | `/start` steps 4 and 7 (`design-reviewer`, `plan-reviewer`) |
+| A plan touching money, tenancy, permissions or schema is attacked, every QA plan is checked against its change, and a screen's design judged, before any code | `/start` steps 4 and 7 (`design-reviewer`, `plan-reviewer` checks 5–7, or every check) |
 | A change is QA'd on every surface it reaches | `/qa` step 1 |
 | A second agent reviews every change before it is pushed | `/ship` step 3 (`code-reviewer`) |
 | Every commit waits for the owner's yes to its file list and message | `/ship` step 7 |
