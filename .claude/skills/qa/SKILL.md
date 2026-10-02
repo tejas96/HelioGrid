@@ -88,12 +88,9 @@ Run what the plan's `Regression` lines name, on the servers and devices just sta
 
 - web specs for the changed routes: `pnpm --filter @heliogrid/e2e test:web <spec files>`
 - component specs for changed `ui` parts: `pnpm --filter @heliogrid/e2e test:ct <spec files>`
-- phone flows, ONE device after the other — two at once lose key presses:
-  `bash tests/e2e/mobile/run.sh <udid>`, then `bash tests/e2e/mobile/run.sh <serial>`
 
-A failure here is fixed before any agent starts. The phone suite clears the app and its keychain
-(`tests/e2e/mobile/boot.yaml`), so after it the main session signs each phone in to its standing
-account with the fixed code.
+A failure here is fixed before any agent starts. The phone flows never run here: they run in CI's
+`android` and `ios` jobs on the pull request (`tests/e2e/CLAUDE.md`).
 
 ## 4. Dispatch — one agent per surface, all in ONE message, in the background, one phase at a time
 
@@ -134,7 +131,7 @@ or the emulator."
 ## 5. Watch
 
 Tell the owner where the run is, one line each:
-- each step as it starts — `QA step 3 of 9 — phone suite on iPhone 16`;
+- each step as it starts — `QA step 3 of 9 — web specs`;
 - each agent as it returns — `qa-mobile ios: 12 pass · 0 fail · 1 not run`;
 - while agents run, at each look: every results file's row count, with the time.
 
@@ -152,9 +149,9 @@ spot-check that contradicts its row makes that surface's run untrusted, and it r
 
 ```
 # QA report — T-M02-001 · Quick Add Lead
-Suites: web 12/12 ✓ · components 4/4 ✓ · phone ios 3/3 ✓ android 3/3 ✓ · unit ✓
-Run: 38 min · check:all green at a1b2c3d4e5f6 · api starts 3 (phases 2 + 1) · suite runs ios 1
-android 1 · accounts made by tapping 0 · blocks 0 · re-runs 2 · agents 3
+Suites: web 12/12 ✓ · components 4/4 ✓ · unit ✓ · phone flows: CI
+Run: 38 min · check:all green at a1b2c3d4e5f6 · api starts 3 (phases 2 + 1) · accounts made by
+tapping 0 · blocks 0 · re-runs 2 · agents 3
 
 ## Results
 | check                          | web | ios | android | api |
@@ -203,8 +200,7 @@ Wait until every agent has returned. Then sort each failure:
 Re-check with `SendMessage` to the SAME agent — only the failed checks. Run again only the suites
 the fixes reach. Nothing is committed before `/ship`, so name the packages the fixes changed:
 `pnpm turbo ls --filter='...@heliogrid/<each one>'` lists them and every package that imports them —
-the web specs of the routes the fixes touch when `@heliogrid/web` is listed; the phone suite, on each
-device, only when `@heliogrid/mobile` is. Each file a fix changes that step 1's diff did not hold →
+the web specs of the routes the fixes touch when `@heliogrid/web` is listed. Each file a fix changes that step 1's diff did not hold →
 apply the `when` lines to it; a check it now meets joins the re-check. A check that still fails after its third fix → stop and ask the owner: fix the code
 another way, or change the plan.
 

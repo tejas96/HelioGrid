@@ -123,7 +123,7 @@ catalog freshness checks, the unit tests and the invariants. CI job `quality` ru
 | Every web route and phone screen has its regression flow, by file name; `tests/e2e/mobile/run.sh` runs every top-level phone flow, and every `steps/` flow is called | invariant `e2e-flow-per-screen` |
 | Every Biome plugin file exists, and every folder its globs name exists | invariant `biome-plugin-scopes` |
 | The invariants run against a real database, and fail closed in CI without one | CI job `quality` (`tests/invariants/src/run.ts`) |
-| The regression suite runs on what a change reaches: the web flows and component tests, the phone's JavaScript bundle and both native builds in CI; the phone flows at `/qa`, since CI has no simulator | CI jobs `e2e-web` · `mobile-js` · `android` · `ios` · `/qa` step 3 |
+| The regression suite runs on what a change reaches, in CI: the web flows and component tests, the phone's JavaScript bundle, and both native builds with the phone flows on an emulator and a simulator; `/qa` runs the changed web and component specs, never the phone flows | CI jobs `e2e-web` · `mobile-js` · `android` · `ios` (lane `phone_e2e`) · `/qa` step 3 |
 | Each rule is tested at its edges; each proof would fail without its fix; a money, tenancy or permission test is seen to fail once | review — `code-reviewer` items 1, 22 and 23 · `plan-reviewer` checks 5 and 6 · `/ship` step 5 runs the breaks |
 
 ## Agent safety
