@@ -18,13 +18,13 @@ Do steps 1–7 in order. Write no code. Step 7 ends in a stop.
 - Delete the QA workspace of every task that now reads `shipped`: for each folder in `.qa/`, look
   up its task's `**Status:**` line and remove `.qa/<T-id>/` when it is `shipped`. Leave `.qa/api.log`.
   Remove that task's QA records too — its companies `QA <T-id> …`, their rows, and every person
-  whose only memberships are in them; the `DEV_OTP_PHONE` person always stays. The infra must be
+  whose only memberships are in them; every `DEV_OTP_PHONES` person always stays. The infra must be
   up. It runs in one transaction, refuses any database but the local one, and prints what it removed:
   ```bash
   pnpm --filter @heliogrid/api exec tsx --env-file-if-exists=<repo>/.env.local -e "(async () => {
     const { openPools, unseed, adminUrl } = await import('./tests/support/fixture.ts');
     const { tenant, tenantMembership, userAccount } = await import('@heliogrid/db');
-    const { and, eq, inArray, like, notInArray } = await import('drizzle-orm');
+    const { and, inArray, like, notInArray } = await import('drizzle-orm');
     if (new URL(adminUrl).host === 'localhost:5544' === false) throw new Error('refused: not the local database');
     const pools = openPools();
     const db = pools.admin.db;
@@ -32,7 +32,7 @@ Do steps 1–7 in order. Write no code. Step 7 ends in a stop.
     const ids = companies.map((c) => c.tenantId);
     const members = ids.length === 0 ? [] : await db.selectDistinct({ userId: tenantMembership.userAccountId }).from(tenantMembership).where(inArray(tenantMembership.tenantId, ids));
     const elsewhere = members.length === 0 ? [] : await db.selectDistinct({ userId: tenantMembership.userAccountId }).from(tenantMembership).where(and(inArray(tenantMembership.userAccountId, members.map((m) => m.userId)), notInArray(tenantMembership.tenantId, ids)));
-    const dev = await db.select({ userId: userAccount.id }).from(userAccount).where(eq(userAccount.phoneE164, process.env.DEV_OTP_PHONE ?? ''));
+    const dev = await db.select({ userId: userAccount.id }).from(userAccount).where(inArray(userAccount.phoneE164, (process.env.DEV_OTP_PHONES ?? '').split(',').map((p) => p.trim())));
     const keep = new Set([...elsewhere, ...dev].map((r) => r.userId));
     const people = members.filter((m) => keep.has(m.userId) === false);
     await db.transaction((tx) => unseed(tx, { companies: companies, people: people, memberships: [] }));

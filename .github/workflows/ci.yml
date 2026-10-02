@@ -113,8 +113,8 @@ jobs:
       TEMPORAL_TLS_CERT_FILE: /dev/null
       TEMPORAL_TLS_KEY_FILE: /dev/null
       TEMPORAL_AUTH_TOKEN_FILE: /dev/null
-      # The one number whose code is fixed, so a test signs in through the front door.
-      DEV_OTP_PHONE: "+919999999999"
+      # The development number whose code is fixed, so a test signs in through the front door.
+      DEV_OTP_PHONES: "+919999999999"
       DEV_OTP_CODE: "000000"
       # A CI-only signing secret for the api's token; nothing outside this workflow ever
       # verifies a token signed with it. Declared in turbo.json's `env` list where a task reads it.
@@ -253,7 +253,7 @@ jobs:
       TEMPORAL_TLS_CERT_FILE: /dev/null
       TEMPORAL_TLS_KEY_FILE: /dev/null
       TEMPORAL_AUTH_TOKEN_FILE: /dev/null
-      DEV_OTP_PHONE: "+919999999999"
+      DEV_OTP_PHONES: "+919999999999"
       DEV_OTP_CODE: "000000"
       AUTH_TOKEN_SECRET: ci-only-token-signing-secret-heliogrid-quality-lane-0001
     steps:

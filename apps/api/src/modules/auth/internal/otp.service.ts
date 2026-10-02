@@ -42,7 +42,7 @@ export class OtpService {
   ): Promise<OtpChallenge> {
     const fixed = developmentCode(phoneE164);
     if (fixed !== null) {
-      // The one development number: its code is known, so nothing is sent and no cap counts —
+      // A development number: its code is known, so nothing is sent and no cap counts —
       // a local sign-in or a QA run repeats it at will. The env refuses it in production.
       const challengeId = await this.codes.createChallenge({
         phoneE164,
@@ -149,11 +149,11 @@ function stateOf(row: ChallengeRow) {
   };
 }
 
-/** The fixed code of the one development number (`DEV_OTP_PHONE`), or null for every other number. */
+/** The fixed code of a development number (`DEV_OTP_PHONES`), or null for every other number. */
 function developmentCode(phoneE164: string): string | null {
-  const { DEV_OTP_PHONE, DEV_OTP_CODE } = ENV;
-  if (DEV_OTP_PHONE === undefined || DEV_OTP_CODE === undefined) return null;
-  return phoneE164 === DEV_OTP_PHONE ? DEV_OTP_CODE : null;
+  const { DEV_OTP_PHONES, DEV_OTP_CODE } = ENV;
+  if (DEV_OTP_PHONES === undefined || DEV_OTP_CODE === undefined) return null;
+  return DEV_OTP_PHONES.includes(phoneE164) ? DEV_OTP_CODE : null;
 }
 
 /** A six-digit code, uniformly random; the leading zeros are part of the code. */

@@ -105,5 +105,10 @@ export const filePathSchema = z.string().min(1);
 
 /** E.164, as the front door stores it: a plus, then seven to fifteen digits, no leading zero. */
 export const developmentPhoneSchema = z.string().regex(/^\+[1-9]\d{6,14}$/);
+/** A comma list of those numbers, each trimmed; an empty item fails the E.164 pattern. */
+export const developmentPhonesSchema = z
+  .string()
+  .transform((list) => list.split(',').map((phone) => phone.trim()))
+  .pipe(z.array(developmentPhoneSchema));
 /** The six digits of a sign-in code, leading zeros included. */
 export const developmentCodeSchema = z.string().regex(/^\d{6}$/);

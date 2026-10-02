@@ -12,8 +12,8 @@ import { skipUnless } from './preconditions';
  * meets the guard, the validation, the filter and the tenancy precondition a person meets — the
  * repository alone proves none of them.
  *
- * Sign-in is the development number (`DEV_OTP_PHONE` / `DEV_OTP_CODE`), whose code is fixed so
- * no test reads a log. A company is created through `POST /tenants`, the front door's own route,
+ * Sign-in is the first development number (`DEV_OTP_PHONES` / `DEV_OTP_CODE`), whose code is
+ * fixed so no test reads a log. A company is created through `POST /tenants`, the front door's own route,
  * and the session adopts it — so the SECOND company a test creates gives the same person a
  * session under another tenant, which is how cross-tenant is proven on the wire with one number.
  *
@@ -23,7 +23,7 @@ import { skipUnless } from './preconditions';
  */
 
 /** The api's own reader of the environment — the harness asks it, never `process.env`. */
-const DEV_PHONE = ENV.DEV_OTP_PHONE ?? '';
+const DEV_PHONE = ENV.DEV_OTP_PHONES?.[0] ?? '';
 const DEV_CODE = ENV.DEV_OTP_CODE ?? '';
 
 export interface Reply<T = unknown> {
@@ -55,7 +55,7 @@ export interface Http {
     body?: unknown,
     headers?: Record<string, string>,
   ): Promise<Reply<T>>;
-  /** The development number, through the request and verify routes. */
+  /** The first development number, through the request and verify routes. */
   signIn(): Promise<SessionProjection>;
   /** `POST /tenants`; the session now acts under the company it just created. */
   createCompany(companyName: string): Promise<SessionProjection>;
@@ -74,7 +74,7 @@ export function skipWithoutHarness(proof: string, unproven: string): boolean {
   return skipUnless(
     DEV_PHONE !== '' && DEV_CODE !== '',
     proof,
-    `no DEV_OTP_PHONE / DEV_OTP_CODE. ${unproven}`,
+    `no DEV_OTP_PHONES / DEV_OTP_CODE. ${unproven}`,
   );
 }
 
