@@ -40,11 +40,6 @@ pnpm --filter @heliogrid/theme build     # prints token, field-mode and contrast
 - **`dist/` is emitted, not authored.** A change that looks absent after editing source means you
   edited `dist/`. Run the build.
 
-## Done means
-
-The build exits 0 with its counts printed, and nothing under `_generated/` or `dist/` was
-hand-edited.
-
 ## Traps
 
 - `ds:pull` is a Claude session action that drives the DesignSync MCP, not a pnpm script, so `pnpm ds:pull` fails → drive the MCP in a session and commit what it writes.

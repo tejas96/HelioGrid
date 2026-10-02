@@ -25,7 +25,7 @@ pnpm --filter @heliogrid/forms build | typecheck    # tsc -p
 
 ## Done means
 
-Build, typecheck and lint green · consumed by BOTH platforms (Law 7) · the form driven in a
+Build, typecheck and lint green · consumed by BOTH platforms · the form driven in a
 browser and on both simulators.
 
 ## Traps

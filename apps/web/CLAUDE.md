@@ -47,13 +47,12 @@ pnpm --filter @heliogrid/web dev | build | typecheck      # dev = localhost:3002
   Component or an effect** — module scope runs on the server during SSR and will crash the render.
 - **Server-only work stays server-only.** Route handlers, server actions and secrets never become
   imports of shared UI: `@heliogrid/env/server` is unimportable from a client file.
-- **Language comes from `@heliogrid/i18n/react`**, never `@lingui/react`, which this app does not
-  declare. `app/providers.tsx` builds ONE runtime per mount (a `useState` initialiser, never
-  module scope — Next shares module scope across every server request) and syncs `<html lang>`
-  and `dir` on each switch. Keep the loader specifiers literal or catalog splitting stops.
+- **Language comes from `@heliogrid/i18n/react`.** `app/providers.tsx` builds the runtime in a
+  `useState` initialiser (one per mount: `packages/i18n/CLAUDE.md`) and syncs `<html lang>` and
+  `dir` on each switch. Keep the loader specifiers literal or catalog splitting stops.
 - **Client vs server render.** A client component reaches data through `@heliogrid/data/react`
   hooks under `<DataProvider>`. A server component or action uses `createServerDataContext` from
-  `@heliogrid/data/server`, called INSIDE the render. No route uses it yet.
+  `@heliogrid/data/server`, called INSIDE the render.
 - **Styling layers:** components own pixels (`@heliogrid/ui` index only); screens own layout via
   a colocated `<screen>.css` with token `var()`; Tailwind is layout only (`flex`, `grid`,
   `min-h-dvh`), never a value (ADR-0026). `globals.css` is the only stylesheet under `app/`.

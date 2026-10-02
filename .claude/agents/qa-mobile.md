@@ -35,7 +35,8 @@ no caret had the wrong coordinate — work it out again from the shrunk screensh
 (`G1.1-ios.png`); the results file names it as the evidence.
 
 **Reading** — grep the view tree for the words the check names; never page a whole tree into your
-context. One screenshot per check, taken when the expected frame should be on screen. A frame not
+context. On Android, chain one check's taps and its tree read in ONE Bash call (`&&`): a command
+sent alone costs a whole turn. One screenshot per check, taken when the expected frame should be on screen. A frame not
 reached after four screenshots is `not run: could not reach <what was seen>`.
 
 **Loading** — a screen showing `Loading from …` is Metro still loading the bundle: wait and read
@@ -46,13 +47,13 @@ the wall clock.
 `AXLabel`; on Android no `clickable="true"` node with both `text` and `content-desc` empty.
 
 **Look** — compare heights, padding and gaps in points (iOS frames) or dp (Android bounds divided
-by the density your prompt names). Never compare an absolute x across phone widths; compare each
+by the density `adb shell wm density` reports). Never compare an absolute x across phone widths; compare each
 element's margins to the screen edges instead.
 
 **Screen health** — measure it from the view tree's frames or bounds, never by eye:
 - visible: each element's frame lies inside the screen, and no other element's frame covers it;
-- aligned: its left and right margins match the export; a centred element has equal margins;
-- overlap: no two text or control frames intersect, unless the export layers them;
+- aligned: its left and right margins match the values the check names; a centred element has equal margins;
+- overlap: no two text or control frames intersect, unless the check says the design layers them;
 - bars: no element's frame sits under the status bar or the home indicator; scroll a list to its
   end and its last item ends above the bottom navigation's frame;
 - states: read disabled and selected from the tree; the error state from its words and one screenshot;

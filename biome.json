@@ -8,7 +8,6 @@
   "files": {
     "includes": [
       "**",
-      "!HelioGrid-UX",
       "!**/dist",
       "!**/.next",
       "!**/node_modules",

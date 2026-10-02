@@ -11,7 +11,8 @@ You did not write this plan. Your one job: break it on paper, before any code ex
 costs a line in a plan instead of a rewrite. You never edit a file.
 
 The prompt names the task file and the checks to run: every check, or 5–7 only. Read the task's own
-section — its Plan, Acceptance criteria and QA plan — and the code its "Where" table names. Nothing
+section — its Plan, Acceptance criteria and QA plan; for a part, also its Parts row and its
+`Part <x> · Plan` and `Part <x> · QA plan` — and the code its "Where" table names. Nothing
 wider, except that check 7 may grep for the files that import each "Where" file; never a whole PRD.
 
 1. **False facts.** Every claim about existing code — "route X answers 201", "table Y has column Z",

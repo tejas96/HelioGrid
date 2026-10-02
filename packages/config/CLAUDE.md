@@ -10,6 +10,8 @@ Deps: `architecture.md` §2 config.
 - `biome/*.grit` — the repo's Biome lint plugins, one per rule, named for what it holds. The root
   `biome.json` registers each one with the files it reads. How to scope and silence one is
   `.claude/rules/biome.md`, which loads when you open a plugin.
+- `unit-test-packages.json` — the set of packages that carry unit tests, read by the runner and by
+  dependency-cruiser; its law is `.claude/rules/testing.md`.
 - NEVER: runtime code, a dependency, or a `//` comment in a JSON preset. Anything executable belongs
   in a real package; a comment in a preset turns the build red, so its reasons live in this file.
 
@@ -25,7 +27,7 @@ None. Consumers typecheck against the presets; `pnpm lint` runs the plugins.
 - Two things the presets do NOT cover: a package with no matching preset extends
   `tsconfig.base.json` directly (there is no browser or react preset), and `apps/mobile`
   extends `base.json` here and then `@react-native/typescript-config`, whose settings win where the
-  two overlap (`apps/mobile/CLAUDE.md`).
+  two overlap.
 
 ## Done means
 

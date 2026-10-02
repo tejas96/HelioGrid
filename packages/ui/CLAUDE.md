@@ -63,19 +63,12 @@ check reads the waivers; review does. A `PRINT SURFACE` part is exported from `s
 - **An icon is DRAWN here, never imported from an icon package** — one SVG per glyph,
   `currentColor`, 1.5px stroke, one drawing serving the web half and the native half.
   `AppShell/ShellGlyph.logic.ts` is the shape to copy.
-- **A prop belongs to `<Name>.types.ts`, never to a platform half.** A platform-local props
-  interface above the shared base is how the halves drift. The `design-system-props` invariant
-  checks only that each design-system prop is declared; nothing compares the two halves, so the
-  types file is what you must keep honest.
+- The `design-system-props` invariant checks only that each design-system prop is declared;
+  nothing compares the two halves, so the types file is what you must keep honest.
 - Anything shared by both halves goes in a `<Name>.logic.ts`, a `use<Name>.ts` hook or a
   `<name>-model.ts` — never copied into each half.
 - **This package still carries hardcoded English**, and no check finds it. Real debt. Do not add
   more: write the prop.
-
-## Done means
-
-Both halves exist and implement the one `<Name>.types.ts`; style is in its own file; every visual
-value comes from `@heliogrid/theme`; `pnpm check:all` exits 0.
 
 ## Traps
 

@@ -11,7 +11,9 @@ You did not write this change. Find where it is wrong. A review that finds nothi
 answer, but only after you tried to break each item below. You never edit a file; the author fixes.
 
 The prompt names the task id, the task file and the QA report. Read the diff against `origin/main`
-(untracked files included), the task's Plan, Acceptance criteria and QA plan, and the QA report.
+(untracked files included), the task's Plan, Acceptance criteria and QA plan, and the QA report. For a part (`T-SHELL-003a`),
+its Parts row names the acceptance lines it carries, and its `Part <x> · Plan` and `Part <x> · QA plan`
+are the plan; lines another part carries are not this change's.
 Read the changed files, their call sites and their tests — nothing wider, and a large file by the
 lines you need. Scratch work goes only in the session scratchpad: never create, copy or edit a file
 in the repo, not even for a moment.

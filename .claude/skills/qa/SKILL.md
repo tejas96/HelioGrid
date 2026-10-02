@@ -5,8 +5,9 @@ description: Run a task's QA plan after the build — the regression suites firs
 
 # /qa — run the plan, report, fix, re-check
 
-The QA plan was written at `/start`, before the code, so it tests what should happen rather than what
-was built; run it as written after the refresh in step 1. No probes, no rounds. Everything a run writes lives in
+For a part, `<T-id>` is the part's id (`T-SHELL-003a`, `docs/tasks/README.md` rule 0) and its plan
+is the part's `#### Part <x> · QA plan`. The QA plan was written at `/start`, before the code, so it tests what should happen rather than what
+was built; run it as written after the refresh in step 1. Everything a run writes lives in
 the git-ignored workspace `.qa/<T-id>/` — `report.md`, each agent's results, `evidence/` — and the
 report's final copy goes into the PR body at `/ship`.
 
@@ -47,7 +48,7 @@ step 3 are the QA.
    own person and its own company, on the development numbers in `.env.local` (`DEV_OTP_PHONES`,
    the one fixed code `DEV_OTP_CODE`, no caps). `.qa/accounts.md` names each surface's number; the
    main session's curl session for each lives in `.qa/accounts/<surface>.jar`. No `accounts.md` →
-   write it, giving each surface its own number from `DEV_OTP_PHONES` — the last four; fewer than
+   write it, giving each surface its own number from `DEV_OTP_PHONES` — the second to the fifth; fewer than
    five numbers there → stop and ask the owner to add them. Every run, for each surface the plan
    reaches:
    - **Alive?** `curl -i http://localhost:8084/tenants/me -b .qa/accounts/<surface>.jar -c
@@ -124,7 +125,7 @@ or the emulator."
 
 1. Never edit source. Never start, restart or stop a server or a device. Never write to the
    database.
-2. Use only the account you are given.
+2. Use only the account you are given. Never `POST /auth/sign-out-everywhere` on a standing account.
 3. For each check: do the action → read the result as TEXT (the page tree, the view tree, the
    response or the database value) → compare it with the exact expected text → pass or fail.
 4. A screenshot is evidence, never the verdict — except a Look check, where you measure.
@@ -168,7 +169,7 @@ android 1 · accounts made by tapping 0 · blocks 0 · re-runs 2 · agents 3
 ## Results
 | check                          | web | ios | android | api |
 |--------------------------------|-----|-----|---------|-----|
-| S1 sign in → "Leads"           | ✓   | ✓   | ✓       | —   |
+| SM1 sign in → "Leads"          | ✓   | ✓   | ✓       | —   |
 | G1.1 empty → "Enter a phone…"  | ✓   | ✓   | ✗ I1    | —   |
 
 ## Issues

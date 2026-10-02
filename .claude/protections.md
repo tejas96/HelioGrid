@@ -85,7 +85,7 @@ catalog freshness checks, the unit tests and the invariants. CI job `quality` ru
 | Every contrast pair meets its WCAG floor | the `packages/theme` build (`assertContrastFloor` in `build.ts`) |
 | A native view never folds a control out of reach (`accessible`), never carries accessibility props it cannot speak, and a progress bar carries its value | Biome plugins `folded-control` · `inert-a11y` · `progressbar-value` |
 | A web landing has no serious or critical axe violation | `expectNoSeriousViolations` (`tests/e2e/support/axe.ts`) in every web spec · CI job `e2e-web` |
-| Every tap target is at least 44, no meaning shows only on hover, help text sits in the Explainer, and the screen matches its export | review — `design-reviewer` · `code-reviewer` items 20 and 21 · QA Look checks |
+| Every tap target is at least 44, no meaning shows only on hover, help text sits in the Explainer, and the screen matches its design | review — `design-reviewer` · `code-reviewer` items 20 and 21 · QA Look checks |
 
 ## Language
 
@@ -144,10 +144,10 @@ catalog freshness checks, the unit tests and the invariants. CI job `quality` ru
 
 | what is protected | what holds it |
 |---|---|
-| Every commit passes Biome on its staged files, the secret scan and a typecheck of the changed packages | git pre-commit (`simple-git-hooks` → `pnpm run precommit`) |
+| Every commit passes Biome on its staged files, the secret scan and a typecheck of every package (turbo-cached) | git pre-commit (`simple-git-hooks` → `pnpm run precommit`) |
 | Every pull request passes the full check on Linux | CI job `quality` (step `Quality gate`) |
 | The next step is the one the build order picks | `/start` step 2 |
-| A plan touching money, tenancy, permissions or schema is attacked, every QA plan is checked against its change, and a screen's design judged, before any code | `/start` steps 4 and 7 (`design-reviewer`, `plan-reviewer` checks 5–7, or every check) |
+| A plan touching money, tenancy, permissions or schema is attacked, every QA plan is checked against its change, and a screen's design judged, before any code | `/start` steps 5 and 8 (`design-reviewer`, `plan-reviewer` checks 5–7, or every check) |
 | A change is QA'd on every surface it reaches | `/qa` step 1 |
 | Each QA surface runs on its own standing account, alive and at its baseline before the run; a standing company never gets a seeded row; a QA row is re-judged only when the words seen equal the corrected words | `/qa` steps 2 and 8 · `code-reviewer` item 28 |
 | A second agent reviews every change before it is pushed | `/ship` step 3 (`code-reviewer`) |
