@@ -68,8 +68,8 @@ exactly that list and message — a yes to an earlier commit is not this yes.
 ## 9. CI on the same PR
 
 When a check fails, read its log for the PR head's full SHA, fix the cause, and show the owner the
-fix commit; push it after the yes. CI runs on Linux, except the `ios` job on macOS: paths are
-case-sensitive and the tools are GNU. A red phone flow keeps its screenshot and logs as the run's
+fix commit; push it after the yes. CI runs on Linux, where paths are case-sensitive and the tools
+are GNU — except the `ios` job, on macOS. A red phone flow keeps its screenshot and logs as the run's
 artifact. The owner merges.
 
 ---

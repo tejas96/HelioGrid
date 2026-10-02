@@ -49,7 +49,8 @@ never run the phone flows; `test:mobile` runs them by hand only to debug a red C
 ## Local conventions
 
 - A new number's code is read from the api's log, `.qa/api.log`, which the `api`
-  launch configurations and `playwright.config.ts` both write (`support/api-log.ts`). A running api
+  launch configurations, `playwright.config.ts` and CI's `android` and `ios` jobs write
+  (`support/api-log.ts`). A running api
   is reused as it is, so it must be one of those: an api started any other way writes no log here.
 - Maestro types faster than the phone's fields take keys: a flow waits for the tap to settle before
   typing, gives each code box its own digit, and presses Return to close the keyboard before the
