@@ -4,8 +4,7 @@
 > Before authoring the next one, read its Data model block in `docs/tasks/`. A number is taken in
 > LANDING order, so a task landing out of sequence takes the next free one and sweeps the docs.
 
-Traps: `.claude/landmines.md` · deps: `architecture.md` §2 db. Authoring a migration has
-a sequence: run `/migration`.
+Deps: `architecture.md` §2 db. Authoring a migration has a sequence: run `/migration`.
 
 ## What lives here / what must never live here
 
@@ -42,7 +41,7 @@ pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT into drizzle-dra
 
 ## Rules
 
-- **Migrations are append-only** (`M19`). Editing an applied file makes `migrate` refuse to run.
+- **Migrations are append-only.** Editing an applied file makes `migrate` refuse to run.
   Add a new numbered file; only an explicit owner ruling overrides this.
 - **Every tenant-owned table needs all four**: a `tenant_id` column · a composite index leading
   with it · an RLS policy for `app_user` checking `app.tenant_id`, fail-closed via
@@ -55,12 +54,12 @@ pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT into drizzle-dra
   `tenant` by its own id, `user_account` through a membership) or readable reference data
   (`GLOBAL_READABLE_TABLES` — SELECT held, no write privilege, no RLS; the market pack), each
   listed **with its reason** in `tests/invariants/src/table-tenancy-scan.ts`. Any other table
-  fails the scan (`M12`).
+  fails that invariant.
 - A `jsonb` payload column is typed as its ENVELOPE — key names, row identity, re-minted brands —
   never as the domain aggregate; the whole is parsed in `domain`, never here.
 - **Tenancy is defence in depth, all three always**: guard (session claims) → repository filter
   (tenantId from context, never from client input) → RLS backstop.
-- **A tenant repository is given a DOOR, not a database** (`M11`): `tenantPool(db)` returns a
+- **A tenant repository is given a DOOR, not a database**: `tenantPool(db)` returns a
   `TenantPool` with one method and no query of its own, so a read that never names its tenant
   does not compile. Take the branded `TenantScopedDb` wherever a read must be a tenant's own,
   and `DbTransaction` where either pool's transaction is legitimate.
@@ -69,7 +68,8 @@ pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT into drizzle-dra
   raw SQL insert must supply ids.
 - Append-only ledgers (`audit_log_entry` today) get no UPDATE or DELETE grants, and the tenancy
   invariant asserts it from the catalog over every RLS-subject role.
-- pgEnum values hand-mirror the contract `z.enum`s (`M17`); change both sides in the same slice.
+- pgEnum values hand-mirror the contract `z.enum`s; change both sides in the same slice. The
+  `enum-parity` invariant proves they match.
 - `usage_events` dedupe is `(idempotency_key, period_key)`; a producer MUST derive `period_key`
   from `occurred_at` or retries stop being no-ops.
 - An identity provider's own tables are owned by ITS migrator, never authored here.
@@ -83,3 +83,8 @@ pnpm --filter @heliogrid/db exec drizzle-kit generate   # DRAFT into drizzle-dra
 
 The migration applies fresh AND on an already-migrated database (idempotent skip) · the RLS
 cross-tenant invariant green against real state · typecheck and lint green.
+
+## Traps
+
+- A door opened INSIDE another door is a SEPARATE transaction, not a nested one: `withTenantTransaction` runs on the pool, so the inner call takes a second connection, its work COMMITS even when the outer rolls back, and a deep nest under load starves the pool → pass the `TenantScopedDb` you already hold down to the helper; open a second door only for a truly independent unit of work.
+- A `TenantScopedDb` kept past its callback still runs and reads NOTHING: the transaction has ended, so `app.tenant_id` is gone and every tenant policy matches zero rows — an empty result, never an error → do the work inside the callback and return VALUES from it, never the `tx`.

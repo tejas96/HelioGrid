@@ -51,6 +51,7 @@
   height: 12px;
   border-radius: var(--rf-md);
   /* Drawn in --surface: a --canvas bar is the tile's own grey and would not show. */
+  /* biome-ignore lint/plugin/raw-white-css: shimmer — a loading bar's shimmer */
   background: linear-gradient(
     90deg,
     var(--surface) 25%,

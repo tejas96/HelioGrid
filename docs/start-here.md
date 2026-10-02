@@ -1,33 +1,32 @@
 # Start here — designing one screen
 
-> ## ▶ Run `python3 scripts/next-screen.py` — it prints the next screen, and any redesign owed comes before it.
+> ## ▶ Run `/start` in a fresh Claude Code session — step 2 prints `NEXT`, `AHEAD` and `DONE`, and names the next screen to draw.
 
-This file is how you design **one** screen. Then you repeat it until the script prints nothing.
+This file is how you design **one** screen. Then you repeat it until `DONE` reads 99.
 Nothing else in this repository needs your attention while you do that.
 
 The register holds 150 screens; **99 are V1**. The `V` column in `docs/prd/registers/screens.md` §2
 says which. **You skip every `V2` row** — real scope, not designed until V1 ships.
 
-## The only four files you ever touch
+## The only three files you ever touch
 
 | # | File | What you do with it |
 |---|---|---|
 | 1 | `docs/ux/claude-design-context.md` | **Paste it.** Same file, every session, never edited in a session. |
 | 2 | `docs/ux/briefs/SCR-….md` | **Paste it.** One per session. This is the screen. |
-| 3 | `docs/prd/registers/screens.md` | **Edit 1 line** when the screen is approved. |
-| 4 | `docs/tasks/<module>.md` | **Edit 1 line** when the screen is approved. |
+| 3 | `docs/tasks/<module>.md` | **Edit 1 line** when the screen is approved. |
 
-Files 1 and 2 go into Claude Design. Files 3 and 4 record that it's done. Everything else in this
+Files 1 and 2 go into Claude Design. File 3 records that it's done. Everything else in this
 repo is the reasoning behind those briefs — you never open it.
 
 ---
 
 ## The order is the V1 build order. `V2` rows are skipped.
 
-**Your next screen is the first one `python3 scripts/next-screen.py` prints.** Do not invent a
-different starting point, however tempting a smaller brief looks. It is the same screen the build
-line of `python3 scripts/gates.py` names — as `NEXT: owner draws …` when the build has reached it,
-or as `design ahead:` while the build is still on earlier work.
+**Your next screen is the one `/start` step 2 names.** Do not invent a different starting point,
+however tempting a smaller brief looks. It prints the screen as `NEXT` — the owner draws it — when
+the build has reached it, and as `AHEAD`, the next undrawn screen on the same walk, while the build
+is still on earlier work.
 
 The eight blocks, in order, with the V1 count in each:
 
@@ -58,19 +57,18 @@ Two things about this order are deliberate, so you don't "correct" them:
   `SCR-SHELL-06` sits with the shell rows in the register, but it renders a tenant's M12 billing
   state, so it belongs to block 2.
 
-Within a block, the script follows the build's own walk — each task file's screens in the order they
-are written, a task's dependency pulled ahead of it. The build line asks for a module's screens when
-it reaches the module's first backend task, because the backend serves what the drawings show. It
-skips every row whose `V` column says `V2` or whose `Status` is already `designed`. A screen that
+Within a block, `/start` follows the build's own walk — each task file's screens in the order they
+are written, a task's dependency pulled ahead of it. It asks for a module's screens when it reaches
+the module's first backend task, because the backend serves what the drawings show. It skips every
+row whose `V` column says `V2`, and every screen whose task's `DESIGN:` line already holds a link. A screen that
 reuses a part another screen draws should come after that screen on the walk; nothing checks this, so
 when it does not, move the drawing screen's task ahead in its task file before drawing either.
 
 ## You never choose a brief — the screens register tells you
 
-Every screen has exactly **one** brief, and its filename is a column in the screen's own row in
-`docs/prd/registers/screens.md` §2. `python3 scripts/next-screen.py` prints the screen, the two
-files to paste, and the two `file:line` locations to edit afterwards. It reads the register's
-header row rather than counting columns, so a new column cannot make it lie.
+Every screen has exactly **one** brief, and its filename is the `Brief` column in the screen's own
+row in `docs/prd/registers/screens.md` §2. `/start` step 2 prints the screen, the two files to
+paste, and the `file:line` of the one `DESIGN:` line to edit afterwards.
 
 ---
 
@@ -221,42 +219,31 @@ sentence that is not on the never-behind-a-tap list is a FAIL. Push back on both
 Before the next screen starts, close every open question this one raised: check each against the
 repo first, and bring the survivors to the owner as two options at most, with a pick.
 
-Only after you've approved the design. `python3 scripts/next-screen.py` prints the exact
-`file:line` for both edits.
+Only after you've approved the design. `/start` step 2 printed the exact `file:line` of the edit.
+The register is not edited: the task's `DESIGN:` line is the one record that a screen is drawn.
 
-**Edit 1 — `docs/prd/registers/screens.md`.** Change `planned` → `designed`, and `—` → your Claude
-Design link. Leave the `V` column alone:
-
-```
-BEFORE  | SCR-… | **Name** | P0 | 8 | `docs/ux/briefs/…` | V1 | planned | — | …
-AFTER   | SCR-… | **Name** | P0 | 8 | `docs/ux/briefs/…` | V1 | designed | <link> | …
-```
-
-**Edit 2 — the module's task file.**
+**Edit 1 — the module's task file.**
 
 ```
 BEFORE  DESIGN: SCR-… → PENDING
 AFTER   DESIGN: SCR-… → <link>
 ```
 
-Both get the same link: the screen's main (Mobile) board. **When the screen has more than one board**
-(States, Desktop States, Language …), the task's `DESIGN:` line lists every other board after the main
-link, so whoever builds the screen reaches all of them in one click. The register keeps the one main
-link:
+The link is the screen's main (Mobile) board. **When the screen has more than one board** (States,
+Desktop States, Language …), the `DESIGN:` line lists every other board after the main link, so
+whoever builds the screen reaches all of them in one click:
 
 ```
 AFTER   DESIGN: SCR-… → <main link> · also: States <link> · Language <link>
 ```
 
+Once every `DESIGN:` line a task carries holds a link, its `Status:` turns `designed`.
+
 Ignore any hit inside `docs/tasks/README.md` — that file only documents what a `DESIGN:` line looks like.
 
-**Edit 3 — only if the brief said "designer decides".** If you made a choice the brief left open,
+**Edit 2 — only if the brief said "designer decides".** If you made a choice the brief left open,
 write it into the brief in the section it belongs to, so the next screen inherits it. An unrecorded
 decision is how two screens end up disagreeing about the same flow.
-
-**Edit 4 — LAST: which brief the design was reviewed against.** Run `python3 scripts/gates.py`.
-Gate 31 names the brief's digest; write it into the same register row's `Brief reviewed` cell, in
-place of `—`. It goes last because Edit 3 changes the brief.
 
 ## Fixing a screen that is already designed
 
@@ -267,22 +254,23 @@ must change, the next section applies.
 
 ## When a brief changes after its screen was designed
 
-Gate 31 refuses a changed brief until someone reviews the design against the brief as it now reads.
+Nothing records which version of a brief a drawing was made from. A redraw is caught at the
+screen's turn instead: `/start` sends `design-reviewer` over every screen task before it is built,
+and a design the brief has moved past is a MUST FIX — the screen is redrawn before the build.
 
-- **Still matches** → write the new digest gate 31 names.
-- **No longer matches** → write `owed <digest>`, and add a `## Redesign owed` section to the brief
-  that says exactly what the design shows and what the brief now requires.
-  `python3 scripts/next-screen.py` then lists it, the build line stops at its task, and it is
-  redrawn at that turn.
-- **The screen is already BUILT** → its cell also carries the code's verdict: `· code ok` when the
-  built screen matches the brief, or `· code owed T-…` naming the task that changes it.
+- **Still matches** → nothing to record.
+- **No longer matches** → add a `## Redesign owed` section to the brief that says exactly what the
+  design shows and what the brief now requires, so the redraw has its instructions.
+- **The screen is already BUILT** → check the built screen against the brief too; when it no
+  longer matches, write the task that changes it into `docs/tasks/`.
 
 ### Redoing the screen, step by step
 
 A redesign EDITS the drawing that exists. Nothing here starts a new file.
 
-1. `python3 scripts/next-screen.py` names the screen and the fault.
-2. Open the screen's own file in the design project — the register row's link — with the live
+1. `design-reviewer`'s MUST FIX at the screen's `/start`, or the brief's `## Redesign owed`
+   section, names the screen and the fault.
+2. Open the screen's own file in the design project — the link on its task's `DESIGN:` line — with the live
    design system selected, and stay in it. One session per screen.
 3. Paste `docs/ux/claude-design-context.md`, then the whole brief, then this instruction:
    *"This is a REDESIGN of an existing screen. Edit the existing `<file>` in place — no new file, no
@@ -294,10 +282,9 @@ A redesign EDITS the drawing that exists. Nothing here starts a new file.
 4. Read that list against the export: the fault is gone, and nothing else moved.
 5. Re-export the screen's pair into `HelioGrid-UX/`, REPLACING both files — never a bundled page,
    and one pair per screen afterwards.
-6. Delete the brief's `## Redesign owed` section, run `python3 scripts/gates.py`, and write the
-   digest it names in place of `owed …`.
-7. A BUILT screen: check the built screen against the redesign too, and keep `· code ok` only if it
-   still matches. Otherwise write `· code owed T-…` and open that task.
+6. Delete the brief's `## Redesign owed` section.
+7. A BUILT screen: check the built screen against the redesign too; when it no longer matches,
+   write the task that changes it into `docs/tasks/`.
 
 A fix one screen needs is usually a fact the corridor shares: when a rule is broken in one design,
 sweep the others for the same break before recording anything.
@@ -306,12 +293,8 @@ sweep the others for the same break before recording anything.
 
 ## How you know you're finished
 
-```bash
-grep -c '^| SCR-.*| V1 | planned |' docs/prd/registers/screens.md
-```
-
-**0 when you're done.** The `^| SCR-` anchor matters: without it the command also counts the V2
-rows and the register's own documentation of this command, and never reaches zero during V1.
+`/start` step 2 prints `DONE` — how many of the 99 V1 screens have a link on their task's `DESIGN:`
+line. **99 when you're done.**
 
 ---
 

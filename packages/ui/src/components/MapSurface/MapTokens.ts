@@ -6,6 +6,7 @@
 
 export const MAP_ACCENT = 'var(--accent)';
 export const MAP_INFO = 'var(--info)';
+// biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
 export const MAP_SURFACE = 'var(--surface)';
 
 /** A pending pin is accent with a hollow core; a confirmed pin is a filled success pin. */

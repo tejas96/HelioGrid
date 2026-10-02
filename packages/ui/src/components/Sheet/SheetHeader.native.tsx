@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: theme.spacing['sp-3'],
     paddingBottom: theme.spacing['sp-3'],
+    // biome-ignore lint/plugin/raw-white: panel — a sheet, a modal, a detail panel: a page ground over the page
     backgroundColor: theme.colors.surface,
     zIndex: 1,
   },

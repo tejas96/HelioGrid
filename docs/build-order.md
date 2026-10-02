@@ -23,8 +23,8 @@ requirement register; this file only says what order to take them in and why.
 
 ## The V1 scope lock
 
-**99 of the 150 screens are V1.** *(84 on 2026-08-15; 95 on 2026-08-16; 98 the same day, after the V1 readiness audit found three scope holes the gates could not see; 99 when `SCR-M01-11` followed — V1 had no user-owned preferences screen at all, so the language picker, the per-user units, the notification mute and the high-contrast field mode had nowhere to live.)* The `V` column in `docs/prd/registers/screens.md` §2 is the lock;
-`scripts/gates.py` gate 17 keeps it honest. V2 is real scope that is deliberately not blocking launch —
+**99 of the 150 screens are V1.** *(84 on 2026-08-15; 95 on 2026-08-16; 98 the same day, after the V1 readiness audit found three scope holes the gates could not see; 99 when `SCR-M01-11` followed — V1 had no user-owned preferences screen at all, so the language picker, the per-user units, the notification mute and the high-contrast field mode had nowhere to live.)* The `V` column in `docs/prd/registers/screens.md` §2 is the lock,
+and only an owner decision moves it. V2 is real scope that is deliberately not blocking launch —
 the architecture keeps its extension points, but nothing V2 is designed or built until V1 ships.
 
 **234 of the 394 tasks are backend tasks: none carries a drawing of its own, and each still waits for
@@ -37,8 +37,8 @@ the drawings of the screens it serves.**
 
 ## One order, walked one step at a time
 
-Every task is built in ONE fixed order, and `python3 scripts/gates.py` prints its next step on every
-run (`M126`). The order is walked, never chosen:
+Every task is built in ONE fixed order, and `/start` step 2 walks it to pick the next step; no
+check holds the order. The order is walked, never chosen:
 
 1. the blocks below, lowest first;
 2. inside a block, its cells in the order the block's row writes them — a file, or a task placed
@@ -54,14 +54,15 @@ The step is the first open V1 task on that walk:
 | the task | the step printed |
 |---|---|
 | ready | `build <task>` — `/start` takes it |
-| a screen not drawn, or its drawing owed a redesign | `owner draws <SCR>` from its brief — `python3 scripts/next-screen.py` prints how — then `/start` takes it |
-| a backend task whose screens in its block are not all drawn — its own file's, and any whose `Depends on:` names it | `owner draws <SCR>, …` before the backend is built: a drawing states facts the backend serves. A redesign owed does not hold it — that drawing exists, and it stops the screen task instead |
+| a screen whose `DESIGN:` line holds no link | `owner draws <SCR>` from its brief — `/start` prints how — then `/start` takes it |
+| a backend task whose screens in its block are not all drawn — its own file's, and any whose `Depends on:` names it | `owner draws <SCR>, …` before the backend is built: a drawing states facts the backend serves. A redraw `design-reviewer` asks for does not hold it — that drawing exists, and the redraw stops only the screen task |
 | carries a `**Blocked:**` line — a ruling, an account | `owner clears` it; nothing after it is taken until it is cleared, or the task is moved or parked with a recorded reason |
 | waits on a parked task | `owner clears` it: unpark that task, or move or park this one |
 | carries a `**Parked:**` line | stepped over; it pulls nothing ahead |
 
-So a module runs design → backend → UI. A screen that is not drawn is never skipped for one that is. The line also prints `design ahead:` —
-the next screen to draw on the same walk — so the owner draws while the build runs.
+So a module runs design → backend → UI. A screen that is not drawn is never skipped for one that is. `/start` also prints `AHEAD` —
+the next screen to draw on the same walk — so the owner draws while the build runs, and `DONE`, how
+many of the 99 V1 screens are drawn.
 
 Note the `V` column lives on screens, not tasks. A task is V1 if the V1 workflow needs it —
 which for the foundations means all of them, since permissions, formats and honesty underpin
@@ -92,7 +93,7 @@ so designing it in block 1 means inventing the states and the destinations `M12`
 yet. The block-1 count of 22 already excludes it and the block-2 count of 5 already includes it.
 **The data-rights engine waits in block 8, parked.** `T-FCORE-009` — `pack.data-rights`, the erasure
 workflow and the IN DPDP determination — is parked by owner ruling until the tenant base reaches real
-paying customers (roughly 10–20). It sits in the last V1 block so the build line stops offering it; it
+paying customers (roughly 10–20). It sits in the last V1 block so `/start` stops offering it; it
 builds when the owner unparks it, and by then the customer record (block 3) and the calling consent
 records (block 6) its proofs erase and export exist.
 
@@ -115,8 +116,8 @@ and its assumptions in the words the drawn proposal document (`SCR-M06-17`) give
 drawn in block 8. The design system's own renderer closes with it, so the boards drawn on free words
 are redrawn once.
 
-`python3 scripts/next-screen.py` walks the same order for the screens still to draw — run it rather
-than reading this table against the screens register by eye.
+`/start` step 2 walks the same order for the screens still to draw and prints the next one as
+`AHEAD` — use it rather than reading this table against the screens register by eye.
 
 **Block 2 is not block 5.** `M12` is how the platform charges an EPC company — pricing page,
 hosted checkout, dunning, usage against bundles. `M11` is how that company collects from a
@@ -143,8 +144,8 @@ there are two.
 
 - it is **frontend-only**, and this repo's backend and schema are built block by block before it
   (blocks 0–6);
-- it does not meet this repo's standards, and `boundaries`, `check:adherence` and `check:dupes`
-  run on every commit;
+- it does not meet this repo's standards, and `pnpm lint` (Biome and its plugins,
+  dependency-cruiser, turbo boundaries) and the duplication check run on every pull request;
 - it carries its own defect register at `docs/prd/modules/M05-studio/defect-register.md`.
 
 Porting it first would mean inventing the API, schema and data-layer conventions *while* fighting
@@ -198,7 +199,7 @@ Build the consumer after the producer, or stub it deliberately and record the st
 Each task below sits in one block, and one of its done-when proofs needs a screen or a record that
 only exists in a later block — so, as placed, its block cannot finish. Each owes a ruling BEFORE its
 own block starts: move the task to the block its proof needs, or move that proof line to the later
-task that builds what it needs. A record here keeps the order honest (`M126`); it does not settle the ruling.
+task that builds what it needs. A record here keeps the order honest; it does not settle the ruling.
 
 | task | block | waits on | block | the proof step that needs it |
 |---|---|---|---|---|
@@ -206,27 +207,13 @@ task that builds what it needs. A record here keeps the order honest (`M126`); i
 
 ---
 
-## Verifying
+## Checking the suite
 
-```bash
-python3 scripts/gates.py
-```
+No script checks the documents any more. `/start` step 3 checks the task it takes: every row id
+the task cites exists in the PRD, and every quoted row still matches its PRD cell. `design-reviewer`
+checks a screen's product facts against their whole PRD rows and its design against its brief.
+What nothing checks — a dangling id in a task not yet started, the V1 count, a row dispositioned
+twice in the screens register — is held by review and the owner.
 
-The mechanical gates in `scripts/gates.py` run over the whole suite — no dangling row or task ids anywhere in `docs/prd/`,
-`docs/ux/briefs/`, `docs/tasks/` or the screens register; verbatim quotes matching their live PRD cells; every
-screen carrying a brief and a DESIGN task; no offline machinery left in `docs/tasks/`; every one of
-the 1,660 PRD rows dispositioned exactly once in the screens register; and no open-question id
-anywhere — a row carries its own ruling. Ground truth is re-derived from the live PRD on
-every run, so a gate cannot pass by agreeing with a stale snapshot.
-
-Two of them exist because of specific ways this suite has been got wrong before. **Gate 15**
-distinguishes a struck disposition from a missing one, because "we deleted the row from the
-screens register" and "we recorded that the row was deleted" look identical in a count and mean
-opposite things. **Gate 17** holds the V1 scope lock at 99, so scope creeps by an owner decision
-that moves the number, never by an edit that nobody notices.
-
-Design progress is a separate count:
-
-```bash
-grep -c '^| SCR-.*| V1 | planned |' docs/prd/registers/screens.md
-```
+Design progress is `/start` step 2's `DONE` line: how many of the 99 V1 screens have a link on
+their task's `DESIGN:` line.

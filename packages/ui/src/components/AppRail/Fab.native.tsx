@@ -31,6 +31,7 @@ function PlusIcon() {
     <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
       <Path
         d="M12 5v14M5 12h14"
+        // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
         stroke={theme.colors['text-inverse']}
         strokeWidth={1.75}
         strokeLinecap="round"

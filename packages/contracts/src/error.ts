@@ -38,8 +38,8 @@ export const baseErrorCodeSchema = z.enum(baseErrorCodes);
  * A retry key that already made a record for a DIFFERENT request — another body, another person
  * (`F4-07`). Nothing is written. Answered as 422 beside the route's own 422 codes, in an
  * `extensibleEnum` set: the create routes GAINED this code, and a closed set that grows is a
- * breaking change to every client built before it (`M26`) — so a reader keeps a fallback, as the
- * 401 set's readers do. Only a send that carries a key can meet it.
+ * breaking change to every client built before it (oasdiff in CI) — so a reader keeps a fallback,
+ * as the 401 set's readers do. Only a send that carries a key can meet it.
  */
 export const IDEMPOTENCY_KEY_REUSED = 'IDEMPOTENCY_KEY_REUSED' as const;
 export type BaseErrorCode = z.infer<typeof baseErrorCodeSchema>;
@@ -93,7 +93,7 @@ export const openErrorEnvelopeSchema = errorEnvelope(z.string());
  * 413 PAYLOAD_TOO_LARGE · 429 RATE_LIMITED · 5xx INTERNAL (opaque).
  */
 /**
- * The status each base code answers with. NOT exported, and that is the mechanism (`M121`).
+ * The status each base code answers with. NOT exported, and that is what holds it.
  *
  * Several codes share a status — 401 is both `UNAUTHENTICATED` and `NO_CREDENTIAL`, 403 both
  * `FORBIDDEN` and `ENTITLEMENT_BLOCKED` — so a REVERSE scan of this map returns whichever was
@@ -129,8 +129,8 @@ export function httpStatusFor(code: BaseErrorCode): number {
  * EXTENSIBLE, deliberately. A closed set would make every future authentication code a breaking
  * change: a client built before it — an installer's phone in the field above all — validates the
  * response and refuses the whole reply, so the app never sees the error at all. The known codes
- * still travel as `x-extensible-enum` for readers and for the breaking-change judge (`M26`), and
- * a reader keeps a fallback for a code it does not know.
+ * still travel as `x-extensible-enum` for readers and for the breaking-change judge (oasdiff in
+ * CI), and a reader keeps a fallback for a code it does not know.
  *
  * The two codes differ for the CLIENT, not the person: both read "sign in", but a credential
  * that did not work is worth one refresh — a restarted phone with a lapsed token comes back

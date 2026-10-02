@@ -104,6 +104,7 @@ export function SunCloudMark({ animate = true }: { animate?: boolean }) {
 
 const part = {
   position: 'absolute',
+  // biome-ignore lint/plugin/raw-white: illustration — a drawn mark
   backgroundColor: theme.colors.surface,
   borderRadius: theme.radius['r-pill'],
 } as const;

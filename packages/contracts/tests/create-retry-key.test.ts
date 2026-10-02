@@ -5,7 +5,7 @@ import { apiContract } from '../src/index';
 /**
  * `F4-07`: a create applied twice never makes a second record. A route that answers 201 creates,
  * and the retry key is how the server knows the second send is the first one again — so a create
- * route without the key header is a duplicate waiting for a dropped connection (`M138`).
+ * route without the key header is a duplicate waiting for a dropped connection.
  */
 interface RouteLike {
   readonly method: string;
@@ -30,7 +30,7 @@ function carriesRetryKey(route: RouteLike): boolean {
   return headers?.shape?.[IDEMPOTENCY_KEY_HEADER] !== undefined;
 }
 
-describe('every create route carries the retry key (F4-07, M138)', () => {
+describe('every create route carries the retry key (F4-07)', () => {
   const creates = routesOf(apiContract).filter((route) => '201' in route.responses);
 
   it('finds the create routes it guards', () => {

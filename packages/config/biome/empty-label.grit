@@ -1,0 +1,19 @@
+// An accessible label is never blank: label, aria-label or accessibilityLabel given "", '', ``
+// (or the same inside {}), whitespace only — as a JSX attribute, an object property or a default.
+or {
+  JsPropertyObjectMember(),
+  JsxAttribute(),
+  JsVariableDeclarator(),
+  JsAssignmentExpression(),
+  JsObjectBindingPatternShorthandProperty(),
+  JsFormalParameter(),
+  JsPropertyClassMember(),
+  TsPropertySignatureTypeMember()
+} as $pair where {
+  $pair <: or {
+    includes "label",
+    includes "Label"
+  },
+  $pair <: r"(?s)(?:[\w$]+\.)*[\x22\x27]?(?:label|aria-label|accessibilityLabel)[\x22\x27]?\s*[:=]\s*(?:(?:\x22\s*\x22|\x27\s*\x27|\x60\s*\x60)|\{\s*(?:\x22\s*\x22|\x27\s*\x27|\x60\s*\x60)\s*\}).*",
+  register_diagnostic(span=$pair, message="An accessible label is empty, so a screen reader reads nothing — give the control its words from @heliogrid/i18n.")
+}

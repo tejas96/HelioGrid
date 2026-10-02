@@ -100,6 +100,328 @@
       }
     }
   },
+  "plugins": [
+    {
+      "path": "./packages/config/biome/raw-colour.grit",
+      "includes": [
+        "**/apps/mobile/src/**/*.{ts,tsx,mts,cts,jsx}",
+        "**/apps/mobile/App.tsx",
+        "**/apps/web/app/**/*.{ts,tsx,mts,cts,jsx}",
+        "**/apps/web/features/**/*.{ts,tsx,mts,cts,jsx}",
+        "**/apps/web/lib/**/*.{ts,tsx,mts,cts,jsx}",
+        "**/packages/theme/src/**/*.{ts,tsx,mts,cts,jsx}",
+        "**/packages/ui/src/**/*.{ts,tsx,mts,cts,jsx}",
+        "!**/packages/ui/src/components/BrandColorField/brand-swatches.ts",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/raw-colour-css.grit",
+      "includes": [
+        "**/apps/mobile/src/**/*.{css}",
+        "**/apps/web/app/**/*.{css}",
+        "**/apps/web/features/**/*.{css}",
+        "**/apps/web/lib/**/*.{css}",
+        "**/packages/theme/src/**/*.{css}",
+        "**/packages/ui/src/**/*.{css}",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/domain-clock.grit",
+      "includes": [
+        "**/packages/domain/src/**/*.{ts,mts,cts}",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/app-vocabulary.grit",
+      "includes": [
+        "**/apps/**/*.{ts,tsx}",
+        "!**/*.d.ts",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/brand-cast-domain.grit",
+      "includes": [
+        "**/apps/**/*.{ts,tsx}",
+        "**/packages/**/*.{ts,tsx}",
+        "!**/packages/domain/**",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/brand-cast-db.grit",
+      "includes": [
+        "**/apps/**/*.{ts,tsx}",
+        "**/packages/**/*.{ts,tsx}",
+        "!**/packages/db/**",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/role-literal.grit",
+      "includes": [
+        "**/apps/**/*.{ts,tsx}",
+        "**/packages/**/*.{ts,tsx}",
+        "!**/packages/domain/**",
+        "!**/packages/contracts/**",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/app-sql.grit",
+      "includes": [
+        "**/apps/**/*.{ts,tsx}",
+        "!**/*.repository.ts",
+        "!**/apps/*/src/common/db/**",
+        "!**/apps/*/src/scripts/**",
+        "!**/apps/*/tests/**",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/screen-size.grit",
+      "includes": [
+        "**/apps/mobile/src/**/*.{ts,tsx,mts}",
+        "**/apps/mobile/App.tsx",
+        "**/apps/web/app/**/*.{ts,tsx,mts}",
+        "**/apps/web/features/**/*.{ts,tsx,mts}",
+        "**/apps/web/lib/**/*.{ts,tsx,mts}",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/screen-size-css.grit",
+      "includes": [
+        "**/apps/mobile/src/**/*.{css}",
+        "**/apps/web/app/**/*.{css}",
+        "**/apps/web/features/**/*.{css}",
+        "**/apps/web/lib/**/*.{css}",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/empty-label.grit",
+      "includes": [
+        "**/apps/mobile/src/**/*.{ts,tsx,mts}",
+        "**/apps/mobile/App.tsx",
+        "**/apps/web/app/**/*.{ts,tsx,mts}",
+        "**/apps/web/features/**/*.{ts,tsx,mts}",
+        "**/apps/web/lib/**/*.{ts,tsx,mts}",
+        "**/packages/ui/src/**/*.{ts,tsx,mts}",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/light-only.grit",
+      "includes": [
+        "**/apps/mobile/src/**/*.{ts,tsx,mts}",
+        "**/apps/mobile/App.tsx",
+        "**/apps/web/app/**/*.{ts,tsx,mts}",
+        "**/apps/web/features/**/*.{ts,tsx,mts}",
+        "**/apps/web/lib/**/*.{ts,tsx,mts}",
+        "**/packages/theme/src/**/*.{ts,tsx,mts}",
+        "**/packages/ui/src/**/*.{ts,tsx,mts}",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/light-only-css.grit",
+      "includes": [
+        "**/apps/mobile/src/**/*.{css}",
+        "**/apps/web/app/**/*.{css}",
+        "**/apps/web/features/**/*.{css}",
+        "**/apps/web/lib/**/*.{css}",
+        "**/packages/theme/src/**/*.{css}",
+        "**/packages/ui/src/**/*.{css}",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/light-only-theme-css.grit",
+      "includes": [
+        "**/packages/theme/src/**/*.css",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/banned-word.grit",
+      "includes": [
+        "**/apps/api/src/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}",
+        "**/apps/worker/src/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}",
+        "**/apps/mobile/src/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}",
+        "**/apps/mobile/App.tsx",
+        "**/apps/web/app/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}",
+        "**/apps/web/features/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}",
+        "**/apps/web/lib/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}",
+        "**/packages/*/src/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}",
+        "**/apps/web/next.config.ts",
+        "!**/packages/i18n/src/locales/*/messages.ts",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/banned-word-css.grit",
+      "includes": [
+        "**/apps/api/src/**/*.{css}",
+        "**/apps/worker/src/**/*.{css}",
+        "**/apps/mobile/src/**/*.{css}",
+        "**/apps/web/app/**/*.{css}",
+        "**/apps/web/features/**/*.{css}",
+        "**/apps/web/lib/**/*.{css}",
+        "**/packages/*/src/**/*.{css}",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/banned-word-json.grit",
+      "includes": [
+        "**/apps/api/src/**/*.{json}",
+        "**/apps/worker/src/**/*.{json}",
+        "**/apps/mobile/src/**/*.{json}",
+        "**/apps/web/app/**/*.{json}",
+        "**/apps/web/features/**/*.{json}",
+        "**/apps/web/lib/**/*.{json}",
+        "**/packages/*/src/**/*.{json}",
+        "**/apps/mobile/app.json",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/raw-white.grit",
+      "includes": [
+        "**/apps/mobile/src/**/*.{ts,tsx}",
+        "**/apps/web/app/**/*.{ts,tsx}",
+        "**/apps/web/features/**/*.{ts,tsx}",
+        "**/apps/web/lib/**/*.{ts,tsx}",
+        "**/packages/theme/src/**/*.{ts,tsx}",
+        "**/packages/ui/src/**/*.{ts,tsx}",
+        "**/apps/mobile/App.tsx",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/raw-white-css.grit",
+      "includes": [
+        "**/apps/mobile/src/**/*.css",
+        "**/apps/web/app/**/*.css",
+        "**/apps/web/features/**/*.css",
+        "**/apps/web/lib/**/*.css",
+        "**/packages/theme/src/**/*.css",
+        "**/packages/ui/src/**/*.css",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/inert-a11y.grit",
+      "includes": ["**/packages/ui/src/**/*.{ts,tsx}"]
+    },
+    {
+      "path": "./packages/config/biome/folded-control.grit",
+      "includes": ["**/packages/ui/src/**/*.{ts,tsx}"]
+    },
+    {
+      "path": "./packages/config/biome/progressbar-value.grit",
+      "includes": ["**/packages/ui/src/**/*.{ts,tsx}"]
+    }
+  ],
   "javascript": {
     "parser": {
       "unsafeParameterDecoratorsEnabled": true
@@ -186,12 +508,7 @@
       }
     },
     {
-      "includes": [
-        "packages/env/src/**",
-        "apps/web/lib/env.ts",
-        "scripts/check-openapi-breaking.mjs",
-        "infra/temporal/spike/**"
-      ],
+      "includes": ["packages/env/src/**", "apps/web/lib/env.ts", "infra/temporal/spike/**"],
       "linter": {
         "rules": {
           "style": {
@@ -258,6 +575,8 @@
                   "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
                   "@lingui/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupts translations.",
                   "@lingui/react/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupts translations.",
+                  "lucide-react": "Icons are DRAWN in packages/ui — one SVG per glyph, currentColor, 1.5px stroke — and serve both platform halves (owner ruling; docs/engineering/03 Icons row, F7-19). An icon PACKAGE ties the family to someone else's release and splits it in two, one library per platform. ShellIcons.tsx is the shape to copy.",
+                  "lucide-react-native": "Icons are DRAWN in packages/ui — one SVG per glyph, currentColor, 1.5px stroke — and serve both platform halves (owner ruling; docs/engineering/03 Icons row, F7-19). An icon PACKAGE ties the family to someone else's release and splits it in two, one library per platform. ShellIcons.tsx is the shape to copy.",
                   "react-hook-form": "Import useZodForm/Controller from '@heliogrid/forms' — the fenced form layer (foundation-dx spec §2.2).",
                   "@hookform/resolvers/zod": "zodResolver is wired inside @heliogrid/forms' useZodForm — import that instead (foundation-dx spec §2.2).",
                   "zod": "Import z from '@heliogrid/forms' — the app bundler's zod is a DIFFERENT instance (dual ESM/CJS), so installFormsErrorMap's translated defaults never apply to schemas built with it. Real schemas live in @heliogrid/contracts."
@@ -332,9 +651,15 @@
                 "paths": {
                   "node:fs": "A service reads no file of its own. Its identity — the signed token and the mTLS certificates — is read by @heliogrid/env/server, the one reader both services use, so a rotation that works for one works for the other. The single exception is the boot assertion that a BUILD artifact exists, and it is excluded by path.",
                   "fs": "A service reads no file of its own. Its identity — the signed token and the mTLS certificates — is read by @heliogrid/env/server, the one reader both services use. Use 'node:fs' inside @heliogrid/env, never a bare specifier.",
+                  "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
+                  "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
+                  "@lingui/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupts translations.",
+                  "@lingui/react/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupts translations.",
+                  "lucide-react": "Icons are DRAWN in packages/ui — one SVG per glyph, currentColor, 1.5px stroke — and serve both platform halves (owner ruling; docs/engineering/03 Icons row, F7-19). An icon PACKAGE ties the family to someone else's release and splits it in two, one library per platform. ShellIcons.tsx is the shape to copy.",
+                  "lucide-react-native": "Icons are DRAWN in packages/ui — one SVG per glyph, currentColor, 1.5px stroke — and serve both platform halves (owner ruling; docs/engineering/03 Icons row, F7-19). An icon PACKAGE ties the family to someone else's release and splits it in two, one library per platform. ShellIcons.tsx is the shape to copy.",
                   "@heliogrid/db": {
                     "importNames": ["createDb"],
-                    "message": "A repository is given a DOOR, not a pool (M11). Building a second pool with createDb walks around the tenant handle and around the one holder with a shutdown hook, so a command that opens one never exits. Ask for TENANT_DB, REFERENCE_DB or ADMIN_DB. The two places that legitimately open a pool carry a biome-ignore at the call site naming why — it folds in HERE rather than into an override of its own, because an override REPLACES this rule's config for the files it matches and would switch the two bans above off."
+                    "message": "A repository is given a DOOR, not a pool: the tenant handle is the only way to a tenant row. Building a second pool with createDb walks around the tenant handle and around the one holder with a shutdown hook, so a command that opens one never exits. Ask for TENANT_DB, REFERENCE_DB or ADMIN_DB. The two places that legitimately open a pool carry a biome-ignore at the call site naming why — it folds in HERE rather than into an override of its own, because an override REPLACES this rule's config for the files it matches and would switch the two bans above off."
                   }
                 }
               }
@@ -360,6 +685,8 @@
                   "zod/v4-mini": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
                   "@lingui/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupts translations.",
                   "@lingui/react/macro": "Explicit-id <Trans id=…> only — the macro pipeline is blocked on the swc plugin (packages/i18n/CLAUDE.md, THE CONVENTION). Mixing macro and explicit ids corrupts translations.",
+                  "lucide-react": "Icons are DRAWN in packages/ui — one SVG per glyph, currentColor, 1.5px stroke — and serve both platform halves (owner ruling; docs/engineering/03 Icons row, F7-19). An icon PACKAGE ties the family to someone else's release and splits it in two, one library per platform. ShellIcons.tsx is the shape to copy.",
+                  "lucide-react-native": "Icons are DRAWN in packages/ui — one SVG per glyph, currentColor, 1.5px stroke — and serve both platform halves (owner ruling; docs/engineering/03 Icons row, F7-19). An icon PACKAGE ties the family to someone else's release and splits it in two, one library per platform. ShellIcons.tsx is the shape to copy.",
                   "react-hook-form": "Import useZodForm/Controller from '@heliogrid/forms' — the fenced form layer (foundation-dx spec §2.2).",
                   "@hookform/resolvers/zod": "zodResolver is wired inside @heliogrid/forms' useZodForm — import that instead (foundation-dx spec §2.2).",
                   "zod": "Import z from '@heliogrid/forms' — the app bundler's zod is a DIFFERENT instance (dual ESM/CJS), so installFormsErrorMap's translated defaults never apply to schemas built with it. Real schemas live in @heliogrid/contracts."
@@ -379,16 +706,16 @@
               "level": "error",
               "options": {
                 "deniedGlobals": {
-                  "fetch": "packages/domain is pure — no I/O (packages/domain/CLAUDE.md, M57). The app that calls the reducer owns the wire, through packages/data.",
-                  "XMLHttpRequest": "packages/domain is pure — no I/O (packages/domain/CLAUDE.md, M57). The app that calls the reducer owns the wire, through packages/data.",
-                  "setTimeout": "packages/domain is pure — no timer (M57). Time enters as a parameter (`now: number`); packages/data's hook owns timers.",
-                  "setInterval": "packages/domain is pure — no timer (M57). Time enters as a parameter (`now: number`); packages/data's hook owns timers.",
-                  "performance": "packages/domain is pure — no clock (M57). Time enters as a parameter (`now: number`).",
-                  "crypto": "packages/domain is pure — no randomness (M57). An id source is injected by the caller.",
-                  "globalThis": "packages/domain reaches no platform object: `globalThis.fetch` is fetch by another name (M57).",
-                  "window": "packages/domain reaches no platform object: `window.setTimeout` is a timer by another name (M57).",
-                  "self": "packages/domain reaches no platform object: `self.fetch` is fetch by another name (M57).",
-                  "global": "packages/domain reaches no platform object: `global.setTimeout` is a timer by another name (M57)."
+                  "fetch": "packages/domain is pure — no I/O (packages/domain/CLAUDE.md). The app that calls the reducer owns the wire, through packages/data.",
+                  "XMLHttpRequest": "packages/domain is pure — no I/O (packages/domain/CLAUDE.md). The app that calls the reducer owns the wire, through packages/data.",
+                  "setTimeout": "packages/domain is pure — no timer. Time enters as a parameter (`now: number`); packages/data's hook owns timers.",
+                  "setInterval": "packages/domain is pure — no timer. Time enters as a parameter (`now: number`); packages/data's hook owns timers.",
+                  "performance": "packages/domain is pure — no clock. Time enters as a parameter (`now: number`).",
+                  "crypto": "packages/domain is pure — no randomness. An id source is injected by the caller.",
+                  "globalThis": "packages/domain reaches no platform object: `globalThis.fetch` is fetch by another name.",
+                  "window": "packages/domain reaches no platform object: `window.setTimeout` is a timer by another name.",
+                  "self": "packages/domain reaches no platform object: `self.fetch` is fetch by another name.",
+                  "global": "packages/domain reaches no platform object: `global.setTimeout` is a timer by another name."
                 }
               }
             },
@@ -406,7 +733,7 @@
                 "patterns": [
                   {
                     "group": ["node:*"],
-                    "message": "packages/domain is isomorphic and pure — no Node-only API (Law 10, M57). The repo-wide import bans are repeated above because an override REPLACES this rule's config for the files it matches."
+                    "message": "packages/domain is isomorphic and pure — no Node-only API (Law 10). The repo-wide import bans are repeated above because an override REPLACES this rule's config for the files it matches."
                   }
                 ]
               }

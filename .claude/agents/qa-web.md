@@ -1,60 +1,60 @@
 ---
 name: qa-web
-description: Drives the Next.js web app in the browser pane to execute a QA step list and report verdicts with evidence. Dispatched by /verify.
+description: Runs the web checks of a QA plan in the browser pane — behaviour, text, layout at 375 and 1536, keyboard, and the network calls each action makes — and writes one result row per check. Dispatched by /qa when a change reaches the web app.
 tools: mcp__Claude_Browser__preview_logs, mcp__Claude_Browser__tabs_context, mcp__Claude_Browser__tabs_select, mcp__Claude_Browser__navigate, mcp__Claude_Browser__read_page, mcp__Claude_Browser__find, mcp__Claude_Browser__computer, mcp__Claude_Browser__form_input, mcp__Claude_Browser__read_console_messages, mcp__Claude_Browser__read_network_requests, mcp__Claude_Browser__resize_window, mcp__Claude_Browser__javascript_tool, Bash, Read, Grep
 model: sonnet
-effort: medium
+effort: high
 maxTurns: 100
 ---
 
-Execute the given web QA steps against the running app and report verdicts. You never edit
-source; a step you cannot run is `inconclusive`, never a pass.
+Run the checks your prompt gives you, under the common rules your prompt gives you. This file is
+how to drive the web app.
 
-**The servers are up; never start, restart or stop one.** The author started them before the
-dispatch and the prompt names each server id; `navigate` to the web app on port 3002. Front your tab (`tabs_context`, `tabs_select`)
-before any physical click or typing — a hidden pane or a background tab drops them silently — and
-prefer `form_input` and a scripted click through `javascript_tool`. Then per step:
+**Open it** — `navigate` to `http://localhost:3002`. Bring your tab to the front (`tabs_context`,
+`tabs_select`) before any click or typing: a hidden pane or a background tab drops input silently.
+Prefer `form_input` and a scripted click through `javascript_tool`.
 
-**Signing in during a run.** The one procedure is `.claude/skills/verify/references/test-matrix.md`
-§"Signing in during a run" — the development number for an existing account, a fresh `+91` number
-plus the API log file for a new one. Sign in only with the account the prompt gives you — another
-surface's session ends when yours signs out.
+**Read the result as text** — `read_page`, the accessibility tree, never a screenshot. The expected
+value is a literal string: the tree holds it, or the check fails. "Renders correctly" is not a
+result; "Welcome back present and Loading absent" is. For a computed value — a colour, a size, a
+gap — read it with `javascript_tool`.
 
-1. Perform the actions.
-2. Read the criterion with `read_page` — the accessibility tree, NOT a screenshot. **`expected`
-   is a literal string: the tree contains it or the step fails.** "Renders correctly" is not a
-   criterion; `Welcome back` present and `Loading` absent is.
-3. Capture evidence as TEXT: the matched tree excerpt and the computed values, plus console and
-   network output where the step concerns errors or requests. The screenshot tool returns an image,
-   not a file: a step decided by vision writes what it saw in words.
-4. Record the wire: every API call the step's actions made, from `read_network_requests` —
-   method, path, status, and the request body where the step sent data — against the step's
-   `wire` list. A call the plan did not name, the same call made twice, or a body carrying the
-   wrong data is a finding, written into `observed` even when the visible outcome matched.
+**Check every call the action made** — `read_network_requests`: the method, the path, the status and
+the body sent. A call the check did not expect, the same call twice, or a body with the wrong data
+is a finding, written into the row even when the screen looked right. A console error from the
+action (`read_console_messages`) fails the check.
 
-A console error or failed request produced by the step's actions fails it, even when the
-visible outcome looks right. So does a server error: mark the api log before each step and read
-it after, with `web` — `test-matrix.md` §"A server error fails the step".
+**The api log** — your requests carry your browser's user agent; read only those lines.
 
-Screenshot only for what vision alone catches — clipping, overlap, truncation, layout
-collapse at 375px, broken Devanagari. `resize_window` for responsive steps.
+**Layout** — `resize_window` to 375 and to 1536 for width checks. A Look check measures computed
+styles against the export: gaps, sizes, type and alignment, in pixels. A screenshot is only for what
+vision alone shows — clipping, overlap, broken Devanagari — and you write what you saw in words.
 
-**Screen first, then write as you go** — the one procedure is
-`.claude/skills/verify/references/test-matrix.md` §"What each agent can see, and recording a run":
-a step you cannot observe or drive is recorded `inconclusive`, naming what; append each verdict
-to `verdicts-web.jsonl` in the folder the prompt names, one line per step, in the line shape that
-section gives (`surface: "web"`, the round, stage and tree the prompt names).
+**Screen health** — measure it with `javascript_tool`, never by eye:
+- visible: each element's `getBoundingClientRect()` lies inside the viewport, its text is not cut
+  (`scrollWidth <= clientWidth`), and `document.elementFromPoint` at its centre returns the element
+  or a child — anything else covers it;
+- aligned: its left margin (`rect.left`) and right margin (`innerWidth - rect.right`) match the
+  export; a centred element has equal margins within 2px;
+- overlap: no two visible text or control boxes intersect, unless the export layers them;
+- states: reach focus with Tab, and read disabled, selected and error from the tree and the
+  computed styles;
+- large text: `document.documentElement.style.zoom = '2'`, check again, then set it back to `''`;
+- tap targets: every control's box is at least 44 × 44;
+- fonts: `document.fonts.check` for each face, and the computed `font-family` of Hindi and Marathi
+  text;
+- console: `read_console_messages` — an error fails the check, a new warning is a finding.
 
-**Then probe.** The steps are the floor, not the ceiling: after the last step, run the probes
-`.claude/skills/verify/references/test-matrix.md` §"Probes" sets — how many, aimed where, picked how,
-one `P<n>` line each.
+**Files** — the web screenshot tool returns an image, not a file: write what you saw in the result
+row; a log or measured values you save go under `.qa/<T-id>/evidence/`, named by the check id.
 
-Return ONLY a JSON array of the lines you wrote — `observed` is the exact string you read. No prose
-outside the array.
+**Keyboard** — use real key presses: Tab order, visible focus, Enter and Escape.
 
-Never mark a step passed on a screenshot alone, and never skip one silently.
+**No connection** — the browser pane cannot drop the network. A "no connection" check is proven by
+the web spec the build added (`context.setOffline(true)`); here it is `not run: the spec covers it`.
 
-**Signing out between runs.** The pane keeps the HttpOnly session across runs and the placeholder
-home has no control: from any page on the app's origin, `javascript_tool`
-`await fetch('http://localhost:8084/auth/sign-out', {method: 'POST', credentials: 'include'})`,
-then open `/login` — the door must show "Sign in" before a step that signs in.
+**Signing in and out** — use only the account your prompt gives you; a company you create is named
+as your prompt says (`QA <T-id> <surface>`). The pane keeps its session
+between runs. To sign out: from any page on the app's origin, `javascript_tool`
+`await fetch('http://localhost:8084/auth/sign-out', {method: 'POST', credentials: 'include'})`, then
+open `/login`; it must show "Sign in" before a check that signs in.

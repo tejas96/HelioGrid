@@ -11,12 +11,18 @@
  * for ones the importer does not declare — a pattern covering only one form is inert in
  * exactly the case it exists to catch. Four rules in this file were inert on that basis.
  */
-/* The apps a unit test may live in, from the one file that states the corpus — so this rule
+/* The packages a unit test may live in, from the one file that states the corpus — so this rule
  * cannot fence a different set than the runner collects or the guard admits. */
-const TEST_APPS = require('./packages/config/unit-test-packages.json')
-  .packages.filter((p) => p.startsWith('apps/'))
-  .map((p) => p.slice('apps/'.length));
-if (TEST_APPS.length === 0) throw new Error('unit-test-packages.json names no app');
+const UNIT_TEST_PACKAGES = require('./packages/config/unit-test-packages.json').packages;
+if (UNIT_TEST_PACKAGES.length === 0) throw new Error('unit-test-packages.json names no package');
+/* A test file outside the one place for its kind: anything under a `__tests__` or `__mocks__`
+ * folder; a `*.test.*` outside a listed package's `tests/`; a `*.spec.*` anywhere but where the
+ * regression suite's two runners read them. */
+const MISPLACED_TEST = [
+  '(^|/)__(tests|mocks)__/',
+  `^(?!(${UNIT_TEST_PACKAGES.join('|')})/tests/).*\\.test\\.[^/]*$`,
+  '^(?!tests/e2e/web/.*\\.spec\\.ts$|tests/e2e/components/.*\\.spec\\.tsx$).*\\.spec\\.[^/]*$',
+].join('|');
 
 module.exports = {
   forbidden: [
@@ -281,9 +287,9 @@ module.exports = {
         'apps/web and apps/mobile reach the API through @heliogrid/data ONLY — the sole ' +
         'initClient call is packages/data/src/client/client.ts (ADR-0023). A third-party ' +
         'HTTP client bypasses the contract, so contract drift stops being a compile error ' +
-        'and becomes a runtime surprise. Complements — does NOT replace — the prose rule ' +
-        'in apps/web/CLAUDE.md: that landmine was a native fetch() via an untyped api<T>(), ' +
-        'which has no import for a bundler graph to catch. No exemptions: the four app-local ' +
+        'and becomes a runtime surprise. Complements — does NOT replace — the Biome fetch ban ' +
+        'in apps/** (noRestrictedGlobals): a native fetch() via an untyped api<T>() has no ' +
+        'import for a bundler graph to catch. No exemptions: the four app-local ' +
         'client files this rule once anchored were deleted by ADR-0023/0024 (better-auth is ' +
         'banned outright by apps-never-touch-the-wire, not exempt).',
       from: {
@@ -308,11 +314,12 @@ module.exports = {
       name: 'package-index-only',
       severity: 'error',
       comment:
-        'apps reach a package ONLY through a path its package.json `exports` declares — never a deep source path (docs/engineering/02 §2). Generalises the former ui-index-only. theme is omitted deliberately: every one of its entry points is a declared subpath export. @heliogrid/ui declares a `./styles.css` subpath export (resolved to `src/styles.css`), so it is permitted alongside index. @heliogrid/i18n declares `.`, `./react` and `./rn` — `./rn` is separate because importing it installs global Intl polyfills that must never enter a web bundle. `packages/contracts/src/locale.ts` needs no subpath: it is re-exported from index, which is how `lingui.config.js` reads the language set. The `@heliogrid/*/src/` arm is LOAD-BEARING, not belt-and-braces: every package restricts its `exports`, so a deep source import does NOT resolve to a file — `resolved` stays the BARE SPECIFIER and a `^packages/` regex can never match it. With only the path arms this rule was INERT in exactly the case it exists to catch (found by injection, Track 9) — the same failure mode as the old `bullmq-fenced`.',
+        'apps reach a package ONLY through a path its package.json `exports` declares — never a deep source path (docs/engineering/02 §2). Generalises the former ui-index-only. theme is omitted deliberately: every one of its entry points is a declared subpath export. @heliogrid/ui declares a `./styles.css` subpath export (resolved to `src/styles.css`) and a `./print` one (`src/print.ts`, the web print parts), so both are permitted alongside index. @heliogrid/i18n declares `.`, `./react` and `./rn` — `./rn` is separate because importing it installs global Intl polyfills that must never enter a web bundle. `packages/contracts/src/locale.ts` needs no subpath: it is re-exported from index, which is how `lingui.config.js` reads the language set. The `@heliogrid/*/src/` arm is LOAD-BEARING, not belt-and-braces: every package restricts its `exports`, so a deep source import does NOT resolve to a file — `resolved` stays the BARE SPECIFIER and a `^packages/` regex can never match it. With only the path arms this rule was INERT in exactly the case it exists to catch (found by injection, Track 9) — the same failure mode as the old `bullmq-fenced`.',
       from: { path: '^apps/' },
       to: {
         path: [
-          '^packages/(ui|theme|db|domain|adapters)/src/(?!index|styles\\.css$)',
+          '^packages/ui/src/(?!index|print\\.ts$|styles\\.css$)',
+          '^packages/(theme|db|domain|adapters)/src/(?!index|styles\\.css$)',
           '^packages/contracts/src/(?!index|workflows/index)',
           '^packages/data/src/(?!index|react/index|server/index)',
           '^packages/i18n/src/(?!index|react/index|rn/index)',
@@ -473,12 +480,13 @@ module.exports = {
       name: 'no-tests-outside-the-tests-tree',
       severity: 'error',
       comment:
-        'Unit tests are welcome in the LOGIC layers, but only at `<package>/tests/**/*.test.ts`. An app test anywhere else — beside a screen, inside src/ — is either testing the frontend (proven by RUNNING it) or sitting where the app build will compile it. apps/api and apps/worker tests are exempted by path, not by filename, so a stray `Screen.test.tsx` under apps/web is still an error. check-adherence.sh check 1 says the same thing about files that import nothing.',
-      from: {
-        path: '^apps/.*\\.(test|spec)\\.(ts|tsx)$',
-        pathNot: `^apps/(${TEST_APPS.join('|')})/tests/`,
+        'One name, one place (.claude/rules/testing.md). A unit test is `*.test.*` under `<package>/tests/` of a package named in packages/config/unit-test-packages.json — anywhere else it is testing a layer this repo proves by running, or sitting inside src/ where the package build compiles it into dist/. A `*.spec.*` is the regression suite\'s, at tests/e2e/web/*.spec.ts or tests/e2e/components/*.spec.tsx, where its two runners read it, so a spec anywhere else never runs. `__tests__/` and `__mocks__/` are conventions this repo does not use. The rule judges the FILE, whatever it imports: a dependency-cruiser rule selects every module on a path by its dependents count, and "fewer than 100" is every test file, which nothing imports.',
+      module: {
+        path: MISPLACED_TEST,
+        pathNot: '(^|/)(node_modules|dist|\\.next|ios|android)/',
+        numberOfDependentsLessThan: 100,
       },
-      to: { path: '.*' },
+      from: {},
     },
     {
       name: 'adapters-no-domain-internals',

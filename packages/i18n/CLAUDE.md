@@ -1,7 +1,6 @@
 # @heliogrid/i18n — ONE Lingui catalog (EN/HI/MR) for Next.js AND bare RN
 
-Traps: `.claude/landmines.md` · deps:
-`architecture.md` §2 i18n. `packages/ui` stays string-free: copy arrives as props.
+Deps: `architecture.md` §2 i18n. `packages/ui` stays string-free: copy arrives as props.
 
 ## What lives here / what must never live here
 
@@ -26,11 +25,12 @@ src/locales/<lang>/           messages.po (source of truth) + messages.ts (compi
 src/index.ts                  REACT-FREE root — createI18nRuntime, createTranslator, metadata
 src/languages.ts              LANGUAGE_META + the statically-imported source catalog
 src/catalog-loader.ts         web: one import() chunk per language
-src/catalog-loader.native.ts  RN: static imports (Metro substitutes it — see the landmine)
+src/catalog-loader.native.ts  RN: static imports — Metro substitutes it, because `import()`
+                              cannot lazy-load on the phone
 src/react/                    the ONE provider and hooks both platforms use
 src/rn/                       Hermes Intl polyfills — global side effects, own entry
-tests/runtime.test.ts         the fallback and per-reader proofs, against the REAL catalogs — the
-                              one unit-tested file here (`.claude/rules/testing.md`)
+tests/                        unit tests of `runtime.ts` and the `copy/` functions, against the
+                              REAL catalogs (`.claude/rules/testing.md`)
 ```
 
 ## Three entry points
@@ -46,7 +46,7 @@ bundle must never take.
 pnpm --filter @heliogrid/i18n extract | build | typecheck   # extract sweeps web, mobile and ui
 ```
 
-Run `extract` before committing: CI fails if the catalogs are not fresh (`M47`).
+Run `extract` before committing: `pnpm check:catalogs` fails if the catalogs are not fresh.
 
 ## Local conventions
 
@@ -58,7 +58,7 @@ Run `extract` before committing: CI fails if the catalogs are not fresh (`M47`).
 - **The language SET is not written here.** `UI_LANGUAGES` is authored in
   `packages/domain/src/format/languages.ts` and re-exported by contracts, which is
   where this package and `lingui.config.js` still read it. `LANGUAGE_META` and both catalog
-  loaders are `satisfies Record<UiLanguage, …>` (`M48`).
+  loaders are `satisfies Record<UiLanguage, …>`.
 - **The provider FOLLOWS the session.** A root passes `follow={user?.interfaceLanguage ?? null}`
   and persists only on `source === 'user'` in `onLocaleChange`; a screen calls `setLocale` and
   never writes the profile itself — the store is the one persist path (`F3-02`, `F3-04`).
@@ -82,11 +82,12 @@ design token but the sans stack, no component, and no product model beyond the l
 
 1. **Add the code** to `UI_LANGUAGES` in `packages/domain/src/format/languages.ts`. The build then
    refuses until each registration exists — every `satisfies Record<UiLanguage, …>` the compiler
-   names (`M48`), `LANGUAGE_META`'s tag, endonym and direction among them — and the plural polyfill
+   names, `LANGUAGE_META`'s tag, endonym and direction among them — and the plural polyfill
    line in `src/rn/index.ts`, which no type holds yet (`docs/tasks/deferred.md`): add it by hand.
-2. **Add the database value** with `/migration`: `ui_language` mirrors the set (`M17`). The
-   migration runs before machines roll; an older build that meets the new language reads English
-   (`uiLanguageResponseSchema`, `uiLanguageOrSource`) and the person's stored choice is untouched.
+2. **Add the database value** with `/migration`: `ui_language` mirrors the set, and the
+   `enum-parity` invariant proves it. The migration runs before machines roll; an older build that
+   meets the new language reads English (`uiLanguageResponseSchema`, `uiLanguageOrSource`) and the
+   person's stored choice is untouched.
 3. **Translate.** `pnpm --filter @heliogrid/i18n extract` writes the new catalog. A gap falls back
    to English string by string (`F3-05`) — a partly translated language ships; an empty `msgstr`
    in a `.po` file is the gap to fill, and no gate counts them.
@@ -97,7 +98,8 @@ design token but the sans stack, no component, and no product model beyond the l
    `npx react-native-asset` for iOS; on Android the same faces go in
    `apps/mobile/android/app/src/main/res/font/` as `<family>_<weight>.ttf`, lowercase, beside a
    `<family>.xml` that maps each weight, and the family is registered in `MainApplication.kt`
-   (`check:languages` names what is missing). Then look at it on a device — only a device proves the phone links it.
+   (the `language-fonts` invariant names what is missing). Then look at it on a device — only a
+   device proves the phone links it.
 5. **Write the plurals.** Every plural message written in the language carries every category
    `Intl.PluralRules` names for it; a message still in English is a gap, not a failure.
 6. **Money: nothing to do.** `formatMoney` takes the market's pack and never a language (`F3-20`;
@@ -105,11 +107,17 @@ design token but the sans stack, no component, and no product model beyond the l
 7. **Check the densest screens** that exist — the BOM, the generated proposal document, the
    proposal builder, the lead list, the studio panels — rendered in the language at both
    viewports (`F3-18`). A reviewer judges this; no gate can.
-8. **Ship when `pnpm check:languages` is green** (`F3-27`, `M135`). Until then the language never
-   reaches `main`, so the picker cannot offer it.
+8. **Ship when `pnpm check:all` is green** — the `language-fonts` invariant and
+   `tests/plural-forms.test.ts` hold `F3-27`. Until then the language never reaches `main`, so the
+   picker cannot offer it.
 
 ## Done means
 
 `extract` leaves the tree clean · every locale has zero missing messages, or the gap is a
 deliberate English fallback · every language RENDERED on web and both simulators, switching and
 not merely loading.
+
+## Traps
+
+- Without the statically imported source catalog, `i18n.activate()` warns on every boot and a production build `console.warn`s on every fallback message → keep the static import in `languages.ts`.
+- `lingui.config.js` is CommonJS and runs outside any TS pipeline, so it needs BUILT contracts; it throws rather than fall back, because a silent fallback would extract against the wrong language set with every check green → build contracts first.

@@ -20,9 +20,10 @@ const c = initContract();
 
 /**
  * What the product is telling someone (`F6-05`). Built from `NOTIFICATION_TYPES` in
- * `@heliogrid/domain`, never restated: the migration mirrors the same tuple as a pgEnum (`M17`),
- * so a value on one side alone is a row the API can never return or a value the database rejects.
- * This closed form is the WRITE side and the mirror; the read below carries the growing form.
+ * `@heliogrid/domain`, never restated: the migration mirrors the same tuple as a pgEnum (invariant
+ * `enum-parity`), so a value on one side alone is a row the API can never return or a value the
+ * database rejects. This closed form is the WRITE side and the mirror; the read below carries the
+ * growing form.
  */
 export const notificationTypeSchema = z.enum(NOTIFICATION_TYPES);
 export type NotificationType = z.infer<typeof notificationTypeSchema>;
@@ -66,7 +67,7 @@ export type UnreadCount = z.infer<typeof unreadCountSchema>;
 
 /**
  * The five groups a person may switch push off for (`F6-15`). Derived from the domain tuple like
- * every other vocabulary (`M17`); the migration mirrors the same list as a pgEnum. Closed on the
+ * every other vocabulary; the migration mirrors the same list as a pgEnum. Closed on the
  * WRITE side so an unknown group is refused before any query runs, and growing on the read, which
  * is the same pair `notificationTypeSchema` and `notificationSchema` already use above.
  */
@@ -139,7 +140,7 @@ export type MarkAllRead = z.infer<typeof markAllReadSchema>;
  * in it. Registering the same token twice replaces the row rather than adding one, so a handset
  * that signs in again does not collect duplicates and a person is not pushed twice.
  */
-/** Derived from the domain tuple; the migration mirrors the same list as a pgEnum (`M17`). */
+/** Derived from the domain tuple; the migration mirrors the same list as a pgEnum (invariant `enum-parity`). */
 export const pushPlatformSchema = z.enum(PUSH_PLATFORMS);
 export type PushPlatform = z.infer<typeof pushPlatformSchema>;
 

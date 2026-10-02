@@ -3,7 +3,7 @@ import type { BannerGlyph } from './Banner.types';
 /**
  * The banner glyphs, as geometry rather than markup. Each is a list of `d` strings plus whether
  * the outline is ringed, because the two halves draw with different elements — `<path>`/`<circle>`
- * on web, `react-native-svg`'s `<Path>`/`<Circle>` on RN — and only the SHAPE is shared (`M118`).
+ * on web, `react-native-svg`'s `<Path>`/`<Circle>` on RN — and only the SHAPE is shared.
  * The halves used to hold the same outlines in two encodings, which is how one platform keeps an
  * old glyph after the other is corrected.
  *

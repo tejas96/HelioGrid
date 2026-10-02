@@ -18,12 +18,14 @@ const DISABLED = theme.colors['surface-form'];
 
 const COLORS: Record<Ground, GroundColors> = {
   page: {
+    // biome-ignore lint/plugin/raw-white: ground — the ground itself, and Surface, which sets it
     ground: theme.colors.surface,
     controlFill: theme.colors['bg-well'],
     controlFillDisabled: DISABLED,
   },
   tile: {
     ground: theme.colors['canvas-sunken'],
+    // biome-ignore lint/plugin/raw-white: ground — the ground itself, and Surface, which sets it
     controlFill: theme.colors.surface,
     controlFillDisabled: DISABLED,
   },

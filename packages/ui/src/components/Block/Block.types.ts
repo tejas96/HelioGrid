@@ -66,7 +66,7 @@ export interface BlockProps {
   /**
    * Changes nothing: a block is always a heading on the page (`F7-49`), with no surface or shadow
    * to drop. Declared because the design system's contract declares it, and removing a declared
-   * prop fails `ds:contract`.
+   * prop fails the `design-system-props` invariant.
    */
   flat?: boolean;
   children?: ReactNode;

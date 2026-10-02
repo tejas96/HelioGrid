@@ -23,8 +23,8 @@ export const uuidSchema = z.string().uuid();
 /**
  * The retry key every create route carries (`F4-07`): the same key sent again answers with the
  * record the first send made, never a second one. OPTIONAL, because an app in the field sends
- * none until it updates, and a request without one is applied exactly as before. `M138` fails
- * for a route that answers 201 without it.
+ * none until it updates, and a request without one is applied exactly as before.
+ * `tests/create-retry-key.test.ts` fails for a route that answers 201 without it.
  */
 export const IDEMPOTENCY_KEY_HEADER = 'idempotency-key' as const;
 export const createHeadersSchema = z.object({ [IDEMPOTENCY_KEY_HEADER]: uuidSchema.optional() });
@@ -36,10 +36,11 @@ export type CreateHeaders = z.infer<typeof createHeadersSchema>;
  * breaking change: a client built before it, a mobile app in the field above all, validates the
  * response and refuses the whole list. So the wire accepts every known value AND any value a
  * newer server has learned, and the known list travels as `x-extensible-enum` for readers and
- * for the breaking-change judge (`M26`). The closed `z.enum` still exists beside it for every
- * WRITE and for the pgEnum mirror (`M17`); a consumer rendering one of these keeps a fallback for
- * a value it does not know, never a `Record` that must be total. A FIXED set — the twelve presets,
- * a membership's status — stays a closed enum: growing one IS a product release.
+ * for the breaking-change judge (oasdiff in CI). The closed `z.enum` still exists beside it for
+ * every WRITE and for the pgEnum mirror (invariant `enum-parity`); a consumer rendering one of
+ * these keeps a fallback for a value it does not know, never a `Record` that must be total. A
+ * FIXED set — the twelve presets, a membership's status — stays a closed enum: growing one IS a
+ * product release.
  */
 export function extensibleEnum<const K extends readonly [string, ...string[]]>(
   known: K,
@@ -72,7 +73,7 @@ export const percentSchema = z
 /**
  * Provenance tier — product law: every user-visible number carries one (`F8-01`). `PROVENANCE_TIERS`
  * in domain, derived here, so the format layer that must carry a tier and the surfaces that render
- * one read one list (`M17`).
+ * one read one list.
  */
 export const provenanceTierSchema = z.enum(PROVENANCE_TIERS);
 export type ProvenanceTier = z.infer<typeof provenanceTierSchema>;
@@ -85,7 +86,7 @@ export type ProvenanceTier = z.infer<typeof provenanceTierSchema>;
 export const provenanceStandingSchema = z.enum(PROVENANCE_STANDINGS);
 export type ProvenanceStanding = z.infer<typeof provenanceStandingSchema>;
 
-/** Per-USER measurement preference — `MEASUREMENT_SYSTEMS` in domain, derived here, mirrored as a pgEnum (`M17`). */
+/** Per-USER measurement preference — `MEASUREMENT_SYSTEMS` in domain, derived here, mirrored as a pgEnum (invariant `enum-parity`). */
 export const measurementSystemSchema = z.enum(MEASUREMENT_SYSTEMS);
 export type MeasurementSystem = z.infer<typeof measurementSystemSchema>;
 
@@ -111,7 +112,7 @@ export type RolePreset = z.infer<typeof rolePresetSchema>;
 export const roleSetSchema = z.array(rolePresetSchema).min(1);
 export type RoleSet = z.infer<typeof roleSetSchema>;
 
-/** What an EPC sells — `TENANT_SEGMENTS` in domain, derived here, mirrored as a pgEnum (`M17`). */
+/** What an EPC sells — `TENANT_SEGMENTS` in domain, derived here, mirrored as a pgEnum (invariant `enum-parity`). */
 export const tenantSegmentSchema = z.enum(TENANT_SEGMENTS);
 export type TenantSegment = z.infer<typeof tenantSegmentSchema>;
 
@@ -126,7 +127,8 @@ export type PlatformKind = z.infer<typeof platformKindSchema>;
 /**
  * What a record points AT — the kind half of the suite's ONE polymorphic pointer (`F2-22`,
  * `F6-02`). The audit entry and the notification read this same union, so a subject named on one
- * wire cannot be a subject the other has never heard of. Mirrored as a pgEnum (`M17`).
+ * wire cannot be a subject the other has never heard of. Mirrored as a pgEnum (invariant
+ * `enum-parity`).
  */
 export const subjectKindSchema = z.enum(SUBJECT_KINDS);
 export type SubjectKind = z.infer<typeof subjectKindSchema>;

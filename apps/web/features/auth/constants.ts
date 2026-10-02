@@ -15,6 +15,7 @@ export const COMPANY_SIGNUP_ROUTE = '/company-signup';
  * Typed as a `Record` rather than left to inference, so a landing added in domain fails to
  * compile HERE, naming the missing key, instead of surfacing as an index error at the call site.
  */
+// biome-ignore lint/plugin/app-vocabulary: maps a domain landing to the web's own URL; ruling owed (docs/tasks/deferred.md, app vocabulary row)
 export const ROUTE_OF: Record<Exclude<SessionLanding, 'wait' | 'access-removed'>, string> = {
   door: LOGIN_ROUTE,
   'company-step': COMPANY_SIGNUP_ROUTE,

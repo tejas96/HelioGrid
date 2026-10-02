@@ -1,8 +1,8 @@
 # @heliogrid/theme — every visual value, generated from the live design system
 
-One package: raw tokens, the RN theme object, the web stylesheets and the fonts. The
-no-raw-values law is `.claude/rules/ui-adherence.md`, which loads with this folder. Traps:
-`.claude/landmines.md`.
+Deps: `architecture.md` §2 theme. One package: raw tokens, the RN theme object, the web
+stylesheets and the fonts. The no-raw-values law is `.claude/rules/ui-adherence.md`, which loads
+with this folder.
 
 ## What lives here / what must never live here
 
@@ -44,3 +44,7 @@ pnpm --filter @heliogrid/theme build     # prints token, field-mode and contrast
 
 The build exits 0 with its counts printed, and nothing under `_generated/` or `dist/` was
 hand-edited.
+
+## Traps
+
+- `ds:pull` is a Claude session action that drives the DesignSync MCP, not a pnpm script, so `pnpm ds:pull` fails → drive the MCP in a session and commit what it writes.

@@ -17,10 +17,10 @@ import { userAccount } from './identity';
 import { subjectKind } from './subject';
 import { tenant } from './tenant';
 
-/** Where a row's bytes live; hand-mirrors domain's tuple (`M17`). Never on the wire. */
+/** Where a row's bytes live; hand-mirrors domain's tuple (invariant `enum-parity`). Never on the wire. */
 export const storageProvider = pgEnum('storage_provider', STORAGE_PROVIDERS);
 
-/** Every type a stored file may be; hand-mirrors domain's tuple (`M17`). */
+/** Every type a stored file may be; hand-mirrors domain's tuple (invariant `enum-parity`). */
 export const fileContentType = pgEnum('file_content_type', FILE_CONTENT_TYPES);
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });

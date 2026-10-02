@@ -4,8 +4,9 @@
  *
  * The locale list is READ FROM THE CONTRACT, never restated. It is loaded from the BUILT
  * `@heliogrid/contracts` dist because this file is CommonJS and runs outside any TS
- * pipeline — which means extraction depends on contracts being built first. `pnpm verify`
- * builds before it extracts, and `turbo.json` gives i18n's tasks the `^build` dependency.
+ * pipeline — which means extraction depends on contracts being built first. `pnpm check:all`
+ * builds before `check:catalogs` extracts, and `turbo.json` gives i18n's tasks the `^build`
+ * dependency.
  *
  * The failure is deliberately LOUD. A `try { require } catch { fallback list }` here would
  * mean a stale or unbuilt contract silently extracts against the wrong set of locales, and

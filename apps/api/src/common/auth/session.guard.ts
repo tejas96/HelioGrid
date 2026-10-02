@@ -16,7 +16,7 @@ import { carriesCredential } from './cookies';
 import { attachSession } from './session-context';
 
 /**
- * The ONE deny-by-default guard (`M15`). Every route's access is read from the map its
+ * The ONE deny-by-default guard. Every route's access is read from the map its
  * controller declared; a route with no entry is denied. It depends on the `SessionResolver`
  * PORT, never on the auth module's service class — `common/` may not import a module, and the
  * port is what lets the guard be bound in the root module without the injector failing at boot.

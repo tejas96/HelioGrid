@@ -1,5 +1,6 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
-import { PagedDocument, Surface } from '@heliogrid/ui';
+import { Surface } from '@heliogrid/ui';
+import { PagedDocument } from '@heliogrid/ui/print';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour } from '../support/token';
 

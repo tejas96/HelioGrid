@@ -1,0 +1,25 @@
+// A role preset is named only by the permission model in packages/domain (and the wire in
+// packages/contracts). The list is closed and lives in packages/domain/src/authz/roles.ts.
+or {
+  JsStringLiteralExpression(),
+  TsStringLiteralType(),
+  JsLiteralMemberName(),
+  JsxString()
+} as $role where {
+  $role <: or {
+    includes "epc_owner",
+    includes "sales_manager",
+    includes "sales_executive",
+    includes "survey_engineer",
+    includes "design_engineer",
+    includes "project_manager",
+    includes "field_technician",
+    includes "installation_team_member",
+    includes "hr_admin",
+    includes "finance",
+    includes "operations",
+    includes "marketing"
+  },
+  $role <: r"[\x22\x27](?:epc_owner|sales_manager|sales_executive|survey_engineer|design_engineer|project_manager|field_technician|installation_team_member|hr_admin|finance|operations|marketing)[\x22\x27]",
+  register_diagnostic(span=$role, message="A role name is written outside the permission model — call can(roles, capability) from packages/domain instead of comparing a role string.")
+}

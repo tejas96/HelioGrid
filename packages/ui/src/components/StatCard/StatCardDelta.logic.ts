@@ -2,8 +2,8 @@ import type { StatCardDeltaDir } from './StatCard.types';
 
 /**
  * The direction arrows, as geometry rather than markup: the web half draws each `d` with
- * `<path>` and the native half with `react-native-svg`'s `<Path>`, so ONE drawing serves both
- * (`M118`). A copy in each half is how a corrected arrow lands on one platform only.
+ * `<path>` and the native half with `react-native-svg`'s `<Path>`, so ONE drawing serves both.
+ * A copy in each half is how a corrected arrow lands on one platform only.
  *
  * The strings are SVG path data on a 24x24 grid, not identifiers: `M x y` moves the pen,
  * `h`/`v` draw a horizontal or vertical line, `l` a line to a point, `c` a curve. So

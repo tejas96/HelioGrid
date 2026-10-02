@@ -1,0 +1,41 @@
+// The raw white — `--surface` in any spelling the theme gives it, and `--text-inverse` where it
+// paints a surface, a ring or an edge — is named only where a reason says so.
+// Each regex sits behind `includes` checks that are cheaper and never narrower.
+or {
+  or {
+    JsStringLiteralExpression(),
+    JsTemplateChunkElement(),
+    JsxString(),
+    TsStringLiteralType()
+  } as $white where {
+    $white <: or {
+      includes "--surface",
+      includes "--text-inverse"
+    },
+    $white <: r"(?s).*(?:var\(--surface(?:-card)?\)|(?:background(?:-color)?|fill|stroke|box-shadow|border(?:-[a-z]+)*|outline(?:-color)?) *:[^;]*var\(--text-inverse\)).*",
+    register_diagnostic(span=$white, message="Raw white — a control part takes var(--hg-control-fill) or useGround().controlFill, a knob or a ring var(--hg-ground) or useGround().ground; a file that truly needs the white says why in a biome-ignore.")
+  },
+  JsStaticMemberExpression() as $white where {
+    $white <: includes "theme.colors.surface",
+    $white <: r"(?s).*theme\.colors\.surface",
+    register_diagnostic(span=$white, message="Raw white — a control part takes var(--hg-control-fill) or useGround().controlFill, a knob or a ring var(--hg-ground) or useGround().ground; a file that truly needs the white says why in a biome-ignore.")
+  },
+  JsComputedMemberExpression() as $white where {
+    $white <: includes "theme.colors[",
+    $white <: r"(?s).*theme\.colors\[.surface(?:-card)?.\]",
+    register_diagnostic(span=$white, message="Raw white — a control part takes var(--hg-control-fill) or useGround().controlFill, a knob or a ring var(--hg-ground) or useGround().ground; a file that truly needs the white says why in a biome-ignore.")
+  },
+  or {
+    JsPropertyObjectMember(),
+    JsxAttribute(),
+    JsVariableDeclarator(),
+    JsAssignmentExpression()
+  } as $white where {
+    $white <: includes "text-inverse",
+    or {
+      $white <: r"(?s)(?:[\w$]+\.)*[\x22\x27]?(?:backgroundColor|border[A-Za-z]*Color|shadowColor|fill|stroke)[\x22\x27]?\s*[:=][^,;]*theme\.colors\[.text-inverse.\].*",
+      $white <: r"(?s)(?:[\w$]+\.)*[\x22\x27]?(?:backgroundColor|boxShadow|border[A-Za-z]*|outline[A-Za-z]*|fill|stroke)[\x22\x27]?\s*[:=][^,;]*var\(--text-inverse\).*"
+    },
+    register_diagnostic(span=$white, message="Raw white — a control part takes var(--hg-control-fill) or useGround().controlFill, a knob or a ring var(--hg-ground) or useGround().ground; a file that truly needs the white says why in a biome-ignore.")
+  }
+}

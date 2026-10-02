@@ -8,6 +8,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     // The page is `surface` (`F7-15`, `F7-49`).
+    // biome-ignore lint/plugin/raw-white: page-ground — an app's page or door: the page is white
     backgroundColor: theme.colors.surface,
   },
 });

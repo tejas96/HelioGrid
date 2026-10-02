@@ -1,0 +1,17 @@
+// A component tag whose accessibilityRole or role is the literal "progressbar" promises a position,
+// so it carries accessibilityValue or aria-valuenow. A role computed in an expression is not read,
+// and neither is a lower-case web tag (an indeterminate web progressbar is valid ARIA).
+or {
+  JsxOpeningElement(name=$name, attributes=$attrs),
+  JsxSelfClosingElement(name=$name, attributes=$attrs)
+} as $tag where {
+  $tag <: includes "progressbar",
+  $name <: r"[A-Z].*",
+  $attrs <: some JsxAttribute() as $role where {
+    $role <: r"(?:accessibilityRole|role)\s*=\s*(?:\x22progressbar\x22|\x27progressbar\x27|\{\s*(?:\x22progressbar\x22|\x27progressbar\x27)\s*\})"
+  },
+  not $attrs <: some JsxAttribute() as $value where {
+    $value <: r"(?s)(?:accessibilityValue|aria-valuenow)\s*=.*"
+  },
+  register_diagnostic(span=$tag, message="A progressbar role promises a position but this tag gives no accessibilityValue — add accessibilityValue with min, max and now, or, when nothing is measurable, drop the role and announce the wait as a labelled live region.")
+}

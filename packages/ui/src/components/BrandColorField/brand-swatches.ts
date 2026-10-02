@@ -6,8 +6,8 @@ import { theme } from '@heliogrid/theme';
  * package is GENERATED from the live design system (`ds:pull`, docs/engineering/17 §6) and never
  * hand-transcribed, and a tenant's blue is not something the design system has an opinion about.
  *
- * This file therefore holds raw colour, and is the ONE path the raw-colour gate exempts — see the
- * `COLOUR_DATA_FILES` note in `scripts/check-adherence.sh`. It holds nothing but the data, so
+ * This file therefore holds raw colour, and is the ONE path the raw-colour plugin exempts — its
+ * `!…/brand-swatches.ts` line in `biome.json`. It holds nothing but the data, so
  * every styling line in `BrandColorField` beside it stays covered. Both platform halves default
  * from here rather than each spelling the list, so the two pickers cannot offer different swatches.
  */

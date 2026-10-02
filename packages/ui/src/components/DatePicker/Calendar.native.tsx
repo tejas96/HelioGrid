@@ -27,6 +27,7 @@ const SKELETON_CELLS = 35;
 
 const local = StyleSheet.create({
   frame: {
+    // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
     backgroundColor: theme.colors.surface,
     borderRadius: theme.radius['r-lg'],
     padding: theme.spacing['sp-4'],

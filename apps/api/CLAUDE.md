@@ -1,7 +1,6 @@
 # @heliogrid/api — NestJS modular monolith, the only tenant-facing HTTP surface
 
-Traps: `.claude/landmines.md` · what holds a rule: `mechanisms.md` · deps:
-`architecture.md` §2 apps/api.
+Deps: `architecture.md` §2 apps/api.
 
 ## What lives here / what must never live here
 
@@ -22,13 +21,13 @@ src/scripts/<verb>-<noun>.ts   a command: boots the application context, calls O
 `internal/` is a privacy boundary, not tidying: what the module's own service uses and nothing
 outside may import. One repository and one service need none; `auth`'s seven files do.
 
-Overflow ~450 lines splits by SUBAREA in the same folder (`auth.invites.service.ts`).
-`apps/worker` uses the same shape.
+A file nearing Biome's 300-line cap splits by SUBAREA in the same folder (for example
+`auth.invites.service.ts`). `apps/worker` uses the same shape.
 
 ## Commands
 
 `dev` and `start` pass `--env-file-if-exists=../../.env.local`, so local values load and a REAL
-env var still wins — Fly secrets and CI are never overridden.
+env var still wins — the production host's secrets and CI are never overridden.
 
 ```
 pnpm --filter @heliogrid/api dev | build | typecheck     # dev = tsx watch, API_PORT 8084
@@ -40,7 +39,7 @@ curl localhost:8084/health                               # liveness · /health/r
 
 - **db and drizzle are legal ONLY in `*.repository.ts`**; a service sees no `tx` or table, and a
   `src/scripts/` command drives a service, never a repository. **The NAME states the pool**: plain
-  takes `TENANT_DB`, a DOOR with no query of its own (`M11`) · `*.admin.repository.ts` crosses
+  takes `TENANT_DB`, a DOOR with no query of its own · `*.admin.repository.ts` crosses
   tenancy · `*.reference.repository.ts` reads what no tenant owns — the last two fenced, on raw `Db`.
 - Cross-module imports go through `<m>.public.ts`, never another module's service class.
 - **The audit module is a LEAF and stays one**: other modules' repositories import
@@ -49,8 +48,7 @@ curl localhost:8084/health                               # liveness · /health/r
 - `common/` is framework plumbing two or more modules need. It may never import a module, and
   business behaviour belongs in `packages/domain` instead.
 - **Every non-2xx response is the canonical envelope**, including the body-parser's 413, which
-  `app.ts` answers before Nest sees the request. A route declaring a NON-base error code needs
-  `ContractException`.
+  `app.ts` answers before Nest sees the request.
 - **A body `details[]` path is the SCHEMA FIELD path** (`phone`, `profile.age` — never
   `body.phone`): clients feed it straight to `applyServerErrors`. A query, header or param path
   is prefixed with its source only when the bare name would be ambiguous.
@@ -69,9 +67,8 @@ curl localhost:8084/health                               # liveness · /health/r
 - **Every controller declares its routes' access with `RouteAccessMap`**, beside `@TsRestHandler`:
   `public`, `session-cookie`, `session`, `member` or `{ capability }`. The map is typed against the
   router, so a route the contract gains fails to compile until it says what it needs, and the
-  guard denies a route with no entry — silence is denial (`M15`). Never an inline role test: the
-  capability is domain's. The session a handler needs is `sessionOf(req)`; cookies are set through
-  `responseOf(req)`, never an injected `@Res()`.
+  guard denies a route with no entry — silence is denial. Never an inline role test: the
+  capability is domain's. The session a handler needs is `sessionOf(req)`.
 - **In development the sign-in code and the invite link are written to the log**
   (`Message for +91…`), because the message rail is bound to the development adapter; the SMS
   adapter replaces it and the development one refuses to run in production.
@@ -83,3 +80,13 @@ curl localhost:8084/health                               # liveness · /health/r
 Contract implemented AND driven with curl · typecheck and lint green · the FAILURE paths driven,
 not read: a malformed request returns field-addressable `details[]`, a contract-violating
 response returns opaque INTERNAL, and the response's request id matches the log with no PII.
+
+## Traps
+
+- Every api HTTP suite signs in with the ONE development number, so a new session binds to whichever membership that number holds, including a company another suite created; a suite that DELETES companies races every other suite's sign-in, and the loser fails on `session_active_tenant_id_tenant_id_fk` in an unrelated file → a suite deletes only the rows it wrote and leaves the company standing; a session bound to a company being removed is UNBOUND (`active_tenant_id = null`), never deleted.
+- `app_user` holds SELECT on `tenant` and a `FOR SELECT` policy, so an UPDATE to a tenant column neither errors nor happens: RLS matches no row and `returning()` comes back empty, which reads like "nothing to change", and a column-level GRANT does not fix it → a tenant-editable setting gets its own tenant-scoped table with a `FOR ALL` policy; the `tenant` row keeps the founding facts.
+- `pnpm dev` runs tsx (esbuild), which emits no decorator metadata, so an implicit constructor parameter fails at boot while every HTTP test, whose transform does emit it, stays green → explicit `@Inject(Token)` on EVERY parameter (`Reflector`, class providers and factory-built classes included), then boot it once (`curl localhost:8084/health`) before believing a service works.
+- A route declaring a NON-base error code silently ships the wrong code: the envelope filter maps the status back to a code, and both sides compile → throw `ContractException` with that literal code AND an explicit `HttpStatus`.
+- `redact` reaches structured fields only: `req.query.phone` is censored while the same value inside the raw `req.url` is not → `common/logging.ts` strips the query string from the logged URL.
+- A ts-rest `RequestValidationError` carries the submitted data, and some Zod issue codes include the value → `common/logging.ts` serialises errors through an ALLOWLIST; never turn it into a denylist.
+- `@Res({ passthrough: true })` on a `@TsRestHandler` method marks the response handled, so the handler's body never leaves the process and the request hangs with no error → set cookies through `responseOf(req)` (`common/auth/cookies.ts`), never an injected `@Res()`.

@@ -31,6 +31,7 @@ export const WHITE: string = theme.colors['text-inverse'];
 /** Near-black ink — the other. */
 export const NEAR_BLACK: string = theme.colors['text-primary'];
 /** The document's paper, which a brand colour has to carry a word on. */
+// biome-ignore lint/plugin/raw-white: measure — a contrast measurement against the paper
 export const PAPER: string = theme.colors.surface;
 /* Both floors keep domain's names: one fact, one name, so a sentence in a component and the
    walk that answers it cannot be read as two different numbers. */

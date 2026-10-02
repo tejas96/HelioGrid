@@ -255,6 +255,7 @@
   right: var(--sp-1);
   bottom: var(--sp-1);
   height: 4px;
+  /* biome-ignore lint/plugin/raw-white-css: over-media — a chip, a thumbnail or a control drawn over a photograph or a map */
   background: color-mix(in srgb, var(--surface) 60%, transparent);
 }
 
@@ -289,6 +290,7 @@
   display: grid;
   place-items: center;
   border-radius: var(--r-pill);
+  /* biome-ignore lint/plugin/raw-white-css: over-media — a chip, a thumbnail or a control drawn over a photograph or a map */
   background: var(--surface);
   box-shadow: var(--e2);
   color: var(--text-secondary);

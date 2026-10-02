@@ -81,6 +81,7 @@ function TickBox({
         <Svg width={13} height={13} viewBox="0 0 12 12" fill="none">
           <Path
             d="M2.5 6.5 5 9l4.5-5"
+            // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
             stroke={theme.colors['text-inverse']}
             strokeWidth={2.2}
             strokeLinecap="round"

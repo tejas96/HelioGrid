@@ -1,6 +1,6 @@
 # @heliogrid/data — the frontend SDK, the ONLY data path for web and RN
 
-Traps: `.claude/landmines.md` · deps: `architecture.md` §2 data.
+Deps: `architecture.md` §2 data.
 
 ## What lives here / what must never live here
 
@@ -59,3 +59,9 @@ pnpm --filter @heliogrid/data build | typecheck     # tsc -p (composite; emits d
 Build, typecheck and lint green · consumed by BOTH platforms (Law 7) · transport, error and retry
 behaviour proven by driving the real client against a controllable origin — malformed body,
 unknown status, non-envelope, timeout, cancellation, refused connection — never by reading it.
+
+## Traps
+
+- ts-rest runs client response validation INSIDE the fetcher, so a contract mismatch reaches the transport's own `catch` as a raw `ZodError` that looks exactly like a failed request, and classified as network it becomes retryable → the transport rethrows `ZodError` untouched.
+- `createServerDataContext` hoisted to a module constant serves the next visitor the previous visitor's session and cache, because both fields are request-bound → call it INSIDE the render and let it fall out of scope.
+- `lib: ["ES2023", "DOM"]` in this package's tsconfig is load-bearing: without DOM, `Headers` is unknown and ts-rest's `FetchOptions` collapses to `never`, typing every fetch option `undefined` → keep the lib entry.

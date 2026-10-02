@@ -4,7 +4,7 @@ import { uuidv7 } from '../uuid';
 import { subjectKind } from './subject';
 import { tenant } from './tenant';
 
-/** pgEnums hand-mirror domain's tuples (`M17` proves each pair equal). */
+/** pgEnums hand-mirror domain's tuples (invariant `enum-parity` proves each pair equal). */
 export const auditEventType = pgEnum('audit_event_type', AUDIT_EVENT_TYPES);
 export const auditActorKind = pgEnum('audit_actor_kind', AUDIT_ACTOR_KINDS);
 

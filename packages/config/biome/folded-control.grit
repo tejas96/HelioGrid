@@ -1,0 +1,21 @@
+// `accessible` (bare or `={true}`) folds a tag's whole subtree into one element, so a control
+// inside it is unreachable to a screen reader. A control is a Pressable, Touchable*, Button,
+// TextInput or Switch tag, or any onPress / onLongPress, anywhere in the LITERAL subtree; the tag's
+// own attributes are not its subtree. `accessible={expression}` and a self-closing tag are not read.
+JsxElement(opening_element=$open, children=$subtree) where {
+  $open <: includes "accessible",
+  $open <: JsxOpeningElement(name=$name, attributes=$attrs),
+  $name <: r"[A-Z].*",
+  $attrs <: some JsxAttribute(name=$accessible) as $flag where {
+    $accessible <: "accessible",
+    $flag <: r"accessible(?:\s*=\s*\{\s*true\s*\})?"
+  },
+  $subtree <: contains or {
+    JsxOpeningElement(name=$control),
+    JsxSelfClosingElement(name=$control),
+    JsxAttribute(name=$control)
+  } where {
+    $control <: r"(?:(?:Pressable|TouchableOpacity|TouchableHighlight|TouchableWithoutFeedback|TouchableNativeFeedback|Button|TextInput|Switch)(?:\.[\w$.]+)?|onPress|onLongPress)"
+  },
+  register_diagnostic(span=$open, message="accessible folds this whole subtree into one element, so every control inside it is out of reach of the screen reader — remove accessible and put the label on the control the user lands on, or on a child that has a role and holds no control.")
+}

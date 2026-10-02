@@ -6,7 +6,7 @@
 set -euo pipefail
 
 # A guard that cannot run fails closed: only exit 2 blocks, so a missing tool must not exit 127.
-command -v python3 >/dev/null || { echo "Blocked: this guard needs python3 on PATH and cannot run without it (M93)." >&2; exit 2; }
+command -v python3 >/dev/null || { echo "Blocked: this guard needs python3 on PATH and cannot run without it, and it stops a push to main and a force-push." >&2; exit 2; }
 
 input="$(cat)"
 branch="$(git -C "${CLAUDE_PROJECT_DIR:-.}" branch --show-current 2>/dev/null || true)"
@@ -48,7 +48,8 @@ for segment in re.split(r"[|;&]+|\n", cmd):
     if len(positional) < 2 and os.environ.get("CURRENT_BRANCH") == "main":
         print("bare"); sys.exit(0)
 print("ok")
-')"
+')" \
+  || { echo "Blocked: this guard could not read its input." >&2; exit 2; }
 
 case "$verdict" in
   force) echo "Blocked: never force-push (CLAUDE.md §4). Rebase forward and push, or open a new branch." >&2; exit 2 ;;

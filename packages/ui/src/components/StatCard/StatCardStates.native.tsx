@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
   shimmer: {
     borderRadius: theme.radius['rf-md'],
     /* Drawn in --surface, as `Card`'s: a grey bar on the grey tile would not show. */
+    // biome-ignore lint/plugin/raw-white: shimmer — a loading bar's shimmer
     backgroundColor: theme.colors.surface,
   },
   error: { marginTop: 10, alignItems: 'flex-start', gap: theme.spacing['sp-2'] },

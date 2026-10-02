@@ -66,6 +66,7 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.colors['text-tertiary'],
   },
   marker: { position: 'absolute', bottom: 5, width: 5, height: 5, borderRadius: 2.5 },
+  // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
   onSelected: { backgroundColor: theme.colors['text-inverse'] },
 });
 

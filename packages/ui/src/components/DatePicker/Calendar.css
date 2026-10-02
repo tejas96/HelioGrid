@@ -6,6 +6,7 @@
    squeezed under the floor by a narrow caller. */
 
 .hg-calendar {
+  /* biome-ignore lint/plugin/raw-white-css: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15) */
   background: var(--surface);
   border-radius: var(--r-lg);
   padding: var(--sp-4);
@@ -149,6 +150,7 @@
 }
 
 .hg-calendar-cell[data-selected="true"] .hg-calendar-lock-bar {
+  /* biome-ignore lint/plugin/raw-white-css: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15) */
   background: var(--text-inverse);
 }
 
@@ -185,6 +187,7 @@
 }
 
 .hg-calendar-cell[data-selected="true"] .hg-calendar-marker {
+  /* biome-ignore lint/plugin/raw-white-css: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15) */
   background: var(--text-inverse);
 }
 

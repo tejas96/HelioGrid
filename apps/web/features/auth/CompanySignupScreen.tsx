@@ -17,8 +17,8 @@ import { HOME_ROUTE, LOGIN_ROUTE } from './constants';
 
 /**
  * Company signup on the web (`SCR-M01-02` at 1536): the number, the code, then three fields, over
- * the flow `T-M01-036` landed and the door's two-field composition. The open group holds no gate
- * (`M114`): the screen opens to a new number before any session exists and to a verified number
+ * the flow `T-M01-036` landed and the door's two-field composition. The open group holds no gate:
+ * the screen opens to a new number before any session exists and to a verified number
  * without a company (`M01-10`). Which panel shows is `signupView`'s; this composes, and on the
  * `done` view sends a person who has a company to their home once the session phase is signed in
  * (`M01-08`) — at once for an owner who arrives signed in, after the beat for a known number

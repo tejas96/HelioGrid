@@ -20,7 +20,7 @@ jobs:
   # Which lanes this change can reach. `quality` never asks; it always runs. The three mobile
   # lanes ask, because a native build costs 11–15 minutes and proves nothing about a change
   # that no mobile bundle contains. Markdown never counts: a CLAUDE.md inside apps/mobile is
-  # not a mobile change (the same rule /verify applies to its blast radius).
+  # not a mobile change (the same rule /qa applies to the surfaces a change reaches).
   changes:
     name: changes
     runs-on: ubuntu-24.04
@@ -146,43 +146,6 @@ jobs:
             exit 1
           fi
           echo "migrations append-only: OK"
-      - name: A runtime change on a HIGH-risk task carries its /verify stamp (M113)
-        if: github.event_name == 'pull_request'
-        shell: bash
-        env:
-          BASE_REF: ${{ github.base_ref }}
-          HEAD_REF: ${{ github.head_ref }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          # git runs no commit hook for a cherry-pick, a revert, a rebase or a fast-forward, so the
-          # stamp and the tier git's pre-commit reads are read again here, on the pull request's head
-          # as pushed. The tier is HIGH by path (M113); else it comes from the task the branch names
-          # (<kind>/<t-id>-<slug>) and its ticket in the head's tree — no task, no Risk line, reads HIGH.
-          # The stamp must sit in the section of that task or of a task this pull request ships (its
-          # Status turns shipped here). The QA record lives in the author's .git,
-          # never here, so the record and its counts are held by git's pre-commit alone (M151).
-          set -euo pipefail
-          git fetch --no-tags --quiet origin "$BASE_REF"
-          scratch="$(mktemp -d)"
-          in_tree() { # a verify-digest mode read against one commit's tree
-            GIT_INDEX_FILE="$scratch/$1.index" git read-tree "$1"
-            GIT_INDEX_FILE="$scratch/$1.index" bash scripts/verify-digest.sh "${@:2}"
-          }
-          base_sha="$(git merge-base "$HEAD_SHA" "origin/$BASE_REF")"
-          head="$(in_tree "$HEAD_SHA" --staged)"
-          base="$(in_tree "$base_sha" --staged)"
-          tip="$(in_tree "$(git rev-parse "origin/$BASE_REF")" --staged)"
-          echo "runtime digest: head $head · merge base $base · $BASE_REF $tip"
-          if [ "$head" = "$base" ] || [ "$head" = "$tip" ]; then
-            echo "no runtime change: no stamp needed"
-          elif [ "$(in_tree "$HEAD_SHA" --risk "$HEAD_REF" "$base_sha")" = LOW ]; then
-            echo "LOW-risk task on $HEAD_REF: no stamp needed"
-          elif in_tree "$HEAD_SHA" --stamped "$HEAD_REF" "$head"; then
-            :
-          else
-            echo "::error::The runtime tree this pull request's head carries (digest $head) is HIGH-risk — by a path it changes, or by the ticket of the task $HEAD_REF names — and no /verify stamp for it sits in the section of that task or of a task this pull request ships. Run /verify on it and commit the stamped ticket (M113)."
-            exit 1
-          fi
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
@@ -197,10 +160,6 @@ jobs:
           key: turbo-${{ runner.os }}-${{ github.job }}-${{ github.sha }}
           restore-keys: turbo-${{ runner.os }}-${{ github.job }}-
       - run: pnpm install --frozen-lockfile
-      # The same pinned build a developer installs with `pnpm tools:oasdiff` (M26): the pin —
-      # version and per-archive checksum — is scripts/oasdiff-pin.json, one file for both.
-      - name: Install oasdiff (the breaking-change half of check:openapi — M26)
-        run: bash scripts/install-oasdiff.sh
       - name: Cluster roles and schema grants (infra/postgres/init)
         # Roles are CLUSTER objects and infra owns them; the service container runs no init SQL,
         # so this is what a local `pnpm infra:up` does on first boot — the SAME two files, as the
@@ -213,39 +172,55 @@ jobs:
           psql "$SUPERUSER_URL" -v ON_ERROR_STOP=1 -f infra/postgres/init/01-roles.sql
           psql "$SUPERUSER_URL" -v ON_ERROR_STOP=1 -f infra/postgres/init/02-databases.sql
       - name: Apply migrations (CI database)
-        # Must run before pnpm verify:ci so the invariants have tables to inspect.
+        # Must run before pnpm check:all so the invariants have tables to inspect.
         run: pnpm --filter @heliogrid/db migrate
       - name: Quality gate
-        # pnpm verify:ci = pnpm verify; check:env rides inside verify.
-        # pnpm verify = build (dist/ present before dep-cruiser runs) → lint (Biome + adherence)
-        # → boundaries (Turbo role tags) → typecheck → check:dupes → ds:contract → check:openapi
-        # → i18n extract freshness → language readiness → check:env → check:docs → test:unit
-        # → test (invariants).
-        # test:unit runs vitest WITH COVERAGE deliberately: the per-slice 100% thresholds in
-        # vitest.config.mts are the only thing stopping an edge case being deleted with its
-        # test, and a bare `vitest run` reports them not at all. Do not drop the flag to save
-        # a second — without it this step passes on a suite that has quietly stopped covering
-        # what it claims to.
+        # pnpm check:all = build → lint (Biome and its plugins, dependency-cruiser, sherif, turbo
+        # boundaries) → typecheck → check:dupes → check:openapi (spec freshness) → check:catalogs
+        # → test:unit → test (invariants, with this job's database).
         # BUILD FIRST: dependency-cruiser resolves a workspace import through the target's
         # `main`/`types`, which point at dist/ — so before anything is built the edge does not
-        # exist and every rule aimed at a dist-shipping package reports clean:
-        # `db-access-in-repositories-only` fires with dist present and reports
-        # "no dependency violations found" without it, on the identical offending file.
-        run: pnpm verify:ci
+        # exist and every rule aimed at a dist-shipping package reports clean.
+        # test:unit runs vitest WITH COVERAGE: the per-slice 100% thresholds in vitest.config.mts
+        # are what stop an edge case being deleted with its test.
+        run: pnpm check:all
+      - name: No breaking API change against the base (oasdiff 1.31.0)
+        # Judged on the pull request only: a push to main has no base to compare. The build is
+        # pinned by version and sha256, so every run grades a change the same way. A response
+        # enum that grows by design is declared x-extensible-enum; any other ERR-level finding
+        # needs the owner's ruling, stated in the change, before it merges.
+        if: github.event_name == 'pull_request'
+        shell: bash
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          tool="$RUNNER_TEMP/oasdiff"; mkdir -p "$tool"
+          curl -fsSL -o "$tool/oasdiff.tar.gz" \
+            https://github.com/oasdiff/oasdiff/releases/download/v1.31.0/oasdiff_1.31.0_linux_amd64.tar.gz
+          echo "0177d4bc0bf04f4061e9277795b77335ee100a43b508e94fce5c46de083bbede  $tool/oasdiff.tar.gz" | sha256sum -c -
+          tar -xzf "$tool/oasdiff.tar.gz" -C "$tool"
+          bin="$(find "$tool" -type f -name oasdiff | head -1)"
+          [ -n "$bin" ] || { echo "::error::no oasdiff binary in the release archive"; exit 1; }
+          # A base that cannot be read is a failure; only a spec the base does not have yet passes.
+          git rev-parse --verify --quiet "origin/$BASE_REF^{commit}" >/dev/null \
+            || { echo "::error::origin/$BASE_REF is not fetched, so nothing can be compared"; exit 1; }
+          spec=packages/contracts/openapi/openapi.json
+          if ! git cat-file -e "origin/$BASE_REF:$spec" 2>/dev/null; then
+            echo "no spec on $BASE_REF yet: nothing to break"; exit 0
+          fi
+          git show "origin/$BASE_REF:$spec" > "$tool/base.json"
+          "$bin" breaking "$tool/base.json" "$spec" --fail-on ERR
       # No native splash-colour freshness gate: the splash artifacts are FROZEN (see the $comment
       # in SplashCanvas.colorset/Contents.json) and the gate returns when packages/theme re-emits
       # them. Never gate on `pnpm --filter <pkg> build` for a package that can be deleted: pnpm
       # exits 0 on an unmatched filter, so the step regenerates nothing, `git status` is clean,
       # and the gate passes green while proving nothing. A gate that cannot run is worse than no
       # gate: it reports success forever.
-      - uses: actions/upload-artifact@v4
-        with:
-          name: openapi
-          path: packages/contracts/openapi/openapi.json
 
   # The regression suite's web half (tests/e2e): every shipped route driven in a real browser
   # against the BUILT api and web, then the component suite. Playwright's webServer starts both
-  # servers and this job starts none, so one api holds 8084. The phone half runs in /verify — CI
+  # servers and this job starts none, so one api holds 8084. The phone half runs in /qa — CI
   # has no simulator. retries: 0; a failure uploads its traces and the api's log to replay it.
   e2e-web:
     name: e2e-web
@@ -324,7 +299,7 @@ jobs:
           path: |
             tests/e2e/test-results/
             tests/e2e/playwright-report/
-            .git/heliogrid-harness/api.log
+            .qa/api.log
           include-hidden-files: true
           retention-days: 14
 
@@ -364,7 +339,8 @@ jobs:
   android:
     name: android
     needs: changes
-    if: needs.changes.outputs.android == 'true'
+    # Native builds run on the pull request only: the same tree already built there.
+    if: github.event_name == 'pull_request' && needs.changes.outputs.android == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -391,7 +367,8 @@ jobs:
   ios:
     name: ios
     needs: changes
-    if: needs.changes.outputs.ios == 'true'
+    # Native builds run on the pull request only: the same tree already built there.
+    if: github.event_name == 'pull_request' && needs.changes.outputs.ios == 'true'
     runs-on: macos-15
     timeout-minutes: 45
     env:

@@ -52,7 +52,9 @@
   width: 14px;
   height: 14px;
   border-radius: var(--r-pill);
+  /* biome-ignore lint/plugin/raw-white-css: over-media — a chip, a thumbnail or a control drawn over a photograph or a map */
   background: var(--surface);
+  /* biome-ignore lint/plugin/raw-white-css: over-media — a chip, a thumbnail or a control drawn over a photograph or a map */
   box-shadow:
     inset 0 0 0 2.5px var(--hg-map-tone),
     0 0 0 3px var(--surface),
@@ -63,6 +65,7 @@
   width: 16px;
   height: 16px;
   background: var(--hg-map-tone);
+  /* biome-ignore lint/plugin/raw-white-css: over-media — a chip, a thumbnail or a control drawn over a photograph or a map */
   box-shadow:
     0 0 0 3px var(--surface),
     var(--e2);
@@ -71,6 +74,7 @@
 .hg-map-surface-chip {
   padding: var(--sp-0-5) var(--sp-2);
   border-radius: var(--r-pill);
+  /* biome-ignore lint/plugin/raw-white-css: over-media — a chip, a thumbnail or a control drawn over a photograph or a map */
   background: var(--surface);
   box-shadow: var(--e2);
   font-family: var(--font-sans);

@@ -25,6 +25,7 @@
   flex-direction: column;
   gap: 14px;
   overflow: hidden;
+  /* biome-ignore lint/plugin/raw-white-css: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen */
   background: var(--surface);
   border-radius: var(--sheet-radius);
   box-shadow: var(--e3);

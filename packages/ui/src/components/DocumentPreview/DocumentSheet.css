@@ -19,6 +19,7 @@
 }
 
 .hg-doc-band[data-band-ok="false"] {
+  /* biome-ignore lint/plugin/raw-white-css: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen */
   background: var(--surface);
   color: var(--text-primary);
   border-bottom: 3px solid var(--hg-doc-brand);

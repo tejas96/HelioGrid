@@ -6,7 +6,7 @@ import { baseError, errorEnvelope, IDEMPOTENCY_KEY_REUSED, unauthenticatedEnvelo
 
 const c = initContract();
 
-/** Every type a stored file may be — derived from domain, mirrored as a pgEnum (`M17`). */
+/** Every type a stored file may be — derived from domain, mirrored as a pgEnum (invariant `enum-parity`). */
 export const fileContentTypeSchema = z.enum(FILE_CONTENT_TYPES);
 export type FileContentType = z.infer<typeof fileContentTypeSchema>;
 

@@ -20,6 +20,7 @@ export const styles = StyleSheet.create({
   // scrolls shows under the camera or the status bar (`F7-50`).
   page: {
     flex: 1,
+    // biome-ignore lint/plugin/raw-white: page-ground — an app's page or door: the page is white
     backgroundColor: theme.colors.surface,
   },
   scroll: {

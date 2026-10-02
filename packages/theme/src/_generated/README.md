@@ -10,24 +10,25 @@ replaced its floor at zero with the shown negative payable, on both sides. A par
 `feedback/Explainer`, 97 typings now — with `manifest.json` and `tokens/elevation.css` (comment text
 only). A partial pull on **2026-09-25** brought `tokens/spacing.css` with two new tokens, `--bp-desktop` and `--form-max`; `manifest.json`'s token census does not list them until the next full pull, and nothing reads it for values (`src/parse.ts`). A partial pull on **2026-09-28** brought `contracts/data/Provenance.d.ts.txt` after `F8-03`'s closed tier set was written into the design system (`T-FPLAT-072`); its renderer, `Provenance.jsx`, is unchanged there. **Held back, on purpose:** `adherence.oxlintrc.json` and `contracts/feedback/Banner.d.ts.txt`.
 The design system gave `Banner` two props, `actionBelow` and `onFormChange`; pulling either file
-turns `ds:contract` red until `packages/ui` ports them, and a port is proven by running both
-platforms. They arrive with that port — `docs/tasks/deferred.md` names it.
+turns the invariant `design-system-props` red until `packages/ui` ports them, and a port is proven
+by running both platforms. They arrive with that port — `docs/tasks/deferred.md` names it.
 
 Every file in this folder is a byte-verbatim copy of the live design system:
 
 - `tokens/*.css` — the 11 token/stylesheet source files
 - `styles.css` — the DS global stylesheet (an `@import` manifest over `tokens/`)
-- `manifest.json` — the component + prop census, consumed by the `ds:contract` gate
+- `manifest.json` — the component + prop census; no check reads it
 - `adherence.oxlintrc.json` — per-component prop contracts
 - `contracts/<family>/<Name>.d.ts.txt` — the 97 component typings, pulled verbatim and **never
   hand-edited**. These are the design system's own declarations, prop names *and prop types*,
-  which is what makes the `ds:contract` gate possible: `adherence.oxlintrc.json` carries names
+  which is what the invariant `design-system-props` reads: `adherence.oxlintrc.json` carries names
   only, so it can say a prop is missing but never that a prop was ported with a weaker type. If a
   typing here looks wrong, the fix is a re-pull, not an edit — an edited contract is a hand-copied
   mirror, which is the exact failure docs/engineering/17 §6 exists to abolish.
 
   **Why `.d.ts.txt` and not `.d.ts`.** These files are DATA, not code: nothing compiles them,
-  nothing imports them, nothing type-checks them — `scripts/ds-contract/` opens them as TEXT.
+  nothing imports them, nothing type-checks them — `tests/invariants/src/design-system-props.ts`
+  opens them as TEXT.
   But the bytes are the design system's real typings, and all 95 open with
   `import React from "react"`. Named `<Name>.d.ts`, every toolchain pointed at this package
   claimed them as live TypeScript: `turbo boundaries` parsed all 95 and reported **94**
@@ -39,7 +40,7 @@ Every file in this folder is a byte-verbatim copy of the live design system:
   `.txt`, so boundaries, tsc, biome and jscpd all stop parsing them, **with not one byte
   of content altered** — still `cmp`-identical to the design system originals. `.d.ts` stays in
   the middle of the name so the file still announces what it is. A re-pull must land them under
-  this extension; the reader is `CONTRACT_EXT` in `scripts/ds-contract/contracts.mjs`.
+  this extension; the reader is `CONTRACT_EXT` in `tests/invariants/src/design-system-props.ts`.
 
   The two alternatives were rejected: adding `react` to `packages/theme` buys a lint pass by
   breaking the standalone rule that is the package's whole architecture, and path-excluding the

@@ -23,5 +23,6 @@ export const MAP_PIN_COLOR: Record<'pending' | 'confirmed', string> = {
 
 export const MAP_ACCENT = theme.colors.accent;
 export const MAP_INFO = theme.colors.info;
+// biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
 export const MAP_SURFACE = theme.colors.surface;
 export const MAP_GRIDLINE = theme.colors['chart-gridline'];

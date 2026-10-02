@@ -42,7 +42,6 @@ export * from './components/DetailPanel';
 export * from './components/Disclosure';
 export * from './components/DocumentPreview';
 export * from './components/DoorFrame';
-export * from './components/DrawingSheet';
 export * from './components/Dropzone';
 export * from './components/EditorSurface';
 export * from './components/EmptyState';
@@ -71,12 +70,6 @@ export * from './components/NumberField';
 export * from './components/OperationProgress';
 export * from './components/OptionCardGroup';
 export * from './components/OtpInput';
-/* DocumentSection — PagedDocument wins, because its own public prop is typed with the bare name
-   (`sections?: DocumentSection<Row>[]`), so a caller cannot annotate that array without it.
-   DocumentPreview's section type stays reachable under its exported alias `DocumentSectionInput`,
-   which is the type its `sections` prop actually takes. */
-export type { DocumentSection } from './components/PagedDocument';
-export * from './components/PagedDocument';
 export * from './components/PendingAction';
 export * from './components/PhoneField';
 export * from './components/PhotoField';
@@ -153,8 +146,6 @@ export * from './utils/color-contrast';
 export type { MarketFormat } from './utils/format';
 export * from './utils/format';
 export { IN_FORMAT } from './utils/format';
-export * from './utils/page-size';
-export * from './utils/print-scope';
 export * from './utils/qr-encode';
 export * from './utils/qr-encode-blocks';
 // END COMPONENT EXPORTS

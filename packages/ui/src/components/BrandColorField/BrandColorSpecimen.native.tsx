@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-3'],
     paddingVertical: theme.spacing['sp-2'],
     paddingHorizontal: 14,
+    // biome-ignore lint/plugin/raw-white: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen
     backgroundColor: theme.colors.surface,
   },
   line: {

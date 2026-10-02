@@ -12,6 +12,7 @@
 
 .hg-rich-text-frame {
   border-radius: var(--r-input-expressive);
+  /* biome-ignore lint/plugin/raw-white-css: deferred — owed by a row in docs/tasks/deferred.md */
   background: var(--surface);
   box-shadow: var(--e2);
   transition: box-shadow var(--dur-standard) var(--ease-standard);
@@ -110,6 +111,7 @@
   border-radius: var(--r-input-functional);
   /* A control is --surface at --e2 — this is a text field, and it was the one left on the
      dim ground the ruling was raised to end. */
+  /* biome-ignore lint/plugin/raw-white-css: deferred — owed by a row in docs/tasks/deferred.md */
   background: var(--surface);
   box-shadow: var(--e2);
   font-family: var(--font-mono);

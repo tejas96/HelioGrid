@@ -128,7 +128,7 @@ are paper, not tiles. `PagedDocument`'s cards stay paper.
 | `PagedDocument` | **A tranche band names itself in a `<p>`, so its table is anonymous to a screen reader.** Measured on all eight bands: a `<table>` with no `<caption>`, no `aria-label` and no `role`, its name in a paragraph immediately above. `F7-27` asks a customer-facing table to carry its own name. | `SCR-M01-20` |
 | `Modal` · `Sheet` | **`labelId` is web-only in practice.** Both take it on the shared type and only the web half reads it; the native halves carry `accessibilityViewIsModal` and no name, so a native icon-header dialog is still unnamed — the defect the prop was added to close. An unread optional prop typechecks, so Law 7 does NOT catch this. Route it through `accessibilityLabel`, or state the platform reason on the type. | `arch review 2026-09-02` |
 | `PhoneField` | **The native half composes its accessible name in code** — `` `${label}, ${phone(value)}` `` — while the web half names the input from a `<label>` and puts the number in a separate sr-only span. Two announcements from one component, no platform reason recorded, and the join runs against the composed-sentence law (owner ruling 2026-08-31): a composed sentence is a whole translated sentence with slots, never a concatenation. | `arch review 2026-09-02` |
-| `PhoneField` · `PhotoField` | **No design-system contract mirror**, so both sit outside `ds:contract` — the only gate comparing repo props against the design system. `ds:contract` skips a component with no contract file, silently. | `arch review 2026-09-02` |
+| `PhoneField` · `PhotoField` | **No design-system contract mirror**, so both sit outside the invariant `design-system-props` — the only check comparing repo props against the design system. It skips a component with no contract file, silently. | `arch review 2026-09-02` |
 | — | No `Skeleton` component, and no duration token for the stated 1.4 s shimmer (nearest is `--dur-ambient`, 500 ms). | `SCR-M01-03` |
 
 **The English-string debt has a MECHANISM now, and it is one change, not 46.** CLAUDE.md §8
@@ -141,8 +141,9 @@ fails to COMPILE rather than waiting for an audit; verified against the three sh
 today (a literal, a template literal, an English default). Every row above that names an
 unreachable or defaulted English string closes with that one change plus its own prop, and
 `.claude/rules/ui-adherence.md`'s regenerate-the-list command stops being how this is tracked.
-Sequenced with `docs/engineering/17`, per that rule; register the brand in
-`scripts/check-adherence.sh`'s `BRANDS` on the day it lands, or the cast hole stays open.
+Sequenced with `docs/engineering/17`, per that rule; enrol the brand in a `brand-cast-<owner>.grit`
+Biome plugin on the day it lands — the invariant `brand-registry` refuses it otherwise — or the
+cast hole stays open.
 
 **Has an owner, so not listed above:** `F3-13`'s React Native half — components read
 `theme.type.families.sans` and RN has no per-codepoint fallback, so Devanagari falls to the OS face.

@@ -26,8 +26,8 @@ const storeUrlsSchema = z.object({
 /**
  * What a phone below the server-declared minimum is answered, on ANY route, before the route
  * runs. Every build ever shipped reads this body with the code it shipped with, so its shape
- * never breaks: `emit-openapi` writes it onto every operation and `M26` judges each change.
- * Not a base code: the global filter never answers it, and the base set is closed (`M121`).
+ * never breaks: `emit-openapi` writes it onto every operation and CI's oasdiff judges each change.
+ * Not a base code: the global filter never answers it, and the base set is closed.
  */
 export const clientUpgradeRequiredSchema = z.object({
   error: z.object({

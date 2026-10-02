@@ -10,7 +10,7 @@ import type { TextVariant } from './Text.types';
  * `Text`. Both halves resolve from the ONE answer here, so a mixed line is broken into the same
  * runs and given the same line box on the phone and in the browser (Law 7). Every fact is the
  * theme's, read from the bundled faces at build time — this file decides nothing and states no
- * number of its own (`M58`).
+ * number of its own.
  */
 
 const STACK: ScriptStack = theme.type.scriptStack;

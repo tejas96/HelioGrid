@@ -1,8 +1,8 @@
 # @heliogrid/ui — ONE component package, both platforms
 
-Primitives plus components, each shipping a web half and a React Native half from one folder.
-The compose-don't-invent and no-raw-values laws are `.claude/rules/ui-adherence.md`, which loads
-with this folder. Traps: `.claude/landmines.md`.
+Deps: `architecture.md` §2 ui. Primitives plus components, each shipping a web half and a React
+Native half from one folder. The compose-don't-invent and no-raw-values laws are
+`.claude/rules/ui-adherence.md`, which loads with this folder.
 
 **This package is built from the design system AHEAD of the screens that consume it.** Component
 gaps found by a screen are registered in `docs/tasks/UI.md`: fix when you touch the component,
@@ -28,10 +28,8 @@ fix BOTH halves, then delete the row.
   props and renders; it does not know what a lead or a tranche is. **Formatting is product
   logic**: `src/utils/format.ts` BINDS a market pack to domain's format slice, and
   `src/utils/color-contrast.ts` binds this system's inks to domain's contrast maths; both
-  implement nothing (`M49`).
-- **NEVER a raw visual value** (that is `@heliogrid/theme`), **user-visible English** (copy
-  arrives as a prop from `@heliogrid/i18n` through the consumer), or **navigation chrome** (that
-  belongs to the app).
+  implement nothing.
+- **NEVER navigation chrome** — that belongs to the app.
 - NEVER a DOM API in a `.native.tsx`, or a React Native import in a `.tsx`.
 - **NEVER a hover state in a native half.** A touch screen has no pointer, so the web half's
   lift or tint has no counterpart here — the pressed state is the touch feedback, and a fact that
@@ -54,23 +52,32 @@ src/components/<Name>/
 `.tsx` with no config; webpack and Turbopack never look for `.native.*`. Naming the web half
 `.web.tsx` needs custom resolution in both bundlers and fails at RUNTIME when it is wrong.
 
-A component with only one platform half is incomplete, not "web-only" — the two waiver markers
-are a closed vocabulary read by `ds:contract`.
+A component with only one platform half is incomplete, not "web-only" — unless its types file
+opens with one of the two waivers, `PRINT SURFACE` or `POINTER SURFACE`, and gives the reason. No
+check reads the waivers; review does. A `PRINT SURFACE` part is exported from `src/print.ts`
+(`@heliogrid/ui/print`), never from `src/index.ts`: the phone typechecks the main entry with its
+`.native` halves first, and a print part there fails it.
 
 ## Local conventions
 
-- **An icon is DRAWN here, never imported from an icon package** (`M118`) — one SVG per glyph,
+- **An icon is DRAWN here, never imported from an icon package** — one SVG per glyph,
   `currentColor`, 1.5px stroke, one drawing serving the web half and the native half.
   `AppShell/ShellIcons.tsx` is the shape to copy.
 - **A prop belongs to `<Name>.types.ts`, never to a platform half.** A platform-local props
-  interface above the shared base is how the halves drift; only prop NAMES are compared today
-  (`M35`), so the types file is what you must keep honest.
+  interface above the shared base is how the halves drift. The `design-system-props` invariant
+  checks only that each design-system prop is declared; nothing compares the two halves, so the
+  types file is what you must keep honest.
 - Anything shared by both halves goes in a `<Name>.logic.ts`, a `use<Name>.ts` hook or a
   `<name>-model.ts` — never copied into each half.
-- **This package still carries hardcoded English** (review-only). Real debt. Do not add more: write the
-  prop.
+- **This package still carries hardcoded English**, and no check finds it. Real debt. Do not add
+  more: write the prop.
 
 ## Done means
 
 Both halves exist and implement the one `<Name>.types.ts`; style is in its own file; every visual
 value comes from `@heliogrid/theme`; `pnpm check:all` exits 0.
+
+## Traps
+
+- Native clips a `Text`'s ink to its own box, so a line box shorter than the face's own line loses ो ी ं off the top and reads as a spacing bug; the box is raised to the bundled face's declared line, but a parent's `overflow: hidden` on a heading's top edge, or a style that shrinks the box, brings the clip back → leave the raised box alone and give the parent room.
+- React Native's `flattenStyle` copies EVERY key of every style object, `undefined` values included, so a later `{ x: maybeUndefined }` ERASES the `x` a variant beneath it set — on the phone only, since the web half does the opposite → append the object conditionally (`cond ? { x } : undefined`), never a key whose value may be undefined.

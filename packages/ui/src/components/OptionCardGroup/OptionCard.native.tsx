@@ -97,6 +97,7 @@ function Dot({ selected, off }: { selected: boolean; off: boolean }) {
     return (
       <View style={[styles.dot, styles.dotSelected]}>
         {/* White on the accent — a mark on the accent, the same on every ground. */}
+        {/* biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill */}
         <View style={[styles.dotFill, { backgroundColor: theme.colors['text-inverse'] }]} />
       </View>
     );

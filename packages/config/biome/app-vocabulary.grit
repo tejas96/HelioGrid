@@ -1,0 +1,25 @@
+// An app declares no shared vocabulary. EXPORTED only: a type or a constant nothing can import
+// cannot become a second source of truth, so a file-local state machine passes.
+or {
+  JsExport(export_clause=TsTypeAliasDeclaration(ty=TsUnionType(types=[
+    TsStringLiteralType(), ...
+  ]))) as $export where {
+    register_diagnostic(span=$export, message="An app declares no shared vocabulary — a union of string literals belongs in packages/contracts; import it from there.")
+  },
+  JsExport(export_clause=JsVariableDeclarationClause(declaration=JsVariableDeclaration(declarators=$declarators) as $declaration)) as $export where {
+    $declaration <: r"(?s)const\s.*",
+    $declarators <: some JsVariableDeclarator(id=$name, initializer=JsInitializerClause(expression=$value)) where {
+      $name <: r"[A-Z][A-Z0-9_]+",
+      $value <: r"(?s)\{.*"
+    },
+    register_diagnostic(span=$export, message="An app declares no shared vocabulary — a SCREAMING_CASE lookup belongs in packages/domain (policy) or packages/contracts (wire); import it from there.")
+  },
+  JsExport(export_clause=JsVariableDeclarationClause(declaration=JsVariableDeclaration(declarators=$declarators) as $declaration)) as $export where {
+    $declaration <: r"(?s)const\s.*",
+    $declarators <: some JsVariableDeclarator(id=$name, initializer=JsInitializerClause(expression=$value)) where {
+      $name <: r"[A-Z][A-Z0-9_]+",
+      $value <: r"(?s)-?[0-9].*"
+    },
+    register_diagnostic(span=$export, message="An app declares no policy number — a SCREAMING_CASE number belongs in packages/domain or the market pack; import it from there.")
+  }
+}

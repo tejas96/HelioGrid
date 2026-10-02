@@ -9,10 +9,8 @@ import { OTP_LENGTH } from '@heliogrid/domain';
  * code into it (`message-delivery.development.ts`) — the only place a new number's code appears.
  */
 export const API_LOG = path.join(
-  execFileSync('git', ['rev-parse', '--path-format=absolute', '--git-common-dir'], {
-    encoding: 'utf8',
-  }).trim(),
-  'heliogrid-harness',
+  execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim(),
+  '.qa',
   'api.log',
 );
 

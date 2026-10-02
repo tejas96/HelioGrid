@@ -64,6 +64,7 @@ export function BrandBloom({ placement, size, style }: NativeBrandBloomProps) {
           >
             <Stop offset="0" stopColor={theme.colors['iris-violet']} stopOpacity={0.22} />
             <Stop offset="0.4" stopColor={theme.colors['iris-blue']} stopOpacity={0.14} />
+            {/* biome-ignore lint/plugin/raw-white: illustration — a drawn mark */}
             <Stop offset="0.72" stopColor={theme.colors.surface} stopOpacity={0} />
           </RadialGradient>
         </Defs>

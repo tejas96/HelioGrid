@@ -10,7 +10,7 @@ import { assertWorkflowBundle } from '../../src/common/temporal/workflow-bundle'
  * worker has only ever been driven as its built artifact.
  *
  * It needs the bundle BUILT, and that is correct rather than awkward: the bundle is a build
- * artifact by design (`workflow-bundle.ts` says why), `pnpm verify` builds before it tests, and
+ * artifact by design (`workflow-bundle.ts` says why), `pnpm check:all` builds before it tests, and
  * a failure here on an unbuilt tree says the true thing.
  */
 describe('assertWorkflowBundle', () => {

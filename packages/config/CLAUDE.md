@@ -1,18 +1,21 @@
-# @heliogrid/config — shared tsconfig presets
+# @heliogrid/config — shared build config: tsconfig presets and Biome plugins
 
-Traps: `.claude/landmines.md` · deps: `architecture.md` §2 config.
+Deps: `architecture.md` §2 config.
 
 ## What lives here / what must never live here
 
-- tsconfig presets only, consumed as `"extends": "@heliogrid/config/tsconfig/<preset>.json"`.
+- tsconfig presets, consumed as `"extends": "@heliogrid/config/tsconfig/<preset>.json"`.
   `tsconfig/base.json` holds the shared compiler options, and the repo-root `tsconfig.base.json`
   extends IT — so there is one copy and the packages that extend the root file keep working.
-- NEVER: runtime code, a dependency, or a `//` comment. Anything executable belongs in a real
-  package; a comment turns the build red, so reasons live in this file.
+- `biome/*.grit` — the repo's Biome lint plugins, one per rule, named for what it holds. The root
+  `biome.json` registers each one with the files it reads. How to scope and silence one is
+  `.claude/rules/biome.md`, which loads when you open a plugin.
+- NEVER: runtime code, a dependency, or a `//` comment in a JSON preset. Anything executable belongs
+  in a real package; a comment in a preset turns the build red, so its reasons live in this file.
 
 ## Commands
 
-None — JSON only. Consumers typecheck against these.
+None. Consumers typecheck against the presets; `pnpm lint` runs the plugins.
 
 ## Local conventions
 
@@ -26,5 +29,8 @@ None — JSON only. Consumers typecheck against these.
 
 ## Done means
 
-`pnpm turbo typecheck` stays green across the workspace. Note that a green typecheck does not
-prove the `extends` paths resolve for every tool — see the landmine.
+`pnpm turbo typecheck` stays green across the workspace.
+
+## Traps
+
+- An `extends` that climbs out of this package resolves against the CONSUMER's `node_modules` for any tool that does not realpath: `tsc` realpaths and hides it, Vite does not, so a green typecheck does not prove these paths resolve → every `extends` here is package-relative (`./base.json`).

@@ -1,0 +1,16 @@
+language css
+
+// The token package keeps the seam for a dark set open but ships none: no `.dark`, `.theme-dark` or
+// `[data-…="dark"]` scope in packages/theme's hand-written stylesheets.
+or {
+  CssClassSelector() as $scope where {
+    $scope <: includes "dark",
+    $scope <: r"\.(?:theme-)?dark(?:-[\w-]*)?",
+    register_diagnostic(span=$scope, message="v1 is light-only — no dark mode, colour-scheme API or dark scope; the theme has only the light set.")
+  },
+  CssAttributeSelector() as $scope where {
+    $scope <: includes "dark",
+    $scope <: r"(?s)\[\s*data-[\w-]+\s*[~|^$*]?=\s*[\x22\x27]?dark[\x22\x27]?\s*(?:[iIsS]\s*)?\]",
+    register_diagnostic(span=$scope, message="v1 is light-only — no dark mode, colour-scheme API or dark scope; the theme has only the light set.")
+  }
+}

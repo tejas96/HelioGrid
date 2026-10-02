@@ -1,0 +1,17 @@
+language css
+
+// The raw white in a stylesheet: var(--surface) / var(--surface-card), and var(--text-inverse) as a
+// background, fill, stroke, shadow, border or outline value. Both report on the whole declaration,
+// so one biome-ignore above the property covers a value that runs over several lines.
+or {
+  CssGenericProperty() as $white where {
+    $white <: includes "--surface",
+    $white <: r"(?s).*var\(--surface(?:-card)?\).*",
+    register_diagnostic(span=$white, message="Raw white — a control part takes var(--hg-control-fill) or useGround().controlFill, a knob or a ring var(--hg-ground) or useGround().ground; a file that truly needs the white says why in a biome-ignore.")
+  },
+  CssGenericProperty() as $white where {
+    $white <: includes "--text-inverse",
+    $white <: r"(?s).*(?:background(?:-color)?|fill|stroke|box-shadow|border(?:-[a-z]+)*|outline(?:-color)?) *:[^;]*var\(--text-inverse\).*",
+    register_diagnostic(span=$white, message="Raw white — a control part takes var(--hg-control-fill) or useGround().controlFill, a knob or a ring var(--hg-ground) or useGround().ground; a file that truly needs the white says why in a biome-ignore.")
+  }
+}

@@ -33,6 +33,7 @@
    it on; a tile there would vanish, and without this entry their retry would read the desk. */
 .hg-paged-document-card,
 .hg-paged-document-unavailable {
+  /* biome-ignore lint/plugin/raw-white-css: ground — the ground itself, and Surface, which sets it */
   --hg-ground: var(--surface);
   --hg-control-fill: var(--bg-well);
 }
@@ -60,6 +61,7 @@
   background: var(--canvas-sunken);
   box-shadow: none;
   --hg-ground: var(--canvas-sunken);
+  /* biome-ignore lint/plugin/raw-white-css: ground — the ground itself, and Surface, which sets it */
   --hg-control-fill: var(--surface);
 }
 
@@ -83,6 +85,7 @@
 .hg-dt-card[data-fixed="true"],
 .hg-dt-card[data-selected="true"] {
   --hg-ground: var(--canvas-sunken);
+  /* biome-ignore lint/plugin/raw-white-css: ground — the ground itself, and Surface, which sets it */
   --hg-control-fill: var(--surface);
 }
 

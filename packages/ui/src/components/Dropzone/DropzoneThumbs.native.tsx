@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     bottom: theme.spacing['sp-1'],
     height: 4,
     borderRadius: theme.radius['r-pill'],
+    // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
     backgroundColor: theme.colors.surface,
     overflow: 'hidden',
   },
@@ -54,6 +55,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
+    // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
     backgroundColor: theme.colors.surface,
     ...theme.elevation.e2,
   },

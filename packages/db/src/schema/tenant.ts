@@ -14,7 +14,7 @@ import { uuidv7 } from '../uuid';
 import { creationKeyColumns } from './creation-key';
 import { marketPack } from './market';
 
-/** pgEnums hand-mirror domain's tuples (`M17` proves the two equal). */
+/** pgEnums hand-mirror domain's tuples (invariant `enum-parity` proves the two equal). */
 export const tenantSegment = pgEnum('tenant_segment', TENANT_SEGMENTS);
 export const uiLanguage = pgEnum('ui_language', UI_LANGUAGES);
 

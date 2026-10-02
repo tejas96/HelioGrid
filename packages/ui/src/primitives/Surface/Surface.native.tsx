@@ -40,6 +40,7 @@ const RADIUS: Record<Density, Record<SurfaceRadius, number>> = {
 };
 
 const BACKGROUND: Record<SurfaceBackground, string> = {
+  // biome-ignore lint/plugin/raw-white: ground — the ground itself, and Surface, which sets it
   surface: theme.colors.surface,
   'surface-alt': theme.colors['surface-alt'],
   canvas: theme.colors.canvas,

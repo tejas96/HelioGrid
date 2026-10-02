@@ -1,35 +1,49 @@
 #!/usr/bin/env bash
-# PreToolUse(Bash): skipping git's hooks skips the commit gate — /verify's stamp (M113), biome
-# --error-on-warnings and typecheck. Fix the diagnostic instead (CLAUDE.md §4).
+# PreToolUse(Bash): skipping git's hooks skips the commit gate — biome --error-on-warnings,
+# typecheck and the secret scan. Fix the diagnostic instead (CLAUDE.md §4).
 #
-# Matches the ACTION, not a mention: quoted segments are stripped first, so a commit message
+# Matches the ACTION, not a mention: a quoted string becomes the word Q, so a commit message
 # that discusses the flag still lands, while the flag as an argument is caught wherever it
 # sits in the command. git accepts a long option by any unique prefix (`--no-verif`), global
 # options before the subcommand (`git -c x=y commit`, `git --no-pager commit`), `-n` as the short
 # form on `git commit` (on `git push` it is a dry run), a hooks path in any letter case, and the
-# hook runner's own variables — each skips the gate just as surely as the full flag.
+# hook runner's own variables — each skips the gate just as surely as the full flag. Reading
+# core.hooksPath is allowed; only a command that sets, adds, replaces or unsets it is refused.
 set -euo pipefail
 
 # A guard that cannot run fails closed: only exit 2 blocks, so a missing tool must not exit 127.
-command -v python3 >/dev/null || { echo "Blocked: this guard needs python3 on PATH and cannot run without it (M64)." >&2; exit 2; }
+command -v python3 >/dev/null || { echo "Blocked: this guard needs python3 on PATH and cannot run without it." >&2; exit 2; }
 
-cmd="$(cat | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tool_input",{}).get("command",""))')"
+cmd="$(cat | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tool_input",{}).get("command",""))')" \
+  || { echo "Blocked: this guard could not read its input." >&2; exit 2; }
 
 verdict="$(printf '%s' "$cmd" | python3 -c '
 import re, sys
 s = sys.stdin.read()
-# Strip heredoc bodies, then double- and single-quoted strings. What remains is argument text.
+# Drop heredoc bodies: they are text, never arguments.
 s = re.sub(r"<<-?\x27?\"?(\w+)\x27?\"?.*?^\1", " ", s, flags=re.S | re.M)
-s = re.sub(r"\"(?:[^\"\\\\]|\\\\.)*\"", " ", s)
-s = re.sub(r"\x27[^\x27]*\x27", " ", s)
+# A hooks path passed to git on its command line, quoted or not, joined by = or a space.
+if re.search(r"(?:-c|--config-env)(?:=|\s*)[\"\x27]?core\.hookspath=", s, re.I):
+    print("a redirected hooks path"); sys.exit()
+# A quoted string becomes the word Q, so a quoted value still counts as one.
+s = re.sub(r"\"(?:[^\"\\\\]|\\\\.)*\"", " Q ", s)
+s = re.sub(r"\x27[^\x27]*\x27", " Q ", s)
 if re.search(r"(^|\s)--no-verify(\s|=|$)", s):
     print("--no-verify"); sys.exit()
-if re.search(r"core\.hookspath", s, re.I):
-    print("a redirected hooks path"); sys.exit()
 if re.search(r"SKIP_SIMPLE_GIT_HOOKS|SIMPLE_GIT_HOOKS_RC|GIT_CONFIG_(COUNT|KEY_\d+|VALUE_\d+|PARAMETERS)", s):
     print("the hook runner'"'"'s or git'"'"'s config variables"); sys.exit()
-commit = re.compile(r"(?:^|\s)git(?:\s+(?:-[cC]\s+\S+|--\S+|-\S+))*\s+commit(?P<args>(?:\s.*)?)$")
+git = r"(?:^|\s)git(?:\s+(?:-[cC]\s+\S+|--\S+|-\S+))*\s+"
+config = re.compile(git + r"config(?P<args>(?:\s.*)?)$")
+commit = re.compile(git + r"commit(?P<args>(?:\s.*)?)$")
+config_writes = {"set", "unset", "--unset", "--unset-all", "--add", "--replace-all", "--edit", "-e"}
 for segment in re.split(r"[;&|\n]+", s):
+    m = config.search(segment)
+    if m:
+        # A redirection (`2>/dev/null`) is not a value; anything else after the key is one.
+        words = [w for w in m.group("args").split() if not re.match(r"^\d*[<>]", w)]
+        key = next((i for i, w in enumerate(words) if w.lower() == "core.hookspath"), None)
+        if key is not None and (words[key + 1:] or any(w.lower() in config_writes for w in words[:key])):
+            print("a redirected hooks path"); sys.exit()
     m = commit.search(segment)
     if not m:
         continue
@@ -38,10 +52,10 @@ for segment in re.split(r"[;&|\n]+", s):
         print("a prefix of --no-verify"); sys.exit()
     if re.search(r"(^|\s)-[A-Za-z]*n[A-Za-z]*(\s|$)", args):
         print("-n, which is --no-verify,"); sys.exit()
-')"
+')" || { echo "Blocked: this guard could not judge the command." >&2; exit 2; }
 
 if [ -n "$verdict" ]; then
-  echo "Blocked: $verdict skips git's commit gate. Fix the lint, typecheck or stamp diagnostic instead (CLAUDE.md §4)." >&2
+  echo "Blocked: $verdict skips git's commit gate. Fix the lint, typecheck or secret-scan diagnostic instead (CLAUDE.md §4)." >&2
   exit 2
 fi
 exit 0

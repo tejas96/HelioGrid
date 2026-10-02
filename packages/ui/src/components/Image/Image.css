@@ -58,6 +58,7 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
+  /* biome-ignore lint/plugin/raw-white-css: over-media — a chip, a thumbnail or a control drawn over a photograph or a map */
   box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text-inverse) 45%, transparent);
   pointer-events: none;
 }
@@ -166,6 +167,7 @@
   height: var(--sp-6);
   padding: 0 10px;
   border-radius: var(--r-pill);
+  /* biome-ignore lint/plugin/raw-white-css: over-media — a chip, a thumbnail or a control drawn over a photograph or a map */
   background: var(--surface);
   box-shadow: var(--e2);
   font-size: var(--fs-overline);

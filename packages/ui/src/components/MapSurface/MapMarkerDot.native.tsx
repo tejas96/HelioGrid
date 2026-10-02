@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 7,
+    // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
     backgroundColor: theme.colors.surface,
     borderWidth: 2.5,
     ...theme.elevation.e2,
@@ -29,6 +30,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing['sp-0-5'],
     paddingHorizontal: theme.spacing['sp-2'],
     borderRadius: theme.radius['r-pill'],
+    // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
     backgroundColor: theme.colors.surface,
     ...theme.elevation.e2,
   },
@@ -107,6 +109,7 @@ export function MapMarkerDot({
             style={[
               styles.dot,
               live ? styles.dotLive : undefined,
+              // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
               { borderColor: theme.colors.surface },
               live ? { backgroundColor: colour } : { borderColor: colour },
             ]}

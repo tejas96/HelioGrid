@@ -14,9 +14,9 @@ const c = initContract();
 
 /**
  * The act an entry records (`F2-22`). Built from `AUDIT_EVENT_TYPES` in `@heliogrid/domain`,
- * never restated: the migration mirrors the same tuple as a pgEnum (`M17`), so a value on one
- * side alone is a row the API can never return or a value the database rejects. This closed
- * form is the WRITE side and the mirror; the log's read carries the growing form below.
+ * never restated: the migration mirrors the same tuple as a pgEnum (invariant `enum-parity`), so a
+ * value on one side alone is a row the API can never return or a value the database rejects. This
+ * closed form is the WRITE side and the mirror; the log's read carries the growing form below.
  */
 export const auditEventTypeSchema = z.enum(AUDIT_EVENT_TYPES);
 export type AuditEventType = z.infer<typeof auditEventTypeSchema>;

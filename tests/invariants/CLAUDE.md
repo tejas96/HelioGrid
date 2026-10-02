@@ -6,15 +6,18 @@ an invariant proves the seam between them.
 ## What lives here / what must never live here
 
 - The locked invariant set: tenancy RLS, RLS armed, tenancy write paths, table tenancy scan,
-  enum parity, schema parity, tenant-id-on-the-wire, format rendering, matrix-mirrors-f2, brand
-  registry, template-keys-mirror-f6 — one name
+  enum parity, schema parity, tenant pin, tenant-id-on-the-wire, format rendering,
+  matrix-mirrors-f2, brand registry, template-keys-mirror-f6, vocabulary copies, dockerfile
+  unprivileged, light-only platform files, banned word in other files, env example complete,
+  language fonts, e2e flow per screen, design-system props, biome plugin scopes — one name
   per file in `src/`, so a file added here without a name added there is visible. **Additions require explicit owner
   approval** — the set is deliberately small so a green run means something.
-- NEVER a unit test. Those live at `<package>/tests/**/*.test.ts` and prove one DECISION at its
-  edges; an invariant proves a property of the SYSTEM against real state. Neither replaces the
-  other.
+- NEVER a unit test (`.claude/rules/testing.md`).
 - Never a fixture factory, a mock, or a helper library. An invariant that needs scaffolding to be
-  readable is testing the wrong thing.
+  readable is testing the wrong thing. The two shared files are `repo-root.ts` and
+  `repo-files.ts`, the one file lister every static invariant reads the tree through.
+- Each static invariant is a pure `find…(repo)` that returns its findings and a `run…(repo)` that
+  throws them, and it refuses an empty scan, so a renamed folder fails instead of passing.
 
 ## Commands
 
@@ -26,8 +29,8 @@ pnpm turbo test                              # the same, through the gate
 ## Local conventions
 
 - **A skipped invariant that reports success is worse than no invariant.** `run.ts` skips loudly
-  without `DATABASE_URL` and fails closed under CI. A green local `pnpm verify` on a machine with
-  no database has NOT proven tenancy.
+  without `DATABASE_URL` and fails closed under CI. A green local `pnpm check:all` on a machine
+  with no database has NOT proven tenancy.
 - **Vacuity is not a pass.** A db-backed invariant with nothing to compare says so explicitly,
   and a reset store makes them say it again. Read the output, not the exit code: the summary
   lines name what was exercised, and "OK" over zero rows is what they are written to refuse.
@@ -42,5 +45,5 @@ pnpm turbo test                              # the same, through the gate
 ## Done means
 
 The invariant fails on the violation it names — inject it once, watch it go red, then remove it,
-and record the date in its `mechanisms.md` row. An invariant nobody has seen fail is a rule nobody
-has verified.
+and write that red run into the PR body (`/ship` step 5). An invariant nobody has seen fail is a
+rule nobody has verified.

@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
     height: 12,
     borderRadius: theme.radius['rf-md'],
     /* Drawn in --surface: the card is a grey tile, and a grey bar on it would not show. */
+    // biome-ignore lint/plugin/raw-white: shimmer — a loading bar's shimmer
     backgroundColor: theme.colors.surface,
   },
   message: { alignItems: 'flex-start', gap: theme.spacing['sp-2'] },

@@ -1,0 +1,69 @@
+// v1 is light-only (scripts): no prefers-color-scheme, no useColorScheme / Appearance / colorScheme,
+// no `color-scheme:` set to dark or normal, and no Tailwind `dark:` in a class string. Comments are
+// never read. The native and web light-only settings (Info.plist, styles.xml, globals.css :root,
+// the colors.css alias chain) are held by the invariant light-only-platform-files.
+// Each regex sits behind `includes` checks that are cheaper and never narrower.
+or {
+  or {
+    JsReferenceIdentifier(),
+    JsIdentifierBinding(),
+    JsIdentifierAssignment(),
+    JsName(),
+    JsLiteralMemberName(),
+    JsxName(),
+    JsxReferenceIdentifier(),
+    JsLiteralExportName()
+  } as $name where {
+    $name <: or {
+      includes "olorScheme",
+      includes "Appearance"
+    },
+    $name <: r"[\x22\x27]?(?:useColorScheme|Appearance|colorScheme)[\x22\x27]?",
+    register_diagnostic(span=$name, message="v1 is light-only — no dark mode, colour-scheme API or dark scope; the theme has only the light set.")
+  },
+  or {
+    JsStringLiteralExpression(),
+    JsTemplateChunkElement(),
+    JsxString(),
+    JsxText(),
+    TsStringLiteralType()
+  } as $text where {
+    or {
+      and {
+        $text <: or {
+          includes "color-scheme",
+          includes "olorScheme",
+          includes "Appearance"
+        },
+        $text <: r"(?s).*(?:prefers-color-scheme|\b(?:useColorScheme|Appearance|colorScheme)\b|color-scheme\s*:[^;}]*\b(?:dark|normal)\b).*"
+      },
+      and {
+        $text <: includes "dark:",
+        or {
+          $text <: within JsxAttribute(name=or {
+            "className",
+            "classNames",
+            "class"
+          }) ,
+          $text <: within JsCallExpression(callee=or {
+            "clsx",
+            "classNames",
+            "cn",
+            JsStaticMemberExpression(member=or {
+              "clsx",
+              "classNames",
+              "cn"
+            })
+          }) ,
+          $text <: within JsPropertyObjectMember(name=or {
+            "className",
+            "'className'"
+          }) ,
+          $text <: within JsVariableDeclarator(id="className")
+        },
+        $text <: r"(?s)(?:.*[^\w-])?dark:[a-z\[].*"
+      }
+    },
+    register_diagnostic(span=$text, message="v1 is light-only — no dark mode, colour-scheme API or dark scope; the theme has only the light set.")
+  }
+}

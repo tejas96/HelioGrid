@@ -1,73 +1,31 @@
 ---
 name: contract-change
-description: Change the API contract safely — edit first, re-emit OpenAPI, keep database enums in step, sweep every typed client, and judge breaking changes. Use whenever packages/contracts is edited.
+description: Change the API contract safely — the contract first, the OpenAPI spec re-emitted and committed, database enums kept in step, every typed client swept, and breaking changes judged before they merge. Use whenever packages/contracts is edited.
 ---
 
-# Changing the contract
+# /contract-change — contract first, spec fresh, clients swept, breaks judged
 
-Contract law — what may and may not go in a contract — is in `packages/contracts/CLAUDE.md`,
-which loads when you open a contract file. This is the sequence to run.
+What may and may not go in a contract is in `packages/contracts/CLAUDE.md`, which loads when you open
+a contract file. This is the order of work.
 
-## 1. Edit the contract first
-
-Before any implementation. The diff is the API review surface (Law 3).
-
-## 2. Re-emit and commit the OpenAPI surface
-
-The emit reads `dist/`, so **build before you emit** — otherwise you emit the old surface
-from stale `dist` and see no diff for a change you did make:
-
-```bash
-pnpm --filter @heliogrid/contracts build
-pnpm --filter @heliogrid/contracts openapi
-git diff --stat packages/contracts/openapi/openapi.json
-```
-
-Or run `pnpm check:openapi`, which builds, emits, fails on a stale committed spec, and —
-when `oasdiff` is installed — also flags breaking changes against `origin/main`.
-
-The committed spec must match the contract **in the same change**. A stale committed
-surface is a lie told to every reader of it. CI enforces this half on every PR.
-
-## 3. If you touched a `z.enum` the database also stores
-
-The pgEnum changes in the same slice, through `/migration` — never by editing an applied
-file. `db-no-upward` forbids importing contracts into `packages/db`, so the two sides are
-hand-mirrored — but they are not unchecked:
-`tests/invariants/src/enum-parity.ts` PROVES pgEnum ↔ z.enum parity (live pg_enum against
-the contract schemas, both directions) via `pnpm turbo test` — needs `DATABASE_URL`
-locally; CI fails closed. Change both sides in the same slice via `/migration`.
-
-A value on one side only is a silent production defect — rows the API can never return, or
-API values the database rejects at insert.
-
-## 4. Sweep the typed clients
-
-```bash
-pnpm turbo typecheck
-```
-
-Web and mobile consume the ts-rest contract, so a shape change surfaces as a compile error
-at every call site. The sole typed client lives in `packages/data/src/client/client.ts` —
-the only `initClient` call in the repo. **A call site that did NOT break where you expected
-it to is hand-rolling HTTP**: find it and route it through `@heliogrid/data`.
-
-Adding an enum value must also break every `Record<TheEnum, …>` map that renders it. If
-nothing broke, the map is not exhaustive — make it so.
-
-## 5. Judge breaking changes before shipping
-
-Removing a field, tightening a type, renaming a key or changing a declared status code
-breaks every existing client. Additive changes — a new optional field, a new endpoint — do
-not. A genuine break needs an owner ruling, stated in the change itself, before it merges.
-
-`pnpm check:openapi` diffs the emitted surface against `origin/main` with the ONE pinned
-build of `oasdiff` — `pnpm tools:oasdiff` installs it, and the check is RED without it, here
-as under CI (`M26`): an older build grades the same finding a level lower and would pass what
-CI refuses. A value added to a response enum is error-level: a set that grows by design is
-declared `extensibleEnum` in `common.ts` (the rule in this package's `CLAUDE.md`); anything
-else is a genuine break and needs the owner's ruling, stated in the change, before it merges.
-
-`oasdiff` judges the SHAPE only (`M26`). A change of MEANING in the same shape — a unit or a scale, a
-time zone, what a status, a zero or an empty list stands for — is just as breaking: name it in the
-change, judge it here, and pin the new meaning with a test.
+1. **Edit the contract first**, before any implementation. The diff is the API's review surface.
+2. **Re-emit the spec and commit it in the same change.** The emit reads `dist/`, so build first:
+   `pnpm check:openapi` builds, emits and fails while the committed spec differs from what the
+   contract emits — then the fresh spec is on disk; commit it.
+3. **A `z.enum` the database also stores** changes its pgEnum in the same slice, through
+   `/migration` — never by editing an applied file. The `enum-parity` invariant proves the two
+   match, both ways; it needs the database.
+4. **Sweep the clients:** `pnpm turbo typecheck`. Web and mobile consume the typed contract, so a
+   shape change breaks every call site — a call site that did NOT break is making raw HTTP calls:
+   route it through `@heliogrid/data`. A new enum value must break every `Record<TheEnum, …>` that
+   renders it; one that did not break is not exhaustive — make it so.
+5. **Judge breaking changes before the merge.**
+   - Removing a field, tightening a type, renaming a key or changing a declared status breaks every
+     existing client, and phones in the field update weeks late. Additive changes — a new optional
+     field, a new endpoint — do not.
+   - CI's oasdiff step judges the SHAPE on every pull request. A response set that grows by design
+     is declared `extensibleEnum` in `common.ts`; anything else oasdiff flags needs the owner's
+     ruling, stated in the change.
+   - A change of MEANING in the same shape — a unit or a scale, a time zone, what a status, a zero or
+     an empty list stands for — is just as breaking: name it in the change and pin the new meaning
+     with a test.

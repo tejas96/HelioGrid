@@ -21,6 +21,7 @@ const LOGO_MAX_RATIO = 3;
  */
 export function DocumentBandHeader({ doc }: { doc: ResolvedDocument }) {
   const fade = doc.bandOk ? 'on' : 'off';
+  // biome-ignore lint/plugin/raw-white: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen
   const bandColour = doc.bandOk ? doc.brandHex : theme.colors.surface;
   const bandText = doc.bandOk ? doc.bandTextColor : theme.colors['text-primary'];
   const lines = doc.letterhead?.lines;

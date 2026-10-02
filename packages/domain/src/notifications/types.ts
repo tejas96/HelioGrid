@@ -84,7 +84,8 @@ export type NotificationReadFilter = (typeof NOTIFICATION_READ_FILTERS)[number];
 
 /**
  * The platforms a push can be addressed to (`F6-13`). Closed: a handset runs one of these, and
- * the transport needs to know which to shape its payload. Mirrored as a pgEnum (`M17`).
+ * the transport needs to know which to shape its payload. Mirrored as a pgEnum (invariant
+ * `enum-parity`).
  */
 export const PUSH_PLATFORMS = ['ios', 'android'] as const;
 export type PushPlatform = (typeof PUSH_PLATFORMS)[number];

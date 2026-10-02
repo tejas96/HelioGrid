@@ -1,5 +1,10 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "extends": ["//"],
-  "tags": ["app-invariants"]
+  "tags": ["app-invariants"],
+  "tasks": {
+    "test": {
+      "dependsOn": ["^build", "@heliogrid/i18n#build", "@heliogrid/theme#build"]
+    }
+  }
 }

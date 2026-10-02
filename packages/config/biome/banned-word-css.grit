@@ -1,0 +1,19 @@
+language css
+
+// The commercial document is a Proposal (stylesheets): the banned word in a class, property, value,
+// custom property, string or url. Comments are never read.
+or {
+  CssIdentifier(),
+  CssCustomIdentifier(),
+  CssDashedIdentifier(),
+  CssString(),
+  CssUrlValueRaw()
+} as $word where {
+  $lower = lowercase($word),
+  $lower <: or {
+    includes "quot",
+    includes "क"
+  },
+  $word <: r"(?is).*(?:quot(?:e|ation|ing)|कोटेश|क्वोट|क्वॉट).*",
+  register_diagnostic(span=$word, message="Banned word — the commercial document is a Proposal in every language: say 'proposal' (प्रस्ताव).")
+}

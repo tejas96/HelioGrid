@@ -1,6 +1,6 @@
 # @heliogrid/forms — the headless form layer, the ONLY form-state path for apps
 
-Traps: `.claude/landmines.md` · deps: `architecture.md` §2 forms.
+Deps: `architecture.md` §2 forms.
 
 ## What lives here / what must never live here
 
@@ -19,7 +19,7 @@ pnpm --filter @heliogrid/forms build | typecheck    # tsc -p
 
 ## Local conventions
 
-- **Apps import `z` from HERE, never from `'zod'`** (`M4`). Zod's dual ESM/CJS build gives the app
+- **Apps import `z` from HERE, never from `'zod'`.** Zod's dual ESM/CJS build gives the app
   bundler a different module instance, so `installFormsErrorMap`'s translated defaults would
   silently never apply to schemas built with it.
 
@@ -27,3 +27,7 @@ pnpm --filter @heliogrid/forms build | typecheck    # tsc -p
 
 Build, typecheck and lint green · consumed by BOTH platforms (Law 7) · the form driven in a
 browser and on both simulators.
+
+## Traps
+
+- `installFormsErrorMap` mutates zod's PROCESS-GLOBAL error map, so it cannot be per request; it is correct on a client, where one mount has one language → each app root installs it, bound to that mount's translator; server-side translation uses `@heliogrid/i18n`'s `createTranslator` instead.

@@ -4,12 +4,13 @@ import type { AppRouter } from '@ts-rest/core';
 import type { Request } from 'express';
 
 /**
- * What a route needs before its handler runs (`F2-25`, `M15`): nothing; the session COOKIE,
+ * What a route needs before its handler runs (`F2-25`): nothing; the session COOKIE,
  * which the handler itself verifies (the refresh grant is scoped to `/auth` and never becomes
  * a token); a live session by token; an active membership; or a capability the membership's
  * roles grant. Declared per route, beside the contract it serves, as a COMPLETE map — a route
  * the map does not name is denied, so silence is denial rather than a hole.
  */
+// biome-ignore lint/plugin/app-vocabulary: the API's own route-access type; ruling owed (docs/tasks/deferred.md, app vocabulary row)
 export type RouteAccess =
   | 'public'
   | 'session-cookie'

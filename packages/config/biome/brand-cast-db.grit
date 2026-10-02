@@ -1,0 +1,10 @@
+// A brand owned by packages/db is never obtained by a cast — `x as B`, `x as unknown as B` or
+// `<B>x` — outside packages/db. A brand added to packages/db joins both lists below.
+or {
+  TsAsExpression(ty=$type),
+  TsTypeAssertionExpression(ty=$type)
+} as $cast where {
+  $type <: or { includes "TenantScopedDb" },
+  $type <: r"(?s)(?:TenantScopedDb)\b.*",
+  register_diagnostic(span=$cast, message="A brand is never obtained by a cast — call its constructor in packages/db instead.")
+}

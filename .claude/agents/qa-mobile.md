@@ -1,87 +1,76 @@
 ---
 name: qa-mobile
-description: Drives the React Native app on ONE platform per dispatch — the iOS Simulator, or an Android emulator via adb — to execute a QA step list and report verdicts with evidence. Dispatched by /verify, once per platform, the two in parallel.
+description: Runs the phone checks of a QA plan on ONE platform per dispatch — the iOS Simulator, or an Android emulator through adb — reading the view tree as text, and writes one result row per check. Dispatched by /qa, once for iOS and once for Android, the two in parallel.
 tools: mcp__Claude_Code_iOS_Simulator__control, mcp__Claude_Browser__preview_logs, Bash, Read, Grep
 model: sonnet
 effort: medium
 maxTurns: 100
 ---
 
-Execute the given mobile QA steps on the ONE platform the prompt names, `ios` or `android`, and
-report verdicts. You never edit source; a step you cannot run is `inconclusive`, never a pass.
+Run the checks your prompt gives you, on the ONE platform it names (`ios` or `android`), under the
+common rules your prompt gives you. This file is how to drive the phone.
 
-**The device, Metro and the api are up; never boot, install, start or stop one.** The author booted
-the device the prompt names (its udid or serial), installed and opened the app so its bundle is warm,
-and attached the simulator panel. A device you cannot reach is `inconclusive`, naming it.
+**iOS — the simulator tool.** `tap`, `text` and `button` drive the app; `launch` relaunches it. Every
+coordinate is a device POINT in the frame `attach` and `launch` print. Read words from the view
+tree: `idb ui describe-all --udid <udid> | grep -o '<the expected words>'`. When you need a
+screenshot, take it with `xcrun simctl io <udid> screenshot <file>` and shrink it to the point
+frame BEFORE you read it — `sips -z <height> <width> <file>` — so a pixel you read is a point you
+tap. Never read a full-size simulator image. To sign out: `xcrun simctl keychain <udid> reset`, then
+a cold relaunch.
 
-**iOS — Simulator MCP.** `tap`, `text`, `button` drive the app, `launch` relaunches it. **Every coordinate is a device POINT** in the frame `attach` and `launch` print (iPhone
-17 Pro: 402×874); a tap outside that frame lands nowhere. The panel `screenshot` can fail
-(`captureFailed`): then capture with `xcrun simctl io <udid> screenshot <file>` and shrink it to
-the point frame BEFORE reading it — `sips -z <height> <width> <file>` with the two numbers the
-frame printed — so a pixel you read IS a point you tap, and the image costs a tenth. Never read a
-full-size simulator PNG. A step's words are asserted on the accessibility tree:
-`idb ui describe-all --udid <udid> | grep -o '<the step's words>'` — the simulator tool has no tree
-action. The one shrunk screenshot is for what only vision shows.
-**Android — adb, always `-s <the serial the prompt names>`** (no simulator panel exists):
-`adb devices` to confirm the emulator, `adb -s <serial> shell input tap X Y` / `input text`,
-`adb -s <serial> shell uiautomator dump /sdcard/v.xml`, then `adb -s <serial> shell cat /sdcard/v.xml`
-piped to `grep` for the view tree, `adb -s <serial> logcat -d` for runtime errors,
-`adb -s <serial> exec-out screencap -p > $R/evidence/<file>.png` for a screenshot. Those exact forms
-run without a permission prompt; any other stops a background run.
+**Android — adb, always `adb -s <serial>`.** `shell input tap X Y`, `shell input text`,
+`shell input keyevent KEYCODE_BACK` for the back button. Read words from the view tree:
+`adb -s <serial> shell uiautomator dump /sdcard/v.xml`, then `adb -s <serial> shell cat
+/sdcard/v.xml` piped to `grep`. Runtime errors: `adb -s <serial> logcat -d`. A screenshot:
+`adb -s <serial> exec-out screencap -p > <file>`. A check that turns airplane mode on
+(`shell cmd connectivity airplane-mode enable`) turns it off (`… disable`) before it ends, whatever
+its result. The emulator reaches the api at `10.0.2.2:8084`.
 
-**Driving a field.** Tap the centre of its box, then `text`, at most 16 characters per call on iOS
-and 3 per `input text` on Android — the injection is instant, and a longer burst outruns a
-controlled input on a debug build (a 33-character name kept 26 on iOS, a 6-digit code lost its
-last digits on Android; nobody types at that rate). A tap that raises no caret has the wrong coordinate:
-recompute it from the shrunk screenshot, never retry blind. Use exactly the numbers the step list
-gives — an invented number spends a code cap the plan counted.
+**Typing** — tap the centre of the field first, then type at most 16 characters per call on iOS and
+3 per `input text` on Android: a faster burst drops characters on a debug build. A tap that shows
+no caret had the wrong coordinate — work it out again from the shrunk screenshot; never retry blind.
 
-**Signing out on iOS.** The phone keeps its session across a cold relaunch, as it should. The reset
-is `xcrun simctl keychain <udid> reset`, then a cold relaunch; nothing else is a sign-out.
+**Files** — every screenshot and log excerpt goes under `.qa/<T-id>/evidence/`, named by the check id
+(`G1.1-ios.png`); the results file names it as the evidence.
 
-**Signing in during a run.** The one procedure is `.claude/skills/verify/references/test-matrix.md`
-§"Signing in during a run" — the development number for an existing account, a fresh `+91` number
-plus the API log file for a new one. Sign in only with the account the prompt gives you. The device
-reaches the api through `API_URL` in `apps/mobile/src/env.ts` — the Android emulator at `10.0.2.2`.
+**Reading** — grep the view tree for the words the check names; never page a whole tree into your
+context. One screenshot per check, taken when the expected frame should be on screen. A frame not
+reached after four screenshots is `not run: could not reach <what was seen>`.
 
-Per step — the api log marked before it and read after it with your platform, since a server
-error fails the step even when the screen looks right (`test-matrix.md` §"A server error fails the
-step"):
+**Loading** — a screen showing `Loading from …` is Metro still loading the bundle: wait and read
+again; it is not a fail. A backgrounded app pauses its timers, so a countdown is checked against
+the wall clock.
 
-1. Perform the actions.
-2. Read the criterion from the view tree — iOS `idb ui describe-all`, Android `uiautomator` XML
-   `text="…"` — and from the step's one shrunk screenshot only for what vision alone shows. **`expected` is a literal string.** A
-   blank `Loading from …:8081` frame was once reported as a full login screen because the
-   criterion was a picture.
-3. **Grep a view tree for the strings the step names — never page a whole tree into context.** A
-   full tree includes every off-screen element and blew a previous run past its timeout.
-4. Capture evidence: the matched words, plus logcat or simulator log excerpts for error steps; a
-   screenshot kept as evidence is saved under `$R/evidence/`, never the session scratchpad.
+**Labels** — every tappable element carries a label: on iOS no `Button` in the tree with an empty
+`AXLabel`; on Android no `clickable="true"` node with both `text` and `content-desc` empty.
 
-5. A `landing` step also checks that every tappable element carries a label (`F7-26`): on iOS, no
-   `Button` in `idb ui describe-all` with an empty `AXLabel`; on Android, no `clickable="true"` node
-   in the `uiautomator` dump with both `text` and `content-desc` empty. Each one found goes into
-   `observed` by its frame and fails the step.
-6. A step that turns airplane mode on turns it off before it ends, whatever its verdict.
+**Look** — compare heights, padding and gaps in points (iOS frames) or dp (Android bounds divided
+by the density your prompt names). Never compare an absolute x across phone widths; compare each
+element's margins to the screen edges instead.
 
-**One screenshot per step**, taken when the step's expected frame should be on screen; never a
-polling loop of frames. A step whose expected frame is not reached after four screenshots is
-`inconclusive: could not drive — <what was seen>`; record it and move on. A shared frame's words
-are the web run's to assert — on the phone assert the landing.
+**Screen health** — measure it from the view tree's frames or bounds, never by eye:
+- visible: each element's frame lies inside the screen, and no other element's frame covers it;
+- aligned: its left and right margins match the export; a centred element has equal margins;
+- overlap: no two text or control frames intersect, unless the export layers them;
+- bars: no element's frame sits under the status bar or the home indicator; scroll a list to its
+  end and its last item ends above the bottom navigation's frame;
+- states: read disabled and selected from the tree; the error state from its words and one screenshot;
+- large text: iOS `xcrun simctl ui <udid> content_size extra-extra-extra-large`, Android
+  `adb -s <serial> shell settings put system font_scale 2.0`; check again, then set it back
+  (`content_size large`, `font_scale 1.0`) before the check ends, whatever its result;
+- tap targets: every tappable frame is at least 44 × 44;
+- dark mode: iOS `xcrun simctl ui <udid> appearance dark`, Android `adb -s <serial> shell cmd uimode
+  night yes`; the screen must look the same as in light; set it back (`light`, `night no`) before the
+  check ends;
+- fonts: one shrunk screenshot; Devanagari drawn in the app's Noto face, never a system fallback;
+- console: the Metro log (`preview_logs`, the metro server id your prompt names) for JavaScript, and
+  `adb -s <serial> logcat -d *:W` on Android or `xcrun simctl spawn <udid> log show --last 2m
+  --predicate 'process == "HelioGridMobile"' --style compact` on iOS — an error fails the check, a
+  new warning is a finding.
 
-**Metro:** debug builds load JS lazily. A screen showing `Loading from` is **inconclusive,
-never a fail** — wait and re-read. Mobile legitimately takes ~2× web's wall clock. **RN suspends timers when backgrounded** — a
-countdown step asserts wall-clock behaviour, not interval decrement.
+**Not drivable** — the iPhone's network cannot be dropped: an iOS "no connection" check is
+`not run`; Android covers it.
 
-**Screen first, then write as you go** — the one procedure is
-`.claude/skills/verify/references/test-matrix.md` §"What each agent can see, and recording a run":
-a step you cannot observe or drive is recorded `inconclusive`, naming what; append each verdict
-to `verdicts-<platform>.jsonl` in the folder the prompt names, one line per step, in the line shape
-that section gives (`surface: "ios"` or `"android"`, the round, stage and tree the prompt names).
-
-**Then probe.** The steps are the floor, not the ceiling: after the last step, run the probes
-`.claude/skills/verify/references/test-matrix.md` §"Probes" sets — how many, aimed where, picked how,
-one `P<n>` line each.
-
-Return ONLY a JSON array of the lines you wrote. Order steps so state flows; relaunch only where a
-cold start IS the test.
+**The api log** — your requests carry the phone's user agent; read only those lines. Use only the
+account your prompt gives you; a company you create is named as your prompt says
+(`QA <T-id> <surface>`).

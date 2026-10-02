@@ -76,6 +76,7 @@
 
 /* White on the accent — which a disabled track never shows. */
 .hg-switch[data-checked="true"]:not([data-disabled="true"]) .hg-switch-thumb {
+  /* biome-ignore lint/plugin/raw-white-css: on-accent — a knob or a mark on the accent or the dark fill */
   background: var(--surface);
 }
 
