@@ -46,11 +46,12 @@ persistence:
         connectProtocol: "tcp"
         user: "temporal"
         password: "temporal"
-        # Connection budget, not a default: one machine, two stores. maxConns here plus
-        # visibility's must stay under the database's own max_connections with headroom for
-        # the schema tool and an operator psql session.
-        maxConns: 20
-        maxIdleConns: 20
+        # A budget PER SERVICE, not per cluster: each of the five services in
+        # TEMPORAL_SERVICES opens its own pool to each store, so Temporal can hold
+        # 5 × (this + visibility's) = 40. Raised past that, Temporal and the api's tests
+        # together exhaust Postgres's 100 connections and the tests fail with 53300.
+        maxConns: 6
+        maxIdleConns: 6
         maxConnLifetime: "1h"
     visibility:
       sql:
@@ -60,8 +61,8 @@ persistence:
         connectProtocol: "tcp"
         user: "temporal"
         password: "temporal"
-        maxConns: 10
-        maxIdleConns: 10
+        maxConns: 2
+        maxIdleConns: 2
         maxConnLifetime: "1h"
 
 global:

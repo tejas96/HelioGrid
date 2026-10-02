@@ -25,8 +25,9 @@ groups:
           summary: Temporal cannot reach or write its database
           description: >-
             The cluster serves the port while its persistence is failing, so a TCP check would
-            still be green. Check the Postgres machine, the connection budget (maxConns in the
-            server config plus visibility's must fit under max_connections) and TLS validity.
+            still be green. Check the Postgres machine, the connection budget (five services ×
+            (maxConns in the server config plus visibility's) must fit under max_connections) and
+            TLS validity.
 
   - name: temporal-workload
     rules:

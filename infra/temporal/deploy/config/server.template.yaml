@@ -30,12 +30,13 @@ persistence:
         connectProtocol: "tcp"
         user: "__PG_USER__"
         password: "__PG_PASSWORD__"
-        # Connection BUDGET, not a default. maxConns here plus visibility's must stay under
-        # the database's own max_connections with headroom for the schema tool and one
-        # operator psql session — a cluster that cannot open a connection to upgrade itself is
-        # a cluster you cannot upgrade.
-        maxConns: 20
-        maxIdleConns: 20
+        # A budget PER SERVICE, not per cluster: each of the five services in
+        # TEMPORAL_SERVICES (Dockerfile) opens its own pool to each store, so Temporal can hold
+        # 5 × (this + visibility's) = 40. That total must stay under the database's own
+        # max_connections with headroom for the schema tool and one operator psql session — a
+        # cluster that cannot open a connection to upgrade itself is a cluster you cannot upgrade.
+        maxConns: 6
+        maxIdleConns: 6
         maxConnLifetime: "1h"
         tls:
           # A DECISION, not a default. Production must state `true`: the connection carries
@@ -53,8 +54,8 @@ persistence:
         connectProtocol: "tcp"
         user: "__PG_USER__"
         password: "__PG_PASSWORD__"
-        maxConns: 10
-        maxIdleConns: 10
+        maxConns: 2
+        maxIdleConns: 2
         maxConnLifetime: "1h"
         tls:
           enabled: __PG_TLS__
