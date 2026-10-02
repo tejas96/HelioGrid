@@ -17,6 +17,30 @@ Do steps 1–7 in order. Write no code. Step 7 ends in a stop.
   branch first.
 - Delete the QA workspace of every task that now reads `shipped`: for each folder in `.qa/`, look
   up its task's `**Status:**` line and remove `.qa/<T-id>/` when it is `shipped`. Leave `.qa/api.log`.
+  Remove that task's QA records too — its companies `QA <T-id> …`, their rows, and every person
+  whose only memberships are in them; the `DEV_OTP_PHONE` person always stays. The infra must be
+  up. It runs in one transaction, refuses any database but the local one, and prints what it removed:
+  ```bash
+  pnpm --filter @heliogrid/api exec tsx --env-file-if-exists=<repo>/.env.local -e "(async () => {
+    const { openPools, unseed, adminUrl } = await import('./tests/support/fixture.ts');
+    const { tenant, tenantMembership, userAccount } = await import('@heliogrid/db');
+    const { and, eq, inArray, like, notInArray } = await import('drizzle-orm');
+    if (new URL(adminUrl).host === 'localhost:5544' === false) throw new Error('refused: not the local database');
+    const pools = openPools();
+    const db = pools.admin.db;
+    const companies = await db.select({ tenantId: tenant.id }).from(tenant).where(like(tenant.companyName, 'QA <T-id> %'));
+    const ids = companies.map((c) => c.tenantId);
+    const members = ids.length === 0 ? [] : await db.selectDistinct({ userId: tenantMembership.userAccountId }).from(tenantMembership).where(inArray(tenantMembership.tenantId, ids));
+    const elsewhere = members.length === 0 ? [] : await db.selectDistinct({ userId: tenantMembership.userAccountId }).from(tenantMembership).where(and(inArray(tenantMembership.userAccountId, members.map((m) => m.userId)), notInArray(tenantMembership.tenantId, ids)));
+    const dev = await db.select({ userId: userAccount.id }).from(userAccount).where(eq(userAccount.phoneE164, process.env.DEV_OTP_PHONE ?? ''));
+    const keep = new Set([...elsewhere, ...dev].map((r) => r.userId));
+    const people = members.filter((m) => keep.has(m.userId) === false);
+    await db.transaction((tx) => unseed(tx, { companies: companies, people: people, memberships: [] }));
+    console.log('removed ' + ids.length + ' companies and ' + people.length + ' people');
+    await pools.close();
+  })()"
+  ```
+  The files those rows point at stay in the local object store.
 
 ## 2. Pick the step — only when the owner names no task
 
