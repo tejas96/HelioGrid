@@ -75,6 +75,10 @@ element's margins to the screen edges instead.
 `not run`; Android covers it. A true double tap cannot be driven on iOS either: an iOS double-tap
 check is `not run`; Android covers it.
 
-**The api log** — your requests carry the phone's user agent; read only those lines. Use only the
-account your prompt gives you; a company you create is named as your prompt says
-(`QA <T-id> <surface>`).
+**The api log** — your requests carry the phone's user agent; read only those lines.
+
+**Account** — the main session has signed the phone in to the account your prompt gives you. A
+check that ends the session (S6) uses the app's own sign-out, or the keychain reset above on iOS —
+never "sign out everywhere"; sign back in with the number and the fixed code your prompt gives. A
+language your prompt says was set for you shows after a relaunch. A company you create is named as
+your prompt says (`QA <T-id> <surface>`).

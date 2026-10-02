@@ -145,6 +145,7 @@ catalog freshness checks, the unit tests and the invariants. CI job `quality` ru
 | The next step is the one the build order picks | `/start` step 2 |
 | A plan touching money, tenancy, permissions or schema is attacked, every QA plan is checked against its change, and a screen's design judged, before any code | `/start` steps 4 and 7 (`design-reviewer`, `plan-reviewer` checks 5–7, or every check) |
 | A change is QA'd on every surface it reaches | `/qa` step 1 |
+| Each QA surface runs on its own standing account, alive and at its baseline before the run; a standing company never gets a seeded row; a QA row is re-judged only when the words seen equal the corrected words | `/qa` steps 2 and 8 · `code-reviewer` item 28 |
 | A second agent reviews every change before it is pushed | `/ship` step 3 (`code-reviewer`) |
 | Every commit waits for the owner's yes to its file list and message | `/ship` step 7 |
 | A doc the change made wrong is fixed in the same change | review — `code-reviewer` item 27 |

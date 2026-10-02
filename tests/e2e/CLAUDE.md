@@ -22,7 +22,8 @@ Deps: `architecture.md` §2 tests/e2e. The law is `.claude/rules/testing.md`; th
 - Never a typed word or colour: words come from `@heliogrid/i18n`, colours from the page's own
   tokens (`support/token.ts`), the touch floor from `@heliogrid/ui`.
 - Never a shared account: every flow signs up its own fresh number (`support/phone.ts`), so no spec
-  reads another's data or the developer's, and no count or empty state is asserted.
+  reads another's data or the developer's, and no count or empty state is asserted. `/qa`'s
+  standing `QA <surface>` accounts are for its agents only; a flow never signs in to one.
 - Never a retry: a flake is a bug and is fixed.
 - Every web spec ends its landing with `support/axe.ts`'s `expectNoSeriousViolations` once the
   landing's words are visible: a `serious` or `critical` violation fails the suite (`F7-26`).
