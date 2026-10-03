@@ -17,19 +17,14 @@ export const NOTIFICATION_CENTRE = {
   headUnread: /*i18n*/ { id: '{unread} unread · {total} in the last {days} days' },
   headNothingUnread: /*i18n*/ { id: 'Nothing unread · {total} in the last {days} days' },
   headMatch: /*i18n*/ { id: '{match} match · {unread} unread in all' },
-  headSource: /*i18n*/ { id: 'Counted from the records, never from push' },
-  groupSource: /*i18n*/ { id: 'Counted from the records' },
-  markAllRead: /*i18n*/ { id: 'Mark all read' },
+  headMatchOnly: /*i18n*/ { id: '{match} match' },
+  headTotalOnly: /*i18n*/ { id: '{total} in the last {days} days' },
   markAllReadName: /*i18n*/ {
     id: '{count, plural, one {Mark the # unread notification read} other {Mark all # unread notifications read}}',
   },
-  filtersInForce: /*i18n*/ { id: 'Filters in force: {filters}' },
-  clearFilters: /*i18n*/ { id: 'Clear filters' },
-  clearFiltersName: /*i18n*/ { id: 'Clear the read-state and type-group filters' },
-  readState: /*i18n*/ { id: 'Read state' },
-  all: /*i18n*/ { id: 'All' },
   unread: /*i18n*/ { id: 'Unread' },
-  typeGroup: /*i18n*/ { id: 'Type group' },
+  unreadOnly: /*i18n*/ { id: 'Unread only' },
+  filterBar: /*i18n*/ { id: 'Filter notifications' },
   today: SHELL.today,
   yesterday: /*i18n*/ { id: 'Yesterday · {date}' },
   earlierDay: /*i18n*/ { id: '{weekday} · {date}' },
@@ -44,6 +39,10 @@ export const NOTIFICATION_CENTRE = {
     id: 'The centre keeps the last {days} days. It is an inbox, not an archive — each of these facts also lives on its own record’s timeline, for good.',
   },
   markedRead: /*i18n*/ { id: '{count} marked read' },
+  markAllFailed: /*i18n*/ { id: 'Couldn’t mark them read' },
+  readFailed: /*i18n*/ { id: 'Couldn’t mark it read' },
+  nothingChanged: /*i18n*/ { id: 'Nothing changed. Try again in a moment.' },
+  olderFailed: /*i18n*/ { id: 'Couldn’t load older notifications. Try again.' },
   nothingDeleted: /*i18n*/ { id: 'Nothing was deleted — every notification is still in the list.' },
   emptyTitle: /*i18n*/ { id: 'Nothing has reached you yet' },
   emptyMessage: /*i18n*/ {
@@ -59,6 +58,7 @@ export const NOTIFICATION_CENTRE = {
   },
   backToList: /*i18n*/ { id: 'Back to the list' },
   cardName: /*i18n*/ { id: '{title}. {body}. {time}.' },
+  memberLine: /*i18n*/ { id: '{time} · {body}' },
   unreadCardName: /*i18n*/ { id: 'Unread. {title}. {body}. {time}.' },
 } as const;
 
@@ -120,9 +120,15 @@ export function groupSentence(translate: Translator['t'], type: string, count: n
  */
 export function centreHeadLine(
   translate: Translator['t'],
-  facts: { filtered: boolean; match: number; unread: number; total: number },
+  facts: { filtered: boolean; match: number; unread: number | null; total: number },
 ): string {
   const days = NOTIFICATION_CENTRE_HORIZON_DAYS;
+  /* An unread count not yet known is left out, never shown as 0 (`F8-01`). */
+  if (facts.unread === null) {
+    return facts.filtered
+      ? translate(NOTIFICATION_CENTRE.headMatchOnly, { match: facts.match })
+      : translate(NOTIFICATION_CENTRE.headTotalOnly, { total: facts.total, days });
+  }
   if (facts.filtered) {
     return translate(NOTIFICATION_CENTRE.headMatch, { match: facts.match, unread: facts.unread });
   }
@@ -146,16 +152,9 @@ export function centreDayLabel(
   return translate(NOTIFICATION_CENTRE.earlierDay, { weekday: day.weekday, date: day.date });
 }
 
-/** "Filters in force: Unread · Sales, Delivery" — the read state first, then the groups. */
-export function filtersInForce(
-  translate: Translator['t'],
-  filters: { unreadOnly: boolean; groups: readonly NotificationTypeGroup[] },
-): string {
-  const groups = filters.groups.map((group) => translate(TYPE_GROUP_NAME[group])).join(', ');
-  const parts = [filters.unreadOnly ? translate(NOTIFICATION_CENTRE.unread) : '', groups];
-  return translate(NOTIFICATION_CENTRE.filtersInForce, {
-    filters: parts.filter((part) => part !== '').join(' · '),
-  });
+/** Show older's words — "Show older matches" under a filter. */
+export function showOlderLabel(translate: Translator['t'], filtered: boolean): string {
+  return translate(filtered ? NOTIFICATION_CENTRE.showOlderMatches : NOTIFICATION_CENTRE.showOlder);
 }
 
 /** The horizon sentence, its number read from the one constant the reads are bounded by. */
@@ -168,7 +167,11 @@ export function notificationCardName(
   translate: Translator['t'],
   card: { title: string; body: string; time: string; unread: boolean },
 ): string {
-  const { title, body, time } = card;
   const name = card.unread ? NOTIFICATION_CENTRE.unreadCardName : NOTIFICATION_CENTRE.cardName;
-  return translate(name, { title, body, time });
+  return translate(name, { title: clause(card.title), body: clause(card.body), time: card.time });
+}
+
+/** A record's sentence without its own closing stop, so the name never reads "logo.. 10:15". */
+function clause(words: string): string {
+  return words.trim().replace(/[.।]+$/u, '');
 }

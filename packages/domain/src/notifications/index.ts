@@ -10,6 +10,7 @@ export {
   NOTIFICATION_CENTRE_HORIZON_DAYS,
   typesInGroups,
 } from './centre';
+export { type MarkAllOutcome, nextOpenGroup } from './centre-acts';
 export {
   type CentreDay,
   type CentreFacts,

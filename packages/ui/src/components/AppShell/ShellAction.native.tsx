@@ -20,13 +20,14 @@ export function ShellAction({
   label,
   icon,
   badge,
+  name: wholeName,
   onClick,
   active = false,
   style,
 }: NativeShellActionProps) {
   /* A zero badge keeps the plain name here (the source's `badge ?` test) while it still reaches
      CountBadge, which renders nothing at zero. */
-  const name = badge === 0 ? label : badgeName(label, badge);
+  const name = wholeName ?? (badge === 0 ? label : badgeName(label, badge));
   const { controlFill } = useGround();
   return (
     <Pressable
@@ -60,9 +61,10 @@ const styles = StyleSheet.create({
   active: {
     backgroundColor: theme.colors['accent-subtle'],
   },
+  /* The count rides the button's top-right corner, half outside it, so it never covers the glyph. */
   badge: {
     position: 'absolute',
-    top: 6,
-    right: theme.spacing['sp-1'],
+    top: -theme.spacing['sp-1'],
+    right: -theme.spacing['sp-1'],
   },
 });

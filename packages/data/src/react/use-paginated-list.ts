@@ -1,12 +1,17 @@
 'use client';
 import type { Paginated } from '@heliogrid/contracts';
-import { type QueryKey, useInfiniteQuery } from '@tanstack/react-query';
+import { keepPreviousData, type QueryKey, useInfiniteQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 interface PaginatedListOptions<TItem extends { id: string }> {
   queryKey: QueryKey;
   fetchPage: (page: number) => Promise<Paginated<TItem>>;
   enabled?: boolean;
+  /**
+   * While a new key's first page loads, keep showing the last key's pages — a filter change then
+   * swaps the list in place instead of blanking it to a skeleton.
+   */
+  keepPreviousWhileLoading?: boolean;
 }
 
 /**
@@ -18,6 +23,7 @@ export function usePaginatedList<TItem extends { id: string }>({
   queryKey,
   fetchPage,
   enabled,
+  keepPreviousWhileLoading = false,
 }: PaginatedListOptions<TItem>) {
   const query = useInfiniteQuery({
     queryKey,
@@ -35,6 +41,7 @@ export function usePaginatedList<TItem extends { id: string }>({
       return loaded < lastPage.totalCount ? lastPageParam + 1 : undefined;
     },
     enabled,
+    placeholderData: keepPreviousWhileLoading ? keepPreviousData : undefined,
   });
 
   const items = useMemo(

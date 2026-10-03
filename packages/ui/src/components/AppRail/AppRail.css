@@ -69,10 +69,12 @@
   outline-offset: 2px;
 }
 
+/* The count rides the button's top-right corner, half outside it, so it never covers the glyph:
+   a 20 badge inside a 44 button sat over the bell's upper half. */
 .hg-app-rail-badge {
   position: absolute;
-  top: var(--sp-0-5);
-  right: 0;
+  top: calc(-1 * var(--sp-1));
+  right: calc(-1 * var(--sp-1));
 }
 
 /* ── PillNav — the phone shell's footer (F7-22) ───────────────────────────────────────────

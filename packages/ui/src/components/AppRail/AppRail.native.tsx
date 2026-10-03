@@ -67,9 +67,10 @@ interface RailButtonProps {
 function RailButton({ item, active, onPress }: RailButtonProps) {
   return (
     <Pressable
-      accessibilityLabel={badgeName(item.label, item.badge)}
+      accessibilityLabel={item.name ?? badgeName(item.label, item.badge)}
+      accessibilityState={item.open === undefined ? undefined : { expanded: item.open }}
       onPress={onPress}
-      style={[styles.button, active ? styles.buttonActive : undefined]}
+      style={[styles.button, active || item.open === true ? styles.buttonActive : undefined]}
     >
       {item.icon}
       {/* F6-17: the badge counts unread from the record. A number, not a dot. */}
@@ -107,9 +108,10 @@ const styles = StyleSheet.create({
   buttonActive: {
     backgroundColor: theme.colors['accent-subtle'],
   },
+  /* The count rides the button's top-right corner, half outside it, so it never covers the glyph. */
   badge: {
     position: 'absolute',
-    top: theme.spacing['sp-0-5'],
-    right: 0,
+    top: -theme.spacing['sp-1'],
+    right: -theme.spacing['sp-1'],
   },
 });

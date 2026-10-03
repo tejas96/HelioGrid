@@ -1,4 +1,4 @@
-import type { CSSProperties, UIEvent } from 'react';
+import type { CSSProperties, ReactNode, UIEvent } from 'react';
 import { useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { OverlayBody } from './OverlayBody';
@@ -41,6 +41,7 @@ export function Sheet({
   subtitle,
   overline,
   children,
+  meta,
   size = 'auto',
   density = 'expressive',
   handle = true,
@@ -120,6 +121,8 @@ export function Sheet({
           />
         ) : null}
 
+        <SheetMeta meta={meta} />
+
         <div
           {...sheetBodyAttrs(hasHeader, footer !== null)}
           className="hg-sheet-body"
@@ -158,4 +161,9 @@ export function Sheet({
       </div>
     </>
   );
+}
+
+/** The row between the header and the body, drawn only when the caller gave one. */
+function SheetMeta({ meta }: { meta: ReactNode }) {
+  return meta === undefined || meta === null ? null : <div className="hg-sheet-meta">{meta}</div>;
 }

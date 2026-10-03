@@ -11,8 +11,7 @@ export type DoorRoute =
   | 'More'
   | 'QuickAddLead'
   | 'StartSurvey'
-  | 'Search'
-  | 'Notifications';
+  | 'Search';
 
 /** Where each pill item goes. Home is the shell itself; every other is a door. */
 export const DESTINATION_ROUTE: Record<Exclude<StandingDestination, 'home'>, DoorRoute> = {

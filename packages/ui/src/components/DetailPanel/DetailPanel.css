@@ -13,7 +13,7 @@
   --hg-panel-footer-fade: var(--sp-5);
 
   position: fixed;
-  top: 0;
+  top: var(--hg-panel-top, 0px);
   bottom: 0;
   z-index: calc(var(--hg-panel-z, 50) + 1);
   width: min(var(--hg-panel-w, 480px), 100%);

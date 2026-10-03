@@ -2,7 +2,7 @@
 
 Bell + badge + grouped actionable notification list, filterable by type-group and read state, every item deep-linking with its one-step act.
 
-**Module:** SHELL · **Personas:** All staff; EPC Owner additionally receives the two pushed monthly summaries · **Context of use:** one shared surface on both platforms — bell in the web header, bell in the mobile shell (F6.4 behavior detail). Read on phones in the field.
+**Module:** SHELL · **Personas:** All staff; EPC Owner additionally receives the two pushed monthly summaries · **Context of use:** one shared surface on both platforms — bell at the foot of the web rail, bell in the mobile shell (F6.4 behavior detail). Read on phones in the field.
 
 ## Entry & exit
 
@@ -11,7 +11,7 @@ Reached from: the bell in the app shell on both platforms (F6-17; the shell is S
 **Decisions made in design (2026-08-19) — the brief left these open; later screens inherit them.**
 
 1. **The centre is the product's overlay grammar, not a screen you travel to** (`F7-21`). Phone: a `Sheet` at 92%, modal, focus trapped and handed back to the bell. Desktop: a 520px `DetailPanel` anchored under the header, **non-modal** — no backdrop, no scroll lock — with the content column inset by the panel's width, because the page beside a 520px panel is still the user's work.
-2. **Exits** — an item card's whole face → its subject; a group member's name → its record; each one-step act → the act; `Show older` → the next page; `Mark all read` → the same list with nothing unread; `Clear filters` → the unfiltered list; the honest landing's `Back to the list`; close / Esc / drag → back to the home.
+2. **Exits** — an item card's whole face → its subject; a group member's name → its record; each one-step act → the act; `Show older` → the next page; `Mark all read` → the same list with nothing unread; the filter bar's on buttons → tapped again, the unfiltered list; the honest landing's `Back to the list`; close / Esc / drag → back to the home.
 3. **A group row is not an exit.** Grouping is presentation only (`F6-12`), so the group has no subject of its own — its members carry the links. A bulk act reaches its members through its subject record, never by opening 400 rows in place.
 4. **A monthly summary is read where it arrived** (`M13-21`'s own reason), with the full dashboard one control away. A summary that only deep-links to the dashboard the owner never opens has not been read either.
 5. **A lifecycle chip sits in `RecordCard.marks`, not `chip`.** `chip` renders on the name's line, and a notification's name is a sentence — at 335px that pushed it to four lines, and Hindi and Marathi push further.

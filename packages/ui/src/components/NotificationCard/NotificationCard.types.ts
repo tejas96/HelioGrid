@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import type { ProvenanceProps } from '../Provenance/Provenance.types';
 
 /**
  * One notification in the centre (`SCR-SHELL-03`). Every word arrives translated: `title` and
@@ -65,8 +64,6 @@ export interface NotificationGroupProps {
   latest: string;
   /** "2 unread", or absent when every member is read. */
   unreadLabel?: string;
-  /** How the count was arrived at (`F8`): derived, from the records. */
-  provenance: ProvenanceProps;
   open: boolean;
   onToggle: () => void;
   /** "Show these 3" / "Hide these 3", by `open`. */
@@ -83,4 +80,91 @@ export interface NotificationLandingProps {
   message: string;
   backLabel: string;
   onBack: () => void;
+}
+
+/** A card in the list, as its words arrived; `item` is what a tap hands back. */
+export type NotificationListCard<T> = { kind: 'card'; item: T } & Omit<
+  NotificationCardProps,
+  'onOpen' | 'act' | 'sideAct'
+>;
+
+export type NotificationListAnnouncement<T> = { kind: 'announcement'; item: T } & Omit<
+  NotificationAnnouncementProps,
+  'onOpen' | 'act'
+>;
+
+export interface NotificationListGroup<T> {
+  kind: 'group';
+  key: string;
+  type: string;
+  sentence: string;
+  latest: string;
+  unreadLabel?: string;
+  /** "Show these 3" and "Hide these 3": the list holds whether the group is open. */
+  showLabel: string;
+  hideLabel: string;
+  members: readonly ({ item: T } & Omit<NotificationMemberProps, 'onOpen' | 'sideAct'>)[];
+}
+
+export type NotificationListRow<T> =
+  | NotificationListCard<T>
+  | NotificationListAnnouncement<T>
+  | NotificationListGroup<T>;
+
+/** One of the tenant's days: its overline and its rows, newest first. */
+export interface NotificationListDay<T> {
+  /** The day itself, `YYYY-MM-DD` — its key. */
+  date: string;
+  label: string;
+  rows: readonly NotificationListRow<T>[];
+}
+
+/**
+ * The centre's list (`SCR-SHELL-03`), both platforms: the days, their rows, then the tail — Show
+ * older while older matches remain, else the horizon sentence (`F6-19`). Every word arrives
+ * translated; the list holds only which groups are open.
+ */
+export interface NotificationListProps<T> {
+  days: readonly NotificationListDay<T>[];
+  /** A card, an announcement or a group's member was tapped. */
+  onOpen: (item: T) => void;
+  /** "Show older" — present while older matches remain; absent, the horizon shows instead. */
+  olderLabel?: string;
+  onShowOlder?: () => void;
+  loadingOlder?: boolean;
+  /** "Couldn't load older notifications. Try again." — shown over Show older when a page failed. */
+  olderFailed?: string;
+  /** "The centre keeps the last 30 days. It is an inbox, not an archive …" */
+  horizon: string;
+}
+
+/**
+ * The centre's head (`SCR-SHELL-03`): one count line and, at its right end, Mark all read as a
+ * check-check icon — the same at both widths. The head scrolls away with the list.
+ */
+export interface NotificationHeadProps {
+  /** "7 unread · 46 in the last 30 days" — a tally of the reader's records, no tier (`F8-01`). */
+  count: string;
+  /** "Mark all 7 unread notifications read". Absent while nothing unread is listed (`F4-27`). */
+  markAllName?: string;
+  onMarkAll?: () => void;
+  /** Mark all read is on its way; a press now sends nothing. */
+  marking?: boolean;
+}
+
+/**
+ * The centre's filter bar (`SCR-SHELL-03`), pinned above the list: an Unread toggle, a hairline,
+ * then one button per type group. A button is its icon; switched on it turns dark and its name
+ * slides out. One group is open at a time — the bar holds no rule but that one.
+ */
+export interface NotificationFilterBarProps {
+  /** The toolbar's name — "Filter notifications". */
+  label: string;
+  unread: { label: string; name: string };
+  unreadOn: boolean;
+  onUnread: (on: boolean) => void;
+  groups: readonly { value: string; label: string }[];
+  /** The open group, or null for every group. */
+  openGroup: string | null;
+  onGroup: (value: string | null) => void;
 }

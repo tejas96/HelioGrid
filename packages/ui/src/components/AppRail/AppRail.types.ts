@@ -18,6 +18,13 @@ export interface RailItem {
    * bare dot for the rare case where a count isn't known; prefer a number.
    */
   badge?: number | boolean;
+  /**
+   * The whole name a screen reader hears, its count included, in the reader's language — the
+   * bell's "Notifications, 3 unread". Absent, the label and the count are joined.
+   */
+  name?: string;
+  /** A footer item whose overlay is open — the bell while its centre shows: drawn active. */
+  open?: boolean;
   onClick?: () => void;
   /**
    * What a coach mark points at to name this item (`M01-16`): a ref the item binds to its

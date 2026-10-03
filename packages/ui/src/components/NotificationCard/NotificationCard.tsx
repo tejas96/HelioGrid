@@ -139,7 +139,11 @@ export function Meta({ time, unreadLabel }: { time: string; unreadLabel?: string
       <Text variant="mono" color="secondary" className="hg-notification-time">
         {time}
       </Text>
-      {unreadLabel === undefined ? null : <Badge tone="accent">{unreadLabel}</Badge>}
+      {unreadLabel === undefined ? null : (
+        <Badge tone="accent" density="functional">
+          {unreadLabel}
+        </Badge>
+      )}
     </div>
   );
 }

@@ -96,6 +96,7 @@
 @import "./components/NamedGap/NamedGap.css";
 @import "./components/NextAction/NextAction.css";
 @import "./components/NotificationCard/NotificationCard.css";
+@import "./components/NotificationCard/NotificationFilterBar.css";
 @import "./components/NoConnection/NoConnection.css";
 @import "./components/NumberField/NumberField.css";
 @import "./components/OperationProgress/OperationProgress.css";

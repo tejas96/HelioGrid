@@ -2,7 +2,6 @@ import { Text } from '../../primitives/Text/Text';
 import { ActivityGlyph } from '../ActivityStream/ActivityGlyph';
 import { Button } from '../Button/Button';
 import { Badge } from '../Chip/Chip';
-import { renderProvenance } from '../Provenance/Provenance';
 import { Face, Meta } from './NotificationCard';
 import { notificationGlyph } from './NotificationCard.logic';
 import type { NotificationGroupProps, NotificationMemberProps } from './NotificationCard.types';
@@ -17,7 +16,6 @@ export function NotificationGroup({
   sentence,
   latest,
   unreadLabel,
-  provenance,
   open,
   onToggle,
   toggleLabel,
@@ -35,7 +33,6 @@ export function NotificationGroup({
             <Text variant="body" bold className="hg-notification-title">
               {sentence}
             </Text>
-            {renderProvenance(provenance, { size: 12 })}
             <Meta time={latest} unreadLabel={unreadLabel} />
           </div>
         </div>

@@ -169,15 +169,24 @@ function Words({
 export function Meta({ time, unreadLabel }: { time: string; unreadLabel?: string }) {
   return (
     <View style={styles.meta}>
-      <Text variant="mono" color="secondary">
+      <Text variant="mono" color="secondary" style={styles.time}>
         {time}
       </Text>
-      {unreadLabel === undefined ? null : <Badge tone="accent">{unreadLabel}</Badge>}
+      {unreadLabel === undefined ? null : (
+        <Badge tone="accent" density="functional">
+          {unreadLabel}
+        </Badge>
+      )}
     </View>
   );
 }
 
 export const styles = StyleSheet.create({
+  /* The board's meta line: the time in mono at the caption size (12), not body-sm. */
+  time: {
+    fontSize: theme.type.roles.caption.fontSize,
+    lineHeight: theme.type.roles.caption.lineHeight,
+  },
   card: {
     gap: theme.spacing['sp-3'],
     padding: theme.spacing['sp-4'],

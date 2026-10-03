@@ -78,5 +78,20 @@ export const ACTIVITY_GLYPH: Record<string, readonly GlyphShape[]> = {
     path('m9.5 15 2 2 3.5-3.5'),
   ],
   clock: [circle(12, 12, 8.5), path('M12 7.5V12l3 2')],
+  /* The centre's filter bar and its Mark all read (`SCR-SHELL-03`). */
+  'bar-chart': [path('M4 20V9M10 20V4M16 20v-7M22 20H2')],
+  users: [
+    path('M9 4.8a3.2 3.2 0 1 1 0 6.4 3.2 3.2 0 0 1 0-6.4'),
+    path('M2.5 20a6.5 6.5 0 0 1 13 0'),
+    path('M16.6 5.6a3.2 3.2 0 0 1 0 4.9'),
+    path('M18 20a6.4 6.4 0 0 0-2-4.6'),
+  ],
+  bill: [
+    path('M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z'),
+    path('M14 3v5h5'),
+    path('M9 13.5h5'),
+    path('M9 17h3.5'),
+  ],
+  'check-check': [path('M17 7 7.5 16.5 3 12'), path('m21.5 9-7.5 7.5-1.5-1.5')],
   'user-plus': [circle(10, 8, 3.4), path('M3.5 20a6.5 6.5 0 0 1 13 0'), path('M18 6.5v6M15 9.5h6')],
 };
