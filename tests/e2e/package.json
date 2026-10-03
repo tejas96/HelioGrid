@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test:web": "playwright test -c playwright.config.ts",
-    "test:ct": "playwright test -c playwright-ct.config.ts",
+    "test:ct": "{ find ../../packages/ui/src -name '*.css' -newer playwright/.cache/metainfo.json 2>/dev/null | grep -q . && rm -rf playwright/.cache; } ; playwright test -c playwright-ct.config.ts",
     "test:mobile": "bash mobile/run.sh",
     "typecheck": "tsc -p tsconfig.json"
   },

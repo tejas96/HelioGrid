@@ -50,6 +50,8 @@ export function usePaginatedList<TItem extends { id: string }>({
     hasNextPage: query.hasNextPage,
     fetchNextPage: query.fetchNextPage,
     isFetchingNextPage: query.isFetchingNextPage,
+    /** The next page failed while the pages already shown stand — `status` reads `error` then too. */
+    isFetchNextPageError: query.isFetchNextPageError,
     refetch: query.refetch,
   };
 }

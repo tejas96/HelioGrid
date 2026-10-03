@@ -25,6 +25,16 @@ export { energySourceLabel } from './copy/energy-source';
 export { explainerPagerWords } from './copy/explainer';
 export { freshnessLabel } from './copy/freshness';
 export { homeTitle } from './copy/homes';
+export {
+  centreDayLabel,
+  centreHeadLine,
+  centreHorizonLine,
+  filtersInForce,
+  groupSentence,
+  NOTIFICATION_CENTRE,
+  notificationCardName,
+  TYPE_GROUP_NAME,
+} from './copy/notifications';
 export { standingLabel, tierLabel } from './copy/provenance';
 export {
   accessRemovedWords,

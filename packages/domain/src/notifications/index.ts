@@ -10,6 +10,15 @@ export {
   NOTIFICATION_CENTRE_HORIZON_DAYS,
   typesInGroups,
 } from './centre';
+export {
+  type CentreDay,
+  type CentreFacts,
+  type CentreNotification,
+  type CentreRow,
+  type CentreView,
+  centreView,
+  isAnnouncement,
+} from './centre-view';
 export { pushIsDue } from './delivery';
 export { channelsOwed, mayMute, pushMuted } from './mutes';
 export { marketQuietHours, pushDueAt, type QuietWindow } from './quiet-hours';

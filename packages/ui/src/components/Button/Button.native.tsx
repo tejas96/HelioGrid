@@ -80,6 +80,7 @@ export function Button({
   icon = null,
   iconRight = null,
   fullWidth = false,
+  expanded,
   onClick,
   style,
 }: NativeButtonProps) {
@@ -98,6 +99,7 @@ export function Button({
     <Pressable
       disabled={disabled}
       onPress={onClick}
+      accessibilityState={expanded === undefined ? undefined : { expanded }}
       style={[
         styles.pill,
         SIZE[size],

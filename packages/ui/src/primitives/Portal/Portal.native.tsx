@@ -14,13 +14,15 @@ interface PortalRegistry {
 }
 
 const PortalContext = createContext<PortalRegistry | null>(null);
+/** Apart from the registry, so a changed inset never remounts every open portal. */
+const BottomInsetContext = createContext(0);
 
 /**
  * Mount ONE PortalHost at the app root (above navigation). Every Portal below it renders
  * into an absolute-fill layer on top of the host's children — sheets, modals, menus and
  * tooltips all escape their screen through here.
  */
-export function PortalHost({ children }: PortalHostProps) {
+export function PortalHost({ children, bottomInset = 0 }: PortalHostProps) {
   const [portals, setPortals] = useState<readonly PortalEntry[]>([]);
   const registry = useMemo<PortalRegistry>(
     () => ({
@@ -43,14 +45,16 @@ export function PortalHost({ children }: PortalHostProps) {
   );
   return (
     <PortalContext.Provider value={registry}>
-      <View style={styles.host}>
-        {children}
-        {portals.map((entry) => (
-          <View key={entry.key} style={StyleSheet.absoluteFill} pointerEvents="box-none">
-            {entry.node}
-          </View>
-        ))}
-      </View>
+      <BottomInsetContext.Provider value={bottomInset}>
+        <View style={styles.host}>
+          {children}
+          {portals.map((entry) => (
+            <View key={entry.key} style={StyleSheet.absoluteFill} pointerEvents="box-none">
+              {entry.node}
+            </View>
+          ))}
+        </View>
+      </BottomInsetContext.Provider>
     </PortalContext.Provider>
   );
 }
@@ -75,6 +79,11 @@ export function Portal({ children }: PortalProps): ReactNode {
     return children;
   }
   return null;
+}
+
+/** The home-indicator band a float docked to the bottom edge must clear; 0 without a host. */
+export function usePortalBottomInset(): number {
+  return useContext(BottomInsetContext);
 }
 
 const styles = StyleSheet.create({

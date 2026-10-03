@@ -70,6 +70,7 @@ export * from './components/MoneySummary';
 export * from './components/NamedGap';
 export * from './components/NextAction';
 export * from './components/NoConnection';
+export * from './components/NotificationCard';
 export * from './components/NumberField';
 export * from './components/OperationProgress';
 export * from './components/OptionCardGroup';

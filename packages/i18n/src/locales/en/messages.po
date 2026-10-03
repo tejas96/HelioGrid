@@ -18,6 +18,76 @@ msgid "{chain} codes were invalidated in a row"
 msgstr "{chain} codes were invalidated in a row"
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:14
+msgid "{count, plural, =0 {Notifications} one {Notifications, # unread} other {Notifications, # unread}}"
+msgstr "{count, plural, =0 {Notifications} one {Notifications, # unread} other {Notifications, # unread}}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:83
+msgid "{count, plural, one {# call handed to you} other {# calls handed to you}}"
+msgstr "{count, plural, one {# call handed to you} other {# calls handed to you}}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:92
+msgid "{count, plural, one {# design returned} other {# designs returned}}"
+msgstr "{count, plural, one {# design returned} other {# designs returned}}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:86
+msgid "{count, plural, one {# follow-up due} other {# follow-ups due}}"
+msgstr "{count, plural, one {# follow-up due} other {# follow-ups due}}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:99
+msgid "{count, plural, one {# lead unassigned for a day} other {# leads unassigned for a day}}"
+msgstr "{count, plural, one {# lead unassigned for a day} other {# leads unassigned for a day}}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:107
+msgid "{count, plural, one {# notification} other {# notifications}}"
+msgstr "{count, plural, one {# notification} other {# notifications}}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:98
+msgid "{count, plural, one {# payment due} other {# payments due}}"
+msgstr "{count, plural, one {# payment due} other {# payments due}}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:102
+msgid "{count, plural, one {# product update} other {# product updates}}"
+msgstr "{count, plural, one {# product update} other {# product updates}}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:80
+msgid "{count, plural, one {# proposal opened} other {# proposals opened}}"
+msgstr "{count, plural, one {# proposal opened} other {# proposals opened}}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:95
+msgid "{count, plural, one {# sign-off requested} other {# sign-offs requested}}"
+msgstr "{count, plural, one {# sign-off requested} other {# sign-offs requested}}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:89
+msgid "{count, plural, one {# survey submitted} other {# surveys submitted}}"
+msgstr "{count, plural, one {# survey submitted} other {# surveys submitted}}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:23
+msgid "{count, plural, one {Mark the # unread notification read} other {Mark all # unread notifications read}}"
+msgstr "{count, plural, one {Mark the # unread notification read} other {Mark all # unread notifications read}}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:46
+msgid "{count} marked read"
+msgstr "{count} marked read"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:37
+msgid "{count} unread"
+msgstr "{count} unread"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:36
 msgid "{home}, switch home"
 msgstr "{home}, switch home"
@@ -26,6 +96,11 @@ msgstr "{home}, switch home"
 #: src/copy/sign-in.ts:71
 msgid "{left, plural, one {# try left} other {# tries left}} on this code. HelioGrid invalidates a code after {tries} wrong tries, and then you need a new one."
 msgstr "{left, plural, one {# try left} other {# tries left}} on this code. HelioGrid invalidates a code after {tries} wrong tries, and then you need a new one."
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:19
+msgid "{match} match · {unread} unread in all"
+msgstr "{match} match · {unread} unread in all"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:23
@@ -68,6 +143,16 @@ msgid "{step} of {total}"
 msgstr "{step} of {total}"
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:36
+msgid "{time} latest"
+msgstr "{time} latest"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:61
+msgid "{title}. {body}. {time}."
+msgstr "{title}. {body}. {time}."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:114
 msgid "{tries} wrong tries invalidate a code, and three invalidated codes lock the number. HelioGrid’s rule, and {lockMinutes} minutes is the wait."
 msgstr "{tries} wrong tries invalidate a code, and three invalidated codes lock the number. HelioGrid’s rule, and {lockMinutes} minutes is the wait."
@@ -76,6 +161,16 @@ msgstr "{tries} wrong tries invalidate a code, and three invalidated codes lock 
 #: src/copy/sign-in.ts:80
 msgid "{tries} wrong tries use a code up"
 msgstr "{tries} wrong tries use a code up"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:17
+msgid "{unread} unread · {total} in the last {days} days"
+msgstr "{unread} unread · {total} in the last {days} days"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:35
+msgid "{weekday} · {date}"
+msgstr "{weekday} · {date}"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:83
@@ -118,6 +213,11 @@ msgid "Add lead"
 msgstr "Add lead"
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:30
+msgid "All"
+msgstr "All"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:19
 msgid "Already on HelioGrid?"
 msgstr "Already on HelioGrid?"
@@ -133,6 +233,11 @@ msgid "Answer the call and type what you hear."
 msgstr "Answer the call and type what you hear."
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:49
+msgid "Anything that needs you, or changes on work you hold, lands here — newest first, with the one thing you can do about it."
+msgstr "Anything that needs you, or changes on work you hold, lands here — newest first, with the one thing you can do about it."
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:13
 msgid "Assumed"
 msgstr "Assumed"
@@ -141,6 +246,16 @@ msgstr "Assumed"
 #: src/copy/explainer.ts:7
 msgid "Back"
 msgstr "Back"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:60
+msgid "Back to the list"
+msgstr "Back to the list"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:71
+msgid "Billing"
+msgstr "Billing"
 
 #. js-lingui-explicit-id
 #: src/copy/energy-source.ts:11
@@ -199,6 +314,16 @@ msgid "City"
 msgstr "City"
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:27
+msgid "Clear filters"
+msgstr "Clear filters"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:28
+msgid "Clear the read-state and type-group filters"
+msgstr "Clear the read-state and type-group filters"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:106
 msgid "Closed until the {windowMinutes} minutes are up. Nothing shortens it."
 msgstr "Closed until the {windowMinutes} minutes are up. Nothing shortens it."
@@ -234,9 +359,24 @@ msgid "Confirmed"
 msgstr "Confirmed"
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:53
+msgid "Couldn’t load your notifications"
+msgstr "Couldn’t load your notifications"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:44
 msgid "Couldn't load your work"
 msgstr "Couldn't load your work"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:21
+msgid "Counted from the records"
+msgstr "Counted from the records"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:20
+msgid "Counted from the records, never from push"
+msgstr "Counted from the records, never from push"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:21
@@ -267,6 +407,11 @@ msgstr "Creating your company"
 #: src/copy/freshness.ts:37
 msgid "data rights"
 msgstr "data rights"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:68
+msgid "Delivery"
+msgstr "Delivery"
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:11
@@ -324,6 +469,11 @@ msgid "Filled from the SMS on this phone. Check it, or type over it."
 msgstr "Filled from the SMS on this phone. Check it, or type over it."
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:26
+msgid "Filters in force: {filters}"
+msgstr "Filters in force: {filters}"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:73
 msgid "Finance"
 msgstr "Finance"
@@ -334,9 +484,19 @@ msgid "Finance Home"
 msgstr "Finance Home"
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:40
+msgid "From HelioGrid · product news"
+msgstr "From HelioGrid · product news"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:38
 msgid "Get the code by call"
 msgstr "Get the code by call"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:52
+msgid "Go to your leads"
+msgstr "Go to your leads"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:49
@@ -362,6 +522,11 @@ msgstr "HelioGrid did not answer in time. If you were saving, check whether it s
 #: src/copy/api-error.ts:88
 msgid "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:39
+msgid "Hide these {count}"
+msgstr "Hide these {count}"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:84
@@ -422,6 +587,11 @@ msgstr "Locked."
 #: src/copy/shell.ts:25
 msgid "Main"
 msgstr "Main"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:22
+msgid "Mark all read"
+msgstr "Mark all read"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:38
@@ -506,6 +676,11 @@ msgid "Not a structural certification"
 msgstr "Not a structural certification"
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:56
+msgid "Not available here"
+msgstr "Not available here"
+
+#. js-lingui-explicit-id
 #: src/copy/freshness.ts:16
 msgid "Not checked"
 msgstr "Not checked"
@@ -541,6 +716,11 @@ msgid "Nothing else is asked for here — no tax registration, no logo, no price
 msgstr "Nothing else is asked for here — no tax registration, no logo, no price book, no team, no card."
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:48
+msgid "Nothing has reached you yet"
+msgstr "Nothing has reached you yet"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:89
 msgid "Nothing is on its way, so there is nothing to wait for."
 msgstr "Nothing is on its way, so there is nothing to wait for."
@@ -556,9 +736,19 @@ msgid "Nothing to type until a new code is sent."
 msgstr "Nothing to type until a new code is sent."
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:18
+msgid "Nothing unread · {total} in the last {days} days"
+msgstr "Nothing unread · {total} in the last {days} days"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:49
 msgid "Nothing was created, so trying again cannot make two companies. Your number is still verified and your three details are still here."
 msgstr "Nothing was created, so trying again cannot make two companies. Your number is still verified and your three details are still here."
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:47
+msgid "Nothing was deleted — every notification is still in the list."
+msgstr "Nothing was deleted — every notification is still in the list."
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:54
@@ -610,6 +800,11 @@ msgstr "Paste the whole code if that is easier — it fills every box."
 #: src/copy/freshness.ts:34
 msgid "payment methods"
 msgstr "payment methods"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:69
+msgid "Payments"
+msgstr "Payments"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:88
@@ -667,6 +862,11 @@ msgid "Rajesh Kulkarni"
 msgstr "Rajesh Kulkarni"
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:29
+msgid "Read state"
+msgstr "Read state"
+
+#. js-lingui-explicit-id
 #: src/copy/energy-source.ts:10
 msgid "Real · PVGIS ({database})"
 msgstr "Real · PVGIS ({database})"
@@ -690,6 +890,11 @@ msgstr "Resend code"
 #: src/copy/document-basis.ts:14
 msgid "Roof measured from satellite imagery. A site visit will confirm dimensions, shading and electrical access."
 msgstr "Roof measured from satellite imagery. A site visit will confirm dimensions, shading and electrical access."
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:67
+msgid "Sales"
+msgstr "Sales"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:75
@@ -745,6 +950,21 @@ msgstr "Sent by SMS to"
 #: src/copy/sign-in.ts:46
 msgid "Sent just now. SMS is the only channel."
 msgstr "Sent just now. SMS is the only channel."
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:41
+msgid "Show older"
+msgstr "Show older"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:42
+msgid "Show older matches"
+msgstr "Show older matches"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:38
+msgid "Show these {count}"
+msgstr "Show these {count}"
 
 #. js-lingui-explicit-id
 #: src/copy/authored-content.ts:13
@@ -862,6 +1082,11 @@ msgid "tax rates"
 msgstr "tax rates"
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:70
+msgid "Team"
+msgstr "Team"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:37
 msgid "That change isn't allowed here."
 msgstr "That change isn't allowed here."
@@ -925,6 +1150,11 @@ msgstr "The call did not go through"
 #: src/copy/sign-in.ts:103
 msgid "The cap holds even when sending fails — {perWindow} every {windowMinutes} minutes, {day} a day for one number. HelioGrid’s rule."
 msgstr "The cap holds even when sending fails — {perWindow} every {windowMinutes} minutes, {day} a day for one number. HelioGrid’s rule."
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:43
+msgid "The centre keeps the last {days} days. It is an inbox, not an archive — each of these facts also lives on its own record’s timeline, for good."
+msgstr "The centre keeps the last {days} days. It is an inbox, not an archive — each of these facts also lives on its own record’s timeline, for good."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:87
@@ -1027,6 +1257,11 @@ msgid "This person is the only EPC Owner. A company always keeps at least one EP
 msgstr "This person is the only EPC Owner. A company always keeps at least one EPC Owner and one person who can manage the team."
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:57
+msgid "This record is no longer in your scope, or was removed. The notification stays here because it reached you."
+msgstr "This record is no longer in your scope, or was removed. The notification stays here because it reached you."
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:58
 msgid "This screen arrives in a later update."
 msgstr "This screen arrives in a later update."
@@ -1080,6 +1315,21 @@ msgstr "Try again. If it keeps failing, tell your admin what you were doing."
 #: src/copy/shell.ts:118
 msgid "Two presets, one home"
 msgstr "Two presets, one home"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:32
+msgid "Type group"
+msgstr "Type group"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:31
+msgid "Unread"
+msgstr "Unread"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:62
+msgid "Unread. {title}. {body}. {time}."
+msgstr "Unread. {title}. {body}. {time}."
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:60
@@ -1205,6 +1455,11 @@ msgstr "Where you're based."
 #: src/copy/shell.ts:41
 msgid "Work assigned to you shows here. Ask your manager for your first one."
 msgstr "Work assigned to you shows here. Ask your manager for your first one."
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:34
+msgid "Yesterday · {date}"
+msgstr "Yesterday · {date}"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:128

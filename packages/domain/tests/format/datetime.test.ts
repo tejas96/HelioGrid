@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
+  formatClockAt,
   formatDate,
   formatMonthYear,
   formatTime,
+  formatWeekday,
   monthNames,
   weekdayNames,
 } from '../../src/format/datetime';
@@ -87,5 +89,29 @@ describe('month and weekday names', () => {
     expect(weekdayNames(IN_FORMATS, 'long')[0]).toBe('Sunday');
     expect(weekdayNames(MONDAY_FIRST, 'long')[0]).toBe('Monday');
     expect(weekdayNames(IN_FORMATS)).toHaveLength(7);
+  });
+});
+
+describe('formatClockAt — when an event happened, on the tenant clock (F3-22)', () => {
+  it.each([
+    ['the pack clock, 24-hour', IN_FORMATS, '2026-08-19T10:42:00Z', '16:12'],
+    ['the pack clock, 12-hour', TWELVE_HOUR, '2026-08-19T10:42:00Z', '4:12 PM'],
+    ['midnight on the tenant clock', IN_FORMATS, '2026-08-18T18:30:00Z', '00:00'],
+    ['one minute before it', IN_FORMATS, '2026-08-18T18:29:00Z', '23:59'],
+  ])('%s', (_, pack, stamp, clock) => {
+    expect(formatClockAt(pack, stamp)).toBe(clock);
+  });
+
+  it('answers nothing for an unparseable stamp', () => {
+    expect(formatClockAt(IN_FORMATS, 'not a date')).toBe('');
+  });
+});
+
+describe('formatWeekday — the day by its name, on the tenant clock', () => {
+  it.each([
+    ['a Monday', '2026-08-17T06:00:00Z', 'Monday'],
+    ['00:30 IST is already Tuesday, though UTC says Monday', '2026-08-17T19:00:00Z', 'Tuesday'],
+  ])('%s', (_, stamp, name) => {
+    expect(formatWeekday(IN_FORMATS, stamp)).toBe(name);
   });
 });

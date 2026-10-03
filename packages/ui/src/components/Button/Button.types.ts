@@ -34,5 +34,10 @@ export interface ButtonProps {
   icon?: ReactNode;
   iconRight?: ReactNode;
   fullWidth?: boolean;
+  /**
+   * Set only on a button that shows and hides something below it: whether that is shown now. A
+   * screen reader says "expanded" or "collapsed" with the words, so the state is never sight-only.
+   */
+  expanded?: boolean;
   onClick?: () => void;
 }

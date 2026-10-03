@@ -67,4 +67,16 @@ export const ACTIVITY_GLYPH: Record<string, readonly GlyphShape[]> = {
   bell: [path('M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6z'), path('M10 19a2 2 0 0 0 4 0')],
   undo: [path('M4 10h9a5 5 0 1 1 0 10H8'), path('m8 6-4 4 4 4')],
   dot: [circle(12, 12, 3.5)],
+  /* The notification centre's marks (`SCR-SHELL-03`). */
+  eye: [
+    path('M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z'),
+    circle(12, 12, 3),
+  ],
+  'calendar-check': [
+    rect(4, 5, 16, 16, 2),
+    path('M8 3v4M16 3v4M4 10h16'),
+    path('m9.5 15 2 2 3.5-3.5'),
+  ],
+  clock: [circle(12, 12, 8.5), path('M12 7.5V12l3 2')],
+  'user-plus': [circle(10, 8, 3.4), path('M3.5 20a6.5 6.5 0 0 1 13 0'), path('M18 6.5v6M15 9.5h6')],
 };
