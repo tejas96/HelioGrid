@@ -37,6 +37,7 @@ export function Button({
   icon = null,
   iconRight = null,
   fullWidth = false,
+  expanded,
   onClick,
   className,
   style,
@@ -60,6 +61,7 @@ export function Button({
       disabled={disabled && !stated}
       aria-disabled={disabled ? true : undefined}
       aria-describedby={stated ? autoId : undefined}
+      aria-expanded={expanded}
       onClick={() => {
         if (disabled) {
           return;

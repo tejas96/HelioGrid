@@ -102,6 +102,8 @@ type ReviewedComputesNothing =
   | 'PACK_SCHEMAS'
   /* picks the setting in force per key; its shape outruns the depth the check walks, and it holds no figure */
   | 'resolveEffectiveSettings'
+  /* groups the notification records it is handed and returns them; generic over the record, it holds no figure */
+  | 'centreView'
   /* label a figure they are handed (`F8`) */
   | 'qualifyMoney'
   | 'qualifyMinorUnits'

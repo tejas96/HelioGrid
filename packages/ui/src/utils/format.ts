@@ -1,5 +1,6 @@
 import {
   type FormatPack,
+  formatClockAt,
   formatCompact,
   formatCompactMoney,
   formatDate,
@@ -9,6 +10,7 @@ import {
   formatNumber,
   formatPhone,
   formatTime,
+  formatWeekday,
   IN_FORMATS,
   type MinorUnits,
   moneySymbol,
@@ -66,6 +68,10 @@ export interface MarketFormat {
   date: (value: string | Date) => string;
   /** A calendar heading — `March 2026`. */
   monthYear: (value: string | Date) => string;
+  /** When an event happened, by the pack's clock and zone — `16:12`. */
+  clockAt: (value: string) => string;
+  /** A day's name in the pack's language and zone — `Monday`. */
+  weekday: (value: string) => string;
   /** Resolved ISO week start, 1 = Monday … 7 = Sunday. `Calendar`'s first column reads this. */
   firstDayOfWeek: number;
   /** 12 month names in calendar order. */
@@ -91,6 +97,8 @@ export function createFormat(pack: FormatPack = IN_FORMATS): MarketFormat {
     time: (hhmm) => formatTime(pack, hhmm),
     date: (value) => formatDate(pack, value),
     monthYear: (value) => formatMonthYear(pack, value),
+    clockAt: (value) => formatClockAt(pack, value),
+    weekday: (value) => formatWeekday(pack, value),
     firstDayOfWeek: pack.firstDayOfWeek,
     monthNames: (style) => monthNames(pack, style),
     weekdayNames: (style) => weekdayNames(pack, style),

@@ -7,7 +7,7 @@ import { MarketProvider, PortalHost } from '@heliogrid/ui';
 import { type ReactNode, useCallback, useState } from 'react';
 import { StatusBar } from 'react-native';
 import { getVersion } from 'react-native-device-info';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { keychainStorage } from './src/auth/keychain-storage';
 import { API_URL } from './src/env';
 import { createFormsValidationMessage, createI18nRuntime, LanguageFollowsUser } from './src/i18n';
@@ -61,10 +61,10 @@ export default function App() {
           <SafeAreaProvider>
             {/* The ONE portal host, above navigation: every menu, sheet and modal escapes its
                 screen through here; without it a Portal renders in place (Portal.native). */}
-            <PortalHost>
+            <InsetPortalHost>
               <StatusBar barStyle="dark-content" />
               <AppNavigation />
-            </PortalHost>
+            </InsetPortalHost>
           </SafeAreaProvider>
         </MarketProvider>
       </SessionLanguage>
@@ -78,6 +78,16 @@ export default function App() {
  * only the session read, because `packages/i18n` may not import `packages/data`. The phone has
  * no document, so it passes no `onDocumentLanguage` — that half is web's alone.
  */
+/**
+ * The portal host, told how tall the home-indicator band is: every sheet docked to the bottom edge
+ * renders through it and lifts its last line above the band. `packages/ui` holds no safe-area
+ * library, so the app — which does — supplies the fact.
+ */
+function InsetPortalHost({ children }: { children: ReactNode }) {
+  const { bottom } = useSafeAreaInsets();
+  return <PortalHost bottomInset={bottom}>{children}</PortalHost>;
+}
+
 function SessionLanguage({ runtime, children }: { runtime: I18nRuntime; children: ReactNode }) {
   const { user, setInterfaceLanguage } = useSession();
   const onChosen = useCallback(

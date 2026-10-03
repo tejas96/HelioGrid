@@ -1,4 +1,5 @@
 import type { FormatPack } from './pack';
+import { localMinutes } from './zone';
 
 /**
  * The ONE date and time implementation (`F3-19`, `F3-22`). No surface composes a date string,
@@ -46,6 +47,27 @@ export function formatDate(pack: FormatPack, value: string | Date | number): str
     year: 'numeric',
     timeZone: pack.timeZone,
   }).format(epoch);
+}
+
+/** `2026-08-17` → `Monday`, the day's name in the market's language, on the tenant's zone. */
+export function formatWeekday(pack: FormatPack, value: string | number): string {
+  const epoch = toEpoch(value);
+  if (epoch === null) return '';
+  return new Intl.DateTimeFormat(pack.locale, { weekday: 'long', timeZone: pack.timeZone }).format(
+    epoch,
+  );
+}
+
+/**
+ * What the tenant's wall clock read at an instant, by the pack's clock — `16:12` or `4:12 PM`.
+ * An event's time (an item emitted, a call placed), where `formatTime` takes a slot's digits.
+ */
+export function formatClockAt(pack: FormatPack, value: string | number): string {
+  const epoch = toEpoch(value);
+  if (epoch === null) return '';
+  const minutes = localMinutes(epoch, pack.timeZone);
+  const hhmm = `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
+  return formatTime(pack, hhmm);
 }
 
 /** A calendar's own heading — `March 2026`. */

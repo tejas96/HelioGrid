@@ -9,6 +9,8 @@ export { DataProvider } from './provider';
 export type { CompanyCreation, CompanySignup } from './use-company-signup';
 export { useCompanySignup } from './use-company-signup';
 export { useLiveness } from './use-health';
+export type { NotificationCentre } from './use-notification-centre';
+export { useNotificationCentre, useUnreadCount } from './use-notification-centre';
 export { usePagedList } from './use-paged-list';
 export { usePaginatedList } from './use-paginated-list';
 export { useSession } from './use-session';

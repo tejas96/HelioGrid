@@ -34,12 +34,18 @@ step 3 are the QA.
 ## 2. Prepare — the main session owns every server and device
 
 1. Load `SendMessage` and `TaskStop` with `ToolSearch`; they are deferred tools.
-2. Start the servers the surfaces need with `preview_start`: `api`, `web`, `mobile-metro`, `worker`.
-   One instance of each serves every surface — the iOS simulator reaches the api at
+2. Start the servers the surfaces need with `preview_start`: `api`, `web-built`, `mobile-metro`,
+   `worker`. The web is the BUILT app: the web suite in step 3 reuses whatever listens on port 3002,
+   and the dev server's overlay blocks its clicks. After a fix to the web, restart `web-built` before
+   the re-check. One instance of each serves every surface — the iOS simulator reaches the api at
    `localhost:8084`, the Android emulator at `10.0.2.2:8084`. Note each server id. The api writes
    its log to `.qa/api.log`.
 3. Boot each device: the simulator (`xcrun simctl boot <udid>`, then the simulator tool's
-   `attach`) and the Android emulator with its window. Open the app once on each, and the browser
+   `attach`) and the Android emulator with its window. Rebuild a phone's app
+   (`pnpm --filter @heliogrid/mobile ios|android`, minutes each) only when
+   `git diff --name-only origin/main -- apps/mobile/ios apps/mobile/android apps/mobile/package.json`
+   lists a file, or the app is not installed — `launch` fails; JavaScript alone reaches the app
+   through Metro. Open the app once on each, and the browser
    tab once, so every bundle is warm. Right before dispatch (step 4), sign each phone in, through
    the app's own door, to the account its first check needs — its standing account, or the fresh
    one the Setup names — with that number's code, and leave it on the home. An agent starts from

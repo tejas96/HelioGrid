@@ -1,8 +1,16 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
-import { Animated, Easing, PanResponder, ScrollView, StyleSheet, View } from 'react-native';
-import { Portal } from '../../primitives/Portal/Portal.native';
+import {
+  Animated,
+  BackHandler,
+  Easing,
+  PanResponder,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
+import { Portal, usePortalBottomInset } from '../../primitives/Portal/Portal.native';
 import { OverlayBody } from './OverlayBody.native';
 import type { SheetDensity, SheetProps, SheetSize } from './Sheet.types';
 import { SheetBackdrop } from './SheetBackdrop.native';
@@ -25,9 +33,12 @@ const DRAG_DISMISS = 96;
  * THREE WEB BEHAVIOURS MAPPED FOR TOUCH:
  * · `position: fixed` has no RN equivalent, so the whole layer renders through the Portal
  *   primitive — the one thing in the system that lifts a surface out of its screen.
- * · The Esc key and the DOM focus trap have no touch equivalents. Dismissal is the backdrop tap,
- *   the 44×44 close button and the drag past 96dp; the trap becomes `accessibilityViewIsModal`,
- *   which is what hides the layer behind from a screen reader.
+ * · The Esc key's partner is Android's Back: while a dismissible sheet is open, Back closes it and
+ *   goes no further. The DOM focus trap has no touch equivalent; dismissal is also the backdrop
+ *   tap, the 44×44 close button and the drag past 96dp, and the trap becomes
+ *   `accessibilityViewIsModal`, which is what hides the layer behind from a screen reader.
+ * · The web half clears the home-indicator band in CSS; here the app root hands the band's height
+ *   to `PortalHost`, and the sheet's last line sits above it.
  * · The body scroll lock is inherent: a modal sheet's layer covers the screen. A non-modal one
  *   sets `pointerEvents="box-none"` so the surface behind stays live and scrollable — the same
  *   three-things-together decision the web half makes.
@@ -66,6 +77,21 @@ export function Sheet({
   const [panelHeight, setPanelHeight] = useState(0);
   const [scrolled, setScrolled] = useState(false);
   const draggable = dragToDismiss && dismissible;
+  const bottomInset = usePortalBottomInset();
+  /* Read through a ref: Android calls the newest listener first, so re-registering on a new
+     `onClose` would put a lower sheet's Back above the sheet on top of it. */
+  const closeOnBack = useRef(onClose);
+  closeOnBack.current = onClose;
+
+  useEffect(() => {
+    if (!open || !dismissible) return;
+    const back = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (closeOnBack.current === undefined) return false;
+      closeOnBack.current();
+      return true;
+    });
+    return () => back.remove();
+  }, [open, dismissible]);
 
   useEffect(() => {
     if (!open || panelHeight === 0) {
@@ -160,6 +186,7 @@ export function Sheet({
               hasHeader ? styles.bodyNoTop : undefined,
               footer === null ? undefined : styles.bodyWithFooter,
               bodyStyle,
+              footer === null ? clearBand(ladder.bodyPad, bottomInset) : undefined,
             ]}
           >
             <OverlayBody
@@ -182,7 +209,13 @@ export function Sheet({
             </OverlayBody>
           </ScrollView>
 
-          {footer === null ? null : <View style={[styles.footer, ladder.footerPad]}>{footer}</View>}
+          {footer === null ? null : (
+            <View
+              style={[styles.footer, ladder.footerPad, clearBand(ladder.footerPad, bottomInset)]}
+            >
+              {footer}
+            </View>
+          )}
         </Animated.View>
       </View>
     </Portal>
@@ -247,6 +280,12 @@ const styles = StyleSheet.create({
     paddingBottom: theme.spacing['sp-4'],
   },
 });
+
+/** The last region's bottom padding, raised past the home-indicator band; nothing without one. */
+function clearBand(pad: ViewStyle, bottomInset: number): ViewStyle | undefined {
+  if (bottomInset === 0) return undefined;
+  return { paddingBottom: Number(pad.paddingBottom ?? 0) + bottomInset };
+}
 
 interface SheetLadder {
   panel: ViewStyle;

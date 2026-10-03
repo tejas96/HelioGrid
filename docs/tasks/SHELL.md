@@ -792,6 +792,132 @@ Domain types it reads, adds none: the type registry, the grouping class and the 
 - (F4-27, F6-07, F6-12, F6-19, M13-21 and M13-45 carry no dedicated Given/When/Then lines in their PRDs' acceptance blocks; the requirement texts above are the binding criteria — the centre marks read once and up-only per F6-07, and never stands a modal or spinner wall between the reader and their work per F4-27.) → proof: QA web · ios · android open an item on one device and it is read on the other and never un-reads; three proposal-opened events on one day render as one group with three reachable members; the horizon row says the centre is an inbox, not an archive; Mark all read is absent when nothing is unread and no modal or spinner wall stands between the reader and the list; the owner's monthly summary reads in place with the dashboard one control away
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: qa-web every listed state at 1536px · qa-mobile every listed state at 375px
 
+#### Design check
+Board: SCR-SHELL-03 Notification Center - Mobile.dc.html and its decisions record, read through DesignSync (three rounds, 2026-10-03)
+Asked: five type groups (Sales, Delivery, Payments, Team, Billing) on every filter, a sideways FacetChips row on the phone; product news in the EPC Owner's inbox only; rows draw only the record's fields and their act; "N match · M unread in all" with a derived tier under every head; only the voice agent's escalation is immediate; the honest landing names no person and no date; Mark all read is a worded secondary sm button wherever anything unread is listed; the filtered frames read Unread + Sales; the title-to-body gap 2; the phone toast clears the home band
+Verified: all of it on the 17 frames (m-default, m-default-unrolled, d-default, s-loading, s-empty, s-error, s-filtered, s-landing, s-markall, s-summary-received, s-summary-opened, f-badge, f-grouped, f-announce, f-horizon, d-filtered, d-landing); nothing else moved
+Build values that differ from the board (verify round 3, and the build): the tile radius is `--r-card-expressive` (24) and the member gap 10px, because the theme has no `--r-tile`/`--tile-gap` (`D94`) · a member's line wraps rather than ellipsising — caller text never takes `nowrap` (`.claude/rules/ui-adherence.md`) · the landing carries the title "Not available here" from `packages/i18n` (`UnavailableNote` would otherwise print English, `D92`) · the phone head puts Mark all read on its own row BY STRUCTURE — a column, `--sp-2` under the tier, aligned to the end — never by `flex-wrap`, so Hindi cannot move it · titles take a tracking token (`--tr-h4`), never a raw `-0.01em` · "Filters in force" takes `flex: 1; min-width: 0` and wraps, no 190px cap · the filter block's bottom padding is `--sp-3` on every frame
+Values for QA:
+- Phone 375 — Sheet inset, ~747 tall (92%), handle, title "Notifications", close; body `--canvas`; content 335 between 20 sides
+- Phone head — padding `--sp-2` top, `--sp-4` bottom; count 15 bold tabular; 4 → the tier line 12 "Derived · Counted from the records, never from push"; 8 → Mark all read (secondary sm, 44), right edge 20 from the sheet edge
+- Phone filters — sticky at top 0 on `--canvas`, padding 4 / 12, gap 8: All · Unread (44), then the five FacetChips across 335, scrolling sideways (36 pill in a 44 box)
+- List — days 20 apart (`--sp-5`); 12 from the day overline (11 bold uppercase, tertiary) and between rows; bottom 24
+- Row card — `--fill`, `--r-tile`, padding 16; glyph circle 40 on `--surface` with a 20 accent glyph; unread dot 10 with a 2 ring; title 15 bold, body 13 secondary, `--sp-0-5` apart; meta 8 below: time mono 12, Unread badge 22; act: 44 icon at the right edge or a full-width secondary sm 44 in a foot indented 52
+- Group members — 8 under the group card, 10 apart (`--tile-gap`), padding 12/12/12/16, name link 13 bold with a 44 hit area, Unread badge, Call 44
+- Announcement — LogoTile 32 in the 40 slot, overline "From HelioGrid · product news", foot indented 52: time left, act right
+- Tail — centred, gap 12: Show older (sm 44), then the horizon sentence (12)
+- Toast — 20 from each side, `--safe-bottom` + `--sp-4` (50) from the bottom
+- Web 1536 — rail 72, header 64; DetailPanel right, 520 wide, top 64, non-modal; inner sides 32 → a 456 column; the page keeps a 576 right inset (520 + 32 + 24), so no content sits under the panel
+- Web head — sticky, padding 16, gap 16: count + tier left, Mark all read top-right; (filtered) Filters in force | Clear filters; All · Unread; the "Type group" overline, then the five FacetChips wrapped, 4 below
+- Rail bell — 44, active while the panel is open; CountBadge 2 down, flush right; 16 above the avatar; nothing at 0, "99+" above 99
+Not checked from text: clipping, overlap, Hindi and Marathi fit, the sticky head while scrolling, focus trap and return to the bell, the 44 hit areas → QA H1, H3, H8, S7, W2, M3
+
+#### Plan
+**Scope** — In: the centre on both platforms — the bell's count from the record, the list grouped and filtered, mark one and mark all read, the horizon, loading, empty, error, Show older, the product-news row, and the honest landing as a built state; the web panel and the phone sheet. Out: the two monthly summaries' frames (`s-summary-received`, `s-summary-opened`) — no summary type exists, so they build with `T-M13-010` (written into it); every row's one-step act — each subject's module wires its own (Decided 2); a push tap opening the centre — the push slice's (`apps/mobile/src/navigation/linking.ts` note). Size: ~46 files, so it is split — part a ~24, part b ~22.
+**Twin** — one screen, two platforms: the web panel and the phone sheet. Every part below that both draw lives in a package.
+**Where**
+| package | what changes |
+|---|---|
+| domain | `notifications/centre-view.ts` — the centre's view-model: rows from items (equal `groupKey` → one group, members newest first; null never groups), day sections in the tenant's zone, the head's facts (match count, unread count, whether Mark all read shows), `seenThrough` (the newest `emittedAt` shown), whether Show older shows; its test |
+| domain | `isAnnouncement` in `centre-view.ts` — product news (`system`) read from what raises it; `format/datetime.ts` — `formatClockAt` (an event's time on the tenant clock) and `formatWeekday`, bound in `packages/ui`'s `utils/format.ts` as `clockAt` and `weekday` |
+| domain | `shell/doors.ts` — `notifications` leaves the doors: the centre is an overlay, not a page (brief decision 1); its test |
+| i18n | `copy/notifications.ts` — every word the centre shows: the five group labels, the head lines, the tier line, the group sentence, the horizon sentence, the toast, empty, error, the landing, Show older, Clear filters, Filters in force, each type's glyph name; EN · HI · MR; its test |
+| data | `react/use-notification-centre.ts` — the list (`usePaginatedList` over `inbox`), the filters, the unread count, mark one, mark all with `seenThrough` and the list's own filter; `cache/keys.ts` — `notifications` keys per company; mark one / mark all invalidate the list and the count together |
+| ui | `NotificationCard/` — the card, the group and its members, product news and the landing, both halves, one `.types.ts`; the type → glyph map in `NotificationCard.logic.ts`, drawn by `ActivityGlyph` (four marks added: eye, calendar-check, clock, user-plus); `Button` gains `expanded` (the group's toggle); `Ground.css` lists the card and the member as tiles |
+| ui | `DetailPanel` — a `top` in the shared types, so the panel anchors under the header on the web; the phone half accepts and ignores it (Law 7). Part b: its only consumer is the web panel, and L1 at 1536 measures it |
+| tests/e2e/components | `NotificationCard.spec.tsx` — card, group open and closed, announcement, Unread badge, act slot |
+| apps/web | `features/notifications/NotificationCentre.tsx` + css — the panel; `features/shell/ShellScreen.tsx` — the bell opens and closes the panel, carries the badge, the page takes the 576 inset while open; `constants.ts` loses the door path |
+| apps/mobile | `screens/notifications/NotificationSheet.tsx` — the sheet; `screens/shell/components/ShellTopBar.tsx` — the bell opens the sheet and carries the badge; `navigation/routes/app.ts`, `screens/shell/doors.ts`, `PlaceholderScreen.tsx` lose the `Notifications` route |
+| tests/e2e | `web/notifications.spec.ts` — open, filter, mark one, mark all, no connection; `mobile/notifications.yaml` |
+| docs | the brief and this task say "the bell at the rail's foot" on the web (the shipped shell); `T-M13-010` takes the two summary frames |
+
+**How it works**
+  bell → `useNotificationCentre()` (data) → `GET /notifications` + `GET /notifications/unread-count` (api, shipped) → `centreView()` (domain) → `NotificationCard` (ui) in a `DetailPanel` (web) or a `Sheet` (phone)
+**Example**
+  Amit taps the bell showing 7 → the list opens: "7 unread · 46 in the last 30 days"; "3 proposals opened today" is one card he can open to see each; he taps Unread + Sales → "6 match · 7 unread in all"; Mark all read → "6 marked read", the bell reads 1, the hand-off that arrived after the list opened stays unread.
+  ```ts
+  centreView(items: readonly Notification[], facts: { now: number; timeZone: string; hasMore: boolean }): CentreView
+  ```
+**Data / API** — none: every route is shipped (`T-FPLAT-017`, `T-FPLAT-019`).
+**Risks**
+- Mark all read marks a notification the reader never saw → `seenThrough` is the newest `emittedAt` the list SHOWED and the call carries the list's own filter (`notification.ts:122-132`) → `centre-view.test.ts` › "seenThrough is the newest shown" · QA G4.3
+- The badge and the list disagree after a read → mark one and mark all invalidate the count and the list under one key prefix → QA G1.2 in part b (`packages/data` has no test runner; the hook is proven where a screen drives it)
+- A day boundary in UTC splits "today's" group → `centreGroupKey` already groups on the tenant's day; the sections use the same zone → `centre-view.test.ts` › "a 23:30 IST item sits in its IST day"
+- Hindi pushes Mark all read over the count → it sits on its own row by structure (Design check) → QA S7, H7
+**Decided at /start**
+1. The two summary frames move to `T-M13-010`: no summary type exists in `NOTIFICATION_TYPES` (`packages/domain/src/notifications/types.ts:11-21`), and the frames need four figures the record does not carry. A decision for a later module is written there, not asked.
+2. Rows keep the board's act buttons (owner, 1A): the card takes an act slot; no act is wired here, because every act is its subject module's route and none of those modules exists. QA proves the slot through the component spec.
+3. Sample rows on the board use types the code does not have yet (owner, 2A); the build and QA use only the nine `NOTIFICATION_TYPES`.
+4. On the web the bell stays at the rail's foot, as `T-SHELL-008` shipped it (`apps/web/features/shell/ShellScreen.tsx:54-70`) and the board draws; "the bell in the web header" (brief, F6.4) reads as "the shell's chrome". The brief's wording is corrected; the PRD sentence is left as it is.
+5. The centre is an overlay, not a route (brief decision 1): the phone's `Notifications` placeholder route and the `notifications` door go.
+6. A tap on a card marks it read. No subject kind that exists today (`packages/domain/src/subject/kinds.ts`) has a screen yet, so the tap opens nothing more until a subject's module adds its destination — the same rule as the acts.
+7. The task is split (step 6): a is the parts both platforms draw, b is the centre on both.
+8. The honest landing is built now as a finished part (owner, ASK 1 → A): the words and the state, proven in the component spec. It starts showing when the first module with its own record screen opens a subject and is refused; until then a tap only marks the item read.
+9. `D81` and the `Sheet` half of `D64` join part a (owner's yes): the phone `Sheet` closes on Android's Back while open and dismissible, and its last line clears the home band. The inset is a FACT the app supplies — `PortalHost` takes `bottomInset`, which `apps/mobile/App.tsx` reads from `react-native-safe-area-context` — because `packages/ui` holds no safe-area library (`.claude/rules/screen-parts.md`, "the platform adapter the package refuses to hold"). `D64`'s `Menu` half stays in `deferred.md`.
+
+#### Acceptance criteria
+- AC1 · Given unread notifications, when the badge renders on any device, then its count derives from the records and matches the list (F6-17). → proof: QA G1.1, G1.2 (web · ios · android: three unread records → the bell reads 3 and the head says 3 unread)
+- AC2 · Given an item read on one device, when the other device opens the centre, then it is read there and never un-reads (F6-07). → proof: QA G3.2
+- AC3 · Given three proposal-opened events on one tenant day, then they render as one group with three reachable members; an agent escalation never groups (F6-12). → proof: `centre-view.test.ts` › "groups equal keys into one row at the newest member, members newest first" · "a null key never groups — the escalation stands alone however many arrive" · "00:30 IST sits in today, though UTC still calls it yesterday"; QA G2.1
+- AC4 · Given the filters, when Unread and a type group are chosen, then the list shows only those, newest first, the head reads "N match · M unread in all", and Clear filters returns the whole list (F6-17). → proof: QA G2.2, G2.3
+- AC5 · Given the list's end inside 30 days, then the horizon sentence says the centre is an inbox, not an archive (F6-19). → proof: `notifications.test.ts` (i18n) › "the horizon names the days the reads are bounded by"; QA G2.4
+- AC6 · Given nothing unread in the list shown, Mark all read is absent; given unread items, it marks read exactly what the list showed under its filter, deletes nothing, and says so in the toast (F6-07, F4-27). → proof: `centre-view.test.ts` › "mark all shows only with unread in the list — everything listed is read" · "seenThrough is the newest shown, so a later arrival stays unread"; QA G4.1–G4.3
+- AC7 · Given the centre open at 1536, then the page beside the panel stays usable — no backdrop, no scroll lock, nothing under the panel; while loading, no spinner wall covers the reader's work (F4-27, brief decision 1). → proof: QA G5.1, L1
+- AC8 · Given a product-news item, then it renders as the announcement form, never as tenant work, and only an EPC Owner receives it (F6.4, registry `system` → `epc_owner`). → proof: QA G2.5; `NotificationCard.spec.tsx` › "product news names who speaks and carries no unread mark"
+- AC9 · added at /start (missing states) · Given the list, then loading, empty, error with Try again, and Show older each render as the board draws them. → proof: QA S2, S3
+- AC10 · added at /start (honest landing) · Given the landing state, then it shows the board's words, names no person and no date, and Back to the list returns to the list (F6-16 edge). → proof: `NotificationCard.spec.tsx` › "the landing names no one and goes back once"; its trigger — see ASK 1
+- AC11 · Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. The two summary frames are `T-M13-010`'s (Decided 1). → proof: QA L1, L2, S2 at 375 and 1536; `pnpm check:all`
+
+#### Parts
+| part | ships | acceptance lines | status |
+|---|---|---|---|
+| a | the shared parts: `centreView` and `isAnnouncement` (domain), the date helpers, the centre's words (i18n), `useNotificationCentre` (data), `NotificationCard` (ui), their tests and the component spec | AC3, AC5, AC6 (the rule), AC8 (the form), AC10 (the parts) | shipped |
+| b | the centre and the bell on web and phone; `DetailPanel`'s `top`; the door and route removed (`shell/doors.ts` and its test, the web path, the phone route); the e2e specs; the docs wording. The phone half of `NotificationCard` first runs here, on both phones; the hook's invalidation is proven here; both apps mount `ProvenanceWordsProvider` (no app does yet, and the group's count line throws without it) | AC1, AC2, AC4, AC6, AC7, AC8, AC9, AC10, AC11 | open |
+
+#### Part a · Plan
+**Where** — the Plan's Where rows for `domain` (`centre-view.ts`, `format/datetime.ts` — not `shell/doors.ts`, which is part b's), `i18n`, `data` and `ui` (`NotificationCard/` — not `DetailPanel`, part b's), and `tests/e2e/components/NotificationCard.spec.tsx`; plus the phone `Sheet` fix (Decided 9) — `Sheet/Sheet.native.tsx`, `primitives/Portal/` (`Portal.types.ts`, `Portal.native.tsx`), `apps/mobile/App.tsx`, `docs/tasks/deferred.md` (`D81` deleted, `D64` keeps its `Menu` half) · **Size** — ~29 files. The phone half of the card is written here and first runs in part b (no phone component runner exists: `tests/e2e/components` is Playwright on Chromium).
+
+#### Part a · QA plan
+Surfaces: machine (components at 3100) · web · ios · android — web added at /qa step 1 for G3.1; the new parts reach no screen yet (`git grep` of `apps/` for `NotificationCard`, `centreView`, `useNotificationCentre` after the build is empty); the `Sheet` fix reaches every phone sheet, and the shell's grievance note (`apps/mobile/src/screens/shell/components/GrievanceNote.tsx`) is the one a person can open today.
+
+Setup
+- Accounts: the standing `QA ios` and `QA android` — the grievance note needs only a signed-in shell
+- Phase 1 · default — the suites and every check
+
+G2 · The phone sheet — ios · android · phase 1
+- G2.1 · android: open the account menu → the grievance contact → the sheet "Grievance officer" opens; press Back → the sheet closes and the shell stays; press Back again → the app leaves as before
+- G2.2 · ios and android: the grievance sheet open → its last line ends above the home-indicator band (iOS: the line's bottom y < the band's top y; on the smallest and the largest supported phone)
+- G2.3 · android: a sheet that cannot be dismissed (none on a screen today) — not driven; the rule is in the code review
+
+Added at /qa step 1 (a shared `ui` change reaches every screen: `Button` gains `expanded`, `Ground.css` two tile selectors, `Sheet` and `PortalHost` on the phone) — web · ios · android · phase 1
+- G3.1 · web `/home` at 375 and 1536: H1, H3, H5, H6, H8 — the head, the blocks' Try again and the account menu look and act as before; W2 — tab order reaches the rail, the bell, the account and each block's button with visible focus
+- G3.2 · ios · android: the shell's home: H1, H3, H4, H5, H8 — the top bar, the pill and the home's blocks as before; the grievance sheet opens from the account menu and closes by its close button
+- R2 · `tests/e2e/web/home.spec.ts` at 375 and 1536 (the built web)
+
+Look — components, web at 335 and 456 · phase 1
+- L1 · a card: `--fill`, `--r-tile`, padding 16; glyph circle 40 with a 20 glyph; unread dot 10 with a 2 ring; title 15 bold, body 13 `--sp-0-5` (2) under it; meta 8 below: time mono 12, the Unread badge 22 reading "Unread" (new copy — filled at /qa step 1)
+- L2 · a group closed then opened: the group sentence and its tier line; the toggle reads "Show these 3" / "Hide these 3" (new copy — filled at /qa step 1); members 8 under the card and 10 apart, padding 12/12/12/16, each name a 13 bold link with a 44 hit area
+- L3 · the product-news form: LogoTile 32 in the 40 slot, no glyph circle, the overline "From HelioGrid · product news" (new copy — filled at /qa step 1), a foot indented 52 with the time left and the act right
+- L4 · the act slot: on a card a full-width secondary sm button 44 high in a foot indented 52; on a member row a 44 icon button whose label is the act's words plus the member's name
+
+G1 · The landing — components · phase 1
+- G1.1 · the landing reads "This [record] is no longer in your scope, or was removed." and "The notification stays here because it reached you." (new copy — filled at /qa step 1); no person and no date; Back to the list calls its handler once
+
+Standard — components · phase 1
+- S8 · a title of 200 characters, emoji and Devanagari → wraps, nothing clips — why: the card renders words a module wrote
+- S10 · every icon-only button has a label — why: the member row's act is an icon
+- H1, H3, H8 · visible, no overlap, 44 targets — why: a new component
+- H5 · no console error during the spec run — why: a list of keyed rows and icon buttons is new
+- H7 · the card and the group at 200% text, 335 wide → no label clips or overlaps — why: the card's words are new
+- H6 · pressed and focused states — why: the card and its links are pressable
+- H10 · Devanagari in its own face — why: with S7's words
+- S7 · Hindi and Marathi: the head line, the group sentence, the horizon sentence fit at 335 — why: new words
+
+Regression — machine · phase 1
+- R1 · `tests/e2e/components/` whole · unit tests (domain, i18n) · `tests/e2e/mobile/login.yaml` on both phones (the shell opens)
+
+Not in: API A1–A7 — no route changes · S1–S6, S9, S11 — no screen yet (part b) · H2, H4, H9, H11 — no screen places the card yet · W1–W4 — no web screen · M1, M3 — no new phone screen or field; M2 — no request in flight · M4 — G2.1 is the Back check · $1–$3 — no money · E1 — nothing sent
+
 ---
 
 ### T-SHELL-006 · Billing State Banner & Denial Sheets

@@ -1,0 +1,169 @@
+/* NotificationCard — a notification, a group of them, product news and the honest landing
+   (SCR-SHELL-03). The tile's fill and shadow are Ground.css's; this keeps radius, padding, rings. */
+
+.hg-notification-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border-radius: var(--r-card-expressive);
+}
+
+/* The face: a sibling button under the content, so a control in a slot is its own target. */
+.hg-notification-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: inherit;
+  cursor: pointer;
+}
+
+.hg-notification-face:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.hg-notification-top {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  pointer-events: none;
+}
+
+.hg-notification-glyph,
+.hg-notification-logo {
+  position: relative;
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: var(--sp-10);
+  height: var(--sp-10);
+}
+
+.hg-notification-glyph {
+  border-radius: var(--r-pill);
+  background: var(--hg-control-fill);
+  color: var(--accent);
+}
+
+/* Decoration beside the word "Unread", never instead of it (StatusMark's law). */
+.hg-notification-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--hg-ground);
+}
+
+.hg-notification-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+  padding-top: var(--sp-1);
+}
+
+.hg-notification-sentence {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.hg-notification-title {
+  letter-spacing: var(--tr-h4);
+  text-wrap: pretty;
+}
+
+.hg-notification-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-1);
+}
+
+.hg-notification-time {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-notification-side {
+  /* Above the face, which is positioned too: an act is its own control. */
+  position: relative;
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+/* The foot sits under the words, past the glyph's column. */
+.hg-notification-foot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-left: calc(var(--sp-10) + var(--sp-3));
+}
+
+.hg-notification-foot[data-spread="true"] {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.hg-notification-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* Members stand closer to each other than to the card they open from. */
+.hg-notification-members {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hg-notification-member {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: 44px;
+  padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-4);
+  border-radius: var(--r-card-expressive);
+}
+
+.hg-notification-member-words {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+  pointer-events: none;
+}
+
+.hg-notification-member-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-notification-landing {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-notification-landing-back {
+  display: flex;
+}
