@@ -38,17 +38,19 @@ Deps: `architecture.md` §2 tests/e2e. The law is `.claude/rules/testing.md`; th
 ```
 pnpm --filter @heliogrid/e2e test:web                 # the web flows; starts the BUILT api and web, or reuses running ones
 pnpm --filter @heliogrid/e2e test:ct [<spec files>]   # the component tests (port 3100)
-pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows, one device per call
+pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows by hand, one device per call
 pnpm --filter @heliogrid/e2e exec playwright show-trace <trace.zip>   # replay a failure
 ```
 
-The web suite and the whole component suite run in CI (`e2e-web`). The phone suite runs in
-`/qa`: CI has no simulator. It needs Metro, the api and the app installed on each device.
+Every suite runs in CI: the web and component suites in `e2e-web`, the phone flows in `android`
+and `ios` (`.github/workflows/ci.yml` says how, and how to switch them off). `/qa` and `/ship`
+never run the phone flows; `test:mobile` runs them by hand only to debug a red CI run.
 
 ## Local conventions
 
 - A new number's code is read from the api's log, `.qa/api.log`, which the `api`
-  launch configurations and `playwright.config.ts` both write (`support/api-log.ts`). A running api
+  launch configurations, `playwright.config.ts` and CI's `android` and `ios` jobs write
+  (`support/api-log.ts`). A running api
   is reused as it is, so it must be one of those: an api started any other way writes no log here.
 - Maestro types faster than the phone's fields take keys: a flow waits for the tap to settle before
   typing, gives each code box its own digit, and presses Return to close the keyboard before the

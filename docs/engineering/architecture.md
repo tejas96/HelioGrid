@@ -292,7 +292,7 @@ real state; anything needing a mock. Extension point: one file per invariant + a
 Owns: the shipped flows, driven as a person drives them — `web/<route>.spec.ts` (Playwright, against
 the built api and web), `components/<Name>.spec.tsx` (Playwright component tests of the real
 `packages/ui` web halves, mounted with the app's stylesheets) and `mobile/<screen>.yaml` (Maestro, on
-the simulator and the emulator). Allowed deps: contracts, domain, i18n, theme, ui, config — the words a
+the simulator and the emulator of CI's native jobs). Allowed deps: contracts, domain, i18n, theme, ui, config — the words a
 spec expects come from `i18n` and the colours from `theme`, never typed. Platform scope: a Node runner
 and the devices. Belongs: one flow per web route and per phone screen (invariant `e2e-flow-per-screen`). Never: a unit test, a
 mock of anything this repo owns, a server or a device started by a spec itself outside the runner's

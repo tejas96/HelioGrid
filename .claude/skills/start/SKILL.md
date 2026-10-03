@@ -281,7 +281,7 @@ Standard — web · ios · android · phase 1
 - H7 · the largest text size → no label clips — why: the form's labels are new
 
 Regression — machine · phase 1
-- R1 · tests/e2e/web/leads.spec.ts · tests/e2e/mobile/leads.yaml · unit tests
+- R1 · tests/e2e/web/leads.spec.ts · unit tests (the new tests/e2e/mobile/leads.yaml runs in CI)
 
 Not in: S6 — no step of this flow holds a session · H9 — no theme, app root or native change
 ````
