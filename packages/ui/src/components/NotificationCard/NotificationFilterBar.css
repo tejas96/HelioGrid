@@ -1,0 +1,102 @@
+/* NotificationFilterBar — the notification centre's filter bar (`SCR-SHELL-03`), pinned above
+   the list on both widths. */
+
+.hg-notification-filters {
+  padding: var(--sp-2) 0 var(--sp-4);
+}
+
+/* A 4px bleed so a focus ring at either end is never cut by the row's own scroll. */
+.hg-notification-filter-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  box-sizing: content-box;
+  width: 100%;
+  margin: calc(-1 * var(--sp-1));
+  padding: var(--sp-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.hg-notification-filter-rule {
+  flex-shrink: 0;
+  width: 1px;
+  height: var(--sp-6);
+  margin: 0 var(--sp-2);
+  background: var(--hairline);
+}
+
+/* The board's pill: 44 high, the 18 icon centred by 13 a side (13 + 18 + 13 = 44, off the spacing
+   scale — `D94`); on, it darkens and its name slides out, 16 from the right. The motion is the
+   theme's: colour at the standard pace, the slide emphasised, the words fading in after it. */
+.hg-notification-filter {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  min-width: 44px;
+  padding: 0 13px;
+  border: none;
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  white-space: nowrap;
+  background: var(--hg-control-fill);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  transition:
+    background var(--dur-standard) var(--ease-standard),
+    color var(--dur-standard) var(--ease-standard),
+    padding var(--dur-emphasised) var(--ease-standard);
+}
+
+.hg-notification-filter[aria-pressed="true"] {
+  padding-right: var(--sp-4);
+  background: var(--action-primary);
+  color: var(--text-inverse);
+}
+
+.hg-notification-filter:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.hg-notification-filter-icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+}
+
+.hg-notification-filter-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: var(--r-pill);
+  background: currentColor;
+}
+
+.hg-notification-filter-label {
+  max-width: 0;
+  margin-left: 0;
+  opacity: 0;
+  transition:
+    max-width var(--dur-emphasised) var(--ease-standard),
+    margin-left var(--dur-emphasised) var(--ease-standard),
+    opacity var(--dur-standard) var(--ease-standard);
+}
+
+.hg-notification-filter[aria-pressed="true"] .hg-notification-filter-label {
+  max-width: 96px;
+  margin-left: var(--sp-2);
+  opacity: 1;
+  transition-delay: 0ms, 0ms, var(--dur-micro);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hg-notification-filter,
+  .hg-notification-filter-label {
+    transition: none;
+  }
+}

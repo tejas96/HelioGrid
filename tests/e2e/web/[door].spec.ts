@@ -106,14 +106,9 @@ test('a door the person is not offered, or no door at all, is not found', async 
   }
 });
 
-test('search and the bell open their doors', async ({ page }) => {
+test('search opens its door', async ({ page }) => {
   await createCompany(page, en, freshMobile());
   await passTheOwnersMark(page, en);
-
-  await page.getByRole('button', { name: en.t(SHELL.notifications) }).click();
-  await expect(
-    page.getByRole('heading', { level: 1, name: doorTitle(en.t, 'notifications') }),
-  ).toBeAttached();
 
   // From --bp-desktop the search is a field that Enter submits; below it, a button.
   if ((page.viewportSize()?.width ?? 0) >= 968) {

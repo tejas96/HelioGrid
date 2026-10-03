@@ -207,7 +207,8 @@ it · say the instruction plainly, in words a new reader can act on.
 
 Digest of the foundations `F1`–`F8`, which are canonical.
 
-- Every user-visible number carries a provenance tier: measured / derived / estimated / assumed.
+- Every user-visible number carries a provenance tier: measured / derived / estimated / assumed —
+  an identifier, and a count of the reader's own listed records, excepted (`F8-01`).
 - Money never renders stale — design changed and quote not recomputed reads provisional.
 - One money path: BOM ↔ proposal ↔ tranches ↔ payments reconcile to the currency's minor unit.
 - One market and one currency per tenant; market facts (tax, stages, checklists, rails, phone spec)

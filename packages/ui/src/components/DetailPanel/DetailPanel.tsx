@@ -8,7 +8,7 @@ import type { DetailPanelProps } from './DetailPanel.types';
 import { PanelHeader } from './PanelHeader';
 import { PanelSkeleton } from './PanelSkeleton';
 
-/** The two live numbers — z-index and the panel's own width — ride in as custom properties. */
+/** The live numbers — z-index, the panel's width and its top — ride in as custom properties. */
 type PanelVars = CSSProperties & Record<`--${string}`, string>;
 
 interface WebDetailPanelProps extends DetailPanelProps {
@@ -37,6 +37,7 @@ export function DetailPanel({
   onClose,
   side = 'right',
   width = 480,
+  top = '0px',
   title,
   subtitle,
   overline,
@@ -74,7 +75,11 @@ export function DetailPanel({
     return null;
   }
 
-  const vars: PanelVars = { '--hg-panel-z': `${zIndex}`, '--hg-panel-w': `${width}px` };
+  const vars: PanelVars = {
+    '--hg-panel-z': `${zIndex}`,
+    '--hg-panel-w': `${width}px`,
+    '--hg-panel-top': top,
+  };
 
   return (
     <>

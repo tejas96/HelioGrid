@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
 import { Badge } from '../Chip/Chip.native';
-import { renderProvenance } from '../Provenance/Provenance.native';
 import { styles as card, Glyph, Meta, Tile } from './NotificationCard.native';
 import type { NotificationGroupProps, NotificationMemberProps } from './NotificationCard.types';
 
@@ -16,7 +15,6 @@ export function NotificationGroup({
   sentence,
   latest,
   unreadLabel,
-  provenance,
   open,
   onToggle,
   toggleLabel,
@@ -31,7 +29,6 @@ export function NotificationGroup({
             <Text variant="body" bold style={card.title}>
               {sentence}
             </Text>
-            {renderProvenance(provenance, { size: 12 })}
             <Meta time={latest} unreadLabel={unreadLabel} />
           </View>
         </View>
@@ -73,8 +70,7 @@ function Member({ title, line, unreadLabel, name, onOpen, sideAct }: Notificatio
 
 const styles = StyleSheet.create({
   group: { gap: theme.spacing['sp-2'] },
-  /* Members stand closer to each other than to the card they open from. */
-  members: { gap: 10 },
+  members: { gap: theme.spacing['sp-2'] },
   member: {
     flexDirection: 'row',
     alignItems: 'center',

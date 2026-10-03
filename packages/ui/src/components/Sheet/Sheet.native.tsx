@@ -1,5 +1,5 @@
 import { theme } from '@heliogrid/theme';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import {
   Animated,
@@ -50,6 +50,7 @@ export function Sheet({
   subtitle,
   overline,
   children,
+  meta,
   size = 'auto',
   density = 'expressive',
   handle = true,
@@ -174,6 +175,8 @@ export function Sheet({
             </View>
           ) : null}
 
+          <SheetMeta meta={meta} density={density} />
+
           <ScrollView
             onScroll={(event) => {
               scrollTop.current = event.nativeEvent.contentOffset.y;
@@ -222,6 +225,16 @@ export function Sheet({
   );
 }
 
+/** The row between the header and the body, drawn only when the caller gave one. */
+function SheetMeta({ meta, density }: { meta: ReactNode; density: SheetDensity }) {
+  if (meta === undefined || meta === null) return null;
+  return (
+    <View style={density === 'expressive' ? styles.metaExpressive : styles.metaFunctional}>
+      {meta}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   panel: {
     position: 'absolute',
@@ -256,6 +269,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-4'],
     paddingBottom: theme.spacing['sp-4'],
   },
+  metaExpressive: { paddingHorizontal: theme.spacing['sp-5'] },
+  metaFunctional: { paddingHorizontal: theme.spacing['sp-4'] },
   bodyNoTop: { paddingTop: 0 },
   bodyWithFooter: { paddingBottom: theme.spacing['sp-2'] },
   unavailable: {

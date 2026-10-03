@@ -34,6 +34,8 @@ export interface ShellActionProps {
   icon?: ReactNode;
   /** A count (or `true`) rides the corner as a `CountBadge`. */
   badge?: number | boolean;
+  /** The whole name, its count included, in the reader's language. Absent, label and count join. */
+  name?: string;
   onClick?: () => void;
   active?: boolean;
 }
@@ -78,6 +80,8 @@ export interface MobileTopBarProps {
   searchLabel: string;
   /** The bell's name, in the reader's language; the unread count is added to it. */
   notificationsLabel: string;
+  /** The bell's whole name with its count — "Notifications, 3 unread" — when the caller words it. */
+  notificationsName?: string;
   /** The product mark. The phone has no rail, so **this** is where it rides. */
   brand?: ReactNode;
   /** The tenant's `TenantMark`. With a title present pass `showName={false}` — one set of words. */

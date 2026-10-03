@@ -172,6 +172,13 @@
   color: var(--text-secondary);
 }
 
+/* ── the meta row: in view while the body scrolls ──────────────────────────── */
+
+.hg-sheet-meta {
+  flex-shrink: 0;
+  padding: 0 var(--hg-sheet-pad-x);
+}
+
 /* ── the body ──────────────────────────────────────────────────────────────── */
 
 .hg-sheet-body {

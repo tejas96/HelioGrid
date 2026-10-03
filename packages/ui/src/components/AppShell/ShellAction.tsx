@@ -18,6 +18,7 @@ export function ShellAction({
   label,
   icon,
   badge,
+  name: wholeName,
   onClick,
   active = false,
   className,
@@ -25,7 +26,7 @@ export function ShellAction({
 }: WebShellActionProps) {
   /* A zero badge keeps the plain name here (the source's `badge ?` test) while it still reaches
      CountBadge, which renders nothing at zero. The rail and the nav item say "0 unread". */
-  const name = badge === 0 ? label : badgeName(label, badge);
+  const name = wholeName ?? (badge === 0 ? label : badgeName(label, badge));
   return (
     <button
       type="button"

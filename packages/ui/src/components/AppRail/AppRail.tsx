@@ -66,11 +66,12 @@ function RailButton({ item, active, onClick }: RailButtonProps) {
   return (
     <button
       type="button"
-      aria-label={badgeName(item.label, item.badge)}
+      aria-label={item.name ?? badgeName(item.label, item.badge)}
       aria-current={active ? 'page' : undefined}
+      aria-expanded={item.open}
       onClick={onClick}
       className="hg-app-rail-button"
-      data-active={active ? 'true' : undefined}
+      data-active={active || item.open === true ? 'true' : undefined}
     >
       {item.icon}
       {/* F6-17: the badge counts unread from the record. A number, not a dot — see CountBadge. */}

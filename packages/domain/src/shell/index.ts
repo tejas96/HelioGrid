@@ -12,7 +12,7 @@ export { isBelowMinimum, parseClientVersion, STORE_PLATFORMS } from './client-ve
 export type { FirstRunMark, MarkedControls, MarkInView } from './coach-marks';
 export { FIRST_RUN_COACH_MARKS, firstRunMarksFor, markInView, marksToShow } from './coach-marks';
 export type { ShellDoor } from './doors';
-export { offeredDoors } from './doors';
+export { offeredDoors, offersDoor } from './doors';
 export type {
   ExplainerMove,
   ExplainerPagerWords,

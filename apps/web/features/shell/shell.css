@@ -59,3 +59,11 @@
     display: none;
   }
 }
+
+/* The page beside the open notification centre keeps clear of it (`SCR-SHELL-03` d-default): the
+   panel's width, its inner side and a gap — nothing of the page sits under the panel. */
+@media (min-width: 968px) {
+  .hg-shell-centre-open .hg-shell-page {
+    padding-inline-end: calc(var(--form-max) + var(--sp-8) + var(--sp-6));
+  }
+}

@@ -28,5 +28,4 @@ export const appScreens = {
   QuickAddLead: { screen: PlaceholderScreen, if: useHasHome },
   StartSurvey: { screen: PlaceholderScreen, if: useHasHome },
   Search: { screen: PlaceholderScreen, if: useHasHome },
-  Notifications: { screen: PlaceholderScreen, if: useHasHome },
 };

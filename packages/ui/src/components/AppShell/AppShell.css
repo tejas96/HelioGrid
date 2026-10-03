@@ -196,10 +196,12 @@
   outline-offset: 2px;
 }
 
+/* The count rides the button's top-right corner, half outside it, so it never covers the glyph:
+   a 20 badge inside a 44 button sat over the bell's upper half. */
 .hg-app-shell-action-badge {
   position: absolute;
-  top: 6px;
-  right: var(--sp-1);
+  top: calc(-1 * var(--sp-1));
+  right: calc(-1 * var(--sp-1));
 }
 
 /* ── the count badge ───────────────────────────────────────────────────────────────────────

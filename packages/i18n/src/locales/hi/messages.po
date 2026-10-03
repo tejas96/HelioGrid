@@ -73,17 +73,17 @@ msgid "{count, plural, one {# survey submitted} other {# surveys submitted}}"
 msgstr "{count, plural, one {# सर्वे जमा हुआ} other {# सर्वे जमा हुए}}"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:23
+#: src/copy/notifications.ts:22
 msgid "{count, plural, one {Mark the # unread notification read} other {Mark all # unread notifications read}}"
 msgstr "{count, plural, one {# अपठित सूचना को पढ़ा हुआ मानें} other {सभी # अपठित सूचनाओं को पढ़ा हुआ मानें}}"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:46
+#: src/copy/notifications.ts:41
 msgid "{count} marked read"
 msgstr "{count} पढ़ी हुई मानी गईं"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:37
+#: src/copy/notifications.ts:32
 msgid "{count} unread"
 msgstr "{count} अपठित"
 
@@ -96,6 +96,11 @@ msgstr "{home}, होम बदलें"
 #: src/copy/sign-in.ts:71
 msgid "{left, plural, one {# try left} other {# tries left}} on this code. HelioGrid invalidates a code after {tries} wrong tries, and then you need a new one."
 msgstr "इस कोड पर {left, plural, one {# कोशिश बची है} other {# कोशिशें बची हैं}}। HelioGrid {tries} गलत कोशिशों के बाद कोड को अमान्य कर देता है, और फिर आपको नया कोड चाहिए।"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:20
+msgid "{match} match"
+msgstr "{match} मिलीं"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:19
@@ -143,14 +148,24 @@ msgid "{step} of {total}"
 msgstr "{total} में से {step}"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:36
+#: src/copy/notifications.ts:61
+msgid "{time} · {body}"
+msgstr "{time} · {body}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:31
 msgid "{time} latest"
 msgstr "सबसे नई {time}"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:61
+#: src/copy/notifications.ts:60
 msgid "{title}. {body}. {time}."
 msgstr "{title}. {body}. {time}."
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:21
+msgid "{total} in the last {days} days"
+msgstr "पिछले {days} दिनों में {total}"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:114
@@ -168,7 +183,7 @@ msgid "{unread} unread · {total} in the last {days} days"
 msgstr "{unread} अपठित · पिछले {days} दिनों में {total}"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:35
+#: src/copy/notifications.ts:30
 msgid "{weekday} · {date}"
 msgstr "{weekday} · {date}"
 
@@ -213,11 +228,6 @@ msgid "Add lead"
 msgstr "लीड जोड़ें"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:30
-msgid "All"
-msgstr "सभी"
-
-#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:19
 msgid "Already on HelioGrid?"
 msgstr "पहले से HelioGrid पर हैं?"
@@ -233,7 +243,7 @@ msgid "Answer the call and type what you hear."
 msgstr "कॉल उठाएँ और जो सुनें वह टाइप करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:49
+#: src/copy/notifications.ts:48
 msgid "Anything that needs you, or changes on work you hold, lands here — newest first, with the one thing you can do about it."
 msgstr "जिस काम में आपकी ज़रूरत है, या आपके काम में जो बदलता है, वह यहाँ आता है — सबसे नया पहले, और साथ में वह एक काम जो आप कर सकते हैं।"
 
@@ -248,7 +258,7 @@ msgid "Back"
 msgstr "पीछे"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:60
+#: src/copy/notifications.ts:59
 msgid "Back to the list"
 msgstr "सूची पर वापस"
 
@@ -314,16 +324,6 @@ msgid "City"
 msgstr "शहर"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:27
-msgid "Clear filters"
-msgstr "फ़िल्टर हटाएँ"
-
-#. js-lingui-explicit-id
-#: src/copy/notifications.ts:28
-msgid "Clear the read-state and type-group filters"
-msgstr "पढ़ने की स्थिति और प्रकार-समूह के फ़िल्टर हटाएँ"
-
-#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:106
 msgid "Closed until the {windowMinutes} minutes are up. Nothing shortens it."
 msgstr "{windowMinutes} मिनट पूरे होने तक बंद है। इसे कुछ भी छोटा नहीं करता।"
@@ -359,7 +359,12 @@ msgid "Confirmed"
 msgstr "पुष्टि हुई"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:53
+#: src/copy/notifications.ts:45
+msgid "Couldn’t load older notifications. Try again."
+msgstr "पुरानी सूचनाएँ लोड नहीं हो सकीं। फिर कोशिश करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:52
 msgid "Couldn’t load your notifications"
 msgstr "आपकी सूचनाएँ लोड नहीं हो सकीं"
 
@@ -369,14 +374,14 @@ msgid "Couldn't load your work"
 msgstr "आपका काम लोड नहीं हो सका"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:21
-msgid "Counted from the records"
-msgstr "रिकॉर्ड से गिना गया"
+#: src/copy/notifications.ts:43
+msgid "Couldn’t mark it read"
+msgstr "इसे पढ़ा हुआ नहीं माना जा सका"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:20
-msgid "Counted from the records, never from push"
-msgstr "रिकॉर्ड से गिना गया, पुश से कभी नहीं"
+#: src/copy/notifications.ts:42
+msgid "Couldn’t mark them read"
+msgstr "इन्हें पढ़ा हुआ नहीं माना जा सका"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:21
@@ -469,9 +474,9 @@ msgid "Filled from the SMS on this phone. Check it, or type over it."
 msgstr "इस फ़ोन पर आए SMS से भरा गया। जाँच लें, या इसके ऊपर टाइप करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:26
-msgid "Filters in force: {filters}"
-msgstr "लागू फ़िल्टर: {filters}"
+#: src/copy/notifications.ts:27
+msgid "Filter notifications"
+msgstr "सूचनाएँ छाँटें"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:73
@@ -484,7 +489,7 @@ msgid "Finance Home"
 msgstr "फ़ाइनेंस होम"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:40
+#: src/copy/notifications.ts:35
 msgid "From HelioGrid · product news"
 msgstr "HelioGrid की ओर से · प्रोडक्ट समाचार"
 
@@ -494,7 +499,7 @@ msgid "Get the code by call"
 msgstr "कॉल पर कोड पाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:52
+#: src/copy/notifications.ts:51
 msgid "Go to your leads"
 msgstr "अपनी लीड पर जाएँ"
 
@@ -524,7 +529,7 @@ msgid "HelioGrid's answer could not be read. If you were saving, check whether i
 msgstr "HelioGrid का जवाब पढ़ा नहीं जा सका। अगर आप कुछ सेव कर रहे थे, तो दोबारा कोशिश करने से पहले देख लें कि वह सेव हुआ या नहीं।"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:39
+#: src/copy/notifications.ts:34
 msgid "Hide these {count}"
 msgstr "ये {count} छिपाएँ"
 
@@ -587,11 +592,6 @@ msgstr "लॉक है।"
 #: src/copy/shell.ts:25
 msgid "Main"
 msgstr "मुख्य"
-
-#. js-lingui-explicit-id
-#: src/copy/notifications.ts:22
-msgid "Mark all read"
-msgstr "सब पढ़ा हुआ मानें"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:38
@@ -676,7 +676,7 @@ msgid "Not a structural certification"
 msgstr "संरचनात्मक प्रमाणन नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:56
+#: src/copy/notifications.ts:55
 msgid "Not available here"
 msgstr "यहाँ उपलब्ध नहीं"
 
@@ -711,12 +711,17 @@ msgid "Nothing assigned to you yet"
 msgstr "आपको अभी तक कुछ नहीं सौंपा गया है"
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:44
+msgid "Nothing changed. Try again in a moment."
+msgstr "कुछ नहीं बदला। थोड़ी देर में फिर कोशिश करें।"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:16
 msgid "Nothing else is asked for here — no tax registration, no logo, no price book, no team, no card."
 msgstr "यहाँ और कुछ नहीं माँगा जाता — न टैक्स रजिस्ट्रेशन, न लोगो, न प्राइस बुक, न टीम, न कार्ड।"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:48
+#: src/copy/notifications.ts:47
 msgid "Nothing has reached you yet"
 msgstr "अभी तक आपके पास कुछ नहीं आया"
 
@@ -746,7 +751,7 @@ msgid "Nothing was created, so trying again cannot make two companies. Your numb
 msgstr "कुछ भी नहीं बना, इसलिए फिर से कोशिश करने पर दो कंपनियाँ नहीं बन सकतीं। आपका नंबर अब भी सत्यापित है और आपके तीनों विवरण अब भी यहीं हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:47
+#: src/copy/notifications.ts:46
 msgid "Nothing was deleted — every notification is still in the list."
 msgstr "कुछ भी हटाया नहीं गया — हर सूचना अब भी सूची में है।"
 
@@ -862,11 +867,6 @@ msgid "Rajesh Kulkarni"
 msgstr "राजेश कुलकर्णी"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:29
-msgid "Read state"
-msgstr "पढ़ने की स्थिति"
-
-#. js-lingui-explicit-id
 #: src/copy/energy-source.ts:10
 msgid "Real · PVGIS ({database})"
 msgstr "वास्तविक · PVGIS ({database})"
@@ -952,17 +952,17 @@ msgid "Sent just now. SMS is the only channel."
 msgstr "अभी-अभी भेजा गया। SMS ही एकमात्र माध्यम है।"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:41
+#: src/copy/notifications.ts:36
 msgid "Show older"
 msgstr "पुरानी दिखाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:42
+#: src/copy/notifications.ts:37
 msgid "Show older matches"
 msgstr "पुरानी मिलती सूचनाएँ दिखाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:38
+#: src/copy/notifications.ts:33
 msgid "Show these {count}"
 msgstr "ये {count} दिखाएँ"
 
@@ -1152,7 +1152,7 @@ msgid "The cap holds even when sending fails — {perWindow} every {windowMinute
 msgstr "भेजना विफल होने पर भी सीमा लागू रहती है — एक नंबर के लिए हर {windowMinutes} मिनट में {perWindow}, दिन में {day}। यह HelioGrid का नियम है।"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:43
+#: src/copy/notifications.ts:38
 msgid "The centre keeps the last {days} days. It is an inbox, not an archive — each of these facts also lives on its own record’s timeline, for good."
 msgstr "यह केंद्र पिछले {days} दिन रखता है। यह इनबॉक्स है, संग्रह नहीं — इनमें से हर बात अपने रिकॉर्ड की टाइमलाइन पर भी हमेशा के लिए रहती है।"
 
@@ -1257,7 +1257,7 @@ msgid "This person is the only EPC Owner. A company always keeps at least one EP
 msgstr "यह व्यक्ति कंपनी का एकमात्र EPC Owner है। कंपनी में हमेशा कम से कम एक EPC Owner और टीम का प्रबंधन कर सकने वाला एक व्यक्ति रहना ज़रूरी है।"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:57
+#: src/copy/notifications.ts:56
 msgid "This record is no longer in your scope, or was removed. The notification stays here because it reached you."
 msgstr "यह रिकॉर्ड अब आपके दायरे में नहीं है, या हटा दिया गया है। सूचना यहाँ बनी रहती है क्योंकि यह आप तक पहुँची थी।"
 
@@ -1317,14 +1317,14 @@ msgid "Two presets, one home"
 msgstr "दो प्रीसेट, एक होम"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:32
-msgid "Type group"
-msgstr "प्रकार-समूह"
-
-#. js-lingui-explicit-id
-#: src/copy/notifications.ts:31
+#: src/copy/notifications.ts:25
 msgid "Unread"
 msgstr "अपठित"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:26
+msgid "Unread only"
+msgstr "केवल अपठित"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:62
@@ -1457,7 +1457,7 @@ msgid "Work assigned to you shows here. Ask your manager for your first one."
 msgstr "आपको सौंपा गया काम यहाँ दिखता है। अपना पहला काम अपने मैनेजर से माँगें।"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:34
+#: src/copy/notifications.ts:29
 msgid "Yesterday · {date}"
 msgstr "कल · {date}"
 

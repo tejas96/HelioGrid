@@ -1,0 +1,1 @@
+export { NotificationCentre } from './NotificationCentre';

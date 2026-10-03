@@ -11,6 +11,11 @@ export interface DetailPanelProps {
   side?: DetailPanelSide;
   /** Panel width in px; caps at 100% of its container. */
   width?: number;
+  /**
+   * Where the panel's top edge sits, as a token — `var(--header-h)` anchors it under the web
+   * header so the header stays usable. The phone half ignores it: a phone draws a `Sheet`.
+   */
+  top?: string;
   title?: string;
   /** Rendered in Geist Mono — job IDs, coordinates, invoice numbers. */
   subtitle?: string;

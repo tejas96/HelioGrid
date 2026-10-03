@@ -246,7 +246,6 @@ export function homeBlocksWords(translate: Translator['t'], home: ComposedHome) 
 export function doorTitle(translate: Translator['t'], door: ShellDoor): string {
   if (door === 'add_lead' || door === 'start_survey') return verbLabel(translate, door);
   if (door === 'search') return translate(SHELL.search);
-  if (door === 'notifications') return translate(SHELL.notifications);
   return destinationLabel(translate, door);
 }
 

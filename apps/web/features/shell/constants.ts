@@ -14,5 +14,4 @@ export const DOOR_PATH: Record<ShellDoor, string> = {
   add_lead: '/add-lead',
   start_survey: '/start-survey',
   search: '/search',
-  notifications: '/notifications',
 };

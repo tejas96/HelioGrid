@@ -20,6 +20,7 @@ export function MobileTopBar({
   title,
   searchLabel,
   notificationsLabel,
+  notificationsName,
   brand,
   tenant,
   onSearchClick,
@@ -57,6 +58,7 @@ export function MobileTopBar({
         {onNotificationsClick !== undefined ? (
           <ShellAction
             label={notificationsLabel}
+            name={notificationsName}
             badge={notifications}
             onClick={onNotificationsClick}
             icon={<ShellGlyph name="bell" size="md" />}

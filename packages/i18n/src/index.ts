@@ -25,14 +25,16 @@ export { energySourceLabel } from './copy/energy-source';
 export { explainerPagerWords } from './copy/explainer';
 export { freshnessLabel } from './copy/freshness';
 export { homeTitle } from './copy/homes';
+export { centreActToast, centreFilterWords, centreHeadWords } from './copy/notification-head';
+export { type CentreClock, centreListWords } from './copy/notification-list';
 export {
   centreDayLabel,
   centreHeadLine,
   centreHorizonLine,
-  filtersInForce,
   groupSentence,
   NOTIFICATION_CENTRE,
   notificationCardName,
+  showOlderLabel,
   TYPE_GROUP_NAME,
 } from './copy/notifications';
 export { standingLabel, tierLabel } from './copy/provenance';

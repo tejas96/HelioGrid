@@ -16,6 +16,11 @@ export interface SheetProps {
   /** Uppercase micro-label above the title ("SITE SURVEY"). */
   overline?: string;
   children?: ReactNode;
+  /**
+   * A row between the header and the scrolling body that stays in view while the body scrolls —
+   * a list's filter bar. The same slot as `DetailPanel`'s `meta`.
+   */
+  meta?: ReactNode;
   /** auto = hugs content (max 92%); half = 56%; full = 92%. */
   size?: SheetSize;
   density?: SheetDensity;

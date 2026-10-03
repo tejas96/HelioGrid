@@ -73,7 +73,6 @@ describe('doorTitle — a door the shell opens is titled by what it is', () => {
     { door: 'add_lead', title: 'Add lead' },
     { door: 'start_survey', title: 'Start survey' },
     { door: 'search', title: 'Search' },
-    { door: 'notifications', title: 'Notifications' },
   ] as const)('$door → $title', async ({ door, title }) => {
     const { t } = await createTranslator('en');
     expect(doorTitle(t, door)).toBe(title);

@@ -23,7 +23,6 @@ const DOOR: Record<DoorRoute, ShellDoor> = {
   QuickAddLead: 'add_lead',
   StartSurvey: 'start_survey',
   Search: 'search',
-  Notifications: 'notifications',
 };
 
 /**

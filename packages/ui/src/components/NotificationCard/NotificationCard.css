@@ -91,7 +91,10 @@
   margin-top: var(--sp-1);
 }
 
-.hg-notification-time {
+.hg-notification-card .hg-text.hg-notification-time {
+  /* The board's meta line: the time in mono at the caption size (12), not body-sm. */
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -128,7 +131,7 @@
 .hg-notification-members {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--sp-2);
 }
 
 .hg-notification-member {
@@ -166,4 +169,43 @@
 
 .hg-notification-landing-back {
   display: flex;
+}
+
+/* The list (`SCR-SHELL-03` d-default): days 20 apart, rows 12, the tail centred. */
+.hg-notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  padding-bottom: var(--sp-6);
+}
+
+.hg-notification-day {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-notification-tail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  text-align: center;
+}
+
+/* ── the head (`SCR-SHELL-03` d-default) ─────────────────────────────────────────────────────
+   One count line, Mark all read at its right end; it scrolls away with the list. */
+.hg-notification-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding-top: var(--sp-3);
+}
+
+/* The count wraps rather than ellipsising: its words are translated. */
+.hg-notification-head-count {
+  flex: 1;
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
 }
