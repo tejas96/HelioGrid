@@ -1,11 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { resendOpensAt, resendSecondsLeft } from '../../src/auth/login-policy';
-import {
-  INITIAL_LOGIN_STATE,
-  type LoginEvent,
-  type LoginState,
-  loginReducer,
-} from '../../src/auth/login-state';
+import { loginReducer } from '../../src/auth/login-reducer';
+import { INITIAL_LOGIN_STATE, type LoginEvent, type LoginState } from '../../src/auth/login-state';
 import { IN_FORMATS } from '../../src/format/pack';
 
 const NOW = Date.UTC(2026, 8, 10, 9, 0, 0);
@@ -256,6 +252,9 @@ describe('while a round trip is in flight', () => {
     { type: 'call' },
     { type: 'sms' },
     { type: 'change-number' },
+    { type: 'google' },
+    { type: 'use-number' },
+    { type: 'sign-in-by-number' },
   ];
 
   it.each(presses.map((event) => [event.type, event] as const))('%s is ignored', (_, event) => {

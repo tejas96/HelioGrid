@@ -213,6 +213,11 @@ msgid "A rep must never reach another rep’s customer photographs, so nothing c
 msgstr "कोई प्रतिनिधि किसी दूसरे प्रतिनिधि के ग्राहक की फ़ोटो तक कभी नहीं पहुँचना चाहिए, इसलिए जो भी लिया गया वह लेने वाली पहचान के बाद नहीं बचता।"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:156
+msgid "About linking your number"
+msgstr "नंबर जोड़ने के बारे में"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:27
 msgid "Account"
 msgstr "खाता"
@@ -354,9 +359,24 @@ msgid "company setup"
 msgstr "कंपनी सेटअप"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:152
+msgid "Confirm your mobile number"
+msgstr "अपना मोबाइल नंबर पक्का करें"
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:21
 msgid "Confirmed"
 msgstr "पुष्टि हुई"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:145
+msgid "Continue with Google"
+msgstr "Google से जारी रखें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:146
+msgid "Continue with Google. Signs you in to the same account as your mobile number."
+msgstr "Google से जारी रखें। आपको उसी खाते में साइन इन करता है जो आपके मोबाइल नंबर का है।"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:45
@@ -504,6 +524,11 @@ msgid "Go to your leads"
 msgstr "अपनी लीड पर जाएँ"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:150
+msgid "Google sign-in did not finish"
+msgstr "Google साइन इन पूरा नहीं हुआ"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:49
 msgid "Got it"
 msgstr "ठीक है"
@@ -512,6 +537,11 @@ msgstr "ठीक है"
 #: src/copy/shell.ts:29
 msgid "Grievance officer"
 msgstr "शिकायत अधिकारी"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:153
+msgid "HelioGrid accounts are mobile numbers, so this Google login gets linked to yours. It never makes a second account."
+msgstr "HelioGrid खाते मोबाइल नंबर होते हैं, इसलिए यह Google लॉगिन आपके नंबर से जुड़ता है। इससे कभी दूसरा खाता नहीं बनता।"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:82
@@ -539,9 +569,19 @@ msgid "Home"
 msgstr "होम"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:157
+msgid "How linking works"
+msgstr "जोड़ना कैसे काम करता है"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:74
 msgid "HR/Admin"
 msgstr "HR/एडमिन"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:158
+msgid "If this number already has an account, the Google login joins it. If it does not, the code takes you into company signup with the number carried in — the same rule as the front door."
+msgstr "अगर इस नंबर का पहले से खाता है, तो Google लॉगिन उसी से जुड़ जाता है। अगर नहीं है, तो कोड आपको कंपनी साइनअप में ले जाता है, नंबर साथ लेकर — वही नियम जो मुख्य दरवाज़े पर है।"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:60
@@ -572,6 +612,11 @@ msgstr "इंस्टॉलर जॉब होम"
 #: src/copy/shell.ts:85
 msgid "Leads"
 msgstr "लीड्स"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:167
+msgid "Links {email}"
+msgstr "{email} को जोड़ता है"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:31
@@ -696,6 +741,11 @@ msgid "Not yet calculated"
 msgstr "अभी गणना नहीं हुई"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:162
+msgid "Not you? Use a different Google account"
+msgstr "आप नहीं हैं? दूसरा Google खाता इस्तेमाल करें"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:98
 msgid "Not your number — the step after it did not complete. Try again."
 msgstr "आपके नंबर की गलती नहीं — उसके बाद का चरण पूरा नहीं हुआ। फिर से कोशिश करें।"
@@ -714,6 +764,11 @@ msgstr "आपको अभी तक कुछ नहीं सौंपा ग
 #: src/copy/notifications.ts:44
 msgid "Nothing changed. Try again in a moment."
 msgstr "कुछ नहीं बदला। थोड़ी देर में फिर कोशिश करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:151
+msgid "Nothing changed. Try Google again, or use your number."
+msgstr "कुछ नहीं बदला। Google फिर से आज़माएँ, या अपना नंबर इस्तेमाल करें।"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:16
@@ -776,6 +831,16 @@ msgid "Only some phones fill this in. On the rest it is typed, and nothing else 
 msgstr "सिर्फ़ कुछ फ़ोन इसे खुद भरते हैं। बाकी पर इसे टाइप किया जाता है, और इस चरण में और कुछ नहीं बदलता।"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:181
+msgid "Only the SMS codes are paused — your account is not."
+msgstr "सिर्फ़ SMS कोड रुके हैं — आपका खाता नहीं।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:149
+msgid "Opening Google sign-in"
+msgstr "Google साइन इन खुल रहा है"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:70
 msgid "Operations"
 msgstr "ऑपरेशंस"
@@ -784,6 +849,11 @@ msgstr "ऑपरेशंस"
 #: src/copy/homes.ts:13
 msgid "Operations Home"
 msgstr "ऑपरेशंस होम"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:144
+msgid "or"
+msgstr "या"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:14
@@ -927,6 +997,11 @@ msgid "Send it again"
 msgstr "फिर से भेजें"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:166
+msgid "Send the code by SMS and link this Google login"
+msgstr "SMS से कोड भेजें और यह Google लॉगिन जोड़ें"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:36
 msgid "Send the SMS again"
 msgstr "SMS फिर से भेजें"
@@ -997,6 +1072,16 @@ msgid "Sign in with this number"
 msgstr "इस नंबर से साइन इन करें"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:175
+msgid "Sign in with this number. The code is already verified."
+msgstr "इस नंबर से साइन इन करें। कोड पहले ही जाँचा जा चुका है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:172
+msgid "Sign in with your number, or use the Google account already linked."
+msgstr "अपने नंबर से साइन इन करें, या पहले से जुड़ा Google खाता इस्तेमाल करें।"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:30
 msgid "Sign out"
 msgstr "साइन आउट करें"
@@ -1012,9 +1097,24 @@ msgid "Signing in takes you to the company it belongs to. One number is one acco
 msgstr "साइन इन करने पर आप उस कंपनी में पहुँचते हैं जिसका यह नंबर है। एक नंबर एक खाता है, चाहे वह किसी भी दरवाज़े से आए।"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:161
+msgid "Signing in with Google"
+msgstr "Google से साइन इन हो रहा है"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:59
 msgid "Signing up again would not make a second company"
 msgstr "दोबारा साइन अप करने से दूसरी कंपनी नहीं बनेगी"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:182
+msgid "SMS codes are paused for this number for {lockMinutes} minutes, so this Google login cannot be linked yet."
+msgstr "इस नंबर के लिए SMS कोड {lockMinutes} मिनट के लिए रुके हैं, इसलिए यह Google लॉगिन अभी नहीं जोड़ा जा सकता।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:178
+msgid "SMS codes are paused for this number. If you've signed in with Google before, it still works."
+msgstr "इस नंबर के लिए SMS कोड रुके हुए हैं। अगर आपने पहले Google से साइन इन किया है, तो वह अब भी काम करता है।"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:20
@@ -1162,6 +1262,11 @@ msgid "The code did not send"
 msgstr "कोड भेजा नहीं जा सका"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:170
+msgid "The code was correct for"
+msgstr "कोड इस नंबर के लिए सही था"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:30
 msgid "The code we checked was for"
 msgstr "हमने जो कोड जाँचा वह इस नंबर के लिए था"
@@ -1212,6 +1317,11 @@ msgid "This field is required."
 msgstr "यह फ़ील्ड ज़रूरी है।"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:169
+msgid "This Google login cannot be linked"
+msgstr "यह Google लॉगिन नहीं जोड़ा जा सकता"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:64
 msgid "This invite has run out. Ask to be invited again."
 msgstr "इस आमंत्रण की अवधि समाप्त हो गई है। फिर से आमंत्रित करने के लिए कहें।"
@@ -1235,6 +1345,11 @@ msgstr "यह वर्शन {current} है। HelioGrid को अब व�
 #: src/copy/api-error.ts:57
 msgid "This number is already on your team."
 msgstr "यह नंबर पहले से आपकी टीम में है।"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:171
+msgid "This number is linked to another Google account"
+msgstr "यह नंबर किसी दूसरे Google खाते से जुड़ा है"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:112
@@ -1357,9 +1472,24 @@ msgid "Uploading held photographs arrives with the survey capture."
 msgstr "रोके गए फ़ोटो अपलोड करने की सुविधा सर्वे कैप्चर के साथ आएगी।"
 
 #. js-lingui-explicit-id
+#: src/copy/sign-in.ts:163
+msgid "Use a different Google account"
+msgstr "दूसरा Google खाता इस्तेमाल करें"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:64
 msgid "Use a different number"
 msgstr "दूसरा नंबर इस्तेमाल करें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:164
+msgid "Use my number instead"
+msgstr "इसके बजाय मेरा नंबर इस्तेमाल करें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:165
+msgid "Use my number instead. Goes back to the phone step."
+msgstr "इसके बजाय मेरा नंबर इस्तेमाल करें। फ़ोन वाले चरण पर वापस जाता है।"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:109
@@ -1385,6 +1515,11 @@ msgstr "जाँचें और आगे बढ़ें"
 #: src/copy/sign-in.ts:32
 msgid "Verify and sign in"
 msgstr "जाँचें और साइन इन करें"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:168
+msgid "Verify the code, link this Google login and sign in"
+msgstr "कोड जाँचें, यह Google लॉगिन जोड़ें और साइन इन करें"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:26

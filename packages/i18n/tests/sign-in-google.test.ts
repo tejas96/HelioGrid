@@ -1,0 +1,185 @@
+import {
+  INITIAL_LOGIN_STATE,
+  type LoginState,
+  loginFrame,
+  type UiLanguage,
+} from '@heliogrid/domain';
+import { describe, expect, it } from 'vitest';
+import { SIGN_IN } from '../src/copy/sign-in';
+import { signInWords } from '../src/copy/sign-in-frames';
+import { googleLinkWords, phoneGoogleWords } from '../src/copy/sign-in-google';
+import { createTranslator } from '../src/runtime';
+
+/**
+ * The Google door's words (`SCR-M01-01`, the Google frames), read against the real catalogs:
+ * English as the board draws it, and every new sentence translated in Hindi and Marathi.
+ */
+const EMAIL = 'priya.sharma@gmail.com';
+const FACTS = { cooldownLeft: 0, triesLeft: 5, phoneShown: '+91 98200 41123' };
+const otp = (over: Partial<LoginState>): LoginState => ({
+  ...INITIAL_LOGIN_STATE,
+  step: 'otp',
+  phone: '+919820041123',
+  request: 'sent',
+  placed: true,
+  sends: 1,
+  ...over,
+});
+const google = { idToken: 't', nonce: null, email: EMAIL };
+/** A door with a Google sheet behind it — the sign-in door. */
+const signInFrame = (state: LoginState) => loginFrame(state, true);
+
+describe('the code frames carry Google', () => {
+  it('the locked frame offers Google with the hedged sentence (M01-04)', async () => {
+    const { t } = await createTranslator('en');
+    const words = signInWords(t, signInFrame(otp({ request: 'locked' })), FACTS);
+    expect(words.google).toEqual({
+      sentence:
+        "SMS codes are paused for this number. If you've signed in with Google before, it still works.",
+      label: 'Continue with Google',
+      aria: 'Continue with Google. Signs you in to the same account as your mobile number.',
+    });
+  });
+
+  it('google-phone-taken: the block, the number signs in, another login', async () => {
+    const { t } = await createTranslator('en');
+    const frame = signInFrame(otp({ googleEnded: 'phone-taken', google, code: '482913' }));
+    const words = signInWords(t, frame, FACTS);
+    expect(words.title).toBe('This Google login cannot be linked');
+    expect(words.sub).toBe('The code was correct for');
+    expect(words.block?.title).toBe('This number is linked to another Google account');
+    expect(words.primary).toBe('Sign in with this number');
+    expect(words.primaryAria).toBe('Sign in with this number. The code is already verified.');
+    expect(words.google).toEqual({
+      sentence: null,
+      label: 'Use a different Google account',
+      aria: 'Use a different Google account',
+    });
+  });
+
+  it('a linking code names the login under the number, and Verify says it links', async () => {
+    const { t } = await createTranslator('en');
+    const words = signInWords(t, signInFrame(otp({ google })), FACTS);
+    expect(words.links).toBe(`Links ${EMAIL}`);
+    expect(words.primaryAria).toBe('Verify the code, link this Google login and sign in');
+  });
+
+  it('a plain code frame carries none of it', async () => {
+    const { t } = await createTranslator('en');
+    const words = signInWords(t, signInFrame(otp({})), FACTS);
+    expect(words).toMatchObject({ links: null, google: null, primaryAria: null });
+  });
+});
+
+describe('phoneGoogleWords', () => {
+  it('the control, the "or", and the account rule in its accessible name', async () => {
+    const { t } = await createTranslator('en');
+    expect(phoneGoogleWords(t, { busy: false, failed: false })).toEqual({
+      or: 'or',
+      label: 'Continue with Google',
+      aria: 'Continue with Google. Signs you in to the same account as your mobile number.',
+      failed: null,
+    });
+  });
+
+  it('spinning, it names what it is opening (m-google-loading)', async () => {
+    const { t } = await createTranslator('en');
+    expect(phoneGoogleWords(t, { busy: true, failed: false }).aria).toBe('Opening Google sign-in');
+  });
+
+  it('a sign-in that did not finish says nothing changed (m-google-failed)', async () => {
+    const { t } = await createTranslator('en');
+    expect(phoneGoogleWords(t, { busy: false, failed: true }).failed).toEqual({
+      tone: 'danger',
+      title: 'Google sign-in did not finish',
+      body: 'Nothing changed. Try Google again, or use your number.',
+    });
+  });
+});
+
+describe('googleLinkWords', () => {
+  const open = { kind: 'link', phoneEnabled: true, sendOffered: true, sending: false } as const;
+
+  it('the link step: title, explainer, the tile, Send code that links (m-google-link)', async () => {
+    const { t } = await createTranslator('en');
+    const words = googleLinkWords(t, open, EMAIL);
+    expect(words.title).toBe('Confirm your mobile number');
+    expect(words.explainer?.title).toBe('How linking works');
+    expect(words.tileOverline).toBe('Signing in with Google');
+    expect(words.email).toBe(EMAIL);
+    expect(words.anotherAccount).toEqual({
+      underTile: 'Not you? Use a different Google account',
+      short: 'Use a different Google account',
+    });
+    expect(words.send).toEqual({
+      label: 'Send code',
+      aria: 'Send the code by SMS and link this Google login',
+    });
+    expect(words.locked).toBeNull();
+  });
+
+  it('Send code names the send while it runs', async () => {
+    const { t } = await createTranslator('en');
+    expect(googleLinkWords(t, { ...open, sending: true }, EMAIL).send?.label).toBe(
+      'Sending the code',
+    );
+  });
+
+  it('the locked link: no Send code, no explainer, the block and the wait (m-google-link-locked)', async () => {
+    const { t } = await createTranslator('en');
+    const locked = {
+      kind: 'link-locked',
+      phoneEnabled: false,
+      sendOffered: false,
+      sending: false,
+    } as const;
+    const words = googleLinkWords(t, locked, EMAIL);
+    expect(words.send).toBeNull();
+    expect(words.explainer).toBeNull();
+    expect(words.locked?.block.title).toBe('3 codes were invalidated in a row');
+    expect(words.locked?.sentence).toBe(
+      'SMS codes are paused for this number for 15 minutes, so this Google login cannot be linked yet.',
+    );
+  });
+});
+
+/** Every key this door added; each must read in the reader's own language (`F3-07`). */
+const GOOGLE_KEYS = [
+  'or',
+  'continueWithGoogle',
+  'continueWithGoogleLabel',
+  'openingGoogle',
+  'googleFailedTitle',
+  'googleFailedBody',
+  'confirmYourNumber',
+  'linkingBody',
+  'linkingExplainerLabel',
+  'linkingExplainerTitle',
+  'linkingExplainerPage',
+  'signingInWithGoogle',
+  'notYouUseAnotherGoogle',
+  'useAnotherGoogle',
+  'useMyNumberInstead',
+  'useMyNumberInsteadLabel',
+  'sendCodeAndLinkLabel',
+  'linksEmail',
+  'verifyAndLinkLabel',
+  'phoneTakenTitle',
+  'codeCorrectFor',
+  'phoneTakenBlockTitle',
+  'phoneTakenBlockBody',
+  'signInWithThisNumberLabel',
+  'lockedGoogleSentence',
+  'smsPausedFoot',
+  'linkLockedSentence',
+] as const satisfies readonly (keyof typeof SIGN_IN)[];
+
+describe.each<UiLanguage>(['hi', 'mr'])('the Google words in %s', (language) => {
+  it.each(GOOGLE_KEYS)('%s is translated', async (key) => {
+    const { t } = await createTranslator(language);
+    const english = (await createTranslator('en')).t(SIGN_IN[key]);
+    const translated = t(SIGN_IN[key]);
+    expect(translated.trim()).not.toBe('');
+    expect(translated).not.toBe(english);
+  });
+});

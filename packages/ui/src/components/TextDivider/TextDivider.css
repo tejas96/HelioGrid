@@ -1,0 +1,6 @@
+/* TextDivider — the word spans the column so its centre is the column's centre. */
+
+.hg-text-divider {
+  display: block;
+  width: 100%;
+}

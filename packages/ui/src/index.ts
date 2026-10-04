@@ -101,6 +101,7 @@ export * from './components/Switch';
 export * from './components/Tabs';
 export * from './components/TenantHeader';
 export * from './components/Textarea';
+export * from './components/TextDivider';
 export * from './components/TimeField';
 export * from './components/Timeline';
 export * from './components/TintedBlock';

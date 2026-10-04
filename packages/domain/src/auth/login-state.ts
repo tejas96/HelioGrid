@@ -1,24 +1,22 @@
 /**
- * The OTP login flow — one state machine both doors run (Law 11). The reducer is total and pure:
- * a press it cannot honour returns the state unchanged, the clock arrives inside the event as
- * `now`, and a round trip is ASKED FOR through `pending` and answered by an `-ended` event, so
- * the hook that drives it decides nothing.
+ * The sign-in flow's facts and events — what `loginReducer` (`login-reducer.ts`) moves between
+ * and both doors read (Law 11).
  */
 import type { FormatPack } from '../format/pack';
-import { type PhoneDigitsMismatch, phoneDigitsMismatch } from '../format/phone';
-import { resendOpensAt, resendSecondsLeft } from './login-policy';
-import { OTP_LENGTH } from './otp';
+import type { PhoneDigitsMismatch } from '../format/phone';
+import type { GoogleEnded, GoogleOutcome, GoogleSheetResult, GoogleToken } from './google-sign-in';
 import { OTP_MAX_FAILED_VERIFIES, type OtpChannel } from './otp-policy';
 
 /**
- * The steps of the OTP login flow. `switch` is the shared-device step (`F4-37`): a different
+ * The steps of the OTP login flow. `google-link` is a first Google sign-in confirming the number
+ * its login will join (`M01-02`). `switch` is the shared-device step (`F4-37`): a different
  * user verified on a device still holding another user's work, and what will be lost is named
  * before the switch completes. A device holding nothing skips it.
  */
-export type LoginStep = 'phone' | 'otp' | 'switch' | 'done';
+export type LoginStep = 'phone' | 'google-link' | 'otp' | 'switch' | 'done';
 
-/** The door's own two steps — `switch` is the session store's and `done` the navigator's. */
-export type SignInStep = Extract<LoginStep, 'phone' | 'otp'>;
+/** The door's own steps — `switch` is the session store's and `done` the navigator's. */
+export type SignInStep = Extract<LoginStep, 'phone' | 'google-link' | 'otp'>;
 
 /**
  * How a request for a code ended. Every refusal the wire can name has its own word, because
@@ -56,7 +54,10 @@ export type LoginPress =
   | 'choose-call'
   | 'call'
   | 'sms'
-  | 'change-number';
+  | 'change-number'
+  | 'google'
+  | 'use-number'
+  | 'sign-in-by-number';
 
 /**
  * A round trip the reducer asked for, carrying everything it must send, so the hook that makes
@@ -64,7 +65,10 @@ export type LoginPress =
  */
 export type PendingCall =
   | { readonly kind: 'request'; readonly phone: string; readonly channel: OtpChannel }
-  | { readonly kind: 'verify'; readonly code: string };
+  | { readonly kind: 'verify'; readonly code: string }
+  | { readonly kind: 'google-sheet' }
+  /** `code` is the link's proof; `null` asks whether the login is linked already. */
+  | { readonly kind: 'google'; readonly token: GoogleToken; readonly code: string | null };
 
 /** Everything a frame is drawn from — one fact per field, so a frame is a pure reading of it. */
 export interface LoginState {
@@ -95,6 +99,10 @@ export interface LoginState {
   readonly resendAt: number | null;
   /** Whole seconds until the resend is live; 0 means it is. Re-read on every tick. */
   readonly cooldownLeft: number;
+  /** The Google login being linked to the number this flow proves; `null` outside the link. */
+  readonly google: GoogleToken | null;
+  /** What the last Google sign-in left on the door; `null` when it left nothing. */
+  readonly googleEnded: GoogleEnded | null;
 }
 
 export type LoginEvent =
@@ -107,15 +115,24 @@ export type LoginEvent =
   | { readonly type: 'call' }
   | { readonly type: 'sms' }
   | { readonly type: 'change-number' }
+  | { readonly type: 'google' }
+  | { readonly type: 'use-number' }
+  | { readonly type: 'sign-in-by-number' }
   | { readonly type: 'request-ended'; readonly outcome: OtpRequestOutcome; readonly now: number }
   | {
       readonly type: 'verify-ended';
       readonly outcome: OtpVerifyOutcome;
       readonly triesLeft: number;
     }
+  | { readonly type: 'google-sheet-ended'; readonly result: GoogleSheetResult }
+  | { readonly type: 'google-ended'; readonly outcome: GoogleOutcome; readonly triesLeft: number }
   | { readonly type: 'tick'; readonly now: number };
 
-type PressEvent = Exclude<LoginEvent, { type: 'request-ended' | 'verify-ended' | 'tick' }>;
+type AnswerEvent = Extract<
+  LoginEvent,
+  { type: 'request-ended' | 'verify-ended' | 'google-sheet-ended' | 'google-ended' | 'tick' }
+>;
+export type PressEvent = Exclude<LoginEvent, AnswerEvent>;
 
 export const INITIAL_LOGIN_STATE: LoginState = {
   step: 'phone',
@@ -133,111 +150,6 @@ export const INITIAL_LOGIN_STATE: LoginState = {
   triesLeft: OTP_MAX_FAILED_VERIFIES,
   resendAt: null,
   cooldownLeft: 0,
+  google: null,
+  googleEnded: null,
 };
-
-/** While a round trip is in flight only its answer and the clock are heard. */
-export function loginReducer(state: LoginState, event: LoginEvent): LoginState {
-  switch (event.type) {
-    case 'tick':
-      return { ...state, cooldownLeft: resendSecondsLeft(state.resendAt, event.now) };
-    case 'request-ended':
-      return requestEnded(state, event.outcome, event.now);
-    case 'verify-ended':
-      return verifyEnded(state, event.outcome, event.triesLeft);
-    default:
-      return state.pending === null ? pressed(state, event) : state;
-  }
-}
-
-function pressed(state: LoginState, event: PressEvent): LoginState {
-  switch (event.type) {
-    case 'phone-typed':
-      return { ...state, phone: event.phone, phoneProblem: null };
-    case 'code-typed':
-      return codeTyped(state, event.code);
-    case 'send':
-      return send(state, event.pack);
-    case 'verify':
-      return verify(state);
-    case 'resend':
-      return requestOn(state, state.channel);
-    case 'call':
-      return requestOn(state, 'voice');
-    case 'sms':
-      return requestOn(state, 'sms');
-    case 'choose-call':
-      return { ...state, ...UNTRIED_CODE, channel: 'voice', placed: false };
-    case 'change-number':
-      return { ...INITIAL_LOGIN_STATE, phone: state.phone };
-  }
-}
-
-/** The code field as a fresh code finds it. */
-const UNTRIED_CODE = { code: '', codeShort: false, filled: false, verify: null } as const;
-
-function codeTyped(state: LoginState, code: string): LoginState {
-  const arrivedWhole = state.code === '' && code.length > 1;
-  return { ...state, code, filled: arrivedWhole, verify: null, codeShort: false };
-}
-
-function send(state: LoginState, pack: FormatPack): LoginState {
-  const problem = phoneDigitsMismatch(pack, state.phone);
-  if (problem !== null) return { ...state, phoneProblem: problem };
-  return {
-    ...state,
-    ...UNTRIED_CODE,
-    phoneProblem: null,
-    channel: 'sms',
-    pending: { kind: 'request', phone: state.phone, channel: 'sms' },
-  };
-}
-
-function verify(state: LoginState): LoginState {
-  if (state.code.length < OTP_LENGTH) return { ...state, codeShort: true };
-  return { ...state, codeShort: false, pending: { kind: 'verify', code: state.code } };
-}
-
-/** A request inside the gap is not sent — the server would refuse it (`M01-04`) — so the press is ignored. */
-function requestOn(state: LoginState, channel: OtpChannel): LoginState {
-  if (state.cooldownLeft > 0) return state;
-  return {
-    ...state,
-    ...UNTRIED_CODE,
-    channel,
-    pending: { kind: 'request', phone: state.phone, channel },
-  };
-}
-
-/** A send and a server-side gap both start the device's gap; every other answer releases it (`M01-03`). */
-function startsCooldown(outcome: OtpRequestOutcome): boolean {
-  return outcome === 'sent' || outcome === 'cooldown';
-}
-
-function requestEnded(state: LoginState, outcome: OtpRequestOutcome, now: number): LoginState {
-  const resendAt = startsCooldown(outcome) ? resendOpensAt(now) : null;
-  return {
-    ...state,
-    ...UNTRIED_CODE,
-    pending: null,
-    step: 'otp',
-    request: outcome,
-    // A gap refusal placed nothing, so the call route stays offered rather than reading as answered.
-    placed: outcome === 'cooldown' ? state.placed : true,
-    sends: outcome === 'sent' ? state.sends + 1 : state.sends,
-    triesLeft: OTP_MAX_FAILED_VERIFIES,
-    resendAt,
-    cooldownLeft: resendSecondsLeft(resendAt, now),
-  };
-}
-
-function verifyEnded(state: LoginState, outcome: OtpVerifyOutcome, triesLeft: number): LoginState {
-  return {
-    ...state,
-    pending: null,
-    verify: outcome,
-    triesLeft,
-    code: outcome === 'mismatch' ? state.code : '',
-    codeShort: false,
-    filled: false,
-  };
-}

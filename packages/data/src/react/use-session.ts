@@ -23,6 +23,7 @@ export function useSession(): SessionApi {
       ...snapshot,
       requestOtp: session.requestOtp,
       verifyOtp: session.verifyOtp,
+      signInWithGoogle: session.signInWithGoogle,
       completeSwitch: session.completeSwitch,
       enterKnownAccount: session.enterKnownAccount,
       leaveKnownAccount: session.leaveKnownAccount,

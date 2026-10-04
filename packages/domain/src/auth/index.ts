@@ -5,6 +5,15 @@ export type { DoorView } from './door-view';
 export { doorView } from './door-view';
 export type { GoogleBindingFacts, GoogleBindingRoad, GoogleBindOutcome } from './google-binding';
 export { googleBindingRoad } from './google-binding';
+export type { GoogleLinkFrame, PhoneGoogle } from './google-frame';
+export { googleLinkFrame, phoneGoogle } from './google-frame';
+export type {
+  GoogleEnded,
+  GoogleOutcome,
+  GoogleResult,
+  GoogleSheetResult,
+  GoogleToken,
+} from './google-sign-in';
 export type { InvitationLife, InvitationStatus } from './invitation-policy';
 export {
   INVITATION_EXPIRY_DAYS,
@@ -27,6 +36,7 @@ export type {
   FootLine,
   FrameControl,
   FrameTone,
+  GoogleLabel,
   PrimaryLabel,
   ResendLabel,
   ResendSlot,
@@ -40,6 +50,7 @@ export {
   resendOpensAt,
   resendSecondsLeft,
 } from './login-policy';
+export { loginReducer } from './login-reducer';
 export type {
   LoginEvent,
   LoginPress,
@@ -50,7 +61,7 @@ export type {
   PendingCall,
   SignInStep,
 } from './login-state';
-export { INITIAL_LOGIN_STATE, loginReducer } from './login-state';
+export { INITIAL_LOGIN_STATE } from './login-state';
 export { OTP_EXPIRY_SECONDS, OTP_LENGTH } from './otp';
 export type {
   OtpChallengeState,

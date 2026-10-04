@@ -15,7 +15,12 @@ import { loadWebEnv } from '@heliogrid/env/web';
  * `.env.example` and any reader can see it, and a malformed value fails naming the key instead
  * of producing a mystery network error.
  */
-export const API_URL = loadWebEnv({
-  // One key, written out. Do NOT rewrite as process.env[k] or a spread — neither is substituted.
+const ENV = loadWebEnv({
+  // One key per line, written out. Do NOT rewrite as process.env[k] or a spread — neither is substituted.
   NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-}).NEXT_PUBLIC_API_URL;
+  NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID: process.env.NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+});
+
+export const API_URL = ENV.NEXT_PUBLIC_API_URL;
+/** The web's Google client (`M01-02`); `undefined` means the door draws no Google control. */
+export const GOOGLE_WEB_CLIENT_ID = ENV.NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID;
