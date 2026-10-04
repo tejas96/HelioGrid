@@ -1,5 +1,7 @@
 import type { CreateTenant, OtpChannel, UiLanguage } from '@heliogrid/contracts';
 import type {
+  GoogleResult,
+  GoogleToken,
   OtpRequestOutcome,
   OtpVerifyResult,
   RolePreset,
@@ -26,6 +28,12 @@ export interface SessionStore {
    * the signup door a number that already has a company is held as `known` rather than signed in.
    */
   verifyOtp(code: string, door?: SignInDoor): Promise<OtpVerifyResult>;
+  /**
+   * Signs in through Google (`M01-02`). With `code` null it asks whether the login is linked;
+   * with a code, the code of the challenge `requestOtp` opened is the proof that links it to that
+   * number. A session is admitted as a verify's is, the shared-device switch included (`F4-37`).
+   */
+  signInWithGoogle(token: GoogleToken, code: string | null): Promise<GoogleResult>;
   /** Discards the previous user's held work and lets the pending switch complete (`F4-37`). */
   completeSwitch(): Promise<void>;
   /** The person chose the account their number already has: it signs in (`M01-08`). */

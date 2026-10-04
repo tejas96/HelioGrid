@@ -2,7 +2,7 @@ import type { SignInStep } from './login-state';
 import type { SessionSnapshot } from './session';
 
 /** The panels the door can show; both screens render exactly one, chosen here. */
-export type DoorView = 'switch' | 'done' | 'code' | 'phone';
+export type DoorView = 'switch' | 'done' | 'code' | 'google-link' | 'phone';
 
 /**
  * Which panel the door shows, in the one order both screens keep (Law 11): a pending switch
@@ -15,5 +15,6 @@ export function doorView(
 ): DoorView {
   if (session.switch !== null) return 'switch';
   if (session.status === 'authenticated' && session.user !== null) return 'done';
-  return step === 'otp' ? 'code' : 'phone';
+  if (step === 'otp') return 'code';
+  return step;
 }

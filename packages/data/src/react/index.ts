@@ -17,7 +17,7 @@ export { useSession } from './use-session';
 export { useSessionPhase } from './use-session-phase';
 export type { Shell } from './use-shell';
 export { useShell } from './use-shell';
-export type { SignIn } from './use-sign-in';
+export type { OpenGoogle, SignIn } from './use-sign-in';
 export { useSignIn } from './use-sign-in';
 export type { SignInDwell } from './use-sign-in-dwell';
 export { useSignInDwell } from './use-sign-in-dwell';

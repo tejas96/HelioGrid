@@ -708,8 +708,8 @@ Board notes to the plan: the title-to-Explainer gap is `--sp-1` on the phone and
 - AC2 · Given a Google token whose subject is unbound, when it is presented without a verified challenge, then the answer names the phone step; when it is presented with a verified challenge, then the subject binds to that phone's account and never mints a second one (M01-02). → proof: › "unbound without link answers GOOGLE_NOT_LINKED", › "a link binds to the existing account", › "a link to a new number creates one account" (a seeded phone, unseeded after), › "a bound subject linking another phone is refused", the two race tests · `google-binding.test.ts` (every branch) · QA P2
 - AC3 · Given a phone under its 15-minute SMS lock, when its account signs in through Google, then it is admitted (M01-04). → proof: › "a locked phone's bound subject signs in while /auth/otp/request answers 429" (three invalidated challenges seeded for a fixture phone) · QA P3
 - AC4 · Given any sign-in surface, when it renders, then no password field exists anywhere (M01-05) and Google Login is offered alongside Mobile OTP (M01-02). → proof: part c QA (web 375 + 1536, ios, android)
-- AC5 · Given 5 failed verify attempts, when the fifth fails, then that OTP is invalid and the user is told to request a fresh one; given 3 consecutive invalidations, then the number is locked 15 min with an explanation (M01-04). → proof: login-frame.test.ts › "the locked frame offers Google with the hedged sentence" · part c QA (the locked frame on both platforms)
-- AC6 · Given a first Google sign-in, when the subject is unbound, then the linking flow runs onto the same phone-identity account and never mints a second one (M01-02). → proof: login-state.test.ts › the Google events · part c QA (`m-google-link` → code → home, on both platforms, signed in by the owner)
+- AC5 · Given 5 failed verify attempts, when the fifth fails, then that OTP is invalid and the user is told to request a fresh one; given 3 consecutive invalidations, then the number is locked 15 min with an explanation (M01-04). → proof: sign-in-google.test.ts › "the locked frame offers Google with the hedged sentence (M01-04)" · login-frame.test.ts › "the locked frame carries the Google control …" · part c QA (the locked frame on both platforms)
+- AC6 · Given a first Google sign-in, when the subject is unbound, then the linking flow runs onto the same phone-identity account and never mints a second one (M01-02). → proof: login-google.test.ts › the Google door · part c QA (`m-google-link` → code → home, on both platforms, signed in by the owner)
 - AC7 · added at /start (the token check) · Given a token for another app, an expired token, a wrong issuer, or `GOOGLE_CLIENT_IDS` unset, when it is presented, then 401 `GOOGLE_TOKEN_REFUSED` and nothing changes. → proof: google-identity.test.ts (wrong audience, wrong issuer, expired, nonce mismatch, good) · › "no client ids answers 401" (the service's check, `ENV` mocked) · › "a key-fetch failure answers unavailable" · QA P4
 - AC8 · added at /start (the code is the proof) · Given an unbound subject and a wrong, expired or spent code, when the link is presented, then the verify refusal answers, the try counts toward the lock, and nothing binds. → proof: › "an unbound subject with a wrong code binds nothing", › "an expired code binds nothing", › "a spent code binds nothing", › "the fifth wrong code through /auth/google answers OTP_INVALIDATED" · QA P5
 - AC9 · added at /start (missing error states) · Given the phone's account already holds another Google login, when the link's code matches, then 409 `GOOGLE_PHONE_TAKEN`, nothing binds, and the same code still signs in by number. → proof: › "phone taken leaves the code usable by /auth/otp/verify", › "a wrong code on a taken phone answers OTP_MISMATCH, not GOOGLE_PHONE_TAKEN" · part c QA (`m-google-phone-taken`)
@@ -719,7 +719,7 @@ Board notes to the plan: the title-to-Explainer gap is `--sp-1` on the phone and
 | part | ships | acceptance lines | status |
 |---|---|---|---|
 | a | the backend slice: POST /auth/google, the port and its two adapters, the binding, `GOOGLE_CLIENT_IDS`, the OpenAPI | AC1, AC2, AC3, AC7, AC8, AC9 (api half), the shared-phone hand-over | shipped |
-| b | the shared flow: the Google events and frames in `domain`, the store and `useSignIn` call, the copy in three languages, `TextDivider`, the two apps' public client-id variables | AC5 (frame half), AC10 (frame half) | open |
+| b | the shared flow: the Google events and frames in `domain`, the store and `useSignIn` call, the copy in three languages, `TextDivider`, the two apps' public client-id variables | AC5 (frame half), AC10 (frame half) || shipped |
 | c | both screens: the control, the "or", the linking step, the four Google frames and the locked sentence on web and phone; the web's Google return route; the phone library and its native config; the e2e specs; the docs | AC4, AC5, AC6, AC9 (screen half), AC10 | open |
 
 #### Part a · Plan
@@ -754,6 +754,63 @@ Regression — machine · phase 1
 - R1 · `apps/api/tests/auth/*` · `pnpm check:openapi` · every unit test
 
 Not in: A1 — the route is public by design (a sign-in door) · A2 — no tenant id crosses it · A3 — no role reaches a public route · A5 — no create key: a repeated `link` signs in and binds nothing new, proven by the harness test of Decided 9 · S*, H*, W*, M* — no screen in this part · $ — no money · E1 — no SMS beyond the existing OTP request
+
+#### Part b · Plan
+**Where** — the Plan's Where rows for `domain` (all but `google-binding.ts`), `data`, `i18n`, `ui` and the two client-id variables of `env`, landed as:
+| package | what changes |
+|---|---|
+| domain | `auth/google-sign-in.ts` (new — `GoogleToken` `{ idToken, nonce, email }`, `GoogleSheetResult` (token · cancelled · failed), `GoogleOutcome`, `GoogleResult`); `auth/login-reducer.ts` (new — `loginReducer` moved out of `login-state.ts`, which passed 300 lines, with its Google moves); `auth/login-state.ts` (step `google-link`; `google` — the login being linked; `googleEnded`; pending `google-sheet` and `google`; presses `google`, `use-number`, `sign-in-by-number`; `change-number` while linking returns to the link step); `auth/google-frame.ts` (new — the link step's frame, `link` or `link-locked`, and the phone step's Google part: busy, failed); `auth/login-frame.ts` (`google-phone-taken` in the code family; the locked frame's `googleOffered`; the linking line); `auth/login-frame-parts.ts` (the new labels); `auth/door-view.ts` (`google-link`); `auth/index.ts` |
+| data | `auth/repository.ts` (`signInWithGoogle`), `session/types.ts` + `session/store.ts` (`signInWithGoogle(token, link)` — the held challenge id, the wire codes to `GoogleOutcome`, `admit` on a session), `react/use-sign-in.ts` (`useSignIn(pack, door, openGoogle?)`; `returnFromGoogle(token)` for the web's return route) |
+| i18n | `copy/sign-in.ts` (the board's Google words), `copy/sign-in-frames.ts` (the phone-taken frame, "Links {email}"), `copy/sign-in-google.ts` (new — the link step's and the phone step's Google words), `src/index.ts`, `locales/{en,hi,mr}/messages.po` + compiled `messages.ts` |
+| ui | `components/TextDivider/` (new — types, web, native, css, index; the word is a prop, no English default), `src/index.ts` |
+| env | `schema/web.ts` (`NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID`, optional), `schema/mobile.ts` (`GOOGLE_WEB_CLIENT_ID`, `GOOGLE_IOS_CLIENT_ID`), `.env.example`; `apps/web/lib/env.ts`, `apps/mobile/src/env.ts` |
+| tests | `packages/domain/tests/auth/` — `login-google.test.ts` (new — the Google events; `change-number` off the link step never enters it), `google-frame.test.ts` (new), `login-frame.test.ts` (AC5's "the locked frame offers Google with the hedged sentence"; phone-taken), `door-view.test.ts`; `packages/i18n/tests/sign-in-google.test.ts` (new); `tests/e2e/components/TextDivider.spec.tsx` (new) |
+
+**Size** — ~38 files, ~900 lines; six of them are the catalogs (three `.po`, three compiled). `data` has no unit tests by law (`.claude/rules/testing.md`): its Google call is proven live in part c (AC6); here the OTP path through the changed hook and store is proven unchanged (G1).
+
+**Decided at part b's /start**
+1. **One `GoogleToken` enters the flow from either platform.** The phone's sheet is a function the screen passes to `useSignIn` (`openGoogle`, part c); the web's sign-in page leaves the tab, so its return route hands the token in through `returnFromGoogle`. One reducer branch serves both.
+2. **`google-phone-taken` is a code-family frame** (`login-frame.ts`), not `google-frame.ts` as the Plan's row says: the code step draws it — the spent field, the block, "Sign in with this number" — and that press re-verifies the kept code through `/auth/otp/verify` (Plan Decided 2).
+3. **A lock met while linking — on the request or on a verify — is `google-link-locked`.** The plain locked frame's Google button would lead back to the same wait.
+4. **`GOOGLE_SUBJECT_TAKEN`, `GOOGLE_TOKEN_REFUSED`, `GOOGLE_UNAVAILABLE`, a network failure and any unnamed code are one outcome, `failed`** → `m-google-failed`; the board draws one failure frame (Plan Decided 3). A cancelled sheet changes nothing (board decision 11).
+5. **No screen changes in this part.** The Plan's "`lockedFoot` replaced" lands in part c, with the button its new words speak of; here the locked frame gains `googleOffered` and the new foot, the sentence and every Google word land in three languages, drawn by no screen yet.
+6. **The phone's two client ids are written in `apps/mobile/src/env.ts`**, as `API_URL` is: bare RN has no env source, and a client id ships in every app bundle anyway. The prod ids wait with the prod mobile config (Plan Out). The web's id is optional: absent, the door draws no Google control (no dead control, `MS12-17`).
+7. **The board's words are copied as drawn**, with two kept as built: "A code works for {codeMinutes} minutes" (the 5-minute ruling) and the locked body's "{tries} wrong tries".
+8. **Ruled at /ship (the review): the hook owns whether a door offers Google.** `useSignIn` without a sheet nulls every frame's Google control and returns `google: null` for the phone step, so the signup door and a web build with no client id draw none, and no screen decides it (Law 11).
+
+#### Part b · QA plan
+Surfaces: machine (components at 3100) · web · ios · android — no screen draws a new part yet; the sign-in and signup screens on both platforms import the changed `useSignIn`, store and `signInWords`.
+
+Setup
+- Accounts: the standing `QA web` · `QA ios` · `QA android` — a known number signs in; no fresh account
+- Codes are read from `.qa/api.log` (the development delivery adapter); G1.2's wrong try is reset by the right code that follows it
+- Phase 1 · default — the suites and every check
+
+G1 · The OTP door works as before — web 375 + 1536 · ios · android · phase 1
+- G1.1 · the standing number → Send code → the code from the api log → Verify and sign in → "You are in", then the home
+- G1.2 · a wrong code → "That code did not match" and "4 tries left on this code. …"; then the right code → signed in
+- G1.3 · on the code step, Change number → the phone step titled "Sign in" with the number still in the field; no "Confirm your mobile number"
+- G1.4 · no "Continue with Google", no "or" and no Google words on any frame — part c draws them
+
+G2 · The signup door works as before — web 375 + 1536 · ios · android · phase 1
+- G2.1 · Create a company account → a fresh number → Send code → the code → the company step opens with the number carried in — why fresh: an unknown number reaches the company step; nothing is submitted there
+- G2.2 · the standing number on the signup door → the code → "That number already has an account" shows (`M01-08`)
+
+Look — components, web at 375 and 420 · phase 1
+- L1 · `TextDivider` with "or" in a 375 and a 420 column: `--fs-caption`, `--text-secondary`, the word's centre within 1 px of the column's centre, the part spans the column's full width, no rules either side; the gaps around it (`--sp-5`, `--sp-3`) are the screen's, measured in part c
+
+Standard — web · ios · android · components · phase 1
+- H1, H3, H5, H8 · the sign-in and signup doors' phone and code steps — why: `useSignIn` and `signInWords` changed beneath them (a shared-package change)
+- H1, H5 · `TextDivider` in the spec — why: a new component
+
+API — api · phase 1 · added at /qa step 1 (`packages/env`'s `googleClientIdsSchema` now composes the new one-id schema, and the api reads it)
+- P1 · the api boots with `GOOGLE_CLIENT_IDS` set; POST /auth/google `{ "idToken": "not-a-token", "platform": "web" }` → 401 `GOOGLE_TOKEN_REFUSED`; no error line in `.qa/api.log`
+
+Regression — machine · phase 1
+- R1 · unit tests (domain, i18n), among them `login-frame.test.ts` › "the locked frame carries the Google control …" (AC5: the frame's Google part) and `sign-in-google.test.ts` › "the locked frame offers Google with the hedged sentence (M01-04)" (AC5: the exact sentence) and `google-frame.test.ts` (AC10: failed, cancelled changes nothing, link-locked) · `tests/e2e/components/TextDivider.spec.tsx`
+- R2 · S7 by machine: `sign-in-google.test.ts` reads each new id in the real hi and mr catalogs — a non-empty translation that differs from the English ("Google" aside) — and `pnpm check:catalogs` holds the compiled files to the `.po` · `tests/e2e/web/login.spec.ts` and `company-signup.spec.ts` (both doors run `useSignIn`) · `tests/e2e/mobile/login.yaml` on both phones
+
+Not in: A1–A7 — no route changes · S1–S6, S8–S11 — no screen changes (part c) · the locked frame — its words do not change here (Decided 5); R1 holds its new Google part · `TextDivider`'s native half — no phone screen renders it until part c, whose Look checks it · H2, H4, H6, H7, H9–H11 — no screen's look changes · W1–W4 — G1 runs both widths; no new web control · M1–M4 — no new phone screen or field · $1–$3 — no money · E1 — nothing new is sent
 
 ### T-M01-028 · Invitations and the atomic accept
 **Type:** engine · **Tier:** P0

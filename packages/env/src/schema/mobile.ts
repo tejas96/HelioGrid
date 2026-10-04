@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { originSchema } from './fragments';
+import { googleClientIdSchema, originSchema } from './fragments';
 
 /**
  * What the React Native app needs from configuration. Like the web schema, everything here
@@ -12,6 +12,12 @@ import { originSchema } from './fragments';
  */
 export const mobileEnvSchema = z.object({
   API_URL: originSchema,
+  /**
+   * Google sign-in (`M01-02`): the WEB client id, which the phone's ID token is issued for so the
+   * api checks one audience on both platforms, and the iOS client the sheet opens through.
+   */
+  GOOGLE_WEB_CLIENT_ID: googleClientIdSchema,
+  GOOGLE_IOS_CLIENT_ID: googleClientIdSchema,
 });
 
 export type MobileEnv = z.infer<typeof mobileEnvSchema>;

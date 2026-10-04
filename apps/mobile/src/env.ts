@@ -23,7 +23,14 @@ const ENV = loadNativeEnv({
     android: `http://10.0.2.2:${API_PORT_DEFAULT}`,
     default: `http://localhost:${API_PORT_DEFAULT}`,
   }),
+  // The development Google project's clients (`.ops/google-cloud.md`). Public ids, not secrets; the
+  // production ones arrive with the native config module that a deployed build needs anyway.
+  GOOGLE_WEB_CLIENT_ID: '349637662348-qtmdotp2qt6r9pc4qvks9b7u7705o844.apps.googleusercontent.com',
+  GOOGLE_IOS_CLIENT_ID: '349637662348-f1s0ddfkbtokf0018rlbep83vsnl6bk7.apps.googleusercontent.com',
 });
 
 /** Validated origin of apps/api. Never a bare localhost fallback at a call site. */
 export const API_URL = ENV.API_URL;
+/** Google sign-in's clients (`M01-02`): the id token's audience, and the iOS sheet's client. */
+export const GOOGLE_WEB_CLIENT_ID = ENV.GOOGLE_WEB_CLIENT_ID;
+export const GOOGLE_IOS_CLIENT_ID = ENV.GOOGLE_IOS_CLIENT_ID;

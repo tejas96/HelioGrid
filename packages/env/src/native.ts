@@ -7,10 +7,10 @@
  * instead of three), and swapping where raw values come from is a change in ONE file,
  * `apps/mobile/src/env.ts`.
  *
- * Today that file supplies a platform-selected localhost, because that is genuinely all the
- * configuration the app has: the Android emulator reaches the host at 10.0.2.2 and the iOS
- * simulator at localhost. When a deployed API URL exists, a native config module
- * (react-native-config or equivalent) becomes the source and nothing here changes.
+ * Today that file supplies a platform-selected localhost — the Android emulator reaches the host
+ * at 10.0.2.2 and the iOS simulator at localhost — and the development Google client ids, written
+ * out. When a deployed API URL exists, a native config module (react-native-config or equivalent)
+ * becomes the source and nothing here changes.
  */
 import { parseEnv } from './parse';
 import { type MobileEnv, mobileEnvSchema } from './schema/mobile';

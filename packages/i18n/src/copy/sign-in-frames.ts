@@ -10,6 +10,7 @@ import {
   type FootLine,
   type FrameKind,
   type FrameTone,
+  type GoogleLabel,
   type LoginFrame,
   OTP_EXPIRY_SECONDS,
   OTP_INVALIDATIONS_TO_LOCK,
@@ -26,6 +27,7 @@ import {
   type WaitReason,
 } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
+import { COMPANY_SIGNUP } from './company-signup';
 import { SIGN_IN } from './sign-in';
 
 const SECONDS_PER_MINUTE = 60;
@@ -59,6 +61,14 @@ const OUR_SIDE = {
 } as const;
 
 const FRAME: Record<FrameKind, FrameCopy> = {
+  'google-phone-taken': {
+    title: SIGN_IN.phoneTakenTitle,
+    block: {
+      tone: 'danger',
+      title: SIGN_IN.phoneTakenBlockTitle,
+      body: SIGN_IN.phoneTakenBlockBody,
+    },
+  },
   'auth-error': {
     title: SIGN_IN.authErrorTitle,
     block: { tone: 'danger', title: SIGN_IN.ourSideFailed, body: SIGN_IN.authErrorBody },
@@ -107,6 +117,7 @@ const SUB: Record<SubLine, MessageRef> = {
   'tried-to-call': SIGN_IN.triedToCall,
   'will-call': SIGN_IN.weCallAndReadTo,
   'checked-for': SIGN_IN.checkedFor,
+  'correct-for': SIGN_IN.codeCorrectFor,
   'locked-for': SIGN_IN.lockedFor,
 };
 
@@ -134,6 +145,7 @@ const PRIMARY: Record<PrimaryLabel, MessageRef> = {
   'send-again': SIGN_IN.sendItAgain,
   'call-me': SIGN_IN.callMeWithCode,
   'call-again': SIGN_IN.callAgain,
+  'sign-in-by-number': COMPANY_SIGNUP.signInWithThisNumber,
 };
 
 const RESEND: Record<ResendLabel, MessageRef> = {
@@ -161,6 +173,29 @@ const FOOT: Record<FootLine, MessageRef> = {
   'wait-stops': SIGN_IN.waitStopsOnFailure,
 };
 
+/**
+ * The Google control a code frame carries: the locked frame says why it still works (`M01-04`);
+ * a taken phone offers another login and needs no sentence.
+ */
+interface GoogleCopy {
+  readonly sentence: MessageRef | null;
+  readonly label: MessageRef;
+  readonly aria: MessageRef;
+}
+
+const GOOGLE: Record<GoogleLabel, GoogleCopy> = {
+  continue: {
+    sentence: SIGN_IN.lockedGoogleSentence,
+    label: SIGN_IN.continueWithGoogle,
+    aria: SIGN_IN.continueWithGoogleLabel,
+  },
+  'use-another': {
+    sentence: null,
+    label: SIGN_IN.useAnotherGoogle,
+    aria: SIGN_IN.useAnotherGoogle,
+  },
+};
+
 /** The facts a sentence fills in — the numbers that move, and the number as the reader sees it. */
 export interface SignInFacts {
   readonly cooldownLeft: number;
@@ -185,10 +220,19 @@ export interface SignInWords {
   readonly helper: string;
   readonly codeError: string | null;
   readonly primary: string | null;
+  /** The primary's accessible name where it says more than its label; `null` where the label is enough. */
+  readonly primaryAria: string | null;
   readonly resend: string | null;
   readonly wait: string | null;
   readonly call: { readonly label: string; readonly note: string } | null;
   readonly foot: string | null;
+  /** "Links {email}" under the number while a Google login is being linked. */
+  readonly links: string | null;
+  readonly google: {
+    readonly sentence: string | null;
+    readonly label: string;
+    readonly aria: string;
+  } | null;
 }
 
 export function signInWords(
@@ -202,10 +246,11 @@ export function signInWords(
     seconds: facts.cooldownLeft,
     left: facts.triesLeft,
     phone: facts.phoneShown,
+    email: frame.linkedEmail ?? '',
   };
   const t = (message: MessageRef) => translate(message, values);
   const { title, block } = FRAME[frame.kind];
-  const { resend } = frame;
+  const { resend, google } = frame;
   return {
     title: t(title),
     sub: t(SUB[frame.sub]),
@@ -213,13 +258,29 @@ export function signInWords(
     helper: frame.helper === null ? '' : t(HELPER[frame.helper]),
     codeError: frame.codeError === null ? null : t(CODE_ERROR[frame.codeError]),
     primary: frame.primary === null ? null : t(primaryOf(frame.primary.label, labels)),
+    primaryAria: primaryAriaOf(frame, t),
     resend: resend?.kind === 'live' ? t(RESEND[resend.label]) : null,
     wait: resend?.kind === 'wait' ? t(WAIT[resend.reason]) : null,
     call: frame.callOffered
       ? { label: t(SIGN_IN.getCodeByCall), note: t(SIGN_IN.weCallNote) }
       : null,
     foot: frame.foot === null ? null : t(FOOT[frame.foot]),
+    links: frame.linkedEmail === null ? null : t(SIGN_IN.linksEmail),
+    google: google === null ? null : googleWords(GOOGLE[google], t),
   };
+}
+
+function googleWords(copy: GoogleCopy, t: (message: MessageRef) => string): SignInWords['google'] {
+  const { sentence, label, aria } = copy;
+  return { sentence: sentence === null ? null : t(sentence), label: t(label), aria: t(aria) };
+}
+
+function primaryAriaOf(frame: LoginFrame, t: (message: MessageRef) => string): string | null {
+  if (frame.primary?.label === 'sign-in-by-number') return t(SIGN_IN.signInWithThisNumberLabel);
+  if (frame.primary?.label === 'verify' && frame.linkedEmail !== null) {
+    return t(SIGN_IN.verifyAndLinkLabel);
+  }
+  return null;
 }
 
 function primaryOf(label: PrimaryLabel, labels: SignInLabels): MessageRef {

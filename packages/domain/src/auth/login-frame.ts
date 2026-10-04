@@ -9,6 +9,7 @@ import type {
   CodeHelper,
   FootLine,
   FrameControl,
+  GoogleLabel,
   ResendSlot,
   SubLine,
 } from './login-frame-parts';
@@ -16,6 +17,7 @@ import type { LoginState } from './login-state';
 
 /** The frames, in the order a fact wins: a refused check over a refused request over the ordinary step. */
 export type FrameKind =
+  | 'google-phone-taken'
   | 'auth-error'
   | 'locked'
   | 'call-offer'
@@ -43,7 +45,14 @@ export interface LoginFrame {
   /** The "Get the code by call" block — the person's own choice, never HelioGrid's (`M01-03`). */
   readonly callOffered: boolean;
   readonly foot: FootLine | null;
+  /** The Google control under the frame — the SMS lock does not close Google (`M01-04`). */
+  readonly google: GoogleLabel | null;
+  /** The Google login this code links, named under the number; `null` when it links none. */
+  readonly linkedEmail: string | null;
 }
+
+/** What a frame decides for itself; the Google parts most frames lack are filled in once. */
+type FrameBody = Omit<LoginFrame, 'google' | 'linkedEmail'> & Partial<Pick<LoginFrame, 'google'>>;
 
 export function frameKindOf(state: LoginState): FrameKind {
   return refusalFrameOf(state) ?? codeFrameOf(state);
@@ -52,6 +61,7 @@ export function frameKindOf(state: LoginState): FrameKind {
 /** A refused check or a refused request owns the frame before any ordinary step is read. */
 function refusalFrameOf(state: LoginState): FrameKind | null {
   const byCall = state.channel === 'voice';
+  if (state.googleEnded === 'phone-taken') return 'google-phone-taken';
   if (state.verify === 'failed') return 'auth-error';
   if (state.verify === 'locked' || state.request === 'locked') return 'locked';
   // A call the person chose but has not placed yet is offered before any SMS outcome is judged —
@@ -72,8 +82,17 @@ function codeFrameOf(state: LoginState): FrameKind {
   return 'entry';
 }
 
-export function loginFrame(state: LoginState): LoginFrame {
-  return FRAMES[frameKindOf(state)](state);
+/**
+ * `googleOffered` says whether this door has a Google sheet behind it: a door without one — the
+ * signup door, or a web build with no client id — draws no Google control, never a dead one.
+ */
+export function loginFrame(state: LoginState, googleOffered: boolean): LoginFrame {
+  const { google = null, ...body } = FRAMES[frameKindOf(state)](state);
+  return {
+    ...body,
+    google: googleOffered ? google : null,
+    linkedEmail: state.google?.email ?? null,
+  };
 }
 
 const VERIFY: FrameControl = { press: 'verify', label: 'verify' };
@@ -111,7 +130,21 @@ function newCodeWays(state: LoginState): Pick<LoginFrame, 'primary' | 'resend' |
 const NO_CODE = { helper: 'no-code-yet', codeError: null, codeEnabled: false } as const;
 const NO_WAYS = { primary: null, callOffered: false } as const;
 
-const FRAMES: Record<FrameKind, (state: LoginState) => LoginFrame> = {
+const FRAMES: Record<FrameKind, (state: LoginState) => FrameBody> = {
+  // The code matched, so it is shown spent and fine; the number signs in by it, and the Google
+  // login waits for another account (`M01-02`: nothing is relinked behind the person).
+  'google-phone-taken': () => ({
+    kind: 'google-phone-taken',
+    sub: 'correct-for',
+    helper: 'code-was-fine',
+    codeError: null,
+    codeEnabled: false,
+    primary: { press: 'sign-in-by-number', label: 'sign-in-by-number' },
+    resend: null,
+    callOffered: false,
+    foot: null,
+    google: 'use-another',
+  }),
   'auth-error': () => ({
     kind: 'auth-error',
     sub: 'checked-for',
@@ -132,6 +165,7 @@ const FRAMES: Record<FrameKind, (state: LoginState) => LoginFrame> = {
     ...NO_WAYS,
     resend: { kind: 'wait', reason: 'locked' },
     foot: 'locked',
+    google: 'continue',
   }),
   // The cap counts every request on the number, a call included (`M01-04`), so no primary
   // pretends a call is a way in: the wait is the remedy, as in the locked frame.

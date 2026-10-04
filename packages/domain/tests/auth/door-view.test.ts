@@ -56,6 +56,7 @@ describe('doorView', () => {
       'code',
     ],
     ['the otp step shows the code panel', door(), 'otp', 'code'],
+    ['a first Google sign-in shows the link panel', door(), 'google-link', 'google-link'],
     ['every other step shows the phone panel', door(), 'phone', 'phone'],
   ] as const)('%s', (_name, session, step, expected) => {
     expect(doorView(session, step)).toBe(expected);

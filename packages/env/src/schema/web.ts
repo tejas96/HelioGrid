@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { API_PORT_DEFAULT, originSchema } from './fragments';
+import { API_PORT_DEFAULT, googleClientIdSchema, originSchema } from './fragments';
 
 /**
  * Browser-visible configuration ONLY. Every value here is shipped to the client and is public
@@ -16,6 +16,8 @@ import { API_PORT_DEFAULT, originSchema } from './fragments';
  */
 export const webEnvSchema = z.object({
   NEXT_PUBLIC_API_URL: originSchema.default(`http://localhost:${API_PORT_DEFAULT}`),
+  /** The web's Google client (`M01-02`). Absent, the door draws no Google control — never a dead one. */
+  NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID: googleClientIdSchema.optional(),
 });
 
 export type WebEnv = z.infer<typeof webEnvSchema>;

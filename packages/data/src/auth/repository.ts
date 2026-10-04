@@ -1,4 +1,5 @@
 import type {
+  GoogleSignIn,
   OtpChallenge,
   OtpChannel,
   PlatformKind,
@@ -15,6 +16,8 @@ import { normalizeClientError, toApiError } from '../errors/errors';
 export interface AuthRepository {
   requestOtp(phoneE164: string, channel: OtpChannel): Promise<OtpChallenge>;
   verifyOtp(challengeId: string, code: string, platform: PlatformKind): Promise<SessionProjection>;
+  /** The Google door (`M01-02`): a linked login's session, or a refusal naming the phone step. */
+  signInWithGoogle(input: GoogleSignIn): Promise<SessionProjection>;
   session(signal?: AbortSignal): Promise<SessionProjection>;
   signOut(): Promise<void>;
   signOutEverywhere(): Promise<void>;
@@ -35,6 +38,15 @@ export function createAuthRepository(api: ApiClient): AuthRepository {
     async verifyOtp(challengeId, code, platform) {
       try {
         const res = await api.auth.verifyOtp({ body: { challengeId, code, platform } });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async signInWithGoogle(body) {
+      try {
+        const res = await api.auth.signInWithGoogle({ body });
         if (res.status !== 200) throw toApiError(res);
         return res.body;
       } catch (error) {

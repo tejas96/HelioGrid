@@ -27,6 +27,7 @@ export type SubLine =
   | 'tried-to-call'
   | 'will-call'
   | 'checked-for'
+  | 'correct-for'
   | 'locked-for';
 
 /** The helper under the code field. */
@@ -50,7 +51,8 @@ export type PrimaryLabel =
   | 'send-new'
   | 'send-again'
   | 'call-me'
-  | 'call-again';
+  | 'call-again'
+  | 'sign-in-by-number';
 
 export type ResendLabel = 'send-new' | 'send-sms-again';
 
@@ -68,6 +70,12 @@ export type FootLine =
   | 'only-some-phones'
   | 'code-works-for'
   | 'wait-stops';
+
+/**
+ * The Google control a code frame carries (`M01-02`): the way in while SMS is locked, or another
+ * Google login when this one cannot be linked. It always raises the `google` press.
+ */
+export type GoogleLabel = 'continue' | 'use-another';
 
 export interface FrameControl {
   readonly press: LoginPress;

@@ -141,6 +141,47 @@ export const SIGN_IN = {
     id: 'Uploading held photographs arrives with the survey capture.',
   },
   signInAndDiscard: /*i18n*/ { id: 'Sign in and discard' },
+  or: /*i18n*/ { id: 'or' },
+  continueWithGoogle: /*i18n*/ { id: 'Continue with Google' },
+  continueWithGoogleLabel: /*i18n*/ {
+    id: 'Continue with Google. Signs you in to the same account as your mobile number.',
+  },
+  openingGoogle: /*i18n*/ { id: 'Opening Google sign-in' },
+  googleFailedTitle: /*i18n*/ { id: 'Google sign-in did not finish' },
+  googleFailedBody: /*i18n*/ { id: 'Nothing changed. Try Google again, or use your number.' },
+  confirmYourNumber: /*i18n*/ { id: 'Confirm your mobile number' },
+  linkingBody: /*i18n*/ {
+    id: 'HelioGrid accounts are mobile numbers, so this Google login gets linked to yours. It never makes a second account.',
+  },
+  linkingExplainerLabel: /*i18n*/ { id: 'About linking your number' },
+  linkingExplainerTitle: /*i18n*/ { id: 'How linking works' },
+  linkingExplainerPage: /*i18n*/ {
+    id: 'If this number already has an account, the Google login joins it. If it does not, the code takes you into company signup with the number carried in — the same rule as the front door.',
+  },
+  signingInWithGoogle: /*i18n*/ { id: 'Signing in with Google' },
+  notYouUseAnotherGoogle: /*i18n*/ { id: 'Not you? Use a different Google account' },
+  useAnotherGoogle: /*i18n*/ { id: 'Use a different Google account' },
+  useMyNumberInstead: /*i18n*/ { id: 'Use my number instead' },
+  useMyNumberInsteadLabel: /*i18n*/ { id: 'Use my number instead. Goes back to the phone step.' },
+  sendCodeAndLinkLabel: /*i18n*/ { id: 'Send the code by SMS and link this Google login' },
+  linksEmail: /*i18n*/ { id: 'Links {email}' },
+  verifyAndLinkLabel: /*i18n*/ { id: 'Verify the code, link this Google login and sign in' },
+  phoneTakenTitle: /*i18n*/ { id: 'This Google login cannot be linked' },
+  codeCorrectFor: /*i18n*/ { id: 'The code was correct for' },
+  phoneTakenBlockTitle: /*i18n*/ { id: 'This number is linked to another Google account' },
+  phoneTakenBlockBody: /*i18n*/ {
+    id: 'Sign in with your number, or use the Google account already linked.',
+  },
+  signInWithThisNumberLabel: /*i18n*/ {
+    id: 'Sign in with this number. The code is already verified.',
+  },
+  lockedGoogleSentence: /*i18n*/ {
+    id: "SMS codes are paused for this number. If you've signed in with Google before, it still works.",
+  },
+  smsPausedFoot: /*i18n*/ { id: 'Only the SMS codes are paused — your account is not.' },
+  linkLockedSentence: /*i18n*/ {
+    id: 'SMS codes are paused for this number for {lockMinutes} minutes, so this Google login cannot be linked yet.',
+  },
 } as const;
 
 export type SignInCopyKey = keyof typeof SIGN_IN;

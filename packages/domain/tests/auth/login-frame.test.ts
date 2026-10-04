@@ -15,10 +15,17 @@ function otp(overrides: Partial<LoginState>): LoginState {
   };
 }
 const byCall = { channel: 'voice', placed: true } as const;
+/** A door with a Google sheet behind it — the sign-in door. */
+const signInFrame = (state: LoginState) => loginFrame(state, true);
 const inGap = { resendAt: 1, cooldownLeft: 12 } as const;
 
 describe('frameKindOf — the order a fact wins', () => {
   it.each<[string, Partial<LoginState>, FrameKind]>([
+    [
+      'a taken phone, over a failed step and the lock',
+      { googleEnded: 'phone-taken', verify: 'failed', request: 'locked' },
+      'google-phone-taken',
+    ],
     [
       'a failed step after the code, over everything',
       { verify: 'failed', request: 'locked' },
@@ -49,7 +56,7 @@ describe('frameKindOf — the order a fact wins', () => {
 
 describe('loginFrame — what each frame offers', () => {
   it('auth-error: the code was fine, so Try again checks it again', () => {
-    expect(loginFrame(otp({ verify: 'failed' }))).toEqual({
+    expect(signInFrame(otp({ verify: 'failed' }))).toEqual({
       kind: 'auth-error',
       sub: 'checked-for',
       helper: 'code-was-fine',
@@ -59,11 +66,13 @@ describe('loginFrame — what each frame offers', () => {
       resend: null,
       callOffered: false,
       foot: 'auth-error',
+      google: null,
+      linkedEmail: null,
     });
   });
 
   it('locked: no entry, no primary, no call — the wait is the remedy', () => {
-    expect(loginFrame(otp({ request: 'locked' }))).toMatchObject({
+    expect(signInFrame(otp({ request: 'locked' }))).toMatchObject({
       kind: 'locked',
       sub: 'locked-for',
       helper: 'locked',
@@ -75,11 +84,44 @@ describe('loginFrame — what each frame offers', () => {
     });
   });
 
+  it('the locked frame carries the Google control (M01-04: the lock is SMS only; its sentence is sign-in-google.test.ts)', () => {
+    expect(signInFrame(otp({ request: 'locked' })).google).toBe('continue');
+  });
+
+  it('a door with no Google sheet behind it draws no Google control — never a dead one', () => {
+    expect(loginFrame(otp({ request: 'locked' }), false).google).toBeNull();
+    expect(loginFrame(otp({ googleEnded: 'phone-taken' }), false).google).toBeNull();
+  });
+
+  it('google-phone-taken: the matched code shown spent, the number signs in, another login offered', () => {
+    const google = { idToken: 't', nonce: null, email: 'priya.sharma@gmail.com' };
+    expect(signInFrame(otp({ googleEnded: 'phone-taken', google, code: '482913' }))).toEqual({
+      kind: 'google-phone-taken',
+      sub: 'correct-for',
+      helper: 'code-was-fine',
+      codeError: null,
+      codeEnabled: false,
+      primary: { press: 'sign-in-by-number', label: 'sign-in-by-number' },
+      resend: null,
+      callOffered: false,
+      foot: null,
+      google: 'use-another',
+      linkedEmail: 'priya.sharma@gmail.com',
+    });
+  });
+
+  it('no other frame carries Google, and only a linking code names the login', () => {
+    const plain = signInFrame(otp({}));
+    expect(plain).toMatchObject({ google: null, linkedEmail: null });
+    const google = { idToken: 't', nonce: null, email: 'priya.sharma@gmail.com' };
+    expect(signInFrame(otp({ google })).linkedEmail).toBe('priya.sharma@gmail.com');
+  });
+
   it.each([
     ['by SMS', {}, 'tried-by-sms'],
     ['by call', byCall, 'tried-to-call'],
   ] as const)('capped %s: no primary, because a call counts to the cap too', (_, channel, sub) => {
-    expect(loginFrame(otp({ request: 'capped', ...channel }))).toMatchObject({
+    expect(signInFrame(otp({ request: 'capped', ...channel }))).toMatchObject({
       kind: 'capped',
       sub,
       helper: 'no-code-yet',
@@ -96,7 +138,7 @@ describe('loginFrame — what each frame offers', () => {
     ['request-failed', null],
   ] as const)('%s: send it again, or the call as the way across', (kind, foot) => {
     const request = kind === 'delivery-failed' ? 'delivery-failed' : 'failed';
-    expect(loginFrame(otp({ request }))).toMatchObject({
+    expect(signInFrame(otp({ request }))).toMatchObject({
       kind,
       sub: 'tried-by-sms',
       helper: 'no-code-yet',
@@ -112,7 +154,7 @@ describe('loginFrame — what each frame offers', () => {
     ['call-not-placed', 'delivery-failed'],
     ['call-request-failed', 'failed'],
   ] as const)('%s: call again, or the SMS again as the way across', (kind, request) => {
-    expect(loginFrame(otp({ request, ...byCall }))).toMatchObject({
+    expect(signInFrame(otp({ request, ...byCall }))).toMatchObject({
       kind,
       sub: 'tried-to-call',
       primary: { press: 'resend', label: 'call-again' },
@@ -120,7 +162,7 @@ describe('loginFrame — what each frame offers', () => {
       callOffered: false,
       foot: null,
     });
-    expect(loginFrame(otp({ request, ...byCall, ...inGap })).resend).toEqual({
+    expect(signInFrame(otp({ request, ...byCall, ...inGap })).resend).toEqual({
       kind: 'wait',
       reason: 'short',
     });
@@ -131,7 +173,7 @@ describe('loginFrame — what each frame offers', () => {
     ['used-up', 'invalidated'],
   ] as const)('%s: nothing to type until a new code', (kind, verify) => {
     it('by SMS offers a new code and the call', () => {
-      expect(loginFrame(otp({ verify }))).toMatchObject({
+      expect(signInFrame(otp({ verify }))).toMatchObject({
         kind,
         sub: 'sent-by-sms',
         helper: 'nothing-until-new',
@@ -144,7 +186,7 @@ describe('loginFrame — what each frame offers', () => {
     });
 
     it('by call offers another call and the SMS', () => {
-      expect(loginFrame(otp({ verify, ...byCall }))).toMatchObject({
+      expect(signInFrame(otp({ verify, ...byCall }))).toMatchObject({
         sub: 'read-out',
         primary: { press: 'resend', label: 'call-again' },
         resend: { kind: 'live', press: 'sms', label: 'send-sms-again' },
@@ -153,7 +195,7 @@ describe('loginFrame — what each frame offers', () => {
     });
 
     it('inside the gap shows the wait and no way to ask', () => {
-      expect(loginFrame(otp({ verify, ...inGap }))).toMatchObject({
+      expect(signInFrame(otp({ verify, ...inGap }))).toMatchObject({
         primary: null,
         resend: { kind: 'wait', reason: 'short' },
         callOffered: false,
@@ -163,7 +205,7 @@ describe('loginFrame — what each frame offers', () => {
 
   it('call-offer: the call is the primary, the SMS the way back', () => {
     const offered = otp({ channel: 'voice', placed: false });
-    expect(loginFrame(offered)).toMatchObject({
+    expect(signInFrame(offered)).toMatchObject({
       kind: 'call-offer',
       sub: 'will-call',
       helper: 'answer-call',
@@ -173,14 +215,14 @@ describe('loginFrame — what each frame offers', () => {
       callOffered: false,
       foot: 'call',
     });
-    expect(loginFrame({ ...offered, ...inGap })).toMatchObject({
+    expect(signInFrame({ ...offered, ...inGap })).toMatchObject({
       primary: null,
       resend: { kind: 'wait', reason: 'short' },
     });
   });
 
   it('wrong: the error sits on the field and the tries left at the foot', () => {
-    expect(loginFrame(otp({ verify: 'mismatch' }))).toMatchObject({
+    expect(signInFrame(otp({ verify: 'mismatch' }))).toMatchObject({
       kind: 'wrong',
       helper: null,
       codeError: 'wrong',
@@ -190,21 +232,21 @@ describe('loginFrame — what each frame offers', () => {
       callOffered: false,
       foot: 'tries-left',
     });
-    expect(loginFrame(otp({ verify: 'mismatch', ...inGap })).resend).toEqual({
+    expect(signInFrame(otp({ verify: 'mismatch', ...inGap })).resend).toEqual({
       kind: 'wait',
       reason: 'short',
     });
   });
 
   it('filled: check it or type over it; a short press answers on the field', () => {
-    expect(loginFrame(otp({ filled: true }))).toMatchObject({
+    expect(signInFrame(otp({ filled: true }))).toMatchObject({
       kind: 'filled',
       helper: 'filled-from-sms',
       codeError: null,
       resend: { kind: 'live', press: 'resend', label: 'send-new' },
       foot: 'only-some-phones',
     });
-    expect(loginFrame(otp({ filled: true, codeShort: true, ...inGap }))).toMatchObject({
+    expect(signInFrame(otp({ filled: true, codeShort: true, ...inGap }))).toMatchObject({
       codeError: 'short',
       resend: { kind: 'wait', reason: 'short' },
     });
@@ -215,7 +257,7 @@ describe('loginFrame — what each frame offers', () => {
     ['a second SMS', { sends: 2 }, 'sent-moment-ago', 'again', 'wait-stops'],
     ['a call', { sends: 1, ...byCall }, 'answer-call', 'first', 'code-works-for'],
   ] as const)('waiting after %s', (_, facts, helper, reason, foot) => {
-    expect(loginFrame(otp({ ...inGap, ...facts }))).toMatchObject({
+    expect(signInFrame(otp({ ...inGap, ...facts }))).toMatchObject({
       kind: 'waiting',
       helper,
       codeEnabled: true,
@@ -232,7 +274,7 @@ describe('loginFrame — what each frame offers', () => {
   ] as const)(
     'entry %s: paste the whole code; the call is offered only off the SMS',
     (_, channel, callOffered) => {
-      expect(loginFrame(otp({ codeShort: true, ...channel }))).toMatchObject({
+      expect(signInFrame(otp({ codeShort: true, ...channel }))).toMatchObject({
         kind: 'entry',
         helper: 'paste-whole',
         codeError: 'short',

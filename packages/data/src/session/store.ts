@@ -1,7 +1,10 @@
-import type { PlatformKind, SessionProjection } from '@heliogrid/contracts';
+import type { GoogleSignIn, PlatformKind, SessionProjection } from '@heliogrid/contracts';
 import {
   CHECKING,
   canRenew,
+  type GoogleOutcome,
+  type GoogleResult,
+  type GoogleToken,
   OTP_MAX_FAILED_VERIFIES,
   type OtpRequestOutcome,
   type OtpVerifyOutcome,
@@ -22,7 +25,6 @@ import type { UserRepository } from '../user/repository';
 import type { HeldWork } from './held-work';
 import type { SessionStore } from './types';
 
-/** The refusals that mean "the code, not the connection" (`M01-04`). */
 /**
  * The wire's refusal codes (`packages/contracts/src/auth.ts`), each to the one word the door
  * renders a frame for. A code the wire did not name is `failed` — never guessed from a message.
@@ -39,8 +41,28 @@ const VERIFY_OUTCOME_BY_CODE: Record<string, OtpVerifyOutcome> = {
   OTP_INVALIDATED: 'invalidated',
   OTP_LOCKED: 'locked',
 };
+/** The Google door's own refusals; every other one it answers renders the one failure frame. */
+const GOOGLE_OUTCOME_BY_CODE: Record<string, GoogleOutcome> = {
+  ...VERIFY_OUTCOME_BY_CODE,
+  GOOGLE_NOT_LINKED: 'not-linked',
+  GOOGLE_PHONE_TAKEN: 'phone-taken',
+};
 function codeOf(error: unknown): string {
   return error instanceof ApiError ? error.code : '';
+}
+
+/** The wire's Google request: an optional field is left out, never sent as undefined. */
+function googleSignInBody(
+  token: GoogleToken,
+  platform: PlatformKind,
+  link: GoogleSignIn['link'],
+): GoogleSignIn {
+  return {
+    idToken: token.idToken,
+    platform,
+    ...(token.nonce === null ? {} : { nonce: token.nonce }),
+    ...(link === undefined ? {} : { link }),
+  };
 }
 
 function userOf(projection: SessionProjection): SessionUser {
@@ -59,7 +81,8 @@ function userOf(projection: SessionProjection): SessionUser {
 /**
  * The real session store, authored ONCE for both platforms. It starts `checking` and asks the
  * server who the cookies belong to; the credentials themselves never pass through here — the
- * transport carries them. `verifyOtp` is where a shared device changes hands (`F4-37`).
+ * transport carries them. `verifyOtp` and `signInWithGoogle` are where a shared device changes
+ * hands (`F4-37`).
  */
 export function createSessionStore(config: {
   auth: AuthRepository;
@@ -71,6 +94,7 @@ export function createSessionStore(config: {
   let snapshot: SessionSnapshot = CHECKING;
   let challengeId: string | null = null;
   let wrongTries = 0;
+  const triesLeft = () => Math.max(OTP_MAX_FAILED_VERIFIES - wrongTries, 0);
   const listeners = new Set<() => void>();
 
   const emit = (next: SessionSnapshot) => {
@@ -152,7 +176,6 @@ export function createSessionStore(config: {
       }
     },
     async verifyOtp(code, door = 'sign-in'): Promise<OtpVerifyResult> {
-      const triesLeft = () => Math.max(OTP_MAX_FAILED_VERIFIES - wrongTries, 0);
       if (challengeId === null) return { outcome: 'failed', triesLeft: triesLeft() };
       try {
         const next = userOf(await config.auth.verifyOtp(challengeId, code, config.platform));
@@ -161,6 +184,24 @@ export function createSessionStore(config: {
         return { outcome: 'verified', triesLeft: triesLeft() };
       } catch (error) {
         const outcome = VERIFY_OUTCOME_BY_CODE[codeOf(error)] ?? 'failed';
+        if (outcome === 'mismatch') wrongTries += 1;
+        return { outcome, triesLeft: triesLeft() };
+      }
+    },
+    async signInWithGoogle(token, code): Promise<GoogleResult> {
+      // A link proves a number by the code of the challenge this store opened; without one there is nothing to prove.
+      if (code !== null && challengeId === null)
+        return { outcome: 'failed', triesLeft: triesLeft() };
+      const link = code === null || challengeId === null ? undefined : { challengeId, code };
+      try {
+        const projection = await config.auth.signInWithGoogle(
+          googleSignInBody(token, config.platform, link),
+        );
+        if (link !== undefined) challengeId = null;
+        await admit(userOf(projection), 'sign-in');
+        return { outcome: 'signed-in', triesLeft: triesLeft() };
+      } catch (error) {
+        const outcome = GOOGLE_OUTCOME_BY_CODE[codeOf(error)] ?? 'failed';
         if (outcome === 'mismatch') wrongTries += 1;
         return { outcome, triesLeft: triesLeft() };
       }
