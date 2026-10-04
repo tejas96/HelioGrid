@@ -79,8 +79,29 @@ export class OtpService {
     return { challengeId, resendAvailableAt: new Date(decision.resendAvailableAt).toISOString() };
   }
 
-  /** The phone a code verified for, or a named refusal. */
+  /** The phone a code verified for, or a named refusal. The code is spent once it verifies. */
   async verify(challengeId: string, code: string, now: number): Promise<{ phoneE164: string }> {
+    const { phoneE164 } = await this.check(challengeId, code, now);
+    const claimed = await this.codes.claimVerified(challengeId, now);
+    if (!claimed) {
+      throw codeAlreadyUsed();
+    }
+    return { phoneE164 };
+  }
+
+  /** The phone a code request was made for, before any code is checked. */
+  async phoneOf(challengeId: string): Promise<string> {
+    const challenge = await this.codes.challengeById(challengeId);
+    if (!challenge) throw new NotFoundException('No such code request.');
+    return challenge.phoneE164;
+  }
+
+  /**
+   * Every refusal a verify can meet — the lock, the wrong try counted, the fifth that invalidates,
+   * the expiry — but the code is NOT spent: the caller spends it with the act it proves, so a
+   * refused act leaves the code usable (the Google bind, `M01-02`).
+   */
+  async check(challengeId: string, code: string, now: number): Promise<{ phoneE164: string }> {
     const challenge = await this.codes.challengeById(challengeId);
     if (!challenge) throw new NotFoundException('No such code request.');
     const history = await this.history(challenge.phoneE164, now);
@@ -106,11 +127,7 @@ export class OtpService {
     }
     if (decision.kind === 'expired') throw refusedVerify('OTP_EXPIRED', 'That code has expired.');
     if (decision.kind === 'spent') {
-      throw refusedVerify('OTP_INVALIDATED', 'That code was already used. Request a fresh one.');
-    }
-    const claimed = await this.codes.claimVerified(challengeId, now);
-    if (!claimed) {
-      throw refusedVerify('OTP_INVALIDATED', 'That code was already used. Request a fresh one.');
+      throw codeAlreadyUsed();
     }
     return { phoneE164: challenge.phoneE164 };
   }
@@ -164,7 +181,7 @@ function randomCode(): string {
 }
 
 /** Keyed on the server secret, so a leaked table cannot be brute-forced offline. */
-function hashCode(phoneE164: string, code: string): string {
+export function hashCode(phoneE164: string, code: string): string {
   return createHmac('sha256', ENV.AUTH_TOKEN_SECRET).update(`${phoneE164}:${code}`).digest('hex');
 }
 
@@ -193,6 +210,11 @@ function refusedVerify(
   message: string,
 ): never {
   throw new ContractException(code, message, HttpStatus.UNAUTHORIZED);
+}
+
+/** A code spent once already — by its own verify, or by a race that won the claim. */
+export function codeAlreadyUsed(): never {
+  throw refusedVerify('OTP_INVALIDATED', 'That code was already used. Request a fresh one.');
 }
 
 function locked(): never {

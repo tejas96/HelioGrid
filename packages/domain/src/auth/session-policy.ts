@@ -1,3 +1,4 @@
+import { MS_PER_DAY } from '../format/zone';
 /**
  * Session lifetimes (`M01-07`), as the numbers and the two decisions both platforms obey. Time
  * enters as `now: number` (epoch milliseconds); nothing here reads a clock.
@@ -18,7 +19,6 @@ export const MOBILE_IDLE_DAYS = 7;
 export const API_TOKEN_MINUTES = 10;
 
 const MS_PER_MINUTE = 60_000;
-const MS_PER_DAY = 24 * 60 * MS_PER_MINUTE;
 
 /** When a session opened at `now` on this platform expires, before any later use. */
 export function sessionExpiresAt(kind: PlatformKind, now: number): number {

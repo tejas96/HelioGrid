@@ -14,6 +14,7 @@ import {
   notificationPreference,
   notificationSettings,
   onboardingProgress,
+  otpChallenge,
   proposalTemplateSettings,
   pushDevice,
   session,
@@ -29,9 +30,11 @@ import {
 } from '@heliogrid/db';
 import { type InvitationStatus, invitationExpiresAt, type RolePreset } from '@heliogrid/domain';
 import { eq, inArray } from 'drizzle-orm';
+import { type Challenge, seedChallenges } from './challenges';
 import { type Device, seedDevices } from './devices';
 import { adminUrl, databaseUrl } from './preconditions';
 
+export { aChallenge, type Challenge } from './challenges';
 export { aDevice, type Device } from './devices';
 
 export { adminUrl, databaseUrl, skipUnless, skipWithoutDatabase } from './preconditions';
@@ -58,6 +61,8 @@ export interface Person {
   readonly name: string;
   /** The login identity, unique globally (`M01-18`); an invite is keyed to one of these. */
   readonly phoneE164: string;
+  /** The Google login linked to the account (`M01-02`), when the proof needs one. */
+  readonly googleSubject?: string;
 }
 
 export interface Membership {
@@ -125,6 +130,7 @@ export interface Fixture {
   readonly memberships: readonly Membership[];
   readonly devices?: readonly Device[];
   readonly invites?: readonly Invite[];
+  readonly challenges?: readonly Challenge[];
 }
 
 /** Both pools a proof drives: the runtime role under RLS, and the admin role that seeds and reads. */
@@ -164,6 +170,7 @@ export async function seed(db: Db, fixture: Fixture): Promise<void> {
         id: person.userId,
         phoneE164: person.phoneE164,
         name: person.name,
+        googleSubject: person.googleSubject ?? null,
         interfaceLanguage: 'en' as const,
         unitPreference: 'metric' as const,
         createdAt: now,
@@ -193,6 +200,7 @@ export async function seed(db: Db, fixture: Fixture): Promise<void> {
   );
   if (roles.length > 0) await db.insert(membershipRole).values(roles);
   if (fixture.devices?.length) await seedDevices(db, fixture.devices, now);
+  if (fixture.challenges?.length) await seedChallenges(db, fixture.challenges);
   if (fixture.invites?.length) {
     await db.insert(invitation).values(
       fixture.invites.map((invite) => ({
@@ -222,6 +230,13 @@ export async function seed(db: Db, fixture: Fixture): Promise<void> {
 export async function unseed(db: Db, fixture: Fixture): Promise<void> {
   const companies = fixture.companies.map((company) => company.tenantId);
   const people = fixture.people.map((person) => person.userId);
+  // Every code request for a phone the fixture names — seeded, or made through the api's door.
+  const phones = [
+    ...fixture.people.map((person) => person.phoneE164),
+    ...(fixture.challenges ?? []).map((challenge) => challenge.phoneE164),
+  ];
+  if (phones.length > 0)
+    await db.delete(otpChallenge).where(inArray(otpChallenge.phoneE164, phones));
   // An empty list is a legitimate fixture — the HTTP harness tears down the companies it created
   // and never the person it signed in as — and `inArray` refuses an empty array, so each half
   // runs only when it has something to remove.

@@ -1,4 +1,4 @@
-import { type Db, otpChallenge } from '@heliogrid/db';
+import { type Db, type DbTransaction, otpChallenge } from '@heliogrid/db';
 import type { OtpChannel } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, desc, eq, gt, isNull } from 'drizzle-orm';
@@ -69,10 +69,15 @@ export class OtpAdminRepository {
 
   /**
    * Marks the challenge verified only if nobody has: two requests racing on one code cannot
-   * both win. Returns whether this caller won the claim.
+   * both win. Returns whether this caller won the claim. `tx` spends the code inside the act it
+   * proves, so a refused act rolls the claim back with it (the Google bind).
    */
-  async claimVerified(id: string, verifiedAt: number): Promise<boolean> {
-    const claimed = await this.db
+  async claimVerified(
+    id: string,
+    verifiedAt: number,
+    tx: Db | DbTransaction = this.db,
+  ): Promise<boolean> {
+    const claimed = await tx
       .update(otpChallenge)
       .set({ verifiedAt: new Date(verifiedAt) })
       .where(

@@ -77,3 +77,6 @@ coverage/
 
 # The local QA workspace: one folder per task (report, agent results, evidence) and the api log.
 .qa/
+
+# The owner's private infra record: every external account, project, client id and what is still owed.
+.ops/

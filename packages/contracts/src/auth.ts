@@ -52,6 +52,49 @@ export const otpVerifyRefusalSchema = z.enum([
 ]);
 export type OtpVerifyRefusal = z.infer<typeof otpVerifyRefusalSchema>;
 
+/**
+ * The Google door (`M01-02`): a convenience sign-in onto the SAME phone-identity account. A
+ * Google login already linked to an account signs straight in; one that is not answers
+ * `GOOGLE_NOT_LINKED`, and the device runs the phone step and sends the code back in `link` —
+ * the code is checked here, by the same rules as a verify, so the bind and the code's use are one
+ * act. `nonce` is the value the device put in Google's request; when sent, the token must carry it.
+ */
+export const googleSignInSchema = z.object({
+  idToken: z.string().min(1).max(4096),
+  platform: platformKindSchema,
+  nonce: z.string().min(1).max(256).optional(),
+  link: z
+    .object({
+      challengeId: uuidSchema,
+      code: otpVerifySchema.shape.code,
+    })
+    .optional(),
+});
+export type GoogleSignIn = z.infer<typeof googleSignInSchema>;
+
+/**
+ * Why a Google sign-in was refused, beside the verify refusals a `link` can meet:
+ * - `GOOGLE_NOT_LINKED` — the login is linked to no account; run the phone step.
+ * - `GOOGLE_PHONE_TAKEN` — that phone's account already holds another Google login.
+ * - `GOOGLE_SUBJECT_TAKEN` — this login is linked to a different phone's account.
+ */
+export const googleLinkRefusalSchema = z.enum([
+  'GOOGLE_NOT_LINKED',
+  'GOOGLE_PHONE_TAKEN',
+  'GOOGLE_SUBJECT_TAKEN',
+]);
+export type GoogleLinkRefusal = z.infer<typeof googleLinkRefusalSchema>;
+
+/** A token Google did not sign for this app, expired, a nonce it does not carry — or no client ids set. */
+export const GOOGLE_TOKEN_REFUSED = 'GOOGLE_TOKEN_REFUSED' as const;
+/** Google's signing keys could not be fetched; nothing was decided. */
+export const GOOGLE_UNAVAILABLE = 'GOOGLE_UNAVAILABLE' as const;
+/** Every code the Google door itself answers, beside the verify refusals a `link` meets. */
+export type GoogleRefusal =
+  | GoogleLinkRefusal
+  | typeof GOOGLE_TOKEN_REFUSED
+  | typeof GOOGLE_UNAVAILABLE;
+
 export const refreshSchema = z.object({
   /**
    * Whether this call is foreground authenticated use. Only a foreground call restarts a mobile
@@ -113,6 +156,21 @@ export const authContract = c.router({
       401: errorEnvelope(otpVerifyRefusalSchema),
       404: errorEnvelope(baseError('NOT_FOUND')),
       429: errorEnvelope(z.literal('OTP_LOCKED')),
+    },
+  },
+  signInWithGoogle: {
+    method: 'POST',
+    path: '/auth/google',
+    body: googleSignInSchema,
+    summary:
+      'Sign in with Google — a linked login signs in; a link binds it to the phone the code proves',
+    responses: {
+      200: sessionProjectionSchema,
+      401: errorEnvelope(z.enum([GOOGLE_TOKEN_REFUSED, ...otpVerifyRefusalSchema.options])),
+      404: errorEnvelope(baseError('NOT_FOUND')),
+      409: errorEnvelope(googleLinkRefusalSchema),
+      429: errorEnvelope(z.literal('OTP_LOCKED')),
+      503: errorEnvelope(z.literal(GOOGLE_UNAVAILABLE)),
     },
   },
   refresh: {
