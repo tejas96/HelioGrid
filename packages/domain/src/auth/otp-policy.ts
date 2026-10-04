@@ -1,3 +1,4 @@
+import { MS_PER_DAY } from '../format/zone';
 import { RESEND_SECONDS } from './login-policy';
 import { OTP_EXPIRY_SECONDS } from './otp';
 
@@ -23,7 +24,6 @@ export const OTP_LOCK_MINUTES = 15;
 
 const MS_PER_SECOND = 1_000;
 const MS_PER_MINUTE = 60 * MS_PER_SECOND;
-const MS_PER_DAY = 24 * 60 * MS_PER_MINUTE;
 
 /** What a phone's recent OTP traffic looks like, as the store can answer it. */
 export interface OtpHistory {

@@ -1,3 +1,4 @@
+import { MS_PER_DAY } from '../format/zone';
 /**
  * A team invitation (`M01-12`, `M01-13`): its states, how long it lives and the one cap on
  * sending, as numbers and decisions both platforms obey. Time enters as `now: number`, epoch
@@ -20,8 +21,6 @@ export type InvitationStatus = (typeof INVITATION_STATUSES)[number];
 export const INVITATION_EXPIRY_DAYS = 7;
 /** `M01-04` — invite sends are capped per tenant per day. */
 export const INVITATIONS_PER_TENANT_PER_DAY = 50;
-
-const MS_PER_DAY = 24 * 60 * 60 * 1_000;
 
 /** When an invitation sent at `sentAt` stops being acceptable. */
 export function invitationExpiresAt(sentAt: number): number {

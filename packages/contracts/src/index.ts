@@ -40,6 +40,7 @@ export * from './notification';
 // The setup corridor (`T-M01-026`): resume, and the one prompt-point per skipped fact.
 export * from './onboarding';
 // The platform message rail (the code and the invite), the session projection and its port.
+export * from './ports/google-identity';
 export * from './ports/message-delivery';
 export * from './ports/object-store';
 export * from './ports/push';

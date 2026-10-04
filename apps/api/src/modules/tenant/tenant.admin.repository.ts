@@ -94,10 +94,17 @@ export class TenantAdminRepository {
         .insert(membershipRole)
         .values({ tenantId: created.id, membershipId: membership.id, rolePreset: FOUNDER_ROLE });
       // The signer's name is a signup fact (`M01-01`); it lands on the account with the company.
+      // Only when it differs: an unchanged name taking the row lock would hold it for the rest
+      // of this transaction, and every signup by the same person would queue behind it.
       await tx
         .update(userAccount)
         .set({ name: input.ownerName })
-        .where(eq(userAccount.id, input.ownerUserId));
+        .where(
+          and(
+            eq(userAccount.id, input.ownerUserId),
+            sql`${userAccount.name} is distinct from ${input.ownerName}`,
+          ),
+        );
       // What a company has before its owner touches a setting (`M01-28`): the corridor, the
       // empty profile, the two standard splits — in this transaction, so none is ever missing.
       await seedTenantSettings(tx, { tenantId: created.id, now: input.now });

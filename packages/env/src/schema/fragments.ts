@@ -110,5 +110,10 @@ export const developmentPhonesSchema = z
   .string()
   .transform((list) => list.split(',').map((phone) => phone.trim()))
   .pipe(z.array(developmentPhoneSchema));
+/** A comma list of Google OAuth client ids, each trimmed; the ids a Google ID token may be issued for. */
+export const googleClientIdsSchema = z
+  .string()
+  .transform((list) => list.split(',').map((id) => id.trim()))
+  .pipe(z.array(z.string().regex(/^[\w-]+\.apps\.googleusercontent\.com$/)).min(1));
 /** The six digits of a sign-in code, leading zeros included. */
 export const developmentCodeSchema = z.string().regex(/^\d{6}$/);

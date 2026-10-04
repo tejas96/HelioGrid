@@ -7,6 +7,7 @@ import {
   developmentCodeSchema,
   developmentPhonesSchema,
   filePathSchema,
+  googleClientIdsSchema,
   nodeEnvSchema,
   originSchema,
   poolMaxSchema,
@@ -92,6 +93,12 @@ const apiEnvObject = z.object({
    */
   DEV_OTP_PHONES: developmentPhonesSchema.optional(),
   DEV_OTP_CODE: developmentCodeSchema.optional(),
+  /**
+   * The Google OAuth client ids a Google ID token may be issued for (`M01-02`): each
+   * environment's web id (which the web and Android sign-ins name) and its iOS id. Client ids, not
+   * secrets. Optional: unset, POST /auth/google refuses every token and nothing else changes.
+   */
+  GOOGLE_CLIENT_IDS: googleClientIdsSchema.optional(),
 
   /**
    * The oldest phone build the api still serves, and where each store sells the new one

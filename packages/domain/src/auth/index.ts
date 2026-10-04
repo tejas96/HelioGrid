@@ -3,6 +3,8 @@ export { admit, refreshVerdict } from './admission';
 export { hasCompany, homeOf } from './company';
 export type { DoorView } from './door-view';
 export { doorView } from './door-view';
+export type { GoogleBindingFacts, GoogleBindingRoad, GoogleBindOutcome } from './google-binding';
+export { googleBindingRoad } from './google-binding';
 export type { InvitationLife, InvitationStatus } from './invitation-policy';
 export {
   INVITATION_EXPIRY_DAYS,

@@ -295,7 +295,7 @@ export class AuthAdminRepository {
   }
 }
 
-function accountColumns() {
+export function accountColumns() {
   return {
     id: userAccount.id,
     phoneE164: userAccount.phoneE164,

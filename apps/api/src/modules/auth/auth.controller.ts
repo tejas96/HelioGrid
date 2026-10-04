@@ -39,6 +39,7 @@ export class AuthController {
   @RouteAccessMap(authContract, {
     requestOtp: 'public',
     verifyOtp: 'public',
+    signInWithGoogle: 'public',
     refresh: 'session-cookie',
     signOut: 'session',
     signOutEverywhere: 'session',
@@ -56,6 +57,17 @@ export class AuthController {
           body.challengeId,
           body.code,
           body.platform,
+          languageOf(req),
+          cookieOf(req, SESSION_COOKIE),
+          Date.now(),
+        );
+        setSessionCookie(res, opened.session.secret, opened.session.expiresAt);
+        setTokenCookie(res, opened.token.token, opened.token.expiresAt);
+        return { status: 200, body: opened.projection };
+      },
+      signInWithGoogle: async ({ body }) => {
+        const opened = await this.auth.signInWithGoogle(
+          body,
           languageOf(req),
           cookieOf(req, SESSION_COOKIE),
           Date.now(),
