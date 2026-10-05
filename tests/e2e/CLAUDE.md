@@ -32,17 +32,22 @@ Deps: `architecture.md` §2 tests/e2e.
 ```
 pnpm --filter @heliogrid/e2e test:web                 # the web flows; starts the BUILT api and web, or reuses running ones
 pnpm --filter @heliogrid/e2e test:ct [<spec files>]   # the component tests (port 3100)
-pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows, one device per call
+pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows by hand, one device per call
 ```
 
-The web suite and the whole component suite run in CI (`e2e-web`). The phone suite runs by
-hand: CI has no simulator. It needs Metro, the api and the app installed on each device.
+Every suite runs in CI: the web and component suites in `e2e-web`, the phone flows in `android`
+and `ios` (`.github/workflows/ci.yml` says how, and how the repository variable `PHONE_E2E=off`
+switches the flows off). `test:mobile` runs them by hand only to debug a red CI run; it needs
+Metro, the api and the app installed on the device. An emulator a local run uses matches CI's:
+API 34, 4 cores and 4 GB of RAM — at 1.5 GB Maestro's on-device server dies mid-suite
+(`DeviceServerDiedException`) while the app shows no fault.
 
 ## Local conventions
 
 - A new number's code is read from the api's log, `.qa/api.log`, which the `api`
-  launch configurations and `playwright.config.ts` both write (`support/api-log.ts`). A running api
-  is reused as it is, so it must be one of those: an api started any other way writes no log here.
+  launch configurations, `playwright.config.ts` and CI's `android` and `ios` jobs write
+  (`support/api-log.ts`). A running api is reused as it is, so it must be one of those: an api
+  started any other way writes no log here.
 - Maestro types faster than the phone's fields take keys: a flow waits for the tap to settle before
   typing, gives each code box its own digit, and presses Return to close the keyboard before the
   next tap — while it is up, the form spends a tap on closing it.
