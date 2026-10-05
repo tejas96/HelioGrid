@@ -36,11 +36,12 @@ pnpm infra:down    # stop, keep the data
 pnpm infra:reset   # down -v — destroys the volume
 ```
 
-**One Postgres container, three databases** (owner ruling 2026-08-27). `heliogrid-pg-local` on
-port `5544` holds `heliogrid_dev` (Drizzle migrations), plus `temporal` and `temporal_visibility`
-(owned by `temporal-sql-tool`). Two migration tools, separate databases, so neither can reach the
-other's tables — and the tenancy invariant still scans `heliogrid_dev` alone, because `pg_class`
-is per-database.
+**One Postgres container, four databases** (owner ruling 2026-08-27; the fourth 2026-10-05).
+`heliogrid-pg-local` on port `5544` holds `heliogrid_dev` (the owner's development data) and
+`heliogrid_test` (`/task` QA, the local api tests and the invariants — disposable), both on the
+Drizzle migrations, plus `temporal` and `temporal_visibility` (owned by `temporal-sql-tool`). Two
+migration tools, separate databases, so neither can reach the other's tables — and the tenancy
+invariant scans the one database its URL names, because `pg_class` is per-database.
 
 Roles and databases are provisioned by `infra/postgres/init/*.sql`, which Postgres runs once on
 an empty volume. Nothing is created by hand any more. Put these in `.env.local`:
@@ -48,6 +49,19 @@ an empty volume. Nothing is created by hand any more. Put these in `.env.local`:
 ```
 DATABASE_URL=postgres://app_runtime:app_runtime@localhost:5544/heliogrid_dev
 DATABASE_ADMIN_URL=postgres://app_admin:app_admin@localhost:5544/heliogrid_dev
+```
+
+Switching to the test database is the database name in both lines, then `pnpm db:migrate` with
+the file exported (`set -a; . ./.env.local; set +a` — the command reads the shell, not the file)
+and a restart of the api alone; web, Metro and the phones keep talking to the api. A fresh test
+database holds no market pack, so before the first sign-in there run
+`pnpm --filter @heliogrid/api pack:publish` (it reads `.env.local` itself). `vitest.config.mts`
+collects `apps/api/tests` locally only while both lines name `heliogrid_test`, skips them with a
+warning otherwise, and throws when a collected run names `heliogrid_dev`. A volume created before
+`03-test-database.sql` existed receives the database once:
+
+```
+docker exec -i heliogrid-pg-local psql -U heliogrid -d heliogrid_dev -v ON_ERROR_STOP=1 -f - < infra/postgres/init/03-test-database.sql
 ```
 
 The four `TEMPORAL_TLS_*`/`TEMPORAL_AUTH_TOKEN_FILE` values ship as `/ABSOLUTE/PATH/TO/…`

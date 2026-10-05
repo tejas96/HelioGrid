@@ -40,12 +40,39 @@ try {
   if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
 }
 
-/* The api tests write companies into the one local database the app uses, and the ones that sign
-   up through the api remove none, so off CI they are left out — said out loud, never silently.
-   One file runs locally with `CI=1 pnpm exec vitest run <file>`, for a red proof. */
-const runApiTests = process.env.CI !== undefined;
+/* The api tests sign companies up through the api and remove none, so they run only against a
+   database that is theirs: `heliogrid_test` locally (infra/postgres/init/03-test-database.sql),
+   `heliogrid_ci` in CI. Off CI they are collected only when BOTH database URLs name the test
+   database; whenever they are collected and either URL names `heliogrid_dev`, the run refuses
+   here, before collection — a loud stop, never a test run against the owner's development data.
+   Off CI with any other pair of names they are skipped, and the warning below says so. */
+const TEST_DATABASE = 'heliogrid_test';
+const DEVELOPMENT_DATABASE = 'heliogrid_dev';
+/* A missing or malformed URL reads as "no name": the api tests are then skipped with the warning,
+   and the api's own env loader reports the bad value with its variable name. */
+const databaseNameOf = (url: string | undefined) => {
+  if (!url) return undefined;
+  try {
+    return new URL(url).pathname.replace(/^\//, '');
+  } catch {
+    return undefined;
+  }
+};
+const databaseNames = [process.env.DATABASE_URL, process.env.DATABASE_ADMIN_URL].map(
+  databaseNameOf,
+);
+const bothNameTheTestDatabase = databaseNames.every((name) => name === TEST_DATABASE);
+const runApiTests = process.env.CI !== undefined || bothNameTheTestDatabase;
+if (runApiTests && databaseNames.includes(DEVELOPMENT_DATABASE)) {
+  throw new Error(
+    `apps/api/tests refuse ${DEVELOPMENT_DATABASE}: point DATABASE_URL and DATABASE_ADMIN_URL at ` +
+      `${TEST_DATABASE} in .env.local (vitest.config.mts)`,
+  );
+}
 if (!runApiTests) {
-  process.emitWarning('apps/api/tests are skipped off CI; run one with CI=1 (vitest.config.mts)');
+  process.emitWarning(
+    `apps/api/tests are skipped: both DATABASE_URL and DATABASE_ADMIN_URL must name ${TEST_DATABASE} (vitest.config.mts)`,
+  );
 }
 
 export default defineConfig({
@@ -65,6 +92,10 @@ export default defineConfig({
     exclude: runApiTests
       ? configDefaults.exclude
       : [...configDefaults.exclude, 'apps/api/tests/**'],
+    /* Two workers: each api test file opens its own pools (`packages/db/src/client.ts`, `max: 10`)
+       and the local Temporal holds about half of Postgres's 100 slots, so one worker per core ran
+       out of connections at random. Two is the value that passed. */
+    maxWorkers: 2,
     /*
      * A test imports `../../src/…`, never `@heliogrid/<pkg>`. The package entry resolves to
      * BUILT `dist/`, so a test written that way passes against the last build and says nothing

@@ -82,9 +82,10 @@ Write under the task's header lines (`docs/tasks/README.md` keeps the shape):
   `qa-android`, `evaluator`, `ci`. Tiers: `required`, `blocked` (names what clears it),
   `not_applicable` (names why). CI lanes today: `quality`, `e2e-web`, `mobile-js`, `android`,
   `ios`, chosen by the path rules in `.github/workflows/ci.yml`; a lane an AC needs that the
-  paths skip is `FAIL`, never a pass. Before PR B no row claims local API-integration proof: an
-  API behaviour is proven by its single-file red proof (`CI=1 pnpm exec vitest run <file>`) and
-  CI. Before PR C no row claims phone CI proof: phone rows are local, by `qa-ios` and `qa-android`.
+  paths skip is `FAIL`, never a pass. An API behaviour is proven by its test file on
+  `heliogrid_test` (`pnpm exec vitest run <file>`, both database names switched —
+  `infra/README.md`) and CI. Before PR C no row claims phone CI proof: phone rows are local, by
+  `qa-ios` and `qa-android`.
 - `#### Parts` — the `Where` table is complete or the plan is not, and it is the budget: a part
   holds about 20 files and 1,000 lines, or holds one independently rejectable deliverable. The
   cap decides WHERE the work splits, never what is cut: a test, a protection row or a doc line is
@@ -117,15 +118,15 @@ planned file list is the budget: when the changed set passes it by a fifth, or a
 package the plan does not name, stop, show the delta (planned and built · built but not planned,
 each with its reason · planned but not built) and repartition — never trim a proof to fit. Tick
 the part's checklist as each file group and proof lands; the owner reads it, never a transcript.
-A planted red that needs a database runs on `heliogrid_test` once PR B lands; until then it needs
-the owner's yes for that one run; no task creates a database of its own.
+A planted red that needs a database runs on `heliogrid_test`; no task creates a database of its
+own.
 
 Before any helper runs, drive one happy path yourself on the surface you
 changed.
 
 ## 5. QA — helpers once, on one stack
 
-Start or reuse the stack (step 0). After PR B: set both `.env.local` database names to
+Start or reuse the stack (step 0). Set both `.env.local` database names to
 `heliogrid_test`, run `pnpm db:migrate`, restart only the api, and verify both names before QA.
 Standing accounts, one helper each: `…901` web, `…902` iOS, `…903` Android (`DEV_OTP_PHONES`); a
 missing standing company is created once through the app before QA; API tests never use them.

@@ -100,7 +100,7 @@ nvm use
 pnpm install --frozen-lockfile
 pnpm turbo build                          # REQUIRED before anything below
 
-pnpm infra:up                             # container + all three databases + roles —
+pnpm infra:up                             # container + every database + roles —
                                           # see infra/README.md §"Local dev"
 
 cp .env.example .env.local                # then fill in DATABASE_URL (app_runtime) and
