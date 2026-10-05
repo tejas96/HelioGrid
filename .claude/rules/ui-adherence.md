@@ -11,24 +11,16 @@ paths:
 
 # UI — theme only, compose don't invent, separate rendering from logic
 
-The component folder shape is `packages/ui/CLAUDE.md`. This file is the law that applies wherever
-UI is authored, in the package and in both apps.
-
 ## Visual values
 
-- **No raw values.** No hex, no arbitrary px, no inline style. Everything comes from
-  `@heliogrid/theme`, which is GENERATED from the live design system and never hand-transcribed.
-  `color-mix()` over TOKENS is house style; a literal colour in any notation is not. On a screen
-  only `0` is written raw; a size or colour the design system lacks is added THERE, in Claude
+- **No raw values** — no hex, no px, no inline style; every value comes from `@heliogrid/theme`. On
+  a screen only `0` is written raw; a size or colour the design system lacks is added THERE, in Claude
   Design, then pulled — never typed into the app.
 - **Primary actions are near-black.** Accent is focus, links, selection, active tab and control
   fills ONLY — never a button fill. Iridescence is atmosphere, never information. Hierarchy comes
   from luminance and elevation, not borders.
-- **Light-only v1.** Text is never smaller than 12px; the 11px uppercase overline is the one
-  exception. No dark-mode API, no theme switch; the web root declares `color-scheme: only light`
-  and the iOS app pins `UIUserInterfaceStyle` to Light.
-- **An icon-only control is an `IconButton`**, whose `label` is required; a `Button` always has
-  words.
+- **Text is never smaller than 12px**; the 11px uppercase overline is the one exception.
+- **An icon-only control is an `IconButton`**; a `Button` always has words.
 
 ## Compose from the primitives, don't re-answer them
 
@@ -38,14 +30,12 @@ style, and a component that re-implements either is a defect:
 - **`Pressable` owns the 44px minimum touch target.** Never re-implement a pressable.
 - **`StatusMark` owns "status is never carried by colour alone"** — always a label plus a mark.
 
-**Semantics go THROUGH `Pressable`, never around it.** A control that is a checkbox, radio, tab or
-menu row passes `accessibilityRole` and `accessibilityState` to the primitive. Reaching past it
-for the platform pressable gives up the 44px floor and the focus ring, which is the only thing the
-primitive exists to guarantee.
+**Semantics go through `Pressable`:** a checkbox, radio, tab or menu row passes `accessibilityRole`
+and `accessibilityState` to it; reaching for the platform pressable loses the 44px floor and focus
+ring.
 
-**Never put `accessible` on a wrapper that contains focusable controls.** It folds the subtree into
-one element: the children's labels concatenate and any control inside goes out of the screen
-reader's reach. State belongs on the node that already IS the accessibility element.
+**Never put `accessible` on a wrapper that holds controls** — it folds them out of the screen
+reader's reach; state goes on the node that is the accessibility element.
 
 A surface the design system does not cover is COMPOSED from the existing vocabulary, never new
 visuals. **No user-visible English lives in `packages/ui`, accessibility labels included** — a
@@ -53,7 +43,7 @@ screen reader speaks an `aria-label`, so a hard-coded one is a Hindi user hearin
 props are required, never optional-with-a-fallback: a default that "only shows if you forget" is
 how untranslated copy ships.
 
-## What no static gate can see — each shipped as a real defect past every gate
+## Traps no check sees
 
 - **A control never renders smaller than it was designed.** A `width` or `height` with a smaller
   `min-width` or `min-height` in a flex row shrinks silently, and the touch check then measures the
@@ -68,13 +58,10 @@ how untranslated copy ships.
 - **A component never states a value it was not told** — a default that invents a limit, a size or
   a ceiling promises one thing while the caller refuses another.
 
-## Screens are the unguarded surface
+## Screens
 
-A few gates reach the screens (`.claude/protections.md`: raw colours, screen sizes, app vocabularies,
-timers); most of what a screen writes inline is held by review alone. Assume nothing is watching: no
-inline policy, money maths, enum, copy or colour. A screen renders (Law 11), and every
-word it shows comes from `@heliogrid/i18n` — `<Trans id="…">` in markup, `i18n._()` for a string; a
-bare English literal in JSX is a defect no gate sees.
+Every word a screen shows comes from `@heliogrid/i18n` — `<Trans id="…">` in markup, `t(COPY.key)`
+in hooks and handlers. No check finds a bare English literal in JSX.
 
 ## Presentation and logic live in different files
 
@@ -87,7 +74,5 @@ it feeds is a review finding.
 
 ## Done means
 
-375px and 1536px both work · loading, empty and error states all designed (never an offline state)
-· keyboard reachable with visible focus · touch targets ≥44px · no hover-only meaning · Hindi
-renders without clipping · numbers carry provenance · the prop contract is one `<Name>.types.ts`
-both platforms implement (Law 7).
+The per-screen Definition of Done, `F7-43` (`docs/prd/foundations/F7-design-language.md`) — for a
+component: at 375 and 1536, in Hindi, both halves on the one `<Name>.types.ts`.

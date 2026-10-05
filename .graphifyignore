@@ -102,7 +102,6 @@ turbo.json
 biome.json
 .jscpd.json
 apps/mobile/app.json
-.claude/settings.json
 .claude/launch.json
 
 # Emitted OpenAPI — derived from packages/contracts/src, which is already graphed.

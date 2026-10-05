@@ -198,7 +198,7 @@ The port is then held by checks that run in `pnpm lint` and `pnpm check:all`, an
 | **Inert accessibility** — `accessibilityState`, `accessibilityLabel` or `accessibilityValue` on a React Native `View` or `Animated.View` that is not an accessibility element (no `accessible`, no role) | Biome plugin `inert-a11y` |
 | **Folded control** — `accessible` on a tag whose subtree holds a control, so the control is out of a screen reader's reach | Biome plugin `folded-control` |
 | **Dishonest role** — a literal `progressbar` role with no `accessibilityValue` or `aria-valuenow` | Biome plugin `progressbar-value` |
-| **Semantic drift** — the two halves of one component declaring different roles or states for a screen reader | review — `code-reviewer` |
+| **Semantic drift** — the two halves of one component declaring different roles or states for a screen reader | review |
 | **False excuse** — a comment excusing a shortfall by naming something that already exists | review |
 | **Census** — a component missing one of its four files (`<Name>.types.ts`, `<Name>.tsx`, `<Name>.native.tsx`, `index.ts`) | review; nothing checks it |
 
@@ -223,7 +223,7 @@ a web half declaring a role and a state its native half did not, so the control 
 plain button and its state was carried by colour alone (`F7-12`). The checks above close a few
 mechanically detectable shapes. Nothing here reads what a component *does* — defaults, focus order,
 tokens, copy, state transitions, loading and error behaviour, gesture targets. That is review's job
-and `/qa`'s.
+and verification's, on the running app.
 
 ### The two native waivers
 

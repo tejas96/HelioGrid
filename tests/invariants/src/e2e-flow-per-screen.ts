@@ -35,7 +35,7 @@ const PHONE_SCREENS_HELD: ReadonlyMap<string, string> = new Map([
     'shell',
     'reached only by a member with a company: no flow yet signs a seeded member in, and the ' +
       "sign-up flow's Create company press never reaches the api on iOS inside Maestro, while the " +
-      'same tap on a still screen does — qa-mobile drives it',
+      'same tap on a still screen does — it is checked by hand',
   ],
 ]);
 

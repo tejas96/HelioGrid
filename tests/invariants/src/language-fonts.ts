@@ -235,7 +235,7 @@ export async function runLanguageFonts(repo: string): Promise<void> {
     throw new Error(
       'language-fonts: a language that fails is never offered:\n  ' +
         findings.join('\n  ') +
-        '\n  The playbook is packages/i18n/CLAUDE.md, "Adding a language".',
+        '\n  The playbook is docs/engineering/adding-a-language.md.',
     );
   }
   console.log(`language-fonts OK — ${summary}`);

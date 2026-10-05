@@ -19,8 +19,7 @@ import {
 import postgres from 'postgres';
 
 /**
- * Enum parity invariant — closes the drift packages/db/CLAUDE.md calls "the highest-risk
- * drift in the repo".
+ * Enum parity invariant — closes the highest-risk drift in the repo.
  *
  * packages/db hand-mirrors the contracts z.enums, and dependency-cruiser's `db-no-upward`
  * correctly forbids importing contracts there ("db never imports contracts, ui or apps").
@@ -93,7 +92,7 @@ const NO_CONTRACT_YET: Record<string, string> = {
 /**
  * Deliberately one-directional. A contract enum with no pg counterpart is NOT a failure:
  * under Law 9 its table lands with its owning module (provenanceTier and workflowStatus are
- * wire-only today). The /migration skill is what pairs a new stored enum with its contract.
+ * wire-only today). The migration that stores a new enum pairs it with its contract.
  */
 
 function assert(cond: unknown, msg: string): asserts cond {

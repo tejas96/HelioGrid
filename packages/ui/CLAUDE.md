@@ -4,14 +4,12 @@ Deps: `architecture.md` §2 ui. Primitives plus components, each shipping a web 
 Native half from one folder. The compose-don't-invent and no-raw-values laws are
 `.claude/rules/ui-adherence.md`, which loads with this folder.
 
-**This package is built from the design system AHEAD of the screens that consume it.** Component
-gaps found by a screen are registered in `docs/tasks/UI.md`: fix when you touch the component,
-fix BOTH halves, then delete the row.
+**Before changing a component, read its rows in `docs/tasks/UI.md`.** Fix the repo side, give
+the owner the design-system side, then delete the row.
 
 ## What lives here / what must never live here
 
-- `src/primitives/` — the atoms everything else is built from: `Box`, `Field`, `FieldBox`, `Ground`,
-  `Icon`, `Portal`, `Pressable`, `StatusMark`, `Surface`, `Text`. **Every field draws its box through
+- `src/primitives/` — the atoms every component is built from. **Every field draws its box through
   `FieldBox`** — the well, the radius and the rings are decided there once (`F7-15`, `F7-24`); a
   field that paints its own background, shadow or ring is drift. **Every other control takes its
   fill from `Ground`** — the opposite of what holds it: `var(--hg-control-fill)` on the web,
@@ -22,20 +20,17 @@ fix BOTH halves, then delete the row.
   `tileSurface` and wraps `GroundProvider ground="tile"`. A tile keeps only its radius, padding
   and ring states; one that paints its own grey is drift. A section is a heading on the page —
   no fill, no shadow; what must stay opaque over scrolling paints `var(--hg-ground)`.
-- `src/components/<Name>/` — one folder per component, both platforms inside it.
-- `src/utils/` — helpers shared across components only. `src/styles.css` — the package stylesheet.
-- **NEVER product logic, policy or money maths.** That is `@heliogrid/domain`. A component takes
-  props and renders; it does not know what a lead or a tranche is. **Formatting is product
-  logic**: `src/utils/format.ts` BINDS a market pack to domain's format slice, and
-  `src/utils/color-contrast.ts` binds this system's inks to domain's contrast maths; both
+- **NEVER product logic, policy or money maths** (that is domain). `utils/format.ts` and
+  `utils/color-contrast.ts` only bind a pack or this system's inks to domain's maths; they
   implement nothing.
-- **NEVER navigation chrome** — that belongs to the app.
-- NEVER a DOM API in a `.native.tsx`, or a React Native import in a `.tsx`.
-- **NEVER a hover state in a native half.** A touch screen has no pointer, so the web half's
-  lift or tint has no counterpart here — the pressed state is the touch feedback, and a fact that
-  only appears on hover has not appeared at all (`N1`).
-- **The ask is one component (`F7-46`), never per-screen prose.** Teaching a screen puts behind an
-  information control opens the shared anchored popover; a screen that writes its own is drift.
+- **Navigation chrome is drawn here; routing is not.** No router import: a component takes its
+  items and an onNavigate from the app.
+- NEVER a react-native import in a web `.tsx` (no check catches it); a DOM global in a
+  `.native.tsx` fails typecheck.
+- **NEVER a hover state in a `.native.tsx`** — the pressed state is the touch feedback, and nothing
+  may appear only on hover (`N1`).
+- **An "ask" is always `Explainer`** (`F7-46`): the one anchored popover behind an information
+  control. Never write a per-screen one.
 
 ## Folder shape — a closed set; never invent a folder
 
@@ -43,7 +38,7 @@ fix BOTH halves, then delete the row.
 src/components/<Name>/
   <Name>.types.ts     THE shared prop contract — both halves implement it (Law 7)
   <Name>.tsx          web        <Name>.native.tsx   React Native
-  <Name>.css          web styles — style is NEVER in the component file
+  <Name>.css          web styles
   <Name>.logic.ts     anything that is not markup, consumed by BOTH halves
   index.ts            the only thing outside imports
 ```
@@ -53,22 +48,19 @@ src/components/<Name>/
 `.web.tsx` needs custom resolution in both bundlers and fails at RUNTIME when it is wrong.
 
 A component with only one platform half is incomplete, not "web-only" — unless its types file
-opens with one of the two waivers, `PRINT SURFACE` or `POINTER SURFACE`, and gives the reason. No
-check reads the waivers; review does. A `PRINT SURFACE` part is exported from `src/print.ts`
-(`@heliogrid/ui/print`), never from `src/index.ts`: the phone typechecks the main entry with its
-`.native` halves first, and a print part there fails it.
+opens with one of the two waivers, `PRINT SURFACE` or `POINTER SURFACE`, and gives the reason.
+A `PRINT SURFACE` part is exported from `src/print.ts` (`@heliogrid/ui/print`), never from
+`src/index.ts`: the phone typechecks the main entry with its `.native` halves first, and a print
+part there fails it.
 
 ## Local conventions
 
-- **An icon is DRAWN here, never imported from an icon package** — one SVG per glyph,
-  `currentColor`, 1.5px stroke, one drawing serving the web half and the native half.
-  `AppShell/ShellGlyph.logic.ts` is the shape to copy.
+- **An icon is drawn here, never imported** (Biome blocks lucide; any other icon package is
+  equally wrong). Copy `AppShell/ShellGlyph.logic.ts`.
 - The `design-system-props` invariant checks only that each design-system prop is declared;
   nothing compares the two halves, so the types file is what you must keep honest.
-- Anything shared by both halves goes in a `<Name>.logic.ts`, a `use<Name>.ts` hook or a
-  `<name>-model.ts` — never copied into each half.
-- **This package still carries hardcoded English**, and no check finds it. Real debt. Do not add
-  more: write the prop.
+- **Existing components still carry hard-coded English** and no check finds it — never copy that
+  pattern (`.claude/rules/ui-adherence.md`).
 
 ## Traps
 

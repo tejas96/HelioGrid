@@ -1,20 +1,15 @@
 # @heliogrid/domain — pure isomorphic domain logic, the bottom layer
 
-Deps: `architecture.md` §2 domain. This package imports nothing in the workspace. Contracts
-derives from it (`z.enum(ROLE_PRESETS)`); importing contracts from here is a package cycle.
+Imports no workspace package except build config. Contracts derives from this package
+(`z.enum(ROLE_PRESETS)`), so importing contracts here is a cycle.
 
 ## What lives here / what must never live here
 
-- Decision logic both platforms need: state machines as pure reducers, formatters, business
-  invariants, calculations, and the AUTHORIZATION POLICY (`src/authz/`).
-- **`src/authz/` is the whole permission model** — the twelve fixed presets, the capability
-  matrix, OR-across-held-roles, and widest-wins visibility resolved PER DOMAIN. It is pure by
-  design: no session, no tenant, no request. The API resolves the membership and passes the ROLES
-  in; this decides. That is what lets the model be exercised without a server, and what stops a
-  permission check quietly becoming a query.
-- NEVER: NestJS, React, React Native, storage, fetch, an env read, `packages/db`, `packages/ui`,
-  any app import, a `node:` import, a timer, `performance` or `crypto`. No side effects, no I/O,
-  no clock read at module scope.
+- `src/authz/` is the whole permission model (presets, capability matrix, OR across held roles,
+  widest-wins visibility per domain). It takes ROLES in and never reads a session, tenant or
+  request.
+- NEVER a framework (NestJS, React, React Native), storage, or any I/O. Biome refuses clocks,
+  timers, `crypto` and `node:` imports here.
 - Rules, catalogs and market config arrive as INJECTED parameters. A module-level global is the
   specific anti-pattern this package exists to prevent.
 - **Two entries: the index every device bundles, and `./server` (`src/server.ts`) for `apps/api` and
@@ -25,64 +20,39 @@ derives from it (`z.enum(ROLE_PRESETS)`); importing contracts from here is a pac
   figure out of a pack and labelling a figure one is handed compute nothing and stay on the index,
   each named with its reason on the reviewed list in `tests/money/device-entry.test.ts`.
 
-## Commands
-
-```
-pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ and tests/
-```
-
 ## Local conventions
 
 - Reducers are `(state, event) => state` — total, synchronous, no timers. `packages/data`'s hook
   owns timers and I/O, the app navigation and rendering; the reducer owns the decision.
-- **Time enters as a parameter (`now: number`)**, never `Date.now()` inside a reducer. That is
-  what makes behaviour reproducible and stops RN's suspended-timer behaviour becoming a platform
-  special case. `new Date(…)` is banned here, parsing included: use `Date.parse` and pass the
-  epoch to Intl.
-- **A capability matrix with a default is a matrix with a hole.** Every cell is written out, and
-  `Record` is what makes a thirteenth preset a compile error in every row rather than a quiet
-  `undefined`. The rows `F2` §F2.5 fixes live in `authz/<area>.ts`, one file per product area named for
-  what it holds (`survey.ts`, never the PRD's `m04`), joined in `capabilities.ts` and
-  `visibility.ts`; a module appends its placeholder rows to ITS file when its slice begins
-  (Law 9), and the `matrix-mirrors-f2` invariant holds every cell to the book.
-- **`format/pack.ts` is FLAT, and that is not a style choice.** The design system's pulled
-  `MarketProvider` contract fixes `id`, `locale`, `currency`, `currencyFractionDigits`, `clock`
-  and `taxIdLabel` as names, and the `design-system-props` invariant fails on a dropped one.
-  Grouping them into sub-objects would make the design system and this package each declare a pack.
-- **A market fact is a key on `MarketPack` (`market/pack.ts`), never a constant.** A key task
-  adds its folder beside `format/`, its property on `MarketPack` and its India values on
-  `IN_PACK`, and reaches `MarketCode` through `market/code` by path, never the market index;
-  `market/launch.ts` reports what is still unauthored (`F1-05`). `MarketCode` and
-  `PackVersion` are brands: obtain them from a pack, never by a cast.
-- **`commerce/` is packaging, not a pack key** — the one folder beside the keys that is NOT one, so
-  it sits outside `MarketPack`. It holds structure every market prices against, never a market fact.
-  `costs.ts` is its other half: what the platform pays for instead of selling, and `trial.ts` the
-  one non-paying motion there will ever be, and `soft-block.ts` what a tenant may still do when
-  they have not, and `grandfathering.ts` what a repricing may do to them. A change that cannot be
-  PROVEN generous waits for the horizon.
-- **This package holds no clock, so a billing fact is authored in its own unit, never as an
-  instant.** The trial is DAYS; the soft-block matrix is keyed by PHASE, because `past_due` behaves
-  as two. Turning either into a moment needs the TENANT's clock (`F1-10`), which the PRD's
-  platform-billing module (`M12`) holds.
-- **A rate carries the cost it must clear** (`pricing/`). `WorstCaseCogs` sits on `UnitRate` and on
-  each `ChannelRate`, never in a table beside them, so a rate cannot be authored without the figure
-  that judges it. It has no `verified` field and never gains one (`BM-26`).
+- Parse a date with `Date.parse` and pass the epoch to Intl (Biome refuses `new Date` and
+  `Date.now` here).
+- Capability rows live in `authz/<area>.ts`, one file per product area named for what it holds
+  (`survey.ts`, never `m04.ts`), joined in `capabilities.ts` and `visibility.ts`. A module adds its
+  rows to its own file when its slice begins. Write every cell; never add a default.
+- Keep `format/pack.ts` flat: the design system's `MarketProvider` fixes `id`, `locale`,
+  `currency`, `currencyFractionDigits`, `clock` and `taxIdLabel`, and `design-system-props` fails
+  on a dropped one.
+- **A market fact is a key on `MarketPack` (`market/pack.ts`), never a constant.** A new key adds
+  its folder beside `format/`, its property on `MarketPack` and India's values on `IN_PACK`, and
+  imports `MarketCode` from `market/code` by path, never the market index.
+- `commerce/` holds packaging every market prices against — never a market fact — so it is not a
+  `MarketPack` key. A repricing reaches a price-protected tenant at once only when it takes nothing
+  away (`BM-42`); otherwise it waits until the protection ends.
+- This package has no clock, so a billing fact is authored in its own unit, never as an instant:
+  the trial is in DAYS, and the soft-block matrix is keyed by PHASE. Turning one into a moment
+  needs the tenant's clock (`F1-10`), held by `M12`.
+- `WorstCaseCogs` sits on each `UnitRate` and `ChannelRate`, never in a separate table, and never
+  gains a `verified` field (`BM-26`).
 - **A ruleset item declares `floor()` or `tenantDefault()`** (`calling/`), so an unclassified one
   is a compile error rather than a silent default-to-editable (`F1-17`). A time of day is
   `ClockTime`, minutes past midnight, carrying no zone — `F1-10` puts every comparison on the
   TENANT's clock and the caller holding the tenant applies it. `packages/ui`'s `TimeField` keeps
   its own parser: that one reads what a person types, not what the platform authors.
-- **A pack LABEL is per language and a pack VOCABULARY is an open set** (`format/`). A label is a
-  `PackLabel` — `en` required, the rest optional, because `F3-05` falls back to English and an
-  unauthored Hindi label is a content gap, not a failure state. It lives on the pack rather than in
-  `packages/i18n` so a label change stays a pack revision (`F1-11`), which is also why
-  `UI_LANGUAGES` is authored HERE and contracts derives it. Stage, blocker, checklist and
-  payment-mode keys are open-set strings validated against the pack (`F1-09`) — a reader returns
-  `null` for an undeclared key and never guesses, because the machines that own them are not
-  authored yet (Law 9). A never-translated name (`DISCOM`, `ALMM`, `GSTIN`) carries `en` alone.
-  A TENANT's own words resolve through `authoredIn`, which names the language shown, never
-  through `inLanguage`, whose silent English fallback is a pack label's law (`F3-05`) and not a
-  tenant's (`F3-10`); no check holds this, review does.
+- A pack label is a `PackLabel`: `en` required, other languages optional (an unauthored Hindi
+  label falls back to English, `F3-05`). Labels live on the pack, not in `packages/i18n`, so
+  `UI_LANGUAGES` is authored here. Stage, blocker, checklist and payment-mode keys are open-set
+  strings checked against the pack: a reader returns `null` for an unknown key. A tenant's own
+  words go through `authoredIn`, never `inLanguage` (`F3-10`); only review holds this.
 - **An amount is `MinorUnits` and a rate is `BasisPoints`** (`money/`), brands with one constructor
   each, and `money/` is the ONLY slice that rounds — `applyRate` for a fraction of an
   amount, `amountForQuantity` for a quantity at a per-unit price — so BOM, proposal and invoice can
@@ -92,4 +62,4 @@ pnpm --filter @heliogrid/domain typecheck | build     # typecheck covers src/ an
 
 ## Done means
 
-Pure · consumed by BOTH platforms where a mobile surface exists · typecheck and lint green.
+Consumed by both platforms wherever a mobile surface exists.

@@ -147,8 +147,8 @@ export interface FunnelChartProps extends Omit<ChartFrameProps, 'children' | 'in
   /**
    * Below this carried-forward percentage a stage is called out. REQUIRED, and deliberately not
    * defaulted: a funnel that is doing badly is a product judgement, and this package may hold no
-   * policy (`packages/ui/CLAUDE.md`). A component that invents a threshold promises one thing
-   * while its caller means another — the caller passes the number its own module owns.
+   * policy (`.claude/rules/ui-adherence.md`). A component that invents a threshold promises one
+   * thing while its caller means another — the caller passes the number its own module owns.
    */
   lowConversionBelow: number;
 }

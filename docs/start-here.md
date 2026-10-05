@@ -1,8 +1,8 @@
 # Start here — designing one screen
 
-> ## ▶ Run `/start` in a fresh Claude Code session — step 2 prints `NEXT`, `AHEAD` and `DONE`, and names the next screen to draw.
+> ## ▶ Your next screen is the first undrawn V1 screen on the walk in `docs/build-order.md`.
 
-This file is how you design **one** screen. Then you repeat it until `DONE` reads 99.
+This file is how you design **one** screen. Then you repeat it until all 99 V1 screens are drawn.
 Nothing else in this repository needs your attention while you do that.
 
 The register holds 150 screens; **99 are V1**. The `V` column in `docs/prd/registers/screens.md` §2
@@ -23,10 +23,9 @@ repo is the reasoning behind those briefs — you never open it.
 
 ## The order is the V1 build order. `V2` rows are skipped.
 
-**Your next screen is the one `/start` step 2 names.** Do not invent a different starting point,
-however tempting a smaller brief looks. It prints the screen as `NEXT` — the owner draws it — when
-the build has reached it, and as `AHEAD`, the next undrawn screen on the same walk, while the build
-is still on earlier work.
+**Your next screen is the first undrawn V1 screen on the build order's walk.** Do not invent a
+different starting point, however tempting a smaller brief looks. When the build has reached it,
+the build waits for it; while the build is still on earlier work, you draw it ahead.
 
 The eight blocks, in order, with the V1 count in each:
 
@@ -57,18 +56,18 @@ Two things about this order are deliberate, so you don't "correct" them:
   `SCR-SHELL-06` sits with the shell rows in the register, but it renders a tenant's M12 billing
   state, so it belongs to block 2.
 
-Within a block, `/start` follows the build's own walk — each task file's screens in the order they
-are written, a task's dependency pulled ahead of it. It asks for a module's screens when it reaches
-the module's first backend task, because the backend serves what the drawings show. It skips every
-row whose `V` column says `V2`, and every screen whose task's `DESIGN:` line already holds a link. A screen that
+Within a block, the walk is the build's own — each task file's screens in the order they are
+written, a task's dependency pulled ahead of it. A module's screens are due when the build reaches
+the module's first backend task, because the backend serves what the drawings show. The walk skips
+every row whose `V` column says `V2`, and every screen whose task's `DESIGN:` line already holds a link. A screen that
 reuses a part another screen draws should come after that screen on the walk; nothing checks this, so
 when it does not, move the drawing screen's task ahead in its task file before drawing either.
 
 ## You never choose a brief — the screens register tells you
 
 Every screen has exactly **one** brief, and its filename is the `Brief` column in the screen's own
-row in `docs/prd/registers/screens.md` §2. `/start` step 2 prints the screen, the two files to
-paste, and the `file:line` of the one `DESIGN:` line to edit afterwards.
+row in `docs/prd/registers/screens.md` §2. The one line to edit afterwards is the `DESIGN:` line
+on the screen's task.
 
 ---
 
@@ -218,7 +217,7 @@ sentence that is not on the never-behind-a-tap list is a FAIL. Push back on both
 Before the next screen starts, close every open question this one raised: check each against the
 repo first, and bring the survivors to the owner as two options at most, with a pick.
 
-Only after you've approved the design. `/start` step 2 printed the exact `file:line` of the edit.
+Only after you've approved the design.
 The register is not edited: the task's `DESIGN:` line is the one record that a screen is drawn.
 
 **Edit 1 — the module's task file.**
@@ -245,16 +244,14 @@ decision is how two screens end up disagreeing about the same flow.
 ## Fixing a screen that is already designed
 
 A fix to a screen already drawn is made on its board and record in the Claude Design project, by
-you — the project is the one source of a design, and the repo holds no copy. A fix Claude asks for
-at a screen's `/start` comes as an exact instruction to paste there; Claude then reads the board
-again and checks it. A fix to a screen not drawn yet goes into its brief. When a designed screen's brief itself
+you — the project is the one source of a design, and the repo holds no copy. A fix to a screen not drawn yet goes into its brief. When a designed screen's brief itself
 must change, the next section applies.
 
 ## When a brief changes after its screen was designed
 
 Nothing records which version of a brief a drawing was made from. A redraw is caught at the
-screen's turn instead: `/start` sends `design-reviewer` over every screen task before it is built,
-and a design the brief has moved past is a MUST FIX — the screen is redrawn before the build.
+screen's turn instead: before a screen task is built, the owner checks its board against its
+brief, and a design the brief has moved past is redrawn before the build.
 
 - **Still matches** → nothing to record.
 - **No longer matches** → add a `## Redesign owed` section to the brief that says exactly what the
@@ -266,8 +263,8 @@ and a design the brief has moved past is a MUST FIX — the screen is redrawn be
 
 A redesign EDITS the drawing that exists. Nothing here starts a new file.
 
-1. `design-reviewer`'s MUST FIX at the screen's `/start`, or the brief's `## Redesign owed`
-   section, names the screen and the fault.
+1. The owner's check before the build, or the brief's `## Redesign owed` section, names the
+   screen and the fault.
 2. Open the screen's own file in the design project — the link on its task's `DESIGN:` line — with the live
    design system selected, and stay in it. One session per screen.
 3. Paste `docs/ux/claude-design-context.md`, then the whole brief, then this instruction:
@@ -291,8 +288,7 @@ sweep the others for the same break before recording anything.
 
 ## How you know you're finished
 
-`/start` step 2 prints `DONE` — how many of the 99 V1 screens have a link on their task's `DESIGN:`
-line. **99 when you're done.**
+Count the V1 screens whose task's `DESIGN:` line holds a link. **99 when you're done.**
 
 ---
 

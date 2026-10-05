@@ -1,14 +1,11 @@
 # @heliogrid/e2e — the regression suite
 
-Deps: `architecture.md` §2 tests/e2e. The law is `.claude/rules/testing.md`; the
-`e2e-flow-per-screen` invariant holds that every web route and phone screen has its flow, and that
-`mobile/run.sh` runs every phone flow.
+Deps: `architecture.md` §2 tests/e2e.
 
 ## What lives here / what must never live here
 
 - `web/<route>.spec.ts` — one per web route, named as `e2e-flow-per-screen` names it (`/login` →
-  `login.spec.ts`, `/` → `root.spec.ts`, a `(group)` folder dropped). Each runs at 375 and 1536
-  (`F7-43` item 1).
+  `login.spec.ts`, `/` → `root.spec.ts`, a `(group)` folder dropped).
 - `components/<Name>.spec.tsx` — the real `@heliogrid/ui` web halves, mounted with the app's
   stylesheets (`playwright/index.tsx`). A mounted component is imported from the `@heliogrid/ui`
   index; a plain value from `@heliogrid/ui` is read through `support/`, since the component
@@ -22,16 +19,13 @@ Deps: `architecture.md` §2 tests/e2e. The law is `.claude/rules/testing.md`; th
 - Never a typed word or colour: words come from `@heliogrid/i18n`, colours from the page's own
   tokens (`support/token.ts`), the touch floor from `@heliogrid/ui`.
 - Never a shared account: every flow signs up its own fresh number (`support/phone.ts`), so no spec
-  reads another's data or the developer's, and no count or empty state is asserted. `/qa`'s
-  standing `QA <surface>` accounts are for its agents only; a flow never signs in to one.
-- A flow names the company it creates `E2E <its 10-digit number>`: `/start` removes every such
-  company once it is an hour old, so a flow that names it otherwise leaves it behind for good.
+  reads another's data or the developer's, and no count or empty state is asserted.
+- A flow names its company `E2E <its 10-digit number>`.
 - Never a retry: a flake is a bug and is fixed.
 - Every web spec ends its landing with `support/axe.ts`'s `expectNoSeriousViolations` once the
   landing's words are visible: a `serious` or `critical` violation fails the suite (`F7-26`).
-- The web's network dropped or a request aborted is driven here and nowhere else —
-  `page.context().setOffline(true)`, `page.route(<path>, (route) => route.abort())` (`F8-36`); a QA
-  agent cannot drop the browser pane's network.
+- Network loss and aborted requests are tested here and nowhere else —
+  `page.context().setOffline(true)`, `page.route(<path>, (r) => r.abort())` (`F8-36`).
 
 ## Commands
 
@@ -39,11 +33,10 @@ Deps: `architecture.md` §2 tests/e2e. The law is `.claude/rules/testing.md`; th
 pnpm --filter @heliogrid/e2e test:web                 # the web flows; starts the BUILT api and web, or reuses running ones
 pnpm --filter @heliogrid/e2e test:ct [<spec files>]   # the component tests (port 3100)
 pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows, one device per call
-pnpm --filter @heliogrid/e2e exec playwright show-trace <trace.zip>   # replay a failure
 ```
 
-The web suite and the whole component suite run in CI (`e2e-web`). The phone suite runs in
-`/qa`: CI has no simulator. It needs Metro, the api and the app installed on each device.
+The web suite and the whole component suite run in CI (`e2e-web`). The phone suite runs by
+hand: CI has no simulator. It needs Metro, the api and the app installed on each device.
 
 ## Local conventions
 

@@ -70,7 +70,7 @@ authoritative doc for that layer; this table is only the index.
 | `docs/prd/` | **What the product does** — product overview, personas, journey, 8 foundations, 13 modules, and the screens register | — |
 | `docs/tasks/` | Per-module build tasks, written to as work completes | — |
 | `docs/ux/` | The 150 screen briefs plus the context file every design session is given | — |
-| `.claude/` | Rules, skills and agent configuration that govern AI-assisted changes here | — |
+| `.claude/` | Rules, the protections map and the dev-server launch file for AI-assisted changes here | — |
 
 ## Prerequisites
 
@@ -81,8 +81,6 @@ authoritative doc for that layer; this table is only the index.
   need to install a specific pnpm globally, just have any recent pnpm/Corepack available.
 - **Docker** (or a local Postgres 16) — for `DATABASE_URL`. The database invariants skip loudly
   without it; they never silently pass.
-- **Python 3** — the agent hooks in `.claude/hooks/` read their input with it and refuse to run
-  without it.
 - **openssl** — `pnpm infra:up` mints the development PKI with it.
 - **gitleaks** — installed in the cold start below; the pre-commit secret scan fails closed without
   it. The breaking-change judge, a pinned `oasdiff`, runs only in CI.
@@ -342,23 +340,17 @@ every test) — run it once before considering any non-trivial change done. See
 
 ## Schema, contract & cross-cutting changes
 
-Some changes need more than "edit the file" — a dedicated skill exists for each, and skipping
-it is how drift enters the repo silently:
-
-| You changed... | Run this | Why |
-|---|---|---|
-| `packages/contracts` (any endpoint, schema, or type) | `/contract-change` | Re-emits `packages/contracts/openapi/openapi.json`, sweeps every typed client (`apps/web`, `apps/mobile`) for breakage via typecheck, and judges whether the change is breaking |
-| `packages/db` (new table, new/changed column, pgEnum) | `/migration` | Authors a new append-only SQL file (never edit an applied one), wires tenancy/RLS/grants, applies it twice to prove idempotency, and runs the invariants against a real database |
-| A `z.enum` that's also a Postgres `pgEnum` | Both of the above, same slice | `packages/db` hand-mirrors contract enums (dependency-cruiser forbids `db` importing `contracts`) — `tests/invariants/src/enum-parity.ts` catches drift, but only if you run it |
-| Any feature/bugfix slice, after `pnpm check:all` passes | `/qa` | A green `pnpm check:all` proves code correctness, never UI or cross-surface behavior. `/qa` runs the task's QA plan: the regression suites first, then one QA agent per surface the change reaches — browser for web, simulator for iOS, emulator for Android, curl for the API — and re-checks only what failed |
-| Any task or bug, before a line is written | `/start` | Picks the next step in the build order (or takes the task you name), creates the branch, reads the task, its brief, its design and the code it touches, writes the plan, the acceptance criteria and the QA plan into the task, and stops for the go |
-| A completed task, after `/qa` | `/ship` | Catches up with main, runs `pnpm check:all` once, has `code-reviewer` review the diff, runs the red proofs it names, then commits on a yes, pushes and raises the PR. Merge is the owner's |
+| You changed... | Do this |
+|---|---|
+| `packages/contracts` (any endpoint, schema, or type) | Run `pnpm check:openapi` and commit the fresh `packages/contracts/openapi/openapi.json`; CI refuses a breaking change |
+| `packages/db` (new table, new/changed column, pgEnum) | `pnpm db:migration:new`, review the draft, `pnpm db:migrate`; never edit an applied migration. The invariants check it against a real database |
+| A `z.enum` that's also a Postgres `pgEnum` | Both of the above, same slice — `tests/invariants/src/enum-parity.ts` catches drift |
 
 ## Git workflow
 
-Work starts with `/start` on a branch off `main` and ends with `/ship`, which commits on a yes,
-pushes and raises the PR; the owner merges. `main` is PR-only. A PR is one complete task, never
-half of one. Full detail: [`CLAUDE.md`](CLAUDE.md) §3, §4.
+Work starts on a branch off `main` and ends with a PR; every commit waits for the owner's yes, and
+the owner merges. `main` is PR-only. A PR is one complete task, never half of one. Full detail:
+[`CLAUDE.md`](CLAUDE.md) §3, §4.
 
 ## Where to find things
 
@@ -380,9 +372,7 @@ half of one. Full detail: [`CLAUDE.md`](CLAUDE.md) §3, §4.
 | `docs/engineering/forward-compat.md` | What each module's first migration must satisfy so later modules aren't blocked |
 | `docs/engineering/adr/` | Why each architecture choice was made — reference only |
 | [`docs/README.md`](docs/README.md) | **The docs map** — every file under `docs/`, and whether it is pinned or live |
-| `.claude/skills/` | `/start`, `/qa`, `/ship`, `/contract-change`, `/migration` — see [above](#schema-contract--cross-cutting-changes) |
-| `.claude/agents/` | The QA agents (`qa-api` · `qa-web` · `qa-mobile`) and the three reviewers (`plan-reviewer` · `design-reviewer` · `code-reviewer`) — none edits a file, and each has a turn cap; `/start` runs `design-reviewer`'s instructions in a foreground `general-purpose` agent (only that agent can read Claude Design), read-only by its prompt |
-| [`.claude/protections.md`](.claude/protections.md) | Which tool, rule, test, hook, CI step or reviewer holds each protection |
+| [`.claude/protections.md`](.claude/protections.md) | Which tool, rule, test or CI step holds each protection |
 | each package's `CLAUDE.md` → `## Traps` | **Troubleshooting** — the live traps where they bite, each with its fix |
 | `packages/contracts/openapi/openapi.json` | The API surface as OpenAPI 3.0.2 — emitted from the contract and gate-checked; no Swagger UI is served |
 

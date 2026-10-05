@@ -147,9 +147,7 @@ ruling (2026-08-16) scopes its prerequisite set to what the release actually off
 screen was added; the honesty half of the row is untouched.
 
 Whether a screen is drawn is not recorded here. Its task's `**DESIGN:**` line in `docs/tasks/`
-holds the link once the screen is drawn, and `PENDING` until then. `/start` step 2 counts the V1
-screens drawn and prints the count as `DONE`; its command reads the `V` column below as each row's
-sixth cell, so a new column goes after `V`, never before it.
+holds the link once the screen is drawn, and `PENDING` until then.
 
 
 ### App shell & global surfaces

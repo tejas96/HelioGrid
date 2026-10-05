@@ -13,12 +13,12 @@
 | line | ✓ | proof |
 |---|---|---|
 
-<!-- Every acceptance line of the task, each with its test by file and name or its QA check id. A
+<!-- Every acceptance line of the task, each with its test by file and name or the check run on the app. A
      line with no proof is not done, and this PR is not open. -->
 
 ## QA report
 
-<!-- The full report /qa produced: per-surface results with observed values, and what was NOT run
+<!-- What was checked on the running app, per surface, with observed values, and what was NOT run
      and why. Specifics, not adjectives. -->
 
 ## Review
@@ -26,7 +26,7 @@
 | finding | fix |
 |---|---|
 
-<!-- code-reviewer's findings (the review before push) and what was done about each. -->
+<!-- The review's findings and what was done about each. -->
 
 ## Red proofs
 

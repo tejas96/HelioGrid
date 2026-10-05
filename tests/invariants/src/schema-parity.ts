@@ -222,7 +222,7 @@ export async function runSchemaParity(adminUrl: string) {
         problems.map((p) => `  - ${p}`).join('\n') +
         '\n\n  The migration is the source of truth for the database; the Drizzle model is what\n' +
         '  the application queries through. Both are hand-written, so they only agree if\n' +
-        '  someone makes them — change them in the SAME slice (/migration).',
+        '  someone makes them — change them in the SAME slice (a migration).',
     );
 
     if (modelled.length === 0) {

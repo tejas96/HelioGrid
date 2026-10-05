@@ -718,7 +718,7 @@ The two preset-shaped rules, `epc_owner` and `capability_holders`, resolve again
 could be written today; they wait here so that resolution is authored ONCE, against all four
 rules, rather than half now and half beside the first record (Law 11).
 
-**Depends on:** `T-MS-117` for the M05 done-when line, recorded in `docs/build-order.md` as a proof that waits on block 7; the block-3 slice that lands the lead record — its subject kind, its owner and its assignee — which that block's `/start` names; `T-FPLAT-017` (shipped, #100) carries the registry and the four recipient rules; `T-FPLAT-002` (shipped, #43) carries the F2 resolution this reads.
+**Depends on:** `T-MS-117` for the M05 done-when line, recorded in `docs/build-order.md` as a proof that waits on block 7; the block-3 slice that lands the lead record — its subject kind, its owner and its assignee — which that block's task names at its start; `T-FPLAT-017` (shipped, #100) carries the registry and the four recipient rules; `T-FPLAT-002` (shipped, #43) carries the F2 resolution this reads.
 **Block:** 3, by owner ruling at its own `/start` — built before `T-M02-011` notifies a lead's new owner, so resolution is written once.
 
 **Requirements (verbatim):**
@@ -822,7 +822,7 @@ Domain (`packages/domain/src/notifications/`): `NOTIFICATION_CENTRE_HORIZON_DAYS
 - **F6-24** (P0) — **Search is never billing-gated.** In every billing state, search works — it is in the soft-block matrix's always-on set. *(Re-pulled verbatim 2026-08-07: the sweep cut this row's offline half — "Search works offline over synced data"; "Offline, the box searches the device's synced cache with the standard staleness indication (`F4-02`)" — which cited a row that no longer exists. The task title lost "offline reads" with it.)*
 - **F6-25** (P1) — **Search finds records, not analytics:** results are records the searcher can open — no computed answers, no cross-record aggregation, no natural-language querying in v1 (§5). Result ranking is plain (exact identifier matches — phone, proposal number — first; then name/city matches); no engagement tuning.
 
-**Depends on:** the lead record — the first `M02` task that authors it, in block 3 (the `M02` tickets do not yet say which one carries the `lead` table; its `/start` names it here) · `T-M02-015` (the junk state `F6-23` searches for). Each later module adds its own search target when its slice begins (Law 9): proposals (`M06`, block 8) for the alias, projects (`M08`), customers and sites, catalog items, people.
+**Depends on:** the lead record — the first `M02` task that authors it, in block 3 (the `M02` tickets do not yet say which one carries the `lead` table; that task names it here at its start) · `T-M02-015` (the junk state `F6-23` searches for). Each later module adds its own search target when its slice begins (Law 9): proposals (`M06`, block 8) for the alias, projects (`M08`), customers and sites, catalog items, people.
 **Ruled at `/start`:** **the owner moved this task to block 3, out of block 0.** In block 0 no searchable table exists — today's schema is identity, tenancy, settings, invitations, notifications, audit and the market pack — so every done-when line would run over empty results and prove nothing, and building the engine ahead of its first target is a contract for a need no slice has yet. Recorded in `docs/build-order.md`'s block table; `T-SHELL-002`, the screen that calls it, is recorded there as waiting on it.
 
 **DONE WHEN:**
@@ -1184,11 +1184,11 @@ No brand, route, table, error code or contract enum is added.
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **PRD rows:** none claimed — `F8-23` is `T-FPLAT-029`'s, `F8-03` `T-FPLAT-072`'s; this task carries their owed lines on the design system's half.
-**Split from `T-FPLAT-073` at its `/start` (owner pick):** the projection's words are the drawn document's (`SCR-M06-17`), `PENDING` when `T-FPLAT-073` started, so this waits in block 8, where that screen is drawn. `/start` checks the drawing first.
+**Split from `T-FPLAT-073` at its `/start` (owner pick):** the projection's words are the drawn document's (`SCR-M06-17`), `PENDING` when `T-FPLAT-073` started, so this waits in block 8, where that screen is drawn. The drawing is checked first, before the build.
 **Owed by `T-FPLAT-029` (`F8-23`):** the label prints a figure's `projection` — the word that calls it a projection and each assumption `statedAssumptions(projection)` from `@heliogrid/domain` lists, in that order and never its own, money through the money formatter, EN/HI/MR, the words taken from the drawn document (`SCR-M06-17`) — beside the tier, never hover-only (`F8-07`). The label's `projection` prop, a free string today, takes `ProjectionAssumptions`. Proven by a label render that prints a projection's word and its horizon.
 **Owed by `T-FPLAT-072` and `T-FPLAT-073` (the design system's half):** in Claude Design, `components/data/Provenance.d.ts` declares the port's `energySource`, `freshness` and typed `projection`, and `Provenance.jsx` renders the tier closed to the four and `unmarked` and no `withLabel={false}`; `components/feedback/Disclosure` stops owning its English and `DISCLOSURE_TEXT` — its words are `i18n`'s, as the port's are since `T-FPLAT-073`; both contracts are re-pulled verbatim. The boards drawn on free words (`SCR-M01-15`, `SCR-M01-16`, `SCR-M01-17`, `SCR-M12-02`, `SCR-M12-04`, `SCR-SHELL-06`) are redrawn by the owner to print them as `source`. The indicative lead clause ("Indicative — Indicative proposal. …") says one word twice; the drawn document decides the lead.
 **Depends on:** T-FPLAT-073
-`/start` writes the rest of the ticket.
+The rest of the ticket is written at the task's start.
 ---
 
 ### T-FPLAT-075 · Open page — a white page, and every field a grey well

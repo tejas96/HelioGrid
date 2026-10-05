@@ -32,7 +32,7 @@ the architecture keeps its extension points, but nothing V2 is designed or built
 
 ## One order, walked one step at a time
 
-Every task is built in ONE fixed order, and `/start` step 2 walks it to pick the next step; no
+Every task is built in ONE fixed order, and the session walks it to pick the next step; no
 check holds the order. The order is walked, never chosen:
 
 1. the blocks below, lowest first;
@@ -47,19 +47,18 @@ check holds the order. The order is walked, never chosen:
 The step is the first open part of a split task, else the first open V1 task on that walk. A part
 lives in its task's `#### Parts` table; this file never lists parts.
 
-| the task | the step printed |
+| the task | the step |
 |---|---|
-| ready | `build <task>` — `/start` takes it |
-| a screen whose `DESIGN:` line reads `PENDING` | `owner draws <SCR>` from its brief — `/start` prints how — then `/start` takes it |
-| a backend task whose screens in its block are not all drawn — its own file's, and any whose `Depends on:` names it | `owner draws <SCR>, …` before the backend is built: a drawing states facts the backend serves. A redraw `design-reviewer` asks for does not hold it — that drawing exists, and the redraw stops only the screen task |
+| ready | `build <task>` |
+| a screen whose `DESIGN:` line reads `PENDING` | `owner draws <SCR>` from its brief (`docs/start-here.md`), then `build <task>` |
+| a backend task whose screens in its block are not all drawn — its own file's, and any whose `Depends on:` names it | `owner draws <SCR>, …` before the backend is built: a drawing states facts the backend serves. A redraw does not hold it — that drawing exists, and the redraw stops only the screen task |
 | carries a `**Blocked:**` line — a ruling, an account | `owner clears` it; nothing after it is taken until it is cleared, or the task is moved or parked with a recorded reason |
 | waits on a parked task | `owner clears` it: unpark that task, or move or park this one |
 | waits on an open task of a later block | `owner clears` it: move one of the two tasks, with a recorded reason |
 | carries a `**Parked:**` line | stepped over; it pulls nothing ahead |
 
-So a module runs design → backend → UI. A screen that is not drawn is never skipped for one that is. `/start` also prints `AHEAD` —
-the next screen to draw on the same walk — so the owner draws while the build runs, and `DONE`, how
-many V1 screens are drawn.
+So a module runs design → backend → UI. A screen that is not drawn is never skipped for one that is. The owner
+draws the next undrawn screen on the same walk while the build runs.
 
 Note the `V` column lives on screens, not tasks. A task is V1 if the V1 workflow needs it —
 which for the foundations means all of them, since permissions, formats and honesty underpin
@@ -88,7 +87,7 @@ so designing it in block 1 means inventing the states and the destinations `M12`
 yet. The block-1 count of 22 already excludes it and the block-2 count of 5 already includes it.
 **The data-rights engine waits in block 8, parked.** `T-FCORE-009` — `pack.data-rights`, the erasure
 workflow and the IN DPDP determination — is parked by owner ruling until the tenant base reaches real
-paying customers (roughly 10–20). It sits in the last V1 block so `/start` stops offering it; it
+paying customers (roughly 10–20). It sits in the last V1 block so the walk reaches it last; it
 builds when the owner unparks it, and by then the customer record (block 3) and the calling consent
 records (block 6) its proofs erase and export exist.
 
@@ -111,8 +110,8 @@ and its assumptions in the words the drawn proposal document (`SCR-M06-17`) give
 drawn in block 8. The design system's own renderer closes with it, so the boards drawn on free words
 are redrawn once.
 
-`/start` step 2 walks the same order for the screens still to draw and prints the next one as
-`AHEAD` — use it rather than reading this table against the screens register by eye.
+The next screen to draw is the first undrawn V1 screen on the same walk — walk the order rather
+than reading this table against the screens register by eye.
 
 **Block 2 is not block 5.** `M12` is how the platform charges an EPC company — pricing page,
 hosted checkout, dunning, usage against bundles. `M11` is how that company collects from a
@@ -196,11 +195,10 @@ task that builds what it needs. A record here keeps the order honest; it does no
 
 ## Checking the suite
 
-No script checks the documents any more. `/start` step 4 checks the task it takes: every row id
-the task cites exists in the PRD, and every quoted row still matches its PRD cell. `design-reviewer`
-checks a screen's product facts against their whole PRD rows and its design against its brief.
+No script checks the documents any more. The plan checks the task it takes: every row id the task
+cites exists in the PRD, and every quoted row still matches its PRD cell. The owner checks a
+screen's design in Claude Design.
 What nothing checks — a dangling id in a task not yet started, the V1 count, a row dispositioned
 twice in the screens register — is held by review and the owner.
 
-Design progress is `/start` step 2's `DONE` line: how many V1 screens have a link on their task's
-`DESIGN:` line.
+Design progress is how many V1 screens have a link on their task's `DESIGN:` line.

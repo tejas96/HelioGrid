@@ -1,19 +1,15 @@
 # @heliogrid/web — Next.js App Router, pure frontend/BFF (NO domain logic)
 
-Deps: `architecture.md` §2 apps/web. Platform rules: `architecture.md` §3 · what both apps share:
-`CLAUDE.md` §6 · UI law: `.claude/rules/ui-adherence.md`.
+Deps: `architecture.md` §2 apps/web · platform rules: §3.
 
 ## What lives here / what must never live here
 
-- `app/` holds routes, the layout and the providers; `features/<capability>/` holds the work.
-  A route handler is cookie/session BFF glue ONLY.
-- NEVER: authored business logic (import it — Law 11), a `packages/db` import, a raw hex or px
-  value, a hand-rolled HTTP client.
+- NEVER: a `@heliogrid/db` import.
 
-## Where files go — a closed set; never invent a folder
+## Where files go
 
 ```
-app/(<group>)/<route>/page.tsx  routing ONLY — reads params, renders one screen, ≤50 lines; the
+app/(<group>)/<route>/page.tsx  routing ONLY — reads params, renders one screen; the
                        group is the gate: (door) signed-out only · (open) anyone · (inside) signed in
                        with a company — its layout.tsx mounts the session gate once
 app/                   layout · providers · loading · error · not-found · route (BFF glue)
@@ -24,11 +20,10 @@ features/<capability>/ <Name>Screen.tsx composes · components/ one per componen
 lib/                   app infrastructure (env.ts)
 ```
 
-Same shape as mobile, different location. A part BOTH platforms draw leaves this tree —
-`.claude/rules/screen-parts.md`, loaded with this folder. A feature is named for the CAPABILITY it owns,
-matching the API module that serves it, so one name spans both sides. `app/` imports a feature ONLY
-through its barrel or a screen barrel one level down — nothing deeper. Two FEATURES sharing
-something means it is not feature-local: it belongs in a package (`architecture.md` §4).
+A feature is named for the CAPABILITY it owns, matching the API module that serves it, so one
+name spans both sides. `app/` imports a feature ONLY through its barrel or a screen barrel one
+level down — nothing deeper. Two FEATURES sharing something means it is not feature-local: it
+belongs in a package (`architecture.md` §4).
 
 ## Commands
 
@@ -38,30 +33,28 @@ pnpm --filter @heliogrid/web dev | build | typecheck      # dev = localhost:3002
 
 ## Rules
 
-- **`app/` ROUTES, `features/` OWNS.** `page.tsx` renders one screen and holds no work. A screen
-  owns no flow: its reducer is `@heliogrid/domain`'s and its hook `@heliogrid/data`'s, both
-  imported (Law 11); a `useState` here holds a purely visual fact.
+- A screen's `useState` holds only a visual fact; its flow is a `@heliogrid/domain` reducer
+  driven by a `@heliogrid/data` hook.
 - **The Server/Client boundary is `architecture.md` §3**, not restated here. What it means at edit
   time: a `'use client'` at the route level opts every child in, so know which level you are on.
-- **DOM-only APIs (`window`, `document`, `navigator`, `localStorage`) appear only in a Client
-  Component or an effect** — module scope runs on the server during SSR and will crash the render.
-- **Server-only work stays server-only.** Route handlers, server actions and secrets never become
-  imports of shared UI: `@heliogrid/env/server` is unimportable from a client file.
-- **Language comes from `@heliogrid/i18n/react`.** `app/providers.tsx` builds the runtime in a
-  `useState` initialiser (one per mount: `packages/i18n/CLAUDE.md`) and syncs `<html lang>` and
-  `dir` on each switch. Keep the loader specifiers literal or catalog splitting stops.
+- Web reads env only through `lib/env.ts`. Never import `@heliogrid/env/server` into apps/web —
+  no check refuses it.
+- Language comes from `@heliogrid/i18n/react`; `app/providers.tsx` builds the runtime once per
+  mount (`packages/i18n/CLAUDE.md`). Keep catalog loader specifiers literal, or catalog splitting
+  stops.
 - **Client vs server render.** A client component reaches data through `@heliogrid/data/react`
   hooks under `<DataProvider>`. A server component or action uses `createServerDataContext` from
   `@heliogrid/data/server`, called INSIDE the render.
-- **Styling layers:** components own pixels (`@heliogrid/ui` index only); screens own layout via
-  a colocated `<screen>.css` with token `var()`; Tailwind is layout only (`flex`, `grid`,
-  `min-h-dvh`), never a value (ADR-0026). `globals.css` is the only stylesheet under `app/`.
+- Paginated screens use `usePaginatedList` (accumulating) or `usePagedList` (numbered), never a
+  hand-wired `useInfiniteQuery`.
+- Tailwind is for layout only (`flex`, `grid`, `min-h-dvh`), never a value (ADR-0026);
+  `globals.css` is the only stylesheet under `app/`.
 - **An enum-driven picker or label map is `Record<TheEnum, …>` and iterates the CANONICAL list** —
   `schema.options` for a contract enum, the exported tuple for a domain one. What matters is that
   the list is not authored in the screen.
-- API failures render a shared error component, never a hand-written string; forms branch
-  `VALIDATION_FAILED` through `applyServerErrors` first. `ApiErrorText` is owed to `packages/ui`
-  so both platforms share one.
+- Forms branch `VALIDATION_FAILED` through `applyServerErrors` first; any other API failure takes
+  its words from `@heliogrid/i18n`, never a hand-written string. The first screen that renders one
+  builds `ApiErrorText` in `packages/ui` (deferred D68).
 
 ## Done means
 

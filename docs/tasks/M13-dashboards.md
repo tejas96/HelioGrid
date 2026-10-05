@@ -116,7 +116,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 **DONE WHEN:**
 - Given a target unset, when the dashboard renders, then no nag appears anywhere and every section works; given a target set inline, then "this period" compares against it (M13-17).
 
-**Settle at /start:**
+**Settle before the build:**
 - The monthly target's unit (M13-17, M13-14) is money — an integer in the tenant currency's minor unit, the one actual the dashboard compares (M13-14's won/signed value against the target) — ruled: no unit column and no count target; a second metric is a new row, not a column.
 
 ### T-M13-009 · Descriptive statistics — medians, outlier flags, cycle-time measurement
@@ -156,7 +156,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 **DONE WHEN:**
 - (M13-51 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text above is the binding criterion. The PRD's analytics-events note for §M13.8 names the event: trial-to-paid conversion recorded (M13-51).)
 
-**Settle at /start:**
+**Settle before the build:**
 - No analytics event-stream store in V1: trial-to-paid (M13-51, BM-47) derives from the `subscription` transitions M12 already records — trialing to paid, with timestamps — so the taxonomy is those named transitions and nothing is authored — pick: derive (cost if wrong: an appended analytics_event table whose rows the transitions already imply).
 
 ### T-M13-012 · Dashboard export

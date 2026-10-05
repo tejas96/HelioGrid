@@ -54,7 +54,7 @@ file's slice exactly once.
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 - the ported POC tests for this area pass unchanged in the new project.
 
-**Settle at /start:**
+**Settle before the build:**
 - Step-1 customer name, phone and address — ruled: design-local fields, prefilled once from the lead by T-MS-372's new-design factory and never written back (M05-15 and MS1-01 make every field editable on the design, M02 stays the customer record's only writer, and a divergent value is the design's own client detail, the way M06-48 gives a proposal its own).
 - The first-run walkthrough's dismissal — pick: a device-held flag, with no column anywhere (MS1-08 asks for shown-once and dismissable, and no row asks the dismissal to follow the user across devices; cost if wrong: one boolean on `user_account` through T-M01-025's owner).
 
@@ -100,7 +100,7 @@ file's slice exactly once.
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 - the ported POC tests for this area pass unchanged in the new project.
 
-**Settle at /start:**
+**Settle before the build:**
 - "Keep items for review" — ruled: stores nothing of its own; the stranded panels, placements and strings stay in their layer chunk unchanged and their invalidity is re-derived on every geometry change and on open, surfacing on T-MS-272's live validation (MS2-36 already re-detects dependents on every change, M05-10 forbids a stored flag where a comparison exists, and a holding table would be a second copy of the same objects).
 - Detection runs per design — ruled: every run is one append-only `roof_detection` row kept whatever its disposition, rejected and superseded runs are retained and never re-shown, and no current-run pointer exists because accepted geometry enters the design only through the artifact (MS2-40) carrying its own provenance (MS2-43) (the row is the ai_detection meter's provenance_ref, so BM-19's billing evidence can never be deleted; a same-day retry on the same pin is served from MS2-44's day cache and lands as a row with billed false).
 
@@ -239,7 +239,7 @@ file's slice exactly once.
 - Given a 70° detected pitch, Then precedence falls back rather than erroring (MS2-26).
 - the ported POC tests for this area pass unchanged in the new project.
 
-**Settle at /start:**
+**Settle before the build:**
 - `face_group` — ruled: a linkage id, not a record; each member roof carries `face_group_id` and its own copy of the plane-shared fields, which MS2-20's propagation rewrites across the group in the same undo step, a duplicate drops the id (MS2-19) and azimuth stays per face (MS2-27) (the POC's `faceGroupId` on the roof is the shape S12-1 ports, and a group record would hold values every face already stores).
 
 ---
@@ -282,7 +282,7 @@ file's slice exactly once.
 - Given accept, Then factory naming continues and provenance stamps persist (MS2-43).
 - the ported POC tests for this area pass unchanged in the new project.
 
-**Settle at /start:**
+**Settle before the build:**
 - `detection_artifact` cardinality — ruled: one artifact seeds exactly one design, the design whose pin it is guarded against (MS2-40); a variant takes its geometry by duplication (MS11-25), never by re-seeding, and whether one survey version's tile may span several designs is M04's question, settled with T-M04-013 when that module lands (V1 has no survey).
 
 ---
@@ -427,7 +427,7 @@ file's slice exactly once.
 2. **DONE** — carried by T-M06-018's send-gate DONE WHEN (`docs/tasks/M06-proposals.md`): given a design carrying the review-needed marker, when a draft proposal built on it is sent from the share sheet, then the send is blocked and the stated reason names the superseding survey version. This task holds the gating state; the send path that honours it is M06's. (`F8-17`'s recompute-in-flight block is a different condition and does not cover this one.)
 3. **OPEN when this note was written — being closed in this same wave** — the proposal-LIST leg of the marker's surface. `docs/ux/briefs/SCR-M06-19-proposal-list.md` carries no state for the review-needed condition (its States list has `stale-badge`, the `M06-46` comparison, only, and `M05-13` is not among its verbatim rows), while T-M06-019 (`docs/tasks/M06-proposals.md`) already makes the review-needed row state a closing condition and records the required brief edit as its own **counterpart edit required outside this file** note. That edit is the brief owner's and is being made this wave; when it lands this item closes with nothing further to do here. It does not gate T-MS-117 — this task owns the marker state and the emit, and the list rendering of the marker is M06's — but it is why the ledger above is not a whole-of-`M05-13` clearance. (This header previously read "**both landed; no open counterpart work remains**"; that wording is quoted here for traceability — it was true of items 1 and 2 and overlooked this third leg.)
 
-**Settle at /start:**
+**Settle before the build:**
 - Recording the review that clears the marker — ruled: an implicit re-pin; the designer's review ends by pinning the superseding survey version on the design, and the marker — derived by comparing that pin to the newest version (M05-10, `F8-13`) — clears with it, the attributed act being the save that moved the pin (a stored clearance with no pin move is exactly the hand-set flag M05-10 forbids; V1 carries no survey, so the first design this reaches is M04's, and M04-66 points at this same pin).
 
 ---

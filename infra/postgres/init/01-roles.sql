@@ -34,7 +34,7 @@ DO $$ BEGIN
   END IF;
 END $$;
 
--- The qa-api agent's read path at /qa. Membership in app_user is the trap: every tenant table is RLS
+-- A read-only path for checking data by hand. Membership in app_user is the trap: every tenant table is RLS
 -- ENABLED and FORCEd with policies written for app_user, so a read-only role with no applicable
 -- policy reads ZERO ROWS FROM EVERY TENANT TABLE — and an agent reports those empty results as
 -- observed values. That is a confident green proving nothing.
@@ -45,8 +45,7 @@ DO $$ BEGIN
 END $$;
 -- The membership also hands qa_readonly app_user's write grants, so every session it opens starts
 -- read-only. A session can turn this off (`BEGIN READ WRITE`, `SET transaction_read_only`), so it is
--- one guard of two: the agent hook refuses the write words it knows, those included — a word list,
--- never a parser of SQL — and qa-api's prompt forbids them.
+-- a guard against a mistake, not against intent.
 ALTER ROLE qa_readonly SET default_transaction_read_only = on;
 
 -- Temporal's own owner. Name and password match infra/temporal/config/temporal.yaml, which is

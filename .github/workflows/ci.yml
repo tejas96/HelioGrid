@@ -20,7 +20,7 @@ jobs:
   # Which lanes this change can reach. `quality` never asks; it always runs. The three mobile
   # lanes ask, because a native build costs 11–15 minutes and proves nothing about a change
   # that no mobile bundle contains. Markdown never counts: a CLAUDE.md inside apps/mobile is
-  # not a mobile change (the same rule /qa applies to the surfaces a change reaches).
+  # not a mobile change.
   changes:
     name: changes
     runs-on: ubuntu-24.04
@@ -135,8 +135,7 @@ jobs:
         run: |
           git fetch --no-tags origin ${{ github.base_ref }}
           # Scoped to *.sql to match what the runner actually locks: migrate.ts reads
-          # `readdirSync(...).filter(f => f.endsWith('.sql'))` and hashes only those, and
-          # .claude/hooks/block-applied-migration-edit.sh matches only */migrations/*.sql.
+          # `readdirSync(...).filter(f => f.endsWith('.sql'))` and hashes only those.
           # Every .sql file is covered; nothing is exempted.
           if ! git diff --diff-filter=MDR --no-renames --quiet origin/${{ github.base_ref }}...HEAD -- 'packages/db/migrations/*.sql'; then
             echo "::error::An APPLIED migration was modified, deleted or RENAMED. Migrations are"
@@ -220,7 +219,7 @@ jobs:
 
   # The regression suite's web half (tests/e2e): every shipped route driven in a real browser
   # against the BUILT api and web, then the component suite. Playwright's webServer starts both
-  # servers and this job starts none, so one api holds 8084. The phone half runs in /qa — CI
+  # servers and this job starts none, so one api holds 8084. The phone half runs by hand — CI
   # has no simulator. retries: 0; a failure uploads its traces and the api's log to replay it.
   e2e-web:
     name: e2e-web
