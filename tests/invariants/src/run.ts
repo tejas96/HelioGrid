@@ -9,6 +9,7 @@ import { runEnumParity } from './enum-parity';
 import { runEnvExampleComplete } from './env-example-complete';
 import { runFormatInvariants } from './format-rendering';
 import { runLanguageFonts } from './language-fonts';
+import { runLaunchReusesRunningServers } from './launch-reuses-running-servers';
 import { runLightOnlyPlatformFiles } from './light-only-platform-files';
 import { runMatrixMirrorsF2 } from './matrix-mirrors-f2';
 import { REPO_ROOT } from './repo-root';
@@ -27,7 +28,7 @@ import { runVocabularyCopies } from './vocabulary-copies';
  * brand-registry (static), template-keys-mirror-f6 (static, F6-26), and the static repo
  * checks: vocabulary-copies, dockerfile-unprivileged, light-only-platform-files,
  * banned-word-other-files, env-example-complete, language-fonts, e2e-flow-per-screen,
- * design-system-props, biome-plugin-scopes.
+ * design-system-props, biome-plugin-scopes, launch-reuses-running-servers.
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
@@ -47,6 +48,7 @@ async function main() {
   runE2eFlowPerScreen(REPO_ROOT); // static — every route and screen has its regression flow
   runDesignSystemProps(REPO_ROOT); // static — no design-system prop dropped by its port
   runBiomePluginScopes(REPO_ROOT); // static — every lint plugin covers a place that exists
+  runLaunchReusesRunningServers(REPO_ROOT); // static — a dev-server start kills nothing, appends its log
   const env = loadInvariantsEnv();
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;
   if (!url) {

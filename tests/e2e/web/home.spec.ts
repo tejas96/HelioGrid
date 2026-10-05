@@ -9,7 +9,8 @@ import {
 } from '@heliogrid/i18n';
 import { expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
-import { createCompany, expectNoSidewaysScroll } from '../support/door';
+import { createCompany } from '../support/door';
+import { expectNoSidewaysScroll } from '../support/layout';
 import { freshMobile } from '../support/phone';
 import { passTheOwnersMark } from '../support/shell';
 

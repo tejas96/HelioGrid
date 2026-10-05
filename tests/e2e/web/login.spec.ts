@@ -2,7 +2,8 @@ import { UI_LANGUAGES } from '@heliogrid/contracts';
 import { COMPANY_SIGNUP, createTranslator, LANGUAGE_META, SIGN_IN } from '@heliogrid/i18n';
 import { expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
-import { expectNoSidewaysScroll, requestCode, typeCode, wrongCodeFor } from '../support/door';
+import { requestCode, typeCode, wrongCodeFor } from '../support/door';
+import { expectNoSidewaysScroll } from '../support/layout';
 import { freshMobile } from '../support/phone';
 
 const en = await createTranslator('en');

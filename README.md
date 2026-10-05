@@ -143,11 +143,13 @@ pnpm infra:up
 
 Or from inside the app's own directory, plain `pnpm dev`/`pnpm start` works the same way.
 
-**api and web kill whatever's already on their port before starting.** Both have a `predev`/
-`prestart` npm hook that runs `kill-port <port>` first — so a leftover process from a crashed
-previous run never causes `EADDRINUSE` or silently pushes the server onto a different port.
-This is deliberately just npm's native `pre*` lifecycle hooks + the `kill-port` package — no
-custom wrapper script. See `apps/api/package.json` / `apps/web/package.json` scripts.
+**A server never kills what is already on its port.** A running HelioGrid server is reused as it
+is. A launch configuration that finds its port busy refuses to start and says so — it never kills
+the listener and never moves to another port (`next dev` would otherwise drift to 3003). A stale or
+foreign listener on 3002, 8084 or 8081 is freed on purpose, by you, with the `clean-dev-ports`
+launch configuration in `.claude/launch.json` — the one command allowed to stop them. The launch
+configurations append their output to `.qa/api.log`, `.qa/web.log` and `.qa/metro.log` and never
+truncate them (`tests/invariants/src/launch-reuses-running-servers.ts` holds both rules).
 
 `apps/web`'s dev-server port is a **literal** in `apps/web/package.json` (`next dev --port
 3002`), not read from `.env` — Next.js's CLI has no environment-variable equivalent for its

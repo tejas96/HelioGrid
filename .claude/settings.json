@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push * --force*)",
+      "Bash(git push * -f *)",
+      "Bash(git push origin main*)",
+      "Bash(git push * main)",
+      "Bash(git commit --no-verify*)",
+      "Bash(git commit -n *)",
+      "Bash(git commit * --no-verify*)",
+      "Edit(pnpm-lock.yaml)",
+      "Write(pnpm-lock.yaml)",
+      "Bash(docker volume rm*)",
+      "Bash(docker volume prune*)",
+      "Bash(docker system prune*)",
+      "Bash(docker compose * down -v*)",
+      "Bash(docker compose * down --volumes*)",
+      "Bash(pnpm infra:reset*)",
+      "Bash(pkill*)",
+      "Bash(killall*)",
+      "Bash(kill-port*)",
+      "Bash(rm -rf /Volumes/works-space/heliogrid*)",
+      "Bash(rm -rf ~*)",
+      "Bash(rm -rf $HOME*)"
+    ]
+  }
+}

@@ -2,6 +2,7 @@ import { HOME_LADDER } from '@heliogrid/domain';
 import { createTranslator, homeBlocksWords } from '@heliogrid/i18n';
 import { HomeBlocks } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { expectNoSidewaysScroll, expectSharedEdge } from '../support/layout';
 
 const en = await createTranslator('en');
 const [OWNER, MANAGER] = HOME_LADDER;
@@ -10,7 +11,7 @@ const words = homeBlocksWords(en.t, { home: OWNER, composed: [MANAGER] });
 test.describe('at 1536', () => {
   test.use({ viewport: { width: 1536, height: 960 } });
 
-  test('a loaded home teaches in every block, side by side', async ({ mount }) => {
+  test('a loaded home teaches in every block, side by side', async ({ mount, page }) => {
     const region = await mount(<HomeBlocks {...words} load="ready" onRetry={() => undefined} />);
     const teaching = region.getByText(words.emptyTitle);
 
@@ -20,7 +21,8 @@ test.describe('at 1536', () => {
       await teaching.nth(1).boundingBox(),
     ];
     expect(composed?.x).toBeGreaterThan((own?.x ?? 0) + (own?.width ?? 0));
-    expect(composed?.y).toBe(own?.y);
+    await expectSharedEdge([teaching.nth(0), teaching.nth(1)], 'top');
+    await expectNoSidewaysScroll(page);
   });
 });
 
