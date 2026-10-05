@@ -17,6 +17,8 @@ export * from './audit';
 export * from './auth';
 // The company's identity facts (`T-M01-026`): the profile and its tax registrations.
 export * from './business-profile';
+// The catalog (`T-M01-027`): its closed sets; the two-tier read and the tenant's writes land with part b.
+export * from './catalog';
 // The too-old phone (`T-FPLAT-033`): the version header and the 426 every route may answer.
 export * from './client-version';
 export * from './common';

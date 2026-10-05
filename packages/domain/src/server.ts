@@ -11,10 +11,16 @@
  * formatter, a reducer, anything a screen needs.
  */
 
+export { readReleaseSnapshot } from './catalog/release';
 export { resolveCatalogItem } from './catalog/resolve';
 export { applyRate } from './money/basis-points';
 export { reconcileMinorUnits, resolvePayable } from './money/equation';
-export { amountForQuantity, sumMinorUnits } from './money/minor-units';
+export {
+  amountForQuantity,
+  minorUnitsOfDecimal,
+  minorUnitsToDecimal,
+  sumMinorUnits,
+} from './money/minor-units';
 export { tenMonthYearly } from './pricing/book';
 export { clearsCogsFloor, metersBelowCogsFloor } from './pricing/cogs';
 export { subsidyAmount } from './subsidy/amount';

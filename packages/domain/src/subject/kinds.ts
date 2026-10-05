@@ -18,5 +18,9 @@ export const SUBJECT_KINDS = [
   'tranche_template',
   /** The tenant itself, for a setting that is a whole list rather than a row — its holidays. */
   'tenant',
+  /** A tenant's own SKU (`M01-36`); the platform item an override or a rate names; a release (`M01-43`). */
+  'tenant_catalog_item',
+  'catalog_item',
+  'catalog_release',
 ] as const;
 export type SubjectKind = (typeof SUBJECT_KINDS)[number];

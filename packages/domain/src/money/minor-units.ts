@@ -42,3 +42,36 @@ export function amountForQuantity(perUnit: MinorUnits, quantity: number): MinorU
   const exact = perUnit * quantity;
   return minorUnits(Math.sign(exact) * Math.round(Math.abs(exact)));
 }
+
+const DECIMAL_TEXT = /^(-?)(\d+)(?:\.(\d+))?$/;
+
+/**
+ * Decimal text — the wire's `amountSchema`, or a `numeric(14,3)` column read back — as whole
+ * minor units of a currency with `fractionDigits` (INR: 2). Digits past the currency's are
+ * accepted only as zeros: the column keeps three, the rupee two, and a non-zero third digit is a
+ * fraction of a paisa nobody can be charged — refused, never rounded.
+ */
+export function minorUnitsOfDecimal(text: string, fractionDigits: number): MinorUnits {
+  const match = DECIMAL_TEXT.exec(text);
+  if (match === null) throw new RangeError(`an amount is decimal text, not ${text}`);
+  const [, sign, whole, fraction = ''] = match;
+  const kept = fraction.slice(0, fractionDigits).padEnd(fractionDigits, '0');
+  const dropped = fraction.slice(fractionDigits);
+  if (/[^0]/.test(dropped)) {
+    throw new RangeError(
+      `${text} is not a whole number of minor units at ${fractionDigits} digits`,
+    );
+  }
+  const amount = Number(`${sign}${whole}${kept}`);
+  // `-0.00` is a zero: the wire admits the sign, and a negative zero breaks `Object.is` downstream.
+  return minorUnits(amount === 0 ? 0 : amount);
+}
+
+/** Whole minor units as the wire's decimal text, scaled to the currency: `123450` at 2 reads `1234.50`. */
+export function minorUnitsToDecimal(amount: MinorUnits, fractionDigits: number): string {
+  const digits = String(Math.abs(amount)).padStart(fractionDigits + 1, '0');
+  const whole = digits.slice(0, digits.length - fractionDigits);
+  const fraction = digits.slice(digits.length - fractionDigits);
+  const sign = amount < 0 ? '-' : '';
+  return fractionDigits === 0 ? `${sign}${whole}` : `${sign}${whole}.${fraction}`;
+}

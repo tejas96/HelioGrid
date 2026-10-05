@@ -53,3 +53,28 @@ export function undeclaredSchemes(
 ): readonly string[] {
   return required.filter((scheme) => certificationScheme(certification, scheme) === null);
 }
+
+/** How a claim stands under a market: held, or the one way it is not. */
+export type CertificationVerdict =
+  | 'held'
+  | 'undeclared'
+  | 'reference_missing'
+  | 'reference_unexpected';
+
+/**
+ * Whether one claim may be held under this market (`F1-19`, `F1-44`): the scheme must be one the
+ * market declares, and the evidence must be the kind the scheme demands — a `list_reference`
+ * scheme carries its reference, a `flag` scheme carries none. The platform publish and the own-SKU
+ * create refuse anything else at the write, so a false claim never reaches a badge or M06's gate.
+ */
+export function certificationVerdict(
+  certification: CertificationSchemesPack,
+  claim: Certification,
+): CertificationVerdict {
+  const declared = certificationScheme(certification, claim.scheme);
+  if (declared === null) return 'undeclared';
+  if (declared.evidence === 'list_reference') {
+    return claim.reference === null ? 'reference_missing' : 'held';
+  }
+  return claim.reference === null ? 'held' : 'reference_unexpected';
+}

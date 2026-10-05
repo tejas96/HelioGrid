@@ -4,6 +4,7 @@ import { IN_CERTIFICATION_SCHEMES } from '../../src/certification/pack';
 import {
   badgedSchemes,
   certificationScheme,
+  certificationVerdict,
   holdsScheme,
   undeclaredSchemes,
 } from '../../src/certification/schemes';
@@ -67,5 +68,27 @@ describe('undeclaredSchemes — the guard against a rule that gates on nothing (
 
   it('requires nothing of a rule that requires nothing', () => {
     expect(undeclaredSchemes(NO_SCHEMES, [])).toEqual([]);
+  });
+});
+
+describe('certificationVerdict — whether one claim may be held under a market (F1-19, F1-44)', () => {
+  it.each([
+    ['a listed ALMM entry', { scheme: 'ALMM', reference: 'MNRE/ALMM/I/2026/0412' }, 'held'],
+    ['a DCR flag', { scheme: 'DCR', reference: null }, 'held'],
+    ['ALMM with no list reference', { scheme: 'ALMM', reference: null }, 'reference_missing'],
+    [
+      'DCR carrying a reference it has no list for',
+      { scheme: 'DCR', reference: 'x' },
+      'reference_unexpected',
+    ],
+    ['a scheme no market declares', { scheme: 'UL', reference: null }, 'undeclared'],
+    ['a scheme spelled in another case', { scheme: 'almm', reference: 'x' }, 'undeclared'],
+  ] as const)('%s → %s', (_what, claim, expected) => {
+    expect(certificationVerdict(IN_CERTIFICATION_SCHEMES, claim)).toBe(expected);
+  });
+
+  it('a market declaring no scheme holds no claim', () => {
+    const none = { schemes: [], standards: IN_CERTIFICATION_SCHEMES.standards };
+    expect(certificationVerdict(none, { scheme: 'DCR', reference: null })).toBe('undeclared');
   });
 });

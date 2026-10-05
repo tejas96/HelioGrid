@@ -104,6 +104,8 @@ type ReviewedComputesNothing =
   | 'resolveEffectiveSettings'
   /* groups the notification records it is handed and returns them; generic over the record, it holds no figure */
   | 'centreView'
+  /* parses a spec envelope and computes nothing: a zod schema outruns the type walk's depth */
+  | 'catalogSpecSchema'
   /* label a figure they are handed (`F8`) */
   | 'qualifyMoney'
   | 'qualifyMinorUnits'

@@ -3,6 +3,15 @@
  * resolves to for a tenant on a date. `resolveCatalogItem` hands out a money figure, so it is on
  * `./server` alone (F4-04); its types are here, because a screen renders what the server sent.
  */
+
+export type {
+  CatalogReleaseSnapshot,
+  CatalogReleaseSnapshotEnvelope,
+  OverrideSnapshot,
+  OwnItemSnapshot,
+  ReleaseChangeKind,
+} from './release';
+export { changeKindOf, RELEASE_CHANGE_KINDS } from './release';
 export type {
   CatalogOverride,
   CatalogRate,
@@ -22,7 +31,7 @@ export type {
   PanelSpec,
   SpecParse,
 } from './specs';
-export { parseCatalogSpec } from './specs';
+export { catalogSpecSchema, parseCatalogSpec } from './specs';
 export type {
   BatteryChemistry,
   CatalogAvailability,

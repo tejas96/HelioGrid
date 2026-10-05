@@ -2,8 +2,6 @@ import { randomUUID } from 'node:crypto';
 import {
   auditLogEntry,
   authIdentity,
-  brandingSettings,
-  businessProfile,
   createDb,
   type Db,
   file,
@@ -14,19 +12,12 @@ import {
   notification,
   notificationPreference,
   notificationSettings,
-  onboardingProgress,
   otpChallenge,
-  proposalTemplateSettings,
   pushDevice,
   session,
-  taxRegistration,
   tenant,
-  tenantHoliday,
   tenantMembership,
   tenantPool,
-  timelineTemplate,
-  trancheTemplate,
-  trancheTemplateLine,
   userAccount,
 } from '@heliogrid/db';
 import { type InvitationStatus, invitationExpiresAt, type RolePreset } from '@heliogrid/domain';
@@ -35,6 +26,7 @@ import { type Challenge, seedChallenges } from './challenges';
 import { type Device, seedDevices } from './devices';
 import { seedLinkedLogins } from './logins';
 import { adminUrl, databaseUrl } from './preconditions';
+import { TENANT_CATALOG_TABLES, TENANT_SETTING_TABLES } from './tenant-tables';
 
 export { aChallenge, type Challenge } from './challenges';
 export { aDevice, type Device } from './devices';
@@ -251,23 +243,16 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
     return;
   }
   await db.delete(auditLogEntry).where(inArray(auditLogEntry.tenantId, companies));
+  for (const catalogTable of TENANT_CATALOG_TABLES) {
+    await db.delete(catalogTable).where(inArray(catalogTable.tenantId, companies));
+  }
   await db.delete(file).where(inArray(file.tenantId, companies));
   await db.delete(notification).where(inArray(notification.tenantId, companies));
   await db
     .delete(notificationPreference)
     .where(inArray(notificationPreference.tenantId, companies));
   await db.delete(notificationSettings).where(inArray(notificationSettings.tenantId, companies));
-  for (const setting of [
-    trancheTemplateLine,
-    trancheTemplate,
-    taxRegistration,
-    tenantHoliday,
-    businessProfile,
-    brandingSettings,
-    proposalTemplateSettings,
-    timelineTemplate,
-    onboardingProgress,
-  ]) {
+  for (const setting of TENANT_SETTING_TABLES) {
     await db.delete(setting).where(inArray(setting.tenantId, companies));
   }
   await db.delete(invitationRole).where(inArray(invitationRole.tenantId, companies));

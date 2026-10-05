@@ -15,4 +15,11 @@ export type {
   StandardsLabels,
 } from './pack';
 export { CERTIFICATION_EVIDENCE, IN_CERTIFICATION_SCHEMES } from './pack';
-export { badgedSchemes, certificationScheme, holdsScheme, undeclaredSchemes } from './schemes';
+export type { CertificationVerdict } from './schemes';
+export {
+  badgedSchemes,
+  certificationScheme,
+  certificationVerdict,
+  holdsScheme,
+  undeclaredSchemes,
+} from './schemes';

@@ -17,7 +17,7 @@ src/common/            plumbing 2+ modules need: auth/ (guard, route-access map,
                        db/ (the pools), temporal/, filters/, errors/, request-id.ts, logging.ts,
                        creation-key.ts, client-version.ts
 src/modules/<m>/       <m>.module|public|controller|service|repository.ts · internal/
-src/scripts/<verb>-<noun>.ts   boots the app context, calls ONE service, exits
+src/scripts/<verb>-<noun>.ts   boots the app context, calls the service of each thing it does, holds no logic, exits
 ```
 
 `internal/` holds what only the module's own service uses (other modules reach only
@@ -29,7 +29,7 @@ A file nearing 300 lines splits by subarea in the same folder: `settings.templat
 
 ```
 pnpm --filter @heliogrid/api dev | build | typecheck     # dev = tsx watch, API_PORT 8084
-pnpm --filter @heliogrid/api pack:publish                # the typed pack as its market's next revision
+pnpm --filter @heliogrid/api pack:publish                # the typed pack as its market's next revision, then the India platform catalog
 curl localhost:8084/health                               # liveness · /health/ready = readiness
 ```
 
