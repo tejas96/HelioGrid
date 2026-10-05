@@ -1,6 +1,6 @@
 # @heliogrid/contracts — ts-rest + Zod 3, the API review surface
 
-Deps: `architecture.md` §2 contracts. Changing a contract has a sequence: run `/contract-change`.
+Deps: `architecture.md` §2 contracts.
 
 ## What lives here / what must never live here
 

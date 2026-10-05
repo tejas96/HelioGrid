@@ -24,18 +24,20 @@ paths:
   character (a no-break space, a zero-width space) is written as a `\u` escape.
 - **A money, tenancy or permission rule, and a check a change adds or alters, is proven red once.**
   Break the rule its test names — never a neighbour or its input data — see the test fail BY NAME,
-  then restore it. A crash or a compile error is not red. At `/ship` the code reviewer names the
-  break and the main session runs it (`/ship` step 5). A test of a race FORCES its overlap — it holds
+  then restore it. A crash or a compile error is not red. A test of a race FORCES its overlap — it holds
   a lock both sides need until both are seen waiting (`apps/api/tests/support/held-lock.ts`) —
   because two requests merely fired together mostly run one after the other.
 - **Coverage is 100% where a wrong number costs money or leaks data** — under
   `packages/domain/src/`: `money/**`, `tax/**`, `subsidy/**`, `pricing/**`, `authz/**` and
   `commerce/tranche-allocation.ts`. Elsewhere it is reported, never failing: read
   `pnpm test:coverage` for the edge you missed.
+- **`apps/api/tests/` run only in CI.** The ones that sign up through the api leave companies in
+  the one local database the app uses, so `vitest.config.mts` leaves them out unless `CI` is set,
+  and says so. A red proof runs its one file locally: `CI=1 pnpm exec vitest run <file>`.
 - **The regression suite, `tests/e2e/`, proves a shipped flow keeps working** — every web route and
   phone screen has a flow (the `e2e-flow-per-screen` invariant holds that), and the `packages/ui`
   web halves are mounted with the app's stylesheets. Its specs are `web/*.spec.ts` and
-  `components/*.spec.tsx` there, and nowhere else. It never replaces the QA agents, which prove what
-  a change makes new.
+  `components/*.spec.tsx` there, and nowhere else. It never replaces checking on the running app,
+  which proves what a change makes new.
 - **Unit tests do not replace `tests/invariants/`.** An invariant proves a property of the SYSTEM
   against real state; a unit test proves one decision at its edges.

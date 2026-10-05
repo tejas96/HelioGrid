@@ -23,6 +23,6 @@ appId: com.heliogrid.app
 - pressKey: Enter
 # The form stops here, filled: pressing Create company inside a Maestro flow never reaches the api on
 # iOS, while the same tap on a still screen does, so creating the company and the home it opens are
-# driven by qa-mobile (T-FPLAT-079, R9; gate 33's one held screen).
+# checked by hand (T-FPLAT-079, R9; gate 33's one held screen).
 - scrollUntilVisible:
     element: ${CREATE_COMPANY}

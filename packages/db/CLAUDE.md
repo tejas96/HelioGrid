@@ -4,7 +4,7 @@
 > Before authoring the next one, read its Data model block in `docs/tasks/`. A number is taken in
 > LANDING order, so a task landing out of sequence takes the next free one and sweeps the docs.
 
-Deps: `architecture.md` §2 db. Authoring a migration has a sequence: run `/migration`.
+Deps: `architecture.md` §2 db.
 
 ## What lives here / what must never live here
 
@@ -74,7 +74,7 @@ pnpm db:migration:new                # DRAFT into drizzle-draft/ — review, the
 
 ## Done means
 
-`/migration` step 8 — applied twice, the invariants run against the real database.
+The migration applied twice, then the invariants run against the real database.
 
 ## Traps
 

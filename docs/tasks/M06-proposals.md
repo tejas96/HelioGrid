@@ -37,7 +37,7 @@ are the specification.
 - Given a Quick-mode proposal expanded to the full builder, when the rail renders, then every value from Quick mode is present unchanged and nothing must be re-entered (M06-19).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
-**Settle at /start:**
+**Settle before the build:**
 - Whether Quick-mode state is persisted on the proposal or purely presentational (M06-18, M06-19) — ruled: one boolean on the proposal, set by the entry toggle and cleared by the expansion act; the hidden-vs-shown step set is never stored (M06-18 fixes the shown steps at 1, 3, 8 and 10 as product law, and M06-19's generated Quick proposal opening in the full builder for its next version is knowable only if the proposal carries the mode).
 
 ---
@@ -112,7 +112,7 @@ are the specification.
 - Given the EMI toggle on, when the document renders, then EMI figures carry the projection label with their assumptions (M06-40).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
-**Settle at /start:**
+**Settle before the build:**
 - Which range bounds the stored capacity field — step 3's 0.5–7000 kW or the design range M06-09 records beside it (M06-09) — ruled: neither; the column takes any positive capacity, step 3's typed entry validates 0.5–7000 kW as M06-09's own row states, and a Path A value is stored exactly as the design derived it (M06-09 records the divergence and forbids normalising either side; a column bound would silently normalise the derived value).
 
 ---
@@ -256,7 +256,7 @@ the specification.
 - Given the BOM detail on a phone, when it renders, then it is a card list with an edit sheet — never a wide table (M06-39).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
-**Settle at /start:**
+**Settle before the build:**
 - Whether BOM-detail edits at proposal time live on the proposal's money block or write back to the studio's BOM (M06-39, §M06.6) — ruled: they are the proposal's own money inputs — the per-proposal margin and every line adjustment are stored on the proposal and snapshotted into the version's money block; `bom_line` is read-only to this module and never written (M06-01 makes the BOM the studio's internal object, and a write-back would move the design's fingerprint and stale the proposal from its own edit, M06-46).
 
 ---
@@ -316,10 +316,10 @@ here and never re-declared.
 - Given any Path B version, when document or link render, then the verbatim indicative line is present in the reading flow; given a remote-survey-based design, then the basis line renders (M06-51).
 - Given a design with variants, when the customer-facing rendering is produced, then exactly one recommended system shows by default (M06-56).
 - Given the EMI toggle on, when the document renders, then EMI figures carry the projection label with their assumptions (M06-40).
-- Given a generated document in a non-Latin language, when it is produced and opened, then conjuncts, matras and ligatures are shaped correctly throughout (`F3-15`). → proof: qa-api renders this document in `mr` and reads the produced artifact's embedded faces and glyph runs, so a broken conjunct is read rather than eyeballed
+- Given a generated document in a non-Latin language, when it is produced and opened, then conjuncts, matras and ligatures are shaped correctly throughout (`F3-15`). → proof: QA (api) renders this document in `mr` and reads the produced artifact's embedded faces and glyph runs, so a broken conjunct is read rather than eyeballed
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
-**Settle at /start:**
+**Settle before the build:**
 - What a V1 document states as its basis when no survey exists behind it (M06-51; `F8-20`, `F8-22`) — ruled: the basis is derived at Generate from the design's roof-capture provenance tier and frozen into the version's honesty labels — no design keeps `F8-20`'s indicative line; a design whose roof tier is not `measured` renders `F8-22`'s remote line verbatim; a `measured` roof, M04's V2 path, carries no basis line; and no field is added to the design (`F8-21` reduces roof capture to exactly two flows, so the tier already names the flow, and a stored basis would be a second copy of it).
 
 ---
@@ -477,7 +477,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 - Given step 10, when it renders, then the proposal number is present, auto-assigned and disabled — never editable, never client-generated (M06-16, M06-44).
 - Given a generated version, when any input later changes, then the version's snapshot and money block are byte-identical to generation time and a change note exists (M06-42).
 
-**Settle at /start:**
+**Settle before the build:**
 - Whether a version physically copies its component and tranche rows or references frozen draft rows (M06-31, M06-42) — ruled: physical copy at Generate — each version owns its own copied component and tranche rows beside its field-set and money snapshot, and the draft rows stay the one editable set with no frozen flag (M06-42 defines a version as a snapshot and demands byte-identity, which is provable only on rows nothing else can write; a frozen flag would turn every post-Generate edit into a copy-on-write of the draft).
 - Which object carries the status machine at the share boundary (M06-45, M06-53) — ruled: the proposal alone carries `status`; a version is a stateless snapshot, and M06-53's version moving to shared is the proposal's transition taken with its latest version, which the share act's own record names (M06-45 states the machine verbatim on the proposal; a second status on the version would be two machines for one act and a write to an immutable row).
 - Whether declined-by-tenant is a status value or a reason (M06-45, M06-58) — ruled: no sixth status — a withdrawal is the `superseded` transition, and the act's actor and cause are the transition's timeline and audit record, never a status or reason column (M06-45 closes the set at five and moves statuses by acts; `declined` is the customer link's act, so a tenant act cannot share it).
@@ -511,8 +511,8 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 - Given untouched tenant settings, when a proposal is built, then platform-seeded defaults carry every templated step and no settings visit is required (M06-49; `M01-28` consumed).
 - Given step 9 with T&C added, when "Save as template" is used, then the tenant's template set gains it and the page estimate reflects the content (M06-15; `M01-51`).
 - Given step 6, when phases are reordered, added, deleted or reset, then the tenant's timeline template is the reset target (M06-12; `M01-52`).
-- Given the proposal-template settings, when the builder generates a document, then cover, included sections, default terms and bank details come from these settings (or their platform defaults), and the document is titled with the ruled name in every locale (M01-51). → proof: qa-web + qa-mobile save a cover, section set, terms and the printed bank details on `T-M01-019`'s screen, then generate a proposal: each appears, and the document is titled with the ruled name in all three languages — the proof `T-M01-019` hands here, because its block has no builder
-- (M01-52, handed here by `T-M01-019`, whose block has no builder.) → proof: qa-web + qa-mobile a phase order saved on `T-M01-019`'s screen is the order step 6 opens with
+- Given the proposal-template settings, when the builder generates a document, then cover, included sections, default terms and bank details come from these settings (or their platform defaults), and the document is titled with the ruled name in every locale (M01-51). → proof: QA (web and phone) save a cover, section set, terms and the printed bank details on `T-M01-019`'s screen, then generate a proposal: each appears, and the document is titled with the ruled name in all three languages — the proof `T-M01-019` hands here, because its block has no builder
+- (M01-52, handed here by `T-M01-019`, whose block has no builder.) → proof: QA (web and phone) a phase order saved on `T-M01-019`'s screen is the order step 6 opens with
 
 ---
 
@@ -542,7 +542,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 **DONE WHEN:**
 - Given generated narrative, when the document renders, then every narrative claim traces to a field or computed value of the version (M06-52).
 
-**Settle at /start:**
+**Settle before the build:**
 - Whether the narrative claim-to-fact mapping is persisted data or a generation-time discipline (M06-52) — pick: generation-time — the narrative is rendered from the version's snapshot through `i18n` templates whose only slots are the version's fields and computed values, so the template is the mapping and nothing is stored beyond the version's PDF artifact (M06-52's source drops the traceability test as implementation detail, and a slot template cannot assert a fact the version lacks; cost if wrong: free-form generated prose would need a stored narrative plus a claim-to-fact map on the version, both additive).
 
 ---

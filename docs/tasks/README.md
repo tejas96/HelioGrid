@@ -5,17 +5,16 @@ shell, `F-core.md` / `F-platform.md` / `F5-customer-link.md` where a foundation 
 itself, and the studio split across `MS-studio-a.md` / `-b.md` / `-c.md`. `UI.md` is the one
 file here that is a REGISTER rather than tasks — component gaps with no requirement rows behind
 them, so no `T-` ids and no task anatomy. `deferred.md` holds what a task found outside its
-scope; each row names what reopens it, and `/start` lists the rows that are met. Every task was
+scope; each row names what reopens it. Every task was
 generated from the requirement register, and no P0 requirement exists without a task (or an
 explicit `realized-by` pointer to the requirement that carries it); a task whose `PRD rows:` reads
 `none` builds what other tasks' rows need.
 
 ## Task anatomy
 
-A task is its header lines, written when the task is. `/start` adds its sections under them —
-`#### Plan`, `#### Acceptance criteria` and `#### QA plan`; for a split task `#### Parts` and each
-part's `#### Part <x> · Plan` and `#### Part <x> · QA plan`; for a screen `#### Design check` — in
-the formats `.claude/skills/start/SKILL.md` gives, the one place they are written. The header lines:
+A task is its header lines, written when the task is. The plan adds its sections under them —
+`#### Plan` and `#### Acceptance criteria`; for a split task `#### Parts` and each part's
+`#### Part <x> · Plan`. The header lines:
 
 ```
 ### T-M02-001 · Quick Add Lead
@@ -31,20 +30,19 @@ the formats `.claude/skills/start/SKILL.md` gives, the one place they are writte
 **DEFECTS:** (studio tasks only) rows from docs/prd/modules/M05-studio/defect-register.md
 **Why:** one or two lines, in EPC terms — who gains what, and what breaks without it
 **Depends on:** task ids and migration numbers that must land first
-**Blocked:** (only while true) what only the owner can clear — a ruling, an account; `/start` stops here
-**Parked:** (only while true) the owner's reason; `/start` steps over it
+**Blocked:** (only while true) what only the owner can clear — a ruling, an account; the work stops here
+**Parked:** (only while true) the owner's reason; the order steps over it
 **DONE WHEN:** the requirement rows' own Given/When/Then, copied verbatim — never paraphrased.
-        `/start` copies them into `#### Acceptance criteria` and extends them there; the PRD's own lines stay word for word
+        The plan copies them into `#### Acceptance criteria` and extends them there; the PRD's own lines stay word for word
 ```
 
-Each acceptance line names its proof: a test by file and name, or a QA check id. A money, tenancy
-or permission rule's test is seen to fail once, at `/ship`, on the break `code-reviewer` names.
-Nothing checks a task's shape: `/start` fixes a missing part before the go, and `plan-reviewer`
-reads every plan (`/start` step 8).
+Each acceptance line names its proof: a test by file and name, or a check on the running app. A
+money, tenancy or permission rule's test is seen to fail once (`.claude/rules/testing.md`).
+Nothing checks a task's shape: the plan fixes a missing part before the owner's go.
 **A shipped section keeps the shape it shipped in** — its `Risk:`, `Cases:`, `Placement:`,
 `Used by:`, `QA plan:`, `Rounds:` and `Verified:` lines, and its verification record, stay as
 history and are never rewritten. An open task that still carries one of those lines keeps it the
-same way: `/start` adds the three sections under the header lines and changes nothing above them.
+same way: the plan adds its sections under the header lines and changes nothing above them.
 
 ## Binding rules
 
@@ -54,18 +52,18 @@ same way: `/start` adds the three sections under the header lines and changes no
    never a commit and never a PR of its own — and the squash commit on main carries the PR
    number. A split task's parts keep their own ledger in its `#### Parts` table (`open` →
    `shipped`, in the part's own change commit), and the task turns `shipped` with its last part. A
-   part's id is the task id plus its letter (`T-SHELL-003a`); wherever a skill writes `<T-id>` — the
-   branch, the commit subject, `.qa/<T-id>/`, the QA companies `QA <T-id> …` — a part uses its own id. Build, tests and QA are proven
+   part's id is the task id plus its letter (`T-SHELL-003a`); wherever `<T-id>` is written — the
+   branch, the commit subject — a part uses its own id. Build, tests and verification are proven
    inside the PR, never tracked as states. A task whose rows moved to another task is `struck` —
    its heading says STRUCK, its stub stays so the id is never reused, and it is never counted as
    open work.
    **The ORDER is `docs/build-order.md`**: its blocks place every task file, each file's backend tasks
    go before its screens, each in the order they are written, a backend waits for the drawings of the
    screens it serves, and a `Depends on:` pulls a task of the same block ahead. The next
-   step is the ONE `/start` step 2 picks — the next open part of a split task, build a task, the
+   step is the ONE the session picks from it — the next open part of a split task, build a task, the
    owner draws a screen at its turn, or the owner clears a `**Blocked:**` line — never one picked
    from memory and never a later task because it is ready. A ticket with no `Depends on:` line waits
-   on nothing, and `/start` writes the line.
+   on nothing, and the plan writes the line.
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
 2. **Reference whitelist.** A task may cite only: `docs/prd/**`, the screen's board and decisions record in the Claude Design project, by the link on its `DESIGN:` line (the one source of a design — the repo holds no copy),
@@ -76,8 +74,8 @@ same way: `/start` adds the three sections under the header lines and changes no
    `/Volumes/works-space/Solar-App-POC/` (tasks typed `port` only). Anything else —
    old research docs, the v1 repo — is a defect in the task. A task never cites an open-question
    id: a PRD row carries its own ruling, and git carries the history.
-3. **`DESIGN: PENDING` blocks the task at its turn.** `/start` names the drawing as the
-   step, the owner draws it, then `/start` takes the task. A backend task waits for the drawings of
+3. **`DESIGN: PENDING` blocks the task at its turn.** The drawing is the step: the owner
+   draws it, then the task is built. A backend task waits for the drawings of
    the screens it serves (rule 0). A screen's UI is not "done" until it matches its board in Claude
    Design.
 4. **Studio tasks are ports, not rewrites** (ruling S12-1): engineering core moves as-is with

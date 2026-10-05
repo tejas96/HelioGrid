@@ -22,10 +22,9 @@ Deps: `architecture.md` §2 tests/e2e. The law is `.claude/rules/testing.md`; th
 - Never a typed word or colour: words come from `@heliogrid/i18n`, colours from the page's own
   tokens (`support/token.ts`), the touch floor from `@heliogrid/ui`.
 - Never a shared account: every flow signs up its own fresh number (`support/phone.ts`), so no spec
-  reads another's data or the developer's, and no count or empty state is asserted. `/qa`'s
-  standing `QA <surface>` accounts are for its agents only; a flow never signs in to one.
-- A flow names the company it creates `E2E <its 10-digit number>`: `/start` removes every such
-  company once it is an hour old, so a flow that names it otherwise leaves it behind for good.
+  reads another's data or the developer's, and no count or empty state is asserted.
+- A flow names the company it creates `E2E <its 10-digit number>`, so its rows can be found. Nothing
+  removes them yet.
 - Never a retry: a flake is a bug and is fixed.
 - Every web spec ends its landing with `support/axe.ts`'s `expectNoSeriousViolations` once the
   landing's words are visible: a `serious` or `critical` violation fails the suite (`F7-26`).
@@ -42,8 +41,8 @@ pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows, one devi
 pnpm --filter @heliogrid/e2e exec playwright show-trace <trace.zip>   # replay a failure
 ```
 
-The web suite and the whole component suite run in CI (`e2e-web`). The phone suite runs in
-`/qa`: CI has no simulator. It needs Metro, the api and the app installed on each device.
+The web suite and the whole component suite run in CI (`e2e-web`). The phone suite runs by
+hand: CI has no simulator. It needs Metro, the api and the app installed on each device.
 
 ## Local conventions
 

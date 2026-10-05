@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 /* The layers a unit test may live in, read from the one file that states them
    (`packages/config/unit-test-packages.json`). A JSON read rather than an import so this
@@ -27,10 +27,9 @@ const COMPLETE = { statements: 100, branches: 100, functions: 100, lines: 100 };
  */
 /*
  * `.env.local` reaches the tests, exactly as it reaches the invariants (whose runner passes
- * `--env-file-if-exists`). A test needing the local database — the role-administration
- * transitions are the first — would otherwise SKIP on every developer machine and run only in
- * CI, which is the "a skipped proof reports success" trap this repo refuses. Node's own loader,
- * so no dependency and no second dotenv parser; absent, CI's real variables stand as they are.
+ * `--env-file-if-exists`), so a test needing the local database runs against it rather than
+ * skipping. Node's own loader, so no dependency and no second dotenv parser; absent, CI's real
+ * variables stand as they are.
  */
 try {
   process.loadEnvFile('.env.local');
@@ -39,6 +38,14 @@ try {
   // neither skips loudly. Anything else (an unreadable or malformed file) is a real problem and
   // must not be swallowed: a silently ignored env file is how a proof stops running unnoticed.
   if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+}
+
+/* The api tests write companies into the one local database the app uses, and the ones that sign
+   up through the api remove none, so off CI they are left out — said out loud, never silently.
+   One file runs locally with `CI=1 pnpm exec vitest run <file>`, for a red proof. */
+const runApiTests = process.env.CI !== undefined;
+if (!runApiTests) {
+  process.emitWarning('apps/api/tests are skipped off CI; run one with CI=1 (vitest.config.mts)');
 }
 
 export default defineConfig({
@@ -55,6 +62,9 @@ export default defineConfig({
        test in a package outside it used to RUN and pass while three checks said it may not
        exist. Collecting from the same list is what makes the refusal true. */
     include: UNIT_TEST_PACKAGES.map((pkg) => `${pkg}/tests/**/*.test.ts`),
+    exclude: runApiTests
+      ? configDefaults.exclude
+      : [...configDefaults.exclude, 'apps/api/tests/**'],
     /*
      * A test imports `../../src/…`, never `@heliogrid/<pkg>`. The package entry resolves to
      * BUILT `dist/`, so a test written that way passes against the last build and says nothing

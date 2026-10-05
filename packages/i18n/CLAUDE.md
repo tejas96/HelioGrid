@@ -84,7 +84,7 @@ design token but the sans stack, no component, and no product model beyond the l
    refuses until each registration exists — every `satisfies Record<UiLanguage, …>` the compiler
    names, `LANGUAGE_META`'s tag, endonym and direction among them — and the plural polyfill
    line in `src/rn/index.ts`, which no type holds yet (`docs/tasks/deferred.md`): add it by hand.
-2. **Add the database value** with `/migration`: `ui_language` mirrors the set, and the
+2. **Add the database value** with a migration: `ui_language` mirrors the set, and the
    `enum-parity` invariant proves it. The migration runs before machines roll; an older build that
    meets the new language reads English (`uiLanguageResponseSchema`, `uiLanguageOrSource`) and the
    person's stored choice is untouched.

@@ -46,11 +46,11 @@ hook's state — and the screen, which may import both sides, supplies it.
 
 ## The two moments
 
-- **`/start`**: the reach names the twin and, part by part, where each shared part lives. A part
-  that would exist in both app trees is split out there, before the go.
-- **`/qa` and `/ship`**: a twinned screen's QA checks name both platforms, so the report shows any
-  drift side by side — a single-platform change to a twinned screen is where drift starts — and the
-  code review checks that a part both apps draw is authored once.
+- **The plan**: it names the twin and, part by part, where each shared part lives. A part that
+  would exist in both app trees is split out there, before the go.
+- **Verify and review**: a twinned screen is checked on both platforms, so any drift shows side by
+  side — a single-platform change to a twinned screen is where drift starts — and the review checks
+  that a part both apps draw is authored once.
 
 A pair that already exists is a finding, not a rule to bend: it goes to `docs/tasks/deferred.md`
 with what blocks the lift, and the next screen task on either twin lifts it.

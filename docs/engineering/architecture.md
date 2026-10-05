@@ -132,8 +132,8 @@ aggregate). Platform scope: backend only. The ./uuid subpath is for backend use
 imported it and node:crypto cannot resolve in a browser or Metro bundle.
 Belongs: DDL for the current module's slice (Law 9).
 Never: contracts imports (db-no-upward — the enum-parity invariant is the seam that keeps
-pgEnum ↔ z.enum honest); business logic. Extension point: /migration authors the next
-numbered file.
+pgEnum ↔ z.enum honest); business logic. Extension point: `pnpm db:migration:new` starts the
+next numbered file.
 
 ### data — the ONLY frontend wire path (ADR-0023)
 Owns: the typed client (sole initClient, response-validating and unknown-status-rejecting),
@@ -356,11 +356,10 @@ per-glob coverage threshold in `vitest.config.mts`, landing with the slice it co
 
 ## §4 Placement procedure — run BEFORE writing any new file
 
-Walk top-down; first match wins. `/start` records the answer per new file in the plan's Where table.
+Walk top-down; first match wins. The plan records the answer for each new file.
 
-1. Is it a wire shape (request/response/enum crossing HTTP)? → packages/contracts
-   (+ /contract-change).
-2. Is it stored schema? → packages/db via /migration, in the owning module's slice (Law 9).
+1. Is it a wire shape (request/response/enum crossing HTTP)? → packages/contracts.
+2. Is it stored schema? → packages/db via a migration, in the owning module's slice (Law 9).
 3. Is it business logic, a policy number, a protocol constant, a permission rule, or a flow
    view-model both platforms read? → packages/domain (pure TS only). A capability or a
    visibility scope is ALWAYS domain — never an `if role === …` in a handler, which is the
@@ -382,8 +381,8 @@ Walk top-down; first match wins. `/start` records the answer per new file in the
    tree, composing the layers above. Screens hold rendering, not policy.
 10. Is it environment/config? → a schema in packages/env + .env.example. A raw process.env
     read anywhere else needs an entry in biome.json's `noProcessEnv` override (§2 env).
-11. Is it the agent's own instruction or a check — a skill, an agent, a hook, a rule, a lint
-    plugin, an invariant, a CI lane? → `.claude/<skills|agents|hooks|rules>/`,
+11. Is it the agent's own instruction or a check — a rule, a lint plugin, an invariant, a CI
+    lane? → `.claude/rules/`,
     `packages/config/biome/`, `tests/invariants/`, `.github/workflows/`. Closed sets, and a new
     holder gets its row in `.claude/protections.md`. There is no `scripts/`: a new script or
     command waits for the owner's yes (CLAUDE.md §1).

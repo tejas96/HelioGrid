@@ -51,20 +51,19 @@ first — and grep every other brief for the same line and fix each one. A word 
 fact the brief does not pin.
 
 Write them **before** the design session, for the screen you are about to draw. A brief whose
-screen is already designed is left alone: a brief that moves past its design makes `design-reviewer`
-ask for a redraw at the screen's `/start`, which buys nothing for a screen already drawn.
+screen is already designed is left alone: a brief that moves past its design makes the screen due a
+redraw before its build, which buys nothing for a screen already drawn.
 
 ## The one thing no check can hold: the States list
 
-`design-reviewer` holds a screen's product facts against their whole PRD rows at the screen's
-`/start` — but **nothing checks that a brief's States list is complete**. It cannot be checked: states are a
+The owner checks a screen's board before its build — but **nothing checks that a brief's States list is complete**. It cannot be checked: states are a
 design decomposition, not a projection of the
 requirement rows, so no 1:1 rule exists to enforce (three formulations were measured on
 2026-08-26 and all three fired on 17–43% of correct briefs).
 
 **So read the States list against the requirement rows by hand, once, before the design session.**
 A requirement whose failure, empty, refused or in-progress frame has no state is a screen that
-gets built without it, and the first thing that catches it is `/qa` on the real surface.
+gets built without it, and the first thing that catches it is verify on the running app.
 
 ## If a design decision splits or merges a screen
 

@@ -45,5 +45,5 @@ pnpm turbo test                              # the same, through the gate
 ## Done means
 
 The invariant fails on the violation it names — inject it once, watch it go red, then remove it,
-and write that red run into the PR body (`/ship` step 5). An invariant nobody has seen fail is a
+and write that red run into the PR body. An invariant nobody has seen fail is a
 rule nobody has verified.

@@ -26,11 +26,9 @@ declarations. A check you add or change is trusted only after it fires on a plan
 **Every mistake leaves a record.** A mistake found in the work — yours, a reviewer's, a check's or
 the owner's — is fixed at once and listed in the PR body by its kind. One a rule could have
 prevented gets that rule where it fires, as a type, a lint rule or a test wherever one can decide it.
-A harness fault met during a task goes to `docs/tasks/deferred.md` and is fixed in its own change.
 
-**The harness earns its size.** A rule, check or agent is added only with what it replaces or the
-cost it saves. **No new script:** a code fact goes into a type, Biome, dependency-cruiser or a test;
-anything else is a skill step. Ask the owner before adding a script or a command.
+**No new script.** A code fact goes into a type, Biome, dependency-cruiser or a test. Ask the owner
+before adding a script or a command.
 
 ## 2. The Laws
 
@@ -57,19 +55,19 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
 
 ## 3. Workflow
 
-One fresh session per task or part, and one task or part per PR. The work follows ONE order: the
-next step `/start` picks from `docs/build-order.md` — the next open part of a split task, build a
-task, the owner draws a screen, or the owner clears a blocker. Inside a module it is design → backend → UI.
+One task or part per PR. The work follows ONE order, `docs/build-order.md` — the next open part of
+a split task, build a task, the owner draws a screen, or the owner clears a blocker. Inside a module
+it is design → backend → UI.
 
-| step | who | stops for the owner |
+| step | what | stops for the owner |
 |---|---|---|
-| `/start` | picks the step, critiques the task, writes the plan, the acceptance criteria and the QA plan; `design-reviewer` for a screen; `plan-reviewer` on every plan — its QA-plan checks, or every check for money, tenancy, permissions or schema | yes — the go |
-| build | the main session, inside the plan | only when the scope changes |
-| `/qa` | the suites, then one QA agent per surface the change reaches, in parallel; fix and re-check what failed | when a check fails three times |
-| `/ship` | `code-reviewer` once, the fixes and red proofs, the commit, the push, the PR, CI | yes — every commit |
+| plan | read the task, write the plan and its acceptance criteria into it | yes — the go |
+| build | inside the plan | only when the scope changes |
+| verify | `pnpm check:all`, then the change on the running app | when a check fails three times |
+| commit | the commit, the push, the PR, CI | yes — every commit |
 
-**One turn, many calls.** In every step and every agent, each read, search and check that does not
-wait on another's result goes in ONE turn. A turn re-reads the whole session, so one lookup per turn
+**One turn, many calls.** Each read, search and check that does not wait on another's result goes in
+ONE turn. A turn re-reads the whole session, so one lookup per turn
 is the slowest and costliest way to work.
 
 **Build:**
@@ -77,17 +75,13 @@ is the slowest and costliest way to work.
 1. Tests first: each acceptance line's test before its code (`.claude/rules/testing.md`).
 2. Stay in the plan's scope. A new behaviour, table, route, contract or package → stop and ask.
 3. After each change, `pnpm check`.
-4. A schema change runs `/migration`; a contract change runs `/contract-change`.
-5. A bug outside the scope goes to `docs/tasks/deferred.md`, never into this diff.
-6. When done, one tidy pass over the diff — reuse, names, dead code — then `pnpm check:all` once,
-   noting its tree stamp (`/qa`, "The QA report"), then `/qa`. `/ship` runs it again only when the tree
-   changed.
-7. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code
+4. A bug outside the scope goes to `docs/tasks/deferred.md`, never into this diff.
+5. When done, one tidy pass over the diff — reuse, names, dead code — then `pnpm check:all` once.
+6. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code
    that is gone: `pnpm turbo build --force`.
 
 **A PR is one complete task or part:** every acceptance line it carries met and proven before it
-opens; a plan over about 30 files is split at `/start` into parts inside the task, web and phone
-together. **One review per change:** findings are fixed and the work ships.
+opens; a plan over about 30 files is split into parts inside the task, web and phone together.
 
 ## 4. Stop and ask the owner before
 
@@ -141,8 +135,8 @@ import, §4 where a new file goes. Run §4 before creating one. This is the dige
 |---|---|
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
 | `docs/engineering/` | how this repo is built, ranked **below** `docs/prd/`. |
-| `.claude/` | the agent's own instructions — `skills/`, `agents/`, `hooks/`, `rules/` and `protections.md`, a closed set. `rules/` is law that spans MORE than one package; a rule for exactly one package lives in that package's own `CLAUDE.md`. |
-| `.qa/` | the local QA workspace, git-ignored: the api log; the standing QA accounts — `accounts.md` names each surface's number, `accounts/<surface>.jar` holds its curl session; and one folder per task — its QA report, each agent's results and its evidence. `/start` deletes a shipped task's folder, never the accounts. |
+| `.claude/` | the agent's own instructions — `rules/`, `protections.md` and `launch.json` (the dev servers), a closed set. `rules/` is law that spans MORE than one package; a rule for exactly one package lives in that package's own `CLAUDE.md`. |
+| `.qa/` | git-ignored: `api.log`, the api's development log, which the `api` launch configurations and the e2e suite write. |
 | `.ops/` | the owner's private infra record, git-ignored: every external account, project and client id, what is still owed, and each environment's values (`dev.env`, `prod.env`). A console change updates it in the same sitting. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
 | the Claude Design project | NOT in the repo: every screen's board and decisions record, one pair per screen — the pixel-perfect reference a screen is built and measured against. It is the one source of a design: a task's `DESIGN:` line links it, `DesignSync` reads it at the task's turn, the owner edits it there, and no copy is kept on disk. |
@@ -197,8 +191,7 @@ Every line, every app, every package.
   never inside the current change, and never parked.
 - **Dependencies change only through `pnpm add`/`pnpm remove`** — never a hand-edited dependency
   block or lockfile. **The database is read-only to you**: schema through a migration, data through
-  the application — except the two scripts the skills run against the local database: `/start`'s
-  QA-record cleanup and `/qa`'s seed.
+  the application.
 - **Testing law is `.claude/rules/testing.md`.**
 
 Writing rules, not code: a rule carries no date (a trap goes to its package's `CLAUDE.md`, and when

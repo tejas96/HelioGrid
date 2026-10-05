@@ -52,9 +52,8 @@ __pycache__/
 
 # Planning-plugin working files, if that plugin is ever enabled — its briefs, specs, plans and
 # subagent scratch, under ONE root. Plugin-internal process state, not repo documentation: the
-# code and the PR carry what the repo needs to know. The plugin is disabled in
-# `.claude/settings.json`, so nothing writes here today; the line stays so that enabling it
-# never drops process scratch into the tree.
+# code and the PR carry what the repo needs to know. The line stays so that enabling it never
+# drops process scratch into the tree.
 .superpowers/
 
 # The Playwright MCP's scratch output.
@@ -75,7 +74,7 @@ coverage/
 # Tools installed locally by hand (never committed).
 .tools/
 
-# The local QA workspace: one folder per task (report, agent results, evidence) and the api log.
+# The api's development log, `.qa/api.log`.
 .qa/
 
 # The owner's private infra record: every external account, project, client id and what is still owed.
