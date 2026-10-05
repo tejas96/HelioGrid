@@ -87,9 +87,10 @@ Write under the task's header lines (`docs/tasks/README.md` keeps the shape):
   `ios`, chosen by the path rules in `.github/workflows/ci.yml`; a lane an AC needs that the
   paths skip is `FAIL`, never a pass. An API behaviour is proven by its test file on
   `heliogrid_test` (`pnpm exec vitest run <file>`, both database names switched —
-  `infra/README.md`) and CI. A phone row owned by `ci` is proven only by the `android` or `ios`
-  lane's `Phone flows (tests/e2e/mobile)` step having run and passed; a lane whose `Phone flows
-  OFF` step ran proves nothing, and the row is `BLOCKED`, never a pass.
+  `infra/README.md`) and CI. A phone row owned by `ci` is an Android row, proven only by the
+  `android` lane's `Phone flows (tests/e2e/mobile)` step having run and passed; a lane whose
+  `Phone flows OFF` step ran proves nothing, and the row is `BLOCKED`, never a pass. An iOS
+  phone row is local, by `qa-ios`, never `ci`.
 - `#### Parts` — the `Where` table is complete or the plan is not, and it is the budget: a part
   holds about 20 files and 1,000 lines, or holds one independently rejectable deliverable. The
   cap decides WHERE the work splits, never what is cut: a test, a protection row or a doc line is
