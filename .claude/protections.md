@@ -131,7 +131,7 @@ catalog freshness checks, the unit tests and the invariants; off CI it leaves ou
 
 | what is protected | what holds it |
 |---|---|
-| An agent never writes to the database | the `qa_readonly` role's read-only sessions (`infra/postgres/init/01-roles.sql`), when an agent connects as it |
+| An agent never writes to the database | nothing — CLAUDE.md §8 states it; the `qa_readonly` role (`infra/postgres/init/01-roles.sql`) is read-only but nothing connects as it |
 | An agent never edits a lockfile | CI's `pnpm install --frozen-lockfile` |
 | An agent never pushes to `main`, never force-pushes and never skips git's pre-commit hook | `main` is PR-only on GitHub · CLAUDE.md §4 states the rest; nothing on this machine blocks it |
 | An agent's network and file writes, and a command that wipes a device | nothing |

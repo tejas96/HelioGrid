@@ -19,8 +19,7 @@ import {
 import postgres from 'postgres';
 
 /**
- * Enum parity invariant — closes the drift packages/db/CLAUDE.md calls "the highest-risk
- * drift in the repo".
+ * Enum parity invariant — closes the highest-risk drift in the repo.
  *
  * packages/db hand-mirrors the contracts z.enums, and dependency-cruiser's `db-no-upward`
  * correctly forbids importing contracts there ("db never imports contracts, ui or apps").

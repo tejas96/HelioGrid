@@ -4,15 +4,10 @@ Multi-tenant SaaS for solar EPC companies — India-first, global-capable: CRM �
 3D design → proposal → customer link → voice follow-up → projects → payments. The 3D Design
 Studio is the flagship. Light-only v1 · EN/HI/MR · tenant-currency money (INR v1).
 
-**This file states the invariants.** `docs/engineering/architecture.md` places every file ·
-`.claude/protections.md` says which tool, rule or test holds each protection · each package's
-`CLAUDE.md` holds its own rules and traps and loads when you work there.
-
 ## 1. Core principles
 
 **Think before coding.** State assumptions. Two readings the PRD supports → take the simplest, write
-it into the task with one reason, and say it out loud. A feature or a number no PRD row implies is
-the owner's: stop and ask.
+it into the task with one reason, and say it out loud.
 
 **Propose a better approach when you see one** — with an example in *this* codebase and the cost to
 switch. Never switch silently.
@@ -32,7 +27,7 @@ before adding a script or a command.
 
 ## 2. The Laws
 
-Stable ids — never reused or renumbered; a gap is a law that was removed.
+Law ids are stable — never reuse or renumber one.
 
 1. **Foundation before features.** Feature modules build only on landed foundation.
 3. **Contracts before code.** requirements → domain model → contract → shared types →
@@ -44,18 +39,17 @@ Stable ids — never reused or renumbered; a gap is a law that was removed.
    searches `.claude/`, `docs/`, `.github/`, the configs and `.env.example` for the dead paths.
 9. **Incremental schema & API growth.** Tables, enums, contracts and endpoints are authored only
    when their owning module's slice begins.
-10. **Platform purity.** Shared packages hold no DOM, no React Native, no Node-only API outside a
-    declared server entry.
+10. **Platform purity.** A shared package holds no DOM, React Native or Node-only API outside a
+    declared platform entry — ui's `.tsx`/`.native.tsx` halves, i18n's `./rn`, a `./server` entry.
 11. **Flows are authored once.** Shared state vocabulary and view-model types live in a shared
     package before either screen consumes them. Screens render; they don't hold policy.
-12. **A new fact joins its guard.** A brand, an enum, a token, a route, a table or an error code
-    your change adds is enrolled with the check that holds its kind, in the same change. A kind no
-    check holds is said out loud, never assumed safe. Prose and design have no check: a reviewer and
-    the owner hold them.
+12. **A new fact joins its guard.** A brand, enum, token, route, table or error code you add is
+    enrolled with the check that holds its kind (`.claude/protections.md` names it) in the same
+    change; a kind no check holds is said out loud.
 
 ## 3. Workflow
 
-One task or part per PR. The work follows ONE order, `docs/build-order.md` — the next open part of
+The work follows ONE order, `docs/build-order.md` — the next open part of
 a split task, build a task, the owner draws a screen, or the owner clears a blocker. Inside a module
 it is design → backend → UI.
 
@@ -66,22 +60,20 @@ it is design → backend → UI.
 | verify | `pnpm check:all`, then the change on the running app | when a check fails three times |
 | commit | the commit, the push, the PR, CI | yes — every commit |
 
-**One turn, many calls.** Each read, search and check that does not wait on another's result goes in
-ONE turn. A turn re-reads the whole session, so one lookup per turn
-is the slowest and costliest way to work.
+**One turn, many calls.** Batch every read, search and check that does not wait on another's result
+into one turn.
 
 **Build:**
 
 1. Tests first: each acceptance line's test before its code (`.claude/rules/testing.md`).
 2. Stay in the plan's scope. A new behaviour, table, route, contract or package → stop and ask.
 3. After each change, `pnpm check`.
-4. A bug outside the scope goes to `docs/tasks/deferred.md`, never into this diff.
-5. When done, one tidy pass over the diff — reuse, names, dead code — then `pnpm check:all` once.
-6. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code
+4. When done, one tidy pass over the diff — reuse, names, dead code — then `pnpm check:all` once.
+5. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code
    that is gone: `pnpm turbo build --force`.
 
-**A PR is one complete task or part:** every acceptance line it carries met and proven before it
-opens; a plan over about 30 files is split into parts inside the task, web and phone together.
+**A PR is one complete task or part:** every acceptance line met and proven before it opens; a plan
+over about 30 files splits into parts, web and phone together.
 
 ## 4. Stop and ask the owner before
 
@@ -90,18 +82,18 @@ opens; a plan over about 30 files is split into parts inside the task, web and p
 - A layer conflict §7 does not resolve.
 - A feature or a number no PRD row implies. A decision that belongs to a LATER module is not an ask:
   write it into that module's task in `docs/tasks/`, and carry on.
-- **Committing.** Every commit waits for its own yes, given to the shown file list and message; a
-  go, a green check or the yes to an earlier commit is never that yes. The task's Status — or, for a part,
-  its row in the task's Parts table — turns `shipped` in that commit; then push and raise the PR. The owner merges. `main` is PR-only; never
-  `--no-verify`, never a force-push.
+- **Committing.** Each commit waits for the owner's yes to the shown file list and message — a go,
+  a green check or an earlier yes never counts. In that commit the task's Status (or the part's row
+  in its Parts table) turns `shipped`; then push and open the PR. The owner merges. Never
+  `--no-verify`, never force-push.
 
 ## 5. Commands
 
 | | |
 |---|---|
-| `pnpm infra:up` · `pnpm infra:down` | **Before anything.** One Postgres container (3 databases) + Temporal, from a clean clone. |
-| `pnpm check` | **While building.** Biome on what differs from `origin/main`, the typecheck of the changed packages, and the related unit tests. Fast, and never the proof. |
-| `pnpm check:all` | **Once, when the build is done.** Build → lint (Biome and its plugins, dependency-cruiser, sherif, turbo boundaries) → typecheck → duplication → OpenAPI freshness → catalog freshness → every unit test → the invariants. The two freshness checks rewrite a stale file before they fail — commit the fresh one. |
+| `pnpm infra:up` · `pnpm infra:down` | **Before anything.** Postgres (3 databases), the object store and Temporal. |
+| `pnpm check` | **While building.** Biome on files that differ from `origin/main`, the workspace typecheck (cached), and `vitest related` on changed .ts files. Fast; never the proof. |
+| `pnpm check:all` | **Once, when the build is done.** Build, lint (Biome, dependency-cruiser, sherif, turbo boundaries), typecheck, duplication, OpenAPI and catalog freshness, unit tests, invariants. A stale OpenAPI or catalog file is rewritten and the check fails — commit the fresh file. |
 | `pnpm lint:fix` | Format and auto-fix. |
 | `pnpm test:watch` · `pnpm test:coverage` | Tests while writing · the edge cases you missed (read it, not the pass count). |
 | `pnpm db:migration:new` · `pnpm db:migrate` | Where a migration starts; never hand-author one. |
@@ -109,9 +101,10 @@ opens; a plan over about 30 files is split into parts inside the task, web and p
 The database invariants need the local Postgres; without it they SKIP loudly, and over an empty
 schema they report VACUOUS. Neither is a pass. Never weaken a check to make a change pass.
 
-**Ports are dedicated, never reassigned** — web `3002` · api `8084` · metro `8081` · postgres
-`5544` · object store `9000` · temporal `7233` · component tests `3100` ·
-the worker has no listener. A busy port is a stale service: kill it, never fall back to another.
+**Ports are dedicated** — web `3002` · api `8084` · metro `8081` · postgres `5544` · object store
+`9000` · temporal `7233` · component tests `3100`; the worker has none. A busy dev-server port is a
+stale process: kill it (the launch configs do), never move to another port. A busy infra port means
+the stack is already up.
 Start web, api and metro through the browser preview tool; `pnpm --filter @heliogrid/mobile
 ios|android` drives metro.
 
@@ -128,21 +121,20 @@ import, §4 where a new file goes. Run §4 before creating one. This is the dige
 | `ui` | one component package, both platforms (`.tsx` + `.native.tsx`). |
 | `db` | schema and append-only migrations. |
 | `i18n` | every user-visible string. |
-| `env` | the only reader of `process.env`. |
+| `env` | env schemas and loaders — the only `process.env` reader outside the `noProcessEnv` override in `biome.json`. |
 | `forms` · `data` · `config` | the form layer · the typed client · shared build config and the Biome plugins. |
 
 | tree | what it is |
 |---|---|
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
-| `docs/engineering/` | how this repo is built, ranked **below** `docs/prd/`. |
-| `.claude/` | the agent's own instructions — `rules/`, `protections.md` and `launch.json` (the dev servers), a closed set. `rules/` is law that spans MORE than one package; a rule for exactly one package lives in that package's own `CLAUDE.md`. |
+| `docs/engineering/` | how this repo is built. |
+| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers). |
 | `.qa/` | git-ignored: `api.log`, the api's development log, which the `api` launch configurations and the e2e suite write. |
 | `.ops/` | the owner's private infra record, git-ignored: every external account, project and client id, what is still owed, and each environment's values (`dev.env`, `prod.env`). A console change updates it in the same sitting. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
-| the Claude Design project | NOT in the repo: every screen's board and decisions record, one pair per screen — the pixel-perfect reference a screen is built and measured against. It is the one source of a design: a task's `DESIGN:` line links it, `DesignSync` reads it at the task's turn, the owner edits it there, and no copy is kept on disk. |
+| the Claude Design project | NOT in the repo: each screen's board and decisions record — the pixel-perfect reference. A task's `DESIGN:` line links it; read it with `DesignSync`; keep no copy on disk. A studio screen (`ported from the POC`) has none. |
 
-Everything public is an entry a package's `package.json` `exports` declares — `src/index.ts`, or a
-subpath such as `@heliogrid/data/react` or `@heliogrid/ui/print`; consumers never import a deep path. **Never invent a folder**: every tree is a closed set, and a new category is a
+Import a package only through an entry its `package.json` `exports` declares. **Never invent a folder**: every tree is a closed set, and a new category is a
 plan-time decision. `docs/README.md` maps every document.
 
 ## 7. When rules conflict
@@ -155,15 +147,12 @@ ask.
 
 ## 8. Coding standards
 
-Every line, every app, every package.
-
-- **A shared fact is UNSPEAKABLE outside its owner.** If a consumer could type the value itself, it
-  will be typed twice: give it a branded type in its owner, so importing is the only way to obtain
-  one. Never `as <Brand>` outside that package. Owners: money and policy numbers → `domain` ·
+- **A shared fact is unspeakable outside its owner.** If a consumer could type the value itself,
+  make it a branded type in its owner so importing is the only way to get one. Owners: money and policy numbers → `domain` ·
   user-visible copy → `i18n` · vocabularies → `domain`, derived in `contracts` · visual values →
   `theme` · queries → `db` · wire calls → `data`.
-- **Zero duplication.** Search before you write. A second copy of a definition, a formula or a
-  shape is a defect even when both copies are correct — they will diverge.
+- **Zero duplication.** A second copy of a definition, formula or shape is a defect even when both
+  are correct — they will diverge.
 - **Code reads like English or it is rewritten.** Names say WHAT, never how; a reader new to this
   codebase follows a function top to bottom without scrolling back. Needing a comment to explain it
   means the code is wrong. A comment states the CONSTRAINT — what breaks if you change this — and
@@ -171,32 +160,23 @@ Every line, every app, every package.
 - **Solve today's problem.** No speculative abstraction, no config for one caller, no indirection
   for a future that has not been specified — unless a PRD row asks for the extension point; then
   it is built, and an acceptance line proves it.
-- **Shape.** Files ≲300 lines, split by responsibility and named for what they do — never
-  `*2`/`*-extra`, never for a layer or a document id · no `any`, `!`, `==`, or `console.log` in
-  anything SERVED · style outside the component file · no app-declared enum, union, lookup or
-  policy number · `process.env` read only in `packages/env` · a package compiles and typechecks
-  with `tsc -p`, never `tsc -b`.
+- **Shape.** A file stays under 300 lines, split by responsibility and named for what it does —
+  never `*2`/`*-extra`, never for a layer or a document id. A package builds and typechecks with
+  `tsc -p`, never `tsc -b`.
 - **Queries are correct the first time.** Index-backed, no N+1, no `select *`, no unbounded scan,
   every tenant-scoped read carrying its tenant predicate.
 - **Every boundary has a contract.** Nothing crosses a package or process edge on an inferred or
   `any` shape; where two sides must agree, the agreement is a type in `packages/contracts`.
-- **A release is safe at every step of its roll.** Machines roll one by one, apps in the field
-  update weeks late, and a workflow or job started before a release runs on after it. A change to
-  anything stored or sent between runtimes — a row, a column, an enum value, a response, a workflow
-  message, a queued job, a cached payload, a pack — names who reads it and proves both directions:
-  every OLDER reader still running reads the NEW shape, and the new code reads everything the old
-  one wrote. What cannot be read both ways ships in two releases: expand, then contract.
-- **A bug you find is reported at once.** Inside the task's scope it is fixed now. Outside it, it
-  goes to `docs/tasks/deferred.md` as one row — the issue, the next step and the `reopens when` condition —
-  never inside the current change, and never parked.
+- **A release is safe at every step of its roll.** Old app versions, old machines and running
+  workflows outlive a release. A change to anything stored or sent between runtimes (row, column,
+  enum value, response, workflow message, queued job, cached payload, pack) names its readers and
+  proves both ways: old readers read the new shape, new code reads what the old wrote. If it can't,
+  ship two releases: expand, then contract.
+- **A bug you find is reported at once.** In scope: fix it now. Out of scope: one row in
+  `docs/tasks/deferred.md` (issue, next step, `reopens when`), never in this diff.
 - **Dependencies change only through `pnpm add`/`pnpm remove`** — never a hand-edited dependency
   block or lockfile. **The database is read-only to you**: schema through a migration, data through
   the application.
-- **Testing law is `.claude/rules/testing.md`.**
-
-Writing rules, not code: a rule carries no date (a trap goes to its package's `CLAUDE.md`, and when
-and why something changed is the commit's job) · one fact lives in one file — cite it, never restate
-it · say the instruction plainly, in words a new reader can act on.
 
 ## 9. Product law
 
@@ -204,7 +184,7 @@ Digest of the foundations `F1`–`F8`, which are canonical.
 
 - Every user-visible number carries a provenance tier: measured / derived / estimated / assumed —
   an identifier, and a count of the reader's own listed records, excepted (`F8-01`).
-- Money never renders stale — design changed and quote not recomputed reads provisional.
+- Money never renders stale — a design changed since the proposal was computed reads provisional.
 - One money path: BOM ↔ proposal ↔ tranches ↔ payments reconcile to the currency's minor unit.
 - One market and one currency per tenant; market facts (tax, stages, checklists, rails, phone spec)
   resolve from versioned market packs, never hard-coded.

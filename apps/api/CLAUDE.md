@@ -6,23 +6,24 @@ Deps: `architecture.md` §2 apps/api.
 
 - One Nest module per bounded context. Controllers implement ts-rest contracts and hold ZERO
   business logic: controller → service → tenant-scoped repository.
-- NEVER: a hand-rolled `@Get`/`@Post` outside a contract (webhook receivers excepted), domain
-  math (that is `packages/domain`), raw SQL outside a repository, a raw `process.env` read.
+- NEVER: a hand-rolled `@Get`/`@Post` outside a contract (webhook receivers excepted).
 
-## Folder shape — a closed set; never invent a folder
+## Folder shape
 
 ```
-src/app.ts · main.ts  createApp() is the ONE boot path; main.ts listens, a test listens on port 0
-src/common/auth/    the guard, the route-access map, the cookies, the session context
-src/modules/<m>/    <m>.module|public|controller|service|repository.ts · internal/
-src/scripts/<verb>-<noun>.ts   a command: boots the application context, calls ONE service, exits
+src/app.ts · main.ts   createApp() is the ONE boot path; main.ts listens, a test listens on port 0
+src/config/env.ts      the app's typed env
+src/common/            plumbing 2+ modules need: auth/ (guard, route-access map, cookies, session),
+                       db/ (the pools), temporal/, filters/, errors/, request-id.ts, logging.ts,
+                       creation-key.ts, client-version.ts
+src/modules/<m>/       <m>.module|public|controller|service|repository.ts · internal/
+src/scripts/<verb>-<noun>.ts   boots the app context, calls ONE service, exits
 ```
 
-`internal/` is a privacy boundary, not tidying: what the module's own service uses and nothing
-outside may import. One repository and one service need none; `auth`'s seven files do.
+`internal/` holds what only the module's own service uses (other modules reach only
+`<m>.public.ts`). A module with one repository and one service needs none.
 
-A file nearing Biome's 300-line cap splits by SUBAREA in the same folder (for example
-`settings.templates.service.ts`).
+A file nearing 300 lines splits by subarea in the same folder: `settings.templates.service.ts`.
 
 ## Commands
 
@@ -34,59 +35,55 @@ curl localhost:8084/health                               # liveness · /health/r
 
 ## Local conventions
 
-- **db and drizzle are legal ONLY in `*.repository.ts`**; a service sees no `tx` or table, and a
-  `src/scripts/` command drives a service, never a repository. **The NAME states the pool**: plain
-  takes `TENANT_DB`, a DOOR with no query of its own · `*.admin.repository.ts` crosses
-  tenancy · `*.reference.repository.ts` reads what no tenant owns — the last two fenced, on raw `Db`.
+- **db and drizzle only in `*.repository.ts`** — a service never sees a `tx` or a table; a
+  `src/scripts/` command calls a service, never a repository. The file name picks the pool:
+  `*.repository.ts` takes `TENANT_DB`; `*.admin.repository.ts` crosses tenants;
+  `*.reference.repository.ts` reads tables no tenant owns.
 - Cross-module imports go through `<m>.public.ts`, never another module's service class.
 - **The audit module is a LEAF and stays one**: other modules' repositories import
   `recordAuditEntry` from it, so a `.public.ts` import in the other direction closes a cycle.
   An entry records ids; whoever renders a name resolves it on the read side.
-- `common/` is framework plumbing two or more modules need. It may never import a module, and
-  business behaviour belongs in `packages/domain` instead.
-- **Every non-2xx response is the canonical envelope**, including the body-parser's 413, which
-  `app.ts` answers before Nest sees the request.
+- `common/` is plumbing two or more modules need; it never imports a module.
+- **Tenancy is three layers, always**: the guard (session claims) → the repository filter
+  (tenantId from context, never from client input) → RLS.
+- **Cross-tenant reads return 404, never 403** — never reveal that another tenant's row exists.
+- **Every non-2xx response is the canonical envelope** (`common/filters/`); never write an error
+  body by hand.
 - **A body `details[]` path is the SCHEMA FIELD path** (`phone`, `profile.age` — never
   `body.phone`): clients feed it straight to `applyServerErrors`. A query, header or param path
   is prefixed with its source only when the bare name would be ambiguous.
 - **Response validation is ON globally.** A handler whose body fails its own contract, or which
   answers an UNDECLARED status, becomes an opaque `INTERNAL` on the wire; the truth goes to the
   log under the same request id.
-- **`x-request-id` is assigned in one place** (`common/request-id.ts`, mounted before CORS and
-  body parsing) so even a parser 413 carries one. The header NAME is `REQUEST_ID_HEADER` from
-  `@heliogrid/contracts`, never the literal — `packages/data` forwards the same one.
-- The log shape and its redaction live in ONE file, `common/logging.ts`. Add a redaction path
-  there, never per-handler.
-- **Workflows are started through `TemporalGateway`**, never a client a service builds. Pass the
-  CONTRACT from `@heliogrid/contracts/workflows`; the gateway derives the id from it. The channel
-  opens on FIRST use, never at boot. `start()` is idempotent by construction, not a licence to
-  dual-write: the durable handoff is an outbox row in the SAME transaction (`forward-compat.md`).
-- **Every controller declares its routes' access with `RouteAccessMap`**, beside `@TsRestHandler`:
-  `public`, `session-cookie`, `session`, `member` or `{ capability }`. The map is typed against the
-  router, so a route the contract gains fails to compile until it says what it needs, and the
-  guard denies a route with no entry — silence is denial. Never an inline role test: the
-  capability is domain's. The session a handler needs is `sessionOf(req)`.
-- **In development the sign-in code and the invite link are written to the log**
-  (`Message for +91…`), because the message rail is bound to the development adapter; the SMS
-  adapter replaces it and the development one refuses to run in production.
+- `x-request-id` is assigned only in `common/request-id.ts`; name the header with
+  `REQUEST_ID_HEADER` from `@heliogrid/contracts`, never the literal.
+- The log shape and its redaction live only in `common/logging.ts`: add a redaction path there,
+  never per-handler. Errors serialise through an ALLOWLIST (never turn it into a denylist), and the
+  logged URL drops its query string, because `redact` reaches structured fields only.
+- **Start workflows through `TemporalGateway`** with the contract from
+  `@heliogrid/contracts/workflows`; the gateway derives the id. `start()` is idempotent, but the
+  durable handoff is an outbox row in the SAME transaction (`docs/engineering/forward-compat.md`).
+- **Every controller declares route access with `RouteAccessMap`** beside `@TsRestHandler`:
+  `public`, `session-cookie`, `session`, `member` or `{ capability }`. A missing entry fails to
+  compile and the guard denies it. Never test a role inline; read the session with `sessionOf(req)`.
+- In development the sign-in code and the invite link are written to the api log
+  (`Message for +91…`).
 - List endpoints: `orderBy(<sort key> DESC, id DESC)`, `limit` and `page` from
   `paginationQuerySchema` (the service derives the offset), `totalCount` counted with the SAME
   `where` — never a divergent count query.
 
 ## Done means
 
-Contract implemented AND driven with curl · typecheck and lint green · the FAILURE paths driven,
-not read: a malformed request returns field-addressable `details[]`, a contract-violating
-response returns opaque INTERNAL, and the response's request id matches the log with no PII.
+Contract implemented AND driven with curl · the FAILURE paths driven, not read: a malformed
+request returns field-addressable `details[]`, a contract-violating response returns opaque
+INTERNAL, and the response's request id matches the log with no PII.
 
 ## Traps
 
-- Every api HTTP suite signs in with the ONE development number, so a new session binds to whichever membership that number holds, including a company another suite created; a suite that DELETES companies races every other suite's sign-in, and the loser fails on `session_active_tenant_id_tenant_id_fk` in an unrelated file → a suite deletes only the rows it wrote and leaves the company standing; a session bound to a company being removed is UNBOUND (`active_tenant_id = null`), never deleted.
+- Every api HTTP suite signs in with the ONE development number, so a suite that DELETES a company breaks other suites' sign-in (`session_active_tenant_id_tenant_id_fk` in an unrelated file) → a suite deletes only the rows it wrote and never a company; a session whose company is removed is unbound (`active_tenant_id = null`), never deleted.
 - `app_user` holds SELECT on `tenant` and a `FOR SELECT` policy, so an UPDATE to a tenant column neither errors nor happens: RLS matches no row and `returning()` comes back empty, which reads like "nothing to change", and a column-level GRANT does not fix it → a tenant-editable setting gets its own tenant-scoped table with a `FOR ALL` policy; the `tenant` row keeps the founding facts.
 - `pnpm dev` runs tsx (esbuild), which emits no decorator metadata, so an implicit constructor parameter fails at boot while every HTTP test, whose transform does emit it, stays green → explicit `@Inject(Token)` on EVERY parameter (`Reflector`, class providers and factory-built classes included), then boot it once (`curl localhost:8084/health`) before believing a service works.
 - A route declaring a NON-base error code silently ships the wrong code: the envelope filter maps the status back to a code, and both sides compile → throw `ContractException` with that literal code AND an explicit `HttpStatus`.
-- `redact` reaches structured fields only: `req.query.phone` is censored while the same value inside the raw `req.url` is not → `common/logging.ts` strips the query string from the logged URL.
-- A ts-rest `RequestValidationError` carries the submitted data, and some Zod issue codes include the value → `common/logging.ts` serialises errors through an ALLOWLIST; never turn it into a denylist.
 - `vitest.config.mts` loads the developer's `.env.local`, so a suite that leans on an OPTIONAL variable (`GOOGLE_CLIENT_IDS`) passes on the machine that has it and goes red in CI, which sets none → a suite takes an optional value from a `vi.mock('../../src/config/env')` over the real `ENV`, never from the file.
 - The HTTP suites run in parallel against one database, so a count over a whole table (`select count(*) from user_account`) moves under another suite's signup and the assertion flakes → count only the rows the case owns (`where phone_e164 = …`).
 - `@Res({ passthrough: true })` on a `@TsRestHandler` method marks the response handled, so the handler's body never leaves the process and the request hangs with no error → set cookies through `responseOf(req)` (`common/auth/cookies.ts`), never an injected `@Res()`.

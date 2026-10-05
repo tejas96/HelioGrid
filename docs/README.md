@@ -30,6 +30,7 @@ traps sit under `## Traps` in its own `CLAUDE.md`. External-account setup notes 
 | [`engineering/architecture.md`](engineering/architecture.md) | **The spine.** §1 module map · §2 package registry · §3 platform rules · §4 placement. Run §4 before creating any file. |
 | [`engineering/data-model.md`](engineering/data-model.md) | The logical data model and ERD, derived from `prd/` and ranked below it; read beside `forward-compat.md` before writing a migration. |
 | [`engineering/forward-compat.md`](engineering/forward-compat.md) | What each module's first migration must satisfy. |
+| [`engineering/adding-a-language.md`](engineering/adding-a-language.md) | The steps that add a UI language (`F3-26`). |
 | [`engineering/17-ui-architecture-v2.md`](engineering/17-ui-architecture-v2.md) | The UI layer: the theme, the primitives, the components, and what holds a port to the design system. |
 | [`engineering/02-system-architecture.md`](engineering/02-system-architecture.md) · [`03-tech-stack.md`](engineering/03-tech-stack.md) · [`07-integrations.md`](engineering/07-integrations.md) · [`08-security-and-tenancy.md`](engineering/08-security-and-tenancy.md) · [`09-observability-and-ops.md`](engineering/09-observability-and-ops.md) | How the system runs, the stack and its pins, ports and adapters, the threat model, observability. |
 | [`engineering/adr/`](engineering/adr/) | Why each architecture choice was made. Reference only — never a gate. |

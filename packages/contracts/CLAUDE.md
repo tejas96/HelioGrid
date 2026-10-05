@@ -1,21 +1,13 @@
 # @heliogrid/contracts — ts-rest + Zod 3, the API review surface
 
-Deps: `architecture.md` §2 contracts.
-
 ## What lives here / what must never live here
 
-- ts-rest routers, Zod request/response schemas, the error envelope, shared conventions
-  (pagination, provenance, role and language enums — the last two DERIVED from `@heliogrid/domain`,
-  never authored here), Temporal workflow messages (`workflows/`),
-  the SESSION PROJECTION (`session.ts`) and its `SessionResolver` port (`ports/session.ts`).
-- **The session projection is the identity-provider seam.** HelioGrid owns `user_account`,
-  sessions, tenants, memberships and roles; a wrapped identity library owns only its own tables;
-  `session.ts` joins the two ONCE. A guard, repository or screen that reaches past it for a
-  provider type is what makes a provider upgrade a repo-wide sweep.
-- NEVER: an implementation, a db import, a NestJS import, a fetch client, a `zod/v4` import, or
-  a role definition — `ROLE_PRESETS` and the capability matrix are `@heliogrid/domain`, because
-  permission policy is business truth and the API must answer "may they?" with no contract in
-  scope.
+- Role and language enums are DERIVED from `@heliogrid/domain`, never authored here. The session
+  projection is `session.ts`; its port is `ports/session.ts`.
+- `session.ts` is the one place HelioGrid's identity tables meet the identity library's. A guard,
+  repository or screen reads the session projection and never imports a provider type.
+- NEVER: an implementation, a NestJS import, a fetch client, or a role list (`ROLE_PRESETS` and
+  the capability matrix are `@heliogrid/domain`).
 
 ## Where files go
 
@@ -26,33 +18,25 @@ src/error.ts                the canonical error envelope
 src/workflows/              Temporal workflow message schemas — the ./workflows subpath
 src/ports/<capability>.ts   a provider port interface and its DI token; its implementation
                             lives with its consumer, never here
+src/scripts/                the OpenAPI emitter run by the openapi script
 src/index.ts                the only entry consumers import
 openapi/openapi.json        emitted, committed, checked by `pnpm check:openapi` — never hand-edited
 ```
 
-## Commands
-
-```
-pnpm --filter @heliogrid/contracts build      # tsc -p (composite)
-pnpm --filter @heliogrid/contracts openapi    # emit openapi/openapi.json, AFTER build
-```
-
 ## Rules
 
-- **The contract diff comes FIRST**, before any endpoint or client. That diff IS the API review
-  (Law 3). A breaking change means a versioned route, settled in the plan; prefer additive.
-- **Every closed business set is ONE `z.enum`**, with its inferred type exported from the index.
-  Consumers import the type; an inline literal union downstream is a defect. A UI status or
-  variant map is `Record<TheEnum, …>`, so a new value fails to compile rather than rendering
-  blank. A set both layers need is written in `@heliogrid/domain` and derived here.
+- A breaking wire change needs a versioned route, agreed with the owner before building; prefer
+  an additive change.
+- **Every closed business set is ONE `z.enum`**, with its inferred type exported from the index;
+  consumers import the type. A status or variant map is `Record<TheEnum, …>`, so a new value fails
+  to compile.
 - **A set that GROWS with the slices (Law 9) — audit events, notification types — is
   `extensibleEnum(...)` where a RESPONSE carries it**, its reader keeps a fallback, and the closed
   `z.enum` stays beside it for writes and the pgEnum mirror. A FIXED set stays closed on both sides.
 - Every route declares its error union via `errorEnvelope(z.enum([...]))`; codes are UPPER_SNAKE.
   The HTTP mapping is `httpStatusFor` (over the unexported `HTTP_STATUS_BY_CODE`) and its reverse
   `genericErrorCodeByStatus`, both in `src/error.ts`. Do not invent a mapping.
-- **`errorDetailSchema`'s inferred `ErrorDetail` is exported — import it.** Two hand-written
-  copies of one wire shape is the Law 5 defect this package exists to prevent.
+- Import `ErrorDetail` (inferred from `errorDetailSchema`); never re-type the wire shape.
 - **Tenant identity NEVER crosses the wire** — no `tenant_id`/`tenantId` in any body or query
   schema at any depth; it comes from verified session claims. Workflow payloads DO carry
   `tenantId`: a durable workflow has no session to derive it from.
@@ -63,16 +47,12 @@ pnpm --filter @heliogrid/contracts openapi    # emit openapi/openapi.json, AFTER
   national-number grouping and length) belongs to `pack.formats`; and a WIRE fact no screen ever
   sees belongs HERE, because contracts is the wire truth and domain is business truth.
 - Pagination is offset + `totalCount`. A cursor-based route needs an owner ruling.
-- Zod is pinned at 3.x and `zod/v4` is banned. `strictStatusCodes: true` on the root router, so
-  an undeclared status is a type error.
 
-## Cross-cutting concerns are built in, never retrofitted
+## Cross-cutting concerns
 
-Anything that will reach every module later — permissions, tenancy, money, audit, i18n — is
-provisioned by the **first** contract that could carry it, even while nothing consumes it, and
-behind ONE seam rather than per-endpoint checks. Read your module's row in
-`docs/engineering/forward-compat.md` before authoring its first contract. Retrofitting one of
-these is a repo-wide sweep.
+Before a module's first contract, read its row in `docs/engineering/forward-compat.md`.
+Permissions, tenancy, money, audit and i18n are provisioned by that first contract, behind one
+seam, even before anything consumes them.
 
 ## Done means
 

@@ -7,25 +7,15 @@ with this folder.
 ## What lives here / what must never live here
 
 - `src/_generated/` — the design system, byte-verbatim: tokens, `styles.css`, contracts, manifest.
-- `build.ts` and its parts (`parse.ts`, `contrast.ts`, `emit-theme.ts`) — the generator, which
-  parses `_generated/tokens/*.css` and emits everything into `dist/`.
+- `build.ts` (the generator) and its parts in `src/` — `parse.ts`, `contrast.ts`, `emit-theme.ts`,
+  `font-metrics.ts` — read `_generated/tokens/*.css` and emit `dist/` (git-ignored, never edited).
 - `assets/fonts/` — the vendored woff2 faces.
 - NEVER: **a hand-written token.** Every value arrives through `ds:pull`. A missing value is
   missing from the design system — fix it there, not here.
 - NEVER: component code (that is `@heliogrid/ui`), or anything app- or product-specific. This
   package knows nothing about solar.
 
-## Folder shape
-
-```
-src/_generated/   the design system, verbatim — NEVER hand-edit
-src/parse.ts · src/contrast.ts · src/emit-theme.ts · src/font-metrics.ts   the generator's parts
-build.ts          the generator          dist/   emitted, git-ignored, never edited
-```
-
-Consumers import a subpath from the manifest — `@heliogrid/theme`, `/tokens.css`, `/base.css`,
-`/print.css`, `/theme`, `/tokens.json`, `/contrast.pairs.json`, `/fonts/*`. Never a deep source
-path.
+Consumers import only the subpaths in `package.json` `exports`.
 
 ## Commands
 
@@ -35,11 +25,8 @@ pnpm --filter @heliogrid/theme build     # prints token, field-mode and contrast
 
 ## Local conventions
 
-- **The contrast check FAILS the build below the WCAG floor.** Read the failure — it names the
-  pair. Never raise the floor to make it pass.
-- **`dist/` is emitted, not authored.** A change that looks absent after editing source means you
-  edited `dist/`. Run the build.
+- Consumers read `dist/`: after editing `src/` or `_generated/`, run the build.
 
 ## Traps
 
-- `ds:pull` is a Claude session action that drives the DesignSync MCP, not a pnpm script, so `pnpm ds:pull` fails → drive the MCP in a session and commit what it writes.
+- There is no `pnpm ds:pull`: pull with the DesignSync tool in a session and commit exactly what it writes.

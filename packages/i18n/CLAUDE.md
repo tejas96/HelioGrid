@@ -4,24 +4,18 @@ Deps: `architecture.md` §2 i18n. `packages/ui` takes its copy as props.
 
 ## What lives here / what must never live here
 
-- The `.po` catalogs (the translation source of truth) and their COMPILED `messages.ts` · the
-  `LANGUAGE_META` table · the catalog loaders · the runtime and translator factories · the ONE
-  React provider both platforms use · the Hermes Intl polyfills · `src/copy/` for copy both
-  platforms render.
-- The `@lingui` and `@formatjs` DEPENDENCIES. Neither app declares them, so swapping the message
-  library touches `src/react/` and nothing in either app.
+- The @lingui and @formatjs dependencies live here only; never add them to an app.
 - `src/copy/` modules are pure data — React-free, JSX banned, extractor-swept via leading
   `/*i18n*/` descriptors. Where a closed set exists the module is a `Record` over the contract
   enum. Screen-specific copy stays in its screen.
-- NEVER: app copy hard-coded elsewhere, a per-app catalog, the language LIST (that is
-  the re-export in `packages/contracts/src/locale.ts`), agent or WhatsApp templates (those are tenant DATA), or a
-  raw Intl currency format.
+- NEVER: app copy hard-coded elsewhere, a per-app catalog, agent or WhatsApp templates (tenant
+  DATA), or a raw Intl currency format.
 
 ## Where files go
 
 ```
 src/copy/<area>.ts            copy BOTH platforms need — pure data, no React, no JSX
-src/locales/<lang>/           messages.po (source of truth) + messages.ts (compiled, committed)
+src/locales/<lang>/           messages.po (source of truth) + messages.ts (compiled by `build`, committed, never hand-edited)
 src/index.ts                  REACT-FREE root — createI18nRuntime, createTranslator, metadata
 src/languages.ts              LANGUAGE_META + the statically-imported source catalog
 src/catalog-loader.ts         web: one import() chunk per language
@@ -46,70 +40,33 @@ bundle must never take.
 pnpm --filter @heliogrid/i18n extract | build | typecheck   # extract sweeps web, mobile and ui
 ```
 
-Run `extract` before committing: `pnpm check:catalogs` fails if the catalogs are not fresh.
+Run `extract` after any copy change.
 
 ## Local conventions
 
-- **THE CONVENTION: runtime `<Trans id="<English source text>" />`** on both platforms, from
-  `@heliogrid/i18n/react`. The id IS the English string, so ids double as msgids and the extractor
-  keeps ONE entry per message. Never mix macro `<Trans>` and explicit-id usage for the same
-  string — the extractor forks them into duplicate entries and translations are lost. It is also
-  why the first paint is correct with no catalog fetched: a missing message renders its id.
+- **THE CONVENTION: runtime `<Trans id="<English source text>" />`** from `@heliogrid/i18n/react`,
+  both platforms. The id IS the English string, so the first paint is right before any catalog
+  loads.
 - **The language SET is not written here.** `UI_LANGUAGES` is authored in
   `packages/domain/src/format/languages.ts` and re-exported by contracts, which is
   where this package and `lingui.config.js` still read it. `LANGUAGE_META` and both catalog
   loaders are `satisfies Record<UiLanguage, …>`.
-- **The provider FOLLOWS the session.** A root passes `follow={user?.interfaceLanguage ?? null}`
-  and persists only on `source === 'user'` in `onLocaleChange`; a screen calls `setLocale` and
-  never writes the profile itself — the store is the one persist path (`F3-02`, `F3-04`).
+- **The provider FOLLOWS the session.** A root mounts `LanguageFollowsUser` with
+  `follow={user?.interfaceLanguage ?? null}` and `onChosen`; a screen calls `setLocale` and never
+  writes the profile itself (`F3-02`, `F3-04`).
 - **One instance per mount and per request. Never a module-scope one** — Next evaluates a module
   once per server process and shares it across every request, so a module-level `setupI18n()` is
   one mutable active locale for every concurrent visitor.
 - `t(COPY.key, values)` in hooks and handlers — the descriptor itself, never `.id` · `<Trans>` in markup · `createTranslator(locale)` off the
   React tree. Store message IDs plus data, never a translated business record — that is wrong for
   every other reader of it.
-- **UI language is not the tenant MARKET.** Language is per user; currency grouping, tax scheme
-  and paperwork come from the market pack. A Marathi-reading user in an Indian tenant still sees
-  INR in lakh/crore. Never derive one from the other.
-- The catalog loader is platform-FORKED and has to be: web uses `import()` so webpack splits one
-  chunk per language, and `catalog-loader.native.ts` imports all three statically.
-- Compiled `messages.ts` files are generated. Never hand-edit them.
+- **UI language is per user; currency, tax and paperwork come from the tenant's market pack.**
+  Never derive one from the other.
 
-## Adding a language — the playbook (`F3-26`)
+## Adding a language
 
-Configuration, never a product change. Do these steps and nothing else; the diff touches no
-design token but the sans stack, no component, and no product model beyond the list (`F3-28`).
-
-1. **Add the code** to `UI_LANGUAGES` in `packages/domain/src/format/languages.ts`. The build then
-   refuses until each registration exists — every `satisfies Record<UiLanguage, …>` the compiler
-   names, `LANGUAGE_META`'s tag, endonym and direction among them — and the plural polyfill
-   line in `src/rn/index.ts`, which no type holds yet (`docs/tasks/deferred.md`): add it by hand.
-2. **Add the database value** with a migration: `ui_language` mirrors the set, and the
-   `enum-parity` invariant proves it. The migration runs before machines roll; an older build that
-   meets the new language reads English (`uiLanguageResponseSchema`, `uiLanguageOrSource`) and the
-   person's stored choice is untouched.
-3. **Translate.** `pnpm --filter @heliogrid/i18n extract` writes the new catalog. A gap falls back
-   to English string by string (`F3-05`) — a partly translated language ships; an empty `msgstr`
-   in a `.po` file is the gap to fill, and no gate counts them.
-4. **Give the script a face** if the stack does not draw it (`F3-13`, `F3-14`). In the design
-   system: its `@font-face` and its family in `--font-sans`, then pull. Here: the variable woff2
-   in `packages/theme/assets/fonts/`. On the phone: one static instance per sanctioned weight,
-   named `<Family>-<Weight>.ttf`, in `apps/mobile/assets/fonts/`, linked with
-   `npx react-native-asset` for iOS; on Android the same faces go in
-   `apps/mobile/android/app/src/main/res/font/` as `<family>_<weight>.ttf`, lowercase, beside a
-   `<family>.xml` that maps each weight, and the family is registered in `MainApplication.kt`
-   (the `language-fonts` invariant names what is missing). Then look at it on a device — only a
-   device proves the phone links it.
-5. **Write the plurals.** Every plural message written in the language carries every category
-   `Intl.PluralRules` names for it; a message still in English is a gap, not a failure.
-6. **Money: nothing to do.** `formatMoney` takes the market's pack and never a language (`F3-20`;
-   `packages/domain/tests/format/languages.test.ts`).
-7. **Check the densest screens** that exist — the BOM, the generated proposal document, the
-   proposal builder, the lead list, the studio panels — rendered in the language at both
-   viewports (`F3-18`). A reviewer judges this; no gate can.
-8. **Ship when `pnpm check:all` is green** — the `language-fonts` invariant and
-   `tests/plural-forms.test.ts` hold `F3-27`. Until then the language never reaches `main`, so the
-   picker cannot offer it.
+Follow `docs/engineering/adding-a-language.md`; the `language-fonts` invariant and
+`tests/plural-forms.test.ts` refuse a half-added one.
 
 ## Done means
 
@@ -120,4 +77,3 @@ not merely loading.
 ## Traps
 
 - Without the statically imported source catalog, `i18n.activate()` warns on every boot and a production build `console.warn`s on every fallback message → keep the static import in `languages.ts`.
-- `lingui.config.js` is CommonJS and runs outside any TS pipeline, so it needs BUILT contracts; it throws rather than fall back, because a silent fallback would extract against the wrong language set with every check green → build contracts first.

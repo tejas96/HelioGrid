@@ -1,27 +1,20 @@
 # @heliogrid/db — append-only, tenant-scoped, fail-closed
 
-> A migration is named for what it does, so `migrations/` IS the list and it is not restated here.
-> Before authoring the next one, read its Data model block in `docs/tasks/`. A number is taken in
-> LANDING order, so a task landing out of sequence takes the next free one and sweeps the docs.
-
-Deps: `architecture.md` §2 db.
+> Before a migration, read its task's Data model block in `docs/tasks/`. Numbers go in LANDING
+> order: a task landing out of sequence takes the next free number and fixes the docs that name it.
 
 ## What lives here / what must never live here
 
-- The Drizzle schema, the connection factory and the TENANT DOOR, the migration runner,
-  and the migrations themselves.
-- **The entities come from the owning task's Data model block** in `docs/tasks/` — what each one
-  is, its key fields, its tenancy and the PRD rows behind it. This package holds the PHYSICAL
-  answer; the task holds the logical one, and neither restates the other. `forward-compat.md` is
-  the third: what your first migration must already satisfy.
+- This package holds the physical schema; the task's Data model block holds the logical one, and
+  neither restates the other. `docs/engineering/forward-compat.md` lists what your first migration
+  must already satisfy.
 - The `./uuid` subpath is backend-only; `node:crypto` cannot resolve in a browser or Metro bundle.
-- NEVER: business logic, a contract import, an app import, or a table or column that is not in a
-  migration.
+- NEVER: business logic, or a table or column that no migration creates.
 
 ## Where files go
 
 ```
-migrations/NNNN_<what>.sql  four-digit, zero-padded, one above the highest; NEVER edited
+migrations/NNNN_<what>.sql  four-digit, zero-padded, next free number
 src/schema/<area>.ts        the Drizzle mirror of what the migrations built
 src/client.ts               connection factory + the tenant door (`tenantPool`)
 src/migrate.ts              the sha256-locked runner
@@ -35,12 +28,13 @@ pnpm --filter @heliogrid/db build | migrate
 pnpm db:migration:new                # DRAFT into drizzle-draft/ — review, then move
 ```
 
-`migrate` takes the URL as `argv[1]`; this package reads no environment, so it stays reusable.
+`migrate` takes the URL as its first argument. `pnpm db:migrate` passes `$DATABASE_ADMIN_URL`
+(else `$DATABASE_URL`) from the SHELL, so load `.env.local` first: `set -a; . ./.env.local; set +a`.
 
 ## Rules
 
-- **Migrations are append-only.** Editing an applied file makes `migrate` refuse to run.
-  Add a new numbered file; only an explicit owner ruling overrides this.
+- Migrations are append-only: an edited applied file makes `migrate` refuse to run. Add a new
+  file; only an owner ruling overrides this.
 - **Every tenant-owned table needs all four**: a `tenant_id` column · a composite index leading
   with it · an RLS policy for `app_user` checking `app.tenant_id`, fail-closed via
   `nullif(current_setting('app.tenant_id', true), '')::uuid` — after a transaction-local
@@ -55,19 +49,14 @@ pnpm db:migration:new                # DRAFT into drizzle-draft/ — review, the
   fails that invariant.
 - A `jsonb` payload column is typed as its ENVELOPE — key names, row identity, re-minted brands —
   never as the domain aggregate; the whole is parsed in `domain`, never here.
-- **Tenancy is defence in depth, all three always**: guard (session claims) → repository filter
-  (tenantId from context, never from client input) → RLS backstop.
-- **A tenant repository is given a DOOR, not a database**: `tenantPool(db)` returns a
-  `TenantPool` with one method and no query of its own, so a read that never names its tenant
-  does not compile. Take the branded `TenantScopedDb` wherever a read must be a tenant's own,
-  and `DbTransaction` where either pool's transaction is legitimate.
-- **Cross-tenant reads return 404, never 403** — never reveal that another tenant's row exists.
+- A tenant repository is given `tenantPool(db)`, a `TenantPool` whose one method opens a tenant
+  transaction. Take `TenantScopedDb` where a read must be a tenant's own, and `DbTransaction` where
+  either pool's transaction will do.
 - ids are UUIDv7 generated **app-side** via `$defaultFn`; tables carry no DB-side id default, so a
   raw SQL insert must supply ids.
-- Append-only ledgers (`audit_log_entry` today) get no UPDATE or DELETE grants, and the tenancy
-  invariant asserts it from the catalog over every RLS-subject role.
-- pgEnum values hand-mirror the contract `z.enum`s; change both sides in the same slice. The
-  `enum-parity` invariant proves they match.
+- Append-only ledgers (`audit_log_entry`) get no UPDATE or DELETE grant.
+- pgEnum values mirror the contract `z.enum`s; change both in the same slice (`enum-parity`
+  proves it).
 - An identity provider's own tables are owned by ITS migrator, never authored here.
 - `tenant` INSERT is deliberately NOT granted to `app_user` — signup crosses tenancy and runs on
   the explicit admin path; so do every account, code and session write.

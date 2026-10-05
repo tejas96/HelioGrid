@@ -1,38 +1,21 @@
 # @heliogrid/data — the frontend SDK, the ONLY data path for web and RN
 
-Deps: `architecture.md` §2 data.
-
 ## What lives here / what must never live here
 
-- The transport and its three modes · the ONE `initClient` call · the repository registry
-  (`src/composition.ts`) · repository interfaces and their online-first implementations · the
-  session store · query keys · error normalisation · `createDataLayer` · the React Query adapter
-  under `src/react/`.
-- NEVER: UI, navigation, screens, business logic (that is `@heliogrid/domain`), an environment
-  read (`baseUrl` is passed IN), or an import of db, ui, theme, i18n or any app.
-- **Three entry points, and no more.** `@heliogrid/data` is framework-free · `./react` is the
-  React Query adapter · `./server` is ONE request-scoped context for a Next server render. React
-  and React Query may appear only under `src/react/` and `src/server/`.
-
-## Commands
-
-```
-pnpm --filter @heliogrid/data build | typecheck     # tsc -p (composite; emits dist/)
-```
+- NEVER: UI, navigation or business logic (that is `@heliogrid/domain`); `baseUrl` is passed in,
+  never read from the environment.
+- Three entries only: `.` (framework-free), `./react` (React Query adapter), `./server` (one
+  request-scoped Next context). React lives only under `src/react/` and `src/server/`.
 
 ## Local conventions
 
 - **Repositories are interfaces with factories, and their types are INFERRED from the contract,**
   never hand-written. That is what makes a data-source swap one change for both platforms.
-- **Every hook lives in `src/react/`**, feature hooks included — `use-health.ts`, not
-  `health/hooks.ts`. Colocation reads better, but the lint boundary would then need a filename
-  pattern instead of a directory prefix, and a fuzzy mechanism rots.
-- The session is a **store** (`subscribe`/`getSnapshot`), read via `useSyncExternalStore`. A plain
-  object with a `status` field cannot re-render a screen.
-- `createDataLayer` and `createServerDataContext` are the ONLY construction entries an app gets,
-  both through `src/composition.ts`. `createApiClient` and `createTransport` are deliberately not
-  exported — re-exporting the client hands apps back the raw wire. **A new repository is one
-  edit**: add it to `createRepositoryRegistry` and every host gets it.
+- **Every hook, feature hooks included, lives in `src/react/`** (`use-health.ts`, not
+  `health/hooks.ts`).
+- Apps construct only through `createDataLayer` and `createServerDataContext`; never export
+  `createApiClient` or `createTransport`. **A new repository is one edit**: add it to
+  `createRepositoryRegistry` (`src/composition.ts`).
 - **Every failure leaves this package as a `DataError`.** A repository normalises in its own
   `catch`; raw `ZodError`s and ts-rest classes never reach a screen.
 - **Retry is `DataError.retryable`, not a count**, set where the failure is classified:
@@ -40,28 +23,24 @@ pnpm --filter @heliogrid/data build | typecheck     # tsc -p (composite; emits d
   never retry. Never re-add a bare `retry: N`.
 - **Read methods take an `AbortSignal` and forward it.** A repository that ignores it makes
   cancellation a lie all the way up.
-- `server` mode forwards an ALLOWLIST (`cookie`, `authorization`, `REQUEST_ID_HEADER` from
-  `@heliogrid/contracts`), never a spread: the browser's `host` and
-  `content-length` corrupt our request, and everything else risks carrying one caller's identity
-  into another's. Never a tenant header.
-- Paginated screens use `usePaginatedList` (accumulating) or `usePagedList` (numbered pager),
-  never a hand-wired `useInfiniteQuery`.
-- **`session/store.ts` is the one session store, both platforms.** It starts `checking`, asks
-  the server who the cookies belong to, and never sees a credential: the transport carries the
-  cookies and renews the ten-minute token once on a 401. Only a 401 from the refresh ends a
-  session, with the reason its code names (`ACCESS_REMOVED` or a plain sign-out). A sign-in, a
-  sign-out, a failed boot check and a loss move the snapshot through domain's `sessionAfter`, which
-  the store only calls. A shared device changing hands consults
-  `HeldWork` (`F4-37`) before the new user's data loads; `NO_HELD_WORK` is V1's answer.
+- `server` mode forwards only `cookie`, `authorization` and `REQUEST_ID_HEADER` (`transport.ts`),
+  never a spread and never a tenant header. A spread leaks one caller's identity into another's
+  request.
+- **`session/store.ts` is the one session store for both platforms**: a `subscribe`/`getSnapshot`
+  store read via `useSyncExternalStore`. It never holds a credential (the transport carries the
+  cookies), and every move goes through domain's `sessionAfter`, which the store only calls. A
+  device changing hands consults `HeldWork` (`F4-37`) before the new user's data loads.
 
 ## Done means
 
-Build, typecheck and lint green · consumed by BOTH platforms · transport, error and retry
-behaviour proven by driving the real client against a controllable origin — malformed body,
-unknown status, non-envelope, timeout, cancellation, refused connection — never by reading it.
+Consumed by both platforms; transport, error and retry behaviour proven by driving the real client
+against a controllable origin (malformed body, unknown status, non-envelope, timeout, cancellation,
+refused connection).
 
 ## Traps
 
 - ts-rest runs client response validation INSIDE the fetcher, so a contract mismatch reaches the transport's own `catch` as a raw `ZodError` that looks exactly like a failed request, and classified as network it becomes retryable → the transport rethrows `ZodError` untouched.
 - `createServerDataContext` hoisted to a module constant serves the next visitor the previous visitor's session and cache, because both fields are request-bound → call it INSIDE the render and let it fall out of scope.
 - `lib: ["ES2023", "DOM"]` in this package's tsconfig is load-bearing: without DOM, `Headers` is unknown and ts-rest's `FetchOptions` collapses to `never`, typing every fetch option `undefined` → keep the lib entry.
+- React Native suspends timers in the background → a countdown or elapsed time is wall-clock timestamp maths, never an interval decrement.
+- iOS CFNetwork merges its own cookie copy into our header and the server answers 401 → React Native sends `credentials: 'omit'`, set in the transport, never per client.

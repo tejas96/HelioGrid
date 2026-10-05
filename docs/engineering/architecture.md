@@ -279,7 +279,7 @@ code, a workspace dependency, or a real credential — `pki/` is gitignored deve
 Extension point: one folder per deployed dependency.
 
 ### tests/invariants — the proof layer
-Owns: executable invariants — the locked set `tests/invariants/CLAUDE.md` names — run by pnpm turbo test; fail-closed under CI, loud-skip
+Owns: executable invariants — the locked set `tests/invariants/src/run.ts` runs — run by pnpm turbo test; fail-closed under CI, loud-skip
 locally without DATABASE_URL. Allowed deps: contracts, domain, db, env, config — importing both
 the wire and the schema is the POINT: an invariant proves the seam between them. Platform
 scope: backend only (a Node tsx runner). Belongs: a new invariant when a rule can be proven

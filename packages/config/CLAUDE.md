@@ -4,26 +4,23 @@ Deps: `architecture.md` §2 config.
 
 ## What lives here / what must never live here
 
-- tsconfig presets, consumed as `"extends": "@heliogrid/config/tsconfig/<preset>.json"`.
-  `tsconfig/base.json` holds the shared compiler options, and the repo-root `tsconfig.base.json`
-  extends IT — so there is one copy and the packages that extend the root file keep working.
-- `biome/*.grit` — the repo's Biome lint plugins, one per rule, named for what it holds. The root
-  `biome.json` registers each one with the files it reads. How to scope and silence one is
-  `.claude/rules/biome.md`, which loads when you open a plugin.
+- tsconfig presets: extend `"@heliogrid/config/tsconfig/<preset>.json"`. `tsconfig/base.json` holds
+  the one copy of compiler options; the root `tsconfig.base.json` only extends it.
+- `biome/*.grit`: one Biome plugin per rule, named for what it holds; the root `biome.json`
+  registers each with the files it reads.
 - `unit-test-packages.json` — the set of packages that carry unit tests, read by the runner and by
   dependency-cruiser; its law is `.claude/rules/testing.md`.
-- NEVER: runtime code, a dependency, or a `//` comment in a JSON preset. Anything executable belongs
-  in a real package; a comment in a preset turns the build red, so its reasons live in this file.
+- NEVER runtime code or a dependency. A preset is strict JSON (Biome refuses a comment), so a
+  preset's reasons go in this file.
 
 ## Commands
 
-None. Consumers typecheck against the presets; `pnpm lint` runs the plugins.
+None — `pnpm lint` runs the plugins.
 
 ## Local conventions
 
-- `node-package.json` — a library package: `composite`, dist and d.ts emit. No tsconfig in the repo
-  references another (ADR-0001), which is why a package builds with `tsc -p`, never `tsc -b` (`CLAUDE.md` §8). `nest-app.json` — a NestJS app (decorators and metadata, no composite).
-- Presets use `${configDir}` so `outDir` and `rootDir` resolve per consumer.
+- `node-package.json` — a library package (composite, emits dist and d.ts). `nest-app.json` — a
+  NestJS app (decorators, metadata, no composite).
 - Two things the presets do NOT cover: a package with no matching preset extends
   `tsconfig.base.json` directly (there is no browser or react preset), and `apps/mobile`
   extends `base.json` here and then `@react-native/typescript-config`, whose settings win where the
