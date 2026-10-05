@@ -406,10 +406,15 @@ jobs:
         # The api refuses a sign-in code for a number no published pack reaches (see e2e-web).
         if: vars.PHONE_E2E != 'off'
         run: pnpm --filter @heliogrid/api pack:publish
-      - name: Start the api and Metro, and warm the bundle
-        # The api writes .qa/api.log, where run.sh reads each sign-in code. The bundle is asked for
-        # once before any flow: a flow that meets a cold Metro waits on the first build and loses
-        # its step (deferred.md D90). A readiness wait, never a retry of a flow.
+      - name: Start the api and Metro, and warm the bundle and the api
+        # The api writes .qa/api.log, where run.sh reads each sign-in code. Before any flow, Metro
+        # is asked for THE bundle the app asks for — its exact query, read off the device log: a
+        # bundle asked for with other options is another build, and the app's first launch then
+        # rebuilt all 2,100 modules while the flows ran, starving the api and the device on a
+        # three-core runner until the door's client gave up at its 10 s limit. The second fetch
+        # proves the cache is warm. Then one real code request, repeated until the api answers it
+        # inside 2 s: the first request pays the cold pool and the pack read. Readiness waits,
+        # never a retry of a flow (deferred.md D90).
         if: vars.PHONE_E2E != 'off'
         shell: bash
         run: &start-api-and-metro |
@@ -421,8 +426,23 @@ jobs:
           ready() { for _ in $(seq 120); do curl -fsS "$1" > /dev/null 2>&1 && return 0; sleep 1; done; return 1; }
           ready http://localhost:8084/health/ready || { echo '::error::the api never became ready'; tail -50 .qa/api.log; exit 1; }
           ready http://localhost:8081/status || { echo '::error::Metro never started'; tail -50 .qa/metro.log; exit 1; }
-          time curl -fsS --max-time 300 -o /dev/null "http://localhost:8081/index.bundle?platform=$platform&dev=true&minify=false" \
-            || { echo '::error::Metro did not build the bundle'; tail -50 .qa/metro.log; exit 1; }
+          if [ "$platform" = ios ]; then
+            bundle='platform=ios&dev=true&lazy=true&minify=false&inlineSourceMap=false&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server&app=com.heliogrid.app'
+          else
+            bundle='platform=android&dev=true&lazy=true&minify=false&app=com.heliogrid.app&modulesOnly=false&runModule=true'
+          fi
+          fetch_bundle() { curl -fsS --max-time 300 -o /dev/null -w '%{time_total}' "http://localhost:8081/index.bundle?$bundle"; }
+          first=$(fetch_bundle) || { echo '::error::Metro did not build the bundle'; tail -50 .qa/metro.log; exit 1; }
+          second=$(fetch_bundle) || { echo '::error::Metro did not serve the warm bundle'; tail -50 .qa/metro.log; exit 1; }
+          echo "bundle: built in ${first}s, served warm in ${second}s"
+          for try in $(seq 1 12); do
+            took=$(curl -sS -o /dev/null -w '%{time_total}' --max-time 60 -X POST http://localhost:8084/auth/otp/request \
+              -H 'content-type: application/json' -d "{\"phoneE164\":\"+91980000$(printf '%04d' "$try")\",\"channel\":\"sms\"}")
+            echo "api warm-up $try: /auth/otp/request answered in ${took}s"
+            awk -v t="$took" 'BEGIN { exit !(t < 2) }' && break
+            [ "$try" -lt 12 ] || { echo '::error::the api still answers a code request in over 2 s'; tail -20 .qa/api.log; exit 1; }
+            sleep 5
+          done
       - uses: actions/cache@v4
         if: vars.PHONE_E2E != 'off'
         with:
