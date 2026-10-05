@@ -393,6 +393,10 @@ Operations; Finance views prices & margins; DD11). **Inline own-SKU add** while 
 Operations) — the grant follows proposal/design authoring so DD9's "add it there" is real for
 the people who hit the gap. All twelve presets *pick from* the catalog (picking is not
 managing — F2 §F2.5-M01 note). Catalog and price-book changes are audit events (F2-22).
+**The catalog's money grant is `F2.M01.manage-catalog` held in any form (owner ruling 2026-10-05):**
+an item's rate, its tax and its rate history are served to EPC Owner, Operations and Finance, and
+omitted for every other preset — the wire marks the keys absent, never null, so "no rate" and "not
+yours to see" never read alike.
 
 **Edge cases & what-goes-wrong.**
 

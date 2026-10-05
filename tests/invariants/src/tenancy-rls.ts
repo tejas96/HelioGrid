@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import postgres from 'postgres';
+import { APPEND_ONLY_LEDGERS } from './append-only-ledgers';
 import {
   assertNoRlsBypassingRoutes,
   assertPartitionChildrenUngranted,
@@ -322,14 +323,8 @@ export async function runTenancyInvariants(adminUrl: string) {
     });
 
     // Append-only ledgers: asserted from the CATALOG, over every mutating privilege and every
-    // RLS-subject role. The list names the ledgers that EXIST, and is asserted non-empty below.
-    //
-    // The previous form ran `update <ledger>` under app_user and required it to throw. Two
-    // problems, both real: it tested UPDATE only — DELETE and TRUNCATE were ungated and the
-    // grants permitted neither being checked — and `expectFail` accepts ANY exception, so a
-    // typo'd table name or a connection blip read as "append-only holds". A privilege question
-    // answers all of it at once and cannot be fooled by an unrelated error.
-    const ledgerNames = ['audit_log_entry'];
+    // RLS-subject role (why a privilege question, and which ledgers: `append-only-ledgers.ts`).
+    const ledgerNames = Object.keys(APPEND_ONLY_LEDGERS);
     const ledgerGrants = await sql<{ ledger: string; privilege: string; grantee: string }[]>`
       select c.relname as ledger, priv.privilege, sub.rolname as grantee
       from pg_class c

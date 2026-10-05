@@ -65,7 +65,15 @@
                               "settings.tranche_template_changed",
                               "settings.tranche_template_archived",
                               "settings.tranche_template_default_changed",
-                              "settings.holidays_changed"
+                              "settings.holidays_changed",
+                              "catalog.item_created",
+                              "catalog.item_changed",
+                              "catalog.item_archived",
+                              "catalog.item_unarchived",
+                              "catalog.override_changed",
+                              "catalog.override_cleared",
+                              "catalog.rate_recorded",
+                              "catalog.release_published"
                             ]
                           },
                           "actorKind": {
@@ -97,7 +105,10 @@
                               "proposal_template_settings",
                               "timeline_template",
                               "tranche_template",
-                              "tenant"
+                              "tenant",
+                              "tenant_catalog_item",
+                              "catalog_item",
+                              "catalog_release"
                             ]
                           },
                           "subjectRef": {
@@ -5154,7 +5165,10 @@
                               "proposal_template_settings",
                               "timeline_template",
                               "tranche_template",
-                              "tenant"
+                              "tenant",
+                              "tenant_catalog_item",
+                              "catalog_item",
+                              "catalog_release"
                             ]
                           },
                           "subjectRef": {
@@ -6140,7 +6154,10 @@
                         "proposal_template_settings",
                         "timeline_template",
                         "tranche_template",
-                        "tenant"
+                        "tenant",
+                        "tenant_catalog_item",
+                        "catalog_item",
+                        "catalog_release"
                       ]
                     },
                     "subjectRef": {

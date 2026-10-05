@@ -1,6 +1,9 @@
 import {
   auditActorKindSchema,
   auditEventTypeSchema,
+  catalogAvailabilitySchema,
+  catalogProvenanceSchema,
+  componentKindSchema,
   fileContentTypeSchema,
   invitationStatusSchema,
   loginProviderSchema,
@@ -11,6 +14,7 @@ import {
   otpChannelSchema,
   platformKindSchema,
   pushPlatformSchema,
+  releaseChangeKindSchema,
   rolePresetSchema,
   subjectKindSchema,
   tenantSegmentSchema,
@@ -68,6 +72,19 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   file_content_type: {
     options: fileContentTypeSchema.options,
     contract: 'fileContentTypeSchema',
+  },
+  component_kind: { options: componentKindSchema.options, contract: 'componentKindSchema' },
+  catalog_provenance_label: {
+    options: catalogProvenanceSchema.options,
+    contract: 'catalogProvenanceSchema',
+  },
+  catalog_availability: {
+    options: catalogAvailabilitySchema.options,
+    contract: 'catalogAvailabilitySchema',
+  },
+  release_change_kind: {
+    options: releaseChangeKindSchema.options,
+    contract: 'releaseChangeKindSchema',
   },
 };
 

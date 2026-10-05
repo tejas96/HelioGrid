@@ -26,6 +26,14 @@ export const AUDIT_EVENT_TYPES = [
   'settings.tranche_template_archived',
   'settings.tranche_template_default_changed',
   'settings.holidays_changed',
+  'catalog.item_created',
+  'catalog.item_changed',
+  'catalog.item_archived',
+  'catalog.item_unarchived',
+  'catalog.override_changed',
+  'catalog.override_cleared',
+  'catalog.rate_recorded',
+  'catalog.release_published',
 ] as const;
 export type AuditEventType = (typeof AUDIT_EVENT_TYPES)[number];
 

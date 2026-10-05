@@ -54,7 +54,9 @@ pnpm db:migration:new                # DRAFT into drizzle-draft/ — review, the
   either pool's transaction will do.
 - ids are UUIDv7 generated **app-side** via `$defaultFn`; tables carry no DB-side id default, so a
   raw SQL insert must supply ids.
-- Append-only ledgers (`audit_log_entry`) get no UPDATE or DELETE grant.
+- An append-only ledger gets no UPDATE, DELETE or TRUNCATE grant for any role under `app_user`, and
+  joins `tests/invariants/src/append-only-ledgers.ts` in the migration that lands it (`tenancy-rls`
+  asserts the list).
 - pgEnum values mirror the contract `z.enum`s; change both in the same slice (`enum-parity`
   proves it).
 - An identity provider's own tables are owned by ITS migrator, never authored here.

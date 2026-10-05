@@ -54,6 +54,16 @@ const GLOBAL_READABLE_TABLES: Record<string, string> = {
   market_pack_version:
     'one published, dated pack revision as ONE jsonb payload (F1-11); pinned by every priced ' +
     'output, superseded and never deleted, written only by the publish command',
+  catalog_item:
+    'the platform master catalog (M01-33): every tenant reads its market’s slice and none ' +
+    'writes it — curation is internal platform operations on the admin path (M01-46), and a ' +
+    'platform item carries no price (T-M01-027)',
+  catalog_item_market_availability:
+    'one platform item’s availability in one market (M01-33), the join every market-scoped ' +
+    'list goes through; written only by the publish command (T-M01-027)',
+  catalog_item_certification:
+    'one scheme-keyed certification held by one platform item (M01-34, F1-44): the row is the ' +
+    'claim, read by every picker and by M06’s gate, written only by the publish command (T-M01-027)',
 };
 
 /**
@@ -67,6 +77,10 @@ const GLOBAL_UNIQUES: Record<string, string> = {
   invitation_token_hash_key:
     'the hash of the secret in an invite link: the landing resolves a link before any tenant is ' +
     'known, and the secret is 32 random bytes, so no two tenants can meet on it (T-M01-028)',
+  catalog_rate_entry_sequence_key:
+    'the rate ledger’s insertion order (M01-44), an identity column the database alone numbers: ' +
+    'its uniqueness is what settles two entries on one date, and no tenant ever supplies a ' +
+    'value, so no two tenants can meet on one (T-M01-027)',
 };
 
 function assert(cond: unknown, msg: string): asserts cond {

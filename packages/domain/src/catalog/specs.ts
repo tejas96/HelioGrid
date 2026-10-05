@@ -213,9 +213,10 @@ function fieldOrders(spec: CatalogSpec): readonly FieldOrder[] {
 /**
  * Every kind's envelope as one schema, discriminated by `kind`, so a form, a route and a stored read
  * refuse the same spec. A failed field-order gate carries no message: it carries the field it is
- * compared with, and `i18n` words it.
+ * compared with, and `i18n` words it. Exported for the create body's contract (`T-M01-027`); it
+ * parses specs and computes no figure, which `tests/money/device-entry.test.ts` records.
  */
-const CATALOG_SPEC_SCHEMA: z.ZodType<CatalogSpec, z.ZodTypeDef, unknown> = z
+export const catalogSpecSchema: z.ZodType<CatalogSpec, z.ZodTypeDef, unknown> = z
   .discriminatedUnion('kind', [
     PANEL_ENVELOPE,
     INVERTER_ENVELOPE,
@@ -241,7 +242,7 @@ export type SpecParse =
 
 /** A spec read whole — from a form, a request body or a stored row. */
 export function parseCatalogSpec(raw: unknown): SpecParse {
-  const parsed = CATALOG_SPEC_SCHEMA.safeParse(raw);
+  const parsed = catalogSpecSchema.safeParse(raw);
   if (parsed.success) return { ok: true, spec: parsed.data };
   const fields = parsed.error.issues.map((issue) => issue.path.join('.'));
   return { ok: false, failedFields: [...new Set(fields)] };

@@ -283,7 +283,7 @@ jobs:
         run: pnpm --filter @heliogrid/db migrate
       - name: Build the api, the web and what the suite imports
         run: pnpm turbo build --filter=@heliogrid/api --filter=@heliogrid/web --filter='@heliogrid/e2e^...'
-      - name: Publish the India market pack (the api's own writer)
+      - name: Publish the India market pack and platform catalog (the api's own writer)
         # A fresh database holds no market pack, and the api refuses a sign-in code for a number no
         # published pack reaches ("We cannot send messages to that country yet"), so every flow that
         # asks for a code would fail. After the build: the command imports what the build emits.

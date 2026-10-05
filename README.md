@@ -112,7 +112,7 @@ set -a; . ./.env.local; set +a            # db migrate and the invariants read t
                                           # SHELL, not from the file — export it for this session
 
 pnpm --filter @heliogrid/db migrate       # schema: 0001 is the market pack
-pnpm --filter @heliogrid/api pack:publish # seeds the India pack as revision 1
+pnpm --filter @heliogrid/api pack:publish # seeds the India pack as revision 1 and the India platform catalog
 brew install gitleaks                      # the pre-commit secret scan needs it; the hook refuses to run without it
 # Sign in locally with any +91 number: the code is in the api log (`Message for +91…`), no SMS.
 pnpm check:all                            # build · lint · typecheck · duplication · freshness · unit tests · invariants

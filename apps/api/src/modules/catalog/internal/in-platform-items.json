@@ -1,0 +1,740 @@
+[
+  {
+    "brand": "AESOLAR",
+    "model": "CMER-132BDS 605",
+    "spec": {
+      "kind": "panel",
+      "watt": 605,
+      "technology": "topcon",
+      "lengthMm": 2382,
+      "widthMm": 1133,
+      "vocV": 48.7,
+      "vmpV": 40.5,
+      "iscA": 15.7,
+      "impA": 14.94,
+      "tempCoeffVocPct": -0.25,
+      "warrantyYears": 30,
+      "weightKg": 28.0
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "AESOLAR",
+    "model": "CMER-132BDS 610",
+    "spec": {
+      "kind": "panel",
+      "watt": 610,
+      "technology": "topcon",
+      "lengthMm": 2382,
+      "widthMm": 1133,
+      "vocV": 48.9,
+      "vmpV": 40.7,
+      "iscA": 15.75,
+      "impA": 15.0,
+      "tempCoeffVocPct": -0.25,
+      "warrantyYears": 30,
+      "weightKg": 28.0
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "AESOLAR",
+    "model": "CMER-132BDS 615",
+    "spec": {
+      "kind": "panel",
+      "watt": 615,
+      "technology": "topcon",
+      "lengthMm": 2382,
+      "widthMm": 1133,
+      "vocV": 49.1,
+      "vmpV": 40.9,
+      "iscA": 15.8,
+      "impA": 15.04,
+      "tempCoeffVocPct": -0.25,
+      "warrantyYears": 30,
+      "weightKg": 28.0
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Adani Solar",
+    "model": "ELAN Shine 540",
+    "spec": {
+      "kind": "panel",
+      "watt": 540,
+      "technology": "mono_perc",
+      "lengthMm": 2279,
+      "widthMm": 1134,
+      "vocV": 49.5,
+      "vmpV": 41.6,
+      "iscA": 13.9,
+      "impA": 13.0,
+      "tempCoeffVocPct": -0.27,
+      "warrantyYears": 25,
+      "weightKg": 27.0
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": [
+      {
+        "scheme": "DCR",
+        "reference": null
+      }
+    ]
+  },
+  {
+    "brand": "Adani Solar",
+    "model": "ELAN Shine 545",
+    "spec": {
+      "kind": "panel",
+      "watt": 545,
+      "technology": "mono_perc",
+      "lengthMm": 2279,
+      "widthMm": 1134,
+      "vocV": 49.7,
+      "vmpV": 41.8,
+      "iscA": 13.95,
+      "impA": 13.04,
+      "tempCoeffVocPct": -0.27,
+      "warrantyYears": 25,
+      "weightKg": 27.0
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": [
+      {
+        "scheme": "DCR",
+        "reference": null
+      }
+    ]
+  },
+  {
+    "brand": "Waaree",
+    "model": "Bi-55-550 Bifacial",
+    "spec": {
+      "kind": "panel",
+      "watt": 550,
+      "technology": "bifacial",
+      "lengthMm": 2278,
+      "widthMm": 1134,
+      "vocV": 49.9,
+      "vmpV": 41.9,
+      "iscA": 14.0,
+      "impA": 13.13,
+      "tempCoeffVocPct": -0.26,
+      "bifacialityPct": 70,
+      "warrantyYears": 30,
+      "weightKg": 31.5
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": [
+      {
+        "scheme": "DCR",
+        "reference": null
+      }
+    ]
+  },
+  {
+    "brand": "Waaree",
+    "model": "AHNAY-585 TOPCon",
+    "spec": {
+      "kind": "panel",
+      "watt": 585,
+      "technology": "topcon",
+      "lengthMm": 2333,
+      "widthMm": 1134,
+      "vocV": 51.3,
+      "vmpV": 42.9,
+      "iscA": 14.5,
+      "impA": 13.64,
+      "tempCoeffVocPct": -0.24,
+      "warrantyYears": 30,
+      "weightKg": 27.5
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Vikram Solar",
+    "model": "HYPERSOL 555",
+    "spec": {
+      "kind": "panel",
+      "watt": 555,
+      "technology": "bifacial",
+      "lengthMm": 2279,
+      "widthMm": 1134,
+      "vocV": 50.1,
+      "vmpV": 42.0,
+      "iscA": 14.05,
+      "impA": 13.21,
+      "tempCoeffVocPct": -0.26,
+      "bifacialityPct": 70,
+      "warrantyYears": 30,
+      "weightKg": 31.0
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "RenewSys",
+    "model": "DESERV 590 HJT",
+    "spec": {
+      "kind": "panel",
+      "watt": 590,
+      "technology": "hjt",
+      "lengthMm": 2334,
+      "widthMm": 1134,
+      "vocV": 52.4,
+      "vmpV": 44.1,
+      "iscA": 14.2,
+      "impA": 13.38,
+      "tempCoeffVocPct": -0.22,
+      "warrantyYears": 30,
+      "weightKg": 32.0
+    },
+    "provenance": "representative",
+    "availability": "out_of_stock",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Tata Power Solar",
+    "model": "TP535 Mono",
+    "spec": {
+      "kind": "panel",
+      "watt": 535,
+      "technology": "mono_perc",
+      "lengthMm": 2279,
+      "widthMm": 1134,
+      "vocV": 49.2,
+      "vmpV": 41.3,
+      "iscA": 13.85,
+      "impA": 12.95,
+      "tempCoeffVocPct": -0.28,
+      "warrantyYears": 25,
+      "weightKg": 27.0
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": [
+      {
+        "scheme": "DCR",
+        "reference": null
+      }
+    ]
+  },
+  {
+    "brand": "Gautam Solar",
+    "model": "GS-440 Poly",
+    "spec": {
+      "kind": "panel",
+      "watt": 440,
+      "technology": "poly",
+      "lengthMm": 2108,
+      "widthMm": 1048,
+      "vocV": 49.0,
+      "vmpV": 40.5,
+      "iscA": 11.6,
+      "impA": 10.87,
+      "tempCoeffVocPct": -0.3,
+      "warrantyYears": 25,
+      "weightKg": 23.0
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "LONGi",
+    "model": "Hi-MO 7 625",
+    "spec": {
+      "kind": "panel",
+      "watt": 625,
+      "technology": "topcon",
+      "lengthMm": 2382,
+      "widthMm": 1134,
+      "vocV": 49.8,
+      "vmpV": 41.5,
+      "iscA": 15.9,
+      "impA": 15.06,
+      "tempCoeffVocPct": -0.24,
+      "warrantyYears": 30,
+      "weightKg": 28.5
+    },
+    "provenance": "representative",
+    "availability": "out_of_stock",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Jinko",
+    "model": "Tiger Neo 615",
+    "spec": {
+      "kind": "panel",
+      "watt": 615,
+      "technology": "topcon",
+      "lengthMm": 2382,
+      "widthMm": 1134,
+      "vocV": 49.2,
+      "vmpV": 41.0,
+      "iscA": 15.85,
+      "impA": 15.0,
+      "tempCoeffVocPct": -0.25,
+      "warrantyYears": 30,
+      "weightKg": 28.5
+    },
+    "provenance": "representative",
+    "availability": "out_of_stock",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Premier Energies",
+    "model": "PE-575 TOPCon",
+    "spec": {
+      "kind": "panel",
+      "watt": 575,
+      "technology": "topcon",
+      "lengthMm": 2333,
+      "widthMm": 1134,
+      "vocV": 50.9,
+      "vmpV": 42.5,
+      "iscA": 14.4,
+      "impA": 13.53,
+      "tempCoeffVocPct": -0.25,
+      "warrantyYears": 30,
+      "weightKg": 27.5
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": [
+      {
+        "scheme": "DCR",
+        "reference": null
+      }
+    ]
+  },
+  {
+    "brand": "Goldi Solar",
+    "model": "HELOC 565",
+    "spec": {
+      "kind": "panel",
+      "watt": 565,
+      "technology": "mono_perc",
+      "lengthMm": 2279,
+      "widthMm": 1134,
+      "vocV": 50.3,
+      "vmpV": 42.2,
+      "iscA": 14.1,
+      "impA": 13.39,
+      "tempCoeffVocPct": -0.27,
+      "warrantyYears": 27,
+      "weightKg": 27.0
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "GoodWe",
+    "model": "GW3000-NS",
+    "spec": {
+      "kind": "inverter",
+      "acKw": 3,
+      "phases": 1,
+      "mppt": {
+        "count": 2,
+        "minV": 80,
+        "maxV": 550,
+        "maxCurrentA": 16,
+        "stringsPerMppt": 1
+      },
+      "maxDcV": 600,
+      "efficiencyPct": 97.6,
+      "warrantyYears": 5
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "GoodWe",
+    "model": "GW5000-NS",
+    "spec": {
+      "kind": "inverter",
+      "acKw": 5,
+      "phases": 1,
+      "mppt": {
+        "count": 2,
+        "minV": 80,
+        "maxV": 550,
+        "maxCurrentA": 16,
+        "stringsPerMppt": 1
+      },
+      "maxDcV": 600,
+      "efficiencyPct": 97.8,
+      "warrantyYears": 5
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Growatt",
+    "model": "MIN 5000TL-X",
+    "spec": {
+      "kind": "inverter",
+      "acKw": 5,
+      "phases": 1,
+      "mppt": {
+        "count": 2,
+        "minV": 80,
+        "maxV": 550,
+        "maxCurrentA": 16,
+        "stringsPerMppt": 1
+      },
+      "maxDcV": 600,
+      "efficiencyPct": 98.0,
+      "warrantyYears": 5
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Sungrow",
+    "model": "SG6.0RS",
+    "spec": {
+      "kind": "inverter",
+      "acKw": 6,
+      "phases": 1,
+      "mppt": {
+        "count": 2,
+        "minV": 40,
+        "maxV": 560,
+        "maxCurrentA": 16,
+        "stringsPerMppt": 1
+      },
+      "maxDcV": 600,
+      "efficiencyPct": 98.1,
+      "warrantyYears": 5
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Sungrow",
+    "model": "SG8.0RT",
+    "spec": {
+      "kind": "inverter",
+      "acKw": 8,
+      "phases": 3,
+      "mppt": {
+        "count": 2,
+        "minV": 140,
+        "maxV": 1000,
+        "maxCurrentA": 26,
+        "stringsPerMppt": 2
+      },
+      "maxDcV": 1100,
+      "efficiencyPct": 98.3,
+      "warrantyYears": 10
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Growatt",
+    "model": "MID 10KTL3-X",
+    "spec": {
+      "kind": "inverter",
+      "acKw": 10,
+      "phases": 3,
+      "mppt": {
+        "count": 2,
+        "minV": 160,
+        "maxV": 950,
+        "maxCurrentA": 26,
+        "stringsPerMppt": 2
+      },
+      "maxDcV": 1100,
+      "efficiencyPct": 98.4,
+      "warrantyYears": 5
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Solis",
+    "model": "S5-GC10K",
+    "spec": {
+      "kind": "inverter",
+      "acKw": 10,
+      "phases": 3,
+      "mppt": {
+        "count": 2,
+        "minV": 160,
+        "maxV": 850,
+        "maxCurrentA": 26,
+        "stringsPerMppt": 2
+      },
+      "maxDcV": 1100,
+      "efficiencyPct": 98.1,
+      "warrantyYears": 5
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Huawei",
+    "model": "SUN2000-12KTL-M5",
+    "spec": {
+      "kind": "inverter",
+      "acKw": 12,
+      "phases": 3,
+      "mppt": {
+        "count": 2,
+        "minV": 140,
+        "maxV": 980,
+        "maxCurrentA": 27,
+        "stringsPerMppt": 2
+      },
+      "maxDcV": 1100,
+      "efficiencyPct": 98.4,
+      "warrantyYears": 10
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Sungrow",
+    "model": "SG15RT",
+    "spec": {
+      "kind": "inverter",
+      "acKw": 15,
+      "phases": 3,
+      "mppt": {
+        "count": 2,
+        "minV": 160,
+        "maxV": 1000,
+        "maxCurrentA": 30,
+        "stringsPerMppt": 2
+      },
+      "maxDcV": 1100,
+      "efficiencyPct": 98.5,
+      "warrantyYears": 10
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Growatt",
+    "model": "MID 20KTL3-X",
+    "spec": {
+      "kind": "inverter",
+      "acKw": 20,
+      "phases": 3,
+      "mppt": {
+        "count": 2,
+        "minV": 160,
+        "maxV": 1000,
+        "maxCurrentA": 30,
+        "stringsPerMppt": 3
+      },
+      "maxDcV": 1100,
+      "efficiencyPct": 98.6,
+      "warrantyYears": 5
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Amaze Solar",
+    "model": "AN HKVA 30 KVA-360V",
+    "spec": {
+      "kind": "inverter",
+      "acKw": 30,
+      "phases": 3,
+      "mppt": {
+        "count": 10,
+        "minV": 540,
+        "maxV": 730,
+        "maxCurrentA": 20,
+        "stringsPerMppt": 1
+      },
+      "maxDcV": 1000,
+      "efficiencyPct": 97.9,
+      "warrantyYears": 3
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Solis",
+    "model": "S5-GC25K",
+    "spec": {
+      "kind": "inverter",
+      "acKw": 25,
+      "phases": 3,
+      "mppt": {
+        "count": 3,
+        "minV": 180,
+        "maxV": 1000,
+        "maxCurrentA": 32,
+        "stringsPerMppt": 2
+      },
+      "maxDcV": 1100,
+      "efficiencyPct": 98.3,
+      "warrantyYears": 5
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Tata Power Solar",
+    "model": "Solaroof LFP 5.1 kWh · 48 V",
+    "spec": {
+      "kind": "battery",
+      "usableKwh": 5.12,
+      "nominalV": 51.2,
+      "chemistry": "lfp",
+      "powerKw": 2.5,
+      "cycleLife": 6000,
+      "widthMm": 480,
+      "depthMm": 250,
+      "heightMm": 620,
+      "weightKg": 48,
+      "warrantyYears": 10
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Luminous",
+    "model": "LiON 5 kWh · 48 V",
+    "spec": {
+      "kind": "battery",
+      "usableKwh": 5.0,
+      "nominalV": 51.2,
+      "chemistry": "lfp",
+      "powerKw": 2.5,
+      "cycleLife": 4000,
+      "widthMm": 500,
+      "depthMm": 230,
+      "heightMm": 600,
+      "weightKg": 52,
+      "warrantyYears": 5
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Exide",
+    "model": "Li-Tron HV 10.2 kWh",
+    "spec": {
+      "kind": "battery",
+      "usableKwh": 10.24,
+      "nominalV": 409.6,
+      "chemistry": "lfp",
+      "powerKw": 5,
+      "cycleLife": 6000,
+      "widthMm": 600,
+      "depthMm": 270,
+      "heightMm": 900,
+      "weightKg": 105,
+      "warrantyYears": 10
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Huawei",
+    "model": "LUNA2000-5-S0 · HV",
+    "spec": {
+      "kind": "battery",
+      "usableKwh": 5.0,
+      "nominalV": 450,
+      "chemistry": "lfp",
+      "powerKw": 2.5,
+      "cycleLife": 6000,
+      "widthMm": 670,
+      "depthMm": 150,
+      "heightMm": 600,
+      "weightKg": 63,
+      "warrantyYears": 10
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  },
+  {
+    "brand": "Amaron",
+    "model": "Tubular 4 × 200 Ah · 48 V (4.8 kWh usable)",
+    "spec": {
+      "kind": "battery",
+      "usableKwh": 4.8,
+      "nominalV": 48,
+      "chemistry": "lead_acid",
+      "powerKw": 2.0,
+      "cycleLife": 1500,
+      "widthMm": 520,
+      "depthMm": 280,
+      "heightMm": 900,
+      "weightKg": 240,
+      "warrantyYears": 3
+    },
+    "provenance": "representative",
+    "availability": "available",
+    "markets": ["IN"],
+    "certifications": []
+  }
+]
