@@ -24,7 +24,8 @@ Steps, in this order:
 3. **The gate.** Run `pnpm check:all` exactly once, after step 2, from the repository root. Read
    its failures, not its exit code. If it rewrites `packages/contracts/openapi/openapi.json` or the
    catalogs under `packages/i18n/src/locales`, list those paths as `regenerated` — Main owns and
-   commits them. Off CI the API tests are left out; say so in the row that needs them.
+   commits them. The api tests run locally only on `heliogrid_test`: the gate's warning
+   `apps/api/tests are skipped` makes every api-owned row `FAIL`, never `pending`.
 4. **Report** in the shape below.
 
 Rules that never bend:
