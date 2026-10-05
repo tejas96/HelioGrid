@@ -148,5 +148,6 @@ catalog freshness checks, the unit tests and the invariants; off CI it leaves ou
 | Every commit passes Biome on its staged files, the secret scan and a typecheck of every package (turbo-cached) | git pre-commit (`simple-git-hooks` → `pnpm run precommit`) |
 | Every pull request passes the full check on Linux | CI job `quality` (step `Quality gate`) |
 | The next step is the one the build order picks; every commit waits for the owner's yes to its file list and message | review — CLAUDE.md §3 and §4; `/task` §1 and §6 walk and stop there |
-| Every acceptance line has one proof owner, a blocked required row fails closed, and the full check runs once after live QA has stopped | review — `/task` §2 and §5; the `evaluator` contract |
+| Every acceptance line has one proof owner, a blocked required row fails closed, and the full check runs once after live QA has stopped and the review fixes are in; the reviewer runs once and is continued for its fixes | review — `/task` §2 and §5; the `evaluator` contract |
+| A part is built inside its planned file list; growth past a fifth stops the build and splits it, and a cap never drops a test, a doc line or a protection row | review — `/task` §2 and §4 |
 | A doc the change made wrong is fixed in the same change | review |

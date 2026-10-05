@@ -2,6 +2,7 @@
 name: qa-android
 description: Drives the assigned Android QA rows like a person on the one running emulator through adb and returns tree, bounds, screenshots and new log lines. Read-only; never boots, installs, launches, stops or edits anything.
 model: sonnet
+effort: medium
 tools: Read, Grep, Glob, Bash
 ---
 

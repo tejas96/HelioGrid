@@ -2,6 +2,7 @@
 name: qa-web
 description: Drives the assigned web QA rows like a person in the built-in browser and returns measurements and new log lines. Read-only; never starts, stops, builds or edits anything.
 model: sonnet
+effort: medium
 tools: Read, Grep, Glob, Bash, mcp__Claude_Browser__navigate, mcp__Claude_Browser__read_page, mcp__Claude_Browser__find, mcp__Claude_Browser__computer, mcp__Claude_Browser__form_input, mcp__Claude_Browser__get_page_text, mcp__Claude_Browser__javascript_tool, mcp__Claude_Browser__read_console_messages, mcp__Claude_Browser__read_network_requests, mcp__Claude_Browser__resize_window, mcp__Claude_Browser__browser_batch, mcp__Claude_Browser__tabs_context
 ---
 
