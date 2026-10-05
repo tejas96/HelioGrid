@@ -39,8 +39,9 @@ Every suite runs in CI: the web and component suites in `e2e-web`, the phone flo
 and `ios` (`.github/workflows/ci.yml` says how, and how the repository variable `PHONE_E2E=off`
 switches the flows off). `test:mobile` runs them by hand only to debug a red CI run; it needs
 Metro, the api and the app installed on the device. An emulator a local run uses matches CI's:
-API 34, 4 cores and 4 GB of RAM — at 1.5 GB Maestro's on-device server dies mid-suite
-(`DeviceServerDiedException`) while the app shows no fault.
+API 34, 4 cores and 4 GB of RAM, given on the command line (`emulator -avd <name> -memory 4096`;
+the emulator ignores `hw.ramSize` in the AVD's file) — at 2 GB and below Maestro's on-device
+server dies mid-suite (`DeviceServerDiedException`) while the app shows no fault.
 
 ## Local conventions
 

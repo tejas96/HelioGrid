@@ -366,6 +366,18 @@ jobs:
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
       - run: pnpm install --frozen-lockfile
+      - uses: actions/cache@v4
+        id: ndk-cache
+        with:
+          path: /usr/local/lib/android/sdk/ndk/27.1.12297006
+          key: ndk-27.1.12297006
+      - name: Install the NDK the app pins (cache miss only)
+        # apps/mobile/android/build.gradle pins the NDK and the runner image carries another, so
+        # Gradle downloaded it inside its own configuration on every run — about 600 MB with no
+        # cache, and one corrupt download ("Archive is not a ZIP archive") failed the whole lane
+        # before any flow. Installed here, once, by the SDK manager, and kept by the cache above.
+        if: steps.ndk-cache.outputs.cache-hit != 'true'
+        run: echo y | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "ndk;27.1.12297006"
       # Before every flow step, so the switch never skips the build: autolinking and codegen read
       # package.json and native sources only, and a debug APK holds no JavaScript.
       - name: Assemble debug APK
