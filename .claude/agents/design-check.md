@@ -2,6 +2,7 @@
 name: design-check
 description: Read-only check that one screen's design record is ready to build against. Main fetches the Claude Design record through DesignSync and pastes it; this helper has no DesignSync of its own.
 model: opus
+effort: medium
 tools: Read, Grep, Glob
 ---
 

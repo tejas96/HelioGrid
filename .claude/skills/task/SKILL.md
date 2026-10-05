@@ -18,6 +18,9 @@ blocker named. `/task <id>` for a task that is not the walk's step is refused wi
 
 ## 0. Runtime ledger — before anything runs
 
+First the branch, before any edit: `git switch -c feat/<task or part id> origin/main` on a clean
+tree (`git status`); the folder is shared with every other session, so a dirty tree is theirs.
+
 Record every resource you will touch as `pre_existing` or `started_by_task`, with the identity
 that stops or restores it, in the task's `#### Runtime` section:
 
@@ -65,7 +68,9 @@ absent. Metro is shared by both phones; JavaScript changes reload through it.
 
 Write under the task's header lines (`docs/tasks/README.md` keeps the shape):
 
-- `#### Plan` — scope in one paragraph; each decision with ONE reason; UX readiness; every new
+- `#### Plan` — first a summary of at most ten lines: what changes, the files by package, the
+  size, the routes and tables, the proofs — the owner reads this before anything else; then
+  scope in one paragraph; each decision with ONE reason; UX readiness; every new
   file with its placement answer from `docs/engineering/architecture.md` §4; interfaces and
   migration numbers; rollout safety (old readers, new readers, expand then contract);
   the twin screen on the other platform (`.claude/rules/screen-parts.md`).
@@ -80,9 +85,13 @@ Write under the task's header lines (`docs/tasks/README.md` keeps the shape):
   paths skip is `FAIL`, never a pass. Before PR B no row claims local API-integration proof: an
   API behaviour is proven by its single-file red proof (`CI=1 pnpm exec vitest run <file>`) and
   CI. Before PR C no row claims phone CI proof: phone rows are local, by `qa-ios` and `qa-android`.
-- `#### Parts` — when the plan passes about 30 files or holds independently rejectable
-  deliverables: each part an end-to-end deliverable with its id, AC subset, dependency, files,
-  rows and proof; web and phone of one flow stay in one part.
+- `#### Parts` — the `Where` table is complete or the plan is not, and it is the budget: a part
+  holds about 20 files and 1,000 lines, or holds one independently rejectable deliverable. The
+  cap decides WHERE the work splits, never what is cut: a test, a protection row or a doc line is
+  never dropped to fit, and a cut that would drop a proof splits the part instead. Each part is
+  an end-to-end deliverable with its id, AC subset, dependency, files, rows and proof; web and
+  phone of one flow stay in one part. Each part carries a checklist — one box per file group of
+  its `Where` rows and one per proof — ticked as it lands.
 
 A clear PRD or brief answer corrects the task before approval. Silence or ambiguity: at most two
 options to the owner, the ruling written into the PRD row or brief first, then the task. Nothing
@@ -103,8 +112,15 @@ Then present the contract and stop. Nothing is built before the owner's go (`CLA
 Tests first (`.claude/rules/testing.md`): one slice at a time — failing test, minimal code,
 targeted pass, `pnpm check`. Every money, tenancy or permission rule and every check you add or
 change is seen red on a planted bad line, and the line is recorded for the commit card. A new
-route, table, contract, package, behaviour or materially larger file set stops you: repartition
-and go back to step 2. Before any helper runs, drive one happy path yourself on the surface you
+route, table, contract, package or behaviour stops you: repartition and go back to step 2. The
+planned file list is the budget: when the changed set passes it by a fifth, or a file lands in a
+package the plan does not name, stop, show the delta (planned and built · built but not planned,
+each with its reason · planned but not built) and repartition — never trim a proof to fit. Tick
+the part's checklist as each file group and proof lands; the owner reads it, never a transcript.
+A planted red that needs a database runs on `heliogrid_test` once PR B lands; until then it needs
+the owner's yes for that one run; no task creates a database of its own.
+
+Before any helper runs, drive one happy path yourself on the surface you
 changed.
 
 ## 5. QA — helpers once, on one stack
@@ -117,19 +133,28 @@ missing standing company is created once through the app before QA; API tests ne
 Give every helper the same context packet and nothing else: the AC lines, its rows, the interface
 and file map, the diff summary, the commands already run, the runtime identities and log paths.
 Start `qa-web`, `qa-ios` and `qa-android` together — an omitted surface starts no helper — and
-`reviewer` beside them with the diff. `evaluator` starts only after every surface helper has
-returned, and runs `pnpm check:all` once; what it regenerates (OpenAPI, catalogs) is yours to read
-and commit.
+`reviewer` beside them with the finished diff. Fix the reviewer's findings, then CONTINUE the same
+reviewer (`SendMessage`) with only the fixed files; never a fresh instance. A third pass happens
+only when a fix touched a money, tenancy or permission rule. `evaluator` starts only after every
+surface helper has returned and the review fixes are in; it runs `pnpm check:all` once, and what
+it regenerates (OpenAPI, catalogs) is yours to read and commit. A code change after that gate
+reruns `pnpm check` and the one command that proves the change, by you, and the evaluator is
+continued with that output; it is never re-spawned.
 
-Fix only an evidenced failure; rerun only the owning row — a surface row by its helper, the gate by
-the evaluator. The third failure of the same row stops for the owner.
+Fix only an evidenced failure; rerun only the owning row — a surface row by its helper. The third
+failure of the same row stops for the owner. A check's proof is its full output read to the end;
+a grep for one line is never the proof.
 
 ## 6. Pre-commit card
 
 Show, and stop: the AC proof summary (the evaluator's rows), the review result, every planted-red
-line, the exact changed-file list, the exact commit message (the task's `Status:` or the part's row
+line, the changed files in three lists (planned and built · built but not planned, each with its
+reason · planned but not built), the exact commit message (the task's `Status:` or the part's row
 turns `shipped` in this commit), mistakes found and the rule that now prevents each, unresolved
-blockers, the runtime cleanup state. Commit only on the owner's yes to THIS card; a `go`, a green
+blockers, the runtime cleanup state, and the measurements — tool-call turns, tokens, helper runs,
+planned versus built — written under the task's `#### Runtime` in the same commit.
+
+Commit only on the owner's yes to THIS card; a `go`, a green
 check or an earlier yes never counts (`CLAUDE.md` §4). Never `--no-verify`, never force-push.
 
 ## 7. Draft PR and CI
@@ -151,14 +176,14 @@ starts in a fresh session.
 
 ## Helpers — `.claude/agents/`
 
-| helper | model | when | returns |
+| helper | model · effort | when | returns |
 |---|---|---|---|
-| `design-check` | opus | step 3 | `READY` · `NEEDS_CHANGE` · `NOT_DRAWN`, findings, one prompt |
-| `qa-web` · `qa-ios` · `qa-android` | sonnet | step 5, together | `PASS` · `FAIL` · `BLOCKED`, `row → action → observed → measurements → new log range` |
-| `reviewer` | opus | step 5, with QA | `blocker` · `should-fix` · `note`, `row → file:line → evidence → smallest fix` |
-| `evaluator` | sonnet | step 5, after QA | `AC → owner → proof → result → evidence`, the gate, regenerated paths |
-| `ci-investigator` | sonnet | step 7, one failed job | cause, evidence, smallest fix, proof |
+| `design-check` | opus · medium | step 3 | `READY` · `NEEDS_CHANGE` · `NOT_DRAWN`, findings, one prompt |
+| `qa-web` · `qa-ios` · `qa-android` | sonnet · medium | step 5, together | `PASS` · `FAIL` · `BLOCKED`, `row → action → observed → measurements → new log range` |
+| `reviewer` | opus · medium | step 5, with QA | `blocker` · `should-fix` · `note`, `row → file:line → evidence → smallest fix` |
+| `evaluator` | sonnet · medium | step 5, after QA | `AC → owner → proof → result → evidence`, the gate, regenerated paths |
+| `ci-investigator` | sonnet · high | step 7, one failed job | cause, evidence, smallest fix, proof |
 
 Helpers hold no `Agent`, `Write` or `Edit` tool and start no helper of their own. Only you read
 Claude Design (`DesignSync` is Main-only). Each helper receives the packet and its contract — never
-a copy of the laws.
+a copy of the laws. A rerun continues the same helper with the delta, never a fresh instance.
