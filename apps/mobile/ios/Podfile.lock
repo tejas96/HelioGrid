@@ -2098,7 +2098,7 @@ PODS:
     - RNNotifee/NotifeeCore (= 9.1.8)
   - RNNotifee/NotifeeCore (9.1.8):
     - React-Core
-  - RNScreens (4.26.2):
+  - RNScreens (4.28.0):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -2120,9 +2120,9 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
-    - RNScreens/common (= 4.26.2)
+    - RNScreens/common (= 4.28.0)
     - Yoga
-  - RNScreens/common (4.26.2):
+  - RNScreens/common (4.28.0):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -2573,7 +2573,7 @@ SPEC CHECKSUMS:
   RNGoogleSignin: 0bdb79f8bb7b598754a42db310c7864535421a97
   RNKeychain: 1b055a0ec36d058cb0a075e965d8c9d335e0c828
   RNNotifee: 4a6ee5c7deaf00e005050052d73ee6315dff7ec9
-  RNScreens: dcd5c85a822d9cbb21fc321bbbbcf918f3d48c23
+  RNScreens: f1d8d46edaf07457e8044b63782a018fc3889aa6
   RNSVG: ffe18ba0e8fbad864bf22d6f0060a4ee88ec9bf3
   Yoga: 94172d87dd5d83fc929bf1ee53121b5d4490b5f2
 
