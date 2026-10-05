@@ -81,6 +81,7 @@ export function Button({
   iconRight = null,
   fullWidth = false,
   expanded,
+  spokenName,
   onClick,
   style,
 }: NativeButtonProps) {
@@ -100,6 +101,7 @@ export function Button({
       disabled={disabled}
       onPress={onClick}
       accessibilityState={expanded === undefined ? undefined : { expanded }}
+      accessibilityLabel={spokenName}
       style={[
         styles.pill,
         SIZE[size],

@@ -26,6 +26,8 @@ export function OtpInput({
   helper,
   error,
   disabled = false,
+  readOnly = false,
+  busy = false,
   autoFocus = false,
   className,
   style,
@@ -85,36 +87,46 @@ export function OtpInput({
       {/* biome-ignore lint/a11y/useSemanticElements: a <fieldset>/<legend> would replace the
           label line the design system draws above the boxes, and this group has no submit
           semantics — role="group" is the exact meaning. */}
-      <div className="hg-otp-boxes" role="group" aria-label={label ?? 'Verification code'}>
+      <div
+        className="hg-otp-boxes"
+        role="group"
+        aria-label={label ?? 'Verification code'}
+        aria-busy={busy ? true : undefined}
+      >
         {slots.map((slot) => (
-          <input
-            key={slot.key}
-            ref={(el) => {
-              refs.current[slot.index] = el;
-            }}
-            className="hg-otp-box"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            aria-label={`Digit ${slot.index + 1}`}
-            aria-invalid={error !== undefined ? true : undefined}
-            {...fieldBox({
-              focused: focusedIndex === slot.index,
-              tone: error === undefined ? 'none' : 'error',
-              disabled,
-              density: 'expressive',
-            })}
-            maxLength={length}
-            disabled={disabled}
-            autoFocus={autoFocus && slot.index === 0}
-            value={slot.char}
-            onChange={(e) => onCharChange(slot.index, e.target.value)}
-            onKeyDown={(e) => onKey(slot.index, e)}
-            onFocus={(e) => {
-              setFocusedIndex(slot.index);
-              e.target.select();
-            }}
-            onBlur={() => setFocusedIndex(null)}
-          />
+          <span key={slot.key} className="hg-otp-cell">
+            <input
+              ref={(el) => {
+                refs.current[slot.index] = el;
+              }}
+              className="hg-otp-box"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              aria-label={`Digit ${slot.index + 1}`}
+              aria-invalid={error !== undefined ? true : undefined}
+              {...fieldBox({
+                focused: focusedIndex === slot.index,
+                tone: error === undefined ? 'none' : 'error',
+                disabled,
+                density: 'expressive',
+              })}
+              maxLength={length}
+              disabled={disabled}
+              readOnly={readOnly || busy}
+              aria-readonly={readOnly || busy ? true : undefined}
+              autoFocus={autoFocus && slot.index === 0}
+              value={slot.char}
+              onChange={(e) => onCharChange(slot.index, e.target.value)}
+              onKeyDown={(e) => onKey(slot.index, e)}
+              onFocus={(e) => {
+                setFocusedIndex(slot.index);
+                e.target.select();
+              }}
+              onBlur={() => setFocusedIndex(null)}
+            />
+            {/* An empty cell is found by its mark, not an outline (`SCR-M01-01`); a digit replaces it. */}
+            {slot.char === '' ? <span className="hg-otp-bar" aria-hidden="true" /> : null}
+          </span>
         ))}
       </div>
       {helper !== undefined || error !== undefined ? (

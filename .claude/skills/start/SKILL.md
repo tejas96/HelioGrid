@@ -31,7 +31,7 @@ Do steps 1–9 in order. Write no code. Step 9 ends in a stop.
     const shipped = [/* 'T-M02-001', 'T-SHELL-003a', … */];
     const { openPools, unseed, adminUrl } = await import('./tests/support/fixture.ts');
     const { tenant, tenantMembership, userAccount } = await import('@heliogrid/db');
-    const { and, inArray, like, lt, notInArray, or, sql } = await import('drizzle-orm');
+    const { and, eq, inArray, like, lt, notInArray, or, sql } = await import('drizzle-orm');
     if (new URL(adminUrl).host === 'localhost:5544' === false) throw new Error('refused: not the local database');
     const pools = openPools();
     const db = pools.admin.db;
@@ -39,7 +39,7 @@ Do steps 1–9 in order. Write no code. Step 9 ends in a stop.
     const suiteCompany = and(sql\`\${tenant.companyName} ~ '^E2E [0-9]{10}$'\`, lt(tenant.createdAt, anHourAgo));
     const companies = await db.select({ tenantId: tenant.id }).from(tenant).where(or(suiteCompany, ...shipped.map((id) => like(tenant.companyName, 'QA ' + id + ' %'))));
     const ids = companies.map((c) => c.tenantId);
-    const members = ids.length === 0 ? [] : await db.selectDistinct({ userId: tenantMembership.userAccountId }).from(tenantMembership).where(inArray(tenantMembership.tenantId, ids));
+    const members = ids.length === 0 ? [] : await db.selectDistinct({ userId: tenantMembership.userAccountId, phoneE164: userAccount.phoneE164 }).from(tenantMembership).innerJoin(userAccount, eq(userAccount.id, tenantMembership.userAccountId)).where(inArray(tenantMembership.tenantId, ids));
     const elsewhere = members.length === 0 ? [] : await db.selectDistinct({ userId: tenantMembership.userAccountId }).from(tenantMembership).where(and(inArray(tenantMembership.userAccountId, members.map((m) => m.userId)), notInArray(tenantMembership.tenantId, ids)));
     const dev = await db.select({ userId: userAccount.id }).from(userAccount).where(inArray(userAccount.phoneE164, (process.env.DEV_OTP_PHONES ?? '').split(',').map((p) => p.trim())));
     const keep = new Set([...elsewhere, ...dev].map((r) => r.userId));
@@ -102,7 +102,8 @@ when they fail: print what is wrong and who clears it. The rest are findings the
 
 - **Scope** — what the task builds and what it leaves are clear; the Plan's `Scope` line records both.
 - **Requirements** — every PRD row id it cites exists, and every quoted row still matches its PRD
-  cell.
+  cell. Every sentence of a cited row is an acceptance line, or is named Out with its reason — a
+  sentence with no line has no proof, and nobody checks it.
 - **Acceptance** — every `DONE WHEN` line is there and can be proven by a test or a QA check.
 - **Dependencies** — every task on its `Depends on:` line reads `shipped`
   (`grep -A3 '^### <T-id> ' docs/tasks/*.md | grep Status`); every outside need it names (an

@@ -2,12 +2,23 @@
 # the api sent and enters it with steps/enter-code.yaml — Maestro cannot read a file mid-flow.
 appId: com.heliogrid.app
 ---
+# The Google door sits under the number (`M01-02`): the "or", then Continue with Google, whose
+# spoken name starts with its words. No flow presses it — no agent holds a Google password.
+- extendedWaitUntil:
+    visible: "${CONTINUE_WITH_GOOGLE}(\\..*)?"
+    timeout: 15000
+- assertVisible: ${OR}
 # A field is the SECOND element its label's words name: the label comes first, the field after it,
 # and iOS may append `, <value>` to a field's name.
 - tapOn:
     text: "${MOBILE_NUMBER}(, .*)?"
     index: 1
-# A key typed before the keyboard is up is lost, so the tap settles first.
+# A key typed before the keyboard is up is lost, so the tap settles first. The column is centred
+# (`SCR-M01-01`), so it rises as the keyboard opens: the field is tapped again where it came to rest.
+- waitForAnimationToEnd
+- tapOn:
+    text: "${MOBILE_NUMBER}(, .*)?"
+    index: 1
 - waitForAnimationToEnd
 - inputText: ${PHONE}
 - tapOn: ${SEND_CODE}

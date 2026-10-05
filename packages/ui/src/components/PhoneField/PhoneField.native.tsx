@@ -68,6 +68,7 @@ export function PhoneField({
   error,
   helper,
   disabled = false,
+  readOnly = false,
   announceError = false,
   autoFocus = false,
   style,
@@ -110,7 +111,7 @@ export function PhoneField({
           autoFocus={autoFocus}
           // The whole number, so the reader hears one number rather than a code and some groups.
           accessibilityLabel={`${label}, ${mkt.phone(value)}`}
-          editable={!disabled}
+          editable={!disabled && !readOnly}
           keyboardType="phone-pad"
           textContentType="telephoneNumber"
           value={shown}

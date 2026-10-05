@@ -97,7 +97,7 @@ describe.skipIf(skip)("the Google door's edges, over HTTP", () => {
     const statuses = (await both).map((reply) => reply.status).sort();
     expect(statuses).toEqual([HttpStatus.OK, HttpStatus.CONFLICT]);
     const loser = (await both).find((reply) => reply.status === HttpStatus.CONFLICT);
-    expect(loser?.body.error?.code).toBe('GOOGLE_PHONE_TAKEN');
+    expect(loser?.body.error?.code).toBe('LOGIN_PHONE_TAKEN');
     // The loser's code is left unspent: only the winner's claim survived its transaction.
     const [spent] = await pools.admin.db
       .select({ n: count() })
@@ -128,7 +128,7 @@ describe.skipIf(skip)("the Google door's edges, over HTTP", () => {
       HttpStatus.CONFLICT,
     ]);
     expect(replies.find((reply) => reply.status === HttpStatus.CONFLICT)?.body.error?.code).toBe(
-      'GOOGLE_SUBJECT_TAKEN',
+      'LOGIN_LINKED_ELSEWHERE',
     );
     const holders = [
       await subjectAt(pools.admin.db, racedOne.phoneE164),
@@ -143,13 +143,30 @@ describe.skipIf(skip)("the Google door's edges, over HTTP", () => {
       nonce: 'sent-by-device',
     });
     expect(reply.status).toBe(HttpStatus.UNAUTHORIZED);
-    expect(reply.body.error?.code).toBe('GOOGLE_TOKEN_REFUSED');
+    expect(reply.body.error?.code).toBe('LOGIN_TOKEN_REFUSED');
   });
 
   it('a key-fetch failure answers unavailable', async () => {
     const reply = await google({ idToken: TEST_GOOGLE_UNAVAILABLE });
     expect(reply.status).toBe(HttpStatus.SERVICE_UNAVAILABLE);
-    expect(reply.body.error?.code).toBe('GOOGLE_UNAVAILABLE');
+    expect(reply.body.error?.code).toBe('LOGIN_PROVIDER_UNAVAILABLE');
+  });
+
+  it('an unknown provider answers 400', async () => {
+    const reply = await http.callAnonymously<{ error?: { code: string } }>(
+      'POST',
+      '/auth/sign-in/apple',
+      { idToken: token(aSubject('apple')), platform: 'web' },
+    );
+    expect(reply.status).toBe(HttpStatus.BAD_REQUEST);
+  });
+
+  it('the old /auth/google answers 404', async () => {
+    const reply = await http.callAnonymously<{ error?: { code: string } }>('POST', '/auth/google', {
+      idToken: token(aSubject('old')),
+      platform: 'web',
+    });
+    expect(reply.status).toBe(HttpStatus.NOT_FOUND);
   });
 
   it('an unknown challenge id answers 404', async () => {

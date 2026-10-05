@@ -13,22 +13,43 @@ export const styles = StyleSheet.create({
   inset: { flex: 1, backgroundColor: theme.colors.surface },
   titleBlock: {
     gap: theme.spacing['sp-2'],
-    paddingTop: theme.spacing['sp-8'],
     paddingBottom: theme.spacing['sp-6'],
   },
+  /**
+   * Above the title: grows as much as `spacer` below the form, so the title and the form sit
+   * centred between the header and the road at the foot (`SCR-M01-01`); never under `sp-8`.
+   */
+  spacerTop: { flex: 1, minHeight: theme.spacing['sp-8'] },
   form: { gap: theme.spacing['sp-5'] },
-  or: { alignItems: 'center', gap: theme.spacing['sp-3'] },
+  /** The "or" and Continue with Google: `sp-5` above (the form's gap), `sp-3` between (`SCR-M01-01`). */
+  google: { gap: theme.spacing['sp-3'] },
+  /** The locked frame's way still open: the sentence, `sp-4`, then Continue with Google (`M01-04`). */
+  lockedGoogle: { gap: theme.spacing['sp-4'] },
   caption: { marginTop: theme.spacing['sp-4'] },
   spacer: { flex: 1, minHeight: theme.spacing['sp-6'] },
   /** The road at the foot of the number step: the question and where it goes. */
   road: { alignItems: 'center', gap: theme.spacing['sp-2'] },
-  /** The export's code column: `sp-5` between the header row and the title, then `sp-5` throughout. */
-  codeColumn: { gap: theme.spacing['sp-5'], paddingTop: theme.spacing['sp-5'] },
-  /** Under a step header the code column keeps the title block's `sp-8` (the signup export). */
-  codeColumnAfterLead: { gap: theme.spacing['sp-5'], paddingTop: theme.spacing['sp-8'] },
+  /** The code column, centred in the space under the header (`SCR-M01-01`); at least `sp-6` above and below. */
+  codeColumn: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    gap: theme.spacing['sp-5'],
+    paddingVertical: theme.spacing['sp-6'],
+  },
+  /** Under a step header the code column keeps the title block's `sp-8` above it (the signup export). */
+  codeColumnAfterLead: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    gap: theme.spacing['sp-5'],
+    paddingTop: theme.spacing['sp-8'],
+    paddingBottom: theme.spacing['sp-6'],
+  },
   codeTitle: { gap: theme.spacing['sp-1'] },
+  /** The link step's title and its Explainer on one row, `sp-2` apart. */
+  titleRow: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
+  /** The tile, then `sp-2`, then "Not you?" at the start of the line. */
+  linkAccount: { gap: theme.spacing['sp-2'], alignItems: 'flex-start' },
   centred: { alignItems: 'center' },
-  callBlock: { gap: theme.spacing['sp-2'] },
   sheetBody: { gap: theme.spacing['sp-4'], paddingBottom: theme.spacing['sp-2'] },
   sheetActions: { gap: theme.spacing['sp-3'] },
 });

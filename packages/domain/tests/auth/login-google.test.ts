@@ -20,7 +20,7 @@ describe('the Google door (M01-02)', () => {
   const TOKEN: GoogleToken = { idToken: 'id-token', nonce: 'n-1', email: 'priya.sharma@gmail.com' };
   const OTHER: GoogleToken = { ...TOKEN, idToken: 'other-token', email: 'ravi@gmail.com' };
   const checking = state({ pending: { kind: 'google', token: TOKEN, code: null } });
-  /** The link step after `GOOGLE_NOT_LINKED`: the login waits for the number's code. */
+  /** The link step after `LOGIN_NOT_LINKED`: the login waits for the number's code. */
   const linking = state({ step: 'google-link', google: TOKEN });
   const linkingCode = { ...linking, ...cooled, google: TOKEN, code: CODE };
   const proving = {
@@ -58,6 +58,19 @@ describe('the Google door (M01-02)', () => {
     expect(loginReducer(sheet, { type: 'google-sheet-ended', result: { kind: 'failed' } })).toEqual(
       state({ googleEnded: 'failed' }),
     );
+  });
+
+  it('a failure the web return route reads, with nothing pending, draws the failure frame', () => {
+    expect(
+      loginReducer(state({}), { type: 'google-sheet-ended', result: { kind: 'failed' } }),
+    ).toEqual(state({ googleEnded: 'failed' }));
+  });
+
+  it('a return route answer is not heard over a round trip already in flight', () => {
+    const sending = state({ pending: { kind: 'request', phone: '9820041123', channel: 'sms' } });
+    expect(
+      loginReducer(sending, { type: 'google-sheet-ended', result: { kind: 'failed' } }),
+    ).toEqual(sending);
   });
 
   it('a linked login signs in: the session store moves the door', () => {
@@ -214,7 +227,6 @@ describe('the Google door (M01-02)', () => {
       { kind: 'cancelled' },
     ],
     ['a cancel with no sheet open', state({}), { kind: 'cancelled' }],
-    ['a failure with no sheet open', state({}), { kind: 'failed' }],
   ] as const)('a sheet answer no open sheet asked for is ignored: %s', (_, from, result) => {
     expect(loginReducer(from, { type: 'google-sheet-ended', result })).toBe(from);
   });

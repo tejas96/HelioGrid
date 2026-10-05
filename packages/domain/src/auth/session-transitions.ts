@@ -11,6 +11,8 @@ export type SessionEvent =
   | { readonly kind: 'signed-out' }
   /** The boot check failed. After a loss it found, that loss already said everything. */
   | { readonly kind: 'boot-failed' }
+  /** The boot check found no credential: signed out, read the same way as a failed check. */
+  | { readonly kind: 'boot-signed-out' }
   /** The transport's refresh was refused, and the server named why. */
   | { readonly kind: 'lost'; readonly loss: SessionLoss };
 
@@ -35,6 +37,7 @@ export function sessionAfter(current: SessionSnapshot, event: SessionEvent): Ses
     case 'signed-out':
       return SIGNED_OUT;
     case 'boot-failed':
+    case 'boot-signed-out':
       return current.status === 'checking' ? SIGNED_OUT : current;
     case 'lost':
       return afterLoss(current, event.loss);

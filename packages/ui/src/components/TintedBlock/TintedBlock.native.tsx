@@ -22,9 +22,11 @@ export function TintedBlock({ tone, title, body, style }: NativeTintedBlockProps
       <Text variant="body-sm" color={tone}>
         {title}
       </Text>
-      <Text variant="caption" color="secondary">
-        {body}
-      </Text>
+      {body === undefined ? null : (
+        <Text variant="caption" color="secondary">
+          {body}
+        </Text>
+      )}
     </View>
   );
 }

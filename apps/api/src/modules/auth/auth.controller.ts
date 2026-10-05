@@ -1,10 +1,16 @@
-import { ACCESS_REMOVED, authContract } from '@heliogrid/contracts';
+import {
+  ACCESS_REMOVED,
+  authContract,
+  SESSION_RESOLVER,
+  type SessionResolver,
+} from '@heliogrid/contracts';
 import { UI_LANGUAGES, UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/domain';
 import { Controller, HttpStatus, Inject, Req, UnauthorizedException } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
 import {
+  carriesCredential,
   clearAuthCookies,
   cookieOf,
   responseOf,
@@ -33,17 +39,19 @@ export class AuthController {
   constructor(
     @Inject(AuthService) private readonly auth: AuthService,
     @Inject(OtpService) private readonly otp: OtpService,
+    @Inject(SESSION_RESOLVER) private readonly sessions: SessionResolver,
   ) {}
 
   @TsRestHandler(authContract)
   @RouteAccessMap(authContract, {
     requestOtp: 'public',
     verifyOtp: 'public',
-    signInWithGoogle: 'public',
+    signInWithProvider: 'public',
     refresh: 'session-cookie',
     signOut: 'session',
     signOutEverywhere: 'session',
-    session: 'session',
+    // Public so a signed-out visitor is answered, not refused (`D104`); the handler resolves.
+    session: 'public',
   })
   handler(@Req() req: Request) {
     const res = responseOf(req);
@@ -65,8 +73,9 @@ export class AuthController {
         setTokenCookie(res, opened.token.token, opened.token.expiresAt);
         return { status: 200, body: opened.projection };
       },
-      signInWithGoogle: async ({ body }) => {
-        const opened = await this.auth.signInWithGoogle(
+      signInWithProvider: async ({ params, body }) => {
+        const opened = await this.auth.signInWithProvider(
+          params.provider,
           body,
           languageOf(req),
           cookieOf(req, SESSION_COOKIE),
@@ -108,7 +117,12 @@ export class AuthController {
         clearAuthCookies(res);
         return { status: 204, body: undefined };
       },
-      session: async () => ({ status: 200, body: sessionOf(req) }),
+      session: async () => {
+        const resolved = await this.sessions.resolve(req);
+        if (resolved !== null) return { status: 200, body: resolved.session };
+        if (carriesCredential(req)) throw new UnauthorizedException('Sign in to continue.');
+        return { status: 200, body: { signedIn: false as const } };
+      },
     });
   }
 }

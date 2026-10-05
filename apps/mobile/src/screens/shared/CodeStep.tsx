@@ -2,9 +2,11 @@ import type { SignIn } from '@heliogrid/data/react';
 import { OTP_LENGTH } from '@heliogrid/domain';
 import { SIGN_IN, type SignInLabels, signInWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, OtpInput, PhoneValue, Text, TintedBlock, useFormat } from '@heliogrid/ui';
+import { Button, OtpInput, Text, TintedBlock } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
+import { CodeGoogle } from './CodeGoogle';
+import { CodeTitle } from './CodeTitle';
 import { styles } from './door-styles';
 import { InsetDoorFrame } from './InsetDoorFrame';
 
@@ -26,17 +28,12 @@ export function CodeStep({
   note?: string;
 }) {
   const t = useTranslate();
-  const { phone } = useFormat();
   const { state, frame, busy } = signIn;
   const { primary, resend } = frame;
   const words = signInWords(
     t,
     frame,
-    {
-      cooldownLeft: state.cooldownLeft,
-      triesLeft: state.triesLeft,
-      phoneShown: phone(state.phone),
-    },
+    { cooldownLeft: state.cooldownLeft, triesLeft: state.triesLeft },
     labels,
   );
   return (
@@ -49,27 +46,28 @@ export function CodeStep({
     >
       {lead}
       <View style={lead === undefined ? styles.codeColumn : styles.codeColumnAfterLead}>
-        <View style={styles.codeTitle}>
-          <Text variant="h2">{words.title}</Text>
-          <PhoneValue label={words.sub} value={state.phone} />
-        </View>
+        <CodeTitle words={words} phone={state.phone} />
         {words.block === null ? null : <TintedBlock {...words.block} />}
-        <OtpInput
-          length={OTP_LENGTH}
-          label={t(SIGN_IN.codeLabel, { n: OTP_LENGTH })}
-          value={state.code}
-          onChange={signIn.typeCode}
-          disabled={!frame.codeEnabled || busy}
-          helper={words.helper}
-          error={words.codeError ?? undefined}
-          autoFocus={frame.codeEnabled}
-        />
+        {frame.code === 'absent' ? null : (
+          <OtpInput
+            length={OTP_LENGTH}
+            label={t(SIGN_IN.codeLabel, { n: OTP_LENGTH })}
+            value={state.code}
+            onChange={signIn.typeCode}
+            disabled={frame.code === 'closed'}
+            readOnly={frame.code === 'read-only'}
+            busy={busy}
+            error={words.codeError ?? undefined}
+            autoFocus={frame.code === 'open'}
+          />
+        )}
         {primary === null || words.primary === null ? null : (
           <Button
             variant="primary"
             size="lg"
             fullWidth
             loading={busy}
+            spokenName={words.primaryAria ?? undefined}
             onClick={() => signIn.press(primary.press)}
           >
             {words.primary}
@@ -82,34 +80,24 @@ export function CodeStep({
             </Button>
           </View>
         ) : null}
-        {resend?.kind === 'wait' ? (
+        {words.wait === null ? null : (
           <View style={styles.centred}>
-            <Button
-              variant="ghost"
-              size="md"
-              fullWidth
-              disabled
-              disabledReason={{ reason: words.wait ?? '', align: 'center' }}
-            >
-              {t(SIGN_IN.resendCode)}
+            <Button variant="ghost" size="md" disabled spokenName={words.wait.spoken}>
+              {words.wait.label}
             </Button>
-          </View>
-        ) : null}
-        {words.call === null ? null : (
-          <View style={styles.callBlock}>
-            <Button
-              variant="secondary"
-              size="md"
-              fullWidth
-              onClick={() => signIn.press('choose-call')}
-            >
-              {words.call.label}
-            </Button>
-            <Text variant="caption" color="secondary" align="center">
-              {words.call.note}
-            </Text>
           </View>
         )}
+        {words.call === null ? null : (
+          <Button
+            variant="secondary"
+            size="md"
+            fullWidth
+            onClick={() => signIn.press('choose-call')}
+          >
+            {words.call}
+          </Button>
+        )}
+        {words.google === null ? null : <CodeGoogle signIn={signIn} words={words.google} />}
         {words.foot === null ? null : (
           <Text variant="caption" color="secondary">
             {words.foot}

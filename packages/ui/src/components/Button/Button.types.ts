@@ -39,5 +39,12 @@ export interface ButtonProps {
    * screen reader says "expanded" or "collapsed" with the words, so the state is never sight-only.
    */
   expanded?: boolean;
+  /**
+   * What a screen reader says in place of the words, when the words alone hide a rule the person
+   * must hear ("Continue with Google. Signs you in to the same account as your mobile number.").
+   * It starts with the visible words, so speech control can still find the button by what it shows.
+   * Web: `aria-label`. Native: `accessibilityLabel`.
+   */
+  spokenName?: string;
   onClick?: () => void;
 }

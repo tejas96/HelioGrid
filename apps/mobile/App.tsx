@@ -62,7 +62,9 @@ export default function App() {
             {/* The ONE portal host, above navigation: every menu, sheet and modal escapes its
                 screen through here; without it a Portal renders in place (Portal.native). */}
             <InsetPortalHost>
-              <StatusBar barStyle="dark-content" />
+              {/* Transparent, with dark icons, on every Android version: the door's bloom runs under it
+                  (`SCR-M01-01`), and each screen keeps clear of the top inset itself. */}
+              <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
               <AppNavigation />
             </InsetPortalHost>
           </SafeAreaProvider>

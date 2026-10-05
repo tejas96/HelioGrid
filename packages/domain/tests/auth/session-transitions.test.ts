@@ -43,6 +43,14 @@ describe('sessionAfter — why a session ended, and what the device keeps of it 
     expect(sessionAfter(CHECKING, { kind: 'boot-failed' })).toEqual(SIGNED_OUT);
   });
 
+  it('sends a boot check that found no credential to the door', () => {
+    expect(sessionAfter(CHECKING, { kind: 'boot-signed-out' })).toEqual(SIGNED_OUT);
+  });
+
+  it('keeps an ending found at boot when the boot check then finds no credential', () => {
+    expect(sessionAfter(removedAtBoot, { kind: 'boot-signed-out' })).toBe(removedAtBoot);
+  });
+
   it.each([
     {
       from: removed,

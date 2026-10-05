@@ -18,6 +18,27 @@
   gap: var(--sp-2);
 }
 
+.hg-otp-cell {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* The empty cell's mark: --mark-subtle clears 3:1 on the page and on the well, where the well
+   itself does not (1.10:1) — so a cell is findable without a border. */
+.hg-otp-bar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--sp-3);
+  /* A stroke, as FieldBox's 1.5px and 2px rings are: the theme carries no stroke-width token. */
+  height: 2px;
+  border-radius: var(--r-pill);
+  background: var(--mark-subtle);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
 .hg-otp-box {
   width: 48px;
   flex-shrink: 0;

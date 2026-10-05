@@ -3,6 +3,7 @@ import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
   extensibleEnum,
+  loginProviderSchema,
   otpChannelSchema,
   phoneE164Schema,
   platformKindSchema,
@@ -53,13 +54,13 @@ export const otpVerifyRefusalSchema = z.enum([
 export type OtpVerifyRefusal = z.infer<typeof otpVerifyRefusalSchema>;
 
 /**
- * The Google door (`M01-02`): a convenience sign-in onto the SAME phone-identity account. A
- * Google login already linked to an account signs straight in; one that is not answers
- * `GOOGLE_NOT_LINKED`, and the device runs the phone step and sends the code back in `link` —
- * the code is checked here, by the same rules as a verify, so the bind and the code's use are one
- * act. `nonce` is the value the device put in Google's request; when sent, the token must carry it.
+ * The provider door (`M01-02`): a convenience sign-in onto the SAME phone-identity account. A
+ * login already linked to an account signs straight in; one that is not answers
+ * `LOGIN_NOT_LINKED`, and the device runs the phone step and sends the code back in `link` — the
+ * code is checked here, by the same rules as a verify, so the bind and the code's use are one act.
+ * `nonce` is the value the device put in the provider's request; when sent, the token must carry it.
  */
-export const googleSignInSchema = z.object({
+export const providerSignInSchema = z.object({
   idToken: z.string().min(1).max(4096),
   platform: platformKindSchema,
   nonce: z.string().min(1).max(256).optional(),
@@ -70,30 +71,40 @@ export const googleSignInSchema = z.object({
     })
     .optional(),
 });
-export type GoogleSignIn = z.infer<typeof googleSignInSchema>;
+export type ProviderSignIn = z.infer<typeof providerSignInSchema>;
+
+/** The provider a sign-in goes through, in the path — an unknown one is a 400, never a query. */
+export const providerParamsSchema = z.object({ provider: loginProviderSchema });
 
 /**
- * Why a Google sign-in was refused, beside the verify refusals a `link` can meet:
- * - `GOOGLE_NOT_LINKED` — the login is linked to no account; run the phone step.
- * - `GOOGLE_PHONE_TAKEN` — that phone's account already holds another Google login.
- * - `GOOGLE_SUBJECT_TAKEN` — this login is linked to a different phone's account.
+ * Why a provider sign-in was refused, beside the verify refusals a `link` can meet:
+ * - `LOGIN_NOT_LINKED` — the login is linked to no account; run the phone step.
+ * - `LOGIN_PHONE_TAKEN` — that phone's account already holds another login of this provider.
+ * - `LOGIN_LINKED_ELSEWHERE` — this login is linked to a different phone's account.
  */
-export const googleLinkRefusalSchema = z.enum([
-  'GOOGLE_NOT_LINKED',
-  'GOOGLE_PHONE_TAKEN',
-  'GOOGLE_SUBJECT_TAKEN',
+export const loginLinkRefusalSchema = z.enum([
+  'LOGIN_NOT_LINKED',
+  'LOGIN_PHONE_TAKEN',
+  'LOGIN_LINKED_ELSEWHERE',
 ]);
-export type GoogleLinkRefusal = z.infer<typeof googleLinkRefusalSchema>;
+export type LoginLinkRefusal = z.infer<typeof loginLinkRefusalSchema>;
 
-/** A token Google did not sign for this app, expired, a nonce it does not carry — or no client ids set. */
-export const GOOGLE_TOKEN_REFUSED = 'GOOGLE_TOKEN_REFUSED' as const;
-/** Google's signing keys could not be fetched; nothing was decided. */
-export const GOOGLE_UNAVAILABLE = 'GOOGLE_UNAVAILABLE' as const;
-/** Every code the Google door itself answers, beside the verify refusals a `link` meets. */
-export type GoogleRefusal =
-  | GoogleLinkRefusal
-  | typeof GOOGLE_TOKEN_REFUSED
-  | typeof GOOGLE_UNAVAILABLE;
+/** A token the provider did not sign for this app, expired, a nonce it does not carry — or no client ids set. */
+export const LOGIN_TOKEN_REFUSED = 'LOGIN_TOKEN_REFUSED' as const;
+/** The provider's signing keys could not be fetched; nothing was decided. */
+export const LOGIN_PROVIDER_UNAVAILABLE = 'LOGIN_PROVIDER_UNAVAILABLE' as const;
+/** Every code the provider door itself answers, beside the verify refusals a `link` meets. */
+export type LoginRefusal =
+  | LoginLinkRefusal
+  | typeof LOGIN_TOKEN_REFUSED
+  | typeof LOGIN_PROVIDER_UNAVAILABLE;
+
+/**
+ * The boot check's answer to a visitor carrying no credential at all: a fact, not a refusal, so
+ * a signed-out page logs no error. A credential that did not work still answers 401 — it is
+ * worth one refresh.
+ */
+export const signedOutSchema = z.object({ signedIn: z.literal(false) });
 
 export const refreshSchema = z.object({
   /**
@@ -158,19 +169,20 @@ export const authContract = c.router({
       429: errorEnvelope(z.literal('OTP_LOCKED')),
     },
   },
-  signInWithGoogle: {
+  signInWithProvider: {
     method: 'POST',
-    path: '/auth/google',
-    body: googleSignInSchema,
+    path: '/auth/sign-in/:provider',
+    pathParams: providerParamsSchema,
+    body: providerSignInSchema,
     summary:
-      'Sign in with Google — a linked login signs in; a link binds it to the phone the code proves',
+      'Sign in through a provider — a linked login signs in; a link binds it to the phone the code proves',
     responses: {
       200: sessionProjectionSchema,
-      401: errorEnvelope(z.enum([GOOGLE_TOKEN_REFUSED, ...otpVerifyRefusalSchema.options])),
+      401: errorEnvelope(z.enum([LOGIN_TOKEN_REFUSED, ...otpVerifyRefusalSchema.options])),
       404: errorEnvelope(baseError('NOT_FOUND')),
-      409: errorEnvelope(googleLinkRefusalSchema),
+      409: errorEnvelope(loginLinkRefusalSchema),
       429: errorEnvelope(z.literal('OTP_LOCKED')),
-      503: errorEnvelope(z.literal(GOOGLE_UNAVAILABLE)),
+      503: errorEnvelope(z.literal(LOGIN_PROVIDER_UNAVAILABLE)),
     },
   },
   refresh: {
@@ -206,9 +218,10 @@ export const authContract = c.router({
   session: {
     method: 'GET',
     path: '/auth/session',
-    summary: 'The current session as the projection every screen sees',
+    summary:
+      'The current session as the projection every screen sees, or signed out for a visitor carrying no credential',
     responses: {
-      200: sessionProjectionSchema,
+      200: z.union([sessionProjectionSchema, signedOutSchema]),
       401: unauthenticatedEnvelope,
     },
   },

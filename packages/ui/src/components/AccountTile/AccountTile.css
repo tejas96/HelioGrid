@@ -1,0 +1,15 @@
+/* AccountTile — a filled tile naming the account a step acts for. Every value a token var(). */
+
+.hg-account-tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: var(--sp-4);
+  border-radius: var(--r-card-expressive);
+  background: var(--neutral-bg);
+}
+
+/* An email has no spaces to break at; without this it runs past the tile. */
+.hg-account-tile__account {
+  overflow-wrap: anywhere;
+}

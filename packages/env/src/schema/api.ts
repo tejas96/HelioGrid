@@ -96,7 +96,7 @@ const apiEnvObject = z.object({
   /**
    * The Google OAuth client ids a Google ID token may be issued for (`M01-02`): each
    * environment's web id (which the web and Android sign-ins name) and its iOS id. Client ids, not
-   * secrets. Optional: unset, POST /auth/google refuses every token and nothing else changes.
+   * secrets. Optional: unset, POST /auth/sign-in/google refuses every token and nothing else changes.
    */
   GOOGLE_CLIENT_IDS: googleClientIdsSchema.optional(),
 

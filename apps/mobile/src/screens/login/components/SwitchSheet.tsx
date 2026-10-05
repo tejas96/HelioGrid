@@ -1,7 +1,7 @@
 import type { PendingSwitch } from '@heliogrid/domain';
 import { SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, Sheet, TintedBlock, useFormat } from '@heliogrid/ui';
+import { Button, Sheet, useFormat } from '@heliogrid/ui';
 import { View } from 'react-native';
 import { styles } from '../../shared/door-styles';
 
@@ -32,11 +32,6 @@ export function SwitchSheet({
       subtitle={t(SIGN_IN.switchSubtitle, { date: date(heldWork.capturedAt) })}
     >
       <View style={styles.sheetBody}>
-        <TintedBlock
-          tone="danger"
-          title={t(SIGN_IN.switchBlockTitle)}
-          body={t(SIGN_IN.switchBlockBody)}
-        />
         <View style={styles.sheetActions}>
           <Button
             variant="secondary"

@@ -5,7 +5,8 @@
 .hg-brand-bloom {
   position: absolute;
   background: var(--glow-brand);
-  border-radius: var(--r-pill);
+  /* An ellipse, as the artboards draw it — a pill's flat sides read as a band. */
+  border-radius: 50%;
   pointer-events: none;
 }
 

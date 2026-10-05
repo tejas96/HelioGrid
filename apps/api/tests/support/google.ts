@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { type Db, userAccount } from '@heliogrid/db';
-import { eq } from 'drizzle-orm';
+import { authIdentity, type Db, userAccount } from '@heliogrid/db';
+import { and, eq } from 'drizzle-orm';
 import { TEST_GOOGLE_TOKEN_PREFIX } from '../../src/modules/auth/internal/google-identity.test-double';
 import type { Challenge } from './challenges';
 import { aPerson, type Person } from './fixture';
@@ -10,6 +10,9 @@ import type { Http } from './http';
  * The Google door's proofs (`M01-02`) share these: a token the api's test double reads, a fresh
  * Google subject, a person whose account already holds a login, and the two calls a device makes.
  */
+
+/** The provider door's path for Google. */
+export const GOOGLE_SIGN_IN = '/auth/sign-in/google';
 
 /** Every code a seeded challenge carries; the proof knows it, as a person reading an SMS does. */
 export const GOOGLE_CODE = '482913';
@@ -33,7 +36,7 @@ export const callGoogle = (
   body: Record<string, unknown>,
   headers?: Record<string, string>,
 ) =>
-  http.callAnonymously<GoogleAnswer>('POST', '/auth/google', { platform: 'web', ...body }, headers);
+  http.callAnonymously<GoogleAnswer>('POST', GOOGLE_SIGN_IN, { platform: 'web', ...body }, headers);
 
 /** A Google call carrying the code for a phone in `link`. */
 export const linkGoogle = (http: Http, subject: string, challenge: Challenge, code = GOOGLE_CODE) =>
@@ -45,8 +48,9 @@ export const linkGoogle = (http: Http, subject: string, challenge: Challenge, co
 /** The Google login the account at this phone holds, or null — read on the admin path. */
 export async function subjectAt(db: Db, phoneE164: string): Promise<string | null> {
   const [row] = await db
-    .select({ subject: userAccount.googleSubject })
-    .from(userAccount)
-    .where(eq(userAccount.phoneE164, phoneE164));
+    .select({ subject: authIdentity.subject })
+    .from(authIdentity)
+    .innerJoin(userAccount, eq(userAccount.id, authIdentity.userAccountId))
+    .where(and(eq(userAccount.phoneE164, phoneE164), eq(authIdentity.provider, 'google')));
   return row?.subject ?? null;
 }

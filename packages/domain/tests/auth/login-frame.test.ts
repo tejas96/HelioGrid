@@ -59,28 +59,27 @@ describe('loginFrame — what each frame offers', () => {
     expect(signInFrame(otp({ verify: 'failed' }))).toEqual({
       kind: 'auth-error',
       sub: 'checked-for',
-      helper: 'code-was-fine',
       codeError: null,
-      codeEnabled: false,
+      code: 'read-only',
       primary: { press: 'verify', label: 'try-again' },
       resend: null,
       callOffered: false,
       foot: 'auth-error',
+      explainer: null,
       google: null,
       linkedEmail: null,
     });
   });
 
-  it('locked: no entry, no primary, no call — the wait is the remedy', () => {
+  it('locked: no code field, no primary, no resend, no call — the title says how long', () => {
     expect(signInFrame(otp({ request: 'locked' }))).toMatchObject({
       kind: 'locked',
       sub: 'locked-for',
-      helper: 'locked',
-      codeEnabled: false,
+      code: 'absent',
       primary: null,
-      resend: { kind: 'wait', reason: 'locked' },
+      resend: null,
       callOffered: false,
-      foot: 'locked',
+      foot: null,
     });
   });
 
@@ -98,13 +97,13 @@ describe('loginFrame — what each frame offers', () => {
     expect(signInFrame(otp({ googleEnded: 'phone-taken', google, code: '482913' }))).toEqual({
       kind: 'google-phone-taken',
       sub: 'correct-for',
-      helper: 'code-was-fine',
       codeError: null,
-      codeEnabled: false,
+      code: 'read-only',
       primary: { press: 'sign-in-by-number', label: 'sign-in-by-number' },
       resend: null,
       callOffered: false,
       foot: null,
+      explainer: null,
       google: 'use-another',
       linkedEmail: 'priya.sharma@gmail.com',
     });
@@ -120,29 +119,31 @@ describe('loginFrame — what each frame offers', () => {
   it.each([
     ['by SMS', {}, 'tried-by-sms'],
     ['by call', byCall, 'tried-to-call'],
-  ] as const)('capped %s: no primary, because a call counts to the cap too', (_, channel, sub) => {
-    expect(signInFrame(otp({ request: 'capped', ...channel }))).toMatchObject({
-      kind: 'capped',
-      sub,
-      helper: 'no-code-yet',
-      codeEnabled: false,
-      primary: null,
-      resend: { kind: 'wait', reason: 'cap' },
-      callOffered: false,
-      foot: 'cap',
-    });
-  });
+  ] as const)(
+    'capped %s: no primary, because a call counts to the cap too; the limits sit behind the Explainer',
+    (_, channel, sub) => {
+      expect(signInFrame(otp({ request: 'capped', ...channel }))).toMatchObject({
+        kind: 'capped',
+        sub,
+        code: 'closed',
+        primary: null,
+        resend: null,
+        callOffered: false,
+        foot: null,
+        explainer: 'code-limits',
+      });
+    },
+  );
 
   it.each([
-    ['delivery-failed', 'not-sent'],
+    ['delivery-failed', null],
     ['request-failed', null],
   ] as const)('%s: send it again, or the call as the way across', (kind, foot) => {
     const request = kind === 'delivery-failed' ? 'delivery-failed' : 'failed';
     expect(signInFrame(otp({ request }))).toMatchObject({
       kind,
       sub: 'tried-by-sms',
-      helper: 'no-code-yet',
-      codeEnabled: false,
+      code: 'closed',
       primary: { press: 'resend', label: 'send-again' },
       resend: null,
       callOffered: true,
@@ -162,10 +163,7 @@ describe('loginFrame — what each frame offers', () => {
       callOffered: false,
       foot: null,
     });
-    expect(signInFrame(otp({ request, ...byCall, ...inGap })).resend).toEqual({
-      kind: 'wait',
-      reason: 'short',
-    });
+    expect(signInFrame(otp({ request, ...byCall, ...inGap })).resend).toEqual({ kind: 'wait' });
   });
 
   describe.each([
@@ -176,8 +174,7 @@ describe('loginFrame — what each frame offers', () => {
       expect(signInFrame(otp({ verify }))).toMatchObject({
         kind,
         sub: 'sent-by-sms',
-        helper: 'nothing-until-new',
-        codeEnabled: false,
+        code: 'closed',
         primary: { press: 'resend', label: 'send-new' },
         resend: null,
         callOffered: true,
@@ -197,7 +194,7 @@ describe('loginFrame — what each frame offers', () => {
     it('inside the gap shows the wait and no way to ask', () => {
       expect(signInFrame(otp({ verify, ...inGap }))).toMatchObject({
         primary: null,
-        resend: { kind: 'wait', reason: 'short' },
+        resend: { kind: 'wait' },
         callOffered: false,
       });
     });
@@ -208,80 +205,70 @@ describe('loginFrame — what each frame offers', () => {
     expect(signInFrame(offered)).toMatchObject({
       kind: 'call-offer',
       sub: 'will-call',
-      helper: 'answer-call',
-      codeEnabled: true,
+      code: 'open',
       primary: { press: 'call', label: 'call-me' },
       resend: { kind: 'live', press: 'sms', label: 'send-sms-again' },
       callOffered: false,
-      foot: 'call',
+      foot: null,
     });
     expect(signInFrame({ ...offered, ...inGap })).toMatchObject({
       primary: null,
-      resend: { kind: 'wait', reason: 'short' },
+      resend: { kind: 'wait' },
     });
   });
 
   it('wrong: the error sits on the field and the tries left at the foot', () => {
     expect(signInFrame(otp({ verify: 'mismatch' }))).toMatchObject({
       kind: 'wrong',
-      helper: null,
       codeError: 'wrong',
-      codeEnabled: true,
+      code: 'open',
       primary: { press: 'verify', label: 'verify' },
       resend: { kind: 'live', press: 'resend', label: 'send-new' },
       callOffered: false,
       foot: 'tries-left',
     });
-    expect(signInFrame(otp({ verify: 'mismatch', ...inGap })).resend).toEqual({
-      kind: 'wait',
-      reason: 'short',
-    });
+    expect(signInFrame(otp({ verify: 'mismatch', ...inGap })).resend).toEqual({ kind: 'wait' });
   });
 
   it('filled: check it or type over it; a short press answers on the field', () => {
     expect(signInFrame(otp({ filled: true }))).toMatchObject({
       kind: 'filled',
-      helper: 'filled-from-sms',
       codeError: null,
       resend: { kind: 'live', press: 'resend', label: 'send-new' },
-      foot: 'only-some-phones',
+      foot: null,
     });
     expect(signInFrame(otp({ filled: true, codeShort: true, ...inGap }))).toMatchObject({
       codeError: 'short',
-      resend: { kind: 'wait', reason: 'short' },
+      resend: { kind: 'wait' },
     });
   });
 
   it.each([
-    ['the first SMS', { sends: 1 }, 'sent-just-now', 'first', 'code-works-for'],
-    ['a second SMS', { sends: 2 }, 'sent-moment-ago', 'again', 'wait-stops'],
-    ['a call', { sends: 1, ...byCall }, 'answer-call', 'first', 'code-works-for'],
-  ] as const)('waiting after %s', (_, facts, helper, reason, foot) => {
+    ['the first SMS', { sends: 1 }],
+    ['a second SMS', { sends: 2 }],
+    ['a call', { sends: 1, ...byCall }],
+  ] as const)('waiting after %s: the resend control counts the gap down itself', (_, facts) => {
     expect(signInFrame(otp({ ...inGap, ...facts }))).toMatchObject({
       kind: 'waiting',
-      helper,
-      codeEnabled: true,
+      code: 'open',
       primary: { press: 'verify', label: 'verify' },
-      resend: { kind: 'wait', reason },
+      resend: { kind: 'wait' },
       callOffered: false,
-      foot,
+      foot: null,
     });
   });
 
   it.each([
     ['by SMS', {}, true],
     ['by call', byCall, false],
-  ] as const)(
-    'entry %s: paste the whole code; the call is offered only off the SMS',
-    (_, channel, callOffered) => {
-      expect(signInFrame(otp({ codeShort: true, ...channel }))).toMatchObject({
-        kind: 'entry',
-        helper: 'paste-whole',
-        codeError: 'short',
-        resend: { kind: 'live', press: 'resend', label: 'send-new' },
-        callOffered,
-        foot: null,
-      });
-    },
-  );
+  ] as const)('entry %s: the call is offered only off the SMS', (_, channel, callOffered) => {
+    expect(signInFrame(otp({ codeShort: true, ...channel }))).toMatchObject({
+      kind: 'entry',
+      code: 'open',
+      codeError: 'short',
+      resend: { kind: 'live', press: 'resend', label: 'send-new' },
+      callOffered,
+      foot: null,
+    });
+  });
 });

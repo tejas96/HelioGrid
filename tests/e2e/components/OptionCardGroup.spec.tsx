@@ -6,7 +6,7 @@ import { resolvedColour } from '../support/token';
 const en = await createTranslator('en');
 const bySms = en.t(SIGN_IN.sendCode);
 const byCall = en.t(SIGN_IN.getCodeByCall);
-const lockedReason = en.t(SIGN_IN.lockedResendReason);
+const lockedReason = en.t(SIGN_IN.authErrorFoot);
 
 const options = [
   { value: 'sms', title: bySms },

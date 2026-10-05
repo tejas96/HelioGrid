@@ -12,6 +12,7 @@ vi.mock('../../src/config/env', async (original) => {
 });
 
 import { skipWithoutDatabase } from '../support/fixture';
+import { GOOGLE_SIGN_IN } from '../support/google';
 import { bootHttp, type Http } from '../support/http';
 
 interface Answer {
@@ -35,11 +36,11 @@ describe.skipIf(skip)('the Google door with no client ids, over HTTP', () => {
   });
 
   it('no client ids answers 401', async () => {
-    const reply = await http.callAnonymously<Answer>('POST', '/auth/google', {
+    const reply = await http.callAnonymously<Answer>('POST', GOOGLE_SIGN_IN, {
       idToken: 'test-google:anyone',
       platform: 'web',
     });
     expect(reply.status).toBe(HttpStatus.UNAUTHORIZED);
-    expect(reply.body.error?.code).toBe('GOOGLE_TOKEN_REFUSED');
+    expect(reply.body.error?.code).toBe('LOGIN_TOKEN_REFUSED');
   });
 });

@@ -6,9 +6,10 @@
  */
 import type {
   CodeError,
-  CodeHelper,
+  CodeField,
   FootLine,
   FrameControl,
+  FrameExplainer,
   GoogleLabel,
   ResendSlot,
   SubLine,
@@ -36,15 +37,15 @@ export type FrameKind =
 export interface LoginFrame {
   readonly kind: FrameKind;
   readonly sub: SubLine;
-  /** `null` when the field shows an error instead. */
-  readonly helper: CodeHelper | null;
   readonly codeError: CodeError | null;
-  readonly codeEnabled: boolean;
+  readonly code: CodeField;
   readonly primary: FrameControl | null;
   readonly resend: ResendSlot | null;
   /** The "Get the code by call" block — the person's own choice, never HelioGrid's (`M01-03`). */
   readonly callOffered: boolean;
   readonly foot: FootLine | null;
+  /** The rule behind the frame, behind an Explainer beside its title; `null` when none. */
+  readonly explainer: FrameExplainer | null;
   /** The Google control under the frame — the SMS lock does not close Google (`M01-04`). */
   readonly google: GoogleLabel | null;
   /** The Google login this code links, named under the number; `null` when it links none. */
@@ -52,7 +53,8 @@ export interface LoginFrame {
 }
 
 /** What a frame decides for itself; the Google parts most frames lack are filled in once. */
-type FrameBody = Omit<LoginFrame, 'google' | 'linkedEmail'> & Partial<Pick<LoginFrame, 'google'>>;
+type FrameBody = Omit<LoginFrame, 'google' | 'linkedEmail' | 'explainer'> &
+  Partial<Pick<LoginFrame, 'google' | 'explainer'>>;
 
 export function frameKindOf(state: LoginState): FrameKind {
   return refusalFrameOf(state) ?? codeFrameOf(state);
@@ -87,9 +89,10 @@ function codeFrameOf(state: LoginState): FrameKind {
  * signup door, or a web build with no client id — draws no Google control, never a dead one.
  */
 export function loginFrame(state: LoginState, googleOffered: boolean): LoginFrame {
-  const { google = null, ...body } = FRAMES[frameKindOf(state)](state);
+  const { google = null, explainer = null, ...body } = FRAMES[frameKindOf(state)](state);
   return {
     ...body,
+    explainer,
     google: googleOffered ? google : null,
     linkedEmail: state.google?.email ?? null,
   };
@@ -98,7 +101,7 @@ export function loginFrame(state: LoginState, googleOffered: boolean): LoginFram
 const VERIFY: FrameControl = { press: 'verify', label: 'verify' };
 const SEND_AGAIN: FrameControl = { press: 'resend', label: 'send-again' };
 const CALL_AGAIN: FrameControl = { press: 'resend', label: 'call-again' };
-const WAIT_SHORT: ResendSlot = { kind: 'wait', reason: 'short' };
+const WAIT: ResendSlot = { kind: 'wait' };
 const NEW_CODE: ResendSlot = { kind: 'live', press: 'resend', label: 'send-new' };
 const SMS_AGAIN: ResendSlot = { kind: 'live', press: 'sms', label: 'send-sms-again' };
 
@@ -113,21 +116,18 @@ function shortError(state: LoginState): CodeError | null {
 }
 /** Inside the gap the slot shows the wait, because a request pressed there is not sent. */
 function insideGap(state: LoginState, live: ResendSlot): ResendSlot {
-  return state.cooldownLeft > 0 ? WAIT_SHORT : live;
-}
-function firstSend(state: LoginState): boolean {
-  return state.sends <= 1;
+  return state.cooldownLeft > 0 ? WAIT : live;
 }
 
 /** After a code died: a new one on the channel in use, and the other channel as the way across. */
 function newCodeWays(state: LoginState): Pick<LoginFrame, 'primary' | 'resend' | 'callOffered'> {
-  if (state.cooldownLeft > 0) return { primary: null, resend: WAIT_SHORT, callOffered: false };
+  if (state.cooldownLeft > 0) return { primary: null, resend: WAIT, callOffered: false };
   if (state.channel === 'voice')
     return { primary: CALL_AGAIN, resend: SMS_AGAIN, callOffered: false };
   return { primary: { press: 'resend', label: 'send-new' }, resend: null, callOffered: true };
 }
 
-const NO_CODE = { helper: 'no-code-yet', codeError: null, codeEnabled: false } as const;
+const NO_CODE = { codeError: null, code: 'closed' } as const;
 const NO_WAYS = { primary: null, callOffered: false } as const;
 
 const FRAMES: Record<FrameKind, (state: LoginState) => FrameBody> = {
@@ -136,9 +136,8 @@ const FRAMES: Record<FrameKind, (state: LoginState) => FrameBody> = {
   'google-phone-taken': () => ({
     kind: 'google-phone-taken',
     sub: 'correct-for',
-    helper: 'code-was-fine',
     codeError: null,
-    codeEnabled: false,
+    code: 'read-only',
     primary: { press: 'sign-in-by-number', label: 'sign-in-by-number' },
     resend: null,
     callOffered: false,
@@ -148,9 +147,8 @@ const FRAMES: Record<FrameKind, (state: LoginState) => FrameBody> = {
   'auth-error': () => ({
     kind: 'auth-error',
     sub: 'checked-for',
-    helper: 'code-was-fine',
     codeError: null,
-    codeEnabled: false,
+    code: 'read-only',
     primary: { press: 'verify', label: 'try-again' },
     resend: null,
     callOffered: false,
@@ -159,23 +157,23 @@ const FRAMES: Record<FrameKind, (state: LoginState) => FrameBody> = {
   locked: () => ({
     kind: 'locked',
     sub: 'locked-for',
-    helper: 'locked',
     codeError: null,
-    codeEnabled: false,
+    code: 'absent',
     ...NO_WAYS,
-    resend: { kind: 'wait', reason: 'locked' },
-    foot: 'locked',
+    resend: null,
+    foot: null,
     google: 'continue',
   }),
   // The cap counts every request on the number, a call included (`M01-04`), so no primary
-  // pretends a call is a way in: the wait is the remedy, as in the locked frame.
+  // pretends a call is a way in, and no resend waits on a gap: the title says how long.
   capped: (state) => ({
     kind: 'capped',
     sub: triedSub(state),
     ...NO_CODE,
     ...NO_WAYS,
-    resend: { kind: 'wait', reason: 'cap' },
-    foot: 'cap',
+    resend: null,
+    foot: null,
+    explainer: 'code-limits',
   }),
   'delivery-failed': () => ({
     kind: 'delivery-failed',
@@ -184,7 +182,7 @@ const FRAMES: Record<FrameKind, (state: LoginState) => FrameBody> = {
     primary: SEND_AGAIN,
     resend: null,
     callOffered: true,
-    foot: 'not-sent',
+    foot: null,
   }),
   'call-not-placed': (state) => ({
     kind: 'call-not-placed',
@@ -216,38 +214,34 @@ const FRAMES: Record<FrameKind, (state: LoginState) => FrameBody> = {
   expired: (state) => ({
     kind: 'expired',
     sub: sentSub(state),
-    helper: 'nothing-until-new',
     codeError: null,
-    codeEnabled: false,
+    code: 'closed',
     ...newCodeWays(state),
     foot: null,
   }),
   'used-up': (state) => ({
     kind: 'used-up',
     sub: sentSub(state),
-    helper: 'nothing-until-new',
     codeError: null,
-    codeEnabled: false,
+    code: 'closed',
     ...newCodeWays(state),
     foot: null,
   }),
   'call-offer': (state) => ({
     kind: 'call-offer',
     sub: 'will-call',
-    helper: 'answer-call',
     codeError: null,
-    codeEnabled: true,
+    code: 'open',
     primary: state.cooldownLeft > 0 ? null : { press: 'call', label: 'call-me' },
     resend: insideGap(state, SMS_AGAIN),
     callOffered: false,
-    foot: 'call',
+    foot: null,
   }),
   wrong: (state) => ({
     kind: 'wrong',
     sub: sentSub(state),
-    helper: null,
     codeError: 'wrong',
-    codeEnabled: true,
+    code: 'open',
     primary: VERIFY,
     resend: insideGap(state, NEW_CODE),
     callOffered: false,
@@ -256,39 +250,31 @@ const FRAMES: Record<FrameKind, (state: LoginState) => FrameBody> = {
   filled: (state) => ({
     kind: 'filled',
     sub: sentSub(state),
-    helper: 'filled-from-sms',
     codeError: shortError(state),
-    codeEnabled: true,
+    code: 'open',
     primary: VERIFY,
     resend: insideGap(state, NEW_CODE),
     callOffered: false,
-    foot: 'only-some-phones',
+    foot: null,
   }),
   waiting: (state) => ({
     kind: 'waiting',
     sub: sentSub(state),
-    helper: waitingHelper(state),
     codeError: shortError(state),
-    codeEnabled: true,
+    code: 'open',
     primary: VERIFY,
-    resend: { kind: 'wait', reason: firstSend(state) ? 'first' : 'again' },
+    resend: WAIT,
     callOffered: false,
-    foot: firstSend(state) ? 'code-works-for' : 'wait-stops',
+    foot: null,
   }),
   entry: (state) => ({
     kind: 'entry',
     sub: sentSub(state),
-    helper: 'paste-whole',
     codeError: shortError(state),
-    codeEnabled: true,
+    code: 'open',
     primary: VERIFY,
     resend: NEW_CODE,
     callOffered: state.channel === 'sms',
     foot: null,
   }),
 };
-
-function waitingHelper(state: LoginState): CodeHelper {
-  if (state.channel === 'voice') return 'answer-call';
-  return firstSend(state) ? 'sent-just-now' : 'sent-moment-ago';
-}

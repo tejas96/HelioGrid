@@ -3,8 +3,6 @@ export { admit, refreshVerdict } from './admission';
 export { hasCompany, homeOf } from './company';
 export type { DoorView } from './door-view';
 export { doorView } from './door-view';
-export type { GoogleBindingFacts, GoogleBindingRoad, GoogleBindOutcome } from './google-binding';
-export { googleBindingRoad } from './google-binding';
 export type { GoogleLinkFrame, PhoneGoogle } from './google-frame';
 export { googleLinkFrame, phoneGoogle } from './google-frame';
 export type {
@@ -27,24 +25,32 @@ export {
 } from './invitation-policy';
 export type { SessionLanding } from './landing';
 export { landingFor } from './landing';
+export type {
+  LoginBindingFacts,
+  LoginBindingRoad,
+  LoginBindOutcome,
+  LoginProvider,
+} from './login-binding';
+export { LOGIN_PROVIDERS, loginBindingRoad } from './login-binding';
 export type { FrameKind, LoginFrame } from './login-frame';
 export { frameKindOf, loginFrame } from './login-frame';
 export type {
   CodeError,
-  CodeHelper,
+  CodeField,
   DoorRoad,
   FootLine,
   FrameControl,
+  FrameExplainer,
   FrameTone,
   GoogleLabel,
   PrimaryLabel,
   ResendLabel,
   ResendSlot,
   SubLine,
-  WaitReason,
 } from './login-frame-parts';
 export {
   COUNTDOWN_TICK_MS,
+  countdownClock,
   DONE_DWELL_MS,
   RESEND_SECONDS,
   resendOpensAt,

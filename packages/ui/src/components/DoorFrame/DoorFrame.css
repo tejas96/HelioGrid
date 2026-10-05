@@ -72,6 +72,13 @@
   gap: var(--sp-6);
 }
 
+/* Under the breakpoint the column is centred between the header and the foot of the screen, as
+   the phone draws it: this spacer takes half the free height, the task's own end the other half. */
+.hg-door-body::before {
+  content: "";
+  flex: 1 1 0;
+}
+
 .hg-door-identity {
   display: flex;
   flex-direction: column;
@@ -80,7 +87,8 @@
 
 .hg-door-task {
   display: flex;
-  flex: 1;
+  /* Grows from its content, so the free height splits evenly with the spacer above the identity. */
+  flex: 1 1 auto;
   flex-direction: column;
   gap: var(--sp-5);
   width: 100%;
@@ -120,6 +128,10 @@
 
   .hg-door-wordmark-desktop {
     display: block;
+  }
+
+  .hg-door-body::before {
+    display: none;
   }
 
   .hg-door-body {

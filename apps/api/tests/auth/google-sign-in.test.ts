@@ -1,4 +1,4 @@
-import { otpChallenge, session, userAccount } from '@heliogrid/db';
+import { authIdentity, otpChallenge, session, userAccount } from '@heliogrid/db';
 import {
   OTP_EXPIRY_SECONDS,
   OTP_INVALIDATIONS_TO_LOCK,
@@ -6,7 +6,7 @@ import {
   OTP_REQUEST_WINDOW_MINUTES,
 } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
-import { count, eq } from 'drizzle-orm';
+import { and, count, eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { SESSION_COOKIE } from '../../src/common/auth/cookies';
 import {
@@ -66,6 +66,7 @@ const misses = aPerson('Anil Deshmukh');
 const handedOver = linkedTo('Meera Iyer');
 const lastUser = aPerson('Field Phone Previous');
 const retried = aPerson('Retried Link');
+const rowed = aPerson('Row Proof');
 const freshPhone = aPhone();
 
 const unlinkedCode = aChallenge(unlinked.phoneE164, CODE);
@@ -82,6 +83,7 @@ const lastMissCode = aChallenge(misses.phoneE164, CODE, {
 });
 const freshCode = aChallenge(freshPhone, CODE);
 const retriedCode = aChallenge(retried.phoneE164, CODE);
+const rowCode = aChallenge(rowed.phoneE164, CODE);
 // Codes used up in a row: asked before the request window, used up inside the lock (`M01-04`).
 const lockedHistory = Array.from({ length: OTP_INVALIDATIONS_TO_LOCK }, (_, index) =>
   aChallenge(locked.phoneE164, CODE, {
@@ -94,7 +96,7 @@ const lastUserDevice = aDevice(lastUser, company);
 
 const fixture: Fixture = {
   companies: [company],
-  people: [linked, unlinked, taken, locked, misses, handedOver, lastUser, retried],
+  people: [linked, unlinked, taken, locked, misses, handedOver, lastUser, retried, rowed],
   memberships: [],
   devices: [lastUserDevice],
   challenges: [
@@ -108,6 +110,7 @@ const fixture: Fixture = {
     lastMissCode,
     freshCode,
     retriedCode,
+    rowCode,
     ...lockedHistory,
   ],
 };
@@ -137,8 +140,8 @@ describe.skipIf(skip)('the Google door, over HTTP', () => {
     (
       await pools.admin.db
         .select({ n: count() })
-        .from(userAccount)
-        .where(eq(userAccount.googleSubject, subject))
+        .from(authIdentity)
+        .where(and(eq(authIdentity.provider, 'google'), eq(authIdentity.subject, subject)))
     )[0]?.n ?? 0;
   const subjectOf = (person: { phoneE164: string }) => subjectAt(pools.admin.db, person.phoneE164);
   const challengeRow = async (challenge: Challenge) =>
@@ -179,10 +182,10 @@ describe.skipIf(skip)('the Google door, over HTTP', () => {
     expect(await holdersOf(linked.googleSubject ?? '')).toBe(1);
   });
 
-  it('unbound without link answers GOOGLE_NOT_LINKED', async () => {
+  it('unbound without link answers LOGIN_NOT_LINKED', async () => {
     const reply = await google({ idToken: token(aSubject('stranger')) });
     expect(reply.status).toBe(HttpStatus.CONFLICT);
-    expect(reply.body.error?.code).toBe('GOOGLE_NOT_LINKED');
+    expect(reply.body.error?.code).toBe('LOGIN_NOT_LINKED');
   });
 
   it('a link binds to the existing account', async () => {
@@ -204,10 +207,21 @@ describe.skipIf(skip)('the Google door, over HTTP', () => {
     expect(await subjectOf({ phoneE164: freshPhone })).toBe(subject);
   });
 
+  it("a link writes an auth_identity row whose provider is the path's", async () => {
+    const subject = aSubject('row');
+    const reply = await linking(subject, rowCode);
+    expect(reply.status).toBe(HttpStatus.OK);
+    const rows = await pools.admin.db
+      .select({ provider: authIdentity.provider, userAccountId: authIdentity.userAccountId })
+      .from(authIdentity)
+      .where(eq(authIdentity.subject, subject));
+    expect(rows).toEqual([{ provider: 'google', userAccountId: reply.body.actor?.userId }]);
+  });
+
   it('a bound subject linking another phone is refused', async () => {
     const reply = await linking(linked.googleSubject ?? '', otherPhoneCode);
     expect(reply.status).toBe(HttpStatus.CONFLICT);
-    expect(reply.body.error?.code).toBe('GOOGLE_SUBJECT_TAKEN');
+    expect(reply.body.error?.code).toBe('LOGIN_LINKED_ELSEWHERE');
     expect((await challengeRow(otherPhoneCode))?.verifiedAt).toBeNull();
   });
 
@@ -231,13 +245,13 @@ describe.skipIf(skip)('the Google door, over HTTP', () => {
     expect(await subjectOf(misses)).toBeNull();
   });
 
-  it('the fifth wrong code through /auth/google answers OTP_INVALIDATED', async () => {
+  it('the fifth wrong code through the Google door answers OTP_INVALIDATED', async () => {
     const reply = await linking(aSubject('fifth'), lastMissCode, WRONG);
     expect(reply.body.error?.code).toBe('OTP_INVALIDATED');
     expect((await challengeRow(lastMissCode))?.invalidatedAt).not.toBeNull();
   });
 
-  it('a wrong code on a taken phone answers OTP_MISMATCH, not GOOGLE_PHONE_TAKEN', async () => {
+  it('a wrong code on a taken phone answers OTP_MISMATCH, not LOGIN_PHONE_TAKEN', async () => {
     const reply = await linking(aSubject('prober'), takenWrongCode, WRONG);
     expect(reply.body.error?.code).toBe('OTP_MISMATCH');
     expect((await challengeRow(takenWrongCode))?.failedVerifies).toBe(1);
@@ -246,7 +260,7 @@ describe.skipIf(skip)('the Google door, over HTTP', () => {
   it('phone taken leaves the code usable by /auth/otp/verify', async () => {
     const reply = await linking(aSubject('second'), takenCode);
     expect(reply.status).toBe(HttpStatus.CONFLICT);
-    expect(reply.body.error?.code).toBe('GOOGLE_PHONE_TAKEN');
+    expect(reply.body.error?.code).toBe('LOGIN_PHONE_TAKEN');
     expect(await subjectOf(taken)).toBe(taken.googleSubject);
     const byNumber = await http.callAnonymously<Answer>('POST', '/auth/otp/verify', {
       challengeId: takenCode.challengeId,
