@@ -10,5 +10,6 @@ export type BlockTone = FrameTone | 'info';
 export interface TintedBlockProps {
   tone: BlockTone;
   title: string;
-  body: string;
+  /** What to do next, when the controls under the block do not already say it; omitted, the title stands alone. */
+  body?: string;
 }

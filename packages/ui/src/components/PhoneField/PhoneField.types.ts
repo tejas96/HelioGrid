@@ -25,6 +25,11 @@ export interface PhoneFieldProps {
   /** A sentence beside the field. `--text-secondary`, because a caller passing one expects it read. */
   helper?: string;
   disabled?: boolean;
+  /**
+   * Holds its number while a request runs: not editable, but drawn on its normal ground, never
+   * greyed — the field did nothing wrong, the screen is waiting (`SCR-M01-01` m-loading).
+   */
+  readOnly?: boolean;
   /** Takes focus on mount — the desktop door, where the number is the one task. The phone never raises its keyboard uninvited. */
   autoFocus?: boolean;
   /**

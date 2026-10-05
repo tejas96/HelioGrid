@@ -1,4 +1,4 @@
-import type { GoogleIdentity, GoogleIdentityVerdict } from '@heliogrid/contracts';
+import type { IdentityProvider, IdentityVerdict } from '@heliogrid/contracts';
 import { ENV } from '../../../config/env';
 
 /** A token the double accepts: `test-google:<subject>`, or `test-google:<subject>:<nonce>`. */
@@ -12,7 +12,7 @@ export const TEST_GOOGLE_UNAVAILABLE = 'test-google-unavailable';
  * Bound only under `NODE_ENV=test`, and it refuses to be built anywhere else — a door that accepts
  * a typed subject must never face a person.
  */
-export class TestGoogleIdentity implements GoogleIdentity {
+export class TestGoogleIdentity implements IdentityProvider {
   constructor() {
     if (ENV.NODE_ENV !== 'test') {
       throw new Error('The test Google identity runs only under NODE_ENV=test.');
@@ -23,7 +23,7 @@ export class TestGoogleIdentity implements GoogleIdentity {
     idToken: string,
     audiences: readonly string[],
     nonce: string | undefined,
-  ): Promise<GoogleIdentityVerdict> {
+  ): Promise<IdentityVerdict> {
     if (idToken === TEST_GOOGLE_UNAVAILABLE) return { kind: 'unavailable' };
     if (audiences.length === 0 || !idToken.startsWith(TEST_GOOGLE_TOKEN_PREFIX)) {
       return { kind: 'refused' };

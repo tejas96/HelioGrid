@@ -31,3 +31,12 @@ export function resendSecondsLeft(opensAt: number | null, now: number): number {
   if (opensAt === null) return 0;
   return Math.max(0, Math.ceil((opensAt - now) / MS_PER_SECOND));
 }
+
+const SECONDS_PER_MINUTE = 60;
+
+/** The resend wait as the control reads it, "m:ss" ("Resend code in 0:24"); never below 0:00. */
+export function countdownClock(seconds: number): string {
+  const left = Math.max(0, seconds);
+  const minutes = Math.floor(left / SECONDS_PER_MINUTE);
+  return `${minutes}:${String(left % SECONDS_PER_MINUTE).padStart(2, '0')}`;
+}

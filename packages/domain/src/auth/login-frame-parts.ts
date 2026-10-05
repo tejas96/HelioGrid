@@ -30,17 +30,12 @@ export type SubLine =
   | 'correct-for'
   | 'locked-for';
 
-/** The helper under the code field. */
-export type CodeHelper =
-  | 'no-code-yet'
-  | 'nothing-until-new'
-  | 'locked'
-  | 'code-was-fine'
-  | 'sent-just-now'
-  | 'sent-moment-ago'
-  | 'answer-call'
-  | 'filled-from-sms'
-  | 'paste-whole';
+/**
+ * The code field, as a frame draws it: `open` takes a code; `read-only` shows the code the step
+ * already holds, on its normal ground; `closed` is a field with no code to take until a new one
+ * is sent; `absent` is a frame that draws none — the number is locked, nothing can be typed.
+ */
+export type CodeField = 'open' | 'read-only' | 'closed' | 'absent';
 
 /** The field's own error: the code did not match, or Verify was pressed short. */
 export type CodeError = 'wrong' | 'short';
@@ -56,20 +51,11 @@ export type PrimaryLabel =
 
 export type ResendLabel = 'send-new' | 'send-sms-again';
 
-/** Why the resend slot shows a wait instead of a control. */
-export type WaitReason = 'first' | 'again' | 'short' | 'cap' | 'locked';
+/** The caption at the foot of the frame: only what the person acts on (`F7-46`). */
+export type FootLine = 'auth-error' | 'tries-left';
 
-/** The caption at the foot of the frame. */
-export type FootLine =
-  | 'auth-error'
-  | 'locked'
-  | 'cap'
-  | 'not-sent'
-  | 'call'
-  | 'tries-left'
-  | 'only-some-phones'
-  | 'code-works-for'
-  | 'wait-stops';
+/** An Explainer beside a frame's title, for a rule the frame no longer spells out (`F7-46`). */
+export type FrameExplainer = 'code-limits';
 
 /**
  * The Google control a code frame carries (`M01-02`): the way in while SMS is locked, or another
@@ -84,4 +70,5 @@ export interface FrameControl {
 
 export type ResendSlot =
   | { readonly kind: 'live'; readonly press: LoginPress; readonly label: ResendLabel }
-  | { readonly kind: 'wait'; readonly reason: WaitReason };
+  /** The resend gap is running: the control's own label counts it down. */
+  | { readonly kind: 'wait' };

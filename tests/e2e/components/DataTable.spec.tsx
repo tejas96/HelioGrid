@@ -7,7 +7,7 @@ import { FlaggedStackedTable } from './DataTable.story';
 const en = await createTranslator('en');
 const label = en.t(SIGN_IN.mobileNumber);
 const value = en.t(SIGN_IN.changeNumber);
-const issue = en.t(SIGN_IN.lockedWhileSending);
+const issue = en.t(SIGN_IN.wrongError);
 
 const rows = [{ id: 1, name: value }];
 const WIDE = 0;

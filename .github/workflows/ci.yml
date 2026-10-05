@@ -256,6 +256,11 @@ jobs:
       DEV_OTP_PHONES: "+919999999999"
       DEV_OTP_CODE: "000000"
       AUTH_TOKEN_SECRET: ci-only-token-signing-secret-heliogrid-quality-lane-0001
+      # The door draws Continue with Google only when the web build holds a client id, and the api
+      # checks tokens against the same id. The development client's id: public, not a secret; no
+      # flow presses through to Google.
+      NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID: 349637662348-qtmdotp2qt6r9pc4qvks9b7u7705o844.apps.googleusercontent.com
+      GOOGLE_CLIENT_IDS: 349637662348-qtmdotp2qt6r9pc4qvks9b7u7705o844.apps.googleusercontent.com
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4

@@ -4,6 +4,8 @@ import type { SessionLanding } from '@heliogrid/domain';
 export const LOGIN_ROUTE = '/login';
 export const HOME_ROUTE = '/home';
 export const COMPANY_SIGNUP_ROUTE = '/company-signup';
+/** Where Google's sign-in page sends the tab back; registered on the web OAuth client. */
+export const GOOGLE_RETURN_ROUTE = '/login/google';
 
 /**
  * This app's route for each landing `landingFor` can answer. The DECISION is domain's and the

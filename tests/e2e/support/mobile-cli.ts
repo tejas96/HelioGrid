@@ -17,6 +17,8 @@ if (command === 'words') {
     SIGN_IN_TITLE: SIGN_IN.signIn,
     MOBILE_NUMBER: SIGN_IN.mobileNumber,
     SEND_CODE: SIGN_IN.sendCode,
+    OR: SIGN_IN.or,
+    CONTINUE_WITH_GOOGLE: SIGN_IN.continueWithGoogle,
     ENTER_THE_CODE: SIGN_IN.enterTheCode,
     CODE_LABEL: t.t(SIGN_IN.codeLabel, { n: OTP_LENGTH }),
     VERIFY_AND_SIGN_IN: SIGN_IN.verifyAndSignIn,

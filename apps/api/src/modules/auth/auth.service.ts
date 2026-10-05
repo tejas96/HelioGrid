@@ -1,12 +1,13 @@
 import {
-  GOOGLE_IDENTITY,
-  type GoogleIdentity,
-  type GoogleRefusal,
-  type GoogleSignIn,
+  IDENTITY_PROVIDERS,
+  type IdentityProviders,
+  type LoginProvider,
+  type LoginRefusal,
+  type ProviderSignIn,
   type SessionProjection,
 } from '@heliogrid/contracts';
 import {
-  googleBindingRoad,
+  loginBindingRoad,
   type PlatformKind,
   type RefreshVerdict,
   refreshedExpiry,
@@ -17,10 +18,12 @@ import {
 import { HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { hashSecret, randomSecret } from '../../common/auth/secrets';
 import { ContractException } from '../../common/errors/contract-exception';
-import { ENV } from '../../config/env';
 import { MarketPackService } from '../market/market.public';
 import { type AccountRow, AuthAdminRepository } from './internal/auth.admin.repository';
-import { GoogleBindingAdminRepository } from './internal/google-binding.admin.repository';
+import {
+  LoginBindingAdminRepository,
+  type LoginIdentity,
+} from './internal/login-binding.admin.repository';
 import { codeAlreadyUsed, OtpService } from './internal/otp.service';
 import { claimsOf, lifeOf, projectionOf } from './internal/session.projection';
 import { TokenService } from './internal/token.service';
@@ -50,8 +53,8 @@ export class AuthService {
     @Inject(OtpService) private readonly otp: OtpService,
     @Inject(TokenService) private readonly tokens: TokenService,
     @Inject(MarketPackService) private readonly markets: MarketPackService,
-    @Inject(GoogleBindingAdminRepository) private readonly binding: GoogleBindingAdminRepository,
-    @Inject(GOOGLE_IDENTITY) private readonly identity: GoogleIdentity,
+    @Inject(LoginBindingAdminRepository) private readonly binding: LoginBindingAdminRepository,
+    @Inject(IDENTITY_PROVIDERS) private readonly providers: IdentityProviders,
   ) {}
 
   /**
@@ -77,32 +80,33 @@ export class AuthService {
   }
 
   /**
-   * The Google door (`M01-02`). A login linked to an account signs in as it — the SMS lock never
-   * touches this road (`M01-04`). An unlinked login answers `GOOGLE_NOT_LINKED` until the device
+   * The provider door (`M01-02`). A login linked to an account signs in as it — the SMS lock never
+   * touches this road (`M01-04`). An unlinked login answers `LOGIN_NOT_LINKED` until the device
    * sends the code for a phone in `link`; that code is checked by the verify rules and spent with
    * the bind, so a refused bind leaves it usable. `handedOverFrom` ends the device's last session,
    * as a verify does (`F4-37`).
    */
-  async signInWithGoogle(
-    input: GoogleSignIn,
+  async signInWithProvider(
+    provider: LoginProvider,
+    input: ProviderSignIn,
     language: UiLanguage,
     handedOverFrom: string | undefined,
     now: number,
   ): Promise<OpenedSession> {
-    const subject = await this.verifiedSubject(input.idToken, input.nonce);
-    const linked = await this.binding.accountBySubject(subject);
+    const login = { provider, subject: await this.verifiedSubject(provider, input) };
+    const linked = await this.binding.accountByLogin(login);
     const requestedPhoneE164 =
       input.link === undefined ? null : await this.otp.phoneOf(input.link.challengeId);
-    const road = googleBindingRoad({
+    const road = loginBindingRoad({
       linkedPhoneE164: linked?.phoneE164 ?? null,
       requestedPhoneE164,
     });
-    if (road === 'not-linked') throw googleRefusal('GOOGLE_NOT_LINKED');
-    if (road === 'subject-taken') throw googleRefusal('GOOGLE_SUBJECT_TAKEN');
+    if (road === 'not-linked') throw loginRefusal('LOGIN_NOT_LINKED');
+    if (road === 'linked-elsewhere') throw loginRefusal('LOGIN_LINKED_ELSEWHERE');
     const account =
       road === 'session' && linked !== null
         ? linked
-        : await this.bind(subject, input.link, language, now);
+        : await this.bind(login, input.link, language, now);
     if (handedOverFrom !== undefined) await this.endHandedOverSession(handedOverFrom, now);
     return this.openSession(account, input.platform, now);
   }
@@ -167,32 +171,32 @@ export class AuthService {
     return { projection: projectionOf(account, membership, row), token };
   }
 
-  /** The Google account id a token proves, or why not: unset ids, a refused token, keys unreachable. */
-  private async verifiedSubject(idToken: string, nonce: string | undefined): Promise<string> {
-    const audiences = ENV.GOOGLE_CLIENT_IDS;
-    if (audiences === undefined) throw googleRefusal('GOOGLE_TOKEN_REFUSED');
-    const verdict = await this.identity.verify(idToken, audiences, nonce);
-    if (verdict.kind === 'unavailable') throw googleRefusal('GOOGLE_UNAVAILABLE');
-    if (verdict.kind === 'refused') throw googleRefusal('GOOGLE_TOKEN_REFUSED');
+  /** The provider's account id a token proves, or why not: unset ids, a refused token, keys unreachable. */
+  private async verifiedSubject(provider: LoginProvider, input: ProviderSignIn): Promise<string> {
+    const { checker, audiences } = this.providers[provider];
+    if (audiences === undefined) throw loginRefusal('LOGIN_TOKEN_REFUSED');
+    const verdict = await checker.verify(input.idToken, audiences, input.nonce);
+    if (verdict.kind === 'unavailable') throw loginRefusal('LOGIN_PROVIDER_UNAVAILABLE');
+    if (verdict.kind === 'refused') throw loginRefusal('LOGIN_TOKEN_REFUSED');
     return verdict.subject;
   }
 
   /** The code for the phone proves it; then the phone's account — found or made — takes the login. */
   private async bind(
-    subject: string,
-    link: GoogleSignIn['link'],
+    login: LoginIdentity,
+    link: ProviderSignIn['link'],
     language: UiLanguage,
     now: number,
   ): Promise<AccountRow> {
-    if (link === undefined) throw googleRefusal('GOOGLE_NOT_LINKED');
+    if (link === undefined) throw loginRefusal('LOGIN_NOT_LINKED');
     const { phoneE164 } = await this.otp.check(link.challengeId, link.code, now);
     const account =
       (await this.store.accountByPhone(phoneE164)) ??
       (await this.createAccount(phoneE164, language, now));
-    const outcome = await this.binding.bindWithCode(link.challengeId, account.id, subject, now);
+    const outcome = await this.binding.bindWithCode(link.challengeId, account.id, login, now);
     if (outcome === 'code-spent') codeAlreadyUsed();
-    if (outcome === 'phone-taken') throw googleRefusal('GOOGLE_PHONE_TAKEN');
-    if (outcome === 'subject-taken') throw googleRefusal('GOOGLE_SUBJECT_TAKEN');
+    if (outcome === 'phone-taken') throw loginRefusal('LOGIN_PHONE_TAKEN');
+    if (outcome === 'linked-elsewhere') throw loginRefusal('LOGIN_LINKED_ELSEWHERE');
     return account;
   }
 
@@ -241,31 +245,31 @@ export class AuthService {
   }
 }
 
-const GOOGLE_REFUSALS: Record<GoogleRefusal, { status: HttpStatus; message: string }> = {
-  GOOGLE_TOKEN_REFUSED: {
+const LOGIN_REFUSALS: Record<LoginRefusal, { status: HttpStatus; message: string }> = {
+  LOGIN_TOKEN_REFUSED: {
     status: HttpStatus.UNAUTHORIZED,
-    message: 'Google sign-in did not finish. Try again, or use your number.',
+    message: 'The sign-in did not finish. Try again, or use your number.',
   },
-  GOOGLE_UNAVAILABLE: {
+  LOGIN_PROVIDER_UNAVAILABLE: {
     status: HttpStatus.SERVICE_UNAVAILABLE,
-    message: 'Google could not be reached. Try again in a moment.',
+    message: 'The sign-in provider could not be reached. Try again in a moment.',
   },
-  GOOGLE_NOT_LINKED: {
+  LOGIN_NOT_LINKED: {
     status: HttpStatus.CONFLICT,
-    message: 'This Google login is not linked yet. Confirm your mobile number.',
+    message: 'This login is not linked yet. Confirm your mobile number.',
   },
-  GOOGLE_PHONE_TAKEN: {
+  LOGIN_PHONE_TAKEN: {
     status: HttpStatus.CONFLICT,
-    message: 'This number is linked to another Google account.',
+    message: 'This number is linked to another login of this provider.',
   },
-  GOOGLE_SUBJECT_TAKEN: {
+  LOGIN_LINKED_ELSEWHERE: {
     status: HttpStatus.CONFLICT,
-    message: 'This Google login is linked to a different number.',
+    message: 'This login is linked to a different number.',
   },
 };
 
 /** A route code, not a base one: a bare Nest exception would carry the generic code (apps/api/CLAUDE.md). */
-function googleRefusal(code: GoogleRefusal): ContractException {
-  const { status, message } = GOOGLE_REFUSALS[code];
+function loginRefusal(code: LoginRefusal): ContractException {
+  const { status, message } = LOGIN_REFUSALS[code];
   return new ContractException(code, message, status);
 }

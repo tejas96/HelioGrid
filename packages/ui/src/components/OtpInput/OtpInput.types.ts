@@ -15,5 +15,12 @@ export interface OtpInputProps {
   helper?: string;
   error?: string;
   disabled?: boolean;
+  /**
+   * Shows a code it will not take: not editable, on the normal ground, never greyed
+   * (`SCR-M01-01`). `disabled` is for a field with nothing to take.
+   */
+  readOnly?: boolean;
+  /** A request is running with this code: read-only for its length, and announced as busy. */
+  busy?: boolean;
   autoFocus?: boolean;
 }

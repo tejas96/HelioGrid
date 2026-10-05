@@ -15,7 +15,7 @@ import { createTranslator } from '../src/runtime';
  * English as the board draws it, and every new sentence translated in Hindi and Marathi.
  */
 const EMAIL = 'priya.sharma@gmail.com';
-const FACTS = { cooldownLeft: 0, triesLeft: 5, phoneShown: '+91 98200 41123' };
+const FACTS = { cooldownLeft: 0, triesLeft: 5 };
 const otp = (over: Partial<LoginState>): LoginState => ({
   ...INITIAL_LOGIN_STATE,
   step: 'otp',
@@ -34,11 +34,44 @@ describe('the code frames carry Google', () => {
     const { t } = await createTranslator('en');
     const words = signInWords(t, signInFrame(otp({ request: 'locked' })), FACTS);
     expect(words.google).toEqual({
-      sentence:
-        "SMS codes are paused for this number. If you've signed in with Google before, it still works.",
+      sentence: "If you've signed in with Google before, it still works.",
       label: 'Continue with Google',
       aria: 'Continue with Google. Signs you in to the same account as your mobile number.',
     });
+  });
+
+  it('the locked frame names what paused and for how long, and nothing else (M01-04, F7-46)', async () => {
+    const { t } = await createTranslator('en');
+    const words = signInWords(t, signInFrame(otp({ request: 'locked' })), FACTS);
+    expect(words.title).toBe('SMS codes paused for 15 minutes');
+    expect(words.sub).toBe('Paused for');
+    expect(words.block).toEqual({ tone: 'danger', title: '3 codes were invalidated in a row' });
+    expect(words.foot).toBeNull();
+    expect(words.wait).toBeNull();
+  });
+
+  it("the resend gap is the control's own label, m:ss, and its spoken name in seconds", async () => {
+    const { t } = await createTranslator('en');
+    const waiting = signInFrame(otp({ resendAt: 1, cooldownLeft: 24 }));
+    expect(signInWords(t, waiting, { ...FACTS, cooldownLeft: 24 }).wait).toEqual({
+      label: 'Resend code in 0:24',
+      spoken: 'Resend code, available in 24 seconds',
+    });
+    expect(signInWords(t, waiting, { ...FACTS, cooldownLeft: 1 }).wait?.spoken).toBe(
+      'Resend code, available in 1 second',
+    );
+  });
+
+  it('the cap keeps its limits behind the Explainer (m-cap-reached)', async () => {
+    const { t } = await createTranslator('en');
+    const words = signInWords(t, signInFrame(otp({ request: 'capped' })), FACTS);
+    expect(words.explainer).toEqual({
+      label: 'About code limits',
+      title: 'Code limits',
+      page: 'You can ask for 3 codes every 15 minutes, and 8 a day.',
+    });
+    expect(words.wait).toBeNull();
+    expect(words.foot).toBeNull();
   });
 
   it('google-phone-taken: the block, the number signs in, another login', async () => {
@@ -92,7 +125,7 @@ describe('phoneGoogleWords', () => {
     expect(phoneGoogleWords(t, { busy: false, failed: true }).failed).toEqual({
       tone: 'danger',
       title: 'Google sign-in did not finish',
-      body: 'Nothing changed. Try Google again, or use your number.',
+      body: 'Try again, or use your number.',
     });
   });
 });
@@ -105,6 +138,10 @@ describe('googleLinkWords', () => {
     const words = googleLinkWords(t, open, EMAIL);
     expect(words.title).toBe('Confirm your mobile number');
     expect(words.explainer?.title).toBe('How linking works');
+    expect(words.explainer?.pages[0]).toBe(
+      'HelioGrid accounts are mobile numbers. Google never makes a second account.',
+    );
+    expect(words.body).toBe("We'll link this Google login to your number.");
     expect(words.tileOverline).toBe('Signing in with Google');
     expect(words.email).toBe(EMAIL);
     expect(words.anotherAccount).toEqual({
@@ -136,10 +173,11 @@ describe('googleLinkWords', () => {
     const words = googleLinkWords(t, locked, EMAIL);
     expect(words.send).toBeNull();
     expect(words.explainer).toBeNull();
-    expect(words.locked?.block.title).toBe('3 codes were invalidated in a row');
-    expect(words.locked?.sentence).toBe(
-      'SMS codes are paused for this number for 15 minutes, so this Google login cannot be linked yet.',
-    );
+    expect(words.locked?.block).toEqual({
+      tone: 'danger',
+      title: '3 codes were invalidated in a row',
+    });
+    expect(words.locked?.sentence).toBe('SMS codes are paused for 15 minutes, so linking waits.');
   });
 });
 
@@ -155,6 +193,7 @@ const GOOGLE_KEYS = [
   'linkingBody',
   'linkingExplainerLabel',
   'linkingExplainerTitle',
+  'linkingExplainerIntro',
   'linkingExplainerPage',
   'signingInWithGoogle',
   'notYouUseAnotherGoogle',
@@ -167,11 +206,22 @@ const GOOGLE_KEYS = [
   'phoneTakenTitle',
   'codeCorrectFor',
   'phoneTakenBlockTitle',
-  'phoneTakenBlockBody',
   'signInWithThisNumberLabel',
   'lockedGoogleSentence',
-  'smsPausedFoot',
   'linkLockedSentence',
+  // The words pass (`F7-46`): every sentence it changed or added.
+  'intro',
+  'wrongError',
+  'triesLeft',
+  'lockedTitle',
+  'lockedFor',
+  'authErrorFoot',
+  'switchSubtitle',
+  'resendIn',
+  'resendInLabel',
+  'codeLimitsExplainerLabel',
+  'codeLimitsExplainerTitle',
+  'codeLimitsExplainerPage',
 ] as const satisfies readonly (keyof typeof SIGN_IN)[];
 
 describe.each<UiLanguage>(['hi', 'mr'])('the Google words in %s', (language) => {

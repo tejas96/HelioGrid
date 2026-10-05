@@ -6,8 +6,9 @@
  */
 import {
   type CodeError,
-  type CodeHelper,
+  countdownClock,
   type FootLine,
+  type FrameExplainer,
   type FrameKind,
   type FrameTone,
   type GoogleLabel,
@@ -24,7 +25,6 @@ import {
   RESEND_SECONDS,
   type ResendLabel,
   type SubLine,
-  type WaitReason,
 } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { COMPANY_SIGNUP } from './company-signup';
@@ -45,64 +45,49 @@ const POLICY_VALUES = {
   gap: RESEND_SECONDS,
 };
 
+/** A frame's title and its tinted block: the block names what happened; the controls are the fix (`F7-46`). */
 interface FrameCopy {
   readonly title: MessageRef;
-  readonly block: {
-    readonly tone: FrameTone;
-    readonly title: MessageRef;
-    readonly body: MessageRef;
-  } | null;
+  readonly block: { readonly tone: FrameTone; readonly title: MessageRef } | null;
 }
 
-const OUR_SIDE = {
-  tone: 'danger',
-  title: SIGN_IN.ourSideFailed,
-  body: SIGN_IN.requestFailedBody,
-} as const;
+const OUR_SIDE = { tone: 'danger', title: SIGN_IN.ourSideFailed } as const;
 
 const FRAME: Record<FrameKind, FrameCopy> = {
   'google-phone-taken': {
     title: SIGN_IN.phoneTakenTitle,
-    block: {
-      tone: 'danger',
-      title: SIGN_IN.phoneTakenBlockTitle,
-      body: SIGN_IN.phoneTakenBlockBody,
-    },
+    block: { tone: 'danger', title: SIGN_IN.phoneTakenBlockTitle },
   },
   'auth-error': {
     title: SIGN_IN.authErrorTitle,
-    block: { tone: 'danger', title: SIGN_IN.ourSideFailed, body: SIGN_IN.authErrorBody },
+    block: { tone: 'danger', title: SIGN_IN.ourSideFailed },
   },
   locked: {
     title: SIGN_IN.lockedTitle,
-    block: { tone: 'danger', title: SIGN_IN.lockedBlockTitle, body: SIGN_IN.lockedBlockBody },
+    block: { tone: 'danger', title: SIGN_IN.lockedBlockTitle },
   },
   'call-offer': { title: SIGN_IN.getCodeByCall, block: null },
   capped: {
     title: SIGN_IN.capTitle,
-    block: { tone: 'warning', title: SIGN_IN.capBlockTitle, body: SIGN_IN.capBlockBody },
+    block: { tone: 'warning', title: SIGN_IN.capBlockTitle },
   },
   'delivery-failed': {
     title: SIGN_IN.notSentTitle,
-    block: { tone: 'danger', title: SIGN_IN.notSentBlockTitle, body: SIGN_IN.notSentBlockBody },
+    block: { tone: 'danger', title: SIGN_IN.notSentBlockTitle },
   },
   'call-not-placed': {
     title: SIGN_IN.callNotPlacedTitle,
-    block: {
-      tone: 'danger',
-      title: SIGN_IN.callNotPlacedBlockTitle,
-      body: SIGN_IN.notSentBlockBody,
-    },
+    block: { tone: 'danger', title: SIGN_IN.callNotPlacedBlockTitle },
   },
   'request-failed': { title: SIGN_IN.requestFailedTitle, block: OUR_SIDE },
   'call-request-failed': { title: SIGN_IN.couldNotCallTitle, block: OUR_SIDE },
   expired: {
     title: SIGN_IN.expiredTitle,
-    block: { tone: 'warning', title: SIGN_IN.expiredBlockTitle, body: SIGN_IN.expiredBlockBody },
+    block: { tone: 'warning', title: SIGN_IN.expiredBlockTitle },
   },
   'used-up': {
     title: SIGN_IN.usedUpTitle,
-    block: { tone: 'warning', title: SIGN_IN.usedUpBlockTitle, body: SIGN_IN.usedUpBlockBody },
+    block: { tone: 'warning', title: SIGN_IN.usedUpBlockTitle },
   },
   wrong: { title: SIGN_IN.wrongTitle, block: null },
   filled: { title: SIGN_IN.codeFilledTitle, block: null },
@@ -119,18 +104,6 @@ const SUB: Record<SubLine, MessageRef> = {
   'checked-for': SIGN_IN.checkedFor,
   'correct-for': SIGN_IN.codeCorrectFor,
   'locked-for': SIGN_IN.lockedFor,
-};
-
-const HELPER: Record<CodeHelper, MessageRef> = {
-  'no-code-yet': SIGN_IN.noCodeYet,
-  'nothing-until-new': SIGN_IN.nothingUntilNew,
-  locked: SIGN_IN.lockedHelper,
-  'code-was-fine': SIGN_IN.codeWasFine,
-  'sent-just-now': SIGN_IN.sentJustNow,
-  'sent-moment-ago': SIGN_IN.sentMomentAgo,
-  'answer-call': SIGN_IN.answerCall,
-  'filled-from-sms': SIGN_IN.filledFromSms,
-  'paste-whole': SIGN_IN.pasteWhole,
 };
 
 const CODE_ERROR: Record<CodeError, MessageRef> = {
@@ -153,24 +126,20 @@ const RESEND: Record<ResendLabel, MessageRef> = {
   'send-sms-again': SIGN_IN.sendSmsAgain,
 };
 
-const WAIT: Record<WaitReason, MessageRef> = {
-  first: SIGN_IN.waitFirst,
-  again: SIGN_IN.waitAgain,
-  short: SIGN_IN.waitShort,
-  cap: SIGN_IN.capResendReason,
-  locked: SIGN_IN.lockedResendReason,
-};
-
 const FOOT: Record<FootLine, MessageRef> = {
   'auth-error': SIGN_IN.authErrorFoot,
-  locked: SIGN_IN.lockedFoot,
-  cap: SIGN_IN.capFoot,
-  'not-sent': SIGN_IN.notSentFoot,
-  call: SIGN_IN.callFoot,
   'tries-left': SIGN_IN.triesLeft,
-  'only-some-phones': SIGN_IN.onlySomePhones,
-  'code-works-for': SIGN_IN.codeWorksFor,
-  'wait-stops': SIGN_IN.waitStopsOnFailure,
+};
+
+const EXPLAINER: Record<
+  FrameExplainer,
+  { readonly label: MessageRef; readonly title: MessageRef; readonly page: MessageRef }
+> = {
+  'code-limits': {
+    label: SIGN_IN.codeLimitsExplainerLabel,
+    title: SIGN_IN.codeLimitsExplainerTitle,
+    page: SIGN_IN.codeLimitsExplainerPage,
+  },
 };
 
 /**
@@ -196,11 +165,10 @@ const GOOGLE: Record<GoogleLabel, GoogleCopy> = {
   },
 };
 
-/** The facts a sentence fills in — the numbers that move, and the number as the reader sees it. */
+/** The facts a sentence fills in — the numbers that move. */
 export interface SignInFacts {
   readonly cooldownLeft: number;
   readonly triesLeft: number;
-  readonly phoneShown: string;
 }
 
 /** The one word the two doors say differently: what a verified code leads to (`SCR-M01-02`). */
@@ -212,19 +180,21 @@ export interface SignInLabels {
 export interface SignInWords {
   readonly title: string;
   readonly sub: string;
-  readonly block: {
-    readonly tone: FrameTone;
+  readonly block: { readonly tone: FrameTone; readonly title: string } | null;
+  /** The rule behind the frame, in an Explainer beside the title; `null` when the frame has none. */
+  readonly explainer: {
+    readonly label: string;
     readonly title: string;
-    readonly body: string;
+    readonly page: string;
   } | null;
-  readonly helper: string;
   readonly codeError: string | null;
   readonly primary: string | null;
   /** The primary's accessible name where it says more than its label; `null` where the label is enough. */
   readonly primaryAria: string | null;
   readonly resend: string | null;
-  readonly wait: string | null;
-  readonly call: { readonly label: string; readonly note: string } | null;
+  /** The resend gap, in the waiting control's own label ("Resend code in 0:24") and its spoken name. */
+  readonly wait: { readonly label: string; readonly spoken: string } | null;
+  readonly call: string | null;
   readonly foot: string | null;
   /** "Links {email}" under the number while a Google login is being linked. */
   readonly links: string | null;
@@ -245,29 +215,42 @@ export function signInWords(
     ...POLICY_VALUES,
     seconds: facts.cooldownLeft,
     left: facts.triesLeft,
-    phone: facts.phoneShown,
     email: frame.linkedEmail ?? '',
   };
-  const t = (message: MessageRef) => translate(message, values);
+  const t = (message: MessageRef, more: Record<string, string> = {}) =>
+    translate(message, { ...values, ...more });
   const { title, block } = FRAME[frame.kind];
   const { resend, google } = frame;
   return {
     title: t(title),
     sub: t(SUB[frame.sub]),
-    block: block === null ? null : { tone: block.tone, title: t(block.title), body: t(block.body) },
-    helper: frame.helper === null ? '' : t(HELPER[frame.helper]),
+    block: block === null ? null : { tone: block.tone, title: t(block.title) },
+    explainer: explainerWords(frame.explainer, t),
     codeError: frame.codeError === null ? null : t(CODE_ERROR[frame.codeError]),
     primary: frame.primary === null ? null : t(primaryOf(frame.primary.label, labels)),
     primaryAria: primaryAriaOf(frame, t),
     resend: resend?.kind === 'live' ? t(RESEND[resend.label]) : null,
-    wait: resend?.kind === 'wait' ? t(WAIT[resend.reason]) : null,
-    call: frame.callOffered
-      ? { label: t(SIGN_IN.getCodeByCall), note: t(SIGN_IN.weCallNote) }
-      : null,
+    wait:
+      resend?.kind === 'wait'
+        ? {
+            label: t(SIGN_IN.resendIn, { time: countdownClock(facts.cooldownLeft) }),
+            spoken: t(SIGN_IN.resendInLabel),
+          }
+        : null,
+    call: frame.callOffered ? t(SIGN_IN.getCodeByCall) : null,
     foot: frame.foot === null ? null : t(FOOT[frame.foot]),
     links: frame.linkedEmail === null ? null : t(SIGN_IN.linksEmail),
     google: google === null ? null : googleWords(GOOGLE[google], t),
   };
+}
+
+function explainerWords(
+  explainer: FrameExplainer | null,
+  t: (message: MessageRef) => string,
+): SignInWords['explainer'] {
+  if (explainer === null) return null;
+  const { label, title, page } = EXPLAINER[explainer];
+  return { label: t(label), title: t(title), page: t(page) };
 }
 
 function googleWords(copy: GoogleCopy, t: (message: MessageRef) => string): SignInWords['google'] {

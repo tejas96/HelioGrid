@@ -31,6 +31,7 @@ export function PhoneField({
   error,
   helper,
   disabled = false,
+  readOnly = false,
   announceError = false,
   autoFocus = false,
   id,
@@ -80,6 +81,7 @@ export function PhoneField({
           autoComplete="tel-national"
           value={shown}
           disabled={disabled}
+          readOnly={readOnly}
           autoFocus={autoFocus}
           aria-invalid={error === undefined ? undefined : true}
           aria-describedby={message === undefined ? undefined : messageId}

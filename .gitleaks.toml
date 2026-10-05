@@ -11,4 +11,9 @@ useDefault = true
 [allowlist]
 description = "A permission-matrix row key is a pointer into the PRD (`rowKey: 'F2.M02.add-edit-leads'`), not a key of any kind; the generic-api-key rule reads the word Key and a long token."
 regexTarget = "line"
-regexes = ['''rowKey: 'F2\.[A-Z][0-9]*\.[a-z0-9-]+',''']
+regexes = [
+  '''rowKey: 'F2\.[A-Z][0-9]*\.[a-z0-9-]+',''',
+  # A CocoaPods SPEC CHECKSUMS line in Podfile.lock: a pod's name and the SHA-1 of its podspec, public on
+  # the CocoaPods trunk. A pod named for auth (AppAuth, GTMAppAuth) reads as a key to generic-api-key.
+  '''(?m)^\s*[A-Z][A-Za-z0-9_+-]*: [0-9a-f]{40}\s*$''',
+]

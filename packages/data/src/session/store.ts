@@ -1,4 +1,4 @@
-import type { GoogleSignIn, PlatformKind, SessionProjection } from '@heliogrid/contracts';
+import type { PlatformKind, ProviderSignIn, SessionProjection } from '@heliogrid/contracts';
 import {
   CHECKING,
   canRenew,
@@ -44,8 +44,8 @@ const VERIFY_OUTCOME_BY_CODE: Record<string, OtpVerifyOutcome> = {
 /** The Google door's own refusals; every other one it answers renders the one failure frame. */
 const GOOGLE_OUTCOME_BY_CODE: Record<string, GoogleOutcome> = {
   ...VERIFY_OUTCOME_BY_CODE,
-  GOOGLE_NOT_LINKED: 'not-linked',
-  GOOGLE_PHONE_TAKEN: 'phone-taken',
+  LOGIN_NOT_LINKED: 'not-linked',
+  LOGIN_PHONE_TAKEN: 'phone-taken',
 };
 function codeOf(error: unknown): string {
   return error instanceof ApiError ? error.code : '';
@@ -55,8 +55,8 @@ function codeOf(error: unknown): string {
 function googleSignInBody(
   token: GoogleToken,
   platform: PlatformKind,
-  link: GoogleSignIn['link'],
-): GoogleSignIn {
+  link: ProviderSignIn['link'],
+): ProviderSignIn {
   return {
     idToken: token.idToken,
     platform,
@@ -151,7 +151,11 @@ export function createSessionStore(config: {
     booted = true;
     config.auth
       .session()
-      .then((projection) => signedIn(userOf(projection), true))
+      .then((projection) =>
+        projection === null
+          ? apply({ kind: 'boot-signed-out' })
+          : signedIn(userOf(projection), true),
+      )
       .catch(() => apply({ kind: 'boot-failed' }));
   };
 
@@ -194,7 +198,8 @@ export function createSessionStore(config: {
         return { outcome: 'failed', triesLeft: triesLeft() };
       const link = code === null || challengeId === null ? undefined : { challengeId, code };
       try {
-        const projection = await config.auth.signInWithGoogle(
+        const projection = await config.auth.signInWithProvider(
+          'google',
           googleSignInBody(token, config.platform, link),
         );
         if (link !== undefined) challengeId = null;

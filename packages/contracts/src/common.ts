@@ -1,5 +1,6 @@
 import { extendZodWithOpenApi } from '@anatine/zod-openapi';
 import {
+  LOGIN_PROVIDERS,
   MEASUREMENT_SYSTEMS,
   MEMBERSHIP_STATUSES,
   OTP_CHANNELS,
@@ -132,6 +133,10 @@ export type PlatformKind = z.infer<typeof platformKindSchema>;
  */
 export const subjectKindSchema = z.enum(SUBJECT_KINDS);
 export type SubjectKind = z.infer<typeof subjectKindSchema>;
+
+/** A sign-in provider beside the phone (`M01-02`) — `LOGIN_PROVIDERS` in domain; mirrored as a pgEnum (invariant `enum-parity`). */
+export const loginProviderSchema = z.enum(LOGIN_PROVIDERS);
+export type LoginProvider = z.infer<typeof loginProviderSchema>;
 
 /** How a code is delivered: SMS, or the user-initiated voice call (`M01-03`). */
 export const otpChannelSchema = z.enum(OTP_CHANNELS);

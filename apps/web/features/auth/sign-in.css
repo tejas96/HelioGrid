@@ -21,6 +21,42 @@
   gap: var(--sp-5);
 }
 
+/* The "or" and Continue with Google: sp-5 above (the form's gap), sp-3 between (`SCR-M01-01`). */
+.hg-door-google {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* The locked frame's way still open: the sentence, sp-4, then Continue with Google (`M01-04`). */
+.hg-door-locked-google {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+/* The link step: the title and its Explainer on one row, sp-2 apart on both widths. */
+.hg-door-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+/* The tile, then sp-2, then "Not you?" on the phone; the column's own gap follows. */
+.hg-door-link-account {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-door-phone-only {
+  display: flex;
+}
+
+.hg-door-desktop-only {
+  display: none;
+}
+
 .hg-door-signup {
   display: flex;
   flex-direction: column;
@@ -33,12 +69,6 @@
 .hg-door-centred {
   display: flex;
   justify-content: center;
-}
-
-.hg-door-call {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
 }
 
 .hg-door-switch {
@@ -76,6 +106,14 @@
    two phone-only offsets go. */
 /* --bp-desktop: @media cannot read a custom property, so its value is written here. */
 @media (min-width: 968px) {
+  .hg-door-phone-only {
+    display: none;
+  }
+
+  .hg-door-desktop-only {
+    display: block;
+  }
+
   .hg-door-intro {
     padding-top: 0;
   }

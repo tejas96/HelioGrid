@@ -2,7 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useId } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
+import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
 import { BLOOM_GEOMETRY, type BrandBloomProps } from './BrandBloom.types';
 
 interface NativeBrandBloomProps extends BrandBloomProps {
@@ -24,6 +24,32 @@ function farthestCorner(width: number, height: number): number {
   return Math.sqrt(width * width + height * height) / 2;
 }
 
+/**
+ * The bloom's ellipse and its gradient, in the box's own units when its size is known, else as
+ * fractions of it: the centre, the radii, and the gradient's reach to the farthest corner.
+ */
+function shapeOf(known: { width: number; height: number } | null) {
+  if (known === null) {
+    return {
+      cx: '50%',
+      cy: '50%',
+      rx: '50%',
+      ry: '50%',
+      reach: '50%',
+      units: 'objectBoundingBox',
+    } as const;
+  }
+  const { width, height } = known;
+  return {
+    cx: width / 2,
+    cy: height / 2,
+    rx: width / 2,
+    ry: height / 2,
+    reach: farthestCorner(width, height),
+    units: 'userSpaceOnUse',
+  } as const;
+}
+
 export function BrandBloom({ placement, size, style }: NativeBrandBloomProps) {
   const gradientId = `hg-bloom-${useId()}`;
   const geometry = placement === undefined ? null : BLOOM_GEOMETRY[placement];
@@ -33,6 +59,7 @@ export function BrandBloom({ placement, size, style }: NativeBrandBloomProps) {
       : size !== undefined
         ? { width: size, height: size }
         : null;
+  const shape = shapeOf(known);
   const box: ViewStyle =
     geometry !== null
       ? {
@@ -57,10 +84,10 @@ export function BrandBloom({ placement, size, style }: NativeBrandBloomProps) {
         <Defs>
           <RadialGradient
             id={gradientId}
-            cx={known === null ? '50%' : known.width / 2}
-            cy={known === null ? '50%' : known.height / 2}
-            r={known === null ? '50%' : farthestCorner(known.width, known.height)}
-            gradientUnits={known === null ? 'objectBoundingBox' : 'userSpaceOnUse'}
+            cx={shape.cx}
+            cy={shape.cy}
+            r={shape.reach}
+            gradientUnits={shape.units}
           >
             <Stop offset="0" stopColor={theme.colors['iris-violet']} stopOpacity={0.22} />
             <Stop offset="0.4" stopColor={theme.colors['iris-blue']} stopOpacity={0.14} />
@@ -68,7 +95,14 @@ export function BrandBloom({ placement, size, style }: NativeBrandBloomProps) {
             <Stop offset="0.72" stopColor={theme.colors.surface} stopOpacity={0} />
           </RadialGradient>
         </Defs>
-        <Rect x="0" y="0" width="100%" height="100%" fill={`url(#${gradientId})`} />
+        {/* An ellipse, as the artboards draw it: a box would end in a straight edge. */}
+        <Ellipse
+          cx={shape.cx}
+          cy={shape.cy}
+          rx={shape.rx}
+          ry={shape.ry}
+          fill={`url(#${gradientId})`}
+        />
       </Svg>
     </View>
   );

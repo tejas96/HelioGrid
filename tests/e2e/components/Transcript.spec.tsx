@@ -4,8 +4,8 @@ import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour } from '../support/token';
 
 const en = await createTranslator('en');
-const agentSaid = en.t(SIGN_IN.answerCall);
-const customerSaid = en.t(SIGN_IN.codeWasFine);
+const agentSaid = en.t(SIGN_IN.wrongError);
+const customerSaid = en.t(SIGN_IN.googleFailedBody);
 
 const turns = [
   { id: 1, party: 'agent' as const, text: agentSaid, at: 0 },

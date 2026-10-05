@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import {
   auditLogEntry,
+  authIdentity,
   brandingSettings,
   businessProfile,
   createDb,
@@ -32,6 +33,7 @@ import { type InvitationStatus, invitationExpiresAt, type RolePreset } from '@he
 import { eq, inArray } from 'drizzle-orm';
 import { type Challenge, seedChallenges } from './challenges';
 import { type Device, seedDevices } from './devices';
+import { seedLinkedLogins } from './logins';
 import { adminUrl, databaseUrl } from './preconditions';
 
 export { aChallenge, type Challenge } from './challenges';
@@ -170,12 +172,12 @@ export async function seed(db: Db, fixture: Fixture): Promise<void> {
         id: person.userId,
         phoneE164: person.phoneE164,
         name: person.name,
-        googleSubject: person.googleSubject ?? null,
         interfaceLanguage: 'en' as const,
         unitPreference: 'metric' as const,
         createdAt: now,
       })),
     );
+    await seedLinkedLogins(db, fixture.people, now);
   }
   if (fixture.memberships.length > 0) {
     await db.insert(tenantMembership).values(
@@ -244,6 +246,7 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
   if (companies.length === 0) {
     await db.delete(session).where(inArray(session.userAccountId, people));
     await db.delete(pushDevice).where(inArray(pushDevice.userRef, people));
+    await db.delete(authIdentity).where(inArray(authIdentity.userAccountId, people));
     await db.delete(userAccount).where(inArray(userAccount.id, people));
     return;
   }
@@ -281,6 +284,7 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
   if (people.length > 0) {
     // A phone a person registered for push hangs on them alone, and blocks their removal.
     await db.delete(pushDevice).where(inArray(pushDevice.userRef, people));
+    await db.delete(authIdentity).where(inArray(authIdentity.userAccountId, people));
     await db.delete(userAccount).where(inArray(userAccount.id, people));
   }
   await db.delete(tenant).where(inArray(tenant.id, companies));

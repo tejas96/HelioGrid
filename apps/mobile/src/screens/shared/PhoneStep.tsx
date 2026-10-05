@@ -1,8 +1,8 @@
 import type { SignIn } from '@heliogrid/data/react';
 import type { DoorRoad } from '@heliogrid/domain';
-import { SIGN_IN } from '@heliogrid/i18n';
+import { phoneGoogleWords, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, PhoneField, Text } from '@heliogrid/ui';
+import { Button, PhoneField, Text, TextDivider, TintedBlock } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { styles } from './door-styles';
@@ -33,9 +33,12 @@ export function PhoneStep({
   const t = useTranslate();
   const { state, busy } = signIn;
   const problem = state.phoneProblem;
+  const sending = state.pending?.kind === 'request';
+  const google = signIn.google === null ? null : phoneGoogleWords(t, signIn.google);
   return (
     <InsetDoorFrame trailing={<LanguageControl />}>
       {lead}
+      <View style={styles.spacerTop} />
       <View style={styles.titleBlock}>
         <Text variant="h2">{title}</Text>
         <Text variant="body" color="secondary">
@@ -43,28 +46,45 @@ export function PhoneStep({
         </Text>
       </View>
       <View style={styles.form}>
+        {google?.failed ? <TintedBlock {...google.failed} /> : null}
         <PhoneField
           label={t(SIGN_IN.mobileNumber)}
           value={state.phone}
           onChange={signIn.typePhone}
-          disabled={busy}
+          readOnly={busy}
           announceError
           error={
             problem === null
               ? undefined
               : t(SIGN_IN.digitsMismatch, { typed: problem.typed, needed: problem.needed })
           }
-          helper={busy ? t(SIGN_IN.lockedWhileSending) : t(SIGN_IN.willSendBySms)}
         />
         <Button
           variant="primary"
           size="lg"
           fullWidth
-          loading={busy}
+          loading={sending}
+          disabled={busy && !sending}
           onClick={() => signIn.press('send')}
         >
-          {busy ? t(SIGN_IN.sendingTheCode) : t(SIGN_IN.sendCode)}
+          {sending ? t(SIGN_IN.sendingTheCode) : t(SIGN_IN.sendCode)}
         </Button>
+        {google === null ? null : (
+          <View style={styles.google}>
+            <TextDivider label={google.or} />
+            <Button
+              variant="secondary"
+              size="lg"
+              fullWidth
+              loading={signIn.google?.busy}
+              disabled={busy && !signIn.google?.busy}
+              spokenName={google.aria}
+              onClick={() => signIn.press('google')}
+            >
+              {google.label}
+            </Button>
+          </View>
+        )}
       </View>
       {note === undefined ? null : (
         <View style={styles.caption}>

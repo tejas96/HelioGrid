@@ -175,7 +175,8 @@ Every line, every app, every package.
   means the code is wrong. A comment states the CONSTRAINT — what breaks if you change this — and
   never a date; when and why it changed goes in the commit.
 - **Solve today's problem.** No speculative abstraction, no config for one caller, no indirection
-  for a future that has not been specified.
+  for a future that has not been specified — unless a PRD row asks for the extension point; then
+  it is built, and an acceptance line proves it.
 - **Shape.** Files ≲300 lines, split by responsibility and named for what they do — never
   `*2`/`*-extra`, never for a layer or a document id · no `any`, `!`, `==`, or `console.log` in
   anything SERVED · style outside the component file · no app-declared enum, union, lookup or

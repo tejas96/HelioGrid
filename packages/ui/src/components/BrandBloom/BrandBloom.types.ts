@@ -24,12 +24,12 @@ export interface BloomGeometry {
 /**
  * The bloom geometry, one row per placement — art dimensions, not layout, so they are named
  * roles here and never transcribed into a screen (`SCR-M01-01` contract item 8). The phone
- * placements are drawn LARGER than the artboards' 520×420 and 520×520 boxes: on a device the
- * artboard's box read as a small patch, and the owner asked for the wash to reach the field.
+ * placements are the artboards' 520×420 and 520×520 boxes, measured from the screen's top edge:
+ * a larger wash lay under the fields and washed out their edge. Every bloom is an ellipse.
  */
 export const BLOOM_GEOMETRY: Record<BloomPlacement, BloomGeometry> = {
-  top: { width: 900, height: 740, top: -280, left: null },
-  centre: { width: 880, height: 880, top: null, left: null },
+  top: { width: 520, height: 420, top: -140, left: null },
+  centre: { width: 520, height: 520, top: null, left: null },
   desktop: { width: 900, height: 820, top: -180, left: 120 },
   'desktop-wide': { width: 1100, height: 820, top: -220, left: null },
 };

@@ -1,5 +1,6 @@
 import {
   FIRST_RUN_COACH_MARKS,
+  LOGIN_PROVIDERS,
   MEASUREMENT_SYSTEMS,
   MEMBERSHIP_STATUSES,
   OTP_CHANNELS,
@@ -13,9 +14,11 @@ import {
   integer,
   pgEnum,
   pgTable,
+  primaryKey,
   smallint,
   text,
   timestamp,
+  unique,
   uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core';
@@ -28,6 +31,7 @@ export const rolePreset = pgEnum('role_preset', ROLE_PRESETS);
 export const membershipStatus = pgEnum('membership_status', MEMBERSHIP_STATUSES);
 export const platformKind = pgEnum('platform_kind', PLATFORM_KINDS);
 export const otpChannel = pgEnum('otp_channel', OTP_CHANNELS);
+export const loginProvider = pgEnum('login_provider', LOGIN_PROVIDERS);
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
 
@@ -45,12 +49,38 @@ export const userAccount = pgTable('user_account', {
   phoneE164: text('phone_e164').notNull().unique(),
   /** Null until the person types a name — at signup, or on the invited first run (`M01-14`). */
   name: text('name'),
-  /** The linked Google identity's subject (`M01-02`); bound once, never a second account. */
-  googleSubject: text('google_subject').unique(),
   interfaceLanguage: uiLanguage('interface_language').notNull(),
   unitPreference: measurementSystem('unit_preference').notNull(),
   createdAt: instant('created_at').notNull(),
 });
+
+/** The two keys a bind can collide on; the bind repository names its refusals by them. */
+export const AUTH_IDENTITY_SUBJECT_KEY = 'auth_identity_provider_subject_pk';
+export const AUTH_IDENTITY_ACCOUNT_KEY = 'auth_identity_account_provider_unique';
+
+/**
+ * A provider login linked to an account (`M01-02`): a convenience door onto the SAME
+ * phone-identity account. One login links one account (`AUTH_IDENTITY_SUBJECT_KEY`), and an
+ * account holds at most one login per provider (`AUTH_IDENTITY_ACCOUNT_KEY`). A provider is a
+ * value of `login_provider`, never a column. UNREACHABLE: the admin path alone reads and writes it,
+ * before any session exists.
+ */
+export const authIdentity = pgTable(
+  'auth_identity',
+  {
+    userAccountId: uuid('user_account_id')
+      .notNull()
+      .references(() => userAccount.id),
+    provider: loginProvider('provider').notNull(),
+    /** The provider's stable account id — never the email, which can change. */
+    subject: text('subject').notNull(),
+    createdAt: instant('created_at').notNull(),
+  },
+  (table) => [
+    primaryKey({ name: AUTH_IDENTITY_SUBJECT_KEY, columns: [table.provider, table.subject] }),
+    unique(AUTH_IDENTITY_ACCOUNT_KEY).on(table.userAccountId, table.provider),
+  ],
+);
 
 /**
  * A single-use sign-in code keyed to a phone before any account exists (`M01-04`, `M01-05`).

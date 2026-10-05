@@ -173,7 +173,8 @@ function verifyEnded(state: LoginState, outcome: OtpVerifyOutcome, triesLeft: nu
  */
 function googleSheetEnded(state: LoginState, result: GoogleSheetResult): LoginState {
   const sheetOpen = state.pending?.kind === 'google-sheet';
-  const webReturn = state.pending === null && result.kind === 'token';
+  // The web's return route reads Google's answer with nothing pending: Google's page left the tab.
+  const webReturn = state.pending === null && result.kind !== 'cancelled';
   if (!sheetOpen && !webReturn) return state;
   switch (result.kind) {
     case 'token':

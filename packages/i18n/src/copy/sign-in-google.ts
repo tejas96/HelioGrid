@@ -18,7 +18,8 @@ import { SIGN_IN } from './sign-in';
 export interface GoogleBlockWords {
   readonly tone: FrameTone;
   readonly title: string;
-  readonly body: string;
+  /** Only the failed sign-in says what to do next; the lock's title says it all (`F7-46`). */
+  readonly body?: string;
 }
 
 /** The phone step's Google part: the "or", the control, and a sign-in that did not finish. */
@@ -56,7 +57,7 @@ export interface GoogleLinkWords {
   readonly explainer: {
     readonly label: string;
     readonly title: string;
-    readonly page: string;
+    readonly pages: readonly [string, string];
   } | null;
   readonly tileOverline: string;
   readonly email: string;
@@ -88,7 +89,7 @@ export function googleLinkWords(
       : {
           label: t(SIGN_IN.linkingExplainerLabel),
           title: t(SIGN_IN.linkingExplainerTitle),
-          page: t(SIGN_IN.linkingExplainerPage),
+          pages: [t(SIGN_IN.linkingExplainerIntro), t(SIGN_IN.linkingExplainerPage)],
         },
     tileOverline: t(SIGN_IN.signingInWithGoogle),
     email,
@@ -109,7 +110,6 @@ export function googleLinkWords(
           block: {
             tone: 'danger',
             title: t(SIGN_IN.lockedBlockTitle),
-            body: t(SIGN_IN.lockedBlockBody),
           },
           sentence: t(SIGN_IN.linkLockedSentence),
         }

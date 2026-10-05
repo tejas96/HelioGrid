@@ -1,8 +1,9 @@
 import type {
-  GoogleSignIn,
+  LoginProvider,
   OtpChallenge,
   OtpChannel,
   PlatformKind,
+  ProviderSignIn,
   SessionProjection,
 } from '@heliogrid/contracts';
 import type { ApiClient } from '../client/client';
@@ -16,9 +17,10 @@ import { normalizeClientError, toApiError } from '../errors/errors';
 export interface AuthRepository {
   requestOtp(phoneE164: string, channel: OtpChannel): Promise<OtpChallenge>;
   verifyOtp(challengeId: string, code: string, platform: PlatformKind): Promise<SessionProjection>;
-  /** The Google door (`M01-02`): a linked login's session, or a refusal naming the phone step. */
-  signInWithGoogle(input: GoogleSignIn): Promise<SessionProjection>;
-  session(signal?: AbortSignal): Promise<SessionProjection>;
+  /** The provider door (`M01-02`): a linked login's session, or a refusal naming the phone step. */
+  signInWithProvider(provider: LoginProvider, input: ProviderSignIn): Promise<SessionProjection>;
+  /** The session the cookies hold, or `null` for a visitor carrying none. */
+  session(signal?: AbortSignal): Promise<SessionProjection | null>;
   signOut(): Promise<void>;
   signOutEverywhere(): Promise<void>;
 }
@@ -44,9 +46,9 @@ export function createAuthRepository(api: ApiClient): AuthRepository {
         throw normalizeClientError(error);
       }
     },
-    async signInWithGoogle(body) {
+    async signInWithProvider(provider, body) {
       try {
-        const res = await api.auth.signInWithGoogle({ body });
+        const res = await api.auth.signInWithProvider({ params: { provider }, body });
         if (res.status !== 200) throw toApiError(res);
         return res.body;
       } catch (error) {
@@ -57,7 +59,7 @@ export function createAuthRepository(api: ApiClient): AuthRepository {
       try {
         const res = await api.auth.session({ fetchOptions: { signal } });
         if (res.status !== 200) throw toApiError(res);
-        return res.body;
+        return 'signedIn' in res.body ? null : res.body;
       } catch (error) {
         throw normalizeClientError(error);
       }

@@ -77,6 +77,6 @@ describe.skipIf(skip)('the api with no minimum phone version', () => {
     const reply = await http.call('GET', '/auth/session', undefined, {
       [CLIENT_VERSION_HEADER]: '1.0',
     });
-    expect(reply.status).toBe(HttpStatus.UNAUTHORIZED);
+    expect(reply.status).toBe(HttpStatus.OK);
   });
 });

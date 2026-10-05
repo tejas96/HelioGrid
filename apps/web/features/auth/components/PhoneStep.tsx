@@ -1,8 +1,16 @@
 import type { SignIn } from '@heliogrid/data/react';
 import type { DoorRoad } from '@heliogrid/domain';
-import { SIGN_IN } from '@heliogrid/i18n';
+import { phoneGoogleWords, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, DoorFrame, type DoorTaskMeasure, PhoneField, Text } from '@heliogrid/ui';
+import {
+  Button,
+  DoorFrame,
+  type DoorTaskMeasure,
+  PhoneField,
+  Text,
+  TextDivider,
+  TintedBlock,
+} from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 import { LanguageControl } from './LanguageControl';
 
@@ -36,6 +44,8 @@ export function PhoneStep({
   const t = useTranslate();
   const { state, busy } = signIn;
   const problem = state.phoneProblem;
+  const sending = state.pending?.kind === 'request';
+  const google = signIn.google === null ? null : phoneGoogleWords(t, signIn.google);
   return (
     <DoorFrame
       trailing={<LanguageControl />}
@@ -57,12 +67,13 @@ export function PhoneStep({
       {task ?? (
         <>
           {lead}
+          {google?.failed ? <TintedBlock {...google.failed} /> : null}
           <div className="hg-door-form">
             <PhoneField
               label={t(SIGN_IN.mobileNumber)}
               value={state.phone}
               onChange={signIn.typePhone}
-              disabled={busy}
+              readOnly={busy}
               announceError
               autoFocus
               error={
@@ -70,17 +81,33 @@ export function PhoneStep({
                   ? undefined
                   : t(SIGN_IN.digitsMismatch, { typed: problem.typed, needed: problem.needed })
               }
-              helper={busy ? t(SIGN_IN.lockedWhileSending) : t(SIGN_IN.willSendBySms)}
             />
             <Button
               variant="primary"
               size="lg"
               fullWidth
-              loading={busy}
+              loading={sending}
+              disabled={busy && !sending}
               onClick={() => signIn.press('send')}
             >
-              {busy ? t(SIGN_IN.sendingTheCode) : t(SIGN_IN.sendCode)}
+              {sending ? t(SIGN_IN.sendingTheCode) : t(SIGN_IN.sendCode)}
             </Button>
+            {google === null ? null : (
+              <div className="hg-door-google">
+                <TextDivider label={google.or} />
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  fullWidth
+                  loading={signIn.google?.busy}
+                  disabled={busy && !signIn.google?.busy}
+                  spokenName={google.aria}
+                  onClick={() => signIn.press('google')}
+                >
+                  {google.label}
+                </Button>
+              </div>
+            )}
           </div>
           <div className="hg-door-signup">
             <Text variant="body-sm" color="secondary">

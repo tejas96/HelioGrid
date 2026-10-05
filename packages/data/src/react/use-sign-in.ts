@@ -3,7 +3,6 @@ import {
   COUNTDOWN_TICK_MS,
   type FormatPack,
   type GoogleSheetResult,
-  type GoogleToken,
   INITIAL_LOGIN_STATE,
   type LoginFrame,
   type LoginPress,
@@ -28,8 +27,8 @@ export interface SignIn {
   typePhone(phone: string): void;
   typeCode(code: string): void;
   press(control: LoginPress): void;
-  /** The web's Google return route hands its token in here: Google's page left the tab. */
-  returnFromGoogle(token: GoogleToken): void;
+  /** The web's Google return route hands in how Google's page closed: it left the tab to open. */
+  returnFromGoogle(result: GoogleSheetResult): void;
 }
 
 /** Opens Google's sheet on this platform and says how it closed; part of the screen, never this package. */
@@ -103,8 +102,8 @@ export function useSignIn(
       typeCode: (code: string) => dispatch({ type: 'code-typed', code }),
       press: (control: LoginPress) =>
         dispatch(control === 'send' ? { type: 'send', pack } : { type: control }),
-      returnFromGoogle: (token: GoogleToken) =>
-        dispatch({ type: 'google-sheet-ended', result: { kind: 'token', token } }),
+      returnFromGoogle: (result: GoogleSheetResult) =>
+        dispatch({ type: 'google-sheet-ended', result }),
     }),
     [state, pack, googleOffered],
   );

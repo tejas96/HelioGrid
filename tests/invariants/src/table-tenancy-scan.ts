@@ -25,6 +25,9 @@ const GLOBAL_TABLES: Record<string, string> = {
   user_account:
     'the global platform account, keyed by phone — ARMED: RLS shows a row only to a tenant ' +
     'that holds a membership on it; every write runs on the admin path (T-M01-025)',
+  auth_identity:
+    'a provider login linked to an account (M01-02) — unreachable, the admin path alone reads and ' +
+    'writes it before any session exists (T-M01-032)',
   otp_challenge:
     'a sign-in code keyed to a phone before any account exists — unreachable, the admin path ' +
     'alone reads and writes it (T-M01-025)',

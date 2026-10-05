@@ -11,6 +11,7 @@
 export * from './components/AccessRemoved';
 export * from './components/Accordion';
 export * from './components/AccountMenu';
+export * from './components/AccountTile';
 export * from './components/ActionReason';
 export * from './components/ActivityStream';
 export * from './components/ActorClass';

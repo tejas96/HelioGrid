@@ -38,6 +38,7 @@ export function Button({
   iconRight = null,
   fullWidth = false,
   expanded,
+  spokenName,
   onClick,
   className,
   style,
@@ -62,6 +63,7 @@ export function Button({
       aria-disabled={disabled ? true : undefined}
       aria-describedby={stated ? autoId : undefined}
       aria-expanded={expanded}
+      aria-label={spokenName}
       onClick={() => {
         if (disabled) {
           return;

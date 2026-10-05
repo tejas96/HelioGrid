@@ -59,8 +59,8 @@ describe.skipIf(skip)('the api with a minimum phone version of 1.10', () => {
 
   it.each([
     { sent: '1.9', status: CLIENT_UPGRADE_REQUIRED_STATUS },
-    { sent: '1.10', status: HttpStatus.UNAUTHORIZED },
-    { sent: '1.11', status: HttpStatus.UNAUTHORIZED },
+    { sent: '1.10', status: HttpStatus.OK },
+    { sent: '1.11', status: HttpStatus.OK },
   ])('a supported version is served', async ({ sent, status }) => {
     const reply = await http.call('GET', '/auth/session', undefined, {
       [CLIENT_VERSION_HEADER]: sent,
@@ -81,7 +81,7 @@ describe.skipIf(skip)('the api with a minimum phone version of 1.10', () => {
 
   it('a request with no client version is served', async () => {
     const reply = await http.call('GET', '/auth/session');
-    expect(reply.status).toBe(HttpStatus.UNAUTHORIZED);
+    expect(reply.status).toBe(HttpStatus.OK);
   });
 
   it('a too-old client is refused before the session guard', async () => {

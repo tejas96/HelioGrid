@@ -1,4 +1,4 @@
-import type { GoogleIdentity, GoogleIdentityVerdict } from '@heliogrid/contracts';
+import type { IdentityProvider, IdentityVerdict } from '@heliogrid/contracts';
 import { createRemoteJWKSet, errors, type JWTVerifyGetKey, jwtVerify } from 'jose';
 
 /** Where Google publishes the keys its ID tokens are signed with. */
@@ -16,14 +16,14 @@ class KeysUnreachable extends Error {}
  * that is not a key set — is `unavailable`, never a refusal: the person did nothing wrong, and
  * "refused" would send them round the linking flow for nothing.
  */
-export class JoseGoogleIdentity implements GoogleIdentity {
+export class JoseGoogleIdentity implements IdentityProvider {
   constructor(private readonly keys: JWTVerifyGetKey = createRemoteJWKSet(GOOGLE_KEYS_URL)) {}
 
   async verify(
     idToken: string,
     audiences: readonly string[],
     nonce: string | undefined,
-  ): Promise<GoogleIdentityVerdict> {
+  ): Promise<IdentityVerdict> {
     try {
       const { payload } = await jwtVerify(idToken, this.judgedKeys, {
         issuer: GOOGLE_ISSUERS,
