@@ -23,5 +23,5 @@ appId: com.heliogrid.app
 - inputText: ${PHONE}
 - tapOn: ${SEND_CODE}
 - extendedWaitUntil:
-    visible: "RED PROOF — never on screen"
+    visible: ${ENTER_THE_CODE}
     timeout: 15000
