@@ -1,7 +1,7 @@
 import { COMPANY_SIGNUP, createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
-import { expectNoSidewaysScroll } from '../support/door';
+import { expectNoSidewaysScroll } from '../support/layout';
 
 /**
  * The Google door on the web (`M01-02`, `SCR-M01-01`). No flow presses through to Google — no

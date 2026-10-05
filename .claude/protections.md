@@ -87,6 +87,7 @@ catalog freshness checks, the unit tests and the invariants; off CI it leaves ou
 | A native view never folds a control out of reach (`accessible`), never carries accessibility props it cannot speak, and a progress bar carries its value | Biome plugins `folded-control` · `inert-a11y` · `progressbar-value` |
 | A web landing has no serious or critical axe violation | `expectNoSeriousViolations` (`tests/e2e/support/axe.ts`) in every web spec · CI job `e2e-web` |
 | Every tap target is at least 44, no meaning shows only on hover, help text sits in the Explainer, and the screen matches its design | review |
+| A web page never scrolls sideways at 375 or 1536, and siblings the design record aligns share the edge it names | `expectNoSidewaysScroll` in every web spec and `expectSharedEdge` in the spec that declares the edge (`tests/e2e/support/layout.ts`) · CI job `e2e-web` · the declared rows of `qa-web` |
 
 ## Language
 
@@ -132,9 +133,13 @@ catalog freshness checks, the unit tests and the invariants; off CI it leaves ou
 | what is protected | what holds it |
 |---|---|
 | An agent never writes to the database | nothing — CLAUDE.md §8 states it; the `qa_readonly` role (`infra/postgres/init/01-roles.sql`) is read-only but nothing connects as it |
-| An agent never edits a lockfile | CI's `pnpm install --frozen-lockfile` |
-| An agent never pushes to `main`, never force-pushes and never skips git's pre-commit hook | `main` is PR-only on GitHub · CLAUDE.md §4 states the rest; nothing on this machine blocks it |
-| An agent's network and file writes, and a command that wipes a device | nothing |
+| An agent never edits a lockfile | CI's `pnpm install --frozen-lockfile` · `.claude/settings.json` denies `Edit` and `Write` on `pnpm-lock.yaml` in Claude Code |
+| An agent never pushes to `main`, never force-pushes and never skips git's pre-commit hook | `main` is PR-only on GitHub · `.claude/settings.json` denies `git push --force`, `-f`, a push to `main` and `git commit --no-verify`, `-n` in Claude Code · CLAUDE.md §4 states the rest |
+| An agent never wipes a product volume and never kills by port or process name (`docker volume rm`, `docker system prune`, `compose down -v`, `pnpm infra:reset`, `pkill`, `killall`, `kill-port`, `rm -rf` of the repository or the home folder) | `.claude/settings.json` deny rules, each seen to refuse its planted command, in Claude Code · another client: nothing |
+| A dev-server start kills no process it did not start and truncates no log; the one explicit clean action is the `clean-dev-ports` launch configuration | invariant `launch-reuses-running-servers` |
+| A helper reads and reports only: no `Agent`, `Write` or `Edit` tool, no server, device or build command, no helper of its own | the `tools` list of each `.claude/agents/*.md` (Claude Code) · its contract · a shell write by a helper: review of the diff |
+| Every runtime resource a task started is stopped, and the database routing restored, before the task reports done; a pre-existing one is never touched | review — `/task` §0 and §8 (`.claude/skills/task/SKILL.md`) |
+| An agent's network writes | nothing |
 
 ## Process
 
@@ -142,5 +147,6 @@ catalog freshness checks, the unit tests and the invariants; off CI it leaves ou
 |---|---|
 | Every commit passes Biome on its staged files, the secret scan and a typecheck of every package (turbo-cached) | git pre-commit (`simple-git-hooks` → `pnpm run precommit`) |
 | Every pull request passes the full check on Linux | CI job `quality` (step `Quality gate`) |
-| The next step is the one the build order picks; every commit waits for the owner's yes to its file list and message | review — CLAUDE.md §3 and §4 |
+| The next step is the one the build order picks; every commit waits for the owner's yes to its file list and message | review — CLAUDE.md §3 and §4; `/task` §1 and §6 walk and stop there |
+| Every acceptance line has one proof owner, a blocked required row fails closed, and the full check runs once after live QA has stopped | review — `/task` §2 and §5; the `evaluator` contract |
 | A doc the change made wrong is fixed in the same change | review |

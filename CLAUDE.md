@@ -102,9 +102,9 @@ The database invariants need the local Postgres; without it they SKIP loudly, an
 schema they report VACUOUS. Neither is a pass. Never weaken a check to make a change pass.
 
 **Ports are dedicated** — web `3002` · api `8084` · metro `8081` · postgres `5544` · object store
-`9000` · temporal `7233` · component tests `3100`; the worker has none. A busy dev-server port is a
-stale process: kill it (the launch configs do), never move to another port. A busy infra port means
-the stack is already up.
+`9000` · temporal `7233` · component tests `3100`; the worker has none. A running HelioGrid server is
+reused; a foreign listener on a dev port is freed on purpose with `clean-dev-ports` — a start never
+kills it and never moves to another port. A busy infra port means the stack is already up.
 Start web, api and metro through the browser preview tool; `pnpm --filter @heliogrid/mobile
 ios|android` drives metro.
 
@@ -128,8 +128,8 @@ import, §4 where a new file goes. Run §4 before creating one. This is the dige
 |---|---|
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
 | `docs/engineering/` | how this repo is built. |
-| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers). |
-| `.qa/` | git-ignored: `api.log`, the api's development log, which the `api` launch configurations and the e2e suite write. |
+| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers), `skills/task/` (the one step runner — it walks the order and holds the two gates), `agents/` (its read-only helpers), `settings.json` (hard-safety denies). |
+| `.qa/` | git-ignored: `api.log`, `web.log`, `metro.log` — the development logs the launch configurations append to and the e2e suite reads. |
 | `.ops/` | the owner's private infra record, git-ignored: every external account, project and client id, what is still owed, and each environment's values (`dev.env`, `prod.env`). A console change updates it in the same sitting. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
 | the Claude Design project | NOT in the repo: each screen's board and decisions record — the pixel-perfect reference. A task's `DESIGN:` line links it; read it with `DesignSync`; keep no copy on disk. A studio screen (`ported from the POC`) has none. |

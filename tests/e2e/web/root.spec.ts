@@ -1,7 +1,7 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
-import { expectNoSidewaysScroll } from '../support/door';
+import { expectNoSidewaysScroll } from '../support/layout';
 
 const en = await createTranslator('en');
 

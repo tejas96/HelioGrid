@@ -2,6 +2,7 @@ import { OTP_LENGTH } from '@heliogrid/domain';
 import { COMPANY_SIGNUP, SIGN_IN, type Translator } from '@heliogrid/i18n';
 import { expect, type Page } from '@playwright/test';
 import { codeSentTo } from './api-log';
+import { expectNoSidewaysScroll } from './layout';
 import type { freshMobile } from './phone';
 
 type Mobile = ReturnType<typeof freshMobile>;
@@ -56,12 +57,4 @@ export async function createCompany(page: Page, t: Translator, mobile: Mobile): 
 /** A code that is certainly not `code`: each digit moved on by one. */
 export function wrongCodeFor(code: string): string {
   return [...code].map((digit) => String((Number(digit) + 1) % 10)).join('');
-}
-
-/** `F7-43` item 1: the page never scrolls sideways at the viewport it is drawn at. */
-export async function expectNoSidewaysScroll(page: Page): Promise<void> {
-  const overflow = await page.evaluate(
-    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-  );
-  expect(overflow).toBeLessThanOrEqual(0);
 }

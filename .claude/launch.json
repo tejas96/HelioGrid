@@ -6,7 +6,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "lsof -ti tcp:3002 -sTCP:LISTEN | xargs -r kill -9; WATCHPACK_POLLING=true exec pnpm --filter @heliogrid/web dev"
+        "lsof -ti tcp:3002 -sTCP:LISTEN >/dev/null && { echo 'port 3002 is busy: reuse that server, or free it with clean-dev-ports'; exit 1; }; log=\"$(git rev-parse --show-toplevel)/.qa/web.log\"; mkdir -p \"${log%/*}\"; exec > >(tee -a \"$log\") 2>&1; WATCHPACK_POLLING=true exec pnpm --filter @heliogrid/web dev"
       ],
       "port": 3002
     },
@@ -15,7 +15,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "lsof -ti tcp:3002 -sTCP:LISTEN | xargs -r kill -9; pnpm --filter @heliogrid/web build && exec pnpm --filter @heliogrid/web start"
+        "lsof -ti tcp:3002 -sTCP:LISTEN >/dev/null && { echo 'port 3002 is busy: reuse that server, or free it with clean-dev-ports'; exit 1; }; log=\"$(git rev-parse --show-toplevel)/.qa/web.log\"; mkdir -p \"${log%/*}\"; exec > >(tee -a \"$log\") 2>&1; pnpm --filter @heliogrid/web build && exec pnpm --filter @heliogrid/web start"
       ],
       "port": 3002
     },
@@ -24,7 +24,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "lsof -ti tcp:8084 -sTCP:LISTEN | xargs -r kill -9; log=\"$(git rev-parse --show-toplevel)/.qa/api.log\"; mkdir -p \"${log%/*}\"; : > \"$log\"; exec > >(tee \"$log\") 2>&1; pnpm infra:token && exec pnpm --filter @heliogrid/api dev"
+        "lsof -ti tcp:8084 -sTCP:LISTEN >/dev/null && { echo 'port 8084 is busy: reuse that server, or free it with clean-dev-ports'; exit 1; }; log=\"$(git rev-parse --show-toplevel)/.qa/api.log\"; mkdir -p \"${log%/*}\"; exec > >(tee -a \"$log\") 2>&1; pnpm infra:token && exec pnpm --filter @heliogrid/api dev"
       ],
       "port": 8084
     },
@@ -33,7 +33,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "lsof -ti tcp:8084 -sTCP:LISTEN | xargs -r kill -9; log=\"$(git rev-parse --show-toplevel)/.qa/api.log\"; mkdir -p \"${log%/*}\"; : > \"$log\"; exec > >(tee \"$log\") 2>&1; pnpm infra:token && exec pnpm --filter @heliogrid/api start"
+        "lsof -ti tcp:8084 -sTCP:LISTEN >/dev/null && { echo 'port 8084 is busy: reuse that server, or free it with clean-dev-ports'; exit 1; }; log=\"$(git rev-parse --show-toplevel)/.qa/api.log\"; mkdir -p \"${log%/*}\"; exec > >(tee -a \"$log\") 2>&1; pnpm infra:token && exec pnpm --filter @heliogrid/api start"
       ],
       "port": 8084
     },
@@ -42,7 +42,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "lsof -ti tcp:8081 -sTCP:LISTEN | xargs -r kill -9; exec pnpm --filter @heliogrid/mobile start"
+        "lsof -ti tcp:8081 -sTCP:LISTEN >/dev/null && { echo 'port 8081 is busy: reuse that server, or free it with clean-dev-ports'; exit 1; }; log=\"$(git rev-parse --show-toplevel)/.qa/metro.log\"; mkdir -p \"${log%/*}\"; exec > >(tee -a \"$log\") 2>&1; exec pnpm --filter @heliogrid/mobile start"
       ],
       "port": 8081
     },
@@ -50,6 +50,14 @@
       "name": "worker",
       "runtimeExecutable": "bash",
       "runtimeArgs": ["-c", "pnpm infra:token && exec pnpm --filter @heliogrid/worker dev"]
+    },
+    {
+      "name": "clean-dev-ports",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "for port in 3002 8084 8081; do pids=$(lsof -ti tcp:$port -sTCP:LISTEN); if [ -n \"$pids\" ]; then echo \"port $port: stopping $pids\"; kill $pids; else echo \"port $port: free\"; fi; done"
+      ]
     }
   ]
 }

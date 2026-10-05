@@ -64,7 +64,7 @@ running browser — a task is done only when it has been driven, not read.
 ## Traps
 
 - A feature barrel that re-exports both a Server Component and a `'use client'` screen attaches the client chunk to EVERY page reaching the barrel, and tree-shaking cannot remove it; two routes reporting the same First Load JS is the sign → give the client screen its own barrel.
-- `turbo build`, `pnpm check:all` or `rm -rf */dist` while `next dev` runs makes every chunk 404: unstyled HTML and `undefined (reading 'call')`, which looks like a code bug → kill port 3002, `rm -rf apps/web/.next`, restart.
+- `turbo build`, `pnpm check:all` or `rm -rf */dist` while `next dev` runs makes every chunk 404: unstyled HTML and `undefined (reading 'call')`, which looks like a code bug → stop the web server (the `clean-dev-ports` launch configuration), `rm -rf apps/web/.next`, restart.
 - `"sideEffects": ["**/*.css"]` in `package.json` is load-bearing: without it webpack keeps every module a barrel names, and it holds only while every side-effect import here is CSS → keep it, and recheck it when a non-CSS side-effect import lands.
 - `lib/env.ts` must write each `process.env.NEXT_PUBLIC_*` out literally: Next substitutes text, so `process.env[key]` or a spread reads `undefined` in the browser and falls back to the schema default with nothing failing → literal reads only.
 - The stylesheet import order in `app/layout.tsx` is load-bearing → `@heliogrid/theme/tokens.css`, then `base.css`, then `@heliogrid/ui/styles.css`, then `globals.css`; keep it.

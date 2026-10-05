@@ -32,8 +32,8 @@ the architecture keeps its extension points, but nothing V2 is designed or built
 
 ## One order, walked one step at a time
 
-Every task is built in ONE fixed order, and the session walks it to pick the next step; no
-check holds the order. The order is walked, never chosen:
+Every task is built in ONE fixed order, and `/task` (`.claude/skills/task/SKILL.md`) walks it to
+pick the next step; no check holds the order. The order is walked, never chosen:
 
 1. the blocks below, lowest first;
 2. inside a block, its cells in the order the block's row writes them — a file, or a task placed
@@ -71,14 +71,14 @@ every block below.
 | # | Block | V1 screens | Task files |
 |---|---|---|---|
 | **0** | **Foundations** | 0 | `F-core` (all but `T-FCORE-009` — see below) · `F-platform` (all but `T-FPLAT-020`, `T-FPLAT-066`, `T-FPLAT-074` — see below) |
-| **1** | **Shell + entry & tenant** | 22 | `SHELL` (all but `T-SHELL-002`, `T-SHELL-006` — see below) · `M01-onboarding` (37) |
+| **1** | **Shell + entry & tenant** | 22 | `SHELL` (all but `T-SHELL-002`, `T-SHELL-006` — see below) · `M01-onboarding` (all but `T-M01-029` — see below) |
 | **2** | **Billing & plans** | 5 | `M12-platform-billing` (13) · `SHELL` → `T-SHELL-006` |
 | **3** | **CRM & leads** | 7 | `M02-crm-leads` (17) · `SHELL` → `T-SHELL-002` · `F-platform` → `T-FPLAT-020`, `T-FPLAT-066` |
 | **4** | **Projects** | 6 | `M08-projects` (15) |
 | **5** | **Payments & collections** | 4 | `M11-payments-collections` (16) |
 | **6** | **Sales exec, calling core + owner home** | 12 | `M07-sales-execution` (29) · `M13-dashboards` (12) |
 | **7** | **3D Design Studio** | 18 | `MS-studio-a/-b/-c` (83) |
-| **8** | **Proposals + customer link** | 25 | `M06-proposals` (31) · `F5-customer-link` (13) · `F-core` → `T-FCORE-009` · `F-platform` → `T-FPLAT-074` |
+| **8** | **Proposals + customer link** | 25 | `M06-proposals` (31) · `F5-customer-link` (13) · `F-core` → `T-FCORE-009` · `F-platform` → `T-FPLAT-074` · `M01-onboarding` → `T-M01-029` |
 
 **The `SHELL` task file spans three blocks.** `SCR-SHELL-06` — the billing state banner and its
 denial sheets — sits with the other shell rows in the screens register, because that is where it renders.
@@ -90,6 +90,13 @@ workflow and the IN DPDP determination — is parked by owner ruling until the t
 paying customers (roughly 10–20). It sits in the last V1 block so the walk reaches it last; it
 builds when the owner unparks it, and by then the customer record (block 3) and the calling consent
 records (block 6) its proofs erase and export exist.
+
+**The demo project seed builds in block 8, not block 1.** `T-M01-029` instantiates a finished
+demo lead, design and proposal for every new tenant, and its `Depends on:` names the first
+migrations of M02 (`lead`), the studio (`design`) and M06 (`proposal`, `proposal_version`) — three
+later blocks. Owner ruling 2026-10-05: it moves to block 8, after M06's first migration, so the
+block-1 walk no longer stops on a wait it cannot clear; the `DocumentPreview` sample defaults it
+also owns move with it.
 
 **Global search builds in block 3, not block 0.** `T-FPLAT-020` searches leads, proposals,
 projects, customers, sites, catalog items and people, and in block 0 none of those tables exists:
