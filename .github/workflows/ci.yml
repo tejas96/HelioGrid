@@ -29,6 +29,7 @@ jobs:
       mobile_js: ${{ steps.lanes.outputs.mobile_js }}
       e2e_web: ${{ steps.lanes.outputs.e2e_web }}
       phone_e2e: ${{ steps.lanes.outputs.phone_e2e }}
+      ios: ${{ steps.lanes.outputs.ios }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -73,9 +74,12 @@ jobs:
           # The web regression suite: what the web and the api serve, every package either imports,
           # the suite itself, and the files that shape the build.
           lane e2e_web '^(apps/(web|api)/|packages/|tests/e2e/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|tsconfig\.base\.json$|\.github/workflows/ci\.yml$)'
-          # The native builds and the phone flows on them: what the app and the api run (native
-          # sources, manifests and Gemfiles included), every package either imports, the database
-          # roles the api connects as, the phone suite and what it reads, and the build files.
+          # The Android build and the phone flows on it: what the app and the api run (native
+          # sources and manifests included), every package either imports, the database roles the
+          # api connects as, the phone suite and what it reads, and the build files.
+          # The iOS build changes only through native sources, the app manifest, the mobile
+          # package.json (autolinking), the Gemfiles or the lockfile.
+          lane ios '^(apps/mobile/(ios/|package\.json$|app\.json$|react-native\.config\.js$|Gemfile$|Gemfile\.lock$)|pnpm-lock\.yaml$|\.github/workflows/ci\.yml$)'
           lane phone_e2e '^(apps/(mobile|api)/|packages/|infra/postgres/|tests/e2e/(mobile/|support/|package\.json$)|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|tsconfig\.base\.json$|\.github/workflows/ci\.yml$)'
 
   quality:
@@ -336,9 +340,11 @@ jobs:
         # android bundle covers the whole graph.
         run: pnpm bundle
 
-  # The two native jobs build the debug app, then run the phone flows on it: tests/e2e/mobile/run.sh
+  # The android job builds the debug app, then runs the phone flows on it: tests/e2e/mobile/run.sh
   # against the BUILT api and a Metro this job starts, since a debug build loads its JavaScript
-  # from Metro and bundles none. They run on main as well as the pull request: setup-gradle and a
+  # from Metro and bundles none. The iOS flows run by hand or by the qa-ios helper, never here: a
+  # macOS runner spends 20 minutes on the Xcode build alone (the ios job below proves the build and
+  # nothing more). The android job runs on main as well as the pull request: setup-gradle and a
   # cache written on a pull request stay with that pull request, so main is what warms them for
   # the next one. The repository variable PHONE_E2E=off skips every flow step and keeps the build,
   # so the required check still reports: `gh variable set PHONE_E2E --body off` turns the flows
@@ -417,20 +423,15 @@ jobs:
         # never a retry of a flow (deferred.md D90).
         if: vars.PHONE_E2E != 'off'
         shell: bash
-        run: &start-api-and-metro |
+        run: |
           set -euo pipefail
-          platform=$([ "$RUNNER_OS" = macOS ] && echo ios || echo android)
           mkdir -p .qa
           nohup pnpm --filter @heliogrid/api start > .qa/api.log 2>&1 &
           nohup pnpm --filter @heliogrid/mobile start > .qa/metro.log 2>&1 &
           ready() { for _ in $(seq 120); do curl -fsS "$1" > /dev/null 2>&1 && return 0; sleep 1; done; return 1; }
           ready http://localhost:8084/health/ready || { echo '::error::the api never became ready'; tail -50 .qa/api.log; exit 1; }
           ready http://localhost:8081/status || { echo '::error::Metro never started'; tail -50 .qa/metro.log; exit 1; }
-          if [ "$platform" = ios ]; then
-            bundle='platform=ios&dev=true&lazy=true&minify=false&inlineSourceMap=false&modulesOnly=false&runModule=true&excludeSource=true&sourcePaths=url-server&app=com.heliogrid.app'
-          else
-            bundle='platform=android&dev=true&lazy=true&minify=false&app=com.heliogrid.app&modulesOnly=false&runModule=true'
-          fi
+          bundle='platform=android&dev=true&lazy=true&minify=false&app=com.heliogrid.app&modulesOnly=false&runModule=true'
           fetch_bundle() { curl -fsS --max-time 300 -o /dev/null -w '%{time_total}' "http://localhost:8081/index.bundle?$bundle"; }
           first=$(fetch_bundle) || { echo '::error::Metro did not build the bundle'; tail -50 .qa/metro.log; exit 1; }
           second=$(fetch_bundle) || { echo '::error::Metro did not serve the warm bundle'; tail -50 .qa/metro.log; exit 1; }
@@ -452,7 +453,7 @@ jobs:
         # The version the suite is written against, checked by the release's own sha256.
         if: vars.PHONE_E2E != 'off'
         shell: bash
-        run: &install-maestro |
+        run: |
           set -euo pipefail
           if [ ! -x "$HOME/maestro/bin/maestro" ]; then
             curl -fsSL -o "$RUNNER_TEMP/maestro.zip" \
@@ -527,15 +528,13 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
-  # The android job's comment holds for this one. A macOS runner runs no service container, so its
-  # Postgres 16 comes from Homebrew rather than the pinned image: the newest 16.x, the one place a
-  # job's database is not the pinned digest.
   ios:
     name: ios
     needs: changes
-    if: needs.changes.outputs.phone_e2e == 'true'
+    # Native builds run on the pull request only: the same tree already built there.
+    if: github.event_name == 'pull_request' && needs.changes.outputs.ios == 'true'
     runs-on: macos-15
-    timeout-minutes: 60
+    timeout-minutes: 45
     env:
       # The Gemfile.lock resolves the `ruby` platform only (apps/mobile/.bundle/config sets the
       # same flag locally); without it bundler refuses the darwin platform of the runner.
@@ -547,32 +546,14 @@ jobs:
       BUNDLE_VERSION: system
     steps:
       - uses: actions/checkout@v4
-      - name: Boot an iPhone simulator, before the build
-        # The newest plain "iPhone <n>" on the runtime of the selected Xcode's simulator SDK: Maestro
-        # drives the simulator through that Xcode, which cannot test a newer runtime. The runner
-        # image decides which exist, so the choice is printed and a missing one fails by name.
-        # Booted first so it settles during the build: on a simulator booted just before the flows,
-        # Maestro's driver took 50 s, 73 s, then over its 180 s limit.
-        if: vars.PHONE_E2E != 'off'
-        shell: bash
-        run: |
-          set -euo pipefail
-          sdk="$(xcrun --sdk iphonesimulator --show-sdk-version)"
-          runtime="com.apple.CoreSimulator.SimRuntime.iOS-${sdk//./-}"
-          pick="$(xcrun simctl list devices available --json | jq -r --arg rt "$runtime" '
-            [.devices[$rt] // [] | .[] | select(.name | test("^iPhone [0-9]+$"))]
-            | sort_by(.name | ltrimstr("iPhone ") | tonumber) | last // empty | "\(.udid) \(.name)"')"
-          [ -n "$pick" ] || { echo "::error::no plain iPhone simulator on $runtime"; exit 1; }
-          read -r udid name <<< "$pick"
-          echo "simulator: $name on iOS $sdk ($udid) · $(xcodebuild -version | sed -n 1p)"
-          echo "SIMULATOR=$udid" >> "$GITHUB_ENV"
-          xcrun simctl boot "$udid"
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # No `turbo build`, for the same reason as the android lane: a Debug configuration loads
+      # its JavaScript from Metro and `react-native-xcode.sh` bundles nothing.
       - uses: ruby/setup-ruby@v1
         with:
           # 3.1 is the newest Ruby the lock resolves on: apps/mobile/Gemfile.lock was written under
@@ -594,17 +575,12 @@ jobs:
         env:
           BUNDLE_GEMFILE: ${{ github.workspace }}/apps/mobile/Gemfile
         run: bundle exec pod install
-      # Before every flow step, so the switch never skips the build: a Debug configuration loads
-      # its JavaScript from Metro and `react-native-xcode.sh` bundles nothing.
-      - name: Build for simulator (signed to run locally)
+      - name: Build for simulator (no signing)
         working-directory: apps/mobile/ios
         # `shell: bash` turns on `-o pipefail`. Without it the step's exit status is
         # `tail`'s (always 0), so a Swift compile error, a missing Pod or a bad Info.plist
         # produced a GREEN job — the only mechanical proof the RN app still builds for iOS
         # (Law 7) could never fail.
-        # Signed as Xcode signs a simulator build (`-`, no team): an unsigned app carries no
-        # entitlements, and the keychain refuses it (-34018), so the session never stores and
-        # "Send code" fails before any request leaves the app.
         shell: bash
         run: |
           xcodebuild -workspace HelioGridMobile.xcworkspace \
@@ -612,82 +588,5 @@ jobs:
             -configuration Debug \
             -sdk iphonesimulator \
             -destination 'generic/platform=iOS Simulator' \
-            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
             build | tail -50
-      - name: Phone flows OFF
-        if: vars.PHONE_E2E == 'off'
-        run: echo "::warning::phone flows OFF (PHONE_E2E=off) — they ran nowhere on this change"
-      - uses: actions/cache@v4
-        if: vars.PHONE_E2E != 'off'
-        with:
-          path: .turbo
-          key: turbo-${{ runner.os }}-${{ github.job }}-${{ github.sha }}
-          restore-keys: turbo-${{ runner.os }}-${{ github.job }}-
-      - name: Postgres 16 (Homebrew), with the superuser the service container has
-        if: vars.PHONE_E2E != 'off'
-        env:
-          HOMEBREW_NO_AUTO_UPDATE: '1'
-        shell: bash
-        run: |
-          set -euo pipefail
-          brew install postgresql@16
-          bin="$(brew --prefix postgresql@16)/bin"
-          echo "$bin" >> "$GITHUB_PATH"
-          brew services start postgresql@16
-          for _ in $(seq 60); do "$bin/pg_isready" -q -h localhost && break; sleep 1; done
-          "$bin/psql" -h localhost -d postgres -v ON_ERROR_STOP=1 \
-            -c "CREATE ROLE heliogrid LOGIN SUPERUSER PASSWORD 'heliogrid'" \
-            -c "CREATE DATABASE heliogrid_ci OWNER heliogrid"
-      - name: Cluster roles and schema grants (infra/postgres/init)
-        if: vars.PHONE_E2E != 'off'
-        env: *cluster-roles-env
-        run: *cluster-roles
-      - name: Apply migrations (CI database)
-        if: vars.PHONE_E2E != 'off'
-        env: *suite-api-env
-        run: pnpm --filter @heliogrid/db migrate
-      - name: Build the api, what Metro bundles and what the suite imports
-        if: vars.PHONE_E2E != 'off'
-        run: pnpm turbo build --filter=@heliogrid/api --filter='@heliogrid/mobile^...' --filter='@heliogrid/e2e^...'
-      - name: Publish the India market pack and platform catalog (the api's own writer)
-        if: vars.PHONE_E2E != 'off'
-        env: *suite-api-env
-        run: pnpm --filter @heliogrid/api pack:publish
-      - name: Start the api and Metro, and warm the bundle
-        if: vars.PHONE_E2E != 'off'
-        env: *suite-api-env
-        shell: bash
-        run: *start-api-and-metro
-      - uses: actions/cache@v4
-        if: vars.PHONE_E2E != 'off'
-        with:
-          path: ~/maestro
-          key: maestro-${{ runner.os }}-2.11.0
-      - name: Install Maestro 2.11.0
-        if: vars.PHONE_E2E != 'off'
-        shell: bash
-        run: *install-maestro
-      - name: Install the app on the simulator, once it has finished booting
-        if: vars.PHONE_E2E != 'off'
-        run: |
-          xcrun simctl bootstatus "$SIMULATOR" -b
-          xcrun simctl install "$SIMULATOR" apps/mobile/ios/build/Build/Products/Debug-iphonesimulator/HelioGridMobile.app
-      - name: Phone flows (tests/e2e/mobile) on the simulator
-        if: vars.PHONE_E2E != 'off'
-        run: bash tests/e2e/mobile/run.sh "$SIMULATOR"
-      - name: Read the simulator's log of a failure
-        if: failure() && vars.PHONE_E2E != 'off' && env.SIMULATOR != ''
-        run: xcrun simctl spawn "$SIMULATOR" log show --last 20m --style compact --predicate 'process == "HelioGridMobile"' > .qa/device.log
-      - name: Keep the flows' screenshots and the logs of a failure
-        if: failure() && vars.PHONE_E2E != 'off'
-        uses: actions/upload-artifact@v4
-        with:
-          name: phone-flows-ios
-          path: |
-            ~/.maestro/tests/
-            .qa/api.log
-            .qa/metro.log
-            .qa/device.log
-          include-hidden-files: true
-          if-no-files-found: ignore
-          retention-days: 14
