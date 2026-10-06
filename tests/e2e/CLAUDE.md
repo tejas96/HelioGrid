@@ -43,6 +43,10 @@ needs Metro, the api and the app installed on the device. An emulator a local ru
 API 34, 4 cores and 4 GB of RAM, given on the command line (`emulator -avd <name> -memory 4096`;
 the emulator ignores `hw.ramSize` in the AVD's file) — at 2 GB and below Maestro's on-device
 server dies mid-suite (`DeviceServerDiedException`) while the app shows no fault.
+Maestro drives one device per `run.sh` (two at once lose the first keys typed), but the three QA
+helpers may drive web, iPhone and Android at once on one stack: proven on one api, one Metro and
+two phones — three helpers each typing their own number and reading only their own code, then the
+same keys sent to all three surfaces in one instant, with no key lost or crossed.
 
 ## Local conventions
 
