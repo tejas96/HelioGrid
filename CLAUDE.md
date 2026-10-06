@@ -70,7 +70,8 @@ into one turn.
 3. After each change, `pnpm check`.
 4. When done, one tidy pass over the diff — reuse, names, dead code — then `pnpm check:all` once.
 5. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code
-   that is gone: `pnpm turbo build --force`.
+   that is gone. `tsc -p` never removes old output, so delete the app's git-ignored `dist/`
+   (`rm -r apps/api/dist`), then `pnpm turbo build --force`.
 
 **A PR is one complete task or part:** every acceptance line met and proven before it opens; an RFC
 over about 30 files splits into parts, web and phone together.
