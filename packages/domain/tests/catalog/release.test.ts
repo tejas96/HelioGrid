@@ -46,7 +46,14 @@ const override = (over: Partial<Extract<CatalogReleaseSnapshot, { kind: 'overrid
 describe('changeKindOf — what one release line says about one item (M01-43)', () => {
   it('an item with no earlier line is added', () => {
     expect(changeKindOf(null, ownItem())).toBe('added');
-    expect(changeKindOf(null, override())).toBe('added');
+    expect(changeKindOf(null, override({ hidden: true }))).toBe('added');
+  });
+
+  it.each([
+    ['a cleared override', override()],
+    ['an own SKU archived before any release named it', ownItem({ archived: true })],
+  ])('%s with no earlier line says nothing', (_what, after) => {
+    expect(changeKindOf(null, after)).toBeNull();
   });
 
   it('an own SKU archived since its last line is archived, whatever else moved', () => {
@@ -109,6 +116,20 @@ describe('readReleaseSnapshot — a stored line read whole, its amount re-minted
 
   it('a cleared rate reads as none', () => {
     expect(readReleaseSnapshot(override()).rate).toBeNull();
+  });
+
+  it('drops a key a later release added, so it never reads as a change', () => {
+    const stored = {
+      ...ownItem(),
+      rate: null,
+      addedLater: true,
+      spec: { ...PANEL, colour: 'black' },
+    };
+    expect(readReleaseSnapshot(stored)).toEqual(ownItem({ rate: null }));
+  });
+
+  it('refuses a stored line that is not a snapshot', () => {
+    expect(() => readReleaseSnapshot({ kind: 'override', hidden: 'no' })).toThrow();
   });
 
   it('refuses a stored amount that is not a whole number of minor units', () => {

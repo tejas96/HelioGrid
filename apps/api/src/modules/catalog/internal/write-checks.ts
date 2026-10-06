@@ -1,7 +1,12 @@
-import type { RateWrite } from '@heliogrid/contracts';
-import type { CertificationSchemesPack } from '@heliogrid/domain';
+import type { RateWrite, RoleSet } from '@heliogrid/contracts';
+import { type CertificationSchemesPack, can, limitsOn } from '@heliogrid/domain';
 import { minorUnitsOfDecimal, minorUnitsToDecimal } from '@heliogrid/domain/server';
-import { ConflictException, HttpStatus, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  HttpStatus,
+  NotFoundException,
+} from '@nestjs/common';
 import type { ContractRoute, CreationReplies, Keyed } from '../../../common/creation-key';
 import { ContractException } from '../../../common/errors/contract-exception';
 import type { RateToAppend } from '../catalog.rates.repository';
@@ -66,6 +71,15 @@ function scaled(amount: string | null, digits: number, at: string): string | nul
       HttpStatus.BAD_REQUEST,
       [{ path: `${at}amount`, issue: `at most ${digits} decimal places` }],
     );
+  }
+}
+
+export const MANAGE_CATALOG = 'onboarding.manage_catalog';
+
+/** A write is the outright grant's: a limited one — Finance's "view prices & margins" — reads only. */
+export function admitWrite(roles: RoleSet): void {
+  if (!can(roles, MANAGE_CATALOG) || limitsOn(roles, MANAGE_CATALOG).length > 0) {
+    throw new ForbiddenException('Your role reads the catalog and does not change it.');
   }
 }
 

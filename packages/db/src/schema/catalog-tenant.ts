@@ -66,7 +66,10 @@ export const tenantCatalogItem = pgTable(
     preferred: boolean('preferred').notNull(),
     archived: boolean('archived').notNull(),
     createdAt: instant('created_at').notNull(),
-    /** Moves on every write; a release reads what changed after its predecessor by it. */
+    /**
+     * Moves on every write. A release does not read it: it compares every item with its last
+     * line, since a rate dated ahead changes the item on its day with no write.
+     */
     updatedAt: instant('updated_at').notNull(),
     ...creationKeyColumns(),
   },

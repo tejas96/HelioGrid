@@ -12,8 +12,8 @@ import {
   type ResolvedCatalogItemWire,
   type RoleSet,
 } from '@heliogrid/contracts';
-import { badgedSchemes, can, certificationVerdict, limitsOn, localDate } from '@heliogrid/domain';
-import { ForbiddenException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { badgedSchemes, can, certificationVerdict, localDate } from '@heliogrid/domain';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
 import { CreationReplies, creationKeyOf } from '../../common/creation-key';
 import { ContractException } from '../../common/errors/contract-exception';
@@ -25,9 +25,14 @@ import { CatalogSliceRepository } from './catalog.slice.repository';
 import { resolvedOf } from './internal/resolve-input';
 import { prefixTermsOf } from './internal/search-terms';
 import { type MoneyView, rateEntryWire, resolvedWire } from './internal/wire';
-import { rateToAppend, refused, refusedOrKeyed, type Scope } from './internal/write-checks';
-
-const MANAGE = 'onboarding.manage_catalog';
+import {
+  admitWrite,
+  MANAGE_CATALOG,
+  rateToAppend,
+  refused,
+  refusedOrKeyed,
+  type Scope,
+} from './internal/write-checks';
 
 /** No draft table exists yet: the studio's and M06's slices add the query (decision 15). */
 const OPEN_DRAFTS_BEFORE_THE_STUDIO = 0;
@@ -222,7 +227,7 @@ export class CatalogService {
   }
 
   /** The tenant's market, currency and day, and its market's pack, as every act reads them. */
-  private async scopeOf(tenantId: string, now: number): Promise<Scope> {
+  async scopeOf(tenantId: string, now: number): Promise<Scope> {
     const tenant = await this.slice.tenantOf(tenantId);
     if (tenant === null) throw new Error('the guard admitted a catalog route with no company');
     const pack = (await this.markets.currentPacks()).find(
@@ -241,15 +246,8 @@ export class CatalogService {
   }
 }
 
-/** A write is the outright grant's: a limited one — Finance's "view prices & margins" — reads only. */
-function admitWrite(roles: RoleSet): void {
-  if (!can(roles, MANAGE) || limitsOn(roles, MANAGE).length > 0) {
-    throw new ForbiddenException('Your role reads the catalog and does not change it.');
-  }
-}
-
 function moneyFor(roles: RoleSet, scope: Scope): MoneyView {
-  return { visible: can(roles, MANAGE), minorUnitDigits: scope.resolve.minorUnitDigits };
+  return { visible: can(roles, MANAGE_CATALOG), minorUnitDigits: scope.resolve.minorUnitDigits };
 }
 
 /** The form as stored, each claim held to the market's evidence rule first (`F1-19`, `F1-44`). */

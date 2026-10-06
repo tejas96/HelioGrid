@@ -9391,6 +9391,1798 @@
         }
       }
     },
+    "/catalog/releases": {
+      "get": {
+        "summary": "The tenant’s catalog releases, newest first, each with its lines counted",
+        "tags": [
+          "catalogReleases"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "default": 25,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "publishedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "counts": {
+                            "type": "object",
+                            "properties": {
+                              "added": {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              "changed": {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              "archived": {
+                                "type": "integer",
+                                "minimum": 0
+                              }
+                            },
+                            "required": [
+                              "added",
+                              "changed",
+                              "archived"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "label",
+                          "publishedAt",
+                          "counts"
+                        ]
+                      }
+                    },
+                    "totalCount": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "totalCount"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "UNAUTHENTICATED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "FORBIDDEN"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Publish a labelled release: one line for each own SKU or override that changed since its last line",
+        "tags": [
+          "catalogReleases"
+        ],
+        "parameters": [
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  }
+                },
+                "required": [
+                  "label"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "201",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "publishedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "counts": {
+                      "type": "object",
+                      "properties": {
+                        "added": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "changed": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "archived": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "added",
+                        "changed",
+                        "archived"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "publishedAt",
+                    "counts"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "UNAUTHENTICATED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "FORBIDDEN"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "409",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "CATALOG_LABEL_TAKEN"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "CATALOG_NOTHING_CHANGED",
+                            "IDEMPOTENCY_KEY_REUSED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalog/releases/{id}": {
+      "get": {
+        "summary": "One release and a page of its before-and-after lines",
+        "tags": [
+          "catalogReleases"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "default": 25,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "release": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "publishedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "counts": {
+                          "type": "object",
+                          "properties": {
+                            "added": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "changed": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "archived": {
+                              "type": "integer",
+                              "minimum": 0
+                            }
+                          },
+                          "required": [
+                            "added",
+                            "changed",
+                            "archived"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "label",
+                        "publishedAt",
+                        "counts"
+                      ]
+                    },
+                    "lines": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "item": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "source": {
+                                    "type": "string",
+                                    "enum": [
+                                      "platform_item",
+                                      "own_item"
+                                    ]
+                                  },
+                                  "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                      "panel",
+                                      "inverter",
+                                      "battery",
+                                      "micro_inverter",
+                                      "optimiser"
+                                    ]
+                                  },
+                                  "brand": {
+                                    "type": "string"
+                                  },
+                                  "model": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "source",
+                                  "kind",
+                                  "brand",
+                                  "model"
+                                ]
+                              },
+                              "changeKind": {
+                                "type": "string",
+                                "enum": [
+                                  "added",
+                                  "changed",
+                                  "archived"
+                                ]
+                              },
+                              "before": {
+                                "discriminator": {
+                                  "propertyName": "kind"
+                                },
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "type": "string",
+                                        "enum": [
+                                          "own_item"
+                                        ]
+                                      },
+                                      "brand": {
+                                        "type": "string"
+                                      },
+                                      "model": {
+                                        "type": "string"
+                                      },
+                                      "spec": {
+                                        "discriminator": {
+                                          "propertyName": "kind"
+                                        },
+                                        "oneOf": [
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "kind": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "panel"
+                                                ]
+                                              },
+                                              "watt": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "technology": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "mono_perc",
+                                                  "topcon",
+                                                  "bifacial",
+                                                  "poly",
+                                                  "hjt"
+                                                ]
+                                              },
+                                              "lengthMm": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "widthMm": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "vocV": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "vmpV": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "iscA": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "impA": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "tempCoeffVocPct": {
+                                                "type": "number",
+                                                "maximum": 0,
+                                                "exclusiveMaximum": 0
+                                              },
+                                              "tempCoeffPmaxPct": {
+                                                "type": "number",
+                                                "maximum": 0,
+                                                "exclusiveMaximum": 0
+                                              },
+                                              "bifacialityPct": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0,
+                                                "maximum": 100
+                                              },
+                                              "warrantyYears": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "weightKg": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              }
+                                            },
+                                            "required": [
+                                              "kind",
+                                              "watt",
+                                              "technology",
+                                              "lengthMm",
+                                              "widthMm",
+                                              "vocV",
+                                              "vmpV",
+                                              "iscA",
+                                              "impA",
+                                              "tempCoeffVocPct"
+                                            ]
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "kind": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "inverter"
+                                                ]
+                                              },
+                                              "acKw": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "phases": {
+                                                "type": "number",
+                                                "enum": [
+                                                  1,
+                                                  3
+                                                ]
+                                              },
+                                              "mppt": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "count": {
+                                                    "type": "integer",
+                                                    "minimum": 0,
+                                                    "exclusiveMinimum": 0
+                                                  },
+                                                  "minV": {
+                                                    "type": "number",
+                                                    "minimum": 0,
+                                                    "exclusiveMinimum": 0
+                                                  },
+                                                  "maxV": {
+                                                    "type": "number",
+                                                    "minimum": 0,
+                                                    "exclusiveMinimum": 0
+                                                  },
+                                                  "maxCurrentA": {
+                                                    "type": "number",
+                                                    "minimum": 0,
+                                                    "exclusiveMinimum": 0
+                                                  },
+                                                  "stringsPerMppt": {
+                                                    "type": "integer",
+                                                    "minimum": 0,
+                                                    "exclusiveMinimum": 0
+                                                  }
+                                                },
+                                                "required": [
+                                                  "count",
+                                                  "minV",
+                                                  "maxV",
+                                                  "maxCurrentA",
+                                                  "stringsPerMppt"
+                                                ]
+                                              },
+                                              "maxDcV": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "efficiencyPct": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0,
+                                                "maximum": 100,
+                                                "exclusiveMaximum": 100
+                                              },
+                                              "warrantyYears": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              }
+                                            },
+                                            "required": [
+                                              "kind",
+                                              "acKw",
+                                              "phases",
+                                              "mppt",
+                                              "maxDcV",
+                                              "efficiencyPct"
+                                            ]
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "kind": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "battery"
+                                                ]
+                                              },
+                                              "usableKwh": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "nominalV": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "chemistry": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "lfp",
+                                                  "nmc",
+                                                  "lead_acid"
+                                                ]
+                                              },
+                                              "powerKw": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "cycleLife": {
+                                                "type": "integer",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "warrantyYears": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "widthMm": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "depthMm": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "heightMm": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "weightKg": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              }
+                                            },
+                                            "required": [
+                                              "kind",
+                                              "usableKwh",
+                                              "nominalV",
+                                              "chemistry",
+                                              "powerKw",
+                                              "cycleLife",
+                                              "widthMm",
+                                              "depthMm",
+                                              "heightMm",
+                                              "weightKg"
+                                            ]
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "kind": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "micro_inverter"
+                                                ]
+                                              },
+                                              "ratedAcW": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "warrantyYears": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              }
+                                            },
+                                            "required": [
+                                              "kind",
+                                              "ratedAcW"
+                                            ]
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "kind": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "optimiser"
+                                                ]
+                                              },
+                                              "ratedInputW": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "warrantyYears": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              }
+                                            },
+                                            "required": [
+                                              "kind",
+                                              "ratedInputW"
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      "certifications": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "scheme": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "maxLength": 40
+                                            },
+                                            "reference": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "maxLength": 200,
+                                              "nullable": true
+                                            }
+                                          },
+                                          "required": [
+                                            "scheme",
+                                            "reference"
+                                          ]
+                                        }
+                                      },
+                                      "preferred": {
+                                        "type": "boolean"
+                                      },
+                                      "archived": {
+                                        "type": "boolean"
+                                      },
+                                      "rate": {
+                                        "type": "object",
+                                        "properties": {
+                                          "amount": {
+                                            "type": "string",
+                                            "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                                          },
+                                          "currencyCode": {
+                                            "type": "string",
+                                            "minLength": 3,
+                                            "maxLength": 3
+                                          },
+                                          "effectiveOn": {
+                                            "type": "string",
+                                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                                          }
+                                        },
+                                        "required": [
+                                          "amount",
+                                          "currencyCode",
+                                          "effectiveOn"
+                                        ],
+                                        "nullable": true
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "brand",
+                                      "model",
+                                      "spec",
+                                      "certifications",
+                                      "preferred",
+                                      "archived",
+                                      "rate"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "type": "string",
+                                        "enum": [
+                                          "override"
+                                        ]
+                                      },
+                                      "taxPct": {
+                                        "type": "string",
+                                        "pattern": "^\\d{1,3}\\.\\d{2}$",
+                                        "nullable": true
+                                      },
+                                      "hidden": {
+                                        "type": "boolean"
+                                      },
+                                      "preferred": {
+                                        "type": "boolean"
+                                      },
+                                      "rate": {
+                                        "type": "object",
+                                        "properties": {
+                                          "amount": {
+                                            "type": "string",
+                                            "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                                          },
+                                          "currencyCode": {
+                                            "type": "string",
+                                            "minLength": 3,
+                                            "maxLength": 3
+                                          },
+                                          "effectiveOn": {
+                                            "type": "string",
+                                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                                          }
+                                        },
+                                        "required": [
+                                          "amount",
+                                          "currencyCode",
+                                          "effectiveOn"
+                                        ],
+                                        "nullable": true
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "taxPct",
+                                      "hidden",
+                                      "preferred",
+                                      "rate"
+                                    ]
+                                  }
+                                ],
+                                "nullable": true
+                              },
+                              "after": {
+                                "discriminator": {
+                                  "propertyName": "kind"
+                                },
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "type": "string",
+                                        "enum": [
+                                          "own_item"
+                                        ]
+                                      },
+                                      "brand": {
+                                        "type": "string"
+                                      },
+                                      "model": {
+                                        "type": "string"
+                                      },
+                                      "spec": {
+                                        "discriminator": {
+                                          "propertyName": "kind"
+                                        },
+                                        "oneOf": [
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "kind": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "panel"
+                                                ]
+                                              },
+                                              "watt": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "technology": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "mono_perc",
+                                                  "topcon",
+                                                  "bifacial",
+                                                  "poly",
+                                                  "hjt"
+                                                ]
+                                              },
+                                              "lengthMm": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "widthMm": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "vocV": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "vmpV": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "iscA": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "impA": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "tempCoeffVocPct": {
+                                                "type": "number",
+                                                "maximum": 0,
+                                                "exclusiveMaximum": 0
+                                              },
+                                              "tempCoeffPmaxPct": {
+                                                "type": "number",
+                                                "maximum": 0,
+                                                "exclusiveMaximum": 0
+                                              },
+                                              "bifacialityPct": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0,
+                                                "maximum": 100
+                                              },
+                                              "warrantyYears": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "weightKg": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              }
+                                            },
+                                            "required": [
+                                              "kind",
+                                              "watt",
+                                              "technology",
+                                              "lengthMm",
+                                              "widthMm",
+                                              "vocV",
+                                              "vmpV",
+                                              "iscA",
+                                              "impA",
+                                              "tempCoeffVocPct"
+                                            ]
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "kind": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "inverter"
+                                                ]
+                                              },
+                                              "acKw": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "phases": {
+                                                "type": "number",
+                                                "enum": [
+                                                  1,
+                                                  3
+                                                ]
+                                              },
+                                              "mppt": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "count": {
+                                                    "type": "integer",
+                                                    "minimum": 0,
+                                                    "exclusiveMinimum": 0
+                                                  },
+                                                  "minV": {
+                                                    "type": "number",
+                                                    "minimum": 0,
+                                                    "exclusiveMinimum": 0
+                                                  },
+                                                  "maxV": {
+                                                    "type": "number",
+                                                    "minimum": 0,
+                                                    "exclusiveMinimum": 0
+                                                  },
+                                                  "maxCurrentA": {
+                                                    "type": "number",
+                                                    "minimum": 0,
+                                                    "exclusiveMinimum": 0
+                                                  },
+                                                  "stringsPerMppt": {
+                                                    "type": "integer",
+                                                    "minimum": 0,
+                                                    "exclusiveMinimum": 0
+                                                  }
+                                                },
+                                                "required": [
+                                                  "count",
+                                                  "minV",
+                                                  "maxV",
+                                                  "maxCurrentA",
+                                                  "stringsPerMppt"
+                                                ]
+                                              },
+                                              "maxDcV": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "efficiencyPct": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0,
+                                                "maximum": 100,
+                                                "exclusiveMaximum": 100
+                                              },
+                                              "warrantyYears": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              }
+                                            },
+                                            "required": [
+                                              "kind",
+                                              "acKw",
+                                              "phases",
+                                              "mppt",
+                                              "maxDcV",
+                                              "efficiencyPct"
+                                            ]
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "kind": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "battery"
+                                                ]
+                                              },
+                                              "usableKwh": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "nominalV": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "chemistry": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "lfp",
+                                                  "nmc",
+                                                  "lead_acid"
+                                                ]
+                                              },
+                                              "powerKw": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "cycleLife": {
+                                                "type": "integer",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "warrantyYears": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "widthMm": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "depthMm": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "heightMm": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "weightKg": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              }
+                                            },
+                                            "required": [
+                                              "kind",
+                                              "usableKwh",
+                                              "nominalV",
+                                              "chemistry",
+                                              "powerKw",
+                                              "cycleLife",
+                                              "widthMm",
+                                              "depthMm",
+                                              "heightMm",
+                                              "weightKg"
+                                            ]
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "kind": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "micro_inverter"
+                                                ]
+                                              },
+                                              "ratedAcW": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "warrantyYears": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              }
+                                            },
+                                            "required": [
+                                              "kind",
+                                              "ratedAcW"
+                                            ]
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "kind": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "optimiser"
+                                                ]
+                                              },
+                                              "ratedInputW": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              },
+                                              "warrantyYears": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "exclusiveMinimum": 0
+                                              }
+                                            },
+                                            "required": [
+                                              "kind",
+                                              "ratedInputW"
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      "certifications": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "scheme": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "maxLength": 40
+                                            },
+                                            "reference": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "maxLength": 200,
+                                              "nullable": true
+                                            }
+                                          },
+                                          "required": [
+                                            "scheme",
+                                            "reference"
+                                          ]
+                                        }
+                                      },
+                                      "preferred": {
+                                        "type": "boolean"
+                                      },
+                                      "archived": {
+                                        "type": "boolean"
+                                      },
+                                      "rate": {
+                                        "type": "object",
+                                        "properties": {
+                                          "amount": {
+                                            "type": "string",
+                                            "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                                          },
+                                          "currencyCode": {
+                                            "type": "string",
+                                            "minLength": 3,
+                                            "maxLength": 3
+                                          },
+                                          "effectiveOn": {
+                                            "type": "string",
+                                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                                          }
+                                        },
+                                        "required": [
+                                          "amount",
+                                          "currencyCode",
+                                          "effectiveOn"
+                                        ],
+                                        "nullable": true
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "brand",
+                                      "model",
+                                      "spec",
+                                      "certifications",
+                                      "preferred",
+                                      "archived",
+                                      "rate"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "type": "string",
+                                        "enum": [
+                                          "override"
+                                        ]
+                                      },
+                                      "taxPct": {
+                                        "type": "string",
+                                        "pattern": "^\\d{1,3}\\.\\d{2}$",
+                                        "nullable": true
+                                      },
+                                      "hidden": {
+                                        "type": "boolean"
+                                      },
+                                      "preferred": {
+                                        "type": "boolean"
+                                      },
+                                      "rate": {
+                                        "type": "object",
+                                        "properties": {
+                                          "amount": {
+                                            "type": "string",
+                                            "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                                          },
+                                          "currencyCode": {
+                                            "type": "string",
+                                            "minLength": 3,
+                                            "maxLength": 3
+                                          },
+                                          "effectiveOn": {
+                                            "type": "string",
+                                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                                          }
+                                        },
+                                        "required": [
+                                          "amount",
+                                          "currencyCode",
+                                          "effectiveOn"
+                                        ],
+                                        "nullable": true
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "taxPct",
+                                      "hidden",
+                                      "preferred",
+                                      "rate"
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "item",
+                              "changeKind",
+                              "before",
+                              "after"
+                            ]
+                          }
+                        },
+                        "totalCount": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "items",
+                        "totalCount"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "release",
+                    "lines"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "UNAUTHENTICATED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "FORBIDDEN"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "NOT_FOUND"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/files": {
       "post": {
         "summary": "Declare a file for a subject — the row and a short-lived link the client uploads the bytes to directly",
