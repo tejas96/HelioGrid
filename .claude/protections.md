@@ -114,7 +114,9 @@ catalog freshness checks, the unit tests and the invariants; off CI it leaves ou
 | Every route that answers 201 declares `idempotency-key`, and each create finds its retry | unit tests `packages/contracts/tests/create-retry-key.test.ts` · `apps/api/tests/*/retried-*.test.ts` |
 | The transport tells the session store when a refresh could not save a call | typecheck (`SessionSignals` required in `packages/data/src/transport/transport.ts`) |
 | Every notification type is registered with who raises it, who receives it, its channels and its urgency | typecheck (`NOTIFICATION_REGISTRY: Record<NotificationType, …>` in `packages/domain/src/notifications/registry.ts`) |
-| The worker resolves its workflows: each type name equals its exported function, and the bundle is found when run from source | typecheck (`satisfies` in each `<area>.public.ts`) · unit test `apps/worker/tests/temporal/workflow-bundle.test.ts` |
+| The worker resolves its workflows: each type name equals its exported function, the bundle's one entry (`src/worker.workflows.ts`) re-exports it, and the bundle is found when run from source | typecheck (both `satisfies` in each `<area>.public.ts`) · unit test `apps/worker/tests/temporal/workflow-bundle.test.ts` |
+| A step the api runs and the workflow that calls it agree on its name and shape | typecheck (the activity interface in `@heliogrid/contracts/workflows`, implemented by the api and proxied by the worker) |
+| A product change hands work to Temporal only through an outbox row in its own transaction, and a retried dispatch never starts a second run | unit test `apps/api/tests/orchestration/outbox-handoff.test.ts` · invariant `tenancy-rls` (the outbox in `append-only-ledgers.ts`) · a module starting a workflow without its row: review |
 | The contract is not bypassed: no hand-written wire type, raw HTTP call or hard-coded enum value | review |
 
 ## Tests and regression

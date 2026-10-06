@@ -14,10 +14,10 @@ import type { ApiEnv } from './schema/api';
 
 /**
  * How soon a rotated token is noticed by a connection that cannot ask for one per request.
- * The client SDK takes a FUNCTION and calls it per request; the worker's native connection takes
- * a STRING and must be told, so it asks this often — the one cadence, not one per process.
+ * The client SDK takes a FUNCTION and calls it per request; a native connection — the worker's,
+ * and the api's step host — takes a STRING and must be told, so it asks this often.
  */
-export const IDENTITY_TOKEN_REFRESH_MS = 60_000;
+const IDENTITY_TOKEN_REFRESH_MS = 60_000;
 
 /**
  * The four values a process needs to prove who it is, TAKEN from the schema that declares them
@@ -83,4 +83,30 @@ export function createIdentityTokenReader(path: string): () => string {
     cached = { key, token };
     return token;
   };
+}
+
+/**
+ * Tells a connection that takes its token as a STRING about each rotation, and returns the stop.
+ *
+ * A failed read or push never throws out of the timer: the token in use may still be valid, and an
+ * uncaught throw here would turn a rotation hiccup into a process exit. The timer is unref'd, so it
+ * never keeps a stopping process alive on its own.
+ */
+export function watchIdentityToken(
+  readToken: () => string,
+  push: (token: string) => Promise<void>,
+): () => void {
+  let pushed = readToken();
+  const timer = setInterval(() => {
+    try {
+      const current = readToken();
+      if (current === pushed) return;
+      pushed = current;
+      push(current).catch(() => undefined);
+    } catch {
+      // The file is mid-rotation or gone for a moment; the next tick reads it again.
+    }
+  }, IDENTITY_TOKEN_REFRESH_MS);
+  timer.unref();
+  return () => clearInterval(timer);
 }

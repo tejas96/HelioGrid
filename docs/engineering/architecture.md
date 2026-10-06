@@ -228,9 +228,11 @@ folder. Platform rules: §3.
 
 ### apps/api — NestJS BFF
 Owns: API modules (one per contract router), the session guard and the typed route-access
-map (common/auth — every route declares its access, deny by default), the Temporal gateway
-(common/temporal — the ONE place workflows are started, signalled and queried, every payload
-validated against its contract), the ContractException
+map (common/auth — every route declares its access, deny by default), the Temporal seam
+(common/temporal — the ONE place workflows are started, signalled, queried and scheduled, every
+payload validated against its contract; the outbox's dispatcher; and the step host, which runs
+the activities of the workflows whose data this app owns, beside their repositories, started by
+`main.ts` alone so a test or a script never polls a queue), the ContractException
 error envelope, global ts-rest response validation, the request-id seam (common/request-id.ts
 — assign before CORS and body parsing, echo on every response, expose through CORS), the
 log shape and its redaction (common/logging.ts — the ONE authoring; there is no shared
@@ -240,29 +242,34 @@ common/db (fenced by admin-pool-fenced — db provides the factory, this app bui
 pair). Allowed deps: contracts, domain, db, env, config. Platform scope: backend only
 (Node). Belongs: the HTTP edge, its repositories, and `src/scripts/` commands that drive a
 service. Never: ui/theme/i18n/data (frontend layers — held by the `app-api` Turbo
-boundary tag); raw process.env (env owns it); a timer or any periodic job — every Fly
-instance would run it, so it lives in apps/worker as a Temporal Schedule. Extension point: one Nest module per contract router,
+boundary tag); raw process.env (env owns it); a periodic job — every Fly instance would run
+it, so it is a Temporal Schedule whose workflow lives in apps/worker (the step host's reconnect
+timer is per process by design, not a job). Extension point: one Nest module per contract router,
 repositories fenced by db-access-in-repositories-only.
 
 ### apps/worker — Temporal workflows and activities
 **STATUS: Temporal worker (ADR-0025).** BullMQ was removed in the Track 7 cutover and its
-contract export deleted in Track 9; `no-bullmq` makes re-adding it a build failure. One
-business area exists (`modules/platform/`) and it is deliberately not a product module — the
-cutover proves the path without a product module depending on an unproven mechanism.
+contract export deleted in Track 9; `no-bullmq` makes re-adding it a build failure. Two areas
+exist: `modules/platform/`, deliberately not a product module — the cutover proves the path
+without a product module depending on an unproven mechanism — and `modules/outbox/`, the sweep
+that starts what the api's fast dispatch missed.
 Owns: the single Temporal connection and worker lifecycle (common/temporal — graceful drain on
 SIGTERM), and one folder per business area under src/modules/<area>/ holding
 `<area>.workflows.ts` (DETERMINISTIC — imports nothing from Node, Nest, db, HTTP or env),
 `<area>.activities.types.ts` (the seam the workflow types against), `<area>.activities.ts`
-(idempotent side effects) and `<area>.public.ts`. The workflow BUNDLE is a build artifact; the
-worker refuses to boot without it. Held by: workflows-are-deterministic ·
+(idempotent side effects) and `<area>.public.ts` — or no activity files at all, when the area's
+steps run in apps/api beside their data (the outbox, the catalog import): the workflow then types
+its steps against the activity interface in `@heliogrid/contracts/workflows`, and its registration
+carries no activities. The workflow BUNDLE is a build artifact, built from `src/worker.workflows.ts`,
+which re-exports every area; the worker refuses to boot without it. Held by: workflows-are-deterministic ·
 workflows-take-no-core-modules · temporal-client-fenced · no-bullmq. Allowed deps: contracts, domain,
 db, env, config, adapters. Platform scope: backend only (Node, no HTTP surface). Belongs: work that must
 outlive a request, and every periodic job — each one a Temporal Schedule, because Temporal
 starts a schedule once for the whole cluster however many machines run. Never: HTTP handlers (api owns the edge); frontend layers (held by
 the `app-worker` Turbo boundary tag — allows contracts/domain/db/env/config/adapters).
 Extension point: one folder per business area under `src/modules/<area>/`, exporting a
-`TemporalWorkerRegistration` that `worker.module.ts` composes — a second area is one line at
-the root plus its own folder, with no framework edit. A module NEVER constructs its own
+`TemporalWorkerRegistration` that `worker.module.ts` composes — a new area is its own folder,
+one line in `worker.module.ts` and one in `worker.workflows.ts`, with no framework edit. A module NEVER constructs its own
 connection to the orchestrator (`temporal-client-fenced`); `common/` owns the single one and
 must not import a module (`common-imports-no-modules`), which is why the host depends on the
 registration INTERFACE and the root does the composing.

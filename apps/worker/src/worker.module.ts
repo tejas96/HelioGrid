@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { LoggerModule } from 'nestjs-pino';
 import { TEMPORAL_WORKER_REGISTRATIONS } from './common/temporal/temporal.tokens';
 import { TemporalWorkerHost } from './common/temporal/temporal.worker';
+import { outboxWorkerRegistration } from './modules/outbox/outbox.public';
 import { platformWorkerRegistration } from './modules/platform/platform.public';
 
 /**
@@ -28,7 +29,7 @@ import { platformWorkerRegistration } from './modules/platform/platform.public';
     // `common/` stays beneath the modules and a new area is one line here plus its own folder.
     {
       provide: TEMPORAL_WORKER_REGISTRATIONS,
-      useValue: [platformWorkerRegistration],
+      useValue: [platformWorkerRegistration, outboxWorkerRegistration],
     },
     TemporalWorkerHost,
   ],

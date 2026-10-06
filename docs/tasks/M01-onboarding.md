@@ -1572,6 +1572,21 @@ Recorded at the step's start (2026-10-06), before anything ran. Branch `feat/T-M
 - browser tab `seed` (opened by the preview) → closed. Postgres, object store, Temporal → pre_existing, untouched. The worker never started in part a.
 - logs → `.qa/api.log` 1,379,216 → 1,504,193 bytes; kept.
 
+**Part b, at the start** (2026-10-06) — branch `feat/T-M01-030b` from `origin/main` `09cdb401`. web, api, metro: free. Postgres, object store, Temporal (`heliogrid-temporal`, `heliogrid-temporal-admin`, `heliogrid-temporal-jwks`): pre_existing. No simulator booted, no device attached, the browser pane closed. Database routing: `heliogrid_dev` on both names. Logs: `.qa/api.log` 1,504,193 bytes · `.qa/metro.log` 14,661 · `.qa/web.log` absent. The api and the worker are `started_by_task` for the live check, through their launch configurations.
+
+**Part b, at the end** (resource → initial → final):
+- worker → not running → started once through the `worker` launch configuration (serverId `4a84ce9b…`), stopped; no `tsx watch` left.
+- api `8084` → free → started once through the `api` launch configuration (serverId `d6f5585c…`), stopped; free again.
+- database routing → `heliogrid_dev` on both → `heliogrid_test` for the tests, the live check and the gate → `heliogrid_dev` on both, the file byte-identical to its start.
+- `heliogrid_test` → migration 0018 applied. `heliogrid_dev` untouched (0015).
+- Temporal → pre_existing → the `outbox-sweep` schedule this task created is deleted and its one waiting run terminated; nothing of this task runs there.
+- browser tabs `seed`, `tab-1` (opened by the previews) → closed. Postgres, object store → pre_existing, untouched.
+- logs → `.qa/api.log` 1,504,193 → 1,774,976 bytes; kept.
+
+**Part b measurements** — about 95 Main tool calls; helper runs: `reviewer` 2 passes (119.8k + 157.3k tokens), `evaluator` 1 gate run (33.6k); no QA helper (no route; `qa-api` rows are parts a, c, d). Main's own tokens are not measured by this session. Planned about 33 files; built 37 — the deltas in the commit card.
+
+**Part b, planted reds** — each seen failing by name in `outbox-handoff.test.ts`, then restored: the event written through a separate connection → *leaves no event when the change that wrote it fails after the write*; `REJECT_DUPLICATE` removed, and the "already started" catch removed → *starts with USE_EXISTING and REJECT_DUPLICATE, and reads a finished run as started*; the grace inverted → *sweeps an event the fast path missed, and leaves one still inside its grace*; the tenant check absent → *refuses an event whose input names another tenant …*; the per-event catch removed, and the known-name filter removed → *sweeps past an event that fails to start and one whose workflow this release lacks*.
+
 **Part a measurements** — about 120 Main tool calls; helper runs: `qa-api` 1 (26.8k tokens), `reviewer` 3 passes (97.4k + 117.4k + 122.8k — the third because a money rule changed), `evaluator` 2 gate runs (25.1k + 32.2k — the first stopped on the stale OpenAPI file it regenerated); Main's own tokens are not measured by this session. Planned about 17 files; built 31 changed files, the deltas in the commit card.
 
 #### Plan
@@ -1606,7 +1621,7 @@ Recorded at the step's start (2026-10-06), before anything ran. Branch `feat/T-M
 14. **A rate enters dated the run's day in the tenant's time zone**, in the tenant's currency, refused finer than its minor unit by the catalog's existing check; the actor of every write and audit entry is the job's `started_by`.
 15. **Access** — every route needs `onboarding.manage_catalog` held outright (`admitWrite`): an import writes prices, and a Finance session never writes one (owner ruling 2026-10-06). A read of another tenant's job is 404.
 16. **Migration numbers are taken at their slice** — 0017 (part a), 0018 (part b), 0019 (part c); the task's "0009" lines are corrected in the same change (Law 8), and the DONE WHEN line 6 number with them.
-17. **The proofs move with the activities** — DONE WHEN 1 and 2 name `apps/worker/tests/catalog/…`; the activities live in the API, so those files are `apps/api/tests/catalog/import-run.test.ts` and `import-idempotency.test.ts`. The worker proves its workflow's step order with Temporal's test environment.
+17. **The proofs move with the activities** — DONE WHEN 1 and 2 name `apps/worker/tests/catalog/…`; the activities live in the API, so those files are `apps/api/tests/catalog/import-run.test.ts` and `import-idempotency.test.ts`. No worker test runs a workflow on Temporal's test environment (owner, part b): a workflow's step order is read live through `heliogrid-temporal-admin`.
 18. **`file.content_type` becomes text held by a CHECK** — owner ruling 2026-10-06, found at build: Postgres caps an enum label at 63 bytes and the `.xlsx` type is 65. The domain tuple stays the one list; the CHECK is built from it, and `enum-parity` reads the CHECK back against the contract as it read the enum. Safe both ways while a release rolls: the column holds the same strings.
 19. **Storing a file needs its capability held outright** — `mayUploadFile` refuses a limited cell, so Finance's "view prices & margins" never stores a price list. No other file rule has a limited cell, so the logo is unchanged.
 20. **A price cell is read in the tenant's currency, with no market's marks hard-coded** — the market pack's own sign (`moneySymbol`) and ISO code are taken off and any other sign leaves the cell unreadable, so `$ 13,200` is never read as rupees; grouping is Indian or Western but never a mix, and the scale is the money module's rule (`minorUnitsOfDecimal`), not a second copy. India's informal `Rs.` and `/-` are not read: such a cell needs attention and is fixed in place. They would be a market fact on the pack, and no pack key holds them today.
@@ -1629,16 +1644,17 @@ Recorded at the step's start (2026-10-06), before anything ran. Branch `feat/T-M
 | a | contracts | `openapi/openapi.json` (regenerated) | §4.1 |
 | a | tests | `packages/domain/tests/catalog/import-cells.test.ts`, `import-columns.test.ts`, `import-matching.test.ts`, `packages/domain/tests/files/file-signature.test.ts` (renamed), `subject-rules.test.ts`, `apps/api/tests/files/spreadsheet.test.ts` | `.claude/rules/testing.md` |
 | b | db | `migrations/0018_orchestration_outbox.sql`, `src/schema/outbox.ts`, `src/schema/index.ts` | §4.2 |
-| b | contracts | `src/workflows/outbox.ts` (`outboxSweepWorkflow`), `src/workflows/registry.ts` (`TASK_QUEUES`), `src/workflows/index.ts` | §4.1 — workflow messages |
-| b | api | `src/common/temporal/temporal.activity-host.ts`, `temporal.tokens.ts`, `temporal.module.ts`, `outbox.repository.ts`, `outbox.admin.repository.ts`, `outbox.dispatcher.ts`, `outbox.activities.ts`, `src/app.module.ts`, `package.json` | the one Temporal seam (`temporal-client-fenced`) |
-| b | worker | `src/modules/outbox/outbox.workflows.ts`, `outbox.activities.types.ts`, `outbox.public.ts`, `src/worker.module.ts` | §2 worker — one folder per area |
-| b | tests | `apps/api/tests/orchestration/outbox-handoff.test.ts`, `apps/worker/tests/outbox/sweep.test.ts` | testing rules |
-| b | docs | `docs/engineering/architecture.md`, `infra/temporal/README.md`, `.claude/protections.md` | Law 8 · Law 12 |
+| b | contracts | `src/workflows/outbox.ts` (`outboxSweepWorkflow`, `OutboxActivities`), `src/workflows/registry.ts` (`TASK_QUEUES`), `src/workflows/index.ts` | §4.1 — workflow messages |
+| b | env | `src/temporal.ts` (`watchIdentityToken`), `src/server.ts` | env owns the identity reader |
+| b | api | `src/common/temporal/temporal.activity-host.ts`, `temporal.gateway.ts`, `temporal.module.ts`, `outbox.repository.ts`, `outbox.admin.repository.ts`, `outbox.dispatcher.ts`, `outbox.activities.ts`, `src/main.ts`, `package.json` | the one Temporal seam (`temporal-client-fenced`) |
+| b | worker | `src/modules/outbox/outbox.workflows.ts`, `outbox.public.ts`, `src/modules/platform/platform.public.ts`, `src/worker.workflows.ts`, `src/worker.module.ts`, `src/main.ts`, `src/common/temporal/temporal.tokens.ts`, `temporal.connection.ts`, `scripts/build-workflow-bundle.mjs` | §2 worker — one folder per area |
+| b | tests | `apps/api/tests/orchestration/outbox-handoff.test.ts`, `apps/api/tests/support/fixture.ts`, `tests/invariants/src/append-only-ledgers.ts` | testing rules · Law 12 |
+| b | docs | `docs/engineering/architecture.md`, `infra/temporal/README.md`, `.claude/protections.md`, `apps/worker/CLAUDE.md`, `apps/api/CLAUDE.md`, `docs/tasks/deferred.md` | Law 8 · Law 12 |
 | c | db | `migrations/0019_catalog_import.sql`, `src/schema/catalog-import.ts`, `src/schema/index.ts` | §4.2 |
 | c | contracts | `src/catalog-import.ts` (five routes), `src/index.ts`, `src/workflows/catalog-import.ts`, `src/workflows/index.ts`, `openapi/openapi.json` | §4.1 |
 | c | api | `src/modules/catalog/catalog.import.controller.ts`, `catalog.import.service.ts`, `catalog.import.repository.ts`, `catalog.import.activities.ts`, `internal/spreadsheet.ts` (the `exceljs` reader), `catalog.module.ts`, `catalog.public.ts`, `package.json` | the catalog module (decision 2 of `T-M01-031`: the rates and imports are panels of one catalog surface) |
 | c | worker | `src/modules/catalog/catalog.workflows.ts`, `catalog.activities.types.ts`, `catalog.public.ts`, `src/worker.module.ts` | §2 worker |
-| c | tests | `apps/api/tests/catalog/import-handoff.test.ts`, `import-preview.test.ts`, `apps/worker/tests/catalog/import-workflow.test.ts` | testing rules |
+| c | tests | `apps/api/tests/catalog/import-handoff.test.ts`, `import-preview.test.ts` | testing rules |
 | d | contracts | `src/catalog-import.ts` (`POST …/run`), `openapi/openapi.json` | §4.1 |
 | d | api | `catalog.import.controller.ts`, `catalog.import.service.ts`, `catalog.import.activities.ts`, `catalog.import-run.repository.ts` | the catalog module |
 | d | worker | `src/modules/catalog/catalog.workflows.ts` (the run phase) | §2 worker |
@@ -1677,14 +1693,29 @@ Q3 runs in part a; Q4 in part b; Q6–Q7 in part c; Q8–Q9 in part d. No row to
 | part | delivers | AC | depends on | status |
 |---|---|---|---|---|
 | a | the import rules (guess, match, vocabularies) and spreadsheets in the one file table | AC-4, AC-5, AC-7 | `T-M01-031` (stacked) | shipped |
-| b | the handoff — outbox, dispatcher, sweep schedule, the API's activity host | AC-3, AC-6 (outbox) | a | open |
+| b | the handoff — outbox, dispatcher, sweep schedule, the API's activity host | AC-3, AC-6 (outbox) | a | shipped |
 | c | the job up to the preview — start, read, mapping, matching, row fixes | AC-1 (preview), AC-3 (import), AC-5, AC-6, AC-8 | b | open |
 | d | the run and the report | AC-1 (run), AC-2, AC-9 | c | open |
 
 **Part a checklist** — [x] domain import vocabularies · [x] column guess · [x] match rule · [x] file types, `catalog` subject, signature · [x] migration 0017 · [x] file service and lookup · [x] Q1 · [x] Q2 · [x] Q3 · [ ] Q10 (the PR's `quality` lane)
-**Part b checklist** — [ ] migration 0018 and schema · [ ] workflow contract and queues · [ ] activity host · [ ] outbox write, dispatcher, sweep · [ ] worker sweep workflow · [ ] docs · [ ] Q4 · [ ] Q5 (outbox) · [ ] Q10
+**Part b checklist** — [x] migration 0018 and schema · [x] workflow contract and queues · [x] activity host · [x] outbox write, dispatcher, sweep · [x] worker sweep workflow · [x] docs · [x] Q4 · [x] Q5 (outbox) · [ ] Q10
 **Part c checklist** — [ ] migration 0019 and schema · [ ] five routes · [ ] read and match activities, spreadsheet reader · [ ] workflow phases read and match · [ ] Q5 · [ ] Q6 · [ ] Q7 · [ ] Q10
 **Part d checklist** — [ ] run route · [ ] apply activity and keys · [ ] workflow run phase · [ ] Q8 · [ ] Q9 · [ ] Q10
+
+#### Part b · Plan
+Found at part b's start, each with one reason; the owner chose both open ones on 2026-10-06.
+1. **A finished workflow is never started twice.** `USE_EXISTING` joins a RUNNING workflow only; once one has completed, a second dispatch of the same event started a new run. The gateway's start adds `REJECT_DUPLICATE` and reads "already started" as done.
+2. **Only the serving process hosts the steps.** `main.ts` starts the activity host after it listens; a test or a `src/scripts/` command never polls. A test process runs on `heliogrid_test`, and a poller there would take the local dev api's sweeps onto the wrong database.
+3. **The step signatures are a contract.** The workflow (worker) and its steps (api) now run in two processes, so `OutboxActivities` lives in `@heliogrid/contracts/workflows` and both sides type against it; the worker's `outbox.activities.types.ts` is not made.
+4. **The token push is written once.** The api's step host needs the native connection the worker has; the rotated-token push moves to `@heliogrid/env/server` (`watchIdentityToken`) and both apps call it.
+5. **One workflow bundle entry.** The bundle took one area's file; `src/worker.workflows.ts` re-exports every area's workflows and the build reads it.
+6. **The outbox is append-only for `app_user`** — it joins `APPEND_ONLY_LEDGERS`; the dispatcher marks rows on the admin path.
+7. **No worker sweep test** (owner, option 1 of 2: no `@temporalio/testing`). The sweep workflow is one step call; the compiler holds its names; the live check reads the schedule's runs through `heliogrid-temporal-admin`. The dispatch rule is proven by `outbox-handoff.test.ts` on `heliogrid_test`.
+8. **One part b** (owner, option 1 of 2), about 33 files.
+
+Part b's files, replacing its `Where` rows: db `migrations/0018_orchestration_outbox.sql`, `src/schema/outbox.ts`, `src/schema/index.ts` · contracts `src/workflows/outbox.ts`, `registry.ts`, `index.ts` · env `src/temporal.ts`, `src/server.ts` · api `src/common/temporal/temporal.activity-host.ts`, `temporal.gateway.ts`, `temporal.module.ts`, `outbox.repository.ts`, `outbox.admin.repository.ts`, `outbox.dispatcher.ts`, `outbox.activities.ts`, `src/main.ts`, `package.json` · worker `src/modules/outbox/outbox.workflows.ts`, `outbox.public.ts`, `src/modules/platform/platform.public.ts`, `src/worker.workflows.ts`, `src/worker.module.ts`, `src/main.ts`, `src/common/temporal/temporal.tokens.ts`, `temporal.connection.ts`, `scripts/build-workflow-bundle.mjs` · tests `apps/api/tests/orchestration/outbox-handoff.test.ts`, `apps/api/tests/support/fixture.ts`, `tests/invariants/src/append-only-ledgers.ts` · docs `architecture.md`, `infra/temporal/README.md`, `.claude/protections.md`, `apps/worker/CLAUDE.md`, `apps/api/CLAUDE.md`, `docs/tasks/deferred.md`, this task · `pnpm-lock.yaml`.
+
+For part c: `catalogImport` joins `OUTBOX_WORKFLOWS` (`packages/contracts/src/workflows/outbox.ts`); the platform healthcheck stays there only while `outbox-handoff.test.ts` starts it, and part c moves that test onto `catalogImport` and drops it. Its input carries `tenantId`, which `recordOutboxEvent` holds to the transaction's tenant.
 
 ### T-M01-031 · Price book
 **Type:** engine · **Tier:** P0

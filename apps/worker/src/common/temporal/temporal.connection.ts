@@ -1,7 +1,7 @@
 import {
   createIdentityTokenReader,
-  IDENTITY_TOKEN_REFRESH_MS,
   temporalTlsFrom,
+  watchIdentityToken,
 } from '@heliogrid/env/server';
 import { NativeConnection } from '@temporalio/worker';
 import { ENV } from '../../config/env';
@@ -13,7 +13,7 @@ import { ENV } from '../../config/env';
  *
  * `NativeConnection`, not the client's `Connection`: a worker polls through the Rust core, and
  * handing it a JS-side connection silently creates a second one. It takes the token as a STRING
- * and cannot ask for one per request, so the rotation it cannot notice is pushed in below.
+ * and cannot ask for one per request, so each rotation is pushed in (`watchIdentityToken`).
  */
 export interface WorkerConnection {
   connection: NativeConnection;
@@ -28,16 +28,6 @@ export async function connectToTemporal(): Promise<WorkerConnection> {
     apiKey: readToken(),
   });
 
-  let pushed = readToken();
-  const timer = setInterval(() => {
-    const current = readToken();
-    if (current === pushed) return;
-    pushed = current;
-    // Failing to refresh must not take the worker down: the current token may still be valid,
-    // and a crash here would turn a rotation hiccup into an outage.
-    void connection.setApiKey(current).catch(() => undefined);
-  }, IDENTITY_TOKEN_REFRESH_MS);
-  timer.unref();
-
-  return { connection, stopTokenRefresh: () => clearInterval(timer) };
+  const stopTokenRefresh = watchIdentityToken(readToken, (token) => connection.setApiKey(token));
+  return { connection, stopTokenRefresh };
 }

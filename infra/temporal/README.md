@@ -115,9 +115,10 @@ reason the **public** frontend can stay strictly authorized.
 | Namespace | `heliogrid` | One namespace. Per-tenant namespaces would put tenancy in the orchestrator instead of in the database where RLS already enforces it. Revisit only if a tenant needs isolated retention or throughput guarantees. |
 | Retention | **30 days** | Retention covers CLOSED workflows and exists for debugging and replay, not for audit — `audit_log` is the system of record for who did what. 30 days also bounds §6's "wait until every pre-patch execution has closed". |
 | History shards | **512, IMMUTABLE** | Cannot be changed after initialisation: a different count means a new cluster and a migration of every workflow. 512 is the smallest value that does not cap a single machine's throughput before the machine does. Lower is unrecoverable; higher spends shard overhead on parallelism one machine cannot use. |
-| Task queues | `heliogrid-platform` | One per business area as modules land. A queue is a scaling and isolation boundary — a slow PDF render must not starve a lead assignment. |
+| Task queues | `heliogrid-platform`, `heliogrid-outbox` | One per business area as modules land. A queue is a scaling and isolation boundary — a slow PDF render must not starve a lead assignment. A queue's workflow tasks are polled by the worker; its activity tasks by whichever process runs its steps — the api, for steps that write the api's data. |
+| Schedules | `outbox-sweep` (every minute, overlap `SKIP`) | Created by the api's step host when absent, once per cluster. A periodic job is a schedule, never a timer in a process every machine runs. |
 | Workflow ids | `<area>-<stable-domain-id>` | Derived, never generated. The id IS the dedupe key (§5). |
-| Conflict policy | `USE_EXISTING` for dispatch | A retry attaches to the run in flight. `REJECT_DUPLICATE` is proven to refuse reuse of a completed id — both behaviours are checked. |
+| Conflict policy | `USE_EXISTING` + `REJECT_DUPLICATE` for dispatch | A retry attaches to the run in flight, and a retry after the run finished is refused — the gateway reads that refusal as "already started". Both behaviours are proven by the spike. |
 | Payload rule | ids, never documents | `limit.blobSize.warn` 256 KB, `error` 2 MB (Temporal's own ceiling is 4 MB per message). A payload approaching this is a design error, not a tuning opportunity. |
 | PII rule | **no PII in workflow arguments, signals or search attributes** | History is retained for 30 days and is readable by any operator. Pass a tenant-scoped id; the activity reads the row. |
 | Search attributes | none yet | Each is a visibility-schema change. The first module that needs to list by a business field adds one, with its migration. |
@@ -139,10 +140,13 @@ mark the row done. Every step is retryable because the id is stable.
 start, then retries — twice — yields **exactly one** workflow and **exactly one** set of
 effects.
 
-> **What is NOT proven.** The outbox TABLE is product schema, and product database work is out
-> of scope by owner ruling (2026-08-25). The atomic half — that the row and the product change
-> commit together — arrives with the first migration. Until then this is a proven dispatcher
-> protocol on top of an unproven transaction boundary.
+The table is `orchestration_outbox` (migration 0018). A repository writes the row in its own
+tenant transaction (`recordOutboxEvent`, `apps/api/src/common/temporal/`); the service starts the
+workflow right after the commit (`OutboxDispatcher.dispatchNow`); the `outbox-sweep` schedule runs
+`outboxSweep` every minute, whose step starts every event still undispatched after 30 seconds.
+The start joins a running workflow (`USE_EXISTING`) and refuses to restart a finished one
+(`REJECT_DUPLICATE`, read as "already started"). `apps/api/tests/orchestration/outbox-handoff.test.ts`
+proves the atomic half and the single workflow id.
 
 Activities must be idempotent regardless: Temporal retries them, and a retry that
 double-applies is the defect the whole retry model rests on not having.
@@ -243,7 +247,6 @@ with its effects applied once.
 
 - **It is not HA.** One machine. Restarts and deploys pause orchestration; persisted workflows
   recover afterwards. Track 8 records this as a planned production limitation.
-- **The atomic outbox write** — see §5.
 - **api/worker privilege separation** — see §3.
 - **Load, soak, and alert delivery.** Nothing here says what happens at volume.
 - **A production CA.** Everything in `pki/` is 2048-bit development material minted by a shell

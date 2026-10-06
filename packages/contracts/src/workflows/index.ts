@@ -10,6 +10,13 @@
  * former sibling. Do not add one back.
  */
 
+export type { OutboxActivities } from './outbox';
+export {
+  OUTBOX_SWEEP_SCHEDULE_ID,
+  OUTBOX_WORKFLOW_NAMES,
+  outboxSweepWorkflow,
+  outboxWorkflowNamed,
+} from './outbox';
 export { platformHealthcheckWorkflow } from './platform';
 export type {
   TaskQueue,
