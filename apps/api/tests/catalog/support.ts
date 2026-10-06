@@ -17,6 +17,9 @@ import { CatalogAdminRepository } from '../../src/modules/catalog/catalog.admin.
 import { CatalogPlatformService } from '../../src/modules/catalog/catalog.platform.service';
 import { CatalogPricesRepository } from '../../src/modules/catalog/catalog.prices.repository';
 import { CatalogRatesRepository } from '../../src/modules/catalog/catalog.rates.repository';
+import { CatalogReleaseReadsRepository } from '../../src/modules/catalog/catalog.release-reads.repository';
+import { CatalogReleasesRepository } from '../../src/modules/catalog/catalog.releases.repository';
+import { CatalogReleasesService } from '../../src/modules/catalog/catalog.releases.service';
 import { CatalogRepository } from '../../src/modules/catalog/catalog.repository';
 import { CatalogService } from '../../src/modules/catalog/catalog.service';
 import { CatalogSliceRepository } from '../../src/modules/catalog/catalog.slice.repository';
@@ -40,6 +43,16 @@ export function catalogServiceOf(pools: Pools): CatalogService {
     new CatalogPricesRepository(pools.tenants),
     new CatalogRatesRepository(pools.tenants),
     marketsOf(pools),
+    new CreationReplies(new PinoLogger({ pinoHttp: { level: 'silent' } })),
+  );
+}
+
+/** The release service as `catalog.module.ts` composes it, over the real repositories. */
+export function catalogReleasesServiceOf(pools: Pools): CatalogReleasesService {
+  return new CatalogReleasesService(
+    new CatalogReleasesRepository(pools.tenants),
+    new CatalogReleaseReadsRepository(pools.tenants),
+    catalogServiceOf(pools),
     new CreationReplies(new PinoLogger({ pinoHttp: { level: 'silent' } })),
   );
 }

@@ -1,8 +1,10 @@
+import { z } from 'zod';
 import type { Certification } from '../certification/pack';
+import { isCalendarDate } from '../format/holidays';
 import { canonicalJson } from '../market/payload';
 import { minorUnits } from '../money/minor-units';
 import type { CatalogRate } from './resolve';
-import type { CatalogSpec } from './specs';
+import { type CatalogSpec, catalogSpecSchema } from './specs';
 
 /**
  * A catalog release's lines (M01-43): what one publish says about one item, as a before and an
@@ -40,32 +42,76 @@ export interface OverrideSnapshot {
 
 export type CatalogReleaseSnapshot = OwnItemSnapshot | OverrideSnapshot;
 
-/** A snapshot as a line's jsonb holds it: the rate's amount a plain number of minor units. */
-type Stored<Snapshot extends { readonly rate: CatalogRate | null }> = Omit<Snapshot, 'rate'> & {
-  readonly rate: (Omit<CatalogRate, 'amount'> & { readonly amount: number }) | null;
-};
-export type CatalogReleaseSnapshotEnvelope = Stored<OwnItemSnapshot> | Stored<OverrideSnapshot>;
+const storedRateSchema = z
+  .object({
+    amount: z.number(),
+    currency: z.string(),
+    effectiveOn: z.string().refine(isCalendarDate),
+  })
+  .nullable();
 
-/** A stored line read whole: the amount re-minted through the brand's one door (`F1-07`). */
-export function readReleaseSnapshot(
-  stored: CatalogReleaseSnapshotEnvelope,
-): CatalogReleaseSnapshot {
+/**
+ * A stored side as one schema: a key a later release adds is dropped and the spec is read through
+ * its kind's envelope, so a line written by a newer machine compares equal on an older one — or
+ * every item would read as `changed` on the first publish after a field is added.
+ */
+const storedSnapshotSchema = z.discriminatedUnion('kind', [
+  z.object({
+    kind: z.literal('own_item'),
+    brand: z.string(),
+    model: z.string(),
+    spec: catalogSpecSchema,
+    certifications: z
+      .array(z.object({ scheme: z.string(), reference: z.string().nullable() }))
+      .readonly(),
+    preferred: z.boolean(),
+    archived: z.boolean(),
+    rate: storedRateSchema,
+  }),
+  z.object({
+    kind: z.literal('override'),
+    taxPct: z.string().nullable(),
+    hidden: z.boolean(),
+    preferred: z.boolean(),
+    rate: storedRateSchema,
+  }),
+]);
+
+/** A snapshot as a line's jsonb holds it: the rate's amount a plain number of minor units. */
+export type CatalogReleaseSnapshotEnvelope = z.input<typeof storedSnapshotSchema>;
+
+/**
+ * A stored line read whole: unknown keys dropped, the amount re-minted through its one door
+ * (`F1-07`).
+ */
+export function readReleaseSnapshot(stored: unknown): CatalogReleaseSnapshot {
+  const snapshot = storedSnapshotSchema.parse(stored);
   const rate =
-    stored.rate === null ? null : { ...stored.rate, amount: minorUnits(stored.rate.amount) };
-  return { ...stored, rate };
+    snapshot.rate === null ? null : { ...snapshot.rate, amount: minorUnits(snapshot.rate.amount) };
+  return { ...snapshot, rate };
 }
 
 /**
- * What a line says, or `null` for no line: an item with no earlier line is `added`; an own SKU
- * archived since its last line is `archived`, whatever else moved; anything else that differs is
- * `changed`; two equal sides say nothing — a change made and reverted between releases is not a
- * change. Equal as canonical JSON, so the order keys arrive in never reads as a change.
+ * An item no release has named yet that a design could not pick with anything to say: an override
+ * with every field unset and no rate, or an own SKU archived before its first line.
+ */
+function saysNothingYet(after: CatalogReleaseSnapshot): boolean {
+  if (after.kind === 'own_item') return after.archived;
+  return after.taxPct === null && !after.hidden && !after.preferred && after.rate === null;
+}
+
+/**
+ * What a line says, or `null` for no line: an item with no earlier line is `added`, unless it says
+ * nothing yet; an own SKU archived since its last line is `archived`, whatever else moved;
+ * anything else that differs is `changed`; two equal sides say nothing — a change made and
+ * reverted between releases is not a change. Equal as canonical JSON, so the order keys arrive
+ * in never reads as a change.
  */
 export function changeKindOf(
   before: CatalogReleaseSnapshot | null,
   after: CatalogReleaseSnapshot,
 ): ReleaseChangeKind | null {
-  if (before === null) return 'added';
+  if (before === null) return saysNothingYet(after) ? null : 'added';
   if (
     after.kind === 'own_item' &&
     before.kind === 'own_item' &&

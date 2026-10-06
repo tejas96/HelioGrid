@@ -1,5 +1,6 @@
 import type {
   BaseErrorCode,
+  CatalogReleaseErrorCode,
   InvitationErrorCode,
   TenantErrorCode,
   TenantSettingsErrorCode,
@@ -48,7 +49,7 @@ const COPY: Record<BaseErrorCode, { id: string }> = {
  * here, once, for both platforms.
  */
 const ROUTE_COPY: Record<
-  TenantErrorCode | InvitationErrorCode | TenantSettingsErrorCode,
+  TenantErrorCode | InvitationErrorCode | TenantSettingsErrorCode | CatalogReleaseErrorCode,
   { id: string }
 > = {
   LAST_OWNER: /*i18n*/ {
@@ -70,6 +71,12 @@ const ROUTE_COPY: Record<
   },
   TAX_REGISTRATION_MALFORMED: /*i18n*/ {
     id: 'That does not read as a registration of this type. Check it against the format shown.',
+  },
+  CATALOG_LABEL_TAKEN: /*i18n*/ {
+    id: 'A release already has this name. Choose another name.',
+  },
+  CATALOG_NOTHING_CHANGED: /*i18n*/ {
+    id: 'Nothing in the catalog changed since the last release, so there is nothing to publish.',
   },
 };
 

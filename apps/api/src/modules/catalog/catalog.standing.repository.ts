@@ -12,7 +12,7 @@ import { type AuditEntryToWrite, memberAct } from '../audit/audit.public';
 
 /**
  * What every catalog write does first, on the caller's transaction: take the catalog lock
- * (decision 10) — what part c's publish reads changes under — and resolve the item id inside
+ * (decision 10) — the publish snapshots the catalog under it — and resolve the item id inside
  * this tenant and market, since a foreign key ignores RLS. Nothing here deletes: a product is
  * archived (`M01-42`), a price is appended (`M01-44`).
  */
@@ -24,7 +24,7 @@ export type Standing =
   | { readonly is: 'own_item'; readonly kind: ComponentKind; readonly archived: boolean }
   | { readonly is: 'platform_item'; readonly overrideId: string | null };
 
-/** Every tenant catalog write serialises here, and part c's publish takes the same lock. */
+/** Every tenant catalog write serialises here, and the release publish takes the same lock. */
 export async function lockCatalog(tx: TenantScopedDb, tenantId: string): Promise<void> {
   await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`catalog:${tenantId}`}))`);
 }

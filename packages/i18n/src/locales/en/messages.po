@@ -198,6 +198,11 @@ msgid "A company name is needed — it goes on every proposal you send."
 msgstr "A company name is needed — it goes on every proposal you send."
 
 #. js-lingui-explicit-id
+#: src/copy/api-error.ts:75
+msgid "A release already has this name. Choose another name."
+msgstr "A release already has this name. Choose another name."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:58
 msgid "About code limits"
 msgstr "About code limits"
@@ -228,7 +233,7 @@ msgid "Already on HelioGrid?"
 msgstr "Already on HelioGrid?"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:58
+#: src/copy/api-error.ts:59
 msgid "An invite already went to this number and is still open."
 msgstr "An invite already went to this number and is still open."
 
@@ -524,17 +529,17 @@ msgid "HelioGrid accounts are mobile numbers. Google never makes a second accoun
 msgstr "HelioGrid accounts are mobile numbers. Google never makes a second account."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:82
+#: src/copy/api-error.ts:89
 msgid "HelioGrid could not be reached, from your side or ours. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid could not be reached, from your side or ours. If you were saving, check whether it saved before trying again."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:85
+#: src/copy/api-error.ts:92
 msgid "HelioGrid did not answer in time. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid did not answer in time. If you were saving, check whether it saved before trying again."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:88
+#: src/copy/api-error.ts:95
 msgid "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
 
@@ -724,6 +729,11 @@ msgstr "Nothing else is asked for here — no tax registration, no logo, no pric
 #: src/copy/notifications.ts:47
 msgid "Nothing has reached you yet"
 msgstr "Nothing has reached you yet"
+
+#. js-lingui-explicit-id
+#: src/copy/api-error.ts:78
+msgid "Nothing in the catalog changed since the last release, so there is nothing to publish."
+msgstr "Nothing in the catalog changed since the last release, so there is nothing to publish."
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:18
@@ -1032,12 +1042,12 @@ msgid "SMS codes paused for {lockMinutes} minutes"
 msgstr "SMS codes paused for {lockMinutes} minutes"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:20
+#: src/copy/api-error.ts:21
 msgid "Some fields need attention. Check the form and retry."
 msgstr "Some fields need attention. Check the form and retry."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:34
+#: src/copy/api-error.ts:35
 msgid "Someone changed this while you were editing. Refresh and retry."
 msgstr "Someone changed this while you were editing. Refresh and retry."
 
@@ -1047,7 +1057,7 @@ msgid "Something on our side failed"
 msgstr "Something on our side failed"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:42
+#: src/copy/api-error.ts:43
 msgid "Something went wrong on our side. Try again."
 msgstr "Something went wrong on our side. Try again."
 
@@ -1107,7 +1117,7 @@ msgid "Team"
 msgstr "Team"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:37
+#: src/copy/api-error.ts:38
 msgid "That change isn't allowed here."
 msgstr "That change isn't allowed here."
 
@@ -1127,7 +1137,7 @@ msgid "That code is used up"
 msgstr "That code is used up"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:71
+#: src/copy/api-error.ts:72
 msgid "That does not read as a registration of this type. Check it against the format shown."
 msgstr "That does not read as a registration of this type. Check it against the format shown."
 
@@ -1142,12 +1152,12 @@ msgid "That number already has an account"
 msgstr "That number already has an account"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:33
+#: src/copy/api-error.ts:34
 msgid "That record isn't available."
 msgstr "That record isn't available."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:38
+#: src/copy/api-error.ts:39
 msgid "That request is too large. Reduce it and retry."
 msgstr "That request is too large. Reduce it and retry."
 
@@ -1182,7 +1192,7 @@ msgid "The code we checked was for"
 msgstr "The code we checked was for"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:65
+#: src/copy/api-error.ts:66
 msgid "The invite could not be sent. Try again in a moment."
 msgstr "The invite could not be sent. Try again in a moment."
 
@@ -1202,7 +1212,7 @@ msgid "The SMS network turned it away"
 msgstr "The SMS network turned it away"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:68
+#: src/copy/api-error.ts:69
 msgid "The tranches must add up to exactly 100%. Place the remainder before saving."
 msgstr "The tranches must add up to exactly 100%. Place the remainder before saving."
 
@@ -1222,7 +1232,7 @@ msgid "This Google login cannot be linked"
 msgstr "This Google login cannot be linked"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:64
+#: src/copy/api-error.ts:65
 msgid "This invite has run out. Ask to be invited again."
 msgstr "This invite has run out. Ask to be invited again."
 
@@ -1237,7 +1247,7 @@ msgid "This is version {current}. HelioGrid now needs version {required} or late
 msgstr "This is version {current}. HelioGrid now needs version {required} or later."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:57
+#: src/copy/api-error.ts:58
 msgid "This number is already on your team."
 msgstr "This number is already on your team."
 
@@ -1247,7 +1257,7 @@ msgid "This number is linked to another Google account"
 msgstr "This number is linked to another Google account"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:54
+#: src/copy/api-error.ts:55
 msgid "This person is the only EPC Owner. A company always keeps at least one EPC Owner and one person who can manage the team."
 msgstr "This person is the only EPC Owner. A company always keeps at least one EPC Owner and one person who can manage the team."
 
@@ -1262,7 +1272,7 @@ msgid "This screen arrives in a later update."
 msgstr "This screen arrives in a later update."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:91
+#: src/copy/api-error.ts:98
 msgid "This stopped before HelioGrid answered. If you were saving, check whether it saved before trying again."
 msgstr "This stopped before HelioGrid answered. If you were saving, check whether it saved before trying again."
 
@@ -1287,7 +1297,7 @@ msgid "Today · {date}"
 msgstr "Today · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:41
+#: src/copy/api-error.ts:42
 msgid "Too many attempts. Wait a moment and retry."
 msgstr "Too many attempts. Wait a moment and retry."
 
@@ -1487,13 +1497,13 @@ msgid "You can ask for {perWindow} codes every {windowMinutes} minutes, and {day
 msgstr "You can ask for {perWindow} codes every {windowMinutes} minutes, and {day} a day."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:29
+#: src/copy/api-error.ts:30
 msgid "You don't have access to do that."
 msgstr "You don't have access to do that."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:23
-#: src/copy/api-error.ts:28
+#: src/copy/api-error.ts:24
+#: src/copy/api-error.ts:29
 msgid "You're signed out. Sign in to continue."
 msgstr "You're signed out. Sign in to continue."
 
@@ -1524,12 +1534,12 @@ msgid "Your company has not published its grievance officer yet. Ask your admin 
 msgstr "Your company has not published its grievance officer yet. Ask your admin who handles questions about your data."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:61
+#: src/copy/api-error.ts:62
 msgid "Your company has sent today’s invites. Try again tomorrow."
 msgstr "Your company has sent today’s invites. Try again tomorrow."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:30
+#: src/copy/api-error.ts:31
 msgid "Your current plan doesn't include this."
 msgstr "Your current plan doesn't include this."
 

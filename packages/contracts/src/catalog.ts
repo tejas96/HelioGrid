@@ -26,8 +26,8 @@ const c = initContract();
 /**
  * The catalog (`T-M01-027`): its closed sets, derived from domain's tuples and mirrored as
  * pgEnums (invariant `enum-parity`); the market-scoped read through `resolveCatalogItem`; and the
- * tenant's writes — own SKUs, the sparse override, the dated rate ledger. The release routes land
- * with part c.
+ * tenant's writes — own SKUs, the sparse override, the dated rate ledger. The releases are
+ * `catalog-releases.ts`.
  */
 
 /** What a catalog item is (`M01-45`). */
@@ -48,10 +48,10 @@ export type ReleaseChangeKind = z.infer<typeof releaseChangeKindSchema>;
 
 /** Which tier supplied a resolved value (`MS4-07`'s second axis). */
 const catalogSourceSchema = z.enum(CATALOG_SOURCES);
-const itemSourceSchema = catalogSourceSchema.extract(['platform_item', 'own_item']);
+export const catalogItemSourceSchema = catalogSourceSchema.extract(['platform_item', 'own_item']);
 
 /** One scheme-keyed claim (`M01-34`): a `list_reference` scheme carries its reference, a flag none. */
-const certificationSchema = z.object({
+export const catalogCertificationSchema = z.object({
   scheme: z.string().trim().min(1).max(40),
   reference: z.string().trim().min(1).max(200).nullable(),
 });
@@ -60,7 +60,7 @@ const certificationSchema = z.object({
  * A rate as the reader is shown it (`MS4-07`): the amount in the tenant's currency and the date
  * of the ledger entry in force.
  */
-const resolvedRateSchema = z.object({
+export const resolvedRateSchema = z.object({
   source: catalogSourceSchema.extract(['override', 'own_item']),
   amount: amountSchema,
   currencyCode: currencyCodeSchema,
@@ -79,13 +79,13 @@ const resolvedTaxSchema = z.object({
  */
 export const resolvedCatalogItemSchema = z.object({
   id: uuidSchema,
-  source: itemSourceSchema,
+  source: catalogItemSourceSchema,
   brand: z.string(),
   model: z.string(),
   spec: catalogSpecSchema,
   provenance: catalogProvenanceSchema,
   availability: catalogAvailabilitySchema.nullable(),
-  certifications: z.array(certificationSchema),
+  certifications: z.array(catalogCertificationSchema),
   badges: z.array(z.string()),
   tax: resolvedTaxSchema.nullable().optional(),
   rate: resolvedRateSchema.nullable().optional(),
@@ -110,7 +110,7 @@ const flagSchema = z.enum(['true', 'false']).transform((flag) => flag === 'true'
  */
 export const catalogItemsQuerySchema = paginationQuerySchema.extend({
   q: z.string().trim().max(100).optional(),
-  source: itemSourceSchema.optional(),
+  source: catalogItemSourceSchema.optional(),
   kind: componentKindSchema.optional(),
   wattMin: z.coerce.number().positive().optional(),
   wattMax: z.coerce.number().positive().optional(),
@@ -140,7 +140,7 @@ export const ownCatalogItemWriteSchema = z.object({
   brand: z.string().trim().min(1).max(120),
   model: z.string().trim().min(1).max(120),
   spec: catalogSpecSchema,
-  certifications: z.array(certificationSchema).max(10),
+  certifications: z.array(catalogCertificationSchema).max(10),
   preferred: z.boolean(),
 });
 export type OwnCatalogItemWrite = z.infer<typeof ownCatalogItemWriteSchema>;
