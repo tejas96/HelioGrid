@@ -56,8 +56,8 @@ it is design → backend → UI.
 | step | what | stops for the owner |
 |---|---|---|
 | plan | read the task, write its RFC into it | yes — approve RFC |
-| build | inside the RFC | only when the scope changes |
-| verify | `pnpm check:all`, then the change on the running app | when a check fails three times |
+| build | inside the approved RFC | when scope voids the approval |
+| verify | running-app QA and review, then the Evaluator's full gate | when the second full-gate run fails or the checked diff changes after it |
 | commit | the commit, the push, the PR, CI | yes — every commit |
 
 **One turn, many calls.** Batch every read, search and check that does not wait on another's result
@@ -66,21 +66,25 @@ into one turn.
 **Build:**
 
 1. Tests first: each acceptance line's test before its code (`.claude/rules/testing.md`).
-2. Stay in the RFC's scope. A new behaviour, table, route, contract or package → stop and ask.
-3. After each change, `pnpm check`.
-4. When done, one tidy pass over the diff — reuse, names, dead code — then `pnpm check:all` once.
-5. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code
+2. Stay in the RFC's scope. A new behaviour, table, route, contract, package or affected package
+   voids approval: update the complete RFC and obtain approval again before continuing.
+3. After each coherent slice, `pnpm check`.
+4. One build step gets two attempts. After both fail, stop with the evidence and at most two
+   clearing paths, recommended first.
+5. When done, one tidy pass over the diff — reuse, names, dead code — then local QA and review.
+   The Evaluator owns the full gate after both.
+6. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code
    that is gone. `tsc -p` never removes old output, so delete the app's git-ignored `dist/`
    (`rm -r apps/api/dist`), then `pnpm turbo build --force`.
 
-**A PR is one complete task or part:** every acceptance line met and proven before it opens; an RFC
-over about 30 files splits into parts, web and phone together.
+**A PR is one complete task or part:** every acceptance line is met and proven before it opens.
+`docs/tasks/README.md` owns the RFC and part-size rules.
 
 ## 4. Stop and ask the owner before
 
 - Anything billable or external-account-shaped (cloud, store accounts, paid APIs).
 - Schema or API work outside the current module (Law 9).
-- A layer conflict §7 does not resolve.
+- A layer conflict §7 **When rules conflict** does not resolve.
 - A feature or a number no PRD row implies. A decision that belongs to a LATER module is not an ask:
   write it into that module's task in `docs/tasks/`, and carry on.
 - **Committing.** Each commit waits for the owner's yes to the shown file list and message — a go,
@@ -92,9 +96,9 @@ over about 30 files splits into parts, web and phone together.
 
 | | |
 |---|---|
-| `pnpm infra:up` · `pnpm infra:down` | **Before anything.** Postgres (3 databases), the object store and Temporal. |
+| `pnpm infra:up` · `pnpm infra:down` | Before infra-dependent work. The read-only build-order walk and RFC need no stack. |
 | `pnpm check` | **While building.** Biome on files that differ from `origin/main`, the workspace typecheck (cached), and `vitest related` on changed .ts files. Fast; never the proof. |
-| `pnpm check:all` | **Once, when the build is done.** Build, lint (Biome, dependency-cruiser, sherif, turbo boundaries), typecheck, duplication, OpenAPI and catalog freshness, unit tests, invariants. A stale OpenAPI or catalog file is rewritten and the check fails — commit the fresh file. |
+| `pnpm check:all` | **Normally once, after live QA and review.** Build, lint (Biome, dependency-cruiser, sherif, turbo boundaries), typecheck, duplication, OpenAPI and catalog freshness, unit tests, invariants. A checked-file change left by or made after the first run returns to affected QA and review; then run its proving command and `pnpm check`, and give the same Evaluator the updated reports for one final `check:all`. Two full-gate runs maximum: a failure of the second, or a checked-file change after it, stops. |
 | `pnpm lint:fix` | Format and auto-fix. |
 | `pnpm test:watch` · `pnpm test:coverage` | Tests while writing · the edge cases you missed (read it, not the pass count). |
 | `pnpm db:migration:new` · `pnpm db:migrate` | Where a migration starts; never hand-author one. |
@@ -103,27 +107,13 @@ The database invariants need the local Postgres; without it they SKIP loudly, an
 schema they report VACUOUS. Neither is a pass. Never weaken a check to make a change pass.
 
 **Ports are dedicated** — web `3002` · api `8084` · metro `8081` · postgres `5544` · object store
-`9000` · temporal `7233` · component tests `3100`; the worker has none. A running HelioGrid server is
-reused; a foreign listener on a dev port is freed on purpose with `clean-dev-ports` — a start never
-kills it and never moves to another port. A busy infra port means the stack is already up.
-Start web, api and metro through the browser preview tool; `pnpm --filter @heliogrid/mobile
-ios|android` drives metro.
+`9000` · temporal `7233` · component tests `3100`. Reuse a healthy HelioGrid service; free a
+foreign listener only through `clean-dev-ports`, never by port or process name.
 
 ## 6. Where everything lives
 
-**`docs/engineering/architecture.md` is the authority** — §2 what each package owns and may
-import, §4 where a new file goes. Run §4 before creating one. This is the digest.
-
-| package | owns |
-|---|---|
-| `contracts` | enums, wire shapes, string-literal unions, ports, workflow messages. The API review surface. |
-| `domain` | logic, policy numbers, formatters, money maths. Pure — no clock, no I/O. |
-| `theme` | every visual value. Generated; never hand-edited. |
-| `ui` | one component package, both platforms (`.tsx` + `.native.tsx`). |
-| `db` | schema and append-only migrations. |
-| `i18n` | every user-visible string. |
-| `env` | env schemas and loaders — the only `process.env` reader outside the `noProcessEnv` override in `biome.json`. |
-| `forms` · `data` · `config` | the form layer · the typed client · shared build config and the Biome plugins. |
+**`docs/engineering/architecture.md` is the authority** — §2 owns package responsibilities and
+allowed imports; §4 decides where a new file goes. Run §4 before creating one.
 
 | tree | what it is |
 |---|---|
@@ -176,8 +166,8 @@ ask.
 - **A bug you find is reported at once.** In scope: fix it now. Out of scope: one row in
   `docs/tasks/deferred.md` (issue, next step, `reopens when`), never in this diff.
 - **Dependencies change only through `pnpm add`/`pnpm remove`** — never a hand-edited dependency
-  block or lockfile. **The database is read-only to you**: schema through a migration, data through
-  the application.
+  block or lockfile. **Never write the database directly**: schema goes through a migration and
+  test or development data through the application.
 
 ## 9. Product law
 

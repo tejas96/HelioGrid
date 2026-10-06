@@ -1,6 +1,7 @@
 # docs/ — everything written lives here
 
-One folder, four trees. Root holds only `README.md`, `CLAUDE.md` (with `AGENTS.md`, a link to it) and the code.
+One folder, four trees. Root holds only `README.md`, the canonical `CLAUDE.md`, an `AGENTS.md`
+compatibility pointer and the code.
 
 | | |
 |---|---|
@@ -14,18 +15,19 @@ One folder, four trees. Root holds only `README.md`, `CLAUDE.md` (with `AGENTS.m
 | [`prd/`](prd/) | The product spec — the owner brief, foundations, modules, and the screens register; every row carries its own ruling | **Source of truth** |
 | [`ux/`](ux/) | One design brief per screen, plus the Claude Design session context; the boards and decisions records live in the Claude Design project that each task's `DESIGN:` line links, and are read from there — the repo holds no copy | **Source of truth** |
 | [`tasks/`](tasks/) | Engineering work, one file per module, derived from the PRD registers | **Source of truth** |
-| [`engineering/`](engineering/) | How this repo is built — dissolving into the package files and the tasks; each file carries its fate | Support, ranked below `prd/` |
+| [`engineering/`](engineering/) | How this repo is built; `architecture.md` is the canonical spine and each other file states its current status or fate | Support, ranked below `prd/` |
 
 `CLAUDE.md` §7 fixes the order: `prd/` (a row carries its own ruling) →
 `engineering/architecture.md` → contracts. **Nothing in `engineering/` is product truth.** Where the two disagree, `prd/` wins.
 
 ## Inside `engineering/`
 
-Every file here is dissolving: its first line names its fate, and the folder's line count only
-falls, by review. What holds each protection is `.claude/protections.md`, and each package's live
-traps sit under `## Traps` in its own `CLAUDE.md`. External-account setup notes moved to `infra/ops/`.
+`architecture.md` is stable and canonical. Each other file's first line names its current fate;
+those files shrink only through reviewed moves. What holds each protection is
+`.claude/protections.md`, and each package's live traps sit under `## Traps` in its own
+`CLAUDE.md`. External-account setup notes moved to `infra/ops/`.
 
-| Path | What it is, until its fate lands |
+| Path | What it is |
 |---|---|
 | [`engineering/architecture.md`](engineering/architecture.md) | **The spine.** §1 module map · §2 package registry · §3 platform rules · §4 placement. Run §4 before creating any file. |
 | [`engineering/data-model.md`](engineering/data-model.md) | The logical data model and ERD, derived from `prd/` and ranked below it; read beside `forward-compat.md` before writing a migration. |
