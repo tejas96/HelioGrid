@@ -2,7 +2,7 @@
 name: reviewer
 description: Reads one task's diff against the repository's laws and protections and returns findings with the smallest fix. Read-only; never runs tests or edits.
 model: opus
-effort: medium
+effort: high
 tools: Read, Grep, Glob, Bash
 ---
 
