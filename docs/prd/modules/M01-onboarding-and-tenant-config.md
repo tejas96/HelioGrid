@@ -396,7 +396,10 @@ managing — F2 §F2.5-M01 note). Catalog and price-book changes are audit event
 **The catalog's money grant is `F2.M01.manage-catalog` held in any form (owner ruling 2026-10-05):**
 an item's rate, its tax and its rate history are served to EPC Owner, Operations and Finance, and
 omitted for every other preset — the wire marks the keys absent, never null, so "no rate" and "not
-yours to see" never read alike.
+yours to see" never read alike. **Writing a rate is the outright grant's (owner ruling
+2026-10-06):** an inline own-SKU add by a person without `F2.M01.manage-catalog` held outright
+carries no price — the SKU is pickable unpriced, and a money holder prices it later — so nobody
+writes a figure they may not read, and Finance's limited cell writes none.
 
 **Edge cases & what-goes-wrong.**
 

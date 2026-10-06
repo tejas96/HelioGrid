@@ -17,8 +17,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { ADMIN_DB } from '../../common/db/admin.token';
-import { recordAuditEntry } from '../audit/audit.public';
-import { settingsAct } from './internal/audit-act';
+import { memberAct, recordAuditEntry } from '../audit/audit.public';
 
 /** Any transaction, on either pool: the seed rides the one that creates the tenant. */
 
@@ -142,7 +141,7 @@ export class SettingsAdminRepository {
       if (!row) throw new Error('business_profile upsert returned no row');
       await recordAuditEntry(
         tx,
-        settingsAct(
+        memberAct(
           'settings.business_profile_changed',
           tenantId,
           { kind: 'business_profile', ref: row.id },

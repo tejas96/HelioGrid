@@ -8,8 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { TENANT_DB } from '../../common/db/tenant.token';
-import { recordAuditEntry } from '../audit/audit.public';
-import { settingsAct } from './internal/audit-act';
+import { memberAct, recordAuditEntry } from '../audit/audit.public';
 
 /**
  * The proposal and timeline templates on the runtime pool (`M01-51`, `M01-52`): one row each,
@@ -53,7 +52,7 @@ export class SettingsTemplatesRepository {
       if (!row) throw new Error('proposal_template_settings upsert returned no row');
       await recordAuditEntry(
         tx,
-        settingsAct(
+        memberAct(
           'settings.proposal_template_changed',
           tenantId,
           { kind: 'proposal_template_settings', ref: row.id },
@@ -94,7 +93,7 @@ export class SettingsTemplatesRepository {
       if (!row) throw new Error('timeline_template upsert returned no row');
       await recordAuditEntry(
         tx,
-        settingsAct(
+        memberAct(
           'settings.timeline_template_changed',
           tenantId,
           { kind: 'timeline_template', ref: row.id },

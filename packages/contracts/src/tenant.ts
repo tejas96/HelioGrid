@@ -3,6 +3,7 @@ import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
   createHeadersSchema,
+  currencyCodeSchema,
   extensibleEnum,
   membershipStatusSchema,
   paginated,
@@ -39,8 +40,7 @@ export const tenantSchema = z.object({
   city: citySchema,
   /** Fixed at creation from the owner's phone; never changes (`F1-07`). */
   marketCode: marketCodeSchema,
-  /** ISO 4217, server-assigned from the market's pack; one per tenant (`F1-07`). */
-  currencyCode: z.string().length(3),
+  currencyCode: currencyCodeSchema,
   defaultLanguage: uiLanguageResponseSchema,
   /** IANA zone — the pack's default until the tenant sets its own (`F1-10`). */
   timezone: z.string().min(1),

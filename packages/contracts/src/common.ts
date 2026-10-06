@@ -65,6 +65,9 @@ export const amountSchema = z
   .string()
   .regex(/^-?\d{1,12}(\.\d{1,3})?$/, 'amount as decimal string scaled to the currency minor unit');
 
+/** ISO 4217 — the tenant's one currency, server-assigned from its market's pack (`F1-07`). */
+export const currencyCodeSchema = z.string().length(3);
+
 /** Percentages: numeric(5,2) as string, 0.00–100.00. */
 export const percentSchema = z
   .string()

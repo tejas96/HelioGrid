@@ -8,6 +8,7 @@ import type {
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { count, desc, eq } from 'drizzle-orm';
+import type { Act } from '../../common/auth/session-context';
 import { TENANT_DB } from '../../common/db/tenant.token';
 
 /** Any transaction, on either pool: an entry rides the one that carries its change. */
@@ -28,6 +29,30 @@ export interface AuditEntryToWrite {
   readonly subjectKind: SubjectKind;
   readonly subjectRef: string;
   readonly changePayload: AuditChangePayload | null;
+}
+
+/**
+ * A member's change as the log records it (`F2-22`): settings, branding, tranche and catalog acts
+ * are covered events. The event name says the whole change, so no payload rides with it; the row
+ * itself holds what was saved.
+ */
+export function memberAct(
+  eventType: AuditEventType,
+  tenantId: string,
+  subject: { readonly kind: SubjectKind; readonly ref: string },
+  act: Act,
+): AuditEntryToWrite {
+  return {
+    tenantId,
+    eventType,
+    actorKind: 'tenant_user',
+    actorRef: act.actorUserId,
+    occurredAt: new Date(act.now),
+    blocked: false,
+    subjectKind: subject.kind,
+    subjectRef: subject.ref,
+    changePayload: null,
+  };
 }
 
 /**

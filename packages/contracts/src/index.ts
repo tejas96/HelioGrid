@@ -1,6 +1,7 @@
 import { initContract } from '@ts-rest/core';
 import { auditContract } from './audit';
 import { authContract } from './auth';
+import { catalogContract } from './catalog';
 import { fileContract } from './file';
 import { healthContract } from './health';
 import { invitationContract } from './invitation';
@@ -17,7 +18,7 @@ export * from './audit';
 export * from './auth';
 // The company's identity facts (`T-M01-026`): the profile and its tax registrations.
 export * from './business-profile';
-// The catalog (`T-M01-027`): its closed sets; the two-tier read and the tenant's writes land with part b.
+// The catalog (`T-M01-027`): its closed sets, the resolved read and the tenant's writes.
 export * from './catalog';
 // The too-old phone (`T-FPLAT-033`): the version header and the 426 every route may answer.
 export * from './client-version';
@@ -66,6 +67,7 @@ export const apiContract = c.router(
   {
     audit: auditContract,
     auth: authContract,
+    catalog: catalogContract,
     file: fileContract,
     health: healthContract,
     invitation: invitationContract,
