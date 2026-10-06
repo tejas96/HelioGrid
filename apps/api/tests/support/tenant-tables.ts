@@ -5,6 +5,8 @@ import {
   catalogRelease,
   catalogReleaseLine,
   onboardingProgress,
+  priceBookRate,
+  priceBookVersion,
   proposalTemplateSettings,
   taxRegistration,
   tenantCatalogItem,
@@ -32,8 +34,13 @@ export const TENANT_SETTING_TABLES = [
   onboardingProgress,
 ] as const;
 
-/** Lines, releases, the ledger, then the overrides and the own SKUs — an own SKU points at its datasheet file. */
+/**
+ * The price book's rates before their versions; then lines, releases, the ledger, the overrides
+ * and the own SKUs — an own SKU points at its datasheet file.
+ */
 export const TENANT_CATALOG_TABLES = [
+  priceBookRate,
+  priceBookVersion,
   catalogReleaseLine,
   catalogRelease,
   catalogRateEntry,

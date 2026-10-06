@@ -73,7 +73,8 @@
                               "catalog.override_changed",
                               "catalog.override_cleared",
                               "catalog.rate_recorded",
-                              "catalog.release_published"
+                              "catalog.release_published",
+                              "price_book.version_published"
                             ]
                           },
                           "actorKind": {
@@ -108,7 +109,8 @@
                               "tenant",
                               "tenant_catalog_item",
                               "catalog_item",
-                              "catalog_release"
+                              "catalog_release",
+                              "price_book_version"
                             ]
                           },
                           "subjectRef": {
@@ -14529,7 +14531,8 @@
                               "tenant",
                               "tenant_catalog_item",
                               "catalog_item",
-                              "catalog_release"
+                              "catalog_release",
+                              "price_book_version"
                             ]
                           },
                           "subjectRef": {
@@ -15518,7 +15521,8 @@
                         "tenant",
                         "tenant_catalog_item",
                         "catalog_item",
-                        "catalog_release"
+                        "catalog_release",
+                        "price_book_version"
                       ]
                     },
                     "subjectRef": {
@@ -16355,6 +16359,1137 @@
                           "type": "string",
                           "enum": [
                             "CONFLICT"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/price-book/active": {
+      "get": {
+        "summary": "The rate card in force: the newest version, or the platform default before the first",
+        "tags": [
+          "priceBook"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "number": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": 0
+                        },
+                        "publishedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "publishedBy": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "name": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name"
+                          ]
+                        },
+                        "note": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "number",
+                        "publishedAt",
+                        "publishedBy",
+                        "note"
+                      ],
+                      "nullable": true
+                    },
+                    "defaultMarginPct": {
+                      "type": "string",
+                      "pattern": "^\\d{1,3}\\.\\d{2}$"
+                    },
+                    "currencyCode": {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 3
+                    },
+                    "rates": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "allOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "en": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 120
+                                  }
+                                },
+                                "required": [
+                                  "en"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 120
+                                }
+                              }
+                            ]
+                          },
+                          "basis": {
+                            "type": "string",
+                            "enum": [
+                              "per_job",
+                              "per_kw",
+                              "per_visit",
+                              "per_metre"
+                            ]
+                          },
+                          "amount": {
+                            "type": "string",
+                            "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "basis",
+                          "amount"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "defaultMarginPct",
+                    "currencyCode",
+                    "rates"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "UNAUTHENTICATED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "FORBIDDEN"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/price-book/versions": {
+      "get": {
+        "summary": "Every price-book version, newest first, with the one in force marked",
+        "tags": [
+          "priceBook"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "default": 25,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "number": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "exclusiveMinimum": 0
+                          },
+                          "publishedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "publishedBy": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "name": {
+                                "type": "string",
+                                "nullable": true
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name"
+                            ]
+                          },
+                          "note": {
+                            "type": "string"
+                          },
+                          "defaultMarginPct": {
+                            "type": "string",
+                            "pattern": "^\\d{1,3}\\.\\d{2}$"
+                          },
+                          "rateCount": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "active": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "number",
+                          "publishedAt",
+                          "publishedBy",
+                          "note",
+                          "defaultMarginPct",
+                          "rateCount",
+                          "active"
+                        ]
+                      }
+                    },
+                    "totalCount": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "totalCount"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "UNAUTHENTICATED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "FORBIDDEN"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Publish a new price-book version — the whole rate set, its default margin and a note; it is now the one in force",
+        "tags": [
+          "priceBook"
+        ],
+        "parameters": [
+          {
+            "name": "idempotency-key",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "note": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "defaultMarginPct": {
+                    "type": "string",
+                    "pattern": "^\\d{1,3}\\.\\d{2}$"
+                  },
+                  "rates": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "allOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "en": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 120
+                                }
+                              },
+                              "required": [
+                                "en"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 120
+                              }
+                            }
+                          ]
+                        },
+                        "basis": {
+                          "type": "string",
+                          "enum": [
+                            "per_job",
+                            "per_kw",
+                            "per_visit",
+                            "per_metre"
+                          ]
+                        },
+                        "amount": {
+                          "type": "string",
+                          "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "basis",
+                        "amount"
+                      ]
+                    },
+                    "maxItems": 100
+                  }
+                },
+                "required": [
+                  "note",
+                  "defaultMarginPct",
+                  "rates"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "201",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "number": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": 0
+                    },
+                    "publishedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "publishedBy": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "name": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name"
+                      ]
+                    },
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "number",
+                    "publishedAt",
+                    "publishedBy",
+                    "note"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "UNAUTHENTICATED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "FORBIDDEN"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "IDEMPOTENCY_KEY_REUSED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/price-book/versions/{id}": {
+      "get": {
+        "summary": "One price-book version and its rates, read-only",
+        "tags": [
+          "priceBook"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "number": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": 0
+                    },
+                    "publishedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "publishedBy": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "name": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name"
+                      ]
+                    },
+                    "note": {
+                      "type": "string"
+                    },
+                    "defaultMarginPct": {
+                      "type": "string",
+                      "pattern": "^\\d{1,3}\\.\\d{2}$"
+                    },
+                    "rateCount": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "currencyCode": {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 3
+                    },
+                    "rates": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "allOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "en": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 120
+                                  }
+                                },
+                                "required": [
+                                  "en"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 120
+                                }
+                              }
+                            ]
+                          },
+                          "basis": {
+                            "type": "string",
+                            "enum": [
+                              "per_job",
+                              "per_kw",
+                              "per_visit",
+                              "per_metre"
+                            ]
+                          },
+                          "amount": {
+                            "type": "string",
+                            "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "basis",
+                          "amount"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "number",
+                    "publishedAt",
+                    "publishedBy",
+                    "note",
+                    "defaultMarginPct",
+                    "rateCount",
+                    "active",
+                    "currencyCode",
+                    "rates"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "UNAUTHENTICATED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "FORBIDDEN"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "NOT_FOUND"
                           ]
                         },
                         "message": {

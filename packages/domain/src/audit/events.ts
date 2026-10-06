@@ -34,6 +34,7 @@ export const AUDIT_EVENT_TYPES = [
   'catalog.override_cleared',
   'catalog.rate_recorded',
   'catalog.release_published',
+  'price_book.version_published',
 ] as const;
 export type AuditEventType = (typeof AUDIT_EVENT_TYPES)[number];
 

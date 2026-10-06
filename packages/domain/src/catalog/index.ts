@@ -4,6 +4,8 @@
  * `./server` alone (F4-04); its types are here, because a screen renders what the server sent.
  */
 
+export type { PriceBookRateBasis } from './price-book';
+export { MAX_MARGIN, PLATFORM_DEFAULT_MARGIN, PRICE_BOOK_RATE_BASES } from './price-book';
 export type {
   CatalogReleaseSnapshot,
   CatalogReleaseSnapshotEnvelope,

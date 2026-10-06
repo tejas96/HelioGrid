@@ -3,6 +3,9 @@ import { MarketModule } from '../market/market.public';
 import { CatalogAdminRepository } from './catalog.admin.repository';
 import { CatalogController } from './catalog.controller';
 import { CatalogPlatformService } from './catalog.platform.service';
+import { CatalogPriceBookController } from './catalog.price-book.controller';
+import { CatalogPriceBookRepository } from './catalog.price-book.repository';
+import { CatalogPriceBookService } from './catalog.price-book.service';
 import { CatalogPricesRepository } from './catalog.prices.repository';
 import { CatalogRatesRepository } from './catalog.rates.repository';
 import { CatalogReleaseReadsRepository } from './catalog.release-reads.repository';
@@ -15,11 +18,12 @@ import { CatalogSliceRepository } from './catalog.slice.repository';
 
 /**
  * The catalog (`T-M01-027`): the platform book's publish, and the tenant's market slice, own
- * SKUs, overrides, rate ledger and labelled releases behind the catalog routes.
+ * SKUs, overrides, rate ledger and labelled releases behind the catalog routes; and the price book
+ * (`T-M01-031`), the rates panel of the same surface.
  */
 @Module({
   imports: [MarketModule],
-  controllers: [CatalogController, CatalogReleasesController],
+  controllers: [CatalogController, CatalogReleasesController, CatalogPriceBookController],
   providers: [
     CatalogPlatformService,
     CatalogAdminRepository,
@@ -31,6 +35,8 @@ import { CatalogSliceRepository } from './catalog.slice.repository';
     CatalogReleasesService,
     CatalogReleasesRepository,
     CatalogReleaseReadsRepository,
+    CatalogPriceBookService,
+    CatalogPriceBookRepository,
   ],
   exports: [CatalogPlatformService],
 })
