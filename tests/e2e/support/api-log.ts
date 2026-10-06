@@ -39,7 +39,7 @@ export async function codeSentTo(phoneE164: string, since: number): Promise<stri
 function newestCode(marker: string, since: number): string | null {
   if (!existsSync(API_LOG)) {
     throw new Error(
-      `no api log at ${API_LOG}: the running api was not started by an \`api\` launch configuration or by this suite, so its codes are written nowhere this suite reads`,
+      `no api log at ${API_LOG}: the running api was not started by an \`api\` launch configuration, this suite or CI's phone jobs, so its codes are written nowhere this suite reads`,
     );
   }
   const lines = readFileSync(API_LOG, 'utf8')

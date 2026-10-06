@@ -126,7 +126,7 @@ catalog freshness checks, the unit tests and the invariants; off CI it leaves ou
 | Every Biome plugin file exists, and every folder its globs name exists | invariant `biome-plugin-scopes` |
 | The invariants run against a real database, and fail closed in CI without one | CI job `quality` (`tests/invariants/src/run.ts`) |
 | The api tests never run against `heliogrid_dev`: off CI they are collected only when both database URLs name `heliogrid_test` and are skipped with a warning otherwise; whenever they are collected (as with `CI` set) a URL naming `heliogrid_dev` throws before collection | `vitest.config.mts` (the guard; seen red on `heliogrid_dev` once) |
-| The regression suite runs on what a change reaches: the web flows and component tests, the phone's JavaScript bundle and both native builds in CI; the phone flows are run by hand, since CI has no simulator | CI jobs `e2e-web` · `mobile-js` · `android` · `ios` |
+| The regression suite runs on what a change reaches, in CI: the web flows and component tests, the phone's JavaScript bundle, both native builds, and the phone flows on an Android emulator; the iOS flows run by hand or by `qa-ios`, never in CI. The repository variable `PHONE_E2E=off` switches the Android flows off, and no check holds that: while it is set, nothing proves them | CI jobs `e2e-web` · `mobile-js` · `android` (lane `phone_e2e`) · `ios` (the build) |
 | Each rule is tested at its edges; each proof would fail without its fix; a money, tenancy or permission test is seen to fail once | review |
 
 ## Agent safety
