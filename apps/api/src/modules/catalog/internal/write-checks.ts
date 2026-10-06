@@ -42,16 +42,25 @@ export function rateToAppend(
     );
   }
   return {
-    amount: scaled(rate.amount, scope.resolve.minorUnitDigits, at),
+    amount: amountAtScale(rate.amount, scope.resolve.minorUnitDigits, at),
     currency: scope.currencyCode,
     effectiveOn,
   };
 }
 
-/** `catalog_rate_entry.rate_amount` is `numeric(14,3)` (migration 0015): eleven whole digits. */
+/**
+ * `catalog_rate_entry.rate_amount` and `price_book_rate.amount` are `numeric(14,3)`: eleven whole
+ * digits.
+ */
 const LEDGER_WHOLE_DIGITS = 11;
 
-function scaled(amount: string | null, digits: number, at: string): string | null {
+/**
+ * An amount as the column stores it, scaled to the currency's minor unit — a fraction of one
+ * refused, never rounded. `at` prefixes the body path a refusal names (`rates.0.`).
+ */
+export function amountAtScale(amount: string, digits: number, at: string): string;
+export function amountAtScale(amount: string | null, digits: number, at: string): string | null;
+export function amountAtScale(amount: string | null, digits: number, at: string): string | null {
   if (amount === null) return null;
   const whole = (amount.split('.')[0] ?? '').replace(/^-?0*/, '');
   if (whole.length > LEDGER_WHOLE_DIGITS) {

@@ -491,6 +491,13 @@ Operations, DD11); **Finance** holds view of prices and margins; margin figures 
 on surfaces reached by presets without a money grant (F2's surface laws). Version publishes
 are audit events (F2-22).
 
+**Before the first publish there is no version (owner ruling 2026-10-06):** nothing is seeded at
+signup. A company that has never published reads no version, no rates and the platform default
+margin, and its first publish is version 1 — as the rates panel's empty state says. A proposal
+priced before version 1 pins "no version", and version 1 stales it by comparison (F8-13).
+**The platform default margin is 18% (owner ruling 2026-10-06)** — the builder's starting margin
+for a company that has published no version (M01-28).
+
 **Edge cases & what-goes-wrong.**
 
 - *Price book updated after proposals were sent* (`TC.wrong.5`) → sent proposals keep original

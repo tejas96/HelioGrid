@@ -13,6 +13,7 @@ import {
   notificationTypeSchema,
   otpChannelSchema,
   platformKindSchema,
+  priceBookRateBasisSchema,
   pushPlatformSchema,
   releaseChangeKindSchema,
   rolePresetSchema,
@@ -85,6 +86,10 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   release_change_kind: {
     options: releaseChangeKindSchema.options,
     contract: 'releaseChangeKindSchema',
+  },
+  price_book_rate_basis: {
+    options: priceBookRateBasisSchema.options,
+    contract: 'priceBookRateBasisSchema',
   },
 };
 

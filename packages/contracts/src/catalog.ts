@@ -126,7 +126,10 @@ export const catalogItemsQuerySchema = paginationQuerySchema.extend({
 export type CatalogItemsQuery = z.infer<typeof catalogItemsQuerySchema>;
 
 /** A price of one unit in the tenant's currency; zero is a price, a negative one is not. */
-const priceSchema = amountSchema.refine((amount) => !amount.startsWith('-'), 'a price is ≥ 0');
+export const priceSchema = amountSchema.refine(
+  (amount) => !amount.startsWith('-'),
+  'a price is ≥ 0',
+);
 
 /** A dated entry (`M01-44`): no date means today on the tenant's clock, never a day before it. */
 export const rateWriteSchema = z.object({

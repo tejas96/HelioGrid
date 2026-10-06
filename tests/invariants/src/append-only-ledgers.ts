@@ -13,4 +13,7 @@ export const APPEND_ONLY_LEDGERS: Record<string, string> = {
   catalog_release:
     'a labelled publish of the tenant’s catalog changes, pinned by designs and proposals (M01-43)',
   catalog_release_line: 'one changed item of a release, immutable with it (M01-43, T-M01-027)',
+  price_book_version:
+    'one immutable set of non-catalog rates, pinned by designs and sent proposals (M01-48, M01-49)',
+  price_book_rate: 'one rate of a price-book version, immutable with it (M01-48, T-M01-031)',
 };
