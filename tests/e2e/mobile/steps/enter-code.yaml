@@ -1,7 +1,9 @@
 # Enters the code `run.sh` read from the api log and verifies it. Not a screen: a step two flows share.
 # Maestro types faster than the boxes move focus, and a key typed in one go — a paste included — can
 # be lost, so each box is tapped and given its own digit. The boxes are named after the code's label
-# on both platforms.
+# on both platforms. The screen settles after each digit as well as after each tap: on a loaded
+# emulator the sixth digit was still in flight when Verify was pressed five milliseconds later, and
+# the form refused with five digits.
 appId: com.heliogrid.app
 ---
 - evalScript: ${output.box = 0}
@@ -11,6 +13,7 @@ appId: com.heliogrid.app
       - tapOn: "${CODE_LABEL}.*${output.box + 1}"
       - waitForAnimationToEnd
       - inputText: ${CODE[output.box]}
+      - waitForAnimationToEnd
       - evalScript: ${output.box = output.box + 1}
 - tapOn: ${VERIFY_AND_SIGN_IN}
 # Signing in asks the system for notification permission, and the system's own prompt covers the
