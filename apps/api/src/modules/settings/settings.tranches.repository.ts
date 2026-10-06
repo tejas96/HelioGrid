@@ -17,8 +17,7 @@ import type { Act } from '../../common/auth/session-context';
 import { type CreationKey, type Keyed, replayOf } from '../../common/creation-key';
 import { lockCreationKey } from '../../common/db/creation-key-lock';
 import { TENANT_DB } from '../../common/db/tenant.token';
-import { recordAuditEntry } from '../audit/audit.public';
-import { settingsAct } from './internal/audit-act';
+import { memberAct, recordAuditEntry } from '../audit/audit.public';
 
 export type TemplateOutcome =
   | { readonly outcome: 'done'; readonly template: TrancheTemplate }
@@ -90,7 +89,7 @@ export class SettingsTranchesRepository {
       await writeLines(tx, tenantId, row.id, content);
       await recordAuditEntry(
         tx,
-        settingsAct(
+        memberAct(
           'settings.tranche_template_created',
           tenantId,
           { kind: 'tranche_template', ref: row.id },
@@ -128,7 +127,7 @@ export class SettingsTranchesRepository {
       await writeLines(tx, tenantId, id, content);
       await recordAuditEntry(
         tx,
-        settingsAct(
+        memberAct(
           'settings.tranche_template_changed',
           tenantId,
           { kind: 'tranche_template', ref: id },
@@ -161,7 +160,7 @@ export class SettingsTranchesRepository {
         .where(and(eq(trancheTemplate.tenantId, tenantId), eq(trancheTemplate.id, id)));
       await recordAuditEntry(
         tx,
-        settingsAct(
+        memberAct(
           'settings.tranche_template_archived',
           tenantId,
           { kind: 'tranche_template', ref: id },
@@ -194,7 +193,7 @@ export class SettingsTranchesRepository {
           .where(and(eq(trancheTemplate.tenantId, tenantId), eq(trancheTemplate.id, id)));
         await recordAuditEntry(
           tx,
-          settingsAct(
+          memberAct(
             'settings.tranche_template_default_changed',
             tenantId,
             { kind: 'tranche_template', ref: id },

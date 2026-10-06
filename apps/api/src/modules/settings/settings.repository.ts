@@ -22,8 +22,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { and, asc, eq, notInArray } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { TENANT_DB } from '../../common/db/tenant.token';
-import { recordAuditEntry } from '../audit/audit.public';
-import { settingsAct } from './internal/audit-act';
+import { memberAct, recordAuditEntry } from '../audit/audit.public';
 import { trancheTemplatesOf } from './settings.tranches.repository';
 
 /** The tenant's own row: the signup facts, the two declarations, the locale pair — and its market. */
@@ -136,7 +135,7 @@ export class SettingsRepository {
       const profileId = await ensureProfile(tx, tenantId, act.now);
       await recordAuditEntry(
         tx,
-        settingsAct(
+        memberAct(
           'settings.tax_registrations_changed',
           tenantId,
           { kind: 'business_profile', ref: profileId },
@@ -171,7 +170,7 @@ export class SettingsRepository {
       if (!row) throw new Error('branding_settings upsert returned no row');
       await recordAuditEntry(
         tx,
-        settingsAct(
+        memberAct(
           'settings.branding_changed',
           tenantId,
           { kind: 'branding_settings', ref: row.id },
@@ -208,7 +207,7 @@ export class SettingsRepository {
       }
       await recordAuditEntry(
         tx,
-        settingsAct('settings.holidays_changed', tenantId, { kind: 'tenant', ref: tenantId }, act),
+        memberAct('settings.holidays_changed', tenantId, { kind: 'tenant', ref: tenantId }, act),
       );
       return holidaysOf(tx, tenantId);
     });

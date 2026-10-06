@@ -4,4 +4,4 @@
  * the change that caused it (`F2-22`) and no module ever keeps a second log.
  */
 export { AuditModule } from './audit.module';
-export { type AuditEntryToWrite, recordAuditEntry } from './audit.repository';
+export { type AuditEntryToWrite, memberAct, recordAuditEntry } from './audit.repository';
