@@ -11,13 +11,17 @@ runbooks and traps are in `infra/temporal/README.md`.
 
 ```
 src/{config,common,modules}
+src/worker.workflows.ts                        the bundle's ONE entry: re-exports every area's workflows
 src/modules/<area>/<area>.workflows.ts         DETERMINISTIC. The sequence.
                    <area>.activities.types.ts  the activity signatures, and nothing else
                    <area>.activities.ts        the side effects. Idempotent, always.
                    <area>.public.ts            what the root composes; asserts the name match
 ```
 
-Copy `modules/platform/` for a new area.
+Copy `modules/platform/` for a new area whose steps run here, `modules/outbox/` for one whose
+steps run in the api beside their data — no activity files, the workflow typed against the
+contract's activity interface, the registration carrying no activities. Add the area's workflows
+to `src/worker.workflows.ts`.
 
 ## Commands
 

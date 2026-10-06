@@ -1,4 +1,8 @@
 import { Global, Inject, Injectable, Module, type OnApplicationShutdown } from '@nestjs/common';
+import { OutboxActivityRegistration } from './outbox.activities';
+import { OutboxAdminRepository } from './outbox.admin.repository';
+import { OutboxDispatcher } from './outbox.dispatcher';
+import { TemporalActivityHost } from './temporal.activity-host';
 import { TemporalConnection } from './temporal.client';
 import { TemporalGateway } from './temporal.gateway';
 import { TEMPORAL_CLIENT } from './temporal.tokens';
@@ -26,6 +30,9 @@ class TemporalShutdown implements OnApplicationShutdown {
  * It is a long-lived gRPC channel with its own reconnection: building one per request would open
  * a TLS handshake per call and make Temporal's own backpressure invisible.
  *
+ * The api also HOSTS workflow steps (`temporal.activity-host.ts`) and owns the outbox's dispatch
+ * (`outbox.dispatcher.ts`): both sit here because both are the one seam to the orchestrator.
+ *
  * A module never constructs its own client — it injects `TemporalGateway`. Same rule the
  * `bullmq-fenced` dep-cruiser rule held for queues, and `temporal-client-fenced` now holds it
  * for this.
@@ -36,7 +43,13 @@ class TemporalShutdown implements OnApplicationShutdown {
     { provide: TEMPORAL_CLIENT, useClass: TemporalConnection },
     TemporalGateway,
     TemporalShutdown,
+    TemporalActivityHost,
+    OutboxAdminRepository,
+    OutboxDispatcher,
+    OutboxActivityRegistration,
   ],
-  exports: [TemporalGateway],
+  // A module starts a workflow through the gateway, hands its committed outbox event to the
+  // dispatcher, and registers its queue's steps with the host.
+  exports: [TemporalGateway, OutboxDispatcher, TemporalActivityHost],
 })
 export class TemporalModule {}

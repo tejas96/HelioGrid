@@ -12,14 +12,16 @@ import type { TaskQueue } from '@heliogrid/contracts/workflows';
 export interface TemporalWorkerRegistration {
   readonly taskQueue: TaskQueue;
   /**
-   * The activity implementations for this queue.
+   * The activity implementations for this queue — absent when the queue's steps run in the api
+   * beside their data (the outbox sweep, the catalog import): this process then holds the workflow
+   * alone and polls no activity task.
    *
    * `object` is what the SDK itself accepts, and narrowing it here would be a lie dressed as
    * safety: the real check is that each module's activities object is declared
    * `: <Module>Activities`, and that the workflow proxies THAT SAME interface. Forcing a
    * narrower shape here only produced an unsound `as` at the one call site.
    */
-  readonly activities: object;
+  readonly activities?: object;
 }
 
 export const TEMPORAL_WORKER_REGISTRATIONS = Symbol.for('heliogrid.TemporalWorkerRegistrations');

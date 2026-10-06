@@ -19,11 +19,7 @@ import { type InvariantsEnv, invariantsEnvSchema } from './schema/invariants';
 import { type WorkerEnv, workerEnvSchema } from './schema/worker';
 
 export type { TemporalIdentityEnv, TemporalTlsOptions } from './temporal';
-export {
-  createIdentityTokenReader,
-  IDENTITY_TOKEN_REFRESH_MS,
-  temporalTlsFrom,
-} from './temporal';
+export { createIdentityTokenReader, temporalTlsFrom, watchIdentityToken } from './temporal';
 
 let apiCache: ApiEnv | undefined;
 export function loadApiEnv(): ApiEnv {

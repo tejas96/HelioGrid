@@ -1,5 +1,6 @@
 import { platformHealthcheckWorkflow } from '@heliogrid/contracts/workflows';
 import type { TemporalWorkerRegistration } from '../../common/temporal/temporal.tokens';
+import * as bundledWorkflows from '../../worker.workflows';
 import { platformActivities } from './platform.activities';
 import * as platformWorkflows from './platform.workflows';
 
@@ -19,6 +20,8 @@ import * as platformWorkflows from './platform.workflows';
  * building. It costs one line and no runtime.
  */
 platformWorkflows satisfies Record<typeof platformHealthcheckWorkflow.name, unknown>;
+// And the bundle's one entry re-exports it: an area left out there starts, then fails every task.
+bundledWorkflows satisfies Record<typeof platformHealthcheckWorkflow.name, unknown>;
 
 export const platformWorkerRegistration: TemporalWorkerRegistration = {
   taskQueue: platformHealthcheckWorkflow.taskQueue,

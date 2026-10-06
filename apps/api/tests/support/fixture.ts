@@ -12,6 +12,7 @@ import {
   notification,
   notificationPreference,
   notificationSettings,
+  orchestrationOutbox,
   otpChallenge,
   pushDevice,
   session,
@@ -247,6 +248,7 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
     await db.delete(catalogTable).where(inArray(catalogTable.tenantId, companies));
   }
   await db.delete(file).where(inArray(file.tenantId, companies));
+  await db.delete(orchestrationOutbox).where(inArray(orchestrationOutbox.tenantId, companies));
   await db.delete(notification).where(inArray(notification.tenantId, companies));
   await db
     .delete(notificationPreference)

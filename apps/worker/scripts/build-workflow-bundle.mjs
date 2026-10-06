@@ -17,9 +17,9 @@ import { bundleWorkflowCode } from '@temporalio/worker';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'dist', 'workflow-bundle.js');
 
-// The compiled workflow file, not the TypeScript source: `tsc` has already run and the bundler
-// then sees exactly what ships.
-const workflowsPath = join(ROOT, 'dist', 'modules', 'platform', 'platform.workflows.js');
+// The compiled entry that re-exports every area's workflows, not the TypeScript source: `tsc` has
+// already run and the bundler then sees exactly what ships.
+const workflowsPath = join(ROOT, 'dist', 'worker.workflows.js');
 
 const { code } = await bundleWorkflowCode({ workflowsPath });
 writeFileSync(OUT, code);

@@ -16,4 +16,7 @@ export const APPEND_ONLY_LEDGERS: Record<string, string> = {
   price_book_version:
     'one immutable set of non-catalog rates, pinned by designs and sent proposals (M01-48, M01-49)',
   price_book_rate: 'one rate of a price-book version, immutable with it (M01-48, T-M01-031)',
+  orchestration_outbox:
+    'a handoff to Temporal, written in its change’s transaction; only the dispatcher marks it, on ' +
+    'the admin path (infra/temporal/README.md §5, T-M01-030)',
 };

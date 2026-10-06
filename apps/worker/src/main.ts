@@ -1,6 +1,10 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { Logger } from 'nestjs-pino';
+import {
+  TEMPORAL_WORKER_REGISTRATIONS,
+  type TemporalWorkerRegistration,
+} from './common/temporal/temporal.tokens';
 import { ENV } from './config/env';
 import { WorkerModule } from './worker.module';
 
@@ -16,12 +20,13 @@ async function bootstrap() {
   const app = await NestFactory.createApplicationContext(WorkerModule, { bufferLogs: true });
   app.useLogger(app.get(Logger));
   app.enableShutdownHooks();
-  app
-    .get(Logger)
-    .log(
-      `worker up — Temporal ${ENV.TEMPORAL_ADDRESS} namespace=${ENV.TEMPORAL_NAMESPACE} ` +
-        'queue=heliogrid-platform',
-    );
+  app.get(Logger).log(
+    `worker up — Temporal ${ENV.TEMPORAL_ADDRESS} namespace=${ENV.TEMPORAL_NAMESPACE} ` +
+      `queues=${app
+        .get<readonly TemporalWorkerRegistration[]>(TEMPORAL_WORKER_REGISTRATIONS)
+        .map((registration) => registration.taskQueue)
+        .join(',')}`,
+  );
 }
 
 void bootstrap();

@@ -62,7 +62,11 @@ curl localhost:8084/health                               # liveness · /health/r
   logged URL drops its query string, because `redact` reaches structured fields only.
 - **Start workflows through `TemporalGateway`** with the contract from
   `@heliogrid/contracts/workflows`; the gateway derives the id. `start()` is idempotent, but the
-  durable handoff is an outbox row in the SAME transaction (`docs/engineering/forward-compat.md`).
+  durable handoff is an outbox row in the SAME transaction (`docs/engineering/forward-compat.md`):
+  the repository calls `recordOutboxEvent(tx, …)` inside its tenant transaction, and the service
+  hands the event id to `OutboxDispatcher.dispatchNow` after the commit; the sweep starts any it missed.
+- A workflow's steps that write this app's data run HERE: the module registers its queue with
+  `TemporalActivityHost` at init, typed against the contract's activity interface.
 - **Every controller declares route access with `RouteAccessMap`** beside `@TsRestHandler`:
   `public`, `session-cookie`, `session`, `member` or `{ capability }`. A missing entry fails to
   compile and the guard denies it. Never test a role inline; read the session with `sessionOf(req)`.

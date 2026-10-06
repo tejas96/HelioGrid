@@ -16,7 +16,7 @@ import type { z } from 'zod';
  * Task queues are a scaling and isolation boundary, not a label: a slow PDF render on the
  * same queue as lead assignment starves it. One per business area as modules land.
  */
-export const TASK_QUEUES = ['heliogrid-platform'] as const;
+export const TASK_QUEUES = ['heliogrid-platform', 'heliogrid-outbox'] as const;
 export type TaskQueue = (typeof TASK_QUEUES)[number];
 
 export interface WorkflowDefinition<
