@@ -21,6 +21,8 @@
       "Bash(pkill*)",
       "Bash(killall*)",
       "Bash(kill-port*)",
+      "Bash(* xargs kill*)",
+      "Bash(kill *)",
       "Bash(rm -rf /Volumes/works-space/heliogrid*)",
       "Bash(rm -rf ~*)",
       "Bash(rm -rf $HOME*)"

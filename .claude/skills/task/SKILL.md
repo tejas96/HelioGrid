@@ -16,11 +16,11 @@ Two owner gates and only two: the complete contract (step 3) and every commit (s
 each CI fix). A design or dependency blocker is a prerequisite, not a gate: the step ends with the
 blocker named. `/task <id>` for a task that is not the walk's step is refused with the step named.
 
-## 0. Runtime ledger — before anything runs
+## 0. Runtime rules — nothing runs before the walk
 
-First the branch, before any edit: `git switch -c feat/<task or part id> origin/main` on a clean
-tree (`git status`); the folder is shared with every other session, so a dirty tree is theirs.
-
+The walk (step 1) is read-only and comes first. Once it answers `build <id>`: the branch,
+`git switch -c feat/<id> origin/main` on a clean tree (`git status`; the folder is shared with
+every other session, so a dirty tree is theirs), then this ledger, then the contract (step 2).
 Record every resource you will touch as `pre_existing` or `started_by_task`, with the identity
 that stops or restores it, in the task's `#### Runtime` section:
 
@@ -34,9 +34,12 @@ that stops or restores it, in the task's `#### Runtime` section:
 | logs | `wc -c .qa/api.log .qa/web.log .qa/metro.log` | byte marks |
 
 A healthy HelioGrid server (its pid's command names this repository and `/health/ready` answers
-200) is reused as it is. A foreign listener is the owner's to free with the `clean-dev-ports`
-launch configuration; you never kill by port or name. You start a server only through
-`.claude/launch.json` with the preview tool. A simulator is chosen by the NEWEST install of
+200) is reused: a source one (`api`, `web`, `mobile-metro`) as it is; a built one (`api-built`,
+`web-built`) only when its build is newer than the newest changed file, else restarted through its
+launch configuration when it is yours, or named to the owner when it is pre-existing. The runtime
+ledger records which mode each server runs in. A foreign listener is the owner's to free with the
+`clean-dev-ports` launch configuration; you never kill by port or name. You start a server only
+through `.claude/launch.json` with the preview tool. A simulator is chosen by the NEWEST install of
 `com.heliogrid.app` (`xcrun simctl get_app_container <udid> com.heliogrid.app`, then `stat` its
 binary); a native rebuild happens only when native files changed after that install or the app is
 absent. Metro is shared by both phones; JavaScript changes reload through it.
@@ -84,8 +87,10 @@ Write under the task's header lines (`docs/tasks/README.md` keeps the shape):
   `ios`, chosen by the path rules in `.github/workflows/ci.yml`; a lane an AC needs that the
   paths skip is `FAIL`, never a pass. An API behaviour is proven by its test file on
   `heliogrid_test` (`pnpm exec vitest run <file>`, both database names switched —
-  `infra/README.md`) and CI. Before PR C no row claims phone CI proof: phone rows are local, by
-  `qa-ios` and `qa-android`.
+  `infra/README.md`) and CI. A phone row owned by `ci` is an Android row, proven only by the
+  `android` lane's `Phone flows (tests/e2e/mobile)` step having run and passed; a lane whose
+  `Phone flows OFF` step ran proves nothing, and the row is `BLOCKED`, never a pass. An iOS
+  phone row is local, by `qa-ios`, never `ci`.
 - `#### Parts` — the `Where` table is complete or the plan is not, and it is the budget: a part
   holds about 20 files and 1,000 lines, or holds one independently rejectable deliverable. The
   cap decides WHERE the work splits, never what is cut: a test, a protection row or a doc line is
@@ -110,11 +115,9 @@ Then present the contract and stop. Nothing is built before the owner's go (`CLA
 
 ## 4. Build
 
-Tests first (`.claude/rules/testing.md`): one slice at a time — failing test, minimal code,
-targeted pass, `pnpm check`. Every money, tenancy or permission rule and every check you add or
-change is seen red on a planted bad line, and the line is recorded for the commit card. A new
-route, table, contract, package or behaviour stops you: repartition and go back to step 2. The
-planned file list is the budget: when the changed set passes it by a fifth, or a file lands in a
+Build as `CLAUDE.md` §3 and `.claude/rules/testing.md` say, one slice at a time; each planted red
+line is recorded for the commit card. A new route, table, contract, package or behaviour stops
+you: repartition and go back to step 2. The planned file list is the budget: when the changed set passes it by a fifth, or a file lands in a
 package the plan does not name, stop, show the delta (planned and built · built but not planned,
 each with its reason · planned but not built) and repartition — never trim a proof to fit. Tick
 the part's checklist as each file group and proof lands; the owner reads it, never a transcript.
@@ -126,19 +129,28 @@ changed.
 
 ## 5. QA — helpers once, on one stack
 
-Start or reuse the stack (step 0). Set both `.env.local` database names to
-`heliogrid_test`, run `pnpm db:migrate`, restart only the api, and verify both names before QA.
+Start or reuse the stack (step 0). Set both `.env.local` database names to `heliogrid_test`,
+export the file (`set -a; . ./.env.local; set +a` — `pnpm db:migrate` reads the shell), run
+`pnpm db:migrate`, publish the pack when the test database holds none
+(`pnpm --filter @heliogrid/api pack:publish`), restart only the api, and verify both names before
+QA.
 Standing accounts, one helper each: `…901` web, `…902` iOS, `…903` Android (`DEV_OTP_PHONES`); a
 missing standing company is created once through the app before QA; API tests never use them.
 
 Give every helper the same context packet and nothing else: the AC lines, its rows, the interface
 and file map, the diff summary, the commands already run, the runtime identities and log paths.
-Start `qa-web`, `qa-ios` and `qa-android` together — an omitted surface starts no helper — and
-`reviewer` beside them with the finished diff. Fix the reviewer's findings, then CONTINUE the same
-reviewer (`SendMessage`) with only the fixed files; never a fresh instance. A third pass happens
-only when a fix touched a money, tenancy or permission rule. `evaluator` starts only after every
+Record `git status --porcelain` and `git diff | git hash-object --stdin` before any helper starts
+and compare when they return: a helper holds Bash, so the tool list alone proves nothing — a
+difference is a blocker named by file. Start `qa-web`, `qa-ios` and `qa-android` together — an
+omitted surface starts no helper — and `reviewer` beside them with the finished diff. Fix the
+reviewer's findings, then CONTINUE the same reviewer (`SendMessage`) with only the fixed files;
+never a fresh instance. A third pass happens only when a fix touched a money, tenancy or
+permission rule. `evaluator` starts only after every
 surface helper has returned and the review fixes are in; it runs `pnpm check:all` once, and what
-it regenerates (OpenAPI, catalogs) is yours to read and commit. A code change after that gate
+it regenerates (OpenAPI, catalogs) is yours to read and commit. A web dev server you started is
+stopped before the gate (`apps/web/CLAUDE.md`: a build under `next dev` breaks its chunks) and
+restarted after it when QA goes on; a pre-existing one is the owner's — say what the gate will do
+to it and wait for the word. A code change after that gate
 reruns `pnpm check` and the one command that proves the change, by you, and the evaluator is
 continued with that output; it is never re-spawned.
 
@@ -155,15 +167,15 @@ turns `shipped` in this commit), mistakes found and the rule that now prevents e
 blockers, the runtime cleanup state, and the measurements — tool-call turns, tokens, helper runs,
 planned versus built — written under the task's `#### Runtime` in the same commit.
 
-Commit only on the owner's yes to THIS card; a `go`, a green
-check or an earlier yes never counts (`CLAUDE.md` §4). Never `--no-verify`, never force-push.
+The commit waits for the owner's yes to THIS card (`CLAUDE.md` §4).
 
 ## 7. Draft PR and CI
 
 Push, open a DRAFT PR whose body carries the proof and the mistakes record. A failed required job
 goes to `ci-investigator` for that job only; show a CI-fix card (cause, files, proof, message);
 the owner's `fix` approves that card and the same-PR push, nothing unshown. Judge only the latest
-run of the head SHA. Mark ready when every required lane has passed; the owner merges.
+run of the head SHA, step by step for a phone lane (step 2's rule), never its colour alone. Mark
+ready when every required lane has passed; the owner merges.
 
 ## 8. Teardown — on success, block, cancellation or failure
 
@@ -177,13 +189,13 @@ starts in a fresh session.
 
 ## Helpers — `.claude/agents/`
 
-| helper | model · effort | when | returns |
-|---|---|---|---|
-| `design-check` | opus · medium | step 3 | `READY` · `NEEDS_CHANGE` · `NOT_DRAWN`, findings, one prompt |
-| `qa-web` · `qa-ios` · `qa-android` | sonnet · medium | step 5, together | `PASS` · `FAIL` · `BLOCKED`, `row → action → observed → measurements → new log range` |
-| `reviewer` | opus · medium | step 5, with QA | `blocker` · `should-fix` · `note`, `row → file:line → evidence → smallest fix` |
-| `evaluator` | sonnet · medium | step 5, after QA | `AC → owner → proof → result → evidence`, the gate, regenerated paths |
-| `ci-investigator` | sonnet · high | step 7, one failed job | cause, evidence, smallest fix, proof |
+| helper | when | returns |
+|---|---|---|
+| `design-check` | step 3 | `READY` · `NEEDS_CHANGE` · `NOT_DRAWN`, findings, one prompt |
+| `qa-web` · `qa-ios` · `qa-android` | step 5, together | `PASS` · `FAIL` · `BLOCKED`, `row → action → observed → measurements → new log range` |
+| `reviewer` | step 5, with QA | `blocker` · `should-fix` · `note`, `row → file:line → evidence → smallest fix` |
+| `evaluator` | step 5, after QA | `AC → owner → proof → result → evidence`, the gate, regenerated paths |
+| `ci-investigator` | step 7, one failed job | cause, evidence, smallest fix, proof |
 
 Helpers hold no `Agent`, `Write` or `Edit` tool and start no helper of their own. Only you read
 Claude Design (`DesignSync` is Main-only). Each helper receives the packet and its contract — never
