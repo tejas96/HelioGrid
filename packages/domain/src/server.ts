@@ -11,6 +11,7 @@
  * formatter, a reducer, anything a screen needs.
  */
 
+export { matchImportRows } from './catalog/import-matching';
 export { readReleaseSnapshot } from './catalog/release';
 export { resolveCatalogItem } from './catalog/resolve';
 export { applyRate } from './money/basis-points';

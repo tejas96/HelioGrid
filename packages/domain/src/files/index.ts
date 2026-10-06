@@ -3,7 +3,7 @@
  * may own a file and who may store or read it.
  */
 
-export { IMAGE_SIGNATURE_BYTES, matchesImageSignature } from './image-signature';
+export { FILE_SIGNATURE_BYTES, matchesFileSignature } from './file-signature';
 export type { FileDeclarationVerdict, FileSubjectKind, FileSubjectRule } from './rules';
 export {
   FILE_DOWNLOAD_LINK_SECONDS,

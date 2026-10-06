@@ -1549,6 +1549,143 @@ Rows Q9, Q10, Q11, Q12 of the QA plan, and Q8c below. Surfaces: api, database. `
 - Given a row matching a platform product at a different spec, when the matching pass runs, then it is a needs-attention row and no platform spec changes (§M01.4 edge cases). → proof: unit packages/domain/tests/catalog/import-matching.test.ts
 - Given migration 0009, when the tenancy scan runs, then `catalog_import_job` passes as tenant-scoped. → proof: invariant table-tenancy-scan
 
+#### Runtime
+Recorded at the step's start (2026-10-06), before anything ran. Branch `feat/T-M01-030a`, cut from `feat/T-M01-031` (PR #236, unmerged) by the owner's word — a stacked PR.
+
+| resource | state at start | identity |
+|---|---|---|
+| web `3002` · metro `8081` | free; nothing will start — an engine task, no screen | — |
+| api `8084` | free; `started_by_task` for QA, through the `api` launch configuration | preview serverId, recorded when started |
+| worker | not running; `started_by_task` from part b, through its launch configuration | preview serverId, recorded when started |
+| postgres `5544` | pre_existing | container `heliogrid-pg-local` |
+| object store `9000` | pre_existing | container `heliogrid-object-store-local` |
+| temporal `7233` | pre_existing | containers `heliogrid-temporal`, `heliogrid-temporal-admin`, `heliogrid-temporal-jwks` |
+| simulators · emulators | none booted, none attached | — |
+| browser tabs | the pane is closed | — |
+| database routing | `heliogrid_dev` on both `DATABASE_URL` and `DATABASE_ADMIN_URL` | `.env.local` |
+| logs | `.qa/api.log` 1,379,216 bytes · `.qa/metro.log` 14,661 bytes · `.qa/web.log` not created | byte marks |
+
+**Part a, at the end** (resource → initial → final):
+- api `8084` → free → started once through the `api` launch configuration (serverId `3ccd7460…`), stopped; free again, no `tsx watch` left.
+- database routing → `heliogrid_dev` on both → `heliogrid_test` for the tests and QA → `heliogrid_dev` on both, the file byte-identical to its start.
+- `heliogrid_test` → migration 0017 applied. `heliogrid_dev` was never migrated (it stands at 0015).
+- browser tab `seed` (opened by the preview) → closed. Postgres, object store, Temporal → pre_existing, untouched. The worker never started in part a.
+- logs → `.qa/api.log` 1,379,216 → 1,504,193 bytes; kept.
+
+**Part a measurements** — about 120 Main tool calls; helper runs: `qa-api` 1 (26.8k tokens), `reviewer` 3 passes (97.4k + 117.4k + 122.8k — the third because a money rule changed), `evaluator` 2 gate runs (25.1k + 32.2k — the first stopped on the stale OpenAPI file it regenerated); Main's own tokens are not measured by this session. Planned about 17 files; built 31 changed files, the deltas in the commit card.
+
+#### Plan
+**Summary**
+- **What:** the import job beneath the wizard — a CSV or Excel price list is stored, read, its columns guessed, its rows matched against the catalog, fixed in place, and imported in the background with a kept per-row report. The first product work handed to Temporal: the outbox and its dispatcher land here.
+- **Owner ruling 2026-10-06 — the steps run beside their data.** The worker holds the workflow (the step list); the API process hosts the activities (the steps), so the import reuses the catalog's own repositories, audit entries and spec gates with no second copy. `architecture.md` §2 (api, worker) and `infra/temporal/README.md` §5 change in part b.
+- **Files (~70), four parts, four stacked PRs:** a · the import rules and spreadsheet files (~17) · b · the handoff — outbox, dispatcher, the API's activity host (~20) · c · the job up to the preview (~22) · d · the run and the report (~11).
+- **Routes:** `POST /catalog/imports` · `GET /catalog/imports` · `GET /catalog/imports/{id}` · `PUT /catalog/imports/{id}/mapping` · `PUT /catalog/imports/{id}/rows/{rowNumber}` · `POST /catalog/imports/{id}/run`.
+- **Tables:** `orchestration_outbox` (0018), `catalog_import_job` and `catalog_import_row` (0019); 0017 adds two file types and one subject kind.
+- **Temporal (permanent names):** queues `heliogrid-catalog`, `heliogrid-outbox`; workflows `catalogImport`, `outboxSweep`; schedule `outbox-sweep`.
+- **New dependencies (`pnpm add`, api only):** `@temporalio/worker` 1.22.0 (the pin the worker holds) and `exceljs` 4.4.0.
+- **Proofs:** domain units for the guess and the match; API tests on `heliogrid_test` for the handoff, the read, the run and idempotency; invariants; `qa-api` drives every route and reads each workflow through `heliogrid-temporal-admin`.
+
+**Scope** — In: everything in the task's Contract and Data model, plus what they need that no task has built — spreadsheet types in the one file table, the outbox table and dispatcher, the API's activity host. · Out: the task's Out-of-scope line, less "the outbox dispatcher's durability proof — `infra/temporal`" (the outbox is product schema and lands here; the spike's proof stays). The wizard screen stays `T-M01-017`.
+
+**UX readiness** — an engine task: no drawing of its own. The screen it serves, `SCR-M01-17`, holds its link; its decisions record was read on 2026-10-06 and these facts bind the backend: step 1 asks the sheet and the header row, guessed (the pass-1 audit); the matching pass shows counted progress ("256 of 412 rows") and its cancel stops the work (decisions 24, 25); a needs-attention row is fixed by typing its value, or left out, and a spec conflict offers *keep the platform spec and override the price* or *import as your own SKU* (decisions 9, 30, 31); every preview row carries the file's price and the price the catalog holds now (decision 7); a failed run is the report, never the error state, and an unreadable file is step 1's error (decisions 26, 27); the report records *price applied · product created · left out* per row with the price before and after, and its *Fix the N rows* re-enters the preview on the left-out rows (decision 32 and the pass-3 audit).
+
+**Decided at /task** — one reason each; a line the owner strikes leaves the plan whole.
+1. **Activities run in the API, the workflow in the worker** — the owner's ruling above. The API gains `common/temporal/temporal.activity-host.ts`: one activities-only Temporal worker per registration, started in the background after boot and retried, so a Temporal outage never stops the API booting or serving reads (`T-FPLAT-064`). The worker app registers `heliogrid-catalog` with the workflow bundle and no activities. Proven at build that an activities-free registration polls no activity tasks; if it does, the plan returns to the owner.
+2. **The outbox is one tenant-scoped table, written in the caller's transaction** — `orchestration_outbox(id uuid = event id, tenant_id, workflow text, payload jsonb of ids only, created_at, dispatched_at)`, all four always, INSERT and SELECT for `app_user`, read and marked by the dispatcher on the admin path. The event id IS the workflow id's stem (`<area>-<event id>`), started `USE_EXISTING`.
+3. **Two dispatch paths, one rule.** After the commit the service starts the workflow at once and marks the row (the fast path, seconds); a Temporal Schedule `outbox-sweep` runs `outboxSweep` every minute, whose activity starts every row still undispatched after 30 seconds. A dispatcher dying between the commit and the start costs a minute, never the work or a double. The schedule is created by the activity host at boot when absent; a periodic job never lives in the API (`architecture.md` §2).
+4. **Two parts of the task's contract change shape.** The file is declared against a new file subject `catalog` — the company's catalog, ref the tenant's own id, upload and read `onboarding.manage_catalog`, CSV and XLSX, under the 2 MB ceiling — because the file exists before the job does and `POST /catalog/imports` takes its id as the task says. And the workflow's progress is the job row's `progress`, read by `GET /catalog/imports/{id}`, not a Temporal query: one source, and the wizard already polls that read.
+5. **Excel means `.xlsx`; `.xls` and `.ods` are refused with "save it as .xlsx or .csv"** — `exceljs` reads `.xlsx` and CSV, and the PRD says Excel/CSV. A stored file's first bytes are held to its type at `complete`, as images are: `.xlsx` starts with the zip signature, CSV holds no NUL byte. `image-signature.ts` becomes `file-signature.ts`.
+6. **A job runs in phases, one workflow per handoff.** States `reading → mapped → matching → previewed → running → completed`, and `unreadable` from `reading`. `POST /catalog/imports` commits `reading` + an outbox row (phase `read`); `PUT …/mapping` commits `matching` + a row (phase `match`); `POST …/run` commits `running` + a row (phase `run`). The workflow type is one, `catalogImport`, its input `{ eventId, tenantId, jobId, phase }` — ids only (README §4).
+7. **The per-row report is a child table, `catalog_import_row`** — `(tenant_id, job_id, row_number)` unique; raw cells, mapped fields, outcome, reason, fix, result and the item it wrote. Rows are paged and fixed one at a time, and a jsonb column rewritten per fix would race two fixers. This answers the task's first open condition. Nothing purges (the task).
+8. **A run that fails is a completed report, not a `failed` state** (decision 26). A row the catalog refuses at write is `failed` with its reason; Temporal retries an activity, so a whole-run failure is a row-level one. This answers the second open condition.
+9. **Matching is brand + model against the market slice AND the tenant's own SKUs**, compared after trimming outer whitespace and never case-folded or translated (F3-08). A platform match → a price override with a dated rate entry; an own-SKU match → a dated rate entry on that SKU. This is what makes a second import of the same file create no second SKU (DONE WHEN 2). Both count as matched; how the screen words the own-SKU kind is `T-M01-017`'s.
+10. **A new product needs its kind's whole spec envelope from the file**, held by the existing gates (`specs.ts`); a missing or impossible field is a needs-attention row naming the fields. The target-field vocabulary is `kind`, `brand`, `model`, `rate` and every envelope field per kind (an own SKU carries no tax of its own, so no `taxPct`), each with header synonyms in English, Hindi and Marathi. No partial own SKU exists today, and inventing one is `T-M01-027`'s schema, not this task's.
+11. **Row outcomes and reasons are closed sets in domain** — outcomes `price_override · own_item_price · new_item · needs_attention · left_out`; reasons `brand_or_model_missing · kind_missing · price_missing · price_unreadable · price_below_zero · price_finer_than_minor_unit · spec_missing · spec_invalid · spec_conflict · several_matches · repeated_in_file`; conflict answers `keep_catalog_spec · import_as_own_item`. Until 0019 mirrors them as pgEnums, `vocabulary-copies` holds them as one list; `enum-parity` takes them with 0019 (Law 12); results `price_applied · product_created · left_out · failed`.
+12. **A fix answers the row's question, never edits the platform** — `PUT …/rows/{n}` takes `{ cells }` (typed values for the mapped fields), `{ leaveOut: true }`, or for a spec conflict `{ answer: 'keep_catalog_spec' | 'import_as_own_item' }` — on an own SKU only the first, since it is already the tenant's own. The row is re-matched and the job's counts recompute in the same transaction.
+13. **Every row's write is keyed** — a deterministic creation key per `(job, row)` (a name-based uuid) goes through `CatalogRepository.createOwnItem` and `CatalogPricesRepository.saveOverride`, the routes' own retry door (`F4-07`): a retried activity replays, never doubles. A completed job whose left-out or failed rows are fixed may run again, and only those rows write (decision 32).
+14. **A rate enters dated the run's day in the tenant's time zone**, in the tenant's currency, refused finer than its minor unit by the catalog's existing check; the actor of every write and audit entry is the job's `started_by`.
+15. **Access** — every route needs `onboarding.manage_catalog` held outright (`admitWrite`): an import writes prices, and a Finance session never writes one (owner ruling 2026-10-06). A read of another tenant's job is 404.
+16. **Migration numbers are taken at their slice** — 0017 (part a), 0018 (part b), 0019 (part c); the task's "0009" lines are corrected in the same change (Law 8), and the DONE WHEN line 6 number with them.
+17. **The proofs move with the activities** — DONE WHEN 1 and 2 name `apps/worker/tests/catalog/…`; the activities live in the API, so those files are `apps/api/tests/catalog/import-run.test.ts` and `import-idempotency.test.ts`. The worker proves its workflow's step order with Temporal's test environment.
+18. **`file.content_type` becomes text held by a CHECK** — owner ruling 2026-10-06, found at build: Postgres caps an enum label at 63 bytes and the `.xlsx` type is 65. The domain tuple stays the one list; the CHECK is built from it, and `enum-parity` reads the CHECK back against the contract as it read the enum. Safe both ways while a release rolls: the column holds the same strings.
+19. **Storing a file needs its capability held outright** — `mayUploadFile` refuses a limited cell, so Finance's "view prices & margins" never stores a price list. No other file rule has a limited cell, so the logo is unchanged.
+20. **A price cell is read in the tenant's currency, with no market's marks hard-coded** — the market pack's own sign (`moneySymbol`) and ISO code are taken off and any other sign leaves the cell unreadable, so `$ 13,200` is never read as rupees; grouping is Indian or Western but never a mix, and the scale is the money module's rule (`minorUnitsOfDecimal`), not a second copy. India's informal `Rs.` and `/-` are not read: such a cell needs attention and is fixed in place. They would be a market fact on the pack, and no pack key holds them today.
+21. **Header words are kept per launch language, typed by `UiLanguage`** — owner ruling 2026-10-06 (option A of two; B was English-only headers, which the PRD's §M01.4 localisation note and the board's decision 14 would have had to drop). A language added to `UI_LANGUAGES` does not compile in `import-columns.ts` until every field names its words in it, and a test holds each language to words for kind, brand, model and price. A word that could name two fields — `type`, `company`, `cost` — names none, and the person places that column. The guess only fills step 2; the person confirms every column.
+
+**Rollout safety** — new tables and new enum values, and one column change: 0017 moves `file.content_type` from its pgEnum to text held by a CHECK (decision 18), holding the same strings, so an older api reads and writes it as before. An older api is also a reader of a `catalog` file row: it knows no such subject and would answer 500 on `complete` or `download-url`. No client sends one until the wizard (`T-M01-017`) ships, after every api runs this code, so the window is empty; the api deploys before any client that declares a spreadsheet. Old readers: an old app never sends a spreadsheet type and never reads an import route; an old worker without `catalogImport` leaves the workflow task to retry until the new worker deploys, and nothing is lost (the outbox row stays undispatched or the start waits on the queue). New readers: the new API reads no row an old one wrote. Deploy order: worker first, then API. No expand-then-contract is needed.
+
+**Twin screen** — none: an engine task. Both platforms' wizard is `T-M01-017`.
+
+**Where** — every new or changed file with its §4 answer.
+
+| part | package | file | §4 answer |
+|---|---|---|---|
+| a | domain | `src/catalog/import.ts` (outcomes, reasons, conflict answers — states, entry points and results land with parts c and d), `src/catalog/import-cells.ts`, `src/catalog/import-columns.ts`, `src/catalog/import-matching.ts`, `src/catalog/specs.ts` (`SPEC_FIELDS`, derived), `src/catalog/index.ts`, `src/server.ts` | §4.3 — vocabulary and business logic |
+| a | domain | `src/files/vocabulary.ts`, `src/files/rules.ts`, `src/files/file-signature.ts` (renamed from `image-signature.ts`), `src/files/index.ts`, `src/subject/kinds.ts` | §4.3 |
+| a | db | `src/schema/file.ts` (the CHECK) | §4.2 |
+| a | invariants · rules | `tests/invariants/src/enum-parity.ts` (CHECK-held vocabularies), `.claude/protections.md` | §4.11 · Law 12 |
+| a | db | `migrations/0017_spreadsheet_files.sql` | §4.2 |
+| a | api | `src/modules/file/file.service.ts`, `src/modules/file/internal/subject-lookup.ts` | the file module's own seams |
+| a | contracts | `openapi/openapi.json` (regenerated) | §4.1 |
+| a | tests | `packages/domain/tests/catalog/import-cells.test.ts`, `import-columns.test.ts`, `import-matching.test.ts`, `packages/domain/tests/files/file-signature.test.ts` (renamed), `subject-rules.test.ts`, `apps/api/tests/files/spreadsheet.test.ts` | `.claude/rules/testing.md` |
+| b | db | `migrations/0018_orchestration_outbox.sql`, `src/schema/outbox.ts`, `src/schema/index.ts` | §4.2 |
+| b | contracts | `src/workflows/outbox.ts` (`outboxSweepWorkflow`), `src/workflows/registry.ts` (`TASK_QUEUES`), `src/workflows/index.ts` | §4.1 — workflow messages |
+| b | api | `src/common/temporal/temporal.activity-host.ts`, `temporal.tokens.ts`, `temporal.module.ts`, `outbox.repository.ts`, `outbox.admin.repository.ts`, `outbox.dispatcher.ts`, `outbox.activities.ts`, `src/app.module.ts`, `package.json` | the one Temporal seam (`temporal-client-fenced`) |
+| b | worker | `src/modules/outbox/outbox.workflows.ts`, `outbox.activities.types.ts`, `outbox.public.ts`, `src/worker.module.ts` | §2 worker — one folder per area |
+| b | tests | `apps/api/tests/orchestration/outbox-handoff.test.ts`, `apps/worker/tests/outbox/sweep.test.ts` | testing rules |
+| b | docs | `docs/engineering/architecture.md`, `infra/temporal/README.md`, `.claude/protections.md` | Law 8 · Law 12 |
+| c | db | `migrations/0019_catalog_import.sql`, `src/schema/catalog-import.ts`, `src/schema/index.ts` | §4.2 |
+| c | contracts | `src/catalog-import.ts` (five routes), `src/index.ts`, `src/workflows/catalog-import.ts`, `src/workflows/index.ts`, `openapi/openapi.json` | §4.1 |
+| c | api | `src/modules/catalog/catalog.import.controller.ts`, `catalog.import.service.ts`, `catalog.import.repository.ts`, `catalog.import.activities.ts`, `internal/spreadsheet.ts` (the `exceljs` reader), `catalog.module.ts`, `catalog.public.ts`, `package.json` | the catalog module (decision 2 of `T-M01-031`: the rates and imports are panels of one catalog surface) |
+| c | worker | `src/modules/catalog/catalog.workflows.ts`, `catalog.activities.types.ts`, `catalog.public.ts`, `src/worker.module.ts` | §2 worker |
+| c | tests | `apps/api/tests/catalog/import-handoff.test.ts`, `import-preview.test.ts`, `apps/worker/tests/catalog/import-workflow.test.ts` | testing rules |
+| d | contracts | `src/catalog-import.ts` (`POST …/run`), `openapi/openapi.json` | §4.1 |
+| d | api | `catalog.import.controller.ts`, `catalog.import.service.ts`, `catalog.import.activities.ts`, `catalog.import-run.repository.ts` | the catalog module |
+| d | worker | `src/modules/catalog/catalog.workflows.ts` (the run phase) | §2 worker |
+| d | tests | `apps/api/tests/catalog/import-run.test.ts`, `import-idempotency.test.ts` | testing rules |
+| a–d | docs | `docs/tasks/M01-onboarding.md` (this task; `T-M01-017`'s 0009 and worker lines) | Law 8 |
+
+#### Acceptance criteria
+- **AC-1** — Given an import file with platform-matching rows, unknown rows and broken rows, when the preview renders, then it states the three counts, matched rows become price overrides and unknown rows tenant SKUs on import, and broken rows are fixable inline; the import runs async with progress and produces a per-row report (M01-41). → proof: part c `apps/api/tests/catalog/import-preview.test.ts` — one file yields the three counts and a fixed row moves them; part d `apps/api/tests/catalog/import-run.test.ts` — the run creates an override with a dated rate entry and no SKU per matched row, a SKU per unknown row, and a report line per row; the wizard's rendering is `T-M01-017`'s
+- **AC-2** — Given the same file imported twice, when the second run completes, then each unknown row exists as exactly one SKU and each matched override carries two dated rate entries; given an activity retried after a partial apply, then no row is created twice (§M01.4 edge cases; M01-44). → proof: part d `apps/api/tests/catalog/import-idempotency.test.ts`
+- **AC-3** — Given a run is started, when the API commits the status change, then the outbox row is in the same transaction and a dispatcher that retries after a crash starts exactly one workflow. → proof: part b `apps/api/tests/orchestration/outbox-handoff.test.ts` — an injected failure after the change leaves no outbox row, and two dispatches of one event yield one workflow id; part c `apps/api/tests/catalog/import-handoff.test.ts` — the import's start and run commit their row with the state
+- **AC-4** — Given a file whose headers are in Hindi or Marathi, when the mapping auto-guesses, then the same target fields are proposed as for the English headers, and the header text itself is returned untranslated (§M01.4 localization notes). → proof: part a `packages/domain/tests/catalog/import-columns.test.ts`
+- **AC-5** — Given a row matching a platform product at a different spec, when the matching pass runs, then it is a needs-attention row and no platform spec changes (§M01.4 edge cases). → proof: part a `packages/domain/tests/catalog/import-matching.test.ts`; part c `import-preview.test.ts` — the platform item's row is byte-identical after the pass
+- **AC-6** — Given migrations 0018 and 0019, when the tenancy scan runs, then `orchestration_outbox`, `catalog_import_job` and `catalog_import_row` pass as tenant-scoped. → proof: invariant `table-tenancy-scan`
+- **AC-7** (extension) — Given a CSV or `.xlsx` price list declared against the company's catalog, when it is uploaded and confirmed, then it is stored; given bytes that are not the declared type, or a person without `onboarding.manage_catalog` held outright, then it is refused. → proof: part a `apps/api/tests/files/spreadsheet.test.ts`; `qa-api`
+- **AC-8** (extension) — Given a Finance session, when it starts, fixes or runs an import, then each is refused; given another company's job id, then it reads 404. → proof: part c `import-preview.test.ts`; `qa-api`
+- **AC-9** (extension) — Given an import is run and the wizard is closed, when the run finishes, then the job reads `completed` with its report and Temporal shows exactly one completed `catalogImport` per handoff. → proof: `qa-api` with `docker exec heliogrid-temporal-admin temporal workflow show`
+
+#### QA plan
+| id | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| Q1 | main-dev | required | domain | the guess and the match tables run; one rule broken each, seen red by name | AC-4, AC-5 units |
+| Q2 | main-dev | required | api tests | file type and read-back tests on `heliogrid_test`; the `.xlsx` signature broken once, seen red | AC-7 |
+| Q3 | qa-api | required | api `8084` | `…904` declares, uploads and completes a CSV and an `.xlsx` against `catalog`; a PNG renamed `.xlsx` is refused; `…906` (Finance) is refused the declare | AC-7 |
+| Q4 | main-dev | required | api tests | the handoff test; the outbox insert moved outside the transaction once, seen red | AC-3 |
+| Q5 | main-dev | required | invariants | `table-tenancy-scan`, `tenancy-rls`, `enum-parity`, `schema-parity` over 0017–0019 | AC-6 |
+| Q6 | qa-api | required | api `8084` | `…904` starts an import from a stored file, polls to `mapped`, sends the mapping, polls to `previewed`, reads the counts, fixes one row and sees them move | AC-1, AC-4, AC-5 |
+| Q7 | qa-api | required | api `8084` | `…906` is refused start, fix and run; `…905` reads `…904`'s job as 404 | AC-8 |
+| Q8 | qa-api | required | api `8084` + temporal admin | `…904` runs the import, reads `running` then `completed` and the report; runs the same file again and sees no second SKU; `temporal workflow show` names one completed workflow per handoff | AC-1, AC-2, AC-9 |
+| Q9 | main-dev | required | api tests | run and idempotency tests; the per-row key dropped once, seen red | AC-1, AC-2 |
+| Q10 | ci | required | `quality` | the PR's run of each part passes | every AC |
+| — | qa-web · qa-ios · qa-android | not_applicable | — | an engine task; the wizard is `T-M01-017` | — |
+
+Q3 runs in part a; Q4 in part b; Q6–Q7 in part c; Q8–Q9 in part d. No row touches global state.
+
+#### Parts
+| part | delivers | AC | depends on | status |
+|---|---|---|---|---|
+| a | the import rules (guess, match, vocabularies) and spreadsheets in the one file table | AC-4, AC-5, AC-7 | `T-M01-031` (stacked) | shipped |
+| b | the handoff — outbox, dispatcher, sweep schedule, the API's activity host | AC-3, AC-6 (outbox) | a | open |
+| c | the job up to the preview — start, read, mapping, matching, row fixes | AC-1 (preview), AC-3 (import), AC-5, AC-6, AC-8 | b | open |
+| d | the run and the report | AC-1 (run), AC-2, AC-9 | c | open |
+
+**Part a checklist** — [x] domain import vocabularies · [x] column guess · [x] match rule · [x] file types, `catalog` subject, signature · [x] migration 0017 · [x] file service and lookup · [x] Q1 · [x] Q2 · [x] Q3 · [ ] Q10 (the PR's `quality` lane)
+**Part b checklist** — [ ] migration 0018 and schema · [ ] workflow contract and queues · [ ] activity host · [ ] outbox write, dispatcher, sweep · [ ] worker sweep workflow · [ ] docs · [ ] Q4 · [ ] Q5 (outbox) · [ ] Q10
+**Part c checklist** — [ ] migration 0019 and schema · [ ] five routes · [ ] read and match activities, spreadsheet reader · [ ] workflow phases read and match · [ ] Q5 · [ ] Q6 · [ ] Q7 · [ ] Q10
+**Part d checklist** — [ ] run route · [ ] apply activity and keys · [ ] workflow run phase · [ ] Q8 · [ ] Q9 · [ ] Q10
+
 ### T-M01-031 · Price book
 **Type:** engine · **Tier:** P0
 **Status:** shipped

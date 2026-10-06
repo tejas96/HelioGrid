@@ -11,7 +11,14 @@ export type StorageProvider = (typeof STORAGE_PROVIDERS)[number];
 
 /**
  * Every type a stored file may be. It GROWS with the slice that first stores a new type (Law 9),
- * and each kind in `rules.ts` takes a subset of it. Mirrored as a pgEnum (invariant `enum-parity`).
+ * and each kind in `rules.ts` takes a subset of it. Held in the database by the CHECK
+ * `file_content_type_known` — the `.xlsx` type is longer than a pgEnum label may be — and read back
+ * against the contract by invariant `enum-parity`.
  */
-export const FILE_CONTENT_TYPES = ['image/png', 'image/jpeg'] as const;
+export const FILE_CONTENT_TYPES = [
+  'image/png',
+  'image/jpeg',
+  'text/csv',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+] as const;
 export type FileContentType = (typeof FILE_CONTENT_TYPES)[number];

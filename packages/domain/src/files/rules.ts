@@ -1,5 +1,5 @@
 import type { Capability } from '../authz/capabilities';
-import { can } from '../authz/policy';
+import { can, limitsOn } from '../authz/policy';
 import type { RolePreset } from '../authz/roles';
 import type { SubjectKind } from '../subject/kinds';
 import type { FileContentType } from './vocabulary';
@@ -41,7 +41,7 @@ export interface FileSubjectRule {
  * The subjects a file may be stored against. It GROWS with the slice that first stores a file
  * for its subject (Law 9); a subject kind absent here owns no file, and the wire refuses it.
  */
-export const FILE_SUBJECT_KINDS = ['tenant'] as const satisfies readonly SubjectKind[];
+export const FILE_SUBJECT_KINDS = ['tenant', 'catalog'] as const satisfies readonly SubjectKind[];
 export type FileSubjectKind = (typeof FILE_SUBJECT_KINDS)[number];
 
 export const FILE_SUBJECT_RULES: Readonly<Record<FileSubjectKind, FileSubjectRule>> = {
@@ -51,6 +51,17 @@ export const FILE_SUBJECT_RULES: Readonly<Record<FileSubjectKind, FileSubjectRul
     read: 'member',
     maxBytes: FILE_MAX_BYTES,
     contentTypes: ['image/png', 'image/jpeg'],
+  },
+  /**
+   * The company's catalog — a supplier's price list for the import (`M01-41`), its ref the
+   * company's own id because the file is stored before the import that reads it exists. Read by
+   * the same people who manage the catalog: a price list is prices.
+   */
+  catalog: {
+    upload: 'onboarding.manage_catalog',
+    read: 'onboarding.manage_catalog',
+    maxBytes: FILE_MAX_BYTES,
+    contentTypes: ['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
   },
 };
 
@@ -66,8 +77,12 @@ export function judgeFileDeclaration(
   return 'accepted';
 }
 
+/**
+ * Storing a file is a write, so it needs the capability held outright: a limited cell is a narrower
+ * act — Finance's "view prices & margins" on the catalog — and never stores anything.
+ */
 export function mayUploadFile(roles: readonly RolePreset[], rule: FileSubjectRule): boolean {
-  return can(roles, rule.upload);
+  return can(roles, rule.upload) && limitsOn(roles, rule.upload).length === 0;
 }
 
 /** `member` reads for anyone the session guard already admitted into the company. */

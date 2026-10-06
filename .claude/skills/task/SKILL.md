@@ -110,6 +110,14 @@ A clear PRD or brief answer corrects the task before approval. Silence or ambigu
 options to the owner, the ruling written into the PRD row or brief first, then the task. Nothing
 is invented in implementation.
 
+**No requirement is copied blind.** Before the contract is shown, test every line it carries over —
+the PRD row, the brief, the board, the task's own text — two ways: is it wrong (a defect, a
+contradiction, a fact not tied to its owner, a list that will drift), and is there a simpler or
+better way to meet the same need. Each finding goes into the contract for the owner, never folded
+in silently and never followed silently: what you found, an example in this codebase, the cost of
+each way, your recommendation first (`CLAUDE.md` §1). A higher-authority source is still
+questioned; only the owner changes it.
+
 ## 3. Design check — screen tasks
 
 Fetch the record yourself with `DesignSync` `get_file` (the project and file name are in the
@@ -124,8 +132,10 @@ Then present the contract and stop. Nothing is built before the owner's go (`CLA
 
 Build as `CLAUDE.md` §3 and `.claude/rules/testing.md` say, one slice at a time; each planted red
 line is recorded for the commit card. A new route, table, contract, package or behaviour stops
-you: repartition and go back to step 2. The planned file list is the budget: when the changed set
-passes it by a fifth, or a file lands in a package the plan does not name, stop, show the delta
+you: repartition and go back to step 2. So does a requirement the build shows to be wrong or
+over-built: the step 2 test applies, and the owner hears it before the code follows it. The
+planned file list is the budget: when the changed set passes it by a fifth, or a file lands in a
+package the plan does not name, stop, show the delta
 (planned and built · built but not planned, each with its reason · planned but not built) and
 repartition — never trim a proof to fit. Tick the part's checklist as each file group and proof
 lands; the owner reads it, never a transcript.

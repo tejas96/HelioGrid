@@ -7,7 +7,12 @@ import type { FileSubjectKind } from '@heliogrid/domain';
  */
 export type SubjectLookup = (tenantId: string, subjectRef: string) => Promise<boolean>;
 
+/** The company itself: only ever the caller's own. The wire takes a uuid in either case. */
+const isTheCompany: SubjectLookup = async (tenantId, subjectRef) =>
+  subjectRef.toLowerCase() === tenantId.toLowerCase();
+
 export const SUBJECT_LOOKUPS: Readonly<Record<FileSubjectKind, SubjectLookup>> = {
-  /** The company itself: only ever the caller's own. The wire takes a uuid in either case. */
-  tenant: async (tenantId, subjectRef) => subjectRef.toLowerCase() === tenantId.toLowerCase(),
+  tenant: isTheCompany,
+  /** The company's catalog is the company's own: its ref is the company's id. */
+  catalog: isTheCompany,
 };

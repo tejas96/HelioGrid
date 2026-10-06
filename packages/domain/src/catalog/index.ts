@@ -4,6 +4,28 @@
  * `./server` alone (F4-04); its types are here, because a screen renders what the server sent.
  */
 
+export type {
+  CatalogImportAttentionReason,
+  CatalogImportConflictAnswer,
+  CatalogImportCounts,
+  CatalogImportRowOutcome,
+} from './import';
+export {
+  CATALOG_IMPORT_ATTENTION_REASONS,
+  CATALOG_IMPORT_CONFLICT_ANSWERS,
+  CATALOG_IMPORT_ROW_OUTCOMES,
+  countImportMatches,
+} from './import';
+export type { ImportCurrency } from './import-cells';
+export type { CatalogImportField, ColumnGuess } from './import-columns';
+export { CATALOG_IMPORT_FIELDS, guessColumns, guessHeaderRow } from './import-columns';
+export type {
+  CatalogImportRowInput,
+  CatalogImportRowMatch,
+  ImportAttention,
+  ImportCatalog,
+  ImportCatalogEntry,
+} from './import-matching';
 export type { PriceBookRateBasis } from './price-book';
 export { MAX_MARGIN, PLATFORM_DEFAULT_MARGIN, PRICE_BOOK_RATE_BASES } from './price-book';
 export type {
