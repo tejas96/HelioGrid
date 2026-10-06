@@ -85,9 +85,12 @@ Write under the task's header lines (`docs/tasks/README.md` keeps the shape):
   an extension gets the next label; each line names its proof by test file and name, or by the
   running-app check that proves it.
 - `#### QA plan` — one row per proof: `id · owner · tier · surface · action → expected · proof`.
-  Owners: `main-dev` (unit, contract, curl against `8084`, request ids), `qa-web`, `qa-ios`,
-  `qa-android`, `evaluator`, `ci`. Tiers: `required`, `blocked` (names what clears it),
-  `not_applicable` (names why). CI lanes today: `quality`, `e2e-web`, `mobile-js`, `android`,
+  Owners: `main-dev` (unit, contract and planted-red proofs), `qa-api` (the running API's
+  behaviour over curl: status, body, headers, sign-in, permissions, tenant isolation, idempotency,
+  persistence — only what the row declares), `qa-web`, `qa-ios`, `qa-android`, `evaluator`, `ci`.
+  Main proves no live API journey itself: it checks the API is up, and `qa-api` drives the rows.
+  A task with no reachable API behaviour marks `qa-api` `not_applicable` with the reason. Tiers:
+  `required`, `blocked` (names what clears it), `not_applicable` (names why). CI lanes today: `quality`, `e2e-web`, `mobile-js`, `android`,
   `ios`, chosen by the path rules in `.github/workflows/ci.yml`; a lane an AC needs that the
   paths skip is `FAIL`, never a pass. An API behaviour is proven by its test file on
   `heliogrid_test` (`pnpm exec vitest run <file>`, both database names switched —
@@ -138,12 +141,14 @@ Start or reuse the stack (step 0). Set both `.env.local` database names to `heli
 export the file (`set -a; . ./.env.local; set +a` — `pnpm db:migrate` reads the shell), run
 `pnpm db:migrate`, publish the pack when the test database holds none
 (`pnpm --filter @heliogrid/api pack:publish`), restart only the api, and verify both names before
-QA. Standing accounts, one helper each: `…901` web, `…902` iOS, `…903` Android
-(`DEV_OTP_PHONES`); a missing standing company is created once through the app before QA; API
-tests never use them.
+QA. Standing accounts, one helper each: `…901` web, `…902` iOS, `…903` Android, `…904` and
+`…905` for `qa-api` (its own tenant and a second tenant for isolation rows), all in
+`DEV_OTP_PHONES`; a missing standing company is created once through the app before QA and never
+again; API tests never use them.
 
 Each helper gets its own packet and nothing more. A QA helper: its rows, the AC lines they prove,
-the URL or device, its standing account, the runtime identities and log paths. The reviewer: the
+the URL or device, its standing account, the runtime identities and log paths — `qa-api` the base
+URL `http://localhost:8084`, both its numbers and the log path. The reviewer: the
 plan, the AC lines, the changed-file list, the diff, the protection rows the plan names. The
 evaluator: the AC lines with their owners, every helper's report, your own proof lines, the
 commands already run. The helpers may drive web, iOS and Android at once on one stack
@@ -156,14 +161,16 @@ helper holds Bash, so a write is detected, never prevented; a database or device
 detected at all — its contract forbids it. A changed hash is a blocker named by file.
 
 Start `qa-web`, `qa-ios` and `qa-android` together — an omitted surface starts no helper — and
-`reviewer` beside them with the finished diff. Fix the reviewer's findings, then CONTINUE the same
+`reviewer` beside them with the finished diff. `qa-api` starts with them when the QA plan holds
+API rows, since its tenants hold its data apart; a row that touches global state (the platform
+catalog, a market pack) waits until the surface helpers have returned, and the plan says which. Fix the reviewer's findings, then CONTINUE the same
 reviewer (`SendMessage`) with only the fixed files; never a fresh instance. A third pass happens
 only when a fix touched a money, tenancy or permission rule.
 
 A failed row reruns once, by its helper, after an evidenced fix; the third failure of the same row
 stops for the owner. A code change made after a row PASSED — a review fix, a tidy — reruns every
-row whose surface or file it touched, by the same helper continued, before the evaluator starts:
-a pass on code that changed since is no pass.
+row whose surface, route or file it touched, by the same helper continued, before the evaluator
+starts: a pass on code that changed since is no pass.
 
 `evaluator` starts only after every surface helper has returned, the review fixes are in and every
 touched row has been rerun; it runs `pnpm check:all` once, and what it regenerates (OpenAPI,
@@ -201,8 +208,10 @@ ready when every required lane has passed; the owner merges.
 Restore both `.env.local` database names to their initial values, restarting the api only if you
 restarted it; stop every `started_by_task` resource by its exact identity (`preview_stop`,
 `xcrun simctl shutdown <udid>`, `adb -s <serial> emu kill`, `tabs_close`); run `pnpm infra:down`
-only if this task ran `pnpm infra:up`; leave every `pre_existing` resource alone; keep the logs
-and proof. Report `resource → initial state → final state`. `DONE` is refused while a
+only if this task ran `pnpm infra:up`; leave every `pre_existing` resource alone, the standing
+companies in `heliogrid_test` among them; keep the logs and proof; confirm no `tsx watch` of
+yours survives (`pgrep -fl 'tsx.*watch'`) — a watcher outlives the listener it spawned. Report
+`resource → initial state → final state`. `DONE` is refused while a
 task-owned process lives or the database routing differs from its initial state. The next task
 starts in a fresh session.
 
@@ -212,6 +221,7 @@ starts in a fresh session.
 |---|---|---|
 | `design-check` | step 3 | `READY` · `NEEDS_CHANGE` · `NOT_DRAWN`, findings, one prompt |
 | `qa-web` · `qa-ios` · `qa-android` | step 5, together | `PASS` · `FAIL` · `BLOCKED`, `row → action → observed → measurements → new log range` |
+| `qa-api` | step 5, with them, when the plan holds API rows | `PASS` · `FAIL` · `BLOCKED`, `row → requests → observed status and body → request id and log range → result` |
 | `reviewer` | step 5, with QA | `blocker` · `should-fix` · `note`, `row → file:line → evidence → smallest fix` |
 | `evaluator` | step 5, after QA | `AC → owner → proof → result → evidence`, the gate, regenerated paths |
 | `ci-investigator` | step 7, one failed job | cause, evidence, smallest fix, proof |
