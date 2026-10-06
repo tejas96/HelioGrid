@@ -3,18 +3,20 @@
 <!-- The task id and name, then one short paragraph in simple words: who gains what. Explicit
      non-goals here — not a file list. -->
 
-## Plan
+## RFC
 
-<!-- From the task's `#### Plan`: Where (packages) · How it works (the flow line) · Example. Any
-     owner ruling applied, stated as the rule it became. -->
+<!-- The approved RFC lives under the task (`#### RFC` in `docs/tasks/`); link it by task id and
+     repeat none of its sections. Here only: what changed after approval and the re-approval it
+     got, and any owner ruling applied, stated as the rule it became. -->
 
 ## Acceptance criteria → proof
 
 | line | ✓ | proof |
 |---|---|---|
 
-<!-- Every acceptance line of the task, each with its test by file and name or the check run on the app. A
-     line with no proof is not done, and this PR is not open. -->
+<!-- Every `AC-n` of the approved RFC's proof matrix with the result of its proof: the test by
+     file and name or the check run on the app. A line with no proof is not done, and this PR is
+     not open. -->
 
 ## QA report
 

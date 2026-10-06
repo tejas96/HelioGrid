@@ -8,10 +8,9 @@ paths:
 
 ## The twin question
 
-Before writing a screen part, name the screen's twin in the plan — the same screen on the other
-platform, built or not — or say it has none, and, part by part, where each shared part lives. For
-each part ask: does the
-other platform draw the same thing? If yes, the part is authored ONCE and both screens import it.
+Before writing a screen part, name the screen's twin in the RFC's `##### Proposal` — the same
+screen on the other platform, built or not — or say it has none, and, part by part, where each
+shared part lives. For each part ask: does the other platform draw the same thing? If yes, the part is authored ONCE and both screens import it.
 "Not built over there yet" is not a no: the phone's number step and the web's are one door.
 
 ## What leaves the screen

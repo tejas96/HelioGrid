@@ -356,7 +356,7 @@ per-glob coverage threshold in `vitest.config.mts`, landing with the slice it co
 
 ## §4 Placement procedure — run BEFORE writing any new file
 
-Walk top-down; first match wins. The plan records the answer for each new file.
+Walk top-down; first match wins. The RFC's file table records the answer for each new file.
 
 1. Is it a wire shape (request/response/enum crossing HTTP)? → packages/contracts.
 2. Is it stored schema? → packages/db via a migration, in the owning module's slice (Law 9).

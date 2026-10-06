@@ -12,9 +12,10 @@ explicit `realized-by` pointer to the requirement that carries it); a task whose
 
 ## Task anatomy
 
-A task is its header lines, written when the task is. The plan adds its sections under them —
-`#### Plan` and `#### Acceptance criteria`; for a split task `#### Parts` and each part's
-`#### Part <x> · Plan`. The header lines:
+A task is its header lines, written when the task is. The RFC adds its sections under them —
+one `#### RFC`, whose `#####` sections `/task` §2 fixes; for a split task `#### Parts` and each
+part's `#### Part <x> · RFC`. A task approved under the earlier `#### Plan` shape keeps it
+(`/task` §2). The header lines:
 
 ```
 ### T-M02-001 · Quick Add Lead
@@ -33,16 +34,17 @@ A task is its header lines, written when the task is. The plan adds its sections
 **Blocked:** (only while true) what only the owner can clear — a ruling, an account; the work stops here
 **Parked:** (only while true) the owner's reason; the order steps over it
 **DONE WHEN:** the requirement rows' own Given/When/Then, copied verbatim — never paraphrased.
-        The plan copies them into `#### Acceptance criteria` and extends them there; the PRD's own lines stay word for word
+        The RFC copies them into its `##### Acceptance criteria and proof` and extends them there; the PRD's own lines stay word for word
 ```
 
-Each acceptance line names its proof: a test by file and name, or a check on the running app. A
-money, tenancy or permission rule's test is seen to fail once (`.claude/rules/testing.md`).
-Nothing checks a task's shape: the plan fixes a missing part before the owner's go.
+Each acceptance line names its proof in the RFC's one proof matrix: a test by file and name, or a
+check on the running app. A money, tenancy or permission rule's test is seen to fail once
+(`.claude/rules/testing.md`). Nothing checks a task's shape: an incomplete RFC (`/task` §2) is
+not presented for approval.
 **A shipped section keeps the shape it shipped in** — its `Risk:`, `Cases:`, `Placement:`,
 `Used by:`, `QA plan:`, `Rounds:` and `Verified:` lines, and its verification record, stay as
 history and are never rewritten. An open task that still carries one of those lines keeps it the
-same way: the plan adds its sections under the header lines and changes nothing above them.
+same way: the RFC adds its sections under the header lines and changes nothing above them.
 
 ## Binding rules
 
@@ -63,7 +65,7 @@ same way: the plan adds its sections under the header lines and changes nothing 
    step is the ONE the session picks from it — the next open part of a split task, build a task, the
    owner draws a screen at its turn, or the owner clears a `**Blocked:**` line — never one picked
    from memory and never a later task because it is ready. A ticket with no `Depends on:` line waits
-   on nothing, and the plan writes the line.
+   on nothing, and the RFC writes the line.
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
 2. **Reference whitelist.** A task may cite only: `docs/prd/**`, the screen's board and decisions record in the Claude Design project, by the link on its `DESIGN:` line (the one source of a design — the repo holds no copy),

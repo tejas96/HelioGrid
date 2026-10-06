@@ -55,8 +55,8 @@ it is design → backend → UI.
 
 | step | what | stops for the owner |
 |---|---|---|
-| plan | read the task, write the plan and its acceptance criteria into it | yes — the go |
-| build | inside the plan | only when the scope changes |
+| plan | read the task, write its RFC into it | yes — approve RFC |
+| build | inside the RFC | only when the scope changes |
 | verify | `pnpm check:all`, then the change on the running app | when a check fails three times |
 | commit | the commit, the push, the PR, CI | yes — every commit |
 
@@ -66,13 +66,13 @@ into one turn.
 **Build:**
 
 1. Tests first: each acceptance line's test before its code (`.claude/rules/testing.md`).
-2. Stay in the plan's scope. A new behaviour, table, route, contract or package → stop and ask.
+2. Stay in the RFC's scope. A new behaviour, table, route, contract or package → stop and ask.
 3. After each change, `pnpm check`.
 4. When done, one tidy pass over the diff — reuse, names, dead code — then `pnpm check:all` once.
 5. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code
    that is gone: `pnpm turbo build --force`.
 
-**A PR is one complete task or part:** every acceptance line met and proven before it opens; a plan
+**A PR is one complete task or part:** every acceptance line met and proven before it opens; an RFC
 over about 30 files splits into parts, web and phone together.
 
 ## 4. Stop and ask the owner before
