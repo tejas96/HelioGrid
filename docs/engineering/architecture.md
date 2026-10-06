@@ -1,4 +1,5 @@
-> **Fate:** §2 (what each package owns and imports) folds into that package's `CLAUDE.md`; §1 and §4 fold into `CLAUDE.md` §6; then this file is deleted.
+> **Status:** canonical. Sections 1–4 remain the one cross-package architecture and placement
+> authority. A later approved consolidation may replace it; no deletion is currently planned.
 
 # HelioGrid architecture — the spine
 

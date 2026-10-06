@@ -13,9 +13,11 @@ explicit `realized-by` pointer to the requirement that carries it); a task whose
 ## Task anatomy
 
 A task is its header lines, written when the task is. The RFC adds its sections under them —
-one `#### RFC`, whose `#####` sections `/task` §2 fixes; for a split task `#### Parts` and each
-part's `#### Part <x> · RFC`. A task approved under the earlier `#### Plan` shape keeps it
-(`/task` §2). The header lines:
+one `#### RFC`, whose `#####` sections below fix; for a split task `#### Parts` and each
+part's `#### Part <x> · RFC`. A task approved under the earlier `#### Plan` shape keeps it while
+that approval remains valid; if scope voids the approval, the affected task or part gets one
+complete replacement RFC and the earlier sections remain as history (`/task` steps 2 and 4). The
+header lines:
 
 ```
 ### T-M02-001 · Quick Add Lead
@@ -39,12 +41,82 @@ part's `#### Part <x> · RFC`. A task approved under the earlier `#### Plan` sha
 
 Each acceptance line names its proof in the RFC's one proof matrix: a test by file and name, or a
 check on the running app. A money, tenancy or permission rule's test is seen to fail once
-(`.claude/rules/testing.md`). Nothing checks a task's shape: an incomplete RFC (`/task` §2) is
+(`.claude/rules/testing.md`). Nothing checks a task's shape: an incomplete RFC (`/task` step 2) is
 not presented for approval.
 **A shipped section keeps the shape it shipped in** — its `Risk:`, `Cases:`, `Placement:`,
 `Used by:`, `QA plan:`, `Rounds:` and `Verified:` lines, and its verification record, stay as
 history and are never rewritten. An open task that still carries one of those lines keeps it the
 same way: the RFC adds its sections under the header lines and changes nothing above them.
+
+## RFC — the one implementation contract
+
+The RFC is the owner's one approval card: headings, short bullets and tables, plus one Mermaid
+diagram when a boundary changes. No parallel plan, ASCII diagram, second summary or restated
+repository law: cite its owner. Every section below is present and in this order; a section that
+does not apply says why. A part writes
+`#### Part <x> · RFC`, carries only its own facts and proof rows, and cites the task RFC for shared
+facts. The task's acceptance lines appear once, except a replacement RFC for an invalidated legacy
+part repeats that part's applicable AC and proof rows so the owner reads one complete decision.
+
+1. `##### Title` — `<task id> — <clear change name>`.
+2. `##### Description` — who gains what and the technical problem solved; cite the task, PRD rows
+   and brief or design record without copying them.
+3. `##### Goals` — short, measurable outcomes.
+4. `##### Non-goals` — behavior and surfaces deliberately unchanged.
+5. `##### Readiness and dependencies` — landed dependencies, design-check verdict for screen work,
+   assumptions and blockers. No `TBD` or open blocker when shown.
+6. `##### Proposal` — end-to-end request, user or event flow; key decisions with one reason;
+   implementation order; material errors and refusals; the twin platform screen.
+7. `##### Architecture diagram` — Mermaid `flowchart LR` or `sequenceDiagram`, at most 15 nodes or
+   participants, showing only changed and directly relevant boundaries. If none:
+   `No boundary change — <where the change remains>.`
+8. `##### Package changes` — each package's responsibility, public exports and dependency direction;
+   each new brand, enum, token, route, table or error code's protection row, and any kind no check
+   holds (Law 12); otherwise a reasoned `None`.
+9. `##### Data and schema changes` — migration, tables, columns, enums, indexes, constraints,
+   seed/backfill, old/new readers, rollout and rollback or expand/contract; otherwise
+   `None — no stored shape changes`.
+10. `##### File and folder changes` — `action | path | purpose | placement reason`, one planned file
+    per row. Actions are `add`, `modify`, `move`, `delete`; a new folder carries architecture §4's
+    placement answer.
+11. `##### API and contract changes` — route/event/activity, method, request and response, errors,
+    auth, permission, tenancy and compatibility; otherwise `None — no wire boundary changes`.
+12. `##### Risks and rollout` — material tenancy/security, money/data, workflow/release, migration,
+    deployment and operational risks, each with its mitigation. No invented risk.
+13. `##### Acceptance criteria and proof` — every `DONE WHEN` line verbatim as `AC-1`, `AC-2`, …,
+    followed by one matrix: `AC/row | owner | tier | surface | action → expected | proof`.
+14. `##### Delivery size` — estimated files and authored changed lines, one part or split, and the
+    planned implementation order.
+
+Proof owners are `main-dev`, `qa-api`, `qa-web`, `qa-ios`, `qa-android`, `evaluator`, or `ci`;
+tiers are `required`, `blocked` with what clears it, or `not_applicable` with why. Every required
+AC has exactly one proof owner and expected result; a required blocked row fails closed. Main owns
+unit, contract and planted-red proofs, never a live API journey. `qa-api` owns reachable running-API
+behavior — status, body, headers, sign-in, permission, tenant isolation, idempotency and persistence
+only where declared. A task with no reachable API behavior marks it not applicable. An API test
+runs on `heliogrid_test`. CI ownership names a path-selected lane that must actually run; a skipped
+lane proves nothing. Android phone flows may be CI-owned only when the `Phone flows` step runs;
+the step must be `Phone flows (tests/e2e/mobile) on the emulator`. A run of `Phone flows OFF`
+proves nothing and the row is `blocked`, never passed. iOS journeys are local `qa-ios` proofs.
+
+## Delivery size and Parts
+
+Target each task or part at no more than about 30 changed files **and** 1,000 authored changed
+lines (additions plus deletions). List generated artifacts and lockfiles, but exclude them from the
+line estimate. An inseparable end-to-end deliverable may exceed a target only when its RFC explains
+why no smaller part can be independently accepted and the owner approves that exact size.
+
+`#### Parts` is a separate heading because the build-order walk reads it. Its `Where` rows are the
+complete file budget. Each part is end to end, independently acceptable, and names its id, AC
+subset, dependency, files and proof rows; web and phone halves of one flow stay together. Each
+part carries one checklist item per file group and proof. A cap decides where work splits; it never
+drops a test, proof, protection or required doc fix.
+
+During build, a new behavior, route, contract, table, package or affected package — or actual files
+or authored lines more than 20% above the RFC estimate — voids approval. Update the complete RFC
+including a fresh `##### Delivery size` ruling: split into parts, or an inseparable deliverable
+approved at its new exact size. Obtain approval again. A legacy Plan invalidated this way is
+preserved as history and followed by one complete replacement RFC, never a delta-only Plan.
 
 ## Binding rules
 
@@ -68,12 +140,15 @@ same way: the RFC adds its sections under the header lines and changes nothing a
    on nothing, and the RFC writes the line.
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
-2. **Reference whitelist.** A task may cite only: `docs/prd/**`, the screen's board and decisions record in the Claude Design project, by the link on its `DESIGN:` line (the one source of a design — the repo holds no copy),
+2. **Requirement reference whitelist.** A task's header and requirement text may cite only:
+   `docs/prd/**`, the screen's board and decisions record in the Claude Design project, by the link on its `DESIGN:` line (the one source of a design — the repo holds no copy),
    `docs/engineering/data-model.md` and `docs/engineering/forward-compat.md` (a schema-bearing
    task, where naming its entities or its first-migration row is clearer than restating them),
    `docs/ux/briefs/**`, `docs/prd/modules/M05-studio/defect-register.md`
    (studio tasks), and `3d_design_studio/**` — the POC repo, today at
-   `/Volumes/works-space/Solar-App-POC/` (tasks typed `port` only). Anything else —
+   `/Volumes/works-space/Solar-App-POC/` (tasks typed `port` only). The RFC may additionally cite
+   implementation authorities its sections require: architecture, protections, CI and package
+   instructions. Anything else —
    old research docs, the v1 repo — is a defect in the task. A task never cites an open-question
    id: a PRD row carries its own ruling, and git carries the history.
 3. **`DESIGN: PENDING` blocks the task at its turn.** The drawing is the step: the owner

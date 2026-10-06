@@ -1,7 +1,6 @@
 # Tasks — SHELL (app shell & platform surfaces)
 
-Task-id prefix: `T-SHELL-`. A task whose plan is over about 30 files is split into parts inside it,
-web and phone together. Rules per `docs/tasks/README.md`. Briefs live in
+Task-id prefix: `T-SHELL-`. RFC and part-size rules live in `docs/tasks/README.md`. Briefs live in
 `docs/ux/briefs/`.
 
 ---
