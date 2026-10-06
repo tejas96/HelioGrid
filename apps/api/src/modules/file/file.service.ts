@@ -10,14 +10,14 @@ import {
 } from '@heliogrid/contracts';
 import {
   FILE_DOWNLOAD_LINK_SECONDS,
+  FILE_SIGNATURE_BYTES,
   FILE_SUBJECT_KINDS,
   FILE_SUBJECT_RULES,
   FILE_UPLOAD_LINK_SECONDS,
   type FileSubjectKind,
   type FileSubjectRule,
-  IMAGE_SIGNATURE_BYTES,
   judgeFileDeclaration,
-  matchesImageSignature,
+  matchesFileSignature,
   mayReadFile,
   mayUploadFile,
   type RolePreset,
@@ -147,10 +147,10 @@ export class FileService {
     const stored = await this.fromStore(() => this.store.head(row.externalId));
     if (stored === null) throw notUploaded();
     const first = await this.fromStore(() =>
-      this.store.readFirstBytes(row.externalId, IMAGE_SIGNATURE_BYTES),
+      this.store.readFirstBytes(row.externalId, FILE_SIGNATURE_BYTES),
     );
     const asDeclared =
-      stored.checksumSha256 === row.checksumSha256 && matchesImageSignature(row.contentType, first);
+      stored.checksumSha256 === row.checksumSha256 && matchesFileSignature(row.contentType, first);
     if (!asDeclared) {
       throw new ContractException(
         'FILE_CONTENT_MISMATCH',

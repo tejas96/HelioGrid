@@ -31,7 +31,9 @@ function attachSymbol(symbol: string, body: string, position: 'before' | 'after'
  * is in. Derived here so no component ever owns a currency again. Falls back to Intl's symbol
  * for the market's grouping locale, then to the ISO code.
  */
-export function moneySymbol(pack: FormatPack): string {
+export function moneySymbol(
+  pack: Pick<FormatPack, 'locale' | 'currency' | 'currencySymbol'>,
+): string {
   if (pack.currencySymbol !== null) return pack.currencySymbol.trim();
   try {
     const parts = new Intl.NumberFormat(pack.locale, {

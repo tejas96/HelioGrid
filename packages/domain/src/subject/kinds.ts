@@ -24,5 +24,7 @@ export const SUBJECT_KINDS = [
   'catalog_release',
   /** One immutable set of a tenant's non-catalog rates (`M01-48`). */
   'price_book_version',
+  /** A company's catalog as a whole — what a supplier's price list is stored against (`M01-41`). */
+  'catalog',
 ] as const;
 export type SubjectKind = (typeof SUBJECT_KINDS)[number];

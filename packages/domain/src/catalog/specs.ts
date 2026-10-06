@@ -235,6 +235,42 @@ export const catalogSpecSchema: z.ZodType<CatalogSpec, z.ZodTypeDef, unknown> = 
     }
   });
 
+/**
+ * One field of a kind's envelope as a reader of loose text sees it (`M01-41`'s import): its dotted
+ * path, whether the envelope requires it, and the values it takes when it is a closed set. DERIVED
+ * from the envelopes above, so a field added to one is importable the day it lands.
+ */
+export interface SpecField {
+  readonly path: string;
+  readonly required: boolean;
+  readonly values: readonly (string | number)[] | null;
+}
+
+function fieldsOf(shape: z.ZodRawShape, prefix: string, required: boolean): SpecField[] {
+  return Object.entries(shape).flatMap(([key, schema]): SpecField[] => {
+    if (key === 'kind') return [];
+    const optional = schema instanceof z.ZodOptional;
+    const inner: z.ZodTypeAny = optional ? schema.unwrap() : schema;
+    const path = `${prefix}${key}`;
+    if (inner instanceof z.ZodObject) return fieldsOf(inner.shape, `${path}.`, !optional);
+    const values =
+      inner instanceof z.ZodEnum
+        ? (inner.options as readonly string[])
+        : inner instanceof z.ZodUnion
+          ? (inner.options as readonly z.ZodLiteral<number>[]).map((option) => option.value)
+          : null;
+    return [{ path, required: required && !optional, values }];
+  });
+}
+
+export const SPEC_FIELDS: Readonly<Record<ComponentKind, readonly SpecField[]>> = {
+  panel: fieldsOf(PANEL_ENVELOPE.shape, '', true),
+  inverter: fieldsOf(INVERTER_ENVELOPE.shape, '', true),
+  battery: fieldsOf(BATTERY_ENVELOPE.shape, '', true),
+  micro_inverter: fieldsOf(MICRO_INVERTER_ENVELOPE.shape, '', true),
+  optimiser: fieldsOf(OPTIMISER_ENVELOPE.shape, '', true),
+};
+
 export type SpecParse =
   | { readonly ok: true; readonly spec: CatalogSpec }
   /** Each field that failed once, as a dotted path (`mppt.maxV`); empty for the envelope itself. */

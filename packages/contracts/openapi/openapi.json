@@ -110,7 +110,8 @@
                               "tenant_catalog_item",
                               "catalog_item",
                               "catalog_release",
-                              "price_book_version"
+                              "price_book_version",
+                              "catalog"
                             ]
                           },
                           "subjectRef": {
@@ -11211,7 +11212,8 @@
                   "subjectKind": {
                     "type": "string",
                     "enum": [
-                      "tenant"
+                      "tenant",
+                      "catalog"
                     ]
                   },
                   "subjectRef": {
@@ -11222,7 +11224,9 @@
                     "type": "string",
                     "enum": [
                       "image/png",
-                      "image/jpeg"
+                      "image/jpeg",
+                      "text/csv",
+                      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     ]
                   },
                   "byteSize": {
@@ -11265,7 +11269,8 @@
                         "subjectKind": {
                           "type": "string",
                           "x-extensible-enum": [
-                            "tenant"
+                            "tenant",
+                            "catalog"
                           ]
                         },
                         "subjectRef": {
@@ -11276,7 +11281,9 @@
                           "type": "string",
                           "x-extensible-enum": [
                             "image/png",
-                            "image/jpeg"
+                            "image/jpeg",
+                            "text/csv",
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                           ]
                         },
                         "byteSize": {
@@ -11613,7 +11620,8 @@
                     "subjectKind": {
                       "type": "string",
                       "x-extensible-enum": [
-                        "tenant"
+                        "tenant",
+                        "catalog"
                       ]
                     },
                     "subjectRef": {
@@ -11624,7 +11632,9 @@
                       "type": "string",
                       "x-extensible-enum": [
                         "image/png",
-                        "image/jpeg"
+                        "image/jpeg",
+                        "text/csv",
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                       ]
                     },
                     "byteSize": {
@@ -14532,7 +14542,8 @@
                               "tenant_catalog_item",
                               "catalog_item",
                               "catalog_release",
-                              "price_book_version"
+                              "price_book_version",
+                              "catalog"
                             ]
                           },
                           "subjectRef": {
@@ -15522,7 +15533,8 @@
                         "tenant_catalog_item",
                         "catalog_item",
                         "catalog_release",
-                        "price_book_version"
+                        "price_book_version",
+                        "catalog"
                       ]
                     },
                     "subjectRef": {

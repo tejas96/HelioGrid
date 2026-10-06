@@ -70,10 +70,6 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
     options: invitationStatusSchema.options,
     contract: 'invitationStatusSchema',
   },
-  file_content_type: {
-    options: fileContentTypeSchema.options,
-    contract: 'fileContentTypeSchema',
-  },
   component_kind: { options: componentKindSchema.options, contract: 'componentKindSchema' },
   catalog_provenance_label: {
     options: catalogProvenanceSchema.options,
@@ -92,6 +88,25 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
     contract: 'priceBookRateBasisSchema',
   },
 };
+
+/**
+ * A vocabulary held by a CHECK instead of a pgEnum, because one of its values is longer than the
+ * 63 bytes Postgres allows an enum label: constraint name → the contract schema whose values its
+ * `IN (…)` list must match, exactly.
+ */
+const CHECKED: Record<string, { options: readonly string[]; contract: string }> = {
+  file_content_type_known: {
+    options: fileContentTypeSchema.options,
+    contract: 'fileContentTypeSchema',
+  },
+};
+
+/** The quoted literals of a CHECK as Postgres prints it back (`'text/csv'::text`). */
+function checkedValues(definition: string): string[] {
+  return [...definition.matchAll(/'((?:[^']|'')*)'/g)].map(([, value = '']) =>
+    value.replace(/''/g, "'"),
+  );
+}
 
 /**
  * pg enums that intentionally have NO contract counterpart yet, each with the reason.
@@ -135,7 +150,7 @@ function checkMappedPair(
 ): void {
   const dbValues = dbEnums.get(typname);
   if (!dbValues) {
-    problems.push(`pg enum "${typname}" is missing, but ${contract} expects it`);
+    problems.push(`"${typname}" is missing from the database, but ${contract} expects it`);
     return;
   }
   const inDb = [...dbValues].sort();
@@ -197,6 +212,16 @@ export async function runEnumParity(adminUrl: string) {
       checkMappedPair(typname, options, contract, dbEnums, problems);
     }
 
+    // Every CHECK-held vocabulary must match value-for-value, as an enum does.
+    const checks = await sql<{ conname: string; definition: string }[]>`
+      select conname, pg_get_constraintdef(oid) as definition
+      from pg_constraint
+      where contype = 'c' and conname in ${sql(Object.keys(CHECKED))}`;
+    const dbChecks = new Map(checks.map((c) => [c.conname, checkedValues(c.definition)]));
+    for (const [conname, { options, contract }] of Object.entries(CHECKED)) {
+      checkMappedPair(conname, options, contract, dbChecks, problems);
+    }
+
     // A new pg enum must be consciously mapped or consciously excused.
     for (const typname of dbEnums.keys()) {
       if (typname in MAPPED || typname in NO_CONTRACT_YET) continue;
@@ -217,7 +242,8 @@ export async function runEnumParity(adminUrl: string) {
 
     const excused = Object.keys(NO_CONTRACT_YET).filter((t) => dbEnums.has(t)).length;
     console.log(
-      `enum parity OK — ${Object.keys(MAPPED).length} contract-backed enums match, ` +
+      `enum parity OK — ${Object.keys(MAPPED).length} contract-backed enums and ` +
+        `${Object.keys(CHECKED).length} CHECK-held vocabularies match, ` +
         `${excused} intentionally contract-free`,
     );
   } finally {

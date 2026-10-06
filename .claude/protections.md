@@ -41,7 +41,7 @@ catalog freshness checks, the unit tests and the invariants; off CI it leaves ou
 | what is protected | what holds it |
 |---|---|
 | An applied migration is never edited, deleted or renamed | the sha256-locked runner (`packages/db/src/migrate.ts`) · CI step `Migrations are append-only` |
-| The database matches the code: every pgEnum equals its contract `z.enum`, and the Drizzle schema mirrors the tables, columns, nullability and indexes the migrations built | invariants `enum-parity` · `schema-parity` |
+| The database matches the code: every pgEnum equals its contract `z.enum` — and so does every vocabulary a CHECK holds because a value outgrew the 63-byte enum label (`file_content_type_known`) — and the Drizzle schema mirrors the tables, columns, nullability and indexes the migrations built | invariants `enum-parity` · `schema-parity` |
 | An app writes no SQL; queries live in `packages/db` | Biome plugin `app-sql` |
 | Every query is index-backed with no N+1 and no `select *`; no derived value is stored; a stored or sent shape is read both ways while a release rolls | review |
 

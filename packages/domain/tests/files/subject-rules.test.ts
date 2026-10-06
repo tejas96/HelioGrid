@@ -63,6 +63,18 @@ describe('mayUploadFile / mayReadFile — the kind names the capability', () => 
     expect(mayUploadFile(roles, FILE_SUBJECT_RULES.tenant)).toBe(allowed);
   });
 
+  it.each([
+    [['epc_owner'], true, true],
+    [['operations'], true, true],
+    [['finance'], false, true],
+    [['finance', 'operations'], true, true],
+    [['sales_executive'], false, false],
+    [[], false, false],
+  ] as const)('%j may upload a price list: %s, and read one: %s', (roles, upload, read) => {
+    expect(mayUploadFile(roles, FILE_SUBJECT_RULES.catalog)).toBe(upload);
+    expect(mayReadFile(roles, FILE_SUBJECT_RULES.catalog)).toBe(read);
+  });
+
   it('a member-readable kind is readable by any role and by none', () => {
     expect(mayReadFile(['field_technician'], pngOnly)).toBe(true);
     expect(mayReadFile([], pngOnly)).toBe(true);

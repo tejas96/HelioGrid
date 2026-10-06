@@ -1,4 +1,4 @@
-import { FILE_CONTENT_TYPES, STORAGE_PROVIDERS } from '@heliogrid/domain';
+import { FILE_CONTENT_TYPES, type FileContentType, STORAGE_PROVIDERS } from '@heliogrid/domain';
 import { sql } from 'drizzle-orm';
 import {
   bigint,
@@ -20,8 +20,12 @@ import { tenant } from './tenant';
 /** Where a row's bytes live; hand-mirrors domain's tuple (invariant `enum-parity`). Never on the wire. */
 export const storageProvider = pgEnum('storage_provider', STORAGE_PROVIDERS);
 
-/** Every type a stored file may be; hand-mirrors domain's tuple (invariant `enum-parity`). */
-export const fileContentType = pgEnum('file_content_type', FILE_CONTENT_TYPES);
+/**
+ * Every type a stored file may be, held by a CHECK rather than a pgEnum: Postgres caps an enum
+ * label at 63 bytes and the `.xlsx` type is 65. Built from domain's tuple; invariant `enum-parity`
+ * reads the constraint back against the contract.
+ */
+const KNOWN_CONTENT_TYPES = sql.raw(FILE_CONTENT_TYPES.map((type) => `'${type}'`).join(', '));
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
 
@@ -55,7 +59,7 @@ export const file = pgTable(
     provider: storageProvider('provider').notNull(),
     /** The object key in that store, built from server ids only. */
     externalId: text('external_id').notNull(),
-    contentType: fileContentType('content_type').notNull(),
+    contentType: text('content_type').$type<FileContentType>().notNull(),
     byteSize: bigint('byte_size', { mode: 'number' }).notNull(),
     /** Base64 SHA-256 the store was told to hold the upload to. */
     checksumSha256: text('checksum_sha256').notNull(),
@@ -69,6 +73,7 @@ export const file = pgTable(
   },
   (table) => [
     check('file_byte_size_positive', sql`${table.byteSize} >= 1`),
+    check('file_content_type_known', sql`${table.contentType} in (${KNOWN_CONTENT_TYPES})`),
     /** One row per stored object: two rows never claim the same bytes. */
     uniqueIndex('file_tenant_provider_external_key').on(
       table.tenantId,
