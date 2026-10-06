@@ -18,9 +18,10 @@ blocker named. `/task <id>` for a task that is not the walk's step is refused wi
 
 ## 0. Runtime rules — nothing runs before the walk
 
-The walk (step 1) is read-only and comes first. Once it answers `build <id>`: the branch,
-`git switch -c feat/<id> origin/main` on a clean tree (`git status`; the folder is shared with
-every other session, so a dirty tree is theirs), then this ledger, then the contract (step 2).
+The walk (step 1) is read-only and comes first. Once it answers `build <id>`: the branch — on a
+clean tree (`git status`; the folder is shared with every other session, so a dirty tree is
+theirs), `git switch feat/<id>` when that branch exists, else `git switch -c feat/<id>
+origin/main` — then this ledger, then the contract (step 2).
 Record every resource you will touch as `pre_existing` or `started_by_task`, with the identity
 that stops or restores it, in the task's `#### Runtime` section:
 
@@ -35,9 +36,10 @@ that stops or restores it, in the task's `#### Runtime` section:
 
 A healthy HelioGrid server (its pid's command names this repository and `/health/ready` answers
 200) is reused: a source one (`api`, `web`, `mobile-metro`) as it is; a built one (`api-built`,
-`web-built`) only when its build is newer than the newest changed file, else restarted through its
-launch configuration when it is yours, or named to the owner when it is pre-existing. The runtime
-ledger records which mode each server runs in. A foreign listener is the owner's to free with the
+`web-built`) only when its process started after its build's newest file (`ps -o lstart= -p <pid>`
+against `apps/api/dist` or `apps/web/.next`), else restarted through its launch configuration when
+it is yours, or named to the owner when it is pre-existing. The runtime ledger records each
+server's mode and start time. A foreign listener is the owner's to free with the
 `clean-dev-ports` launch configuration; you never kill by port or name. You start a server only
 through `.claude/launch.json` with the preview tool. A simulator is chosen by the NEWEST install of
 `com.heliogrid.app` (`xcrun simctl get_app_container <udid> com.heliogrid.app`, then `stat` its
@@ -46,9 +48,11 @@ absent. Metro is shared by both phones; JavaScript changes reload through it.
 
 ## 1. Select — the walk, fail closed
 
-1. Read the block table and the placement paragraphs in `docs/build-order.md` ("The order").
+1. Read the block table and the placement paragraphs in `docs/build-order.md` ("The order") —
+   from `origin/main` after `git fetch origin`, as every file the walk reads: `git show
+   origin/main:<path>`, never the folder's checked-out branch.
 2. For each block from 0, for each task file in the row's order, list the tasks once:
-   `grep -n -E '^### T-|^\*\*(Type|Status|Depends on|Blocked|Parked|DESIGN|Design):\*\*|^#### Parts|^\| [a-z] \|' docs/tasks/<file>.md`.
+   `git show origin/main:docs/tasks/<file>.md | grep -n -E '^### T-|^\*\*(Type|Status|Depends on|Blocked|Parked|DESIGN|Design):\*\*|^#### Parts|^\| [a-z] \|'`.
    Inside a file: the first open row of a `#### Parts` table, else engine, policy, integration and
    port tasks first in file order, then screens in file order; a `Depends on:` task of the same
    block goes before the task that names it; a task placed apart from its file sits where the
@@ -117,10 +121,11 @@ Then present the contract and stop. Nothing is built before the owner's go (`CLA
 
 Build as `CLAUDE.md` §3 and `.claude/rules/testing.md` say, one slice at a time; each planted red
 line is recorded for the commit card. A new route, table, contract, package or behaviour stops
-you: repartition and go back to step 2. The planned file list is the budget: when the changed set passes it by a fifth, or a file lands in a
-package the plan does not name, stop, show the delta (planned and built · built but not planned,
-each with its reason · planned but not built) and repartition — never trim a proof to fit. Tick
-the part's checklist as each file group and proof lands; the owner reads it, never a transcript.
+you: repartition and go back to step 2. The planned file list is the budget: when the changed set
+passes it by a fifth, or a file lands in a package the plan does not name, stop, show the delta
+(planned and built · built but not planned, each with its reason · planned but not built) and
+repartition — never trim a proof to fit. Tick the part's checklist as each file group and proof
+lands; the owner reads it, never a transcript.
 A planted red that needs a database runs on `heliogrid_test`; no task creates a database of its
 own.
 
@@ -133,30 +138,44 @@ Start or reuse the stack (step 0). Set both `.env.local` database names to `heli
 export the file (`set -a; . ./.env.local; set +a` — `pnpm db:migrate` reads the shell), run
 `pnpm db:migrate`, publish the pack when the test database holds none
 (`pnpm --filter @heliogrid/api pack:publish`), restart only the api, and verify both names before
-QA.
-Standing accounts, one helper each: `…901` web, `…902` iOS, `…903` Android (`DEV_OTP_PHONES`); a
-missing standing company is created once through the app before QA; API tests never use them.
+QA. Standing accounts, one helper each: `…901` web, `…902` iOS, `…903` Android
+(`DEV_OTP_PHONES`); a missing standing company is created once through the app before QA; API
+tests never use them.
 
-Give every helper the same context packet and nothing else: the AC lines, its rows, the interface
-and file map, the diff summary, the commands already run, the runtime identities and log paths.
-Record `git status --porcelain` and `git diff | git hash-object --stdin` before any helper starts
-and compare when they return: a helper holds Bash, so the tool list alone proves nothing — a
-difference is a blocker named by file. Start `qa-web`, `qa-ios` and `qa-android` together — an
-omitted surface starts no helper — and `reviewer` beside them with the finished diff. Fix the
-reviewer's findings, then CONTINUE the same reviewer (`SendMessage`) with only the fixed files;
-never a fresh instance. A third pass happens only when a fix touched a money, tenancy or
-permission rule. `evaluator` starts only after every
-surface helper has returned and the review fixes are in; it runs `pnpm check:all` once, and what
-it regenerates (OpenAPI, catalogs) is yours to read and commit. A web dev server you started is
-stopped before the gate (`apps/web/CLAUDE.md`: a build under `next dev` breaks its chunks) and
-restarted after it when QA goes on; a pre-existing one is the owner's — say what the gate will do
-to it and wait for the word. A code change after that gate
-reruns `pnpm check` and the one command that proves the change, by you, and the evaluator is
-continued with that output; it is never re-spawned.
+Each helper gets its own packet and nothing more. A QA helper: its rows, the AC lines they prove,
+the URL or device, its standing account, the runtime identities and log paths. The reviewer: the
+plan, the AC lines, the changed-file list, the diff, the protection rows the plan names. The
+evaluator: the AC lines with their owners, every helper's report, your own proof lines, the
+commands already run. The helpers may drive web, iOS and Android at once on one stack
+(`tests/e2e/CLAUDE.md`), each on its own account.
 
-Fix only an evidenced failure; rerun only the owning row — a surface row by its helper. The third
-failure of the same row stops for the owner. A check's proof is its full output read to the end;
-a grep for one line is never the proof.
+Before any helper starts, hash what a helper must not change, and compare when they return:
+`{ git status --porcelain=v2 -uall; git diff; git ls-files -o --exclude-standard -z | xargs -0
+git hash-object; grep -E '^DATABASE_(ADMIN_)?URL=' .env.local; } | git hash-object --stdin`. A
+helper holds Bash, so a write is detected, never prevented; a database or device write is not
+detected at all — its contract forbids it. A changed hash is a blocker named by file.
+
+Start `qa-web`, `qa-ios` and `qa-android` together — an omitted surface starts no helper — and
+`reviewer` beside them with the finished diff. Fix the reviewer's findings, then CONTINUE the same
+reviewer (`SendMessage`) with only the fixed files; never a fresh instance. A third pass happens
+only when a fix touched a money, tenancy or permission rule.
+
+A failed row reruns once, by its helper, after an evidenced fix; the third failure of the same row
+stops for the owner. A code change made after a row PASSED — a review fix, a tidy — reruns every
+row whose surface or file it touched, by the same helper continued, before the evaluator starts:
+a pass on code that changed since is no pass.
+
+`evaluator` starts only after every surface helper has returned, the review fixes are in and every
+touched row has been rerun; it runs `pnpm check:all` once, and what it regenerates (OpenAPI,
+catalogs) is yours to read and commit. Around that gate: a web dev server you started is stopped
+before it (`apps/web/CLAUDE.md`: a build under `next dev` breaks its chunks) and restarted after
+it when QA goes on; a built server you started (`api-built`, `web-built`) is restarted after it,
+since the gate rebuilt what it serves; a pre-existing server is the owner's — say what the gate
+will do to it and wait for the word. A code change after the gate reruns `pnpm check` and the one
+command that proves the change, by you, and the evaluator is continued with that output; it is
+never re-spawned.
+
+A check's proof is its full output read to the end; a grep for one line is never the proof.
 
 ## 6. Pre-commit card
 
