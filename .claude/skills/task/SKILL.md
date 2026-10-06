@@ -1,6 +1,6 @@
 ---
 name: task
-description: Use when the owner asks for the next engineering step of HelioGrid's build order, or to start, continue or finish one task or part through plan, build, QA, review, commit, draft PR and CI. Never starts on its own.
+description: Use when the owner asks for the next engineering step of HelioGrid's build order, or to start, continue or finish one task or part through RFC, build, QA, review, commit, draft PR and CI. Never starts on its own.
 user-invocable: true
 disable-model-invocation: true
 ---
@@ -12,7 +12,7 @@ laws are `CLAUDE.md`, cited by section and never copied; the order is `docs/buil
 task in `docs/tasks/` is the operational source; the PRD rows and brief it cites are the higher
 authority when it is unclear, silent or contradicts them.
 
-Two owner gates and only two: the complete contract (step 3) and every commit (step 7, again for
+Two owner gates and only two: the RFC (step 3) and every commit (step 7, again for
 each CI fix). A design or dependency blocker is a prerequisite, not a gate: the step ends with the
 blocker named. `/task <id>` for a task that is not the walk's step is refused with the step named.
 
@@ -21,7 +21,7 @@ blocker named. `/task <id>` for a task that is not the walk's step is refused wi
 The walk (step 1) is read-only and comes first. Once it answers `build <id>`: the branch — on a
 clean tree (`git status`; the folder is shared with every other session, so a dirty tree is
 theirs), `git switch feat/<id>` when that branch exists, else `git switch -c feat/<id>
-origin/main` — then this ledger, then the contract (step 2).
+origin/main` — then this ledger, then the RFC (step 2).
 Record every resource you will touch as `pre_existing` or `started_by_task`, with the identity
 that stops or restores it, in the task's `#### Runtime` section:
 
@@ -71,50 +71,84 @@ absent. Metro is shared by both phones; JavaScript changes reload through it.
 4. Emit exactly one line — `build <id>` · `owner draws <SCR-…>` · `owner clears <id>` — with the
    file and line that decided it. `owner draws` and `owner clears` end the step here.
 
-## 2. The contract — one document, one approval
+## 2. The RFC — one document, one approval
 
-Write under the task's header lines (`docs/tasks/README.md` keeps the shape):
+Write under the task's header lines (`docs/tasks/README.md` keeps them) one `#### RFC` holding
+these `#####` sections, every one present in the task's RFC, in this order. A section that does not apply holds
+one line with its reason, never nothing. Bullets and tables, never essays; no repository law
+restated. A part writes `#### Part <x> · RFC` with only the sections whose content is the part's
+own and cites the task's RFC for the rest; the AC lines are listed once, in the task's RFC, and
+a part's matrix holds only its rows. An open task or part whose approved `#### Plan`,
+`#### Acceptance criteria` and `#### QA plan` already stand is built from them: they go to the
+helpers in the RFC's place, and no RFC is written beside them.
 
-- `#### Plan` — first a summary of at most ten lines: what changes, the files by package, the
-  size, the routes and tables, the proofs — the owner reads this before anything else; then
-  scope in one paragraph; each decision with ONE reason; UX readiness; every new
-  file with its placement answer from `docs/engineering/architecture.md` §4; interfaces and
-  migration numbers; rollout safety (old readers, new readers, expand then contract);
-  the twin screen on the other platform (`.claude/rules/screen-parts.md`).
-- `#### Acceptance criteria` — every `DONE WHEN` line verbatim, labelled `AC-1`, `AC-2`, …;
-  an extension gets the next label; each line names its proof by test file and name, or by the
-  running-app check that proves it.
-- `#### QA plan` — one row per proof: `id · owner · tier · surface · action → expected · proof`.
+- `##### Title` — `<task id> — <clear change name>`.
+- `##### Description` — one short paragraph: who gains what, and the technical problem solved.
+  Cites the task, its PRD rows and its brief or board; copies none of them.
+- `##### Goals` — a short measurable list of what the change must achieve.
+- `##### Non-goals` — what this task deliberately does not build or change.
+- `##### Readiness and dependencies` — the landed tasks it needs; design readiness for screen
+  work (the `#### Design check` verdict, filled after step 3 and before the RFC is shown);
+  assumptions; blockers. No open blocker and no `TBD` when the RFC is shown.
+- `##### Proposal` — developer language: the request, user or event flow from start to finish;
+  each key decision with ONE reason; the implementation sequence; error and refusal behaviour
+  where it matters; the twin screen on the other platform (`.claude/rules/screen-parts.md`).
+- `##### Architecture diagram` — a small Mermaid diagram when the change crosses a package,
+  process, API, storage or runtime boundary, showing only the changed or directly relevant
+  boundaries; else `No boundary change — <one sentence: where the change remains>.`
+- `##### Package changes` — for each affected package: its responsibility in this change, new
+  or changed public exports, the dependency direction, the `.claude/protections.md` rows each
+  new brand, enum, token, route, table or error code joins, and any kind no check holds (Law
+  12); else `None — <reason>`.
+- `##### Data and schema changes` — the migration number; tables, columns, enums, indexes and
+  constraints; backfill or seed; old and new readers and rollout; rollback or expand-then-contract;
+  else `None — no stored shape changes`.
+- `##### File and folder changes` — one table, `action | path | purpose | placement reason`;
+  actions `add`, `modify`, `move`, `delete`; planned files, never folder names; a new folder
+  carries its `docs/engineering/architecture.md` §4 answer.
+- `##### API and contract changes` — for each changed boundary: the method and route, event or
+  activity name; request shape; response shape; error codes; authentication, permission and
+  tenant behaviour; backward compatibility; else `None — no wire boundary changes`.
+- `##### Risks and rollout` — material risks only (tenancy and security, money and data
+  integrity, workflow and release compatibility, migration or deployment order, operations),
+  each with its mitigation. No invented risk.
+- `##### Acceptance criteria and proof` — every `DONE WHEN` line verbatim, labelled `AC-1`,
+  `AC-2`, …; an extension gets the next label. Then ONE proof matrix, one row per proof:
+  `AC/row | owner | tier | surface | action → expected | proof`.
   Owners: `main-dev` (unit, contract and planted-red proofs), `qa-api` (the running API's
   behaviour over curl: status, body, headers, sign-in, permissions, tenant isolation, idempotency,
   persistence — only what the row declares), `qa-web`, `qa-ios`, `qa-android`, `evaluator`, `ci`.
   Main proves no live API journey itself: it checks the API is up, and `qa-api` drives the rows.
   A task with no reachable API behaviour marks `qa-api` `not_applicable` with the reason. Tiers:
-  `required`, `blocked` (names what clears it), `not_applicable` (names why). CI lanes today: `quality`, `e2e-web`, `mobile-js`, `android`,
-  `ios`, chosen by the path rules in `.github/workflows/ci.yml`; a lane an AC needs that the
-  paths skip is `FAIL`, never a pass. An API behaviour is proven by its test file on
-  `heliogrid_test` (`pnpm exec vitest run <file>`, both database names switched —
-  `infra/README.md`) and CI. A phone row owned by `ci` is an Android row, proven only by the
-  `android` lane's `Phone flows (tests/e2e/mobile)` step having run and passed; a lane whose
-  `Phone flows OFF` step ran proves nothing, and the row is `BLOCKED`, never a pass. An iOS
-  phone row is local, by `qa-ios`, never `ci`.
-- `#### Parts` — the `Where` table is complete or the plan is not, and it is the budget: a part
-  holds about 20 files and 1,000 lines, or holds one independently rejectable deliverable. The
-  cap decides WHERE the work splits, never what is cut: a test, a protection row or a doc line is
-  never dropped to fit, and a cut that would drop a proof splits the part instead. Each part is
-  an end-to-end deliverable with its id, AC subset, dependency, files, rows and proof; web and
-  phone of one flow stay in one part. Each part carries a checklist — one box per file group of
-  its `Where` rows and one per proof — ticked as it lands.
+  `required`, `blocked` (names what clears it), `not_applicable` (names why). Every required AC
+  has exactly one proof owner; a required blocked row fails closed. CI lanes today: `quality`,
+  `e2e-web`, `mobile-js`, `android`, `ios`, chosen by the path rules in
+  `.github/workflows/ci.yml`; a lane an AC needs that the paths skip is `FAIL`, never a pass. An
+  API behaviour is proven by its test file on `heliogrid_test` (`pnpm exec vitest run <file>`,
+  both database names switched — `infra/README.md`) and CI. A phone row owned by `ci` is an
+  Android row, proven only by the `android` lane's `Phone flows (tests/e2e/mobile)` step having
+  run and passed; a lane whose `Phone flows OFF` step ran proves nothing, and the row is
+  `BLOCKED`, never a pass. An iOS phone row is local, by `qa-ios`, never `ci`.
+- `##### Delivery size` — estimated files and lines; one part or split (a split names the
+  `#### Parts` table); the planned implementation order.
+- `#### Parts` — a separate exact heading, since the walk reads it. The `Where` table is
+  complete or the RFC is not, and it is the budget: a part holds about 20 files and 1,000 lines,
+  or holds one independently rejectable deliverable. The cap decides WHERE the work splits,
+  never what is cut: a test, a protection row or a doc line is never dropped to fit, and a cut
+  that would drop a proof splits the part instead. Each part is an end-to-end deliverable with
+  its id, AC subset, dependency, files, rows and proof; web and phone of one flow stay in one
+  part. Each part carries a checklist — one box per file group of its `Where` rows and one per
+  proof — ticked as it lands.
 
 A clear PRD or brief answer corrects the task before approval. Silence or ambiguity: at most two
 options to the owner, the ruling written into the PRD row or brief first, then the task. Nothing
 is invented in implementation.
 
-**No requirement is copied blind.** Before the contract is shown, test every line it carries over —
+**No requirement is copied blind.** Before the RFC is shown, test every line it carries over —
 the PRD row, the brief, the board, the task's own text — two ways: is it wrong (a defect, a
 contradiction, a fact not tied to its owner, a list that will drift), and is there a simpler or
-better way to meet the same need. Each finding goes into the contract for the owner, never folded
-in silently and never followed silently: what you found, an example in this codebase, the cost of
+better way to meet the same need. Each finding goes into the RFC for the owner, never folded in
+silently and never followed silently: what you found, an example in this codebase, the cost of
 each way, your recommendation first (`CLAUDE.md` §1). A higher-authority source is still
 questioned; only the owner changes it.
 
@@ -126,18 +160,23 @@ and `docs/start-here.md` to `design-check`. `READY` goes into `#### Design check
 verdict's date; anything else goes to the owner as the helper's one prompt. The owner's "done"
 means: fetch again, check again. A studio screen reads `ported from the POC` and has no check.
 
-Then present the contract and stop. Nothing is built before the owner's go (`CLAUDE.md` §3).
+Then present the RFC once — the complete section as written under the task, no second summary
+and no plan beside it — end with exactly `Decision required: approve RFC / request changes`,
+and stop. No test, migration or source edit begins before the owner's explicit approval
+(`CLAUDE.md` §3). The approval covers the RFC as shown and nothing else.
 
 ## 4. Build
 
 Build as `CLAUDE.md` §3 and `.claude/rules/testing.md` say, one slice at a time; each planted red
-line is recorded for the commit card. A new route, table, contract, package or behaviour stops
-you: repartition and go back to step 2. So does a requirement the build shows to be wrong or
-over-built: the step 2 test applies, and the owner hears it before the code follows it. The
-planned file list is the budget: when the changed set passes it by a fifth, or a file lands in a
-package the plan does not name, stop, show the delta
-(planned and built · built but not planned, each with its reason · planned but not built) and
-repartition — never trim a proof to fit. Tick the part's checklist as each file group and proof
+line is recorded for the commit card. A new route, table, contract, package or behaviour voids
+the approval: update the RFC and present it again as step 3 says — in full, the changed
+sections named first, the same decision line. So does a requirement the build shows to be
+wrong or over-built: the step 2 test applies, and the owner hears it before the code follows it.
+The RFC's file table is the budget and the record: a file that lands outside it is added to it
+with its reason as it lands; when the changed set passes it by more than a fifth, or a file
+lands in a package the RFC does not name, the approval is void — stop, show the delta
+(planned and built · built but not planned, each with its reason · planned but not built),
+update the RFC and present it again — never trim a proof to fit. Tick the part's checklist as each file group and proof
 lands; the owner reads it, never a transcript.
 A planted red that needs a database runs on `heliogrid_test`; no task creates a database of its
 own.
@@ -159,9 +198,9 @@ again; API tests never use them.
 Each helper gets its own packet and nothing more. A QA helper: its rows, the AC lines they prove,
 the URL or device, its standing account, the runtime identities and log paths — `qa-api` the base
 URL `http://localhost:8084`, both its numbers and the log path. The reviewer: the
-plan, the AC lines, the changed-file list, the diff, the protection rows the plan names. The
-evaluator: the AC lines with their owners, every helper's report, your own proof lines, the
-commands already run. The helpers may drive web, iOS and Android at once on one stack
+approved RFC, the changed-file list, the diff, the protection rows the RFC names. The
+evaluator: the RFC's `##### Acceptance criteria and proof` section pasted verbatim — never
+retyped or summarised — every helper's report, your own proof lines, the commands already run. The helpers may drive web, iOS and Android at once on one stack
 (`tests/e2e/CLAUDE.md`), each on its own account.
 
 Before any helper starts, hash what a helper must not change, and compare when they return:
@@ -171,9 +210,9 @@ helper holds Bash, so a write is detected, never prevented; a database or device
 detected at all — its contract forbids it. A changed hash is a blocker named by file.
 
 Start `qa-web`, `qa-ios` and `qa-android` together — an omitted surface starts no helper — and
-`reviewer` beside them with the finished diff. `qa-api` starts with them when the QA plan holds
+`reviewer` beside them with the finished diff. `qa-api` starts with them when the proof matrix holds
 API rows, since its tenants hold its data apart; a row that touches global state (the platform
-catalog, a market pack) waits until the surface helpers have returned, and the plan says which. Fix the reviewer's findings, then CONTINUE the same
+catalog, a market pack) waits until the surface helpers have returned, and the RFC says which. Fix the reviewer's findings, then CONTINUE the same
 reviewer (`SendMessage`) with only the fixed files; never a fresh instance. A third pass happens
 only when a fix touched a money, tenancy or permission rule.
 
@@ -231,7 +270,7 @@ starts in a fresh session.
 |---|---|---|
 | `design-check` | step 3 | `READY` · `NEEDS_CHANGE` · `NOT_DRAWN`, findings, one prompt |
 | `qa-web` · `qa-ios` · `qa-android` | step 5, together | `PASS` · `FAIL` · `BLOCKED`, `row → action → observed → measurements → new log range` |
-| `qa-api` | step 5, with them, when the plan holds API rows | `PASS` · `FAIL` · `BLOCKED`, `row → requests → observed status and body → request id and log range → result` |
+| `qa-api` | step 5, with them, when the proof matrix holds API rows | `PASS` · `FAIL` · `BLOCKED`, `row → requests → observed status and body → request id and log range → result` |
 | `reviewer` | step 5, with QA | `blocker` · `should-fix` · `note`, `row → file:line → evidence → smallest fix` |
 | `evaluator` | step 5, after QA | `AC → owner → proof → result → evidence`, the gate, regenerated paths |
 | `ci-investigator` | step 7, one failed job | cause, evidence, smallest fix, proof |

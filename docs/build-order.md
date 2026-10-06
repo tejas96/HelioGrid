@@ -202,7 +202,7 @@ task that builds what it needs. A record here keeps the order honest; it does no
 
 ## Checking the suite
 
-No script checks the documents any more. The plan checks the task it takes: every row id the task
+No script checks the documents any more. The RFC checks the task it takes: every row id the task
 cites exists in the PRD, and every quoted row still matches its PRD cell. The owner checks a
 screen's design in Claude Design.
 What nothing checks — a dangling id in a task not yet started, the V1 count, a row dispositioned
