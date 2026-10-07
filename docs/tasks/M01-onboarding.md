@@ -424,7 +424,7 @@ This file covers module M01 — company signup and authentication, team invites 
   · Hindi and Marathi → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Language.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-17-catalog-import-wizard.md`; they are the specification.
 **Data model:** none — reads `catalog_import_job` and `catalog_import_row` authored by `T-M01-030` (migrations 0019, 0020 and 0021) and the overrides, SKUs and rate entries the run writes through `T-M01-027` (migration 0015); the uploaded file is the one `file` table's row (no task id yet).
-**Contract:** `packages/contracts/src/catalog-import.ts` — POST /catalog/imports (from an uploaded file id, the entry point, and the file's name and saved date as the device's picker gives them — the step 1 subtitle names no supplier, since no source holds one: `T-M01-030c` decision 8) · GET /catalog/imports (the re-openable reports) · GET /catalog/imports/{id} (the one read the wizard polls — its state, mapping and counts) · PUT /catalog/imports/{id}/mapping · GET /catalog/imports/{id}/rows (the preview grid, paged and narrowed by outcome; `T-M01-030d` decision 11) · PUT /catalog/imports/{id}/rows/{rowNumber} · POST /catalog/imports/{id}/run (the job then reads `run: { done, total, at, by }` while it runs and `results` once completed; each row its `result` and `failure` — `T-M01-030f`). The matching pass shows a short wait, not a counted "256 of 412 rows" — the run carries the counted progress (owner ruling R1 at `T-M01-030d`; board decision 24 is redrawn to match). A row judged again at the run can fail as `changed_since_preview` — its product changed in the catalog since the preview — and the report says so (`T-M01-030f` D2). Domain read: `CATALOG_IMPORT_STATES`, `CATALOG_IMPORT_ENTRY_POINTS`, the target-field vocabulary of `import-columns.ts`, `importRunProgress`, `CATALOG_IMPORT_ROW_RESULTS`.
+**Contract:** `packages/contracts/src/catalog-import.ts` — POST /catalog/imports (from an uploaded file id, the entry point, and the file's name and saved date as the device's picker gives them — the step 1 subtitle names no supplier, since no source holds one: `T-M01-030c` decision 8) · GET /catalog/imports (the re-openable reports) · GET /catalog/imports/{id} (the one read the wizard polls — its state, mapping and counts) · PUT /catalog/imports/{id}/mapping · GET /catalog/imports/{id}/rows (the preview grid, paged and narrowed by outcome; `T-M01-030d` decision 11) · PUT /catalog/imports/{id}/rows/{rowNumber} · POST /catalog/imports/{id}/run (the job then reads `run: { done, total, at, by }` while it runs and `results` once completed; each row its `result` and `failure` — `T-M01-030f`). The matching pass shows a short wait, not a counted "256 of 412 rows" — the run carries the counted progress (owner ruling R1 at `T-M01-030d`; board decision 24 is redrawn to match). A row judged again at the run can fail as `changed_since_preview` — its product changed in the catalog since the preview — and the report says so (`T-M01-030f` D2); that row keeps the verdict it was judged by, so the grid asks its question. The report pages `GET …/rows?result=…` (one result per read — the *Left out* and *Failed* chips are two reads) and renders each row's `priceBefore` and `priceApplied` as *Price before* and *Price now* — null `priceApplied` is *Unchanged*; *Fix the N rows* takes N from domain's `importRowsToFix(results)`, fixes the open rows with the same `PUT …/rows/{rowNumber}` on the completed job, and presses the same `POST …/run`, which writes only those rows (`T-M01-030g`). Domain read: `CATALOG_IMPORT_STATES`, `CATALOG_IMPORT_ENTRY_POINTS`, the target-field vocabulary of `import-columns.ts`, `importRunProgress`, `CATALOG_IMPORT_ROW_RESULTS`, `importRowsToFix`.
 **Depends on:** `T-M01-030` (migrations 0019, 0020 and 0021 and the routes; the workflow on `heliogrid-catalog`) · `T-M01-027` (migration 0015) · `T-M01-025` (the guard for `m01.manage_catalog`) · the first `file` slice (the presigned upload the first step needs — no task id yet; the wizard cannot start before it) · `T-M01-015` (the settings entry; onboarding is another).
 **Out of scope:** matching, the async run, idempotency and the report's storage — `T-M01-030`; the tables it writes — `T-M01-027`; the file bytes path — the first file slice; M02's lead import, the same pattern — `T-M02-005`; the outbox and dispatcher — `T-M01-030`, `infra/temporal`; the entry from the add sheet — `T-M01-016`, which lands after this wizard and wires that hand-off itself.
 **DONE WHEN:**
@@ -1520,7 +1520,7 @@ Rows Q9, Q10, Q11, Q12 of the QA plan, and Q8c below. Surfaces: api, database. `
 
 ### T-M01-030 · Catalog spreadsheet import job
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped
 **Why:** An owner drops the supplier's price list in and every product they stock carries their price minutes later — hundreds of rows matched against the platform book, unknown ones made their own SKUs, broken ones fixed in place (M01-41); without it the first quote waits on typing every product by hand, which is the abandonment M01-22 names.
 **PRD rows:** none of its own — the import row is quoted and dispositioned at `T-M01-017` (the wizard), and this task is the job beneath that screen; quoting it a second time here would be the duplicate this suite forbids.
 **Requirements:** M01-41's build-side half — smart matching, the async run, the per-row report — and §M01.4's behaviour detail and edge cases bind this task: the preview states "N rows · M match platform products (will become price overrides) · K new products · E rows need attention"; fixing happens in the preview grid, never in a bounced file; a match creates a price override and never a spec edit, and a spec conflict on a match is a needs-attention row; a re-run of the same file appends new rate entries on the matched overrides and never a duplicate SKU; column auto-guess handles headers in any launch language while the file's own header text is data and never translates; the import runs async with visible progress and the per-row report is kept and re-openable; it is one wizard at its three entry points — onboarding, Catalog settings, the picker's add-flow.
@@ -1646,6 +1646,21 @@ Recorded at the step's start (2026-10-06), before anything ran. Branch `feat/T-M
 - browser tabs `seed`, `tab-1` (opened by the previews) → closed. Postgres, object store → pre_existing, untouched.
 - logs → `.qa/api.log` 3,386,118 → 3,723,568 bytes; kept.
 
+**Part g, at the start** (2026-10-07) — branch `feat/T-M01-030g` from `origin/main` `65ac4e2c`. web `3002`, api `8084`, Metro `8081`: free. Postgres (`heliogrid-pg-local`), object store (`heliogrid-object-store-local`), Temporal (`heliogrid-temporal`, `heliogrid-temporal-admin`, `heliogrid-temporal-jwks`): pre_existing. No iOS simulator booted; no Android device attached. The browser pane closed. Database routing: `heliogrid_dev` on both `DATABASE_URL` and `DATABASE_ADMIN_URL`. Logs: `.qa/api.log` 3,723,568 bytes · `.qa/metro.log` 14,661 · `.qa/web.log` absent. The api and the worker are `started_by_task` for the live check, through their launch configurations.
+
+**Part g, at the end** (resource → initial → final):
+- api `8084` → free → started through the `api` launch configuration twice (serverIds `502227f5…`, `b6b42d11…` — restarted onto the review fixes), stopped; free again, no `tsx watch` left.
+- worker → not running → started once through the `worker` launch configuration (serverId `b74f42d6…`), stopped.
+- database routing → `heliogrid_dev` on both → `heliogrid_test` for the tests, the live check and the gate → `heliogrid_dev` on both, the file byte-identical to its start.
+- `heliogrid_test` → at 0021, no migration in this part. `heliogrid_dev` untouched. It keeps QA's two jobs (`…571b`, `…739b`, both `completed`, each run twice), their own SKUs, and the standing company's *Adani Solar ELAN Shine 540* override now at 12950 — written by the second QA import — nothing purges.
+- Temporal → pre_existing → the `outbox-sweep` schedule the api re-created at boot is deleted and its one waiting run terminated; every `catalogImport` the live check started completed (eight: read, match, run, run per job).
+- browser tabs `seed`, `tab-1` (opened by the previews) → closed. Postgres, object store → pre_existing, untouched. Metro `8081` → free → untouched.
+- logs → `.qa/api.log` 3,723,568 → 3,967,218 bytes; kept.
+
+**Part g measurements** — about 150 Main tool calls; helper runs: `qa-api` 2 passes (46.8k, 56.8k tokens — the second after the review fixes; Main read Temporal both times, `qa-api` may not run `docker`), `reviewer` 3 passes (126.4k, 141.1k, 146.1k — each a continuation; clean on the third), `evaluator` 1 gate run (27.4k, pass on the first full gate). Main's own tokens are not measured by this session. Planned 18 files and about 1,050 authored lines; built 19 files (1 generated: `openapi.json` +150) and about 1,100 (+5%) — the deltas in the RFC's As built record.
+
+**Part g planted reds** — each seen failing by name, then restored: the written-outcome filter removed from the second run's start → *answers a completed import with nothing to write as it stands, and hands nothing off*; the group judged in sheet order → *asks which is meant when an open row is fixed to a product the run already priced*; the written-row guard removed from the fix → *refuses a fix to a row a completed run wrote, and changes nothing*; the `left_out` condition removed from the second run's marking → *leaves out a failed row the person left out, clearing its failure*; the marking as first built → *runs again past a row that failed, which keeps its failure* (the CHECK's error).
+
 **Part f planted reds** — each seen failing by name, then restored: results in their own transaction after the writes → *writes nothing twice when a step runs again after its commit is lost*; the event in its own transaction → *leaves neither the run nor its event when the commit is lost*; `admitWrite` removed from the run → *refuses Finance the run and changes nothing*; the stored verdict written without judging again → *makes one SKU when two imports previewed from one file run one after the other* and *fails a row whose product changed in the catalog since the preview*; the row CHECK in its bare `=` form, planted in `heliogrid_test` → *refuses a reason on a row not yet run, …*; the run's missing job answered with another status → *reads another company’s job as not found, and changes nothing*; the run dated by `run_at` → *dates a price by the day its step writes it, never the day before*.
 
 **Part f measurements** — about 170 Main tool calls; helper runs: `qa-api` 2 passes (41.6k, 55.1k tokens — the second after the review fixes; neither could run `docker`, so Main read Temporal with a `reader` token), `reviewer` 3 passes (158.6k, 177.7k, 179.2k — each a continuation; clean on the third), `evaluator` 1 gate run (36.2k, pass on the first full gate). Main's own tokens are not measured by this session. Planned 27 files and about 1,500 authored lines; built 33 files (1 generated: `openapi.json` +764) and about 2,220 — code about 1,140, tests about 870, docs about 210 — the rulings in the RFC's Delivery size.
@@ -1759,7 +1774,7 @@ Q3 runs in part a; Q4 in part b; Q6–Q7 in part c; Q8–Q9 in part d. No row to
 | d | the mapping, the matching pass and the preview reads — mapping, row table 0020, the match step, counts, the rows page; a new mapping during the pass supersedes it (the board's "stops the work", no cancel route) (`#### Part d · RFC`) | AC-1 (preview), AC-5, AC-6 (rows), AC-8 (mapping, rows), AC-11 | c | shipped |
 | e | the row fix — `PUT …/rows/{rowNumber}`, the product-group re-match (`#### Part e · RFC`) | AC-1 (fix), AC-8 (fix), AC-12 | d | shipped |
 | f | the run — `POST …/run`, the batched write step, progress and a result on every row (`#### Part f · RFC`) | AC-1 (run), AC-2, AC-3 (run), AC-8 (run), AC-9 | e | shipped |
-| g | the report — price before and now, the filter by result, *Fix the N rows* (board decision 32); proposed by part f's D1 A, its own RFC at its turn | — (board facts) | f | open |
+| g | the report — price before and now, the filter by result, *Fix the N rows* (board decision 32): a completed job's open rows fixed and run again (`#### Part g · RFC`) | AC-13, AC-14, AC-8 (fix) | f | shipped |
 
 **Part a checklist** — [x] domain import vocabularies · [x] column guess · [x] match rule · [x] file types, `catalog` subject, signature · [x] migration 0017 · [x] file service and lookup · [x] Q1 · [x] Q2 · [x] Q3 · [ ] Q10 (the PR's `quality` lane)
 **Part b checklist** — [x] migration 0018 and schema · [x] workflow contract and queues · [x] activity host · [x] outbox write, dispatcher, sweep · [x] worker sweep workflow · [x] docs · [x] Q4 · [x] Q5 (outbox) · [ ] Q10
@@ -2519,6 +2534,165 @@ Part f's lines of the task's AC (Plan `#### Acceptance criteria`), verbatim:
   - **Owner ruling (2026-10-07):** D3 → **A** — each batch dates its entries by the day it is written, on the tenant's clock.
   - *Not taken:* a forced-overlap test of two runs on one company (optional in the review) — both take the catalog lock first, the same lock the single form and the release publish hold; renaming `import-preview-support.ts` (optional).
 - **Checklist (part f)** — [x] domain results and progress · [x] migration 0021 and schema · [x] contracts and workflow phase · [x] shared own-SKU insert, override, ledger id · [x] run repository and service · [x] route · [x] worker loop · [x] docs · [x] AC-1 (main-dev) · [x] AC-1 · AC-9 (qa-api) · [x] AC-2 · [x] AC-3 · [x] 0021 invariants (evaluator) · [x] AC-8 (main-dev, qa-api) · [x] review (clean on the third pass) · [ ] CI
+
+#### Part g · RFC
+The task's shared facts — the Plan's decisions 1–21, parts c to f's decisions and the AC list — stand unless a line below changes one. Branch `feat/T-M01-030g` from `origin/main` `65ac4e2c`.
+
+##### Title
+T-M01-030g — the import report: each row's price before and the price it applied, the rows narrowed by result, and *Fix the N rows* — the rows the run did not write fixed in place and run again.
+
+##### Description
+- **User impact:** in the import wizard's report (`SCR-M01-17`, step 4, frames O and Q) the owner scans *Price before* beside *Price now* for the one price that looks wrong, narrows the report to *Left out*, and presses *Fix the 7 rows*: the seven come back into the preview grid, are fixed there, and are imported — the other 405 are never touched again. Directly: no supplier row is lost to a dead end, and no wrong price hides in 400 lines. Indirectly: the catalog is complete after one import, so the first quote is not short of the products the file had trouble with.
+- **Who gains:** anyone holding `onboarding.manage_catalog` outright.
+- **Problem solved:** part f keeps a result on every row, but the report cannot show what a price was before the run, cannot be narrowed by result, and a completed job takes no fix and no second run — the board's route back (decision 32) does not exist.
+- **Cites:** the task header (`M01-41`, `M01-44`); the brief `docs/ux/briefs/SCR-M01-17-catalog-import-wizard.md` (state `per-row-report-reopenable`); the board's decisions record, read 2026-10-07 — decision 32 (*Fix the 7 rows* re-enters step 3 with the *Left out* scope chosen), pass 3 N7 (*Price before* is the override's price, or *No price*; *Price now* is the price from the file), N8 (a left-out row reads *Unchanged*), finding 48 (the report's columns are the past tense of the preview's).
+
+##### Goals
+- `GET …/{id}/rows` gives each written row `priceBefore` (the rate in force on its item just before the entry the row wrote) and `priceApplied` (that entry); every other row of a run job `priceBefore` = the rate its item holds today and `priceApplied` = null.
+- `GET …/{id}/rows?result=…` narrows the rows to one result.
+- On a completed job, a row the run did not write (`left_out` or `failed`) takes a fix; a row it wrote is refused.
+- `POST …/run` on a completed job writes only its open rows that now judge as a write; with none, the job is answered as it stands and nothing is handed off.
+- One import never prices one product twice, across its runs.
+
+##### Non-goals
+- The wizard and its words — `T-M01-017`.
+- A run history: a second run moves `run_at` and `run_by` to the new run; each rate entry keeps its own date and person (`M01-44`).
+- Any change to the read, the mapping or the matching pass (parts c, d).
+- A new import job for the open rows (see decision 2's rejected way).
+
+##### Readiness and dependencies
+- Landed on `origin/main`: part f (#245) — results, `rate_entry_id`, the run step; part e (#244) — the fix; `T-M01-027` — the rate ledger and `ratesInForce`.
+- Design: an engine part, no drawing of its own. `SCR-M01-17` holds its link; the facts that bind the report are cited above.
+- Stack: Postgres, object store, Temporal pre_existing; `heliogrid_test` at 0021. The api and the worker start through `.claude/launch.json` for the live check.
+- Database: no migration.
+- Blockers: none. One ruling rides on this approval — D1 (Delivery size).
+
+##### Proposal
+**Flow.** The report pages `GET …/{id}/rows?result=left_out` → each row with its two prices → *Fix the N rows* (N from domain's `importRowsToFix(results)`) → `PUT …/rows/{n}` on the completed job, as in part e → `POST …/run` → one tenant transaction: the job locked, the open rows that now judge as a write lose their result, `running`, the new runner, the outbox event → the run step writes only rows with no result (part f, unchanged) → `completed`.
+
+**Key decisions** (one reason each):
+1. **The two prices are read from the ledger, never stored.** `priceApplied` is the entry the row kept (`rate_entry_id`); `priceBefore` is the newest entry on the same parent ordered before it by `(entry_date, sequence)`, one statement per page. The ledger is append-only (`M01-44`) and a run never backdates (part f D3), so the read is exact. Storing a copy would be the second copy of a price §8 forbids. A new SKU's or a bare override's first entry has nothing before it → null, the board's *No price*.
+2. **The fix and the second run work in place on the completed job.** Domain gains `CATALOG_IMPORT_OPEN_RESULTS` (`left_out`, `failed`) and `takesImportFix(state, result)`: a `previewed` job's every row, a `completed` job's open rows. The job stays `completed` while fixed, so its report never disappears. *Rejected:* a new job holding only the open rows — a new route, a copy of rows and a second report for one file.
+3. **A written row is never judged again into a write.** A fix on a completed job judges its product group with the rows the run wrote placed FIRST, so their products count as already seen: an open row naming one of them reads `repeated_in_file` — the first pass's own rule (`matchImportRows`: one import never writes two prices for one product). Only open rows' verdicts are stored.
+4. **A row failed as `changed_since_preview` keeps the verdict the run gave it.** The run already judged it again; storing that verdict (outcome `needs_attention` and its attention) lets the fix grid ask its question. Without it, the row would show its stale preview verdict and fail again on every run. A `not_applied` row keeps its written outcome and is simply written by the next run.
+5. **The second run takes only open rows that now write.** `takesImportRun` widens to `completed`; the start clears `result` and `failure` on open rows whose outcome is a write (`CATALOG_IMPORT_WRITTEN_OUTCOMES`) and leaves every other row as it is. None → the job is answered as it stands, no event (a retried *Import* stays safe). Progress stays part f's rule over the whole job: rows written of rows to write.
+6. **The rows filter takes one result.** `result` beside part d's `outcome`, both optional, both ANDed, on the existing index `(tenant_id, job_id, result, row_number)`. The wizard's *Left out* and *Failed* chips are two reads; how it groups them is `T-M01-017`'s.
+7. **The report's rule lives on the server and in domain** (Law 11): the two prices are filled for every row of a run job, so the screen picks no column by result; `importRowsToFix` gives N.
+
+**Order.** Domain (open results, fix and run rules, N) → contracts (row fields, filter) → the ledger read → rows page → fix service moved and widened → run start and failed verdicts → api tests → OpenAPI → docs.
+
+**Refusals.** 403 a role without the outright grant · 404 a job not this company's, or a row the sheet does not hold · 409 `CONFLICT` a fix on a `running` job or on a row the run wrote, and a run on a job in `reading`, `unreadable`, `mapped`, `matching`.
+
+**Twin screen.** None: an engine part. Both platforms' wizard is `T-M01-017`.
+
+##### Architecture diagram
+```mermaid
+sequenceDiagram
+  participant D as Device
+  participant A as api
+  participant P as Postgres
+  participant T as Temporal
+  D->>A: GET …/{id}/rows?result=left_out
+  A->>P: page + in-force rates + the entry each row wrote and the one before it
+  D->>A: PUT …/{id}/rows/{n} (completed job, open row)
+  A->>P: job lock, group judged with written rows first, open rows' verdicts stored
+  D->>A: POST …/{id}/run (completed job)
+  A->>P: open rows that now write lose their result, running, outbox event — one transaction
+  A->>T: start catalogImport (phase run) — part f's step writes rows with no result
+```
+
+##### Package changes
+- **domain** — `catalog/import.ts`: `CATALOG_IMPORT_OPEN_RESULTS`, `takesImportFix(state, result)`, `takesImportRun` widened to `completed`, `importRowsToFix(results)`. Client-safe.
+- **contracts** — `catalog-import-rows.ts`: the row gains `priceBefore`, `priceApplied` (`resolvedRateSchema`, nullable); `catalogImportRowsQuerySchema` gains `result`. Direction unchanged: contracts → domain.
+- **api** — catalog module: `ratesBeforeEntries` and `entriesById` in the rates repository; the rows page reads the filter and the two prices; the fix moves out of the preview service (274 lines) into `catalog.import-fix.service.ts`, widened; the run repository's start and its failed rows' verdicts.
+- **Law 12 enrolment:** no new pgEnum, table, route, error code, brand or token. The query field → OpenAPI freshness. `CATALOG_IMPORT_OPEN_RESULTS` is a subset of a held vocabulary, typed `satisfies readonly CatalogImportRowResult[]`.
+
+##### Data and schema changes
+None — no stored shape changes. Part f's CHECKs hold: the start clears `result` and `failure` together; `rate_entry_id` and `created_item_id` stay null on an open row. **Readers, both ways:** a part f api refuses a fix or a run on a completed job (409) — harmless; its run step writes any row with no result, so it finishes a second run the new api started. A part g api reads part f's jobs as they are. No backfill; rollback is the previous release.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/domain/src/catalog/import.ts` | open results, fix and run rules, N | §4.3 vocabulary and policy |
+| modify | `packages/domain/src/catalog/index.ts` | exports | §4.3 |
+| modify | `packages/domain/tests/catalog/import.test.ts` | the rules | testing rules |
+| modify | `packages/contracts/src/catalog-import-rows.ts` | two prices, the result filter | §4.1 |
+| modify | `packages/contracts/openapi/openapi.json` | regenerated | §4.1 (generated) |
+| modify | `apps/api/src/modules/catalog/catalog.rates.repository.ts` | the entries by id and the entry before each | the one ledger read |
+| modify | `apps/api/src/modules/catalog/catalog.import-rows.repository.ts` | the filter; the two prices on a page | the one rows read |
+| modify | `apps/api/src/modules/catalog/catalog.import-preview.service.ts` | the fix moved out; `rowWire` fields | catalog module; 300-line rule |
+| add | `apps/api/src/modules/catalog/catalog.import-fix.service.ts` | the fix, widened to a completed job's open rows | catalog module; 300-line rule |
+| modify | `apps/api/src/modules/catalog/catalog.import-fix.repository.ts` | the page's prices for the rows a fix answers | the one fix read |
+| modify | `apps/api/src/modules/catalog/catalog.import-run.repository.ts` | the second run's start; a failed row's verdict | the one run write |
+| modify | `apps/api/src/modules/catalog/catalog.import-run.service.ts` | the failed row carries its verdict | catalog module |
+| modify | `apps/api/src/modules/catalog/catalog.import.controller.ts` | the fix from its new service | catalog module |
+| modify | `apps/api/src/modules/catalog/catalog.module.ts` | wiring | Nest wiring |
+| add | `apps/api/tests/catalog/import-report.test.ts` | AC-14 — *Fix the N rows* | testing rules |
+| add *(built, not planned)* | `apps/api/tests/catalog/import-report-prices.test.ts` | AC-13 — the two prices, the filter, an unwritten row, a cleared price | the 300-line rule |
+| modify | `apps/api/tests/catalog/import-fix-refusals.test.ts` | a written row refused | testing rules |
+| modify | `apps/api/tests/catalog/import-run.test.ts` | a failed row keeps its verdict | testing rules |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, Parts, Runtime; `T-M01-017`'s report lines | Law 8 |
+
+##### API and contract changes
+| route | method | request → response | errors | access |
+|---|---|---|---|---|
+| `/catalog/imports/{id}/rows` | GET | adds `?result=`; each row adds `priceBefore`, `priceApplied` (`{ source, amount, currencyCode, effectiveOn } \| null`) | unchanged | `onboarding.manage_catalog` outright |
+| `/catalog/imports/{id}/rows/{rowNumber}` | PUT | unchanged body; now also a completed job's open row | 409 a written row or a running job | same |
+| `/catalog/imports/{id}/run` | POST | unchanged; now also a completed job with open rows that write → 200 `running`; none → 200 as it stands | unchanged | same |
+
+Tenancy: no `tenantId` on the wire; the ledger read carries the tenant predicate. Compatibility: added fields and an optional query field.
+
+##### Risks and rollout
+| risk | mitigation |
+|---|---|
+| A second run writes a row twice | decision 5 — only rows with no result are written, and only open rows lose theirs; planted red: the open-row filter removed |
+| One product priced twice across runs | decision 3 — written rows lead the group; planted red: the group in sheet order |
+| A fix rewrites a row the run wrote | decision 2 — `takesImportFix` refuses it; planted red: the guard removed |
+| A wrong *Price before* | decision 1 — tested against a ledger with an earlier entry, none, and a cleared one |
+| Release roll | api only, no migration; any order is safe (Data) |
+
+##### Acceptance criteria and proof
+Part g extends the task's AC (`AC-1` … `AC-12` stand):
+- **AC-13** (extension, new) — Given a completed import, when its rows are read, then each row the run wrote carries the price its item held just before that write and the price the write applied, every other row the price its item holds now and no applied price; and the rows can be narrowed to one result.
+- **AC-14** (extension, new) — Given a completed import with left-out or failed rows, when one is fixed and the import is run again, then only the rows that now write are written, no row the first run wrote is written or priced again, and the job completes with a result on every row; given a fix to a row the run wrote, or a run again with nothing to write, then it is refused or answered as it stands and nothing changes.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-13 | main-dev | required | api tests | an override with an earlier entry, a bare override, a new SKU → `priceBefore` the earlier entry, null, null, and `priceApplied` each row's entry; a `not_applied` row → its item's rate today and no applied price; a left-out row → both null (it stores no item, D129); a price cleared before the run → `priceBefore` null; `?result=left_out` returns only those rows | `import-report-prices.test.ts` |
+| AC-14 | main-dev | required | api tests | a left-out row fixed and run again → only it written, the first run's entries unchanged in count; a row fixed to a written row's product → `repeated_in_file`; a fix to a written row → 409, nothing changed; run again with nothing open → `completed`, no event; a `changed_since_preview` row keeps its new verdict; planted reds: the open-row filter, the group order, the written-row guard — each failed by name | `import-report.test.ts`, `import-fix-refusals.test.ts`, `import-run.test.ts` |
+| AC-14 | main-dev | required | domain | `takesImportFix`, `takesImportRun`, `importRowsToFix` | `import.test.ts` |
+| AC-8 | qa-api | required | api `8084` | `…906` (Finance) fix on a completed job → 403 | live |
+| AC-13 · AC-14 · AC-9 | qa-api | required | api `8084` + temporal | `…904` runs a file with a broken row, reads the report's prices and `?result=left_out`, fixes the row, runs again, reads it `product_created` and every other row unchanged; Temporal shows one completed `catalogImport` per handoff (Main reads it if `qa-api` cannot run `docker`) | live |
+| all | evaluator · ci | required | `pnpm check:all` · `quality` | the gate and the PR's run pass | gate · CI |
+| — | qa-web · qa-ios · qa-android | not_applicable | — | an engine part; the wizard is `T-M01-017` | — |
+
+##### Delivery size
+- **Estimate:** 18 files (1 generated: `openapi.json`). Authored lines: code about 400 (about 120 of them the fix moved, not new) · tests about 450 · this RFC and doc lines about 200 — about 1,050. Parts e and f ran 40–60% over their estimates, mostly in tests; this one counts tests at the size theirs landed.
+- **D1 — size ruling (owner).**
+  - **A · one part g (recommended).** The report's two prices and its act are one surface (board finding 48, decision 32); about 1,050 lines, a little over the 1,000 target.
+  - **B · split.** **g1** — the two prices and the filter (about 450 lines). **g2** — the fix on a completed job and the second run (about 600). Each is acceptable alone; two PRs and two QA runs.
+- **Order:** as in Proposal.
+- **Owner rulings (2026-10-07):** RFC approved; D1 → **A** (one part g).
+- **As built (2026-10-07):** 18 changed files (1 generated: `openapi.json` +150) against 18 planned, and about 810 authored lines against about 1,050 — inside the approval. `pnpm check`: 47 files, 406 tests.
+  - **Planned and built:** domain `import.ts`, `index.ts`, `import.test.ts`; contracts `catalog-import-rows.ts`, `openapi.json`; api `catalog.import-rows.repository.ts`, `catalog.import-preview.service.ts`, `catalog.import-run.repository.ts`, `catalog.import-run.service.ts`; tests `import-report.test.ts`, `import-fix-refusals.test.ts`, `import-run.test.ts`; this file.
+  - **Built but not planned:** `catalog.written-rates.repository.ts` — the ledger read, since the rates repository would pass 300 lines · `internal/import-judging.ts` — `verdictOf` shared by the fix and the run's failed rows (Law 5) · `internal/wire.ts` — `reportPricesWire`, the two prices' rule beside `storedRateWire` · `packages/contracts/src/catalog-import.ts` — the three route summaries now say what the routes take · `docs/tasks/deferred.md` — D129.
+  - **Planned but not built:** `catalog.rates.repository.ts` (the read went to its own file) · `catalog.import-fix.service.ts`, `catalog.import.controller.ts`, `catalog.module.ts` (the preview service stays at 277 lines with the fix in it, so nothing moved) · `catalog.import-fix.repository.ts` (a fix's rows carry the prices through the shared `withRates`).
+  - **Changed from the RFC:** the fix rule is two domain functions — `takesImportFix(state)` for the job, `fixesImportRow(state, result)` for the row — plus `wroteImportRow(result)`, so the job's 409 still comes before a missing row's 404.
+  - **Found in the build:** a row the run left out because the pass flagged it stores no matched item (CHECK `catalog_import_row_match_names_its_item`), so its *Price before* is null even when its product has an override — `deferred.md` D129, outside this RFC's stored shape. The contract's comment says so.
+  - **Planted reds, each failed by name, then restored:** the written-outcome filter removed from the second run's start → *answers a completed import with nothing to write as it stands, and hands nothing off*; the group judged in sheet order → *asks which is meant when an open row is fixed to a product the run already priced*; the written-row guard removed from the fix → *refuses a fix to a row a completed run wrote, and changes nothing*. The open-result filter removed is refused by the CHECK `catalog_import_row_result_names_its_write` itself (a database error, not a red), so the schema holds that rule.
+- **After the first review (2026-10-07)** — 19 files (+1: `import-report-prices.test.ts`, the price edges, since `import-report.test.ts` would pass 300 lines). Live QA passed every row before these fixes (Temporal read by Main). Fixed, each with what now prevents it:
+  - *Review, blocker* — a second run marked every unwritten row `left_out` whatever its result, so a `changed_since_preview` row (now `needs_attention`) kept its `failure` under `left_out`, the CHECK `catalog_import_row_result_names_its_write` refused it, and `POST …/run` answered 500. The start now marks only rows with no result, or a row the person left out (clearing its `failure`); a failed row nobody fixed stays failed with its reason → *runs again past a row that failed, which keeps its failure*, seen failing by name on the code before the fix with that CHECK's error.
+  - *Review* — the proof matrix's "a left-out row reads today's rate" and the Risks row's "a cleared one" had no test → *shows a row the run never wrote at the price its item holds now, with none applied* (a `not_applied` row) and *shows no price before a write whose item's price was cleared*. A left-out row reads null, since it stores no item (D129).
+  - *Review* — `import-run.test.ts` grew past 300 lines → one `toMatchObject`.
+  - *Review* — the run service's comments still said a run already made answers with no second handoff → reworded.
+  - *Review* — the before-entry read joined the two parent columns with `or`, which reads neither index in order → one lateral per parent column, each a top-1 read on its own `(tenant, parent, entry_date desc, sequence desc)` index.
+  - *Review* — `wroteImportRow` spelt the written pair itself → `CATALOG_IMPORT_WRITTEN_RESULTS` beside the open results, which it reads.
+  - *Review* — a block comment repeated `WrittenRate`'s doc → removed; this record's line count corrected.
+- **After the second review (2026-10-07)** — still 19 files.
+  - *Review* — the blocker's second branch, a failed row the person then leaves out, had no case → *leaves out a failed row the person left out, clearing its failure*, seen failing by name with the `left_out` condition removed, then restored.
+  - *Review* — `import-run.test.ts` still read 301 lines → 299. The report's price case moved into `import-report-prices.test.ts` (224 lines), so `import-report.test.ts` (237) holds *Fix the N rows* alone.
+  - *Review* — the run service's class comment ran two dashed clauses into one sentence → two sentences.
+- **Checklist (part g)** — [x] domain rules · [x] contracts · [x] ledger read and rows page · [x] fix · [x] second run and failed verdicts · [x] docs · [x] AC-13 · [x] AC-14 (main-dev) · [x] qa-api (passed, and passed again after review; Temporal read by Main) · [x] review (clean on the third pass) · [x] gate (`pnpm check:all`, first run) · [ ] CI
 
 ### T-M01-031 · Price book
 **Type:** engine · **Tier:** P0

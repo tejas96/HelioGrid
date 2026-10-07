@@ -15,14 +15,15 @@ import { CatalogImportRunRepository, type RowWrite } from './catalog.import-run.
 import type { RateToAppend } from './catalog.rates.repository';
 import { CatalogService } from './catalog.service';
 import { importNotFound } from './internal/import-job';
-import { catalogOf, matchInput, namingCells } from './internal/import-judging';
+import { catalogOf, matchInput, namingCells, verdictOf } from './internal/import-judging';
 import { admitWrite } from './internal/write-checks';
 
 /**
  * The import's run (`T-M01-030f`, `M01-41`): a previewed job handed to the `catalogImport`
  * workflow, whose step writes its rows into the catalog batch by batch — each row judged again
  * against the catalog as it stands, so a preview gone stale never makes a second SKU — and keeps
- * what it did with every row. The route is the manage grant held outright, as every import route is.
+ * what it did with every row. A completed job whose open rows were fixed runs again over only
+ * those rows (`T-M01-030g`). The route is the manage grant held outright, as every import route is.
  */
 @Injectable()
 export class CatalogImportRunService {
@@ -35,7 +36,10 @@ export class CatalogImportRunService {
     @Inject(OutboxDispatcher) private readonly dispatcher: OutboxDispatcher,
   ) {}
 
-  /** Runs a previewed import; one already run is answered as it stands, with no second handoff. */
+  /**
+   * Runs a previewed import, or runs a completed one again over its fixed open rows; one running,
+   * or completed with nothing to write, is answered as it stands, with no second handoff.
+   */
   async run(tenantId: string, roles: RoleSet, id: string, act: Act): Promise<CatalogImportWire> {
     admitWrite(roles);
     const started = await this.runs.start(tenantId, id, act);
@@ -131,6 +135,11 @@ function rowWrite(
       return { rowNumber, on: 'new_item', item, rate: priced(match.rate) };
     }
     default:
-      return { rowNumber, on: 'nothing', failure: 'changed_since_preview' };
+      return {
+        rowNumber,
+        on: 'nothing',
+        failure: 'changed_since_preview',
+        verdict: verdictOf({ rowNumber }, match),
+      };
   }
 }

@@ -239,7 +239,7 @@ describe.skipIf(skip)('running an import, against a migrated database', () => {
     expect(audited.map((entry) => entry.actorRef)).toEqual([manager.userId]);
   });
 
-  it('fails a row whose product changed in the catalog since the preview', async () => {
+  it('fails a row whose product changed in the catalog since the preview, keeping its new verdict', async () => {
     const own = await anOwnSku(`Changed ${run}`, '9000');
     const jobId = await aPreview([`Changed ${run},OP-1,9200,${A_NEW_PANEL}`]);
     await catalogServiceOf(pools).saveItem(
@@ -263,12 +263,12 @@ describe.skipIf(skip)('running an import, against a migrated database', () => {
     await runs().run(here.tenantId, OWNER, jobId, act());
     await runEveryBatch(runs(), { tenantId: here.tenantId, jobId });
 
-    const [row] = await ranRows(jobId);
-    expect([row?.outcome, row?.result, row?.failure]).toEqual([
-      'own_item_price',
-      'failed',
-      'changed_since_preview',
-    ]);
+    expect((await ranRows(jobId))[0]).toMatchObject({
+      outcome: 'needs_attention',
+      attention: [{ reason: 'spec_conflict', fields: ['watt'] }],
+      result: 'failed',
+      failure: 'changed_since_preview',
+    });
     const after = await pools.admin.db
       .select()
       .from(catalogRateEntry)

@@ -206,7 +206,8 @@ export const catalogImportContract = c.router({
     path: '/catalog/imports/:id/rows',
     pathParams: z.object({ id: uuidSchema }),
     query: catalogImportRowsQuerySchema,
-    summary: 'A page of the preview grid by sheet row number, narrowed to one outcome when asked',
+    summary:
+      'A page of the preview grid, or of the report, by sheet row number — narrowed to one outcome or one result when asked',
     responses: {
       200: paginated(catalogImportRowSchema),
       ...guarded,
@@ -223,13 +224,14 @@ export const catalogImportContract = c.router({
       rowNumber: z.coerce.number().int().positive().max(CATALOG_IMPORT_ROW_NUMBER_MAX),
     }),
     body: catalogImportRowFixSchema,
-    summary: 'Fix one row of the preview — its product’s rows are judged again and the counts move',
+    summary:
+      'Fix one row of the preview, or a row a completed run left open — its product’s rows are judged again and the counts move',
     responses: {
       200: catalogImportFixedSchema,
       ...guarded,
       /** No such job or row in this company. */
       404: notFound,
-      /** The job is not previewed: a new mapping is matching it, or it runs or has run. */
+      /** A new mapping is matching the job, it is running, or the run wrote this row. */
       409: wrongState,
       /** An answer on a row that asks no question — `details[].issue` says so. */
       422: errorEnvelope(baseError('DOMAIN_RULE_VIOLATION')),
@@ -241,7 +243,7 @@ export const catalogImportContract = c.router({
     pathParams: z.object({ id: uuidSchema }),
     body: c.noBody(),
     summary:
-      'Import the previewed rows — the run writes them in the background and the job is polled; a job already run answers as it stands',
+      'Import the previewed rows, or a completed job’s fixed open rows — the run writes them in the background and the job is polled; a job with nothing to write answers as it stands',
     responses: {
       200: catalogImportSchema,
       ...guarded,

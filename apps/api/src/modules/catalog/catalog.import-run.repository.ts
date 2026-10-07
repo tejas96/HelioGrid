@@ -8,6 +8,7 @@ import {
   uuidv7,
 } from '@heliogrid/db';
 import {
+  CATALOG_IMPORT_OPEN_RESULTS,
   CATALOG_IMPORT_RUN_BATCH_ROWS,
   CATALOG_IMPORT_WRITTEN_OUTCOMES,
   type CatalogImportRowFailure,
@@ -17,11 +18,16 @@ import {
   takesImportRun,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, asc, eq, isNull, notInArray, sql } from 'drizzle-orm';
+import { and, asc, eq, inArray, isNull, notInArray, or, sql } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { recordOutboxEvent } from '../../common/temporal/outbox.repository';
-import { lockedJob, previewColumns, type StoredRow } from './catalog.import-rows.repository';
+import {
+  lockedJob,
+  previewColumns,
+  type RowVerdict,
+  type StoredRow,
+} from './catalog.import-rows.repository';
 import { type PricedItem, priceItemIn } from './catalog.prices.repository';
 import type { RateToAppend } from './catalog.rates.repository';
 import { makeOwnItem } from './catalog.repository';
@@ -46,6 +52,8 @@ export type RowWrite =
       readonly rowNumber: number;
       readonly on: 'nothing';
       readonly failure: CatalogImportRowFailure;
+      /** The verdict the row was judged by at the write, kept so a fix asks its question. */
+      readonly verdict: RowVerdict;
     };
 
 /** One batch of a run, read under the job's and the catalog's locks. */
@@ -58,13 +66,14 @@ export interface RunBatch {
 /** A started run, and the event to dispatch after the commit — or where the job already is. */
 export type StartedRun = { readonly eventId: string } | { readonly status: CatalogImportState };
 
-/** What a row's write left: its result, and the entry and SKU it made. */
+/** What a row's write left: its result, the entry and SKU it made, and a failed row's verdict. */
 interface RowResult {
   readonly rowNumber: number;
   readonly result: CatalogImportRowResult;
   readonly failure: CatalogImportRowFailure | null;
   readonly rateEntryId: string | null;
   readonly createdItemId: string | null;
+  readonly verdict: RowVerdict | null;
 }
 
 /** The import's run on the runtime pool, inside the tenant transaction (`T-M01-030f`). */
@@ -75,8 +84,9 @@ export class CatalogImportRunRepository {
 
   /**
    * The job `running`, who ran it and when, every row the run will not write left out, and the
-   * handoff to the run step — committed together or not at all. A job not previewed is answered
-   * where it is and nothing is written; null when it is not this company's.
+   * handoff to the run step — committed together or not at all. A completed job runs again only
+   * its open rows a fix made a write (`T-M01-030g` decision 5); with none, like a job not
+   * previewed, it is answered where it is and nothing is written. Null when not this company's.
    */
   async start(tenantId: string, jobId: string, act: Act): Promise<StartedRun | null> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
@@ -84,17 +94,32 @@ export class CatalogImportRunRepository {
       if (job === null) return null;
       if (!takesImportRun(job.status)) return { status: job.status };
       const at = new Date(act.now);
+      const reopened = await tx
+        .update(catalogImportRow)
+        .set({ result: null, failure: null, updatedAt: at })
+        .where(
+          and(
+            ofJob(tenantId, jobId),
+            inArray(catalogImportRow.result, [...CATALOG_IMPORT_OPEN_RESULTS]),
+            inArray(catalogImportRow.outcome, [...CATALOG_IMPORT_WRITTEN_OUTCOMES]),
+          ),
+        )
+        .returning({ rowNumber: catalogImportRow.rowNumber });
+      if (job.status === 'completed' && reopened.length === 0) return { status: job.status };
       await tx
         .update(catalogImportJob)
         .set({ status: 'running', runAt: at, runBy: act.actorUserId, updatedAt: at })
         .where(and(eq(catalogImportJob.tenantId, tenantId), eq(catalogImportJob.id, jobId)));
+      // Only a row with no result yet, or one the person left out: a failed row nobody fixed
+      // keeps its result and its reason, which the row's CHECK holds together.
       await tx
         .update(catalogImportRow)
-        .set({ result: 'left_out', updatedAt: at })
+        .set({ result: 'left_out', failure: null, updatedAt: at })
         .where(
           and(
             ofJob(tenantId, jobId),
             notInArray(catalogImportRow.outcome, [...CATALOG_IMPORT_WRITTEN_OUTCOMES]),
+            or(isNull(catalogImportRow.result), eq(catalogImportRow.outcome, 'left_out')),
           ),
         );
       const eventId = uuidv7();
@@ -176,7 +201,7 @@ async function written(
   write: RowWrite,
   act: Act,
 ): Promise<RowResult> {
-  const row = { rowNumber: write.rowNumber, failure: null, createdItemId: null };
+  const row = { rowNumber: write.rowNumber, failure: null, createdItemId: null, verdict: null };
   switch (write.on) {
     case 'price': {
       const rateEntryId = await priceItemIn(tx, tenantId, write.item, write.rate, act, null);
@@ -192,11 +217,20 @@ async function written(
       };
     }
     case 'nothing':
-      return { ...row, result: 'failed', failure: write.failure, rateEntryId: null };
+      return {
+        ...row,
+        result: 'failed',
+        failure: write.failure,
+        rateEntryId: null,
+        verdict: write.verdict,
+      };
   }
 }
 
-/** The batch's results, in one statement for every row given. */
+/**
+ * The batch's results, in one statement for every row given. A failed row takes the verdict it
+ * was judged by at the write; every other row keeps the one the preview stored.
+ */
 async function recordResults(
   tx: TenantScopedDb,
   tenantId: string,
@@ -206,17 +240,25 @@ async function recordResults(
 ): Promise<void> {
   if (results.length === 0) return;
   const values = results.map(
-    (row) => sql`(
+    ({ verdict, ...row }) => sql`(
       ${row.rowNumber}::int, ${row.result}::catalog_import_row_result,
-      ${row.failure}::catalog_import_row_failure, ${row.rateEntryId}::uuid, ${row.createdItemId}::uuid)`,
+      ${row.failure}::catalog_import_row_failure, ${row.rateEntryId}::uuid, ${row.createdItemId}::uuid,
+      ${verdict?.outcome ?? null}::catalog_import_row_outcome,
+      ${verdict === null ? null : JSON.stringify(verdict.attention)}::jsonb,
+      ${verdict?.catalogItemId ?? null}::uuid, ${verdict?.tenantCatalogItemId ?? null}::uuid)`,
   );
   await tx.execute(sql`
     update catalog_import_row r set
       result = v.result, failure = v.failure, rate_entry_id = v.rate_entry_id,
       created_item_id = v.created_item_id,
+      outcome = coalesce(v.outcome, r.outcome), attention = coalesce(v.attention, r.attention),
+      catalog_item_id = case when v.outcome is null then r.catalog_item_id else v.catalog_item_id end,
+      tenant_catalog_item_id =
+        case when v.outcome is null then r.tenant_catalog_item_id else v.tenant_catalog_item_id end,
       updated_at = ${new Date(now).toISOString()}::timestamptz
     from (values ${sql.join(values, sql`, `)}) as v(
-      row_number, result, failure, rate_entry_id, created_item_id)
+      row_number, result, failure, rate_entry_id, created_item_id, outcome, attention,
+      catalog_item_id, tenant_catalog_item_id)
     where r.tenant_id = ${tenantId} and r.job_id = ${jobId} and r.row_number = v.row_number`);
 }
 
