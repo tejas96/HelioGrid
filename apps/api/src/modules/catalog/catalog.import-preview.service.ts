@@ -16,6 +16,7 @@ import {
   countImportMatches,
   effectiveImportCells,
   fixedImportRow,
+  fixesImportRow,
   hasImportPreview,
   type ImportCurrency,
   type ImportProductName,
@@ -23,6 +24,8 @@ import {
   importProductNames,
   mappedRows,
   namesOneOf,
+  takesImportFix,
+  wroteImportRow,
 } from '@heliogrid/domain';
 import { matchImportRows, readImportPrice } from '@heliogrid/domain/server';
 import {
@@ -41,14 +44,15 @@ import {
   CatalogImportRowsRepository,
   type JudgedRow,
   type PreviewRow,
+  type RowVerdict,
   type StoredRow,
 } from './catalog.import-rows.repository';
 import { CatalogService } from './catalog.service';
 import { CatalogSliceRepository } from './catalog.slice.repository';
 import { importJobOf, importNotFound, PRICE_LIST } from './internal/import-job';
-import { catalogOf, matchInput, namingCells } from './internal/import-judging';
+import { catalogOf, matchInput, namingCells, verdictOf } from './internal/import-judging';
 import { readSheetRows } from './internal/spreadsheet';
-import { storedRateWire } from './internal/wire';
+import { reportPricesWire, storedRateWire } from './internal/wire';
 import { admitWrite } from './internal/write-checks';
 
 /**
@@ -123,6 +127,7 @@ export class CatalogImportPreviewService {
     const scope = await this.catalog.scopeOf(tenantId, now);
     const { rows, totalCount } = await this.rows.page(tenantId, id, {
       outcome: query.outcome,
+      result: query.result,
       limit: query.limit,
       offset: (query.page - 1) * query.limit,
       pricedOn: scope.resolve.pricedOn,
@@ -133,7 +138,9 @@ export class CatalogImportPreviewService {
   /**
    * One fix to one row (`T-M01-030e`), under the job's lock: the row's next state, then every row
    * naming its product before or after the fix judged again. A row's verdict depends only on rows
-   * and items of its own product, so these are the verdicts a whole new pass would give.
+   * and items of its own product, so these are the verdicts a whole new pass would give. On a
+   * completed job only a row its run left open takes a fix, and a row it wrote keeps its verdict
+   * (`T-M01-030g` decisions 2, 3).
    */
   async fix(
     tenantId: string,
@@ -146,11 +153,14 @@ export class CatalogImportPreviewService {
     admitWrite(roles);
     const scope = await this.catalog.scopeOf(tenantId, now);
     const fixed = await this.fixes.inLockedJob(tenantId, id, async (job) => {
-      if (job.status !== 'previewed') {
+      if (!takesImportFix(job.status)) {
         throw new ConflictException(`An import that is ${job.status} takes no fix.`);
       }
       const row = await job.row(rowNumber);
       if (row === null) throw new NotFoundException('That row is not in this import.');
+      if (!fixesImportRow(job.status, row.result)) {
+        throw new ConflictException('The run wrote that row into the catalog.');
+      }
       const problem = importFixProblem(row, fix);
       if (problem !== null) {
         throw new ContractException(
@@ -167,6 +177,7 @@ export class CatalogImportPreviewService {
       const verdicts = matchImportRows(group.map(matchInput), catalogOf(named, scope.formats));
       const moved = group.flatMap((member, index) => {
         const judged = { ...member, ...verdictOf(member, verdicts[index]) };
+        if (wroteImportRow(member.result)) return [];
         return member.rowNumber === rowNumber || verdictMoved(member, judged) ? [judged] : [];
       });
       await job.write(moved, now);
@@ -185,8 +196,11 @@ export class CatalogImportPreviewService {
 }
 
 /**
- * The rows naming one of these products, in sheet order, with the fixed row as it now stands —
- * kept by the pass's own identity, since the database only narrowed to rows containing the names.
+ * The rows naming one of these products, with the fixed row as it now stands — kept by the pass's
+ * own identity, since the database only narrowed to rows containing the names. The rows a run
+ * wrote lead, then the rest in sheet order: the pass matches a repeated product once, on its first
+ * row, so an open row naming a product the run already priced asks which is meant, and one import
+ * never prices one product twice across its runs (`T-M01-030g` decision 3).
  */
 function productGroup(
   candidates: readonly StoredRow[],
@@ -196,22 +210,10 @@ function productGroup(
   const naming = candidates.filter(
     (row) => row.rowNumber !== fixed.rowNumber && namesOneOf(effectiveImportCells(row), names),
   );
-  return [...naming, fixed].sort((one, other) => one.rowNumber - other.rowNumber);
-}
-
-type Verdict = Pick<JudgedRow, 'outcome' | 'attention' | 'catalogItemId' | 'tenantCatalogItemId'>;
-
-function verdictOf(
-  row: { readonly rowNumber: number },
-  match: CatalogImportRowMatch | undefined,
-): Verdict {
-  if (match === undefined) throw new Error(`row ${row.rowNumber} has no verdict`);
-  return {
-    outcome: match.outcome,
-    attention: match.outcome === 'needs_attention' ? match.attention : [],
-    catalogItemId: match.outcome === 'price_override' ? match.platformItemId : null,
-    tenantCatalogItemId: match.outcome === 'own_item_price' ? match.ownItemId : null,
-  };
+  const writtenFirst = (row: StoredRow) => (wroteImportRow(row.result) ? 0 : 1);
+  return [...naming, fixed].sort(
+    (one, other) => writtenFirst(one) - writtenFirst(other) || one.rowNumber - other.rowNumber,
+  );
 }
 
 function judgedRow(
@@ -221,7 +223,7 @@ function judgedRow(
   return { rowNumber: row.rowNumber, cells: row.cells, ...verdictOf(row, match) };
 }
 
-function verdictMoved(before: Verdict, after: Verdict): boolean {
+function verdictMoved(before: RowVerdict, after: RowVerdict): boolean {
   return (
     before.outcome !== after.outcome ||
     before.catalogItemId !== after.catalogItemId ||
@@ -234,7 +236,7 @@ function verdictMoved(before: Verdict, after: Verdict): boolean {
  * Compared field by field, never as JSON text: a stored attention comes back from `jsonb` with its
  * keys reordered, so equal attention would read as changed.
  */
-function sameAttention(one: Verdict['attention'], other: Verdict['attention']): boolean {
+function sameAttention(one: RowVerdict['attention'], other: RowVerdict['attention']): boolean {
   return (
     one.length === other.length &&
     one.every((item, index) => {
@@ -270,5 +272,6 @@ function rowWire(row: PreviewRow, currency: ImportCurrency): CatalogImportRowWir
     catalogPrice: row.rate === null ? null : storedRateWire(row.rate, currency.minorUnitDigits),
     result: row.result,
     failure: row.failure,
+    ...reportPricesWire(row, currency.minorUnitDigits),
   };
 }

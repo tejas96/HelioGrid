@@ -180,9 +180,12 @@ export const CATALOG_IMPORT_WRITTEN_OUTCOMES = [
  */
 export const CATALOG_IMPORT_RUN_BATCH_ROWS = 100;
 
-/** A run starts from the preview only; a fix and a new mapping end there (`T-M01-030f` decision 8). */
+/**
+ * A run starts from the preview, and again from a completed job whose open rows were fixed
+ * (`T-M01-030g` decision 5): a second run writes only the rows that now write.
+ */
 export function takesImportRun(state: CatalogImportState): boolean {
-  return state === 'previewed';
+  return state === 'previewed' || state === 'completed';
 }
 
 /** Whether the job has been run: it is running, or has finished and keeps its results. */
@@ -223,4 +226,46 @@ export function countImportResults(byResult: CatalogImportResultCounts): Catalog
     leftOut: byResult.left_out ?? 0,
     failed: byResult.failed ?? 0,
   };
+}
+
+/**
+ * The results a run leaves open — the rows *Fix the N rows* takes back into the preview
+ * (`SCR-M01-17` decision 32): left out unchanged, or failed with its reason.
+ */
+export const CATALOG_IMPORT_OPEN_RESULTS = [
+  'left_out',
+  'failed',
+] as const satisfies readonly CatalogImportRowResult[];
+
+/** The results of a row the run wrote into the catalog: the rest are open. */
+export const CATALOG_IMPORT_WRITTEN_RESULTS = [
+  'price_applied',
+  'product_created',
+] as const satisfies readonly CatalogImportRowResult[];
+
+/** Whether the run wrote the row into the catalog: a price applied, or a product created. */
+export function wroteImportRow(result: CatalogImportRowResult | null): boolean {
+  return CATALOG_IMPORT_WRITTEN_RESULTS.some((written) => written === result);
+}
+
+/** Where a job takes a fix: its preview, and once completed, the rows its run left open. */
+export function takesImportFix(state: CatalogImportState): boolean {
+  return state === 'previewed' || state === 'completed';
+}
+
+/**
+ * Whether one row takes a fix: any row of a preview; of a completed job, only a row the run left
+ * open. A row the run wrote is never judged again into a write (`T-M01-030g` decision 2).
+ */
+export function fixesImportRow(
+  state: CatalogImportState,
+  result: CatalogImportRowResult | null,
+): boolean {
+  if (state === 'previewed') return true;
+  return state === 'completed' && CATALOG_IMPORT_OPEN_RESULTS.some((open) => open === result);
+}
+
+/** The N of the report's *Fix the N rows*: every row the run left open. */
+export function importRowsToFix(results: CatalogImportResults): number {
+  return results.leftOut + results.failed;
 }

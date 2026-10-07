@@ -26,6 +26,7 @@ export {
   CATALOG_IMPORT_ENTRY_POINTS,
   CATALOG_IMPORT_FILE_NAME_MAX,
   CATALOG_IMPORT_MAPPABLE_STATES,
+  CATALOG_IMPORT_OPEN_RESULTS,
   CATALOG_IMPORT_ROW_FAILURES,
   CATALOG_IMPORT_ROW_NUMBER_MAX,
   CATALOG_IMPORT_ROW_OUTCOMES,
@@ -35,13 +36,18 @@ export {
   CATALOG_IMPORT_UNPACKED_LIMIT_BYTES,
   CATALOG_IMPORT_UNREADABLE_REASONS,
   CATALOG_IMPORT_WRITTEN_OUTCOMES,
+  CATALOG_IMPORT_WRITTEN_RESULTS,
   countImportMatches,
   countImportResults,
+  fixesImportRow,
   hasImportPreview,
   hasImportRun,
+  importRowsToFix,
   importRunProgress,
+  takesImportFix,
   takesImportMapping,
   takesImportRun,
+  wroteImportRow,
 } from './import';
 export type { ImportCurrency } from './import-cells';
 export type { CatalogImportCells, CatalogImportField, ColumnGuess } from './import-columns';

@@ -5,6 +5,7 @@ import type {
 } from '@heliogrid/contracts';
 import { basisPointsToPercent, type ResolvedCatalogItem } from '@heliogrid/domain';
 import { minorUnitsOfDecimal, minorUnitsToDecimal } from '@heliogrid/domain/server';
+import type { PreviewRow } from '../catalog.import-rows.repository';
 import type { ItemRate, RecordedRate } from '../catalog.rates.repository';
 
 /** Whether this reader sees money, and how many digits the tenant's currency carries. */
@@ -63,4 +64,21 @@ export function storedRateWire(
 /** The column's decimal text scaled to the currency's digits, as every wire amount is. */
 function scaledAmount(stored: string, minorUnitDigits: number): string {
   return minorUnitsToDecimal(minorUnitsOfDecimal(stored, minorUnitDigits), minorUnitDigits);
+}
+
+/**
+ * The report's two prices for one row (`T-M01-030g`): a row the run wrote shows the rate in force
+ * before its write and the rate it wrote; any other row of a run, the rate its item holds now and
+ * none applied — it is unchanged. A row not yet run shows neither.
+ */
+export function reportPricesWire(
+  row: PreviewRow,
+  minorUnitDigits: number,
+): Pick<CatalogImportRowWire, 'priceBefore' | 'priceApplied'> {
+  const priced = (rate: ItemRate | null) =>
+    rate === null ? null : storedRateWire(rate, minorUnitDigits);
+  if (row.written !== null) {
+    return { priceBefore: priced(row.written.before), priceApplied: priced(row.written.applied) };
+  }
+  return { priceBefore: row.result === null ? null : priced(row.rate), priceApplied: null };
 }

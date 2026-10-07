@@ -1,7 +1,8 @@
 /*
- * What the import's row fix refuses (`T-M01-030e` AC-8, AC-12), against REAL state: an answer to a
- * row that asks none, a job a new mapping is matching again, a role without the outright manage
- * grant, and another company's job or a row the sheet does not hold — each with nothing written.
+ * What the import's row fix refuses (`T-M01-030e` AC-8, AC-12; `T-M01-030g` AC-14), against REAL
+ * state: an answer to a row that asks none, a job a new mapping is matching again, a row a
+ * completed run wrote, a role without the outright manage grant, and another company's job or a
+ * row the sheet does not hold — each with nothing written.
  */
 import type { CatalogImportRowFixWrite, RoleSet } from '@heliogrid/contracts';
 import { catalogImportRow, catalogItem } from '@heliogrid/db';
@@ -26,7 +27,13 @@ import {
   unseed,
 } from '../support/fixture';
 import { aRecordingTemporal } from '../support/temporal';
-import { aPreviewOf, PRICE_COLUMNS } from './import-preview-support';
+import {
+  A_NEW_PANEL,
+  aPreviewOf,
+  importRunServiceOf,
+  PRICE_COLUMNS,
+  runEveryBatch,
+} from './import-preview-support';
 import {
   aPlatformItem,
   aRunTag,
@@ -124,6 +131,19 @@ describe.skipIf(skip)('refusing an import row fix, against a migrated database',
     await expect(fix(jobId, ROW.first, { leaveOut: true })).rejects.toBeInstanceOf(
       ConflictException,
     );
+  });
+
+  it('refuses a fix to a row a completed run wrote, and changes nothing', async () => {
+    const jobId = await aPreview([`Written ${run},W-1,5000,${A_NEW_PANEL}`]);
+    const runs = importRunServiceOf(pools, files, aRecordingTemporal());
+    await runs.run(here.tenantId, OWNER, jobId, act());
+    await runEveryBatch(runs, { tenantId: here.tenantId, jobId });
+    const before = await storedRows(jobId);
+
+    await expect(fix(jobId, ROW.first, { leaveOut: true })).rejects.toBeInstanceOf(
+      ConflictException,
+    );
+    expect(await storedRows(jobId)).toEqual(before);
   });
 
   it('refuses Finance the fix and changes nothing', async () => {

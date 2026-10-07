@@ -1,13 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import {
+  CATALOG_IMPORT_ROW_RESULTS,
   CATALOG_IMPORT_STATES,
   countImportMatches,
   countImportResults,
+  fixesImportRow,
   hasImportPreview,
   hasImportRun,
+  importRowsToFix,
   importRunProgress,
+  takesImportFix,
   takesImportMapping,
   takesImportRun,
+  wroteImportRow,
 } from '../../src/catalog/import';
 
 describe('the job states a mapping and a preview belong to', () => {
@@ -15,6 +20,7 @@ describe('the job states a mapping and a preview belong to', () => {
   const previewed = ['previewed', 'running', 'completed'];
 
   const ran = ['running', 'completed'];
+  const runnable = ['previewed', 'completed'];
 
   it.each(CATALOG_IMPORT_STATES)('%s', (state) => {
     expect([
@@ -22,11 +28,13 @@ describe('the job states a mapping and a preview belong to', () => {
       hasImportPreview(state),
       takesImportRun(state),
       hasImportRun(state),
+      takesImportFix(state),
     ]).toEqual([
       taking.includes(state),
       previewed.includes(state),
-      state === 'previewed',
+      runnable.includes(state),
       ran.includes(state),
+      runnable.includes(state),
     ]);
   });
 });
@@ -72,5 +80,34 @@ describe("countImportMatches — the preview's figures", () => {
     ],
   ] as const)('%s', (_, byOutcome, counts) => {
     expect(countImportMatches(byOutcome)).toEqual(counts);
+  });
+});
+
+describe('fixesImportRow and wroteImportRow — which rows *Fix the N rows* takes back', () => {
+  const open = ['left_out', 'failed'];
+  const written = ['price_applied', 'product_created'];
+
+  it.each([null, ...CATALOG_IMPORT_ROW_RESULTS])('a row whose result is %s', (result) => {
+    expect([
+      fixesImportRow('previewed', result),
+      fixesImportRow('completed', result),
+      fixesImportRow('running', result),
+      wroteImportRow(result),
+    ]).toEqual([
+      true,
+      result !== null && open.includes(result),
+      false,
+      written.includes(result ?? ''),
+    ]);
+  });
+});
+
+describe("importRowsToFix — the N of the report's act", () => {
+  it.each([
+    ['nothing open', { priceApplied: 3, productCreated: 1, leftOut: 0, failed: 0 }, 0],
+    ['left out only', { priceApplied: 0, productCreated: 0, leftOut: 7, failed: 0 }, 7],
+    ['left out and failed', { priceApplied: 405, productCreated: 0, leftOut: 7, failed: 2 }, 9],
+  ] as const)('%s', (_, results, n) => {
+    expect(importRowsToFix(results)).toBe(n);
   });
 });

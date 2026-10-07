@@ -11421,7 +11421,7 @@
     },
     "/catalog/imports/{id}/rows": {
       "get": {
-        "summary": "A page of the preview grid by sheet row number, narrowed to one outcome when asked",
+        "summary": "A page of the preview grid, or of the report, by sheet row number — narrowed to one outcome or one result when asked",
         "tags": [
           "catalogImport"
         ],
@@ -11465,6 +11465,19 @@
                 "new_item",
                 "needs_attention",
                 "left_out"
+              ]
+            }
+          },
+          {
+            "name": "result",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "price_applied",
+                "product_created",
+                "left_out",
+                "failed"
               ]
             }
           }
@@ -11629,6 +11642,70 @@
                               "not_applied"
                             ],
                             "nullable": true
+                          },
+                          "priceBefore": {
+                            "type": "object",
+                            "properties": {
+                              "source": {
+                                "type": "string",
+                                "enum": [
+                                  "override",
+                                  "own_item"
+                                ]
+                              },
+                              "amount": {
+                                "type": "string",
+                                "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                              },
+                              "currencyCode": {
+                                "type": "string",
+                                "minLength": 3,
+                                "maxLength": 3
+                              },
+                              "effectiveOn": {
+                                "type": "string",
+                                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                              }
+                            },
+                            "required": [
+                              "source",
+                              "amount",
+                              "currencyCode",
+                              "effectiveOn"
+                            ],
+                            "nullable": true
+                          },
+                          "priceApplied": {
+                            "type": "object",
+                            "properties": {
+                              "source": {
+                                "type": "string",
+                                "enum": [
+                                  "override",
+                                  "own_item"
+                                ]
+                              },
+                              "amount": {
+                                "type": "string",
+                                "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                              },
+                              "currencyCode": {
+                                "type": "string",
+                                "minLength": 3,
+                                "maxLength": 3
+                              },
+                              "effectiveOn": {
+                                "type": "string",
+                                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                              }
+                            },
+                            "required": [
+                              "source",
+                              "amount",
+                              "currencyCode",
+                              "effectiveOn"
+                            ],
+                            "nullable": true
                           }
                         },
                         "required": [
@@ -11643,7 +11720,9 @@
                           "filePrice",
                           "catalogPrice",
                           "result",
-                          "failure"
+                          "failure",
+                          "priceBefore",
+                          "priceApplied"
                         ]
                       }
                     },
@@ -11896,7 +11975,7 @@
     },
     "/catalog/imports/{id}/rows/{rowNumber}": {
       "put": {
-        "summary": "Fix one row of the preview — its product’s rows are judged again and the counts move",
+        "summary": "Fix one row of the preview, or a row a completed run left open — its product’s rows are judged again and the counts move",
         "tags": [
           "catalogImport"
         ],
@@ -12111,6 +12190,70 @@
                               "not_applied"
                             ],
                             "nullable": true
+                          },
+                          "priceBefore": {
+                            "type": "object",
+                            "properties": {
+                              "source": {
+                                "type": "string",
+                                "enum": [
+                                  "override",
+                                  "own_item"
+                                ]
+                              },
+                              "amount": {
+                                "type": "string",
+                                "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                              },
+                              "currencyCode": {
+                                "type": "string",
+                                "minLength": 3,
+                                "maxLength": 3
+                              },
+                              "effectiveOn": {
+                                "type": "string",
+                                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                              }
+                            },
+                            "required": [
+                              "source",
+                              "amount",
+                              "currencyCode",
+                              "effectiveOn"
+                            ],
+                            "nullable": true
+                          },
+                          "priceApplied": {
+                            "type": "object",
+                            "properties": {
+                              "source": {
+                                "type": "string",
+                                "enum": [
+                                  "override",
+                                  "own_item"
+                                ]
+                              },
+                              "amount": {
+                                "type": "string",
+                                "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                              },
+                              "currencyCode": {
+                                "type": "string",
+                                "minLength": 3,
+                                "maxLength": 3
+                              },
+                              "effectiveOn": {
+                                "type": "string",
+                                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                              }
+                            },
+                            "required": [
+                              "source",
+                              "amount",
+                              "currencyCode",
+                              "effectiveOn"
+                            ],
+                            "nullable": true
                           }
                         },
                         "required": [
@@ -12125,7 +12268,9 @@
                           "filePrice",
                           "catalogPrice",
                           "result",
-                          "failure"
+                          "failure",
+                          "priceBefore",
+                          "priceApplied"
                         ]
                       }
                     },
@@ -12461,7 +12606,7 @@
     },
     "/catalog/imports/{id}/run": {
       "post": {
-        "summary": "Import the previewed rows — the run writes them in the background and the job is polled; a job already run answers as it stands",
+        "summary": "Import the previewed rows, or a completed job’s fixed open rows — the run writes them in the background and the job is polled; a job with nothing to write answers as it stands",
         "tags": [
           "catalogImport"
         ],

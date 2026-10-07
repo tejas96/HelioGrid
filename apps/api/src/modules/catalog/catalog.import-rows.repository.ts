@@ -19,6 +19,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { and, asc, eq, sql } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { type ItemRate, itemRatesInForce, type RatedItem } from './catalog.rates.repository';
+import { type WrittenRate, writtenRates } from './catalog.written-rates.repository';
 
 /** One row as the matching pass judged it, ready to store. */
 export interface JudgedRow {
@@ -30,14 +31,25 @@ export interface JudgedRow {
   readonly tenantCatalogItemId: string | null;
 }
 
-/** One stored row as the preview grid reads it, with the rate its matched item holds today. */
+/** A row's verdict, as the matching pass stores it and a fix or a failed write replaces it. */
+export type RowVerdict = Pick<
+  JudgedRow,
+  'outcome' | 'attention' | 'catalogItemId' | 'tenantCatalogItemId'
+>;
+
+/**
+ * One stored row as the preview grid and the report read it: the rate its matched item holds
+ * today, and once the run wrote it, the entry it wrote and the one before (`T-M01-030g`).
+ */
 export interface PreviewRow extends JudgedRow {
   readonly fix: CatalogImportCells;
   readonly leftOut: boolean;
   readonly answer: CatalogImportConflictAnswer | null;
   readonly result: CatalogImportRowResult | null;
   readonly failure: CatalogImportRowFailure | null;
+  readonly rateEntryId: string | null;
   readonly rate: ItemRate | null;
+  readonly written: WrittenRate | null;
 }
 
 /** Enough rows per statement that a long sheet takes few round trips, few enough for the bind limit. */
@@ -56,6 +68,7 @@ export const previewColumns = {
   tenantCatalogItemId: catalogImportRow.tenantCatalogItemId,
   result: catalogImportRow.result,
   failure: catalogImportRow.failure,
+  rateEntryId: catalogImportRow.rateEntryId,
 };
 
 /** The import's rows on the runtime pool, inside the tenant transaction (`T-M01-030d`). */
@@ -126,14 +139,16 @@ export class CatalogImportRowsRepository {
   }
 
   /**
-   * A page of the grid by sheet row number, narrowed to one outcome when asked, each matched row
-   * with the rate its item holds on `pricedOn` — read once for the page, never per row.
+   * A page of the grid by sheet row number, narrowed to one outcome or one result when asked, each
+   * matched row with the rate its item holds on `pricedOn` and each written row with its entries —
+   * read once for the page, never per row.
    */
   async page(
     tenantId: string,
     jobId: string,
     page: {
       readonly outcome: CatalogImportRowOutcome | undefined;
+      readonly result: CatalogImportRowResult | undefined;
       readonly limit: number;
       readonly offset: number;
       readonly pricedOn: string;
@@ -144,6 +159,7 @@ export class CatalogImportRowsRepository {
         eq(catalogImportRow.tenantId, tenantId),
         eq(catalogImportRow.jobId, jobId),
         page.outcome === undefined ? undefined : eq(catalogImportRow.outcome, page.outcome),
+        page.result === undefined ? undefined : eq(catalogImportRow.result, page.result),
       );
       const rows = await tx
         .select(previewColumns)
@@ -198,10 +214,13 @@ export async function lockedJob(tx: TenantScopedDb, tenantId: string, jobId: str
   return job ?? null;
 }
 
-/** One stored row, without the rate its item holds today. */
-export type StoredRow = Omit<PreviewRow, 'rate'>;
+/** One stored row, without the rates read beside it. */
+export type StoredRow = Omit<PreviewRow, 'rate' | 'written'>;
 
-/** Each row with the rate its matched item holds on `pricedOn`, read once for all of them. */
+/**
+ * Each row with the rate its matched item holds on `pricedOn`, and each written row with the
+ * entry it wrote and the one before it — read once for all of them.
+ */
 export async function withRates(
   tx: TenantScopedDb,
   tenantId: string,
@@ -215,8 +234,17 @@ export async function withRates(
     return [];
   });
   const rates = await itemRatesInForce(tx, tenantId, matched, pricedOn);
+  const written = await writtenRates(
+    tx,
+    tenantId,
+    rows.flatMap((row) => (row.rateEntryId === null ? [] : [row.rateEntryId])),
+  );
   return rows.map((row) => {
     const itemId = row.catalogItemId ?? row.tenantCatalogItemId;
-    return { ...row, rate: itemId === null ? null : (rates.get(itemId) ?? null) };
+    return {
+      ...row,
+      rate: itemId === null ? null : (rates.get(itemId) ?? null),
+      written: row.rateEntryId === null ? null : (written.get(row.rateEntryId) ?? null),
+    };
   });
 }

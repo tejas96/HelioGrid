@@ -43,7 +43,11 @@ const importCellsSchema = z.record(z.string(), z.string());
  * One row of the preview grid: the cells as the file wrote them, the person's fix over them, the
  * pass's verdict, the price the file asks and the price the catalog holds now (`SCR-M01-17`
  * decision 7) — null when the cell holds no readable price, or the item no rate. Once the import
- * has run, what the run did with the row, and why when it failed (`T-M01-030f`).
+ * has run, what the run did with the row, and why when it failed (`T-M01-030f`); and the report's
+ * two prices (`T-M01-030g`): on a row the run wrote, the rate in force just before its write and
+ * the rate it wrote; on any other row, the rate its matched item holds now and none applied. Both
+ * are null on a row not yet run; `priceBefore` is null where the item had no price, or where the
+ * row names no item (`match` null — a needs-attention row stores none, `deferred.md` D129).
  */
 export const catalogImportRowSchema = z.object({
   rowNumber: z.number().int().positive(),
@@ -63,11 +67,14 @@ export const catalogImportRowSchema = z.object({
   catalogPrice: resolvedRateSchema.nullable(),
   result: extensibleEnum(CATALOG_IMPORT_ROW_RESULTS).nullable(),
   failure: extensibleEnum(CATALOG_IMPORT_ROW_FAILURES).nullable(),
+  priceBefore: resolvedRateSchema.nullable(),
+  priceApplied: resolvedRateSchema.nullable(),
 });
 export type CatalogImportRowWire = z.infer<typeof catalogImportRowSchema>;
 
 export const catalogImportRowsQuerySchema = paginationQuerySchema.extend({
   outcome: catalogImportRowOutcomeSchema.optional(),
+  result: catalogImportRowResultSchema.optional(),
 });
 export type CatalogImportRowsQuery = z.infer<typeof catalogImportRowsQuerySchema>;
 

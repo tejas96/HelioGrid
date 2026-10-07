@@ -1,10 +1,11 @@
 import {
+  type CatalogImportRowMatch,
   catalogSpecSchema,
   effectiveImportCells,
   type ImportCatalog,
   type ImportCurrency,
 } from '@heliogrid/domain';
-import type { StoredRow } from '../catalog.import-rows.repository';
+import type { RowVerdict, StoredRow } from '../catalog.import-rows.repository';
 import type { NamedItem } from '../catalog.slice.repository';
 
 /*
@@ -34,5 +35,19 @@ export function catalogOf(named: readonly NamedItem[], currency: ImportCurrency)
     platformItems: named.filter((row) => row.source === 'platform_item').map(entryOf),
     ownItems: named.filter((row) => row.source === 'own_item').map(entryOf),
     currency,
+  };
+}
+
+/** What a row's match stores: its outcome, why it needs attention, and the item it names. */
+export function verdictOf(
+  row: { readonly rowNumber: number },
+  match: CatalogImportRowMatch | undefined,
+): RowVerdict {
+  if (match === undefined) throw new Error(`row ${row.rowNumber} has no verdict`);
+  return {
+    outcome: match.outcome,
+    attention: match.outcome === 'needs_attention' ? match.attention : [],
+    catalogItemId: match.outcome === 'price_override' ? match.platformItemId : null,
+    tenantCatalogItemId: match.outcome === 'own_item_price' ? match.ownItemId : null,
   };
 }
