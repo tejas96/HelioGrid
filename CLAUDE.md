@@ -123,7 +123,7 @@ allowed imports; §4 decides where a new file goes. Run §4 before creating one.
 | `.qa/` | git-ignored: `api.log`, `web.log`, `metro.log` — the development logs the launch configurations append to and the e2e suite reads. |
 | `.ops/` | the owner's private infra record, git-ignored: every external account, project and client id, what is still owed, and each environment's values (`dev.env`, `prod.env`). A console change updates it in the same sitting. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
-| the Claude Design project | NOT in the repo: each screen's board and decisions record — the pixel-perfect reference. A task's `DESIGN:` line links it; read it with `DesignSync`; keep no copy on disk. A studio screen (`ported from the POC`) has none. |
+| the Claude Design project | NOT in the repo: each screen's board and decisions record — the pixel-perfect reference. A task's `DESIGN:` line links it; read the record with `DesignSync` and view the board in the browser pane; keep no copy in the repo — frame screenshots live only in the session's scratchpad. A studio screen (`ported from the POC`) has none. |
 
 Import a package only through an entry its `package.json` `exports` declares. **Never invent a folder**: every tree is a closed set, and a new category is a
 plan-time decision. `docs/README.md` maps every document.

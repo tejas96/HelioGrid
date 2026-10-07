@@ -30,7 +30,7 @@ For every row, in this order:
    from the API log for YOUR number only, never guessed.
 3. **Measure** from the tree: the required words and states are present; every control the row
    names is at least 44 points on both axes; nothing the row names is clipped or off screen; a
-   screenshot is taken for the row and judged against the design record the row cites.
+   screenshot is taken for the row and judged against the board frame it carries (below).
 4. **Observe** the words, the state and the destination against the row's expected result.
 5. **Report** one line per row in the shape below.
 

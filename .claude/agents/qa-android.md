@@ -32,7 +32,7 @@ For every row, in this order:
    window and moves every control. A sign-in code is read from the API log for YOUR number only.
 3. **Measure** from the tree: the required words and states are present; every control the row
    names is at least 44 dp on both axes (bounds divided by the device's density); nothing the row
-   names is clipped or off screen; the screenshot is judged against the design record the row cites.
+   names is clipped or off screen; the screenshot is judged against the board frame the row carries (below).
 4. **Observe** the words, the state and the destination against the row's expected result.
 5. **Report** one line per row in the shape below.
 
