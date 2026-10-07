@@ -3367,8 +3367,8 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | part | delivers | AC | depends on | status |
 |---|---|---|---|---|
 | a | the four changed token files and the census pulled; every field drawn the open page's way (fill, 54, radius 16, inset rings, the field type sizes); every built screen checked against its board | AC-1, AC-2, AC-3, AC-4 | the design system's field type tokens (the prerequisite in `#### Part a · RFC`) | shipped |
-| b | the phone header (company chip) and the floating pill footer, `PhoneScreen`; the shell and home redrawn on them | its own RFC | a | open |
-| c | tiles (`Card`, `RecordCard`, `TileActions`), the search pill and filter button, kind chips, flat `Accordion`, wherever built; a disabled control in a tile equals the tile's `--canvas-sunken` ground until tiles take `--fill` (part a review) — close it here, and `F7-15`'s "until part c" lines; the secondary button on the page drawn as the design system's `Button` draws it — `--surface` with `--e2`, not the grey well — every secondary on every screen, with `F7-15` amended (owner ruling D14 B, `T-M01-035`'s side-by-side review, 2026-10-07); `Banner`'s `actionBelow` and `onFormChange` ported on both halves, with the held-back `Banner.d.ts.txt` and `adherence.oxlintrc.json` pulled (D31, deferred review 2026-10-08); `RichText`'s frame drawn by `FieldBox` (D60); the phone `Menu` and `Sheet` backdrop named or hidden for a screen reader (D82) | its own RFC | a | open |
+| b | the phone header (company chip) and the floating pill footer, `PhoneScreen`; the shell and home redrawn on them; the pill's labels capped to their slots at the largest text size (D83) | its own RFC | a | open |
+| c | tiles (`Card`, `RecordCard`, `TileActions`), the search pill and filter button, kind chips, flat `Accordion`, wherever built; a disabled control in a tile equals the tile's `--canvas-sunken` ground until tiles take `--fill` (part a review) — close it here, and `F7-15`'s "until part c" lines; the secondary button on the page drawn as the design system's `Button` draws it — `--surface` with `--e2`, not the grey well — every secondary on every screen, with `F7-15` amended (owner ruling D14 B, `T-M01-035`'s side-by-side review, 2026-10-07); `Banner`'s `actionBelow` and `onFormChange` ported on both halves, with the held-back `Banner.d.ts.txt` and `adherence.oxlintrc.json` pulled (D31, deferred review 2026-10-08); `RichText`'s frame drawn by `FieldBox` (D60); the phone `Menu` and `Sheet` backdrop named or hidden for a screen reader (D82); a loading `Button` keeps its name for assistive technology (D84); `Modal`'s body takes its bottom padding at 375 (D88); one visually-hidden option replaces the copies (D93); `NotificationCard` takes the tile tokens part a pulled (D94); the phone `Sheet`'s close target, title wrap, `Badge` and close label (D96); the design system's `PhoneField` reads the dial code from its market and its typing is pulled (D130); a placeholder takes `--text-tertiary` (D131, `F7-15`); the overline and mono take the body's line height, 1.55 (D136) — each design-system change by the owner's paste first | its own RFC | a | open |
 
 #### Part a · RFC
 
@@ -3542,12 +3542,13 @@ Recorded at the step's start (2026-10-07), before anything ran. Branch `feat/T-F
 **Status:** planned
 **Why:** A handler can throw a status its contract never declares, which response validation turns into an opaque 500 (D18); a route's `:param` need not declare its shape, so raw text reaches the database as a 500 (D29); and no route declares the shared 400, 403 and 500 the filter and guard really send, so the OpenAPI spec and the typed client understate every route (D30).
 **PRD rows:** none of its own — `CLAUDE.md` §8, every boundary has a contract.
-**Chosen by the owner** (deferred review, 2026-10-08): D71 rides with it; (a) a Biome plugin for D18; a unit test over the contract files for D29; the three shared statuses declared once, on every route, for D30.
+**Chosen by the owner** (deferred review, 2026-10-08): D71 and D127 ride with it; (a) a Biome plugin for D18; a unit test over the contract files for D29; the three shared statuses declared once, on every route, for D30.
 **DONE WHEN:**
 - A Biome plugin refuses `throw new *Exception` inside a `tsRestHandler` block in `apps/api/`, with its `.claude/protections.md` row. → proof: `pnpm lint` green, and red on a planted throw.
 - Every `:segment` in a contract path has a matching `pathParams` key. → proof: a unit test over `packages/contracts/src/`, red on a planted route.
 - Every route's spec carries the shared 400 `VALIDATION_FAILED`, 403 and 500 `INTERNAL` from one declaration. → proof: `check:openapi` and a contract test.
 - The api guard's `RouteAccess` stays the guard's own type (owner ruling, deferred review 2026-10-08, D71); its `biome-ignore` cites that ruling. → proof: `pnpm lint`.
+- A contract route's `body`, `query` or `pathParams` is never a `z.union` or `.or()`, so a refusal names its key (D127). → proof: a Biome plugin, red on a planted line, with its protections row.
 
 ### T-FPLAT-084 · Every colour pair the components draw clears its contrast floor
 **Type:** policy · **Tier:** P0 (`F7-11`, `N4`)
@@ -3579,4 +3580,14 @@ Recorded at the step's start (2026-10-07), before anything ran. Branch `feat/T-F
 **Depends on:** `T-FPLAT-082` (part c), so the baseline is taken on the open page.
 **DONE WHEN:**
 - Playwright `toHaveScreenshot` holds every web route at 375 and 1536; the images are committed; a run fails when one differs; a baseline changes only with the owner's yes. → proof: the e2e lane green, and red on a planted one-token change to a shared part.
+
+### T-FPLAT-087 · Dates and digits in the reader's language
+**Type:** policy · **Tier:** P1 (`F3-21`, `F3-22`)
+**Status:** planned
+**Why:** Every date prints its words in the market pack's locale, not the reader's language — "THURSDAY · 1 OCT 2026" in Hindi and Marathi (D97); and Marathi mixes digit systems, an ICU plural's `#` in Devanagari beside a plain `{count}` in Latin, against `F3-21` (D98).
+**PRD rows:** `F3-21` (Latin digits in every language); `F3-22`, amended 2026-10-08 (a date's words follow the reader's language).
+**Chosen by the owner** (deferred review, 2026-10-08).
+**DONE WHEN:**
+- A date's month and weekday names follow the reader's language through `useFormat`; the order and style stay the pack's. → proof: unit tests of the date formatter in English, Hindi and Marathi; QA of the centre and home in Hindi and Marathi.
+- Every number renders in Latin digits in every language, an ICU `#` and a plain `{n}` alike. → proof: a unit test of the i18n runtime over a plural and a count in Marathi.
 

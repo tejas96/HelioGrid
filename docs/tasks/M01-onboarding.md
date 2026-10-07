@@ -633,7 +633,7 @@ Since the start: the browser pane, `started_by_task` (tab `seed`, the board for 
 **Why:** The door blames the server for the person's own connection (D1), a boot during a deploy or a timeout signs a signed-in person out (D7), a person whose access was removed lands on the door with no reason (D6), the company step says *nothing was created* after a request that got no answer (D39), the web has no offline state and loads forever (D80), both apps render API failures each their own way (D68), and the phone's dev build shows an unread debugger warning (D78).
 **PRD rows:** `F8-36` (a failure says what happened, plainly); `M01-07` (sessions end only by their own rules).
 **DESIGN:** SCR-M01-01 → the existing board; the access-removed frame is drawn first (D6, the owner's prompt from the deferred review of 2026-10-08).
-**Chosen by the owner** (deferred review, 2026-10-08): D1 and D7 as one task; D6, D39, D68, D78 and D80 ride with it.
+**Chosen by the owner** (deferred review, 2026-10-08): D1 and D7 as one task; D6, D39, D68, D78, D80, D87, D133, D139 and D142 ride with it — the RFC splits it into parts under the 30-file rule.
 **Depends on:** `T-M01-038`.
 **DONE WHEN:**
 - A request that got no answer reads as *could not be reached*, never *something on our side failed*; a server refusal keeps its own words. → proof: unit test of `loginFrame`; QA web and phone with the network off.
@@ -643,6 +643,9 @@ Since the start: the browser pane, `started_by_task` (tab `seed`, the board for 
 - With no connection the web shows the shared no-connection screen instead of loading forever. → proof: a Playwright case that drops the network.
 - Both apps render an API failure through one `ApiErrorText` in `packages/ui` (one `.types.ts`, words from `packages/i18n`). → proof: typecheck; QA web and phone.
 - The phone dev build's debugger warning is read and its source fixed, or recorded with why it stays. → proof: QA on a cold start.
+- A path no route serves shows a drawn not-found frame in the reader's language, with a way home (D87). → proof: e2e web; side-by-side with the board.
+- `SCR-M01-02`'s frames meet the words law after the board's copy pass, and the app's words follow (D133). → proof: the design check's word inventory; side-by-side.
+- `m-google-failed` is drawn and measured in Hindi and Marathi (D139), and four small web-door differences are ruled and built — the board wins unless a law says otherwise (D142). → proof: side-by-side, web and phone.
 
 ### T-M01-040 · Signing in returns the person to where they were going
 **Type:** screen · **Tier:** P1 (`M01-61`)
