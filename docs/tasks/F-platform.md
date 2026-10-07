@@ -3368,7 +3368,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 |---|---|---|---|---|
 | a | the four changed token files and the census pulled; every field drawn the open page's way (fill, 54, radius 16, inset rings, the field type sizes); every built screen checked against its board | AC-1, AC-2, AC-3, AC-4 | the design system's field type tokens (the prerequisite in `#### Part a · RFC`) | shipped |
 | b | the phone header (company chip) and the floating pill footer, `PhoneScreen`; the shell and home redrawn on them | its own RFC | a | open |
-| c | tiles (`Card`, `RecordCard`, `TileActions`), the search pill and filter button, kind chips, flat `Accordion`, wherever built; a disabled control in a tile equals the tile's `--canvas-sunken` ground until tiles take `--fill` (part a review) — close it here, and `F7-15`'s "until part c" lines; the secondary button on the page drawn as the design system's `Button` draws it — `--surface` with `--e2`, not the grey well — every secondary on every screen, with `F7-15` amended (owner ruling D14 B, `T-M01-035`'s side-by-side review, 2026-10-07) | its own RFC | a | open |
+| c | tiles (`Card`, `RecordCard`, `TileActions`), the search pill and filter button, kind chips, flat `Accordion`, wherever built; a disabled control in a tile equals the tile's `--canvas-sunken` ground until tiles take `--fill` (part a review) — close it here, and `F7-15`'s "until part c" lines; the secondary button on the page drawn as the design system's `Button` draws it — `--surface` with `--e2`, not the grey well — every secondary on every screen, with `F7-15` amended (owner ruling D14 B, `T-M01-035`'s side-by-side review, 2026-10-07); `Banner`'s `actionBelow` and `onFormChange` ported on both halves, with the held-back `Banner.d.ts.txt` and `adherence.oxlintrc.json` pulled (D31, deferred review 2026-10-08) | its own RFC | a | open |
 
 #### Part a · RFC
 
@@ -3537,12 +3537,34 @@ Recorded at the step's start (2026-10-07), before anything ran. Branch `feat/T-F
 - The label gap was 4px against the design system's 8px and no proof caught it → measured in live QA; no component test holds it yet (said out loud).
 - A packet expected the code boxes at 54 and a disabled ghost to fill; both were the packet's error, not the code's → each packet value is read from the design system's component before the helper runs.
 
-### T-FPLAT-083 · A handler never throws a status its contract does not declare
+### T-FPLAT-083 · A route answers only what its contract declares
 **Type:** policy · **Tier:** P1
 **Status:** planned
-**Why:** A handler can throw a status its contract never declares; response validation turns it into an opaque 500 (D18). `apps/api/CLAUDE.md` states the rule and only review holds it.
+**Why:** A handler can throw a status its contract never declares, which response validation turns into an opaque 500 (D18); a route's `:param` need not declare its shape, so raw text reaches the database as a 500 (D29); and no route declares the shared 400, 403 and 500 the filter and guard really send, so the OpenAPI spec and the typed client understate every route (D30).
 **PRD rows:** none of its own — `CLAUDE.md` §8, every boundary has a contract.
-**Chosen by the owner** (deferred review, 2026-10-08): mechanism (a), a Biome plugin.
+**Chosen by the owner** (deferred review, 2026-10-08): (a) a Biome plugin for D18; a unit test over the contract files for D29; the three shared statuses declared once, on every route, for D30.
 **DONE WHEN:**
 - A Biome plugin refuses `throw new *Exception` inside a `tsRestHandler` block in `apps/api/`, with its `.claude/protections.md` row. → proof: `pnpm lint` green, and red on a planted throw.
+- Every `:segment` in a contract path has a matching `pathParams` key. → proof: a unit test over `packages/contracts/src/`, red on a planted route.
+- Every route's spec carries the shared 400 `VALIDATION_FAILED`, 403 and 500 `INTERNAL` from one declaration. → proof: `check:openapi` and a contract test.
 
+### T-FPLAT-084 · Every colour pair the components draw clears its contrast floor
+**Type:** policy · **Tier:** P0 (`F7-11`, `N4`)
+**Status:** planned
+**Why:** The theme build measures only the pairs declared in `packages/theme/src/contrast.ts`, so a pairing `packages/ui` draws but never declares, or a re-pulled colour, can drop under its floor unseen (D25).
+**PRD rows:** `F7-11`; `N4` of `F7-23`.
+**Chosen by the owner** (deferred review, 2026-10-08).
+**Depends on:** `T-FPLAT-082` (part c).
+**DONE WHEN:**
+- A check — a theme build step or an invariant, never a script — reads every text and mark colour set on a background across `packages/ui`'s CSS and native styles, reports each pair no declared pair covers, and fails one under its role's floor. → proof: the gate green, and red on a planted undeclared pair under the floor.
+
+### T-FPLAT-085 · A repeat is harmless
+**Type:** policy · **Tier:** P1
+**Status:** planned
+**Why:** The invite SMS leaves inside the create transaction, so a failed commit can leave a dead link and a retry sends a second SMS (D36); an accept sent twice answers the second time as a conflict though the join ran (D37); a save of an unchanged value writes a second audit entry and moves the authorization version (D38).
+**PRD rows:** none of its own — `F4` data integrity (one act, one record).
+**Chosen by the owner** (deferred review, 2026-10-08): one task for the three.
+**DONE WHEN:**
+- The invite SMS leaves after the commit, from the worker's outbox, keyed by the invitation id — once, and only for a stored invite. → proof: an api test with a failed commit sends nothing; a retry sends one.
+- A repeat accept by the same person answers as the first did; an invite accepted by another number stays refused. → proof: api test.
+- A replace whose new value equals the stored one writes and records nothing — every settings save and the role write. → proof: api tests, red on a planted second audit entry.
