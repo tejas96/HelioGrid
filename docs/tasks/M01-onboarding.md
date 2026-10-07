@@ -424,7 +424,7 @@ This file covers module M01 — company signup and authentication, team invites 
   · Hindi and Marathi → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Language.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-17-catalog-import-wizard.md`; they are the specification.
 **Data model:** none — reads `catalog_import_job` and `catalog_import_row` authored by `T-M01-030` (migrations 0019 and 0020) and the overrides, SKUs and rate entries the run writes through `T-M01-027` (migration 0015); the uploaded file is the one `file` table's row (no task id yet).
-**Contract:** `packages/contracts/src/catalog-import.ts` — POST /catalog/imports (from an uploaded file id, the entry point, and the file's name and saved date as the device's picker gives them — the step 1 subtitle names no supplier, since no source holds one: `T-M01-030c` decision 8) · GET /catalog/imports (the re-openable reports) · GET /catalog/imports/{id} (the one read the wizard polls) · PUT /catalog/imports/{id}/mapping · PUT /catalog/imports/{id}/rows/{rowNumber} · POST /catalog/imports/{id}/run. Domain read: `CATALOG_IMPORT_STATES`, `CATALOG_IMPORT_ENTRY_POINTS`, the target-field vocabulary of `import-columns.ts`.
+**Contract:** `packages/contracts/src/catalog-import.ts` — POST /catalog/imports (from an uploaded file id, the entry point, and the file's name and saved date as the device's picker gives them — the step 1 subtitle names no supplier, since no source holds one: `T-M01-030c` decision 8) · GET /catalog/imports (the re-openable reports) · GET /catalog/imports/{id} (the one read the wizard polls — its state, mapping and counts) · PUT /catalog/imports/{id}/mapping · GET /catalog/imports/{id}/rows (the preview grid, paged and narrowed by outcome; `T-M01-030d` decision 11) · PUT /catalog/imports/{id}/rows/{rowNumber} · POST /catalog/imports/{id}/run. The matching pass shows a short wait, not a counted "256 of 412 rows" — the run carries the counted progress (owner ruling R1 at `T-M01-030d`; board decision 24 is redrawn to match). Domain read: `CATALOG_IMPORT_STATES`, `CATALOG_IMPORT_ENTRY_POINTS`, the target-field vocabulary of `import-columns.ts`.
 **Depends on:** `T-M01-030` (migrations 0019 and 0020 and the routes; the workflow on `heliogrid-catalog`) · `T-M01-027` (migration 0015) · `T-M01-025` (the guard for `m01.manage_catalog`) · the first `file` slice (the presigned upload the first step needs — no task id yet; the wizard cannot start before it) · `T-M01-015` (the settings entry; onboarding is another).
 **Out of scope:** matching, the async run, idempotency and the report's storage — `T-M01-030`; the tables it writes — `T-M01-027`; the file bytes path — the first file slice; M02's lead import, the same pattern — `T-M02-005`; the outbox and dispatcher — `T-M01-030`, `infra/temporal`; the entry from the add sheet — `T-M01-016`, which lands after this wizard and wires that hand-off itself.
 **DONE WHEN:**
@@ -1604,6 +1604,22 @@ Recorded at the step's start (2026-10-06), before anything ran. Branch `feat/T-M
 
 **Part c, planted reds** — each seen failing by name, then restored: the unpacked bound removed (`spreadsheet.test.ts`, two cases); the zip walked by its stated count; no offset-plus-size check; no count check; no ZIP64 refusal (three cases); no CSV catch; no end-record length check; the event written in its own transaction after the job's (`import-handoff.test.ts`); `admitWrite` removed from the start (`import-handoff.test.ts`).
 
+**Part d, planted reds** — each seen failing by name, then restored: the revision condition removed from `CatalogImportRowsRepository.replace` → *a superseded pass writes nothing, and the newer mapping’s pass writes its rows* (`import-map.test.ts`); `admitWrite` removed from the mapping → *refuses Finance the mapping and changes nothing* (`import-map.test.ts`).
+
+**Part d, at the end** (resource → initial → final):
+- api `8084` → free → started through the `api` launch configuration three times (serverIds `c0171e31…`, `2d2cd21c…`, `d6d4d5d0…` — restarted onto rebuilt packages), stopped; free again, no `tsx watch` left.
+- worker → not running → started twice through the `worker` launch configuration (serverIds `9805f0ce…`, `5a9ee54e…` — the second on the rebuilt bundle), stopped.
+- database routing → `heliogrid_dev` on both → `heliogrid_test` for the tests, the live check and the gate → `heliogrid_dev` on both, the file byte-identical to its start.
+- `heliogrid_test` → migration 0020 applied (twice, the second a no-op). `heliogrid_dev` untouched.
+- Temporal → pre_existing → the `outbox-sweep` schedule the api re-created at boot is deleted and its one waiting run terminated; every `catalogImport` the live check started completed.
+- browser tabs `seed`, `tab-1`, `tab-2` (opened by the previews) → closed. Postgres, object store → pre_existing, untouched. `emulator-5554` → pre_existing, untouched.
+- logs → `.qa/api.log` 2,313,066 → 2,972,622 bytes; kept.
+- `heliogrid_test` keeps QA's jobs (…904's imports, `previewed` and `mapped`) and the platform item's override cleared by a dated absence — nothing purges.
+
+**Part d measurements** — about 230 Main tool calls; helper runs: `qa-api` 4 passes (47.9k, 62.4k, 76.8k, 96.5k tokens — the first blocked by the stale worker bundle, the last for per-call evidence), `reviewer` 4 passes (148.9k, 196.1k, 209.5k, 213.5k — each a continuation; the third a full re-read for the money path), `evaluator` 2 gate runs (37.5k, 49.1k — the first stopped at dependency-cruiser). Main's own tokens are not measured by this session. Planned 26 files and about 1,930 lines for the whole of d; split by the owner to about 22 files and 1,200 lines; built 41 files (1 generated) and about 2,450 authored lines — code about 1,500, tests about 740, docs about 210 — the rulings in the RFC's Delivery size.
+
+**Part d, at the start** (2026-10-07) — branch `feat/T-M01-030d`, cut from `feat/T-M01-030c` `10cd951e` (PR #241, open) by the owner's word — a stacked PR; it rebases onto `origin/main` after #241 merges. web `3002`, api `8084`, Metro `8081`: free. Postgres (`heliogrid-pg-local`), object store (`heliogrid-object-store-local`), Temporal (`heliogrid-temporal`, `heliogrid-temporal-admin`, `heliogrid-temporal-jwks`): pre_existing. No iOS simulator booted; Android `emulator-5554` attached, pre_existing, untouched (an engine part). The browser pane closed. Database routing: `heliogrid_dev` on both `DATABASE_URL` and `DATABASE_ADMIN_URL`. Logs: `.qa/api.log` 2,313,066 bytes · `.qa/metro.log` 14,661 · `.qa/web.log` absent. The api and the worker are `started_by_task` for the live check, through their launch configurations.
+
 #### Plan
 **Summary**
 - **What:** the import job beneath the wizard — a CSV or Excel price list is stored, read, its columns guessed, its rows matched against the catalog, fixed in place, and imported in the background with a kept per-row report. The first product work handed to Temporal: the outbox and its dispatcher land here.
@@ -1710,14 +1726,16 @@ Q3 runs in part a; Q4 in part b; Q6–Q7 in part c; Q8–Q9 in part d. No row to
 | a | the import rules (guess, match, vocabularies) and spreadsheets in the one file table | AC-4, AC-5, AC-7 | `T-M01-031` (stacked) | shipped |
 | b | the handoff — outbox, dispatcher, sweep schedule, the API's activity host | AC-3, AC-6 (outbox) | a | shipped |
 | c | the job starts and reads its file — start, list, read, the read step (`#### Part c · RFC`) | AC-3 (start), AC-6 (job), AC-8 (start, read), AC-10 | b | shipped |
-| d | the mapping, the matching pass and the preview — mapping, row table 0020, row fixes, preview rows; a new mapping during the pass supersedes it (the board's "stops the work", no cancel route) | AC-1 (preview), AC-5, AC-6 (rows), AC-8 (fix) | c | open |
-| e | the run and the report | AC-1 (run), AC-2, AC-3 (run), AC-8 (run), AC-9 | d | open |
+| d | the mapping, the matching pass and the preview reads — mapping, row table 0020, the match step, counts, the rows page; a new mapping during the pass supersedes it (the board's "stops the work", no cancel route) (`#### Part d · RFC`) | AC-1 (preview), AC-5, AC-6 (rows), AC-8 (mapping, rows), AC-11 | c | shipped |
+| e | the row fix — `PUT …/rows/{rowNumber}`, the product-group re-match (`#### Part d · RFC` decision 7) | AC-1 (fix), AC-8 (fix) | d | open |
+| f | the run and the report | AC-1 (run), AC-2, AC-3 (run), AC-8 (run), AC-9 | e | open |
 
 **Part a checklist** — [x] domain import vocabularies · [x] column guess · [x] match rule · [x] file types, `catalog` subject, signature · [x] migration 0017 · [x] file service and lookup · [x] Q1 · [x] Q2 · [x] Q3 · [ ] Q10 (the PR's `quality` lane)
 **Part b checklist** — [x] migration 0018 and schema · [x] workflow contract and queues · [x] activity host · [x] outbox write, dispatcher, sweep · [x] worker sweep workflow · [x] docs · [x] Q4 · [x] Q5 (outbox) · [ ] Q10
 **Part c checklist** — in `#### Part c · RFC` → Delivery size.
-**Part d checklist** — [ ] migration 0020 and schema · [ ] mapping and row-fix routes · [ ] match step · [ ] workflow phase match · [ ] Q5 (rows) · [ ] Q6 · [ ] Q7 (fix) · [ ] Q10
-**Part e checklist** — [ ] run route · [ ] apply activity and keys · [ ] workflow run phase · [ ] Q8 · [ ] Q9 · [ ] Q10
+**Part d checklist** — in `#### Part d · RFC` → Delivery size.
+**Part e checklist** — [ ] row-fix route · [ ] product-group re-match · [ ] AC-1 (fix) · [ ] AC-8 (fix) · [ ] Q10
+**Part f checklist** — [ ] run route · [ ] apply activity and keys · [ ] workflow run phase · [ ] Q8 · [ ] Q9 · [ ] Q10
 
 #### Part b · Plan
 Found at part b's start, each with one reason; the owner chose both open ones on 2026-10-06.
@@ -1927,6 +1945,194 @@ Part c's lines of the task's AC (Plan `#### Acceptance criteria`), verbatim:
   - **B · split into two stacked PRs.** c1 — the store's `read`, `readStored` and the reader with its test (about 15 files, about 450 lines); c2 — the job, the routes, the workflow and both handoff tests (about 28 files, about 1,450 lines — still over the line target). Same code; two reviews and two CI runs.
 - **Order:** as in Proposal.
 - **Checklist (part c)** — [x] domain vocabularies · [x] migration 0019 and schema · [x] contracts and workflow · [x] store `read` and `readStored` · [x] job repository, service, routes · [x] reader and read step · [x] worker workflow · [x] outbox list and test move · [x] docs · [x] AC-3 (main-dev) · [ ] AC-6 (evaluator) · [x] AC-8 (main-dev, qa-api) · [x] AC-10 (main-dev, qa-api) · [x] review (clean after three passes) · [ ] CI
+
+#### Part d · RFC
+Replaces the legacy `#### Plan`'s part d (its `Where` rows d and its checklist line), which stays above as history. The task's shared facts — the Plan's decisions 1–21 and the AC list — stand unless a line below changes one. Branch `feat/T-M01-030d`, stacked on part c (PR #241, open) by the owner's word.
+
+##### Title
+T-M01-030d — the import maps, matches and previews: a confirmed column mapping becomes a preview of every row with its three counts, and a broken row is fixed in place.
+
+##### Description
+- **Who gains:** the owner in the import wizard (`SCR-M01-17`, steps 2 and 3). After this part, confirming the columns runs the matching pass in the background; the preview then shows every row, the counts `N rows · M match · K new · E need attention`, the file's price beside the catalog's price now, and a broken row is fixed by typing its value, left out, or — on a spec conflict — answered.
+- **Problem solved:** the second workflow phase (`match`) on part b's handoff; the per-row record (`catalog_import_row`) the run (part f) applies and the report keeps; a re-match after each fix that stays exact without matching the whole file again.
+- **Cites:** the task header (`M01-41`, §M01.4 behaviour detail and edge cases); the brief `docs/ux/briefs/SCR-M01-17-catalog-import-wizard.md` (decisions 2, 3, 4; states preview-three-counts, needs-attention-inline-fix); the board's decisions record as read on 2026-10-06 and summarised in the Plan's UX readiness — decisions 7, 9, 24, 25, 30, 31.
+
+##### Goals
+- `PUT /catalog/imports/{id}/mapping` stores the sheet, the header row and each column's field, moves the job to `matching` and hands phase `match` to `catalogImport` in one transaction.
+- The match step reads the chosen sheet whole, matches every filled row, and leaves the job `previewed` with one `catalog_import_row` per row.
+- A second mapping sent while the pass runs supersedes it: the first pass writes nothing, the job ends `previewed` with the second mapping's rows.
+- `GET /catalog/imports/{id}` adds the mapping and the counts; `GET /catalog/imports/{id}/rows` pages the rows, filterable by outcome.
+- `PUT /catalog/imports/{id}/rows/{rowNumber}` fixes one row; its outcome and the counts move in the same transaction.
+- No platform item changes, whatever the file or the answers say (AC-5).
+
+##### Non-goals
+- The run, its progress and the kept report (part f); the row fix (part e).
+- A cancel route: a new mapping supersedes the pass (Parts table, decided at part c).
+- The wizard screen and its three entry points (`T-M01-017`).
+- Any change to the read step, the file rules or the column guess (parts a and c).
+
+##### Readiness and dependencies
+- Landed (on this stack): part a — the match rule `matchImportRows`, the cell readers, `guessColumns`/`guessHeaderRow`, the outcome, reason and answer tuples; part b — outbox, dispatcher, sweep, the api's step host; part c — the job (0019), the read step, `readStored`, the `exceljs` reader, `catalogImport` phase `read`. `T-M01-027` — the market slice union, `ratesInForce`, `CatalogService.scopeOf`.
+- Design: an engine part, no drawing of its own. `SCR-M01-17` holds its link; its record's facts are in the Plan's UX readiness.
+- Stack: Postgres, object store, Temporal run (pre_existing); `heliogrid_test` at 0019. The api and worker start through `.claude/launch.json` for the live check.
+- Database: 0020 lands on `heliogrid_test` only. `heliogrid_dev` stays at its level; PR #241 merges before this part's PR, and this branch then rebases onto `origin/main` (one local database serves every branch; no other branch is open on a later migration).
+- Blockers: none. Two owner rulings ride on this approval — R1 (Proposal, decision 4) and the size ruling (Delivery size).
+
+##### Proposal
+**Flow.** The wizard reads the job's `sheets`, guesses the header row and columns on the device (part c decision 3), the person confirms → `PUT …/mapping { sheet, headerRow, columns }` → the service checks the job is this company's and in `mapped`, `matching` or `previewed`, and the mapping fits the sheet → one tenant transaction stores the mapping, adds 1 to `mapping_revision`, sets `matching` and writes the outbox event `{ eventId, tenantId, jobId, phase: 'match' }` → after the commit the dispatcher starts `catalogImport` → the worker calls `matchCatalogImport` → the api's step reads the job, reads the stored file again and the chosen sheet whole, turns each filled row below the header into its mapped cells, reads the catalog entries those rows name in ONE slice query, runs `matchImportRows`, and in one transaction — the job locked, its revision still the one read — replaces the job's rows and sets `previewed` → the wizard polls `GET …/{id}` (counts) and pages `GET …/{id}/rows` → a fix `PUT …/rows/{n}` re-matches that row and every row naming the same product, in one transaction.
+
+**Key decisions** (one reason each):
+1. **A mapping is `{ sheet, headerRow, columns }`.** `sheet` indexes `sheets`; `headerRow` indexes that sheet's `topRows` (so sheet row `headerRow + 1`); `columns[i]` is the field of column `i + 1` or null. Brand, model and rate are each placed once; no field twice — the contract's schema refuses both (400). The rule that it fits the sheet (`sheet` in range, `headerRow` within `topRows`, `columns` no longer than `columnCount`) is domain's `importMappingProblem`, client-safe, so the wizard disables confirm on the same rule the service refuses with (422 `DOMAIN_RULE_VIOLATION`) — Law 11. `kind` is not required: an unknown row then asks for its kind in the grid.
+2. **The step reads the file again; the job never stores all rows of the file.** Part c stores only the top rows (decision 3 there). Re-reading costs one more parse per confirmed mapping (up to the 377 ms block D125 already accepts). The row numbers are the sheet's own (what the person sees in Excel); an all-blank row is skipped and not counted.
+3. **A new mapping supersedes the pass by revision, not by cancel.** The step writes only when the job is `matching` and `mapping_revision` equals the revision it read; a stale pass writes nothing and answers where the job is. A retried step writes once (rows are replaced in the same transaction as the state). A mapping equal to the stored one while `matching` or `previewed` answers the job as it stands and writes no event. Past every retry `endCatalogImportMatch` puts the job back to `mapped` (same revision check): the wizard reads `mapped` after `matching` and offers to confirm again.
+4. **R1 — the matching pass shows no counted progress (owner ruling asked).** The board's decision 24 draws "256 of 412 rows" during the pass. The pass is one parse plus in-memory matching, under a second for hundreds of rows, written in one transaction: a counter would jump from 0 to done. Counting it needs chunked transactions, a progress column and supersede handling between chunks (about 120 more lines and one more column). **Recommended — A:** no counted progress for the pass; the wizard shows a short wait, and the run (part f) carries the counted progress (`M01-41` "visible progress" is the import's run); the owner edits decision 24 in Claude Design. **B:** build the counter as drawn.
+5. **The row table holds the pass's verdict, not derived numbers.** Each row keeps its file cells, the person's fix, left-out and answer, and the verdict — outcome, attention (reasons and fields), and the matched item's id. The counts are read with one `count(*) … group by outcome` over the job's rows (no counts column: `.claude/protections.md`, no derived value stored). The file price is read from the cells at read time (`readImportPrice`, server-only, `F4-04`); the catalog price now from `ratesInForce` for the page's targets (board decision 7). The run (part f) applies what the preview recorded.
+6. **One query finds the candidates.** The slice union (`catalog.slice.repository.ts` `unionOf`) gains an `identities` condition — the file's distinct `(brand, model)` pairs, trimmed — so the market's platform items and the tenant's own SKUs come back in one statement with their specs. Archived and hidden items match too: a second SKU for a product the tenant already has is the defect `M01-41` forbids. Lookup on the platform natural key `(component_kind, brand, model)` with every kind listed; on own items through the tenant index.
+7. **A fix re-matches its product group, exactly.** `PUT …/rows/{n}` takes `{ cells }` (merged into the row's fix, field by field; any import field — a spec field the file lacks is typed here), `{ leaveOut: true | false }`, or `{ answer }`. In one transaction: the job row locked (`for update` — two fixers queue), the rows naming the fixed row's old or new `(brand, model)` read in row order, `matchImportRows` over them against their candidates, changed verdicts written. Exact because `repeated_in_file` and `several_matches` depend only on rows and items of the same product. Allowed only while `previewed` (409 `CONFLICT` otherwise).
+8. **Superseded rows are deleted.** A new mapping's pass replaces the job's rows, so `app_user` gets DELETE on `catalog_import_row`. "Nothing purges" (the task) holds for the report: the service deletes rows only inside the pass, which runs only before the run. Kept simpler than a revision column on every row that every read filters.
+9. **The match step returns `{ status }`**, like the read; the workflow's `match` case mirrors `read` (bounded retries, then the end step).
+10. **Every new route is `onboarding.manage_catalog` held outright** (`admitWrite`, part c decision 9); another company's job or row is 404.
+11. **Rows have their own paged route — a change to the task's contract.** The task puts the preview rows inside `GET …/{id}`, which the wizard polls. Hundreds of rows on every poll is waste; a paged `GET …/{id}/rows?outcome=` serves the grid, and the job read carries only the counts. Cost: one route and one query.
+
+**Order.** Domain mapping rule → migration 0020 and schema → contracts (routes, phase, steps) → slice `identities` → sheet reader → rows repository → mapping write → match step → fix → reads → worker phase → docs.
+
+**Refusals.** 400 a body outside the schema (brand, model or rate unplaced, a field twice) · 403 a role without the outright grant · 404 a job or row not this company's · 409 `CONFLICT` a mapping in `reading`, `unreadable`, `running` or `completed`, a fix outside `previewed` · 422 `DOMAIN_RULE_VIOLATION` a mapping that does not fit its sheet.
+
+**Twin screen.** None: an engine part. Both platforms' wizard is `T-M01-017`.
+
+##### Architecture diagram
+```mermaid
+sequenceDiagram
+  participant D as Device
+  participant A as api (routes + step host)
+  participant P as Postgres
+  participant T as Temporal
+  participant W as worker
+  participant S as Object store
+  D->>A: PUT /catalog/imports/{id}/mapping
+  A->>P: mapping + revision + matching + outbox event, one transaction
+  A->>T: start catalogImport (phase match)
+  T->>W: workflow task
+  W->>T: call matchCatalogImport
+  T->>A: activity task (heliogrid-catalog)
+  A->>S: read the stored file
+  A->>P: candidates (slice union), then rows + previewed if revision unchanged
+  D->>A: GET …/{id} (counts) · GET …/{id}/rows (page)
+  D->>A: PUT …/rows/{n} (fix → re-match its product group)
+```
+
+##### Package changes
+- **domain** — new `catalog/import-mapping.ts` (client-safe): `CatalogImportMapping`, `importMappingProblem(mapping, sheets)`, `mappedRows(sheetRows, mapping)` (row number + cells, blank rows skipped). Exported from the client-safe index.
+- **contracts** — `catalog-import.ts`: three routes (mapping, rows, fix), the mapping, row and fix schemas, `mapping` and `counts` on the job read; `workflows/catalog-import.ts`: phase `match`, steps `matchCatalogImport`, `endCatalogImportMatch`. Direction unchanged: contracts → domain.
+- **db** — `schema/catalog-import.ts`: two job columns, the row table, two pgEnums mirrored from domain.
+- **api** — catalog module: a preview service and a rows repository (new files — the 300-line rule), the mapping write on the job repository, the candidates condition on the slice union, `readSheetRows` in the reader, two steps registered, `formats` on `CatalogService.scopeOf`'s scope.
+- **worker** — `catalog.workflows.ts`: the `match` case.
+- **Law 12 enrolment:** pgEnums `catalog_import_row_outcome`, `catalog_import_conflict_answer` → `enum-parity`; `catalog_import_row` → `table-tenancy-scan`, `tenancy-rls` (read from the database); three routes → `RouteAccessMap` (typecheck) and OpenAPI freshness; the step names → the `satisfies` checks in `catalog.public.ts`. **Said out loud:** the attention reasons live inside the `attention` jsonb, held by no pgEnum — the contract's `z.enum` parses every stored reason on every read, so an unknown one fails loudly rather than renders. No new error code, brand or token.
+
+##### Data and schema changes
+- **Migration `0020_catalog_import_rows.sql`** (started with `pnpm db:migration:new`):
+  - `catalog_import_job` + `mapping jsonb` null · `mapping_revision integer not null default 0` · CHECK `catalog_import_job_matched_has_mapping`: status in (`matching`, `previewed`, `running`, `completed`) implies `mapping is not null`.
+  - New `catalog_import_row`: `id uuid` pk (uuidv7) · `tenant_id` fk · `job_id` fk `catalog_import_job` · `row_number integer` (CHECK ≥ 1) · `cells jsonb` (the mapped cells as the file wrote them) · `fix jsonb` (the typed cells, `{}` when none) · `left_out boolean` · `answer catalog_import_conflict_answer` null · `outcome catalog_import_row_outcome` · `attention jsonb` (`[{ reason, fields }]`, empty unless `needs_attention`) · `catalog_item_id` fk null · `tenant_catalog_item_id` fk null · `created_at`, `updated_at`. CHECK: at most one item id; `price_override` has `catalog_item_id`, `own_item_price` has `tenant_catalog_item_id`, every other outcome has neither.
+  - Indexes: unique `(tenant_id, job_id, row_number)` — the grid's order and the fix's lookup; `(tenant_id, job_id, outcome, row_number)` — the filtered page and the counts.
+  - Tenancy: all four always; fail-closed RLS for `app_user`; grants SELECT, INSERT, UPDATE, DELETE (decision 8).
+- **Readers, both ways:** the part c api selects named job columns, so it reads a job with a mapping unchanged; it never reads the row table. A part c worker handed phase `match` would finish without calling a step — so the worker deploys first (it knows `match`), then the api (Plan, rollout safety). Expand only; no backfill (no client has called these routes); rollback is the previous release with the columns and table left unread.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| add | `packages/domain/src/catalog/import-mapping.ts` | mapping type, fit rule, mapped rows | §4.3 business logic, client-safe |
+| modify | `packages/domain/src/catalog/index.ts` | exports | §4.3 |
+| add | `packages/db/migrations/0020_catalog_import_rows.sql` | job columns, row table | §4.2 |
+| modify | `packages/db/src/schema/catalog-import.ts` | their mirror, two pgEnums | §4.2 |
+| modify | `packages/contracts/src/catalog-import.ts` | three routes, schemas, job read additions | §4.1 |
+| modify | `packages/contracts/src/workflows/catalog-import.ts` | phase `match`, two steps | §4.1 workflow messages |
+| modify | `packages/contracts/openapi/openapi.json` | regenerated | §4.1 (generated) |
+| modify | `apps/api/src/modules/catalog/catalog.import.controller.ts` | three routes | catalog module |
+| add | `apps/api/src/modules/catalog/catalog.import-preview.service.ts` | mapping, match step, end step, fix, rows read | catalog module; the import service stays under 300 lines |
+| modify | `apps/api/src/modules/catalog/catalog.import.service.ts` | the job read gains mapping and counts | catalog module |
+| modify | `apps/api/src/modules/catalog/catalog.import.repository.ts` | mapping write + outbox event; job columns | catalog module |
+| add | `apps/api/src/modules/catalog/catalog.import-rows.repository.ts` | replace, page, counts, product group, verdict update | catalog module |
+| modify | `apps/api/src/modules/catalog/catalog.slice.repository.ts` | `identities` condition; `unionOf` and `completed` exported to the rows repository | the one slice query (Law 5) |
+| modify | `apps/api/src/modules/catalog/catalog.service.ts` | `formats` on the scope | the one scope read |
+| modify | `apps/api/src/modules/catalog/internal/spreadsheet.ts` | `readSheetRows` | the one reader |
+| modify | `apps/api/src/modules/catalog/catalog.import.activities.ts` | two steps registered | catalog module |
+| modify | `apps/api/src/modules/catalog/catalog.module.ts` | wiring | Nest wiring |
+| modify | `apps/worker/src/modules/catalog/catalog.workflows.ts` | the `match` case | §2 worker |
+| add | `packages/domain/tests/catalog/import-mapping.test.ts` | the fit rule, mapped rows | testing rules |
+| add | `apps/api/tests/catalog/import-preview.test.ts` | mapping, pass, counts, supersede, AC-5 | testing rules |
+| add | `apps/api/tests/catalog/import-fix.test.ts` | fixes, product group, access | testing rules |
+| modify | `apps/api/tests/catalog/spreadsheet.test.ts` | `readSheetRows` | testing rules |
+| modify | `apps/api/tests/catalog/support.ts` | a mapped job, a priced catalog | testing rules |
+| modify | `apps/api/tests/support/tenant-tables.ts` | the row table in the cleanup, before the job | the fixture's FK order |
+| modify | `tests/invariants/src/enum-parity.ts` | two pgEnums against their contract schemas | Law 12 |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, Parts; `T-M01-017`'s lines for R1 and the rows route | Law 8 |
+
+##### API and contract changes
+| route / message | method | request → response | errors | access |
+|---|---|---|---|---|
+| `/catalog/imports/{id}/mapping` | PUT | `{ sheet, headerRow, columns: (field \| null)[] }` → 200 job | 400 · 403 · 404 · 409 `CONFLICT` · 422 `DOMAIN_RULE_VIOLATION` | `onboarding.manage_catalog` outright |
+| `/catalog/imports/{id}` | GET | adds `mapping: { sheet, headerRow, columns } \| null`, `counts: { rows, matched, newItems, needsAttention, leftOut } \| null` (null until `previewed`) | unchanged | same |
+| `/catalog/imports/{id}/rows` | GET | `page`, `limit`, `outcome?` → `{ items: [{ rowNumber, cells, fix, leftOut, answer, outcome, attention, match: { source, id } \| null, filePrice \| null, catalogPrice: { amount, currency, effectiveOn } \| null }], totalCount }` by row number | 403 · 404 · 409 `CONFLICT` before `previewed` | same |
+| `/catalog/imports/{id}/rows/{rowNumber}` | PUT | `{ cells }` \| `{ leaveOut }` \| `{ answer }` → 200 the row (the job's counts read again by the device) | 400 · 403 · 404 · 409 `CONFLICT` | same |
+| `catalogImport` | workflow | phase gains `match` | — | ids only |
+| `matchCatalogImport` · `endCatalogImportMatch` | activities (api) | `{ tenantId, jobId }` → `{ status }` | retried by Temporal; a gone job fails for good | the tenant from the input |
+
+Tenancy: no `tenantId` on the wire; every read and write carries its tenant predicate. Compatibility: added routes and fields; `extensibleEnum` on every vocabulary a client reads (outcome, reason, answer, field), so a later value parses on an older client.
+
+##### Risks and rollout
+| risk | mitigation |
+|---|---|
+| A stale pass overwrites a newer mapping's rows | decision 3 — the write is conditioned on the revision read, inside the job lock; `import-preview.test.ts` plants a second mapping mid-pass |
+| Two fixers race on one product group | decision 7 — the job row is locked for the fix's transaction |
+| A large sheet (a 2 MB CSV can hold tens of thousands of rows) | the pass is one parse plus a linear match; rows insert in batches inside one transaction; a fix touches only its product group. The read blocks the event loop as D125 records, now once per mapping too — D125's worker-thread move covers both |
+| An unknown attention reason stored | parsed by the contract's `z.enum` on every read (Package changes) |
+| Release roll | worker before api (Data and schema changes); an api ahead of its worker leaves the `match` task queued, nothing lost |
+
+##### Acceptance criteria and proof
+Part d's lines of the task's AC (Plan `#### Acceptance criteria`), verbatim:
+- **AC-1** — Given an import file with platform-matching rows, unknown rows and broken rows, when the preview renders, then it states the three counts, matched rows become price overrides and unknown rows tenant SKUs on import, and broken rows are fixable inline; the import runs async with progress and produces a per-row report (M01-41). *(Part d: the counts; the inline fix is part e's; the run, progress and report are part f's.)*
+- **AC-5** — Given a row matching a platform product at a different spec, when the matching pass runs, then it is a needs-attention row and no platform spec changes (§M01.4 edge cases).
+- **AC-6** — Given migrations 0018 and 0019, when the tenancy scan runs, then `orchestration_outbox`, `catalog_import_job` and `catalog_import_row` pass as tenant-scoped. *(Part d: `catalog_import_row`, in migration 0020.)*
+- **AC-8** (extension) — Given a Finance session, when it starts, fixes or runs an import, then each is refused; given another company's job id, then it reads 404. *(Part d: the mapping, the rows read and the fix.)*
+- **AC-11** (extension, new) — Given a read job, when a mapping that fits its sheet is confirmed, then the job reaches `previewed` with one row per filled sheet row below the header; given a mapping that does not fit, or a job not in `mapped`, `matching` or `previewed`, then it is refused and nothing changes; given a second mapping while the pass runs, then the job ends `previewed` with the second mapping's rows only.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 | main-dev | required | api tests | one CSV with platform, own-SKU, unknown and broken rows → mapping → step → counts `rows/matched/newItems/needsAttention`; `filePrice` and `catalogPrice` on a page, narrowed by outcome (the fix's rows are part e's) | `import-preview.test.ts` |
+| AC-1 | qa-api | required | api `8084` + temporal admin | `…904` starts an import, polls `mapped`, sends the mapping, polls `previewed`, reads counts and a filtered page, `temporal workflow show` names one completed `catalogImport` per handoff (read, match) | live |
+| AC-5 | main-dev | required | api tests | a platform match at another spec → `needs_attention` (`spec_conflict`, its fields); the platform item's row byte-identical before and after the pass (the answer is part e's) | `import-preview.test.ts` |
+| AC-6 | evaluator | required | invariants | `table-tenancy-scan`, `tenancy-rls`, `enum-parity`, `schema-parity` over 0020 | `pnpm check:all` |
+| AC-8 | main-dev | required | api tests | Finance's mapping and rows read → 403, nothing written; another company's job → 404 on both; planted red: `admitWrite` removed from the mapping — *refuses Finance the mapping and changes nothing* failed by name (the fix's rows are part e's) | `import-map.test.ts` |
+| AC-8 | qa-api | required | api `8084` | `…906` (Finance) mapping and rows → 403; `…905` reads `…904`'s rows and maps its job → 404 | live |
+| AC-11 | main-dev | required | domain | the fit rule: sheet, header row, column count; mapped rows skip blanks and keep sheet row numbers | `import-mapping.test.ts` |
+| AC-11 | main-dev | required | api tests | a mapping outside the sheet → 422; a mapping on `reading` → 409; the same mapping twice → one event; a second mapping between the first's read and write → the first writes nothing, rows are the second's; the step run twice → one set of rows; past retries → back to `mapped`; planted red: the revision condition removed — *a superseded pass writes nothing, and the newer mapping’s pass writes its rows* failed by name | `import-map.test.ts` |
+| AC-11 | main-dev | required | api tests | `readSheetRows` on CSV and `.xlsx`: every row, sheet row numbers, cell text as the read gives it | `spreadsheet-rows.test.ts` |
+| AC-11 | qa-api | required | api `8084` | `…904` sends two mappings back to back; the job ends `previewed` with the second's columns | live |
+| all | ci | required | `quality` | the PR's run passes | CI |
+| — | qa-web · qa-ios · qa-android | not_applicable | — | an engine part; the wizard is `T-M01-017` | — |
+
+##### Delivery size
+- **Estimate:** 26 files (1 generated: `openapi.json`). Authored lines: code about 950 · tests about 750 · this RFC and doc lines about 230 — about 1,930. Over both targets (30 files is met; 1,000 lines is not).
+- **Size ruling (owner).** The fix is separable: the preview with its counts is acceptable without it. So `docs/tasks/README.md` asks for a split.
+  - **A · split (recommended).** **d** — mapping, pass, preview reads, 0020 whole: about 22 files, code about 700, tests about 500. **e** — the row fix: about 6 files, code about 250, tests about 250. The run and the report become **f**. Two stacked PRs; d is still over 1,000 lines, because the migration, the step and its supersede proof cannot be accepted apart.
+  - **B · one part at about 1,930 lines and 26 files.** One PR, one review, one CI run; the fix's re-match proofs sit beside the pass they depend on.
+- **Order:** as in Proposal.
+- **Owner rulings (2026-10-07):** R1 → **A** (no counted progress for the matching pass; the owner edits board decision 24). Size → **A** (split). Part d builds this RFC less decision 7: the fix route, `import-fix.test.ts`, the fix rows of AC-1 and AC-8 and the fix's planted red go to part e; the run and the report become part f. Part d's AC-8 planted red moves onto the mapping: `admitWrite` removed from the mapping — *refuses Finance the mapping and changes nothing* failed by name. Part d's budget: about 22 files, code about 700, tests about 500.
+- **Build delta (2026-10-07) — approval void, the owner rules again.** Built 32 changed files (1 generated: `openapi.json` +1,264) against about 22, and about 2,150 authored lines against about 1,200 + docs — code about 1,310 (about 170 of them moved, not new), tests about 640, docs about 190. Every proof row so far is green on `heliogrid_test`; live QA and review have not run.
+  - **Planned and built:** `import-mapping.ts` and its test · `index.ts` · migration 0020 and the schema · `catalog-import.ts` (contract) and the workflow contract · `openapi.json` · the controller, import service, job repository, rows repository, preview service, slice repository, `catalog.service.ts`, `spreadsheet.ts`, activities, module · the worker's `match` case · `import-preview.test.ts`, `spreadsheet.test.ts`, `support.ts`, `tenant-tables.ts` · `enum-parity.ts` · this task file.
+  - **Built but not planned:** `catalog.slice-conditions.repository.ts` — the slice repository crossed 300 lines with the names read, so its filter predicates and their one type, `SliceFilter`, moved out whole (the 300-line rule; dependency-cruiser's no-circular kept the type beside them, and its `drizzle-in-repositories-only` names the file a repository — first placed in `internal/`, refused at the gate) · `import-map.test.ts` — the mapping, supersede, retry and access proofs, split from `import-preview.test.ts` (the 300-line rule) · `import-text.ts`, `import-cells.ts`, `import-matching.ts` — `isBlank` moved to the client-safe text helpers, so the client-safe mapping rule loads no money reader · `server.ts` — `readImportPrice` exported for the page's file price (`F4-04`: a price is read on the server) · `internal/write-checks.ts` — `formats` on `Scope`, what the price cells are read against.
+  - **Planned but not built:** none (the fix is part e).
+  - **Changed from the RFC:** decision 3's end step puts a still-`matching` job back to `mapped` without a revision check — the end step's input is ids only, so it cannot know the revision its pass read. A newer pass then finds `mapped` and writes nothing; the person confirms once more. Only two passes failing past every retry at once meet it.
+  - **Why the estimate missed:** the rows repository (about 220 lines: replace under the job lock, counts, the page with its rates) and the preview service (about 200) were counted at about half; the moves were not counted.
+  - **Two ways on:** **A · keep part d at its built size (recommended)** — one PR; the preview is not acceptable without its mapping, its pass and its reads, and the moves are forced by the 300-line rule. **B · split once more** — d1: the mapping, migration 0020 and the match step (about 20 files, about 1,350 lines); d2: the counts and the rows page (about 10 files, about 600 lines). d1 alone shows the person nothing.
+  - **After review (2026-10-07):** the review's findings, each fixed: the counts formula is domain's `countImportMatches`, now over counts by outcome (it was written again in the rows repository); the ledger-picking rule is one `itemRatesInForce` in the rates repository, which the slice's `completed` now calls too (the rows page had a copy); the product names the pass reads are domain's `importProductNames` beside the match rule's identity (the service had a copy); one `CatalogImportCells` type in domain; the state rules `takesImportMapping`, `hasImportPreview` and `sameImportMapping` in domain, client-safe, for the wizard too; the contract's counts tied to domain by `satisfies` and its mapping shape declared once; one `storedRateWire` for the rate shape; one `PRICE_LIST` and one find-or-404 (`internal/import-job.ts`); a refused-JSON reply's request id unlogged, found in live QA — platform-wide, so `docs/tasks/deferred.md` D126, not this diff; `named()` reads no claims or rates; the whole-sheet reader's tests in their own file (the 300-line rule). Built but not planned, from these: `internal/import-job.ts`, `catalog.rates.repository.ts`, `internal/wire.ts`, `import-columns.ts`, `import.ts`, `import-matching.test.ts`, `spreadsheet-rows.test.ts`.
+  - **The rows page orders by `row_number` alone** — total, since `(tenant_id, job_id, row_number)` is unique, and the sheet's order is the grid's; `apps/api/CLAUDE.md`'s newest-first-then-id rule is for lists of records, not a sheet.
+  - **The names read, explained on `heliogrid_test` (32 platform items):** with brand and model fixed, `catalog_item_natural_key` serves the lookup (`Index Scan using catalog_item_natural_key`, all kinds in its index condition); joined to the file's names the planner hashes the whole 32-row book instead, the cheaper plan at that size. The own-SKU side reads through `tenant_catalog_item_tenant_kind_archived_idx` by tenant, bounded by the tenant's own SKUs, as decision 6 says. No book large enough to show the planner's choice at scale exists locally; none is written to make one.
+  - **Mistake found in live QA — the worker ran an old workflow bundle.** `pnpm --filter @heliogrid/worker dev` reloads source but runs the BUILT `dist/workflow-bundle.js`; the bundle predated the `match` case, so each match handoff completed doing nothing and the job stayed `matching`. Rebuilt with `pnpm --filter @heliogrid/worker build`; the trap now stands in `apps/worker/CLAUDE.md` (built but not planned).
+- **Size ruling (after the build, 2026-10-07):** the owner approved option **A** — part d at its built size, about 2,150 authored lines and 32 files, one PR; the end step as built.
+- **After the second review pass (2026-10-07) — files over again; the owner rules.** The review's fixes brought the change to 40 files (1 generated) against the 32 approved — 25% over — and about 2,440 authored lines against 2,150 (14%, inside the fifth): code about 1,500, tests about 740, docs about 210. The second pass's own fixes: the product-name rule moved to the client-safe `import-text.ts` (it computes no money, so it does not belong on `./server`); the slice's `ProductName` dropped for domain's `ImportProductName`; `itemRatesInForce` skips the override lookup when the caller already joined it, so the catalog list keeps its statement count; the `import.ts` tests in their own `import.test.ts`. New files since the 32: `internal/import-job.ts`, `spreadsheet-rows.test.ts`, `import.test.ts`, and modified `catalog.rates.repository.ts`, `internal/wire.ts`, `import-columns.ts`, `import.ts`, `import-matching.test.ts` (each one shared fact moved to its owner, none new behaviour). Live QA passed every row on the stack before these last fixes; the rows page and the mapping route are re-driven after the ruling.
+- **Size ruling (after the second review pass, 2026-10-07):** the owner approved option **A** — part d at 40 files (1 generated) and about 2,440 authored lines, one PR.
+- **Checklist (part d)** — [x] domain mapping rule · [x] migration 0020 and schema · [x] contracts and workflow phase · [x] slice `identities` and sheet reader · [x] rows repository · [x] mapping write and match step · [x] reads · [x] worker phase · [x] docs · [x] AC-1 (preview: main-dev, qa-api) · [x] AC-5 · [x] AC-6 (evaluator) · [x] AC-8 (mapping, rows: main-dev, qa-api) · [x] AC-11 (main-dev, qa-api) · [x] review (clean on the fourth pass) · [ ] CI
 
 ### T-M01-031 · Price book
 **Type:** engine · **Tier:** P0

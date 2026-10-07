@@ -2,7 +2,9 @@ import {
   auditActorKindSchema,
   auditEventTypeSchema,
   catalogAvailabilitySchema,
+  catalogImportConflictAnswerSchema,
   catalogImportEntryPointSchema,
+  catalogImportRowOutcomeSchema,
   catalogImportStateSchema,
   catalogImportUnreadableReasonSchema,
   catalogProvenanceSchema,
@@ -101,6 +103,14 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   catalog_import_unreadable_reason: {
     options: catalogImportUnreadableReasonSchema.options,
     contract: 'catalogImportUnreadableReasonSchema',
+  },
+  catalog_import_row_outcome: {
+    options: catalogImportRowOutcomeSchema.options,
+    contract: 'catalogImportRowOutcomeSchema',
+  },
+  catalog_import_conflict_answer: {
+    options: catalogImportConflictAnswerSchema.options,
+    contract: 'catalogImportConflictAnswerSchema',
   },
 };
 

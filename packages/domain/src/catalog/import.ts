@@ -111,16 +111,30 @@ export interface CatalogImportCounts {
   readonly leftOut: number;
 }
 
-export function countImportMatches(
-  outcomes: readonly CatalogImportRowOutcome[],
-): CatalogImportCounts {
-  const of = (...wanted: CatalogImportRowOutcome[]) =>
-    outcomes.filter((outcome) => wanted.includes(outcome)).length;
+/** How many rows the pass judged each way, as a store counts them by outcome. */
+export type CatalogImportOutcomeCounts = Readonly<Partial<Record<CatalogImportRowOutcome, number>>>;
+
+/** The preview's figures from the rows counted by outcome; an outcome absent counts nothing. */
+export function countImportMatches(byOutcome: CatalogImportOutcomeCounts): CatalogImportCounts {
+  const of = (...wanted: readonly CatalogImportRowOutcome[]) =>
+    wanted.reduce((sum, outcome) => sum + (byOutcome[outcome] ?? 0), 0);
   return {
-    rows: outcomes.length,
+    rows: of(...CATALOG_IMPORT_ROW_OUTCOMES),
     matched: of('price_override', 'own_item_price'),
     newItems: of('new_item'),
     needsAttention: of('needs_attention'),
     leftOut: of('left_out'),
   };
+}
+
+/** Where a job takes a new mapping: once read, and until it runs (`T-M01-030d` decision 3). */
+export const CATALOG_IMPORT_MAPPABLE_STATES = ['mapped', 'matching', 'previewed'] as const;
+
+export function takesImportMapping(state: CatalogImportState): boolean {
+  return CATALOG_IMPORT_MAPPABLE_STATES.some((mappable) => mappable === state);
+}
+
+/** Whether the matching pass has left rows to show: previewed, and every state after it. */
+export function hasImportPreview(state: CatalogImportState): boolean {
+  return state === 'previewed' || state === 'running' || state === 'completed';
 }

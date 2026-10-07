@@ -20,6 +20,8 @@ import { OutboxDispatcher } from '../../src/common/temporal/outbox.dispatcher';
 import { CatalogAdminRepository } from '../../src/modules/catalog/catalog.admin.repository';
 import { CatalogImportRepository } from '../../src/modules/catalog/catalog.import.repository';
 import { CatalogImportService } from '../../src/modules/catalog/catalog.import.service';
+import { CatalogImportPreviewService } from '../../src/modules/catalog/catalog.import-preview.service';
+import { CatalogImportRowsRepository } from '../../src/modules/catalog/catalog.import-rows.repository';
 import { CatalogPlatformService } from '../../src/modules/catalog/catalog.platform.service';
 import { CatalogPricesRepository } from '../../src/modules/catalog/catalog.prices.repository';
 import { CatalogRatesRepository } from '../../src/modules/catalog/catalog.rates.repository';
@@ -224,9 +226,24 @@ export function importServiceOf(
   const silent = new PinoLogger({ pinoHttp: { level: 'silent' } });
   return new CatalogImportService(
     new CatalogImportRepository(tenants),
+    new CatalogImportRowsRepository(tenants),
     files.service,
     new OutboxDispatcher(temporal.gateway, new OutboxAdminRepository(pools.admin.db), silent),
     new CreationReplies(silent),
+  );
+}
+
+/** The import's preview as `catalog.module.ts` composes it, over the real repositories. */
+export function importPreviewServiceOf(
+  pools: Pools,
+  files: ReturnType<typeof fileServiceOf>,
+): CatalogImportPreviewService {
+  return new CatalogImportPreviewService(
+    new CatalogImportRepository(pools.tenants),
+    new CatalogImportRowsRepository(pools.tenants),
+    files.service,
+    catalogServiceOf(pools),
+    new CatalogSliceRepository(pools.tenants),
   );
 }
 

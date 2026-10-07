@@ -2,6 +2,7 @@ import {
   brandingSettings,
   businessProfile,
   catalogImportJob,
+  catalogImportRow,
   catalogRateEntry,
   catalogRelease,
   catalogReleaseLine,
@@ -36,11 +37,12 @@ export const TENANT_SETTING_TABLES = [
 ] as const;
 
 /**
- * The import's jobs first — a job points at its price list's file; the price book's rates before
- * their versions; then lines, releases, the ledger, the overrides and the own SKUs — an own SKU
- * points at its datasheet file.
+ * The import's rows, then its jobs — a row points at its job and at the item it matched, a job at
+ * its price list's file; the price book's rates before their versions; then lines, releases, the
+ * ledger, the overrides and the own SKUs — an own SKU points at its datasheet file.
  */
 export const TENANT_CATALOG_TABLES = [
+  catalogImportRow,
   catalogImportJob,
   priceBookRate,
   priceBookVersion,

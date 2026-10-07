@@ -8,14 +8,19 @@ import type {
   CatalogAvailability,
   CatalogProvenanceLabel,
   Certification,
-  ComponentKind,
-  PanelTechnology,
+  ImportProductName,
   ResolvedCatalogItem,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { asc, eq, inArray, type SQL, sql } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
-import { ratesInForce, type StoredRate } from './catalog.rates.repository';
+import { itemRatesInForce, type StoredRate } from './catalog.rates.repository';
+import {
+  listConditions,
+  namedConditions,
+  type SliceFilter,
+  textOf,
+} from './catalog.slice-conditions.repository';
 
 /** The tenant facts every catalog read and write is scoped and stamped by. */
 export interface CatalogTenant {
@@ -24,18 +29,8 @@ export interface CatalogTenant {
   readonly timezone: string;
 }
 
-/** What narrows the list (`M01-38`, `MS4-10`); `terms` is already a `to_tsquery` text. */
-export interface SliceFilter {
-  readonly terms: string | null;
-  readonly source?: ResolvedCatalogItem['source'];
-  readonly kind?: ComponentKind;
-  readonly wattMin?: number;
-  readonly wattMax?: number;
-  readonly technology?: PanelTechnology;
-  readonly schemes?: readonly string[];
-  readonly preferred?: boolean;
-  readonly archived: boolean;
-}
+/** An item as the matching pass compares it; the spec is parsed whole by the caller. */
+export type NamedItem = Pick<SliceRow, 'source' | 'id' | 'brand' | 'model' | 'spec'>;
 
 /** One row of the slice as stored; `internal/resolve-input.ts` turns it into the resolver's input. */
 export interface SliceRow {
@@ -125,6 +120,23 @@ export class CatalogSliceRepository {
       return row ?? null;
     });
   }
+
+  /**
+   * The items an import's rows name, by brand and model exactly as given — archived and hidden ones
+   * too, since a second SKU for a product the tenant already has is what an import must never make
+   * (`T-M01-030d` decision 6). Only what the pass compares: no claims, no rates.
+   */
+  async named(
+    tenantId: string,
+    marketCode: string,
+    names: readonly ImportProductName[],
+  ): Promise<readonly NamedItem[]> {
+    if (names.length === 0) return [];
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const rows = await tx.execute<UnionRow>(unionOf(tenantId, marketCode, { names }));
+      return rows.map(({ source, id, brand, model, spec }) => ({ source, id, brand, model, spec }));
+    });
+  }
 }
 
 /** The platform rows' claims and every row's rate in force, read once for the whole page. */
@@ -147,27 +159,17 @@ async function completed(
           .from(catalogItemCertification)
           .where(inArray(catalogItemCertification.catalogItemId, platformIds))
           .orderBy(asc(catalogItemCertification.schemeKey));
-  const rates = await ratesInForce(
-    tx,
-    tenantId,
-    {
-      ownItems: rows.filter((row) => row.source === 'own_item').map((row) => row.id),
-      overrides: rows.flatMap((row) => (row.overrideId === null ? [] : [row.overrideId])),
-    },
-    pricedOn,
-  );
-  return rows.map((row) => {
-    const ledger = row.source === 'own_item' ? row.id : row.overrideId;
-    return {
-      ...row,
-      certifications:
-        row.certifications ??
-        claims
-          .filter((claim) => claim.itemId === row.id)
-          .map(({ scheme, reference }) => ({ scheme, reference })),
-      rate: ledger === null ? null : (rates.get(ledger) ?? null),
-    };
-  });
+  // The union already joined each platform row's override, so no second lookup is needed.
+  const rates = await itemRatesInForce(tx, tenantId, rows, pricedOn);
+  return rows.map((row) => ({
+    ...row,
+    certifications:
+      row.certifications ??
+      claims
+        .filter((claim) => claim.itemId === row.id)
+        .map(({ scheme, reference }) => ({ scheme, reference })),
+    rate: rates.get(row.id) ?? null,
+  }));
 }
 
 /**
@@ -178,7 +180,10 @@ async function completed(
 function unionOf(
   tenantId: string,
   marketCode: string,
-  read: { readonly filter: SliceFilter } | { readonly id: string },
+  read:
+    | { readonly filter: SliceFilter }
+    | { readonly id: string }
+    | { readonly names: readonly ImportProductName[] },
 ): SQL {
   const filter = 'filter' in read ? read.filter : null;
   const platform: SQL[] = [];
@@ -187,6 +192,8 @@ function unionOf(
     platform.push(sql`ci.id = ${read.id}`);
     own.push(sql`t.id = ${read.id}`);
   }
+  if ('names' in read) platform.push(...namedConditions(sql`ci`, read.names, true));
+  if ('names' in read) own.push(...namedConditions(sql`t`, read.names, false));
   if (filter !== null) {
     platform.push(...listConditions(filter, 'platform'));
     own.push(...listConditions(filter, 'own'));
@@ -216,67 +223,4 @@ function unionOf(
   if (filter?.source === 'platform_item') return platformSelect;
   if (filter?.source === 'own_item') return ownSelect;
   return sql`${platformSelect} union all ${ownSelect}`;
-}
-
-/**
- * What a list read narrows by, on one table: a platform row's hide and prefer flags are its
- * override's. `schemes` keeps an item holding every one listed (b6).
- */
-function listConditions(filter: SliceFilter, table: 'platform' | 'own'): SQL[] {
-  const alias = table === 'platform' ? sql`ci` : sql`t`;
-  const conditions = [
-    sql`${alias}.archived = ${filter.archived}`,
-    ...panelSpecConditions(alias, filter),
-  ];
-  if (table === 'platform') conditions.push(sql`coalesce(o.hidden, false) = false`);
-  if (filter.kind !== undefined) {
-    conditions.push(sql`${alias}.component_kind = ${filter.kind}::component_kind`);
-  }
-  if (filter.terms !== null) {
-    conditions.push(sql`${textOf(alias)} @@ to_tsquery('simple', ${filter.terms})`);
-  }
-  if (filter.preferred !== undefined) {
-    const preferred = table === 'platform' ? sql`coalesce(o.preferred, false)` : sql`t.preferred`;
-    conditions.push(sql`${preferred} = ${filter.preferred}`);
-  }
-  if (filter.schemes !== undefined && filter.schemes.length > 0) {
-    conditions.push(
-      table === 'platform' ? platformHolds(filter.schemes) : ownHolds(filter.schemes),
-    );
-  }
-  return conditions;
-}
-
-function platformHolds(schemes: readonly string[]): SQL {
-  const wanted = sql.join(
-    schemes.map((scheme) => sql`${scheme}`),
-    sql`, `,
-  );
-  return sql`array[${wanted}]::text[] <@ array(select c.scheme_key from catalog_item_certification c where c.catalog_item_id = ci.id)`;
-}
-
-/** Containment over the claims array, which the GIN index serves (`jsonb_path_ops`). */
-function ownHolds(schemes: readonly string[]): SQL {
-  return sql`t.certifications @> ${JSON.stringify(schemes.map((scheme) => ({ scheme })))}::jsonb`;
-}
-
-/** The text the GIN index is built over — the expression must match it to be index-backed. */
-function textOf(alias: SQL): SQL {
-  return sql`to_tsvector('simple', ${alias}.brand || ' ' || ${alias}.model)`;
-}
-
-/** A watt window or a technology keeps panels only: no other kind carries either (b6). */
-function panelSpecConditions(alias: SQL, filter: SliceFilter): SQL[] {
-  const panel = sql`${alias}.component_kind = 'panel'`;
-  const conditions: SQL[] = [];
-  if (filter.wattMin !== undefined) {
-    conditions.push(panel, sql`(${alias}.spec->>'watt')::numeric >= ${filter.wattMin}`);
-  }
-  if (filter.wattMax !== undefined) {
-    conditions.push(panel, sql`(${alias}.spec->>'watt')::numeric <= ${filter.wattMax}`);
-  }
-  if (filter.technology !== undefined) {
-    conditions.push(panel, sql`${alias}.spec->>'technology' = ${filter.technology}`);
-  }
-  return conditions;
 }

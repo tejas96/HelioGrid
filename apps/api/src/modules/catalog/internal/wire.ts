@@ -1,7 +1,11 @@
-import type { RateEntryWire, ResolvedCatalogItemWire } from '@heliogrid/contracts';
+import type {
+  CatalogImportRowWire,
+  RateEntryWire,
+  ResolvedCatalogItemWire,
+} from '@heliogrid/contracts';
 import { basisPointsToPercent, type ResolvedCatalogItem } from '@heliogrid/domain';
 import { minorUnitsOfDecimal, minorUnitsToDecimal } from '@heliogrid/domain/server';
-import type { RecordedRate } from '../catalog.rates.repository';
+import type { ItemRate, RecordedRate } from '../catalog.rates.repository';
 
 /** Whether this reader sees money, and how many digits the tenant's currency carries. */
 export interface MoneyView {
@@ -35,12 +39,28 @@ export function resolvedWire(item: ResolvedCatalogItem, money: MoneyView): Resol
 /** A ledger row as the history shows it: the stored decimal scaled to the currency's digits. */
 export function rateEntryWire(entry: RecordedRate, minorUnitDigits: number): RateEntryWire {
   return {
-    amount:
-      entry.amount === null
-        ? null
-        : minorUnitsToDecimal(minorUnitsOfDecimal(entry.amount, minorUnitDigits), minorUnitDigits),
+    amount: entry.amount === null ? null : scaledAmount(entry.amount, minorUnitDigits),
     currencyCode: entry.currency,
     effectiveOn: entry.effectiveOn,
     recordedAt: entry.recordedAt.toISOString(),
   };
+}
+
+/** A rate in force as a reader is shown it; null when the ledger's last entry cleared it. */
+export function storedRateWire(
+  rate: ItemRate,
+  minorUnitDigits: number,
+): CatalogImportRowWire['catalogPrice'] {
+  if (rate.amount === null) return null;
+  return {
+    source: rate.on,
+    amount: scaledAmount(rate.amount, minorUnitDigits),
+    currencyCode: rate.currency,
+    effectiveOn: rate.effectiveOn,
+  };
+}
+
+/** The column's decimal text scaled to the currency's digits, as every wire amount is. */
+function scaledAmount(stored: string, minorUnitDigits: number): string {
+  return minorUnitsToDecimal(minorUnitsOfDecimal(stored, minorUnitDigits), minorUnitDigits);
 }
