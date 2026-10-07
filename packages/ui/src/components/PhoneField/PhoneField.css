@@ -4,13 +4,13 @@
 .hg-phone-field {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-1);
+  gap: var(--sp-2);
   min-width: 0;
 }
 
 .hg-phone-field-label {
   font-family: var(--font-sans);
-  font-size: var(--fs-body-sm);
+  font-size: var(--fs-field-label);
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
 }
@@ -24,7 +24,7 @@
 }
 
 .hg-phone-field-shell[data-density="expressive"] {
-  height: 52px;
+  height: var(--field-h);
 }
 
 .hg-phone-field-shell[data-density="functional"] {
@@ -36,7 +36,7 @@
 .hg-phone-field-dial {
   flex-shrink: 0;
   font-family: var(--font-mono);
-  font-size: var(--fs-body);
+  font-size: var(--fs-field-value);
   color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
 }
@@ -49,7 +49,7 @@
   outline: none;
   background: transparent;
   font-family: var(--font-mono);
-  font-size: var(--fs-body);
+  font-size: var(--fs-field-value);
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
 }
@@ -57,7 +57,7 @@
 .hg-phone-field-message {
   margin: 0;
   font-family: var(--font-sans);
-  font-size: var(--fs-caption);
+  font-size: var(--fs-field-helper);
   line-height: var(--lh-caption);
   /* --text-secondary, not tertiary: a caller passing a sentence beside a field expects it read. */
   color: var(--text-secondary);

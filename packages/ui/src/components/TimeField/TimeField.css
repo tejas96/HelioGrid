@@ -18,7 +18,7 @@
 }
 
 .hg-time-field-label {
-  font-size: var(--fs-body-sm);
+  font-size: var(--fs-field-label);
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
 }
@@ -27,10 +27,10 @@
   display: flex;
   align-items: center;
   gap: var(--sp-2);
-  height: 48px;
+  height: var(--field-h);
   min-height: 44px;
   /* Pinned: the declared height is the height. Without this a flex column could shrink the box
-     to its min-height and every field in a tall form would silently be 44 instead of 48. */
+     to its min-height and every field in a tall form would silently be 44 instead of 54. */
   flex-shrink: 0;
   padding: 0 14px;
   /* The well, its radius and its rings are the FieldBox primitive's. */
@@ -53,7 +53,7 @@
   outline: none;
   background: transparent;
   font-family: var(--font-mono);
-  font-size: var(--fs-body);
+  font-size: var(--fs-field-value);
   font-weight: var(--fw-bold);
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
@@ -92,8 +92,8 @@
   cursor: not-allowed;
 }
 
-/* LIGHTER than the well, as a disabled field is: the well is every enabled control's fill. The
-   chosen preset keeps its accent, so its white words stay readable. */
+/* SUNK, as a disabled field is (Ground's --hg-control-fill-disabled). The chosen preset keeps its
+   accent, so its white words stay readable. */
 .hg-time-field-preset:disabled:not([data-active="true"]) {
   background: var(--hg-control-fill-disabled);
 }
@@ -105,7 +105,7 @@
 
 .hg-time-field-message {
   margin: 0;
-  font-size: var(--fs-caption);
+  font-size: var(--fs-field-helper);
   line-height: var(--lh-caption);
   color: var(--text-tertiary);
   text-wrap: pretty;
@@ -128,7 +128,7 @@
 
 .hg-time-range-legend {
   padding: 0;
-  font-size: var(--fs-body-sm);
+  font-size: var(--fs-field-label);
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
 }

@@ -16,6 +16,9 @@ const DEFAULT_ELEMENT: Record<TextVariant, TextElement> = {
   caption: 'p',
   overline: 'p',
   mono: 'code',
+  'field-label': 'span',
+  'field-value': 'span',
+  'field-helper': 'p',
 };
 
 interface WebTextProps extends TextProps {

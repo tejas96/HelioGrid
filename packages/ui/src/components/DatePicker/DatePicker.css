@@ -12,7 +12,7 @@
 .hg-date-picker-label {
   display: block;
   font-family: var(--font-sans);
-  font-size: var(--fs-body-sm);
+  font-size: var(--fs-field-label);
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
   margin-bottom: var(--sp-1);
@@ -20,7 +20,7 @@
 
 .hg-date-picker-trigger {
   width: 100%;
-  min-height: var(--sp-12);
+  min-height: var(--field-h);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -28,7 +28,7 @@
   padding: 0 var(--sp-4);
   /* The well, its radius and its rings are the FieldBox primitive's; open counts as focused. */
   font-family: var(--font-sans);
-  font-size: var(--fs-body);
+  font-size: var(--fs-field-value);
   color: var(--text-primary);
   cursor: pointer;
   text-align: left;
@@ -60,7 +60,7 @@
 .hg-date-picker-note {
   margin: var(--sp-1) var(--sp-0-5) 0;
   font-family: var(--font-sans);
-  font-size: var(--fs-caption);
+  font-size: var(--fs-field-helper);
   color: var(--text-tertiary);
 }
 

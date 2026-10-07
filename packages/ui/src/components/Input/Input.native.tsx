@@ -31,10 +31,13 @@ const KEYBOARD: Record<InputType, KeyboardTypeOptions> = {
   number: 'numeric',
 };
 
-const SHELL_HEIGHT: Record<InputDensity, number> = { expressive: 52, functional: 40 };
+const SHELL_HEIGHT: Record<InputDensity, number> = {
+  expressive: theme.layout['field-h'],
+  functional: theme.spacing['sp-10'],
+};
 
 const styles = StyleSheet.create({
-  column: { gap: theme.spacing['sp-1'], minWidth: 0 },
+  column: { gap: theme.spacing['sp-2'], minWidth: 0 },
   shell: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     padding: 0,
     fontFamily: theme.type.families.sans,
-    fontSize: theme.type.roles.body.fontSize,
+    fontSize: theme.type.field.value,
     color: theme.colors['text-primary'],
   },
   controlMono: { fontFamily: theme.type.families.mono },
@@ -116,7 +119,7 @@ export function Input({
   return (
     <View style={[styles.column, style]}>
       {label === undefined ? null : (
-        <Text variant="body-sm" color="secondary">
+        <Text variant="field-label" color="secondary">
           {label}
         </Text>
       )}
@@ -148,13 +151,13 @@ export function Input({
       {overrideNode === null ? renderAttribution(attribution, { fieldName: label }) : null}
       {/* The line under the field (`inputNote`) — success is words with its mark, never a ring. */}
       {note?.kind === 'error' ? (
-        <Text variant="caption" color="danger">
+        <Text variant="field-helper" color="danger">
           {note.text}
         </Text>
       ) : note?.kind === 'success' ? (
         <StatusMark tone="success" label={note.text} />
       ) : note?.kind === 'helper' ? (
-        <Text variant="caption" color="tertiary">
+        <Text variant="field-helper" color="tertiary">
           {note.text}
         </Text>
       ) : null}

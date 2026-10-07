@@ -1,13 +1,13 @@
-/* FieldBox — the well every field draws (F7-15, F7-24). A field is found by being DARKER than
-   the --surface page or sheet that holds it, never by an outline; a white field on a white surface
-   is the defect this exists to end. Each field keeps its own height, padding and layout; this owns
-   the ground, the radius and the rings, so ten fields cannot draw ten different ones again.
+/* FieldBox — the ground every field draws (F7-15, F7-24; the design system's open page). A field
+   is a --fill well on the white page, never an outline; a white field on a white surface is the
+   defect this exists to end. Each field keeps its own height, padding and layout; this owns the
+   ground, the radius and the rings, so ten fields cannot draw ten different ones again.
 
-   Text inside a well is --text-secondary or stronger: --text-tertiary on the well is 4.48:1, under
-   the text floor (packages/theme/src/contrast.ts), so the placeholder steps up. */
+   Text inside a well is --text-secondary or stronger (F7-15): --text-tertiary measures 4.71:1 on
+   --fill and 4.54:1 on the disabled well, at the floor's edge (packages/theme/src/contrast.ts). */
 
 [data-field-box] {
-  background: var(--bg-well);
+  background: var(--fill);
   border: none;
   box-shadow: none;
   transition:
@@ -28,27 +28,19 @@
   box-shadow: inset 0 0 0 1.5px var(--danger);
 }
 
-/* The system ring, outside the well: a --surface gap, then --accent. A shadow, so it moves nothing.
-   With a verdict it ADDS to the inset ring — a focused field in error shows both. */
-[data-field-box][data-fb-focused] {
-  /* biome-ignore lint/plugin/raw-white-css: field — FieldBox's focus gap: a field never sits in a tile */
-  box-shadow:
-    0 0 0 2px var(--surface),
-    0 0 0 4px var(--accent);
-}
-
+/* Focus is an inset accent ring, as the verdict is — it moves nothing, and on the white page an
+   outer ring's --surface gap would vanish. One ring, so focus wins it while the caret is in, even in
+   error (F7-24: focus is never removed); the error's words stay under the field and the danger ring
+   returns on blur. The selector outranks the verdict's, so the order of the rules cannot undo it. */
+[data-field-box][data-fb-focused],
 [data-field-box][data-fb-focused][data-fb-tone="error"] {
-  /* biome-ignore lint/plugin/raw-white-css: field — FieldBox's focus gap: a field never sits in a tile */
-  box-shadow:
-    inset 0 0 0 1.5px var(--danger),
-    0 0 0 2px var(--surface),
-    0 0 0 4px var(--accent);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
 }
 
-/* Disabled fades the well LIGHTER and keeps the value readable — a locked number that looked
-   empty would read as a hint. The screen's own reason line says why it is locked. */
+/* Disabled sinks the well and keeps the value readable — a locked number that looked empty would
+   read as a hint. The screen's own reason line says why it is locked. */
 [data-field-box][data-fb-disabled] {
-  background: var(--surface-form);
+  background: var(--canvas-sunken);
   cursor: not-allowed;
 }
 

@@ -33,10 +33,17 @@
      this palette's MARKS survive (a --success dot measures 3.13 there and 2.88 one step lower, under
      the 3:1 non-text floor), so the ladder bottoms out here and the page and the well coincide. Two
      names, two roles, one value; field mode already gives them different ones. */
-  --canvas:#EEF0F3;
+  /* OPEN PAGE (2026-09-29). The page is white. The old canvas grey is now the FILL of tiles,
+     fields, chips and round icon buttons — a surface is a fill on white, never a box on grey,
+     and never a card inside a card. --canvas-sunken keeps #EEF0F3 for wells and tracks. */
+  --canvas:#FFFFFF;
+  --fill:#F3F4F6;
+  --fill-hover:#ECEEF1;
+  --line-soft:#E3E5E9;
+  --line-tile:#E6E7EA;   /* the thin rule above a tile's action pills */
   --canvas-sunken:#EEF0F3;
   --surface:#FFFFFF;
-  --surface-form:#F6F7F9;
+  --surface-form:#FFFFFF;
   --surface-alt:#FAFBFC;
   --text-primary:#0A0A0B;   /* 19.79 / 18.46 */
   --text-secondary:#54565B; /*  7.34 /  6.85 — AAA */

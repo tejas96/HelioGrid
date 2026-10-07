@@ -73,7 +73,7 @@ export function TimeField({
   return (
     <View style={[styles.root, style]}>
       {label !== undefined ? (
-        <Text variant="body-sm" color="secondary" style={styles.label}>
+        <Text variant="field-label" color="secondary" style={styles.label}>
           {label}
         </Text>
       ) : null}
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing['sp-2'],
-    height: 48,
+    height: theme.layout['field-h'],
     minHeight: 44,
     paddingHorizontal: PAD_X - FIELD_BOX_EDGE,
   },
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     padding: 0,
     fontFamily: theme.type.families.mono,
-    fontSize: theme.type.roles.body.fontSize,
+    fontSize: theme.type.field.value,
     fontWeight: '700',
     fontVariant: ['tabular-nums'],
     color: theme.colors['text-primary'],

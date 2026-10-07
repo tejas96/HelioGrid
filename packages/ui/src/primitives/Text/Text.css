@@ -62,6 +62,22 @@
   line-height: var(--lh-caption);
 }
 
+.hg-text[data-variant="field-label"] {
+  font-size: var(--fs-field-label);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
+}
+
+.hg-text[data-variant="field-value"] {
+  font-size: var(--fs-field-value);
+  line-height: var(--lh-body);
+}
+
+.hg-text[data-variant="field-helper"] {
+  font-size: var(--fs-field-helper);
+  line-height: var(--lh-caption);
+}
+
 .hg-text[data-variant="overline"] {
   font-size: var(--fs-overline);
   line-height: var(--lh-caption);

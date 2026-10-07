@@ -23,7 +23,10 @@ test('a table is a heading on the page — no fill, no shadow', async ({ mount }
   await expect(table).toHaveCSS('border-radius', '0px');
 });
 
-test('a table row is on the page and its cell editor is a well', async ({ mount, page }) => {
+test('a table row is on the page and its cell editor is a field on the fill', async ({
+  mount,
+  page,
+}) => {
   const table = await mount(
     <DataTable
       columns={[{ key: 'name', label, editable: true }]}
@@ -37,7 +40,7 @@ test('a table row is on the page and its cell editor is a well', async ({ mount,
 
   await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--hg-ground'));
   await expect(row).toHaveCSS('box-shadow', 'none');
-  await expect(editor).toHaveCSS('background-color', await resolvedColour(page, '--bg-well'));
+  await expect(editor).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
   await expect(editor).toHaveCSS('box-shadow', 'none');
 });
 
@@ -81,7 +84,7 @@ test('a stacked record is a tile, and one holding an editor lies on the page', a
   await expect(onPage).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   await expect(onPage.getByRole('textbox', { name: label })).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--bg-well'),
+    await resolvedColour(page, '--fill'),
   );
   await expect(onPage.locator('.hg-checkbox-box')).toHaveCSS(
     'background-color',
@@ -108,7 +111,7 @@ test('a record whose only editor is in its detail list lies on the page', async 
   await expect(table.locator('.hg-dt-card')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   await expect(table.getByRole('textbox', { name: issue })).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--bg-well'),
+    await resolvedColour(page, '--fill'),
   );
 });
 
@@ -146,7 +149,7 @@ test('a flagged record holding an editor keeps its tint, and its controls are wh
   );
   await expect(card.getByRole('textbox', { name: label })).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--bg-well'),
+    await resolvedColour(page, '--fill'),
   );
 });
 

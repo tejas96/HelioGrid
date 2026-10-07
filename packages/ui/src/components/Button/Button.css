@@ -118,8 +118,8 @@
 
 .hg-button:disabled,
 .hg-button[aria-disabled="true"] {
-  /* LIGHTER than the well, as a disabled field is: the well is the enabled secondary's ground and
-     every field's, so a disabled primary on it would read as an enabled secondary. */
+  /* SUNK, as a disabled field is (Ground's --hg-control-fill-disabled), so a disabled primary never
+     reads as an enabled secondary. */
   background: var(--hg-control-fill-disabled);
   color: var(--text-disabled);
 }

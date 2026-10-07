@@ -42,7 +42,7 @@
   box-shadow: none;
 }
 
-/* LIGHTER than the well, as a disabled field is: the well is every enabled control's fill. */
+/* SUNK, as a disabled field is (Ground's --hg-control-fill-disabled). */
 .hg-checkbox[data-disabled="true"] .hg-checkbox-box {
   background: var(--hg-control-fill-disabled);
   box-shadow: none;

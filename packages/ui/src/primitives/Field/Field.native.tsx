@@ -1,9 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Text as RNText, View } from 'react-native';
+import { roleOf } from '../Text/Text.logic';
 import type { FieldProps } from './Field.types';
 
-const R = theme.type.roles;
 const sans = theme.type.families.sans;
 
 const container: ViewStyle = {
@@ -14,8 +14,7 @@ const container: ViewStyle = {
 const labelStyle: TextStyle = {
   fontFamily: sans,
   fontWeight: '500',
-  fontSize: R['body-sm'].fontSize,
-  lineHeight: R['body-sm'].lineHeight,
+  ...roleOf('field-label'),
   color: theme.colors['text-secondary'],
 };
 
@@ -25,15 +24,13 @@ const requiredStyle: TextStyle = {
 
 const hintStyle: TextStyle = {
   fontFamily: sans,
-  fontSize: R.caption.fontSize,
-  lineHeight: R.caption.lineHeight,
+  ...roleOf('field-helper'),
   color: theme.colors['text-tertiary'],
 };
 
 const errorStyle: TextStyle = {
   fontFamily: sans,
-  fontSize: R.caption.fontSize,
-  lineHeight: R.caption.lineHeight,
+  ...roleOf('field-helper'),
   color: theme.colors['danger-text'],
 };
 

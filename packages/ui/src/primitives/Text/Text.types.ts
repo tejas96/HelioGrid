@@ -3,7 +3,8 @@ import type { ReactNode } from 'react';
 /**
  * The DS type scale (docs/engineering/17 §4). `overline` is the 11px/700/uppercase/0.12em signature —
  * the one sanctioned appearance below the 12px floor. `mono` is body-sm in Geist Mono,
- * for figures and identifiers.
+ * for figures and identifiers. The three `field-` variants are a field's label, typed value and
+ * helper or error line, at the design system's field sizes (`--fs-field-*`).
  */
 export type TextVariant =
   | 'display'
@@ -16,7 +17,10 @@ export type TextVariant =
   | 'body-sm'
   | 'caption'
   | 'overline'
-  | 'mono';
+  | 'mono'
+  | 'field-label'
+  | 'field-value'
+  | 'field-helper';
 
 /**
  * Text colour roles. The semantic entries resolve to the `-text` partner tokens — the only

@@ -3,6 +3,7 @@ import { runBannedWordOtherFiles } from './banned-word-other-files';
 import { runBiomePluginScopes } from './biome-plugin-scopes';
 import { runBrandRegistry } from './brand-registry';
 import { runDesignSystemProps } from './design-system-props';
+import { runDesignSystemSnapshot } from './design-system-snapshot';
 import { runDockerfileUnprivileged } from './dockerfile-unprivileged';
 import { runE2eFlowPerScreen } from './e2e-flow-per-screen';
 import { runEnumParity } from './enum-parity';
@@ -28,7 +29,7 @@ import { runVocabularyCopies } from './vocabulary-copies';
  * brand-registry (static), template-keys-mirror-f6 (static, F6-26), and the static repo
  * checks: vocabulary-copies, dockerfile-unprivileged, light-only-platform-files,
  * banned-word-other-files, env-example-complete, language-fonts, e2e-flow-per-screen,
- * design-system-props, biome-plugin-scopes, launch-reuses-running-servers.
+ * design-system-props, design-system-snapshot, biome-plugin-scopes, launch-reuses-running-servers.
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
@@ -47,6 +48,7 @@ async function main() {
   await runLanguageFonts(REPO_ROOT); // static — reads the BUILT i18n and theme packages
   runE2eFlowPerScreen(REPO_ROOT); // static — every route and screen has its regression flow
   runDesignSystemProps(REPO_ROOT); // static — no design-system prop dropped by its port
+  runDesignSystemSnapshot(REPO_ROOT); // static — the pulled tokens equal the pulled census
   runBiomePluginScopes(REPO_ROOT); // static — every lint plugin covers a place that exists
   runLaunchReusesRunningServers(REPO_ROOT); // static — a dev-server start kills nothing, appends its log
   const env = loadInvariantsEnv();

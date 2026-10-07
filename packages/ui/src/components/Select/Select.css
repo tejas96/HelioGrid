@@ -8,7 +8,7 @@
 
 .hg-select-label {
   display: block;
-  font-size: var(--fs-body-sm);
+  font-size: var(--fs-field-label);
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
   margin-bottom: 6px;
@@ -18,9 +18,9 @@
   width: 100%;
   min-height: 44px;
   /* Pinned: the declared height is the height. Without this a flex column could shrink the box
-     to its min-height and every field in a tall form would silently be 44 instead of 48. */
+     to its min-height and every field in a tall form would silently be 44 instead of 54. */
   flex-shrink: 0;
-  height: 48px;
+  height: var(--field-h);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -29,7 +29,7 @@
   /* The well, its radius and its rings are the FieldBox primitive's; open counts as focused, and
      keyboard focus takes the system outline every button carries. */
   font-family: var(--font-sans);
-  font-size: var(--fs-body);
+  font-size: var(--fs-field-value);
   text-align: left;
   color: var(--text-primary);
   cursor: pointer;
@@ -64,7 +64,7 @@
 
 .hg-select-message {
   margin: 6px 2px 0;
-  font-size: var(--fs-caption);
+  font-size: var(--fs-field-helper);
   color: var(--text-tertiary);
 }
 
@@ -107,7 +107,7 @@
   cursor: pointer;
   background: transparent;
   color: var(--text-primary);
-  font-size: var(--fs-body);
+  font-size: var(--fs-field-value);
 }
 
 /* A disabled option's label stays READABLE (--text-tertiary, not --text-disabled): MS2-21 requires

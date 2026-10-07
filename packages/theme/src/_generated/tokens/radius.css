@@ -11,7 +11,9 @@
   --r-card-expressive:24px;
   --r-card-functional:12px;
   --r-sheet-top:32px;
-  --r-input-expressive:14px;
+  --r-input-expressive:16px;
+  --r-field:16px;       /* every filled field, 54px tall */
+  --r-tile:22px;        /* a list item: one grey tile on the white page */
   --r-input-functional:10px;
   --r-feature-tile:999px 999px 32px 32px; /* @kind radius */ /* signature stadium/superellipse — use sparingly */
 }

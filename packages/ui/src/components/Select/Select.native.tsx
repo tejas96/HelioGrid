@@ -88,7 +88,7 @@ function SelectTrigger({
       ]}
     >
       <Text
-        variant="body"
+        variant="field-value"
         // Text in a well is secondary or stronger; a disabled value stays readable.
         color={current === undefined || disabled ? 'secondary' : 'primary'}
         style={styles.value}
@@ -159,7 +159,7 @@ export function Select({
   return (
     <View style={style}>
       {label !== undefined ? (
-        <Text variant="body-sm" color="secondary" style={styles.label}>
+        <Text variant="field-label" color="secondary" style={styles.label}>
           {label}
         </Text>
       ) : null}
@@ -176,7 +176,7 @@ export function Select({
         />
       </View>
       {helper !== undefined || error !== undefined ? (
-        <Text variant="caption" color={error !== undefined ? 'danger' : 'tertiary'}>
+        <Text variant="field-helper" color={error !== undefined ? 'danger' : 'tertiary'}>
           {error ?? helper}
         </Text>
       ) : null}
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   trigger: {
     width: '100%',
     minHeight: 44,
-    height: 48,
+    height: theme.layout['field-h'],
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

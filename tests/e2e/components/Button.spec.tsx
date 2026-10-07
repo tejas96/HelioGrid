@@ -21,3 +21,15 @@ test('a medium secondary button on the page is the well, and no shorter than the
   const box = await button.boundingBox();
   expect(box?.height).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
 });
+
+test('a disabled primary button sinks to --canvas-sunken, never the white page it sits on', async ({
+  mount,
+  page,
+}) => {
+  const button = await mount(<Button disabled>{tryAgain}</Button>);
+
+  await expect(button).toHaveCSS('background-color', await resolvedColour(page, '--canvas-sunken'));
+  expect(await resolvedColour(page, '--canvas-sunken')).not.toBe(
+    await resolvedColour(page, '--canvas'),
+  );
+});

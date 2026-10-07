@@ -41,6 +41,19 @@ const TYPE_ROLES = [
   'table',
 ] as const;
 
+/** The three sizes every field shares — its label, its value, its helper or error line. */
+const FIELD_TYPE_PARTS = ['label', 'value', 'helper'] as const;
+
+function fieldType(resolved: Map<string, string>): Record<string, number> {
+  const sizes: Record<string, number> = {};
+  for (const part of FIELD_TYPE_PARTS) {
+    const size = pxToNumber(resolved.get(`fs-field-${part}`) ?? '');
+    if (size === undefined) throw new Error(`--fs-field-${part} is missing or not px`);
+    sizes[part] = size;
+  }
+  return sizes;
+}
+
 function typeRole(resolved: Map<string, string>, role: string) {
   const fs = resolved.get(`fs-${role}`);
   if (!fs) throw new Error(`missing --fs-${role}`);
@@ -164,6 +177,7 @@ export function buildThemeObject(input: ThemeInputs) {
       scriptStack,
       weights,
       roles: typography,
+      field: fieldType(resolved),
     },
     spacing: pickPx(resolved, spacingNames),
     layout: pickPx(resolved, layoutNames),

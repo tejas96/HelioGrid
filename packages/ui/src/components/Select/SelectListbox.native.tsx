@@ -89,7 +89,7 @@ function OptionRow({ active, onPress, option, selected }: OptionRowProps) {
       >
         <View style={styles.line}>
           <Text
-            variant="body"
+            variant="field-value"
             color={disabled ? 'tertiary' : 'primary'}
             style={selected ? styles.selectedLabel : undefined}
           >

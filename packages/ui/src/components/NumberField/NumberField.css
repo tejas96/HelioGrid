@@ -6,7 +6,7 @@
 
 .hg-number-field-label {
   display: block;
-  font-size: var(--fs-body-sm);
+  font-size: var(--fs-field-label);
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
   margin-bottom: 6px;
@@ -15,12 +15,12 @@
 .hg-number-field-box {
   display: flex;
   align-items: center;
-  height: 48px;
+  height: var(--field-h);
   min-height: 44px;
   /* Pinned: the declared height is the height. Without this a flex column could shrink the box
-     to its min-height and every field in a tall form would silently be 44 instead of 48. */
+     to its min-height and every field in a tall form would silently be 44 instead of 54. */
   flex-shrink: 0;
-  padding: 0 14px;
+  padding: 0 var(--sp-4);
 }
 
 .hg-number-field-box[data-density="functional"] {
@@ -42,7 +42,7 @@
   background: transparent;
   text-align: right;
   font-family: var(--font-mono);
-  font-size: var(--fs-body);
+  font-size: var(--fs-field-value);
   font-weight: var(--fw-bold);
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
@@ -80,7 +80,7 @@
 
 .hg-number-field-message {
   margin: 6px 2px 0;
-  font-size: var(--fs-caption);
+  font-size: var(--fs-field-helper);
   line-height: 1.45;
   color: var(--text-tertiary);
   text-wrap: pretty;
