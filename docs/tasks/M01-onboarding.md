@@ -627,18 +627,22 @@ Since the start: the browser pane, `started_by_task` (tab `seed`, the board for 
 - A planted red restored by moving a backup file back kept the component-test cache stale, and the green run still failed → `tests/e2e/CLAUDE.md` now says to restore by editing, since `test:ct` clears its cache by modification time.
 - QA pass 1 found three 375 differences the phone app already drew (the note under the primary, the code step's header, the intro size) — the RFC had compared order, size, gaps and pins only → each board element is compared, as the side-by-side row says; built as the owner-approved delta.
 
-### T-M01-039 · The door when the network or the session fails
+### T-M01-039 · The door and the web when the network or the session fails
 **Type:** screen · **Tier:** P0 (`F8-36`)
 **Status:** planned
-**Why:** The door blames the server for the person's own connection (D1), a boot during a deploy or a timeout signs a signed-in person out (D7), and a person whose access was removed lands on the door with no reason (D6).
+**Why:** The door blames the server for the person's own connection (D1), a boot during a deploy or a timeout signs a signed-in person out (D7), a person whose access was removed lands on the door with no reason (D6), the company step says *nothing was created* after a request that got no answer (D39), the web has no offline state and loads forever (D80), both apps render API failures each their own way (D68), and the phone's dev build shows an unread debugger warning (D78).
 **PRD rows:** `F8-36` (a failure says what happened, plainly); `M01-07` (sessions end only by their own rules).
 **DESIGN:** SCR-M01-01 → the existing board; the access-removed frame is drawn first (D6, the owner's prompt from the deferred review of 2026-10-08).
-**Chosen by the owner** (deferred review, 2026-10-08): D1 and D7 as one task, D6 rides with it.
+**Chosen by the owner** (deferred review, 2026-10-08): D1 and D7 as one task; D6, D39, D68, D78 and D80 ride with it.
 **Depends on:** `T-M01-038`.
 **DONE WHEN:**
 - A request that got no answer reads as *could not be reached*, never *something on our side failed*; a server refusal keeps its own words. → proof: unit test of `loginFrame`; QA web and phone with the network off.
 - A boot that fails for anything but a lost session keeps the person signed in and offers a retry over the loading frame. → proof: unit test of the session store; QA with the api stopped during boot.
 - A person whose access was removed sees the board's access-removed frame on the door, cleared by the next sign-in. → proof: QA web and phone; side-by-side with the board.
+- After a create that got no answer, the company step says the company may have been made and trying again is safe; a server refusal keeps *nothing was created*. → proof: unit test of the words; QA with the api stopped mid-create; side-by-side with the redrawn `SCR-M01-02` frame.
+- With no connection the web shows the shared no-connection screen instead of loading forever. → proof: a Playwright case that drops the network.
+- Both apps render an API failure through one `ApiErrorText` in `packages/ui` (one `.types.ts`, words from `packages/i18n`). → proof: typecheck; QA web and phone.
+- The phone dev build's debugger warning is read and its source fixed, or recorded with why it stays. → proof: QA on a cold start.
 
 ### T-M01-040 · Signing in returns the person to where they were going
 **Type:** screen · **Tier:** P1 (`M01-61`)
