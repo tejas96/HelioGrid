@@ -107,6 +107,23 @@ export const similarTenantSchema = z.object({
   city: citySchema,
 });
 
+/**
+ * A request to be added to a company that already exists (`M01-09`). It names no company id: the
+ * api matches the typed name and city again, so a request reaches only a company whose exact name
+ * and city the asker typed. `name` is the asker's name as typed on the company step, carried for
+ * the owner's notice and stored nowhere else.
+ */
+export const joinRequestSchema = z.object({
+  companyName: companyNameSchema,
+  city: citySchema,
+  name: personNameSchema,
+});
+export type JoinRequest = z.infer<typeof joinRequestSchema>;
+
+/** The company the request went to, as it is stored — what the sent state names. */
+export const requestedCompanySchema = similarTenantSchema.pick({ companyName: true, city: true });
+export type RequestedCompany = z.infer<typeof requestedCompanySchema>;
+
 const unauthenticated = unauthenticatedEnvelope;
 const forbidden = errorEnvelope(baseError('FORBIDDEN'));
 const notFound = errorEnvelope(baseError('NOT_FOUND'));
@@ -212,10 +229,26 @@ export const tenantContract = c.router({
     method: 'GET',
     path: '/tenants/similar',
     query: similarTenantsQuerySchema,
-    summary: 'Likely-existing workspaces by company name and city — the request-to-join steer',
+    summary:
+      'Likely-existing workspaces by company name and city, oldest first — the request-to-join steer',
     responses: {
       200: z.object({ items: z.array(similarTenantSchema) }),
       401: unauthenticated,
+    },
+  },
+  joinRequest: {
+    method: 'POST',
+    path: '/tenants/join-requests',
+    body: joinRequestSchema,
+    summary:
+      'Ask the oldest company with this exact name and city to add me — a notice to each of its EPC Owners; a repeat sends nothing new',
+    responses: {
+      200: requestedCompanySchema,
+      401: unauthenticated,
+      /** No company has this name and city now. */
+      404: notFound,
+      /** The asker already belongs to a company: the steer exists only on signup. */
+      409: errorEnvelope(baseError('CONFLICT')),
     },
   },
 });

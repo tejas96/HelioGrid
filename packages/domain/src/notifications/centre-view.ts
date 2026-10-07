@@ -1,7 +1,7 @@
 import type { CalendarDate } from '../format/holidays';
 import { localDate, MS_PER_DAY } from '../format/zone';
 import { NOTIFICATION_REGISTRY } from './registry';
-import { NOTIFICATION_TYPES, type NotificationType } from './types';
+import { isKnownType } from './types';
 
 /**
  * What the centre reads of one notification. Named by shape here because `packages/contracts`
@@ -131,8 +131,4 @@ function daysBetween(from: CalendarDate, to: CalendarDate): number {
  */
 export function isAnnouncement(type: string): boolean {
   return isKnownType(type) && NOTIFICATION_REGISTRY[type].raisedBy === 'platform';
-}
-
-function isKnownType(type: string): type is NotificationType {
-  return (NOTIFICATION_TYPES as readonly string[]).includes(type);
 }

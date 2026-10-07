@@ -25,7 +25,7 @@ export function KnownNumber({
   const t = useTranslate();
   return (
     <InsetDoorFrame trailing={<LanguageControl />}>
-      <View style={styles.knownTitle}>
+      <View style={styles.offFlowTitle}>
         <Text variant="h2">{t(COMPANY_SIGNUP.knownTitle)}</Text>
         <Text variant="body" color="secondary">
           {t(COMPANY_SIGNUP.knownIntro)}

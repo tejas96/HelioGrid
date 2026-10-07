@@ -15,7 +15,8 @@ import { SettingsTranchesRepository } from './settings.tranches.repository';
 /**
  * Tenant settings and the setup corridor (`T-M01-026`). It reads the tenant's market pack for
  * the tax formats and the holiday floor; the tenant module calls its seed inside the creation
- * transaction through the public surface, never the other way round.
+ * transaction and reads a company's quiet hours through the public surface, never the other way
+ * round.
  */
 @Module({
   imports: [MarketModule],
@@ -31,5 +32,6 @@ import { SettingsTranchesRepository } from './settings.tranches.repository';
     SettingsAdminRepository,
     QuietHoursRepository,
   ],
+  exports: [SettingsService],
 })
 export class SettingsModule {}

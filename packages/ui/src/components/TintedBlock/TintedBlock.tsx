@@ -12,7 +12,7 @@ interface WebTintedBlockProps extends TintedBlockProps {
 export function TintedBlock({ tone, title, body, className, style }: WebTintedBlockProps) {
   return (
     <div className={classNames('hg-tinted-block', className)} data-tone={tone} style={style}>
-      <Text variant="body-sm" color={tone}>
+      <Text variant="body-sm" color={tone} bold>
         {title}
       </Text>
       {body === undefined ? null : (

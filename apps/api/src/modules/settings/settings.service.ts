@@ -10,12 +10,14 @@ import type {
 } from '@heliogrid/contracts';
 import {
   checkTaxRegistration,
+  clockTime,
   clockTimeHhmm,
   compliantShades,
   type EffectiveSettings,
   type MarketPack,
   marketQuietHours,
   packLabel,
+  type QuietWindow,
   resolveEffectiveSettings,
   type UiLanguage,
 } from '@heliogrid/domain';
@@ -23,6 +25,7 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
 import { ContractException } from '../../common/errors/contract-exception';
 import { MarketPackService } from '../market/market.public';
+import type { TenantQuietHours } from '../notification/notification.public';
 import { brandingWire, effectiveWire } from './internal/wire';
 import { SettingsAdminRepository } from './settings.admin.repository';
 import { QuietHoursRepository } from './settings.quiet-hours.repository';
@@ -141,7 +144,7 @@ export class SettingsService {
     const read = await this.scoped.everything(tenantId);
     if (read === null) throw notVisible();
     const { marketCode, ...tenant } = read.tenant;
-    const pack = await this.packOfMarket(marketCode);
+    const pack = await this.markets.currentPackOf(marketCode);
     return resolveEffectiveSettings({
       formats: pack.formats,
       tenant,
@@ -168,32 +171,50 @@ export class SettingsService {
     return this.resolvedWindow(tenantId, await this.quiet.save(tenantId, body));
   }
 
+  /**
+   * The window a notification's push is held against, on the company's own clock (`F6-14`,
+   * `F1-10`): the one `quietHours` serves, read for a company the caller does not belong to.
+   */
+  async quietHoursOf(tenantId: string): Promise<TenantQuietHours> {
+    const own = await this.scoped.tenant(tenantId);
+    if (own === null) throw new Error(`no company ${tenantId} to hold a push for`);
+    const { window } = await this.windowInForce(own.marketCode, await this.quiet.read(tenantId));
+    return { window, timezone: own.timezone };
+  }
+
   private async resolvedWindow(
     tenantId: string,
     stored: { start: string | null; end: string | null },
   ): Promise<{ source: SettingSource; value: QuietHours }> {
-    if (stored.start !== null && stored.end !== null) {
-      /* The column is `time`, so it reads back with seconds the wire format does not carry. */
-      return { source: 'tenant', value: { start: hhmm(stored.start), end: hhmm(stored.end) } };
-    }
-    const fromMarket = marketQuietHours((await this.packOf(tenantId)).callingRules);
+    const own = await this.scoped.tenant(tenantId);
+    if (own === null) throw notVisible();
+    const { source, window } = await this.windowInForce(own.marketCode, stored);
     return {
-      source: 'platform',
-      value: { start: clockTimeHhmm(fromMarket.start), end: clockTimeHhmm(fromMarket.end) },
+      source,
+      value: { start: clockTimeHhmm(window.start), end: clockTimeHhmm(window.end) },
     };
+  }
+
+  /** The company's own window when it keeps one, else its market's default. */
+  private async windowInForce(
+    marketCode: string,
+    stored: { start: string | null; end: string | null },
+  ): Promise<{ source: SettingSource; window: QuietWindow }> {
+    if (stored.start !== null && stored.end !== null) {
+      /* The column is `time`, so it reads back with seconds a `ClockTime` does not carry. */
+      return {
+        source: 'tenant',
+        window: { start: clockTime(hhmm(stored.start)), end: clockTime(hhmm(stored.end)) },
+      };
+    }
+    const pack = await this.markets.currentPackOf(marketCode);
+    return { source: 'platform', window: marketQuietHours(pack.callingRules) };
   }
 
   private async packOf(tenantId: string): Promise<MarketPack> {
     const own = await this.scoped.tenant(tenantId);
     if (own === null) throw notVisible();
-    return this.packOfMarket(own.marketCode);
-  }
-
-  /** The tenant's market has a published pack, or the deployment is broken: said loudly, never guessed. */
-  private async packOfMarket(marketCode: string): Promise<MarketPack> {
-    const pack = (await this.markets.currentPacks()).find((one) => one.market === marketCode);
-    if (pack === undefined) throw new Error(`no pack is published for market ${marketCode}`);
-    return pack;
+    return this.markets.currentPackOf(own.marketCode);
   }
 }
 

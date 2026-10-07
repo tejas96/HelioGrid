@@ -101,7 +101,7 @@
       },
       "app-api": {
         "dependencies": {
-          "allow": ["app-api", "contracts", "domain", "db", "env", "config"]
+          "allow": ["app-api", "contracts", "domain", "db", "env", "i18n", "config"]
         }
       },
       "app-worker": {

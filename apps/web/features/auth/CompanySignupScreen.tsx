@@ -1,5 +1,5 @@
 'use client';
-import { useSession, useSessionPhase, useSignIn } from '@heliogrid/data/react';
+import { useCompanySignup, useSession, useSessionPhase, useSignIn } from '@heliogrid/data/react';
 import { homeOf, signupView } from '@heliogrid/domain';
 import { COMPANY_SIGNUP, homeTitle, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
@@ -10,6 +10,7 @@ import './sign-in.css';
 import './company-signup.css';
 import { CodeStep } from './components/CodeStep';
 import { CompanyStep } from './components/CompanyStep';
+import { JoinRequestSent } from './components/JoinRequestSent';
 import { KnownNumber } from './components/KnownNumber';
 import { PhoneStep } from './components/PhoneStep';
 import { SignupProgress } from './components/SignupProgress';
@@ -19,7 +20,8 @@ import { HOME_ROUTE, LOGIN_ROUTE } from './constants';
  * Company signup on the web (`SCR-M01-02` at 1536): the number, the code, then three fields, over
  * the flow `T-M01-036` landed and the door's two-field composition. The open group holds no gate:
  * the screen opens to a new number before any session exists and to a verified number
- * without a company (`M01-10`). Which panel shows is `signupView`'s; this composes, and on the
+ * without a company (`M01-10`). Which panel shows is `signupView`'s, over the join steer
+ * `useCompanySignup` holds (`M01-09`); this composes, and on the
  * `done` view sends a person who has a company to their home once the session phase is signed in
  * (`M01-08`) — at once for an owner who arrives signed in, after the beat for a known number
  * entered here.
@@ -31,7 +33,8 @@ export function CompanySignupScreen() {
   const phase = useSessionPhase();
   const { pack } = useFormat();
   const signIn = useSignIn(pack, 'signup');
-  const view = signupView(session, signIn.state.step);
+  const signup = useCompanySignup();
+  const view = signupView(session, signIn.state.step, signup.steer);
   const sendHome = view === 'done' && phase === 'signedIn';
 
   useEffect(() => {
@@ -61,8 +64,25 @@ export function CompanySignupScreen() {
       <SuccessDwell title={t(SIGN_IN.youAreIn)} line={t(SIGN_IN.takingYouTo, { destination })} />
     );
   }
-  if (view === 'company' && session.user !== null) {
-    return <CompanyStep user={session.user} restored={session.restored} />;
+  if (view === 'sent' && session.user !== null && signup.found !== null) {
+    return (
+      <JoinRequestSent
+        company={signup.found}
+        name={signup.typedName ?? session.user.name}
+        phoneE164={session.user.phoneE164}
+        onCreateInstead={() => void signup.createAnyway()}
+      />
+    );
+  }
+  if ((view === 'company' || view === 'join') && session.user !== null) {
+    return (
+      <CompanyStep
+        user={session.user}
+        restored={session.restored}
+        joining={view === 'join'}
+        signup={signup}
+      />
+    );
   }
   if (view === 'code') {
     return (

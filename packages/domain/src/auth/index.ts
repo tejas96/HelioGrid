@@ -116,5 +116,5 @@ export {
 } from './session-policy';
 export type { SessionEvent } from './session-transitions';
 export { CHECKING, canRenew, SIGNED_OUT, sessionAfter } from './session-transitions';
-export type { SignupView } from './signup-view';
+export type { JoinSteer, SignupView } from './signup-view';
 export { signupView } from './signup-view';

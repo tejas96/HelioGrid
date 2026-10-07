@@ -19,7 +19,7 @@ const TINT: Record<BlockTone, ViewStyle> = {
 export function TintedBlock({ tone, title, body, style }: NativeTintedBlockProps) {
   return (
     <View style={[styles.block, TINT[tone], style]}>
-      <Text variant="body-sm" color={tone}>
+      <Text variant="body-sm" color={tone} bold>
         {title}
       </Text>
       {body === undefined ? null : (

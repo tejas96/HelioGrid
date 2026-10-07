@@ -1,7 +1,12 @@
 import { localDate, MS_PER_DAY } from '../format/zone';
 import type { SubjectKind } from '../subject/kinds';
 import { NOTIFICATION_REGISTRY, typeGroupOf } from './registry';
-import { NOTIFICATION_TYPES, type NotificationType, type NotificationTypeGroup } from './types';
+import {
+  isKnownType,
+  NOTIFICATION_TYPES,
+  type NotificationType,
+  type NotificationTypeGroup,
+} from './types';
 
 /**
  * How many days back the notification centre reads (`F6-19`) — the owner's number, and the one
@@ -28,15 +33,17 @@ export function typesInGroups(groups: readonly NotificationTypeGroup[]): Notific
  * on the same TENANT calendar day (`F1-10`) — "3 proposals opened today". Equal keys group.
  *
  * An immediate type answers null and never groups, because grouping it would hide the one thing
- * the class exists to surface (`F6-13`). Grouping is presentation only: every record still stands
- * on its own, and the key is how the screen knows which to draw together without deciding it.
+ * the class exists to surface (`F6-13`). So does a type this build does not know: a newer api may
+ * have written it while this one still serves the inbox, and its urgency is not known here.
+ * Grouping is presentation only: every record still stands on its own, and the key is how the
+ * screen knows which to draw together without deciding it.
  */
 export function centreGroupKey(
-  type: NotificationType,
+  type: string,
   subjectKind: SubjectKind,
   emittedAt: number,
   timeZone: string,
 ): string | null {
-  if (NOTIFICATION_REGISTRY[type].urgency === 'immediate') return null;
+  if (!isKnownType(type) || NOTIFICATION_REGISTRY[type].urgency === 'immediate') return null;
   return `${type}:${subjectKind}:${localDate(emittedAt, timeZone)}`;
 }

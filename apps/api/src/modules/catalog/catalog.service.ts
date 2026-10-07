@@ -230,10 +230,7 @@ export class CatalogService {
   async scopeOf(tenantId: string, now: number): Promise<Scope> {
     const tenant = await this.slice.tenantOf(tenantId);
     if (tenant === null) throw new Error('the guard admitted a catalog route with no company');
-    const pack = (await this.markets.currentPacks()).find(
-      (candidate) => candidate.market === tenant.marketCode,
-    );
-    if (pack === undefined) throw new Error(`no pack is published for market ${tenant.marketCode}`);
+    const pack = await this.markets.currentPackOf(tenant.marketCode);
     return {
       ...tenant,
       certificationSchemes: pack.certificationSchemes,

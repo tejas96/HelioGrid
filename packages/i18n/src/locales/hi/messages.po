@@ -43,7 +43,7 @@ msgid "{count, plural, one {# lead unassigned for a day} other {# leads unassign
 msgstr "{count, plural, one {# लीड एक दिन से किसी को नहीं सौंपी गई} other {# लीड एक दिन से किसी को नहीं सौंपी गईं}}"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:107
+#: src/copy/notifications.ts:110
 msgid "{count, plural, one {# notification} other {# notifications}}"
 msgstr "{count, plural, one {# सूचना} other {# सूचनाएँ}}"
 
@@ -53,7 +53,7 @@ msgid "{count, plural, one {# payment due} other {# payments due}}"
 msgstr "{count, plural, one {# भुगतान बाकी} other {# भुगतान बाकी}}"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:102
+#: src/copy/notifications.ts:105
 msgid "{count, plural, one {# product update} other {# product updates}}"
 msgstr "{count, plural, one {# प्रोडक्ट अपडेट} other {# प्रोडक्ट अपडेट}}"
 
@@ -61,6 +61,11 @@ msgstr "{count, plural, one {# प्रोडक्ट अपडेट} other {
 #: src/copy/notifications.ts:80
 msgid "{count, plural, one {# proposal opened} other {# proposals opened}}"
 msgstr "{count, plural, one {# प्रस्ताव खोला गया} other {# प्रस्ताव खोले गए}}"
+
+#. js-lingui-explicit-id
+#: src/copy/notifications.ts:102
+msgid "{count, plural, one {# request to join} other {# requests to join}}"
+msgstr "{count, plural, one {जुड़ने का # अनुरोध} other {जुड़ने के # अनुरोध}}"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:95
@@ -118,6 +123,11 @@ msgid "{name} — account, grievance contact and sign out"
 msgstr "{name} — खाता, शिकायत संपर्क और साइन आउट"
 
 #. js-lingui-explicit-id
+#: src/copy/join-request.ts:9
+msgid "{name} asks to join"
+msgstr "{name} जुड़ना चाहते हैं"
+
+#. js-lingui-explicit-id
 #: src/copy/explainer.ts:8
 msgid "{page} of {total}"
 msgstr "{total} में से {page}"
@@ -126,6 +136,11 @@ msgstr "{total} में से {page}"
 #: src/copy/sign-in.ts:63
 msgid "{perWindow} codes in {windowMinutes} minutes is the limit"
 msgstr "{windowMinutes} मिनट में {perWindow} कोड की सीमा है"
+
+#. js-lingui-explicit-id
+#: src/copy/join-request.ts:10
+msgid "{phone} asked to be added to {company}."
+msgstr "{phone} ने {company} में जोड़े जाने का अनुरोध किया है।"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:39
@@ -183,7 +198,7 @@ msgid "{weekday} · {date}"
 msgstr "{weekday} · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:83
+#: src/copy/company-signup.ts:101
 msgid "A city is needed — it is where your company is based."
 msgstr "शहर ज़रूरी है — यही बताता है कि आपकी कंपनी कहाँ है।"
 
@@ -193,7 +208,7 @@ msgid "A code lasts {codeMinutes} minutes"
 msgstr "एक कोड {codeMinutes} मिनट तक चलता है"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:79
+#: src/copy/company-signup.ts:97
 msgid "A company name is needed — it goes on every proposal you send."
 msgstr "कंपनी का नाम ज़रूरी है — यह आपके हर प्रस्ताव पर जाता है।"
 
@@ -201,6 +216,11 @@ msgstr "कंपनी का नाम ज़रूरी है — यह �
 #: src/copy/api-error.ts:75
 msgid "A release already has this name. Choose another name."
 msgstr "इस नाम की रिलीज़ पहले से है। कोई दूसरा नाम चुनें।"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:70
+msgid "A workspace already exists for {company} in {city}"
+msgstr "{city} में {company} का वर्कस्पेस पहले से है"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:58
@@ -241,6 +261,11 @@ msgstr "इस नंबर पर पहले ही एक आमंत्र
 #: src/copy/notifications.ts:48
 msgid "Anything that needs you, or changes on work you hold, lands here — newest first, with the one thing you can do about it."
 msgstr "जिस काम में आपकी ज़रूरत है, या आपके काम में जो बदलता है, वह यहाँ आता है — सबसे नया पहले, और साथ में वह एक काम जो आप कर सकते हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:71
+msgid "Asking to join sends its owner a request to add {phone}."
+msgstr "जुड़ने का अनुरोध करने पर उसके मालिक को {phone} जोड़ने का अनुरोध जाता है।"
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:13
@@ -312,6 +337,11 @@ msgstr "भाषा बदलें"
 #: src/copy/sign-in.ts:18
 msgid "Change number"
 msgstr "नंबर बदलें"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:85
+msgid "Changed your mind, or it is not the same company?"
+msgstr "मन बदल गया, या यह वही कंपनी नहीं है?"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:44
@@ -404,6 +434,11 @@ msgid "Create a company account"
 msgstr "कंपनी खाता बनाएँ"
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:74
+msgid "Create a new company anyway"
+msgstr "फिर भी नई कंपनी बनाएँ"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:43
 msgid "Create company"
 msgstr "कंपनी बनाएँ"
@@ -412,6 +447,11 @@ msgstr "कंपनी बनाएँ"
 #: src/copy/company-signup.ts:12
 msgid "Create your company"
 msgstr "अपनी कंपनी बनाएँ"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:86
+msgid "Create your own company instead"
+msgstr "इसके बजाय अपनी कंपनी बनाएँ"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:44
@@ -882,6 +922,16 @@ msgid "Reported"
 msgstr "सूचित किया गया"
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:72
+msgid "Request to join"
+msgstr "जुड़ने का अनुरोध करें"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:73
+msgid "Request to join the existing {company} workspace"
+msgstr "मौजूदा {company} वर्कस्पेस से जुड़ने का अनुरोध करें"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:33
 msgid "Resend code"
 msgstr "कोड दोबारा भेजें"
@@ -942,6 +992,11 @@ msgid "Send the code by SMS and link this Google login"
 msgstr "SMS से कोड भेजें और यह Google लॉगिन जोड़ें"
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:79
+msgid "Send the request again"
+msgstr "अनुरोध फिर से भेजें"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:32
 msgid "Send the SMS again"
 msgstr "SMS फिर से भेजें"
@@ -950,6 +1005,11 @@ msgstr "SMS फिर से भेजें"
 #: src/copy/sign-in.ts:14
 msgid "Sending the code"
 msgstr "कोड भेजा जा रहा है"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:84
+msgid "Sent as"
+msgstr "इस नाम से भेजा"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:21
@@ -1055,6 +1115,11 @@ msgstr "आपके संपादन के दौरान किसी औ�
 #: src/copy/sign-in.ts:56
 msgid "Something on our side failed"
 msgstr "हमारी ओर से कुछ विफल हुआ"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:76
+msgid "Something on our side or the connection failed, so nothing was sent."
+msgstr "हमारी ओर से या कनेक्शन में कुछ गड़बड़ हुई, इसलिए कुछ नहीं भेजा गया।"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:43
@@ -1220,6 +1285,11 @@ msgstr "किस्तों का योग ठीक 100% होना च�
 #: src/copy/company-signup.ts:45
 msgid "These three are being written now, so they are facts rather than fields for the moment — nothing can change under the write, and nothing is greyed out to say so."
 msgstr "ये तीनों अभी लिखे जा रहे हैं, इसलिए फ़िलहाल ये फ़ील्ड नहीं, तथ्य हैं — लिखते समय कुछ बदल नहीं सकता, और यह बताने के लिए कुछ भी धुँधला नहीं किया गया है।"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:69
+msgid "This company may already be here"
+msgstr "यह कंपनी शायद पहले से यहाँ है"
 
 #. js-lingui-explicit-id
 #: src/copy/validation.ts:9
@@ -1467,6 +1537,11 @@ msgid "Welcome back — carry on"
 msgstr "फिर से स्वागत है — आगे बढ़ें"
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:81
+msgid "When the owner of {company}, {city} adds you, an SMS to your number brings you straight in."
+msgstr "जब {company}, {city} के मालिक आपको जोड़ेंगे, तो आपके नंबर पर आया SMS आपको सीधे अंदर ले आएगा।"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:42
 msgid "Where you're based."
 msgstr "आप कहाँ स्थित हैं।"
@@ -1564,7 +1639,7 @@ msgid "Your name"
 msgstr "आपका नाम"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:82
+#: src/copy/company-signup.ts:100
 msgid "Your name is needed — you become this company's first EPC owner."
 msgstr "आपका नाम ज़रूरी है — आप इस कंपनी के पहले EPC Owner बनते हैं।"
 
@@ -1577,3 +1652,13 @@ msgstr "आपका नंबर"
 #: src/copy/company-signup.ts:66
 msgid "Your number is verified and no company was created — so there is nothing to redo and no second workspace waiting to be cleaned up."
 msgstr "आपका नंबर सत्यापित है और कोई कंपनी नहीं बनी — इसलिए दोबारा करने को कुछ नहीं है और साफ़ करने के लिए कोई दूसरा वर्कस्पेस नहीं है।"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:75
+msgid "Your request did not go through"
+msgstr "आपका अनुरोध नहीं जा सका"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:80
+msgid "Your request is with the owner"
+msgstr "आपका अनुरोध मालिक के पास है"

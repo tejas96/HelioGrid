@@ -38,8 +38,9 @@ export interface TenantQuietHours {
 
 /**
  * Writes one record ON THE CALLER'S TRANSACTION, so a notification and the change that earned it
- * commit together or neither does. `push_sent_at` is left null: the record is the truth and push
- * is a later, best-effort act on top of it (`F6-06`), never a condition of the record existing.
+ * commit together or neither does, and answers its id — what the push after the commit sends.
+ * `push_sent_at` is left null: the record is the truth and push is a later, best-effort act on top
+ * of it (`F6-06`), never a condition of the record existing.
  *
  * `push_due_at` is set HERE and never moved (`F6-14`). It is the one emit door, so a held push
  * cannot be a state a caller forgets to set: the type's urgency comes from the registry and the
@@ -50,14 +51,19 @@ export async function recordNotification(
   tx: DbTransaction,
   toWrite: NotificationToWrite,
   quietHours: TenantQuietHours,
-): Promise<void> {
+): Promise<string> {
   const due = pushDueAt(
     NOTIFICATION_REGISTRY[toWrite.type].urgency,
     toWrite.emittedAt.getTime(),
     quietHours.window,
     quietHours.timezone,
   );
-  await tx.insert(notification).values({ ...toWrite, pushDueAt: new Date(due) });
+  const [written] = await tx
+    .insert(notification)
+    .values({ ...toWrite, pushDueAt: new Date(due) })
+    .returning({ id: notification.id });
+  if (written === undefined) throw new Error('the notification insert returned no row');
+  return written.id;
 }
 
 /** The columns the wire declares, in one place: a read and a mark-read return the same shape. */

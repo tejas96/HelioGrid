@@ -65,6 +65,10 @@ describe('centreGroupKey — which items group (F6-12)', () => {
     stamp: string,
   ) => centreGroupKey(type, subjectKind, at(stamp), IST);
 
+  it('never groups, and never throws on, a type this build does not know — a newer api wrote it', () => {
+    expect(centreGroupKey('a_later_type', 'tenant', at('2026-09-24T06:00:00Z'), IST)).toBeNull();
+  });
+
   it('never groups an immediate type', () => {
     expect(key(immediateType, 'tenant', '2026-09-24T06:00:00Z')).toBeNull();
   });

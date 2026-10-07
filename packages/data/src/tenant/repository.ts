@@ -1,10 +1,12 @@
 import type {
   AssignRoles,
   CreateTenant,
+  JoinRequest,
   Member,
   MyMembership,
   Paginated,
   PaginationQuery,
+  RequestedCompany,
   SessionProjection,
   Tenant,
 } from '@heliogrid/contracts';
@@ -28,6 +30,8 @@ export interface TenantRepository {
   /** Raises that count; refused with `DOMAIN_RULE_VIOLATION` below the stored one. */
   updateMyMembership(body: MyMembership): Promise<MyMembership>;
   similar(companyName: string, city: string, signal?: AbortSignal): Promise<SimilarTenant[]>;
+  /** Asks the oldest company with this name and city to add me (`M01-09`); a repeat sends nothing new. */
+  joinRequest(body: JoinRequest): Promise<RequestedCompany>;
   /** The whole set a person will hold, old → new; refused with `LAST_OWNER` when it would remove the last EPC Owner. */
   assignRoles(membershipId: string, roles: AssignRoles['roles']): Promise<Member>;
   /** Deactivated, never deleted; refused with `LAST_OWNER` for the last EPC Owner. */
@@ -93,6 +97,15 @@ export function createTenantRepository(api: ApiClient): TenantRepository {
         });
         if (res.status !== 200) throw toApiError(res);
         return res.body.items;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async joinRequest(body) {
+      try {
+        const res = await api.tenant.joinRequest({ body });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body;
       } catch (error) {
         throw normalizeClientError(error);
       }

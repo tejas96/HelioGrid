@@ -17,7 +17,9 @@ once through the app, never per run. API tests use their own fixtures, not these
 ## Packets and mutation guard
 
 Give each QA helper only its proof rows, the AC lines they prove, runtime identity, log paths and
-its URL/device/account. `qa-api` receives `http://localhost:8084`, both API numbers and the api log.
+its URL/device/account. A screen row carries the board pictures of the frames it covers; after QA
+returns, Main sets each board frame beside every surface's screenshot of it, one image per frame,
+and the commit card shows them. `qa-api` receives `http://localhost:8084`, both API numbers and the api log.
 The reviewer receives the approved RFC, changed-file list, diff and named protection rows. The
 Evaluator receives the RFC proof section verbatim, every report, Main's proof and commands.
 

@@ -5,12 +5,16 @@ import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
 import { responseOf, setTokenCookie } from '../../common/auth/cookies';
 import { actOf, sessionIdOf, sessionOf, tenantIdOf } from '../../common/auth/session-context';
+import { JoinRequestService } from './tenant.join-request.service';
 import { TenantService } from './tenant.service';
 
 @Controller()
 export class TenantController {
-  // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
-  constructor(@Inject(TenantService) private readonly tenants: TenantService) {}
+  // Explicit tokens: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
+  constructor(
+    @Inject(TenantService) private readonly tenants: TenantService,
+    @Inject(JoinRequestService) private readonly joins: JoinRequestService,
+  ) {}
 
   @TsRestHandler(tenantContract)
   @RouteAccessMap(tenantContract, {
@@ -20,6 +24,7 @@ export class TenantController {
     updateMyMembership: 'member',
     members: 'member',
     similar: 'session',
+    joinRequest: 'session',
     assignRoles: { capability: 'onboarding.manage_team' },
     deactivateMember: { capability: 'onboarding.manage_team' },
   })
@@ -61,6 +66,10 @@ export class TenantController {
       similar: async ({ query }) => ({
         status: 200,
         body: { items: await this.tenants.similar(query.companyName, query.city) },
+      }),
+      joinRequest: async ({ body }) => ({
+        status: 200,
+        body: await this.joins.request(sessionOf(req), body, new Date()),
       }),
       assignRoles: async ({ params, body }) => ({
         status: 200,

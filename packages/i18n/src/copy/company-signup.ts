@@ -3,7 +3,7 @@
  * platforms (Law 11) and translated in three languages (`F3-07`). The number and code steps are
  * the front door's (`SIGN_IN`) with these words where the doors differ; the export's frames are
  * the source, and the places the words were corrected are recorded in `T-M01-036`. The join
- * steer's words arrive with `T-M01-035`.
+ * steer and the request-sent state are `T-M01-035`'s (`M01-09`).
  */
 import type { CreateTenant } from '@heliogrid/contracts';
 import type { MessageRef, Translator } from '../runtime';
@@ -66,6 +66,24 @@ export const COMPANY_SIGNUP = {
   resumeLine: /*i18n*/ {
     id: 'Your number is verified and no company was created — so there is nothing to redo and no second workspace waiting to be cleaned up.',
   },
+  joinTitle: /*i18n*/ { id: 'This company may already be here' },
+  joinFound: /*i18n*/ { id: 'A workspace already exists for {company} in {city}' },
+  joinSends: /*i18n*/ { id: 'Asking to join sends its owner a request to add {phone}.' },
+  requestToJoin: /*i18n*/ { id: 'Request to join' },
+  requestToJoinLabel: /*i18n*/ { id: 'Request to join the existing {company} workspace' },
+  createAnyway: /*i18n*/ { id: 'Create a new company anyway' },
+  requestFailedTitle: /*i18n*/ { id: 'Your request did not go through' },
+  requestFailedBody: /*i18n*/ {
+    id: 'Something on our side or the connection failed, so nothing was sent.',
+  },
+  sendRequestAgain: /*i18n*/ { id: 'Send the request again' },
+  sentTitle: /*i18n*/ { id: 'Your request is with the owner' },
+  sentBody: /*i18n*/ {
+    id: 'When the owner of {company}, {city} adds you, an SMS to your number brings you straight in.',
+  },
+  sentAs: /*i18n*/ { id: 'Sent as' },
+  changedMind: /*i18n*/ { id: 'Changed your mind, or it is not the same company?' },
+  createOwnInstead: /*i18n*/ { id: 'Create your own company instead' },
 } as const;
 
 export type CompanySignupCopyKey = keyof typeof COMPANY_SIGNUP;
