@@ -30,7 +30,7 @@ export interface CatalogTenant {
 }
 
 /** An item as the matching pass compares it; the spec is parsed whole by the caller. */
-export type NamedItem = Pick<SliceRow, 'source' | 'id' | 'brand' | 'model' | 'spec'>;
+export type NamedItem = Pick<SliceRow, 'source' | 'id' | 'brand' | 'model' | 'spec' | 'overrideId'>;
 
 /** One row of the slice as stored; `internal/resolve-input.ts` turns it into the resolver's input. */
 export interface SliceRow {
@@ -147,7 +147,14 @@ export async function namedIn(
 ): Promise<readonly NamedItem[]> {
   if (names.length === 0) return [];
   const rows = await tx.execute<UnionRow>(unionOf(tenantId, marketCode, { names }));
-  return rows.map(({ source, id, brand, model, spec }) => ({ source, id, brand, model, spec }));
+  return rows.map(({ source, id, brand, model, spec, overrideId }) => ({
+    source,
+    id,
+    brand,
+    model,
+    spec,
+    overrideId,
+  }));
 }
 
 /** The platform rows' claims and every row's rate in force, read once for the whole page. */

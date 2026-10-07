@@ -1,6 +1,7 @@
 import { CATALOG_IMPORT_ROW_NUMBER_MAX } from '@heliogrid/domain';
 import { describe, expect, it } from 'vitest';
-import { catalogImportContract, catalogImportRowFixSchema } from '../src/catalog-import';
+import { catalogImportContract } from '../src/catalog-import';
+import { catalogImportRowFixSchema } from '../src/catalog-import-rows';
 
 /** Where each issue points, as the api's envelope reports it in `details[].path`. */
 const issuePaths = (body: unknown) => {

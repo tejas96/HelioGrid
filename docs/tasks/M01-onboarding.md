@@ -423,9 +423,9 @@ This file covers module M01 — company signup and authentication, team invites 
 **DESIGN:** SCR-M01-17 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Mobile.dc.html · also: Language https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Language.dc.html
   · Hindi and Marathi → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Language.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-17-catalog-import-wizard.md`; they are the specification.
-**Data model:** none — reads `catalog_import_job` and `catalog_import_row` authored by `T-M01-030` (migrations 0019 and 0020) and the overrides, SKUs and rate entries the run writes through `T-M01-027` (migration 0015); the uploaded file is the one `file` table's row (no task id yet).
-**Contract:** `packages/contracts/src/catalog-import.ts` — POST /catalog/imports (from an uploaded file id, the entry point, and the file's name and saved date as the device's picker gives them — the step 1 subtitle names no supplier, since no source holds one: `T-M01-030c` decision 8) · GET /catalog/imports (the re-openable reports) · GET /catalog/imports/{id} (the one read the wizard polls — its state, mapping and counts) · PUT /catalog/imports/{id}/mapping · GET /catalog/imports/{id}/rows (the preview grid, paged and narrowed by outcome; `T-M01-030d` decision 11) · PUT /catalog/imports/{id}/rows/{rowNumber} · POST /catalog/imports/{id}/run. The matching pass shows a short wait, not a counted "256 of 412 rows" — the run carries the counted progress (owner ruling R1 at `T-M01-030d`; board decision 24 is redrawn to match). Domain read: `CATALOG_IMPORT_STATES`, `CATALOG_IMPORT_ENTRY_POINTS`, the target-field vocabulary of `import-columns.ts`.
-**Depends on:** `T-M01-030` (migrations 0019 and 0020 and the routes; the workflow on `heliogrid-catalog`) · `T-M01-027` (migration 0015) · `T-M01-025` (the guard for `m01.manage_catalog`) · the first `file` slice (the presigned upload the first step needs — no task id yet; the wizard cannot start before it) · `T-M01-015` (the settings entry; onboarding is another).
+**Data model:** none — reads `catalog_import_job` and `catalog_import_row` authored by `T-M01-030` (migrations 0019, 0020 and 0021) and the overrides, SKUs and rate entries the run writes through `T-M01-027` (migration 0015); the uploaded file is the one `file` table's row (no task id yet).
+**Contract:** `packages/contracts/src/catalog-import.ts` — POST /catalog/imports (from an uploaded file id, the entry point, and the file's name and saved date as the device's picker gives them — the step 1 subtitle names no supplier, since no source holds one: `T-M01-030c` decision 8) · GET /catalog/imports (the re-openable reports) · GET /catalog/imports/{id} (the one read the wizard polls — its state, mapping and counts) · PUT /catalog/imports/{id}/mapping · GET /catalog/imports/{id}/rows (the preview grid, paged and narrowed by outcome; `T-M01-030d` decision 11) · PUT /catalog/imports/{id}/rows/{rowNumber} · POST /catalog/imports/{id}/run (the job then reads `run: { done, total, at, by }` while it runs and `results` once completed; each row its `result` and `failure` — `T-M01-030f`). The matching pass shows a short wait, not a counted "256 of 412 rows" — the run carries the counted progress (owner ruling R1 at `T-M01-030d`; board decision 24 is redrawn to match). A row judged again at the run can fail as `changed_since_preview` — its product changed in the catalog since the preview — and the report says so (`T-M01-030f` D2). Domain read: `CATALOG_IMPORT_STATES`, `CATALOG_IMPORT_ENTRY_POINTS`, the target-field vocabulary of `import-columns.ts`, `importRunProgress`, `CATALOG_IMPORT_ROW_RESULTS`.
+**Depends on:** `T-M01-030` (migrations 0019, 0020 and 0021 and the routes; the workflow on `heliogrid-catalog`) · `T-M01-027` (migration 0015) · `T-M01-025` (the guard for `m01.manage_catalog`) · the first `file` slice (the presigned upload the first step needs — no task id yet; the wizard cannot start before it) · `T-M01-015` (the settings entry; onboarding is another).
 **Out of scope:** matching, the async run, idempotency and the report's storage — `T-M01-030`; the tables it writes — `T-M01-027`; the file bytes path — the first file slice; M02's lead import, the same pattern — `T-M02-005`; the outbox and dispatcher — `T-M01-030`, `infra/temporal`; the entry from the add sheet — `T-M01-016`, which lands after this wizard and wires that hand-off itself.
 **DONE WHEN:**
 - Given an import file with platform-matching rows, unknown rows and broken rows, when the preview renders, then it states the three counts, matched rows become price overrides and unknown rows tenant SKUs on import, and broken rows are fixable inline; the import runs async with progress and produces a per-row report (M01-41). → proof: QA (web and phone) one file with the three row kinds renders the counts in plain numbers, a row fixed in the grid moves the counts and the act's number, the run shows progress and the report reopens from the list; the matching and the writes are `T-M01-030`'s units
@@ -1635,6 +1635,21 @@ Recorded at the step's start (2026-10-06), before anything ran. Branch `feat/T-M
 
 **Part e measurements** — about 120 Main tool calls; helper runs: `qa-api` 3 passes (48.9k, 60.5k, 66.6k tokens — the first failed the malformed-body row, the third after the row bound), `reviewer` 3 passes (108.1k, 136.4k, 139.2k — each a continuation; clean on the third), `evaluator` 1 gate run (34.6k, pass). Main's own tokens are not measured by this session. Planned 15 files and about 850 authored lines; built 21 files (1 generated) and about 1,350 — code about 555, tests about 650, docs about 150 — the rulings in the RFC's Delivery size.
 
+**Part f, at the start** (2026-10-07) — branch `feat/T-M01-030f` from `origin/main` `58996766`. web `3002`, api `8084`, Metro `8081`: free. Postgres (`heliogrid-pg-local`), object store (`heliogrid-object-store-local`), Temporal (`heliogrid-temporal`, `heliogrid-temporal-admin`, `heliogrid-temporal-jwks`): pre_existing. No iOS simulator booted; no Android device attached. The browser pane closed. Database routing: `heliogrid_dev` on both `DATABASE_URL` and `DATABASE_ADMIN_URL`. Logs: `.qa/api.log` 3,386,118 bytes · `.qa/metro.log` 14,661 · `.qa/web.log` absent. The api and the worker are `started_by_task` for the live check, through their launch configurations.
+
+**Part f, at the end** (resource → initial → final):
+- api `8084` → free → started through the `api` launch configuration twice (serverIds `b0d294f1…`, `527b0ca0…` — restarted onto the rebuilt packages after review), stopped; free again, no `tsx watch` left.
+- worker → not running → started twice through the `worker` launch configuration (serverIds `403643f4…`, `9e4501d1…` — the second on the rebuilt bundle), stopped.
+- database routing → `heliogrid_dev` on both → `heliogrid_test` for the tests, the live check and the gate → `heliogrid_dev` on both, the file byte-identical to its start.
+- `heliogrid_test` → migration 0021 applied. `heliogrid_dev` untouched. It keeps QA's jobs (`…1c55`, `…962c`, `…5d81`, `…bb84` completed; `…dee4` previewed; `…e98f` mapped), the own SKUs `QARun122720` and `QARerun124155`, and the 12500 and 12700 tenant rates on *Adani Solar ELAN Shine 540* — nothing purges.
+- Temporal → pre_existing → the `outbox-sweep` schedule the api re-created at boot is deleted; no workflow runs; every `catalogImport` the live check started completed.
+- browser tabs `seed`, `tab-1` (opened by the previews) → closed. Postgres, object store → pre_existing, untouched.
+- logs → `.qa/api.log` 3,386,118 → 3,723,568 bytes; kept.
+
+**Part f planted reds** — each seen failing by name, then restored: results in their own transaction after the writes → *writes nothing twice when a step runs again after its commit is lost*; the event in its own transaction → *leaves neither the run nor its event when the commit is lost*; `admitWrite` removed from the run → *refuses Finance the run and changes nothing*; the stored verdict written without judging again → *makes one SKU when two imports previewed from one file run one after the other* and *fails a row whose product changed in the catalog since the preview*; the row CHECK in its bare `=` form, planted in `heliogrid_test` → *refuses a reason on a row not yet run, …*; the run's missing job answered with another status → *reads another company’s job as not found, and changes nothing*; the run dated by `run_at` → *dates a price by the day its step writes it, never the day before*.
+
+**Part f measurements** — about 170 Main tool calls; helper runs: `qa-api` 2 passes (41.6k, 55.1k tokens — the second after the review fixes; neither could run `docker`, so Main read Temporal with a `reader` token), `reviewer` 3 passes (158.6k, 177.7k, 179.2k — each a continuation; clean on the third), `evaluator` 1 gate run (36.2k, pass on the first full gate). Main's own tokens are not measured by this session. Planned 27 files and about 1,500 authored lines; built 33 files (1 generated: `openapi.json` +764) and about 2,220 — code about 1,140, tests about 870, docs about 210 — the rulings in the RFC's Delivery size.
+
 #### Plan
 **Summary**
 - **What:** the import job beneath the wizard — a CSV or Excel price list is stored, read, its columns guessed, its rows matched against the catalog, fixed in place, and imported in the background with a kept per-row report. The first product work handed to Temporal: the outbox and its dispatcher land here.
@@ -1743,7 +1758,8 @@ Q3 runs in part a; Q4 in part b; Q6–Q7 in part c; Q8–Q9 in part d. No row to
 | c | the job starts and reads its file — start, list, read, the read step (`#### Part c · RFC`) | AC-3 (start), AC-6 (job), AC-8 (start, read), AC-10 | b | shipped |
 | d | the mapping, the matching pass and the preview reads — mapping, row table 0020, the match step, counts, the rows page; a new mapping during the pass supersedes it (the board's "stops the work", no cancel route) (`#### Part d · RFC`) | AC-1 (preview), AC-5, AC-6 (rows), AC-8 (mapping, rows), AC-11 | c | shipped |
 | e | the row fix — `PUT …/rows/{rowNumber}`, the product-group re-match (`#### Part e · RFC`) | AC-1 (fix), AC-8 (fix), AC-12 | d | shipped |
-| f | the run and the report | AC-1 (run), AC-2, AC-3 (run), AC-8 (run), AC-9 | e | open |
+| f | the run — `POST …/run`, the batched write step, progress and a result on every row (`#### Part f · RFC`) | AC-1 (run), AC-2, AC-3 (run), AC-8 (run), AC-9 | e | shipped |
+| g | the report — price before and now, the filter by result, *Fix the N rows* (board decision 32); proposed by part f's D1 A, its own RFC at its turn | — (board facts) | f | open |
 
 **Part a checklist** — [x] domain import vocabularies · [x] column guess · [x] match rule · [x] file types, `catalog` subject, signature · [x] migration 0017 · [x] file service and lookup · [x] Q1 · [x] Q2 · [x] Q3 · [ ] Q10 (the PR's `quality` lane)
 **Part b checklist** — [x] migration 0018 and schema · [x] workflow contract and queues · [x] activity host · [x] outbox write, dispatcher, sweep · [x] worker sweep workflow · [x] docs · [x] Q4 · [x] Q5 (outbox) · [ ] Q10
@@ -2307,6 +2323,202 @@ Part e's lines of the task's AC (Plan `#### Acceptance criteria`), verbatim:
   - **Two ways on:** **A · keep part e at about 1,350 lines and 21 files, one PR (recommended)** — every added line is a fix or its proof. **B · split** — not sensible after the build: each half's proofs share one fixture and one route.
 - **Size ruling (after the first review, 2026-10-07):** the owner approved option **A** — part e at about 1,350 authored lines and 21 files, one PR.
 - **Checklist (part e)** — [x] domain fix rule · [x] contract route · [x] slice read in a transaction · [x] fix repository · [x] service and controller · [x] docs · [x] AC-1 (fix: main-dev) · [x] AC-1 (fix: qa-api) · [x] AC-8 (fix: main-dev) · [x] AC-8 (fix: qa-api) · [x] AC-12 (main-dev) · [x] AC-12 (qa-api) · [x] review (clean on the third pass) · [ ] CI
+
+#### Part f · RFC
+The task's shared facts — the Plan's decisions 1–21, parts c, d and e's decisions and the AC list — stand unless a line below changes one. Branch `feat/T-M01-030f` from `origin/main`.
+
+##### Title
+T-M01-030f — the import runs: a previewed price list is written into the catalog in the background, row by row, with counted progress and a kept result on every row.
+
+##### Description
+- **User impact:** in the import wizard (`SCR-M01-17`, the run and step 4) the owner presses *Import 405 rows* and can close the wizard. The prices land in the catalog in the background, the wizard shows "218 of 405", and every row keeps what happened to it — price applied, product created, left out, or failed with its reason. Directly: a supplier's whole price list is in the catalog minutes after the upload, with no typing. Indirectly: the first quote is priced from real supplier prices, and a second import of the same list next month adds dated prices and never a second copy of a product.
+- **Who gains:** anyone holding `onboarding.manage_catalog` outright.
+- **Problem solved:** the third workflow phase (`run`) on part b's handoff; the catalog writes the preview promised, made safe against a retried step, a stale preview and two imports of one file.
+- **Cites:** the task header (`M01-41`, `M01-44`, §M01.4 edge cases); the brief `docs/ux/briefs/SCR-M01-17-catalog-import-wizard.md` (states `importing-async-progress`, `per-row-report-reopenable`); the board's decisions record, read 2026-10-07 — decision 25 (the run's cancel *stops watching*; the run continues on the server), decision 26 (a failed run is the report, never the error state), pass 3 (the run is counted, "218 of 405"; the report's outcome words *Price applied · Product created · Left out*; columns *Price before* and *Price now*), decision 32 (*Fix the N rows* re-enters the preview on the left-out rows).
+
+##### Goals
+- `POST /catalog/imports/{id}/run` moves a `previewed` job to `running`, marks every row the run will not write `left_out`, and hands phase `run` to `catalogImport` — one transaction.
+- The run step writes the rows in batches; each batch's catalog writes and its rows' results commit together, so a retried step writes nothing twice (AC-2).
+- The job reads `completed` with a result on every row; `GET …/{id}` shows the run's progress while it runs and the results' counts after.
+- A file imported twice makes exactly one SKU per unknown product and two dated rate entries per matched override (AC-2).
+
+##### Non-goals
+- The report's *Price before* and *Price now* columns, its filter by result, and *Fix the N rows* (board decision 32) — part g, if D1 rules A.
+- A cancel route: the run's cancel stops watching, not the work (board decision 25).
+- The wizard screen (`T-M01-017`).
+- Any change to the read, the mapping, the pass or the fix (parts c, d, e).
+
+##### Readiness and dependencies
+- Landed on `origin/main`: part e (#244) — the row fix; part d (#242) — `catalog_import_row`, the pass, the slice's names read inside a caller's transaction; part b — the outbox, dispatcher and step host; `T-M01-027` — `appendRate`, `upsertOverride`, the own-SKU insert, `lockCatalog`, the audit entries.
+- Design: an engine part, no drawing of its own. `SCR-M01-17` holds its link; the facts that bind the run are cited above.
+- Stack: Postgres, object store, Temporal pre_existing; `heliogrid_test` at 0020. The api and the worker start through `.claude/launch.json` for the live check.
+- Database: migration 0021 lands on `heliogrid_test` only.
+- Blockers: none. Two rulings ride on this approval — D1 (Delivery size) and D2 (Proposal decision 4). The owner's open edit of board decision 24 (part d R1) does not touch the run.
+
+##### Proposal
+**Flow.** The person presses *Import* → `POST …/{id}/run` → the service admits the grant outright, finds the job (404) → one tenant transaction: the job locked, still `previewed` (409 otherwise; `running` or `completed` answers the job as it stands, no second event), `status = running`, `run_at` and `run_by` set, every `needs_attention` or `left_out` row given result `left_out`, the outbox event `{ eventId, tenantId, jobId, phase: 'run' }` → after the commit the dispatcher starts `catalogImport` → the worker loops on the step `applyCatalogImportRows` until it answers `completed` → each call, in one tenant transaction: the catalog lock, the next 100 rows with no result in row order, the items naming them read (the slice's names read), each row judged again by `matchImportRows`, its write made, its result recorded; when no row is left, the job → `completed` → the wizard polls `GET …/{id}` for progress, then pages `GET …/{id}/rows` for the results.
+
+**Key decisions** (one reason each):
+1. **A batch's writes and its rows' results commit in one transaction.** A retried step finds those rows already holding a result and skips them; a step that fails mid-batch rolls the whole batch back. This replaces the Plan's decision 13 (a creation key per row through `createOwnItem` and `saveOverride`): those open their own transactions, so the row's result would land in a second one and need the key to repair the gap. The writes reuse the catalog's own transaction-level pieces — `lockCatalog`, `upsertOverride`, `appendRate`, the own-SKU insert (moved out of `createOwnItem` into one function both call), `recordAuditEntry` — never a second copy (Law 5).
+2. **Batches of 100, looped by the workflow.** A 2 MB CSV can hold tens of thousands of rows; one step for all of them would pass the 1-minute step timeout. Each call is bounded; the loop is the workflow's. Progress is read off the rows (`done` = rows with a result, of rows not `left_out`), never stored (`.claude/protections.md`).
+3. **What each row writes.** A platform match → the tenant's override (made bare if none) and a rate entry; an own-SKU match → a rate entry on it; a new product → the own SKU with its rate entry (an own SKU is the tenant's by the table it lives in; no provenance column exists to set). Every entry is in the tenant's currency, dated as D3 below rules. Results: `price_applied`, `product_created`, `left_out`, `failed`. A row keeps the rate entry it wrote and, for `product_created`, the SKU it made.
+4. **D2 — the run judges each row again at write time (owner ruling asked).** A preview can be stale: two jobs previewed from one file, then run one after the other, both say *new product* — the second run would make a second SKU, the duplicate `M01-41` forbids and AC-2 tests. **Recommended — A:** each batch re-reads the items naming its rows under the catalog lock and runs the same `matchImportRows`; a row whose verdict is still a write is written as judged now (a *new* row whose product now exists is priced on it, no second SKU); a row that now needs attention is `failed` with reason `changed_since_preview`. Race-free: the own-SKU form and the release publish take the same lock. About 40 lines. **B:** write the preview's stored verdict as it stands — simpler, and a second import previewed before the first ran makes duplicate SKUs.
+4b. **D3 — the day a run's price is dated (owner ruling asked; found in review).** Decision 3 as approved dated every entry by `run_at`'s day. The ledger's rule b4 (`apps/api/src/modules/catalog/internal/write-checks.ts`, `rateToAppend`) says a rate never starts before today on the tenant's clock: a backdated entry changes the rate an earlier day already resolved to. A run whose later batch, or whose retried step, commits after midnight would write yesterday's date. **Recommended — A:** each batch dates its entries by the day it is written, on the tenant's clock; a run crossing midnight dates its later rows the next day, and no entry is ever backdated — one line, the scope read at `now` instead of `run_at`. **B:** keep `run_at`'s day — one date across the whole run, and a backdated entry whenever a run crosses midnight.
+5. **The actor is who pressed *Import*.** The Plan's decision 14 named the job's `started_by`; the person who runs it may be another. `run_by` is stored and is the actor of every write and audit entry.
+6. **A run that cannot finish ends as a report** (board decision 26). Each step call is retried 5 times; past them `endCatalogImportRun` marks every row still without a result `failed` (`not_applied`) and completes the job. The person sees which rows landed and which did not.
+7. **Needs-attention rows do not block the run.** The board's act imports 405 of 412; the 7 are left out and say *Unchanged*. A run with nothing to write completes at once — no rule refuses it (none is in the PRD or the board).
+8. **Allowed only from `previewed`, under the job lock** — the fix (part e) takes the same lock and checks `previewed`, so no fix lands on a running job.
+
+**Order.** Domain results and progress → migration 0021 and schema → contracts (route, job additions, phase, steps) → the own-SKU insert shared → run repository → run service and step → controller → worker loop → api tests → OpenAPI → docs.
+
+**Refusals.** 403 a role without the outright grant · 404 a job not this company's · 409 `CONFLICT` a job in `reading`, `unreadable`, `mapped` or `matching`.
+
+**Twin screen.** None: an engine part. Both platforms' wizard is `T-M01-017`.
+
+##### Architecture diagram
+```mermaid
+sequenceDiagram
+  participant D as Device
+  participant A as api (route + step host)
+  participant P as Postgres
+  participant T as Temporal
+  participant W as worker
+  D->>A: POST /catalog/imports/{id}/run
+  A->>P: job running + rows left out + outbox event, one transaction
+  A->>T: start catalogImport (phase run)
+  T->>W: workflow task
+  loop until completed
+    W->>T: call applyCatalogImportRows
+    T->>A: activity task (heliogrid-catalog)
+    A->>P: lock, next 100 rows, items naming them, writes + results, one transaction
+  end
+  D->>A: GET …/{id} (progress) · GET …/{id}/rows (results)
+```
+
+##### Package changes
+- **domain** — `catalog/import.ts`: `CATALOG_IMPORT_ROW_RESULTS` (`price_applied · product_created · left_out · failed`), `CATALOG_IMPORT_ROW_FAILURES` (`changed_since_preview · not_applied`), `CATALOG_IMPORT_WRITTEN_OUTCOMES`, `takesImportRun(state)`, `hasImportRun(state)`, `importRunProgress(countsByResult)`, `countImportResults(countsByResult)`, and the policy number `CATALOG_IMPORT_RUN_BATCH_ROWS` (100 — Biome refuses a SCREAMING_CASE number in an app). Client-safe; the wizard reads progress by the same rule.
+- **contracts** — `catalog-import.ts`: the `run` route; the job read gains `run: { done, total, at, by } | null` and `results: { priceApplied, productCreated, leftOut, failed } | null`; the row gains `result`, `failure`. The file is at 300 lines, so the rows' schemas move to a new `catalog-import-rows.ts` — with the row vocabularies they read (outcome, answer, field, counts), so the two files import one way and no cycle forms; every route stays in the one router. `workflows/catalog-import.ts`: phase `run`, steps `applyCatalogImportRows`, `endCatalogImportRun`. Direction unchanged: contracts → domain.
+- **db** — `schema/catalog-import.ts`: three job and four row columns, two pgEnums.
+- **api** — catalog module: a run service and a run repository (new files — the import service and job repository stay under 300 lines); the own-SKU insert shared by `createOwnItem` and the run; `upsertOverride` exported; `appendRate` returns the entry's id; the rows read and counts gain the result.
+- **worker** — `catalog.workflows.ts`: the `run` case and its loop.
+- **Law 12 enrolment:** pgEnums `catalog_import_row_result`, `catalog_import_row_failure` → `enum-parity`; the new columns → `schema-parity`; the route → `RouteAccessMap` (typecheck) and OpenAPI freshness; the step names → the `satisfies` checks in `catalog.public.ts`. No new table, error code, brand or token.
+
+##### Data and schema changes
+- **Migration `0021_catalog_import_run.sql`** (started with `pnpm db:migration:new`):
+  - `catalog_import_job` + `run_at timestamptz` null · `run_by uuid` fk `user_account` null · CHECK `catalog_import_job_run_has_runner`: status in (`running`, `completed`) exactly when `run_at` and `run_by` are set.
+  - `catalog_import_row` + `result catalog_import_row_result` null · `failure catalog_import_row_failure` null · `rate_entry_id uuid` fk `catalog_rate_entry` null · `created_item_id uuid` fk `tenant_catalog_item` null. CHECKs: `failure` set exactly when `result = 'failed'`; `rate_entry_id` set exactly when `result` in (`price_applied`, `product_created`); `created_item_id` set exactly when `result = 'product_created'`.
+  - Index: `(tenant_id, job_id, result, row_number)` — the step's next batch (`result is null`) and the counts by result.
+  - Tenancy: no new table; the grants stand (UPDATE on both tables is held).
+- **Readers, both ways:** the part e api selects named columns, so it reads a job and rows with the new columns unchanged, and never sets them. A part e worker handed phase `run` would end without calling a step — so the worker deploys first, then the api (Plan, rollout safety). Expand only; no backfill (no job has run); rollback is the previous release with the columns left unread.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/domain/src/catalog/import.ts` | results, failures, run state rule, progress and result counts | §4.3 vocabulary and policy |
+| modify | `packages/domain/src/catalog/index.ts` | exports | §4.3 |
+| modify | `packages/domain/tests/catalog/import.test.ts` | progress and counts | testing rules |
+| add | `packages/db/migrations/0021_catalog_import_run.sql` | job and row columns | §4.2 |
+| modify | `packages/db/src/schema/catalog-import.ts` | their mirror, two pgEnums | §4.2 |
+| modify | `packages/contracts/src/catalog-import.ts` | `run` route, job additions | §4.1 |
+| add | `packages/contracts/src/catalog-import-rows.ts` | the rows' schemas and the row vocabularies, moved; `result`, `failure` | §4.1; the 300-line rule |
+| modify | `packages/contracts/src/index.ts` | export | §4.1 |
+| modify | `packages/contracts/src/workflows/catalog-import.ts` | phase `run`, two steps | §4.1 workflow messages |
+| modify | `packages/contracts/openapi/openapi.json` | regenerated | §4.1 (generated) |
+| add | `apps/api/src/modules/catalog/catalog.import-run.service.ts` | run route, apply step, end step | catalog module; the import service stays under 300 lines |
+| add | `apps/api/src/modules/catalog/catalog.import-run.repository.ts` | run start, next batch, batch write, end | catalog module |
+| modify | `apps/api/src/modules/catalog/catalog.repository.ts` | the own-SKU insert as one transaction-level function | the one insert (Law 5) |
+| modify | `apps/api/src/modules/catalog/catalog.prices.repository.ts` | export `upsertOverride` | the one override write (Law 5) |
+| modify | `apps/api/src/modules/catalog/catalog.rates.repository.ts` | `appendRate` returns the entry id | the one ledger write |
+| modify | `apps/api/src/modules/catalog/catalog.import-rows.repository.ts` | counts by result; the page's result fields | the one rows read |
+| modify | `apps/api/src/modules/catalog/catalog.import.service.ts` | the job read's `run` and `results` | catalog module |
+| modify | `apps/api/src/modules/catalog/catalog.import-preview.service.ts` | `rowWire` gains `result`, `failure` | the one row wire |
+| modify | `apps/api/src/modules/catalog/catalog.import.controller.ts` | the route | catalog module |
+| modify | `apps/api/src/modules/catalog/catalog.import.activities.ts` | two steps registered | catalog module |
+| modify | `apps/api/src/modules/catalog/catalog.module.ts` | wiring | Nest wiring |
+| modify | `apps/worker/src/modules/catalog/catalog.workflows.ts` | the `run` case and loop | §2 worker |
+| add | `apps/api/tests/catalog/import-run.test.ts` | AC-1 run, D2, the actor, the end step | testing rules |
+| add | `apps/api/tests/catalog/import-idempotency.test.ts` | AC-2 | testing rules |
+| modify | `apps/api/tests/catalog/import-preview-support.ts` | a previewed job ready to run | one fixture |
+| modify | `tests/invariants/src/enum-parity.ts` | two pgEnums against their contract schemas | Law 12 |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, Parts, Runtime; `T-M01-017`'s run and report lines | Law 8 |
+| add *(built, not planned)* | `apps/api/src/modules/catalog/internal/import-judging.ts` | `catalogOf`, `matchInput`, `namingCells` — how a stored row is put to the match rule, moved out of the preview service so the fix and the run share one copy | Law 5; the preview service stays under 300 lines |
+| modify *(built, not planned)* | `apps/api/src/modules/catalog/catalog.import.repository.ts` | the job read carries `runAt`, `runBy` | the one job read |
+| add *(built, not planned)* | `apps/api/tests/catalog/import-run-refusals.test.ts` | AC-3 and AC-8 of the run, split from `import-run.test.ts` | the 300-line rule |
+| modify *(built, not planned)* | `packages/contracts/tests/catalog-import-fix.test.ts` | imports the fix schema from its new file | the move |
+| modify *(built, not planned)* | `docs/tasks/deferred.md` | D128 — a brand or model over 120 characters becomes an own SKU the edit form cannot save; found in the build, outside part f | `CLAUDE.md` §8 |
+
+##### API and contract changes
+| route / message | method | request → response | errors | access |
+|---|---|---|---|---|
+| `/catalog/imports/{id}/run` | POST | no body → 200 job (`running`; `running` or `completed` answers as it stands) | 403 · 404 · 409 `CONFLICT` | `onboarding.manage_catalog` outright |
+| `/catalog/imports/{id}` | GET | adds `run: { done, total, at, by } \| null` (from `running` on) and `results: { priceApplied, productCreated, leftOut, failed } \| null` (`completed`) | unchanged | same |
+| `/catalog/imports/{id}/rows` | GET | each row adds `result \| null`, `failure \| null` | unchanged | same |
+| `catalogImport` | workflow | phase gains `run` | — | ids only |
+| `applyCatalogImportRows` · `endCatalogImportRun` | activities (api) | `{ tenantId, jobId }` → `{ status }` | retried by Temporal; a gone job fails for good | the tenant from the input |
+
+Tenancy: no `tenantId` on the wire; every read and write carries its tenant predicate. Compatibility: added route and fields; `extensibleEnum` on `result` and `failure`, so a later value parses on an older client.
+
+##### Risks and rollout
+| risk | mitigation |
+|---|---|
+| A retried step writes a price or a SKU twice | decision 1 — writes and results in one transaction; `import-idempotency.test.ts` retries a committed batch and a failed one |
+| A stale preview makes a second SKU | decision 4 (D2 A) — each row judged again under the catalog lock |
+| A long sheet holds the catalog lock | 100 rows per transaction; the lock is held for one batch, never the whole run |
+| A run stuck in `running` | decision 6 — bounded retries, then `endCatalogImportRun` |
+| The wrong person on the audit entries | decision 5 — `run_by` |
+| Release roll | the worker MUST deploy before the api: a part e worker completes a `run` workflow without calling a step, and the job stays `running` with no recovery — no event is left to sweep, and a second run answers `running` (review finding) |
+
+##### Acceptance criteria and proof
+Part f's lines of the task's AC (Plan `#### Acceptance criteria`), verbatim:
+- **AC-1** — Given an import file with platform-matching rows, unknown rows and broken rows, when the preview renders, then it states the three counts, matched rows become price overrides and unknown rows tenant SKUs on import, and broken rows are fixable inline; the import runs async with progress and produces a per-row report (M01-41). *(Part f: matched rows become price overrides and unknown rows tenant SKUs on import; the run, its progress and the per-row result.)*
+- **AC-2** — Given the same file imported twice, when the second run completes, then each unknown row exists as exactly one SKU and each matched override carries two dated rate entries; given an activity retried after a partial apply, then no row is created twice (§M01.4 edge cases; M01-44).
+- **AC-3** — Given a run is started, when the API commits the status change, then the outbox row is in the same transaction and a dispatcher that retries after a crash starts exactly one workflow. *(Part f: the run.)*
+- **AC-8** (extension) — Given a Finance session, when it starts, fixes or runs an import, then each is refused; given another company's job id, then it reads 404. *(Part f: the run.)*
+- **AC-9** (extension) — Given an import is run and the wizard is closed, when the run finishes, then the job reads `completed` with its report and Temporal shows exactly one completed `catalogImport` per handoff.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 | main-dev | required | api tests | a previewed job with platform, own-SKU, new and needs-attention rows runs → one override with one dated rate entry and no SKU per platform row; one entry per own-SKU row; one SKU with its entry per new row; `left_out` on every other row; progress `done/total` moves per batch; `completed` with result counts | `import-run.test.ts` |
+| AC-1 | main-dev | required | domain | progress and result counts from counts by result | `import.test.ts` |
+| AC-2 | main-dev | required | api tests | the same file imported and run twice → one SKU per unknown product, two dated entries per matched override; a batch run again after its commit → nothing new; a batch failed mid-write → nothing kept, then written once; D2 A: two jobs previewed, then run in turn → one SKU; planted red: the result written in its own transaction after the batch's writes — *writes nothing twice when a step runs again after its commit* failed by name | `import-idempotency.test.ts` |
+| AC-3 | main-dev | required | api tests | the run's commit lost after the job update → no `running`, no event; run twice → one event; planted red: the event written in its own transaction — *leaves neither the run nor its event when the commit is lost* failed by name | `import-run-refusals.test.ts` |
+| AC-8 | main-dev | required | api tests | Finance's run → 403, nothing written; another company's job → 404; a job not yet previewed → 409; planted red: `admitWrite` removed from the run — *refuses Finance the run and changes nothing* failed by name | `import-run-refusals.test.ts` |
+| AC-8 | qa-api | required | api `8084` | `…906` (Finance) run → 403; `…905` runs `…904`'s job → 404 | live |
+| AC-1 · AC-9 | qa-api | required | api `8084` + temporal admin | `…904` previews a file with platform, new and broken rows, runs it, polls `running` with progress to `completed`, reads results on the rows page; runs the same file again as a new job and reads no second SKU; `temporal workflow show` names one completed `catalogImport` per handoff (read, match, run) | live |
+| 0021 | evaluator | required | invariants | `enum-parity`, `schema-parity`, `tenancy-rls` over 0021 (no new table, so AC-6 is unchanged) | `pnpm check:all` |
+| all | ci | required | `quality` | the PR's run passes | CI |
+| — | qa-web · qa-ios · qa-android | not_applicable | — | an engine part; the wizard is `T-M01-017` | — |
+
+##### Delivery size
+- **Estimate (part f as above):** 27 files (1 generated: `openapi.json`). Authored lines: code about 760 · tests about 550 · this RFC and doc lines about 200 — about 1,500. Over the 1,000-line target; within 30 files.
+- **D1 — size ruling (owner).** The report's reads and its *Fix the N rows* route back (board decision 32) are separable from the run: the run with a result on every row meets every AC on its own.
+  - **A · split (recommended).** **f** — the run, as this RFC (about 1,500 lines). It cannot be split further: a run route with no write step leaves every job `running`. **g** — the report: *Price before* (the ledger entry before the one the row wrote, read, never stored) and *Price now* on the rows page, the filter by result, and *Fix the N rows* — a fix allowed on a completed job's left-out and failed rows, and a run again that writes only those (about 600 lines). Its own RFC at its turn.
+  - **B · one part, f and g together** — about 2,100 lines and 33 files; one PR.
+- **Order:** as in Proposal.
+- **Owner rulings (2026-10-07):** RFC approved; D1 → **A** (split: f the run, g the report); D2 → **A** (each row judged again at write time).
+- **Build delta (2026-10-07) — approval void, the owner rules again.** Built 32 changed files (1 generated: `openapi.json` +764) against 27 (+18%), and about 2,100 authored lines against about 1,500 (+40%) — code about 1,100 (about 150 of them moved, not new), tests about 820, docs about 180. Every main-dev proof row is green on `heliogrid_test` (`pnpm check`: 46 files, 396 tests); all four planted reds seen failing by name (below); live QA and review have not run.
+  - **Planned and built:** every row of the file table above not marked *built, not planned*.
+  - **Built but not planned:** the five rows marked so in the file table, each with its reason.
+  - **Planned but not built:** none.
+  - **Changed from the RFC:** the batch size is domain's policy number `CATALOG_IMPORT_RUN_BATCH_ROWS`; the worker's three phases end through one `endedOnFailure` helper (Biome's complexity limit refused a third try/catch case); the contracts move carries the row vocabularies too (no import cycle).
+  - **Why the estimate missed:** the run repository (about 250 lines: the start, the batch under two locks, the four writes and the one-statement result write) was counted at about half; the tests were counted at 550 and are about 820 — the handoff and refusal proofs need their own failing-pool fixtures.
+  - **Planted reds, each failed by name, then restored:** results in their own transaction after the writes → *writes nothing twice when a step runs again after its commit is lost*; the event in its own transaction → *leaves neither the run nor its event when the commit is lost*; `admitWrite` removed from the run → *refuses Finance the run and changes nothing*; the stored verdict written with no judging again (D2 B) → *makes one SKU when two imports previewed from one file run one after the other* and *fails a row whose product changed in the catalog since the preview*.
+  - **Two ways on:** **A · keep part f at its built size (recommended)** — one PR; the run route, the batch step and the worker loop are one usable act, and no half shows the person anything. **B · split once more** — f1: the route, the handoff and the start (about 900 lines); f2: the batch write, the loop and the end (about 1,200). f1 alone leaves every job `running` for good.
+- **Size ruling (after the build, 2026-10-07):** the owner approved option **A** — part f at its built size, about 2,100 authored lines and 32 files, one PR.
+- **After the first review (2026-10-07)** — 33 files (+1: `catalog.slice.repository.ts`, the names read carries each platform item's override id) and about 2,180 authored lines (+4%), inside the approved fifth. Live QA passed every row before these fixes (Temporal read by Main: `qa-api` may not run `docker`). Fixed, each with what now prevents it:
+  - *Review* — the Risks row said an api ahead of its worker loses nothing; a part e worker completes a `run` workflow without a step and the job stays `running`. The row now says the worker MUST deploy first.
+  - *Review* — the two new CHECKs had no proof → *refuses a reason on a row not yet run, a failed row with no reason, and a running job with no one who ran it*, seen red with the bare `=` form planted in `heliogrid_test` (a null result let the reason through), restored from the migration's own line.
+  - *Review* — no test ran a step again after its commit → the second run of the twice-imported file calls the step once more and writes nothing.
+  - *Review* — the cross-company 404 had no planted red → the run's missing job answered with another status, *reads another company’s job as not found, and changes nothing* failed by name.
+  - *Review* — the price write existed twice, and the run's copy rewrote an existing override's `updated_at` → one `priceItemIn` in the prices repository, used by the single rate send and the run; the run passes the override id the names read already joined.
+  - *Review* — the run route's state rule was a literal in the repository → `takesImportRun` there; the service refuses what `hasImportRun` does not answer.
+  - *Review* — a running job with no runner answered `running` and would loop the workflow → it fails for good (`stepCannotSucceed`).
+  - *Review* — `writesImportRow` had no caller → dropped. The worker's retry comment now covers the run.
+  - *Review, the money red* — no test would see the run date its prices wrongly → *dates a price by the day its step writes it, never the day before* (`import-idempotency.test.ts`), seen red on the `run_at`-dated code before D3 A landed (`2026-10-06` written by a step on `2026-10-07`).
+  - *Main* — migration 0021's header still says the run's entries are dated `run_at`'s day. The file is applied on `heliogrid_test`, and the runner refuses an applied file whose hash changed; editing it would need the migration undone there by hand, a direct database write. Left as written — the owner's ruling at the commit card (option A); the RFC holds the truth.
+  - **Owner ruling (2026-10-07):** D3 → **A** — each batch dates its entries by the day it is written, on the tenant's clock.
+  - *Not taken:* a forced-overlap test of two runs on one company (optional in the review) — both take the catalog lock first, the same lock the single form and the release publish hold; renaming `import-preview-support.ts` (optional).
+- **Checklist (part f)** — [x] domain results and progress · [x] migration 0021 and schema · [x] contracts and workflow phase · [x] shared own-SKU insert, override, ledger id · [x] run repository and service · [x] route · [x] worker loop · [x] docs · [x] AC-1 (main-dev) · [x] AC-1 · AC-9 (qa-api) · [x] AC-2 · [x] AC-3 · [x] 0021 invariants (evaluator) · [x] AC-8 (main-dev, qa-api) · [x] review (clean on the third pass) · [ ] CI
 
 ### T-M01-031 · Price book
 **Type:** engine · **Tier:** P0

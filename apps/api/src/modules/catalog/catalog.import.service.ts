@@ -19,8 +19,11 @@ import {
   type CatalogImportMappingProblem,
   type CatalogImportSheet,
   countImportMatches,
+  countImportResults,
   hasImportPreview,
+  hasImportRun,
   importMappingProblem,
+  importRunProgress,
   sameImportMapping,
   takesImportMapping,
 } from '@heliogrid/domain';
@@ -110,6 +113,22 @@ export class CatalogImportService {
       counts: hasImportPreview(job.status)
         ? countImportMatches(await this.rows.countsByOutcome(tenantId, id))
         : null,
+      ...(await this.runOf(tenantId, job)),
+    };
+  }
+
+  /** The run's progress once the import is run, and the report's figures once it has completed. */
+  private async runOf(
+    tenantId: string,
+    job: ImportJobRow,
+  ): Promise<Pick<CatalogImportWire, 'run' | 'results'>> {
+    if (!hasImportRun(job.status) || job.runAt === null || job.runBy === null) {
+      return { run: null, results: null };
+    }
+    const byResult = await this.rows.countsByResult(tenantId, job.id);
+    return {
+      run: { ...importRunProgress(byResult), at: job.runAt.toISOString(), by: job.runBy },
+      results: job.status === 'completed' ? countImportResults(byResult) : null,
     };
   }
 

@@ -6,6 +6,7 @@ import { RouteAccessMap } from '../../common/auth/access';
 import { actOf, rolesOf, tenantIdOf } from '../../common/auth/session-context';
 import { CatalogImportService } from './catalog.import.service';
 import { CatalogImportPreviewService } from './catalog.import-preview.service';
+import { CatalogImportRunService } from './catalog.import-run.service';
 import { MANAGE_CATALOG } from './internal/write-checks';
 
 const MANAGE = { capability: MANAGE_CATALOG } as const;
@@ -16,6 +17,7 @@ export class CatalogImportController {
   constructor(
     @Inject(CatalogImportService) private readonly imports: CatalogImportService,
     @Inject(CatalogImportPreviewService) private readonly previews: CatalogImportPreviewService,
+    @Inject(CatalogImportRunService) private readonly runs: CatalogImportRunService,
   ) {}
 
   @TsRestHandler(catalogImportContract)
@@ -28,6 +30,7 @@ export class CatalogImportController {
     map: MANAGE,
     rows: MANAGE,
     fix: MANAGE,
+    run: MANAGE,
   })
   handler(@Req() req: Request) {
     const tenantId = () => tenantIdOf(req);
@@ -63,6 +66,10 @@ export class CatalogImportController {
           body,
           actOf(req).now,
         ),
+      }),
+      run: async ({ params }) => ({
+        status: 200,
+        body: await this.runs.run(tenantId(), roles(), params.id, actOf(req)),
       }),
     });
   }

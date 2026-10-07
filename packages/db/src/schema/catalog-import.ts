@@ -2,7 +2,9 @@ import {
   CATALOG_IMPORT_CONFLICT_ANSWERS,
   CATALOG_IMPORT_ENTRY_POINTS,
   CATALOG_IMPORT_FILE_NAME_MAX,
+  CATALOG_IMPORT_ROW_FAILURES,
   CATALOG_IMPORT_ROW_OUTCOMES,
+  CATALOG_IMPORT_ROW_RESULTS,
   CATALOG_IMPORT_STATES,
   CATALOG_IMPORT_UNREADABLE_REASONS,
   type CatalogImportCells,
@@ -26,7 +28,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { uuidv7 } from '../uuid';
 import { catalogItem } from './catalog-platform';
-import { tenantCatalogItem } from './catalog-tenant';
+import { catalogRateEntry, tenantCatalogItem } from './catalog-tenant';
 import { creationKeyColumns } from './creation-key';
 import { file } from './file';
 import { userAccount } from './identity';
@@ -49,6 +51,14 @@ export const catalogImportRowOutcome = pgEnum(
 export const catalogImportConflictAnswer = pgEnum(
   'catalog_import_conflict_answer',
   CATALOG_IMPORT_CONFLICT_ANSWERS,
+);
+export const catalogImportRowResult = pgEnum(
+  'catalog_import_row_result',
+  CATALOG_IMPORT_ROW_RESULTS,
+);
+export const catalogImportRowFailure = pgEnum(
+  'catalog_import_row_failure',
+  CATALOG_IMPORT_ROW_FAILURES,
 );
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
@@ -83,6 +93,10 @@ export const catalogImportJob = pgTable(
     mapping: jsonb('mapping').$type<CatalogImportMapping>(),
     /** Raised by every confirmed mapping, so a pass started for an older one writes nothing. */
     mappingRevision: integer('mapping_revision').notNull().default(0),
+    /** When the person pressed import; a job not run has none. */
+    runAt: instant('run_at'),
+    /** Who pressed import — the actor of every catalog write and audit entry the run makes. */
+    runBy: uuid('run_by').references(() => userAccount.id),
     startedBy: uuid('started_by')
       .notNull()
       .references(() => userAccount.id),
@@ -108,6 +122,11 @@ export const catalogImportJob = pgTable(
     check(
       'catalog_import_job_matched_has_mapping',
       sql`${table.status} not in ('matching', 'previewed', 'running', 'completed') or ${table.mapping} is not null`,
+    ),
+    // A run names when it started and who started it; a job never run names neither.
+    check(
+      'catalog_import_job_run_has_runner',
+      sql`(${table.status} in ('running', 'completed')) = (${table.runAt} is not null) and (${table.runAt} is null) = (${table.runBy} is null)`,
     ),
   ],
 );
@@ -143,6 +162,13 @@ export const catalogImportRow = pgTable(
     attention: jsonb('attention').$type<readonly ImportAttention[]>().notNull(),
     catalogItemId: uuid('catalog_item_id').references(() => catalogItem.id),
     tenantCatalogItemId: uuid('tenant_catalog_item_id').references(() => tenantCatalogItem.id),
+    /** What the run did with the row; null until it has. */
+    result: catalogImportRowResult('result'),
+    failure: catalogImportRowFailure('failure'),
+    /** The dated entry the row wrote — the price it applied, or its new product's first price. */
+    rateEntryId: uuid('rate_entry_id').references(() => catalogRateEntry.id),
+    /** The own SKU the row made. */
+    createdItemId: uuid('created_item_id').references(() => tenantCatalogItem.id),
     createdAt: instant('created_at').notNull(),
     updatedAt: instant('updated_at').notNull(),
   },
@@ -158,11 +184,25 @@ export const catalogImportRow = pgTable(
       table.outcome,
       table.rowNumber,
     ),
+    // The run's next rows (`result is null`, in row order) and its counts by result.
+    index('catalog_import_row_tenant_job_result_idx').on(
+      table.tenantId,
+      table.jobId,
+      table.result,
+      table.rowNumber,
+    ),
     check('catalog_import_row_number_positive', sql`${table.rowNumber} >= 1`),
     // The item a match names is the one its outcome writes to; any other outcome names none.
     check(
       'catalog_import_row_match_names_its_item',
       sql`(${table.outcome} = 'price_override') = (${table.catalogItemId} is not null) and (${table.outcome} = 'own_item_price') = (${table.tenantCatalogItemId} is not null)`,
+    ),
+    // A failure is the reason a failed row gives; a written row names its entry, a new one its SKU.
+    check(
+      'catalog_import_row_result_names_its_write',
+      // `is not distinct from` and `coalesce`: a row not yet run has a null result, which `=` and
+      // `in` would turn into a null CHECK, and a null CHECK passes.
+      sql`(${table.result} is not distinct from 'failed') = (${table.failure} is not null) and coalesce(${table.result} in ('price_applied', 'product_created'), false) = (${table.rateEntryId} is not null) and (${table.result} is not distinct from 'product_created') = (${table.createdItemId} is not null)`,
     ),
   ],
 );

@@ -25,6 +25,7 @@ export * from './business-profile';
 export * from './catalog';
 // The spreadsheet import (`T-M01-030`): a stored price list becomes a job the wizard maps and runs.
 export * from './catalog-import';
+export * from './catalog-import-rows';
 // The catalog's labelled releases (`T-M01-027` part c).
 export * from './catalog-releases';
 // The too-old phone (`T-FPLAT-033`): the version header and the 426 every route may answer.
