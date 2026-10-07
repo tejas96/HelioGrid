@@ -1,14 +1,23 @@
 import {
+  CATALOG_IMPORT_ATTENTION_REASONS,
+  CATALOG_IMPORT_CONFLICT_ANSWERS,
   CATALOG_IMPORT_ENTRY_POINTS,
+  CATALOG_IMPORT_FIELDS,
   CATALOG_IMPORT_FILE_NAME_MAX,
+  CATALOG_IMPORT_ROW_OUTCOMES,
   CATALOG_IMPORT_STATES,
   CATALOG_IMPORT_UNREADABLE_REASONS,
+  type CatalogImportCounts,
+  type CatalogImportMapping,
   type CatalogImportSheet,
   FILE_CONTENT_TYPES,
+  importColumnsProblem,
 } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
+import { catalogItemSourceSchema, resolvedRateSchema } from './catalog';
 import {
+  amountSchema,
   createHeadersSchema,
   extensibleEnum,
   paginated,
@@ -32,6 +41,11 @@ export const catalogImportStateSchema = z.enum(CATALOG_IMPORT_STATES);
 export const catalogImportEntryPointSchema = z.enum(CATALOG_IMPORT_ENTRY_POINTS);
 /** Held by the pgEnum `catalog_import_unreadable_reason` (invariant `enum-parity`). */
 export const catalogImportUnreadableReasonSchema = z.enum(CATALOG_IMPORT_UNREADABLE_REASONS);
+/** Held by the pgEnum `catalog_import_row_outcome` (invariant `enum-parity`). */
+export const catalogImportRowOutcomeSchema = z.enum(CATALOG_IMPORT_ROW_OUTCOMES);
+/** Held by the pgEnum `catalog_import_conflict_answer` (invariant `enum-parity`). */
+export const catalogImportConflictAnswerSchema = z.enum(CATALOG_IMPORT_CONFLICT_ANSWERS);
+export const catalogImportFieldSchema = z.enum(CATALOG_IMPORT_FIELDS);
 
 /**
  * Start an import from a stored `catalog` file. The name and the saved date are the device
@@ -54,6 +68,72 @@ export const catalogImportSheetSchema = z.object({
   topRows: z.array(z.array(z.string())),
 }) satisfies z.ZodType<CatalogImportSheet>;
 export type CatalogImportSheetWire = z.infer<typeof catalogImportSheetSchema>;
+
+/** Where the mapping points: the sheet, its header row, and the field each column fills. */
+const mappingShape = {
+  sheet: z.number().int().nonnegative(),
+  headerRow: z.number().int().nonnegative(),
+};
+
+/**
+ * The mapping step 2 confirms (`T-M01-030d` decision 1). Brand, model and rate placed once each and
+ * no field twice is the schema's (400); whether it fits the job's sheets is the service's (422) —
+ * both are domain's rule, which the wizard holds its confirm to.
+ */
+export const catalogImportMappingSchema = z
+  .object({ ...mappingShape, columns: z.array(catalogImportFieldSchema.nullable()) })
+  .superRefine((mapping, context) => {
+    const problem = importColumnsProblem(mapping.columns);
+    if (problem !== null) context.addIssue({ code: 'custom', path: ['columns'], message: problem });
+  }) satisfies z.ZodType<CatalogImportMapping>;
+export type CatalogImportMappingWrite = z.infer<typeof catalogImportMappingSchema>;
+
+/** The mapping as a job reports it; a field added later still parses on an older client. */
+const catalogImportMappingReadSchema = z.object({
+  ...mappingShape,
+  columns: z.array(extensibleEnum(CATALOG_IMPORT_FIELDS).nullable()),
+});
+
+/** The preview's figures (`SCR-M01-17` decision 3), counted off the rows: derived, never stored. */
+export const catalogImportCountsSchema = z.object({
+  rows: z.number().int().nonnegative(),
+  matched: z.number().int().nonnegative(),
+  newItems: z.number().int().nonnegative(),
+  needsAttention: z.number().int().nonnegative(),
+  leftOut: z.number().int().nonnegative(),
+}) satisfies z.ZodType<CatalogImportCounts>;
+
+/** Keyed by import field (`CATALOG_IMPORT_FIELDS`), held open so a field added later still parses. */
+const importCellsSchema = z.record(z.string(), z.string());
+
+/**
+ * One row of the preview grid: the cells as the file wrote them, the person's fix over them, the
+ * pass's verdict, the price the file asks and the price the catalog holds now (`SCR-M01-17`
+ * decision 7) — null when the cell holds no readable price, or the item no rate.
+ */
+export const catalogImportRowSchema = z.object({
+  rowNumber: z.number().int().positive(),
+  cells: importCellsSchema,
+  fix: importCellsSchema,
+  leftOut: z.boolean(),
+  answer: extensibleEnum(CATALOG_IMPORT_CONFLICT_ANSWERS).nullable(),
+  outcome: extensibleEnum(CATALOG_IMPORT_ROW_OUTCOMES),
+  attention: z.array(
+    z.object({
+      reason: extensibleEnum(CATALOG_IMPORT_ATTENTION_REASONS),
+      fields: z.array(z.string()),
+    }),
+  ),
+  match: z.object({ source: catalogItemSourceSchema, id: uuidSchema }).nullable(),
+  filePrice: amountSchema.nullable(),
+  catalogPrice: resolvedRateSchema.nullable(),
+});
+export type CatalogImportRowWire = z.infer<typeof catalogImportRowSchema>;
+
+export const catalogImportRowsQuerySchema = paginationQuerySchema.extend({
+  outcome: catalogImportRowOutcomeSchema.optional(),
+});
+export type CatalogImportRowsQuery = z.infer<typeof catalogImportRowsQuerySchema>;
 
 /** A job as the re-openable list shows it. Vocabularies are extensible: later phases add states. */
 export const catalogImportSummarySchema = z.object({
@@ -79,6 +159,10 @@ export const catalogImportSchema = catalogImportSummarySchema.extend({
     byteSize: z.number().int().positive(),
   }),
   sheets: z.array(catalogImportSheetSchema).nullable(),
+  /** Null until the first mapping is confirmed. */
+  mapping: catalogImportMappingReadSchema.nullable(),
+  /** Null until the matching pass has previewed the rows. */
+  counts: catalogImportCountsSchema.nullable(),
 });
 export type CatalogImportWire = z.infer<typeof catalogImportSchema>;
 
@@ -87,6 +171,8 @@ const guarded = {
   403: errorEnvelope(baseError('FORBIDDEN')),
 } as const;
 const notFound = errorEnvelope(baseError('NOT_FOUND'));
+/** The job is not where the act can happen — mapping a file not yet read, paging rows not matched. */
+const wrongState = errorEnvelope(baseError('CONFLICT'));
 
 export const catalogImportContract = c.router({
   start: {
@@ -118,5 +204,36 @@ export const catalogImportContract = c.router({
     pathParams: z.object({ id: uuidSchema }),
     summary: 'One import: where it is, and the sheets its file holds once read',
     responses: { 200: catalogImportSchema, ...guarded, 404: notFound },
+  },
+  map: {
+    method: 'PUT',
+    path: '/catalog/imports/:id/mapping',
+    pathParams: z.object({ id: uuidSchema }),
+    body: catalogImportMappingSchema,
+    summary:
+      'Confirm the sheet, the header row and the columns — the matching pass runs in the background; a new mapping supersedes a pass still running',
+    responses: {
+      200: catalogImportSchema,
+      ...guarded,
+      404: notFound,
+      /** The job is reading, unreadable, running or completed. */
+      409: wrongState,
+      /** The mapping does not fit the sheets the file holds — `details[].issue` says how. */
+      422: errorEnvelope(baseError('DOMAIN_RULE_VIOLATION')),
+    },
+  },
+  rows: {
+    method: 'GET',
+    path: '/catalog/imports/:id/rows',
+    pathParams: z.object({ id: uuidSchema }),
+    query: catalogImportRowsQuerySchema,
+    summary: 'A page of the preview grid by sheet row number, narrowed to one outcome when asked',
+    responses: {
+      200: paginated(catalogImportRowSchema),
+      ...guarded,
+      404: notFound,
+      /** The matching pass has not previewed the rows. */
+      409: wrongState,
+    },
   },
 });

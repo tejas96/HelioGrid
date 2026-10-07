@@ -1,14 +1,14 @@
 import type { CatalogImportAttentionReason, CatalogImportConflictAnswer } from './import';
 import {
   type ImportCurrency,
-  isBlank,
   readComponentKind,
   readImportPrice,
   readImportSpec,
   readSpecValue,
   specValueAt,
 } from './import-cells';
-import type { CatalogImportField } from './import-columns';
+import type { CatalogImportCells, CatalogImportField } from './import-columns';
+import { identityOf, isBlank, productNameOf } from './import-text';
 import { type CatalogSpec, SPEC_FIELDS } from './specs';
 import { COMPONENT_KINDS } from './vocabulary';
 
@@ -23,7 +23,7 @@ import { COMPONENT_KINDS } from './vocabulary';
 
 /** One row as the preview holds it: its mapped cells and what the person has answered on it. */
 export interface CatalogImportRowInput {
-  readonly cells: Readonly<Partial<Record<CatalogImportField, string>>>;
+  readonly cells: CatalogImportCells;
   readonly leftOut: boolean;
   readonly answer: CatalogImportConflictAnswer | null;
 }
@@ -64,8 +64,6 @@ export type CatalogImportRowMatch =
 type Target =
   | { readonly on: 'platform'; readonly entry: ImportCatalogEntry }
   | { readonly on: 'own'; readonly entry: ImportCatalogEntry };
-
-const identityOf = (brand: string, model: string) => `${brand.trim()}\u0000${model.trim()}`;
 
 function byIdentity(entries: readonly ImportCatalogEntry[]): Map<string, ImportCatalogEntry[]> {
   const index = new Map<string, ImportCatalogEntry[]>();
@@ -151,14 +149,13 @@ function matchRow(
 ): CatalogImportRowMatch {
   if (row.leftOut) return { outcome: 'left_out' };
   const attention: ImportAttention[] = [];
-  const brand = row.cells.brand?.trim() ?? '';
-  const model = row.cells.model?.trim() ?? '';
-  const named = brand !== '' && model !== '';
-  if (!named) attention.push({ reason: 'brand_or_model_missing', fields: [] });
+  const name = productNameOf(row.cells);
+  if (name === null) attention.push({ reason: 'brand_or_model_missing', fields: [] });
   const price = readImportPrice(row.cells.rate, catalog.currency);
   if (!price.ok) attention.push({ reason: price.reason, fields: [] });
-  if (!named) return { outcome: 'needs_attention', attention };
+  if (name === null) return { outcome: 'needs_attention', attention };
 
+  const { brand, model } = name;
   const identity = identityOf(brand, model);
   if (seen.has(identity)) attention.push({ reason: 'repeated_in_file', fields: [] });
   seen.add(identity);

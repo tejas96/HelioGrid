@@ -52,6 +52,9 @@ export const CATALOG_IMPORT_FIELDS = [
 ] as const;
 export type CatalogImportField = (typeof CATALOG_IMPORT_FIELDS)[number];
 
+/** One row's cells by the field each fills, as text — the file's, or the person's fix over it. */
+export type CatalogImportCells = Readonly<Partial<Record<CatalogImportField, string>>>;
+
 /**
  * The header words each field answers to, per launch language. Keyed by `UiLanguage`, so a language
  * added to `UI_LANGUAGES` does not compile here until every field says which words it answers to

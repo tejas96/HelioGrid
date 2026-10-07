@@ -26,6 +26,42 @@ export async function readSpreadsheet(
   contentType: FileContentType,
   unpackedLimit = CATALOG_IMPORT_UNPACKED_LIMIT_BYTES,
 ): Promise<SpreadsheetRead> {
+  const opened = await openWorkbook(bytes, contentType, unpackedLimit);
+  if (!opened.readable) return opened;
+  const sheets = opened.workbook.worksheets.map(sheetOf);
+  if (sheets.every((sheet) => sheet.rowCount === 0)) return { readable: false, reason: 'no_rows' };
+  return { readable: true, sheets };
+}
+
+export type SheetRowsRead =
+  | { readonly readable: true; readonly rows: readonly (readonly string[])[] }
+  | { readonly readable: false };
+
+/**
+ * Every row of one sheet as text, `rows[i]` being sheet row `i + 1` — what the matching pass maps
+ * (`T-M01-030d` decision 2). The file is the one the read step already opened, so a file that no
+ * longer opens, or a sheet no longer there, is not the person's to fix: the caller fails the step.
+ */
+export async function readSheetRows(
+  bytes: Uint8Array,
+  contentType: FileContentType,
+  sheetIndex: number,
+): Promise<SheetRowsRead> {
+  const opened = await openWorkbook(bytes, contentType, CATALOG_IMPORT_UNPACKED_LIMIT_BYTES);
+  const sheet = opened.readable ? opened.workbook.worksheets[sheetIndex] : undefined;
+  if (sheet === undefined) return { readable: false };
+  return { readable: true, rows: rowsOf(sheet, sheet.rowCount) };
+}
+
+type OpenedWorkbook =
+  | { readonly readable: true; readonly workbook: ExcelJS.Workbook }
+  | { readonly readable: false; readonly reason: 'cannot_open' | 'too_large_unpacked' };
+
+async function openWorkbook(
+  bytes: Uint8Array,
+  contentType: FileContentType,
+  unpackedLimit: number,
+): Promise<OpenedWorkbook> {
   const workbook = new ExcelJS.Workbook();
   if (contentType === 'text/csv') {
     // TextDecoder drops a byte-order mark; `map` keeps every cell the text it was, so `1,32,000`
@@ -37,19 +73,17 @@ export async function readSpreadsheet(
       // A quote left open is the file's, never an outage: a retry would read it the same way.
       return { readable: false, reason: 'cannot_open' };
     }
-  } else {
-    const unpacked = unpackedSizeOf(bytes, unpackedLimit);
-    if (unpacked === 'too_large') return { readable: false, reason: 'too_large_unpacked' };
-    if (unpacked === 'not_a_zip') return { readable: false, reason: 'cannot_open' };
-    try {
-      await workbook.xlsx.load(Buffer.from(bytes));
-    } catch {
-      return { readable: false, reason: 'cannot_open' };
-    }
+    return { readable: true, workbook };
   }
-  const sheets = workbook.worksheets.map(sheetOf);
-  if (sheets.every((sheet) => sheet.rowCount === 0)) return { readable: false, reason: 'no_rows' };
-  return { readable: true, sheets };
+  const unpacked = unpackedSizeOf(bytes, unpackedLimit);
+  if (unpacked === 'too_large') return { readable: false, reason: 'too_large_unpacked' };
+  if (unpacked === 'not_a_zip') return { readable: false, reason: 'cannot_open' };
+  try {
+    await workbook.xlsx.load(Buffer.from(bytes));
+  } catch {
+    return { readable: false, reason: 'cannot_open' };
+  }
+  return { readable: true, workbook };
 }
 
 /**
@@ -60,8 +94,13 @@ export async function readSpreadsheet(
 function sheetOf(sheet: Worksheet): CatalogImportSheet {
   const rowCount = countFilledRows(sheet);
   const columnCount = rowCount === 0 ? 0 : sheet.columnCount;
-  const lastTopRow = rowCount === 0 ? 0 : Math.min(HEADER_ROW_SCAN, sheet.rowCount);
-  const topRows = Array.from({ length: lastTopRow }, (_row, index) => {
+  const topRows = rowsOf(sheet, rowCount === 0 ? 0 : Math.min(HEADER_ROW_SCAN, sheet.rowCount));
+  return { name: sheet.name, rowCount, columnCount, topRows };
+}
+
+/** The sheet's first `count` rows as text, each ending at its last filled cell. */
+function rowsOf(sheet: Worksheet, count: number): string[][] {
+  return Array.from({ length: count }, (_row, index) => {
     const row = sheet.getRow(index + 1);
     const cells = Array.from({ length: row.cellCount }, (_cell, column) =>
       textOf(row.getCell(column + 1).value),
@@ -69,7 +108,6 @@ function sheetOf(sheet: Worksheet): CatalogImportSheet {
     while (cells.at(-1) === '') cells.pop();
     return cells;
   });
-  return { name: sheet.name, rowCount, columnCount, topRows };
 }
 
 function countFilledRows(sheet: Worksheet): number {

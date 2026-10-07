@@ -2,7 +2,7 @@ import { moneySymbol } from '../format/money';
 import type { FormatPack } from '../format/pack';
 import { minorUnitsOfDecimal, minorUnitsToDecimal } from '../money/minor-units';
 import type { CatalogImportAttentionReason } from './import';
-import { asciiDigits, importTextKey } from './import-text';
+import { asciiDigits, importTextKey, isBlank } from './import-text';
 import { type CatalogSpec, parseCatalogSpec, SPEC_FIELDS, type SpecField } from './specs';
 import type { BatteryChemistry, ComponentKind, PanelTechnology } from './vocabulary';
 
@@ -11,11 +11,6 @@ import type { BatteryChemistry, ComponentKind, PanelTechnology } from './vocabul
  * value or a refusal out. Nothing here guesses past what the text says — a cell it cannot read is
  * a row that needs attention, never a value made up.
  */
-
-/** A cell with nothing in it is absent, never a zero. */
-export function isBlank(cell: string | undefined): cell is undefined {
-  return cell === undefined || cell.trim() === '';
-}
 
 /** A number as a sheet writes it: grouped with commas, Devanagari digits, a unit after it. */
 export function readImportNumber(cell: string): number | null {

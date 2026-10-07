@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { type CatalogImportConflictAnswer, countImportMatches } from '../../src/catalog/import';
+import type { CatalogImportConflictAnswer } from '../../src/catalog/import';
 import type { CatalogImportField } from '../../src/catalog/import-columns';
 import {
   type CatalogImportRowInput,
   type ImportCatalog,
   matchImportRows,
 } from '../../src/catalog/import-matching';
+import { importProductNames } from '../../src/catalog/import-text';
 import type { CatalogSpec } from '../../src/catalog/specs';
 import { IN_FORMATS } from '../../src/format/pack';
 
@@ -274,15 +275,18 @@ describe('matchImportRows — the matching pass (M01-41, §M01.4 edge cases)', (
   });
 });
 
-describe("countImportMatches — the preview's figures", () => {
-  it.each([
-    ['no rows', [], { rows: 0, matched: 0, newItems: 0, needsAttention: 0, leftOut: 0 }],
-    [
-      'one of each',
-      ['price_override', 'own_item_price', 'new_item', 'needs_attention', 'left_out'],
-      { rows: 5, matched: 2, newItems: 1, needsAttention: 1, leftOut: 1 },
-    ],
-  ] as const)('%s', (_, outcomes, counts) => {
-    expect(countImportMatches(outcomes)).toEqual(counts);
+describe('importProductNames — what the pass reads from the catalog', () => {
+  it('names each product once, outer spaces aside, and skips a row missing either half', () => {
+    const rows = [
+      { cells: { brand: ' Waaree ', model: 'WS-545' } },
+      { cells: { brand: 'Waaree', model: ' WS-545 ' } },
+      { cells: { brand: 'Waaree' } },
+      { cells: { brand: '  ', model: 'WS-550' } },
+      { cells: { brand: 'Adani', model: 'ASB-540' } },
+    ];
+    expect(importProductNames(rows)).toEqual([
+      { brand: 'Waaree', model: 'WS-545' },
+      { brand: 'Adani', model: 'ASB-540' },
+    ]);
   });
 });

@@ -1,5 +1,5 @@
 import type { RateWrite, RoleSet } from '@heliogrid/contracts';
-import { type CertificationSchemesPack, can, limitsOn } from '@heliogrid/domain';
+import { type CertificationSchemesPack, can, type FormatPack, limitsOn } from '@heliogrid/domain';
 import { minorUnitsOfDecimal, minorUnitsToDecimal } from '@heliogrid/domain/server';
 import {
   ConflictException,
@@ -17,6 +17,8 @@ import type { ResolveContext } from './resolve-input';
 /** The tenant and its market's facts, read once per act. */
 export interface Scope extends CatalogTenant {
   readonly certificationSchemes: CertificationSchemesPack;
+  /** How the market writes money: what an import's price cells are read against. */
+  readonly formats: FormatPack;
   readonly resolve: ResolveContext;
 }
 

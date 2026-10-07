@@ -9,6 +9,7 @@ export type {
   CatalogImportConflictAnswer,
   CatalogImportCounts,
   CatalogImportEntryPoint,
+  CatalogImportOutcomeCounts,
   CatalogImportRowOutcome,
   CatalogImportSheet,
   CatalogImportState,
@@ -19,14 +20,17 @@ export {
   CATALOG_IMPORT_CONFLICT_ANSWERS,
   CATALOG_IMPORT_ENTRY_POINTS,
   CATALOG_IMPORT_FILE_NAME_MAX,
+  CATALOG_IMPORT_MAPPABLE_STATES,
   CATALOG_IMPORT_ROW_OUTCOMES,
   CATALOG_IMPORT_STATES,
   CATALOG_IMPORT_UNPACKED_LIMIT_BYTES,
   CATALOG_IMPORT_UNREADABLE_REASONS,
   countImportMatches,
+  hasImportPreview,
+  takesImportMapping,
 } from './import';
 export type { ImportCurrency } from './import-cells';
-export type { CatalogImportField, ColumnGuess } from './import-columns';
+export type { CatalogImportCells, CatalogImportField, ColumnGuess } from './import-columns';
 export {
   CATALOG_IMPORT_FIELDS,
   guessColumns,
@@ -34,12 +38,26 @@ export {
   HEADER_ROW_SCAN,
 } from './import-columns';
 export type {
+  CatalogImportColumnsProblem,
+  CatalogImportMappedRow,
+  CatalogImportMapping,
+  CatalogImportMappingProblem,
+} from './import-mapping';
+export {
+  importColumnsProblem,
+  importMappingProblem,
+  mappedRows,
+  sameImportMapping,
+} from './import-mapping';
+export type {
   CatalogImportRowInput,
   CatalogImportRowMatch,
   ImportAttention,
   ImportCatalog,
   ImportCatalogEntry,
 } from './import-matching';
+export type { ImportProductName } from './import-text';
+export { importProductNames } from './import-text';
 export type { PriceBookRateBasis } from './price-book';
 export { MAX_MARGIN, PLATFORM_DEFAULT_MARGIN, PRICE_BOOK_RATE_BASES } from './price-book';
 export type {

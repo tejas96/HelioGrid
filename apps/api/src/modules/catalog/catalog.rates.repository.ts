@@ -1,4 +1,9 @@
-import { catalogRateEntry, type TenantPool, type TenantScopedDb } from '@heliogrid/db';
+import {
+  catalogRateEntry,
+  type TenantPool,
+  type TenantScopedDb,
+  tenantCatalogOverride,
+} from '@heliogrid/db';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, count, desc, eq, gt, inArray, lte } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
@@ -119,6 +124,69 @@ export async function ratesInForce(
     for (const { parentId, ...rate } of rows) if (parentId) inForce.set(parentId, rate);
   }
   return inForce;
+}
+
+/**
+ * An item a rate is read for: an own SKU, or a platform item through the tenant's override. A read
+ * that already joined the override passes its id (null when there is none), and no lookup runs.
+ */
+export interface RatedItem {
+  readonly source: 'platform_item' | 'own_item';
+  readonly id: string;
+  readonly overrideId?: string | null;
+}
+
+/** The rate in force on an item, and the ledger it came from. */
+export interface ItemRate extends StoredRate {
+  readonly on: RateParent['on'];
+}
+
+/**
+ * Each item's rate in force on `pricedOn`, by item id: an own SKU's own ledger, a platform item's
+ * override's (`M01-44`) — the one rule every reader picks the ledger by. At most three statements
+ * whatever the count; an item with no rate is absent.
+ */
+export async function itemRatesInForce(
+  tx: TenantScopedDb,
+  tenantId: string,
+  items: readonly RatedItem[],
+  pricedOn: string,
+): Promise<Map<string, ItemRate>> {
+  const ownItems = items.filter((item) => item.source === 'own_item').map((item) => item.id);
+  const platform = items.filter((item) => item.source === 'platform_item');
+  const known = platform.flatMap((item) =>
+    item.overrideId == null ? [] : [{ id: item.overrideId, itemId: item.id }],
+  );
+  const unknown = platform.filter((item) => item.overrideId === undefined).map((item) => item.id);
+  const looked =
+    unknown.length === 0
+      ? []
+      : await tx
+          .select({ id: tenantCatalogOverride.id, itemId: tenantCatalogOverride.catalogItemId })
+          .from(tenantCatalogOverride)
+          .where(
+            and(
+              eq(tenantCatalogOverride.tenantId, tenantId),
+              inArray(tenantCatalogOverride.catalogItemId, unknown),
+            ),
+          );
+  const overrides = [...known, ...looked];
+  const rates = await ratesInForce(
+    tx,
+    tenantId,
+    { ownItems, overrides: overrides.map((override) => override.id) },
+    pricedOn,
+  );
+  const byItem = new Map<string, ItemRate>();
+  for (const id of ownItems) {
+    const rate = rates.get(id);
+    if (rate !== undefined) byItem.set(id, { ...rate, on: 'own_item' });
+  }
+  for (const { id, itemId } of overrides) {
+    const rate = rates.get(id);
+    if (rate !== undefined) byItem.set(itemId, { ...rate, on: 'override' });
+  }
+  return byItem;
 }
 
 /**

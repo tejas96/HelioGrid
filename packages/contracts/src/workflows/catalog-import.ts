@@ -4,14 +4,15 @@ import { defineWorkflow } from './registry';
 
 /**
  * The catalog import (`T-M01-030`): ONE workflow type, started once per handoff with the phase it
- * runs. Part c's phase reads the stored file; the match and the run join this list as added values,
- * which every payload already stored still parses (`outbox.ts` says why that matters).
+ * runs: `read` opens the stored file, `match` matches its rows by the confirmed mapping. The run
+ * joins this list as an added value, which every payload already stored still parses (`outbox.ts`
+ * says why that matters).
  *
  * The input is ids only (`infra/temporal/README.md` §4): the tenant, because a durable run has no
  * session, and the job, whose row holds everything else. The worker holds the sequence; every step
  * runs in the api, beside the catalog's tables.
  */
-export const CATALOG_IMPORT_PHASES = ['read'] as const;
+export const CATALOG_IMPORT_PHASES = ['read', 'match'] as const;
 
 export const catalogImportWorkflow = defineWorkflow({
   name: 'catalogImport',
@@ -52,4 +53,14 @@ export interface CatalogImportActivities {
    * `unreadable` (`not_read`), so no job waits in `reading` for good.
    */
   endCatalogImportRead(input: CatalogImportStepInput): Promise<CatalogImportStepResult>;
+  /**
+   * Matches every filled row of the mapped sheet and leaves the job `previewed` with its rows — or,
+   * when a newer mapping has superseded the one it read, writes nothing.
+   */
+  matchCatalogImport(input: CatalogImportStepInput): Promise<CatalogImportStepResult>;
+  /**
+   * Ends a pass that failed past every retry by putting the job back to `mapped`, unless a newer
+   * mapping has taken over, so the wizard offers the confirm again.
+   */
+  endCatalogImportMatch(input: CatalogImportStepInput): Promise<CatalogImportStepResult>;
 }

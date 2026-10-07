@@ -1,14 +1,21 @@
 import {
+  CATALOG_IMPORT_CONFLICT_ANSWERS,
   CATALOG_IMPORT_ENTRY_POINTS,
   CATALOG_IMPORT_FILE_NAME_MAX,
+  CATALOG_IMPORT_ROW_OUTCOMES,
   CATALOG_IMPORT_STATES,
   CATALOG_IMPORT_UNREADABLE_REASONS,
+  type CatalogImportCells,
+  type CatalogImportMapping,
   type CatalogImportSheet,
+  type ImportAttention,
 } from '@heliogrid/domain';
 import { sql } from 'drizzle-orm';
 import {
+  boolean,
   check,
   index,
+  integer,
   jsonb,
   pgEnum,
   pgTable,
@@ -18,6 +25,8 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { uuidv7 } from '../uuid';
+import { catalogItem } from './catalog-platform';
+import { tenantCatalogItem } from './catalog-tenant';
 import { creationKeyColumns } from './creation-key';
 import { file } from './file';
 import { userAccount } from './identity';
@@ -32,6 +41,14 @@ export const catalogImportEntryPoint = pgEnum(
 export const catalogImportUnreadableReason = pgEnum(
   'catalog_import_unreadable_reason',
   CATALOG_IMPORT_UNREADABLE_REASONS,
+);
+export const catalogImportRowOutcome = pgEnum(
+  'catalog_import_row_outcome',
+  CATALOG_IMPORT_ROW_OUTCOMES,
+);
+export const catalogImportConflictAnswer = pgEnum(
+  'catalog_import_conflict_answer',
+  CATALOG_IMPORT_CONFLICT_ANSWERS,
 );
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
@@ -62,6 +79,10 @@ export const catalogImportJob = pgTable(
     fileName: text('file_name').notNull(),
     savedAt: instant('saved_at'),
     sheets: jsonb('sheets').$type<readonly CatalogImportSheet[]>(),
+    /** What the person confirmed in step 2; set from the first mapping on. */
+    mapping: jsonb('mapping').$type<CatalogImportMapping>(),
+    /** Raised by every confirmed mapping, so a pass started for an older one writes nothing. */
+    mappingRevision: integer('mapping_revision').notNull().default(0),
     startedBy: uuid('started_by')
       .notNull()
       .references(() => userAccount.id),
@@ -82,6 +103,66 @@ export const catalogImportJob = pgTable(
     check(
       'catalog_import_job_unreadable_has_reason',
       sql`(${table.status} = 'unreadable') = (${table.unreadableReason} is not null)`,
+    ),
+    // A job past its mapping matches, previews and runs by it; without one there is nothing to run.
+    check(
+      'catalog_import_job_matched_has_mapping',
+      sql`${table.status} not in ('matching', 'previewed', 'running', 'completed') or ${table.mapping} is not null`,
+    ),
+  ],
+);
+
+/**
+ * One filled row of an import's sheet and the matching pass's verdict on it (`T-M01-030d`): its
+ * cells, what the person answered, and what the pass made of it — the outcome, why it needs
+ * attention, and the item it matched. The counts are read off these rows, never stored.
+ *
+ * Tenant-scoped, all four always. DELETE as well as SELECT, INSERT and UPDATE for `app_user`: a new
+ * mapping's pass replaces the rows of the one it supersedes, before anything is run.
+ */
+export const catalogImportRow = pgTable(
+  'catalog_import_row',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .$defaultFn(() => uuidv7()),
+    tenantId: uuid('tenant_id')
+      .notNull()
+      .references(() => tenant.id),
+    jobId: uuid('job_id')
+      .notNull()
+      .references(() => catalogImportJob.id),
+    /** The sheet's own row number, the one the person sees in their file. */
+    rowNumber: integer('row_number').notNull(),
+    cells: jsonb('cells').$type<CatalogImportCells>().notNull(),
+    fix: jsonb('fix').$type<CatalogImportCells>().notNull(),
+    leftOut: boolean('left_out').notNull(),
+    answer: catalogImportConflictAnswer('answer'),
+    outcome: catalogImportRowOutcome('outcome').notNull(),
+    /** Empty unless the outcome is `needs_attention`; each reason is parsed by the contract. */
+    attention: jsonb('attention').$type<readonly ImportAttention[]>().notNull(),
+    catalogItemId: uuid('catalog_item_id').references(() => catalogItem.id),
+    tenantCatalogItemId: uuid('tenant_catalog_item_id').references(() => tenantCatalogItem.id),
+    createdAt: instant('created_at').notNull(),
+    updatedAt: instant('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('catalog_import_row_tenant_job_row_key').on(
+      table.tenantId,
+      table.jobId,
+      table.rowNumber,
+    ),
+    index('catalog_import_row_tenant_job_outcome_idx').on(
+      table.tenantId,
+      table.jobId,
+      table.outcome,
+      table.rowNumber,
+    ),
+    check('catalog_import_row_number_positive', sql`${table.rowNumber} >= 1`),
+    // The item a match names is the one its outcome writes to; any other outcome names none.
+    check(
+      'catalog_import_row_match_names_its_item',
+      sql`(${table.outcome} = 'price_override') = (${table.catalogItemId} is not null) and (${table.outcome} = 'own_item_price') = (${table.tenantCatalogItemId} is not null)`,
     ),
   ],
 );

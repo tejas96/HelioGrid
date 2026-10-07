@@ -48,3 +48,7 @@ pnpm --filter @heliogrid/worker dev | build | typecheck    # build also emits th
 
 The workflow driven through the api route that starts it, against the local Temporal · idempotency
 proven for anything that touches money.
+
+## Traps
+
+- `dev` reloads the source but runs the BUILT `dist/workflow-bundle.js`, so a workflow edit never runs: a new branch of a workflow is missing from the bundle, and its handoff completes doing nothing with no error → after any `*.workflows.ts` change, `pnpm --filter @heliogrid/worker build` (the bundle reads the compiled `dist/`, so `build:workflows` alone is not enough), then restart the worker.

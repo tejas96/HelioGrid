@@ -237,6 +237,7 @@ export class CatalogService {
     return {
       ...tenant,
       certificationSchemes: pack.certificationSchemes,
+      formats: pack.formats,
       resolve: {
         pricedOn: localDate(now, tenant.timezone),
         badgedSchemes: badgedSchemes(pack.certificationSchemes),

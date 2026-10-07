@@ -9570,6 +9570,102 @@
                         ]
                       },
                       "nullable": true
+                    },
+                    "mapping": {
+                      "type": "object",
+                      "properties": {
+                        "sheet": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "headerRow": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "columns": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "kind",
+                              "brand",
+                              "model",
+                              "rate",
+                              "watt",
+                              "technology",
+                              "lengthMm",
+                              "widthMm",
+                              "vocV",
+                              "vmpV",
+                              "iscA",
+                              "impA",
+                              "tempCoeffVocPct",
+                              "tempCoeffPmaxPct",
+                              "bifacialityPct",
+                              "warrantyYears",
+                              "weightKg",
+                              "acKw",
+                              "phases",
+                              "mppt.count",
+                              "mppt.minV",
+                              "mppt.maxV",
+                              "mppt.maxCurrentA",
+                              "mppt.stringsPerMppt",
+                              "maxDcV",
+                              "efficiencyPct",
+                              "usableKwh",
+                              "nominalV",
+                              "chemistry",
+                              "powerKw",
+                              "cycleLife",
+                              "depthMm",
+                              "heightMm",
+                              "ratedAcW",
+                              "ratedInputW"
+                            ],
+                            "nullable": true
+                          }
+                        }
+                      },
+                      "required": [
+                        "sheet",
+                        "headerRow",
+                        "columns"
+                      ],
+                      "nullable": true
+                    },
+                    "counts": {
+                      "type": "object",
+                      "properties": {
+                        "rows": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "matched": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "newItems": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "needsAttention": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "leftOut": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "rows",
+                        "matched",
+                        "newItems",
+                        "needsAttention",
+                        "leftOut"
+                      ],
+                      "nullable": true
                     }
                   },
                   "required": [
@@ -9582,7 +9678,9 @@
                     "createdAt",
                     "unreadableReason",
                     "file",
-                    "sheets"
+                    "sheets",
+                    "mapping",
+                    "counts"
                   ]
                 }
               }
@@ -10241,6 +10339,102 @@
                         ]
                       },
                       "nullable": true
+                    },
+                    "mapping": {
+                      "type": "object",
+                      "properties": {
+                        "sheet": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "headerRow": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "columns": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "kind",
+                              "brand",
+                              "model",
+                              "rate",
+                              "watt",
+                              "technology",
+                              "lengthMm",
+                              "widthMm",
+                              "vocV",
+                              "vmpV",
+                              "iscA",
+                              "impA",
+                              "tempCoeffVocPct",
+                              "tempCoeffPmaxPct",
+                              "bifacialityPct",
+                              "warrantyYears",
+                              "weightKg",
+                              "acKw",
+                              "phases",
+                              "mppt.count",
+                              "mppt.minV",
+                              "mppt.maxV",
+                              "mppt.maxCurrentA",
+                              "mppt.stringsPerMppt",
+                              "maxDcV",
+                              "efficiencyPct",
+                              "usableKwh",
+                              "nominalV",
+                              "chemistry",
+                              "powerKw",
+                              "cycleLife",
+                              "depthMm",
+                              "heightMm",
+                              "ratedAcW",
+                              "ratedInputW"
+                            ],
+                            "nullable": true
+                          }
+                        }
+                      },
+                      "required": [
+                        "sheet",
+                        "headerRow",
+                        "columns"
+                      ],
+                      "nullable": true
+                    },
+                    "counts": {
+                      "type": "object",
+                      "properties": {
+                        "rows": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "matched": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "newItems": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "needsAttention": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "leftOut": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "rows",
+                        "matched",
+                        "newItems",
+                        "needsAttention",
+                        "leftOut"
+                      ],
+                      "nullable": true
                     }
                   },
                   "required": [
@@ -10253,7 +10447,9 @@
                     "createdAt",
                     "unreadableReason",
                     "file",
-                    "sheets"
+                    "sheets",
+                    "mapping",
+                    "counts"
                   ]
                 }
               }
@@ -10384,6 +10580,1072 @@
                           "type": "string",
                           "enum": [
                             "NOT_FOUND"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalog/imports/{id}/mapping": {
+      "put": {
+        "summary": "Confirm the sheet, the header row and the columns — the matching pass runs in the background; a new mapping supersedes a pass still running",
+        "tags": [
+          "catalogImport"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sheet": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "headerRow": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "columns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "kind",
+                        "brand",
+                        "model",
+                        "rate",
+                        "watt",
+                        "technology",
+                        "lengthMm",
+                        "widthMm",
+                        "vocV",
+                        "vmpV",
+                        "iscA",
+                        "impA",
+                        "tempCoeffVocPct",
+                        "tempCoeffPmaxPct",
+                        "bifacialityPct",
+                        "warrantyYears",
+                        "weightKg",
+                        "acKw",
+                        "phases",
+                        "mppt.count",
+                        "mppt.minV",
+                        "mppt.maxV",
+                        "mppt.maxCurrentA",
+                        "mppt.stringsPerMppt",
+                        "maxDcV",
+                        "efficiencyPct",
+                        "usableKwh",
+                        "nominalV",
+                        "chemistry",
+                        "powerKw",
+                        "cycleLife",
+                        "depthMm",
+                        "heightMm",
+                        "ratedAcW",
+                        "ratedInputW"
+                      ],
+                      "nullable": true
+                    }
+                  }
+                },
+                "required": [
+                  "sheet",
+                  "headerRow",
+                  "columns"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "reading",
+                        "unreadable",
+                        "mapped",
+                        "matching",
+                        "previewed",
+                        "running",
+                        "completed"
+                      ]
+                    },
+                    "entryPoint": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "onboarding",
+                        "settings",
+                        "in_flow"
+                      ]
+                    },
+                    "fileName": {
+                      "type": "string"
+                    },
+                    "savedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "nullable": true
+                    },
+                    "startedBy": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "unreadableReason": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "cannot_open",
+                        "too_large_unpacked",
+                        "no_rows",
+                        "not_read"
+                      ],
+                      "nullable": true
+                    },
+                    "file": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "contentType": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "image/png",
+                            "image/jpeg",
+                            "text/csv",
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                          ]
+                        },
+                        "byteSize": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": 0
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "contentType",
+                        "byteSize"
+                      ]
+                    },
+                    "sheets": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "rowCount": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "columnCount": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "topRows": {
+                            "type": "array",
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "rowCount",
+                          "columnCount",
+                          "topRows"
+                        ]
+                      },
+                      "nullable": true
+                    },
+                    "mapping": {
+                      "type": "object",
+                      "properties": {
+                        "sheet": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "headerRow": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "columns": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "kind",
+                              "brand",
+                              "model",
+                              "rate",
+                              "watt",
+                              "technology",
+                              "lengthMm",
+                              "widthMm",
+                              "vocV",
+                              "vmpV",
+                              "iscA",
+                              "impA",
+                              "tempCoeffVocPct",
+                              "tempCoeffPmaxPct",
+                              "bifacialityPct",
+                              "warrantyYears",
+                              "weightKg",
+                              "acKw",
+                              "phases",
+                              "mppt.count",
+                              "mppt.minV",
+                              "mppt.maxV",
+                              "mppt.maxCurrentA",
+                              "mppt.stringsPerMppt",
+                              "maxDcV",
+                              "efficiencyPct",
+                              "usableKwh",
+                              "nominalV",
+                              "chemistry",
+                              "powerKw",
+                              "cycleLife",
+                              "depthMm",
+                              "heightMm",
+                              "ratedAcW",
+                              "ratedInputW"
+                            ],
+                            "nullable": true
+                          }
+                        }
+                      },
+                      "required": [
+                        "sheet",
+                        "headerRow",
+                        "columns"
+                      ],
+                      "nullable": true
+                    },
+                    "counts": {
+                      "type": "object",
+                      "properties": {
+                        "rows": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "matched": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "newItems": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "needsAttention": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "leftOut": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "rows",
+                        "matched",
+                        "newItems",
+                        "needsAttention",
+                        "leftOut"
+                      ],
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "status",
+                    "entryPoint",
+                    "fileName",
+                    "savedAt",
+                    "startedBy",
+                    "createdAt",
+                    "unreadableReason",
+                    "file",
+                    "sheets",
+                    "mapping",
+                    "counts"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "FORBIDDEN"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "NOT_FOUND"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "409",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "CONFLICT"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "DOMAIN_RULE_VIOLATION"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalog/imports/{id}/rows": {
+      "get": {
+        "summary": "A page of the preview grid by sheet row number, narrowed to one outcome when asked",
+        "tags": [
+          "catalogImport"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "default": 25,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "outcome",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "price_override",
+                "own_item_price",
+                "new_item",
+                "needs_attention",
+                "left_out"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "rowNumber": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "exclusiveMinimum": 0
+                          },
+                          "cells": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            }
+                          },
+                          "fix": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            }
+                          },
+                          "leftOut": {
+                            "type": "boolean"
+                          },
+                          "answer": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "keep_catalog_spec",
+                              "import_as_own_item"
+                            ],
+                            "nullable": true
+                          },
+                          "outcome": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "price_override",
+                              "own_item_price",
+                              "new_item",
+                              "needs_attention",
+                              "left_out"
+                            ]
+                          },
+                          "attention": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "reason": {
+                                  "type": "string",
+                                  "x-extensible-enum": [
+                                    "brand_or_model_missing",
+                                    "kind_missing",
+                                    "price_missing",
+                                    "price_unreadable",
+                                    "price_below_zero",
+                                    "price_finer_than_minor_unit",
+                                    "spec_missing",
+                                    "spec_invalid",
+                                    "spec_conflict",
+                                    "several_matches",
+                                    "repeated_in_file"
+                                  ]
+                                },
+                                "fields": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "required": [
+                                "reason",
+                                "fields"
+                              ]
+                            }
+                          },
+                          "match": {
+                            "type": "object",
+                            "properties": {
+                              "source": {
+                                "type": "string",
+                                "enum": [
+                                  "platform_item",
+                                  "own_item"
+                                ]
+                              },
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              }
+                            },
+                            "required": [
+                              "source",
+                              "id"
+                            ],
+                            "nullable": true
+                          },
+                          "filePrice": {
+                            "type": "string",
+                            "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$",
+                            "nullable": true
+                          },
+                          "catalogPrice": {
+                            "type": "object",
+                            "properties": {
+                              "source": {
+                                "type": "string",
+                                "enum": [
+                                  "override",
+                                  "own_item"
+                                ]
+                              },
+                              "amount": {
+                                "type": "string",
+                                "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                              },
+                              "currencyCode": {
+                                "type": "string",
+                                "minLength": 3,
+                                "maxLength": 3
+                              },
+                              "effectiveOn": {
+                                "type": "string",
+                                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                              }
+                            },
+                            "required": [
+                              "source",
+                              "amount",
+                              "currencyCode",
+                              "effectiveOn"
+                            ],
+                            "nullable": true
+                          }
+                        },
+                        "required": [
+                          "rowNumber",
+                          "cells",
+                          "fix",
+                          "leftOut",
+                          "answer",
+                          "outcome",
+                          "attention",
+                          "match",
+                          "filePrice",
+                          "catalogPrice"
+                        ]
+                      }
+                    },
+                    "totalCount": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "totalCount"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "FORBIDDEN"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "NOT_FOUND"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "409",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "CONFLICT"
                           ]
                         },
                         "message": {
