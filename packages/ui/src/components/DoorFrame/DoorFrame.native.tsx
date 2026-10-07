@@ -17,12 +17,19 @@ interface NativeDoorFrameProps extends DoorFrameProps {
 /**
  * The page, the bloom and the header row every door frame shares, at 375 as `SCR-M01-01` and
  * `SCR-M01-02` draw it: the bloom behind the top of the column, `sp-6` above and below, the
- * market's mobile screen padding at the sides. One column, so `identity` is drawn above the task
- * and `taskMeasure` names nothing here. `footer` stays under the scrolling column. The safe-area
- * insets are the screen's: the export's 375×812 frame starts under the status bar, and the
- * app's own inset view puts it there — this package holds no platform adapter.
+ * market's mobile screen padding at the sides. One column, so `lead` and then `identity` are
+ * drawn above the task and `taskMeasure` names nothing here. `footer` stays under the scrolling
+ * column. The safe-area insets are the screen's: the export's 375×812 frame starts under the
+ * status bar, and the app's own inset view puts it there — this package holds no platform adapter.
  */
-export function DoorFrame({ trailing, identity, footer, children, style }: NativeDoorFrameProps) {
+export function DoorFrame({
+  trailing,
+  lead,
+  identity,
+  footer,
+  children,
+  style,
+}: NativeDoorFrameProps) {
   return (
     <View style={[styles.root, style]}>
       <BrandBloom placement="top" />
@@ -36,6 +43,7 @@ export function DoorFrame({ trailing, identity, footer, children, style }: Nativ
               <Wordmark size={WORDMARK_SIZE} />
               {trailing}
             </View>
+            {lead}
             {identity}
             {children}
           </View>

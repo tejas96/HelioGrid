@@ -13,7 +13,9 @@
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
-  overflow: hidden;
+  /* Clips the bloom without becoming a scroll container, so the held action (`.hg-door-footer`)
+     sticks to the window, not to this box. */
+  overflow: clip;
   /* The page is --surface (F7-15, F7-49): the fields on it are wells, darker than it. */
   /* biome-ignore lint/plugin/raw-white-css: full-screen-ground — a screen that is its own page */
   background: var(--surface);
@@ -32,8 +34,14 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--sp-5);
+  /* `sp-6` from the header row to whatever leads the column (both boards' 375 tables). */
+  gap: var(--sp-6);
   padding: var(--sp-6) var(--screen-pad-mobile);
+}
+
+/* The held action carries the column's last `sp-6` itself, so the page adds none under it. */
+.hg-door-page:has(.hg-door-footer) {
+  padding-bottom: 0;
 }
 
 .hg-door-wordmark-desktop {
@@ -44,8 +52,7 @@
    window between a phone and the two-field composition never shows a 420 column hugging its
    left edge. The rows share the cap so the wordmark stays over the column. */
 .hg-door-header,
-.hg-door-body,
-.hg-door-footer {
+.hg-door-body {
   width: 100%;
   max-width: var(--door-measure);
   margin-inline: auto;
@@ -72,22 +79,29 @@
   gap: var(--sp-6);
 }
 
-/* Under the breakpoint the column is centred between the header and the foot of the screen, as
-   the phone draws it: this spacer takes half the free height, the task's own end the other half. */
-.hg-door-body::before {
-  content: "";
-  flex: 1 1 0;
-}
-
 .hg-door-identity {
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
 }
 
+/* The heading is the page's `h1` at both widths, in the phone's `--fs-h2` role under the
+   breakpoint and `--fs-h1` from it (both boards' "Heading"), as `Sheet` sizes its title by width;
+   the intro under it takes the phone's body size the same way. */
+.hg-door-identity .hg-text[data-variant="h1"] {
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  letter-spacing: var(--tr-h2);
+}
+
+.hg-door-identity .hg-text[data-variant="body-lg"] {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
 .hg-door-task {
   display: flex;
-  /* Grows from its content, so the free height splits evenly with the spacer above the identity. */
+  /* Takes the column's free height, so a road at its end (`margin-top: auto`) reaches the foot. */
   flex: 1 1 auto;
   flex-direction: column;
   gap: var(--sp-5);
@@ -99,9 +113,15 @@
   gap: var(--sp-6);
 }
 
-/* An action that stays under the column — `sp-6` under the last line, as the phone draws it. */
+/* The action the board pins: at the column's foot when the column is short, and held at the
+   window's foot while a long column scrolls under it — `sp-6` below it, on the page's own ground so
+   nothing scrolled shows through. */
 .hg-door-footer {
-  padding-top: var(--sp-6);
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  padding-bottom: var(--sp-6);
+  background: var(--hg-ground);
 }
 
 @media (min-width: 968px) {
@@ -113,12 +133,12 @@
     display: block;
   }
 
-  .hg-door-page {
+  .hg-door-page,
+  .hg-door-page:has(.hg-door-footer) {
     padding: var(--sp-8) var(--screen-pad-desktop);
   }
 
-  .hg-door-header,
-  .hg-door-footer {
+  .hg-door-header {
     max-width: none;
   }
 
@@ -130,26 +150,61 @@
     display: block;
   }
 
-  .hg-door-body::before {
-    display: none;
-  }
-
+  /* Two fields: the identity on the left, centred against the task column, which stacks the step
+     header, the task and the action in reading order between two equal free rows, so a tall
+     identity never stretches the column's own rows. A slot a door leaves out takes no height. */
   .hg-door-body {
     max-width: none;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: center;
-    gap: var(--sp-16);
+    grid-template-rows: 1fr auto auto auto 1fr;
+    grid-template-areas:
+      "identity ."
+      "identity lead"
+      "identity task"
+      "identity footer"
+      "identity .";
+    column-gap: var(--sp-16);
+    row-gap: 0;
     padding-bottom: var(--sp-16);
   }
 
   .hg-door-identity {
+    grid-area: identity;
+    align-self: center;
     max-width: 560px;
     justify-self: end;
     gap: var(--sp-6);
   }
 
+  .hg-door-identity .hg-text[data-variant="h1"] {
+    font-size: var(--fs-h1);
+    line-height: var(--lh-h1);
+    letter-spacing: var(--tr-h1);
+  }
+
+  .hg-door-identity .hg-text[data-variant="body-lg"] {
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body-lg);
+  }
+
+  .hg-door-lead {
+    grid-area: lead;
+    max-width: var(--door-measure);
+    margin-bottom: var(--sp-6);
+  }
+
   .hg-door-task {
+    grid-area: task;
     flex: initial;
+  }
+
+  .hg-door-footer {
+    grid-area: footer;
+    position: static;
+    max-width: var(--door-measure);
+    margin-top: 0;
+    padding: var(--sp-6) 0 0;
+    background: none;
   }
 }

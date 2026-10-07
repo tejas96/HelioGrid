@@ -3,7 +3,7 @@ import { useTranslate } from '@heliogrid/i18n/react';
 import { Stepper } from '@heliogrid/ui';
 
 /**
- * The flow's three steps atop the task column (`SCR-M01-02` decisions 2 and 13): gated, because
+ * The flow's three steps, the door's step header (`SCR-M01-02` decisions 2 and 13): gated, because
  * the company details read the verified account and cannot be jumped to before it exists; going
  * back stays open. From the door's breakpoint the component's numbered form with the steps
  * spelled out; under it the phone's track and counter, where 335px holds no step names — both

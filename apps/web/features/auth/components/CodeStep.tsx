@@ -11,6 +11,7 @@ import {
   TintedBlock,
 } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
+import { doorColumn } from '../constants';
 import { CodeGoogle } from './CodeGoogle';
 import { CodeTitle } from './CodeTitle';
 import { LanguageControl } from './LanguageControl';
@@ -50,13 +51,17 @@ export function CodeStep({
           <Button variant="ghost" size="sm" onClick={() => signIn.press('change-number')}>
             {t(SIGN_IN.changeNumber)}
           </Button>
-          <LanguageControl />
+          {/* The phone header holds the way back alone (`SCR-M01-01` code family). */}
+          <div className="hg-door-desktop-only">
+            <LanguageControl />
+          </div>
         </>
       }
       taskMeasure={taskMeasure}
+      className={doorColumn(lead)}
+      lead={lead}
       identity={<CodeTitle words={words} phone={state.phone} />}
     >
-      {lead}
       {words.block === null ? null : <TintedBlock {...words.block} />}
       {frame.code === 'absent' ? null : (
         <OtpInput

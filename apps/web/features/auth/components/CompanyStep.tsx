@@ -15,12 +15,13 @@ import { SignupProgress } from './SignupProgress';
 /**
  * Step 3 — the three fields over the verified number, and the one write this screen owns
  * (`M01-01`). The number, the resume line and every finding about the person are the identity
- * half's (`SCR-M01-02` decisions 11 and 22); the fields, the facts and the primary are the task's.
- * When the details match a company that exists, the same fields stay and the steer takes the
- * primary's place (`M01-09`); a changed detail drops the steer, and while a request is on its way
- * the values are facts, as they are while the company is written (`SCR-M01-02` decision 26). The
- * form holds only its fields; the write, the steer and their waits are `useCompanySignup`'s; the
- * words of the four frames are `companySignupWords`'.
+ * half's (`SCR-M01-02` decisions 11 and 22); the fields and the facts are the task's, and the
+ * primary is the frame's held action, pinned under the scrolling fields (decision 9). When the
+ * details match a company that exists, the same fields stay and the steer — the finding and both
+ * roads — takes the primary's place (`M01-09`); a changed detail drops the steer, and while a
+ * request is on its way the values are facts, as they are while the company is written
+ * (decision 26). The form holds only its fields; the write, the steer and their waits are
+ * `useCompanySignup`'s; the words of the four frames are `companySignupWords`'.
  */
 export function CompanyStep({
   user,
@@ -55,6 +56,7 @@ export function CompanyStep({
       <DoorFrame
         trailing={<LanguageControl />}
         taskMeasure="steps"
+        lead={<SignupProgress current={2} />}
         identity={
           <>
             <div className="hg-door-title">
@@ -64,15 +66,18 @@ export function CompanyStep({
             <div className="hg-signup-wide-only">{steer}</div>
           </>
         }
+        footer={
+          <div className="hg-signup-join-footer">
+            <div className="hg-signup-narrow-only">{steer}</div>
+            <JoinRoads company={steered} signup={signup} />
+          </div>
+        }
       >
-        <SignupProgress current={2} />
         {signup.requesting === 'sending' ? (
           <CompanyFacts values={form.getValues()} />
         ) : (
           <CompanyFields form={form} withHelpers={false} />
         )}
-        <div className="hg-signup-narrow-only">{steer}</div>
-        <JoinRoads company={steered} signup={signup} />
       </DoorFrame>
     );
   }
@@ -81,6 +86,7 @@ export function CompanyStep({
     <DoorFrame
       trailing={<LanguageControl />}
       taskMeasure="steps"
+      lead={<SignupProgress current={2} />}
       identity={
         <>
           <div className="hg-door-title">
@@ -108,18 +114,19 @@ export function CompanyStep({
           ) : null}
         </>
       }
+      footer={
+        <Button
+          variant="primary"
+          size="lg"
+          fullWidth
+          loading={frame.writing || signup.checking}
+          onClick={create}
+        >
+          {words.primary}
+        </Button>
+      }
     >
-      <SignupProgress current={2} />
       {frame.writing ? <CompanyFacts values={form.getValues()} /> : <CompanyFields form={form} />}
-      <Button
-        variant="primary"
-        size="lg"
-        fullWidth
-        loading={frame.writing || signup.checking}
-        onClick={create}
-      >
-        {words.primary}
-      </Button>
       {words.caption === null ? null : (
         <Text variant="caption" color="secondary">
           {words.caption}

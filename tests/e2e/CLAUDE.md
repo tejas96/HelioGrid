@@ -50,6 +50,9 @@ same keys sent to all three surfaces in one instant, with no key lost or crossed
 
 ## Local conventions
 
+- `test:ct` clears its component cache only when a `packages/ui` stylesheet is newer than the
+  cache, so a stylesheet restored by moving an older copy back keeps the stale build: restore by
+  editing the file, or touch it before the next run.
 - A new number's code is read from the api's log, `.qa/api.log`, which the `api`
   launch configurations, `playwright.config.ts` and CI's `android` job write
   (`support/api-log.ts`). A running api is reused as it is, so it must be one of those: an api

@@ -43,6 +43,7 @@ export function GoogleLinkStep({ signIn }: { signIn: SignIn }) {
           </div>
         </>
       }
+      className="hg-door-front"
       identity={
         <div className="hg-door-title">
           <div className="hg-door-title-row">
