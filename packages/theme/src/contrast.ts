@@ -46,11 +46,12 @@ interface DeclaredPair {
   restriction?: string;
 }
 
-const TEXT_BACKGROUNDS = ['surface', 'canvas', 'surface-alt', 'canvas-sunken'] as const;
+/** `fill` is the open page's grey: every field, tile and chip — the words in them land on it. */
+const TEXT_BACKGROUNDS = ['surface', 'canvas', 'surface-alt', 'canvas-sunken', 'fill'] as const;
 const SEMANTIC = ['success', 'warning', 'danger', 'info', 'neutral'] as const;
 /** --warning excluded: colors.css proves it clears 3:1 NOWHERE — it is a tint, never a mark. */
 const MARKS = ['success', 'danger', 'info', 'neutral'] as const;
-const MARK_BACKGROUNDS = ['surface', 'canvas', 'canvas-sunken'] as const;
+const MARK_BACKGROUNDS = ['surface', 'canvas', 'canvas-sunken', 'fill'] as const;
 
 /**
  * The declared pair set. Word-setting tokens hold 4.5:1 (7:1 where the DS positions them as
@@ -70,13 +71,13 @@ const DECLARED_PAIRS: DeclaredPair[] = [
     role: `secondary text (--text-body) on --${bg}`,
     floor: 4.5,
     // On canvas-sunken and the state tints this pair is LOAD-BEARING: --text-tertiary
-    // measures ≈4.48 there (under the floor), so quiet text steps up to --text-secondary.
+    // measures ≈4.54 on canvas-sunken (at the floor's edge), so quiet text steps up to --text-secondary.
   })),
   { fg: 'text-tertiary', bg: 'surface', role: 'meta text (--text-meta) on white', floor: 4.5 },
   { fg: 'text-tertiary', bg: 'canvas', role: 'meta text on page canvas', floor: 4.5 },
-  // DELIBERATELY not declared: text-tertiary on canvas-sunken (≈4.48 — under the 4.5 floor).
+  // DELIBERATELY not declared: text-tertiary on canvas-sunken (≈4.54 — at the 4.5 floor's edge; D131).
   // colors.css: on sunken and on any state tint, quiet text takes --text-secondary instead.
-  // Declaring it would sanction a sub-AA combination the DS itself forbids.
+  // Declaring it would sanction a pairing the design system forbids (colors.css), at the floor's edge.
   {
     fg: 'text-disabled',
     bg: 'surface',
@@ -97,6 +98,7 @@ const DECLARED_PAIRS: DeclaredPair[] = [
   { fg: 'accent', bg: 'surface', role: 'links / focus / selected on white', floor: 4.5 },
   { fg: 'accent', bg: 'canvas', role: 'links on page canvas', floor: 4.5 },
   { fg: 'accent', bg: 'canvas-sunken', role: 'focus ring in wells (non-text)', floor: 3 },
+  { fg: 'accent', bg: 'fill', role: "a field's focus ring on its fill (non-text)", floor: 3 },
   { fg: 'accent-hover', bg: 'surface', role: 'hovered links on white', floor: 4.5 },
   ...SEMANTIC.map((s) => ({
     fg: `${s}-text`,

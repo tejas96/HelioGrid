@@ -30,7 +30,7 @@ export function NumberFieldMessage({ refused, error, correction, hint }: NumberF
         accessible
       >
         {typeof refused === 'string' ? (
-          <Text variant="caption" color="danger">
+          <Text variant="field-helper" color="danger">
             {refused}
           </Text>
         ) : (
@@ -43,7 +43,7 @@ export function NumberFieldMessage({ refused, error, correction, hint }: NumberF
     return (
       <View style={styles.slot} accessible>
         {typeof error === 'string' ? (
-          <Text variant="caption" color="danger">
+          <Text variant="field-helper" color="danger">
             {error}
           </Text>
         ) : (
@@ -55,7 +55,7 @@ export function NumberFieldMessage({ refused, error, correction, hint }: NumberF
   if (correction !== null) {
     return (
       <View style={styles.slot} accessibilityLiveRegion="polite" accessible>
-        <Text variant="caption" color="warning">
+        <Text variant="field-helper" color="warning">
           {correction}
         </Text>
       </View>
@@ -64,7 +64,7 @@ export function NumberFieldMessage({ refused, error, correction, hint }: NumberF
   if (hint !== undefined) {
     return (
       <View style={styles.slot}>
-        <Text variant="caption" color="tertiary">
+        <Text variant="field-helper" color="tertiary">
           {hint}
         </Text>
       </View>

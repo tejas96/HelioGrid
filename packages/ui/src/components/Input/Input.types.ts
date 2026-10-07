@@ -3,7 +3,7 @@ import type { FieldOverrideSpec } from '../FieldOverride/FieldOverride.types';
 import type { ValueSourceLevel, ValueSourceSpec } from '../ValueSource/ValueSource.types';
 
 /** Density changes the SIZE only — the well is the same in both.
- *  expressive = 52px, functional = 40px. */
+ *  expressive = 54px, functional = 40px. */
 export type InputDensity = 'expressive' | 'functional';
 
 export interface InputProps {
@@ -20,7 +20,7 @@ export interface InputProps {
    * native counterpart on each; anything else falls back to plain text.
    */
   type?: InputType;
-  /** expressive = 52px, functional = 40px — size only, never the ground */
+  /** expressive = 54px, functional = 40px — size only, never the ground */
   density?: InputDensity;
   /** error message — inset 1.5px danger ring + text below */
   error?: string;

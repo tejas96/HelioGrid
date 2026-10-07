@@ -11,9 +11,9 @@ const styles = StyleSheet.create({
   box: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 48,
+    height: theme.layout['field-h'],
     minHeight: 44,
-    paddingHorizontal: 14 - FIELD_BOX_EDGE,
+    paddingHorizontal: theme.spacing['sp-4'] - FIELD_BOX_EDGE,
   },
   boxFunctional: { height: 40 },
   boxSteppers: { paddingHorizontal: 0 },
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     textAlign: 'right',
     fontFamily: theme.type.families.mono,
-    fontSize: theme.type.roles.body.fontSize,
+    fontSize: theme.type.field.value,
     fontWeight: '700',
     color: theme.colors['text-primary'],
     padding: 0,
@@ -74,7 +74,7 @@ export function NumberFieldBox({
           accessibilityLabel={`Decrease ${name}`}
           onPress={() => draft.nudge(-1)}
         >
-          <Text variant="body" color={ink}>
+          <Text variant="field-value" color={ink}>
             −
           </Text>
         </Pressable>
@@ -103,7 +103,7 @@ export function NumberFieldBox({
           accessibilityLabel={`Increase ${name}`}
           onPress={() => draft.nudge(1)}
         >
-          <Text variant="body" color={ink}>
+          <Text variant="field-value" color={ink}>
             +
           </Text>
         </Pressable>

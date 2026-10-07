@@ -70,7 +70,7 @@ export function NumberField({
     draft.refusal === null
       ? null
       : (refusalMessage ?? (
-          <Text variant="caption" color="danger">
+          <Text variant="field-helper" color="danger">
             {draft.refusal}
             {refusalPath}
           </Text>
@@ -80,7 +80,7 @@ export function NumberField({
   return (
     <View style={style}>
       {label !== undefined ? (
-        <Text variant="body-sm" color="secondary" style={styles.label}>
+        <Text variant="field-label" color="secondary" style={styles.label}>
           {label}
         </Text>
       ) : null}

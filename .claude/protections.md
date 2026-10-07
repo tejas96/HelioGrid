@@ -77,6 +77,7 @@ catalog freshness checks, the unit tests and the invariants; off CI it leaves ou
 | what is protected | what holds it |
 |---|---|
 | Every prop the design system declares for a component is declared by its port | invariant `design-system-props` |
+| The pulled design-system tokens equal the census pulled with them, name and value, both ways | invariant `design-system-snapshot` |
 | A phone screen passes only props the native half takes, and never reaches a print surface: the phone typechecks the `.native` halves first, and the print parts come only from `@heliogrid/ui/print` | typecheck (`moduleSuffixes` in `apps/mobile/tsconfig.json`; `packages/ui/src/print.ts`) |
 | Both halves of a component declare the same role and state for screen readers | review |
 | Controls and icons come from `packages/ui`: no icon package, no raw web `button`, `input`, `a`, `select` or `textarea`, no `react-native` control in a phone screen | Biome `noRestrictedImports` (`lucide-react`, `lucide-react-native`; `react-native` in the screens override) · Biome `noRestrictedElements` (web `app/` and `features/`) |

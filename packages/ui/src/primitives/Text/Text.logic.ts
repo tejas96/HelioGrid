@@ -45,7 +45,7 @@ function stringsIn(children: ReactNode): string[] {
  * anything. Only a line the scale would clip is raised.
  */
 export function lineHeightFor(variant: TextVariant, children: ReactNode): number | undefined {
-  const role = theme.type.roles[variant === 'mono' ? 'body-sm' : variant];
+  const role = roleOf(variant);
   /* Mono sets the never-translated set (`F3-08`) — figures, identifiers and units, Latin in
      every language — in a family the stack does not name, so no script floor reaches it. */
   const floorEm = isMono(variant)
@@ -54,6 +54,30 @@ export function lineHeightFor(variant: TextVariant, children: ReactNode): number
         .flatMap((text) => runsOfString(text))
         .reduce((tallest, run) => Math.max(tallest, LINE_FLOOR_EM.get(run.family) ?? 0), 0);
   const floor = Math.ceil(floorEm * role.fontSize);
-  const drawn = 'lineHeight' in role ? role.lineHeight : 0;
+  const drawn = role.lineHeight ?? 0;
   return floor > drawn ? floor : undefined;
+}
+
+/**
+ * A field's three parts take the design system's field sizes (`--fs-field-*`) on the line box of
+ * the role each stands in for — the label a small line, the value a body line, the helper a caption.
+ */
+const FIELD_ROLES = {
+  'field-label': {
+    fontSize: theme.type.field.label,
+    lineHeight: theme.type.roles['body-sm'].lineHeight,
+  },
+  'field-value': { fontSize: theme.type.field.value, lineHeight: theme.type.roles.body.lineHeight },
+  'field-helper': {
+    fontSize: theme.type.field.helper,
+    lineHeight: theme.type.roles.caption.lineHeight,
+  },
+} as const;
+
+/** The size and line box a variant draws at; `mono` is body-sm in the mono face. */
+export function roleOf(variant: TextVariant): { fontSize: number; lineHeight?: number } {
+  if (variant === 'field-label' || variant === 'field-value' || variant === 'field-helper') {
+    return FIELD_ROLES[variant];
+  }
+  return theme.type.roles[variant === 'mono' ? 'body-sm' : variant];
 }

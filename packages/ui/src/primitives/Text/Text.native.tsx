@@ -2,7 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { Children, isValidElement, type ReactNode } from 'react';
 import type { StyleProp, TextStyle } from 'react-native';
 import { Text as RNText } from 'react-native';
-import { isMono, lineHeightFor, runsOfString } from './Text.logic';
+import { isMono, lineHeightFor, roleOf, runsOfString } from './Text.logic';
 import type { TextAlign, TextColor, TextProps, TextVariant } from './Text.types';
 
 const R = theme.type.roles;
@@ -68,6 +68,24 @@ const VARIANT: Record<TextVariant, TextStyle> = {
     fontWeight: '400',
     fontSize: R.caption.fontSize,
     lineHeight: R.caption.lineHeight,
+  },
+  'field-label': {
+    fontFamily: sans,
+    fontWeight: '500',
+    fontSize: roleOf('field-label').fontSize,
+    lineHeight: roleOf('field-label').lineHeight,
+  },
+  'field-value': {
+    fontFamily: sans,
+    fontWeight: '400',
+    fontSize: roleOf('field-value').fontSize,
+    lineHeight: roleOf('field-value').lineHeight,
+  },
+  'field-helper': {
+    fontFamily: sans,
+    fontWeight: '400',
+    fontSize: roleOf('field-helper').fontSize,
+    lineHeight: roleOf('field-helper').lineHeight,
   },
   /* The 11px/700/uppercase/0.12em signature — the one sanctioned sub-12px appearance. */
   overline: {

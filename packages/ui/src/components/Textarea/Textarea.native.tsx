@@ -55,7 +55,7 @@ export function Textarea({
   return (
     <View style={style}>
       {label !== undefined ? (
-        <Text variant="body-sm" color="secondary" style={styles.label}>
+        <Text variant="field-label" color="secondary" style={styles.label}>
           {label}
         </Text>
       ) : null}
@@ -87,11 +87,11 @@ export function Textarea({
       {attributionNode === null ? null : <View style={styles.attribution}>{attributionNode}</View>}
       {helper !== undefined || error !== undefined || hasCounter ? (
         <View style={styles.foot}>
-          <Text variant="caption" color={error !== undefined ? 'danger' : 'tertiary'}>
+          <Text variant="field-helper" color={error !== undefined ? 'danger' : 'tertiary'}>
             {error ?? helper ?? ''}
           </Text>
           {maxLength !== undefined ? (
-            <Text variant="caption" color={countColor(length, maxLength)} style={styles.count}>
+            <Text variant="field-helper" color={countColor(length, maxLength)} style={styles.count}>
               {`${length}/${maxLength}`}
             </Text>
           ) : null}
@@ -106,7 +106,7 @@ const input: TextStyle = {
   paddingVertical: PAD_Y - FIELD_BOX_EDGE,
   paddingHorizontal: theme.spacing['sp-4'] - FIELD_BOX_EDGE,
   fontFamily: theme.type.families.sans,
-  fontSize: R.body.fontSize,
+  fontSize: theme.type.field.value,
   lineHeight: R.body.lineHeight,
   color: theme.colors['text-primary'],
 };

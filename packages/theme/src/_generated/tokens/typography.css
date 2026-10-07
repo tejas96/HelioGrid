@@ -22,5 +22,10 @@
   --fs-overline:11px;  --tr-overline:0.12em; /* @kind font */
   --fs-button:15px;    --tr-button:-0.01em; /* @kind font */
   --fs-table:13px;     --lh-table:1.45; /* @kind font */
+
+  /* Field type — label, value, helper/error, shared by every field */
+  --fs-field-label:13.5px; /* @kind font */
+  --fs-field-value:16px; /* @kind font */
+  --fs-field-helper:12.5px; /* @kind font */
 }
 :root[data-mode="expressive"]{ --fs-display:40px; --fs-h1:32px; --fs-h2:24px; }

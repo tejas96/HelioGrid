@@ -91,8 +91,9 @@
   --hg-control-fill: var(--surface);
 }
 
-/* LIGHTER than the well on the page, a step under white in a tile — about 1.07:1 either way, and no
-   token lies between, so the label and the mark carry the state (F7-11). */
+/* SUNK, as the design system's disabled button is: --canvas-sunken under the white page. In a tile
+   it equals the tile's ground until T-FPLAT-082 part c moves tiles to --fill, so there the label and
+   the mark carry the state (F7-11). --surface-form is white on the open page and would hide it. */
 :root {
-  --hg-control-fill-disabled: var(--surface-form);
+  --hg-control-fill-disabled: var(--canvas-sunken);
 }

@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   wrap: { minWidth: 0 },
   trigger: {
     width: '100%',
-    minHeight: theme.spacing['sp-12'],
+    minHeight: theme.layout['field-h'],
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -86,7 +86,7 @@ export function DatePicker({
   return (
     <View style={[styles.wrap, style]}>
       {label === undefined ? null : (
-        <Text variant="body-sm" color="secondary">
+        <Text variant="field-label" color="secondary">
           {label}
         </Text>
       )}
@@ -134,7 +134,7 @@ export function DatePicker({
       </Pressable>
       {helper === undefined && error === undefined ? null : (
         <View style={styles.note}>
-          <Text variant="caption" color={error === undefined ? 'tertiary' : 'danger'}>
+          <Text variant="field-helper" color={error === undefined ? 'tertiary' : 'danger'}>
             {error ?? helper}
           </Text>
         </View>

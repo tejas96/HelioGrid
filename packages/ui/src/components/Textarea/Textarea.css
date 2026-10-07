@@ -5,7 +5,7 @@
 
 .hg-textarea-label {
   display: block;
-  font-size: var(--fs-body-sm);
+  font-size: var(--fs-field-label);
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
   margin-bottom: 6px;
@@ -19,7 +19,7 @@
   padding: var(--sp-3) var(--sp-4);
   outline: none;
   font-family: var(--font-sans);
-  font-size: var(--fs-body);
+  font-size: var(--fs-field-value);
   line-height: var(--lh-body);
   color: var(--text-primary);
 }
@@ -43,7 +43,7 @@
 }
 
 .hg-textarea-message {
-  font-size: var(--fs-caption);
+  font-size: var(--fs-field-helper);
   color: var(--text-tertiary);
 }
 
@@ -52,7 +52,7 @@
 }
 
 .hg-textarea-count {
-  font-size: var(--fs-caption);
+  font-size: var(--fs-field-helper);
   font-variant-numeric: tabular-nums;
   color: var(--text-tertiary);
 }

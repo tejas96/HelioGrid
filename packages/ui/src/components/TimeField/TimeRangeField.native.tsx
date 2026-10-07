@@ -47,7 +47,7 @@ export function TimeRangeField({
        and the refusal sentence into one element. */
     <View style={[styles.root, style]}>
       {label !== undefined ? (
-        <Text variant="body-sm" color="secondary" style={styles.legend}>
+        <Text variant="field-label" color="secondary" style={styles.legend}>
           {label}
         </Text>
       ) : null}

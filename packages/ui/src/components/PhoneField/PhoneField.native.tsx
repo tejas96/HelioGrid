@@ -15,10 +15,13 @@ interface NativePhoneValueProps extends PhoneValueProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const SHELL_HEIGHT: Record<PhoneFieldDensity, number> = { expressive: 52, functional: 40 };
+const SHELL_HEIGHT: Record<PhoneFieldDensity, number> = {
+  expressive: theme.layout['field-h'],
+  functional: theme.spacing['sp-10'],
+};
 
 const styles = StyleSheet.create({
-  column: { gap: theme.spacing['sp-1'], minWidth: 0 },
+  column: { gap: theme.spacing['sp-2'], minWidth: 0 },
   shell: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -34,7 +37,7 @@ const styles = StyleSheet.create({
   dial: {
     flexShrink: 0,
     fontFamily: theme.type.families.mono,
-    fontSize: theme.type.roles.body.fontSize,
+    fontSize: theme.type.field.value,
     color: theme.colors['text-secondary'],
   },
   input: {
@@ -42,7 +45,7 @@ const styles = StyleSheet.create({
     minWidth: 0,
     alignSelf: 'stretch',
     fontFamily: theme.type.families.mono,
-    fontSize: theme.type.roles.body.fontSize,
+    fontSize: theme.type.field.value,
     color: theme.colors['text-primary'],
   },
   valueNumber: {
@@ -91,7 +94,7 @@ export function PhoneField({
 
   return (
     <View style={[styles.column, style]}>
-      <Text variant="body-sm" color="secondary">
+      <Text variant="field-label" color="secondary">
         {label}
       </Text>
       <View
@@ -123,7 +126,7 @@ export function PhoneField({
       </View>
       {message === undefined ? null : (
         <Text
-          variant="caption"
+          variant="field-helper"
           color={error === undefined ? 'secondary' : 'danger'}
           live={error !== undefined && announceError}
         >

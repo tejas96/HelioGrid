@@ -3,11 +3,12 @@ import type { TextStyle, ViewStyle } from 'react-native';
 import type { FieldBoxState, FieldBoxTone } from './FieldBox.types';
 
 /**
- * The ring sits ON the well's edge here, with no gap (`F7-24`): a ring outside would pad every box
- * by 4px, and the code row — six 48px cells and five 8px gaps — would outgrow a 375px screen. The
- * edge is always drawn, transparent at rest, so the text never shifts when focus arrives.
+ * The ring sits ON the well's edge, inside it (`F7-24`; the design system's 1.5px inset ring): a
+ * ring outside would pad every box, and the code row — six 48px cells and five 8px gaps — would
+ * outgrow a 375px screen. The edge is always drawn, transparent at rest, so the text never shifts
+ * when focus arrives.
  */
-const EDGE = 2;
+const EDGE = 1.5;
 
 /** For a field whose padding must hold its text where it was: subtract this from the padding. */
 export const FIELD_BOX_EDGE = EDGE;
@@ -28,7 +29,7 @@ export function fieldBox({
   density,
 }: FieldBoxState): ViewStyle {
   return {
-    backgroundColor: disabled ? theme.colors['surface-form'] : theme.colors['bg-well'],
+    backgroundColor: disabled ? theme.colors['canvas-sunken'] : theme.colors.fill,
     borderRadius:
       density === 'functional'
         ? theme.radius['r-input-functional']
@@ -43,8 +44,8 @@ export function fieldBoxText(disabled: boolean): TextStyle | undefined {
   return disabled ? DISABLED_TEXT : undefined;
 }
 
-/* One edge, so one colour: focus wins while the caret is in, and the error's words stay under the
-   field; the red edge returns on blur. The web draws both rings at once. */
+/* One edge, so one colour, as on the web: focus wins while the caret is in, even in error (F7-24:
+   focus is never removed); the error's words stay under the field and the red edge returns on blur. */
 function edgeColor(focused: boolean, tone: FieldBoxTone): string {
   if (focused) {
     return theme.colors.accent;

@@ -3353,3 +3353,186 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | F8-34 | T-FPLAT-032 |
 | F8-35 | T-FPLAT-032 |
 | F8-36 | T-FPLAT-032 |
+
+### T-FPLAT-082 · The open page — the app's design tokens and components pulled level with the live design system
+**Type:** port · **Tier:** P0
+**Status:** in progress — part a shipped; parts b and c open
+**Why:** Every screen is drawn on the live design system, but the app draws with a snapshot of it pulled on 2026-08-19 plus partial pulls. The design system's open page (2026-09-29) made the page white and moved grey to the fill of fields, tiles and chips, restyled the fields, the phone header and footer and the list tiles, and added tokens the boards use (`--fill`, `--tile-pad`, `--r-tile`). Without the pull, no screen can match its board: a screen built now is built against values the design has already left.
+**PRD rows:** none of its own — the design system is the visual authority (`F7`); `docs/engineering/17-ui-architecture-v2.md` §6 owns the pull.
+**Design:** none — no screen of its own; each part checks the built screens it touches against their boards.
+**Chosen by the owner** (`T-M01-035`'s design review, rulings D7 A, D8 A, D9 A, 2026-10-07): the pull runs first, split in three parts; `T-M01-035` resumes after part a.
+**Depends on:** `T-FPLAT-023` (shipped — the adherence gate the pulled typings feed).
+
+#### Parts
+| part | delivers | AC | depends on | status |
+|---|---|---|---|---|
+| a | the four changed token files and the census pulled; every field drawn the open page's way (fill, 54, radius 16, inset rings, the field type sizes); every built screen checked against its board | AC-1, AC-2, AC-3, AC-4 | the design system's field type tokens (the prerequisite in `#### Part a · RFC`) | shipped |
+| b | the phone header (company chip) and the floating pill footer, `PhoneScreen`; the shell and home redrawn on them | its own RFC | a | open |
+| c | tiles (`Card`, `RecordCard`, `TileActions`), the search pill and filter button, kind chips, flat `Accordion`, wherever built; a disabled control in a tile equals the tile's `--canvas-sunken` ground until tiles take `--fill` (part a review) — close it here, and `F7-15`'s "until part c" lines | its own RFC | a | open |
+
+#### Part a · RFC
+
+##### Title
+T-FPLAT-082a — the open page's tokens and fields: the app's design tokens pulled from the live design system, and every field drawn the way the design system now draws it.
+
+##### Description
+- **User impact:** on every built screen the page turns white, as every board shows it, and every field becomes the grey, filled, 54-tall box with its label above that the boards draw. Directly: what a person sees is what was designed. Indirectly: a screen built from its board stops needing hand fixes, and `T-M01-035`'s request-sent tile can be built at all.
+- **Who gains:** every user of a built screen; every later screen task.
+- **Problem solved:** `packages/theme/src/_generated/` lags the live design system (project `c8aa4326…`): four token files differ (`colors.css`, `spacing.css`, `radius.css`, `field-mode.css` — 17 tokens added, 5 changed, none removed: `--canvas` `#EEF0F3` → `#FFFFFF`, `--surface-form` → `#FFFFFF`, `--r-input-expressive` 14 → 16px, `--topbar-h-mobile`, `--bottomnav-h`), and the census adds `PhoneField`, `PhoneScreen`, `TileAction`, `TileActions`. The other seven token files match byte for byte.
+- **Cites:** `docs/engineering/17-ui-architecture-v2.md` §6; the design system's `readme.md` "Open page layout (2026-09-29)" and `components/forms/Input.jsx`, read 2026-10-07.
+
+##### Goals
+- Every token name and value in `packages/theme/src/_generated/tokens/` equals the live census's, and a test holds it.
+- `FieldBox` (the one ground every field draws) takes `--fill`, `--r-input-expressive`, an inset 1.5px `--accent` ring on focus, an inset 1.5px `--danger` ring in error, `--canvas-sunken` when disabled.
+- Every field at expressive density is 54 tall (`--field-h`); label, helper, error and value take the design system's field type tokens.
+- The phone theme regenerates from the pulled files; the contrast gate passes, with the pairs words make on `--fill` declared.
+- Every built screen (the sign-in door, company signup, the shell and home, the notification centre) is checked at 375 and 1536 and on both phones: a white page, fields as their boards draw them, nothing invisible.
+
+##### Non-goals
+- The phone header, footer and `PhoneScreen` — part b. Tiles, `Card`/`RecordCard`, `TileActions`, the search pill and filter button, kind chips, `Accordion` — part c.
+- Any component prop beyond the fields' typings; `Banner`'s held-back contract stays held back (`_generated/README.md`).
+- Any screen's own layout.
+
+##### Readiness and dependencies
+- Landed: `T-FPLAT-023` (the adherence gate, `design-system-props`); `FieldBox` already draws every field's ground once (`packages/ui/src/primitives/FieldBox/`).
+- **Prerequisite — design (owner):** the design system's fields set their label, helper and value sizes as raw numbers (13.5px, 12.5px, 16px in `Input.jsx`), which the type scale does not hold. The app may not type a size the design system lacks (`.claude/rules/ui-adherence.md`), so the design system names them first (D10).
+- Branch `feat/T-FPLAT-082` from `feat/T-M01-030g` (PR #246 open); `T-M01-035`'s work is stashed and stacks on this part.
+- Blockers: the prerequisite above. D10 rides on this approval.
+
+##### Proposal
+**Flow.** The design system names the field sizes (owner) → Main pulls the four token files, the census and the field typings with `DesignSync` `get_file`, verbatim → the invariant holds tokens equal to the census → `packages/theme` regenerates the phone theme from them → `FieldBox` and the eight fields take the open page's values → every built screen is checked against its board.
+
+**Findings from testing the requirement:**
+1. **Pulling tokens alone breaks fields** — no: every field already sits on `FieldBox`'s grey well, so a white page keeps them visible. The pull and the field port still ship together, so no screen shows half of the open page.
+2. **Raw sizes in the design system's fields** — named in the design system first (prerequisite, D10).
+3. **A partial pull must be recorded** — `_generated/README.md` names this pull and what it covers, as earlier partial pulls do.
+4. **The snapshot can drift silently** (`17` §6: "nothing verifies the snapshot is current except pulling again") — not fixed here; the new test holds the snapshot consistent with its own census, so a half-copied file is caught.
+
+**Key decisions** (one reason each):
+1. **Copy verbatim, then prove values.** `get_file` returns the exact text; the test parses every pulled token and compares name and value with the pulled census, so a copy mistake in a value fails by name.
+2. **One ground, one change.** The fill, radius and rings change in `FieldBox` (web and native) only; each field changes only its height and type sizes.
+3. **The focus ring moves inside the field** (the design system's inset 1.5px accent) — the outer ring's `--surface` gap disappears into a white page.
+
+**Order:** prerequisite → pull and the snapshot test → phone theme and contrast → `FieldBox` → the eight fields → built-screen check → docs.
+
+**Twin:** every changed component has a web half (`.css`) and a native half (`.native.tsx`), changed together (Law 7).
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  DS[Live design system c8aa4326] -->|get_file, verbatim| GEN[theme _generated tokens + census + typings]
+  GEN --> T[snapshot test: tokens equal census]
+  GEN --> RN[theme build: CSS vars + phone theme]
+  RN --> FB[ui FieldBox ground and rings]
+  FB --> F[eight fields: height, type sizes]
+  F --> APPS[web and phone screens]
+```
+
+##### Package changes
+- **theme:** the pulled files; `contrast.ts` declares the word pairs on `--fill`.
+- **invariants:** `design-system-snapshot` — every token in `tokens/*.css` equals the census.
+- **ui:** `FieldBox` (both halves); the eight fields' heights and type sizes (both halves).
+- **Protections (Law 12):** the new test is the holder for "the pulled tokens equal the pulled census" — its row in `.claude/protections.md`. New tokens are held by the existing design-system adherence plugins; no new brand, route, table or error code.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/theme/src/_generated/tokens/{colors,spacing,radius,field-mode,typography}.css` | pulled (`typography.css` carries the field type sizes, D10 A) | the snapshot |
+| modify | `packages/theme/src/_generated/manifest.json` · `README.md` | pulled census; the pull recorded | the snapshot |
+| — | `packages/theme/src/_generated/contracts/forms/*` | **not changed:** six field typings equal the live ones; `SearchField`'s gains the filter button (part c); `PhoneField`'s new one is held back (D130) | the snapshot |
+| add | `tests/invariants/src/design-system-snapshot.ts` · modify `run.ts` | tokens equal the census | `packages/theme` has no unit tests (`packages/config/unit-test-packages.json`); a property of the committed snapshot is an invariant, as `design-system-props` is |
+| add | `tests/e2e/components/Input.spec.tsx` | the field's ground, height and focus ring, measured | component tests (`tests/e2e/CLAUDE.md`) |
+| modify | `packages/theme/src/contrast.ts` | the pairs on `--fill` | the contrast gate's owner |
+| modify | `packages/ui/src/primitives/FieldBox/FieldBox.css` · `FieldBox.native.tsx` | ground, radius, inset rings | the one ground |
+| modify | `packages/ui/src/components/{Input,PhoneField,NumberField,Select,TimeField,DatePicker,Textarea}/*.css` · `*.native.tsx` · `Input.types.ts` · `PhoneField.types.ts` | height, label gap and type sizes; the typings' doc comments say 54 | each field |
+| — | `packages/ui/src/components/SearchField/*` | **not changed:** the search pill is part c | part c |
+| modify | `packages/ui/src/primitives/Ground/Ground.css` · `Ground.native.tsx` · the `LIGHTER` comments in `Button.css`, `Checkbox.css`, `TimeField.css` | a disabled control's fill is `--canvas-sunken`, as the design system's disabled button is; `--surface-form` turned white and hid it (review) | the one ground |
+| modify | `.claude/protections.md` · `docs/tasks/F-platform.md` · `docs/prd/foundations/F7-design-language.md` | the test's row; this RFC; `F7-15` (the field takes `--fill`) and `F7-24` (one inset ring, focus wins it, D11) | Law 12, Law 8 |
+| modify | `packages/theme/src/emit-theme.ts` | the phone theme's `type.field` sizes from `--fs-field-*` | the generator owns the phone theme's shape |
+| modify | `packages/ui/src/primitives/Field/Field.css` · `Field.native.tsx` | the shared label, hint and error at the field sizes | the one label part |
+| modify | `packages/ui/src/primitives/Text/Text.types.ts` · `Text.tsx` · `Text.css` · `Text.native.tsx` · `Text.logic.ts` | `field-label`, `field-value`, `field-helper` variants, both halves | the phone fields draw their words through `Text` |
+| modify | the fields' message and range parts (`TimeFieldMessage`, `TimeRangeField`, `NumberFieldMessage`, `NumberFieldBox`, `SelectListbox` native halves) | the field sizes | each field's own parts |
+| modify | `tests/e2e/support/token.ts` · `tests/e2e/components/DataTable.spec.tsx` · `Button.spec.tsx` | `resolvedLength`; the cell editor is a field on the fill; a disabled primary sinks to `--canvas-sunken` (review blocker; planted red: `--surface-form` received white) | component tests |
+| modify | `packages/theme/src/_generated/README.md` · `docs/tasks/deferred.md` | the pull recorded; `PhoneField`'s typing held back (D130); the placeholder colour (D131) and the phone door's keyboard-up scroll (D132), found in QA | the snapshot; Law 8 |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **Mixed look until parts b and c land:** cards and the shell's bars are still drawn the old way on a white page — visible, since they carry an elevation shadow. The three parts merge close together; nothing is deployed.
+- **A field-height change moves layouts by 2px per field** — every built screen is checked at both widths and on both phones.
+- **A mistyped value in a pulled file** — the snapshot test fails by name.
+
+##### Acceptance criteria and proof
+- **AC-1** (new) — Given the live design system, when the snapshot is read, then every token name and value in `packages/theme/src/_generated/tokens/` equals the pulled census.
+- **AC-2** (new) — Given any field at expressive density, when it renders on the web and on a phone, then it is the board's field: a `--fill` ground, 54 tall, radius 16, the label, helper and value at the design system's field type tokens, and focus and error as inset 1.5px rings.
+- **AC-3** (new) — Given every built screen, when it renders at 375 and 1536 and on both phones, then its page is white and its fields match its board, with no control invisible or clipped, apart from D91 (a first-run mark over a sheet) and D132 (the phone door's keyboard-up scroll), which part a records and does not cause (D12).
+- **AC-4** (new) — Given the pulled colours, when the contrast gate runs, then every declared pair passes, the pairs on `--fill` included.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 | main-dev · evaluator | required | invariants | every token equals the census, both ways; planted red: the stale census against the new files (52 problems, by name) | invariant `design-system-snapshot` |
+| AC-2 | main-dev | required | component tests | `Input` at expressive: height 54, ground `--fill`, focus inset ring | `tests/e2e/components/Input.spec.tsx` (ct, new) |
+| AC-2 · AC-3 | qa-web | required | web `3002` at 375 and 1536 | each built screen: page white; each field's ground, height, radius, label, helper and value against its board's tokens | live |
+| AC-2 · AC-3 | qa-ios | required | simulator | the same on the phone | live |
+| AC-2 · AC-3 | qa-android | required | emulator | the same on Android | live |
+| AC-4 | evaluator · ci | required | `pnpm check:all` · `quality` | the contrast gate and every check pass | gate · CI |
+
+##### Delivery size
+- **Estimate:** about 22 authored files and 450 authored lines (code about 250, tests about 120, docs about 80); about 14 pulled files, counted as generated.
+- **Built (re-ruled 2026-10-07, approval voided by size):** 46 authored files and 700 authored lines — code 362, tests 177, docs 161 — and 7 pulled files (33 lines), against 22 and 450. Over the 30-file target: one inseparable deliverable, because every field draws through the shared `FieldBox`, `Field` and `Text` primitives, and Law 7 holds web and phone halves together, so a split leaves the two platforms, or two fields, drawn differently. Where it grew: the field type sizes became `Text` variants on both halves and every native field part (D10 A); review and QA added `Ground`'s disabled fill and its three comments, the label gap, `Button.spec.tsx`, the `F7-15`/`F7-24` amendments (D11 A) and the deferred rows D131, D132.
+- **One part** — part a as above.
+- **D10 — the field type sizes (owner).** **A · the design system names them (recommended):** three tokens in the type scale — label 13.5, value 16, helper 12.5 — and the fields use them; the app then pulls them with the rest. **B · the fields move onto the existing scale** (`--fs-body-sm` 13, `--fs-body` 15, `--fs-caption` 12): no new tokens, but the boards' fields change by half a pixel to a pixel.
+- **Order:** as in Proposal.
+- **Owner rulings (2026-10-07):** RFC approved; D10 → **A** (the design system names the three field type sizes).
+- **D11 — a focused field in error (review, 2026-10-07): A.** The design system's `Input` drew only the danger ring on a focused field in error, so focus vanished (`F7-24`). One inset ring on both platforms; focus takes it while the caret is in, the error words stay, the danger ring returns on blur. `F7-24` and `F7-15` amended in this part; the design system follows by the owner's paste, read back 2026-10-07: `Input`, `OtpInput`, `Select`, `Textarea`, `NumberField`, `DatePicker`, `TimeField` and `SearchField` put focus before error (`PhoneField` composes `Input`). Proof: `tests/e2e/components/Input.spec.tsx` (planted red: the danger-first rule, received the danger ring).
+- **D12 — AC-3 and two pre-existing defects (evaluator, 2026-10-07): A.** D91 (a first-run mark draws over the notification sheet and account menu on the phone) and D132 (with the keyboard up, the phone door does not scroll the focused field and its error line into view) stay deferred rows; AC-3 names them as outside part a.
+- **D13 — the second full gate (2026-10-07): A.** `pnpm check:all` run 2 failed only at the `enum-parity` invariant: the shared local database holds `join_requested` from `T-M01-035`'s migration 0022, which this branch's contract does not know. Every earlier step passed. The database stays; CI's `quality` job runs the gate on a fresh database and is AC-4's proof, and the PR is marked ready only on it.
+- **Delivery size re-ruled (2026-10-07): A** — part a approved as one inseparable deliverable at 46 authored files and 700 authored lines.
+
+**Checklist** — [ ] prerequisite · [ ] pull · [ ] snapshot test · [ ] phone theme and contrast · [ ] FieldBox · [ ] fields · [ ] built screens · [ ] docs · [ ] qa-web · [ ] qa-ios · [ ] qa-android · [ ] review · [ ] gate
+
+#### Runtime
+Recorded at the step's start (2026-10-07), before anything ran. Branch `feat/T-FPLAT-082` from `feat/T-M01-030g` `05674c73`; `T-M01-035`'s work is in `git stash` (`stash@{0}`).
+
+| resource | state at start | identity |
+|---|---|---|
+| web `3002` · api `8084` · metro `8081` | free | — |
+| postgres `5544` · object store `9000` · temporal `7233` | pre_existing | containers `heliogrid-pg-local`, `heliogrid-object-store-local`, `heliogrid-temporal` |
+| simulators · emulators | none booted | — |
+| browser tabs | the pane is closed | — |
+| database routing | `heliogrid_dev` on both URLs (`heliogrid_dev` is at 0022 from `T-M01-035`'s mistake) | `.env.local` |
+| logs | `.qa/api.log` 4,375,636 · `.qa/web.log` 35,364 · `.qa/metro.log` 118,197 bytes | byte marks |
+
+**Part a checklist**
+- [x] tokens and census pulled (5 token files, `manifest.json`, `README.md`) · AC-1 invariant, planted reds
+- [x] `FieldBox` ground, radius and inset rings, both halves · `Input.spec.tsx`, planted reds
+- [x] the seven fields' height, label gap and type sizes; `Field`, `Text` variants, `emit-theme.ts`
+- [x] `Ground`'s disabled fill · `Button.spec.tsx`, planted red
+- [x] contrast pairs on `--fill` · theme build, planted red
+- [x] live QA web 375/1536, iOS, Android · reviewer CLEAN
+- [x] docs: `F7-15`, `F7-24`, `protections.md`, D130–D132
+
+**At the end (2026-10-07)**
+
+| resource | state at end |
+|---|---|
+| web · api · metro | stopped by Main; `3002`, `8084`, `8081` free |
+| postgres · object store · temporal | pre_existing, untouched |
+| simulator `40ED0117` · `emulator-5554` | shut down |
+| browser tabs | closed; the pane is closed |
+| database routing | restored to `heliogrid_dev` on both URLs (QA ran on `heliogrid_test`) |
+| logs | `.qa/api.log` 4,535,039 · `.qa/web.log` 69,520 · `.qa/metro.log` 241,995 bytes |
+| test data | on `heliogrid_test`, through the app: companies "QA Solar Ten" (+91 98234 56789) and "QA iOS Solar" (+91 99999 99902); verified numbers without a company +91 98374 65512, 98345 67890, 98456 12307 |
+
+**Measurements:** helper runs — reviewer 1 (4 continuations), qa-web 1 (3), qa-ios 1 (1), qa-android 1 (1), evaluator 1 (1); helper tokens about 590k (reviewer 120k, qa-web 127k, qa-ios 107k, qa-android 107k, evaluator 51k); Main's turns and tokens were not counted. Planned 22 files / 450 lines; built 46 authored files / 700 lines and 7 pulled (re-ruled A). Full gate: run 1 failed on a stale `apps/api/dist` orphan; run 2 failed only at `enum-parity` on the shared database (D13 A).
+
+**Mistakes and the rule that now holds each**
+- The size passed 20% over the estimate during the build and was found only at the commit card → count `git diff --numstat` after each slice (the step 4 budget rule).
+- The design system's error-before-focus ring was copied, hiding focus on a field in error (`F7-24`) → `Input.spec.tsx` asserts accent on focus and danger on blur.
+- `Ground`'s disabled fill read `--surface-form`, white after the pull → `Button.spec.tsx` asserts `--canvas-sunken`, and that it differs from `--canvas`.
+- The label gap was 4px against the design system's 8px and no proof caught it → measured in live QA; no component test holds it yet (said out loud).
+- A packet expected the code boxes at 54 and a disabled ghost to fill; both were the packet's error, not the code's → each packet value is read from the design system's component before the helper runs.

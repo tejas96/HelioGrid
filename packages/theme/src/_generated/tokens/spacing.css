@@ -15,7 +15,14 @@
      width from --rail-w, AppHeader reads --header-h and MobileTopBar --topbar-h-mobile. A token
      nothing reads is the defect the rename was raised about, so --rail-w is not left as one. */
   --rail-w:72px;
-  --header-h:64px; --topbar-h-mobile:56px; --bottomnav-h:72px;
+  --header-h:64px; --topbar-h-mobile:64px;
+  /* The floating footer pill: 66 tall, 20 from each side, 26 above the home-bar safe area.
+     --bottomnav-h is the whole reserved band (26 + 66), so content and toasts clear it. */
+  --bottomnav-h:92px; --bottomnav-pill-h:66px; --bottomnav-inset:20px; --bottomnav-gap:26px;
+  /* Phones with a centred camera: nothing drawn in the top 54px or the bottom 34px. */
+  --safe-top:54px; --safe-bottom:34px;
+  --field-h:54px;
+  --section-gap:28px; --tile-gap:10px; --tile-pad:16px;
   --content-max:1440px;
   /* The width at which a screen switches to its desktop layout. CSS cannot read a custom property
      inside @media, so a screen writes this value there and the adherence check accepts it only

@@ -14,7 +14,7 @@ export interface GroundColors {
   controlFillDisabled: string;
 }
 
-const DISABLED = theme.colors['surface-form'];
+const DISABLED = theme.colors['canvas-sunken'];
 
 const COLORS: Record<Ground, GroundColors> = {
   page: {

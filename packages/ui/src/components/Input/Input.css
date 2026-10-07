@@ -2,18 +2,18 @@
    owns the size and the layout only.
 
    The control stretches to the shell's full height rather than sitting as a centred 21px line:
-   the field LOOKS 44–52px tall and the tap has to land anywhere inside it. */
+   the field LOOKS 44–54px tall and the tap has to land anywhere inside it. */
 
 .hg-input {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-1);
+  gap: var(--sp-2);
   min-width: 0;
 }
 
 .hg-input-label {
   font-family: var(--font-sans);
-  font-size: var(--fs-body-sm);
+  font-size: var(--fs-field-label);
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
 }
@@ -27,7 +27,7 @@
 }
 
 .hg-input-shell[data-density="expressive"] {
-  height: 52px;
+  height: var(--field-h);
 }
 
 /* Density changes the size, never the ground — the well is the same in both. */
@@ -43,7 +43,7 @@
   outline: none;
   background: transparent;
   font-family: var(--font-sans);
-  font-size: var(--fs-body);
+  font-size: var(--fs-field-value);
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
@@ -56,7 +56,7 @@
 .hg-input-error,
 .hg-input-helper {
   font-family: var(--font-sans);
-  font-size: var(--fs-caption);
+  font-size: var(--fs-field-helper);
   line-height: var(--lh-caption);
 }
 

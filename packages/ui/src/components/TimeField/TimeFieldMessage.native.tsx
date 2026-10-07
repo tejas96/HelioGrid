@@ -19,7 +19,7 @@ export function TimeFieldMessage({ error, helper, refused }: NativeTimeFieldMess
   if (refused !== null) {
     return (
       <View accessibilityRole="alert" accessibilityLiveRegion="assertive">
-        <Text variant="caption" color="danger">
+        <Text variant="field-helper" color="danger">
           {refused}
         </Text>
       </View>
@@ -27,14 +27,14 @@ export function TimeFieldMessage({ error, helper, refused }: NativeTimeFieldMess
   }
   if (error !== undefined && error !== null && error !== false) {
     return (
-      <Text variant="caption" color="danger">
+      <Text variant="field-helper" color="danger">
         {error}
       </Text>
     );
   }
   if (helper !== undefined) {
     return (
-      <Text variant="caption" color="tertiary">
+      <Text variant="field-helper" color="tertiary">
         {helper}
       </Text>
     );
