@@ -5,7 +5,7 @@ import {
   watchIdentityToken,
 } from '@heliogrid/env/server';
 import { Inject, Injectable, type OnApplicationShutdown } from '@nestjs/common';
-import type { IntervalSpec } from '@temporalio/client';
+import { ApplicationFailure, type IntervalSpec } from '@temporalio/client';
 import { NativeConnection, Worker } from '@temporalio/worker';
 import { PinoLogger } from 'nestjs-pino';
 import { ENV } from '../../config/env';
@@ -24,6 +24,14 @@ export interface ActivityRegistration {
   readonly taskQueue: TaskQueue;
   readonly activities: object;
   readonly schedule?: ActivitySchedule;
+}
+
+/**
+ * A step that can never succeed — the record it works on is gone — fails for good, so its workflow
+ * ends; any other error a step throws is retried by Temporal.
+ */
+export function stepCannotSucceed(message: string): Error {
+  return ApplicationFailure.nonRetryable(message);
 }
 
 /** How long an unreachable Temporal is left before the host connects again. */

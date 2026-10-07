@@ -1,4 +1,5 @@
 import * as audit from './audit';
+import * as catalogImport from './catalog-import';
 import * as catalogPlatform from './catalog-platform';
 import * as catalogTenant from './catalog-tenant';
 import * as file from './file';
@@ -29,11 +30,13 @@ export const schema = {
   ...subject,
   ...catalogPlatform,
   ...catalogTenant,
+  ...catalogImport,
   ...priceBook,
   ...outbox,
 };
 
 export * from './audit';
+export * from './catalog-import';
 export * from './catalog-platform';
 export * from './catalog-tenant';
 export * from './file';

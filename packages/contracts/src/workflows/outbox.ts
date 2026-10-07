@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { platformHealthcheckWorkflow } from './platform';
+import { catalogImportWorkflow } from './catalog-import';
 import { defineWorkflow, type WorkflowDefinition, type WorkflowResult } from './registry';
 
 /**
@@ -42,11 +42,8 @@ export interface OutboxActivities {
  * A stored event is parsed by its workflow's CURRENT input schema at dispatch, so a change to one
  * of these inputs must still parse every payload already stored, or it ships as expand, then
  * contract (`CLAUDE.md` §8).
- *
- * The platform healthcheck is here so the handoff is proven end to end before a product workflow
- * exists, the same reason it was the first workflow.
  */
-const OUTBOX_WORKFLOWS: readonly WorkflowDefinition[] = [platformHealthcheckWorkflow];
+const OUTBOX_WORKFLOWS: readonly WorkflowDefinition[] = [catalogImportWorkflow];
 
 export const OUTBOX_WORKFLOW_NAMES: readonly string[] = OUTBOX_WORKFLOWS.map(
   (definition) => definition.name,

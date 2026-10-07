@@ -2,6 +2,7 @@ import {
   type CreateHeaders,
   type DeclaredFile,
   type DeclareFile,
+  type FileContentType,
   type FileDownload,
   fileContract,
   OBJECT_STORE,
@@ -137,6 +138,35 @@ export class FileService {
       expiresInSeconds: FILE_DOWNLOAD_LINK_SECONDS,
     });
     return { url, expiresAt: expiresAt(now, FILE_DOWNLOAD_LINK_SECONDS) };
+  }
+
+  /**
+   * A confirmed file of the kind asked, for a module that starts work on it: another company's, or
+   * one stored against another kind, is not found; one not yet confirmed has nothing to read.
+   */
+  async confirmed(tenantId: string, id: string, kind: FileSubjectKind): Promise<StoredFile> {
+    return toWire(await this.confirmedRow(tenantId, id, kind));
+  }
+
+  /**
+   * Every byte of a confirmed file — for a workflow step only, never a request (the port says why);
+   * the subject's rule has already bounded its size. An outage throws, and the step is retried.
+   */
+  async readStored(
+    tenantId: string,
+    id: string,
+    kind: FileSubjectKind,
+  ): Promise<{ readonly contentType: FileContentType; readonly bytes: Uint8Array }> {
+    const row = await this.confirmedRow(tenantId, id, kind);
+    const bytes = await this.fromStore(() => this.store.read(row.externalId));
+    return { contentType: row.contentType, bytes };
+  }
+
+  private async confirmedRow(tenantId: string, id: string, kind: FileSubjectKind) {
+    const row = await this.files.find(tenantId, id);
+    if (row === null || row.subjectKind !== kind) throw new NotFoundException();
+    if (row.uploadedAt === null) throw notUploaded();
+    return row;
   }
 
   /**

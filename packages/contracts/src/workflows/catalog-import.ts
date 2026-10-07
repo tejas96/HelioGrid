@@ -1,0 +1,55 @@
+import { CATALOG_IMPORT_STATES, type CatalogImportState } from '@heliogrid/domain';
+import { z } from 'zod';
+import { defineWorkflow } from './registry';
+
+/**
+ * The catalog import (`T-M01-030`): ONE workflow type, started once per handoff with the phase it
+ * runs. Part c's phase reads the stored file; the match and the run join this list as added values,
+ * which every payload already stored still parses (`outbox.ts` says why that matters).
+ *
+ * The input is ids only (`infra/temporal/README.md` §4): the tenant, because a durable run has no
+ * session, and the job, whose row holds everything else. The worker holds the sequence; every step
+ * runs in the api, beside the catalog's tables.
+ */
+export const CATALOG_IMPORT_PHASES = ['read'] as const;
+
+export const catalogImportWorkflow = defineWorkflow({
+  name: 'catalogImport',
+  taskQueue: 'heliogrid-catalog',
+  input: z.object({
+    eventId: z.string().uuid(),
+    tenantId: z.string().uuid(),
+    jobId: z.string().uuid(),
+    phase: z.enum(CATALOG_IMPORT_PHASES),
+  }),
+  // From domain's tuple, not the HTTP contract's schema: this entry never loads the HTTP surface.
+  result: z.object({ status: z.enum(CATALOG_IMPORT_STATES) }),
+  signals: {},
+  queries: {},
+  workflowId: (input) => `catalog-import-${input.eventId}`,
+});
+
+/** What a step is told: whose job, by id. */
+export interface CatalogImportStepInput {
+  readonly tenantId: string;
+  readonly jobId: string;
+}
+
+/** Where a step left the job. */
+export interface CatalogImportStepResult {
+  readonly status: CatalogImportState;
+}
+
+/**
+ * The import's steps, as both processes see them: the workflow (worker) calls them by NAME and the
+ * api registers them by name, so a renamed step is a compile error on both sides.
+ */
+export interface CatalogImportActivities {
+  /** Reads the job's stored file and leaves the job `mapped`, or `unreadable` with its reason. */
+  readCatalogImport(input: CatalogImportStepInput): Promise<CatalogImportStepResult>;
+  /**
+   * Ends a read that failed past every retry — the store or the database stayed down — as
+   * `unreadable` (`not_read`), so no job waits in `reading` for good.
+   */
+  endCatalogImportRead(input: CatalogImportStepInput): Promise<CatalogImportStepResult>;
+}

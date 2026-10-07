@@ -423,9 +423,9 @@ This file covers module M01 — company signup and authentication, team invites 
 **DESIGN:** SCR-M01-17 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Mobile.dc.html · also: Language https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Language.dc.html
   · Hindi and Marathi → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-17+Catalog+Import+Wizard+-+Language.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-17-catalog-import-wizard.md`; they are the specification.
-**Data model:** none — reads `catalog_import_job` authored by `T-M01-030` (migration 0009) and the overrides, SKUs and rate entries the run writes through `T-M01-027` (migration 0015); the uploaded file is the one `file` table's row (no task id yet).
-**Contract:** `packages/contracts/src/catalog-import.ts` — POST /catalog/imports (from an uploaded file id and the entry point) · GET /catalog/imports (the re-openable reports) · GET /catalog/imports/{id} (the one read the wizard polls) · PUT /catalog/imports/{id}/mapping · PUT /catalog/imports/{id}/rows/{rowNumber} · POST /catalog/imports/{id}/run. Domain read: `CATALOG_IMPORT_STATES`, `CATALOG_IMPORT_ENTRY_POINTS`, the target-field vocabulary of `import-columns.ts`.
-**Depends on:** `T-M01-030` (migration 0009 and the routes; the workflow on `heliogrid-catalog`) · `T-M01-027` (migration 0015) · `T-M01-025` (the guard for `m01.manage_catalog`) · the first `file` slice (the presigned upload the first step needs — no task id yet; the wizard cannot start before it) · `T-M01-015` (the settings entry; onboarding is another).
+**Data model:** none — reads `catalog_import_job` and `catalog_import_row` authored by `T-M01-030` (migrations 0019 and 0020) and the overrides, SKUs and rate entries the run writes through `T-M01-027` (migration 0015); the uploaded file is the one `file` table's row (no task id yet).
+**Contract:** `packages/contracts/src/catalog-import.ts` — POST /catalog/imports (from an uploaded file id, the entry point, and the file's name and saved date as the device's picker gives them — the step 1 subtitle names no supplier, since no source holds one: `T-M01-030c` decision 8) · GET /catalog/imports (the re-openable reports) · GET /catalog/imports/{id} (the one read the wizard polls) · PUT /catalog/imports/{id}/mapping · PUT /catalog/imports/{id}/rows/{rowNumber} · POST /catalog/imports/{id}/run. Domain read: `CATALOG_IMPORT_STATES`, `CATALOG_IMPORT_ENTRY_POINTS`, the target-field vocabulary of `import-columns.ts`.
+**Depends on:** `T-M01-030` (migrations 0019 and 0020 and the routes; the workflow on `heliogrid-catalog`) · `T-M01-027` (migration 0015) · `T-M01-025` (the guard for `m01.manage_catalog`) · the first `file` slice (the presigned upload the first step needs — no task id yet; the wizard cannot start before it) · `T-M01-015` (the settings entry; onboarding is another).
 **Out of scope:** matching, the async run, idempotency and the report's storage — `T-M01-030`; the tables it writes — `T-M01-027`; the file bytes path — the first file slice; M02's lead import, the same pattern — `T-M02-005`; the outbox and dispatcher — `T-M01-030`, `infra/temporal`; the entry from the add sheet — `T-M01-016`, which lands after this wizard and wires that hand-off itself.
 **DONE WHEN:**
 - Given an import file with platform-matching rows, unknown rows and broken rows, when the preview renders, then it states the three counts, matched rows become price overrides and unknown rows tenant SKUs on import, and broken rows are fixable inline; the import runs async with progress and produces a per-row report (M01-41). → proof: QA (web and phone) one file with the three row kinds renders the counts in plain numbers, a row fixed in the grid moves the counts and the act's number, the run shows progress and the report reopens from the list; the matching and the writes are `T-M01-030`'s units
@@ -1524,7 +1524,7 @@ Rows Q9, Q10, Q11, Q12 of the QA plan, and Q8c below. Surfaces: api, database. `
 **Why:** An owner drops the supplier's price list in and every product they stock carries their price minutes later — hundreds of rows matched against the platform book, unknown ones made their own SKUs, broken ones fixed in place (M01-41); without it the first quote waits on typing every product by hand, which is the abandonment M01-22 names.
 **PRD rows:** none of its own — the import row is quoted and dispositioned at `T-M01-017` (the wizard), and this task is the job beneath that screen; quoting it a second time here would be the duplicate this suite forbids.
 **Requirements:** M01-41's build-side half — smart matching, the async run, the per-row report — and §M01.4's behaviour detail and edge cases bind this task: the preview states "N rows · M match platform products (will become price overrides) · K new products · E rows need attention"; fixing happens in the preview grid, never in a bounced file; a match creates a price override and never a spec edit, and a spec conflict on a match is a needs-attention row; a re-run of the same file appends new rate entries on the matched overrides and never a duplicate SKU; column auto-guess handles headers in any launch language while the file's own header text is data and never translates; the import runs async with visible progress and the per-row report is kept and re-openable; it is one wizard at its three entry points — onboarding, Catalog settings, the picker's add-flow.
-**Data model:** migration `0009_catalog_import.sql` authors `catalog_import_job`, tenant-scoped, all four always — `tenant_id`, a composite index leading with it, a fail-closed RLS policy for `app_user`, explicit grants. The number follows the price book's 0006; if that slice has not landed when this one begins, this migration takes 0006 and the price book the next — numbers are taken at the slice, never reserved. The run is durable work on the worker through Temporal, and the handoff binds the orchestration rule of `docs/engineering/forward-compat.md`, copied here because this is the first M01 migration that hands anything off: **a product mutation NEVER dual-writes to Temporal. The event is written in the SAME transaction as the product change, and a dispatcher starts the workflow with an id derived from the event id — so a crashed dispatcher retries into the same workflow instead of a second one. The outbox table is therefore part of the FIRST migration that has anything to hand off, not a later addition (ADR-0025, `infra/temporal/README.md` §5). Activities stay idempotent regardless: Temporal retries them.** The outbox table is authored by whichever migration first hands off; if none has by the time this slice begins, this migration is that first one and authors it, its tenancy settled before the build — the row is written inside the tenant transaction and read by the dispatcher on the admin path. Temporal names are chosen once and are permanent: task queue `heliogrid-catalog` (added to `TASK_QUEUES`), workflow type `catalogImport`, workflow id derived from the outbox event id. Every activity keys its effect on the job and the row number and writes `INSERT … ON CONFLICT DO NOTHING`, so a retried activity creates no second SKU, override or rate entry; the writes go through the catalog area's own repositories (`T-M01-027`), never another module's.
+**Data model:** migration `0019_catalog_import.sql` authors `catalog_import_job` (and `0020` its rows — parts c and d), tenant-scoped, all four always — `tenant_id`, a composite index leading with it, a fail-closed RLS policy for `app_user`, explicit grants. The number follows the price book's 0006; if that slice has not landed when this one begins, this migration takes 0006 and the price book the next — numbers are taken at the slice, never reserved. The run is durable work on the worker through Temporal, and the handoff binds the orchestration rule of `docs/engineering/forward-compat.md`, copied here because this is the first M01 migration that hands anything off: **a product mutation NEVER dual-writes to Temporal. The event is written in the SAME transaction as the product change, and a dispatcher starts the workflow with an id derived from the event id — so a crashed dispatcher retries into the same workflow instead of a second one. The outbox table is therefore part of the FIRST migration that has anything to hand off, not a later addition (ADR-0025, `infra/temporal/README.md` §5). Activities stay idempotent regardless: Temporal retries them.** The outbox table is authored by whichever migration first hands off; if none has by the time this slice begins, this migration is that first one and authors it, its tenancy settled before the build — the row is written inside the tenant transaction and read by the dispatcher on the admin path. Temporal names are chosen once and are permanent: task queue `heliogrid-catalog` (added to `TASK_QUEUES`), workflow type `catalogImport`, workflow id derived from the outbox event id. Every activity keys its effect on the job and the row number and writes `INSERT … ON CONFLICT DO NOTHING`, so a retried activity creates no second SKU, override or rate entry; the writes go through the catalog area's own repositories (`T-M01-027`), never another module's.
 
 | entity | key fields | rules | rows |
 |---|---|---|---|
@@ -1547,7 +1547,7 @@ Rows Q9, Q10, Q11, Q12 of the QA plan, and Q8c below. Surfaces: api, database. `
 - Given a run is started, when the API commits the status change, then the outbox row is in the same transaction and a dispatcher that retries after a crash starts exactly one workflow. → proof: unit apps/api/tests/catalog/import-handoff.test.ts — an injected failure after the job update leaves no outbox row, and two dispatches of one event yield one workflow id
 - Given a file whose headers are in Hindi or Marathi, when the mapping auto-guesses, then the same target fields are proposed as for the English headers, and the header text itself is returned untranslated (§M01.4 localization notes). → proof: unit packages/domain/tests/catalog/import-columns.test.ts
 - Given a row matching a platform product at a different spec, when the matching pass runs, then it is a needs-attention row and no platform spec changes (§M01.4 edge cases). → proof: unit packages/domain/tests/catalog/import-matching.test.ts
-- Given migration 0009, when the tenancy scan runs, then `catalog_import_job` passes as tenant-scoped. → proof: invariant table-tenancy-scan
+- Given migration 0019, when the tenancy scan runs, then `catalog_import_job` passes as tenant-scoped. → proof: invariant table-tenancy-scan
 
 #### Runtime
 Recorded at the step's start (2026-10-06), before anything ran. Branch `feat/T-M01-030a`, cut from `feat/T-M01-031` (PR #236, unmerged) by the owner's word — a stacked PR.
@@ -1588,6 +1588,21 @@ Recorded at the step's start (2026-10-06), before anything ran. Branch `feat/T-M
 **Part b, planted reds** — each seen failing by name in `outbox-handoff.test.ts`, then restored: the event written through a separate connection → *leaves no event when the change that wrote it fails after the write*; `REJECT_DUPLICATE` removed, and the "already started" catch removed → *starts with USE_EXISTING and REJECT_DUPLICATE, and reads a finished run as started*; the grace inverted → *sweeps an event the fast path missed, and leaves one still inside its grace*; the tenant check absent → *refuses an event whose input names another tenant …*; the per-event catch removed, and the known-name filter removed → *sweeps past an event that fails to start and one whose workflow this release lacks*.
 
 **Part a measurements** — about 120 Main tool calls; helper runs: `qa-api` 1 (26.8k tokens), `reviewer` 3 passes (97.4k + 117.4k + 122.8k — the third because a money rule changed), `evaluator` 2 gate runs (25.1k + 32.2k — the first stopped on the stale OpenAPI file it regenerated); Main's own tokens are not measured by this session. Planned about 17 files; built 31 changed files, the deltas in the commit card.
+
+**Part c, at the start** (2026-10-06) — branch `feat/T-M01-030c` from `origin/main` `12aa2a52`. web `3002`, api `8084`: free. Metro `8081`: held by a foreign listener — pid 16150, `/Volumes/works-space/movo/…/react-native/cli.js start` (Movo's Metro); this task starts no Metro and leaves it alone. Postgres (`heliogrid-pg-local`), object store (`heliogrid-object-store-local`), Temporal (`heliogrid-temporal`, `heliogrid-temporal-admin`, `heliogrid-temporal-jwks`): pre_existing. No iOS simulator booted; Android `emulator-5554` attached, pre_existing, untouched (an engine part). The browser pane closed. Database routing: `heliogrid_dev` on both `DATABASE_URL` and `DATABASE_ADMIN_URL`. Logs: `.qa/api.log` 1,774,976 bytes · `.qa/metro.log` 14,661 · `.qa/web.log` absent. The api and the worker are `started_by_task` for the live check, through their launch configurations.
+
+**Part c, at the end** (resource → initial → final):
+- api `8084` → free → started once through the `api` launch configuration (serverId `13a3847d…`), stopped; free again, no `tsx watch` left.
+- worker → not running → started once through the `worker` launch configuration (serverId `762b6f70…`), stopped; no `tsx watch` left.
+- database routing → `heliogrid_dev` on both → `heliogrid_test` for the tests, the live check and the gate → `heliogrid_dev` on both, the file byte-identical to its start.
+- `heliogrid_test` → migration 0019 applied. `heliogrid_dev` untouched (0015).
+- Temporal → pre_existing → the `outbox-sweep` schedule the api re-created at boot is deleted and its one waiting run terminated; every `catalogImport` the live check started completed; nothing of this task runs there.
+- browser tabs `seed`, `tab-1` (opened by the previews) → closed. Postgres, object store → pre_existing, untouched. Metro `8081` → Movo's, foreign → no longer listening; this task never touched it. `emulator-5554` → pre_existing, untouched.
+- logs → `.qa/api.log` 1,774,976 → 2,313,066 bytes; kept.
+
+**Part c measurements** — about 230 Main tool calls; helper runs: `qa-api` 3 passes (50.6k + 60.0k + 64.8k tokens), `reviewer` 4 passes (157.2k, 191.5k, 198.7k, 201.2k — each a continuation), `evaluator` 1 gate run (28.7k). Main's own tokens are not measured by this session. Planned about 38 files and 950 authored lines; built 45 files and about 2,360 — the deltas and both size rulings in the RFC's Delivery size.
+
+**Part c, planted reds** — each seen failing by name, then restored: the unpacked bound removed (`spreadsheet.test.ts`, two cases); the zip walked by its stated count; no offset-plus-size check; no count check; no ZIP64 refusal (three cases); no CSV catch; no end-record length check; the event written in its own transaction after the job's (`import-handoff.test.ts`); `admitWrite` removed from the start (`import-handoff.test.ts`).
 
 #### Plan
 **Summary**
@@ -1694,13 +1709,15 @@ Q3 runs in part a; Q4 in part b; Q6–Q7 in part c; Q8–Q9 in part d. No row to
 |---|---|---|---|---|
 | a | the import rules (guess, match, vocabularies) and spreadsheets in the one file table | AC-4, AC-5, AC-7 | `T-M01-031` (stacked) | shipped |
 | b | the handoff — outbox, dispatcher, sweep schedule, the API's activity host | AC-3, AC-6 (outbox) | a | shipped |
-| c | the job up to the preview — start, read, mapping, matching, row fixes | AC-1 (preview), AC-3 (import), AC-5, AC-6, AC-8 | b | open |
-| d | the run and the report | AC-1 (run), AC-2, AC-9 | c | open |
+| c | the job starts and reads its file — start, list, read, the read step (`#### Part c · RFC`) | AC-3 (start), AC-6 (job), AC-8 (start, read), AC-10 | b | shipped |
+| d | the mapping, the matching pass and the preview — mapping, row table 0020, row fixes, preview rows; a new mapping during the pass supersedes it (the board's "stops the work", no cancel route) | AC-1 (preview), AC-5, AC-6 (rows), AC-8 (fix) | c | open |
+| e | the run and the report | AC-1 (run), AC-2, AC-3 (run), AC-8 (run), AC-9 | d | open |
 
 **Part a checklist** — [x] domain import vocabularies · [x] column guess · [x] match rule · [x] file types, `catalog` subject, signature · [x] migration 0017 · [x] file service and lookup · [x] Q1 · [x] Q2 · [x] Q3 · [ ] Q10 (the PR's `quality` lane)
 **Part b checklist** — [x] migration 0018 and schema · [x] workflow contract and queues · [x] activity host · [x] outbox write, dispatcher, sweep · [x] worker sweep workflow · [x] docs · [x] Q4 · [x] Q5 (outbox) · [ ] Q10
-**Part c checklist** — [ ] migration 0019 and schema · [ ] five routes · [ ] read and match activities, spreadsheet reader · [ ] workflow phases read and match · [ ] Q5 · [ ] Q6 · [ ] Q7 · [ ] Q10
-**Part d checklist** — [ ] run route · [ ] apply activity and keys · [ ] workflow run phase · [ ] Q8 · [ ] Q9 · [ ] Q10
+**Part c checklist** — in `#### Part c · RFC` → Delivery size.
+**Part d checklist** — [ ] migration 0020 and schema · [ ] mapping and row-fix routes · [ ] match step · [ ] workflow phase match · [ ] Q5 (rows) · [ ] Q6 · [ ] Q7 (fix) · [ ] Q10
+**Part e checklist** — [ ] run route · [ ] apply activity and keys · [ ] workflow run phase · [ ] Q8 · [ ] Q9 · [ ] Q10
 
 #### Part b · Plan
 Found at part b's start, each with one reason; the owner chose both open ones on 2026-10-06.
@@ -1716,6 +1733,200 @@ Found at part b's start, each with one reason; the owner chose both open ones on
 Part b's files, replacing its `Where` rows: db `migrations/0018_orchestration_outbox.sql`, `src/schema/outbox.ts`, `src/schema/index.ts` · contracts `src/workflows/outbox.ts`, `registry.ts`, `index.ts` · env `src/temporal.ts`, `src/server.ts` · api `src/common/temporal/temporal.activity-host.ts`, `temporal.gateway.ts`, `temporal.module.ts`, `outbox.repository.ts`, `outbox.admin.repository.ts`, `outbox.dispatcher.ts`, `outbox.activities.ts`, `src/main.ts`, `package.json` · worker `src/modules/outbox/outbox.workflows.ts`, `outbox.public.ts`, `src/modules/platform/platform.public.ts`, `src/worker.workflows.ts`, `src/worker.module.ts`, `src/main.ts`, `src/common/temporal/temporal.tokens.ts`, `temporal.connection.ts`, `scripts/build-workflow-bundle.mjs` · tests `apps/api/tests/orchestration/outbox-handoff.test.ts`, `apps/api/tests/support/fixture.ts`, `tests/invariants/src/append-only-ledgers.ts` · docs `architecture.md`, `infra/temporal/README.md`, `.claude/protections.md`, `apps/worker/CLAUDE.md`, `apps/api/CLAUDE.md`, `docs/tasks/deferred.md`, this task · `pnpm-lock.yaml`.
 
 For part c: `catalogImport` joins `OUTBOX_WORKFLOWS` (`packages/contracts/src/workflows/outbox.ts`); the platform healthcheck stays there only while `outbox-handoff.test.ts` starts it, and part c moves that test onto `catalogImport` and drops it. Its input carries `tenantId`, which `recordOutboxEvent` holds to the transaction's tenant.
+
+#### Part c · RFC
+Replaces the legacy `#### Plan` for part c, which stays above as history. Its approval is void: the build of part c needs the object store to hand over a whole file — a port the Plan did not change — and the Plan's part c (about 22 files) does not fit `docs/tasks/README.md`'s size rule once that is counted. The task's shared facts (the Plan's decisions 1–21, the AC list) stand unless a line below changes one.
+
+##### Title
+T-M01-030c — the import starts and reads its file: a stored price list becomes a job whose sheets the wizard can map.
+
+##### Description
+- **Who gains:** the owner who drops a supplier's price list into the import wizard (`SCR-M01-17`, step 1). After this part the file is read in the background, and the wizard gets each sheet's name, size and top rows to place the header row and guess the columns.
+- **Problem solved:** the first product work handed to Temporal through the outbox (part b's handoff, now used by a real workflow), and the first time the api reads a whole stored file.
+- **Cites:** the task header (`M01-41`, §M01.4); the brief `docs/ux/briefs/SCR-M01-17-catalog-import-wizard.md`; the board's decisions record read 2026-10-06 — step 1 asks the sheet and the header row, guessed (pass-1 audit); an unreadable file is step 1's error and a failed run is never the error state (decisions 26, 27).
+
+##### Goals
+- `POST /catalog/imports` commits a job in `reading` and its outbox event in one transaction, then starts `catalogImport` (phase `read`).
+- The read step opens the stored CSV or `.xlsx` and leaves the job `mapped` with every sheet's name, row count, column count and first 10 rows — or `unreadable` with a reason.
+- `GET /catalog/imports` and `GET /catalog/imports/{id}` read jobs newest first and one job; another company's job is 404.
+- Every route is `onboarding.manage_catalog` held outright; Finance is refused the start.
+
+##### Non-goals
+- The mapping, the matching pass, the preview rows, row fixes (part d) and the run and the report (part e).
+- The wizard screen and its three entry points (`T-M01-017`).
+- Any change to how a file is declared, uploaded or confirmed (part a).
+- A supplier name on step 1 — no source holds one; recorded on `T-M01-017` (decision 8).
+
+##### Readiness and dependencies
+- Landed: part a (`catalog` file subject, CSV and `.xlsx` types, signature check, migration 0017); part b (outbox 0018, dispatcher, sweep, the api's step host, `REJECT_DUPLICATE`); `T-M01-027` (catalog module); `T-M01-025` (guard, `started_by`).
+- Design: an engine part — no drawing of its own. `SCR-M01-17` holds its link; its record was read on 2026-10-06 (facts above).
+- Stack: Postgres, object store and Temporal run (pre_existing). The api and the worker start through `.claude/launch.json` for the live check.
+- Blockers: none.
+
+##### Proposal
+**Flow.** The device declares, uploads and completes a `catalog` file (part a) → `POST /catalog/imports { fileId, entryPoint, fileName, savedAt }` → the service checks the file is this company's, a `catalog` file and uploaded → one tenant transaction inserts the job (`reading`) and the outbox event `{ eventId, tenantId, jobId, phase: 'read' }` → after the commit `OutboxDispatcher.dispatchNow` starts `catalogImport` on `heliogrid-catalog` (the sweep starts it a minute later if that fails) → the worker runs the workflow, which calls the step `readCatalogImport` → the api's step host runs it: it reads the bytes from the store, opens the workbook, and writes the sheets and `mapped` (or `unreadable`) in one tenant transaction → the wizard polls `GET /catalog/imports/{id}`.
+
+**Key decisions** (one reason each):
+1. **The store hands over a whole file.** `ObjectStore` gains `read(key)`, both adapters implement it, and `FileService.readStored(tenantId, id, subjectKind)` is the one way a module gets a stored file's bytes and type — only once uploaded, only of the kind asked; `FileService.confirmed` is the start's check of the same. The port's sentence "the api never holds a file" becomes "a request never carries a file": the device still uploads straight to the store; a workflow step may read a file its rule bounds (2 MB). The step runs in the api by the owner's ruling (Plan decision 1).
+2. **A workbook is held to 20 MB unpacked.** An `.xlsx` is a zip: 2 MB can unpack to hundreds, and the read runs in the serving api. Before `exceljs` opens it, the step unpacks each entry and stops one byte past the bound — never trusting the sizes the zip's directory declares, which a crafted file writes as anything — and marks the job `unreadable` (`too_large_unpacked`). 20 MB is ten times the upload ceiling — a number no PRD row sets, so the owner's approval of this RFC is its ruling.
+3. **The guess runs where it is shown.** The job stores facts only — each sheet's name, row and column counts as counted in the file, and its first `HEADER_ROW_SCAN` (10) rows as text. The header row and the columns are guessed by domain's `guessHeaderRow` and `guessColumns` (client-safe) on the device, so step 1's sheet and header-row choice redraws step 2 at once with no round trip, and nothing derived is stored (`.claude/protections.md`: no derived value is stored). The Plan's "the column auto-guess runs on the worker" is superseded.
+4. **One workflow type, phased.** `catalogImport` input `{ eventId, tenantId, jobId, phase }`, ids only; part c declares phase `read`, part d adds `match`, part e `run` — each an added enum value every stored payload still parses. Workflow id `catalog-import-<eventId>`.
+5. **The read step is idempotent and fails closed.** It writes only while the job is `reading`, so a retried step writes nothing twice. A file the reader cannot open is the person's (`unreadable`, `cannot_open`); a sheet set with no row is `unreadable` (`no_rows`). A store or database outage throws and Temporal retries it (5 attempts, backoff); past them the workflow ends the phase through `endCatalogImportRead` — the job reads `unreadable` (`not_read`), and the person replaces the file. No job stays `reading` for good.
+6. **Cell text is the file's text.** Numbers, dates, formulas (their result), rich text and booleans become the text the matching pass reads; CSV keeps every cell as written (no number or date coercion), UTF-8 with its BOM dropped. `exceljs` 4.4.0 reads both (Plan decisions 5, 20).
+7. **`catalogImport` replaces the platform healthcheck in `OUTBOX_WORKFLOWS`** (part b's note): `outbox-handoff.test.ts` moves onto it, and the healthcheck leaves the outbox list (it stays a workflow).
+8. **The file's name and saved date come from the device.** `fileName` (1–255 chars) and `savedAt` (nullable) are what step 1 and the re-opened report name; both platforms' pickers give them. No supplier is stored — nothing in a file names its supplier reliably; `T-M01-017` gets the line "the step 1 subtitle names no supplier (no source; `T-M01-030c` decision 8)".
+9. **Finance is refused at the door's service check** (`admitWrite`, Plan decision 15); every read is the same outright grant — a job is a price list in waiting.
+
+**Order.** Domain vocabularies → migration 0019 and schema → contracts (routes, workflow, port) → file read seam → job repository and service → read step and spreadsheet reader → worker workflow → outbox list and test move → docs.
+
+**Refusals.** 403 a role without the outright grant · 404 a file or job not this company's, or a file of another kind · 409 `FILE_NOT_UPLOADED` a file not yet confirmed · 400 a body outside the schema · `Idempotency-Key` replay answers the first job.
+
+**Twin screen.** None: an engine part. Both platforms' wizard is `T-M01-017`.
+
+##### Architecture diagram
+```mermaid
+sequenceDiagram
+  participant D as Device
+  participant A as api (route + step host)
+  participant P as Postgres
+  participant T as Temporal
+  participant W as worker
+  participant S as Object store
+  D->>A: POST /catalog/imports
+  A->>P: job (reading) + outbox event, one transaction
+  A->>T: start catalogImport (id from event id)
+  T->>W: workflow task
+  W->>T: call readCatalogImport
+  T->>A: activity task (heliogrid-catalog)
+  A->>S: read the stored file
+  A->>P: sheets + mapped / unreadable
+  D->>A: GET /catalog/imports/{id} (polls)
+```
+
+##### Package changes
+- **domain** — `catalog/import.ts` gains `CATALOG_IMPORT_STATES` (`reading · unreadable · mapped · matching · previewed · running · completed` — the whole machine now, one enum), `CATALOG_IMPORT_ENTRY_POINTS` (`onboarding · settings · in_flow`), `CATALOG_IMPORT_UNREADABLE_REASONS` (`cannot_open · too_large_unpacked · no_rows · not_read`), `CATALOG_IMPORT_UNPACKED_LIMIT_BYTES`. Exported from the client-safe index.
+- **contracts** — `catalog-import.ts` (three routes, wire schemas derived from the tuples); `workflows/catalog-import.ts` (`catalogImportWorkflow`, `CatalogImportActivities`); `TASK_QUEUES` + `heliogrid-catalog`; `ports/object-store.ts` `read`. Direction unchanged: contracts → domain.
+- **db** — `schema/catalog-import.ts`; three pgEnums mirrored from domain.
+- **api** — catalog module: import controller, service, repository, activities registration, `internal/spreadsheet.ts`; file module exports `FileService` through `file.public.ts`; both store adapters gain `read`. New dependency `exceljs` (api only, `pnpm add`).
+- **worker** — `modules/catalog/` (workflow + registration with no activities), one line each in `worker.module.ts` and `worker.workflows.ts`.
+- **Law 12 enrolment:** the three pgEnums → `enum-parity` (its hand-held list); `catalog_import_job` → `table-tenancy-scan` and `tenancy-rls`, which read every table from the database; the three routes → `RouteAccessMap` (typecheck) and the OpenAPI freshness check; the queue and workflow names → the `satisfies` name checks in `catalog.public.ts`. No new error code; no new brand or token.
+
+##### Data and schema changes
+- **Migration `0019_catalog_import.sql`** (started with `pnpm db:migration:new`): table `catalog_import_job` — `id uuid` pk (uuidv7) · `tenant_id` fk · `file_id` fk `file` · `entry_point catalog_import_entry_point` · `status catalog_import_status` · `unreadable_reason catalog_import_unreadable_reason` null · `file_name text` (CHECK 1–255) · `saved_at timestamptz` null · `sheets jsonb` null (`[{ name, rowCount, columnCount, topRows: string[][] }]`) · `started_by` fk `user_account` · `created_at`, `updated_at` · the creation-key columns. CHECK: `unreadable_reason` is set exactly when `status = 'unreadable'`.
+- **Indexes:** `(tenant_id, created_at desc)` — the list; unique `(tenant_id, creation_key)` where set.
+- **Tenancy:** all four always — `tenant_id`, the composite index leading with it, fail-closed RLS for `app_user`, grants SELECT, INSERT, UPDATE (a job moves through its states; no DELETE — nothing purges, the task).
+- **Readers, both ways:** new table and new enums; no older code reads them, and no client calls these routes until `T-M01-017` ships. No backfill; rollback is the previous release, the table left unread. Expand only.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/domain/src/catalog/import.ts` | states, entry points, unreadable reasons, unpacked limit | §4.3 vocabulary |
+| modify | `packages/domain/src/catalog/index.ts` | exports | §4.3 |
+| add | `packages/db/migrations/0019_catalog_import.sql` | the job table | §4.2 |
+| add | `packages/db/src/schema/catalog-import.ts` | its mirror and pgEnums | §4.2 |
+| modify | `packages/db/src/schema/index.ts` | export | §4.2 |
+| add | `packages/contracts/src/catalog-import.ts` | three routes and wire | §4.1 |
+| modify | `packages/contracts/src/index.ts` | export | §4.1 |
+| add | `packages/contracts/src/workflows/catalog-import.ts` | workflow + step signatures | §4.1 workflow messages |
+| modify | `packages/contracts/src/workflows/index.ts` | export | §4.1 |
+| modify | `packages/contracts/src/workflows/registry.ts` | `heliogrid-catalog` | §4.1 |
+| modify | `packages/contracts/src/workflows/outbox.ts` | `catalogImport` in, healthcheck out | §4.1 |
+| modify | `packages/contracts/src/ports/object-store.ts` | `read` | the port's owner |
+| modify | `packages/contracts/openapi/openapi.json` | regenerated | §4.1 |
+| modify | `apps/api/src/modules/file/internal/object-store.s3.ts` | `read` | the adapter |
+| modify | `apps/api/src/modules/file/internal/object-store.memory.ts` | `read` | the adapter |
+| modify | `apps/api/src/modules/file/file.service.ts` | `readStored` | the file module's one door |
+| modify | `apps/api/src/modules/file/file.module.ts` | export `FileService` | Nest wiring |
+| modify | `apps/api/src/modules/file/file.public.ts` | export `FileModule`'s service | module boundary |
+| add | `apps/api/src/modules/catalog/catalog.import.controller.ts` | the three routes | catalog module (Plan, `T-M01-031` decision 2) |
+| add | `apps/api/src/modules/catalog/catalog.import.service.ts` | start, list, read | catalog module |
+| add | `apps/api/src/modules/catalog/catalog.import.repository.ts` | job rows + outbox write | catalog module |
+| add | `apps/api/src/modules/catalog/catalog.import.activities.ts` | `readCatalogImport`, `endCatalogImportRead`, registration | catalog module |
+| add | `apps/api/src/modules/catalog/internal/spreadsheet.ts` | `exceljs` reader + unpacked-size check | module internal |
+| modify | `apps/api/src/modules/catalog/catalog.module.ts` | wiring, `FileModule` import | Nest wiring |
+| modify | `apps/api/package.json` · `pnpm-lock.yaml` | `exceljs` (generated) | `pnpm add` |
+| add | `apps/worker/src/modules/catalog/catalog.workflows.ts` | `catalogImport` (phase `read`) | §2 worker, one folder per area |
+| add | `apps/worker/src/modules/catalog/catalog.public.ts` | registration, name checks | §2 worker |
+| modify | `apps/worker/src/worker.module.ts` · `src/worker.workflows.ts` | one line each | §2 worker extension point |
+| add | `apps/api/tests/catalog/import-handoff.test.ts` | AC-3 (import), AC-8 (start, read) | testing rules |
+| add | `apps/api/tests/catalog/spreadsheet.test.ts` | the reader on CSV, `.xlsx`, broken, packed-large files | testing rules |
+| modify | `apps/api/tests/orchestration/outbox-handoff.test.ts` | onto `catalogImport` | part b's note |
+| modify | `tests/invariants/src/enum-parity.ts` | the three pgEnums against their contract schemas | Law 12 |
+| modify | `infra/temporal/README.md` | `heliogrid-catalog` queue | Law 8 |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, Parts, `T-M01-017`'s supplier line and migration number | Law 8 |
+| add *(built, not planned)* | `apps/api/tests/catalog/import-read.test.ts` | the read step's proofs, split from `import-handoff.test.ts` | the 300-line file rule |
+| add *(built, not planned)* | `apps/api/tests/support/temporal.ts` | the recording Temporal client, moved out of `outbox-handoff.test.ts` so both tests share one copy | zero duplication |
+| modify *(built, not planned)* | `apps/api/tests/catalog/support.ts` | the import's service, a stored price list, a start body | testing rules |
+| modify *(built, not planned)* | `apps/api/tests/support/tenant-tables.ts` | the job table in the fixture's cleanup, before `file` | the fixture's FK order |
+| modify *(built, not planned)* | `apps/api/tests/files/complete.test.ts` | its hand-built store gains `read` | the port grew |
+| modify *(built, not planned)* | `docs/engineering/02-system-architecture.md` | the file-transfer rule now names the one whole-file read — this is where the sentence lives, not `architecture.md` | Law 8 |
+| modify *(built, not planned)* | `docs/tasks/deferred.md` | D125, the accepted read block | the owner's ruling |
+| modify *(built, not planned)* | `apps/api/src/common/temporal/temporal.activity-host.ts` | `stepCannotSucceed` — a step whose job is gone fails for good, so its workflow ends (review finding) | the one Temporal seam (`temporal-client-fenced`) |
+| modify *(built, not planned)* | `docs/tasks/F-platform.md` | the file contract's sentence on bytes through the api names the bounded whole-file read | Law 8 |
+| modify *(built, not planned)* | `docs/tasks/README.md` | the size estimate counts test lines on their own line — the rule this part's twice-missed estimate called for (owner, 2026-10-07) | every mistake leaves a record |
+
+##### API and contract changes
+| route / message | method | request → response | errors | access |
+|---|---|---|---|---|
+| `/catalog/imports` | POST | `{ fileId, entryPoint, fileName, savedAt \| null }` + `Idempotency-Key` → 201 job | 400 · 403 · 404 · 409 `FILE_NOT_UPLOADED` · `IDEMPOTENCY_KEY_REUSED` | `onboarding.manage_catalog` outright |
+| `/catalog/imports` | GET | `page`, `limit` → `{ items: [{ id, status, entryPoint, fileName, savedAt, createdAt, startedBy }], totalCount }` newest first | 403 | same |
+| `/catalog/imports/{id}` | GET | → `{ id, status, entryPoint, unreadableReason, fileName, savedAt, file: { id, contentType, byteSize }, sheets: [{ name, rowCount, columnCount, topRows }] \| null, startedBy, createdAt }` | 403 · 404 another company's | same |
+| `catalogImport` | workflow | `{ eventId, tenantId, jobId, phase: 'read' }` → `{ status }` | — | ids only; queue `heliogrid-catalog` |
+| `readCatalogImport` · `endCatalogImportRead` | activities (api) | `{ tenantId, jobId }` → `{ status }` | retried by Temporal | the tenant from the input, pinned per transaction |
+| `ObjectStore.read` | port | `key` → bytes | throws on outage | api internal |
+
+Tenancy: no `tenantId` on the wire (invariant `tenant-id-on-the-wire`); every read carries its tenant predicate. Compatibility: new routes and fields; `extensibleEnum` on every vocabulary a client reads, so part d's and e's states parse on an older client.
+
+##### Risks and rollout
+| risk | mitigation |
+|---|---|
+| A packed `.xlsx` exhausts the serving api's memory | decision 2 — the unpacked sum is checked before `exceljs` opens it; `spreadsheet.test.ts` plants a file over the bound |
+| Parsing a 2 MB workbook blocks the api's event loop | measured in build: a 2 MB `.xlsx` blocks it for up to 377 ms in one stretch, 0.8 MB for 150 ms, a 400-row list under 10 ms. Past the 250 ms this row set, the owner accepted it (2026-10-06): large lists are rare and it is once per import. `deferred.md` D125 holds the worker-thread move |
+| A job stuck in `reading` | decision 5 — bounded retries, then `endCatalogImportRead` |
+| A retried read writes twice | the write is conditioned on `status = 'reading'`; the handoff test retries it |
+| An event for another tenant | `recordOutboxEvent` refuses an input whose `tenantId` is not the transaction's (part b) |
+| Release roll | deploy the worker first (it knows `catalogImport`), then the api; an api ahead of its worker leaves the workflow task queued, nothing lost (Plan, rollout safety) |
+
+##### Acceptance criteria and proof
+Part c's lines of the task's AC (Plan `#### Acceptance criteria`), verbatim:
+- **AC-3** — Given a run is started, when the API commits the status change, then the outbox row is in the same transaction and a dispatcher that retries after a crash starts exactly one workflow. *(Part c: the import's start.)*
+- **AC-6** — Given migrations 0018 and 0019, when the tenancy scan runs, then `orchestration_outbox`, `catalog_import_job` and `catalog_import_row` pass as tenant-scoped. *(Part c: `catalog_import_job`; `catalog_import_row` moves to part d's migration 0020.)*
+- **AC-8** (extension) — Given a Finance session, when it starts, fixes or runs an import, then each is refused; given another company's job id, then it reads 404. *(Part c: the start and the read.)*
+- **AC-10** (extension, new) — Given a stored CSV or `.xlsx` price list, when an import is started, then the job reaches `mapped` with each sheet's name, row and column counts and its top rows as the file wrote them; given a file that cannot be opened, holds no rows, or unpacks past the bound, then it reaches `unreadable` with that reason.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-3 | main-dev | required | api tests | the commit lost after the job, and after the event → no job, no event, no start; start twice with one key → one job, one event, one workflow id; the key sent with another body → `IDEMPOTENCY_KEY_REUSED`, nothing written; the list newest first, paged, counted whole; planted red: the event written in its own transaction after the job's — *leaves neither … when the commit after its event is lost* failed by name | `import-handoff.test.ts` |
+| AC-3 | main-dev | required | api tests | the outbox test moved onto `catalogImport` still passes | `outbox-handoff.test.ts` |
+| AC-6 | evaluator | required | invariants | `table-tenancy-scan`, `tenancy-rls`, `enum-parity`, `schema-parity` over 0019 | `pnpm check:all` |
+| AC-8 | main-dev | required | api tests | Finance's start → 403, no row; another company reads the job → 404; planted red: `admitWrite` removed from the start — *refuses Finance the start and writes nothing* failed by name | `import-handoff.test.ts` |
+| AC-8 | qa-api | required | api `8084` | `…906` (Finance) start → 403; `…905` reads `…904`'s job → 404 | live |
+| AC-10 | main-dev | required | api tests | reader: CSV with `1,32,000` and Hindi headers kept as text; `.xlsx` two sheets; broken bytes → `cannot_open`; empty → `no_rows`; packed past bound → `too_large_unpacked`; a crafted end record — count 0 over a packed entry (`too_large_unpacked`), a directory ending short of the end record, a count over the records, any ZIP64 marker (`not_a_zip`); an unclosed CSV quote → `cannot_open`; a top row ends at its last filled cell. Planted reds, each failed by name: the bound removed (*one byte past it*, *stops a packed zip at the bound*); the walk by stated count (*measures a packed entry whatever count the end record states*); no offset-plus-size check (*refuses a directory that ends short …*); no count check (*refuses a count of two over one record …*); no ZIP64 refusal (*refuses an end record that asks for ZIP64 through its disk number* and two more); no CSV catch (*cannot open a CSV whose quote is never closed …*) | `spreadsheet.test.ts` |
+| AC-10 | main-dev | required | api tests | the read step over a stored CSV and `.xlsx` → `mapped` and sheets; run twice → one write; an `.xlsx` it cannot open → `cannot_open`; a store down → throws for the retry, then `not_read`; a step whose job is gone → fails non-retryable, read and end alike | `import-read.test.ts` |
+| AC-10 | qa-api | required | api `8084` + temporal admin | `…904` uploads a CSV and an `.xlsx`, starts each, polls to `mapped`, reads sheets; a renamed broken `.xlsx` reaches `unreadable`; `temporal workflow show` names one completed `catalogImport` per start | live |
+| all | ci | required | `quality` | the PR's run passes | CI |
+| — | qa-web · qa-ios · qa-android | not_applicable | — | an engine part; the wizard is `T-M01-017` | — |
+
+##### Delivery size
+- **Planned:** about 38 changed files and about 950 authored lines. **Built:** 43 changed files (2 generated: `openapi.json` +1,044, `pnpm-lock.yaml` +522) and about 1,900 authored lines — code about 1,000, tests about 700, this RFC about 200. The estimate counted the code and left out the tests. Approval was void at the build's end; the owner rules on the size below.
+- **Size ruling (2026-10-07):** the owner approved option A — one part at its built size, one PR.
+- **After review (2026-10-07):** 45 changed files and about 2,360 authored lines — code about 1,220, tests about 920, docs about 220. The review's fixes added about 460: the zip measure read the way the parser reads it (record walk, offset-plus-size, ZIP64 and cut-off end records refused), an unclosed CSV quote read as `cannot_open`, a gone job failing for good, the list's own columns, one file-name bound, and the tests and planted reds for each. That is 24% over the approved 1,900, so the approval is void again; the owner rules once more — **A** keep one part at this size, or **B** split as above (c1 reader about 650 lines, c2 the rest about 1,700).
+- **Size ruling (after review, 2026-10-07):** the owner approved option A again — one part at about 2,360 authored lines and 45 files, one PR.
+- **Parts** (approved 2026-10-06) —
+
+| part | delivers | AC | depends on | status |
+|---|---|---|---|---|
+| a | the import rules and spreadsheets in the one file table | AC-4, AC-5, AC-7 | `T-M01-031` | shipped |
+| b | the handoff — outbox, dispatcher, sweep, the API's activity host | AC-3, AC-6 (outbox) | a | shipped |
+| c | the job starts and reads its file — start, list, read, the read step | AC-3 (start), AC-6 (job), AC-8 (start, read), AC-10 | b | shipped |
+| d | the mapping, the matching pass and the preview — mapping, row table 0020, row fixes, preview rows; a new mapping during the pass supersedes it (the board's "stops the work", no cancel route) | AC-1 (preview), AC-5, AC-6 (rows), AC-8 (fix) | c | open |
+| e | the run and the report | AC-1 (run), AC-2, AC-3 (run), AC-8 (run), AC-9 | d | open |
+
+- **Over both targets** — 43 files against about 30, about 1,900 authored lines against 1,000. Two ways on:
+  - **A · one part at its built size (recommended).** Everything is built, and every proof row is green on `heliogrid_test`. The start without the read leaves every job in `reading` with nothing to show, so the two are one usable step for the wizard; only the reader (`spreadsheet.ts` and its test, about 350 lines) stands apart. One PR.
+  - **B · split into two stacked PRs.** c1 — the store's `read`, `readStored` and the reader with its test (about 15 files, about 450 lines); c2 — the job, the routes, the workflow and both handoff tests (about 28 files, about 1,450 lines — still over the line target). Same code; two reviews and two CI runs.
+- **Order:** as in Proposal.
+- **Checklist (part c)** — [x] domain vocabularies · [x] migration 0019 and schema · [x] contracts and workflow · [x] store `read` and `readStored` · [x] job repository, service, routes · [x] reader and read step · [x] worker workflow · [x] outbox list and test move · [x] docs · [x] AC-3 (main-dev) · [ ] AC-6 (evaluator) · [x] AC-8 (main-dev, qa-api) · [x] AC-10 (main-dev, qa-api) · [x] review (clean after three passes) · [ ] CI
 
 ### T-M01-031 · Price book
 **Type:** engine · **Tier:** P0

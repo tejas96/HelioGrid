@@ -1,7 +1,12 @@
 import { Module } from '@nestjs/common';
+import { FileModule } from '../file/file.public';
 import { MarketModule } from '../market/market.public';
 import { CatalogAdminRepository } from './catalog.admin.repository';
 import { CatalogController } from './catalog.controller';
+import { CatalogImportActivityRegistration } from './catalog.import.activities';
+import { CatalogImportController } from './catalog.import.controller';
+import { CatalogImportRepository } from './catalog.import.repository';
+import { CatalogImportService } from './catalog.import.service';
 import { CatalogPlatformService } from './catalog.platform.service';
 import { CatalogPriceBookController } from './catalog.price-book.controller';
 import { CatalogPriceBookRepository } from './catalog.price-book.repository';
@@ -19,11 +24,17 @@ import { CatalogSliceRepository } from './catalog.slice.repository';
 /**
  * The catalog (`T-M01-027`): the platform book's publish, and the tenant's market slice, own
  * SKUs, overrides, rate ledger and labelled releases behind the catalog routes; and the price book
- * (`T-M01-031`), the rates panel of the same surface.
+ * (`T-M01-031`), the rates panel of the same surface; and the spreadsheet import (`T-M01-030`),
+ * whose steps run here beside the tables they write.
  */
 @Module({
-  imports: [MarketModule],
-  controllers: [CatalogController, CatalogReleasesController, CatalogPriceBookController],
+  imports: [MarketModule, FileModule],
+  controllers: [
+    CatalogController,
+    CatalogReleasesController,
+    CatalogPriceBookController,
+    CatalogImportController,
+  ],
   providers: [
     CatalogPlatformService,
     CatalogAdminRepository,
@@ -37,6 +48,9 @@ import { CatalogSliceRepository } from './catalog.slice.repository';
     CatalogReleaseReadsRepository,
     CatalogPriceBookService,
     CatalogPriceBookRepository,
+    CatalogImportService,
+    CatalogImportRepository,
+    CatalogImportActivityRegistration,
   ],
   exports: [CatalogPlatformService],
 })

@@ -8,17 +8,31 @@ export type {
   CatalogImportAttentionReason,
   CatalogImportConflictAnswer,
   CatalogImportCounts,
+  CatalogImportEntryPoint,
   CatalogImportRowOutcome,
+  CatalogImportSheet,
+  CatalogImportState,
+  CatalogImportUnreadableReason,
 } from './import';
 export {
   CATALOG_IMPORT_ATTENTION_REASONS,
   CATALOG_IMPORT_CONFLICT_ANSWERS,
+  CATALOG_IMPORT_ENTRY_POINTS,
+  CATALOG_IMPORT_FILE_NAME_MAX,
   CATALOG_IMPORT_ROW_OUTCOMES,
+  CATALOG_IMPORT_STATES,
+  CATALOG_IMPORT_UNPACKED_LIMIT_BYTES,
+  CATALOG_IMPORT_UNREADABLE_REASONS,
   countImportMatches,
 } from './import';
 export type { ImportCurrency } from './import-cells';
 export type { CatalogImportField, ColumnGuess } from './import-columns';
-export { CATALOG_IMPORT_FIELDS, guessColumns, guessHeaderRow } from './import-columns';
+export {
+  CATALOG_IMPORT_FIELDS,
+  guessColumns,
+  guessHeaderRow,
+  HEADER_ROW_SCAN,
+} from './import-columns';
 export type {
   CatalogImportRowInput,
   CatalogImportRowMatch,

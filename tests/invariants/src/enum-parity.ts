@@ -2,6 +2,9 @@ import {
   auditActorKindSchema,
   auditEventTypeSchema,
   catalogAvailabilitySchema,
+  catalogImportEntryPointSchema,
+  catalogImportStateSchema,
+  catalogImportUnreadableReasonSchema,
   catalogProvenanceSchema,
   componentKindSchema,
   fileContentTypeSchema,
@@ -86,6 +89,18 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   price_book_rate_basis: {
     options: priceBookRateBasisSchema.options,
     contract: 'priceBookRateBasisSchema',
+  },
+  catalog_import_status: {
+    options: catalogImportStateSchema.options,
+    contract: 'catalogImportStateSchema',
+  },
+  catalog_import_entry_point: {
+    options: catalogImportEntryPointSchema.options,
+    contract: 'catalogImportEntryPointSchema',
+  },
+  catalog_import_unreadable_reason: {
+    options: catalogImportUnreadableReasonSchema.options,
+    contract: 'catalogImportUnreadableReasonSchema',
   },
 };
 

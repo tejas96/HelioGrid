@@ -2,6 +2,7 @@ import { initContract } from '@ts-rest/core';
 import { auditContract } from './audit';
 import { authContract } from './auth';
 import { catalogContract } from './catalog';
+import { catalogImportContract } from './catalog-import';
 import { catalogReleasesContract } from './catalog-releases';
 import { fileContract } from './file';
 import { healthContract } from './health';
@@ -22,6 +23,8 @@ export * from './auth';
 export * from './business-profile';
 // The catalog (`T-M01-027`): its closed sets, the resolved read and the tenant's writes.
 export * from './catalog';
+// The spreadsheet import (`T-M01-030`): a stored price list becomes a job the wizard maps and runs.
+export * from './catalog-import';
 // The catalog's labelled releases (`T-M01-027` part c).
 export * from './catalog-releases';
 // The too-old phone (`T-FPLAT-033`): the version header and the 426 every route may answer.
@@ -74,6 +77,7 @@ export const apiContract = c.router(
     audit: auditContract,
     auth: authContract,
     catalog: catalogContract,
+    catalogImport: catalogImportContract,
     catalogReleases: catalogReleasesContract,
     file: fileContract,
     health: healthContract,

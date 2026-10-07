@@ -103,7 +103,8 @@ proves nothing and the row is `blocked`, never passed. iOS journeys are local `q
 
 Target each task or part at no more than about 30 changed files **and** 1,000 authored changed
 lines (additions plus deletions). List generated artifacts and lockfiles, but exclude them from the
-line estimate. An inseparable end-to-end deliverable may exceed a target only when its RFC explains
+line estimate. The estimate gives code lines and test lines on separate lines; a part's tests are
+counted, never assumed small. An inseparable end-to-end deliverable may exceed a target only when its RFC explains
 why no smaller part can be independently accepted and the owner approves that exact size.
 
 `#### Parts` is a separate heading because the build-order walk reads it. Its `Where` rows are the

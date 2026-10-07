@@ -1,9 +1,10 @@
 import type { FileContentType, StorageProvider } from '@heliogrid/domain';
 
 /**
- * The port every stored byte leaves and returns through (`T-FPLAT-035`). The api never holds a
- * file: it signs a link, the client moves the bytes straight to the store, and the api only asks
- * the store what arrived. One adapter speaks the S3 API, which every store the suite has used or
+ * The port every stored byte leaves and returns through (`T-FPLAT-035`). A request never carries a
+ * file: the api signs a link, the client moves the bytes straight to the store, and the api asks the
+ * store what arrived. Only a workflow step reads a whole file back (`read`), and only one its
+ * subject's rule bounds in size — the price list an import reads (`T-M01-030c`). One adapter speaks the S3 API, which every store the suite has used or
  * will use speaks — so a vendor change is store settings, never a second implementation.
  *
  * A store behind this port MUST refuse an upload whose length or SHA-256 differs from the signed
@@ -51,6 +52,8 @@ export interface ObjectStore {
   head(key: string): Promise<StoredObject | null>;
   /** The first `count` bytes, or fewer when the object is shorter. */
   readFirstBytes(key: string, count: number): Promise<Uint8Array>;
+  /** Every byte stored under the key. Throws on an outage, and when nothing is stored there. */
+  read(key: string): Promise<Uint8Array>;
 }
 
 /** A `symbol` on purpose: a string DI token collides silently across modules. */

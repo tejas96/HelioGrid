@@ -54,6 +54,13 @@ export class MemoryObjectStore implements ObjectStore {
     return (this.objects.get(key) ?? new Uint8Array()).slice(0, count);
   }
 
+  async read(key: string): Promise<Uint8Array> {
+    this.answer();
+    const bytes = this.objects.get(key);
+    if (bytes === undefined) throw new Error(`nothing is stored under ${key}`);
+    return bytes.slice();
+  }
+
   /** The client's PUT through a signed link. False where a real store would refuse the bytes. */
   receive(url: string, bytes: Uint8Array): boolean {
     const key = url.slice(LINK_PREFIX.length);
