@@ -144,3 +144,83 @@ export function takesImportMapping(state: CatalogImportState): boolean {
 export function hasImportPreview(state: CatalogImportState): boolean {
   return state === 'previewed' || state === 'running' || state === 'completed';
 }
+
+/**
+ * What the run did with one row (`SCR-M01-17` pass 3: a preview projects, a report records). A row
+ * the preview did not settle is left out and stays unchanged in the catalog; a row the catalog
+ * could not take is failed with its reason (`T-M01-030f` decisions 4 and 6).
+ */
+export const CATALOG_IMPORT_ROW_RESULTS = [
+  'price_applied',
+  'product_created',
+  'left_out',
+  'failed',
+] as const;
+export type CatalogImportRowResult = (typeof CATALOG_IMPORT_ROW_RESULTS)[number];
+
+/**
+ * Why a row the preview settled was not written: judged again at the write, it needed attention —
+ * its product changed in the catalog since the preview — or the run could not reach the catalog
+ * past every retry, and the row was never tried.
+ */
+export const CATALOG_IMPORT_ROW_FAILURES = ['changed_since_preview', 'not_applied'] as const;
+export type CatalogImportRowFailure = (typeof CATALOG_IMPORT_ROW_FAILURES)[number];
+
+/** The outcomes a run writes into the catalog; a row judged any other way is left out. */
+export const CATALOG_IMPORT_WRITTEN_OUTCOMES = [
+  'price_override',
+  'own_item_price',
+  'new_item',
+] as const satisfies readonly CatalogImportRowOutcome[];
+
+/**
+ * Rows a run writes per step call and per transaction: the catalog lock is held for one batch,
+ * never a whole sheet, and a 2 MB sheet's tens of thousands of rows stay inside the step's one-minute
+ * timeout call by call. Raise it and one batch can outlast the timeout or hold the lock longer.
+ */
+export const CATALOG_IMPORT_RUN_BATCH_ROWS = 100;
+
+/** A run starts from the preview only; a fix and a new mapping end there (`T-M01-030f` decision 8). */
+export function takesImportRun(state: CatalogImportState): boolean {
+  return state === 'previewed';
+}
+
+/** Whether the job has been run: it is running, or has finished and keeps its results. */
+export function hasImportRun(state: CatalogImportState): boolean {
+  return state === 'running' || state === 'completed';
+}
+
+/** A job's rows counted by result; `pending` counts the rows the run has still to write. */
+export type CatalogImportResultCounts = Readonly<
+  Partial<Record<CatalogImportRowResult | 'pending', number>>
+>;
+
+/** The run's counted progress (`SCR-M01-17` pass 3, "218 of 405"): rows written of rows to write. */
+export interface CatalogImportRunProgress {
+  readonly done: number;
+  readonly total: number;
+}
+
+/** Read off the rows, never stored: every row with a result counts, except a row left out. */
+export function importRunProgress(byResult: CatalogImportResultCounts): CatalogImportRunProgress {
+  const done =
+    (byResult.price_applied ?? 0) + (byResult.product_created ?? 0) + (byResult.failed ?? 0);
+  return { done, total: done + (byResult.pending ?? 0) };
+}
+
+/** The report's figures: what the run did with every row of the sheet. */
+export interface CatalogImportResults {
+  readonly priceApplied: number;
+  readonly productCreated: number;
+  readonly leftOut: number;
+  readonly failed: number;
+}
+
+export function countImportResults(byResult: CatalogImportResultCounts): CatalogImportResults {
+  return {
+    priceApplied: byResult.price_applied ?? 0,
+    productCreated: byResult.product_created ?? 0,
+    leftOut: byResult.left_out ?? 0,
+    failed: byResult.failed ?? 0,
+  };
+}

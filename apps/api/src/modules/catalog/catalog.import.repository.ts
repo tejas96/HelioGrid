@@ -34,6 +34,9 @@ export interface ImportJobRow extends ImportJobSummary {
   readonly sheets: readonly CatalogImportSheet[] | null;
   readonly mapping: CatalogImportMapping | null;
   readonly mappingRevision: number;
+  /** When the person pressed import and who did; both null until the job is run. */
+  readonly runAt: Date | null;
+  readonly runBy: string | null;
 }
 
 export interface ImportToStart {
@@ -72,6 +75,8 @@ const jobColumns = {
   sheets: catalogImportJob.sheets,
   mapping: catalogImportJob.mapping,
   mappingRevision: catalogImportJob.mappingRevision,
+  runAt: catalogImportJob.runAt,
+  runBy: catalogImportJob.runBy,
 };
 
 /** The import's jobs on the runtime pool, inside the tenant transaction (`T-M01-030`). */

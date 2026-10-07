@@ -8,7 +8,10 @@ import type {
   CatalogImportCells,
   CatalogImportConflictAnswer,
   CatalogImportOutcomeCounts,
+  CatalogImportResultCounts,
+  CatalogImportRowFailure,
   CatalogImportRowOutcome,
+  CatalogImportRowResult,
   CatalogImportState,
   ImportAttention,
 } from '@heliogrid/domain';
@@ -32,6 +35,8 @@ export interface PreviewRow extends JudgedRow {
   readonly fix: CatalogImportCells;
   readonly leftOut: boolean;
   readonly answer: CatalogImportConflictAnswer | null;
+  readonly result: CatalogImportRowResult | null;
+  readonly failure: CatalogImportRowFailure | null;
   readonly rate: ItemRate | null;
 }
 
@@ -49,6 +54,8 @@ export const previewColumns = {
   attention: catalogImportRow.attention,
   catalogItemId: catalogImportRow.catalogItemId,
   tenantCatalogItemId: catalogImportRow.tenantCatalogItemId,
+  result: catalogImportRow.result,
+  failure: catalogImportRow.failure,
 };
 
 /** The import's rows on the runtime pool, inside the tenant transaction (`T-M01-030d`). */
@@ -101,6 +108,21 @@ export class CatalogImportRowsRepository {
   /** The job's rows counted by outcome, for domain's `countImportMatches`. */
   async countsByOutcome(tenantId: string, jobId: string): Promise<CatalogImportOutcomeCounts> {
     return this.db.withTenantTransaction(tenantId, (tx) => countsIn(tx, tenantId, jobId));
+  }
+
+  /**
+   * The job's rows counted by what the run did with them — a row it has still to write counted as
+   * `pending` — for domain's `importRunProgress` and `countImportResults`.
+   */
+  async countsByResult(tenantId: string, jobId: string): Promise<CatalogImportResultCounts> {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const groups = await tx
+        .select({ result: catalogImportRow.result, count: sql<number>`count(*)::int` })
+        .from(catalogImportRow)
+        .where(and(eq(catalogImportRow.tenantId, tenantId), eq(catalogImportRow.jobId, jobId)))
+        .groupBy(catalogImportRow.result);
+      return Object.fromEntries(groups.map((group) => [group.result ?? 'pending', group.count]));
+    });
   }
 
   /**

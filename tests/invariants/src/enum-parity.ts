@@ -4,7 +4,9 @@ import {
   catalogAvailabilitySchema,
   catalogImportConflictAnswerSchema,
   catalogImportEntryPointSchema,
+  catalogImportRowFailureSchema,
   catalogImportRowOutcomeSchema,
+  catalogImportRowResultSchema,
   catalogImportStateSchema,
   catalogImportUnreadableReasonSchema,
   catalogProvenanceSchema,
@@ -111,6 +113,14 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   catalog_import_conflict_answer: {
     options: catalogImportConflictAnswerSchema.options,
     contract: 'catalogImportConflictAnswerSchema',
+  },
+  catalog_import_row_result: {
+    options: catalogImportRowResultSchema.options,
+    contract: 'catalogImportRowResultSchema',
+  },
+  catalog_import_row_failure: {
+    options: catalogImportRowFailureSchema.options,
+    contract: 'catalogImportRowFailureSchema',
   },
 };
 

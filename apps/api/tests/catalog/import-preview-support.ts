@@ -1,12 +1,21 @@
 import type { RoleSet } from '@heliogrid/contracts';
+import { type TenantPool, tenantCatalogItem } from '@heliogrid/db';
 import type { CatalogImportField } from '@heliogrid/domain';
+import { and, eq } from 'drizzle-orm';
+import { PinoLogger } from 'nestjs-pino';
 import type { Act } from '../../src/common/auth/session-context';
+import { OutboxAdminRepository } from '../../src/common/temporal/outbox.admin.repository';
+import { OutboxDispatcher } from '../../src/common/temporal/outbox.dispatcher';
+import { CatalogImportRepository } from '../../src/modules/catalog/catalog.import.repository';
+import { CatalogImportRunRepository } from '../../src/modules/catalog/catalog.import-run.repository';
+import { CatalogImportRunService } from '../../src/modules/catalog/catalog.import-run.service';
 import type { fileServiceOf } from '../files/support';
 import type { openPools } from '../support/fixture';
 import { aRecordingTemporal } from '../support/temporal';
 import {
   anImportStart,
   aStoredPriceList,
+  catalogServiceOf,
   importPreviewServiceOf,
   importServiceOf,
 } from './support';
@@ -60,4 +69,43 @@ export async function aPreviewOf(
   const matched = await importPreviewServiceOf(pools, files).matchRows(step, Date.now());
   if (matched.status !== 'previewed') throw new Error(`the pass left ${matched.status}`);
   return job.id;
+}
+
+/**
+ * The import's run as `catalog.module.ts` composes it, over the real repositories and the real
+ * dispatcher on a Temporal client that only records; `tenants` stands in for the run's own pool.
+ */
+export function importRunServiceOf(
+  pools: ReturnType<typeof openPools>,
+  files: ReturnType<typeof fileServiceOf>,
+  temporal: ReturnType<typeof aRecordingTemporal>,
+  tenants: TenantPool = pools.tenants,
+): CatalogImportRunService {
+  const silent = new PinoLogger({ pinoHttp: { level: 'silent' } });
+  return new CatalogImportRunService(
+    new CatalogImportRepository(pools.tenants),
+    new CatalogImportRunRepository(tenants),
+    importServiceOf(pools, files, temporal),
+    catalogServiceOf(pools),
+    new OutboxDispatcher(temporal.gateway, new OutboxAdminRepository(pools.admin.db), silent),
+  );
+}
+
+/** The run step called as the workflow calls it, batch after batch, until the job leaves `running`. */
+export async function runEveryBatch(
+  runs: CatalogImportRunService,
+  step: { readonly tenantId: string; readonly jobId: string },
+): Promise<string> {
+  for (;;) {
+    const applied = await runs.applyRows(step, Date.now());
+    if (applied.status !== 'running') return applied.status;
+  }
+}
+
+/** A company's own SKUs under one brand, read on the admin path — what a run made, or did not. */
+export function ownSkusNamed(pools: ReturnType<typeof openPools>, tenantId: string, brand: string) {
+  return pools.admin.db
+    .select()
+    .from(tenantCatalogItem)
+    .where(and(eq(tenantCatalogItem.tenantId, tenantId), eq(tenantCatalogItem.brand, brand)));
 }

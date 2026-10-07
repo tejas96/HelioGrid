@@ -33,6 +33,7 @@ export type RateToAppend = Omit<StoredRate, 'sequence'>;
  * Appends one dated entry ON THE CALLER'S TRANSACTION — the one write behind every price change
  * (`M01-44`): never an UPDATE, so every earlier entry stays byte-identical. The caller holds the
  * catalog lock and has resolved the parent inside this tenant first: a foreign key ignores RLS.
+ * Answers the entry's id, which an import's row keeps as the price it applied.
  */
 export async function appendRate(
   tx: TenantScopedDb,
@@ -41,19 +42,24 @@ export async function appendRate(
   entry: RateToAppend,
   act: Act,
   key: CreationKey | null,
-): Promise<void> {
-  await tx.insert(catalogRateEntry).values({
-    tenantId,
-    tenantCatalogItemId: parent.on === 'own_item' ? parent.id : null,
-    tenantCatalogOverrideId: parent.on === 'override' ? parent.id : null,
-    rateAmount: entry.amount,
-    currencyCode: entry.currency,
-    entryDate: entry.effectiveOn,
-    enteredBy: act.actorUserId,
-    recordedAt: new Date(act.now),
-    creationKey: key?.key,
-    creationFingerprint: key?.fingerprint,
-  });
+): Promise<string> {
+  const [appended] = await tx
+    .insert(catalogRateEntry)
+    .values({
+      tenantId,
+      tenantCatalogItemId: parent.on === 'own_item' ? parent.id : null,
+      tenantCatalogOverrideId: parent.on === 'override' ? parent.id : null,
+      rateAmount: entry.amount,
+      currencyCode: entry.currency,
+      entryDate: entry.effectiveOn,
+      enteredBy: act.actorUserId,
+      recordedAt: new Date(act.now),
+      creationKey: key?.key,
+      creationFingerprint: key?.fingerprint,
+    })
+    .returning({ id: catalogRateEntry.id });
+  if (!appended) throw new Error('catalog_rate_entry insert returned no row');
+  return appended.id;
 }
 
 /** The entry an earlier send with this key appended, and the request it answered (`F4-07`). */

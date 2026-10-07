@@ -122,16 +122,11 @@ export class CatalogPricesRepository {
       await lockCatalog(tx, tenantId);
       const standing = await standingOf(tx, tenantId, marketCode, id);
       if (standing === null) return { outcome: 'not-found' };
-      const parent: RateParent =
+      const item: PricedItem =
         standing.is === 'own_item'
-          ? ownItem(id)
-          : {
-              on: 'override',
-              id: standing.overrideId ?? (await upsertOverride(tx, tenantId, id, {}, act)),
-            };
-      await appendRate(tx, tenantId, parent, rate, act, key);
-      const subject = standing.is === 'own_item' ? ownItem(id) : platform(id);
-      await recordAuditEntry(tx, catalogAct('catalog.rate_recorded', tenantId, subject, act));
+          ? { on: 'own_item', id }
+          : { on: 'platform_item', id, overrideId: standing.overrideId };
+      await priceItemIn(tx, tenantId, item, rate, act, key);
       return { outcome: 'created', row: id };
     });
   }
@@ -165,6 +160,38 @@ async function replayedRate(
   return made === null ? null : replayOf(id, made.fingerprint, key);
 }
 
+/** An item a price is recorded on: an own SKU, or a platform item through its override, if any. */
+export type PricedItem =
+  | { readonly on: 'own_item'; readonly id: string }
+  | { readonly on: 'platform_item'; readonly id: string; readonly overrideId: string | null };
+
+/**
+ * One dated price ON THE CALLER'S TRANSACTION — on an own SKU, or on a platform item's override,
+ * made bare if it has none — with its audit entry: the single rate send and an import's matched
+ * row alike (`M01-44`). The caller holds the catalog lock. Answers the entry's id.
+ */
+export async function priceItemIn(
+  tx: TenantScopedDb,
+  tenantId: string,
+  item: PricedItem,
+  rate: RateToAppend,
+  act: Act,
+  key: CreationKey | null,
+): Promise<string> {
+  const parent: RateParent =
+    item.on === 'own_item'
+      ? ownItem(item.id)
+      : {
+          on: 'override',
+          id: item.overrideId ?? (await upsertOverride(tx, tenantId, item.id, {}, act)),
+        };
+  const entryId = await appendRate(tx, tenantId, parent, rate, act, key);
+  const subject = item.on === 'own_item' ? ownItem(item.id) : platform(item.id);
+  await recordAuditEntry(tx, catalogAct('catalog.rate_recorded', tenantId, subject, act));
+  return entryId;
+}
+
+/** The tenant's override on a platform item, made bare when it has none; its id. */
 async function upsertOverride(
   tx: TenantScopedDb,
   tenantId: string,

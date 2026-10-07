@@ -1,25 +1,27 @@
 import {
-  CATALOG_IMPORT_ATTENTION_REASONS,
-  CATALOG_IMPORT_CONFLICT_ANSWERS,
   CATALOG_IMPORT_ENTRY_POINTS,
   CATALOG_IMPORT_FIELDS,
   CATALOG_IMPORT_FILE_NAME_MAX,
   CATALOG_IMPORT_ROW_NUMBER_MAX,
-  CATALOG_IMPORT_ROW_OUTCOMES,
   CATALOG_IMPORT_STATES,
   CATALOG_IMPORT_UNREADABLE_REASONS,
-  type CatalogImportCounts,
   type CatalogImportMapping,
-  type CatalogImportRowFix,
+  type CatalogImportResults,
   type CatalogImportSheet,
   FILE_CONTENT_TYPES,
   importColumnsProblem,
 } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
-import { catalogItemSourceSchema, resolvedRateSchema } from './catalog';
 import {
-  amountSchema,
+  catalogImportCountsSchema,
+  catalogImportFieldSchema,
+  catalogImportFixedSchema,
+  catalogImportRowFixSchema,
+  catalogImportRowSchema,
+  catalogImportRowsQuerySchema,
+} from './catalog-import-rows';
+import {
   createHeadersSchema,
   extensibleEnum,
   paginated,
@@ -43,11 +45,6 @@ export const catalogImportStateSchema = z.enum(CATALOG_IMPORT_STATES);
 export const catalogImportEntryPointSchema = z.enum(CATALOG_IMPORT_ENTRY_POINTS);
 /** Held by the pgEnum `catalog_import_unreadable_reason` (invariant `enum-parity`). */
 export const catalogImportUnreadableReasonSchema = z.enum(CATALOG_IMPORT_UNREADABLE_REASONS);
-/** Held by the pgEnum `catalog_import_row_outcome` (invariant `enum-parity`). */
-export const catalogImportRowOutcomeSchema = z.enum(CATALOG_IMPORT_ROW_OUTCOMES);
-/** Held by the pgEnum `catalog_import_conflict_answer` (invariant `enum-parity`). */
-export const catalogImportConflictAnswerSchema = z.enum(CATALOG_IMPORT_CONFLICT_ANSWERS);
-export const catalogImportFieldSchema = z.enum(CATALOG_IMPORT_FIELDS);
 
 /**
  * Start an import from a stored `catalog` file. The name and the saved date are the device
@@ -96,85 +93,22 @@ const catalogImportMappingReadSchema = z.object({
   columns: z.array(extensibleEnum(CATALOG_IMPORT_FIELDS).nullable()),
 });
 
-/** The preview's figures (`SCR-M01-17` decision 3), counted off the rows: derived, never stored. */
-export const catalogImportCountsSchema = z.object({
-  rows: z.number().int().nonnegative(),
-  matched: z.number().int().nonnegative(),
-  newItems: z.number().int().nonnegative(),
-  needsAttention: z.number().int().nonnegative(),
+/** The run's counted progress (`SCR-M01-17` pass 3): rows written of rows to write, read off the rows. */
+const catalogImportRunSchema = z.object({
+  done: z.number().int().nonnegative(),
+  total: z.number().int().nonnegative(),
+  /** When the person pressed import. */
+  at: z.string().datetime(),
+  by: uuidSchema,
+});
+
+/** The report's figures: what the run did with every row, counted off the rows. */
+export const catalogImportResultsSchema = z.object({
+  priceApplied: z.number().int().nonnegative(),
+  productCreated: z.number().int().nonnegative(),
   leftOut: z.number().int().nonnegative(),
-}) satisfies z.ZodType<CatalogImportCounts>;
-
-/** Keyed by import field (`CATALOG_IMPORT_FIELDS`), held open so a field added later still parses. */
-const importCellsSchema = z.record(z.string(), z.string());
-
-/**
- * One row of the preview grid: the cells as the file wrote them, the person's fix over them, the
- * pass's verdict, the price the file asks and the price the catalog holds now (`SCR-M01-17`
- * decision 7) — null when the cell holds no readable price, or the item no rate.
- */
-export const catalogImportRowSchema = z.object({
-  rowNumber: z.number().int().positive(),
-  cells: importCellsSchema,
-  fix: importCellsSchema,
-  leftOut: z.boolean(),
-  answer: extensibleEnum(CATALOG_IMPORT_CONFLICT_ANSWERS).nullable(),
-  outcome: extensibleEnum(CATALOG_IMPORT_ROW_OUTCOMES),
-  attention: z.array(
-    z.object({
-      reason: extensibleEnum(CATALOG_IMPORT_ATTENTION_REASONS),
-      fields: z.array(z.string()),
-    }),
-  ),
-  match: z.object({ source: catalogItemSourceSchema, id: uuidSchema }).nullable(),
-  filePrice: amountSchema.nullable(),
-  catalogPrice: resolvedRateSchema.nullable(),
-});
-export type CatalogImportRowWire = z.infer<typeof catalogImportRowSchema>;
-
-export const catalogImportRowsQuerySchema = paginationQuerySchema.extend({
-  outcome: catalogImportRowOutcomeSchema.optional(),
-});
-export type CatalogImportRowsQuery = z.infer<typeof catalogImportRowsQuerySchema>;
-
-/** A fix is one act on its row, so exactly one of these keys is sent. */
-const ROW_FIX_ACTS = ['cells', 'leaveOut', 'answer'] as const;
-
-/**
- * One fix to one row (`T-M01-030e` decision 1): typed cells laid over the file's, the row left
- * out or brought back, or the answer to its spec conflict — exactly one of the three. One strict
- * object rather than a union, so a refusal names the key at fault (`details[].path`).
- */
-export const catalogImportRowFixSchema = z
-  .object({
-    cells: z.record(catalogImportFieldSchema, z.string()).optional(),
-    leaveOut: z.boolean().optional(),
-    answer: catalogImportConflictAnswerSchema.optional(),
-  })
-  .strict()
-  .transform((body, context): CatalogImportRowFix => {
-    const sent = ROW_FIX_ACTS.filter((act) => body[act] !== undefined);
-    if (sent.length === 1 && body.cells !== undefined) return { cells: body.cells };
-    if (sent.length === 1 && body.leaveOut !== undefined) return { leaveOut: body.leaveOut };
-    if (sent.length === 1 && body.answer !== undefined) return { answer: body.answer };
-    context.addIssue({
-      code: 'custom',
-      path: sent.slice(1, 2),
-      message: 'A fix sends exactly one of cells, leaveOut or answer.',
-    });
-    return z.NEVER;
-  });
-export type CatalogImportRowFixWrite = z.infer<typeof catalogImportRowFixSchema>;
-
-/**
- * What a fix changed: every row whose verdict or fix moved — the fixed row and the rows naming its
- * product — by row number, and the job's counts after it (`T-M01-030e` decision 4).
- */
-export const catalogImportFixedSchema = z.object({
-  rows: z.array(catalogImportRowSchema),
-  counts: catalogImportCountsSchema,
-});
-export type CatalogImportFixedWire = z.infer<typeof catalogImportFixedSchema>;
+  failed: z.number().int().nonnegative(),
+}) satisfies z.ZodType<CatalogImportResults>;
 
 /** A job as the re-openable list shows it. Vocabularies are extensible: later phases add states. */
 export const catalogImportSummarySchema = z.object({
@@ -204,6 +138,10 @@ export const catalogImportSchema = catalogImportSummarySchema.extend({
   mapping: catalogImportMappingReadSchema.nullable(),
   /** Null until the matching pass has previewed the rows. */
   counts: catalogImportCountsSchema.nullable(),
+  /** Null until the import is run; then its progress, which stays at its end once completed. */
+  run: catalogImportRunSchema.nullable(),
+  /** Null until the run has completed. */
+  results: catalogImportResultsSchema.nullable(),
 });
 export type CatalogImportWire = z.infer<typeof catalogImportSchema>;
 
@@ -295,6 +233,21 @@ export const catalogImportContract = c.router({
       409: wrongState,
       /** An answer on a row that asks no question — `details[].issue` says so. */
       422: errorEnvelope(baseError('DOMAIN_RULE_VIOLATION')),
+    },
+  },
+  run: {
+    method: 'POST',
+    path: '/catalog/imports/:id/run',
+    pathParams: z.object({ id: uuidSchema }),
+    body: c.noBody(),
+    summary:
+      'Import the previewed rows — the run writes them in the background and the job is polled; a job already run answers as it stands',
+    responses: {
+      200: catalogImportSchema,
+      ...guarded,
+      404: notFound,
+      /** The job is not previewed yet: it is reading, unreadable, mapped or matching. */
+      409: wrongState,
     },
   },
 });

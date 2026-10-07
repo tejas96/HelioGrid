@@ -13,12 +13,10 @@ import {
   type CatalogImportMappedRow,
   type CatalogImportRowFix,
   type CatalogImportRowMatch,
-  catalogSpecSchema,
   countImportMatches,
   effectiveImportCells,
   fixedImportRow,
   hasImportPreview,
-  type ImportCatalog,
   type ImportCurrency,
   type ImportProductName,
   importFixProblem,
@@ -46,8 +44,9 @@ import {
   type StoredRow,
 } from './catalog.import-rows.repository';
 import { CatalogService } from './catalog.service';
-import { CatalogSliceRepository, type NamedItem } from './catalog.slice.repository';
+import { CatalogSliceRepository } from './catalog.slice.repository';
 import { importJobOf, importNotFound, PRICE_LIST } from './internal/import-job';
+import { catalogOf, matchInput, namingCells } from './internal/import-judging';
 import { readSheetRows } from './internal/spreadsheet';
 import { storedRateWire } from './internal/wire';
 import { admitWrite } from './internal/write-checks';
@@ -185,14 +184,6 @@ export class CatalogImportPreviewService {
   }
 }
 
-const namingCells = (row: StoredRow) => ({ cells: effectiveImportCells(row) });
-
-const matchInput = (row: StoredRow) => ({
-  cells: effectiveImportCells(row),
-  leftOut: row.leftOut,
-  answer: row.answer,
-});
-
 /**
  * The rows naming one of these products, in sheet order, with the fixed row as it now stands —
  * kept by the pass's own identity, since the database only narrowed to rows containing the names.
@@ -206,20 +197,6 @@ function productGroup(
     (row) => row.rowNumber !== fixed.rowNumber && namesOneOf(effectiveImportCells(row), names),
   );
   return [...naming, fixed].sort((one, other) => one.rowNumber - other.rowNumber);
-}
-
-function catalogOf(named: readonly NamedItem[], currency: ImportCurrency): ImportCatalog {
-  const entryOf = (row: NamedItem) => ({
-    id: row.id,
-    brand: row.brand,
-    model: row.model,
-    spec: catalogSpecSchema.parse(row.spec),
-  });
-  return {
-    platformItems: named.filter((row) => row.source === 'platform_item').map(entryOf),
-    ownItems: named.filter((row) => row.source === 'own_item').map(entryOf),
-    currency,
-  };
 }
 
 type Verdict = Pick<JudgedRow, 'outcome' | 'attention' | 'catalogItemId' | 'tenantCatalogItemId'>;
@@ -291,5 +268,7 @@ function rowWire(row: PreviewRow, currency: ImportCurrency): CatalogImportRowWir
     match,
     filePrice: filePrice.ok ? filePrice.amount : null,
     catalogPrice: row.rate === null ? null : storedRateWire(row.rate, currency.minorUnitDigits),
+    result: row.result,
+    failure: row.failure,
   };
 }

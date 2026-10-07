@@ -2,19 +2,58 @@ import { describe, expect, it } from 'vitest';
 import {
   CATALOG_IMPORT_STATES,
   countImportMatches,
+  countImportResults,
   hasImportPreview,
+  hasImportRun,
+  importRunProgress,
   takesImportMapping,
+  takesImportRun,
 } from '../../src/catalog/import';
 
 describe('the job states a mapping and a preview belong to', () => {
   const taking = ['mapped', 'matching', 'previewed'];
   const previewed = ['previewed', 'running', 'completed'];
 
+  const ran = ['running', 'completed'];
+
   it.each(CATALOG_IMPORT_STATES)('%s', (state) => {
-    expect([takesImportMapping(state), hasImportPreview(state)]).toEqual([
+    expect([
+      takesImportMapping(state),
+      hasImportPreview(state),
+      takesImportRun(state),
+      hasImportRun(state),
+    ]).toEqual([
       taking.includes(state),
       previewed.includes(state),
+      state === 'previewed',
+      ran.includes(state),
     ]);
+  });
+});
+
+describe("importRunProgress and countImportResults — the run's figures", () => {
+  it.each([
+    ['nothing run yet', {}, { done: 0, total: 0 }],
+    ['every row still to write', { pending: 405, left_out: 7 }, { done: 0, total: 405 }],
+    [
+      'the board’s run, part way (`SCR-M01-17` pass 3)',
+      { price_applied: 150, product_created: 60, failed: 8, pending: 187, left_out: 7 },
+      { done: 218, total: 405 },
+    ],
+    ['every row left out', { left_out: 3 }, { done: 0, total: 0 }],
+  ] as const)('%s', (_, byResult, progress) => {
+    expect(importRunProgress(byResult)).toEqual(progress);
+  });
+
+  it.each([
+    ['nothing run yet', {}, { priceApplied: 0, productCreated: 0, leftOut: 0, failed: 0 }],
+    [
+      'one of each, and a row still to write',
+      { price_applied: 1, product_created: 1, left_out: 1, failed: 1, pending: 1 },
+      { priceApplied: 1, productCreated: 1, leftOut: 1, failed: 1 },
+    ],
+  ] as const)('%s', (_, byResult, results) => {
+    expect(countImportResults(byResult)).toEqual(results);
   });
 });
 

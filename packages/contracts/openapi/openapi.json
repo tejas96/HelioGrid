@@ -9666,6 +9666,62 @@
                         "leftOut"
                       ],
                       "nullable": true
+                    },
+                    "run": {
+                      "type": "object",
+                      "properties": {
+                        "done": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "total": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "by": {
+                          "type": "string",
+                          "format": "uuid"
+                        }
+                      },
+                      "required": [
+                        "done",
+                        "total",
+                        "at",
+                        "by"
+                      ],
+                      "nullable": true
+                    },
+                    "results": {
+                      "type": "object",
+                      "properties": {
+                        "priceApplied": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "productCreated": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "leftOut": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "failed": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "priceApplied",
+                        "productCreated",
+                        "leftOut",
+                        "failed"
+                      ],
+                      "nullable": true
                     }
                   },
                   "required": [
@@ -9680,7 +9736,9 @@
                     "file",
                     "sheets",
                     "mapping",
-                    "counts"
+                    "counts",
+                    "run",
+                    "results"
                   ]
                 }
               }
@@ -10435,6 +10493,62 @@
                         "leftOut"
                       ],
                       "nullable": true
+                    },
+                    "run": {
+                      "type": "object",
+                      "properties": {
+                        "done": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "total": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "by": {
+                          "type": "string",
+                          "format": "uuid"
+                        }
+                      },
+                      "required": [
+                        "done",
+                        "total",
+                        "at",
+                        "by"
+                      ],
+                      "nullable": true
+                    },
+                    "results": {
+                      "type": "object",
+                      "properties": {
+                        "priceApplied": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "productCreated": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "leftOut": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "failed": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "priceApplied",
+                        "productCreated",
+                        "leftOut",
+                        "failed"
+                      ],
+                      "nullable": true
                     }
                   },
                   "required": [
@@ -10449,7 +10563,9 @@
                     "file",
                     "sheets",
                     "mapping",
-                    "counts"
+                    "counts",
+                    "run",
+                    "results"
                   ]
                 }
               }
@@ -10936,6 +11052,62 @@
                         "leftOut"
                       ],
                       "nullable": true
+                    },
+                    "run": {
+                      "type": "object",
+                      "properties": {
+                        "done": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "total": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "by": {
+                          "type": "string",
+                          "format": "uuid"
+                        }
+                      },
+                      "required": [
+                        "done",
+                        "total",
+                        "at",
+                        "by"
+                      ],
+                      "nullable": true
+                    },
+                    "results": {
+                      "type": "object",
+                      "properties": {
+                        "priceApplied": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "productCreated": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "leftOut": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "failed": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "priceApplied",
+                        "productCreated",
+                        "leftOut",
+                        "failed"
+                      ],
+                      "nullable": true
                     }
                   },
                   "required": [
@@ -10950,7 +11122,9 @@
                     "file",
                     "sheets",
                     "mapping",
-                    "counts"
+                    "counts",
+                    "run",
+                    "results"
                   ]
                 }
               }
@@ -11437,6 +11611,24 @@
                               "effectiveOn"
                             ],
                             "nullable": true
+                          },
+                          "result": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "price_applied",
+                              "product_created",
+                              "left_out",
+                              "failed"
+                            ],
+                            "nullable": true
+                          },
+                          "failure": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "changed_since_preview",
+                              "not_applied"
+                            ],
+                            "nullable": true
                           }
                         },
                         "required": [
@@ -11449,7 +11641,9 @@
                           "attention",
                           "match",
                           "filePrice",
-                          "catalogPrice"
+                          "catalogPrice",
+                          "result",
+                          "failure"
                         ]
                       }
                     },
@@ -11899,6 +12093,24 @@
                               "effectiveOn"
                             ],
                             "nullable": true
+                          },
+                          "result": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "price_applied",
+                              "product_created",
+                              "left_out",
+                              "failed"
+                            ],
+                            "nullable": true
+                          },
+                          "failure": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "changed_since_preview",
+                              "not_applied"
+                            ],
+                            "nullable": true
                           }
                         },
                         "required": [
@@ -11911,7 +12123,9 @@
                           "attention",
                           "match",
                           "filePrice",
-                          "catalogPrice"
+                          "catalogPrice",
+                          "result",
+                          "failure"
                         ]
                       }
                     },
@@ -12191,6 +12405,551 @@
                           "type": "string",
                           "enum": [
                             "DOMAIN_RULE_VIOLATION"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalog/imports/{id}/run": {
+      "post": {
+        "summary": "Import the previewed rows — the run writes them in the background and the job is polled; a job already run answers as it stands",
+        "tags": [
+          "catalogImport"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "reading",
+                        "unreadable",
+                        "mapped",
+                        "matching",
+                        "previewed",
+                        "running",
+                        "completed"
+                      ]
+                    },
+                    "entryPoint": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "onboarding",
+                        "settings",
+                        "in_flow"
+                      ]
+                    },
+                    "fileName": {
+                      "type": "string"
+                    },
+                    "savedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "nullable": true
+                    },
+                    "startedBy": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "unreadableReason": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "cannot_open",
+                        "too_large_unpacked",
+                        "no_rows",
+                        "not_read"
+                      ],
+                      "nullable": true
+                    },
+                    "file": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "contentType": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "image/png",
+                            "image/jpeg",
+                            "text/csv",
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                          ]
+                        },
+                        "byteSize": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": 0
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "contentType",
+                        "byteSize"
+                      ]
+                    },
+                    "sheets": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "rowCount": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "columnCount": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "topRows": {
+                            "type": "array",
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "rowCount",
+                          "columnCount",
+                          "topRows"
+                        ]
+                      },
+                      "nullable": true
+                    },
+                    "mapping": {
+                      "type": "object",
+                      "properties": {
+                        "sheet": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "headerRow": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "columns": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "kind",
+                              "brand",
+                              "model",
+                              "rate",
+                              "watt",
+                              "technology",
+                              "lengthMm",
+                              "widthMm",
+                              "vocV",
+                              "vmpV",
+                              "iscA",
+                              "impA",
+                              "tempCoeffVocPct",
+                              "tempCoeffPmaxPct",
+                              "bifacialityPct",
+                              "warrantyYears",
+                              "weightKg",
+                              "acKw",
+                              "phases",
+                              "mppt.count",
+                              "mppt.minV",
+                              "mppt.maxV",
+                              "mppt.maxCurrentA",
+                              "mppt.stringsPerMppt",
+                              "maxDcV",
+                              "efficiencyPct",
+                              "usableKwh",
+                              "nominalV",
+                              "chemistry",
+                              "powerKw",
+                              "cycleLife",
+                              "depthMm",
+                              "heightMm",
+                              "ratedAcW",
+                              "ratedInputW"
+                            ],
+                            "nullable": true
+                          }
+                        }
+                      },
+                      "required": [
+                        "sheet",
+                        "headerRow",
+                        "columns"
+                      ],
+                      "nullable": true
+                    },
+                    "counts": {
+                      "type": "object",
+                      "properties": {
+                        "rows": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "matched": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "newItems": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "needsAttention": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "leftOut": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "rows",
+                        "matched",
+                        "newItems",
+                        "needsAttention",
+                        "leftOut"
+                      ],
+                      "nullable": true
+                    },
+                    "run": {
+                      "type": "object",
+                      "properties": {
+                        "done": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "total": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "by": {
+                          "type": "string",
+                          "format": "uuid"
+                        }
+                      },
+                      "required": [
+                        "done",
+                        "total",
+                        "at",
+                        "by"
+                      ],
+                      "nullable": true
+                    },
+                    "results": {
+                      "type": "object",
+                      "properties": {
+                        "priceApplied": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "productCreated": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "leftOut": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "failed": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "priceApplied",
+                        "productCreated",
+                        "leftOut",
+                        "failed"
+                      ],
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "status",
+                    "entryPoint",
+                    "fileName",
+                    "savedAt",
+                    "startedBy",
+                    "createdAt",
+                    "unreadableReason",
+                    "file",
+                    "sheets",
+                    "mapping",
+                    "counts",
+                    "run",
+                    "results"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "FORBIDDEN"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "NOT_FOUND"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "409",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "CONFLICT"
                           ]
                         },
                         "message": {

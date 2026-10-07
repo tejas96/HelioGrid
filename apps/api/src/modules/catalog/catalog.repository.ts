@@ -1,5 +1,5 @@
 import type { OwnCatalogItemWrite } from '@heliogrid/contracts';
-import { type TenantPool, tenantCatalogItem } from '@heliogrid/db';
+import { type TenantPool, type TenantScopedDb, tenantCatalogItem } from '@heliogrid/db';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
@@ -50,26 +50,8 @@ export class CatalogRepository {
         if (made) return replayOf(made.id, made.fingerprint, key);
       }
       await lockCatalog(tx, tenantId);
-      const [row] = await tx
-        .insert(tenantCatalogItem)
-        .values({
-          tenantId,
-          componentKind: item.spec.kind,
-          ...item,
-          archived: false,
-          createdAt: new Date(act.now),
-          updatedAt: new Date(act.now),
-          creationKey: key?.key,
-          creationFingerprint: key?.fingerprint,
-        })
-        .returning({ id: tenantCatalogItem.id });
-      if (!row) throw new Error('tenant_catalog_item insert returned no row');
-      if (rate !== null) await appendRate(tx, tenantId, ownItem(row.id), rate, act, null);
-      await recordAuditEntry(
-        tx,
-        catalogAct('catalog.item_created', tenantId, ownItem(row.id), act),
-      );
-      return { outcome: 'created', row: row.id };
+      const made = await makeOwnItem(tx, tenantId, item, rate, act, key);
+      return { outcome: 'created', row: made.id };
     });
   }
 
@@ -117,4 +99,37 @@ export class CatalogRepository {
       return null;
     });
   }
+}
+
+/**
+ * An own SKU made ON THE CALLER'S TRANSACTION — the single form's create and an import's new
+ * product alike — with its first rate entry when it has a price, and its one audit entry. The
+ * caller holds the catalog lock. Answers the SKU's id and its rate entry's.
+ */
+export async function makeOwnItem(
+  tx: TenantScopedDb,
+  tenantId: string,
+  item: OwnCatalogItemWrite,
+  rate: RateToAppend | null,
+  act: Act,
+  key: CreationKey | null,
+): Promise<{ readonly id: string; readonly rateEntryId: string | null }> {
+  const [row] = await tx
+    .insert(tenantCatalogItem)
+    .values({
+      tenantId,
+      componentKind: item.spec.kind,
+      ...item,
+      archived: false,
+      createdAt: new Date(act.now),
+      updatedAt: new Date(act.now),
+      creationKey: key?.key,
+      creationFingerprint: key?.fingerprint,
+    })
+    .returning({ id: tenantCatalogItem.id });
+  if (!row) throw new Error('tenant_catalog_item insert returned no row');
+  const rateEntryId =
+    rate === null ? null : await appendRate(tx, tenantId, ownItem(row.id), rate, act, null);
+  await recordAuditEntry(tx, catalogAct('catalog.item_created', tenantId, ownItem(row.id), act));
+  return { id: row.id, rateEntryId };
 }

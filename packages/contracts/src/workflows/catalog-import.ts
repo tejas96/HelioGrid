@@ -4,15 +4,15 @@ import { defineWorkflow } from './registry';
 
 /**
  * The catalog import (`T-M01-030`): ONE workflow type, started once per handoff with the phase it
- * runs: `read` opens the stored file, `match` matches its rows by the confirmed mapping. The run
- * joins this list as an added value, which every payload already stored still parses (`outbox.ts`
- * says why that matters).
+ * runs: `read` opens the stored file, `match` matches its rows by the confirmed mapping, `run`
+ * writes them into the catalog. A phase is an added value, which every payload already stored
+ * still parses (`outbox.ts` says why that matters).
  *
  * The input is ids only (`infra/temporal/README.md` §4): the tenant, because a durable run has no
  * session, and the job, whose row holds everything else. The worker holds the sequence; every step
  * runs in the api, beside the catalog's tables.
  */
-export const CATALOG_IMPORT_PHASES = ['read', 'match'] as const;
+export const CATALOG_IMPORT_PHASES = ['read', 'match', 'run'] as const;
 
 export const catalogImportWorkflow = defineWorkflow({
   name: 'catalogImport',
@@ -63,4 +63,15 @@ export interface CatalogImportActivities {
    * mapping has taken over, so the wizard offers the confirm again.
    */
   endCatalogImportMatch(input: CatalogImportStepInput): Promise<CatalogImportStepResult>;
+  /**
+   * Writes the run's next batch of rows into the catalog, each judged again against the catalog as
+   * it stands, with their results in the same transaction. Answers `running` while rows remain to
+   * write, and `completed` once none do — the workflow calls it again until then.
+   */
+  applyCatalogImportRows(input: CatalogImportStepInput): Promise<CatalogImportStepResult>;
+  /**
+   * Ends a run that failed past every retry: every row still unwritten is failed as `not_applied`
+   * and the job completes, so the report says which rows landed and which did not.
+   */
+  endCatalogImportRun(input: CatalogImportStepInput): Promise<CatalogImportStepResult>;
 }
