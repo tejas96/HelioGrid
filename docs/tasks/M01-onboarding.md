@@ -456,7 +456,7 @@ Recorded at the step's start (2026-10-07), before anything ran. Branch `feat/T-M
 
 ### T-M01-038 · The web door at phone width matches the phone board
 **Type:** screen · **Tier:** P0 (`F7-43`)
-**Status:** planned
+**Status:** shipped
 **Why:** At 375 the web door (`/login`, `/company-signup`) is laid out as the 1536 two-field composition stacked, not as the phone board: the heading sits above the step header and at `h1`, an off-flow state's content is centred low on the page, and the action flows under the column instead of being pinned. The boards draw one phone layout for both the app and the web at 375 (`F7-43` item 1, parity).
 **PRD rows:** none of its own — `F7-43` item 1 (375 and 1536, parity by capability); the boards `SCR-M01-01` and `SCR-M01-02` are the reference.
 **Design:** the existing boards' 375 frames (`SCR-M01-01`, `SCR-M01-02`) — no new drawing.
@@ -465,7 +465,209 @@ Recorded at the step's start (2026-10-07), before anything ran. Branch `feat/T-M
 **Found by:** the side-by-side comparison of `T-M01-035`'s frames (web 375 against `m-request-to-join`, `m-request-failed`, `m-request-sent`).
 **Out of scope:** the white secondary button (`T-FPLAT-082` part c, D14 B); the 1536 layout, which matches.
 **DONE WHEN:**
-- At 375 every web door frame orders as its phone board: the step header above the heading, the heading at the board's phone size (`h2`), an off-flow title `sp-8` under the header, and the action pinned at the bottom where the board pins it. → proof: a side-by-side of every web door frame at 375 against its board frame, and the e2e door specs green.
+- At 375 every web door frame lays out as its phone board (each record's "375 vertical layout"): the step header above the heading, the heading in the `--fs-h2` role, the gap under the header or the step header the board's token, the front door's column centred between the header and its foot where `SCR-M01-01` centres it and the signup frames top-aligned, and the action pinned at the bottom where the board pins it. → proof: a side-by-side of every web door frame at 375 against its board frame, and the e2e door specs green.
+
+Corrected before approval (2026-10-08): the line read "an off-flow title `sp-8` under the header". The boards' 375 tables put `m-request-sent`'s heading `sp-8` under the header and `m-duplicate-phone`'s `sp-6`, and draw the step header on `m-request-to-join` and `m-request-failed`; the front door centres its column and the signup frames do not.
+
+#### Design check
+**READY** (2026-10-08, after the owner added each board's "Heading" section and "375 vertical layout" table; both records re-read that day). The heading is an `<h1>` in the `--fs-h2` role at 375 and `--fs-h1` at 1536 on both boards. `SCR-M01-01`: the front door centres between equal flex spacers (min `sp-8` above the title, min `sp-6` under the form) with the signup door at the column's foot — never a viewport pin (N9); the code family centres between spacers (min 0), nothing pinned. `SCR-M01-02`: header 78 → 122, step header `sp-6` under it, heading `sp-8` under it on steps 1 and 2 and `m-number-invalid`, `sp-6` elsewhere; no spacer above any heading; the action is pinned under a scroll region on steps 3, `m-error`, `m-resume`, `m-request-to-join`, `m-request-failed`, and held at the foot on step 1, `m-loading`, `m-request-sent`, `m-fields-invalid`; nothing pinned on step 2 and `m-duplicate-phone`. Not blocking: the words-law FAILs (D133); `m-google-failed` not yet measured in Hindi and Marathi (the board's own contract item 4, D139).
+
+**Board pictures** (scratchpad `board/`, 53 frames, board zoom 75% for 375 and 50% for 1536): `SCR-M01-01` — `m01-m-normal`, `m-number-invalid`, `m-loading`, `m-google-failed`, `m-google-loading`, `m-google-link`, `m-google-link-locked`, `m-otp-sent`, `m-otp-entry`, `m-otp-auto-read`, `m-wrong-code`, `m-expired-code`, `m-resend-cooldown`, `m-call-me-instead`, `m-delivery-failed`, `m-cap-reached`, `m-number-locked`, `m-auth-error`, `m-google-link-code`, `m-google-phone-taken`, `m-success-dwell`, `m-switch-discards`; `d-normal`, `d-switch-discards`, `d-code-family`, `d-number-locked`, `d-google-link`. `SCR-M01-02` — `m02-m-step1-number`, `m-step2-code`, `m-step3-empty`, `m-step3-filled`, `m-loading`, `m-error`, `m-duplicate-phone`, `m-request-to-join`, `m-request-sent`, `m-request-failed`, `m-resume`, `m-number-invalid`, `m-fields-invalid`; `m-request-to-join-hi`, `-mr`, `m-request-failed-hi`, `-mr`, `m-request-sent-hi`, `-mr`; `d-step1-number`, `d-step2-code`, `d-step3-filled`, `d-duplicate-phone`, `d-request-to-join`, `d-request-sent`, `d-request-failed`.
+
+#### RFC
+
+##### Title
+T-M01-038 — the web door at 375 laid out as the phone board: the step header above the heading, the heading at phone size, the board's gaps, and the action pinned where the board pins it.
+
+##### Description
+- **User impact:** someone who signs in or creates a company on a phone's browser sees the same screen the app shows: the step bar first, a phone-sized heading, and the button they need held at the bottom of the screen while the fields scroll. Directly: the main button never drops below the fold in Hindi or Marathi. Indirectly: one phone design serves the app and the web, so every later door screen is built once.
+- **Who gains:** a new owner signing up on a phone browser; anyone signing in on the web from a phone.
+- **Problem solved:** the shared `DoorFrame`'s web half draws one DOM order at every width — the identity (with the heading) before the task (with the step header) — centres every column, never uses its `footer`, and every heading is `Text variant="h1"` (32px). Found by `T-M01-035`'s side-by-side (D15 B); the boards' 375 tables (READY above) are the reference.
+
+##### Goals
+- At 375 every web door frame matches its board frame side by side: order, heading size, gaps, centring or top alignment, pinned action.
+- At 1536 every door frame is unchanged against its board frame.
+- The frame's behaviour at both widths is held by a component test.
+
+##### Non-goals
+- Words, states, routes, the 1536 composition, the phone app's screens (they already pass their own side-by-side), the white secondary button (`T-FPLAT-082c`). The bloom's sideways scroll (D135) closes as a side effect: `overflow: clip` no longer makes the page a scroll container (measured: the language menu open at 375 on both doors, `scrollX` 0, overflow 0).
+
+##### Readiness and dependencies
+- Landed: `T-M01-035` (on this branch, PR #248 open — this branch is cut from it; it rebases onto `main` after #248 merges). Design check READY (above).
+- Assumption: "pinned" on the web is the page's own scroll with the action held at the viewport's foot (`position: sticky`) — the web's form of the board's "scroll region with the action below it" (`SCR-M01-02` decision 9). The front door's signup link is not pinned: it follows the form at the column's foot (`SCR-M01-01` N9).
+- No blocker.
+
+##### Proposal
+**Flow.** A web door screen hands `DoorFrame` four slots — `lead` (the step header), `identity` (heading, intro, account, findings), the task (fields, primary), `footer` (the action the board pins) — and the frame places them per width: at 375 one column in that order with the footer held at the viewport's foot; at 1536 the two-field grid, the identity left and the lead, task and footer stacked in the task column.
+
+**Findings from testing the requirement:**
+1. **The DONE WHEN's off-flow gap was wrong** — corrected above from the boards' tables before approval.
+2. **The phone app differs from the board on two signup frames:** step 1 and the code step centre their column on the phone (`apps/mobile/src/screens/shared/PhoneStep.tsx` `spacerTop`, `door-styles.ts` `codeColumnAfterLead`); the board top-aligns both under the step header. Out of this web task's scope → D138 (decision D1 below).
+3. **Simpler than a new component:** the heading size is the frame's to set, as `Sheet` and `Modal` set their title per width (`Sheet.css` `--hg-sheet-title`): `DoorFrame.css` draws the identity's heading in the `--fs-h2` role under the door's breakpoint, so the seven call sites keep `Text variant="h1"` and change nothing.
+4. **Centring belongs to the screen, not the frame:** the phone's frame centres nothing and each screen places its own spacers; the web frame's unconditional centring (`DoorFrame.css` `.hg-door-body::before`) is removed and the sign-in screens add the board's two spacers, as their phone twins do.
+
+**Key decisions** (one reason each):
+1. **`lead` is a slot of the shared contract** (`DoorFrame.types.ts`), so its place per width is the frame's, not each screen's; the native half renders it under the header (Law 7), and no phone screen changes.
+2. **`footer` moves inside the frame's body**, so at 1536 it sits in the task column in reading order (the board's "sign-in door under the form") and at 375 it is held at the viewport's foot.
+3. **A focused field never hides under the pinned action:** the page's `scroll-padding-bottom` is the footer's height.
+
+**Order:** component test (red) → `DoorFrame` web and native → sign-in screens → signup screens → docs → side-by-side QA at 375 and 1536.
+
+**Twin:** the phone app already lays these frames out per board; the native `DoorFrame` gains only the `lead` render.
+
+**Build delta (2026-10-08, from QA and review — approved by the owner, A):** three more 375 differences from the board, each one the phone app already draws: (a) step 1's note sits under the primary at 375 and stays in the identity half at 1536; (b) the code step's header holds "Change number" alone at 375, the language control from the breakpoint (as `GoogleLinkStep` already does); (c) the identity's intro takes `--fs-body` at 375 and `--fs-body-lg` at 1536, by the heading's rule. The company step's note now renders above the held primary, as both boards draw it, so its i18n contract comment is corrected (`packages/i18n`, a package this RFC did not name — the reason the approval is asked again).
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  S[web door screens: PhoneStep, CodeStep, CompanyStep, JoinRequestSent, KnownNumber] -->|lead, identity, task, footer| DF[ui DoorFrame web half]
+  DF -->|under 968px| C[one column: lead, identity, task, footer held at the foot]
+  DF -->|968px and up| G[two-field grid: identity left; lead, task, footer right]
+  T[DoorFrame.types.ts lead slot] --> DF
+  T --> N[ui DoorFrame native half: lead under the header]
+  CT[component test DoorFrame.spec.tsx] --> DF
+```
+
+##### Package changes
+- **ui:** `DoorFrame` gains `lead?: ReactNode` (types, web, native); the web half moves `footer` into the body, drops the centring spacer, and sizes the identity's heading per width. No new export.
+- **web:** the door screens pass `lead` and `footer`; `sign-in.css` and `company-signup.css` carry the boards' spacers and gaps; `constants.ts` names the column rule once (`doorColumn`).
+- **i18n:** one contract comment (delta above).
+- **Protections (Law 12):** none — no brand, enum, token, route, table or error code. Said out loud: `DoorFrame.css` sizes `Text`'s `h1` and `body-lg` inside the identity, held by `DoorFrame.spec.tsx`; the web's `sign-in.css` and `company-signup.css` select the frame's own `.hg-door-body::before` and `.hg-door-identity`, and no check holds those — a rename in `packages/ui` drops them silently.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/ui/src/components/DoorFrame/DoorFrame.types.ts` | the `lead` slot | the one contract (Law 7) |
+| modify | `packages/ui/src/components/DoorFrame/DoorFrame.tsx` | `lead` before the identity; `footer` inside the body; the page's `scroll-padding-bottom` follows the held footer | the web half |
+| modify | `packages/ui/src/components/DoorFrame/DoorFrame.css` | 375: no centring, `sp-6` under the header, heading `--fs-h2` and intro `--fs-body`, footer held at the foot; 1536: grid areas; `overflow: clip` | the frame's stylesheet |
+| modify | `packages/ui/src/components/DoorFrame/DoorFrame.native.tsx` | renders `lead` under the header | Law 7 |
+| modify | `apps/web/features/auth/components/PhoneStep.tsx` | `lead` slot; the front door's two spacers; the signup's top alignment | the screen owns its spacers |
+| modify | `apps/web/features/auth/components/CodeStep.tsx` | `lead` slot; the code family centred on the front door, top-aligned under a step header | same |
+| modify | `apps/web/features/auth/components/CompanyStep.tsx` | `lead`; Create company, and the finding with both roads, into `footer`; the note above the action | the board pins them |
+| modify | `apps/web/features/auth/components/JoinRequestSent.tsx` | prompt and route into `footer`; heading `sp-8` under the header | board `m-request-sent` |
+| — | `apps/web/features/auth/components/KnownNumber.tsx` | **not changed:** top-aligned and `sp-6` under the header through the frame alone | board `m-duplicate-phone` |
+| modify | `apps/web/features/auth/components/GoogleLinkStep.tsx` | `hg-door-front`: its column centres, as the front door's | built but not planned — the frame stopped centring |
+| modify | `apps/web/features/auth/constants.ts` | `doorColumn(lead)`, the one place the centring-or-top rule is named | built but not planned — review (one rule, two callers) |
+| modify | `apps/web/features/auth/components/SignupProgress.tsx` | its comment: the step header, no longer "atop the task column" | built but not planned — Law 8 |
+| modify | `packages/i18n/src/copy/company-signup-frames.ts` | the caption's comment: above the held primary | built but not planned — Law 8 (delta) |
+| modify | `apps/web/features/auth/sign-in.css` · `company-signup.css` | the boards' spacers and gaps, hidden at 1536 | the screens' stylesheets |
+| add | `tests/e2e/components/DoorFrame.spec.tsx` | the frame at 375 and 1536 | component tests (`tests/e2e/CLAUDE.md`) |
+| modify | `docs/tasks/M01-onboarding.md` · `docs/tasks/deferred.md` | this RFC; D135 and D137 closed, D138 (phone step 1 and code step centring), D139 (`m-google-failed` language proof), D140–D142 (older web-door differences QA found) | Law 8 |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **1536 moves when the frame's DOM changes** — AC-2's side-by-side of all 12 desktop frames, and the component test's 1536 case.
+- **A pinned action covers a focused field on a phone browser** — `scroll-padding-bottom`; QA focuses the last field at 375 with the footer present.
+- **Stacked branch** — rebased onto `main` after #248 merges; nothing deployed.
+
+##### Acceptance criteria and proof
+- **AC-1** — the DONE WHEN line above (375, verbatim).
+- **AC-2** (new) — Given every door frame at 1536, when it renders, then it matches its board frame: identity left, the step header atop the task column, the action in reading order under the task.
+- **AC-3** (new) — Given `DoorFrame` with a `lead`, an identity heading and a `footer`, when it renders at 375, then the lead is above the heading, the heading is in the `--fs-h2` role and the footer stays inside the viewport while the column scrolls; at 1536 the lead and footer sit in the task column and the heading is `--fs-h1`.
+- **AC-4** (new, owner 2026-10-08) — Given a window between the boards' two widths (768), when every door frame renders, then it is the phone layout centred at its task measure, with no sideways scroll and the pinned action in view — the frame's rule (`DoorFrame.css`), since no board frame draws this width.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-3 | main-dev | required | component tests | mount at 375 and 1536 → order, heading size, footer in view, columns; planted reds: the old DOM order (lead under the heading) and no sticky footer | `tests/e2e/components/DoorFrame.spec.tsx` (ct, new) |
+| AC-1 | qa-web | required | web `3002` at 375 | each of the 41 board frames' states (22 sign-in, 13 signup, 6 language renders) → side-by-side with `board/<frame>.png`, every difference listed | live |
+| AC-4 | qa-web | required | web `3002` at 768 | one frame per door step and state family (`m-normal`, `m-otp-entry`, `m-step1-number`, `m-step3-filled`, `m-request-to-join`, `m-request-sent`) → phone layout centred, `scrollWidth` = 768, the pinned action inside the viewport | live |
+| AC-2 | qa-web | required | web `3002` at 1536 | each of the 12 desktop board frames → side-by-side, unchanged | live |
+| AC-1 · AC-2 | main-dev · ci | required | Playwright `phone` and `desktop` projects | `tests/e2e/web/login.spec.ts`, `login-google.spec.ts`, `company-signup.spec.ts` green | e2e |
+| — | qa-ios · qa-android | not_applicable | — | no phone screen changes; the native half's `lead` has no caller | — |
+| — | qa-api | not_applicable | — | no API change | — |
+| all | evaluator | required | `pnpm check:all` | every check passes | gate |
+
+##### Delivery size
+- **Estimate:** 16 authored files, about 400 authored lines — code about 200, tests about 110, docs about 90. One part.
+- **Order:** as in Proposal.
+- **Owner rulings (2026-10-08):** RFC approved; D1 → **A** (deferred row D138); AC-4 added — one QA row at 768. Build delta → **A** (the three 375 matches and the i18n comment). Five board frames **not applicable** to the web side-by-side (owner, A): `m-otp-auto-read` (no SMS autofill in a desktop browser), `m-google-loading` (the press leaves for Google's own page), `m-switch-discards` and `d-switch-discards` (held work only a phone session holds), `m-success-dwell` (drawn by `SuccessDwell`, which this change does not touch) — AC-1 is proven on the other 37 of 41 frames at 375, AC-2 on 11 of 12 at 1536.
+- **D1 — the phone's step 1 and code step (finding 2).** **A · deferred row D138 (recommended):** this task stays web-only and needs no phone QA; the next phone door task fixes the two spacers. **B · fix here:** two style lines in `apps/mobile`, plus iOS and Android side-by-side of the two frames.
+
+**Checklist** — [x] component test red · [x] DoorFrame web + native · [x] sign-in screens · [x] signup screens · [x] docs · [x] e2e green (local, 34 passed; CI pending) · [x] qa-web 375 · [x] qa-web 1536 · [x] qa-web 768 · [x] review · [x] gate (`pnpm check:all` run 1 passed; evaluator PASS)
+
+**Planted reds** (`DoorFrame.spec.tsx`): the step header under the heading → "Expected < 74.25, Received 1778.25"; the action not held → "Expected <= 812, Received 1873.5"; the intro at the desktop size under the breakpoint → "Expected 15px, Received 17px". Each restored and green.
+
+**QA record (2026-10-08):** `qa-web` two passes on Main's shots of 38 states at 375, 768 and 1536 (a temporary Playwright script, deleted before the commit; the pane was signed in, so the live rows ran in the script's fresh browser). Pass 1 found the step-1 note above the field, the language control in the code step's header, the intro at 17 px, and the column low on the front door; review found the 1536 bottom padding lost under a footer (blocker), the grid's empty rows, the footer's ground at 1536 and four smaller items — all fixed, reviewer clean on the third pass. Pass 2: 375, 1536 and 768 match; the code column's residual offset measured as the board's own rule (186 px of free height above and below inside the body, the board's `sp-6` gap above) on a taller page; older differences recorded as D140–D142. Live: 768 columns 420 and 480 wide, centred (174/174, 144/144), no sideways scroll; 375 *Create company* 740–788 with the page at its top; City focused 577.7–631.7, above it; the language menu leaves `scrollX` 0 on both doors (D135 closed).
+
+#### Runtime
+Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-M01-038` from `feat/T-M01-035` `78f9320e` (PR #248 open, not merged — owner's call; the walk read the branch, and the owner chose this task over `T-FPLAT-082b`, which the block walk gives first, by D15 B's "next after this one").
+
+| resource | state at start | identity |
+|---|---|---|
+| web `3002` · api `8084` · metro `8081` | free | — |
+| postgres `5544` · object store `9000` · temporal `7233` | pre_existing | containers `heliogrid-pg-local`, `heliogrid-object-store-local`, `heliogrid-temporal` |
+| simulators · emulators | none booted | — |
+| browser tabs | the pane is closed | — |
+| database routing | `heliogrid_dev` on both URLs | `.env.local` |
+| logs | `.qa/api.log` 5,392,732 · `.qa/web.log` 125,003 · `.qa/metro.log` 470,188 bytes | byte marks |
+
+Since the start: the browser pane, `started_by_task` (tab `seed`, the board for the design check's pictures).
+
+**At the end (2026-10-08)** (resource → at start → final):
+- web `3002` · api `8084` · metro `8081` → free → `web` and `api` started through their launch configurations for QA, stopped by Main → free; no `tsx … watch` left.
+- postgres · object store · temporal → pre_existing → untouched.
+- simulators · emulators → none booted → none booted.
+- browser pane → closed → opened by Main (board pictures, preview tabs) → every tab closed; the pane is closed.
+- database routing → `heliogrid_dev` on both → `heliogrid_test` for QA → `heliogrid_dev` on both; `.env.local` byte-equal to its start copy.
+- logs → `.qa/api.log` 6,038,321 · `.qa/web.log` 151,354 · `.qa/metro.log` 470,188 bytes; kept.
+- test data on `heliogrid_test`, all through the app: fresh signup numbers from the shot script and the e2e specs (companies named `E2E <number>` and `Shots <number>`, join requests to them); none on the standing accounts.
+- a temporary Playwright script (`tests/e2e/web/door-shots.spec.ts`) made the web shots and the live measurements; deleted before the commit.
+
+**Measurements:** helper runs — Explore 2 (shell map 112k, door map 105k tokens), `design-check` 1 (three passes), `reviewer` 1 (three passes, about 146k), `qa-web` 1 (two passes, about 143k), `evaluator` 1 (two passes). Main's own turns and tokens were not counted. Size: planned 16 files and about 400 authored lines; built 18 files and about 595 authored lines — code 339, tests 102, docs about 155 (+49% lines). **Size re-ruled by the owner (2026-10-08): A** — one inseparable part: the frame and its screens change together, and either half alone fails its side-by-side. The growth: the owner's build delta, three review passes, and the QA and mistakes records. Full gate: one run, passed.
+
+**Mistakes and the rule that now holds each**
+- `.hg-door-page:has(.hg-door-footer)` outranked the 1536 padding inside the media block, so every desktop door with a held action lost its bottom `sp-8` (review blocker) → a width-scoped override is restated inside the media block; no test holds the page's padding yet (said out loud).
+- The 1536 grid's empty `lead` and `footer` rows took a share of a tall identity's height (review) → two free `1fr` rows frame the task column; QA measured the centres (3–5 px apart).
+- The task's DONE WHEN line said "an off-flow title `sp-8`", which the board contradicts on `m-duplicate-phone` (`sp-6`) → corrected before approval from the boards' 375 tables, which the design check now holds the boards to.
+- A planted red restored by moving a backup file back kept the component-test cache stale, and the green run still failed → `tests/e2e/CLAUDE.md` now says to restore by editing, since `test:ct` clears its cache by modification time.
+- QA pass 1 found three 375 differences the phone app already drew (the note under the primary, the code step's header, the intro size) — the RFC had compared order, size, gaps and pins only → each board element is compared, as the side-by-side row says; built as the owner-approved delta.
+
+### T-M01-039 · The door and the web when the network or the session fails
+**Type:** screen · **Tier:** P0 (`F8-36`)
+**Status:** planned
+**Why:** The door blames the server for the person's own connection (D1), a boot during a deploy or a timeout signs a signed-in person out (D7), a person whose access was removed lands on the door with no reason (D6), the company step says *nothing was created* after a request that got no answer (D39), the web has no offline state and loads forever (D80), both apps render API failures each their own way (D68), and the phone's dev build shows an unread debugger warning (D78).
+**PRD rows:** `F8-36` (a failure says what happened, plainly); `M01-07` (sessions end only by their own rules).
+**DESIGN:** SCR-M01-01 → the existing board; the access-removed frame is drawn first (D6, the owner's prompt from the deferred review of 2026-10-08).
+**Chosen by the owner** (deferred review, 2026-10-08): D1 and D7 as one task; D6, D39, D68, D78, D80, D87, D133, D139 and D142 ride with it — the RFC splits it into parts under the 30-file rule.
+**Depends on:** `T-M01-038`.
+**DONE WHEN:**
+- A request that got no answer reads as *could not be reached*, never *something on our side failed*; a server refusal keeps its own words. → proof: unit test of `loginFrame`; QA web and phone with the network off.
+- A boot that fails for anything but a lost session keeps the person signed in and offers a retry over the loading frame. → proof: unit test of the session store; QA with the api stopped during boot.
+- A person whose access was removed sees the board's access-removed frame on the door, cleared by the next sign-in. → proof: QA web and phone; side-by-side with the board.
+- After a create that got no answer, the company step says the company may have been made and trying again is safe; a server refusal keeps *nothing was created*. → proof: unit test of the words; QA with the api stopped mid-create; side-by-side with the redrawn `SCR-M01-02` frame.
+- With no connection the web shows the shared no-connection screen instead of loading forever. → proof: a Playwright case that drops the network.
+- Both apps render an API failure through one `ApiErrorText` in `packages/ui` (one `.types.ts`, words from `packages/i18n`). → proof: typecheck; QA web and phone.
+- The phone dev build's debugger warning is read and its source fixed, or recorded with why it stays. → proof: QA on a cold start.
+- A path no route serves shows a drawn not-found frame in the reader's language, with a way home (D87). → proof: e2e web; side-by-side with the board.
+- `SCR-M01-02`'s frames meet the words law after the board's copy pass, and the app's words follow (D133). → proof: the design check's word inventory; side-by-side.
+- `m-google-failed` is drawn and measured in Hindi and Marathi (D139), and four small web-door differences are ruled and built — the board wins unless a law says otherwise (D142). → proof: side-by-side, web and phone.
+
+### T-M01-040 · Signing in returns the person to where they were going
+**Type:** screen · **Tier:** P1 (`M01-61`)
+**Status:** planned
+**Why:** A deep link opened while signed out lands on home after sign-in (D20); the owner ruled the person returns to the link.
+**PRD rows:** `M01-61` (P1).
+**DESIGN:** none — no new frame; the door is `SCR-M01-01` as drawn.
+**Chosen by the owner** (deferred review, 2026-10-08).
+**Depends on:** `T-M01-039`.
+**DONE WHEN:**
+- `M01-61` → proof: e2e web (a signed-out deep link returns to it after sign-in; a route the roles cannot open lands on home); QA phone with a deep link.
+
+### T-M01-041 · The door's parts lifted into packages/ui
+**Type:** screen · **Tier:** P1
+**Status:** planned
+**Why:** Twelve door parts exist once per platform, drawn the same from the same hooks and words (D24), and the phone's code step lacks the language control the web keeps (D23).
+**PRD rows:** none of its own — Law 7 (one prop contract per shared component); `SCR-M01-01`, `SCR-M01-02` as drawn.
+**DESIGN:** none — the existing boards.
+**Chosen by the owner** (deferred review, 2026-10-08): its own task, after `T-FPLAT-082` part c.
+**Depends on:** `T-FPLAT-082` (part c), `T-M01-040`.
+**DONE WHEN:**
+- Each door part lives in `packages/ui` with one `<Name>.types.ts` and both halves; the apps render them; the phone's code step carries the language control. → proof: typecheck and the e2e door specs; side-by-side of every door frame against its board.
 
 ### T-M01-003 · Onboarding — Language
 **Type:** screen · **Tier:** P0

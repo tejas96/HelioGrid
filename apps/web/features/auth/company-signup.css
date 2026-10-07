@@ -44,6 +44,20 @@
   background: var(--fill);
 }
 
+/* Steps 1 and 2 and request-sent put their heading `sp-8` under what leads it, where the frame's
+   gap is `sp-6` (`SCR-M01-02` "375 vertical layout"); from the breakpoint the identity is centred
+   in its own column. */
+.hg-signup-heading-deep .hg-door-identity {
+  margin-top: var(--sp-2);
+}
+
+/* The held steer: the finding, then both roads (`SCR-M01-02` decision 9). */
+.hg-signup-join-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
 /* The join steer's two roads, 12 apart on the board (`SCR-M01-02` decision 19). */
 .hg-signup-join-roads {
   display: flex;
@@ -83,6 +97,10 @@
      edge and stops at the form measure (`SCR-M01-02`: half 176 → 736, block 176 → 696). */
   .hg-door-identity:has(.hg-signup-finding) {
     width: 100%;
+  }
+
+  .hg-signup-heading-deep .hg-door-identity {
+    margin-top: 0;
   }
 
   .hg-signup-progress-phone {

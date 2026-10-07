@@ -47,6 +47,11 @@ Put each finding, codebase example, switching cost and recommendation in the RFC
 source corrects the task before approval. Silence or ambiguity gives the owner at most two options;
 the ruling lands in the PRD row or brief first, then the task. Implementation invents nothing.
 
+Before showing the RFC, list every `docs/tasks/deferred.md` row this task meets: `T-<this> starts`,
+`T-<x> ships` where x has shipped, and `touches <path>` where a path in the file table sits under
+it. Each goes into the decision block as join this task or stays, recommended first; a row that
+joins is deleted in this task's commit.
+
 ## 3. Design check — screen tasks
 
 Fetch the record yourself with `DesignSync` `get_file` (the project and file name are in the

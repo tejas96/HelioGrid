@@ -3,10 +3,16 @@
    road at the foot, the code family's rows and the switch panel. Component pixels belong to the
    package; every value a token var(). */
 
-/* The door's title block sits sp-8 under the header on the phone (the export's normal frame);
-   the code family's sits sp-5 (its column's gap), so only the door adds the difference. */
-.hg-door-intro {
-  padding-top: var(--sp-3);
+/* The front door, the code family and the linking frame centre their column between the header
+   and the column's foot (`SCR-M01-01` "375 vertical layout"): this spacer takes half the free
+   height, the task's own end the other half. A door with a step header is top-aligned instead.
+   The spacer takes back the body's gap under it, so the title sits at least `sp-8` under the
+   header (the page's `sp-6` and its own `sp-2`). */
+.hg-door-front .hg-door-body::before {
+  content: "";
+  flex: 1 1 0;
+  min-height: var(--sp-2);
+  margin-bottom: calc(var(--sp-6) * -1);
 }
 
 .hg-door-title {
@@ -103,7 +109,7 @@
 }
 
 /* From the frame's breakpoint (`DoorFrame.css`) the identity is its own column, so the door's
-   two phone-only offsets go. */
+   phone-only spacer and road position go. */
 /* --bp-desktop: @media cannot read a custom property, so its value is written here. */
 @media (min-width: 968px) {
   .hg-door-phone-only {
@@ -114,8 +120,8 @@
     display: block;
   }
 
-  .hg-door-intro {
-    padding-top: 0;
+  .hg-door-front .hg-door-body::before {
+    display: none;
   }
 
   .hg-door-signup {

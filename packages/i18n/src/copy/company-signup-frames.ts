@@ -24,7 +24,7 @@ export interface CompanySignupWords {
   readonly intro: string | null;
   /** The primary's label: create, creating, or try again. */
   readonly primary: string;
-  /** Under the primary: what the write means while it runs, what a refusal did not do. */
+  /** Above the held primary: what the write means while it runs, what a refusal did not do. */
   readonly caption: string | null;
 }
 
