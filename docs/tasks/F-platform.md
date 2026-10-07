@@ -3536,3 +3536,13 @@ Recorded at the step's start (2026-10-07), before anything ran. Branch `feat/T-F
 - `Ground`'s disabled fill read `--surface-form`, white after the pull → `Button.spec.tsx` asserts `--canvas-sunken`, and that it differs from `--canvas`.
 - The label gap was 4px against the design system's 8px and no proof caught it → measured in live QA; no component test holds it yet (said out loud).
 - A packet expected the code boxes at 54 and a disabled ghost to fill; both were the packet's error, not the code's → each packet value is read from the design system's component before the helper runs.
+
+### T-FPLAT-083 · A handler never throws a status its contract does not declare
+**Type:** policy · **Tier:** P1
+**Status:** planned
+**Why:** A handler can throw a status its contract never declares; response validation turns it into an opaque 500 (D18). `apps/api/CLAUDE.md` states the rule and only review holds it.
+**PRD rows:** none of its own — `CLAUDE.md` §8, every boundary has a contract.
+**Chosen by the owner** (deferred review, 2026-10-08): mechanism (a), a Biome plugin.
+**DONE WHEN:**
+- A Biome plugin refuses `throw new *Exception` inside a `tsRestHandler` block in `apps/api/`, with its `.claude/protections.md` row. → proof: `pnpm lint` green, and red on a planted throw.
+

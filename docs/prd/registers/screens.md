@@ -1012,6 +1012,7 @@ Nothing below is renumbered.*
 | M01-58 | P0 | screen | SCR-M01-22 | T-M01-022 |
 | M01-59 | P1 | mixed | SCR-M01-23 · +non-UI: holiday additions only narrow calling availability; per-user UI… | T-M01-023 |
 | M01-60 | P0 | mixed | SCR-M01-24 · +non-UI: write-only credential storage, scheduled probes, every decrypt… | T-M01-024 |
+| M01-61 | P1 | mixed | SCR-M01-01 · +non-UI: the route a signed-out person opened is kept through sign-in | T-M01-040 |
 
 ### docs/prd/modules/M02-crm-and-leads.md
 

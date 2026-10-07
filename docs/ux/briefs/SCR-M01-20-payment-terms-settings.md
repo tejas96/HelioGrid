@@ -23,7 +23,7 @@ Reached from: the tenant-config settings surface map — *Payment terms* is a na
    tenant is mid-edit and the block belongs to the act, not to the meter.
 3. **The preview's money comes from a stated sample contract value** — basis `assumed`, per-tranche
    amounts `derived`, both tiers persistent. A customer sees money, so percentages alone fail the
-   requirement; and the tenant's latest quote would make a settings preview move because someone
+   requirement; and the tenant's latest proposal would make a settings preview move because someone
    priced a job.
 4. **Seeded means given, not locked.** The platform seeds two templates at tenant creation — a copy
    taken once, not a live upstream — so they are edited in place, and offering a "restore the

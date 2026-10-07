@@ -627,6 +627,41 @@ Since the start: the browser pane, `started_by_task` (tab `seed`, the board for 
 - A planted red restored by moving a backup file back kept the component-test cache stale, and the green run still failed → `tests/e2e/CLAUDE.md` now says to restore by editing, since `test:ct` clears its cache by modification time.
 - QA pass 1 found three 375 differences the phone app already drew (the note under the primary, the code step's header, the intro size) — the RFC had compared order, size, gaps and pins only → each board element is compared, as the side-by-side row says; built as the owner-approved delta.
 
+### T-M01-039 · The door when the network or the session fails
+**Type:** screen · **Tier:** P0 (`F8-36`)
+**Status:** planned
+**Why:** The door blames the server for the person's own connection (D1), a boot during a deploy or a timeout signs a signed-in person out (D7), and a person whose access was removed lands on the door with no reason (D6).
+**PRD rows:** `F8-36` (a failure says what happened, plainly); `M01-07` (sessions end only by their own rules).
+**DESIGN:** SCR-M01-01 → the existing board; the access-removed frame is drawn first (D6, the owner's prompt from the deferred review of 2026-10-08).
+**Chosen by the owner** (deferred review, 2026-10-08): D1 and D7 as one task, D6 rides with it.
+**Depends on:** `T-M01-038`.
+**DONE WHEN:**
+- A request that got no answer reads as *could not be reached*, never *something on our side failed*; a server refusal keeps its own words. → proof: unit test of `loginFrame`; QA web and phone with the network off.
+- A boot that fails for anything but a lost session keeps the person signed in and offers a retry over the loading frame. → proof: unit test of the session store; QA with the api stopped during boot.
+- A person whose access was removed sees the board's access-removed frame on the door, cleared by the next sign-in. → proof: QA web and phone; side-by-side with the board.
+
+### T-M01-040 · Signing in returns the person to where they were going
+**Type:** screen · **Tier:** P1 (`M01-61`)
+**Status:** planned
+**Why:** A deep link opened while signed out lands on home after sign-in (D20); the owner ruled the person returns to the link.
+**PRD rows:** `M01-61` (P1).
+**DESIGN:** none — no new frame; the door is `SCR-M01-01` as drawn.
+**Chosen by the owner** (deferred review, 2026-10-08).
+**Depends on:** `T-M01-039`.
+**DONE WHEN:**
+- `M01-61` → proof: e2e web (a signed-out deep link returns to it after sign-in; a route the roles cannot open lands on home); QA phone with a deep link.
+
+### T-M01-041 · The door's parts lifted into packages/ui
+**Type:** screen · **Tier:** P1
+**Status:** planned
+**Why:** Twelve door parts exist once per platform, drawn the same from the same hooks and words (D24), and the phone's code step lacks the language control the web keeps (D23).
+**PRD rows:** none of its own — Law 7 (one prop contract per shared component); `SCR-M01-01`, `SCR-M01-02` as drawn.
+**DESIGN:** none — the existing boards.
+**Chosen by the owner** (deferred review, 2026-10-08): its own task, after `T-FPLAT-082` part c.
+**Depends on:** `T-FPLAT-082` (part c), `T-M01-040`.
+**DONE WHEN:**
+- Each door part lives in `packages/ui` with one `<Name>.types.ts` and both halves; the apps render them; the phone's code step carries the language control. → proof: typecheck and the e2e door specs; side-by-side of every door frame against its board.
+
 ### T-M01-003 · Onboarding — Language
 **Type:** screen · **Tier:** P0
 **Status:** designed
