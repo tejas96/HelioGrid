@@ -7,6 +7,7 @@ import { CatalogImportActivityRegistration } from './catalog.import.activities';
 import { CatalogImportController } from './catalog.import.controller';
 import { CatalogImportRepository } from './catalog.import.repository';
 import { CatalogImportService } from './catalog.import.service';
+import { CatalogImportFixRepository } from './catalog.import-fix.repository';
 import { CatalogImportPreviewService } from './catalog.import-preview.service';
 import { CatalogImportRowsRepository } from './catalog.import-rows.repository';
 import { CatalogPlatformService } from './catalog.platform.service';
@@ -54,6 +55,7 @@ import { CatalogSliceRepository } from './catalog.slice.repository';
     CatalogImportRepository,
     CatalogImportPreviewService,
     CatalogImportRowsRepository,
+    CatalogImportFixRepository,
     CatalogImportActivityRegistration,
   ],
   exports: [CatalogPlatformService],

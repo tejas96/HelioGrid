@@ -132,11 +132,22 @@ export class CatalogSliceRepository {
     names: readonly ImportProductName[],
   ): Promise<readonly NamedItem[]> {
     if (names.length === 0) return [];
-    return this.db.withTenantTransaction(tenantId, async (tx) => {
-      const rows = await tx.execute<UnionRow>(unionOf(tenantId, marketCode, { names }));
-      return rows.map(({ source, id, brand, model, spec }) => ({ source, id, brand, model, spec }));
-    });
+    return this.db.withTenantTransaction(tenantId, (tx) =>
+      namedIn(tx, tenantId, marketCode, names),
+    );
   }
+}
+
+/** `named`, inside the caller's transaction — a fix reads its candidates under its job's lock. */
+export async function namedIn(
+  tx: TenantScopedDb,
+  tenantId: string,
+  marketCode: string,
+  names: readonly ImportProductName[],
+): Promise<readonly NamedItem[]> {
+  if (names.length === 0) return [];
+  const rows = await tx.execute<UnionRow>(unionOf(tenantId, marketCode, { names }));
+  return rows.map(({ source, id, brand, model, spec }) => ({ source, id, brand, model, spec }));
 }
 
 /** The platform rows' claims and every row's rate in force, read once for the whole page. */

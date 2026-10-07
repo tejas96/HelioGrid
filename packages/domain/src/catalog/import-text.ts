@@ -52,6 +52,14 @@ export function productNameOf(cells: NamingCells): ImportProductName | null {
   return brand === '' || model === '' ? null : { brand, model };
 }
 
+/** Whether these cells name one of these products, compared as the matching pass compares them. */
+export function namesOneOf(cells: NamingCells, names: readonly ImportProductName[]): boolean {
+  const name = productNameOf(cells);
+  if (name === null) return false;
+  const identity = identityOf(name.brand, name.model);
+  return names.some((other) => identityOf(other.brand, other.model) === identity);
+}
+
 /**
  * Each product the rows name, once, compared as the pass compares them — what the server reads
  * from the catalog before matching, so no row matches an item the read left out.

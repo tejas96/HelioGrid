@@ -6,7 +6,6 @@
  */
 import type { RoleSet } from '@heliogrid/contracts';
 import { catalogItem } from '@heliogrid/db';
-import type { CatalogImportField } from '@heliogrid/domain';
 import { localDate } from '@heliogrid/domain';
 import { eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -22,12 +21,11 @@ import {
   unseed,
 } from '../support/fixture';
 import { aRecordingTemporal } from '../support/temporal';
+import { A_NEW_PANEL, aPreviewOf, PANEL_COLUMNS } from './import-preview-support';
 import {
-  anImportStart,
   aPanelSpec,
   aPlatformItem,
   aRunTag,
-  aStoredPriceList,
   catalogServiceOf,
   importPreviewServiceOf,
   importServiceOf,
@@ -47,25 +45,6 @@ const fixture: Fixture = {
 const OWNER: RoleSet = [preset.epc_owner];
 const act = () => ({ actorUserId: owner.userId, now: Date.now() });
 const run = aRunTag();
-
-/** The panel envelope's required fields, in the order the price list's columns give them. */
-const COLUMNS: readonly CatalogImportField[] = [
-  'brand',
-  'model',
-  'rate',
-  'kind',
-  'watt',
-  'technology',
-  'lengthMm',
-  'widthMm',
-  'vocV',
-  'vmpV',
-  'iscA',
-  'impA',
-  'tempCoeffVocPct',
-];
-const HEADER = 'Brand,Model,Rate,Kind,Watt,Technology,Length,Width,Voc,Vmp,Isc,Imp,Temp Coeff Voc';
-const A_NEW_PANEL = 'panel,550,topcon,2278,1134,49.6,41.8,14,13.2,-0.25';
 
 /**
  * The sheet row each line lands on in the paged list below a title row and the header: the file's
@@ -100,18 +79,8 @@ describe.skipIf(skip)('previewing an import, against a migrated database', () =>
   const platformRow = (id: string) =>
     pools.admin.db.select().from(catalogItem).where(eq(catalogItem.id, id));
 
-  /** A price list stored, read, mapped by `COLUMNS` under its header, and matched. */
-  const aPreviewOf = async (lines: readonly string[]) => {
-    const csv = new TextEncoder().encode(['Supplier list', HEADER, ...lines].join('\n'));
-    const fileId = await aStoredPriceList(files, here.tenantId, act(), undefined, csv);
-    const job = await imports().start(here.tenantId, OWNER, anImportStart(fileId), {}, act());
-    const step = { tenantId: here.tenantId, jobId: job.id };
-    await imports().readFile(step, Date.now());
-    const mapping = { sheet: 0, headerRow: 1, columns: [...COLUMNS] };
-    await imports().map(here.tenantId, OWNER, job.id, mapping, Date.now());
-    expect(await previews().matchRows(step, Date.now())).toEqual({ status: 'previewed' });
-    return job.id;
-  };
+  const aPreview = (lines: readonly string[]) =>
+    aPreviewOf(pools, files, here.tenantId, OWNER, act, lines);
 
   beforeAll(async () => {
     pools = openPools();
@@ -155,7 +124,7 @@ describe.skipIf(skip)('previewing an import, against a migrated database', () =>
   });
 
   it('counts a platform match, an own-SKU match, a new product and a broken row', async () => {
-    const jobId = await aPreviewOf([
+    const jobId = await aPreview([
       `${names.listed},"13,200"`,
       '',
       `Own ${run},OP-1,9500`,
@@ -167,11 +136,11 @@ describe.skipIf(skip)('previewing an import, against a migrated database', () =>
 
     expect(job.status).toBe('previewed');
     expect(job.counts).toEqual({ rows: 4, matched: 2, newItems: 1, needsAttention: 1, leftOut: 0 });
-    expect(job.mapping).toEqual({ sheet: 0, headerRow: 1, columns: COLUMNS });
+    expect(job.mapping).toEqual({ sheet: 0, headerRow: 1, columns: PANEL_COLUMNS });
   });
 
   it('pages the rows by their sheet row numbers, the file’s price beside the catalog’s today', async () => {
-    const jobId = await aPreviewOf([
+    const jobId = await aPreview([
       `${names.listed},"13,200"`,
       '',
       `Own ${run},OP-1,9500`,
@@ -230,7 +199,7 @@ describe.skipIf(skip)('previewing an import, against a migrated database', () =>
 
   it('asks about a platform match at another spec, and leaves the platform item as it was', async () => {
     const before = await platformRow(platform.conflicted);
-    const jobId = await aPreviewOf([`${names.conflicted},12500,panel,${ANOTHER_WATT}`]);
+    const jobId = await aPreview([`${names.conflicted},12500,panel,${ANOTHER_WATT}`]);
 
     const page = await previews().page(
       here.tenantId,

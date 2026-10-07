@@ -20,6 +20,7 @@ import { OutboxDispatcher } from '../../src/common/temporal/outbox.dispatcher';
 import { CatalogAdminRepository } from '../../src/modules/catalog/catalog.admin.repository';
 import { CatalogImportRepository } from '../../src/modules/catalog/catalog.import.repository';
 import { CatalogImportService } from '../../src/modules/catalog/catalog.import.service';
+import { CatalogImportFixRepository } from '../../src/modules/catalog/catalog.import-fix.repository';
 import { CatalogImportPreviewService } from '../../src/modules/catalog/catalog.import-preview.service';
 import { CatalogImportRowsRepository } from '../../src/modules/catalog/catalog.import-rows.repository';
 import { CatalogPlatformService } from '../../src/modules/catalog/catalog.platform.service';
@@ -244,6 +245,7 @@ export function importPreviewServiceOf(
     files.service,
     catalogServiceOf(pools),
     new CatalogSliceRepository(pools.tenants),
+    new CatalogImportFixRepository(pools.tenants),
   );
 }
 
