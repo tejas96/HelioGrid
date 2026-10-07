@@ -4,11 +4,13 @@ import {
   CATALOG_IMPORT_ENTRY_POINTS,
   CATALOG_IMPORT_FIELDS,
   CATALOG_IMPORT_FILE_NAME_MAX,
+  CATALOG_IMPORT_ROW_NUMBER_MAX,
   CATALOG_IMPORT_ROW_OUTCOMES,
   CATALOG_IMPORT_STATES,
   CATALOG_IMPORT_UNREADABLE_REASONS,
   type CatalogImportCounts,
   type CatalogImportMapping,
+  type CatalogImportRowFix,
   type CatalogImportSheet,
   FILE_CONTENT_TYPES,
   importColumnsProblem,
@@ -135,6 +137,45 @@ export const catalogImportRowsQuerySchema = paginationQuerySchema.extend({
 });
 export type CatalogImportRowsQuery = z.infer<typeof catalogImportRowsQuerySchema>;
 
+/** A fix is one act on its row, so exactly one of these keys is sent. */
+const ROW_FIX_ACTS = ['cells', 'leaveOut', 'answer'] as const;
+
+/**
+ * One fix to one row (`T-M01-030e` decision 1): typed cells laid over the file's, the row left
+ * out or brought back, or the answer to its spec conflict — exactly one of the three. One strict
+ * object rather than a union, so a refusal names the key at fault (`details[].path`).
+ */
+export const catalogImportRowFixSchema = z
+  .object({
+    cells: z.record(catalogImportFieldSchema, z.string()).optional(),
+    leaveOut: z.boolean().optional(),
+    answer: catalogImportConflictAnswerSchema.optional(),
+  })
+  .strict()
+  .transform((body, context): CatalogImportRowFix => {
+    const sent = ROW_FIX_ACTS.filter((act) => body[act] !== undefined);
+    if (sent.length === 1 && body.cells !== undefined) return { cells: body.cells };
+    if (sent.length === 1 && body.leaveOut !== undefined) return { leaveOut: body.leaveOut };
+    if (sent.length === 1 && body.answer !== undefined) return { answer: body.answer };
+    context.addIssue({
+      code: 'custom',
+      path: sent.slice(1, 2),
+      message: 'A fix sends exactly one of cells, leaveOut or answer.',
+    });
+    return z.NEVER;
+  });
+export type CatalogImportRowFixWrite = z.infer<typeof catalogImportRowFixSchema>;
+
+/**
+ * What a fix changed: every row whose verdict or fix moved — the fixed row and the rows naming its
+ * product — by row number, and the job's counts after it (`T-M01-030e` decision 4).
+ */
+export const catalogImportFixedSchema = z.object({
+  rows: z.array(catalogImportRowSchema),
+  counts: catalogImportCountsSchema,
+});
+export type CatalogImportFixedWire = z.infer<typeof catalogImportFixedSchema>;
+
 /** A job as the re-openable list shows it. Vocabularies are extensible: later phases add states. */
 export const catalogImportSummarySchema = z.object({
   id: uuidSchema,
@@ -234,6 +275,26 @@ export const catalogImportContract = c.router({
       404: notFound,
       /** The matching pass has not previewed the rows. */
       409: wrongState,
+    },
+  },
+  fix: {
+    method: 'PUT',
+    path: '/catalog/imports/:id/rows/:rowNumber',
+    pathParams: z.object({
+      id: uuidSchema,
+      rowNumber: z.coerce.number().int().positive().max(CATALOG_IMPORT_ROW_NUMBER_MAX),
+    }),
+    body: catalogImportRowFixSchema,
+    summary: 'Fix one row of the preview — its product’s rows are judged again and the counts move',
+    responses: {
+      200: catalogImportFixedSchema,
+      ...guarded,
+      /** No such job or row in this company. */
+      404: notFound,
+      /** The job is not previewed: a new mapping is matching it, or it runs or has run. */
+      409: wrongState,
+      /** An answer on a row that asks no question — `details[].issue` says so. */
+      422: errorEnvelope(baseError('DOMAIN_RULE_VIOLATION')),
     },
   },
 });

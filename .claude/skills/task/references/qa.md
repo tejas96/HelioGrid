@@ -41,7 +41,9 @@ Fix only evidenced failures. Continue the same reviewer with every changed file 
 use a third review pass only after a money, tenancy or permission fix, or a checked-file change
 after a full-gate run. A QA row runs once and gets one evidenced retry. Its third failure stops.
 Any checked-file change after a pass reruns every row whose surface, route or file the change
-touched, with the same continued helper.
+touched, with the same continued helper. Start that rerun only after the continued reviewer
+returns clean on the fixes, so one rerun covers them all: a review finding fixed after a rerun
+costs another.
 
 ## Evaluator gate
 

@@ -38,7 +38,8 @@ export interface PreviewRow extends JudgedRow {
 /** Enough rows per statement that a long sheet takes few round trips, few enough for the bind limit. */
 const ROWS_PER_INSERT = 500;
 
-const previewColumns = {
+/** A stored row's columns, as the grid and a fix read it. */
+export const previewColumns = {
   rowNumber: catalogImportRow.rowNumber,
   cells: catalogImportRow.cells,
   fix: catalogImportRow.fix,
@@ -76,9 +77,9 @@ export class CatalogImportRowsRepository {
       const mine = and(eq(catalogImportRow.tenantId, tenantId), eq(catalogImportRow.jobId, jobId));
       await tx.delete(catalogImportRow).where(mine);
       const at = new Date(now);
-      for (let start = 0; start < rows.length; start += ROWS_PER_INSERT) {
+      await inBatches(rows, async (batch) => {
         await tx.insert(catalogImportRow).values(
-          rows.slice(start, start + ROWS_PER_INSERT).map((row) => ({
+          batch.map((row) => ({
             ...row,
             tenantId,
             jobId,
@@ -88,7 +89,7 @@ export class CatalogImportRowsRepository {
             updatedAt: at,
           })),
         );
-      }
+      });
       await tx
         .update(catalogImportJob)
         .set({ status: 'previewed', updatedAt: at })
@@ -99,14 +100,7 @@ export class CatalogImportRowsRepository {
 
   /** The job's rows counted by outcome, for domain's `countImportMatches`. */
   async countsByOutcome(tenantId: string, jobId: string): Promise<CatalogImportOutcomeCounts> {
-    return this.db.withTenantTransaction(tenantId, async (tx) => {
-      const groups = await tx
-        .select({ outcome: catalogImportRow.outcome, count: sql<number>`count(*)::int` })
-        .from(catalogImportRow)
-        .where(and(eq(catalogImportRow.tenantId, tenantId), eq(catalogImportRow.jobId, jobId)))
-        .groupBy(catalogImportRow.outcome);
-      return Object.fromEntries(groups.map((group) => [group.outcome, group.count]));
-    });
+    return this.db.withTenantTransaction(tenantId, (tx) => countsIn(tx, tenantId, jobId));
   }
 
   /**
@@ -148,7 +142,32 @@ export class CatalogImportRowsRepository {
   }
 }
 
-async function lockedJob(tx: TenantScopedDb, tenantId: string, jobId: string) {
+/** The rows in batches of `ROWS_PER_INSERT`, one statement each, in order. */
+export async function inBatches<T>(
+  rows: readonly T[],
+  write: (batch: readonly T[]) => Promise<void>,
+): Promise<void> {
+  for (let start = 0; start < rows.length; start += ROWS_PER_INSERT) {
+    await write(rows.slice(start, start + ROWS_PER_INSERT));
+  }
+}
+
+/** The job's rows counted by outcome, inside the caller's transaction. */
+export async function countsIn(
+  tx: TenantScopedDb,
+  tenantId: string,
+  jobId: string,
+): Promise<CatalogImportOutcomeCounts> {
+  const groups = await tx
+    .select({ outcome: catalogImportRow.outcome, count: sql<number>`count(*)::int` })
+    .from(catalogImportRow)
+    .where(and(eq(catalogImportRow.tenantId, tenantId), eq(catalogImportRow.jobId, jobId)))
+    .groupBy(catalogImportRow.outcome);
+  return Object.fromEntries(groups.map((group) => [group.outcome, group.count]));
+}
+
+/** The job's state, its row locked for the caller's transaction; null when not this company's. */
+export async function lockedJob(tx: TenantScopedDb, tenantId: string, jobId: string) {
   const [job] = await tx
     .select({ status: catalogImportJob.status, mappingRevision: catalogImportJob.mappingRevision })
     .from(catalogImportJob)
@@ -157,13 +176,14 @@ async function lockedJob(tx: TenantScopedDb, tenantId: string, jobId: string) {
   return job ?? null;
 }
 
-type StoredPreviewRow = Omit<PreviewRow, 'rate'>;
+/** One stored row, without the rate its item holds today. */
+export type StoredRow = Omit<PreviewRow, 'rate'>;
 
-/** Each row with the rate its matched item holds on `pricedOn`, read once for the page. */
-async function withRates(
+/** Each row with the rate its matched item holds on `pricedOn`, read once for all of them. */
+export async function withRates(
   tx: TenantScopedDb,
   tenantId: string,
-  rows: readonly StoredPreviewRow[],
+  rows: readonly StoredRow[],
   pricedOn: string,
 ): Promise<PreviewRow[]> {
   const matched: RatedItem[] = rows.flatMap((row): RatedItem[] => {

@@ -1620,6 +1620,21 @@ Recorded at the step's start (2026-10-06), before anything ran. Branch `feat/T-M
 
 **Part d, at the start** (2026-10-07) — branch `feat/T-M01-030d`, cut from `feat/T-M01-030c` `10cd951e` (PR #241, open) by the owner's word — a stacked PR; it rebases onto `origin/main` after #241 merges. web `3002`, api `8084`, Metro `8081`: free. Postgres (`heliogrid-pg-local`), object store (`heliogrid-object-store-local`), Temporal (`heliogrid-temporal`, `heliogrid-temporal-admin`, `heliogrid-temporal-jwks`): pre_existing. No iOS simulator booted; Android `emulator-5554` attached, pre_existing, untouched (an engine part). The browser pane closed. Database routing: `heliogrid_dev` on both `DATABASE_URL` and `DATABASE_ADMIN_URL`. Logs: `.qa/api.log` 2,313,066 bytes · `.qa/metro.log` 14,661 · `.qa/web.log` absent. The api and the worker are `started_by_task` for the live check, through their launch configurations.
 
+**Part e, at the start** (2026-10-07) — branch `feat/T-M01-030e` from `origin/main` `61348999`. web `3002`, api `8084`: free. Metro `8081`: held by a foreign listener — pid 22315, `/Volumes/works-space/oneohm/oneohm-mobile/…/react-native start` (OneOhm's Metro); this task starts no Metro and leaves it alone. Postgres (`heliogrid-pg-local`), object store (`heliogrid-object-store-local`), Temporal (`heliogrid-temporal`, `heliogrid-temporal-admin`, `heliogrid-temporal-jwks`): pre_existing. No iOS simulator booted; Android `emulator-5554` attached, pre_existing, untouched (an engine part). The browser pane closed. Database routing: `heliogrid_dev` on both `DATABASE_URL` and `DATABASE_ADMIN_URL`. Logs: `.qa/api.log` 2,972,622 bytes · `.qa/metro.log` 14,661 · `.qa/web.log` absent. The api and the worker are `started_by_task` for the live check, through their launch configurations.
+
+**Part e, at the end** (resource → initial → final):
+- api `8084` → free → started through the `api` launch configuration three times (serverIds `6a019a70…`, `94779cb3…`, `9194a924…` — restarted onto the rebuilt contract twice), stopped; free again, no `tsx watch` left.
+- worker → not running → started once through the `worker` launch configuration (serverId `3db3c2f9…`), stopped.
+- database routing → `heliogrid_dev` on both → `heliogrid_test` for the tests, the live check and the gate → `heliogrid_dev` on both, the file byte-identical to its start.
+- `heliogrid_test` → at 0020, no migration in this part. `heliogrid_dev` untouched. It keeps QA's two jobs (`…e916`, `…3820`, both `previewed`) — nothing purges.
+- Temporal → pre_existing → the `outbox-sweep` schedule the api re-created at boot is deleted; no workflow runs.
+- browser tabs `seed`, `tab-1` (opened by the previews) → closed. Postgres, object store → pre_existing, untouched. Metro `8081` → OneOhm's, foreign → untouched. `emulator-5554` → pre_existing, untouched.
+- logs → `.qa/api.log` 2,972,622 → 3,386,118 bytes; kept.
+
+**Part e, planted reds** — each seen failing by name, then restored: `admitWrite` removed from the fix → *refuses Finance the fix and changes nothing*; the group narrowed to the fixed row → *leaving out the first of two rows naming one product matches the second*; the fix's missing job answered with another status → *reads another company’s job, and a row the sheet does not hold, as not found*; the fix body as a union again → *refuses a field no import has, naming where* (and two more); the attention compared as JSON text → *answers only the rows a fix moved, never a repeat that stays the repeat* (red before its fix).
+
+**Part e measurements** — about 120 Main tool calls; helper runs: `qa-api` 3 passes (48.9k, 60.5k, 66.6k tokens — the first failed the malformed-body row, the third after the row bound), `reviewer` 3 passes (108.1k, 136.4k, 139.2k — each a continuation; clean on the third), `evaluator` 1 gate run (34.6k, pass). Main's own tokens are not measured by this session. Planned 15 files and about 850 authored lines; built 21 files (1 generated) and about 1,350 — code about 555, tests about 650, docs about 150 — the rulings in the RFC's Delivery size.
+
 #### Plan
 **Summary**
 - **What:** the import job beneath the wizard — a CSV or Excel price list is stored, read, its columns guessed, its rows matched against the catalog, fixed in place, and imported in the background with a kept per-row report. The first product work handed to Temporal: the outbox and its dispatcher land here.
@@ -1727,14 +1742,14 @@ Q3 runs in part a; Q4 in part b; Q6–Q7 in part c; Q8–Q9 in part d. No row to
 | b | the handoff — outbox, dispatcher, sweep schedule, the API's activity host | AC-3, AC-6 (outbox) | a | shipped |
 | c | the job starts and reads its file — start, list, read, the read step (`#### Part c · RFC`) | AC-3 (start), AC-6 (job), AC-8 (start, read), AC-10 | b | shipped |
 | d | the mapping, the matching pass and the preview reads — mapping, row table 0020, the match step, counts, the rows page; a new mapping during the pass supersedes it (the board's "stops the work", no cancel route) (`#### Part d · RFC`) | AC-1 (preview), AC-5, AC-6 (rows), AC-8 (mapping, rows), AC-11 | c | shipped |
-| e | the row fix — `PUT …/rows/{rowNumber}`, the product-group re-match (`#### Part d · RFC` decision 7) | AC-1 (fix), AC-8 (fix) | d | open |
+| e | the row fix — `PUT …/rows/{rowNumber}`, the product-group re-match (`#### Part e · RFC`) | AC-1 (fix), AC-8 (fix), AC-12 | d | shipped |
 | f | the run and the report | AC-1 (run), AC-2, AC-3 (run), AC-8 (run), AC-9 | e | open |
 
 **Part a checklist** — [x] domain import vocabularies · [x] column guess · [x] match rule · [x] file types, `catalog` subject, signature · [x] migration 0017 · [x] file service and lookup · [x] Q1 · [x] Q2 · [x] Q3 · [ ] Q10 (the PR's `quality` lane)
 **Part b checklist** — [x] migration 0018 and schema · [x] workflow contract and queues · [x] activity host · [x] outbox write, dispatcher, sweep · [x] worker sweep workflow · [x] docs · [x] Q4 · [x] Q5 (outbox) · [ ] Q10
 **Part c checklist** — in `#### Part c · RFC` → Delivery size.
 **Part d checklist** — in `#### Part d · RFC` → Delivery size.
-**Part e checklist** — [ ] row-fix route · [ ] product-group re-match · [ ] AC-1 (fix) · [ ] AC-8 (fix) · [ ] Q10
+**Part e checklist** — in `#### Part e · RFC` → Delivery size.
 **Part f checklist** — [ ] run route · [ ] apply activity and keys · [ ] workflow run phase · [ ] Q8 · [ ] Q9 · [ ] Q10
 
 #### Part b · Plan
@@ -2133,6 +2148,165 @@ Part d's lines of the task's AC (Plan `#### Acceptance criteria`), verbatim:
 - **After the second review pass (2026-10-07) — files over again; the owner rules.** The review's fixes brought the change to 40 files (1 generated) against the 32 approved — 25% over — and about 2,440 authored lines against 2,150 (14%, inside the fifth): code about 1,500, tests about 740, docs about 210. The second pass's own fixes: the product-name rule moved to the client-safe `import-text.ts` (it computes no money, so it does not belong on `./server`); the slice's `ProductName` dropped for domain's `ImportProductName`; `itemRatesInForce` skips the override lookup when the caller already joined it, so the catalog list keeps its statement count; the `import.ts` tests in their own `import.test.ts`. New files since the 32: `internal/import-job.ts`, `spreadsheet-rows.test.ts`, `import.test.ts`, and modified `catalog.rates.repository.ts`, `internal/wire.ts`, `import-columns.ts`, `import.ts`, `import-matching.test.ts` (each one shared fact moved to its owner, none new behaviour). Live QA passed every row on the stack before these last fixes; the rows page and the mapping route are re-driven after the ruling.
 - **Size ruling (after the second review pass, 2026-10-07):** the owner approved option **A** — part d at 40 files (1 generated) and about 2,440 authored lines, one PR.
 - **Checklist (part d)** — [x] domain mapping rule · [x] migration 0020 and schema · [x] contracts and workflow phase · [x] slice `identities` and sheet reader · [x] rows repository · [x] mapping write and match step · [x] reads · [x] worker phase · [x] docs · [x] AC-1 (preview: main-dev, qa-api) · [x] AC-5 · [x] AC-6 (evaluator) · [x] AC-8 (mapping, rows: main-dev, qa-api) · [x] AC-11 (main-dev, qa-api) · [x] review (clean on the fourth pass) · [ ] CI
+
+#### Part e · RFC
+Builds `#### Part d · RFC` decision 7, which the owner's size ruling moved here. The task's shared facts — the Plan's decisions 1–21, part d's decisions and the AC list — stand unless a line below changes one. Branch `feat/T-M01-030e` from `origin/main`.
+
+##### Title
+T-M01-030e — the import fixes a row in place: a typed value, a row left out or a spec conflict answered re-judges that product's rows and moves the counts.
+
+##### Description
+- **User impact:** in the import wizard's preview (`SCR-M01-17`, step 3) the owner fixes a broken row where it stands — types the missing wattage, leaves a row out, or answers a spec conflict — and the counts move at once. Directly: no supplier file is edited and uploaded again. Indirectly: the run (part f) imports only rows the person has seen settled.
+- **Who gains:** the owner or anyone holding `onboarding.manage_catalog` outright.
+- **Problem solved:** the one write on a previewed job. A fix changes more than its own row: leaving out the first of two rows that name one product makes the second the match, and retyping a model can make a row the repeat of another. The fix judges again every row that names the fixed row's product before or after the fix, so the stored verdicts stay what a full pass would give.
+- **Cites:** the task header (`M01-41`, §M01.4 edge cases); the brief `docs/ux/briefs/SCR-M01-17-catalog-import-wizard.md` (decision 3; state needs-attention-inline-fix); board decisions 9, 30, 31 as the Plan's UX readiness records them.
+
+##### Goals
+- `PUT /catalog/imports/{id}/rows/{rowNumber}` takes one of `{ cells }`, `{ leaveOut }`, `{ answer }` and answers with every row the fix changed and the job's new counts.
+- After any fix, the job's stored verdicts equal what the matching pass would give over the fixed rows (proven by comparing the two in one test).
+- No platform item changes, whatever the fix or the answer (AC-5 held for the fix).
+
+##### Non-goals
+- The run, its progress and the kept report (part f); the report's *Fix the N rows* re-entry (part f, board decision 32).
+- Any change to the match rule, the mapping, the pass or the reads (parts a and d).
+- The wizard screen (`T-M01-017`).
+
+##### Readiness and dependencies
+- Landed on `origin/main`: part d (#242) — `catalog_import_row` with `fix`, `left_out`, `answer` and the UPDATE grant (0020); `matchImportRows`; the slice's names read; the rows page and its rates read; `admitWrite`, `importJobOf`.
+- Design: an engine part, no drawing of its own. `SCR-M01-17` holds its link; the facts that bind the fix are in the Plan's UX readiness (decisions 9, 30, 31).
+- Stack: Postgres, object store, Temporal pre_existing; `heliogrid_test` at 0020. The api and the worker start through `.claude/launch.json` for the live check (a previewed job needs the read and match steps).
+- Database: no migration.
+- Blockers: none. Two rulings ride on this approval — D1 and D2 (Proposal).
+
+##### Proposal
+**Flow.** The person fixes a row → `PUT …/rows/{n}` → the service admits the grant outright, finds the job (404) → one tenant transaction: the job row locked `for update` (two fixers queue; a mapping waits), still `previewed` or 409 → the fixed row read (404) → domain checks the fix (422) and makes the row's next state → the rows that name the row's old or new product read in row order → their candidates read (the slice's names read, in this transaction) → `matchImportRows` over that group → changed verdicts and the fixed row's state written in one statement → the changed rows (with the catalog's price today) and the counts read → 200.
+
+**Key decisions** (one reason each):
+1. **The body is one of three** — `{ cells }` (import fields → typed text, merged into the row's `fix` key by key; a spec field the file lacks may be typed), `{ leaveOut: boolean }` (false brings the row back), `{ answer: 'keep_catalog_spec' | 'import_as_own_item' }`. A fix value wins over the file's cell for that field; typing `''` blanks it. The file's own cells are never rewritten. The api's body limit bounds the text.
+2. **The group is found by the database, decided by domain.** The pass compares names after JavaScript's `trim()`, which Postgres does not copy exactly. So the query narrows by substring — rows of this job whose effective brand contains the trimmed brand and whose model contains the trimmed model (`strpos`, read through the `(tenant_id, job_id, …)` index, bounded by the job) — and domain's `identityOf` keeps the exact ones. The fixed row is always in the group, even with no name.
+3. **The re-match is exact.** `repeated_in_file` and `several_matches` depend only on rows and items of the same product, and every other reason only on the row itself, so matching the old and the new product's rows in row order gives the verdicts a full pass would. A test holds the two equal.
+4. **D1 — the fix answers the changed rows and the counts (owner ruling asked).** Part d's table wrote "200 the row". A fix can change other rows (the repeat that becomes the match), so the fixed row alone leaves the grid wrong until the next page read. **Recommended — A:** `{ rows: [every row whose verdict or fix changed, by row number], counts }`, read in the same transaction; the grid patches what it shows and the counts move without a poll. **B:** the fixed row only, as written; the wizard reads the page and the job again after each fix (two reads per fix, and a short window where the grid shows stale verdicts).
+5. **D2 — an answer only where the row asks (owner ruling asked).** As built in part a, `import_as_own_item` turns ANY platform match into a new own SKU, and a stored answer silently settles a conflict that a later fix creates. **Recommended — A:** an answer is taken only on a row whose attention holds `spec_conflict`, or that already holds an answer (to change it); otherwise 422 `DOMAIN_RULE_VIOLATION`, issue `asks_no_question`. A fix that changes the row's product (brand or model) drops its answer, since the answer was about the other product. The rule is domain's, client-safe, so the wizard offers the choice on the same rule (Law 11). About 25 lines. **B:** store any answer and let the match rule read it as it does.
+6. **An own SKU's conflict keeps its one answer.** On an own SKU, `import_as_own_item` is read as no answer by the match rule (part a) — the row stays a conflict. The wizard offers only *keep*; no extra refusal is built.
+7. **Allowed only while `previewed`** — 409 `CONFLICT` otherwise, checked under the job lock, so a fix never lands on a job a new mapping is re-matching or a run is applying.
+8. **The fix's write keeps the row table's CHECK** — the matched item id is written with its outcome in the same statement, so a fix never stores an outcome without its item, or the reverse.
+
+**Order.** Domain fix rule and its test → contract route and schemas → slice names read inside a transaction → the fix repository → the service → the controller → api tests → OpenAPI → docs.
+
+**Refusals.** 400 a body outside the schema (no branch, two branches, an unknown field) · 403 a role without the outright grant · 404 a job or row not this company's · 409 `CONFLICT` a job not `previewed` · 422 `DOMAIN_RULE_VIOLATION` an answer on a row that asks no question (D2 A).
+
+**Twin screen.** None: an engine part. Both platforms' wizard is `T-M01-017`.
+
+##### Architecture diagram
+```mermaid
+sequenceDiagram
+  participant D as Device
+  participant A as api (catalog import)
+  participant P as Postgres
+  D->>A: PUT /catalog/imports/{id}/rows/{n}
+  A->>P: lock the job, still previewed
+  A->>P: the fixed row, then the rows naming its old or new product
+  A->>P: their candidates (slice names read)
+  Note over A: domain — the next row state, matchImportRows over the group
+  A->>P: changed verdicts and the row's fix, one statement
+  A->>P: the changed rows with today's price, the counts
+  A-->>D: 200 { rows, counts }
+```
+
+##### Package changes
+- **domain** — new `catalog/import-fix.ts` (client-safe): `CatalogImportRowFix` (the three branches), `takesImportAnswer(row)`, `importFixProblem(row, fix)`, `fixedImportRow(row, fix)` (the next `fix`, `leftOut`, `answer`, the answer dropped when the product changes). Exported from the client-safe index.
+- **contracts** — `catalog-import.ts`: the `fix` route, `catalogImportRowFixSchema` (a strict union; `cells` keyed by `catalogImportFieldSchema`), `catalogImportFixedSchema` (`{ rows, counts }`). Direction unchanged: contracts → domain.
+- **api** — catalog module: a fix repository (new file — the rows repository would pass 300 lines), the slice's names read callable inside a caller's transaction, the fix in the preview service, the route in the controller.
+- **Law 12 enrolment:** the route → `RouteAccessMap` (typecheck) and OpenAPI freshness. The issue `asks_no_question` is a 422 `details[].issue` like the mapping's problems, held by its domain type. No new table, enum, brand, token or error code.
+
+##### Data and schema changes
+None — no stored shape changes. Part d's `catalog_import_row` already holds `fix`, `left_out` and `answer`, and `app_user` holds UPDATE on it. Readers both ways: a part d api never writes these columns and reads them as stored; this api reads what part d wrote (`fix` `{}`, `left_out` false, `answer` null).
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| add | `packages/domain/src/catalog/import-fix.ts` | the fix type, the answer rule, the next row state | §4.3 business logic, client-safe |
+| modify | `packages/domain/src/catalog/index.ts` | exports | §4.3 |
+| add | `packages/domain/tests/catalog/import-fix.test.ts` | the answer rule, the merge, the dropped answer | testing rules |
+| modify | `packages/contracts/src/catalog-import.ts` | the `fix` route and its schemas | §4.1 |
+| modify | `packages/contracts/openapi/openapi.json` | regenerated | §4.1 (generated) |
+| add | `apps/api/src/modules/catalog/catalog.import-fix.repository.ts` | lock, row, group, write, changed rows and counts in one transaction | catalog module; the rows repository stays under 300 lines |
+| modify | `apps/api/src/modules/catalog/catalog.import-rows.repository.ts` | `withRates` and the counts read shared with the fix | the one rows read (Law 5) |
+| modify | `apps/api/src/modules/catalog/catalog.slice.repository.ts` | the names read callable inside a transaction | the one slice query (Law 5) |
+| modify | `apps/api/src/modules/catalog/catalog.import-preview.service.ts` | `fix` | the preview's service |
+| modify | `apps/api/src/modules/catalog/catalog.import.controller.ts` | the route | catalog module |
+| modify | `apps/api/src/modules/catalog/catalog.module.ts` | wiring | Nest wiring |
+| add | `apps/api/tests/catalog/import-fix.test.ts` | fixes, the group, the full-pass equality, refusals, access | testing rules |
+| modify | `apps/api/tests/catalog/support.ts` | the fix repository in the composed service | one fixture (zero duplication) |
+| add | `apps/api/tests/catalog/import-preview-support.ts` | a previewed panel list, shared with `import-preview.test.ts` (built, not planned: `support.ts` would pass 300 lines) | one fixture (zero duplication) |
+| modify | `apps/api/tests/catalog/import-preview.test.ts` | uses the shared previewed job | the move above |
+| modify | `packages/domain/src/catalog/import-text.ts` | `namesOneOf` — the pass's identity applied to the group (built, not planned) | the one identity rule (Law 5) |
+| modify | `apps/api/src/modules/catalog/internal/import-job.ts` | `importNotFound` — one 404 for the job read and the fix (built, not planned) | one message |
+| add | `apps/api/tests/catalog/import-fix-refusals.test.ts` | the 422, 409, 403 and 404 refusals (built, not planned: `import-fix.test.ts` would pass 300 lines) | testing rules |
+| add | `packages/contracts/tests/catalog-import-fix.test.ts` | the fix body names the key at fault; the row number's bounds (built, not planned: review and live QA) | testing rules |
+| modify | `packages/domain/src/catalog/import.ts` | `CATALOG_IMPORT_ROW_NUMBER_MAX` — the most the `row_number integer` column holds bounds the route's row number (built, not planned: review) | §4.3 policy number |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, Parts, Runtime | Law 8 |
+
+##### API and contract changes
+| route | method | request → response | errors | access |
+|---|---|---|---|---|
+| `/catalog/imports/{id}/rows/{rowNumber}` | PUT | `{ cells: { [field]: string } }` \| `{ leaveOut: boolean }` \| `{ answer: 'keep_catalog_spec' \| 'import_as_own_item' }` → 200 `{ rows: CatalogImportRow[], counts }` (D1 A) | 400 · 403 · 404 · 409 `CONFLICT` · 422 `DOMAIN_RULE_VIOLATION` (D2 A) | `onboarding.manage_catalog` outright |
+
+Tenancy: no `tenantId` on the wire; every read and write carries its tenant predicate; another company's job or row is 404. Compatibility: an added route; the row and counts shapes are part d's, with their extensible vocabularies.
+
+##### Risks and rollout
+| risk | mitigation |
+|---|---|
+| Two fixers on one product group | decision 7 — the job row is locked for the fix's transaction |
+| A fix and a new mapping at once | the mapping and the fix both take the job lock; the fix checks `previewed` under it (409 after a mapping) |
+| The group misses a row the pass would count | decision 2 — the database narrows by substring, domain keeps the exact; the full-pass equality test |
+| A large sheet | the group read is bounded by the job's rows through the index; the write touches the group only |
+| Release roll | an added route on existing columns; no worker change |
+
+##### Acceptance criteria and proof
+Part e's lines of the task's AC (Plan `#### Acceptance criteria`), verbatim:
+- **AC-1** — Given an import file with platform-matching rows, unknown rows and broken rows, when the preview renders, then it states the three counts, matched rows become price overrides and unknown rows tenant SKUs on import, and broken rows are fixable inline; the import runs async with progress and produces a per-row report (M01-41). *(Part e: broken rows are fixable inline; the run, progress and report are part f's.)*
+- **AC-8** (extension) — Given a Finance session, when it starts, fixes or runs an import, then each is refused; given another company's job id, then it reads 404. *(Part e: the fix.)*
+- **AC-12** (extension, new) — Given a previewed import, when a row is fixed — a cell typed, the row left out or brought back, or a spec conflict answered — then that row and every row naming the same product before or after the fix are judged again, the counts move in the same transaction, and no platform item changes; given an answer on a row that asks no question, or a job not `previewed`, then it is refused and nothing changes.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 | main-dev | required | api tests | a broken row's missing spec typed → `new_item`, the counts move by one; a price typed on a `price_missing` row → matched | `import-fix.test.ts` |
+| AC-1 | qa-api | required | api `8084` | `…904` previews a file with a broken row, fixes it, and reads the row and the counts moved in the answer and in `GET …/{id}` | live |
+| AC-8 | main-dev | required | api tests | Finance's fix → 403, nothing written; another company's job and row → 404; planted reds: `admitWrite` removed from the fix — *refuses Finance the fix and changes nothing* failed by name; the fix's missing job answered with another status — *reads another company’s job, and a row the sheet does not hold, as not found* failed by name | `import-fix-refusals.test.ts` |
+| AC-8 | qa-api | required | api `8084` | `…906` (Finance) fix → 403; `…905` fixes `…904`'s row → 404 | live |
+| AC-12 | main-dev | required | domain | the answer rule; the merge key by key; the answer dropped on a new brand or model, kept on a spec cell | `import-fix.test.ts` (domain) |
+| AC-12 | main-dev | required | api tests | leaving out the first of two rows naming one product matches the second; a model retyped onto another row's product makes it the repeat; `keep_catalog_spec` → `price_override` and the platform item byte-identical; `import_as_own_item` → `new_item`; an answer on a clean row → 422 `asks_no_question`; a fix on `matching` → 409; a repeat that stays the repeat is not answered as moved; after a run of mixed fixes the stored verdicts and matched item ids equal a fresh `matchImportRows` over the fixed rows; planted red: the group narrowed to the fixed row — *leaving out the first of two rows naming one product matches the second* failed by name | `import-fix.test.ts`, `import-fix-refusals.test.ts` |
+| AC-12 | main-dev | required | contract | a body with two acts, an unknown field or an unoffered answer → refused at the key at fault; a row number past `CATALOG_IMPORT_ROW_NUMBER_MAX` or below 1 → refused; planted red: the body as a union again — *refuses a field no import has, naming where* failed by name | `catalog-import-fix.test.ts` (contracts) |
+| AC-12 | qa-api | required | api `8084` | `…904` leaves out one of two repeated rows and reads the other matched in the answer | live |
+| all | ci | required | `quality` | the PR's run passes | CI |
+| — | evaluator | not_applicable | invariants | no table, enum or migration changes; the gate still runs whole at step 5 | — |
+| — | qa-web · qa-ios · qa-android | not_applicable | — | an engine part; the wizard is `T-M01-017` | — |
+
+##### Delivery size
+- **Estimate:** 15 files (1 generated: `openapi.json`). Authored lines: code about 290 · tests about 400 (about 40 of them moved from `import-preview.test.ts`) · this RFC and doc lines about 160 — about 850. Inside both targets: one part.
+- **Order:** as in Proposal.
+- **Owner rulings (2026-10-07):** RFC approved; D1 → **A** (the changed rows and the counts); D2 → **A** (an answer only where the row asks; a new product drops it).
+- **Build delta (2026-10-07) — approval void, the owner rules again.** Built 18 changed files (1 generated: `openapi.json`) against 15, and about 1,100 authored lines against about 850 — code about 475 (planned 290), tests about 490 (planned 400; about 110 of them moved), docs about 140. Every main-dev proof row is green on `heliogrid_test` (10 api tests, 13 domain tests, `pnpm check` 628 tests); both planted reds seen failing by name; live QA and review have not run.
+  - **Planned and built:** every row of the file table above, less the three marked "built, not planned".
+  - **Built but not planned:** `import-preview-support.ts` (the 300-line rule on `support.ts`) · `namesOneOf` in `import-text.ts` (the group keeps rows by the pass's own identity, not a second copy of it) · `importNotFound` in `internal/import-job.ts` (one 404 for two callers).
+  - **Planned but not built:** none.
+  - **Why the estimate missed:** the fix repository's one-statement write and its locked reads (about 125 lines) and the service's fix with its group and verdict helpers (about 135) were counted at about half; the full-pass equality test and the fixture move were not counted.
+  - **Two ways on:** **A · keep part e at its built size (recommended)** — one PR; the fix is one route whose proofs cannot be accepted apart. **B · split once more** — e1: the leave-out and the typed cells; e2: the answer and its rule. e1 alone leaves every spec conflict unanswerable, so the preview still cannot settle.
+- **Size ruling (after the build, 2026-10-07):** the owner approved option **A** — part e at its built size, about 1,100 authored lines and 18 files, one PR.
+- **After live QA and the first review (2026-10-07) — lines over again; the owner rules.** Built 21 changed files (1 generated) against the 18 approved (+17%, inside the fifth), and about 1,350 authored lines against about 1,100 (+23%) — code about 555, tests about 650, docs about 150. Every main-dev proof row is green (`pnpm check`: 48 files, 653 tests); live QA passed every behaviour row before these fixes and is re-driven after the ruling.
+  - **Mistakes found and fixed, with what now prevents each:**
+    - *Live QA* — a two-act or unknown-field body was refused with `details[].path` `body` and "Invalid input": a `z.union` body reports no key. The body is one strict object whose refusal names the key → `catalog-import-fix.test.ts` (contracts), seen red with the union back.
+    - *Review* — every unchanged needs-attention row in a group was answered and rewritten as moved: `jsonb` returns the attention's keys reordered, so the JSON text never matched. Compared field by field → *answers only the rows a fix moved, never a repeat that stays the repeat*, seen red before the fix.
+    - *Review* — a row number past the `integer` column answered 500. Bounded by the most the column holds (first bounded by the last `.xlsx` row; the second review showed a CSV of blank lines passes that) → `catalog-import-fix.test.ts`.
+    - *Review* — the matrix promised "a price typed on a `price_missing` row → matched" and no test proved it → *types a missing price on a row naming a platform item, and it matches*.
+    - *Review* — the cross-company 404 had no planted red → recorded above.
+    - *Main* — the QA rerun started while the reviewer was still reading the fixes; its next finding changed the route again and cost a third QA pass → `.claude/skills/task/references/qa.md`: a rerun starts only after the continued reviewer returns clean (the owner asked for it in this branch).
+  - **Also from review:** the full-pass equality compares matched item ids; the 422's code, details and status are asserted; the write runs in the rows' batch size (`inBatches`, shared with the pass's insert); the SQL cell names the domain rule it must equal.
+  - **Built but not planned (this round):** `import-fix-refusals.test.ts`, `catalog-import-fix.test.ts` (contracts), `import.ts` (domain).
+  - **Two ways on:** **A · keep part e at about 1,350 lines and 21 files, one PR (recommended)** — every added line is a fix or its proof. **B · split** — not sensible after the build: each half's proofs share one fixture and one route.
+- **Size ruling (after the first review, 2026-10-07):** the owner approved option **A** — part e at about 1,350 authored lines and 21 files, one PR.
+- **Checklist (part e)** — [x] domain fix rule · [x] contract route · [x] slice read in a transaction · [x] fix repository · [x] service and controller · [x] docs · [x] AC-1 (fix: main-dev) · [x] AC-1 (fix: qa-api) · [x] AC-8 (fix: main-dev) · [x] AC-8 (fix: qa-api) · [x] AC-12 (main-dev) · [x] AC-12 (qa-api) · [x] review (clean on the third pass) · [ ] CI
 
 ### T-M01-031 · Price book
 **Type:** engine · **Tier:** P0

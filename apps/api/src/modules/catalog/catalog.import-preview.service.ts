@@ -1,4 +1,5 @@
 import type {
+  CatalogImportFixedWire,
   CatalogImportRowsQuery,
   CatalogImportRowWire,
   Paginated,
@@ -10,27 +11,43 @@ import type {
 } from '@heliogrid/contracts/workflows';
 import {
   type CatalogImportMappedRow,
+  type CatalogImportRowFix,
   type CatalogImportRowMatch,
   catalogSpecSchema,
+  countImportMatches,
+  effectiveImportCells,
+  fixedImportRow,
   hasImportPreview,
   type ImportCatalog,
   type ImportCurrency,
+  type ImportProductName,
+  importFixProblem,
   importProductNames,
   mappedRows,
+  namesOneOf,
 } from '@heliogrid/domain';
 import { matchImportRows, readImportPrice } from '@heliogrid/domain/server';
-import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { ContractException } from '../../common/errors/contract-exception';
 import { stepCannotSucceed } from '../../common/temporal/temporal.activity-host';
 import { FileService } from '../file/file.public';
 import { CatalogImportRepository } from './catalog.import.repository';
+import { CatalogImportFixRepository } from './catalog.import-fix.repository';
 import {
   CatalogImportRowsRepository,
   type JudgedRow,
   type PreviewRow,
+  type StoredRow,
 } from './catalog.import-rows.repository';
 import { CatalogService } from './catalog.service';
 import { CatalogSliceRepository, type NamedItem } from './catalog.slice.repository';
-import { importJobOf, PRICE_LIST } from './internal/import-job';
+import { importJobOf, importNotFound, PRICE_LIST } from './internal/import-job';
 import { readSheetRows } from './internal/spreadsheet';
 import { storedRateWire } from './internal/wire';
 import { admitWrite } from './internal/write-checks';
@@ -49,6 +66,7 @@ export class CatalogImportPreviewService {
     @Inject(FileService) private readonly files: FileService,
     @Inject(CatalogService) private readonly catalog: CatalogService,
     @Inject(CatalogSliceRepository) private readonly slice: CatalogSliceRepository,
+    @Inject(CatalogImportFixRepository) private readonly fixes: CatalogImportFixRepository,
   ) {}
 
   /**
@@ -112,6 +130,82 @@ export class CatalogImportPreviewService {
     });
     return { items: rows.map((row) => rowWire(row, scope.formats)), totalCount };
   }
+
+  /**
+   * One fix to one row (`T-M01-030e`), under the job's lock: the row's next state, then every row
+   * naming its product before or after the fix judged again. A row's verdict depends only on rows
+   * and items of its own product, so these are the verdicts a whole new pass would give.
+   */
+  async fix(
+    tenantId: string,
+    roles: RoleSet,
+    id: string,
+    rowNumber: number,
+    fix: CatalogImportRowFix,
+    now: number,
+  ): Promise<CatalogImportFixedWire> {
+    admitWrite(roles);
+    const scope = await this.catalog.scopeOf(tenantId, now);
+    const fixed = await this.fixes.inLockedJob(tenantId, id, async (job) => {
+      if (job.status !== 'previewed') {
+        throw new ConflictException(`An import that is ${job.status} takes no fix.`);
+      }
+      const row = await job.row(rowNumber);
+      if (row === null) throw new NotFoundException('That row is not in this import.');
+      const problem = importFixProblem(row, fix);
+      if (problem !== null) {
+        throw new ContractException(
+          'DOMAIN_RULE_VIOLATION',
+          'That row asks no question to answer.',
+          HttpStatus.UNPROCESSABLE_ENTITY,
+          [{ path: 'answer', issue: problem }],
+        );
+      }
+      const next: StoredRow = { ...row, ...fixedImportRow(row, fix) };
+      const names = importProductNames([row, next].map(namingCells));
+      const group = productGroup(await job.naming(names), next, names);
+      const named = await job.named(scope.marketCode, names);
+      const verdicts = matchImportRows(group.map(matchInput), catalogOf(named, scope.formats));
+      const moved = group.flatMap((member, index) => {
+        const judged = { ...member, ...verdictOf(member, verdicts[index]) };
+        return member.rowNumber === rowNumber || verdictMoved(member, judged) ? [judged] : [];
+      });
+      await job.write(moved, now);
+      const rows = await job.rows(
+        moved.map((member) => member.rowNumber),
+        scope.resolve.pricedOn,
+      );
+      return { rows, counts: await job.counts() };
+    });
+    if (fixed === null) throw importNotFound();
+    return {
+      rows: fixed.rows.map((row) => rowWire(row, scope.formats)),
+      counts: countImportMatches(fixed.counts),
+    };
+  }
+}
+
+const namingCells = (row: StoredRow) => ({ cells: effectiveImportCells(row) });
+
+const matchInput = (row: StoredRow) => ({
+  cells: effectiveImportCells(row),
+  leftOut: row.leftOut,
+  answer: row.answer,
+});
+
+/**
+ * The rows naming one of these products, in sheet order, with the fixed row as it now stands —
+ * kept by the pass's own identity, since the database only narrowed to rows containing the names.
+ */
+function productGroup(
+  candidates: readonly StoredRow[],
+  fixed: StoredRow,
+  names: readonly ImportProductName[],
+): StoredRow[] {
+  const naming = candidates.filter(
+    (row) => row.rowNumber !== fixed.rowNumber && namesOneOf(effectiveImportCells(row), names),
+  );
+  return [...naming, fixed].sort((one, other) => one.rowNumber - other.rowNumber);
 }
 
 function catalogOf(named: readonly NamedItem[], currency: ImportCurrency): ImportCatalog {
@@ -128,23 +222,58 @@ function catalogOf(named: readonly NamedItem[], currency: ImportCurrency): Impor
   };
 }
 
-function judgedRow(
-  row: CatalogImportMappedRow,
-  verdict: CatalogImportRowMatch | undefined,
-): JudgedRow {
-  if (verdict === undefined) throw new Error(`row ${row.rowNumber} has no verdict`);
+type Verdict = Pick<JudgedRow, 'outcome' | 'attention' | 'catalogItemId' | 'tenantCatalogItemId'>;
+
+function verdictOf(
+  row: { readonly rowNumber: number },
+  match: CatalogImportRowMatch | undefined,
+): Verdict {
+  if (match === undefined) throw new Error(`row ${row.rowNumber} has no verdict`);
   return {
-    rowNumber: row.rowNumber,
-    cells: row.cells,
-    outcome: verdict.outcome,
-    attention: verdict.outcome === 'needs_attention' ? verdict.attention : [],
-    catalogItemId: verdict.outcome === 'price_override' ? verdict.platformItemId : null,
-    tenantCatalogItemId: verdict.outcome === 'own_item_price' ? verdict.ownItemId : null,
+    outcome: match.outcome,
+    attention: match.outcome === 'needs_attention' ? match.attention : [],
+    catalogItemId: match.outcome === 'price_override' ? match.platformItemId : null,
+    tenantCatalogItemId: match.outcome === 'own_item_price' ? match.ownItemId : null,
   };
 }
 
+function judgedRow(
+  row: CatalogImportMappedRow,
+  match: CatalogImportRowMatch | undefined,
+): JudgedRow {
+  return { rowNumber: row.rowNumber, cells: row.cells, ...verdictOf(row, match) };
+}
+
+function verdictMoved(before: Verdict, after: Verdict): boolean {
+  return (
+    before.outcome !== after.outcome ||
+    before.catalogItemId !== after.catalogItemId ||
+    before.tenantCatalogItemId !== after.tenantCatalogItemId ||
+    !sameAttention(before.attention, after.attention)
+  );
+}
+
+/**
+ * Compared field by field, never as JSON text: a stored attention comes back from `jsonb` with its
+ * keys reordered, so equal attention would read as changed.
+ */
+function sameAttention(one: Verdict['attention'], other: Verdict['attention']): boolean {
+  return (
+    one.length === other.length &&
+    one.every((item, index) => {
+      const twin = other[index];
+      return (
+        twin !== undefined &&
+        item.reason === twin.reason &&
+        item.fields.length === twin.fields.length &&
+        item.fields.every((field, at) => field === twin.fields[at])
+      );
+    })
+  );
+}
+
 function rowWire(row: PreviewRow, currency: ImportCurrency): CatalogImportRowWire {
-  const filePrice = readImportPrice({ ...row.cells, ...row.fix }.rate, currency);
+  const filePrice = readImportPrice(effectiveImportCells(row).rate, currency);
   const match =
     row.catalogItemId !== null
       ? { source: 'platform_item' as const, id: row.catalogItemId }

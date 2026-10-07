@@ -11,6 +11,10 @@ export async function importJobOf(
   id: string,
 ): Promise<ImportJobRow> {
   const job = await jobs.find(tenantId, id);
-  if (job === null) throw new NotFoundException('That import is not in this company’s catalog.');
+  if (job === null) throw importNotFound();
   return job;
 }
+
+/** The 404 for a job that is not this company's. */
+export const importNotFound = () =>
+  new NotFoundException('That import is not in this company’s catalog.');

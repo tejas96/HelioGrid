@@ -27,6 +27,7 @@ export class CatalogImportController {
     import: MANAGE,
     map: MANAGE,
     rows: MANAGE,
+    fix: MANAGE,
   })
   handler(@Req() req: Request) {
     const tenantId = () => tenantIdOf(req);
@@ -51,6 +52,17 @@ export class CatalogImportController {
       rows: async ({ params, query }) => ({
         status: 200,
         body: await this.previews.page(tenantId(), roles(), params.id, query, actOf(req).now),
+      }),
+      fix: async ({ params, body }) => ({
+        status: 200,
+        body: await this.previews.fix(
+          tenantId(),
+          roles(),
+          params.id,
+          params.rowNumber,
+          body,
+          actOf(req).now,
+        ),
       }),
     });
   }

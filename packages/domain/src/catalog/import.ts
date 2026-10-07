@@ -49,6 +49,12 @@ const UNPACKED_TIMES_STORED = 10;
  */
 export const CATALOG_IMPORT_UNPACKED_LIMIT_BYTES = FILE_MAX_BYTES * UNPACKED_TIMES_STORED;
 
+/**
+ * The largest sheet row number a job stores: the most its `row_number integer` column holds. A
+ * fix naming a larger row is refused before it reaches the column, which would fail it.
+ */
+export const CATALOG_IMPORT_ROW_NUMBER_MAX = 2_147_483_647;
+
 /** The longest file name a job keeps: the contract's bound and the column's CHECK, one number. */
 export const CATALOG_IMPORT_FILE_NAME_MAX = 255;
 

@@ -21,6 +21,7 @@ export {
   CATALOG_IMPORT_ENTRY_POINTS,
   CATALOG_IMPORT_FILE_NAME_MAX,
   CATALOG_IMPORT_MAPPABLE_STATES,
+  CATALOG_IMPORT_ROW_NUMBER_MAX,
   CATALOG_IMPORT_ROW_OUTCOMES,
   CATALOG_IMPORT_STATES,
   CATALOG_IMPORT_UNPACKED_LIMIT_BYTES,
@@ -37,6 +38,18 @@ export {
   guessHeaderRow,
   HEADER_ROW_SCAN,
 } from './import-columns';
+export type {
+  CatalogImportFixProblem,
+  CatalogImportRowAnswers,
+  CatalogImportRowFix,
+  CatalogImportRowState,
+} from './import-fix';
+export {
+  effectiveImportCells,
+  fixedImportRow,
+  importFixProblem,
+  takesImportAnswer,
+} from './import-fix';
 export type {
   CatalogImportColumnsProblem,
   CatalogImportMappedRow,
@@ -57,7 +70,7 @@ export type {
   ImportCatalogEntry,
 } from './import-matching';
 export type { ImportProductName } from './import-text';
-export { importProductNames } from './import-text';
+export { importProductNames, namesOneOf } from './import-text';
 export type { PriceBookRateBasis } from './price-book';
 export { MAX_MARGIN, PLATFORM_DEFAULT_MARGIN, PRICE_BOOK_RATE_BASES } from './price-book';
 export type {
