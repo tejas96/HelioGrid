@@ -60,6 +60,9 @@ how untranslated copy ships.
 
 ## Screens
 
+Hindi and Marathi words are copied from the board's language renders; a phrase the board has no
+render for is drafted, flagged in the task for a native review, and never passed off as the board's.
+
 Every word a screen shows comes from `@heliogrid/i18n` — `<Trans id="…">` in markup, `t(COPY.key)`
 in hooks and handlers. No check finds a bare English literal in JSX.
 

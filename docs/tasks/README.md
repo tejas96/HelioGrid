@@ -100,6 +100,11 @@ runs on `heliogrid_test`. CI ownership names a path-selected lane that must actu
 lane proves nothing. Android phone flows may be CI-owned only when the `Phone flows` step runs;
 the step must be `Phone flows (tests/e2e/mobile) on the emulator`. A run of `Phone flows OFF`
 proves nothing and the row is `blocked`, never passed. iOS journeys are local `qa-ios` proofs.
+A screen task with a board (a studio screen has none) has one `side-by-side` row per board frame
+it renders — each state, 375, 1536, each language render — owned by the surface's QA helper. Web at
+375 is compared with the phone frame. A state the board draws only at 375 is compared at 1536 with
+its phone frame and the board's stated 1536 rule (`docs/start-here.md`, desktop states), not flagged
+as missing. A frame with no row, or a built state with no frame and no stated rule, is a finding.
 
 ## Delivery size and Parts
 

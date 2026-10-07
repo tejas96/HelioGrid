@@ -17,7 +17,11 @@ export { shownInNote } from './copy/authored-content';
 export type { CompanySignupCopyKey } from './copy/company-signup';
 export { COMPANY_SIGNUP, companyFieldRefusal } from './copy/company-signup';
 export type { CompanySignupFrame, CompanySignupWords } from './copy/company-signup-frames';
-export { companySignupWords } from './copy/company-signup-frames';
+export {
+  companySignupWords,
+  joinSteerFinding,
+  joinSteerWords,
+} from './copy/company-signup-frames';
 export { AGENT_CALL_CORRELATION, agentCallCorrelation } from './copy/correlation';
 export { disclosureLead, disclosureLine } from './copy/disclosure';
 export { BASIS_LINE_WORD } from './copy/document-basis';
@@ -25,6 +29,8 @@ export { energySourceLabel } from './copy/energy-source';
 export { explainerPagerWords } from './copy/explainer';
 export { freshnessLabel } from './copy/freshness';
 export { homeTitle } from './copy/homes';
+export type { JoinRequestAsker } from './copy/join-request';
+export { joinRequestNotice } from './copy/join-request';
 export { centreActToast, centreFilterWords, centreHeadWords } from './copy/notification-head';
 export { type CentreClock, centreListWords } from './copy/notification-list';
 export {

@@ -30,7 +30,7 @@ For every row, in this order:
    from the API log for YOUR number only, never guessed.
 3. **Measure** from the tree: the required words and states are present; every control the row
    names is at least 44 points on both axes; nothing the row names is clipped or off screen; a
-   screenshot is taken for the row and judged against the design record the row cites.
+   screenshot is taken for the row and judged against the board frame it carries (below).
 4. **Observe** the words, the state and the destination against the row's expected result.
 5. **Report** one line per row in the shape below.
 
@@ -44,6 +44,12 @@ Rules that never bend:
 - A suspected flake gets ONE immediate retry of that row; a second pass is `PASS` with a `flake`
   note, a second failure is `FAIL`.
 - You restore any mutable setting a row changed, through the app, before you finish.
+- For a row that names a board frame: screenshot the same state at the frame's size, save it at the
+  row's path, and compare it with the board picture element by element — presence, order, words (in
+  every language the row names), colour, size, spacing, alignment. List every difference under
+  `differences:`; one the row does not list as ruled is `FAIL`. Where you judge the board itself
+  wrong, mark the difference `board?` with your reason; you never decide it. Two pictures judged
+  side by side, not a pixel diff.
 
 Report shape, and nothing else:
 
@@ -51,5 +57,6 @@ Report shape, and nothing else:
 verdict: PASS | FAIL | BLOCKED
 rows:
 - <row id> → <action> → <observed result> → <measurements> → <log bytes a–b, n lines, m for my number>
+  differences: <each difference from the board frame, `board?` marked, or "none">
 notes: <flake, crash line, or "none">
 ```

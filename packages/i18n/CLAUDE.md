@@ -59,7 +59,8 @@ Run `extract` after any copy change.
   one mutable active locale for every concurrent visitor.
 - `t(COPY.key, values)` in hooks and handlers — the descriptor itself, never `.id` · `<Trans>` in markup · `createTranslator(locale)` off the
   React tree. Store message IDs plus data, never a translated business record — that is wrong for
-  every other reader of it.
+  every other reader of it. A notification is the one exception: it has one reader, and `F6-08`
+  fixes its words in that reader's language when the api writes it (`createTranslator`).
 - **UI language is per user; currency, tax and paperwork come from the tenant's market pack.**
   Never derive one from the other.
 

@@ -170,7 +170,9 @@ them. THREE entry points: `.` React-free (createTranslator for a server render o
 `./react` the provider and hooks · `./rn` the Hermes polyfills, separate because importing
 them has global side effects a web bundle must never take. Allowed deps:
 contracts, domain (the money/format helpers), config; react is a PEER. Platform scope: shared
-frontend. Belongs: copy both platforms render (Law 11). Never: macro imports (lint-banned);
+frontend, plus the React-free root on the server, where the api renders a notification's words in
+its reader's language when it is written (`F6-08`). Belongs: copy both platforms render (Law 11),
+and the words of a notification the server writes. Never: macro imports (lint-banned);
 a module-scope i18n instance (one shared mutable locale across concurrent server renders);
 locale-default number formats for money
 (CLAUDE.md §9: tenant-currency grouping — UI LANGUAGE never selects a money format; the
@@ -240,12 +242,14 @@ log shape and its redaction (common/logging.ts — the ONE authoring; there is n
 packages/config/logging.ts), the explicit body limit and its canonical 413, the tenancy
 runtime precondition, and the RUNTIME_DB/ADMIN_DB pool pair in
 common/db (fenced by admin-pool-fenced — db provides the factory, this app builds the
-pair). Allowed deps: contracts, domain, db, env, config. Platform scope: backend only
-(Node). Belongs: the HTTP edge, its repositories, and `src/scripts/` commands that drive a
-service. Never: ui/theme/i18n/data (frontend layers — held by the `app-api` Turbo
-boundary tag); raw process.env (env owns it); a periodic job — every Fly instance would run
-it, so it is a Temporal Schedule whose workflow lives in apps/worker (the step host's reconnect
-timer is per process by design, not a job). Extension point: one Nest module per contract router,
+pair). Allowed deps: contracts, domain, db, env, i18n (its React-free `.` entry only — a
+notification's words are rendered in the reader's language when it is written, `F6-08`), config.
+Platform scope: backend only (Node). Belongs: the HTTP edge, its repositories, and `src/scripts/`
+commands that drive a service. Never: ui/theme/data (frontend layers — held by the `app-api`
+Turbo boundary tag); i18n's `./react` or `./rn` (dependency-cruiser `server-no-i18n-frontend-entries`); raw
+process.env (env owns it); a periodic job — every Fly instance would run it, so it is a Temporal
+Schedule whose workflow lives in apps/worker (the step host's reconnect timer is per process by
+design, not a job). Extension point: one Nest module per contract router,
 repositories fenced by db-access-in-repositories-only.
 
 ### apps/worker — Temporal workflows and activities

@@ -10,4 +10,8 @@
  */
 export { NotificationModule } from './notification.module';
 export { NotificationPushService } from './notification.push.service';
-export { type NotificationToWrite, recordNotification } from './notification.repository';
+export {
+  type NotificationToWrite,
+  recordNotification,
+  type TenantQuietHours,
+} from './notification.repository';

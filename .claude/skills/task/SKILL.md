@@ -55,6 +55,17 @@ and `docs/start-here.md` to `design-check`. `READY` goes into `#### Design check
 verdict's date; anything else goes to the owner as the helper's one prompt. The owner's "done"
 means: fetch again, check again. A studio screen reads `ported from the POC` and has no check.
 
+After `READY`, Main captures every frame the task renders from the board in the browser pane (the
+owner signed in): each state, at 375 and 1536, and each language render, a phone frame at least
+375 px wide, into the scratchpad as `board/<frame>.png`. `#### Design check` lists them; the build
+reads the pictures with the record.
+
+The board is the design, not an order. A frame that looks wrong — against a PRD row, the brief, a
+law or rule, accessibility or another frame, or with a clearly simpler way to the same row — goes to
+the owner with at most two options, recommended first: fix the board (one paste-ready prompt), or
+build the better way and record the ruling in the task. Never copy it silently, never depart from
+it silently, and build neither way before the owner answers.
+
 Then present the RFC once — the complete section as written under the task, no second summary
 and no plan beside it — with two things only the chat adds. The `##### Architecture diagram` is
 drawn as a picture in the inline widget — the same nodes and arrows as the Mermaid, which stays
@@ -106,9 +117,9 @@ stops for the owner. Never respawn the Evaluator.
 
 ## 6. Pre-commit card
 
-Show, and stop: the AC proof summary (the evaluator's rows), the review result, every planted-red
-line, the changed files in three lists (planned and built · built but not planned, each with its
-reason · planned but not built), the exact commit message (the task's `Status:` or the part's row
+Show, and stop: the AC proof summary (the evaluator's rows), the side-by-side images of a screen
+task, the review result, every planted-red line, the changed files in three lists (planned and
+built · built but not planned, each with its reason · planned but not built), the exact commit message (the task's `Status:` or the part's row
 turns `shipped` in this commit), mistakes found and the rule that now prevents each, unresolved
 blockers, the runtime cleanup state, and the measurements — tool-call turns, tokens, helper runs,
 planned versus built — written under the task's `#### Runtime` in the same commit.

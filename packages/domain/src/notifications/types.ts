@@ -17,9 +17,15 @@ export const NOTIFICATION_TYPES = [
   'signoff_requested',
   'payment_due',
   'lead_unassigned_24h',
+  'join_requested',
   'system',
 ] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
+
+/** Whether a stored type is one this build knows — a newer api may have written one it does not. */
+export function isKnownType(type: string): type is NotificationType {
+  return (NOTIFICATION_TYPES as readonly string[]).includes(type);
+}
 
 /**
  * Where a notification can be delivered, and nowhere else (`F6-11`). The in-app record is the
@@ -101,6 +107,8 @@ export const NOTIFICATION_SOURCES = [
   'proposals',
   'sales_execution',
   'payments',
+  /** The company's own team — who joins it. Never the platform: product news is apart (`F6.4`). */
+  'team',
   'platform',
 ] as const;
 export type NotificationSource = (typeof NOTIFICATION_SOURCES)[number];

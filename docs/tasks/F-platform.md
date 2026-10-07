@@ -3368,7 +3368,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 |---|---|---|---|---|
 | a | the four changed token files and the census pulled; every field drawn the open page's way (fill, 54, radius 16, inset rings, the field type sizes); every built screen checked against its board | AC-1, AC-2, AC-3, AC-4 | the design system's field type tokens (the prerequisite in `#### Part a · RFC`) | shipped |
 | b | the phone header (company chip) and the floating pill footer, `PhoneScreen`; the shell and home redrawn on them | its own RFC | a | open |
-| c | tiles (`Card`, `RecordCard`, `TileActions`), the search pill and filter button, kind chips, flat `Accordion`, wherever built; a disabled control in a tile equals the tile's `--canvas-sunken` ground until tiles take `--fill` (part a review) — close it here, and `F7-15`'s "until part c" lines | its own RFC | a | open |
+| c | tiles (`Card`, `RecordCard`, `TileActions`), the search pill and filter button, kind chips, flat `Accordion`, wherever built; a disabled control in a tile equals the tile's `--canvas-sunken` ground until tiles take `--fill` (part a review) — close it here, and `F7-15`'s "until part c" lines; the secondary button on the page drawn as the design system's `Button` draws it — `--surface` with `--e2`, not the grey well — every secondary on every screen, with `F7-15` amended (owner ruling D14 B, `T-M01-035`'s side-by-side review, 2026-10-07) | its own RFC | a | open |
 
 #### Part a · RFC
 

@@ -27,10 +27,15 @@ export async function typeCode(page: Page, t: Translator, code: string): Promise
 }
 
 /**
- * A new number through the signup door's three steps — the number, its code, the company — to
- * the company's home: the one way a spec obtains a person with a company of their own.
+ * A new number through the signup door's first two steps — the number and its code — to the
+ * company step, where the three details are filled and nothing is pressed yet.
  */
-export async function createCompany(page: Page, t: Translator, mobile: Mobile): Promise<void> {
+export async function fillCompanyStep(
+  page: Page,
+  t: Translator,
+  mobile: Mobile,
+  company: string,
+): Promise<void> {
   await page.goto('/company-signup');
   await expect(
     page.getByRole('heading', { name: t.t(COMPANY_SIGNUP.createYourCompany) }),
@@ -41,17 +46,26 @@ export async function createCompany(page: Page, t: Translator, mobile: Mobile): 
   await typeCode(page, t, code);
   await page.getByRole('button', { name: t.t(COMPANY_SIGNUP.verifyAndContinue) }).click();
 
-  await page
-    .getByRole('textbox', { name: t.t(COMPANY_SIGNUP.companyName) })
-    .fill(`E2E ${mobile.national}`);
+  await page.getByRole('textbox', { name: t.t(COMPANY_SIGNUP.companyName) }).fill(company);
   await page
     .getByRole('textbox', { name: t.t(COMPANY_SIGNUP.yourName) })
     .fill(`Owner ${mobile.national}`);
   await page.getByRole('textbox', { name: t.t(COMPANY_SIGNUP.city) }).fill('Pune');
   await expectNoSidewaysScroll(page);
+}
+
+/**
+ * A new number through the signup door's three steps — the number, its code, the company — to
+ * the company's home: the one way a spec obtains a person with a company of their own. Answers
+ * the company's name.
+ */
+export async function createCompany(page: Page, t: Translator, mobile: Mobile): Promise<string> {
+  const company = `E2E ${mobile.national}`;
+  await fillCompanyStep(page, t, mobile, company);
   await page.getByRole('button', { name: t.t(COMPANY_SIGNUP.createCompany) }).click();
 
   await expect(page).toHaveURL(/\/home$/);
+  return company;
 }
 
 /** A code that is certainly not `code`: each digit moved on by one. */

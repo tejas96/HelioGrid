@@ -1,5 +1,5 @@
 import { createTenantSchema } from '@heliogrid/contracts';
-import { useCompanySignup } from '@heliogrid/data/react';
+import { type CompanySignup, useSteerDroppedOnEdit } from '@heliogrid/data/react';
 import type { SessionUser } from '@heliogrid/domain';
 import { useZodForm } from '@heliogrid/forms';
 import { COMPANY_SIGNUP, companySignupWords, SIGN_IN } from '@heliogrid/i18n';
@@ -8,29 +8,74 @@ import { Button, DoorFrame, Text, TintedBlock } from '@heliogrid/ui';
 import { AccountCard } from './AccountCard';
 import { CompanyFacts } from './CompanyFacts';
 import { CompanyFields } from './CompanyFields';
+import { JoinFailureBlock, JoinRoads, JoinSteerBlock } from './JoinSteer';
 import { LanguageControl } from './LanguageControl';
 import { SignupProgress } from './SignupProgress';
 
 /**
  * Step 3 — the three fields over the verified number, and the one write this screen owns
- * (`M01-01`). The number, the resume line and the not-created finding are the identity half's
- * (`SCR-M01-02` decisions 11 and 22); the fields, the facts and the primary are the task's. The
- * form holds only its fields (the contract's schema through the forms layer); the write's wait
- * and refusal are `useCompanySignup`'s; the words of the four frames are `companySignupWords`'.
+ * (`M01-01`). The number, the resume line and every finding about the person are the identity
+ * half's (`SCR-M01-02` decisions 11 and 22); the fields, the facts and the primary are the task's.
+ * When the details match a company that exists, the same fields stay and the steer takes the
+ * primary's place (`M01-09`); a changed detail drops the steer, and while a request is on its way
+ * the values are facts, as they are while the company is written (`SCR-M01-02` decision 26). The
+ * form holds only its fields; the write, the steer and their waits are `useCompanySignup`'s; the
+ * words of the four frames are `companySignupWords`'.
  */
-export function CompanyStep({ user, restored }: { user: SessionUser; restored: boolean }) {
+export function CompanyStep({
+  user,
+  restored,
+  joining,
+  signup,
+}: {
+  user: SessionUser;
+  restored: boolean;
+  /** The view is `join` (`signupView`): the steer replaces the primary. */
+  joining: boolean;
+  signup: CompanySignup;
+}) {
   const t = useTranslate();
-  const signup = useCompanySignup();
   const form = useZodForm(createTenantSchema, {
     defaultValues: { companyName: '', ownerName: user.name, city: '' },
   });
-  const create = form.handleSubmit((values) => void signup.create(values));
+  useSteerDroppedOnEdit(signup, form.watch);
+  const steered = joining ? signup.found : null;
+
+  const create = form.handleSubmit((values) => void signup.submit(values));
   const frame = {
     restored,
     writing: signup.creation === 'creating',
     failed: signup.creation === 'failed',
   };
   const words = companySignupWords(t, frame);
+
+  if (steered !== null) {
+    const steer = <JoinSteerBlock company={steered} phoneE164={user.phoneE164} />;
+    return (
+      <DoorFrame
+        trailing={<LanguageControl />}
+        taskMeasure="steps"
+        identity={
+          <>
+            <div className="hg-door-title">
+              <Text variant="h1">{t(COMPANY_SIGNUP.joinTitle)}</Text>
+            </div>
+            <JoinFailureBlock signup={signup} />
+            <div className="hg-signup-wide-only">{steer}</div>
+          </>
+        }
+      >
+        <SignupProgress current={2} />
+        {signup.requesting === 'sending' ? (
+          <CompanyFacts values={form.getValues()} />
+        ) : (
+          <CompanyFields form={form} withHelpers={false} />
+        )}
+        <div className="hg-signup-narrow-only">{steer}</div>
+        <JoinRoads company={steered} signup={signup} />
+      </DoorFrame>
+    );
+  }
 
   return (
     <DoorFrame
@@ -66,7 +111,13 @@ export function CompanyStep({ user, restored }: { user: SessionUser; restored: b
     >
       <SignupProgress current={2} />
       {frame.writing ? <CompanyFacts values={form.getValues()} /> : <CompanyFields form={form} />}
-      <Button variant="primary" size="lg" fullWidth loading={frame.writing} onClick={create}>
+      <Button
+        variant="primary"
+        size="lg"
+        fullWidth
+        loading={frame.writing || signup.checking}
+        onClick={create}
+      >
         {words.primary}
       </Button>
       {words.caption === null ? null : (

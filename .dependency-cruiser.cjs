@@ -191,6 +191,14 @@ module.exports = {
       to: { path: '^@heliogrid/db|^packages/db/' },
     },
     {
+      name: 'server-no-i18n-frontend-entries',
+      severity: 'error',
+      comment:
+        "apps/api and apps/worker take @heliogrid/i18n's React-free root alone — a notification's words rendered when it is written (F6-08). ./react is the frontend's provider and hooks, ./rn installs Hermes globals; neither belongs in a server. Both forms, as web-no-db: the specifier and the on-disk path.",
+      from: { path: '^apps/(api|worker)/' },
+      to: { path: '^@heliogrid/i18n/(react|rn)|^packages/i18n/(src|dist)/(react|rn)/' },
+    },
+    {
       name: 'web-app-imports-feature-barrel-only',
       severity: 'error',
       comment:

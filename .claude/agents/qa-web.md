@@ -23,8 +23,8 @@ For every row, in this order:
 3. **Measure, at 375 and at 1536** (`resize_window`), through the page itself (`javascript_tool`,
    `getBoundingClientRect`): no page-level horizontal overflow
    (`documentElement.scrollWidth <= clientWidth`); every interactive target the row names is at
-   least 44 px on both axes; the shared edges, overlaps and spacing the row DECLARES from the
-   design record, never a scan of every element; critical text the row names is not clipped.
+   least 44 px on both axes; the shared edges, overlaps and spacing the row declares; critical text
+   the row names is not clipped.
    Console errors since the row began are evidence.
 4. **Observe.** The words, the state, the destination — against the row's expected result.
 5. **Report** one line per row in the shape below.
@@ -37,7 +37,12 @@ Rules that never bend:
 - A row you cannot run is `BLOCKED` with the exact reason; you never substitute another path.
 - A suspected flake gets ONE immediate retry of that row; a second pass is `PASS` with a `flake`
   note, a second failure is `FAIL`. Nothing else is retried.
-- A screenshot is evidence for your judgment, never a pixel baseline.
+- For a row that names a board frame: screenshot the same state at the frame's size, save it at the
+  row's path, and compare it with the board picture element by element — presence, order, words (in
+  every language the row names), colour, size, spacing, alignment. List every difference under
+  `differences:`; one the row does not list as ruled is `FAIL`. Where you judge the board itself
+  wrong, mark the difference `board?` with your reason; you never decide it. Two pictures judged
+  side by side, not a pixel diff.
 - You restore any mutable setting a row changed, through the app, before you finish.
 
 Report shape, and nothing else:
@@ -46,5 +51,6 @@ Report shape, and nothing else:
 verdict: PASS | FAIL | BLOCKED
 rows:
 - <row id> → <action> → <observed result> → <measurements> → <log bytes a–b, n lines, m for my number>
+  differences: <each difference from the board frame, `board?` marked, or "none">
 notes: <flake, console error, or "none">
 ```

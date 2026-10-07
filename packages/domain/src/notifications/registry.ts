@@ -84,6 +84,17 @@ export const NOTIFICATION_REGISTRY: Record<NotificationType, NotificationRegistr
     channels: ['in_app', 'push'],
     urgency: 'standard',
   },
+  /**
+   * Someone signing up asked to be added to this company (`M01-09`); its subject is the asker's
+   * account. Never an invitation: an invitation carries an inviter and a preset, a request has
+   * neither (`T-M01-028`).
+   */
+  join_requested: {
+    raisedBy: 'team',
+    recipients: ['epc_owner'],
+    channels: ['in_app', 'push'],
+    urgency: 'standard',
+  },
   /** An announcement from the platform; its subject is the company it is addressed to. */
   system: {
     raisedBy: 'platform',
@@ -108,6 +119,7 @@ const GROUP_BY_SOURCE: Record<NotificationSource, NotificationTypeGroup> = {
   survey: 'delivery',
   design: 'delivery',
   payments: 'payments',
+  team: 'team',
   platform: 'team',
 };
 

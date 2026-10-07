@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { KnownAccount, SessionSnapshot, SessionUser } from '../../src/auth/session';
-import { signupView } from '../../src/auth/signup-view';
+import { type JoinSteer, signupView } from '../../src/auth/signup-view';
 
 /**
  * Which panel the company-signup door shows. Two orderings matter: a number that already has a
@@ -60,4 +60,28 @@ describe('signupView', () => {
   ] as const)('%s', (_name, session, step, expected) => {
     expect(signupView(session, step)).toBe(expected);
   });
+
+  /**
+   * The join steer (`M01-09`) only ever replaces the company step: a known number, a company
+   * already made and the steps before the code verifies all outrank it.
+   */
+  const companyless = signup({ status: 'authenticated', user: withoutCompany });
+  it.each([
+    ['no steer keeps the company step', companyless, 'none', 'company'],
+    ['an offered steer shows the join panel', companyless, 'offered', 'join'],
+    ['a sent request shows the sent panel', companyless, 'sent', 'sent'],
+    [
+      'a company made after a steer is done',
+      signup({ status: 'authenticated', user: withCompany }),
+      'sent',
+      'done',
+    ],
+    ['a known number outranks a steer', signup({ known }), 'offered', 'known'],
+    ['a steer before the code verifies is not shown', signup(), 'offered', 'code'],
+  ] as const satisfies readonly (readonly [string, Signup, JoinSteer, string])[])(
+    '%s',
+    (_name, session, steer, expected) => {
+      expect(signupView(session, 'otp', steer)).toBe(expected);
+    },
+  );
 });

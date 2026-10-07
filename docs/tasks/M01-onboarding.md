@@ -169,19 +169,304 @@ This file covers module M01 — company signup and authentication, team invites 
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: qa-web every base and brief-listed state at 1536px less `M01-09`'s two, measured against the `d-*` frames from disk; parity with `T-M01-002` is by construction — one store (`signupView`, `useSignIn`), one copy (`COMPANY_SIGNUP`) — shown by the import list, never re-driven
 ### T-M01-035 · Company Signup — request to join
 **Type:** screen · **Tier:** P1
-**Status:** planned
+**Status:** shipped
 **Why:** A second person from a company that already has a workspace is steered to join it rather than opening a second one that splits the company's leads, designs and money; without it every colleague who signs up makes a duplicate company nobody can merge.
 **PRD rows:** M01-09 (P1)
 **BRIEF:** docs/ux/briefs/SCR-M01-02-company-signup.md
-**Design:** the same canvas as `T-M01-002`'s DESIGN line — `m-request-to-join` and `m-request-sent` at 375, `d-request-to-join` at 1536; one screen, one DESIGN line, kept on the phone slice.
+**Design:** the same canvas as `T-M01-002`'s DESIGN line — `m-request-to-join`, `m-request-sent` and `m-request-failed` at 375, `d-request-to-join`, `d-request-sent` and `d-request-failed` at 1536; one screen, one DESIGN line, kept on the phone slice.
 **Requirements (verbatim):**
 - **M01-09** (P1) — **A second person from the same company is steered to "request to join".** Signup detects a likely-existing workspace by company name + city and offers "request to join" (routed to that tenant's EPC Owner as an invite request) instead of silently creating a second workspace. Creating a new company remains possible — the detection is a steer, not a block.
 **Data model:** none — reads `tenant` through `GET /tenants/similar` (`T-M01-025`); the request itself is a notification record, `T-FPLAT-017`'s table.
-**Contract:** `packages/contracts/src/tenant.ts` gains the join request — the message to the matched tenant's EPC Owner, the notification type `T-FPLAT-017` registers ("X asks to join", with the act "invite this person" opening `SCR-M01-07` pre-filled); never an invitation (ruled at `T-M01-028`'s `/start`: an invitation carries an inviter and at least one preset, a request has neither). The route's exact shape is named before the build. **Settle before the build:** how a typed city resolves to the spelling the match needs (the export's "Matched to Pune, Maharashtra") — the pack carries no city list; a list is `T-FCORE-016`'s pack data, or the match stays the case-insensitive free-text one `T-M01-025` ruled.
+**Contract:** `packages/contracts/src/tenant.ts` gains the join request — the message to the matched tenant's EPC Owner, the notification type `T-FPLAT-017` registers ("X asks to join", with the act "invite this person" opening `SCR-M01-07` pre-filled); never an invitation (ruled at `T-M01-028`'s `/start`: an invitation carries an inviter and at least one preset, a request has neither). The route's exact shape is named before the build. **Ruled at `/task` (owner):** the city is matched as typed, ignoring case — the rule `T-M01-025` built; no market-pack city list, no suggestions, no "matched to" helper (brief decision 3).
 **Depends on:** `T-FPLAT-017` (the registry and the record the request is) · `T-M01-002` and `T-M01-034` (the screens the states are drawn on) · `T-M01-025` (GET /tenants/similar).
 **Out of scope:** the Owner's inbox and the act it offers — `T-FPLAT-017`, `T-M01-007`; every other state of the screen — `T-M01-002`, `T-M01-034`.
 **DONE WHEN:**
 - (M01-09 carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text quoted above is the binding criterion.) → proof: QA (web and phone) a company name and city matching an existing workspace renders the steer with both roads full-size, "Create a new company anyway" still creates, and "Request to join" leaves the matched tenant's EPC Owner a request naming the asker and lands the asker on the `request-sent` state · QA (api) the Owner's notification carries the registered type
+
+#### Design check
+**READY** (2026-10-07, board v6 — after the owner drew `request-failed` (D6 A), the sending rule for *Create a new company anyway* and `request-sent` in Hindi and Marathi; the record re-read that day). This task's frames: `m-request-to-join`, `m-request-sent`, `m-request-failed`, `d-request-to-join`, `d-request-sent`, `d-request-failed`, and `m-request-to-join`, `m-request-sent`, `m-request-failed` in Hindi and Marathi. The steer carries one sentence, *request-sent* one body sentence, *request-failed* one danger sentence, at both widths; City is a plain field matched as typed; while a request sends the fields lock, the join road spins and *Create a new company anyway* is bare-disabled; a 404 returns to the plain step. Not blocking: the words-law FAILs on frames this task does not render (`deferred.md` D133); the `Stepper` counter's English (`docs/tasks/UI.md`).
+
+#### RFC
+
+##### Title
+T-M01-035 — request to join: signup finds a company that already exists, and the person asks its owner to add them instead of making a second one.
+
+##### Description
+- **User impact:** on signup's company step (`SCR-M01-02`), Meera types *Suryodaya Solar Solutions Pvt Ltd*, *Pune* and presses *Create company*. Signup tells her that company is already here and offers *Request to join* or *Create a new company anyway*. She asks to join; the company's owner gets a notice naming her and her number. Directly: no second workspace for one company. Indirectly: the company's leads, designs and money stay in one place.
+- **Who gains:** a second person from an existing company, and that company's EPC Owner.
+- **Problem solved:** `GET /tenants/similar` exists (`T-M01-025`) but nothing calls it, no route carries a request, and the api has never raised a notification.
+- **Cites:** this task's header (`M01-09` (P1)); the brief `docs/ux/briefs/SCR-M01-02-company-signup.md` (decisions 3, 5, 6; states `request-to-join-offered`, `request-sent`); the board's decisions record, read 2026-10-07 — decisions 5, 9, 18–20, 22, 24 and the word plan.
+
+##### Goals
+- *Create company* with a name and city that match an existing company (as typed, case ignored) shows the steer; no match creates as today.
+- *Create a new company anyway* and *Create your own company instead* create the company.
+- *Request to join* gives every active EPC Owner of the matched company one `join_requested` notification, in that owner's language, naming the asker's name and number; the asker lands on `request-sent`.
+- A repeated request writes nothing new.
+- Web at 375 and 1536 and the phone carry the same states and words.
+
+##### Non-goals
+- The owner's act on the notice (*invite this person*, opening `SCR-M01-07` pre-filled): `SCR-M01-07` is not built and a notification carries no link yet — written into `T-M01-007`'s task as part of this change.
+- A city list, suggestions or a "matched to" helper (owner ruling, brief decision 3).
+- Storing the request as its own record, a cancel, or telling the asker the owner's answer — the invite SMS is the answer (board word plan).
+- Every other state of the screen — `T-M01-002`, `T-M01-034`.
+
+##### Readiness and dependencies
+- Landed: `T-M01-025` (`GET /tenants/similar`, index `tenant_company_name_city_idx`, migration 0002) · `T-FPLAT-017` (the record, `recordNotification`) · `T-FPLAT-018` (quiet hours, mutes) · `T-FPLAT-067` (push) · `T-M01-002`, `T-M01-034` (the screens) · `T-SHELL-003` (the owner's notification centre shows the notice).
+- Branch stacked on `feat/T-M01-030g` (PR #246, open); it adds no migration, so 0022 is next.
+- **Owner ruling (2026-10-07):** the city is matched as typed, ignoring case — brief decision 3 and this task's Contract line.
+- Design check: see `#### Design check`. The board was redrawn twice in this step (the city words, `d-request-sent`, the language renders, the steer's and `request-sent`'s words). Frames this task does not render still break the words law — `deferred.md` D133, a copy pass outside this task.
+- Deferred rows met at this start (missed at the walk, raised by review): `D23` (the phone's code step has no language control) and `D24` (ten door parts written once per platform) both read *T-M01-035 starts*. D5 rules them.
+- Blockers: none. D2 and D3 below ride on this approval.
+
+##### Proposal
+**Flow.** *Create company* → `GET /tenants/similar` → no match: `POST /tenants` as today · a match: the steer names the oldest match → *Request to join* → `POST /tenants/join-requests {companyName, city, name}` → the api re-matches on the admin pool, then in the matched tenant's transaction finds its active EPC Owners, skips an owner who already holds this asker's request, writes one notification per owner in the owner's language, commits, then sends the pushes → 200 `{companyName, city}` → `request-sent`.
+
+**Findings from testing the requirements** (each with its fix):
+1. **City resolution** — the board drew a market-pack city list nothing holds. Ruled by the owner: typed text (above). The board was redrawn.
+2. **The owner's act** — the task's Contract line has the notice open `SCR-M01-07` pre-filled; that screen and notification links do not exist. Left out (Non-goals); the line moves to `T-M01-007`.
+3. **Two matches** — `similar` has no order, so the steer and the request could name different companies. It orders by `created_at`; the request goes to the oldest match.
+4. **The request names no tenant id.** The api matches again from the typed name and city, so a caller reaches only a company whose exact name and city they typed — never one picked by id.
+5. **No one resolves "the EPC Owner" yet** (`registry.ts` leaves rule → people to the slice that needs it). The request reads active members holding `epc_owner` in the matched tenant.
+6. **`recordNotification` returns nothing,** but a push needs the record's id. It returns the id.
+7. **The task's Contract line puts the type in contracts;** types live in `packages/domain` (`NOTIFICATION_TYPES`) and contracts derive them. Corrected here.
+8. **The api cannot render words** — its allowed deps are contracts, domain, db, env, config (`architecture.md` §2, apps/api). D2.
+9. **A failed request keeps the steer (board decision 25, D6 A).** The screen's error frame is titled *We could not create the company*, which a failed request is not. So a failed request keeps the steer whole, adds a danger block under the heading — *Your request did not go through* / *Something on our side or the connection failed, so nothing was sent.* — and the join road reads *Send the request again*; a repeat writes nothing twice. While the request is on its way the values show as facts, the join road spins and *Create a new company anyway* is disabled (decision 26). A request answered 404 (the company no longer matches) goes back to the plain company step, since trying again cannot succeed.
+10. **A failed similar check does not block.** The steer is advice (`M01-09`: "a steer, not a block"), so a failed check creates as today.
+
+**Key decisions** (one reason each):
+1. **No table for the request.** The notification IS the request (`T-M01-028`'s ruling: a request is never an invitation); the subject is the asker's `user_account`. A table would hold one fact twice.
+2. **One request per asker per company.** Before writing, the api looks for that owner's `join_requested` with the same subject (index `notification_tenant_recipient_emitted_idx` leads with tenant and recipient). A repeat answers 200 and writes nothing.
+3. **The asker must have no company.** A person with an active membership is refused 409 — the steer exists only on signup.
+4. **The steer state is domain's.** `signupView` gains `join` and `sent`, chosen from the hook's steer state, so both screens render one view chosen once (Law 11).
+5. **The typed name travels in the request, only for the words.** The account's name is set when a company is created (`POST /tenants`); a request changes no account.
+
+**Order:** domain (type, registry row, views) → migration 0022 → contracts → api (similar order, request, notice words) → data hook → web → phone → e2e → docs.
+
+**Twin screen:** web `apps/web/features/auth/` and phone `apps/mobile/src/screens/company-signup/` get the same two panels; 1536 follows decisions 22 and 24.
+
+##### Architecture diagram
+```mermaid
+sequenceDiagram
+  participant S as Signup screen (web · phone)
+  participant H as useCompanySignup (data)
+  participant A as api tenant module
+  participant T as matched tenant (RLS tx)
+  participant N as notification module
+  S->>H: Create company
+  H->>A: GET /tenants/similar
+  A-->>H: oldest match first
+  H-->>S: view join
+  S->>H: Request to join
+  H->>A: POST /tenants/join-requests
+  A->>A: re-match on admin pool
+  A->>T: active EPC Owners, existing requests
+  A->>N: recordNotification per owner (owner's language)
+  A->>N: deliver push after commit
+  A-->>H: 200 company, city
+  H-->>S: view sent
+```
+
+##### Package changes
+- **domain:** `NOTIFICATION_TYPES` gains `join_requested`; its registry row — raised by a new source `team` (group *team*), recipients `epc_owner`, channels in-app and push, standard. Not `platform`: that source is product news (`F6.4`, `isAnnouncement`), which a company's own request is not — `centre-view.test.ts` caught it in the build. `SignupView` gains `join` and `sent`.
+- **contracts:** `tenant.ts` gains `joinRequestSchema` and the `joinRequest` route; the notification read already accepts new types (`extensibleEnum`).
+- **db:** migration 0022 adds the enum value; no table.
+- **i18n:** the steer and request-sent words in `company-signup.ts`; the owner's notice words; `GROUP_SENTENCE` for the new type (a `Record`, so it will not compile without it); all three languages.
+- **data:** `tenant` repository `joinRequest`; `useCompanySignup` gains the steer.
+- **api:** the route in the tenant module; `@heliogrid/i18n` as a dependency (D2); the settings module exports `SettingsService` for its new `quietHoursOf` (a company's quiet window and clock, which a notice's push is held against, `F6-14`).
+- **ui:** `NotificationCard`'s per-type icon map gains `join_requested` → `users` — the map is a `Record` over the types, so it will not compile without the row.
+- **Protections (Law 12):** route → `RouteAccessMap` (`session`); type → the registry `Record` and `enum-parity`; words → the three-language checks; screens → `e2e-flow-per-screen` (existing flows extended). No new brand, table or error code.
+
+##### Data and schema changes
+- Migration `0022_join_request_notification.sql` (from `pnpm db:migration:new`): `ALTER TYPE notification_type ADD VALUE 'join_requested'`.
+- Old readers: the notification read is `extensibleEnum`, so an old app shows an unknown type through its fallback. New code reads old rows unchanged. Expand only; rollback leaves an unused value.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/domain/src/notifications/types.ts` | `join_requested` | the type list's owner |
+| modify | `packages/domain/src/notifications/registry.ts` | its row | the registry `Record` |
+| modify | `packages/domain/src/auth/signup-view.ts` | `join`, `sent` | the view rule's owner |
+| modify | `packages/domain/tests/auth/signup-view.test.ts` | the two views | its test |
+| add | `packages/db/migrations/0022_join_request_notification.sql` | the enum value | §4.2 |
+| modify | `packages/contracts/src/tenant.ts` | the route and schema | tenant contract area |
+| modify | `packages/contracts/openapi/openapi.json` | regenerated | generated |
+| modify | `apps/api/package.json` · `pnpm-lock.yaml` | `@heliogrid/i18n` (D2) | `pnpm add` |
+| modify | `docs/engineering/architecture.md` | apps/api allowed deps gain i18n (D2) | the authority |
+| modify | `apps/api/src/modules/tenant/tenant.controller.ts` | route and access | the tenant module |
+| add | `apps/api/src/modules/tenant/tenant.join-request.service.ts` | match, guard, words, push | the service would pass 300 lines |
+| add | `apps/api/src/modules/tenant/tenant.join-request.repository.ts` | owners, existing requests, the write | tenant-scoped writes |
+| modify | `apps/api/src/modules/tenant/tenant.admin.repository.ts` | `similar` ordered by `created_at` | the cross-tenant read |
+| modify | `apps/api/src/modules/tenant/tenant.module.ts` | imports `NotificationModule` | Nest wiring |
+| modify | `apps/api/src/modules/notification/notification.repository.ts` | `recordNotification` returns the id | the one writer |
+| modify | `apps/api/src/modules/notification/notification.public.ts` | exports `TenantQuietHours` | the module's surface |
+| modify | `apps/api/src/modules/settings/settings.service.ts` · `settings.module.ts` · `settings.public.ts` | `quietHoursOf`, exported | the company's quiet window is the settings module's (`F6-14`) |
+| modify | `turbo.json` | the `app-api` boundary allows `i18n` (D2) | the boundary tag |
+| modify | `packages/ui/src/components/NotificationCard/NotificationCard.logic.ts` | the type's icon | its `Record` |
+| modify | `packages/i18n/src/index.ts` · `packages/domain/src/auth/index.ts` | the new exports | package entries |
+| modify | `packages/i18n/src/copy/company-signup-frames.ts` · `packages/i18n/tests/company-signup-frames.test.ts` | `joinSteerWords`, `joinSteerFinding` — words chosen by state, the number kept whole | `.claude/rules/screen-parts.md` (words by state are a copy function) |
+| modify | `packages/data/src/react/index.ts` | exports the hook's new types and `useSteerDroppedOnEdit` | the data entry |
+| modify | `apps/web/features/auth/components/CompanyStep.tsx` · `apps/mobile/src/screens/company-signup/components/CompanyStep.tsx` | the steer inside the company step, sharing its form | the step owns the fields the steer keeps |
+| modify | `apps/web/features/auth/company-signup.css` · `apps/mobile/src/screens/company-signup/styles.ts` · `…/components/KnownNumber.tsx` · `…/components/CompanyFields.tsx` · `apps/web/features/auth/components/CompanyFields.tsx` | the steer's placement per width, the sent-as facts; the off-flow title style renamed for both panels; the fields' helpers off under the steer (`withHelpers`, both halves); the phone fields' gap under the account (`underAccount`) | the screen's own styles |
+| modify | `packages/ui/src/components/TintedBlock/TintedBlock.tsx` · `TintedBlock.native.tsx` | the block's title bold (QA round 1) | the component's owner, one contract for both halves (Law 7) |
+| modify | `apps/api/src/modules/market/market.service.ts` · `apps/api/src/modules/catalog/catalog.service.ts` | `currentPackOf` — the one lookup settings, catalog and the request share (review) | the market module owns the packs |
+| modify | `packages/domain/src/notifications/centre.ts` · `packages/domain/tests/notifications/centre.test.ts` | an unknown type never groups and never throws (review: release safety) | the group rule's owner |
+| modify | `.dependency-cruiser.cjs` · `.claude/protections.md` · `packages/i18n/CLAUDE.md` | `server-no-i18n-frontend-entries` and its row; the notification exception to stored translations | Law 12, Law 8 |
+| modify | `docs/tasks/deferred.md` · `docs/ux/briefs/SCR-M01-02-company-signup.md` | D23/D24 reopen cells, D133, D134, D135, D136, D137; brief decision 3 (the owner's city ruling); the brief's `request-failed` state and its 1536 count (board v6) | Law 8 |
+| add | `apps/api/tests/tenant/join-request.test.ts` | the request's cases | testing rules |
+| add | `packages/i18n/src/copy/join-request.ts` | the owner's notice words | copy module per reader |
+| modify | `packages/i18n/src/copy/company-signup.ts` | steer and request-sent words | the screen's copy |
+| modify | `packages/i18n/src/copy/notifications.ts` | `GROUP_SENTENCE` row | its `Record` |
+| modify | `packages/i18n/src/locales/{en,hi,mr}/messages.po` · `messages.ts` | the catalogs (`.ts` compiled) | i18n catalogs |
+| modify | `packages/data/src/tenant/repository.ts` | `joinRequest` | wire calls |
+| modify | `packages/data/src/react/use-company-signup.ts` | the steer | the screen's hook |
+| modify | `apps/web/features/auth/CompanySignupScreen.tsx` | renders the two views | the screen |
+| add | `apps/web/features/auth/components/JoinSteer.tsx` · `JoinRequestSent.tsx` | the two panels | beside `CompanyStep.tsx` |
+| modify | `apps/mobile/src/screens/company-signup/CompanySignupScreen.tsx` | renders the two views | the screen |
+| add | `apps/mobile/src/screens/company-signup/components/JoinSteer.tsx` · `JoinRequestSent.tsx` | the two panels | beside `CompanyStep.tsx` |
+| modify | `tests/e2e/web/company-signup.spec.ts` · `tests/e2e/support/door.ts` | the steer and request-sent; the signup helper stops at the company step | the screen's flow |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC; `T-M01-007` gains the owner's act | Law 8 |
+
+##### API and contract changes
+- `GET /tenants/similar` — unchanged shape; items now oldest first.
+- `POST /tenants/join-requests` — body `{companyName, city, name}` (the existing name, city and owner-name schemas). Access `session` (signed in, no company needed). 200 `{companyName, city}` — the company as stored. 401 no session · 404 no company matches now · 409 the asker already has a company · 400 a field fails its schema (the global `VALIDATION_FAILED`). Idempotent by rule (decision 2), so no idempotency key. Additive; no client breaks.
+
+##### Risks and rollout
+- **Tenancy:** an outsider causes a write in another company. Mitigation: the target is only an exact name-and-city match; the write runs in that tenant's own RLS transaction; the planted red proves another company's owners get nothing.
+- **Abuse:** anyone with a verified number can ask any company they can name. Mitigation: one request per asker per company; owners only; the OTP limits cost a verified number. No cap number is invented (no PRD row).
+- **Privacy:** the asker learns that a company exists in a city — the steer's purpose (`M01-09`). No owner name crosses (brief decision 6).
+- **Release:** the enum value is expand-only and readers fall back (Data).
+- **An older api reading the new type:** the inbox derives each item's urgency from the registry, and an api built before this type would fail on a `join_requested` row. No deployed api exists yet (hosting is not set up), so no older api can read one; the inbox read gains an unknown-type guard here so a later type is safe in its roll.
+- **Two requests at the same instant** may both write before either sees the other: the screen sends one request at a time, and a second notice is harmless. No lock is taken.
+
+##### Acceptance criteria and proof
+- **AC-1** — (M01-09 carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text quoted above is the binding criterion.) → proof: QA (web and phone) a company name and city matching an existing workspace renders the steer with both roads full-size, "Create a new company anyway" still creates, and "Request to join" leaves the matched tenant's EPC Owner a request naming the asker and lands the asker on the `request-sent` state · QA (api) the Owner's notification carries the registered type
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 | main-dev | required | api tests | a match → each active EPC Owner gets one `join_requested` in their language naming the asker, other members none, another company nothing; repeat → nothing new; no match → 404; asker with a company → 409; no session → 401; two matches → the oldest | `apps/api/tests/tenant/join-request.test.ts`; planted reds (Delivery size): the EPC Owner role filter, the active filter, the repeat check and the oldest-first order, each removed |
+| AC-1 | main-dev | required | domain | `signupView` → `join`, `sent` | `signup-view.test.ts` |
+| AC-1 | qa-api | required | api `8084` | the request live, then the owner's `GET` inbox shows `join_requested`; a second request adds none | live |
+| AC-1 | qa-web | required | web `3002` at 375 and 1536 | steer with both roads; *anyway* creates; *Request to join* → `request-sent`; the owner's centre shows the notice | live, board compared |
+| AC-1 | qa-ios | required | simulator | the same on the phone | live |
+| AC-1 | qa-android | required | Pixel_8 emulator | the same on Android (owner ruling 2026-10-07: the phone flow cannot reach the steer — it stops before *Create company*, T-FPLAT-079, and the steer needs a second account) | live |
+| AC-1 | ci | required | `e2e-web` | a second number types an existing company → the steer → `request-sent`; and *anyway* → home; a request that does not go through keeps the steer, says so (*anyway* disabled while it is on its way), and sends again | `tests/e2e/web/company-signup.spec.ts` |
+| all | evaluator · ci | required | `pnpm check:all` · `quality` | the gate passes | gate · CI |
+
+##### Delivery size
+- **Estimate:** 31 authored files, 3 generated (`openapi.json`, `pnpm-lock.yaml`, the three compiled `messages.ts` counted once). Authored lines: code about 650 · tests about 350 · docs about 120 — about 1,120.
+- **D3 — size ruling (owner).**
+  - **A · one part (recommended).** The steer without the request leads nowhere, and the request without the steer has no caller. About 31 files and 1,120 lines.
+  - **B · split.** **a** — the route, the type, the words (about 14 files, 550 lines; proved by api tests and `qa-api`). **b** — the two screens (about 17 files, 570 lines). Two PRs and two QA runs.
+- **D2 — the owner's notice words (owner).**
+  - **A · the api may import `@heliogrid/i18n`'s React-free entry (recommended).** `architecture.md` already names that entry for "a server render or a job"; every later notification type needs the same.
+  - **B · the words go in the market pack**, as SMS words do (`platformMessage`). No new dependency, but UI words become pack data, which owns market facts, not copy.
+- **Order:** as in Proposal.
+- **Owner rulings (2026-10-07):** RFC approved; D2 → **A** (the api imports `@heliogrid/i18n`); D3 → **A** (one part).
+- **Scope delta approved (2026-10-07):** `packages/ui`'s notification icon for the new type; the settings module's `quietHoursOf`; `turbo.json`'s `app-api` boundary; validation answers 400; the race note.
+- **Build delta (2026-10-07, after the first review)** — the build ran over the 20% line, so approval is void until D4 and D5 are ruled.
+  - **Measured:** 49 authored files (42 tracked, 7 new) and about 1,560 authored lines (code about 970, tests about 380, docs about 210), against 31 files and 1,120 lines planned. Generated: `openapi.json`, `pnpm-lock.yaml`, three compiled catalogs.
+  - **Why it grew:** the copy and catalogs in three languages; the steer living inside both `CompanyStep`s; `quietHoursOf` and the `team` source; the e2e helper split; the RFC's own deltas.
+  - **The review's fixes add about 8 files and 150 lines:** one market-pack lookup reused by settings, catalog and the request; the quiet-hours type reused; a `checking` wait so a matching check never says *Creating your company*; the view passed into `CompanyStep`; the edit-drops-steer rule written once; the 404 rule above; the push after commit caught per notice; the phone number kept whole in the steer sentence; a dependency-cruiser rule keeping i18n's `./react` and `./rn` out of the api (seen firing, then its protections row); the i18n docs naming the api's use; a deferred row to drop `tenantId` from `GET /tenants/similar`.
+  - **D4 — size (owner).** **A · one part at about 57 files and 1,710 lines (recommended)** — built and proven; the steer without the request leads nowhere. **B · split now** — the backend as one PR, the screens as a second; the code is written, so a split only adds a second review and QA run.
+  - **D5 — `D23` and `D24` (owner).** **A · keep both deferred (recommended)**: add `JoinSteer` and `JoinRequestSent` to `D24`'s list, and both rows reopen on the owner scheduling the door-parts lift as its own task — twelve parts into `packages/ui` is its own RFC. **B · lift now**: the twelve parts move into `packages/ui` in this task, roughly doubling it.
+  - **Owner rulings (2026-10-07):** delta approved; D4 → **A** (one part); D5 → **A** (both stay deferred).
+- **Planted reds, each seen failing by name in `apps/api/tests/tenant/join-request.test.ts`, then restored:** the EPC Owner role filter removed → *sends each active EPC Owner of the oldest match one join request…* (the worker got one); the active-membership filter removed → the same case (the left owner got one); the repeat check removed → *writes nothing new when the same person asks again*; the oldest-first order removed → *lists the oldest match first on the steer read*. The tenant predicate is a second guard behind RLS (the write runs in the matched company's own transaction), so removing it alone cannot go red. `server-no-i18n-frontend-entries` fired on a planted `@heliogrid/i18n/react` import in the api, then was restored. `centre.test.ts`'s unknown-type case failed before the guard.
+- **Review, not changed (with reason):** the repository resolves the registry's `epc_owner` rule to holders of `FOUNDER_ROLE`. The rule names a relationship and the role is its people (`registry.ts`: resolving a rule to people is the emitting slice's); filtering by the rule's string would conflate the two vocabularies.
+- **After the owner's design review (2026-10-07):** the build missed the board's details on `request-sent` and the steer (the Sent-as tile on `--fill` with `--tile-pad` and `--r-tile`, its name `body-sm` bold and number mono bold, the prompt `body-sm` centred `sp-2` over its route, the phone request-sent heading `sp-8` from the header, the phone steer heading → fields `sp-5` and fields → finding `sp-5`, the roads `sp-3` apart, the 1536 finding block) and two states were never driven (the sending lock, a failed request). Owner approved the fix plan; D6 → **A**: the owner draws `request-failed` on the board first. QA adds an element-by-element check of type, colour, fill, padding and gaps against the board's tokens.
+- **Board redrawn (2026-10-07, D6 A):** `m-request-failed` / `d-request-failed` and their Hindi and Marathi renders; the sending lock and the 404 return written on the board (decision 26); every finding and failure block at 1536 one size, `d-duplicate-phone`'s. Read again and to be checked by `design-check` when this task resumes.
+- **Blocked on the design tokens (D7 A, D8 A, 2026-10-07):** `packages/theme/src/_generated/` is the snapshot pulled at #12; the live design system has since moved to the open page (`--canvas` white), added `--fill`, `--tile-pad`, `--r-tile` and more, and changed values (`--surface-form`, `--r-input-expressive`). The Sent-as tile cannot be built to the board without them. The pull runs first as its own task on `feat/T-FPLAT-pull`, stacked on `feat/T-M01-030g`; this branch then stacks on it, and the visual fixes, the `request-failed` state, the sending lock and an element-by-element QA follow.
+- **As built (2026-10-07):** 55 authored files (46 changed, 9 new) and about 1,780 authored lines — code about 1,120, tests about 400, docs about 260 — inside D4's approved size. Generated: `openapi.json` (+248), `pnpm-lock.yaml` (+3), three compiled catalogs.
+  - **Planned and built:** every row of `##### File and folder changes`, as amended by the two approved deltas.
+  - **Built but not planned:** `packages/domain/src/notifications/centre-view.ts` — `isKnownType` moved to `types.ts` so the inbox and the announcement rule share one check (review, Law 5).
+  - **Planned but not built:** `tests/e2e/mobile/company-signup.yaml` — the phone flow cannot reach the steer (owner ruling: live `qa-android`).
+  - **Changed from the RFC:** the steer lives inside both `CompanyStep`s, sharing the form, not in a separate `JoinSteer` screen; validation answers 400; a 404 returns to the plain step; *Check* is its own wait.
+- **Size after the resume (2026-10-07, approval void by size until ruled):** the board-v6 round — the `request-failed` block and *Send the request again*, the sending lock (facts, spinner, bare-disabled *anyway*), the Sent-as tile, the steer's road gap, the prompt's size and centring, the phone heading padding, the brief's `request-failed` state, the words in three languages and a failing-request e2e case — touched 17 files already in the table and added about 390 authored lines. Built: 55 authored files (no new file) and about 2,170 authored lines, against D4's 57 files and 1,710 lines (+27%). One part still: the round finishes states of the same two panels.
+  - **Owner ruling (2026-10-07):** size **A** — one part at about 55 files and 2,170 lines.
+  - **Side-by-side review (owner's request, 2026-10-07):** every frame of this task shot on web 375 and 1536, iOS and Android, English, Hindi and Marathi, beside its board frame. Fixed: the field helpers hidden under the steer (the steer's one sentence is its finding — both `CompanyFields`); six Hindi and Marathi phrases set to the board's words. Rulings: **D14 B** — the board's white secondary button (`--surface`, `--e2`) is drawn in `T-FPLAT-082` part c, every screen at once; **D15 B** — the web door at 375 matches the phone board in its own task, `T-M01-038`, next after this one (replaces D137). Kept: a number never wraps (ui-adherence), where the board breaks it after `+91`.
+  - **Process rules changed (owner, 2026-10-07), in this commit:** `/task` step 3 captures every frame from the board and never follows it blindly (a wrong frame goes to the owner with two options); `references/qa.md` and the three QA helpers compare each screenshot with its board frame element by element and list every difference (`board?` where the board looks wrong); `docs/tasks/README.md` adds one `side-by-side` proof row per frame; `ui-adherence.md` copies Hindi and Marathi words from the board's renders; the commit card shows the side-by-side images.
+  - **From QA, round 1 (2026-10-07):** every statement block's title is bold — `TintedBlock`'s two halves (`packages/ui`), as the board's blocks draw it (*"a `--fs-body-sm` bold title"*, *"what happened in its bold line"*). This also bolds the sign-in door's blocks (`SCR-M01-01`), whose record names no weight; said here out loud. At 1536 a finding holds the identity half at its 560 measure, so the block sits at the half's left edge, 520 wide (the board's 176 → 696). The rule selects `DoorFrame`'s own `.hg-door-identity` from `company-signup.css`, because only a finding widens the half — the board's `d-step2-code` keeps the half shrink-wrapped — so a rename of that ui class drops it silently; no check holds it, said out loud.
+- **Mistakes found, each fixed, with what now prevents it:**
+  - *Main, found by the side-by-side* — the field helpers were drawn under the steer, where `m-request-to-join` and `m-request-failed` show none (the steer's one sentence is its finding). Prevention: the board's frames are captured at design check and every QA row compares its screenshot with them (`/task` step 3, the QA helpers); no automatic check reads a board — said out loud.
+  - *Main, found by the side-by-side* — six Hindi and Marathi phrases were written, not read from the board's language renders. Prevention: Hindi and Marathi words are copied from the board's renders (`.claude/rules/ui-adherence.md`); no automatic check reads a board — said out loud.
+  - *Main, after the resume* — QA packets named `…906` and `…907` as company-less, but both belong to *QA api primary*; and called `000000` a wrong code when it is `DEV_OTP_CODE`. Each cost one helper run. Prevention: read the numbers' memberships from the test database and the dev code from `.env.local` before writing a packet — no check can see a packet; said out loud.
+  - *Main, after the resume* — the web steer's block title rendered at weight 400 and its 1536 block shrank to its content; `TintedBlock` never drew the board's bold line. Found by element-level QA; the bold title is now one contract on both halves.
+  - *Main* — migration 0022 applied to `heliogrid_dev`: `pnpm --filter @heliogrid/db migrate <url>` ignores the argument and reads `DATABASE_ADMIN_URL` from the shell. Applied again correctly to `heliogrid_test`; `heliogrid_dev` stays one migration ahead until this merges (an enum value cannot be dropped). Prevention: `packages/db/CLAUDE.md` already says `pnpm db:migrate` reads the shell; no check can see which database a person meant — said out loud.
+  - *Main* — the walk did not list the deferred rows due at this start (D23, D24); the review found them, the owner ruled D5. Prevention: `docs/tasks/deferred.md`'s header rule; review holds it.
+  - *Main* — a scripted edit of this file wrote it back without its tail (every task after this one); rebuilt from git and checked against `git diff HEAD --stat`. No check holds a task file whole — said out loud.
+  - *Main* — the iOS packet gave the board's 375×812 home-bar line (778) for a 402×874 device; the rerun measured against 840.
+  - *design-check* — the steer's second sentence passed two rounds before it was flagged; the owner redrew it.
+  - *A helper* — 36 files were found staged in git after QA; no helper may write the repository. Unstaged; no content changed. The status hash detects it; nothing prevents it.
+  - *Review* — the registry's `platform` source made the request read as product news (`centre-view.test.ts` caught it in the build); the `team` source fixes it.
+
+**Checklist** — [x] domain · [x] migration 0022 · [x] contracts · [x] api · [x] words · [x] data · [x] web · [x] phone · [x] e2e · [x] docs · [x] AC-1 main-dev · [x] qa-api · [x] review (clean on the third pass, before the pause) · board-v6 round: [x] words · [x] web · [x] phone · [x] e2e (10 passed on one worker; planted red: the failure block removed → *element(s) not found* at both widths) · [x] docs · [x] qa-web · [x] qa-ios · [x] qa-android (steer, request-failed with the api stopped, request-sent, the sign-in door's bold block; the owner's notice on web) · [x] review (clean, fourth pass) · [x] qa-api (live again: 401, 200, a repeat adds no notice, the owner's one notice, 404) · [x] *anyway* creates, live on web, iOS and Android · [x] side-by-side of every frame (web 375/1536, iOS, Android; English, हिन्दी, मराठी) · [x] gate — run 1 passed before the side-by-side round; run 2, the final, passed after it (2,763 tests, every invariant green)
+
+#### Runtime
+Recorded at the step's start (2026-10-07), before anything ran. Branch `feat/T-M01-035` from `feat/T-M01-030g` `05674c73` — stacked on the open PR #246, by the owner's call.
+
+| resource | state at start | identity |
+|---|---|---|
+| web `3002` · api `8084` · metro `8081` | free | — |
+| postgres `5544` | pre_existing | container `heliogrid-pg-local` |
+| object store `9000` | pre_existing | container `heliogrid-object-store-local` |
+| temporal `7233` | pre_existing | container `heliogrid-temporal` |
+| simulators · emulators | none booted, none attached | — |
+| browser tabs | the pane is closed | — |
+| database routing | `heliogrid_dev` on both `DATABASE_URL` and `DATABASE_ADMIN_URL` | `.env.local` |
+| logs | `.qa/api.log` 3,967,218 bytes · `.qa/metro.log` 14,661 bytes · `.qa/web.log` not created | byte marks |
+
+**At the end** (resource → initial → final):
+- api `8084` → free → started through the `api` launch configuration (serverId `69c9cfea…`), stopped; free.
+- web `3002` → free → started through `web` (`c2c37d7c…`), stopped before the gate; free.
+- metro `8081` → free → started through `mobile-metro` (`ce4219d9…`), stopped; free. No `tsx watch` left.
+- simulator iPhone 17 Pro `40ED0117-7FB4-4A1E-BCA4-08A160670C63` → shut down → booted (restarted once when its screen did not come up), shut down.
+- emulator `Pixel_8_Emulator` (`emulator-5554`) → not running → started with 4 GB, its app data cleared once for a signed-out start, stopped.
+- browser tabs → pane closed → `seed` and `tab-1` opened by the previews, closed.
+- database routing → `heliogrid_dev` on both → `heliogrid_test` for QA → `heliogrid_dev` on both, `.env.local` byte-identical to its start.
+- `heliogrid_test` → migrated to 0022. `heliogrid_dev` → migrated to 0022 by mistake (above).
+- standing accounts → `…902` and `…903` stay company-less, each holding one join request; `…901` and `…904` hold the notices; QA's fresh numbers own new companies named like the targets (oldest still the standing ones).
+- Postgres, object store, Temporal → pre_existing, untouched.
+- logs → `.qa/api.log` 3,967,218 → 4,375,636 · `.qa/web.log` created → 35,364 · `.qa/metro.log` 14,661 → 118,197 bytes; kept.
+
+**Measurements** — about 330 Main tool calls; helper runs: `design-check` 4 (one helper continued), `qa-api` 2, `qa-web` 2, `qa-ios` 3, `qa-android` 3, `reviewer` 3, `evaluator` 1, plus one read-only code map; Main's own tokens are not measured by this session. Planned 31 files and 1,120 lines; built 55 files and about 1,780 lines (both deltas approved).
+
+**Resumed (2026-10-07, after `T-FPLAT-082a` merged as #247).** Branch `feat/T-M01-035` moved to `origin/main` `c08a52cd`; the paused work restored from `stash@{0}`; its deferred rows renumbered D130–D132 → D133–D135 (part a took D130–D132). State at resume:
+
+| resource | state at resume | identity |
+|---|---|---|
+| web `3002` · api `8084` · metro `8081` | free | — |
+| postgres · object store · temporal | pre_existing | `heliogrid-pg-local`, `heliogrid-object-store-local`, `heliogrid-temporal` |
+| simulators · emulators | none booted | — |
+| browser tabs | the pane is closed | — |
+| database routing | `heliogrid_dev` on both URLs; `heliogrid_dev` and `heliogrid_test` at 0022 | `.env.local` |
+| logs | `.qa/api.log` 4,535,039 · `.qa/web.log` 69,520 · `.qa/metro.log` 241,995 bytes | byte marks |
+
+**At the end of the resume** (resource → at resume → final):
+- web `3002` · api `8084` · metro `8081` → free → started through `web`, `api`, `mobile-metro`; the api stopped once by Main for the request-failed rows and started again; all stopped; free.
+- Docker → running → the daemon went down during the build (not by Main) and the containers exited; Main started Docker Desktop and ran `pnpm infra:up`, which reused the images and the volumes; running.
+- simulator `40ED0117-7FB4-4A1E-BCA4-08A160670C63` → shut down → booted, its keychain reset once for a signed-out start; shut down.
+- emulator `emulator-5554` → not running → started (4 GB), its app data cleared twice for signed-out starts; stopped.
+- browser tabs → pane closed → `seed`, `tab-1`; closed.
+- database routing → `heliogrid_dev` on both → `heliogrid_test` for QA → `heliogrid_dev` on both. The start copy of `.env.local` was lost with the scratchpad, so the restore changed only the two database names back; not checked byte for byte — said out loud.
+- test data on `heliogrid_test`, all through the app: companies made by *anyway* — "QA api second" again for +91 98765 03910 (web), +91 98765 03911 (iOS) and +91 99999 99903 (Android); +903 is no longer company-less, so the Android standing account needs a new company-less number next time. Join requests from +91 98765 01906 (Standing Web EPC), 01907 (QA Solar Ten), 98345 67890 (QA iOS Solar) and 98765 02908 (QA api primary).
+- logs → `.qa/api.log` 5,202,325 · `.qa/web.log` 107,592 · `.qa/metro.log` 411,597 bytes; kept.
+
+**The side-by-side round** (owner's request, after the first commit card) → the stack started again on `heliogrid_test` and stopped; the api stopped once for the failed shots; the simulator's keychain reset twice and the emulator's app data cleared twice for signed-out starts; the board read in the browser pane, signed in by the owner; web shots by a temporary spec, created and deleted; a company "Suryodaya Solar Solutions Pvt Ltd" (owner +91 98765 04900) made through the api, plus a second "Suryodaya Solar Solutions" (+91 98765 04911, an input slip); join requests from +91 98765 04912–04916 and web numbers. Both phones signed out once when Metro rebuilt mid-run; a plain relaunch resumes the session, so it is a development reload, not the product. End: ports free, devices off, tabs closed, `.env.local` on `heliogrid_dev`.
+
+**Measurements of the resume** — helper runs: `design-check` 1 (one continuation), `reviewer` 1 (four passes), `qa-web` 1 (seven continuations), `qa-ios` 1 (six), `qa-android` 1 (seven), `qa-api` 1, `evaluator` 1 (one continuation); one full gate. Main's own turns and tokens are not counted. Size: 61 authored files and about 2,294 lines against the re-ruled 55 and 2,170 (+11% files, +6% lines).
+
+### T-M01-038 · The web door at phone width matches the phone board
+**Type:** screen · **Tier:** P0 (`F7-43`)
+**Status:** planned
+**Why:** At 375 the web door (`/login`, `/company-signup`) is laid out as the 1536 two-field composition stacked, not as the phone board: the heading sits above the step header and at `h1`, an off-flow state's content is centred low on the page, and the action flows under the column instead of being pinned. The boards draw one phone layout for both the app and the web at 375 (`F7-43` item 1, parity).
+**PRD rows:** none of its own — `F7-43` item 1 (375 and 1536, parity by capability); the boards `SCR-M01-01` and `SCR-M01-02` are the reference.
+**Design:** the existing boards' 375 frames (`SCR-M01-01`, `SCR-M01-02`) — no new drawing.
+**Chosen by the owner** (`T-M01-035`'s side-by-side review, ruling D15 B, 2026-10-07): its own task, next after `T-M01-035`. It replaces deferred row D137.
+**Depends on:** `T-M01-035` (the web frames it rebuilds at 375).
+**Found by:** the side-by-side comparison of `T-M01-035`'s frames (web 375 against `m-request-to-join`, `m-request-failed`, `m-request-sent`).
+**Out of scope:** the white secondary button (`T-FPLAT-082` part c, D14 B); the 1536 layout, which matches.
+**DONE WHEN:**
+- At 375 every web door frame orders as its phone board: the step header above the heading, the heading at the board's phone size (`h2`), an off-flow title `sp-8` under the header, and the action pinned at the bottom where the board pins it. → proof: a side-by-side of every web door frame at 375 against its board frame, and the e2e door specs green.
+
 ### T-M01-003 · Onboarding — Language
 **Type:** screen · **Tier:** P0
 **Status:** designed
@@ -256,6 +541,7 @@ This file covers module M01 — company signup and authentication, team invites 
 **Contract:** `packages/contracts/src/invitation.ts` — POST /invitations (name, phone, ≥1 preset → pending; zero roles refused before anything sends; an already-member phone and the daily cap refused with the reason the surface renders) · `packages/contracts/src/tenant-settings.ts` — PUT /onboarding/progress/{step} (skip during onboarding). `rolePresetSchema` (`common.ts`); preset display names and clauses are `packages/i18n` copy.
 **Depends on:** `T-M01-028` (migration 0005; POST /invitations) · `T-M01-025` (migration 0002; the guard for `m01.manage_team`, the invite cap) · `T-FPLAT-003` (the zero-role guard, F2-21) · `T-M01-026` (the onboarding step write) · `T-M01-012` (the Team screen it is one tap from outside onboarding).
 **Out of scope:** the invite record, the send on the platform rail, expiry and the cap value — `T-M01-028`; the guard — `T-FPLAT-003`; the invitee's side — `T-M01-008`; revocation and the pending list — `T-M01-012`; the invite message's language — the tenant default on `tenant` (`T-M01-025`) rendered by `packages/i18n`.
+**Carried from `T-M01-035`:** the `join_requested` notice's act — *invite this person*, opening this screen with the asker's name and number filled in (`M01-09`). The notice's subject is the asker's `user_account`; a notification carries no link yet, so the act lands with this screen.
 **DONE WHEN:**
 - Given an invite with zero roles, when it is submitted, then it is blocked before sending (M01-12, F2-21). → proof: QA (web and phone) submit with no preset: the refusal renders on the role group and no request leaves the client; QA (api) a zero-role body is refused by `POST /invitations` before any message is sent
 - Given an invite composed with zero roles, when it is submitted, then it is blocked before sending (F2-21). → proof: QA (api) `POST /invitations` with an empty role list answers the refusal and sends nothing — the guard's own unit is `T-FPLAT-003`'s

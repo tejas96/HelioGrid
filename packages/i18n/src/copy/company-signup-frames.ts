@@ -59,3 +59,52 @@ function caption(t: Translator['t'], frame: CompanySignupFrame): string | null {
   if (frame.writing) return t(COMPANY_SIGNUP.writtenNow);
   return frame.failed ? t(COMPANY_SIGNUP.errorFoot) : null;
 }
+
+/** A statement block's words — the steer's finding, or the request that did not go through. */
+export interface JoinBlockWords {
+  readonly title: string;
+  readonly body: string;
+}
+
+/**
+ * The join steer's primary, and the failure it carries (`M01-09`, `SCR-M01-02` decision 25): the
+ * request, or — after one that did not go through, with nothing sent — sending it again, with the
+ * failure said in a block under the heading while the rest of the steer stays whole.
+ */
+export function joinSteerWords(
+  translate: Translator['t'],
+  failed: boolean,
+): { primary: string; failure: JoinBlockWords | null } {
+  if (!failed) return { primary: translate(COMPANY_SIGNUP.requestToJoin), failure: null };
+  return {
+    primary: translate(COMPANY_SIGNUP.sendRequestAgain),
+    failure: {
+      title: translate(COMPANY_SIGNUP.requestFailedTitle),
+      body: translate(COMPANY_SIGNUP.requestFailedBody),
+    },
+  };
+}
+
+/** A space inside a number becomes one a line never breaks at: a number is read as one token. */
+const NO_BREAK_SPACE = '\u00a0';
+
+/**
+ * The join steer's finding (`M01-09`, `SCR-M01-02` decision 18): the company and its city, and
+ * where a request goes — its owner, never a name. The number arrives grouped and is kept on one
+ * line, so a narrow screen never breaks it after its dial code.
+ */
+export function joinSteerFinding(
+  translate: Translator['t'],
+  company: { readonly companyName: string; readonly city: string },
+  groupedPhone: string,
+): JoinBlockWords {
+  return {
+    title: translate(COMPANY_SIGNUP.joinFound, {
+      company: company.companyName,
+      city: company.city,
+    }),
+    body: translate(COMPANY_SIGNUP.joinSends, {
+      phone: groupedPhone.replaceAll(' ', NO_BREAK_SPACE),
+    }),
+  };
+}

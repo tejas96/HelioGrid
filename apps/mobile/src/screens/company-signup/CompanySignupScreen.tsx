@@ -1,4 +1,4 @@
-import { useSession, useSignIn } from '@heliogrid/data/react';
+import { useCompanySignup, useSession, useSignIn } from '@heliogrid/data/react';
 import { homeOf, signupView } from '@heliogrid/domain';
 import { COMPANY_SIGNUP, homeTitle, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { CodeStep } from '../shared/CodeStep';
 import { PhoneStep } from '../shared/PhoneStep';
 import { CompanyStep } from './components/CompanyStep';
+import { JoinRequestSent } from './components/JoinRequestSent';
 import { KnownNumber } from './components/KnownNumber';
 import { SignupProgress } from './components/SignupProgress';
 
@@ -14,7 +15,8 @@ import { SignupProgress } from './components/SignupProgress';
  * Company signup (`SCR-M01-02`): the number, the code, then three fields, over the flow
  * `T-M01-036` landed. Two routes render it — the door's "Create a company account" while signed
  * out, and the company step for a verified number without a company (`M01-10`). Which panel
- * shows is `signupView`'s; this composes.
+ * shows is `signupView`'s, over the join steer `useCompanySignup` holds (`M01-09`); this
+ * composes.
  */
 export function CompanySignupScreen() {
   const t = useTranslate();
@@ -22,7 +24,8 @@ export function CompanySignupScreen() {
   const session = useSession();
   const { pack } = useFormat();
   const signIn = useSignIn(pack, 'signup');
-  const view = signupView(session, signIn.state.step);
+  const signup = useCompanySignup();
+  const view = signupView(session, signIn.state.step, signup.steer);
 
   /** The held account's session ends, and the number step comes back with the field cleared. */
   const leaveForAnotherNumber = () => {
@@ -47,8 +50,25 @@ export function CompanySignupScreen() {
       <SuccessDwell title={t(SIGN_IN.youAreIn)} line={t(SIGN_IN.takingYouTo, { destination })} />
     );
   }
-  if (view === 'company' && session.user !== null) {
-    return <CompanyStep user={session.user} restored={session.restored} />;
+  if (view === 'sent' && session.user !== null && signup.found !== null) {
+    return (
+      <JoinRequestSent
+        company={signup.found}
+        name={signup.typedName ?? session.user.name}
+        phoneE164={session.user.phoneE164}
+        onCreateInstead={() => void signup.createAnyway()}
+      />
+    );
+  }
+  if ((view === 'company' || view === 'join') && session.user !== null) {
+    return (
+      <CompanyStep
+        user={session.user}
+        restored={session.restored}
+        joining={view === 'join'}
+        signup={signup}
+      />
+    );
   }
   if (view === 'code') {
     return (

@@ -99,6 +99,9 @@ const GROUP_SENTENCE: Record<NotificationType, MessageRef> = {
   lead_unassigned_24h: /*i18n*/ {
     id: '{count, plural, one {# lead unassigned for a day} other {# leads unassigned for a day}}',
   },
+  join_requested: /*i18n*/ {
+    id: '{count, plural, one {# request to join} other {# requests to join}}',
+  },
   system: /*i18n*/ {
     id: '{count, plural, one {# product update} other {# product updates}}',
   },

@@ -29,7 +29,39 @@
 /* A finding about the person, in the identity half at the export's measure. */
 .hg-signup-finding {
   align-self: flex-start;
+  width: 100%;
   max-width: var(--form-max);
+}
+
+/* Who the request was sent as (`SCR-M01-02` request-sent): one grey tile on the white page, the
+   board's focal point on that state (decision 24). */
+.hg-signup-sent-as {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: var(--tile-pad);
+  border-radius: var(--r-tile);
+  background: var(--fill);
+}
+
+/* The join steer's two roads, 12 apart on the board (`SCR-M01-02` decision 19). */
+.hg-signup-join-roads {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* The prompt over the one route back to creating, centred above it (`SCR-M01-02` request-sent). */
+.hg-signup-sent-route {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* The join steer's finding sits under the fields on the phone and in the identity half at 1536
+   (`SCR-M01-02` decision 22) — one of the two, never both. */
+.hg-signup-wide-only {
+  display: none;
 }
 
 /* The three values as facts while they are written, on the page with no surface (F7-49). */
@@ -47,11 +79,25 @@
 
 /* --bp-desktop: @media cannot read a custom property, so its value is written here. */
 @media (min-width: 968px) {
+  /* A finding holds the identity half at its full measure, so the block starts at the half's left
+     edge and stops at the form measure (`SCR-M01-02`: half 176 → 736, block 176 → 696). */
+  .hg-door-identity:has(.hg-signup-finding) {
+    width: 100%;
+  }
+
   .hg-signup-progress-phone {
     display: none;
   }
 
   .hg-signup-progress-desktop {
+    display: block;
+  }
+
+  .hg-signup-narrow-only {
+    display: none;
+  }
+
+  .hg-signup-wide-only {
     display: block;
   }
 

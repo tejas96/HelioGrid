@@ -14,14 +14,21 @@ import { styles } from '../styles';
  */
 export function CompanyFields({
   form,
-  afterBlock,
+  underAccount = false,
+  withHelpers = true,
 }: {
   form: UseFormReturn<CreateTenant>;
-  afterBlock: boolean;
+  /**
+   * The fields sit under the verified account, which takes the wider gap; a title or a block takes
+   * the board's sp-5.
+   */
+  underAccount?: boolean;
+  /** Under the join steer the fields carry no helper: the steer's one sentence is its finding. */
+  withHelpers?: boolean;
 }) {
   const t = useTranslate();
   return (
-    <View style={[styles.fields, afterBlock ? styles.fieldsAfterBlock : null]}>
+    <View style={[styles.fields, underAccount ? styles.fieldsUnderAccount : null]}>
       <Controller
         control={form.control}
         name="companyName"
@@ -44,7 +51,7 @@ export function CompanyFields({
             placeholder={t(COMPANY_SIGNUP.yourNameExample)}
             value={field.value}
             onChange={field.onChange}
-            helper={t(COMPANY_SIGNUP.firstOwner)}
+            helper={withHelpers ? t(COMPANY_SIGNUP.firstOwner) : undefined}
             error={companyFieldRefusal(t, 'ownerName', fieldState.error)}
           />
         )}
@@ -58,7 +65,7 @@ export function CompanyFields({
             placeholder={t(COMPANY_SIGNUP.cityExample)}
             value={field.value}
             onChange={field.onChange}
-            helper={t(COMPANY_SIGNUP.whereBased)}
+            helper={withHelpers ? t(COMPANY_SIGNUP.whereBased) : undefined}
             error={companyFieldRefusal(t, 'city', fieldState.error)}
           />
         )}

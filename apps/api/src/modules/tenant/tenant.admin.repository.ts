@@ -1,7 +1,7 @@
 import { type Db, membershipRole, tenant, tenantMembership, userAccount } from '@heliogrid/db';
 import { FOUNDER_ROLE, type UiLanguage } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, asc, eq, sql } from 'drizzle-orm';
 import { type CreationKey, type Keyed, replayOf } from '../../common/creation-key';
 import { ADMIN_DB } from '../../common/db/admin.token';
 import { lockCreationKey } from '../../common/db/creation-key-lock';
@@ -114,20 +114,22 @@ export class TenantAdminRepository {
 
   /**
    * Workspaces with this exact company name and city — the request-to-join steer (`M01-09`).
-   * Bounded: the steer shows a handful and a common name in a large city could match many, so
-   * the query stops rather than reading every match to render three.
+   * Oldest first, so the steer and the request it leads to name the same company. Bounded: the
+   * steer shows a handful and a common name in a large city could match many, so the query stops
+   * rather than reading every match to render three.
    */
   async similar(companyName: string, city: string): Promise<TenantRow[]> {
     return this.db
       .select(tenantColumns())
       .from(tenant)
-      .limit(SIMILAR_TENANT_CEILING)
       .where(
         and(
           eq(sql`lower(${tenant.companyName})`, sql`lower(${companyName})`),
           eq(sql`lower(${tenant.city})`, sql`lower(${city})`),
         ),
-      );
+      )
+      .orderBy(asc(tenant.createdAt), asc(tenant.id))
+      .limit(SIMILAR_TENANT_CEILING);
   }
 }
 

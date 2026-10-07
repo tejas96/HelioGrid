@@ -48,6 +48,13 @@ export class MarketPackService {
       .map((envelope) => this.stored(envelope));
   }
 
+  /** A market's current pack. A market a company holds always has one, or the deployment is broken: said loudly, never guessed. */
+  async currentPackOf(marketCode: string): Promise<MarketPack> {
+    const pack = (await this.currentPacks()).find((one) => one.market === marketCode);
+    if (pack === undefined) throw new Error(`no pack is published for market ${marketCode}`);
+    return pack;
+  }
+
   /**
    * The pack a phone belongs to, for a message the platform sends to it — refusing a number no
    * market's allowlist covers, and one whose national part is not the length that market fixes
