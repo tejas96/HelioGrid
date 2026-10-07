@@ -123,6 +123,12 @@ export class S3ObjectStore implements ObjectStore {
     if (stored.Body === undefined) return new Uint8Array();
     return stored.Body.transformToByteArray();
   }
+
+  async read(key: string): Promise<Uint8Array> {
+    const stored = await this.client.send(new GetObjectCommand({ Bucket: this.bucket, Key: key }));
+    if (stored.Body === undefined) throw new Error(`the store answered no body for ${key}`);
+    return stored.Body.transformToByteArray();
+  }
 }
 
 /** HEAD carries no body, so a missing object is told by its status, never by a message. */

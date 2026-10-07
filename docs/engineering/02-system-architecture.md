@@ -325,8 +325,10 @@ DECLARED and readable only once `complete` read the object back and found the de
 SHA-256 and image type. Keys are `{tenant_id}/{file_id}`, both server ids. The upload link signs
 the length and the checksum, so the store refuses other bytes; the S3 presigner cannot sign the
 type, so the api checks the first bytes and every download link forces the row's type as an
-attachment. Clients upload and download **direct to the store** — bytes never proxy through the
-api. No file is larger than 2 MB (`FILE_MAX_BYTES`). The per-tenant quota check on every presign
+attachment. Clients upload and download **direct to the store** — no request carries a file's bytes
+through the api. Only a workflow step reads a stored file back whole, through the file module's
+`readStored`, and only a file its subject's rule bounds — the price list the catalog import reads
+(`T-M01-030c`), which is checked for what it unpacks to before it is opened. No file is larger than 2 MB (`FILE_MAX_BYTES`). The per-tenant quota check on every presign
 and the sweep of never-completed rows are M12's; until they land, pending rows are unbounded.
 
 ---

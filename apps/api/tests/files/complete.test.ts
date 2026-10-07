@@ -39,6 +39,7 @@ const forgetsChecksums = (store: ObjectStore): ObjectStore => ({
     return stored === null ? null : { ...stored, checksumSha256: null };
   },
   readFirstBytes: (key, count) => store.readFirstBytes(key, count),
+  read: (key) => store.read(key),
 });
 
 const skip = skipWithoutDatabase(

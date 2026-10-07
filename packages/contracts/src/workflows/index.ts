@@ -10,6 +10,12 @@
  * former sibling. Do not add one back.
  */
 
+export type {
+  CatalogImportActivities,
+  CatalogImportStepInput,
+  CatalogImportStepResult,
+} from './catalog-import';
+export { CATALOG_IMPORT_PHASES, catalogImportWorkflow } from './catalog-import';
 export type { OutboxActivities } from './outbox';
 export {
   OUTBOX_SWEEP_SCHEDULE_ID,

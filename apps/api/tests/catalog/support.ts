@@ -7,13 +7,19 @@ import {
   catalogItemMarketAvailability,
   catalogRateEntry,
   marketPack,
+  type TenantPool,
 } from '@heliogrid/db';
 import type { Certification, PanelSpec } from '@heliogrid/domain';
 import { and, eq, inArray, sql } from 'drizzle-orm';
+import ExcelJS from 'exceljs';
 import { PinoLogger } from 'nestjs-pino';
 import type { Act } from '../../src/common/auth/session-context';
 import { CreationReplies } from '../../src/common/creation-key';
+import { OutboxAdminRepository } from '../../src/common/temporal/outbox.admin.repository';
+import { OutboxDispatcher } from '../../src/common/temporal/outbox.dispatcher';
 import { CatalogAdminRepository } from '../../src/modules/catalog/catalog.admin.repository';
+import { CatalogImportRepository } from '../../src/modules/catalog/catalog.import.repository';
+import { CatalogImportService } from '../../src/modules/catalog/catalog.import.service';
 import { CatalogPlatformService } from '../../src/modules/catalog/catalog.platform.service';
 import { CatalogPricesRepository } from '../../src/modules/catalog/catalog.prices.repository';
 import { CatalogRatesRepository } from '../../src/modules/catalog/catalog.rates.repository';
@@ -23,8 +29,11 @@ import { CatalogReleasesService } from '../../src/modules/catalog/catalog.releas
 import { CatalogRepository } from '../../src/modules/catalog/catalog.repository';
 import { CatalogService } from '../../src/modules/catalog/catalog.service';
 import { CatalogSliceRepository } from '../../src/modules/catalog/catalog.slice.repository';
+import { sha256Of } from '../../src/modules/file/internal/object-store.memory';
+import { type fileServiceOf, UPLOADER } from '../files/support';
 import type { openPools } from '../support/fixture';
 import { marketsOf } from '../support/market';
+import type { aRecordingTemporal } from '../support/temporal';
 
 export { publishIndiaPack } from '../support/market';
 
@@ -182,3 +191,74 @@ export const preset = rolePresetSchema.enum;
 export const noKey = {};
 
 export const ids = (items: readonly Pick<CatalogItemWire, 'id'>[]) => items.map((item) => item.id);
+
+/** The two types a price list is stored as (`T-M01-030` part a). */
+export const priceListType = {
+  csv: 'text/csv',
+  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+} as const;
+export type PriceListType = (typeof priceListType)[keyof typeof priceListType];
+
+/** A small supplier price list as a CSV: a header row and two products. */
+export const aPriceList = (): Uint8Array =>
+  new TextEncoder().encode('Brand,Model,Rate\nWaaree,WS-545,"13,200"\nAdani,ASB-540,12900\n');
+
+/** What the wizard sends to start an import of a stored file. */
+export const anImportStart = (fileId: string) => ({
+  fileId,
+  entryPoint: 'settings' as const,
+  fileName: 'Price list Aug 2026.csv',
+  savedAt: null,
+});
+
+/**
+ * The import as `catalog.module.ts` composes it, over the real repositories, a file service on a
+ * memory store, and the real dispatcher over a Temporal client that only records (`temporal.ts`).
+ */
+export function importServiceOf(
+  pools: Pools,
+  files: ReturnType<typeof fileServiceOf>,
+  temporal: ReturnType<typeof aRecordingTemporal>,
+  tenants: TenantPool = pools.tenants,
+): CatalogImportService {
+  const silent = new PinoLogger({ pinoHttp: { level: 'silent' } });
+  return new CatalogImportService(
+    new CatalogImportRepository(tenants),
+    files.service,
+    new OutboxDispatcher(temporal.gateway, new OutboxAdminRepository(pools.admin.db), silent),
+    new CreationReplies(silent),
+  );
+}
+
+/** Declares, uploads and confirms a price list against a company's catalog; its file id. */
+export async function aStoredPriceList(
+  files: ReturnType<typeof fileServiceOf>,
+  tenantId: string,
+  act: Act,
+  contentType: PriceListType = priceListType.csv,
+  bytes: Uint8Array = aPriceList(),
+): Promise<string> {
+  const declared = await files.service.declare(
+    tenantId,
+    UPLOADER,
+    {
+      subjectKind: 'catalog',
+      subjectRef: tenantId,
+      contentType,
+      byteSize: bytes.length,
+      checksumSha256: sha256Of(bytes),
+    },
+    {},
+    act,
+  );
+  files.store.receive(declared.upload?.url ?? '', bytes);
+  await files.service.complete(tenantId, UPLOADER, declared.file.id, act);
+  return declared.file.id;
+}
+
+/** An `.xlsx` holding these sheets, each a list of rows as `exceljs` writes them. */
+export async function aWorkbookOf(sheets: Record<string, unknown[][]>): Promise<Uint8Array> {
+  const workbook = new ExcelJS.Workbook();
+  for (const [name, rows] of Object.entries(sheets)) workbook.addWorksheet(name).addRows(rows);
+  return new Uint8Array(await workbook.xlsx.writeBuffer());
+}

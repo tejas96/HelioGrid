@@ -1,6 +1,7 @@
 import {
   brandingSettings,
   businessProfile,
+  catalogImportJob,
   catalogRateEntry,
   catalogRelease,
   catalogReleaseLine,
@@ -35,10 +36,12 @@ export const TENANT_SETTING_TABLES = [
 ] as const;
 
 /**
- * The price book's rates before their versions; then lines, releases, the ledger, the overrides
- * and the own SKUs — an own SKU points at its datasheet file.
+ * The import's jobs first — a job points at its price list's file; the price book's rates before
+ * their versions; then lines, releases, the ledger, the overrides and the own SKUs — an own SKU
+ * points at its datasheet file.
  */
 export const TENANT_CATALOG_TABLES = [
+  catalogImportJob,
   priceBookRate,
   priceBookVersion,
   catalogReleaseLine,

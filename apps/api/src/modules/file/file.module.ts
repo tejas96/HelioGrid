@@ -17,5 +17,7 @@ const objectStoreProvider: Provider = {
 @Module({
   controllers: [FileController],
   providers: [FileService, FileRepository, objectStoreProvider],
+  // A module that works on a stored file reaches it through the service, never the store.
+  exports: [FileService],
 })
 export class FileModule {}

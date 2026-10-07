@@ -1,8 +1,68 @@
+import { FILE_MAX_BYTES } from '../files/rules';
+
 /**
  * The spreadsheet import's closed sets (`M01-41`). Contracts derives its `z.enum`s from these and
  * the database mirrors them as pgEnums when the job's table lands, so a member added here is added
  * to both in the same change.
  */
+
+/**
+ * Where a job is in its life. A job is read, mapped, matched into a preview, then run; a file that
+ * cannot be read ends it at `unreadable`, and the person replaces the file. The whole machine is
+ * declared at once, so a later phase adds no enum value to a stored column.
+ */
+export const CATALOG_IMPORT_STATES = [
+  'reading',
+  'unreadable',
+  'mapped',
+  'matching',
+  'previewed',
+  'running',
+  'completed',
+] as const;
+export type CatalogImportState = (typeof CATALOG_IMPORT_STATES)[number];
+
+/** The wizard's three doors (`M01-41`): one wizard, reached from onboarding, settings or a flow. */
+export const CATALOG_IMPORT_ENTRY_POINTS = ['onboarding', 'settings', 'in_flow'] as const;
+export type CatalogImportEntryPoint = (typeof CATALOG_IMPORT_ENTRY_POINTS)[number];
+
+/**
+ * Why a file was not read — each one step 1's error, answered by choosing another file
+ * (`SCR-M01-17` decision 27). `not_read` is a store or database that stayed down past every retry:
+ * the file may be fine, and choosing it again reads it again.
+ */
+export const CATALOG_IMPORT_UNREADABLE_REASONS = [
+  'cannot_open',
+  'too_large_unpacked',
+  'no_rows',
+  'not_read',
+] as const;
+export type CatalogImportUnreadableReason = (typeof CATALOG_IMPORT_UNREADABLE_REASONS)[number];
+
+/** How many times its stored size a workbook may unpack to (`T-M01-030c` decision 2). */
+const UNPACKED_TIMES_STORED = 10;
+
+/**
+ * The most a workbook may unpack to. An `.xlsx` is a zip, so a 2 MB upload can unpack to hundreds
+ * of megabytes inside the api that reads it; ten times the upload ceiling is the owner's bound.
+ * Raise it and a packed file can take the serving api's memory.
+ */
+export const CATALOG_IMPORT_UNPACKED_LIMIT_BYTES = FILE_MAX_BYTES * UNPACKED_TIMES_STORED;
+
+/** The longest file name a job keeps: the contract's bound and the column's CHECK, one number. */
+export const CATALOG_IMPORT_FILE_NAME_MAX = 255;
+
+/**
+ * One sheet of a read file, as the file holds it: its name, how many rows and columns it fills, and
+ * its first `HEADER_ROW_SCAN` rows as text — what step 1 places the header row on and step 2 guesses
+ * the columns from, on the device (`T-M01-030c` decision 3). Counted, never guessed.
+ */
+export interface CatalogImportSheet {
+  readonly name: string;
+  readonly rowCount: number;
+  readonly columnCount: number;
+  readonly topRows: readonly (readonly string[])[];
+}
 
 /**
  * What the matching pass makes of one row. A match on a platform item becomes a price override and
