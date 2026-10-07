@@ -59,8 +59,10 @@ facts. The task's acceptance lines appear once, except a replacement RFC for an 
 part repeats that part's applicable AC and proof rows so the owner reads one complete decision.
 
 1. `##### Title` — `<task id> — <clear change name>`.
-2. `##### Description` — who gains what and the technical problem solved; cite the task, PRD rows
-   and brief or design record without copying them.
+2. `##### Description` — opens with the user impact in plain words, two or three sentences: where
+   in the product this helps, what the user gets directly, and what they get indirectly;
+   `None — internal` when nothing a user meets changes. Then who gains what and the technical
+   problem solved; cite the task, PRD rows and brief or design record without copying them.
 3. `##### Goals` — short, measurable outcomes.
 4. `##### Non-goals` — behavior and surfaces deliberately unchanged.
 5. `##### Readiness and dependencies` — landed dependencies, design-check verdict for screen work,

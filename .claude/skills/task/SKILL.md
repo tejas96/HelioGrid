@@ -56,24 +56,37 @@ verdict's date; anything else goes to the owner as the helper's one prompt. The 
 means: fetch again, check again. A studio screen reads `ported from the POC` and has no check.
 
 Then present the RFC once — the complete section as written under the task, no second summary
-and no plan beside it — end with exactly `Decision required: approve RFC / request changes`,
-and stop. No test, migration or source edit begins before the owner's explicit approval
-(`CLAUDE.md` §3). The approval covers the RFC as shown and nothing else.
+and no plan beside it — with two things only the chat adds. The `##### Architecture diagram` is
+drawn as a picture in the inline widget — the same nodes and arrows as the Mermaid, which stays
+the record in the task file; a chat that cannot draw shows the Mermaid block as it is. The RFC
+closes with the decision block, nothing after it:
+
+- `Decisions for you:` each open ruling on one line — the section that holds it, its options,
+  the recommended one first — or `none`.
+- `Simplest build:` one line — what is reused, what is left out, and the simpler way taken when
+  the step 2 test found one.
+- exactly `Decision required: approve RFC / request changes`.
+
+Stop. No test, migration or source edit begins before the owner's explicit approval
+(`CLAUDE.md` §3). The approval covers the RFC as shown and nothing else. A request for changes is
+answered the way step 4 re-shows a delta: the changed sections only, then the decision block.
 
 ## 4. Build
 
-Build as `CLAUDE.md` §3 and `.claude/rules/testing.md` say, one slice at a time; each planted red
-line is recorded for the commit card. A new route, table, contract, package, affected package or behaviour voids
-the approval: update the RFC — or create the full replacement RFC required above for a legacy
-Plan — and present it again as step 3 says, in full, with the same decision line. A delta-only
-`Plan` is not a replacement RFC. So does a requirement the
-build shows to be wrong or over-built: the step 2 test applies, and the owner hears it before the
-code follows it.
+Build as `CLAUDE.md` §3 and `.claude/rules/testing.md` say, one slice at a time, each slice the
+smallest code that meets its line (`CLAUDE.md` §8 *Solve today's problem*, Law 5); each planted
+red line is recorded for the commit card. A new route, table, contract, package, affected package
+or behaviour voids the approval: update the RFC and present the delta — a banner with files and
+lines built against planned, then each changed section in full under its name; an unchanged
+section is named as approved and never reprinted — closing with the decision block as step 3
+says. The owner's yes to a delta covers the updated RFC whole. The whole RFC is shown again only
+when it is a full replacement RFC for a legacy Plan. A delta-only `Plan` is not a replacement RFC. So does a requirement the build shows to be
+wrong or over-built: the step 2 test applies, and the owner hears it before the code follows it.
 The RFC's file table and authored-line estimate are the budget and record: a file that lands
 outside it is added with its reason as it lands; when the budget rule in `docs/tasks/README.md` is
 breached, or a file lands in a package the RFC does not name, approval is void — stop, show the delta
 (planned and built · built but not planned, each with its reason · planned but not built),
-update the RFC and present it again — never trim a proof to fit. Tick the part's checklist as each file group and proof
+update the RFC and present the delta as above — never trim a proof to fit. Tick the part's checklist as each file group and proof
 lands; the owner reads it, never a transcript.
 A planted red that needs a database runs on `heliogrid_test`; no task creates a database of its
 own.
