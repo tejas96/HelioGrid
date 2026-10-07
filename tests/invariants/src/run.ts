@@ -2,6 +2,7 @@ import { loadInvariantsEnv } from '@heliogrid/env/server';
 import { runBannedWordOtherFiles } from './banned-word-other-files';
 import { runBiomePluginScopes } from './biome-plugin-scopes';
 import { runBrandRegistry } from './brand-registry';
+import { runDeferredRows } from './deferred-rows';
 import { runDesignSystemProps } from './design-system-props';
 import { runDesignSystemSnapshot } from './design-system-snapshot';
 import { runDockerfileUnprivileged } from './dockerfile-unprivileged';
@@ -29,7 +30,8 @@ import { runVocabularyCopies } from './vocabulary-copies';
  * brand-registry (static), template-keys-mirror-f6 (static, F6-26), and the static repo
  * checks: vocabulary-copies, dockerfile-unprivileged, light-only-platform-files,
  * banned-word-other-files, env-example-complete, language-fonts, e2e-flow-per-screen,
- * design-system-props, design-system-snapshot, biome-plugin-scopes, launch-reuses-running-servers.
+ * design-system-props, design-system-snapshot, biome-plugin-scopes, launch-reuses-running-servers,
+ * deferred-rows.
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
@@ -51,6 +53,7 @@ async function main() {
   runDesignSystemSnapshot(REPO_ROOT); // static — the pulled tokens equal the pulled census
   runBiomePluginScopes(REPO_ROOT); // static — every lint plugin covers a place that exists
   runLaunchReusesRunningServers(REPO_ROOT); // static — a dev-server start kills nothing, appends its log
+  runDeferredRows(REPO_ROOT); // static — every deferred row can reopen, and none is overdue
   const env = loadInvariantsEnv();
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;
   if (!url) {
