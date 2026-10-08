@@ -121,16 +121,6 @@
   text-wrap: pretty;
 }
 
-/* The state IN WORDS for a screen reader — the glyph is only the second channel. */
-.hg-operation-progress-stage-state {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 /* ── the closing lines and the action row ──────────────────────────────────── */
 
 .hg-operation-progress-leave {

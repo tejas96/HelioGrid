@@ -128,7 +128,7 @@ export function ReorderRow({
             does not, so it is stated once per row rather than only on move — AND IT CARRIES ITS
             DENOMINATOR. "1" alone is not the fact; "1 of 5" is. RN has no visually-hidden node, so
             the digit is drawn and the whole sentence is this node's accessible name, which is the
-            same split the web half makes with `.hg-reorder-sr`. */}
+            same split the web half makes with `spokenOnly`. */}
         <View
           accessible
           accessibilityLabel={positionLabel(index, total)}

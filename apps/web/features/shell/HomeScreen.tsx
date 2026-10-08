@@ -30,7 +30,8 @@ export function HomeScreen() {
   const verb = shell.centreVerb;
   return (
     <div className="hg-shell-page" ref={page}>
-      <Text as="h1" className="hg-shell-heading">
+      {/* The page's heading for a screen reader: the title it names is already on screen. */}
+      <Text as="h1" spokenOnly>
         {head.title}
       </Text>
       <HomeHead

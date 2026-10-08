@@ -117,12 +117,3 @@
 .hg-page-estimate[data-over="true"] {
   color: var(--warning-text);
 }
-
-/* `basis` states the arithmetic in words for a screen reader — visible to assistive tech only. */
-.hg-page-estimate-basis {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-}

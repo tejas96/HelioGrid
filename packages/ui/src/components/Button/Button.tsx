@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { Text } from '../../primitives/Text/Text';
 import { renderActionReason } from '../ActionReason';
 import type { ButtonProps } from './Button.types';
 
@@ -63,6 +64,7 @@ export function Button({
       aria-disabled={disabled ? true : undefined}
       aria-describedby={stated ? autoId : undefined}
       aria-expanded={expanded}
+      aria-busy={loading ? true : undefined}
       aria-label={spokenName}
       onClick={() => {
         if (disabled) {
@@ -72,7 +74,14 @@ export function Button({
       }}
     >
       {loading ? (
-        <span className="hg-button-spinner" aria-hidden="true" />
+        /* The spinner is drawn for the eye; the words stay for a screen reader, so a button that is
+           working keeps its name (`F7-26`). */
+        <>
+          <span className="hg-button-spinner" aria-hidden="true" />
+          <Text as="span" spokenOnly>
+            {children}
+          </Text>
+        </>
       ) : (
         <>
           {icon}

@@ -58,7 +58,7 @@ export function CountBadge({
           on this side. Written through the DS `Text` primitive rather than a bare `<span>` so the
           name SOURCE is declared rather than inferred: a clipped node the parity gate cannot see
           is a name nobody can audit. */}
-      <Text as="span" className="hg-app-shell-badge-words">
+      <Text as="span" spokenOnly>
         {words}
       </Text>
     </span>

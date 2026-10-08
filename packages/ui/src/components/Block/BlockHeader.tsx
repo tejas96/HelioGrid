@@ -17,7 +17,7 @@ function BlockCount({ shownCount, countLabel }: { shownCount: string; countLabel
           CONTENT — this is where the native half's `accessibilityLabel` sentence lives on the web.
           Through the DS `Text` primitive rather than a bare `<span>` so the name SOURCE is
           declared: a clipped node the parity gate cannot see is a name nobody can audit. */}
-      <Text as="span" className="hg-block-sr">
+      <Text as="span" spokenOnly>
         {countLabel !== undefined ? `${shownCount} ${countLabel}` : shownCount}
       </Text>
     </span>

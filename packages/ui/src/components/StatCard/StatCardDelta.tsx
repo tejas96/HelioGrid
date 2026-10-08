@@ -61,7 +61,7 @@ export function StatCardDelta({
           those words are CONTENT here where the native half folds the whole chip into one
           `accessibilityLabel`. Through the DS `Text` primitive so the name source is declared
           rather than left in a clipped `<span>` the parity gate cannot read. */}
-      <Text as="span" className="hg-stat-card-sr">{`${DIR_WORD[dir]} `}</Text>
+      <Text as="span" spokenOnly>{`${DIR_WORD[dir]} `}</Text>
       {delta}
       {sentWord ? (
         <>

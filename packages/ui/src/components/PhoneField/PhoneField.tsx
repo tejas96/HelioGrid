@@ -102,7 +102,7 @@ export function PhoneField({
       )}
       {/* The grouping is the pack's, so a screen never restates it — this span exists only to keep
           the digits' count reachable to a screen reader as one number rather than as groups. */}
-      <span className="hg-phone-field-sr">{mkt.phone(value)}</span>
+      <span className="hg-spoken-only">{mkt.phone(value)}</span>
     </div>
   );
 }

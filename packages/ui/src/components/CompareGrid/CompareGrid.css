@@ -66,15 +66,6 @@
   font-family: var(--font-sans);
 }
 
-.hg-compare-sr {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 /* ── the pinned attribute column ──────────────────────────────────────────── */
 
 .hg-compare-pin {

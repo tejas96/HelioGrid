@@ -38,7 +38,7 @@ export function PageEstimate({
           · {overBy} over the {max}-page limit
         </span>
       )}
-      <span className="hg-page-estimate-basis">{e.basis}</span>
+      <span className="hg-spoken-only">{e.basis}</span>
     </span>
   );
 }

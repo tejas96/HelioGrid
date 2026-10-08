@@ -49,7 +49,7 @@ export function CompareGridTable<Opt extends CompareOption>({
       <thead>
         <tr>
           <th scope="col" className="hg-compare-pin hg-compare-pin--head">
-            <span className="hg-compare-sr">Attribute</span>
+            <span className="hg-spoken-only">Attribute</span>
           </th>
           {options.map((option) => (
             <CompareOptionHead
@@ -90,7 +90,7 @@ export function CompareGridTable<Opt extends CompareOption>({
         <tfoot>
           <tr>
             <th scope="row" className="hg-compare-pin hg-compare-pin--foot">
-              <span className="hg-compare-sr">Choose an option</span>
+              <span className="hg-spoken-only">Choose an option</span>
             </th>
             {options.map((option) => (
               <td

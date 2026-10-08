@@ -13,17 +13,6 @@
   min-width: 0;
 }
 
-/* The group is NAMED, not labelled on screen — the circle and its act already say what this is. */
-.hg-photo-field-legend {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 .hg-photo-field-mark {
   flex-shrink: 0;
   border-radius: var(--r-pill);

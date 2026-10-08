@@ -28,7 +28,11 @@ export interface ButtonProps {
    * a `ScopeNote`.
    */
   disabledReason?: ReactNode | ActionReasonSpec;
-  /** replaces the label with a spinner, keeps width fixed */
+  /**
+   * Replaces the label with a spinner for the eye; a screen reader still hears the words, and the
+   * button is busy. Web: a `spokenOnly` copy of the words and `aria-busy`. Native:
+   * `accessibilityLabel` and `accessibilityState.busy`.
+   */
   loading?: boolean;
   /** leading icon node — a glyph this package draws, 20px, 1.5 stroke */
   icon?: ReactNode;

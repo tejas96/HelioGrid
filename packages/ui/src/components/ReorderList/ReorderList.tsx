@@ -137,7 +137,7 @@ export function ReorderList<T>({
   return (
     <div className={classNames('hg-reorder-list', className)} style={style}>
       {/* One live region for the list. Assertive would interrupt a field the user is typing in. */}
-      <span role="status" aria-live="polite" className="hg-reorder-sr">
+      <span role="status" aria-live="polite" className="hg-spoken-only">
         {say}
       </span>
 
