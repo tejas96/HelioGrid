@@ -1,10 +1,11 @@
-import { createTranslator, NOTIFICATION_CENTRE } from '@heliogrid/i18n';
+import { createTranslator, NOTIFICATION_CENTRE, SHELL } from '@heliogrid/i18n';
 import { Sheet } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { animationsSettled } from '../support/motion';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 
 const en = await createTranslator('en');
+const hi = await createTranslator('hi');
 
 test.use({ viewport: { width: 375, height: 812 } });
 
@@ -13,7 +14,14 @@ test('the close under a handle sits wholly inside the header and takes a touch a
   page,
 }) => {
   await mount(
-    <Sheet open handle showClose title={en.t(NOTIFICATION_CENTRE.title)} size="half">
+    <Sheet
+      open
+      handle
+      showClose
+      closeLabel={en.t(SHELL.close)}
+      title={en.t(NOTIFICATION_CENTRE.title)}
+      size="half"
+    >
       <p>{en.t(NOTIFICATION_CENTRE.emptyMessage)}</p>
     </Sheet>,
   );
@@ -50,4 +58,15 @@ test('the close under a handle sits wholly inside the header and takes a touch a
     );
     expect(hit).toBe(await close.getAttribute('class'));
   }
+});
+
+test("the close is named in the reader's language", async ({ mount, page }) => {
+  await mount(
+    <Sheet open showClose closeLabel={hi.t(SHELL.close)} title={hi.t(NOTIFICATION_CENTRE.title)}>
+      <p>{hi.t(NOTIFICATION_CENTRE.emptyMessage)}</p>
+    </Sheet>,
+  );
+  await expect(
+    page.getByRole('dialog').getByRole('button', { name: hi.t(SHELL.close), exact: true }),
+  ).toBeVisible();
 });

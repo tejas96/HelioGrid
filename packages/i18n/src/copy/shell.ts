@@ -47,6 +47,8 @@ export const SHELL = {
   },
   tryAgain: SIGN_IN.tryAgain,
   gotIt: /*i18n*/ { id: 'Got it' },
+  /** An overlay's close button: a name a screen reader speaks, never drawn. */
+  close: /*i18n*/ { id: 'Close' },
   next: /*i18n*/ { id: 'Next' },
   markCount: /*i18n*/ { id: '{step} of {total}' },
   accessRemovedFrom: /*i18n*/ { id: 'Your access to {company} was removed' },

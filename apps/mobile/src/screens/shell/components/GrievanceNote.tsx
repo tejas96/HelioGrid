@@ -9,7 +9,13 @@ import { Sheet, UnavailableNote } from '@heliogrid/ui';
 export function GrievanceNote({ open, onClose }: { open: boolean; onClose: () => void }) {
   const t = useTranslate();
   return (
-    <Sheet open={open} onClose={onClose} title={t(SHELL.grievanceOfficer)} size="auto">
+    <Sheet
+      open={open}
+      onClose={onClose}
+      closeLabel={t(SHELL.close)}
+      title={t(SHELL.grievanceOfficer)}
+      size="auto"
+    >
       <UnavailableNote title={t(SHELL.notPublishedYet)} message={t(SHELL.grievanceNotPublished)} />
     </Sheet>
   );

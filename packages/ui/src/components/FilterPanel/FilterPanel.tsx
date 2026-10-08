@@ -81,6 +81,7 @@ export function FilterSet({
 export function FilterPanel({
   open = false,
   onClose,
+  closeLabel,
   dimensions = [],
   value = {},
   onChange,
@@ -111,6 +112,7 @@ export function FilterPanel({
     <EditorSurface
       open={open}
       onClose={onClose}
+      closeLabel={closeLabel}
       title={title}
       panelAbove={panelAbove}
       width={width}

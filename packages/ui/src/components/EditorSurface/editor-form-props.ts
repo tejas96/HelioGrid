@@ -11,6 +11,7 @@ import type {
 export const PANEL_ABOVE = 720;
 
 export interface EditorFormChrome {
+  closeLabel: string;
   density: EditorSurfaceDensity;
   showClose: boolean;
 }
@@ -18,6 +19,7 @@ export interface EditorFormChrome {
 /** A panel has room for a close button and defaults to the dense working set: it sits on data. */
 export function panelChrome(props: EditorSurfaceProps): EditorFormChrome {
   return {
+    closeLabel: props.closeLabel,
     density: props.density ?? 'functional',
     showClose: props.showClose ?? true,
   };
@@ -26,6 +28,7 @@ export function panelChrome(props: EditorSurfaceProps): EditorFormChrome {
 /** A decision is always dismissible by its own actions, and always offers the close. */
 export function modalChrome(props: EditorSurfaceProps): EditorFormChrome {
   return {
+    closeLabel: props.closeLabel,
     density: props.density ?? 'expressive',
     showClose: props.showClose ?? true,
   };
@@ -46,6 +49,7 @@ export interface SheetFormChrome extends EditorFormChrome {
 export function sheetChrome(props: EditorSurfaceProps): SheetFormChrome {
   const modal = props.modal !== false;
   return {
+    closeLabel: props.closeLabel,
     density: props.density ?? 'expressive',
     showClose: props.showClose ?? !modal,
     size: props.size ?? (modal ? 'auto' : 'half'),

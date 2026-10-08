@@ -6,6 +6,7 @@ import {
   centreHorizonLine,
   centreListWords,
   NOTIFICATION_CENTRE,
+  SHELL,
   showOlderLabel,
 } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
@@ -45,6 +46,7 @@ export function NotificationSheet({ onClose, onGoToLeads }: NotificationSheetPro
       <Sheet
         title={t(NOTIFICATION_CENTRE.title)}
         onClose={onClose}
+        closeLabel={t(SHELL.close)}
         size="full"
         showClose
         state={centre.surface}

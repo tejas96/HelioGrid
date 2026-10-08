@@ -1,4 +1,5 @@
 import type { FilterOption } from '../FilterBar';
+import type { OverlayCloseWords } from '../Sheet/OverlayClose.types';
 
 /**
  * What one dimension holds. The design system declares the map as `Record<string, any>`; the
@@ -80,7 +81,7 @@ export interface FilterSetProps {
   header?: boolean;
 }
 
-export interface FilterPanelProps {
+export interface FilterPanelProps extends OverlayCloseWords {
   open?: boolean;
   onClose?: () => void;
   dimensions: FilterDimension[];

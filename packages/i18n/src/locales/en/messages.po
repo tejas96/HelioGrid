@@ -158,7 +158,7 @@ msgid "{preset} home · your only preset"
 msgstr "{preset} home · your only preset"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:51
+#: src/copy/shell.ts:53
 msgid "{step} of {total}"
 msgstr "{step} of {total}"
 
@@ -238,12 +238,12 @@ msgid "Account"
 msgstr "Account"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:108
+#: src/copy/shell.ts:110
 msgid "Add a lead from your home"
 msgstr "Add a lead from your home"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:101
+#: src/copy/shell.ts:103
 msgid "Add lead"
 msgstr "Add lead"
 
@@ -314,7 +314,7 @@ msgstr "calling rules"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:15
-#: src/copy/shell.ts:89
+#: src/copy/shell.ts:91
 msgid "Campaigns"
 msgstr "Campaigns"
 
@@ -352,6 +352,11 @@ msgstr "Check the SMS, or send a new code."
 #: src/copy/company-signup.ts:40
 msgid "City"
 msgstr "City"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:51
+msgid "Close"
+msgstr "Close"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:23
@@ -479,7 +484,7 @@ msgid "design"
 msgstr "design"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:76
+#: src/copy/shell.ts:78
 msgid "Design Engineer"
 msgstr "Design Engineer"
 
@@ -504,7 +509,7 @@ msgid "Enter the code"
 msgstr "Enter the code"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:68
+#: src/copy/shell.ts:70
 msgid "EPC Owner"
 msgstr "EPC Owner"
 
@@ -514,7 +519,7 @@ msgid "Estimated"
 msgstr "Estimated"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:78
+#: src/copy/shell.ts:80
 msgid "Field Technician"
 msgstr "Field Technician"
 
@@ -524,7 +529,7 @@ msgid "Filter notifications"
 msgstr "Filter notifications"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:73
+#: src/copy/shell.ts:75
 msgid "Finance"
 msgstr "Finance"
 
@@ -589,7 +594,7 @@ msgid "Hide these {count}"
 msgstr "Hide these {count}"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:84
+#: src/copy/shell.ts:86
 msgid "Home"
 msgstr "Home"
 
@@ -599,7 +604,7 @@ msgid "How linking works"
 msgstr "How linking works"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:74
+#: src/copy/shell.ts:76
 msgid "HR/Admin"
 msgstr "HR/Admin"
 
@@ -634,7 +639,7 @@ msgid "Indicative proposal. Generation and savings are estimated from system siz
 msgstr "Indicative proposal. Generation and savings are estimated from system size and location. A site survey and shadow analysis will confirm the final figures."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:79
+#: src/copy/shell.ts:81
 msgid "Installation Team Member"
 msgstr "Installation Team Member"
 
@@ -644,7 +649,7 @@ msgid "Installer Job Home"
 msgstr "Installer Job Home"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:85
+#: src/copy/shell.ts:87
 msgid "Leads"
 msgstr "Leads"
 
@@ -664,7 +669,7 @@ msgid "market prices"
 msgstr "market prices"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:72
+#: src/copy/shell.ts:74
 msgid "Marketing"
 msgstr "Marketing"
 
@@ -679,7 +684,7 @@ msgid "Mobile number"
 msgstr "Mobile number"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:90
+#: src/copy/shell.ts:92
 msgid "More"
 msgstr "More"
 
@@ -706,7 +711,7 @@ msgstr "New company on HelioGrid?"
 
 #. js-lingui-explicit-id
 #: src/copy/explainer.ts:6
-#: src/copy/shell.ts:50
+#: src/copy/shell.ts:52
 msgid "Next"
 msgstr "Next"
 
@@ -791,7 +796,7 @@ msgid "Nothing was deleted — every notification is still in the list."
 msgstr "Nothing was deleted — every notification is still in the list."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:54
+#: src/copy/shell.ts:56
 msgid "Nothing you captured on this device is lost. Ask your admin to restore your access, or sign in with another account."
 msgstr "Nothing you captured on this device is lost. Ask your admin to restore your access, or sign in with another account."
 
@@ -811,7 +816,7 @@ msgid "Opening Google sign-in"
 msgstr "Opening Google sign-in"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:70
+#: src/copy/shell.ts:72
 msgid "Operations"
 msgstr "Operations"
 
@@ -852,7 +857,7 @@ msgid "Payments"
 msgstr "Payments"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:88
+#: src/copy/shell.ts:90
 msgid "People"
 msgstr "People"
 
@@ -877,17 +882,17 @@ msgid "Project Board"
 msgstr "Project Board"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:71
+#: src/copy/shell.ts:73
 msgid "Project Manager"
 msgstr "Project Manager"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:87
+#: src/copy/shell.ts:89
 msgid "Projects"
 msgstr "Projects"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:86
+#: src/copy/shell.ts:88
 msgid "Proposals"
 msgstr "Proposals"
 
@@ -957,12 +962,12 @@ msgid "Sales"
 msgstr "Sales"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:75
+#: src/copy/shell.ts:77
 msgid "Sales Executive"
 msgstr "Sales Executive"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:69
+#: src/copy/shell.ts:71
 msgid "Sales Manager"
 msgstr "Sales Manager"
 
@@ -1052,7 +1057,7 @@ msgid "Sign in instead"
 msgstr "Sign in instead"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:57
+#: src/copy/shell.ts:59
 msgid "Sign in with another account"
 msgstr "Sign in with another account"
 
@@ -1127,12 +1132,12 @@ msgid "Something went wrong on our side. Try again."
 msgstr "Something went wrong on our side. Try again."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:112
+#: src/copy/shell.ts:114
 msgid "Start a survey from your home"
 msgstr "Start a survey from your home"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:102
+#: src/copy/shell.ts:104
 msgid "Start survey"
 msgstr "Start survey"
 
@@ -1142,7 +1147,7 @@ msgid "subsidy rules"
 msgstr "subsidy rules"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:77
+#: src/copy/shell.ts:79
 msgid "Survey Engineer"
 msgstr "Survey Engineer"
 
@@ -1312,7 +1317,7 @@ msgid "This is a material estimate and a visual model, not a structural check. A
 msgstr "This is a material estimate and a visual model, not a structural check. An engineer must verify the structure."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:61
+#: src/copy/shell.ts:63
 msgid "This is version {current}. HelioGrid now needs version {required} or later."
 msgstr "This is version {current}. HelioGrid now needs version {required} or later."
 
@@ -1337,7 +1342,7 @@ msgid "This record is no longer in your scope, or was removed. The notification 
 msgstr "This record is no longer in your scope, or was removed. The notification stays here because it reached you."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:58
+#: src/copy/shell.ts:60
 msgid "This screen arrives in a later update."
 msgstr "This screen arrives in a later update."
 
@@ -1362,7 +1367,7 @@ msgid "Three things, and you're in. Everything else comes later, inside the prod
 msgstr "Three things, and you're in. Everything else comes later, inside the product."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:59
+#: src/copy/shell.ts:61
 msgid "Today · {date}"
 msgstr "Today · {date}"
 
@@ -1387,7 +1392,7 @@ msgid "Try again. If it keeps failing, tell your admin what you were doing."
 msgstr "Try again. If it keeps failing, tell your admin what you were doing."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:118
+#: src/copy/shell.ts:120
 msgid "Two presets, one home"
 msgstr "Two presets, one home"
 
@@ -1407,17 +1412,17 @@ msgid "Unread. {title}. {body}. {time}."
 msgstr "Unread. {title}. {body}. {time}."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:60
+#: src/copy/shell.ts:62
 msgid "Update HelioGrid"
 msgstr "Update HelioGrid"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:96
+#: src/copy/shell.ts:98
 msgid "Update on Google Play"
 msgstr "Update on Google Play"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:95
+#: src/copy/shell.ts:97
 msgid "Update on the App Store"
 msgstr "Update on the App Store"
 
@@ -1452,12 +1457,12 @@ msgid "Use my number instead. Goes back to the phone step."
 msgstr "Use my number instead. Goes back to the phone step."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:109
+#: src/copy/shell.ts:111
 msgid "Use this button to add a lead."
 msgstr "Use this button to add a lead."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:113
+#: src/copy/shell.ts:115
 msgid "Use this button to start a survey."
 msgstr "Use this button to start a survey."
 
@@ -1583,12 +1588,12 @@ msgid "You're signed out. Sign in to continue."
 msgstr "You're signed out. Sign in to continue."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:52
+#: src/copy/shell.ts:54
 msgid "Your access to {company} was removed"
 msgstr "Your access to {company} was removed"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:53
+#: src/copy/shell.ts:55
 msgid "Your access was removed"
 msgstr "Your access was removed"
 
@@ -1619,7 +1624,7 @@ msgid "Your current plan doesn't include this."
 msgstr "Your current plan doesn't include this."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:119
+#: src/copy/shell.ts:121
 msgid "Your home is the {preset} one. Open the title to switch."
 msgstr "Your home is the {preset} one. Open the title to switch."
 

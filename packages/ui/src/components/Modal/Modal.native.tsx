@@ -36,6 +36,7 @@ const TITLE: Record<ModalDensity, TextStyle> = {
 export function Modal({
   open = true,
   onClose,
+  closeLabel,
   title,
   description,
   overline,
@@ -120,7 +121,9 @@ export function Modal({
                 </Text>
               )}
             </View>
-            {showClose ? <OverlayClose offset="modal" onClick={onClose} /> : null}
+            {showClose ? (
+              <OverlayClose label={closeLabel} offset="modal" onClick={onClose} />
+            ) : null}
           </View>
 
           {children === undefined ? null : (

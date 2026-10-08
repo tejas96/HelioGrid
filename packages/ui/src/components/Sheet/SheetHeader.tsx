@@ -4,6 +4,7 @@ import { OverlayClose } from './OverlayClose';
 interface SheetHeaderProps {
   /** With a handle above it the header loses its own top padding. */
   handle: boolean;
+  closeLabel: string;
   onClose?: () => void;
   /** Without a handle the header becomes the drag target, exactly as the reference does. */
   onPointerDown?: (event: ReactPointerEvent<HTMLDivElement>) => void;
@@ -19,6 +20,7 @@ interface SheetHeaderProps {
 /** The sheet's sticky header: overline, title, subtitle and the 44×44 dismissal. */
 export function SheetHeader({
   handle,
+  closeLabel,
   onClose,
   onPointerDown,
   overline,
@@ -46,7 +48,9 @@ export function SheetHeader({
         )}
         {subtitle === undefined ? null : <div className="hg-sheet-subtitle">{subtitle}</div>}
       </div>
-      {showClose ? <OverlayClose offset={handle ? 'handle' : 'sheet'} onClick={onClose} /> : null}
+      {showClose ? (
+        <OverlayClose label={closeLabel} offset={handle ? 'handle' : 'sheet'} onClick={onClose} />
+      ) : null}
     </div>
   );
 }

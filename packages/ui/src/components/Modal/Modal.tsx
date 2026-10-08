@@ -32,6 +32,7 @@ interface WebModalProps extends ModalProps {
 export function Modal({
   open = true,
   onClose,
+  closeLabel,
   title,
   labelId,
   description,
@@ -89,7 +90,9 @@ export function Modal({
                 <p className="hg-modal-description">{description}</p>
               )}
             </div>
-            {showClose ? <OverlayClose offset="modal" onClick={onClose} /> : null}
+            {showClose ? (
+              <OverlayClose label={closeLabel} offset="modal" onClick={onClose} />
+            ) : null}
           </div>
 
           {children === undefined ? null : <div className="hg-modal-body">{children}</div>}
