@@ -38,9 +38,12 @@ function groupNationalNumber(digits: string, groups: readonly number[]): string 
  * check can never disagree about where the code ends.
  */
 export function nationalNumber(pack: FormatPack, value: string): string {
-  const digits = value.trim().replace(NON_DIGIT, '');
+  const raw = value.trim();
+  const digits = raw.replace(NON_DIGIT, '');
   const code = pack.phone.dialCode.replace(NON_DIGIT, '');
-  return code.length > 0 && digits.startsWith(code) ? digits.slice(code.length) : digits;
+  // Only a `+` says a code is there: a national number may begin with the code's digits (`91…`).
+  const carriesCode = raw.startsWith('+') && code.length > 0 && digits.startsWith(code);
+  return carriesCode ? digits.slice(code.length) : digits;
 }
 
 export interface PhoneOptions {
