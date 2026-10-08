@@ -68,7 +68,7 @@ export function ReorderRow({
             denominator is CONTENT here where the native half carries the whole sentence in
             `accessibilityLabel`. Through the DS `Text` primitive so the name source is declared
             rather than buried in a clipped `<span>` the parity gate cannot read. */}
-        <Text as="span" className="hg-reorder-sr">
+        <Text as="span" spokenOnly>
           {` of ${total}`}
         </Text>
       </span>

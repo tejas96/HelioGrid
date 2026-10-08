@@ -50,7 +50,7 @@ export function OperationStages({ stages }: { stages: OperationStage[] }) {
               </span>
             ) : null}
             <span className="hg-operation-progress-stage-label">{stage.label}</span>
-            <span className="hg-operation-progress-stage-state">{STATE_WORDS[state]}</span>
+            <span className="hg-spoken-only">{STATE_WORDS[state]}</span>
           </li>
         );
       })}

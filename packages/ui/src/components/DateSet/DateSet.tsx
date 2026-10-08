@@ -128,7 +128,7 @@ export function DateSet({
       className={classNames('hg-date-set', className)}
       style={style}
     >
-      <span className="hg-date-set-announce" role="status" aria-live="polite">
+      <span className="hg-spoken-only" role="status" aria-live="polite">
         {say}
       </span>
       <div className="hg-date-set-layout" data-stacked={wide ? undefined : 'true'}>

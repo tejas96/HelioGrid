@@ -286,13 +286,3 @@
 .hg-app-shell-badge[data-tone="accent"][data-dot="true"] {
   background: var(--accent);
 }
-
-/* The badge's own sentence, for a CountBadge mounted outside a labelled host. On the rail, the
-   nav item and the shell button the host's aria-label wins and this is never announced. */
-.hg-app-shell-badge-words {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-}

@@ -104,8 +104,10 @@ export function Button({
     <Pressable
       disabled={disabled}
       onPress={onClick}
-      accessibilityState={expanded === undefined ? undefined : { expanded }}
-      accessibilityLabel={spokenName}
+      accessibilityState={expanded === undefined ? { busy: loading } : { expanded, busy: loading }}
+      /* Named by its words even while the spinner stands in for them, so a button that is working
+         keeps its name (`F7-26`). */
+      accessibilityLabel={spokenName ?? children}
       style={[
         styles.pill,
         SIZE[size],

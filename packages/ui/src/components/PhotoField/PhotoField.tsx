@@ -66,7 +66,7 @@ export function PhotoField({
       aria-describedby={message === undefined ? undefined : messageId}
     >
       {/* The name is spoken, not shown: the circle and its act already say what this is on screen. */}
-      <legend className="hg-photo-field-legend">{label}</legend>
+      <legend className="hg-spoken-only">{label}</legend>
       <div
         className="hg-photo-field-mark"
         data-size={size}

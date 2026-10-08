@@ -3356,7 +3356,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 
 ### T-FPLAT-082 · The open page — the app's design tokens and components pulled level with the live design system
 **Type:** port · **Tier:** P0
-**Status:** in progress — parts a, b, c, d and e shipped; part f open
+**Status:** in progress — parts a, b, c, d, e and f shipped; part g open
 **Why:** Every screen is drawn on the live design system, but the app draws with a snapshot of it pulled on 2026-08-19 plus partial pulls. The design system's open page (2026-09-29) made the page white and moved grey to the fill of fields, tiles and chips, restyled the fields, the phone header and footer and the list tiles, and added tokens the boards use (`--fill`, `--tile-pad`, `--r-tile`). Without the pull, no screen can match its board: a screen built now is built against values the design has already left.
 **PRD rows:** none of its own — the design system is the visual authority (`F7`); `docs/engineering/17-ui-architecture-v2.md` §6 owns the pull.
 **Design:** none — no screen of its own; each part checks the built screens it touches against their boards.
@@ -3371,7 +3371,8 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | c | the tiles and the page's controls: every tile (`Card`, `AccountTile`, `NotificationCard`, the request-sent tile) on `--fill`, `--r-tile`, `--tile-pad`; a control that is not a field on the page's `--fill`; the secondary `Button` `--surface` at `--e2` on every ground (owner ruling D14 B, `T-M01-035`, 2026-10-07); a disabled control in a tile darker than the tile; `F7-15` and `F7-49` amended; D94 | its own RFC | a | shipped |
 | d | the header: `AppShell.d.ts` pulled once the design system draws the company's name as words and moves `PhoneScreen` to its own file (part b, B1) — `MobileTopBar`'s `company` and `safeTop`, `ShellAction`'s `round`, the round grey search and bell; the top bar at the largest text (D144, D2 A); part b's design-system leftovers (`AppRail.jsx`'s arc comment, the in-view item 50 against 48, `RailItem.anchor`, `searchLabel`/`notificationsLabel`) and `Card.d.ts`'s stale comment — each design-system change by the owner's paste first. The search pill and its filter square moved to D145 (D1 A) | its own RFC | c | shipped |
 | e | the held-back typings and the design system's open rulings: `Banner`'s `actionBelow` and `onFormChange` ported on both halves, with the held-back `Banner.d.ts.txt` and `adherence.oxlintrc.json` pulled (D31, deferred review 2026-10-08); the design system's `PhoneField` reads the dial code from its market and its typing is pulled (D130); `RichText`'s frame drawn by `FieldBox` (D60); a placeholder takes `--text-tertiary` (D131, `F7-15`); the overline and mono take the body's line height, 1.55 (D136) — each design-system change by the owner's paste first | its own RFC | c | shipped |
-| f | assistive technology and the controls' edges: the phone `Menu` and `Sheet` backdrop named or hidden for a screen reader (D82); a loading `Button` keeps its name for assistive technology (D84); `Modal`'s body takes its bottom padding at 375 (D88); one visually-hidden option replaces the copies (D93); the phone `Sheet`'s close target, title wrap, `Badge` and close label (D96) | its own RFC | c | open |
+| f | words kept for a screen reader: one visually-hidden option — `Text`'s `spokenOnly`, the rule written once in `Text.css` — with every copy moved onto it and a Biome rule against a new one (D93); a loading `Button` keeps its name for assistive technology (D84) | its own RFC | c | shipped |
+| g | the overlays' and controls' edges: the phone `Menu` and `Sheet` backdrop named or hidden for a screen reader (D82); `Modal`'s body takes its bottom padding at 375 (D88); the phone `Sheet`'s close target, title wrap, `Badge` and close label (D96) — split from f by `T-FPLAT-082f`'s ruling F2 | its own RFC | f | open |
 
 #### Part a · RFC
 
@@ -4346,6 +4347,183 @@ Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-F
 - The build ran 55% over the line estimate, voiding approval (the review's fixes, an indent, the RFC's own records) → shown as a delta, approved at size; said out loud.
 - `d-request-sent` was not reached in the board pane → compared with the record's measured table; said out loud.
 
+#### Part f · RFC
+
+##### Title
+T-FPLAT-082f — words kept for a screen reader: one visually-hidden option for the whole web, and a loading button that keeps its name.
+
+##### Description
+- **User impact:** a person who uses a screen reader taps *Send code* on the door and, while the code is being sent, still hears "Send code, busy" — today the button goes nameless the moment it starts working, on the web and on both phones (D84). Nothing changes for a sighted person: no pixel moves. Indirectly: words written for the screen reader alone (the shell's page heading, the bell's "3 unread", a table's *Actions* header) are hidden one way everywhere, so a later screen cannot hide them a broken way.
+- **Who gains:** every screen-reader user of a built screen; every later screen that hides words from the eye.
+- **Problem solved:** the visually-hidden rule is written out twelve times — eleven `packages/ui` stylesheets and `apps/web/features/shell/shell.css` (D93) — and `TitleBlock.css` already drifted to the older `clip: rect()` form. A loading `Button` swaps its words for an `aria-hidden` spinner (`Button.tsx:70-71`) and the phone half for an `ActivityIndicator` (`Button.native.tsx:117-118`), so the focused control has no accessible name while it works (D84).
+- **Cites:** `F7-26` (no unnamed control); D84, D93; `.claude/rules/ui-adherence.md` (compose from the primitives).
+
+##### Goals
+- The visually-hidden rule exists once, `.hg-spoken-only` in `packages/ui/src/primitives/Text/Text.css`; `rg 'clip-path: ?inset\(50%|clip: ?rect' packages/ui/src apps/web` finds only that file.
+- A new copy in any UI stylesheet fails Biome (`spoken-only-css`).
+- Every word that was hidden is still hidden and still heard, on every route that reaches one.
+- A loading `Button` is named by its words and marked busy, on the web, iPhone and Android.
+
+##### Non-goals
+- Part g's rows (D82, D88, D96).
+- The four controls that hide a real `input` over their drawn box (`Checkbox`, `Radio`, `Switch`, `Dropzone`): that input stays a focusable hit target, a different rule from words hidden from the eye.
+- Any phone half of D93 (finding 1).
+- A loading button's width, and whether a loading button takes a second press — neither is in D84.
+- The `docs/tasks/UI.md` rows on the touched components (`DataTable`, `ReorderList`, `PagedDocument`, `PhoneField`, `PhotoField`): this part moves one class in each and changes no look or contract, so they stay.
+- The design system: it draws no screen-reader words and its typings do not change.
+
+##### Readiness and dependencies
+- Landed: part c (#251) and every later part (#252, #253).
+- Design: none — no look changes, so no board frame is captured.
+- Live loading state: the door's *Send code* is loading only while its request is open. Main holds the task-owned api (`kill -STOP` on its exact pid, then `kill -CONT`) while each QA surface reads the button; nothing else stops.
+- Blockers: none.
+
+##### Proposal
+**Flow.** `Button.spec.tsx` red → the rule in `Text.css`, `Text`'s `spokenOnly` → `Button` web and phone → the eleven copies and the shell heading moved → the Biome rule, seen red on a planted copy → QA on the door and the shell → docs.
+
+**Findings from testing the requirement:**
+1. **D93's "on both halves" cannot be met, and needs no phone half.** React Native has no off-screen text node. Every phone half already gives the whole sentence to the element a screen reader lands on (`CountBadge.native.tsx:89-91`, `ReorderRow.native.tsx:128-131`, `DateSet.native.tsx:91-94`, `ReorderList.defaults.ts:63-65`). So the option is web-only, on `WebTextProps` beside `as` and `className` (`Text.tsx:24-28`), the existing home of a web-only `Text` prop. → F1.
+2. **A prop, not only a class.** `apps/web` cannot be handed a class name it could mistype (`CLAUDE.md` §8, a shared fact is unspeakable outside its owner); `spokenOnly` is typed. Inside `packages/ui` — the rule's owner — an element that is not a `Text` (the `PhotoField` `legend`, the polite live regions of `DateSet` and `ReorderList`, a table header's span) takes the class itself.
+3. **D84 on the phone needs no hidden node.** The phone `Button` passes `accessibilityLabel={spokenName ?? children}` and `accessibilityState` `busy`; a screen reader then names it the same while it loads as when it rests.
+4. **A guard, so the thirteenth copy cannot land.** A Biome CSS plugin like `raw-colour-css` flags `clip-path: inset(50%)` and `clip: rect(` in every UI stylesheet but `Text.css` (`CLAUDE.md` §1, every mistake leaves a record).
+5. **The task is over its size in one part.** Part f as written (five rows) is about 70 files. → F2.
+
+**Key decisions** (one reason each):
+1. **The name `spokenOnly`** — says what the words are (spoken, not shown), beside `Button`'s `spokenName`.
+2. **The web loading button keeps its words in a `spokenOnly` span and sets `aria-busy`** — the name stays the visible words, so speech control still finds the button.
+
+**Order:** test red → rule and prop → `Button` halves → copies → Biome rule and planted red → QA → docs.
+
+**Twin:** D84 on both halves. D93 is web-only by finding 1.
+
+##### Architecture diagram
+No boundary change — the change stays inside `packages/ui`'s `Text` and `Button`, eleven web stylesheets, `apps/web`'s shell heading and one Biome plugin.
+
+```mermaid
+flowchart LR
+  RULE[ui Text.css .hg-spoken-only] --> TXT[ui Text web: spokenOnly]
+  TXT --> BTN[ui Button web: loading words + aria-busy]
+  TXT --> SHELL[web shell page heading]
+  TXT --> UIT[ui Block, StatCard, ReorderRow, CountBadge]
+  RULE --> UIE[ui legend, live regions, header spans]
+  BN[ui Button native: label + busy]
+  LINT[Biome spoken-only-css] -.->|refuses a copy| CSS[UI stylesheets]
+```
+
+##### Package changes
+- **ui:** `Text` (web) gains `spokenOnly?: boolean` on `WebTextProps` — no shared-contract change, the phone `Text` is untouched. `Text.css` holds `.hg-spoken-only`. `Button` web keeps its words for a screen reader while loading; `Button` native names itself by its words and states `busy`. Eleven stylesheets lose their copy.
+- **web:** the shell's page heading takes `spokenOnly`; `shell.css` loses its copy.
+- **config:** `packages/config/biome/spoken-only-css.grit`, enrolled in `biome.json`.
+- **Protections (Law 12):** no brand, enum, token, route, table or error code. The new rule is held by the new Biome plugin, and `.claude/protections.md` gets its row. Said out loud: off-screen hiding (`left: -9999px`) and the `hg-spoken-only` class written by hand outside `packages/ui` are held by review only.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/ui/src/primitives/Text/Text.tsx` · `Text.css` | `spokenOnly`; the one rule | the text primitive |
+| modify | `packages/ui/src/components/Button/Button.tsx` · `Button.native.tsx` · `Button.types.ts` | the words kept while loading, `aria-busy` / `busy`; `loading`'s doc | the button |
+| modify | `packages/ui/src/components/Block/Block.css` · `BlockHeader.tsx` | the copy out; `spokenOnly` | each copy's owner |
+| modify | `packages/ui/src/components/StatCard/StatCard.css` · `StatCardDelta.tsx` | the same | " |
+| modify | `packages/ui/src/components/ReorderList/ReorderList.css` · `ReorderRow.tsx` · `ReorderList.tsx` · `ReorderRow.native.tsx` | the same; the live region takes the class; a comment that names the old class | " |
+| modify | `packages/ui/src/components/AppShell/AppShell.css` · `CountBadge.tsx` | the same | " |
+| modify | `packages/ui/src/components/CompareGrid/CompareGrid.css` · `CompareGridTable.tsx` | the copy out; the class | " |
+| modify | `packages/ui/src/components/DataTable/DataTable.css` · `DataTableHead.tsx` | the same | " |
+| modify | `packages/ui/src/components/PagedDocument/TitleBlock.css` · `PageEstimate.tsx` | the same | " |
+| modify | `packages/ui/src/components/PhotoField/PhotoField.css` · `PhotoField.tsx` | the same | " |
+| modify | `packages/ui/src/components/PhoneField/PhoneField.css` · `PhoneField.tsx` | the same | " |
+| modify | `packages/ui/src/components/DateSet/DateSet.css` · `DateSet.tsx` | the same | " |
+| modify | `packages/ui/src/components/OperationProgress/OperationProgress.css` · `OperationStages.tsx` | the same | " |
+| modify | `apps/web/features/shell/shell.css` · `HomeScreen.tsx` · `PlaceholderScreen.tsx` | the copy out; the heading takes `spokenOnly` | the shell |
+| add | `packages/config/biome/spoken-only-css.grit` | refuses the rule outside `Text.css` | Biome plugins live here |
+| modify | `biome.json` | enrols it on the UI stylesheets, `Text.css` excluded | the plugin list |
+| modify | `tests/e2e/components/Button.spec.tsx` | a loading button's name and busy state; its hidden words 1×1 and clipped | component tests (`tests/e2e/CLAUDE.md`) |
+| modify | `.claude/protections.md` | the rule's row | Law 12 |
+| modify | `docs/tasks/F-platform.md` · `docs/tasks/deferred.md` | this RFC, part g's row, `T-FPLAT-084` and `T-FPLAT-086` wait on part g; D84 and D93 deleted; D155 added | Law 8 |
+| modify | `packages/ui/src/components/Button/Button.css` | built, not planned: its comment said loading keeps the width fixed, which no rule does; the claim is removed and the defect recorded as D155 | the button |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **A class on the same element beats the hidden rule** and a word shows (one class, the fourth stylesheet) — no `Text` variant sets position, size or clip (review); `spokenOnly` takes no `className` by its type, so a `Text` cannot carry a second class; QA measures every hidden node at 375 and 1536.
+- **A held api lets the phone's request time out** before QA reads it — QA reads at once; Main resumes the api after each read.
+- **The Biome plugin misses a form or fires on the input-hiding controls** — the planted red proves the first; `pnpm lint` over today's tree proves the second.
+
+##### Acceptance criteria and proof
+- **AC-1** (D93) — Given every UI stylesheet, when Biome runs, then the visually-hidden rule is written only in `Text.css`, and a copy anywhere else fails.
+- **AC-2** (D93) — Given every word hidden from the eye, when its screen renders, then it is still hidden — a 1×1 clipped box — and still in the accessibility tree.
+- **AC-3** (D84) — Given a `Button` with `loading`, when a screen reader reads it, then its name is its words and it is busy, on the web.
+- **AC-4** (D84) — Given the same, on iPhone and Android.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 | main-dev | required | Biome | `pnpm lint` green; `rg` finds the rule only in `Text.css`; planted red: the old rule pasted back into `Block.css` → `spoken-only-css` names it | Biome plugin `spoken-only-css` |
+| AC-2 | main-dev | required | component tests | the existing specs of `Block`, `StatCard`, `DataTable`, `CompareGrid`, `ReorderList`, `DateSet` and `PagedDocument` stay green; `Button.spec` measures the loading button's hidden words 1×1, `clip-path` `inset(50%)` | `tests/e2e/components/*.spec.tsx` (ct) |
+| AC-2 | qa-web | required | browser, 375 and 1536 | the door, the code step and the home shell: every `.hg-spoken-only` node 1×1 and clipped; its words in the accessibility tree (the page heading, the bell's unread words, the phone field's number) | live |
+| AC-3 | main-dev | required | component tests | a loading button: role `button`, name its words, `aria-busy="true"`, the spinner hidden; planted red: the hidden words removed → the name test fails | `tests/e2e/components/Button.spec.tsx` (ct) |
+| AC-3 | qa-web | required | browser, 375 | the door's *Send code* pressed with the api held: the loading button's name is its words while sending, "Sending the code" (amended at QA: both doors pass these words while sending), and it is busy | live |
+| AC-4 | qa-ios | required | simulator | the same button with the api held: its accessibility label "Sending the code", busy | live |
+| AC-4 | qa-android | required | emulator | the same: the node's name "Sending the code" | live |
+| AC-1–AC-4 | evaluator · ci | required | `pnpm check:all` · `quality`, `e2e-web` | every check passes | gate · CI |
+
+##### Delivery size
+- **Estimate:** 38 files — 33 code (two of them config), 1 test, 4 docs. About 450 authored lines: code about 200 (most of it the eleven deleted copies), tests about 50, docs about 200.
+- **Over the 30-file target by 8:** no smaller part can be accepted alone — the Biome rule can land only when the last copy is gone, and a half-moved set is the duplication D93 exists to end. Every file but six is a one- or two-line move.
+- **Order:** as in Proposal.
+
+**Decisions — part f**
+- **F1 — D93's phone half.** **A · web only (recommended):** `spokenOnly` on the web `Text`; the phone halves keep giving the whole sentence to the element the reader lands on, as four of them do today. **B · both halves:** a shared `Text` prop whose phone half draws the words as an unseen accessibility node — no platform gives one, unproven on VoiceOver and TalkBack, and four working phone halves change.
+- **F2 — the split.** **A · two parts (recommended):** f is D93 and D84 (this RFC, 38 files); g is D82, D88 and D96, with its own RFC; `T-FPLAT-084` and `T-FPLAT-086` then wait on g. **B · one part f** at about 70 files.
+- **Deferred rows met:** D2, D92 (`touches packages/ui/src/components/`), D42 (`touches packages/ui/src/primitives/Text/`), D41, D62 (`touches .claude/`) — stay. D76, D103, D108 (`touches packages/ui/src/components/Button/`) — stay for part g, which measures the controls at the largest text and the 44 floor on both phones.
+
+- **Owner rulings (2026-10-08):** RFC approved; F1 → **A** (web only); F2 → **A** (two parts; g takes D82, D88, D96); the deferred rows met stay.
+- **Review (2026-10-08):** two should-fix and six notes, all fixed — `Button.css` and D155 recorded above; the planted reds recorded below; `spokenOnly` refuses a `className` by its type; the Biome rule widened to `-webkit-clip-path` and `inset(100%)` and any longhand, the forms it misses said out loud; the protections row names what review holds; the code cites `F7-26`, not a deleted row; the shell heading's reason kept as a comment; the spec asserts the spinner hidden.
+
+- **QA (2026-10-08):** all pass. AC-2 web at 375 and 1536: on the door the phone field's whole number, on the home the page heading "Owner Dashboard" and the bell's "7 unread notifications" — each 1×1, `clip-path` `inset(50%)`, in the accessibility tree; no overflow. AC-3 web, the api held: the loading button named "Sending the code" by its hidden words, `aria-busy="true"`, the spinner hidden; the browser tool's tree once showed it unnamed, so the spec now reads Chrome's own accessibility tree (CDP), which names it. AC-4 iOS: label "Sending the code", value "busy"; Android: content-desc "Sending the code, busy" (React Native speaks the busy state in the name). The api was held by the owner's own `kill -STOP` / `kill -CONT` on its pid: `.claude/settings.json` denies `kill` to Main. All three surfaces first sat on company signup's step 3 from part e's run with no way out (D146); Main cleared the phones' saved sessions and signed the web session out through `POST /auth/sign-out`.
+**Planted reds (2026-10-08):** the old rule pasted back into `Block.css` (`clip-path: inset(50%)`, `clip: rect(0 0 0 0)`, then `-webkit-clip-path: inset(100%)`, `inset(50% 50% 50% 50%)`) → `spoken-only-css` named each, `background-clip: text` and a one-edge `inset(50% 0 0 0)` passed (the second review narrowed the rule to equal edges); the hidden words removed from the web `Button` → "a loading button keeps its words…" failed; `spokenOnly` with a `className` → typecheck refused it.
+
+**Checklist** — [x] `Button.spec` red · [x] rule and `spokenOnly` · [x] `Button` halves · [x] eleven copies and the shell heading · [x] Biome rule and planted red · [x] qa-web · [x] qa-ios · [x] qa-android · [x] review · [ ] gate · [x] docs
+
+#### Runtime — part f
+Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-FPLAT-082f` from `origin/main` `ae14c1d7`.
+
+| resource | state at start | identity |
+|---|---|---|
+| web `3002` · api `8084` · metro `8081` | free | — |
+| postgres `5544` · object store `9000` · temporal `7233` | pre_existing | containers `heliogrid-pg-local`, `heliogrid-object-store-local`, `heliogrid-temporal` |
+| simulators · emulators | none booted | — |
+| browser tabs | the pane is closed | — |
+| database routing | `heliogrid_dev` on both URLs | `.env.local` |
+| logs | `.qa/api.log` 6,565,783 · `.qa/web.log` 186,660 · `.qa/metro.log` 615,869 bytes | byte marks |
+| started by the task | api (preview server `8dcaecc7`, launch `api`, pid 38881), web (`efb47112`, launch `web`), Metro (`acecea8d`, launch `mobile-metro`), simulator `40ED0117` (iPhone 17 Pro), `emulator-5554` (Pixel 8, API 34); database routing moved to `heliogrid_test` on both URLs for QA and the gate | preview ids, UDID, serial |
+| browser pane | tabs `seed` (api), `tab-1` (web), `tab-2` (Metro) | tab ids |
+| test data | the standing accounts …901 (web), …902 (iOS), …903 (Android) on `heliogrid_test`; codes requested while the api was held, none sent | numbers |
+
+**At the end (2026-10-08)**
+
+| resource | state at end |
+|---|---|
+| api · web · Metro | stopped by Main (preview stop); `3002`, `8084`, `8081` free; no `tsx watch` left. The api was held once by the owner's `kill -STOP 38881` and resumed by `kill -CONT 38881` before the gate |
+| postgres · object store · temporal | pre_existing, untouched |
+| simulator `40ED0117` · `emulator-5554` | shut down. Before QA, Main reset the simulator's keychain and cleared the Android app's data: both apps sat on company signup's step 3 from part e's run (D146) |
+| browser pane | tabs `seed`, `tab-1` and `tab-2` closed; the pane is closed. The web's leftover …908 session was signed out through `POST /auth/sign-out` |
+| database routing | restored to `heliogrid_dev` on both URLs (QA and the gate ran on `heliogrid_test`) |
+| logs | `.qa/api.log` 6,632,294 · `.qa/web.log` 204,810 · `.qa/metro.log` 680,479 bytes |
+| test data | the three standing accounts stay on `heliogrid_test`; all three surfaces signed out |
+
+**Measurements:** helper runs — qa-web 1 (3 continuations), qa-ios 1 (2), qa-android 1 (2), reviewer 1 (2 continuations), evaluator 1, full gate once; helper tokens about 305k (reviewer 136k, qa-web 58k, qa-ios 41k, qa-android 40k, evaluator 29k); Main's turns and tokens were not counted. Planned 38 files and about 450 authored lines; built 39 files and about 490 lines — code about 250, tests 28, docs about 210.
+
+**Mistakes and the rule that now holds each**
+- The plan had Main hold the api with `kill -STOP`, which `.claude/settings.json` denies to Main (QA) → the owner ran both commands; the deny is the rule and it fired, said out loud.
+- The QA rows expected the loading name "Send code"; both doors pass "Sending the code" while sending (QA prep) → the rows amended before QA ran; no check can decide an expected word, said out loud.
+- `spokenOnly` could be passed with a `className` that outranks the rule (review) → refused by its type, seen red.
+- The Biome rule first missed `-webkit-clip-path` and `inset(100%)`, then refused a one-edge `inset` (review, twice) → narrowed to equal edges, five forms planted; off-screen hiding is held by review, said out loud.
+- The code cited D84, a row this change deletes (review) → cites `F7-26`; no check finds a deleted row's id, said out loud.
+- `Button.css` landed outside the file table (review) → added as built, not planned.
+- Removing the CSS copies dropped the shell heading's reason (review) → kept as a comment on each heading.
+
 ### T-FPLAT-083 · A route answers only what its contract declares
 **Type:** policy · **Tier:** P1
 **Status:** planned
@@ -4365,7 +4543,7 @@ Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-F
 **Why:** The theme build measures only the pairs declared in `packages/theme/src/contrast.ts`, so a pairing `packages/ui` draws but never declares, or a re-pulled colour, can drop under its floor unseen (D25).
 **PRD rows:** `F7-11`; `N4` of `F7-23`.
 **Chosen by the owner** (deferred review, 2026-10-08).
-**Depends on:** `T-FPLAT-082` (part f, its last part — split by `T-FPLAT-082c`'s ruling C1).
+**Depends on:** `T-FPLAT-082` (part g, its last part — split by `T-FPLAT-082c`'s ruling C1 and `T-FPLAT-082f`'s ruling F2).
 **DONE WHEN:**
 - A check — a theme build step or an invariant, never a script — reads every text and mark colour set on a background across `packages/ui`'s CSS and native styles, reports each pair no declared pair covers, and fails one under its role's floor. → proof: the gate green, and red on a planted undeclared pair under the floor.
 
@@ -4386,7 +4564,7 @@ Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-F
 **Why:** QA checks only the screens a change reaches, so a change to a shared `packages/ui` part can break the look of a screen nobody opens (D74).
 **PRD rows:** none of its own — `F7-43` (Definition of Done at 375 and 1536).
 **Chosen by the owner** (deferred review, 2026-10-08): web routes first.
-**Depends on:** `T-FPLAT-082` (part f, its last part — split by `T-FPLAT-082c`'s ruling C1), so the baseline is taken on the open page.
+**Depends on:** `T-FPLAT-082` (part g, its last part — split by `T-FPLAT-082c`'s ruling C1 and `T-FPLAT-082f`'s ruling F2), so the baseline is taken on the open page.
 **DONE WHEN:**
 - Playwright `toHaveScreenshot` holds every web route at 375 and 1536; the images are committed; a run fails when one differs; a baseline changes only with the owner's yes. → proof: the e2e lane green, and red on a planted one-token change to a shared part.
 

@@ -21,11 +21,19 @@ const DEFAULT_ELEMENT: Record<TextVariant, TextElement> = {
   'field-helper': 'p',
 };
 
-interface WebTextProps extends TextProps {
+interface WebTextBase extends TextProps {
   /** Override the rendered element when the document outline needs it. */
   as?: TextElement;
-  className?: string;
 }
+
+/**
+ * `spokenOnly`: words for a screen reader alone — hidden from the eye, kept in the accessibility
+ * tree. Web only: React Native has no off-screen text node, so a phone half gives the whole sentence
+ * to the element the reader lands on (`accessibilityLabel`). It takes no `className`: a class that
+ * sets position, size or margin would outrank the one rule and show the words.
+ */
+type WebTextProps = WebTextBase &
+  ({ spokenOnly?: false; className?: string } | { spokenOnly: true; className?: never });
 
 /** The DS type scale. Values live in Text.css as typography tokens only. */
 export function Text({
@@ -39,6 +47,7 @@ export function Text({
   bold,
   as,
   className,
+  spokenOnly,
 }: WebTextProps) {
   const Element = as ?? DEFAULT_ELEMENT[variant];
   /* The browser resolves the stack per character, so the face needs no help here — but a line
@@ -47,7 +56,11 @@ export function Text({
   const lineHeight = lineHeightFor(variant, children);
   return (
     <Element
-      className={classNames('hg-text', className)}
+      className={classNames(
+        'hg-text',
+        spokenOnly === true ? 'hg-spoken-only' : undefined,
+        className,
+      )}
       data-variant={variant}
       data-color={color}
       data-align={align}

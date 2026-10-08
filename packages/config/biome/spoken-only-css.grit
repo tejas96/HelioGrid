@@ -1,0 +1,18 @@
+language css
+
+// Words hidden from the eye for a screen reader are hidden one way: the rule lives once in
+// packages/ui/src/primitives/Text/Text.css (`.hg-spoken-only`), which `includes` leaves out. Any
+// other UI stylesheet that clips a box to nothing — `clip-path` or `-webkit-clip-path: inset(50%)`
+// or `inset(100%)`, each edge the same, or `clip: rect(…)` — is writing a second copy. Off-screen hiding
+// (`left: -9999px`) is not matched; review holds it. Comments are trivia and never read.
+CssGenericProperty() as $declaration where {
+  $declaration <: or {
+    includes "clip-path",
+    includes "clip"
+  },
+  $declaration <: or {
+    r"(?s)(?:-webkit-)?clip-path\s*:\s*inset\(\s*(?:50%(?:\s+50%){0,3}|100%(?:\s+100%){0,3})\s*\).*",
+    r"(?s)clip\s*:\s*rect\(.*"
+  },
+  register_diagnostic(span=$declaration, message="Words hidden for a screen reader use Text's `spokenOnly` (or the `hg-spoken-only` class inside packages/ui) — the rule lives once, in Text.css.")
+}

@@ -137,6 +137,24 @@
       ]
     },
     {
+      "path": "./packages/config/biome/spoken-only-css.grit",
+      "includes": [
+        "**/apps/mobile/src/**/*.{css}",
+        "**/apps/web/app/**/*.{css}",
+        "**/apps/web/features/**/*.{css}",
+        "**/apps/web/lib/**/*.{css}",
+        "**/packages/theme/src/**/*.{css}",
+        "**/packages/ui/src/**/*.{css}",
+        "!**/packages/ui/src/primitives/Text/Text.css",
+        "!**/node_modules/**",
+        "!**/dist/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**",
+        "!**/_generated/**"
+      ]
+    },
+    {
       "path": "./packages/config/biome/domain-clock.grit",
       "includes": [
         "**/packages/domain/src/**/*.{ts,mts,cts}",

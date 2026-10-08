@@ -68,17 +68,6 @@
   color: var(--danger-text);
 }
 
-/* The whole number, once, for a screen reader — the visible field speaks its groups. */
-.hg-phone-field-sr {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 /* PhoneValue — a value that cannot be edited is drawn as a value, never as a disabled field. */
 
 .hg-phone-value {

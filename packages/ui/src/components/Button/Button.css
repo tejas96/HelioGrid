@@ -146,7 +146,7 @@
   cursor: not-allowed;
 }
 
-/* Loading replaces the label with a spinner and keeps the width fixed. */
+/* Loading replaces the label with a spinner. */
 .hg-button-spinner {
   width: var(--sp-4);
   height: var(--sp-4);

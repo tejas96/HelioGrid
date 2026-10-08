@@ -44,15 +44,6 @@
   --hg-dt-act-w: 96px;
 }
 
-.hg-dt-sr {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 /* The caption lives in the SHELL, not inside the <table> — as a <caption> element it rendered
    only when the table did, so it vanished on every phone and in every narrow panel. */
 .hg-dt-caption {

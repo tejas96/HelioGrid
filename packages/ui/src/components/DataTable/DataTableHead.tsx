@@ -157,7 +157,7 @@ export function DataTableHead<Row>({
         ))}
         {hasActions ? (
           <th className="hg-dt-th hg-dt-th--actions">
-            <span className="hg-dt-sr">Actions</span>
+            <span className="hg-spoken-only">Actions</span>
           </th>
         ) : null}
       </tr>

@@ -20,7 +20,8 @@ export function PlaceholderScreen({ path }: { path: string }) {
   const title = doorTitle(t, door);
   return (
     <div className="hg-shell-page">
-      <Text as="h1" className="hg-shell-heading">
+      {/* The page's heading for a screen reader: the title it names is already on screen. */}
+      <Text as="h1" spokenOnly>
         {title}
       </Text>
       <EmptyState title={title} description={t(SHELL.comingLater)} />

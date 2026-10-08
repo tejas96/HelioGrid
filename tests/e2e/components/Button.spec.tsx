@@ -67,3 +67,31 @@ test('a secondary lifts one step to --e3 under the pointer', async ({ mount, pag
   await button.hover();
   await expect(button).toHaveCSS('box-shadow', await resolvedShadow(page, '--e3'));
 });
+
+const sendCode = en.t(SIGN_IN.sendCode);
+
+test('a loading button keeps its words for a screen reader and says it is busy (F7-26)', async ({
+  mount,
+  page,
+}) => {
+  await mount(<Button loading>{sendCode}</Button>);
+
+  const button = page.getByRole('button', { name: sendCode });
+  await expect(button).toHaveAttribute('aria-busy', 'true');
+  await expect(button.locator('.hg-button-spinner')).toHaveAttribute('aria-hidden', 'true');
+  const chrome = await page.context().newCDPSession(page);
+  const { nodes } = await chrome.send('Accessibility.getFullAXTree');
+  const named = nodes.find((node) => node.role?.value === 'button');
+  expect(named?.name?.value).toBe(sendCode);
+  const words = button.getByText(sendCode);
+  await expect(words).toHaveCSS('clip-path', 'inset(50%)');
+  const box = await words.boundingBox();
+  expect(box?.width).toBeLessThanOrEqual(1);
+  expect(box?.height).toBeLessThanOrEqual(1);
+});
+
+test('a resting button is not busy', async ({ mount }) => {
+  const button = await mount(<Button>{sendCode}</Button>);
+
+  await expect(button).not.toHaveAttribute('aria-busy', 'true');
+});
