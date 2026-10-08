@@ -11,7 +11,13 @@ import { Modal, UnavailableNote } from '@heliogrid/ui';
 export function GrievanceNote({ open, onClose }: { open: boolean; onClose: () => void }) {
   const t = useTranslate();
   return (
-    <Modal open={open} onClose={onClose} title={t(SHELL.grievanceOfficer)} size="sm">
+    <Modal
+      open={open}
+      onClose={onClose}
+      closeLabel={t(SHELL.close)}
+      title={t(SHELL.grievanceOfficer)}
+      size="sm"
+    >
       <UnavailableNote title={t(SHELL.notPublishedYet)} message={t(SHELL.grievanceNotPublished)} />
     </Modal>
   );

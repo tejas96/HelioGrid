@@ -1,5 +1,5 @@
 import type { PendingSwitch } from '@heliogrid/domain';
-import { SIGN_IN } from '@heliogrid/i18n';
+import { SHELL, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { Button, Sheet, useFormat } from '@heliogrid/ui';
 import { View } from 'react-native';
@@ -24,6 +24,7 @@ export function SwitchSheet({
     <Sheet
       open
       onClose={() => undefined}
+      closeLabel={t(SHELL.close)}
       dismissible={false}
       handle={false}
       size="auto"

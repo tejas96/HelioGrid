@@ -37,6 +37,7 @@ interface WebSheetProps extends SheetProps {
 export function Sheet({
   open = true,
   onClose,
+  closeLabel,
   title,
   subtitle,
   overline,
@@ -110,6 +111,7 @@ export function Sheet({
         {hasHeader ? (
           <SheetHeader
             handle={handle}
+            closeLabel={closeLabel}
             onClose={onClose}
             onPointerDown={handle ? undefined : onPointerDown}
             overline={overline}

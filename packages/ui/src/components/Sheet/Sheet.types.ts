@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
+import type { OverlayCloseWords } from './OverlayClose.types';
 
 /** auto = hugs content (max 92%); half = 56%; full = 92%. */
 export type SheetSize = 'auto' | 'half' | 'full';
@@ -7,7 +8,7 @@ export type SheetSize = 'auto' | 'half' | 'full';
 /** Expressive = the 32px sheet radius and roomy padding; functional = 16px and tighter. */
 export type SheetDensity = 'expressive' | 'functional';
 
-export interface SheetProps {
+export interface SheetProps extends OverlayCloseWords {
   open?: boolean;
   /** Called on backdrop click, Esc, close button and drag-past-threshold. */
   onClose?: () => void;

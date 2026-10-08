@@ -7,6 +7,7 @@ import {
   centreHorizonLine,
   centreListWords,
   NOTIFICATION_CENTRE,
+  SHELL,
   showOlderLabel,
 } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
@@ -47,6 +48,7 @@ export function NotificationCentre({ onClose, onGoToLeads }: NotificationCentreP
       <DetailPanel
         title={t(NOTIFICATION_CENTRE.title)}
         onClose={onClose}
+        closeLabel={t(SHELL.close)}
         modal={false}
         density="expressive"
         width={theme.layout['form-max']}

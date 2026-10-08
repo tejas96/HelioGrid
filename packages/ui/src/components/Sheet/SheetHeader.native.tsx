@@ -9,6 +9,7 @@ interface SheetHeaderProps {
   density: SheetDensity;
   /** With a handle above it the header loses its own top padding, as on web. */
   handle: boolean;
+  closeLabel: string;
   onClose?: () => void;
   overline?: string;
   /** The scroll shadow — luminance, never a divider line. */
@@ -34,6 +35,7 @@ const TITLE: Record<SheetDensity, TextStyle> = {
 export function SheetHeader({
   density,
   handle,
+  closeLabel,
   onClose,
   overline,
   scrolled,
@@ -69,7 +71,9 @@ export function SheetHeader({
           </Text>
         )}
       </View>
-      {showClose ? <OverlayClose offset={handle ? 'handle' : 'sheet'} onClick={onClose} /> : null}
+      {showClose ? (
+        <OverlayClose label={closeLabel} offset={handle ? 'handle' : 'sheet'} onClick={onClose} />
+      ) : null}
     </View>
   );
 }

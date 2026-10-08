@@ -1,26 +1,11 @@
-/**
- * Sheet and DetailPanel pull the button back by 8/10; Modal's roomier header by 10/12. Under a
- * handle `handle` pulls only sideways, so the web draws the same header as the phone, where a
- * close pulled up past the header loses 8 of its 44 to the view that holds it.
- */
-export type OverlayCloseOffset = 'sheet' | 'modal' | 'handle';
-
-interface OverlayCloseProps {
-  onClick?: () => void;
-  offset?: OverlayCloseOffset;
-  /**
-   * The accessible name. Hardcoded "Close" in the reference implementation and no prop on any of
-   * the three public contracts carries it, so the default stays here rather than becoming an API
-   * this family's `.d.ts` files do not declare.
-   */
-  label?: string;
-}
+import type { OverlayCloseProps } from './OverlayClose.types';
 
 /**
- * The 44×44 dismissal shared by Sheet, Modal and DetailPanel. Hover is a background tint only, so
+ * The 44×44 dismissal shared by Sheet, Modal and DetailPanel. Under a handle the web draws the same
+ * header as the phone, so `handle` pulls only sideways here too. Hover is a background tint only, so
  * nothing about the control is hover-only: the glyph, the target and the name are always present.
  */
-export function OverlayClose({ onClick, offset = 'sheet', label = 'Close' }: OverlayCloseProps) {
+export function OverlayClose({ onClick, offset = 'sheet', label }: OverlayCloseProps) {
   return (
     <button
       aria-label={label}

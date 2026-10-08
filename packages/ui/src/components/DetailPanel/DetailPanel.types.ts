@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react';
+import type { OverlayCloseWords } from '../Sheet/OverlayClose.types';
 import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 
 export type DetailPanelSide = 'right' | 'left';
 
 export type DetailPanelDensity = 'expressive' | 'functional';
 
-export interface DetailPanelProps {
+export interface DetailPanelProps extends OverlayCloseWords {
   open?: boolean;
   onClose?: () => void;
   side?: DetailPanelSide;

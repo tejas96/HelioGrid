@@ -8,6 +8,7 @@ import { OverlayClose } from '../Sheet/OverlayClose.native';
 interface PanelHeaderProps {
   /** Leading node, usually an IconCircle or Avatar. */
   leading?: ReactNode;
+  closeLabel: string;
   onClose?: () => void;
   overline?: string;
   /** The panel's density padding, resolved by the caller. */
@@ -23,6 +24,7 @@ interface PanelHeaderProps {
 /** The panel's sticky header: a leading node, the heading block and the 44×44 dismissal. */
 export function PanelHeader({
   leading,
+  closeLabel,
   onClose,
   overline,
   pad,
@@ -59,7 +61,7 @@ export function PanelHeader({
           )}
         </View>
       </View>
-      {showClose ? <OverlayClose offset="sheet" onClick={onClose} /> : null}
+      {showClose ? <OverlayClose label={closeLabel} offset="sheet" onClick={onClose} /> : null}
     </View>
   );
 }

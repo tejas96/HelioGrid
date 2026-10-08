@@ -29,6 +29,7 @@ interface NativeDetailPanelProps extends DetailPanelProps {
 export function DetailPanel({
   open = true,
   onClose,
+  closeLabel,
   side = 'right',
   width = 480,
   title,
@@ -101,6 +102,7 @@ export function DetailPanel({
         >
           <PanelHeader
             leading={leading}
+            closeLabel={closeLabel}
             onClose={onClose}
             overline={overline}
             pad={pad}

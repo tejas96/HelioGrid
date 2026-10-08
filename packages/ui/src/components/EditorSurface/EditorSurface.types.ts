@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { DetailPanelProps, DetailPanelSide } from '../DetailPanel/DetailPanel.types';
 import type { ModalProps } from '../Modal/Modal.types';
+import type { OverlayCloseWords } from '../Sheet/OverlayClose.types';
 import type { SheetProps, SheetSize } from '../Sheet/Sheet.types';
 import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 
@@ -38,7 +39,7 @@ export interface UseEditorFormOptions {
  * remain the two forms it renders; reach for them directly only when a surface is one of them by
  * nature.
  */
-export interface EditorSurfaceProps {
+export interface EditorSurfaceProps extends OverlayCloseWords {
   open?: boolean;
   onClose?: () => void;
   /**

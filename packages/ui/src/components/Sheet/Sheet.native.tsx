@@ -46,6 +46,7 @@ const DRAG_DISMISS = 96;
 export function Sheet({
   open = true,
   onClose,
+  closeLabel,
   title,
   subtitle,
   overline,
@@ -165,6 +166,7 @@ export function Sheet({
               <SheetHeader
                 density={density}
                 handle={handle}
+                closeLabel={closeLabel}
                 onClose={onClose}
                 overline={overline}
                 scrolled={scrolled}

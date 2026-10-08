@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { OverlayCloseWords } from '../Sheet/OverlayClose.types';
 
 /** sm 400 · md 520 · lg 720 (capped at 100%). */
 export type ModalSize = 'sm' | 'md' | 'lg';
@@ -8,7 +9,7 @@ export type ModalDensity = 'expressive' | 'functional';
 /** Draws the leading circular icon tint. neutral = no icon unless `icon` is given. */
 export type ModalTone = 'neutral' | 'danger' | 'warning' | 'success';
 
-export interface ModalProps {
+export interface ModalProps extends OverlayCloseWords {
   open?: boolean;
   onClose?: () => void;
   title?: string;

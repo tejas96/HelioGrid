@@ -3356,7 +3356,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 
 ### T-FPLAT-082 · The open page — the app's design tokens and components pulled level with the live design system
 **Type:** port · **Tier:** P0
-**Status:** in progress — parts a, b, c, d, e, f and g shipped; part h open
+**Status:** shipped
 **Why:** Every screen is drawn on the live design system, but the app draws with a snapshot of it pulled on 2026-08-19 plus partial pulls. The design system's open page (2026-09-29) made the page white and moved grey to the fill of fields, tiles and chips, restyled the fields, the phone header and footer and the list tiles, and added tokens the boards use (`--fill`, `--tile-pad`, `--r-tile`). Without the pull, no screen can match its board: a screen built now is built against values the design has already left.
 **PRD rows:** none of its own — the design system is the visual authority (`F7`); `docs/engineering/17-ui-architecture-v2.md` §6 owns the pull.
 **Design:** none — no screen of its own; each part checks the built screens it touches against their boards.
@@ -3373,7 +3373,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | e | the held-back typings and the design system's open rulings: `Banner`'s `actionBelow` and `onFormChange` ported on both halves, with the held-back `Banner.d.ts.txt` and `adherence.oxlintrc.json` pulled (D31, deferred review 2026-10-08); the design system's `PhoneField` reads the dial code from its market and its typing is pulled (D130); `RichText`'s frame drawn by `FieldBox` (D60); a placeholder takes `--text-tertiary` (D131, `F7-15`); the overline and mono take the body's line height, 1.55 (D136) — each design-system change by the owner's paste first | its own RFC | c | shipped |
 | f | words kept for a screen reader: one visually-hidden option — `Text`'s `spokenOnly`, the rule written once in `Text.css` — with every copy moved onto it and a Biome rule against a new one (D93); a loading `Button` keeps its name for assistive technology (D84) | its own RFC | c | shipped |
 | g | the overlays' edges: the phone `Menu` and `Sheet` scrim proven already out of a screen reader's way (D82); `Modal`'s last body padded on both halves (D88); the phone `Sheet`'s close target, title and `Badge` at every text size (D96) — split from f by `T-FPLAT-082f`'s ruling F2 | its own RFC | f | shipped |
-| h | the close button's words: a required `closeLabel` from `packages/i18n` on `Sheet`, `Modal`, `DetailPanel`, `EditorSurface` and `FilterPanel`, filled by every caller on both platforms (D96's last item); `OverlayClose.types.ts` authored once with the offset union and the required label — split from g by `T-FPLAT-082g`'s ruling G2 | its own RFC | g | open |
+| h | the close button's words: a required `closeLabel` from `packages/i18n` on `Sheet`, `Modal`, `DetailPanel`, `EditorSurface` and `FilterPanel`, filled by every caller on both platforms (D96's last item); `OverlayClose.types.ts` authored once with the offset union and the required label — split from g by `T-FPLAT-082g`'s ruling G2 | its own RFC | g | shipped |
 
 #### Part a · RFC
 
@@ -4697,6 +4697,169 @@ Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-F
 - A comment gave the web half the phone's reason, and three edited comments were left unwrapped (review) → fixed; Biome does not reflow comments, said out loud.
 - Android's app dies on every font-scale change (QA) → D159; out of this part's scope.
 - CI `e2e-web` failed on `web/home.spec.ts` "a new owner lands on their home…" (run 37781374502): the test reloaded while the mark's save was still in flight, and after the reload it checked the mark hidden before the home had read the count, so it passed while loading and failed when the old count came back first. Not this part's code: the race was there since the test was written. → `support/shell.ts`'s `passTheOwnersMark` returns only once the `PATCH` is stored, and the test waits for the home's taught words (drawn only once the count is read) before checking the mark. Planted red: the save held 8 s → the old helper failed with CI's exact assertion, the fixed one passed; then both callers 5× at both viewports (160 passed) and the whole suite (68 passed). No check finds an absence asserted during loading, said out loud.
+
+#### Part h · RFC
+
+##### Title
+T-FPLAT-082h — the close button's words: a required `closeLabel` from `packages/i18n` on every overlay, on web and phone.
+
+##### Description
+- **User impact:** a Hindi or Marathi reader who uses a screen reader hears the close button named in their own language — "बंद करें" or "बंद करा" — not the English "Close". Today they meet it on the web's notification centre and grievance note, and on the phone's notification centre. Indirectly: every later overlay must pass its close words, so no new screen can ship an English close.
+- **Problem solved:** `deferred.md` D96's last item. `OverlayClose` defaults its name to "Close" (`Sheet/OverlayClose.tsx:23`, `.native.tsx:30`), and no prop on `Sheet`, `Modal`, `DetailPanel`, `EditorSurface` or `FilterPanel` carries it (found live in `T-SHELL-003` part b QA, S7). Split from g by ruling G2. The close's props are also typed twice, once per half (Law 7, `CLAUDE.md` §8 zero duplication).
+
+##### Goals
+- The five overlays take a required `closeLabel: string`; no English default is left in `packages/ui`'s close.
+- `OverlayClose`'s props and offset union are declared once, in `OverlayClose.types.ts`, and both halves implement it.
+- Every caller passes the word from `packages/i18n`: one new key, `SHELL.close`, in English, Hindi and Marathi.
+- A caller that leaves out `closeLabel`, or passes a blank one, fails a check.
+
+##### Non-goals
+- Every other English word inside `packages/ui` — `FilterPanel`'s "Clear all", "Done", "Show N results" and the rest of D2; `UnavailableNote`'s title (D92).
+- The close's look, size or offset (part g).
+- The design system's typings (decision H1).
+- The layer behind an open phone overlay (D156) and the length of `Sheet.native.tsx` (finding 4).
+
+##### Readiness and dependencies
+- Landed: part g (#255 — open, not merged; this branch is cut from `feat/T-FPLAT-082g` at `52e0c2da` by the owner's word, so it merges after #255).
+- Design: no screen of its own and no board frame — the change is a name a screen reader speaks; nothing on screen moves.
+- Assumption: the `TranslatedText` brand (`docs/tasks/UI.md`) has not landed, so `closeLabel` is a plain `string`, as `retryLabel` is.
+- Blockers: none.
+
+##### Proposal
+**Flow.** a caller reads `t(SHELL.close)` → passes `closeLabel` to its overlay → the overlay hands it to its header → `OverlayClose` names its button with it (`aria-label` on the web, `accessibilityLabel` on the phone).
+
+**Findings from testing the requirement:**
+1. **Required always, not only where a close draws.** `showClose`'s default differs by component (`Sheet` false, `Modal` and `DetailPanel` true, `EditorSurface` by form), so a type that asks for words only when a close can draw is a union per component. Required always is one line per caller; the two callers that draw no close (the phone's `SwitchSheet` and grievance note) pass the word too.
+2. **`EditorSurface` needs no change of its own.** Its three forms take their chrome from `editor-form-props.ts` (`panelChrome`, `modalChrome`, `sheetChrome`), spread into each form; `closeLabel` joins the chrome there once.
+3. **The blank-label rule does not see `closeLabel`.** `empty-label.grit` matches only `label`, `aria-label` and `accessibilityLabel`, so `closeLabel=""` passes lint. The rule's list gains `closeLabel`, proven red on a planted line.
+4. **`Sheet.native.tsx` is already 337 lines**, over the 300 law; this part adds two. Splitting it is not this part's work → a new deferred row, D160.
+
+**Key decisions** (one reason each):
+1. **The word lives in `SHELL` as `close`** — every overlay a caller draws today is the shell's or the door's, and `SHELL` is the shared module both already import (`Reuse before creation`, Law 5). A later module's overlay imports the same key.
+2. **`OverlayClose.types.ts` holds `OverlayCloseOffset` and `OverlayCloseProps`** — the two halves keep only their own offset values and their own reason.
+
+**Order:** `OverlayClose.types.ts` → the five contracts → both halves of each → the key in three languages → the five callers → both specs → the grit rule and its planted red → QA → docs.
+
+**Twin:** every change is on both halves (Law 7).
+
+##### Architecture diagram
+No boundary change — the word crosses the existing i18n → app → ui edge, as `retryLabel` does.
+
+```mermaid
+flowchart LR
+  I18N[i18n SHELL.close, en hi mr] --> WEB[web notification centre and grievance note]
+  I18N --> MOB[mobile notification sheet, grievance note, switch sheet]
+  WEB -->|closeLabel| OV[ui Sheet, Modal, DetailPanel, EditorSurface, FilterPanel]
+  MOB -->|closeLabel| OV
+  OV --> OC[ui OverlayClose, one types file]
+  OC --> SR[screen reader name]
+  GRIT[Biome empty-label: closeLabel] -.->|refuses blank| WEB
+  GRIT -.-> MOB
+```
+
+##### Package changes
+- **ui:** `closeLabel: string` joins `SheetProps`, `ModalProps`, `DetailPanelProps`, `EditorSurfaceProps` and `FilterPanelProps`; new internal `OverlayClose.types.ts` (not exported from `index.ts`); `label` on `OverlayClose` becomes required. No new export.
+- **i18n:** `SHELL.close` added; its three catalogs.
+- **config:** `empty-label.grit` matches `closeLabel` too.
+- **Protections (Law 12):** no brand, enum, token, route, table or error code. The row "Every icon-only control has a label…" in `.claude/protections.md` gains `closeLabel` in `OverlayClose.types.ts` beside `label` in `IconButton.types.ts`.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| add | `packages/ui/src/components/Sheet/OverlayClose.types.ts` | the close's one prop contract and offset union | beside its two halves (Law 7) |
+| modify | `packages/ui/src/components/Sheet/OverlayClose.tsx` · `OverlayClose.native.tsx` | implement the one contract; no English default | the shared close |
+| modify | `packages/ui/src/components/Sheet/Sheet.types.ts` · `Sheet.tsx` · `Sheet.native.tsx` · `SheetHeader.tsx` · `SheetHeader.native.tsx` | `closeLabel` through to the close | the sheet |
+| modify | `packages/ui/src/components/Modal/Modal.types.ts` · `Modal.tsx` · `Modal.native.tsx` | the same | the modal |
+| modify | `packages/ui/src/components/DetailPanel/DetailPanel.types.ts` · `DetailPanel.tsx` · `DetailPanel.native.tsx` · `PanelHeader.tsx` · `PanelHeader.native.tsx` | the same | the panel |
+| modify | `packages/ui/src/components/EditorSurface/EditorSurface.types.ts` · `editor-form-props.ts` | the same, once in the chrome | the editor (finding 2) |
+| modify | `packages/ui/src/components/FilterPanel/FilterPanel.types.ts` · `FilterPanel.tsx` · `FilterPanel.native.tsx` | the same | the filter panel |
+| modify | `packages/i18n/src/copy/shell.ts` | `SHELL.close` | shared shell words |
+| modify | `packages/i18n/src/locales/{en,hi,mr}/messages.po` · `messages.ts` | the word in three languages; `messages.ts` and `en` generated by `extract` and `build` | the catalogs |
+| modify | `apps/web/features/notifications/NotificationCentre.tsx` · `apps/web/features/shell/components/GrievanceNote.tsx` | pass `closeLabel` | the callers |
+| modify | `apps/mobile/src/screens/notifications/NotificationSheet.tsx` · `apps/mobile/src/screens/shell/components/GrievanceNote.tsx` · `apps/mobile/src/screens/login/components/SwitchSheet.tsx` | pass `closeLabel` | the callers |
+| modify | `tests/e2e/components/Sheet.spec.tsx` · `Modal.spec.tsx` | pass the word; the close is named by it | component tests |
+| modify | `packages/config/biome/empty-label.grit` | `closeLabel` blank refused | the blank-label rule |
+| modify | `.claude/protections.md` | the label row names `closeLabel` | Law 12 |
+| modify | `docs/tasks/F-platform.md` · `docs/tasks/deferred.md` | this RFC, part h row and task `shipped`; D96 deleted; D160 added | Law 8 |
+
+##### API and contract changes
+None — no wire boundary changes. The `packages/ui` prop contracts change: `closeLabel` is required on five public components. Every caller is in this repository and changes in the same commit; no released app reads a `packages/ui` type.
+
+##### Risks and rollout
+- **A future caller forgets the word** — the typecheck refuses it; a blank word fails lint.
+- **The wrong word in Hindi or Marathi** — "बंद करें" and "बंद करा" follow the catalogs' register ("साइन आउट करें", "साइन आउट करा"); QA hears them on the running app.
+
+##### Acceptance criteria and proof
+- **AC-1** (D96) — Given a Hindi or Marathi reader, when a screen reader reaches an overlay's close button, then its name is the reader's language word from `packages/i18n`, on web and phone.
+- **AC-2** (new) — Given a caller of `Sheet`, `Modal`, `DetailPanel`, `EditorSurface` or `FilterPanel`, when it leaves out `closeLabel` or passes a blank one, then the check fails.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 | main-dev | required | component tests | a `Sheet` with a close and a `Modal`, each given `hi.t(SHELL.close)` → `getByRole('button', { name: hi.t(SHELL.close), exact: true })` finds the close (amended at review: the catalog's word, never a typed one) | `tests/e2e/components/Sheet.spec.tsx` · `Modal.spec.tsx` (ct) |
+| AC-1 | qa-web | required | browser, `hi` and `mr`, 1536 | the notification centre (`DetailPanel`) and the grievance note (`Modal`) open → the close's accessible name is "बंद करें" in `hi`, "बंद करा" in `mr` | live |
+| AC-1 | qa-ios | required | simulator, `hi` | the notification centre (`Sheet`) open → the close's label is "बंद करें" | live |
+| AC-1 | qa-android | required | emulator, `hi` | the same → the close's content description is "बंद करें" | live |
+| AC-2 | main-dev | required | typecheck · Biome | planted red: `closeLabel` removed from the web grievance note → `pnpm typecheck` fails naming `closeLabel`; `closeLabel=""` on it → `pnpm lint` fails with `empty-label`; both restored | planted red |
+| AC-1–AC-2 | evaluator · ci | required | `pnpm check:all` · `quality`, `e2e-web` | every check passes | gate · CI |
+
+##### Delivery size
+- **Estimate:** 35 authored files and 4 generated (`messages.ts` ×3, `en/messages.po`) — 29 code, 2 tests, 1 rule, 3 docs. About 290 authored lines: code about 110, tests about 20, docs about 160.
+- **Built (amended at the commit card, for the owner's approval):** 35 authored files and 4 generated, as planned; 372 authored lines (+ and −), not 290 — code 159 (moving the close's two in-file contracts into `OverlayClose.types.ts` counts their deletions), tests 43 (Biome wrapped both new tests' long lines), docs 170 (the review, QA and runtime records); the catalogs' 255 lines are `extract` moving line references, beside two typed words. That is 28% over the estimate, past the 20% the budget allows; nothing outside the file table landed.
+- **One part, over the 30-file target.** It is inseparable: once `closeLabel` is required on the three base overlays, `EditorSurface`, `FilterPanel` and every caller fail the typecheck until they pass it, so no smaller part builds green. An optional prop first and a required one later is two PRs for one decision, with an English default shipped in between. The lines stay small.
+
+**Decisions — part h**
+- **H1 — the design system's typings.** **A · app only (recommended):** the port already carries props the design system lacks (`Sheet`'s `retryLabel` and `meta`), and `design-system-props` checks only dropped props; the name is never drawn, so no board changes. **B · the owner's paste too:** the design system's five overlays gain `closeLabel`, and their five `.d.ts.txt` are pulled again.
+- **H2 — the size.** **A · one part at 35 authored files (recommended)**, for the reason under Delivery size. **B · two parts:** an optional prop first, required next.
+- **Deferred rows met:** D96 (`T-FPLAT-082 ships`) — **joins**, it is this part. D2, D92 (`touches packages/ui/src/components/`) — **stay**: their words are other components', and both wait on `T-M12-004`. D156 (`touches …/Sheet/Sheet.native.tsx`) — **stays**: a screen-reader layer change with its own phone QA. D41, D62 (`touches .claude/`) — **stay**: harness checks with no tie to this part.
+
+- **Owner rulings (2026-10-08):** RFC approved; H1 → **A** (app only); H2 → **A** (one part at 35 authored files).
+- **Owner ruling at the commit card (2026-10-08):** the built size, 35 authored files and 372 lines, approved as it is (A).
+- **Build (2026-10-08):** both component specs' new test red first — the close was named "Close" — then green. Planted reds: the old `empty-label` rule passed `closeLabel=""` on the web grievance note and the new one fails it; `closeLabel` removed there → `TS2741: Property 'closeLabel' is missing`; both restored. "बंद करें" and "बंद करा" have no board render (the name is never drawn): drafted in the catalogs' register and flagged here for a native review (`.claude/rules/ui-adherence.md`).
+- **Review (2026-10-08):** one should-fix and four notes, all fixed or recorded — both specs find the close by `hi.t(SHELL.close)` with `exact`, never a typed Hindi word (AC-1's row amended); `closeLabel` and its reason declared once as `OverlayCloseWords` in `OverlayClose.types.ts`, which the five contracts extend (built, not planned: no new file); the types file's offset comment made true for the web half; `Sheet.native.tsx`'s length is D160; the part row turns `shipped` in the commit.
+- **QA setup (2026-10-08):** no signed-in screen sets a language yet (the picker is `T-M01-011`'s), and the door's choice yields to the account's stored one after sign-in. Main set the three standing accounts' `interfaceLanguage` through the api (`PATCH /users/me` on `heliogrid_test`) and relaunched both phone apps; English is restored after QA.
+- **QA (2026-10-08):** all pass. AC-1 web at 1536: the notification centre (`DetailPanel`) and the grievance note (`Modal`) name their close "Close" in `en`, "बंद करें" in `hi`, "बंद करा" in `mr`, each 44 × 44. iOS (…902, `hi`): the centre's close `Button 'बंद करें'`, 44 × 44 pt. Android (…903, `hi`): `content-desc="बंद करें"`, 44.2 dp. English read "Close" on both phones first. Nothing marked read; all three accounts back to `en` and Main's api sessions signed out.
+
+**Checklist** — [x] `OverlayClose.types.ts` · [x] five contracts and halves · [x] `SHELL.close` ×3 · [x] five callers · [x] specs · [x] grit rule and planted red · [x] qa-web · [x] qa-ios · [x] qa-android · [x] review · [x] gate · [x] docs
+
+#### Runtime — part h
+Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-FPLAT-082h` from `feat/T-FPLAT-082g` `52e0c2da` (the owner's word: #255 is not merged yet).
+
+| resource | state at start | identity |
+|---|---|---|
+| web `3002` · api `8084` · metro `8081` | free | — |
+| postgres `5544` · object store `9000` · temporal `7233` | pre_existing | containers `heliogrid-pg-local`, `heliogrid-object-store-local`, `heliogrid-temporal` |
+| simulators · emulators | none booted | — |
+| browser tabs | the pane is closed | — |
+| database routing | `heliogrid_dev` on both URLs | `.env.local` |
+| logs | `.qa/api.log` 757,041 · `.qa/web.log` 221,634 · `.qa/metro.log` 749,379 bytes | byte marks |
+| started by the task | api (preview server `09811645`, launch `api`), Metro (`26a2eb71`, launch `mobile-metro`), web (`3b6a6ff9`, launch `web`), simulator `40ED0117` (iPhone 17 Pro), `emulator-5554` (Pixel 8); database routing moved to `heliogrid_test` on both URLs for QA and the gate | preview ids, UDID, serial |
+| browser pane | tabs `seed` (api), `tab-1` (Metro), `tab-2` (web) | tab ids |
+| test data | the standing accounts …901 (web), …902 (iOS), …903 (Android) on `heliogrid_test`, each set to `hi` (…901 also `mr`) by Main through `PATCH /users/me` and set back to `en` | numbers |
+
+**At the end (2026-10-08)**
+
+| resource | state at end |
+|---|---|
+| api · web · Metro | stopped by Main (preview stop; web before the gate); `3002`, `8084`, `8081` free; no `tsx watch` left |
+| postgres · object store · temporal | pre_existing, untouched |
+| simulator `40ED0117` · `emulator-5554` | shut down |
+| browser pane | tabs `seed`, `tab-1` and `tab-2` closed; the pane is closed |
+| database routing | restored to `heliogrid_dev` on both URLs |
+| logs | `.qa/api.log` 949,412 · `.qa/web.log` 237,514 · `.qa/metro.log` 799,765 bytes |
+| test data | all three standing accounts back to `en`; Main's three api sessions signed out; the web stays signed in on …901, iOS on …902, Android now on …903 (it was on …902) |
+
+**Measurements:** helper runs — qa-web 1 (2 continuations), qa-ios 1 (1 continuation), qa-android 1 (1 continuation), reviewer 1, evaluator 1, full gate once; helper tokens about 330k (reviewer 83k, qa-web 68k, qa-ios 59k, qa-android 56k, evaluator 31k); Main's turns and tokens were not counted. Planned 35 authored files and about 290 lines; built 35 authored files (+4 generated) and 372 lines — code 159, tests 43, docs 170. Built and not planned: no file; `OverlayCloseWords` (review). Planned and not built: none.
+
+**Mistakes and the rule that now holds each**
+- The two new specs first found the close by a typed Hindi word (review) → they take `hi.t(SHELL.close)` with `exact`; `tests/e2e/CLAUDE.md` already forbids a typed word, and no check finds one, said out loud.
+- `closeLabel` and its reason were first written five times, once per contract (review) → `OverlayCloseWords`, declared once; jscpd does not see a five-line repeat, said out loud.
+- QA's packets assumed a signed-in person can change language; none can until `T-M01-011` (QA) → Main set the language through the api and relaunched the phones; no rule needed, the gap is that task's.
+- Main relaunched the Android app while its helper was still driving it (QA) → no harm; the helper signed in again. No check holds it, said out loud.
+- A scripted checklist tick first changed part a's shipped checklist, the first matching line in the file (docs) → restored from `HEAD` at once and checked with `git diff -U0`; the check `D62` asks for would refuse it.
+- The build passed the 20% line budget, found only when counting for this card (commit) → shown to the owner as a delta here; no check counts a part's lines, said out loud.
 
 ### T-FPLAT-083 · A route answers only what its contract declares
 **Type:** policy · **Tier:** P1

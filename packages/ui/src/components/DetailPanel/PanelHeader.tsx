@@ -4,6 +4,7 @@ import { OverlayClose } from '../Sheet/OverlayClose';
 interface PanelHeaderProps {
   /** Leading node, usually an IconCircle or Avatar. */
   leading?: ReactNode;
+  closeLabel: string;
   onClose?: () => void;
   overline?: string;
   /** The scroll shadow — luminance, never a divider line. */
@@ -18,6 +19,7 @@ interface PanelHeaderProps {
 /** The panel's sticky header: a leading node, the heading block and the 44×44 dismissal. */
 export function PanelHeader({
   leading,
+  closeLabel,
   onClose,
   overline,
   scrolled,
@@ -44,7 +46,7 @@ export function PanelHeader({
           )}
         </div>
       </div>
-      {showClose ? <OverlayClose offset="sheet" onClick={onClose} /> : null}
+      {showClose ? <OverlayClose label={closeLabel} offset="sheet" onClick={onClose} /> : null}
     </div>
   );
 }

@@ -35,6 +35,7 @@ interface WebDetailPanelProps extends DetailPanelProps {
 export function DetailPanel({
   open = true,
   onClose,
+  closeLabel,
   side = 'right',
   width = 480,
   top = '0px',
@@ -100,6 +101,7 @@ export function DetailPanel({
       >
         <PanelHeader
           leading={leading}
+          closeLabel={closeLabel}
           onClose={onClose}
           overline={overline}
           scrolled={scrolled}
