@@ -26,8 +26,10 @@ const TITLE: Record<SheetDensity, TextStyle> = {
 };
 
 /**
- * The sheet's sticky header. `overline` is the Text primitive's own 11px signature — the one
- * sanctioned appearance below the 12px floor — so this file never re-spells it.
+ * The sheet's sticky header. The title keeps its drawn size whatever text size the person set,
+ * as a platform sheet's own title does: grown, one word was wider than the line and broke inside
+ * itself. `overline` is the Text primitive's own 11px signature — the one sanctioned appearance
+ * below the 12px floor — so this file never re-spells it.
  */
 export function SheetHeader({
   density,
@@ -57,7 +59,7 @@ export function SheetHeader({
           </Text>
         )}
         {title === undefined ? null : (
-          <Text variant={density === 'functional' ? 'h4' : 'h3'} style={TITLE[density]}>
+          <Text variant={density === 'functional' ? 'h4' : 'h3'} style={TITLE[density]} fixedSize>
             {title}
           </Text>
         )}
@@ -67,7 +69,7 @@ export function SheetHeader({
           </Text>
         )}
       </View>
-      {showClose ? <OverlayClose offset="sheet" onClick={onClose} /> : null}
+      {showClose ? <OverlayClose offset={handle ? 'handle' : 'sheet'} onClick={onClose} /> : null}
     </View>
   );
 }

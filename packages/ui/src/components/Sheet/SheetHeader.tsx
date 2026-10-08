@@ -46,7 +46,7 @@ export function SheetHeader({
         )}
         {subtitle === undefined ? null : <div className="hg-sheet-subtitle">{subtitle}</div>}
       </div>
-      {showClose ? <OverlayClose offset="sheet" onClick={onClose} /> : null}
+      {showClose ? <OverlayClose offset={handle ? 'handle' : 'sheet'} onClick={onClose} /> : null}
     </div>
   );
 }

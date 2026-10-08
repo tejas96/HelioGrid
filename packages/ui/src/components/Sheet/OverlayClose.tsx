@@ -1,5 +1,9 @@
-/** Sheet and DetailPanel pull the button back by 8/10; Modal's roomier header by 10/12. */
-export type OverlayCloseOffset = 'sheet' | 'modal';
+/**
+ * Sheet and DetailPanel pull the button back by 8/10; Modal's roomier header by 10/12. Under a
+ * handle `handle` pulls only sideways, so the web draws the same header as the phone, where a
+ * close pulled up past the header loses 8 of its 44 to the view that holds it.
+ */
+export type OverlayCloseOffset = 'sheet' | 'modal' | 'handle';
 
 interface OverlayCloseProps {
   onClick?: () => void;

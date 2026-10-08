@@ -73,7 +73,9 @@ test('a new owner lands on their home inside the shell, with one mark on the ver
   await passTheOwnersMark(page, en);
   await expect(page.getByText(verbMark?.body ?? '')).toBeHidden();
   await page.reload();
-  await expect(page.getByRole('button', { name: addLead })).toBeVisible();
+  // The home teaches only once the company and the passed marks are read, so the mark's absence
+  // is checked against the server's count, never against a page still loading.
+  await expect(page.getByText(en.t(SHELL.nothingAssigned)).first()).toBeVisible();
   await expect(page.getByText(verbMark?.body ?? '')).toBeHidden();
 });
 

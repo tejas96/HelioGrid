@@ -25,6 +25,10 @@
   margin-right: -10px;
 }
 
+.hg-overlay-close[data-offset="handle"] {
+  margin-right: -10px;
+}
+
 .hg-overlay-close[data-offset="modal"] {
   margin-top: -10px;
   margin-right: -12px;

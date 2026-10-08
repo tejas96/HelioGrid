@@ -53,8 +53,14 @@ const styles = StyleSheet.create({
    it rides on the Text primitive's style slot rather than in a second text component. */
 const medium: TextStyle = { fontWeight: '500' };
 
-function pillStyle(density: ChipDensity, extra: ViewStyle): ViewStyle {
-  return { ...styles.pill, height: PILL_H[density], ...extra };
+/**
+ * A label's drawn height is a floor, so at a larger text size its words grow the pill instead of
+ * clipping. A pressable pill keeps it fixed: its target gives back exactly the difference, and a
+ * grown pill would draw over the rows above and below it.
+ */
+function pillStyle(density: ChipDensity, extra: ViewStyle, pressable = false): ViewStyle {
+  const height = pressable ? { height: PILL_H[density] } : { minHeight: PILL_H[density] };
+  return { ...styles.pill, ...height, ...extra };
 }
 
 interface NativeChipProps extends ChipProps {
@@ -87,7 +93,11 @@ export function Chip({
   const pill = (
     <View
       style={[
-        pillStyle(density, active ? styles.chipActive : { backgroundColor: controlFill }),
+        pillStyle(
+          density,
+          active ? styles.chipActive : { backgroundColor: controlFill },
+          onClick !== undefined,
+        ),
         style,
       ]}
     >
