@@ -6,8 +6,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
-  padding: var(--sp-4);
-  border-radius: var(--r-card-expressive);
+  padding: var(--tile-pad);
+  border-radius: var(--r-tile);
 }
 
 /* The face: a sibling button under the content, so a control in a slot is its own target. */
@@ -20,6 +20,12 @@
   background: transparent;
   border-radius: inherit;
   cursor: pointer;
+}
+
+/* A card or member that opens takes the tile's hover fill, as `Card` does; nothing depends on it. */
+.hg-notification-card:has(> .hg-notification-face:hover),
+.hg-notification-member:has(> .hg-notification-face:hover) {
+  background: var(--fill-hover);
 }
 
 .hg-notification-face:focus-visible {
@@ -140,8 +146,8 @@
   align-items: center;
   gap: var(--sp-3);
   min-height: 44px;
-  padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-4);
-  border-radius: var(--r-card-expressive);
+  padding: var(--sp-3) var(--sp-3) var(--sp-3) var(--tile-pad);
+  border-radius: var(--r-tile);
 }
 
 .hg-notification-member-words {

@@ -19,5 +19,5 @@ test('the sticky day heading paints the ground that holds it', async ({ mount, p
   const day = card.locator('.hg-stream-day');
 
   await expect(day).toHaveCSS('position', 'sticky');
-  await expect(day).toHaveCSS('background-color', await resolvedColour(page, '--canvas-sunken'));
+  await expect(day).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
 });

@@ -19,10 +19,7 @@ for (const variant of ['card', 'box'] as const) {
       </BandedFigure>,
     );
 
-    await expect(figure).toHaveCSS(
-      'background-color',
-      await resolvedColour(page, '--canvas-sunken'),
-    );
+    await expect(figure).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
     await expect(figure).toHaveCSS('box-shadow', 'none');
     await expect(figure.getByRole('button', { name: tryAgain })).toHaveCSS(
       'background-color',

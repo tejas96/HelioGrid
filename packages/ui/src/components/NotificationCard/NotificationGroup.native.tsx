@@ -78,8 +78,8 @@ const styles = StyleSheet.create({
     minHeight: 44,
     paddingVertical: theme.spacing['sp-3'],
     paddingRight: theme.spacing['sp-3'],
-    paddingLeft: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-card-expressive'],
+    paddingLeft: theme.layout['tile-pad'],
+    borderRadius: theme.radius['r-tile'],
   },
   memberWords: { flex: 1, minWidth: 0, gap: theme.spacing['sp-1'] },
   memberLine: {

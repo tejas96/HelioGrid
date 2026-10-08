@@ -46,8 +46,16 @@ interface DeclaredPair {
   restriction?: string;
 }
 
-/** `fill` is the open page's grey: every field, tile and chip — the words in them land on it. */
-const TEXT_BACKGROUNDS = ['surface', 'canvas', 'surface-alt', 'canvas-sunken', 'fill'] as const;
+/** `fill` is the open page's grey: every field, tile and chip — the words in them land on it.
+ *  `fill-hover` is a tappable tile under the web pointer: its words stay readable there. */
+const TEXT_BACKGROUNDS = [
+  'surface',
+  'canvas',
+  'surface-alt',
+  'canvas-sunken',
+  'fill',
+  'fill-hover',
+] as const;
 const SEMANTIC = ['success', 'warning', 'danger', 'info', 'neutral'] as const;
 /** --warning excluded: colors.css proves it clears 3:1 NOWHERE — it is a tint, never a mark. */
 const MARKS = ['success', 'danger', 'info', 'neutral'] as const;
@@ -99,6 +107,12 @@ const DECLARED_PAIRS: DeclaredPair[] = [
   { fg: 'accent', bg: 'canvas', role: 'links on page canvas', floor: 4.5 },
   { fg: 'accent', bg: 'canvas-sunken', role: 'focus ring in wells (non-text)', floor: 3 },
   { fg: 'accent', bg: 'fill', role: "a field's focus ring on its fill (non-text)", floor: 3 },
+  {
+    fg: 'accent',
+    bg: 'fill-hover',
+    role: "a selected tile's ring under the pointer (non-text)",
+    floor: 3,
+  },
   { fg: 'accent-hover', bg: 'surface', role: 'hovered links on white', floor: 4.5 },
   ...SEMANTIC.map((s) => ({
     fg: `${s}-text`,

@@ -28,5 +28,5 @@ test('a pinned cell paints the ground that holds it', async ({ mount, page }) =>
   const pinned = card.getByRole('rowheader', { name: label });
 
   await expect(pinned).toHaveCSS('position', 'sticky');
-  await expect(pinned).toHaveCSS('background-color', await resolvedColour(page, '--canvas-sunken'));
+  await expect(pinned).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
 });

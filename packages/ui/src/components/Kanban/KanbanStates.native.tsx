@@ -66,7 +66,7 @@ export function BoardMessage({ tone, title, message, onRetry, retryLabel }: Boar
   const ink = warning ? theme.colors['warning-text'] : theme.colors['text-tertiary'];
   return (
     <View style={[tileSurface, styles.message]}>
-      {/* The message is a tile, so its retry turns white. */}
+      {/* The message is a tile: what it holds reads the tile's ground. */}
       <GroundProvider ground="tile">
         <View style={[styles.mark, warning ? styles.markWarning : null]}>
           <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">

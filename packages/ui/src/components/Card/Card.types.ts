@@ -3,11 +3,11 @@ import type { SurfaceState } from '../UnavailableNote';
 
 export interface CardProps {
   children?: ReactNode;
-  /** expressive = 24px radius / 24px pad; functional = 12px / 16px */
+  /** expressive = the tile's `--r-tile` and `--tile-pad`; functional = 12px / 16px */
   density?: 'expressive' | 'functional';
-  /** enables the hover ring + pointer */
+  /** enables the hover fill + pointer */
   interactive?: boolean;
-  /** 2px accent ring */
+  /** the inset 1.5px accent ring a focused field also draws */
   selected?: boolean;
   /**
    * **The card has states**, because law 1 ("states are part of done") applies to the surface every

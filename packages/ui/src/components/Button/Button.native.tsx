@@ -13,8 +13,7 @@ interface NativeButtonProps extends ButtonProps {
 }
 
 interface VariantVisual {
-  /** Absent: the variant takes the control fill of what holds it. */
-  background?: string;
+  background: string;
   color: string;
   elevation?: ViewStyle;
 }
@@ -22,9 +21,14 @@ interface VariantVisual {
 /* Primary is near-black. The accent is never a button fill. */
 const VARIANT: Record<ButtonVariant, VariantVisual> = {
   primary: { background: theme.colors['action-primary'], color: theme.colors['text-inverse'] },
-  /* The opposite of what holds it (`F7-15`): the well on the page or a sheet, never a white pill
-     on white; white inside a tile. */
-  secondary: { color: theme.colors['text-primary'] },
+  /* Raised, as the design system's button is (`F7-15`, owner ruling D14 B): white at `e2` on every
+     ground — the page, a sheet, a tile. */
+  secondary: {
+    // biome-ignore lint/plugin/raw-white: control — the secondary is white on every ground (D14 B)
+    background: theme.colors.surface,
+    color: theme.colors['text-primary'],
+    elevation: theme.elevation.e2,
+  },
   /* Web ghost reads --control-edge so field mode can ring it; RN has no field-mode edge yet. */
   ghost: { background: 'transparent', color: theme.colors['text-secondary'] },
   destructive: { background: theme.colors['danger-text'], color: theme.colors['text-inverse'] },
@@ -86,7 +90,7 @@ export function Button({
   style,
 }: NativeButtonProps) {
   const visual = VARIANT[variant];
-  const { controlFill, controlFillDisabled } = useGround();
+  const { controlFillDisabled } = useGround();
   /* Same resolver as the web half — a string, an `ActionReasonSpec` or a ready node all land on
      ActionReason, and a spec with no sentence resolves to nothing and states nothing. */
   const reason = renderActionReason(disabledReason);
@@ -105,10 +109,10 @@ export function Button({
       style={[
         styles.pill,
         SIZE[size],
-        { backgroundColor: visual.background ?? controlFill },
+        { backgroundColor: visual.background },
         disabled ? undefined : visual.elevation,
         // A ghost has no ground, and being unavailable does not give it one — see the web half.
-        // Lighter than the well, which an enabled secondary and every field rest on — see the web half.
+        // Sunk below the page and the tile alike — see the web half.
         disabled && variant !== 'ghost' ? { backgroundColor: controlFillDisabled } : undefined,
         fullWidth ? styles.fullWidth : undefined,
         style,

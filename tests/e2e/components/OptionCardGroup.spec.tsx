@@ -21,10 +21,7 @@ test('every available option is a grey tile with no shadow, the selected one rin
   const selected = group.getByRole('radio', { name: bySms });
   const unselected = group.getByRole('radio', { name: byCall });
 
-  await expect(selected).toHaveCSS(
-    'background-color',
-    await resolvedColour(page, '--canvas-sunken'),
-  );
+  await expect(selected).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
   await expect(selected).toHaveCSS(
     'box-shadow',
     `${await resolvedColour(page, '--accent')} 0px 0px 0px 2px`,

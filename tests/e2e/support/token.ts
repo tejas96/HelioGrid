@@ -31,3 +31,17 @@ export async function resolvedLength(page: Page, token: `--${string}`): Promise<
   if (px === 0) throw new Error(`${token} resolves to nothing on this page`);
   return px;
 }
+
+/** A theme shadow token as the page resolves it on a box — so a spec compares a shadow, never types one. */
+export async function resolvedShadow(page: Page, token: `--${string}`): Promise<string> {
+  const shadow = await page.evaluate((name) => {
+    const probe = document.createElement('div');
+    probe.style.boxShadow = `var(${name})`;
+    document.body.append(probe);
+    const value = getComputedStyle(probe).boxShadow;
+    probe.remove();
+    return value;
+  }, token);
+  if (shadow === 'none') throw new Error(`${token} resolves to nothing on this page`);
+  return shadow;
+}

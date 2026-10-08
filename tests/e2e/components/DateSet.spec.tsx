@@ -19,7 +19,7 @@ test('a date row is a grey tile with no shadow, and the calendar stays on the pa
   );
   const row = dateSet.getByRole('listitem');
 
-  await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--canvas-sunken'));
+  await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
   await expect(row).toHaveCSS('box-shadow', 'none');
   await expect(dateSet.locator('.hg-date-set-grid')).toHaveCSS(
     'background-color',

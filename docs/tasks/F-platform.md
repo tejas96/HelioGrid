@@ -3356,7 +3356,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 
 ### T-FPLAT-082 · The open page — the app's design tokens and components pulled level with the live design system
 **Type:** port · **Tier:** P0
-**Status:** in progress — parts a and b shipped; part c open
+**Status:** in progress — parts a, b and c shipped; parts d, e and f open
 **Why:** Every screen is drawn on the live design system, but the app draws with a snapshot of it pulled on 2026-08-19 plus partial pulls. The design system's open page (2026-09-29) made the page white and moved grey to the fill of fields, tiles and chips, restyled the fields, the phone header and footer and the list tiles, and added tokens the boards use (`--fill`, `--tile-pad`, `--r-tile`). Without the pull, no screen can match its board: a screen built now is built against values the design has already left.
 **PRD rows:** none of its own — the design system is the visual authority (`F7`); `docs/engineering/17-ui-architecture-v2.md` §6 owns the pull.
 **Design:** none — no screen of its own; each part checks the built screens it touches against their boards.
@@ -3368,7 +3368,10 @@ These rows are screen rows: their verbatim text is the specification of a screen
 |---|---|---|---|---|
 | a | the four changed token files and the census pulled; every field drawn the open page's way (fill, 54, radius 16, inset rings, the field type sizes); every built screen checked against its board | AC-1, AC-2, AC-3, AC-4 | the design system's field type tokens (the prerequisite in `#### Part a · RFC`) | shipped |
 | b | the phone footer pulled level: `BottomNav` is the pill on the design system's footer tokens, its typing pulled, the retired arc removed; the pill's labels held to their slots at the largest text size (D83). The header stays the name as words (B1) | its own RFC | a | shipped |
-| c | tiles (`Card`, `RecordCard`, `TileActions`), the search pill and filter button, kind chips, flat `Accordion`, wherever built; a disabled control in a tile equals the tile's `--canvas-sunken` ground until tiles take `--fill` (part a review) — close it here, and `F7-15`'s "until part c" lines; the secondary button on the page drawn as the design system's `Button` draws it — `--surface` with `--e2`, not the grey well — every secondary on every screen, with `F7-15` amended (owner ruling D14 B, `T-M01-035`'s side-by-side review, 2026-10-07); `Banner`'s `actionBelow` and `onFormChange` ported on both halves, with the held-back `Banner.d.ts.txt` and `adherence.oxlintrc.json` pulled (D31, deferred review 2026-10-08); `RichText`'s frame drawn by `FieldBox` (D60); the phone `Menu` and `Sheet` backdrop named or hidden for a screen reader (D82); a loading `Button` keeps its name for assistive technology (D84); `Modal`'s body takes its bottom padding at 375 (D88); one visually-hidden option replaces the copies (D93); `NotificationCard` takes the tile tokens part a pulled (D94); the phone `Sheet`'s close target, title wrap, `Badge` and close label (D96); the design system's `PhoneField` reads the dial code from its market and its typing is pulled (D130); a placeholder takes `--text-tertiary` (D131, `F7-15`); the overline and mono take the body's line height, 1.55 (D136); `AppShell.d.ts` pulled once the design system draws the company's name as words and moves `PhoneScreen` to its own file (part b, B1) — each design-system change by the owner's paste first | its own RFC | a | open |
+| c | the tiles and the page's controls: every tile (`Card`, `AccountTile`, `NotificationCard`, the request-sent tile) on `--fill`, `--r-tile`, `--tile-pad`; a control that is not a field on the page's `--fill`; the secondary `Button` `--surface` at `--e2` on every ground (owner ruling D14 B, `T-M01-035`, 2026-10-07); a disabled control in a tile darker than the tile; `F7-15` and `F7-49` amended; D94 | its own RFC | a | shipped |
+| d | the header: `AppShell.d.ts` pulled once the design system draws the company's name as words and moves `PhoneScreen` to its own file (part b, B1) — `MobileTopBar`'s `company` and `safeTop`, `ShellAction`'s `round`, the round grey bell; the search pill (50 tall) and its filter square, with `SearchField`'s typing pulled; part b's design-system leftovers (`AppRail.jsx`'s arc comment, the in-view item 50 against 48, the error frame's Try again as the secondary `Button`, `RailItem.anchor`, `searchLabel`/`notificationsLabel`) and `Card.d.ts`'s stale comment — each design-system change by the owner's paste first | its own RFC | c | open |
+| e | the held-back typings and the design system's open rulings: `Banner`'s `actionBelow` and `onFormChange` ported on both halves, with the held-back `Banner.d.ts.txt` and `adherence.oxlintrc.json` pulled (D31, deferred review 2026-10-08); the design system's `PhoneField` reads the dial code from its market and its typing is pulled (D130); `RichText`'s frame drawn by `FieldBox` (D60); a placeholder takes `--text-tertiary` (D131, `F7-15`); the overline and mono take the body's line height, 1.55 (D136) — each design-system change by the owner's paste first | its own RFC | c | open |
+| f | assistive technology and the controls' edges: the phone `Menu` and `Sheet` backdrop named or hidden for a screen reader (D82); a loading `Button` keeps its name for assistive technology (D84); `Modal`'s body takes its bottom padding at 375 (D88); one visually-hidden option replaces the copies (D93); the phone `Sheet`'s close target, title wrap, `Badge` and close label (D96) | its own RFC | c | open |
 
 #### Part a · RFC
 
@@ -3710,6 +3713,195 @@ Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-F
 - The proof matrix promised board frames the running app cannot reach (evaluator) → B7; a proof row names a state the app can reach today, or says why not.
 - QA started on phones still holding another number's half-finished signup → Main cleared both apps' sessions; readiness now includes the app's signed-in account, not only that it is installed (said out loud — no rule written).
 
+#### Part c · RFC
+
+##### Title
+T-FPLAT-082c — the tiles and the page's controls: every tile drawn as the open page's grey tile, a control that is not a field on the page's `--fill`, and the secondary button white at `--e2`.
+
+##### Description
+- **User impact:** on every built screen a tile — the notification card, the email tile on the Google link step, the request-sent tile — becomes the board's grey tile (radius 22, padding 16), and every secondary button (*Continue with Google*, *Create a company account*, a notification's act) becomes the white raised pill the boards draw instead of a grey one. Directly: what a person sees is what was designed. Indirectly: the next screen tasks (`T-M01-003` onward) draw tiles and secondary buttons from one place, already level with the design system.
+- **Who gains:** every user of a built screen; every later screen task.
+- **Problem solved:** part a moved the page to white and the fields to `--fill`, but the app's tiles still draw `--canvas-sunken` at radius 24 (`primitives/Ground/Ground.css:63`, `Card.css:13-14`, `NotificationCard.css:9-10`, `AccountTile.css:7-9`), a non-field control on the page still takes the well `--bg-well` (`Ground.css:38`), and the secondary button takes that well (`Button.css:77`) where the design system's `Button` is `--surface` at `--e2` (`components/forms/Button.jsx`, read 2026-10-08) — the owner's ruling D14 B (`T-M01-035`, 2026-10-07). The design system's open page (`readme.md`, "Open page layout (2026-09-29)") makes `--fill` the fill of tiles, chips and round icon buttons; `Card.jsx` draws `--fill`, `--r-tile`, padding 16, `--fill-hover` under the pointer and an inset 1.5px `--accent` ring when selected.
+- **Cites:** `F7-15`, `F7-49`; `SCR-M01-01`'s record ("Open page … single facts sit in grey tiles (`--fill`, `--r-tile`, `--tile-pad`)"); `SCR-SHELL-03`'s decision 9 (the card) and 4 (the filter bar: `--fill` pills, a `--line-soft` hairline); D94.
+
+##### Goals
+- Every tile on web and phone is `--fill`, radius `--r-tile` (22), padding `--tile-pad` (16), with no border and no shadow; selected is an inset 1.5px `--accent` ring; a web hover takes `--fill-hover`.
+- A control that is not a field takes `--fill` on the page or in a sheet and `--surface` in a tile; a disabled control takes `--canvas-sunken` on every ground, now darker than the tile it sits in.
+- The secondary `Button` is `--surface` at `--e2` on every ground, lifting to `--e3` on a web hover; disabled it sinks to `--canvas-sunken` with no shadow.
+- The app's hand-drawn request-sent tile becomes a `Card` on both platforms.
+- `F7-15` and `F7-49` say what the open page says.
+
+##### Non-goals
+- The other tiles in `Ground.css`'s list (`StatCard`, `BandedFigure`, `Kanban`, `Checklist` …) take the new fill through the one list but keep their own radius and padding: no built screen draws them.
+- `RecordCard`, `TileActions`, the kind chips and the flat `Accordion` — no built screen draws them (C2).
+- The phone header, the search pill and its filter square, `AppShell.d.ts` — part d. `Banner`, `PhoneField`, `RichText`, the placeholder and the line heights — part e. The assistive fixes — part f (C1).
+- `D94`'s Unread badge: the board draws it 22 high and the design system's small `Badge` is 24; the app keeps the design system's 24.
+- `Card`'s English state words (D2).
+
+##### Readiness and dependencies
+- Landed: part a (`--fill`, `--fill-hover`, `--r-tile`, `--tile-pad`, `--line-soft` in both themes; `FieldBox` on `--fill`); part b. `Ground` is the one place a tile's fill and a control's fill are decided (`Ground.css`, `Ground.native.tsx` `tileSurface`).
+- Design: no `DESIGN` line (a port). No design-system change is needed: `Card.jsx`, `Button.jsx` and the open page's rules already say every value this part uses. QA compares against the board frames below, captured after approval.
+- Assumption: a tile is one record on the page (`F7-49`); the email tile and the request-sent tile are tiles by their boards' words.
+- Blockers: none.
+
+##### Proposal
+**Flow.** `Ground` (both halves) moves the tile to `--fill` and the page's control fill to `--fill` → `Card` takes the tile's radius, padding, hover and selected ring → `AccountTile` joins the tile list → `NotificationCard` takes the tile's radius and padding, its filter bar the `--line-soft` hairline → the secondary `Button` is white at `--e2` → the two `JoinRequestSent` screens draw a `Card` → each built screen is compared with its board.
+
+**Findings from testing the requirement:**
+1. **Part c's row is about 20 items in four kinds** — tiles and page controls, the header, the held-back typings and the design system's open rulings, the assistive fixes — about 80 files together, nearly three times the 30-file target (`docs/tasks/README.md`). Each kind stands alone. → C1: four parts, c to f.
+2. **`RecordCard`, `TileActions`, kind chips and the flat `Accordion` have no caller.** `RecordCard` and `TileActions` do not exist in `packages/ui`; `Accordion` and `FilterBar` exist and nothing renders them. A port now proves itself on no screen (`CLAUDE.md` §8, solve today's problem); the catalog (`SCR-M01-15`'s Prefer/Hide/Archive) and the first forms draw them in block 1. → C2.
+3. **The app draws a tile by hand.** The request-sent tile repeats the tile's three values in `apps/web/features/auth/company-signup.css:38-45` and `apps/mobile/src/screens/company-signup/styles.ts:51-56`; once `Card` is the board's tile, they are a second copy (`CLAUDE.md` §8, zero duplication). → both draw `Card`.
+4. **The email tile is a tint, not a tile.** `AccountTile` takes `--neutral-bg` at radius 24 (`AccountTile.css:7-9`); `SCR-M01-01`'s record puts single facts in grey tiles. → it joins the tile list.
+5. **`F7-15` and `F7-49` still say `--canvas-sunken`** for a tile and for a page control, and `F7-15` names "until `T-FPLAT-082` part c" (`F7-design-language.md:314`, `:366`); D14 B's secondary button is not in `F7-15` yet. → both rows amended (Law 8).
+6. **A disabled control in a tile** equalled the tile until now (`Ground.css:94-96`); with the tile on `--fill` it is one step darker (`--canvas-sunken`), as the design system's disabled button is. The label and the mark still carry the state (`F7-11`). → closed here; the comment goes.
+7. **The design system's own `Card.d.ts` comment is stale** ("expressive = 24px radius / 24px pad") against its `Card.jsx` (`--r-tile`, 16). The typing is pulled verbatim, so the repo's copy keeps the stale words; `Card.types.ts` says the true values. → the fix rides part d's design-system prompt.
+
+**Key decisions** (one reason each):
+1. **One list, one change.** The tile's fill moves in `Ground` only; each tile keeps only its radius, padding and rings, as `Ground.css` already requires.
+2. **Follow `Card.jsx` on hover and selection** — `--fill-hover` and an inset 1.5px `--accent` ring, the field's ring — so nothing changes size when a tile is selected, and nothing depends on hover (`F7-15`, N1).
+3. **The secondary button reads no ground.** It is `--surface` at `--e2` everywhere, as `Button.jsx` draws it and D14 B rules; on the phone it takes `theme.elevation.e2`.
+
+**Order:** `Ground` and the `Card` spec red → `Ground` both halves → `Card` both halves → `AccountTile` → `NotificationCard` and its filter bar → `Button` and its spec → the two request-sent screens → `F7-15`, `F7-49` → board frames, then QA.
+
+**Twin:** every changed component changes its `.css` or `.tsx` web half and its `.native.tsx` half together (Law 7).
+
+##### Architecture diagram
+No boundary change — the change stays inside `packages/ui`'s drawing (`Ground`, `Card`, `AccountTile`, `NotificationCard`, `Button`) and two app screens that stop drawing a tile by hand.
+
+```mermaid
+flowchart LR
+  TOK[theme tokens: fill, fill-hover, r-tile, tile-pad, e2] --> G[ui Ground: tile fill, control fill]
+  G --> C[Card]
+  G --> AT[AccountTile]
+  G --> NC[NotificationCard]
+  TOK --> B[Button secondary: surface at e2]
+  C --> JRS[web + phone JoinRequestSent]
+  AT --> DOOR[door: Google link step]
+  NC --> CEN[notification centre]
+  B --> DOOR
+  B --> JRS
+```
+
+##### Package changes
+- **ui:** `Ground` (both halves) — tile fill and page control fill `--fill`; `Card`, `AccountTile`, `NotificationCard` (both halves) — tile radius, padding and rings; `Button` (both halves) — the secondary. No export changes.
+- **theme:** `contrast.ts` declares the words a hovered tile carries on `--fill-hover`.
+- **web, mobile:** `JoinRequestSent` draws `Card`; the hand-drawn tile styles go.
+- **Protections (Law 12):** no new brand, enum, token, route, table or error code.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/ui/src/primitives/Ground/Ground.css` · `Ground.native.tsx` | tile `--fill`; page control fill `--fill`; `AccountTile` in the tile list; the "until part c" comment closed | the one ground |
+| modify | `packages/ui/src/components/Card/Card.css` · `Card.native.tsx` · `Card.types.ts` | `--r-tile`, `--tile-pad`; `--fill-hover`; inset 1.5px `--accent` when selected; the typing's comment | the tile |
+| modify | `packages/ui/src/components/AccountTile/AccountTile.css` · `AccountTile.native.tsx` | a tile: its own tint out, the tile's radius and padding | the email tile |
+| modify | `packages/ui/src/components/NotificationCard/NotificationCard.css` · `NotificationCard.native.tsx` | the card and the group member at `--r-tile`, `--tile-pad` (D94); a card's and a member's `--fill-hover` on the web (QA W4, review) | the notification tile |
+| modify | `packages/ui/src/components/NotificationCard/NotificationFilterBar.css` · `NotificationFilterBar.native.tsx` | the hairline `--line-soft` (`SCR-SHELL-03` decision 4, D94) | the filter bar |
+| modify | `packages/ui/src/components/Button/Button.css` · `Button.native.tsx` | secondary `--surface` at `--e2`, web hover `--e3` (D14 B) | the button |
+| modify | `packages/theme/src/contrast.ts` | primary and secondary words on `--fill-hover` | the contrast gate's owner |
+| modify | `apps/web/features/auth/components/JoinRequestSent.tsx` · `apps/web/features/auth/company-signup.css` | the sent-as tile is a `Card`; `.hg-signup-sent-as` goes | the screen |
+| modify | `apps/mobile/src/screens/company-signup/components/JoinRequestSent.tsx` · `styles.ts` | the same on the phone; `sentAs` goes | the screen |
+| modify | `tests/e2e/components/Card.spec.tsx` | the tile's ground, radius, padding, selected ring, hover fill; its retry raised; a disabled control darker than the tile (the spec existed: planned as `add`) | component tests (`tests/e2e/CLAUDE.md`) |
+| modify | `tests/e2e/components/Button.spec.tsx` | the secondary white at `--e2` on the page and in a tile | component tests |
+| modify | `packages/ui/src/components/NotificationCard/NotificationGroup.native.tsx` | a group member's radius and inset (built, not planned: the native member is drawn here) | the notification tile |
+| modify | `tests/e2e/support/token.ts` | `resolvedShadow`, so the two specs compare a shadow token and never type one (built, not planned) | the specs' token reader |
+| modify | `tests/e2e/components/{AccountTile,NotificationCard,NotificationGroup}.spec.tsx` | the tile's new fill, radius and padding; a card's and a member's `--fill-hover` (QA W4, review) (built, not planned: the specs of two planned components) | component tests |
+| modify | `tests/e2e/components/{BandedFigure,Checklist,DataTable,DateSet,FindingList,Kanban,NextAction,OptionCardGroup,ReorderList,StatCard,Transcript}.spec.tsx` | each tile they measure is `--fill` (built, not planned: every tile is drawn by `Ground`'s one list, C3) | component tests |
+| modify | `tests/e2e/components/{ActivityStream,CompareGrid}.spec.tsx` · `DataTable.spec.tsx` (sticky head) | a sticky part inside a tile paints the tile's new ground | component tests |
+| modify | `tests/e2e/components/{Block,PagedDocument,TenantHeader}.spec.tsx` · `DataTable.spec.tsx` (a checkbox on the page) | a retry or secondary on the page is raised white; a page control is `--fill` | component tests |
+| modify | `packages/ui/src/components/{Radio/Radio.css,Radio/Radio.native.tsx,Slider/Slider.css,Slider/Slider.native.tsx,Switch/Switch.css,IconButton/IconButton.css,Checkbox/Checkbox.native.tsx,TimeField/TimeField.native.tsx}` | built, not planned: their comments called the disabled fill "lighter than the well"; it is now one step below the fill (Law 8) | each control |
+| modify | `packages/ui/src/components/{Button/RetryButton.tsx,Kanban/Kanban.css,Kanban/KanbanStates.native.tsx,Card/Card.tsx}` · `packages/ui/CLAUDE.md` | built, not planned (review): comments and the package rule still said a retry reads its ground and `Card` hovers by a ring; the secondary is the one control that paints `--surface` (D14 B) | Law 8 |
+| modify | `docs/tasks/UI.md` | built, not planned: the register's ground and tile lines named `--canvas-sunken` and the well | Law 8 |
+| modify | `docs/prd/foundations/F7-design-language.md` | `F7-15` (page controls `--fill`, the secondary button, the disabled control) and `F7-49` (the tile's values) | Law 8 |
+| modify | `docs/tasks/F-platform.md` · `docs/tasks/deferred.md` | this RFC and the Parts table (C1); `T-FPLAT-084` and `T-FPLAT-086` depend on part f; D94 deleted; the list-parts row (C2 A); D146–D150 (Q2 A) | Law 8 |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **Every secondary button and every tile on every built screen changes look** — QA compares each built screen's board frames at 375 and 1536 and on both phones.
+- **A page control on `--fill` is lighter than the well it was** (1.10:1 on white against 1.14:1) — the owner chose `--fill` with that number (`F7-15`); the control's words carry it (`F7-11`). The contrast gate measures every declared pair.
+- **The other tiles change fill unseen** — no built screen draws them; their own screen tasks compare them with their boards.
+
+##### Acceptance criteria and proof
+- **AC-1** (new; amended by Q1 A) — Given any tile (`Card`, `AccountTile`, `NotificationCard` and a group's member), when it renders on the web and on a phone, then it is `--fill`, radius `--r-tile`, padding `--tile-pad` — a group's member keeps the board's compact 12/12/12/16 (`SCR-SHELL-03` decision 11) — with no border and no shadow; selected, an inset 1.5px `--accent` ring; under a web pointer, `--fill-hover`.
+- **AC-2** (new) — Given a control that is not a field, when it sits on the page or in a sheet it takes `--fill`, in a tile `--surface`, and disabled `--canvas-sunken` on every ground.
+- **AC-3** (D14 B) — Given a secondary `Button`, when it renders on any ground, then it is `--surface` at `--e2`, `--e3` under a web pointer, and disabled `--canvas-sunken` with no shadow.
+- **AC-4** (new; scoped by Q2 A) — Given each built screen that draws a tile or a secondary button, when it renders at 375 and 1536 and on both phones, then its tiles, page controls and secondary buttons match its board frames, apart from the rulings its own task recorded; a difference part c does not draw is a deferred row (D140, D146–D150).
+- **AC-5** (new) — Given the changed colours, when the contrast gate and every check run, then they pass.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 · AC-2 | main-dev | required | component tests | `Card` ground `--fill`, radius 22, padding 16, selected inset ring; a `Button` inside it `--surface`; a disabled one `--canvas-sunken`; planted red: `Ground`'s tile fill back to `--canvas-sunken` | `tests/e2e/components/Card.spec.tsx` (ct) |
+| AC-3 | main-dev | required | component tests | secondary background `--surface`, shadow `--e2` on the page and in a `Card`; planted red: the secondary back on `--hg-control-fill` | `tests/e2e/components/Button.spec.tsx` (ct) |
+| AC-1–AC-4 | qa-web | required | web `3002`, 375 and 1536 | side-by-side: `SCR-M01-01` `m-normal`, `d-normal`; `SCR-M01-02` `m-request-to-join`, `m-request-sent`, `d-request-to-join`, `d-request-sent`; `SCR-SHELL-03` `m-default`, `s-filtered`, `d-default` — each tile's fill, radius and padding, each secondary's fill and shadow, the filter bar's hairline | live, board pictures |
+| AC-1–AC-4 | qa-ios | required | simulator | side-by-side: the 375 frames above | live, board pictures |
+| AC-1–AC-4 | qa-android | required | emulator | side-by-side: the 375 frames above | live, board pictures |
+| AC-4 · Hindi | — | blocked | — | `m-request-sent-hi`: the door's language is lost in signup (D143, clears with `T-M01-039`) | — |
+| AC-1 · AC-4 · `SCR-M01-01` `m-google-link`, `d-google-link` | main-dev | required | component tests | the email tile (`AccountTile`) is `--fill`, `--r-tile`, `--tile-pad` and holds a 63-character address at 375; the running link step needs a real Google sign-in no QA helper can hold (the api binds its Google test double only under `NODE_ENV=test`), so the frame is compared with the component's render, not the running step (build, 2026-10-08) | `tests/e2e/components/AccountTile.spec.tsx` (ct) |
+| AC-4 · `SCR-SHELL-03` `s-landing` | — | not_applicable | — | no built module yet takes a record out of a recipient's scope, so the honest landing cannot be reached on a running app; its one part c element, the secondary *Back to the list*, is the `Button` secondary `Button.spec.tsx` proves (QA, 2026-10-08) | — |
+| AC-4 · `SCR-SHELL-01` | — | not_applicable | — | the home draws no tile and no secondary button; part c changes nothing there | — |
+| AC-5 | evaluator · ci | required | `pnpm check:all` · `quality` | the contrast gate and every check pass | gate · CI |
+
+##### Delivery size
+- **Estimate:** 24 files — 18 code, 2 tests, 4 docs. About 420 authored lines: code about 200, tests about 120, docs about 100.
+- **One part** — part c as above; the rest of the old row becomes parts d, e and f (C1).
+- **Order:** as in Proposal.
+- **Built after review (2026-10-08):** 57 files, within 20% of the re-ruled 43 plus the eight comment fixes and four review fixes listed in the file table.
+- **Built (2026-10-08, approval voided by size, C3):** the full component suite after `Ground` moved — 26 tests in 18 spec files outside the plan still measure the old `--canvas-sunken` tile, the `--bg-well` page control or the flat secondary. With them, part c is about 43 files (planned 24) and about 520 authored lines: code about 210, tests about 210, docs about 100.
+
+**Decisions — part c**
+- **C1 — the split.** **A · four parts (recommended):** c the tiles and the page's controls (this RFC); d the header (`AppShell.d.ts` pulled, the round bell, the search pill and its filter square, part b's design-system leftovers); e the held-back typings and the design system's open rulings (D31, D130, D60, D131, D136); f assistive technology and the controls' edges (D82, D84, D88, D93, D96). Each its own RFC at its turn; `T-FPLAT-084` and `T-FPLAT-086` wait on part f. **B · one part c, re-ruled as one deliverable** at about 80 files.
+- **C2 — the list parts no built screen draws (`RecordCard`, `TileActions`, kind chips, the flat `Accordion`).** **A · the first screen that draws one ports it (recommended):** one deferred row, reopening at `T-M01-003 starts`, so each screen task reads it at its RFC. **B · port them now** as a part of their own, proven by component tests only.
+
+- **C3 — the size, re-ruled (build, 2026-10-08).** **A · one part at about 43 files (recommended):** the 19 added files are spec expectations of one rule — `Ground` draws every tile and every page control — so a split leaves the suite red or two tile looks on screen. **B · move only the built tiles** (`Card`, `AccountTile`, `NotificationCard`) and leave the other tiles on `--canvas-sunken` until their screens: 26 files, but `Ground`'s one list gains a second tile fill.
+- **Owner rulings (2026-10-08):** RFC approved; C1 → **A** (four parts, c to f); C2 → **A** (the first screen that draws a list part ports it; one deferred row); deferred rows: D94 joins, D2, D92, D76, D103 and D108 stay.
+- **Owner ruling (2026-10-08, build):** C3 → **A** (one part at about 43 files).
+- **Owner rulings (2026-10-08, QA):** Q1 → **A** (a group member keeps the board's compact padding; AC-1 amended, no code change); Q2 → **A** (AC-4 covers what part c draws; the older differences QA found are deferred rows D146–D150).
+
+**Planted reds (2026-10-08):** `Ground.css`'s tile fill set back to `--canvas-sunken` → `Card.spec.tsx` "a card is the open page's tile…" failed, received `rgb(238, 240, 243)`; the secondary set back to `var(--hg-control-fill)` → `Button.spec.tsx` "a medium secondary button on the page is white and raised…" failed, received `rgb(243, 244, 246)`. Both restored; 98 of 98 component tests green. Review: a disabled secondary kept its `--e2` on the web → `Button.spec.tsx` "a disabled secondary sinks to --canvas-sunken with no shadow" failed, received `rgba(16, 24, 40, 0.05) 0px 2px 8px 0px`; fixed. Review (second pass): a group member took no `--fill-hover` → `NotificationGroup.spec.tsx` "a member that opens takes --fill-hover under the pointer" failed at 335 and 456, received `rgb(243, 244, 246)`; fixed. QA (web W4): a notification card took no `--fill-hover` → `NotificationCard.spec.tsx` "a card that opens takes --fill-hover under the pointer" failed at 335 and 456, received `rgb(243, 244, 246)`; fixed.
+
+**Checklist** — [x] Card spec red · [x] Ground · [x] Card · [x] AccountTile · [x] NotificationCard and filter bar · [x] Button and spec · [x] request-sent screens · [x] F7 rows · [x] board frames captured · [x] qa-web · [x] qa-ios · [x] qa-android · [x] review · [x] gate · [x] docs
+
+#### Runtime — part c
+Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-FPLAT-082c` from `origin/main` `ad88ecc7`.
+
+| resource | state at start | identity |
+|---|---|---|
+| web `3002` · api `8084` · metro `8081` | free | — |
+| postgres `5544` · object store `9000` · temporal `7233` | pre_existing | containers `heliogrid-pg-local`, `heliogrid-object-store-local`, `heliogrid-temporal` |
+| simulators · emulators | none booted | — |
+| browser tabs | the pane is closed | — |
+| database routing | `heliogrid_dev` on both URLs | `.env.local` |
+| logs | `.qa/api.log` 6,297,366 · `.qa/web.log` 151,354 · `.qa/metro.log` 486,036 bytes | byte marks |
+| started by the task | api (preview server, launch `api`), web (launch `web`), Metro (launch `mobile-metro`), simulator `40ED0117` (iPhone 17 Pro), `emulator-5554` (Pixel 8, API 34); database routing moved to `heliogrid_test` on both URLs for QA | preview server ids, UDID, serial |
+| browser pane | tabs `seed` (the Claude Design boards), `tab-1` (api), `tab-2` (web, then Metro) | tab ids |
+
+**At the end (2026-10-08)**
+
+| resource | state at end |
+|---|---|
+| api · web · Metro | stopped by Main (preview stop; web before the gate); `3002`, `8084`, `8081` free; no `tsx watch` left |
+| postgres · object store · temporal | pre_existing, untouched |
+| simulator `40ED0117` · `emulator-5554` | shut down |
+| browser pane | tabs `seed`, `tab-1`, `tab-2` closed; the pane is closed |
+| database routing | restored to `heliogrid_dev` on both URLs (QA and the gate ran on `heliogrid_test`); `.env.local` otherwise identical |
+| logs | `.qa/api.log` 6,453,504 · `.qa/web.log` 169,448 · `.qa/metro.log` 559,123 bytes |
+| test data | on `heliogrid_test`, through the app: three join requests by "Meera Joshi" (+91 73182 04659 and +91 73182 05871 to "Standing Web EPC", +91 74312 09865 to "QA iOS Solar", +91 62045 18830 to "QA api primary"); +91 74312 09865 also created a "QA iOS Solar" company (D146); the iPhone's and the emulator's app data were cleared |
+
+**Measurements:** helper runs — qa-web 1 (1 continuation), qa-ios 1, qa-android 1 (1), reviewer 1 (2), evaluator 1; helper tokens about 463k (qa-web 139k, qa-android 101k, reviewer 122k, qa-ios 67k, evaluator 34k); Main's turns and tokens were not counted. Planned 24 files and about 420 lines; re-ruled 43 (C3 A); built 59 files, +504 −184 — code about 230, tests about 250, docs about 200 (the eight comment fixes, four review fixes, `UI.md`, `packages/ui/CLAUDE.md` and `docs/tasks/README.md` over the re-ruled 43). Full gate: one run, green; the docs written after it (this record, two rules in `docs/tasks/README.md`) are Markdown no check reads.
+
+**Mistakes and the rule that now holds each**
+- The plan listed `Card.spec.tsx` as new; it existed (not searched at plan time, Law 5) → said out loud; the README line below makes the spec search part of the file table.
+- The plan missed the 18 component specs that pin the old tile fill, the well and the flat secondary → the size breach C3 → `docs/tasks/README.md` (Delivery size): a change to a shared primitive's look counts every spec that measures the old value.
+- The proof matrix promised frames the running app cannot reach — the Google link step (a real Google sign-in) and the honest landing (no record leaves a recipient's scope yet) — the same mistake as part b's B7, unwritten then → `docs/tasks/README.md` (proof rules): a side-by-side row names only a reachable frame; an unreachable one is decided in the RFC.
+- On the web a disabled secondary kept its `--e2` (review) → `Button.spec.tsx` "a disabled secondary sinks to --canvas-sunken with no shadow", seen red.
+- AC-1 promised `--fill-hover` for every tile and built it on `Card` only (QA W4, review) → `NotificationCard.spec.tsx` and `NotificationGroup.spec.tsx` hover tests, seen red; AC-1 also promised members 16 padding against the board → Q1 A.
+- AC-4 asked every built screen to match its board whole, so older differences failed a part that does not draw them → Q2 A; the differences are D146–D150.
+- Comments and `packages/ui/CLAUDE.md` still said a retry reads its ground and `Card` hovers by a ring (review, Law 8) → fixed; held by review only (said out loud).
+
 ### T-FPLAT-083 · A route answers only what its contract declares
 **Type:** policy · **Tier:** P1
 **Status:** planned
@@ -3729,7 +3921,7 @@ Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-F
 **Why:** The theme build measures only the pairs declared in `packages/theme/src/contrast.ts`, so a pairing `packages/ui` draws but never declares, or a re-pulled colour, can drop under its floor unseen (D25).
 **PRD rows:** `F7-11`; `N4` of `F7-23`.
 **Chosen by the owner** (deferred review, 2026-10-08).
-**Depends on:** `T-FPLAT-082` (part c).
+**Depends on:** `T-FPLAT-082` (part f, its last part — split by `T-FPLAT-082c`'s ruling C1).
 **DONE WHEN:**
 - A check — a theme build step or an invariant, never a script — reads every text and mark colour set on a background across `packages/ui`'s CSS and native styles, reports each pair no declared pair covers, and fails one under its role's floor. → proof: the gate green, and red on a planted undeclared pair under the floor.
 
@@ -3750,7 +3942,7 @@ Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-F
 **Why:** QA checks only the screens a change reaches, so a change to a shared `packages/ui` part can break the look of a screen nobody opens (D74).
 **PRD rows:** none of its own — `F7-43` (Definition of Done at 375 and 1536).
 **Chosen by the owner** (deferred review, 2026-10-08): web routes first.
-**Depends on:** `T-FPLAT-082` (part c), so the baseline is taken on the open page.
+**Depends on:** `T-FPLAT-082` (part f, its last part — split by `T-FPLAT-082c`'s ruling C1), so the baseline is taken on the open page.
 **DONE WHEN:**
 - Playwright `toHaveScreenshot` holds every web route at 375 and 1536; the images are committed; a run fails when one differs; a baseline changes only with the owner's yes. → proof: the e2e lane green, and red on a planted one-token change to a shared part.
 

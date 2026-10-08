@@ -15,7 +15,8 @@ the owner the design-system side, then delete the row.
   fill from `Ground`** — the opposite of what holds it: `var(--hg-control-fill)` on the web,
   `useGround()` on the phone. A surface that holds controls joins `Ground.css`'s page or tile list
   and, on the phone, wraps its content in `GroundProvider`; a control that paints `--surface` or
-  the well itself is drift. **A tile is drawn only by `Ground`** (`F7-49`): its class joins
+  the well itself is drift — except the secondary `Button`, which is raised, not filled:
+  `--surface` at `--e2` on every ground (`F7-15`, owner ruling D14 B). **A tile is drawn only by `Ground`** (`F7-49`): its class joins
   `Ground.css`'s tiles list, which paints its fill and its shadow; on the phone it spreads
   `tileSurface` and wraps `GroundProvider ground="tile"`. A tile keeps only its radius, padding
   and ring states; one that paints its own grey is drift. A section is a heading on the page —

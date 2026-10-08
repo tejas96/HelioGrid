@@ -37,8 +37,8 @@ for (const account of [
       const ink = range.getBoundingClientRect();
       const style = getComputedStyle(tile);
       const probe = document.createElement('div');
-      probe.style.padding = 'var(--sp-4)';
-      probe.style.borderRadius = 'var(--r-card-expressive)';
+      probe.style.padding = 'var(--tile-pad)';
+      probe.style.borderRadius = 'var(--r-tile)';
       document.body.append(probe);
       const expected = getComputedStyle(probe);
       const want = { padding: expected.paddingTop, radius: expected.borderTopLeftRadius };
@@ -53,7 +53,7 @@ for (const account of [
         tileInnerRight: box.right - Number.parseFloat(style.paddingRight),
       };
     });
-    expect(look.fill).toBe(await resolvedColour(page, '--neutral-bg'));
+    expect(look.fill).toBe(await resolvedColour(page, '--fill'));
     expect(look.padding).toBe(look.want.padding);
     expect(look.radius).toBe(look.want.radius);
     expect(look.tileWidth).toBe(WIDTH);

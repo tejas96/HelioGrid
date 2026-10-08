@@ -1,7 +1,7 @@
 import type { RequestedCompany } from '@heliogrid/contracts';
 import { COMPANY_SIGNUP } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, Text, useFormat } from '@heliogrid/ui';
+import { Button, Card, Text, useFormat } from '@heliogrid/ui';
 import { View } from 'react-native';
 import { styles as door } from '../../shared/door-styles';
 import { InsetDoorFrame } from '../../shared/InsetDoorFrame';
@@ -46,7 +46,7 @@ export function JoinRequestSent({
           {t(COMPANY_SIGNUP.sentBody, { company: company.companyName, city: company.city })}
         </Text>
       </View>
-      <View style={styles.sentAs}>
+      <Card style={styles.sentAs}>
         <Text variant="overline" color="secondary">
           {t(COMPANY_SIGNUP.sentAs)}
         </Text>
@@ -56,7 +56,7 @@ export function JoinRequestSent({
         <Text variant="mono" bold>
           {format.phone(phoneE164)}
         </Text>
-      </View>
+      </Card>
       <View style={door.spacer} />
     </InsetDoorFrame>
   );

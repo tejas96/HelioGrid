@@ -19,7 +19,7 @@ test('an errored stat card is a tile and draws its retry white', async ({ mount,
   );
   const retry = card.getByRole('button', { name: tryAgain });
 
-  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--canvas-sunken'));
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
   await expect(card).toHaveCSS('box-shadow', 'none');
   await expect(retry).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
   await retry.click();
@@ -38,7 +38,7 @@ test('a stat card is a grey tile with no shadow and its controls are white', asy
     </StatCard>,
   );
 
-  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--canvas-sunken'));
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
   await expect(card).toHaveCSS('box-shadow', 'none');
   await expect(card.getByRole('button', { name: tryAgain })).toHaveCSS(
     'background-color',
@@ -54,7 +54,7 @@ test('a tappable stat card is a grey tile, ringed under the pointer and never li
     <StatCard label={tryAgain} value={12} onClick={() => undefined} ariaLabel={tryAgain} />,
   );
 
-  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--canvas-sunken'));
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
   await expect(card).toHaveCSS('box-shadow', 'none');
   await card.hover();
   await expect(card).toHaveCSS(

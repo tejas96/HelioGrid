@@ -1,8 +1,8 @@
 import { Button } from './Button';
 
 /**
- * The one Try again every component's error state draws — `Button` secondary, so it reads its
- * fill from what holds it (`Ground`) and a change to that rule reaches every retry at once.
+ * The one Try again every component's error state draws — `Button` secondary, white at `--e2` on
+ * every ground (`F7-15`), so a change to the secondary reaches every retry at once.
  *
  * It renders only with BOTH the act and the words — blank words are no words, since a button with
  * none has no accessible name: the words are the caller's, from

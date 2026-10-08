@@ -17,7 +17,7 @@ test("the agent's turn is a tile under the agent's name", async ({ mount, page }
   const turn = transcript.locator('.hg-transcript-bubble').filter({ hasText: agentSaid });
 
   await expect(turn.locator('.hg-transcript-speaker')).toHaveAttribute('data-party', 'agent');
-  await expect(turn).toHaveCSS('background-color', await resolvedColour(page, '--canvas-sunken'));
+  await expect(turn).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
   await expect(turn).toHaveCSS('box-shadow', 'none');
 });
 

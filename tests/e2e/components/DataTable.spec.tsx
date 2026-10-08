@@ -53,7 +53,7 @@ test('the sticky head paints the ground that holds it', async ({ mount, page }) 
   const head = card.getByRole('columnheader', { name: label });
 
   await expect(head).toHaveCSS('position', 'sticky');
-  await expect(head).toHaveCSS('background-color', await resolvedColour(page, '--canvas-sunken'));
+  await expect(head).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
 });
 
 test('a stacked record is a tile, and one holding an editor lies on the page', async ({
@@ -75,7 +75,7 @@ test('a stacked record is a tile, and one holding an editor lies on the page', a
   const tile = page.locator('.hg-dt-card').nth(0);
   const onPage = page.locator('.hg-dt-card').nth(1);
 
-  await expect(tile).toHaveCSS('background-color', await resolvedColour(page, '--canvas-sunken'));
+  await expect(tile).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
   await expect(tile).toHaveCSS('box-shadow', 'none');
   await expect(tile.locator('.hg-checkbox-box')).toHaveCSS(
     'background-color',
@@ -88,7 +88,7 @@ test('a stacked record is a tile, and one holding an editor lies on the page', a
   );
   await expect(onPage.locator('.hg-checkbox-box')).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--bg-well'),
+    await resolvedColour(page, '--fill'),
   );
 });
 
@@ -129,7 +129,7 @@ test('a column marked editable with nothing to commit to leaves the record a til
 
   await expect(table.locator('.hg-dt-card')).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--canvas-sunken'),
+    await resolvedColour(page, '--fill'),
   );
 });
 
@@ -164,7 +164,7 @@ test('a stacked total is a grey tile with no shadow', async ({ mount, page }) =>
   );
   const total = table.locator('.hg-dt-total-block');
 
-  await expect(total).toHaveCSS('background-color', await resolvedColour(page, '--canvas-sunken'));
+  await expect(total).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
   await expect(total).toHaveCSS('box-shadow', 'none');
 });
 

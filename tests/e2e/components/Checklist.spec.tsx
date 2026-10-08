@@ -22,7 +22,7 @@ test('a checklist row is a grey tile with no shadow and its controls are white',
   const checklist = await mount(<Checklist label={label} items={items} />);
   const row = checklist.getByRole('listitem');
 
-  await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--canvas-sunken'));
+  await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
   await expect(row).toHaveCSS('box-shadow', 'none');
   await expect(row.locator('.hg-checklist-box')).toHaveCSS(
     'background-color',

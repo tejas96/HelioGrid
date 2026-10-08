@@ -1,17 +1,18 @@
 /* Card — the tile (F7-49): one record, grey on the white page, no shadow and no border. Its fill
    and its ground are drawn by the tiles' list (primitives/Ground/Ground.css), so a control inside
-   it turns white. Flat at
-   rest, so hover and selected show by a ring alone: --mark-subtle under the pointer, --accent when
-   selected. Nothing depends on hover — a touch screen has none. */
+   it turns white. Under the pointer it takes --fill-hover; selected, the inset accent ring a focused
+   field draws, so the frame never moves. Nothing depends on hover — a touch screen has none. */
 
 .hg-card {
-  transition: box-shadow var(--dur-standard) var(--ease-standard);
+  transition:
+    box-shadow var(--dur-standard) var(--ease-standard),
+    background var(--dur-standard) var(--ease-standard);
   cursor: default;
 }
 
 .hg-card[data-density="expressive"] {
-  border-radius: var(--r-card-expressive);
-  padding: var(--sp-6);
+  border-radius: var(--r-tile);
+  padding: var(--tile-pad);
 }
 
 .hg-card[data-density="functional"] {
@@ -24,13 +25,11 @@
 }
 
 .hg-card[data-interactive="true"]:hover {
-  box-shadow: 0 0 0 2px var(--mark-subtle);
+  background: var(--fill-hover);
 }
 
-/* Selected wins over hover — the accent ring is the state, the grey ring only the pointer. */
-.hg-card[data-selected="true"],
-.hg-card[data-selected="true"]:hover {
-  box-shadow: 0 0 0 2px var(--accent);
+.hg-card[data-selected="true"] {
+  box-shadow: inset 0 0 0 1.5px var(--accent);
 }
 
 .hg-card:focus-visible {

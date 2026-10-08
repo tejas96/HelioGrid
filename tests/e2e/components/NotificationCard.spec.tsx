@@ -51,6 +51,15 @@ for (const width of [335, 456]) {
       await expect.poll(() => opened).toBe(1);
     });
 
+    test('a card that opens takes --fill-hover under the pointer', async ({ mount, page }) => {
+      const card = await mount(
+        <NotificationCard {...item} unreadLabel={unread} name={name} onOpen={() => undefined} />,
+      );
+
+      await card.getByRole('button', { name }).hover();
+      await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--fill-hover'));
+    });
+
     test('a card holds the board: a 40 glyph circle, the body 2 under the title', async ({
       mount,
     }) => {
@@ -79,7 +88,7 @@ for (const width of [335, 456]) {
       expect(text.x + text.width).toBeLessThanOrEqual(box.x + box.width);
     });
 
-    test('the card is a tile: its fill, padding 16, radius 24, a 10 dot, the foot past the glyph', async ({
+    test('the card is a tile: its fill, padding 16, radius 22, a 10 dot, the foot past the glyph', async ({
       mount,
       page,
     }) => {
@@ -102,9 +111,9 @@ for (const width of [335, 456]) {
         return { fill: style.backgroundColor, padding: style.padding, radius: style.borderRadius };
       });
       expect(look).toEqual({
-        fill: await resolvedColour(page, '--canvas-sunken'),
+        fill: await resolvedColour(page, '--fill'),
         padding: '16px',
-        radius: '24px',
+        radius: '22px',
       });
       const dot = await card.locator('.hg-notification-dot').boundingBox();
       expect([dot?.width, dot?.height]).toEqual([10, 10]);

@@ -1,5 +1,6 @@
 /* Ground — what holds a control, and the fill a control takes on it (F7-15, F7-49). A control is
-   the opposite of what holds it: the well's grey on the white page, white inside the grey tile.
+   the opposite of what holds it: the open page's grey `--fill` on the white page, white inside the
+   grey tile.
    Two custom properties, inherited through the DOM, so a control reads its fill from whatever
    holds it and is never told.
 
@@ -19,7 +20,7 @@
    sheet or a menu opened inside a tile would otherwise inherit the tile's ground and draw its
    controls white on white. */
 
-/* The page — and a sheet, a modal, a menu over it: white, so a control takes the well. */
+/* The page — and a sheet, a modal, a menu over it: white, so a control takes the fill. */
 :root,
 .hg-surface[data-background="surface"],
 .hg-surface[data-background="surface-alt"],
@@ -30,12 +31,12 @@
 .hg-coach-mark,
 .hg-explainer-bubble,
 /* `PagedDocument`'s cards are paper standing where a sheet would, on the grey desk its screen sets
-   it on; a tile there would vanish, and without this entry their retry would read the desk. */
+   it on; a tile there would vanish, and without this entry a control on them would read the desk. */
 .hg-paged-document-card,
 .hg-paged-document-unavailable {
   /* biome-ignore lint/plugin/raw-white-css: ground — the ground itself, and Surface, which sets it */
   --hg-ground: var(--surface);
-  --hg-control-fill: var(--bg-well);
+  --hg-control-fill: var(--fill);
 }
 
 /* The tiles (F7-49): one record, or one item of a list — grey on the white page, no shadow, and a
@@ -43,6 +44,7 @@
    tile's fill and its ground cannot part. Loaded before every component, so a tile's own state rule — an off
    option, a played turn — still wins over this fill at rest. */
 .hg-card,
+.hg-account-tile,
 .hg-stat-card,
 /* A tappable tile is a `Pressable`, whose reset loads later and clears a one-class fill. */
 .hg-pressable.hg-stat-card-button,
@@ -60,9 +62,9 @@
 .hg-transcript-bubble,
 .hg-dt-total-block,
 .hg-dt-card:not([data-editable="true"]) {
-  background: var(--canvas-sunken);
+  background: var(--fill);
   box-shadow: none;
-  --hg-ground: var(--canvas-sunken);
+  --hg-ground: var(--fill);
   /* biome-ignore lint/plugin/raw-white-css: ground — the ground itself, and Surface, which sets it */
   --hg-control-fill: var(--surface);
 }
@@ -91,9 +93,8 @@
   --hg-control-fill: var(--surface);
 }
 
-/* SUNK, as the design system's disabled button is: --canvas-sunken under the white page. In a tile
-   it equals the tile's ground until T-FPLAT-082 part c moves tiles to --fill, so there the label and
-   the mark carry the state (F7-11). --surface-form is white on the open page and would hide it. */
+/* SUNK, as the design system's disabled button is: --canvas-sunken, one step below the white page
+   and below the tile's --fill alike. --surface-form is white on the open page and would hide it. */
 :root {
   --hg-control-fill-disabled: var(--canvas-sunken);
 }
