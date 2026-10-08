@@ -4,8 +4,8 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import { Circle, Path, Svg } from 'react-native-svg';
 import {
   FIELD_BOX_EDGE,
-  FIELD_BOX_PLACEHOLDER,
   fieldBox,
+  fieldBoxPlaceholder,
   fieldBoxText,
 } from '../../primitives/FieldBox/FieldBox.native';
 import { useGround } from '../../primitives/Ground/Ground.native';
@@ -107,7 +107,7 @@ export function TimeField({
           value={entry.draft}
           editable={!disabled}
           placeholder={shape}
-          placeholderTextColor={FIELD_BOX_PLACEHOLDER}
+          placeholderTextColor={fieldBoxPlaceholder(disabled)}
           accessibilityLabel={label}
           autoCorrect={false}
           autoCapitalize="none"

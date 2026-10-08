@@ -13,8 +13,25 @@ const EDGE = 1.5;
 /** For a field whose padding must hold its text where it was: subtract this from the padding. */
 export const FIELD_BOX_EDGE = EDGE;
 
-/** Text inside a well is `text-secondary` or stronger — tertiary on the well is under the floor. */
-export const FIELD_BOX_PLACEHOLDER = theme.colors['text-secondary'];
+/**
+ * A placeholder is a hint, so it is `text-tertiary` (4.71:1 on the well); on the disabled well
+ * tertiary is at the floor's edge, so there it steps up to `text-secondary`, as a value does.
+ */
+export function fieldBoxPlaceholder(disabled: boolean): string {
+  return theme.colors[`text-${fieldWords(true, disabled)}`];
+}
+
+/**
+ * The `Text` colour of a field that draws its value as words, not a `TextInput` — a picker's
+ * trigger: the placeholder a hint, as `fieldBoxPlaceholder`; a disabled value stays readable.
+ */
+export function fieldWords(
+  isPlaceholder: boolean,
+  disabled: boolean,
+): 'primary' | 'secondary' | 'tertiary' {
+  if (disabled) return 'secondary';
+  return isPlaceholder ? 'tertiary' : 'primary';
+}
 
 const DISABLED_TEXT: TextStyle = { color: theme.colors['text-secondary'] };
 

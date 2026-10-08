@@ -80,7 +80,8 @@
 
 .hg-text[data-variant="overline"] {
   font-size: var(--fs-overline);
-  line-height: var(--lh-caption);
+  /* The overline and mono name no line height of their own: like every board, the body's. */
+  line-height: var(--lh-body);
   letter-spacing: var(--tr-overline);
   font-weight: var(--fw-bold);
   text-transform: uppercase;
@@ -89,7 +90,7 @@
 .hg-text[data-variant="mono"] {
   font-family: var(--font-mono);
   font-size: var(--fs-body-sm);
-  line-height: var(--lh-body-sm);
+  line-height: var(--lh-body);
   font-variant-numeric: tabular-nums;
 }
 

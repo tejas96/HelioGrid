@@ -92,6 +92,7 @@ const VARIANT: Record<TextVariant, TextStyle> = {
     fontFamily: sans,
     fontWeight: '700',
     fontSize: R.overline.fontSize,
+    lineHeight: roleOf('overline').lineHeight,
     letterSpacing: R.overline.letterSpacing,
     textTransform: 'uppercase',
   },
@@ -102,8 +103,8 @@ const VARIANT: Record<TextVariant, TextStyle> = {
   mono: {
     fontFamily: theme.type.families.mono,
     fontWeight: '400',
-    fontSize: R['body-sm'].fontSize,
-    lineHeight: R['body-sm'].lineHeight,
+    fontSize: roleOf('mono').fontSize,
+    lineHeight: roleOf('mono').lineHeight,
     fontVariant: ['tabular-nums'],
   },
 };

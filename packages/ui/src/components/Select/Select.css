@@ -40,8 +40,13 @@
   padding: 0 var(--sp-3);
 }
 
-/* Text in a well is --text-secondary or stronger: tertiary on the well is under the floor. */
+/* A placeholder is a hint (F7-15): --text-tertiary in the well, --text-secondary on the disabled
+   well, where tertiary is at the floor's edge (`FieldBox.css`). */
 .hg-select-trigger[data-placeholder="true"] {
+  color: var(--text-tertiary);
+}
+
+.hg-select-trigger[data-placeholder="true"][data-fb-disabled] {
   color: var(--text-secondary);
 }
 

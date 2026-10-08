@@ -74,10 +74,23 @@ const FIELD_ROLES = {
   },
 } as const;
 
+/**
+ * The overline and mono name no line height of their own in the design system, so a board draws
+ * them at the body's, which `body` sets for the whole page (`--lh-body`): the same ratio, on their
+ * own size.
+ */
+const BODY = theme.type.roles.body;
+const onBodyLeading = (fontSize: number) =>
+  Math.round(((fontSize * BODY.lineHeight) / BODY.fontSize) * 10) / 10;
+
 /** The size and line box a variant draws at; `mono` is body-sm in the mono face. */
 export function roleOf(variant: TextVariant): { fontSize: number; lineHeight?: number } {
   if (variant === 'field-label' || variant === 'field-value' || variant === 'field-helper') {
     return FIELD_ROLES[variant];
   }
-  return theme.type.roles[variant === 'mono' ? 'body-sm' : variant];
+  if (variant === 'overline' || variant === 'mono') {
+    const { fontSize } = theme.type.roles[variant === 'mono' ? 'body-sm' : 'overline'];
+    return { fontSize, lineHeight: onBodyLeading(fontSize) };
+  }
+  return theme.type.roles[variant];
 }

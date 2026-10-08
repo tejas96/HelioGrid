@@ -5,8 +5,8 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import { Circle, Path, Svg } from 'react-native-svg';
 import {
   FIELD_BOX_EDGE,
-  FIELD_BOX_PLACEHOLDER,
   fieldBox,
+  fieldBoxPlaceholder,
   fieldBoxText,
 } from '../../primitives/FieldBox/FieldBox.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -60,7 +60,7 @@ export function SearchField({
         value={value}
         editable={!disabled}
         placeholder={placeholder}
-        placeholderTextColor={FIELD_BOX_PLACEHOLDER}
+        placeholderTextColor={fieldBoxPlaceholder(disabled)}
         accessibilityLabel={ariaLabel ?? placeholder}
         onChangeText={(next) => onChange?.(next)}
         onFocus={() => setFocus(true)}

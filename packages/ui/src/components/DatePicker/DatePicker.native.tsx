@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
-import { FIELD_BOX_EDGE, fieldBox } from '../../primitives/FieldBox/FieldBox.native';
+import { FIELD_BOX_EDGE, fieldBox, fieldWords } from '../../primitives/FieldBox/FieldBox.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/market-context';
@@ -109,10 +109,7 @@ export function DatePicker({
         ]}
       >
         <View style={styles.value}>
-          {/* Text in a well is secondary or stronger; a disabled value stays readable. */}
-          <Text color={text === '' || disabled ? 'secondary' : 'primary'}>
-            {text === '' ? placeholder : text}
-          </Text>
+          <Text color={fieldWords(text === '', disabled)}>{text === '' ? placeholder : text}</Text>
         </View>
         <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
           <Rect

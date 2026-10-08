@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
-import { FIELD_BOX_EDGE, fieldBox } from '../../primitives/FieldBox/FieldBox.native';
+import { FIELD_BOX_EDGE, fieldBox, fieldWords } from '../../primitives/FieldBox/FieldBox.native';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -89,8 +89,7 @@ function SelectTrigger({
     >
       <Text
         variant="field-value"
-        // Text in a well is secondary or stronger; a disabled value stays readable.
-        color={current === undefined || disabled ? 'secondary' : 'primary'}
+        color={fieldWords(current === undefined, disabled)}
         style={styles.value}
       >
         {current === undefined ? placeholder : current.label}

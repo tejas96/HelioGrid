@@ -83,7 +83,9 @@ const DECLARED_PAIRS: DeclaredPair[] = [
   })),
   { fg: 'text-tertiary', bg: 'surface', role: 'meta text (--text-meta) on white', floor: 4.5 },
   { fg: 'text-tertiary', bg: 'canvas', role: 'meta text on page canvas', floor: 4.5 },
-  // DELIBERATELY not declared: text-tertiary on canvas-sunken (≈4.54 — at the 4.5 floor's edge; D131).
+  // A placeholder in a field's well (F7-15); on the disabled well it steps up to --text-secondary.
+  { fg: 'text-tertiary', bg: 'fill', role: 'a placeholder in a field well', floor: 4.5 },
+  // DELIBERATELY not declared: text-tertiary on canvas-sunken (≈4.54 — at the 4.5 floor's edge; F7-15).
   // colors.css: on sunken and on any state tint, quiet text takes --text-secondary instead.
   // Declaring it would sanction a pairing the design system forbids (colors.css), at the floor's edge.
   {

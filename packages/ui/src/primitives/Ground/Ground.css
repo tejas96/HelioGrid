@@ -93,6 +93,14 @@
   --hg-control-fill: var(--surface);
 }
 
+/* A field's well that holds controls of its own — `RichText`'s toolbar and link address: the well is
+   `FieldBox`'s, and a control in it turns white, as in a tile. */
+.hg-rich-text-frame {
+  --hg-ground: var(--fill);
+  /* biome-ignore lint/plugin/raw-white-css: ground — the ground itself, and Surface, which sets it */
+  --hg-control-fill: var(--surface);
+}
+
 /* SUNK, as the design system's disabled button is: --canvas-sunken, one step below the white page
    and below the tile's --fill alike. --surface-form is white on the open page and would hide it. */
 :root {

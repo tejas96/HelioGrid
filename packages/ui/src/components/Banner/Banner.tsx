@@ -1,9 +1,15 @@
-import type { CSSProperties } from 'react';
-import { useEffect } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
 import { bannerKind, isNeverDismissible } from './Banner.kinds';
-import { BANNER_GLYPH } from './Banner.logic';
+import {
+  ACTION_BELOW,
+  actionStacks,
+  BANNER_GLYPH,
+  useDisclaimerWarning,
+  useFormReport,
+} from './Banner.logic';
 import type { BannerGlyph, BannerProps } from './Banner.types';
 
 interface WebBannerProps extends BannerProps {
@@ -33,6 +39,31 @@ function Glyph({ name, size }: { name: BannerGlyph; size: number }) {
   );
 }
 
+/** The copy column: the title, the body, and the action when it has dropped under the body. */
+function Content({
+  title,
+  children,
+  actionBelowBody,
+}: {
+  title?: string;
+  children?: ReactNode;
+  actionBelowBody?: ReactNode;
+}) {
+  return (
+    <div className="hg-banner-content">
+      {title === undefined ? null : <div className="hg-banner-title">{title}</div>}
+      {children === undefined || children === null ? null : (
+        <div className="hg-banner-body" data-has-title={title === undefined ? undefined : 'true'}>
+          {children}
+        </div>
+      )}
+      {actionBelowBody === undefined ? null : (
+        <div className="hg-banner-action-row">{actionBelowBody}</div>
+      )}
+    </div>
+  );
+}
+
 /** The in-page statement of a fact about what's on screen. Never covers content, never blocks. */
 export function Banner({
   kind = 'state',
@@ -45,18 +76,17 @@ export function Banner({
   variant = 'block',
   density = 'expressive',
   icon,
+  actionBelow = ACTION_BELOW,
+  onFormChange,
   className,
   style,
 }: WebBannerProps) {
   const meta = bannerKind(kind);
   const canDismiss = (dismissible ?? false) && !isNeverDismissible(kind) && onDismiss !== undefined;
-  useEffect(() => {
-    if (kind === 'disclaimer') {
-      console.warn(
-        'Banner kind="disclaimer" is superseded by <Disclosure>. M06-04 / SCR-M06-17 require the line in the reading flow at the weight of the figures it qualifies, on the customer\'s own surface — a banner is operator chrome (MS9-11), it can be capped by BannerStack, and its strip is the wrong weight. This banner is never dismissible, but move it.',
-      );
-    }
-  }, [kind]);
+  const width = useOwnWidth(variant === 'block');
+  const stacked = actionStacks(action !== undefined, width.value, actionBelow);
+  useFormReport(stacked, width.value, onFormChange);
+  useDisclaimerWarning(kind);
 
   if (variant === 'pill') {
     return (
@@ -75,6 +105,7 @@ export function Banner({
 
   return (
     <div
+      ref={width.ref}
       role={meta.role}
       className={classNames('hg-banner', className)}
       data-tone={tone ?? meta.tone}
@@ -82,15 +113,12 @@ export function Banner({
       style={style}
     >
       {icon ?? <Glyph name={meta.icon} size={17} />}
-      <div className="hg-banner-content">
-        {title === undefined ? null : <div className="hg-banner-title">{title}</div>}
-        {children === undefined || children === null ? null : (
-          <div className="hg-banner-body" data-has-title={title === undefined ? undefined : 'true'}>
-            {children}
-          </div>
-        )}
-      </div>
-      {action === undefined ? null : <div className="hg-banner-action-slot">{action}</div>}
+      <Content title={title} actionBelowBody={stacked ? action : undefined}>
+        {children}
+      </Content>
+      {action === undefined || stacked ? null : (
+        <div className="hg-banner-action-slot">{action}</div>
+      )}
       {canDismiss ? (
         <Pressable className="hg-banner-dismiss" accessibilityLabel="Dismiss" onPress={onDismiss}>
           <svg
@@ -109,4 +137,26 @@ export function Banner({
       ) : null}
     </div>
   );
+}
+
+/**
+ * The banner's own outer layout width, observed — never the viewport's; `null` until first
+ * measured. The border box, as the phone's `onLayout` reports it: `contentRect` leaves out the
+ * padding, and `getBoundingClientRect` would read a banner inside a scaled preview at its scale.
+ */
+function useOwnWidth(observed: boolean) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState<number | null>(null);
+  useEffect(() => {
+    const element = ref.current;
+    if (!observed || element === null) return;
+    /* No first read: an observer reports once when it starts, so the width has one source. */
+    const observer = new ResizeObserver(([entry]) => {
+      const box = entry?.borderBoxSize[0];
+      if (box !== undefined) setValue(box.inlineSize);
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [observed]);
+  return { ref, value };
 }

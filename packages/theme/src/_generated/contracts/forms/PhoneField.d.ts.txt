@@ -1,0 +1,13 @@
+import React from "react";
+export interface PhoneFieldProps {
+  label?: string;
+  value?: string;
+  /** Receives the typed digits (spaces kept). */
+  onChange?: (value: string) => void;
+  helper?: string;
+  error?: string;
+  disabled?: boolean;
+  style?: React.CSSProperties;
+}
+/** Filled phone field — Input with the market pack's dial code fixed at its start (`useFormat().pack.phone?.dialCode`); none when the pack has no phone. */
+export function PhoneField(props: PhoneFieldProps): JSX.Element;
