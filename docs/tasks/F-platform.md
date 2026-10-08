@@ -5079,6 +5079,156 @@ Measurements: about 110 tool-call turns; this session's context at the card abou
 **DONE WHEN:**
 - A check — a theme build step or an invariant, never a script — reads every text and mark colour set on a background across `packages/ui`'s CSS and native styles, reports each pair no declared pair covers, and fails one under its role's floor. → proof: the gate green, and red on a planted undeclared pair under the floor.
 
+#### RFC
+
+##### Title
+T-FPLAT-084 — every colour pair `packages/ui` sets on a background is a declared pair: an invariant reads both platforms' styles, and the theme build keeps each declared pair over its floor.
+
+##### Description
+- **User impact:** none today — no app screen renders a part this task changes. Indirectly: words and marks in every shared part stay readable as parts are added or colours re-pulled, and four quiet labels a reader depends on (a missing image's words, a logo slot, a stream's day heading, a table's column heading) step up to the readable role.
+- **Problem solved:** D25. The theme build measures only the pairs `packages/theme/src/contrast.ts` declares; nothing reads the pairs `packages/ui` draws, so an undeclared pairing can sit under its floor unseen (`F7-11`, `N4` of `F7-23`).
+
+##### Goals
+- A new invariant reads every CSS rule and native style object in `packages/ui/src` that sets a word or mark colour and a background together, and fails each pair `contrast.ts` does not declare, naming file, line and pair.
+- Every pair drawn today is declared with its role, or fixed — the invariant starts green.
+- The theme build keeps refusing a declared pair under its floor (unchanged).
+- D25 leaves `deferred.md`.
+
+##### Non-goals
+- No new colour token, no design-system change, no value re-pulled.
+- A colour whose background another rule or a parent sets is not read (decision **D1**).
+- Borders, outlines and shadows are not read: the design system draws controls by fill, not rings (`F7-15`), and a hairline is decoration WCAG 1.4.11 does not cover.
+- The tenant brand colour stays with `T-FPLAT-022`'s engine, which checks it when it is saved.
+- D2, D92 (`touches packages/ui/src/components/`) and D41 (`touches .claude/protections.md`) stay deferred.
+
+##### Readiness and dependencies
+- **Depends on:** `T-FPLAT-082` — shipped (#256, `ad419c6c`). Block 0, policy, no screen and no board.
+- **Branch:** `feat/T-FPLAT-084` from `feat/T-FPLAT-083` (`060ee888`) by the owner's word; #257 is open and this task needs nothing from it. It is rebased on `main` after #257 merges, before this PR leaves draft.
+- **Design check:** not applicable — no screen.
+- **Blockers:** none.
+
+##### Proposal
+**Findings from testing the requirement** (measured over `packages/ui/src`, 2,514 CSS rules and 287 native files):
+1. **A static read cannot know where most colours land.** 751 of 983 web colour settings, and 143 of 155 native ones, have no background in their own rule or style object; their background comes from a parent or another rule. Pairing each with every ground `Ground.css` names gives about 20 pair kinds red across about 30 files on both platforms that are not real — a white tick whose accent fill another rule sets, read as white on white. → **D1**.
+2. **`color` does not say words or glyph.** `Stepper`'s done and error markers set `--text-inverse` on `--success` (3.62) and `--danger` (3.91) for a tick and a `!` only (`StepperMarker.tsx:21-49`) — a mark, floor 3, not words. Only a declared role can say so; the invariant cannot.
+3. **D25's seed number is wrong.** `--text-tertiary` on `--canvas-sunken` measures 4.54, not "about 4.48" (`contrast.ts:94` says ≈4.54 too). A check that fails only under the floor never fires on it, though the design system forbids the pair (`contrast.ts:96-98`, `.claude/rules/ui-adherence.md` "the quiet role"). → **D2**.
+4. **A report in a green run is never read.** "Reports each pair no declared pair covers" helps only if it stops someone; failing an undeclared pair is the report, and it makes the declared list the one record of every pair. → **D2**.
+5. **The same-rule read today, both platforms:** 20 declared pairs; 8 undeclared that pass their floor; 5 under it; 2 that are not one colour token. Each is resolved below.
+
+**What the invariant does (D1 A, D2 A).** It reads each CSS rule (comments stripped; no nesting exists) and each innermost native style object in `packages/ui/src`. Where one sets a background (`background`, `background-color`, `backgroundColor`) and a colour (`color` as words; `fill`, `stroke` as marks) to `var(--token)` or `theme.colors…`, each (colour, background) is a pair. `--hg-ground`, `--hg-control-fill` and `--hg-control-fill-disabled` stand for every value `Ground.css` gives them. A pair `contrast.pairs.json` does not declare fails; a value that is not one colour token fails unless the invariant's two-entry list names it with its reason (`--hg-doc-brand`, the tenant's colour, checked when saved by `T-FPLAT-022`; `--gradient-brand`, the wordmark, a logotype WCAG 1.4.3 exempts). The floor stays the theme build's job: a pair is declared with its floor there, and the build refuses one under it.
+
+**The pairs drawn today:**
+
+| pair | where | ratio | resolution |
+|---|---|---|---|
+| `text-tertiary` on `canvas-sunken` | `Image.css:68`, `RichText.css:246`; `ActivityStream.css:49`, `DataTable.css:85` through `--hg-ground` | 4.54 | **fix** → `--text-secondary`, both halves: words a reader depends on, two of them overlines (`F7-11`) |
+| `text-inverse` on `--hg-control-fill` | `Checkbox.css:24`, `Checklist.css:129`, `Timeline.css:72` | 1.0–1.1 | **fix** → the colour moves into the rules that set the filled background (checked, done, blocked, failed); no pixel changes |
+| `text-inverse` on `success`, `danger` | `Stepper.css:19-26` | 3.62, 3.91 | declare — a glyph on a status disc, non-text, floor 3, restricted: never words |
+| `text-disabled` on `canvas-sunken` | `Button.css`, `Checkbox.css`, `Dropzone.css`, `Explainer.css` | 1.44 | declare — restricted, as `text-disabled` on `surface` is (WCAG 1.4.3 exempts inactive controls) |
+| `text-tertiary` on `neutral-bg` | the message marks of `ActivityStream`, `ChartFrame`, `CompareGridStates`, `DataTableChrome`, `Kanban`, `MapFrame`, `Timeline`, `UnavailableNote` | 4.59 | declare — a glyph on the neutral tint, non-text, floor 3, restricted: never words |
+| `accent` on `accent-subtle` | `ActivityStreamEntry`, `AppRail`, `AppShell`, `AudioTransport`, `Chip.native` | 4.65 | declare — floor 4.5 |
+| `neutral-text` on `fill` | `Chip.css` | 6.19 | declare — floor 4.5 |
+| `text-inverse` on `danger-text` | `Button.css`, `Button.native.tsx` | 6.62 | declare — floor 4.5 |
+| `text-inverse` on `text-primary` | `Tooltip.css` | 19.79 | declare — floor 4.5 |
+| `text-secondary` on `neutral-bg` | `AudioPlayer`, `Banner`, `Modal`, `RichText` | 6.5 | declare — floor 4.5 |
+| `text-tertiary` on `surface-alt` | `Dropzone.css` | 5.01 | declare — floor 4.5 |
+
+**Key decisions** (one reason each):
+1. **An invariant, not a theme build step** — `packages/theme` depends on nothing in the workspace and builds first; reading `packages/ui` from it would run the dependency the wrong way. `tests/invariants` already reads repo files as text.
+2. **The declared set is read through `@heliogrid/theme/contrast.pairs.json`**, an export the package already declares, added to `tests/invariants` with `pnpm add` — never a path into another package's `dist/`.
+3. **The invariant reads names, not ratios** — the floor is computed once, by the theme build; a second ratio here would be a third copy of the maths.
+
+**Order:** planted reds against the new invariant → the declarations → the fixes → green → protections and docs.
+
+**Twin:** the four word fixes land on both halves (`ImageStates.native.tsx:43`, `RichTextView.native.tsx:20`, `ActivityStreamList.native.tsx`, `DataTableHead.native.tsx`); the tick moves are web-only, since a native tick takes its colour as a prop.
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  C["theme/src/contrast.ts<br/>declared pairs + floors"] --> B["theme build<br/>refuses a pair under its floor"]
+  B --> J["contrast.pairs.json<br/>(export)"]
+  G["ui Ground.css<br/>ground values"] --> I
+  W["ui *.css rules"] --> I["invariant<br/>ui-colour-pairs"]
+  N["ui *.native.tsx style objects"] --> I
+  J --> I
+  I --> R["pnpm check:all<br/>fails an undeclared pair"]
+```
+
+##### Package changes
+- `tests/invariants` — gains `ui-colour-pairs` and a workspace dependency on `@heliogrid/theme` (read through its `./contrast.pairs.json` export). Direction: tests read packages; nothing imports tests.
+- `packages/theme` — `contrast.ts` gains the eleven declared pairs above; its header's pointer to the deferred row is replaced by the invariant's name. No export changes.
+- `packages/ui` — four colours step up on both halves; three tick colours move rule. No prop or export changes.
+- **Law 12:** the invariant is a new check; `.claude/protections.md` row "Every contrast pair meets its WCAG floor" gains it, and states the kind no check holds: a colour whose background another rule or a parent sets.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| add | `tests/invariants/src/ui-colour-pairs.ts` | the invariant | a static property of the repo, beside its siblings |
+| modify | `tests/invariants/src/run.ts` | runs it | the one runner |
+| modify | `tests/invariants/package.json` | `@heliogrid/theme` dependency (`pnpm add`) | reads the export |
+| modify | `pnpm-lock.yaml` | generated by `pnpm add` | — |
+| modify | `packages/theme/src/contrast.ts` | eleven declarations; header fixed | the one declared set |
+| modify | `packages/ui/src/components/Image/Image.css` · `ImageStates.native.tsx` | missing-image words → secondary | both halves |
+| modify | `packages/ui/src/components/RichText/RichText.css` · `RichTextView.native.tsx` | logo-slot words → secondary | both halves |
+| modify | `packages/ui/src/components/ActivityStream/ActivityStream.css` · `ActivityStreamList.native.tsx` | day heading → secondary | both halves |
+| modify | `packages/ui/src/components/DataTable/DataTable.css` · `DataTableHead.native.tsx` | column heading → secondary | both halves |
+| modify | `packages/ui/src/components/Checkbox/Checkbox.css` | tick colour with the checked fill | — |
+| modify | `packages/ui/src/components/Checklist/Checklist.css` | tick colour with the done fill | — |
+| modify | `packages/ui/src/components/Timeline/Timeline.css` | glyph colour with the status fills | — |
+| modify | `tests/e2e/components/Checklist.spec.tsx` | a done box's tick is white on success | the one spec of a moved tick |
+| modify | `.claude/protections.md` | the row names the invariant and its limit | Law 12 |
+| modify | `docs/tasks/deferred.md` | D25 deleted | joins this task |
+| modify | `docs/tasks/F-platform.md` | this RFC, status | the task |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **A real pair the read misses** (its background set elsewhere) — the stated limit, written in the protections row; the declared set and axe's text contrast on every web route (`tests/e2e/support/axe.ts`) still stand.
+- **A colour step changes a part's look** — four labels go from `#6A6D73` to `#54565B`; no app screen renders them yet; the component specs in CI's `quality` lane run them.
+- **The branch sits on #257** — rebased on `main` after #257 merges; it touches none of #257's files.
+
+##### Acceptance criteria and proof
+- **AC-1** — A check — a theme build step or an invariant, never a script — reads every text and mark colour set on a background across `packages/ui`'s CSS and native styles, reports each pair no declared pair covers, and fails one under its role's floor. → proof: the gate green, and red on a planted undeclared pair under the floor.
+  - **Under D2 A it reads:** … and fails each pair no declared pair covers; a declared pair under its role's floor fails the theme build.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 | main-dev | required | invariant | planted reds, each removed: web `color: var(--warning)` on `background: var(--surface)` → fails naming file, line, pair; native `{ color: theme.colors.warning, backgroundColor: theme.colors.surface }` → fails; `var(--text-tertiary)` on `var(--hg-ground)` → fails as on `canvas-sunken`; `color: var(--hg-probe)` on `--surface` → fails as not one token | `pnpm --filter @heliogrid/invariants test` output |
+| AC-1 | main-dev | required | theme build | planted red: `warning` on `surface` declared at floor 4.5 → the build refuses it; removed | `pnpm --filter @heliogrid/theme build` output |
+| AC-1 | main-dev | required | component test | a done checklist box: tick `rgb(255, 255, 255)` on `rgb(21, 154, 91)`; planted red: the moved colour removed → fails | `tests/e2e/components/Checklist.spec.tsx` |
+| AC-1 | evaluator | required | gate | `pnpm check:all` → the invariant passes with its counts | gate |
+| AC-1 | ci | required | `quality` | component tests and invariants pass | CI |
+| AC-1 | qa-web · qa-ios · qa-android · qa-api | not_applicable | — | no app screen or route renders a changed part | — |
+
+##### Delivery size
+- **Estimate:** 22 authored files plus 1 generated (`pnpm-lock.yaml`). Code about 230 lines (invariant about 150, declarations about 60, styles about 20); tests about 15 (the Checklist assertion — the invariant is itself the check, proven by planted reds); docs about 200.
+- **One part** — within the 30-file and 1,000-line targets.
+
+**Decisions — T-FPLAT-084**
+- **D1 — which background a colour is paired with.** **A · the one its own rule or style object sets (recommended):** exact for what it reads; a colour set elsewhere is stated as not held. **B · also every ground, for a colour with none of its own:** reads all 983 web settings, but about 20 false pair kinds across about 30 files need restructuring first, about 30 more files — a split.
+- **D2 — what an undeclared pair does.** **A · it fails (recommended):** the declared list becomes the one record; the forbidden `text-tertiary` on `canvas-sunken` fires as D25 asked; four labels step up. **B · it is reported and fails only under the floor:** the four labels stay; the forbidden pair passes at 4.54; the report is read only when something else is red.
+- **Deferred rows met:** D25 (`T-FPLAT-084 starts`) — **join**, deleted in this commit. D2, D92 (`touches packages/ui/src/components/`) — **stay**: English copy in parts, owned by `T-M12-004`. D41 (`touches .claude/protections.md`) — **stay**: three placement checks unrelated to colour.
+
+**Checklist** — [ ] planted reds · [ ] declarations · [ ] word fixes, both halves · [ ] tick moves and spec · [ ] protections, deferred, docs · [ ] review · [ ] gate
+
+#### Runtime
+Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-FPLAT-084` from `feat/T-FPLAT-083` `060ee888` by the owner's word — #257 is still open, and this task does not depend on it.
+
+| resource | state | identity |
+|---|---|---|
+| web `3002`, api `8084`, Metro `8081` | none listening | — |
+| Postgres `5544` | pre_existing | `heliogrid-pg-local` |
+| object store `9000` | pre_existing | `heliogrid-object-store-local` |
+| Temporal `7233` | pre_existing | `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulators and emulators | none booted | — |
+| browser tabs | none opened by this task | — |
+| database routing | `DATABASE_URL` and `DATABASE_ADMIN_URL` → `heliogrid_dev` | `.env.local` |
+| runtime logs | `api.log` 1160413 · `web.log` 237514 · `metro.log` 799765 bytes | `.qa/` |
+
 ### T-FPLAT-085 · A repeat is harmless
 **Type:** policy · **Tier:** P1
 **Status:** planned
