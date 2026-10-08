@@ -1,10 +1,10 @@
 // biome-ignore-all lint/a11y/noAutofocus: `autoFocus` is the caller's contract (.d.ts) — the desktop door has one task, the number.
+import { nationalNumber } from '@heliogrid/domain';
 import type { CSSProperties } from 'react';
 import { useId, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
 import { useFormat } from '../MarketProvider';
-import { NON_DIGIT } from './PhoneField.logic';
 import type { PhoneFieldProps, PhoneValueProps } from './PhoneField.types';
 
 interface WebPhoneFieldProps extends PhoneFieldProps {
@@ -43,17 +43,15 @@ export function PhoneField({
   const fieldId = id ?? autoId;
   const messageId = `${fieldId}-message`;
   const { dialCode } = mkt.pack.phone;
-  const code = dialCode.replace(NON_DIGIT, '');
   const [focused, setFocused] = useState(false);
 
   /* The box shows the NATIONAL number, grouped; the caller holds E.164. Splitting here rather than
      in the caller is what stops two screens grouping one number two ways. */
-  const digits = value.replace(NON_DIGIT, '');
-  const nsn = digits.startsWith(code) ? digits.slice(code.length) : digits;
-  const shown = mkt.phone(nsn, { nsn: true });
+  const shown = mkt.phone(value, { nsn: true });
 
+  /* A number pasted whole carries its `+` and code, which the box already shows beside it. */
   const commit = (typed: string): void => {
-    const entered = typed.replace(NON_DIGIT, '');
+    const entered = nationalNumber(mkt.pack, typed);
     onChange?.(entered.length === 0 ? '' : `${dialCode}${entered}`);
   };
 
