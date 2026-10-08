@@ -142,6 +142,7 @@ export function LogoTile({ size = 40, radius = 12, style }: NativeLogoTileProps)
         />
       </Svg>
       <Text
+        fixedSize
         style={{
           fontFamily: theme.type.families.sans,
           fontWeight: '700',

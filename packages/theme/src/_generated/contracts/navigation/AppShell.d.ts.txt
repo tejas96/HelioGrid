@@ -61,6 +61,8 @@ export interface ShellActionProps {
   badge?: number | boolean;
   onClick?: () => void;
   active?: boolean;
+  /** A 44px grey-filled circle — the open-page phone header's bell and extra actions. */
+  round?: boolean;
   style?: React.CSSProperties;
 }
 /** A 44×44 shell button with an optional count badge. */
@@ -113,25 +115,34 @@ export interface AppHeaderProps {
 export function AppHeader(props: AppHeaderProps): JSX.Element;
 
 export interface MobileTopBarProps {
-  title?: string;
-  /** The product mark. The phone has no rail, so **this** is where it rides. */
+  /** The tenant's company name — plain words after the mark (--fs-body, --fw-bold, one line,
+   *  ellipsis). Not a control: V1 has no company switcher (T-SHELL-001). */
+  company?: string;
+  /** The product mark. Defaults to the 32px LogoTile. */
   brand?: React.ReactNode;
-  /** The tenant's `TenantMark`. With a title present pass `showName={false}` — one set of words. */
-  tenant?: React.ReactNode;
-  /** Opens the global search sheet — the phone's half of `F6-20`. */
   onSearchClick?: () => void;
-  /** The `JobTray`, same slot and same position as on the desktop header. */
+  /** The search button's accessible name, in the reader's language. The bar types no English of its own. */
+  searchLabel: string;
+  /** A JobTray — rides before the bell. */
   jobs?: React.ReactNode;
+  /** Unread count, read from the record (F6-17). */
   notifications?: number | boolean;
   onNotificationsClick?: () => void;
+  /** The bell's accessible name, in the reader's language. The bar types no English of its own. */
+  notificationsLabel: string;
+  /** Pass the 44px Avatar. */
   avatar?: React.ReactNode;
-  /** Back button or menu, before the title. */
   leading?: React.ReactNode;
+  /** Extra round ShellActions (pass `round`). */
   actions?: React.ReactNode;
+  /** Pad the top 54px (--safe-top) so nothing sits under a centred camera. Default false — use it
+   *  when no device frame reserves the status bar. */
+  safeTop?: boolean;
   sticky?: boolean;
   style?: React.CSSProperties;
 }
-/** The phone top bar — `--topbar-h-mobile`, with the same search and bell obligations. */
+/** The phone header — LogoTile and company name left; round bell and 44px avatar right. No page title: the
+ *  title is the first thing in the content below. */
 export function MobileTopBar(props: MobileTopBarProps): JSX.Element;
 
 export interface AppShellProps {

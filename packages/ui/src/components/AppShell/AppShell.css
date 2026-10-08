@@ -1,5 +1,5 @@
 /* AppShell — the header half of F7-22's sidebar-and-header shell, plus the phone top bar.
-   Heights come from the tokens that already existed: --header-h (64) and --topbar-h-mobile (56). */
+   Heights come from --header-h and --topbar-h-mobile. */
 
 .hg-app-shell {
   display: flex;
@@ -124,8 +124,8 @@
   align-items: center;
   gap: var(--sp-2);
   box-sizing: border-box;
-  min-height: var(--topbar-h-mobile, 56px);
-  padding: 0 var(--screen-pad-mobile);
+  min-height: var(--topbar-h-mobile);
+  padding: var(--sp-2) var(--screen-pad-mobile);
   background: var(--hg-ground);
   font-family: var(--font-sans);
 }
@@ -134,27 +134,23 @@
   position: sticky;
 }
 
-.hg-app-shell-topbar-title {
-  flex: 1;
-  min-width: 0;
-  margin: 0;
-  overflow: hidden;
-  color: var(--text-primary);
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-h1);
-  white-space: nowrap;
-  text-overflow: ellipsis;
+/* The device's own inset, read by the browser — never the typed --safe-top. */
+.hg-app-shell-topbar[data-safe-top="true"] {
+  padding-top: max(var(--sp-2), env(safe-area-inset-top));
 }
 
-/* The tenant's words give way first, so Search, the bell and the avatar keep their 44. */
-.hg-app-shell-topbar-tenant {
-  flex-shrink: 1;
+/* The tile and the company's name. The name gives way first, so Search, the bell and the avatar
+   keep their 44. The board's 10 between them is no token; --sp-2 is the nearest step. */
+.hg-app-shell-topbar-identity {
+  flex: 1;
   min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
 }
 
-.hg-app-shell-topbar-spacer {
-  flex: 1;
+.hg-app-shell-topbar-company {
+  min-width: 0;
 }
 
 .hg-app-shell-topbar-actions {
@@ -175,8 +171,8 @@
   min-width: 44px;
   height: 44px;
   border: none;
-  border-radius: var(--r-pill);
-  background: var(--hg-control-fill);
+  border-radius: var(--r-md);
+  background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
   transition: background var(--dur-standard) var(--ease-standard);
@@ -184,6 +180,17 @@
 
 .hg-app-shell-action:hover:not([data-active="true"]) {
   background: var(--neutral-bg);
+}
+
+/* The round shell button: a grey circle on the page — the phone header's search and bell, and the
+   avatar's button. */
+.hg-app-shell-action[data-round="true"] {
+  border-radius: var(--r-pill);
+  background: var(--hg-control-fill);
+}
+
+.hg-app-shell-action[data-round="true"]:hover:not([data-active="true"]) {
+  background: var(--fill-hover);
 }
 
 .hg-app-shell-action[data-active="true"] {

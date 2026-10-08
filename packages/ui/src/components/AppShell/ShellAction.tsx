@@ -10,7 +10,8 @@ interface WebShellActionProps extends ShellActionProps {
 }
 
 /**
- * A 44×44 shell button with an optional count badge riding its corner. The accessible name is
+ * A 44×44 shell button with an optional count badge riding its corner — the grey circle when
+ * `round`, otherwise transparent until the pointer is over it. The accessible name is
  * built here — "Notifications, 7 unread" — and an `aria-label` wins over element contents, so
  * the badge's own sr-only sentence is never the one announced.
  */
@@ -21,6 +22,7 @@ export function ShellAction({
   name: wholeName,
   onClick,
   active = false,
+  round = false,
   className,
   style,
 }: WebShellActionProps) {
@@ -34,6 +36,7 @@ export function ShellAction({
       onClick={onClick}
       className={classNames('hg-app-shell-action', className)}
       data-active={active ? 'true' : undefined}
+      data-round={round ? 'true' : undefined}
       style={style}
     >
       {icon}

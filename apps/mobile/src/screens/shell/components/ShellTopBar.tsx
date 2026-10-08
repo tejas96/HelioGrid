@@ -2,8 +2,7 @@ import { useShell, useUnreadCount } from '@heliogrid/data/react';
 import { offersDoor } from '@heliogrid/domain';
 import { accountMenuWords, NOTIFICATION_CENTRE, SHELL } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { theme } from '@heliogrid/theme';
-import { AccountMenu, LogoTile, MobileTopBar, Text } from '@heliogrid/ui';
+import { AccountMenu, MobileTopBar } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { NotificationSheet } from '../../notifications';
@@ -36,14 +35,7 @@ export function ShellTopBar({ companyName, account }: ShellTopBarProps) {
   return (
     <>
       <MobileTopBar
-        brand={<LogoTile size={theme.spacing['sp-8']} radius={theme.radius['r-sm']} />}
-        tenant={
-          companyName === null ? undefined : (
-            <Text variant="body" bold oneLine>
-              {companyName}
-            </Text>
-          )
-        }
+        company={companyName ?? undefined}
         searchLabel={t(SHELL.search)}
         notificationsLabel={t(SHELL.notifications)}
         notificationsName={t(NOTIFICATION_CENTRE.bellName, { count: unread ?? 0 })}

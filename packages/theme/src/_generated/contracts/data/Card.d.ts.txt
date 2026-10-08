@@ -3,11 +3,11 @@ import { SurfaceState } from "../feedback/UnavailableNote";
 
 export interface CardProps {
   children?: React.ReactNode;
-  /** expressive = 24px radius / 24px pad; functional = 12px / 16px */
+  /** expressive = the tile's --r-tile and --tile-pad; functional = 12px / 16px */
   density?: "expressive" | "functional";
-  /** enables hover lift + pointer */
+  /** enables the hover fill (--fill-hover) + pointer */
   interactive?: boolean;
-  /** 2px accent focus ring */
+  /** the inset 1.5px --accent ring a focused field also draws */
   selected?: boolean;
   /**
    * **The card has states**, because law 1 ("states are part of done") applies to the surface every
@@ -37,7 +37,7 @@ export interface IconCircleProps {
 }
 
 /**
- * Floating white card — no border, separates by luminance + soft shadow. Ships `loading`, `empty`,
+ * A grey tile (--fill) on the white page — no border, no shadow. Ships `loading`, `empty`,
  * `error` and `unavailable` states, like every other surface in the system.
  * @startingPoint section="Data display" subtitle="Floating card + signature circular icon container" viewport="700x260"
  */

@@ -3356,7 +3356,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 
 ### T-FPLAT-082 · The open page — the app's design tokens and components pulled level with the live design system
 **Type:** port · **Tier:** P0
-**Status:** in progress — parts a, b and c shipped; parts d, e and f open
+**Status:** in progress — parts a, b, c and d shipped; parts e and f open
 **Why:** Every screen is drawn on the live design system, but the app draws with a snapshot of it pulled on 2026-08-19 plus partial pulls. The design system's open page (2026-09-29) made the page white and moved grey to the fill of fields, tiles and chips, restyled the fields, the phone header and footer and the list tiles, and added tokens the boards use (`--fill`, `--tile-pad`, `--r-tile`). Without the pull, no screen can match its board: a screen built now is built against values the design has already left.
 **PRD rows:** none of its own — the design system is the visual authority (`F7`); `docs/engineering/17-ui-architecture-v2.md` §6 owns the pull.
 **Design:** none — no screen of its own; each part checks the built screens it touches against their boards.
@@ -3369,7 +3369,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | a | the four changed token files and the census pulled; every field drawn the open page's way (fill, 54, radius 16, inset rings, the field type sizes); every built screen checked against its board | AC-1, AC-2, AC-3, AC-4 | the design system's field type tokens (the prerequisite in `#### Part a · RFC`) | shipped |
 | b | the phone footer pulled level: `BottomNav` is the pill on the design system's footer tokens, its typing pulled, the retired arc removed; the pill's labels held to their slots at the largest text size (D83). The header stays the name as words (B1) | its own RFC | a | shipped |
 | c | the tiles and the page's controls: every tile (`Card`, `AccountTile`, `NotificationCard`, the request-sent tile) on `--fill`, `--r-tile`, `--tile-pad`; a control that is not a field on the page's `--fill`; the secondary `Button` `--surface` at `--e2` on every ground (owner ruling D14 B, `T-M01-035`, 2026-10-07); a disabled control in a tile darker than the tile; `F7-15` and `F7-49` amended; D94 | its own RFC | a | shipped |
-| d | the header: `AppShell.d.ts` pulled once the design system draws the company's name as words and moves `PhoneScreen` to its own file (part b, B1) — `MobileTopBar`'s `company` and `safeTop`, `ShellAction`'s `round`, the round grey bell; the search pill (50 tall) and its filter square, with `SearchField`'s typing pulled; part b's design-system leftovers (`AppRail.jsx`'s arc comment, the in-view item 50 against 48, the error frame's Try again as the secondary `Button`, `RailItem.anchor`, `searchLabel`/`notificationsLabel`) and `Card.d.ts`'s stale comment — each design-system change by the owner's paste first | its own RFC | c | open |
+| d | the header: `AppShell.d.ts` pulled once the design system draws the company's name as words and moves `PhoneScreen` to its own file (part b, B1) — `MobileTopBar`'s `company` and `safeTop`, `ShellAction`'s `round`, the round grey search and bell; the top bar at the largest text (D144, D2 A); part b's design-system leftovers (`AppRail.jsx`'s arc comment, the in-view item 50 against 48, `RailItem.anchor`, `searchLabel`/`notificationsLabel`) and `Card.d.ts`'s stale comment — each design-system change by the owner's paste first. The search pill and its filter square moved to D145 (D1 A) | its own RFC | c | shipped |
 | e | the held-back typings and the design system's open rulings: `Banner`'s `actionBelow` and `onFormChange` ported on both halves, with the held-back `Banner.d.ts.txt` and `adherence.oxlintrc.json` pulled (D31, deferred review 2026-10-08); the design system's `PhoneField` reads the dial code from its market and its typing is pulled (D130); `RichText`'s frame drawn by `FieldBox` (D60); a placeholder takes `--text-tertiary` (D131, `F7-15`); the overline and mono take the body's line height, 1.55 (D136) — each design-system change by the owner's paste first | its own RFC | c | open |
 | f | assistive technology and the controls' edges: the phone `Menu` and `Sheet` backdrop named or hidden for a screen reader (D82); a loading `Button` keeps its name for assistive technology (D84); `Modal`'s body takes its bottom padding at 375 (D88); one visually-hidden option replaces the copies (D93); the phone `Sheet`'s close target, title wrap, `Badge` and close label (D96) | its own RFC | c | open |
 
@@ -3901,6 +3901,214 @@ Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-F
 - AC-1 promised `--fill-hover` for every tile and built it on `Card` only (QA W4, review) → `NotificationCard.spec.tsx` and `NotificationGroup.spec.tsx` hover tests, seen red; AC-1 also promised members 16 padding against the board → Q1 A.
 - AC-4 asked every built screen to match its board whole, so older differences failed a part that does not draw them → Q2 A; the differences are D146–D150.
 - Comments and `packages/ui/CLAUDE.md` still said a retry reads its ground and `Card` hovers by a ring (review, Law 8) → fixed; held by review only (said out loud).
+
+#### Part d · RFC
+
+##### Title
+T-FPLAT-082d — the phone header pulled level: `AppShell.d.ts` pulled, the company's name drawn by `MobileTopBar`, the round grey search and bell, and the design system's last shell leftovers paid.
+
+##### Description
+- **User impact:** on the phone, the top bar is the one the shell board draws — the product tile, the company's name in bold words, a round grey search and bell, the avatar. At the largest text size the company's name and the avatar's initials keep their drawn size, so the name is no longer cut to "QA…" and the initials are whole (D144). Indirectly: every later phone screen takes its header from one component that the design system and the app describe the same way.
+- **Who gains:** every phone user of a built screen; every later screen task.
+- **Problem solved:** the design system now draws the name as words and keeps `PhoneScreen` in its own file (the owner's B1 paste, part b). Its `AppShell.d.ts` gives `MobileTopBar` `company` and `safeTop`, gives `ShellAction` `round`, and drops `title` and `tenant` (`components/navigation/AppShell.d.ts`, read 2026-10-08). The repo still holds the 2026-08-19 typing (`_generated/README.md`, "Held back"); the app hands the name in as its own `Text` in the `tenant` slot (`apps/mobile/src/screens/shell/components/ShellTopBar.tsx:41-47`); and `ShellAction` paints every use grey (`AppShell.css:178`, `ShellAction.native.tsx:41`) where the design system paints only a `round` one.
+- **Cites:** `MS12-19`, `F6-17`, `F6-20`, `F7-15`, `F7-50`; `SCR-SHELL-01`'s decision 3; `T-SHELL-001`'s ruling "the company name is words, not a chip" (`docs/tasks/SHELL.md:231`); `docs/tasks/UI.md:72`; D144.
+
+##### Goals
+- `contracts/navigation/AppShell.d.ts.txt` equals the live typing, and `design-system-props` passes with `company`, `safeTop` and `round` ported on both halves.
+- `MobileTopBar` draws the mark and the company's words itself; `title` and `tenant` leave it.
+- `ShellAction` with `round` is the 44 grey circle — `--fill`, `--fill-hover` under a web pointer, a `--text-primary` icon; without it the button is transparent at `--r-md`, as the design system draws it.
+- At the largest text size the bar's name and the avatar's initials keep their drawn size, and the home's title stays inside the screen margin, on both phones (D144).
+- After the owner's paste, `AppRail.d.ts.txt` and `Card.d.ts.txt` are pulled again, and `UI.md`'s "Owed to the design system by the shell" is closed.
+
+##### Non-goals
+- The search pill (50 tall), its filter square and `SearchField`'s typing — D1.
+- The web shell: it keeps the rail and its header at every width (`T-SHELL-008`). No web screen draws `MobileTopBar`, so its web half changes with the native half (Law 7) and is proven by a component test.
+- `PhoneScreen`: not pulled, not ported — a board's device frame (part b).
+- Frame 10 (update required): built with no top bar (`T-SHELL-010`).
+- The port's own extras stay: `notificationsName`, `RailItem.name`, `RailItem.open`.
+
+##### Readiness and dependencies
+- Landed: parts a–c. Part c is on `feat/T-FPLAT-082c` (PR #251, not yet merged); this branch is cut from it on the owner's word (2026-10-08). `--topbar-h-mobile` 64, `--fill` and `--fill-hover` are pulled (part a).
+- Design: no `DESIGN` line (a port). QA compares the phone with `SCR-SHELL-01`'s frames, captured after approval.
+- Design-system prerequisite: the owner's one paste below, into the HelioGrid Design System project. The port does not wait for it; the two re-pulls and the `UI.md` close do.
+- Assumption: `ShellTopBar` is `MobileTopBar`'s only caller (`grep -rn '<MobileTopBar' apps packages/ui/src`), so dropping `title` and `tenant` breaks nothing else.
+- Assumption: the board's header follows the design system (name as words). Its record's 1 Oct section still says "company chip"; the frame capture after approval shows which. A chip on the board goes to the owner then.
+- Blockers: none.
+
+```text
+In the HelioGrid Design System, bring three files level with the shipped app. Change nothing else.
+
+1. components/navigation/AppShell.jsx and AppShell.d.ts — MobileTopBar takes two required props,
+   `searchLabel` and `notificationsLabel`: the search button's and the bell's accessible names, in
+   the reader's language. The bar types no English of its own: remove the "Search" and
+   "Notifications" literals it passes to ShellAction and pass the two props instead.
+
+2. components/navigation/AppRail.jsx and AppRail.d.ts —
+   a. RailItem gains `anchor?: CoachMarkAnchor` (the type from ../feedback/CoachMark): the ref a
+      coach mark points at to name this item; a marked item must carry one.
+   b. The BottomNav item in view is 48 tall, the same as every other slot (it is 50 now).
+   c. The file's top comment still says BottomNav is "four destinations around a raised near-black
+      FAB, sitting under one parabolic top edge". Replace that sentence with: "BottomNav — the phone
+      counterpart: one floating white pill; the item in view is a black pill with its icon and label."
+
+3. components/data/Card.d.ts — make the comments say what Card.jsx draws:
+   - density: "expressive = the tile's --r-tile and --tile-pad; functional = 12px / 16px"
+   - interactive: "enables the hover fill (--fill-hover) + pointer"
+   - selected: "the inset 1.5px --accent ring a focused field also draws"
+   - the Card doc line: "A grey tile (--fill) on the white page — no border, no shadow."
+```
+
+##### Proposal
+**Flow.** The design system's `AppShell.d.ts` → `design-system-props` red on `company`, `safeTop`, `round` → the types → `ShellAction` (both halves) → `MobileTopBar` (both halves) → `ShellTopBar` passes `company` → D144 → component spec → both phones → the owner's paste lands → `AppShell.d.ts`, `AppRail.d.ts`, `Card.d.ts` pulled once → docs.
+
+**Findings from testing the requirement:**
+1. **The search pill and the filter square have no built caller.** The one `SearchField` in the app is the web header's, `functional` and 40 tall (`apps/web/features/shell/components/ShellHeader.tsx:59`), whose look the design system did not change. The 50 pill is the `expressive` form, and the square is `FilterBar`'s `FiltersButton` redrawn (`components/data/FilterBar.d.ts`: "the 50×50 black square"). Part c put the list parts with the first screen that draws them (C2, D145). Pulling `SearchField`'s typing now forces three props onto a port no screen shows, and drags `FiltersButton`'s redraw with it. → D1.
+2. **The error frame's Try again is already level.** Part c made the secondary `Button` the white raised button the board draws (D14 B). It leaves the leftovers.
+3. **`round` defaults to false in the design system, which draws a transparent button.** Today every `ShellAction` is grey. `AccountMenu`'s trigger passes `round` too (built, not planned): the web avatar is 32 inside its 44 button, so without it the grey circle at the rail's foot would go; under a web pointer it now takes `--fill-hover` where it took `--neutral-bg`. The only caller left without `round` is `AppHeader`'s bell, which no built screen passes. → follow the design system; nothing else changes on screen.
+4. **`safeTop` is part b's `safeBottom` again** (B3): the app owns the device inset (`.claude/rules/screen-parts.md`). The web half pads `env(safe-area-inset-top)`, at least the bar's 8; the native half declares it and does not read it — `ShellFrame`'s safe area already keeps the bar below the camera. Never the typed `--safe-top` 54.
+5. **D144's words are chrome, not content.** The bar is a fixed 64 band, as the pill is; its name, the avatar's initials, the tile's letter and the bell's count keep their drawn size (the letter and the count added at QA), as the pill's labels do (`Text` `fixedSize`, D83). The home's title is the page's own words, so it grows and wraps inside the margin.
+
+**Key decisions** (one reason each):
+1. **`MobileTopBar` draws the name; the app passes a string.** One drawing of the name, the design system's.
+2. **`round` as the design system has it** — the header's two buttons pass it; the grey moves from every `ShellAction` to the round one.
+3. **`fixedSize` for the bar's name, the avatar's initials, the tile's letter and the bell's count** (finding 5).
+
+**Order:** `AppShell.d.ts` pulled and the invariant red → types → `ShellAction` → `MobileTopBar` and its spec → `ShellTopBar` → D144 → board frames, then QA → the paste's re-pulls → docs.
+
+**Twin:** `ShellAction` and `MobileTopBar` change both halves together (Law 7). D144's five fixes are native: the phone's system text size is what grows them, and the web half takes `fixedSize` through the same `Text` prop, where it changes nothing.
+
+##### Architecture diagram
+No boundary change — the change stays inside `packages/ui`'s shell parts and the phone's top bar.
+
+```mermaid
+flowchart LR
+  DS[Live design system AppShell.d.ts] -->|get_file, verbatim| GEN[theme _generated AppShell typing]
+  GEN --> INV[invariant design-system-props]
+  INV -->|company, safeTop, round| TB[ui MobileTopBar web + native]
+  INV -->|round| SA[ui ShellAction web + native]
+  SA --> TB
+  TXT[ui Text fixedSize] --> TB
+  TXT --> AV[ui Avatar initials]
+  AV --> AM[ui AccountMenu trigger]
+  AM --> STB[mobile ShellTopBar]
+  TB --> STB
+  PASTE[owner paste: AppRail, Card, AppShell labels] -.->|re-pull| GEN
+```
+
+##### Package changes
+- **theme:** `AppShell.d.ts.txt` pulled; after the paste, `AppRail.d.ts.txt` and `Card.d.ts.txt`. `_generated/README.md` records the pull, keeps `SearchField.d.ts.txt` held back (D1) and says why `PhoneScreen.d.ts` is not pulled.
+- **ui:** `MobileTopBarProps` gains `company` and `safeTop` and loses `title` and `tenant`; `ShellActionProps` gains `round`; `Avatar`'s native initials, `LogoTile`'s native letter, `CountBadge`'s native digits and `HomeHead`'s native title follow D144. No export changes.
+- **mobile:** `ShellTopBar` passes the company's name as `company`.
+- **Protections (Law 12):** no new brand, enum, token, route, table or error code. The pulled typing is held by `design-system-props`.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/theme/src/_generated/contracts/navigation/AppShell.d.ts.txt` | pulled | the snapshot |
+| modify | `packages/theme/src/_generated/contracts/navigation/AppRail.d.ts.txt` · `contracts/data/Card.d.ts.txt` | re-pulled after the paste | the snapshot |
+| modify | `packages/theme/src/_generated/README.md` | the pull recorded; `SearchField` still held (D1); `PhoneScreen` not pulled | the snapshot |
+| modify | `packages/ui/src/components/AppShell/AppShell.types.ts` | `company`, `safeTop`, `round`; `title`, `tenant` out | the one contract (Law 7) |
+| modify | `packages/ui/src/components/AppShell/ShellAction.tsx` · `ShellAction.native.tsx` | `round` grey circle; otherwise transparent `--r-md` | the shell button |
+| modify | `packages/ui/src/components/AppShell/MobileTopBar.tsx` · `MobileTopBar.native.tsx` | mark, name as words, round search and bell, `safeTop`; the name `fixedSize` (D144) | the phone header |
+| modify | `packages/ui/src/components/AppShell/AppShell.css` | the bar's name, `round`, `safeTop`; the old title and tenant rules out | the web half's styles |
+| modify | `packages/ui/src/components/Avatar/Avatar.native.tsx` | initials `fixedSize` (D144) | the avatar |
+| modify | `packages/ui/src/components/HomeHead/HomeHead.native.tsx` | the title wraps inside the margin (D144) | the home's head |
+| modify | `apps/mobile/src/screens/shell/components/ShellTopBar.tsx` | `company={companyName}`; its own `Text` goes | the phone shell |
+| add | `tests/e2e/components/MobileTopBar.spec.tsx` | the bar's geometry, the name's words and ellipsis, the round buttons and their icons, the name-only bar, `safeTop`, a `ShellAction` without `round` (no story: every handler is called on a press, not while rendering) | component tests (`tests/e2e/CLAUDE.md`) |
+| modify | `packages/ui/src/components/AccountMenu/AccountMenu.tsx` · `AccountMenu.native.tsx` | built, not planned: the trigger passes `round`, so the avatar's grey circle stays; the phone avatar is 44, filling its button, as `T-SHELL-001` drew it (it was 40 in a grey ring; review) | the avatar's button |
+| modify | `packages/ui/src/components/Wordmark/Wordmark.native.tsx` · `packages/ui/src/components/AppShell/CountBadge.native.tsx` | built, not planned: the tile's letter and the bell's count keep their drawn size; at the largest text they were scaled up and clipped (QA, iOS AC-3) | the bar's other fixed words |
+| modify | `docs/tasks/UI.md` | the shell's owed list paid by the design system and deleted | Law 8 |
+| modify | `docs/tasks/F-platform.md` · `docs/tasks/deferred.md` | this RFC and part d's row; D144 deleted (D2); D145 takes the search pill and the filter square (D1) | Law 8 |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **Every phone screen's header changes** — QA compares the home with the board's frames on both phones, at the default and the largest text size.
+- **A mistyped pulled typing** — `design-system-props` reads it; each file is compared with `get_file` after it is written.
+- **The paste does not land before QA** — the port and its proofs do not need it; the re-pulls and the `UI.md` close then become one deferred row, said on the commit card.
+
+##### Acceptance criteria and proof
+- **AC-1** (new) — Given the live design system, when the shell's typing is read, then `contracts/navigation/AppShell.d.ts.txt` equals it and every prop it declares is declared by the port.
+- **AC-2** (new) — Given the phone shell, when it renders on iPhone and Android, then the top bar is the 32 product tile, the company's name in `--fs-body` bold on one line with an ellipsis, the round 44 search and bell on `--fill` with `--text-primary` icons (the bell with its count), and the 44 avatar; no title and no chip; 64 tall, 20 from each side.
+- **AC-3** (D144; amended at QA) — Given the largest text size, when the phone shell renders, then the company's name, the avatar's initials, the tile's letter and the bell's count keep their drawn size, and the home's title stays inside the screen margin, on both phones.
+- **AC-4** (new) — Given `SCR-SHELL-01`'s phone frames, when the built shell renders the same states, then its header matches them apart from the rulings `T-SHELL-001` recorded.
+- **AC-5** (new) — Given the owner's paste, when the design system is read again, then `AppRail.d.ts.txt` and `Card.d.ts.txt` equal it and `UI.md`'s owed list for the shell is closed.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 | main-dev · evaluator | required | invariants | `design-system-props` green; planted red: `round` dropped from the port, named by the invariant | invariant `design-system-props` |
+| AC-2 | main-dev | required | component tests | the web half: name words bold, one line, ellipsis with a 60-character name at 375; 20 each side; search and bell 44 round on `--fill`, icons `--text-primary`; a name-only bar (Frame 8's) draws no buttons; `safeTop` marks the bar and keeps its own padding where the browser reports no inset (the inset itself is read only on a device); a `ShellAction` without `round` transparent at `--r-md`; planted reds: the round fill back to transparent, the bell's icon back to `secondary` | `tests/e2e/components/MobileTopBar.spec.tsx` (ct, new) |
+| AC-2 | qa-ios | required | simulator | the home: the bar's height, sides, tile, name, round buttons; the bell opens the centre, search opens its door | live |
+| AC-2 | qa-android | required | emulator | the same on Android | live |
+| AC-3 | qa-ios | required | simulator, largest text size | the name, the initials, the tile's letter and the bell's count whole at their drawn size; the home's title inside the margin | live |
+| AC-3 | qa-android | required | emulator, font scale 2.0, set while the app is closed (a change while it runs crashes it: D107) | the same | live |
+| AC-4 | qa-ios | required | simulator, 375-wide frames | side-by-side: frame 2 (empty) and frame 6 (single preset) — the header | live, board pictures |
+| AC-4 | qa-android | required | emulator | side-by-side: frame 2 | live, board pictures |
+| AC-4 · frames 1, 3, 5, 7 | — | not_applicable | — | the header is the same in every home state; part d changes only the header | — |
+| AC-4 · frames 4, 9 | — | not_applicable | — | they need lead records and availability no built module holds | — |
+| AC-4 · frame 8 | — | not_applicable | — | needs a member whose access was removed, and no built screen removes one (`T-M01-012`); the name-only bar is the spec's case | — |
+| AC-4 · frame 10 | — | not_applicable | — | built with no top bar (`T-SHELL-010`) | — |
+| AC-4 · Hindi | — | blocked | — | the shell cannot be reached in Hindi: D143, clears with `T-M01-039` | — |
+| AC-5 | main-dev · evaluator | required | DesignSync · invariants | after the paste (2026-10-08), each file compared with `get_file` and written to equal it; `AppRail.jsx` read: the item in view 48, the arc sentence gone; `design-system-props` green | read · invariant |
+| AC-1–AC-5 | evaluator · ci | required | `pnpm check:all` · `quality` | every check passes | gate · CI |
+
+##### Delivery size
+- **Estimate:** 19 files — 12 code, 2 tests, 5 docs and snapshot notes. About 420 authored lines: code about 160, tests about 120, docs about 140.
+- **One part.**
+- **Order:** as in Proposal.
+
+**Decisions — part d**
+- **D1 — the search pill and its filter square.** **A · they join D145 (recommended):** the first screen that draws them (a list or the search screen) ports them with `SearchField`'s and `FilterBar`'s typings; part d's row loses them. **B · port them now, as the row says:** the 50 pill, the black square on both halves, both typings pulled, proven by component tests only — about 10 more files and 300 lines that no screen shows.
+- **D2 — D144 (the top bar at the largest text).** **A · joins (recommended):** the name and the initials keep their drawn size, the home's title wraps; three files. **B · stays** for its own task.
+- **Deferred rows met:** D144 (D2); D2, D92 (`touches packages/ui/src/components/`), D107 (`touches apps/mobile/src/`) and D22 (`touches docs/tasks/UI.md`) — stay, as parts b and c ruled.
+- **Owner rulings (2026-10-08):** RFC approved; D1 → **A** (the search pill and its filter square join D145); D2 → **A** (D144 joins); deferred rows: D2, D92, D107 and D22 stay.
+- **QA (2026-10-08):** AC-3 amended to hold the tile's letter and the bell's count too (iOS saw both scaled and clipped). The board's phone header still draws the "Company" chip (board last edited 2026-10-03); compared apart from `T-SHELL-001`'s ruling. The paste had not landed by the first gate (AC-5 blocked, a D151 row written); the owner pasted, the three typings were pulled, D151 was deleted and AC-5 proven. At the largest iOS text the home's title breaks inside a word but stays inside the margin → D152.
+
+**Planted reds (2026-10-08):** `round` renamed out of the port → `design-system-props` named `AppShell.round`; the round fill set to `transparent` → `MobileTopBar.spec.tsx` "search and the bell are round grey 44 buttons…" failed, received `rgba(0, 0, 0, 0)`; the bell's icon without `tone="primary"` (review) → the same test failed, received `rgb(84, 86, 91)`. All restored.
+
+**Checklist** — [x] pull and invariant · [x] types · [x] `ShellAction` · [x] `MobileTopBar` and spec · [x] `ShellTopBar` · [x] D144 · [x] board frames captured · [x] qa-ios · [x] qa-android · [x] paste re-pulls · [x] review · [ ] gate · [x] docs
+
+#### Runtime — part d
+Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-FPLAT-082d` from `feat/T-FPLAT-082c` `3ab65e43` (owner: part c is not merged yet).
+
+| resource | state at start | identity |
+|---|---|---|
+| web `3002` · api `8084` · metro `8081` | free | — |
+| postgres `5544` · object store `9000` · temporal `7233` | pre_existing | containers `heliogrid-pg-local`, `heliogrid-object-store-local`, `heliogrid-temporal` |
+| simulators · emulators | none booted | — |
+| browser tabs | the pane is closed | — |
+| database routing | `heliogrid_dev` on both URLs | `.env.local` |
+| logs | `.qa/api.log` 6,453,504 · `.qa/web.log` 169,448 · `.qa/metro.log` 559,123 bytes | byte marks |
+| started by the task | api (preview server, launch `api`), Metro (launch `mobile-metro`), simulator `40ED0117` (iPhone 17 Pro), `emulator-5554` (Pixel 8, API 34); database routing moved to `heliogrid_test` on both URLs for QA and the gate | preview server ids, UDID, serial |
+| phone text size | iPhone content size `large`; Android `font_scale` 1.0 — restored at the end | settings |
+| browser pane | tabs `seed` (api) and `tab-1` (Metro, then the `SCR-SHELL-01` board) | tab ids |
+
+**At the end (2026-10-08)**
+
+| resource | state at end |
+|---|---|
+| api · Metro | stopped by Main (preview stop); `3002`, `8084`, `8081` free; no `tsx watch` left |
+| postgres · object store · temporal | pre_existing, untouched |
+| simulator `40ED0117` · `emulator-5554` | shut down |
+| phone text size | iPhone content size `large`, Android `font_scale` 1.0 — restored (Android's set and restored with the app closed: D107) |
+| browser pane | tabs `seed` and `tab-1` closed; the pane is closed |
+| database routing | restored to `heliogrid_dev` on both URLs (QA and the gate ran on `heliogrid_test`) |
+| logs | `.qa/api.log` 6,511,013 · `.qa/web.log` 169,448 · `.qa/metro.log` 574,195 bytes |
+| test data | none written: both phones used standing accounts already signed in ("QA iOS Solar" on the iPhone, +91 99999 99904 "QA api primary" on Android) |
+
+**Measurements:** helper runs — qa-ios 1 (1 continuation), qa-android 1 (2), reviewer 1 (1), evaluator 1; helper tokens about 420k (reviewer 189k, qa-android 104k, qa-ios 93k, evaluator 33k); Main's turns and tokens were not counted. Planned 19 files (18 in the table) and about 420 lines; built 21 files — the four `AccountMenu`, `Wordmark` and `CountBadge` halves added, the story not built — +376 −113 plus the 115-line spec — code about 200, tests about 115, docs about 260. Full gate: two runs, both green — the first with AC-5 blocked on the owner's paste, the second after the three typings were pulled.
+
+**Mistakes and the rule that now holds each**
+- The plan said the avatar's button would change nothing and left `AccountMenu` out of the file table; the web avatar is 32 inside its 44, so it needed `round` (found at build, review) → said out loud; the RFC's file table now lists it.
+- The phone avatar was 40 in a grey ring where `T-SHELL-001` and the design system draw 44 (review) → fixed; the spec mounts `Avatar` directly, so only review and QA hold it (said out loud).
+- At the largest iOS text the tile's letter and the bell's count grew and were clipped; the plan held only the name and the initials (QA) → `fixedSize` on both, AC-3 amended; no automated test holds a native text size (said out loud, as part b's D83).
+- The spec read the button's colour, which no icon inherits (review) → the spec reads the icon's own colour, seen red.
+- The plan listed a story file `tests/e2e/CLAUDE.md` says is needed only for a prop called while rendering → removed; the rule exists and was not read at plan time.
+- QA reruns started before the reviewer had returned on the fixes, against `references/qa.md`'s order → no QA result changed with the review's last notes (comments, docs, a test name); said out loud.
 
 ### T-FPLAT-083 · A route answers only what its contract declares
 **Type:** policy · **Tier:** P1

@@ -94,7 +94,7 @@ export function CountBadge({
       accessibilityLabel={words}
       style={[styles.pill, { backgroundColor: pair.bg, borderColor: ground }, style]}
     >
-      <Text variant="caption" style={[styles.digits, { color: pair.fg }]}>
+      <Text variant="caption" fixedSize style={[styles.digits, { color: pair.fg }]}>
         {shown}
       </Text>
     </View>

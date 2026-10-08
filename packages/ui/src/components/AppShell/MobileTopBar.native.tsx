@@ -3,6 +3,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { LogoTile } from '../Wordmark/Wordmark.native';
 import type { MobileTopBarProps } from './AppShell.types';
 import { ShellAction } from './ShellAction.native';
 import { ShellGlyph } from './ShellGlyph.native';
@@ -12,19 +13,20 @@ interface NativeMobileTopBarProps extends MobileTopBarProps {
 }
 
 /**
- * The phone top bar — `--topbar-h-mobile`, with the same search and bell obligations. The phone
- * has no rail, so `brand` IS where the product mark rides and `tenant` sits beside it.
+ * The phone header — the product tile and the company's name as words on the left; the round
+ * search, the bell and the avatar on the right. No page title: the title starts the content below.
  *
- * `sticky` is accepted and inert: RN has no `position: sticky`, and a bar stays put by sitting
- * outside the ScrollView — the screen's arrangement, not this component's.
+ * The name keeps its drawn size at every system text size: the bar is a fixed band, and a grown
+ * name only loses more of itself to the ellipsis. `sticky` and `safeTop` are accepted and
+ * inert here — a bar stays put by sitting outside the ScrollView, and the app's safe area keeps it
+ * below the camera; both are the screen's arrangement, not this component's.
  */
 export function MobileTopBar({
-  title,
+  company,
   searchLabel,
   notificationsLabel,
   notificationsName,
   brand,
-  tenant,
   onSearchClick,
   jobs,
   notifications,
@@ -38,34 +40,37 @@ export function MobileTopBar({
   return (
     <View style={[styles.bar, { backgroundColor: ground }, style]}>
       {leading}
-      {brand !== undefined ? <View style={styles.slot}>{brand}</View> : null}
-      {tenant !== undefined ? <View style={styles.tenant}>{tenant}</View> : null}
-      {title !== undefined ? (
-        <View style={styles.titleClip}>
-          <Text variant="h3" style={styles.title}>
-            {title}
-          </Text>
+      <View style={styles.identity}>
+        <View style={styles.slot}>
+          {brand ?? <LogoTile size={theme.spacing['sp-8']} radius={theme.radius['r-sm']} />}
         </View>
-      ) : (
-        <View style={styles.spacer} />
-      )}
+        {company !== undefined ? (
+          <View style={styles.company}>
+            <Text variant="body" bold oneLine fixedSize>
+              {company}
+            </Text>
+          </View>
+        ) : null}
+      </View>
       <View style={styles.actions}>
         {actions}
         {jobs}
         {onSearchClick !== undefined ? (
           <ShellAction
+            round
             label={searchLabel}
             onClick={onSearchClick}
-            icon={<ShellGlyph name="search" size="md" />}
+            icon={<ShellGlyph name="search" size="md" tone="primary" />}
           />
         ) : null}
         {onNotificationsClick !== undefined ? (
           <ShellAction
+            round
             label={notificationsLabel}
             name={notificationsName}
             badge={notifications}
             onClick={onNotificationsClick}
-            icon={<ShellGlyph name="bell" size="md" />}
+            icon={<ShellGlyph name="bell" size="md" tone="primary" />}
           />
         ) : null}
         {avatar}
@@ -80,31 +85,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing['sp-2'],
     minHeight: theme.layout['topbar-h-mobile'],
+    paddingVertical: theme.spacing['sp-2'],
     paddingHorizontal: theme.layout['screen-pad-mobile'],
+  },
+  /* The name gives way first, so Search, the bell and the avatar keep their 44. */
+  identity: {
+    flex: 1,
+    minWidth: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing['sp-2'],
   },
   slot: {
     flexShrink: 0,
     justifyContent: 'center',
   },
-  /* The tenant's words give way first, so Search, the bell and the avatar keep their 44. */
-  tenant: {
+  company: {
     flexShrink: 1,
     minWidth: 0,
-    justifyContent: 'center',
-  },
-  /* The Text primitive carries no numberOfLines, so a long title clips rather than ellipsising
-     — the bar keeps its 56dp height either way. */
-  titleClip: {
-    flex: 1,
-    minWidth: 0,
-    overflow: 'hidden',
-    maxHeight: 24,
-  },
-  title: {
-    letterSpacing: -0.5,
-  },
-  spacer: {
-    flex: 1,
   },
   actions: {
     flexShrink: 0,

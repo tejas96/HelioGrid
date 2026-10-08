@@ -12,7 +12,7 @@ import type { AccountMenuProps } from './AccountMenu.types';
  */
 export function AccountMenu(props: AccountMenuProps) {
   const avatar = <Avatar name={props.name} size={theme.spacing['sp-8']} />;
-  const trigger = <ShellAction label={props.triggerName} icon={avatar} />;
+  const trigger = <ShellAction round label={props.triggerName} icon={avatar} />;
   const grievanceGlyph = <ShellGlyph name="shield" size="md" />;
   return (
     <Menu

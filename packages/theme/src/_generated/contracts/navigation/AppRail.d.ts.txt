@@ -1,4 +1,5 @@
 import React from "react";
+import { CoachMarkAnchor } from "../feedback/CoachMark";
 
 export interface RailItem {
   key: string;
@@ -14,6 +15,8 @@ export interface RailItem {
    */
   badge?: number | boolean;
   onClick?: () => void;
+  /** The ref a coach mark points at to name this item. A marked item must carry one. */
+  anchor?: CoachMarkAnchor;
 }
 
 export interface AppRailProps {
