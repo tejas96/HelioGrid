@@ -1,6 +1,7 @@
 import { createTranslator, groupSentence, NOTIFICATION_CENTRE } from '@heliogrid/i18n';
 import { IconButton, NotificationGroup } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { resolvedColour } from '../support/token';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 
 /** A group of notifications (`SCR-SHELL-03`, `F6-12`), at the phone's 335 and the web panel's 456. */
@@ -11,6 +12,37 @@ const hideThree = en.t(NOTIFICATION_CENTRE.hideGroup, { count: 3 });
 for (const width of [335, 456]) {
   test.describe(`at ${width}`, () => {
     test.use({ viewport: { width, height: 800 } });
+
+    test('a member that opens takes --fill-hover under the pointer', async ({ mount, page }) => {
+      const title = 'Deshmukh Textiles · v4';
+      const group = await mount(
+        <NotificationGroup
+          type="proposal_opened"
+          sentence={groupSentence(en.t, 'proposal_opened', 1)}
+          latest={en.t(NOTIFICATION_CENTRE.latest, { time: '15:48' })}
+          unreadLabel={en.t(NOTIFICATION_CENTRE.groupUnread, { count: 1 })}
+          onToggle={() => undefined}
+          open
+          toggleLabel={hideThree}
+          members={[
+            {
+              id: 'm0',
+              title,
+              line: 'Opened 15:40 · Nashik',
+              name: title,
+              onOpen: () => undefined,
+            },
+          ]}
+        />,
+      );
+      const member = page.locator('.hg-notification-member');
+
+      await group.getByRole('button', { name: title }).hover();
+      await expect(member).toHaveCSS(
+        'background-color',
+        await resolvedColour(page, '--fill-hover'),
+      );
+    });
 
     test('a group: closed it holds its count, opened it lists each member as its own link', async ({
       mount,

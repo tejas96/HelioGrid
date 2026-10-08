@@ -50,7 +50,7 @@
   box-shadow: inset 0 0 0 2px var(--accent);
 }
 
-/* LIGHTER than the well, as a disabled field is: the well is every enabled control's fill. */
+/* SUNK below the fill, as a disabled field is: --canvas-sunken on the page and in a tile alike. */
 .hg-radio-box[data-disabled="true"] {
   background: var(--hg-control-fill-disabled);
   box-shadow: none;

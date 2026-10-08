@@ -23,7 +23,7 @@ interface StepButtonProps {
 
 /** A 44dp minus/plus either side of the track — the Pressable primitive owns that floor. */
 function StepButton({ disabled, glyph, label, onPress }: StepButtonProps) {
-  /* The opposite of what holds it (`F7-15`); lighter than the well at its limit — see the web half. */
+  /* The opposite of what holds it (`F7-15`); sunk below the fill at its limit — see the web half. */
   const { controlFill, controlFillDisabled } = useGround();
   const fill = disabled ? controlFillDisabled : controlFill;
   return (

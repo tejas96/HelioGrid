@@ -47,13 +47,8 @@ export const styles = StyleSheet.create({
   joinFooter: { gap: theme.spacing['sp-5'] },
   /** The join steer's two roads, 12 apart on the board (`SCR-M01-02` decision 19). */
   joinRoads: { gap: theme.spacing['sp-3'] },
-  /** Who the request was sent as: one grey tile, the request-sent frame's focal point. */
-  sentAs: {
-    gap: theme.spacing['sp-1'],
-    padding: theme.layout['tile-pad'],
-    borderRadius: theme.radius['r-tile'],
-    backgroundColor: theme.colors.fill,
-  },
+  /** Who the request was sent as: one `Card`, the request-sent frame's focal point; its lines `sp-1` apart. */
+  sentAs: { gap: theme.spacing['sp-1'] },
   /** The request-sent title sits deeper than the known number's: `sp-8` above it (board v6). */
   sentTitleTop: { paddingTop: theme.spacing['sp-8'] },
   /** The prompt, centred over the one route back to creating. */

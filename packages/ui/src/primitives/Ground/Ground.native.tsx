@@ -20,11 +20,11 @@ const COLORS: Record<Ground, GroundColors> = {
   page: {
     // biome-ignore lint/plugin/raw-white: ground — the ground itself, and Surface, which sets it
     ground: theme.colors.surface,
-    controlFill: theme.colors['bg-well'],
+    controlFill: theme.colors.fill,
     controlFillDisabled: DISABLED,
   },
   tile: {
-    ground: theme.colors['canvas-sunken'],
+    ground: theme.colors.fill,
     // biome-ignore lint/plugin/raw-white: ground — the ground itself, and Surface, which sets it
     controlFill: theme.colors.surface,
     controlFillDisabled: DISABLED,
@@ -50,7 +50,7 @@ export function useGround(): GroundColors {
  * padding and rings, and wraps its content in `GroundProvider ground="tile"`.
  */
 export const tileSurface = {
-  backgroundColor: theme.colors['canvas-sunken'],
+  backgroundColor: theme.colors.fill,
   shadowOpacity: 0,
   elevation: 0,
 } satisfies ViewStyle;

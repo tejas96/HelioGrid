@@ -94,7 +94,7 @@ function FilterButton({ label, name, on, onPress, icon }: FilterButtonProps) {
 }
 
 /* The board's bar: 4 above, 12 below, buttons 4 apart; a 1 × 24 hairline 8 from either side; the
-   18 icon centred by 13 a side in the 44 pill (off the spacing scale — `D94`). */
+   18 icon centred by 13 a side in the 44 pill (off the spacing scale, as the board draws it). */
 const styles = StyleSheet.create({
   bar: { paddingTop: theme.spacing['sp-1'], paddingBottom: theme.spacing['sp-3'] },
   row: { alignItems: 'center', gap: theme.spacing['sp-1'] },
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     width: 1,
     height: theme.spacing['sp-6'],
     marginHorizontal: theme.spacing['sp-2'],
-    backgroundColor: theme.colors.hairline,
+    backgroundColor: theme.colors['line-soft'],
   },
   button: {
     flexDirection: 'row',

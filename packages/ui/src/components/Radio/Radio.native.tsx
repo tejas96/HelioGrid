@@ -79,7 +79,7 @@ export function Radio({
           styles.box,
           { backgroundColor: controlFill },
           checked ? styles.boxChecked : null,
-          // Lighter than the well, which is every enabled control's fill — see the web half.
+          // Sunk below the fill, on the page and in a tile alike — see the web half.
           disabled ? [styles.boxDisabled, { backgroundColor: controlFillDisabled }] : null,
         ]}
       >

@@ -23,6 +23,6 @@ test('a tenant header is a heading on the page — no fill, no shadow', async ({
   await expect(header).toHaveCSS('border-radius', '0px');
   await expect(header.getByRole('button', { name: tryAgain })).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--bg-well'),
+    await resolvedColour(page, '--surface'),
   );
 });

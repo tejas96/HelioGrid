@@ -1,7 +1,7 @@
 import type { RequestedCompany } from '@heliogrid/contracts';
 import { COMPANY_SIGNUP } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, DoorFrame, Text, useFormat } from '@heliogrid/ui';
+import { Button, Card, DoorFrame, Text, useFormat } from '@heliogrid/ui';
 import { LanguageControl } from './LanguageControl';
 
 /**
@@ -47,7 +47,7 @@ export function JoinRequestSent({
         </div>
       }
     >
-      <div className="hg-signup-sent-as">
+      <Card className="hg-signup-sent-as">
         <Text variant="overline" color="secondary">
           {t(COMPANY_SIGNUP.sentAs)}
         </Text>
@@ -57,7 +57,7 @@ export function JoinRequestSent({
         <Text variant="mono" bold>
           {format.phone(phoneE164)}
         </Text>
-      </div>
+      </Card>
     </DoorFrame>
   );
 }

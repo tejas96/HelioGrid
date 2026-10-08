@@ -18,7 +18,7 @@ test('a record card is a tile and its controls are white', async ({ mount, page 
     />,
   );
 
-  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--canvas-sunken'));
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
   await expect(card).toHaveCSS('box-shadow', 'none');
   await expect(card.getByRole('button', { name: tryAgain })).toHaveCSS(
     'background-color',

@@ -1,12 +1,12 @@
-/* AccountTile — a filled tile naming the account a step acts for. Every value a token var(). */
+/* AccountTile — the tile (F7-49) naming the account a step acts for. Its fill is the tiles' list's
+   (primitives/Ground/Ground.css); this keeps the tile's radius and padding. */
 
 .hg-account-tile {
   display: flex;
   flex-direction: column;
   gap: var(--sp-1);
-  padding: var(--sp-4);
-  border-radius: var(--r-card-expressive);
-  background: var(--neutral-bg);
+  padding: var(--tile-pad);
+  border-radius: var(--r-tile);
 }
 
 /* An email has no spaces to break at; without this it runs past the tile. */

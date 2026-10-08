@@ -62,7 +62,7 @@
   cursor: pointer;
 }
 
-/* LIGHTER than the well, as a disabled field is: the well is every enabled control's fill. */
+/* SUNK below the fill, as a disabled field is: --canvas-sunken on the page and in a tile alike. */
 .hg-slider-step:disabled {
   background: var(--hg-control-fill-disabled);
   color: var(--text-disabled);

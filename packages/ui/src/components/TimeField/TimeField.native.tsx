@@ -53,7 +53,7 @@ export function TimeField({
   style,
 }: NativeTimeFieldProps) {
   const format = useFormat();
-  /* A preset is the opposite of what holds it (`F7-15`); lighter than the well when disabled. */
+  /* A preset is the opposite of what holds it (`F7-15`); sunk below the fill when disabled. */
   const { controlFill, controlFillDisabled } = useGround();
   const presetFill = disabled ? controlFillDisabled : controlFill;
   const shape = timeShape(placeholder, format);

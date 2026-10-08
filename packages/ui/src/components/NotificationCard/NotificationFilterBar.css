@@ -23,11 +23,11 @@
   width: 1px;
   height: var(--sp-6);
   margin: 0 var(--sp-2);
-  background: var(--hairline);
+  background: var(--line-soft);
 }
 
 /* The board's pill: 44 high, the 18 icon centred by 13 a side (13 + 18 + 13 = 44, off the spacing
-   scale — `D94`); on, it darkens and its name slides out, 16 from the right. The motion is the
+   scale, as the board draws it); on, it darkens and its name slides out, 16 from the right. The motion is the
    theme's: colour at the standard pace, the slide emphasised, the words fading in after it. */
 .hg-notification-filter {
   flex-shrink: 0;

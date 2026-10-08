@@ -33,15 +33,12 @@
   max-width: var(--form-max);
 }
 
-/* Who the request was sent as (`SCR-M01-02` request-sent): one grey tile on the white page, the
-   board's focal point on that state (decision 24). */
+/* Who the request was sent as (`SCR-M01-02` request-sent): one `Card` on the white page, the
+   board's focal point on that state (decision 24); its three lines sit `sp-1` apart. */
 .hg-signup-sent-as {
   display: flex;
   flex-direction: column;
   gap: var(--sp-1);
-  padding: var(--tile-pad);
-  border-radius: var(--r-tile);
-  background: var(--fill);
 }
 
 /* Steps 1 and 2 and request-sent put their heading `sp-8` under what leads it, where the frame's

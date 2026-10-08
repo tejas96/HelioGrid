@@ -192,7 +192,7 @@
 /* ── board-level states ───────────────────────────────────────────────────── */
 
 /* The board's message is a tile (F7-49): its fill, no shadow and its ground are drawn by the
-   tiles' list (primitives/Ground/Ground.css), so its retry turns white. */
+   tiles' list (primitives/Ground/Ground.css). */
 .hg-kanban-message {
   display: flex;
   flex-direction: column;

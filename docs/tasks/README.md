@@ -104,13 +104,13 @@ A screen task with a board (a studio screen has none) has one `side-by-side` row
 it renders — each state, 375, 1536, each language render — owned by the surface's QA helper. Web at
 375 is compared with the phone frame. A state the board draws only at 375 is compared at 1536 with
 its phone frame and the board's stated 1536 rule (`docs/start-here.md`, desktop states), not flagged
-as missing. A frame with no row, or a built state with no frame and no stated rule, is a finding.
+as missing. A frame with no row, or a built state with no frame and no stated rule, is a finding. A side-by-side row names only a frame the running app reaches today with data QA can make through the app; a frame it cannot reach is decided in the RFC — `not_applicable` with the reason, or proven by its component's spec — never found by QA.
 
 ## Delivery size and Parts
 
 Target each task or part at no more than about 30 changed files **and** 1,000 authored changed
 lines (additions plus deletions). List generated artifacts and lockfiles, but exclude them from the
-line estimate. The estimate gives code lines and test lines on separate lines; a part's tests are
+line estimate. A change to a shared primitive's look counts every spec that measures the old value (`tests/e2e/components/`) in its file table. The estimate gives code lines and test lines on separate lines; a part's tests are
 counted, never assumed small. An inseparable end-to-end deliverable may exceed a target only when its RFC explains
 why no smaller part can be independently accepted and the owner approves that exact size.
 

@@ -32,10 +32,7 @@ test('a finding is a grey tile with no shadow and its controls are white', async
   );
   const finding = list.getByRole('listitem');
 
-  await expect(finding).toHaveCSS(
-    'background-color',
-    await resolvedColour(page, '--canvas-sunken'),
-  );
+  await expect(finding).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
   await expect(finding).toHaveCSS('box-shadow', 'none');
   await expect(finding.getByRole('button', { name: jumpLabel })).toHaveCSS(
     'background-color',

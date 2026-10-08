@@ -23,20 +23,20 @@ text `tokens.css:230-262` carries) reverses to `F7-15`'s well. Every field's `.j
 `SearchField`, `RangeField`'s end boxes — draws the well (`--bg-well`, no shadow), the one focus
 ring (a `--surface` gap then `--accent`; on the phone the ring on the edge), the inset danger ring
 alongside focus, a disabled well of `--surface-form`, and `--text-secondary` placeholders. The
-secondary `Button` and the overlay retry pill take the well. `Sheet`, `Modal` and `DetailPanel` hold
+secondary `Button` and the overlay retry pill are `--surface` at `--e2` (`T-FPLAT-082c`). `Sheet`, `Modal` and `DetailPanel` hold
 their content on `--surface`. `DoorFrame` paints `--surface`. The signup's verified number and its
 facts block sit on the page with no surface (`SCR-M01-02`).
 
 **Owed to the design system by the ground and the tile (`T-FPLAT-076`), repo side done.** Every
-control is the opposite of what holds it: a `--canvas-sunken` fill on the page or a sheet,
-`--surface` inside a tile, flat, and `--surface-form` when disabled — `Checkbox`, `Radio`, `Chip`
+control is the opposite of what holds it: `--fill` on the page or a sheet (`T-FPLAT-082c`),
+`--surface` inside a tile, flat, and `--canvas-sunken` when disabled — `Checkbox`, `Radio`, `Chip`
 (static and pressable alike) and the neutral `Badge`, `IconButton`'s surface variant,
 `LanguageSwitcher`'s pill, `EmptyState`'s disc, `TimeField`'s presets, `Slider`'s steps,
-`Stepper`'s markers and indicator, the secondary `Button`. A track takes that fill (`Switch`,
+`Stepper`'s markers and indicator. A track takes that fill (`Switch`,
 `Slider`, `SegmentedControl`, `Stepper`'s track, dots and lines) and the knob on it the ground
-(white on the page, `--canvas-sunken` in a tile). A step not yet reached is a filled disc with its
-number in `--text-secondary`, no ring. `Card` is the tile: `--canvas-sunken`, no shadow, hover a
-2px `--mark-subtle` ring, selected a 2px `--accent` ring; `IconCircle` mixes over what holds it;
+(white on the page, `--fill` in a tile). A step not yet reached is a filled disc with its
+number in `--text-secondary`, no ring. `Card` is the tile: `--fill`, `--r-tile`, `--tile-pad`, no shadow,
+hover `--fill-hover`, selected an inset 1.5px `--accent` ring (`T-FPLAT-082c`); `IconCircle` mixes over what holds it;
 the shimmer is drawn in `--surface`. `Kanban`'s columns have no fill. `Input`'s `success` is the
 confirming words under the field with the success mark, never a ring.
 
@@ -55,8 +55,8 @@ the meters' ticks, `LineChart`'s end dot). A tinted panel that holds a control i
 panels, `CompareGrid`'s selected column.
 
 **Owed to the design system by the containers (`T-FPLAT-078`), repo side done.** A surface never
-holds another (`F7-49`). A TILE — `--canvas-sunken`, no shadow, a hover or selected state a ring as
-`Card`'s — is `StatCard`, `NextAction`'s record card, `BandedFigure`'s card and box, `Kanban`'s
+holds another (`F7-49`). A TILE — `--fill`, no shadow (`T-FPLAT-082c`), a hover or selected state its
+own — is `StatCard`, `NextAction`'s record card, `BandedFigure`'s card and box, `Kanban`'s
 board message, and each item of `Checklist`, `FindingList`, `ReorderList`, `DateSet`,
 `OptionCardGroup` (selected: the accent ring on the grey, no `--accent-subtle`; an off option lies on
 the page with no fill), `Transcript` (both parties; the played turn `--accent-subtle`) and

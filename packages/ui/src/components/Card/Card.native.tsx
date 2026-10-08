@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { FIELD_BOX_EDGE } from '../../primitives/FieldBox/FieldBox.native';
 import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Pressable`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
@@ -18,16 +19,17 @@ interface NativeIconCircleProps extends IconCircleProps {
 
 const styles = StyleSheet.create({
   card: {
-    /* The tile's look is `tileSurface` (`F7-49`). The web ring is a box-shadow; RN has none, so
-       the ring is a border that is always present and only changes colour — the frame must not
-       move between selected and unselected. */
-    borderWidth: 2,
+    /* The tile's look is `tileSurface` (`F7-49`). The web ring is an inset box-shadow; RN has none,
+       so the ring is the field's inset edge, always present and only changing colour — the frame
+       must not move between selected and unselected. */
+    borderWidth: FIELD_BOX_EDGE,
     borderColor: 'transparent',
   },
   selected: { borderColor: theme.colors.accent },
+  /* The edge sits inside the tile's padding, so the words start where the web's do. */
   expressive: {
-    borderRadius: theme.radius['r-card-expressive'],
-    padding: theme.spacing['sp-6'],
+    borderRadius: theme.radius['r-tile'],
+    padding: theme.layout['tile-pad'] - FIELD_BOX_EDGE,
   },
   functional: {
     borderRadius: theme.radius['r-card-functional'],

@@ -1,20 +1,20 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { Block } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedColour } from '../support/token';
+import { resolvedColour, resolvedShadow } from '../support/token';
 
 const en = await createTranslator('en');
 const tryAgain = en.t(SIGN_IN.tryAgain);
 
-test('an errored block on the page draws its retry in the well', async ({ mount, page }) => {
+test('an errored block on the page draws its retry white and raised', async ({ mount, page }) => {
   let retries = 0;
   const block = await mount(
     <Block state="error" onRetry={() => (retries += 1)} retryLabel={tryAgain} />,
   );
   const retry = block.getByRole('button', { name: tryAgain });
 
-  await expect(retry).toHaveCSS('background-color', await resolvedColour(page, '--bg-well'));
-  await expect(retry).toHaveCSS('box-shadow', 'none');
+  await expect(retry).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(retry).toHaveCSS('box-shadow', await resolvedShadow(page, '--e2'));
   await retry.click();
   expect(retries).toBe(1);
 });

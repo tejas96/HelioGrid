@@ -189,8 +189,8 @@ export const styles = StyleSheet.create({
   },
   card: {
     gap: theme.spacing['sp-3'],
-    padding: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-card-expressive'],
+    padding: theme.layout['tile-pad'],
+    borderRadius: theme.radius['r-tile'],
   },
   top: { flexDirection: 'row', alignItems: 'flex-start', gap: theme.spacing['sp-3'] },
   inert: { flex: 1, flexDirection: 'row', alignItems: 'flex-start', gap: theme.spacing['sp-3'] },
@@ -200,7 +200,7 @@ export const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
-    borderRadius: theme.radius['r-card-expressive'],
+    borderRadius: theme.radius['r-tile'],
   },
   glyphSlot: {
     width: theme.spacing['sp-10'],

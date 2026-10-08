@@ -12,6 +12,6 @@ test('a reorder row is a grey tile with no shadow', async ({ mount, page }) => {
   const list = await mount(<ReorderList items={items} />);
   const row = list.getByRole('listitem').first();
 
-  await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--canvas-sunken'));
+  await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
   await expect(row).toHaveCSS('box-shadow', 'none');
 });
