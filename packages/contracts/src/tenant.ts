@@ -125,7 +125,6 @@ export const requestedCompanySchema = similarTenantSchema.pick({ companyName: tr
 export type RequestedCompany = z.infer<typeof requestedCompanySchema>;
 
 const unauthenticated = unauthenticatedEnvelope;
-const forbidden = errorEnvelope(baseError('FORBIDDEN'));
 const notFound = errorEnvelope(baseError('NOT_FOUND'));
 
 export const tenantContract = c.router({
@@ -161,8 +160,7 @@ export const tenantContract = c.router({
     responses: {
       200: myMembershipSchema,
       401: unauthenticated,
-      /** A session with no company yet (`M01-10`). */
-      403: forbidden,
+      // The shared 403: a session with no company yet (`M01-10`).
       404: notFound,
     },
   },
@@ -174,7 +172,6 @@ export const tenantContract = c.router({
     responses: {
       200: myMembershipSchema,
       401: unauthenticated,
-      403: forbidden,
       404: notFound,
       /** The count is below the one already stored: a mark once passed stays passed. */
       422: errorEnvelope(baseError('DOMAIN_RULE_VIOLATION')),
@@ -202,7 +199,6 @@ export const tenantContract = c.router({
     responses: {
       200: memberSchema,
       401: unauthenticated,
-      403: forbidden,
       404: notFound,
       /** Not active: a deactivated person keeps their presets as history, an invited one has not joined. */
       409: errorEnvelope(baseError('CONFLICT')),
@@ -219,7 +215,6 @@ export const tenantContract = c.router({
     responses: {
       200: memberSchema,
       401: unauthenticated,
-      403: forbidden,
       404: notFound,
       409: errorEnvelope(baseError('CONFLICT')),
       422: errorEnvelope(tenantErrorCodeSchema),

@@ -36,6 +36,10 @@ openapi/openapi.json        emitted, committed, checked by `pnpm check:openapi` 
 - Every route declares its error union via `errorEnvelope(z.enum([...]))`; codes are UPPER_SNAKE.
   The HTTP mapping is `httpStatusFor` (over the unexported `HTTP_STATUS_BY_CODE`) and its reverse
   `genericErrorCodeByStatus`, both in `src/error.ts`. Do not invent a mapping.
+- The shared 400 `VALIDATION_FAILED`, 403 `FORBIDDEN` and 500 `INTERNAL` reach every route from
+  `sharedRefusals` (`src/error.ts`), mounted once as `commonResponses` on the root contract — never
+  redeclare them. A route's own entry for one of those statuses REPLACES the shared one, so a route
+  adding a code there still names the shared code beside it.
 - Import `ErrorDetail` (inferred from `errorDetailSchema`); never re-type the wire shape.
 - **Tenant identity NEVER crosses the wire** — no `tenant_id`/`tenantId` in any body or query
   schema at any depth; it comes from verified session claims. Workflow payloads DO carry

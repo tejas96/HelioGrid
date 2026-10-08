@@ -10,7 +10,7 @@ import type { Request } from 'express';
  * roles grant. Declared per route, beside the contract it serves, as a COMPLETE map — a route
  * the map does not name is denied, so silence is denial rather than a hole.
  */
-// biome-ignore lint/plugin/app-vocabulary: the API's own route-access type, a guard's and not a map; its home is owed (docs/tasks/deferred.md D71)
+// biome-ignore lint/plugin/app-vocabulary: the API guard's own route-access type, not a vocabulary a client shares; it stays here by the owner's ruling recorded in T-FPLAT-083
 export type RouteAccess =
   | 'public'
   | 'session-cookie'
@@ -44,11 +44,17 @@ export function RouteAccessMap<R extends AppRouter>(
   return SetMetadata(ROUTE_ACCESS, byKey);
 }
 
+/** The key of the route express matched for this request, or `undefined` when none matched. */
+export function matchedRouteKey(req: Request): string | undefined {
+  const path = (req.route as { path?: string } | undefined)?.path;
+  return path === undefined ? undefined : routeKey(req.method, path);
+}
+
 /** The access the matched route declared, or `undefined` for a route nobody declared. */
 export function accessOf(
   declared: Map<string, RouteAccess> | undefined,
   req: Request,
 ): RouteAccess | undefined {
-  const path = (req.route as { path?: string } | undefined)?.path;
-  return path === undefined ? undefined : declared?.get(routeKey(req.method, path));
+  const key = matchedRouteKey(req);
+  return key === undefined ? undefined : declared?.get(key);
 }

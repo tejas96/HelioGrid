@@ -36,9 +36,8 @@ export const onboardingProgressSchema = z.object({
 export type OnboardingProgress = z.infer<typeof onboardingProgressSchema>;
 
 const unauthenticated = errorEnvelope(baseError('UNAUTHENTICATED'));
-const forbidden = errorEnvelope(baseError('FORBIDDEN'));
 const conflict = errorEnvelope(baseError('CONFLICT'));
-const guarded = { 401: unauthenticated, 403: forbidden } as const;
+const guarded = { 401: unauthenticated } as const;
 
 export const onboardingContract = c.router({
   progress: {

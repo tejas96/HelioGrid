@@ -96,7 +96,6 @@ export type CatalogReleaseWrite = z.infer<typeof catalogReleaseWriteSchema>;
 
 const guarded = {
   401: errorEnvelope(baseError('UNAUTHENTICATED')),
-  403: errorEnvelope(baseError('FORBIDDEN')),
 } as const;
 
 export const catalogReleasesContract = c.router({

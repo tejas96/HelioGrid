@@ -54,7 +54,12 @@ curl localhost:8084/health                               # liveness · /health/r
   is prefixed with its source only when the bare name would be ambiguous.
 - **Response validation is ON globally.** A handler whose body fails its own contract, or which
   answers an UNDECLARED status, becomes an opaque `INTERNAL` on the wire; the truth goes to the
-  log under the same request id.
+  log under the same request id. ts-rest checks only a RETURNED response, so a THROWN status meets
+  its route in the envelope filter instead (`common/filters/declared-statuses.ts`): one the matched
+  route does not declare — its own or the shared 400, 403 and 500 (`sharedRefusals`) — is the
+  same opaque `INTERNAL`, and the log names the route and the status. The shared set holds for a
+  THROWN status only: a controller mounts its area router, which does not carry it, so a handler
+  never returns one of those statuses.
 - `x-request-id` is assigned only in `common/request-id.ts`; name the header with
   `REQUEST_ID_HEADER` from `@heliogrid/contracts`, never the literal.
 - The log shape and its redaction live only in `common/logging.ts`: add a redaction path there,

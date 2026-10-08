@@ -94,7 +94,6 @@ const invitationParamsSchema = z.object({ id: uuidSchema });
 const landingParamsSchema = z.object({ token: invitationTokenSchema });
 
 const unauthenticated = unauthenticatedEnvelope;
-const forbidden = errorEnvelope(baseError('FORBIDDEN'));
 const notFound = errorEnvelope(baseError('NOT_FOUND'));
 const conflict = errorEnvelope(baseError('CONFLICT'));
 
@@ -109,7 +108,6 @@ export const invitationContract = c.router({
     responses: {
       201: invitationSchema,
       401: unauthenticated,
-      403: forbidden,
       /** Already on this team, in any status; or a live invite already went to this phone. */
       409: errorEnvelope(invitationErrorCodeSchema.extract(['ALREADY_MEMBER', 'ALREADY_INVITED'])),
       /** A number no authored market's allowlist covers (`F1-49`); or the retry key made an invite for another request. */
@@ -126,7 +124,6 @@ export const invitationContract = c.router({
     responses: {
       200: paginated(invitationSchema),
       401: unauthenticated,
-      403: forbidden,
     },
   },
   revoke: {
@@ -138,7 +135,6 @@ export const invitationContract = c.router({
     responses: {
       200: invitationSchema,
       401: unauthenticated,
-      403: forbidden,
       404: notFound,
       /** Already accepted, declined or revoked: nothing left to withdraw. */
       409: conflict,
@@ -164,8 +160,7 @@ export const invitationContract = c.router({
     responses: {
       200: sessionProjectionSchema,
       401: unauthenticated,
-      /** The session belongs to a different phone than the invite is keyed to. */
-      403: forbidden,
+      // The shared 403: the session belongs to a different phone than the invite is keyed to.
       404: notFound,
       /** `INVITE_EXPIRED`: ask to be invited again. `CONFLICT`: already on this team. */
       409: errorEnvelope(

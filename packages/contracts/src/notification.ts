@@ -220,8 +220,7 @@ export const notificationContract = c.router({
     responses: {
       200: notificationPreferenceSchema,
       401: unauthenticatedEnvelope,
-      /** `F6-15` — the billing group is not the Owner's to mute. */
-      403: errorEnvelope(baseError('FORBIDDEN')),
+      // The shared 403: `F6-15` — the billing group is not the Owner's to mute.
     },
   },
   markAllRead: {
