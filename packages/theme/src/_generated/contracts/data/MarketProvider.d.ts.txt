@@ -21,6 +21,8 @@ export interface MarketPack {
    * used, with Monday as the last-resort fallback.
    */
   firstDayOfWeek?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  /** The market's calling code and how its national number is grouped — `+91`, `[5, 5]`, `10`. */
+  phone?: { dialCode: string; nsnGroups: number[]; nsnLength: number };
 }
 
 export interface MarketFormat {

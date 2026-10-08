@@ -3356,7 +3356,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 
 ### T-FPLAT-082 · The open page — the app's design tokens and components pulled level with the live design system
 **Type:** port · **Tier:** P0
-**Status:** in progress — parts a, b, c and d shipped; parts e and f open
+**Status:** in progress — parts a, b, c, d and e shipped; part f open
 **Why:** Every screen is drawn on the live design system, but the app draws with a snapshot of it pulled on 2026-08-19 plus partial pulls. The design system's open page (2026-09-29) made the page white and moved grey to the fill of fields, tiles and chips, restyled the fields, the phone header and footer and the list tiles, and added tokens the boards use (`--fill`, `--tile-pad`, `--r-tile`). Without the pull, no screen can match its board: a screen built now is built against values the design has already left.
 **PRD rows:** none of its own — the design system is the visual authority (`F7`); `docs/engineering/17-ui-architecture-v2.md` §6 owns the pull.
 **Design:** none — no screen of its own; each part checks the built screens it touches against their boards.
@@ -3370,7 +3370,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | b | the phone footer pulled level: `BottomNav` is the pill on the design system's footer tokens, its typing pulled, the retired arc removed; the pill's labels held to their slots at the largest text size (D83). The header stays the name as words (B1) | its own RFC | a | shipped |
 | c | the tiles and the page's controls: every tile (`Card`, `AccountTile`, `NotificationCard`, the request-sent tile) on `--fill`, `--r-tile`, `--tile-pad`; a control that is not a field on the page's `--fill`; the secondary `Button` `--surface` at `--e2` on every ground (owner ruling D14 B, `T-M01-035`, 2026-10-07); a disabled control in a tile darker than the tile; `F7-15` and `F7-49` amended; D94 | its own RFC | a | shipped |
 | d | the header: `AppShell.d.ts` pulled once the design system draws the company's name as words and moves `PhoneScreen` to its own file (part b, B1) — `MobileTopBar`'s `company` and `safeTop`, `ShellAction`'s `round`, the round grey search and bell; the top bar at the largest text (D144, D2 A); part b's design-system leftovers (`AppRail.jsx`'s arc comment, the in-view item 50 against 48, `RailItem.anchor`, `searchLabel`/`notificationsLabel`) and `Card.d.ts`'s stale comment — each design-system change by the owner's paste first. The search pill and its filter square moved to D145 (D1 A) | its own RFC | c | shipped |
-| e | the held-back typings and the design system's open rulings: `Banner`'s `actionBelow` and `onFormChange` ported on both halves, with the held-back `Banner.d.ts.txt` and `adherence.oxlintrc.json` pulled (D31, deferred review 2026-10-08); the design system's `PhoneField` reads the dial code from its market and its typing is pulled (D130); `RichText`'s frame drawn by `FieldBox` (D60); a placeholder takes `--text-tertiary` (D131, `F7-15`); the overline and mono take the body's line height, 1.55 (D136) — each design-system change by the owner's paste first | its own RFC | c | open |
+| e | the held-back typings and the design system's open rulings: `Banner`'s `actionBelow` and `onFormChange` ported on both halves, with the held-back `Banner.d.ts.txt` and `adherence.oxlintrc.json` pulled (D31, deferred review 2026-10-08); the design system's `PhoneField` reads the dial code from its market and its typing is pulled (D130); `RichText`'s frame drawn by `FieldBox` (D60); a placeholder takes `--text-tertiary` (D131, `F7-15`); the overline and mono take the body's line height, 1.55 (D136) — each design-system change by the owner's paste first | its own RFC | c | shipped |
 | f | assistive technology and the controls' edges: the phone `Menu` and `Sheet` backdrop named or hidden for a screen reader (D82); a loading `Button` keeps its name for assistive technology (D84); `Modal`'s body takes its bottom padding at 375 (D88); one visually-hidden option replaces the copies (D93); the phone `Sheet`'s close target, title wrap, `Badge` and close label (D96) | its own RFC | c | open |
 
 #### Part a · RFC
@@ -3813,6 +3813,9 @@ None — no stored shape changes.
 | modify | `tests/e2e/components/{Block,PagedDocument,TenantHeader}.spec.tsx` · `DataTable.spec.tsx` (a checkbox on the page) | a retry or secondary on the page is raised white; a page control is `--fill` | component tests |
 | modify | `packages/ui/src/components/{Radio/Radio.css,Radio/Radio.native.tsx,Slider/Slider.css,Slider/Slider.native.tsx,Switch/Switch.css,IconButton/IconButton.css,Checkbox/Checkbox.native.tsx,TimeField/TimeField.native.tsx}` | built, not planned: their comments called the disabled fill "lighter than the well"; it is now one step below the fill (Law 8) | each control |
 | modify | `packages/ui/src/components/{Button/RetryButton.tsx,Kanban/Kanban.css,Kanban/KanbanStates.native.tsx,Card/Card.tsx}` · `packages/ui/CLAUDE.md` | built, not planned (review): comments and the package rule still said a retry reads its ground and `Card` hovers by a ring; the secondary is the one control that paints `--surface` (D14 B) | Law 8 |
+| modify | `packages/ui/src/primitives/Ground/Ground.css` | built, not planned: the `RichText` frame is the ground of its own controls, so its link field takes the white control fill and no raw white | `Ground.css` is the one record of grounds |
+| modify | `packages/ui/src/components/Select/Select.css` · `Select.native.tsx` · `DatePicker/DatePicker.css` · `DatePicker.native.tsx` · `RichText/RichTextBlocks.native.tsx` | built, not planned (review): two pickers and the editor draw their placeholder as words, not `::placeholder`, so they take the same rule | each field |
+| modify | `docs/prd/foundations/F7-design-language.md` | `F7-15`: a disabled field's placeholder steps up to `--text-secondary` | Law 8 |
 | modify | `docs/tasks/UI.md` | built, not planned: the register's ground and tile lines named `--canvas-sunken` and the well | Law 8 |
 | modify | `docs/prd/foundations/F7-design-language.md` | `F7-15` (page controls `--fill`, the secondary button, the disabled control) and `F7-49` (the tile's values) | Law 8 |
 | modify | `docs/tasks/F-platform.md` · `docs/tasks/deferred.md` | this RFC and the Parts table (C1); `T-FPLAT-084` and `T-FPLAT-086` depend on part f; D94 deleted; the list-parts row (C2 A); D146–D150 (Q2 A) | Law 8 |
@@ -4070,7 +4073,7 @@ None — no wire boundary changes.
 
 **Planted reds (2026-10-08):** `round` renamed out of the port → `design-system-props` named `AppShell.round`; the round fill set to `transparent` → `MobileTopBar.spec.tsx` "search and the bell are round grey 44 buttons…" failed, received `rgba(0, 0, 0, 0)`; the bell's icon without `tone="primary"` (review) → the same test failed, received `rgb(84, 86, 91)`. All restored.
 
-**Checklist** — [x] pull and invariant · [x] types · [x] `ShellAction` · [x] `MobileTopBar` and spec · [x] `ShellTopBar` · [x] D144 · [x] board frames captured · [x] qa-ios · [x] qa-android · [x] paste re-pulls · [x] review · [ ] gate · [x] docs
+**Checklist** — [x] pull and invariant · [x] types · [x] `ShellAction` · [x] `MobileTopBar` and spec · [x] `ShellTopBar` · [x] D144 · [x] board frames captured · [x] qa-ios · [x] qa-android · [x] paste re-pulls · [x] review · [x] gate · [x] docs
 
 #### Runtime — part d
 Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-FPLAT-082d` from `feat/T-FPLAT-082c` `3ab65e43` (owner: part c is not merged yet).
@@ -4109,6 +4112,239 @@ Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-F
 - The spec read the button's colour, which no icon inherits (review) → the spec reads the icon's own colour, seen red.
 - The plan listed a story file `tests/e2e/CLAUDE.md` says is needed only for a prop called while rendering → removed; the rule exists and was not read at plan time.
 - QA reruns started before the reviewer had returned on the fixes, against `references/qa.md`'s order → no QA result changed with the review's last notes (comments, docs, a test name); said out loud.
+
+#### Part e · RFC
+
+##### Title
+T-FPLAT-082e — the held-back typings and the design system's open rulings: `Banner`'s own-width action, `PhoneField`'s dial code from the market, `RichText` on the field's well, the placeholder as a hint, and the overline and mono on the body's line height.
+
+##### Description
+- **User impact:** in every field, the grey example words ("Suryodaya Solar Solutions", "Pune") read lighter than a typed value, so a person no longer thinks the field is already filled (D131). A tile that holds an overline and a mono number — the request-sent tile's *Sent as* line, the Google account tile, a notification's kind — is as tall as its board draws it (D136). Indirectly: a banner on a phone keeps its words on two lines instead of four, and the terms editor is a grey well like every other field, for the screens that will draw them (`T-SHELL-006`, `T-M01-019`).
+- **Who gains:** every user of a built form and tile; every later screen task that draws a banner, a phone number or the terms editor.
+- **Problem solved:** five gaps between the app and the live design system (project `c8aa4326…`, read 2026-10-08). `Banner` lacks `actionBelow` and `onFormChange` (`components/feedback/Banner.d.ts`), so `Banner.d.ts.txt` is held back (D31). The design system's `PhoneField` types its own `countryCode` "+91" and `placeholder` "98220 12345", where the app reads the dial code from the market pack (`F1-49`) and shows no example (D130). `RichText`'s frame is white at `--e2` (`RichText.css:16`, `RichText.native.tsx:34`) where the design system draws it on `--fill` (`components/forms/RichText.jsx`) (D60). A placeholder takes `--text-secondary`, the label's colour (`FieldBox.css`, `FieldBox.native.tsx:17`), where `F7-15` now says `--text-tertiary` (D131). The overline sets `--lh-caption` 1.4 and mono `--lh-body-sm` 1.5 (`Text.css:83,92`; native overline sets none), where every board inherits the body's `--lh-body` 1.55 (`tokens/base.css`, `body`) (D136).
+- **Cites:** `F1-49`, `F7-15`, `F7-24`; D31, D60, D130, D131, D136; `docs/engineering/17-ui-architecture-v2.md` §6.
+
+##### Goals
+- `contracts/feedback/Banner.d.ts.txt`, `contracts/forms/PhoneField.d.ts.txt`, `contracts/data/MarketProvider.d.ts.txt` and `tokens/base.css` equal the live design system after the owner's paste, and `design-system-props` and `design-system-snapshot` pass.
+- `Banner` moves its action under the body when its own width is below `actionBelow` (default 400), keeps the 44 target, and reports each change once through `onFormChange({ actionStacked, width })`, on both halves.
+- `RichText`'s frame is `FieldBox`'s well on both halves; its four raw-white `biome-ignore` comments are gone.
+- Every field's placeholder is `--text-tertiary`; a disabled field's stays `--text-secondary`; the contrast gate holds `--text-tertiary` on `--fill`.
+- The overline and mono draw at the body's line height, 1.55, on both halves: the request-sent *Sent as* tile measures 96.7 on the web, iOS and Android.
+
+##### Non-goals
+- `adherence.oxlintrc.json`: held back with D145 (decision E1). Pulled now it also asks `SearchField` for the filter square's three props, which part d moved to D145.
+- `SearchField`'s and `FilterBar`'s typings, the search pill, the filter square (D145).
+- Any change to the app's `PhoneField`: after the paste the design system matches it.
+- The line heights of any other `Text` role; `manifest.json` (no check reads it).
+- Part f's rows (D82, D84, D88, D93, D96).
+
+##### Readiness and dependencies
+- Landed: parts a–d (#247, #250, #251, #252). `FieldBox` draws every field's well (part a); `GroundProvider` gives a control in a tile its white fill (part c).
+- Design: no `DESIGN` line (a port). QA compares the touched built screens with their boards: `SCR-M01-02`'s step 3 (placeholders) and request-sent (the *Sent as* tile), captured after approval.
+- Design-system prerequisite: the owner's one paste below, into the HelioGrid Design System project. `Banner`, `RichText`, the line heights and the app's placeholder do not wait for it; the three re-pulls (`PhoneField`, `MarketProvider`, `base.css`) and AC-3 do.
+- Finding: no screen renders a `Banner` or a `RichText` today (`grep -rn '<Banner\|<RichText' apps packages/ui/src`). Their web halves are proven by component specs; their native halves cannot be reached on a phone, and a new row hands that proof to the first screen that draws each (`T-SHELL-006`, `T-M01-019`).
+- Finding: D136 needs no design-system change. The design system names no overline or mono line height, so a board's overline and mono inherit `body`'s `--lh-body` from `tokens/base.css`; the app follows that.
+- Blockers: none.
+
+```text
+In the HelioGrid Design System, change three things. Change nothing else.
+
+1. components/data/MarketProvider.jsx and MarketProvider.d.ts — MarketPack gains
+   `phone?: { dialCode: string; nsnGroups: number[]; nsnLength: number }`, documented as
+   "the market's calling code and how its national number is grouped — `+91`, `[5, 5]`, `10`".
+   IN_PACK sets `phone: { dialCode: "+91", nsnGroups: [5, 5], nsnLength: 10 }`. GENERIC_PACK sets none.
+
+2. components/forms/PhoneField.jsx and PhoneField.d.ts — remove the `countryCode` and `placeholder`
+   props. The dial code at the field's start is `useFormat().pack.phone?.dialCode` (import useFormat
+   from ../data/MarketProvider.jsx); with no phone in the pack, no dial code and no divider show.
+   The field shows no example number. Update the comment: "the dial code comes from the market
+   pack, never from a prop".
+
+3. tokens/base.css — add after the `::selection` rule:
+   ::placeholder{ color:var(--text-tertiary); opacity:1; }
+   :disabled::placeholder{ color:var(--text-secondary); }
+   A placeholder is a hint and never reads as a typed value; on a disabled field's sunken well it
+   steps up to --text-secondary, as colors.css asks of quiet text on --canvas-sunken.
+```
+
+##### Proposal
+**Flow.** `Banner.d.ts` pulled → `design-system-props` red on `actionBelow`, `onFormChange` → the shared rule → both halves → spec → `RichText` on `FieldBox` → the placeholder → the line heights → board frames, then QA → the owner's paste lands → `PhoneField.d.ts`, `MarketProvider.d.ts`, `base.css` pulled → docs.
+
+**Findings from testing the requirement:**
+1. **The adherence file drags D145 in.** Measured on a scratch copy (the live file, the repo's port): `design-system-props` names `Banner.actionBelow`, `Banner.onFormChange` and `SearchField.onFilterClick`, `filterCount`, `filterLabel`. The live file's other additions (`Modal.labelId`, `SegmentedOption.countMax`, `FactRow`, `TileAction`, `PhoneScreen`, `ExplainerAction`) are already met or have no port. `Banner.d.ts.txt` alone already makes the invariant ask for both `Banner` props, so the adherence file adds nothing this part needs. → E1.
+2. **The design system's `PhoneField` placeholder is an Indian number typed into a component** ("98220 12345"), the defect `F1-49` exists to end; the app's field shows none and no board was found that needs one. → E2.
+3. **D136 is the app's alone** (Readiness). No paste, no token: the app takes `--lh-body`, as the boards do.
+4. **D131 has a floor's edge.** `--text-tertiary` is 4.71:1 on `--fill` but 4.54:1 on the disabled well, which `colors.css` forbids for quiet text; so a disabled field's placeholder stays `--text-secondary`, and the paste asks the design system for the same.
+5. **`RichText`'s link field stays white, by the ground.** The design system draws the link address `--surface` at `--e2` inside the grey frame. The frame becomes a tile ground (`GroundProvider`), so the link field and the toolbar take the ground's control fill and need no raw white — all four ignores go.
+
+**Key decisions** (one reason each):
+1. **One rule, `actionStacks(hasAction, width, actionBelow)` in `Banner.logic.ts`** — both halves read the same answer; the web measures the border box with `ResizeObserver`, the phone with `onLayout`.
+2. **`onFormChange` fires only when the answer changes**, as the design system's does — a surface reading it never loops.
+3. **`fieldBoxPlaceholder(disabled)` replaces the `FIELD_BOX_PLACEHOLDER` constant** on the phone — the four native fields pass their `disabled`.
+
+**Order:** pull and red → `Banner` rule, halves, spec → `RichText` → placeholder and contrast pair → line heights → board frames, QA → paste re-pulls → docs.
+
+**Twin:** every change is on both halves (Law 7). `Banner` and `RichText` native: no screen reaches them (Readiness).
+
+##### Architecture diagram
+No boundary change — the change stays inside `packages/ui`'s `Banner`, `RichText`, `FieldBox` and `Text`, and `packages/theme`'s snapshot and contrast pairs.
+
+```mermaid
+flowchart LR
+  DS[Live design system] -->|get_file, verbatim| GEN[theme _generated typings + base.css]
+  PASTE[owner paste: PhoneField, MarketPack, base.css] -.->|re-pull| GEN
+  GEN --> INV[invariants design-system-props + snapshot]
+  INV -->|actionBelow, onFormChange| BAN[ui Banner web + native]
+  RULE[ui Banner.logic actionStacks] --> BAN
+  FB[ui FieldBox well + placeholder] --> RT[ui RichText frame]
+  FB --> FIELDS[ui Input, Textarea, TimeField, SearchField]
+  GP[ui GroundProvider tile] --> RT
+  TXT[ui Text overline + mono at lh-body] --> TILES[built tiles: request-sent, AccountTile, NotificationCard]
+  CON[theme contrast pairs] -->|text-tertiary on fill| FB
+```
+
+##### Package changes
+- **theme:** `Banner.d.ts.txt` pulled; after the paste `PhoneField.d.ts.txt` (new), `MarketProvider.d.ts.txt` and `tokens/base.css`. `_generated/README.md` records the pull and keeps `adherence.oxlintrc.json` held with D145. `contrast.ts` declares `--text-tertiary` on `--fill` (placeholder), floor 4.5.
+- **ui:** `BannerProps` gains `actionBelow` and `onFormChange`; `Banner.logic.ts` exports the stacking rule; `FieldBox.native.tsx` exports `fieldBoxPlaceholder(disabled)` in place of `FIELD_BOX_PLACEHOLDER`, and `fieldWords` for a picker's words; `Text`'s overline and mono line heights. One new type from `@heliogrid/ui`: `BannerForm`, the shape `onFormChange` hands back (built, not planned).
+- **Protections (Law 12):** no new brand, enum, token, route, table or error code. The pulled typings are held by `design-system-props`, the tokens by `design-system-snapshot`, the pair by the contrast gate.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/theme/src/_generated/contracts/feedback/Banner.d.ts.txt` | pulled | the snapshot |
+| add | `packages/theme/src/_generated/contracts/forms/PhoneField.d.ts.txt` | pulled after the paste | the snapshot |
+| modify | `packages/theme/src/_generated/contracts/data/MarketProvider.d.ts.txt` · `tokens/base.css` | re-pulled after the paste | the snapshot |
+| modify | `packages/theme/src/_generated/README.md` | the pull recorded; the adherence file held with D145 | the snapshot |
+| modify | `packages/theme/src/contrast.ts` | `--text-tertiary` on `--fill`, the placeholder's pair | the contrast gate |
+| modify | `packages/ui/src/components/Banner/Banner.types.ts` · `Banner.logic.ts` | the two props; the stacking rule | the one contract (Law 7) |
+| modify | `packages/ui/src/components/Banner/Banner.tsx` · `Banner.native.tsx` · `Banner.css` | measure the own width, place the action, report the change | the banner |
+| modify | `packages/ui/src/components/RichText/RichText.tsx` · `RichText.native.tsx` · `RichText.css` | the frame on `FieldBox`, a tile ground for its controls, four ignores out | the editor |
+| modify | `packages/ui/src/primitives/FieldBox/FieldBox.css` · `FieldBox.native.tsx` | the placeholder `--text-tertiary`, disabled `--text-secondary` | the one well |
+| modify | `packages/ui/src/components/Input/Input.native.tsx` · `Textarea/Textarea.native.tsx` · `TimeField/TimeField.native.tsx` · `SearchField/SearchField.native.tsx` | pass `disabled` to `fieldBoxPlaceholder` | each native field |
+| modify | `packages/ui/src/primitives/Text/Text.css` · `Text.native.tsx` · `Text.logic.ts` | overline and mono at `--lh-body` | the text primitive |
+| add | `tests/e2e/components/Banner.spec.tsx` | the action beside at 600, under the body at 343 with its 44 target, a set `actionBelow`, `onFormChange` once per change, the pill ignoring it | component tests (`tests/e2e/CLAUDE.md`) |
+| add | `tests/e2e/components/RichText.spec.tsx` | the frame `--fill`, radius 16, no shadow, the focus ring inset accent; the link field white | component tests |
+| modify | `tests/e2e/components/Input.spec.tsx` | the placeholder `--text-tertiary`; disabled `--text-secondary` | component tests |
+| modify | `docs/tasks/F-platform.md` · `docs/tasks/deferred.md` | this RFC and part e's row; D31, D60, D130, D131, D136 deleted; D145 takes the adherence file; a new row for the native `Banner` and `RichText` on a phone | Law 8 |
+| modify | `packages/ui/src/primitives/Ground/Ground.css` | built, not planned: the `RichText` frame is the ground of its own controls, so its link field takes the white control fill and no raw white | `Ground.css` is the one record of grounds |
+| modify | `packages/ui/src/components/Select/Select.css` · `Select.native.tsx` · `DatePicker/DatePicker.css` · `DatePicker.native.tsx` · `RichText/RichTextBlocks.native.tsx` | built, not planned (review): two pickers and the editor draw their placeholder as words, not `::placeholder`, so they take the same rule | each field |
+| modify | `docs/prd/foundations/F7-design-language.md` | `F7-15`: a disabled field's placeholder steps up to `--text-secondary` | Law 8 |
+| modify | `docs/tasks/UI.md` | built, not planned: the `PhoneField` specimen row deleted (E2 re-ruled); the owed placeholder colour and the missing `PhoneField` mirror brought up to date | Law 8 |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **Every overline and mono line grows by 1.5–3 px** (73 uses) — a component spec that measures a tile's height can go red; each is read against the board before it changes, never moved to pass. QA measures the *Sent as* tile on three surfaces.
+- **Every placeholder turns lighter** — the contrast gate holds the 4.5 floor on `--fill`; QA reads the step-3 placeholders on three surfaces.
+- **A mistyped pulled file** — the invariants read it; each file is compared with `get_file` after it is written.
+- **The paste does not land before QA** — AC-3 becomes one deferred row, said on the commit card; nothing else waits.
+
+##### Acceptance criteria and proof
+- **AC-1** (new) — Given the live design system, when `Banner`'s typing is read, then `contracts/feedback/Banner.d.ts.txt` equals it and the port declares `actionBelow` and `onFormChange` on both halves.
+- **AC-2** (D31) — Given a banner with an action, when its own width is below `actionBelow` (default 400), then the action sits on its own line under the body with its 44 target, and at or above it beside the copy; `onFormChange` reports `{ actionStacked, width }` once per change; a pill ignores both.
+- **AC-3** (D130, D131) — Given the owner's paste, when the design system is read again, then `PhoneField.d.ts.txt`, `MarketProvider.d.ts.txt` and `tokens/base.css` equal it, the design system's `PhoneField` has no `countryCode` and no `placeholder`, and both invariants pass.
+- **AC-4** (D60) — Given `RichText`, when it renders, then its frame is the field's well — `--fill`, `--r-input-expressive`, no shadow, an inset accent ring on focus — and no raw-white `biome-ignore` is left in its folder.
+- **AC-5** (D131) — Given any field with a placeholder, when it is empty, then the placeholder is `--text-tertiary`, and on a disabled field `--text-secondary`, on the web, iPhone and Android.
+- **AC-6** (D136) — Given a tile with an overline and a mono line, when it renders, then both lines take the body's line height, 1.55: the request-sent *Sent as* tile measures 96.7 on the web, iPhone and Android.
+- **AC-7** (new) — Given `SCR-M01-02`'s step-3 and request-sent frames, when the built screens render the same states, then their placeholders and the *Sent as* tile match them.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 | main-dev · evaluator | required | invariants | `design-system-props` green; planted red: `actionBelow` dropped from the port, named by the invariant | invariant `design-system-props` |
+| AC-2 | main-dev | required | component tests | at 600 the action beside the copy; at 343 under the body, 44 tall; `actionBelow={300}` at 343 beside; resizing 600 → 343 → 600 calls `onFormChange` twice with the right answers and widths; a pill draws no stacked row; planted red: the comparison flipped | `tests/e2e/components/Banner.spec.tsx` (ct, new) |
+| AC-2 · native | — | not_applicable | — | no screen renders a `Banner`; the phone half reads the same rule; the first screen to draw one proves it on both phones (new row, `T-SHELL-006 starts`) | — |
+| AC-3 | main-dev · evaluator | required | DesignSync · invariants | after the paste each file compared with `get_file` and written to equal it; `PhoneField.jsx` read: no `countryCode`, dial code from the pack; both invariants green | read · invariants |
+| AC-4 | main-dev | required | component tests · lint | the frame's background `--fill`, radius 16, `box-shadow` none; focused, the inset 1.5 accent ring; the link field white; `rg 'biome-ignore lint/plugin/raw-white' packages/ui/src/components/RichText` empty; planted red: the frame back to `--surface` | `tests/e2e/components/RichText.spec.tsx` (ct, new) · Biome |
+| AC-4 · native | — | not_applicable | — | no screen renders a `RichText`; the first screen to draw one proves it on both phones (new row, `T-M01-019 starts`) | — |
+| AC-5 | main-dev | required | component tests | an empty `Input`'s placeholder colour `--text-tertiary`; disabled `--text-secondary`; planted red: `FieldBox.css` back to secondary | `tests/e2e/components/Input.spec.tsx` (ct) |
+| AC-5 | qa-web | required | browser, 375 and 1536 | company signup step 3: the name and city placeholders `--text-tertiary` (computed colour) | live |
+| AC-5 | qa-ios | required | simulator | the same step: the placeholders lighter than the label, sampled from the screenshot | live |
+| AC-5 | qa-android | required | emulator | the same | live |
+| AC-6 | qa-web | required | browser, 375 and 1536 | the request-sent *Sent as* tile 96.7 tall; its overline and mono lines' line height 1.55 × their size | live |
+| AC-6 | qa-ios | required | simulator | the tile 96.7 ± 1 (amended at QA: iOS snaps each line box to its 1/3-point grid) | live |
+| AC-6 | qa-android | required | emulator | the tile 96.7 ± 0.5 dp | live |
+| AC-7 | qa-web · qa-ios · qa-android | required | 375 and 1536 frames | side-by-side: step 3 (empty) and request-sent | live, board pictures |
+| AC-7 · Hindi | — | blocked | — | signup cannot be reached in Hindi past step 2: D143, clears with `T-M01-039` | — |
+| AC-1–AC-7 | evaluator · ci | required | `pnpm check:all` · `quality` | every check passes | gate · CI |
+
+##### Delivery size
+- **Estimate:** 32 files — 4 pulled (generated, no lines), 19 code, 3 tests, 6 docs and snapshot notes. About 600 authored lines: code about 260, tests about 200, docs about 140.
+- **Built (re-ruled 2026-10-08, approval voided by size):** 36 files — 4 pulled (33 lines), 25 code, 3 tests, 4 docs — and about 930 authored lines: code 496, tests 205, docs 229. Over the estimate by 55% in lines and over the 30-file target by two authored files. Where it went: the review's fixes (`Select`, `DatePicker` and `RichTextBlocks` took the placeholder rule — five files; the banner's width and its two specs), `Ground.css` for the editor's controls, `RichText.native.tsx` re-indented under its new `GroundProvider` (74 + 71 of its lines are the indent), and the RFC's own records (QA, review, paste, the E2 finding — 212 lines). Still one part: every file is one of the five rulings or a fix the review asked for, every proof has run on the web, iPhone and Android, and a split now would ship the placeholder rule to three fields and not to two. **Owner ruling (2026-10-08): A — approved at this size as one part.**
+- **Order:** as in Proposal.
+
+**Decisions — part e**
+- **E1 — the adherence file.** **A · held with D145 (recommended):** pulled by the screen that draws the search pill and the filter square; `Banner.d.ts.txt` alone holds the two `Banner` props. **B · pull it now:** `SearchField` then needs `onFilterClick`, `filterCount` and `filterLabel` declared on both halves with no screen to show them — part d's D1 A undone, about 6 more files.
+- **E2 — `PhoneField`'s example number.** **A · the design system drops `placeholder` (recommended):** the field shows no example, as built; no number typed into a component. **B · the app adds `placeholder`:** an example from the market pack's grouping on both halves, and every caller's words — about 6 more files.
+- **Deferred rows met:** D2, D92 (`touches packages/ui/src/components/`), D42 (`touches packages/ui/src/primitives/Text/`), D14, D22, D26 (`touches packages/theme/src/_generated/tokens/`, by `base.css`) and D54 (`touches docs/prd/foundations/F7-design-language.md`) — stay, as parts b–d ruled.
+- **Owner rulings (2026-10-08):** RFC approved; E1 → **A** (the adherence file is held with D145); E2 → **A** (the design system drops `placeholder`); the deferred rows met stay.
+- **Build finding (2026-10-08), re-ruled:** finding 2 was wrong — `SCR-M01-01`'s decision 2 draws the empty phone field with the market's example number as a format specimen, and `docs/tasks/UI.md` owed it to `PhoneField` (`T-M01-001`). Shown to the owner with the board's facts; E2 → **A** again: no phone field shows an example. `UI.md`'s row is deleted, and the board's specimen goes by the owner's paste into the screens project (built, not planned: `docs/tasks/UI.md` joins the file table).
+
+```text
+In the HelioGrid screens project, change SCR-M01-01 and SCR-M01-02. Change nothing else.
+
+1. Every frame that draws an EMPTY phone field (SCR-M01-01: m-normal, m-loading, m-google-loading,
+   m-google-failed, m-google-link, m-switch-discards, d-normal, d-google-link, d-switch-discards;
+   SCR-M01-02: any empty number step) — the field shows the "+91" prefix and no example number.
+   No placeholder in a phone field.
+2. SCR-M01-01's decisions record:
+   - Decision 2, replace the last sentence with: "The empty phone field shows no example number —
+     the dial code is the only format cue (owner ruling 2026-10-08, T-FPLAT-082e)."
+   - Code cells → "Field contrast, stated": replace "its **`--text-secondary` placeholder**" with
+     "its label above it"; a placeholder elsewhere is `--text-tertiary` (F7-15).
+3. SCR-M01-02's decisions record: if it names an example number in the phone field, record the same
+   ruling there.
+```
+
+- **QA (2026-10-08):** web, iOS and Android pass AC-5 (placeholders #6A6D73, labels #54565B) and AC-7 apart from D154. AC-6: web 96.69, Android 96.8 dp, iOS **97.3 pt** — iOS snaps every line box up to its 1/3-point grid (the untouched 19.5 name line measures 19.67; the overline 17.1 → 17.33, the mono 20.2 → 20.33), so no line height reaches 96.7 on a 3x iPhone; the ±0.5 was the plan's mistake, and the iOS row reads ±1 (each line within one pixel). Before this part the tile measured 93.7. `d-request-sent` was not reached in the board pane and is compared with the record's measured 1536 table. Found and recorded: D153 (no phone half of `Banner` and `RichText` is reachable), D154 (step 3's account is not the board's tile).
+- **Review (2026-10-08):** seven should-fix, all fixed — `Select`, `DatePicker` and `RichText`'s own placeholder took the rule; the web banner reads its layout border box (`offsetWidth`, `borderBoxSize`), not a transformed rect; the test-only `data-action-stacked` went, the specs read positions; the resize test waits for each width, seen red with the change guard removed; the README, `Ground.css`'s row and `BannerForm` recorded. Notes kept: the native 1.5 edge → D153; the toolbar divider is the design system's own `--canvas-sunken` on `--fill`. A second pass: clean, with two notes taken — `fieldBoxPlaceholder` reads `fieldWords`, so the rule is written once; the web banner's only width source is its observer.
+- **The owner's paste (2026-10-08):** the design system's `PhoneField` reads `useFormat().pack.phone?.dialCode` with no `countryCode` and no `placeholder`; `MarketPack` gains `phone`; `tokens/base.css` gives `::placeholder` `--text-tertiary` and a disabled one `--text-secondary`. Each file read with `get_file`, pulled and compared; `design-system-props` green; D130 and D131 deleted. The owner was also given one line for the design system's `Banner` (measure the border box on every read) and the screens-board paste for E2.
+
+**Planted reds (2026-10-08):** `actionBelow` renamed out of the port → `design-system-props` named `Banner.actionBelow`; the stack comparison flipped → four `Banner.spec.tsx` tests failed; the change guard removed → "onFormChange reports each change of place once" failed; the frame off `fieldBox` → two `RichText.spec.tsx` tests failed; `FieldBox.css`'s placeholder back to secondary → "is --text-tertiary in an empty field" failed. All restored.
+
+**Checklist** — [x] pull and invariant · [x] `Banner` rule, halves, spec · [x] `RichText` · [x] placeholder and pair · [x] line heights · [x] board frames captured · [x] qa-web · [x] qa-ios · [x] qa-android · [x] paste re-pulls · [x] review · [ ] gate · [x] docs
+
+#### Runtime — part e
+Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-FPLAT-082e` from `origin/main` `738e5e7c`.
+
+| resource | state at start | identity |
+|---|---|---|
+| web `3002` · api `8084` · metro `8081` | free | — |
+| postgres `5544` · object store `9000` · temporal `7233` | pre_existing | containers `heliogrid-pg-local`, `heliogrid-object-store-local`, `heliogrid-temporal` |
+| simulators · emulators | none booted | — |
+| browser tabs | the pane is closed | — |
+| database routing | `heliogrid_dev` on both URLs | `.env.local` |
+| logs | `.qa/api.log` 6,511,013 · `.qa/web.log` 169,448 · `.qa/metro.log` 574,195 bytes | byte marks |
+| started by the task | api (preview server `0feb3d8b`, launch `api`), web (`0af03bdb`, launch `web`), Metro (`88d8412e`, launch `mobile-metro`), simulator `40ED0117` (iPhone 17 Pro), `emulator-5554` (Pixel 8, API 34); database routing moved to `heliogrid_test` on both URLs for QA and the gate | preview server ids, UDID, serial |
+| browser pane | tabs `seed` (api), `tab-1` (web), `tab-2` (Metro, then the `SCR-M01-02` board) | tab ids |
+| test data | fresh signups +91 99999 99908 (web), …909 (iOS), …910 (Android), each asking to join "QA Solar Ten", Pune — written through the app on `heliogrid_test` | numbers |
+
+**At the end (2026-10-08)**
+
+| resource | state at end |
+|---|---|
+| api · web · Metro | stopped by Main (preview stop); `3002`, `8084`, `8081` free; no `tsx watch` left |
+| postgres · object store · temporal | pre_existing, untouched |
+| simulator `40ED0117` · `emulator-5554` | shut down |
+| browser pane | tabs `seed`, `tab-1` and `tab-2` closed; the pane is closed; the Claude Design chat checked — nothing was sent |
+| database routing | restored to `heliogrid_dev` on both URLs (QA and the gate ran on `heliogrid_test`) |
+| logs | `.qa/api.log` 6,565,783 · `.qa/web.log` 186,660 · `.qa/metro.log` 615,869 bytes |
+| test data | the three signups and their join requests stay on `heliogrid_test`; the standing accounts were signed out on both phones (iPhone "QA iOS Solar" …902, Android "QA api primary" …904) and stay signed out |
+
+**Measurements:** helper runs — qa-web 1, qa-ios 1, qa-android 1 (1 continuation, after Main launched the app), reviewer 1 (2 continuations), evaluator 1; helper tokens about 400k (reviewer 156k, qa-ios 70k, qa-android 70k, qa-web 63k, evaluator 30k); Main's turns and tokens were not counted. Planned 32 files and about 600 lines; built 36 files and about 930 lines (code 496, tests 205, docs 229) plus 33 pulled lines — re-ruled A at that size. Full gate: one run, green.
+
+**Mistakes and the rule that now holds each**
+- The RFC said no board draws an example number in the phone field; `SCR-M01-01`'s decision 2 and a `UI.md` row both did (found at build) → said to the owner before the code followed it, E2 re-ruled; `packages/ui/CLAUDE.md` already says to read a component's `UI.md` rows before changing it, and the plan did not.
+- The plan gave the iOS tile ±0.5, which a 3x iPhone cannot meet: it snaps each line box up to its 1/3-point grid (QA) → the row amended to ±1 with the measured reason; no check can decide a tolerance, said out loud.
+- The placeholder rule reached the fields that read `FIELD_BOX_PLACEHOLDER` and missed `Select`, `DatePicker` and `RichText`'s own, which draw words (review) → fixed; the grep for the old constant was the plan's whole search, said out loud.
+- The web banner read a transformed rect, and two of its tests could stay green with the rule broken (review) → fixed, the change guard seen red.
+- The Android helper started before the app was open (QA, BLOCKED) → Main launched it; `references/qa.md` already lists the app's launch among Main's readiness checks.
+- The web helper's first calls ran on Main's board tab, not the `tab-1` its packet named (QA) → nothing changed on the board or in its chat, checked; said out loud.
+- The build ran 55% over the line estimate, voiding approval (the review's fixes, an indent, the RFC's own records) → shown as a delta, approved at size; said out loud.
+- `d-request-sent` was not reached in the board pane → compared with the record's measured table; said out loud.
 
 ### T-FPLAT-083 · A route answers only what its contract declares
 **Type:** policy · **Tier:** P1

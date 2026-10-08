@@ -13,7 +13,13 @@ export interface BannerProps {
   kind?: BannerKind;
   /** Bold first line. Omit for a single-line banner. */
   title?: string;
-  /** Body copy. Omit for a title-only banner. */
+  /**
+   * Body copy — **and it accepts fact rows**. A `FactRows` group dropped in here takes the banner's
+   * ink (the body is wrapped in `FactInk`), so label and value separate by weight rather than by
+   * colour and stay full-contrast on a danger or warning tint. The group measures the body column's
+   * own width, so it takes its full-width form inside a narrow banner — which is the other half of
+   * why the action drops out of the copy's way below `actionBelow`.
+   */
   children?: React.ReactNode;
   /** Trailing action — use `BannerAction`. */
   action?: React.ReactNode;
@@ -31,6 +37,16 @@ export interface BannerProps {
   variant?: "block" | "pill";
   density?: "expressive" | "functional";
   icon?: React.ReactNode;
+  /**
+   * Below this much of the banner's **own** width (never the viewport), the action drops to its own
+   * line under the body — full 44px target around the same 32px pill — so the copy keeps the whole
+   * width. Default 400: a phone-width banner (343 inside 375) and a narrow `DetailPanel` fall below
+   * it, a 600px strip does not. Ignored by `variant="pill"`, which has no action row.
+   */
+  actionBelow?: number;
+  /** Fires when that own-width answer changes, so a surface arranging content around the banner
+   *  reads this measurement instead of running a second observer over the same element (law 4). */
+  onFormChange?: (info: { actionStacked: boolean; width: number }) => void;
   style?: React.CSSProperties;
 }
 
@@ -38,6 +54,12 @@ export interface BannerProps {
  * In-page statement of a fact about what's on screen: needs review, overdue, below cost,
  * preliminary. Never covers content, never blocks interaction, and disappears when the fact
  * stops being true rather than being dismissed into silence.
+ *
+ * **The action changes place by the banner's own width, never the viewport** (law 4). Wide: it stays
+ * in the action row beside the copy. Narrow (below `actionBelow`): it drops to its own line under
+ * the body, with its full 44px target around the 32px pill, so the copy keeps the full width instead
+ * of breaking over four lines to keep a pill in its seat. The switch is published through
+ * `onFormChange`.
  *
  * **Not the home of a mandatory disclosure.** `kind="disclaimer"` is superseded by `Disclosure`:
  * `M06-04`'s verbatim line belongs *in the reading flow at the weight of the figures it qualifies*,

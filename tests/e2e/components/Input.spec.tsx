@@ -44,3 +44,38 @@ test('a field in error shows focus while it has it, and its danger ring when it 
   await expect(ground).toHaveCSS('box-shadow', await ring('--danger'));
   await expect(field.getByText(needed)).toBeVisible();
 });
+
+/** A placeholder is a hint, never a typed value (`F7-15`): tertiary in the well, secondary when disabled. */
+test.describe('the placeholder', () => {
+  const placeholderColour = (input: HTMLInputElement) =>
+    getComputedStyle(input, '::placeholder').color;
+
+  test('is --text-tertiary in an empty field', async ({ mount, page }) => {
+    const field = await mount(
+      <Input
+        label={en.t(COMPANY_SIGNUP.companyName)}
+        value=""
+        placeholder={en.t(COMPANY_SIGNUP.companyNameExample)}
+      />,
+    );
+
+    expect(await field.getByRole('textbox').evaluate(placeholderColour)).toBe(
+      await resolvedColour(page, '--text-tertiary'),
+    );
+  });
+
+  test('steps up to --text-secondary on the disabled well', async ({ mount, page }) => {
+    const field = await mount(
+      <Input
+        label={en.t(COMPANY_SIGNUP.companyName)}
+        value=""
+        placeholder={en.t(COMPANY_SIGNUP.companyNameExample)}
+        disabled
+      />,
+    );
+
+    expect(await field.getByRole('textbox').evaluate(placeholderColour)).toBe(
+      await resolvedColour(page, '--text-secondary'),
+    );
+  });
+});

@@ -10,19 +10,10 @@
   margin-bottom: 6px;
 }
 
+/* The frame is a field's well (`FieldBox`); it holds its own controls, so it is also their ground
+   (`Ground.css`). */
 .hg-rich-text-frame {
-  border-radius: var(--r-input-expressive);
-  /* biome-ignore lint/plugin/raw-white-css: deferred — owed by a row in docs/tasks/deferred.md */
-  background: var(--surface);
-  box-shadow: var(--e2);
-  transition: box-shadow var(--dur-standard) var(--ease-standard);
   overflow: hidden;
-}
-
-.hg-rich-text-frame[data-focus="true"] {
-  box-shadow:
-    0 0 0 2px var(--accent),
-    var(--e2);
 }
 
 /* ── toolbar ──────────────────────────────────────────────────────────────── */
@@ -109,10 +100,9 @@
   border: none;
   outline: none;
   border-radius: var(--r-input-functional);
-  /* A control is --surface at --e2 — this is a text field, and it was the one left on the
-     dim ground the ruling was raised to end. */
-  /* biome-ignore lint/plugin/raw-white-css: deferred — owed by a row in docs/tasks/deferred.md */
-  background: var(--surface);
+  /* The link address sits inside the frame's well, so it takes the well's control fill, raised, as
+     the design system draws it. */
+  background: var(--hg-control-fill);
   box-shadow: var(--e2);
   font-family: var(--font-mono);
   font-size: var(--fs-body-sm);
@@ -147,6 +137,11 @@
   line-height: 1.6;
   color: var(--text-tertiary);
   pointer-events: none;
+}
+
+/* On the disabled well tertiary is at the floor's edge, so the hint steps up (`FieldBox.css`). */
+.hg-rich-text-frame[data-fb-disabled] .hg-rich-text-placeholder {
+  color: var(--text-secondary);
 }
 
 .hg-rich-text-editable {

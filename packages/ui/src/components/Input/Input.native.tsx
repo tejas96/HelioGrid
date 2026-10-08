@@ -3,8 +3,8 @@ import type { KeyboardTypeOptions, StyleProp, TextStyle, ViewStyle } from 'react
 import { StyleSheet, TextInput, View } from 'react-native';
 import {
   FIELD_BOX_EDGE,
-  FIELD_BOX_PLACEHOLDER,
   fieldBox,
+  fieldBoxPlaceholder,
   fieldBoxText,
 } from '../../primitives/FieldBox/FieldBox.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
@@ -137,7 +137,7 @@ export function Input({
           keyboardType={KEYBOARD[type]}
           secureTextEntry={type === 'password'}
           placeholder={placeholder}
-          placeholderTextColor={FIELD_BOX_PLACEHOLDER}
+          placeholderTextColor={fieldBoxPlaceholder(disabled)}
           value={commitOnBlur ? draft : (value ?? '')}
           onChangeText={handleChangeText}
           onFocus={() => setFocus(true)}

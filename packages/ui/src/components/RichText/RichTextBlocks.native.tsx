@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { fieldBoxPlaceholder } from '../../primitives/FieldBox/FieldBox.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { RichTextAt } from './RichText.edit';
 import { isListBlock, keyed, textOf } from './RichText.model';
@@ -76,7 +77,7 @@ export function RichTextBlocks({
       editable={!disabled}
       value={textOf(spans)}
       placeholder={showPlaceholder ? placeholder : undefined}
-      placeholderTextColor={theme.colors['text-tertiary']}
+      placeholderTextColor={fieldBoxPlaceholder(disabled)}
       accessibilityLabel={label ?? 'Terms and conditions'}
       onFocus={() => onCaret(at)}
       onBlur={onBlur}

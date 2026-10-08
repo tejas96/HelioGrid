@@ -3,8 +3,9 @@
    defect this exists to end. Each field keeps its own height, padding and layout; this owns the
    ground, the radius and the rings, so ten fields cannot draw ten different ones again.
 
-   Text inside a well is --text-secondary or stronger (F7-15): --text-tertiary measures 4.71:1 on
-   --fill and 4.54:1 on the disabled well, at the floor's edge (packages/theme/src/contrast.ts). */
+   A value inside a well is --text-secondary or stronger (F7-15). A placeholder is a hint, so it is
+   --text-tertiary, 4.71:1 on --fill; on the disabled well tertiary is at the floor's edge (4.54:1),
+   so there it steps up to --text-secondary (packages/theme/src/contrast.ts). */
 
 [data-field-box] {
   background: var(--fill);
@@ -51,9 +52,18 @@
   opacity: 1;
 }
 
+/* `tokens/base.css` gives every input the same two colours; these stay because they also set
+   `-webkit-text-fill-color`, which the disabled rule above sets, and they follow the well's own
+   disabled mark, which a field can carry while its input is not `:disabled`. */
 [data-field-box]::placeholder,
 [data-field-box] ::placeholder {
+  color: var(--text-tertiary);
+  -webkit-text-fill-color: var(--text-tertiary);
+  opacity: 1;
+}
+
+[data-field-box][data-fb-disabled]::placeholder,
+[data-field-box][data-fb-disabled] ::placeholder {
   color: var(--text-secondary);
   -webkit-text-fill-color: var(--text-secondary);
-  opacity: 1;
 }

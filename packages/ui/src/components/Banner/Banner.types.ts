@@ -62,6 +62,21 @@ export interface BannerProps {
   variant?: 'block' | 'pill';
   density?: 'expressive' | 'functional';
   icon?: ReactNode;
+  /**
+   * Below this much of the banner's **own** width (never the viewport), the action drops to its own
+   * line under the body — its 44px target kept — so the copy keeps the whole width. Default 400: a
+   * phone-width banner (343 inside 375) falls below it, a 600px strip does not. A pill ignores it.
+   */
+  actionBelow?: number;
+  /** Fires when that own-width answer changes, so a surface arranging content around the banner
+   *  reads this measurement instead of observing the same element a second time. */
+  onFormChange?: (info: BannerForm) => void;
+}
+
+/** Where the banner put its action, and the own width that decided it. */
+export interface BannerForm {
+  actionStacked: boolean;
+  width: number;
 }
 
 /**

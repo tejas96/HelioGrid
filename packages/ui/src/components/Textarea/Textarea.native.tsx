@@ -4,8 +4,8 @@ import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
 import {
   FIELD_BOX_EDGE,
-  FIELD_BOX_PLACEHOLDER,
   fieldBox,
+  fieldBoxPlaceholder,
   fieldBoxText,
 } from '../../primitives/FieldBox/FieldBox.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -76,7 +76,7 @@ export function Textarea({
         multiline
         editable={!disabled}
         placeholder={placeholder}
-        placeholderTextColor={FIELD_BOX_PLACEHOLDER}
+        placeholderTextColor={fieldBoxPlaceholder(disabled)}
         maxLength={maxLength}
         accessibilityLabel={label}
         textAlignVertical="top"

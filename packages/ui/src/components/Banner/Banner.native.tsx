@@ -1,14 +1,20 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import { useEffect } from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
+import { useState } from 'react';
+import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { bannerKind, isNeverDismissible } from './Banner.kinds';
-import { BANNER_GLYPH } from './Banner.logic';
+import {
+  ACTION_BELOW,
+  actionStacks,
+  BANNER_GLYPH,
+  useDisclaimerWarning,
+  useFormReport,
+} from './Banner.logic';
 import type { BannerGlyph, BannerProps, BannerTone } from './Banner.types';
 
 interface NativeBannerProps extends BannerProps {
@@ -69,6 +75,37 @@ function Body({ title, children, tone }: { title?: string; children: ReactNode; 
   );
 }
 
+/** The copy column: the title, the body, and the action when it has dropped under the body. */
+function Content({
+  title,
+  tone,
+  children,
+  actionBelowBody,
+}: {
+  title?: string;
+  tone: string;
+  children?: ReactNode;
+  actionBelowBody?: ReactNode;
+}) {
+  return (
+    <View style={styles.content}>
+      {title === undefined ? null : (
+        <Text variant="body-sm" style={[styles.title, { color: tone }]}>
+          {title}
+        </Text>
+      )}
+      {children === undefined || children === null ? null : (
+        <Body title={title} tone={tone}>
+          {children}
+        </Body>
+      )}
+      {actionBelowBody === undefined ? null : (
+        <View style={styles.actionRow}>{actionBelowBody}</View>
+      )}
+    </View>
+  );
+}
+
 function Dismiss({ tone, onDismiss }: { tone: string; onDismiss: () => void }) {
   return (
     <Pressable accessibilityLabel="Dismiss" onPress={onDismiss} style={styles.dismiss}>
@@ -99,18 +136,17 @@ export function Banner({
   variant = 'block',
   density = 'expressive',
   icon,
+  actionBelow = ACTION_BELOW,
+  onFormChange,
   style,
 }: NativeBannerProps) {
   const meta = bannerKind(kind);
   const pair = TONES[tone ?? meta.tone];
   const canDismiss = (dismissible ?? false) && !isNeverDismissible(kind) && onDismiss !== undefined;
-  useEffect(() => {
-    if (kind === 'disclaimer') {
-      console.warn(
-        'Banner kind="disclaimer" is superseded by <Disclosure>. M06-04 / SCR-M06-17 require the line in the reading flow at the weight of the figures it qualifies, on the customer\'s own surface — a banner is operator chrome (MS9-11), it can be capped by BannerStack, and its strip is the wrong weight. This banner is never dismissible, but move it.',
-      );
-    }
-  }, [kind]);
+  const [width, setWidth] = useState<number | null>(null);
+  const stacked = actionStacks(action !== undefined, width, actionBelow);
+  useFormReport(stacked, width, onFormChange);
+  useDisclaimerWarning(kind);
 
   /* RN has no `status` role; a polite live region is its equivalent, and `alert` maps straight. */
   const alerting = meta.role === 'alert';
@@ -136,6 +172,7 @@ export function Banner({
   return (
     <View
       {...a11y}
+      onLayout={(event: LayoutChangeEvent) => setWidth(event.nativeEvent.layout.width)}
       style={[
         styles.block,
         density === 'functional' ? styles.blockFunctional : styles.blockExpressive,
@@ -148,19 +185,10 @@ export function Banner({
         <View style={styles.glyph}>
           {icon ?? <Glyph name={meta.icon} size={17} color={pair.text} />}
         </View>
-        <View style={styles.content}>
-          {title === undefined ? null : (
-            <Text variant="body-sm" style={[styles.title, { color: pair.text }]}>
-              {title}
-            </Text>
-          )}
-          {children === undefined || children === null ? null : (
-            <Body title={title} tone={pair.text}>
-              {children}
-            </Body>
-          )}
-        </View>
-        {action === undefined ? null : <View style={styles.actionSlot}>{action}</View>}
+        <Content title={title} tone={pair.text} actionBelowBody={stacked ? action : undefined}>
+          {children}
+        </Content>
+        {action === undefined || stacked ? null : <View style={styles.actionSlot}>{action}</View>}
         {canDismiss ? <Dismiss tone={pair.text} onDismiss={onDismiss} /> : null}
       </GroundProvider>
     </View>
@@ -203,6 +231,12 @@ const styles = StyleSheet.create({
   actionSlot: {
     flexShrink: 0,
     marginTop: -2,
+  },
+  /* Below `actionBelow` of the banner's own width the action takes its own line under the body. */
+  actionRow: {
+    flexDirection: 'row',
+    marginTop: theme.spacing['sp-2'],
+    marginLeft: -2,
   },
   dismiss: {
     margin: -theme.spacing['sp-3'],

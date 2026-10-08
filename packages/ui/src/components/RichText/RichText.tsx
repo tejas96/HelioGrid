@@ -1,6 +1,7 @@
 import type { CSSProperties, MouseEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { fieldBox } from '../../primitives/FieldBox';
 import type { ToolCommand } from './RichText.commands';
 import { EMPTY_RICH_TEXT, measure, richTextRows } from './RichText.model';
 import { LOGO_HTML, serialise, toHtml } from './RichText.serialise';
@@ -126,7 +127,10 @@ export function RichText({
   return (
     <div className={classNames('hg-rich-text', className)} style={style}>
       {label !== undefined ? <div className="hg-rich-text-label">{label}</div> : null}
-      <div className="hg-rich-text-frame" data-focus={focus}>
+      <div
+        className="hg-rich-text-frame"
+        {...fieldBox({ focused: focus, disabled, density: 'expressive' })}
+      >
         <RichTextToolbar
           marks={marks}
           disabled={disabled}

@@ -2,6 +2,8 @@ import { theme } from '@heliogrid/theme';
 import { useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { fieldBox } from '../../primitives/FieldBox/FieldBox.native';
+import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ToolCommand } from './RichText.commands';
@@ -28,14 +30,7 @@ interface NativeRichTextProps extends RichTextProps {
 
 const styles = StyleSheet.create({
   label: { marginBottom: 6 },
-  frame: {
-    borderRadius: theme.radius['r-input-expressive'],
-    // biome-ignore lint/plugin/raw-white: deferred — owed by a row in docs/tasks/deferred.md
-    backgroundColor: theme.colors.surface,
-    overflow: 'hidden',
-    ...theme.elevation.e2,
-  },
-  frameFocus: { borderWidth: 2, borderColor: theme.colors.accent },
+  frame: { overflow: 'hidden' },
   linkRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -49,9 +44,6 @@ const styles = StyleSheet.create({
     height: 44,
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-input-functional'],
-    // A control is `surface` at e2 — this is a text field.
-    // biome-ignore lint/plugin/raw-white: deferred — owed by a row in docs/tasks/deferred.md
-    backgroundColor: theme.colors.surface,
     ...theme.elevation.e2,
     fontFamily: theme.type.families.mono,
     fontSize: theme.type.roles['body-sm'].fontSize,
@@ -74,6 +66,22 @@ const styles = StyleSheet.create({
   },
   count: { flexDirection: 'row', alignItems: 'baseline', gap: theme.spacing['sp-3'] },
 });
+
+/** The link address, raised on the frame's control fill, as the design system draws it. */
+function LinkAddress({ value, onChange }: { value: string; onChange: (href: string) => void }) {
+  const { controlFill } = useGround();
+  return (
+    <TextInput
+      style={[styles.href, { backgroundColor: controlFill }]}
+      value={value}
+      accessibilityLabel="Link address"
+      placeholder="https://"
+      placeholderTextColor={theme.colors['text-tertiary']}
+      autoCapitalize="none"
+      onChangeText={onChange}
+    />
+  );
+}
 
 const BLANK: RichTextValue = { version: 1, blocks: [{ type: 'p', spans: [{ text: '' }] }] };
 
@@ -140,68 +148,63 @@ export function RichText({
           {label}
         </Text>
       ) : null}
-      <View style={[styles.frame, focus ? styles.frameFocus : null]}>
-        <RichTextToolbar
-          marks={marksAt(working, at)}
-          disabled={disabled}
-          hasLogo={m.hasLogo}
-          linking={linking}
-          templates={templates}
-          saveTemplateLabel={saveTemplateLabel}
-          onRun={run}
-          onToggleLink={() => setLinking((v) => !v)}
-          onToggleLogo={toggleLogo}
-          onLoadTemplate={onLoadTemplate}
-          onSaveAsTemplate={
-            onSaveAsTemplate === undefined
-              ? undefined
-              : () => onSaveAsTemplate(value, measure(value))
-          }
-        />
-        {linking ? (
-          <View style={styles.linkRow}>
-            <TextInput
-              style={styles.href}
-              value={href}
-              accessibilityLabel="Link address"
-              placeholder="https://"
-              placeholderTextColor={theme.colors['text-tertiary']}
-              autoCapitalize="none"
-              onChangeText={setHref}
-            />
-            <Pressable
-              style={styles.apply}
-              accessibilityLabel="Add link"
-              onPress={() => {
-                emit(setHrefAt(working, at, href));
-                setLinking(false);
-              }}
-            >
-              <Text variant="body-sm" color="inverse">
-                Add link
-              </Text>
-            </Pressable>
-          </View>
-        ) : null}
-        <View style={[styles.body, { minHeight }]}>
-          <RichTextBlocks
-            value={working}
+      <View style={[fieldBox({ focused: focus, disabled, density: 'expressive' }), styles.frame]}>
+        {/* The frame is a field's well holding its own controls, so it is their ground: white, as in a tile. */}
+        <GroundProvider ground="tile">
+          <RichTextToolbar
+            marks={marksAt(working, at)}
             disabled={disabled}
-            placeholder={placeholder}
-            showPlaceholder={m.chars === 0 && !m.hasLogo}
-            label={label}
-            onCaret={(next) => {
-              setFocus(true);
-              setAt(next);
-            }}
-            onBlur={() => {
-              setFocus(false);
-              onCommit?.(working);
-            }}
-            onText={(target, text) => emit(setTextAt(working, target, text))}
-            onEnter={(target) => emit(insertAfter(working, target))}
+            hasLogo={m.hasLogo}
+            linking={linking}
+            templates={templates}
+            saveTemplateLabel={saveTemplateLabel}
+            onRun={run}
+            onToggleLink={() => setLinking((v) => !v)}
+            onToggleLogo={toggleLogo}
+            onLoadTemplate={onLoadTemplate}
+            onSaveAsTemplate={
+              onSaveAsTemplate === undefined
+                ? undefined
+                : () => onSaveAsTemplate(value, measure(value))
+            }
           />
-        </View>
+          {linking ? (
+            <View style={styles.linkRow}>
+              <LinkAddress value={href} onChange={setHref} />
+              <Pressable
+                style={styles.apply}
+                accessibilityLabel="Add link"
+                onPress={() => {
+                  emit(setHrefAt(working, at, href));
+                  setLinking(false);
+                }}
+              >
+                <Text variant="body-sm" color="inverse">
+                  Add link
+                </Text>
+              </Pressable>
+            </View>
+          ) : null}
+          <View style={[styles.body, { minHeight }]}>
+            <RichTextBlocks
+              value={working}
+              disabled={disabled}
+              placeholder={placeholder}
+              showPlaceholder={m.chars === 0 && !m.hasLogo}
+              label={label}
+              onCaret={(next) => {
+                setFocus(true);
+                setAt(next);
+              }}
+              onBlur={() => {
+                setFocus(false);
+                onCommit?.(working);
+              }}
+              onText={(target, text) => emit(setTextAt(working, target, text))}
+              onEnter={(target) => emit(insertAfter(working, target))}
+            />
+          </View>
+        </GroundProvider>
       </View>
       {/* The char count is REAL and ships. The page estimate is the caller's, and empty stays
           empty — the editor never prints "≈ 1 page" it cannot stand behind. */}

@@ -62,6 +62,14 @@
   margin-top: -2px;
 }
 
+/* Below `actionBelow` of the banner's own width the action takes its own line under the body, so
+   the copy keeps the whole width; the action keeps its 44px target. */
+.hg-banner-action-row {
+  display: flex;
+  margin-top: var(--sp-2);
+  margin-left: -2px;
+}
+
 /* 44px of target, borrowed back as negative margin so a banner does not grow to gain one. */
 .hg-banner-dismiss {
   margin: -12px -12px -12px 0;

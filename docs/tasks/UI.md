@@ -22,7 +22,7 @@ text `tokens.css:230-262` carries) reverses to `F7-15`'s well. Every field's `.j
 `PhoneField`, `OtpInput`, `NumberField`, `Select`, `TimeField`, `DatePicker`, `Textarea`,
 `SearchField`, `RangeField`'s end boxes — draws the well (`--bg-well`, no shadow), the one focus
 ring (a `--surface` gap then `--accent`; on the phone the ring on the edge), the inset danger ring
-alongside focus, a disabled well of `--surface-form`, and `--text-secondary` placeholders. The
+alongside focus, a disabled well of `--surface-form`, and `--text-tertiary` placeholders (`--text-secondary` on a disabled well; `T-FPLAT-082e` asks for both in `tokens/base.css`). The
 secondary `Button` and the overlay retry pill are `--surface` at `--e2` (`T-FPLAT-082c`). `Sheet`, `Modal` and `DetailPanel` hold
 their content on `--surface`. `DoorFrame` paints `--surface`. The signup's verified number and its
 facts block sit on the page with no surface (`SCR-M01-02`).
@@ -126,7 +126,8 @@ are paper, not tiles. `PagedDocument`'s cards stay paper.
 | `PagedDocument` | **A tranche band names itself in a `<p>`, so its table is anonymous to a screen reader.** Measured on all eight bands: a `<table>` with no `<caption>`, no `aria-label` and no `role`, its name in a paragraph immediately above. `F7-27` asks a customer-facing table to carry its own name. | `SCR-M01-20` |
 | `Modal` · `Sheet` | **`labelId` is web-only in practice.** Both take it on the shared type and only the web half reads it; the native halves carry `accessibilityViewIsModal` and no name, so a native icon-header dialog is still unnamed — the defect the prop was added to close. An unread optional prop typechecks, so Law 7 does NOT catch this. Route it through `accessibilityLabel`, or state the platform reason on the type. | `arch review 2026-09-02` |
 | `PhoneField` | **The native half composes its accessible name in code** — `` `${label}, ${phone(value)}` `` — while the web half names the input from a `<label>` and puts the number in a separate sr-only span. Two announcements from one component, no platform reason recorded, and the join runs against the composed-sentence law (owner ruling 2026-08-31): a composed sentence is a whole translated sentence with slots, never a concatenation. | `arch review 2026-09-02` |
-| `PhoneField` · `PhotoField` | **No design-system contract mirror**, so both sit outside the invariant `design-system-props` — the only check comparing repo props against the design system. It skips a component with no contract file, silently. | `arch review 2026-09-02` |
+| `PhoneField` | **`onChange` hands back a different value on each side.** The design system documents it as "the typed digits (spaces kept)"; the port hands back the E.164 number (`PhoneField.types.ts`), the one shape stored and sent (`contracts/common.ts` `phoneE164Schema`). `design-system-props` reads names, not meanings, so no check sees it. Give the design system's typing the E.164 sentence, then delete this row. | `T-FPLAT-082e` review |
+| `PhotoField` | **No design-system contract mirror**, so it sits outside the invariant `design-system-props` — the only check comparing repo props against the design system. It skips a component with no contract file, silently. | `arch review 2026-09-02` |
 | — | No `Skeleton` component, and no duration token for the stated 1.4 s shimmer (nearest is `--dur-ambient`, 500 ms). | `SCR-M01-03` |
 
 **The English-string debt has a MECHANISM now, and it is one change, not 46.** CLAUDE.md §8
@@ -146,5 +147,4 @@ cast hole stays open.
 **Has an owner, so not listed above:** `F3-13`'s React Native half — components read
 `theme.type.families.sans` and RN has no per-codepoint fallback, so Devanagari falls to the OS face.
 `T-FPLAT-007` owns it with `F3-17`'s per-script line height. The web half is fixed.
-| `PhoneField` | **No format specimen in the empty field.** `SCR-M01-01` decision 2 draws the empty number field with the market's example number as a placeholder ("98200 41123" — a format specimen, not a value); the shared contract has no `placeholder`, so the door's empty field shows the dial code alone. Add the prop to both halves, sourced from the pack's phone spec, then delete this row. | `T-M01-001` |
 | `BrandBloom` | **No design-system contract mirror.** Every onboarding, tenant-configuration and auth artboard draws `--glow-brand` as a raw positioned span (five geometries across ten screens) and the design system ships no component for it; the repo's `BrandBloom` is that span as one component, both halves, and the native half is the one real radial gradient behind every mark (`EmptyState`, `NoConnection`). Give the design system the component, then delete this row. | `T-M01-001` |
