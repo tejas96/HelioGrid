@@ -1,12 +1,11 @@
 import { theme } from '@heliogrid/theme';
-import { PILL_NAV_HEIGHT } from '@heliogrid/ui';
 import { StyleSheet } from 'react-native';
 
-/** The pill floats this far above the device's home-indicator inset (`F7-50`). */
-export const PILL_GAP = theme.spacing['sp-6'];
-
-/** How far a screen under the pill must scroll past its last row so the pill never covers it. */
-export const underPill = (insetBottom: number) => PILL_NAV_HEIGHT + PILL_GAP + insetBottom;
+/**
+ * How far a screen under the pill must scroll past its last row so the pill never covers it:
+ * `--bottomnav-h` is the pill and its gap, above the device's home-indicator inset (`F7-50`).
+ */
+export const underPill = (insetBottom: number) => theme.layout['bottomnav-h'] + insetBottom;
 
 /**
  * The switcher spans the page's column: a home title and its preset share one row, and the menu's
@@ -38,9 +37,12 @@ export const styles = StyleSheet.create({
     paddingHorizontal: theme.layout['screen-pad-mobile'],
     paddingVertical: theme.spacing['sp-6'],
   },
-  pill: {
+  // The frame the pill floats in: the screen down to the device's bottom inset, which the
+  // screen reads; touches pass through it to the page.
+  pillFrame: {
     position: 'absolute',
-    left: theme.layout['screen-pad-mobile'],
-    right: theme.layout['screen-pad-mobile'],
+    top: 0,
+    left: 0,
+    right: 0,
   },
 });

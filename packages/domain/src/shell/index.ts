@@ -1,6 +1,6 @@
 /**
  * The app shell's own facts (`docs/tasks/SHELL.md`): which home is in force and which presets'
- * work is composed inside it, what the arc bar's raised centre does and which lists sit beside
+ * work is composed inside it, what the footer pill's verb does and which lists sit beside
  * it, per preset, which first-run coach marks show and how many there may be, all of it as one view, whether a phone's version meets the server's minimum, and how the ask (`F7-46`)
  * pages. Pure tables and pure derivations — the words are `packages/i18n`'s.
  */

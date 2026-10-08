@@ -3356,7 +3356,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 
 ### T-FPLAT-082 · The open page — the app's design tokens and components pulled level with the live design system
 **Type:** port · **Tier:** P0
-**Status:** in progress — part a shipped; parts b and c open
+**Status:** in progress — parts a and b shipped; part c open
 **Why:** Every screen is drawn on the live design system, but the app draws with a snapshot of it pulled on 2026-08-19 plus partial pulls. The design system's open page (2026-09-29) made the page white and moved grey to the fill of fields, tiles and chips, restyled the fields, the phone header and footer and the list tiles, and added tokens the boards use (`--fill`, `--tile-pad`, `--r-tile`). Without the pull, no screen can match its board: a screen built now is built against values the design has already left.
 **PRD rows:** none of its own — the design system is the visual authority (`F7`); `docs/engineering/17-ui-architecture-v2.md` §6 owns the pull.
 **Design:** none — no screen of its own; each part checks the built screens it touches against their boards.
@@ -3367,8 +3367,8 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | part | delivers | AC | depends on | status |
 |---|---|---|---|---|
 | a | the four changed token files and the census pulled; every field drawn the open page's way (fill, 54, radius 16, inset rings, the field type sizes); every built screen checked against its board | AC-1, AC-2, AC-3, AC-4 | the design system's field type tokens (the prerequisite in `#### Part a · RFC`) | shipped |
-| b | the phone header (company chip) and the floating pill footer, `PhoneScreen`; the shell and home redrawn on them; the pill's labels capped to their slots at the largest text size (D83) | its own RFC | a | open |
-| c | tiles (`Card`, `RecordCard`, `TileActions`), the search pill and filter button, kind chips, flat `Accordion`, wherever built; a disabled control in a tile equals the tile's `--canvas-sunken` ground until tiles take `--fill` (part a review) — close it here, and `F7-15`'s "until part c" lines; the secondary button on the page drawn as the design system's `Button` draws it — `--surface` with `--e2`, not the grey well — every secondary on every screen, with `F7-15` amended (owner ruling D14 B, `T-M01-035`'s side-by-side review, 2026-10-07); `Banner`'s `actionBelow` and `onFormChange` ported on both halves, with the held-back `Banner.d.ts.txt` and `adherence.oxlintrc.json` pulled (D31, deferred review 2026-10-08); `RichText`'s frame drawn by `FieldBox` (D60); the phone `Menu` and `Sheet` backdrop named or hidden for a screen reader (D82); a loading `Button` keeps its name for assistive technology (D84); `Modal`'s body takes its bottom padding at 375 (D88); one visually-hidden option replaces the copies (D93); `NotificationCard` takes the tile tokens part a pulled (D94); the phone `Sheet`'s close target, title wrap, `Badge` and close label (D96); the design system's `PhoneField` reads the dial code from its market and its typing is pulled (D130); a placeholder takes `--text-tertiary` (D131, `F7-15`); the overline and mono take the body's line height, 1.55 (D136) — each design-system change by the owner's paste first | its own RFC | a | open |
+| b | the phone footer pulled level: `BottomNav` is the pill on the design system's footer tokens, its typing pulled, the retired arc removed; the pill's labels held to their slots at the largest text size (D83). The header stays the name as words (B1) | its own RFC | a | shipped |
+| c | tiles (`Card`, `RecordCard`, `TileActions`), the search pill and filter button, kind chips, flat `Accordion`, wherever built; a disabled control in a tile equals the tile's `--canvas-sunken` ground until tiles take `--fill` (part a review) — close it here, and `F7-15`'s "until part c" lines; the secondary button on the page drawn as the design system's `Button` draws it — `--surface` with `--e2`, not the grey well — every secondary on every screen, with `F7-15` amended (owner ruling D14 B, `T-M01-035`'s side-by-side review, 2026-10-07); `Banner`'s `actionBelow` and `onFormChange` ported on both halves, with the held-back `Banner.d.ts.txt` and `adherence.oxlintrc.json` pulled (D31, deferred review 2026-10-08); `RichText`'s frame drawn by `FieldBox` (D60); the phone `Menu` and `Sheet` backdrop named or hidden for a screen reader (D82); a loading `Button` keeps its name for assistive technology (D84); `Modal`'s body takes its bottom padding at 375 (D88); one visually-hidden option replaces the copies (D93); `NotificationCard` takes the tile tokens part a pulled (D94); the phone `Sheet`'s close target, title wrap, `Badge` and close label (D96); the design system's `PhoneField` reads the dial code from its market and its typing is pulled (D130); a placeholder takes `--text-tertiary` (D131, `F7-15`); the overline and mono take the body's line height, 1.55 (D136); `AppShell.d.ts` pulled once the design system draws the company's name as words and moves `PhoneScreen` to its own file (part b, B1) — each design-system change by the owner's paste first | its own RFC | a | open |
 
 #### Part a · RFC
 
@@ -3536,6 +3536,179 @@ Recorded at the step's start (2026-10-07), before anything ran. Branch `feat/T-F
 - `Ground`'s disabled fill read `--surface-form`, white after the pull → `Button.spec.tsx` asserts `--canvas-sunken`, and that it differs from `--canvas`.
 - The label gap was 4px against the design system's 8px and no proof caught it → measured in live QA; no component test holds it yet (said out loud).
 - A packet expected the code boxes at 54 and a disabled ghost to fill; both were the packet's error, not the code's → each packet value is read from the design system's component before the helper runs.
+
+#### Part b · RFC
+
+##### Title
+T-FPLAT-082b — the phone footer pulled level: one pill `BottomNav` on the design system's footer tokens, the retired arc removed, the labels held to their slots.
+
+##### Description
+- **User impact:** on the phone, the footer pill sits where the shell board draws it — 66 tall, 26 above the home bar — and at the largest text size every label stays inside its slot, so More is never cut off the screen (D83). Indirectly: every later phone screen takes the footer from one component with one set of numbers.
+- **Who gains:** every phone user of a built screen; every later phone screen task.
+- **Problem solved:** the design system's footer typing dropped the arc (`shape`, `curveHeight`, `notchRadius`, `fabOffset`, `height`, `fab`) and added `verb`, `floating` and `safeBottom` (`components/navigation/AppRail.d.ts`, read 2026-10-08); the repo still holds the 2026-08-19 typing and ~550 lines of arc code nothing calls (`BottomNav.tsx:23`, `BottomNav.native.tsx`, `AppRail.css:143-261`). Part a pulled `--bottomnav-pill-h` 66, `--bottomnav-inset` 20 and `--bottomnav-gap` 26, but the pill still computes 64 (`AppRail.types.ts:123`) and floats 24 above the inset (`apps/mobile/src/screens/shell/styles.ts:6`).
+- **Cites:** `F7-22` (the pill replaces the arc), `F7-50` (insets read at run time), `F7-15`; `SCR-SHELL-01`'s decisions record, "Open-page redraw — 1 Oct 2026"; `T-SHELL-001`'s ruling "the company name is words, not a chip" (`docs/tasks/SHELL.md:231`); `docs/tasks/UI.md` "Owed to the design system by the shell".
+
+##### Goals
+- `contracts/navigation/AppRail.d.ts.txt` equals the live typing, and the invariant `design-system-props` passes with `verb`, `floating` and `safeBottom` ported on both halves.
+- `BottomNav` is the pill on both platforms; `PillNav` and the arc code are gone.
+- The pill reads its height, side inset and gap from `--bottomnav-pill-h`, `--bottomnav-inset`, `--bottomnav-gap`; on the phone it floats above the device's own bottom inset, read at run time.
+- At the largest text size every pill label fits its slot on both phones.
+
+##### Non-goals
+- The phone header: it stays the product tile and the company's name as words (B1). `AppShell.d.ts` is not pulled in this part (B1).
+- `PhoneScreen`: not ported. It is a board's device frame (a drawn clock, battery and home bar); the app draws inside the device's real insets (`F7-50`) through `SafeAreaView`.
+- The header's round buttons and every other control's fill — part c moves controls to `--fill`.
+- The web: it keeps the rail at every width (`T-SHELL-008`), so no web screen draws the pill. The web half changes with the native half (Law 7) and is proven by a component test.
+- `Fab` stays: the design system keeps it for desktop and in-page use.
+
+##### Readiness and dependencies
+- Landed: part a (the footer tokens, `theme.layout['bottomnav-pill-h' | 'bottomnav-inset' | 'bottomnav-gap']`); `T-SHELL-001` (the pill, `ShellFrame`, `usePillItems`).
+- Design: no `DESIGN` line (a port). QA compares the phone against `SCR-SHELL-01`'s frames, captured from the board into the scratchpad after approval.
+- Assumption: no caller draws the arc — `BottomNav` is called once, with `shape="pill"` (`ShellFrame.tsx:41`).
+- Blockers: none. The design-system fixes in B1 go to the owner as one paste-ready prompt; this part does not wait for them.
+
+##### Proposal
+**Flow.** Pull `AppRail.d.ts` verbatim → the invariant names the three new props → `BottomNav` (both halves) becomes the pill with `verb`, `floating`, `safeBottom` → `ShellFrame` passes the items and nothing else → QA on both phones, the largest text size included.
+
+**Findings from testing the requirement:**
+1. **"The phone header (company chip)" contradicts an owner ruling.** `T-SHELL-001` ruled the name is words, no chip: a grey pill on the page reads as a control and this one opens nothing (`F7-15`). The board's chip came the same day from the open-page adapter (`open-page.js`, `HGOpenTopBar`), which draws a chip on every board; the board's own decision 3 still says "name as words", and its self-audit flags the chip's 11.5px caption under the 12px floor. → B1.
+2. **The live footer breaks two laws the shipped pill keeps:** a 1px `--line-soft` border (`F7-15`: a floating surface separates by its shadow) and off-scale values (label 14.5/600, icon 23, a raw shadow). `T-SHELL-001` ruled the design system takes the shipped values (`docs/tasks/UI.md`); it has not yet. → the pill keeps them; B1's prompt carries them.
+3. **Values the design system now holds as tokens win over computed ones:** height 66 (was 64 = 48 + 2 × 8), gap 26 (was `--sp-6` 24), inset 20 (was `--screen-pad-mobile`, also 20). The 48-tall slots centre in the 66.
+4. **`PhoneScreen` is a mockup frame** — its `chrome` draws a fake status bar. → not ported (Non-goals).
+5. **Simpler:** the pull does not force the arc out (the invariant checks only that design-system props exist in the port), but the arc has no caller and `F7-22` retired it, so it leaves with this pull rather than staying as dead code.
+
+**Key decisions** (one reason each):
+1. **`BottomNav` takes `PillNav`'s body; `PillNav` is deleted.** One component, as the design system has it.
+2. **`verb: true` marks the action:** it runs its `onClick`, is never in view, and its label is its name. `usePillItems` sets it. The design system's legacy `fab: true` is not ported: nothing calls it, and the item type refuses it. No check holds an item's own props — `design-system-props` reads only a typing's top-level members (said out loud, Law 12).
+3. **The app owns the device inset** (`.claude/rules/screen-parts.md`; and a library both the app and a workspace package import loads twice under Metro, `apps/mobile/CLAUDE.md`). `floating` (default true) places the pill `--bottomnav-inset` from each side and `--bottomnav-gap` above the bottom of the frame it floats in. On the web `safeBottom` adds `env(safe-area-inset-bottom)`; on the phone `ShellFrame` gives the pill one frame whose bottom edge is the device's inset, read at run time (`F7-50`), so there the app's frame meets `safeBottom` and the native half does not read it. Never the typed `--safe-bottom` 34. (B3)
+4. **D83: the label keeps its drawn size at every text size** — `Text` takes `fixedSize`, native `allowFontScaling={false}`, which holds the size and the line height together (B4); the web label does not wrap.
+5. **The pill's height is the token itself** (`theme.layout['bottomnav-pill-h']`); a screen pads its scroll by `--bottomnav-h`, the gap and the pill together. `PILL_NAV_HEIGHT` leaves; the shared `isInView` and `pressItem` decide the verb and the press once for both halves.
+
+**Order:** pull and the invariant red → types → web half and its component test → native half → `ShellFrame`, `styles.ts`, `usePillItems` → both phones, the largest text size included → docs.
+
+**Twin:** `BottomNav.tsx` and `BottomNav.native.tsx` change together (Law 7).
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  DS[Live design system AppRail.d.ts] -->|get_file, verbatim| GEN[theme _generated AppRail typing]
+  GEN --> INV[invariant design-system-props]
+  TOK[theme tokens bottomnav-pill-h, -inset, -gap] --> BN[ui BottomNav web + native]
+  INV -->|verb, floating, safeBottom| BN
+  SA[react-native-safe-area-context] -->|bottom inset| SF
+  PI[mobile usePillItems verb item] --> SF[mobile ShellFrame]
+  BN --> SF
+```
+
+##### Package changes
+- **theme:** the pulled `AppRail.d.ts.txt`; `_generated/README.md` records it and holds `AppShell.d.ts.txt` back (B1).
+- **ui:** `BottomNav` is the pill; `BottomNavProps` loses the arc and gains `floating`, `safeBottom`; `BottomNavItem` is `RailItem` with `verb`; `Text` gains `fixedSize`; `BottomNavFabSlot`, `BottomNavShape`, `slotDrop` and `ICON_*` leave the public exports. No new dependency (B3).
+- **mobile:** `ShellFrame` drops its pill wrapper; `usePillItems` marks the verb.
+- **Protections (Law 12):** no new brand, enum, token, route, table or error code. The pulled typing is held by `design-system-props`.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/theme/src/_generated/contracts/navigation/AppRail.d.ts.txt` | pulled | the snapshot |
+| modify | `packages/theme/src/_generated/README.md` | the pull recorded; `AppShell.d.ts.txt` held back (B1) | the snapshot |
+| modify | `packages/ui/src/components/AppRail/AppRail.types.ts` | arc out; `verb`, `floating`, `safeBottom`; pill numbers from tokens | the one contract (Law 7) |
+| modify | `packages/ui/src/components/AppRail/BottomNav.tsx` · `BottomNav.native.tsx` | the pill; D83 cap | the component |
+| delete | `packages/ui/src/components/AppRail/PillNav.tsx` · `PillNav.native.tsx` | folded into `BottomNav` | one component |
+| modify | `packages/ui/src/components/AppRail/AppRail.css` | arc rules out; pill rules on the tokens | the web half's styles |
+| add | `tests/e2e/components/BottomNav.spec.tsx` | the pill's height, side inset, gap, slot floor, the verb never in view | component tests (`tests/e2e/CLAUDE.md`) |
+| modify | `apps/mobile/src/screens/shell/components/ShellFrame.tsx` · `styles.ts` · `use-pill-items.ts` | the pill floats itself; `underPill` from the token; the verb item | the phone shell |
+| modify | `packages/ui/src/primitives/Text/Text.types.ts` · `Text.native.tsx` | `fixedSize` (B4, review) | the one text primitive |
+| modify | `packages/domain/src/shell/index.ts` · `centre-verb.ts` · `standing-destinations.ts` | comments that named the arc bar (review, Law 8) | Law 8 |
+| modify | `docs/tasks/UI.md` · `docs/tasks/F-platform.md` · `docs/tasks/deferred.md` | the arc left the repo; this RFC and its row; D83 deleted | Law 8 |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **The pill moves 2px taller and 2px higher** on every phone screen — QA checks the home and every list it covers at both the default and the largest text size.
+- **A mistyped pulled typing** — `design-system-props` reads it; the file is re-read against `get_file` after writing.
+
+##### Acceptance criteria and proof
+- **AC-1** (new) — Given the live design system, when the footer's typing is read, then `contracts/navigation/AppRail.d.ts.txt` equals it and every prop it declares is declared by the port.
+- **AC-2** (new) — Given the phone shell, when it renders on iPhone and Android, then the footer is one white pill, `--bottomnav-pill-h` tall, `--bottomnav-inset` from each side and `--bottomnav-gap` above the device's bottom inset, with no border and the `--e4` shadow; the item in view is the near-black pill with its icon and label, every other item its icon alone with a target of at least 44, and the verb is never in view.
+- **AC-3** (D83) — Given the largest text size, when the phone shell renders, then every pill label sits inside its slot and More stays on screen, on both phones.
+- **AC-4** (new) — Given `SCR-SHELL-01`'s phone frames, when the built shell renders the same states, then it matches them apart from the rulings `T-SHELL-001` recorded and B1.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 | main-dev · evaluator | required | invariants | `design-system-props` green; planted red: `safeBottom` dropped from the port, named by the invariant | invariant `design-system-props` |
+| AC-2 | main-dev | required | component tests | pill height, inset and gap equal the tokens; slots ≥ 44; no border; the verb item never `aria-current` | `tests/e2e/components/BottomNav.spec.tsx` (ct, new) |
+| AC-2 | qa-ios | required | simulator | the home and Leads: pill geometry, item in view, verb opens its door | live |
+| AC-2 | qa-android | required | emulator | the same on Android, with its own bottom inset | live |
+| AC-3 | qa-ios | required | simulator, largest text size | H7 again: every label inside its slot, More on screen | live |
+| AC-3 | qa-android | required | emulator, largest font size | the same | live |
+| AC-4 | qa-ios | required | simulator, 375-wide frames | side-by-side: frame 2 empty, 5 role verb, 6 single preset (B7) | live, board pictures |
+| AC-4 · frames 1, 3, 7 | — | not_applicable | — | the pill draws the same in every home state, and part b changes only the pill (B7) | — |
+| AC-4 · frame 4 | — | not_applicable | — | needs lead records no built module holds (B7) | — |
+| AC-4 · frames 8, 10 | — | not_applicable | — | they draw no pill, and nothing part b changes runs there (B7) | — |
+| AC-4 · Hindi | qa-ios | blocked | — | the door's language is lost in signup and the signed-in phone has no language control; clears with D143 (`T-M01-039`) (B7) | — |
+| AC-4 | qa-android | required | emulator | side-by-side: frames 2 and 5 (B7) | live, board pictures |
+| AC-1–AC-4 | evaluator · ci | required | `pnpm check:all` · `quality` | every check passes | gate · CI |
+
+##### Delivery size
+- **Estimate:** 13 files. **Built (review, 2026-10-08):** 21 files — the 13, plus `Text.types.ts` and `Text.native.tsx` (B4) and three `packages/domain/src/shell/` comment fixes (Law 8), and the spec counted as its own file — about 1,150 authored lines (+440 −713, about two thirds deleted arc). Files are more than 20% over the estimate, so the size is ruled again (B5). The estimate was about 1,050 authored lines: code about 860 (about 620 of them deleted arc and `PillNav` lines, about 240 added), tests about 100, docs about 90.
+- **Over the 1,000-line target, one part:** most lines are deletions of code nothing calls, and the pull, the port of its three props and the arc's removal touch the same four files; a split leaves `BottomNav` half arc, half pill. (B2)
+- **Order:** as in Proposal.
+
+**Decisions — part b**
+- **B1 — the phone header.** **A · words, as `T-SHELL-001` ruled (recommended):** the header does not change; the owner gets one paste-ready prompt that brings the design system and the board level with the shipped shell (the name as words, no caption; the pill with no border, the `--e4` shadow, the label on the type scale, 24 icons; `PhoneScreen` in its own file, so a mockup frame is never read as the shell's typing); `AppShell.d.ts.txt` is pulled when the prompt lands, in part c. **B · the chip:** reverses `T-SHELL-001`; the design system first names the caption's and the name's sizes (11.5 is under the floor, 14.5/600 is off the scale) and moves `PhoneScreen` out; then part b ports `company`, `companyCaption`, `onCompanyClick`, `safeTop` and `round` — about 6 more files.
+- **B2 — the size.** **A · one part at about 1,050 lines, most of them deletions (recommended).** **B · leave the arc in** (its props are allowed extras): about 430 lines; a deferred row removes it later.
+- **Owner rulings (2026-10-08):** RFC approved; B1 → **A**; B2 → **A**; deferred rows: D83 joins, D66, D2, D92 and D105 stay.
+- **B7 — AC-4's frames (evaluator, 2026-10-08): A.** The rows keep the frames whose pill this part changes and QA reached: iPhone 2, 5, 6; Android 2, 5. Frames 1, 3, 7 leave (the pill is the same in every home state); 4 waits on lead records; 8 and 10 draw no pill; Hindi is blocked by D143.
+- **Owner rulings (2026-10-08, after review):** B4 approved (`Text` takes `fixedSize`); B5 → **A** (one part, 21 files); B6 → **A** (one Hindi standing company on the iPhone, through the app).
+- **B4 — the D83 cap (review, 2026-10-08).** The plan named `maxFontSizeMultiplier`, which `Text` does not take; dividing the size by the font scale held the size but not the line height, so the label's line box grew to about 72 in a 48 slot. `Text` gains `fixedSize` (native `allowFontScaling={false}`): the label never grows, as the platforms' tab bars do. D42 (`touches packages/ui/src/primitives/Text/`) is met and stays.
+- **B3 — the phone's `safeBottom` (build, 2026-10-08): A.** The plan put `react-native-safe-area-context` in `packages/ui`; `.claude/rules/screen-parts.md` keeps a safe-area inset in the app, and the library would load twice under Metro. The app's frame meets it; the native half declares the prop and does not read it. Delta approved.
+
+- **B5 — the size, re-ruled.** **A · one part at 21 files and about 1,150 lines (recommended):** the five added files are a two-line primitive option and three comment fixes the review asked for. **B · move the three domain comment fixes to a deferred row:** 18 files, but three comments stay false until it is picked.
+- **B6 — the Hindi row (QA, 2026-10-08).** The signed-in app has no language control until the profile screen is built, and the door's choice does not carry into the shell. **A · one Hindi standing company, signed up once on the iPhone with the door in Hindi (recommended)** · B · no Hindi side-by-side in this part.
+
+**Checklist** — [x] pull and invariant · [x] types · [x] web half and component test · [x] native half · [x] phone shell · [x] board frames captured · [x] qa-ios · [x] qa-android · [x] review · [x] gate · [x] docs
+
+#### Runtime — part b
+Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-FPLAT-082b` from `origin/main` `e1f0205b`.
+
+| resource | state at start | identity |
+|---|---|---|
+| web `3002` · api `8084` · metro `8081` | free | — |
+| postgres `5544` · object store `9000` · temporal `7233` | pre_existing | containers `heliogrid-pg-local`, `heliogrid-object-store-local`, `heliogrid-temporal` |
+| simulators · emulators | none booted | — |
+| browser tabs | the pane is closed | — |
+| database routing | `heliogrid_dev` on both URLs | `.env.local` |
+| logs | `.qa/api.log` 6,038,321 · `.qa/web.log` 151,354 · `.qa/metro.log` 470,188 bytes | byte marks |
+| started by the task | api (preview server, launch `api`), Metro (launch `mobile-metro`), simulator `40ED0117` (iPhone 17 Pro), `emulator-5554` (Pixel 8, API 34); database routing moved to `heliogrid_test` on both URLs for QA | preview server ids, UDID, serial |
+| phone text size | iPhone content size `large`; Android `font_scale` 1.0 — restored at teardown | settings |
+| browser pane | tabs `seed` (api) and `tab-1` (Metro, then the `SCR-SHELL-01` board) | tab ids |
+
+**At the end (2026-10-08)**
+
+| resource | state at end |
+|---|---|
+| api · Metro | stopped by Main (preview stop); `3002`, `8084`, `8081` free; no `tsx watch` left |
+| postgres · object store · temporal | pre_existing, untouched |
+| simulator `40ED0117` · `emulator-5554` | shut down |
+| phone text size | iPhone content size `large`, Android `font_scale` 1.0 — restored |
+| browser pane | tabs `seed` and `tab-1` closed; the pane is closed |
+| database routing | restored to `heliogrid_dev` on both URLs (QA ran on `heliogrid_test`) |
+| logs | `.qa/api.log` 6,297,366 · `.qa/web.log` 151,354 · `.qa/metro.log` 486,036 bytes |
+| test data | on `heliogrid_test`, through the app: the Hindi standing company "QA Hindi 902" (+91 98765 09902, stored `en` — D143); the standing …902 and …903 accounts dismissed their first-run mark |
+
+**Measurements:** helper runs — qa-ios 1 (5 continuations), qa-android 1 (5), reviewer 1 (1), evaluator 1 (1); helper tokens about 370k (qa-ios 107k, qa-android 99k, reviewer 128k, evaluator 33k); Main's turns and tokens were not counted. Planned 13 files and about 1,050 lines; built 20 files (counting each deletion and the pulled typing) and about 1,170 lines — code about 900, of them 713 deleted; tests 82; docs 161 — re-ruled B5 A. Full gate: one run, green; the matrix change after it is docs-only (evaluator).
+
+**Mistakes and the rule that now holds each**
+- The plan put `react-native-safe-area-context` in `packages/ui`, against `.claude/rules/screen-parts.md` and the Metro double-load trap → found at build before any QA; the rule already holds it — it was not read at plan time (said out loud; no new rule).
+- The first D83 fix divided the label's size by the font scale and left its line height growing (review) → `Text`'s `fixedSize`; proven live at the largest size on both phones; no automated test holds it (said out loud — the native half has no unit tests).
+- The verb test asserted a mount callback without polling (review) → `tests/e2e/CLAUDE.md` already names it; the spec polls.
+- Four comments still named the retired arc bar (review, Law 8) → fixed; held by review only.
+- The proof matrix promised board frames the running app cannot reach (evaluator) → B7; a proof row names a state the app can reach today, or says why not.
+- QA started on phones still holding another number's half-finished signup → Main cleared both apps' sessions; readiness now includes the app's signed-in account, not only that it is installed (said out loud — no rule written).
 
 ### T-FPLAT-083 · A route answers only what its contract declares
 **Type:** policy · **Tier:** P1

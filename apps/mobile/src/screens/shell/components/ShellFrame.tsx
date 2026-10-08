@@ -1,13 +1,13 @@
-import { BottomNav, type RailItem } from '@heliogrid/ui';
+import { BottomNav, type BottomNavItem } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 import { ScrollView, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { PILL_GAP, styles, underPill } from '../styles';
+import { styles, underPill } from '../styles';
 
 interface ShellFrameProps {
   topBar: ReactNode;
   /** The pill's items; none hides the pill, as Frame 8 does. */
-  items: RailItem[];
+  items: BottomNavItem[];
   /** The item in view, or none on a door the pill does not name. */
   inView?: string;
   children: ReactNode;
@@ -15,8 +15,8 @@ interface ShellFrameProps {
 
 /**
  * The shell's arrangement (`SCR-SHELL-01`): the top bar stays put under the status band, the
- * content scrolls under it and under the pill, and the pill floats above the device's own
- * home-indicator inset — read at run time, never a typed number (`F7-50`).
+ * content scrolls under it and under the pill, and the pill floats in a frame that ends at the
+ * device's own home-indicator inset — read at run time, never a typed number (`F7-50`).
  */
 export function ShellFrame({ topBar, items, inView, children }: ShellFrameProps) {
   const insets = useSafeAreaInsets();
@@ -37,8 +37,8 @@ export function ShellFrame({ topBar, items, inView, children }: ShellFrameProps)
         {children}
       </ScrollView>
       {pill ? (
-        <View style={[styles.pill, { bottom: insets.bottom + PILL_GAP }]}>
-          <BottomNav shape="pill" items={items} value={inView} />
+        <View pointerEvents="box-none" style={[styles.pillFrame, { bottom: insets.bottom }]}>
+          <BottomNav items={items} value={inView} />
         </View>
       ) : null}
     </SafeAreaView>

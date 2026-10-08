@@ -2,7 +2,7 @@ import type { Shell } from '@heliogrid/data/react';
 import type { StandingDestination } from '@heliogrid/domain';
 import { destinationLabel, verbLabel } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import type { RailItem } from '@heliogrid/ui';
+import type { BottomNavItem } from '@heliogrid/ui';
 import { DESTINATION_GLYPH, ShellGlyph } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
 import { createElement, type RefObject } from 'react';
@@ -25,11 +25,11 @@ const glyph = (destination: StandingDestination, filled: boolean) =>
 export function usePillItems(
   shell: Pick<Shell, 'destinations' | 'centreVerb'>,
   actionRef: RefObject<View | null>,
-): RailItem[] {
+): BottomNavItem[] {
   const t = useTranslate();
   const navigation = useNavigation();
   if (shell.destinations === null) return [];
-  const items: RailItem[] = shell.destinations.map((destination) => ({
+  const items: BottomNavItem[] = shell.destinations.map((destination) => ({
     key: destination,
     label: destinationLabel(t, destination),
     icon: glyph(destination, false),
@@ -41,8 +41,9 @@ export function usePillItems(
   }));
   const verb = shell.centreVerb;
   if (verb === null) return items;
-  const action: RailItem = {
+  const action: BottomNavItem = {
     key: 'action',
+    verb: true,
     label: verbLabel(t, verb),
     icon: createElement(ShellGlyph, { name: 'plus-circle' }),
     anchor: actionRef,

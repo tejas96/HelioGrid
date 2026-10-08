@@ -2,7 +2,7 @@ import type { Capability } from '../authz/capabilities';
 import type { RolePreset } from '../authz/roles';
 
 /**
- * The act under the arc bar's raised centre (`F7-22`). A screen renders a KEY and the glyph never
+ * The act in the middle of the footer pill (`F7-22`). A screen renders a KEY and the glyph never
  * changes; the words are `packages/i18n`'s. Adding a verb here is not enough — it needs the
  * capability it performs below, and a home to carry it.
  */
