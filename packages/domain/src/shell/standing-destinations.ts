@@ -2,7 +2,7 @@ import type { VisibilityDomain } from '../authz/cells';
 import type { RolePreset } from '../authz/roles';
 
 /**
- * The lists a person keeps under their thumb between Home and More — the arc bar's middle slots
+ * The lists a person keeps under their thumb between Home and More — the footer pill's middle slots
  * (`F7-22`). Proposals, never Quotes (`F6-22`).
  */
 export const WORK_DESTINATIONS = ['leads', 'proposals', 'projects', 'people', 'campaigns'] as const;

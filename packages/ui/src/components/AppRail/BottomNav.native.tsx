@@ -1,192 +1,126 @@
 import { theme } from '@heliogrid/theme';
-import { useState } from 'react';
-import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
+import type { RefObject } from 'react';
+import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { badgeName, showsBadge } from '../AppShell/AppShell.types';
 import { CountBadge } from '../AppShell/CountBadge.native';
+import type { CoachMarkAnchor } from '../CoachMark/CoachMark.types';
 import type { BottomNavProps, RailItem } from './AppRail.types';
-import { ICON_BOX, ICON_GAP, ICON_TOP, isFabSlot, LABEL_TOP, slotDrop } from './AppRail.types';
-import { PillNav } from './PillNav.native';
+import { isInView, PILL_NAV_SLOT_HEIGHT, PILL_NAV_SLOT_WIDTH, pressItem } from './AppRail.types';
 
 interface NativeBottomNavProps extends BottomNavProps {
   style?: StyleProp<ViewStyle>;
 }
 
-/** The concave cut, drawn as geometry: RN has no mask-image, so the notch is a path. */
-function notchPath(width: number, height: number, radius: number): string {
-  const corner = theme.radius['r-lg'];
-  const centre = width / 2;
-  return [
-    `M0 ${height}V${corner}A${corner} ${corner} 0 0 1 ${corner} 0`,
-    `H${centre - radius}A${radius} ${radius} 0 0 0 ${centre + radius} 0`,
-    `H${width - corner}A${corner} ${corner} 0 0 1 ${width} ${corner}`,
-    `V${height}Z`,
-  ].join('');
-}
-
 /**
- * The phone bar: destinations around a raised FAB under ONE parabolic top edge that the icons
- * and labels ride — each slot's content is pushed down by the arc's depth at that slot's centre.
+ * The phone shell's footer (`F7-22`): one white pill that floats, so it separates by its shadow
+ * and never a line (`F7-15`). Floating, it sits at the design system's inset and gap from the
+ * bottom of the frame it floats in. The device's bottom inset is the app's (`F7-50`): its frame
+ * ends there, so `safeBottom` is met by the caller on the phone and not read here.
  *
- * THE PLATE IS GEOMETRY ON BOTH PLATFORMS, but the lift is not: the web floats the bar on a
- * `drop-shadow` that follows the curved silhouette, and RN shadows follow a View's rectangle. So
- * the flat plate keeps its shadow and the curve and notch plates — being SVG paths — carry none.
+ * Slots sit space-between at a fixed width, so More stays at the right end whatever the count and
+ * no slot narrows under 44 when a long label is in view.
  */
 export function BottomNav({
   items,
   value,
   onChange,
-  fab,
-  shape = 'curve',
-  curveHeight = 21,
-  height = 72,
-  notchRadius = 38,
-  fabOffset = 23,
+  floating = true,
   style,
 }: NativeBottomNavProps) {
-  const [barWidth, setBarWidth] = useState(0);
-  if (shape === 'pill')
-    return <PillNav items={items} value={value} onChange={onChange} style={style} />;
-  const count = items.length === 0 ? 1 : items.length;
-  const curved = shape === 'curve';
-  const rise = curved ? curveHeight : 0;
-
-  const onLayout = (event: LayoutChangeEvent) => {
-    setBarWidth(event.nativeEvent.layout.width);
-  };
-
   return (
-    <View style={style}>
-      <View onLayout={onLayout} style={[styles.bar, { height }]}>
-        {shape === 'flat' ? (
-          <View style={styles.flatPlate} />
-        ) : (
-          <Svg
-            width="100%"
-            height="100%"
-            viewBox={curved ? `0 0 100 ${height}` : `0 0 ${barWidth} ${height}`}
-            preserveAspectRatio={curved ? 'none' : 'xMidYMid meet'}
-            style={StyleSheet.absoluteFill}
-          >
-            <Path
-              d={
-                curved
-                  ? `M0 ${rise}Q 50 ${-rise} 100 ${rise}L100 ${height}L0 ${height}Z`
-                  : notchPath(barWidth, height, notchRadius)
-              }
-              // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
-              fill={theme.colors.surface}
-            />
-          </Svg>
-        )}
-        {/* THE BAR IS A NAVIGATION LANDMARK, NOT A TABLIST. The DS half is `<nav aria-label="Primary">`
-            (ds-v2 navigation/AppRail.jsx) and each slot carries `aria-current="page"`, not
-            `aria-selected` — destinations, not tabs, and a `tablist` without `tab` children
-            announces a set that is not there. RN models no landmark roles, so the honest native
-            form of a `<nav>` is a plain View: the drift was the invented role, not a missing one. */}
-        <View style={styles.slots}>
-          {items.map((item, index) => {
-            const drop = slotDrop(index, count, rise);
-            if (isFabSlot(item)) {
-              return (
-                <View key={item.key} style={[styles.fabSlot, { paddingTop: LABEL_TOP - 6 + drop }]}>
-                  {item.label !== undefined ? (
-                    <Text variant="caption" color="secondary" style={styles.label}>
-                      {item.label}
-                    </Text>
-                  ) : null}
-                </View>
-              );
-            }
-            return (
-              <NavItem
-                key={item.key}
-                item={item}
-                active={item.key === value}
-                drop={drop}
-                onPress={() => onChange?.(item.key)}
-              />
-            );
-          })}
-        </View>
-      </View>
-      {fab !== undefined ? (
-        <View pointerEvents="box-none" style={[styles.fab, { top: -fabOffset }]}>
-          {fab}
-        </View>
-      ) : null}
+    <View style={[styles.pill, floating ? styles.floating : undefined, style]}>
+      {items.map((item) => (
+        <NavItem
+          key={item.key}
+          item={item}
+          inView={isInView(item, value)}
+          onPress={() => pressItem(item, onChange)}
+        />
+      ))}
     </View>
   );
 }
 
 interface NavItemProps {
   item: RailItem;
-  active: boolean;
-  drop: number;
+  inView: boolean;
   onPress: () => void;
 }
 
-/** The label is EXPLICIT — otherwise the badge numeral and the visible label run together. */
-function NavItem({ item, active, drop, onPress }: NavItemProps) {
+/** In view: the near-black pill with its filled icon and its label. Otherwise the icon alone. */
+function NavItem({ item, inView, onPress }: NavItemProps) {
   return (
-    <Pressable
-      accessibilityLabel={badgeName(item.label, item.badge)}
-      onPress={onPress}
-      style={[styles.item, { paddingTop: ICON_TOP + drop }]}
-    >
-      {/* Filled variants exist only for the active item — the one place this system mixes them.
-          Colour carries the state; the label weight does not change. */}
-      <View style={styles.icon}>
-        {active ? (item.activeIcon ?? item.icon) : item.icon}
-        {showsBadge(item.badge) ? (
-          <View style={styles.badge}>
-            <CountBadge count={item.badge} label={item.label.toLowerCase()} />
-          </View>
+    <View ref={viewRef(item.anchor)} collapsable={false}>
+      {/* A destination, not a tab: the web half says so with `aria-current="page"`, which React
+          Native has no partner for — the same answer `AppRail` gives. */}
+      <Pressable
+        accessibilityLabel={badgeName(item.label, item.badge)}
+        onPress={onPress}
+        style={[styles.item, inView ? styles.inView : undefined]}
+      >
+        <View style={styles.icon}>
+          {inView ? (item.activeIcon ?? item.icon) : item.icon}
+          {showsBadge(item.badge) ? (
+            <View style={styles.badge}>
+              <CountBadge count={item.badge} label={item.label.toLowerCase()} />
+            </View>
+          ) : null}
+        </View>
+        {inView ? (
+          <Text variant="body" color="inverse" fixedSize style={styles.label}>
+            {item.label}
+          </Text>
         ) : null}
-      </View>
-      <Text variant="caption" color={active ? 'accent' : 'tertiary'} style={styles.label}>
-        {item.label}
-      </Text>
-    </Pressable>
+      </Pressable>
+    </View>
   );
 }
 
+/** A coach mark measures the View this ref holds; any other anchor has no meaning on the phone. */
+function viewRef(anchor: CoachMarkAnchor | undefined): RefObject<View | null> | undefined {
+  if (anchor === undefined || typeof anchor === 'string' || !('current' in anchor))
+    return undefined;
+  return anchor as RefObject<View | null>;
+}
+
 const styles = StyleSheet.create({
-  bar: {
-    position: 'relative',
-  },
-  flatPlate: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    borderTopLeftRadius: theme.radius['r-lg'],
-    borderTopRightRadius: theme.radius['r-lg'],
+  pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: theme.layout['bottomnav-pill-h'],
+    paddingHorizontal: theme.spacing['sp-2'],
+    borderRadius: theme.radius['r-pill'],
     // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
     backgroundColor: theme.colors.surface,
-    ...theme.elevation.e2,
+    ...theme.elevation.e4,
   },
-  slots: {
-    position: 'relative',
-    flexDirection: 'row',
-    height: '100%',
+  floating: {
+    position: 'absolute',
+    left: theme.layout['bottomnav-inset'],
+    right: theme.layout['bottomnav-inset'],
+    bottom: theme.layout['bottomnav-gap'],
   },
   item: {
-    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    gap: ICON_GAP,
-    height: '100%',
+    justifyContent: 'center',
+    gap: theme.spacing['sp-2'],
+    minWidth: PILL_NAV_SLOT_WIDTH,
+    height: PILL_NAV_SLOT_HEIGHT,
+    borderRadius: theme.radius['r-pill'],
+  },
+  inView: {
+    paddingHorizontal: theme.spacing['sp-4'],
+    backgroundColor: theme.colors['action-primary'],
   },
   icon: {
     position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
-    height: ICON_BOX,
   },
   badge: {
     position: 'absolute',
@@ -194,20 +128,8 @@ const styles = StyleSheet.create({
     right: -14,
   },
   label: {
-    lineHeight: 14,
+    fontSize: theme.type.roles.button.fontSize,
+    letterSpacing: theme.type.roles.button.letterSpacing,
     fontWeight: '500',
-    letterSpacing: -0.12,
-  },
-  fabSlot: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  fab: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    zIndex: 1,
-    alignItems: 'center',
   },
 });

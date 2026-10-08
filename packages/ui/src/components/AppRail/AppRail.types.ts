@@ -52,40 +52,31 @@ export interface AppRailProps {
   brand?: ReactNode;
 }
 
-/** Use `{ key, fab: true, label }` to reserve the centre slot; the label sits under the FAB. */
-export interface BottomNavFabSlot {
-  key: string;
-  fab: true;
-  label?: string;
-}
-
-export type BottomNavItem = RailItem | BottomNavFabSlot;
+/**
+ * A `verb` item is the role's action: it runs its `onClick`, is never in view, and its label is
+ * its name.
+ */
+export type BottomNavItem = RailItem & { verb?: boolean };
 
 /**
- * pill = the phone shell (`F7-22`): one white pill floating over the page, the item in view a
- * near-black pill with its icon and label, every other item an icon named by its label · curve =
- * one parabolic sweep, icons and labels riding it · notch = concave cut · flat = plain bar. The
- * last three are the retired arc's, kept while the design system's contract still names them.
+ * The phone footer (`F7-22`): one white pill. The item in view is a near-black pill with its icon
+ * and label; every other item is its icon, named by its label. The order is the caller's.
  */
-export type BottomNavShape = 'pill' | 'curve' | 'notch' | 'flat';
-
 export interface BottomNavProps {
   items: BottomNavItem[];
   value?: string;
   onChange?: (key: string) => void;
-  fab?: ReactNode;
-  shape?: BottomNavShape;
   /**
-   * Depth of the arc: how far the edges sit below the centre peak. 21 is the drawn spec —
-   * changing it moves the icons and labels with the curve, since they ride it.
+   * Over the screen, `--bottomnav-inset` from each side and `--bottomnav-gap` above the bottom.
+   * Default true. False leaves the pill in the flow, for a caller that places it.
    */
-  curveHeight?: number;
-  /** Bar height measured from the centre peak down. Matches --bottomnav-h. */
-  height?: number;
-  /** Radius of the concave cut when shape="notch". */
-  notchRadius?: number;
-  /** How far the FAB rides above the peak. 23 of its 56 sits proud, the rest inside the bar. */
-  fabOffset?: number;
+  floating?: boolean;
+  /**
+   * Above the device's own bottom inset, read at run time (`F7-50`). Default true. The web reads
+   * it; on the phone the inset is the app's (`.claude/rules/screen-parts.md`), so the frame the
+   * pill floats in ends at it and the native half does not read this.
+   */
+  safeBottom?: boolean;
 }
 
 export interface FabProps {
@@ -96,34 +87,19 @@ export interface FabProps {
 }
 
 /**
- * Vertical rhythm measured from the curve's peak: 13 icon top / 24 icon box / 4 gap / 14 label
- * line. ONE declaration for both platforms — the content RIDES the arc, so these are the numbers
- * the per-slot drop is added to.
- */
-export const ICON_TOP = 13;
-export const ICON_BOX = 24;
-export const ICON_GAP = 4;
-export const LABEL_TOP = ICON_TOP + ICON_BOX + ICON_GAP;
-
-/** Depth of the parabolic edge at slot `k`'s centre, across `count` equal slots. */
-export function slotDrop(k: number, count: number, rise: number): number {
-  if (rise === 0 || count === 0) {
-    return 0;
-  }
-  const u = ((k + 0.5) / count - 0.5) * 2;
-  return rise * u * u;
-}
-
-/**
- * The pill's numbers, ONE declaration for both halves. A slot is the touch floor wide and 48
- * tall — wider flex slots fall under 44 once a long label is in view (`SCR-SHELL-01`) — and the
- * pill is a slot plus `--sp-2` above and below. A screen pads its scroll by `PILL_NAV_HEIGHT`, so it
- * is exported rather than retyped.
+ * The pill's slot, ONE declaration for both halves: the touch floor wide and 48 tall — wider flex
+ * slots fall under 44 once a long label is in view (`SCR-SHELL-01`).
  */
 export const PILL_NAV_SLOT_WIDTH = MIN_TOUCH_TARGET;
 export const PILL_NAV_SLOT_HEIGHT = theme.spacing['sp-12'];
-export const PILL_NAV_HEIGHT = PILL_NAV_SLOT_HEIGHT + 2 * theme.spacing['sp-2'];
 
-export function isFabSlot(item: BottomNavItem): item is BottomNavFabSlot {
-  return 'fab' in item && item.fab === true;
+/** The verb is never the item in view, whatever `value` says. */
+export function isInView(item: BottomNavItem, value: string | undefined): boolean {
+  return item.verb !== true && item.key === value;
+}
+
+/** An item with its own act runs it; any other item is a destination, handed to `onChange`. */
+export function pressItem(item: BottomNavItem, onChange?: (key: string) => void): void {
+  if (item.onClick === undefined) onChange?.(item.key);
+  else item.onClick();
 }

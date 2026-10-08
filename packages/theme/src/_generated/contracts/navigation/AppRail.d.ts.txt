@@ -36,26 +36,20 @@ export interface AppRailProps {
 export function AppRail(props: AppRailProps): JSX.Element;
 
 export interface BottomNavProps {
-  /** Use `{ key, fab: true, label }` to reserve the centre slot; the label sits under the FAB. */
-  items: (RailItem | { key: string; fab: true; label?: string })[];
+  /** Five items: Home, first list, the role's verb (`verb: true`, e.g. "Add lead" / "Start survey"),
+   *  second list, More. The verb takes `onClick`, never becomes active, and its label is its
+   *  accessible name. `fab: true` is read as `verb: true`. */
+  items: (RailItem & { verb?: boolean; fab?: boolean })[];
   value?: string;
   onChange?: (key: string) => void;
-  fab?: React.ReactNode;
-  /** curve = one parabolic sweep across the full width, icons and labels riding it (default,
-   *  the signature of the phone shell) · notch = concave cut · flat = plain bar. */
-  shape?: "curve" | "notch" | "flat";
-  /** Depth of the arc: how far the edges sit below the centre peak. 21 is the drawn spec —
-   *  changing it moves the icons and labels with the curve, since they ride it. */
-  curveHeight?: number;
-  /** Bar height measured from the centre peak down. Matches --bottomnav-h. */
-  height?: number;
-  /** Radius of the concave cut when shape="notch". */
-  notchRadius?: number;
-  /** How far the FAB rides above the peak. 23 of its 56 sits proud, the rest inside the bar. */
-  fabOffset?: number;
+  /** Absolutely positioned over the screen, 20px from each side, 26px above the safe area. Default true. */
+  floating?: boolean;
+  /** Sit above the 34px home bar (--safe-bottom). Default true. */
+  safeBottom?: boolean;
   style?: React.CSSProperties;
 }
-/** Phone navigation bar — four destinations around a raised FAB under one parabolic edge. */
+/** Phone footer — one floating white pill. Active item: black pill with icon + label; others:
+ *  23px icons with accessible names. Replaces the arc bar and the raised FAB. */
 export function BottomNav(props: BottomNavProps): JSX.Element;
 
 export interface FabProps {

@@ -1,6 +1,5 @@
 /* AppRail — the 72px desktop icon rail. The active item is an accent-subtle tile, never a
-   border and never a left accent bar. BottomNav — the phone counterpart, four destinations
-   around a raised near-black FAB under one parabolic top edge that the content rides. */
+   border and never a left accent bar. */
 
 .hg-app-rail {
   flex-shrink: 0;
@@ -77,15 +76,16 @@
   right: calc(-1 * var(--sp-1));
 }
 
-/* ── PillNav — the phone shell's footer (F7-22) ───────────────────────────────────────────
-   A float: separated by its shadow, never a line (F7-15). The screen places it over the insets. */
+/* ── BottomNav — the phone shell's footer (F7-22) ────────────────────────────────────────
+   A float: separated by its shadow, never a line (F7-15). Floating, it sits over the screen at the
+   design system's inset and gap, above the device's own bottom inset (F7-50). */
 
-.hg-pill-nav {
+.hg-bottom-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
-  height: var(--hg-pill-height);
+  height: var(--bottomnav-pill-h);
   padding: 0 var(--sp-2);
   border-radius: var(--r-pill);
   /* biome-ignore lint/plugin/raw-white-css: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15) */
@@ -93,7 +93,20 @@
   box-shadow: var(--e4);
 }
 
-.hg-pill-nav-item {
+/* Above the screen's scrolling content, below every sheet. */
+.hg-bottom-nav[data-floating="true"] {
+  position: absolute;
+  z-index: 1;
+  left: var(--bottomnav-inset);
+  right: var(--bottomnav-inset);
+  bottom: var(--bottomnav-gap);
+}
+
+.hg-bottom-nav[data-safe-bottom="true"] {
+  bottom: calc(env(safe-area-inset-bottom) + var(--bottomnav-gap));
+}
+
+.hg-bottom-nav-item {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -109,114 +122,21 @@
   cursor: pointer;
 }
 
-.hg-pill-nav-item[data-in-view="true"] {
+.hg-bottom-nav-item[data-in-view="true"] {
   padding: 0 var(--sp-4);
   background: var(--action-primary);
   color: var(--text-inverse);
 }
 
-.hg-pill-nav-item:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
-}
-
-.hg-pill-nav-icon {
-  position: relative;
-  display: grid;
-  place-items: center;
-}
-
-.hg-pill-nav-badge {
-  position: absolute;
-  top: -6px;
-  right: -14px;
-}
-
-.hg-pill-nav-label {
-  font-family: var(--font-sans);
-  font-size: var(--fs-button);
-  font-weight: var(--fw-medium);
-  letter-spacing: var(--tr-button);
-  white-space: nowrap;
-}
-
-/* ── BottomNav ─────────────────────────────────────────────────────────────────────────── */
-
-.hg-bottom-nav {
-  position: relative;
-}
-
-/* The lift under the bar. There is no drop-shadow token, so the ink is --hairline — the DS's
-   own near-black at 6%, the closest token to the drawn 5% and the only one that is a LINE. */
-.hg-bottom-nav-bar {
-  position: relative;
-  height: var(--hg-bottom-nav-height, var(--bottomnav-h));
-  filter: drop-shadow(0 -1px 8px var(--hairline));
-}
-
-svg.hg-bottom-nav-plate {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-div.hg-bottom-nav-plate {
-  position: absolute;
-  inset: 0;
-  border-radius: var(--r-lg) var(--r-lg) 0 0;
-  /* biome-ignore lint/plugin/raw-white-css: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15) */
-  background: var(--surface);
-}
-
-/* A mask reads the ALPHA channel only — --text-primary is simply the opaque token that keeps a
-   raw colour out of the gradient. The concave alternative to the parabolic sweep. */
-div.hg-bottom-nav-plate[data-shape="notch"] {
-  mask-image: radial-gradient(
-    circle var(--hg-bottom-nav-notch-radius) at 50% 0,
-    transparent 0 var(--hg-bottom-nav-notch-radius),
-    var(--text-primary) calc(var(--hg-bottom-nav-notch-radius) + 0.5px)
-  );
-}
-
-/* Equal 1fr slots — the FAB's slot is exactly as wide as the rest, so all the centres are
-   evenly spaced. A fixed-width spacer for the FAB threw the others off centre. */
-.hg-bottom-nav-slots {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(var(--hg-bottom-nav-slots, 5), 1fr);
-  height: 100%;
-}
-
-.hg-bottom-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--hg-bottom-nav-icon-gap);
-  height: 100%;
-  border: none;
-  padding-top: calc(var(--hg-bottom-nav-icon-top) + var(--hg-bottom-nav-drop, 0px));
-  background: transparent;
-  color: var(--text-tertiary);
-  cursor: pointer;
-  transition: color var(--dur-standard) var(--ease-standard);
-}
-
-.hg-bottom-nav-item[data-active="true"] {
-  color: var(--accent);
-}
-
 .hg-bottom-nav-item:focus-visible {
   outline: 2px solid var(--focus-ring);
-  outline-offset: -2px;
+  outline-offset: 2px;
 }
 
 .hg-bottom-nav-icon {
   position: relative;
   display: grid;
   place-items: center;
-  height: var(--hg-bottom-nav-icon-box);
 }
 
 .hg-bottom-nav-badge {
@@ -227,36 +147,10 @@ div.hg-bottom-nav-plate[data-shape="notch"] {
 
 .hg-bottom-nav-label {
   font-family: var(--font-sans);
-  font-size: var(--fs-caption);
-  line-height: 14px;
+  font-size: var(--fs-button);
   font-weight: var(--fw-medium);
   letter-spacing: var(--tr-button);
-  /* A nav slot has a fixed height, so a longer translation TRUNCATES rather than wrapping —
-     without the ellipsis it silently overflowed into the slot beside it. */
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* The FAB's own label hangs 6px above the others' line because it has no icon box above it. */
-.hg-bottom-nav-fab-slot {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: calc(var(--hg-bottom-nav-label-top) - 6px + var(--hg-bottom-nav-drop, 0px));
-}
-
-.hg-bottom-nav-fab-slot .hg-bottom-nav-label {
-  color: var(--text-secondary);
-}
-
-/* 23 of the FAB's 56 sits proud of the peak; the rest sits inside the bar. */
-.hg-bottom-nav-fab {
-  position: absolute;
-  top: calc(-1 * var(--hg-bottom-nav-fab-offset));
-  left: 50%;
-  z-index: 1;
-  transform: translateX(-50%);
 }
 
 /* ── Fab ───────────────────────────────────────────────────────────────────────────────── */

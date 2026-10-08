@@ -171,6 +171,7 @@ export function Text({
   live,
   oneLine,
   bold,
+  fixedSize,
   style,
 }: NativeTextProps) {
   /* Appended only when the scale would clip, and appended LAST so it also outranks a consumer's
@@ -190,6 +191,7 @@ export function Text({
       ]}
       accessibilityLanguage={lang}
       accessibilityLiveRegion={live === true ? 'assertive' : 'none'}
+      allowFontScaling={fixedSize !== true}
       numberOfLines={oneLine === true ? 1 : undefined}
       ellipsizeMode={oneLine === true ? 'tail' : undefined}
     >
