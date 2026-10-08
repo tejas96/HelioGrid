@@ -1,3 +1,4 @@
+import { nationalNumber } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
@@ -5,7 +6,6 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import { FIELD_BOX_EDGE, fieldBox, fieldBoxText } from '../../primitives/FieldBox/FieldBox.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/MarketProvider.native';
-import { NON_DIGIT } from './PhoneField.logic';
 import type { PhoneFieldDensity, PhoneFieldProps, PhoneValueProps } from './PhoneField.types';
 
 interface NativePhoneFieldProps extends PhoneFieldProps {
@@ -79,14 +79,12 @@ export function PhoneField({
   const mkt = useFormat();
   const [focus, setFocus] = useState(false);
   const { dialCode } = mkt.pack.phone;
-  const code = dialCode.replace(NON_DIGIT, '');
 
-  const digits = value.replace(NON_DIGIT, '');
-  const nsn = digits.startsWith(code) ? digits.slice(code.length) : digits;
-  const shown = mkt.phone(nsn, { nsn: true });
+  const shown = mkt.phone(value, { nsn: true });
 
+  /* A number pasted whole carries its `+` and code, which the box already shows beside it. */
   const commit = (typed: string): void => {
-    const entered = typed.replace(NON_DIGIT, '');
+    const entered = nationalNumber(mkt.pack, typed);
     onChange?.(entered.length === 0 ? '' : `${dialCode}${entered}`);
   };
 
