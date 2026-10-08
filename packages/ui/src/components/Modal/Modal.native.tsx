@@ -126,7 +126,12 @@ export function Modal({
           {children === undefined ? null : (
             <ScrollView
               style={styles.body}
-              contentContainerStyle={{ paddingTop: theme.spacing['sp-4'], paddingHorizontal: pad }}
+              contentContainerStyle={{
+                paddingTop: theme.spacing['sp-4'],
+                paddingHorizontal: pad,
+                /* With no footer the body is the panel's last part and keeps its padding. */
+                paddingBottom: footer === null ? pad : 0,
+              }}
             >
               {children}
             </ScrollView>

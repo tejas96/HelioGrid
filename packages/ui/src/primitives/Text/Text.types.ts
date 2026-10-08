@@ -71,9 +71,10 @@ export interface TextProps {
   /** The variant at the bold weight — a name that must stand out in a line of its own size. */
   bold?: boolean;
   /**
-   * Keep the words at their drawn size whatever text size the person set — only for a control the
-   * platforms' own versions never grow, like a tab bar's label: grown, the footer's label pushed
-   * More off the screen (D83). Its name still reaches a screen reader whole.
+   * Keep the words at their drawn size whatever text size the person set — only for a control, or
+   * a bar's or a sheet's title, that the platforms' own versions never grow, like a tab bar's
+   * label: grown, the footer's label pushed More off the screen (D83). Its name still reaches a
+   * screen reader whole.
    * Native: `allowFontScaling={false}`. The web has no text size of its own to ignore.
    */
   fixedSize?: boolean;

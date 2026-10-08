@@ -3356,7 +3356,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 
 ### T-FPLAT-082 · The open page — the app's design tokens and components pulled level with the live design system
 **Type:** port · **Tier:** P0
-**Status:** in progress — parts a, b, c, d, e and f shipped; part g open
+**Status:** in progress — parts a, b, c, d, e, f and g shipped; part h open
 **Why:** Every screen is drawn on the live design system, but the app draws with a snapshot of it pulled on 2026-08-19 plus partial pulls. The design system's open page (2026-09-29) made the page white and moved grey to the fill of fields, tiles and chips, restyled the fields, the phone header and footer and the list tiles, and added tokens the boards use (`--fill`, `--tile-pad`, `--r-tile`). Without the pull, no screen can match its board: a screen built now is built against values the design has already left.
 **PRD rows:** none of its own — the design system is the visual authority (`F7`); `docs/engineering/17-ui-architecture-v2.md` §6 owns the pull.
 **Design:** none — no screen of its own; each part checks the built screens it touches against their boards.
@@ -3372,7 +3372,8 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | d | the header: `AppShell.d.ts` pulled once the design system draws the company's name as words and moves `PhoneScreen` to its own file (part b, B1) — `MobileTopBar`'s `company` and `safeTop`, `ShellAction`'s `round`, the round grey search and bell; the top bar at the largest text (D144, D2 A); part b's design-system leftovers (`AppRail.jsx`'s arc comment, the in-view item 50 against 48, `RailItem.anchor`, `searchLabel`/`notificationsLabel`) and `Card.d.ts`'s stale comment — each design-system change by the owner's paste first. The search pill and its filter square moved to D145 (D1 A) | its own RFC | c | shipped |
 | e | the held-back typings and the design system's open rulings: `Banner`'s `actionBelow` and `onFormChange` ported on both halves, with the held-back `Banner.d.ts.txt` and `adherence.oxlintrc.json` pulled (D31, deferred review 2026-10-08); the design system's `PhoneField` reads the dial code from its market and its typing is pulled (D130); `RichText`'s frame drawn by `FieldBox` (D60); a placeholder takes `--text-tertiary` (D131, `F7-15`); the overline and mono take the body's line height, 1.55 (D136) — each design-system change by the owner's paste first | its own RFC | c | shipped |
 | f | words kept for a screen reader: one visually-hidden option — `Text`'s `spokenOnly`, the rule written once in `Text.css` — with every copy moved onto it and a Biome rule against a new one (D93); a loading `Button` keeps its name for assistive technology (D84) | its own RFC | c | shipped |
-| g | the overlays' and controls' edges: the phone `Menu` and `Sheet` backdrop named or hidden for a screen reader (D82); `Modal`'s body takes its bottom padding at 375 (D88); the phone `Sheet`'s close target, title wrap, `Badge` and close label (D96) — split from f by `T-FPLAT-082f`'s ruling F2 | its own RFC | f | open |
+| g | the overlays' edges: the phone `Menu` and `Sheet` scrim proven already out of a screen reader's way (D82); `Modal`'s last body padded on both halves (D88); the phone `Sheet`'s close target, title and `Badge` at every text size (D96) — split from f by `T-FPLAT-082f`'s ruling F2 | its own RFC | f | shipped |
+| h | the close button's words: a required `closeLabel` from `packages/i18n` on `Sheet`, `Modal`, `DetailPanel`, `EditorSurface` and `FilterPanel`, filled by every caller on both platforms (D96's last item); `OverlayClose.types.ts` authored once with the offset union and the required label — split from g by `T-FPLAT-082g`'s ruling G2 | its own RFC | g | open |
 
 #### Part a · RFC
 
@@ -4306,7 +4307,7 @@ In the HelioGrid screens project, change SCR-M01-01 and SCR-M01-02. Change nothi
 
 **Planted reds (2026-10-08):** `actionBelow` renamed out of the port → `design-system-props` named `Banner.actionBelow`; the stack comparison flipped → four `Banner.spec.tsx` tests failed; the change guard removed → "onFormChange reports each change of place once" failed; the frame off `fieldBox` → two `RichText.spec.tsx` tests failed; `FieldBox.css`'s placeholder back to secondary → "is --text-tertiary in an empty field" failed. All restored.
 
-**Checklist** — [x] pull and invariant · [x] `Banner` rule, halves, spec · [x] `RichText` · [x] placeholder and pair · [x] line heights · [x] board frames captured · [x] qa-web · [x] qa-ios · [x] qa-android · [x] paste re-pulls · [x] review · [ ] gate · [x] docs
+**Checklist** — [x] pull and invariant · [x] `Banner` rule, halves, spec · [x] `RichText` · [x] placeholder and pair · [x] line heights · [x] board frames captured · [x] qa-web · [x] qa-ios · [x] qa-android · [x] paste re-pulls · [x] review · [x] gate · [x] docs
 
 #### Runtime — part e
 Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-FPLAT-082e` from `origin/main` `738e5e7c`.
@@ -4484,7 +4485,7 @@ None — no wire boundary changes.
 - **QA (2026-10-08):** all pass. AC-2 web at 375 and 1536: on the door the phone field's whole number, on the home the page heading "Owner Dashboard" and the bell's "7 unread notifications" — each 1×1, `clip-path` `inset(50%)`, in the accessibility tree; no overflow. AC-3 web, the api held: the loading button named "Sending the code" by its hidden words, `aria-busy="true"`, the spinner hidden; the browser tool's tree once showed it unnamed, so the spec now reads Chrome's own accessibility tree (CDP), which names it. AC-4 iOS: label "Sending the code", value "busy"; Android: content-desc "Sending the code, busy" (React Native speaks the busy state in the name). The api was held by the owner's own `kill -STOP` / `kill -CONT` on its pid: `.claude/settings.json` denies `kill` to Main. All three surfaces first sat on company signup's step 3 from part e's run with no way out (D146); Main cleared the phones' saved sessions and signed the web session out through `POST /auth/sign-out`.
 **Planted reds (2026-10-08):** the old rule pasted back into `Block.css` (`clip-path: inset(50%)`, `clip: rect(0 0 0 0)`, then `-webkit-clip-path: inset(100%)`, `inset(50% 50% 50% 50%)`) → `spoken-only-css` named each, `background-clip: text` and a one-edge `inset(50% 0 0 0)` passed (the second review narrowed the rule to equal edges); the hidden words removed from the web `Button` → "a loading button keeps its words…" failed; `spokenOnly` with a `className` → typecheck refused it.
 
-**Checklist** — [x] `Button.spec` red · [x] rule and `spokenOnly` · [x] `Button` halves · [x] eleven copies and the shell heading · [x] Biome rule and planted red · [x] qa-web · [x] qa-ios · [x] qa-android · [x] review · [ ] gate · [x] docs
+**Checklist** — [x] `Button.spec` red · [x] rule and `spokenOnly` · [x] `Button` halves · [x] eleven copies and the shell heading · [x] Biome rule and planted red · [x] qa-web · [x] qa-ios · [x] qa-android · [x] review · [x] gate · [x] docs
 
 #### Runtime — part f
 Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-FPLAT-082f` from `origin/main` `ae14c1d7`.
@@ -4524,6 +4525,178 @@ Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-F
 - `Button.css` landed outside the file table (review) → added as built, not planned.
 - Removing the CSS copies dropped the shell heading's reason (review) → kept as a comment on each heading.
 
+#### Part g · RFC
+
+##### Title
+T-FPLAT-082g — the overlays' edges: the phone scrim out of a screen reader's way, a modal's last line off its edge, and the phone sheet's close button, title and badge whole at every text size.
+
+##### Description
+- **User impact:** on the phone, a screen reader is proven not to stop on a nameless area behind an open menu or sheet (D82, no code needed). On the web, the grievance note's last line no longer sits on the dialog's edge (D88). On the phone, the notification centre's close button takes a full 44 × 44 touch, its title never breaks inside a word, and its badges show their whole word at the largest text (D96). Indirectly: every later sheet, modal and badge takes these edges from the one component.
+- **Problem solved:** three QA findings on shipped shell screens (`docs/tasks/deferred.md` D82, D88, D96), all in `packages/ui`'s overlay family and its pill. The design system draws two of the same defects (`Modal.jsx`, `Chip.jsx`, read with `DesignSync` on 2026-10-08).
+- **Split:** D96's last item — the close button's words from `packages/i18n` — moves to a new part h (G2).
+
+##### Goals
+- Android's and iOS's own accessibility trees list no unnamed control while the shell's switcher (`Menu`) or the grievance note (`Sheet`) is open.
+- A `Modal` with a body and no footer keeps its side padding under its last line, on both halves.
+- The phone `Sheet`'s close button measures at least 44 × 44 on Android and iOS.
+- At the largest text the phone sheet's title breaks only between words, and a `Badge` holds its whole word.
+
+##### Non-goals
+- The close button's words (part h, G2).
+- Any other title too wide for one word (the home's, D152; `EmptyState`'s, D76): G1's ruling serves them later, its rows stay.
+- `Button` heights (D76, D103, D108) and the filter pills' 43.8 dp (D150).
+- The web `Sheet`'s close: it already takes its 44 × 44 (the header is `z-index: 1` over the handle, `Sheet.css:120-131`); it changes only so both halves draw one header.
+- The design system's typings: no prop changes, so nothing is pulled.
+
+##### Readiness and dependencies
+- Landed: part f (#254) and every earlier part.
+- Design: no screen of its own. No board frame is captured: the look changes only where the boards draw the defect (the grievance note's bottom gap, the phone centre's header under its handle, a badge at the largest text). The owner's paste below makes the design system draw the same, so the next board drawn from it matches.
+- D82 is not yet reproduced. Both scrims carry the hide props since #2 (`Menu.native.tsx:96-100`, `SheetBackdrop.native.tsx:24-29`); `T-SHELL-012`'s QA read a raw view tree, which also lists nodes a screen reader skips. The build reproduces it first (finding 1).
+- Blockers: none. The design-system paste does not hold the port.
+
+##### Proposal
+**Flow.** D82 reproduced on both phones → `Modal.spec` red → D88 on both halves → the close's handle offset → the title → the pill → QA on both phones and the web → the owner's paste and its re-read → docs.
+
+**Findings from testing the requirement:**
+1. **D82 may already be met.** The scrim and the backdrop have been hidden on both phones since #2. Main reads Android's compressed tree (`uiautomator dump --compressed`, the nodes TalkBack reads) and iOS's accessibility tree with each open. **If either lists the scrim**, both get `accessible={false}` — the one prop that also takes them out of Android's focus order; the hide props stay. **If neither does**, D82 closes on that proof with no code, and the rows say so.
+2. **D88 is not a 375 defect and not web-only.** The body's bottom padding is 0 at every width (`Modal.css:131-134`), on the phone too (`Modal.native.tsx:127-129`); a footer hides it. So a body that is the panel's last part takes the panel's padding, both halves. No phone screen draws a `Modal` today (the phone's grievance note is a `Sheet`), so the phone half is proven by review.
+3. **D96's 35.8 dp is the pull above a handle.** The close is pulled up 8 (`OverlayClose.native.tsx:48`) to stop it growing the header. Under a handle the header has no top padding (`SheetHeader.native.tsx:90`), so 8 of the 44 lie outside the header, and a phone takes no touch outside a view's parent: 44 − 8.2 = 35.8. Under a handle the close takes no top pull; the header grows to 44 when its title is one line (8 more). Both halves, so the two draw one header.
+4. **"The title wraps by word" cannot hold for one word wider than the line.** "Notifications" at iOS's largest `h3` is wider than the sheet. → G1.
+5. **The badge and the chip share one pill** (`pillStyle`, `Chip.native.tsx:56-58`; `Chip.css:33-41`). Its fixed `height` becomes a `minHeight`: unchanged at the default size, growing with its words. The chip takes the same fix in the same line.
+6. **Part g as written is about 45 files.** The close's words are a contract change across five components, four screens and three catalogs. → G2.
+
+**Key decisions** (one reason each):
+1. **A new close offset, `handle`**, beside `sheet` and `modal` — the header that knows it sits under a handle picks it, so the pull stays in `OverlayClose`'s one place.
+2. **`accessible={false}` only if reproduced** — a fix for a defect no tree shows is speculative (`CLAUDE.md` §1).
+
+**Order:** D82 reproduced → `Modal.spec` red → `Modal` → close offset → title → pill → QA → paste re-read → docs.
+
+**Twin:** every change is on both halves; D82 is phone-only (the web has no scrim element).
+
+**The owner's paste** (one prompt, into the HelioGrid Design System project):
+> In `components/overlays/Modal.jsx`, when the modal has a body and no footer, give the body the panel's bottom padding (`pad`), so its last line never sits on the dialog's edge. In `components/overlays/Sheet.jsx`, when the sheet has a handle, the header's close button takes `marginTop: 0` instead of `-8`, so its whole 44 × 44 sits inside the header. In `components/data/Chip.jsx`, the pill of `Chip` and of `Badge` takes `minHeight` instead of `height`, so its words never clip at a larger text size. Change nothing else.
+
+##### Architecture diagram
+No boundary change — the change stays inside `packages/ui`'s overlay family and its pill.
+
+```mermaid
+flowchart LR
+  SCRIM[ui Menu and SheetBackdrop native: hidden, not focusable] --> SR[screen reader tree]
+  MODAL[ui Modal both halves: last body padded] --> GN[web grievance note]
+  OC[ui OverlayClose: offset handle] --> SH[ui SheetHeader both halves]
+  SH --> NC[phone notification centre]
+  PILL[ui Chip pill: minHeight] --> BADGE[Badge and Chip]
+  BADGE --> NC
+  DS[design system: owner paste] -.->|re-read| MODAL
+```
+
+##### Package changes
+- **ui:** `OverlayCloseOffset` gains `handle` (internal, not exported from `index.ts`); `SheetHeader` picks it; the phone title takes `fixedSize` (if G1 A); `Modal`'s last body takes the panel padding; the pill takes `minHeight`; the scrims take `accessible={false}` only if reproduced. No public prop, export or contract changes.
+- **Protections (Law 12):** no brand, enum, token, route, table or error code. Said out loud: no check holds a hidden scrim, a padded last body, a 44 target under a handle or a pill that grows — review and QA hold them.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/ui/src/components/Menu/Menu.native.tsx` | D82, only if reproduced; D64 if it joins | the menu |
+| modify | `packages/ui/src/components/Sheet/SheetBackdrop.native.tsx` | D82, only if reproduced | the backdrop |
+| modify | `packages/ui/src/components/Modal/Modal.css` · `Modal.native.tsx` | the last body padded | the modal |
+| modify | `packages/ui/src/components/Sheet/OverlayClose.tsx` · `OverlayClose.native.tsx` · `OverlayShared.css` | the `handle` offset | the shared close |
+| modify | `packages/ui/src/components/Sheet/SheetHeader.tsx` · `SheetHeader.native.tsx` | picks `handle`; the title's size (G1) | the sheet header |
+| modify | `packages/ui/src/components/Chip/Chip.css` · `Chip.native.tsx` | the pill's `minHeight` | the pill |
+| add | `tests/e2e/components/Modal.spec.tsx` · `Sheet.spec.tsx` | a body with no footer keeps the bottom padding; the sheet's close under a handle is 44 × 44 and wholly hit | component tests (`tests/e2e/CLAUDE.md`) |
+| modify | `docs/tasks/F-platform.md` · `docs/tasks/deferred.md` | this RFC; part h's row; `T-FPLAT-084` and `T-FPLAT-086` wait on part h; D82, D88 deleted, D96 narrowed to its words (part h); D156–D159 added | Law 8 |
+| add | `tests/e2e/support/motion.ts` | built, not planned: both new specs wait for the open animation; written once (review) | e2e support |
+| modify | `packages/ui/src/primitives/Text/Text.types.ts` | built, not planned: `fixedSize`'s doc now admits a bar's or a sheet's title (review, Law 8) | the text primitive |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **The phone centre's header grows 8** — QA reads the centre at the default and the largest size on both phones; nothing below it is covered.
+- **A pill that grows could push a row** — at the default size the pill is unchanged (`minHeight` equals the old `height`); QA reads the centre's groups and cards at the largest size.
+- **D82 reproduced on one phone only** — `accessible={false}` goes on both halves of the one scrim anyway; it changes nothing a finger does.
+- **The paste lands late** — the port does not need it; the re-read becomes one deferred row, said on the commit card.
+
+##### Acceptance criteria and proof
+- **AC-1** (D82) — Given the phone `Menu` (the shell's switcher) or `Sheet` (the grievance note) open, when a screen reader's own tree is read, then no unnamed control is in it, on Android and iOS.
+- **AC-2** (D88) — Given a `Modal` with a body and no footer, when it renders, then the body's last line sits the panel's padding above the dialog's edge, at 375 and 1536.
+- **AC-3** (D96) — Given the phone `Sheet` with a handle and a close button, when it renders, then the close's touch area is at least 44 × 44, on Android and iOS.
+- **AC-4** (D96) — Given the largest text size, when the phone notification centre opens, then its title breaks only between words, and every `Badge` shows its whole word, on Android and iOS.
+- **AC-5** (new) — Given the owner's paste, when the design system is read again, then `Modal.jsx`, `Sheet.jsx` and `Chip.jsx` draw the three changes.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 | main-dev | required | emulator, simulator | before any code: the switcher and the grievance note open; Android `uiautomator dump --compressed` and the iOS accessibility tree read → the result recorded (finding 1) | reproduction |
+| AC-1 | qa-android | required | emulator | the same two, after the build: no clickable node without a name in the compressed tree | live |
+| AC-1 | qa-ios | required | simulator | the same: no element without a label | live |
+| AC-2 | main-dev | required | component tests | a body-only `Modal`: the body's last child's bottom to the dialog's bottom = 28 (expressive), 24 (functional); planted red: the rule removed → fails | `tests/e2e/components/Modal.spec.tsx` (ct) |
+| AC-2 | qa-web | required | browser, 375 and 1536 | the grievance note: the body's bottom padding = the panel's 28, and the last line at least 28 from the dialog's edge (amended at QA: the note's own 2px bottom padding makes it 30) | live |
+| AC-3 | main-dev | required | component tests | a `Sheet` with a handle and `showClose`: the close 44 × 44, `elementFromPoint` at the middle of each edge is the close (amended at build: a browser hit-tests the round button's circle, not its corners) | `tests/e2e/components/Sheet.spec.tsx` (ct) |
+| AC-3 | qa-android | required | emulator | the notification centre: the close's bounds ≥ 44 × 44 dp | live |
+| AC-3 | qa-ios | required | simulator | the same in points | live |
+| AC-4 | qa-ios | required | simulator, accessibility-extra-extra-extra-large | the centre's title whole on its line(s); every badge's word whole inside its pill | live |
+| AC-4 | qa-android | required | emulator, font scale 2.0 | the same | live |
+| AC-5 | main-dev | required | DesignSync | after the paste, `get_file` on the three files shows each change | read |
+| AC-1–AC-4 | evaluator · ci | required | `pnpm check:all` · `quality`, `e2e-web` | every check passes | gate · CI |
+
+##### Delivery size
+- **Estimate:** 15 files — 11 code (two of them, `Menu.native.tsx` and `SheetBackdrop.native.tsx`, only if D82 reproduces), 2 tests, 2 docs. About 240 authored lines: code about 40, tests about 70, docs about 130.
+- **One part.** Order as in Proposal.
+
+**Decisions — part g**
+- **G1 — a sheet title too wide for one word at the largest text.** **A · the title keeps its drawn size (recommended):** `fixedSize`, as the top bar's name does (D144); a platform sheet's own title does not grow either, and at its drawn size every word fits. **B · the title grows to a ceiling (1.5×):** a new `Text` prop on both halves; "Notifications" fits at 1.5×, a longer word may not.
+- **G2 — the split.** **A · two parts (recommended):** g is D82, D88 and D96's target, title and badge (this RFC, 15 files); h is D96's close words — a required `closeLabel` on `Sheet`, `Modal`, `DetailPanel`, `EditorSurface` and `FilterPanel` from `packages/i18n`, with its own RFC; `T-FPLAT-084` and `T-FPLAT-086` then wait on h. **B · one part g** at about 45 files.
+- **Deferred rows met:** D64 (`touches …/Menu/Menu.native.tsx`) — **join (recommended)** if D82 changes that file: Back closes the open menu, as `Sheet.native.tsx` does, about 10 lines, proven on the same Android switcher run; otherwise stays. D2, D92 (`touches packages/ui/src/components/`) — stay: part h meets D2's words.
+
+- **Owner rulings (2026-10-08):** RFC approved; G1 → **A** (the title keeps its drawn size); G2 → **A** (two parts; h takes the close words); D64 → **join** if D82 changes `Menu.native.tsx`; D2 and D92 stay.
+
+- **D82 reproduction (2026-10-08, before any code):** the shell's switcher (`Menu`) and the grievance note (`Sheet`) open on both phones. Android's compressed tree (`uiautomator dump --compressed`, the nodes TalkBack reads) and iOS's accessibility tree (`idb ui describe-all`) list no unnamed control; only Android's raw dump lists the scrim, a focusable full-screen view a reader skips. Per finding 1, D82 closes with no code: `Menu.native.tsx` and `SheetBackdrop.native.tsx` are planned and not built, and D64 stays. The same reads found the page behind an open overlay still in the reader's tree (D156).
+- **Review (2026-10-08):** four should-fix and six notes, all fixed or recorded — the part row no longer names D64 and states D82's proof; this reproduction record; the animation wait written once (`support/motion.ts`); a pressable `Chip` keeps its fixed height, so only a label grows (its target gives back the exact difference); the web close's comment gives the web's reason; comments rewrapped; `fixedSize`'s doc widened; AC-3's row names edge middles; `OverlayClose.types.ts` joins part h; a pressable `Chip` at the largest text (D157) and the badge's `nowrap` (D158) recorded.
+- **QA (2026-10-08):** all pass. AC-1: no unnamed control in either reader tree with the switcher, the account menu or the grievance note open, on both phones. AC-2 web at 375 and 1536: the body's bottom padding 28, the last line 30 from the edge (the note's own 2px). AC-3: the close 44 × 44 pt on iOS, 44.2 × 44.2 dp on Android (was 35.8 tall), its top level with the title's; a tap 2–3 inside its top edge closes the centre. AC-4 at iOS's largest size and Android's font scale 2.0: "Notifications" whole on one line, both "Unread" pills whole. Android's app was killed by every font-scale change (`react-native-screens`, "Screen fragments should never be restored"): Main set the scale first, then relaunched; recorded as D159. Both phones read +91 99999 99902, the only standing account with notifications; nothing was marked read.
+
+**Checklist** — [x] D82 reproduced · [x] `Modal.spec` red · [x] `Modal` halves · [x] close offset · [x] title · [x] pill · [x] qa-web · [x] qa-ios · [x] qa-android · [x] paste re-read · [x] review · [x] gate · [x] docs
+
+#### Runtime — part g
+Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-FPLAT-082g` from `origin/main` `6224484f`.
+
+| resource | state at start | identity |
+|---|---|---|
+| web `3002` · api `8084` · metro `8081` | free | — |
+| postgres `5544` · object store `9000` · temporal `7233` | pre_existing | containers `heliogrid-pg-local`, `heliogrid-object-store-local`, `heliogrid-temporal` |
+| simulators · emulators | none booted | — |
+| browser tabs | the pane is closed | — |
+| database routing | `heliogrid_dev` on both URLs | `.env.local` |
+| logs | `.qa/api.log` 6,632,294 · `.qa/web.log` 204,810 · `.qa/metro.log` 680,479 bytes | byte marks |
+| started by the task | api (preview server `0abf6a0a`, launch `api`, pid 92141), Metro (`aaee3174`, launch `mobile-metro`), web (`38899063`, launch `web`), simulator `40ED0117` (iPhone 17 Pro), `emulator-5554` (Pixel 8); database routing moved to `heliogrid_test` on both URLs for the reproduction, QA and the gate | preview ids, UDID, serial |
+| browser pane | tabs `seed` (api), `tab-1` (Metro), `tab-2` (web) | tab ids |
+| test data | the standing accounts …901 (web), …902 (iOS, and Android for its two notifications), …903 (Android, signed out for …902) on `heliogrid_test`; nothing marked read | numbers |
+
+**At the end (2026-10-08)**
+
+| resource | state at end |
+|---|---|
+| api · web · Metro | stopped by Main (preview stop; web before the gate); `3002`, `8084`, `8081` free; no `tsx watch` left |
+| postgres · object store · temporal | pre_existing, untouched |
+| simulator `40ED0117` · `emulator-5554` | shut down; iOS text size restored to `large`, Android font scale to 1.0. Android's app was killed by each font-scale change (D159) and relaunched by Main |
+| browser pane | tabs `seed`, `tab-1` and `tab-2` closed; the pane is closed |
+| database routing | restored to `heliogrid_dev` on both URLs |
+| logs | `.qa/api.log` 6,738,506 · `.qa/web.log` 221,634 · `.qa/metro.log` 749,379 bytes |
+| test data | the standing accounts stay on `heliogrid_test`; the web on …901 and both phones on …902 stay signed in |
+
+**Measurements:** helper runs — qa-web 1, qa-ios 1 (1 continuation), qa-android 1 (2 continuations), reviewer 1 (1 continuation), evaluator 1, full gate once; helper tokens about 305k (reviewer 108k, qa-android 63k, qa-ios 56k, qa-web 42k, evaluator 35k); Main's turns and tokens were not counted. Planned 15 files and about 240 authored lines; built 15 files and 390 lines (+352 −38) — code 101, tests 95, docs 194. Planned and not built: `Menu.native.tsx`, `SheetBackdrop.native.tsx` (D82 did not reproduce). Built and not planned: `tests/e2e/support/motion.ts`, `Text.types.ts` (review).
+
+**Mistakes and the rule that now holds each**
+- Both new specs first measured while the overlay was still animating in, so their numbers were wrong (build) → `support/motion.ts`'s `animationsSettled` before any measurement; no check can make a spec wait, said out loud.
+- The `Sheet` spec probed the close's corners, which a browser does not hit on a round button (build) → it probes each edge's middle, and its comment says why.
+- AC-2's web row expected exactly 28, not knowing the grievance note's own 2px (QA) → amended to "padding 28, line ≥ 28"; the component spec holds the exact 28 with a plain paragraph. No check decides an expected value, said out loud.
+- The pill's `minHeight` also let a pressable `Chip` grow past the room its target keeps (review) → only a label grows; the pressable case is D157. My paste had already given the design system's pressable pill `minHeight`; D157 carries it back.
+- The part row and the RFC still claimed D82 and D64 code after D82 closed with none (review) → the row and the record corrected.
+- A comment gave the web half the phone's reason, and three edited comments were left unwrapped (review) → fixed; Biome does not reflow comments, said out loud.
+- Android's app dies on every font-scale change (QA) → D159; out of this part's scope.
+
 ### T-FPLAT-083 · A route answers only what its contract declares
 **Type:** policy · **Tier:** P1
 **Status:** planned
@@ -4543,7 +4716,7 @@ Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-F
 **Why:** The theme build measures only the pairs declared in `packages/theme/src/contrast.ts`, so a pairing `packages/ui` draws but never declares, or a re-pulled colour, can drop under its floor unseen (D25).
 **PRD rows:** `F7-11`; `N4` of `F7-23`.
 **Chosen by the owner** (deferred review, 2026-10-08).
-**Depends on:** `T-FPLAT-082` (part g, its last part — split by `T-FPLAT-082c`'s ruling C1 and `T-FPLAT-082f`'s ruling F2).
+**Depends on:** `T-FPLAT-082` (part h, its last part — split by `T-FPLAT-082c`'s ruling C1, `T-FPLAT-082f`'s ruling F2 and `T-FPLAT-082g`'s ruling G2).
 **DONE WHEN:**
 - A check — a theme build step or an invariant, never a script — reads every text and mark colour set on a background across `packages/ui`'s CSS and native styles, reports each pair no declared pair covers, and fails one under its role's floor. → proof: the gate green, and red on a planted undeclared pair under the floor.
 
@@ -4564,7 +4737,7 @@ Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-F
 **Why:** QA checks only the screens a change reaches, so a change to a shared `packages/ui` part can break the look of a screen nobody opens (D74).
 **PRD rows:** none of its own — `F7-43` (Definition of Done at 375 and 1536).
 **Chosen by the owner** (deferred review, 2026-10-08): web routes first.
-**Depends on:** `T-FPLAT-082` (part g, its last part — split by `T-FPLAT-082c`'s ruling C1 and `T-FPLAT-082f`'s ruling F2), so the baseline is taken on the open page.
+**Depends on:** `T-FPLAT-082` (part h, its last part — split by `T-FPLAT-082c`'s ruling C1, `T-FPLAT-082f`'s ruling F2 and `T-FPLAT-082g`'s ruling G2), so the baseline is taken on the open page.
 **DONE WHEN:**
 - Playwright `toHaveScreenshot` holds every web route at 375 and 1536; the images are committed; a run fails when one differs; a baseline changes only with the owner's yes. → proof: the e2e lane green, and red on a planted one-token change to a shared part.
 

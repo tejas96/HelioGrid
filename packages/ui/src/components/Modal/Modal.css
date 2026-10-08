@@ -133,6 +133,12 @@
   padding: var(--sp-4) var(--hg-modal-pad) 0;
 }
 
+/* With no footer under it the body is the panel's last part, so it keeps the panel's padding:
+   without it the last line sits on the dialog's edge. */
+.hg-modal-body:last-child {
+  padding-bottom: var(--hg-modal-pad);
+}
+
 .hg-modal-footer {
   flex-shrink: 0;
   padding: var(--sp-4) var(--hg-modal-pad) var(--hg-modal-pad);

@@ -3,8 +3,9 @@
    THE TARGET AND THE PILL ARE TWO DIFFERENT RECTANGLES. An interactive chip's <button> is the
    44px floor (Pressable owns it) and the pill drawn inside keeps its own height — 28px
    expressive, 24px functional. The difference is transparent padding owned by the target, taken
-   back as negative margin so no row grows. Neither the pill height nor the 44px floor has a
-   spacing token, so both are named local custom properties rather than loose numbers. */
+   back as negative margin so no row grows. A label's height is a floor instead, so larger words
+   grow it rather than clip. Neither the pill height nor the 44px floor has a spacing token, so
+   both are named local custom properties rather than loose numbers. */
 
 .hg-chip,
 .hg-badge,
@@ -32,13 +33,13 @@
 
 .hg-chip[data-density="expressive"],
 .hg-badge[data-density="expressive"] {
-  height: var(--hg-chip-h-expressive);
+  min-height: var(--hg-chip-h-expressive);
   font-size: var(--fs-body-sm);
 }
 
 .hg-chip[data-density="functional"],
 .hg-badge[data-density="functional"] {
-  height: var(--hg-chip-h-functional);
+  min-height: var(--hg-chip-h-functional);
   font-size: var(--fs-caption);
 }
 
@@ -103,6 +104,16 @@
 
 .hg-chip-target--functional {
   margin: calc((var(--hg-chip-h-functional) - var(--hg-chip-touch)) / 2) 0;
+}
+
+/* The target's margin gives back exactly the drawn height's difference, so a pressable pill keeps
+   that height: grown, it would draw over the rows above and below it. */
+.hg-chip-target--expressive > .hg-chip {
+  height: var(--hg-chip-h-expressive);
+}
+
+.hg-chip-target--functional > .hg-chip {
+  height: var(--hg-chip-h-functional);
 }
 
 /* ── Badge — the -text partner sets the words, the -bg sets the tint ──────── */
