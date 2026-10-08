@@ -4696,6 +4696,7 @@ Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-F
 - The part row and the RFC still claimed D82 and D64 code after D82 closed with none (review) → the row and the record corrected.
 - A comment gave the web half the phone's reason, and three edited comments were left unwrapped (review) → fixed; Biome does not reflow comments, said out loud.
 - Android's app dies on every font-scale change (QA) → D159; out of this part's scope.
+- CI `e2e-web` failed on `web/home.spec.ts` "a new owner lands on their home…" (run 37781374502): the test reloaded while the mark's save was still in flight, and after the reload it checked the mark hidden before the home had read the count, so it passed while loading and failed when the old count came back first. Not this part's code: the race was there since the test was written. → `support/shell.ts`'s `passTheOwnersMark` returns only once the `PATCH` is stored, and the test waits for the home's taught words (drawn only once the count is read) before checking the mark. Planted red: the save held 8 s → the old helper failed with CI's exact assertion, the fixed one passed; then both callers 5× at both viewports (160 passed) and the whole suite (68 passed). No check finds an absence asserted during loading, said out loud.
 
 ### T-FPLAT-083 · A route answers only what its contract declares
 **Type:** policy · **Tier:** P1
