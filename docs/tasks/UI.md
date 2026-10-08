@@ -69,8 +69,6 @@ every block is flat — and leaves its contract; `SourceDocument`'s density roun
 its one surface; `Accordion`'s contract stops saying an errored section is tinted. A printed checklist's rows
 are paper, not tiles. `PagedDocument`'s cards stay paper.
 
-**Owed to the design system by the shell (`T-SHELL-001`), repo side done.** `SCR-SHELL-01`'s export draws the pill footer; the build differs from it where it measured wrong, and the design system takes the same: the company's name as words beside `LogoTile`, no chip fill (a grey pill on the page reads as a control, `F7-15`); the pill with no border and the `--e4` shadow, its slots 44 wide laid out space-between, the item in view padded `--sp-4`, its label `--fs-button` / `--fw-medium`, icons `Icon lg` at the one stroke; the top bar `--topbar-h-mobile`; the error frame's Try again the secondary `Button`; `BottomNav`'s `RailItem.anchor` and `MobileTopBar`'s `searchLabel` and `notificationsLabel`. `PhoneScreen` moves to its own file, so a board's device frame is never read as the shell's typing; the repo then pulls `AppShell.d.ts` (`T-FPLAT-082` part c). The pill's height, side inset and gap are the design system's tokens, which the repo reads (`T-FPLAT-082` part b).
-
 | Component | Gap | Found by |
 |---|---|---|
 | `OtpInput` · `Input` | Helper is fixed `--text-tertiary` 12px, which `N4` forbids for anything load-bearing — so every screen with a load-bearing sentence beside a field draws its own `--text-secondary` line outside the component and the spacing becomes a per-screen decision. | `SCR-M01-08` · `SCR-M01-09` |

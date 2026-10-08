@@ -38,6 +38,11 @@ export interface ShellActionProps {
   name?: string;
   onClick?: () => void;
   active?: boolean;
+  /**
+   * The 44 grey circle — the phone header's search and bell, and the avatar's button. Without it
+   * the button is transparent at `--r-md`, as on the desktop header.
+   */
+  round?: boolean;
 }
 
 export interface AppHeaderProps {
@@ -75,27 +80,38 @@ export interface AppHeaderProps {
 }
 
 export interface MobileTopBarProps {
-  title?: string;
+  /**
+   * The tenant's company name — plain words after the mark, bold, one line, cut by an ellipsis.
+   * Not a control: V1 has no company switcher (`T-SHELL-001`), and a grey chip reads as one.
+   */
+  company?: string;
   /** The Search button's name, in the reader's language — the bar holds no English of its own. */
   searchLabel: string;
   /** The bell's name, in the reader's language; the unread count is added to it. */
   notificationsLabel: string;
   /** The bell's whole name with its count — "Notifications, 3 unread" — when the caller words it. */
   notificationsName?: string;
-  /** The product mark. The phone has no rail, so **this** is where it rides. */
+  /** The product mark. Defaults to the 32 `LogoTile`. */
   brand?: ReactNode;
-  /** The tenant's `TenantMark`. With a title present pass `showName={false}` — one set of words. */
-  tenant?: ReactNode;
-  /** Opens the global search sheet — the phone's half of `F6-20`. */
+  /** Opens the global search door — the phone's half of `F6-20`. */
   onSearchClick?: () => void;
-  /** The `JobTray`, same slot and same position as on the desktop header. */
+  /** The `JobTray`, before the bell. */
   jobs?: ReactNode;
+  /** Unread count, read from the record (`F6-17`). */
   notifications?: number | boolean;
   onNotificationsClick?: () => void;
+  /** The 44 avatar. */
   avatar?: ReactNode;
-  /** Back button or menu, before the title. */
+  /** Back button or menu, before the mark. */
   leading?: ReactNode;
+  /** Extra round `ShellAction`s. */
   actions?: ReactNode;
+  /**
+   * Keep the bar below a centred camera. The device's own inset decides how far: the web half pads
+   * `env(safe-area-inset-top)`; on the phone the app's safe area already holds the bar below it, so
+   * the native half takes no inset of its own.
+   */
+  safeTop?: boolean;
   sticky?: boolean;
 }
 
@@ -124,7 +140,10 @@ export interface ShellGlyphProps {
   filled?: boolean;
   /** `lg` (24) on the pill, `md` (20) in a menu, `xl` (32) on a full-screen state. */
   size?: 'md' | 'lg' | 'xl';
-  /** `secondary` at rest, `inverse` on the near-black pill, `primary` on a state's mark. */
+  /**
+   * `secondary` at rest, `inverse` on the near-black pill, `primary` on a state's mark and in a
+   * round shell button.
+   */
   tone?: 'primary' | 'secondary' | 'inverse';
 }
 

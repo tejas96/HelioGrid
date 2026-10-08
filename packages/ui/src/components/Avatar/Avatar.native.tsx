@@ -52,7 +52,11 @@ export function Avatar({ src, name = '', size = 40, style }: NativeAvatarProps) 
       {src !== undefined ? (
         <Image accessibilityLabel={name} source={{ uri: src }} style={styles.image} />
       ) : (
-        <Text style={[styles.initials, type]}>{initialsOf(name)}</Text>
+        // The initials keep their drawn size: grown by the system text size they overflow the
+        // fixed circle and are clipped to an arc.
+        <Text allowFontScaling={false} style={[styles.initials, type]}>
+          {initialsOf(name)}
+        </Text>
       )}
     </View>
   );

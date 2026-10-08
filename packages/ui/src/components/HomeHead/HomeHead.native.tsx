@@ -62,7 +62,9 @@ function TitleTrigger({ title, name, onClick }: TitleTriggerProps) {
   return (
     <Pressable accessibilityLabel={name} onPress={onClick}>
       <View style={styles.trigger}>
-        <Text variant="h3">{title}</Text>
+        <View style={styles.titleWords}>
+          <Text variant="h3">{title}</Text>
+        </View>
         <ShellGlyph name="chevron" size="md" tone="primary" />
       </View>
     </Pressable>
@@ -90,14 +92,20 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   // What the switcher's mark points at: the title alone, not the row it sits in.
+  // At the largest system text the title wraps inside the margin instead of running past it.
   titleAnchor: {
     alignSelf: 'flex-start',
+    maxWidth: '100%',
   },
   trigger: {
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
+    maxWidth: '100%',
     gap: theme.spacing['sp-1'],
     minHeight: theme.spacing['sp-12'],
+  },
+  titleWords: {
+    flexShrink: 1,
   },
 });

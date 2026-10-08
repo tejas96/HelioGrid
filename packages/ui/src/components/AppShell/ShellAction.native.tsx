@@ -12,9 +12,10 @@ interface NativeShellActionProps extends ShellActionProps {
 }
 
 /**
- * A 44×44 shell button with an optional count badge riding its corner — the Pressable primitive
- * owns the target. The web's hover tint has no touch equivalent; the primitive's pressed state is
- * the feedback here, and `active` still paints the accent-subtle tile.
+ * A 44×44 shell button with an optional count badge riding its corner — the grey circle when
+ * `round`, otherwise transparent at `--r-md`. The Pressable primitive owns the target. The web's
+ * hover tint has no touch equivalent; the primitive's pressed state is the feedback here, and
+ * `active` still paints the accent-subtle tile.
  */
 export function ShellAction({
   label,
@@ -23,6 +24,7 @@ export function ShellAction({
   name: wholeName,
   onClick,
   active = false,
+  round = false,
   style,
 }: NativeShellActionProps) {
   /* A zero badge keeps the plain name here (the source's `badge ?` test) while it still reaches
@@ -35,7 +37,7 @@ export function ShellAction({
       onPress={onClick}
       style={[
         styles.action,
-        { backgroundColor: controlFill },
+        round ? [styles.round, { backgroundColor: controlFill }] : undefined,
         active ? styles.active : undefined,
         style,
       ]}
@@ -56,6 +58,9 @@ const styles = StyleSheet.create({
     height: 44,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: theme.radius['r-md'],
+  },
+  round: {
     borderRadius: theme.radius['r-pill'],
   },
   active: {
