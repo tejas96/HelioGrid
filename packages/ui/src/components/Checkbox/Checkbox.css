@@ -33,13 +33,13 @@
      inside a tile (primitives/Ground). Found by luminance, never by an edge. */
   background: var(--hg-control-fill);
   box-shadow: none;
-  color: var(--text-inverse);
   transition: background var(--dur-micro) var(--ease-standard);
 }
 
 .hg-checkbox[data-checked="true"] .hg-checkbox-box {
   background: var(--accent);
   box-shadow: none;
+  color: var(--text-inverse);
 }
 
 /* SUNK, as a disabled field is (Ground's --hg-control-fill-disabled). */

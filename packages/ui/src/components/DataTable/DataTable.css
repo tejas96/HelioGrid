@@ -89,7 +89,7 @@
   font-weight: var(--fw-bold);
   letter-spacing: var(--tr-overline);
   text-transform: uppercase;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   background: var(--hg-ground);
   text-align: left;
   position: sticky;

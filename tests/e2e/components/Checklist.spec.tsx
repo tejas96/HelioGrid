@@ -5,7 +5,8 @@ import { resolvedColour } from '../support/token';
 
 const en = await createTranslator('en');
 const label = en.t(COMPANY_SIGNUP.yourCompany);
-const items = [{ id: 'name', title: en.t(COMPANY_SIGNUP.companyName) }];
+const item = { id: 'name', title: en.t(COMPANY_SIGNUP.companyName) };
+const items = [item];
 
 test('a checklist is a heading on the page — no fill, no shadow', async ({ mount }) => {
   const checklist = await mount(<Checklist label={label} items={items} />);
@@ -28,4 +29,12 @@ test('a checklist row is a grey tile with no shadow and its controls are white',
     'background-color',
     await resolvedColour(page, '--surface'),
   );
+});
+
+test("a done row's tick is white on the success fill", async ({ mount, page }) => {
+  const checklist = await mount(<Checklist label={label} items={[{ ...item, done: true }]} />);
+  const box = checklist.locator('.hg-checklist-box');
+
+  await expect(box).toHaveCSS('background-color', await resolvedColour(page, '--success'));
+  await expect(box.locator('svg')).toHaveCSS('color', await resolvedColour(page, '--text-inverse'));
 });

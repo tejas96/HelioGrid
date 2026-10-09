@@ -11,8 +11,8 @@
  * live design system and its build must run before any package is built. The two are one
  * formula: a change to WCAG's constants is a change to both files.
  *
- * The coverage scan over `packages/ui`'s CSS — a pairing a component uses that nobody declared
- * below — is not here; `docs/tasks/deferred.md` carries what it must do.
+ * Which pairs `packages/ui` actually draws is held by the `ui-colour-pairs` invariant: a colour
+ * set on a background in one rule or style object fails it until its pair is declared below.
  */
 
 function relativeLuminance(hex: string): number {
@@ -85,6 +85,19 @@ const DECLARED_PAIRS: DeclaredPair[] = [
   { fg: 'text-tertiary', bg: 'canvas', role: 'meta text on page canvas', floor: 4.5 },
   // A placeholder in a field's well (F7-15); on the disabled well it steps up to --text-secondary.
   { fg: 'text-tertiary', bg: 'fill', role: 'a placeholder in a field well', floor: 4.5 },
+  {
+    fg: 'text-tertiary',
+    bg: 'surface-alt',
+    role: "meta text on a dropzone's alt surface",
+    floor: 4.5,
+  },
+  {
+    fg: 'text-tertiary',
+    bg: 'neutral-bg',
+    role: "a state message's glyph on its neutral disc (non-text)",
+    floor: 3,
+    restriction: 'RESTRICTED: a glyph only — words on a state tint take --text-secondary.',
+  },
   // DELIBERATELY not declared: text-tertiary on canvas-sunken (≈4.54 — at the 4.5 floor's edge; F7-15).
   // colors.css: on sunken and on any state tint, quiet text takes --text-secondary instead.
   // Declaring it would sanction a pairing the design system forbids (colors.css), at the floor's edge.
@@ -95,6 +108,15 @@ const DECLARED_PAIRS: DeclaredPair[] = [
     floor: 1,
     restriction:
       'RESTRICTED: ≈1.6:1. WCAG 1.4.3 exempts inactive controls; never words a user must ' +
+      'read, and disabled state must never be the only signal.',
+  },
+  {
+    fg: 'text-disabled',
+    bg: 'canvas-sunken',
+    role: 'disabled control text on the sunk disabled fill',
+    floor: 1,
+    restriction:
+      'RESTRICTED: ≈1.4:1. WCAG 1.4.3 exempts inactive controls; never words a user must ' +
       'read, and disabled state must never be the only signal.',
   },
   {
@@ -116,6 +138,18 @@ const DECLARED_PAIRS: DeclaredPair[] = [
     floor: 3,
   },
   { fg: 'accent-hover', bg: 'surface', role: 'hovered links on white', floor: 4.5 },
+  { fg: 'accent', bg: 'accent-subtle', role: 'selected words on the accent tint', floor: 4.5 },
+  { fg: 'text-secondary', bg: 'neutral-bg', role: 'quiet words on the neutral tint', floor: 4.5 },
+  { fg: 'neutral-text', bg: 'fill', role: 'neutral chip words on the control fill', floor: 4.5 },
+  { fg: 'text-inverse', bg: 'danger-text', role: 'a destructive button label', floor: 4.5 },
+  { fg: 'text-inverse', bg: 'text-primary', role: 'tooltip words on near-black', floor: 4.5 },
+  ...(['success', 'warning-text', 'danger'] as const).map((s) => ({
+    fg: 'text-inverse',
+    bg: s,
+    role: `a step's glyph on the ${s} disc (non-text)`,
+    floor: 3,
+    restriction: 'RESTRICTED: a tick or an exclamation only — never words.',
+  })),
   ...SEMANTIC.map((s) => ({
     fg: `${s}-text`,
     bg: `${s}-bg`,

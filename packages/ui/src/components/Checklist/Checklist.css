@@ -134,15 +134,16 @@
   display: grid;
   place-items: center;
   /* The opposite of what holds it (F7-15, primitives/Ground): white inside the step's tile. Flat —
-     the mark's own ring draws the box, never a shadow. The ink is the tick's, on the success fill. */
+     the mark's own ring draws the box, never a shadow. */
   background: var(--hg-control-fill);
   box-shadow: inset 0 0 0 1.5px var(--mark-subtle);
-  color: var(--text-inverse);
 }
 
+/* The tick's ink sits with the fill it is drawn on. */
 .hg-checklist-box[data-done="true"] {
   background: var(--success);
   box-shadow: none;
+  color: var(--text-inverse);
 }
 
 .hg-checklist-box[data-disabled="true"] {

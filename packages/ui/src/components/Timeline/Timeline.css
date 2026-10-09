@@ -77,7 +77,6 @@
   position: relative;
   z-index: 1;
   background: var(--hg-control-fill);
-  color: var(--text-inverse);
 }
 
 .hg-timeline[data-variant="page"] .hg-timeline-node {
@@ -90,14 +89,18 @@
   height: 20px;
 }
 
+/* A glyph's ink sits with the fill it is drawn on. */
 .hg-timeline-node[data-status="done"] {
   background: var(--success);
+  color: var(--text-inverse);
 }
 .hg-timeline-node[data-status="blocked"] {
   background: var(--warning-text);
+  color: var(--text-inverse);
 }
 .hg-timeline-node[data-status="failed"] {
   background: var(--danger);
+  color: var(--text-inverse);
 }
 
 /* Current carries an accent core in a soft ring — the one lit step. */

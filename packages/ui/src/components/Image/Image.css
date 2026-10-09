@@ -76,7 +76,7 @@
   padding: var(--sp-3);
   text-align: center;
   background: var(--canvas-sunken);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .hg-image-missing[data-tone="warning"] {
@@ -120,7 +120,7 @@
   max-width: 260px;
   font-size: var(--fs-caption);
   line-height: 1.45;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 /* ── loading and present ──────────────────────────────────────────────────── */

@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['rf-sm'],
     backgroundColor: theme.colors['canvas-sunken'],
   },
-  logoLabel: { fontFamily: theme.type.families.mono, color: theme.colors['text-tertiary'] },
+  logoLabel: { fontFamily: theme.type.families.mono, color: theme.colors['text-secondary'] },
   listRow: { flexDirection: 'row' },
   bullet: { fontFamily: theme.type.families.sans },
   link: { color: theme.colors.link, textDecorationLine: 'underline' },
