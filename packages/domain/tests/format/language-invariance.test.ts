@@ -7,13 +7,14 @@ import { type FormatPack, IN_FORMATS } from '../../src/format/pack';
 
 /**
  * `F3-20` and `F3-22`'s acceptance line: a reader who switches interface language re-reads the
- * same amount, date and measurement CHARACTER-IDENTICAL. Only the words around the value change.
+ * same amount and measurement CHARACTER-IDENTICAL, and the same date with only its month and
+ * weekday names in their own words. Only those words change.
  *
- * The formatters take a market pack and never a language, so the property holds because the
- * reader's language is not an input. What is worth testing is therefore not the invariance — a
- * test that called the same function twice would prove nothing — but its EDGE: what happens when
- * a language tag reaches the locale where the market's belongs. Every case below is that edge,
- * and each one is a rendering a reader would accept as correct while being wrong.
+ * Money, numbers and measurements take a market pack and never a language, so for them the
+ * property holds because the reader's language is not an input. A date takes the language for its
+ * names alone. What is worth testing is the EDGE: what happens when a language tag reaches the
+ * locale where the market's belongs. Every case below is that edge, and each one is a rendering a
+ * reader would accept as correct while being wrong.
  */
 
 /** What a surface builds if it lets the reader's language reach the pack. This is the defect. */
@@ -31,7 +32,7 @@ describe('a language reaching the pack changes the value, which is why it never 
       formatMoney(IN_FORMATS, AMOUNT),
       formatCompactMoney(IN_FORMATS, 9_200_000),
       formatNumber(IN_FORMATS, AMOUNT),
-      formatDate(IN_FORMATS, INSTANT),
+      formatDate(IN_FORMATS, INSTANT, 'en'),
       formatTime(IN_FORMATS, '17:00'),
       formatLength(IN_FORMATS, 4.2),
     ];
@@ -39,21 +40,21 @@ describe('a language reaching the pack changes the value, which is why it never 
       formatMoney(packInReaderLanguage('hi-IN-u-nu-deva'), AMOUNT),
       formatCompactMoney(packInReaderLanguage('hi-IN-u-nu-deva'), 9_200_000),
       formatNumber(packInReaderLanguage('hi-IN-u-nu-deva'), AMOUNT),
-      formatDate(packInReaderLanguage('hi-IN-u-nu-deva'), INSTANT),
+      formatDate(packInReaderLanguage('hi-IN-u-nu-deva'), INSTANT, 'en'),
       formatTime(packInReaderLanguage('hi-IN-u-nu-deva'), '17:00'),
       formatLength(packInReaderLanguage('hi-IN-u-nu-deva'), 4.2),
     ];
     expect(leaked).not.toEqual(market);
   });
 
-  it('takes the month NAME from the market, never from the reader', () => {
-    /* `12 Mar 2026` must read the same in English, Hindi and Marathi. It only does because the
-       name comes from `pack.locale`; a reader's tag here renders the month in their script. */
-    expect(formatDate(IN_FORMATS, '2026-03-12T06:00:00Z')).toBe('12 Mar 2026');
-    expect(formatMonthYear(IN_FORMATS, '2026-03-12T06:00:00Z')).toBe('March 2026');
-    expect(formatMonthYear(packInReaderLanguage('mr-IN'), '2026-03-12T06:00:00Z')).not.toBe(
-      'March 2026',
+  it("takes a date's names from the reader, and its order and digits from the market", () => {
+    /* The reader's language moves the month's word and nothing else. Let the reader's tag reach
+       the pack instead, and Marathi's own pattern brings its comma and its Devanagari digits. */
+    expect(formatDate(IN_FORMATS, '2026-10-01T06:00:00Z', 'mr')).toBe('1 ऑक्टो 2026');
+    expect(formatDate(packInReaderLanguage('mr-IN'), '2026-10-01T06:00:00Z', 'mr')).toBe(
+      '१ ऑक्टो, २०२६',
     );
+    expect(formatMonthYear(IN_FORMATS, '2026-03-12T06:00:00Z', 'en')).toBe('March 2026');
   });
 });
 
@@ -69,7 +70,8 @@ describe('Latin digits survive a pack authored with any tag (F3-21)', () => {
     const rendered = [
       formatMoney(IN_FORMATS, AMOUNT),
       formatCompactMoney(IN_FORMATS, 14_000_000),
-      formatDate(IN_FORMATS, INSTANT),
+      formatDate(IN_FORMATS, INSTANT, 'mr'),
+      formatDate(IN_FORMATS, INSTANT, 'hi'),
     ].join(' ');
     const foreign = [...rendered.matchAll(NON_LATIN_DIGIT)].filter((m) => !/[0-9]/.test(m[0]));
     expect(foreign).toEqual([]);

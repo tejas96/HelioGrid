@@ -1,3 +1,4 @@
+import { UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
 import {
   type FormatPack,
   formatClockAt,
@@ -64,26 +65,32 @@ export interface MarketFormat {
   phone: (value: string, options?: { nsn?: boolean }) => string;
   /** `17:00` → `17:00` or `5:00 PM` by the pack's clock. Storage stays 24-hour. */
   time: (hhmm: string) => string;
-  /** A date in the pack's style and zone — `12 Mar 2026` under the India pack. */
+  /** A date in the pack's style and zone, its month in the reader's words — `12 मार्च 2026`. */
   date: (value: string | Date) => string;
-  /** A calendar heading — `March 2026`. */
+  /** A calendar heading, its month in the reader's words — `March 2026`. */
   monthYear: (value: string | Date) => string;
   /** When an event happened, by the pack's clock and zone — `16:12`. */
   clockAt: (value: string) => string;
-  /** A day's name in the pack's language and zone — `Monday`. */
+  /** A day's name in the reader's words, on the pack's zone — `Monday`. */
   weekday: (value: string) => string;
   /** Resolved ISO week start, 1 = Monday … 7 = Sunday. `Calendar`'s first column reads this. */
   firstDayOfWeek: number;
-  /** 12 month names in calendar order. */
+  /** 12 month names in calendar order, in the reader's words. */
   monthNames: (style?: 'long' | 'short' | 'narrow') => string[];
-  /** 7 weekday names **starting at `firstDayOfWeek`** — a calendar grid's column order. */
+  /** 7 weekday names in the reader's words, **starting at `firstDayOfWeek`** — a grid's columns. */
   weekdayNames: (style?: 'narrow' | 'short' | 'long') => string[];
   /** Strips grouping and symbols so a typed amount parses back to a number. */
   parseNumber: (input: string | number) => number | null;
 }
 
-/** Binds a market pack to the domain implementations. A market overrides by supplying a pack. */
-export function createFormat(pack: FormatPack = IN_FORMATS): MarketFormat {
+/**
+ * Binds a market pack and the reader's language to the domain implementations. A market overrides
+ * by supplying a pack; the language names a date's month and weekday and nothing else (`F3-22`).
+ */
+export function createFormat(
+  pack: FormatPack = IN_FORMATS,
+  language: UiLanguage = UI_SOURCE_LOCALE,
+): MarketFormat {
   return {
     pack,
     number: (value, options) => formatNumber(pack, value, options),
@@ -95,13 +102,13 @@ export function createFormat(pack: FormatPack = IN_FORMATS): MarketFormat {
     compactMoney: (value) => formatCompactMoney(pack, value),
     phone: (value, options) => formatPhone(pack, value, { nationalOnly: options?.nsn }),
     time: (hhmm) => formatTime(pack, hhmm),
-    date: (value) => formatDate(pack, value),
-    monthYear: (value) => formatMonthYear(pack, value),
+    date: (value) => formatDate(pack, value, language),
+    monthYear: (value) => formatMonthYear(pack, value, language),
     clockAt: (value) => formatClockAt(pack, value),
-    weekday: (value) => formatWeekday(pack, value),
+    weekday: (value) => formatWeekday(pack, value, language),
     firstDayOfWeek: pack.firstDayOfWeek,
-    monthNames: (style) => monthNames(pack, style),
-    weekdayNames: (style) => weekdayNames(pack, style),
+    monthNames: (style) => monthNames(pack, language, style),
+    weekdayNames: (style) => weekdayNames(pack, language, style),
     parseNumber,
   };
 }

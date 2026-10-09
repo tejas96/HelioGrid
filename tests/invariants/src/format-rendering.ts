@@ -68,8 +68,22 @@ function renderedValues(): Expectation[] {
     {
       row: 'F1-48',
       what: 'date style',
-      actual: formatDate(IN_FORMATS, '2026-03-12T06:00:00Z'),
+      actual: formatDate(IN_FORMATS, '2026-03-12T06:00:00Z', 'en'),
       expected: '12 Mar 2026',
+    },
+    {
+      /* The reader's words, the pack's order and digits. Formatted in the reader's locale whole,
+         Hindi keeps its order but Marathi adds a comma and Devanagari digits: `१ ऑक्टो, २०२६`. */
+      row: 'F3-22',
+      what: "a Hindi reader's date: the month in Hindi, the rest the pack's",
+      actual: formatDate(IN_FORMATS, '2026-10-01T06:00:00Z', 'hi'),
+      expected: '1 अक्टू॰ 2026',
+    },
+    {
+      row: 'F3-22',
+      what: "a Marathi reader's date: the month in Marathi, the rest the pack's",
+      actual: formatDate(IN_FORMATS, '2026-10-01T06:00:00Z', 'mr'),
+      expected: '1 ऑक्टो 2026',
     },
     {
       /* 19:00 UTC is 00:30 the NEXT day in Asia/Kolkata. Rendered in the device's zone this
@@ -77,7 +91,7 @@ function renderedValues(): Expectation[] {
          green lint cannot see. */
       row: 'F3-22',
       what: 'date on the tenant timezone, not the device',
-      actual: formatDate(IN_FORMATS, '2026-03-11T19:00:00Z'),
+      actual: formatDate(IN_FORMATS, '2026-03-11T19:00:00Z', 'en'),
       expected: '12 Mar 2026',
     },
     {
@@ -98,7 +112,11 @@ function renderedValues(): Expectation[] {
          `F3-22` — every date renders, in the right style, one day out. */
       row: 'F3-22',
       what: "date on the TENANT's own zone, not the market default",
-      actual: formatDate(packOnTenantTime(IN_FORMATS, 'Europe/London'), '2026-03-11T19:00:00Z'),
+      actual: formatDate(
+        packOnTenantTime(IN_FORMATS, 'Europe/London'),
+        '2026-03-11T19:00:00Z',
+        'en',
+      ),
       expected: '11 Mar 2026',
     },
     {

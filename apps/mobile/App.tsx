@@ -10,7 +10,12 @@ import { getVersion } from 'react-native-device-info';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { keychainStorage } from './src/auth/keychain-storage';
 import { API_URL } from './src/env';
-import { createFormsValidationMessage, createI18nRuntime, LanguageFollowsUser } from './src/i18n';
+import {
+  createFormsValidationMessage,
+  createI18nRuntime,
+  LanguageFollowsUser,
+  useI18n,
+} from './src/i18n';
 import { AppNavigation } from './src/navigation';
 import { thisPlatform } from './src/push/messaging';
 import { ReactQueryHost } from './src/react-query-host';
@@ -57,7 +62,7 @@ export default function App() {
       <SessionLanguage runtime={i18nRuntime}>
         {/* The launch market until a tenant's pack is read: the door runs before any tenant
             exists, and its phone field reads the dial code and the number's length from here. */}
-        <MarketProvider>
+        <ReaderMarket>
           <SafeAreaProvider>
             {/* The ONE portal host, above navigation: every menu, sheet and modal escapes its
                 screen through here; without it a Portal renders in place (Portal.native). */}
@@ -68,18 +73,21 @@ export default function App() {
               <AppNavigation />
             </InsetPortalHost>
           </SafeAreaProvider>
-        </MarketProvider>
+        </ReaderMarket>
       </SessionLanguage>
     </DataProvider>
   );
 }
 
 /**
- * The mount follows the signed-in person's language (`F3-02`) and persists a choice made here
- * (`F3-04`). The FOLLOW itself is `@heliogrid/i18n/react`'s and shared with the web; this holds
- * only the session read, because `packages/i18n` may not import `packages/data`. The phone has
- * no document, so it passes no `onDocumentLanguage` — that half is web's alone.
+ * The market's formats in the reader's words: the language the mount follows names a date's month
+ * and weekday (`F3-22`). Inside the language provider, because only it knows the active language.
  */
+function ReaderMarket({ children }: { children: ReactNode }) {
+  const { locale } = useI18n();
+  return <MarketProvider language={locale}>{children}</MarketProvider>;
+}
+
 /**
  * The portal host, told how tall the home-indicator band is: every sheet docked to the bottom edge
  * renders through it and lifts its last line above the band. `packages/ui` holds no safe-area
@@ -90,6 +98,12 @@ function InsetPortalHost({ children }: { children: ReactNode }) {
   return <PortalHost bottomInset={bottom}>{children}</PortalHost>;
 }
 
+/**
+ * The mount follows the signed-in person's language (`F3-02`) and persists a choice made here
+ * (`F3-04`). The FOLLOW itself is `@heliogrid/i18n/react`'s and shared with the web; this holds
+ * only the session read, because `packages/i18n` may not import `packages/data`. The phone has
+ * no document, so it passes no `onDocumentLanguage` — that half is web's alone.
+ */
 function SessionLanguage({ runtime, children }: { runtime: I18nRuntime; children: ReactNode }) {
   const { user, setInterfaceLanguage } = useSession();
   const onChosen = useCallback(

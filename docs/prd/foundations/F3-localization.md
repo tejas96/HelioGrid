@@ -410,8 +410,8 @@ personal setting requiring no grant.
   then it renders through the single money implementation using the tenant market's declared
   format values, identically in every language (`F3-19`, `F3-20`).
 - Given a user who switches interface language, when they re-read the same amount, date or
-  measurement, then the rendered value is character-identical apart from surrounding words
-  (`F3-20`, `F3-22`).
+  measurement, then the rendered value is character-identical apart from surrounding words and a
+  date's month and weekday names, which follow the reader's language (`F3-20`, `F3-22`).
 - Given any language and any surface including generated documents, when a numeral renders, then
   it uses Latin digits (`F3-21`).
 - Given a user-facing date or time, when it renders, then it uses the pack's declared style and
@@ -423,11 +423,12 @@ personal setting requiring no grant.
 
 **Localization notes.** The inversion worth stating plainly: **formats are not localized by
 language** — they are localized by market, and this section is where that distinction is made. The
-only language-driven part of a formatted string is the words around the number (a compact
-notation's spoken or written unit word, a relative-time phrase, a plural form), and those are
-catalog copy under `F3-07`. **Analytics events:** none of its own. A format-bypass detector (a
-value rendered outside the shared implementation) is a defect signal for the closure pass, not a
-usage metric.
+only language-driven parts of a formatted string are the words around the number (a compact
+notation's spoken or written unit word, a relative-time phrase, a plural form), which are catalog
+copy under `F3-07`, and a date's month and weekday names, which follow the reader while the date's
+order, punctuation and digits stay the pack's (`F3-22`). **Analytics events:** none of its own. A
+format-bypass detector (a value rendered outside the shared implementation) is a defect signal for
+the closure pass, not a usage metric.
 
 ### F3.5 — Adding a language, and the language-set boundary
 

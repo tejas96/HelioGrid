@@ -54,9 +54,10 @@ export interface FormatPack {
   /** The market's code (`market/code.ts`), never a label (`F1-09`). */
   readonly id: MarketCode;
   /**
-   * The market's GROUPING and date locale — never the reader's (`F3-20`). `-u-nu-latn` is not
-   * decoration: it pins Latin digits at the Intl call itself (`F3-21`, `F1-47`), so a pack
-   * authored with a Devanagari-defaulting tag still renders `4,52,471`.
+   * The market's GROUPING and date ORDER locale — never the reader's (`F3-20`); a date's names are
+   * the reader's (`F3-22`, `datetime.ts`). `withLatinDigits` is not decoration: it pins Latin digits
+   * at the Intl call itself (`F3-21`, `F1-47`), so a pack authored with a Devanagari-defaulting tag
+   * still renders `4,52,471`.
    */
   readonly locale: string;
   /** ISO 4217. One currency per tenant, server-assigned from its market (`F1-07`). */
@@ -111,13 +112,22 @@ export interface FormatPack {
 }
 
 /**
+ * A locale tag that prints 0–9 whatever its language's own digits (`F3-21`, `F1-47`). Marathi's
+ * default is Devanagari, so every `Intl` locale a reader can see — a pack's, the translator's —
+ * is built through here.
+ */
+export function withLatinDigits(tag: string): string {
+  return `${tag}-u-nu-latn`;
+}
+
+/**
  * India — the one authored pack at launch (`F1-06`). Every value below cites the row that fixes
  * it; a reader checks this table against the PRD rather than trusting the code.
  */
 export const IN_FORMATS: FormatPack = {
   id: IN_MARKET,
   /** `en-IN` groups `4,52,471`; the `latn` pin holds `F3-21` whatever tag a pack is authored with. */
-  locale: 'en-IN-u-nu-latn',
+  locale: withLatinDigits('en-IN'),
   currency: 'INR',
   currencySymbol: '₹',
   symbolPosition: 'before',
