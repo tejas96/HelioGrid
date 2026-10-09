@@ -86,6 +86,18 @@ export type ErrorEnvelope = z.infer<typeof genericErrorSchema>;
 export const openErrorEnvelopeSchema = errorEnvelope(z.string());
 
 /**
+ * What the api's shared edges send on every route, whatever the route declares itself: the request
+ * check's 400, the guard's 403 and the opaque 500. Mounted once, as `commonResponses` on the root
+ * contract, so the spec and the typed client carry them on every operation; a route's own entry for
+ * the same status wins, so a 403 it declares must still name `FORBIDDEN` for the guard's refusal.
+ */
+export const sharedRefusals = {
+  400: errorEnvelope(baseError('VALIDATION_FAILED')),
+  403: errorEnvelope(baseError('FORBIDDEN')),
+  500: errorEnvelope(baseError('INTERNAL')),
+} as const;
+
+/**
  * HTTP mapping (apps/api/CLAUDE.md — binding):
  * 400 VALIDATION_FAILED · 401 UNAUTHENTICATED / NO_CREDENTIAL · 403 FORBIDDEN / ENTITLEMENT_BLOCKED ·
  * 404 NOT_FOUND (not-found-or-not-yours — never reveal existence across tenants) ·

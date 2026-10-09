@@ -4863,7 +4863,7 @@ Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-F
 
 ### T-FPLAT-083 · A route answers only what its contract declares
 **Type:** policy · **Tier:** P1
-**Status:** planned
+**Status:** shipped
 **Why:** A handler can throw a status its contract never declares, which response validation turns into an opaque 500 (D18); a route's `:param` need not declare its shape, so raw text reaches the database as a 500 (D29); and no route declares the shared 400, 403 and 500 the filter and guard really send, so the OpenAPI spec and the typed client understate every route (D30).
 **PRD rows:** none of its own — `CLAUDE.md` §8, every boundary has a contract.
 **Chosen by the owner** (deferred review, 2026-10-08): D71 and D127 ride with it; (a) a Biome plugin for D18; a unit test over the contract files for D29; the three shared statuses declared once, on every route, for D30.
@@ -4873,6 +4873,201 @@ Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-F
 - Every route's spec carries the shared 400 `VALIDATION_FAILED`, 403 and 500 `INTERNAL` from one declaration. → proof: `check:openapi` and a contract test.
 - The api guard's `RouteAccess` stays the guard's own type (owner ruling, deferred review 2026-10-08, D71); its `biome-ignore` cites that ruling. → proof: `pnpm lint`.
 - A contract route's `body`, `query` or `pathParams` is never a `z.union` or `.or()`, so a refusal names its key (D127). → proof: a Biome plugin, red on a planted line, with its protections row.
+
+#### RFC
+
+##### Title
+T-FPLAT-083 — a route answers only what its contract declares: a thrown status held to its route, the shared 400, 403 and 500 declared once, and the request shapes kept field-addressable.
+
+##### Description
+- **User impact:** none — internal. Indirectly: the web and phone apps are told every refusal a route can send, so a refusal never reaches them with a status their typed client does not know; and a refusal of bad input always names the field to fix.
+- **Problem solved:** the five deferred rows the owner put on this task (D18, D29, D30, D71, D127). A thrown error skips the contract today: a service can throw a status its route never declares, and it reaches the wire unchecked. No route declares the 400, 403 and 500 the shared filter and guard send, so the OpenAPI and the typed client understate every route. Nothing keeps a `:param` declared or a request shape free of unions. `CLAUDE.md` §8 (every boundary has a contract) is the rule; `apps/api/CLAUDE.md` holds the api's half.
+
+##### Goals
+- A thrown status that its route does not declare can no longer reach the wire as if it were declared.
+- Every route in `apiContract` declares 400 `VALIDATION_FAILED`, 403 `FORBIDDEN` and 500 `INTERNAL`, written once.
+- A test over `apiContract` fails on a `:segment` with no `pathParams` key, and on a union request shape.
+- `RouteAccess`'s `biome-ignore` cites the owner's ruling, not an open row.
+- D18, D29, D30, D71 and D127 leave `deferred.md`.
+
+##### Non-goals
+- No route-specific code is added or removed; no handler or service changes what it answers today, except as R1 says for the six undeclared throws below.
+- The client-version 426 stays as `emit-openapi.ts` writes it.
+- `RouteAccess` does not move (D71 ruling).
+- D41 and D62 (both met by `touches .claude/`) stay deferred.
+
+##### Readiness and dependencies
+- **Depends on:** nothing open — every route it reads is landed. Block 0, policy, no screen and no board.
+- **Design check:** not applicable — no screen.
+- **Assumption:** ts-rest `3.52.1`'s router option `commonResponses` merges under each route's own `responses`, a route's own entry winning (`@ts-rest/core` `recursivelyApplyOptions`). Every route that declares 403 today lists `FORBIDDEN` in it (checked over `apiContract`), so the guard's code stays declared where a route's own 403 wins.
+- **Blockers:** none.
+
+##### Proposal
+**Findings from testing the requirement:**
+1. **D18's premise is wrong.** A thrown Nest error is never response-validated: `@ts-rest/nest`'s interceptor validates only a returned response or a `TsRestException`, and re-throws anything else to the filter, which answers its own status (`apps/api/src/common/filters/envelope-exception.filter.ts:86-117`). So an undeclared throw is not an opaque 500 — it reaches the wire as its status, unchecked. `apps/api/CLAUDE.md:55-57` says an undeclared status becomes `INTERNAL`; that is true only for a returned one.
+2. **The ruled plugin (AC-1) misses every real case.** Only 8 throws sit inside a `tsRestHandler` block, and all 8 throw a status their route declares (`tenant.controller.ts:47`, `auth.controller.ts:96,98,123`, `notification.controller.ts:76,92`, `health.controller.ts:36`, `market.controller.ts:24`). An audit of all 114 throw sites found six undeclared pairs, all in services: `auth.verifyOtp` and `auth.signInWithProvider` 422 (`market/market.service.ts:67`), `tenant.create` 404 (`auth/auth.service.ts:169`), `user.updateMe` 404 (`user/user.service.ts:16`), `catalog.createItem` 404 (`catalog/catalog.service.ts:82`), `catalogImport.import` 409 `FILE_NOT_UPLOADED` (`file/file.service.ts:168`). Each needs a race — a record or pack changed mid-request. Rewriting the 8 handler throws as returned errors would also make a handler write its own error body, which `apps/api/CLAUDE.md:49` forbids. A better mechanism → decision **R1**.
+3. **D29 is already met.** All 33 routes with a `:segment` declare it in `pathParams` (walked over `apiContract`); `T-FPLAT-017` and later tasks fixed them. AC-2 lands as the test that keeps it so.
+4. **403 on every route over-declares on 17 routes.** The guard sends 403 only on `member` and capability routes; the 26 routes with no 403 today hold 9 such routes (the 7 notification routes, `tenant.me`, `tenant.members`) and 17 public or session routes that never send one. One declaration on every route keeps the ruling simple, and a client told "may answer 403" loses nothing → kept as ruled, no decision.
+5. **A plugin cannot see most request shapes (D127, AC-5).** 64 of the 81 `body`, `query` and `pathParams` keys in `packages/contracts/src/` name a schema defined elsewhere (`body: ownCatalogItemWriteSchema`), so a Biome plugin reading the key's text misses a union built there. A test over `apiContract` reads the real Zod type → decision **R2**.
+6. **The typed client widens.** `commonResponses` on `apiContract` also reaches `packages/data/src/client/client.ts:14`; any code the wider response union breaks is fixed in `packages/data` and listed as it lands.
+7. **D30's "no-company leg in their api suite":** `tenant.me` and `tenant.members` have no api suite. The leg is a `qa-api` row on the running api.
+
+**Flow (R1 A).** a request → guard → handler → a service throws → `EnvelopeExceptionFilter` → looks up the matched route's declared statuses (built once from `apiContract`, keyed as the guard keys them, `routeKey` in `common/auth/access.ts`) → a declared status answers as today; an undeclared one answers the opaque 500 `INTERNAL` and logs the route and the status under the request id. A request no route matched (an unknown path, the body parser, the version gate) answers as today.
+
+**Key decisions** (one reason each):
+1. **The three shared statuses are one `sharedRefusals` object in `packages/contracts/src/error.ts`, passed as `commonResponses` on `apiContract`** — the envelope's other definitions live there, and the root router is the one place every route, the spec and the client read.
+2. **The R1 lookup is built from `apiContract`, not from each controller's router** — the same contract the spec is emitted from, so the filter and the OpenAPI can never disagree.
+3. **The six undeclared throws stay as they are** — each needs a race, so the opaque 500 R1 gives them is the honest answer for a state the request cannot cause; declaring them would promise clients a refusal they cannot meet.
+
+**Order:** the contract test (AC-2, AC-3, AC-5) red → `sharedRefusals` → OpenAPI re-emitted → the filter test red → the filter → `packages/data` fallout → `access.ts` ignore → `apps/api/CLAUDE.md` and protections → QA → docs.
+
+**Twin:** no screen.
+
+##### Architecture diagram
+```mermaid
+sequenceDiagram
+  participant C as web / phone client
+  participant G as api SessionGuard
+  participant H as handler + service
+  participant F as EnvelopeExceptionFilter
+  participant D as declared statuses (from apiContract)
+  participant K as packages/contracts apiContract
+  K->>D: every route's statuses, sharedRefusals included
+  K->>C: typed client and OpenAPI carry 400, 403, 500
+  C->>G: request
+  G->>H: access granted
+  H-->>F: throws (status S)
+  F->>D: is S declared for this route?
+  alt declared
+    F-->>C: S with its code
+  else undeclared
+    F-->>C: 500 INTERNAL, log names route and S
+  end
+```
+
+##### Package changes
+- **contracts:** new export `sharedRefusals` (`error.ts`); `apiContract` gains `commonResponses`. No new code, enum or brand — the three codes are base codes.
+- **api:** `common/filters/` gains the declared-status lookup; the filter answers an undeclared status as `INTERNAL`. Imports `@heliogrid/contracts` only, as today.
+- **data:** only what the wider response union breaks (finding 6).
+- **Protections (Law 12):** two new rows in `.claude/protections.md` — "a thrown status is one its route declares" (`apps/api/tests/common/undeclared-status.test.ts`; under R1 B the plugin instead), and "a route's `:segment`s are declared, its request shapes are objects, and every route carries the shared refusals" (`packages/contracts/tests/route-shape.test.ts`; under R2 B the union half is a plugin). No new route, table or error code.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/contracts/src/error.ts` | `sharedRefusals` — the 400, 403 and 500 envelopes, once | the envelope's home |
+| modify | `packages/contracts/src/index.ts` | `commonResponses: sharedRefusals` on `apiContract` | the root router |
+| modify | `packages/contracts/openapi/openapi.json` | re-emitted (generated) | `check:openapi` |
+| add | `packages/contracts/tests/route-shape.test.ts` | AC-2, AC-3, AC-5 over `apiContract` | contracts' unit tests |
+| add | `apps/api/src/common/filters/declared-statuses.ts` | the route → declared statuses lookup (R1 A) | beside the filter it serves |
+| modify | `apps/api/src/common/filters/envelope-exception.filter.ts` | an undeclared thrown status answers `INTERNAL` and logs (R1 A) | the one error edge |
+| add | `apps/api/tests/common/undeclared-status.test.ts` | AC-1's edges and planted red (R1 A) | the api's common tests |
+| modify | `apps/api/src/common/auth/access.ts` | the `biome-ignore` cites the ruling (AC-4) | the type's home |
+| modify | `apps/api/CLAUDE.md` | lines 55-57 cover a thrown status too | Law 8 |
+| modify | `.claude/protections.md` | the two rows above | Law 12 |
+| modify | `docs/tasks/F-platform.md` · `docs/tasks/deferred.md` | this RFC and `shipped`; D18, D29, D30, D71, D127 deleted | Law 8 |
+| modify | `packages/data/src/**` (0–3 files) | only what finding 6 breaks, named as it lands | the client |
+| modify | `apps/api/src/common/auth/session.guard.ts` | built, not planned (review): the guard reads `matchedRouteKey`, the one matched-route lookup the filter shares | `access.ts` owns the route key |
+| add | `packages/contracts/tests/support/routes.ts` | built, not planned (review): one `routesOf` for the contract tests | three tests had three walkers |
+| modify | `packages/contracts/tests/create-retry-key.test.ts` · `no-role-editor.test.ts` | built, not planned (review): read the shared `routesOf` | the same |
+| modify | `packages/contracts/CLAUDE.md` | built, not planned (review): the shared refusals are never redeclared; a route's own entry replaces the shared one | Law 8 |
+| modify | `packages/contracts/src/{audit,catalog,catalog-import,catalog-releases,file,invitation,notification,onboarding,price-book,tenant,tenant-settings}.ts` | **delta D1 A only:** every 403 that names only `FORBIDDEN` deleted — now a second copy of `sharedRefusals[403]` | `CLAUDE.md` §8 zero duplication |
+
+Under R1 B the three R1 A rows are replaced by `packages/config/biome/handler-throw.grit` (add), `biome.json` (modify), a returned-refusal helper in `apps/api/src/common/errors/` (add) and the 6 controllers holding the 8 throws (modify). Under R2 B, `packages/config/biome/request-union.grit` (add) and `biome.json` (modify) join.
+
+##### API and contract changes
+- **Every route** in `apiContract` gains declared 400 (`VALIDATION_FAILED`), 403 (`FORBIDDEN`) and 500 (`INTERNAL`) responses, each the canonical envelope; a route's own 403 wins where it declares one (it lists `FORBIDDEN` already). The wire does not change — the api already sends these.
+- **Compatibility:** responses only grow, so every shipped client reads them; oasdiff judges it in CI's `quality` lane. The typed client's union widens (finding 6). Built: the typecheck found no reader to fix. One runtime change for `packages/data` (found at review): a 400, 403 or 500 was an undeclared status, which the client raised as `ApiError`; now declared, a JSON body at those statuses is parsed against the envelope, so a non-envelope JSON body would raise `InvalidResponseError` instead. The api sends only the envelope there.
+- **R1 A:** the six undeclared pairs in finding 2 answer 500 `INTERNAL` instead of their status. Each needs a race; none is reachable by a person's own request.
+- No auth, permission or tenancy change.
+
+##### Risks and rollout
+- **An undeclared throw the audit missed turns into a 500 in production (R1 A).** Mitigation: the audit walked all 114 throw sites; every api HTTP suite drives the real filter, so a refusal a suite reaches and its route does not declare goes red there before it ships; the log line names the route and status.
+- **oasdiff reads a grown response set as breaking.** Mitigation: added non-success responses are not an ERR-level change; CI's `quality` lane proves it.
+- **The client's wider union breaks a reader.** Mitigation: the workspace typecheck finds every one; each is fixed in `packages/data`.
+
+##### Acceptance criteria and proof
+- **AC-1** — A Biome plugin refuses `throw new *Exception` inside a `tsRestHandler` block in `apps/api/`, with its `.claude/protections.md` row. → proof: `pnpm lint` green, and red on a planted throw.
+  - **R1 A replaces it with:** A status thrown on a route that its contract does not declare answers as the opaque 500 `INTERNAL`, and the log names the route and the status; a declared status, and a request no route matched, answer as before — with its `.claude/protections.md` row. → proof: an api test of the filter, red on a planted pass-through.
+- **AC-2** — Every `:segment` in a contract path has a matching `pathParams` key. → proof: a unit test over `packages/contracts/src/`, red on a planted route.
+- **AC-3** — Every route's spec carries the shared 400 `VALIDATION_FAILED`, 403 and 500 `INTERNAL` from one declaration. → proof: `check:openapi` and a contract test.
+- **AC-4** — The api guard's `RouteAccess` stays the guard's own type (owner ruling, deferred review 2026-10-08, D71); its `biome-ignore` cites that ruling. → proof: `pnpm lint`.
+- **AC-5** — A contract route's `body`, `query` or `pathParams` is never a `z.union` or `.or()`, so a refusal names its key (D127). → proof: a Biome plugin, red on a planted line, with its protections row.
+  - **R2 A replaces the proof with:** a unit test over `apiContract`, red on a planted union body, with its protections row.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 (R1 A) | main-dev | required | api test | `it.each`: a declared 404 → 404 `NOT_FOUND`; an undeclared 404 → 500 `INTERNAL` and one error log naming route and status; a declared route literal (`ContractException`) → kept; no matched route → as thrown; planted red: the check removed → the undeclared case fails by name; restored | `apps/api/tests/common/undeclared-status.test.ts` |
+| AC-1 (R1 A) | qa-api | required | running api | `GET /market-packs/ZZ` → 404 `NOT_FOUND` with the envelope and `x-request-id` (a declared throw still passes) | live |
+| AC-2 | main-dev | required | unit | every route's `:segment`s ⊆ its `pathParams` keys; planted red: a `/probe/:id` route with none → fails by name | `packages/contracts/tests/route-shape.test.ts` |
+| AC-2 | qa-api | required | running api | `POST /notifications/not-a-uuid/read` signed in, with the route's body `{}` → 400 `VALIDATION_FAILED`, `details` is only path `id` (amended at QA: sent with no body, the body's own refusal comes first) | live |
+| AC-3 | main-dev | required | unit | every route declares 400, 403, 500 whose codes include `VALIDATION_FAILED`, `FORBIDDEN`, `INTERNAL`; planted red: `commonResponses` removed → fails by name | `packages/contracts/tests/route-shape.test.ts` |
+| AC-3 | evaluator | required | gate | `pnpm check:openapi` → the committed spec matches the emitted one | gate |
+| AC-3 | qa-api | required | running api | a signed-in person with no company: `GET /tenants/me` and `GET /tenants/me/members` → 403 `FORBIDDEN` envelope, and the committed spec lists 403 on both (D30) | live |
+| AC-3 | ci | required | `quality` | oasdiff `breaking --fail-on ERR` passes on the grown spec | CI |
+| AC-4 | main-dev | required | Biome | `pnpm lint` green with the new reason; the ignore names the ruling, not D71 | lint |
+| AC-5 (R2 A) | main-dev | required | unit | no route's `body`, `query` or `pathParams` is a Zod union (unwrapped through effects, optional, nullable, default); planted red: a route whose body is `z.object(…).or(z.object(…))` → fails by name | `packages/contracts/tests/route-shape.test.ts` |
+| AC-1–AC-5 | evaluator · ci | required | `pnpm check:all` · `quality`, `e2e-web` | every check passes | gate · CI |
+
+##### Delivery size
+- **Estimate (R1 A, R2 A):** 13 authored files plus 1 generated (`openapi.json`), and up to 3 in `packages/data`. About 410 authored lines: code about 60, tests about 140, docs about 210.
+- **R1 B, R2 B instead:** about 12 more files (two grit rules, `biome.json`, a helper, six controllers), code about 120 more; tests about the same.
+- **Built so far (delta 1, after review):** 16 authored files plus 1 generated, against 13 planned (+23%); `packages/data` needed none. Under D1 A, 27 authored files and about 80 more deleted lines; the spec is expected byte-identical (`check:openapi` proves it).
+- **One part.** The five rows meet in one seam — the contract's declared statuses — and fit the 30-file and 1,000-line targets.
+
+**Decisions — T-FPLAT-083**
+- **R1 — how a thrown status is held to its route (AC-1, D18).** **A · the filter checks it (recommended):** every throw site is covered, services included, where the six real cases live; no handler writes an error body; `apps/api/CLAUDE.md:55-57` becomes true as written; AC-1's line is replaced as shown. **B · the plugin as ruled:** the 8 handler throws — all correct today — become returned refusals through a new helper; the six service cases stay unseen; `apps/api/CLAUDE.md:55-57` is corrected to say a thrown status is not checked.
+- **R2 — how a union request is refused (AC-5, D127).** **A · the contract test (recommended):** it reads the real Zod type of all 81 request shapes and sits in AC-2's test file. **B · the plugin as ruled:** it sees only the 17 written inline.
+- **Deferred rows met:** D18, D29, D30, D71, D127 (`T-FPLAT-083 starts`) — **join**, they are this task, deleted in its commit. D41, D62 (`touches .claude/`) — **stay**: harness checks with no tie to this task. Under R1 B or R2 B, D53 and D70 (`touches biome.json`) are met too — **stay**: rules about other files.
+
+- **Owner rulings (2026-10-08):** RFC approved; R1 → **A** (the filter checks a thrown status); R2 → **A** (the contract test). AC-1 and AC-5 are proven by their R1 A and R2 A lines.
+
+**Delta 1 — after review (2026-10-08).** Built against planned: 16 authored files, 13 planned; four review fixes added `session.guard.ts`, `tests/support/routes.ts`, the two older contract tests and `packages/contracts/CLAUDE.md` (rows in the file table). Unchanged sections stay as approved.
+- **D1 — the 403s that now copy `sharedRefusals`.** 11 contract files still declare a 403 naming only `FORBIDDEN`, a second copy of the shared one. **A · delete them now (recommended):** this task made them copies, and the rule it adds to `packages/contracts/CLAUDE.md` forbids them; 11 files, about 80 deleted lines, spec byte-identical. **B · a deferred row:** the copies stay, and the rule says only a new route never redeclares them.
+- **D2 — the filter checks the status, not the code (review note).** A generic `ConflictException` on a route whose 409 lists only its own literals still passes the filter with `CONFLICT`. **A · a deferred row (recommended):** a new behaviour beyond R1 A, which may turn more refusals into 500s; it needs its own audit. **B · now:** the lookup keeps each route's response schemas and parses the envelope before answering, about 5 lines and two test cases.
+- **Deferred rows met by D1 A:** D128 (`touches packages/contracts/src/catalog.ts`), D134 (`touches packages/contracts/src/tenant.ts`) — **stay**: a domain bound and a two-release field drop, neither this task's.
+
+- **Owner rulings on delta 1 (2026-10-08):** delta approved; D1 → **A** (the copies deleted now); D2 → **A** (a deferred row).
+
+- **Build (2026-10-08):** tests first. `route-shape.test.ts` red before `sharedRefusals` — 198 cases, each route's missing shared 400, 403 or 500 by name — then green. Planted reds, each restored: a `health.probe` route at `/probe/:id` with no `pathParams` and a body `.or()` → the segment and union cases fail by name; a union under `.refine().optional()` as a query, and four more under `.and()`, `.brand().readonly()`, `z.lazy().catch()` and `z.unknown().pipe()` → each union case fails by name; price-book's `guarded` given back its own `FORBIDDEN` 403 → "does not copy the shared 403" fails for `priceBook.active`, `.publish`, `.version`. `undeclared-status.test.ts` red before the filter change (the undeclared 404 and 401 answered as thrown), then green; the check planted out of the filter → both undeclared cases fail by name. The re-emitted spec only adds: 400 and 500 on all 86 operations, 403 on 26; nothing changed or removed; local `oasdiff breaking --fail-on ERR` (1.26.1) reports none; after D1 A the spec is byte-identical. The workspace typecheck found no reader in `packages/data` to fix. The whole api suite on `heliogrid_test` passes (67 files, 534 tests) with no `undeclaredStatus` logged, before and after D1 A.
+- **QA (2026-10-08, `qa-api`):** all pass on the restarted api. `GET /market-packs/ZZ` → 404 `NOT_FOUND`, request id matched, no internal-failure line. `POST /notifications/not-a-uuid/read` with `{}` (…904) → 400 `VALIDATION_FAILED`, one detail, path `id`. A no-company session (…908): `GET /tenants/me` and `/tenants/me/members` → 403 `FORBIDDEN`; the spec lists 403 on both and 400 and 500 on all 86 operations. Row 2 failed once as first written (no body, so the body's own refusal came first); the row was amended and its one retry passed. Every session signed out; no company made.
+- **Gate (2026-10-08, evaluator):** PASS — `pnpm check:all` exit 0, read to the end: build, lint, typecheck, dupes, `check:openapi` (spec fresh), catalogs, 200 unit files and 3458 tests, `turbo test`, the invariants with no SKIP or VACUOUS. CI's `quality` (oasdiff 1.31.0) and `e2e-web` follow the push.
+- **Review (2026-10-08):** four should-fix and six notes, then two more on the fixes; all fixed or ruled — one matched-route lookup (`matchedRouteKey`); one contract-test route walker; the 403 copies deleted (D1 A) and a test that refuses a new one; the contracts rule written; the data-client note; thrown-only scope in `apps/api/CLAUDE.md`; `isUnion` through every wrapper; the filter JSDoc moved; lines rewrapped; the protections row names the copy check. The code check is D161 (D2 A).
+
+**Checklist** — [x] contract test and `sharedRefusals` · [x] OpenAPI re-emitted · [x] filter test and filter · [x] `packages/data` fallout (none) · [x] `access.ts` ignore · [x] `apps/api/CLAUDE.md` and protections · [x] qa-api · [x] review · [x] gate · [x] docs
+
+#### Runtime
+Recorded at the step's start (2026-10-08), before anything ran. Branch `feat/T-FPLAT-083` from `origin/main` `ad419c6c` (#256 merged).
+
+| resource | state | identity |
+|---|---|---|
+| web `3002`, api `8084`, Metro `8081` | none listening | — |
+| Postgres `5544` | pre_existing | `heliogrid-pg-local` |
+| object store `9000` | pre_existing | `heliogrid-object-store-local` |
+| Temporal `7233` | pre_existing | `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulators and emulators | none booted | — |
+| browser tabs | none opened by this task | — |
+| database routing | `DATABASE_URL` and `DATABASE_ADMIN_URL` → `heliogrid_dev` | `.env.local` |
+| runtime logs | `api.log` 949412 · `web.log` 237514 · `metro.log` 799765 bytes | `.qa/` |
+
+- **Owner ruling at the commit card (2026-10-08):** the built size, 27 authored files and 619 lines (code 125, tests 280, docs 214), approved as it is.
+
+**Teardown and measurements (2026-10-08, at the commit card).**
+
+| resource | initial | final |
+|---|---|---|
+| api `8084` | none listening | started by the task (launch `api`, twice: pids 39522, 69724), stopped |
+| web `3002`, Metro `8081` | none | none |
+| Postgres, object store, Temporal | pre_existing | untouched, running |
+| browser tab | none | `seed` (opened by the api preview) closed |
+| database routing | both URLs → `heliogrid_dev` | both → `heliogrid_test` for QA and the gate, restored to `heliogrid_dev` |
+| runtime logs | `api.log` 949412 bytes | 1160413; `web.log`, `metro.log` unchanged |
+| `tsx … watch` | none | none |
+
+Measurements: about 110 tool-call turns; this session's context at the card about 319k tokens; helper runs — 1 audit (Explore), `qa-api` 3 (first run, one row retry, the rerun after the last checked-file change), `reviewer` 2, `evaluator` 1; planned 13 authored files and about 410 lines, built 27 authored files (the 11 under D1 A deleting the copied 403s) plus 1 generated.
+
 
 ### T-FPLAT-084 · Every colour pair the components draw clears its contrast floor
 **Type:** policy · **Tier:** P0 (`F7-11`, `N4`)

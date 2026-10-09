@@ -147,7 +147,6 @@ export type CatalogImportWire = z.infer<typeof catalogImportSchema>;
 
 const guarded = {
   401: unauthenticatedEnvelope,
-  403: errorEnvelope(baseError('FORBIDDEN')),
 } as const;
 const notFound = errorEnvelope(baseError('NOT_FOUND'));
 /** The job is not where the act can happen — mapping a file not yet read, paging rows not matched. */

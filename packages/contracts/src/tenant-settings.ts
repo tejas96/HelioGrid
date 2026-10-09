@@ -123,11 +123,10 @@ export const tenantSettingsErrorCodeSchema = z.enum(tenantSettingsErrorCodes);
 export type TenantSettingsErrorCode = z.infer<typeof tenantSettingsErrorCodeSchema>;
 
 const unauthenticated = errorEnvelope(baseError('UNAUTHENTICATED'));
-const forbidden = errorEnvelope(baseError('FORBIDDEN'));
 const notFound = errorEnvelope(baseError('NOT_FOUND'));
 const conflict = errorEnvelope(baseError('CONFLICT'));
 
-const guarded = { 401: unauthenticated, 403: forbidden } as const;
+const guarded = { 401: unauthenticated } as const;
 const templateParams = z.object({ id: uuidSchema });
 
 export const tenantSettingsContract = c.router({

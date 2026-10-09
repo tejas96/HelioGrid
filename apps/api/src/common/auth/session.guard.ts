@@ -11,7 +11,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import type { Request } from 'express';
 import { ContractException } from '../errors/contract-exception';
-import { accessOf, ROUTE_ACCESS, type RouteAccess, routeKey } from './access';
+import { accessOf, matchedRouteKey, ROUTE_ACCESS, type RouteAccess, routeKey } from './access';
 import { carriesCredential } from './cookies';
 import { attachSession } from './session-context';
 
@@ -44,10 +44,7 @@ export class SessionGuard implements CanActivate {
        * CONTRACT path while the lookup uses the EXPRESS one. The second reads as an auth failure
        * and sends the reader to sessions and tokens; the key in the message ends that hunt.
        */
-      const attempted = routeKey(
-        req.method,
-        (req.route as { path?: string } | undefined)?.path ?? '?',
-      );
+      const attempted = matchedRouteKey(req) ?? routeKey(req.method, '?');
       throw new UnauthorizedException(
         `This route declares no access for ${attempted}. Either it declares none, or its ` +
           'declared path and its served path have diverged.',

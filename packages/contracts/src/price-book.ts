@@ -98,7 +98,6 @@ export type PriceBookPublish = z.infer<typeof priceBookPublishSchema>;
 
 const guarded = {
   401: errorEnvelope(baseError('UNAUTHENTICATED')),
-  403: errorEnvelope(baseError('FORBIDDEN')),
 } as const;
 
 export const priceBookContract = c.router({

@@ -14,6 +14,7 @@ import type { Request, Response } from 'express';
 import { PinoLogger } from 'nestjs-pino';
 import { ContractException } from '../errors/contract-exception';
 import { REQUEST_ID_HEADER, resolveRequestId, safeRequestId } from '../request-id';
+import { routeNotDeclaring } from './declared-statuses';
 
 type ValidationSource = 'body' | 'headers' | 'params' | 'query';
 
@@ -25,16 +26,16 @@ interface Envelope {
 }
 
 /**
- * The opaque outcome. Everything the client is NOT allowed to learn — a response that failed
- * its own contract, an undeclared status, a thrown Error — collapses to exactly this, and the
- * truth goes to the log under the same request id.
- */
-/**
  * The 5xx boundary. Named because `status >= 500` reads as arithmetic and IS a policy: at and
  * above this the client is told nothing and the log keeps the truth.
  */
 const SERVER_ERROR_STATUS = 500;
 
+/**
+ * The opaque outcome. Everything the client is NOT allowed to learn — a response that failed its
+ * own contract, a status returned or thrown that the route does not declare, a thrown Error —
+ * collapses to exactly this, and the truth goes to the log under the same request id.
+ */
 const OPAQUE_INTERNAL: Envelope = {
   status: httpStatusFor('INTERNAL'),
   code: 'INTERNAL',
@@ -152,10 +153,20 @@ export class EnvelopeExceptionFilter implements ExceptionFilter {
     const requestId = safeRequestId(req.id) ?? resolveRequestId(req.headers[REQUEST_ID_HEADER]);
     res.setHeader(REQUEST_ID_HEADER, requestId);
 
-    const { status, code, message, details } = envelopeFor(exception);
+    const thrown = envelopeFor(exception);
+    // ts-rest checks only what a handler RETURNS, so a thrown status meets its contract here or
+    // nowhere.
+    const undeclaredOn = routeNotDeclaring(req, thrown.status);
+    const { status, code, message, details } =
+      undeclaredOn === undefined ? thrown : OPAQUE_INTERNAL;
     if (status >= SERVER_ERROR_STATUS) {
       // The client sees opaque INTERNAL; the log keeps the truth, under the same request id.
-      this.logger.error(safeErrorLog(exception, requestId), 'Request failed internally');
+      const undeclared =
+        undeclaredOn === undefined ? {} : { route: undeclaredOn, undeclaredStatus: thrown.status };
+      this.logger.error(
+        { ...safeErrorLog(exception, requestId), ...undeclared },
+        'Request failed internally',
+      );
     }
     res.status(status).json({ error: { code, message, details, requestId } });
   }

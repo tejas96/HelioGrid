@@ -88,7 +88,6 @@ export const fileErrorCodeSchema = z.enum(fileErrorCodes);
 export type FileErrorCode = z.infer<typeof fileErrorCodeSchema>;
 
 const fileParamsSchema = z.object({ id: uuidSchema });
-const forbidden = errorEnvelope(baseError('FORBIDDEN'));
 const notFound = errorEnvelope(baseError('NOT_FOUND'));
 const notUploaded = errorEnvelope(fileErrorCodeSchema.extract(['FILE_NOT_UPLOADED']));
 
@@ -103,7 +102,6 @@ export const fileContract = c.router({
     responses: {
       201: declaredFileSchema,
       401: unauthenticatedEnvelope,
-      403: forbidden,
       /** No such subject in this company. */
       404: notFound,
       422: errorEnvelope(
@@ -121,7 +119,6 @@ export const fileContract = c.router({
     responses: {
       200: fileSchema,
       401: unauthenticatedEnvelope,
-      403: forbidden,
       404: notFound,
       409: notUploaded,
       422: errorEnvelope(fileErrorCodeSchema.extract(['FILE_CONTENT_MISMATCH'])),
@@ -136,7 +133,6 @@ export const fileContract = c.router({
     responses: {
       200: fileDownloadSchema,
       401: unauthenticatedEnvelope,
-      403: forbidden,
       404: notFound,
       409: notUploaded,
     },

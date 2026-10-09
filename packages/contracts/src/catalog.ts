@@ -178,7 +178,6 @@ export const rateEntrySchema = z.object({
 export type RateEntryWire = z.infer<typeof rateEntrySchema>;
 
 const unauthenticated = errorEnvelope(baseError('UNAUTHENTICATED'));
-const forbidden = errorEnvelope(baseError('FORBIDDEN'));
 const notFound = errorEnvelope(baseError('NOT_FOUND'));
 const conflict = errorEnvelope(baseError('CONFLICT'));
 const ruleBroken = errorEnvelope(baseError('DOMAIN_RULE_VIOLATION'));
@@ -186,7 +185,7 @@ const ruleBrokenOrKeyReused = errorEnvelope(
   z.enum([baseError('DOMAIN_RULE_VIOLATION').value, IDEMPOTENCY_KEY_REUSED]),
 );
 
-const guarded = { 401: unauthenticated, 403: forbidden } as const;
+const guarded = { 401: unauthenticated } as const;
 const itemParams = z.object({ id: uuidSchema });
 
 export const catalogContract = c.router({

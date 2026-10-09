@@ -4,6 +4,7 @@ import { authContract } from './auth';
 import { catalogContract } from './catalog';
 import { catalogImportContract } from './catalog-import';
 import { catalogReleasesContract } from './catalog-releases';
+import { sharedRefusals } from './error';
 import { fileContract } from './file';
 import { healthContract } from './health';
 import { invitationContract } from './invitation';
@@ -93,6 +94,7 @@ export const apiContract = c.router(
   },
   {
     strictStatusCodes: true,
+    commonResponses: sharedRefusals,
   },
 );
 

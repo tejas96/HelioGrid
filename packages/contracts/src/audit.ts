@@ -8,7 +8,7 @@ import {
   rolePresetSchema,
   uuidSchema,
 } from './common';
-import { baseError, errorEnvelope, unauthenticatedEnvelope } from './error';
+import { unauthenticatedEnvelope } from './error';
 
 const c = initContract();
 
@@ -71,7 +71,6 @@ export const auditContract = c.router({
     responses: {
       200: paginated(auditLogEntrySchema),
       401: unauthenticatedEnvelope,
-      403: errorEnvelope(baseError('FORBIDDEN')),
     },
   },
 });
