@@ -28,8 +28,9 @@ export interface LandingRow {
 }
 
 /**
- * How a join ended (`M01-13`): the company joined, or the one reason nothing was written — the
- * link no longer lands (answered, withdrawn or run out), or the person is already on this team.
+ * How a join ended (`M01-13`): the company joined — or joined already by this same person, whose
+ * repeat answers as the join did (`F4-07`) — or the one reason nothing was written: the link no
+ * longer lands (answered, withdrawn or run out), or the person is already on this team.
  */
 export type AcceptOutcome =
   | { readonly outcome: 'done'; readonly tenantId: string }
@@ -126,6 +127,10 @@ export async function acceptInvitation(
   input: { tokenHash: string; userId: string; now: number },
 ): Promise<AcceptOutcome> {
   const row = await lockedByToken(tx, input.tokenHash);
+  // A lost answer retried: the join landed, so it answers again and writes nothing more.
+  if (row?.status === 'accepted' && (await joinedThrough(tx, row, input.userId))) {
+    return { outcome: 'done', tenantId: row.tenantId };
+  }
   if (!row || invitationStatus(lifeOf(row), input.now) !== 'pending') {
     return { outcome: 'not-pending' };
   }
@@ -198,6 +203,7 @@ async function lockedByToken(tx: DbTransaction, tokenHash: string) {
       id: invitation.id,
       tenantId: invitation.tenantId,
       inviteeName: invitation.inviteeName,
+      phoneE164: invitation.inviteePhoneE164,
       status: invitation.status,
       expiresAt: invitation.expiresAt,
       reinviteRequestedAt: invitation.reinviteRequestedAt,
@@ -207,6 +213,31 @@ async function lockedByToken(tx: DbTransaction, tokenHash: string) {
     .limit(1)
     .for('update');
   return row ?? null;
+}
+
+/**
+ * Whether this person is the one an accepted invite let in: the invite's own phone, still active in
+ * its company. Anyone else — a teammate there included — finds the answered link landing nowhere.
+ */
+async function joinedThrough(
+  tx: DbTransaction,
+  row: { tenantId: string; phoneE164: string },
+  userId: string,
+): Promise<boolean> {
+  const [joined] = await tx
+    .select({ id: tenantMembership.id })
+    .from(tenantMembership)
+    .innerJoin(userAccount, eq(userAccount.id, tenantMembership.userAccountId))
+    .where(
+      and(
+        eq(tenantMembership.tenantId, row.tenantId),
+        eq(tenantMembership.userAccountId, userId),
+        eq(tenantMembership.status, 'active'),
+        eq(userAccount.phoneE164, row.phoneE164),
+      ),
+    )
+    .limit(1);
+  return joined !== undefined;
 }
 
 function lifeOf(row: { status: InvitationStatus; expiresAt: Date }) {

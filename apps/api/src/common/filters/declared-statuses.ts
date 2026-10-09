@@ -16,7 +16,9 @@ function statusesByRoute(router: AppRouter): [string, ReadonlySet<number>][] {
   );
 }
 
-const DECLARED = new Map(statusesByRoute(apiContract));
+export const DECLARED: ReadonlyMap<string, ReadonlySet<number>> = new Map(
+  statusesByRoute(apiContract),
+);
 
 /**
  * The matched route's key when that route does not declare `status`; otherwise `undefined` — also

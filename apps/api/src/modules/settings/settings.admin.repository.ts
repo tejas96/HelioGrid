@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from 'node:util';
 import {
   businessProfile,
   type Db,
@@ -18,6 +19,7 @@ import { eq } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { ADMIN_DB } from '../../common/db/admin.token';
 import { memberAct, recordAuditEntry } from '../audit/audit.public';
+import { withKwp } from './settings.repository';
 
 /** Any transaction, on either pool: the seed rides the one that creates the tenant. */
 
@@ -93,7 +95,8 @@ export interface ProfileToWrite {
  * The one settings write that touches the tenant registry: `tenant` is ARMED, readable to its
  * own session and written on the admin path alone (`T-M01-025`), so the whole profile save —
  * the company facts by id, the profile row, the entry — is one transaction here, never split
- * across the two pools where half could land.
+ * across the two pools where half could land. The profile as stored, sent again, writes and
+ * records nothing (`F4-07`).
  */
 @Injectable()
 export class SettingsAdminRepository {
@@ -102,6 +105,8 @@ export class SettingsAdminRepository {
 
   async saveProfile(tenantId: string, profile: ProfileToWrite, act: Act): Promise<ProfileToWrite> {
     return this.db.transaction(async (tx) => {
+      const stored = await storedProfile(tx, tenantId);
+      if (stored !== null && isDeepStrictEqual(stored, profile)) return stored;
       const now = new Date(act.now);
       const [facts] = await tx
         .update(tenant)
@@ -148,12 +153,24 @@ export class SettingsAdminRepository {
           act,
         ),
       );
-      return {
-        ...facts,
-        typicalSystemKwp: facts.typicalSystemKwp === null ? null : Number(facts.typicalSystemKwp),
-        address: row.address,
-        bankDetails: row.bankDetails,
-      };
+      return withKwp({ ...facts, address: row.address, bankDetails: row.bankDetails });
     });
   }
+}
+
+async function storedProfile(tx: DbTransaction, tenantId: string): Promise<ProfileToWrite | null> {
+  const [row] = await tx
+    .select({
+      companyName: tenant.companyName,
+      city: tenant.city,
+      segment: tenant.segment,
+      typicalSystemKwp: tenant.typicalSystemKwp,
+      address: businessProfile.address,
+      bankDetails: businessProfile.bankDetails,
+    })
+    .from(tenant)
+    .innerJoin(businessProfile, eq(businessProfile.tenantId, tenant.id))
+    .where(eq(tenant.id, tenantId))
+    .limit(1);
+  return row === undefined ? null : withKwp(row);
 }

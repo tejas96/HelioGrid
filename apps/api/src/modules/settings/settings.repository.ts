@@ -1,14 +1,13 @@
+import { isDeepStrictEqual } from 'node:util';
 import {
   brandingSettings,
   businessProfile,
   onboardingProgress,
-  proposalTemplateSettings,
   type TenantPool,
   type TenantScopedDb,
   taxRegistration,
   tenant,
   tenantHoliday,
-  timelineTemplate,
 } from '@heliogrid/db';
 import type {
   BrandingSettings,
@@ -23,6 +22,7 @@ import { and, asc, eq, notInArray } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { memberAct, recordAuditEntry } from '../audit/audit.public';
+import { storedProposalTemplate, storedTimelineTemplate } from './settings.templates.repository';
 import { trancheTemplatesOf } from './settings.tranches.repository';
 
 /** The tenant's own row: the signup facts, the two declarations, the locale pair — and its market. */
@@ -41,7 +41,8 @@ export interface TenantSettingsRead {
  * The tenant's settings on the runtime pool, inside the tenant transaction: the one read the
  * effective resolver makes, and the writes that stay within tenant scope. The profile's company
  * facts live on `tenant`, an ARMED registry written on the admin path, so that write is
- * `settings.admin.repository.ts`'s.
+ * `settings.admin.repository.ts`'s. A save equal to what is stored writes and records nothing
+ * (`F4-07`): it answers the stored value.
  */
 @Injectable()
 export class SettingsRepository {
@@ -62,28 +63,6 @@ export class SettingsRepository {
         .from(businessProfile)
         .where(eq(businessProfile.tenantId, tenantId))
         .limit(1);
-      const [branding] = await tx
-        .select({
-          brandColour: brandingSettings.brandColour,
-          letterhead: brandingSettings.letterhead,
-        })
-        .from(brandingSettings)
-        .where(eq(brandingSettings.tenantId, tenantId))
-        .limit(1);
-      const [proposal] = await tx
-        .select({
-          cover: proposalTemplateSettings.cover,
-          sectionsIncluded: proposalTemplateSettings.sectionsIncluded,
-          defaultTerms: proposalTemplateSettings.defaultTerms,
-        })
-        .from(proposalTemplateSettings)
-        .where(eq(proposalTemplateSettings.tenantId, tenantId))
-        .limit(1);
-      const [timeline] = await tx
-        .select({ phases: timelineTemplate.phases })
-        .from(timelineTemplate)
-        .where(eq(timelineTemplate.tenantId, tenantId))
-        .limit(1);
       const [progress] = await tx
         .select({ promptPointStates: onboardingProgress.promptPointStates })
         .from(onboardingProgress)
@@ -94,9 +73,9 @@ export class SettingsRepository {
         settings: {
           businessProfile: profile ?? null,
           taxRegistrations: await registrationsOf(tx, tenantId),
-          branding: branding ?? null,
-          proposalTemplate: proposal ?? null,
-          timelineTemplate: timeline ?? null,
+          branding: await brandingOf(tx, tenantId),
+          proposalTemplate: await storedProposalTemplate(tx, tenantId),
+          timelineTemplate: await storedTimelineTemplate(tx, tenantId),
           trancheTemplates: await trancheTemplatesOf(tx, tenantId),
           holidays: await holidaysOf(tx, tenantId),
         },
@@ -112,6 +91,8 @@ export class SettingsRepository {
     act: Act,
   ): Promise<readonly TaxRegistration[]> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const stored = await registrationsOf(tx, tenantId);
+      if (sameSet(stored, registrations, (one) => one.registrationType)) return stored;
       const kept = registrations.map((registration) => registration.registrationType);
       await tx
         .delete(taxRegistration)
@@ -152,6 +133,8 @@ export class SettingsRepository {
     act: Act,
   ): Promise<BrandingSettings> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const stored = await brandingOf(tx, tenantId);
+      if (stored !== null && isDeepStrictEqual(stored, branding)) return stored;
       const now = new Date(act.now);
       const values = {
         brandColour: branding.brandColour,
@@ -188,6 +171,8 @@ export class SettingsRepository {
     act: Act,
   ): Promise<readonly TenantHoliday[]> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const stored = await holidaysOf(tx, tenantId);
+      if (sameSet(stored, holidays, (one) => one.date)) return stored;
       const kept = holidays.map((holiday) => holiday.date);
       await tx
         .delete(tenantHoliday)
@@ -228,11 +213,33 @@ async function tenantRead(tx: TenantScopedDb, tenantId: string): Promise<TenantR
     .from(tenant)
     .where(eq(tenant.id, tenantId))
     .limit(1);
-  if (!row) return null;
+  return row ? withKwp(row) : null;
+}
+
+/** `typical_system_kwp` is `numeric`, which the driver reads back as text. */
+export function withKwp<T extends { typicalSystemKwp: string | null }>(
+  row: T,
+): Omit<T, 'typicalSystemKwp'> & { typicalSystemKwp: number | null } {
   return {
     ...row,
     typicalSystemKwp: row.typicalSystemKwp === null ? null : Number(row.typicalSystemKwp),
   };
+}
+
+async function brandingOf(tx: TenantScopedDb, tenantId: string): Promise<BrandingSettings | null> {
+  const [row] = await tx
+    .select({ brandColour: brandingSettings.brandColour, letterhead: brandingSettings.letterhead })
+    .from(brandingSettings)
+    .where(eq(brandingSettings.tenantId, tenantId))
+    .limit(1);
+  return row ?? null;
+}
+
+/** A list the store keeps as a set, one row per key: equal whatever order either side holds it in. */
+function sameSet<T>(stored: readonly T[], sent: readonly T[], keyOf: (one: T) => string): boolean {
+  const byKey = (items: readonly T[]) =>
+    [...items].sort((a, b) => keyOf(a).localeCompare(keyOf(b)));
+  return isDeepStrictEqual(byKey(stored), byKey(sent));
 }
 
 async function registrationsOf(

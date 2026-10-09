@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from 'node:util';
 import {
   membershipRole,
   type TenantPool,
@@ -41,11 +42,13 @@ export type TransitionOutcome =
   | { readonly outcome: 'done'; readonly member: MemberRow }
   | { readonly outcome: 'not-found' | 'not-active' | 'last-owner' };
 
-/** What the change did, and the old → new the log records for it — written either way. */
-interface ChangeOutcome {
-  readonly outcome: 'done' | 'last-owner';
-  readonly changePayload: AuditChangePayload | null;
-}
+/**
+ * What the change did, and the old → new the log records for it — written whether it landed or was
+ * refused. A change to what is already held changed nothing, and nothing records it (`F4-07`).
+ */
+type ChangeOutcome =
+  | { readonly outcome: 'done' | 'last-owner'; readonly changePayload: AuditChangePayload | null }
+  | { readonly outcome: 'unchanged' };
 
 /**
  * The tenant-facing reads and the tenant-scoped writes, on the runtime pool inside the tenant
@@ -107,9 +110,11 @@ export class TenantRepository {
         // preset is written once rather than tripping the unique key. Both sides of the record
         // are put in matrix order, so two entries for the same set read as the same set.
         const to = inMatrixOrder(roles);
+        const from = inMatrixOrder(subjectHolds);
+        if (isDeepStrictEqual(to, from)) return { outcome: 'unchanged' };
         // Old → new, on the refusal as much as on the write: a blocked attempt records what was
         // attempted, because silence about it is how lockout disputes become unanswerable.
-        const changePayload = { from: inMatrixOrder(subjectHolds), to };
+        const changePayload = { from, to };
         if (!keepsControl([...othersHold, ...roles]))
           return { outcome: 'last-owner', changePayload };
         await tx
@@ -212,6 +217,7 @@ export class TenantRepository {
       const presetsOf = (mine: boolean) =>
         held.filter((row) => (row.membershipId === membershipId) === mine).map((r) => r.rolePreset);
       const result = await change(tx, presetsOf(false), presetsOf(true));
+      if (result.outcome === 'unchanged') return { outcome: 'done', member: await memberAt() };
       // Written with the change that caused it and inside the same transaction (`F2-22`): they
       // commit together, and a refusal — which wrote nothing else — still commits its record.
       await recordAuditEntry(tx, {
