@@ -2,6 +2,7 @@ import { COMPANY_SIGNUP, createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { expectNoSidewaysScroll } from '../support/layout';
+import { expectTheLook } from '../support/look';
 
 /**
  * The Google door on the web (`M01-02`, `SCR-M01-01`). No flow presses through to Google — no
@@ -54,6 +55,7 @@ test('a token the api refuses says Google did not finish, and clears the address
   await expect(page.getByText(en.t(SIGN_IN.googleFailedBody))).toBeVisible();
   expect(new URL(page.url()).hash).toBe('');
   await expectNoSeriousViolations(page);
+  await expectTheLook(page);
 });
 
 test('backing out of Google leaves the door as it was, with no message', async ({ page }) => {

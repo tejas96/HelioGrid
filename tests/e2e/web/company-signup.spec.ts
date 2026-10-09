@@ -1,7 +1,8 @@
 import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
 import { type Browser, expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
-import { createCompany, fillCompanyStep } from '../support/door';
+import { createCompany, expectNumberFieldRinged, fillCompanyStep } from '../support/door';
+import { expectTheLook } from '../support/look';
 import { freshMobile } from '../support/phone';
 
 const en = await createTranslator('en');
@@ -13,6 +14,8 @@ test('the signup door opens to its first step with every control named', async (
     page.getByRole('heading', { name: en.t(COMPANY_SIGNUP.createYourCompany) }),
   ).toBeVisible();
   await expectNoSeriousViolations(page);
+  await expectNumberFieldRinged(page, en);
+  await expectTheLook(page);
 });
 
 test('a new number verifies, names its company in one step and lands on home', async ({ page }) => {

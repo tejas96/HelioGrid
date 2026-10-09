@@ -131,11 +131,11 @@ catalog freshness checks, the unit tests and the invariants; off CI it leaves ou
 | what is protected | what holds it |
 |---|---|
 | A unit test is `<package>/tests/**/*.test.ts` in a package `unit-test-packages.json` names; a `*.spec.*` lives only where the e2e runners read it | dependency-cruiser `no-tests-outside-the-tests-tree` · the vitest `include` (both read `packages/config/unit-test-packages.json`) |
-| Every web route and phone screen has its regression flow, by file name; `tests/e2e/mobile/run.sh` runs every top-level phone flow, and every `steps/` flow is called | invariant `e2e-flow-per-screen` |
+| Every web route and phone screen has its regression flow, by file name, and every web route with a look of its own has its baseline at 375 and 1536 (`landing-{phone,desktop}-linux.png`), `/` held by name with its reason; `tests/e2e/mobile/run.sh` runs every top-level phone flow, and every `steps/` flow is called | invariant `e2e-flow-per-screen` |
 | Every Biome plugin file exists, and every folder its globs name exists | invariant `biome-plugin-scopes` |
 | The invariants run against a real database, and fail closed in CI without one | CI job `quality` (`tests/invariants/src/run.ts`) |
 | The api tests never run against `heliogrid_dev`: off CI they are collected only when both database URLs name `heliogrid_test` and are skipped with a warning otherwise; whenever they are collected (as with `CI` set) a URL naming `heliogrid_dev` throws before collection | `vitest.config.mts` (the guard; seen red on `heliogrid_dev` once) |
-| The regression suite runs on what a change reaches, in CI: the web flows and component tests, the phone's JavaScript bundle, both native builds, and the phone flows on an Android emulator; the iOS flows run by hand or by `qa-ios`, never in CI. The repository variable `PHONE_E2E=off` switches the Android flows off, and no check holds that: while it is set, nothing proves them | CI jobs `e2e-web` · `mobile-js` · `android` (lane `phone_e2e`) · `ios` (the build) |
+| The regression suite runs on what a change reaches, in CI: the web flows — each route's look compared pixel for pixel with its baseline, which only CI draws — and component tests, the phone's JavaScript bundle, both native builds, and the phone flows on an Android emulator; the iOS flows run by hand or by `qa-ios`, never in CI. The repository variable `PHONE_E2E=off` switches the Android flows off, and no check holds that: while it is set, nothing proves them | CI jobs `e2e-web` · `mobile-js` · `android` (lane `phone_e2e`) · `ios` (the build) |
 | Each rule is tested at its edges; each proof would fail without its fix; a money, tenancy or permission test is seen to fail once | review |
 
 ## Agent safety

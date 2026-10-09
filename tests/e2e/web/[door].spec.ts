@@ -9,13 +9,14 @@ import { expect, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { createCompany } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
+import { expectTheLook } from '../support/look';
 import { freshMobile } from '../support/phone';
 import { passTheOwnersMark } from '../support/shell';
 
 const en = await createTranslator('en');
 
 test("a destination on the owner's rail opens its door inside the shell", async ({ page }) => {
-  await createCompany(page, en, freshMobile());
+  const company = await createCompany(page, en, freshMobile());
   await passTheOwnersMark(page, en);
   const rail = page.getByRole('navigation', { name: en.t(SHELL.mainNavigation) });
 
@@ -34,6 +35,7 @@ test("a destination on the owner's rail opens its door inside the shell", async 
   // A client navigation swaps the head's title in after the page: read the page once it has one.
   await expect(page).toHaveTitle(/\S/);
   await expectNoSeriousViolations(page);
+  await expectTheLook(page, [page.getByText(company)]);
 
   await rail.getByRole('button', { name: destinationLabel(en.t, 'leads') }).click();
   await page.goBack();
