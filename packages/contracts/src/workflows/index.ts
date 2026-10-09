@@ -16,6 +16,12 @@ export type {
   CatalogImportStepResult,
 } from './catalog-import';
 export { CATALOG_IMPORT_PHASES, catalogImportWorkflow } from './catalog-import';
+export type {
+  InviteMessageActivities,
+  InviteMessageStepInput,
+  InviteMessageStepResult,
+} from './invite-message';
+export { inviteMessageWorkflow } from './invite-message';
 export type { OutboxActivities } from './outbox';
 export {
   OUTBOX_SWEEP_SCHEDULE_ID,

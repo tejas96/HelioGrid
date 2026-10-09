@@ -213,7 +213,7 @@ msgid "A company name is needed — it goes on every proposal you send."
 msgstr "कंपनीचे नाव आवश्यक आहे — ते तुम्ही पाठवलेल्या प्रत्येक प्रस्तावावर जाते."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:75
+#: src/copy/api-error.ts:72
 msgid "A release already has this name. Choose another name."
 msgstr "या नावाची रिलीज आधीच आहे. दुसरे नाव निवडा."
 
@@ -574,17 +574,17 @@ msgid "HelioGrid accounts are mobile numbers. Google never makes a second accoun
 msgstr "HelioGrid खाती मोबाइल नंबर असतात. Google मुळे कधीही दुसरे खाते तयार होत नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:89
+#: src/copy/api-error.ts:86
 msgid "HelioGrid could not be reached, from your side or ours. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid पर्यंत पोहोचता आले नाही — तुमच्या बाजूने किंवा आमच्या. तुम्ही काही सेव्ह करत असाल, तर पुन्हा प्रयत्न करण्यापूर्वी ते सेव्ह झाले का ते तपासा."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:92
+#: src/copy/api-error.ts:89
 msgid "HelioGrid did not answer in time. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid ने वेळेत उत्तर दिले नाही. तुम्ही काही सेव्ह करत असाल, तर पुन्हा प्रयत्न करण्यापूर्वी ते सेव्ह झाले का ते तपासा."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:95
+#: src/copy/api-error.ts:92
 msgid "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid चे उत्तर वाचता आले नाही. तुम्ही काही सेव्ह करत असाल, तर पुन्हा प्रयत्न करण्यापूर्वी ते सेव्ह झाले का ते तपासा."
 
@@ -776,7 +776,7 @@ msgid "Nothing has reached you yet"
 msgstr "अजून तुमच्याकडे काहीही आलेले नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:78
+#: src/copy/api-error.ts:75
 msgid "Nothing in the catalog changed since the last release, so there is nothing to publish."
 msgstr "मागील रिलीजनंतर कॅटलॉगमध्ये काहीही बदलले नाही, त्यामुळे प्रकाशित करण्यासारखे काही नाही."
 
@@ -1207,7 +1207,7 @@ msgid "That code is used up"
 msgstr "तो कोड संपला आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:72
+#: src/copy/api-error.ts:69
 msgid "That does not read as a registration of this type. Check it against the format shown."
 msgstr "हे या प्रकारच्या नोंदणीसारखे दिसत नाही. दाखवलेल्या स्वरूपाशी जुळवून तपासा."
 
@@ -1262,11 +1262,6 @@ msgid "The code we checked was for"
 msgstr "आम्ही तपासलेला कोड या नंबरसाठी होता"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:66
-msgid "The invite could not be sent. Try again in a moment."
-msgstr "आमंत्रण पाठवता आले नाही. थोड्या वेळाने पुन्हा प्रयत्न करा."
-
-#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:53
 msgid "The phone network turned it away"
 msgstr "फोन नेटवर्कने तो परत पाठवला"
@@ -1282,7 +1277,7 @@ msgid "The SMS network turned it away"
 msgstr "SMS नेटवर्कने तो परत पाठवला"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:69
+#: src/copy/api-error.ts:66
 msgid "The tranches must add up to exactly 100%. Place the remainder before saving."
 msgstr "हप्त्यांची बेरीज नेमकी 100% असली पाहिजे. सेव्ह करण्यापूर्वी उरलेली रक्कम ठेवा."
 
@@ -1347,7 +1342,7 @@ msgid "This screen arrives in a later update."
 msgstr "ही स्क्रीन पुढच्या एखाद्या अपडेटमध्ये येईल."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:98
+#: src/copy/api-error.ts:95
 msgid "This stopped before HelioGrid answered. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid ने उत्तर देण्यापूर्वी हे थांबले. तुम्ही काही सेव्ह करत असाल, तर पुन्हा प्रयत्न करण्यापूर्वी ते सेव्ह झाले का ते तपासा."
 

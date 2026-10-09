@@ -76,7 +76,8 @@ curl localhost:8084/health                               # liveness · /health/r
   `public`, `session-cookie`, `session`, `member` or `{ capability }`. A missing entry fails to
   compile and the guard denies it. Never test a role inline; read the session with `sessionOf(req)`.
 - In development the sign-in code and the invite link are written to the api log
-  (`Message for +91…`).
+  (`Message for +91…`). The invite's text leaves from the worker's `inviteMessage` run after the
+  send commits, so its line appears only while the `worker` launch configuration and Temporal run.
 - List endpoints: `orderBy(<sort key> DESC, id DESC)`, `limit` and `page` from
   `paginationQuerySchema` (the service derives the offset), `totalCount` counted with the SAME
   `where` — never a divergent count query.

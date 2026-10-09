@@ -5,18 +5,19 @@ import {
   tenantMembership,
   userAccount,
 } from '@heliogrid/db';
-import type { InvitationStatus, UiLanguage } from '@heliogrid/domain';
+import { type InvitationStatus, invitationStatus, type UiLanguage } from '@heliogrid/domain';
 import { and, count, eq, gt, lte } from 'drizzle-orm';
 
 /**
  * The reads a send makes before it writes, inside the send's own tenant transaction
  * (`invitation.repository.ts`): who is already on the team, how many sends the cap's window
- * holds, a live invite to the phone, and the facts the message needs — with the status reading
- * the Team list filters by, which the live-invite check shares.
+ * holds, a live invite to the phone — with the status reading the Team list filters by, which the
+ * live-invite check shares — and, for the text the worker's run sends later, what it needs.
  */
 
-/** What the message needs and only the tenant's own rows know. */
-export interface SendFacts {
+/** What the text needs and only the tenant's own rows know. */
+export interface MessageFacts {
+  readonly phoneE164: string;
   readonly inviterName: string;
   readonly companyName: string;
   readonly defaultLanguage: UiLanguage;
@@ -50,23 +51,34 @@ export async function sentSince(
   return row?.n ?? 0;
 }
 
-export async function sendFacts(
+/**
+ * The text's facts for an invite still pending NOW, as domain reads it; withdrawn, answered, run
+ * out or never stored, none is owed.
+ */
+export async function messageFacts(
   tx: TenantScopedDb,
   tenantId: string,
-  inviterUserId: string,
-): Promise<SendFacts> {
-  const [company] = await tx
-    .select({ companyName: tenant.companyName, defaultLanguage: tenant.defaultLanguage })
-    .from(tenant)
-    .where(eq(tenant.id, tenantId))
+  invitationId: string,
+  now: number,
+): Promise<MessageFacts | null> {
+  const [row] = await tx
+    .select({
+      status: invitation.status,
+      expiresAt: invitation.expiresAt,
+      phoneE164: invitation.inviteePhoneE164,
+      inviterName: userAccount.name,
+      companyName: tenant.companyName,
+      defaultLanguage: tenant.defaultLanguage,
+    })
+    .from(invitation)
+    .innerJoin(tenant, eq(tenant.id, invitation.tenantId))
+    .innerJoin(userAccount, eq(userAccount.id, invitation.inviterUserId))
+    .where(and(eq(invitation.tenantId, tenantId), eq(invitation.id, invitationId)))
     .limit(1);
-  const [inviter] = await tx
-    .select({ name: userAccount.name })
-    .from(userAccount)
-    .where(eq(userAccount.id, inviterUserId))
-    .limit(1);
-  if (!company || !inviter) throw new Error('the company or the inviter vanished inside the send');
-  return { ...company, inviterName: inviter.name ?? '' };
+  if (!row) return null;
+  const { status, expiresAt, inviterName, ...facts } = row;
+  if (invitationStatus({ status, expiresAt: expiresAt.getTime() }, now) !== 'pending') return null;
+  return { ...facts, inviterName: inviterName ?? '' };
 }
 
 /** A pending, unexpired invite to this phone; an expired one may be sent again. */

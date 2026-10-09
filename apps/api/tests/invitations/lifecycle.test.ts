@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { auditLogEntry, invitation } from '@heliogrid/db';
+import { auditLogEntry, invitation, orchestrationOutbox, uuidv7 } from '@heliogrid/db';
 import {
   FOUNDER_ROLE,
   INVITATION_EXPIRY_DAYS,
@@ -8,14 +8,13 @@ import {
   ROLE_PRESETS,
   type RolePreset,
 } from '@heliogrid/domain';
-import { and, eq, sql } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { InvitationAdminRepository } from '../../src/modules/invitation/invitation.admin.repository';
 import {
   type CreateOutcome,
   InvitationRepository,
 } from '../../src/modules/invitation/invitation.repository';
-import type { SendFacts } from '../../src/modules/invitation/invitation.send.repository';
 import {
   aCompany,
   aMembership,
@@ -32,10 +31,11 @@ import {
 
 /**
  * The invite lifecycle against REAL state (`M01-12`, `M01-04`): the send with its three refusals
- * and the message inside the transaction, the Team list by state, the revoke, the decline and the
- * one-tap ask for a fresh link — each transition at its edges. What an invite IS now is domain's
- * pure decision; what only a database can show is that the send rolls back when the carrier
- * refuses, that the cap counts every send of the day, and that a state once left is not re-entered.
+ * and the handoff of its text, the Team list by state, the revoke, the decline and the one-tap ask
+ * for a fresh link — each transition at its edges. What an invite IS now is domain's pure
+ * decision; what only a database can show is that a refused send hands nothing off, that the cap
+ * counts every send of the day, and that a state once left is not re-entered. The text after the
+ * commit is `message-handoff.test.ts`'s proof.
  */
 
 const OWNER = FOUNDER_ROLE;
@@ -96,7 +96,6 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
   let pools: ReturnType<typeof openPools>;
   let tenantSide: InvitationRepository;
   let landingSide: InvitationAdminRepository;
-  const delivered: SendFacts[] = [];
   const newcomerPhone = aPhone();
   let sentToNewcomer: string;
 
@@ -112,7 +111,7 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
     await pools.close();
   });
 
-  it('sends: a pending invite that runs out in seven days, its presets once each in matrix order, its entry, and the message with the tenant’s own facts', async () => {
+  it('sends: a pending invite that runs out in seven days, its presets once each in matrix order, its entry, and a text owed with the tenant’s own facts', async () => {
     const sent = done(
       await send(here.tenantId, owner.userId, newcomerPhone, [SURVEY, SALES, SALES]),
     );
@@ -120,9 +119,12 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
     expect(sent.status).toBe('pending');
     expect(sent.expiresAt.getTime()).toBe(invitationExpiresAt(NOW));
     expect(sent.roles).toEqual([SALES, SURVEY]);
-    expect(delivered).toEqual([
-      { inviterName: owner.name, companyName: here.companyName, defaultLanguage: 'en' },
-    ]);
+    expect(await tenantSide.awaitingMessage(here.tenantId, sent.id, NOW)).toEqual({
+      phoneE164: newcomerPhone,
+      inviterName: owner.name,
+      companyName: here.companyName,
+      defaultLanguage: 'en',
+    });
     const [entry] = await entriesOf(here.tenantId, 'team.invite_sent');
     expect(entry).toMatchObject({ actorRef: owner.userId, subjectRef: sent.id });
   });
@@ -134,33 +136,16 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
       refusal: 'already-member',
     },
     { who: 'a phone with a live invite', phone: () => newcomerPhone, refusal: 'already-invited' },
-  ])('refuses $who as $refusal, and sends nothing', async ({ phone, refusal }) => {
-    const before = delivered.length;
+  ])('refuses $who as $refusal, and hands off no text', async ({ phone, refusal }) => {
+    const before = await handoffsOf(here.tenantId);
     expect((await send(here.tenantId, owner.userId, phone(), [SALES])).outcome).toBe(refusal);
-    expect(delivered).toHaveLength(before);
+    expect(await handoffsOf(here.tenantId)).toBe(before);
   });
 
   it('lets a phone whose earlier invite ran out be invited again', async () => {
     expect((await send(here.tenantId, owner.userId, runOut.phoneE164, [SALES])).outcome).toBe(
       'created',
     );
-  });
-
-  it('rolls the whole send back when the carrier refuses, so the link that never arrived counts against nothing', async () => {
-    const phone = aPhone();
-    const before = await sendsOf(here.tenantId);
-    await expect(
-      tenantSide.create(
-        here.tenantId,
-        { inviteeName: 'Never Reached', phoneE164: phone, roles: [SALES], tokenHash: randomUUID() },
-        { actorUserId: owner.userId, now: NOW },
-        null,
-        async () => {
-          throw new Error('carrier refused');
-        },
-      ),
-    ).rejects.toThrow('carrier refused');
-    expect(await sendsOf(here.tenantId)).toBe(before);
   });
 
   it('refuses the next send once the day’s cap is spent, revoked sends included', async () => {
@@ -236,12 +221,10 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
   function send(tenantId: string, actorUserId: string, phoneE164: string, roles: RolePreset[]) {
     return tenantSide.create(
       tenantId,
-      { inviteeName: 'New Person', phoneE164, roles, tokenHash: randomUUID() },
+      { id: uuidv7(), inviteeName: 'New Person', phoneE164, roles, tokenHash: randomUUID() },
       by(actorUserId),
       null,
-      async (facts) => {
-        delivered.push(facts);
-      },
+      uuidv7(),
     );
   }
 
@@ -251,7 +234,7 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
 
   function done(result: CreateOutcome) {
     if (result.outcome !== 'created') throw new Error(`expected a send, got ${result.outcome}`);
-    return result.row;
+    return result.row.invitation;
   }
 
   async function statusOf(invitationId: string): Promise<string> {
@@ -284,11 +267,11 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
     return row?.at ?? null;
   }
 
-  async function sendsOf(tenantId: string): Promise<number> {
+  async function handoffsOf(tenantId: string): Promise<number> {
     const rows = await pools.admin.db
-      .select({ id: invitation.id })
-      .from(invitation)
-      .where(and(eq(invitation.tenantId, tenantId)));
+      .select({ id: orchestrationOutbox.id })
+      .from(orchestrationOutbox)
+      .where(eq(orchestrationOutbox.tenantId, tenantId));
     return rows.length;
   }
 

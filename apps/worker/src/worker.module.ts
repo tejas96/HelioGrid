@@ -5,6 +5,7 @@ import { TemporalWorkerHost } from './common/temporal/temporal.worker';
 import { catalogWorkerRegistration } from './modules/catalog/catalog.public';
 import { outboxWorkerRegistration } from './modules/outbox/outbox.public';
 import { platformWorkerRegistration } from './modules/platform/platform.public';
+import { teamWorkerRegistration } from './modules/team/team.public';
 
 /**
  * Orchestration wiring — TEMPORAL (ADR-0025).
@@ -30,7 +31,12 @@ import { platformWorkerRegistration } from './modules/platform/platform.public';
     // `common/` stays beneath the modules and a new area is one line here plus its own folder.
     {
       provide: TEMPORAL_WORKER_REGISTRATIONS,
-      useValue: [platformWorkerRegistration, outboxWorkerRegistration, catalogWorkerRegistration],
+      useValue: [
+        platformWorkerRegistration,
+        outboxWorkerRegistration,
+        catalogWorkerRegistration,
+        teamWorkerRegistration,
+      ],
     },
     TemporalWorkerHost,
   ],

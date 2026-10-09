@@ -122,6 +122,8 @@ jobs:
       # A CI-only signing secret for the api's token; nothing outside this workflow ever
       # verifies a token signed with it. Declared in turbo.json's `env` list where a task reads it.
       AUTH_TOKEN_SECRET: ci-only-token-signing-secret-heliogrid-quality-lane-0001
+      # A CI-only invite-link key; no link made with it leaves this workflow.
+      INVITE_LINK_SECRET: ci-only-invite-link-secret-heliogrid-quality-lane-0001
     steps:
       - uses: actions/checkout@v4
         with:
@@ -258,6 +260,8 @@ jobs:
       DEV_OTP_PHONES: "+919999999999"
       DEV_OTP_CODE: "000000"
       AUTH_TOKEN_SECRET: ci-only-token-signing-secret-heliogrid-quality-lane-0001
+      # A CI-only invite-link key; no link made with it leaves this workflow.
+      INVITE_LINK_SECRET: ci-only-invite-link-secret-heliogrid-quality-lane-0001
       # The door draws Continue with Google only when the web build holds a client id, and the api
       # checks tokens against the same id. The development client's id: public, not a secret; no
       # flow presses through to Google.

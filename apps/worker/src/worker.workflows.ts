@@ -6,3 +6,4 @@
 export * from './modules/catalog/catalog.workflows';
 export * from './modules/outbox/outbox.workflows';
 export * from './modules/platform/platform.workflows';
+export * from './modules/team/team.workflows';

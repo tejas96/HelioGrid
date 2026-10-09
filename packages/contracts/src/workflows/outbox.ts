@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { catalogImportWorkflow } from './catalog-import';
+import { inviteMessageWorkflow } from './invite-message';
 import { defineWorkflow, type WorkflowDefinition, type WorkflowResult } from './registry';
 
 /**
@@ -43,7 +44,10 @@ export interface OutboxActivities {
  * of these inputs must still parse every payload already stored, or it ships as expand, then
  * contract (`CLAUDE.md` §8).
  */
-const OUTBOX_WORKFLOWS: readonly WorkflowDefinition[] = [catalogImportWorkflow];
+const OUTBOX_WORKFLOWS: readonly WorkflowDefinition[] = [
+  catalogImportWorkflow,
+  inviteMessageWorkflow,
+];
 
 export const OUTBOX_WORKFLOW_NAMES: readonly string[] = OUTBOX_WORKFLOWS.map(
   (definition) => definition.name,

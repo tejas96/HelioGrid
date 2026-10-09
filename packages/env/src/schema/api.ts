@@ -42,6 +42,14 @@ const apiEnvObject = z.object({
    */
   AUTH_TOKEN_SECRET: secretSchema,
 
+  /**
+   * Makes an invite link's secret again from the invitation's id, so the text can leave after the
+   * commit without the secret ever being stored or carried (`T-FPLAT-085`). No default. Rotating
+   * it voids every live invite link; a fresh invite sends a working one. Never the value of
+   * `AUTH_TOKEN_SECRET` (refused below): that rotation must not void invites.
+   */
+  INVITE_LINK_SECRET: secretSchema,
+
   /*
    * Temporal (ADR-0025) — the API STARTS and SIGNALS workflows; the worker executes them.
    * Same variables, a DIFFERENT certificate and a different token: two identities, so a
@@ -130,6 +138,14 @@ export const apiEnvSchema = apiEnvObject.superRefine((env, ctx) => {
       path: ['OBJECT_STORE_PROVIDER'],
       message:
         'The OBJECT_STORE_ provider, endpoint, region, bucket and both keys are set together, or not at all.',
+    });
+  }
+  if (env.INVITE_LINK_SECRET === env.AUTH_TOKEN_SECRET) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['INVITE_LINK_SECRET'],
+      message:
+        'INVITE_LINK_SECRET is its own value, never AUTH_TOKEN_SECRET: rotating the token secret must not void every invite link.',
     });
   }
   const declared = [env.DEV_OTP_PHONES, env.DEV_OTP_CODE].filter((v) => v !== undefined).length;

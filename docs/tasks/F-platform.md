@@ -5259,6 +5259,215 @@ Measurements: about 80 tool-call turns across two sessions' days; about 270k tok
 - The invite SMS leaves after the commit, from the worker's outbox, keyed by the invitation id — once, and only for a stored invite. → proof: an api test with a failed commit sends nothing; a retry sends one.
 - A repeat accept by the same person answers as the first did; an invite accepted by another number stays refused. → proof: api test.
 - A replace whose new value equals the stored one writes and records nothing — every settings save and the role write. → proof: api tests, red on a planted second audit entry.
+**Depends on:** none — the outbox, its sweep, the step host and every route this changes are on `main`.
+
+#### RFC
+
+##### Title
+T-FPLAT-085 — a repeat is harmless: the invite message after the commit, a repeated join, an unchanged save
+
+##### Description
+- **User impact.** An owner who invites a teammate never sends a link that does not work, and a retried invite never sends a second text. A teammate who taps *Join* twice on a slow network lands in the company both times instead of seeing an error. An admin who presses *Save* twice, or saves a form they did not change, no longer fills the company's history with changes that changed nothing, and nobody's access is refreshed for no reason.
+- **Who gains.** The owner and HR (`M01-12`, `M01-13`), every admin of the settings screens, and the audit log's reader (`F2-22`, `F4-07`: a submission applied twice never produces a second record).
+- **The technical problem.** Three writes are not safe to repeat: the invite's SMS leaves inside the create transaction (`apps/api/src/modules/invitation/invitation.service.ts:72`); a second accept of an accepted invite is refused (`landingRow`, `invitation.service.ts:196`); and every whole-value replace records an audit entry even when the value is the stored one.
+
+##### Goals
+- The invite SMS leaves only after the invite is committed, from one outbox event keyed by the invitation id; a failed commit sends nothing; a retried send makes no second event and no second message.
+- The same person's second accept answers `200` with the same company; every other repeat stays refused.
+- Each audited whole-value replace (seven settings saves and the role write) answers a send equal to what is stored with the stored value, and writes, records and bumps nothing.
+- A new `PUT`/`PATCH` route cannot land without being classified by the census test (rule where it fires).
+
+##### Non-goals
+- No screen changes. The web and phone Invite, Join and settings screens send and render exactly as now.
+- No real SMS adapter: `MESSAGE_DELIVERY` stays the development adapter (`apps/api/src/modules/auth/auth.module.ts:25`).
+- No delivery state on the Team list (decision D2).
+- Archive and make-default of a tranche template already answer a repeat with nothing (`settings.tranches.repository.ts:153`, `:185`); quiet hours, onboarding progress and notification preferences record no entry — none changes.
+- Catalog's two `PUT`s (decision D3).
+
+##### Readiness and dependencies
+- Landed: the orchestration outbox and its sweep (`apps/api/src/common/temporal/outbox.*`), the step host (`temporal.activity-host.ts`), the catalog import as the pattern to copy (`packages/contracts/src/workflows/catalog-import.ts`, `apps/worker/src/modules/catalog/`, `apps/api/src/modules/catalog/catalog.import.activities.ts`).
+- No screen, so no design check. No migration.
+- Requirement test (step 2):
+  - **F1 — the outbox carries ids only, the message needs a secret.** An outbox payload is "ids only" (`packages/db/src/schema/outbox.ts:6`, `infra/temporal/README.md` §4), but the SMS carries the link, and the store keeps only the link secret's hash (`common/auth/secrets.ts`). So the step cannot rebuild the link — unless the secret is derived from the invitation id with a server key: `token = HMAC(key, invitationId)`, the stored hash unchanged in kind. The key is decision D1.
+  - **F2 — `502 INVITE_DELIVERY_FAILED` can no longer happen.** The create answers before the step runs. The code, its declared `502` and its copy are removed (Law: remove what the change orphaned). A phone that knows the code simply never receives it.
+  - **F3 — D37 says the second accept answers "as a conflict"; it answers `404`.** `landingRow` refuses an accepted invite before the join is tried (`invitation.service.ts:206`). The fix is the same.
+  - **F4 — "every settings save" is eight writes, not every `PUT`.** The list is the audited whole-value replaces: business profile, tax registrations, branding, proposal template, timeline template, holidays, a tranche template's content — and the role write. The rest are already safe (Non-goals).
+  - **F5 — "once" is once per run, at least once at the carrier.** The workflow id is `invite-message-<invitationId>`, so a dispatch retried never starts a second run. Inside the run, Temporal retries a step whose send succeeded but whose answer was lost, so a carrier timeout can still deliver twice — and with a derived token both texts carry the same working link. No carrier offers a dedupe key today.
+  - **F6 — simpler alternative, rejected: send after the commit inside the request.** A crash between the commit and the send leaves a pending invite nobody received, and the "already invited" check then refuses a new send to that phone — a silent drop `F4-07` forbids. The outbox closes that gap; it is the repository's one way to hand work on after a commit (`apps/api/CLAUDE.md`, *Start workflows*).
+
+##### Proposal
+**Part a — the invite message after the commit (AC-1).**
+1. `POST /invitations`: the service mints the invitation id, derives the link secret from it (`inviteLinkSecret(id)`), and the repository writes, in its one tenant transaction, the invite, its roles, `team.invite_sent` and one outbox event `inviteMessage { eventId, tenantId, invitationId }`. No message. After the commit the service calls `OutboxDispatcher.dispatchNow(eventId)`; the sweep starts any event it missed. A replayed or refused send writes no event.
+2. The worker's `inviteMessage` workflow (queue `heliogrid-team`, id `invite-message-<invitationId>`) calls one step, `sendInviteMessage({ tenantId, invitationId })`, retried with backoff, at most 5 attempts.
+3. The step runs in the api (`InvitationMessageService`, registered with `TemporalActivityHost`): it reads the invite in a tenant transaction; an invite no longer pending (revoked, declined, run out) sends nothing; otherwise it reads the send facts, resolves the market pack, rebuilds the link from the id and sends through `MESSAGE_DELIVERY` — the development adapter still writes `Message for +91…` to the api log.
+4. A carrier that refuses past every attempt fails the run; the error is logged with the invitation id; the invite stays pending (D2 A).
+- **Why a new queue:** the api runs one activity set per queue registration, and `heliogrid-outbox`'s and `heliogrid-platform`'s step sets are already polled; two sets on one queue hand a step to a process that lacks it.
+- **Why derived, not stored:** a stored clear secret is what the hash exists to prevent ("a leaked table names nothing a client can present").
+
+**Part b — a repeat changes nothing (AC-2, AC-3).**
+1. Accept: the service reads the row by its token hash. A pending row joins as now. An accepted row, opened by the session whose phone the invite is keyed to and whose account holds an ACTIVE membership in that company, adopts that company into the session again and answers `200` with the projection, as the first accept did — no write, no entry. Every other state answers as today (`404`; `403` for another phone on a live invite; `409` expired).
+2. Replace: each of the eight writes reads what is stored inside its own transaction, in the shape its `GET` answers, and compares it with the request put in that same shape (`isDeepStrictEqual`, `node:util`; a list that is a set is compared in its stored order). Equal → it answers the stored value and writes, records and bumps nothing. The role write treats the same preset set the same way: no row, no `team.roles_changed`, no new authorization version.
+3. The census test reads every `PUT` and `PATCH` route of `apiContract` and requires each to be proven by the repeat test or listed with its reason; a new route fails it until classified.
+
+**Order:** part a, then part b. Each part: tests first, then code.
+
+##### Architecture diagram
+```mermaid
+sequenceDiagram
+  participant App as web / phone
+  participant Api as api · InvitationService
+  participant Db as Postgres
+  participant Wk as worker · inviteMessage
+  participant Step as api · sendInviteMessage
+  participant Sms as MESSAGE_DELIVERY
+  App->>Api: POST /invitations
+  Api->>Db: one transaction — invite, roles, team.invite_sent, outbox event
+  Api-->>App: 201 the invite
+  Api->>Wk: dispatchNow — start, id invite-message-<invitationId>
+  Note over Api,Wk: the sweep starts it a minute later if this start is lost
+  Wk->>Step: sendInviteMessage(tenantId, invitationId)
+  Step->>Db: still pending? send facts
+  Step->>Sms: SMS with the link rebuilt from the id
+```
+
+##### Package changes
+- `packages/contracts` — `workflows`: new `inviteMessageWorkflow` and `InviteMessageActivities`; `TASK_QUEUES` gains `heliogrid-team`; `OUTBOX_WORKFLOWS` gains the workflow. `invitation.ts`: `INVITE_DELIVERY_FAILED` and the create's `502` removed. Direction unchanged.
+- `packages/env` — the api schema gains `INVITE_LINK_SECRET` (D1 A), a `secretSchema`, no default.
+- `packages/i18n` — the `INVITE_DELIVERY_FAILED` sentence removed from `api-error.ts`; catalogs regenerated.
+- `apps/worker` — new area `modules/team/`, registered in `worker.module.ts` and re-exported by `worker.workflows.ts`.
+- `apps/api` — `invitation` module: the step service and its registration; `common/auth/secrets.ts` gains the keyed derivation.
+- **Law 12.** Workflow name `inviteMessage`: held by the two `satisfies` in `team.public.ts` and `workflow-bundle.test.ts` (`protections.md` row *The worker resolves its workflows*). Step name and shape: typecheck (row *A step the api runs…*). Queue `heliogrid-team`: typecheck holds its uses; `infra/temporal/README.md`'s queue list is held by no check — said out loud. `INVITE_LINK_SECRET`: invariant `env-example-complete`. No new brand, token, route, table, enum or error code.
+
+##### Data and schema changes
+None — no stored shape changes. The outbox gains rows of a new workflow name; an api release that does not know it leaves them untouched until it returns (`outbox.dispatcher.ts`, `dispatch`). Invites already sent keep their random secrets and their links.
+
+##### File and folder changes
+| part | action | path | purpose | placement reason |
+|---|---|---|---|---|
+| a | add | `packages/contracts/src/workflows/invite-message.ts` | the workflow, its id rule, its step interface | one file per workflow, beside `catalog-import.ts` |
+| a | modify | `packages/contracts/src/workflows/registry.ts` | `heliogrid-team` in `TASK_QUEUES` | the queue tuple's owner |
+| a | modify | `packages/contracts/src/workflows/outbox.ts` | `inviteMessageWorkflow` in `OUTBOX_WORKFLOWS` | the outbox's list |
+| a | modify | `packages/contracts/src/workflows/index.ts` | export | the entry |
+| a | modify | `packages/contracts/src/invitation.ts` | the `502` and its code removed | the route's contract |
+| a | modify | `packages/contracts/openapi/openapi.json` | regenerated | generated |
+| a | modify | `packages/i18n/src/copy/api-error.ts` | the orphaned sentence removed | the copy's owner |
+| a | modify | `packages/i18n/src/locales/{en,hi,mr}/messages.{po,ts}` | regenerated (6 files) | generated |
+| a | modify | `packages/env/src/schema/api.ts` | `INVITE_LINK_SECRET` | the api's env |
+| a | modify | `.env.example` | the new variable | the example |
+| a | modify | `.github/workflows/ci.yml` | a CI-only value in the two api lanes | the api boots there |
+| a | add | `apps/worker/src/modules/team/team.workflows.ts` | the `inviteMessage` sequence | `apps/worker/src/worker.module.ts`: one folder per area |
+| a | add | `apps/worker/src/modules/team/team.public.ts` | the name checks and the registration | as `catalog.public.ts` |
+| a | modify | `apps/worker/src/worker.workflows.ts` | re-export | the bundle's one entry |
+| a | modify | `apps/worker/src/worker.module.ts` | the registration | the root composes |
+| a | modify | `apps/api/src/common/auth/secrets.ts` | `keyedSecret(key, subject)` | where the link secret is made |
+| a | modify | `apps/api/src/modules/invitation/invitation.service.ts` | create: no message, the event, `dispatchNow` | the module's service |
+| a | modify | `apps/api/src/modules/invitation/invitation.repository.ts` | the outbox event, no `deliver` callback | the tenant transaction |
+| a | modify | `apps/api/src/modules/invitation/invitation.send.repository.ts` | the step's read: the invite if still pending | the send's reads |
+| a | add | `apps/api/src/modules/invitation/invitation.message.service.ts` | the step: read, compose, send | `invitation.service.ts` would pass 300 lines |
+| a | add | `apps/api/src/modules/invitation/invitation.activities.ts` | the step registered on `heliogrid-team` | as `catalog.import.activities.ts` |
+| a | modify | `apps/api/src/modules/invitation/invitation.module.ts` | providers (`TemporalModule` is global) | the module |
+| a | modify | `apps/api/tests/invitations/lifecycle.test.ts` | the send without a message | the existing suite |
+| a | modify | `apps/api/tests/invitations/retried-send.test.ts` | one event for a retried send | the existing suite |
+| a | modify | `apps/api/tests/auth/otp-development-number.test.ts` | the boot fixture gains the new required key; the two secrets refused when equal — added at the gate | the api schema's one boot fixture |
+| a | add | `apps/api/tests/invitations/message-handoff.test.ts` | AC-1: failed commit, retry, the step, the link lands | the module's tests |
+| a | modify | `apps/api/CLAUDE.md` | the invite link reaches the log only with the worker running | the line it corrects |
+| a | modify | `infra/temporal/README.md` | the queue list | §4's table |
+| a | modify | `docs/tasks/deferred.md` | D36 deleted; D2's row added | ships |
+| b | modify | `apps/api/src/modules/invitation/invitation.service.ts` | accept: the repeat | the service |
+| b | modify | `apps/api/src/modules/invitation/invitation.admin.repository.ts` | the joined person's active membership | the cross-tenant side |
+| b | modify | `apps/api/src/modules/settings/settings.repository.ts` | tax registrations, branding, holidays | the writes |
+| b | modify | `apps/api/src/modules/settings/settings.admin.repository.ts` | business profile | the write |
+| b | modify | `apps/api/src/modules/settings/settings.templates.repository.ts` | proposal and timeline templates | the writes |
+| b | modify | `apps/api/src/modules/settings/settings.tranches.repository.ts` | a tranche template's content | the write |
+| b | modify | `apps/api/src/modules/tenant/tenant.repository.ts` | the role write | the write |
+| b | modify | `apps/api/tests/invitations/accept.test.ts` | AC-2 | the existing suite |
+| b | add | `apps/api/tests/settings/unchanged-replace.test.ts` | AC-3 and the census | beside the settings suites |
+| b | modify | `docs/tasks/deferred.md` | D37, D38 deleted; D3's row added | ships |
+| a, b | modify | `docs/tasks/F-platform.md` | this RFC, the ledger, `Status` | the task |
+
+##### API and contract changes
+- `POST /invitations` — `502 INVITE_DELIVERY_FAILED` removed; every other status and the body unchanged. It answers `201` before the text leaves. Old phones never receive the removed code; a new phone meeting an old api during the roll gets an undeclared `502` as the generic error.
+- `POST /invitations/landing/:token/accept` — an accepted invite repeated by its own joined person answers `200` with the session projection; it was `404`. Auth, the `403` and the `409` unchanged.
+- The eight replace routes — same statuses and bodies; an unchanged send answers the stored value.
+- Workflow `inviteMessage` on `heliogrid-team`, input `{ eventId, tenantId, invitationId }`, step `sendInviteMessage({ tenantId, invitationId }) → void`. Release order: the worker knows the workflow before the api writes its first event; a start that reaches a worker without it retries until the worker is deployed.
+
+##### Risks and rollout
+- **Security — the link key.** Whoever holds `INVITE_LINK_SECRET` and an invitation id can make that invite's link. Ids reach the audit log and Temporal history, so the key is a secret like `AUTH_TOKEN_SECRET`: no default, `.ops/` holds each environment's value. Rotating it voids every live invite link (a fresh invite sends a new one).
+- **Delivery.** A run that fails every attempt leaves a pending invite with no text (D2); logged by invitation id. The development rail refuses every number ending `0000` (`message-delivery.development.ts`), so in development such an invite answers `201`, stays pending with no text, and blocks a new send to that phone as `ALREADY_INVITED` until it is withdrawn — before this change it answered `502` and stored nothing.
+- **Local development.** The invite link reaches the api log only while the `worker` launch configuration and Temporal run (`apps/api/CLAUDE.md` updated).
+- **Rollback.** An api rolled back leaves `inviteMessage` events unsent until it returns; the invites stay pending.
+- **Replace.** A comparison that differs only by form (a missing optional field against a stored `null`) would still record; each route's repeat test sends the exact body twice, so such a gap goes red.
+
+##### Acceptance criteria and proof
+- **AC-1** — The invite SMS leaves after the commit, from the worker's outbox, keyed by the invitation id — once, and only for a stored invite. → proof: an api test with a failed commit sends nothing; a retry sends one.
+- **AC-2** — A repeat accept by the same person answers as the first did; an invite accepted by another number stays refused. → proof: api test.
+- **AC-3** — A replace whose new value equals the stored one writes and records nothing — every settings save and the role write. → proof: api tests, red on a planted second audit entry.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 | main-dev | required | api test | a send whose transaction fails after the insert → no invite, no event, nothing sent; a send → one `inviteMessage` event naming only ids; the same key again → no second event; the step run twice for one invite → it sends once per run, the same link both times, and the link lands (`GET /invitations/landing/:token` → `200`); a revoked invite's step sends nothing; a refused text fails the step with an error that names the invite, never the phone; `workflowId` is `invite-message-<invitationId>`. Planted reds: a text sent inside the request again → "texts nothing inside the request" fails; the step blind to the invite's status → "texts nothing for an invite withdrawn" fails; the carrier's own error rethrown → "fails a refused text … never the phone" fails | `apps/api/tests/invitations/message-handoff.test.ts` |
+| AC-1 | qa-api | required | running api, worker, Temporal | `POST /invitations` → `201`; the api log shows one `Message for +91…` with a link; that link's landing → `200`; the same `Idempotency-Key` again → `201` replay and no second log line | qa-api report |
+| AC-2 | main-dev | required | api test | the joined person's second accept → `200`, the same company, one membership, one `team.invite_accepted`; deactivated after joining, the repeat → `404`; another phone on the accepted invite → `404`. Planted red: the repeat branch removed → `404` → fails | `apps/api/tests/invitations/accept.test.ts` |
+| AC-2 | qa-api | required | running api | accept, then accept again on the same session → `200` both, same `activeTenantId` | qa-api report |
+| AC-3 | main-dev | required | api test | each of the eight routes: a body, then the same body → `200`, the stored value, entries for that subject still 1, `updated_at` unchanged; for roles the authorization version unchanged; a changed body → one more entry. The census: every `PUT`/`PATCH` route proven or listed with its reason. Planted reds: one route's comparison removed → its second entry fails the test; a route left out of the census → fails | `apps/api/tests/settings/unchanged-replace.test.ts` |
+| AC-3 | qa-api | required | running api | `PUT /settings/branding` twice with one body → the audit export holds one `settings.branding_changed` | qa-api report |
+| all | evaluator | required | gate | `pnpm check:all` passes, invariants on `heliogrid_test` | gate |
+| all | ci | required | `quality` | unit and api tests pass | CI |
+| all | qa-web · qa-ios · qa-android | not_applicable | — | no screen changes | — |
+
+##### Delivery size
+- **Part a:** 35 files — 28 authored, 7 generated (the OpenAPI spec and six catalog files); the 35th, the boot fixture, was found by the gate. Code about 290 lines, tests about 190, docs about 30. The generated seven are what removing one copy line costs; the authored 28 sit inside the target.
+- **Part b:** 11 files. Code about 170 lines, tests about 240, docs about 10.
+- Together about 44 files, over the 30-file target, and the two halves are independently acceptable, so **two parts**, in this order.
+
+**Decisions — T-FPLAT-085**
+- **D1 — the invite link's key.** **A · a new `INVITE_LINK_SECRET` (recommended).** B · derived from `AUTH_TOKEN_SECRET`; rotating it voids every live invite.
+- **D2 — the carrier refuses past every retry.** **A · the invite stays pending, the failure is logged, a deferred row asks for a visible delivery state when the SMS adapter lands (recommended).** B · the step revokes the invite.
+- **D3 — catalog's two `PUT`s record every repeat.** **A · a new deferred row (recommended).** B · join part b.
+- **Deferred rows met:** D36, D37, D38 — join. D10, D17 (`touches apps/worker/`) — stay.
+
+- **Owner rulings (2026-10-09):** RFC approved; D1 → **A**; D2 → **A**; D3 → **A**.
+- **Build a (2026-10-09):** tests first — `message-handoff.test.ts` (six cases), the lifecycle and retried-send suites moved to the handoff. Planted reds, each restored: a text sent inside the request → "texts nothing inside the request" fails; the step blind to the invite's status → "texts nothing for an invite withdrawn" fails; the carrier's own error rethrown → "fails a refused text … never the phone" fails; the equal-secrets check disabled → "refuses an invite-link secret equal to the token secret" fails. Live: with the worker rebuilt and running, one `Message for` line per stored invite, about 50–75 ms after the commit.
+- **Review a (2026-10-09):** seven findings, then three notes, all fixed — the phone kept out of the step's log line and out of the error it throws (Temporal writes a step's error to the run's history and the worker log; QA found the second path); the development rail's `0000` refusal stated (D2 asked again, kept A); the step run twice in the test; the matrix's plants corrected; the two secrets refused when equal, with their own placeholders and a test; the step's result written once; the file table matched to the diff.
+- **QA a (2026-10-09, qa-api):** PASS, three runs — `201`, one text with a 43-character link that lands `200`, a replay with no second text; a `0000` number → `201`, three refusals at 0, 10 and 30 s naming the invitation only, the phone absent from the whole log range.
+- **Gate a (2026-10-09, evaluator):** run 1 FAIL — `otp-development-number.test.ts`'s boot fixture lacked the new required key (`pnpm check` runs only related tests and missed it); fixed, reviewed, run 2 PASS — `pnpm check:all` exit 0: build, lint, typecheck, dupes, OpenAPI and catalogs fresh, 201 unit files and 3470 tests, invariants green on `heliogrid_test` with no SKIP or VACUOUS.
+- **D2 confirmed (2026-10-09):** the RFC said the development rail never refuses; it refuses every number ending `0000` (review finding). Asked again with that fact, the owner kept **A**.
+
+#### Parts
+| part | what | AC | depends on | status |
+|---|---|---|---|---|
+| a | the invite message after the commit — the outbox event, the `inviteMessage` workflow and its step, the derived link secret, the dead `502` removed | AC-1 | — | shipped |
+| b | a repeat changes nothing — the joined person's repeat accept, the eight unchanged replaces, the route census | AC-2, AC-3 | a | open |
+
+**Checklist a** — [x] contracts and env · [x] worker area · [x] api step and create · [x] tests and planted red · [x] docs, deferred · [x] QA · [x] review · [x] gate
+**Checklist b** — [ ] accept · [ ] eight replaces · [ ] census · [ ] tests and planted reds · [ ] deferred · [ ] QA · [ ] review · [ ] gate
+
+#### Runtime
+Recorded at the step's start (2026-10-09), before anything ran. Branch `feat/T-FPLAT-085` from `origin/main` `55eae18e`.
+
+| resource | state | identity |
+|---|---|---|
+| web `3002`, api `8084`, Metro `8081` | none listening | — |
+| Postgres `5544` | pre_existing | `heliogrid-pg-local` |
+| object store `9000` | pre_existing | `heliogrid-object-store-local` |
+| Temporal `7233` | pre_existing | `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulators and emulators | none booted | — |
+| browser tabs | none opened by this task | — |
+| database routing | `DATABASE_URL` and `DATABASE_ADMIN_URL` → `heliogrid_dev` | `.env.local` |
+| runtime logs | `api.log` 1248786 · `web.log` 237514 · `metro.log` 812908 bytes | `.qa/` |
+
+**Part a — state at its commit card (2026-10-09).** The stack stays up for part b and is torn down at the task's end.
+
+| resource | initial | at part a's card |
+|---|---|---|
+| api `8084` | none | `started_by_task` — preview server `aaa7649a…`, source mode, on `heliogrid_test` |
+| worker | none | `started_by_task` — preview server `9146968d…`; its bundle rebuilt for `inviteMessage` |
+| Postgres, object store, Temporal | pre_existing | untouched, running |
+| database routing | both → `heliogrid_dev` | both → `heliogrid_test` (restored at teardown) |
+| `.env.local` | no `INVITE_LINK_SECRET` | gains a random `INVITE_LINK_SECRET` — required to boot; stays |
+| runtime logs | `api.log` 1248786 bytes | about 1.47 MB — the task's api and QA runs |
+
+Measurements, part a: about 120 tool-call turns; about 175k tokens; helper runs — `qa-api` 3 (two continuations), `reviewer` 5 (four continuations), `evaluator` 2 (one continuation, two full-gate runs); planned 34 files, built 35 (the boot fixture, found by the gate); about 330 authored code lines, 200 test lines, 60 doc lines beside the RFC.
 
 ### T-FPLAT-086 · A screenshot baseline holds every web route's look
 **Type:** policy · **Tier:** P1
