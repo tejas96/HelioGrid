@@ -5251,7 +5251,7 @@ Measurements: about 80 tool-call turns across two sessions' days; about 270k tok
 
 ### T-FPLAT-085 · A repeat is harmless
 **Type:** policy · **Tier:** P1
-**Status:** planned
+**Status:** shipped
 **Why:** The invite SMS leaves inside the create transaction, so a failed commit can leave a dead link and a retry sends a second SMS (D36); an accept sent twice answers the second time as a conflict though the join ran (D37); a save of an unchanged value writes a second audit entry and moves the authorization version (D38).
 **PRD rows:** none of its own — `F4` data integrity (one act, one record).
 **Chosen by the owner** (deferred review, 2026-10-08): one task for the three.
@@ -5337,6 +5337,7 @@ sequenceDiagram
 - `apps/worker` — new area `modules/team/`, registered in `worker.module.ts` and re-exported by `worker.workflows.ts`.
 - `apps/api` — `invitation` module: the step service and its registration; `common/auth/secrets.ts` gains the keyed derivation.
 - **Law 12.** Workflow name `inviteMessage`: held by the two `satisfies` in `team.public.ts` and `workflow-bundle.test.ts` (`protections.md` row *The worker resolves its workflows*). Step name and shape: typecheck (row *A step the api runs…*). Queue `heliogrid-team`: typecheck holds its uses; `infra/temporal/README.md`'s queue list is held by no check — said out loud. `INVITE_LINK_SECRET`: invariant `env-example-complete`. No new brand, token, route, table, enum or error code.
+- **Part b.** `apps/api` — `common/filters/declared-statuses.ts` exports `DECLARED`, which the census reads; no other export, no dependency change. **Law 12:** the census is a new check, so its row joins `.claude/protections.md`. No new brand, token, route, table, enum or error code.
 
 ##### Data and schema changes
 None — no stored shape changes. The outbox gains rows of a new workflow name; an api release that does not know it leaves them untouched until it returns (`outbox.dispatcher.ts`, `dispatch`). Invites already sent keep their random secrets and their links.
@@ -5382,7 +5383,11 @@ None — no stored shape changes. The outbox gains rows of a new workflow name; 
 | b | modify | `apps/api/src/modules/tenant/tenant.repository.ts` | the role write | the write |
 | b | modify | `apps/api/tests/invitations/accept.test.ts` | AC-2 | the existing suite |
 | b | add | `apps/api/tests/settings/unchanged-replace.test.ts` | AC-3 and the census | beside the settings suites |
-| b | modify | `docs/tasks/deferred.md` | D37, D38 deleted; D3's row added | ships |
+| b | add | `apps/api/tests/invitations/accept-route.test.ts` | AC-2 on the route — added at review | `accept.test.ts` would pass 300 lines |
+| b | modify | `apps/api/tests/support/http.ts` | `DEV_PHONE` exported — added at review | the harness's one development number |
+| b | modify | `docs/tasks/deferred.md` | D37, D38 deleted; D3's row added (D163); D164, D165 found | ships |
+| b | modify | `apps/api/src/common/filters/declared-statuses.ts` | `DECLARED` exported for the census — added at build | the root contract's one route walk |
+| b | modify | `.claude/protections.md` | the census's row (Law 12) — added at build | the protections' one list |
 | a, b | modify | `docs/tasks/F-platform.md` | this RFC, the ledger, `Status` | the task |
 
 ##### API and contract changes
@@ -5407,7 +5412,7 @@ None — no stored shape changes. The outbox gains rows of a new workflow name; 
 |---|---|---|---|---|---|
 | AC-1 | main-dev | required | api test | a send whose transaction fails after the insert → no invite, no event, nothing sent; a send → one `inviteMessage` event naming only ids; the same key again → no second event; the step run twice for one invite → it sends once per run, the same link both times, and the link lands (`GET /invitations/landing/:token` → `200`); a revoked invite's step sends nothing; a refused text fails the step with an error that names the invite, never the phone; `workflowId` is `invite-message-<invitationId>`. Planted reds: a text sent inside the request again → "texts nothing inside the request" fails; the step blind to the invite's status → "texts nothing for an invite withdrawn" fails; the carrier's own error rethrown → "fails a refused text … never the phone" fails | `apps/api/tests/invitations/message-handoff.test.ts` |
 | AC-1 | qa-api | required | running api, worker, Temporal | `POST /invitations` → `201`; the api log shows one `Message for +91…` with a link; that link's landing → `200`; the same `Idempotency-Key` again → `201` replay and no second log line | qa-api report |
-| AC-2 | main-dev | required | api test | the joined person's second accept → `200`, the same company, one membership, one `team.invite_accepted`; deactivated after joining, the repeat → `404`; another phone on the accepted invite → `404`. Planted red: the repeat branch removed → `404` → fails | `apps/api/tests/invitations/accept.test.ts` |
+| AC-2 | main-dev | required | api test | the joined person's second accept → `200`, the same company, one membership, one `team.invite_accepted`; deactivated after joining, the repeat → `404`; another phone on the accepted invite → `404`. Planted red: the repeat branch removed → `404` → fails. On the route: two accepts on one session → `200` both, the same membership; a teammate on someone else's answered link → `404`. Planted reds: `JOINS` reverted to `LANDS`; the answered-link `404` removed | `apps/api/tests/invitations/accept.test.ts` · `apps/api/tests/invitations/accept-route.test.ts` |
 | AC-2 | qa-api | required | running api | accept, then accept again on the same session → `200` both, same `activeTenantId` | qa-api report |
 | AC-3 | main-dev | required | api test | each of the eight routes: a body, then the same body → `200`, the stored value, entries for that subject still 1, `updated_at` unchanged; for roles the authorization version unchanged; a changed body → one more entry. The census: every `PUT`/`PATCH` route proven or listed with its reason. Planted reds: one route's comparison removed → its second entry fails the test; a route left out of the census → fails | `apps/api/tests/settings/unchanged-replace.test.ts` |
 | AC-3 | qa-api | required | running api | `PUT /settings/branding` twice with one body → the audit export holds one `settings.branding_changed` | qa-api report |
@@ -5419,6 +5424,7 @@ None — no stored shape changes. The outbox gains rows of a new workflow name; 
 - **Part a:** 35 files — 28 authored, 7 generated (the OpenAPI spec and six catalog files); the 35th, the boot fixture, was found by the gate. Code about 290 lines, tests about 190, docs about 30. The generated seven are what removing one copy line costs; the authored 28 sit inside the target.
 - **Part b:** 11 files. Code about 170 lines, tests about 240, docs about 10.
 - Together about 44 files, over the 30-file target, and the two halves are independently acceptable, so **two parts**, in this order.
+- **Part b as built (2026-10-09), over its estimate by more than 20%:** 15 files — the 11 planned and four added (`declared-statuses.ts` and its protection row for the census; `accept-route.test.ts` and the harness's `DEV_PHONE` export, asked for by review). Code about 280 changed lines (184 added, 97 removed — the comparisons, three reads made shared so no copy was added, the tranche reads), tests about 425 (the eight-route table, the census, the route test), docs about 30. Inside the 30-file and 1,000-line target: still one part.
 
 **Decisions — T-FPLAT-085**
 - **D1 — the invite link's key.** **A · a new `INVITE_LINK_SECRET` (recommended).** B · derived from `AUTH_TOKEN_SECRET`; rotating it voids every live invite.
@@ -5431,16 +5437,22 @@ None — no stored shape changes. The outbox gains rows of a new workflow name; 
 - **Review a (2026-10-09):** seven findings, then three notes, all fixed — the phone kept out of the step's log line and out of the error it throws (Temporal writes a step's error to the run's history and the worker log; QA found the second path); the development rail's `0000` refusal stated (D2 asked again, kept A); the step run twice in the test; the matrix's plants corrected; the two secrets refused when equal, with their own placeholders and a test; the step's result written once; the file table matched to the diff.
 - **QA a (2026-10-09, qa-api):** PASS, three runs — `201`, one text with a 43-character link that lands `200`, a replay with no second text; a `0000` number → `201`, three refusals at 0, 10 and 30 s naming the invitation only, the phone absent from the whole log range.
 - **Gate a (2026-10-09, evaluator):** run 1 FAIL — `otp-development-number.test.ts`'s boot fixture lacked the new required key (`pnpm check` runs only related tests and missed it); fixed, reviewed, run 2 PASS — `pnpm check:all` exit 0: build, lint, typecheck, dupes, OpenAPI and catalogs fresh, 201 unit files and 3470 tests, invariants green on `heliogrid_test` with no SKIP or VACUOUS.
+- **Build b (2026-10-09):** tests first — `accept.test.ts` (three cases: the repeat, a teammate on the answered link, the repeat after deactivation) and `unchanged-replace.test.ts` (the eight routes in one table — first, again with a set reordered, changed — each holding the entries, every stored row's `xmin` and the answer; the census over `DECLARED`), all nine red before the code. Planted reds, each restored: the repeat branch removed → "answers the joined person's repeat …" fails; the joined person's phone check removed → "admits nobody else through an answered link …" fails; the role comparison removed → its `PUT …/roles` row fails; the branding comparison removed → its `PUT /settings/branding` row fails; `PATCH /users/me` left out of the census → "holds every PUT and PATCH route …" fails. Built but not planned: `apps/api/src/common/filters/declared-statuses.ts` — `DECLARED` exported, so the census reads the root contract's one route walk instead of a third copy; `settings.tranches.repository.ts` also reads a template whole in archive and make-default and drops `standingOf`, the smaller copy of that read (315 → 304 lines; Biome's line rule passes, the raw count stays over 300 — D164). An answered invite now reaches the join, which re-admits only the person it let in, under its lock, so a double tap racing the first commit also answers `200`.
+- **Review b (2026-10-09):** two should-fix and four notes. Fixed: the service change had no test — `accept-route.test.ts` drives the route (a repeat → `200` twice, the same company; a teammate on someone else's answered link → `404`), planted red twice: `JOINS` reverted to `LANDS` → the repeat case fails; the answered-link `404` removed → the teammate case fails; the protections row worded to the audited routes; the phone check holds for every state again (an answered link with another phone → `404`, a live one → `403`), so the join's rule no longer rests on nothing moving an invite back to pending; `tenantRead` and the profile save share `withKwp`, and the effective read uses the two template readers; a company with no profile row still writes on its first save. Recorded: the tranche file's raw length (D164).
+- **QA b (2026-10-09, qa-api):** run 1 — AC-3 PASS, AC-2 BLOCKED: the worker process had exited about an hour after it started (its one-hour Temporal token, minted once at launch, D165), so the invite's run sat queued; Main restarted the worker's child (`touch apps/worker/src/main.ts`) after `pnpm infra:token`. Retry — AC-2 PASS: two accepts on one session → `200` both, the same membership; two concurrent repeats → `200` both; the owner's session on the answered link → `404`. AC-3: one `settings.branding_changed` for two equal `PUT`s, a second for a changed one. Rerun after the review fixes — PASS: AC-2 on a fresh invitee (`200` twice, the same membership; the owner on that answered link → `404`; the owner on another number's live invite → `403`); AC-3 +1, +0, +1. Two of the owner's requests answered `401` 95 ms after the invitee's sign-in on the helper's client — the auth code is not in this diff; the owner signed in again and the rows ran.
+- **Gate b (2026-10-09, evaluator):** run 1 PASS — `pnpm check:all`: build 23 tasks, lint (Biome 2134 files, dependency-cruiser, sherif, boundaries) clean, typecheck, dupes, OpenAPI and catalogs fresh, 203 unit files and 3484 tests with no api-test skip, invariants green on `heliogrid_test` with no SKIP or VACUOUS; nothing regenerated.
+- **Budget b (2026-10-09):** 15 files and about 280 code lines against 11 and 170 — over 20%, so the approval was void from the fourth unplanned file; Main saw it only at the commit count. Shown to the owner as a delta.
+- **Owner rulings (2026-10-09, part b):** the delta approved — part b at 15 files and about 280 code lines, one part; D121 and D161, met through `tenant/`, `invitation/` and `common/filters/` and missed by the RFC's deferred list, stay.
 - **D2 confirmed (2026-10-09):** the RFC said the development rail never refuses; it refuses every number ending `0000` (review finding). Asked again with that fact, the owner kept **A**.
 
 #### Parts
 | part | what | AC | depends on | status |
 |---|---|---|---|---|
 | a | the invite message after the commit — the outbox event, the `inviteMessage` workflow and its step, the derived link secret, the dead `502` removed | AC-1 | — | shipped |
-| b | a repeat changes nothing — the joined person's repeat accept, the eight unchanged replaces, the route census | AC-2, AC-3 | a | open |
+| b | a repeat changes nothing — the joined person's repeat accept, the eight unchanged replaces, the route census | AC-2, AC-3 | a | shipped |
 
 **Checklist a** — [x] contracts and env · [x] worker area · [x] api step and create · [x] tests and planted red · [x] docs, deferred · [x] QA · [x] review · [x] gate
-**Checklist b** — [ ] accept · [ ] eight replaces · [ ] census · [ ] tests and planted reds · [ ] deferred · [ ] QA · [ ] review · [ ] gate
+**Checklist b** — [x] accept · [x] eight replaces · [x] census · [x] tests and planted reds · [x] deferred · [x] QA · [x] review · [x] gate
 
 #### Runtime
 Recorded at the step's start (2026-10-09), before anything ran. Branch `feat/T-FPLAT-085` from `origin/main` `55eae18e`.
@@ -5468,6 +5480,33 @@ Recorded at the step's start (2026-10-09), before anything ran. Branch `feat/T-F
 | runtime logs | `api.log` 1248786 bytes | about 1.47 MB — the task's api and QA runs |
 
 Measurements, part a: about 120 tool-call turns; about 175k tokens; helper runs — `qa-api` 3 (two continuations), `reviewer` 5 (four continuations), `evaluator` 2 (one continuation, two full-gate runs); planned 34 files, built 35 (the boot fixture, found by the gate); about 330 authored code lines, 200 test lines, 60 doc lines beside the RFC.
+
+**Part b — state at its start (2026-10-09).** Branch `feat/T-FPLAT-085b` from `origin/main` `28f9b9b6` (part a merged, #260).
+
+| resource | state | identity |
+|---|---|---|
+| api `8084` | `started_by_task` (part a), healthy, source mode, on `heliogrid_test` | `tsx watch` pid 85875, listener pid 11041; part a's session's preview server — this session's preview list is empty |
+| worker | `started_by_task` (part a) | `tsx watch` pid 86688, under pnpm pid 86628 |
+| web `3002`, Metro `8081` | none listening | — |
+| Postgres, object store, Temporal | pre_existing | `heliogrid-pg-local`, `heliogrid-object-store-local`, `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulators and emulators | none booted | — |
+| database routing | both → `heliogrid_test` (part a's switch; the task's initial is `heliogrid_dev`) | `.env.local` |
+| runtime logs | `api.log` 1616958 · `web.log` 237514 · `metro.log` 812908 bytes | `.qa/` |
+
+**Part b — state at its commit card (2026-10-09).**
+
+| resource | initial (task) | final |
+|---|---|---|
+| api `8084` | none | still running — `started_by_task` in part a's session; this session's stop by pid was denied, so the owner stops it (pnpm pid 85820) |
+| worker | none | still running — the same (pnpm pid 86628); its child restarted once in QA after its token ran out (D165) |
+| Postgres, object store, Temporal | pre_existing | untouched, running |
+| database routing | both → `heliogrid_dev` | both → `heliogrid_dev` (restored); the running api keeps its `heliogrid_test` pool until it stops |
+| `.env.local` | no `INVITE_LINK_SECRET` | holds a random `INVITE_LINK_SECRET` — required to boot; stays |
+| `.temporal-token` | minted at launch | minted again once (`pnpm infra:token`) |
+| runtime logs | `api.log` 1248786 bytes | 2251614 — the task's api, tests and QA |
+| browser tabs, simulators, emulators | none | none |
+
+Measurements, part b: about 120 tool-call turns; about 300k tokens; helper runs — `qa-api` 3 (two continuations: the worker retry, the rerun after review), `reviewer` 2 (one continuation), `evaluator` 1 (one full-gate run); planned 11 files, built 15; about 280 changed code lines, 425 test lines, 30 doc lines beside the RFC.
 
 ### T-FPLAT-086 · A screenshot baseline holds every web route's look
 **Type:** policy · **Tier:** P1

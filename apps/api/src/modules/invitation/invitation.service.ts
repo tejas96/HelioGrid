@@ -9,7 +9,7 @@ import {
   type SessionProjection,
 } from '@heliogrid/contracts';
 import { uuidv7 } from '@heliogrid/db/uuid';
-import { invitationStatus } from '@heliogrid/domain';
+import { type InvitationStatus, invitationStatus } from '@heliogrid/domain';
 import {
   ConflictException,
   ForbiddenException,
@@ -118,7 +118,7 @@ export class InvitationService {
 
   /** What the link shows: a live or a run-out invite; anything else lands nowhere (`M01-13`). */
   async landing(token: string, now: number): Promise<InvitationLanding> {
-    const row = await this.landingRow(token, now);
+    const row = await this.landingRow(token, now, LANDS);
     return {
       inviterName: row.inviterName ?? '',
       companyName: row.companyName,
@@ -138,7 +138,7 @@ export class InvitationService {
     token: string,
     now: number,
   ): Promise<{ projection: SessionProjection; token: { token: string; expiresAt: number } }> {
-    const row = await this.landingRow(token, now);
+    const row = await this.landingRow(token, now, JOINS);
     if (row.status === 'expired') {
       throw new ContractException(
         'INVITE_EXPIRED',
@@ -147,6 +147,8 @@ export class InvitationService {
       );
     }
     if (session.actor.phoneE164 !== row.phoneE164) {
+      // An answered invite lands nowhere for anyone but the person it let in.
+      if (row.status === 'accepted') throw new NotFoundException('This invite no longer lands.');
       throw new ForbiddenException('This invite is for a different phone number.');
     }
     const joined = await this.crossTenant.accept(hashSecret(token), session.actor.userId, now);
@@ -172,21 +174,34 @@ export class InvitationService {
     if (outcome === 'not-expired') throw new ConflictException('This invite is still open.');
   }
 
-  /** The row behind a link that still lands, with what it is NOW; every other state is not-found. */
-  private async landingRow(
+  /** The row behind a link in one of the states `lands`, as it is NOW; every other state is not-found. */
+  private async landingRow<S extends InvitationStatus>(
     token: string,
     now: number,
-  ): Promise<Omit<LandingRow, 'status'> & { status: 'pending' | 'expired' }> {
+    lands: readonly S[],
+  ): Promise<Omit<LandingRow, 'status'> & { status: S }> {
     const row = await this.crossTenant.byTokenHash(hashSecret(token));
     const status =
       row === null
         ? null
         : invitationStatus({ status: row.status, expiresAt: row.expiresAt.getTime() }, now);
-    if (row === null || (status !== 'pending' && status !== 'expired')) {
+    if (row === null || !isOneOf(status, lands)) {
       throw new NotFoundException('This invite no longer lands.');
     }
     return { ...row, status };
   }
+}
+
+/** What the link shows: a live invite, or one that has run out. */
+const LANDS = ['pending', 'expired'] as const;
+/** What the join reaches: those, and an answered one its own person may be repeating. */
+const JOINS = [...LANDS, 'accepted'] as const;
+
+function isOneOf<S extends InvitationStatus>(
+  status: InvitationStatus | null,
+  states: readonly S[],
+): status is S {
+  return (states as readonly (InvitationStatus | null)[]).includes(status);
 }
 
 function toInvitation(row: InvitationRow, now: number): Invitation {

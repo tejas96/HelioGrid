@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from 'node:util';
 import {
   type TenantPool,
   type TenantScopedDb,
@@ -109,9 +110,12 @@ export class SettingsTranchesRepository {
   ): Promise<TemplateOutcome> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
       await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${tenantId}))`);
-      const standing = await standingOf(tx, tenantId, id);
-      if (standing === null) return { outcome: 'not-found' };
-      if (standing.archived) return { outcome: 'archived' };
+      const [stored] = await trancheTemplatesOf(tx, tenantId, id);
+      if (stored === undefined) return { outcome: 'not-found' };
+      if (stored.archived) return { outcome: 'archived' };
+      // The content as stored, sent again, writes and records nothing (`F4-07`).
+      const { name, lines } = stored;
+      if (isDeepStrictEqual({ name, lines }, content)) return { outcome: 'done', template: stored };
       await tx
         .update(trancheTemplate)
         .set({ name: content.name, changedAt: new Date(act.now) })
@@ -148,12 +152,10 @@ export class SettingsTranchesRepository {
       // The tenant lock BEFORE the standing is read, as save and make-default take it: two
       // archives at once would otherwise both read "live" and both record the act.
       await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${tenantId}))`);
-      const standing = await standingOf(tx, tenantId, id);
-      if (standing === null) return { outcome: 'not-found' };
-      if (standing.archived) {
-        return { outcome: 'done', template: await templateById(tx, tenantId, id) };
-      }
-      if (standing.isDefault) return { outcome: 'is-default' };
+      const [stored] = await trancheTemplatesOf(tx, tenantId, id);
+      if (stored === undefined) return { outcome: 'not-found' };
+      if (stored.archived) return { outcome: 'done', template: stored };
+      if (stored.isDefault) return { outcome: 'is-default' };
       await tx
         .update(trancheTemplate)
         .set({ archived: true, archivedAt: new Date(act.now) })
@@ -179,10 +181,10 @@ export class SettingsTranchesRepository {
   ): Promise<TemplateOutcome> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
       await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${tenantId}))`);
-      const standing = await standingOf(tx, tenantId, id);
-      if (standing === null) return { outcome: 'not-found' };
-      if (standing.archived) return { outcome: 'archived' };
-      if (!standing.isDefault) {
+      const [stored] = await trancheTemplatesOf(tx, tenantId, id);
+      if (stored === undefined) return { outcome: 'not-found' };
+      if (stored.archived) return { outcome: 'archived' };
+      if (!stored.isDefault) {
         await tx
           .update(trancheTemplate)
           .set({ isDefault: false })
@@ -204,19 +206,6 @@ export class SettingsTranchesRepository {
       return { outcome: 'done', template: await templateById(tx, tenantId, id) };
     });
   }
-}
-
-async function standingOf(
-  tx: TenantScopedDb,
-  tenantId: string,
-  id: string,
-): Promise<{ archived: boolean; isDefault: boolean } | null> {
-  const [row] = await tx
-    .select({ archived: trancheTemplate.archived, isDefault: trancheTemplate.isDefault })
-    .from(trancheTemplate)
-    .where(and(eq(trancheTemplate.tenantId, tenantId), eq(trancheTemplate.id, id)))
-    .limit(1);
-  return row ?? null;
 }
 
 async function writeLines(

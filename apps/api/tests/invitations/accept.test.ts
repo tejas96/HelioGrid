@@ -30,7 +30,8 @@ import {
  * that the membership, its roles, the invitation's flip, the name and the entry are ONE
  * transaction — a failure after them leaves nothing — that a person who already holds an account
  * gains a membership and never a second account, and that a link which has run out, been
- * withdrawn or already answered admits nobody. The person's account exists before the join, as
+ * withdrawn or already answered admits nobody — but the person it let in, whose repeat answers as
+ * the join did and writes nothing more (`F4-07`). The person's account exists before the join, as
  * at signup: the code they verified made it, on the front door's own path.
  */
 
@@ -147,6 +148,40 @@ describe.skipIf(skip)('the one-step join, against a migrated database', () => {
     expect(await nameOf(veteran.userId)).toBe(veteran.name);
   });
 
+  it('answers the joined person’s repeat as the join did, and writes nothing more', async () => {
+    expect(await invites.accept(toNewcomer.tokenHash, newcomer.userId, NOW)).toEqual({
+      outcome: 'done',
+      tenantId: here.tenantId,
+    });
+    expect(await membershipsOf(newcomer.userId, here.tenantId)).toBe(1);
+    expect(
+      (await entriesOf('team.invite_accepted')).filter(
+        (entry) => entry.subjectRef === toNewcomer.invitationId,
+      ),
+    ).toHaveLength(1);
+  });
+
+  it('admits nobody else through an answered link — not even a member of that company', async () => {
+    expect(await invites.accept(toNewcomer.tokenHash, owner.userId, NOW)).toEqual({
+      outcome: 'not-pending',
+    });
+  });
+
+  it('refuses the repeat once the joined person’s access here has ended', async () => {
+    await pools.admin.db
+      .update(tenantMembership)
+      .set({ status: 'deactivated' })
+      .where(
+        and(
+          eq(tenantMembership.userAccountId, veteran.userId),
+          eq(tenantMembership.tenantId, here.tenantId),
+        ),
+      );
+    expect(await invites.accept(toVeteran.tokenHash, veteran.userId, NOW)).toEqual({
+      outcome: 'not-pending',
+    });
+  });
+
   it.each([
     { link: 'one already answered', invite: () => toNewcomer },
     { link: 'one that has run out', invite: () => runOut },
@@ -176,6 +211,16 @@ describe.skipIf(skip)('the one-step join, against a migrated database', () => {
       )
       .limit(1);
     return row ?? null;
+  }
+
+  async function membershipsOf(userId: string, tenantId: string): Promise<number> {
+    const rows = await pools.admin.db
+      .select({ id: tenantMembership.id })
+      .from(tenantMembership)
+      .where(
+        and(eq(tenantMembership.userAccountId, userId), eq(tenantMembership.tenantId, tenantId)),
+      );
+    return rows.length;
   }
 
   async function statusOf(invitationId: string): Promise<string> {

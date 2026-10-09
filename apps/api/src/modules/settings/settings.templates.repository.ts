@@ -1,4 +1,10 @@
-import { proposalTemplateSettings, type TenantPool, timelineTemplate } from '@heliogrid/db';
+import { isDeepStrictEqual } from 'node:util';
+import {
+  proposalTemplateSettings,
+  type TenantPool,
+  type TenantScopedDb,
+  timelineTemplate,
+} from '@heliogrid/db';
 import type {
   ProposalTemplateSettings,
   TimelinePhase,
@@ -12,8 +18,8 @@ import { memberAct, recordAuditEntry } from '../audit/audit.public';
 
 /**
  * The proposal and timeline templates on the runtime pool (`M01-51`, `M01-52`): one row each,
- * absent until first saved, replaced whole on save. The payment-term templates are
- * `settings.tranches.repository.ts`'s.
+ * absent until first saved, replaced whole on save — a save equal to what is stored writes and
+ * records nothing (`F4-07`). The payment-term templates are `settings.tranches.repository.ts`'s.
  */
 @Injectable()
 export class SettingsTemplatesRepository {
@@ -21,14 +27,7 @@ export class SettingsTemplatesRepository {
   constructor(@Inject(TENANT_DB) private readonly db: TenantPool) {}
 
   async proposalTemplate(tenantId: string): Promise<ProposalTemplateSettings | null> {
-    return this.db.withTenantTransaction(tenantId, async (tx) => {
-      const [row] = await tx
-        .select(proposalColumns())
-        .from(proposalTemplateSettings)
-        .where(eq(proposalTemplateSettings.tenantId, tenantId))
-        .limit(1);
-      return row ?? null;
-    });
+    return this.db.withTenantTransaction(tenantId, (tx) => storedProposalTemplate(tx, tenantId));
   }
 
   async saveProposalTemplate(
@@ -37,6 +36,8 @@ export class SettingsTemplatesRepository {
     act: Act,
   ): Promise<ProposalTemplateSettings> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const stored = await storedProposalTemplate(tx, tenantId);
+      if (stored !== null && isDeepStrictEqual(stored, settings)) return stored;
       const now = new Date(act.now);
       const values = {
         cover: settings.cover,
@@ -65,14 +66,7 @@ export class SettingsTemplatesRepository {
   }
 
   async timelineTemplate(tenantId: string): Promise<TimelineTemplateSettings | null> {
-    return this.db.withTenantTransaction(tenantId, async (tx) => {
-      const [row] = await tx
-        .select({ phases: timelineTemplate.phases })
-        .from(timelineTemplate)
-        .where(eq(timelineTemplate.tenantId, tenantId))
-        .limit(1);
-      return row ?? null;
-    });
+    return this.db.withTenantTransaction(tenantId, (tx) => storedTimelineTemplate(tx, tenantId));
   }
 
   async saveTimelineTemplate(
@@ -81,6 +75,8 @@ export class SettingsTemplatesRepository {
     act: Act,
   ): Promise<TimelineTemplateSettings> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const stored = await storedTimelineTemplate(tx, tenantId);
+      if (stored !== null && isDeepStrictEqual(stored.phases, phases)) return stored;
       const now = new Date(act.now);
       const [row] = await tx
         .insert(timelineTemplate)
@@ -103,6 +99,30 @@ export class SettingsTemplatesRepository {
       return { phases: row.phases };
     });
   }
+}
+
+export async function storedProposalTemplate(
+  tx: TenantScopedDb,
+  tenantId: string,
+): Promise<ProposalTemplateSettings | null> {
+  const [row] = await tx
+    .select(proposalColumns())
+    .from(proposalTemplateSettings)
+    .where(eq(proposalTemplateSettings.tenantId, tenantId))
+    .limit(1);
+  return row ?? null;
+}
+
+export async function storedTimelineTemplate(
+  tx: TenantScopedDb,
+  tenantId: string,
+): Promise<TimelineTemplateSettings | null> {
+  const [row] = await tx
+    .select({ phases: timelineTemplate.phases })
+    .from(timelineTemplate)
+    .where(eq(timelineTemplate.tenantId, tenantId))
+    .limit(1);
+  return row ?? null;
 }
 
 function proposalColumns() {

@@ -23,7 +23,7 @@ import { skipUnless } from './preconditions';
  */
 
 /** The api's own reader of the environment — the harness asks it, never `process.env`. */
-const DEV_PHONE = ENV.DEV_OTP_PHONES?.[0] ?? '';
+export const DEV_PHONE = ENV.DEV_OTP_PHONES?.[0] ?? '';
 const DEV_CODE = ENV.DEV_OTP_CODE ?? '';
 
 export interface Reply<T = unknown> {
