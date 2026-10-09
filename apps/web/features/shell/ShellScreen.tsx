@@ -1,7 +1,13 @@
 'use client';
-import { useSession, useShell, useUnreadCount } from '@heliogrid/data/react';
+import { useConnection, useSession, useShell, useUnreadCount } from '@heliogrid/data/react';
 import { offersDoor } from '@heliogrid/domain';
-import { accessRemovedWords, accountMenuWords, NOTIFICATION_CENTRE, SHELL } from '@heliogrid/i18n';
+import {
+  accessRemovedWords,
+  accountMenuWords,
+  connectionWords,
+  NOTIFICATION_CENTRE,
+  SHELL,
+} from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import {
   AccessRemoved,
@@ -9,6 +15,7 @@ import {
   AppRail,
   AppShell,
   LogoTile,
+  NoConnection,
   type RailItem,
   ShellGlyph,
 } from '@heliogrid/ui';
@@ -27,7 +34,8 @@ import './shell.css';
  * header with the company and the search. The bell opens the notification centre beside the page
  * (`SCR-SHELL-03`). Every fact is `useShell()`'s and every part is `packages/ui`'s; this
  * composes. A removal (`S1.wrong.4`) replaces the rail and the page with Frame 8, on whichever
- * route is open — every read is refused there.
+ * route is open — every read is refused there. A device gone offline sees the one no-connection
+ * screen instead of blocks that would wait forever (`F8-36`).
  */
 export function ShellScreen({ children }: { children: ReactNode }) {
   const t = useTranslate();
@@ -41,7 +49,10 @@ export function ShellScreen({ children }: { children: ReactNode }) {
   const showGrievance = () => setGrievance(true);
   const signOut = () => void session.signOut();
   const note = <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />;
+  const connection = useConnection();
 
+  if (!connection.online)
+    return <NoConnection {...connectionWords(t)} onRetry={connection.retry} />;
   if (shell.accessRemoved) {
     return (
       <AppShell className="hg-shell" header={<ShellHeader companyName={shell.companyName} />}>

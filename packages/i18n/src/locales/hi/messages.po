@@ -218,7 +218,7 @@ msgid "A release already has this name. Choose another name."
 msgstr "इस नाम की रिलीज़ पहले से है। कोई दूसरा नाम चुनें।"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:70
+#: src/copy/company-signup.ts:71
 msgid "A workspace already exists for {company} in {city}"
 msgstr "{city} में {company} का वर्कस्पेस पहले से है"
 
@@ -263,7 +263,7 @@ msgid "Anything that needs you, or changes on work you hold, lands here — newe
 msgstr "जिस काम में आपकी ज़रूरत है, या आपके काम में जो बदलता है, वह यहाँ आता है — सबसे नया पहले, और साथ में वह एक काम जो आप कर सकते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:71
+#: src/copy/company-signup.ts:72
 msgid "Asking to join sends its owner a request to add {phone}."
 msgstr "जुड़ने का अनुरोध करने पर उसके मालिक को {phone} जोड़ने का अनुरोध जाता है।"
 
@@ -439,7 +439,7 @@ msgid "Create a company account"
 msgstr "कंपनी खाता बनाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:74
+#: src/copy/company-signup.ts:75
 msgid "Create a new company anyway"
 msgstr "फिर भी नई कंपनी बनाएँ"
 
@@ -619,6 +619,11 @@ msgid "HR/Admin"
 msgstr "HR/एडमिन"
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:55
+msgid "If it keeps failing, sign in later to carry on."
+msgstr "बार-बार ऐसा हो, तो बाद में साइन इन करके आगे बढ़ें।"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:68
 msgid "If it keeps failing, tell your company admin."
 msgstr "अगर यह बार-बार विफल हो, तो अपनी कंपनी के एडमिन को बताएँ।"
@@ -634,7 +639,7 @@ msgid "If you've signed in with Google before, it still works."
 msgstr "अगर आपने पहले Google से साइन इन किया है, तो वह अब भी काम करता है।"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:60
+#: src/copy/company-signup.ts:61
 msgid "If your company already has a workspace and you want your own login inside it, ask its owner to invite you — that keeps one company, one workspace."
 msgstr "अगर आपकी कंपनी का वर्कस्पेस पहले से है और आप उसके अंदर अपना लॉगिन चाहते हैं, तो उसके मालिक से आपको आमंत्रित करने को कहें — इससे एक कंपनी, एक वर्कस्पेस बनी रहती है।"
 
@@ -731,11 +736,6 @@ msgid "Next"
 msgstr "आगे"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:52
-msgid "No error code reaches a field user. If it keeps failing, signing in later with this number returns you to exactly this step."
-msgstr "फ़ील्ड उपयोगकर्ता तक कोई एरर कोड नहीं पहुँचता। अगर यह बार-बार विफल हो, तो बाद में इसी नंबर से साइन इन करने पर आप ठीक इसी चरण पर लौट आते हैं।"
-
-#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:58
 msgid "No more codes for {windowMinutes} minutes"
 msgstr "{windowMinutes} मिनट तक और कोड नहीं"
@@ -802,8 +802,8 @@ msgstr "कुछ अपठित नहीं · पिछले {days} दि�
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:49
-msgid "Nothing was created, so trying again cannot make two companies. Your number is still verified and your three details are still here."
-msgstr "कुछ भी नहीं बना, इसलिए फिर से कोशिश करने पर दो कंपनियाँ नहीं बन सकतीं। आपका नंबर अब भी सत्यापित है और आपके तीनों विवरण अब भी यहीं हैं।"
+msgid "Nothing was created, so trying again is safe."
+msgstr "कुछ नहीं बना, इसलिए फिर से कोशिश करना सुरक्षित है।"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:46
@@ -942,12 +942,12 @@ msgid "Reported"
 msgstr "सूचित किया गया"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:72
+#: src/copy/company-signup.ts:73
 msgid "Request to join"
 msgstr "जुड़ने का अनुरोध करें"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:73
+#: src/copy/company-signup.ts:74
 msgid "Request to join the existing {company} workspace"
 msgstr "मौजूदा {company} वर्कस्पेस से जुड़ने का अनुरोध करें"
 
@@ -1077,7 +1077,7 @@ msgid "Sign in with another account"
 msgstr "दूसरे खाते से साइन इन करें"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:63
+#: src/copy/company-signup.ts:64
 msgid "Sign in with this number"
 msgstr "इस नंबर से साइन इन करें"
 
@@ -1097,7 +1097,7 @@ msgid "Signing in as {name} discards {count} photographs"
 msgstr "{name} के रूप में साइन इन करने से {count} फ़ोटो हट जाएँगे"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:56
+#: src/copy/company-signup.ts:57
 msgid "Signing in takes you to the company it belongs to. One number is one account, whichever door it walks in through."
 msgstr "साइन इन करने पर आप उस कंपनी में पहुँचते हैं जिसका यह नंबर है। एक नंबर एक खाता है, चाहे वह किसी भी दरवाज़े से आए।"
 
@@ -1107,7 +1107,7 @@ msgid "Signing in with Google"
 msgstr "Google से साइन इन हो रहा है"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:59
+#: src/copy/company-signup.ts:60
 msgid "Signing up again would not make a second company"
 msgstr "दोबारा साइन अप करने से दूसरी कंपनी नहीं बनेगी"
 
@@ -1137,9 +1137,9 @@ msgid "Something on our side failed"
 msgstr "हमारी ओर से कुछ विफल हुआ"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:76
-msgid "Something on our side or the connection failed, so nothing was sent."
-msgstr "हमारी ओर से या कनेक्शन में कुछ गड़बड़ हुई, इसलिए कुछ नहीं भेजा गया।"
+#: src/copy/company-signup.ts:77
+msgid "Something on our side failed, so nothing was sent."
+msgstr "हमारी ओर से कुछ गड़बड़ हुई, इसलिए कुछ नहीं भेजा गया।"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:43
@@ -1242,7 +1242,7 @@ msgid "That is taking too long to answer."
 msgstr "जवाब आने में बहुत देर हो रही है।"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:55
+#: src/copy/company-signup.ts:56
 msgid "That number already has an account"
 msgstr "इस नंबर का खाता पहले से है"
 
@@ -1312,7 +1312,7 @@ msgid "These three are being written now, so they are facts rather than fields f
 msgstr "ये तीनों अभी लिखे जा रहे हैं, इसलिए फ़िलहाल ये फ़ील्ड नहीं, तथ्य हैं — लिखते समय कुछ बदल नहीं सकता, और यह बताने के लिए कुछ भी धुँधला नहीं किया गया है।"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:69
+#: src/copy/company-signup.ts:70
 msgid "This company may already be here"
 msgstr "यह कंपनी शायद पहले से यहाँ है"
 
@@ -1462,7 +1462,7 @@ msgid "Use a different Google account"
 msgstr "दूसरा Google खाता इस्तेमाल करें"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:64
+#: src/copy/company-signup.ts:65
 msgid "Use a different number"
 msgstr "दूसरा नंबर इस्तेमाल करें"
 
@@ -1517,6 +1517,11 @@ msgid "We call and read the code out to"
 msgstr "हम कॉल करके इस नंबर पर कोड पढ़कर सुनाते हैं"
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:50
+msgid "We could not confirm the company"
+msgstr "कंपनी बनने की पुष्टि नहीं हो सकी"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:48
 msgid "We could not create the company"
 msgstr "हम कंपनी नहीं बना सके"
@@ -1535,6 +1540,11 @@ msgstr "हम कोड नहीं भेज सके"
 #: src/copy/sign-in.ts:67
 msgid "We could not sign you in"
 msgstr "हम आपको साइन इन नहीं कर सके"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:51
+msgid "We did not hear back"
+msgstr "हमें जवाब नहीं मिला"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:24
@@ -1557,7 +1567,7 @@ msgid "We'll link this Google login to your number."
 msgstr "हम यह Google लॉगिन आपके नंबर से जोड़ेंगे।"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:65
+#: src/copy/company-signup.ts:66
 msgid "Welcome back — carry on"
 msgstr "फिर से स्वागत है — आगे बढ़ें"
 
@@ -1639,6 +1649,11 @@ msgid "Your company has sent today’s invites. Try again tomorrow."
 msgstr "आपकी कंपनी आज के आमंत्रण भेज चुकी है। कल फिर से कोशिश करें।"
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:52
+msgid "Your company may have been made — trying again cannot make a second."
+msgstr "आपकी कंपनी शायद बन गई हो — फिर से कोशिश करने से दूसरी नहीं बनेगी।"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:31
 msgid "Your current plan doesn't include this."
 msgstr "आपके मौजूदा प्लान में यह शामिल नहीं है।"
@@ -1674,12 +1689,12 @@ msgid "Your number"
 msgstr "आपका नंबर"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:66
+#: src/copy/company-signup.ts:67
 msgid "Your number is verified and no company was created — so there is nothing to redo and no second workspace waiting to be cleaned up."
 msgstr "आपका नंबर सत्यापित है और कोई कंपनी नहीं बनी — इसलिए दोबारा करने को कुछ नहीं है और साफ़ करने के लिए कोई दूसरा वर्कस्पेस नहीं है।"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:75
+#: src/copy/company-signup.ts:76
 msgid "Your request did not go through"
 msgstr "आपका अनुरोध नहीं जा सका"
 
@@ -1687,3 +1702,8 @@ msgstr "आपका अनुरोध नहीं जा सका"
 #: src/copy/company-signup.ts:80
 msgid "Your request is with the owner"
 msgstr "आपका अनुरोध मालिक के पास है"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:78
+msgid "Your request may already be with the owner."
+msgstr "आपका अनुरोध शायद मालिक तक पहुँच चुका हो।"

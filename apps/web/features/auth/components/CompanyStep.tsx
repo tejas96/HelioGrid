@@ -1,8 +1,8 @@
 import { createTenantSchema } from '@heliogrid/contracts';
-import { type CompanySignup, useSteerDroppedOnEdit } from '@heliogrid/data/react';
+import { type CompanySignup, failureOf, useSteerDroppedOnEdit } from '@heliogrid/data/react';
 import type { SessionUser } from '@heliogrid/domain';
 import { useZodForm } from '@heliogrid/forms';
-import { COMPANY_SIGNUP, companySignupWords, SIGN_IN } from '@heliogrid/i18n';
+import { COMPANY_SIGNUP, companySignupWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { Button, DoorFrame, Text, TintedBlock } from '@heliogrid/ui';
 import { AccountCard } from './AccountCard';
@@ -46,7 +46,7 @@ export function CompanyStep({
   const frame = {
     restored,
     writing: signup.creation === 'creating',
-    failed: signup.creation === 'failed',
+    failure: failureOf(signup.creation),
   };
   const words = companySignupWords(t, frame);
 
@@ -97,17 +97,12 @@ export function CompanyStep({
               </Text>
             )}
           </div>
-          {frame.failed ? (
-            <TintedBlock
-              tone="danger"
-              title={t(SIGN_IN.ourSideFailed)}
-              body={t(COMPANY_SIGNUP.nothingCreated)}
-              className="hg-signup-finding"
-            />
+          {words.block !== null ? (
+            <TintedBlock {...words.block} className="hg-signup-finding" />
           ) : (
             <AccountCard phoneE164={user.phoneE164} />
           )}
-          {frame.restored && !frame.failed ? (
+          {frame.restored && frame.failure === null ? (
             <Text variant="body-sm" color="secondary">
               {t(COMPANY_SIGNUP.resumeLine)}
             </Text>

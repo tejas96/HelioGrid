@@ -1,5 +1,5 @@
 import type { RequestedCompany } from '@heliogrid/contracts';
-import type { CompanySignup } from '@heliogrid/data/react';
+import { type CompanySignup, failureOf } from '@heliogrid/data/react';
 import { COMPANY_SIGNUP, joinSteerFinding, joinSteerWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { Button, TintedBlock, useFormat } from '@heliogrid/ui';
@@ -29,21 +29,14 @@ export function JoinSteerBlock({
 }
 
 /**
- * A request that did not go through (`SCR-M01-02` decision 25): `m-error`'s danger block under the
- * heading, while the steer stays whole beneath it. Nothing renders before a failure.
+ * A request that did not land (`SCR-M01-02` decisions 23–24): refused or unanswered, its danger
+ * block under the heading, while the steer stays whole beneath it. Nothing renders before one.
  */
 export function JoinFailureBlock({ signup }: { signup: CompanySignup }) {
   const t = useTranslate();
-  const { failure } = joinSteerWords(t, signup.requesting === 'failed');
+  const { failure } = joinSteerWords(t, failureOf(signup.requesting));
   if (failure === null) return null;
-  return (
-    <TintedBlock
-      tone="danger"
-      title={failure.title}
-      body={failure.body}
-      className="hg-signup-finding"
-    />
-  );
+  return <TintedBlock {...failure} className="hg-signup-finding" />;
 }
 
 /**
@@ -59,7 +52,7 @@ export function JoinRoads({
   signup: CompanySignup;
 }) {
   const t = useTranslate();
-  const words = joinSteerWords(t, signup.requesting === 'failed');
+  const words = joinSteerWords(t, failureOf(signup.requesting));
   const sending = signup.requesting === 'sending';
   return (
     <div className="hg-signup-join-roads">

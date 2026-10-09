@@ -46,12 +46,13 @@ export const COMPANY_SIGNUP = {
     id: 'These three are being written now, so they are facts rather than fields for the moment — nothing can change under the write, and nothing is greyed out to say so.',
   },
   couldNotCreate: /*i18n*/ { id: 'We could not create the company' },
-  nothingCreated: /*i18n*/ {
-    id: 'Nothing was created, so trying again cannot make two companies. Your number is still verified and your three details are still here.',
+  nothingCreated: /*i18n*/ { id: 'Nothing was created, so trying again is safe.' },
+  couldNotConfirm: /*i18n*/ { id: 'We could not confirm the company' },
+  noAnswer: /*i18n*/ { id: 'We did not hear back' },
+  mayHaveBeenMade: /*i18n*/ {
+    id: 'Your company may have been made — trying again cannot make a second.',
   },
-  errorFoot: /*i18n*/ {
-    id: 'No error code reaches a field user. If it keeps failing, signing in later with this number returns you to exactly this step.',
-  },
+  errorFoot: /*i18n*/ { id: 'If it keeps failing, sign in later to carry on.' },
   knownTitle: /*i18n*/ { id: 'That number already has an account' },
   knownIntro: /*i18n*/ {
     id: 'Signing in takes you to the company it belongs to. One number is one account, whichever door it walks in through.',
@@ -73,9 +74,8 @@ export const COMPANY_SIGNUP = {
   requestToJoinLabel: /*i18n*/ { id: 'Request to join the existing {company} workspace' },
   createAnyway: /*i18n*/ { id: 'Create a new company anyway' },
   requestFailedTitle: /*i18n*/ { id: 'Your request did not go through' },
-  requestFailedBody: /*i18n*/ {
-    id: 'Something on our side or the connection failed, so nothing was sent.',
-  },
+  requestFailedBody: /*i18n*/ { id: 'Something on our side failed, so nothing was sent.' },
+  requestMayHaveGone: /*i18n*/ { id: 'Your request may already be with the owner.' },
   sendRequestAgain: /*i18n*/ { id: 'Send the request again' },
   sentTitle: /*i18n*/ { id: 'Your request is with the owner' },
   sentBody: /*i18n*/ {

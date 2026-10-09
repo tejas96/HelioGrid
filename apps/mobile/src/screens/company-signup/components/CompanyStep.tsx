@@ -1,8 +1,8 @@
 import { createTenantSchema } from '@heliogrid/contracts';
-import { type CompanySignup, useSteerDroppedOnEdit } from '@heliogrid/data/react';
+import { type CompanySignup, failureOf, useSteerDroppedOnEdit } from '@heliogrid/data/react';
 import type { SessionUser } from '@heliogrid/domain';
 import { useZodForm } from '@heliogrid/forms';
-import { COMPANY_SIGNUP, companySignupWords, joinSteerWords, SIGN_IN } from '@heliogrid/i18n';
+import { COMPANY_SIGNUP, companySignupWords, joinSteerWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { Button, Text, TintedBlock } from '@heliogrid/ui';
 import { View } from 'react-native';
@@ -47,12 +47,12 @@ export function CompanyStep({
   const frame = {
     restored,
     writing: signup.creation === 'creating',
-    failed: signup.creation === 'failed',
+    failure: failureOf(signup.creation),
   };
   const words = companySignupWords(t, frame);
 
   if (steered !== null) {
-    const { failure } = joinSteerWords(t, signup.requesting === 'failed');
+    const { failure } = joinSteerWords(t, failureOf(signup.requesting));
     return (
       <InsetDoorFrame
         trailing={<LanguageControl />}
@@ -64,7 +64,7 @@ export function CompanyStep({
         </View>
         {failure === null ? null : (
           <View style={styles.block}>
-            <TintedBlock tone="danger" title={failure.title} body={failure.body} />
+            <TintedBlock {...failure} />
           </View>
         )}
         {signup.requesting === 'sending' ? (
@@ -100,18 +100,14 @@ export function CompanyStep({
           </Text>
         )}
       </View>
-      {frame.failed ? (
+      {words.block !== null ? (
         <View style={styles.block}>
-          <TintedBlock
-            tone="danger"
-            title={t(SIGN_IN.ourSideFailed)}
-            body={t(COMPANY_SIGNUP.nothingCreated)}
-          />
+          <TintedBlock {...words.block} />
         </View>
       ) : (
         <AccountCard phoneE164={user.phoneE164} />
       )}
-      {frame.restored && !frame.failed ? (
+      {frame.restored && frame.failure === null ? (
         <View style={styles.resumeLine}>
           <Text variant="body-sm" color="secondary">
             {t(COMPANY_SIGNUP.resumeLine)}
@@ -121,7 +117,7 @@ export function CompanyStep({
       {frame.writing ? (
         <CompanyFacts values={form.getValues()} />
       ) : (
-        <CompanyFields form={form} underAccount={!(frame.failed || frame.restored)} />
+        <CompanyFields form={form} underAccount={frame.failure === null && !frame.restored} />
       )}
       {words.caption === null ? null : (
         <View style={styles.caption}>

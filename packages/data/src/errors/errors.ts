@@ -28,6 +28,11 @@ export class DataError extends Error {
   }
 }
 
+/** No readable answer came (`failure` set, the person never left): their network or ours, never our refusal (`F8-36`). */
+export function isUnanswered(error: unknown): boolean {
+  return error instanceof DataError && error.failure !== null && error.failure !== 'cancelled';
+}
+
 /** A non-2xx the server described with the canonical error envelope. */
 export class ApiError extends DataError {
   readonly status: number;
