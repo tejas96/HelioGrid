@@ -8,7 +8,8 @@ Deps: `architecture.md` §2 tests/e2e.
   `login.spec.ts`, `/` → `root.spec.ts`, a `(group)` folder dropped).
 - `web/<route>.spec.ts-snapshots/landing-{phone,desktop}-linux.png` — the route's look at 375 and
   1536: each route spec with a look of its own calls `support/look.ts`'s `expectTheLook` once at
-  its landing. Any changed pixel fails `e2e-web`. A baseline is
+  its landing, and `e2e-flow-per-screen` holds both images by name. Any changed pixel fails
+  `e2e-web`. A baseline is
   drawn only by CI, on Linux — a Mac draws text with other edges, so off CI the comparison is
   skipped. A baseline changes only in a commit the owner approves: from the failed run's
   `e2e-web-traces` artifact, a missing one is in `tests/e2e/web/<route>.spec.ts-snapshots/` and a

@@ -5510,7 +5510,7 @@ Measurements, part b: about 120 tool-call turns; about 300k tokens; helper runs 
 
 ### T-FPLAT-086 · A screenshot baseline holds every web route's look
 **Type:** policy · **Tier:** P1
-**Status:** planned
+**Status:** shipped
 **Why:** QA checks only the screens a change reaches, so a change to a shared `packages/ui` part can break the look of a screen nobody opens (D74).
 **PRD rows:** none of its own — `F7-43` (Definition of Done at 375 and 1536).
 **Chosen by the owner** (deferred review, 2026-10-08): web routes first.
@@ -5689,7 +5689,7 @@ helper → five specs → local Mac stability and planted reds → ci, docs, def
 commit 1 → CI draws → invariant, protections, images, its planted red → the gate's final run →
 commit 2.
 
-**Checklist** — [x] config and helper · [x] five specs · [x] `PhoneField` ring · [x] Mac stability and planted reds · [x] ci, docs, deferred · [x] review · [x] gate · [x] commit 1 · [ ] invariant, protections, images and planted red · [ ] commit 2 · [ ] CI green
+**Checklist** — [x] config and helper · [x] five specs · [x] `PhoneField` ring · [x] Mac stability and planted reds · [x] ci, docs, deferred · [x] review · [x] gate · [x] commit 1 · [x] invariant, protections, images and planted red · [x] commit 2 · [ ] CI green
 
 #### Runtime
 Recorded at the step's start (2026-10-09), before anything ran. Branch `feat/T-FPLAT-086` from `origin/main` `04dd8acc`.
@@ -5713,6 +5713,18 @@ Measurements, commit 1: about 110 tool-call turns; about 250k tokens; helper run
 (two continuations), `evaluator` 1 (one full-gate run); planned 14 files, then 15 at the delta,
 built 16 in commit 1 with 3 owed to commit 2 (18 with the review's three); about 60 changed code
 and test lines, about 35 doc lines beside the RFC.
+
+**Commit 2 — at its card (2026-10-09).** CI run `37907754200` (head `6d481027`) failed `e2e-web`
+exactly on the ten missing looks ("writing actual"), every other web flow (58), the component
+tests (130) and every other lane green; the ten images taken from its `e2e-web-traces` artifact,
+each read: both signup images ringed, only the company's name and the date masked. The invariant
+red on a deleted look and on a look given to the held `root`, green restored (10 looks). Database
+routing restored to `heliogrid_dev` at teardown; nothing listens on 3002, 8084 or 8081.
+
+Measurements, the task: about 140 tool-call turns; about 330k tokens; helper runs — `reviewer` 1
+(two continuations), `evaluator` 1 (two full-gate runs); planned 14 files, 15 at the delta, built 18
+and 10 generated images; about 110
+changed code and test lines, about 45 doc lines beside the RFC.
 
 ### T-FPLAT-087 · Dates and digits in the reader's language
 **Type:** policy · **Tier:** P1 (`F3-21`, `F3-22`)
