@@ -13,6 +13,12 @@ export type SignupView = 'known' | 'done' | 'sent' | 'join' | 'company' | 'code'
 export type JoinSteer = 'none' | 'offered' | 'sent';
 
 /**
+ * How a signup write ended without landing (`F8-36`): `failed` the server refused it, so it is
+ * known nothing was written; `unreached` no answer came, so it may have been.
+ */
+export type WriteFailure = 'failed' | 'unreached';
+
+/**
  * Which panel the signup door shows, in the one order both screens keep (Law 11): a number that
  * already has a company first — the store holds the session anonymous behind it (`M01-08`) —
  * then a settled session, which belongs on the company step while it has no company (`M01-10`)

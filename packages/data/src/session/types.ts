@@ -48,7 +48,8 @@ export interface SessionStore {
   /**
    * Company signup's last step (`M01-01`): the tenant, the owner membership and the owner role in
    * one server transaction, after which this session acts under the new company. Rejects with the
-   * `DataError` the wire answered; nothing is created on a rejection.
+   * `DataError` the wire answered: nothing is created on a refusal, but after no answer the company
+   * may exist — the same retry key then answers with it.
    */
   createCompany(input: CreateTenant): Promise<void>;
   signOut(): Promise<void>;

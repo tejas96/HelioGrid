@@ -1,5 +1,5 @@
 import type { RequestedCompany } from '@heliogrid/contracts';
-import type { CompanySignup } from '@heliogrid/data/react';
+import { type CompanySignup, failureOf } from '@heliogrid/data/react';
 import { COMPANY_SIGNUP, joinSteerFinding, joinSteerWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { Button, TintedBlock, useFormat } from '@heliogrid/ui';
@@ -23,7 +23,7 @@ export function JoinSteer({
 }) {
   const t = useTranslate();
   const format = useFormat();
-  const words = joinSteerWords(t, signup.requesting === 'failed');
+  const words = joinSteerWords(t, failureOf(signup.requesting));
   const finding = joinSteerFinding(t, company, format.phone(phoneE164));
   const sending = signup.requesting === 'sending';
   return (

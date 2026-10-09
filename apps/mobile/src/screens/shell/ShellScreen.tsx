@@ -1,7 +1,13 @@
-import { useSession, useShell } from '@heliogrid/data/react';
-import { accessRemovedWords, homeBlocksWords, homeHeadWords, todayLine } from '@heliogrid/i18n';
+import { useConnection, useSession, useShell } from '@heliogrid/data/react';
+import {
+  accessRemovedWords,
+  connectionWords,
+  homeBlocksWords,
+  homeHeadWords,
+  todayLine,
+} from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { AccessRemoved, HomeBlocks, HomeHead, useFormat } from '@heliogrid/ui';
+import { AccessRemoved, HomeBlocks, HomeHead, NoConnection, useFormat } from '@heliogrid/ui';
 import { useRef, useState } from 'react';
 import { useWindowDimensions, type View } from 'react-native';
 import { FirstRunMark } from './components/FirstRunMark';
@@ -14,9 +20,10 @@ import { usePillItems } from './use-pill-items';
 /**
  * The phone shell (`SCR-SHELL-01`): the person's home inside the top bar and the pill. Every fact
  * is `useShell()`'s — the home, the switcher, the verb, the slots, the marks (Law 11) — and every
- * part is `packages/ui`'s, shared with the web; this composes. A removal is checked before
- * anything loaded, since a read in flight comes back refused once the company has removed the
- * person.
+ * part is `packages/ui`'s, shared with the web; this composes. A device gone offline sees the one
+ * no-connection screen instead of blocks that would wait forever (`F8-36`). A removal is checked
+ * before anything loaded, since a read in flight comes back refused once the company has removed
+ * the person.
  */
 export function ShellScreen() {
   const t = useTranslate();
@@ -30,7 +37,10 @@ export function ShellScreen() {
   const items = usePillItems(shell, actionRef);
   const showGrievance = () => setGrievance(true);
   const signOut = () => void session.signOut();
+  const connection = useConnection();
 
+  if (!connection.online)
+    return <NoConnection {...connectionWords(t)} onRetry={connection.retry} />;
   if (shell.accessRemoved) {
     return (
       <ShellFrame topBar={<ShellTopBar companyName={shell.companyName} />} items={[]}>

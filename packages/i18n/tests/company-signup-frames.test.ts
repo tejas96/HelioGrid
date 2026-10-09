@@ -8,12 +8,12 @@ import { joinRequestNotice } from '../src/copy/join-request';
 import { createTranslator } from '../src/runtime';
 
 /**
- * The four frames the company step draws (`SCR-M01-02`), in words both platforms say the same
+ * The five frames the company step draws (`SCR-M01-02`), in words both platforms say the same
  * way: the normal frame carries an intro, the resumed frame greets, the writing frame names the
- * write, and the refused frame says what was not created.
+ * write, the refused frame says nothing was created, and the unanswered frame says it may have been.
  */
 describe('companySignupWords', () => {
-  const normal = { restored: false, writing: false, failed: false };
+  const normal = { restored: false, writing: false, failure: null };
 
   it('the normal frame: the title, an intro, the create primary, no caption', async () => {
     const { t } = await createTranslator('en');
@@ -22,6 +22,7 @@ describe('companySignupWords', () => {
     expect(words.intro).not.toBeNull();
     expect(words.primary).toBe('Create company');
     expect(words.caption).toBeNull();
+    expect(words.block).toBeNull();
   });
 
   it('the resumed frame greets and drops the intro (M01-10)', async () => {
@@ -41,13 +42,54 @@ describe('companySignupWords', () => {
     expect(words.caption).not.toBeNull();
   });
 
-  it('the refused frame outranks resumed: says what was not created, offers try again', async () => {
-    const { t } = await createTranslator('en');
-    const words = companySignupWords(t, { restored: true, writing: false, failed: true });
-    expect(words.title).toBe('We could not create the company');
-    expect(words.intro).toBeNull();
-    expect(words.primary).toBe('Try again');
-    expect(words.caption).not.toBeNull();
+  /** A refusal is known to have created nothing; a create with no answer may have made it (`F8-36`). */
+  it.each([
+    [
+      'failed',
+      'We could not create the company',
+      {
+        tone: 'danger',
+        title: 'Something on our side failed',
+        body: 'Nothing was created, so trying again is safe.',
+      },
+    ],
+    [
+      'unreached',
+      'We could not confirm the company',
+      {
+        tone: 'danger',
+        title: 'We did not hear back',
+        body: 'Your company may have been made — trying again cannot make a second.',
+      },
+    ],
+  ] as const)(
+    'the %s frame outranks resumed: its own heading and block, try again',
+    async (failure, title, block) => {
+      const { t } = await createTranslator('en');
+      const words = companySignupWords(t, { restored: true, writing: false, failure });
+      expect(words.title).toBe(title);
+      expect(words.block).toEqual(block);
+      expect(words.intro).toBeNull();
+      expect(words.primary).toBe('Try again');
+      expect(words.caption).toBe('If it keeps failing, sign in later to carry on.');
+    },
+  );
+
+  it('the not-reached frame speaks Hindi and Marathi as the board does', async () => {
+    const hi = companySignupWords((await createTranslator('hi')).t, {
+      ...normal,
+      failure: 'unreached',
+    });
+    expect(hi.title).toBe('कंपनी बनने की पुष्टि नहीं हो सकी');
+    expect(hi.block?.body).toBe('आपकी कंपनी शायद बन गई हो — फिर से कोशिश करने से दूसरी नहीं बनेगी।');
+    const mr = companySignupWords((await createTranslator('mr')).t, {
+      ...normal,
+      failure: 'unreached',
+    });
+    expect(mr.title).toBe('कंपनी तयार झाल्याची खात्री झाली नाही');
+    expect(mr.block?.body).toBe(
+      'तुमची कंपनी कदाचित तयार झाली असेल — पुन्हा प्रयत्न केल्याने दुसरी तयार होणार नाही.',
+    );
   });
 
   it('speaks the reader’s language', async () => {
@@ -59,24 +101,36 @@ describe('companySignupWords', () => {
 });
 
 /**
- * The join steer's primary, and the failure it carries after a request that did not go through
- * (`M01-09`, `SCR-M01-02` request-failed): the steer stays whole, and the join road asks again.
+ * The join steer's primary, and the failure it carries after a request that did not land
+ * (`M01-09`, `SCR-M01-02` request-failed, request-not-reached): the steer stays whole, and the join
+ * road asks again.
  */
 describe('joinSteerWords', () => {
   it.each([
-    ['asks to join while nothing has failed', false, 'Request to join', null],
+    ['asks to join while nothing has failed', null, 'Request to join', null],
     [
-      'says the request did not go through, and offers to send it again',
-      true,
+      'after a refusal, says nothing was sent, and offers to send it again',
+      'failed',
       'Send the request again',
       {
+        tone: 'danger',
         title: 'Your request did not go through',
-        body: 'Something on our side or the connection failed, so nothing was sent.',
+        body: 'Something on our side failed, so nothing was sent.',
       },
     ],
-  ] as const)('%s', async (_name, failed, primary, failure) => {
+    [
+      'after no answer, never claims nothing was sent (F8-36)',
+      'unreached',
+      'Send the request again',
+      {
+        tone: 'danger',
+        title: 'We did not hear back',
+        body: 'Your request may already be with the owner.',
+      },
+    ],
+  ] as const)('%s', async (_name, failure, primary, block) => {
     const { t } = await createTranslator('en');
-    expect(joinSteerWords(t, failed)).toEqual({ primary, failure });
+    expect(joinSteerWords(t, failure)).toEqual({ primary, failure: block });
   });
 });
 

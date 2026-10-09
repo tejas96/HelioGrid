@@ -1,20 +1,29 @@
 'use client';
 import type { CreateTenant, RequestedCompany } from '@heliogrid/contracts';
-import type { JoinSteer } from '@heliogrid/domain';
+import type { JoinSteer, WriteFailure } from '@heliogrid/domain';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ApiError } from '../errors/errors';
+import { ApiError, isUnanswered } from '../errors/errors';
 import type { TenantRepository } from '../tenant/repository';
 import { useDataLayer } from './context';
 
 /**
  * Where the company step's one write stands: `creating` while the three values are being
- * written — facts, not fields, for the moment — and `failed` when the server answered no, with
- * nothing created and the values still in the fields (`SCR-M01-02` error state).
+ * written — facts, not fields, for the moment — then, the values still in the fields, `failed`
+ * when the server answered no and nothing was created, or `unreached` when no answer came and the
+ * company may exist (`SCR-M01-02` `m-error`, `m-not-reached`).
  */
-export type CompanyCreation = 'idle' | 'creating' | 'failed';
+export type CompanyCreation = 'idle' | 'creating' | WriteFailure;
 
-/** Where a request to join stands: on its way, or refused with nothing sent (`M01-09`). */
-export type JoinRequesting = 'idle' | 'sending' | 'failed';
+/** Where a request to join stands: on its way, refused with nothing sent, or unanswered (`M01-09`). */
+export type JoinRequesting = 'idle' | 'sending' | WriteFailure;
+
+/** How a write ended without landing, or `null` while it has not. */
+export function failureOf(state: CompanyCreation | JoinRequesting): WriteFailure | null {
+  return state === 'failed' || state === 'unreached' ? state : null;
+}
+
+const failureFrom = (error: unknown): WriteFailure =>
+  isUnanswered(error) ? 'unreached' : 'failed';
 
 export interface CompanySignup {
   readonly creation: CompanyCreation;
@@ -59,8 +68,8 @@ export function useCompanySignup(): CompanySignup {
       setCreation('creating');
       try {
         await session.createCompany(input);
-      } catch {
-        setCreation('failed');
+      } catch (error) {
+        setCreation(failureFrom(error));
       }
     },
     [session],
@@ -101,7 +110,7 @@ export function useCompanySignup(): CompanySignup {
         setSteer('none');
         setRequesting('idle');
       } else {
-        setRequesting('failed');
+        setRequesting(failureFrom(error));
       }
     }
   }, [details, repositories.tenant]);

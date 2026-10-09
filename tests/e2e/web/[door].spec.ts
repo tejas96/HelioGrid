@@ -1,5 +1,6 @@
 import {
   accessRemovedWords,
+  CONNECTION,
   createTranslator,
   destinationLabel,
   doorTitle,
@@ -125,4 +126,23 @@ test('search opens its door', async ({ page }) => {
   await expect(
     page.getByRole('heading', { level: 1, name: doorTitle(en.t, 'search') }),
   ).toBeAttached();
+});
+
+/* `F8-36`: offline, the shell shows the one no-connection screen instead of a page that waits forever. */
+test('offline, a door shows the no-connection screen, and comes back with the connection', async ({
+  page,
+  context,
+}) => {
+  await createCompany(page, en, freshMobile());
+  await page.goto('/leads');
+  const door = page.getByRole('heading', { level: 1, name: doorTitle(en.t, 'leads') });
+  await expect(door).toBeAttached();
+  await context.setOffline(true);
+
+  await expect(page.getByRole('heading', { name: en.t(CONNECTION.title) })).toBeVisible();
+  await expectNoSeriousViolations(page);
+
+  await context.setOffline(false);
+  await expect(page.getByRole('heading', { name: en.t(CONNECTION.title) })).toHaveCount(0);
+  await expect(door).toBeAttached();
 });

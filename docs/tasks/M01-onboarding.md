@@ -729,7 +729,7 @@ flowchart LR
 - **i18n:** the not-reached block (`sign-in.ts`), the no-connection words (new `copy/connection.ts`), the signup not-reached and refusal words, the copy pass, the not-found words; catalogs regenerated.
 - **ui:** none — `NoConnection`, `TintedBlock`, `Explainer`, `DoorFrame` are used as they are.
 - **web · mobile:** the gates, shells, door and signup screens render what the packages pick; web adds `app/not-found.tsx`.
-- **Protections (Law 12):** no brand, token, table or error code. The new union members are held by typecheck: `FrameKind` by `FRAMES` and `FRAME` (full `Record`s), the request outcomes by `REQUEST_REFUSAL` (a full `Record`); the verify outcomes by review (an `if` chain). The not-found route joins `e2e-flow-per-screen` through its spec and baseline (part c).
+- **Protections (Law 12):** no brand, token, table or error code. The new union members are held by typecheck: `FrameKind` by `FRAMES` and `FRAME` (full `Record`s), the request outcomes by `REQUEST_REFUSAL` (a full `Record`); the verify outcomes by review (an `if` chain); `WriteFailure` (part b) — its blocks by a full `Record` in `failureBlock`, `failureOf` and the heading by review. The not-found route joins `e2e-flow-per-screen` through its spec and baseline (part c).
 
 ##### Data and schema changes
 None — no stored shape changes.
@@ -772,7 +772,10 @@ None — no stored shape changes.
 | b | modify | `apps/web/features/auth/components/CompanyStep.tsx` · `JoinSteer.tsx` | the picked block | the screens |
 | b | modify | `apps/mobile/src/screens/company-signup/components/CompanyStep.tsx` · `JoinSteer.tsx` | the same | the screens |
 | b | modify | `apps/web/features/shell/ShellScreen.tsx` · `apps/mobile/src/screens/shell/ShellScreen.tsx` | `NoConnection` while offline | the shells |
-| b | modify | `tests/e2e/web/company-signup.spec.ts` · `home.spec.ts` | create and join with the api aborted; the shell offline | the routes' specs |
+| b | modify | `tests/e2e/web/company-signup.spec.ts` · `[door].spec.ts` | create and join with the api aborted; the shell offline on a door (moved from `home.spec.ts`, which would pass 300 lines — review) | the routes' specs |
+| b | modify | `packages/data/src/errors/errors.ts` · `packages/data/src/session/store.ts` | built, not planned: `isUnanswered` written once beside `DataError` — the store's part-a copy moves there, the signup hook reads it too | zero duplication (`CLAUDE.md` §8) |
+| b | modify | `packages/data/src/session/types.ts` | built, not planned: `createCompany`'s doc said *nothing is created on a rejection* — false after no answer | Law 8 |
+| b | modify | `packages/domain/src/auth/signup-view.ts` · `index.ts` | built, not planned: `WriteFailure` (`failed` · `unreached`), the vocabulary the hook and the words both read | a vocabulary lives in domain (Law 11) |
 | c | modify | `packages/domain/src/auth/door-view.ts` · `tests/auth/door-view.test.ts` | `doorNotice` gains `access-removed` (the function lands in part a) | the door's view |
 | c | modify | `packages/i18n/src/copy/sign-in.ts` · `shell.ts` | the not-found words; *Sent by SMS to* as a line | the door's and the app's words |
 | c | modify | `packages/i18n/src/locales/{en,hi,mr}/messages.{po,ts}` | regenerated (generated) | the catalogs |
@@ -797,6 +800,8 @@ None — no wire boundary changes. The api already answers every case; only how 
 - **A boot that never ends:** `unreachable` holds the person on `NoConnection` until a retry answers; *Try again* reports a failed or slow retry (`NoConnection`'s own lifecycle), so nothing spins forever.
 - **Old app versions:** nothing stored or sent changes; an old app keeps its old words.
 - **Screenshot baselines:** parts c and d change web looks; each lands its CI-drawn baselines in a second commit the owner approves (`tests/e2e/CLAUDE.md`).
+- **Offline unmounts the inside page (part b):** both shells replace the page with `NoConnection`, so a form typed inside the shell would lose its values on a short drop. Today the inside routes are the home and placeholder doors, so nothing is lost; the first inside form keeps its values across the screen (D169).
+- **Hindi and Marathi drafted, not from the board (part b):** *Nothing was created, so trying again is safe.* (`m-error` has no language render) and *Your request may already be with the owner.* (`m-request-not-reached` has none) — owed a native review.
 
 ##### Acceptance criteria and proof
 - **AC-1** — A request that got no answer reads as *could not be reached*, never *something on our side failed*; a server refusal keeps its own words. → proof: unit test of `loginFrame`; QA web and phone with the network off.
@@ -822,10 +827,11 @@ None — no wire boundary changes. The api already answers every case; only how 
 | AC-3 rule | main-dev | required | unit | `ended` set at the door → `access-removed`; signed in → null | `door-view.test.ts` |
 | AC-3 web · iOS · Android | qa-web · qa-ios · qa-android | required | door | a member removed while signed out, then a cold start → the block; sign in again → gone; side-by-side `m-access-removed` | QA |
 | AC-4 words | main-dev | required | unit | `unreached` → *We could not confirm the company* / *Your company may have been made — trying again cannot make a second.*; refusal → *Nothing was created, so trying again is safe.*; the join's two | `company-signup-frames.test.ts` |
-| AC-4 web · iOS · Android | qa-web · qa-ios · qa-android | required | step 3 | api stopped mid-create → `m-not-reached`; side-by-side `m-not-reached`, `m-error`, `m-request-not-reached`, `m-request-failed` | QA + `company-signup.spec.ts` |
-| AC-4 api | qa-api | required | `POST /tenants` | the same retry key twice after a lost answer → one company, `200` both times | QA |
-| AC-5 web | ci | required | `e2e-web` | `/home` → `setOffline(true)` → `NoConnection`; back online → the home | `home.spec.ts` |
-| AC-5 phone twin | qa-ios · qa-android | required | shell | airplane mode → `NoConnection`; off → the home | QA |
+| AC-4 web · iOS · Android | qa-web · qa-ios · qa-android | required | step 3 | api stopped, *Create company* → `m-not-reached`; *Request to join* → `m-request-not-reached`; side-by-side both, and `m-not-reached` in Hindi and Marathi | QA + `company-signup.spec.ts` |
+| AC-4 refusal frames | main-dev | required | unit | `m-error` and `m-request-failed` need a server refusal the app cannot make through its own data — their words are proven in `company-signup-frames.test.ts` and their layout is the drawn frames' already built | `company-signup-frames.test.ts` |
+| AC-4 api | qa-api | required | `POST /tenants` | the same retry key twice after a lost answer → one company, `201` both times | QA |
+| AC-5 web | ci | required | `e2e-web` | `/leads` inside the shell → `setOffline(true)` → `NoConnection`; back online → the door | `[door].spec.ts` |
+| AC-5 phone twin | qa-android | required | shell | Wi-Fi and data off → `NoConnection`; on → the home (the iOS simulator follows the Mac's network and has no airplane mode — not reachable there) | QA |
 | AC-6 | — | not_applicable | — | struck by the owner's ruling (finding 2): no screen renders a raw API failure | — |
 | AC-7 | qa-ios | required | cold start | the debugger warning read; fixed or recorded | QA + Metro log |
 | AC-8 | ci | required | `e2e-web` | `/no-such-page` signed out → *This page does not exist*, *Go to sign in*; signed in → *Go to home* | `not-found.spec.ts` |
@@ -840,7 +846,7 @@ None — no wire boundary changes. The api already answers every case; only how 
 ##### Delivery size
 - **Split into four parts** — one PR each, web and phone together in every part.
 - **a** · door and boot · planned ~20 files (6 generated) · code ~260, tests ~170. **Built (delta, 2026-10-09):** 31 files (6 generated, 1 doc) · code 181, tests 123 authored lines — 9 built but not planned, 2 planned but not built (the file table names each); lines under the estimate. **Built after review (second delta):** 39 files (6 generated, 2 docs) · code 356, tests 182 authored lines, of which about 120 are `login-frame.ts`'s frame-kind decision moved whole into `login-frame-kind.ts` — the review's retry, 401, signup-route, words-test and file-size fixes and D78's push file.
-- **b** · signup failures and the offline shell · ~22 files (6 generated) · code ~230, tests ~150.
+- **b** · signup failures and the offline shell · planned ~22 files (6 generated) · code ~230, tests ~150. **Built (delta, 2026-10-09):** 27 files (6 generated, 2 docs) · code 270, tests 130 authored lines — 5 built but not planned (the file table names each).
 - **c** · access removed, not-found, the door's D142 items · ~22 files (6 generated, 2 baselines) · code ~250, tests ~120.
 - **d** · the signup copy pass · ~16 files (6 generated, 2 baselines) · code ~180, tests ~40.
 - Order: a → b → c → d; each part's tests first.
@@ -849,7 +855,7 @@ None — no wire boundary changes. The api already answers every case; only how 
 | part | delivers | AC | depends on | status |
 |---|---|---|---|---|
 | a | a door request with no answer and a boot during an outage: the not-reached block, `NoConnection` with *Try again* on both apps; D78 read | AC-1, AC-2, AC-7 | — | shipped |
-| b | the company step's and the join's no-answer frames; the offline shell on both apps | AC-4, AC-5 | a | open |
+| b | the company step's and the join's no-answer frames; the offline shell on both apps | AC-4, AC-5 | a | shipped |
 | c | the door's access-removed block, the web's not-found frame, `m-google-failed` in Hindi and Marathi, the door's D142 items | AC-3, AC-8, AC-10 | a | open |
 | d | `SCR-M01-02`'s copy pass and its D142 helpers | AC-9 | b | open |
 
@@ -876,6 +882,10 @@ None — no wire boundary changes. The api already answers every case; only how 
 | browser tabs | `seed` | `seed`, `tab-1` (`started_by_task`) |
 | database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
 | logs | `.qa/api.log` 7,541,062 · `.qa/web.log` 283,394 · `.qa/metro.log` 904,808 bytes | kept |
+
+**Part b · QA and gate (2026-10-09)** — the same stack, branch `feat/T-M01-039b` stacked on part a (PR #264). Five phases, the api stopped and started by Main: P1 a fresh number to step 3; P2 api stopped → *Create company* → `m-not-reached` (English, Hindi, Marathi); P3 api up → *Try again* makes the company, a second fresh number is steered to the same company (Android also: Wi-Fi and data off → `NoConnection`, *Try again* offline → *Still no answer*, on → home by itself); P4 api stopped → *Request to join* → `m-request-not-reached`; P5 api up → *Send the request again* → request sent. qa-web first failed the 375 frame (the pinned finding over City at rest) and withdrew it after measuring City reachable by scroll and by Tab — the board's decision-9 rule; qa-ios's first P4 was blocked by a Metro dev reload Main caused by editing packages mid-phase, then redone. qa-api: the same retry key twice → `201` with one company; a different body → `422 IDEMPOTENCY_KEY_REUSED`. Board pictures `board/m-signup-not-reached.png`, `board/m-request-not-reached.png` (100% zoom); side-by-sides `side/m-signup-not-reached.png`, `side/m-request-not-reached.png` (board, iOS, Android; web by measurement). `pnpm check:all` once: pass (3,521 unit tests); nothing regenerated.
+
+**Measurements (part b)** — helper runs: `qa-web` 1 (six continuations), `qa-ios` 1 (seven), `qa-android` 1 (five), `qa-api` 1, `reviewer` 1 (two continuations), `evaluator` 1; one full gate. Main's own turns and tokens are not counted. Size: planned ~22 files, code ~230, tests ~150; built 27 files (6 generated, 2 docs), code 270, tests 130 authored lines — the delta the owner approved.
 
 ### T-M01-040 · Signing in returns the person to where they were going
 **Type:** screen · **Tier:** P1 (`M01-61`)

@@ -1,4 +1,4 @@
-import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
+import { COMPANY_SIGNUP, createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { type Browser, expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { createCompany, expectNumberFieldRinged, fillCompanyStep } from '../support/door';
@@ -66,7 +66,7 @@ test('the steer is a steer: creating a new company anyway still creates it', asy
   await expect(page).toHaveURL(/\/home$/);
 });
 
-test('a request that does not go through keeps the steer, says so, and sends again', async ({
+test('a request with no answer keeps the steer, never says nothing was sent, and sends again', async ({
   browser,
   page,
 }) => {
@@ -84,11 +84,37 @@ test('a request that does not go through keeps the steer, says so, and sends aga
   await page.getByRole('button', { name: en.t(COMPANY_SIGNUP.requestToJoin) }).click();
   await expect(anyway).toBeDisabled();
   release();
-  await expect(page.getByText(en.t(COMPANY_SIGNUP.requestFailedTitle))).toBeVisible();
+  await expect(page.getByText(en.t(COMPANY_SIGNUP.noAnswer))).toBeVisible();
+  await expect(page.getByText(en.t(COMPANY_SIGNUP.requestMayHaveGone))).toBeVisible();
+  await expect(page.getByText(en.t(COMPANY_SIGNUP.requestFailedBody))).toHaveCount(0);
   await expect(anyway).toBeEnabled();
   await expectNoSeriousViolations(page);
 
   await page.unroute('**/tenants/join-requests');
   await page.getByRole('button', { name: en.t(COMPANY_SIGNUP.sendRequestAgain) }).click();
   await expect(page.getByRole('heading', { name: en.t(COMPANY_SIGNUP.sentTitle) })).toBeVisible();
+});
+
+/*
+ * `F8-36`: a create with no answer may have made the company, so the step never says nothing was
+ * created. Here the first send never arrived, so Try again creates it.
+ */
+test('a create with no answer says the company may have been made, and Try again lands home', async ({
+  page,
+}) => {
+  const mobile = freshMobile();
+  await fillCompanyStep(page, en, mobile, `E2E ${mobile.national}`);
+  await page.route('**/tenants', (route) => route.abort());
+  await page.getByRole('button', { name: en.t(COMPANY_SIGNUP.createCompany) }).click();
+
+  await expect(
+    page.getByRole('heading', { name: en.t(COMPANY_SIGNUP.couldNotConfirm) }),
+  ).toBeVisible();
+  await expect(page.getByText(en.t(COMPANY_SIGNUP.mayHaveBeenMade))).toBeVisible();
+  await expect(page.getByText(en.t(COMPANY_SIGNUP.nothingCreated))).toHaveCount(0);
+  await expectNoSeriousViolations(page);
+
+  await page.unroute('**/tenants');
+  await page.getByRole('button', { name: en.t(SIGN_IN.tryAgain) }).click();
+  await expect(page).toHaveURL(/\/home$/);
 });
