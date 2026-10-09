@@ -213,7 +213,7 @@ msgid "A company name is needed — it goes on every proposal you send."
 msgstr "A company name is needed — it goes on every proposal you send."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:75
+#: src/copy/api-error.ts:72
 msgid "A release already has this name. Choose another name."
 msgstr "A release already has this name. Choose another name."
 
@@ -574,17 +574,17 @@ msgid "HelioGrid accounts are mobile numbers. Google never makes a second accoun
 msgstr "HelioGrid accounts are mobile numbers. Google never makes a second account."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:89
+#: src/copy/api-error.ts:86
 msgid "HelioGrid could not be reached, from your side or ours. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid could not be reached, from your side or ours. If you were saving, check whether it saved before trying again."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:92
+#: src/copy/api-error.ts:89
 msgid "HelioGrid did not answer in time. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid did not answer in time. If you were saving, check whether it saved before trying again."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:95
+#: src/copy/api-error.ts:92
 msgid "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
 
@@ -776,7 +776,7 @@ msgid "Nothing has reached you yet"
 msgstr "Nothing has reached you yet"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:78
+#: src/copy/api-error.ts:75
 msgid "Nothing in the catalog changed since the last release, so there is nothing to publish."
 msgstr "Nothing in the catalog changed since the last release, so there is nothing to publish."
 
@@ -1207,7 +1207,7 @@ msgid "That code is used up"
 msgstr "That code is used up"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:72
+#: src/copy/api-error.ts:69
 msgid "That does not read as a registration of this type. Check it against the format shown."
 msgstr "That does not read as a registration of this type. Check it against the format shown."
 
@@ -1262,11 +1262,6 @@ msgid "The code we checked was for"
 msgstr "The code we checked was for"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:66
-msgid "The invite could not be sent. Try again in a moment."
-msgstr "The invite could not be sent. Try again in a moment."
-
-#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:53
 msgid "The phone network turned it away"
 msgstr "The phone network turned it away"
@@ -1282,7 +1277,7 @@ msgid "The SMS network turned it away"
 msgstr "The SMS network turned it away"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:69
+#: src/copy/api-error.ts:66
 msgid "The tranches must add up to exactly 100%. Place the remainder before saving."
 msgstr "The tranches must add up to exactly 100%. Place the remainder before saving."
 
@@ -1347,7 +1342,7 @@ msgid "This screen arrives in a later update."
 msgstr "This screen arrives in a later update."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:98
+#: src/copy/api-error.ts:95
 msgid "This stopped before HelioGrid answered. If you were saving, check whether it saved before trying again."
 msgstr "This stopped before HelioGrid answered. If you were saving, check whether it saved before trying again."
 

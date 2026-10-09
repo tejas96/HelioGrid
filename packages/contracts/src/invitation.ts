@@ -69,15 +69,13 @@ export type InvitationLanding = z.infer<typeof invitationLandingSchema>;
 /**
  * The refusals only the invite flow raises, each a state the surface renders in its own words
  * (`packages/i18n` keeps copy as a `Record` over this enum): the phone is already on this team,
- * a live invite already went to it, the day's cap is reached, the link ran out, the carrier
- * refused the message.
+ * a live invite already went to it, the day's cap is reached, the link ran out.
  */
 export const invitationErrorCodes = [
   'ALREADY_MEMBER',
   'ALREADY_INVITED',
   'INVITE_CAP_REACHED',
   'INVITE_EXPIRED',
-  'INVITE_DELIVERY_FAILED',
 ] as const;
 export const invitationErrorCodeSchema = z.enum(invitationErrorCodes);
 export type InvitationErrorCode = z.infer<typeof invitationErrorCodeSchema>;
@@ -104,7 +102,7 @@ export const invitationContract = c.router({
     headers: createHeadersSchema,
     body: createInvitationSchema,
     summary:
-      'Invite a person by name and phone with the presets they will hold — the message goes out on the platform rail',
+      'Invite a person by name and phone with the presets they will hold — the message leaves on the platform rail once the invite is stored',
     responses: {
       201: invitationSchema,
       401: unauthenticated,
@@ -113,7 +111,6 @@ export const invitationContract = c.router({
       /** A number no authored market's allowlist covers (`F1-49`); or the retry key made an invite for another request. */
       422: errorEnvelope(extensibleEnum(['DOMAIN_RULE_VIOLATION', IDEMPOTENCY_KEY_REUSED])),
       429: errorEnvelope(invitationErrorCodeSchema.extract(['INVITE_CAP_REACHED'])),
-      502: errorEnvelope(invitationErrorCodeSchema.extract(['INVITE_DELIVERY_FAILED'])),
     },
   },
   list: {

@@ -6,7 +6,7 @@ import {
   invitationContract,
   type SessionProjection,
 } from '@heliogrid/contracts';
-import { auditLogEntry, invitation } from '@heliogrid/db';
+import { auditLogEntry, invitation, uuidv7 } from '@heliogrid/db';
 import { ROLE_PRESETS } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
 import { and, eq, sql } from 'drizzle-orm';
@@ -18,9 +18,9 @@ import { holdLock } from '../support/held-lock';
 import { bootHttp, type Http, skipWithoutHarness } from '../support/http';
 
 /**
- * An invite sent twice is ONE invite and ONE message (`F4-07`), on the wire against a migrated
- * database. The replay is answered BEFORE the send's checks — which would otherwise call the
- * first invite "already invited" — and before the message, which leaves inside the transaction.
+ * An invite sent twice is ONE invite and ONE handoff of its text (`F4-07`), on the wire against a
+ * migrated database. The replay is answered BEFORE the send's checks — which would otherwise call
+ * the first invite "already invited" — and before the handoff, the transaction's last write.
  * A revoke repeated is the retry of a revoke and answers the invite; a revoke of an invite the
  * person already answered stays a conflict, because it is not the same act.
  */
@@ -60,7 +60,7 @@ describe.skipIf(skip)('a retried invite send, over HTTP (F4-07)', () => {
     await pools.close();
   });
 
-  it('answers the same key twice with ONE invite and one entry — the message left once', async () => {
+  it('answers the same key twice with ONE invite and one entry', async () => {
     const key = randomUUID();
     const body = invite('Sent Twice');
     const first = await send(body, key);
@@ -86,7 +86,7 @@ describe.skipIf(skip)('a retried invite send, over HTTP (F4-07)', () => {
     expect(await invitesTo(body.phoneE164)).toBe(1);
   });
 
-  it('leaves no key behind a send the carrier refused, so the same key sends again (F4-07)', async () => {
+  it('leaves no key behind a send whose transaction failed, so the same key sends again (F4-07)', async () => {
     const key = randomUUID();
     const body = invite('Carrier Refused Once');
     const tenantSide = new InvitationRepository(pools.tenants);
@@ -97,16 +97,16 @@ describe.skipIf(skip)('a retried invite send, over HTTP (F4-07)', () => {
       invitationContract.create,
       body,
     );
-    const toSend = { ...body, tokenHash: randomUUID() };
-    // The insert, the entry and the key are written, then the carrier refuses and the whole
-    // transaction rolls back: the key must go with it, or the retry would replay nothing real.
-    await expect(
-      tenantSide.create(tenantId, toSend, act, creationKey, async () => {
-        throw new Error('carrier refused');
-      }),
-    ).rejects.toThrow('carrier refused');
+    const toSend = { ...body, id: uuidv7(), tokenHash: randomUUID() };
+    // The insert, the entry and the key are written, then the handoff's event id is already taken
+    // and the whole transaction rolls back: the key must go with it, or the retry would replay
+    // nothing real.
+    const eventId = uuidv7();
+    const owner = { ...invite('Event Owner'), id: uuidv7(), tokenHash: randomUUID() };
+    expect((await tenantSide.create(tenantId, owner, act, null, eventId)).outcome).toBe('created');
+    await expect(tenantSide.create(tenantId, toSend, act, creationKey, eventId)).rejects.toThrow();
     expect(await invitesTo(body.phoneE164)).toBe(0);
-    const retried = await tenantSide.create(tenantId, toSend, act, creationKey, async () => {});
+    const retried = await tenantSide.create(tenantId, toSend, act, creationKey, uuidv7());
     expect(retried.outcome).toBe('created');
     expect(await invitesTo(body.phoneE164)).toBe(1);
   });

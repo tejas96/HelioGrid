@@ -1,3 +1,4 @@
+import { inviteMessageWorkflow } from '@heliogrid/contracts/workflows';
 import { invitation, invitationRole, type TenantPool, type TenantScopedDb } from '@heliogrid/db';
 import {
   type InvitationStatus,
@@ -13,12 +14,13 @@ import type { Act } from '../../common/auth/session-context';
 import { type CreationKey, type Keyed, replayOf } from '../../common/creation-key';
 import { lockCreationKey } from '../../common/db/creation-key-lock';
 import { TENANT_DB } from '../../common/db/tenant.token';
+import { recordOutboxEvent } from '../../common/temporal/outbox.repository';
 import { recordAuditEntry } from '../audit/audit.public';
 import {
   hasLiveInvite,
   isOnTeam,
-  type SendFacts,
-  sendFacts,
+  type MessageFacts,
+  messageFacts,
   sentSince,
   statusPredicate,
 } from './invitation.send.repository';
@@ -35,12 +37,22 @@ export interface InvitationRow {
   readonly expiresAt: Date;
 }
 
-/** The invite as the sender composed it; the link's secret arrives already hashed. */
+/**
+ * The invite as the sender composed it, under the id the service minted: the link's secret is
+ * made from that id, and arrives already hashed.
+ */
 export interface InviteToSend {
+  readonly id: string;
   readonly inviteeName: string;
   readonly phoneE164: string;
   readonly roles: readonly RolePreset[];
   readonly tokenHash: string;
+}
+
+/** The invite a send stands on, and the handoff its commit owes a start — none for a replay. */
+export interface SentInvite {
+  readonly invitation: InvitationRow;
+  readonly eventId: string | null;
 }
 
 /**
@@ -49,7 +61,7 @@ export interface InviteToSend {
  * cap is reached.
  */
 export type CreateOutcome =
-  | Keyed<InvitationRow>
+  | Keyed<SentInvite>
   | { readonly outcome: 'already-member' | 'already-invited' | 'capped' };
 
 export type RevokeOutcome =
@@ -68,17 +80,17 @@ export class InvitationRepository {
 
   /**
    * The send, in ONE tenant transaction under the tenant lock: the three checks, the rows, the
-   * entry, and the message itself. A carrier that refuses rolls the invite back, so the owner
-   * retries and a link that never arrived counts against nothing. A send retried with its key
+   * entry, and — last — the handoff of the text, which the worker's run sends only once this
+   * commits, so no link leaves for an invite the store does not hold. A send retried with its key
    * answers with the invite the first send made, BEFORE the checks — which would otherwise call
-   * that invite "already invited" — and sends no second message (`F4-07`).
+   * that invite "already invited" — and hands off nothing again (`F4-07`).
    */
   async create(
     tenantId: string,
     invite: InviteToSend,
     act: Act,
     key: CreationKey | null,
-    deliver: (facts: SendFacts) => Promise<void>,
+    eventId: string,
   ): Promise<CreateOutcome> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
       if (key !== null) {
@@ -97,6 +109,7 @@ export class InvitationRepository {
       const [row] = await tx
         .insert(invitation)
         .values({
+          id: invite.id,
           tenantId,
           inviterUserId: act.actorUserId,
           inviteeName: invite.inviteeName,
@@ -116,9 +129,24 @@ export class InvitationRepository {
         .insert(invitationRole)
         .values(roles.map((rolePreset) => ({ tenantId, invitationId: row.id, rolePreset })));
       await recordAuditEntry(tx, inviteAct('team.invite_sent', tenantId, row.id, act));
-      await deliver(await sendFacts(tx, tenantId, act.actorUserId));
-      return { outcome: 'created', row: { ...row, roles } };
+      await recordOutboxEvent(tx, tenantId, inviteMessageWorkflow, {
+        eventId,
+        tenantId,
+        invitationId: row.id,
+      });
+      return { outcome: 'created', row: { invitation: { ...row, roles }, eventId } };
     });
+  }
+
+  /** What the invite's text needs, while the invite is still pending; otherwise none is owed. */
+  async awaitingMessage(
+    tenantId: string,
+    invitationId: string,
+    now: number,
+  ): Promise<MessageFacts | null> {
+    return this.db.withTenantTransaction(tenantId, (tx) =>
+      messageFacts(tx, tenantId, invitationId, now),
+    );
   }
 
   /** The Team list, newest first; the count runs over the SAME where. */
@@ -196,7 +224,7 @@ async function madeWithKey(
   tx: TenantScopedDb,
   tenantId: string,
   key: CreationKey,
-): Promise<Keyed<InvitationRow> | null> {
+): Promise<Keyed<SentInvite> | null> {
   const [made] = await tx
     .select({ ...invitationColumns(), fingerprint: invitation.creationFingerprint })
     .from(invitation)
@@ -206,7 +234,7 @@ async function madeWithKey(
   const { fingerprint, ...row } = made;
   const [withItsRoles] = await withRoles(tx, tenantId, [row]);
   if (!withItsRoles) throw new Error('the invitation vanished inside its own transaction');
-  return replayOf(withItsRoles, fingerprint, key);
+  return replayOf({ invitation: withItsRoles, eventId: null }, fingerprint, key);
 }
 
 function inviteAct(

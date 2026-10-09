@@ -20326,7 +20326,7 @@
     },
     "/invitations": {
       "post": {
-        "summary": "Invite a person by name and phone with the presets they will hold — the message goes out on the platform rail",
+        "summary": "Invite a person by name and phone with the presets they will hold — the message leaves on the platform rail once the invite is stored",
         "tags": [
           "invitation"
         ],
@@ -20823,61 +20823,6 @@
                           "type": "string",
                           "enum": [
                             "INTERNAL"
-                          ]
-                        },
-                        "message": {
-                          "type": "string"
-                        },
-                        "details": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "path": {
-                                "type": "string"
-                              },
-                              "issue": {
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "path",
-                              "issue"
-                            ]
-                          }
-                        },
-                        "requestId": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "code",
-                        "message",
-                        "requestId"
-                      ]
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          },
-          "502": {
-            "description": "502",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "object",
-                      "properties": {
-                        "code": {
-                          "type": "string",
-                          "enum": [
-                            "INVITE_DELIVERY_FAILED"
                           ]
                         },
                         "message": {

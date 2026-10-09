@@ -5,12 +5,11 @@ import {
   type InvitationLanding,
   invitationContract,
   type ListInvitationsQuery,
-  MESSAGE_DELIVERY,
-  type MessageDelivery,
   type Paginated,
   type SessionProjection,
 } from '@heliogrid/contracts';
-import { invitationStatus, inviteLandingPath, platformMessage } from '@heliogrid/domain';
+import { uuidv7 } from '@heliogrid/db/uuid';
+import { invitationStatus } from '@heliogrid/domain';
 import {
   ConflictException,
   ForbiddenException,
@@ -19,24 +18,22 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { hashSecret, randomSecret } from '../../common/auth/secrets';
+import { hashSecret } from '../../common/auth/secrets';
 import type { Act } from '../../common/auth/session-context';
 import { CreationReplies, creationKeyOf } from '../../common/creation-key';
 import { ContractException } from '../../common/errors/contract-exception';
-import { ENV } from '../../config/env';
+import { OutboxDispatcher } from '../../common/temporal/outbox.dispatcher';
 import { AuthService } from '../auth/auth.public';
 import { MarketPackService } from '../market/market.public';
 import { InvitationAdminRepository, type LandingRow } from './invitation.admin.repository';
+import { inviteLinkSecret } from './invitation.message.service';
 import { InvitationRepository, type InvitationRow } from './invitation.repository';
 
-/** The carrier refused the message; the transaction it interrupted has rolled the invite back. */
-class DeliveryRefused extends Error {}
-
 /**
- * The team invite (`M01-12`, `M01-13`): the send on the platform rail, the Team list, the revoke,
- * and the invited person's side — the landing, the one-step join, the decline and the one-tap ask
- * for a fresh link. Every decision about what an invite IS now is domain's; this orders the reads,
- * the writes and the message around them.
+ * The team invite (`M01-12`, `M01-13`): the send, the Team list, the revoke, and the invited
+ * person's side — the landing, the one-step join, the decline and the one-tap ask for a fresh
+ * link. Every decision about what an invite IS now is domain's; this orders the reads and the
+ * writes, and hands the text to the worker's run once the send has committed.
  */
 @Injectable()
 export class InvitationService {
@@ -45,9 +42,9 @@ export class InvitationService {
     @Inject(InvitationRepository) private readonly scoped: InvitationRepository,
     @Inject(InvitationAdminRepository) private readonly crossTenant: InvitationAdminRepository,
     @Inject(MarketPackService) private readonly markets: MarketPackService,
-    @Inject(MESSAGE_DELIVERY) private readonly delivery: MessageDelivery,
     @Inject(AuthService) private readonly auth: AuthService,
     @Inject(CreationReplies) private readonly replies: CreationReplies,
+    @Inject(OutboxDispatcher) private readonly dispatcher: OutboxDispatcher,
   ) {}
 
   async create(
@@ -58,37 +55,20 @@ export class InvitationService {
   ): Promise<Invitation> {
     const route = invitationContract.create;
     const key = creationKeyOf(headers, act.actorUserId, route, body);
-    const pack = await this.markets.deliverablePack(body.phoneE164);
-    const token = randomSecret();
-    const link = `${ENV.WEB_ORIGIN}${inviteLandingPath(token)}`;
-    const sent = await this.scoped
-      .create(tenantId, { ...body, tokenHash: hashSecret(token) }, act, key, async (facts) => {
-        const message = platformMessage(pack.callingRules, 'team_invite', facts.defaultLanguage, {
-          inviter: facts.inviterName,
-          company: facts.companyName,
-          link,
-        });
-        try {
-          await this.delivery.send({ phoneE164: body.phoneE164, channel: 'sms', message });
-        } catch (cause) {
-          throw new DeliveryRefused('the carrier refused the invite', { cause });
-        }
-      })
-      .catch((error: unknown) => {
-        if (error instanceof DeliveryRefused) {
-          throw new ContractException(
-            'INVITE_DELIVERY_FAILED',
-            'The invite could not be sent. Try again in a moment.',
-            HttpStatus.BAD_GATEWAY,
-          );
-        }
-        throw error;
-      });
+    // A number no market's rail reaches is refused before anything is stored (`F1-49`).
+    await this.markets.deliverablePack(body.phoneE164);
+    const id = uuidv7();
+    const toSend = { ...body, id, tokenHash: hashSecret(inviteLinkSecret(id)) };
+    const sent = await this.scoped.create(tenantId, toSend, act, key, uuidv7());
     switch (sent.outcome) {
       case 'created':
       case 'replayed':
-      case 'key-reused':
-        return toInvitation(this.replies.rowOf(sent, route, tenantId), act.now);
+      case 'key-reused': {
+        const made = this.replies.rowOf(sent, route, tenantId);
+        // After the commit, never inside it: the sweep starts the run if this start is lost.
+        if (made.eventId !== null) await this.dispatcher.dispatchNow(made.eventId);
+        return toInvitation(made.invitation, act.now);
+      }
       case 'already-member':
         throw new ContractException(
           'ALREADY_MEMBER',

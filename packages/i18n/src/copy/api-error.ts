@@ -63,9 +63,6 @@ const ROUTE_COPY: Record<
     id: 'Your company has sent today’s invites. Try again tomorrow.',
   },
   INVITE_EXPIRED: /*i18n*/ { id: 'This invite has run out. Ask to be invited again.' },
-  INVITE_DELIVERY_FAILED: /*i18n*/ {
-    id: 'The invite could not be sent. Try again in a moment.',
-  },
   TRANCHES_NOT_WHOLE: /*i18n*/ {
     id: 'The tranches must add up to exactly 100%. Place the remainder before saving.',
   },

@@ -117,6 +117,7 @@ describe('the development numbers (DEV_OTP_PHONES) — a fixed code, no delivery
 const BOOTABLE = {
   DATABASE_URL: 'postgres://app_runtime:app_runtime@localhost:5544/heliogrid',
   AUTH_TOKEN_SECRET: 'a-test-only-signing-secret-of-thirty-two-plus',
+  INVITE_LINK_SECRET: 'a-test-only-invite-link-secret-of-thirty-two-plus',
   TEMPORAL_ADDRESS: '127.0.0.1:7233',
   TEMPORAL_NAMESPACE: 'heliogrid',
   TEMPORAL_TLS_CA_FILE: '/dev/null',
@@ -165,5 +166,14 @@ describe('the development numbers at boot', () => {
     ).toEqual([
       'DEV_OTP_PHONES: A fixed sign-in code never runs in production. Remove DEV_OTP_PHONES and DEV_OTP_CODE.',
     ]);
+  });
+});
+
+describe('the api secrets at boot', () => {
+  it('refuses an invite-link secret equal to the token secret, and boots with its own', () => {
+    expect(refusals({ INVITE_LINK_SECRET: BOOTABLE.AUTH_TOKEN_SECRET })).toEqual([
+      expect.stringMatching(/^INVITE_LINK_SECRET: /),
+    ]);
+    expect(refusals({})).toEqual([]);
   });
 });
