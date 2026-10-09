@@ -34,6 +34,16 @@ describe('formatPhone — display only; storage stays E.164 (F1-49)', () => {
     expect(formatPhone(IN_FORMATS, '9845027746')).toBe('98450 27746');
   });
 
+  it.each([
+    ['9189886266', { nationalOnly: true }, '91898 86266'],
+    ['91', { nationalOnly: true }, '91'],
+    ['9189886266', undefined, '91898 86266'],
+  ])('keeps the leading 91 of the national number %s, options %o', (value, options, shown) => {
+    /* A national number may begin with the market's code digits. Stripping them again turns a
+       number being typed into nothing, and the field drops the keys typed so far. */
+    expect(formatPhone(IN_FORMATS, value, options)).toBe(shown);
+  });
+
   it('leaves a number from another market exactly as it arrived', () => {
     /* India's 5+5 applied to a US number renders `14155 551234` — unreadable, and it looks
        like an Indian number that lost a digit. Relabelling it `+91` would be worse. */
@@ -67,6 +77,9 @@ describe('nationalNumber — the one derivation a display and a compliance check
     ['+919845027746', '9845027746', 'the stored E.164 spelling'],
     ['9845027746', '9845027746', 'a value that is already national'],
     ['+911600123456', '1600123456', 'a series number, where the leading digits are the answer'],
+    ['9189886266', '9189886266', 'a national number that begins with this market’s code digits'],
+    ['91', '91', 'the first two digits of such a number, as they are typed'],
+    ['+91 91898 86266', '9189886266', 'the same number, pasted whole with its code'],
   ])('reads %s as %s — %s', (value, expected) => {
     expect(nationalNumber(IN_FORMATS, value)).toBe(expected);
   });
