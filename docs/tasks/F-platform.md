@@ -5727,12 +5727,244 @@ and 10 generated images; about 110
 changed code and test lines, about 45 doc lines beside the RFC.
 
 ### T-FPLAT-087 · Dates and digits in the reader's language
-**Type:** policy · **Tier:** P1 (`F3-21`, `F3-22`)
-**Status:** planned
+**Type:** policy · **Tier:** P0 (`F3-21`, `F3-22`)
+**Status:** shipped
 **Why:** Every date prints its words in the market pack's locale, not the reader's language — "THURSDAY · 1 OCT 2026" in Hindi and Marathi (D97); and Marathi mixes digit systems, an ICU plural's `#` in Devanagari beside a plain `{count}` in Latin, against `F3-21` (D98).
 **PRD rows:** `F3-21` (Latin digits in every language); `F3-22`, amended 2026-10-08 (a date's words follow the reader's language).
 **Chosen by the owner** (deferred review, 2026-10-08).
+**Depends on:** none — the date formatters, `useFormat`, the i18n runtime and both screens it is proven on (the centre `T-SHELL-003`; the home, `apps/web/features/shell/HomeScreen.tsx` and `apps/mobile/src/screens/shell/ShellScreen.tsx`) are on `main`.
 **DONE WHEN:**
 - A date's month and weekday names follow the reader's language through `useFormat`; the order and style stay the pack's. → proof: unit tests of the date formatter in English, Hindi and Marathi; QA of the centre and home in Hindi and Marathi.
 - Every number renders in Latin digits in every language, an ICU `#` and a plain `{n}` alike. → proof: a unit test of the i18n runtime over a plural and a count in Marathi.
+
+#### RFC
+
+##### Title
+T-FPLAT-087 — a date's words and every digit in the reader's language
+
+##### Description
+A Hindi or Marathi reader now reads a date in their own words. The notification centre's day line
+reads "गुरुवार · 1 अक्टू॰ 2026", not "THURSDAY · 1 OCT 2026", and the home's date line the same
+way. In Marathi every count reads in 0–9: the bell's "२१" and "२ फॉलो-अप बाकी" become "21" and
+"2 फॉलो-अप बाकी", matching the "34" beside them. Indirectly, every later screen that prints a date
+or a plural count gets this for free, because both go through the one formatter and the one
+translator.
+
+Two defects from `T-SHELL-003` part b QA (D97, D98; D49 is D98 found earlier on the door's lockout
+line). D97: `formatDate` and `formatWeekday` (`packages/domain/src/format/datetime.ts:41`, `:53`)
+take their names from `pack.locale` (`en-IN`), so the reader's language never reaches them. D98:
+Lingui formats an ICU `#` with `Intl.NumberFormat('mr')`, whose default digits are Devanagari,
+while a plain `{n}` prints `String(n)`. Rows: `F3-22` as amended 2026-10-08, `F3-21`.
+
+##### Goals
+- `formatDate`, `formatWeekday`, `formatMonthYear`, `monthNames` and `weekdayNames` take the
+  reader's language and print its month and weekday names; the field order, punctuation, digits
+  and zone stay the pack's.
+- `useFormat()` prints in the language the mount follows, on web and phone.
+- The translator formats every number in Latin digits in every language, both the live runtime
+  and `createTranslator` (server text).
+- English output stays byte-identical.
+
+##### Non-goals
+- Times (`formatTime`, `formatClockAt`): 24-hour digits, no words — unchanged.
+- Money, numbers, measurements: already market-formatted with Latin digits — unchanged.
+- `packages/ui` components' own English words (D2, D92) — unchanged.
+- No screen layout, token or copy changes.
+
+##### Readiness and dependencies
+- Landed: the formatters (`datetime.ts`), `createFormat` (`packages/ui/src/utils/format.ts:86`),
+  `MarketProvider` on both app roots (`apps/web/app/providers.tsx:48`, `apps/mobile/App.tsx:60`),
+  `createI18nRuntime` / `createTranslator` (`packages/i18n/src/runtime.ts`), Lingui `5.9.5`, whose
+  `loadAndActivate({ locale, locales })` formats `#` with `locales` (`@lingui/core` `index.mjs:136`,
+  `:355`).
+- No design check — a policy task with no screen; the centre and home are drawn and shipped.
+- No blocker.
+- **Owner ruling (2026-10-09):** RFC approved; D49, D97 and D98 join this task; D43, D46, D2 and
+  D92 stay.
+- **Finding 1 — the PRD contradicts itself.** `F3-22` was amended (2026-10-08), but F3's acceptance
+  line (`F3-localization.md:412`) still says a re-read date is "character-identical apart from
+  surrounding words", and the Localization note (`:424`) says the only language-driven part of a
+  formatted string is the words around the number. The amended row carries its own dated ruling,
+  so it wins (`CLAUDE.md` §7). Fix here: both lines name a date's month and weekday names as the
+  one other part that follows the reader.
+- **Finding 2 — the header's tier was wrong.** `F3-21` and `F3-22` are P0 in F3, so the task is P0
+  (README rule 6). Fixed in the header.
+- **Finding 3 — the simpler way breaks the row.** Formatting the whole date in the reader's locale
+  (`Intl.DateTimeFormat('mr-IN')`) prints "१ ऑक्टो, २०२६": CLDR's Marathi pattern adds a comma and
+  Devanagari digits — against "the order and style stay the pack's" and `F3-21`. So the date is
+  formatted in the pack's locale and only its `month` part is swapped for the reader's
+  (`formatToParts`); a weekday printed alone has no order to keep and is formatted whole in the
+  reader's locale. Cost: one helper, about 12 lines.
+- **Finding 4 — the design system's contract text goes stale.** Its `MarketFormat` says `date`,
+  `monthYear` and `monthNames` print "in the pack's language"
+  (`packages/theme/src/_generated/contracts/data/MarketProvider.d.ts.txt:44`–`:50`) and its
+  `MarketProviderProps` has no `language`. No check fails: `design-system-props` flags only a
+  dropped prop. Prompt for the owner to paste into the design system, any time:
+  > In `MarketProvider`, add the prop `language` — the reader's interface language (`en`, `hi`,
+  > `mr`). `MarketFormat.date`, `monthYear`, `weekday`, `monthNames` and `weekdayNames` print the
+  > month and weekday names in that language; field order, punctuation, digits and timezone stay
+  > the pack's (`F3-22`, amended 2026-10-08). Digits are always 0–9 (`F3-21`).
+
+##### Proposal
+Flow: the person picks Marathi → `LanguageFollowsUser` switches the runtime → the app's
+`ReaderMarket` reads `useI18n().locale` → `MarketProvider language="mr"` → `createFormat(pack, 'mr')`
+→ the centre's `clock.date(at)` calls `formatDate(pack, at, 'mr')` → "1 ऑक्टो 2026".
+
+1. `domain` — `format/pack.ts`: `withLatinDigits(tag)` returns `tag-u-nu-latn`, the one spelling
+   of `F3-21`'s pin. `IN_FORMATS.locale` is built with it. (Planned in `number.ts`; found at the
+   gate: `number.ts` imports the pack's type, so a pack importing it back is a cycle
+   dependency-cruiser refuses.)
+2. `domain` — `format/datetime.ts`: the five name-bearing functions take a required
+   `language: UiLanguage` last. `formatDate` and `formatMonthYear` format in `pack.locale` and
+   replace the `month` part with the same part from a formatter in `<language>-<market>` (`hi-IN`),
+   same options, same zone. `formatWeekday`, `monthNames` and `weekdayNames` read
+   `<language>-<market>` directly — a name alone has no order to keep. Found at QA: iOS's Hermes
+   tags a lone weekday's part as no `weekday`, so a part swap left "WEDNESDAY · 7 अक्तू 2026".
+   The market's region keeps English names byte-identical (`en-IN`'s "Sept", not `en`'s "Sep").
+3. `i18n` — `runtime.ts`: every activation passes `locales: [withLatinDigits(LANGUAGE_META[l].tag)]`
+   through one helper, used by `createTranslator`, `createI18nRuntime` and `setLocale`. Plural
+   rules stay the language's (`mr-u-nu-latn` selects as `mr`).
+4. `ui` — `createFormat(pack, language)`; `MarketProvider` takes a required `language`, both halves
+   from the one `.types.ts`.
+5. Apps — web `providers.tsx` and mobile `App.tsx` each wrap the tree in `ReaderMarket`, which
+   passes `useI18n().locale`. Mobile exports `useI18n` from its `src/i18n.ts` seam.
+6. Tests first: the formatter in `en`/`hi`/`mr`; the runtime's Marathi plural and count; the
+   `format-rendering` invariant gains a Marathi and a Hindi date. Then code, then docs.
+
+Errors: none new. An unparseable value keeps today's answer (`''` or the string). Twin platform:
+the phone gets the same change through the same provider; Hermes' `Intl.DateTimeFormat` is
+platform-backed, so QA reads the phone on both Android and iOS.
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  S[session language] --> F[LanguageFollowsUser]
+  F --> R[i18n runtime: Lingui locales tag-u-nu-latn]
+  F --> M[ReaderMarket in each app]
+  M --> P[MarketProvider language]
+  P --> C[createFormat pack, language]
+  C --> D[domain formatDate / weekday / monthYear]
+  D --> X[Intl in pack locale, names swapped from language-market]
+  R --> T[ICU # in Latin digits]
+  C --> U[centre, home, every useFormat caller]
+  T --> U
+```
+
+##### Package changes
+- `domain`: new export `withLatinDigits` (`format/index.ts`); the five name-bearing date functions
+  gain a required `language`. Imports nothing new.
+- `i18n`: `runtime.ts` imports `withLatinDigits` from `@heliogrid/domain` (an existing dependency);
+  no export changes.
+- `ui`: `createFormat` gains `language` (default the source language, so `IN_FORMAT` and a
+  component outside a provider keep English); `MarketProviderProps.language` required.
+- `apps/web`, `apps/mobile`: compose `ReaderMarket`.
+- Law 12: no new brand, enum, token, route, table or error code. The `F3-21`/`F3-22` row in
+  `.claude/protections.md:105` gains its new holders: the invariant's two reader-language dates and
+  `packages/i18n/tests/runtime.test.ts` for ICU digits.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/domain/src/format/pack.ts` | `withLatinDigits`; `IN_FORMATS.locale` through it — moved from `number.ts` at the gate (import cycle) | the pin already lives on the pack's locale |
+| modify | `packages/domain/src/format/index.ts` | export `withLatinDigits` | the slice's index |
+| modify | `packages/domain/src/format/datetime.ts` | names in the reader's language | the one date implementation |
+| modify | `packages/domain/tests/format/datetime.test.ts` | en/hi/mr edges | its test |
+| modify | `packages/domain/tests/format/language-invariance.test.ts` | names follow the reader; order, digits, zone do not | its test |
+| modify | `packages/domain/tests/format/tenant-pack.test.ts` | the new `language` argument | its test |
+| modify | `tests/invariants/src/format-rendering.ts` | a Hindi and a Marathi date, held character for character and for Latin digits | the `F3-22` invariant |
+| modify | `packages/i18n/src/runtime.ts` | Latin-digit locales on every activation | the one translator |
+| modify | `packages/i18n/tests/runtime.test.ts` | Marathi `#` and `{n}`; the lockout line (D49) | its test |
+| modify | `packages/ui/src/utils/format.ts` | `createFormat(pack, language)` | the binding |
+| modify | `packages/ui/src/components/MarketProvider/MarketProvider.types.ts` | `language` prop | the one prop contract (Law 7) |
+| modify | `packages/ui/src/components/MarketProvider/MarketProvider.tsx` | pass `language` | web half |
+| modify | `packages/ui/src/components/MarketProvider/MarketProvider.native.tsx` | pass `language` | native half |
+| modify | `apps/web/app/providers.tsx` | `ReaderMarket` | the app root composes providers |
+| modify | `apps/mobile/App.tsx` | `ReaderMarket` | the app root composes providers |
+| modify | `apps/mobile/src/i18n.ts` | export `useI18n` for `App.tsx` | the root's i18n seam |
+| modify | `docs/prd/foundations/F3-localization.md` | finding 1: the acceptance line and the note | the contradicted row's section |
+| modify | `.claude/protections.md` | the row's new holders | Law 12 |
+| modify | `docs/tasks/deferred.md` | D49, D97, D98 deleted; D166 and D167 added (review, web QA) | they ship; out-of-scope findings |
+| modify | `docs/tasks/F-platform.md` | this RFC, status | the task |
+
+##### API and contract changes
+None — no wire boundary changes. A server text built with `createTranslator`
+(`apps/api/src/modules/tenant/tenant.join-request.service.ts`) now prints a plural count in Latin
+digits; no field or shape changes.
+
+##### Risks and rollout
+- **Hermes on a phone lacks `formatToParts` or a locale's names** — then the phone would print an
+  English or empty name. Mitigation: `qa-android` and `qa-ios` read the centre and home in Hindi
+  and Marathi on the running app.
+- **A Hindi or Marathi date is longer** ("सोमवार", "अक्टू॰") — the centre's overline and home's date
+  line wrap or clip. Mitigation: the same QA rows measure both at 375 and 1536.
+- **Web server render.** The mount starts in the source language on server and client alike, then
+  follows the person; no hydration mismatch. Read on the running web by `qa-web`.
+- Rollout: client-only; an old app keeps English names until it updates. Nothing stored.
+
+##### Acceptance criteria and proof
+**AC-1** — A date's month and weekday names follow the reader's language through `useFormat`; the order and style stay the pack's. → proof: unit tests of the date formatter in English, Hindi and Marathi; QA of the centre and home in Hindi and Marathi.
+
+**AC-2** — Every number renders in Latin digits in every language, an ICU `#` and a plain `{n}` alike. → proof: a unit test of the i18n runtime over a plural and a count in Marathi.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 formatter | main-dev | required | `packages/domain/tests/format/datetime.test.ts` | one `it.each` over `en`/`hi`/`mr` for each function → reader's names, pack order (no Marathi comma), Latin digits, tenant zone; English unchanged. Planted red: the names read from `pack.locale` again → the `hi` and `mr` cases fail by name | test names and the planted run |
+| AC-1 invariant | main-dev | required | `format-rendering` | a Hindi and a Marathi date expected character for character; planted red: the names read from `pack.locale` again → the two `F3-22` lines fail | the invariant's output |
+| AC-1 web | qa-web | required | running web, account `…901` | centre and home in `hi`, then `mr`, at 375 and 1536 → day overlines and date line in the reader's words, pack order, 0–9, nothing clipped; in `mr` the bell's count and every group sentence read 0–9 (AC-2 on the running app); back to `en` → unchanged | screenshots and text read |
+| AC-1 Android | qa-android | required | running app, account `…904` (`…903` has no notifications to show a day line; `qa-api`, which holds `…904`, does not run here) | the same, at the emulator's width | screenshots and tree |
+| AC-1 iOS | qa-ios | required | running app, account `…902` | the same, at the simulator's width | screenshots and tree |
+| AC-2 runtime | main-dev | required | `packages/i18n/tests/runtime.test.ts` | Marathi: a plural `#` and a plain `{n}` render 0–9 — through `createTranslator`, `createI18nRuntime` and `setLocale`; the lockout line prints `3`. Planted red: the `locales` pin removed → the cases fail by name | test names and the planted run |
+| live API | qa-api | not_applicable | — | no API change | — |
+| gate | evaluator | required | `pnpm check:all` | build, lint, typecheck, unit, invariants green | the gate's report |
+
+##### Delivery size
+One part. 20 files, as built (21 planned; `number.ts` left unchanged — see Proposal step 1).
+Estimated about 70 code and 110 test lines; **built 230 code and 169 test lines** (additions plus
+deletions), about 230 doc lines with this RFC — over the estimate by more than 20%, so the size was
+shown to the owner again. Where the code lines went:
+- `datetime.ts` 87 — the month swap helper, the five signatures Biome splits one argument per line,
+  the weekday formatted whole after the iOS finding, and the constraint comments the rewrite needed.
+- `App.tsx` 28 and `providers.tsx` 15 — `ReaderMarket` and its comment on each root; 14 of the
+  mobile lines are the `SessionLanguage` comment moved back above its function (review).
+- `runtime.ts` 26, `format.ts` 31, `pack.ts` 18, the provider halves and types 21, the rest 4.
+Tests 169: the three-language tables in `datetime.test.ts` (68) and the runtime (35), the invariant's
+two dates (24), the invariance test rewritten to the amended row (34), the `language` argument (8).
+Total about 400 authored lines — inside the 1,000-line part cap, so no split: one inseparable part
+at this exact size.
+**Owner ruling (2026-10-09), the delta:** one part at the built size.
+
+**Checklist** — [x] tests first · [x] `domain` formatters and `withLatinDigits` · [x] i18n runtime · [x] `ui` provider · [x] app roots · [x] planted reds · [x] PRD, protections, deferred · [x] QA web · [x] QA Android · [x] QA iOS · [x] review · [x] gate
+
+#### Runtime
+Recorded at the step's start (2026-10-09), before anything ran. Branch `feat/T-FPLAT-087` from `origin/main` `a2dd6e81`.
+
+| resource | state | identity |
+|---|---|---|
+| web `3002`, api `8084`, Metro `8081` | none listening | — |
+| Postgres `5544` | pre_existing | `heliogrid-pg-local` |
+| object store `9000` | pre_existing | `heliogrid-object-store-local` |
+| Temporal `7233` | pre_existing | `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulators and emulators | none booted | — |
+| browser tabs | none opened by this task | — |
+| database routing | `DATABASE_URL` and `DATABASE_ADMIN_URL` → `heliogrid_dev` | `.env.local` |
+| runtime logs | `api.log` 6854217 · `web.log` 252382 · `metro.log` 812908 bytes | `.qa/` |
+
+**At the commit card (2026-10-09).** Started by this task and still running: `api` (8084, source,
+preview server), `mobile-metro` (8081), the `web` server stopped before the gate; emulator
+`emulator-5554` (Pixel_8_Emulator, booted here; the app rebuilt — native changed after its install)
+and simulator `40ED0117-…` (iPhone 17 Pro, booted here; rebuilt for the same reason). Database
+routing → `heliogrid_test` until teardown. QA accounts `…901`, `…902`, `…904` back on `en`.
+
+Planted reds: the names read from `pack.locale` again → `datetime.test.ts` `hi: …`, `mr: …`,
+`keeps the tenant clock in every language…` and `language-invariance.test.ts` `takes a date's
+names from the reader…` failed by name, and `format-rendering` failed its two `F3-22` lines; the
+runtime's three Marathi cases failed by name before the pin (`३` for `3`). Each restored green.
+
+Measurements: about 200 tool-call turns; about 700k tokens with the helpers; helper runs —
+`qa-web` 1, `qa-android` 1, `qa-ios` 1 (each continued through hi, mr, en and two reruns),
+`reviewer` 1 (four continuations), `evaluator` 1 (two full-gate runs); planned 21 files, built 20;
+230 code and 169 test lines against an estimate of 70 and 110, re-approved at that size.
 

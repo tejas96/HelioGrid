@@ -1,5 +1,6 @@
 import { UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
-import { type I18n, setupI18n } from '@lingui/core';
+import { withLatinDigits } from '@heliogrid/domain';
+import { type I18n, type Messages, setupI18n } from '@lingui/core';
 import { LANGUAGE_META, loadCatalog, SOURCE_CATALOG } from './languages';
 
 /** A sentence as a copy module authors it: the id IS the English source text — THE CONVENTION. */
@@ -20,6 +21,18 @@ function idOf(message: string | MessageRef): string {
 }
 
 /**
+ * The ONE way a catalog becomes active. Lingui formats an ICU `#` with `Intl` in `locales`; left to
+ * the language alone, Marathi's `#` prints `३` beside a plain `{n}`'s `3` (`F3-21`).
+ */
+function activate(i18n: I18n, locale: UiLanguage, messages: Messages): void {
+  i18n.loadAndActivate({
+    locale,
+    locales: [withLatinDigits(LANGUAGE_META[locale].tag)],
+    messages,
+  });
+}
+
+/**
  * A translator bound to ONE locale, for isolated work: a server render, a background job, a
  * PDF export. Each call builds its own `I18n`, so two concurrent requests in different
  * languages cannot see each other's locale.
@@ -33,7 +46,7 @@ function idOf(message: string | MessageRef): string {
  */
 export async function createTranslator(locale: UiLanguage): Promise<Translator> {
   const i18n = setupI18n();
-  i18n.loadAndActivate({ locale, messages: await loadCatalog(locale) });
+  activate(i18n, locale, await loadCatalog(locale));
   return translatorFor(i18n, locale);
 }
 
@@ -67,16 +80,13 @@ function translatorFor(i18n: I18n, locale: UiLanguage): Translator {
  */
 export function createI18nRuntime(initial: UiLanguage = UI_SOURCE_LOCALE): I18nRuntime {
   const i18n = setupI18n();
-  i18n.loadAndActivate({
-    locale: SOURCE_CATALOG.locale,
-    messages: SOURCE_CATALOG.messages,
-  });
+  activate(i18n, SOURCE_CATALOG.locale, SOURCE_CATALOG.messages);
   let current = SOURCE_CATALOG.locale;
   if (initial !== SOURCE_CATALOG.locale) {
     // Fire-and-forget: the caller gets a usable runtime now and the requested language
     // arrives a tick later. The provider re-renders on Lingui's change event.
     void loadCatalog(initial).then((messages) => {
-      i18n.loadAndActivate({ locale: initial, messages });
+      activate(i18n, initial, messages);
       current = initial;
     });
   }
@@ -87,7 +97,7 @@ export function createI18nRuntime(initial: UiLanguage = UI_SOURCE_LOCALE): I18nR
     },
     async setLocale(next) {
       if (next === current) return;
-      i18n.loadAndActivate({ locale: next, messages: await loadCatalog(next) });
+      activate(i18n, next, await loadCatalog(next));
       current = next;
     },
     t: (message, values) => i18n._(idOf(message), values),

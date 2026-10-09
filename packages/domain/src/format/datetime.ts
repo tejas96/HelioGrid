@@ -1,3 +1,4 @@
+import type { UiLanguage } from './languages';
 import type { FormatPack } from './pack';
 import { localMinutes } from './zone';
 
@@ -8,10 +9,10 @@ import { localMinutes } from './zone';
  * **Two facts a reader usually gets wrong here.**
  *
  * `03/04` is two different days in two markets and looks correct in both, so the FIELD ORDER is
- * pack data. And the month NAMES come from `pack.locale` — the market's — not from the
- * reader's language: `F3-19`'s acceptance requires a date to stay character-identical when a
- * user switches interface language, so `12 Mar 2026` reads the same in English, Hindi and
- * Marathi. Only the words around it change.
+ * pack data. The month and weekday NAMES are the reader's words (`F3-22`): `12 Mar 2026` reads
+ * `12 मार्च 2026` in Marathi. Only the names move — the order, the punctuation and the digits stay
+ * the pack's, which is why a date is never formatted in the reader's locale whole: Marathi's own
+ * pattern would print `12 मार्च, २०२६`.
  *
  * `timeZone` is passed to every Intl call on purpose. Omit it and the value renders in the
  * DEVICE's zone, which is the bug `F3-22` names: an 09:00 slot read as 03:30 by a rep whose
@@ -37,25 +38,61 @@ function toEpoch(value: string | Date | number): number | null {
   return Number.isNaN(epoch) ? null : epoch;
 }
 
+/** The reader's words in the market's region — `hi-IN` — so English keeps the market's `Sept`. */
+function namesLocale(pack: FormatPack, language: UiLanguage): string {
+  return `${language}-${pack.id}`;
+}
+
+/** A date in the pack's order, punctuation and digits, its month in the reader's words. */
+function withReaderMonth(
+  pack: FormatPack,
+  language: UiLanguage,
+  epoch: number,
+  options: Intl.DateTimeFormatOptions,
+): string {
+  const zoned = { ...options, timeZone: pack.timeZone };
+  const names = new Intl.DateTimeFormat(namesLocale(pack, language), zoned).formatToParts(epoch);
+  return new Intl.DateTimeFormat(pack.locale, zoned)
+    .formatToParts(epoch)
+    .map((part) =>
+      part.type === 'month'
+        ? (names.find((name) => name.type === 'month')?.value ?? part.value)
+        : part.value,
+    )
+    .join('');
+}
+
 /** `2026-03-12` → `12 Mar 2026` under the IN pack (`F1-48`), on the tenant's zone. */
-export function formatDate(pack: FormatPack, value: string | Date | number): string {
+export function formatDate(
+  pack: FormatPack,
+  value: string | Date | number,
+  language: UiLanguage,
+): string {
   const epoch = toEpoch(value);
   if (epoch === null) return typeof value === 'string' ? value : '';
-  return new Intl.DateTimeFormat(pack.locale, {
+  return withReaderMonth(pack, language, epoch, {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
-    timeZone: pack.timeZone,
-  }).format(epoch);
+  });
 }
 
-/** `2026-08-17` → `Monday`, the day's name in the market's language, on the tenant's zone. */
-export function formatWeekday(pack: FormatPack, value: string | number): string {
+/**
+ * `2026-08-17` → `Monday`, the day's name in the reader's words, on the tenant's zone. A name alone
+ * has no order to keep, so it is formatted whole: iOS's Hermes labels a lone weekday's part as no
+ * `weekday`, and a swap by part would leave the market's English name.
+ */
+export function formatWeekday(
+  pack: FormatPack,
+  value: string | number,
+  language: UiLanguage,
+): string {
   const epoch = toEpoch(value);
   if (epoch === null) return '';
-  return new Intl.DateTimeFormat(pack.locale, { weekday: 'long', timeZone: pack.timeZone }).format(
-    epoch,
-  );
+  return new Intl.DateTimeFormat(namesLocale(pack, language), {
+    weekday: 'long',
+    timeZone: pack.timeZone,
+  }).format(epoch);
 }
 
 /**
@@ -71,14 +108,14 @@ export function formatClockAt(pack: FormatPack, value: string | number): string 
 }
 
 /** A calendar's own heading — `March 2026`. */
-export function formatMonthYear(pack: FormatPack, value: string | Date | number): string {
+export function formatMonthYear(
+  pack: FormatPack,
+  value: string | Date | number,
+  language: UiLanguage,
+): string {
   const epoch = toEpoch(value);
   if (epoch === null) return '';
-  return new Intl.DateTimeFormat(pack.locale, {
-    month: 'long',
-    year: 'numeric',
-    timeZone: pack.timeZone,
-  }).format(epoch);
+  return withReaderMonth(pack, language, epoch, { month: 'long', year: 'numeric' });
 }
 
 /**
@@ -100,18 +137,26 @@ export function formatTime(pack: FormatPack, hhmm: string): string {
 /** 12 month names in calendar order — `long` for a heading, `short` for a compact strip. */
 export function monthNames(
   pack: FormatPack,
+  language: UiLanguage,
   style: 'long' | 'short' | 'narrow' = 'long',
 ): string[] {
-  const format = new Intl.DateTimeFormat(pack.locale, { month: style, timeZone: 'UTC' });
+  const format = new Intl.DateTimeFormat(namesLocale(pack, language), {
+    month: style,
+    timeZone: 'UTC',
+  });
   return Array.from({ length: 12 }, (_, month) => format.format(Date.UTC(NAME_YEAR, month, 15)));
 }
 
 /** 7 weekday names STARTING AT THIS MARKET'S FIRST DAY — a grid's column order, not Monday's. */
 export function weekdayNames(
   pack: FormatPack,
+  language: UiLanguage,
   style: 'narrow' | 'short' | 'long' = 'narrow',
 ): string[] {
-  const format = new Intl.DateTimeFormat(pack.locale, { weekday: style, timeZone: 'UTC' });
+  const format = new Intl.DateTimeFormat(namesLocale(pack, language), {
+    weekday: style,
+    timeZone: 'UTC',
+  });
   /* 7 (Sunday) → 0, 1 (Monday) → 1: the ISO number mapped onto the reference walk. */
   const start = pack.firstDayOfWeek % 7;
   return Array.from({ length: 7 }, (_, offset) =>

@@ -86,7 +86,7 @@ export type {
   MeasurementSystem,
   PhoneFormats,
 } from './pack';
-export { IN_FORMATS, MEASUREMENT_SYSTEMS } from './pack';
+export { IN_FORMATS, MEASUREMENT_SYSTEMS, withLatinDigits } from './pack';
 export {
   formatPhone,
   nationalNumber,

@@ -70,3 +70,38 @@ describe('createI18nRuntime — one mount, switchable in place (F3-04)', () => {
     expect(runtime.t(HELD)).toBe(HELD_IN.mr);
   });
 });
+
+describe('every number in Latin digits, in every language (F3-21)', () => {
+  /* An ICU plural's `#` is formatted by Intl, whose default Marathi digits are Devanagari; a plain
+     `{n}` is printed as it is. Both must read 0–9, or one sentence mixes two digit systems. */
+  const PLURAL = '{left, plural, one {# try left} other {# tries left}} on this code.';
+  const COUNT = '{tries} wrong tries use a code up';
+  const IN_MARATHI = {
+    plural: 'या कोडवर 3 प्रयत्न शिल्लक आहेत.',
+    count: '5 चुकीचे प्रयत्न एक कोड संपवतात',
+  };
+
+  it.each([
+    ['createTranslator', async () => (await createTranslator('mr')).t],
+    [
+      'createI18nRuntime',
+      async () => {
+        const runtime = createI18nRuntime('mr');
+        await vi.waitFor(() => expect(runtime.locale).toBe('mr'));
+        return runtime.t;
+      },
+    ],
+    [
+      'setLocale',
+      async () => {
+        const runtime = createI18nRuntime();
+        await runtime.setLocale('mr');
+        return runtime.t;
+      },
+    ],
+  ])('%s: a plural `#` and a plain count both read 0–9 in Marathi', async (_, translatorOf) => {
+    const t = await translatorOf();
+    expect(t(PLURAL, { left: 3 })).toBe(IN_MARATHI.plural);
+    expect(t(COUNT, { tries: 5 })).toBe(IN_MARATHI.count);
+  });
+});

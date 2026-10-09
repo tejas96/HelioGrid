@@ -102,7 +102,8 @@ catalog freshness checks, the unit tests and the invariants; off CI it leaves ou
 | Every UI language is registered: `LANGUAGE_META` and the catalog loaders are `satisfies Record<UiLanguage, …>`; the phone's plural data is not (`docs/tasks/deferred.md`) | typecheck |
 | A closed vocabulary's words never merge two members (`F3-12`), and a plural message carries every category its language names | unit tests `packages/i18n/tests/closed-vocabularies.test.ts` · `plural-forms.test.ts` |
 | A language is ready (`F3-27`): every character drawn by the sans stack, a static phone face per sanctioned weight in both bundles, Android resolving each family by name; every face ships every weight | invariant `language-fonts` · the `packages/theme` build (`assertWeightsShipped` in `src/font-metrics.ts`) |
-| One format implementation, the PRD's own strings, and a compacted amount keeps its disclosure (`F3-19`–`F3-24`) | invariant `format-rendering` |
+| One format implementation, the PRD's own strings — a date's names in the reader's words, its order and digits the pack's — and a compacted amount keeps its disclosure (`F3-19`–`F3-24`) | invariant `format-rendering` |
+| Every number the translator prints is in Latin digits, an ICU `#` and a plain `{n}` alike (`F3-21`) | unit test `packages/i18n/tests/runtime.test.ts` |
 | The message-template keys equal `F6-26`'s exhaustive list, both ways | invariant `template-keys-mirror-f6` |
 | Explicit-id `<Trans id>` only: the Lingui macro is never imported | Biome `noRestrictedImports` (`@lingui/macro`, `@lingui/react/macro`) |
 | Every visible word comes from `i18n` in all three languages, and kW, kWh and kWp are never translated | review |

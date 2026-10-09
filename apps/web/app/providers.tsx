@@ -4,7 +4,7 @@ import { createDataLayer } from '@heliogrid/data';
 import { DataProvider, useSession } from '@heliogrid/data/react';
 import { installFormsErrorMap } from '@heliogrid/forms';
 import { createFormsValidationMessage, createI18nRuntime, type I18nRuntime } from '@heliogrid/i18n';
-import { LanguageFollowsUser, type LocaleChange } from '@heliogrid/i18n/react';
+import { LanguageFollowsUser, type LocaleChange, useI18n } from '@heliogrid/i18n/react';
 import { MarketProvider, PortalHost } from '@heliogrid/ui';
 import { type ReactNode, useCallback, useState } from 'react';
 import { API_URL } from '../lib/env';
@@ -45,12 +45,21 @@ export function Providers({ children }: { children: ReactNode }) {
       <SessionLanguage runtime={i18nRuntime}>
         {/* The launch market until a tenant's pack is read — the door runs before any tenant exists
             — and the ONE portal host every menu, sheet and modal escapes its screen through. */}
-        <MarketProvider>
+        <ReaderMarket>
           <PortalHost>{children}</PortalHost>
-        </MarketProvider>
+        </ReaderMarket>
       </SessionLanguage>
     </DataProvider>
   );
+}
+
+/**
+ * The market's formats in the reader's words: the language the mount follows names a date's month
+ * and weekday (`F3-22`). Inside the language provider, because only it knows the active language.
+ */
+function ReaderMarket({ children }: { children: ReactNode }) {
+  const { locale } = useI18n();
+  return <MarketProvider language={locale}>{children}</MarketProvider>;
 }
 
 /**

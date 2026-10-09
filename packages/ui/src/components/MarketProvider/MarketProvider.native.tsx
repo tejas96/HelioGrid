@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { createFormat, IN_FORMAT, IN_FORMATS } from '../../utils/format';
+import { createFormat, IN_FORMATS } from '../../utils/format';
 import type { MarketProviderProps } from './MarketProvider.types';
 import { FormatContext, useFormat } from './market-context';
 
@@ -8,8 +8,8 @@ import { FormatContext, useFormat } from './market-context';
  * and the India default are authored once in `market-context.ts`, so this half exists only to keep
  * the folder shape and to let Metro resolve the same component the web bundler resolves.
  */
-export function MarketProvider({ pack, format, children }: MarketProviderProps) {
-  const value = useMemo(() => format || (pack ? createFormat(pack) : IN_FORMAT), [pack, format]);
+export function MarketProvider({ pack, language, format, children }: MarketProviderProps) {
+  const value = useMemo(() => format ?? createFormat(pack, language), [pack, language, format]);
   return <FormatContext.Provider value={value}>{children}</FormatContext.Provider>;
 }
 

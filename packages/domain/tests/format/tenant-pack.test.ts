@@ -22,16 +22,16 @@ describe('packOnTenantTime — the tenant is read by its own clock', () => {
   });
 
   it('moves a date across midnight that the market default left where it was', () => {
-    expect(formatDate(IN_FORMATS, ACROSS_MIDNIGHT)).toBe('12 Mar 2026');
-    expect(formatDate(packOnTenantTime(IN_FORMATS, 'Europe/London'), ACROSS_MIDNIGHT)).toBe(
+    expect(formatDate(IN_FORMATS, ACROSS_MIDNIGHT, 'en')).toBe('12 Mar 2026');
+    expect(formatDate(packOnTenantTime(IN_FORMATS, 'Europe/London'), ACROSS_MIDNIGHT, 'en')).toBe(
       '11 Mar 2026',
     );
   });
 
   it('moves a calendar heading with it, so no surface reads two months', () => {
     const newYear = '2026-01-01T00:30:00+05:30';
-    expect(formatMonthYear(IN_FORMATS, newYear)).toBe('January 2026');
-    expect(formatMonthYear(packOnTenantTime(IN_FORMATS, 'Europe/London'), newYear)).toBe(
+    expect(formatMonthYear(IN_FORMATS, newYear, 'en')).toBe('January 2026');
+    expect(formatMonthYear(packOnTenantTime(IN_FORMATS, 'Europe/London'), newYear, 'en')).toBe(
       'December 2025',
     );
   });
