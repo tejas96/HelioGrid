@@ -5518,6 +5518,202 @@ Measurements, part b: about 120 tool-call turns; about 300k tokens; helper runs 
 **DONE WHEN:**
 - Playwright `toHaveScreenshot` holds every web route at 375 and 1536; the images are committed; a run fails when one differs; a baseline changes only with the owner's yes. → proof: the e2e lane green, and red on a planted one-token change to a shared part.
 
+#### RFC
+
+##### Title
+T-FPLAT-086 — a screenshot baseline holds every web route's look
+
+##### Description
+None — internal. No screen changes. Indirectly every web user gains: a change to a shared part
+that breaks the look of a screen nobody opened now fails CI before it ships.
+
+Today `e2e-web` checks words, roles, sideways scroll and axe, never pixels (D74). This task adds
+one `toHaveScreenshot` per web route, at the two viewports the suite already runs (`phone` 375,
+`desktop` 1536 — `tests/e2e/playwright.config.ts:21`), commits the images, and makes the
+`e2e-flow-per-screen` invariant hold a baseline per route by file name, as it holds a spec per route.
+
+##### Goals
+- Each of the five web routes with a look of its own — `/login`, `/login/google`, `/company-signup`,
+  `/home`, `/[door]` — has a committed baseline at 375 and 1536 (10 images).
+- `e2e-web` fails when a route's render differs from its baseline.
+- A route added without a baseline fails the invariant.
+- CI never overwrites a committed baseline; a new or changed image lands only in a commit the owner
+  approves.
+
+##### Non-goals
+- Phone screens (Maestro) — the owner chose web routes first.
+- Hindi and Marathi renders; states past each route's landing; the component suite.
+- Any change to what a screen draws.
+- `/` — it draws nothing of its own: it sends a visitor on to `/login`, whose baseline holds that
+  look. The invariant holds it by name with that reason.
+
+##### Readiness and dependencies
+- `T-FPLAT-082` part h shipped (`F-platform.md:3376`) — the baseline is taken on the open page.
+- Playwright `1.62.1` is installed; `ignoreSnapshots` and `updateSnapshots: 'missing'` are its
+  own options (`playwright/types/test.d.ts:1434`, `:1987`). No package is added.
+- No design check — no screen. No blocker.
+- **Finding — where a baseline is drawn.** CI renders on Linux; this Mac renders text with other
+  anti-aliasing, so a Mac image never matches CI. Two ways:
+  - **A (recommended):** CI draws the baselines. Mac runs skip the comparison
+    (`ignoreSnapshots: !process.env.CI`, Playwright's documented idiom). A missing baseline makes
+    CI write it and fail; the failure artifact `e2e-web-traces` now also carries the snapshot
+    folders. Main copies the images from it into a commit the owner approves. Cost: this PR has a
+    second commit, the ten images.
+  - **B:** pull the Playwright Linux image (about 2 GB), draw baselines locally in it, and move
+    `e2e-web` into the same container. Cost: the job's services move to container networking, a
+    new local command, a large image.
+- **Owner ruling (2026-10-09): A.**
+- **Found at build (2026-10-09) — the signup door's field loses its ring.** The first stability run
+  failed on `/company-signup` only: the number field holds the caret but draws no focus ring in 13
+  of 20 loads on the running web (375 and 1536; `/login` 20 of 20 ringed). `/company-signup` is
+  server-rendered; `autoFocus` focuses the input while React hydrates it, before React hears the
+  focus event, so `PhoneField`'s `focused` state stays false and `FieldBox` draws no ring (`F7-24`:
+  focus is never removed). `/login` mounts its field only in the browser and always rings. Two ways:
+  - **A (recommended):** fix it here — the web `PhoneField` reads, once it has mounted, whether its
+    input already holds focus, and rings it. One file, about 8 lines; the native half has no
+    hydration and is untouched. The baseline then holds the ringed field.
+  - **B:** defer it as a row; both door specs move the focus off the field before the look, so the
+    baseline holds the unringed field and the bug stays.
+- **Owner ruling (2026-10-09), the delta: A** — fixed here; the RFC approved at 15 files.
+
+##### Proposal
+1. `playwright.config.ts`: `ignoreSnapshots: process.env.CI === undefined` (as `vitest.config.mts:65` reads it), and `threshold: 0` — any changed
+   pixel fails. Found at build: the default `threshold 0.2` passed a planted `--fill` change
+   (#F3F4F6 → #F0F1F4) on all five routes. The other defaults stay (`maxDiffPixels 0`, animations
+   off, caret hidden).
+2. `support/look.ts`: `expectTheLook(page, masks)` — one full-page `toHaveScreenshot` with the
+   words a run changes masked. Each of the five specs calls it once at its route's landing, after
+   the existing asserts:
+   - `login` — the door's first step;
+   - `login-google` — "Google did not finish", the route's own state;
+   - `company-signup` — its first step;
+   - `home` — a new owner's home with its one mark; masks the company's name and today's date;
+   - `[door]` — the leads door; masks the company's name.
+3. Invariant `e2e-flow-per-screen`: each route's `tests/e2e/web/<route>.spec.ts-snapshots/` holds a
+   `*-phone-linux.png` and a `*-desktop-linux.png`; `root` is held with its reason; a held route that
+   gains a baseline or disappears fails, as the phone hold does.
+4. `ci.yml`: the failure upload adds `tests/e2e/web/*-snapshots/`.
+4a. `PhoneField.tsx` (web): after mount, a field whose input already holds focus sets `focused`.
+    The two door specs wait for the field's ring (`expectNumberFieldRinged`) before the look: the
+    HTML's own `autofocus` focuses the field before hydration, so focus alone can come ringless.
+5. Commit 1 (the code, without the invariant) → CI writes the ten images and fails → Main
+   downloads `e2e-web-traces` → commit 2 (the ten images, the invariant and its protections row,
+   proven on them) on its own card → CI green. The invariant waits for commit 2: it names the Linux
+   images, which only CI draws, so in commit 1 it would turn `check:all` red.
+
+Refusal: a differing render fails `e2e-web` with expected, actual and diff images in the artifact.
+To change a baseline: the failed run's `-actual.png` replaces the committed file, in a commit the
+owner approves — written in `tests/e2e/CLAUDE.md`. No twin platform: web only.
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  PR[push to the PR] --> L[e2e-web on Linux]
+  L --> C{each route vs committed baseline}
+  C -->|same| G[green]
+  C -->|missing| W[CI writes it, fails]
+  C -->|differs| F[fails: expected, actual, diff]
+  W --> A[artifact e2e-web-traces]
+  F --> A
+  A --> O[owner's yes on the commit card]
+  O --> B[images committed]
+  B --> PR
+  I[invariant e2e-flow-per-screen] -->|a route with no baseline| R[check:all red]
+```
+
+##### Package changes
+`packages/ui`: the web `PhoneField` rings a field focused before hydration — no export, prop or
+contract changes; the native half is unchanged. `tests/e2e` gains `support/look.ts` (local to the
+suite). Protection (Law 12):
+`.claude/protections.md`'s regression-flow row (`:134`) gains "and every route with a look has its
+baseline at 375 and 1536", held by `e2e-flow-per-screen`; its CI row (`:138`) names the pixel check.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `tests/e2e/playwright.config.ts` | `ignoreSnapshots` off CI | the suite's one config |
+| add | `tests/e2e/support/look.ts` | `expectTheLook` — the one screenshot call | `support/` holds what specs share |
+| modify | `tests/e2e/web/login.spec.ts` | the look | the route's spec |
+| modify | `tests/e2e/web/login-google.spec.ts` | the look | the route's spec |
+| modify | `tests/e2e/web/company-signup.spec.ts` | the look | the route's spec |
+| modify | `tests/e2e/web/home.spec.ts` | the look | the route's spec |
+| modify | `tests/e2e/web/[door].spec.ts` | the look | the route's spec |
+| add | `tests/e2e/web/<route>.spec.ts-snapshots/*-{phone,desktop}-linux.png` | ten baselines, CI-drawn (generated) | Playwright's default path |
+| modify | `packages/ui/src/components/PhoneField/PhoneField.tsx` | a field focused before hydration draws its ring — added at build | the field owns its focus state |
+| modify | `biome.json` | `playwright.config.ts` joins the runner configs that may read `CI` — added at build | beside `vitest.config.mts`, the same exception |
+| modify | `tests/e2e/support/door.ts` | `expectNumberFieldRinged` — the two door specs wait for the ring, not focus — added at review | the door helpers |
+| modify | `.env.example` | `CI`'s readers listed — added at review | the line the config's new read made wrong |
+| modify | `.gitignore` | a Mac-drawn look never committed — added at review | beside the suite's other ignored output |
+| modify | `tests/invariants/src/e2e-flow-per-screen.ts` | a baseline per route | the invariant that holds a flow per route |
+| modify | `.github/workflows/ci.yml` | the snapshot folders in the failure artifact | `e2e-web`'s upload step |
+| modify | `tests/e2e/CLAUDE.md` | the baseline rule and how one changes | the suite's instructions |
+| modify | `.claude/protections.md` | the two rows | Law 12 |
+| modify | `docs/tasks/deferred.md` | D74 deleted | ships |
+| modify | `docs/tasks/F-platform.md` | this RFC, status | the task |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **A flaky pixel** (late font, animation, a moving word) — `toHaveScreenshot` waits for two equal
+  frames; animations are off; masks cover the company's name and the date. Main proves stability
+  locally: two Mac runs with two fresh numbers on the same temporary Mac images, the second green.
+  A CI flake is a bug, fixed, never retried (`tests/e2e/CLAUDE.md`).
+- **A missing mask on a word Main did not see** — the stability run above finds it before CI.
+- **Every later UI change now carries an image commit** — that is the intent (D74); the steps are
+  in `tests/e2e/CLAUDE.md`.
+
+##### Acceptance criteria and proof
+**AC-1** — Playwright `toHaveScreenshot` holds every web route at 375 and 1536; the images are committed; a run fails when one differs; a baseline changes only with the owner's yes. → proof: the e2e lane green, and red on a planted one-token change to a shared part.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 lane green | ci | required | `e2e-web` | the PR's last head SHA, with the ten images → every web flow passes, each look compared (not skipped) | the run's step log: 10 screenshot assertions passed |
+| AC-1 planted token | main-dev | required | local suite, Mac images | images drawn, run twice green; one shared token changed (`packages/theme`), web rebuilt → the five routes' looks fail; reverted → green; Mac images deleted | run output in the commit card |
+| AC-1 every route held | main-dev | required | invariant | one route's baseline deleted → `e2e-flow-per-screen` red naming it; restored → green | planted red in the commit card |
+| AC-1 owner's yes | main-dev | required | CI config + commit | a differing run leaves the committed image unchanged (`git status` clean on the snapshot folder after the planted red); images enter only through the approved commit | the planted run's `git status` |
+| AC-1 signup ring | main-dev | required | running web, `/company-signup` | 20 loads at 375 and 1536 → the focused field rings 20 of 20; the fix removed → the signup look fails the stability run | probe counts and the planted run |
+| AC-1 gate | evaluator | required | `pnpm check:all` | invariants, lint, typecheck green | the gate's report |
+| live API | qa-api | not_applicable | — | no API change | — |
+| live web | qa-web | not_applicable | — | the one change a person sees, the signup field's ring, is the `signup ring` row, measured on the running web; the looks are the suite's own run | — |
+
+##### Delivery size
+One part. 15 files planned at the delta; 18 with three added at review (`support/door.ts`,
+`.env.example`, `.gitignore`) — exactly 20% over, inside the budget rule. 10 more are generated
+images. About 90 code lines (config, helper, invariant, ci, `PhoneField`), about 30 test lines (five
+spec calls, the ring wait), about 30 doc lines. Order: config and
+helper → five specs → local Mac stability and planted reds → ci, docs, deferred → review, gate →
+commit 1 → CI draws → invariant, protections, images, its planted red → the gate's final run →
+commit 2.
+
+**Checklist** — [x] config and helper · [x] five specs · [x] `PhoneField` ring · [x] Mac stability and planted reds · [x] ci, docs, deferred · [x] review · [x] gate · [x] commit 1 · [ ] invariant, protections, images and planted red · [ ] commit 2 · [ ] CI green
+
+#### Runtime
+Recorded at the step's start (2026-10-09), before anything ran. Branch `feat/T-FPLAT-086` from `origin/main` `04dd8acc`.
+
+| resource | state | identity |
+|---|---|---|
+| web `3002`, api `8084`, Metro `8081` | none listening | — |
+| Postgres `5544` | pre_existing | `heliogrid-pg-local` |
+| object store `9000` | pre_existing | `heliogrid-object-store-local` |
+| Temporal `7233` | pre_existing | `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulators and emulators | none booted | — |
+| browser tabs | none opened by this task | — |
+| database routing | `DATABASE_URL` and `DATABASE_ADMIN_URL` → `heliogrid_dev` | `.env.local` |
+| runtime logs | `api.log` 2253961 · `web.log` 237514 · `metro.log` 812908 bytes | `.qa/` |
+
+**Commit 1 — state at its card (2026-10-09).** `api-built` and `web-built` were started through
+the launch configurations for the Mac runs and stopped; nothing listens on 3002 or 8084. Database
+routing → `heliogrid_test` until teardown. Mac images drawn and deleted.
+
+Measurements, commit 1: about 110 tool-call turns; about 250k tokens; helper runs — `reviewer` 1
+(two continuations), `evaluator` 1 (one full-gate run); planned 14 files, then 15 at the delta,
+built 16 in commit 1 with 3 owed to commit 2 (18 with the review's three); about 60 changed code
+and test lines, about 35 doc lines beside the RFC.
+
 ### T-FPLAT-087 · Dates and digits in the reader's language
 **Type:** policy · **Tier:** P1 (`F3-21`, `F3-22`)
 **Status:** planned

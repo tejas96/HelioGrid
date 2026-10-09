@@ -2,8 +2,9 @@ import { UI_LANGUAGES } from '@heliogrid/contracts';
 import { COMPANY_SIGNUP, createTranslator, LANGUAGE_META, SIGN_IN } from '@heliogrid/i18n';
 import { expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
-import { requestCode, typeCode, wrongCodeFor } from '../support/door';
+import { expectNumberFieldRinged, requestCode, typeCode, wrongCodeFor } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
+import { expectTheLook } from '../support/look';
 import { freshMobile } from '../support/phone';
 
 const en = await createTranslator('en');
@@ -37,6 +38,8 @@ test('a new number signs in with the code it was sent and is taken to set up its
 
 test('the door speaks every language in the set, each in its own words', async ({ page }) => {
   await page.goto('/login');
+  await expectNumberFieldRinged(page, en);
+  await expectTheLook(page);
   let shown = LANGUAGE_META.en.endonym;
 
   for (const language of UI_LANGUAGES) {

@@ -5,12 +5,14 @@ import {
   homeTitle,
   NOTIFICATION_CENTRE,
   SHELL,
+  todayLine,
   verbLabel,
 } from '@heliogrid/i18n';
 import { expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { createCompany } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
+import { expectTheLook } from '../support/look';
 import { freshMobile } from '../support/phone';
 import { passTheOwnersMark } from '../support/shell';
 
@@ -59,16 +61,20 @@ test('signed out, home sends a visitor to the door', async ({ page }) => {
 test('a new owner lands on their home inside the shell, with one mark on the verb', async ({
   page,
 }) => {
-  const mobile = freshMobile();
-  await createCompany(page, en, mobile);
+  const company = await createCompany(page, en, freshMobile());
 
   await expect(page.getByRole('navigation', { name: en.t(SHELL.mainNavigation) })).toBeVisible();
-  await expect(page.getByText(`E2E ${mobile.national}`)).toBeVisible();
+  await expect(page.getByText(company)).toBeVisible();
   await expect(page.getByRole('heading', { level: 1, name: ownerHome })).toBeAttached();
   await expect(page.getByRole('button', { name: addLead })).toBeVisible();
   await expect(page.getByText(verbMark?.body ?? '')).toBeVisible();
   await expectNoSidewaysScroll(page);
   await expectNoSeriousViolations(page);
+  // The line over the title, read without its date: today's date is the word a run changes. A mask
+  // that matches nothing is skipped in silence, so the line is found first.
+  const today = page.getByText(todayLine(en.t, ''));
+  await expect(today).toBeVisible();
+  await expectTheLook(page, [page.getByText(company), today]);
 
   await passTheOwnersMark(page, en);
   await expect(page.getByText(verbMark?.body ?? '')).toBeHidden();

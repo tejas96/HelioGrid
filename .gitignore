@@ -45,6 +45,8 @@ apps/mobile/.bundle/config
 playwright-report/
 test-results/
 tests/e2e/playwright/.cache/
+# A web look drawn on a Mac (a local run with CI set): the baselines are CI's Linux renders only.
+tests/e2e/web/*-snapshots/*-darwin.png
 
 # Python bytecode.
 __pycache__/

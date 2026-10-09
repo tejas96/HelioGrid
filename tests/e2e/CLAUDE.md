@@ -6,6 +6,13 @@ Deps: `architecture.md` §2 tests/e2e.
 
 - `web/<route>.spec.ts` — one per web route, named as `e2e-flow-per-screen` names it (`/login` →
   `login.spec.ts`, `/` → `root.spec.ts`, a `(group)` folder dropped).
+- `web/<route>.spec.ts-snapshots/landing-{phone,desktop}-linux.png` — the route's look at 375 and
+  1536: each route spec with a look of its own calls `support/look.ts`'s `expectTheLook` once at
+  its landing. Any changed pixel fails `e2e-web`. A baseline is
+  drawn only by CI, on Linux — a Mac draws text with other edges, so off CI the comparison is
+  skipped. A baseline changes only in a commit the owner approves: from the failed run's
+  `e2e-web-traces` artifact, a missing one is in `tests/e2e/web/<route>.spec.ts-snapshots/` and a
+  changed one is `tests/e2e/test-results/<test>/landing-actual.png`, copied over the committed file.
 - `components/<Name>.spec.tsx` — the real `@heliogrid/ui` web halves, mounted with the app's
   stylesheets (`playwright/index.tsx`). A mounted component is imported from the `@heliogrid/ui`
   index; a plain value from `@heliogrid/ui` is read through `support/`, since the component

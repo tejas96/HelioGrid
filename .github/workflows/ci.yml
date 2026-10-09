@@ -299,14 +299,18 @@ jobs:
       - name: Component tests (tests/e2e/components)
         if: success() || failure()
         run: pnpm --filter @heliogrid/e2e test:ct
-      - name: Keep the traces and the api's log of a failure
+      - name: Keep the traces, the api's log and the screenshots of a failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: e2e-web-traces
+          # The snapshot folders carry a missing baseline this run drew; test-results carries each
+          # differing look's actual image. Either reaches the repository only in a commit the
+          # owner approves (tests/e2e/CLAUDE.md).
           path: |
             tests/e2e/test-results/
             tests/e2e/playwright-report/
+            tests/e2e/web/*-snapshots/
             .qa/api.log
           include-hidden-files: true
           retention-days: 14

@@ -16,6 +16,12 @@ export default defineConfig({
   fullyParallel: true,
   retries: 0,
   forbidOnly: true,
+  // The baselines are CI's Linux renders. A Mac draws text with other edges, so a local run would
+  // compare pixels it never drew: off CI, `toHaveScreenshot` is skipped.
+  ignoreSnapshots: process.env.CI === undefined,
+  // Any changed pixel fails: Playwright's default 0.2 colour tolerance let a one-step change of a
+  // shared token (`--fill` #F3F4F6 → #F0F1F4) through on every route that draws it.
+  expect: { toHaveScreenshot: { threshold: 0 } },
   reporter: [['list'], ['html', { open: 'never' }]],
   use: { baseURL: WEB, trace: 'retain-on-failure' },
   projects: [

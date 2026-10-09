@@ -1,7 +1,7 @@
 // biome-ignore-all lint/a11y/noAutofocus: `autoFocus` is the caller's contract (.d.ts) — the desktop door has one task, the number.
 import { nationalNumber } from '@heliogrid/domain';
 import type { CSSProperties } from 'react';
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
 import { useFormat } from '../MarketProvider';
@@ -44,6 +44,14 @@ export function PhoneField({
   const messageId = `${fieldId}-message`;
   const { dialCode } = mkt.pack.phone;
   const [focused, setFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  /* On a server-rendered page the HTML's own `autofocus` focuses the input before React hydrates
+     it, so React never hears that focus: without this read the caret sits in a field that draws no
+     ring (F7-24). */
+  useEffect(() => {
+    if (inputRef.current !== null && inputRef.current === document.activeElement) setFocused(true);
+  }, []);
 
   /* The box shows the NATIONAL number, grouped; the caller holds E.164. Splitting here rather than
      in the caller is what stops two screens grouping one number two ways. */
@@ -72,6 +80,7 @@ export function PhoneField({
           {dialCode}
         </span>
         <input
+          ref={inputRef}
           id={fieldId}
           className="hg-phone-field-input"
           type="tel"

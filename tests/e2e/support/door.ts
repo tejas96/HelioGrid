@@ -19,6 +19,16 @@ export async function requestCode(page: Page, t: Translator, mobile: Mobile): Pr
   return codeSentTo(mobile.e164, since);
 }
 
+/**
+ * Waits for the number field to draw its focus ring. The page's HTML focuses the field before React
+ * hydrates it; the ring follows only once `PhoneField` has mounted, so a look taken on focus alone
+ * can catch the field ringless.
+ */
+export async function expectNumberFieldRinged(page: Page, t: Translator): Promise<void> {
+  const field = page.getByRole('textbox', { name: t.t(SIGN_IN.mobileNumber) });
+  await expect(page.locator('[data-fb-focused]', { has: field })).toBeVisible();
+}
+
 /** Types a code into the code step's boxes, which move on to the next box by themselves. */
 export async function typeCode(page: Page, t: Translator, code: string): Promise<void> {
   const boxes = page.getByRole('group', { name: t.t(SIGN_IN.codeLabel, { n: OTP_LENGTH }) });
