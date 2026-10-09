@@ -4,6 +4,7 @@ import { landingFor, type SessionLanding } from '@heliogrid/domain';
 import { useRouter } from 'next/navigation';
 import { type ReactNode, useEffect } from 'react';
 import { ROUTE_OF } from './constants';
+import { UnreachableScreen } from './UnreachableScreen';
 
 /** What a route group asks of its visitor: `signed-in` means a settled session WITH a company. */
 type Need = 'signed-out' | 'signed-in';
@@ -20,7 +21,7 @@ type Need = 'signed-out' | 'signed-in';
  */
 export function SessionGate({ need, children }: { need: Need; children: ReactNode }) {
   const phase = useSessionPhase();
-  const { user, ended } = useSession();
+  const { user, ended, unreachable } = useSession();
   const router = useRouter();
   const landing = landingFor(phase, user, ended);
   const sendTo = destinationOf(need, landing);
@@ -29,6 +30,7 @@ export function SessionGate({ need, children }: { need: Need; children: ReactNod
     if (sendTo !== null) router.replace(sendTo);
   }, [sendTo, router]);
 
+  if (unreachable) return <UnreachableScreen />;
   if (landing === 'wait' || sendTo !== null) return null;
   return children;
 }

@@ -1,9 +1,11 @@
 /**
- * The code step's frame — WHAT each fact looks like, decided once for both doors (Law 11):
- * which frame the facts add up to, which controls it offers and what each control does. The
- * words are `packages/i18n`'s, keyed by the vocabularies here; the screen draws and decides
- * nothing.
+ * The code step's frame — WHAT each fact looks like, decided once for both doors (Law 11): which
+ * controls each frame offers and what each control does; which frame the facts add up to is
+ * `login-frame-kind.ts`'s. The words are `packages/i18n`'s, keyed by the vocabularies here; the
+ * screen draws and decides nothing.
  */
+
+import { type FrameKind, frameKindOf } from './login-frame-kind';
 import type {
   CodeError,
   CodeField,
@@ -15,24 +17,6 @@ import type {
   SubLine,
 } from './login-frame-parts';
 import type { LoginState } from './login-state';
-
-/** The frames, in the order a fact wins: a refused check over a refused request over the ordinary step. */
-export type FrameKind =
-  | 'google-phone-taken'
-  | 'auth-error'
-  | 'locked'
-  | 'call-offer'
-  | 'capped'
-  | 'delivery-failed'
-  | 'call-not-placed'
-  | 'request-failed'
-  | 'call-request-failed'
-  | 'expired'
-  | 'used-up'
-  | 'wrong'
-  | 'filled'
-  | 'waiting'
-  | 'entry';
 
 export interface LoginFrame {
   readonly kind: FrameKind;
@@ -55,34 +39,6 @@ export interface LoginFrame {
 /** What a frame decides for itself; the Google parts most frames lack are filled in once. */
 type FrameBody = Omit<LoginFrame, 'google' | 'linkedEmail' | 'explainer'> &
   Partial<Pick<LoginFrame, 'google' | 'explainer'>>;
-
-export function frameKindOf(state: LoginState): FrameKind {
-  return refusalFrameOf(state) ?? codeFrameOf(state);
-}
-
-/** A refused check or a refused request owns the frame before any ordinary step is read. */
-function refusalFrameOf(state: LoginState): FrameKind | null {
-  const byCall = state.channel === 'voice';
-  if (state.googleEnded === 'phone-taken') return 'google-phone-taken';
-  if (state.verify === 'failed') return 'auth-error';
-  if (state.verify === 'locked' || state.request === 'locked') return 'locked';
-  // A call the person chose but has not placed yet is offered before any SMS outcome is judged —
-  // the route out of a failed send must lead somewhere.
-  if (byCall && !state.placed) return 'call-offer';
-  if (state.request === 'capped') return 'capped';
-  if (state.request === 'delivery-failed') return byCall ? 'call-not-placed' : 'delivery-failed';
-  if (state.request === 'failed') return byCall ? 'call-request-failed' : 'request-failed';
-  return null;
-}
-
-function codeFrameOf(state: LoginState): FrameKind {
-  if (state.verify === 'expired') return 'expired';
-  if (state.verify === 'invalidated') return 'used-up';
-  if (state.verify === 'mismatch') return 'wrong';
-  if (state.filled) return 'filled';
-  if (state.cooldownLeft > 0) return 'waiting';
-  return 'entry';
-}
 
 /**
  * `googleOffered` says whether this door has a Google sheet behind it: a door without one — the
@@ -129,6 +85,11 @@ function newCodeWays(state: LoginState): Pick<LoginFrame, 'primary' | 'resend' |
 
 const NO_CODE = { codeError: null, code: 'closed' } as const;
 const NO_WAYS = { primary: null, callOffered: false } as const;
+
+/** A request or a check that got no answer offers what its refusal twin offers; only the words differ (`F8-36`). */
+function unreachedTwin(kind: FrameKind, twin: FrameKind): (state: LoginState) => FrameBody {
+  return (state) => ({ ...FRAMES[twin](state), kind });
+}
 
 const FRAMES: Record<FrameKind, (state: LoginState) => FrameBody> = {
   // The code matched, so it is shown spent and fine; the number signs in by it, and the Google
@@ -211,6 +172,9 @@ const FRAMES: Record<FrameKind, (state: LoginState) => FrameBody> = {
     callOffered: false,
     foot: null,
   }),
+  'auth-unreached': unreachedTwin('auth-unreached', 'auth-error'),
+  'request-unreached': unreachedTwin('request-unreached', 'request-failed'),
+  'call-request-unreached': unreachedTwin('call-request-unreached', 'call-request-failed'),
   expired: (state) => ({
     kind: 'expired',
     sub: sentSub(state),

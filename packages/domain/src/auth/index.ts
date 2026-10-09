@@ -1,8 +1,8 @@
 export type { Admission, MembershipStanding, RefreshVerdict, TokenClaims } from './admission';
 export { admit, refreshVerdict } from './admission';
 export { hasCompany, homeOf } from './company';
-export type { DoorView } from './door-view';
-export { doorView } from './door-view';
+export type { DoorNotice, DoorView } from './door-view';
+export { doorNotice, doorView } from './door-view';
 export type { GoogleLinkFrame, PhoneGoogle } from './google-frame';
 export { googleLinkFrame, phoneGoogle } from './google-frame';
 export type {
@@ -32,8 +32,10 @@ export type {
   LoginProvider,
 } from './login-binding';
 export { LOGIN_PROVIDERS, loginBindingRoad } from './login-binding';
-export type { FrameKind, LoginFrame } from './login-frame';
-export { frameKindOf, loginFrame } from './login-frame';
+export type { LoginFrame } from './login-frame';
+export { loginFrame } from './login-frame';
+export type { FrameKind } from './login-frame-kind';
+export { frameKindOf } from './login-frame-kind';
 export type {
   CodeError,
   CodeField,

@@ -1,5 +1,11 @@
 import { UI_LANGUAGES } from '@heliogrid/contracts';
-import { COMPANY_SIGNUP, createTranslator, LANGUAGE_META, SIGN_IN } from '@heliogrid/i18n';
+import {
+  COMPANY_SIGNUP,
+  CONNECTION,
+  createTranslator,
+  LANGUAGE_META,
+  SIGN_IN,
+} from '@heliogrid/i18n';
 import { expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { expectNumberFieldRinged, requestCode, typeCode, wrongCodeFor } from '../support/door';
@@ -66,19 +72,46 @@ for (const [drop, cut] of [
     (page: Page) => page.route('**/auth/otp/request', (route) => route.abort()),
   ],
 ] as const) {
-  test(`${drop}, Send code says the code could not be sent and offers to send it again`, async ({
+  test(`${drop}, Send code says HelioGrid could not be reached and keeps the number`, async ({
     page,
   }) => {
     await page.goto('/login');
     await expect(page.getByRole('heading', { name: en.t(SIGN_IN.signIn) })).toBeVisible();
     await cut(page);
 
-    await page
-      .getByRole('textbox', { name: en.t(SIGN_IN.mobileNumber) })
-      .fill(freshMobile().national);
+    const number = page.getByRole('textbox', { name: en.t(SIGN_IN.mobileNumber) });
+    const typed = freshMobile().national;
+    await number.fill(typed);
     await page.getByRole('button', { name: en.t(SIGN_IN.sendCode) }).click();
 
     await expect(page.getByText(en.t(SIGN_IN.requestFailedTitle))).toBeVisible();
-    await expect(page.getByRole('button', { name: en.t(SIGN_IN.sendItAgain) })).toBeVisible();
+    await expect(page.getByText(en.t(SIGN_IN.notReached))).toBeVisible();
+    await expect(page.getByText(en.t(SIGN_IN.ourSideFailed))).toHaveCount(0);
+    await expect(number).toHaveValue(new RegExp(typed.slice(-4)));
+    await expect(page.getByRole('button', { name: en.t(SIGN_IN.sendCode) })).toBeEnabled();
   });
 }
+
+/*
+ * `M01-07`: a boot check with no answer never opens the door by itself — the app says HelioGrid
+ * could not be reached and asks again, and the answer it then gets decides where the person lands.
+ */
+test('a boot check with no answer shows the no-connection screen, and Try again asks again', async ({
+  page,
+}) => {
+  await page.route('**/auth/session', (route) => route.abort());
+  await page.goto('/login');
+
+  await expect(page.getByRole('heading', { name: en.t(CONNECTION.title) })).toBeVisible();
+  await expect(page.getByRole('heading', { name: en.t(SIGN_IN.signIn) })).toHaveCount(0);
+  await expectNoSeriousViolations(page);
+
+  // A retry that still gets no answer stays on the screen and says so.
+  await page.getByRole('button', { name: en.t(SIGN_IN.tryAgain) }).click();
+  await expect(page.getByText(en.t(CONNECTION.stillNoAnswer))).toBeVisible();
+
+  await page.unroute('**/auth/session');
+  await page.getByRole('button', { name: en.t(SIGN_IN.tryAgain) }).click();
+  await expect(page.getByRole('heading', { name: en.t(SIGN_IN.signIn) })).toBeVisible();
+  await expectNoSeriousViolations(page);
+});

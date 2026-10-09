@@ -24,6 +24,7 @@ export function useSession(): SessionApi {
       requestOtp: session.requestOtp,
       verifyOtp: session.verifyOtp,
       signInWithGoogle: session.signInWithGoogle,
+      retryBoot: session.retryBoot,
       completeSwitch: session.completeSwitch,
       enterKnownAccount: session.enterKnownAccount,
       leaveKnownAccount: session.leaveKnownAccount,

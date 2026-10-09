@@ -1,6 +1,6 @@
 import type { SignIn } from '@heliogrid/data/react';
 import type { DoorRoad } from '@heliogrid/domain';
-import { phoneGoogleWords, SIGN_IN } from '@heliogrid/i18n';
+import { doorNoticeWords, phoneGoogleWords, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import {
   Button,
@@ -73,6 +73,7 @@ export function PhoneStep({
       {task ?? (
         <>
           {google?.failed ? <TintedBlock {...google.failed} /> : null}
+          {signIn.notice === null ? null : <TintedBlock {...doorNoticeWords(t, signIn.notice)} />}
           <div className="hg-door-form">
             <PhoneField
               label={t(SIGN_IN.mobileNumber)}

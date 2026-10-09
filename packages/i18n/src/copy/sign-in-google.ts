@@ -14,11 +14,11 @@ import {
 import type { Translator } from '../runtime';
 import { SIGN_IN } from './sign-in';
 
-/** A tinted block's words, as the code frames carry them. */
-export interface GoogleBlockWords {
+/** A tinted block's words on the door: what happened, and why when the title alone does not say. */
+export interface DoorBlockWords {
   readonly tone: FrameTone;
   readonly title: string;
-  /** Only the failed sign-in says what to do next; the lock's title says it all (`F7-46`). */
+  /** Omitted where the title says it all, as the lock's does (`F7-46`). */
   readonly body?: string;
 }
 
@@ -28,7 +28,7 @@ export interface PhoneGoogleWords {
   readonly label: string;
   /** The account rule lives here, not in a caption (`SCR-M01-01` decision 12). */
   readonly aria: string;
-  readonly failed: GoogleBlockWords | null;
+  readonly failed: DoorBlockWords | null;
 }
 
 export function phoneGoogleWords(
@@ -66,7 +66,7 @@ export interface GoogleLinkWords {
   readonly useNumber: { readonly label: string; readonly aria: string };
   readonly phoneLabel: string;
   readonly send: { readonly label: string; readonly aria: string } | null;
-  readonly locked: { readonly block: GoogleBlockWords; readonly sentence: string } | null;
+  readonly locked: { readonly block: DoorBlockWords; readonly sentence: string } | null;
 }
 
 export function googleLinkWords(

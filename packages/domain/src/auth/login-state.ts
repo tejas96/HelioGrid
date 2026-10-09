@@ -22,8 +22,9 @@ export type SignInStep = Extract<LoginStep, 'phone' | 'google-link' | 'otp'>;
  * How a request for a code ended. Every refusal the wire can name has its own word, because
  * each is its own frame on the door (`SCR-M01-01`): `cooldown` is the 30 s gap, `capped` an
  * `M01-04` request cap, `locked` the 15-minute number lock, `delivery-failed` the network's
- * confirmed hard failure (the cooldown is released, the caps are not), `failed` anything the
- * wire could not name. Never collapse two into one — the copy differs.
+ * confirmed hard failure (the cooldown is released, the caps are not), `failed` a refusal the
+ * wire could not name, `unreached` a request that got no answer — the person's network or ours,
+ * never told as our failure (`F8-36`). Never collapse two into one — the copy differs.
  */
 export type OtpRequestOutcome =
   | 'sent'
@@ -31,12 +32,13 @@ export type OtpRequestOutcome =
   | 'capped'
   | 'locked'
   | 'delivery-failed'
-  | 'failed';
+  | 'failed'
+  | 'unreached';
 
 /**
  * How a code check ended. `mismatch` leaves tries on this code; `invalidated` is the fifth
  * wrong try (`OTP_MAX_FAILED_VERIFIES`) or a code already used; `expired` is past
- * `OTP_EXPIRY_SECONDS`; `locked` the number lock; `failed` the step after the code.
+ * `OTP_EXPIRY_SECONDS`; `locked` the number lock; `failed` the step after the code; `unreached` a check that got no answer.
  */
 export type OtpVerifyOutcome =
   | 'verified'
@@ -44,7 +46,8 @@ export type OtpVerifyOutcome =
   | 'expired'
   | 'invalidated'
   | 'locked'
-  | 'failed';
+  | 'failed'
+  | 'unreached';
 
 /** The controls a frame can offer — each the press it raises. */
 export type LoginPress =

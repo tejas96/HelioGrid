@@ -54,7 +54,7 @@ pnpm --filter @heliogrid/web dev | build | typecheck      # dev = localhost:3002
   the list is not authored in the screen.
 - Forms branch `VALIDATION_FAILED` through `applyServerErrors` first; any other API failure takes
   its words from `@heliogrid/i18n`, never a hand-written string. The first screen that renders one
-  builds `ApiErrorText` in `packages/ui` (deferred D68).
+  builds `ApiErrorText` in `packages/ui`.
 
 ## Done means
 

@@ -7,6 +7,7 @@
 import {
   type CodeError,
   countdownClock,
+  type DoorNotice,
   type FootLine,
   type FrameExplainer,
   type FrameKind,
@@ -29,6 +30,7 @@ import {
 import type { MessageRef, Translator } from '../runtime';
 import { COMPANY_SIGNUP } from './company-signup';
 import { SIGN_IN } from './sign-in';
+import type { DoorBlockWords } from './sign-in-google';
 
 const SECONDS_PER_MINUTE = 60;
 
@@ -52,16 +54,16 @@ interface FrameCopy {
 }
 
 const OUR_SIDE = { tone: 'danger', title: SIGN_IN.ourSideFailed } as const;
+/** No answer is never told as our failure: it names both sides (`F8-36`, `SCR-M01-01` decision 17). */
+const NOT_REACHED = { tone: 'danger', title: SIGN_IN.notReached } as const;
 
 const FRAME: Record<FrameKind, FrameCopy> = {
   'google-phone-taken': {
     title: SIGN_IN.phoneTakenTitle,
     block: { tone: 'danger', title: SIGN_IN.phoneTakenBlockTitle },
   },
-  'auth-error': {
-    title: SIGN_IN.authErrorTitle,
-    block: { tone: 'danger', title: SIGN_IN.ourSideFailed },
-  },
+  'auth-error': { title: SIGN_IN.authErrorTitle, block: OUR_SIDE },
+  'auth-unreached': { title: SIGN_IN.authErrorTitle, block: NOT_REACHED },
   locked: {
     title: SIGN_IN.lockedTitle,
     block: { tone: 'danger', title: SIGN_IN.lockedBlockTitle },
@@ -81,6 +83,8 @@ const FRAME: Record<FrameKind, FrameCopy> = {
   },
   'request-failed': { title: SIGN_IN.requestFailedTitle, block: OUR_SIDE },
   'call-request-failed': { title: SIGN_IN.couldNotCallTitle, block: OUR_SIDE },
+  'request-unreached': { title: SIGN_IN.requestFailedTitle, block: NOT_REACHED },
+  'call-request-unreached': { title: SIGN_IN.couldNotCallTitle, block: NOT_REACHED },
   expired: {
     title: SIGN_IN.expiredTitle,
     block: { tone: 'warning', title: SIGN_IN.expiredBlockTitle },
@@ -268,4 +272,16 @@ function primaryAriaOf(frame: LoginFrame, t: (message: MessageRef) => string): s
 
 function primaryOf(label: PrimaryLabel, labels: SignInLabels): MessageRef {
   return label === 'verify' && labels.verify !== undefined ? labels.verify : PRIMARY[label];
+}
+
+/** The block above the number step's field (`SCR-M01-01` `m-not-reached`): what failed, then why. */
+export function doorNoticeWords(translate: Translator['t'], notice: DoorNotice): DoorBlockWords {
+  switch (notice) {
+    case 'not-reached':
+      return {
+        tone: 'danger',
+        title: translate(SIGN_IN.requestFailedTitle),
+        body: translate(SIGN_IN.notReached),
+      };
+  }
 }

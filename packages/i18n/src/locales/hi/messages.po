@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:65
+#: src/copy/sign-in.ts:66
 msgid "{chain} codes were invalidated in a row"
 msgstr "लगातार {chain} कोड अमान्य हुए"
 
@@ -133,7 +133,7 @@ msgid "{page} of {total}"
 msgstr "{total} में से {page}"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:63
+#: src/copy/sign-in.ts:64
 msgid "{perWindow} codes in {windowMinutes} minutes is the limit"
 msgstr "{windowMinutes} मिनट में {perWindow} कोड की सीमा है"
 
@@ -223,12 +223,12 @@ msgid "A workspace already exists for {company} in {city}"
 msgstr "{city} में {company} का वर्कस्पेस पहले से है"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:58
+#: src/copy/sign-in.ts:59
 msgid "About code limits"
 msgstr "कोड की सीमा के बारे में"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:88
+#: src/copy/sign-in.ts:89
 msgid "About linking your number"
 msgstr "नंबर जोड़ने के बारे में"
 
@@ -369,7 +369,7 @@ msgid "Code filled from your SMS"
 msgstr "आपके SMS से कोड भर गया"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:59
+#: src/copy/sign-in.ts:60
 msgid "Code limits"
 msgstr "कोड की सीमा"
 
@@ -379,12 +379,12 @@ msgid "Company name"
 msgstr "कंपनी का नाम"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:70
+#: src/copy/sign-in.ts:71
 msgid "company setup"
 msgstr "कंपनी सेटअप"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:86
+#: src/copy/sign-in.ts:87
 msgid "Confirm your mobile number"
 msgstr "अपना मोबाइल नंबर पक्का करें"
 
@@ -394,12 +394,12 @@ msgid "Confirmed"
 msgstr "पुष्टि हुई"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:79
+#: src/copy/sign-in.ts:80
 msgid "Continue with Google"
 msgstr "Google से जारी रखें"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:80
+#: src/copy/sign-in.ts:81
 msgid "Continue with Google. Signs you in to the same account as your mobile number."
 msgstr "Google से जारी रखें। आपको उसी खाते में साइन इन करता है जो आपके मोबाइल नंबर का है।"
 
@@ -554,7 +554,7 @@ msgid "Go to your leads"
 msgstr "अपनी लीड पर जाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:84
+#: src/copy/sign-in.ts:85
 msgid "Google sign-in did not finish"
 msgstr "Google साइन इन पूरा नहीं हुआ"
 
@@ -569,9 +569,19 @@ msgid "Grievance officer"
 msgstr "शिकायत अधिकारी"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:90
+#: src/copy/sign-in.ts:91
 msgid "HelioGrid accounts are mobile numbers. Google never makes a second account."
 msgstr "HelioGrid खाते मोबाइल नंबर होते हैं। Google से कभी दूसरा खाता नहीं बनता।"
+
+#. js-lingui-explicit-id
+#: src/copy/connection.ts:10
+msgid "HelioGrid could not be reached"
+msgstr "HelioGrid से संपर्क नहीं हो सका"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:57
+msgid "HelioGrid could not be reached, from your side or ours."
+msgstr "HelioGrid से संपर्क नहीं हो सका, आपकी ओर से या हमारी ओर से।"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:86
@@ -599,7 +609,7 @@ msgid "Home"
 msgstr "होम"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:89
+#: src/copy/sign-in.ts:90
 msgid "How linking works"
 msgstr "जोड़ना कैसे काम करता है"
 
@@ -609,17 +619,17 @@ msgid "HR/Admin"
 msgstr "HR/एडमिन"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:67
+#: src/copy/sign-in.ts:68
 msgid "If it keeps failing, tell your company admin."
 msgstr "अगर यह बार-बार विफल हो, तो अपनी कंपनी के एडमिन को बताएँ।"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:93
+#: src/copy/sign-in.ts:94
 msgid "If this number already has an account, the Google login joins it. If it does not, the code takes you into company signup with the number carried in — the same rule as the front door."
 msgstr "अगर इस नंबर का पहले से खाता है, तो Google लॉगिन उसी से जुड़ जाता है। अगर नहीं है, तो कोड आपको कंपनी साइनअप में ले जाता है, नंबर साथ लेकर — वही नियम जो मुख्य दरवाज़े पर है।"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:110
+#: src/copy/sign-in.ts:111
 msgid "If you've signed in with Google before, it still works."
 msgstr "अगर आपने पहले Google से साइन इन किया है, तो वह अब भी काम करता है।"
 
@@ -649,12 +659,17 @@ msgid "Installer Job Home"
 msgstr "इंस्टॉलर जॉब होम"
 
 #. js-lingui-explicit-id
+#: src/copy/connection.ts:11
+msgid "It may be your connection or ours. Try again in a moment."
+msgstr "यह आपके कनेक्शन या हमारी ओर से हो सकता है। थोड़ी देर में फिर से कोशिश करें।"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:87
 msgid "Leads"
 msgstr "लीड्स"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:102
+#: src/copy/sign-in.ts:103
 msgid "Links {email}"
 msgstr "{email} को जोड़ता है"
 
@@ -721,7 +736,7 @@ msgid "No error code reaches a field user. If it keeps failing, signing in later
 msgstr "फ़ील्ड उपयोगकर्ता तक कोई एरर कोड नहीं पहुँचता। अगर यह बार-बार विफल हो, तो बाद में इसी नंबर से साइन इन करने पर आप ठीक इसी चरण पर लौट आते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:57
+#: src/copy/sign-in.ts:58
 msgid "No more codes for {windowMinutes} minutes"
 msgstr "{windowMinutes} मिनट तक और कोड नहीं"
 
@@ -751,7 +766,7 @@ msgid "Not yet calculated"
 msgstr "अभी गणना नहीं हुई"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:97
+#: src/copy/sign-in.ts:98
 msgid "Not you? Use a different Google account"
 msgstr "आप नहीं हैं? दूसरा Google खाता इस्तेमाल करें"
 
@@ -811,7 +826,7 @@ msgid "number formats"
 msgstr "संख्या प्रारूप"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:83
+#: src/copy/sign-in.ts:84
 msgid "Opening Google sign-in"
 msgstr "Google साइन इन खुल रहा है"
 
@@ -826,7 +841,7 @@ msgid "Operations Home"
 msgstr "ऑपरेशंस होम"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:78
+#: src/copy/sign-in.ts:79
 msgid "or"
 msgstr "या"
 
@@ -992,7 +1007,7 @@ msgid "Send it again"
 msgstr "फिर से भेजें"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:101
+#: src/copy/sign-in.ts:102
 msgid "Send the code by SMS and link this Google login"
 msgstr "SMS से कोड भेजें और यह Google लॉगिन जोड़ें"
 
@@ -1047,7 +1062,7 @@ msgid "Sign in"
 msgstr "साइन इन करें"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:77
+#: src/copy/sign-in.ts:78
 msgid "Sign in and discard"
 msgstr "साइन इन करें और हटा दें"
 
@@ -1067,7 +1082,7 @@ msgid "Sign in with this number"
 msgstr "इस नंबर से साइन इन करें"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:107
+#: src/copy/sign-in.ts:108
 msgid "Sign in with this number. The code is already verified."
 msgstr "इस नंबर से साइन इन करें। कोड पहले ही जाँचा जा चुका है।"
 
@@ -1077,7 +1092,7 @@ msgid "Sign out"
 msgstr "साइन आउट करें"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:71
+#: src/copy/sign-in.ts:72
 msgid "Signing in as {name} discards {count} photographs"
 msgstr "{name} के रूप में साइन इन करने से {count} फ़ोटो हट जाएँगे"
 
@@ -1087,7 +1102,7 @@ msgid "Signing in takes you to the company it belongs to. One number is one acco
 msgstr "साइन इन करने पर आप उस कंपनी में पहुँचते हैं जिसका यह नंबर है। एक नंबर एक खाता है, चाहे वह किसी भी दरवाज़े से आए।"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:96
+#: src/copy/sign-in.ts:97
 msgid "Signing in with Google"
 msgstr "Google से साइन इन हो रहा है"
 
@@ -1097,12 +1112,12 @@ msgid "Signing up again would not make a second company"
 msgstr "दोबारा साइन अप करने से दूसरी कंपनी नहीं बनेगी"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:111
+#: src/copy/sign-in.ts:112
 msgid "SMS codes are paused for {lockMinutes} minutes, so linking waits."
 msgstr "SMS कोड {lockMinutes} मिनट के लिए रुके हैं, इसलिए जोड़ना रुका है।"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:64
+#: src/copy/sign-in.ts:65
 msgid "SMS codes paused for {lockMinutes} minutes"
 msgstr "SMS कोड {lockMinutes} मिनट के लिए रुके हैं"
 
@@ -1142,6 +1157,11 @@ msgid "Start survey"
 msgstr "सर्वे शुरू करें"
 
 #. js-lingui-explicit-id
+#: src/copy/connection.ts:12
+msgid "Still no answer from HelioGrid."
+msgstr "HelioGrid से अभी भी कोई जवाब नहीं।"
+
+#. js-lingui-explicit-id
 #: src/copy/freshness.ts:32
 msgid "subsidy rules"
 msgstr "सब्सिडी नियम"
@@ -1167,12 +1187,12 @@ msgid "Switch home"
 msgstr "होम बदलें"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:72
+#: src/copy/sign-in.ts:73
 msgid "Taken on {date} and not uploaded. This cannot be undone."
 msgstr "{date} को लिए गए और अपलोड नहीं हुए। इसे पलटा नहीं जा सकता।"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:69
+#: src/copy/sign-in.ts:70
 msgid "Taking you to {destination}"
 msgstr "आपको {destination} पर ले जा रहे हैं"
 
@@ -1217,6 +1237,11 @@ msgid "That is {typed} digits. A mobile number here has {needed}."
 msgstr "यह {typed} अंक हैं। यहाँ मोबाइल नंबर में {needed} अंक होते हैं।"
 
 #. js-lingui-explicit-id
+#: src/copy/connection.ts:13
+msgid "That is taking too long to answer."
+msgstr "जवाब आने में बहुत देर हो रही है।"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:55
 msgid "That number already has an account"
 msgstr "इस नंबर का खाता पहले से है"
@@ -1252,7 +1277,7 @@ msgid "The code did not send"
 msgstr "कोड भेजा नहीं जा सका"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:105
+#: src/copy/sign-in.ts:106
 msgid "The code was correct for"
 msgstr "कोड इस नंबर के लिए सही था"
 
@@ -1297,7 +1322,7 @@ msgid "This field is required."
 msgstr "यह फ़ील्ड ज़रूरी है।"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:104
+#: src/copy/sign-in.ts:105
 msgid "This Google login cannot be linked"
 msgstr "यह Google लॉगिन नहीं जोड़ा जा सकता"
 
@@ -1322,7 +1347,7 @@ msgid "This number is already on your team."
 msgstr "यह नंबर पहले से आपकी टीम में है।"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:106
+#: src/copy/sign-in.ts:107
 msgid "This number is linked to another Google account"
 msgstr "यह नंबर किसी दूसरे Google खाते से जुड़ा है"
 
@@ -1377,7 +1402,7 @@ msgid "Try again"
 msgstr "फिर से कोशिश करें"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:85
+#: src/copy/sign-in.ts:86
 msgid "Try again, or use your number."
 msgstr "फिर से आज़माएँ, या अपना नंबर इस्तेमाल करें।"
 
@@ -1422,17 +1447,17 @@ msgid "Update on the App Store"
 msgstr "App Store पर अपडेट करें"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:73
+#: src/copy/sign-in.ts:74
 msgid "Upload them first"
 msgstr "पहले इन्हें अपलोड करें"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:74
+#: src/copy/sign-in.ts:75
 msgid "Uploading held photographs arrives with the survey capture."
 msgstr "रोके गए फ़ोटो अपलोड करने की सुविधा सर्वे कैप्चर के साथ आएगी।"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:98
+#: src/copy/sign-in.ts:99
 msgid "Use a different Google account"
 msgstr "दूसरा Google खाता इस्तेमाल करें"
 
@@ -1442,12 +1467,12 @@ msgid "Use a different number"
 msgstr "दूसरा नंबर इस्तेमाल करें"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:99
+#: src/copy/sign-in.ts:100
 msgid "Use my number instead"
 msgstr "इसके बजाय मेरा नंबर इस्तेमाल करें"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:100
+#: src/copy/sign-in.ts:101
 msgid "Use my number instead. Goes back to the phone step."
 msgstr "इसके बजाय मेरा नंबर इस्तेमाल करें। फ़ोन वाले चरण पर वापस जाता है।"
 
@@ -1477,7 +1502,7 @@ msgid "Verify and sign in"
 msgstr "जाँचें और साइन इन करें"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:103
+#: src/copy/sign-in.ts:104
 msgid "Verify the code, link this Google login and sign in"
 msgstr "कोड जाँचें, यह Google लॉगिन जोड़ें और साइन इन करें"
 
@@ -1507,7 +1532,7 @@ msgid "We could not send the code"
 msgstr "हम कोड नहीं भेज सके"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:66
+#: src/copy/sign-in.ts:67
 msgid "We could not sign you in"
 msgstr "हम आपको साइन इन नहीं कर सके"
 
@@ -1527,7 +1552,7 @@ msgid "We tried to send by SMS to"
 msgstr "हमने SMS से इस नंबर पर भेजने की कोशिश की"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:87
+#: src/copy/sign-in.ts:88
 msgid "We'll link this Google login to your number."
 msgstr "हम यह Google लॉगिन आपके नंबर से जोड़ेंगे।"
 
@@ -1557,7 +1582,7 @@ msgid "Yesterday · {date}"
 msgstr "कल · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:68
+#: src/copy/sign-in.ts:69
 msgid "You are in"
 msgstr "आप अंदर हैं"
 
@@ -1567,7 +1592,7 @@ msgid "You become this company's first EPC owner."
 msgstr "आप इस कंपनी के पहले EPC Owner बनते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:60
+#: src/copy/sign-in.ts:61
 msgid "You can ask for {perWindow} codes every {windowMinutes} minutes, and {day} a day."
 msgstr "आप हर {windowMinutes} मिनट में {perWindow} कोड, और दिन में {day} कोड माँग सकते हैं।"
 

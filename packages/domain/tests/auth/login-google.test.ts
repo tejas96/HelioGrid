@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { GoogleToken } from '../../src/auth/google-sign-in';
-import { frameKindOf } from '../../src/auth/login-frame';
+import { frameKindOf } from '../../src/auth/login-frame-kind';
 import { loginReducer } from '../../src/auth/login-reducer';
 import { INITIAL_LOGIN_STATE, type LoginState } from '../../src/auth/login-state';
 import { IN_FORMATS } from '../../src/format/pack';
