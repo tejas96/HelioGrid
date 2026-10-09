@@ -82,7 +82,11 @@ describe('a request answered', () => {
   it.each(['capped', 'locked', 'delivery-failed', 'failed', 'unreached'] as const)(
     '%s releases the gap, counts no send and marks the channel asked for',
     (outcome) => {
-      const next = loginReducer(sentState, { type: 'request-ended', outcome, now: NOW });
+      const resent = {
+        ...sentState,
+        pending: { kind: 'request' as const, phone: PHONE, channel: 'sms' as const },
+      };
+      const next = loginReducer(resent, { type: 'request-ended', outcome, now: NOW });
       expect(next).toMatchObject({
         request: outcome,
         sends: 1,
@@ -99,8 +103,19 @@ describe('a request answered', () => {
     expect(next).toEqual(state({ request: 'unreached' }));
   });
 
+  it('a send again clears the last no-answer block while it runs', () => {
+    const unreached = state({ request: 'unreached' });
+    expect(loginReducer(unreached, { type: 'send', pack: IN_FORMATS }).request).toBeNull();
+  });
+
   it('a server-side gap starts the full gap again and places nothing', () => {
-    const offered = state({ step: 'otp', channel: 'voice', placed: false, sends: 1 });
+    const offered = state({
+      step: 'otp',
+      channel: 'voice',
+      placed: false,
+      sends: 1,
+      pending: { kind: 'request', phone: PHONE, channel: 'voice' },
+    });
     const next = loginReducer(offered, { type: 'request-ended', outcome: 'cooldown', now: NOW });
     expect(next).toMatchObject({
       placed: false,
@@ -117,6 +132,7 @@ describe('a request answered', () => {
       verify: 'mismatch' as const,
       triesLeft: 2,
       filled: true,
+      pending: { kind: 'request' as const, phone: PHONE, channel: 'sms' as const },
     };
     const next = loginReducer(tried, { type: 'request-ended', outcome: 'sent', now: NOW });
     expect(next).toMatchObject({
@@ -243,6 +259,7 @@ describe('asking again', () => {
   });
 });
 
+/** Every press but Google, which takes over only the number step's send (`login-google.test.ts`). */
 describe('while a round trip is in flight', () => {
   const busy = {
     ...cooled,
@@ -258,7 +275,6 @@ describe('while a round trip is in flight', () => {
     { type: 'call' },
     { type: 'sms' },
     { type: 'change-number' },
-    { type: 'google' },
     { type: 'use-number' },
     { type: 'sign-in-by-number' },
   ];

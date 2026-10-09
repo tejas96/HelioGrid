@@ -4,7 +4,8 @@
  * `googleLinkFrame`); the code step's Google words are `signInWords`'.
  */
 import {
-  type FrameTone,
+  type BlockAnnouncement,
+  type BlockTone,
   type GoogleLinkFrame,
   OTP_INVALIDATIONS_TO_LOCK,
   OTP_LOCK_MINUTES,
@@ -16,10 +17,12 @@ import { SIGN_IN } from './sign-in';
 
 /** A tinted block's words on the door: what happened, and why when the title alone does not say. */
 export interface DoorBlockWords {
-  readonly tone: FrameTone;
+  readonly tone: BlockTone;
   readonly title: string;
   /** Omitted where the title says it all, as the lock's does (`F7-46`). */
   readonly body?: string;
+  /** How it is spoken when it appears; omitted, it is read in its place like any text. */
+  readonly announce?: BlockAnnouncement;
 }
 
 /** The phone step's Google part: the "or", the control, and a sign-in that did not finish. */

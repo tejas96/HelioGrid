@@ -5,6 +5,7 @@ import {
   loginFrame,
 } from '@heliogrid/domain';
 import { describe, expect, it } from 'vitest';
+import { SHELL } from '../src/copy/shell';
 import { SIGN_IN } from '../src/copy/sign-in';
 import { doorNoticeWords, signInWords } from '../src/copy/sign-in-frames';
 import { createTranslator, type MessageRef } from '../src/runtime';
@@ -49,8 +50,23 @@ describe('doorNoticeWords — the number step names what failed, then both sides
       tone: 'danger',
       title: t(SIGN_IN.requestFailedTitle),
       body: t(SIGN_IN.notReached),
+      announce: 'alert',
     });
     const en = await createTranslator('en');
     if (language !== 'en') expect(words.body).not.toBe(en.t(SIGN_IN.notReached));
   });
+});
+
+describe('doorNoticeWords — a removal found at the door is a fact, not a refusal (S1.wrong.4)', () => {
+  it.each(['en', 'hi', 'mr'] as const)(
+    'access-removed in %s: the info tone, the title alone',
+    async (language) => {
+      const { t } = await createTranslator(language);
+      expect(doorNoticeWords(t, 'access-removed')).toEqual({
+        tone: 'info',
+        title: t(SHELL.accessRemoved),
+        announce: 'status',
+      });
+    },
+  );
 });

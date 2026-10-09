@@ -47,7 +47,7 @@ export function CodeStep({
       {lead}
       <View style={lead === undefined ? styles.codeColumn : styles.codeColumnAfterLead}>
         <CodeTitle words={words} phone={state.phone} />
-        {words.block === null ? null : <TintedBlock {...words.block} />}
+        {words.block === null ? null : <TintedBlock {...words.block} announce="alert" />}
         {frame.code === 'absent' ? null : (
           <OtpInput
             length={OTP_LENGTH}

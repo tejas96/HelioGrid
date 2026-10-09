@@ -238,12 +238,12 @@ msgid "Account"
 msgstr "खाते"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:110
+#: src/copy/shell.ts:113
 msgid "Add a lead from your home"
 msgstr "तुमच्या होममधून लीड जोडा"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:103
+#: src/copy/shell.ts:106
 msgid "Add lead"
 msgstr "लीड जोडा"
 
@@ -314,7 +314,7 @@ msgstr "कॉलिंग नियम"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:15
-#: src/copy/shell.ts:91
+#: src/copy/shell.ts:94
 msgid "Campaigns"
 msgstr "कॅम्पेन"
 
@@ -396,12 +396,12 @@ msgstr "पुष्टी झालेले"
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:80
 msgid "Continue with Google"
-msgstr "Google ने पुढे जा"
+msgstr "Google ने पुढे चला"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:81
 msgid "Continue with Google. Signs you in to the same account as your mobile number."
-msgstr "Google ने पुढे जा. तुमच्या मोबाइल नंबरच्याच खात्यात साइन इन करते."
+msgstr "Google ने पुढे चला. तुमच्या मोबाइल नंबरच्याच खात्यात साइन इन करते."
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:45
@@ -436,7 +436,7 @@ msgstr "कंपनी तयार करा"
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:16
 msgid "Create a company account"
-msgstr "कंपनी खाते तयार करा"
+msgstr "कंपनीचे खाते तयार करा"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:75
@@ -484,7 +484,7 @@ msgid "design"
 msgstr "डिझाइन"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:78
+#: src/copy/shell.ts:81
 msgid "Design Engineer"
 msgstr "डिझाइन इंजिनिअर"
 
@@ -509,7 +509,7 @@ msgid "Enter the code"
 msgstr "कोड टाका"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:70
+#: src/copy/shell.ts:73
 msgid "EPC Owner"
 msgstr "EPC मालक"
 
@@ -519,7 +519,7 @@ msgid "Estimated"
 msgstr "अंदाजित"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:80
+#: src/copy/shell.ts:83
 msgid "Field Technician"
 msgstr "फील्ड तंत्रज्ञ"
 
@@ -529,7 +529,7 @@ msgid "Filter notifications"
 msgstr "सूचना गाळा"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:75
+#: src/copy/shell.ts:78
 msgid "Finance"
 msgstr "वित्त"
 
@@ -549,6 +549,16 @@ msgid "Get the code by call"
 msgstr "कॉलवर कोड मिळवा"
 
 #. js-lingui-explicit-id
+#: src/copy/shell.ts:63
+msgid "Go to home"
+msgstr "होमवर जा"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:62
+msgid "Go to sign in"
+msgstr "साइन इनवर जा"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:51
 msgid "Go to your leads"
 msgstr "तुमच्या लीडकडे जा"
@@ -556,7 +566,7 @@ msgstr "तुमच्या लीडकडे जा"
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:85
 msgid "Google sign-in did not finish"
-msgstr "Google साइन इन पूर्ण झाले नाही"
+msgstr "Google ने साइन इन पूर्ण झाले नाही"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:49
@@ -604,7 +614,7 @@ msgid "Hide these {count}"
 msgstr "या {count} लपवा"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:86
+#: src/copy/shell.ts:89
 msgid "Home"
 msgstr "होम"
 
@@ -614,7 +624,7 @@ msgid "How linking works"
 msgstr "जोडणी कशी होते"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:76
+#: src/copy/shell.ts:79
 msgid "HR/Admin"
 msgstr "HR/अ‍ॅडमिन"
 
@@ -654,7 +664,7 @@ msgid "Indicative proposal. Generation and savings are estimated from system siz
 msgstr "सूचक प्रस्ताव. वीजनिर्मिती आणि बचतीचा अंदाज सिस्टमच्या आकारावरून आणि ठिकाणावरून केला आहे. साइट सर्व्हे आणि सावली विश्लेषणातून अंतिम आकडे निश्चित होतील."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:81
+#: src/copy/shell.ts:84
 msgid "Installation Team Member"
 msgstr "इन्स्टॉलेशन टीम सदस्य"
 
@@ -669,7 +679,7 @@ msgid "It may be your connection or ours. Try again in a moment."
 msgstr "हे तुमच्या कनेक्शनमुळे किंवा आमच्या बाजूने असू शकते. थोड्या वेळाने पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:87
+#: src/copy/shell.ts:90
 msgid "Leads"
 msgstr "लीड्स"
 
@@ -689,7 +699,7 @@ msgid "market prices"
 msgstr "बाजारभाव"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:74
+#: src/copy/shell.ts:77
 msgid "Marketing"
 msgstr "मार्केटिंग"
 
@@ -704,7 +714,7 @@ msgid "Mobile number"
 msgstr "मोबाइल नंबर"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:92
+#: src/copy/shell.ts:95
 msgid "More"
 msgstr "आणखी"
 
@@ -831,7 +841,7 @@ msgid "Opening Google sign-in"
 msgstr "Google साइन इन उघडत आहोत"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:72
+#: src/copy/shell.ts:75
 msgid "Operations"
 msgstr "ऑपरेशन्स"
 
@@ -872,7 +882,7 @@ msgid "Payments"
 msgstr "पेमेंट"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:90
+#: src/copy/shell.ts:93
 msgid "People"
 msgstr "लोक"
 
@@ -897,17 +907,17 @@ msgid "Project Board"
 msgstr "प्रोजेक्ट बोर्ड"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:73
+#: src/copy/shell.ts:76
 msgid "Project Manager"
 msgstr "प्रोजेक्ट मॅनेजर"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:89
+#: src/copy/shell.ts:92
 msgid "Projects"
 msgstr "प्रोजेक्ट्स"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:88
+#: src/copy/shell.ts:91
 msgid "Proposals"
 msgstr "प्रस्ताव"
 
@@ -977,12 +987,12 @@ msgid "Sales"
 msgstr "सेल्स"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:77
+#: src/copy/shell.ts:80
 msgid "Sales Executive"
 msgstr "सेल्स एक्झिक्युटिव्ह"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:71
+#: src/copy/shell.ts:74
 msgid "Sales Manager"
 msgstr "सेल्स मॅनेजर"
 
@@ -1147,12 +1157,12 @@ msgid "Something went wrong on our side. Try again."
 msgstr "आमच्याकडून काहीतरी चूक झाली. पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:114
+#: src/copy/shell.ts:117
 msgid "Start a survey from your home"
 msgstr "तुमच्या होममधून सर्व्हे सुरू करा"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:104
+#: src/copy/shell.ts:107
 msgid "Start survey"
 msgstr "सर्व्हे सुरू करा"
 
@@ -1167,7 +1177,7 @@ msgid "subsidy rules"
 msgstr "अनुदान नियम"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:79
+#: src/copy/shell.ts:82
 msgid "Survey Engineer"
 msgstr "सर्व्हे इंजिनिअर"
 
@@ -1337,7 +1347,7 @@ msgid "This is a material estimate and a visual model, not a structural check. A
 msgstr "हा साहित्याचा अंदाज आणि एक दृश्य मॉडेल आहे, संरचनात्मक तपासणी नाही. संरचनेची पडताळणी अभियंत्याने करणे आवश्यक आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:63
+#: src/copy/shell.ts:66
 msgid "This is version {current}. HelioGrid now needs version {required} or later."
 msgstr "हे व्हर्जन {current} आहे. HelioGrid ला आता व्हर्जन {required} किंवा त्यानंतरचे हवे आहे."
 
@@ -1350,6 +1360,11 @@ msgstr "हा नंबर आधीच तुमच्या टीममध�
 #: src/copy/sign-in.ts:107
 msgid "This number is linked to another Google account"
 msgstr "हा नंबर दुसऱ्या Google खात्याला जोडलेला आहे"
+
+#. js-lingui-explicit-id
+#: src/copy/shell.ts:61
+msgid "This page does not exist"
+msgstr "हे पान अस्तित्वात नाही"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:55
@@ -1387,7 +1402,7 @@ msgid "Three things, and you're in. Everything else comes later, inside the prod
 msgstr "तीन गोष्टी, आणि तुम्ही आत आहात. बाकी सगळे नंतर, प्रॉडक्टच्या आत येते."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:61
+#: src/copy/shell.ts:64
 msgid "Today · {date}"
 msgstr "आज · {date}"
 
@@ -1412,7 +1427,7 @@ msgid "Try again. If it keeps failing, tell your admin what you were doing."
 msgstr "पुन्हा प्रयत्न करा. वारंवार अयशस्वी होत असल्यास, तुम्ही काय करत होता ते तुमच्या अ‍ॅडमिनला सांगा."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:120
+#: src/copy/shell.ts:123
 msgid "Two presets, one home"
 msgstr "दोन प्रीसेट, एक होम"
 
@@ -1432,17 +1447,17 @@ msgid "Unread. {title}. {body}. {time}."
 msgstr "न वाचलेले. {title}. {body}. {time}."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:62
+#: src/copy/shell.ts:65
 msgid "Update HelioGrid"
 msgstr "HelioGrid अपडेट करा"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:98
+#: src/copy/shell.ts:101
 msgid "Update on Google Play"
 msgstr "Google Play वर अपडेट करा"
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:97
+#: src/copy/shell.ts:100
 msgid "Update on the App Store"
 msgstr "App Store वर अपडेट करा"
 
@@ -1477,12 +1492,12 @@ msgid "Use my number instead. Goes back to the phone step."
 msgstr "त्याऐवजी माझा नंबर वापरा. फोनच्या पायरीवर परत जाते."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:111
+#: src/copy/shell.ts:114
 msgid "Use this button to add a lead."
 msgstr "लीड जोडण्यासाठी हे बटण वापरा."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:115
+#: src/copy/shell.ts:118
 msgid "Use this button to start a survey."
 msgstr "सर्व्हे सुरू करण्यासाठी हे बटण वापरा."
 
@@ -1659,7 +1674,7 @@ msgid "Your current plan doesn't include this."
 msgstr "तुमच्या सध्याच्या प्लॅनमध्ये हे समाविष्ट नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/shell.ts:121
+#: src/copy/shell.ts:124
 msgid "Your home is the {preset} one. Open the title to switch."
 msgstr "तुमचे होम {preset} चे आहे. बदलण्यासाठी शीर्षक उघडा."
 

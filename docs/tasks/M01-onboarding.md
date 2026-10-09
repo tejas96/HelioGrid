@@ -675,7 +675,7 @@ T-M01-039 — a failure says what happened: the door and the company step tell "
 - Google sign-in failures: `m-google-failed` already says *did not finish* and blames no side; its words are unchanged (only its Hindi and Marathi are proven, D139).
 - A deep link's return after sign-in (`T-M01-040`), lifting the door's parts into `packages/ui` (`T-M01-041`), the door's 200%-text and keyboard defects (D109, D132), carrying the door's language into signup (D143 — decision below).
 - `ApiErrorText` (finding 2): no screen renders a raw API failure.
-- The number step's not-reached block is not announced to a screen reader yet: `TintedBlock` has no live-region option (D110), which part c's access-removed block also needs — it lands there. `NoConnection`'s English *Last tried at* line after a failed retry → D168.
+- `NoConnection`'s English *Last tried at* line after a failed retry → D168. A code-step resend with no answer twice is not spoken the second time → D170. (The door's blocks are spoken since part c: `TintedBlock`'s `announce`.)
 
 ##### Readiness and dependencies
 - Landed: `T-M01-038` (#249). Design check: READY, 2026-10-09 (above).
@@ -721,13 +721,14 @@ flowchart LR
   E[data session ended] --> D[domain doorNotice] --> PS[web and phone PhoneStep]
   C[data useCompanySignup: unreached] --> W[i18n companySignupWords, joinSteerWords] --> CS[web and phone CompanyStep, JoinSteer]
   NF[web app/not-found.tsx] --> NFS[web NotFoundScreen]
+  NI[web app/inside/not-found.tsx] --> SNF[web ShellNotFoundScreen]
 ```
 
 ##### Package changes
-- **domain:** `OtpRequestOutcome` and `OtpVerifyOutcome` gain `'unreached'`; `SessionSnapshot.unreachable`, set by `boot-failed` (no new event); `doorNotice(snapshot)` → `'access-removed' | null`. The orphan `failure` comment in `session.ts:112-116` goes.
+- **domain:** `OtpRequestOutcome` and `OtpVerifyOutcome` gain `'unreached'`; `SessionSnapshot.unreachable`, set by `boot-failed` (no new event); `doorNotice(state, ended, door)` → `'not-reached' | 'access-removed' | null` (the removal on the front door only); `BlockTone` (`danger` · `warning` · `info`) moves here from `ui`. The orphan `failure` comment in `session.ts:112-116` goes.
 - **data:** the store classifies `failure` (`cancelled` excluded) and gains `retryBoot(): Promise<boolean>`; `CompanyCreation` and `JoinRequesting` gain `'unreached'`; new `useConnection()` on `./react`.
 - **i18n:** the not-reached block (`sign-in.ts`), the no-connection words (new `copy/connection.ts`), the signup not-reached and refusal words, the copy pass, the not-found words; catalogs regenerated.
-- **ui:** none — `NoConnection`, `TintedBlock`, `Explainer`, `DoorFrame` are used as they are.
+- **ui:** `TintedBlock` gains `announce` (part c); `NoConnection`, `Explainer`, `DoorFrame` are used as they are.
 - **web · mobile:** the gates, shells, door and signup screens render what the packages pick; web adds `app/not-found.tsx`.
 - **Protections (Law 12):** no brand, token, table or error code. The new union members are held by typecheck: `FrameKind` by `FRAMES` and `FRAME` (full `Record`s), the request outcomes by `REQUEST_REFUSAL` (a full `Record`); the verify outcomes by review (an `if` chain); `WriteFailure` (part b) — its blocks by a full `Record` in `failureBlock`, `failureOf` and the heading by review. The not-found route joins `e2e-flow-per-screen` through its spec and baseline (part c).
 
@@ -778,11 +779,19 @@ None — no stored shape changes.
 | b | modify | `packages/domain/src/auth/signup-view.ts` · `index.ts` | built, not planned: `WriteFailure` (`failed` · `unreached`), the vocabulary the hook and the words both read | a vocabulary lives in domain (Law 11) |
 | c | modify | `packages/domain/src/auth/door-view.ts` · `tests/auth/door-view.test.ts` | `doorNotice` gains `access-removed` (the function lands in part a) | the door's view |
 | c | modify | `packages/i18n/src/copy/sign-in.ts` · `shell.ts` | the not-found words; *Sent by SMS to* as a line | the door's and the app's words |
-| c | modify | `packages/i18n/src/locales/{en,hi,mr}/messages.{po,ts}` | regenerated (generated) | the catalogs |
+| c | modify | `packages/i18n/src/locales/{en,hi,mr}/messages.{po,ts}` | regenerated (generated); three door words set to the board's renders (QA) | the catalogs |
 | c | modify | `apps/web/features/auth/components/PhoneStep.tsx` · `apps/mobile/src/screens/shared/PhoneStep.tsx` | the access-removed block (`role="status"`); D142 Google per the board | the phone step |
 | c | modify | `apps/web/features/auth/components/CodeTitle.tsx` · `CodeStep.tsx` · `apps/mobile/src/screens/shared/CodeTitle.tsx` · `CodeStep.tsx` | D142: the lead-in line, *Send a new code* | the code step |
-| c | add | `apps/web/app/not-found.tsx` · `apps/web/features/shell/NotFoundScreen.tsx` | the route and its screen | Next's file convention; the screen beside the shell's |
-| c | add | `tests/e2e/web/not-found.spec.ts` · its two baselines (generated, CI-drawn, commit 2) | AC-8 | the routes' specs |
+| c | add | `apps/web/app/not-found.tsx` · `apps/web/features/auth/NotFoundScreen.tsx` · modify `features/auth/index.ts` | the route and its screen — in `auth`, not `shell` (built against planned): outside the shell it wears the front door's header and language control, which `auth` owns | the door's feature |
+| c | modify | `packages/domain/src/auth/login-frame-parts.ts` · `index.ts` · `packages/i18n/src/copy/sign-in-google.ts` | built, not planned: `BlockTone` (`danger` · `warning` · `info`) moves from `packages/ui` to domain beside `FrameTone`, so `DoorBlockWords` can carry the access-removed block's `info` and `TintedBlock` reads the same type | a vocabulary lives in domain (Law 11) |
+| c | modify | `packages/i18n/tests/sign-in-frames.test.ts` | built, not planned: the access-removed block's words in en/hi/mr | i18n's `copy/` functions are unit-tested |
+| c | add | `tests/e2e/web/not-found.spec.ts` | AC-8 — signed out and inside the shell; **no baseline** (delta: `e2e-flow-per-screen` holds looks for `page` routes only, and `not-found` is not one, so a look would be held by nothing — no second commit) | the routes' specs |
+| c | add | `apps/web/app/(inside)/not-found.tsx` | delta: the not-found frame inside the shell for a door the shell does not offer (ruling of finding 9) — heading and *Go to home*, no door header | Next's file convention, per group |
+| c | add | `apps/web/features/shell/ShellNotFoundScreen.tsx` · `components/EmptyShellPage.tsx` · modify `PlaceholderScreen.tsx` · `index.ts` | built, not planned (review): the inside form is the shell's — it stands on the shell's page class — and its page markup is `PlaceholderScreen`'s, now written once | the shell feature; zero duplication |
+| c | modify | `packages/ui/src/components/TintedBlock/TintedBlock.types.ts` · `TintedBlock.tsx` · `TintedBlock.native.tsx` | delta: `announce` — a block that appears after a press says itself on arrival (web `role="alert"`, an announcement on both phones: a live region that mounts holding its words is not reliably spoken, and `Text`'s `live` is a live region iOS never speaks); set on the door's own blocks (phone step, code step); D110 narrowed to the signup step's blocks (built against planned: their files are part b's and d's) | the one block (Law 7) |
+| c | — | `packages/ui/src/components/PhoneField/PhoneField.types.ts` · `PhoneField.tsx` · `PhoneField.native.tsx` | **planned, not built:** `CodeTitle` draws the lead-in as a `body-sm` line and the number in `mono`, so `PhoneValue` keeps its required overline | — |
+| c | modify | `packages/domain/src/auth/login-reducer.ts` · `tests/auth/login-state.test.ts` · `login-google.test.ts` | delta: *Continue with Google* stays live while the number step's code is sending (D142, the board's `m-loading`): a Google press then takes the round trip, and the send's late answer is dropped, also once Google has ended; the screens no longer disable it themselves. A send again clears the last no-answer block while it runs, so the next one is spoken afresh (review) | the reducer |
+| c | modify | `packages/data/src/react/use-sign-in.ts` | `doorNotice` reads the session's `ended` and the door | the one sign-in hook |
 | d | modify | `packages/i18n/src/copy/company-signup.ts` | the copy pass; the three Explainers' pages; the two helpers (D142) | the signup's words |
 | d | modify | `packages/i18n/src/locales/{en,hi,mr}/messages.{po,ts}` | regenerated; hi/mr from the board's renders where drawn (generated) | the catalogs |
 | d | modify | `apps/web/features/auth/CompanySignupScreen.tsx` · `components/KnownNumber.tsx` · `components/PhoneStep.tsx` · `components/CodeStep.tsx` | the words; the Explainers; the number helper and the code hint (D142) | the screens |
@@ -802,6 +811,9 @@ None — no wire boundary changes. The api already answers every case; only how 
 - **Screenshot baselines:** parts c and d change web looks; each lands its CI-drawn baselines in a second commit the owner approves (`tests/e2e/CLAUDE.md`).
 - **Offline unmounts the inside page (part b):** both shells replace the page with `NoConnection`, so a form typed inside the shell would lose its values on a short drop. Today the inside routes are the home and placeholder doors, so nothing is lost; the first inside form keeps its values across the screen (D169).
 - **Hindi and Marathi drafted, not from the board (part b):** *Nothing was created, so trying again is safe.* (`m-error` has no language render) and *Your request may already be with the owner.* (`m-request-not-reached` has none) — owed a native review.
+- **Words set to the board's language renders (part c QA):** hi *Create a company account* → *कंपनी का खाता बनाएँ*; mr → *कंपनीचे खाते तयार करा*; mr *Continue with Google* → *Google ने पुढे चला*, and its spoken name with it — the door's earlier drafts differed from `m-google-failed-hi`/`-mr`, `m-access-removed-hi`/`-mr` and `m-not-reached-hi`/`-mr`.
+- **Hindi and Marathi drafted, not from the board (part c):** *This page does not exist*, *Go to sign in*, *Go to home* (`m-not-found` has no language render) — owed a native review.
+- **A spoken block is not heard on a device yet (part c):** the simulators drive no screen reader, so `announce` is proven by its markup (web `role="alert"`) and its code; the owner hears it once with VoiceOver, TalkBack and a web screen reader.
 
 ##### Acceptance criteria and proof
 - **AC-1** — A request that got no answer reads as *could not be reached*, never *something on our side failed*; a server refusal keeps its own words. → proof: unit test of `loginFrame`; QA web and phone with the network off.
@@ -824,7 +836,7 @@ None — no wire boundary changes. The api already answers every case; only how 
 | AC-2 rule | main-dev | required | unit | `boot-failed` from `checking` keeps `checking` + `unreachable`; again changes nothing; `boot-signed-out` and a loss still open the door; planted red: `boot-failed` → `SIGNED_OUT` | `session-transitions.test.ts` |
 | AC-2 web | qa-web | required | `/home` signed in | api stopped, reload → `NoConnection`; *Try again* while still stopped → *Still no answer from HelioGrid.*; api started, *Try again* → home, still signed in | QA + `login.spec.ts` (refused boot, axe, a retry with no answer) |
 | AC-2 iOS · Android | qa-ios · qa-android | required | cold start | api stopped → `NoConnection`; api back, *Try again* → home | QA |
-| AC-3 rule | main-dev | required | unit | `ended` set at the door → `access-removed`; signed in → null | `door-view.test.ts` |
+| AC-3 rule | main-dev | required | unit | `ended` set at the front door → `access-removed`, kept after *Change number*; on the code step, on the signup door, or under a Google failure → null; planted red: `ended !== null` → `false` | `door-view.test.ts` |
 | AC-3 web · iOS · Android | qa-web · qa-ios · qa-android | required | door | a member removed while signed out, then a cold start → the block; sign in again → gone; side-by-side `m-access-removed` | QA |
 | AC-4 words | main-dev | required | unit | `unreached` → *We could not confirm the company* / *Your company may have been made — trying again cannot make a second.*; refusal → *Nothing was created, so trying again is safe.*; the join's two | `company-signup-frames.test.ts` |
 | AC-4 web · iOS · Android | qa-web · qa-ios · qa-android | required | step 3 | api stopped, *Create company* → `m-not-reached`; *Request to join* → `m-request-not-reached`; side-by-side both, and `m-not-reached` in Hindi and Marathi | QA + `company-signup.spec.ts` |
@@ -834,20 +846,22 @@ None — no wire boundary changes. The api already answers every case; only how 
 | AC-5 phone twin | qa-android | required | shell | Wi-Fi and data off → `NoConnection`; on → the home (the iOS simulator follows the Mac's network and has no airplane mode — not reachable there) | QA |
 | AC-6 | — | not_applicable | — | struck by the owner's ruling (finding 2): no screen renders a raw API failure | — |
 | AC-7 | qa-ios | required | cold start | the debugger warning read; fixed or recorded | QA + Metro log |
-| AC-8 | ci | required | `e2e-web` | `/no-such-page` signed out → *This page does not exist*, *Go to sign in*; signed in → *Go to home* | `not-found.spec.ts` |
+| AC-8 | ci | required | `e2e-web` | `/no/such-page` signed out → *This page does not exist*, *Go to sign in*; `/no-such-door` signed in → inside the shell, *Go to home*. A one-part address signed out matches the shell's `[door]` route, whose gate sends it to sign in first | `not-found.spec.ts` |
 | AC-8 look | qa-web | required | `/no-such-page` | side-by-side `m-not-found` (375), `d-not-found` (1536), in Hindi | QA |
 | AC-9 | qa-web · qa-ios · qa-android | required | signup | side-by-side every `SCR-M01-02` frame the app reaches, 375 and 1536, the Hindi and Marathi renders | QA |
-| AC-10 | qa-web · qa-ios · qa-android | required | door | side-by-side `m-google-failed-hi`/`-mr`; the four D142 items as ruled | QA |
+| AC-10 | qa-web · qa-ios · qa-android | required | door | side-by-side `m-google-failed-hi`/`-mr`; the four D142 items as ruled. The web reaches `m-google-failed` through Google's return with an error (`/login/google#error=server_error`); the phones' native sheet cannot be made to fail in QA, so there the frame is the same `PhoneStep` and `phoneGoogleWords` the web draws, its words in `sign-in-google.test.ts` | QA |
 | gate | evaluator | required | all | `pnpm check:all` green, invariants on `heliogrid_test` | gate |
 
 **Planted reds seen (part a):** `refusalFrameOf` mapping `request: 'unreached'` to `request-failed` failed `login-frame.test.ts` › *an SMS request that got no answer*, *a call request that got no answer*, *request-unreached / call-request-unreached keeps its refusal twin's code field and controls*; `boot-failed` → `SIGNED_OUT` failed `session-transitions.test.ts` › *holds a boot check that got no answer, or a server failure, signed in and unreachable*; `auth-unreached` → `OUR_SIDE` failed `sign-in-frames.test.ts` › *auth-unreached carries its own block*. Each restored from a scratchpad copy and green again.
+
+**Planted reds seen (part c):** `doorNotice` with `ended !== null` → `false` failed `door-view.test.ts` › *a removal the boot check found, at the door as it opens* and *a removal, back on the number after Change number*; the door check dropped failed › *the signup door draws no removal*; the Google-failed check dropped failed › *a removal under a Google sign-in that did not finish*; `requestEnded`'s guard back to `pending !== null && kind !== 'request'` failed `login-google.test.ts` › *a send Google took over stays dropped once the sheet is cancelled* / *failed*; the takeover without `step === 'phone'` failed › *Google pressed while a resend on the code step is ignored*. Each restored from a scratchpad copy.
 | CI | ci | required | `quality`, `e2e-web` | green on the head SHA | CI |
 
 ##### Delivery size
 - **Split into four parts** — one PR each, web and phone together in every part.
 - **a** · door and boot · planned ~20 files (6 generated) · code ~260, tests ~170. **Built (delta, 2026-10-09):** 31 files (6 generated, 1 doc) · code 181, tests 123 authored lines — 9 built but not planned, 2 planned but not built (the file table names each); lines under the estimate. **Built after review (second delta):** 39 files (6 generated, 2 docs) · code 356, tests 182 authored lines, of which about 120 are `login-frame.ts`'s frame-kind decision moved whole into `login-frame-kind.ts` — the review's retry, 401, signup-route, words-test and file-size fixes and D78's push file.
 - **b** · signup failures and the offline shell · planned ~22 files (6 generated) · code ~230, tests ~150. **Built (delta, 2026-10-09):** 27 files (6 generated, 2 docs) · code 270, tests 130 authored lines — 5 built but not planned (the file table names each).
-- **c** · access removed, not-found, the door's D142 items · ~22 files (6 generated, 2 baselines) · code ~250, tests ~120.
+- **c** · access removed, not-found, the door's D142 items · planned ~22 files (6 generated, 2 baselines) · code ~250, tests ~120. **Delta before build (2026-10-09):** ~31 files (6 generated, 3 docs, no baselines) · code ~300, tests ~140 — `packages/ui` joins (`TintedBlock.announce`, `PhoneValue.label` optional), a second not-found file inside the shell, the reducer's Google-while-sending, D110 joins. **Built:** 34 files (6 generated, 3 docs) · code 207, tests 90 authored lines — `PhoneValue` not built; `BlockTone` moved to domain; the not-found screen in `auth`; D110 narrowed, not deleted.
 - **d** · the signup copy pass · ~16 files (6 generated, 2 baselines) · code ~180, tests ~40.
 - Order: a → b → c → d; each part's tests first.
 
@@ -856,7 +870,7 @@ None — no wire boundary changes. The api already answers every case; only how 
 |---|---|---|---|---|
 | a | a door request with no answer and a boot during an outage: the not-reached block, `NoConnection` with *Try again* on both apps; D78 read | AC-1, AC-2, AC-7 | — | shipped |
 | b | the company step's and the join's no-answer frames; the offline shell on both apps | AC-4, AC-5 | a | shipped |
-| c | the door's access-removed block, the web's not-found frame, `m-google-failed` in Hindi and Marathi, the door's D142 items | AC-3, AC-8, AC-10 | a | open |
+| c | the door's access-removed block, the web's not-found frame, `m-google-failed` in Hindi and Marathi, the door's D142 items | AC-3, AC-8, AC-10 | a | shipped |
 | d | `SCR-M01-02`'s copy pass and its D142 helpers | AC-9 | b | open |
 
 #### Runtime
@@ -886,6 +900,18 @@ None — no wire boundary changes. The api already answers every case; only how 
 **Part b · QA and gate (2026-10-09)** — the same stack, branch `feat/T-M01-039b` stacked on part a (PR #264). Five phases, the api stopped and started by Main: P1 a fresh number to step 3; P2 api stopped → *Create company* → `m-not-reached` (English, Hindi, Marathi); P3 api up → *Try again* makes the company, a second fresh number is steered to the same company (Android also: Wi-Fi and data off → `NoConnection`, *Try again* offline → *Still no answer*, on → home by itself); P4 api stopped → *Request to join* → `m-request-not-reached`; P5 api up → *Send the request again* → request sent. qa-web first failed the 375 frame (the pinned finding over City at rest) and withdrew it after measuring City reachable by scroll and by Tab — the board's decision-9 rule; qa-ios's first P4 was blocked by a Metro dev reload Main caused by editing packages mid-phase, then redone. qa-api: the same retry key twice → `201` with one company; a different body → `422 IDEMPOTENCY_KEY_REUSED`. Board pictures `board/m-signup-not-reached.png`, `board/m-request-not-reached.png` (100% zoom); side-by-sides `side/m-signup-not-reached.png`, `side/m-request-not-reached.png` (board, iOS, Android; web by measurement). `pnpm check:all` once: pass (3,521 unit tests); nothing regenerated.
 
 **Measurements (part b)** — helper runs: `qa-web` 1 (six continuations), `qa-ios` 1 (seven), `qa-android` 1 (five), `qa-api` 1, `reviewer` 1 (two continuations), `evaluator` 1; one full gate. Main's own turns and tokens are not counted. Size: planned ~22 files, code ~230, tests ~150; built 27 files (6 generated, 2 docs), code 270, tests 130 authored lines — the delta the owner approved.
+
+**Part c · QA and gate (2026-10-09/10)** — the same stack, branch `feat/T-M01-039c` (part b merged as #265 meanwhile; part c sits on `main`). `qa-api` invited three fresh numbers into the `…904` company (+91 98765 07501 web, 07502 iOS, 07503 Android), each accepted. Phase A signed each in: the code step's lead-in *Sent by SMS to* and the number in mono bold on all three; *Continue with Google* never disabled while *Sending the code* on the web (a MutationObserver, two runs; the phones' send ended before a dump — the reducer's planted reds stand there); not-found signed out at 375 and 1536 (exact to `d-not-found` at a 976 viewport) and in Hindi, inside the shell and signed in. Both phones first opened on an old signup draft with no way out (D146): Main reset the simulator keychain and cleared the emulator app's data. Review: ten findings, all fixed, then one (the access-removed block spoken as an alert, against decision 16) → `BlockAnnouncement`, then CLEAN. Phase B: `qa-api` deactivated the three memberships; a cold start (a reload on the web) opened the door with the info block, `role="status"`, in English, Hindi and Marathi, kept across the switch, gone after a new sign-in (…901/…902/…903). The first full gate failed one row: `m-google-failed-hi`/`-mr` had no side-by-side — the web reaches it through Google's error return, so it was driven and measured, and the same pass found three door words differing from the board's renders (fixed; review CLEAN; rerun on all three). The second full gate passed (3,538 unit tests, invariants green on `heliogrid_test`). Found and deferred: D170 (a code-step resend unanswered twice is spoken once), D171 (the web's signed-out language lost on a full load), D172 (the Devanagari heading box puts hi/mr 7 px lower), D173 (iOS exposes the secondary Google button as an image — predates this part).
+
+**Measurements (part c)** — helper runs: `qa-web` 1 (five continuations), `qa-ios` 1 (three), `qa-android` 1 (three), `qa-api` 1 (three), `reviewer` 1 (three continuations), `evaluator` 1 (one); two full gates. Main's own turns and tokens are not counted. Size: planned ~31 files, code ~300, tests ~140 (the delta); built 39 files (6 generated, 3 docs), code 230, tests 149 authored lines.
+
+| resource | initial | at part c's card |
+|---|---|---|
+| web `3002` · worker | none | stopped (`started_by_task`) |
+| api `8084` · Metro `8081` | none | running (`started_by_task`) — kept for part d |
+| simulator · emulator | none booted | booted (`started_by_task`) — kept for part d; the simulator's keychain reset and the emulator app's data cleared (D146) |
+| browser tabs | `seed` | `seed`, `tab-1`, `tab-2` (`started_by_task`) |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
 
 ### T-M01-040 · Signing in returns the person to where they were going
 **Type:** screen · **Tier:** P1 (`M01-61`)

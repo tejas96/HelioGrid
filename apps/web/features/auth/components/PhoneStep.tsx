@@ -72,7 +72,7 @@ export function PhoneStep({
     >
       {task ?? (
         <>
-          {google?.failed ? <TintedBlock {...google.failed} /> : null}
+          {google?.failed ? <TintedBlock {...google.failed} announce="alert" /> : null}
           {signIn.notice === null ? null : <TintedBlock {...doorNoticeWords(t, signIn.notice)} />}
           <div className="hg-door-form">
             <PhoneField
@@ -106,7 +106,6 @@ export function PhoneStep({
                   size="lg"
                   fullWidth
                   loading={signIn.google?.busy}
-                  disabled={busy && !signIn.google?.busy}
                   spokenName={google.aria}
                   onClick={() => signIn.press('google')}
                 >

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { doorNotice, doorView } from '../../src/auth/door-view';
+import { loginReducer } from '../../src/auth/login-reducer';
 import { INITIAL_LOGIN_STATE, type LoginState } from '../../src/auth/login-state';
 import type { PendingSwitch, SessionSnapshot, SessionUser } from '../../src/auth/session';
 
@@ -64,8 +65,44 @@ describe('doorView', () => {
   });
 });
 
-describe('doorNotice — the one block above the number (F8-36)', () => {
+describe('doorNotice — the one block above the number (F8-36, S1.wrong.4)', () => {
   const login = (over: Partial<LoginState>): LoginState => ({ ...INITIAL_LOGIN_STATE, ...over });
+  const removed = { tenantId: null };
+  it.each([
+    [
+      'a removal the boot check found, at the door as it opens',
+      login({}),
+      removed,
+      'access-removed',
+    ],
+    [
+      'a send with no answer, over a removal',
+      login({ request: 'unreached' }),
+      removed,
+      'not-reached',
+    ],
+    ['a removal, on the code step', login({ step: 'otp', request: 'sent' }), removed, null],
+    [
+      'a removal, back on the number after Change number — until the next sign-in',
+      loginReducer(login({ step: 'otp', request: 'sent' }), { type: 'change-number' }),
+      removed,
+      'access-removed',
+    ],
+    [
+      'a removal under a Google sign-in that did not finish, whose block speaks alone',
+      login({ googleEnded: 'failed' }),
+      removed,
+      null,
+    ],
+    ['no removal', login({}), null, null],
+  ] as const)('%s', (_name, state, ended, expected) => {
+    expect(doorNotice(state, ended, 'sign-in')).toBe(expected);
+  });
+
+  it('the signup door draws no removal (SCR-M01-02)', () => {
+    expect(doorNotice(login({}), removed, 'signup')).toBeNull();
+  });
+
   it.each([
     ['a first send that got no answer', login({ request: 'unreached' }), 'not-reached'],
     [
@@ -76,6 +113,6 @@ describe('doorNotice — the one block above the number (F8-36)', () => {
     ['a refused first send, which opens the code step', login({ request: 'failed' }), null],
     ['the door as it opens', login({}), null],
   ] as const)('%s', (_name, state, expected) => {
-    expect(doorNotice(state)).toBe(expected);
+    expect(doorNotice(state, null, 'sign-in')).toBe(expected);
   });
 });

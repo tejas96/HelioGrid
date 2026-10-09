@@ -58,6 +58,9 @@ export const SHELL = {
   },
   signInWithAnother: /*i18n*/ { id: 'Sign in with another account' },
   comingLater: /*i18n*/ { id: 'This screen arrives in a later update.' },
+  notFound: /*i18n*/ { id: 'This page does not exist' },
+  goToSignIn: /*i18n*/ { id: 'Go to sign in' },
+  goToHome: /*i18n*/ { id: 'Go to home' },
   today: /*i18n*/ { id: 'Today · {date}' },
   updateRequired: /*i18n*/ { id: 'Update HelioGrid' },
   updateVersions: /*i18n*/ {

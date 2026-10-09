@@ -20,7 +20,10 @@ import {
 import { OTP_LENGTH } from './otp';
 import { OTP_MAX_FAILED_VERIFIES, type OtpChannel } from './otp-policy';
 
-/** While a round trip is in flight only its answer and the clock are heard. */
+/**
+ * While a round trip is in flight only its answer and the clock are heard — and Google, which the
+ * front door keeps live while a code is sending (`SCR-M01-01` `m-loading`): it takes the round trip.
+ */
 export function loginReducer(state: LoginState, event: LoginEvent): LoginState {
   switch (event.type) {
     case 'tick':
@@ -34,8 +37,14 @@ export function loginReducer(state: LoginState, event: LoginEvent): LoginState {
     case 'google-ended':
       return googleEnded(state, event.outcome, event.triesLeft);
     default:
-      return state.pending === null ? pressed(state, event) : state;
+      if (state.pending === null) return pressed(state, event);
+      return googleTakesOverSend(state, event) ? pressed(state, event) : state;
   }
+}
+
+/** Google pressed on the number step while its code is sending takes the door (`m-loading`). */
+function googleTakesOverSend(state: LoginState, event: PressEvent): boolean {
+  return event.type === 'google' && state.step === 'phone' && state.pending?.kind === 'request';
 }
 
 function pressed(state: LoginState, event: PressEvent): LoginState {
@@ -97,6 +106,8 @@ function send(state: LoginState, pack: FormatPack): LoginState {
     ...state,
     ...UNTRIED_CODE,
     phoneProblem: null,
+    // The last send's block goes while this one runs, so the next answer is spoken afresh.
+    request: null,
     channel: 'sms',
     pending: { kind: 'request', phone: state.phone, channel: 'sms' },
   };
@@ -137,6 +148,8 @@ function lockedWhileLinking(state: LoginState): LoginState {
 }
 
 function requestEnded(state: LoginState, outcome: OtpRequestOutcome, now: number): LoginState {
+  // A send Google took over is answered too late to matter, even once Google has ended.
+  if (state.pending?.kind !== 'request') return state;
   if (outcome === 'locked' && state.google !== null) return lockedWhileLinking(state);
   // A first send that got no answer opened nothing: the number stays, with the block above it.
   if (outcome === 'unreached' && state.step === 'phone')

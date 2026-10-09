@@ -17,6 +17,7 @@ import {
 } from '@heliogrid/domain';
 import { useEffect, useMemo, useReducer, useRef } from 'react';
 import { useDataLayer } from './context';
+import { useSession } from './use-session';
 
 /** The sign-in flow as a screen consumes it: the facts, the frame they add up to, and the presses. */
 export interface SignIn {
@@ -57,6 +58,7 @@ export function useSignIn(
 ): SignIn {
   const googleOffered = openGoogle !== undefined;
   const { session } = useDataLayer();
+  const { ended } = useSession();
   const [state, dispatch] = useReducer(loginReducer, INITIAL_LOGIN_STATE);
   const { pending, cooldownLeft } = state;
   // Read through a ref: a screen's inline function is new every render, and the call it makes
@@ -102,7 +104,7 @@ export function useSignIn(
       frame: loginFrame(state, googleOffered),
       busy: state.pending !== null,
       google: googleOffered ? phoneGoogle(state) : null,
-      notice: doorNotice(state),
+      notice: doorNotice(state, ended, door),
       typePhone: (phone: string) => dispatch({ type: 'phone-typed', phone }),
       typeCode: (code: string) => dispatch({ type: 'code-typed', code }),
       press: (control: LoginPress) =>
@@ -110,6 +112,6 @@ export function useSignIn(
       returnFromGoogle: (result: GoogleSheetResult) =>
         dispatch({ type: 'google-sheet-ended', result }),
     }),
-    [state, pack, googleOffered],
+    [state, pack, googleOffered, ended, door],
   );
 }

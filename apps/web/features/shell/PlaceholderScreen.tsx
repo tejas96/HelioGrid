@@ -3,8 +3,8 @@ import { useShell } from '@heliogrid/data/react';
 import { offeredDoors } from '@heliogrid/domain';
 import { doorTitle, SHELL } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { EmptyState, Text } from '@heliogrid/ui';
 import { notFound } from 'next/navigation';
+import { EmptyShellPage } from './components/EmptyShellPage';
 import { DOOR_PATH } from './constants';
 
 /**
@@ -17,14 +17,5 @@ export function PlaceholderScreen({ path }: { path: string }) {
   const shell = useShell();
   const door = offeredDoors(shell).find((offered) => DOOR_PATH[offered] === `/${path}`);
   if (door === undefined) notFound();
-  const title = doorTitle(t, door);
-  return (
-    <div className="hg-shell-page">
-      {/* The page's heading for a screen reader: the title it names is already on screen. */}
-      <Text as="h1" spokenOnly>
-        {title}
-      </Text>
-      <EmptyState title={title} description={t(SHELL.comingLater)} />
-    </div>
-  );
+  return <EmptyShellPage title={doorTitle(t, door)} description={t(SHELL.comingLater)} />;
 }
