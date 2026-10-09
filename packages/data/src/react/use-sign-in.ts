@@ -1,6 +1,8 @@
 'use client';
 import {
   COUNTDOWN_TICK_MS,
+  type DoorNotice,
+  doorNotice,
   type FormatPack,
   type GoogleSheetResult,
   INITIAL_LOGIN_STATE,
@@ -24,6 +26,8 @@ export interface SignIn {
   readonly busy: boolean;
   /** The phone step's Google control; `null` on a door with no Google sheet — it draws none. */
   readonly google: PhoneGoogle | null;
+  /** The block above the number; `null` when the number step carries none. */
+  readonly notice: DoorNotice | null;
   typePhone(phone: string): void;
   typeCode(code: string): void;
   press(control: LoginPress): void;
@@ -98,6 +102,7 @@ export function useSignIn(
       frame: loginFrame(state, googleOffered),
       busy: state.pending !== null,
       google: googleOffered ? phoneGoogle(state) : null,
+      notice: doorNotice(state),
       typePhone: (phone: string) => dispatch({ type: 'phone-typed', phone }),
       typeCode: (code: string) => dispatch({ type: 'code-typed', code }),
       press: (control: LoginPress) =>

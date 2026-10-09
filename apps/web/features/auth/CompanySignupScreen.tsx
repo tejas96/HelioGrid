@@ -15,6 +15,7 @@ import { KnownNumber } from './components/KnownNumber';
 import { PhoneStep } from './components/PhoneStep';
 import { SignupProgress } from './components/SignupProgress';
 import { HOME_ROUTE, LOGIN_ROUTE } from './constants';
+import { UnreachableScreen } from './UnreachableScreen';
 
 /**
  * Company signup on the web (`SCR-M01-02` at 1536): the number, the code, then three fields, over
@@ -40,6 +41,9 @@ export function CompanySignupScreen() {
   useEffect(() => {
     if (sendHome) router.replace(HOME_ROUTE);
   }, [sendHome, router]);
+
+  // This route sits outside the gates, so it answers a boot check with no answer itself (`M01-07`).
+  if (session.unreachable) return <UnreachableScreen />;
 
   /** The held account's session ends, and the number step comes back with the field cleared. */
   const leaveForAnotherNumber = () => {

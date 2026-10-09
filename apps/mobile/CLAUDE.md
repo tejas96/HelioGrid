@@ -55,7 +55,7 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 bundle exec pod install
   `@heliogrid/domain` reducer driven by a `@heliogrid/data` hook.
 - Paginated screens: `FlatList` + `usePaginatedList`, never inside a `ScrollView`.
 - An API failure's words come from `@heliogrid/i18n`; the first screen that renders one builds
-  `ApiErrorText` in `packages/ui` (deferred D68).
+  `ApiErrorText` in `packages/ui`.
 
 ## Done means
 

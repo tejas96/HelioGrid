@@ -9,9 +9,9 @@ export type SessionEvent =
   /** A code verified, a known account entered, a switch completed, or the boot check found a session. */
   | { readonly kind: 'signed-in'; readonly user: SessionUser; readonly restored: boolean }
   | { readonly kind: 'signed-out' }
-  /** The boot check failed. After a loss it found, that loss already said everything. */
+  /** The boot check failed for anything but a lost session. After a loss it found, that loss already said everything. */
   | { readonly kind: 'boot-failed' }
-  /** The boot check found no credential: signed out, read the same way as a failed check. */
+  /** The boot check found no credential: signed out. */
   | { readonly kind: 'boot-signed-out' }
   /** The transport's refresh was refused, and the server named why. */
   | { readonly kind: 'lost'; readonly loss: SessionLoss };
@@ -25,6 +25,7 @@ export const CHECKING: SessionSnapshot = {
   restored: false,
   chosenHome: null,
   ended: null,
+  unreachable: false,
 };
 
 /** The door, with nothing held. */
@@ -37,6 +38,9 @@ export function sessionAfter(current: SessionSnapshot, event: SessionEvent): Ses
     case 'signed-out':
       return SIGNED_OUT;
     case 'boot-failed':
+      return current.status === 'checking' && !current.unreachable
+        ? { ...current, unreachable: true }
+        : current;
     case 'boot-signed-out':
       return current.status === 'checking' ? SIGNED_OUT : current;
     case 'lost':

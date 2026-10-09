@@ -138,6 +138,9 @@ function lockedWhileLinking(state: LoginState): LoginState {
 
 function requestEnded(state: LoginState, outcome: OtpRequestOutcome, now: number): LoginState {
   if (outcome === 'locked' && state.google !== null) return lockedWhileLinking(state);
+  // A first send that got no answer opened nothing: the number stays, with the block above it.
+  if (outcome === 'unreached' && state.step === 'phone')
+    return { ...state, pending: null, request: outcome };
   const resendAt = startsCooldown(outcome) ? resendOpensAt(now) : null;
   return {
     ...state,

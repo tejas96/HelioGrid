@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { type FrameKind, frameKindOf, loginFrame } from '../../src/auth/login-frame';
+import { loginFrame } from '../../src/auth/login-frame';
+import { type FrameKind, frameKindOf } from '../../src/auth/login-frame-kind';
 import { INITIAL_LOGIN_STATE, type LoginState } from '../../src/auth/login-state';
 
 /** The code step after one SMS went out and the gap has opened. */
@@ -31,6 +32,11 @@ describe('frameKindOf — the order a fact wins', () => {
       { verify: 'failed', request: 'locked' },
       'auth-error',
     ],
+    [
+      'a check that got no answer, over the lock',
+      { verify: 'unreached', request: 'locked' },
+      'auth-unreached',
+    ],
     ['the lock, from a check', { verify: 'locked' }, 'locked'],
     ['the lock, from a request', { request: 'locked' }, 'locked'],
     [
@@ -43,6 +49,12 @@ describe('frameKindOf — the order a fact wins', () => {
     ['a call the network refused', { request: 'delivery-failed', ...byCall }, 'call-not-placed'],
     ['an SMS our side could not send', { request: 'failed' }, 'request-failed'],
     ['a call our side could not place', { request: 'failed', ...byCall }, 'call-request-failed'],
+    ['an SMS request that got no answer', { request: 'unreached' }, 'request-unreached'],
+    [
+      'a call request that got no answer',
+      { request: 'unreached', ...byCall },
+      'call-request-unreached',
+    ],
     ['a dead code, before a filled field', { verify: 'expired', filled: true }, 'expired'],
     ['a used-up code', { verify: 'invalidated' }, 'used-up'],
     ['a wrong code, before a running gap', { verify: 'mismatch', ...inGap }, 'wrong'],
@@ -51,6 +63,20 @@ describe('frameKindOf — the order a fact wins', () => {
     ['the ordinary step', {}, 'entry'],
   ])('%s', (_, facts, kind) => {
     expect(frameKindOf(otp(facts))).toBe(kind);
+  });
+});
+
+describe('loginFrame — no answer is told from a refusal, and offers the same ways (F8-36)', () => {
+  it.each<[FrameKind, Partial<LoginState>, Partial<LoginState>]>([
+    ['auth-unreached', { verify: 'unreached' }, { verify: 'failed' }],
+    ['request-unreached', { request: 'unreached' }, { request: 'failed' }],
+    [
+      'call-request-unreached',
+      { request: 'unreached', ...byCall },
+      { request: 'failed', ...byCall },
+    ],
+  ])("%s keeps its refusal twin's code field and controls", (kind, unreached, refused) => {
+    expect(signInFrame(otp(unreached))).toEqual({ ...signInFrame(otp(refused)), kind });
   });
 });
 

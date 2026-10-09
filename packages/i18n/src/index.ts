@@ -22,6 +22,7 @@ export {
   joinSteerFinding,
   joinSteerWords,
 } from './copy/company-signup-frames';
+export { CONNECTION, connectionWords } from './copy/connection';
 export { AGENT_CALL_CORRELATION, agentCallCorrelation } from './copy/correlation';
 export { disclosureLead, disclosureLine } from './copy/disclosure';
 export { BASIS_LINE_WORD } from './copy/document-basis';
@@ -63,8 +64,8 @@ export {
 export type { SignInCopyKey } from './copy/sign-in';
 export { SIGN_IN } from './copy/sign-in';
 export type { SignInFacts, SignInLabels, SignInWords } from './copy/sign-in-frames';
-export { signInWords } from './copy/sign-in-frames';
-export type { GoogleBlockWords, GoogleLinkWords, PhoneGoogleWords } from './copy/sign-in-google';
+export { doorNoticeWords, signInWords } from './copy/sign-in-frames';
+export type { DoorBlockWords, GoogleLinkWords, PhoneGoogleWords } from './copy/sign-in-google';
 export { googleLinkWords, phoneGoogleWords } from './copy/sign-in-google';
 export { STRUCTURE_DISCLAIMER } from './copy/structure-disclaimer';
 export type { ValidationIssueLike } from './copy/validation';

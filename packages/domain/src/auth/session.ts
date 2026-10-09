@@ -107,13 +107,13 @@ export interface SessionSnapshot {
   chosenHome: RolePreset | null;
   /** Set when the server removed this person's access: held while signed in, else at the door. */
   ended: EndedAccess | null;
+  /**
+   * The boot check failed for anything but a lost session (`M01-07`: a session ends only by its
+   * own rules): still `checking`, the cookie untouched, until a retry answers.
+   */
+  unreachable: boolean;
 }
 
-/**
- * Outcome, not an exception: both login controllers branch on wrong-code (4xx) versus
- * transport failure, so the distinction belongs in the return type where typecheck sees it.
- * `failure` reuses domain's existing union — no new vocabulary.
- */
 /**
  * How a code check ended, with the tries left ON THIS CODE — counted on the device, because the
  * challenge is this device's and a resend mints a new one; the server's count is the one that

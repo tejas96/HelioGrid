@@ -34,6 +34,11 @@ export interface SessionStore {
    * number. A session is admitted as a verify's is, the shared-device switch included (`F4-37`).
    */
   signInWithGoogle(token: GoogleToken, code: string | null): Promise<GoogleResult>;
+  /**
+   * Asks the boot check again after it got no answer (`unreachable`); the cookie was never touched.
+   * Resolves `false` when it still got none — `unreachable` stays, and the retry screen says so.
+   */
+  retryBoot(): Promise<boolean>;
   /** Discards the previous user's held work and lets the pending switch complete (`F4-37`). */
   completeSwitch(): Promise<void>;
   /** The person chose the account their number already has: it signs in (`M01-08`). */

@@ -39,8 +39,23 @@ describe('sessionAfter — why a session ended, and what the device keeps of it 
     expect(sessionAfter(removedAtBoot, { kind: 'boot-failed' })).toBe(removedAtBoot);
   });
 
-  it('sends a boot check that failed for any other reason to the door', () => {
-    expect(sessionAfter(CHECKING, { kind: 'boot-failed' })).toEqual(SIGNED_OUT);
+  it('holds a boot check that got no answer, or a server failure, signed in and unreachable', () => {
+    expect(sessionAfter(CHECKING, { kind: 'boot-failed' })).toEqual({
+      ...CHECKING,
+      unreachable: true,
+    });
+  });
+
+  it('answers a retry that got no answer again with the same snapshot, still unreachable', () => {
+    const unreachable = sessionAfter(CHECKING, { kind: 'boot-failed' });
+    expect(sessionAfter(unreachable, { kind: 'boot-failed' })).toBe(unreachable);
+  });
+
+  it('leaves unreachable behind once a retried boot check is answered', () => {
+    const unreachable = sessionAfter(CHECKING, { kind: 'boot-failed' });
+    expect(sessionAfter(unreachable, { kind: 'boot-signed-out' })).toEqual(SIGNED_OUT);
+    const back = sessionAfter(unreachable, { kind: 'signed-in', user: priya, restored: true });
+    expect(back).toEqual(signedIn);
   });
 
   it('sends a boot check that found no credential to the door', () => {
@@ -83,6 +98,11 @@ describe('canRenew — a refresh is posted only for a session that could still b
       why: 'the boot check — a lapsed token comes back this way',
     },
     { snapshot: signedIn, renews: true, why: 'signed in' },
+    {
+      snapshot: sessionAfter(CHECKING, { kind: 'boot-failed' }),
+      renews: true,
+      why: 'a boot check that got no answer — the retry may need a fresh token',
+    },
     { snapshot: removed, renews: false, why: 'access removed while signed in' },
     { snapshot: removedAtBoot, renews: false, why: 'ended at boot' },
     { snapshot: SIGNED_OUT, renews: false, why: 'signed out' },

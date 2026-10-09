@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:65
+#: src/copy/sign-in.ts:66
 msgid "{chain} codes were invalidated in a row"
 msgstr "{chain} codes were invalidated in a row"
 
@@ -133,7 +133,7 @@ msgid "{page} of {total}"
 msgstr "{page} of {total}"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:63
+#: src/copy/sign-in.ts:64
 msgid "{perWindow} codes in {windowMinutes} minutes is the limit"
 msgstr "{perWindow} codes in {windowMinutes} minutes is the limit"
 
@@ -223,12 +223,12 @@ msgid "A workspace already exists for {company} in {city}"
 msgstr "A workspace already exists for {company} in {city}"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:58
+#: src/copy/sign-in.ts:59
 msgid "About code limits"
 msgstr "About code limits"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:88
+#: src/copy/sign-in.ts:89
 msgid "About linking your number"
 msgstr "About linking your number"
 
@@ -369,7 +369,7 @@ msgid "Code filled from your SMS"
 msgstr "Code filled from your SMS"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:59
+#: src/copy/sign-in.ts:60
 msgid "Code limits"
 msgstr "Code limits"
 
@@ -379,12 +379,12 @@ msgid "Company name"
 msgstr "Company name"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:70
+#: src/copy/sign-in.ts:71
 msgid "company setup"
 msgstr "company setup"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:86
+#: src/copy/sign-in.ts:87
 msgid "Confirm your mobile number"
 msgstr "Confirm your mobile number"
 
@@ -394,12 +394,12 @@ msgid "Confirmed"
 msgstr "Confirmed"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:79
+#: src/copy/sign-in.ts:80
 msgid "Continue with Google"
 msgstr "Continue with Google"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:80
+#: src/copy/sign-in.ts:81
 msgid "Continue with Google. Signs you in to the same account as your mobile number."
 msgstr "Continue with Google. Signs you in to the same account as your mobile number."
 
@@ -554,7 +554,7 @@ msgid "Go to your leads"
 msgstr "Go to your leads"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:84
+#: src/copy/sign-in.ts:85
 msgid "Google sign-in did not finish"
 msgstr "Google sign-in did not finish"
 
@@ -569,9 +569,19 @@ msgid "Grievance officer"
 msgstr "Grievance officer"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:90
+#: src/copy/sign-in.ts:91
 msgid "HelioGrid accounts are mobile numbers. Google never makes a second account."
 msgstr "HelioGrid accounts are mobile numbers. Google never makes a second account."
+
+#. js-lingui-explicit-id
+#: src/copy/connection.ts:10
+msgid "HelioGrid could not be reached"
+msgstr "HelioGrid could not be reached"
+
+#. js-lingui-explicit-id
+#: src/copy/sign-in.ts:57
+msgid "HelioGrid could not be reached, from your side or ours."
+msgstr "HelioGrid could not be reached, from your side or ours."
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:86
@@ -599,7 +609,7 @@ msgid "Home"
 msgstr "Home"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:89
+#: src/copy/sign-in.ts:90
 msgid "How linking works"
 msgstr "How linking works"
 
@@ -609,17 +619,17 @@ msgid "HR/Admin"
 msgstr "HR/Admin"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:67
+#: src/copy/sign-in.ts:68
 msgid "If it keeps failing, tell your company admin."
 msgstr "If it keeps failing, tell your company admin."
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:93
+#: src/copy/sign-in.ts:94
 msgid "If this number already has an account, the Google login joins it. If it does not, the code takes you into company signup with the number carried in — the same rule as the front door."
 msgstr "If this number already has an account, the Google login joins it. If it does not, the code takes you into company signup with the number carried in — the same rule as the front door."
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:110
+#: src/copy/sign-in.ts:111
 msgid "If you've signed in with Google before, it still works."
 msgstr "If you've signed in with Google before, it still works."
 
@@ -649,12 +659,17 @@ msgid "Installer Job Home"
 msgstr "Installer Job Home"
 
 #. js-lingui-explicit-id
+#: src/copy/connection.ts:11
+msgid "It may be your connection or ours. Try again in a moment."
+msgstr "It may be your connection or ours. Try again in a moment."
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:87
 msgid "Leads"
 msgstr "Leads"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:102
+#: src/copy/sign-in.ts:103
 msgid "Links {email}"
 msgstr "Links {email}"
 
@@ -721,7 +736,7 @@ msgid "No error code reaches a field user. If it keeps failing, signing in later
 msgstr "No error code reaches a field user. If it keeps failing, signing in later with this number returns you to exactly this step."
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:57
+#: src/copy/sign-in.ts:58
 msgid "No more codes for {windowMinutes} minutes"
 msgstr "No more codes for {windowMinutes} minutes"
 
@@ -751,7 +766,7 @@ msgid "Not yet calculated"
 msgstr "Not yet calculated"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:97
+#: src/copy/sign-in.ts:98
 msgid "Not you? Use a different Google account"
 msgstr "Not you? Use a different Google account"
 
@@ -811,7 +826,7 @@ msgid "number formats"
 msgstr "number formats"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:83
+#: src/copy/sign-in.ts:84
 msgid "Opening Google sign-in"
 msgstr "Opening Google sign-in"
 
@@ -826,7 +841,7 @@ msgid "Operations Home"
 msgstr "Operations Home"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:78
+#: src/copy/sign-in.ts:79
 msgid "or"
 msgstr "or"
 
@@ -992,7 +1007,7 @@ msgid "Send it again"
 msgstr "Send it again"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:101
+#: src/copy/sign-in.ts:102
 msgid "Send the code by SMS and link this Google login"
 msgstr "Send the code by SMS and link this Google login"
 
@@ -1047,7 +1062,7 @@ msgid "Sign in"
 msgstr "Sign in"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:77
+#: src/copy/sign-in.ts:78
 msgid "Sign in and discard"
 msgstr "Sign in and discard"
 
@@ -1067,7 +1082,7 @@ msgid "Sign in with this number"
 msgstr "Sign in with this number"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:107
+#: src/copy/sign-in.ts:108
 msgid "Sign in with this number. The code is already verified."
 msgstr "Sign in with this number. The code is already verified."
 
@@ -1077,7 +1092,7 @@ msgid "Sign out"
 msgstr "Sign out"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:71
+#: src/copy/sign-in.ts:72
 msgid "Signing in as {name} discards {count} photographs"
 msgstr "Signing in as {name} discards {count} photographs"
 
@@ -1087,7 +1102,7 @@ msgid "Signing in takes you to the company it belongs to. One number is one acco
 msgstr "Signing in takes you to the company it belongs to. One number is one account, whichever door it walks in through."
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:96
+#: src/copy/sign-in.ts:97
 msgid "Signing in with Google"
 msgstr "Signing in with Google"
 
@@ -1097,12 +1112,12 @@ msgid "Signing up again would not make a second company"
 msgstr "Signing up again would not make a second company"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:111
+#: src/copy/sign-in.ts:112
 msgid "SMS codes are paused for {lockMinutes} minutes, so linking waits."
 msgstr "SMS codes are paused for {lockMinutes} minutes, so linking waits."
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:64
+#: src/copy/sign-in.ts:65
 msgid "SMS codes paused for {lockMinutes} minutes"
 msgstr "SMS codes paused for {lockMinutes} minutes"
 
@@ -1142,6 +1157,11 @@ msgid "Start survey"
 msgstr "Start survey"
 
 #. js-lingui-explicit-id
+#: src/copy/connection.ts:12
+msgid "Still no answer from HelioGrid."
+msgstr "Still no answer from HelioGrid."
+
+#. js-lingui-explicit-id
 #: src/copy/freshness.ts:32
 msgid "subsidy rules"
 msgstr "subsidy rules"
@@ -1167,12 +1187,12 @@ msgid "Switch home"
 msgstr "Switch home"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:72
+#: src/copy/sign-in.ts:73
 msgid "Taken on {date} and not uploaded. This cannot be undone."
 msgstr "Taken on {date} and not uploaded. This cannot be undone."
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:69
+#: src/copy/sign-in.ts:70
 msgid "Taking you to {destination}"
 msgstr "Taking you to {destination}"
 
@@ -1217,6 +1237,11 @@ msgid "That is {typed} digits. A mobile number here has {needed}."
 msgstr "That is {typed} digits. A mobile number here has {needed}."
 
 #. js-lingui-explicit-id
+#: src/copy/connection.ts:13
+msgid "That is taking too long to answer."
+msgstr "That is taking too long to answer."
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:55
 msgid "That number already has an account"
 msgstr "That number already has an account"
@@ -1252,7 +1277,7 @@ msgid "The code did not send"
 msgstr "The code did not send"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:105
+#: src/copy/sign-in.ts:106
 msgid "The code was correct for"
 msgstr "The code was correct for"
 
@@ -1297,7 +1322,7 @@ msgid "This field is required."
 msgstr "This field is required."
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:104
+#: src/copy/sign-in.ts:105
 msgid "This Google login cannot be linked"
 msgstr "This Google login cannot be linked"
 
@@ -1322,7 +1347,7 @@ msgid "This number is already on your team."
 msgstr "This number is already on your team."
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:106
+#: src/copy/sign-in.ts:107
 msgid "This number is linked to another Google account"
 msgstr "This number is linked to another Google account"
 
@@ -1377,7 +1402,7 @@ msgid "Try again"
 msgstr "Try again"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:85
+#: src/copy/sign-in.ts:86
 msgid "Try again, or use your number."
 msgstr "Try again, or use your number."
 
@@ -1422,17 +1447,17 @@ msgid "Update on the App Store"
 msgstr "Update on the App Store"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:73
+#: src/copy/sign-in.ts:74
 msgid "Upload them first"
 msgstr "Upload them first"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:74
+#: src/copy/sign-in.ts:75
 msgid "Uploading held photographs arrives with the survey capture."
 msgstr "Uploading held photographs arrives with the survey capture."
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:98
+#: src/copy/sign-in.ts:99
 msgid "Use a different Google account"
 msgstr "Use a different Google account"
 
@@ -1442,12 +1467,12 @@ msgid "Use a different number"
 msgstr "Use a different number"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:99
+#: src/copy/sign-in.ts:100
 msgid "Use my number instead"
 msgstr "Use my number instead"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:100
+#: src/copy/sign-in.ts:101
 msgid "Use my number instead. Goes back to the phone step."
 msgstr "Use my number instead. Goes back to the phone step."
 
@@ -1477,7 +1502,7 @@ msgid "Verify and sign in"
 msgstr "Verify and sign in"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:103
+#: src/copy/sign-in.ts:104
 msgid "Verify the code, link this Google login and sign in"
 msgstr "Verify the code, link this Google login and sign in"
 
@@ -1507,7 +1532,7 @@ msgid "We could not send the code"
 msgstr "We could not send the code"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:66
+#: src/copy/sign-in.ts:67
 msgid "We could not sign you in"
 msgstr "We could not sign you in"
 
@@ -1527,7 +1552,7 @@ msgid "We tried to send by SMS to"
 msgstr "We tried to send by SMS to"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:87
+#: src/copy/sign-in.ts:88
 msgid "We'll link this Google login to your number."
 msgstr "We'll link this Google login to your number."
 
@@ -1557,7 +1582,7 @@ msgid "Yesterday · {date}"
 msgstr "Yesterday · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:68
+#: src/copy/sign-in.ts:69
 msgid "You are in"
 msgstr "You are in"
 
@@ -1567,7 +1592,7 @@ msgid "You become this company's first EPC owner."
 msgstr "You become this company's first EPC owner."
 
 #. js-lingui-explicit-id
-#: src/copy/sign-in.ts:60
+#: src/copy/sign-in.ts:61
 msgid "You can ask for {perWindow} codes every {windowMinutes} minutes, and {day} a day."
 msgstr "You can ask for {perWindow} codes every {windowMinutes} minutes, and {day} a day."
 

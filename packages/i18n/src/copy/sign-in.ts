@@ -54,6 +54,7 @@ export const SIGN_IN = {
   requestFailedTitle: /*i18n*/ { id: 'We could not send the code' },
   couldNotCallTitle: /*i18n*/ { id: 'We could not place the call' },
   ourSideFailed: /*i18n*/ { id: 'Something on our side failed' },
+  notReached: /*i18n*/ { id: 'HelioGrid could not be reached, from your side or ours.' },
   capTitle: /*i18n*/ { id: 'No more codes for {windowMinutes} minutes' },
   codeLimitsExplainerLabel: /*i18n*/ { id: 'About code limits' },
   codeLimitsExplainerTitle: /*i18n*/ { id: 'Code limits' },

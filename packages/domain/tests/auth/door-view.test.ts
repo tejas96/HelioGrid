@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { doorView } from '../../src/auth/door-view';
+import { doorNotice, doorView } from '../../src/auth/door-view';
+import { INITIAL_LOGIN_STATE, type LoginState } from '../../src/auth/login-state';
 import type { PendingSwitch, SessionSnapshot, SessionUser } from '../../src/auth/session';
 
 /**
@@ -60,5 +61,21 @@ describe('doorView', () => {
     ['every other step shows the phone panel', door(), 'phone', 'phone'],
   ] as const)('%s', (_name, session, step, expected) => {
     expect(doorView(session, step)).toBe(expected);
+  });
+});
+
+describe('doorNotice — the one block above the number (F8-36)', () => {
+  const login = (over: Partial<LoginState>): LoginState => ({ ...INITIAL_LOGIN_STATE, ...over });
+  it.each([
+    ['a first send that got no answer', login({ request: 'unreached' }), 'not-reached'],
+    [
+      'no answer on the code step, which its frame says',
+      login({ step: 'otp', request: 'unreached' }),
+      null,
+    ],
+    ['a refused first send, which opens the code step', login({ request: 'failed' }), null],
+    ['the door as it opens', login({}), null],
+  ] as const)('%s', (_name, state, expected) => {
+    expect(doorNotice(state)).toBe(expected);
   });
 });

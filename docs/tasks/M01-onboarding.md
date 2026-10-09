@@ -629,10 +629,10 @@ Since the start: the browser pane, `started_by_task` (tab `seed`, the board for 
 
 ### T-M01-039 · The door and the web when the network or the session fails
 **Type:** screen · **Tier:** P0 (`F8-36`)
-**Status:** planned
+**Status:** designed
 **Why:** The door blames the server for the person's own connection (D1), a boot during a deploy or a timeout signs a signed-in person out (D7), a person whose access was removed lands on the door with no reason (D6), the company step says *nothing was created* after a request that got no answer (D39), the web has no offline state and loads forever (D80), both apps render API failures each their own way (D68), and the phone's dev build shows an unread debugger warning (D78).
 **PRD rows:** `F8-36` (a failure says what happened, plainly); `M01-07` (sessions end only by their own rules).
-**DESIGN:** SCR-M01-01 → the existing board; the access-removed frame is drawn first (D6, the owner's prompt from the deferred review of 2026-10-08).
+**DESIGN:** SCR-M01-01 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-01+Sign+In+-+Mobile.dc.html · SCR-M01-02 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-02+Company+Signup+-+Mobile.dc.html — each board holds every frame and language render.
 **Chosen by the owner** (deferred review, 2026-10-08): D1 and D7 as one task; D6, D39, D68, D78, D80, D87, D133, D139 and D142 ride with it — the RFC splits it into parts under the 30-file rule.
 **Depends on:** `T-M01-038`.
 **DONE WHEN:**
@@ -646,6 +646,236 @@ Since the start: the browser pane, `started_by_task` (tab `seed`, the board for 
 - A path no route serves shows a drawn not-found frame in the reader's language, with a way home (D87). → proof: e2e web; side-by-side with the board.
 - `SCR-M01-02`'s frames meet the words law after the board's copy pass, and the app's words follow (D133). → proof: the design check's word inventory; side-by-side.
 - `m-google-failed` is drawn and measured in Hindi and Marathi (D139), and four small web-door differences are ruled and built — the board wins unless a law says otherwise (D142). → proof: side-by-side, web and phone.
+
+#### Design check
+**READY** (2026-10-09, both boards). The owner's redesign that day drew `m-access-removed`, `m-not-reached`, `m-not-found` / `d-not-found` and the Hindi and Marathi renders of `m-google-failed`, `m-access-removed`, `m-not-reached` on `SCR-M01-01`, and `SCR-M01-02`'s copy pass, `m-not-reached` and `m-request-not-reached` / `d-request-not-reached`; a first check asked for geometry only, and two fix prompts printed it (`SCR-M01-01` "1536 alignment"; `SCR-M01-02` "What each failure frame's scroll region holds at rest"). Notes carried to QA, not to the board: `SCR-M01-01` counts twenty 1536 states named where nineteen are (cosmetic); `d-normal`'s *Create a company account* ends 10.1 px inside the measure's right edge — measure it, never copy it blind; on `SCR-M01-02`'s failure frames the note line and the lower fields sit below the scroll region's edge at rest, as the record lists — QA compares with that, not with an all-visible frame. Out of scope and standing: the company name on `SCR-SHELL-01` Frame 8 (decision 16), the code family's "one line under the title" call. Owed in the repo: both briefs' State lists gain the owner-ruled states, and `SCR-M01-02`'s brief lines 21 and 49 follow the record (parts c and d).
+
+**Board pictures** are captured into the scratchpad `board/` at each part's build start — the frames that part renders, 375 and 1536, each language render — and listed here as they land.
+
+#### RFC
+
+##### Title
+T-M01-039 — a failure says what happened: the door and the company step tell "no answer" from "refused", a boot during an outage keeps the person signed in, the shell shows the no-connection screen, and the door draws access removed, not-found and the boards' new words.
+
+##### Description
+- **User impact:** someone signing in on a weak network reads *HelioGrid could not be reached, from your side or ours* instead of being told the server broke; a signed-in owner who opens the app during a deploy gets a *Try again* screen instead of being signed out; someone removed from a company is told so at the door. Directly: no failure blames the wrong side, and nothing loads forever. Indirectly: one failure vocabulary (refused · no answer · offline) serves every later screen.
+- **Who gains:** every person at the door, a new owner whose *Create company* timed out, anyone using the web on a train.
+- **Problem solved:** `DataError.failure` already tells a transport failure from a refusal (`packages/data/src/errors/errors.ts:20-76`), but the session store folds both into `'failed'` (`store.ts:172-213`), `boot()` turns every rejection into a sign-out (`store.ts:149-160`, `session-transitions.ts:39-41`), `doorView` never reads `ended` (`door-view.ts:12-20`), the signup hook sets `failed` on any error (`use-company-signup.ts:62-63`), and the web query client pauses reads offline (`query-client.ts:20-27`) with `NoConnection` mounted nowhere. Rows: `F8-36`, `M01-07`, `S1.wrong.4`; boards `SCR-M01-01`, `SCR-M01-02` (Design check above).
+
+##### Goals
+- A door request with no answer shows the board's `m-not-reached` block on web and phone; a refusal keeps `m-auth-error`'s words.
+- A boot that gets no answer, or a 5xx, keeps the device's session and shows `NoConnection` with *Try again*; a lost session still opens the door.
+- A create or a join request with no answer shows `m-not-reached` / `m-request-not-reached`; a refusal keeps `m-error` / `m-request-failed`.
+- The signed-in web and phone show `NoConnection` while the device is offline, and return when it is back.
+- The door shows `m-access-removed` after the boot check finds a removal; the next sign-in clears it.
+- An address no route serves shows the board's not-found frame with a way home.
+- Every `SCR-M01-02` frame carries the board's words after its copy pass; the four D142 differences are ruled and built.
+
+##### Non-goals
+- Google sign-in failures: `m-google-failed` already says *did not finish* and blames no side; its words are unchanged (only its Hindi and Marathi are proven, D139).
+- A deep link's return after sign-in (`T-M01-040`), lifting the door's parts into `packages/ui` (`T-M01-041`), the door's 200%-text and keyboard defects (D109, D132), carrying the door's language into signup (D143 — decision below).
+- `ApiErrorText` (finding 2): no screen renders a raw API failure.
+- The number step's not-reached block is not announced to a screen reader yet: `TintedBlock` has no live-region option (D110), which part c's access-removed block also needs — it lands there. `NoConnection`'s English *Last tried at* line after a failed retry → D168.
+
+##### Readiness and dependencies
+- Landed: `T-M01-038` (#249). Design check: READY, 2026-10-09 (above).
+- Assumptions: "no answer" is a `DataError` whose `failure` is set (`no_connection`, `no_answer`, `unreadable_answer`); `cancelled` never reaches a frame (the person left). A 5xx with the error envelope is a refusal and keeps *Something on our side failed*.
+- The shell's offline screen shows only once the device says it is offline (`onlineManager`); a single request with no answer on a device that thinks it is online is the screen's own error state, as today.
+- No blocker.
+
+##### Proposal
+**Flow.** The store reads `DataError.failure` once: set → `unreached`, else the refusal's code as today. Domain maps `unreached` to the board's not-reached block under the step's own title; the reducers, frames and hooks carry it; the apps render what domain picks. Boot: a check with no answer or a server failure sends `boot-failed`, which now keeps `checking` with `unreachable: true` (a 401 the transport could not turn into a loss sends `boot-signed-out`: the door); each app's gate renders `NoConnection`, whose *Try again* calls `retryBoot()` — the same check again, resolving `false` while it still gets no answer, so the screen stays and says so. Offline: `useConnection()` in `packages/data/react` reads the query client's online manager; each shell renders `NoConnection` while it is false.
+
+**Findings from testing the requirements:**
+1. **AC-2's "retry over the loading frame" has no frame to sit on:** the web renders nothing while booting (`SessionGate.tsx:32`) and the phone a placeholder (`BootScreen.tsx`). The design system's one full-screen state for "the app can reach nothing" is `NoConnection` (its contract, `NoConnection.types.ts:6-10`), already built on both halves — so the retry is that screen. Simpler than a new frame; costs nothing to switch.
+2. **AC-6 (`ApiErrorText`) has no caller:** every failure a person meets today is a drawn frame with its own words (the door, the company step, the join steer, the notification centre, the shell's first load); none renders an API error's text. `apps/web/CLAUDE.md:55-57` and `apps/mobile/CLAUDE.md:57-58` already say the first screen that renders one builds it. Building it now is a component with no caller (`CLAUDE.md` §8 *Solve today's problem*). Recommend: strike AC-6 and delete D68 (decision 2).
+3. **AC-2's "unit test of the session store" — `packages/data` has no unit tests** (`packages/config/unit-test-packages.json`); the decision lives in domain's `sessionAfter`, which the store only calls (`packages/data/CLAUDE.md`). The proof is `session-transitions.test.ts`, plus QA with the api stopped at boot.
+4. **The door's access-removed block can only name no company:** `ended.tenantId` is set only when the removal is found while signed in, and the shell holds that person (`session-transitions.ts:55-62`); signing out clears it. At the door the removal was found by the boot check (`tenantId: null`). So the door prints the board's company-less form, *Your access was removed* — the shell's existing `SHELL.accessRemoved` words, no new string.
+5. **The no-connection words are not on any board:** `NoConnection` types English defaults (`NoConnection.tsx:25-30`, D2's kind). The apps pass every word from `packages/i18n`: one set for boot and offline, the door's own sentence — *HelioGrid could not be reached* · *It may be your connection or ours. Try again in a moment.* The Hindi and Marathi are drafted and flagged for a native review (`.claude/rules/ui-adherence.md`, Screens).
+6. **The join request repeats safely enough:** the api skips owners who already hold a `join_requested` notification from the asker (`tenant.join-request.repository.ts:35-94`), so `m-request-not-reached`'s *Send the request again* sends no second notice; two requests at the same instant could (read-then-insert, no unique index). The board promises nothing, so nothing changes here; the race → one deferred row.
+7. **Board item outside the design system (D142):** the board draws *Send a new code* as an "accent ghost" button; `Button` has no accent form in the code or in the design system's contract (`packages/theme/src/_generated/contracts/forms/Button.d.ts.txt:7`). Decision 4.
+8. **"Sent by SMS to" is `PhoneValue`'s overline label**, which `AccountCard` (*Your account*) and `KnownNumber` (*Mobile number*) also use as overlines, as their boards draw them. So `CodeTitle` renders the lead-in as a sentence-case line above a `PhoneValue` with no label; `PhoneField` is not changed.
+9. **Not-found inside the shell:** a signed-in person on a door the shell does not offer meets `notFound()` inside `(inside)/layout.tsx`, so Next renders the not-found frame inside the shell; the board draws it with no shell. Decision 3.
+
+**Owner rulings** (RFC approval, 2026-10-09, the recommended option each): the four parts as split; AC-6 struck and D68 deleted (finding 2); a signed-in person's not-found frame renders inside the shell (finding 9); *Send a new code* stays the design system's ghost `Button` (finding 7); D143 stays, re-pointed to `T-M01-041 starts`; D8, D105, D138, D146 stay.
+
+**Key decisions** (one reason each):
+1. **One `unreached` outcome, not one per failure kind:** the board draws one block for every no-answer request (`SCR-M01-01` decision 17).
+2. **Boot keeps `checking` and adds `unreachable`,** so nothing that reads `authenticated` changes and the person's cookie is never touched.
+3. **The offline screen belongs to the signed-in shell only:** the door's requests fail fast and draw their own frame (AC-1), and the shell's reads are what pause and load forever (D80).
+
+**Order:** part a → b → c → d (Parts below); inside each, tests first.
+
+**Twin:** every part changes web and phone together, except the not-found route (the phone has no addresses; a deep link's landing is `T-M01-040`).
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  T[data transport: DataError.failure] --> S[data session store]
+  S -->|unreached| R[domain login reducer and loginFrame]
+  S -->|boot-failed| X[domain sessionAfter: unreachable]
+  X --> G[web SessionGate, signup · phone BootScreen]
+  G --> NC[ui NoConnection]
+  O[data useConnection: onlineManager] --> SH[web and phone ShellScreen]
+  SH --> NC
+  E[data session ended] --> D[domain doorNotice] --> PS[web and phone PhoneStep]
+  C[data useCompanySignup: unreached] --> W[i18n companySignupWords, joinSteerWords] --> CS[web and phone CompanyStep, JoinSteer]
+  NF[web app/not-found.tsx] --> NFS[web NotFoundScreen]
+```
+
+##### Package changes
+- **domain:** `OtpRequestOutcome` and `OtpVerifyOutcome` gain `'unreached'`; `SessionSnapshot.unreachable`, set by `boot-failed` (no new event); `doorNotice(snapshot)` → `'access-removed' | null`. The orphan `failure` comment in `session.ts:112-116` goes.
+- **data:** the store classifies `failure` (`cancelled` excluded) and gains `retryBoot(): Promise<boolean>`; `CompanyCreation` and `JoinRequesting` gain `'unreached'`; new `useConnection()` on `./react`.
+- **i18n:** the not-reached block (`sign-in.ts`), the no-connection words (new `copy/connection.ts`), the signup not-reached and refusal words, the copy pass, the not-found words; catalogs regenerated.
+- **ui:** none — `NoConnection`, `TintedBlock`, `Explainer`, `DoorFrame` are used as they are.
+- **web · mobile:** the gates, shells, door and signup screens render what the packages pick; web adds `app/not-found.tsx`.
+- **Protections (Law 12):** no brand, token, table or error code. The new union members are held by typecheck: `FrameKind` by `FRAMES` and `FRAME` (full `Record`s), the request outcomes by `REQUEST_REFUSAL` (a full `Record`); the verify outcomes by review (an `if` chain). The not-found route joins `e2e-flow-per-screen` through its spec and baseline (part c).
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| part | action | path | purpose | placement reason |
+|---|---|---|---|---|
+| a | modify | `packages/domain/src/auth/login-state.ts` | `'unreached'` on the request and verify outcomes | the outcomes' home |
+| a | modify | `packages/domain/src/auth/login-reducer.ts` | carries `unreached` like `failed` | the reducer |
+| a | modify | `packages/domain/src/auth/login-frame.ts` | `unreached` → the not-reached block under the step's own title | the frame picker |
+| a | modify | `packages/domain/src/auth/session.ts` | `unreachable`; the two events; the orphan comment out | the snapshot's type |
+| a | modify | `packages/domain/src/auth/session-transitions.ts` | `boot-failed` keeps `checking` and sets `unreachable` | `sessionAfter` |
+| a | modify | `packages/domain/tests/auth/login-frame.test.ts` · `session-transitions.test.ts` | AC-1, AC-2 | domain's tests |
+| a | modify | `packages/data/src/session/store.ts` | `failure` → `unreached`; a 401 at boot opens the door; `retryBoot()` asks the check again | the one store |
+| a | — | `packages/data/src/react/use-session-phase.ts` | **planned, not built:** the gate and the boot screen read `unreachable` from `useSession()`, so the phase is unchanged | — |
+| a | modify | `packages/data/src/session/types.ts` · `packages/data/src/react/use-session.ts` | built, not planned: `retryBoot()` on the store's contract and on `useSession()` | the store's one contract; the one auth surface |
+| a | modify | `packages/data/src/react/use-sign-in.ts` | built, not planned: `notice` — the front door's block for a first send with no answer (`m-not-reached` is drawn on the front door, not the code step) | the one sign-in hook |
+| a | modify | `packages/domain/src/auth/door-view.ts` · `index.ts` · `tests/auth/door-view.test.ts` | built, not planned here (was part c): `doorNotice` — `not-reached` now, `access-removed` in part c | the door's view |
+| a | modify | `packages/domain/tests/auth/login-state.test.ts` | built, not planned: a first send with no answer stays on the number | the reducer's tests |
+| a | add | `packages/i18n/tests/sign-in-frames.test.ts` | built, not planned (review): the no-answer and refusal words, and the number step's notice | i18n's `copy/` functions are unit-tested |
+| a | add | `apps/web/features/auth/UnreachableScreen.tsx` · modify `CompanySignupScreen.tsx` | built, not planned (review): the one web retry screen, also on `/company-signup`, which sits outside the gates | the auth feature |
+| a | modify | `packages/i18n/src/copy/sign-in-google.ts` | built, not planned (review): `GoogleBlockWords` → `DoorBlockWords`, the one block shape the notice also returns | the block's one type |
+| a | add | `packages/domain/src/auth/login-frame-kind.ts` · modify `tests/auth/login-google.test.ts` | built, not planned (review): which frame the facts add up to, split from `login-frame.ts` when the full `REQUEST_REFUSAL` record took it past 300 lines | split by responsibility (`CLAUDE.md` §8) |
+| a | modify | `docs/tasks/deferred.md` | built, not planned (review): D168, `NoConnection`'s English *Last tried at* | out of scope |
+| a | modify | `apps/web/CLAUDE.md` · `apps/mobile/CLAUDE.md` | built, not planned: the pointer to the deleted D68 removed; the rule stays | Law 8 |
+| a | modify | `apps/web/features/auth/components/PhoneStep.tsx` · `apps/mobile/src/screens/shared/PhoneStep.tsx` | built, not planned here (were part c): the block above the number | the phone step |
+| a | modify | `packages/i18n/src/copy/sign-in.ts` · `sign-in-frames.ts` | the not-reached block | the door's words |
+| a | add | `packages/i18n/src/copy/connection.ts` | the no-connection words | one file per surface |
+| a | modify | `packages/i18n/src/index.ts` | export | the entry |
+| a | modify | `packages/i18n/src/locales/{en,hi,mr}/messages.{po,ts}` | regenerated; hi/mr drafted (6 files, generated) | the catalogs |
+| a | modify | `apps/web/features/auth/SessionGate.tsx` | `unreachable` → `NoConnection` | the gate |
+| a | modify | `apps/mobile/src/screens/boot/BootScreen.tsx` | the same on the phone (`root.tsx` **planned, not built**: Boot already shows while `checking`) | the boot screen |
+| a | modify | `tests/e2e/web/login.spec.ts` | the offline cases expect the not-reached block; a refused boot shows `NoConnection`, *Try again* signs in | the route's spec |
+| a | modify | `apps/mobile/src/push/messaging.ts` | D78's source: React Native Firebase's namespaced `messaging()` warned on every start (`messaging.ts:105`, read in React Native DevTools); the modular calls replace it | the one push file |
+| b | modify | `packages/data/src/react/use-company-signup.ts` | `failure` → `unreached` on create and join | the hook |
+| b | add | `packages/data/src/react/use-connection.ts` · modify `react/index.ts` | online state from the online manager | every hook lives in `src/react/` |
+| b | modify | `packages/i18n/src/copy/company-signup.ts` · `company-signup-frames.ts` | refusal and not-reached words | the signup's words |
+| b | modify | `packages/i18n/tests/company-signup-frames.test.ts` | AC-4's words | its test |
+| b | modify | `packages/i18n/src/locales/{en,hi,mr}/messages.{po,ts}` | regenerated (generated) | the catalogs |
+| b | modify | `apps/web/features/auth/components/CompanyStep.tsx` · `JoinSteer.tsx` | the picked block | the screens |
+| b | modify | `apps/mobile/src/screens/company-signup/components/CompanyStep.tsx` · `JoinSteer.tsx` | the same | the screens |
+| b | modify | `apps/web/features/shell/ShellScreen.tsx` · `apps/mobile/src/screens/shell/ShellScreen.tsx` | `NoConnection` while offline | the shells |
+| b | modify | `tests/e2e/web/company-signup.spec.ts` · `home.spec.ts` | create and join with the api aborted; the shell offline | the routes' specs |
+| c | modify | `packages/domain/src/auth/door-view.ts` · `tests/auth/door-view.test.ts` | `doorNotice` gains `access-removed` (the function lands in part a) | the door's view |
+| c | modify | `packages/i18n/src/copy/sign-in.ts` · `shell.ts` | the not-found words; *Sent by SMS to* as a line | the door's and the app's words |
+| c | modify | `packages/i18n/src/locales/{en,hi,mr}/messages.{po,ts}` | regenerated (generated) | the catalogs |
+| c | modify | `apps/web/features/auth/components/PhoneStep.tsx` · `apps/mobile/src/screens/shared/PhoneStep.tsx` | the access-removed block (`role="status"`); D142 Google per the board | the phone step |
+| c | modify | `apps/web/features/auth/components/CodeTitle.tsx` · `CodeStep.tsx` · `apps/mobile/src/screens/shared/CodeTitle.tsx` · `CodeStep.tsx` | D142: the lead-in line, *Send a new code* | the code step |
+| c | add | `apps/web/app/not-found.tsx` · `apps/web/features/shell/NotFoundScreen.tsx` | the route and its screen | Next's file convention; the screen beside the shell's |
+| c | add | `tests/e2e/web/not-found.spec.ts` · its two baselines (generated, CI-drawn, commit 2) | AC-8 | the routes' specs |
+| d | modify | `packages/i18n/src/copy/company-signup.ts` | the copy pass; the three Explainers' pages; the two helpers (D142) | the signup's words |
+| d | modify | `packages/i18n/src/locales/{en,hi,mr}/messages.{po,ts}` | regenerated; hi/mr from the board's renders where drawn (generated) | the catalogs |
+| d | modify | `apps/web/features/auth/CompanySignupScreen.tsx` · `components/KnownNumber.tsx` · `components/PhoneStep.tsx` · `components/CodeStep.tsx` | the words; the Explainers; the number helper and the code hint (D142) | the screens |
+| d | modify | `apps/mobile/src/screens/company-signup/CompanySignupScreen.tsx` · `components/KnownNumber.tsx` · `apps/mobile/src/screens/shared/PhoneStep.tsx` · `CodeStep.tsx` | the same | the screens |
+| d | modify | `tests/e2e/web/company-signup.spec.ts` · its landing baselines (generated, CI-drawn, commit 2) | the new words | the route's spec |
+| c | modify | `docs/ux/briefs/SCR-M01-01-sign-in.md` | the State list gains access-removed, not-reached, not-found (owner-ruled) | start-here Edit 2 |
+| d | modify | `docs/ux/briefs/SCR-M01-02-company-signup.md` | the State list gains not-reached, request-not-reached; lines 21 and 49 follow the record | start-here Edit 2 |
+| all | modify | `docs/tasks/M01-onboarding.md` · `docs/tasks/deferred.md` | this RFC and the part rows; the rows that ship | Law 8 |
+
+##### API and contract changes
+None — no wire boundary changes. The api already answers every case; only how the apps read its failures changes.
+
+##### Risks and rollout
+- **A failure misread as "no answer":** a refusal shown as *could not be reached* invites a pointless retry. Mitigation: only `failure !== null` reads as unreached; `ApiError` with an envelope keeps its code — proven by the frame tests on both kinds.
+- **A boot that never ends:** `unreachable` holds the person on `NoConnection` until a retry answers; *Try again* reports a failed or slow retry (`NoConnection`'s own lifecycle), so nothing spins forever.
+- **Old app versions:** nothing stored or sent changes; an old app keeps its old words.
+- **Screenshot baselines:** parts c and d change web looks; each lands its CI-drawn baselines in a second commit the owner approves (`tests/e2e/CLAUDE.md`).
+
+##### Acceptance criteria and proof
+- **AC-1** — A request that got no answer reads as *could not be reached*, never *something on our side failed*; a server refusal keeps its own words. → proof: unit test of `loginFrame`; QA web and phone with the network off.
+- **AC-2** — A boot that fails for anything but a lost session keeps the person signed in and offers a retry over the loading frame. → proof: unit test of the session store; QA with the api stopped during boot.
+- **AC-3** — A person whose access was removed sees the board's access-removed frame on the door, cleared by the next sign-in. → proof: QA web and phone; side-by-side with the board.
+- **AC-4** — After a create that got no answer, the company step says the company may have been made and trying again is safe; a server refusal keeps *nothing was created*. → proof: unit test of the words; QA with the api stopped mid-create; side-by-side with the redrawn `SCR-M01-02` frame.
+- **AC-5** — With no connection the web shows the shared no-connection screen instead of loading forever. → proof: a Playwright case that drops the network.
+- **AC-6** — Both apps render an API failure through one `ApiErrorText` in `packages/ui` (one `.types.ts`, words from `packages/i18n`). → proof: typecheck; QA web and phone.
+- **AC-7** — The phone dev build's debugger warning is read and its source fixed, or recorded with why it stays. → proof: QA on a cold start.
+- **AC-8** — A path no route serves shows a drawn not-found frame in the reader's language, with a way home (D87). → proof: e2e web; side-by-side with the board.
+- **AC-9** — `SCR-M01-02`'s frames meet the words law after the board's copy pass, and the app's words follow (D133). → proof: the design check's word inventory; side-by-side.
+- **AC-10** — `m-google-failed` is drawn and measured in Hindi and Marathi (D139), and four small web-door differences are ruled and built — the board wins unless a law says otherwise (D142). → proof: side-by-side, web and phone.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 frame | main-dev | required | unit | `request`/`verify` `unreached` → the `*-unreached` frames; planted red: `request: 'unreached'` mapped to `request-failed` | `login-frame.test.ts` |
+| AC-1 words | main-dev | required | unit | each `*-unreached` frame's block is *HelioGrid could not be reached, from your side or ours.*, each refusal's *Something on our side failed*; the number step's notice in en/hi/mr; planted red: `auth-unreached` → `OUR_SIDE` | `packages/i18n/tests/sign-in-frames.test.ts` |
+| AC-1 web | qa-web | required | `/login` | network off → Send code → *We could not send the code* + *HelioGrid could not be reached, from your side or ours.*; side-by-side `m-not-reached` 375, 1536 per decision 17 | QA + `login.spec.ts` |
+| AC-1 iOS · Android | qa-ios · qa-android | required | door | airplane mode → Send code → the same block; side-by-side `m-not-reached` | QA |
+| AC-2 rule | main-dev | required | unit | `boot-failed` from `checking` keeps `checking` + `unreachable`; again changes nothing; `boot-signed-out` and a loss still open the door; planted red: `boot-failed` → `SIGNED_OUT` | `session-transitions.test.ts` |
+| AC-2 web | qa-web | required | `/home` signed in | api stopped, reload → `NoConnection`; *Try again* while still stopped → *Still no answer from HelioGrid.*; api started, *Try again* → home, still signed in | QA + `login.spec.ts` (refused boot, axe, a retry with no answer) |
+| AC-2 iOS · Android | qa-ios · qa-android | required | cold start | api stopped → `NoConnection`; api back, *Try again* → home | QA |
+| AC-3 rule | main-dev | required | unit | `ended` set at the door → `access-removed`; signed in → null | `door-view.test.ts` |
+| AC-3 web · iOS · Android | qa-web · qa-ios · qa-android | required | door | a member removed while signed out, then a cold start → the block; sign in again → gone; side-by-side `m-access-removed` | QA |
+| AC-4 words | main-dev | required | unit | `unreached` → *We could not confirm the company* / *Your company may have been made — trying again cannot make a second.*; refusal → *Nothing was created, so trying again is safe.*; the join's two | `company-signup-frames.test.ts` |
+| AC-4 web · iOS · Android | qa-web · qa-ios · qa-android | required | step 3 | api stopped mid-create → `m-not-reached`; side-by-side `m-not-reached`, `m-error`, `m-request-not-reached`, `m-request-failed` | QA + `company-signup.spec.ts` |
+| AC-4 api | qa-api | required | `POST /tenants` | the same retry key twice after a lost answer → one company, `200` both times | QA |
+| AC-5 web | ci | required | `e2e-web` | `/home` → `setOffline(true)` → `NoConnection`; back online → the home | `home.spec.ts` |
+| AC-5 phone twin | qa-ios · qa-android | required | shell | airplane mode → `NoConnection`; off → the home | QA |
+| AC-6 | — | not_applicable | — | struck by the owner's ruling (finding 2): no screen renders a raw API failure | — |
+| AC-7 | qa-ios | required | cold start | the debugger warning read; fixed or recorded | QA + Metro log |
+| AC-8 | ci | required | `e2e-web` | `/no-such-page` signed out → *This page does not exist*, *Go to sign in*; signed in → *Go to home* | `not-found.spec.ts` |
+| AC-8 look | qa-web | required | `/no-such-page` | side-by-side `m-not-found` (375), `d-not-found` (1536), in Hindi | QA |
+| AC-9 | qa-web · qa-ios · qa-android | required | signup | side-by-side every `SCR-M01-02` frame the app reaches, 375 and 1536, the Hindi and Marathi renders | QA |
+| AC-10 | qa-web · qa-ios · qa-android | required | door | side-by-side `m-google-failed-hi`/`-mr`; the four D142 items as ruled | QA |
+| gate | evaluator | required | all | `pnpm check:all` green, invariants on `heliogrid_test` | gate |
+
+**Planted reds seen (part a):** `refusalFrameOf` mapping `request: 'unreached'` to `request-failed` failed `login-frame.test.ts` › *an SMS request that got no answer*, *a call request that got no answer*, *request-unreached / call-request-unreached keeps its refusal twin's code field and controls*; `boot-failed` → `SIGNED_OUT` failed `session-transitions.test.ts` › *holds a boot check that got no answer, or a server failure, signed in and unreachable*; `auth-unreached` → `OUR_SIDE` failed `sign-in-frames.test.ts` › *auth-unreached carries its own block*. Each restored from a scratchpad copy and green again.
+| CI | ci | required | `quality`, `e2e-web` | green on the head SHA | CI |
+
+##### Delivery size
+- **Split into four parts** — one PR each, web and phone together in every part.
+- **a** · door and boot · planned ~20 files (6 generated) · code ~260, tests ~170. **Built (delta, 2026-10-09):** 31 files (6 generated, 1 doc) · code 181, tests 123 authored lines — 9 built but not planned, 2 planned but not built (the file table names each); lines under the estimate. **Built after review (second delta):** 39 files (6 generated, 2 docs) · code 356, tests 182 authored lines, of which about 120 are `login-frame.ts`'s frame-kind decision moved whole into `login-frame-kind.ts` — the review's retry, 401, signup-route, words-test and file-size fixes and D78's push file.
+- **b** · signup failures and the offline shell · ~22 files (6 generated) · code ~230, tests ~150.
+- **c** · access removed, not-found, the door's D142 items · ~22 files (6 generated, 2 baselines) · code ~250, tests ~120.
+- **d** · the signup copy pass · ~16 files (6 generated, 2 baselines) · code ~180, tests ~40.
+- Order: a → b → c → d; each part's tests first.
+
+#### Parts
+| part | delivers | AC | depends on | status |
+|---|---|---|---|---|
+| a | a door request with no answer and a boot during an outage: the not-reached block, `NoConnection` with *Try again* on both apps; D78 read | AC-1, AC-2, AC-7 | — | shipped |
+| b | the company step's and the join's no-answer frames; the offline shell on both apps | AC-4, AC-5 | a | open |
+| c | the door's access-removed block, the web's not-found frame, `m-google-failed` in Hindi and Marathi, the door's D142 items | AC-3, AC-8, AC-10 | a | open |
+| d | `SCR-M01-02`'s copy pass and its D142 helpers | AC-9 | b | open |
+
+#### Runtime
+| resource | state | identity |
+|---|---|---|
+| branch | `feat/T-M01-039` created from `origin/main` `a3b2963b` | — |
+| web `3002` · api `8084` · Metro `8081` | none listening | — |
+| Postgres · object store · Temporal | `pre_existing`, running | `heliogrid-pg-local`, `heliogrid-object-store-local`, `heliogrid-temporal` (+ `-admin`, `-jwks`) |
+| simulators · emulators | none booted | — |
+| browser tabs | `pre_existing` | `seed` (the Claude Design board) |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` `DATABASE_URL`, `DATABASE_ADMIN_URL` |
+| logs | `.qa/api.log` 7,541,062 · `.qa/web.log` 283,394 · `.qa/metro.log` 904,808 bytes | byte marks |
+
+**Part a · QA and gate (2026-10-09)** — one stack on `heliogrid_test`: the api, web and Metro started by the task (`preview_start`), the iPhone 17 Pro simulator (`40ED0117-…`, app installed that morning, no native change, no rebuild) and the `Pixel_8_Emulator` (`emulator-5554`, `-memory 4096`) booted by the task; standing accounts …901 web, …902 iOS, …903 Android. Four phases, the api stopped and started by Main between them: A signed in; B api stopped → `NoConnection`, *Try again* while still stopped → *Still no answer*; C api up → *Try again* → home, still signed in; D signed out, api stopped → *Send code* → the not-reached block in English, Hindi and Marathi. A first B run found the review's retry fault; B–D ran again after the fixes. Board picture `board/m-not-reached.png` (100% zoom); its Hindi and Marathi words were read from the board file, their layout from the record. Side-by-side `side/m-not-reached.png`: board, web 375, iOS, Android — the same block, words and order; Android's column sits lower on the taller screen by the board's own centring rule. A web 500 seen once was the dev server reading a package mid-rebuild (`.qa/web.log`: *Unexpected end of JSON input*), not the product. `pnpm check:all` once: pass (3,518 unit tests; invariants on `heliogrid_test`, none vacuous); nothing regenerated.
+
+**Measurements (part a)** — helper runs: Explore 1, `design-check` 1 (one continuation), `qa-web` 1 (five continuations), `qa-ios` 1 (five), `qa-android` 1 (five), `reviewer` 1 (one continuation), `evaluator` 1; one full gate. Main's own turns and tokens are not counted. Size: planned ~20 files, code ~260, tests ~170; built 41 files (6 generated, 4 docs), code 356, tests 182 authored lines — the two deltas the owner approved.
+
+| resource | initial | at part a's card |
+|---|---|---|
+| web `3002` · api `8084` | none | stopped (`started_by_task`) |
+| Metro `8081` | none | running (`started_by_task`, preview server `847ff624…`) — kept for part b |
+| simulator · emulator | none booted | booted (`started_by_task`) — kept for part b |
+| browser tabs | `seed` | `seed`, `tab-1` (`started_by_task`) |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| logs | `.qa/api.log` 7,541,062 · `.qa/web.log` 283,394 · `.qa/metro.log` 904,808 bytes | kept |
 
 ### T-M01-040 · Signing in returns the person to where they were going
 **Type:** screen · **Tier:** P1 (`M01-61`)

@@ -18,7 +18,7 @@ import {
   uiLanguageOrSource,
 } from '@heliogrid/domain';
 import type { AuthRepository } from '../auth/repository';
-import { ApiError } from '../errors/errors';
+import { ApiError, DataError, UnauthorizedError } from '../errors/errors';
 import type { TenantRepository } from '../tenant/repository';
 import type { SessionSignals } from '../transport/transport';
 import type { UserRepository } from '../user/repository';
@@ -49,6 +49,10 @@ const GOOGLE_OUTCOME_BY_CODE: Record<string, GoogleOutcome> = {
 };
 function codeOf(error: unknown): string {
   return error instanceof ApiError ? error.code : '';
+}
+/** No readable answer came (`DataError.failure`): the person's network or ours, never our refusal (`F8-36`). */
+function unanswered(error: unknown): boolean {
+  return error instanceof DataError && error.failure !== null && error.failure !== 'cancelled';
 }
 
 /** The wire's Google request: an optional field is left out, never sent as undefined. */
@@ -146,17 +150,31 @@ export function createSessionStore(config: {
   // The boot check runs on the FIRST subscription, never at construction: a cookie the server
   // still honours signs the person straight in, and a server render — which builds the store
   // but never subscribes — fires no request and rotates no visitor's cookies.
+  // A 401 the transport could not turn into a loss is still no session: it opens the door, never
+  // the retry, or every Try again would meet the same 401. Resolves whether the check was answered.
+  const checkSession = (): Promise<boolean> =>
+    config.auth
+      .session()
+      .then(
+        (projection) => {
+          if (projection === null) apply({ kind: 'boot-signed-out' });
+          else signedIn(userOf(projection), true);
+          return true;
+        },
+        (error: unknown) => {
+          apply({ kind: error instanceof UnauthorizedError ? 'boot-signed-out' : 'boot-failed' });
+          return error instanceof UnauthorizedError;
+        },
+      )
+      // A throw while admitting the answer is no session either; it never leaves the boot hanging.
+      .catch(() => {
+        apply({ kind: 'boot-failed' });
+        return false;
+      });
   let booted = false;
   const boot = () => {
     booted = true;
-    config.auth
-      .session()
-      .then((projection) =>
-        projection === null
-          ? apply({ kind: 'boot-signed-out' })
-          : signedIn(userOf(projection), true),
-      )
-      .catch(() => apply({ kind: 'boot-failed' }));
+    void checkSession();
   };
 
   return {
@@ -176,6 +194,7 @@ export function createSessionStore(config: {
         wrongTries = 0;
         return 'sent';
       } catch (error) {
+        if (unanswered(error)) return 'unreached';
         return REQUEST_OUTCOME_BY_CODE[codeOf(error)] ?? 'failed';
       }
     },
@@ -187,11 +206,13 @@ export function createSessionStore(config: {
         await admit(next, door);
         return { outcome: 'verified', triesLeft: triesLeft() };
       } catch (error) {
+        if (unanswered(error)) return { outcome: 'unreached', triesLeft: triesLeft() };
         const outcome = VERIFY_OUTCOME_BY_CODE[codeOf(error)] ?? 'failed';
         if (outcome === 'mismatch') wrongTries += 1;
         return { outcome, triesLeft: triesLeft() };
       }
     },
+    retryBoot: checkSession,
     async signInWithGoogle(token, code): Promise<GoogleResult> {
       // A link proves a number by the code of the challenge this store opened; without one there is nothing to prove.
       if (code !== null && challengeId === null)

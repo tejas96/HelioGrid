@@ -1,5 +1,10 @@
 import notifee, { AndroidImportance, AuthorizationStatus } from '@notifee/react-native';
-import messaging from '@react-native-firebase/messaging';
+import {
+  getMessaging,
+  getToken,
+  onMessage,
+  registerDeviceForRemoteMessages,
+} from '@react-native-firebase/messaging';
 import { Platform } from 'react-native';
 
 /**
@@ -48,8 +53,9 @@ export async function askToPush(): Promise<boolean> {
  */
 export async function pushToken(): Promise<string | null> {
   try {
-    if (Platform.OS === 'ios') await messaging().registerDeviceForRemoteMessages();
-    const token = await messaging().getToken();
+    const messaging = getMessaging();
+    if (Platform.OS === 'ios') await registerDeviceForRemoteMessages(messaging);
+    const token = await getToken(messaging);
     return token.length > 0 ? token : null;
   } catch {
     return null;
@@ -112,7 +118,7 @@ function subscribe(
     subjectRef?: string;
   }) => void,
 ): () => void {
-  const unsubscribe = messaging().onMessage(async (remote) => {
+  const unsubscribe = onMessage(getMessaging(), async (remote) => {
     const title = remote.notification?.title ?? '';
     const body = remote.notification?.body ?? '';
     if (title.length > 0 || body.length > 0) await showInForeground(title, body);

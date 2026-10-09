@@ -79,7 +79,7 @@ describe('a request answered', () => {
     );
   });
 
-  it.each(['capped', 'locked', 'delivery-failed', 'failed'] as const)(
+  it.each(['capped', 'locked', 'delivery-failed', 'failed', 'unreached'] as const)(
     '%s releases the gap, counts no send and marks the channel asked for',
     (outcome) => {
       const next = loginReducer(sentState, { type: 'request-ended', outcome, now: NOW });
@@ -92,6 +92,12 @@ describe('a request answered', () => {
       });
     },
   );
+
+  it('a first send that got no answer stays on the number, which is kept (F8-36)', () => {
+    const asked = state({ pending: { kind: 'request', phone: PHONE, channel: 'sms' } });
+    const next = loginReducer(asked, { type: 'request-ended', outcome: 'unreached', now: NOW });
+    expect(next).toEqual(state({ request: 'unreached' }));
+  });
 
   it('a server-side gap starts the full gap again and places nothing', () => {
     const offered = state({ step: 'otp', channel: 'voice', placed: false, sends: 1 });
