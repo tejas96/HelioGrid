@@ -69,7 +69,7 @@ function HeadCell<Row>({
 }) {
   const inner = (
     <View style={styles.headCell}>
-      <Text variant="overline" color={state.active ? 'primary' : 'tertiary'}>
+      <Text variant="overline" color={state.active ? 'primary' : 'secondary'}>
         {column.label}
       </Text>
       {state.canSort ? <SortGlyph dir={state.dir} active={state.active} /> : null}

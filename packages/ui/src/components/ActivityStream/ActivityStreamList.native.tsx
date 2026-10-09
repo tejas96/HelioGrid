@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: type.overline.letterSpacing,
     textTransform: 'uppercase',
-    color: theme.colors['text-tertiary'],
+    color: theme.colors['text-secondary'],
   },
   more: { flexDirection: 'row', justifyContent: 'center' },
 });

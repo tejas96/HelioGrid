@@ -40,7 +40,7 @@ export function ImageMissing({
   const compact = isCompact(width);
   const text = missingLabel || miss.label;
   const detail = missingDetail ?? miss.detail;
-  const ink = warning ? theme.colors['warning-text'] : theme.colors['text-tertiary'];
+  const ink = warning ? theme.colors['warning-text'] : theme.colors['text-secondary'];
   const labelVariant = compact ? 'caption' : 'body-sm';
   const labelColor = warning ? 'primary' : 'secondary';
   return (
@@ -69,7 +69,7 @@ export function ImageMissing({
         ) : null}
       </View>
       {!compact && detail ? (
-        <Text variant="caption" color="tertiary" align="center" style={styles.missingDetail}>
+        <Text variant="caption" color="secondary" align="center" style={styles.missingDetail}>
           {detail}
         </Text>
       ) : null}

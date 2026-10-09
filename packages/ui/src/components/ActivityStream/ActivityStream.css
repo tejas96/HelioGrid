@@ -56,7 +56,7 @@
   font-weight: var(--fw-bold);
   letter-spacing: var(--tr-overline);
   text-transform: uppercase;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 /* ── states, and the window's own control ────────────────────────────────────── */

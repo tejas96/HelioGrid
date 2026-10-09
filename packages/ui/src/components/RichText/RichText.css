@@ -249,7 +249,7 @@
   border-radius: var(--rf-sm);
   background: var(--canvas-sunken);
   font-family: var(--font-mono);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .hg-rich-text-logo-row img {
