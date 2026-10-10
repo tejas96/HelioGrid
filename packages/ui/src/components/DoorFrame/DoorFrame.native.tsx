@@ -1,37 +1,30 @@
 import { theme } from '@heliogrid/theme';
-import type { StyleProp, ViewStyle } from 'react-native';
+import { useContext } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project.
    Metro resolves both spellings to the same module, so this is the same import, correctly typed. */
 import { BrandBloom } from '../BrandBloom/BrandBloom.native';
 import { Wordmark } from '../Wordmark/Wordmark.native';
+import { DoorTopInset } from './DoorFrame.logic';
 import type { DoorFrameProps } from './DoorFrame.types';
 
 const WORDMARK_SIZE = 24;
-
-interface NativeDoorFrameProps extends DoorFrameProps {
-  style?: StyleProp<ViewStyle>;
-}
 
 /**
  * The page, the bloom and the header row every door frame shares, at 375 as `SCR-M01-01` and
  * `SCR-M01-02` draw it: the bloom behind the top of the column, `sp-6` above and below, the
  * market's mobile screen padding at the sides. One column, so `lead` and then `identity` are
- * drawn above the task and `taskMeasure` names nothing here. `footer` stays under the scrolling
- * column. The safe-area insets are the screen's: the export's 375×812 frame starts under the
- * status bar, and the app's own inset view puts it there — this package holds no platform adapter.
+ * drawn above the task and `taskMeasure` names nothing here. `column` places the identity: centred
+ * takes the free height above it, as much as the task's own spacer takes below; deep puts it `sp-8`
+ * under the step header. `footer` stays under the scrolling column. The safe-area insets are the
+ * screen's: the export's 375×812 frame starts under the status bar, and the app hands that band's
+ * height in through `DoorTopInset` — this package holds no platform adapter.
  */
-export function DoorFrame({
-  trailing,
-  lead,
-  identity,
-  footer,
-  children,
-  style,
-}: NativeDoorFrameProps) {
+export function DoorFrame({ trailing, lead, identity, footer, column, children }: DoorFrameProps) {
+  const topInset = useContext(DoorTopInset);
   return (
-    <View style={[styles.root, style]}>
+    <View style={[styles.root, { paddingTop: topInset }]}>
       <BrandBloom placement="top" />
       <KeyboardAvoidingView
         style={styles.fill}
@@ -44,7 +37,12 @@ export function DoorFrame({
               {trailing}
             </View>
             {lead}
-            {identity}
+            {column === 'centred' ? <View style={styles.centring} /> : null}
+            {column === 'deep' && identity !== undefined ? (
+              <View style={styles.deep}>{identity}</View>
+            ) : (
+              identity
+            )}
             {children}
           </View>
         </ScrollView>
@@ -72,6 +70,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: theme.spacing['sp-3'],
   },
+  /** Never under `sp-8`, so the heading keeps its distance from the header row on a short screen. */
+  centring: { flex: 1, minHeight: theme.spacing['sp-8'] },
+  deep: { paddingTop: theme.spacing['sp-8'] },
   /** With a footer the column's bottom padding moves to the footer, so the action sits `sp-6` under the last line. */
   columnAboveFooter: { paddingBottom: 0 },
   footer: {

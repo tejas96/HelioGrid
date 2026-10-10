@@ -1,0 +1,35 @@
+/* The number step's task column (`SCR-M01-01` `m-normal`, `d-normal`): the form, the Google rows
+   and the road. The frame, the title block and the column's place are `DoorFrame`'s. Every value a
+   token var(). */
+
+.hg-door-number-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* The "or" and Continue with Google: sp-5 above (the form's gap), sp-3 between (`SCR-M01-01`). */
+.hg-door-number-google {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* The road to the other door, held at the column's foot under the breakpoint. */
+.hg-door-number-road {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  margin-top: auto;
+  padding-top: var(--sp-2);
+}
+
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. From the
+   door's breakpoint the road follows the form in reading order. */
+@media (min-width: 968px) {
+  .hg-door-number-road {
+    margin-top: 0;
+    align-self: center;
+  }
+}

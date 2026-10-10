@@ -111,7 +111,7 @@ as missing. A frame with no row, or a built state with no frame and no stated ru
 Target each task or part at no more than about 30 changed files **and** 1,000 authored changed
 lines (additions plus deletions). List generated artifacts and lockfiles, but exclude them from the
 line estimate. A change to a shared primitive's look counts every spec that measures the old value (`tests/e2e/components/`) in its file table. The estimate gives code lines and test lines on separate lines; a part's tests are
-counted, never assumed small. It counts every authored line the diff will show — a constraint comment is a line, and a row that changes is two, one removed and one added. An inseparable end-to-end deliverable may exceed a target only when its RFC explains
+counted, never assumed small. It counts every authored line the diff will show — a constraint comment is a line, and a row that changes is two, one removed and one added. A file moved and rewritten counts whole on both sides, as one file deleted and one added: git records a move only when the two are at least half alike. An inseparable end-to-end deliverable may exceed a target only when its RFC explains
 why no smaller part can be independently accepted and the owner approves that exact size.
 
 `#### Parts` is a separate heading because the build-order walk reads it. Its `Where` rows are the

@@ -1,9 +1,22 @@
 'use client';
-import { useCompanySignup, useSession, useSessionPhase, useSignIn } from '@heliogrid/data/react';
+import {
+  type SignIn,
+  useCompanySignup,
+  useSession,
+  useSessionPhase,
+  useSignIn,
+} from '@heliogrid/data/react';
 import { homeOf, signupView } from '@heliogrid/domain';
-import { COMPANY_SIGNUP, homeTitle, SIGN_IN, signupExplainers } from '@heliogrid/i18n';
+import {
+  COMPANY_SIGNUP,
+  explainerPagerWords,
+  homeTitle,
+  numberStepWords,
+  SIGN_IN,
+  signupExplainers,
+} from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { SuccessDwell, useFormat } from '@heliogrid/ui';
+import { DoorNumberStep, SuccessDwell, useFormat } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import './sign-in.css';
@@ -12,7 +25,7 @@ import { CodeStep } from './components/CodeStep';
 import { CompanyStep } from './components/CompanyStep';
 import { JoinRequestSent } from './components/JoinRequestSent';
 import { KnownNumber } from './components/KnownNumber';
-import { PhoneStep } from './components/PhoneStep';
+import { LanguageControl } from './components/LanguageControl';
 import { SignupProgress } from './components/SignupProgress';
 import { HOME_ROUTE, LOGIN_ROUTE } from './constants';
 import { keptReturnPath } from './return-path';
@@ -103,19 +116,40 @@ export function CompanySignupScreen() {
       />
     );
   }
+  return <SignupNumberStep signIn={signIn} onSignIn={() => router.push(LOGIN_ROUTE)} />;
+}
+
+/** Step 1 — the number, under the step header, with the road back to the front door. */
+function SignupNumberStep({ signIn, onSignIn }: { signIn: SignIn; onSignIn: () => void }) {
+  const t = useTranslate();
+  const sending = signIn.state.pending?.kind === 'request';
   return (
-    <PhoneStep
-      signIn={signIn}
+    <DoorNumberStep
+      language={<LanguageControl />}
       taskMeasure="steps"
       lead={<SignupProgress current={0} />}
-      title={t(COMPANY_SIGNUP.createYourCompany)}
-      intro={t(COMPANY_SIGNUP.intro)}
-      explainer={signupExplainers(t).whatSignupAsks}
+      title={{
+        title: t(COMPANY_SIGNUP.createYourCompany),
+        intro: t(COMPANY_SIGNUP.intro),
+        explainer: { ...signupExplainers(t).whatSignupAsks, ...explainerPagerWords(t) },
+      }}
+      words={numberStepWords(t, {
+        notice: signIn.notice,
+        google: signIn.google,
+        problem: signIn.state.phoneProblem,
+        sending,
+      })}
+      phone={signIn.state.phone}
+      onPhone={signIn.typePhone}
+      busy={signIn.busy}
+      sending={sending}
+      googleBusy={signIn.google?.busy ?? false}
+      onPress={signIn.press}
       helper={t(COMPANY_SIGNUP.numberHelper)}
       road={{
         question: t(COMPANY_SIGNUP.alreadyOnHelioGrid),
         label: t(COMPANY_SIGNUP.signInInstead),
-        onPress: () => router.push(LOGIN_ROUTE),
+        onPress: onSignIn,
       }}
     />
   );

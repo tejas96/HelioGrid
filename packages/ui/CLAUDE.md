@@ -40,7 +40,8 @@ src/components/<Name>/
   <Name>.types.ts     THE shared prop contract — both halves implement it (Law 7)
   <Name>.tsx          web        <Name>.native.tsx   React Native
   <Name>.css          web styles
-  <Name>.logic.ts     anything that is not markup, consumed by BOTH halves
+  <Name>.logic.ts     anything that is not markup — shared by both halves, or handed to the app
+                      through the index
   index.ts            the only thing outside imports
 ```
 

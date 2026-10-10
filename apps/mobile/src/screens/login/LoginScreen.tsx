@@ -1,12 +1,13 @@
 import { useSession, useSignIn } from '@heliogrid/data/react';
 import { doorView, homeOf } from '@heliogrid/domain';
-import { homeTitle, SIGN_IN } from '@heliogrid/i18n';
+import { homeTitle, numberStepWords, SIGN_IN } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { SuccessDwell, useFormat } from '@heliogrid/ui';
+import { DoorNumberStep, SuccessDwell, useFormat } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
 import { openGoogle } from '../../auth/google-sign-in';
 import { CodeStep } from '../shared/CodeStep';
-import { PhoneStep } from '../shared/PhoneStep';
+import { InsetDoor } from '../shared/InsetDoorFrame';
+import { LanguageControl } from '../shared/LanguageControl';
 import { GoogleLinkStep } from './components/GoogleLinkStep';
 import { SwitchSheet } from './components/SwitchSheet';
 
@@ -28,11 +29,33 @@ export function LoginScreen() {
   };
 
   const view = doorView(session, signIn.state.step);
+  const sending = signIn.state.pending?.kind === 'request';
+  const numberStep = () => (
+    <InsetDoor>
+      <DoorNumberStep
+        language={<LanguageControl />}
+        title={{ title: t(SIGN_IN.signIn), intro: t(SIGN_IN.intro) }}
+        words={numberStepWords(t, {
+          notice: signIn.notice,
+          google: signIn.google,
+          problem: signIn.state.phoneProblem,
+          sending,
+        })}
+        phone={signIn.state.phone}
+        onPhone={signIn.typePhone}
+        busy={signIn.busy}
+        sending={sending}
+        googleBusy={signIn.google?.busy ?? false}
+        onPress={signIn.press}
+        road={road}
+      />
+    </InsetDoor>
+  );
 
   if (view === 'switch' && session.switch !== null) {
     return (
       <>
-        <PhoneStep signIn={signIn} title={t(SIGN_IN.signIn)} intro={t(SIGN_IN.intro)} road={road} />
+        {numberStep()}
         <SwitchSheet pending={session.switch} onConfirm={() => void session.completeSwitch()} />
       </>
     );
@@ -46,7 +69,5 @@ export function LoginScreen() {
   }
   if (view === 'code') return <CodeStep signIn={signIn} />;
   if (view === 'google-link') return <GoogleLinkStep signIn={signIn} />;
-  return (
-    <PhoneStep signIn={signIn} title={t(SIGN_IN.signIn)} intro={t(SIGN_IN.intro)} road={road} />
-  );
+  return numberStep();
 }

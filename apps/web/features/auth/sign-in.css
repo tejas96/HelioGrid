@@ -1,25 +1,7 @@
 /* The door — screen-level layout inside the frame @heliogrid/ui draws (`DoorFrame` owns the
-   canvas, the bloom, the two columns and the door's breakpoint): the title block, the form, the
-   road at the foot, the code family's rows and the switch panel. Component pixels belong to the
-   package; every value a token var(). */
-
-/* The front door, the code family and the linking frame centre their column between the header
-   and the column's foot (`SCR-M01-01` "375 vertical layout"): this spacer takes half the free
-   height, the task's own end the other half. A door with a step header is top-aligned instead.
-   The spacer takes back the body's gap under it, so the title sits at least `sp-8` under the
-   header (the page's `sp-6` and its own `sp-2`). */
-.hg-door-front .hg-door-body::before {
-  content: "";
-  flex: 1 1 0;
-  min-height: var(--sp-2);
-  margin-bottom: calc(var(--sp-6) * -1);
-}
-
-.hg-door-title {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-}
+   canvas, the bloom, the two columns, the title block and the door's breakpoint; `DoorNumberStep`
+   its own form and road): the linking frame's form, the code family's rows and the switch panel.
+   Component pixels belong to the package; every value a token var(). */
 
 .hg-door-form {
   display: flex;
@@ -27,25 +9,11 @@
   gap: var(--sp-5);
 }
 
-/* The "or" and Continue with Google: sp-5 above (the form's gap), sp-3 between (`SCR-M01-01`). */
-.hg-door-google {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-}
-
 /* The locked frame's way still open: the sentence, sp-4, then Continue with Google (`M01-04`). */
 .hg-door-locked-google {
   display: flex;
   flex-direction: column;
   gap: var(--sp-4);
-}
-
-/* A door title and its Explainer on one row, sp-2 apart on both widths. */
-.hg-door-title-row {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
 }
 
 /* The tile, then sp-2, then "Not you?" on the phone; the column's own gap follows. */
@@ -61,15 +29,6 @@
 
 .hg-door-desktop-only {
   display: none;
-}
-
-.hg-door-signup {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--sp-1);
-  margin-top: auto;
-  padding-top: var(--sp-2);
 }
 
 .hg-door-centred {
@@ -108,8 +67,7 @@
   gap: var(--sp-3);
 }
 
-/* From the frame's breakpoint (`DoorFrame.css`) the identity is its own column, so the door's
-   phone-only spacer and road position go. */
+/* From the frame's breakpoint (`DoorFrame.css`) the identity is its own column. */
 /* --bp-desktop: @media cannot read a custom property, so its value is written here. */
 @media (min-width: 968px) {
   .hg-door-phone-only {
@@ -118,14 +76,5 @@
 
   .hg-door-desktop-only {
     display: block;
-  }
-
-  .hg-door-front .hg-door-body::before {
-    display: none;
-  }
-
-  .hg-door-signup {
-    margin-top: 0;
-    align-self: center;
   }
 }

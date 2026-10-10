@@ -1,11 +1,19 @@
-import { useCompanySignup, useSession, useSignIn } from '@heliogrid/data/react';
+import { type SignIn, useCompanySignup, useSession, useSignIn } from '@heliogrid/data/react';
 import { homeOf, signupView } from '@heliogrid/domain';
-import { COMPANY_SIGNUP, homeTitle, SIGN_IN, signupExplainers } from '@heliogrid/i18n';
+import {
+  COMPANY_SIGNUP,
+  explainerPagerWords,
+  homeTitle,
+  numberStepWords,
+  SIGN_IN,
+  signupExplainers,
+} from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { SuccessDwell, useFormat } from '@heliogrid/ui';
+import { DoorNumberStep, SuccessDwell, useFormat } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
 import { CodeStep } from '../shared/CodeStep';
-import { PhoneStep } from '../shared/PhoneStep';
+import { InsetDoor } from '../shared/InsetDoorFrame';
+import { LanguageControl } from '../shared/LanguageControl';
 import { CompanyStep } from './components/CompanyStep';
 import { JoinRequestSent } from './components/JoinRequestSent';
 import { KnownNumber } from './components/KnownNumber';
@@ -83,19 +91,42 @@ export function CompanySignupScreen() {
       />
     );
   }
+  return <SignupNumberStep signIn={signIn} onSignIn={() => navigation.navigate('Login')} />;
+}
+
+/** Step 1 — the number, under the step header, with the road back to the front door. */
+function SignupNumberStep({ signIn, onSignIn }: { signIn: SignIn; onSignIn: () => void }) {
+  const t = useTranslate();
+  const sending = signIn.state.pending?.kind === 'request';
   return (
-    <PhoneStep
-      signIn={signIn}
-      lead={<SignupProgress current={0} />}
-      title={t(COMPANY_SIGNUP.createYourCompany)}
-      intro={t(COMPANY_SIGNUP.intro)}
-      explainer={signupExplainers(t).whatSignupAsks}
-      helper={t(COMPANY_SIGNUP.numberHelper)}
-      road={{
-        question: t(COMPANY_SIGNUP.alreadyOnHelioGrid),
-        label: t(COMPANY_SIGNUP.signInInstead),
-        onPress: () => navigation.navigate('Login'),
-      }}
-    />
+    <InsetDoor>
+      <DoorNumberStep
+        language={<LanguageControl />}
+        lead={<SignupProgress current={0} />}
+        title={{
+          title: t(COMPANY_SIGNUP.createYourCompany),
+          intro: t(COMPANY_SIGNUP.intro),
+          explainer: { ...signupExplainers(t).whatSignupAsks, ...explainerPagerWords(t) },
+        }}
+        words={numberStepWords(t, {
+          notice: signIn.notice,
+          google: signIn.google,
+          problem: signIn.state.phoneProblem,
+          sending,
+        })}
+        phone={signIn.state.phone}
+        onPhone={signIn.typePhone}
+        busy={signIn.busy}
+        sending={sending}
+        googleBusy={signIn.google?.busy ?? false}
+        onPress={signIn.press}
+        helper={t(COMPANY_SIGNUP.numberHelper)}
+        road={{
+          question: t(COMPANY_SIGNUP.alreadyOnHelioGrid),
+          label: t(COMPANY_SIGNUP.signInInstead),
+          onPress: onSignIn,
+        }}
+      />
+    </InsetDoor>
   );
 }
