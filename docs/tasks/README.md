@@ -92,7 +92,9 @@ part repeats that part's applicable AC and proof rows so the owner reads one com
 
 Proof owners are `main-dev`, `qa-api`, `qa-web`, `qa-ios`, `qa-android`, `evaluator`, or `ci`;
 tiers are `required`, `blocked` with what clears it, or `not_applicable` with why. Every required
-AC has exactly one proof owner and expected result; a required blocked row fails closed. Main owns
+AC has exactly one proof owner and expected result; a required blocked row fails closed. Where code
+outside the diff already decides what a frame shows (a `domain` frame, reducer or policy), the row's
+expected result is read from that code, cited by file and line. Main owns
 unit, contract and planted-red proofs, never a live API journey. `qa-api` owns reachable running-API
 behavior — status, body, headers, sign-in, permission, tenant isolation, idempotency and persistence
 only where declared. A task with no reachable API behavior marks it not applicable. An API test

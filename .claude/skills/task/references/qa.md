@@ -17,11 +17,13 @@ once through the app, never per run. API tests use their own fixtures, not these
 ## Packets and mutation guard
 
 Give each QA helper only its proof rows, the AC lines they prove, runtime identity, log paths and
-its URL/device/account. A screen row carries the board pictures of the frames it covers; after QA
-returns, Main sets each board frame beside every surface's screenshot of it, one image per frame,
-and the commit card shows them. `qa-api` receives `http://localhost:8084`, both API numbers and the api log.
-The reviewer receives the approved RFC, changed-file list, diff and named protection rows. The
-Evaluator receives the RFC proof section verbatim, every report, Main's proof and commands.
+its URL/device/account. A screen row carries the board pictures of the frames it covers and, as
+ruled differences, every open `docs/tasks/deferred.md` row that names its screen or one of those
+frames; after QA returns, Main sets each board frame beside every surface's screenshot of it, one
+image per frame, and the commit card shows them. `qa-api` receives `http://localhost:8084`, both API
+numbers and the api log. The reviewer receives the approved RFC, changed-file list, diff and named
+protection rows. The Evaluator receives the RFC proof section verbatim, every report, Main's proof
+and commands.
 
 Before helpers start, hash the tracked status and diff, untracked-file hashes, and the two database
 URL lines. Compare after they return. A changed hash is a blocker named by file. Helpers have Bash,
@@ -34,7 +36,7 @@ Start the helpers for changed surfaces together: `qa-web`, `qa-ios`, `qa-android
 when the proof matrix has live API rows. Each uses its own account on the one stack. Omit an
 unchanged surface. A row touching global state such as the platform catalog or a market pack runs
 after surface helpers return, and the RFC names that serialization. Start `reviewer` beside QA on
-the finished diff.
+the finished diff. Main changes no checked file until every surface helper has returned.
 
 Main performs readiness checks only — health, route/app launch, database routing, accounts and log
 paths — and never duplicates a helper's journey.

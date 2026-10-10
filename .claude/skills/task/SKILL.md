@@ -57,13 +57,15 @@ joins is deleted in this task's commit.
 Fetch the record yourself with `DesignSync` `get_file` (the project and file name are in the
 task's `DESIGN:` link; the `… decisions … .md` sits beside the board) and hand its text, the brief
 and `docs/start-here.md` to `design-check`. `READY` goes into `#### Design check` with the
-verdict's date; anything else goes to the owner as the helper's one prompt. The owner's "done"
+verdict's date and the record's exact file name, which a later fetch uses in place of a file
+listing; anything else goes to the owner as the helper's one prompt. The owner's "done"
 means: fetch again, check again. A studio screen reads `ported from the POC` and has no check.
 
-After `READY`, Main captures every frame the task renders from the board in the browser pane (the
-owner signed in): each state, at 375 and 1536, and each language render, a phone frame at least
-375 px wide, into the scratchpad as `board/<frame>.png`. `#### Design check` lists them; the build
-reads the pictures with the record.
+After `READY`, `qa-web` pictures every frame the task renders from the board in the browser pane
+Main opened (the owner signed in): each state, at 375 and 1536, and each language render, a phone
+frame at least 375 px wide, into the scratchpad as `board/<frame>.png`, and returns their paths; a
+frame it reports `BLOCKED` Main captures itself. `#### Design check` lists them; the build reads
+the pictures with the record.
 
 The board is the design, not an order. A frame that looks wrong — against a PRD row, the brief, a
 law or rule, accessibility or another frame, or with a clearly simpler way to the same row — goes to
@@ -126,8 +128,9 @@ Show, and stop: the AC proof summary (the evaluator's rows), the side-by-side im
 task, the review result, every planted-red line, the changed files in three lists (planned and
 built · built but not planned, each with its reason · planned but not built), the exact commit message (the task's `Status:` or the part's row
 turns `shipped` in this commit), mistakes found and the rule that now prevents each, unresolved
-blockers, the runtime cleanup state, and the measurements — tool-call turns, tokens, helper runs,
-planned versus built — written under the task's `#### Runtime` in the same commit.
+blockers, the runtime cleanup state, and the measurements — tool-call turns, Main's context tokens
+from the session's usage reading, each helper's tokens, helper runs, planned versus built —
+written under the task's `#### Runtime` in the same commit.
 
 The commit waits for the owner's yes to THIS card (`CLAUDE.md` §4).
 
@@ -147,9 +150,9 @@ initial state.
 
 ## Helpers — `.claude/agents/`
 
-`design-check` runs in step 3; changed-surface QA, `qa-api` and `reviewer` run in step 5;
-`evaluator` follows them; `ci-investigator` reads one failed job in step 7. Their own files are the
-only report contracts. Helpers start no helper and edit no repository file. QA drives only its
-assigned API/browser/device surface; Evaluator alone may run the full gate and cause its declared
-generated-file writes. Only Main reads Claude Design. A rerun continues the same helper with the
-delta.
+`design-check` and `qa-web`'s board capture run in step 3; changed-surface QA, `qa-api` and
+`reviewer` run in step 5; `evaluator` follows them; `ci-investigator` reads one failed job in step
+7. Their own files are the only report contracts. Helpers start no helper and edit no repository
+file. QA drives only its assigned API/browser/device surface; Evaluator alone may run the full gate
+and cause its declared generated-file writes. Only Main reads the design record. A rerun continues
+the same helper with the delta.
