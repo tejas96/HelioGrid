@@ -1138,6 +1138,8 @@ Part a (2026-10-10), from the board in the browser pane: `SCR-M01-01` `m-normal`
 
 Part b (2026-10-10): both records were fetched again before its RFC — `SCR-M01-01` thirty-seven frames (31 and 6), `SCR-M01-02` twenty-three (15 and 8), the same state names — so the verdict stands and no helper ran. The records' exact file names in the project: `SCR-M01-01 - decisions &amp; self-audit.md` and `SCR-M01-02 - decisions &amp; self-audit.md`. Its board pictures, taken from the board in the browser pane at its build start: `SCR-M01-01` `m-otp-sent`, `m-otp-entry`, `m-otp-auto-read`, `m-wrong-code`, `m-expired-code`, `m-resend-cooldown`, `m-call-me-instead`, `m-delivery-failed`, `m-cap-reached`, `m-number-locked`, `m-auth-error`, `m-google-link-code`, `m-google-phone-taken` — each phone frame 220 px wide, the board at 75%, two frames to a pane screenshot (the pane gave 800 × 600) — and `d-code-family`, `d-number-locked` at 50%; `SCR-M01-02` `m-step2-code` (338 px wide, the board at 90%) and `d-step2-code` at 50%.
 
+Part c (2026-10-10): both records were fetched again before its RFC, by the file names above — `SCR-M01-01` thirty-seven frames (31 and 6), `SCR-M01-02` twenty-three (15 and 8), the same state names — so the verdict stands and no helper ran the check. Its board pictures, taken by `qa-web` from the boards in the browser pane before the RFC was shown (scratchpad `board/<board>-<frame>.png`): `SCR-M01-01` `m-normal`, `m-switch-discards` (375 × 812, the board at 100%, one shot each), `m-google-link`, `m-google-link-locked`, `m-google-failed-hi`, `m-google-failed-mr` (374 × 812, two shots joined — one pixel under 375, lost in the join), `d-normal`, `d-google-link`, `d-switch-discards` (766 × 500, the board at 50%); `SCR-M01-02` `m-step1-number` (374 × 812) and `d-step1-number` (766 × 500). Main read `m-google-link`, `m-google-link-locked`, `m-switch-discards`, `m-normal`, `d-google-link` and `d-switch-discards` against the record: each matches it. Two facts the pictures show are in the part's RFC (finding 4): the switch is a sheet at 375 and a centred modal at 1536, and its second line names who took the photographs.
+
 #### RFC
 
 ##### Title
@@ -1276,11 +1278,10 @@ Part a's files are one row each in `#### Part a · RFC`. Parts b–g are budgete
 | b | add · move | `packages/ui/src/components/DoorCodeStep/` (5) · `src/index.ts` · `src/styles.css` | the code family, with its title and its Google way inside | §4 step 8 |
 | b | delete · modify | web `CodeStep` `CodeTitle` `CodeGoogle` · phone the same three · four screens · `sign-in.css` · `door-styles.ts` · `constants.ts` | the copies and their styles out | §4 step 9 |
 | b | modify | `docs/ux/briefs/SCR-M01-01-sign-in.md` · `deferred.md` | finding 3's ruling; D23, D138 | the brief owns the state |
-| c | add · delete · modify | `packages/ui/src/components/DoorLinkStep/` (5) · web and phone `GoogleLinkStep` · two screens · styles | the link step | §4 steps 8, 9 |
-| d | add · delete · modify | `packages/ui/src/components/{DoorSwitch,DoorLanguage}/` (about 9) · an `i18n` hook for the language list and its test · web `SwitchPanel` `LanguageControl` · phone `SwitchSheet` `LanguageControl` · every caller of `LanguageControl` | the switch (panel and sheet around one body) and the language control | §4 steps 6, 8, 9 |
+| c | add · delete · modify | `packages/ui/src/components/{DoorLinkStep,DoorSwitch,DoorLanguage}/` (14) · an `i18n` hook for the language list · web `GoogleLinkStep` `SwitchPanel` `LanguageControl` · phone `GoogleLinkStep` `SwitchSheet` `LanguageControl` · every caller of `LanguageControl` · styles | the link step, the switch (a panel and a sheet under one contract) and the language control — rows c and d as first cut, one part by the owner's ruling (2026-10-10); its file rows are in `#### Part c · RFC` | §4 steps 6, 8, 9 |
 | e | add · delete · modify | `packages/ui/src/components/SignupSteps/` (5) and step 3's pieces in `SignupCompanyStep/` — the account, the facts, the fields · web and phone `SignupProgress` `AccountCard` `CompanyFacts` `CompanyFields` | the step header and step 3's pieces | §4 steps 8, 9 |
 | f | add · delete · modify | `packages/ui/src/components/SignupCompanyStep/` — the step and its join steer · web and phone `CompanyStep` `JoinSteer` · two screens · `company-signup.css` · `company-signup/styles.ts` | step 3 itself | §4 steps 8, 9 |
-| g | add · delete · modify | `packages/ui/src/components/{SignupKnownNumber,SignupRequestSent}/` (about 10) · web and phone `KnownNumber` `JoinRequestSent` · `sign-in.css` · `company-signup.css` · `door-styles.ts` · `company-signup/styles.ts` · `apps/mobile/CLAUDE.md` · the dependency-cruiser comment on `screens/shared/` · `deferred.md` | the two off-flow frames; what is left out; `screens/shared/` keeps only the inset wrapper; D24 deleted | §4 step 8 · Law 8 |
+| g | add · delete · modify | `packages/ui/src/components/{SignupKnownNumber,SignupRequestSent}/` (about 10) · web and phone `KnownNumber` `JoinRequestSent` · `company-signup.css` · `door-styles.ts` · `company-signup/styles.ts` · `apps/mobile/CLAUDE.md` · the dependency-cruiser comment on `screens/shared/` · `deferred.md` | the two off-flow frames; what is left out; `screens/shared/` keeps only the inset wrapper; D24 deleted | §4 step 8 · Law 8 |
 
 ##### API and contract changes
 None — no wire boundary changes.
@@ -1322,9 +1323,9 @@ Each part's rows are in its own RFC. The rows every part carries:
 |---|---|---|---|---|
 | a | `DoorFrame` owns the title, the column's place and the phone's inset; the number step is `DoorNumberStep` on both apps (`#### Part a · RFC`) | AC-1 (number step) | `T-M01-040` | shipped |
 | b | the code step is `DoorCodeStep`, its title and its Google way inside; finding 3's ruling is in the brief; the flow's glue is `useSignIn`'s `sending` and `googleBusy`; the step closes its own centred column on the phone (`#### Part b · RFC`) | AC-1 (code step, the language clause struck) | a | shipped |
-| c | the link step is `DoorLinkStep` — its own RFC | AC-1 (link step) | b | open |
-| d | the switch and the language control are `DoorSwitch`, `DoorLanguage` — its own RFC | AC-1 (switch, language) | c | open |
-| e | signup's step header is `SignupSteps`; step 3's account, facts and fields move into `SignupCompanyStep/` — its own RFC | AC-1 (step header, step 3's pieces) | d | open |
+| c | the link step is `DoorLinkStep`, the switch `DoorSwitch`, the language control `DoorLanguage`; the two row rules three steps share are the frame's (`#### Part c · RFC`) | AC-1 (link step, switch, language) | b | shipped |
+| d | merged into c — the owner's ruling, 2026-10-10 | — | — | merged into c |
+| e | signup's step header is `SignupSteps`; step 3's account, facts and fields move into `SignupCompanyStep/` — its own RFC | AC-1 (step header, step 3's pieces) | c | open |
 | f | step 3 itself and its join steer are `SignupCompanyStep` — its own RFC | AC-1 (company step) | e | open |
 | g | the known number and the request sent are `SignupKnownNumber`, `SignupRequestSent`; the leftover styles and D24 go — its own RFC | AC-1 (off-flow frames) | f | open |
 
@@ -1664,6 +1665,254 @@ Checklist:
 - [x] board pictures captured; side-by-side on web, iOS, Android
 - [x] review; the gate
 
+#### Part c · RFC
+
+##### Title
+`T-M01-041c` — The link step, the switch and the language control, authored once
+
+##### Description
+**User impact.** None — internal. Every frame looks as it does today on the web and on both phones. Indirectly, the next fix to the Google link step, to the switch decision or to the language control lands on the web and on both phones in one change.
+
+Who gains: every later change to these three parts. The problem: `GoogleLinkStep`, the switch (`SwitchPanel` on the web, `SwitchSheet` on the phone) and `LanguageControl` exist once per app — 195 lines under `apps/web/features/auth/components/` and 179 under `apps/mobile/src/screens/{login/components,shared}/`; the two `LanguageControl` files are the same 31 lines. This part holds what `#### Parts` first cut as c and d: the owner ruled them one part (2026-10-10). The rest is the task RFC's.
+
+##### Goals
+- `DoorLinkStep`, `DoorSwitch` and `DoorLanguage` draw the three parts on both apps; `rg -w 'GoogleLinkStep|SwitchPanel|SwitchSheet|LanguageControl' apps` finds nothing.
+- Every frame looks as it does today.
+- `/login` and `/company-signup` keep their landing baselines at 375 and 1536.
+- `sign-in.css` is deleted: no rule is left in it.
+
+##### Non-goals
+- Signup's step header, step 3 and the two off-flow frames keep their app files until parts e, f and g; here they only swap the language control they pass.
+- No new word, frame, route or API; no message joins the catalog.
+- The two link frames' differences from the board (D141), the language kept across a load (D171), the way back top-left at 1536 (D140), a switch a person can reach (D21).
+- `packages/data`: `useSignIn` is unchanged.
+
+##### Readiness and dependencies
+- Parts a and b are shipped (`#269`, `#270`); `T-FPLAT-082` is shipped (`docs/tasks/F-platform.md:3359`).
+- Design check: both records were fetched again on 2026-10-10 — thirty-seven frames and twenty-three, the same state names — so the READY verdict stands (`#### Design check`).
+- Board pictures: `#### Design check`, part c.
+- Each lifted half counts whole, deleted in the app and added in `ui` (part a's lesson; `docs/tasks/README.md`).
+- No blocker.
+
+##### Proposal
+**The flow.** As the task RFC: the screen reads its hooks, asks `i18n` for the words, and renders the `ui` component with the words, the facts and the presses.
+
+```tsx
+// apps/web SignInScreen — the phone's LoginScreen makes the same three calls
+const language = <DoorLanguage {...useLanguageChoice()} />;
+
+<DoorLinkStep
+  language={language}
+  words={googleLinkWords(t, frame, signIn.state.google?.email ?? '', signIn.state.phoneProblem)}
+  frame={frame} phone={signIn.state.phone} onPhone={signIn.typePhone}
+  busy={signIn.busy} onPress={signIn.press}
+/>
+
+<DoorSwitch
+  words={doorSwitchWords(t, { name: next.name, count: heldWork.count, date: date(heldWork.capturedAt) })}
+  onConfirm={() => void session.completeSwitch()}
+/>
+```
+
+**Key decisions, one reason each.**
+1. **Three folders, as the task RFC's decision 1.** `DoorLinkStep` (5 files), `DoorSwitch` (5), `DoorLanguage` (4 — it has no rule of its own, so no stylesheet).
+2. **`googleLinkWords` writes every word the link step draws.** It gains the pager's words inside `explainer` and `phoneError`, from a fourth argument, the number's problem; `ui` may not ask `i18n` for them. No second words function.
+3. **The link step takes facts.** `frame` is `Pick<GoogleLinkFrame, 'kind' | 'phoneEnabled' | 'sending'>` (`domain`'s type), then `phone`, `onPhone`, `busy`, `onPress`. The screen calls `domain`'s `googleLinkFrame(signIn.state)`, as the two copies do today; `useSignIn` is not touched.
+4. **`language` is required on the link step; the phone half draws none.** At 375 its header holds *Use my number instead* alone (`SCR-M01-01`, "375 vertical layout"), as the code step's does.
+5. **The link step's column comes from the frame.** `column="centred"` on both halves; the phone half closes its column with one free-height view, as the code step does. It keeps at least `sp-8` above the heading where today's keeps `sp-6`; that shows only when the column is taller than the screen, and the record's `m-google-link` has 173 points to spare (part b, finding 2).
+6. **Android's back button stays the app's.** `useHardwareBack` is a platform adapter (`.claude/rules/screen-parts.md`); `LoginScreen` wraps the step in a local component of five lines that calls it. `ui` holds no back handler for a step.
+7. **The switch is one contract with two shapes.** The web half is the panel the number step takes as `task`; the phone half is the `Sheet` over the step. Its words come from a new `doorSwitchWords` in `sign-in-number.ts` — the switch stands in the number step's form. The screen formats the date (`useFormat`) and hands the string in, because the sentence is `i18n`'s and the format is `ui`'s.
+8. **`DoorLanguage` takes `label`, `current`, `languages` and `onChoose`;** `useLanguageChoice()` in `@heliogrid/i18n/react` hands out exactly those. No wrapper file stays in an app: two wrappers that read the same would be the twin again.
+9. **Two row rules become the frame's.** `.hg-door-chrome` (shown from the door's breakpoint only — the language control beside a way back) and `.hg-door-centred` go to `DoorFrame.css`, beside the two title classes the steps already share. Three steps read them: the code step, the link step, the known number. `DoorCodeStep.css` loses its two copies and `DoorCodeStep.tsx` takes the frame's names.
+10. **The stylesheet follows the component.** The link step's form, tile and two placements go to `DoorLinkStep.css`; the switch's four rules to `DoorSwitch.css`; `sign-in.css` is deleted with its two imports. Phone: `codeColumn`, `codeTitle`, `linkAccount`, `sheetBody` and `sheetActions` leave `door-styles.ts`; `inset`, `spacer`, `titleRow`, `titleText` and `centred` stay for the frames parts f and g lift.
+
+**Findings from testing this part's own lines.**
+
+| # | finding | where | recommendation · cost |
+|---|---|---|---|
+| 1 | The task RFC's row d asks for a test of the `i18n` hook for the language list. The hook returns the contract's language set and each language's own name: a constant, and a React hook. The testing law covers `copy/` functions and refuses a test of a constant. `login.spec.ts:45` already chooses every language through the control and reads the door in each. | `.claude/rules/testing.md` · `tests/e2e/web/login.spec.ts:45` | No unit test. The `e2e-web` row and one QA row on each phone prove it. Saves a file. |
+| 2 | The phones cannot reach the link step in QA: Google's own sheet needs a real Google login, and no helper may type one. The phone half is rewritten, so `tsc` would be its only proof. | `apps/mobile/src/auth/google-sign-in.ts:27` | **Owner rules** (Decisions, 2). |
+| 3 | The switch cannot be reached on any surface: both gates send a signed-in person off the door (D21). | `docs/tasks/deferred.md` D21 | Its side-by-side rows are `not_applicable`; `tsc` holds both halves; the first sight of it is D21's own task. Said under *Risks*. |
+| 4 | The switch differs from the board in two ways no row records. The web draws it as a panel in the task column at both widths, where the board draws a sheet at 375 (`m-switch-discards`) and a centred `Modal` at 1536 (`SCR-M01-01` record, "1536 — where the arrangement genuinely differs"). And every surface writes *Taken on {date}*, where the board names the person too: *Taken by Rahul Patil on 19 Aug 2026* (decision 10). | `apps/web/features/auth/components/SwitchPanel.tsx:22` | Keep today's look and words. D21 gains both facts; it reopens with the switch drive. |
+| 5 | The switch's title has no plural: one held photograph reads *discards 1 photographs*. | `packages/i18n/src/copy/sign-in.ts:72` | New row D185, `T-M04-017 starts`. It needs a changed message in three catalogs, which this part rules out. |
+| 6 | D141 says the web's locked link frame shows an editable field. The code disables it. | `apps/web/features/auth/components/GoogleLinkStep.tsx:80` | The QA row's expected result is read from the code; D141's sentence is corrected when QA has seen the frame. |
+| 7 | The honest size is 47 files and about 1,280 code lines, above the 1,100 the hand-off named: eleven callers of the language control change, and decision 9 touches three more files. | *Delivery size* | **Owner rules** (Decisions, 1). |
+
+**Deferred rows this part meets** (every `touches` path that is a planned file or its parent).
+
+| row | met by | what | recommendation |
+|---|---|---|---|
+| D24 | `apps/web/features/auth/components/` | the twin door parts | **joins** (ruled) — narrowed to the eight parts left |
+| D141 | web `GoogleLinkStep.tsx` | two Google link frames differ from the board | **stays** — a look change on three surfaces; re-pointed to `packages/ui/src/components/DoorLinkStep/` |
+| D171 | web `LanguageControl.tsx` | the door's language is lost on a full load | **stays** — it needs storage, which is new behaviour; re-pointed to `packages/i18n/src/react/language-choice.ts` |
+| D21 | — (not by path) | the switch frame is unreachable | **stays** — gains finding 4's two facts |
+| D102 · D109 · D132 | `packages/ui/src/components/DoorFrame/` (`DoorFrame.css`, decision 9) | the wordmark's target on iOS; the header at 200% text; the keyboard over the field | **stay** — decision 9 moves two row rules and changes none of these |
+| D2 · D92 | `packages/ui/src/components/` | English left inside `ui` components | **stay** — this part adds no English to `ui` |
+| D105 | `apps/mobile/src/` | two 403s on `/notifications/devices` | **stays** |
+| D146 | `apps/mobile/src/screens/company-signup/` | no way back from signup's step 3 on the phone | **stays** — ruled again in part f |
+
+Rows this part's files also meet, found by its review and put to the owner on the commit card (none is this part's lift, so each is recommended to stay):
+
+| row | met by | what | recommendation |
+|---|---|---|---|
+| D110 | both `CompanyStep.tsx` | the company step's refusal blocks are not announced | **stays** — this part only swaps the language control the step passes; ruled again in part f |
+| D170 | `packages/ui/src/components/DoorCodeStep/` | a second no-answer block is not announced again | **stays** — it needs a send counter in the reducer; this part renames two classes there |
+| D181 | `packages/ui/src/components/DoorCodeStep/` | the code step's blocks sit `sp-5` apart, the board's `sp-6` | **stays** — the owner's ruling on the gap is still owed |
+| D188 (new) | `DoorLinkStep.native.tsx` · `apps/mobile/src/screens/shared/door-styles.ts` | review, pass 1: on the phone the title row of a door step is written four times, and this part's link step is the third `ui` copy | **stays until part g** — sharing it now reopens `DoorTitle.native.tsx` and `DoorCodeStep.native.tsx`, the shipped phone halves of parts a and b, in the middle of this part's QA; part g deletes the fourth copy, and the frame's phone side can then own the row once |
+
+**Order.** The words tests (red) → `googleLinkWords`, `doorSwitchWords` → `useLanguageChoice` → `DoorLanguage` → `DoorLinkStep` → `DoorSwitch` → the frame's two row rules → the two sign-in screens and the nine other callers → the six app copies and their styles out → `deferred.md`.
+
+**Errors and refusals.** None new: every block the link step shows arrives as words.
+
+**The twin screen.** Each component is its own twin: one `<Name>.types.ts`, both halves, both apps, in this part.
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  subgraph apps["apps/web · apps/mobile"]
+    S["SignInScreen · LoginScreen"]
+    O["nine other callers<br/>of the language control"]
+    X["GoogleLinkStep · SwitchPanel / SwitchSheet<br/>LanguageControl — one set per app, removed"]
+  end
+  subgraph i18n["packages/i18n"]
+    W["googleLinkWords<br/>+ pager words · phoneError"]
+    SW["doorSwitchWords — new"]
+    L["useLanguageChoice — new<br/>(./react)"]
+  end
+  subgraph ui["packages/ui"]
+    LS["DoorLinkStep"]
+    DS["DoorSwitch<br/>web: panel · phone: Sheet"]
+    DL["DoorLanguage"]
+    F["DoorFrame<br/>+ .hg-door-chrome · .hg-door-centred"]
+  end
+  D["packages/domain<br/>GoogleLinkFrame · LoginPress · UiLanguage"]
+  S -->|frame, email, problem| W
+  S -->|name, count, date| SW
+  S -->|words, facts, presses| LS
+  S -->|words, confirm| DS
+  S --> L
+  O --> L
+  L -->|label, current, languages, onChoose| DL
+  LS --> F
+  LS -.->|types| D
+  DL -.->|types| D
+  S -.-x X
+```
+
+##### Package changes
+- **`ui`** — exports `DoorLinkStep`, `DoorSwitch`, `DoorLanguage` and each one's `Props` and `Words` types. `DoorFrame.css` gains two row rules. Dependency direction unchanged: `domain`, `theme`.
+- **`i18n`** — `GoogleLinkWords` gains the pager's words in `explainer` and `phoneError`; `doorSwitchWords` and `DoorSwitchWords` are exported from `sign-in-number.ts`; `./react` exports `useLanguageChoice`. No new message.
+- **`apps/web` · `apps/mobile`** — lose the three parts each and their styles; `sign-in.css` is deleted.
+- **Law 12.** No new brand, enum, token, route, table or error code. Each component is held by `tsc`, as the task RFC says.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+Three new folders, each `packages/ui/src/components/<Name>/` (architecture §4, step 8).
+
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| add | `packages/ui/src/components/DoorLinkStep/DoorLinkStep.types.ts` | the one prop contract and the words' shape | Law 7 |
+| move | `apps/web/features/auth/components/GoogleLinkStep.tsx` → `packages/ui/src/components/DoorLinkStep/DoorLinkStep.tsx` | the web half — moved, then rewritten over facts; counted as one file deleted and one added | §4 step 8 |
+| move | `apps/mobile/src/screens/login/components/GoogleLinkStep.tsx` → `packages/ui/src/components/DoorLinkStep/DoorLinkStep.native.tsx` | the phone half — the same | §4 step 8 |
+| add | `packages/ui/src/components/DoorLinkStep/DoorLinkStep.css` | the form, the tile's row, the two placements of *Use a different Google account* | the stylesheet follows the component |
+| add | `packages/ui/src/components/DoorLinkStep/index.ts` | exports | the folder's one door |
+| add | `packages/ui/src/components/DoorSwitch/DoorSwitch.types.ts` | the one prop contract and the words' shape | Law 7 |
+| move | `apps/web/features/auth/components/SwitchPanel.tsx` → `packages/ui/src/components/DoorSwitch/DoorSwitch.tsx` | the web half: the panel | §4 step 8 |
+| move | `apps/mobile/src/screens/login/components/SwitchSheet.tsx` → `packages/ui/src/components/DoorSwitch/DoorSwitch.native.tsx` | the phone half: the sheet | §4 step 8 |
+| add | `packages/ui/src/components/DoorSwitch/DoorSwitch.css` | the panel's four rules, from `sign-in.css` | the stylesheet follows the component |
+| add | `packages/ui/src/components/DoorSwitch/index.ts` | exports | the folder's one door |
+| add | `packages/ui/src/components/DoorLanguage/DoorLanguage.types.ts` | the one prop contract | Law 7 |
+| move | `apps/web/features/auth/components/LanguageControl.tsx` → `packages/ui/src/components/DoorLanguage/DoorLanguage.tsx` | the web half | §4 step 8 |
+| move | `apps/mobile/src/screens/shared/LanguageControl.tsx` → `packages/ui/src/components/DoorLanguage/DoorLanguage.native.tsx` | the phone half | §4 step 8 |
+| add | `packages/ui/src/components/DoorLanguage/index.ts` | exports | the folder's one door |
+| modify | `packages/ui/src/index.ts` | exports the three folders | the package's entry |
+| modify | `packages/ui/src/styles.css` | imports the two new stylesheets | where every component's is listed |
+| modify | `packages/ui/src/components/DoorFrame/DoorFrame.css` | `.hg-door-chrome`, `.hg-door-centred` | decision 9 |
+| modify | `packages/ui/src/components/DoorCodeStep/DoorCodeStep.css` | its two copies out | decision 9 |
+| modify | `packages/ui/src/components/DoorCodeStep/DoorCodeStep.tsx` | the frame's two class names | decision 9 |
+| add | `packages/i18n/src/react/language-choice.ts` | `useLanguageChoice` | `src/react/` holds the hooks both platforms use |
+| modify | `packages/i18n/src/react/index.ts` | exports it | the entry |
+| modify | `packages/i18n/src/copy/sign-in-google.ts` | the pager's words, `phoneError` | the link step's words |
+| modify | `packages/i18n/src/copy/sign-in-number.ts` | `doorSwitchWords` | the number step's words |
+| modify | `packages/i18n/src/index.ts` | exports `doorSwitchWords` and its type | the entry |
+| modify | `packages/i18n/tests/sign-in-google.test.ts` | the pager's words and `phoneError`, three languages | `.claude/rules/testing.md` |
+| modify | `packages/i18n/tests/sign-in-number.test.ts` | `doorSwitchWords`, three languages | the same |
+| modify | `apps/web/features/auth/SignInScreen.tsx` | renders the three components | the screen |
+| modify | `apps/web/features/auth/CompanySignupScreen.tsx` | passes `DoorLanguage`; drops the stylesheet import | a caller |
+| modify | `apps/web/features/auth/NotFoundScreen.tsx` | passes `DoorLanguage` | a caller |
+| modify | `apps/web/features/auth/components/KnownNumber.tsx` | the same | a caller |
+| modify | `apps/web/features/auth/components/JoinRequestSent.tsx` | the same | a caller |
+| modify | `apps/web/features/auth/components/CompanyStep.tsx` | the same | a caller |
+| delete | `apps/web/features/auth/sign-in.css` | every rule has moved | the stylesheet follows the component |
+| modify | `apps/mobile/src/screens/login/LoginScreen.tsx` | renders the three components; the back-button wrapper | the screen |
+| modify | `apps/mobile/src/screens/company-signup/CompanySignupScreen.tsx` | passes `DoorLanguage` | a caller |
+| modify | `apps/mobile/src/screens/company-signup/components/KnownNumber.tsx` | the same | a caller |
+| modify | `apps/mobile/src/screens/company-signup/components/JoinRequestSent.tsx` | the same | a caller |
+| modify | `apps/mobile/src/screens/company-signup/components/CompanyStep.tsx` | the same | a caller |
+| modify | `apps/mobile/src/screens/shared/door-styles.ts` | the link step's and the sheet's five styles out | orphaned by the move |
+| modify | `docs/tasks/deferred.md` | D24 narrowed; D141 and D171 re-pointed, D141 corrected from QA; D21 gains finding 4; D185 added; D186 to D188 added from QA and review | the rows this part meets |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the merged rows, the part's row, the ledger | the task |
+
+Each `move` row is two files in the diff, so the table's 41 rows are 47 files.
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **Three door parts change their code on three surfaces.** Mitigation: the e2e door specs, the landing baselines, and a side-by-side row for every frame the app reaches.
+- **The switch is moved without being seen running** (finding 3). `tsc` holds both halves against one contract, and the markup is moved, not redrawn; a slip in its look would first be seen in D21's task.
+- **The phone's link step cannot be reached by a helper** (finding 2). Decisions, 2 rules how it is proven.
+- **The code step's two class names change** (decision 9). Its web flows run in `login.spec.ts`, and one QA row pictures it at 375 and 1536.
+- The rest is the task RFC's. Nothing stored or sent changes.
+
+##### Acceptance criteria and proof
+AC-1 is the task RFC's. This part's rows:
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 · contract | main-dev | required | typecheck | the three components compile in `ui`'s web and native projects and at every call site; `rg -w 'GoogleLinkStep\|SwitchPanel\|SwitchSheet\|LanguageControl' apps` finds nothing | `pnpm check` |
+| AC-1 · the link step's words | main-dev | required | unit | the ask beside the title carries the pager's words; `phoneError` is absent with no problem and names the typed and the needed digits with one — in en, hi, mr; planted red: the pager's words left out, and `phoneError` always absent | `packages/i18n/tests/sign-in-google.test.ts` |
+| AC-1 · the switch's words | main-dev | required | unit | the title names the person and the count, the subtitle carries the date handed in and says it cannot be undone, the two roads and the close label — in en, hi, mr; planted red: the date left out | `packages/i18n/tests/sign-in-number.test.ts` |
+| AC-1 · look | ci | required | `e2e-web` | the door flows pass, the language test chooses every language, the landing baselines at 375 and 1536 are unchanged | `login.spec.ts` · `login-google.spec.ts` · `company-signup.spec.ts` · `not-found.spec.ts` · `[door].spec.ts` |
+| AC-1 · phone flows | ci | required | `android` | `Phone flows (tests/e2e/mobile) on the emulator` runs `login.yaml`, `company-signup.yaml` | CI step |
+| side-by-side · link step | qa-web | required | `/login/google` 375 · 1536 | `m-google-link`, `d-google-link`: Main takes each picture with a scratchpad Playwright script that answers Google's return in the browser (409 `LOGIN_NOT_LINKED`); `qa-web` judges it against the board. At 375 the header holds *Use my number instead* alone and *Not you?* sits under the tile; at 1536 the language control is beside the way back and *Use a different Google account* is centred under *Send code*. Ruled: the way back top-right at 1536 (D140), no example number (D177) | QA |
+| side-by-side · locked link | qa-web | required | `/login/google` 375 | `m-google-link-locked`, Main's picture with *Send code* answered 429 `OTP_LOCKED`: the block, the sentence, the field disabled (`DoorLinkStep`, from `frame.kind`), no *Send code*, no ask. Ruled: the board's foot buttons and bare header (D141) | QA |
+| the link step, in language | qa-web | required | `/login/google` 1536 | हिन्दी, then मराठी, chosen on the link step itself: no English, nothing clipped | QA |
+| the link step on the phones | qa-ios · qa-android | required | door | Decisions, 2, option A: the owner signs in to Google's sheet once on each phone; then `m-google-link` against its picture — the header holds *Use my number instead* alone; the space above the heading, and the space under *Send code* down to the column's bottom padding (`sp-6` above the home band; `DoorFrame.native.tsx`, `column`), are equal within 9 points; on Android the back button returns to the number step | QA |
+| the language control | qa-web | required | `/login` 375 · 1536 · `/company-signup` 375 · 1536 | `m-normal`, `d-normal`, `m-step1-number`, `d-step1-number`: the control reads the language's own name; it opens three names, the current one checked; हिन्दी then मराठी move every word at once and keep a typed number (`F3-04`); the control and each item are 44 or more on both axes. Ruled: 200% text (D109), no example number (D177) | QA |
+| the language control | qa-ios · qa-android | required | door · signup step 1 | the same, on `m-normal` and `m-step1-number`; the control's label against `m-google-failed-hi` and `-mr`. Ruled: three Android controls at 43.8 dp (D103) | QA |
+| the other callers | qa-web · qa-ios · qa-android | required | signup step 3 · web `/nope` | a fresh number verified: step 3's header shows the control and it changes the words; on the web the not-found page the same. Ruled: on the phones step 3 opens in English after a language was chosen (D143) | QA |
+| the code step, unchanged | qa-web | required | `/login` 375 · 1536 | `m-otp-sent`: the header holds *Change number* alone at 375; at 1536 the language control is beside it and the waiting resend is centred under the primary (`d-code-family`). Ruled: D140, D181, D182, D184 | QA |
+| side-by-side · the switch | — | not_applicable | — | `m-switch-discards`, `d-switch-discards` | no surface reaches the frame (D21) |
+| API | qa-api | not_applicable | — | — | no reachable API behaviour changes, and no row needs state made through the api |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part — Decisions, 1. 47 files (0 generated, 2 docs).
+- Code: about 1,280 authored lines — the six app copies deleted 374, the three components in `ui` about 540, `sign-in.css` deleted 73, the two sign-in screens about 80, the nine other callers about 60, `i18n` about 90, the frame's rows and the code step about 45, `door-styles.ts` about 20.
+- Tests: about 70 authored lines.
+- Over the 1,000-line target by about 28%, and over the 30-file target by 17. No smaller part of a component can be accepted alone: a half without its twin, or a component without its call sites, leaves a copy in an app. The part can be cut between components — the link step alone is about 20 files and 640 lines, the switch and the language control about 31 files and 700 — at the cost of a second run of QA on three surfaces.
+- Order: as *Proposal*.
+
+**Owner rulings (2026-10-10, with the approval).** The RFC is approved with every recommendation: the size is A (one part, 47 files, about 1,280 code lines and 70 test lines); the link step on the phones is A (the owner signs in to Google's sheet once on each phone when Main asks in QA); the deferred rows are as the table.
+
+**Built against planned (delta as it lands).** The 47 planned files, no other. Three departures inside them: `DoorLanguage` takes `names` — each language's own name, keyed by language — in place of a `languages` list, and reads the set and its order from `domain`'s `UI_LANGUAGES`, so the control's own label is a lookup that cannot miss (`tsc` refused the list: a `find` may return nothing, and a `Button` takes a string); the frame's rule is named `.hg-door-wide-only`, not `.hg-door-chrome`, because the link step also puts its shorter road under it, which is not chrome; and `DoorFrame.css` loses the `.hg-door-front` spelling of the centred column, orphaned when the link step moved onto `column`. The RFC's deferred table first said seven twin parts are left; eight are (Main's count, corrected).
+
+**Planted reds seen (part c):** `googleLinkWords` without the pager's words failed `sign-in-google.test.ts` › *googleLinkWords* › *the ask beside the title carries the pager’s words, in en*, *in hi*, *in mr* (expected undefined to be 'Next'); `phoneError` always absent failed › *the field: no refusal as the step opens, both counts once pressed, in en*, *in hi*, *in mr*; `doorSwitchWords` with the date left out failed `sign-in-number.test.ts` › *doorSwitchWords — what is lost is named before the switch (F4-37)* › *the person, the count and the date, in en*, *in hi*, *in mr* and *in English it says the switch cannot be undone*. Each restored from a scratchpad copy and green again.
+
+Checklist:
+- [x] the words tests, then `googleLinkWords` and `doorSwitchWords`
+- [x] `useLanguageChoice`; `DoorLanguage`
+- [x] `DoorLinkStep` — types, web half, phone half, styles, exports
+- [x] `DoorSwitch` — types, web half, phone half, styles, exports
+- [x] the frame's two row rules; the code step's class names
+- [x] the two sign-in screens and the nine other callers
+- [x] the six app copies and their styles out; `sign-in.css` deleted; `deferred.md`
+- [x] side-by-side on web, iOS, Android
+- [x] review; the gate
+
 #### Runtime
 Branch `feat/T-M01-041a`, cut from `feat/T-M01-040` (`e4e9d978`) on a clean tree, 2026-10-10 — the owner's word, PR #268 being in review. #268 merged during QA (`c7cf0783`, the same tree), and the branch, which held no commit of its own, was moved onto `main`.
 
@@ -1732,6 +1981,43 @@ Branch `feat/T-M01-041a`, cut from `feat/T-M01-040` (`e4e9d978`) on a clean tree
 | Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
 | database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
 | test data left in `heliogrid_test` | — | one deactivated member of the `…904` company (+91 98765 08218), made through the api; sign-in codes asked for +91 98765 082xx numbers, no account made for them |
+
+**Part c** — branch `feat/T-M01-041c`, cut from `origin/main` (`14096a00`) on a clean tree, 2026-10-10.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | tab `seed` (`started_by_task`): the two boards, opened for the board pictures |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 15,121,078 · `web.log` 468,297 · `metro.log` 1,621,440 bytes | — |
+
+**Part c · QA (2026-10-10)** — one stack on `heliogrid_test`: the api and the web from source, one Metro, the iPhone 17 Pro simulator (`40ED0117…`) and the `Pixel_8_Emulator`; no worker (no row sends an invite). Both phones were started signed out (the simulator's keychain reset, the emulator's app data cleared). No native file changed, so nothing was built. The emulator's app was the build of 3 October, older than Google sign-in's native module (5 October): the owner's first press of *Continue with Google* there raised `'RNGoogleSignin' could not be found`. Main installed the debug build already on disk (`apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk`, built 9 October, after the last native change) over it; the second press worked.
+
+- **Rows.** Web W1–W5, iPhone I1–I4, Android A1–A4: every row passed, each difference a recorded row. `qa-api` did not run: no row needs state made through the api.
+- **The link step.** Web: Main's pictures on the running web, Google's return answered in the browser (409 `LOGIN_NOT_LINKED`), judged by `qa-web` — `m-google-link` at 375 (the header holds *Use my number instead* alone; *Not you?* under the tile), `d-google-link` at 1536 (the language control beside the way back; *Use a different Google account* centred under *Send code*, both centres at x 1010), `m-google-link-locked` (*Send code* answered 429 `OTP_LOCKED`: the block, the sentence, the field disabled, no *Send code*, no ask), the step in Hindi and in Marathi at 1536 (no English left, nothing clipped), and the field's own refusal of seven digits. Phones: the owner signed in to Google's sheet by hand on each (ruling A), and the helpers then set `m-google-link` beside the board — every element present and in order, the header holding the way back alone; the free space above the heading and under *Send code* down to the column's padding is 148 and 140 points on the iPhone and 177.5 and 169.9 dp on Android, 8 and 7.6 apart (the heading's raised line box, as on the code step); the ask opens its two pages with the pager's words; seven digits are refused on the field and nothing is sent; on Android the back button returns to the number step and the app stays open. No helper sent a code from the link step, so the owner's Google login is linked to no number.
+- **The language control.** On `/login` and `/company-signup` at 375 and 1536, and on the door and signup's step 1 on both phones: the control reads the language's own name, opens the three names with the current one checked, and हिन्दी and मराठी move every word at once and keep a typed number. The control is 75.7 × 44 on the web and the iPhone and 77 × 44.2 dp on Android; each item is 208 × 44 (two Android items at 43.8 dp are D103). The other callers: signup's step 3 on all three surfaces and the web's not-found page show the control and it changes their words.
+- **The code step, unchanged** (decision 9). At 375 its header holds *Change number* alone; at 1536 the language control is beside it; the waiting resend is centred under the primary at both widths (centres at x 187.5 and x 1010).
+- **The switch** was seen on no surface (D21): `tsc` is its proof.
+- **First-pass verdicts that were Main's own packets, not the app.** `qa-web` answered FAIL on four differences the packet did not list: the stepper's English counter in Hindi and Marathi (the `Stepper` row of `docs/tasks/UI.md`), an English role name inside the Hindi sentence on step 3 (now D186), the `+91` prefix's grey (now D187), and the link title's line break, which a picture of 8 October shows the same (now in D141). Both phones answered FAIL on the two free spaces, because the packet told them to measure the lower one down to the home band; by the frame's own structure it ends `sp-6` above it. None is this part's: each lifted half draws the same primitives with the same props as the copy it replaces (review, check 1).
+- **Found, out of scope, now rows:** D185 (the switch's title has no plural), D186, D187, D188 (the phone's title row written four times — review). D141 and D21 are corrected and extended.
+- **Mistakes found, and what now holds each.** (1) Main's web packet listed the open `deferred.md` rows of the screen but not the `docs/tasks/UI.md` rows of the components the frames draw, so a known gap read as a failure — proposed to the owner on the commit card as one sentence for `references/qa.md`. (2) Main wrote the phones' free-space measure from the last part's row without reading `DoorFrame.native.tsx`; the RFC's row now names the edge it ends at. (3) Main's deferred-rows table missed D110, D170 and D181: it was written before decision 9 added the code step's two files, and D110 was seen in the list and passed over; review found all three, and the table is walked again whenever the file table grows. (4) Main checked that the emulator's app was installed, not that it was newer than the last native change, so the owner met an error on Android; readiness now compares the install's date with `git log -1 -- apps/mobile/android apps/mobile/package.json`. (5) The RFC counted seven twin parts left where eight are; corrected. (6) Main wrote D188's `reopens when` cell with a part's id; review's second pass noted it and Main kept the id beside a path; the `deferred-rows` invariant refused it on the first full-gate run, and the cell is the path alone.
+- **Review.** `reviewer`: pass 1 — three should-fix (three met rows unlisted; a language list written in a test; the phone's title styles repeated) and two notes, all applied or taken as D188 for the owner's ruling; pass 2 — one should-fix and two notes on the new rows' record, all applied, documents only.
+- **Side-by-side images** (scratchpad `pairs/`): `m-google-link`, `m-google-link-locked`, `d-google-link`, `m-normal`, `d-normal`, `m-step1-number`, `d-step1-number`, `language-hi`, `language-mr` — the board beside each surface's screenshot.
+- **Ruled on the commit card (2026-10-10).** The four rows this part's files also meet all stay: D110, D170, D181, and D188 until part g. The sentence proposed for `references/qa.md` (mistake 1) is approved as its own change after this part's PR.
+- **Gate.** `evaluator`: every part-c row passed or is `pending ci`. `pnpm check:all` run 1 failed at its last step, the invariants' `deferred-rows` (mistake 6), every earlier step green; after the one-cell fix, the invariants and `pnpm check` run by Main, and `reviewer`'s third pass (clean), run 2 passed — 11 build tasks, 23 typecheck tasks, 205 test files, 3,582 tests, the invariants on `heliogrid_test` with none skipped, nothing regenerated.
+
+**Measurements** — helper runs: `qa-web` 2 (the board pictures; the QA rows, one continuation), `qa-ios` 1 (one continuation), `qa-android` 1 (one), `reviewer` 1 (two), `evaluator` 1 (one); `qa-api` none; two full gates, the second passed. Helper tokens, as reported: `qa-web` 126 k for the board pictures and 133 k for QA, `qa-ios` 78 k, `qa-android` 84 k, `reviewer` 184 k, `evaluator` 37 k. Main's context: about 505 k tokens, read from the session's usage just before the commit card; its turns are not counted. Size: planned 47 files, code about 1,280, tests about 70; built 47 files (0 generated, 2 docs), code 1,338 authored lines and tests 70 — 58 lines over, inside the 20%.
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` | none | stopped (`started_by_task`); no worker was started |
+| simulator · emulator | none booted | shut down (`started_by_task`). The simulator's keychain was reset and the emulator's app data cleared, at the start and again at the end, so neither holds a session or the owner's Google login. The emulator's app is now the debug build of 9 October (`app-debug.apk`), installed by Main over the build of 3 October, which had no Google sign-in module |
+| browser tabs | pane closed | closed (the boards' tab and three preview tabs were `started_by_task`); the web tab was signed out through the api first |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| test data left in `heliogrid_test` | — | three accounts with a verified number and no company, made through the app's signup and stopped at step 3: +91 98765 08311 (web), 08321 (iPhone), 08331 (Android); one sign-in code asked for +91 98765 08312, no account made |
 
 ### T-M01-003 · Onboarding — Language
 **Type:** screen · **Tier:** P0

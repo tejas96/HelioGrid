@@ -112,13 +112,24 @@
   gap: var(--sp-2);
 }
 
+/* A control a step centres under its primary: a resend, its wait, a second road. */
+.hg-door-centred {
+  display: flex;
+  justify-content: center;
+}
+
+/* What a step shows from the door's breakpoint only: the language control beside a way back —
+   under it the header row holds the way back alone (`SCR-M01-01` "375 vertical layout") — and a
+   road the wide arrangement places elsewhere. */
+.hg-door-wide-only {
+  display: none;
+}
+
 /* A centred column sits between the header and the column's foot (`SCR-M01-01` "375 vertical
    layout"): this spacer takes half the free height, the task's own end the other half. It takes
    back the body's gap under it, so the title sits at least `sp-8` under the header (the page's
-   `sp-6` and its own `sp-2`). `.hg-door-front` is the same place, named by a door not yet moved
-   onto `column`. */
-.hg-door[data-column="centred"] .hg-door-body::before,
-.hg-door.hg-door-front .hg-door-body::before {
+   `sp-6` and its own `sp-2`). */
+.hg-door[data-column="centred"] .hg-door-body::before {
   content: "";
   flex: 1 1 0;
   min-height: var(--sp-2);
@@ -223,9 +234,12 @@
   }
 
   /* From the breakpoint the identity is centred in its own column, so both placements go. */
-  .hg-door[data-column="centred"] .hg-door-body::before,
-  .hg-door.hg-door-front .hg-door-body::before {
+  .hg-door[data-column="centred"] .hg-door-body::before {
     display: none;
+  }
+
+  .hg-door-wide-only {
+    display: block;
   }
 
   .hg-door[data-column="deep"] .hg-door-identity,

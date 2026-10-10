@@ -6,14 +6,16 @@
 import {
   type BlockAnnouncement,
   type BlockTone,
+  type ExplainerPagerWords,
   type GoogleLinkFrame,
   OTP_INVALIDATIONS_TO_LOCK,
   OTP_LOCK_MINUTES,
   OTP_MAX_FAILED_VERIFIES,
+  type PhoneDigitsMismatch,
   type PhoneGoogle,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
-import type { ExplainerWords } from './explainer';
+import { type ExplainerWords, explainerPagerWords } from './explainer';
 import { SIGN_IN } from './sign-in';
 
 /** A tinted block's words on the door: what happened, and why when the title alone does not say. */
@@ -57,14 +59,16 @@ export function phoneGoogleWords(
 export interface GoogleLinkWords {
   readonly title: string;
   readonly body: string;
-  /** Beside the title on the open step; the locked step drops it. */
-  readonly explainer: ExplainerWords | null;
+  /** Beside the title on the open step, with its pager's words; the locked step drops it. */
+  readonly explainer: (ExplainerWords & ExplainerPagerWords) | null;
   readonly tileOverline: string;
   readonly email: string;
   /** The phone puts "Not you?" under the tile; the desktop's shorter link sits under Send code. */
   readonly anotherAccount: { readonly underTile: string; readonly short: string };
   readonly useNumber: { readonly label: string; readonly aria: string };
   readonly phoneLabel: string;
+  /** The field's own answer to a number of the wrong length; absent as the step opens. */
+  readonly phoneError: string | undefined;
   readonly send: { readonly label: string; readonly aria: string } | null;
   readonly locked: { readonly block: DoorBlockWords; readonly sentence: string } | null;
 }
@@ -73,6 +77,7 @@ export function googleLinkWords(
   translate: Translator['t'],
   frame: GoogleLinkFrame,
   email: string,
+  problem: PhoneDigitsMismatch | null,
 ): GoogleLinkWords {
   const values = {
     chain: OTP_INVALIDATIONS_TO_LOCK,
@@ -90,6 +95,7 @@ export function googleLinkWords(
           label: t(SIGN_IN.linkingExplainerLabel),
           title: t(SIGN_IN.linkingExplainerTitle),
           pages: [t(SIGN_IN.linkingExplainerIntro), t(SIGN_IN.linkingExplainerPage)],
+          ...explainerPagerWords(translate),
         },
     tileOverline: t(SIGN_IN.signingInWithGoogle),
     email,
@@ -99,6 +105,10 @@ export function googleLinkWords(
     },
     useNumber: { label: t(SIGN_IN.useMyNumberInstead), aria: t(SIGN_IN.useMyNumberInsteadLabel) },
     phoneLabel: t(SIGN_IN.mobileNumber),
+    phoneError:
+      problem === null
+        ? undefined
+        : translate(SIGN_IN.digitsMismatch, { typed: problem.typed, needed: problem.needed }),
     send: frame.sendOffered
       ? {
           label: t(frame.sending ? SIGN_IN.sendingTheCode : SIGN_IN.sendCode),

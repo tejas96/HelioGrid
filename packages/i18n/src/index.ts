@@ -73,8 +73,13 @@ export type { SignInFacts, SignInLabels, SignInWords } from './copy/sign-in-fram
 export { signInWords } from './copy/sign-in-frames';
 export type { DoorBlockWords, GoogleLinkWords, PhoneGoogleWords } from './copy/sign-in-google';
 export { googleLinkWords, phoneGoogleWords } from './copy/sign-in-google';
-export type { NumberStepFacts, NumberStepWords } from './copy/sign-in-number';
-export { doorNoticeWords, numberStepWords } from './copy/sign-in-number';
+export type {
+  DoorSwitchFacts,
+  DoorSwitchWords,
+  NumberStepFacts,
+  NumberStepWords,
+} from './copy/sign-in-number';
+export { doorNoticeWords, doorSwitchWords, numberStepWords } from './copy/sign-in-number';
 export { STRUCTURE_DISCLAIMER } from './copy/structure-disclaimer';
 export type { ValidationIssueLike } from './copy/validation';
 export { createFormsValidationMessage } from './copy/validation';

@@ -16,16 +16,14 @@ import {
   signInWords,
   signupExplainers,
 } from '@heliogrid/i18n';
-import { useTranslate } from '@heliogrid/i18n/react';
-import { DoorCodeStep, DoorNumberStep, SuccessDwell, useFormat } from '@heliogrid/ui';
+import { useLanguageChoice, useTranslate } from '@heliogrid/i18n/react';
+import { DoorCodeStep, DoorLanguage, DoorNumberStep, SuccessDwell, useFormat } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import './sign-in.css';
 import './company-signup.css';
 import { CompanyStep } from './components/CompanyStep';
 import { JoinRequestSent } from './components/JoinRequestSent';
 import { KnownNumber } from './components/KnownNumber';
-import { LanguageControl } from './components/LanguageControl';
 import { SignupProgress } from './components/SignupProgress';
 import { HOME_ROUTE, LOGIN_ROUTE } from './constants';
 import { keptReturnPath } from './return-path';
@@ -43,6 +41,7 @@ import { UnreachableScreen } from './UnreachableScreen';
  */
 export function CompanySignupScreen() {
   const t = useTranslate();
+  const language = <DoorLanguage {...useLanguageChoice()} />;
   const router = useRouter();
   const session = useSession();
   const phase = useSessionPhase();
@@ -105,7 +104,7 @@ export function CompanySignupScreen() {
   if (view === 'code') {
     return (
       <DoorCodeStep
-        language={<LanguageControl />}
+        language={language}
         taskMeasure="steps"
         lead={<SignupProgress current={1} />}
         words={signInWords(t, signIn.frame, signIn.state, {
@@ -129,9 +128,10 @@ export function CompanySignupScreen() {
 /** Step 1 — the number, under the step header, with the road back to the front door. */
 function SignupNumberStep({ signIn, onSignIn }: { signIn: SignIn; onSignIn: () => void }) {
   const t = useTranslate();
+  const language = <DoorLanguage {...useLanguageChoice()} />;
   return (
     <DoorNumberStep
-      language={<LanguageControl />}
+      language={language}
       taskMeasure="steps"
       lead={<SignupProgress current={0} />}
       title={{

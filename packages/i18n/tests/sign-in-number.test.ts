@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { SHELL } from '../src/copy/shell';
 import { SIGN_IN } from '../src/copy/sign-in';
-import { doorNoticeWords, type NumberStepFacts, numberStepWords } from '../src/copy/sign-in-number';
+import {
+  doorNoticeWords,
+  doorSwitchWords,
+  type NumberStepFacts,
+  numberStepWords,
+} from '../src/copy/sign-in-number';
 import { createTranslator } from '../src/runtime';
 
 /**
@@ -118,5 +123,36 @@ describe('doorNoticeWords — a removal found at the door is a fact, not a refus
       title: t(SHELL.accessRemoved),
       announce: 'status',
     });
+  });
+});
+
+describe('doorSwitchWords — what is lost is named before the switch (F4-37)', () => {
+  const HELD = { name: 'Priya Sharma', count: 11, date: '19 Aug 2026' };
+
+  it.each(LANGUAGES)('the person, the count and the date, in %s', async (language) => {
+    const { t } = await createTranslator(language);
+    const words = doorSwitchWords(t, HELD);
+    expect(words.title).toBe(t(SIGN_IN.switchTitle, { name: HELD.name, count: HELD.count }));
+    expect(words.title).toContain('Priya Sharma');
+    expect(words.title).toContain('11');
+    expect(words.subtitle).toBe(t(SIGN_IN.switchSubtitle, { date: HELD.date }));
+    expect(words.subtitle).toContain('19 Aug 2026');
+  });
+
+  it.each(LANGUAGES)('upload is offered first, with why it waits, in %s', async (language) => {
+    const { t } = await createTranslator(language);
+    expect(doorSwitchWords(t, HELD)).toMatchObject({
+      upload: t(SIGN_IN.uploadFirst),
+      uploadReason: t(SIGN_IN.uploadArrivesLater),
+      confirm: t(SIGN_IN.signInAndDiscard),
+      close: t(SHELL.close),
+    });
+  });
+
+  it('in English it says the switch cannot be undone', async () => {
+    const { t } = await createTranslator('en');
+    expect(doorSwitchWords(t, HELD).subtitle).toBe(
+      'Taken on 19 Aug 2026 and not uploaded. This cannot be undone.',
+    );
   });
 });

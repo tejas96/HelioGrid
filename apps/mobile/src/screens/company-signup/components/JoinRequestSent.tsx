@@ -1,11 +1,10 @@
 import type { RequestedCompany } from '@heliogrid/contracts';
 import { COMPANY_SIGNUP } from '@heliogrid/i18n';
-import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, Card, Text, useFormat } from '@heliogrid/ui';
+import { useLanguageChoice, useTranslate } from '@heliogrid/i18n/react';
+import { Button, Card, DoorLanguage, Text, useFormat } from '@heliogrid/ui';
 import { View } from 'react-native';
 import { styles as door } from '../../shared/door-styles';
 import { InsetDoorFrame } from '../../shared/InsetDoorFrame';
-import { LanguageControl } from '../../shared/LanguageControl';
 import { styles } from '../styles';
 
 /**
@@ -25,10 +24,11 @@ export function JoinRequestSent({
   onCreateInstead: () => void;
 }) {
   const t = useTranslate();
+  const language = <DoorLanguage {...useLanguageChoice()} />;
   const format = useFormat();
   return (
     <InsetDoorFrame
-      trailing={<LanguageControl />}
+      trailing={language}
       footer={
         <View style={styles.sentRoute}>
           <Text variant="body-sm" color="secondary" align="center">

@@ -1,7 +1,8 @@
 /**
  * The number step's words (`SCR-M01-01` `m-normal` and its answers; frame 1 of `SCR-M01-02`), chosen
  * by the facts both doors hold: what the field refuses, what the primary is doing, whether the door
- * offers Google, and which block stands above the number.
+ * offers Google, and which block stands above the number — and the switch decision that stands in
+ * the step's place while another person's work is held (`m-switch-discards`).
  */
 import type { DoorNotice, PhoneDigitsMismatch, PhoneGoogle } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
@@ -65,4 +66,37 @@ export function doorNoticeWords(translate: Translator['t'], notice: DoorNotice):
         announce: 'alert',
       };
   }
+}
+
+/** What the switch would lose: who is signing in, how many photographs are held, and their date as the reader's market writes it. */
+export interface DoorSwitchFacts {
+  readonly name: string;
+  readonly count: number;
+  readonly date: string;
+}
+
+export interface DoorSwitchWords {
+  readonly title: string;
+  readonly subtitle: string;
+  readonly upload: string;
+  /** Why the upload road cannot be taken yet. */
+  readonly uploadReason: string;
+  readonly confirm: string;
+  /** The sheet's close label; the sheet cannot be dismissed, and a screen reader still names it. */
+  readonly close: string;
+}
+
+/** The switch decision's words (`F4-37`): the loss is named before the roads, upload first. */
+export function doorSwitchWords(
+  translate: Translator['t'],
+  { name, count, date }: DoorSwitchFacts,
+): DoorSwitchWords {
+  return {
+    title: translate(SIGN_IN.switchTitle, { name, count }),
+    subtitle: translate(SIGN_IN.switchSubtitle, { date }),
+    upload: translate(SIGN_IN.uploadFirst),
+    uploadReason: translate(SIGN_IN.uploadArrivesLater),
+    confirm: translate(SIGN_IN.signInAndDiscard),
+    close: translate(SHELL.close),
+  };
 }

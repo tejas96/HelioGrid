@@ -8,6 +8,8 @@ export type { TransProps } from '@lingui/react';
 export { Trans, useLingui } from '@lingui/react';
 export type { LanguageFollowsUserProps } from './follows-user';
 export { LanguageFollowsUser } from './follows-user';
+export type { LanguageChoice } from './language-choice';
+export { useLanguageChoice } from './language-choice';
 export type {
   HelioI18nProviderProps,
   I18nControls,

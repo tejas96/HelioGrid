@@ -1,0 +1,28 @@
+/* The link step's task column (`SCR-M01-01` `m-google-link`, `d-google-link`): the rows the step
+   alone draws. The frame, the title block's rules and the column's place are `DoorFrame`'s. Every
+   value a token var(). */
+
+.hg-door-link-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* The tile, then sp-2, then "Not you?" under the door's breakpoint; the column's own gap follows. */
+.hg-door-link-account {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-door-link-under-tile {
+  display: flex;
+}
+
+/* From the door's breakpoint the shorter link sits under Send code instead. */
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
+@media (min-width: 968px) {
+  .hg-door-link-under-tile {
+    display: none;
+  }
+}
