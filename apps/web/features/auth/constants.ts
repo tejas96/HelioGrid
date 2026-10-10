@@ -1,5 +1,4 @@
 import type { SessionLanding } from '@heliogrid/domain';
-import type { ReactNode } from 'react';
 
 /** The routes the doors send people between — `/login`, `/company-signup` and where a signed-in person belongs. */
 export const LOGIN_ROUTE = '/login';
@@ -23,12 +22,3 @@ export const ROUTE_OF: Record<Exclude<SessionLanding, 'wait'>, string> = {
   home: HOME_ROUTE,
   'access-removed': HOME_ROUTE,
 };
-
-/**
- * How a door step places its column under the breakpoint, as a `DoorFrame` class: the front door
- * centres it between the header and its foot (`SCR-M01-01`); a signup step under its step header
- * is top-aligned with the heading `sp-8` below (`SCR-M01-02` "375 vertical layout").
- */
-export function doorColumn(lead: ReactNode | undefined): string {
-  return lead === undefined ? 'hg-door-front' : 'hg-signup-heading-deep';
-}

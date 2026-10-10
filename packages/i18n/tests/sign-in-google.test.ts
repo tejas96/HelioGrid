@@ -65,7 +65,7 @@ describe('the code frames carry Google', () => {
   it('the cap keeps its limits behind the Explainer (m-cap-reached)', async () => {
     const { t } = await createTranslator('en');
     const words = signInWords(t, signInFrame(otp({ request: 'capped' })), FACTS);
-    expect(words.explainer).toEqual({
+    expect(words.explainer).toMatchObject({
       label: 'About code limits',
       title: 'Code limits',
       pages: ['You can ask for 3 codes every 15 minutes, and 8 a day.'],

@@ -69,6 +69,7 @@
 @import "./components/DocumentPreview/DocumentBands.css";
 @import "./components/DocumentPreview/DocumentPreview.css";
 @import "./components/DocumentPreview/DocumentSheet.css";
+@import "./components/DoorCodeStep/DoorCodeStep.css";
 @import "./components/DoorFrame/DoorFrame.css";
 @import "./components/DoorNumberStep/DoorNumberStep.css";
 @import "./components/DrawingSheet/DrawingSheet.css";

@@ -6,12 +6,12 @@ import {
   homeTitle,
   numberStepWords,
   SIGN_IN,
+  signInWords,
   signupExplainers,
 } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { DoorNumberStep, SuccessDwell, useFormat } from '@heliogrid/ui';
+import { DoorCodeStep, DoorNumberStep, SuccessDwell, useFormat } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
-import { CodeStep } from '../shared/CodeStep';
 import { InsetDoor } from '../shared/InsetDoorFrame';
 import { LanguageControl } from '../shared/LanguageControl';
 import { CompanyStep } from './components/CompanyStep';
@@ -80,15 +80,24 @@ export function CompanySignupScreen() {
   }
   if (view === 'code') {
     return (
-      <CodeStep
-        signIn={signIn}
-        lead={<SignupProgress current={1} />}
-        labels={{
-          verify: COMPANY_SIGNUP.verifyAndContinue,
-          explainer: signupExplainers(t).whatTheCodeDoes,
-        }}
-        helper={t(COMPANY_SIGNUP.codeHelper)}
-      />
+      <InsetDoor>
+        <DoorCodeStep
+          language={<LanguageControl />}
+          lead={<SignupProgress current={1} />}
+          words={signInWords(t, signIn.frame, signIn.state, {
+            verify: COMPANY_SIGNUP.verifyAndContinue,
+            explainer: signupExplainers(t).whatTheCodeDoes,
+          })}
+          frame={signIn.frame}
+          phone={signIn.state.phone}
+          code={signIn.state.code}
+          onCode={signIn.typeCode}
+          busy={signIn.busy}
+          googleBusy={signIn.googleBusy}
+          onPress={signIn.press}
+          helper={t(COMPANY_SIGNUP.codeHelper)}
+        />
+      </InsetDoor>
     );
   }
   return <SignupNumberStep signIn={signIn} onSignIn={() => navigation.navigate('Login')} />;
@@ -97,7 +106,6 @@ export function CompanySignupScreen() {
 /** Step 1 — the number, under the step header, with the road back to the front door. */
 function SignupNumberStep({ signIn, onSignIn }: { signIn: SignIn; onSignIn: () => void }) {
   const t = useTranslate();
-  const sending = signIn.state.pending?.kind === 'request';
   return (
     <InsetDoor>
       <DoorNumberStep
@@ -112,13 +120,13 @@ function SignupNumberStep({ signIn, onSignIn }: { signIn: SignIn; onSignIn: () =
           notice: signIn.notice,
           google: signIn.google,
           problem: signIn.state.phoneProblem,
-          sending,
+          sending: signIn.sending,
         })}
         phone={signIn.state.phone}
         onPhone={signIn.typePhone}
         busy={signIn.busy}
-        sending={sending}
-        googleBusy={signIn.google?.busy ?? false}
+        sending={signIn.sending}
+        googleBusy={signIn.googleBusy}
         onPress={signIn.press}
         helper={t(COMPANY_SIGNUP.numberHelper)}
         road={{

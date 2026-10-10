@@ -1,13 +1,12 @@
 'use client';
 import { useSession, useSignIn } from '@heliogrid/data/react';
 import { doorView, homeOf } from '@heliogrid/domain';
-import { homeTitle, numberStepWords, SIGN_IN } from '@heliogrid/i18n';
+import { homeTitle, numberStepWords, SIGN_IN, signInWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { DoorNumberStep, SuccessDwell, useFormat } from '@heliogrid/ui';
+import { DoorCodeStep, DoorNumberStep, SuccessDwell, useFormat } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
 import './sign-in.css';
-import { CodeStep } from './components/CodeStep';
 import { GoogleLinkStep } from './components/GoogleLinkStep';
 import { LanguageControl } from './components/LanguageControl';
 import { SwitchPanel } from './components/SwitchPanel';
@@ -33,7 +32,6 @@ export function SignInScreen({ companySignupHref }: { companySignupHref: string 
   };
 
   const view = doorView(session, signIn.state.step);
-  const sending = signIn.state.pending?.kind === 'request';
   /** The number step; `task` stands in its form's place while a switch is pending (`F4-37`). */
   const numberStep = (task?: ReactNode) => (
     <DoorNumberStep
@@ -43,13 +41,13 @@ export function SignInScreen({ companySignupHref }: { companySignupHref: string 
         notice: signIn.notice,
         google: signIn.google,
         problem: signIn.state.phoneProblem,
-        sending,
+        sending: signIn.sending,
       })}
       phone={signIn.state.phone}
       onPhone={signIn.typePhone}
       busy={signIn.busy}
-      sending={sending}
-      googleBusy={signIn.google?.busy ?? false}
+      sending={signIn.sending}
+      googleBusy={signIn.googleBusy}
       onPress={signIn.press}
       road={road}
       task={task}
@@ -68,7 +66,21 @@ export function SignInScreen({ companySignupHref }: { companySignupHref: string 
       <SuccessDwell title={t(SIGN_IN.youAreIn)} line={t(SIGN_IN.takingYouTo, { destination })} />
     );
   }
-  if (view === 'code') return <CodeStep signIn={signIn} />;
+  if (view === 'code') {
+    return (
+      <DoorCodeStep
+        language={<LanguageControl />}
+        words={signInWords(t, signIn.frame, signIn.state)}
+        frame={signIn.frame}
+        phone={signIn.state.phone}
+        code={signIn.state.code}
+        onCode={signIn.typeCode}
+        busy={signIn.busy}
+        googleBusy={signIn.googleBusy}
+        onPress={signIn.press}
+      />
+    );
+  }
   if (view === 'google-link') return <GoogleLinkStep signIn={signIn} />;
   return numberStep();
 }

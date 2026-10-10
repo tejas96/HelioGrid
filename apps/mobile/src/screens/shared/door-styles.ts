@@ -3,32 +3,22 @@ import { StyleSheet } from 'react-native';
 
 /**
  * The door's column at 375, as `SCR-M01-01` and `SCR-M01-02` draw it inside the frame
- * `@heliogrid/ui` owns (`DoorFrame`; the number step is `DoorNumberStep`): the inset behind the
- * frame, the code family's rows, the link step's tile and the switch sheet's body. Shared by the
- * sign-in door and company signup.
+ * `@heliogrid/ui` owns (`DoorFrame`; the number and code steps are `DoorNumberStep` and
+ * `DoorCodeStep`): the inset behind the frame, the link step's column and tile, and the switch
+ * sheet's body. Shared by the sign-in door and company signup.
  */
 export const styles = StyleSheet.create({
   /** The inset behind the frame: the page, so the status-bar and home-indicator bands match the frame's ground. */
   // biome-ignore lint/plugin/raw-white: page-ground — an app's page or door: the page is white
   inset: { flex: 1, backgroundColor: theme.colors.surface },
-  /** The locked frame's way still open: the sentence, `sp-4`, then Continue with Google (`M01-04`). */
-  lockedGoogle: { gap: theme.spacing['sp-4'] },
   /** Takes the free height under an off-flow frame's task; never under `sp-6`. */
   spacer: { flex: 1, minHeight: theme.spacing['sp-6'] },
-  /** The code column, centred in the space under the header (`SCR-M01-01`); at least `sp-6` above and below. */
+  /** The link step's column, centred in the space under the header (`SCR-M01-01`); at least `sp-6` above and below. */
   codeColumn: {
     flexGrow: 1,
     justifyContent: 'center',
     gap: theme.spacing['sp-5'],
     paddingVertical: theme.spacing['sp-6'],
-  },
-  /** Under a step header the code column keeps the title block's `sp-8` above it (the signup export). */
-  codeColumnAfterLead: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    gap: theme.spacing['sp-5'],
-    paddingTop: theme.spacing['sp-8'],
-    paddingBottom: theme.spacing['sp-6'],
   },
   codeTitle: { gap: theme.spacing['sp-1'] },
   /** A door title and its Explainer on one row, `sp-2` apart. */

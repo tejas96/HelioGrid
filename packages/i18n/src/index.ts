@@ -70,11 +70,11 @@ export {
 export type { SignInCopyKey } from './copy/sign-in';
 export { SIGN_IN } from './copy/sign-in';
 export type { SignInFacts, SignInLabels, SignInWords } from './copy/sign-in-frames';
-export { doorNoticeWords, signInWords } from './copy/sign-in-frames';
+export { signInWords } from './copy/sign-in-frames';
 export type { DoorBlockWords, GoogleLinkWords, PhoneGoogleWords } from './copy/sign-in-google';
 export { googleLinkWords, phoneGoogleWords } from './copy/sign-in-google';
 export type { NumberStepFacts, NumberStepWords } from './copy/sign-in-number';
-export { numberStepWords } from './copy/sign-in-number';
+export { doorNoticeWords, numberStepWords } from './copy/sign-in-number';
 export { STRUCTURE_DISCLAIMER } from './copy/structure-disclaimer';
 export type { ValidationIssueLike } from './copy/validation';
 export { createFormsValidationMessage } from './copy/validation';

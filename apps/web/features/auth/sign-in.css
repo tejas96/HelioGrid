@@ -1,19 +1,12 @@
 /* The door — screen-level layout inside the frame @heliogrid/ui draws (`DoorFrame` owns the
    canvas, the bloom, the two columns, the title block and the door's breakpoint; `DoorNumberStep`
-   its own form and road): the linking frame's form, the code family's rows and the switch panel.
+   and `DoorCodeStep` their own rows): the linking frame's form and rows, and the switch panel.
    Component pixels belong to the package; every value a token var(). */
 
 .hg-door-form {
   display: flex;
   flex-direction: column;
   gap: var(--sp-5);
-}
-
-/* The locked frame's way still open: the sentence, sp-4, then Continue with Google (`M01-04`). */
-.hg-door-locked-google {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
 }
 
 /* The tile, then sp-2, then "Not you?" on the phone; the column's own gap follows. */

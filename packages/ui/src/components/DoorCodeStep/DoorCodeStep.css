@@ -1,0 +1,29 @@
+/* The code step's task column (`SCR-M01-01`, the code family and `d-code-family`): the rows the
+   step alone draws. The frame, the title block's rules and the column's place are `DoorFrame`'s.
+   Every value a token var(). */
+
+/* The frame's way still open: the sentence, sp-4, then the Google control (`M01-04`). */
+.hg-door-code-google {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+/* The resend and its wait sit centred under the primary. */
+.hg-door-code-centred {
+  display: flex;
+  justify-content: center;
+}
+
+/* Under the door's breakpoint the header row holds the way back alone (`SCR-M01-01` "375 vertical
+   layout"); from it the language control is page chrome beside it. */
+.hg-door-code-language {
+  display: none;
+}
+
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
+@media (min-width: 968px) {
+  .hg-door-code-language {
+    display: block;
+  }
+}

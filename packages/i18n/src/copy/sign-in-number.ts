@@ -5,8 +5,8 @@
  */
 import type { DoorNotice, PhoneDigitsMismatch, PhoneGoogle } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
+import { SHELL } from './shell';
 import { SIGN_IN } from './sign-in';
-import { doorNoticeWords } from './sign-in-frames';
 import { type DoorBlockWords, type PhoneGoogleWords, phoneGoogleWords } from './sign-in-google';
 
 export interface NumberStepFacts {
@@ -49,4 +49,20 @@ export function numberStepWords(
         ? null
         : { or: googleWords.or, label: googleWords.label, aria: googleWords.aria },
   };
+}
+
+/** The block above the number step's field (`SCR-M01-01` `m-not-reached`): what failed, then why. */
+export function doorNoticeWords(translate: Translator['t'], notice: DoorNotice): DoorBlockWords {
+  switch (notice) {
+    case 'access-removed':
+      // The door knows no company: a removal reaches it only through the boot check (`S1.wrong.4`).
+      return { tone: 'info', title: translate(SHELL.accessRemoved), announce: 'status' };
+    case 'not-reached':
+      return {
+        tone: 'danger',
+        title: translate(SIGN_IN.requestFailedTitle),
+        body: translate(SIGN_IN.notReached),
+        announce: 'alert',
+      };
+  }
 }

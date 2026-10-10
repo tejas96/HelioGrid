@@ -38,6 +38,8 @@ Reached from: any signed-out launch of the app or web product (signed-out routin
 
 Base: **loading** · **empty** · **error** (empty/error states carry F7's teaching-empty-state contract — M01 §M01.1 behavior detail).
 
+**Where the language control sits.** On the number step it is in the header row at 375 and in the page chrome at 1536. On the code family the 375 header holds *Change number* alone, on the web and on the phone, and the control is page chrome at 1536 only; a person changes language on the number step (owner ruling 2026-10-10; `SCR-M01-01` record, *375 vertical layout* and *1536 — where the arrangement genuinely differs*). *(`T-M01-041` first asked for the control on the phone's code step; the board stands.)*
+
 Screen-specific:
 
 - **normal** — phone entry with Google Login offered alongside Mobile OTP (M01-02); no password field exists anywhere (M01 §M01.1 acceptance); no dead controls (MS12-17).

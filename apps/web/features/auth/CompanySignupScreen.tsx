@@ -13,15 +13,15 @@ import {
   homeTitle,
   numberStepWords,
   SIGN_IN,
+  signInWords,
   signupExplainers,
 } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { DoorNumberStep, SuccessDwell, useFormat } from '@heliogrid/ui';
+import { DoorCodeStep, DoorNumberStep, SuccessDwell, useFormat } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import './sign-in.css';
 import './company-signup.css';
-import { CodeStep } from './components/CodeStep';
 import { CompanyStep } from './components/CompanyStep';
 import { JoinRequestSent } from './components/JoinRequestSent';
 import { KnownNumber } from './components/KnownNumber';
@@ -104,14 +104,21 @@ export function CompanySignupScreen() {
   }
   if (view === 'code') {
     return (
-      <CodeStep
-        signIn={signIn}
+      <DoorCodeStep
+        language={<LanguageControl />}
         taskMeasure="steps"
         lead={<SignupProgress current={1} />}
-        labels={{
+        words={signInWords(t, signIn.frame, signIn.state, {
           verify: COMPANY_SIGNUP.verifyAndContinue,
           explainer: signupExplainers(t).whatTheCodeDoes,
-        }}
+        })}
+        frame={signIn.frame}
+        phone={signIn.state.phone}
+        code={signIn.state.code}
+        onCode={signIn.typeCode}
+        busy={signIn.busy}
+        googleBusy={signIn.googleBusy}
+        onPress={signIn.press}
         helper={t(COMPANY_SIGNUP.codeHelper)}
       />
     );
@@ -122,7 +129,6 @@ export function CompanySignupScreen() {
 /** Step 1 — the number, under the step header, with the road back to the front door. */
 function SignupNumberStep({ signIn, onSignIn }: { signIn: SignIn; onSignIn: () => void }) {
   const t = useTranslate();
-  const sending = signIn.state.pending?.kind === 'request';
   return (
     <DoorNumberStep
       language={<LanguageControl />}
@@ -137,13 +143,13 @@ function SignupNumberStep({ signIn, onSignIn }: { signIn: SignIn; onSignIn: () =
         notice: signIn.notice,
         google: signIn.google,
         problem: signIn.state.phoneProblem,
-        sending,
+        sending: signIn.sending,
       })}
       phone={signIn.state.phone}
       onPhone={signIn.typePhone}
       busy={signIn.busy}
-      sending={sending}
-      googleBusy={signIn.google?.busy ?? false}
+      sending={signIn.sending}
+      googleBusy={signIn.googleBusy}
       onPress={signIn.press}
       helper={t(COMPANY_SIGNUP.numberHelper)}
       road={{

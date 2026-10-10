@@ -44,6 +44,7 @@ export * from './components/Derivation';
 export * from './components/DetailPanel';
 export * from './components/Disclosure';
 export * from './components/DocumentPreview';
+export * from './components/DoorCodeStep';
 export * from './components/DoorFrame';
 export * from './components/DoorNumberStep';
 export * from './components/Dropzone';
