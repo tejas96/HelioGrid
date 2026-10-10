@@ -945,6 +945,151 @@ None — no wire boundary changes. The api already answers every case; only how 
 **DONE WHEN:**
 - `M01-61` → proof: e2e web (a signed-out deep link returns to it after sign-in; a route the roles cannot open lands on home); QA phone with a deep link.
 
+#### Design check
+Not applicable — `DESIGN: none`. The door is `SCR-M01-01` as drawn and gains no frame. The one state new to the phone, a door the person's shell does not offer, takes the form the owner ruled for the web inside the shell (`T-M01-039` finding 9: the heading and *Go to home*), in the words that frame already has (`SHELL.notFound`, `SHELL.goToHome`).
+
+#### RFC
+
+##### Title
+T-M01-040 — signing in returns the person to the link they opened, on the web and the phone.
+
+##### Description
+- **User impact:** a salesperson taps a link to *Leads* in a message, is asked to sign in, and lands on *Leads* — not on the home, where they would have to find the page again. Directly: one tap fewer after every sign-in that began with a link. Indirectly: every later link the product sends — a notification, a shared lead — opens what it names.
+- **Who gains:** anyone who opens a HelioGrid link while signed out; every later module that sends a link.
+- **Problem solved:** the web's gate sends a signed-out visitor to `/login` and forgets the address (`apps/web/features/auth/SessionGate.tsx:46-48`), and the door then sends everyone to `ROUTE_OF.home`. The phone claims the `heliogrid://` scheme (`AndroidManifest.xml:34-39`, `Info.plist`) but no route declares a path (`apps/mobile/src/navigation/routes/app.ts:18-31`), so a link opens the app and nothing else. Row: `M01-61` (P1); deferred `D20`.
+
+##### Goals
+- Web: a signed-out visitor who opens an inside address lands on that address after signing in — by code or by Google.
+- Phone: `heliogrid://<door>` opened while signed out opens that door after sign-in, with the home under it; opened while signed in, it opens the door at once.
+- A door the person's shell does not offer never opens by address on either platform.
+- A person who signs out and signs in again lands on the home, as today.
+
+##### Non-goals
+- A session that ends while the person is inside (expiry, removal): the next sign-in opens the home, as today.
+- Links to a record (`leads/:leadId`): each module declares its own path when its screen lands (`apps/mobile/src/navigation/linking.ts:4-11`).
+- A phone link no route declares (`heliogrid://no-such-page`): the app opens where it is; the phone has no not-found route of its own.
+- `https://` links that open the phone app (universal and app links): they need a hosted domain file, which is the hosting task's.
+- A notification tap: it carries a payload, not a URL (`linking.ts:13-16`).
+
+##### Readiness and dependencies
+- `T-M01-039`: parts a–c are on `main` (#264, #265, #266); part d is draft PR #267 with CI running. **By the owner's word (2026-10-10) this branch is cut from `feat/T-M01-039d`, not from `origin/main`,** and does not wait for #267. This task's PR opens on `main` after #267 merges; until then the branch takes each new commit of part d by merge.
+- Design check: not applicable (above).
+- Assumptions, each proven on the running app before its code is kept: React Navigation `7.3.14` restores a link it could not open once the routes exist (`UNSTABLE_routeNamesChangeBehavior: 'lastUnhandled'`, present in the installed `@react-navigation/core` `types.tsx:262`); on iOS a link to a running app reaches JavaScript only through an app-delegate hand-over, which `AppDelegate.swift` lacks (it holds `didFinishLaunchingWithOptions` alone, line 14). If the running app shows the link already arrives, `AppDelegate.swift` is not changed.
+- No blocker.
+
+##### Proposal
+**Flow — web.** The inside gate turns away a visitor it never let in: before it sends them to the door it keeps the address (path and query) in the tab's storage. The door's gate, when the sign-in beat ends on `home`, takes the kept address once and goes there instead of `/home`. A new company's first entry (`CompanySignupScreen.tsx:42`) takes it the same way. The address then renders as any address does: an offered door opens, any other shows the not-found frame inside the shell.
+
+**Flow — phone.** Each door route declares its path. The root navigator restores the last link it could not open once the signed-in routes mount, so the same link opens after sign-in with no code of ours holding it. `PlaceholderScreen` shows the not-found form for a door the shell does not offer.
+
+**Findings from testing the requirement:**
+1. **`M01-61`'s last clause disagrees with a later owner ruling.** The row (2026-10-08) says a route the roles cannot open *lands on their home with its reason*. On 2026-10-09 the owner ruled that a signed-in person on a door their shell does not offer sees the not-found frame inside the shell with *Go to home* (`T-M01-039` finding 9, line 700 of this file), and it is built and proven (`apps/web/features/shell/PlaceholderScreen.tsx:18-19`, `tests/e2e/web/[door].spec.ts:102-111`). "Home with its reason" needs a message no board draws and new words in three languages; the not-found frame needs nothing new and does not say which addresses exist for other roles. Recommend: keep the built frame, give the phone the same form, and correct the row's clause first (decision 1).
+2. **`D20` proposed a `next` in the address; the tab's storage is simpler.** A `?next=` is lost when the tab leaves for Google and returns at `/login/google` (`use-google-sheet.ts:30`), so it would need the storage as well; and a value read from the address is an open-redirect surface that needs its own rule. The door already keeps one value in `sessionStorage` across the Google trip (`use-google-sheet.ts:11,27`). Kept there, the address is written only by our gate, survives Google, and dies with the tab. Cost to switch later: one file. Recommend the storage (decision 2).
+3. **The phone would type the nine door addresses a second time.** The web owns them as `DOOR_PATH` (`apps/web/features/shell/constants.ts:7-17`). A link is the same fact on both platforms (`/add-lead` · `heliogrid://add-lead`), so the segments move to domain as `DOOR_SEGMENT: Record<ShellDoor, string>` beside `ShellDoor`; the web derives `DOOR_PATH` from it and the phone's routes read it. Cost: three files; a door added to `ShellDoor` then fails to compile until it has an address.
+4. **The phone opens any door by address today, offered or not.** `PlaceholderScreen` titles whatever route it is on (`apps/mobile/src/screens/shell/PlaceholderScreen.tsx:40-59`); only the pill kept an owner off *Proposals*. A declared path makes it reachable, so the screen now asks `offersDoor` (`packages/domain/src/shell/doors.ts:31-36`), as the web does (`F7-48`).
+5. **A person who signs out would be sent back to the page they left**, if the gate kept every address it turns away — and the next person on a shared computer would land there. The gate keeps the address only for a visitor it never let in during this page load.
+
+**Key decisions** (one reason each):
+1. **The kept address is used once, by the first entry inside** — a sign-in or a new company — so no stale value outlives the visit, and the web matches the phone, where the navigator restores the link whichever way the person gets in.
+2. **Only a path on this site is used:** a kept value that does not start with one `/` is dropped, so a planted value cannot send the tab elsewhere.
+3. **No domain rule for "return":** the phone needs none (the navigator restores the link), so the web's two functions stay in the web's auth feature and the e2e flows prove them (`.claude/rules/testing.md`: web is proven by running it).
+
+**Order:** tests first — the four web flows red → `return-path.ts`, the gate, the company step → `DOOR_SEGMENT` and the web's derived paths → the phone's paths, the navigator option, the not-found form → the iOS hand-over if the running app needs it → docs.
+
+**Errors and refusals:** none new. Storage that throws (a private window) keeps nothing, and sign-in opens the home as today.
+
+**Twin:** web and phone land together; the mechanism differs because the phone's navigator already does the keeping.
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  L[link opened while signed out] --> IG[web inside SessionGate]
+  IG -->|keeps the address| RP[web return-path: tab storage]
+  IG --> D[door: code or Google round trip]
+  D -->|signed in, landing home| DG[web door SessionGate]
+  RP -->|taken once| DG
+  DG --> R[the kept address, else /home]
+  R --> WPS[web PlaceholderScreen: offered door or not-found]
+  DS[domain DOOR_SEGMENT] --> WP[web DOOR_PATH]
+  DS --> AL[phone routes: a path per door]
+  PL[heliogrid:// link] --> NAV[phone RootStack: restores the unopened link]
+  AL --> NAV
+  NAV -->|after sign-in| PPS[phone PlaceholderScreen: offered door or not-found]
+```
+
+##### Package changes
+- `packages/domain` — `shell/doors.ts` gains `DOOR_SEGMENT`, exported through `shell/index.ts`. No new dependency.
+- `apps/web` — `features/auth` gains `return-path.ts` (two functions, feature-local); `features/shell/constants.ts` derives `DOOR_PATH`. Direction unchanged: web → domain.
+- `apps/mobile` — navigation only; mobile → domain as today.
+- **Law 12:** `DOOR_SEGMENT` is a `Record` over `ShellDoor`, so the typecheck holds that every door has an address. A phone link path is a new kind of public fact and **no check holds a phone path against a flow** (`e2e-flow-per-screen` holds screens, not links) — said out loud; QA proves the nine by opening two.
+
+##### Data and schema changes
+None — no stored shape changes. The kept address lives in the tab's `sessionStorage` under one key and is read only by the code that wrote it; an old tab without the key behaves as today.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| add | `apps/web/features/auth/return-path.ts` | keep and take the address, the one-`/` rule | feature-local; beside the gate that calls it |
+| modify | `apps/web/features/auth/SessionGate.tsx` | keeps on turning away, takes on `home` | the one gate |
+| modify | `apps/web/features/auth/CompanySignupScreen.tsx` | a new company's first entry takes the address | line 42, the send home |
+| modify | `packages/domain/src/shell/doors.ts` · `shell/index.ts` | `DOOR_SEGMENT` | beside `ShellDoor` |
+| modify | `apps/web/features/shell/constants.ts` | `DOOR_PATH` derived | the web's paths |
+| modify | `apps/mobile/src/navigation/routes/app.ts` | a path per door | one entry per route (`apps/mobile/CLAUDE.md`) |
+| modify | `apps/mobile/src/navigation/root.tsx` | the navigator restores an unopened link | the route map |
+| modify | `apps/mobile/src/navigation/linking.ts` | the home under a linked door; its note follows | the container's link options |
+| modify | `apps/mobile/src/screens/shell/PlaceholderScreen.tsx` | not-found form for a door not offered | the phone's door screen |
+| modify | `apps/mobile/ios/HelioGridMobile/AppDelegate.swift` | hand an opened URL to React Native — only if the running app shows it is needed | the app's one delegate |
+| modify | `tests/e2e/web/[door].spec.ts` | the four flows of AC-1 | the door route's spec |
+| modify | `docs/prd/modules/M01-onboarding-and-tenant-config.md` | `M01-61`'s last clause, by decision 1 | the row |
+| modify | `docs/tasks/deferred.md` | `D20` deleted | ships |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the ledger, `Status:` | the task |
+
+##### API and contract changes
+None — no wire boundary changes. The phone's nine paths (`heliogrid://leads` … `heliogrid://search`) are new public addresses; each equals the web's.
+
+##### Risks and rollout
+- **Open redirect:** the kept value is written only from this page's own path and is used only when it starts with one `/`; an e2e flow plants `//example.com` and lands on `/home`.
+- **Shared computer:** a signed-out page never keeps an address after a sign-out (finding 5); proven by an e2e flow.
+- **Phone, a link held too long:** the navigator restores the last unopened link when the routes change. A link opened on the company step opens after the company is made — the same rule as the web (key decision 1).
+- **iOS native change:** `AppDelegate.swift` changes only if needed, and then the iOS app is rebuilt once for QA; Android's manifest already hands the link over.
+- **Old app versions:** a phone build without the paths ignores a link, as today. Nothing stored or sent changes.
+- **Stacked on an open PR:** a CI fix on #267 arrives here by merge; this PR opens only after #267 is on `main`.
+
+##### Acceptance criteria and proof
+- **AC-1** — **M01-61** (P1) — **Signing in returns the person to where they were going.** A signed-out person who opens a link to a signed-in route lands on that route after signing in, not on their home — on the web and the phone; a route their roles cannot open lands on their home with its reason. *(The last clause follows decision 1.)*
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 · return | ci | required | web | signed out, open `/leads`; sign in with the code → the address is `/leads` and the *Leads* door shows; `/home` is never drawn | `tests/e2e/web/[door].spec.ts` — *a link opened while signed out is where sign-in lands* (`e2e-web`) |
+| AC-1 · roles | ci | required | web | signed out, an owner opens `/proposals`; sign in → the not-found frame inside the shell; *Go to home* → `/home` | same spec — *a link to a door the person is not offered is not found after sign-in* |
+| AC-1 · sign-out | ci | required | web | sign out on `/leads`; sign in → `/home` | same spec — *signing out, then in, opens the home* |
+| AC-1 · planted address | ci | required | web | the tab holds `//example.com` as the kept value; sign in → `/home` | same spec — *a kept value that is not a path on this site is dropped*; planted red: the one-`/` rule removed |
+| AC-1 · Google | — | not_applicable | web | — | no agent holds a Google password (`tests/e2e/mobile/login.yaml:5-6`); the kept address is read by the same gate after either sign-in |
+| AC-1 · iPhone | qa-ios | required | iOS | signed out, app in the background: open `heliogrid://leads`; sign in → the *Leads* door, Back → home. The same from a cold start. Signed in as an owner: `heliogrid://proposals` → the not-found form, *Go to home* → home | tree and screenshots |
+| AC-1 · Android | qa-android | required | Android | the same three | tree and screenshots |
+| AC-1 · web by hand | qa-web | required | web 375 · 1536 | the return and the roles row on the running app; no flash of the home before the door | measurements and screenshots |
+| API | qa-api | not_applicable | — | — | no reachable API behaviour changes |
+| every door has an address | main-dev | required | typecheck | a door added to `ShellDoor` without a segment fails `tsc` | `pnpm check`; planted red: one key removed |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part. About 15 files (0 generated, 3 docs).
+- Code: about 130 authored lines.
+- Tests: about 80 authored lines.
+- Order: as *Order* above.
+
+#### Runtime
+Branch `feat/T-M01-040`, cut from `feat/T-M01-039d` (`beea4257`) on a clean tree, 2026-10-10.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | — |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 11,030,767 · `web.log` 406,792 · `metro.log` 1,483,589 bytes | — |
+
 ### T-M01-041 · The door's parts lifted into packages/ui
 **Type:** screen · **Tier:** P1
 **Status:** planned
