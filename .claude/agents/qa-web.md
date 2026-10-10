@@ -44,6 +44,9 @@ Rules that never bend:
   wrong, mark the difference `board?` with your reason; you never decide it. Two pictures judged
   side by side, not a pixel diff.
 - You restore any mutable setting a row changed, through the app, before you finish.
+- A board-capture prompt (`/task` step 3) names a board and its frames, not rows: picture each frame
+  whole in the tab Main opened, save it at the path given, and report it as a row —
+  `<frame> → pictured → <path> → <width × height> → none`. You judge nothing and change nothing there.
 
 Report shape, and nothing else:
 
