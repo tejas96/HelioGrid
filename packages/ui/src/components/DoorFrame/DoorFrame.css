@@ -125,6 +125,14 @@
   display: none;
 }
 
+/* A finding about the person, in the identity half at the export's measure (`SCR-M01-02`
+   decision 21): a failure, a steer, a number that already has an account. */
+.hg-door-finding {
+  align-self: flex-start;
+  width: 100%;
+  max-width: var(--form-max);
+}
+
 /* A centred column sits between the header and the column's foot (`SCR-M01-01` "375 vertical
    layout"): this spacer takes half the free height, the task's own end the other half. It takes
    back the body's gap under it, so the title sits at least `sp-8` under the header (the page's
@@ -240,6 +248,12 @@
 
   .hg-door-wide-only {
     display: block;
+  }
+
+  /* A finding holds the identity half at its full measure, so the block starts at the half's left
+     edge and stops at the form measure (`SCR-M01-02`: half 176 → 736, block 176 → 696). */
+  .hg-door-identity:has(.hg-door-finding) {
+    width: 100%;
   }
 
   .hg-door[data-column="deep"] .hg-door-identity,

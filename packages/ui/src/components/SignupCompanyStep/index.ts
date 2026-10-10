@@ -1,4 +1,7 @@
-export { SignupAccount } from './SignupAccount';
-export * from './SignupCompanyStep.types';
-export { SignupFacts } from './SignupFacts';
-export { SignupFields } from './SignupFields';
+export { SignupCompanyStep } from './SignupCompanyStep';
+export type {
+  SignupCompanyStepProps,
+  SignupCompanyStepWords,
+  SignupFieldBinder,
+  SignupFieldState,
+} from './SignupCompanyStep.types';

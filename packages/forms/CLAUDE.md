@@ -3,8 +3,9 @@
 ## What lives here / what must never live here
 
 - Exports: `useZodForm` (a contract schema, or a `.pick()`/`.omit()` of it, drives both types and
-  validation) · `applyServerErrors` (envelope `details[]` → field errors) · `installFormsErrorMap`
-  (translated zod defaults) · `z` and the react-hook-form re-exports.
+  validation) · `applyServerErrors` (envelope `details[]` → field errors) · `fieldBinder` (one
+  `Controller` per field, handed to a `packages/ui` component that draws the fields) ·
+  `installFormsErrorMap` (translated zod defaults) · `z` and the react-hook-form re-exports.
 - NEVER: UI components, copy, data fetching, an environment read, or a schema definition —
   schemas live in `@heliogrid/contracts`.
 

@@ -1,14 +1,22 @@
 'use client';
+import { createTenantSchema } from '@heliogrid/contracts';
 import {
+  type CompanySignup,
+  failureOf,
   type SignIn,
   useCompanySignup,
   useSession,
   useSessionPhase,
   useSignIn,
+  useSteerDroppedOnEdit,
 } from '@heliogrid/data/react';
-import { homeOf, signupView } from '@heliogrid/domain';
+import { homeOf, type SessionUser, signupView } from '@heliogrid/domain';
+import { fieldBinder, useZodForm } from '@heliogrid/forms';
 import {
   COMPANY_SIGNUP,
+  companyFacts,
+  companyFieldWords,
+  companyStepWords,
   explainerPagerWords,
   homeTitle,
   numberStepWords,
@@ -22,6 +30,7 @@ import {
   DoorCodeStep,
   DoorLanguage,
   DoorNumberStep,
+  SignupCompanyStep,
   SignupSteps,
   SuccessDwell,
   useFormat,
@@ -29,7 +38,6 @@ import {
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import './company-signup.css';
-import { CompanyStep } from './components/CompanyStep';
 import { JoinRequestSent } from './components/JoinRequestSent';
 import { KnownNumber } from './components/KnownNumber';
 import { HOME_ROUTE, LOGIN_ROUTE } from './constants';
@@ -100,7 +108,7 @@ export function CompanySignupScreen() {
   }
   if ((view === 'company' || view === 'join') && session.user !== null) {
     return (
-      <CompanyStep
+      <SignupDetailsStep
         user={session.user}
         restored={session.restored}
         joining={view === 'join'}
@@ -130,6 +138,65 @@ export function CompanySignupScreen() {
     );
   }
   return <SignupNumberStep signIn={signIn} onSignIn={() => router.push(LOGIN_ROUTE)} />;
+}
+
+/**
+ * Step 3 — the three fields over the verified number, and the one write this screen owns
+ * (`M01-01`). The form holds only its fields; the write, the steer and their waits are
+ * `useCompanySignup`'s, and every word is `companyStepWords`'. Each field is bound alone
+ * (`fieldBinder`), so a keystroke re-renders one input and never this step.
+ */
+function SignupDetailsStep({
+  user,
+  restored,
+  joining,
+  signup,
+}: {
+  user: SessionUser;
+  restored: boolean;
+  /** The view is `join` (`signupView`): the steer replaces the primary. */
+  joining: boolean;
+  signup: CompanySignup;
+}) {
+  const t = useTranslate();
+  const format = useFormat();
+  const language = <DoorLanguage {...useLanguageChoice()} />;
+  const form = useZodForm(createTenantSchema, {
+    defaultValues: { companyName: '', ownerName: user.name, city: '' },
+  });
+  useSteerDroppedOnEdit(signup, form.watch);
+  const steered = joining ? signup.found : null;
+  const writing = signup.creation === 'creating';
+  const sending = signup.requesting === 'sending';
+  const { helpers, ...words } = companyStepWords(t, {
+    restored,
+    writing,
+    failure: failureOf(signup.creation),
+    fieldRefused: form.formState.isSubmitted && Object.keys(form.formState.errors).length > 0,
+    steer:
+      steered === null
+        ? null
+        : {
+            company: steered,
+            groupedPhone: format.phone(user.phoneE164),
+            failure: failureOf(signup.requesting),
+          },
+  });
+  return (
+    <SignupCompanyStep
+      language={language}
+      words={words}
+      phoneE164={user.phoneE164}
+      bind={fieldBinder(form.control, (name, field) =>
+        companyFieldWords(t, name, { helpers, ...field }),
+      )}
+      facts={writing || sending ? companyFacts(t, form.getValues()) : null}
+      busy={writing || signup.checking || sending}
+      onCreate={form.handleSubmit((values) => void signup.submit(values))}
+      onRequestToJoin={() => void signup.requestToJoin()}
+      onCreateAnyway={() => void signup.createAnyway()}
+    />
+  );
 }
 
 /** Step 1 — the number, under the step header, with the road back to the front door. */
