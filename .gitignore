@@ -44,6 +44,8 @@ apps/mobile/.bundle/config
 # Playwright / test artifacts — the component suite's build lands in playwright/.cache/
 playwright-report/
 test-results/
+playwright-report-ct/
+test-results-ct/
 tests/e2e/playwright/.cache/
 # A web look drawn on a Mac (a local run with CI set): the baselines are CI's Linux renders only.
 tests/e2e/web/*-snapshots/*-darwin.png

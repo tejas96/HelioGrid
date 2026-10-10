@@ -1,6 +1,11 @@
 import type { CreateTenant } from '@heliogrid/contracts';
 import { Controller, type UseFormReturn } from '@heliogrid/forms';
-import { COMPANY_SIGNUP, companyFieldRefusal } from '@heliogrid/i18n';
+import {
+  COMPANY_SIGNUP,
+  type CompanyFieldHelpers,
+  cityHelper,
+  companyFieldRefusal,
+} from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { Input } from '@heliogrid/ui';
 import { View } from 'react-native';
@@ -10,12 +15,13 @@ import { styles } from '../styles';
  * The three fields and no fourth (`M01-01`). Each answers for itself when Create company is
  * pressed, both messages at once (`SCR-M01-02`, the fields-invalid state); the primary is never
  * gated on them. Each field reads only its own error, so a keystroke re-renders one input — a
- * controlled native input whose value lags the keyboard drops characters.
+ * controlled native input whose value lags the keyboard drops characters. The step itself
+ * re-renders only when the set of refused fields changes after a press, never per keystroke.
  */
 export function CompanyFields({
   form,
   underAccount = false,
-  withHelpers = true,
+  helpers,
 }: {
   form: UseFormReturn<CreateTenant>;
   /**
@@ -23,8 +29,11 @@ export function CompanyFields({
    * the board's sp-5.
    */
   underAccount?: boolean;
-  /** Under the join steer the fields carry no helper: the steer's one sentence is its finding. */
-  withHelpers?: boolean;
+  /**
+   * The step's helpers as it opens (`companySignupWords`). Under the join steer the fields carry
+   * none: the steer's one sentence is its finding.
+   */
+  helpers?: CompanyFieldHelpers;
 }) {
   const t = useTranslate();
   return (
@@ -51,7 +60,7 @@ export function CompanyFields({
             placeholder={t(COMPANY_SIGNUP.yourNameExample)}
             value={field.value}
             onChange={field.onChange}
-            helper={withHelpers ? t(COMPANY_SIGNUP.firstOwner) : undefined}
+            helper={helpers?.ownerName ?? undefined}
             error={companyFieldRefusal(t, 'ownerName', fieldState.error)}
           />
         )}
@@ -65,7 +74,7 @@ export function CompanyFields({
             placeholder={t(COMPANY_SIGNUP.cityExample)}
             value={field.value}
             onChange={field.onChange}
-            helper={withHelpers ? t(COMPANY_SIGNUP.whereBased) : undefined}
+            helper={cityHelper(helpers, field.value)}
             error={companyFieldRefusal(t, 'city', fieldState.error)}
           />
         )}

@@ -49,12 +49,7 @@ export function GoogleLinkStep({ signIn }: { signIn: SignIn }) {
           <div className="hg-door-title-row">
             <Text variant="h1">{words.title}</Text>
             {words.explainer === null ? null : (
-              <Explainer
-                label={words.explainer.label}
-                title={words.explainer.title}
-                pages={words.explainer.pages}
-                {...explainerPagerWords(t)}
-              />
+              <Explainer {...words.explainer} {...explainerPagerWords(t)} />
             )}
           </div>
           <Text variant="body" color="secondary">

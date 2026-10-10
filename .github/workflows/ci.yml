@@ -310,6 +310,8 @@ jobs:
           path: |
             tests/e2e/test-results/
             tests/e2e/playwright-report/
+            tests/e2e/test-results-ct/
+            tests/e2e/playwright-report-ct/
             tests/e2e/web/*-snapshots/
             .qa/api.log
           include-hidden-files: true

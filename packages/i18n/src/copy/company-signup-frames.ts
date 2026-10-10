@@ -1,6 +1,6 @@
 /**
- * The words of the company step's five frames (`SCR-M01-02`): normal, resumed (`M01-10`),
- * writing, the company refused, and the create with no answer — authored once for both platforms
+ * The words of the company step's frames (`SCR-M01-02`): as it opens, resumed (`M01-10`), a field
+ * refusing the press, writing, the company refused, and the create with no answer — authored once for both platforms
  * (Law 11), the same shape as `signInWords`. Nothing here chooses a frame: the screen says which
  * facts hold, and each sentence is looked up by its key.
  */
@@ -10,7 +10,7 @@ import { COMPANY_SIGNUP } from './company-signup';
 import { SIGN_IN } from './sign-in';
 import type { DoorBlockWords } from './sign-in-google';
 
-/** The three facts that pick the frame; the screen reads them from its own hook. */
+/** The facts that pick the frame; the screen reads them from its own hook and form. */
 export interface CompanySignupFrame {
   /** The person came back to a step already begun (`M01-10`). */
   readonly restored: boolean;
@@ -18,6 +18,27 @@ export interface CompanySignupFrame {
   readonly writing: boolean;
   /** How the last write ended without landing; `null` while it has not. */
   readonly failure: WriteFailure | null;
+  /** Create company was pressed and a field refuses it: the frame answers on the fields. */
+  readonly fieldRefused: boolean;
+}
+
+/** The line under a field on the step as it opens; `null` where the frame carries none. */
+export interface CompanyFieldHelpers {
+  readonly ownerName: string | null;
+  /** The city's line, which stands only while City is empty: read it through `cityHelper`. */
+  readonly cityWhileEmpty: string | null;
+}
+
+/**
+ * The line under City (`SCR-M01-02` word plan): the step's, while City is empty. Called by the
+ * field with its own value — a step that re-rendered on each keystroke would drop typed characters
+ * on the phone. Under the join steer the fields carry no helpers at all.
+ */
+export function cityHelper(
+  helpers: CompanyFieldHelpers | undefined,
+  city: string,
+): string | undefined {
+  return city.trim() === '' ? (helpers?.cityWhileEmpty ?? undefined) : undefined;
 }
 
 export interface CompanySignupWords {
@@ -30,6 +51,7 @@ export interface CompanySignupWords {
   readonly caption: string | null;
   /** Under the heading after a write that did not land: what is known about it (`F8-36`). */
   readonly block: DoorBlockWords | null;
+  readonly helpers: CompanyFieldHelpers;
 }
 
 /** A write that did not land: refused, nothing was written; unanswered, it may have been. */
@@ -61,6 +83,21 @@ export function companySignupWords(
     primary: primaryLabel(translate, frame),
     caption: caption(translate, frame),
     block: failureBlock(translate, frame.failure, CREATE_FAILURE),
+    helpers: helpers(translate, frame),
+  };
+}
+
+/** The step as it opens, or back from the steer: not resumed, and nothing answering a press. */
+function asItOpens(frame: CompanySignupFrame): boolean {
+  return !frame.restored && !frame.fieldRefused && frame.failure === null;
+}
+
+/** Both lines belong to the step as it opens; a resumed, refused or failed frame carries none. */
+function helpers(t: Translator['t'], frame: CompanySignupFrame): CompanyFieldHelpers {
+  if (!asItOpens(frame)) return { ownerName: null, cityWhileEmpty: null };
+  return {
+    ownerName: t(COMPANY_SIGNUP.firstOwner),
+    cityWhileEmpty: t(COMPANY_SIGNUP.whereBased),
   };
 }
 
@@ -73,7 +110,7 @@ function heading(
   if (frame.failure === 'unreached')
     return { title: t(COMPANY_SIGNUP.couldNotConfirm), intro: null };
   if (frame.restored) return { title: t(COMPANY_SIGNUP.welcomeBack), intro: null };
-  const intro = frame.writing ? null : t(COMPANY_SIGNUP.threeThings);
+  const intro = frame.writing || frame.fieldRefused ? null : t(COMPANY_SIGNUP.threeThings);
   return { title: t(COMPANY_SIGNUP.yourCompany), intro };
 }
 

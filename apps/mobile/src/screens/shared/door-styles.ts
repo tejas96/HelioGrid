@@ -25,7 +25,6 @@ export const styles = StyleSheet.create({
   google: { gap: theme.spacing['sp-3'] },
   /** The locked frame's way still open: the sentence, `sp-4`, then Continue with Google (`M01-04`). */
   lockedGoogle: { gap: theme.spacing['sp-4'] },
-  caption: { marginTop: theme.spacing['sp-4'] },
   spacer: { flex: 1, minHeight: theme.spacing['sp-6'] },
   /** The road at the foot of the number step: the question and where it goes. */
   road: { alignItems: 'center', gap: theme.spacing['sp-2'] },
@@ -45,8 +44,10 @@ export const styles = StyleSheet.create({
     paddingBottom: theme.spacing['sp-6'],
   },
   codeTitle: { gap: theme.spacing['sp-1'] },
-  /** The link step's title and its Explainer on one row, `sp-2` apart. */
+  /** A door title and its Explainer on one row, `sp-2` apart. */
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
+  /** The title gives way and wraps, so a long one never pushes its Explainer off the screen. */
+  titleText: { flexShrink: 1 },
   /** The tile, then `sp-2`, then "Not you?" at the start of the line. */
   linkAccount: { gap: theme.spacing['sp-2'], alignItems: 'flex-start' },
   centred: { alignItems: 'center' },

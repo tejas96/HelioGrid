@@ -198,7 +198,7 @@ msgid "{weekday} · {date}"
 msgstr "{weekday} · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:101
+#: src/copy/company-signup.ts:133
 msgid "A city is needed — it is where your company is based."
 msgstr "A city is needed — it is where your company is based."
 
@@ -208,7 +208,7 @@ msgid "A code lasts {codeMinutes} minutes"
 msgstr "A code lasts {codeMinutes} minutes"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:97
+#: src/copy/company-signup.ts:129
 msgid "A company name is needed — it goes on every proposal you send."
 msgstr "A company name is needed — it goes on every proposal you send."
 
@@ -218,7 +218,7 @@ msgid "A release already has this name. Choose another name."
 msgstr "A release already has this name. Choose another name."
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:71
+#: src/copy/company-signup.ts:72
 msgid "A workspace already exists for {company} in {city}"
 msgstr "A workspace already exists for {company} in {city}"
 
@@ -231,6 +231,21 @@ msgstr "About code limits"
 #: src/copy/sign-in.ts:89
 msgid "About linking your number"
 msgstr "About linking your number"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:60
+msgid "About one account per number"
+msgstr "About one account per number"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:16
+msgid "About what signup asks for"
+msgstr "About what signup asks for"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:30
+msgid "About what the code does"
+msgstr "About what the code does"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:27
@@ -248,7 +263,7 @@ msgid "Add lead"
 msgstr "Add lead"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:19
+#: src/copy/company-signup.ts:22
 msgid "Already on HelioGrid?"
 msgstr "Already on HelioGrid?"
 
@@ -263,7 +278,7 @@ msgid "Anything that needs you, or changes on work you hold, lands here — newe
 msgstr "Anything that needs you, or changes on work you hold, lands here — newest first, with the one thing you can do about it."
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:72
+#: src/copy/company-signup.ts:73
 msgid "Asking to join sends its owner a request to add {phone}."
 msgstr "Asking to join sends its owner a request to add {phone}."
 
@@ -339,7 +354,7 @@ msgid "Change number"
 msgstr "Change number"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:85
+#: src/copy/company-signup.ts:86
 msgid "Changed your mind, or it is not the same company?"
 msgstr "Changed your mind, or it is not the same company?"
 
@@ -349,7 +364,7 @@ msgid "Check the SMS, or send a new code."
 msgstr "Check the SMS, or send a new code."
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:40
+#: src/copy/company-signup.ts:44
 msgid "City"
 msgstr "City"
 
@@ -359,7 +374,7 @@ msgid "Close"
 msgstr "Close"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:23
+#: src/copy/company-signup.ts:26
 msgid "Code"
 msgstr "Code"
 
@@ -374,7 +389,7 @@ msgid "Code limits"
 msgstr "Code limits"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:35
+#: src/copy/company-signup.ts:39
 msgid "Company name"
 msgstr "Company name"
 
@@ -429,7 +444,7 @@ msgid "Couldn’t mark them read"
 msgstr "Couldn’t mark them read"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:21
+#: src/copy/company-signup.ts:24
 msgid "Create a company"
 msgstr "Create a company"
 
@@ -439,27 +454,27 @@ msgid "Create a company account"
 msgstr "Create a company account"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:75
+#: src/copy/company-signup.ts:76
 msgid "Create a new company anyway"
 msgstr "Create a new company anyway"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:43
+#: src/copy/company-signup.ts:47
 msgid "Create company"
 msgstr "Create company"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:12
+#: src/copy/company-signup.ts:13
 msgid "Create your company"
 msgstr "Create your company"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:86
+#: src/copy/company-signup.ts:87
 msgid "Create your own company instead"
 msgstr "Create your own company instead"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:44
+#: src/copy/company-signup.ts:48
 msgid "Creating your company"
 msgstr "Creating your company"
 
@@ -629,7 +644,7 @@ msgid "HR/Admin"
 msgstr "HR/Admin"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:55
+#: src/copy/company-signup.ts:57
 msgid "If it keeps failing, sign in later to carry on."
 msgstr "If it keeps failing, sign in later to carry on."
 
@@ -647,11 +662,6 @@ msgstr "If this number already has an account, the Google login joins it. If it 
 #: src/copy/sign-in.ts:111
 msgid "If you've signed in with Google before, it still works."
 msgstr "If you've signed in with Google before, it still works."
-
-#. js-lingui-explicit-id
-#: src/copy/company-signup.ts:61
-msgid "If your company already has a workspace and you want your own login inside it, ask its owner to invite you — that keeps one company, one workspace."
-msgstr "If your company already has a workspace and you want your own login inside it, ask its owner to invite you — that keeps one company, one workspace."
 
 #. js-lingui-explicit-id
 #: src/copy/disclosure.ts:26
@@ -746,6 +756,11 @@ msgid "Next"
 msgstr "Next"
 
 #. js-lingui-explicit-id
+#: src/copy/company-signup.ts:70
+msgid "No company was made yet — carry on from here."
+msgstr "No company was made yet — carry on from here."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:58
 msgid "No more codes for {windowMinutes} minutes"
 msgstr "No more codes for {windowMinutes} minutes"
@@ -791,9 +806,9 @@ msgid "Nothing changed. Try again in a moment."
 msgstr "Nothing changed. Try again in a moment."
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:16
-msgid "Nothing else is asked for here — no tax registration, no logo, no price book, no team, no card."
-msgstr "Nothing else is asked for here — no tax registration, no logo, no price book, no team, no card."
+#: src/copy/company-signup.ts:19
+msgid "Nothing else is asked for here — no tax registration, logo, price book, team or card. Those come later, inside the product."
+msgstr "Nothing else is asked for here — no tax registration, logo, price book, team or card. Those come later, inside the product."
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:47
@@ -811,7 +826,7 @@ msgid "Nothing unread · {total} in the last {days} days"
 msgstr "Nothing unread · {total} in the last {days} days"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:49
+#: src/copy/company-signup.ts:51
 msgid "Nothing was created, so trying again is safe."
 msgstr "Nothing was created, so trying again is safe."
 
@@ -834,6 +849,16 @@ msgstr "Notifications"
 #: src/copy/freshness.ts:36
 msgid "number formats"
 msgstr "number formats"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:62
+msgid "One mobile number is one HelioGrid account, whichever way you come in."
+msgstr "One mobile number is one HelioGrid account, whichever way you come in."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:61
+msgid "One number, one account"
+msgstr "One number, one account"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:84
@@ -927,12 +952,12 @@ msgid "Provisional"
 msgstr "Provisional"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:41
+#: src/copy/company-signup.ts:45
 msgid "Pune"
 msgstr "Pune"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:38
+#: src/copy/company-signup.ts:42
 msgid "Rajesh Kulkarni"
 msgstr "Rajesh Kulkarni"
 
@@ -952,12 +977,12 @@ msgid "Reported"
 msgstr "Reported"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:73
+#: src/copy/company-signup.ts:74
 msgid "Request to join"
 msgstr "Request to join"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:74
+#: src/copy/company-signup.ts:75
 msgid "Request to join the existing {company} workspace"
 msgstr "Request to join the existing {company} workspace"
 
@@ -1022,7 +1047,7 @@ msgid "Send the code by SMS and link this Google login"
 msgstr "Send the code by SMS and link this Google login"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:79
+#: src/copy/company-signup.ts:80
 msgid "Send the request again"
 msgstr "Send the request again"
 
@@ -1037,7 +1062,7 @@ msgid "Sending the code"
 msgstr "Sending the code"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:84
+#: src/copy/company-signup.ts:85
 msgid "Sent as"
 msgstr "Sent as"
 
@@ -1077,9 +1102,14 @@ msgid "Sign in and discard"
 msgstr "Sign in and discard"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:20
+#: src/copy/company-signup.ts:23
 msgid "Sign in instead"
 msgstr "Sign in instead"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:59
+msgid "Sign in to reach the company it belongs to."
+msgstr "Sign in to reach the company it belongs to."
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:59
@@ -1087,7 +1117,7 @@ msgid "Sign in with another account"
 msgstr "Sign in with another account"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:64
+#: src/copy/company-signup.ts:67
 msgid "Sign in with this number"
 msgstr "Sign in with this number"
 
@@ -1107,17 +1137,12 @@ msgid "Signing in as {name} discards {count} photographs"
 msgstr "Signing in as {name} discards {count} photographs"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:57
-msgid "Signing in takes you to the company it belongs to. One number is one account, whichever door it walks in through."
-msgstr "Signing in takes you to the company it belongs to. One number is one account, whichever door it walks in through."
-
-#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:97
 msgid "Signing in with Google"
 msgstr "Signing in with Google"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:60
+#: src/copy/company-signup.ts:65
 msgid "Signing up again would not make a second company"
 msgstr "Signing up again would not make a second company"
 
@@ -1147,7 +1172,7 @@ msgid "Something on our side failed"
 msgstr "Something on our side failed"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:77
+#: src/copy/company-signup.ts:78
 msgid "Something on our side failed, so nothing was sent."
 msgstr "Something on our side failed, so nothing was sent."
 
@@ -1187,7 +1212,7 @@ msgid "Surveyed remotely"
 msgstr "Surveyed remotely"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:36
+#: src/copy/company-signup.ts:40
 msgid "Suryodaya Solar Solutions"
 msgstr "Suryodaya Solar Solutions"
 
@@ -1252,7 +1277,7 @@ msgid "That is taking too long to answer."
 msgstr "That is taking too long to answer."
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:56
+#: src/copy/company-signup.ts:58
 msgid "That number already has an account"
 msgstr "That number already has an account"
 
@@ -1317,12 +1342,7 @@ msgid "The tranches must add up to exactly 100%. Place the remainder before savi
 msgstr "The tranches must add up to exactly 100%. Place the remainder before saving."
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:45
-msgid "These three are being written now, so they are facts rather than fields for the moment — nothing can change under the write, and nothing is greyed out to say so."
-msgstr "These three are being written now, so they are facts rather than fields for the moment — nothing can change under the write, and nothing is greyed out to say so."
-
-#. js-lingui-explicit-id
-#: src/copy/company-signup.ts:70
+#: src/copy/company-signup.ts:71
 msgid "This company may already be here"
 msgstr "This company may already be here"
 
@@ -1397,9 +1417,14 @@ msgid "This value is too small."
 msgstr "This value is too small."
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:30
-msgid "Three things, and you're in. Everything else comes later, inside the product."
-msgstr "Three things, and you're in. Everything else comes later, inside the product."
+#: src/copy/company-signup.ts:36
+msgid "Three details, and you're in."
+msgstr "Three details, and you're in."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:66
+msgid "To join another company, ask its owner to invite you."
+msgstr "To join another company, ask its owner to invite you."
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:64
@@ -1477,7 +1502,7 @@ msgid "Use a different Google account"
 msgstr "Use a different Google account"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:65
+#: src/copy/company-signup.ts:68
 msgid "Use a different number"
 msgstr "Use a different number"
 
@@ -1502,12 +1527,12 @@ msgid "Use this button to start a survey."
 msgstr "Use this button to start a survey."
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:34
+#: src/copy/company-signup.ts:38
 msgid "Verified"
 msgstr "Verified"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:25
+#: src/copy/company-signup.ts:28
 msgid "Verify and continue"
 msgstr "Verify and continue"
 
@@ -1522,9 +1547,14 @@ msgid "Verify the code, link this Google login and sign in"
 msgstr "Verify the code, link this Google login and sign in"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:26
-msgid "Verifying the code makes the account. The company itself is created by the next step, and until then nothing has been written down."
-msgstr "Verifying the code makes the account. The company itself is created by the next step, and until then nothing has been written down."
+#: src/copy/company-signup.ts:14
+msgid "Verify your number, then add three company details."
+msgstr "Verify your number, then add three company details."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:32
+msgid "Verifying the code creates your account. Your company is created at the next step."
+msgstr "Verifying the code creates your account. Your company is created at the next step."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:25
@@ -1532,12 +1562,12 @@ msgid "We call and read the code out to"
 msgstr "We call and read the code out to"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:50
+#: src/copy/company-signup.ts:52
 msgid "We could not confirm the company"
 msgstr "We could not confirm the company"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:48
+#: src/copy/company-signup.ts:50
 msgid "We could not create the company"
 msgstr "We could not create the company"
 
@@ -1557,7 +1587,7 @@ msgid "We could not sign you in"
 msgstr "We could not sign you in"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:51
+#: src/copy/company-signup.ts:53
 msgid "We did not hear back"
 msgstr "We did not hear back"
 
@@ -1582,17 +1612,32 @@ msgid "We'll link this Google login to your number."
 msgstr "We'll link this Google login to your number."
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:66
+#: src/copy/company-signup.ts:15
+msgid "We'll send a code by SMS."
+msgstr "We'll send a code by SMS."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:69
 msgid "Welcome back — carry on"
 msgstr "Welcome back — carry on"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:81
+#: src/copy/company-signup.ts:17
+msgid "What signup asks for"
+msgstr "What signup asks for"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:31
+msgid "What the code does"
+msgstr "What the code does"
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:82
 msgid "When the owner of {company}, {city} adds you, an SMS to your number brings you straight in."
 msgstr "When the owner of {company}, {city} adds you, an SMS to your number brings you straight in."
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:42
+#: src/copy/company-signup.ts:46
 msgid "Where you're based."
 msgstr "Where you're based."
 
@@ -1600,6 +1645,11 @@ msgstr "Where you're based."
 #: src/copy/shell.ts:41
 msgid "Work assigned to you shows here. Ask your manager for your first one."
 msgstr "Work assigned to you shows here. Ask your manager for your first one."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:49
+msgid "Writing these three details now."
+msgstr "Writing these three details now."
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:29
@@ -1612,14 +1662,19 @@ msgid "You are in"
 msgstr "You are in"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:39
-msgid "You become this company's first EPC owner."
-msgstr "You become this company's first EPC owner."
+#: src/copy/company-signup.ts:43
+msgid "You become the first EPC owner."
+msgstr "You become the first EPC owner."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:61
 msgid "You can ask for {perWindow} codes every {windowMinutes} minutes, and {day} a day."
 msgstr "You can ask for {perWindow} codes every {windowMinutes} minutes, and {day} a day."
+
+#. js-lingui-explicit-id
+#: src/copy/company-signup.ts:29
+msgid "You can paste the whole code."
+msgstr "You can paste the whole code."
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:30
@@ -1643,13 +1698,13 @@ msgid "Your access was removed"
 msgstr "Your access was removed"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:33
+#: src/copy/company-signup.ts:37
 msgid "Your account"
 msgstr "Your account"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:24
-#: src/copy/company-signup.ts:29
+#: src/copy/company-signup.ts:27
+#: src/copy/company-signup.ts:35
 msgid "Your company"
 msgstr "Your company"
 
@@ -1664,7 +1719,7 @@ msgid "Your company has sent today’s invites. Try again tomorrow."
 msgstr "Your company has sent today’s invites. Try again tomorrow."
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:52
+#: src/copy/company-signup.ts:54
 msgid "Your company may have been made — trying again cannot make a second."
 msgstr "Your company may have been made — trying again cannot make a second."
 
@@ -1679,9 +1734,9 @@ msgid "Your home is the {preset} one. Open the title to switch."
 msgstr "Your home is the {preset} one. Open the title to switch."
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:13
-msgid "Your mobile number becomes your HelioGrid account. Two steps to verify it, then three details about your company — that is the whole signup."
-msgstr "Your mobile number becomes your HelioGrid account. Two steps to verify it, then three details about your company — that is the whole signup."
+#: src/copy/company-signup.ts:18
+msgid "Your mobile number becomes your HelioGrid account."
+msgstr "Your mobile number becomes your HelioGrid account."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:10
@@ -1689,36 +1744,31 @@ msgid "Your mobile number is your HelioGrid account."
 msgstr "Your mobile number is your HelioGrid account."
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:37
+#: src/copy/company-signup.ts:41
 msgid "Your name"
 msgstr "Your name"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:100
+#: src/copy/company-signup.ts:132
 msgid "Your name is needed — you become this company's first EPC owner."
 msgstr "Your name is needed — you become this company's first EPC owner."
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:22
+#: src/copy/company-signup.ts:25
 msgid "Your number"
 msgstr "Your number"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:67
-msgid "Your number is verified and no company was created — so there is nothing to redo and no second workspace waiting to be cleaned up."
-msgstr "Your number is verified and no company was created — so there is nothing to redo and no second workspace waiting to be cleaned up."
-
-#. js-lingui-explicit-id
-#: src/copy/company-signup.ts:76
+#: src/copy/company-signup.ts:77
 msgid "Your request did not go through"
 msgstr "Your request did not go through"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:80
+#: src/copy/company-signup.ts:81
 msgid "Your request is with the owner"
 msgstr "Your request is with the owner"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:78
+#: src/copy/company-signup.ts:79
 msgid "Your request may already be with the owner."
 msgstr "Your request may already be with the owner."

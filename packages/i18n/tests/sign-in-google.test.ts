@@ -68,7 +68,7 @@ describe('the code frames carry Google', () => {
     expect(words.explainer).toEqual({
       label: 'About code limits',
       title: 'Code limits',
-      page: 'You can ask for 3 codes every 15 minutes, and 8 a day.',
+      pages: ['You can ask for 3 codes every 15 minutes, and 8 a day.'],
     });
     expect(words.wait).toBeNull();
     expect(words.foot).toBeNull();

@@ -21,7 +21,7 @@ import { SignupProgress } from './SignupProgress';
  * roads — takes the primary's place (`M01-09`); a changed detail drops the steer, and while a
  * request is on its way the values are facts, as they are while the company is written
  * (decision 26). The form holds only its fields; the write, the steer and their waits are
- * `useCompanySignup`'s; the words of the four frames are `companySignupWords`'.
+ * `useCompanySignup`'s; the words of its frames are `companySignupWords`'.
  */
 export function CompanyStep({
   user,
@@ -47,6 +47,7 @@ export function CompanyStep({
     restored,
     writing: signup.creation === 'creating',
     failure: failureOf(signup.creation),
+    fieldRefused: form.formState.isSubmitted && Object.keys(form.formState.errors).length > 0,
   };
   const words = companySignupWords(t, frame);
 
@@ -76,7 +77,7 @@ export function CompanyStep({
         {signup.requesting === 'sending' ? (
           <CompanyFacts values={form.getValues()} />
         ) : (
-          <CompanyFields form={form} withHelpers={false} />
+          <CompanyFields form={form} />
         )}
       </DoorFrame>
     );
@@ -121,7 +122,11 @@ export function CompanyStep({
         </Button>
       }
     >
-      {frame.writing ? <CompanyFacts values={form.getValues()} /> : <CompanyFields form={form} />}
+      {frame.writing ? (
+        <CompanyFacts values={form.getValues()} />
+      ) : (
+        <CompanyFields form={form} helpers={words.helpers} />
+      )}
       {words.caption === null ? null : (
         <Text variant="caption" color="secondary">
           {words.caption}

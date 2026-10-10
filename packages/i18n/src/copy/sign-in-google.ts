@@ -13,6 +13,7 @@ import {
   type PhoneGoogle,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
+import type { ExplainerWords } from './explainer';
 import { SIGN_IN } from './sign-in';
 
 /** A tinted block's words on the door: what happened, and why when the title alone does not say. */
@@ -57,11 +58,7 @@ export interface GoogleLinkWords {
   readonly title: string;
   readonly body: string;
   /** Beside the title on the open step; the locked step drops it. */
-  readonly explainer: {
-    readonly label: string;
-    readonly title: string;
-    readonly pages: readonly [string, string];
-  } | null;
+  readonly explainer: ExplainerWords | null;
   readonly tileOverline: string;
   readonly email: string;
   /** The phone puts "Not you?" under the tile; the desktop's shorter link sits under Send code. */

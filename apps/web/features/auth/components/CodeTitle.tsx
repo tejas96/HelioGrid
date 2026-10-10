@@ -12,12 +12,7 @@ export function CodeTitle({ words, phone }: { words: SignInWords; phone: string 
       <div className="hg-door-title-row">
         <Text variant="h1">{words.title}</Text>
         {words.explainer === null ? null : (
-          <Explainer
-            label={words.explainer.label}
-            title={words.explainer.title}
-            pages={words.explainer.page}
-            {...explainerPagerWords(t)}
-          />
+          <Explainer {...words.explainer} {...explainerPagerWords(t)} />
         )}
       </div>
       {/* The lead-in is a line of its own, sentence case, the number under it (`SCR-M01-01` code family). */}

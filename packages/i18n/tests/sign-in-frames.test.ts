@@ -70,3 +70,19 @@ describe('doorNoticeWords — a removal found at the door is a fact, not a refus
     },
   );
 });
+
+/**
+ * The signup door's ask beside the code step's title (`SCR-M01-02` *What the code does*): it stands
+ * where the frame carries no rule of its own, and a limit frame keeps its own (`SCR-M01-01`).
+ */
+describe('signInWords — the door’s ask beside the title', () => {
+  const ask = { label: 'About the ask', title: 'The ask', pages: ['One page.'] } as const;
+  it.each([
+    ['a sent code shows the door’s ask', otp({}), 'The ask'],
+    ['a capped frame keeps its own rule', otp({ request: 'capped' }), 'Code limits'],
+  ] as const)('%s', async (_name, state, title) => {
+    const { t } = await createTranslator('en');
+    const words = signInWords(t, loginFrame(state, false), FACTS, { explainer: ask });
+    expect(words.explainer?.title).toBe(title);
+  });
+});

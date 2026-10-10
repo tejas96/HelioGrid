@@ -1,7 +1,7 @@
 'use client';
 import { useCompanySignup, useSession, useSessionPhase, useSignIn } from '@heliogrid/data/react';
 import { homeOf, signupView } from '@heliogrid/domain';
-import { COMPANY_SIGNUP, homeTitle, SIGN_IN } from '@heliogrid/i18n';
+import { COMPANY_SIGNUP, homeTitle, SIGN_IN, signupExplainers } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { SuccessDwell, useFormat } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
@@ -94,8 +94,11 @@ export function CompanySignupScreen() {
         signIn={signIn}
         taskMeasure="steps"
         lead={<SignupProgress current={1} />}
-        labels={{ verify: COMPANY_SIGNUP.verifyAndContinue }}
-        note={t(COMPANY_SIGNUP.codeMakesTheAccount)}
+        labels={{
+          verify: COMPANY_SIGNUP.verifyAndContinue,
+          explainer: signupExplainers(t).whatTheCodeDoes,
+        }}
+        helper={t(COMPANY_SIGNUP.codeHelper)}
       />
     );
   }
@@ -106,7 +109,8 @@ export function CompanySignupScreen() {
       lead={<SignupProgress current={0} />}
       title={t(COMPANY_SIGNUP.createYourCompany)}
       intro={t(COMPANY_SIGNUP.intro)}
-      note={t(COMPANY_SIGNUP.nothingElse)}
+      explainer={signupExplainers(t).whatSignupAsks}
+      helper={t(COMPANY_SIGNUP.numberHelper)}
       road={{
         question: t(COMPANY_SIGNUP.alreadyOnHelioGrid),
         label: t(COMPANY_SIGNUP.signInInstead),

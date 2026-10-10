@@ -1,6 +1,11 @@
 import type { CreateTenant } from '@heliogrid/contracts';
 import { Controller, type UseFormReturn } from '@heliogrid/forms';
-import { COMPANY_SIGNUP, companyFieldRefusal } from '@heliogrid/i18n';
+import {
+  COMPANY_SIGNUP,
+  type CompanyFieldHelpers,
+  cityHelper,
+  companyFieldRefusal,
+} from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { Input } from '@heliogrid/ui';
 
@@ -8,15 +13,16 @@ import { Input } from '@heliogrid/ui';
  * The three fields and no fourth (`M01-01`): the company name across the measure, your name and
  * the city sharing the row beneath it from the door's breakpoint (`SCR-M01-02` decision 12). Each
  * answers for itself when Create company is pressed, all messages at once (the fields-invalid
- * state); the primary is never gated on them. Under the join steer the fields carry no helper: the
- * steer's one sentence is its finding (`SCR-M01-02` word inventory).
+ * state); the primary is never gated on them. `helpers` are the step's as it opens
+ * (`companySignupWords`); under the join steer the fields carry none: the steer's one sentence is
+ * its finding (`SCR-M01-02` word inventory).
  */
 export function CompanyFields({
   form,
-  withHelpers = true,
+  helpers,
 }: {
   form: UseFormReturn<CreateTenant>;
-  withHelpers?: boolean;
+  helpers?: CompanyFieldHelpers;
 }) {
   const t = useTranslate();
   return (
@@ -44,7 +50,7 @@ export function CompanyFields({
               placeholder={t(COMPANY_SIGNUP.yourNameExample)}
               value={field.value}
               onChange={field.onChange}
-              helper={withHelpers ? t(COMPANY_SIGNUP.firstOwner) : undefined}
+              helper={helpers?.ownerName ?? undefined}
               error={companyFieldRefusal(t, 'ownerName', fieldState.error)}
             />
           )}
@@ -58,7 +64,7 @@ export function CompanyFields({
               placeholder={t(COMPANY_SIGNUP.cityExample)}
               value={field.value}
               onChange={field.onChange}
-              helper={withHelpers ? t(COMPANY_SIGNUP.whereBased) : undefined}
+              helper={cityHelper(helpers, field.value)}
               error={companyFieldRefusal(t, 'city', fieldState.error)}
             />
           )}

@@ -1,7 +1,7 @@
 import type { KnownAccount } from '@heliogrid/domain';
-import { COMPANY_SIGNUP, SIGN_IN } from '@heliogrid/i18n';
+import { COMPANY_SIGNUP, explainerPagerWords, SIGN_IN, signupExplainers } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, DoorFrame, PhoneValue, Text, TintedBlock } from '@heliogrid/ui';
+import { Button, DoorFrame, Explainer, PhoneValue, Text, TintedBlock } from '@heliogrid/ui';
 import { LanguageControl } from './LanguageControl';
 
 /**
@@ -27,7 +27,10 @@ export function KnownNumber({
       identity={
         <>
           <div className="hg-door-title">
-            <Text variant="h1">{t(COMPANY_SIGNUP.knownTitle)}</Text>
+            <div className="hg-door-title-row">
+              <Text variant="h1">{t(COMPANY_SIGNUP.knownTitle)}</Text>
+              <Explainer {...signupExplainers(t).oneNumberOneAccount} {...explainerPagerWords(t)} />
+            </div>
             <Text variant="body-lg" color="secondary">
               {t(COMPANY_SIGNUP.knownIntro)}
             </Text>
