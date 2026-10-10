@@ -14,15 +14,26 @@
 export type { ApiErrorLike, AttemptFailureLike } from './copy/api-error';
 export { apiErrorMessageId, apiErrorRef, attemptFailureMessageId } from './copy/api-error';
 export { shownInNote } from './copy/authored-content';
-export type { CompanySignupCopyKey, SignupExplainers } from './copy/company-signup';
-export { COMPANY_SIGNUP, companyFieldRefusal, signupExplainers } from './copy/company-signup';
+export type {
+  CompanySignupCopyKey,
+  SignupExplainers,
+  SignupStepsWords,
+} from './copy/company-signup';
+export {
+  COMPANY_SIGNUP,
+  companyFieldRefusal,
+  signupExplainers,
+  signupStepsWords,
+} from './copy/company-signup';
 export type {
   CompanyFieldHelpers,
+  CompanyFieldWords,
   CompanySignupFrame,
   CompanySignupWords,
 } from './copy/company-signup-frames';
 export {
-  cityHelper,
+  companyFacts,
+  companyFieldWords,
   companySignupWords,
   joinSteerFinding,
   joinSteerWords,

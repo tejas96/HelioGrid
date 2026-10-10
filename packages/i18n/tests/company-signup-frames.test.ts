@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   cityHelper,
+  companyFacts,
+  companyFieldWords,
   companySignupWords,
   joinSteerFinding,
   joinSteerWords,
@@ -134,6 +136,89 @@ describe('companySignupWords', () => {
     const words = companySignupWords(t, normal);
     expect(words.title).not.toBe('Your company');
     expect(words.primary).not.toBe('Create company');
+  });
+});
+
+/**
+ * Every word one company field shows (`SCR-M01-02`, step 3 and the fields-invalid state): its
+ * label and example, the step's line under it for the value typed, and its answer to a press.
+ */
+describe('companyFieldWords', () => {
+  const opens = {
+    ownerName: 'You become the first EPC owner.',
+    cityWhileEmpty: "Where you're based.",
+  };
+  const untouched = { helpers: undefined, value: '', error: undefined };
+
+  it.each([
+    ['en', 'companyName', 'Company name', 'Suryodaya Solar Solutions'],
+    ['en', 'ownerName', 'Your name', 'Rajesh Kulkarni'],
+    ['en', 'city', 'City', 'Pune'],
+    ['hi', 'companyName', 'कंपनी का नाम', 'सूर्योदय सोलर सॉल्यूशंस'],
+    ['hi', 'ownerName', 'आपका नाम', 'राजेश कुलकर्णी'],
+    ['hi', 'city', 'शहर', 'पुणे'],
+    ['mr', 'companyName', 'कंपनीचे नाव', 'सूर्योदय सोलर सोल्युशन्स'],
+    ['mr', 'ownerName', 'तुमचे नाव', 'राजेश कुलकर्णी'],
+    ['mr', 'city', 'शहर', 'पुणे'],
+  ] as const)(
+    'in %s, %s carries its name and its example, and nothing under it',
+    async (language, field, label, placeholder) => {
+      const { t } = await createTranslator(language);
+      expect(companyFieldWords(t, field, untouched)).toEqual({
+        label,
+        placeholder,
+        helper: undefined,
+        error: undefined,
+      });
+    },
+  );
+
+  it.each([
+    ['companyName', '', undefined],
+    ['ownerName', '', 'You become the first EPC owner.'],
+    ['ownerName', 'Rajesh Kulkarni', 'You become the first EPC owner.'],
+    ['city', '', "Where you're based."],
+    ['city', '  ', "Where you're based."],
+    ['city', 'P', undefined],
+  ] as const)('%s holding "%s": the step’s line under it', async (field, value, line) => {
+    const { t } = await createTranslator('en');
+    expect(companyFieldWords(t, field, { ...untouched, helpers: opens, value }).helper).toBe(line);
+    expect(companyFieldWords(t, field, { ...untouched, value }).helper).toBeUndefined();
+    const none = { ownerName: null, cityWhileEmpty: null };
+    expect(
+      companyFieldWords(t, field, { ...untouched, helpers: none, value }).helper,
+    ).toBeUndefined();
+  });
+
+  it.each([
+    ['en', 'A city is needed — it is where your company is based.'],
+    ['hi', 'शहर ज़रूरी है — यही बताता है कि आपकी कंपनी कहाँ है।'],
+    ['mr', 'शहर आवश्यक आहे — तुमची कंपनी कुठे आहे हे त्यावरून कळते.'],
+  ] as const)('in %s, a City left empty says why it is needed', async (language, needed) => {
+    const { t } = await createTranslator(language);
+    const error = { type: 'too_small', message: 'x' };
+    expect(companyFieldWords(t, 'city', { ...untouched, error }).error).toBe(needed);
+  });
+
+  it('a refusal that is not about emptiness keeps the words it came with', async () => {
+    const { t } = await createTranslator('en');
+    const error = { type: 'custom', message: 'That city is closed.' };
+    expect(companyFieldWords(t, 'city', { ...untouched, value: 'Pune', error }).error).toBe(
+      'That city is closed.',
+    );
+  });
+});
+
+/** The three values while they are written (`SCR-M01-02`, the loading state): each under its own field's name. */
+describe('companyFacts', () => {
+  it('pairs each value with its field’s name, in the fields’ order', async () => {
+    const { t } = await createTranslator('en');
+    const values = { companyName: 'Suryodaya Solar', ownerName: 'Rajesh Kulkarni', city: 'Pune' };
+    expect(companyFacts(t, values)).toEqual([
+      { label: 'Company name', value: 'Suryodaya Solar' },
+      { label: 'Your name', value: 'Rajesh Kulkarni' },
+      { label: 'City', value: 'Pune' },
+    ]);
   });
 });
 

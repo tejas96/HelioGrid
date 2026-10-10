@@ -127,6 +127,8 @@
 @import "./components/Select/Select.css";
 @import "./components/Sheet/OverlayShared.css";
 @import "./components/Sheet/Sheet.css";
+@import "./components/SignupCompanyStep/SignupCompanyStep.css";
+@import "./components/SignupSteps/SignupSteps.css";
 @import "./components/Slider/Slider.css";
 @import "./components/SourceDocument/SourceDocument.css";
 @import "./components/StatCard/StatCard.css";

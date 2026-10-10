@@ -1,0 +1,17 @@
+/* Company signup's step header (`SCR-M01-02` decisions 4 and 13): the track and its counter, or
+   from the door's breakpoint the numbered form — one of the two, never both. */
+
+.hg-signup-steps-numbered {
+  display: none;
+}
+
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
+@media (min-width: 968px) {
+  .hg-signup-steps-track {
+    display: none;
+  }
+
+  .hg-signup-steps-numbered {
+    display: block;
+  }
+}

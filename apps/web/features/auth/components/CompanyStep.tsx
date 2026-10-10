@@ -1,15 +1,29 @@
 import { createTenantSchema } from '@heliogrid/contracts';
 import { type CompanySignup, failureOf, useSteerDroppedOnEdit } from '@heliogrid/data/react';
 import type { SessionUser } from '@heliogrid/domain';
-import { useZodForm } from '@heliogrid/forms';
-import { COMPANY_SIGNUP, companySignupWords } from '@heliogrid/i18n';
+import { Controller, useZodForm } from '@heliogrid/forms';
+import {
+  COMPANY_SIGNUP,
+  type CompanyFieldHelpers,
+  companyFacts,
+  companyFieldWords,
+  companySignupWords,
+  signupStepsWords,
+} from '@heliogrid/i18n';
 import { useLanguageChoice, useTranslate } from '@heliogrid/i18n/react';
-import { Button, DoorFrame, DoorLanguage, Text, TintedBlock } from '@heliogrid/ui';
-import { AccountCard } from './AccountCard';
-import { CompanyFacts } from './CompanyFacts';
-import { CompanyFields } from './CompanyFields';
+import {
+  Button,
+  DoorFrame,
+  DoorLanguage,
+  SignupAccount,
+  SignupFacts,
+  type SignupFieldBinder,
+  SignupFields,
+  SignupSteps,
+  Text,
+  TintedBlock,
+} from '@heliogrid/ui';
 import { JoinFailureBlock, JoinRoads, JoinSteerBlock } from './JoinSteer';
-import { SignupProgress } from './SignupProgress';
 
 /**
  * Step 3 — the three fields over the verified number, and the one write this screen owns
@@ -20,7 +34,8 @@ import { SignupProgress } from './SignupProgress';
  * roads — takes the primary's place (`M01-09`); a changed detail drops the steer, and while a
  * request is on its way the values are facts, as they are while the company is written
  * (decision 26). The form holds only its fields; the write, the steer and their waits are
- * `useCompanySignup`'s; the words of its frames are `companySignupWords`'.
+ * `useCompanySignup`'s; the words of its frames are `companySignupWords`'. Each field is bound by
+ * its own `Controller`, so a keystroke re-renders one input and never this step.
  */
 export function CompanyStep({
   user,
@@ -50,6 +65,28 @@ export function CompanyStep({
     fieldRefused: form.formState.isSubmitted && Object.keys(form.formState.errors).length > 0,
   };
   const words = companySignupWords(t, frame);
+  const steps = <SignupSteps words={signupStepsWords(t)} current={2} />;
+  const facts = <SignupFacts facts={companyFacts(t, form.getValues())} />;
+  /** Under the join steer the fields carry no helpers: the steer's one sentence is its finding. */
+  const bindWith =
+    (helpers: CompanyFieldHelpers | undefined): SignupFieldBinder =>
+    (name, draw) => (
+      <Controller
+        control={form.control}
+        name={name}
+        render={({ field, fieldState }) =>
+          draw({
+            value: field.value,
+            onChange: field.onChange,
+            ...companyFieldWords(t, name, {
+              helpers,
+              value: field.value,
+              error: fieldState.error,
+            }),
+          })
+        }
+      />
+    );
 
   if (steered !== null) {
     const steer = <JoinSteerBlock company={steered} phoneE164={user.phoneE164} />;
@@ -57,7 +94,7 @@ export function CompanyStep({
       <DoorFrame
         trailing={language}
         taskMeasure="steps"
-        lead={<SignupProgress current={2} />}
+        lead={steps}
         identity={
           <>
             <div className="hg-door-title">
@@ -74,11 +111,7 @@ export function CompanyStep({
           </div>
         }
       >
-        {signup.requesting === 'sending' ? (
-          <CompanyFacts values={form.getValues()} />
-        ) : (
-          <CompanyFields form={form} />
-        )}
+        {signup.requesting === 'sending' ? facts : <SignupFields bind={bindWith(undefined)} />}
       </DoorFrame>
     );
   }
@@ -87,7 +120,7 @@ export function CompanyStep({
     <DoorFrame
       trailing={language}
       taskMeasure="steps"
-      lead={<SignupProgress current={2} />}
+      lead={steps}
       identity={
         <>
           <div className="hg-door-title">
@@ -101,7 +134,10 @@ export function CompanyStep({
           {words.block !== null ? (
             <TintedBlock {...words.block} className="hg-signup-finding" />
           ) : (
-            <AccountCard phoneE164={user.phoneE164} />
+            <SignupAccount
+              words={{ label: t(COMPANY_SIGNUP.yourAccount), verified: t(COMPANY_SIGNUP.verified) }}
+              phoneE164={user.phoneE164}
+            />
           )}
           {frame.restored && frame.failure === null ? (
             <Text variant="body-sm" color="secondary">
@@ -122,11 +158,7 @@ export function CompanyStep({
         </Button>
       }
     >
-      {frame.writing ? (
-        <CompanyFacts values={form.getValues()} />
-      ) : (
-        <CompanyFields form={form} helpers={words.helpers} />
-      )}
+      {frame.writing ? facts : <SignupFields bind={bindWith(words.helpers)} />}
       {words.caption === null ? null : (
         <Text variant="caption" color="secondary">
           {words.caption}

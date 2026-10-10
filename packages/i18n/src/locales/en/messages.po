@@ -198,7 +198,7 @@ msgid "{weekday} · {date}"
 msgstr "{weekday} · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:133
+#: src/copy/company-signup.ts:150
 msgid "A city is needed — it is where your company is based."
 msgstr "A city is needed — it is where your company is based."
 
@@ -208,7 +208,7 @@ msgid "A code lasts {codeMinutes} minutes"
 msgstr "A code lasts {codeMinutes} minutes"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:129
+#: src/copy/company-signup.ts:146
 msgid "A company name is needed — it goes on every proposal you send."
 msgstr "A company name is needed — it goes on every proposal you send."
 
@@ -1749,7 +1749,7 @@ msgid "Your name"
 msgstr "Your name"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:132
+#: src/copy/company-signup.ts:149
 msgid "Your name is needed — you become this company's first EPC owner."
 msgstr "Your name is needed — you become this company's first EPC owner."
 

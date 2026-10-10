@@ -120,6 +120,23 @@ export function signupExplainers(translate: Translator['t']): SignupExplainers {
   };
 }
 
+/** The flow's name and its three steps, in order, for the step header (`SCR-M01-02` decisions 4 and 13). */
+export interface SignupStepsWords {
+  readonly label: string;
+  readonly steps: readonly [string, string, string];
+}
+
+export function signupStepsWords(translate: Translator['t']): SignupStepsWords {
+  return {
+    label: translate(COMPANY_SIGNUP.flowLabel),
+    steps: [
+      translate(COMPANY_SIGNUP.stepYourNumber),
+      translate(COMPANY_SIGNUP.stepCode),
+      translate(COMPANY_SIGNUP.stepYourCompany),
+    ],
+  };
+}
+
 /**
  * Why each company detail is needed, said on the field when it is missing — never a scold
  * (`SCR-M01-02`, the fields-invalid state). A `Record` over the contract's three fields, so a

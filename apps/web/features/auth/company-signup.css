@@ -1,29 +1,13 @@
 /* Company signup — screen-level layout only, inside the frame @heliogrid/ui draws (`DoorFrame`,
    at its `steps` measure); component pixels belong to the package, every value a token var(). The
-   `d-*` frames at 1536: the account surface and every finding about the person in the identity
-   half, the step header, the fields, the facts and the roads in the 480 task column; the phone
-   arrangement stacks the same DOM. */
+   `d-*` frames at 1536: every finding about the person in the identity half, the roads in the 480
+   task column; the phone arrangement stacks the same DOM. The step header, the account, the fields
+   and the facts carry their own rules (`SignupSteps`, `SignupCompanyStep`). */
 
-/* The step header: the phone's track and counter, or the desktop's numbered form — one of the two. */
-.hg-signup-progress-desktop {
-  display: none;
-}
-
-.hg-signup-fields,
-.hg-signup-two-up,
 .hg-signup-roads {
   display: flex;
   flex-direction: column;
   gap: var(--sp-5);
-}
-
-/* The verified number as a fact (`SCR-M01-02` decision 1): the value and its chip on the page, with
-   no surface (F7-49) — a grey tile would read as a field, a white card vanishes on the white page. */
-.hg-signup-account {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-4);
-  align-self: flex-start;
 }
 
 /* A finding about the person, in the identity half at the export's measure. */
@@ -68,19 +52,6 @@
   display: none;
 }
 
-/* The three values as facts while they are written, on the page with no surface (F7-49). */
-.hg-signup-facts {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
-}
-
-.hg-signup-fact {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
-}
-
 /* --bp-desktop: @media cannot read a custom property, so its value is written here. */
 @media (min-width: 968px) {
   /* A finding holds the identity half at its full measure, so the block starts at the half's left
@@ -89,26 +60,11 @@
     width: 100%;
   }
 
-  .hg-signup-progress-phone {
-    display: none;
-  }
-
-  .hg-signup-progress-desktop {
-    display: block;
-  }
-
   .hg-signup-narrow-only {
     display: none;
   }
 
   .hg-signup-wide-only {
     display: block;
-  }
-
-  /* Your name and City share the row beneath the company name (`SCR-M01-02` decision 12). */
-  .hg-signup-two-up {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--sp-4);
   }
 }
