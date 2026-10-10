@@ -25,19 +25,9 @@ export {
   signupExplainers,
   signupStepsWords,
 } from './copy/company-signup';
-export type {
-  CompanyFieldHelpers,
-  CompanyFieldWords,
-  CompanySignupFrame,
-  CompanySignupWords,
-} from './copy/company-signup-frames';
-export {
-  companyFacts,
-  companyFieldWords,
-  companySignupWords,
-  joinSteerFinding,
-  joinSteerWords,
-} from './copy/company-signup-frames';
+export type { CompanyFieldWords } from './copy/company-signup-frames';
+export { companyFacts, companyFieldWords } from './copy/company-signup-frames';
+export { companyStepWords } from './copy/company-signup-step';
 export { CONNECTION, connectionWords } from './copy/connection';
 export { AGENT_CALL_CORRELATION, agentCallCorrelation } from './copy/correlation';
 export { disclosureLead, disclosureLine } from './copy/disclosure';

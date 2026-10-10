@@ -151,7 +151,8 @@ or a QueryClient. Extension point: one repository per contract router, registere
 src/composition.ts.
 
 ### forms — the fenced form layer
-Owns: useZodForm, applyServerErrors (server VALIDATION_FAILED → field errors), the
+Owns: useZodForm, applyServerErrors (server VALIDATION_FAILED → field errors), fieldBinder
+(one binding per field, for a component that draws fields but may not import this package), the
 translated zod error map (installFormsErrorMap), and the re-exports apps must use instead
 of the raw libraries — `z`, Controller/useFieldArray/useWatch and the react-hook-form
 types. Allowed deps: config (react-hook-form/zod are its third-party internals).

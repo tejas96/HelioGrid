@@ -1,5 +1,7 @@
 import type { CreateTenant } from '@heliogrid/contracts';
-import type { ReactElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import type { SignupStepsWords } from '../SignupSteps/SignupSteps.types';
+import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
 
 /**
  * The verified number as a fact, not a field (`SCR-M01-02` decision 1): after verification it is
@@ -61,4 +63,54 @@ export interface SignupFieldsProps {
    * the board's sp-5. The phone half reads it; on the web the frame's column sets that gap.
    */
   underAccount?: boolean;
+}
+
+/**
+ * Every word step 3 draws; `@heliogrid/i18n`'s `companyStepWords` writes them. `null` where the
+ * frame has no such part.
+ */
+export interface SignupCompanyStepWords {
+  steps: SignupStepsWords;
+  title: string;
+  /** Follows the title on the step as it opens only. */
+  intro: string | null;
+  /** A create or a request that did not land, under the heading. */
+  block: TintedBlockProps | null;
+  /** The verified number's label and chip; `null` where a block or the steer takes its place. */
+  account: SignupAccountProps['words'] | null;
+  /** Under the account on a resumed step. */
+  resumeLine: string | null;
+  /** Under the fields: what the write means while it runs, what to do if it keeps failing. */
+  caption: string | null;
+  /** Create company on the plain step, the join road under the steer; `aria` names it in full. */
+  primary: { label: string; aria: string | undefined };
+  /** The join steer's finding and its second road; `null` on the plain step. */
+  steer: { finding: { title: string; body: string }; createAnyway: string } | null;
+}
+
+/**
+ * Company signup's step 3 (`SCR-M01-02`): the three fields over the verified number, and the one
+ * write this screen owns (`M01-01`). When the details match a company that exists the same fields
+ * stay and the steer — the finding and both roads, full-size — takes the primary's place
+ * (`M01-09`, decisions 17 and 18). The primary is the frame's held action, under the scrolling
+ * fields (decision 9); at 1536 every finding about the person is the identity half's (decision
+ * 21). The form, the write and the steer are the screen's; this draws them and raises the presses.
+ */
+export interface SignupCompanyStepProps {
+  /** The door's language control, the header row's trailing control. */
+  language: ReactNode;
+  words: SignupCompanyStepWords;
+  /** The verified number, in E.164. */
+  phoneE164: string;
+  bind: SignupFieldBinder;
+  /**
+   * The three values while a create or a request is on its way — facts, not fields, for the
+   * moment; `null` while the fields are open.
+   */
+  facts: SignupFactsProps['facts'] | null;
+  /** A read or a write is on its way: the primary spins, and under the steer the second road waits, so one press cannot both ask and create. */
+  busy: boolean;
+  onCreate: () => void;
+  onRequestToJoin: () => void;
+  onCreateAnyway: () => void;
 }

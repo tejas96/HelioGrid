@@ -1,5 +1,5 @@
-/* Company signup's step 3, the pieces under its title (`SCR-M01-02`): the verified account, the
-   three fields, and the three values as facts while they are written. Every value a token var(). */
+/* Company signup's step 3 (`SCR-M01-02`): the verified account, the three fields, the three values
+   as facts while they are written, and the join steer held under them. Every value a token var(). */
 
 .hg-signup-fields,
 .hg-signup-two-up {
@@ -30,8 +30,29 @@
   gap: var(--sp-1);
 }
 
+/* The held steer: the finding, then both roads (`SCR-M01-02` decision 9). */
+.hg-signup-join-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* The join steer's two roads, 12 apart on the board (`SCR-M01-02`, 375 vertical layout). */
+.hg-signup-join-roads {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
 /* --bp-desktop: @media cannot read a custom property, so its value is written here. */
 @media (min-width: 968px) {
+  /* The steer's finding sits over the roads under the breakpoint and in the identity half from it
+     (`SCR-M01-02` decision 21) — one of the two, never both; the frame's `.hg-door-wide-only`
+     shows the other. */
+  .hg-signup-narrow-only {
+    display: none;
+  }
+
   /* Your name and City share the row beneath the company name (`SCR-M01-02` decision 12). */
   .hg-signup-two-up {
     display: grid;

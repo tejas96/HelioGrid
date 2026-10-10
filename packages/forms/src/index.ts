@@ -16,4 +16,5 @@ export { Controller, useFieldArray, useWatch } from 'react-hook-form';
 export { z } from 'zod';
 export { applyServerErrors } from './apply-server-errors';
 export { installFormsErrorMap } from './error-map';
+export { fieldBinder } from './field-binder';
 export { useZodForm } from './use-zod-form';

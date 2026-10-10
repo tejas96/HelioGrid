@@ -14,7 +14,7 @@ import {
 /**
  * A number that already has an account, answered after its code verified (`M01-08`, ruled at
  * `T-M01-036`): the finding, the rule in a sentence and the tinted block in the identity half
- * (`SCR-M01-02` decision 22), the number as a fact and both roads full-size in the task — a
+ * (`SCR-M01-02` decision 21), the number as a fact and both roads full-size in the task — a
  * steer, not a block. Off the flow, so it carries no step header.
  */
 export function KnownNumber({
@@ -47,7 +47,7 @@ export function KnownNumber({
             tone="info"
             title={t(COMPANY_SIGNUP.knownBlockTitle)}
             body={t(COMPANY_SIGNUP.knownBlockBody)}
-            className="hg-signup-finding"
+            className="hg-door-finding"
           />
         </>
       }
