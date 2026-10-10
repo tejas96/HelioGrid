@@ -99,6 +99,40 @@
   line-height: var(--lh-body);
 }
 
+/* The title block: the heading and its ask on one row, sp-2 apart at both widths, the intro under. */
+.hg-door-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-door-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+/* A centred column sits between the header and the column's foot (`SCR-M01-01` "375 vertical
+   layout"): this spacer takes half the free height, the task's own end the other half. It takes
+   back the body's gap under it, so the title sits at least `sp-8` under the header (the page's
+   `sp-6` and its own `sp-2`). `.hg-door-front` is the same place, named by a door not yet moved
+   onto `column`. */
+.hg-door[data-column="centred"] .hg-door-body::before,
+.hg-door.hg-door-front .hg-door-body::before {
+  content: "";
+  flex: 1 1 0;
+  min-height: var(--sp-2);
+  margin-bottom: calc(var(--sp-6) * -1);
+}
+
+/* A deep column puts its heading `sp-8` under what leads it, where the frame's gap is `sp-6`
+   (`SCR-M01-02` "375 vertical layout"). `.hg-signup-heading-deep` is the same place, named by a
+   door not yet moved onto `column`. */
+.hg-door[data-column="deep"] .hg-door-identity,
+.hg-door.hg-signup-heading-deep .hg-door-identity {
+  margin-top: var(--sp-2);
+}
+
 .hg-door-task {
   display: flex;
   /* Takes the column's free height, so a road at its end (`margin-top: auto`) reaches the foot. */
@@ -186,6 +220,17 @@
   .hg-door-identity .hg-text[data-variant="body-lg"] {
     font-size: var(--fs-body-lg);
     line-height: var(--lh-body-lg);
+  }
+
+  /* From the breakpoint the identity is centred in its own column, so both placements go. */
+  .hg-door[data-column="centred"] .hg-door-body::before,
+  .hg-door.hg-door-front .hg-door-body::before {
+    display: none;
+  }
+
+  .hg-door[data-column="deep"] .hg-door-identity,
+  .hg-door.hg-signup-heading-deep .hg-door-identity {
+    margin-top: 0;
   }
 
   .hg-door-lead {

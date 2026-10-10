@@ -2,9 +2,8 @@
 import { useSessionPhase } from '@heliogrid/data/react';
 import { SHELL } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, DoorFrame, Text } from '@heliogrid/ui';
+import { Button, DoorFrame, DoorTitle } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
-import './sign-in.css';
 import { LanguageControl } from './components/LanguageControl';
 import { HOME_ROUTE, LOGIN_ROUTE } from './constants';
 
@@ -20,12 +19,8 @@ export function NotFoundScreen() {
   return (
     <DoorFrame
       trailing={<LanguageControl />}
-      className="hg-door-front"
-      identity={
-        <div className="hg-door-title">
-          <Text variant="h1">{t(SHELL.notFound)}</Text>
-        </div>
-      }
+      column="centred"
+      identity={<DoorTitle title={t(SHELL.notFound)} />}
     >
       <Button
         variant="primary"

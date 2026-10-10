@@ -45,6 +45,7 @@ export * from './components/DetailPanel';
 export * from './components/Disclosure';
 export * from './components/DocumentPreview';
 export * from './components/DoorFrame';
+export * from './components/DoorNumberStep';
 export * from './components/Dropzone';
 export * from './components/EditorSurface';
 export * from './components/EmptyState';

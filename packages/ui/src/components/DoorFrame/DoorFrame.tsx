@@ -27,6 +27,7 @@ export function DoorFrame({
   identity,
   footer,
   taskMeasure = 'field',
+  column,
   children,
   className,
   style,
@@ -34,7 +35,12 @@ export function DoorFrame({
   const footerRef = useRef<HTMLDivElement>(null);
   useScrollPaddingFor(footerRef, footer !== undefined);
   return (
-    <main className={classNames('hg-door', className)} data-measure={taskMeasure} style={style}>
+    <main
+      className={classNames('hg-door', className)}
+      data-measure={taskMeasure}
+      data-column={column}
+      style={style}
+    >
       <BrandBloom placement="top" className="hg-door-bloom-phone" />
       <BrandBloom placement="desktop" className="hg-door-bloom-desktop" />
       <div className="hg-door-page">
