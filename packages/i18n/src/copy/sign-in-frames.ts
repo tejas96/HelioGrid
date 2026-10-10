@@ -29,6 +29,7 @@ import {
 } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { COMPANY_SIGNUP } from './company-signup';
+import type { ExplainerWords } from './explainer';
 import { SHELL } from './shell';
 import { SIGN_IN } from './sign-in';
 import type { DoorBlockWords } from './sign-in-google';
@@ -176,9 +177,11 @@ export interface SignInFacts {
   readonly triesLeft: number;
 }
 
-/** The one word the two doors say differently: what a verified code leads to (`SCR-M01-02`). */
+/** The words the two doors say differently: what a verified code leads to, and the ask beside the title (`SCR-M01-02`). */
 export interface SignInLabels {
   readonly verify?: MessageRef;
+  /** The door's ask beside the title, where the frame carries no rule of its own. */
+  readonly explainer?: ExplainerWords;
 }
 
 /** Every string a code frame draws; `null` where the frame has no such part. */
@@ -187,11 +190,7 @@ export interface SignInWords {
   readonly sub: string;
   readonly block: { readonly tone: FrameTone; readonly title: string } | null;
   /** The rule behind the frame, in an Explainer beside the title; `null` when the frame has none. */
-  readonly explainer: {
-    readonly label: string;
-    readonly title: string;
-    readonly page: string;
-  } | null;
+  readonly explainer: ExplainerWords | null;
   readonly codeError: string | null;
   readonly primary: string | null;
   /** The primary's accessible name where it says more than its label; `null` where the label is enough. */
@@ -230,7 +229,7 @@ export function signInWords(
     title: t(title),
     sub: t(SUB[frame.sub]),
     block: block === null ? null : { tone: block.tone, title: t(block.title) },
-    explainer: explainerWords(frame.explainer, t),
+    explainer: explainerWords(frame.explainer, t) ?? labels.explainer ?? null,
     codeError: frame.codeError === null ? null : t(CODE_ERROR[frame.codeError]),
     primary: frame.primary === null ? null : t(primaryOf(frame.primary.label, labels)),
     primaryAria: primaryAriaOf(frame, t),
@@ -255,7 +254,7 @@ function explainerWords(
 ): SignInWords['explainer'] {
   if (explainer === null) return null;
   const { label, title, page } = EXPLAINER[explainer];
-  return { label: t(label), title: t(title), page: t(page) };
+  return { label: t(label), title: t(title), pages: [t(page)] };
 }
 
 function googleWords(copy: GoogleCopy, t: (message: MessageRef) => string): SignInWords['google'] {

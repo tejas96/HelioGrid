@@ -20,20 +20,21 @@ import { LanguageControl } from './LanguageControl';
  * The code family — one frame per outcome, drawn once (`SCR-M01-01`, the `d-code-family` frame)
  * and shared by both doors (`SCR-M01-02`: "the same component and the same words"). The frame is
  * domain's, the words i18n's; this draws them and raises the presses. Signup passes its step
- * header as `lead`, the one label it says differently, and the note its frame always carries.
+ * header as `lead`, its own words — the primary's label and the `Explainer` beside the title —
+ * and the code field's helper.
  */
 export function CodeStep({
   signIn,
   taskMeasure,
   lead,
   labels,
-  note,
+  helper,
 }: {
   signIn: SignIn;
   taskMeasure?: DoorTaskMeasure;
   lead?: ReactNode;
   labels?: SignInLabels;
-  note?: string;
+  helper?: string;
 }) {
   const t = useTranslate();
   const { state, frame, busy } = signIn;
@@ -74,6 +75,7 @@ export function CodeStep({
           busy={busy}
           error={words.codeError ?? undefined}
           autoFocus={frame.code === 'open'}
+          helper={helper}
         />
       )}
       {primary === null || words.primary === null ? null : (
@@ -111,11 +113,6 @@ export function CodeStep({
       {words.foot === null ? null : (
         <Text variant="caption" color="secondary">
           {words.foot}
-        </Text>
-      )}
-      {note === undefined ? null : (
-        <Text variant="caption" color="secondary">
-          {note}
         </Text>
       )}
     </DoorFrame>

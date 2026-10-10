@@ -14,10 +14,15 @@
 export type { ApiErrorLike, AttemptFailureLike } from './copy/api-error';
 export { apiErrorMessageId, apiErrorRef, attemptFailureMessageId } from './copy/api-error';
 export { shownInNote } from './copy/authored-content';
-export type { CompanySignupCopyKey } from './copy/company-signup';
-export { COMPANY_SIGNUP, companyFieldRefusal } from './copy/company-signup';
-export type { CompanySignupFrame, CompanySignupWords } from './copy/company-signup-frames';
+export type { CompanySignupCopyKey, SignupExplainers } from './copy/company-signup';
+export { COMPANY_SIGNUP, companyFieldRefusal, signupExplainers } from './copy/company-signup';
+export type {
+  CompanyFieldHelpers,
+  CompanySignupFrame,
+  CompanySignupWords,
+} from './copy/company-signup-frames';
 export {
+  cityHelper,
   companySignupWords,
   joinSteerFinding,
   joinSteerWords,
@@ -27,6 +32,7 @@ export { AGENT_CALL_CORRELATION, agentCallCorrelation } from './copy/correlation
 export { disclosureLead, disclosureLine } from './copy/disclosure';
 export { BASIS_LINE_WORD } from './copy/document-basis';
 export { energySourceLabel } from './copy/energy-source';
+export type { ExplainerWords } from './copy/explainer';
 export { explainerPagerWords } from './copy/explainer';
 export { freshnessLabel } from './copy/freshness';
 export { homeTitle } from './copy/homes';

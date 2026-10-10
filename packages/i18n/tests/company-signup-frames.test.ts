@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  cityHelper,
   companySignupWords,
   joinSteerFinding,
   joinSteerWords,
@@ -13,7 +14,12 @@ import { createTranslator } from '../src/runtime';
  * write, the refused frame says nothing was created, and the unanswered frame says it may have been.
  */
 describe('companySignupWords', () => {
-  const normal = { restored: false, writing: false, failure: null };
+  const normal = {
+    restored: false,
+    writing: false,
+    failure: null,
+    fieldRefused: false,
+  };
 
   it('the normal frame: the title, an intro, the create primary, no caption', async () => {
     const { t } = await createTranslator('en');
@@ -66,7 +72,7 @@ describe('companySignupWords', () => {
     'the %s frame outranks resumed: its own heading and block, try again',
     async (failure, title, block) => {
       const { t } = await createTranslator('en');
-      const words = companySignupWords(t, { restored: true, writing: false, failure });
+      const words = companySignupWords(t, { ...normal, restored: true, failure });
       expect(words.title).toBe(title);
       expect(words.block).toEqual(block);
       expect(words.intro).toBeNull();
@@ -90,6 +96,37 @@ describe('companySignupWords', () => {
     expect(mr.block?.body).toBe(
       'तुमची कंपनी कदाचित तयार झाली असेल — पुन्हा प्रयत्न केल्याने दुसरी तयार होणार नाही.',
     );
+  });
+
+  /**
+   * The helpers and the intro belong to the step as it opens (`SCR-M01-02` word plan): a resumed
+   * frame, a field refusing the press and a failed write carry none.
+   */
+  it.each([
+    ['as it opens', {}, true],
+    ['resumed', { restored: true }, false],
+    ['with a field refusing the press', { fieldRefused: true }, false],
+    ['after a refusal', { failure: 'failed' }, false],
+    ['after no answer', { failure: 'unreached' }, false],
+  ] as const)('the step %s: its helpers and intro', async (_name, facts, opens) => {
+    const { t } = await createTranslator('en');
+    const words = companySignupWords(t, { ...normal, ...facts });
+    expect(words.helpers).toEqual(
+      opens
+        ? { ownerName: 'You become the first EPC owner.', cityWhileEmpty: "Where you're based." }
+        : { ownerName: null, cityWhileEmpty: null },
+    );
+    expect(words.intro !== null).toBe(opens);
+  });
+
+  it.each([
+    ['an empty City', '', "Where you're based."],
+    ['spaces only', '  ', "Where you're based."],
+    ['a typed City', 'Pune', undefined],
+  ] as const)('the city line under %s', (_name, city, line) => {
+    const helpers = { ownerName: null, cityWhileEmpty: "Where you're based." };
+    expect(cityHelper(helpers, city)).toBe(line);
+    expect(cityHelper(undefined, city)).toBeUndefined();
   });
 
   it('speaks the reader’s language', async () => {

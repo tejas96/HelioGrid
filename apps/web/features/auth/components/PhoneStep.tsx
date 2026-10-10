@@ -1,11 +1,18 @@
 import type { SignIn } from '@heliogrid/data/react';
 import type { DoorRoad } from '@heliogrid/domain';
-import { doorNoticeWords, phoneGoogleWords, SIGN_IN } from '@heliogrid/i18n';
+import {
+  doorNoticeWords,
+  type ExplainerWords,
+  explainerPagerWords,
+  phoneGoogleWords,
+  SIGN_IN,
+} from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import {
   Button,
   DoorFrame,
   type DoorTaskMeasure,
+  Explainer,
   PhoneField,
   Text,
   TextDivider,
@@ -18,8 +25,8 @@ import { LanguageControl } from './LanguageControl';
 /**
  * Frame 1 of either door — the number as it opens, and its answers on the field. The two doors
  * share the field and the primary and differ in their words: the title and the intro in the
- * identity half, the note under the primary on the phone and in the identity half from the
- * breakpoint, the road at the foot (`SCR-M01-02`). `taskMeasure` is the task column's measure,
+ * identity half, the road at the foot, and — on the signup door only — the heading's `Explainer`
+ * and the field's helper (`SCR-M01-02`). `taskMeasure` is the task column's measure,
  * the signup's `steps`. `lead` is the signup's step header, absent on the front door, whose
  * column centres instead (`SCR-M01-01`). `task` replaces the form when the session holds a
  * pending switch (`F4-37`): on the desktop the switch is the task column's content.
@@ -30,7 +37,8 @@ export function PhoneStep({
   lead,
   title,
   intro,
-  note,
+  explainer,
+  helper,
   road,
   task,
 }: {
@@ -39,7 +47,8 @@ export function PhoneStep({
   lead?: ReactNode;
   title: string;
   intro: string;
-  note?: string;
+  explainer?: ExplainerWords;
+  helper?: string;
   road: DoorRoad;
   task?: ReactNode;
 }) {
@@ -56,17 +65,15 @@ export function PhoneStep({
       lead={lead}
       identity={
         <div className="hg-door-title">
-          <Text variant="h1">{title}</Text>
+          <div className="hg-door-title-row">
+            <Text variant="h1">{title}</Text>
+            {explainer === undefined ? null : (
+              <Explainer {...explainer} {...explainerPagerWords(t)} />
+            )}
+          </div>
           <Text variant="body-lg" color="secondary">
             {intro}
           </Text>
-          {note === undefined ? null : (
-            <div className="hg-door-desktop-only">
-              <Text variant="body-sm" color="secondary">
-                {note}
-              </Text>
-            </div>
-          )}
         </div>
       }
     >
@@ -82,6 +89,7 @@ export function PhoneStep({
               readOnly={busy}
               announceError
               autoFocus
+              helper={helper}
               error={
                 problem === null
                   ? undefined
@@ -114,13 +122,6 @@ export function PhoneStep({
               </div>
             )}
           </div>
-          {note === undefined ? null : (
-            <div className="hg-door-phone-only">
-              <Text variant="caption" color="secondary">
-                {note}
-              </Text>
-            </div>
-          )}
           <div className="hg-door-signup">
             <Text variant="body-sm" color="secondary">
               {road.question}

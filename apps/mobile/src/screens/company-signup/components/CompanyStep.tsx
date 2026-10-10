@@ -21,7 +21,7 @@ import { SignupProgress } from './SignupProgress';
  * takes the primary's place under them (`M01-09`); a changed detail drops the steer, a request
  * that did not go through adds its danger block under the title, and while one is on its way the
  * values are facts (`SCR-M01-02` decisions 25 and 26). The form holds only its fields; the write,
- * the steer and their waits are `useCompanySignup`'s; the words of the four frames are
+ * the steer and their waits are `useCompanySignup`'s; the words of its frames are
  * `companySignupWords`'.
  */
 export function CompanyStep({
@@ -48,6 +48,7 @@ export function CompanyStep({
     restored,
     writing: signup.creation === 'creating',
     failure: failureOf(signup.creation),
+    fieldRefused: form.formState.isSubmitted && Object.keys(form.formState.errors).length > 0,
   };
   const words = companySignupWords(t, frame);
 
@@ -70,7 +71,7 @@ export function CompanyStep({
         {signup.requesting === 'sending' ? (
           <CompanyFacts values={form.getValues()} />
         ) : (
-          <CompanyFields form={form} withHelpers={false} />
+          <CompanyFields form={form} />
         )}
       </InsetDoorFrame>
     );
@@ -117,7 +118,11 @@ export function CompanyStep({
       {frame.writing ? (
         <CompanyFacts values={form.getValues()} />
       ) : (
-        <CompanyFields form={form} underAccount={frame.failure === null && !frame.restored} />
+        <CompanyFields
+          form={form}
+          underAccount={frame.failure === null && !frame.restored}
+          helpers={words.helpers}
+        />
       )}
       {words.caption === null ? null : (
         <View style={styles.caption}>

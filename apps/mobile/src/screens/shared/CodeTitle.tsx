@@ -11,14 +11,11 @@ export function CodeTitle({ words, phone }: { words: SignInWords; phone: string 
   return (
     <View style={styles.codeTitle}>
       <View style={styles.titleRow}>
-        <Text variant="h2">{words.title}</Text>
+        <Text variant="h2" style={styles.titleText}>
+          {words.title}
+        </Text>
         {words.explainer === null ? null : (
-          <Explainer
-            label={words.explainer.label}
-            title={words.explainer.title}
-            pages={words.explainer.page}
-            {...explainerPagerWords(t)}
-          />
+          <Explainer {...words.explainer} {...explainerPagerWords(t)} />
         )}
       </View>
       {/* The lead-in is a line of its own, sentence case, the number under it (`SCR-M01-01` code family). */}

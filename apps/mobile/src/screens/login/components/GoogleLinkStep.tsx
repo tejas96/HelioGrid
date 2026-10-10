@@ -36,14 +36,11 @@ export function GoogleLinkStep({ signIn }: { signIn: SignIn }) {
       <View style={styles.codeColumn}>
         <View style={styles.codeTitle}>
           <View style={styles.titleRow}>
-            <Text variant="h2">{words.title}</Text>
+            <Text variant="h2" style={styles.titleText}>
+              {words.title}
+            </Text>
             {words.explainer === null ? null : (
-              <Explainer
-                label={words.explainer.label}
-                title={words.explainer.title}
-                pages={words.explainer.pages}
-                {...explainerPagerWords(t)}
-              />
+              <Explainer {...words.explainer} {...explainerPagerWords(t)} />
             )}
           </View>
           <Text variant="body" color="secondary">

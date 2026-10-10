@@ -7,12 +7,16 @@ import { freshMobile } from '../support/phone';
 
 const en = await createTranslator('en');
 
-test('the signup door opens to its first step with every control named', async ({ page }) => {
+test('the signup door opens to its first step with every control named, its ask at the heading and the helper on the field', async ({
+  page,
+}) => {
   await page.goto('/company-signup');
 
   await expect(
     page.getByRole('heading', { name: en.t(COMPANY_SIGNUP.createYourCompany) }),
   ).toBeVisible();
+  await expect(page.getByRole('button', { name: en.t(COMPANY_SIGNUP.asksLabel) })).toBeVisible();
+  await expect(page.getByText(en.t(COMPANY_SIGNUP.numberHelper))).toBeVisible();
   await expectNoSeriousViolations(page);
   await expectNumberFieldRinged(page, en);
   await expectTheLook(page);

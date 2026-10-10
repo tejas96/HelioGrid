@@ -1,7 +1,7 @@
 import type { KnownAccount } from '@heliogrid/domain';
-import { COMPANY_SIGNUP, SIGN_IN } from '@heliogrid/i18n';
+import { COMPANY_SIGNUP, explainerPagerWords, SIGN_IN, signupExplainers } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, PhoneValue, Text, TintedBlock } from '@heliogrid/ui';
+import { Button, Explainer, PhoneValue, Text, TintedBlock } from '@heliogrid/ui';
 import { View } from 'react-native';
 import { styles as door } from '../../shared/door-styles';
 import { InsetDoorFrame } from '../../shared/InsetDoorFrame';
@@ -26,7 +26,12 @@ export function KnownNumber({
   return (
     <InsetDoorFrame trailing={<LanguageControl />}>
       <View style={styles.offFlowTitle}>
-        <Text variant="h2">{t(COMPANY_SIGNUP.knownTitle)}</Text>
+        <View style={door.titleRow}>
+          <Text variant="h2" style={door.titleText}>
+            {t(COMPANY_SIGNUP.knownTitle)}
+          </Text>
+          <Explainer {...signupExplainers(t).oneNumberOneAccount} {...explainerPagerWords(t)} />
+        </View>
         <Text variant="body" color="secondary">
           {t(COMPANY_SIGNUP.knownIntro)}
         </Text>
