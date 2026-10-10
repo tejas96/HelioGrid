@@ -25,6 +25,10 @@ export interface SignIn {
   readonly frame: LoginFrame;
   /** A round trip is in flight: the primary spins and the fields lock. */
   readonly busy: boolean;
+  /** The round trip in flight asks for a code: the number step's primary spins. */
+  readonly sending: boolean;
+  /** Google's sheet is open, or its token is being checked: the Google control spins. */
+  readonly googleBusy: boolean;
   /** The phone step's Google control; `null` on a door with no Google sheet — it draws none. */
   readonly google: PhoneGoogle | null;
   /** The block above the number; `null` when the number step carries none. */
@@ -98,12 +102,15 @@ export function useSignIn(
     return () => clearTimeout(tick);
   }, [cooldownLeft]);
 
-  return useMemo(
-    () => ({
+  return useMemo(() => {
+    const google = googleOffered ? phoneGoogle(state) : null;
+    return {
       state,
       frame: loginFrame(state, googleOffered),
       busy: state.pending !== null,
-      google: googleOffered ? phoneGoogle(state) : null,
+      sending: state.pending?.kind === 'request',
+      googleBusy: google?.busy ?? false,
+      google,
       notice: doorNotice(state, ended, door),
       typePhone: (phone: string) => dispatch({ type: 'phone-typed', phone }),
       typeCode: (code: string) => dispatch({ type: 'code-typed', code }),
@@ -111,7 +118,6 @@ export function useSignIn(
         dispatch(control === 'send' ? { type: 'send', pack } : { type: control }),
       returnFromGoogle: (result: GoogleSheetResult) =>
         dispatch({ type: 'google-sheet-ended', result }),
-    }),
-    [state, pack, googleOffered, ended, door],
-  );
+    };
+  }, [state, pack, googleOffered, ended, door]);
 }

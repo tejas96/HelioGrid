@@ -1127,7 +1127,7 @@ Branch `feat/T-M01-040`, cut from `feat/T-M01-039d` (`beea4257`) on a clean tree
 **Chosen by the owner** (deferred review, 2026-10-08): its own task, after `T-FPLAT-082` part c.
 **Depends on:** `T-FPLAT-082` (part c), `T-M01-040`.
 **DONE WHEN:**
-- Each door part lives in `packages/ui` with one `<Name>.types.ts` and both halves; the apps render them; the phone's code step carries the language control. → proof: typecheck and the e2e door specs; side-by-side of every door frame against its board.
+- Each door part lives in `packages/ui` with one `<Name>.types.ts` and both halves; the apps render them; ~~the phone's code step carries the language control.~~ → proof: typecheck and the e2e door specs; side-by-side of every door frame against its board. *(The struck clause: owner ruling on finding 3, 2026-10-10 — the board stands, and `docs/ux/briefs/SCR-M01-01-sign-in.md` records where the control sits.)*
 
 #### Design check
 No new drawing — `DESIGN: none — the existing boards`. Both boards read **READY** on 2026-10-09 (`T-M01-039`'s check). Both records were fetched again on 2026-10-10: `SCR-M01-01` still counts thirty-seven frames (31 at 375, 6 at 1536) and `SCR-M01-02` twenty-three (15 and 8), under the same state names, so that verdict stands and no helper ran. One clause of this task's `DONE WHEN` disagrees with the board (finding 3 of the RFC).
@@ -1135,6 +1135,8 @@ No new drawing — `DESIGN: none — the existing boards`. Both boards read **RE
 **Board pictures** are captured into the scratchpad `board/` at each part's build start — the frames that part renders, 375 and 1536, each language render — and listed here as they land.
 
 Part a (2026-10-10), from the board in the browser pane: `SCR-M01-01` `m-normal`, `m-number-invalid`, `m-loading`, `m-google-failed`, `m-google-loading`, `m-access-removed`, `m-not-reached`, `m-google-failed-mr`, `m-access-removed-hi`, `m-access-removed-mr`, `m-not-reached-hi`, `m-not-reached-mr` — each phone frame 338 px wide, the board at 90%, which is the largest whole frame one pane screenshot holds (800 × 905); a 375 px frame needs the board at 100% and does not fit one shot — and `d-normal` at 50%. Reused from `T-M01-039`'s captures of the same day's boards, smaller (208 to 513 px wide): `SCR-M01-01` `m-google-failed-hi`, and `SCR-M01-02` `m-step1-number`, `m-number-invalid`, `d-step1-number`.
+
+Part b (2026-10-10): both records were fetched again before its RFC — `SCR-M01-01` thirty-seven frames (31 and 6), `SCR-M01-02` twenty-three (15 and 8), the same state names — so the verdict stands and no helper ran. Its board pictures, taken from the board in the browser pane at its build start: `SCR-M01-01` `m-otp-sent`, `m-otp-entry`, `m-otp-auto-read`, `m-wrong-code`, `m-expired-code`, `m-resend-cooldown`, `m-call-me-instead`, `m-delivery-failed`, `m-cap-reached`, `m-number-locked`, `m-auth-error`, `m-google-link-code`, `m-google-phone-taken` — each phone frame 220 px wide, the board at 75%, two frames to a pane screenshot (the pane gave 800 × 600) — and `d-code-family`, `d-number-locked` at 50%; `SCR-M01-02` `m-step2-code` (338 px wide, the board at 90%) and `d-step2-code` at 50%.
 
 #### RFC
 
@@ -1291,7 +1293,7 @@ None — no wire boundary changes.
 - **A deleted source file can leave a stale `dist`** (`CLAUDE.md` §3.6): cleared before the gate.
 
 ##### Acceptance criteria and proof
-- **AC-1** — Each door part lives in `packages/ui` with one `<Name>.types.ts` and both halves; the apps render them; the phone's code step carries the language control. → proof: typecheck and the e2e door specs; side-by-side of every door frame against its board.
+- **AC-1** — Each door part lives in `packages/ui` with one `<Name>.types.ts` and both halves; the apps render them; ~~the phone's code step carries the language control.~~ → proof: typecheck and the e2e door specs; side-by-side of every door frame against its board.
 
 Each part's rows are in its own RFC. The rows every part carries:
 
@@ -1319,7 +1321,7 @@ Each part's rows are in its own RFC. The rows every part carries:
 | part | what | AC | depends on | status |
 |---|---|---|---|---|
 | a | `DoorFrame` owns the title, the column's place and the phone's inset; the number step is `DoorNumberStep` on both apps (`#### Part a · RFC`) | AC-1 (number step) | `T-M01-040` | shipped |
-| b | the code step is `DoorCodeStep`, its title and its Google way inside; finding 3's ruling lands; where the flow's glue lives once is ruled (the `sending` and Google-busy facts the four screens derive today); whether the frame or the step owns the lower half of a centred column on the phone is ruled (today the step adds the spacer under its task) — its own RFC | AC-1 (code step, the language clause) | a | open |
+| b | the code step is `DoorCodeStep`, its title and its Google way inside; finding 3's ruling is in the brief; the flow's glue is `useSignIn`'s `sending` and `googleBusy`; the step closes its own centred column on the phone (`#### Part b · RFC`) | AC-1 (code step, the language clause struck) | a | shipped |
 | c | the link step is `DoorLinkStep` — its own RFC | AC-1 (link step) | b | open |
 | d | the switch and the language control are `DoorSwitch`, `DoorLanguage` — its own RFC | AC-1 (switch, language) | c | open |
 | e | signup's step header is `SignupSteps`; step 3's account, facts and fields move into `SignupCompanyStep/` — its own RFC | AC-1 (step header, step 3's pieces) | d | open |
@@ -1449,6 +1451,219 @@ Checklist:
 - [x] board pictures captured; side-by-side on web, iOS, Android
 - [x] review; the gate
 
+#### Part b · RFC
+
+##### Title
+`T-M01-041b` — The code step, authored once
+
+##### Description
+**User impact.** None on the web and none on sign-in — internal. One ruled look change on the phone: on company signup the code step puts its heading `sp-8` under the step header, as the board and the web do; today the phone centres it lower (D138). Indirectly, the next fix to the code step lands on the web and on both phones in one change.
+
+Who gains: every later change to the code family (thirteen states at 375). The problem: `CodeStep`, `CodeTitle` and `CodeGoogle` exist once per app — 185 lines under `apps/web/features/auth/components/` and 181 under `apps/mobile/src/screens/shared/` — the same markup written twice. The rest is the task RFC's.
+
+##### Goals
+- `DoorCodeStep` draws the code family of both doors on both apps; `rg -w 'CodeStep|CodeTitle|CodeGoogle' apps` finds nothing.
+- Every code frame looks as it does today, except the phone's signup code step (D138).
+- `/login` and `/company-signup` keep their landing baselines at 375 and 1536.
+- Finding 3's ruling is on record: the brief says where the language control sits, the `DONE WHEN` clause is struck, D23 is deleted.
+- The two facts the four screens derive today (`sending`, Google busy) are held once.
+
+##### Non-goals
+- The link step, the switch and the language control keep their app files until parts c and d.
+- No new word, frame, route or API; no message joins the catalog.
+- The way back at the top-left at 1536 (D140) and the repeated no-answer block's announcement (D170).
+- The number step's look.
+
+##### Readiness and dependencies
+- Part a is shipped (`#269`, `f0af0550`); `T-FPLAT-082` is shipped (`docs/tasks/F-platform.md:3359`).
+- Design check: both records were fetched again on 2026-10-10 — thirty-seven frames and twenty-three, the same state names — so the READY verdict stands (`#### Design check`).
+- Board pictures are captured at this part's build start, as `#### Design check` says: `SCR-M01-01` the thirteen code-family frames, `d-code-family`, `d-number-locked`; `SCR-M01-02` `m-step2-code`, `d-step2-code`. The owner is signed in to the board in the browser pane.
+- Each lifted half counts whole, deleted in the app and added in `ui` (part a's lesson; `docs/tasks/README.md`).
+- No blocker.
+
+##### Proposal
+**The flow.** As the task RFC: the screen reads `useSignIn`, asks `signInWords` for the frame's words, and renders `DoorCodeStep` with the words, the facts and the presses.
+
+```tsx
+// apps/web SignInScreen — the phone's LoginScreen wraps the same call in <InsetDoor>
+<DoorCodeStep
+  language={<LanguageControl />}
+  words={signInWords(t, signIn.frame, signIn.state)}
+  frame={signIn.frame} phone={signIn.state.phone} code={signIn.state.code}
+  busy={signIn.busy} googleBusy={signIn.googleBusy}
+  onCode={signIn.typeCode} onPress={signIn.press}
+/>
+```
+
+Signup adds `lead` (its step header), `taskMeasure="steps"`, its two labels to `signInWords`, and `helper`.
+
+**Key decisions, one reason each.**
+1. **Five files in the folder.** The title and the Google way are local functions inside each half, not exported: only this step draws them (task RFC, decision 1).
+2. **`signInWords` writes every word the step draws.** It gains `changeNumber`, `codeLabel`, and the pager's words inside `explainer`; `ui` may not ask `i18n` for them. No second words function.
+3. **`doorNoticeWords` moves to `sign-in-number.ts`, with its two tests.** `sign-in-frames.ts` is 291 lines and would pass 300; the function writes the number step's block, so that file is its home.
+4. **The step takes facts.** `frame` is `Pick<LoginFrame, 'code' | 'primary' | 'resend'>` (`domain`'s type), then `phone`, `code`, `busy`, `googleBusy`, `onCode`, `onPress`. The step formats the number itself (`useFormat` is `ui`'s).
+5. **`language` is required; the phone half draws none.** Finding 3's ruling: at 375 the header holds *Change number* alone. The web half shows it from the door's breakpoint. Required, so `tsc` refuses a web call that forgets it.
+6. **The column's place comes from the frame.** `column` is `'centred'` with no `lead` and `'deep'` with one, on both halves — the number step's rule. On the phone this is D138.
+7. **The flow's glue — `Decisions for you`, 1.** `useSignIn` hands out `sending` and `googleBusy` beside `busy`. The four screens stop deriving them. Props stay listed one by one: a ready-made props object in the hook would make `data` copy `ui`'s prop names.
+8. **The lower half of a centred column on the phone — `Decisions for you`, 2.** The step closes its own column with one free-height view, as the number step does before its road. The frame-owned way needs a second foot slot on `DoorFrame`, beside `footer`, for one caller (the number step's road).
+9. **The stylesheet follows the component.** Web: the Google rows, the centred row and the 1536-only language rule go to `DoorCodeStep.css` under the step's own names; `.hg-door-locked-google` leaves `sign-in.css`. `.hg-door-centred` and `.hg-door-desktop-only` stay there for the link step and the known number until parts c and g. Phone: `lockedGoogle`, `codeColumnAfterLead` and `centred` leave `door-styles.ts`; `codeColumn`, `codeTitle`, `titleRow` and `titleText` stay for the link step until part c. `doorColumn` leaves `constants.ts`.
+10. **The web half's title uses the frame's two title classes** (`DoorFrame.css:103-113`). One rule, no copy. `DoorTitle` is not used: the code title has three lines under the heading in other sizes, and the phone's gaps differ (`sp-1` against `sp-2`).
+
+**Findings from testing this part's own lines.**
+
+| # | finding | where | recommendation · cost |
+|---|---|---|---|
+| 1 | The record's *Layout* says the code family's blocks sit `sp-6` apart at 375. Both apps draw `sp-5`, and `T-M01-038`'s side-by-side passed these frames. | `DoorFrame.css:141` · `door-styles.ts:22` | Keep today's look; QA measures the gap on the board picture. A real 4-point difference becomes a deferred row, not a change here. No cost. |
+| 2 | On the phone, `column="centred"` keeps at least `sp-8` above the heading; today's code column keeps `sp-6`. | `DoorFrame.native.tsx:74` · `door-styles.ts:23` | Accept. It shows only when the column is taller than the screen; every drawn frame has 126 points or more to spare (the record's contract item 4). |
+| 3 | D23 says the record is silent on the code frame. It is not now: the 375 table's code-family row reads *Wordmark + Change number*. | `SCR-M01-01` record, *375 vertical layout* | The owner's ruling stands and the record agrees. The brief gets one line; D23 is deleted. |
+| 4 | The lower half of a centred column cannot move into the frame with a plain wrapper: the number step's road would sit 12 points off the board. | *Proposal*, decision 8 | **Owner rules** (Decisions, 2). |
+| 5 | The honest size is over the 1,000-line target: 366 lines are the two app copies, deleted, and about 425 are the same step added in `ui`. | *Delivery size* | **Owner rules** (Decisions, 3). |
+
+**Deferred rows this part meets** (every `touches` path that is a planned file or its parent).
+
+| row | met by | what | recommendation |
+|---|---|---|---|
+| D23 | phone `CodeStep.tsx` | no language control on the phone's code step | **joins** (ruled) — the brief records it; deleted |
+| D138 | phone `CodeStep.tsx` | the phone centres signup's code step under the step header | **joins** (ruled) — `column="deep"`; deleted |
+| D24 | `apps/web/features/auth/components/` | the twin door parts | **joins** (ruled) — narrowed to the eleven parts left |
+| D175 | phone `CodeStep.tsx` | iOS showed the yellow warning toast once | **joins as the QA watch** (ruled); the row is re-pointed or deleted on the commit card |
+| D170 | both `CodeStep.tsx` | a second no-answer block is not announced again | **stays** — it needs a send counter in the reducer, which is new behaviour; re-pointed to `packages/ui/src/components/DoorCodeStep/` |
+| D2 · D92 | `packages/ui/src/components/` | English left inside `ui` components | **stay** — this part adds no English to `ui` |
+| D105 | `apps/mobile/src/` | two 403s on `/notifications/devices` | **stays** |
+| D146 | `apps/mobile/src/screens/company-signup/` | no way back from signup's step 3 on the phone | **stays** — ruled again in part f |
+
+**Order.** The words tests (red) → `signInWords` and the `doorNoticeWords` move → `useSignIn`'s two facts → `DoorCodeStep` (types, both halves moved and edited, styles, exports) → the four screens → the app copies and their styles out → the brief and `deferred.md`.
+
+**Errors and refusals.** None new: every block a code frame shows arrives as words.
+
+**The twin screen.** One `DoorCodeStep.types.ts`, both halves, four screens, in this part.
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  subgraph apps["apps/web · apps/mobile"]
+    S["SignInScreen · LoginScreen<br/>CompanySignupScreen ×2"]
+    X["CodeStep · CodeTitle · CodeGoogle<br/>one set per app — removed"]
+  end
+  subgraph data["packages/data"]
+    H["useSignIn<br/>+ sending · googleBusy"]
+  end
+  subgraph i18n["packages/i18n"]
+    W["signInWords<br/>+ changeNumber · codeLabel · pager words"]
+  end
+  subgraph ui["packages/ui"]
+    C["DoorCodeStep<br/>one types file, two halves"]
+    F["DoorFrame<br/>column: centred · deep"]
+  end
+  D["packages/domain<br/>LoginFrame · LoginPress"]
+  S -->|state, presses| H
+  S -->|frame, counts| W
+  S -->|words, facts, presses| C
+  C --> F
+  C -.->|types| D
+  S -.-x X
+```
+
+##### Package changes
+- **`ui`** — exports `DoorCodeStep`, `DoorCodeStepProps`, `DoorCodeStepWords`. Dependency direction unchanged: `domain`, `theme`.
+- **`i18n`** — `SignInWords` gains `changeNumber`, `codeLabel`, and the pager's words in `explainer`; `doorNoticeWords` is exported from `sign-in-number.ts`. No new message.
+- **`data`** — `SignIn` gains `sending` and `googleBusy`. A package the task RFC did not name; this part's RFC rules it (the `#### Parts` row).
+- **`apps/web` · `apps/mobile`** — lose the three code parts each and their styles.
+- **Law 12.** No new brand, enum, token, route, table or error code. The component is held by `tsc`, as the task RFC says.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+One new folder, `packages/ui/src/components/DoorCodeStep/` (architecture §4, step 8).
+
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| add | `packages/ui/src/components/DoorCodeStep/DoorCodeStep.types.ts` | the one prop contract and the words' shape | Law 7 |
+| move | `apps/web/features/auth/components/CodeStep.tsx` → `packages/ui/src/components/DoorCodeStep/DoorCodeStep.tsx` | the web half — moved, then rewritten over facts; counted as one file deleted and one added | §4 step 8 |
+| delete | `apps/web/features/auth/components/CodeTitle.tsx` | folded into the web half | its one caller moved |
+| delete | `apps/web/features/auth/components/CodeGoogle.tsx` | the same | the same |
+| move | `apps/mobile/src/screens/shared/CodeStep.tsx` → `packages/ui/src/components/DoorCodeStep/DoorCodeStep.native.tsx` | the phone half — the same | §4 step 8 |
+| delete | `apps/mobile/src/screens/shared/CodeTitle.tsx` | folded into the phone half | its one caller moved |
+| delete | `apps/mobile/src/screens/shared/CodeGoogle.tsx` | the same | the same |
+| add | `packages/ui/src/components/DoorCodeStep/DoorCodeStep.css` | the Google rows, the centred row, the 1536-only language rule | the stylesheet follows the component |
+| add | `packages/ui/src/components/DoorCodeStep/index.ts` | exports | the folder's one door |
+| modify | `packages/ui/src/index.ts` | exports the new folder | the package's entry |
+| modify | `packages/ui/src/styles.css` | imports the new stylesheet | where every component's is listed |
+| modify | `packages/i18n/src/copy/sign-in-frames.ts` | `changeNumber`, `codeLabel`, the pager's words; `doorNoticeWords` out | the code frames' words |
+| modify | `packages/i18n/src/copy/sign-in-number.ts` | `doorNoticeWords` in | the number step's words |
+| modify | `packages/i18n/src/index.ts` | the export follows the move | the entry |
+| modify | `packages/i18n/tests/sign-in-frames.test.ts` | the three new words, three languages; the notice tests out | `.claude/rules/testing.md` |
+| modify | `packages/i18n/tests/sign-in-number.test.ts` | the notice tests in | the same |
+| modify | `packages/data/src/react/use-sign-in.ts` | `sending`, `googleBusy` | the hook holds the flow's facts |
+| modify | `apps/web/features/auth/SignInScreen.tsx` | renders `DoorCodeStep`; reads the two facts | the screen |
+| modify | `apps/web/features/auth/CompanySignupScreen.tsx` | the same | the screen |
+| modify | `apps/web/features/auth/sign-in.css` | `.hg-door-locked-google` out | the screen keeps only its own |
+| modify | `apps/web/features/auth/constants.ts` | `doorColumn` out | orphaned by the move |
+| modify | `apps/mobile/src/screens/login/LoginScreen.tsx` | renders `DoorCodeStep` inside `InsetDoor`; reads the two facts | the screen |
+| modify | `apps/mobile/src/screens/company-signup/CompanySignupScreen.tsx` | the same | the screen |
+| modify | `apps/mobile/src/screens/shared/door-styles.ts` | the code step's three styles out | the same |
+| modify | `docs/ux/briefs/SCR-M01-01-sign-in.md` | where the language control sits (finding 3's ruling) | the brief owns the state |
+| modify | `docs/tasks/deferred.md` | D23 and D138 deleted; D24 narrowed; D170 and D175 re-pointed | the rows this part meets |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the struck clause, the part's row, the ledger | the task |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **The code step changes its code on three surfaces.** Mitigation: the e2e door specs, the landing baselines, and a side-by-side row for every frame the app reaches.
+- **The phone's signup code step moves up** (D138). It is the ruled look; side-by-side `m-step2-code` on both phones.
+- **`signInWords` changes its `explainer` shape.** Its one caller is this step; `tsc` proves the call sites.
+- The rest is the task RFC's. Nothing stored or sent changes.
+
+##### Acceptance criteria and proof
+AC-1 is the task RFC's. The clause *the phone's code step carries the language control* is struck by the owner's ruling on finding 3. This part's rows:
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 · contract | main-dev | required | typecheck | `DoorCodeStep` compiles in `ui`'s web and native projects and at four call sites; `rg -w 'CodeStep\|CodeTitle\|CodeGoogle' apps` finds nothing | `pnpm check` |
+| AC-1 · words | main-dev | required | unit | `changeNumber` and `codeLabel` (it names 6 digits) in en, hi, mr; the ask beside the title carries the pager's words, for the frame's own rule and for the door's ask; planted red: the pager's words left out | `packages/i18n/tests/sign-in-frames.test.ts` |
+| AC-1 · the notice's words | main-dev | required | unit | the two moved tests pass unchanged | `packages/i18n/tests/sign-in-number.test.ts` |
+| AC-1 · look | ci | required | `e2e-web` | the door flows pass; the landing baselines at 375 and 1536 are unchanged | `login.spec.ts` · `login-google.spec.ts` · `company-signup.spec.ts` · `[door].spec.ts` |
+| AC-1 · phone flows | ci | required | `android` | `Phone flows (tests/e2e/mobile) on the emulator` runs `login.yaml`, `company-signup.yaml` | CI step |
+| state for QA | qa-api | required | api | state only: one number at the request cap (three codes) and one locked (three codes, five refused checks each) per surface, made through the api; the member for the D175 trip | the numbers handed to the surfaces |
+| side-by-side · code family | qa-web | required | `/login` 375 · 1536 | `m-otp-sent`, `m-otp-entry` (after the 30 s gap), `m-resend-cooldown`, `m-wrong-code`, `m-call-me-instead`, `m-cap-reached`, `m-expired-code` (after 5 minutes), `m-number-locked`; at 1536 `d-code-family` and `d-number-locked` against their pictures, the others by the record's stated rule. The way back top-right at 1536 is D140, not a finding. The gap between blocks is measured (finding 1) | QA |
+| side-by-side · answers QA cannot make | qa-web | required | `/login` 375 | `m-delivery-failed`, `m-auth-error`, `m-google-link-code`, `m-google-phone-taken`: Main takes each picture with a scratchpad Playwright script that answers the request in the browser; `qa-web` judges it against the board | QA |
+| side-by-side · signup code step | qa-web | required | `/company-signup` 375 · 1536 | `m-step2-code`, `d-step2-code` | QA |
+| the facts held once | qa-web | required | `/login` 375 | the code request held: the primary reads *Sending the code* and spins; *Continue with Google* stays live (`m-loading`) | QA |
+| side-by-side · code family | qa-ios · qa-android | required | door | the same eight frames as the web's first row; the header holds the wordmark and *Change number* only; the space above the heading and under the last control is equal within 9 points (the heading's raised line box; part a measured 8.3 and 7.6) | QA |
+| side-by-side · signup code step | qa-ios · qa-android | required | signup | `m-step2-code`: the heading's top is 32 points under the step header, within 1; the free height is only below (D138) | QA |
+| no answer on the code step | qa-web · qa-ios · qa-android | required | door | the api stopped by Main, *Verify* pressed → the no-answer block under the step's title, ~~the code kept~~ (`SCR-M01-01` decision 17; no frame is drawn; the struck clause is D180, owner ruling 2026-10-10) | QA |
+| language | qa-web · qa-ios · qa-android | required | door | `m-otp-sent` and `m-wrong-code` in Hindi and in Marathi, the language chosen on the number step: no English, nothing clipped | QA |
+| `m-otp-auto-read` | — | not_applicable | — | — | no SMS autofill in a desktop browser (owner, `T-M01-038`), a simulator or an emulator |
+| the four answers QA cannot make, on the phones | — | not_applicable | — | — | a phone's request cannot be answered from outside; the frames are the web's pictures of the same `DoorCodeStep` and `signInWords` |
+| D175 watch | qa-ios | required | cold start | the trip that showed it: a member signed in, deactivated, the app cold-started; the JS console read after each step through the code step. A warning seen is reported with its text | QA + Metro |
+| AC-1 · the language control clause | — | not_applicable | — | — | struck by the owner's ruling on finding 3 (2026-10-10); the brief records where the control sits |
+| API | qa-api | not_applicable | — | — | no reachable API behaviour changes |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part — `Decisions for you`, 3. 29 files (0 generated, 3 docs).
+- Code: about 1,020 authored lines — the two app copies deleted 366, the step in `ui` about 425, the four screens about 135, `i18n` about 55, styles and `constants.ts` about 32, `data` about 8.
+- Tests: about 100 authored lines — 64 of them the two notice tests, moved.
+- Over the 1,000-line target by about 12%. No smaller part can be accepted alone: a half without its twin, or the step without its four call sites, leaves a copy in an app, which is the defect this task removes.
+- Order: as *Proposal*.
+
+**Owner rulings (2026-10-10, with the approval).** The RFC is approved with every recommendation: the glue is A (`useSignIn` hands out `sending` and `googleBusy`); the lower half is A (the step closes its own column); the size is A (one part, 29 files, about 1,020 code lines and 100 test lines); the deferred rows are as the table. **During QA (2026-10-10):** the no-answer row's clause *the code kept* is struck — the reducer clears the code by its own tested rule, and the bug it leaves (*Try again* then sends nothing) stays as D180 for its own fix; no code changes here.
+
+**Built against planned (delta as it lands).** Built but not planned: `packages/i18n/tests/sign-in-google.test.ts` — one row, its exact match on the cap frame's ask now meets the pager's words (`toMatchObject`). Planned but not built: `centred` stays in `door-styles.ts` — the known number's frame reads it (`KnownNumber.tsx:49`) until part g. The phone half draws its closing free height under a step header too, so the signup code step keeps at least `sp-6` under its last control, as before. D175's watch ended with nothing seen, and its `reopens when` cell is `touches apps/mobile/src/navigation/` alone. Review, pass 1: the phone half reads `useFormat` from `MarketProvider/market-context`, the file both platforms share, as `DatePicker.native.tsx` does.
+
+**Planted reds seen (part b):** `signInWords` returning the ask without the pager's words failed `sign-in-frames.test.ts` › *signInWords — the ask beside the title carries the pager's words* › *the frame's own rule and the door's ask, in en*, *in hi*, *in mr* (expected undefined to be 'Next'); `codeLabel` given the way back's words failed › *signInWords — the words every code frame draws* › *the way back and the field's label, in en*, *in hi*, *in mr*. Each restored from a scratchpad copy and green again.
+
+Checklist:
+- [x] the words tests, then `signInWords`; `doorNoticeWords` moved with its tests
+- [x] `useSignIn`: `sending`, `googleBusy`
+- [x] `DoorCodeStep` — types, web half, phone half, styles, exports
+- [x] the four screens
+- [x] the app copies and their styles out; the brief; `deferred.md`; the struck clause
+- [x] board pictures captured; side-by-side on web, iOS, Android
+- [x] review; the gate
+
 #### Runtime
 Branch `feat/T-M01-041a`, cut from `feat/T-M01-040` (`e4e9d978`) on a clean tree, 2026-10-10 — the owner's word, PR #268 being in review. #268 merged during QA (`c7cf0783`, the same tree), and the branch, which held no commit of its own, was moved onto `main`.
 
@@ -1480,6 +1695,43 @@ Branch `feat/T-M01-041a`, cut from `feat/T-M01-040` (`e4e9d978`) on a clean tree
 | Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
 | database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
 | test data left in `heliogrid_test` | — | four deactivated members of the `…904` company (+91 98765 08101–08104), made through the api |
+
+**Part b** — branch `feat/T-M01-041b`, cut from `origin/main` (`f0af0550`) on a clean tree, 2026-10-10.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | — |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 14,789,613 · `web.log` 452,373 · `metro.log` 1,588,198 bytes | — |
+
+**Part b · QA (2026-10-10)** — one stack on `heliogrid_test`: the api and the web from source, the worker (for the invite's message), one Metro, the iPhone 17 Pro simulator (`40ED0117…`) and the `Pixel_8_Emulator`, both on the apps already installed — no native file changed, so nothing was rebuilt. Both phones were started signed out (the simulator's keychain reset, the emulator's app data cleared). Every row ran on fresh numbers, +91 98765 082xx; none finished a signup.
+
+- **State (`qa-api`, state only).** Three numbers at the request cap (three codes each) and three locked (three codes, five refused checks each; the fifteenth check answered 429 `OTP_LOCKED`), handed to the surfaces inside the 15 minutes they hold. For the D175 trip: +91 98765 08218 invited into the `…904` company and accepted through the api, then deactivated once the iPhone was signed in.
+- **Rows.** Web W1–W10, iPhone I1–I13, Android A1–A12. Every frame the app reaches was drawn and set beside its board picture on each surface: `m-otp-sent`, `m-otp-entry`, `m-resend-cooldown`, `m-wrong-code`, `m-call-me-instead`, `m-cap-reached`, `m-number-locked`, `m-expired-code` (after 5 minutes), signup's `m-step2-code`, and on the web `d-code-family`, `d-number-locked`, `d-step2-code`. The 375 header holds the wordmark and *Change number* alone on all three; at 1536 the language control is back beside it. Words, order and layout are the board's; the step's own controls are 44 or more on both axes (three Android controls at 43.8 dp are D103). Hindi and Marathi: the code step and its wrong-code frame carry no English and clip nothing on any surface.
+- **D138, the one ruled look change.** On both phones signup's code step now puts its title row 32 points under the step header — iPhone: the bar's bottom about 187, the row's top 219; Android: 177.1 and the heading's top 216.8 inside the 44-point row — with the free height under the last control; the web at 375 reads the same (the step header's bottom 127, the heading 166.6 inside its row).
+- **The centred column on the phones.** The space above the heading and under the last control: iPhone 191 and 183 points, Android 220.9 and 213.0 dp (the navigation bar's top is 2,337 px, read by Main from the window) — 8.0 and 7.9 apart, inside the row's 9, the heading's raised line box as in part a.
+- **The facts held once.** The web's code request held by a scratchpad script: the primary read *Sending the code* with `aria-busy`, and *Continue with Google* stayed enabled.
+- **Answers QA cannot make** — Main's pictures on the running web, the request answered in the browser: `m-delivery-failed` (502 `OTP_DELIVERY_FAILED`), `m-auth-error` (a refusal with no known code), `m-google-link-code` and `m-google-phone-taken` (Google's return with a token whose claims carry the email, then 409 `LOGIN_NOT_LINKED` and 409 `LOGIN_PHONE_TAKEN`). Each drew its title, lead-in, block and controls as `signInWords` writes them.
+- **No answer on the code step.** The web's check aborted in the browser, and on both phones the api stopped by Main: the title *We could not sign you in*, the block *HelioGrid could not be reached, from your side or ours.*, *Try again*, the foot. The typed code is NOT kept, where this RFC's row asks for *the code kept*: `verifyEnded` clears it for every outcome but a mismatch (`login-reducer.ts:180`), a `domain` test asserts that (`login-state.test.ts:216`), and `domain` is not in this diff — so the clause was wrong, not the build. It is D180; the owner ruled the clause struck and the bug deferred.
+- **First-pass verdicts that were Main's own packet, not the app.** All three surfaces answered FAIL on the cap frame because the packet copied the board's primary *Get the code by call*; the app draws none there by `domain`'s own rule, decided in `T-M01-032` and unchanged here (now D183). The packets also did not list three older differences from the board, which every surface then reported: the live resend in grey and the waiting resend with no pill (D182), the blocks `sp-5` apart (D181, measured: 20 px on the web where the board draws about 24), and the code boxes' fixed width, which leaves the row shorter than the column on both phones (D184). None is this part's: the step draws the same primitives with the same props as the copies it replaces (review, check 1).
+- **Found, out of scope, now rows:** D180 (a refused or unanswered check clears the code and *Try again* then does nothing — seen on the web and on both phones), D181, D182, D183, D184.
+- **D175 watch.** Not seen. Main read the Hermes console after a cold start on the door, after the sign-in through the code step, and after the cold start that finds the member removed: empty each time, no toast in any picture. The row stays for the navigator and no longer names the code step.
+- **Mistakes found, and what now holds each.** (1) Main wrote the QA packets' expected results from the board pictures alone, so a ruled difference read as a failure on three surfaces — the board's known differences are now rows (D181–D184), which a later part's packet lists as ruled. (2) Main edited a checked file (`DoorCodeStep.native.tsx`, an import path) while the phone helpers were running; nothing broke, and the rows that ran after it exercised the edited file — review fixes wait for the helpers from now on. (3) Main's search for a style's readers looked for `styles.centred` and missed the reader that imports the sheet as `door`; `tsc` caught it at once and `centred` stays. (4) Main wrote *the code kept* into the no-answer row from the board's decision 17 without reading `verifyEnded`; the reducer and its test say otherwise — a proof row's expected result is read from the code that decides it, and the board's difference is D180. Review, pass 2: D182 first asked the owner to rule the live resend's grey again, which `T-M01-039` had ruled, and D184 said the web's boxes fill the measure, which they do not; both rows are corrected.
+- **Review and gate.** `reviewer`: pass 1 — two should-fix and one note, all applied; pass 2 — one blocker (the no-answer row's struck clause, ruled by the owner) and three should-fix on the new rows' wording, all applied, documents only. `evaluator`: every part-b row passed or is `pending ci` — its first report failed one row because Main, not `qa-web`, had judged the four pictures of answers QA cannot make; `qa-web` then judged them (row W11) and the row passed. `pnpm check:all` passed on its one run — 205 test files, 3,569 tests, the invariants on `heliogrid_test`, nothing regenerated.
+
+**Measurements** — helper runs: `qa-api` 1 (three continuations — state only), `qa-web` 1 (one), `qa-ios` 1 (two), `qa-android` 1 (one), `reviewer` 1 (one), `evaluator` 1 (one); one full gate, passed. Helper tokens, as reported: `qa-api` about 44 k, `qa-web` 122 k, `qa-ios` 129 k, `qa-android` 93 k, `reviewer` 204 k, `evaluator` 41 k. Main's own turns and tokens are not counted. Size: planned 29 files, code about 1,020, tests about 100; built 30 files (0 generated, 3 docs), code 1,046 authored lines and tests 101 — one file and 27 lines over, inside the 20%.
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · worker | none | stopped (`started_by_task`); the api was stopped and started once for the no-answer row |
+| simulator · emulator | none booted | shut down (`started_by_task`); both apps are the builds that were installed — the simulator's keychain reset and the emulator's app data cleared once, for a signed-out start |
+| browser tabs | pane closed | closed (the board's tab and three preview tabs were `started_by_task`) |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| test data left in `heliogrid_test` | — | one deactivated member of the `…904` company (+91 98765 08218), made through the api; sign-in codes asked for +91 98765 082xx numbers, no account made for them |
 
 ### T-M01-003 · Onboarding — Language
 **Type:** screen · **Tier:** P0

@@ -7,7 +7,7 @@
 import {
   type CodeError,
   countdownClock,
-  type DoorNotice,
+  type ExplainerPagerWords,
   type FootLine,
   type FrameExplainer,
   type FrameKind,
@@ -29,10 +29,8 @@ import {
 } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { COMPANY_SIGNUP } from './company-signup';
-import type { ExplainerWords } from './explainer';
-import { SHELL } from './shell';
+import { type ExplainerWords, explainerPagerWords } from './explainer';
 import { SIGN_IN } from './sign-in';
-import type { DoorBlockWords } from './sign-in-google';
 
 const SECONDS_PER_MINUTE = 60;
 
@@ -186,11 +184,15 @@ export interface SignInLabels {
 
 /** Every string a code frame draws; `null` where the frame has no such part. */
 export interface SignInWords {
+  /** The way back to the number step, in the header row. */
+  readonly changeNumber: string;
   readonly title: string;
   readonly sub: string;
   readonly block: { readonly tone: FrameTone; readonly title: string } | null;
-  /** The rule behind the frame, in an Explainer beside the title; `null` when the frame has none. */
-  readonly explainer: ExplainerWords | null;
+  /** The rule behind the frame, in an Explainer beside the title, with its pager's words; `null` when the frame has none. */
+  readonly explainer: (ExplainerWords & ExplainerPagerWords) | null;
+  /** The code field's label: it names how many digits a code has. */
+  readonly codeLabel: string;
   readonly codeError: string | null;
   readonly primary: string | null;
   /** The primary's accessible name where it says more than its label; `null` where the label is enough. */
@@ -225,11 +227,14 @@ export function signInWords(
     translate(message, { ...values, ...more });
   const { title, block } = FRAME[frame.kind];
   const { resend, google } = frame;
+  const explainer = explainerWords(frame.explainer, t) ?? labels.explainer ?? null;
   return {
+    changeNumber: t(SIGN_IN.changeNumber),
     title: t(title),
     sub: t(SUB[frame.sub]),
     block: block === null ? null : { tone: block.tone, title: t(block.title) },
-    explainer: explainerWords(frame.explainer, t) ?? labels.explainer ?? null,
+    explainer: explainer === null ? null : { ...explainer, ...explainerPagerWords(translate) },
+    codeLabel: t(SIGN_IN.codeLabel),
     codeError: frame.codeError === null ? null : t(CODE_ERROR[frame.codeError]),
     primary: frame.primary === null ? null : t(primaryOf(frame.primary.label, labels)),
     primaryAria: primaryAriaOf(frame, t),
@@ -251,7 +256,7 @@ export function signInWords(
 function explainerWords(
   explainer: FrameExplainer | null,
   t: (message: MessageRef) => string,
-): SignInWords['explainer'] {
+): ExplainerWords | null {
   if (explainer === null) return null;
   const { label, title, page } = EXPLAINER[explainer];
   return { label: t(label), title: t(title), pages: [t(page)] };
@@ -272,20 +277,4 @@ function primaryAriaOf(frame: LoginFrame, t: (message: MessageRef) => string): s
 
 function primaryOf(label: PrimaryLabel, labels: SignInLabels): MessageRef {
   return label === 'verify' && labels.verify !== undefined ? labels.verify : PRIMARY[label];
-}
-
-/** The block above the number step's field (`SCR-M01-01` `m-not-reached`): what failed, then why. */
-export function doorNoticeWords(translate: Translator['t'], notice: DoorNotice): DoorBlockWords {
-  switch (notice) {
-    case 'access-removed':
-      // The door knows no company: a removal reaches it only through the boot check (`S1.wrong.4`).
-      return { tone: 'info', title: translate(SHELL.accessRemoved), announce: 'status' };
-    case 'not-reached':
-      return {
-        tone: 'danger',
-        title: translate(SIGN_IN.requestFailedTitle),
-        body: translate(SIGN_IN.notReached),
-        announce: 'alert',
-      };
-  }
 }
