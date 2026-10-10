@@ -198,7 +198,7 @@ msgid "{weekday} · {date}"
 msgstr "{weekday} · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:133
+#: src/copy/company-signup.ts:150
 msgid "A city is needed — it is where your company is based."
 msgstr "शहर आवश्यक आहे — तुमची कंपनी कुठे आहे हे त्यावरून कळते."
 
@@ -208,7 +208,7 @@ msgid "A code lasts {codeMinutes} minutes"
 msgstr "एक कोड {codeMinutes} मिनिटे टिकतो"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:129
+#: src/copy/company-signup.ts:146
 msgid "A company name is needed — it goes on every proposal you send."
 msgstr "कंपनीचे नाव आवश्यक आहे — ते तुम्ही पाठवलेल्या प्रत्येक प्रस्तावावर जाते."
 
@@ -1749,7 +1749,7 @@ msgid "Your name"
 msgstr "तुमचे नाव"
 
 #. js-lingui-explicit-id
-#: src/copy/company-signup.ts:132
+#: src/copy/company-signup.ts:149
 msgid "Your name is needed — you become this company's first EPC owner."
 msgstr "तुमचे नाव आवश्यक आहे — तुम्ही या कंपनीचे पहिले EPC Owner होता."
 

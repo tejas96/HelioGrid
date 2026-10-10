@@ -15,16 +15,23 @@ import {
   SIGN_IN,
   signInWords,
   signupExplainers,
+  signupStepsWords,
 } from '@heliogrid/i18n';
 import { useLanguageChoice, useTranslate } from '@heliogrid/i18n/react';
-import { DoorCodeStep, DoorLanguage, DoorNumberStep, SuccessDwell, useFormat } from '@heliogrid/ui';
+import {
+  DoorCodeStep,
+  DoorLanguage,
+  DoorNumberStep,
+  SignupSteps,
+  SuccessDwell,
+  useFormat,
+} from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import './company-signup.css';
 import { CompanyStep } from './components/CompanyStep';
 import { JoinRequestSent } from './components/JoinRequestSent';
 import { KnownNumber } from './components/KnownNumber';
-import { SignupProgress } from './components/SignupProgress';
 import { HOME_ROUTE, LOGIN_ROUTE } from './constants';
 import { keptReturnPath } from './return-path';
 import { UnreachableScreen } from './UnreachableScreen';
@@ -106,7 +113,7 @@ export function CompanySignupScreen() {
       <DoorCodeStep
         language={language}
         taskMeasure="steps"
-        lead={<SignupProgress current={1} />}
+        lead={<SignupSteps words={signupStepsWords(t)} current={1} />}
         words={signInWords(t, signIn.frame, signIn.state, {
           verify: COMPANY_SIGNUP.verifyAndContinue,
           explainer: signupExplainers(t).whatTheCodeDoes,
@@ -133,7 +140,7 @@ function SignupNumberStep({ signIn, onSignIn }: { signIn: SignIn; onSignIn: () =
     <DoorNumberStep
       language={language}
       taskMeasure="steps"
-      lead={<SignupProgress current={0} />}
+      lead={<SignupSteps words={signupStepsWords(t)} current={0} />}
       title={{
         title: t(COMPANY_SIGNUP.createYourCompany),
         intro: t(COMPANY_SIGNUP.intro),

@@ -1140,6 +1140,8 @@ Part b (2026-10-10): both records were fetched again before its RFC — `SCR-M01
 
 Part c (2026-10-10): both records were fetched again before its RFC, by the file names above — `SCR-M01-01` thirty-seven frames (31 and 6), `SCR-M01-02` twenty-three (15 and 8), the same state names — so the verdict stands and no helper ran the check. Its board pictures, taken by `qa-web` from the boards in the browser pane before the RFC was shown (scratchpad `board/<board>-<frame>.png`): `SCR-M01-01` `m-normal`, `m-switch-discards` (375 × 812, the board at 100%, one shot each), `m-google-link`, `m-google-link-locked`, `m-google-failed-hi`, `m-google-failed-mr` (374 × 812, two shots joined — one pixel under 375, lost in the join), `d-normal`, `d-google-link`, `d-switch-discards` (766 × 500, the board at 50%); `SCR-M01-02` `m-step1-number` (374 × 812) and `d-step1-number` (766 × 500). Main read `m-google-link`, `m-google-link-locked`, `m-switch-discards`, `m-normal`, `d-google-link` and `d-switch-discards` against the record: each matches it. Two facts the pictures show are in the part's RFC (finding 4): the switch is a sheet at 375 and a centred modal at 1536, and its second line names who took the photographs.
 
+Part e (2026-10-10): the `SCR-M01-02` record was fetched again before its RFC, by the file name above — twenty-three frames (15 and 8), the same state names — so the verdict stands and no helper ran the check. Its board pictures (scratchpad `board/SCR-M01-02-<frame>.png`), taken by `qa-web` from the board in the browser pane before the RFC was shown: `d-step2-code`, `d-step3-filled`, `d-request-to-join` (770 × 545, the board at 50%); `m-loading` (391 × 835, the board at 110%); `m-step2-code`, `m-step3-empty`, `m-step3-filled`, `m-fields-invalid`, `m-resume`, `m-request-to-join` (394 to 401 px wide, the board at 150%, two shots joined by matching rows). Reused from part c's capture of the same day: `m-step1-number` (374 × 812) and `d-step1-number` (766 × 500). The capture that works in this pane: no viewport emulation (an emulated size larger than the pane is scaled, and the board's canvas then refuses scroll and clicks), the chat sidebar hidden, and a board zoom that gives 375 px or more in the shot. `qa-web`'s first run was blocked on the seven phone frames by that emulation; its second run, with this recipe, took them.
+
 #### RFC
 
 ##### Title
@@ -1325,7 +1327,7 @@ Each part's rows are in its own RFC. The rows every part carries:
 | b | the code step is `DoorCodeStep`, its title and its Google way inside; finding 3's ruling is in the brief; the flow's glue is `useSignIn`'s `sending` and `googleBusy`; the step closes its own centred column on the phone (`#### Part b · RFC`) | AC-1 (code step, the language clause struck) | a | shipped |
 | c | the link step is `DoorLinkStep`, the switch `DoorSwitch`, the language control `DoorLanguage`; the two row rules three steps share are the frame's (`#### Part c · RFC`) | AC-1 (link step, switch, language) | b | shipped |
 | d | merged into c — the owner's ruling, 2026-10-10 | — | — | merged into c |
-| e | signup's step header is `SignupSteps`; step 3's account, facts and fields move into `SignupCompanyStep/` — its own RFC | AC-1 (step header, step 3's pieces) | c | open |
+| e | signup's step header is `SignupSteps`; step 3's account, facts and fields are `SignupAccount`, `SignupFacts` and `SignupFields` in `SignupCompanyStep/` (`#### Part e · RFC`) | AC-1 (step header, step 3's pieces) | c | shipped |
 | f | step 3 itself and its join steer are `SignupCompanyStep` — its own RFC | AC-1 (company step) | e | open |
 | g | the known number and the request sent are `SignupKnownNumber`, `SignupRequestSent`; the leftover styles and D24 go — its own RFC | AC-1 (off-flow frames) | f | open |
 
@@ -1913,6 +1915,237 @@ Checklist:
 - [x] side-by-side on web, iOS, Android
 - [x] review; the gate
 
+#### Part e · RFC
+
+##### Title
+`T-M01-041e` — Signup's step header and step 3's pieces, authored once
+
+##### Description
+**User impact.** None — internal. Every frame of company signup looks as it does today on the web and on both phones. Indirectly, the next fix to the step header, to the verified number or to the three company fields lands on the web and on both phones in one change.
+
+Who gains: every later change to these four parts. The problem: `SignupProgress`, `AccountCard`, `CompanyFacts` and `CompanyFields` exist once per app — 166 lines under `apps/web/features/auth/components/` and 166 under `apps/mobile/src/screens/company-signup/components/` — drawn from the same words, with the markup written twice (D24). The rest is the task RFC's.
+
+##### Goals
+- `SignupSteps`, `SignupAccount`, `SignupFacts` and `SignupFields` draw the four parts on both apps; `rg -w 'SignupProgress|AccountCard|CompanyFacts|CompanyFields' apps` finds nothing.
+- Every frame looks as it does today.
+- `/company-signup` keeps its landing baselines at 375 and 1536.
+- On the phone a keystroke still re-renders one field, never the step.
+
+##### Non-goals
+- Step 3 itself, its title, its blocks, its primary and the join steer keep their app files (`CompanyStep`, `JoinSteer`) until part f; here `CompanyStep` only swaps the four parts it draws.
+- No new word, frame, route or API; no message joins the catalog.
+- The account and the loading facts as the board's grey tiles (D154 — Decisions, 3), the step counter in Hindi and Marathi (`docs/tasks/UI.md`, `Stepper`), the role's name in two sentences (D186), a way back from step 3 (D146), the refusal blocks announced (D110).
+- `packages/data`, `packages/forms`, `packages/domain`: unchanged.
+
+##### Readiness and dependencies
+- Parts a and b are shipped (`#269`, `#270`). Part c is shipped on this branch's base only: PR #272 is open, its `android` lane still running when this RFC was written. Owner's word, 2026-10-10: do not wait, branch from `feat/T-M01-041c`. On `origin/main` the walk still stops at part c (`docs/tasks/M01-onboarding.md`, row c reads `open` there); on the PR branch the first open row is e (`:1328`). Part e's PR is opened on `main` once #272 merges, or on `feat/T-M01-041c` before it. (#272 merged while this RFC was with the owner — `7d214e7b`; the branch, which held no commit of its own, was moved onto `origin/main`, whose tree differs from its base only by #273's sentence in `references/qa.md`.)
+- Design check: the record was fetched again on 2026-10-10 — twenty-three frames (15 and 8), the same state names — so the READY verdict stands (`#### Design check`).
+- Board pictures: `#### Design check`, part e. Main read `m-step3-empty`, `m-loading`, `m-fields-invalid` and `d-step3-filled`.
+- Each lifted half counts whole, deleted in the app and added in `ui` (part a's lesson).
+- No blocker.
+
+##### Proposal
+**The flow.** As the task RFC: the screen reads its hooks and its form, asks `i18n` for the words, and renders the `ui` component with the words, the facts and the presses.
+
+```tsx
+// both apps' CompanyStep — still the app's until part f
+const bind: SignupFieldBinder = (name, draw) => (
+  <Controller
+    control={form.control}
+    name={name}
+    render={({ field, fieldState }) =>
+      draw({
+        value: field.value,
+        onChange: field.onChange,
+        ...companyFieldWords(t, name, { helpers: words.helpers, value: field.value, error: fieldState.error }),
+      })
+    }
+  />
+);
+
+<SignupSteps words={signupStepsWords(t)} current={2} />
+<SignupAccount words={{ label: t(COMPANY_SIGNUP.yourAccount), verified: t(COMPANY_SIGNUP.verified) }} phoneE164={user.phoneE164} />
+{frame.writing ? <SignupFacts facts={companyFacts(t, form.getValues())} /> : <SignupFields bind={bind} />}
+```
+
+**Key decisions, one reason each.**
+1. **Two folders, as the task RFC's decision 1.** `SignupSteps/` (5 files) is its own frame part: three steps draw it. `SignupCompanyStep/` (9 files) holds step 3's three pieces — `SignupAccount`, `SignupFacts`, `SignupFields`, each with both halves — their props in the one `SignupCompanyStep.types.ts`, their rules in `SignupCompanyStep.css`.
+2. **The fields take one binder from the screen** (the task RFC's finding 5, ruled there). `ui` may not import `forms`. `SignupFields` calls `bind(name, draw)` once per field and draws an `Input` from what the binder hands back; the screen's binder is `forms`' `Controller`, so each field still reads only its own value and error and a keystroke re-renders one input. `name` is `keyof CreateTenant` (`contracts`), so a name outside the contract cannot be bound.
+3. **`companyFieldWords` writes every word one field shows** — its label, its example, its helper for the value typed, its refusal. It is new in `company-signup-frames.ts` and calls `cityHelper` and `companyFieldRefusal`, which the two `CompanyFields` copies call today. The label and example of each field are one `Record` over the contract's three fields there, where today each copy lists them.
+4. **The facts and the step header take plain words.** `companyFacts(t, values)` hands three label–value rows to `SignupFacts`; `signupStepsWords(t)` hands the flow's name and its three step names to `SignupSteps`. Neither chooses anything by state.
+5. **`SignupSteps` owns both forms of the step header.** The web half draws the track with its counter and the numbered form, and `SignupSteps.css` shows one of the two at the door's breakpoint; the phone half draws the track `sp-6` under the header row. Both rules leave the apps.
+6. **On the phone each piece keeps the space above it** (`sp-5` over the account, `sp-6` or `sp-5` over the fields, `sp-6` over the facts), as its app copy does today. `underAccount` stays a prop of the fields' one contract; the web half reads none, because the frame's column sets that gap there. Part f, which lifts the step, can place the pieces itself and retire the prop.
+7. **The stylesheet follows the component.** Web: the two step-header rules go to `SignupSteps.css`; `.hg-signup-fields`, `.hg-signup-two-up`, `.hg-signup-account`, `.hg-signup-facts` and `.hg-signup-fact` go to `SignupCompanyStep.css`; `company-signup.css` keeps the steer's, the roads' and the request-sent rules for parts f and g. Phone: `lead`, `accountCard`, `fields`, `fieldsUnderAccount`, `facts` and `fact` leave `company-signup/styles.ts`.
+8. **What only one caller needs leaves `i18n`'s entry.** `cityHelper` is called by `companyFieldWords` alone once the copies go; it stays exported from its file for its test and leaves `src/index.ts`. `companyFieldRefusal` stays: `tests/e2e/components/Input.spec.tsx` reads it.
+
+**Findings from testing this part's own lines.**
+
+| # | finding | where | recommendation · cost |
+|---|---|---|---|
+| 1 | For one PR, `SignupCompanyStep/` holds a types file and three exported pieces and no `SignupCompanyStep` component: the Parts table lifts the pieces a part before the step. No check reads a folder's shape (`packages/ui/CLAUDE.md`, *Local conventions*). | `#### Parts`, rows e and f | Keep the cut — it is the size ruling's. Part f adds the step and takes the three pieces out of the package's entry. No cost now. |
+| 2 | The proof rule asks one side-by-side row for every board frame the part renders. Twenty-five frames draw one of these four parts (13 at 375, 6 at 1536, 6 language renders), and part f, which lifts step 3 itself, draws twenty of them again. | `docs/tasks/README.md`, *RFC*, the side-by-side rule | **Owner rules** (Decisions, 2). |
+| 3 | `m-loading` cannot be held on a phone: the write lands before any read. The owner ruled for `T-M01-036` that the web's held picture and the shared code prove it. | `docs/tasks/M01-onboarding.md:925` | The same ruling. The phone half of `SignupFacts` is then held by `tsc` alone; said under *Risks*. |
+| 4 | The record draws the verified number in a grey tile (decision 3), and the board's `m-loading` draws the three facts in a second one; both apps draw both bare, and the web's stylesheet says why (`F7-49`). D154 holds the account's difference and both its paths are files this part deletes; no row holds the facts' tile. | `apps/web/features/auth/company-signup.css:20`, `:71` · `deferred.md` D154 · board picture `m-loading` | **Owner rules** (Decisions, 3). Either way D154 gains the facts' tile. |
+| 5 | `underAccount` is read by the phone half only. | decision 6 | Keep it in the one contract (Law 7), as `DoorLinkStep`'s `language` is read by one half. |
+| 6 | The honest size is 36 files, six over the target: eight of them are the twins deleted. | *Delivery size* | **Owner rules** (Decisions, 1). |
+
+**Deferred rows this part meets** (every `touches` path that is a planned file or its parent). D188 is not met: `door-styles.ts` is not in the file table.
+
+| row | met by | what | recommendation |
+|---|---|---|---|
+| D24 | `apps/web/features/auth/components/` | the twin door parts | **joins** (ruled) — narrowed to the four parts left: `CompanyStep`, `JoinSteer`, `KnownNumber`, `JoinRequestSent` |
+| D154 | both `AccountCard.tsx` | the account drawn bare where the board draws a tile | **stays** (Decisions, 3) — re-pointed to `packages/ui/src/components/SignupCompanyStep/`, and extended with the facts' tile (finding 4) |
+| D110 | both `CompanyStep.tsx` | the company step's refusal blocks are not announced | **stays** — this part only swaps the four parts the step draws; ruled again in part f |
+| D146 | `apps/mobile/src/screens/company-signup/` | no way back from signup's step 3 on the phone | **stays** — ruled again in part f |
+| D186 | `packages/i18n/src/copy/company-signup.ts` | an English role name inside two Hindi and Marathi sentences | **stays** — it needs two changed messages and a native reader; this part adds `signupStepsWords` to the file and changes no message |
+| D2 · D92 | `packages/ui/src/components/` | English left inside `ui` components | **stay** — this part adds no English to `ui`; the step counter's is `Stepper`'s own (`docs/tasks/UI.md`) |
+| D105 | `apps/mobile/src/` | two 403s on `/notifications/devices` | **stays** |
+
+**Order.** The words test (red) → `companyFieldWords`, `companyFacts`, `signupStepsWords` → `SignupSteps` → the three pieces (types, web halves, phone halves, styles, exports) → the two `CompanyStep` files and the two screens → the eight app copies and their styles out → `deferred.md`.
+
+**Errors and refusals.** None new: a field's refusal arrives as its word.
+
+**The twin screen.** Each component is its own twin: one types file, both halves, both apps, in this part.
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  subgraph apps["apps/web · apps/mobile"]
+    S["CompanySignupScreen ×2"]
+    C["CompanyStep ×2<br/>the form, the binder"]
+    X["SignupProgress · AccountCard<br/>CompanyFacts · CompanyFields<br/>one set per app, removed"]
+  end
+  FM["packages/forms<br/>useZodForm · Controller"]
+  subgraph i18n["packages/i18n"]
+    SW["signupStepsWords — new"]
+    FW["companyFieldWords — new<br/>label · example · helper · refusal"]
+    CF["companyFacts — new"]
+  end
+  subgraph ui["packages/ui"]
+    ST["SignupSteps"]
+    AC["SignupAccount"]
+    FA["SignupFacts"]
+    FI["SignupFields"]
+  end
+  K["packages/contracts<br/>CreateTenant"]
+  S -->|words, current| ST
+  C -->|words, current| ST
+  C --> SW
+  C -->|one field's state| FW
+  C --> CF
+  C -->|words, number| AC
+  C -->|rows| FA
+  C -->|bind| FI
+  C --> FM
+  FI -.->|field names| K
+  C -.-x X
+```
+
+##### Package changes
+- **`ui`** — exports `SignupSteps`, `SignupAccount`, `SignupFacts`, `SignupFields` and their `Props`, with `SignupFieldBinder` and `SignupFieldState`. Dependency direction unchanged: `contracts`, `domain`, `theme`.
+- **`i18n`** — exports `signupStepsWords`, `companyFieldWords` and `companyFacts`; `cityHelper` leaves the entry. No new message.
+- **`apps/web` · `apps/mobile`** — lose four parts each and their styles.
+- **Law 12.** No new brand, enum, token, route, table or error code. Each component is held by `tsc`, as the task RFC says.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+Two new folders, each `packages/ui/src/components/<Name>/` (architecture §4, step 8).
+
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| add | `packages/ui/src/components/SignupSteps/SignupSteps.types.ts` | the one prop contract and the words' shape | Law 7 |
+| move | `apps/web/features/auth/components/SignupProgress.tsx` → `packages/ui/src/components/SignupSteps/SignupSteps.tsx` | the web half — moved, then rewritten over words; counted as one file deleted and one added | §4 step 8 |
+| move | `apps/mobile/src/screens/company-signup/components/SignupProgress.tsx` → `packages/ui/src/components/SignupSteps/SignupSteps.native.tsx` | the phone half — the same | §4 step 8 |
+| add | `packages/ui/src/components/SignupSteps/SignupSteps.css` | which of the two forms shows | the stylesheet follows the component |
+| add | `packages/ui/src/components/SignupSteps/index.ts` | exports | the folder's one door |
+| add | `packages/ui/src/components/SignupCompanyStep/SignupCompanyStep.types.ts` | the three pieces' props, the binder, one field's state | Law 7 |
+| move | web `AccountCard.tsx` → `SignupCompanyStep/SignupAccount.tsx` | the web half | §4 step 8 |
+| move | phone `AccountCard.tsx` → `SignupCompanyStep/SignupAccount.native.tsx` | the phone half | §4 step 8 |
+| move | web `CompanyFacts.tsx` → `SignupCompanyStep/SignupFacts.tsx` | the web half | §4 step 8 |
+| move | phone `CompanyFacts.tsx` → `SignupCompanyStep/SignupFacts.native.tsx` | the phone half | §4 step 8 |
+| move | web `CompanyFields.tsx` → `SignupCompanyStep/SignupFields.tsx` | the web half | §4 step 8 |
+| move | phone `CompanyFields.tsx` → `SignupCompanyStep/SignupFields.native.tsx` | the phone half | §4 step 8 |
+| add | `packages/ui/src/components/SignupCompanyStep/SignupCompanyStep.css` | the account's row, the fields' column and two-up row, the facts | the stylesheet follows the component |
+| add | `packages/ui/src/components/SignupCompanyStep/index.ts` | exports the three pieces until part f | the folder's one door |
+| modify | `packages/ui/src/index.ts` | exports the two folders | the package's entry |
+| modify | `packages/ui/src/styles.css` | imports the two new stylesheets | where every component's is listed |
+| modify | `packages/i18n/src/copy/company-signup.ts` | `signupStepsWords` | beside `signupExplainers`, the flow's other plain words |
+| modify | `packages/i18n/src/copy/company-signup-frames.ts` | `companyFieldWords`, `companyFacts` | the company step's words |
+| modify | `packages/i18n/src/index.ts` | exports the three; `cityHelper` out | the entry |
+| modify | `packages/i18n/tests/company-signup-frames.test.ts` | `companyFieldWords`, three languages; `companyFacts`' pairing (review) | `.claude/rules/testing.md` |
+| modify | `apps/web/features/auth/components/CompanyStep.tsx` | the binder; renders the four parts | a caller |
+| modify | `apps/web/features/auth/CompanySignupScreen.tsx` | renders `SignupSteps` on steps 1 and 2 | a caller |
+| modify | `apps/web/features/auth/company-signup.css` | the seven moved rules out | orphaned by the move |
+| modify | `apps/mobile/src/screens/company-signup/components/CompanyStep.tsx` | the binder; renders the four parts | a caller |
+| modify | `apps/mobile/src/screens/company-signup/CompanySignupScreen.tsx` | renders `SignupSteps` on steps 1 and 2 | a caller |
+| modify | `apps/mobile/src/screens/company-signup/styles.ts` | the six moved styles out | orphaned by the move |
+| modify | `docs/tasks/deferred.md` | D24 narrowed; D154 re-pointed and extended | the rows this part meets |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the part's row, the ledger | the task |
+
+Each `move` row is two files in the diff, so the table's 28 rows are 36 files.
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **The phone drops typed characters when a field re-renders late** (the task RFC's risk). Mitigation: decision 2 keeps one `Controller` per field; `qa-ios` and `qa-android` type fast into each field and read every character back.
+- **The phone half of `SignupFacts` is not seen running** (finding 3). `tsc` holds it against the one contract, the markup is moved, not redrawn, and the web's held picture shows the same rows.
+- **Three surfaces change the code of signup's last step.** Mitigation: the e2e signup specs, the landing baselines, the phone flow `company-signup.yaml`, and the side-by-side rows below.
+- **This branch stood on an unmerged PR** when the RFC was written; #272 merged before the build began and the branch is on `origin/main` (*Readiness*). `git log` is read after every approval.
+- The rest is the task RFC's. Nothing stored or sent changes.
+
+##### Acceptance criteria and proof
+AC-1 is the task RFC's. This part's rows:
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 · contract | main-dev | required | typecheck | the four components compile in `ui`'s web and native projects and at every call site; `rg -w 'SignupProgress\|AccountCard\|CompanyFacts\|CompanyFields' apps` finds nothing | `pnpm check` |
+| AC-1 · the fields' words | main-dev | required | unit | each field's label and example; *Your name*'s helper with the step's helpers and none without; City's helper while City is empty or blank and none from the first character; a missing detail answered with why it is needed, another refusal with its own words, no refusal with nothing — in en, hi, mr; planted red: City's helper kept after a character, and a field's refusal left out | `packages/i18n/tests/company-signup-frames.test.ts` |
+| AC-1 · look | ci | required | `e2e-web` | the signup flows pass and the landing baselines at 375 and 1536 are unchanged | `company-signup.spec.ts` · `[door].spec.ts` · `login.spec.ts` |
+| AC-1 · phone flows | ci | required | `android` | `Phone flows (tests/e2e/mobile) on the emulator` runs `company-signup.yaml`, `login.yaml` | CI step |
+| side-by-side · the step header | qa-web | required | `/company-signup` steps 1 and 2, 375 · 1536 | `m-step1-number`, `m-step2-code`: the track and its counter under the header row, no step names; `d-step1-number`, `d-step2-code`: the numbered form with the three names, the current one marked; never both forms | QA |
+| side-by-side · the step header | qa-ios · qa-android | required | signup steps 1 and 2 | `m-step1-number`, `m-step2-code`: the track `sp-6` under the header row, the counter at step 1 and at step 2 | QA |
+| side-by-side · step 3 as it opens, and filled | qa-web | required | step 3 with a fresh number verified, 375 · 1536 | `m-step3-empty`, `m-step3-filled`, `d-step3-filled`: *Your account*, the number, *Verified*; three fields with their examples; the helpers under *Your name* and *City*, City's gone from its first character (`cityHelper`, `company-signup-frames.ts:37`); at 1536 *Your name* and *City* share one row and the account is in the identity half. Ruled: the account bare (D154) | QA |
+| side-by-side · step 3 as it opens, and filled | qa-ios · qa-android | required | step 3 with a fresh number verified | `m-step3-empty`, `m-step3-filled`: the same, the fields `sp-6` under the account | QA |
+| typing on the phones | qa-ios · qa-android | required | step 3 | thirty characters typed fast into each of the three fields: every character is kept, in order | QA |
+| side-by-side · the fields refused | qa-web · qa-ios · qa-android | required | step 3, *Create company* pressed with *Company name* empty and the other two filled, then with all three empty | `m-fields-invalid`: the empty field says why it is needed (`COMPANY_FIELD_NEEDED`, `company-signup.ts:145`) and no helper is left (`helpers`, `company-signup-frames.ts:162`); with all three empty each says its own sentence at once. Ruled: the account bare (D154) | QA |
+| side-by-side · resumed | qa-web · qa-ios · qa-android | required | step 3 loaded again — a reload on the web, a cold start by Main on the phones | `m-resume`: the account, the fields with no helpers | QA |
+| side-by-side · the fields under the steer | qa-web · qa-ios · qa-android | required | step 3 with a standing company's name and city typed, *Create company* pressed; the web at 375 and 1536 | `m-request-to-join`, `d-request-to-join`: the three fields keep what was typed and carry no helper; the step header reads step 3 | QA |
+| side-by-side · the facts | qa-web | required | step 3 at 375 | `m-loading`, Main's picture with the create held in the browser: the three values as a label over a value, no input; the same rows with *Request to join* held. Ruled: the account and the facts bare (D154) | QA |
+| the facts on the phones | — | not_applicable | — | `m-loading` | finding 3: a write lands before any read; the owner's ruling for `T-M01-036` |
+| step 3 in language | qa-web · qa-ios · qa-android | required | step 3 | हिन्दी, then मराठी, chosen on step 3's own control: the account's label and chip, the three labels, examples and helpers carry no English and clip nothing. Ruled: the step counter (`UI.md`, `Stepper`), the role's name (D186) | QA |
+| side-by-side · the frames left to part f | — | not_applicable | — | `m-number-invalid`, `m-error`, `m-not-reached`, `m-request-failed`, `m-request-not-reached`, `d-request-failed`, `d-request-not-reached`, and the six language renders | Decisions, 2: each draws these parts in a state pictured above; the title and the block over them are part f's lift, and their rows are part f's |
+| API | qa-api | not_applicable | — | — | no reachable API behaviour changes |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+**The typing row on the iPhone, as proven** (the row above is as approved; the evaluator holds it failed until the owner rules on the commit card): Android kept thirty characters sent in one call; on the iPhone one character per call at about 4 a second kept all thirty in 6 of 6 runs, and a one-call burst on the simulator lost its tail in 6 of 9 runs on this part's code and in 5 of 9 on the code before it, so the lift did not cause it. Whether a fast typist on a real iPhone loses a character is D191.
+
+**Ruled on the commit card (2026-10-10).** The owner accepts the iPhone's typing row as proven: a person's speed keeps every character, the burst loss is older than this part, and D191 stays open for a real iPhone.
+
+##### Delivery size
+- One part — Decisions, 1. 36 files (0 generated, 2 docs). As built: 39, the three message catalogs regenerated (source-line references only).
+- Code: about 990 authored lines — the eight app copies deleted 332, the four components in `ui` about 425, `i18n` about 75, the two `CompanyStep` files and the two screens about 80, `company-signup.css` and `styles.ts` about 75.
+- Tests: about 75 authored lines.
+- At the 1,000-line target and six files over the 30-file target. No smaller part of a component can be accepted alone: a half without its twin, or a component without its call sites, leaves a copy in an app. The part can be cut between components — the step header alone is about 13 files and 250 lines, step 3's pieces about 27 files and 800 — at the cost of a second run of QA on three surfaces.
+- Order: as *Proposal*.
+
+**Owner rulings (2026-10-10, with the approval).** The RFC is approved with every recommendation: the size is A (one part, 36 files, about 990 code lines and 75 test lines); the side-by-side rows are A (twelve frames now, the thirteen failure and language frames in part f); D154 is A (it stays, re-pointed to the new folder and extended with the facts' tile).
+
+**Built against planned (delta as it lands).** The 36 planned files, no other. Two departures inside them: the web step header's two wrappers are named `.hg-signup-steps-track` and `.hg-signup-steps-numbered`, for what each holds, where the app's were `-progress-phone` and `-progress-desktop` (no other reader of the old names exists); and `companyFacts` has a test of its pairing, which the RFC's row did not plan (review, a note: the phone half of `SignupFacts` is not seen running, so a swapped pair would pass `tsc`). The field binder (`bindWith`) is the same nineteen lines in both `CompanyStep` files: it is screen glue the RFC wrote out, `ui` may not hold it, and D24 now says part f's RFC names its one home.
+
+**Planted reds seen (part e):** `lineUnder` with City's line kept after a character failed `company-signup-frames.test.ts` › *companyFieldWords* › *city holding "P": the step’s line under it* (expected 'Where you're based.' to be undefined); `companyFieldWords` with the refusal left out failed › *in en, a City left empty says why it is needed*, *in hi*, *in mr* and *a refusal that is not about emptiness keeps the words it came with*; `companyFacts` with two values swapped failed › *companyFacts* › *pairs each value with its field’s name, in the fields’ order*. Each restored from a scratchpad copy and green again.
+
+Checklist:
+- [x] the words test, then `companyFieldWords`, `companyFacts`, `signupStepsWords`
+- [x] `SignupSteps` — types, web half, phone half, styles, exports
+- [x] `SignupAccount`, `SignupFacts`, `SignupFields` — types, web halves, phone halves, styles, exports
+- [x] the two `CompanyStep` files and the two screens
+- [x] the eight app copies and their styles out; `deferred.md`
+- [x] side-by-side on web, iOS, Android
+- [x] review; the gate
+
 #### Runtime
 Branch `feat/T-M01-041a`, cut from `feat/T-M01-040` (`e4e9d978`) on a clean tree, 2026-10-10 — the owner's word, PR #268 being in review. #268 merged during QA (`c7cf0783`, the same tree), and the branch, which held no commit of its own, was moved onto `main`.
 
@@ -2018,6 +2251,46 @@ Branch `feat/T-M01-041a`, cut from `feat/T-M01-040` (`e4e9d978`) on a clean tree
 | Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
 | database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
 | test data left in `heliogrid_test` | — | three accounts with a verified number and no company, made through the app's signup and stopped at step 3: +91 98765 08311 (web), 08321 (iPhone), 08331 (Android); one sign-in code asked for +91 98765 08312, no account made |
+
+**Part e** — branch `feat/T-M01-041e`, cut from `feat/T-M01-041c` (`bd91ed46`) on a clean tree, 2026-10-10 — the owner's word, PR #272 being open. #272 merged before the build began (`7d214e7b`), and the branch, which held no commit of its own, was moved onto `origin/main`.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | tab `seed` (`started_by_task`): the signup board, opened for the board pictures |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 15,205,544 · `web.log` 483,089 · `metro.log` 1,653,921 bytes | — |
+
+**Part e · QA (2026-10-10)** — one stack on `heliogrid_test`: the api and the web from source, one Metro, the iPhone 17 Pro simulator (`40ED0117…`) and the `Pixel_8_Emulator`; no worker (no row sends a message). Both phones were started signed out. No native file changed, so nothing was built. The emulator had booted from a snapshot older than part c's install, so its app was the build of 3 October again; Main installed the debug build already on disk (`app-debug.apk`, 9 October) over it, as in part c. Every row ran on fresh numbers, +91 98765 084xx: 08411 (web), 08421 (iPhone), 08431 (Android), and 08412 to 08415 for Main's scripted pictures. Each stopped at step 3; the api log holds seven code requests, six `GET /tenants/similar` and no `POST /tenants` and no join request since the part's first byte.
+
+- **Rows.** Web W1–W8, iPhone I1–I8, Android A1–A8: every row passed, each difference a recorded row, but one: the iPhone's typing row is held failed until the owner rules on the commit card (*Typing on the phones*, below). `qa-api` did not run: no row needs state made through the api.
+- **The step header.** Web: at 375 the track and its counter (335 × 35) with the numbered form not displayed; at 1536 the numbered form (480 × 28) with the track not displayed — never both, at steps 1, 2 and 3. Phones: the track sits 24 points under the header row at steps 1 and 2 (iPhone 130 → 154; Android 315 → 378 px, 24.0 dp), with *STEP n OF 3* and the step's name.
+- **Step 3 as it opens, and filled.** The account row, the three fields with their examples and both helpers on all three surfaces; City's helper leaves at its first character and returns when City is emptied; *Your name*'s stays. Phones: the account row 20 points under the title block (iPhone 20.1, Android 19.8 dp), the first label 24 under the account row, fields 20 apart, fields 51 and the primary 48 high. Web at 1536: the account in the identity half, *Your name* and *City* on one row (200 × 54 each).
+- **In language.** हिन्दी and मराठी on step 3's own control on all three surfaces: the account's label and chip, the labels, the examples and the helpers carry no English and clip nothing; the stepper's counter (`UI.md`) and *EPC Owner* (D186) stay English, as ruled.
+- **The fields refused.** With *Company name* empty only its sentence shows; with all three empty each says its own, at once; the intro and both helpers are gone; nothing reaches the api.
+- **Resumed.** A reload on the web and a cold start by Main on each phone: *Welcome back — carry on*, the account row, the resume line, three empty fields with no helpers.
+- **The steer.** `Standing Web EPC` and `Pune` typed and *Create company* pressed: the heading, no account row, the three fields keeping what was typed with no helper, the finding and both roads; one changed character drops it. No road was pressed on any surface.
+- **The facts.** Main's two pictures on the running web, judged by `qa-web`: the create held in the browser (`m-loading`: three label-over-value rows 39 high, no input, *Writing these three details now.*, the primary busy) and the join request held (the same rows under the steer's heading). The phones' half is `tsc`'s (finding 3).
+- **Typing on the phones.** Android: thirty characters into each field in one call, all held. iPhone: one character per call at about 4 a second held all thirty in 6 of 6 runs; a thirty-character burst in one call lost its tail in 6 of 9 runs on this part's code, and in 5 of 9 on the code before it, which Main put back on the simulator for that one comparison (two files and the four old parts from `HEAD`, restored from scratchpad copies; the tree's hash was the same before and after). The loss is the simulator's injection path or older than this part, not the lift: D191.
+- **First-pass verdicts that were Main's own packets, not the app.** `qa-ios` answered FAIL on its first batch for three things the packet did not rule: the burst typing above (the row asked for one call of thirty characters); a refused field that keeps its focus ring on the phones (D178 named the number field only — now extended); and a refused empty field that still draws its grey example (now D189). Both phones marked the board's `m-resume`, which draws a typed company name, against the app's three empty fields (now D190). `qa-web`'s press of *Create company* for the steer was refused by its permission prompt and its screenshots could not be saved, so Main took every web picture with a scratchpad Playwright script on the same running web and `qa-web` judged them (W7, and W1–W6 again from the saved pictures).
+- **Found, out of scope, now rows:** D189, D190, D191, D192 (on Android the language control needed a second tap on step 3). D178 is extended to the company fields; D24 names the binder's home as part f's.
+- **Mistakes found, and what now holds each.** (1) Main's first board-capture prompt told `qa-web` to set an 800 × 905 viewport; the pane was smaller, the page was scaled, and the board's canvas refused scroll and clicks, so seven phone frames came back blocked — the capture that works is in `#### Design check`, part e. (2) Main's typing row asked for one call of thirty characters without knowing what the simulator's injectors do with one; D191 records it and gives `qa-ios` its way to type a long text. (3) Main's packets did not rule the shared `Input`'s refused look or the board's `m-resume` value, which every surface then reported — they are rows now, which a later part's packet lists. (4) Main moved three line citations in its own proof rows by adding functions above them and did not re-point them; review found them, and a row now names the function beside the line. (5) Main ticked the words checklist line before writing the planted reds down; review found the missing line.
+- **Review.** `reviewer`, pass 1: four should-fix (a comment and an RFC sentence that claimed more than the type holds; two comments in `company-signup-frames.ts` the change made wrong; the three moved citations; the planted reds not recorded) and four notes — all four should-fix applied, the note on `companyFacts`' pairing taken as one test, the binder's duplication written into D24 for part f, the eager `companyFacts` call left as it is (no behaviour changes), D26's carriers left for D26's own edit. Pass 2: two should-fix, documents only, both applied — D178's widened next step broke `F7-24` (the focus ring on a focused refused field is the ruled look), so the row now asks the owner and names `FieldBox`; and the typing row's changed method is written under the proof matrix (*as proven*) and D191 can reopen by the owner's word. Pass 3, after the first gate regenerated the three catalogs: source-line references only, no message changed; one should-fix and two notes on this record's wording, applied. After the QA rows had passed, the edits to checked source were comment lines in two files and one added test; no executable line changed, so no row was run again.
+- **Side-by-side images** (scratchpad `pairs/`, one per frame, the board beside each surface): `m-step1-number`, `m-step2-code`, `m-step3-empty`, `m-step3-filled`, `m-fields-invalid`, `m-resume`, `m-request-to-join`, `m-loading`, `d-step1-number`, `d-step2-code`, `d-step3-filled`, `d-request-to-join`.
+- **Gate.** `evaluator`: every part-e row passed or is `pending ci`, but the iPhone's typing row, which it holds failed for the owner's ruling. `pnpm check:all` run 1 failed at `check:catalogs`, every earlier step green: adding `signupStepsWords` above `COMPANY_FIELD_NEEDED` moved three source-line references in each of the three message catalogs, and Main had not run the extract (mistake 6 — a line added to a `copy/` file above a message is followed by `pnpm check:catalogs` before QA). The gate's own extract refreshed them; after `pnpm check:catalogs`, `pnpm check` and `reviewer`'s third pass, run 2 passed — 11 build tasks, 23 typecheck tasks, 205 test files, 3,602 tests, the invariants on `heliogrid_test` with none skipped, nothing more regenerated.
+
+**Measurements** — helper runs: `qa-web` 2 (the board pictures, one continuation; the QA rows, one continuation), `qa-ios` 1 (three continuations), `qa-android` 1 (one), `reviewer` 1 (two), `evaluator` 1 (one); `qa-api` none; two full gates, the second passed. Helper tokens, as reported: `qa-web` 198 k for the board pictures and 119 k for QA, `qa-ios` 122 k, `qa-android` 91 k, `reviewer` 218 k, `evaluator` 41 k. Main's context: about 512 k tokens, read from the session's usage just before the commit card; its turns are not counted. Size: planned 36 files, code about 990, tests about 75; built 39 files (3 generated — the catalogs — and 2 docs), code 1,046 authored lines and tests 85 — 56 code lines over, inside the 20%.
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` | none | stopped (`started_by_task`); no worker was started |
+| simulator · emulator | none booted | shut down (`started_by_task`). The simulator's keychain was reset and the emulator's app data cleared at the start and at the end. The emulator's app was the debug build of 9 October (`app-debug.apk`) for this run; it was started without saving a snapshot, so its next boot holds the build of 3 October again |
+| browser tabs | pane closed | closed (the board's tab and two preview tabs were `started_by_task`) |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| test data left in `heliogrid_test` | — | seven accounts with a verified number and no company, made through the app's signup and stopped at step 3: +91 98765 08411 to 08415 (web), 08421 (iPhone), 08431 (Android) |
 
 ### T-M01-003 · Onboarding — Language
 **Type:** screen · **Tier:** P0

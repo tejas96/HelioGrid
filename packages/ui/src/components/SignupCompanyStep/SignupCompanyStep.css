@@ -1,0 +1,41 @@
+/* Company signup's step 3, the pieces under its title (`SCR-M01-02`): the verified account, the
+   three fields, and the three values as facts while they are written. Every value a token var(). */
+
+.hg-signup-fields,
+.hg-signup-two-up {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* The verified number as a fact (`SCR-M01-02` decision 1): the value and its chip on the page, with
+   no surface (F7-49) — a grey tile would read as a field, a white card vanishes on the white page. */
+.hg-signup-account {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  align-self: flex-start;
+}
+
+/* The three values as facts while they are written, on the page with no surface (F7-49). */
+.hg-signup-facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-signup-fact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
+@media (min-width: 968px) {
+  /* Your name and City share the row beneath the company name (`SCR-M01-02` decision 12). */
+  .hg-signup-two-up {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--sp-4);
+  }
+}
