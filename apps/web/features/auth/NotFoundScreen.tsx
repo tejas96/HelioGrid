@@ -1,10 +1,9 @@
 'use client';
 import { useSessionPhase } from '@heliogrid/data/react';
 import { SHELL } from '@heliogrid/i18n';
-import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, DoorFrame, DoorTitle } from '@heliogrid/ui';
+import { useLanguageChoice, useTranslate } from '@heliogrid/i18n/react';
+import { Button, DoorFrame, DoorLanguage, DoorTitle } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
-import { LanguageControl } from './components/LanguageControl';
 import { HOME_ROUTE, LOGIN_ROUTE } from './constants';
 
 /**
@@ -14,11 +13,12 @@ import { HOME_ROUTE, LOGIN_ROUTE } from './constants';
  */
 export function NotFoundScreen() {
   const t = useTranslate();
+  const language = <DoorLanguage {...useLanguageChoice()} />;
   const router = useRouter();
   const signedIn = useSessionPhase() === 'signedIn';
   return (
     <DoorFrame
-      trailing={<LanguageControl />}
+      trailing={language}
       column="centred"
       identity={<DoorTitle title={t(SHELL.notFound)} />}
     >

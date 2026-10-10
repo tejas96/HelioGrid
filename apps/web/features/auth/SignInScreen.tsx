@@ -1,15 +1,26 @@
 'use client';
 import { useSession, useSignIn } from '@heliogrid/data/react';
-import { doorView, homeOf } from '@heliogrid/domain';
-import { homeTitle, numberStepWords, SIGN_IN, signInWords } from '@heliogrid/i18n';
-import { useTranslate } from '@heliogrid/i18n/react';
-import { DoorCodeStep, DoorNumberStep, SuccessDwell, useFormat } from '@heliogrid/ui';
+import { doorView, googleLinkFrame, homeOf } from '@heliogrid/domain';
+import {
+  doorSwitchWords,
+  googleLinkWords,
+  homeTitle,
+  numberStepWords,
+  SIGN_IN,
+  signInWords,
+} from '@heliogrid/i18n';
+import { useLanguageChoice, useTranslate } from '@heliogrid/i18n/react';
+import {
+  DoorCodeStep,
+  DoorLanguage,
+  DoorLinkStep,
+  DoorNumberStep,
+  DoorSwitch,
+  SuccessDwell,
+  useFormat,
+} from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
-import './sign-in.css';
-import { GoogleLinkStep } from './components/GoogleLinkStep';
-import { LanguageControl } from './components/LanguageControl';
-import { SwitchPanel } from './components/SwitchPanel';
 import { useGoogleReturn, useGoogleSheet } from './hooks/use-google-sheet';
 
 /**
@@ -22,7 +33,8 @@ export function SignInScreen({ companySignupHref }: { companySignupHref: string 
   const t = useTranslate();
   const router = useRouter();
   const session = useSession();
-  const { pack } = useFormat();
+  const { pack, date } = useFormat();
+  const language = <DoorLanguage {...useLanguageChoice()} />;
   const signIn = useSignIn(pack, 'sign-in', useGoogleSheet());
   useGoogleReturn(signIn.returnFromGoogle);
   const road = {
@@ -35,7 +47,7 @@ export function SignInScreen({ companySignupHref }: { companySignupHref: string 
   /** The number step; `task` stands in its form's place while a switch is pending (`F4-37`). */
   const numberStep = (task?: ReactNode) => (
     <DoorNumberStep
-      language={<LanguageControl />}
+      language={language}
       title={{ title: t(SIGN_IN.signIn), intro: t(SIGN_IN.intro) }}
       words={numberStepWords(t, {
         notice: signIn.notice,
@@ -55,8 +67,16 @@ export function SignInScreen({ companySignupHref }: { companySignupHref: string 
   );
 
   if (view === 'switch' && session.switch !== null) {
+    const { heldWork, next } = session.switch;
     return numberStep(
-      <SwitchPanel pending={session.switch} onConfirm={() => void session.completeSwitch()} />,
+      <DoorSwitch
+        words={doorSwitchWords(t, {
+          name: next.name,
+          count: heldWork.count,
+          date: date(heldWork.capturedAt),
+        })}
+        onConfirm={() => void session.completeSwitch()}
+      />,
     );
   }
   if (view === 'done') {
@@ -69,7 +89,7 @@ export function SignInScreen({ companySignupHref }: { companySignupHref: string 
   if (view === 'code') {
     return (
       <DoorCodeStep
-        language={<LanguageControl />}
+        language={language}
         words={signInWords(t, signIn.frame, signIn.state)}
         frame={signIn.frame}
         phone={signIn.state.phone}
@@ -81,6 +101,24 @@ export function SignInScreen({ companySignupHref }: { companySignupHref: string 
       />
     );
   }
-  if (view === 'google-link') return <GoogleLinkStep signIn={signIn} />;
+  if (view === 'google-link') {
+    const frame = googleLinkFrame(signIn.state);
+    return (
+      <DoorLinkStep
+        language={language}
+        words={googleLinkWords(
+          t,
+          frame,
+          signIn.state.google?.email ?? '',
+          signIn.state.phoneProblem,
+        )}
+        frame={frame}
+        phone={signIn.state.phone}
+        onPhone={signIn.typePhone}
+        busy={signIn.busy}
+        onPress={signIn.press}
+      />
+    );
+  }
   return numberStep();
 }

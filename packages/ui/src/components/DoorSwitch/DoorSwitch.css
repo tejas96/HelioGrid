@@ -1,0 +1,33 @@
+/* The switch decision as the door's task column draws it (`SCR-M01-01`, `F4-37`): the mark, the
+   loss and its date centred, then the two roads. Every value a token var(). */
+
+.hg-door-switch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding-bottom: var(--sp-5);
+}
+
+.hg-door-switch-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  text-align: center;
+}
+
+.hg-door-switch-mark {
+  display: grid;
+  place-items: center;
+  width: var(--sp-10);
+  height: var(--sp-10);
+  border-radius: var(--r-pill);
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.hg-door-switch-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}

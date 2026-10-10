@@ -1,3 +1,4 @@
+import { UI_LANGUAGES } from '@heliogrid/contracts';
 import {
   INITIAL_LOGIN_STATE,
   type LoginState,
@@ -5,6 +6,7 @@ import {
   type UiLanguage,
 } from '@heliogrid/domain';
 import { describe, expect, it } from 'vitest';
+import { explainerPagerWords } from '../src/copy/explainer';
 import { SIGN_IN } from '../src/copy/sign-in';
 import { signInWords } from '../src/copy/sign-in-frames';
 import { googleLinkWords, phoneGoogleWords } from '../src/copy/sign-in-google';
@@ -135,7 +137,7 @@ describe('googleLinkWords', () => {
 
   it('the link step: title, explainer, the tile, Send code that links (m-google-link)', async () => {
     const { t } = await createTranslator('en');
-    const words = googleLinkWords(t, open, EMAIL);
+    const words = googleLinkWords(t, open, EMAIL, null);
     expect(words.title).toBe('Confirm your mobile number');
     expect(words.explainer?.title).toBe('How linking works');
     expect(words.explainer?.pages[0]).toBe(
@@ -157,7 +159,7 @@ describe('googleLinkWords', () => {
 
   it('Send code names the send while it runs', async () => {
     const { t } = await createTranslator('en');
-    expect(googleLinkWords(t, { ...open, sending: true }, EMAIL).send?.label).toBe(
+    expect(googleLinkWords(t, { ...open, sending: true }, EMAIL, null).send?.label).toBe(
       'Sending the code',
     );
   });
@@ -170,7 +172,7 @@ describe('googleLinkWords', () => {
       sendOffered: false,
       sending: false,
     } as const;
-    const words = googleLinkWords(t, locked, EMAIL);
+    const words = googleLinkWords(t, locked, EMAIL, null);
     expect(words.send).toBeNull();
     expect(words.explainer).toBeNull();
     expect(words.locked?.block).toEqual({
@@ -179,6 +181,30 @@ describe('googleLinkWords', () => {
     });
     expect(words.locked?.sentence).toBe('SMS codes are paused for 15 minutes, so linking waits.');
   });
+
+  it.each(UI_LANGUAGES)(
+    'the ask beside the title carries the pager’s words, in %s',
+    async (language) => {
+      const { t } = await createTranslator(language);
+      const pager = explainerPagerWords(t);
+      const { explainer } = googleLinkWords(t, open, EMAIL, null);
+      expect(explainer?.nextLabel).toBe(pager.nextLabel);
+      expect(explainer?.backLabel).toBe(pager.backLabel);
+      expect(explainer?.positionLabel(1, 2)).toBe(pager.positionLabel(1, 2));
+    },
+  );
+
+  it.each(UI_LANGUAGES)(
+    'the field: no refusal as the step opens, both counts once pressed, in %s',
+    async (language) => {
+      const { t } = await createTranslator(language);
+      expect(googleLinkWords(t, open, EMAIL, null).phoneError).toBeUndefined();
+      const refused = googleLinkWords(t, open, EMAIL, { typed: 7, needed: 10 });
+      expect(refused.phoneError).toBe(t(SIGN_IN.digitsMismatch, { typed: 7, needed: 10 }));
+      expect(refused.phoneError).toContain('7');
+      expect(refused.phoneError).toContain('10');
+    },
+  );
 });
 
 /** Every key this door added; each must read in the reader's own language (`F3-07`). */

@@ -31,7 +31,7 @@ export function DoorCodeStep({
           <Button variant="ghost" size="sm" onClick={() => onPress('change-number')}>
             {words.changeNumber}
           </Button>
-          <div className="hg-door-code-language">{language}</div>
+          <div className="hg-door-wide-only">{language}</div>
         </>
       }
       taskMeasure={taskMeasure}
@@ -67,14 +67,14 @@ export function DoorCodeStep({
         </Button>
       )}
       {resend?.kind === 'live' && words.resend !== null ? (
-        <div className="hg-door-code-centred">
+        <div className="hg-door-centred">
           <Button variant="ghost" size="md" onClick={() => onPress(resend.press)}>
             {words.resend}
           </Button>
         </div>
       ) : null}
       {words.wait === null ? null : (
-        <div className="hg-door-code-centred">
+        <div className="hg-door-centred">
           <Button variant="ghost" size="md" disabled spokenName={words.wait.spoken}>
             {words.wait.label}
           </Button>

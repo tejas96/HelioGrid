@@ -3,13 +3,12 @@ import { type CompanySignup, failureOf, useSteerDroppedOnEdit } from '@heliogrid
 import type { SessionUser } from '@heliogrid/domain';
 import { useZodForm } from '@heliogrid/forms';
 import { COMPANY_SIGNUP, companySignupWords } from '@heliogrid/i18n';
-import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, DoorFrame, Text, TintedBlock } from '@heliogrid/ui';
+import { useLanguageChoice, useTranslate } from '@heliogrid/i18n/react';
+import { Button, DoorFrame, DoorLanguage, Text, TintedBlock } from '@heliogrid/ui';
 import { AccountCard } from './AccountCard';
 import { CompanyFacts } from './CompanyFacts';
 import { CompanyFields } from './CompanyFields';
 import { JoinFailureBlock, JoinRoads, JoinSteerBlock } from './JoinSteer';
-import { LanguageControl } from './LanguageControl';
 import { SignupProgress } from './SignupProgress';
 
 /**
@@ -36,6 +35,7 @@ export function CompanyStep({
   signup: CompanySignup;
 }) {
   const t = useTranslate();
+  const language = <DoorLanguage {...useLanguageChoice()} />;
   const form = useZodForm(createTenantSchema, {
     defaultValues: { companyName: '', ownerName: user.name, city: '' },
   });
@@ -55,7 +55,7 @@ export function CompanyStep({
     const steer = <JoinSteerBlock company={steered} phoneE164={user.phoneE164} />;
     return (
       <DoorFrame
-        trailing={<LanguageControl />}
+        trailing={language}
         taskMeasure="steps"
         lead={<SignupProgress current={2} />}
         identity={
@@ -85,7 +85,7 @@ export function CompanyStep({
 
   return (
     <DoorFrame
-      trailing={<LanguageControl />}
+      trailing={language}
       taskMeasure="steps"
       lead={<SignupProgress current={2} />}
       identity={

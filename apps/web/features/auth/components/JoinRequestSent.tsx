@@ -1,8 +1,7 @@
 import type { RequestedCompany } from '@heliogrid/contracts';
 import { COMPANY_SIGNUP } from '@heliogrid/i18n';
-import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, Card, DoorFrame, Text, useFormat } from '@heliogrid/ui';
-import { LanguageControl } from './LanguageControl';
+import { useLanguageChoice, useTranslate } from '@heliogrid/i18n/react';
+import { Button, Card, DoorFrame, DoorLanguage, Text, useFormat } from '@heliogrid/ui';
 
 /**
  * Where *Request to join* lands (`SCR-M01-02` request-sent, decisions 20 and 24): what was sent
@@ -22,10 +21,11 @@ export function JoinRequestSent({
   onCreateInstead: () => void;
 }) {
   const t = useTranslate();
+  const language = <DoorLanguage {...useLanguageChoice()} />;
   const format = useFormat();
   return (
     <DoorFrame
-      trailing={<LanguageControl />}
+      trailing={language}
       taskMeasure="steps"
       className="hg-signup-heading-deep"
       identity={

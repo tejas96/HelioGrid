@@ -1,11 +1,10 @@
 import type { KnownAccount } from '@heliogrid/domain';
 import { COMPANY_SIGNUP, explainerPagerWords, SIGN_IN, signupExplainers } from '@heliogrid/i18n';
-import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, Explainer, PhoneValue, Text, TintedBlock } from '@heliogrid/ui';
+import { useLanguageChoice, useTranslate } from '@heliogrid/i18n/react';
+import { Button, DoorLanguage, Explainer, PhoneValue, Text, TintedBlock } from '@heliogrid/ui';
 import { View } from 'react-native';
 import { styles as door } from '../../shared/door-styles';
 import { InsetDoorFrame } from '../../shared/InsetDoorFrame';
-import { LanguageControl } from '../../shared/LanguageControl';
 import { styles } from '../styles';
 
 /**
@@ -23,8 +22,9 @@ export function KnownNumber({
   onLeave: () => void;
 }) {
   const t = useTranslate();
+  const language = <DoorLanguage {...useLanguageChoice()} />;
   return (
-    <InsetDoorFrame trailing={<LanguageControl />}>
+    <InsetDoorFrame trailing={language}>
       <View style={styles.offFlowTitle}>
         <View style={door.titleRow}>
           <Text variant="h2" style={door.titleText}>

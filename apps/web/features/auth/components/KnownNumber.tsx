@@ -1,8 +1,15 @@
 import type { KnownAccount } from '@heliogrid/domain';
 import { COMPANY_SIGNUP, explainerPagerWords, SIGN_IN, signupExplainers } from '@heliogrid/i18n';
-import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, DoorFrame, Explainer, PhoneValue, Text, TintedBlock } from '@heliogrid/ui';
-import { LanguageControl } from './LanguageControl';
+import { useLanguageChoice, useTranslate } from '@heliogrid/i18n/react';
+import {
+  Button,
+  DoorFrame,
+  DoorLanguage,
+  Explainer,
+  PhoneValue,
+  Text,
+  TintedBlock,
+} from '@heliogrid/ui';
 
 /**
  * A number that already has an account, answered after its code verified (`M01-08`, ruled at
@@ -20,9 +27,10 @@ export function KnownNumber({
   onLeave: () => void;
 }) {
   const t = useTranslate();
+  const language = <DoorLanguage {...useLanguageChoice()} />;
   return (
     <DoorFrame
-      trailing={<LanguageControl />}
+      trailing={language}
       taskMeasure="steps"
       identity={
         <>
