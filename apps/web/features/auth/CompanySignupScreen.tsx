@@ -15,6 +15,7 @@ import { KnownNumber } from './components/KnownNumber';
 import { PhoneStep } from './components/PhoneStep';
 import { SignupProgress } from './components/SignupProgress';
 import { HOME_ROUTE, LOGIN_ROUTE } from './constants';
+import { keptReturnPath } from './return-path';
 import { UnreachableScreen } from './UnreachableScreen';
 
 /**
@@ -23,9 +24,9 @@ import { UnreachableScreen } from './UnreachableScreen';
  * the screen opens to a new number before any session exists and to a verified number
  * without a company (`M01-10`). Which panel shows is `signupView`'s, over the join steer
  * `useCompanySignup` holds (`M01-09`); this composes, and on the
- * `done` view sends a person who has a company to their home once the session phase is signed in
- * (`M01-08`) — at once for an owner who arrives signed in, after the beat for a known number
- * entered here.
+ * `done` view sends a person who has a company to the link they opened signed out (`M01-61`), else
+ * to their home, once the session phase is signed in (`M01-08`) — at once for an owner who arrives
+ * signed in, after the beat for a known number entered here.
  */
 export function CompanySignupScreen() {
   const t = useTranslate();
@@ -39,7 +40,7 @@ export function CompanySignupScreen() {
   const sendHome = view === 'done' && phase === 'signedIn';
 
   useEffect(() => {
-    if (sendHome) router.replace(HOME_ROUTE);
+    if (sendHome) router.replace(keptReturnPath() ?? HOME_ROUTE);
   }, [sendHome, router]);
 
   // This route sits outside the gates, so it answers a boot check with no answer itself (`M01-07`).

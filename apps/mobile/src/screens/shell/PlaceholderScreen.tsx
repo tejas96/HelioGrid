@@ -1,9 +1,9 @@
 import { useSession, useShell } from '@heliogrid/data/react';
-import type { ShellDoor } from '@heliogrid/domain';
+import { offersDoor, type ShellDoor } from '@heliogrid/domain';
 import { doorTitle, SHELL } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { EmptyState } from '@heliogrid/ui';
-import { useRoute } from '@react-navigation/native';
+import { Button, EmptyState } from '@heliogrid/ui';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useRef, useState } from 'react';
 import type { View } from 'react-native';
 import { GrievanceNote } from './components/GrievanceNote';
@@ -27,18 +27,21 @@ const DOOR: Record<DoorRoute, ShellDoor> = {
 
 /**
  * A door the shell opens before its module's screen exists — inside the same shell, so no control
- * is dead and the pill still leads home. Its module replaces it (`T-SHELL-001`'s Used by).
+ * is dead and the pill still leads home. Its module replaces it (`T-SHELL-001`'s Used by). A link
+ * reaches every door, so one this person's shell does not offer says the page does not exist
+ * (`F7-48`), as the web's does.
  */
 export function PlaceholderScreen() {
   const t = useTranslate();
   const session = useSession();
   const shell = useShell();
   const route = useRoute();
+  const navigation = useNavigation();
   const actionRef = useRef<View>(null);
   const [grievance, setGrievance] = useState(false);
   const items = usePillItems(shell, actionRef);
   const door = DOOR[route.name as DoorRoute];
-  const title = doorTitle(t, door);
+  const offered = offersDoor(shell, door);
   const inView = items.some((item) => item.key === door) ? door : undefined;
 
   return (
@@ -56,7 +59,18 @@ export function PlaceholderScreen() {
       items={items}
       inView={inView}
     >
-      <EmptyState title={title} description={t(SHELL.comingLater)} />
+      {offered ? (
+        <EmptyState title={doorTitle(t, door)} description={t(SHELL.comingLater)} />
+      ) : (
+        <EmptyState
+          title={t(SHELL.notFound)}
+          action={
+            <Button variant="primary" size="lg" onClick={() => navigation.navigate('Shell')}>
+              {t(SHELL.goToHome)}
+            </Button>
+          }
+        />
+      )}
       <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />
     </ShellFrame>
   );

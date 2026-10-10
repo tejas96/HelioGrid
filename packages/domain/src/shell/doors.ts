@@ -11,6 +11,22 @@ import type { StandingDestination } from './standing-destinations';
 export type ShellDoor = Exclude<StandingDestination, 'home'> | CentreVerb | 'search';
 
 /**
+ * Each door's address segment, one fact on both apps: the web's `/add-lead` and the phone's
+ * `heliogrid://add-lead` are the same link. A segment changed here changes a public address.
+ */
+export const DOOR_SEGMENT: Record<ShellDoor, string> = {
+  leads: 'leads',
+  proposals: 'proposals',
+  projects: 'projects',
+  people: 'people',
+  campaigns: 'campaigns',
+  more: 'more',
+  add_lead: 'add-lead',
+  start_survey: 'start-survey',
+  search: 'search',
+};
+
+/**
  * The doors a person's shell may open (`F7-48`): each standing destination but the home, the
  * home's verb and search. A door outside this list is not this person's, so a screen
  * that opens doors by address answers it as not found.

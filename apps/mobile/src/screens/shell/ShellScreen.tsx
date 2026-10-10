@@ -8,6 +8,7 @@ import {
 } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { AccessRemoved, HomeBlocks, HomeHead, NoConnection, useFormat } from '@heliogrid/ui';
+import { useIsFocused } from '@react-navigation/native';
 import { useRef, useState } from 'react';
 import { useWindowDimensions, type View } from 'react-native';
 import { FirstRunMark } from './components/FirstRunMark';
@@ -38,6 +39,7 @@ export function ShellScreen() {
   const showGrievance = () => setGrievance(true);
   const signOut = () => void session.signOut();
   const connection = useConnection();
+  const inFront = useIsFocused();
 
   if (!connection.online)
     return <NoConnection {...connectionWords(t)} onRetry={connection.retry} />;
@@ -87,7 +89,11 @@ export function ShellScreen() {
           <HomeBlocks {...homeBlocksWords(t, home)} load={shell.load} onRetry={shell.retry} />
         </>
       )}
-      <FirstRunMark shell={shell} anchors={{ switchHome: titleRef, action: actionRef }} />
+      {/* A mark points at THIS screen's controls. Under a door a link opened, the home is mounted
+          but not in front, and its mark would draw over the door: it waits for the home. */}
+      {inFront ? (
+        <FirstRunMark shell={shell} anchors={{ switchHome: titleRef, action: actionRef }} />
+      ) : null}
       <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />
     </ShellFrame>
   );

@@ -3,7 +3,7 @@ import { usePushRegistration } from '../push/usePushRegistration';
 import { UpdateRequired } from '../screens/shell';
 import { linkingOptions } from './linking';
 import { NavigationPhaseProvider } from './phase';
-import { Navigation } from './root';
+import { Navigation, reportUnhandledAction } from './root';
 
 /**
  * The ONE thing App.tsx renders.
@@ -25,7 +25,7 @@ export function AppNavigation() {
   if (refusal !== null) return <UpdateRequired refusal={refusal} />;
   return (
     <NavigationPhaseProvider>
-      <Navigation linking={linkingOptions} />
+      <Navigation linking={linkingOptions} onUnhandledAction={reportUnhandledAction} />
     </NavigationPhaseProvider>
   );
 }
