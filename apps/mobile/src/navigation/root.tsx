@@ -1,9 +1,53 @@
-import { createStaticNavigation, type StaticParamList } from '@react-navigation/native';
+import {
+  CommonActions,
+  createStaticNavigation,
+  type NavigationAction,
+  type NavigationState,
+  type StaticParamList,
+} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { BootScreen } from '../screens/boot';
 import { useIsBooting, useIsSignedIn, useIsSignedOut } from './guards';
 import { appScreens } from './routes/app';
 import { authScreens } from './routes/auth';
+
+/** The home's route name, held to the route map: a renamed home fails to compile here. */
+const HOME: keyof typeof appScreens = 'Shell';
+
+/**
+ * The home goes under a screen that opened alone. A link followed after sign-in is restored as the
+ * stack's only route (`lastUnhandled` below), and Back from it would leave the app; with the home
+ * first, Back reaches the home. Only where the home exists: the Auth group and the company step
+ * hold no `Shell`.
+ */
+function homeUnderALoneScreen(state: NavigationState) {
+  if (!state.routeNames.includes(HOME) || state.routes[0]?.name === HOME) return undefined;
+  return CommonActions.reset({
+    ...state,
+    routes: [{ name: HOME }, ...state.routes],
+    index: state.routes.length,
+  });
+}
+
+/**
+ * What a dev build says of an action no navigator took, in place of React Navigation's own report.
+ * A link opened signed out names a screen only the App group holds: the navigator keeps it and
+ * opens it after sign-in (`lastUnhandled` below), so it is no fault and nothing is said. Any other
+ * unhandled action is a wrong route name and is still an error.
+ */
+export function reportUnhandledAction(action: NavigationAction) {
+  if (!__DEV__ || namesAnAppScreen(action)) return;
+  console.error(
+    `The action '${action.type}' with payload ${JSON.stringify(action.payload)} was not handled by any navigator.`,
+  );
+}
+
+/** A `NAVIGATE` to a screen of the App group: unhandled only while that group is not mounted. */
+function namesAnAppScreen(action: NavigationAction): boolean {
+  const { type, payload } = action;
+  if (type !== 'NAVIGATE' || payload === undefined || !('name' in payload)) return false;
+  return typeof payload.name === 'string' && Object.keys(appScreens).includes(payload.name);
+}
 
 /**
  * THE route map. One config object; the param list is INFERRED from it, never hand-written —
@@ -17,8 +61,19 @@ import { authScreens } from './routes/auth';
  * Swapping GROUPS rather than navigating means a signed-out user has no authenticated screen
  * left in the history to go back to. A false `if` returns null, so the screen never enters
  * navigation state.
+ *
+ * `lastUnhandled` is what returns a person to a link they opened signed out (`M01-61`): the link
+ * names a screen the Auth group does not hold, and the navigator opens it once the App group mounts.
+ * Without it the link is dropped and sign-in lands on the home.
  */
 const RootStack = createNativeStackNavigator({
+  UNSTABLE_routeNamesChangeBehavior: 'lastUnhandled',
+  screenListeners: ({ navigation }) => ({
+    state: (event) => {
+      const reset = homeUnderALoneScreen(event.data.state);
+      if (reset !== undefined) navigation.dispatch(reset);
+    },
+  }),
   screenOptions: { headerShown: false },
   screens: {
     Boot: { screen: BootScreen, if: useIsBooting },

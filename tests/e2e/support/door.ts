@@ -56,12 +56,22 @@ export async function fillCompanyStep(
   await typeCode(page, t, code);
   await page.getByRole('button', { name: t.t(COMPANY_SIGNUP.verifyAndContinue) }).click();
 
+  await fillCompanyDetails(page, t, mobile, company);
+  await expectNoSidewaysScroll(page);
+}
+
+/** The company step's three details, typed and nothing pressed: the owner is `Owner <number>`. */
+export async function fillCompanyDetails(
+  page: Page,
+  t: Translator,
+  mobile: Mobile,
+  company: string,
+): Promise<void> {
   await page.getByRole('textbox', { name: t.t(COMPANY_SIGNUP.companyName) }).fill(company);
   await page
     .getByRole('textbox', { name: t.t(COMPANY_SIGNUP.yourName) })
     .fill(`Owner ${mobile.national}`);
   await page.getByRole('textbox', { name: t.t(COMPANY_SIGNUP.city) }).fill('Pune');
-  await expectNoSidewaysScroll(page);
 }
 
 /**

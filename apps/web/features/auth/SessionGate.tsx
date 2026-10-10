@@ -4,6 +4,7 @@ import { landingFor, type SessionLanding } from '@heliogrid/domain';
 import { useRouter } from 'next/navigation';
 import { type ReactNode, useEffect } from 'react';
 import { ROUTE_OF } from './constants';
+import { forgetReturnPath, keepReturnPath, keptReturnPath } from './return-path';
 import { UnreachableScreen } from './UnreachableScreen';
 
 /** What a route group asks of its visitor: `signed-in` means a settled session WITH a company. */
@@ -18,6 +19,10 @@ type Need = 'signed-out' | 'signed-in';
  * A person whose access was removed while signed in is held (`S1.wrong.4`): the signed-in group
  * keeps them on the route they are on, where the shell shows Frame 8, and the door group sends them
  * inside — held at `/login`, the door would say "You are in".
+ *
+ * A visitor the signed-in group turns away has their address kept, and the door sends them back to
+ * it once they are in (`M01-61`). One who was inside and left is not followed: after a sign-out the
+ * next person in this tab starts at their own home.
  */
 export function SessionGate({ need, children }: { need: Need; children: ReactNode }) {
   const phase = useSessionPhase();
@@ -27,8 +32,15 @@ export function SessionGate({ need, children }: { need: Need; children: ReactNod
   const sendTo = destinationOf(need, landing);
 
   useEffect(() => {
-    if (sendTo !== null) router.replace(sendTo);
-  }, [sendTo, router]);
+    if (landing === 'wait') return;
+    if (sendTo === null) {
+      if (need === 'signed-in') forgetReturnPath();
+      return;
+    }
+    if (need === 'signed-in') keepReturnPath();
+    const backToTheLink = need === 'signed-out' && landing === 'home' ? keptReturnPath() : null;
+    router.replace(backToTheLink ?? sendTo);
+  }, [need, landing, sendTo, router]);
 
   if (unreachable) return <UnreachableScreen />;
   if (landing === 'wait' || sendTo !== null) return null;
