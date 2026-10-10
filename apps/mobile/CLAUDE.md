@@ -19,7 +19,8 @@ src/screens/<name>/       same shape as web's feature, in RN's location
   hooks/use-<thing>.ts    the platform adapter only — keyboard, focus, clipboard, navigation
   styles.ts               screen-level layout; component geometry stays with its component
   types.ts                when two files here share a type
-src/screens/shared/       parts two screens here share, until web draws them (`screen-parts.md`)
+src/screens/shared/       the door's inset wrapper two screens share, and the boot screen's placeholder
+                          scaffold; a part the web also draws is `packages/ui`'s (`screen-parts.md`)
 src/navigation/           React Navigation static config
 src/auth/ · src/push/     native adapters, one per capability; push isolates Firebase/Notifee
 src/react-query-host.tsx  the ONE host-lifecycle adapter (AppState → focus, NetInfo → online)

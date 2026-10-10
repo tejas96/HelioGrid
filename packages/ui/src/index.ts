@@ -98,6 +98,8 @@ export * from './components/SegmentedControl';
 export * from './components/Select';
 export * from './components/Sheet';
 export * from './components/SignupCompanyStep';
+export * from './components/SignupKnownNumber';
+export * from './components/SignupRequestSent';
 export * from './components/SignupSteps';
 export * from './components/Slider';
 export * from './components/SourceDocument';

@@ -1,7 +1,8 @@
-import { DoorFrame, type DoorFrameProps, DoorTopInset } from '@heliogrid/ui';
+import { theme } from '@heliogrid/theme';
+import { DoorTopInset } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
+import { StyleSheet } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { styles } from './door-styles';
 
 /**
  * A door under the phone's insets. The bloom runs from the screen's top edge, under a transparent
@@ -17,11 +18,8 @@ export function InsetDoor({ children }: { children: ReactNode }) {
   );
 }
 
-/** The frame itself under the insets, for a door part this app still composes. */
-export function InsetDoorFrame(props: DoorFrameProps) {
-  return (
-    <InsetDoor>
-      <DoorFrame {...props} />
-    </InsetDoor>
-  );
-}
+const styles = StyleSheet.create({
+  /** The inset behind the frame: the page, so the status-bar and home-indicator bands match the frame's ground. */
+  // biome-ignore lint/plugin/raw-white: page-ground — an app's page or door: the page is white
+  inset: { flex: 1, backgroundColor: theme.colors.surface },
+});

@@ -1,0 +1,8 @@
+/* Company signup's known number (`SCR-M01-02` `m-duplicate-phone`): the number as a fact, then the
+   two roads. Every value a token var(). */
+
+.hg-signup-roads {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}

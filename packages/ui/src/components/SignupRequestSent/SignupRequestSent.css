@@ -1,0 +1,16 @@
+/* Company signup's request sent (`SCR-M01-02` `m-request-sent`). Every value a token var(). */
+
+/* Who the request was sent as: one `Card` on the white page, the board's focal point on that state
+   (decision 24); its three lines sit `sp-1` apart. */
+.hg-signup-sent-as {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+/* The prompt over the one route back to creating, centred above it. */
+.hg-signup-sent-route {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}

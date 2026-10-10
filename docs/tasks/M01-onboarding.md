@@ -1120,7 +1120,7 @@ Branch `feat/T-M01-040`, cut from `feat/T-M01-039d` (`beea4257`) on a clean tree
 
 ### T-M01-041 · The door's parts lifted into packages/ui
 **Type:** screen · **Tier:** P1
-**Status:** planned
+**Status:** shipped
 **Why:** Twelve door parts exist once per platform, drawn the same from the same hooks and words (D24), and the phone's code step lacks the language control the web keeps (D23).
 **PRD rows:** none of its own — Law 7 (one prop contract per shared component); `SCR-M01-01`, `SCR-M01-02` as drawn.
 **DESIGN:** none — the existing boards.
@@ -1143,6 +1143,8 @@ Part c (2026-10-10): both records were fetched again before its RFC, by the file
 Part e (2026-10-10): the `SCR-M01-02` record was fetched again before its RFC, by the file name above — twenty-three frames (15 and 8), the same state names — so the verdict stands and no helper ran the check. Its board pictures (scratchpad `board/SCR-M01-02-<frame>.png`), taken by `qa-web` from the board in the browser pane before the RFC was shown: `d-step2-code`, `d-step3-filled`, `d-request-to-join` (770 × 545, the board at 50%); `m-loading` (391 × 835, the board at 110%); `m-step2-code`, `m-step3-empty`, `m-step3-filled`, `m-fields-invalid`, `m-resume`, `m-request-to-join` (394 to 401 px wide, the board at 150%, two shots joined by matching rows). Reused from part c's capture of the same day: `m-step1-number` (374 × 812) and `d-step1-number` (766 × 500). The capture that works in this pane: no viewport emulation (an emulated size larger than the pane is scaled, and the board's canvas then refuses scroll and clicks), the chat sidebar hidden, and a board zoom that gives 375 px or more in the shot. `qa-web`'s first run was blocked on the seven phone frames by that emulation; its second run, with this recipe, took them.
 
 Part f (2026-10-10): the `SCR-M01-02` record was fetched again before its RFC, by the file name above — twenty-three frames (15 and 8), the same state names — so the verdict stands and no helper ran the check. Its board pictures (scratchpad `board/SCR-M01-02-<frame>.png`), taken by `qa-web` in one run from the board in the browser pane before the RFC was shown, with part e's recipe: `m-number-invalid`, `m-error`, `m-not-reached`, `m-request-failed`, `m-request-not-reached` and the language renders `m-not-reached-hi`, `-mr`, `m-request-to-join-hi`, `-mr`, `m-request-failed-hi`, `-mr` (439 × 951, the board at 150%, two shots joined); `d-request-failed`, `d-request-not-reached` (600 × 390, the board at 50% — this pane's screenshots are 800 × 600). Reused from part e's capture of the same day, copied from that session's scratchpad: `m-step3-empty`, `m-step3-filled`, `m-fields-invalid`, `m-resume`, `m-request-to-join`, `m-loading`, `d-step3-filled`, `d-request-to-join`. The board's frame labels carry state names, not the record's frame ids, so `qa-web` matched each language render to its English frame by its state label. Main read `m-error`, `m-request-failed`, `m-request-failed-hi`, `d-request-failed`, `m-request-to-join`, `d-request-to-join` and `m-step3-empty` against the record: each matches it — on a failure the block takes the account's place, and under the steer the finding sits over the roads at 375 and in the identity half at 1536.
+
+Part g (2026-10-10): the `SCR-M01-02` record was fetched again before its RFC, by the file name above — twenty-three frames (15 and 8), the same state names — so the verdict stands and no helper ran the check. Its board pictures (scratchpad `board/SCR-M01-02-<frame>.png`), taken by `qa-web` in one run from the board in the browser pane before the RFC was shown, with part e's recipe: `m-duplicate-phone`, `m-request-sent` and the language renders `m-request-sent-hi`, `-mr` (440 × 951, the board at 150%, three shots joined); `d-duplicate-phone` (600 × 391) and `d-request-sent` (476 × 310), the board at 50%. Main read `m-duplicate-phone`, `m-request-sent`, `d-duplicate-phone` and `d-request-sent` against the record: each matches it — neither frame carries a step header; at 1536 the known number's title and its block sit in the identity half and the number and both roads in the task, and the request sent holds its tile, its prompt and its route in the task.
 
 #### RFC
 
@@ -1331,7 +1333,7 @@ Each part's rows are in its own RFC. The rows every part carries:
 | d | merged into c — the owner's ruling, 2026-10-10 | — | — | merged into c |
 | e | signup's step header is `SignupSteps`; step 3's account, facts and fields are `SignupAccount`, `SignupFacts` and `SignupFields` in `SignupCompanyStep/` (`#### Part e · RFC`) | AC-1 (step header, step 3's pieces) | c | shipped |
 | f | step 3 and its join steer are `SignupCompanyStep`; every word the step picks is `companyStepWords`'; the field binder is `fieldBinder` in `packages/forms` (`#### Part f · RFC`) | AC-1 (company step) | e | shipped |
-| g | the known number and the request sent are `SignupKnownNumber`, `SignupRequestSent`; the leftover styles and D24 go — its own RFC | AC-1 (off-flow frames) | f | open |
+| g | the known number and the request sent are `SignupKnownNumber`, `SignupRequestSent`; the leftover styles and D24 go (`#### Part g · RFC`) | AC-1 (off-flow frames) | f | shipped |
 
 #### Part a · RFC
 
@@ -2387,6 +2389,230 @@ Checklist:
 - [x] side-by-side on web, iOS, Android
 - [x] review; the gate
 
+#### Part g · RFC
+
+##### Title
+`T-M01-041g` — Signup's two off-flow frames, authored once; the leftovers out
+
+##### Description
+**User impact.** None — internal. The known-number frame and the request-sent frame look and act as they do today on the web and on both phones. Indirectly, the next fix to either frame lands on all three surfaces in one change, and the task's rule is whole: no door part is left once per app.
+
+Who gains: every later change to the two frames. The problem: `KnownNumber` and `JoinRequestSent` exist once per app — 131 lines under `apps/web/features/auth/components/` and 121 under `apps/mobile/src/screens/company-signup/components/` — drawn from the same words, with the markup written twice (D24). Three style files and one wrapper function are kept alive by them alone. The rest is the task RFC's.
+
+##### Goals
+- `SignupKnownNumber` and `SignupRequestSent` draw the two frames on both apps, each from one prop contract; `rg -w 'KnownNumber|JoinRequestSent' apps` finds nothing.
+- Each frame's words come from one `packages/i18n` function; a screen writes none.
+- Both frames look as they do today; `/company-signup` keeps its landing baselines at 375 and 1536.
+- No door style is left in an app: `company-signup.css`, `company-signup/styles.ts` and `shared/door-styles.ts` are gone, and `apps/web/features/auth/components/` with them.
+- D24 is deleted and `T-M01-041` reads `shipped`.
+
+##### Non-goals
+- No new word, frame, route or API; no message joins the catalog.
+- A way back from the request-sent frame on the phone (D146), a door title that balances its lines (D193), the header's way back at 1536 (D140).
+- `DoorCodeStep` and `DoorLinkStep` keep their own title rows on the phone (D188; Decisions, 3).
+- `PlaceholderScaffold` and its `styles.ts` stay in `screens/shared/`: `BootScreen` draws it, and it is not a door part.
+- `packages/data`, `packages/domain`, `packages/forms`: unchanged.
+
+##### Readiness and dependencies
+- Parts a, b, c and e are shipped (`#269`, `#270`, `#272`, `#274`). Part f is shipped on this branch's base only: PR #275 is a draft — `changes`, `quality` and `mobile-js` passed, `e2e-web`, `android` and `ios` running when this RFC was written. Owner's word, 2026-10-10: do not wait, branch from `feat/T-M01-041f` (`e0cb30ae`). On `origin/main` the walk still stops at part f (`docs/tasks/M01-onboarding.md:1331` there reads `open`); on this branch the first open row is g. Part g's PR is opened on `main` once #275 merges, or on `feat/T-M01-041f` before it.
+- Design check: the record was fetched again on 2026-10-10 — twenty-three frames (15 and 8), the same state names — so the READY verdict stands (`#### Design check`).
+- Board pictures: `#### Design check`, part g.
+- Each lifted half counts whole, deleted in the app and added in `ui` (part a's lesson).
+- No blocker.
+
+##### Proposal
+**The flow.** As the task RFC: the screen reads its hooks, asks `i18n` for the frame's words, and renders the `ui` component with the words, the facts and the presses.
+
+```tsx
+// both apps' CompanySignupScreen — the same two calls (the phone wraps each in <InsetDoor>)
+if (view === 'known' && session.known !== null) {
+  return (
+    <SignupKnownNumber
+      language={language}
+      words={knownNumberWords(t)}
+      phoneE164={session.known.next.phoneE164}
+      onEnter={session.enterKnownAccount}
+      onLeave={leaveForAnotherNumber}
+    />
+  );
+}
+if (view === 'sent' && session.user !== null && signup.found !== null) {
+  return (
+    <SignupRequestSent
+      language={language}
+      words={requestSentWords(t, signup.found)}
+      name={signup.typedName ?? session.user.name}
+      phoneE164={session.user.phoneE164}
+      onCreateInstead={() => void signup.createAnyway()}
+    />
+  );
+}
+```
+
+**Key decisions, one reason each.**
+1. **Two folders, `SignupKnownNumber/` and `SignupRequestSent/`** — the task RFC's decision 1 names them; each is one frame with its own props.
+2. **One words function per frame, in one new file** `packages/i18n/src/copy/company-signup-off-flow.ts`: `knownNumberWords(t)` and `requestSentWords(t, { companyName, city })`. Neither frame picks a word by state. The functions exist because `ui` may not import `i18n`, and without them both screens would write the same twelve `t()` calls. `signupExplainers` and `explainerPagerWords` are called inside `knownNumberWords`; both stay on `i18n`'s entry, because both screens still read them for steps 1 and 2.
+3. **The title is the frame's `DoorTitle`** on both halves of both frames (the task RFC's decision 2). For the known number its markup and values are the ones both app files write out today — the web's `.hg-door-title` block and row, the phone's `h2` row with `sp-2` gaps. The request sent has no ask, so today its heading sits outside a title row; inside `DoorTitle` it gains that row around it, as step 3's heading has since part f. The pictures before and after prove it does not move.
+4. **The request sent sits on the frame's `deep` column.** The web copy passes a class, `.hg-signup-heading-deep`, that `DoorFrame.css` keeps as a second name for `[data-column="deep"]` — *named by a door not yet moved onto `column`* (`DoorFrame.css:148`). The component passes `column="deep"`, and the class leaves the stylesheet. On the phone `deep` is the same `sp-8` the app's `sentTitleTop` sets today (`DoorFrame.native.tsx:75`).
+5. **The phone number is formatted by the component**, as today: `PhoneValue` groups the known number, and the request-sent half reads `ui`'s own `useFormat` for the *Sent as* line.
+6. **The stylesheet follows the component.** Web: `.hg-signup-roads` goes to `SignupKnownNumber.css`; `.hg-signup-sent-as` and `.hg-signup-sent-route` go to `SignupRequestSent.css`, names kept; `company-signup.css` is then empty and is deleted with its import. Phone: `offFlowTitle`, `roads`, `sentAs`, `sentTitleTop`, `sentRoute` and the closing free height (`door-styles.ts` `spacer`) go into the two phone halves; `company-signup/styles.ts` is deleted.
+7. **The phone's wrapper is `InsetDoor`, alone.** `InsetDoorFrame` — *the frame under the insets, for a door part this app still composes* — has no reader once the two parts go. The function is removed, the one style `door-styles.ts` still holds for it (`inset`) moves beside it, `door-styles.ts` is deleted, and the file is renamed `shared/InsetDoor.tsx` so its name says what it exports. Two screens change one import line each.
+8. **`screens/shared/` is no longer *temporary*.** The dependency-cruiser comment on `mobile-shared-parts-are-screens-only` and `apps/mobile/CLAUDE.md:22` say it holds door parts waiting to be lifted. They are rewritten: it holds the platform wrapper two screens share and the placeholder scaffold. The rule itself is unchanged.
+
+**Findings from testing this part's own lines.**
+
+| # | finding | where | recommendation · cost |
+|---|---|---|---|
+| 1 | No e2e flow reaches the known-number frame, on the web or the phone. The lift re-wires its two presses, and CI would not see a break. | `rg -i 'known\|already has' tests/e2e` finds nothing | **Owner rules** (Decisions, 2). Add one web flow to `company-signup.spec.ts`, written first and green before the lift — about 30 test lines. |
+| 2 | The task RFC says `screens/shared/` *keeps only the inset wrapper*. It also holds `PlaceholderScaffold` and its `styles.ts`. | `apps/mobile/src/screens/boot/BootScreen.tsx:5` | Leave them: not a door part. The two docs say what the folder holds (decision 8). No cost. |
+| 3 | `.hg-signup-heading-deep` is a second name for one place. | decision 4 | Use `column="deep"`; four lines leave `DoorFrame.css`. The web's pictures before and after prove the heading does not move. |
+| 4 | The board draws no Hindi or Marathi render of the known-number frame. | the record, *Language renders* | No language row on that frame; its three languages are the unit test's. |
+| 5 | The honest size is 32 files — two over the file target — and about 940 lines, under the line target. | *Delivery size* | **Owner rules** (Decisions, 1). |
+
+**Deferred rows this part meets** (every `touches` path that is a planned file or its parent).
+
+| row | met by | what | recommendation |
+|---|---|---|---|
+| D24 | `apps/web/features/auth/components/` | the twin door parts | **joins** (ruled) — the last two parts go; deleted |
+| D188 | `apps/mobile/src/screens/shared/door-styles.ts` | the phone's title row written four times | **stays, narrowed** (Decisions, 3) — the app's copy goes with `door-styles.ts`, and the two new halves read `DoorTitle`; two copies are left, in `DoorCodeStep.native.tsx` and `DoorLinkStep.native.tsx`, and the row's cell is re-pointed at those two files. Joining changes two phone steps this part does not draw; the link step is reached on a phone by the owner alone |
+| D146 | `apps/mobile/src/screens/company-signup/` | no way back from step 3 or the request sent on the phone | **stays** — ruled in parts a and f; a new control is new behaviour |
+| D102 · D109 · D132 | `packages/ui/src/components/DoorFrame/` | the wordmark's target; 200% text; the keyboard over a field | **stay** — this part takes one selector out of `DoorFrame.css` |
+| D2 · D92 | `packages/ui/src/components/` | English left inside `ui` components | **stay** — this part adds no English to `ui` |
+| D105 | `apps/mobile/src/` | two 403s on `/notifications/devices` | **stays** |
+| D65 | `.dependency-cruiser.cjs` | nothing stops an app importing a library a package owns | **stays** — this part changes one comment there |
+
+**Order.** The words test (red) → the two words functions → the known-number e2e flow, green on today's code (Decisions, 2) → the web's before-pictures → the two components (types, web half, phone half, styles, exports) → the two screens → the four app copies and the three style files out → `InsetDoor` → the dependency-cruiser comment, `apps/mobile/CLAUDE.md`, `deferred.md`.
+
+**Errors and refusals.** None: neither frame shows a failure.
+
+**The twin screen.** Each component is its own twin: one types file, both halves, both apps, in this part.
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  subgraph apps["apps/web · apps/mobile"]
+    S["CompanySignupScreen ×2<br/>the hooks, the presses"]
+    I["InsetDoor<br/>phone only — the safe-area inset"]
+    X["KnownNumber · JoinRequestSent<br/>one set per app, removed"]
+    Y["company-signup.css · styles.ts<br/>door-styles.ts — removed"]
+  end
+  H["packages/data<br/>useSession · useCompanySignup"]
+  subgraph i18n["packages/i18n"]
+    W["knownNumberWords — new<br/>requestSentWords — new"]
+  end
+  subgraph ui["packages/ui"]
+    K["SignupKnownNumber — new"]
+    R["SignupRequestSent — new"]
+    F["DoorFrame · DoorTitle"]
+  end
+  S -->|state, presses| H
+  S -->|company, city| W
+  S -->|words, facts, presses| K
+  S -->|words, facts, presses| R
+  I -->|top inset| F
+  K --> F
+  R --> F
+  S -.-x X
+  S -.-x Y
+```
+
+##### Package changes
+- **`ui`** — exports `SignupKnownNumber`, `SignupRequestSent` and their `Props` and `Words` types; `DoorFrame.css` loses `.hg-signup-heading-deep`. Dependency direction unchanged: `contracts`, `domain`, `theme`.
+- **`i18n`** — exports `knownNumberWords` and `requestSentWords`. No new message.
+- **`apps/web` · `apps/mobile`** — lose two parts each and every door style; the phone keeps `InsetDoor`.
+- **Law 12.** No new brand, enum, token, route, table or error code. The components are held by `tsc`, as the task RFC says; said out loud again: no check compares the two halves' markup.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+Two new folders, each `packages/ui/src/components/<Name>/` (architecture §4, step 8). One folder goes: `apps/web/features/auth/components/`.
+
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| add | `packages/ui/src/components/SignupKnownNumber/SignupKnownNumber.types.ts` | the frame's props and its words' shape | Law 7 |
+| add | `packages/ui/src/components/SignupKnownNumber/SignupKnownNumber.tsx` | the web half — written from web `KnownNumber.tsx` | §4 step 8 |
+| add | `packages/ui/src/components/SignupKnownNumber/SignupKnownNumber.native.tsx` | the phone half — written from the phone's file | §4 step 8 |
+| add | `packages/ui/src/components/SignupKnownNumber/SignupKnownNumber.css` | `.hg-signup-roads` | the stylesheet follows the component |
+| add | `packages/ui/src/components/SignupKnownNumber/index.ts` | the folder's one door | `packages/ui/CLAUDE.md` |
+| add | `packages/ui/src/components/SignupRequestSent/SignupRequestSent.types.ts` | the frame's props and its words' shape | Law 7 |
+| add | `packages/ui/src/components/SignupRequestSent/SignupRequestSent.tsx` | the web half — written from web `JoinRequestSent.tsx` | §4 step 8 |
+| add | `packages/ui/src/components/SignupRequestSent/SignupRequestSent.native.tsx` | the phone half — written from the phone's file | §4 step 8 |
+| add | `packages/ui/src/components/SignupRequestSent/SignupRequestSent.css` | `.hg-signup-sent-as`, `.hg-signup-sent-route` | the stylesheet follows the component |
+| add | `packages/ui/src/components/SignupRequestSent/index.ts` | the folder's one door | `packages/ui/CLAUDE.md` |
+| modify | `packages/ui/src/index.ts` | exports the two folders | the entry |
+| modify | `packages/ui/src/styles.css` | imports the two stylesheets | the entry's styles |
+| modify | `packages/ui/src/components/DoorFrame/DoorFrame.css` | `.hg-signup-heading-deep` out | its last reader moves onto `column` |
+| add | `packages/i18n/src/copy/company-signup-off-flow.ts` | `knownNumberWords`, `requestSentWords` | beside the flow's other words |
+| modify | `packages/i18n/src/index.ts` | exports them | the entry |
+| add | `packages/i18n/tests/company-signup-off-flow.test.ts` | both frames' words, three languages | `.claude/rules/testing.md` |
+| modify | `tests/e2e/web/company-signup.spec.ts` | the known-number flow (Decisions, 2) | the signup door's spec |
+| delete | `apps/web/features/auth/components/KnownNumber.tsx` | the web copy | lifted |
+| delete | `apps/web/features/auth/components/JoinRequestSent.tsx` | the web copy | lifted |
+| delete | `apps/web/features/auth/company-signup.css` | its three rules moved | orphaned by the move |
+| modify | `apps/web/features/auth/CompanySignupScreen.tsx` | renders the two components; the stylesheet's import out | a caller |
+| delete | `apps/mobile/src/screens/company-signup/components/KnownNumber.tsx` | the phone copy | lifted |
+| delete | `apps/mobile/src/screens/company-signup/components/JoinRequestSent.tsx` | the phone copy | lifted |
+| delete | `apps/mobile/src/screens/company-signup/styles.ts` | its five styles moved | orphaned by the move |
+| modify | `apps/mobile/src/screens/company-signup/CompanySignupScreen.tsx` | renders the two components inside `InsetDoor` | a caller |
+| delete | `apps/mobile/src/screens/shared/door-styles.ts` | four styles moved or unread; `inset` beside its reader | orphaned by the move |
+| move | `apps/mobile/src/screens/shared/InsetDoorFrame.tsx` → `InsetDoor.tsx` | `InsetDoor` alone, with its one style | the name says what it exports |
+| modify | `apps/mobile/src/screens/login/LoginScreen.tsx` | one import line | a reader of the renamed file |
+| modify | `.dependency-cruiser.cjs` | the comment on `mobile-shared-parts-are-screens-only` | Law 8 |
+| modify | `apps/mobile/CLAUDE.md` | what `src/screens/shared/` holds | Law 8 |
+| modify | `docs/tasks/deferred.md` | D24 deleted; D188 narrowed and re-pointed | the rows this part meets |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the part's row, the task's `Status:`, the ledger | the task |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **Three surfaces change the code of two frames, and their three presses are re-wired.** Mitigation: the e2e flows press *Request to join* twice today and, with Decisions 2, both known-number roads; a QA row presses each road on both phones; the side-by-side rows below.
+- **`LoginScreen` on the phone changes one import.** Mitigation: `tsc`, CI's `login.yaml`, and one row that opens the phone's door.
+- **A deleted source file can leave a stale `dist`** (`CLAUDE.md` §3.6): cleared before the gate.
+- **This branch stands on an unmerged PR.** If #275's review or CI changes part f, the owner merges that into this branch; `git log` is read after every approval.
+- The rest is the task RFC's. Nothing stored or sent changes.
+
+##### Acceptance criteria and proof
+AC-1 is the task RFC's. This part's rows:
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 · contract | main-dev | required | typecheck | both components compile in `ui`'s web and native projects and at both call sites; `rg -w 'KnownNumber\|JoinRequestSent\|InsetDoorFrame' apps` finds nothing; the three style files and `apps/web/features/auth/components/` are gone | `pnpm check` |
+| AC-1 · the words | main-dev | required | unit | `knownNumberWords`: the title, its ask *One number, one account* with the pager's words, the intro, the finding's title and body, the number's label, both roads; `requestSentWords`: the title, the body naming the company and its city, *Sent as*, the prompt, the route back — in en, hi, mr; planted red: the body without the city | `packages/i18n/tests/company-signup-off-flow.test.ts` |
+| AC-1 · look | ci | required | `e2e-web` | the signup flows pass — the request sent twice, and (Decisions, 2) a number that owns a company lands on the known-number frame, *Use a different number* opens step 1 with an empty field, *Sign in with this number* opens its home — and the landing baselines at 375 and 1536 are unchanged | `company-signup.spec.ts` · `[door].spec.ts` · `login.spec.ts` |
+| AC-1 · phone flows | ci | required | `android` | `Phone flows (tests/e2e/mobile) on the emulator` runs `company-signup.yaml`, `login.yaml` | CI step |
+| side-by-side · the known number | qa-web · qa-ios · qa-android | required | `/company-signup`, a number that owns a company, its code verified; the web at 375 and 1536 | `m-duplicate-phone`, `d-duplicate-phone`: no step header, the title with its ask, the intro, the info block, the number as a fact, *Sign in with this number* full-size, *Use a different number* centred under it (`signupView`, `packages/domain/src/auth/signup-view.ts:33`); at 1536 the title and the block in the identity half, the number and both roads in the task. Ruled: D193 | QA |
+| side-by-side · the request sent | qa-web · qa-ios · qa-android | required | a fresh number steered to a standing company, *Request to join* pressed; then हिन्दी and मराठी on the frame's own control; the web at 375 and 1536 | `m-request-sent`, `-hi`, `-mr`, `d-request-sent`: no step header, the title `sp-8` under the header row, the body naming the company and the city, the *Sent as* card with the name and the grouped number, the prompt over *Create your own company instead* held at the foot. Ruled: D146 | QA |
+| the same look on the web | qa-web | required | both frames at 375 and 1536 | Main's pictures and page facts of today's code and of the lifted code, by one scratchpad script: every drawn box is at the same place and size | QA |
+| the three presses | qa-web · qa-ios · qa-android | required | the two frames above | *Use a different number* → step 1, the field empty; the same number again → *Sign in with this number* → the *You are in* beat → its home; on the request sent, *Create your own company instead* → a new company's home | QA |
+| the phone's door still opens | qa-ios · qa-android | required | a cold start, signed out | `m-normal` of `SCR-M01-01`: the door as part a pictured it | QA |
+| API | qa-api | not_applicable | — | — | no reachable API behaviour changes |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part — Decisions, 1. 32 files (0 generated, 2 task documents).
+- Code: about 820 authored lines — the four app copies deleted 252; the three style files deleted 71; `ui` about 330 (the two web halves 100, the two phone halves 125, the two types files 65, the two stylesheets 25, the indexes and entries 8, `DoorFrame.css` 7); `i18n` about 70; the two screens about 50; `InsetDoor` and `LoginScreen` about 20; the comment, `apps/mobile/CLAUDE.md` and `deferred.md` about 10.
+- Tests: about 120 authored lines — the words 90, the e2e flow 30.
+- Two files over the 30-file target, about 60 lines under the 1,000-line target. No smaller part can be accepted alone: a half without its twin, or a component without its call sites, leaves a copy in an app. The one cut that exists is the leftovers as their own PR — `door-styles.ts`, `InsetDoor`, `LoginScreen`, the comment, `apps/mobile/CLAUDE.md`, five files — at the cost of a second gate for twenty lines, and of a part g that leaves a style file with one reader's dead styles in it.
+- Order: as *Proposal*.
+
+**Owner rulings (2026-10-10, with the approval).** The RFC is approved with every recommendation: the size is A (one part, 32 files, about 820 code lines and 120 test lines); the known-number e2e flow is A (added); D188 is A (it stays, narrowed and re-pointed); the other met rows are A (D24 joins and is deleted; D146, D102, D109, D132, D2, D92, D105 and D65 stay).
+
+**Built against planned (delta as it lands).** Every planned file is built and none landed outside the table: 32 files. Planned and not built: none. Four departures inside the plan: the known-number e2e flow signs up two owners, not one — a number may ask for a second code only after the 30-second resend gap, so one wait serves both roads (`RESEND_SECONDS`, as `[door].spec.ts` waits) — and it adds about 42 seconds to each of the two projects; `deferred.md` also gains D194, D195 and a sentence in D193, all from QA, and D188's cell names `DoorFrame.native.tsx` and a fifth holder of the closing free height, `DoorNumberStep.native.tsx`, from review; the words' types (`KnownNumberWords`, `RequestSentWords`) are not exported from `i18n`'s entry, since no app names them; the proof row's beat reads *You are in*, the copy's words, where the RFC as approved wrote *You're in*.
+
+**Planted reds seen (part g):** `requestSentWords` with the city left out of the body failed `company-signup-off-flow.test.ts` › *requestSentWords* › *in en: what was sent and to whom, naming the company and its city, and the one route back*, and the *in hi* and *in mr* rows (the body read `…Pvt Ltd,  के मालिक…`); `SignupKnownNumber`'s web half with *Use a different number* wired to the other road failed `company-signup.spec.ts` › *a number that already has an account is offered its account, or another number* (`getByRole('textbox', { name: 'Mobile number' })` not found). Each restored from a scratchpad copy and green again.
+
+Checklist:
+- [x] the words test, then `knownNumberWords` and `requestSentWords`
+- [x] the known-number e2e flow, green before the lift
+- [x] `SignupKnownNumber` and `SignupRequestSent` — types, web half, phone half, styles, exports
+- [x] the two screens
+- [x] the four app copies and the three style files out; `InsetDoor`; the comment, `apps/mobile/CLAUDE.md`, `deferred.md`
+- [x] side-by-side on web, iOS, Android
+- [x] review
+- [x] the gate
+
 #### Runtime
 Branch `feat/T-M01-041a`, cut from `feat/T-M01-040` (`e4e9d978`) on a clean tree, 2026-10-10 — the owner's word, PR #268 being in review. #268 merged during QA (`c7cf0783`, the same tree), and the branch, which held no commit of its own, was moved onto `main`.
 
@@ -2570,6 +2796,44 @@ Branch `feat/T-M01-041a`, cut from `feat/T-M01-040` (`e4e9d978`) on a clean tree
 | Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
 | database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
 | test data left in `heliogrid_test` | — | made through the app's signup: four accounts with a verified number and no company (+91 98765 08511 to 08514, web); two companies named `QA F iOS 8521` in Nashik (08521, 08623) and two named `QA F Android 8631` in Nagpur (08631, 08633); two accounts whose join request is with those owners (08622, 08632) |
+
+**Part g** — branch `feat/T-M01-041g`, cut from `feat/T-M01-041f` (`e0cb30ae`), 2026-10-10 — the owner's word, PR #275 being a draft with three CI lanes running. The tree held one change that is the owner's and stays untouched: `.claude/agents/reviewer.md`.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | tab `seed` (`started_by_task`): the signup board, opened for the board pictures |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 15,528,069 · `web.log` 511,126 · `metro.log` 1,737,471 bytes | — |
+
+**Part g · QA (2026-10-11)** — one stack on `heliogrid_test`: the api and the web from source, one Metro, the iPhone 17 Pro simulator (`40ED0117…`) and the `Pixel_8_Emulator`; no worker. Both phones were started signed out, on the apps already installed (no native file changed since either install, so nothing was built). `qa-api` did not run: no row needs state made through the api.
+
+- **Rows.** Web W1–W5, iPhone I1–I10, Android A1–A10: every row passed, each difference a recorded row.
+- **Web.** Main took every picture with one scratchpad script on the running web and `qa-web` judged them: both frames at 375 and 1536, the request sent in Hindi and Marathi too, on today's code before the lift and on the lifted code. Of 132 drawn boxes compared, the known number's are the same to the pixel at both widths; on the request sent the heading's own box now hugs its words inside the new title row (its place and height are the same) and nothing drawn moved. A second script pressed the three roads: *Use a different number* opens step 1 with the field empty; *Sign in with this number* shows the *You are in* beat and opens that owner's home; *Create your own company instead* opens a new company's home. No sideways scroll in any picture; no 4xx or 5xx in the api's new lines.
+- **Phones, two phases, one sign-out by Main between.** The door as it opens; a number that owns a company → the known number with its ask, its block, the number and both roads — the title 24 points under the header row, each gap 20 (iPhone 24, 20, 20, 20; Android 24.0, 19.8, 19.8, 20.2 dp) — the ask opens *One number, one account*; *Use a different number* → step 1, the field empty; a second owner's number → *Sign in with this number* → its home. Then a fresh number steered to a standing company → *Request to join* → the request sent — the title 32 under the header row, the card 20 under the body, the prompt 8 over the button on both phones — in English, Hindi and Marathi; *Create your own company instead* → a new company's home.
+- **First-pass verdicts that were not the app.** `qa-web` failed two rows on the card's number, read as a new font: the two runs hold different digits, and each of the thirteen glyphs starts on the same 7.8-pixel advance before and after; with that evidence it passed both. `qa-ios` failed the known number's row on its number drawn in a bold proportional face: that is `PhoneValue`'s phone half, which this diff does not touch — now D194.
+- **Found, out of scope, now rows:** D194 (the known number's label in the overline role on every surface, and its number in a proportional face on both phones); D195 (the phone asks for the notification permission once a code verifies, before a company exists); D193 extended (the known number's title at 1536).
+- **Seen, and not a row.** On the iPhone the first tap on *Send code* straight after typing the number did nothing once, and the next one sent the code — the tap the keyboard takes (`tests/e2e/CLAUDE.md`). The iPhone's system log held `Socket SO_ERROR [61: Connection refused]` lines around the create, with no failed request in the api's log. The Android helper did not catch the *You are in* beat behind the permission dialog D195 names; the iPhone and the web showed it.
+- **The local web suite, on the dev server.** With the phones up the run ended 85 passed and 5 failed, and a later run of the signup spec alone 9 passed and 5 failed: four on Next's own dev badge lying over the account button — the suite's servers are the built ones — and the others on a five-second wait for the home, with the machine's load average near 30. With the phones shut down the signup spec passed 14 of 14, the new flow in both projects. `e2e-web` in CI owns the row.
+- **Mistakes found, and what now holds each.** (1) Main wrote the beat's words in a proof row and in a script as *You're in*; the copy says *You are in* — the lesson of parts b and f a third time. `docs/tasks/README.md`'s proof rule already says a row's expected result is read from the code; Main broke it on one phrase, and the row is corrected. (2) The first packet gave no ruling for `PhoneValue`'s older differences, so a helper failed a row on one; D194 now holds both, so the next packet on this frame carries them as ruled. (3) The words test's Hindi and Marathi tables read five of nine words; review found it, and each language now reads the whole object. (4) The two rewritten docs called the placeholder scaffold a thing two screens share; review found it, and both say what the folder holds.
+- **Review.** `reviewer`, pass 1: no must-fix; two should-fix (the words test's languages; the two docs' wording) and three notes (D188's fifth holder and its reopen cell; no sideways-scroll check in the new flow; the ledger not yet turned) — all applied. After the QA rows had passed the edits were two tests, one comment in `.dependency-cruiser.cjs`, `apps/mobile/CLAUDE.md`, `deferred.md` and this file; no executable line of an app or a package changed, so no row was run again.
+- **Side-by-side images** (scratchpad `pairs/`, one per frame, the board beside each surface): `m-duplicate-phone`, `d-duplicate-phone`, `m-request-sent` and its `-hi` and `-mr`, `d-request-sent`, and the door's `m-normal` on both phones.
+- **Gate.** `evaluator`: every part-g row passed or is `pending ci`. `pnpm check:all` passed on its one run — 9 build and 23 typecheck tasks, 208 test files, 3,635 tests, the OpenAPI and the catalogs fresh, the invariants on `heliogrid_test` with none skipped, nothing regenerated.
+
+#275 merged while QA ran (`e30d1056`); the branch, which held no commit of its own, was moved onto `origin/main`, whose tree equalled its base.
+
+**Measurements** — helper runs: `qa-web` 2 (the board pictures; the judging, one continuation), `qa-ios` 1 (one continuation, its second phase), `qa-android` 1 (one), `reviewer` 1 (one), `evaluator` 1; `qa-api` none; one full gate, passed. Helper tokens, as reported: `qa-web` 87 k for the board pictures and 63 k for the judging, `qa-ios` 83 k, `qa-android` 83 k, `reviewer` 210 k, `evaluator` 39 k. Main's context: about 528 k tokens, read from the session's usage while the gate ran; its turns are not counted. Size: planned 32 files, code about 820, tests about 120; built 32 files (2 task documents), code 792 authored lines and tests 178 — 3% over on all authored lines.
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` | none listening | stopped (`started_by_task`); no worker was started |
+| simulator · emulator | none booted | shut down (`started_by_task`). The simulator's keychain was reset and the emulator's app data cleared at the start, between the two phases and at the end. Both ran the apps already installed; the emulator was started without saving a snapshot |
+| browser tabs | pane closed | closed (the board's tab and three preview tabs were `started_by_task`) |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| test data left in `heliogrid_test` | — | made through the app's signup: by Main's picture scripts, six companies named `QA G <its owner's number>` in Pune, two more of the same names made by *Create your own company instead*, and two accounts with no company whose join request is with such an owner; by the phones, a second `QA G 9109576261` (+91 98765 08721) and a second `QA G 9170243773` (+91 98765 08731), each with a join request to the first; by the local runs of the web suite, its own `E2E <number>` companies |
 
 ### T-M01-003 · Onboarding — Language
 **Type:** screen · **Tier:** P0
