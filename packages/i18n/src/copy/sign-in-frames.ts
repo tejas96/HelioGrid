@@ -29,6 +29,7 @@ import {
 } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { COMPANY_SIGNUP } from './company-signup';
+import { SHELL } from './shell';
 import { SIGN_IN } from './sign-in';
 import type { DoorBlockWords } from './sign-in-google';
 
@@ -277,11 +278,15 @@ function primaryOf(label: PrimaryLabel, labels: SignInLabels): MessageRef {
 /** The block above the number step's field (`SCR-M01-01` `m-not-reached`): what failed, then why. */
 export function doorNoticeWords(translate: Translator['t'], notice: DoorNotice): DoorBlockWords {
   switch (notice) {
+    case 'access-removed':
+      // The door knows no company: a removal reaches it only through the boot check (`S1.wrong.4`).
+      return { tone: 'info', title: translate(SHELL.accessRemoved), announce: 'status' };
     case 'not-reached':
       return {
         tone: 'danger',
         title: translate(SIGN_IN.requestFailedTitle),
         body: translate(SIGN_IN.notReached),
+        announce: 'alert',
       };
   }
 }

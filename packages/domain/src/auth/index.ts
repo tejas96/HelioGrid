@@ -37,6 +37,8 @@ export { loginFrame } from './login-frame';
 export type { FrameKind } from './login-frame-kind';
 export { frameKindOf } from './login-frame-kind';
 export type {
+  BlockAnnouncement,
+  BlockTone,
   CodeError,
   CodeField,
   DoorRoad,

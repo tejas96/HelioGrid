@@ -236,3 +236,40 @@ describe('the Google door (M01-02)', () => {
     expect(loginReducer(idle, { type: 'sign-in-by-number' })).toBe(idle);
   });
 });
+
+/** Google pressed while the number step's code is sending takes the door (`SCR-M01-01` `m-loading`). */
+describe('Google over a send', () => {
+  const TOKEN: GoogleToken = { idToken: 'id-token', nonce: 'n-1', email: 'priya.sharma@gmail.com' };
+  it("Google pressed while a code is sending takes the round trip, and the send's late answer is dropped (SCR-M01-01 m-loading)", () => {
+    const sending = state({ pending: { kind: 'request', phone: PHONE, channel: 'sms' } });
+    const google = loginReducer(sending, { type: 'google' });
+    expect(google.pending).toEqual({ kind: 'google-sheet' });
+    expect(loginReducer(google, { type: 'request-ended', outcome: 'sent', now: NOW })).toBe(google);
+  });
+
+  it.each([
+    ['cancelled', { kind: 'cancelled' }],
+    ['failed', { kind: 'failed' }],
+  ] as const)(
+    'a send Google took over stays dropped once the sheet is %s: the door never jumps to a code step it did not ask for',
+    (_, result) => {
+      const sending = state({ pending: { kind: 'request', phone: PHONE, channel: 'sms' } });
+      const google = loginReducer(sending, { type: 'google' });
+      const ended = loginReducer(google, { type: 'google-sheet-ended', result });
+      expect(loginReducer(ended, { type: 'request-ended', outcome: 'sent', now: NOW })).toBe(ended);
+    },
+  );
+
+  const sendingAgain = {
+    ...cooled,
+    pending: { kind: 'request', phone: PHONE, channel: 'sms' },
+  } as const;
+  it.each<[string, LoginState]>([
+    ['a code checked', { ...cooled, pending: { kind: 'verify', code: CODE } }],
+    ['the sheet open', state({ pending: { kind: 'google-sheet' } })],
+    ['a Google token checked', state({ pending: { kind: 'google', token: TOKEN, code: null } })],
+    ['a resend on the code step', sendingAgain],
+  ])('Google pressed while %s is ignored', (_, inFlight) => {
+    expect(loginReducer(inFlight, { type: 'google' })).toBe(inFlight);
+  });
+});

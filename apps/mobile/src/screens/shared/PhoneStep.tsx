@@ -46,7 +46,7 @@ export function PhoneStep({
         </Text>
       </View>
       <View style={styles.form}>
-        {google?.failed ? <TintedBlock {...google.failed} /> : null}
+        {google?.failed ? <TintedBlock {...google.failed} announce="alert" /> : null}
         {signIn.notice === null ? null : <TintedBlock {...doorNoticeWords(t, signIn.notice)} />}
         <PhoneField
           label={t(SIGN_IN.mobileNumber)}
@@ -78,7 +78,6 @@ export function PhoneStep({
               size="lg"
               fullWidth
               loading={signIn.google?.busy}
-              disabled={busy && !signIn.google?.busy}
               spokenName={google.aria}
               onClick={() => signIn.press('google')}
             >

@@ -106,7 +106,7 @@ test('a door the person is not offered, or no door at all, is not found', async 
   for (const path of ['/proposals', '/start-survey', '/no-such-door']) {
     await page.goto(path);
     await expect(page.getByText(en.t(SHELL.comingLater))).toBeHidden();
-    await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: en.t(SHELL.notFound) })).toBeVisible();
   }
 });
 

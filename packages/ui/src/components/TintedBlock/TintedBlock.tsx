@@ -9,9 +9,21 @@ interface WebTintedBlockProps extends TintedBlockProps {
 }
 
 /** The tinted block above a locked code field or under a finding: the words carry the reason, the tint is the second channel. */
-export function TintedBlock({ tone, title, body, className, style }: WebTintedBlockProps) {
+export function TintedBlock({
+  tone,
+  title,
+  body,
+  announce,
+  className,
+  style,
+}: WebTintedBlockProps) {
   return (
-    <div className={classNames('hg-tinted-block', className)} data-tone={tone} style={style}>
+    <div
+      className={classNames('hg-tinted-block', className)}
+      data-tone={tone}
+      role={announce}
+      style={style}
+    >
       <Text variant="body-sm" color={tone} bold>
         {title}
       </Text>

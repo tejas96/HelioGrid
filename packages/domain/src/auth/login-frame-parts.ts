@@ -9,6 +9,18 @@ import type { LoginPress } from './login-state';
 export type FrameTone = 'danger' | 'warning';
 
 /**
+ * A door block's tint: the two refusal tones, and `info` for a fact that is neither a refusal nor
+ * a risk — a steer's finding (`SCR-M01-02`), an access removed (`SCR-M01-01` decision 16).
+ */
+export type BlockTone = FrameTone | 'info';
+
+/**
+ * How a door block is spoken when it appears: `alert` for one that answers a press, said at once;
+ * `status` for a fact the page opens on, read in its place (`SCR-M01-01` decision 16).
+ */
+export type BlockAnnouncement = 'alert' | 'status';
+
+/**
  * The road at the foot of the number step: the question, the label, and where it goes
  * (`SCR-M01-02`). Both doors draw one, and the other door is where it leads. A screen fills
  * it from its words and its navigator; both platforms read this one shape.
