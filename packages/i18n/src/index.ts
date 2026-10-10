@@ -27,6 +27,7 @@ export {
 } from './copy/company-signup';
 export type { CompanyFieldWords } from './copy/company-signup-frames';
 export { companyFacts, companyFieldWords } from './copy/company-signup-frames';
+export { knownNumberWords, requestSentWords } from './copy/company-signup-off-flow';
 export { companyStepWords } from './copy/company-signup-step';
 export { CONNECTION, connectionWords } from './copy/connection';
 export { AGENT_CALL_CORRELATION, agentCallCorrelation } from './copy/correlation';

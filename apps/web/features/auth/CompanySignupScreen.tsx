@@ -19,7 +19,9 @@ import {
   companyStepWords,
   explainerPagerWords,
   homeTitle,
+  knownNumberWords,
   numberStepWords,
+  requestSentWords,
   SIGN_IN,
   signInWords,
   signupExplainers,
@@ -31,15 +33,14 @@ import {
   DoorLanguage,
   DoorNumberStep,
   SignupCompanyStep,
+  SignupKnownNumber,
+  SignupRequestSent,
   SignupSteps,
   SuccessDwell,
   useFormat,
 } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import './company-signup.css';
-import { JoinRequestSent } from './components/JoinRequestSent';
-import { KnownNumber } from './components/KnownNumber';
 import { HOME_ROUTE, LOGIN_ROUTE } from './constants';
 import { keptReturnPath } from './return-path';
 import { UnreachableScreen } from './UnreachableScreen';
@@ -82,8 +83,10 @@ export function CompanySignupScreen() {
 
   if (view === 'known' && session.known !== null) {
     return (
-      <KnownNumber
-        known={session.known}
+      <SignupKnownNumber
+        language={language}
+        words={knownNumberWords(t)}
+        phoneE164={session.known.next.phoneE164}
         onEnter={session.enterKnownAccount}
         onLeave={leaveForAnotherNumber}
       />
@@ -98,8 +101,9 @@ export function CompanySignupScreen() {
   }
   if (view === 'sent' && session.user !== null && signup.found !== null) {
     return (
-      <JoinRequestSent
-        company={signup.found}
+      <SignupRequestSent
+        language={language}
+        words={requestSentWords(t, signup.found)}
         name={signup.typedName ?? session.user.name}
         phoneE164={session.user.phoneE164}
         onCreateInstead={() => void signup.createAnyway()}

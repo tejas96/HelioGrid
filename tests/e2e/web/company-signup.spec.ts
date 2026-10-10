@@ -1,7 +1,15 @@
+import { RESEND_SECONDS } from '@heliogrid/domain';
 import { COMPANY_SIGNUP, createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { type Browser, expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
-import { createCompany, expectNumberFieldRinged, fillCompanyStep } from '../support/door';
+import {
+  createCompany,
+  expectNumberFieldRinged,
+  fillCompanyStep,
+  requestCode,
+  typeCode,
+} from '../support/door';
+import { expectNoSidewaysScroll } from '../support/layout';
 import { expectTheLook } from '../support/look';
 import { freshMobile } from '../support/phone';
 
@@ -24,6 +32,43 @@ test('the signup door opens to its first step with every control named, its ask 
 
 test('a new number verifies, names its company in one step and lands on home', async ({ page }) => {
   await createCompany(page, en, freshMobile());
+});
+
+/**
+ * A number that already has an account is answered after its code verifies (`M01-08`): the frame
+ * offers that account and the way to another number, and makes no second company. Two owners, so
+ * each number asks for one more code after the one wait.
+ */
+test('a number that already has an account is offered its account, or another number', async ({
+  browser,
+  page,
+}) => {
+  // Each number's signup code is seconds old, and a second one is sent only after the resend gap.
+  test.setTimeout(90_000);
+  const [first, second] = [freshMobile(), freshMobile()];
+  for (const mobile of [first, second]) {
+    const owner = await browser.newContext();
+    await createCompany(await owner.newPage(), en, mobile);
+    await owner.close();
+  }
+  await page.waitForTimeout((RESEND_SECONDS + 1) * 1000);
+  const verify = async (mobile: typeof first) => {
+    await typeCode(page, en, await requestCode(page, en, mobile));
+    await page.getByRole('button', { name: en.t(COMPANY_SIGNUP.verifyAndContinue) }).click();
+  };
+
+  await page.goto('/company-signup');
+  await verify(first);
+  await expect(page.getByRole('heading', { name: en.t(COMPANY_SIGNUP.knownTitle) })).toBeVisible();
+  await expectNoSidewaysScroll(page);
+  await expectNoSeriousViolations(page);
+
+  await page.getByRole('button', { name: en.t(COMPANY_SIGNUP.useDifferentNumber) }).click();
+  await expect(page.getByRole('textbox', { name: en.t(SIGN_IN.mobileNumber) })).toHaveValue('');
+
+  await verify(second);
+  await page.getByRole('button', { name: en.t(COMPANY_SIGNUP.signInWithThisNumber) }).click();
+  await expect(page).toHaveURL(/\/home$/);
 });
 
 /**

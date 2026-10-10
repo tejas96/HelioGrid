@@ -17,7 +17,9 @@ import {
   companyStepWords,
   explainerPagerWords,
   homeTitle,
+  knownNumberWords,
   numberStepWords,
+  requestSentWords,
   SIGN_IN,
   signInWords,
   signupExplainers,
@@ -29,14 +31,14 @@ import {
   DoorLanguage,
   DoorNumberStep,
   SignupCompanyStep,
+  SignupKnownNumber,
+  SignupRequestSent,
   SignupSteps,
   SuccessDwell,
   useFormat,
 } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
-import { InsetDoor } from '../shared/InsetDoorFrame';
-import { JoinRequestSent } from './components/JoinRequestSent';
-import { KnownNumber } from './components/KnownNumber';
+import { InsetDoor } from '../shared/InsetDoor';
 
 /**
  * Company signup (`SCR-M01-02`): the number, the code, then three fields, over the flow
@@ -64,11 +66,15 @@ export function CompanySignupScreen() {
 
   if (view === 'known' && session.known !== null) {
     return (
-      <KnownNumber
-        known={session.known}
-        onEnter={session.enterKnownAccount}
-        onLeave={leaveForAnotherNumber}
-      />
+      <InsetDoor>
+        <SignupKnownNumber
+          language={language}
+          words={knownNumberWords(t)}
+          phoneE164={session.known.next.phoneE164}
+          onEnter={session.enterKnownAccount}
+          onLeave={leaveForAnotherNumber}
+        />
+      </InsetDoor>
     );
   }
   if (view === 'done') {
@@ -80,12 +86,15 @@ export function CompanySignupScreen() {
   }
   if (view === 'sent' && session.user !== null && signup.found !== null) {
     return (
-      <JoinRequestSent
-        company={signup.found}
-        name={signup.typedName ?? session.user.name}
-        phoneE164={session.user.phoneE164}
-        onCreateInstead={() => void signup.createAnyway()}
-      />
+      <InsetDoor>
+        <SignupRequestSent
+          language={language}
+          words={requestSentWords(t, signup.found)}
+          name={signup.typedName ?? session.user.name}
+          phoneE164={session.user.phoneE164}
+          onCreateInstead={() => void signup.createAnyway()}
+        />
+      </InsetDoor>
     );
   }
   if ((view === 'company' || view === 'join') && session.user !== null) {

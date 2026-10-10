@@ -145,10 +145,8 @@
 }
 
 /* A deep column puts its heading `sp-8` under what leads it, where the frame's gap is `sp-6`
-   (`SCR-M01-02` "375 vertical layout"). `.hg-signup-heading-deep` is the same place, named by a
-   door not yet moved onto `column`. */
-.hg-door[data-column="deep"] .hg-door-identity,
-.hg-door.hg-signup-heading-deep .hg-door-identity {
+   (`SCR-M01-02` "375 vertical layout"). */
+.hg-door[data-column="deep"] .hg-door-identity {
   margin-top: var(--sp-2);
 }
 
@@ -256,8 +254,7 @@
     width: 100%;
   }
 
-  .hg-door[data-column="deep"] .hg-door-identity,
-  .hg-door.hg-signup-heading-deep .hg-door-identity {
+  .hg-door[data-column="deep"] .hg-door-identity {
     margin-top: 0;
   }
 

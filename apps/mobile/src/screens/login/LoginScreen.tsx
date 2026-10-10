@@ -21,7 +21,7 @@ import {
 } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
 import { openGoogle } from '../../auth/google-sign-in';
-import { InsetDoor } from '../shared/InsetDoorFrame';
+import { InsetDoor } from '../shared/InsetDoor';
 import { useHardwareBack } from './hooks/use-hardware-back';
 
 /**
