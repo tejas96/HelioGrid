@@ -3,7 +3,8 @@ import { commitDraft, displayNumber, nudgeValue } from './NumberField.logic';
 import type { OutOfRangeMode } from './NumberField.types';
 
 export interface NumberDraftOptions {
-  value: number;
+  /** None: the field is unset and edits as an empty draft. */
+  value: number | undefined;
   onCommit?: (value: number) => void;
   min?: number;
   max?: number;

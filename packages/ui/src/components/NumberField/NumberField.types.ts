@@ -16,7 +16,12 @@ import type { ValueSourceLevel, ValueSourceSpec } from '../ValueSource/ValueSour
  * **Money mode is `currency` plus `outOfRange="refuse"`**, and it also drops the steppers.
  */
 export interface NumberFieldProps {
-  /** Default 0. */
+  /**
+   * The figure, or none: with no `value` the field is UNSET — an empty box beside its unit, never
+   * `0`. A figure nobody declared has no tier that could qualify it (`F8-01`), which is why this
+   * port does not take the design system's `0` default. An empty draft committed on an unset field
+   * leaves it unset; `onCommit` only ever receives a figure.
+   */
   value?: number;
   /** Fires once, on blur or Enter. Never per keystroke. */
   onCommit?: (value: number) => void;

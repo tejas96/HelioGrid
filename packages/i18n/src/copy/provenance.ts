@@ -1,5 +1,8 @@
 import type { ProvenanceStanding, ProvenanceTier } from '@heliogrid/contracts';
+import type { EnergySource, FreshnessWarning } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
+import { energySourceLabel } from './energy-source';
+import { freshnessLabel } from './freshness';
 
 /**
  * The four tiers' words (`F8-02`). The identity stays the English token; only the display is
@@ -32,4 +35,17 @@ export function tierLabel(translate: Translator['t'], tier: ProvenanceTier): str
 /** The standing in the reader's language — `translate` is the mount's `t`. */
 export function standingLabel(translate: Translator['t'], standing: ProvenanceStanding): string {
   return translate(PROVENANCE_STANDING_WORD[standing]);
+}
+
+/**
+ * Every word a provenance label prints, bound to one mount's `t` — what a root mounts
+ * `ProvenanceWordsProvider` with, once, so no label falls back to English (`F3-12`).
+ */
+export function provenanceWords(translate: Translator['t']) {
+  return {
+    tier: (tier: ProvenanceTier) => tierLabel(translate, tier),
+    standing: (standing: ProvenanceStanding) => standingLabel(translate, standing),
+    energySource: (source: EnergySource) => energySourceLabel(translate, source),
+    freshness: (warning: FreshnessWarning) => freshnessLabel(translate, warning),
+  };
 }

@@ -124,6 +124,13 @@
   background: var(--mark-subtle);
 }
 
+/* A load-bearing line: the tier is the surface's honesty contract, so its words take the secondary
+   role (F7-11). A standing keeps its own semantic colour below. */
+.hg-provenance[data-emphasis="load-bearing"],
+.hg-provenance-tier[data-emphasis="load-bearing"] {
+  color: var(--text-secondary);
+}
+
 /* Words that colour the standing itself. */
 .hg-provenance-standing[data-token="success-text"] {
   color: var(--success-text);

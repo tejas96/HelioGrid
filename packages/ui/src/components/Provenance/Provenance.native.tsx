@@ -19,6 +19,7 @@ import {
 } from './Provenance.tiers';
 import type {
   ProvenanceAlign,
+  ProvenanceEmphasis,
   ProvenanceMarkToken,
   ProvenanceProps,
   ProvenanceTierProps,
@@ -82,6 +83,12 @@ const styles = StyleSheet.create({
   },
 });
 
+/** The words' role: the quiet role, or the secondary one where the line is load-bearing (`F7-11`). */
+const WORDS: Record<ProvenanceEmphasis, TextColor> = {
+  quiet: 'tertiary',
+  'load-bearing': 'secondary',
+};
+
 const SIZE: Record<12 | 13, TextStyle> = {
   12: { fontSize: theme.type.roles.caption.fontSize },
   13: { fontSize: theme.type.roles['body-sm'].fontSize },
@@ -101,7 +108,12 @@ function Dot({ token }: { token: ProvenanceMarkToken }) {
 }
 
 /** The tier on its own — word first, dot as the second channel. */
-export function ProvenanceTier({ tier, size = 12, style }: NativeProvenanceTierProps) {
+export function ProvenanceTier({
+  tier,
+  size = 12,
+  emphasis = 'quiet',
+  style,
+}: NativeProvenanceTierProps) {
   const words = useProvenanceWords();
   const t = tierOf(tier);
   if (!t) {
@@ -111,7 +123,7 @@ export function ProvenanceTier({ tier, size = 12, style }: NativeProvenanceTierP
   return (
     <View style={[styles.part, style]}>
       <Dot token={TIER_MARK[t]} />
-      <Text variant="caption" color="tertiary" style={SIZE[step]}>
+      <Text variant="caption" color={WORDS[emphasis]} style={SIZE[step]}>
         {words.tier(t)}
       </Text>
     </View>
@@ -129,11 +141,13 @@ export function Provenance({
   size = 12,
   align = 'left',
   inline = false,
+  emphasis = 'quiet',
   style,
 }: NativeProvenanceProps) {
   const words = useProvenanceWords();
   const t = tierOf(tier);
   const step = provenanceStep(size);
+  const ink = WORDS[emphasis];
   const parts: { id: string; node: ReactNode }[] = [];
 
   /* Standing leads: "this is not final" outranks "this is how it was worked out". */
@@ -144,7 +158,7 @@ export function Provenance({
       node: (
         <View style={styles.part}>
           <Dot token={st.mark} />
-          <Text variant="caption" color={WORD_COLOR[st.color] ?? 'tertiary'} style={SIZE[step]}>
+          <Text variant="caption" color={WORD_COLOR[st.color] ?? ink} style={SIZE[step]}>
             {words.standing(standing)}
           </Text>
         </View>
@@ -160,7 +174,7 @@ export function Provenance({
           <Dot token={FRESHNESS_MARK.mark} />
           <Text
             variant="caption"
-            color={WORD_COLOR[FRESHNESS_MARK.color] ?? 'tertiary'}
+            color={WORD_COLOR[FRESHNESS_MARK.color] ?? ink}
             style={SIZE[step]}
           >
             {words.freshness(warning)}
@@ -175,7 +189,7 @@ export function Provenance({
       node: (
         <View style={styles.part}>
           <Dot token={TIER_MARK[t]} />
-          <Text variant="caption" color="tertiary" style={SIZE[step]}>
+          <Text variant="caption" color={ink} style={SIZE[step]}>
             {words.tier(t)}
           </Text>
         </View>
@@ -192,7 +206,7 @@ export function Provenance({
       parts.push({
         id,
         node: (
-          <Text variant="caption" color="tertiary" style={SIZE[step]}>
+          <Text variant="caption" color={ink} style={SIZE[step]}>
             {prose}
           </Text>
         ),

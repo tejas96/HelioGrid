@@ -15,9 +15,9 @@
 
 import type { OutOfRangeMode } from './NumberField.types';
 
-/** The edited representation. Editing is always a plain number — formatting never leaks in. */
-export function displayNumber(value: number): string {
-  return String(value);
+/** The edited representation. Editing is always a plain number — formatting never leaks in; an unset field edits as nothing. */
+export function displayNumber(value: number | undefined): string {
+  return value === undefined ? '' : String(value);
 }
 
 /** The spoken representation of a bound: "0.3 m", "2500". */
@@ -50,8 +50,8 @@ export type NumberCommit =
 
 export interface NumberCommitInput {
   draft: string;
-  /** The last good value — what a restore returns to. */
-  value: number;
+  /** The last good value — what a restore returns to; none on an unset field. */
+  value: number | undefined;
   min?: number;
   max?: number;
   precision?: number;
@@ -101,10 +101,14 @@ export function commitDraft(input: NumberCommitInput): NumberCommit {
   return { kind: 'accept', value: v, correction };
 }
 
-/** One press of +/− or ArrowUp/ArrowDown — always inside the bounds, never a refusal. */
+/**
+ * One press of +/− or ArrowUp/ArrowDown — always inside the bounds, never a refusal. From an unset
+ * field a press is one step from 0, and the bounds then hold it: with a floor the first press lands
+ * on the floor, the first figure a person would reach for.
+ */
 export function nudgeValue(opts: {
   draft: string;
-  value: number;
+  value: number | undefined;
   direction: 1 | -1;
   step: number;
   min?: number;
@@ -113,7 +117,7 @@ export function nudgeValue(opts: {
 }): number {
   const { draft, value, direction, step, min, max, precision } = opts;
   const base = Number.parseFloat(draft);
-  let v = (Number.isNaN(base) ? value : base) + direction * step;
+  let v = (Number.isNaN(base) ? (value ?? 0) : base) + direction * step;
   if (min !== undefined) v = Math.max(min, v);
   if (max !== undefined) v = Math.min(max, v);
   if (precision !== undefined) v = Number(v.toFixed(precision));

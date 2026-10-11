@@ -288,7 +288,7 @@ msgid "Asking to join sends its owner a request to add {phone}."
 msgstr "सामील होण्याची विनंती केल्यावर त्याच्या मालकाला {phone} जोडण्याची विनंती जाते."
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:13
+#: src/copy/provenance.ts:16
 msgid "Assumed"
 msgstr "गृहीत धरलेले"
 
@@ -424,7 +424,7 @@ msgid "Confirm your mobile number"
 msgstr "तुमचा मोबाइल नंबर निश्चित करा"
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:21
+#: src/copy/provenance.ts:24
 msgid "Confirmed"
 msgstr "पुष्टी झालेले"
 
@@ -519,7 +519,7 @@ msgid "Delivery"
 msgstr "डिलिव्हरी"
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:11
+#: src/copy/provenance.ts:14
 msgid "Derived"
 msgstr "गणनेतून काढलेले"
 
@@ -559,7 +559,7 @@ msgid "EPC Owner"
 msgstr "EPC मालक"
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:12
+#: src/copy/provenance.ts:15
 msgid "Estimated"
 msgstr "अंदाजित"
 
@@ -749,7 +749,7 @@ msgid "Marketing"
 msgstr "मार्केटिंग"
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:10
+#: src/copy/provenance.ts:13
 msgid "Measured"
 msgstr "मोजलेले"
 
@@ -821,7 +821,7 @@ msgid "Not published yet"
 msgstr "अजून प्रकाशित नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:24
+#: src/copy/provenance.ts:27
 msgid "Not yet calculated"
 msgstr "अद्याप गणना झालेली नाही"
 
@@ -982,7 +982,7 @@ msgid "Proposals"
 msgstr "प्रस्ताव"
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:22
+#: src/copy/provenance.ts:25
 msgid "Provisional"
 msgstr "तात्पुरते"
 
@@ -1007,7 +1007,7 @@ msgid "Recalculating"
 msgstr "पुन्हा गणना होत आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:23
+#: src/copy/provenance.ts:26
 msgid "Reported"
 msgstr "कळवलेले"
 
