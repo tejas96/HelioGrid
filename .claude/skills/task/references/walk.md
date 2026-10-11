@@ -7,7 +7,10 @@ Read this file before step 1 emits anything. The walk is read-only and reads the
    `docs/build-order.md` with `git show origin/main:<path>`.
 2. For each block from 0, inspect each task file in the row's order:
    `git show origin/main:docs/tasks/<file>.md | rg -n -e '^### T-' -e '^\*\*(Type|Status|Depends on|Blocked|Parked|DESIGN|Design):\*\*' -e '^#### Parts' -e '^\| [a-z] \|'`.
-3. Inside one task file, choose the first open row of a `#### Parts` table. Otherwise choose
+3. Inside one task file, choose the first open row of a `#### Parts` table. When an open PR's
+   head branch starts with `feat/<task id>` (`gh pr list --state open --json headRefName`), that
+   task's Parts table is read from that branch with `git show origin/<branch>:<path>`; every other
+   read stays on `origin/main`, and the new part's branch is cut from that head. Otherwise choose
    engine, policy, integration and port tasks first in file order, then screens in file order.
    A same-block dependency goes before its consumer; a task explicitly placed elsewhere follows
    the block row.

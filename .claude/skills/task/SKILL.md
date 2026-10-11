@@ -98,8 +98,9 @@ decision block.
 
 Build as `CLAUDE.md` §3 and `.claude/rules/testing.md` say, one slice at a time, each slice the
 smallest code that meets its line (`CLAUDE.md` §8 *Solve today's problem*, Law 5); each planted
-red line is recorded for the commit card. A new route, table, contract, package, affected package
-or behaviour voids the approval: update the RFC and present the delta — a banner with files and
+red line is recorded for the commit card. Before the first edit under a package or app, read its
+`CLAUDE.md`; an edit from the shell loads nothing. A new route, table, contract, package, affected
+package or behaviour voids the approval: update the RFC and present the delta — a banner with files and
 lines built against planned, the link, then one line per changed section saying what changed and
 why; an unchanged section is not named — closing with the decision block as step 3 says. The
 owner's yes to a delta covers the updated RFC whole. The chat never shows the whole RFC, not even
@@ -126,7 +127,7 @@ made after the first run is never planned: return to `references/qa.md`, continu
 then rerun every affected proof row. Then run the command that proves the change and `pnpm check`,
 and continue the same Evaluator with the updated reports for one final `pnpm check:all`. At most two
 full-gate runs belong to one Evaluator. A failure of the second, or a checked-file change after it,
-stops for the owner. Never respawn the Evaluator.
+stops for the owner. Never respawn the Evaluator; one lost to a restart follows `references/qa.md`.
 
 ## 6. Pre-commit card
 
@@ -135,18 +136,24 @@ task, the review result, every planted-red line, the changed files in three list
 built · built but not planned, each with its reason · planned but not built), the exact commit message (the task's `Status:` or the part's row
 turns `shipped` in this commit), mistakes found and the rule that now prevents each, unresolved
 blockers, the runtime cleanup state, and the measurements — tool-call turns, Main's context tokens
-from the session's usage reading, each helper's tokens, helper runs, planned versus built —
+from the session's usage reading, each helper's tokens (or `lost to a restart`), helper runs,
+planned versus built —
 written under the task's `#### Runtime` in the same commit.
 
 The commit waits for the owner's yes to THIS card (`CLAUDE.md` §4).
 
 ## 7. Draft PR and CI
 
-Push, open a DRAFT PR whose body carries the proof and the mistakes record. A failed required job
-goes to `ci-investigator` for that job only; show a CI-fix card (cause, files, proof, message);
-the owner's `fix` approves that card and the same-PR push, nothing unshown. Judge only the latest
-run of the head SHA, step by step for a phone lane (`docs/tasks/README.md` proof rules), never its
-colour alone. Mark ready when every required lane has passed; the owner merges.
+Push, open a DRAFT PR whose body carries the proof and the mistakes record. The session stays
+bound to its PR after the task ends: the app sends it every CI event, and it acts on each one
+without the owner. Judge only the latest run of the head SHA, step by step for a phone lane
+(`docs/tasks/README.md` proof rules), never its colour alone. When every required lane has passed,
+mark the PR ready yourself (`gh pr ready <number>`); the owner merges. A failed required job goes
+to `ci-investigator` for that job only; show a CI-fix card (cause, files, proof, message); the
+owner's `fix` approves that card and the push, nothing unshown. When the folder is already held
+by a later part of the same task — its branch checked out, or a dirty tree — the fix lands on that
+later branch, which carries this part, and this PR is closed as superseded by the later PR, whose
+body says so; the folder is never switched under a running task.
 
 ## 8. Teardown — on success, block, cancellation or failure
 

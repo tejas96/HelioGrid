@@ -73,7 +73,9 @@ part repeats that part's applicable AC and proof rows so the owner reads one com
    implementation order; material errors and refusals; the twin platform screen.
 7. `##### Architecture diagram` — Mermaid `flowchart LR` or `sequenceDiagram`, at most 15 nodes or
    participants, showing only changed and directly relevant boundaries. If none:
-   `No boundary change — <where the change remains>.`
+   `No boundary change — <where the change remains>.` A task RFC always draws its diagram, whole,
+   lettered by part; a part's section may read `No boundary change — see the task diagram`, and
+   the chat then draws the task's.
 8. `##### Package changes` — each package's responsibility, public exports and dependency direction;
    each new brand, enum, token, route, table or error code's protection row, and any kind no check
    holds (Law 12); otherwise a reasoned `None`.
@@ -114,7 +116,9 @@ Marathi) so the phone shows each language the states allow. `qa-android` walks t
 rows and compares no frame: both phones draw the one shared component, and the web at 375 already
 compares every language render. Web at 375 is compared with the phone frame. A state the board draws only at 375 is compared at 1536 with
 its phone frame and the board's stated 1536 rule (`docs/start-here.md`, desktop states), not flagged
-as missing. A frame with no row, or a built state with no frame and no stated rule, is a finding. A side-by-side row names only a frame the running app reaches today with data QA can make through the app; a frame it cannot reach is decided in the RFC — `not_applicable` with the reason, or proven by its component's spec — never found by QA.
+as missing. A frame with no row, or a built state with no frame and no stated rule, is a finding. A side-by-side row names only a frame the running app reaches today with data QA can make through the app; a frame it cannot reach is decided in the RFC — `not_applicable` with the reason, or proven by its component's spec — never found by QA. In a
+light cycle the row's surface is the component page on `3100`, where `qa-web` compares the frames
+the part draws.
 
 ## Delivery size and Parts
 
