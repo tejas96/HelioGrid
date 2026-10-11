@@ -2851,6 +2851,285 @@ Branch `feat/T-M01-041a`, cut from `feat/T-M01-040` (`e4e9d978`) on a clean tree
 - Given a user whose device language is in the set, when they first run the app, then the app renders in that language without their intervention (`F3-03`). → proof: QA (web and phone) a device (or browser) locale of Hindi opens first run in Hindi with the device pill on हिन्दी; a locale outside the set opens in English with the picker fully available
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: QA (web and phone) every base and brief-listed state drawn at 375px and 1536px, the colour-literal lint clean on both
 
+#### RFC
+
+##### Title
+`T-M01-003` — The app speaks the person's language from the first screen, and a new owner confirms it once
+
+##### Description
+**User impact.** A person whose phone or browser is set to Hindi or Marathi meets HelioGrid in that language on the first screen, before anyone explains a setting. A new owner then gets one screen that says which language was chosen and lets them change it. Indirectly, a new account is stored in the language the person read at the door, so the code message, signup and the home agree.
+
+Who gains: the people who work in Hindi or Marathi on the phone (the brief's Context of use) and every new owner. The problem: both apps always start in English (`apps/web/app/providers.tsx:32`, `apps/mobile/App.tsx:52`), nothing reads the device's language, the phone sends no `Accept-Language`, so a new account is stored `en` (D143), and nothing sends a new owner into setup. Sources: this task, `F3-03`, the brief, the design record.
+
+##### Goals
+- A device or browser whose first language is in the set opens the app in it; any other opens in English (AC-2) — part a.
+- A new account is stored in the language its door showed (D143) — part a.
+- A new owner meets the language step once, straight after the company is created, and Continue records it (AC-1's first-run half, AC-3) — part b.
+
+##### Non-goals
+- The permanent picker in the profile (`T-M01-011`) and the invitee's control (`T-M01-009`).
+- The later setup steps (`T-M01-004` … `T-M01-007`).
+- A web door that keeps a chosen language across a full reload (D171).
+- No new api route, table or column.
+
+##### Readiness and dependencies
+- `T-M01-025`, `T-M01-026`, `T-M01-002`, `T-FPLAT-005` and `T-FPLAT-007` are shipped.
+- `T-M01-041` is shipped (`#276`, merged 2026-10-11 as `7fe306e5`). The branch was cut from `feat/T-M01-041g` (`afe6f00b`) by the owner's word while #276 was open; it held no commit of its own and was moved onto `main` when #276 merged — the same tree.
+- Design check: `NEEDS_CHANGE` (`#### Design check`). Part a draws no frame of the board and does not wait for it; part b waits for `READY`.
+- No blocker for part a.
+
+##### Proposal
+Each part's flow is in its own RFC. Shared here:
+
+- **Two parts (owner ruling 2026-10-11).** a — the device's language decides, and signup keeps it. b — the setup gate and the language screen.
+- **What testing the requirements found** (`/task` step 2):
+  1. AC-2 has no code behind it. `T-FPLAT-005` left the device's language to this task (`docs/tasks/F-platform.md`, its ruled line: *the source locale today, the device language once `T-M01-003` resolves it*). Part a builds it.
+  2. The board's `loading` and `error` frames wait on a list of languages, and no request fetches one: the set is `UI_LANGUAGES` in code. Owner ruling 2026-10-11: no loading frame; the error is Continue's save failing (brief, decisions 6 and 8).
+  3. The not-in-set frame names the device's language. A phone cannot name a language it ships no data for. Owner ruling 2026-10-11: it is not named (brief, decision 10).
+  4. AC-1 asks for the picker *when they open their profile afterwards*, and its proof names the profile picker. `T-M01-011` builds and proves that picker — its own first `DONE WHEN` line is the same row. Recommended: this task proves the first-run half, and the profile half's row here is `not_applicable — T-M01-011 owns it`. The other way costs `SCR-M01-11`'s language block built here, ahead of its task.
+  5. The record says an invited employee reaches this screen; the brief says not (owner ruling 2026-08-31). The brief is later and wins; the redraw corrects the record.
+  6. *The device's language* is read as the FIRST language the device lists — `F3-03` says it in the singular. A second listed language is not used: part b's notice (*not in HelioGrid yet*) would then be untrue.
+  7. The brief's gap 2 is already closed: an option card carries its own `lang` (`packages/ui/src/components/OptionCardGroup/OptionCardGroup.types.ts:14`). The brief now says so.
+
+##### Architecture diagram
+Per part.
+
+##### Package changes
+Per part.
+
+##### Data and schema changes
+None — no stored shape changes in either part.
+
+##### File and folder changes
+Per part; `#### Parts` is the budget.
+
+##### API and contract changes
+Per part.
+
+##### Risks and rollout
+Per part.
+
+##### Acceptance criteria and proof
+- **AC-1** — Given any user of any preset, when they open onboarding for the first time and when they open their profile afterwards, then a language picker is available on both platforms, listing each language in its own script and name (`F3-03`).
+- **AC-2** — Given a user whose device language is in the set, when they first run the app, then the app renders in that language without their intervention (`F3-03`).
+- **AC-3** — Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+
+Each part's RFC holds its rows of the one matrix.
+
+##### Delivery size
+Two parts. a: about 19 files, sized in its RFC. b: sized in its own RFC, written when the board is `READY`.
+
+#### Parts
+
+| part | what | AC | depends on | status |
+|---|---|---|---|---|
+| a | the app opens in the device's language, a door's choice is where sign-out returns, and a new account is stored in its door's language (`#### Part a · RFC`) | AC-2 (the app's language) | `T-M01-041` | shipped |
+| b | the setup gate and the language screen — its own RFC | AC-1 (first run), AC-2 (the pill, the not-in-set notice), AC-3 | a · the redraw of `SCR-M01-03` (`#### Design check`) | open |
+
+#### Part a · RFC
+
+##### Title
+`T-M01-003a` — The app opens in the device's language, and signup keeps it
+
+##### Description
+**User impact.** A person with a Hindi or Marathi phone or browser sees the sign-in door in that language at once, and the code message comes in it. After signup, step 3 and the home stay in it; today they flip to English. Indirectly, sign-out returns the door to the device's language, or to the one chosen on the door, never to the last person's.
+
+Who gains: every Hindi or Marathi reader at their first minute. The problem: both mounts start on `UI_SOURCE_LOCALE` and nothing reads the device (`apps/web/app/providers.tsx:32`, `apps/mobile/App.tsx:52`); the phone sends no `Accept-Language`, and the browser sends its own setting, never the door's choice, so `languageOf` (`apps/api/src/modules/auth/auth.controller.ts:31`) stores a new account as `en` or as the browser's language (D143). The rest is the task RFC's.
+
+##### Goals
+- Web: a browser whose first language is `hi` or `mr` opens `/login` in it; `ta` opens English.
+- Phones: the same from the device's first language, on a cold start, signed out.
+- A number that signs up at a Hindi door — by the device, or by the door's own control — is stored `hi`: `GET /auth/session` answers `actor.interfaceLanguage: "hi"`, and step 3 and the home read Hindi.
+- A returning person's stored language still wins after sign-in; sign-out returns to the door's language.
+- One function turns a language tag into a language of the set; the api and both apps call it.
+
+##### Non-goals
+- No new screen, word, route, contract field or table.
+- No server render in the device's language: the web's first HTML stays English until the catalog arrives (*Risks*).
+- The pill and the not-in-set notice — part b.
+- D171: a door's choice is still lost on a full reload; the reload now returns to the device's language.
+
+##### Readiness and dependencies
+- As the task RFC. No design check applies: this part draws no frame.
+- No native file changes, so neither phone app is rebuilt.
+- Main sets and restores each device's language for QA (`#### Runtime`).
+- No blocker.
+
+##### Proposal
+**Flow.**
+1. The app starts. The web reads `navigator.languages[0]` in `providers.tsx` (the browser only; the server has none). The phone reads the device's first language in `apps/mobile/src/i18n.ts` through React Native's own modules — `Settings.get('AppleLanguages')` on iOS, `I18nManager.getConstants().localeIdentifier` on Android.
+2. `uiLanguageOfTag(tag)` in `packages/domain` answers `hi`, `mr`, `en` or `null`. It reads the primary subtag, split at `-` or `_`, in any case.
+3. Each app hands `device` — that answer, or the source language — to `LanguageFollowsUser`. The provider rests in it: with nobody signed in it switches to it as a followed change, so nothing is persisted and the web's `<html lang>` moves.
+4. A choice on the door's control, made while nobody is signed in, becomes the resting language. This replaces the line that samples `runtime.locale` when a follow starts (`packages/i18n/src/react/provider.tsx:105`): with a catalog still loading, that line would record English.
+5. Every api call carries `Accept-Language` with the mount's language: each app gives `createDataLayer` a `language` reader, and the transport sets the header in its browser and mobile modes.
+6. The api's `languageOf` calls `uiLanguageOfTag` on the header's first tag. The code message and a new account take that language (`auth.controller.ts:61,68,80`, `auth.service.ts:209`), as today.
+7. Sign-in: the session's language is followed, as today. For a new account it equals the door's, so nothing flips.
+8. Sign-out: the mount returns to the resting language.
+
+**Key decisions.**
+- The first listed language only — the task RFC's finding 6.
+- The web reads the browser on the client, not in the server render: `createI18nRuntime` paints English first by design (`packages/i18n/src/runtime.ts:81`), and both gates draw nothing during the boot check, so the switch lands before the door shows. The server way costs catalogs loaded in the render and a root layout that reads request headers on every route.
+- React Native's own modules, not a new package: no dependency and no native rebuild.
+- A header, not a body field: the api already reads it, no contract changes, and an old phone keeps working.
+- `language` is required in the data layer's config: an app that forgets it does not compile.
+
+**Order.** The domain test, then `uiLanguageOfTag` · the api test, then `languageOf` · the two web flows, red · the provider and `LanguageFollowsUser` · the data layer and the transport · the web's wiring · the phone's wiring and its device read, checked on both devices before anything depends on it · the documents · QA, review, the gate.
+
+**Refusals.** A device that answers nothing, or a tag outside the set, gives English. A catalog that does not load leaves the mount in the language it had (`provider.tsx:116`, unchanged).
+
+**The twin.** No screen is new. Both app roots change the same way.
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  device[Device or browser: first language] --> read[App root reads it]
+  read --> tag[domain: uiLanguageOfTag]
+  tag --> provider[i18n provider: rests in the device language]
+  doorControl[Door language control] --> provider
+  session[Session: the account's language] --> provider
+  provider --> words[Every screen's words]
+  provider --> transport[data transport: Accept-Language]
+  transport --> api[api: languageOf]
+  api --> tag
+  api --> message[Code message language]
+  api --> account[(user_account.interface_language, at creation)]
+  account --> session
+```
+
+##### Package changes
+- `domain` — `uiLanguageOfTag(tag: string | undefined): UiLanguage | null`, beside `uiLanguageOrSource` in `format/languages.ts`, exported from `format`. It imports nothing.
+- `i18n` (`./react`) — `HelioI18nProviderProps.device?` and `LanguageFollowsUserProps.device`; the resting rule of step 4. The runtime: the last language asked for wins over one whose catalog is still loading, and the provider tells the runtime every language it follows, the active one too.
+- `data` — `DataLayerConfig.language: () => UiLanguage`, passed through `composition.ts` to the transport. `data` → `contracts` only, as today.
+- `api` — `auth.controller.ts` calls the domain function; its own split of the tag goes.
+- `web`, `mobile` — the wiring.
+- Law 12: no brand, enum, token, route, table or error code is new. `Accept-Language` is HTTP's own name.
+
+##### Data and schema changes
+None — no stored shape changes. `user_account.interface_language` receives `hi` or `mr` at creation where it received `en`; every reader already reads the three.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/domain/src/format/languages.ts` | `uiLanguageOfTag` | the language set's owner |
+| modify | `packages/domain/src/format/index.ts` | its export | the package's entry |
+| modify | `packages/domain/tests/format/languages.test.ts` | the tag table | the file's test |
+| modify | `apps/api/src/modules/auth/auth.controller.ts` | `languageOf` calls it | the one reader of the header |
+| add | `apps/api/tests/auth/account-language.test.ts` | a new account's language by header | the auth module's tests |
+| modify | `packages/i18n/src/react/provider.tsx` | `device`, the resting rule | the provider |
+| modify | `packages/i18n/src/react/follows-user.tsx` | passes `device` | the shared follow |
+| modify | `packages/i18n/src/runtime.ts` | the last switch asked for wins | the one place a catalog becomes active |
+| modify | `packages/i18n/tests/runtime.test.ts` | its two cases | the file's test |
+| modify | `packages/i18n/CLAUDE.md` | the follow line names `device` | the package's own note |
+| modify | `packages/data/src/data-layer.ts` | `language` in the config | the layer's config |
+| modify | `packages/data/src/composition.ts` | passes it on | the registry's config |
+| modify | `packages/data/src/transport/transport.ts` | sets the header | where `x-client-version` is set |
+| modify | `apps/web/app/providers.tsx` | the browser read, both wirings | the web's provider root |
+| modify | `apps/mobile/src/i18n.ts` | the device read | the app's language wiring |
+| modify | `apps/mobile/App.tsx` | both wirings | the phone's provider root |
+| modify | `tests/e2e/web/login.spec.ts` | a Hindi and a Tamil browser | the door's flow |
+| modify | `tests/e2e/web/company-signup.spec.ts` | signup at a Hindi door stays Hindi; a door's choice survives sign-out | signup's flow |
+| modify | `docs/tasks/deferred.md` | D143, D171, D120, D145 (Decisions) | the rows' file |
+| modify | `docs/ux/briefs/SCR-M01-03-onboarding-language.md` | the three rulings, the word plan, `Redesign owed` | the screen's brief |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the ledger, the part's row | the task |
+| modify | `.claude/skills/task/SKILL.md` · `.claude/agents/design-check.md` | D120's rule: the board is read beside the record | the step and its helper — only if D120 joins |
+
+##### API and contract changes
+None — no route, schema or error changes. One request header: both clients send `Accept-Language` with the mount's language on every call, and the api reads it on `POST /auth/otp/request`, `POST /auth/otp/verify` and the Google sign-in, as it does now. An old phone sends none and is answered in English, as today; a new client on an old api is read the same way.
+
+##### Risks and rollout
+- **The phone's device read.** React Native 0.86's `Settings` and `I18nManager` are read on the simulator and the emulator before the wiring is trusted. If both attempts fail on a device, the fallback is `react-native-localize` — a new dependency and a native rebuild — and that returns as an RFC delta.
+- **A moment of English on the web.** `/company-signup` has no gate and may show English until the Hindi catalog arrives. QA measures it; a flash a person can see becomes a `deferred.md` row.
+- **The code message.** A phone user's code message was always English; it now follows the door. A sentence with no Hindi version falls back to English (`F3-05`).
+- **Baselines.** Playwright runs an `en-US` browser and CI's emulator is English, so every committed look and phone flow is unchanged.
+- **Rollout.** No migration and no stored shape; any mix of old and new clients and api is safe (*API and contract changes*).
+
+##### Acceptance criteria and proof
+AC-2 is the task RFC's. This part's rows:
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-2 · a tag's language | main-dev | required | unit | `hi`, `hi-IN`, `hi_IN`, `HI-in` → `hi`; `mr-IN` → `mr`; `en-GB` → `en`; `ta`, `ta-IN`, the empty tag, no tag → `null`; planted red: the split at `_` removed | `packages/domain/tests/format/languages.test.ts` |
+| AC-2 · a new account's language | main-dev | required | unit, `heliogrid_test` | a fresh number verified under `Accept-Language: hi-IN` reads `interfaceLanguage: hi`; under `ta-IN`, and with no header, `en`; an `en` account verified under `hi` stays `en` | `apps/api/tests/auth/account-language.test.ts` |
+| AC-2 · the last switch wins | main-dev | required | unit | a switch asked for while an earlier one still loads wins — back to the active language, and on to a third | `packages/i18n/tests/runtime.test.ts` |
+| AC-2 · the account's language wins a late catalog | ci | required | `e2e-web` | an English account reloads on a `hi-IN` browser with the Hindi catalog held until the English home is drawn → the home stays English, `<html lang="en">` | `login.spec.ts` |
+| AC-2 · the web's door | ci | required | `e2e-web` | a `hi-IN` browser opens `/login` with the Hindi heading and *Send code*, and `<html lang="hi">`; a `ta-IN` browser opens it in English; the committed looks are unchanged | `login.spec.ts` |
+| AC-2 · signup keeps it (D143) | ci | required | `e2e-web` | a `hi-IN` browser, a fresh number, a company created → the home in Hindi and the session `hi`; an English browser with the door switched to मराठी → the home in Marathi, and after sign-out the door in Marathi | `company-signup.spec.ts` |
+| AC-2 · the running api | qa-api | required | api `8084` | request and verify a fresh number with `Accept-Language: hi` → `GET /auth/session` answers `actor.interfaceLanguage: "hi"` | QA |
+| AC-2 · the web | qa-web | required | `/login`, a `hi-IN` browser, 375 and 1536 | the door opens in Hindi; a fresh signup's step 3 and home are in Hindi; sign-out returns the Hindi door; an English account signing in there gets its English home | QA |
+| AC-2 · the phones | qa-ios · qa-android | required | the device set to Hindi by Main, a cold start, signed out | the door opens in Hindi; a fresh signup's step 3 and shell are in Hindi; sign-out returns the Hindi door; the device set to Tamil opens the door in English | QA |
+| the phone flows | ci | required | `android` | `Phone flows (tests/e2e/mobile) on the emulator` runs `boot.yaml`, `login.yaml`, `company-signup.yaml` | CI step |
+| side-by-side | — | not_applicable | — | — | this part draws no frame of `SCR-M01-03`; the door's language frames are `T-M01-039`'s proven rows |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part. Under both targets.
+- **As built: 23 files** (0 generated, 3 task documents, 2 harness files) — the 20 of the file table as approved, and the three `packages/i18n` rows added in the build.
+- **Code as built: about 230 authored lines** — `domain` 11, the api 6, `i18n` 67 (the provider 40, the runtime 8, the follow 13, the package note 6), `data` 36, the web 31, the phone 57 (its root's data layer moved inside `App`, counted on both sides), the two harness files 11, `deferred.md` 8.
+- **Tests as built: about 275 authored lines** — the tag table 27, the runtime's cases 14, the api test 108, the web flows 125 (signup 56, the door and the forced-order flow 69).
+- The estimate approved was about 19 files, 130 code lines and 150 test lines. The build is above it by more than the fifth `docs/tasks/README.md` allows, so the size is ruled again with the delta: the files by the three `i18n` rows; the code by the provider's and the runtime's rules, each with its constraint comment, and by the phone root's move; the tests by the api test's fixture and clean-up and by the forced-order flow the review asked for.
+- Documents beside them: the brief (46 lines) and this RFC.
+- Order: as *Proposal*.
+- **Size ruling (2026-10-11):** the owner approved part a at its built size — 23 files, about 230 code lines and about 275 test lines.
+
+**Owner rulings (2026-10-11, with the approval).** The RFC is approved with every recommendation: AC-1's profile half is `T-M01-011`'s, and its row here is `not_applicable`; D143 joins part a, narrowed to the Hindi shell's side-by-side and re-pointed; D120 joins and is deleted; D145 stays, re-pointed to `T-M01-004 starts`; D172 stays for part b's RFC to rule.
+
+**Built against planned (delta as it lands).** Every planned file is built. Three landed outside the table, all in `packages/i18n`, which the RFC names: `src/runtime.ts` and `tests/runtime.test.ts` — the last language asked for wins over one whose catalog is still loading; without it an English account reloading on a Hindi browser ends in Hindi, because the device's switch finishes after the session's — and `CLAUDE.md`, whose line names the provider's props. Planned and not built: none. One departure inside the plan: the phone's data layer is built inside `App`, beside the runtime as the web's is, so it can read the mount's language; it was a module constant. `deferred.md` also gains D196, from QA. The review found the runtime's rule unreached from the provider — a follow equal to the active language returned before the runtime was told — and `login.spec.ts` gained the flow that forces that order.
+
+**Planted reds seen (part a):** `uiLanguageOfTag` with the split at `_` removed failed `languages.test.ts` › *uiLanguageOfTag* › *reads "hi_IN" as hi, by its primary subtag*; `languageOf` answering the source language for every header failed `account-language.test.ts` › *a new number verified at a Hindi door is stored in its language*. Seen red before their code: `runtime.test.ts` › *lets the last switch asked for win over one still loading — back to the active language*; `login.spec.ts` › *a hi-IN browser* and *a mr-IN browser* › *opens the door in …*; `company-signup.spec.ts` › *a company made at the Hindi door opens its home in Hindi* and *a language chosen on the door is the new account’s, and where sign-out returns* — the last one stopping at step 3, which was in English (D143 on the running app); and, after the review, `login.spec.ts` › *an English account reloading on a hi-IN browser keeps its English when the Hindi catalog arrives late*, whose home read `मुख्य` until the provider told the runtime.
+
+Checklist:
+- [x] the tag test, then `uiLanguageOfTag`; the api test, then `languageOf`
+- [x] the two web flows, red
+- [x] the provider and `LanguageFollowsUser`
+- [x] the data layer and the transport
+- [x] the web's wiring; the phone's wiring and device read
+- [x] `deferred.md`; D120's rule
+- [x] QA on the web, iOS, Android and the api
+- [x] review
+- [x] the gate
+
+#### Design check
+`NEEDS_CHANGE` — 2026-10-11, on the record `SCR-M01-03 - decisions &amp; self-audit.md` read beside the board `SCR-M01-03 Onboarding Language - Mobile.dc.html` (60,930 bytes, under the read cap — D120's first run). The board holds nine frames: six at 375 (default, loading, empty, error, device-language-default in Marathi, device-language-not-in-set) and three at 1536 (default, error, not-in-set).
+
+The findings, each now a line of the brief's `## Redesign owed`: explaining paragraphs in the reading flow and no word plan; an error block that reassures; a pill that says *phone* on a frame that says *computer*; no Hindi frame and no measured language proof; no 1536 alignment numbers; a three-list audit with passes that name nothing on this screen; and the record against its own board — *7 at 1536* where three are drawn, the arc bar, two gaps against three, a frame *the next pass draws* — and against the brief on who reaches the screen. Three owner rulings of the same day are in the brief with them (decisions 6, 8 and 10).
+
+The owner redraws in the Claude Design project from the brief; then the record is fetched and checked again. Part a draws no frame and does not wait.
+
+#### Runtime
+Branch `feat/T-M01-003a`, cut from `feat/T-M01-041g` (`afe6f00b`), 2026-10-11 — the owner's word, PR #276 being open. #276 merged before the build (`7fe306e5`, the same tree), and the branch, which held no commit of its own, was moved onto `main`. The tree held the owner's uncommitted `.claude/agents/reviewer.md`, which is theirs and is in no commit of this task.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| device language | iPhone 17 Pro `AppleLanguages` (`en-US`, `en-IN`) · `Pixel_8_Emulator` system languages `en-US` | simulator `40ED0117-7FB4-4A1E-BCA4-08A160670C63` · emulator `emulator-5554` |
+| browser tabs | pane closed | — |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 17,954,251 · `web.log` 546,777 · `metro.log` 1,746,715 bytes | — |
+
+**Part a · QA (2026-10-11)** — one stack on `heliogrid_test`: the api and the web from source, one Metro, the iPhone 17 Pro simulator and the `Pixel_8_Emulator`, both on the apps already installed — no native file changed, so nothing was rebuilt. Main set each device's language, cold-started the apps and restored the languages after; the helpers drove only the app.
+
+- **The device read, before anything depended on it.** iPhone with `AppleLanguages` (`hi-IN`, `en-US`): the door opened in Hindi on the first try. Android with the system list Hindi, English: the same. The emulator ignores `settings put system system_locales` and `persist.sys.locale` (both are overwritten at the framework's restart), so its language was set through its own Settings screen.
+- **Rows, first pass.** `qa-api` A1–A4 passed: a fresh number under `hi` is stored `hi`, under `mr_IN` `mr`, under `ta-IN` `en`, and the standing `…904` account stays `en` under `hi`. `qa-web` W1–W5 passed on Main's pictures at 375 and 1536: a `hi-IN` browser's door, a fresh signup's step 3 and home, the door after sign-out, an English account's home at the Hindi door, and a `ta-IN` browser's English door. `qa-ios` and `qa-android` P1–P3 passed on fresh numbers: the Hindi door, every signup step and the shell in Hindi, the code message in Hindi, and sign-out back to the Hindi door.
+- **The review's blocker, and the rerun.** `reviewer`: one blocker — a follow equal to the active language returned before the runtime was told, so an English account reloading on a Hindi browser could end in Hindi — and five smaller findings; all applied, then clean. The forced-order flow reproduced the blocker on the running web before the fix. Every web and phone row then ran again on the final code and passed: W1–W5 with W4b (the English home after a full reload), P1–P3 on new fresh numbers, and P4 — the iPhone and the emulator set to Tamil open the door in English.
+- **Android's own fallback.** With Bodo first in the list — a language Android says is not available as a system language — the system itself fell back to Hindi and the app opened in Hindi with it. The app reads the language Android resolved, which is what the phone shows.
+- **Measured for D196.** On the development server a `hi-IN` browser showed `/company-signup`'s English heading for 833 ms at 375 and 1,496 ms at 1536 before the Hindi one; `/login`, behind its gate, 26 ms and 14 ms.
+- **Words that read in English in the Hindi flow, all older rows:** `STEP n OF 3` in the step header (`docs/tasks/UI.md`, `Stepper`), `digit n` in the code boxes' names (D2), `EPC Owner` on step 3 (D186).
+- **Local web flows.** The new flows pass on the running web at both viewports, but for the door's-choice flow's last step: the development badge covers the account button, as it does for four older tests, so its sign-out half is the `e2e-web` lane's; the same sign-out was pictured by Main's script with the badge hidden (W3).
+
+**Measurements** — helper runs: `design-check` 1, `qa-api` 1, `qa-web` 1 (one continuation), `qa-ios` 1 (three), `qa-android` 1 (two), `reviewer` 1 (one), `evaluator` 1; one full gate, passed — 209 test files, 3,652 tests, the invariants on `heliogrid_test`, nothing regenerated. Helper tokens, as reported: `design-check` about 63 k, `qa-api` 32 k, `qa-web` 66 k, `qa-ios` 69 k, `qa-android` 45 k, `reviewer` 113 k, `evaluator` 35 k. Main's own turns and tokens are not counted. Size: planned about 19 files, code about 130, tests about 150; built 23 files, code about 230, tests about 275 (*Delivery size*).
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` | none | stopped (`started_by_task`) |
+| simulator · emulator | none booted | shut down (`started_by_task`); both apps are the builds that were installed |
+| device language | iPhone (`en-US`, `en-IN`) · emulator `en-US` | restored: iPhone (`en-US`, `en-IN`) · emulator `en-US`, the three added languages removed |
+| browser tabs | pane closed | closed (`seed`, `tab-1`, `tab-2` were `started_by_task`) |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| test data left in `heliogrid_test` | — | four owners with a company each (+91 98765 08911, 08912, 08921, 08922), three accounts with no company (08931–08933), and the web flows' own `E2E <number>` companies — all made through the app |
+
 ### T-M01-004 · Setup — What You Sell
 **Type:** screen · **Tier:** P0
 **Status:** designed

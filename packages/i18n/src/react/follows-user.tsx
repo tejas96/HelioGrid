@@ -19,6 +19,11 @@ export interface LanguageFollowsUserProps {
   runtime: I18nRuntime;
   /** The signed-in person's own language, or null when nobody is signed in. */
   follow: UiLanguage | null;
+  /**
+   * The device's own language, or the source language where the set does not hold it (`F3-03`).
+   * Required: an app that forgets it would open in English on every device and still compile.
+   */
+  device: UiLanguage;
   /** Persist a language the person chose on THIS mount. Never called for a followed change. */
   onChosen: (next: UiLanguage) => void;
   /**
@@ -32,6 +37,7 @@ export interface LanguageFollowsUserProps {
 export function LanguageFollowsUser({
   runtime,
   follow,
+  device,
   onChosen,
   onDocumentLanguage,
   children,
@@ -44,7 +50,12 @@ export function LanguageFollowsUser({
     [onChosen, onDocumentLanguage],
   );
   return (
-    <HelioI18nProvider runtime={runtime} follow={follow} onLocaleChange={onLocaleChange}>
+    <HelioI18nProvider
+      runtime={runtime}
+      follow={follow}
+      device={device}
+      onLocaleChange={onLocaleChange}
+    >
       {children}
     </HelioI18nProvider>
   );

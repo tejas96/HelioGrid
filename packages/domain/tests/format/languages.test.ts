@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { inLanguage, packLabel, uiLanguageOrSource } from '../../src/format/languages';
+import {
+  inLanguage,
+  packLabel,
+  uiLanguageOfTag,
+  uiLanguageOrSource,
+} from '../../src/format/languages';
 import { formatMoney } from '../../src/format/money';
 import { IN_FORMATS } from '../../src/format/pack';
 
@@ -35,6 +40,26 @@ describe('uiLanguageOrSource — a language this build does not know (F3-26)', (
     expect(uiLanguageOrSource('')).toBe('en');
     expect(uiLanguageOrSource('HI')).toBe('en');
   });
+});
+
+describe('uiLanguageOfTag — a device, browser or header tag read as a language of the set (F3-03)', () => {
+  it.each([
+    ['hi', 'hi'],
+    ['hi-IN', 'hi'],
+    ['hi_IN', 'hi'],
+    ['HI-in', 'hi'],
+    [' mr-IN', 'mr'],
+    ['en-GB', 'en'],
+  ] as const)('reads %j as %s, by its primary subtag', (tag, language) => {
+    expect(uiLanguageOfTag(tag)).toBe(language);
+  });
+
+  it.each([['ta'], ['ta-IN'], ['hindi'], [''], [undefined]] as const)(
+    'answers null for %j — not offered is never English',
+    (tag) => {
+      expect(uiLanguageOfTag(tag)).toBeNull();
+    },
+  );
 });
 
 describe('money renders identically in every IN language (F1-46, F1-47, F3-20)', () => {

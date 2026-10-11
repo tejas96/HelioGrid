@@ -1,7 +1,8 @@
 'use client';
-import { UI_SOURCE_LOCALE } from '@heliogrid/contracts';
+import { UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
 import { createDataLayer } from '@heliogrid/data';
 import { DataProvider, useSession } from '@heliogrid/data/react';
+import { uiLanguageOfTag } from '@heliogrid/domain';
 import { installFormsErrorMap } from '@heliogrid/forms';
 import { createFormsValidationMessage, createI18nRuntime, type I18nRuntime } from '@heliogrid/i18n';
 import { LanguageFollowsUser, type LocaleChange, useI18n } from '@heliogrid/i18n/react';
@@ -27,7 +28,6 @@ export function Providers({ children }: { children: ReactNode }) {
    * module-level `setupI18n('en')` meant one shared, mutable active locale for every
    * concurrent server render.
    */
-  const [dataLayer] = useState(() => createDataLayer({ baseUrl: API_URL }));
   const [i18nRuntime] = useState(() => {
     const runtime = createI18nRuntime(UI_SOURCE_LOCALE);
     /*
@@ -39,10 +39,14 @@ export function Providers({ children }: { children: ReactNode }) {
     installFormsErrorMap(createFormsValidationMessage(runtime.t));
     return runtime;
   });
+  const [dataLayer] = useState(() =>
+    createDataLayer({ baseUrl: API_URL, language: () => i18nRuntime.locale }),
+  );
+  const [device] = useState(deviceLanguage);
 
   return (
     <DataProvider layer={dataLayer}>
-      <SessionLanguage runtime={i18nRuntime}>
+      <SessionLanguage runtime={i18nRuntime} device={device}>
         {/* The launch market until a tenant's pack is read — the door runs before any tenant exists
             — and the ONE portal host every menu, sheet and modal escapes its screen through. */}
         <ReaderMarket>
@@ -51,6 +55,16 @@ export function Providers({ children }: { children: ReactNode }) {
       </SessionLanguage>
     </DataProvider>
   );
+}
+
+/**
+ * The browser's first language where the set holds it (`F3-03`), else the source language. The
+ * server has no browser to ask, so it answers the source language and the first paint is the
+ * server's English either way; the mount moves to the device's language once it is mounted.
+ */
+function deviceLanguage(): UiLanguage {
+  const first = typeof navigator === 'undefined' ? undefined : navigator.languages[0];
+  return uiLanguageOfTag(first) ?? UI_SOURCE_LOCALE;
 }
 
 /**
@@ -68,7 +82,15 @@ function ReaderMarket({ children }: { children: ReactNode }) {
  * shared with the phone; what stays here is web's alone — `<html lang>` and `dir`, which the
  * server wrote for the source locale and which assistive technology reads on every switch.
  */
-function SessionLanguage({ runtime, children }: { runtime: I18nRuntime; children: ReactNode }) {
+function SessionLanguage({
+  runtime,
+  device,
+  children,
+}: {
+  runtime: I18nRuntime;
+  device: UiLanguage;
+  children: ReactNode;
+}) {
   const { user, setInterfaceLanguage } = useSession();
   const onDocumentLanguage = useCallback(({ meta }: LocaleChange) => {
     document.documentElement.lang = meta.tag;
@@ -78,6 +100,7 @@ function SessionLanguage({ runtime, children }: { runtime: I18nRuntime; children
     <LanguageFollowsUser
       runtime={runtime}
       follow={user?.interfaceLanguage ?? null}
+      device={device}
       onChosen={(next) => void setInterfaceLanguage(next)}
       onDocumentLanguage={onDocumentLanguage}
     >

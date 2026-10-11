@@ -4,11 +4,18 @@ import {
   CONNECTION,
   createTranslator,
   LANGUAGE_META,
+  SHELL,
   SIGN_IN,
 } from '@heliogrid/i18n';
 import { expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
-import { expectNumberFieldRinged, requestCode, typeCode, wrongCodeFor } from '../support/door';
+import {
+  createCompany,
+  expectNumberFieldRinged,
+  requestCode,
+  typeCode,
+  wrongCodeFor,
+} from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
 import { expectTheLook } from '../support/look';
 import { freshMobile } from '../support/phone';
@@ -91,6 +98,66 @@ for (const [drop, cut] of [
     await expect(page.getByRole('button', { name: en.t(SIGN_IN.sendCode) })).toBeEnabled();
   });
 }
+
+/**
+ * The door opens in the browser's first language where the set holds it, with nothing asked of the
+ * person (`F3-03`), and in English where it does not.
+ */
+for (const [browserLanguage, language] of [
+  ['hi-IN', 'hi'],
+  ['mr-IN', 'mr'],
+  ['ta-IN', 'en'],
+] as const) {
+  test.describe(`a ${browserLanguage} browser`, () => {
+    test.use({ locale: browserLanguage });
+
+    test(`opens the door in ${LANGUAGE_META[language].endonym}`, async ({ page }) => {
+      const t = await createTranslator(language);
+      await page.goto('/login');
+
+      await expect(page.getByRole('heading', { name: t.t(SIGN_IN.signIn) })).toBeVisible();
+      await expect(page.getByRole('button', { name: t.t(SIGN_IN.sendCode) })).toBeVisible();
+      await expect(page.locator('html')).toHaveAttribute('lang', LANGUAGE_META[language].tag);
+    });
+  });
+}
+
+/**
+ * A signed-in person's own language wins over the browser's (`F3-02`), in the one order that could
+ * lose it: the browser's catalog still loading when the session answers. The Hindi catalog is held
+ * until the English home is drawn, so the overlap is forced.
+ */
+test('an English account reloading on a hi-IN browser keeps its English when the Hindi catalog arrives late', async ({
+  browser,
+}) => {
+  const owner = await browser.newContext();
+  await createCompany(await owner.newPage(), en, freshMobile());
+  const signedIn = await owner.storageState();
+  await owner.close();
+
+  const hindiBrowser = await browser.newContext({ locale: 'hi-IN', storageState: signedIn });
+  const page = await hindiBrowser.newPage();
+  const hindiWords = (await createTranslator('hi')).t(SIGN_IN.signIn);
+  const escaped = [...hindiWords]
+    .map((letter) => `\\u${letter.charCodeAt(0).toString(16).padStart(4, '0')}`)
+    .join('');
+  const englishShell = page.getByRole('navigation', { name: en.t(SHELL.mainNavigation) });
+  let catalogArrived = false;
+  await page.route('**/_next/static/**', async (route) => {
+    const response = await route.fetch();
+    const body = await response.text();
+    const isTheHindiCatalog = body.includes(hindiWords) || body.includes(escaped);
+    if (isTheHindiCatalog) await expect(englishShell).toBeVisible();
+    await route.fulfill({ response, body });
+    if (isTheHindiCatalog) catalogArrived = true;
+  });
+
+  await page.goto('/home');
+  await expect.poll(() => catalogArrived).toBe(true);
+  await expect(englishShell).toBeVisible();
+  await expect(page.locator('html')).toHaveAttribute('lang', LANGUAGE_META.en.tag);
+  await hindiBrowser.close();
+});
 
 /*
  * `M01-07`: a boot check with no answer never opens the door by itself — the app says HelioGrid

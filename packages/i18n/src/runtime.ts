@@ -82,6 +82,7 @@ export function createI18nRuntime(initial: UiLanguage = UI_SOURCE_LOCALE): I18nR
   const i18n = setupI18n();
   activate(i18n, SOURCE_CATALOG.locale, SOURCE_CATALOG.messages);
   let current = SOURCE_CATALOG.locale;
+  let asked = current;
   if (initial !== SOURCE_CATALOG.locale) {
     // Fire-and-forget: the caller gets a usable runtime now and the requested language
     // arrives a tick later. The provider re-renders on Lingui's change event.
@@ -96,8 +97,13 @@ export function createI18nRuntime(initial: UiLanguage = UI_SOURCE_LOCALE): I18nR
       return current;
     },
     async setLocale(next) {
+      asked = next;
       if (next === current) return;
-      activate(i18n, next, await loadCatalog(next));
+      const messages = await loadCatalog(next);
+      // A catalog takes time to load, and a later switch may have been asked for meanwhile — the
+      // mount following a person who just signed in. The last language asked for wins.
+      if (asked !== next) return;
+      activate(i18n, next, messages);
       current = next;
     },
     t: (message, values) => i18n._(idOf(message), values),

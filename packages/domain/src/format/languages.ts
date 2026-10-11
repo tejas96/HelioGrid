@@ -34,6 +34,16 @@ export function uiLanguageOrSource(language: string): UiLanguage {
 }
 
 /**
+ * A language tag as a device, a browser or a request header writes it (`hi-IN`, `hi_IN`, `HI`),
+ * read by its primary subtag. Null when the set does not hold it: "not offered" is a different
+ * answer from English (`F3-03`), and a caller that wants the source language says so itself.
+ */
+export function uiLanguageOfTag(tag: string | undefined): UiLanguage | null {
+  const primary = tag?.trim().split(/[-_]/)[0]?.toLowerCase();
+  return UI_LANGUAGES.find((known) => known === primary) ?? null;
+}
+
+/**
  * One pack-declared label, per language.
  *
  * **English is REQUIRED and the others are not**, which is `F3-05` in the type: a missing

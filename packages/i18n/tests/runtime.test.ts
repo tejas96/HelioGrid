@@ -63,6 +63,20 @@ describe('createI18nRuntime — one mount, switchable in place (F3-04)', () => {
     expect(runtime.i18n).toBe(instance);
   });
 
+  it.each([
+    ['back to the active language', 'en'],
+    ['on to a third language', 'mr'],
+  ] as const)(
+    'lets the last switch asked for win over one still loading — %s',
+    async (_case, last) => {
+      const runtime = createI18nRuntime();
+      const overtaken = runtime.setLocale('hi');
+      await Promise.all([overtaken, runtime.setLocale(last)]);
+      expect(runtime.locale).toBe(last);
+      expect(runtime.t(HELD)).toBe(HELD_IN[last]);
+    },
+  );
+
   it('paints the first frame in English and lets a requested language arrive a tick later', async () => {
     const runtime = createI18nRuntime('mr');
     expect(runtime.locale).toBe('en');

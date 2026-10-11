@@ -11,6 +11,7 @@ import { createTenantRepository, type TenantRepository } from './tenant/reposito
 import type { TokenStorage } from './transport/storage';
 import {
   createTransport,
+  type ReaderLanguage,
   type RequestHeaders,
   type SessionSignals,
   type UpgradeSignals,
@@ -29,10 +30,11 @@ export interface Repositories {
 }
 
 type RepositoryRegistryConfig = { baseUrl: string } & (
-  | { mode: 'browser'; session: SessionSignals }
+  | { mode: 'browser'; session: SessionSignals; language: ReaderLanguage }
   | {
       mode: 'mobile';
       storage: TokenStorage;
+      language: ReaderLanguage;
       appVersion: string;
       session: SessionSignals;
       upgrade: UpgradeSignals;
@@ -52,6 +54,7 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
       ? createTransport({
           mode: 'mobile',
           storage: config.storage,
+          language: config.language,
           appVersion: config.appVersion,
           baseUrl: config.baseUrl,
           session: config.session,
@@ -59,7 +62,12 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
         })
       : config.mode === 'server'
         ? createTransport({ mode: 'server', headers: config.headers })
-        : createTransport({ mode: 'browser', baseUrl: config.baseUrl, session: config.session });
+        : createTransport({
+            mode: 'browser',
+            baseUrl: config.baseUrl,
+            session: config.session,
+            language: config.language,
+          });
   const api = createApiClient(config.baseUrl, transport);
   return {
     audit: createAuditRepository(api),
