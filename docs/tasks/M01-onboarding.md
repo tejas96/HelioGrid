@@ -3583,6 +3583,262 @@ Branch `feat/T-M01-003a`, cut from `feat/T-M01-041g` (`afe6f00b`), 2026-10-11 �
 - Given the onboarding sequence, when it runs, then segment + typical size are asked (M01-23), company profile and invites are skippable (M01-24, M01-12), and the final screen offers exactly the two doors (M01-26). → proof: QA (web and phone) run onboarding end to end: this step asks the two questions and draws no Skip, the profile and invite steps skip, and the landing shows exactly two doors; the size renders `estimated · Declared by you` and an undeclared size is empty, never 0
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: QA (web and phone) every base and brief-listed state drawn at 375px and 1536px, the colour-literal lint clean on both
 
+#### RFC
+
+##### Title
+`T-M01-004` — The second setup step asks what the company sells, and the first proposal starts from its answer
+
+##### Description
+**User impact.** A new owner, straight after choosing the language, meets one screen with two questions: who they sell to (homes, businesses or both) and the size of a typical job in kWp. `Continue` saves both and the setup goes on. Indirectly, the first proposal opens close to a real job instead of at zero, and the size shows its honesty from the first keystroke: *Estimated · Declared by you*.
+
+Who gains: every new owner, and every proposal built from their defaults. The problem: the routes and the columns exist (`PUT /settings/business-profile`, `tenant.segment`, `tenant.typical_system_kwp` — `T-M01-026`, `T-M01-025`), but no screen asks the two questions, `setupStepOwed` knows only the language step (`packages/domain/src/auth/setup-step.ts:16`), and two design-system gaps the board found still stand: a number field cannot be empty (`NumberField.types.ts:21`, `value` defaults to `0`) and a provenance line cannot say it is load-bearing (`Provenance.css:14`). Sources: this task, `M01-23`, the brief, the design record (`#### Design check`).
+
+##### Goals
+- A number field can be unset: an unanswered field shows no figure, never `0` (`F8-01`) — part a.
+- A provenance line can be load-bearing, in the component's own vocabulary — part a.
+- `SetupWhatYouSell` in `packages/ui` draws every state the apps can reach, on the web and the phone, from one prop contract; every word in English, Hindi and Marathi — part b.
+- An owner whose company resumes at `what_you_sell` lands on the step on the web, iOS and Android; `Continue` saves both answers, then records the step; a returning owner's stored answers fill only what they have not touched — part c.
+- `Continue` with a question unanswered refuses at the question, not with a grey button (`M06-22`); a failed save keeps both answers on screen and offers two ways on — part c.
+
+##### Non-goals
+- What the declaration seeds (the studio's target capacity, M06's defaults) — later modules, which inherit its `estimated` tier and never present a stronger one.
+- Editing the declarations later, and the skippable steps that follow — `T-M01-005`, `T-M01-007`; the two-door landing — `T-M01-006`.
+- A field-level error that announces itself (`docs/tasks/UI.md`, the `NumberField` · `OptionCardGroup` row): the board's decision 12 answers with focus and an announcement from the screen.
+- No new api route, table, column or contract.
+
+##### Readiness and dependencies
+- `T-M01-025`, `T-M01-026` and `T-M01-003` are shipped.
+- Design check: see `#### Design check`. Part a draws no frame of the board; parts b and c build against it.
+- Part a runs a light cycle: its proof matrix names no web, phone or api surface — its proofs are the component suite on `3100` and the gate.
+- No blocker for part a.
+
+##### Proposal
+Each part's flow is in its own RFC. Shared here:
+
+- **Three parts.** a — the two component gaps and the provenance words. b — the screen's shared parts. c — the step on the web and both phones.
+- **What testing the requirements found** (`/task` step 2):
+  1. The session knows no company name or city (`packages/domain/src/auth/session.ts:45`), and `PUT /settings/business-profile` replaces the profile whole (`packages/contracts/src/business-profile.ts:27`). So the step reads the profile before it writes; a read that failed is read again by `Continue` before the write, and a failure of either is the one error frame. The record's "a failed check is answered by asking" holds: the questions stay live. → part c.
+  2. `SCR-M01-05` is not built, so the corridor's next step is the home: `Continue` lands there, and `Finish later` puts the step off for this session, as the language step's `Continue anyway` does, so the next sign-in asks again. The route to the company profile is `T-M01-005`'s to re-point (new `deferred.md` row). → *Decisions*, 2.
+  3. Every company made before this task resumes at `what_you_sell` (`settings.onboarding.service.ts:17`), so every existing owner — the standing QA owners too — meets the step once at the next sign-in.
+  4. The board's 1536 grid — the identity block 320 wide at x 396–716, the task column 560 wide at 780–1340, the cards a list, the field at the column's measure, two thin rules — is not the door frame's grid (`DoorFrame.css:207-228`: identity up to 560 right-aligned against the gap, the task track at the door's measure). Built on the frame, as `SCR-M01-03` was ruled: the frame gains a fourth measure, `list` (560 px, `DoorFrame.css:24-30`), so the task column is the board's width and sits 20 px right of it; the identity block keeps the frame's own width. The difference is listed in every 1536 row. → *Decisions*, 3.
+  5. At 375 the failure takes the heading (`m-error`); at 1536 the question keeps it and a banner sits under it (`d-error`). One way at every width — the failure takes the heading — is one DOM and one component; the board's way needs a width switch between two heading structures. → *Decisions*, 4.
+  6. A typed `0` or a negative is not a typical size: it counts as unanswered, and `Continue` refuses it at the field. Precision 2 and the ceiling 999,999.99 are the column's (`tenant.typical_system_kwp`, `numeric(8,2)`), owned by domain. → *Decisions*, 5.
+  7. The record's decision 12 moves focus to the first unanswered question on refusal. React Native cannot move focus into a radio group, so the phone announces that question's error once instead (`TintedBlock.native.tsx:23` is the precedent). → *Decisions*, 6.
+  8. The record's "initial focus lands on the group" at 1536: the step is drawn in the shell's place at whatever address the owner opened, and a page that takes focus on open is a known trap for screen-reader users. Recommended: not built, a ruled difference. → *Decisions*, 7.
+  9. The board draws Hindi for the error frame and the three cards; the Hindi of the question frames' other words is drafted here for the localisation pass, as `SCR-M01-03` did.
+  10. The task's `Data model:` line reads right: the two declarations live on `tenant`; `business_profile` holds the address and the bank details.
+
+**Deferred rows this task meets** (*Decisions*, 8). D145 (`T-M01-004 starts`) — the open page's list parts: no frame of this screen draws one; stays, re-pointed to `T-M01-005 starts`. D197 (`T-M01-004 starts`) — the sign-in beat names the home before a setup step: the fix is in the beat's screens, outside this screen; stays, re-pointed to `T-M01-005 starts`. D5 (`touches tests/e2e/mobile/company-signup.yaml`) — extended in part c with `setup-what-you-sell` in the held list, as `T-M01-003c` did. Rows whose path a part's file table touches are listed in that part's RFC.
+
+##### Architecture diagram
+The whole task; the letter on a node is the part that builds it.
+
+```mermaid
+flowchart LR
+  owner["Owner: Continue after the language step"] --> landing["domain: setupStepOwed, landingFor (c)"]
+  progress[("api: GET and PUT /onboarding/progress")] --> landing
+  landing --> screens["web and phone screens (c)"]
+  hook["data/react: useSetupWhatYouSell (c)"] --> screens
+  profile[("api: GET and PUT /settings/business-profile")] --> hook
+  hook --> progress
+  rules["domain: the answers, the refusal, the size policy (b)"] --> hook
+  words["i18n: setupWhatYouSellWords (b)"] --> ui["ui: SetupWhatYouSell (b)"]
+  screens --> ui
+  ui --> field["ui: NumberField, an unset value (a)"]
+  ui --> tier["ui: Provenance, load-bearing (a)"]
+  pwords["i18n: provenanceWords (a)"] --> roots["app roots: ProvenanceWordsProvider (c)"]
+  roots --> tier
+```
+
+##### Package changes
+Per part.
+
+##### Data and schema changes
+None — no stored shape changes in any part. `tenant.segment` and `tenant.typical_system_kwp` receive their first values through a landed route.
+
+##### File and folder changes
+Per part; `#### Parts` is the budget.
+
+##### API and contract changes
+None — no wire boundary changes. The clients call `GET` and `PUT /settings/business-profile` and `PUT /onboarding/progress/what_you_sell` for the first time (part c); every route is landed (`T-M01-026`).
+
+##### Risks and rollout
+Per part.
+
+##### Acceptance criteria and proof
+- **AC-1** — Given the onboarding sequence, when it runs, then segment + typical size are asked (M01-23), company profile and invites are skippable (M01-24, M01-12), and the final screen offers exactly the two doors (M01-26).
+- **AC-2** — Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+
+AC-1's clauses on the company profile, the invites and the final screen are `T-M01-005`'s, `T-M01-007`'s and `T-M01-006`'s own first `DONE WHEN` lines; this task proves its clause — the two questions asked, no Skip, the size `estimated · Declared by you`, an undeclared size empty — and the other clauses are `not_applicable` here. Each part's RFC holds its rows of the one matrix.
+
+##### Delivery size
+Three parts. a: about 15 files, sized in its RFC. b: the screen's shared parts, about 20 files, its RFC written when a has shipped. c: the step on both apps, about 27 files, its RFC written when b has shipped.
+
+#### Parts
+
+| part | what | AC | depends on | status |
+|---|---|---|---|---|
+| a | `NumberField` can be unset and `Provenance` can be load-bearing, both halves; `provenanceWords` in `packages/i18n`; a component spec for the field; the two `UI.md` rows go (`#### Part a · RFC`) | AC-1 (an undeclared size is empty, never 0 — by component spec) | `T-M01-003` | shipped |
+| b | the screen's shared parts: `SetupWhatYouSell` in `packages/ui`, its words in three languages, domain's rule for the answers (what is missing, what a read fills, what counts as a size) — by unit test and on the component page | AC-1 (the two questions, the tier), AC-2 — on the component page | a · `SCR-M01-04` `READY` | open |
+| c | the step owed, the landing, the business-profile read and write, and the screen on the web and both phones; `createCompany` passes the step | AC-1 (first run, the refusal, the failed save), AC-2 — on the running apps | b | open |
+
+#### Part a · RFC
+
+##### Title
+`T-M01-004a` — A number field can be empty, and a provenance line can be load-bearing
+
+##### Description
+**User impact.** None — internal. No screen a person meets changes in this part. It closes the two design-system gaps this screen found, so part b can draw an undeclared size as an empty field under a tier line a reader cannot miss. Indirectly, every later field that asks for a number nobody has declared yet — the business profile, the catalog — inherits both.
+
+Who gains: part b, and the screens after it. The problem: `NumberField` has no unset value — `value` defaults to `0` (`packages/ui/src/components/NumberField/NumberField.types.ts:21`, `.state.ts:45`), so an unanswered field prints a figure nobody declared and no tier can qualify (`F8-01`); and `Provenance` prints its line in the quiet role (`Provenance.css:14`, `.native.tsx:122`), which the board steps up through a `style` prop — a colour handed in from a screen (`docs/tasks/UI.md`, the two rows). Sources: the task RFC, the record's gaps 1 and 3, `UI.md`.
+
+##### Goals
+- `NumberField` with no `value` shows an empty box and no figure; a figure typed commits once on blur or Enter; an empty draft commits nothing, on an unset field and a set one alike; both halves.
+- `Provenance` and `ProvenanceTier` take `emphasis: 'load-bearing'` and print their words in `--text-secondary`; the default stays quiet; both halves.
+- `provenanceWords(t)` in `packages/i18n` builds the four label functions `ProvenanceWordsProvider` takes, once for every mount.
+- The two `UI.md` rows go; the design-system side is listed for the owner.
+
+##### Non-goals
+- A field error that announces itself (`UI.md`, the `NumberField` · `OptionCardGroup` row) — stays.
+- A way to clear a set field back to unset: an empty draft restores the last good value, as today.
+- Money mode, bounds and refusals of `NumberField` — unchanged.
+- The phone's unit suffix ink and the box files — unchanged: they read the draft, not the value.
+- No app mounts `ProvenanceWordsProvider` yet — part c does.
+
+##### Readiness and dependencies
+- `T-M01-003` is shipped (#279).
+- No design check applies: this part draws no frame of the board.
+- `light cycle`: the proof matrix names no web, phone or api surface; the proofs are the component suite on `3100` and the gate.
+- No blocker.
+
+##### Proposal
+**Flow.**
+1. A screen renders `<NumberField label unit onCommit />` with no `value`. `useNumberFieldDraft` starts the draft at `''`; the box shows the unit alone.
+2. The person types `5` and leaves the field: `commitDraft` accepts, the draft reads `5`, `onCommit(5)` fires once. The caller stores it and renders `value={5}`.
+3. The person empties the field and leaves it: the draft restores — `''` on an unset field, the last good value on a set one; `onCommit` does not fire. Escape does the same.
+4. A screen renders `<Provenance tier="estimated" source="…" emphasis="load-bearing" />` under the field: the words print in the secondary role, the dot unchanged. A `NumberField` hands its `provenance` spec through as today.
+5. A root mounts `<ProvenanceWordsProvider value={provenanceWords(t)}>`, where today it would hand-build four functions.
+
+**Key decisions.**
+- `value?: number`, no default: `undefined` is the unset field. The design system documents a `0` default; the port's types file says why it differs (`F8-01`). `onCommit` keeps its signature — it never receives the absence.
+- A step from an unset field is one step from 0, held by the bounds: with a floor the first press lands on the floor, the first figure a person would reach for (review).
+- `emphasis` is a closed pair, `'quiet' | 'load-bearing'`, default quiet: a token picked by the component, never a colour handed in. The dot keeps its mark token: the word is the carrier (`F8-07`).
+- `provenanceWords` lives beside `tierLabel` in `copy/provenance.ts`: words are `i18n`'s, and the shape is `ui`'s structural `ProvenanceWords` — `i18n` imports nothing from `ui`.
+- A story mounts the field under the provider (`tests/e2e/CLAUDE.md`: a prop the component calls while it renders comes from a story).
+
+**Order.** The component spec, red · `NumberField.logic.ts` and `.state.ts`, then both halves · `Provenance` types, web, native, stylesheet · `provenanceWords` · `UI.md` · review · the gate.
+
+**Refusals.** None — this part makes no call.
+
+**The twin.** Both halves of both components change together; the phone halves are typechecked here and first seen on a phone in part c.
+
+##### Architecture diagram
+No boundary change — inside `packages/ui`'s `NumberField` and `Provenance`, and `packages/i18n`'s provenance words.
+
+##### Package changes
+- `ui` — `NumberFieldProps.value?: number` (unset when absent); `ProvenanceProps.emphasis?` and `ProvenanceTierProps.emphasis?`; `ProvenanceEmphasis` exported from the types. No new dependency.
+- `i18n` — `provenanceWords(translate)` exported from the root entry.
+- Law 12: no brand, enum, token, route, table or error code is new. `ProvenanceEmphasis` is a union `tsc` holds. The `design-system-props` invariant reads prop names and still finds `value`.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/ui/src/components/NumberField/NumberField.types.ts` | `value?: number`, unset when absent | the one prop contract (Law 7) |
+| modify | `packages/ui/src/components/NumberField/NumberField.logic.ts` | `displayNumber` of no value is `''`; `commitDraft` restores to the unset field | the shared rules |
+| modify | `packages/ui/src/components/NumberField/NumberField.state.ts` | the draft starts and restores from an unset value | the shared draft |
+| modify | `packages/ui/src/components/NumberField/NumberField.tsx` · `NumberField.native.tsx` | the `0` default goes | the two halves |
+| modify | `packages/ui/src/components/Provenance/Provenance.types.ts` | `emphasis` on the line and the tier | the one prop contract |
+| modify | `packages/ui/src/components/Provenance/Provenance.tsx` · `Provenance.css` | `data-emphasis`; the secondary role | the web half |
+| modify | `packages/ui/src/components/Provenance/Provenance.native.tsx` | the words' colour role | the phone half |
+| modify | `packages/i18n/src/copy/provenance.ts` · `src/index.ts` | `provenanceWords`; its export | the words' file; the entry |
+| add | `tests/e2e/components/NumberField.spec.tsx` · `NumberField.story.tsx` | the unset field, the commit, the two emphases, measured | one spec per component; the story mounts the provider |
+| modify | `docs/tasks/UI.md` | the two rows go | the register |
+| modify | `docs/tasks/deferred.md` | D145 and D197 re-pointed (the owner's ruling) | the rows' file |
+| modify | `packages/i18n/src/locales/{en,hi,mr}/messages.po` (3) | built, not planned: regenerated — the copy file's new lines moved the source references the catalogs record (generated) | the catalogs |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the ledger, the part's row | the task |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **Callers of `NumberField`.** No app renders one today (`rg '<NumberField' apps packages/ui/src` finds only its own folder); the design-system contract's `value` is unchanged in name. A future caller that forgets `value` gets an empty field, which is the honest default.
+- **The phone halves are unseen until part c.** A look fault found there is fixed and counted there.
+- **Rollout.** Nothing a person meets changes; no stored or sent shape changes.
+
+##### Acceptance criteria and proof
+AC-1 is the task RFC's. This part's rows:
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 · an undeclared size is empty, never 0 | main-dev | required | `3100` | mounted with no `value`: the input reads `''` and no `0` is on the page; the unit shows; planted red: the `0` default restored | `tests/e2e/components/NumberField.spec.tsx` |
+| the commit from empty | main-dev | required | `3100` | type `5`, blur → `onCommit(5)` once and the box reads `5`; empty and blur on the set field → no commit, the box reads `5`; empty and blur on an unset field → no commit, the box reads `''` | the same |
+| a step from an unset field | main-dev | required | `3100` | with `min` 3, `+` → `3`; with no floor, `+` → `1`; planted red: the step taken from the floor instead of 0 | the same |
+| the load-bearing line | main-dev | required | `3100` | `emphasis="load-bearing"` → the line's colour equals the page's `--text-secondary`; with no `emphasis` it equals `--text-tertiary`; the dot is unchanged | the same |
+| side-by-side | — | not_applicable | — | — | this part draws no frame of `SCR-M01-04` |
+| the running api | — | not_applicable | — | — | this part makes no call |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part: **16 files** — 13 of code and tests, 3 documents. No generated file planned. Under both targets.
+- **Code: about 110 authored lines** — `NumberField` 35, `Provenance` 45, `i18n` 20, `UI.md` −2 and the design-system note 10.
+- **Tests: about 130 authored lines** — the spec 100, the story 30.
+- **As built: 16 files**, as planned, and 3 generated catalogs. **Code: about 95 authored lines**; **tests: about 145** — the spec 95, the story 50. Under both targets.
+- Order: as *Proposal*.
+
+**Owner rulings (2026-10-11, with the approval).** The RFC is approved with every recommendation: three parts; `Continue` lands on the home and `Finish later` puts the step off until `SCR-M01-05` exists; the screen is built on the door frame with a new `list` measure, 20 px right of the board at 1536; the failure takes the heading at every width; a size of 0 or less is unanswered, with the column's precision and ceiling; the web moves focus on refusal and the phone announces the first error once; the 1536 initial focus is not built; D145 and D197 stay, re-pointed to `T-M01-005 starts`, and D5 is extended in part c.
+
+**Planted reds seen (part a):** `NumberField.tsx` with its `0` default restored failed `NumberField.spec.tsx` › *an unset field shows no figure: an empty box beside its unit, never 0* and › *an empty draft on an unset field leaves it unset* (the box read `0`); `Provenance.css` with the load-bearing rule removed failed › *the tier line is quiet by default and takes the secondary role when load-bearing; the dot is unchanged* (the line stayed tertiary); `NumberField.logic.ts` stepping from the floor instead of 0 failed › *from an unset field a step lands on the floor where there is one, and one step from 0 where there is none* (the box read `4`). Each file was restored from a scratchpad copy. A first plant of that third red did not fire: the build held a helper that started a press on the floor, which the bounds already do, so removing it changed nothing — dead code the red found, and the rule is now one line (review). Seen red before its code: the first run's › *an unset field shows no figure…*, which found the story's own commit counter printing `0` — the assertion now reads the field alone.
+
+**Mistakes found, and what prevents each.** The first full gate failed at `check:catalogs`: `provenanceWords` added lines to `packages/i18n/src/copy/provenance.ts`, which moved the source references the catalogs record, and the extract was not run after the change. The rule exists — `packages/i18n/CLAUDE.md`, *Run `extract` after any copy change* — and fires when that folder is opened; the file was edited from the shell, so it never loaded. The catalogs the gate regenerated are committed with this part; no new check is added, by the owner's rule (`CLAUDE.md` §1, *No new script*).
+
+**The design-system side, for the owner** (`packages/ui/CLAUDE.md`): `NumberField`'s contract documents `value` as "Default 0"; the port now treats no value as unset, and the design system's field should say the same. `Provenance` gains `emphasis: 'quiet' | 'load-bearing'`, which the design system's component does not declare; `SCR-M01-04`'s board steps the line through `style` where the port now takes the prop.
+
+Checklist:
+- [x] the component spec, red
+- [x] `NumberField`: logic, state, both halves
+- [x] `Provenance`: types, web, native, stylesheet
+- [x] `provenanceWords`
+- [x] `UI.md`
+- [x] review
+- [x] the gate
+
+#### Design check
+`READY` — 2026-10-11, on the record `SCR-M01-04 - decisions &amp; self-audit.md` (19,088 bytes) read beside the board `SCR-M01-04 What You Sell - Mobile.dc.html` (80,706 bytes, under the read cap). The owner redrew the screen from the brief's `## Redesign owed` the same day, in three passes: the words moved to their budget homes and the Hindi frame drawn; the 1536 task column stacked as a list at 520 / 560; the error pair put in one order at both widths. Four checks on the same helper; the fourth found nothing.
+
+The board holds nine frames: seven at 375 — `m-default`, `m-loading`, `m-answered`, `m-refused`, `m-error`, `m-error-mr`, `m-error-hi` — and two at 1536 — `d-default`, `d-error`. The record prints the 1536 alignment numbers (identity block x 396–716, task column 780–1340, cards 74 / 74 / 74, the value edge 1293) and the measured language proof on the error frame. Part a draws no frame of it; the board pictures (`board/<frame>.png`) are captured when part b begins, against the board as it stands then.
+
+#### Runtime
+Branch `feat/T-M01-004`, cut from `origin/main` (`54bd8ced`, #280 merged) on a clean tree, 2026-10-11.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | — |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 22,848,497 · `web.log` 608,147 · `metro.log` 1,800,722 bytes | — |
+| watchers | no `tsx … watch` process | — |
+
+**Part a · QA (2026-10-11)** — light cycle, no stack: this part draws no frame and makes no call. The one server was the component test page (`3100`), started and stopped by each `test:ct` run. The browser pane held one tab on the `SCR-M01-04` board, opened at the owner's word for the redraw (`started_by_task`, tab `seed`).
+
+- **The design check** ran four times on one helper: the owner's three redraw passes closed 16, 5 and 5 findings in turn; the fourth found nothing. The board grew from eight frames to nine (the Hindi error frame), its 1536 task column became a 560 list, and the error pair took one order at both widths.
+- **The component spec** passed five tests after each change; three planted reds fired by name (*Planted reds seen (part a)*). The reviewer's two should-fix findings were applied and confirmed; its delta read of the regenerated catalogs was clean.
+- **The gate** ran twice: the first stopped at `check:catalogs` and regenerated the three `.po` files (*Mistakes found*); the second passed whole — 211 test files, 3,685 tests, the api tests on `heliogrid_test`, the invariants on real tables, nothing further regenerated.
+
+**Measurements (part a)** — helper runs: `design-check` 1 (three continuations), `reviewer` 1 (two), `evaluator` 1 (one); two full gates. Helper tokens, as reported per run: `design-check` about 81 k, 128 k, 162 k and 183 k; `reviewer` 54 k, 60 k and 64 k; `evaluator` 27 k and 38 k. Main: about 95 tool-call turns and about 585 k context tokens at the commit card, the walk, the four design fetches and the RFC among them. Size: planned 16 files, code about 110, tests about 130; built 16 files and 3 generated catalogs, code about 95, tests about 145 (*Delivery size*).
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | none listening |
+| simulator · emulator | none booted | none booted |
+| browser tabs | pane closed | one tab on the board (`seed`, `started_by_task`), closed at the part's end |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+
 ### T-M01-005 · Business Profile
 **Type:** screen · **Tier:** P0
 **Status:** designed

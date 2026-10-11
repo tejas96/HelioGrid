@@ -65,6 +65,14 @@ export interface ProvenanceWords {
 
 export type ProvenanceAlign = 'left' | 'right' | 'center';
 
+/**
+ * How much the line must carry. `quiet` (default) — the line sits among other facts beside a
+ * figure, in the quiet role. `load-bearing` — the tier IS the surface's honesty contract, as on a
+ * declared size nothing else qualifies (`SCR-M01-04`), so the words take the secondary role. A
+ * token the component picks, never a colour a screen hands in (`F7-11`).
+ */
+export type ProvenanceEmphasis = 'quiet' | 'load-bearing';
+
 export interface ProvenanceProps {
   tier?: ProvenanceTierSpec;
   standing?: ProvenanceStanding;
@@ -87,6 +95,7 @@ export interface ProvenanceProps {
   size?: number;
   align?: ProvenanceAlign;
   inline?: boolean;
+  emphasis?: ProvenanceEmphasis;
 }
 
 /** The tier alone — always its visible word, never a dot alone (`F8-07`). */
@@ -94,4 +103,5 @@ export interface ProvenanceTierProps {
   tier?: ProvenanceTierSpec;
   /** 12 (default) or 13. Never below 12 — the type floor. */
   size?: number;
+  emphasis?: ProvenanceEmphasis;
 }

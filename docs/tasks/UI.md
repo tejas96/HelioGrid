@@ -72,9 +72,7 @@ are paper, not tiles. `PagedDocument`'s cards stay paper.
 | Component | Gap | Found by |
 |---|---|---|
 | `OtpInput` · `Input` | Helper is fixed `--text-tertiary` 12px, which `N4` forbids for anything load-bearing — so every screen with a load-bearing sentence beside a field draws its own `--text-secondary` line outside the component and the spacing becomes a per-screen decision. | `SCR-M01-08` · `SCR-M01-09` |
-| `NumberField` | No unset value. `value` defaults to `0`, so an unanswered field shows a figure nobody declared and no tier can qualify it (`N7`). **Waits for a caller:** the fix threads `number \| undefined` through the draft state, both boxes, both platforms and `onCommit`'s signature, and what a stepper does from empty is knowable only from a screen that uses one. | `SCR-M01-04` |
 | `NumberField` · `OptionCardGroup` | Field `error` is described, not announced. The `Text` primitive now carries `live` (`PhoneField` uses it); these two still need it wired to their own error props. | `SCR-M01-04` |
-| `Provenance` | Its line is fixed `--text-tertiary` — wrong where the tier IS the screen's honesty contract. Wants an `emphasis` prop. | `SCR-M01-04` |
 | `Stepper` | The `progress` counter ("Step 1 of 3") and the fallback names ("Steps", "Progress") are English inside the component on both halves, so a Hindi screen reads an English counter. Needs the counter as a caller-supplied sentence, or a `counter` prop the caller translates. | `SCR-M01-02` |
 | `CoachMark` | **The counter still falls back to English** — "Step n of m" (`coach-mark-place.ts`) where a caller passes no `counterLabel`, which `CoachMarkSequence` never does. Make `counterLabel` required wherever a counter shows once a sequence has a caller. | `T-SHELL-001` |
 | `Banner` | No `kind` for a signed-out steer — `suggestion`'s spark reads as AI. One action pill where two full-size routes are wanted. | `SCR-M01-02` |

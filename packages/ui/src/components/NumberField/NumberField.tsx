@@ -22,7 +22,7 @@ interface WebNumberFieldProps extends NumberFieldProps {
  * `currency` drops the steppers. Precedence in the message slot: refusal → error → correction → hint.
  */
 export function NumberField({
-  value = 0,
+  value,
   onCommit,
   min,
   max,

@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
  * ARE the nudge on touch, and each is a Pressable, so each is 44px.
  */
 export function NumberField({
-  value = 0,
+  value,
   onCommit,
   min,
   max,

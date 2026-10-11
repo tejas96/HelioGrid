@@ -288,7 +288,7 @@ msgid "Asking to join sends its owner a request to add {phone}."
 msgstr "Asking to join sends its owner a request to add {phone}."
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:13
+#: src/copy/provenance.ts:16
 msgid "Assumed"
 msgstr "Assumed"
 
@@ -424,7 +424,7 @@ msgid "Confirm your mobile number"
 msgstr "Confirm your mobile number"
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:21
+#: src/copy/provenance.ts:24
 msgid "Confirmed"
 msgstr "Confirmed"
 
@@ -519,7 +519,7 @@ msgid "Delivery"
 msgstr "Delivery"
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:11
+#: src/copy/provenance.ts:14
 msgid "Derived"
 msgstr "Derived"
 
@@ -559,7 +559,7 @@ msgid "EPC Owner"
 msgstr "EPC Owner"
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:12
+#: src/copy/provenance.ts:15
 msgid "Estimated"
 msgstr "Estimated"
 
@@ -749,7 +749,7 @@ msgid "Marketing"
 msgstr "Marketing"
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:10
+#: src/copy/provenance.ts:13
 msgid "Measured"
 msgstr "Measured"
 
@@ -821,7 +821,7 @@ msgid "Not published yet"
 msgstr "Not published yet"
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:24
+#: src/copy/provenance.ts:27
 msgid "Not yet calculated"
 msgstr "Not yet calculated"
 
@@ -982,7 +982,7 @@ msgid "Proposals"
 msgstr "Proposals"
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:22
+#: src/copy/provenance.ts:25
 msgid "Provisional"
 msgstr "Provisional"
 
@@ -1007,7 +1007,7 @@ msgid "Recalculating"
 msgstr "Recalculating"
 
 #. js-lingui-explicit-id
-#: src/copy/provenance.ts:23
+#: src/copy/provenance.ts:26
 msgid "Reported"
 msgstr "Reported"
 

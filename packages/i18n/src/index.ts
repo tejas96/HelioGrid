@@ -52,7 +52,7 @@ export {
   showOlderLabel,
   TYPE_GROUP_NAME,
 } from './copy/notifications';
-export { standingLabel, tierLabel } from './copy/provenance';
+export { provenanceWords, standingLabel, tierLabel } from './copy/provenance';
 export type { SetupLanguageOption, SetupLanguageWords } from './copy/setup-language';
 export { SETUP_LANGUAGE, setupLanguageWords } from './copy/setup-language';
 export {

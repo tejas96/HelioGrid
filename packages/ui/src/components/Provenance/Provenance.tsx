@@ -47,7 +47,13 @@ function Dot({ token }: { token: ProvenanceMarkToken }) {
 }
 
 /** The tier on its own — word first, dot as the second channel. */
-export function ProvenanceTier({ tier, size = 12, className, style }: WebProvenanceTierProps) {
+export function ProvenanceTier({
+  tier,
+  size = 12,
+  emphasis = 'quiet',
+  className,
+  style,
+}: WebProvenanceTierProps) {
   const words = useProvenanceWords();
   const t = tierOf(tier);
   if (!t) {
@@ -57,6 +63,7 @@ export function ProvenanceTier({ tier, size = 12, className, style }: WebProvena
     <span
       className={classNames('hg-provenance-tier', className)}
       data-size={provenanceStep(size)}
+      data-emphasis={emphasis}
       style={style}
     >
       <Dot token={TIER_MARK[t]} />
@@ -76,6 +83,7 @@ export function Provenance({
   size = 12,
   align = 'left',
   inline = false,
+  emphasis = 'quiet',
   className,
   style,
 }: WebProvenanceProps) {
@@ -139,6 +147,7 @@ export function Provenance({
       data-inline={inline ? 'true' : undefined}
       data-align={align}
       data-size={provenanceStep(size)}
+      data-emphasis={emphasis}
       style={style}
     >
       {parts.map((part, i) => (
