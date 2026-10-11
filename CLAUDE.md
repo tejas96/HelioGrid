@@ -16,7 +16,8 @@ switch. Never switch silently.
 
 **Verify reality.** A claim about this repo names the file and line that proves it. A bug is
 reproduced on the RUNNING app, never a mock. Read failures, not exit codes, and call sites, not
-declarations. A check you add or change is trusted only after it fires on a planted bad line.
+declarations. A check you add or change is trusted only after it fires on a planted bad line
+(a `test:web` flow excepted: `.claude/skills/task/references/qa.md`).
 
 **Every mistake leaves a record.** A mistake found in the work — yours, a reviewer's, a check's or
 the owner's — is fixed at once and listed in the PR body by its kind. One a rule could have
@@ -57,7 +58,7 @@ it is design → backend → UI.
 |---|---|---|
 | plan | read the task, write its RFC into it | yes — approve RFC |
 | build | inside the approved RFC | when scope voids the approval |
-| verify | running-app QA and review, then the Evaluator's full gate | when the second full-gate run fails or the checked diff changes after it |
+| verify | review, then running-app QA, then the Evaluator's full gate | when the second full-gate run fails or the checked diff changes after it |
 | commit | the commit, the push, the PR, CI | yes — every commit |
 
 **One turn, many calls.** Batch every read, search and check that does not wait on another's result
@@ -71,13 +72,14 @@ into one turn.
 3. After each coherent slice, `pnpm check`.
 4. One build step gets two attempts. After both fail, stop with the evidence and at most two
    clearing paths, recommended first.
-5. When done, one tidy pass over the diff — reuse, names, dead code — then local QA and review.
+5. When done, one tidy pass over the diff — reuse, names, dead code — then review, then local QA.
    The Evaluator owns the full gate after both.
 6. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code
    that is gone. `tsc -p` never removes old output, so delete the app's git-ignored `dist/`
    (`rm -r apps/api/dist`), then `pnpm turbo build --force`.
 
-**A PR is one complete task or part:** every acceptance line is met and proven before it opens.
+**A PR is one complete task or part:** every acceptance line is met and proven before it opens,
+or by its CI lane before the PR is marked ready (`docs/tasks/README.md` proof owners).
 `docs/tasks/README.md` owns the RFC and part-size rules.
 
 ## 4. Stop and ask the owner before
@@ -98,7 +100,7 @@ into one turn.
 |---|---|
 | `pnpm infra:up` · `pnpm infra:down` | Before infra-dependent work. The read-only build-order walk and RFC need no stack. |
 | `pnpm check` | **While building.** Biome on files that differ from `origin/main`, the workspace typecheck (cached), and `vitest related` on changed .ts files. Fast; never the proof. |
-| `pnpm check:all` | **Normally once, after live QA and review.** Build, lint (Biome, dependency-cruiser, sherif, turbo boundaries), typecheck, duplication, OpenAPI and catalog freshness, unit tests, invariants. A checked-file change left by or made after the first run returns to affected QA and review; then run its proving command and `pnpm check`, and give the same Evaluator the updated reports for one final `check:all`. Two full-gate runs maximum: a failure of the second, or a checked-file change after it, stops. |
+| `pnpm check:all` | **Normally once, after review and live QA.** Build, lint (Biome, dependency-cruiser, sherif, turbo boundaries), typecheck, duplication, OpenAPI and catalog freshness, unit tests, invariants. A checked-file change left by or made after the first run returns to the reviewer, then affected QA; then run its proving command and `pnpm check`, and give the same Evaluator the updated reports for one final `check:all`. Two full-gate runs maximum: a failure of the second, or a checked-file change after it, stops. |
 | `pnpm lint:fix` | Format and auto-fix. |
 | `pnpm test:watch` · `pnpm test:coverage` | Tests while writing · the edge cases you missed (read it, not the pass count). |
 | `pnpm db:migration:new` · `pnpm db:migrate` | Where a migration starts; never hand-author one. |

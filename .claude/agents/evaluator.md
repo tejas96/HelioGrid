@@ -42,7 +42,7 @@ Rules that never bend:
 - If the gate fails without changing a checked file, Main may continue you with the successful
   failing command after fixing the environment; judge that output and do not rerun the gate.
 - If the first run leaves a checked-file change, or one lands after it, Main continues you only
-  after affected QA rows and review pass again, with their updated reports, `pnpm check` and the
+  after review and then affected QA rows pass again, with their updated reports, `pnpm check` and the
   command that proves the change. Re-judge every touched row, then run one final `pnpm check:all`.
 - At most two full-gate runs belong to you. A failure of the second is terminal; report `FAIL`.
   Any checked-file change after the second is `BLOCKED` for the owner. Never run a third.

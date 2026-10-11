@@ -66,7 +66,9 @@ part repeats that part's applicable AC and proof rows so the owner reads one com
 3. `##### Goals` — short, measurable outcomes.
 4. `##### Non-goals` — behavior and surfaces deliberately unchanged.
 5. `##### Readiness and dependencies` — landed dependencies, design-check verdict for screen work,
-   assumptions and blockers. No `TBD` or open blocker when shown.
+   assumptions and blockers; `light cycle` with its reason when the proof matrix names no web,
+   phone or api surface (`.claude/skills/task/references/qa.md`). No `TBD` or open blocker when
+   shown.
 6. `##### Proposal` — end-to-end request, user or event flow; key decisions with one reason;
    implementation order; material errors and refusals; the twin platform screen.
 7. `##### Architecture diagram` — Mermaid `flowchart LR` or `sequenceDiagram`, at most 15 nodes or
@@ -86,7 +88,9 @@ part repeats that part's applicable AC and proof rows so the owner reads one com
 12. `##### Risks and rollout` — material tenancy/security, money/data, workflow/release, migration,
     deployment and operational risks, each with its mitigation. No invented risk.
 13. `##### Acceptance criteria and proof` — every `DONE WHEN` line verbatim as `AC-1`, `AC-2`, …,
-    followed by one matrix: `AC/row | owner | tier | surface | action → expected | proof`.
+    followed by one matrix: `AC/row | owner | tier | surface | action → expected | proof`. A row
+    that needs the api stopped says `api stopped` in its surface column, so local QA runs every such
+    row in the task's one api-down window (`.claude/skills/task/references/qa.md`).
 14. `##### Delivery size` — estimated files and authored changed lines, one part or split, and the
     planned implementation order.
 
@@ -99,12 +103,16 @@ unit, contract and planted-red proofs, never a live API journey. `qa-api` owns r
 behavior — status, body, headers, sign-in, permission, tenant isolation, idempotency and persistence
 only where declared. A task with no reachable API behavior marks it not applicable. An API test
 runs on `heliogrid_test`. CI ownership names a path-selected lane that must actually run; a skipped
-lane proves nothing. Android phone flows may be CI-owned only when the `Phone flows` step runs;
+lane proves nothing. A `test:web` flow's row is owned by `ci` on `e2e-web`, never run locally
+(`.claude/skills/task/references/qa.md`). Android phone flows may be CI-owned only when the `Phone flows` step runs;
 the step must be `Phone flows (tests/e2e/mobile) on the emulator`. A run of `Phone flows OFF`
 proves nothing and the row is `blocked`, never passed. iOS journeys are local `qa-ios` proofs.
 A screen task with a board (a studio screen has none) has one `side-by-side` row per board frame
-it renders — each state, 375, 1536, each language render — owned by the surface's QA helper. Web at
-375 is compared with the phone frame. A state the board draws only at 375 is compared at 1536 with
+it renders on the web — each state, 375, 1536, each language render — owned by `qa-web`, and one
+per phone state owned by `qa-ios` alone, its language rotating state by state (English, Hindi,
+Marathi) so the phone shows each language the states allow. `qa-android` walks the same journey
+rows and compares no frame: both phones draw the one shared component, and the web at 375 already
+compares every language render. Web at 375 is compared with the phone frame. A state the board draws only at 375 is compared at 1536 with
 its phone frame and the board's stated 1536 rule (`docs/start-here.md`, desktop states), not flagged
 as missing. A frame with no row, or a built state with no frame and no stated rule, is a finding. A side-by-side row names only a frame the running app reaches today with data QA can make through the app; a frame it cannot reach is decided in the RFC — `not_applicable` with the reason, or proven by its component's spec — never found by QA.
 

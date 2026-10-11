@@ -75,11 +75,13 @@ the owner with at most two options, recommended first: fix the board (one paste-
 build the better way and record the ruling in the task. Never copy it silently, never depart from
 it silently, and build neither way before the owner answers.
 
-Then present the RFC once — the complete section as written under the task, no second summary
-and no plan beside it — with two things only the chat adds. The `##### Architecture diagram` is
-drawn as a picture in the inline widget — the same nodes and arrows as the Mermaid, which stays
-the record in the task file; a chat that cannot draw shows the Mermaid block as it is. The RFC
-closes with the decision block, nothing after it:
+The RFC is written in full under the task, then the chat shows its short view, never the whole
+text: the title; a link to the `#### … RFC` heading by file and line; the user impact from
+`##### Description`; the `##### Architecture diagram` drawn in the inline widget by the Mermaid
+library from the file's own Mermaid block, never hand-placed, so the picture and the record are
+one text (`references/diagram.md` holds the one widget recipe); a chat that cannot draw shows the
+Mermaid block as it is; the `##### Delivery size` numbers on one line; then the decision block,
+nothing after it. Every other section is read at the link.
 
 - `Decisions for you:` each open ruling on one line — the section that holds it, its options,
   the recommended one first — or `none`.
@@ -88,8 +90,9 @@ closes with the decision block, nothing after it:
 - exactly `Decision required: approve RFC / request changes`.
 
 Stop. No test, migration or source edit begins before the owner's explicit approval
-(`CLAUDE.md` §3). The approval covers the RFC as shown and nothing else. A request for changes is
-answered the way step 4 re-shows a delta: the changed sections only, then the decision block.
+(`CLAUDE.md` §3). The approval covers the RFC as written at the link and nothing else. A request
+for changes is answered the way step 4 shows a delta: one line per changed section, then the
+decision block.
 
 ## 4. Build
 
@@ -97,11 +100,12 @@ Build as `CLAUDE.md` §3 and `.claude/rules/testing.md` say, one slice at a time
 smallest code that meets its line (`CLAUDE.md` §8 *Solve today's problem*, Law 5); each planted
 red line is recorded for the commit card. A new route, table, contract, package, affected package
 or behaviour voids the approval: update the RFC and present the delta — a banner with files and
-lines built against planned, then each changed section in full under its name; an unchanged
-section is named as approved and never reprinted — closing with the decision block as step 3
-says. The owner's yes to a delta covers the updated RFC whole. The whole RFC is shown again only
-when it is a full replacement RFC for a legacy Plan. A delta-only `Plan` is not a replacement RFC. So does a requirement the build shows to be
-wrong or over-built: the step 2 test applies, and the owner hears it before the code follows it.
+lines built against planned, the link, then one line per changed section saying what changed and
+why; an unchanged section is not named — closing with the decision block as step 3 says. The
+owner's yes to a delta covers the updated RFC whole. The chat never shows the whole RFC, not even
+for a full replacement RFC for a legacy Plan, which gets the step 3 short view. A delta-only
+`Plan` is not a replacement RFC. So does a requirement the build shows to be wrong or over-built:
+the step 2 test applies, and the owner hears it before the code follows it.
 The RFC's file table and authored-line estimate are the budget and record: a file that lands
 outside it is added with its reason as it lands; when the budget rule in `docs/tasks/README.md` is
 breached, or a file lands in a package the RFC does not name, approval is void — stop, show the delta
@@ -118,9 +122,9 @@ account, packet, readiness, hash, timing, log and retry rules exactly.
 
 The normal path has one `pnpm check:all`. If its failure is environmental and changes no checked
 file, rerun only the failing command and continue the Evaluator. A checked-file change left by or
-made after the first run is never planned: return to `references/qa.md`, rerun every affected proof
-row and continue the reviewer. Then run the command that proves the change and `pnpm check`, and
-continue the same Evaluator with the updated reports for one final `pnpm check:all`. At most two
+made after the first run is never planned: return to `references/qa.md`, continue the reviewer,
+then rerun every affected proof row. Then run the command that proves the change and `pnpm check`,
+and continue the same Evaluator with the updated reports for one final `pnpm check:all`. At most two
 full-gate runs belong to one Evaluator. A failure of the second, or a checked-file change after it,
 stops for the owner. Never respawn the Evaluator.
 
