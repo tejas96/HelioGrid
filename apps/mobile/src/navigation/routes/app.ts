@@ -1,7 +1,8 @@
 import { DOOR_SEGMENT } from '@heliogrid/domain';
 import { CompanySignupScreen } from '../../screens/company-signup';
+import { SetupLanguageScreen } from '../../screens/setup-language';
 import { PlaceholderScreen, ShellScreen } from '../../screens/shell';
-import { useHasHome, useHasNoTenant, useShowsShell } from '../guards';
+import { useHasHome, useHasNoTenant, useOwesLanguageStep, useShowsShell } from '../guards';
 
 /**
  * Authenticated routes.
@@ -21,6 +22,8 @@ export const appScreens = {
   Shell: { screen: ShellScreen, if: useShowsShell },
   /** A verified number with no company yet lands on the company step (`SCR-M01-01` decision 1, `M01-10`). */
   CompanySetup: { screen: CompanySignupScreen, if: useHasNoTenant },
+  /** An owner whose company still owes its first setup step lands here before the shell (`SCR-M01-03`, `F3-03`). */
+  SetupLanguage: { screen: SetupLanguageScreen, if: useOwesLanguageStep },
   Leads: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.leads },
   Proposals: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.proposals },
   Projects: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.projects },

@@ -59,8 +59,9 @@ export default function App() {
       storePlatform: thisPlatform,
     }),
   );
-  // The device's first language where the set holds it (`F3-03`), else the source language.
-  const [device] = useState(() => uiLanguageOfTag(deviceLanguageTag()) ?? UI_SOURCE_LOCALE);
+  // The device's first language where the set holds it (`F3-03`), else null — never the source
+  // language in its place: the language step says when English was chosen for a device outside the set.
+  const [device] = useState(() => uiLanguageOfTag(deviceLanguageTag()));
 
   return (
     <DataProvider layer={dataLayer}>
@@ -116,7 +117,7 @@ function SessionLanguage({
   children,
 }: {
   runtime: I18nRuntime;
-  device: UiLanguage;
+  device: UiLanguage | null;
   children: ReactNode;
 }) {
   const { user, setInterfaceLanguage } = useSession();

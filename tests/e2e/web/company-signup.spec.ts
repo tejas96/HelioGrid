@@ -7,6 +7,7 @@ import {
   expectNumberFieldRinged,
   fillCompanyDetails,
   fillCompanyStep,
+  passLanguageStep,
   requestCode,
   typeCode,
 } from '../support/door';
@@ -114,7 +115,7 @@ test('the steer is a steer: creating a new company anyway still creates it', asy
   await steeredTo(browser, page);
 
   await page.getByRole('button', { name: en.t(COMPANY_SIGNUP.createAnyway) }).click();
-  await expect(page).toHaveURL(/\/home$/);
+  await passLanguageStep(page, en);
 });
 
 test('a request with no answer keeps the steer, never says nothing was sent, and sends again', async ({
@@ -167,7 +168,7 @@ test('a create with no answer says the company may have been made, and Try again
 
   await page.unroute('**/tenants');
   await page.getByRole('button', { name: en.t(SIGN_IN.tryAgain) }).click();
-  await expect(page).toHaveURL(/\/home$/);
+  await passLanguageStep(page, en);
 });
 
 /** The language the api stored for the person whose company this create made. */
@@ -210,7 +211,7 @@ test('a language chosen on the door is the new account’s, and where sign-out r
   const created = page.waitForResponse(theCreate);
   await page.getByRole('button', { name: mr.t(COMPANY_SIGNUP.createCompany) }).click();
   expect(await languageOfTheCreate(created)).toBe('mr');
-  await expect(page).toHaveURL(/\/home$/);
+  await passLanguageStep(page, mr);
 
   await passTheOwnersMark(page, mr);
   await page

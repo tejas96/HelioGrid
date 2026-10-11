@@ -30,7 +30,8 @@ export function setupStepOwed(
   return read.resumeStep === 'language' ? 'language' : null;
 }
 
-function managesSetup(user: SessionUser | null): boolean {
+/** Whether this person is asked for setup at all — and so whether a device reads its progress for them. */
+export function managesSetup(user: SessionUser | null): boolean {
   if (user === null || user.tenant === null) return false;
   return can(user.tenant.roles, 'onboarding.manage_tenant_settings');
 }

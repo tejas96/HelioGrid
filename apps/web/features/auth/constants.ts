@@ -13,12 +13,14 @@ export const GOOGLE_RETURN_ROUTE = '/login/google';
  *
  * `wait` is excluded because it is not a destination — nothing is known yet and nothing renders.
  * `access-removed` is the inside: the shell shows Frame 8 on whichever inside route is open.
+ * `language-step` is the inside too: the inside group's gate draws the step there.
  * Typed as a `Record` rather than left to inference, so a landing added in domain fails to
  * compile HERE, naming the missing key, instead of surfacing as an index error at the call site.
  */
 export const ROUTE_OF: Record<Exclude<SessionLanding, 'wait'>, string> = {
   door: LOGIN_ROUTE,
   'company-step': COMPANY_SIGNUP_ROUTE,
+  'language-step': HOME_ROUTE,
   home: HOME_ROUTE,
   'access-removed': HOME_ROUTE,
 };

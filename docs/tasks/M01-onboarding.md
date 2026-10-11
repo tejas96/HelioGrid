@@ -2837,13 +2837,13 @@ Branch `feat/T-M01-041a`, cut from `feat/T-M01-040` (`e4e9d978`) on a clean tree
 
 ### T-M01-003 · Onboarding — Language
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped
 **Why:** A surveyor whose phone runs in Marathi opens the app in Marathi before anyone explains a setting, and the choice follows them to every screen; without it the first minute is in the wrong language for the people who live on the phone.
 **PRD rows:** F3-03 (P0)
 **DESIGN:** SCR-M01-03 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-03+Onboarding+Language+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-03-onboarding-language.md`; they are the specification.
 **Data model:** none — reads `user_account.interface_language` authored by `T-M01-025` (migration 0002) and `onboarding_progress` authored by `T-M01-026` (migration 0006); the language set is `UI_LANGUAGES` in `packages/contracts/src/locale.ts`, never a table.
-**Contract:** `packages/contracts/src/onboarding.ts` — GET /onboarding/progress · PUT /onboarding/progress/{step} (the step completed, or skipped when the set holds one language) · `packages/contracts/src/session.ts` — GET /auth/session. The write of `interface_language` is `T-M01-025`'s `PATCH /users/me` (landed, #40), and the app follows the value through `T-FPLAT-005`'s session field and the provider's `follow` seam — the screen calls `useI18n().setLocale`, and nothing else.
+**Contract:** `packages/contracts/src/onboarding.ts` — GET /onboarding/progress · PUT /onboarding/progress/{step} (the step completed, or skipped when the set holds one language) · `packages/contracts/src/session.ts` — GET /auth/session. The write of `interface_language` is `T-M01-025`'s `PATCH /users/me` (landed, #40), and the app follows the value through `T-FPLAT-005`'s session field and the provider's `follow` seam — a tap calls `useI18n().setLocale`, and `Continue` sends the language once more before it records the step (brief, decision 14).
 **Depends on:** `T-M01-025` (migration 0002; the profile write above) · `T-M01-026` (migration 0006; the onboarding step) · `T-M01-002` (the step this one follows) · `T-FPLAT-005` (the runtime language resolution that redraws the screen in the language just touched) · `T-FPLAT-007` (the Devanagari face on mobile and per-script line height).
 **Out of scope:** the permanent picker — `T-M01-011`; the invitee's language control — `T-M01-009`; the message catalog and the immediate re-render — `T-FPLAT-005`; script rendering on mobile — `T-FPLAT-007`; the `OptionCardGroup` per-option `lang` gap — `docs/tasks/UI.md`.
 **DONE WHEN:**
@@ -2925,7 +2925,7 @@ Three parts. a: about 19 files, sized in its RFC. b: the shared parts, sized in 
 |---|---|---|---|---|
 | a | the app opens in the device's language, a door's choice is where sign-out returns, and a new account is stored in its door's language (`#### Part a · RFC`) | AC-2 (the app's language) | `T-M01-041` | shipped |
 | b | the shared parts: `SetupLanguage` in `packages/ui`, its words in three languages, the door frame's third task measure, the provider's device fact, and domain's rule for the step a session owes (`#### Part b · RFC`) | AC-1, AC-2, AC-3 — by unit test and on the component page | a · `SCR-M01-03` `READY` (`#### Design check`) | shipped |
-| c | the setup gate, the client's read and write of the step, and the language screen on the web and both phones — its own RFC | AC-1 (first run), AC-2 (the pill, the not-in-set notice), AC-3 — on the running apps | b | open |
+| c | the setup gate, the client's read and write of the step, and the language screen on the web and both phones (`#### Part c · RFC`) | AC-1 (first run), AC-2 (the pill, the not-in-set notice), AC-3 — on the running apps | b | shipped |
 
 #### Part a · RFC
 
@@ -3262,6 +3262,211 @@ Checklist:
 - [x] review
 - [x] the gate
 
+#### Part c · RFC
+
+##### Title
+`T-M01-003c` — A new owner meets the language step once, on the web and on both phones
+
+##### Description
+**User impact.** A new owner creates the company and the next screen asks one thing: the language. It shows the language the app already opened in, says where that came from, and one tap changes it at once. `Continue` saves it and opens the home, and the step is not asked again. Indirectly, a save that fails never holds the owner: the screen says so and offers two ways on.
+
+Who gains: every new owner, and the people who read Hindi or Marathi. The problem: part b built the screen, its words and the rule, and no app mounts them. Nothing reads `GET /onboarding/progress`, `landingFor` knows no setup landing (`packages/domain/src/auth/landing.ts:13`), and both app roots replace a device outside the set with English before any screen can read it (`apps/web/app/providers.tsx:67`, `apps/mobile/App.tsx:63`). Sources: the task RFC, `F3-03`, the brief, `#### Design check`, part b's *Carried to part c's RFC*.
+
+##### Goals
+- An owner whose company resumes at `language` lands on the language step on the web, iOS and Android, straight after the company is created.
+- A tap redraws the screen in that language with no Save. `Continue` records the step, and the home opens.
+- The step is asked once: a reload, a cold start and a new sign-in open the home.
+- A failed save draws the banner and two ways on. `Continue anyway` opens the home, and the next sign-in asks again.
+- A device outside the set reads the notice and `Chosen for you` on English; a device in the set reads `Your device's language` on its own card.
+- Every other role, and an owner whose read fails, goes straight home.
+
+##### Non-goals
+- The later setup steps (`T-M01-004` … `T-M01-007`): after `Continue` the home opens until they land.
+- The profile's picker (`T-M01-011`); the `empty` frame (part b, *Decisions*, 3).
+- No api route, contract field, table, word or shared component is new.
+- A Maestro flow for the phone screen (*Decisions*, 3).
+- The sign-in beat's line still names the home for an owner who is then asked the step (new row D197).
+
+##### Readiness and dependencies
+- Parts a and b are shipped: a is on `main` (#277), b was draft PR #278, open when this part began. This branch was cut from `feat/T-M01-003b` (`7c5e82d2`) by the owner's word; #278 merged before the commit (`c1b02c94`, the same tree), and the branch, which held no commit of its own, was moved onto `main`.
+- The api routes are landed (`T-M01-026`): `apps/api/src/modules/settings/settings.onboarding.controller.ts:9` asks `onboarding.manage_tenant_settings` for all three.
+- Design check: `READY`, 2026-10-11 (`#### Design check`). The ten board pictures, the record and the board file are part b's capture, copied into this session's scratchpad.
+- No native file changes: neither phone app is rebuilt.
+- No blocker.
+
+##### Proposal
+**Flow.**
+1. The session settles. `useLanding` (new, `packages/data/src/react`) reads `GET /onboarding/progress` for a signed-in person whose roles manage the company's settings — nobody else, because the api refuses them.
+2. It asks domain twice: `setupStepOwed(user, setupPutOff, read)`, then `landingFor(phase, user, ended, owed)`. `landingFor` answers the new landing `language-step`, and `wait` while the read is in flight.
+3. Web: the inside group's gate draws the language step in the shell's place, at the address the person is on (*Decisions*, 1). The door group sends that person inside, to the link they opened or to `/home`.
+4. Phone: the App group mounts `SetupLanguage` for that landing, and Boot stays up while the landing is `wait`.
+5. The screen is ten lines on each app: `useI18n()` gives `locale`, `device` and `setLocale`; `setupLanguageWords` gives the words; `useSetupLanguage` (new, `packages/data/src/react`) gives `saving`, `failed`, `record` and `putOff`.
+6. A tap calls `setLocale`. `Continue` calls `record(locale)`: the language is saved, then the step (*Decisions*, 2). The answer replaces the cached read, the landing turns `home`, and the gate or the navigator opens the home.
+7. A failed save sets `failed`: the banner, `Try again` and `Continue anyway`. `Continue anyway` calls the store's new `putOffSetup`, which sets `setupPutOff` as `chooseHome` sets `chosenHome` (`packages/data/src/session/store.ts:271`). Every sign-in and sign-out already clears it.
+
+**What testing the requirements found** (`/task` step 2).
+1. *An address of its own costs more than it gives.* A new page needs a fourth session group in four rule files, a redirect from every other group, a route spec, and a look baseline that only CI draws and the owner approves in a second commit (`tests/e2e/CLAUDE.md`). Drawn in place, the step needs none of that, the link a person opened is kept with no extra code, and browser Back cannot leave the step — the brief says it has no back control. The phone already swaps screens in place. → *Decisions*, 1.
+2. *A tap's save can be lost with no sign.* `setInterfaceLanguage` keeps the choice on the screen when its save fails (`store.ts:258`, `F3-04`), and the task's `Contract:` line has `Continue` record the step only. Then `Continue` closes the step, and the next sign-in opens in the old language. The banner's title is `Your language was not saved`. → *Decisions*, 2.
+3. *The notice can never show today.* Both roots hand the provider English for a device outside the set (`providers.tsx:67`, `App.tsx:63`). They now hand it the raw answer, and a web flow on a `ta-IN` browser fails if a root goes back.
+4. *The phone banner is silent.* `Banner.native.tsx:152` sets the alert role and says nothing; iOS has no live region. It now says an alert once when it arrives, as `TintedBlock.native.tsx:23` does. `SetupLanguage.native.tsx` is the one phone screen that draws one today; a banner in a `BannerStack` speaks the same way when a phone screen mounts one.
+5. *The phone's navigator must never be empty.* Signed in with the read in flight, no App screen is on. Boot's guard now reads the landing's `wait` (`apps/mobile/src/navigation/guards.ts:12`, `root.tsx:57`).
+6. *No Maestro flow can reach the screen.* It sits after `Create company`, and that press never reaches the api inside a flow on iOS (D5). → *Decisions*, 3.
+7. *Every company made before this part resumes at `language`* (`settings.onboarding.service.ts:17`), so its owner meets the step once at the next sign-in. That is the row's first run of onboarding; the standing QA owners meet it once too.
+8. *The beat's line.* `You are in — taking you to Home` is read by a returning owner who is then asked the step. Rare, and the fix needs the read before the beat. New row D197.
+
+**Deferred rows this part meets.** All stay (*Decisions*, 4): D8 (`store.ts`) — roles changed mid-session, another read; D169 (`(inside)/`, `routes/app.ts`) — the step holds no typed value to lose offline; D196 (`providers.tsx`) — the first HTML's language; D2 and D92 (`packages/ui/src/components/`) — the banner fix types no word; D105 (`apps/mobile/src/`) and D175 (`apps/mobile/src/navigation/`) — Android's notification refusals and iOS's dev toast, both ruled differences in the phone rows.
+
+**Key decisions.**
+- One hook answers the landing for both apps (Law 11): the web's gate and the phone's guards stop calling `landingFor` themselves.
+- The read is cached per company. The step's answer replaces it, so no second read is made.
+- `managesSetup` is exported from `setup-step.ts`: the hook switches the read on by the same rule that reads its answer.
+- A new web feature folder, `features/onboarding/`, named for the contract router; `T-M01-004` … `T-M01-007` land there.
+
+**Order.** The landing test, then `landingFor` · the repository, the keys, the store's `putOffSetup` · the two hooks · the web flows, red · the web gate, screen and root · the phone guards, route, screen and root · the banner · `createCompany` and the signup spec · the held screen and the documents · QA, review, the gate.
+
+**Refusals.** A read that fails or is refused → the home. A save that fails → the banner. No connection at the boot check → the shared no-connection screen, as today.
+
+**The twin.** Both screens land together and draw the one `SetupLanguage`.
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  roots["App roots: the raw device answer"] --> provider["i18n provider: locale, device, setLocale"]
+  api[("api: GET and PUT /onboarding/progress")] --> repo["data: onboarding repository"]
+  repo --> landing["data/react: useLanding"]
+  store["data: session store, putOffSetup"] --> landing
+  owed["domain: setupStepOwed"] --> landing
+  rule["domain: landingFor, language-step"] --> landing
+  landing --> webGate["web: SessionGate, inside group"]
+  landing --> guards["phone: navigation guards, Boot on wait"]
+  webGate --> webScreen["web: SetupLanguageScreen"]
+  guards --> phoneScreen["phone: SetupLanguageScreen"]
+  provider --> webScreen
+  provider --> phoneScreen
+  step["data/react: useSetupLanguage"] --> webScreen
+  step --> phoneScreen
+  step --> repo
+  step --> store
+  webScreen --> ui["ui: SetupLanguage (part b)"]
+  phoneScreen --> ui
+```
+
+##### Package changes
+- `domain` — `SessionLanding` gains `language-step`; `landingFor` takes a fourth argument, the step owed; `managesSetup` is exported. Imports nothing new.
+- `data` — `onboarding/repository.ts`: `OnboardingRepository` (`progress`, `recordStep`), enrolled in `createRepositoryRegistry`. `queryKeys.setup.progress`. `SessionStore.putOffSetup`. `./react`: `useLanding`, `useSetupLanguage`. `data` → `contracts`, `domain`, as today.
+- `ui` — `Banner.native.tsx` says an alert on arrival. No prop changes.
+- `web` — `features/onboarding/` (the screen and its barrel); `SessionGate` takes the step as a slot from the inside layout, so `features/auth` imports no other feature.
+- `mobile` — `src/screens/setup-language/`; one entry in `routes/app.ts`.
+- Law 12: `language-step` joins two exhaustive `Record`s that `tsc` holds — the web's `ROUTE_OF` (`apps/web/features/auth/constants.ts`) and the phone's `ROUTE_OF_LANDING` (`guards.ts:25`). The phone screen folder joins the `e2e-flow-per-screen` invariant's held list (*Decisions*, 3). No route, table, token, brand or error code is new. `packages/data` has no unit tests, so the two hooks are held by the web flows and QA — said out loud.
+
+##### Data and schema changes
+None — no stored shape changes. The clients write `onboarding_progress` and `user_account.interface_language` through routes that are landed.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/domain/src/auth/landing.ts` | `language-step`; the fourth argument | the landing's owner |
+| modify | `packages/domain/src/auth/setup-step.ts` | `managesSetup` exported | the rule's file |
+| modify | `packages/domain/src/auth/index.ts` | the export | the folder's door |
+| modify | `packages/domain/tests/auth/landing.test.ts` | the step owed, and `wait` | the file's test |
+| add | `packages/data/src/onboarding/repository.ts` | the read and the step's write | one repository per contract router |
+| modify | `packages/data/src/composition.ts` | enrols it | the one registry |
+| modify | `packages/data/src/index.ts` | the repository's type | the package's entry |
+| modify | `packages/data/src/cache/keys.ts` | `setup.progress` | every query key |
+| modify | `packages/data/src/session/types.ts` · `store.ts` | `putOffSetup` | the session store |
+| modify | `packages/data/src/react/use-session.ts` | hands it to screens | the one auth surface |
+| add | `packages/data/src/react/use-landing.ts` | the landing, for both apps | every hook lives in `src/react/` |
+| add | `packages/data/src/react/use-setup-language.ts` | the step's save and its put-off | the same |
+| modify | `packages/data/src/react/index.ts` | the exports | the entry |
+| modify | `packages/ui/src/components/Banner/Banner.native.tsx` | an alert says itself on arrival | the banner's phone half |
+| modify | `apps/web/features/auth/SessionGate.tsx` | reads `useLanding`; draws the step slot | the web's one gate |
+| modify | `apps/web/features/auth/constants.ts` | `ROUTE_OF['language-step']` | the route map |
+| add | `apps/web/features/onboarding/SetupLanguageScreen.tsx` · `index.ts` | the web screen and its barrel | `apps/web/CLAUDE.md`: a feature per capability |
+| modify | `apps/web/app/(inside)/layout.tsx` | hands the step to the gate | the inside group's gate |
+| modify | `apps/web/app/providers.tsx` | the raw device answer | the web's provider root |
+| modify | `apps/mobile/src/navigation/guards.ts` | reads `useLanding`; Boot on `wait`; the step's guard | the guards |
+| modify | `apps/mobile/src/navigation/routes/app.ts` | the `SetupLanguage` entry | one entry per screen |
+| add | `apps/mobile/src/screens/setup-language/SetupLanguageScreen.tsx` · `index.ts` | the phone screen | `apps/mobile/CLAUDE.md`: `src/screens/<name>/` |
+| modify | `apps/mobile/App.tsx` | the raw device answer | the phone's provider root |
+| modify | `tests/e2e/support/door.ts` | `createCompany` passes the step | the one way a spec gets a company |
+| modify | `tests/e2e/web/company-signup.spec.ts` | its four own waits for the home | signup's flow |
+| add | `tests/e2e/web/setup-language.spec.ts` | the step's flows | the step has no route, so the file is named for the screen |
+| modify | `tests/invariants/src/e2e-flow-per-screen.ts` | `setup-language` held, with its reason | the held list |
+| modify | `docs/tasks/deferred.md` | D5 extended; D197 added; D198 added from QA | the rows' file |
+| modify | `docs/ux/briefs/SCR-M01-03-onboarding-language.md` | the rulings of *Decisions* 1 and 2 | the screen's brief |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the ledger, the part's row, the `Contract:` line, the task's `Status:` | the task |
+
+##### API and contract changes
+None — no wire boundary changes. The clients call two landed routes for the first time: `GET /onboarding/progress` once per sign-in or start, for a person who manages the company's settings, and `PUT /onboarding/progress/language` with `{ state: "completed" }`. `PATCH /users/me` is called as today. An old phone calls none of them and opens the home, as today.
+
+##### Risks and rollout
+- **One more read before the home.** An owner waits for the progress read at every start: the web shows nothing and the phone shows Boot, as during the boot check. A read that fails is tried again by the data layer's own rule, then the home opens. QA measures the wait after `Create company` on both phones; a flash a person can see becomes a `deferred.md` row.
+- **Existing owners** meet the step once (finding 7).
+- **Every web flow passes the step.** `createCompany` presses `Continue`; a flow that forgets lands on the step and fails at its first shell check.
+- **The spoken banner is not heard on a device.** The simulators drive no screen reader, so it is proven by the tree's alert role and the code; the owner hears it once with VoiceOver and TalkBack.
+- **Rollout.** No stored or sent shape changes. Old and new clients mix safely: the step is asked by a new client alone.
+
+##### Acceptance criteria and proof
+AC-1, AC-2 and AC-3 are the task RFC's. This part's rows:
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| the landing | main-dev | required | unit | signed in with a company and the step owed → `language-step`; the read in flight → `wait`; none owed → `home`; no company → `company-step` and a removal → `access-removed`, whatever is owed | `packages/domain/tests/auth/landing.test.ts` |
+| AC-1 · first run, on the web | ci | required | `e2e-web` | a new number creates its company → the step, the three names in their own scripts; `Continue` → the home; a reload → the home | `tests/e2e/web/setup-language.spec.ts` |
+| AC-1 · a tap redraws, no Save | ci | required | `e2e-web` | a tap on मराठी → the heading in Marathi, `<html lang="mr">`, and `PATCH /users/me` carries `mr`; no Save control | the same |
+| AC-2 · the pill and the notice | ci | required | `e2e-web` | a `hi-IN` browser → the pill on हिन्दी; a `ta-IN` browser → English, the notice, `Chosen for you`; planted red: `providers.tsx` hands English for a device outside the set | the same |
+| AC-3 · the failed save | ci | required | `e2e-web` | the step's `PUT` aborted → the banner as an alert, `Try again`, `Continue anyway`; `Try again` with the route back → the home; `Continue anyway` → the home, and the next sign-in asks again | the same |
+| AC-3 · every other flow | ci | required | `e2e-web` | every spec passes the step through `createCompany`; the committed looks are unchanged | the lane |
+| the phone flows | ci | required | `android` | `Phone flows (tests/e2e/mobile) on the emulator` runs `boot.yaml`, `login.yaml`, `company-signup.yaml` | CI step |
+| AC-1 · AC-3 · side-by-side, the web | qa-web | required | the running web, Main's pictures, a fresh number per frame | at 375: `m-default`, `m-error`, `m-error-hi`, `m-error-mr`, `m-device-marathi`, `m-not-in-set`; at 1536: `d-default`, `d-error`, `d-not-in-set`, and the three frames drawn only at 375 by the board's 1536 rule; ruled: the brief's decision 12, D172, `docs/tasks/UI.md` (*Owed to the design system by the containers*) | QA |
+| AC-1 · the phones' journey | qa-ios · qa-android | required | a fresh number, a cold start | `Create company` → the step; a tap redraws; `Continue` → the shell; a cold start → the shell; a member without the capability, and the standing owner after the step → the shell | QA |
+| AC-2 · the phones' device | qa-ios · qa-android | required | the device set to Marathi, then Tamil, by Main | Marathi → the pill on मराठी (`m-device-marathi`); Tamil → English, the notice, `Chosen for you` (`m-not-in-set`) | QA |
+| AC-3 · side-by-side, the phones | qa-ios · qa-android | required | the api stopped by Main for the error frames | `m-default`, `m-error`, `m-error-hi`, `m-error-mr` beside their board pictures; the banner holds the alert role in the tree; `Continue anyway` → the shell, and a sign-out and sign-in asks again; ruled: the web row's list, D105, D175 | QA |
+| AC-1 · the profile's picker | — | not_applicable | — | — | `T-M01-011` owns it (the owner's ruling with part a) |
+| `m-empty` | — | not_applicable | — | — | part b, *Decisions*, 3 |
+| the running api | — | not_applicable | — | — | no route changes; `T-M01-026` proved these |
+| AC-3 · no raw colour, the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part: **33 files** — 30 of code and tests, 3 documents. No generated file. It is above the target of about 30 and cannot split: a gate with no screen strands the owner, and the web and phone halves of one flow stay together. The owner approves this exact size (*Decisions*, 5).
+- **Code: about 400 authored lines** — `data` 165, the web 100, the phone 85, `domain` 18, `ui` 12, the held screen 8, `deferred.md` and the brief 12.
+- **Tests: about 320 authored lines** — the landing table 40, `createCompany` and the signup spec 35, the step's spec 245.
+- Order: as *Proposal*.
+- **As built: 34 files** — the 33 of the file table and `apps/mobile/src/navigation/phase.tsx` (*Built against planned*). No generated file.
+- **Code as built: about 390 authored lines** — `data` 152, the web 93, the phone 93, `domain` 22, `ui` 12, the held screen 5, `deferred.md` and the brief 10.
+- **Tests as built: about 280 authored lines** — the landing table 32, `createCompany` and the signup spec 39, the step's spec 206.
+- Files are one above the estimate and both line counts under it: inside the fifth `docs/tasks/README.md` allows.
+
+**As proven (part c).** The clause *a member without the capability → the shell* of the phones' journey row is not driven on a phone: no screen makes a second member yet (`T-M01-007`, `T-M01-012`). It is held by `setup-step.test.ts` (part b) and by the web flow *a person whose roles do not manage the company’s settings goes straight home, and nothing is read for them*, which hands the session other roles on its way to the page. The frame `m-error-hi` is driven on the phones on an English device with हिन्दी chosen, so its pill sits on English (the brief's decision 3); `m-error-mr` is driven on a Marathi device, as the board draws it. On the web both are taken on a Hindi and a Marathi browser.
+
+**As proven, from the phones' QA.** The clause *the banner holds the alert role in the tree* of the phones' side-by-side row is not shown by either tree: React Native gives iOS no alert trait, and the banner is not one accessibility element because it can hold a button; Android's `uiautomator` dump carries no role or live-region field. The spoken half stands on the code — `Banner.native.tsx` announces an alert kind's words when it arrives — and on the owner's ear, as *Risks and rollout* says. The row's *the next sign-in asks again* is proven as the code decides it: on both phones the step came back in हिन्दी, the language the account held, because the English tap of the failed-save frames was made with the api stopped and a failed save keeps a choice for that run only (`packages/data/src/session/store.ts`, `F3-04`).
+
+**Owner ruling (2026-10-11, from the phones' first run).** The Boot placeholder shows for under a second between *Create company* and the language step. It is logged as D199 and not fixed here, as *Risks and rollout* said a visible flash would be.
+
+**Owner ruling (2026-10-11, from the web's first picture check).** At 1536 with no finding the title block stands at its own width beside the task column, 175 px right of where a finding holds it — the door frame's rule, as on sign-in and signup. It is kept, and is the sixth difference of the brief's decision 12.
+
+**Built against planned (delta as it lands).** Every planned file is built. One landed outside the table, in `apps/mobile`, which the RFC names: `apps/mobile/src/navigation/phase.tsx` — the landing is decided once there and handed to the guards by context, where the first build had each of thirteen guards hold its own read (review). `setup-language.spec.ts` holds two flows the RFC's matrix does not name — a person whose roles do not manage the settings, written in the build, and a language that does not save, which the review asked for with the button count of the *no Save* flow — and `deferred.md` gained D198 from QA. Planned and not built: none.
+
+**Planted reds seen (part c):** `providers.tsx` handing the provider English for a device outside the set failed `setup-language.spec.ts` › *a ta-IN browser* › *opens the step in English, says why, and marks English as chosen for the person* — the English card read `Your device’s language` where `Chosen for you` is expected. `useLanding`'s read switched on for every role (a permission rule) failed › *a person whose roles do not manage the company’s settings goes straight home, and nothing is read for them* — one `GET /onboarding/progress` where none is expected. Each file was restored from a scratchpad copy. Seen red before their code: `landing.test.ts` › *lands a settled person who owes the language step on it* and › *waits while the step a settled person owes is not known*; `setup-language.spec.ts` › *a new owner is asked for the language once…*, which stopped at the company step's press with no language step to open.
+
+**Review (part c).** `reviewer`: no blocker, four findings and four notes; all applied. A read held back while the device is offline stayed pending, so an owner waited on a blank page or on Boot where the home has the no-connection screen: it now counts as no answer. The read went stale after 30 s and was made again on every focus, where a late answer could put the step just passed back: it never goes stale by itself. The phone decided the landing once per guard; it is decided once per navigator render. The reds were not on record. Notes: the *no Save* flow now counts the step's buttons; a flow drives the language's own save failing; the file table names D198; finding 4's sentence is corrected.
+
+**Owner rulings (2026-10-11, with the approval).** The RFC is approved with every recommendation: the step is drawn in place by the inside gate and has no address; `Continue` saves the language, then the step; `setup-language` is held in the invariant's list with D5's reason, and `qa-ios` and `qa-android` prove the screen; D2, D8, D92, D105, D169, D175 and D196 stay; the part is one, at 33 files, about 400 code lines and about 320 test lines.
+
+Checklist:
+- [x] the landing test, then `landingFor`
+- [x] the repository, the keys, `putOffSetup`
+- [x] `useLanding` and `useSetupLanguage`
+- [x] the web flows, red
+- [x] the web gate, screen, layout and root
+- [x] the phone guards, route, screen and root
+- [x] the phone banner's announcement
+- [x] `createCompany` and the signup spec
+- [x] the held screen, `deferred.md`, the brief
+- [x] QA on the web, iOS and Android
+- [x] review
+- [x] the gate
+
 #### Design check
 `READY` — 2026-10-11, on the record `SCR-M01-03 - decisions &amp; self-audit.md` (17,866 bytes) read beside the board `SCR-M01-03 Onboarding Language - Mobile.dc.html` (42,330 bytes, under the read cap). The owner redrew the screen from the brief the same day; a second, three-line fix closed the last findings, and the brief took one ruling from the redraw — the empty frame's heading reads `Your language`.
 
@@ -3330,6 +3535,38 @@ Branch `feat/T-M01-003a`, cut from `feat/T-M01-041g` (`afe6f00b`), 2026-10-11 �
 | browser tabs | pane closed before the task; one tab on the board (`started_by_task`) | closed |
 | Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
 | database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+
+**Part c · ledger (2026-10-11).** Branch `feat/T-M01-003c`, cut from `feat/T-M01-003b` (`7c5e82d2`) on a clean tree — the owner's word, PR #278 being open. The walk on `origin/main` read part b as open then; #278 held it, and merged during the build (`c1b02c94`).
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | — |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 18,670,940 · `web.log` 569,445 · `metro.log` 1,775,760 bytes | — |
+
+**Part c · QA (2026-10-11)** — one stack on `heliogrid_test`: the api and the web from source, one Metro, the iPhone 17 Pro simulator and the `Pixel_8_Emulator` on the apps already installed — no native file changed, so nothing was rebuilt. Main started and stopped the api for the failed-save frames, cold-started the apps, and set and restored each device's language; the helpers drove only the app, one fresh number per phase.
+
+- **The web.** Main pictured the step on the running web by a scratchpad script — six frames at 375 × 812 and 1536 × 1000, a Hindi, a Marathi and a Tamil browser among them, one fresh number each — and drove the put-off journey with the development badge hidden. `qa-web` judged W1–W14. First pass: W7 and W12 failed on one difference outside the ruled list — at 1536 with no finding the title block stands 175 px right of where a finding holds it. The owner kept it (the brief's decision 12, the sixth). Second pass, on the final code: all fourteen passed, every difference a ruled one.
+- **The web flows.** `setup-language.spec.ts` passes at both viewports on the running web, but for *Continue anyway…*, whose sign-out sits under the development badge as four older flows' do; its journey was driven by Main's script and judged in W14, and the flow itself is the `e2e-web` lane's. The whole web suite ran once: 105 passed, and the nine that failed were those five flows at both viewports less one, and `home.spec.ts` › *a new owner lands on their home…* once at 375 on a contrast read taken while the coach mark was still fading (D198; twelve reruns passed).
+- **The phones.** `qa-ios` and `qa-android`, rows A1–D2, in eight turns each. First run of phase A on the build before the review's fixes; every row then ran on the final code. Passed on both: *Create company* opens the step with no shell behind it; the three names in their own scripts; a tap redraws at once; `m-default`, `m-error`, `m-error-hi`, `m-error-mr`, `m-device-marathi` and `m-not-in-set` beside their board pictures, every difference a ruled one; `Continue anyway` opens the shell and the next sign-in asks again; `Continue` opens the shell and a cold start opens the shell; `Try again` with the api back opens the shell in Marathi; a Tamil device reads the notice and `Chosen for you`. Three rows needed a ruling, each recorded under the matrix: the Boot placeholder after *Create company* (D199), the banner's role in the tree, and the language the step came back in.
+- **Measured.** From the press of *Create company* to the step: about 1.8 s on the development web, about 4 s on the simulator and about 6 s on the emulator, the create and its similar-name check included; the Boot placeholder inside it lasted under a second.
+- **Words that read in English in the Marathi flow, older rows:** `STEP n OF 3` on the signup door (`docs/tasks/UI.md`, `Stepper`), `digit n` in the code boxes' names (D2).
+- **A put-off step is asked again at a reload too.** The fact is held in memory, so a web reload or a phone's cold start counts as the next sign-in (W14).
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` | none listening | stopped (`started_by_task`); the api was stopped and started twice more for the failed-save frames |
+| simulator · emulator | none booted | shut down (`started_by_task`); both apps are the builds that were installed |
+| device language | iPhone (`en-US`, `en-IN`) · emulator `en-US` | restored: iPhone (`en-US`, `en-IN`) · emulator `en-US`, Marathi and Tamil removed |
+| browser tabs | pane closed | closed (`seed`, `tab-1`, `tab-2` were `started_by_task`) |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| test data left in `heliogrid_test` | — | eight owners with a company each from the phones (+91 98765 09311–09313, 09321, 09411–09413, 09421), about thirty from Main's web pictures and the web flows' own `E2E <number>` companies — all made through the app |
+
+**Measurements (part c)** — helper runs: `qa-web` 1 (one continuation), `qa-ios` 1 (eight), `qa-android` 1 (eight), `reviewer` 1 (one), `evaluator` 1; no `design-check` and no board capture — part b's verdict and pictures were reused. One full gate, passed: 211 test files, 3,685 tests, the invariants on `heliogrid_test`, nothing regenerated. Helper tokens, as reported: `qa-web` about 95 k, `qa-ios` 134 k, `qa-android` 157 k, `reviewer` 134 k, `evaluator` 44 k. Main: about 190 tool-call turns and about 580 k context tokens at the commit card, the walk and the RFC among them. Size: planned 33 files, code about 400, tests about 320; built 34 files, code about 390, tests about 280 (*Delivery size*).
 
 ### T-M01-004 · Setup — What You Sell
 **Type:** screen · **Tier:** P0

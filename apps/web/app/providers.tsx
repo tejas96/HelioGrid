@@ -58,13 +58,15 @@ export function Providers({ children }: { children: ReactNode }) {
 }
 
 /**
- * The browser's first language where the set holds it (`F3-03`), else the source language. The
- * server has no browser to ask, so it answers the source language and the first paint is the
- * server's English either way; the mount moves to the device's language once it is mounted.
+ * The browser's first language where the set holds it (`F3-03`), else null — never the source
+ * language in its place: the language step tells a person whose device is outside the set that
+ * English was chosen for them (`SCR-M01-03`), and it cannot tell that from an English device. The
+ * server has no browser to ask, so the first paint is the server's English either way; the mount
+ * moves to the device's language once it is mounted.
  */
-function deviceLanguage(): UiLanguage {
+function deviceLanguage(): UiLanguage | null {
   const first = typeof navigator === 'undefined' ? undefined : navigator.languages[0];
-  return uiLanguageOfTag(first) ?? UI_SOURCE_LOCALE;
+  return uiLanguageOfTag(first);
 }
 
 /**
@@ -88,7 +90,7 @@ function SessionLanguage({
   children,
 }: {
   runtime: I18nRuntime;
-  device: UiLanguage;
+  device: UiLanguage | null;
   children: ReactNode;
 }) {
   const { user, setInterfaceLanguage } = useSession();

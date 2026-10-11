@@ -1,5 +1,5 @@
 import { OTP_LENGTH } from '@heliogrid/domain';
-import { COMPANY_SIGNUP, SIGN_IN, type Translator } from '@heliogrid/i18n';
+import { COMPANY_SIGNUP, SETUP_LANGUAGE, SIGN_IN, type Translator } from '@heliogrid/i18n';
 import { expect, type Page } from '@playwright/test';
 import { codeSentTo } from './api-log';
 import { expectNoSidewaysScroll } from './layout';
@@ -75,16 +75,38 @@ export async function fillCompanyDetails(
 }
 
 /**
- * A new number through the signup door's three steps — the number, its code, the company — to
- * the company's home: the one way a spec obtains a person with a company of their own. Answers
- * the company's name.
+ * A new number through the signup door's three steps — the number, its code, the company — to the
+ * language step every new owner meets once (`SCR-M01-03`), with nothing pressed there. Answers the
+ * company's name.
  */
-export async function createCompany(page: Page, t: Translator, mobile: Mobile): Promise<string> {
+export async function reachLanguageStep(
+  page: Page,
+  t: Translator,
+  mobile: Mobile,
+): Promise<string> {
   const company = `E2E ${mobile.national}`;
   await fillCompanyStep(page, t, mobile, company);
   await page.getByRole('button', { name: t.t(COMPANY_SIGNUP.createCompany) }).click();
+  await expect(page.getByRole('heading', { name: t.t(SETUP_LANGUAGE.title) })).toBeVisible();
+  return company;
+}
 
+/** The language step passed as it stands: Continue records it, and the company's home opens. */
+export async function passLanguageStep(page: Page, t: Translator): Promise<void> {
+  const step = page.getByRole('heading', { name: t.t(SETUP_LANGUAGE.title) });
+  await expect(step).toBeVisible();
+  await page.getByRole('button', { name: t.t(SETUP_LANGUAGE.continue) }).click();
+  await expect(step).toBeHidden();
   await expect(page).toHaveURL(/\/home$/);
+}
+
+/**
+ * A new number through signup and its one language step to the company's home: the one way a spec
+ * obtains a person with a company of their own. Answers the company's name.
+ */
+export async function createCompany(page: Page, t: Translator, mobile: Mobile): Promise<string> {
+  const company = await reachLanguageStep(page, t, mobile);
+  await passLanguageStep(page, t);
   return company;
 }
 

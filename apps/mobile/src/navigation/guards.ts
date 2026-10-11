@@ -1,20 +1,22 @@
-import { useSession } from '@heliogrid/data/react';
-import { landingFor, type SessionLanding } from '@heliogrid/domain';
-import { useNavigationPhase } from './phase';
+import type { SessionLanding } from '@heliogrid/domain';
+import { useNavigationLanding, useNavigationPhase } from './phase';
 
 /**
  * The `if` hooks the static config calls. Each is a pure comparison against the ONE phase
- * value — see phase.tsx for why they must not compute the dwell themselves.
+ * value or the ONE landing decided over it — see phase.tsx for why a guard computes neither.
  *
  * React Navigation calls every one of these unconditionally on each navigator render, in
  * fixed declaration order, so they must obey the rules of hooks and stay cheap.
+ *
+ * Boot follows the landing's `wait`, not the phase alone: a signed-in owner whose setup progress
+ * is still being read has no App screen on, and without Boot the navigator would be empty.
  */
-export const useIsBooting = () => useNavigationPhase() === 'booting';
+export const useIsBooting = () => useNavigationLanding() === 'wait';
 export const useIsSignedOut = () => useNavigationPhase() === 'signedOut';
 export const useIsSignedIn = () => useNavigationPhase() === 'signedIn';
 
-/** The App group's first screens: the shell, or the step that makes a company. */
-type AppEntry = 'Shell' | 'CompanySetup';
+/** The App group's first screens: the shell, the step that makes a company, or the setup step that company owes. */
+type AppEntry = 'Shell' | 'CompanySetup' | 'SetupLanguage';
 
 /**
  * Which first screen each landing inside the App group mounts. The shell holds a person whose
@@ -26,25 +28,23 @@ const ROUTE_OF_LANDING: Record<Exclude<SessionLanding, 'wait' | 'door'>, AppEntr
   home: 'Shell',
   'access-removed': 'Shell',
   'company-step': 'CompanySetup',
+  'language-step': 'SetupLanguage',
 };
 
 /**
- * Inside the App group, WHICH first screen. The decision is `landingFor` — the same function
- * the web's gate reads, so `M01-10`'s rule (a verified number with no company belongs on the
- * company step, not inside) is answered once rather than twice in two shapes.
+ * Inside the App group, WHICH first screen. The decision is domain's `landingFor`, so `M01-10`'s
+ * rule (a verified number with no company belongs on the company step, not inside) is answered
+ * once rather than twice in two shapes.
  */
-const useLanding = () => {
-  const { user, ended } = useSession();
-  return landingFor(useNavigationPhase(), user, ended);
-};
 const useEntry = (): AppEntry | null => {
-  const landing = useLanding();
+  const landing = useNavigationLanding();
   return landing === 'wait' || landing === 'door' ? null : ROUTE_OF_LANDING[landing];
 };
 export const useShowsShell = () => useEntry() === 'Shell';
 export const useHasNoTenant = () => useEntry() === 'CompanySetup';
+export const useOwesLanguageStep = () => useEntry() === 'SetupLanguage';
 /** The doors the shell opens exist only while the person is inside, never while held. */
-export const useHasHome = () => useLanding() === 'home';
+export const useHasHome = () => useNavigationLanding() === 'home';
 
 /*
  * `useIsDevBuild` lived here and gated the Dev group. Removed with the v1
