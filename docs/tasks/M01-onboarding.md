@@ -2843,7 +2843,7 @@ Branch `feat/T-M01-041a`, cut from `feat/T-M01-040` (`e4e9d978`) on a clean tree
 **DESIGN:** SCR-M01-03 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-03+Onboarding+Language+-+Mobile.dc.html
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-03-onboarding-language.md`; they are the specification.
 **Data model:** none — reads `user_account.interface_language` authored by `T-M01-025` (migration 0002) and `onboarding_progress` authored by `T-M01-026` (migration 0006); the language set is `UI_LANGUAGES` in `packages/contracts/src/locale.ts`, never a table.
-**Contract:** `packages/contracts/src/tenant-settings.ts` — PUT /onboarding/progress/{step} (the step completed, or skipped when the set holds one language) · `packages/contracts/src/session.ts` — GET /auth/session. The write of `interface_language` is `T-M01-025`'s `PATCH /users/me` (landed, #40), and the app follows the value through `T-FPLAT-005`'s session field and the provider's `follow` seam — the screen calls `useI18n().setLocale`, and nothing else.
+**Contract:** `packages/contracts/src/onboarding.ts` — GET /onboarding/progress · PUT /onboarding/progress/{step} (the step completed, or skipped when the set holds one language) · `packages/contracts/src/session.ts` — GET /auth/session. The write of `interface_language` is `T-M01-025`'s `PATCH /users/me` (landed, #40), and the app follows the value through `T-FPLAT-005`'s session field and the provider's `follow` seam — the screen calls `useI18n().setLocale`, and nothing else.
 **Depends on:** `T-M01-025` (migration 0002; the profile write above) · `T-M01-026` (migration 0006; the onboarding step) · `T-M01-002` (the step this one follows) · `T-FPLAT-005` (the runtime language resolution that redraws the screen in the language just touched) · `T-FPLAT-007` (the Devanagari face on mobile and per-script line height).
 **Out of scope:** the permanent picker — `T-M01-011`; the invitee's language control — `T-M01-009`; the message catalog and the immediate re-render — `T-FPLAT-005`; script rendering on mobile — `T-FPLAT-007`; the `OptionCardGroup` per-option `lang` gap — `docs/tasks/UI.md`.
 **DONE WHEN:**
@@ -2864,7 +2864,7 @@ Who gains: the people who work in Hindi or Marathi on the phone (the brief's Con
 ##### Goals
 - A device or browser whose first language is in the set opens the app in it; any other opens in English (AC-2) — part a.
 - A new account is stored in the language its door showed (D143) — part a.
-- A new owner meets the language step once, straight after the company is created, and Continue records it (AC-1's first-run half, AC-3) — part b.
+- A new owner meets the language step once, straight after the company is created, and Continue records it (AC-1's first-run half, AC-3) — parts b and c.
 
 ##### Non-goals
 - The permanent picker in the profile (`T-M01-011`) and the invitee's control (`T-M01-009`).
@@ -2875,13 +2875,13 @@ Who gains: the people who work in Hindi or Marathi on the phone (the brief's Con
 ##### Readiness and dependencies
 - `T-M01-025`, `T-M01-026`, `T-M01-002`, `T-FPLAT-005` and `T-FPLAT-007` are shipped.
 - `T-M01-041` is shipped (`#276`, merged 2026-10-11 as `7fe306e5`). The branch was cut from `feat/T-M01-041g` (`afe6f00b`) by the owner's word while #276 was open; it held no commit of its own and was moved onto `main` when #276 merged — the same tree.
-- Design check: `NEEDS_CHANGE` (`#### Design check`). Part a draws no frame of the board and does not wait for it; part b waits for `READY`.
+- Design check: `READY` (`#### Design check`). Part a drew no frame of the board; parts b and c build against it.
 - No blocker for part a.
 
 ##### Proposal
 Each part's flow is in its own RFC. Shared here:
 
-- **Two parts (owner ruling 2026-10-11).** a — the device's language decides, and signup keeps it. b — the setup gate and the language screen.
+- **Three parts (owner rulings 2026-10-11).** a — the device's language decides, and signup keeps it. b — the language screen's shared parts. c — the setup gate and the screen on both apps.
 - **What testing the requirements found** (`/task` step 2):
   1. AC-2 has no code behind it. `T-FPLAT-005` left the device's language to this task (`docs/tasks/F-platform.md`, its ruled line: *the source locale today, the device language once `T-M01-003` resolves it*). Part a builds it.
   2. The board's `loading` and `error` frames wait on a list of languages, and no request fetches one: the set is `UI_LANGUAGES` in code. Owner ruling 2026-10-11: no loading frame; the error is Continue's save failing (brief, decisions 6 and 8).
@@ -2917,14 +2917,15 @@ Per part.
 Each part's RFC holds its rows of the one matrix.
 
 ##### Delivery size
-Two parts. a: about 19 files, sized in its RFC. b: sized in its own RFC, written when the board is `READY`.
+Three parts. a: about 19 files, sized in its RFC. b: the shared parts, sized in its RFC. c: the gate and the screen on both apps, sized in its own RFC, written when b has shipped.
 
 #### Parts
 
 | part | what | AC | depends on | status |
 |---|---|---|---|---|
 | a | the app opens in the device's language, a door's choice is where sign-out returns, and a new account is stored in its door's language (`#### Part a · RFC`) | AC-2 (the app's language) | `T-M01-041` | shipped |
-| b | the setup gate and the language screen — its own RFC | AC-1 (first run), AC-2 (the pill, the not-in-set notice), AC-3 | a · the redraw of `SCR-M01-03` (`#### Design check`) | open |
+| b | the shared parts: `SetupLanguage` in `packages/ui`, its words in three languages, the door frame's third task measure, the provider's device fact, and domain's rule for the step a session owes (`#### Part b · RFC`) | AC-1, AC-2, AC-3 — by unit test and on the component page | a · `SCR-M01-03` `READY` (`#### Design check`) | shipped |
+| c | the setup gate, the client's read and write of the step, and the language screen on the web and both phones — its own RFC | AC-1 (first run), AC-2 (the pill, the not-in-set notice), AC-3 — on the running apps | b | open |
 
 #### Part a · RFC
 
@@ -3088,12 +3089,183 @@ Checklist:
 - [x] review
 - [x] the gate
 
+#### Part b · RFC
+
+##### Title
+`T-M01-003b` — The language screen's shared parts: one component, its words, and the rule for the step a session owes
+
+##### Description
+**User impact.** None — internal. No person meets a change in this part: a new owner still lands on the home. It builds the three things both apps share, so part c only wires them: the screen as one component, every word of it in three languages, and the rule that says when a session owes the language step. Indirectly, the web and the phones cannot draw this screen two ways or word it two ways.
+
+Who gains: part c, and every later setup screen, which reads the same rule. The problem: the screen and its words do not exist; nothing says when a session owes a setup step (`packages/domain/src/auth/landing.ts:13` knows five landings and no setup); and a screen cannot tell a device set to English from a device outside the set, because both roots replace the answer with English before any screen reads it (`apps/web/app/providers.tsx:65-68`, `apps/mobile/App.tsx:63`). Sources: the task RFC, `F3-03`, the brief, the record and the board (`#### Design check`).
+
+##### Goals
+- `SetupLanguage` in `packages/ui` draws the four states the app can reach — default, device-language-default, device-language-not-in-set and error — on the web and the phone from one prop contract.
+- `setupLanguageWords` writes every word of every frame in English, Hindi and Marathi; the three language names are never translated.
+- `useI18n().device` answers the device's language, or none when it is outside the set.
+- `setupStepOwed` in `packages/domain` answers `wait`, `language` or none for a session, and the session snapshot can hold *put off until the next sign-in*.
+- The door frame's task column has a third measure, for a row of choices.
+
+##### Non-goals
+- No route, no screen file in either app, no change to `landingFor`, no api call — part c.
+- The two app roots still pass English for a device outside the set; part c hands the raw answer in, with the screen that reads it.
+- The `empty` frame (*Decisions*, 3).
+- The later setup steps (`T-M01-004` … `T-M01-007`); the profile's picker (`T-M01-011`).
+
+##### Readiness and dependencies
+- Part a is shipped (#277, `eb2e9c36`).
+- Design check: `READY`, 2026-10-11 (`#### Design check`); the ten board pictures are captured.
+- The part needs no api, no database and no phone: its one server is the component test page (`3100`).
+- No blocker.
+
+##### Proposal
+**The whole flow, and which part builds each step.**
+1. *(c)* An owner's company exists. The client reads `GET /onboarding/progress`.
+2. *(b)* `setupStepOwed(user, putOff, read)`: a person whose roles hold `onboarding.manage_tenant_settings` (`can`, `packages/domain/src/authz/policy.ts:33`) and whose company's `resumeStep` is `language` owes the step. While the read is in flight it answers `wait`. A failed read, a later step, a put-off session and every other role answer none — setup never traps a person.
+3. *(c)* `landingFor` sends that session to the language screen on both apps.
+4. *(b)* The screen is `SetupLanguage`, inside `DoorFrame`: the title with its ask, then the notice or the banner, in the identity half; the option cards in the task; the actions held under them. Every word is `setupLanguageWords(t, { device, failed })`.
+5. *(c)* A tap calls `setLocale`; the provider saves the choice as it does today. `Continue` records the step.
+6. *(b, c)* A failed save draws the banner and two routes. `Continue anyway` sets the snapshot's `setupPutOff` (the field is b's, the press is c's); the next sign-in clears it, so the step is asked again.
+
+**What testing the requirements found** (`/task` step 2).
+1. As one part the work is about 57 authored files, against the rule of about 30. Recommended: two more parts — this one holds what both apps share, and part c the gate and the screen on the web and both phones together (the owner's rule: shared parts first, then the screen on both platforms). The other way is one part approved at that exact size: one QA and one gate, and a review twice as large. → *Decisions*, 1.
+2. At 1536 the board draws two fixed tracks, 560 and 680, centred as a pair (identity x 116–676, task 740–1420). The door frame every other door uses centres the gap between its halves (identity 176–736; `packages/ui/src/components/DoorFrame/DoorFrame.css:207-228`). Built on the frame, this screen sits 60 px to the right of its board. Recommended: build on the door frame and record the ruling here — one frame for every door, and each 1536 row lists the 60 px as ruled. The other way: the owner redraws the three 1536 frames on the door's grid (one prompt), so the board and the app agree to the pixel. → *Decisions*, 2.
+3. The `empty` frame and the `skipped` answer cannot occur: the set is `UI_LANGUAGES`, three in code (`packages/domain/src/format/languages.ts:17`). The frame also draws a `FactRow`, which `packages/ui` does not hold (D32). Recommended: not built — no code for a set of one, and its row is `not_applicable`. The other way costs a `FactRow` port and about 80 lines for a frame no person can reach. → *Decisions*, 3.
+4. The task's `Contract:` line named `tenant-settings.ts`; the routes are in `packages/contracts/src/onboarding.ts:43-56`. Corrected in the header.
+5. The session does not say that setup is open (`packages/contracts/src/session.ts:74-83`), so the client reads the existing route. No api change, as the task RFC's non-goals say.
+6. The step is stored per company and the language per person (`onboarding_progress`, one row per tenant). Only `language` has a screen, so the rule asks for that step alone; each later task adds its own.
+7. The board gives Hindi and Marathi for what it draws, as working words. Five strings are not on it and are written here the same way, for the localisation pass: `Continue` in Hindi — `आगे बढ़ें`; `Chosen for you` — `आपके लिए चुनी गई` · `तुमच्यासाठी निवडलेली`; the not-in-set line — `आपके डिवाइस की भाषा अभी HelioGrid में नहीं है, इसलिए ऐप अंग्रेज़ी में शुरू हुआ।` · `तुमच्या डिव्हाइसची भाषा अजून HelioGrid मध्ये नाही, म्हणून ॲप इंग्रजीत सुरू झाले.`
+8. The brief's build note pointed at a section of `packages/ui/CLAUDE.md` that does not exist; the one open gap is `docs/tasks/UI.md:131`. Corrected in the brief; the board and the record no longer name a file.
+
+**Deferred rows this part meets.** D172 (`T-M01-003 starts`) — the Hindi and Marathi heading's taller box on the web door: it stays, re-pointed to `touches packages/ui/src/components/DoorFrame/DoorTitle.tsx`, because the fix moves every door's Hindi and Marathi frame, and it is a ruled difference in this screen's rows. D2 and D92 (`touches packages/ui/src/components/`) stay: the new component types no English of its own. D102, D109 and D132 (`touches packages/ui/src/components/DoorFrame/`) stay: the wordmark's target on iOS, the header at 200% text and the keyboard's scroll are the frame's own faults, and this part adds one width. → *Decisions*, 4.
+
+**Key decisions.**
+- Reuse, one new component (Law 5): `DoorFrame`, `DoorTitle`, `OptionCardGroup`, `Explainer`, `Banner` (kind `validation`, as the board), `TintedBlock` (tone `info`, the not-in-set line), `Button`. No new primitive.
+- The put-off fact sits in the session snapshot beside `chosenHome`: in memory, gone with the session (`packages/domain/src/auth/session.ts:103-107`). Every sign-in and sign-out already rebuilds the snapshot from `SIGNED_OUT`, so both clear it.
+- The pill follows the device, never the selection: it stays on the device's card when another language is chosen (brief, decision 3).
+- `Try again` is `SIGN_IN.tryAgain`, the message the doors already hold.
+- The web half shows three cards in a row by its own stylesheet, from the door's breakpoint once the task column has its whole measure (as built — *Review (part b)*); `OptionCardGroup` is not changed.
+
+**Order.** The domain tests, then the rule and the snapshot's field · the words test, then the copy and the catalogs · the provider's `device` · the frame's measure · the component, web then phone · the component spec · Main's pictures of the component page, `qa-web` · review · the gate.
+
+**Refusals.** None — this part makes no call.
+
+**The twin.** Both halves of `SetupLanguage` land together. The phone half is typechecked here and is first seen on a phone in part c.
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  root["App roots: the device's language (c)"] --> provider["i18n provider: device, or none"]
+  provider --> words["i18n: setupLanguageWords"]
+  set["domain: UI_LANGUAGES"] --> words
+  words --> component["ui: SetupLanguage, web and phone"]
+  frame["ui: DoorFrame, measure choices"] --> component
+  component --> screens["The two app screens (c)"]
+  roles["domain: can, manage tenant settings"] --> owed["domain: setupStepOwed"]
+  snapshot["domain: snapshot.setupPutOff"] --> owed
+  read["data: GET /onboarding/progress (c)"] --> owed
+  owed --> landing["domain: landingFor (c)"]
+  landing --> screens
+```
+
+##### Package changes
+- `domain` — `auth/setup-step.ts`: `setupStepOwed`, `SetupRead`, `SetupStepOwed`, exported from `auth`; `SessionSnapshot.setupPutOff`. It imports nothing outside `domain`.
+- `i18n` — `copy/setup-language.ts`: `SETUP_LANGUAGE`, `setupLanguageWords`, `SetupLanguageWords`. `./react`: `HelioI18nProviderProps.device` may be `null`, and `I18nControls.device` is new.
+- `ui` — `SetupLanguage`, both halves; `DoorTaskMeasure` gains `choices` (680 px). `ui` → `domain`, `theme`, as today.
+- Law 12: no route, table, token, brand or error code is new. `DoorTaskMeasure` is a union `tsc` holds. The new messages join `pnpm check:catalogs`. `SetupLanguage` has no design-system contract, so the `design-system-props` invariant does not judge it — said out loud; `tsc` holds its two halves to one types file.
+
+##### Data and schema changes
+None — no stored shape changes. The snapshot's new field lives in memory, and every reader takes the snapshot whole.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| add | `packages/domain/src/auth/setup-step.ts` | `setupStepOwed` and its two types | beside `landing.ts`, which reads it in part c |
+| modify | `packages/domain/src/auth/session.ts` | `setupPutOff` in the snapshot | the snapshot's type |
+| modify | `packages/domain/src/auth/session-transitions.ts` | its resting value | where `CHECKING` is written |
+| modify | `packages/domain/src/auth/index.ts` | the exports | the folder's door |
+| add | `packages/domain/tests/auth/setup-step.test.ts` | the rule's table | the file's test |
+| modify | `packages/domain/tests/auth/session-transitions.test.ts` | a sign-in and a sign-out clear the field | the file's test |
+| add | `packages/i18n/src/copy/setup-language.ts` | the messages and `setupLanguageWords` | one copy file per screen |
+| modify | `packages/i18n/src/index.ts` | the exports | the package's entry |
+| add | `packages/i18n/tests/setup-language.test.ts` | every frame's words, three languages | the copy file's test |
+| modify | `packages/i18n/src/react/provider.tsx` | `device` may be none; `useI18n().device` | the provider |
+| modify | `packages/i18n/src/react/follows-user.tsx` | passes the wider `device` | the shared follow |
+| modify | `packages/i18n/CLAUDE.md` | the line on `device` | the package's own note |
+| modify | `packages/i18n/src/locales/{en,hi,mr}/messages.{po,ts}` (6) | regenerated; the Hindi and Marathi words | the catalogs (generated) |
+| add | `packages/ui/src/components/SetupLanguage/` (5): `.types.ts` · `.tsx` · `.native.tsx` · `.css` · `index.ts` | the screen, both halves | architecture §4: a shared component, one prop contract |
+| modify | `packages/ui/src/index.ts` · `packages/ui/src/styles.css` | the export; the stylesheet's enrolment | the package's entry and its one stylesheet list |
+| modify | `packages/ui/src/components/DoorFrame/DoorFrame.types.ts` · `DoorFrame.css` | the `choices` measure | the frame owns the widths |
+| add | `tests/e2e/components/SetupLanguage.spec.tsx` | the web half's frames, measured | one spec per component |
+| modify | `docs/ux/briefs/SCR-M01-03-onboarding-language.md` | the empty heading's ruling; the gaps' home; `Redesign owed` deleted, the redraw being done | the screen's brief |
+| modify | `docs/tasks/deferred.md` | D172 re-pointed | the rows' file |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the Parts table, the design check, the ledger | the task |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **The phone half is unseen until part c.** A look fault found there is fixed there and counted there.
+- **The web's side-by-side is on the component page, not the app.** Part c repeats every row on the running web and both phones.
+- **D172.** On the web the Hindi and Marathi heading box is taller than the English one, so the blocks under it sit about 7 px lower. It is a ruled difference in the Hindi and Marathi rows.
+- **Three cards in a row.** `OptionCardGroup` takes its columns as a prop; the web half changes them from the door's breakpoint (968 px), once its column is 680 px wide. The spec measures one column at 375, 800 and 968, and three equal cards at 1536.
+- **Rollout.** Nothing a person meets changes, and no stored or sent shape changes: any mix of old and new clients is safe.
+
+##### Acceptance criteria and proof
+AC-1, AC-2 and AC-3 are the task RFC's. This part's rows:
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 · each language in its own script | main-dev | required | unit | in English, Hindi and Marathi the three option titles read `English`, `हिन्दी`, `मराठी`, each with its own `lang`, and nothing beside them | `packages/i18n/tests/setup-language.test.ts` |
+| AC-2 · the pill and the notice | main-dev | required | unit | device `hi` → the pill on हिन्दी, `Your device's language`, no notice; device none → the pill on English, `Chosen for you`, and the notice line; planted red: the pill's word no longer reads the device | `packages/i18n/tests/setup-language.test.ts` |
+| AC-3 · the failed save's words | main-dev | required | unit | failed → the banner's title and body, `Try again`, `Continue anyway`; not failed → no banner, and `Continue` | `packages/i18n/tests/setup-language.test.ts` |
+| the step a session owes | main-dev | required | unit | an owner whose company resumes at `language` → `language`; the read in flight → `wait`; a failed read, a later step, a put-off session, a role without the capability, no company → none; planted red (a permission rule): the capability check removed | `packages/domain/tests/auth/setup-step.test.ts` |
+| put off, for this session only | main-dev | required | unit | a snapshot with `setupPutOff` set loses it at a sign-in and at a sign-out | `packages/domain/tests/auth/session-transitions.test.ts` |
+| AC-3 · the web half, measured | ci | required | `e2e-web`, the step `Component tests (tests/e2e/components)` | at 375 one column, at 1536 three cards of equal height in one row; no sideways scroll; every target at least 44; the banner is an alert and the notice a status; a tap on a card reports its language | `tests/e2e/components/SetupLanguage.spec.tsx` |
+| side-by-side · the web half on the component page | qa-web | required | component page `3100`, Main's pictures | each of nine frames beside its board picture — at 375 `m-default`, `m-error`, `m-error-hi`, `m-error-mr`, `m-device-marathi`, `m-not-in-set`; at 1536 `d-default`, `d-error`, `d-not-in-set`; ruled: the door frame's grid at 1536 (*Decisions*, 2), D172 | QA |
+| side-by-side · the running apps | — | not_applicable | — | — | no app mounts the component in this part; part c owns every row on the web and both phones |
+| `m-empty` | — | not_applicable | — | — | *Decisions*, 3 |
+| the running api | — | not_applicable | — | — | this part makes no call |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+**As proven (owner ruling 2026-10-11, after the first picture check).** The side-by-side row's ruled list grew by five differences the first run found between the board and the doors' shared parts, each kept as built (brief, decision 12): the ask directly after the title at 375, where the board sets it at the right edge; the not-in-set line bold; the typographic apostrophe; 24 px over the ways on at 1536 against the board's 32; and the finding's 520 px width against 560. The option cards' grey tiles against the board's white cards are `docs/tasks/UI.md`'s own row (*Owed to the design system by the containers*).
+
+##### Delivery size
+- This part: 25 authored files and 6 generated catalogs. Under both targets.
+- **Code: about 470 authored lines** — `ui` 300 (the types 50, the web half 80, the phone half 110, the stylesheet 45, the frame's measure and the entries 15), `i18n` 120, `domain` 50 — and about 70 lines of Hindi and Marathi in the two `.po` files.
+- **Tests: about 300 authored lines** — the rule's table 80, the snapshot's case 20, the words 90, the component spec 110.
+- Part c, in its own RFC: about 32 files.
+- Order: as *Proposal*.
+- **As built: 26 authored files and 6 generated catalogs** — the 25 of the file table and the spec's story wrapper.
+- **Code as built: about 430 authored lines** — `ui` 253, `i18n` 135, `domain` 44 — and 26 lines of Hindi and Marathi in the two `.po` files.
+- **Tests as built: about 520 authored lines** — the rule's table 64, the snapshot's case 7, the words 167, the component spec 236 and its story 45.
+- The estimate approved was 25 files, about 470 code lines and about 300 test lines. The code is under it; the tests are above it by more than the fifth `docs/tasks/README.md` allows, so the size is ruled again with the commit: the words test holds every frame's words in three languages as one table (167 lines against 90), and the spec grew by the story and by the cases the review asked for — the step being recorded, the failed save in Hindi and Marathi, and the widths 800 and 968 (281 lines against 110). The part stays under both targets: 951 authored lines.
+
+**Owner rulings (2026-10-11, with the approval).** The RFC is approved with every recommendation: the work is two more parts, b the shared parts and c the gate and the screen on both apps; the screen is built on the door frame and sits 60 px right of its board at 1536, a ruled difference in every 1536 row; the `empty` frame is not built; D172 stays, re-pointed to `touches packages/ui/src/components/DoorFrame/DoorTitle.tsx`, and D2, D92, D102, D109 and D132 stay.
+
+**Built against planned (delta as it lands).** Every planned file is built. One landed outside the table, in `tests/e2e`, which the RFC names: `tests/e2e/components/SetupLanguage.story.tsx` — the words hold the ask's pager, a function the component calls while it renders, so a spec cannot hand them through `mount`; the story builds them in the browser from `setupLanguageWords`, as `NotificationFilterBar.story.tsx` does. Planned and not built: none. The words carry one way on as `primary` and `secondary`, not three named labels: `Try again` records the step as `Continue` does, so the component has one handler for both.
+
+**Planted reds seen (part b):** `setupStepOwed` with the capability check replaced by *any roles* failed `setup-step.test.ts` › *asks for no step when the roles do not manage the company’s settings* and › *… and nothing is read for that person*; `setupLanguageWords` with the pill's word no longer reading the device failed `setup-language.test.ts` › *a device outside the set puts “chosen for you” on English and says why in one line*, in all three languages. Seen red before their code: `session-transitions.test.ts` › *drops a setup step put off for the session at the next sign-in and at a sign-out*; `setup-language.test.ts`'s Hindi and Marathi rows, until the catalogs held the words.
+
+**Review (part b).** `reviewer`: no blocker, five findings and five notes. Fixed: the row of three cards switched on at the window's 968 px, where the task track is 420 px and the pill — which never wraps — left its card up to about 1,450 px; measured on the component page (pill right edge 728 against the card's 649 at 968), and the row now needs both the door's breakpoint and its own column at the frame's `choices` measure — from a window of about 1,488 px. The second pass found the row also reached the phone's column from 720 px; it now sits inside the breakpoint, with a case at 800. Planted red: the row rule switched on at 100 px failed `SetupLanguage.spec.tsx` › *at 968, where the task column is at its narrowest* › *the languages stay one column, so the pill stays inside its card*. Also fixed: a language name typed in the spec; the spec's missing cases (the step being recorded; the failed save in Hindi and Marathi at 375); two stale lines of the task RFC; two comments.
+
+**Carried to part c's RFC.** The two app roots hand the provider the raw device answer, with a row that fails when a root passes the source language in its place. The store sets `setupPutOff` as it sets `chosenHome`. A row hears the failed save on iOS and Android: `Banner.native.tsx` sets the alert role and makes no announcement.
+
+Checklist:
+- [x] the domain tests, then `setupStepOwed` and the snapshot's field
+- [x] the words test, then the copy and the catalogs
+- [x] the provider's `device`
+- [x] the frame's `choices` measure
+- [x] `SetupLanguage`, web and phone
+- [x] the component spec
+- [x] Main's pictures and `qa-web`
+- [x] review
+- [x] the gate
+
 #### Design check
-`NEEDS_CHANGE` — 2026-10-11, on the record `SCR-M01-03 - decisions &amp; self-audit.md` read beside the board `SCR-M01-03 Onboarding Language - Mobile.dc.html` (60,930 bytes, under the read cap — D120's first run). The board holds nine frames: six at 375 (default, loading, empty, error, device-language-default in Marathi, device-language-not-in-set) and three at 1536 (default, error, not-in-set).
+`READY` — 2026-10-11, on the record `SCR-M01-03 - decisions &amp; self-audit.md` (17,866 bytes) read beside the board `SCR-M01-03 Onboarding Language - Mobile.dc.html` (42,330 bytes, under the read cap). The owner redrew the screen from the brief the same day; a second, three-line fix closed the last findings, and the brief took one ruling from the redraw — the empty frame's heading reads `Your language`.
 
-The findings, each now a line of the brief's `## Redesign owed`: explaining paragraphs in the reading flow and no word plan; an error block that reassures; a pill that says *phone* on a frame that says *computer*; no Hindi frame and no measured language proof; no 1536 alignment numbers; a three-list audit with passes that name nothing on this screen; and the record against its own board — *7 at 1536* where three are drawn, the arc bar, two gaps against three, a frame *the next pass draws* — and against the brief on who reaches the screen. Three owner rulings of the same day are in the brief with them (decisions 6, 8 and 10).
-
-The owner redraws in the Claude Design project from the brief; then the record is fetched and checked again. Part a draws no frame and does not wait.
+The board holds ten frames, each pictured in the session's scratchpad as `board/<frame>.png`: seven at 375 — `m-default`, `m-empty`, `m-error`, `m-error-hi`, `m-error-mr`, `m-device-marathi`, `m-not-in-set` (381 px wide) — and three at 1536 — `d-default`, `d-error`, `d-not-in-set` (1,037 px wide). No loading frame: nothing loads on this screen. The record prints the 1536 alignment numbers (identity x 116–676, task 740–1420, the three cards 81 px tall) and the measured Hindi and Marathi proof on `m-error`.
 
 #### Runtime
 Branch `feat/T-M01-003a`, cut from `feat/T-M01-041g` (`afe6f00b`), 2026-10-11 — the owner's word, PR #276 being open. #276 merged before the build (`7fe306e5`, the same tree), and the branch, which held no commit of its own, was moved onto `main`. The tree held the owner's uncommitted `.claude/agents/reviewer.md`, which is theirs and is in no commit of this task.
@@ -3129,6 +3301,35 @@ Branch `feat/T-M01-003a`, cut from `feat/T-M01-041g` (`afe6f00b`), 2026-10-11 �
 | Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
 | database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
 | test data left in `heliogrid_test` | — | four owners with a company each (+91 98765 08911, 08912, 08921, 08922), three accounts with no company (08931–08933), and the web flows' own `E2E <number>` companies — all made through the app |
+
+**Part b · ledger (2026-10-11).** Branch `feat/T-M01-003b`, cut from `origin/main` (`eb2e9c36`). The tree held the owner's uncommitted `.claude/agents/reviewer.md` — the reviewer's effort, `high` to `medium` — which is theirs; it is committed with part b at the owner's word.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | one tab on the board (`started_by_task`) | `seed` |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 18,670,940 · `web.log` 569,445 · `metro.log` 1,775,760 bytes | — |
+
+**Part b · QA (2026-10-11)** — no stack: this part makes no call and no app mounts its component. The one server was the component test page (`3100`), started and stopped by each `test:ct` run.
+
+- **Pictures.** Main pictured the web half on the component page at 375 × 812 and 1536 × 1000 — the six phone frames and the three desktop frames — by a temporary spec, deleted before the guard hash; retaken after each review fix, every picture stayed byte-identical.
+- **Rows, first pass.** `qa-web` S1–S9, each board frame beside its picture: S7–S9 passed; S1–S6 failed on one difference outside the ruled list — the ask sits directly after the title, where the board's 375 frames set it at the right edge. The Hindi and Marathi words matched the board character for character.
+- **The owner's ruling, and the rerun.** The owner kept the shared parts' way for that difference and four smaller ones (the brief's decision 12; *As proven* under the matrix). `qa-web` judged all nine again: passed, every difference one of the ten ruled.
+- **Measured for the review's finding.** With the row of three switched on at the window's 968 px, the English pill's right edge sat at 728 against its card's 649, and still outside at 1,280; from 1,488 it is inside (988 against 996).
+- **The phone half** is typechecked and unseen: part c draws it on both phones.
+
+**Measurements** — helper runs: `design-check` 1 (one continuation), `qa-web` board capture 1 (one), `Explore` 1 (the code facts for the RFC), `qa-web` 1 (one), `reviewer` 1 (one), `evaluator` 1; one full gate, passed — 211 test files, 3,680 tests, the invariants on `heliogrid_test`, nothing regenerated. Helper tokens, as reported: `design-check` about 99 k, the board capture 114 k, `Explore` 257 k, `qa-web` 57 k, `reviewer` 145 k, `evaluator` 33 k. Main: about 80 tool-call turns and about 620 k context tokens at the commit card, the two design fetches and the RFC among them. Size: planned 25 files, code about 470, tests about 300; built 26 files, code about 430, tests about 520 (*Delivery size*).
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | none listening |
+| simulator · emulator | none booted | none booted |
+| browser tabs | pane closed before the task; one tab on the board (`started_by_task`) | closed |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
 
 ### T-M01-004 · Setup — What You Sell
 **Type:** screen · **Tier:** P0

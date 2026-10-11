@@ -105,6 +105,11 @@ export interface SessionSnapshot {
    * memory only and gone with the session, so the next sign-in lands on the ladder's home again.
    */
   chosenHome: RolePreset | null;
+  /**
+   * The person went past a setup step whose answer did not save. Held in memory only and gone
+   * with the session, so the next sign-in asks for the step again.
+   */
+  setupPutOff: boolean;
   /** Set when the server removed this person's access: held while signed in, else at the door. */
   ended: EndedAccess | null;
   /**

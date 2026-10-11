@@ -18,6 +18,11 @@ import type { I18nRuntime } from '../runtime';
 export interface I18nControls {
   locale: UiLanguage;
   meta: LanguageMeta;
+  /**
+   * The device's own language where the set holds it (`F3-03`), else null — which a screen needs
+   * to say where a language nobody chose came from, and `locale` cannot tell it.
+   */
+  device: UiLanguage | null;
   /** Async on BOTH platforms — the catalog is fetched. Never a synchronous variant on one. */
   setLocale(next: UiLanguage): Promise<void>;
   t: I18nRuntime['t'];
@@ -53,11 +58,11 @@ export interface HelioI18nProviderProps {
    */
   follow?: UiLanguage | null;
   /**
-   * The device's own language where the set holds it (`F3-03`): what the mount rests in until a
-   * language is chosen on the door. Read once, at mount. Omitted, the mount rests in the
-   * language its runtime started with.
+   * The device's own language where the set holds it (`F3-03`), else null: what the mount rests in
+   * until a language is chosen on the door — the resting language reads it once, at mount. Null
+   * or omitted, the mount rests in the language its runtime started with.
    */
-  device?: UiLanguage;
+  device?: UiLanguage | null;
   /**
    * Runs after every successful switch, saying why it happened — where an app syncs
    * `<html lang>` (every switch) or persists a choice (`source: 'user'` alone).
@@ -133,8 +138,14 @@ export function HelioI18nProvider({
   }, [follow, runtime, announce]);
 
   const controls = useMemo<I18nControls>(
-    () => ({ locale, meta: LANGUAGE_META[locale], setLocale, t: runtime.t }),
-    [locale, setLocale, runtime],
+    () => ({
+      locale,
+      meta: LANGUAGE_META[locale],
+      device: device ?? null,
+      setLocale,
+      t: runtime.t,
+    }),
+    [locale, device, setLocale, runtime],
   );
 
   return (

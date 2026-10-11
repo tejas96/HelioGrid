@@ -248,6 +248,11 @@ msgid "About what the code does"
 msgstr "कोड क्या करता है, इसके बारे में"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-language.ts:15
+msgid "About your language"
+msgstr "अपनी भाषा के बारे में"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:27
 msgid "Account"
 msgstr "खाता"
@@ -344,6 +349,11 @@ msgid "certification schemes"
 msgstr "प्रमाणन योजनाएँ"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-language.ts:20
+msgid "Change it any time in Profile & preferences."
+msgstr "इसे कभी भी प्रोफ़ाइल और प्राथमिकताएँ में बदलें।"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:17
 msgid "Change language"
 msgstr "भाषा बदलें"
@@ -362,6 +372,16 @@ msgstr "मन बदल गया, या यह वही कंपनी न�
 #: src/copy/sign-in.ts:44
 msgid "Check the SMS, or send a new code."
 msgstr "SMS जाँचें, या नया कोड भेजें।"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:14
+msgid "Choose your language"
+msgstr "अपनी भाषा चुनें"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:23
+msgid "Chosen for you"
+msgstr "आपके लिए चुनी गई"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:44
@@ -407,6 +427,16 @@ msgstr "अपना मोबाइल नंबर पक्का करे�
 #: src/copy/provenance.ts:21
 msgid "Confirmed"
 msgstr "पुष्टि हुई"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:27
+msgid "Continue"
+msgstr "आगे बढ़ें"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:32
+msgid "Continue anyway"
+msgstr "फिर भी आगे बढ़ें"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:80
@@ -687,6 +717,11 @@ msgstr "इंस्टॉलर जॉब होम"
 #: src/copy/connection.ts:11
 msgid "It may be your connection or ours. Try again in a moment."
 msgstr "यह आपके कनेक्शन या हमारी ओर से हो सकता है। थोड़ी देर में फिर से कोशिश करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:21
+msgid "Language"
+msgstr "भाषा"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:90
@@ -1442,6 +1477,11 @@ msgid "Try again"
 msgstr "फिर से कोशिश करें"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-language.ts:29
+msgid "Try again, or continue and be asked again at your next sign-in."
+msgstr "फिर से कोशिश करें, या आगे बढ़ें — अगली बार साइन इन करने पर यह फिर पूछा जाएगा।"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:86
 msgid "Try again, or use your number."
 msgstr "फिर से कोशिश करें, या अपना नंबर इस्तेमाल करें।"
@@ -1729,9 +1769,34 @@ msgid "Your current plan doesn't include this."
 msgstr "आपके मौजूदा प्लान में यह शामिल नहीं है।"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-language.ts:22
+msgid "Your device’s language"
+msgstr "आपके डिवाइस की भाषा"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:24
+msgid "Your device’s language isn’t in HelioGrid yet, so the app started in English."
+msgstr "आपके डिवाइस की भाषा अभी HelioGrid में नहीं है, इसलिए ऐप अंग्रेज़ी में शुरू हुआ।"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:124
 msgid "Your home is the {preset} one. Open the title to switch."
 msgstr "आपका होम {preset} वाला है। बदलने के लिए शीर्षक खोलें।"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:16
+msgid "Your language"
+msgstr "आपकी भाषा"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:17
+msgid "Your language belongs to you, not to this device. It follows you wherever you sign in."
+msgstr "आपकी भाषा आपकी है, इस डिवाइस की नहीं। आप जहाँ भी साइन इन करें, यह आपके साथ रहती है।"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:28
+msgid "Your language was not saved"
+msgstr "आपकी भाषा सहेजी नहीं गई"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:18

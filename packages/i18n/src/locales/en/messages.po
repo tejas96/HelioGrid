@@ -248,6 +248,11 @@ msgid "About what the code does"
 msgstr "About what the code does"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-language.ts:15
+msgid "About your language"
+msgstr "About your language"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:27
 msgid "Account"
 msgstr "Account"
@@ -344,6 +349,11 @@ msgid "certification schemes"
 msgstr "certification schemes"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-language.ts:20
+msgid "Change it any time in Profile & preferences."
+msgstr "Change it any time in Profile & preferences."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:17
 msgid "Change language"
 msgstr "Change language"
@@ -362,6 +372,16 @@ msgstr "Changed your mind, or it is not the same company?"
 #: src/copy/sign-in.ts:44
 msgid "Check the SMS, or send a new code."
 msgstr "Check the SMS, or send a new code."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:14
+msgid "Choose your language"
+msgstr "Choose your language"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:23
+msgid "Chosen for you"
+msgstr "Chosen for you"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:44
@@ -407,6 +427,16 @@ msgstr "Confirm your mobile number"
 #: src/copy/provenance.ts:21
 msgid "Confirmed"
 msgstr "Confirmed"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:27
+msgid "Continue"
+msgstr "Continue"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:32
+msgid "Continue anyway"
+msgstr "Continue anyway"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:80
@@ -687,6 +717,11 @@ msgstr "Installer Job Home"
 #: src/copy/connection.ts:11
 msgid "It may be your connection or ours. Try again in a moment."
 msgstr "It may be your connection or ours. Try again in a moment."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:21
+msgid "Language"
+msgstr "Language"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:90
@@ -1442,6 +1477,11 @@ msgid "Try again"
 msgstr "Try again"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-language.ts:29
+msgid "Try again, or continue and be asked again at your next sign-in."
+msgstr "Try again, or continue and be asked again at your next sign-in."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:86
 msgid "Try again, or use your number."
 msgstr "Try again, or use your number."
@@ -1729,9 +1769,34 @@ msgid "Your current plan doesn't include this."
 msgstr "Your current plan doesn't include this."
 
 #. js-lingui-explicit-id
+#: src/copy/setup-language.ts:22
+msgid "Your device’s language"
+msgstr "Your device’s language"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:24
+msgid "Your device’s language isn’t in HelioGrid yet, so the app started in English."
+msgstr "Your device’s language isn’t in HelioGrid yet, so the app started in English."
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:124
 msgid "Your home is the {preset} one. Open the title to switch."
 msgstr "Your home is the {preset} one. Open the title to switch."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:16
+msgid "Your language"
+msgstr "Your language"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:17
+msgid "Your language belongs to you, not to this device. It follows you wherever you sign in."
+msgstr "Your language belongs to you, not to this device. It follows you wherever you sign in."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-language.ts:28
+msgid "Your language was not saved"
+msgstr "Your language was not saved"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:18
