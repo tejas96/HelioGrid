@@ -23,7 +23,19 @@ Reached from: directly after signup's three fields — "after M01-01's three fie
 
 **Two things this screen could not answer, both ruled 2026-08-28 and now applied.** The unit is **`kWp`**, not `kW` — the two are different quantities and the difference is 10–30%, which residential hides and C&I does not, on a screen that asks about both. The declarations are edited afterwards in the **company profile, `SCR-M01-05`** (`M01-23`), which is what the *change this later* line and the failed-save *Finish later* route now point at. **Both are redrawn (2026-08-28) and re-measured:** `kWp` reads on all eight frames as label and suffix with no bare `kW` left, and the company profile is named under Continue, in both error bodies and in both `aria-label`s at both widths and in Marathi. The unit stays `kWp` in Marathi — a unit is a quantity, not a word to localise, which is this brief's own never-translate rule reaching the same answer. Because `SCR-M01-05` is the very next step in this corridor, *Finish later* now moves the owner **one step forward** rather than sideways into the product — which is what makes the escape honest without making this step skippable.
 
-**Build note — design-system gaps this screen found** are recorded once, in `packages/ui/CLAUDE.md` §"Known component gaps", which loads when anyone opens that folder. A screen brief is the wrong home for them: nobody building a component reads one. `SCR-M01-04` contributed three of them — `NumberField`'s unset value, `Provenance`'s emphasis and the announce-vs-describe error — plus the one already fixed there: a unit is part of the number, so it is load-bearing and never `--text-tertiary` (`F7-11`).
+**Build note — design-system gaps this screen found.** One is open, in `docs/tasks/UI.md`: a field `error` on `NumberField` and `OptionCardGroup` is described, not announced. Two are closed in the port (`T-M01-004a`): a `NumberField` with no value is unset, and `Provenance` takes `emphasis: 'load-bearing'`. And one rule stands: a unit is part of the number, so it is load-bearing and never `--text-tertiary` (`F7-11`).
+
+**Rulings made in the build (owner, 2026-10-11) — the board and later screens inherit them.**
+
+1. **Until `SCR-M01-05` is built, `Continue` lands on the home and `Finish later` puts the step off for the session**, so the next sign-in asks again. The words are the board's as drawn and name the company profile; `T-M01-005` re-points the route.
+2. **The screen is built on the door frame**, at a `list` measure of 560: the task column is the board's width, and the identity half keeps the frame's own width and place.
+3. **The failure takes the heading at every width, as one block, as the board draws it at 375**: the danger block holds what went wrong as the page's heading in the danger ink, the error's ask at the row's far end, and the fix sentence under them, said as one alert. At 1536 the block stands in the question's place, where the board keeps the question above it.
+4. **A size of 0 or less, or over 999,999.99, is unanswered**; the size holds two decimals. The field has no bound of its own: `Continue` refuses at the field with its one line.
+5. **On a refusal the web moves focus to the first unanswered question; the phone says that question's error once.** The 1536 initial focus is not built.
+6. **The buttons carry no spoken name**: the visible word is the name, and the line at the act and the ask say the rest.
+7. **The Marathi tier word is the product's, `अंदाजित`**, wherever the tier prints; the board's `अंदाजे` is a working word.
+8. **At 1536 a failed save keeps the door frame's rule**: the identity half takes its full width when it holds the fix, so the wordmark and the heading start further left than at rest, as on the language step.
+9. **The door frame's spacing stays**: at 375 the heading sits about 69 px under the wordmark where the board has about 43, and at 1536 the task column sits about 18 px lower than the board's — one frame for every door.
 
 
 ## Requirements (verbatim)

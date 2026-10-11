@@ -238,6 +238,16 @@ msgid "About one account per number"
 msgstr "About one account per number"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:19
+msgid "About these questions"
+msgstr "About these questions"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:37
+msgid "About this error"
+msgstr "About this error"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:16
 msgid "About what signup asks for"
 msgstr "About what signup asks for"
@@ -266,6 +276,11 @@ msgstr "Add a lead from your home"
 #: src/copy/shell.ts:106
 msgid "Add lead"
 msgstr "Add lead"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:32
+msgid "Add the size you sell most often."
+msgstr "Add the size you sell most often."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:22
@@ -306,6 +321,11 @@ msgstr "Back to the list"
 #: src/copy/notifications.ts:71
 msgid "Billing"
 msgstr "Billing"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:56
+msgid "Both"
+msgstr "Both"
 
 #. js-lingui-explicit-id
 #: src/copy/energy-source.ts:11
@@ -407,6 +427,11 @@ msgstr "Code filled from your SMS"
 #: src/copy/sign-in.ts:60
 msgid "Code limits"
 msgstr "Code limits"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:55
+msgid "Commercial & industrial (C&I)"
+msgstr "Commercial & industrial (C&I)"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:39
@@ -514,6 +539,11 @@ msgid "data rights"
 msgstr "data rights"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:31
+msgid "Declared by you"
+msgstr "Declared by you"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:68
 msgid "Delivery"
 msgstr "Delivery"
@@ -564,6 +594,11 @@ msgid "Estimated"
 msgstr "Estimated"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:64
+msgid "Factories, warehouses and offices — bigger rooftops, sold to a business."
+msgstr "Factories, warehouses and offices — bigger rooftops, sold to a business."
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:83
 msgid "Field Technician"
 msgstr "Field Technician"
@@ -582,6 +617,16 @@ msgstr "Finance"
 #: src/copy/homes.ts:16
 msgid "Finance Home"
 msgstr "Finance Home"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:45
+msgid "Finish later"
+msgstr "Finish later"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:42
+msgid "Finish later takes you to your company profile, the next step. You can finish both answers there."
+msgstr "Finish later takes you to your company profile, the next step. You can finish both answers there."
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:35
@@ -662,6 +707,11 @@ msgstr "Hide these {count}"
 #: src/copy/shell.ts:89
 msgid "Home"
 msgstr "Home"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:61
+msgid "Homes and individual rooftops, sold to the owner living under the system."
+msgstr "Homes and individual rooftops, sold to the owner living under the system."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:90
@@ -871,6 +921,11 @@ msgid "Nothing was deleted — every notification is still in the list."
 msgstr "Nothing was deleted — every notification is still in the list."
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:38
+msgid "Nothing was lost"
+msgstr "Nothing was lost"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:56
 msgid "Nothing you captured on this device is lost. Ask your admin to restore your access, or sign in with another account."
 msgstr "Nothing you captured on this device is lost. Ask your admin to restore your access, or sign in with another account."
@@ -950,6 +1005,11 @@ msgstr "People"
 #: src/copy/homes.ts:17
 msgid "People Today"
 msgstr "People Today"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:28
+msgid "Pick the one that describes your work."
+msgstr "Pick the one that describes your work."
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:26
@@ -1037,6 +1097,11 @@ msgid "Resend code, available in {seconds, plural, one {# second} other {# secon
 msgstr "Resend code, available in {seconds, plural, one {# second} other {# seconds}}"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:54
+msgid "Residential"
+msgstr "Residential"
+
+#. js-lingui-explicit-id
 #: src/copy/document-basis.ts:14
 msgid "Roof measured from satellite imagery. A site visit will confirm dimensions, shading and electrical access."
 msgstr "Roof measured from satellite imagery. A site visit will confirm dimensions, shading and electrical access."
@@ -1055,6 +1120,11 @@ msgstr "Sales Executive"
 #: src/copy/shell.ts:74
 msgid "Sales Manager"
 msgstr "Sales Manager"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:33
+msgid "Saves both; you can change them in your company profile."
+msgstr "Saves both; you can change them in your company profile."
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:21
@@ -1225,6 +1295,11 @@ msgstr "Start a survey from your home"
 #: src/copy/shell.ts:107
 msgid "Start survey"
 msgstr "Start survey"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:34
+msgid "Still checking whether you have answered this."
+msgstr "Still checking whether you have answered this."
 
 #. js-lingui-explicit-id
 #: src/copy/connection.ts:12
@@ -1482,6 +1557,11 @@ msgid "Try again, or continue and be asked again at your next sign-in."
 msgstr "Try again, or continue and be asked again at your next sign-in."
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:36
+msgid "Try again, or finish this in your company profile."
+msgstr "Try again, or finish this in your company profile."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:86
 msgid "Try again, or use your number."
 msgstr "Try again, or use your number."
@@ -1497,6 +1577,11 @@ msgid "Two presets, one home"
 msgstr "Two presets, one home"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:30
+msgid "Typical system size"
+msgstr "Typical system size"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:25
 msgid "Unread"
 msgstr "Unread"
@@ -1510,6 +1595,11 @@ msgstr "Unread only"
 #: src/copy/notifications.ts:62
 msgid "Unread. {title}. {body}. {time}."
 msgstr "Unread. {title}. {body}. {time}."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:46
+msgid "Until you finish, proposals start without your answers."
+msgstr "Until you finish, proposals start without your answers."
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:65
@@ -1662,6 +1752,11 @@ msgid "Welcome back — carry on"
 msgstr "Welcome back — carry on"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:18
+msgid "What do you sell?"
+msgstr "What do you sell?"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:17
 msgid "What signup asks for"
 msgstr "What signup asks for"
@@ -1680,6 +1775,16 @@ msgstr "When the owner of {company}, {city} adds you, an SMS to your number brin
 #: src/copy/company-signup.ts:46
 msgid "Where you're based."
 msgstr "Where you're based."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:27
+msgid "Who you sell to"
+msgstr "Who you sell to"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:20
+msgid "Why we ask"
+msgstr "Why we ask"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:41
@@ -1712,6 +1817,11 @@ msgid "You can ask for {perWindow} codes every {windowMinutes} minutes, and {day
 msgstr "You can ask for {perWindow} codes every {windowMinutes} minutes, and {day} a day."
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:24
+msgid "You can change both later in your company profile, the next step. Proposals you have already sent never change."
+msgstr "You can change both later in your company profile, the next step. Proposals you have already sent never change."
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:29
 msgid "You can paste the whole code."
 msgstr "You can paste the whole code."
@@ -1720,6 +1830,11 @@ msgstr "You can paste the whole code."
 #: src/copy/api-error.ts:30
 msgid "You don't have access to do that."
 msgstr "You don't have access to do that."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:67
+msgid "You sell to homes and businesses, and pick which one each proposal is for."
+msgstr "You sell to homes and businesses, and pick which one each proposal is for."
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:24
@@ -1741,6 +1856,21 @@ msgstr "Your access was removed"
 #: src/copy/company-signup.ts:37
 msgid "Your account"
 msgstr "Your account"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:39
+msgid "Your answers are still on this screen, and nothing about your account changed."
+msgstr "Your answers are still on this screen, and nothing about your account changed."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:35
+msgid "Your answers did not save"
+msgstr "Your answers did not save"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:21
+msgid "Your answers set the starting point for every proposal HelioGrid builds."
+msgstr "Your answers set the starting point for every proposal HelioGrid builds."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:27
@@ -1807,6 +1937,11 @@ msgstr "Your mobile number becomes your HelioGrid account."
 #: src/copy/sign-in.ts:10
 msgid "Your mobile number is your HelioGrid account."
 msgstr "Your mobile number is your HelioGrid account."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:29
+msgid "Your most common job, not your biggest."
+msgstr "Your most common job, not your biggest."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:41

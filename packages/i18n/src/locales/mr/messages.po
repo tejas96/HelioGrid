@@ -238,6 +238,16 @@ msgid "About one account per number"
 msgstr "एक नंबर, एक खाते याबद्दल"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:19
+msgid "About these questions"
+msgstr "या प्रश्नांबद्दल"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:37
+msgid "About this error"
+msgstr "या त्रुटीबद्दल"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:16
 msgid "About what signup asks for"
 msgstr "साइन अपमध्ये काय विचारले जाते याबद्दल"
@@ -266,6 +276,11 @@ msgstr "तुमच्या होममधून लीड जोडा"
 #: src/copy/shell.ts:106
 msgid "Add lead"
 msgstr "लीड जोडा"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:32
+msgid "Add the size you sell most often."
+msgstr "तुम्ही सर्वाधिक विकता तो आकार भरा."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:22
@@ -306,6 +321,11 @@ msgstr "यादीकडे परत"
 #: src/copy/notifications.ts:71
 msgid "Billing"
 msgstr "बिलिंग"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:56
+msgid "Both"
+msgstr "दोन्ही"
 
 #. js-lingui-explicit-id
 #: src/copy/energy-source.ts:11
@@ -407,6 +427,11 @@ msgstr "तुमच्या SMS मधून कोड भरला"
 #: src/copy/sign-in.ts:60
 msgid "Code limits"
 msgstr "कोडची मर्यादा"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:55
+msgid "Commercial & industrial (C&I)"
+msgstr "व्यावसायिक व औद्योगिक (C&I)"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:39
@@ -514,6 +539,11 @@ msgid "data rights"
 msgstr "डेटा हक्क"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:31
+msgid "Declared by you"
+msgstr "तुम्ही सांगितलेले"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:68
 msgid "Delivery"
 msgstr "डिलिव्हरी"
@@ -564,6 +594,11 @@ msgid "Estimated"
 msgstr "अंदाजित"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:64
+msgid "Factories, warehouses and offices — bigger rooftops, sold to a business."
+msgstr "कारखाने, गोदामे आणि कार्यालये — मोठी छते, व्यवसायाला विकलेली."
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:83
 msgid "Field Technician"
 msgstr "फील्ड तंत्रज्ञ"
@@ -582,6 +617,16 @@ msgstr "वित्त"
 #: src/copy/homes.ts:16
 msgid "Finance Home"
 msgstr "फायनान्स होम"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:45
+msgid "Finish later"
+msgstr "नंतर पूर्ण करा"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:42
+msgid "Finish later takes you to your company profile, the next step. You can finish both answers there."
+msgstr "नंतर पूर्ण करा तुम्हाला पुढच्या पायरीवर, कंपनी प्रोफाइलमध्ये नेते. दोन्ही उत्तरे तिथे पूर्ण करता येतात."
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:35
@@ -662,6 +707,11 @@ msgstr "या {count} लपवा"
 #: src/copy/shell.ts:89
 msgid "Home"
 msgstr "होम"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:61
+msgid "Homes and individual rooftops, sold to the owner living under the system."
+msgstr "घरे आणि वैयक्तिक छते — जिथे मालक स्वतः त्या सिस्टीमखाली राहतो."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:90
@@ -871,6 +921,11 @@ msgid "Nothing was deleted — every notification is still in the list."
 msgstr "काहीही हटवले नाही — प्रत्येक सूचना अजूनही यादीत आहे."
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:38
+msgid "Nothing was lost"
+msgstr "काहीही हरवले नाही"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:56
 msgid "Nothing you captured on this device is lost. Ask your admin to restore your access, or sign in with another account."
 msgstr "या डिव्हाइसवर तुम्ही नोंदवलेले काहीही हरवलेले नाही. तुमचा प्रवेश परत मिळवण्यासाठी तुमच्या अ‍ॅडमिनला सांगा, किंवा दुसऱ्या खात्याने साइन इन करा."
@@ -950,6 +1005,11 @@ msgstr "लोक"
 #: src/copy/homes.ts:17
 msgid "People Today"
 msgstr "आजचे लोक"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:28
+msgid "Pick the one that describes your work."
+msgstr "तुमच्या कामाचे वर्णन करणारा पर्याय निवडा."
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:26
@@ -1037,6 +1097,11 @@ msgid "Resend code, available in {seconds, plural, one {# second} other {# secon
 msgstr "कोड पुन्हा पाठवा, {seconds, plural, one {# सेकंदात} other {# सेकंदांत}} उपलब्ध"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:54
+msgid "Residential"
+msgstr "निवासी"
+
+#. js-lingui-explicit-id
 #: src/copy/document-basis.ts:14
 msgid "Roof measured from satellite imagery. A site visit will confirm dimensions, shading and electrical access."
 msgstr "छताचे मोजमाप उपग्रह प्रतिमांवरून घेतले आहे. साइट भेटीत मापे, सावली आणि वीज जोडणीची सोय निश्चित होईल."
@@ -1055,6 +1120,11 @@ msgstr "सेल्स एक्झिक्युटिव्ह"
 #: src/copy/shell.ts:74
 msgid "Sales Manager"
 msgstr "सेल्स मॅनेजर"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:33
+msgid "Saves both; you can change them in your company profile."
+msgstr "दोन्ही साठवते; तुम्ही ती तुमच्या कंपनी प्रोफाइलमध्ये बदलू शकता."
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:21
@@ -1225,6 +1295,11 @@ msgstr "तुमच्या होममधून सर्व्हे सु
 #: src/copy/shell.ts:107
 msgid "Start survey"
 msgstr "सर्व्हे सुरू करा"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:34
+msgid "Still checking whether you have answered this."
+msgstr "तुम्ही याचे उत्तर दिले आहे का ते अजून तपासत आहोत."
 
 #. js-lingui-explicit-id
 #: src/copy/connection.ts:12
@@ -1482,6 +1557,11 @@ msgid "Try again, or continue and be asked again at your next sign-in."
 msgstr "पुन्हा प्रयत्न करा, किंवा पुढे चला — पुढच्या साइन-इनला हे पुन्हा विचारले जाईल."
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:36
+msgid "Try again, or finish this in your company profile."
+msgstr "पुन्हा प्रयत्न करा, किंवा हे कंपनी प्रोफाइलमध्ये पूर्ण करा."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:86
 msgid "Try again, or use your number."
 msgstr "पुन्हा प्रयत्न करा, किंवा तुमचा नंबर वापरा."
@@ -1497,6 +1577,11 @@ msgid "Two presets, one home"
 msgstr "दोन प्रीसेट, एक होम"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:30
+msgid "Typical system size"
+msgstr "सामान्य सिस्टम आकार"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:25
 msgid "Unread"
 msgstr "न वाचलेले"
@@ -1510,6 +1595,11 @@ msgstr "फक्त न वाचलेल्या"
 #: src/copy/notifications.ts:62
 msgid "Unread. {title}. {body}. {time}."
 msgstr "न वाचलेले. {title}. {body}. {time}."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:46
+msgid "Until you finish, proposals start without your answers."
+msgstr "पूर्ण करेपर्यंत प्रस्ताव तुमच्या उत्तरांशिवाय सुरू होतात."
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:65
@@ -1662,6 +1752,11 @@ msgid "Welcome back — carry on"
 msgstr "पुन्हा स्वागत आहे — पुढे चला"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:18
+msgid "What do you sell?"
+msgstr "तुम्ही काय विकता?"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:17
 msgid "What signup asks for"
 msgstr "साइन अपमध्ये काय विचारले जाते"
@@ -1680,6 +1775,16 @@ msgstr "{company}, {city} चे मालक तुम्हाला जोड
 #: src/copy/company-signup.ts:46
 msgid "Where you're based."
 msgstr "तुम्ही कुठे आहात."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:27
+msgid "Who you sell to"
+msgstr "तुम्ही कोणाला विकता"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:20
+msgid "Why we ask"
+msgstr "आम्ही का विचारतो"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:41
@@ -1712,6 +1817,11 @@ msgid "You can ask for {perWindow} codes every {windowMinutes} minutes, and {day
 msgstr "तुम्ही दर {windowMinutes} मिनिटांत {perWindow} कोड, आणि दिवसाला {day} कोड मागू शकता."
 
 #. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:24
+msgid "You can change both later in your company profile, the next step. Proposals you have already sent never change."
+msgstr "दोन्ही तुम्ही नंतर पुढच्या पायरीत, कंपनी प्रोफाइलमध्ये बदलू शकता. तुम्ही आधीच पाठवलेले प्रस्ताव कधीही बदलत नाहीत."
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:29
 msgid "You can paste the whole code."
 msgstr "तुम्ही पूर्ण कोड पेस्ट करू शकता."
@@ -1720,6 +1830,11 @@ msgstr "तुम्ही पूर्ण कोड पेस्ट करू �
 #: src/copy/api-error.ts:30
 msgid "You don't have access to do that."
 msgstr "तुम्हाला हे करण्याची परवानगी नाही."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:67
+msgid "You sell to homes and businesses, and pick which one each proposal is for."
+msgstr "तुम्ही घरे आणि व्यवसाय दोघांना विकता, आणि प्रत्येक प्रस्ताव कोणासाठी आहे ते निवडता."
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:24
@@ -1741,6 +1856,21 @@ msgstr "तुमचा प्रवेश काढून टाकला आ�
 #: src/copy/company-signup.ts:37
 msgid "Your account"
 msgstr "तुमचे खाते"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:39
+msgid "Your answers are still on this screen, and nothing about your account changed."
+msgstr "तुमची उत्तरे याच स्क्रीनवर आहेत, आणि तुमच्या खात्यात काहीही बदलले नाही."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:35
+msgid "Your answers did not save"
+msgstr "तुमची उत्तरे साठवली गेली नाहीत"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:21
+msgid "Your answers set the starting point for every proposal HelioGrid builds."
+msgstr "तुमची उत्तरे HelioGrid तयार करत असलेल्या प्रत्येक प्रस्तावाचा सुरुवातीचा बिंदू ठरवतात."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:27
@@ -1807,6 +1937,11 @@ msgstr "तुमचा मोबाइल नंबर तुमचे HelioGri
 #: src/copy/sign-in.ts:10
 msgid "Your mobile number is your HelioGrid account."
 msgstr "तुमचा मोबाइल नंबर हेच तुमचे HelioGrid खाते आहे."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-what-you-sell.ts:29
+msgid "Your most common job, not your biggest."
+msgstr "तुमचे सर्वात नेहमीचे काम, सर्वात मोठे नाही."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:41

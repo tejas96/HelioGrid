@@ -97,6 +97,7 @@ export * from './components/SearchField';
 export * from './components/SegmentedControl';
 export * from './components/Select';
 export * from './components/SetupLanguage';
+export * from './components/SetupWhatYouSell';
 export * from './components/Sheet';
 export * from './components/SignupCompanyStep';
 export * from './components/SignupKnownNumber';

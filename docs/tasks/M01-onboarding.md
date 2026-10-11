@@ -3620,7 +3620,7 @@ Each part's flow is in its own RFC. Shared here:
   1. The session knows no company name or city (`packages/domain/src/auth/session.ts:45`), and `PUT /settings/business-profile` replaces the profile whole (`packages/contracts/src/business-profile.ts:27`). So the step reads the profile before it writes; a read that failed is read again by `Continue` before the write, and a failure of either is the one error frame. The record's "a failed check is answered by asking" holds: the questions stay live. → part c.
   2. `SCR-M01-05` is not built, so the corridor's next step is the home: `Continue` lands there, and `Finish later` puts the step off for this session, as the language step's `Continue anyway` does, so the next sign-in asks again. The route to the company profile is `T-M01-005`'s to re-point (new `deferred.md` row). → *Decisions*, 2.
   3. Every company made before this task resumes at `what_you_sell` (`settings.onboarding.service.ts:17`), so every existing owner — the standing QA owners too — meets the step once at the next sign-in.
-  4. The board's 1536 grid — the identity block 320 wide at x 396–716, the task column 560 wide at 780–1340, the cards a list, the field at the column's measure, two thin rules — is not the door frame's grid (`DoorFrame.css:207-228`: identity up to 560 right-aligned against the gap, the task track at the door's measure). Built on the frame, as `SCR-M01-03` was ruled: the frame gains a fourth measure, `list` (560 px, `DoorFrame.css:24-30`), so the task column is the board's width and sits 20 px right of it; the identity block keeps the frame's own width. The difference is listed in every 1536 row. → *Decisions*, 3.
+  4. The board's 1536 grid — the identity block 320 wide at x 396–716, the task column 560 wide at 780–1340, the cards a list, the field at the column's measure, two thin rules — is not the door frame's grid (`DoorFrame.css`, `.hg-door-body` and `.hg-door-identity` from the breakpoint: identity up to 560 right-aligned against the gap, the task track at the door's measure). Built on the frame, as `SCR-M01-03` was ruled: the frame gains a fourth measure, `list` (560 px, `DoorFrame.css`, the `data-measure` rules), so the task column is the board's width and sits 20 px right of it; the identity block keeps the frame's own width. The difference is listed in every 1536 row. → *Decisions*, 3.
   5. At 375 the failure takes the heading (`m-error`); at 1536 the question keeps it and a banner sits under it (`d-error`). One way at every width — the failure takes the heading — is one DOM and one component; the board's way needs a width switch between two heading structures. → *Decisions*, 4.
   6. A typed `0` or a negative is not a typical size: it counts as unanswered, and `Continue` refuses it at the field. Precision 2 and the ceiling 999,999.99 are the column's (`tenant.typical_system_kwp`, `numeric(8,2)`), owned by domain. → *Decisions*, 5.
   7. The record's decision 12 moves focus to the first unanswered question on refusal. React Native cannot move focus into a radio group, so the phone announces that question's error once instead (`TintedBlock.native.tsx:23` is the precedent). → *Decisions*, 6.
@@ -3679,7 +3679,7 @@ Three parts. a: about 15 files, sized in its RFC. b: the screen's shared parts, 
 | part | what | AC | depends on | status |
 |---|---|---|---|---|
 | a | `NumberField` can be unset and `Provenance` can be load-bearing, both halves; `provenanceWords` in `packages/i18n`; a component spec for the field; the two `UI.md` rows go (`#### Part a · RFC`) | AC-1 (an undeclared size is empty, never 0 — by component spec) | `T-M01-003` | shipped |
-| b | the screen's shared parts: `SetupWhatYouSell` in `packages/ui`, its words in three languages, domain's rule for the answers (what is missing, what a read fills, what counts as a size) — by unit test and on the component page | AC-1 (the two questions, the tier), AC-2 — on the component page | a · `SCR-M01-04` `READY` | open |
+| b | the screen's shared parts: `SetupWhatYouSell` in `packages/ui`, its words in three languages, domain's rule for the answers (what is missing, what a read fills, what counts as a size) — by unit test and on the component page | AC-1 (the two questions, the tier), AC-2 — on the component page | a · `SCR-M01-04` `READY` | shipped |
 | c | the step owed, the landing, the business-profile read and write, and the screen on the web and both phones; `createCompany` passes the step | AC-1 (first run, the refusal, the failed save), AC-2 — on the running apps | b | open |
 
 #### Part a · RFC
@@ -3805,10 +3805,195 @@ Checklist:
 - [x] review
 - [x] the gate
 
+#### Part b · RFC
+
+##### Title
+`T-M01-004b` — The what-you-sell screen's shared parts: one component, its words, and the rule for the two answers
+
+##### Description
+**User impact.** None — internal. No person meets a change in this part: a new owner still lands on the home after the language step. It builds the three things both apps share, so part c only wires them: the screen as one component, every word of it in three languages, and the rule that says which answer is missing and what a stored answer may fill. Indirectly, the web and the phones cannot draw this screen two ways, word it two ways, or disagree on what counts as a size.
+
+Who gains: part c, and `T-M01-005`, which edits the same two answers under the same rule. The problem: the screen and its words do not exist; nothing says what a typical size is — the contract takes any figure from 0 up (`packages/contracts/src/business-profile.ts:31`) while the column holds two decimals under one million (`packages/db/src/schema/tenant.ts:49`); and the door frame has no measure for a column of stacked cards (`packages/ui/src/components/DoorFrame/DoorFrame.types.ts:9`). Sources: the task RFC and its rulings, `M01-23`, the brief, the record and the board (`#### Design check`).
+
+##### Goals
+- `SetupWhatYouSell` in `packages/ui` draws the five states the apps can reach — default, checking, answered, refused and the failed save — on the web and the phone from one prop contract.
+- `setupWhatYouSellWords` writes every word of every frame in English, Hindi and Marathi; the unit reads `kWp` in all three.
+- The size's tier line reads `Estimated · Declared by you` under the field in every state, in the secondary role; an undeclared size is an empty box.
+- Domain says what a typical size is (above 0, at most 999,999.99, two decimals), which questions are unanswered, and what a stored declaration fills.
+- A refused `Continue` moves focus to the first unanswered question on the web; the phone half announces that question's error once.
+- The door frame's task column has a fourth measure, `list` (560 px).
+
+##### Non-goals
+- No screen file in either app, no hook, no api call, no change to `setupStepOwed` or `landingFor`, no `ProvenanceWordsProvider` mount — part c.
+- A field error that announces itself (`docs/tasks/UI.md`, the `NumberField` · `OptionCardGroup` row) — stays.
+- A bound on the field itself (*Proposal*, finding 5), and a bound in the contract (new deferred row).
+- The 1536 initial focus (the task RFC's ruling).
+
+##### Readiness and dependencies
+- Part a is committed on `feat/T-M01-004` (`41091404`) and open as draft PR #281, its checks running; this part is cut from that branch by the owner's word (`#### Runtime`). It reads part a's `NumberField` and `Provenance`.
+- Design check: `READY`, 2026-10-11 (`#### Design check`); the board file is the size the check read (80,706 bytes), and the nine board pictures are listed there.
+- `light cycle`: the proof matrix names no running web, phone or api surface — its proofs are unit tests, the component suite and `qa-web` on the component page (`3100`), the reviewer and the gate.
+- No blocker.
+
+##### Proposal
+**The whole flow, and which part builds each step.**
+1. *(c)* An owner's company resumes at `what_you_sell`; the client reads `GET /settings/business-profile`.
+2. *(b)* The screen is `SetupWhatYouSell`, inside `DoorFrame` at the `list` measure: the title with its ask in the identity half; the three cards, the helper line and the size field in the task; the act held under them. Every word is `setupWhatYouSellWords(t, { checking, refused, failed })`.
+3. *(b)* While the read is in flight (`checking`), both questions are live and `Continue` is unavailable with its reason under it (`Button.disabledReason`, `Button.types.ts:30`). *(c)* When the read lands, `whatYouSellAfterRead` fills only the questions the owner has not touched.
+4. *(b)* A tap on a card reports its segment; the field commits its draft on blur or Enter and reports the figure. Nothing is written before `Continue`.
+5. *(c)* `Continue` asks `whatYouSellUnanswered(answers)`. *(b)* For a non-empty answer the words carry each question's one-line error and no line at the act; the web half moves focus to the first of them and the phone half announces it once.
+6. *(c)* With both answered, the hook writes the profile, then the step. *(b)* A failed save draws the failure in the title's place, `Try again` then `Finish later`, and the one line under them; both answers stay.
+
+**What testing the requirements found** (`/task` step 2).
+1. **Words that name a screen not built yet.** Five lines of the board send the owner to the company profile — the line at `Continue`, the failure's fix sentence, both asks' second pages — and `SCR-M01-05` is `T-M01-005`, the next task. By the task's ruling `Continue` and `Finish later` land on the home until then, so between part c and `T-M01-005` those lines name a place that is not there. Recommended: the board's words as drawn — one wording, one translation pass, nothing launched reads them before `T-M01-005` lands, and the deferred row part c owes for the route names the words with it. The other way: interim words now (`…at your next sign-in`), rewritten in `T-M01-005` — two wordings in three languages. → *Decisions*, 1.
+2. **The Marathi tier word.** The board's `m-error-mr` prints `अंदाजे`; the catalog's word for the tier is `अंदाजित` (`packages/i18n/src/locales/mr/messages.po`, the message `Estimated`), printed by `tierLabel` wherever the tier shows. Recommended: the catalog's word — a tier has one word per language (`F8-03`), and the record calls its Marathi "working translations". A ruled difference in the Marathi row. The other way: the catalog's word becomes the board's, on every screen. → *Decisions*, 2.
+3. **How the failure takes the heading.** The board's `m-error` puts the heading, its ask and the fix sentence in one danger-tinted block. `TintedBlock` draws a bold line and a body, with no ask and no heading (`TintedBlock.types.ts:7`). The signup door already draws a failure that takes the title: the failure is the page's heading, and the block under it holds the one line that helps (`packages/i18n/src/copy/company-signup-frames.ts:175`, `SignupCompanyStep.tsx:52-54`). Recommended: the same — `DoorTitle` with the failure's title and the error's ask, then a danger `TintedBlock` with the fix sentence, said as an alert; no new component code, and every door's failure looks alike. It differs from `m-error` and `d-error`: the heading is in the primary ink, outside the tint. The other way: the board's block — `TintedBlock` gains an ask and a heading role on both halves and joins the tile grounds (`docs/tasks/UI.md:53`), about 40 lines, and the signup's failed frames then differ from this one. → *Decisions*, 3.
+4. **The buttons' spoken names.** The board gives each button an `aria-label` that does not start with its visible word (`Continue` → *Save what you sell and continue setting up HelioGrid*; `Finish later` → *Carry on to your company profile and finish this there*). `Button.spokenName` must start with the visible words, so speech control can find the button (`Button.types.ts:49`). Recommended: no spoken name — the visible word is the name, and the line under the act and the ask say the rest; three messages fewer in three languages. The other way: spoken names that start with the visible word (`Continue. Saves both answers.`), three more messages. → *Decisions*, 4.
+5. **The ceiling is domain's, not the field's.** A `NumberField` given a `max` clamps and prints its own English sentence (`NumberField.logic.ts:69`, D2's kind). So the field takes the precision alone, and `isTypicalSystemSize` decides at `Continue`: 0, a negative and a figure over 999,999.99 are unanswered, refused at the field with its one line. No word is added to the board's.
+6. **The helper line is not the field's `hint`.** A hint sits under the field and gives way to an error (`NumberField.types.ts:50`); the board keeps *Your most common job, not your biggest.* above the field in every state, `m-refused` too. The component draws it as a line above the field.
+7. **The size estimate is over the line target** — about 1,130 authored lines against about 1,000, in 21 files against 30 (*Delivery size*). → *Decisions*, 5.
+8. **Found outside this part.** The contract takes a size the column cannot hold, so a `PUT` of one million or more would fail in the database, not at the contract — read in the code, not yet reproduced. New row D200 (*Deferred rows*).
+9. **The brief's build note** points at a section of `packages/ui/CLAUDE.md` that does not exist (`docs/ux/briefs/SCR-M01-04-setup-what-you-sell.md:26`); the one open gap is `docs/tasks/UI.md`'s `NumberField` · `OptionCardGroup` row. Corrected in the brief, with the task's rulings and this part's.
+10. **Hindi and Marathi the board does not draw.** The board gives both languages for the failed save, the cards, the group, the helper line, the field label and the tier's source. Drafted here the same way, for the localisation pass: the title, the questions' ask, the line at `Continue`, the checking reason and the two field errors — listed in the words test's header. The helper line is the board's in both languages (`m-error-hi`, `m-error-mr`).
+
+**Deferred rows this part meets.** D2 and D92 (`touches packages/ui/src/components/`) stay: the new component types no English of its own. D102, D109 and D132 (`touches packages/ui/src/components/DoorFrame/`) stay: the wordmark's target on iOS, the header at 200% text and the keyboard's scroll are the frame's own faults, and this part adds one width. D172 is a ruled difference in the Hindi and Marathi rows. New: D200 — the size's bound at the contract, `T-M01-005 starts`. → *Decisions*, 6.
+
+**Key decisions.**
+- Reuse, one new component (Law 5): `DoorFrame`, `DoorTitle`, `Explainer`, `OptionCardGroup` (one column), `NumberField` (unset, no steppers, precision 2), `Provenance` through the field (`estimated`, `load-bearing`), `TintedBlock` (as built: with its new `heading` and `explainer`), `Button`. No new primitive.
+- The words follow three facts — `checking`, `refused`, `failed` — and the component picks none by state. `Continue` and `Try again` are the messages the language step and the doors already hold.
+- The one line at the act: *Saves both…* at rest; the checking reason while the read is in flight; none while a question is refused; *Until you finish…* after a failed save.
+- The component names the first refused question once (`SetupWhatYouSell.logic.ts`), and each half answers in its own way: the web focuses it, the phone announces its error. A count of refusals is the prop that says "again".
+- `TYPICAL_SYSTEM_KWP` — the precision and the ceiling — lives in `packages/domain/src/tenancy/what-you-sell.ts`, beside `TENANT_SEGMENTS`; the component reads the precision from it.
+- The unit `kWp` is one constant in the copy file, outside the catalogs: a unit is never translated (`CLAUDE.md` §9), so no translator can change it.
+- At 1536 the two thin rules and the act row are the component's stylesheet, from the door's breakpoint; `Continue` keeps its own width at the row's right edge — the board's 200 px is not a token (`.claude/rules/ui-adherence.md`, *No raw values*; D26).
+
+**Order.** The domain test, then the rule · the words test, then the copy and the catalogs · the frame's measure · the component spec, red · the component, web then phone · Main's pictures of the component page, `qa-web` · review · the gate.
+
+**Refusals.** None — this part makes no call.
+
+**The twin.** Both halves of `SetupWhatYouSell` land together. The phone half is typechecked here and is first seen on a phone in part c.
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  segments["domain: TENANT_SEGMENTS"] --> words["i18n: setupWhatYouSellWords"]
+  rule["domain: the answers' rule, the size policy"] --> hook["data/react: useSetupWhatYouSell (c)"]
+  rule --> component["ui: SetupWhatYouSell, web and phone"]
+  words --> screens["The two app screens (c)"]
+  hook --> screens
+  screens --> component
+  frame["ui: DoorFrame, measure list"] --> component
+  field["ui: NumberField, unset (a)"] --> component
+  tier["ui: Provenance, load-bearing (a)"] --> component
+  component --> page["Component page 3100: the spec and the pictures"]
+```
+
+##### Package changes
+- `domain` — `tenancy/what-you-sell.ts`: `TYPICAL_SYSTEM_KWP`, `WhatYouSellQuestion`, `WhatYouSellAnswers`, `isTypicalSystemSize`, `whatYouSellUnanswered`, `whatYouSellAfterRead`, exported from `tenancy`. It imports nothing outside `domain`.
+- `i18n` — `copy/setup-what-you-sell.ts`: `SETUP_WHAT_YOU_SELL`, `setupWhatYouSellWords`, `SetupWhatYouSellWords`, `SetupWhatYouSellFacts`, exported from the root entry. `i18n` → `contracts`, `domain`, as today.
+- `ui` — `SetupWhatYouSell`, both halves; `DoorTaskMeasure` gains `list` (560 px); `TintedBlockProps` gains `heading` and `explainer`, both optional, so the fourteen other blocks are unchanged; `.hg-tinted-block` joins `Ground.css`'s tinted panels and the phone half wraps its ask in `GroundProvider`, since the block can now hold a control (`packages/ui/CLAUDE.md`). `ui` → `domain`, `theme`, as today.
+- Law 12: no route, table, token, brand or error code is new. `WhatYouSellQuestion` and `DoorTaskMeasure` are unions `tsc` holds. The new messages join `pnpm check:catalogs`. The three kinds' words, `TENANT_SEGMENT_WORD`, join `CLOSED_VOCABULARY_GROUPS`, so no translation can give two kinds one word (`F3-12`; `packages/i18n/tests/closed-vocabularies.test.ts`). `SetupWhatYouSell` has no design-system contract, so the `design-system-props` invariant does not judge it — said out loud; `tsc` holds its two halves to one types file.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| add | `packages/domain/src/tenancy/what-you-sell.ts` | the size policy and the three rules | beside `segment.ts`, whose list it reads |
+| modify | `packages/domain/src/tenancy/index.ts` | the exports | the folder's door |
+| add | `packages/domain/tests/tenancy/what-you-sell.test.ts` | the rules' tables | the file's test |
+| add | `packages/i18n/src/copy/setup-what-you-sell.ts` | the messages and `setupWhatYouSellWords` | one copy file per screen |
+| modify | `packages/i18n/src/index.ts` | the exports | the package's entry |
+| add | `packages/i18n/tests/setup-what-you-sell.test.ts` | every state's words, three languages | the copy file's test |
+| modify | `packages/i18n/src/copy/closed-vocabularies.ts` | built, not planned: the three kinds' words join the registry (Law 12) — a closed vocabulary with a translated display | the registry's file |
+| modify | `packages/i18n/src/locales/{en,hi,mr}/messages.{po,ts}` (6) | regenerated; the Hindi and Marathi words | the catalogs (generated) |
+| add | `packages/ui/src/components/SetupWhatYouSell/` (6): `.types.ts` · `.logic.ts` · `.tsx` · `.native.tsx` · `.css` · `index.ts` | the screen, both halves; the first refused question | architecture §4: a shared component, one prop contract |
+| modify | `packages/ui/src/index.ts` · `packages/ui/src/styles.css` | the export; the stylesheet's enrolment | the package's entry and its one stylesheet list |
+| modify | `packages/ui/src/components/DoorFrame/DoorFrame.types.ts` · `DoorFrame.css` | the `list` measure | the frame owns the widths |
+| modify | `packages/ui/src/components/TintedBlock/` (4): `.types.ts` · `.tsx` · `.native.tsx` · `.css` | built, not planned: `heading` and `explainer` — the failure as one block (*Owner ruling, on the commit card*) | the block's own folder, one prop contract |
+| modify | `packages/ui/src/primitives/Ground/Ground.css` · `docs/tasks/UI.md` | built, not planned: the block is a ground that holds a control; its name in the containers' note | the one record of the grounds; the register |
+| modify | `tests/e2e/support/layout.ts` | built, not planned: `bottomOf`, moved out of the spec to keep it under 300 lines, and `rightOf` beside it | the layout helpers' file |
+| add | `tests/e2e/components/SetupWhatYouSell.spec.tsx` · `SetupWhatYouSell.story.tsx` | the web half's states, measured; the story holds the words and the answers in the browser | one spec per component; the words hold the ask's pager |
+| modify | `docs/ux/briefs/SCR-M01-04-setup-what-you-sell.md` | the build note's home; the rulings | the screen's brief |
+| modify | `docs/tasks/deferred.md` | D200 | the rows' file |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the design check's pictures, the ledger, the part's row | the task |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **The phone half is unseen until part c.** A look fault found there is fixed there and counted there; the announcement on refusal is first heard there.
+- **The web's side-by-side is on the component page, not the app.** Part c repeats every row on the running web and both phones.
+- **Ruled differences the pictures will show**, each kept as built unless the owner rules otherwise: the door frame's grid at 1536 (the task's ruling); at 1536 the failure's block in the question's place, where the board keeps the question above it (*Owner ruling, on the commit card*); the identity half at its full width in the failed frame at 1536 (*Decisions*, 7); `Continue` at its own width at 1536; the Marathi tier word (*Decisions*, 2); D172; and the doors' shared parts as `T-M01-003b` found them — the ask directly after the title at 375, the option cards' grey tiles (`docs/tasks/UI.md`).
+- **Found in the build's pictures: at 1536 the failed save moves the heading.** The frame gives an identity half that holds a finding its full width (`DoorFrame.css`, `.hg-door-identity:has(.hg-door-finding)`), so the wordmark and the heading start at x 176 in the failed frame and at x 423 in the default one; the record keeps both at one x. Recommended: the frame's rule, as the language step's failed frame has it — one frame for every door. The other way: this screen's identity keeps its place, about six lines in the component's stylesheet, and the language step then differs from it. → *Decisions*, 7.
+- **Rollout.** Nothing a person meets changes, and no stored or sent shape changes: any mix of old and new clients is safe.
+
+##### Acceptance criteria and proof
+AC-1 and AC-2 are the task RFC's. This part's rows:
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-1 · the two questions, in three languages | main-dev | required | unit | in English, Hindi and Marathi: the group's name, the three options in `TENANT_SEGMENTS` order with their titles and descriptions, the field's label, and the unit `kWp` in all three; no second way on unless the save failed | `packages/i18n/tests/setup-what-you-sell.test.ts` |
+| the words by state | main-dev | required | unit | at rest → `Continue` and *Saves both…*; checking → the reason and no other line; refused → each refused question's error, no line at the act; failed → the failure's title, its ask, the fix sentence, `Try again`, `Finish later`, *Until you finish…*; failed and refused together → both; planted red: the act's line kept while a question is refused | the same |
+| the answers' rule | main-dev | required | unit | a size: 0, −1, `NaN` and 1,000,000 are not one; 0.01 and 999,999.99 are; unanswered: none, the segment, the size, both — in the screen's order; a stored declaration fills an untouched question and never a touched one, and a stored 0 fills nothing; planted red: the ceiling test removed | `packages/domain/tests/tenancy/what-you-sell.test.ts` |
+| AC-1 · the tier, and the empty size | main-dev | required | `3100` | at rest, checking, refused, failed and beside a typed figure the line under the field reads `Estimated · Declared by you` in the page's `--text-secondary`; undeclared, the box reads `''` and no `0` is in the field; typing `5` and leaving reports 5 once; planted red: the tier line drawn only beside a figure | `tests/e2e/components/SetupWhatYouSell.spec.tsx` |
+| AC-2 · the states, measured | main-dev | required | `3100` | at 375 and 1536: no sideways scroll; at 375, where the refusal's focus and the touch floor are measured: every target at least 44; checking → `Continue` is `aria-disabled`, focusable, its reason shown; refused → the group and the field are `aria-invalid`, each error shown, focus on the first card, and on the field when the size alone is refused; failed → one block: the page's only heading, which is the failure in the danger ink, and the fix sentence are one alert, and the ask stands at the row's far end outside that alert; `Try again` precedes `Finish later` and the two are one width; at 1536 the cards are one column at the frame's `list` measure; a tap on a card reports its segment; Hindi and Marathi failed at 375 clip nothing; planted red: the focus move removed | the same |
+| AC-2 · side-by-side, the web half on the component page | qa-web | required | component page `3100`, Main's pictures | each of the nine frames beside its board picture — at 375 `m-default`, `m-loading`, `m-answered`, `m-refused`, `m-error`, `m-error-mr`, `m-error-hi`; at 1536 `d-default`, `d-error` — and at 1536 the checking, answered and refused states beside their phone frames and the record's 1536 rule; ruled: *Risks and rollout* | QA |
+| AC-2 · zero raw colour literals | evaluator | required | repo | Biome's raw-colour rules pass on the new stylesheet and both halves | `pnpm check:all` |
+| side-by-side · the running apps, both phones | — | not_applicable | — | — | no app mounts the component in this part; part c owns every row on the web and both phones |
+| AC-1 · first run, the refusal and the failed save on the running apps | — | not_applicable | — | — | part c (`#### Parts`) |
+| the running api | — | not_applicable | — | — | this part makes no call |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part: **21 authored files** and 6 generated catalogs. Under the file target.
+- **Code: about 600 authored lines** — `ui` 365 (the types 60, the logic 10, the web half 105, the phone half 125, the stylesheet 55, the frame's measure and the entries 10), `i18n` 135, `domain` 50, and about 50 lines of Hindi and Marathi in the two `.po` files.
+- **Tests: about 530 authored lines** — the rule's tables 80, the words 170, the component spec 225 and its story 55.
+- **About 1,130 authored lines, over the 1,000 target** (*Decisions*, 5). Approval is void above 1,356 lines or 25 files.
+- Order: as *Proposal*.
+- **As built: 29 authored files** — the 21 planned, the closed-vocabulary registry, and seven by the owner's ruling on the commit card (`TintedBlock`'s four, `Ground.css`, `UI.md`, the spec's support file) — and 6 generated catalogs. Past the 25 the first estimate allowed; the owner's *fix now* rules it.
+- **Code as built: about 895 authored lines** — `ui` 600 (the screen's six files 450, `TintedBlock` 133, the frame's measure, the ground and the entries 18), `i18n` 180 (the copy file 169, the registry 5, the entry 6), `domain` 60, and 54 lines of Hindi and Marathi in the two `.po` files.
+- **Tests as built: about 750 authored lines** — the rule's tables 84, the words 276, the component spec 299, its story 82 and the two support helpers 12.
+- **About 1,640 authored lines (1,490 before the one-block change) against the 1,130 approved — 30% over, past the fifth `docs/tasks/README.md` allows, so the size is ruled again before review.** Where it grew: the words test holds every state's words in three languages as one table (276 against 170); the spec measures fifteen cases at the file limit (299 against 225) and its story holds the answers and the refusal as a screen will (82 against 55); the two halves each grew by the act row's two arrangements and the stylesheet by the 1536 rules (336 against 290); the copy file carries the words' contract with a line per field (169 against 135). No file, package, route or behaviour is outside the RFC.
+
+**Owner rulings (2026-10-11, with the approval).** The RFC is approved with every recommendation: the board's words as drawn, naming the company profile; the catalog's Marathi tier word, `अंदाजित`; the failure drawn as the signup door draws one — the page's heading, then the danger block with the fix sentence; no spoken names on the buttons; one part at about 1,130 authored lines; D2, D92, D102, D109 and D132 stay, and D200 is new.
+
+**Owner rulings (2026-10-11, on the build's delta).** The part stays one part at its built size, about 1,470 authored lines. At 1536 the failed save keeps the door frame's rule — the identity half takes its full width when it holds the fix — as the language step's failed frame does; a ruled difference in the `d-error` row.
+
+**Owner ruling (2026-10-11, on the side-by-side).** The door frame's spacing stays: at 375 the heading sits where the frame's `deep` column puts it, about 69 px under the wordmark against the board's 43, and at 1536 the task column sits where the frame centres its two halves, about 18 px lower than the record's — as on the language step; ruled differences in every 375 question row and every 1536 row.
+
+**Owner ruling (2026-10-11, on the commit card) — *Decisions*, 3 reversed.** The failed save is drawn as the board draws it, not as the signup door does: one danger block holding what went wrong as the page's heading, the error's ask and the fix sentence. `TintedBlock` gains `heading` and `explainer` on both halves; the first build's black heading over a block that held only the fix read the fix as the error. Fixed in this part, with a third gate run by the owner's word. The failure still takes the heading at every width, so at 1536 the block stands in the question's place where `d-error` keeps the question above it — a ruled difference in the `d-error` row. The ask is inset, as the board's is, so the title's row keeps the title's height and the block the board's (81 at 375). On the web the ask stands outside the block's live region, at the far end of the title's row: its bubble opens inside its own box, and an alert that grows is said again whole (the second reviewer's finding, read in the code). The fix sentence keeps `TintedBlock`'s own `caption` size where the board draws `body-sm`, as in every block — a ruled difference in the error rows.
+
+**Built against planned (delta as it lands).** Every planned file is built. `TintedBlock`'s four files landed by the owner's ruling on the commit card (*Decisions*, 3 reversed). One more landed outside the table, in `packages/i18n`, which the RFC names: `copy/closed-vocabularies.ts` — the three kinds' words are a closed vocabulary with a translated display, and the registry's own comment says a new one joins there (Law 12); the RFC had missed it. The rule's three functions carry the screen's name — `isTypicalSystemSize`, `whatYouSellUnanswered`, `whatYouSellAfterRead` — because `tenancy` exports into domain's one index, where `unanswered` would say nothing. `useRefusalAnswer` sits in `SetupWhatYouSell.logic.ts` beside `firstRefused`, so the two halves share the once-per-refusal rule and differ only in the answer. The spec lost one case to the 300-line file limit — the refusal's focus at 1536, the same code path as at 375 — and the touch-floor case joined the failed-save case.
+
+**Planted reds seen (part b):** `isTypicalSystemSize` with its ceiling test removed failed `what-you-sell.test.ts` › *refuses 1000000 — the column cannot hold it*, › *refuses Infinity — it is not a figure* and › *fills no size from a stored 1000000.99, which is not one*; `setupWhatYouSellWords` keeping the act's line during a refusal failed `setup-what-you-sell.test.ts` › *refused at …, each owed question says its fix and the act says nothing*, nine cases in three languages; `SetupWhatYouSell.tsx` drawing the tier line only beside a figure failed `SetupWhatYouSell.spec.tsx` › *…an undeclared size is an empty box beside its unit, under its tier line in the secondary role*, in all three states; and with the focus move removed, › *a refused Continue rings both questions… and moves focus to the first card* and › *with the kind chosen, a refused Continue rings the size alone and moves focus into it*; and, after the one-block change, with the block's title no longer the heading, › *a failed save is one alert block — the heading, its ask and the fix…*. The Hindi catalog giving `Both` the word for `Residential` failed `closed-vocabularies.test.ts` › *every closed vocabulary shows each member in its own words, in every language*. Each file was restored from a scratchpad copy and the suite passed again.
+
+**Review (part b).** `reviewer`: no blocker, two should-fix findings and six notes; all acted on, and its second read found one stale number, corrected. Fixed: the helper line is the board's in Hindi and Marathi, and the test's header and finding 10 had listed it as drafted; the refused case now reads the tier line, and the proof matrix's two rows say what the spec measures; four citations the build had moved are now by message or selector; the spec's `kWp` is one named constant with its reason; the `refusals` prop says the count and the words arrive in one render; the 1536 line's selector no longer wins by import order; `isTypicalSystemSize`'s comment says only the range is judged; D200 names the precision. Out of scope, new row D201: two other briefs carry the same dead pointer this part corrected in its own brief.
+
+**As proven (side-by-side, part b).** `qa-web` compared twelve pairs on Main's pictures of the component page: the seven 375 frames, `d-default` and `d-error`, and the checking, answered and refused states at 1536 by the record's rule. The words match in every frame, Hindi and Marathi too; every ruled difference was seen as ruled. Its first read found three differences outside the ruled list. One was Main's picture, not the build: the size field's red ring eases in (`FieldBox.css`), and the refused pictures were taken in the instant of the press; retaken 600 ms later, both rings and both error lines are there at 375 and 1536, and the helper closed it. Two are the door frame's own placement, the same on the language step, and the owner ruled them kept (*Owner ruling, on the side-by-side*): at 375 the heading sits about 69 px under the wordmark where the board has about 43 (the frame's `deep` column), and at 1536 the task column sits about 18 px lower than the record's (the frame centres its two halves). In the retaken pictures `Continue` reads a lighter black: the pointer still rests on it after the press, which is the button's own hover.
+
+**As proven (the one-block failure, after the commit card).** A new `qa-web` compared the four failed-save pairs again — `m-error`, `m-error-mr`, `m-error-hi`, `d-error` — on retaken pictures. Its first read found the block 16 px taller than the board's: the 44 px ask set the title row's height, where the board's ask is inset; the block's ask now takes `inset` on both halves, and the block measures 335 × 81 at 375 against the board's 334 × 81. It also read the title's red as lighter than the board's: the ink is the board's own token (`--danger-text`, asserted by the spec), and the board's pictures — screenshots of the pane — draw every saturated colour duller, the accent ring and the refused ring too; judged by token, it passed. Second read: four pairs pass, no difference outside the ruled list; the title sits 22 px under the block's top against the board's 20, and the ask on the title's centre line, 29 px inside the far edge.
+
+**Mistakes found, and what prevents each.** The RFC recommended drawing the failure as the signup door does, to write no component code, and the owner approved it; on the commit card's pictures the owner saw it read wrong — the bold red line was the fix, and what went wrong stood in black like a title. A recommendation that departs from a drawn frame to save code now shows the two looks side by side before it asks, not after the build (`/task` step 3: the board is the design). The words' copy file and the domain rule were written with their tests, not after them: `CLAUDE.md` §3 puts each test first. Each was then proven by a planted red (above), which is the rule's own proof; no new check is added (`CLAUDE.md` §1, *No new script*). Three of the spec's first assertions were wrong, not the component: the tier line's text has no spaces around its dot in the page, and Playwright reads an `aria-disabled` button as disabled for both `toBeEnabled` and `click` — the spec now reads the line's two words, the native `disabled` property, and forces the click it expects to do nothing. The RFC missed that the three kinds' words are a closed vocabulary: the registry's own comment says a new one joins it, and it loads only when that file is opened; found before review by reading `.claude/protections.md` for the reviewer's packet, enrolled, and proven red. The new deferred row's cell named the next part, `T-M01-004c`, which the `deferred-rows` invariant refuses — a part is a row of its task, not a task — and the first full gate stopped on it: the check exists and caught it, and running the invariants after a `deferred.md` edit would have caught it before the gate. And the first refused pictures were taken before the field's ring had eased in, which cost the helper one finding and one recheck: a picture of a state that follows a press waits for the page to settle.
+
+Checklist:
+- [x] the domain test, then the rule
+- [x] the words test, then the copy and the catalogs
+- [x] the frame's `list` measure
+- [x] the component spec, red
+- [x] `SetupWhatYouSell`, web and phone
+- [x] Main's pictures and `qa-web`
+- [x] the brief and D200
+- [x] review
+- [x] the gate
+
 #### Design check
 `READY` — 2026-10-11, on the record `SCR-M01-04 - decisions &amp; self-audit.md` (19,088 bytes) read beside the board `SCR-M01-04 What You Sell - Mobile.dc.html` (80,706 bytes, under the read cap). The owner redrew the screen from the brief's `## Redesign owed` the same day, in three passes: the words moved to their budget homes and the Hindi frame drawn; the 1536 task column stacked as a list at 520 / 560; the error pair put in one order at both widths. Four checks on the same helper; the fourth found nothing.
 
-The board holds nine frames: seven at 375 — `m-default`, `m-loading`, `m-answered`, `m-refused`, `m-error`, `m-error-mr`, `m-error-hi` — and two at 1536 — `d-default`, `d-error`. The record prints the 1536 alignment numbers (identity block x 396–716, task column 780–1340, cards 74 / 74 / 74, the value edge 1293) and the measured language proof on the error frame. Part a draws no frame of it; the board pictures (`board/<frame>.png`) are captured when part b begins, against the board as it stands then.
+The board holds nine frames: seven at 375 — `m-default`, `m-loading`, `m-answered`, `m-refused`, `m-error`, `m-error-mr`, `m-error-hi` — and two at 1536 — `d-default`, `d-error`. The record prints the 1536 alignment numbers (identity block x 396–716, task column 780–1340, cards 74 / 74 / 74, the value edge 1293) and the measured language proof on the error frame. Part a draws no frame of it.
+
+**Board pictures (part b, 2026-10-11).** The board file fetched again is the size the check read (80,706 bytes). `qa-web` pictured the nine frames in the browser pane, into the session's scratchpad as `board/<frame>.png`: `m-default`, `m-loading`, `m-answered`, `m-refused`, `m-error`, `m-error-mr`, `m-error-hi` — each about 382 × 823, two shots at the board's 150% joined — and `d-default`, `d-error`, each about 549 × 360, one shot at 50%. Main opened `m-error` and `d-error` and they show the right state. The two 1536 pictures are about a third of the frame's size, so a 1536 comparison reads them beside the record's measured positions (*List 4*).
 
 #### Runtime
 Branch `feat/T-M01-004`, cut from `origin/main` (`54bd8ced`, #280 merged) on a clean tree, 2026-10-11.
@@ -3838,6 +4023,39 @@ Branch `feat/T-M01-004`, cut from `origin/main` (`54bd8ced`, #280 merged) on a c
 | browser tabs | pane closed | one tab on the board (`seed`, `started_by_task`), closed at the part's end |
 | Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
 | database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+
+**Part b · ledger (2026-10-11).** Branch `feat/T-M01-004b`, cut from `feat/T-M01-004` (`41091404`, draft PR #281 open, its checks running) on a clean tree, by the owner's word: the walk reads `origin/main`, where part a is not yet merged.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | one tab on the `SCR-M01-04` board, opened for the pictures (`started_by_task`, tab `seed`) |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 22,848,497 · `web.log` 608,147 · `metro.log` 1,800,722 bytes | — |
+| watchers | no `tsx … watch` process | — |
+
+**Part b · QA (2026-10-11)** — light cycle, no stack: this part makes no call and no app mounts the component. The one server was the component test page (`3100`), started and stopped by each `test:ct` run. The browser pane held one tab on the `SCR-M01-04` board for the nine board pictures (`started_by_task`, tab `seed`).
+
+- **Unit proofs:** `what-you-sell.test.ts` 21 tests and `setup-what-you-sell.test.ts` 24 tests pass; `closed-vocabularies.test.ts` passes with the three kinds enrolled.
+- **The component spec** passes 15 of 15 after each change; three planted reds fired in it by name, and three in the unit tests (*Planted reds seen (part b)*).
+- **The reviewer** read alone, then read the fixes: clean after one stale number (*Review (part b)*); a new reviewer read the one-block change after the commit card: three should-fix findings and five notes, all acted on — the spec back under 300 lines, the block enrolled as a ground on both halves, and the ask moved out of the alert's live region.
+- **The side-by-side:** twelve pairs, one recheck (*As proven*); after the one-block change, the four failed-save pairs again, one recheck.
+- **One stalled run:** a component run took 15 minutes for an 8-second suite and failed one case that the change did not touch; the same suite passed 15 of 15 in 18 seconds straight after, with no file changed between — the machine had stalled, as the reviewer's 31-minute delta read beside it shows.
+- **The gate** ran three times, the third by the owner's word after the one-block change: it passed whole again — 213 test files, 3,730 tests, 18 invariants on real tables, nothing regenerated. The first stopped at the `deferred-rows` invariant on D200's cell (*Mistakes found*) and regenerated nothing. The session then restarted and the first evaluator could not be continued; by the owner's word a new evaluator, given the first run's report, ran the second and last gate: it passed whole — 213 test files, 3,730 tests, the api tests on `heliogrid_test`, the invariants on real tables (RLS on 30, 40 base tables scanned), nothing regenerated.
+
+**Measurements (part b)** — helper runs: `qa-web` 3 (the board pictures; the side-by-side, one continuation; the four failed-save pairs, one continuation), `reviewer` 2 (the part, two continuations; the one-block change, two continuations — a new helper after the session restarted), `evaluator` 2 (the first gate; the second and third gates on a new helper after the restart); no `design-check` run, the verdict being part a's. Helper tokens, as reported per run: `qa-web` about 133 k for the board pictures, 57 k and 63 k for the side-by-side, 56 k and 65 k for the failed-save pairs; `reviewer` 162 k, 171 k and 177 k, then 108 k, 124 k and 131 k; `evaluator` 62 k, then 59 k and 67 k. Main: about 150 tool-call turns and about 610 k context tokens at the second commit card, the walk, the record and board fetch and the RFC among them. Size: planned 21 files, code about 600, tests about 530; built 29 files and 6 generated catalogs, code about 895, tests about 750 (*Delivery size*).
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | none listening |
+| simulator · emulator | none booted | none booted |
+| browser tabs | pane closed | the board's tab (`seed`, `started_by_task`) closed; pane closed |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| runtime logs | `api.log` 22,848,497 · `web.log` 608,147 · `metro.log` 1,800,722 bytes | unchanged |
+| watchers | no `tsx … watch` process | none |
 
 ### T-M01-005 · Business Profile
 **Type:** screen · **Tier:** P0

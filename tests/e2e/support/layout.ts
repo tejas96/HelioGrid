@@ -8,6 +8,18 @@ export async function expectNoSidewaysScroll(page: Page): Promise<void> {
   expect(overflow).toBeLessThanOrEqual(0);
 }
 
+/** Where an element ends down the page. One with no box ends nowhere, so an upper bound on it fails. */
+export async function bottomOf(locator: Locator): Promise<number> {
+  const box = await locator.boundingBox();
+  return (box?.y ?? Infinity) + (box?.height ?? 0);
+}
+
+/** Where an element ends across the page. One with no box ends nowhere, so a lower bound on it fails. */
+export async function rightOf(locator: Locator): Promise<number> {
+  const box = await locator.boundingBox();
+  return (box?.x ?? Infinity) + (box?.width ?? 0);
+}
+
 export type Edge = 'left' | 'right' | 'top' | 'bottom';
 
 /** What subpixel rounding may leave between two edges the design draws as one. */
