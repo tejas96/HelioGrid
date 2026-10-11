@@ -24,6 +24,7 @@ export const CHECKING: SessionSnapshot = {
   known: null,
   restored: false,
   chosenHome: null,
+  setupPutOff: false,
   ended: null,
   unreachable: false,
 };

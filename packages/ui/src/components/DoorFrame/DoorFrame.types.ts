@@ -2,10 +2,11 @@ import type { ReactNode } from 'react';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
 
 /**
- * The task column's measure (`SCR-M01-02` decision 14): the front door's one field, or the
- * signup's three named steps and its two-up row. A door names which; the frame owns the widths.
+ * The task column's measure (`SCR-M01-02` decision 14): the front door's one field, the signup's
+ * three named steps and its two-up row, or a row of choices read side by side (`SCR-M01-03`). A
+ * door names which; the frame owns the widths.
  */
-export type DoorTaskMeasure = 'field' | 'steps';
+export type DoorTaskMeasure = 'field' | 'steps' | 'choices';
 
 /**
  * Where the column sits under the door's breakpoint, and on the phone. `centred` — between the

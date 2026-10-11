@@ -20,10 +20,11 @@ export interface LanguageFollowsUserProps {
   /** The signed-in person's own language, or null when nobody is signed in. */
   follow: UiLanguage | null;
   /**
-   * The device's own language, or the source language where the set does not hold it (`F3-03`).
+   * The device's own language where the set holds it (`F3-03`), else null — never the source
+   * language in its place: a screen must be able to tell the two apart.
    * Required: an app that forgets it would open in English on every device and still compile.
    */
-  device: UiLanguage;
+  device: UiLanguage | null;
   /** Persist a language the person chose on THIS mount. Never called for a followed change. */
   onChosen: (next: UiLanguage) => void;
   /**

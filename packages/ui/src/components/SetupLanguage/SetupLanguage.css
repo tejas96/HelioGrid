@@ -1,0 +1,37 @@
+/* The language step (`SCR-M01-03`): the ways on, and the languages' row where the task column has
+   its whole measure. Every value a token var(). */
+
+/* The languages answer to the room their own column has, never to the window: the task track is
+   narrower than its measure from the door's breakpoint up to a wide window. */
+.hg-setup-language-choices {
+  container-type: inline-size;
+}
+
+/* One column under the breakpoint, each way on the column's whole width. */
+.hg-setup-language-ways {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
+@media (min-width: 968px) {
+  /* The frame's `choices` measure: @container cannot read a custom property, so its value is
+     written here. Narrower, a card cannot hold its pill — the pill never wraps — and the set stays
+     one column. Inside the breakpoint, so the phone's column never takes the row. */
+  @container (min-width: 680px) {
+    /* The set is read in one glance: every language in one row, the cards of one height. The
+       group takes its columns as a prop, which cannot follow a width, so its list is placed
+       here. */
+    .hg-setup-language-choices .hg-option-card-group-list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  /* The ways on at their own width, in reading order. */
+  .hg-setup-language-ways {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--sp-4);
+  }
+}
