@@ -55,6 +55,12 @@ export {
 export { provenanceWords, standingLabel, tierLabel } from './copy/provenance';
 export type { SetupLanguageOption, SetupLanguageWords } from './copy/setup-language';
 export { SETUP_LANGUAGE, setupLanguageWords } from './copy/setup-language';
+export type {
+  SetupWhatYouSellFacts,
+  SetupWhatYouSellOption,
+  SetupWhatYouSellWords,
+} from './copy/setup-what-you-sell';
+export { SETUP_WHAT_YOU_SELL, setupWhatYouSellWords } from './copy/setup-what-you-sell';
 export {
   accessRemovedWords,
   accountMenuWords,

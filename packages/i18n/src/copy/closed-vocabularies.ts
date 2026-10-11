@@ -5,6 +5,7 @@ import { BASIS_LINE_WORD } from './document-basis';
 import { ENERGY_SOURCE_WORD } from './energy-source';
 import { FRESHNESS_WORD, PACK_KEY_WORD, PINNED_INPUT_WORD } from './freshness';
 import { PROVENANCE_STANDING_WORD, PROVENANCE_TIER_WORD } from './provenance';
+import { TENANT_SEGMENT_WORD } from './setup-what-you-sell';
 
 /**
  * The words one surface shows together. Every member of every vocabulary in a group must read as
@@ -39,6 +40,10 @@ export const CLOSED_VOCABULARY_GROUPS: readonly ClosedVocabularyGroup[] = [
   {
     surface: 'document basis',
     vocabularies: { line: BASIS_LINE_WORD },
+  },
+  {
+    surface: 'what a company sells',
+    vocabularies: { segment: TENANT_SEGMENT_WORD },
   },
 ];
 

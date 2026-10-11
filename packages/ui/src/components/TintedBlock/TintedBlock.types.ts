@@ -1,4 +1,5 @@
 import type { BlockAnnouncement, BlockTone } from '@heliogrid/domain';
+import type { ExplainerProps } from '../Explainer/Explainer.types';
 
 /**
  * The tinted block above a locked code field or under a finding: the words carry the reason, the
@@ -17,4 +18,12 @@ export interface TintedBlockProps {
    * `Text`'s `live` is not reused: on the phone it is a live region, which iOS never speaks.
    */
   announce?: BlockAnnouncement;
+  /**
+   * The title is the page's heading: a failure that takes the heading's place holds what went
+   * wrong and what fixes it as one message (`SCR-M01-04`, `m-error`). Drawn in the `h3` role in the
+   * tone's ink; on the web it is the document's `h1`, so the screen that sets it draws no other.
+   */
+  heading?: boolean;
+  /** The one ask about the block, at the far end of the title's row, inset so the row keeps the title's height. */
+  explainer?: ExplainerProps;
 }

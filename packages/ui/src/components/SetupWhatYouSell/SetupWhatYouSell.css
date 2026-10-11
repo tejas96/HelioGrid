@@ -1,0 +1,79 @@
+/* The what-you-sell step (`SCR-M01-04`): the two questions as one column, the way on with its one
+   line, and from the door's breakpoint the thin rules that part the column in three. Every value a
+   token var(); the rule's own width is a component pixel. */
+
+.hg-setup-what-you-sell-questions,
+.hg-setup-what-you-sell-size,
+.hg-setup-what-you-sell-act {
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-setup-what-you-sell-questions {
+  gap: var(--sp-4);
+}
+
+.hg-setup-what-you-sell-size,
+.hg-setup-what-you-sell-act {
+  gap: var(--sp-2);
+}
+
+/* One way on takes the row; two share it in equal parts, so neither reads as the lesser. */
+.hg-setup-what-you-sell-ways {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: var(--sp-3);
+}
+
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
+@media (min-width: 968px) {
+  .hg-setup-what-you-sell-questions {
+    gap: var(--sp-8);
+  }
+
+  /* What you sell, how big, and the act: three parts of one column, parted by rules, not boxes. */
+  .hg-setup-what-you-sell-size,
+  .hg-setup-what-you-sell-act {
+    border-top: 1px solid var(--line-tile);
+  }
+
+  .hg-setup-what-you-sell-size {
+    padding-top: var(--sp-8);
+  }
+
+  .hg-setup-what-you-sell-act {
+    padding-top: var(--sp-6);
+  }
+
+  .hg-setup-what-you-sell-act .hg-text.hg-setup-what-you-sell-line {
+    font-size: var(--fs-body-sm);
+    line-height: var(--lh-body-sm);
+  }
+
+  /* One way on stands at the column's right edge at its own width, its line on the same row at the
+     left; with no line it keeps the right edge. */
+  .hg-setup-what-you-sell-act[data-ways="one"] {
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-6);
+  }
+
+  .hg-setup-what-you-sell-act[data-ways="one"] .hg-setup-what-you-sell-ways {
+    flex: none;
+  }
+
+  .hg-setup-what-you-sell-act[data-ways="one"] .hg-setup-what-you-sell-line {
+    text-align: start;
+  }
+
+  /* Two ways on fill the column as one pair, their line centred under them. */
+  .hg-setup-what-you-sell-act[data-ways="two"] {
+    gap: var(--sp-3);
+  }
+
+  .hg-setup-what-you-sell-act[data-ways="two"] .hg-setup-what-you-sell-ways {
+    gap: var(--tile-gap);
+  }
+}

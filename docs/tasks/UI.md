@@ -50,7 +50,7 @@ the control fill, flat — `Banner`'s action, `Dropzone`'s flush, `FilterBar`'s 
 round and speed buttons, `DrawingSheet`'s zoom, `CompareGrid`'s selected pill and chosen cell,
 `Checklist`'s tick box, `Timeline`'s current and upcoming nodes, `ListRow`'s hover — and a thumb or a
 cut-out ring takes the ground (`AudioPlayer`, `RangeField`, `Avatar`, `BrandColorField`'s swatch,
-the meters' ticks, `LineChart`'s end dot). A tinted panel that holds a control is a tile: `Banner`,
+the meters' ticks, `LineChart`'s end dot). A tinted panel that holds a control is a tile: `Banner`, `TintedBlock` (its ask),
 `SourceDocument`'s message, `Image`'s missing panel, `AudioPlayer`'s and `Transcript`'s error
 panels, `CompareGrid`'s selected column.
 

@@ -1,11 +1,38 @@
-/* The tinted block — the words carry the reason, the tint is the second channel. Every value a token var(). */
+/* The tinted block — the words carry the reason, the tint is the second channel. Component pixels
+   belong to the primitives — the ask's box, once; every other value a token var(). */
 
 .hg-tinted-block {
+  /* The ask's box once its inset gives the hit box back (`Explainer.css`: the trigger's 44 less 8
+     a side): a component pixel, written once here. */
+  --hg-tinted-block-ask: 28px;
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--sp-1);
   padding: var(--sp-4);
   border-radius: var(--r-card-expressive);
+}
+
+/* A block that holds an ask: the ask stands at the far end of the title's row, outside the words —
+   they are the live region. The title's row keeps the ask's height and gives way to it, so a long
+   title wraps beside the ask and the body starts under both. */
+.hg-tinted-block-words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hg-tinted-block-title {
+  display: flex;
+  align-items: center;
+  min-height: var(--hg-tinted-block-ask);
+  padding-inline-end: calc(var(--hg-tinted-block-ask) + var(--sp-2));
+}
+
+.hg-tinted-block-ask {
+  position: absolute;
+  inset-block-start: var(--sp-4);
+  inset-inline-end: var(--sp-4);
 }
 
 .hg-tinted-block[data-tone="danger"] {

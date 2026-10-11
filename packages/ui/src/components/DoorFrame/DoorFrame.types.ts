@@ -3,10 +3,10 @@ import type { ExplainerProps } from '../Explainer/Explainer.types';
 
 /**
  * The task column's measure (`SCR-M01-02` decision 14): the front door's one field, the signup's
- * three named steps and its two-up row, or a row of choices read side by side (`SCR-M01-03`). A
- * door names which; the frame owns the widths.
+ * three named steps and its two-up row, a column of stacked cards over a field (`SCR-M01-04`), or
+ * a row of choices read side by side (`SCR-M01-03`). A door names which; the frame owns the widths.
  */
-export type DoorTaskMeasure = 'field' | 'steps' | 'choices';
+export type DoorTaskMeasure = 'field' | 'steps' | 'list' | 'choices';
 
 /**
  * Where the column sits under the door's breakpoint, and on the phone. `centred` — between the

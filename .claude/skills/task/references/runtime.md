@@ -4,7 +4,8 @@ Read this file after the walk returns `build <id>` and before any runtime mutati
 
 ## Ledger
 
-On a clean tree, continue `feat/<id>` when it exists or create it from `origin/main`. Record every
+On a clean tree, continue `feat/<id>` when it exists or create it from `origin/main`, or from the
+open PR head of the task's earlier part when `references/walk.md` names one. Record every
 resource the task may touch under its `#### Runtime` as `pre_existing` or `started_by_task`, with
 the exact identity that stops or restores it:
 
@@ -45,4 +46,4 @@ On success, blocker, cancellation or failure:
 4. Confirm no task-owned `tsx ... watch` process survives; a watcher can outlive its listener.
 5. Report `resource → initial state → final state`.
 
-The next task starts in a fresh session.
+The next task starts in a fresh session; this one stays bound to its PR for CI (`/task` step 7).

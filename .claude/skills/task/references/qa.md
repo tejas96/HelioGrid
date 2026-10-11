@@ -67,7 +67,20 @@ touched, with the same continued helper. Start that rerun only after the continu
 returns clean on the fixes, so one rerun covers them all: a review finding fixed after a rerun
 costs another.
 
+## A helper lost to a restart
+
+A helper whose id no longer answers after an app restart is started anew with every report it and
+Main produced since the task began. Its earlier runs still count toward its limits — a QA row's one
+retry, the Evaluator's two gate runs — and the Runtime record says `lost to a restart` beside its
+tokens.
+
 ## Evaluator gate
+
+Before the Evaluator starts, Main runs the freshness check of each register the diff touched, so
+the first gate run is not spent on a known rule: `pnpm check:catalogs` after a change to copy a
+catalog sweeps, `pnpm check:openapi` after a contract change, and
+`pnpm --filter @heliogrid/invariants test` after a change to a `docs/tasks/` register such as
+`deferred.md`.
 
 Start `evaluator` only after QA returns, review fixes land, and touched rows pass again. Stop a web
 dev server the task started before the gate. If a checked-file change after that run requires QA,

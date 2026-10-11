@@ -4,8 +4,9 @@
    own and publish (the design system's law 4): two 420px measures and three sp-16 gaps,
    2 × 420 + 3 × 64 = 968px, the narrowest window the composition fits. The task measure is the
    screen's (`SCR-M01-02` decision 14): the front door's one field at 420, the signup's three steps
-   at 480, a row of choices at 680 (`SCR-M01-03`) — never wider than its track. Component pixels belong to the primitives; every other
-   value here is a token var(). */
+   at 480, a column of stacked cards at 560 (`SCR-M01-04`), a row of choices at 680 (`SCR-M01-03`)
+   — never wider than its track. Component pixels belong to the primitives; every other value here
+   is a token var(). */
 
 .hg-door {
   --door-measure: 420px;
@@ -23,6 +24,10 @@
 
 .hg-door[data-measure="steps"] {
   --door-measure: 480px;
+}
+
+.hg-door[data-measure="list"] {
+  --door-measure: 560px;
 }
 
 .hg-door[data-measure="choices"] {
