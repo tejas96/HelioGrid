@@ -31,6 +31,7 @@ export type {
   NotificationCentreQuery,
   NotificationRepository,
 } from './notification/repository';
+export type { OnboardingRepository } from './onboarding/repository';
 export type { HeldWork } from './session/held-work';
 export { NO_HELD_WORK } from './session/held-work';
 export type { SessionApi, SessionStore } from './session/types';

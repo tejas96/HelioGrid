@@ -6,7 +6,8 @@ import type { SessionUser } from '../../src/auth/session';
  * The rule both navigators obey. Its ORDER is the decision: nothing is known while the store is
  * still booting, the door keeps a visitor who is not settled — the sign-in beat included, which
  * is why `signedOut` and not-yet-signed-in answer the same — and only then does `M01-10` choose
- * between a company's home and the step that makes one.
+ * between a company's home and the step that makes one. A setup step is asked last: it never
+ * outranks the company step or a removal.
  */
 const person = (tenant: SessionUser['tenant']): SessionUser => ({
   id: 'u1',
@@ -33,17 +34,40 @@ describe('landingFor', () => {
     ],
     ['signedIn with nobody cannot be home', 'signedIn', null, 'company-step'],
   ] as const)('%s', (_name, phase, user, expected) => {
-    expect(landingFor(phase, user, null)).toBe(expected);
+    expect(landingFor(phase, user, null, null)).toBe(expected);
   });
 
   it('lands a held removal on access-removed', () => {
-    expect(landingFor('signedIn', withCompany, { tenantId: 't1' })).toBe('access-removed');
+    expect(landingFor('signedIn', withCompany, { tenantId: 't1' }, null)).toBe('access-removed');
   });
 
   it.each([
     ['booting', 'wait'],
     ['signedOut', 'door'],
   ] as const)('keeps a removal found before sign-in at %s', (phase, expected) => {
-    expect(landingFor(phase, null, { tenantId: null })).toBe(expected);
+    expect(landingFor(phase, null, { tenantId: null }, null)).toBe(expected);
+  });
+
+  it('lands a settled person who owes the language step on it', () => {
+    expect(landingFor('signedIn', withCompany, null, 'language')).toBe('language-step');
+  });
+
+  it('waits while the step a settled person owes is not known', () => {
+    expect(landingFor('signedIn', withCompany, null, 'wait')).toBe('wait');
+  });
+
+  it.each([
+    ['the door, while the sign-in beat plays', 'signedOut', withCompany, null, 'door'],
+    [
+      'the company step, for a person with no company',
+      'signedIn',
+      withoutCompany,
+      null,
+      'company-step',
+    ],
+    ['a removal', 'signedIn', withCompany, { tenantId: 't1' }, 'access-removed'],
+  ] as const)('never puts a setup step before %s', (_name, phase, user, ended, expected) => {
+    expect(landingFor(phase, user, ended, 'language')).toBe(expected);
+    expect(landingFor(phase, user, ended, 'wait')).toBe(expected);
   });
 });

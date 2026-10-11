@@ -1,8 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
-import { StyleSheet, View } from 'react-native';
+import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -150,6 +150,14 @@ export function Banner({
 
   /* RN has no `status` role; a polite live region is its equivalent, and `alert` maps straight. */
   const alerting = meta.role === 'alert';
+  // An alert is said once on arrival and again only when its words change: a view that mounts
+  // already holding the alert role stays silent, and iOS has no live region (as `TintedBlock`).
+  const said = alerting
+    ? [title, children].filter((part) => typeof part === 'string').join('. ')
+    : '';
+  useEffect(() => {
+    if (said !== '') AccessibilityInfo.announceForAccessibility(said);
+  }, [said]);
   const a11y = {
     accessibilityRole: alerting ? ('alert' as const) : undefined,
     accessibilityLiveRegion: alerting ? undefined : ('polite' as const),

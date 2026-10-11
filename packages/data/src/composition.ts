@@ -7,6 +7,7 @@ import {
   createNotificationRepository,
   type NotificationRepository,
 } from './notification/repository';
+import { createOnboardingRepository, type OnboardingRepository } from './onboarding/repository';
 import { createTenantRepository, type TenantRepository } from './tenant/repository';
 import type { TokenStorage } from './transport/storage';
 import {
@@ -25,6 +26,7 @@ export interface Repositories {
   auth: AuthRepository;
   health: HealthRepository;
   invitation: InvitationRepository;
+  onboarding: OnboardingRepository;
   tenant: TenantRepository;
   user: UserRepository;
 }
@@ -75,6 +77,7 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
     auth: createAuthRepository(api),
     health: createHealthRepository(api),
     invitation: createInvitationRepository(api),
+    onboarding: createOnboardingRepository(api),
     tenant: createTenantRepository(api),
     user: createUserRepository(api),
   };

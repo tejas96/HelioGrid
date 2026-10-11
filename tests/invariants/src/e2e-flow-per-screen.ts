@@ -54,6 +54,11 @@ const PHONE_SCREENS_HELD: ReadonlyMap<string, string> = new Map([
       "sign-up flow's Create company press never reaches the api on iOS inside Maestro, while the " +
       'same tap on a still screen does — it is checked by hand',
   ],
+  [
+    'setup-language',
+    'reached only after Create company, the press no Maestro flow lands on iOS (the shell above): ' +
+      'its flows are the web suite and the phone QA rows of its task',
+  ],
 ]);
 
 /** Files under `folder` whose name passes `test`, never inside a hidden folder. */

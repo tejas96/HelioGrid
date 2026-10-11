@@ -31,6 +31,7 @@ export function useSession(): SessionApi {
       createCompany: session.createCompany,
       signOut: session.signOut,
       chooseHome: session.chooseHome,
+      putOffSetup: session.putOffSetup,
       signOutEverywhere: session.signOutEverywhere,
       setInterfaceLanguage: session.setInterfaceLanguage,
     }),

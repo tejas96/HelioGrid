@@ -10,12 +10,15 @@ export type { CompanyCreation, CompanySignup, JoinRequesting } from './use-compa
 export { failureOf, useCompanySignup, useSteerDroppedOnEdit } from './use-company-signup';
 export { useConnection } from './use-connection';
 export { useLiveness } from './use-health';
+export { useLanding } from './use-landing';
 export type { NotificationCentre } from './use-notification-centre';
 export { useNotificationCentre, useUnreadCount } from './use-notification-centre';
 export { usePagedList } from './use-paged-list';
 export { usePaginatedList } from './use-paginated-list';
 export { useSession } from './use-session';
 export { useSessionPhase } from './use-session-phase';
+export type { SetupLanguageStep } from './use-setup-language';
+export { useSetupLanguage } from './use-setup-language';
 export type { Shell } from './use-shell';
 export { useShell } from './use-shell';
 export type { OpenGoogle, SignIn } from './use-sign-in';

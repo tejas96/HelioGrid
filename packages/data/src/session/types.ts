@@ -59,6 +59,11 @@ export interface SessionStore {
    * (`composedHome`), never here.
    */
   chooseHome(preset: RolePreset): void;
+  /**
+   * The person went past a setup step whose answer did not save. Memory only, as `chooseHome`:
+   * the next sign-in's snapshot carries none, so the step is asked again.
+   */
+  putOffSetup(): void;
   signOutEverywhere(): Promise<void>;
   /**
    * The person chose a language (`F3-04`): the snapshot moves at once and the choice is
