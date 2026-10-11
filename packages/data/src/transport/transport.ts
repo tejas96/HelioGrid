@@ -7,7 +7,7 @@ import {
   clientUpgradeRequiredSchema,
   REQUEST_ID_HEADER,
 } from '@heliogrid/contracts';
-import type { SessionLoss } from '@heliogrid/domain';
+import type { SessionLoss, UiLanguage } from '@heliogrid/domain';
 import { type ApiFetcher, type ApiFetcherArgs, tsRestFetchApi } from '@ts-rest/core';
 import { ZodError } from 'zod';
 import type { DataError } from '../errors/errors';
@@ -53,11 +53,18 @@ export interface UpgradeSignals {
   onUpgradeRequired(upgrade: ClientUpgradeRequired['error']['upgrade']): void;
 }
 
+/**
+ * The language the mount shows right now. The api words a code message in it and stores a new
+ * account in it (`F3-03`), so the door a person read is the language their account starts in.
+ */
+export type ReaderLanguage = () => UiLanguage;
+
 type TransportConfig =
-  | { mode: 'browser'; baseUrl: string; session: SessionSignals }
+  | { mode: 'browser'; baseUrl: string; session: SessionSignals; language: ReaderLanguage }
   | {
       mode: 'mobile';
       storage: TokenStorage;
+      language: ReaderLanguage;
       /** The store version this build shipped as; the api refuses one below its minimum (`F4-36`). */
       appVersion: string;
       baseUrl: string;
@@ -66,6 +73,9 @@ type TransportConfig =
     }
   | { mode: 'server'; headers: RequestHeaders };
 
+/* HTTP's own header. A browser fills it from its settings, which a language chosen on the door
+   never reaches; a phone sends none. Both modes set it from the mount. */
+const ACCEPT_LANGUAGE_HEADER = 'accept-language';
 const UNAUTHENTICATED = 401;
 /* The server's word for "you carried no credential at all" — nothing to refresh WITH, so the
    transport spends nothing. Read from the body, because both refusals are 401 by design. */
@@ -193,6 +203,7 @@ async function sendRequest(
 ): Promise<Awaited<ReturnType<ApiFetcher>>> {
   const headers = { ...args.headers };
   if (config.mode === 'server') Object.assign(headers, forwardedHeaders(config.headers));
+  else headers[ACCEPT_LANGUAGE_HEADER] = config.language();
   if (config.mode === 'mobile') {
     const cookie = await config.storage.get();
     if (cookie) headers.cookie = cookie;

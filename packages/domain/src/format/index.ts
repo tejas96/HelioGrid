@@ -57,6 +57,7 @@ export {
   UI_LANGUAGES,
   UI_SOURCE_LOCALE,
   type UiLanguage,
+  uiLanguageOfTag,
   uiLanguageOrSource,
 } from './languages';
 export {

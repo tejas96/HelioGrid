@@ -52,8 +52,10 @@ Run `extract` after any copy change.
   where this package and `lingui.config.js` still read it. `LANGUAGE_META` and both catalog
   loaders are `satisfies Record<UiLanguage, …>`.
 - **The provider FOLLOWS the session.** A root mounts `LanguageFollowsUser` with
-  `follow={user?.interfaceLanguage ?? null}` and `onChosen`; a screen calls `setLocale` and never
-  writes the profile itself (`F3-02`, `F3-04`).
+  `follow={user?.interfaceLanguage ?? null}`, `device` and `onChosen`; a screen calls `setLocale`
+  and never writes the profile itself (`F3-02`, `F3-04`). With nobody signed in the mount rests in
+  `device` — the app's own read of the device's first language (`F3-03`) — or in the language
+  chosen on the door since.
 - **One instance per mount and per request. Never a module-scope one** — Next evaluates a module
   once per server process and shares it across every request, so a module-level `setupI18n()` is
   one mutable active locale for every concurrent visitor.

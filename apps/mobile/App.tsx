@@ -1,6 +1,7 @@
 import { UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
 import { createDataLayer } from '@heliogrid/data';
 import { DataProvider, useSession } from '@heliogrid/data/react';
+import { uiLanguageOfTag } from '@heliogrid/domain';
 import { installFormsErrorMap } from '@heliogrid/forms';
 import type { I18nRuntime } from '@heliogrid/i18n';
 import { MarketProvider, PortalHost } from '@heliogrid/ui';
@@ -13,6 +14,7 @@ import { API_URL } from './src/env';
 import {
   createFormsValidationMessage,
   createI18nRuntime,
+  deviceLanguageTag,
   LanguageFollowsUser,
   useI18n,
 } from './src/i18n';
@@ -30,17 +32,6 @@ import { ReactQueryHost } from './src/react-query-host';
  * `storage`, `appVersion` and `storePlatform` are the ONLY platform-specific pieces of the data path — everything above them
  * (transport, client, repositories, session) is the same code web runs.
  */
-const dataLayer = createDataLayer({
-  baseUrl: API_URL,
-  storage: keychainStorage,
-  // The store version — Android's versionName, iOS's MARKETING_VERSION — which a person compares
-  // against the one a too-old refusal names (F4-36).
-  appVersion: getVersion(),
-  // The store this build updates from, whose link a too-old refusal's button opens — the same
-  // platform push registers as, read once.
-  storePlatform: thisPlatform,
-});
-
 export default function App() {
   /*
    * Per MOUNT, matching web — the i18n runtime is mutable state, and a module-scope
@@ -55,11 +46,26 @@ export default function App() {
     installFormsErrorMap(createFormsValidationMessage(runtime.t));
     return runtime;
   });
+  const [dataLayer] = useState(() =>
+    createDataLayer({
+      baseUrl: API_URL,
+      language: () => i18nRuntime.locale,
+      storage: keychainStorage,
+      // The store version — Android's versionName, iOS's MARKETING_VERSION — which a person
+      // compares against the one a too-old refusal names (F4-36).
+      appVersion: getVersion(),
+      // The store this build updates from, whose link a too-old refusal's button opens — the same
+      // platform push registers as, read once.
+      storePlatform: thisPlatform,
+    }),
+  );
+  // The device's first language where the set holds it (`F3-03`), else the source language.
+  const [device] = useState(() => uiLanguageOfTag(deviceLanguageTag()) ?? UI_SOURCE_LOCALE);
 
   return (
     <DataProvider layer={dataLayer}>
       <ReactQueryHost />
-      <SessionLanguage runtime={i18nRuntime}>
+      <SessionLanguage runtime={i18nRuntime} device={device}>
         {/* The launch market until a tenant's pack is read: the door runs before any tenant
             exists, and its phone field reads the dial code and the number's length from here. */}
         <ReaderMarket>
@@ -104,7 +110,15 @@ function InsetPortalHost({ children }: { children: ReactNode }) {
  * only the session read, because `packages/i18n` may not import `packages/data`. The phone has
  * no document, so it passes no `onDocumentLanguage` — that half is web's alone.
  */
-function SessionLanguage({ runtime, children }: { runtime: I18nRuntime; children: ReactNode }) {
+function SessionLanguage({
+  runtime,
+  device,
+  children,
+}: {
+  runtime: I18nRuntime;
+  device: UiLanguage;
+  children: ReactNode;
+}) {
   const { user, setInterfaceLanguage } = useSession();
   const onChosen = useCallback(
     (next: UiLanguage) => void setInterfaceLanguage(next),
@@ -114,6 +128,7 @@ function SessionLanguage({ runtime, children }: { runtime: I18nRuntime; children
     <LanguageFollowsUser
       runtime={runtime}
       follow={user?.interfaceLanguage ?? null}
+      device={device}
       onChosen={onChosen}
     >
       {children}

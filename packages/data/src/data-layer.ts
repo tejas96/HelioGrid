@@ -5,7 +5,7 @@ import { createSessionStore } from './session/store';
 import type { SessionStore } from './session/types';
 import { createUpgradeStore, NEVER_REFUSED, type UpgradeStore } from './session/upgrade';
 import type { TokenStorage } from './transport/storage';
-import type { SessionSignals } from './transport/transport';
+import type { ReaderLanguage, SessionSignals } from './transport/transport';
 
 export type { Repositories } from './composition';
 
@@ -17,6 +17,8 @@ export type { Repositories } from './composition';
  */
 export type DataLayerConfig = {
   baseUrl: string;
+  /** The mount's language as each call leaves. Required: unwired, every new account is English. */
+  language: ReaderLanguage;
   /** What the device holds for its user (`F4-37`); nothing, until a capture feature lands. */
   heldWork?: HeldWork;
 } & (
@@ -37,7 +39,7 @@ export interface DataLayer {
  * platform: a jar means React Native, and the session opens as a mobile one (`M01-07`).
  */
 export function createDataLayer(config: DataLayerConfig): DataLayer {
-  const { baseUrl, storage, heldWork } = config;
+  const { baseUrl, language, storage, heldWork } = config;
   /*
    * The transport is built INSIDE the registry, and the store is built from the registry's
    * repositories — so the two cannot be handed to each other directly. This relay is the knot:
@@ -59,11 +61,12 @@ export function createDataLayer(config: DataLayerConfig): DataLayer {
         baseUrl,
         mode: 'mobile',
         storage: config.storage,
+        language,
         appVersion: config.appVersion,
         session: signals,
         upgrade: upgrade.signals,
       })
-    : createRepositoryRegistry({ baseUrl, mode: 'browser', session: signals });
+    : createRepositoryRegistry({ baseUrl, mode: 'browser', session: signals, language });
   session = createSessionStore({
     auth: repositories.auth,
     user: repositories.user,

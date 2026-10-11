@@ -4,7 +4,7 @@ import {
   SESSION_RESOLVER,
   type SessionResolver,
 } from '@heliogrid/contracts';
-import { UI_LANGUAGES, UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/domain';
+import { UI_SOURCE_LOCALE, type UiLanguage, uiLanguageOfTag } from '@heliogrid/domain';
 import { Controller, HttpStatus, Inject, Req, UnauthorizedException } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
@@ -29,8 +29,8 @@ import { OtpService } from './internal/otp.service';
  * time — the message goes to a phone, not a user.
  */
 function languageOf(req: Request): UiLanguage {
-  const first = req.headers['accept-language']?.split(',')[0]?.trim().split('-')[0];
-  return UI_LANGUAGES.find((language) => language === first) ?? UI_SOURCE_LOCALE;
+  const first = req.headers['accept-language']?.split(',')[0];
+  return uiLanguageOfTag(first) ?? UI_SOURCE_LOCALE;
 }
 
 @Controller()

@@ -1,10 +1,11 @@
 import { RESEND_SECONDS } from '@heliogrid/domain';
-import { COMPANY_SIGNUP, createTranslator, SIGN_IN } from '@heliogrid/i18n';
-import { type Browser, expect, type Page, test } from '@playwright/test';
+import { COMPANY_SIGNUP, createTranslator, LANGUAGE_META, SHELL, SIGN_IN } from '@heliogrid/i18n';
+import { type Browser, expect, type Page, type Response, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import {
   createCompany,
   expectNumberFieldRinged,
+  fillCompanyDetails,
   fillCompanyStep,
   requestCode,
   typeCode,
@@ -12,6 +13,7 @@ import {
 import { expectNoSidewaysScroll } from '../support/layout';
 import { expectTheLook } from '../support/look';
 import { freshMobile } from '../support/phone';
+import { passTheOwnersMark } from '../support/shell';
 
 const en = await createTranslator('en');
 
@@ -166,4 +168,54 @@ test('a create with no answer says the company may have been made, and Try again
   await page.unroute('**/tenants');
   await page.getByRole('button', { name: en.t(SIGN_IN.tryAgain) }).click();
   await expect(page).toHaveURL(/\/home$/);
+});
+
+/** The language the api stored for the person whose company this create made. */
+async function languageOfTheCreate(created: Promise<Response>): Promise<string> {
+  const session: { actor: { interfaceLanguage: string } } = await (await created).json();
+  return session.actor.interfaceLanguage;
+}
+const theCreate = (response: Response) =>
+  response.request().method() === 'POST' && new URL(response.url()).pathname === '/tenants';
+
+/*
+ * A new account is stored in the language its door showed (`F3-03`): signup never turns to
+ * English behind a Hindi door, and the home opens in the language the person signed up in.
+ */
+test.describe('a hi-IN browser', () => {
+  test.use({ locale: 'hi-IN' });
+
+  test('a company made at the Hindi door opens its home in Hindi', async ({ page }) => {
+    const hi = await createTranslator('hi');
+    const created = page.waitForResponse(theCreate);
+    await createCompany(page, hi, freshMobile());
+
+    expect(await languageOfTheCreate(created)).toBe('hi');
+    await expect(page.getByRole('navigation', { name: hi.t(SHELL.mainNavigation) })).toBeVisible();
+  });
+});
+
+test('a language chosen on the door is the new account’s, and where sign-out returns', async ({
+  page,
+}) => {
+  const mr = await createTranslator('mr');
+  const mobile = freshMobile();
+  await page.goto('/company-signup');
+  await page.getByRole('button', { name: LANGUAGE_META.en.endonym }).click();
+  await page.getByRole('menuitemradio', { name: LANGUAGE_META.mr.endonym }).click();
+
+  await typeCode(page, mr, await requestCode(page, mr, mobile));
+  await page.getByRole('button', { name: mr.t(COMPANY_SIGNUP.verifyAndContinue) }).click();
+  await fillCompanyDetails(page, mr, mobile, `E2E ${mobile.national}`);
+  const created = page.waitForResponse(theCreate);
+  await page.getByRole('button', { name: mr.t(COMPANY_SIGNUP.createCompany) }).click();
+  expect(await languageOfTheCreate(created)).toBe('mr');
+  await expect(page).toHaveURL(/\/home$/);
+
+  await passTheOwnersMark(page, mr);
+  await page
+    .getByRole('button', { name: mr.t(SHELL.accountOf, { name: `Owner ${mobile.national}` }) })
+    .click();
+  await page.getByRole('menuitem', { name: mr.t(SHELL.signOut) }).click();
+  await expect(page.getByRole('heading', { name: mr.t(SIGN_IN.signIn) })).toBeVisible();
 });

@@ -56,7 +56,9 @@ joins is deleted in this task's commit.
 
 Fetch the record yourself with `DesignSync` `get_file` (the project and file name are in the
 task's `DESIGN:` link; the `… decisions … .md` sits beside the board) and hand its text, the brief
-and `docs/start-here.md` to `design-check`. `READY` goes into `#### Design check` with the
+and `docs/start-here.md` to `design-check`. Fetch the board file too when it is under the read cap,
+save it in the scratchpad by a script — never typed — and hand its path beside the record; a board
+over the cap is said in `#### Design check`. `READY` goes into `#### Design check` with the
 verdict's date and the record's exact file name, which a later fetch uses in place of a file
 listing; anything else goes to the owner as the helper's one prompt. The owner's "done"
 means: fetch again, check again. A studio screen reads `ported from the POC` and has no check.
