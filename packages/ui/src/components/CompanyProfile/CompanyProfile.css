@@ -1,0 +1,46 @@
+/* The company profile inside the door's frame (`SCR-M01-05` at 375). The frame owns the page, the
+   bloom, the wordmark and the held act; these rules place what this screen adds. Every value is a
+   token var(). */
+
+/* The heading and its line, `sp-2` apart (`m-default`). */
+.hg-company-profile-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* The list starts `sp-5` under the heading's line, where the frame's own gap is `sp-6`. */
+.hg-company-profile-list {
+  margin-top: calc(var(--sp-1) * -1);
+}
+
+/* One part's fields, `sp-4` apart; a field and the line that belongs to it, `sp-2` apart. */
+.hg-company-profile-set,
+.hg-company-profile-pair,
+.hg-company-profile-act,
+.hg-company-profile-unread {
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-company-profile-set {
+  gap: var(--sp-4);
+}
+
+.hg-company-profile-pair {
+  gap: var(--sp-2);
+}
+
+/* A failed read is one message, centred in the column's free height (`m-error`). It has no
+   heading, and takes back the gap the frame keeps under its empty identity. */
+.hg-company-profile-unread {
+  flex: 1;
+  justify-content: center;
+  margin-top: calc(var(--sp-6) * -1);
+}
+
+/* The act, what is said above it and under it, `sp-3` apart, never nearer the list than `sp-5`. */
+.hg-company-profile-act {
+  gap: var(--sp-3);
+  padding-top: var(--sp-5);
+}

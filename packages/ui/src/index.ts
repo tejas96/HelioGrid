@@ -34,6 +34,7 @@ export * from './components/Checklist';
 export * from './components/Chip';
 export * from './components/ChipGroup';
 export * from './components/CoachMark';
+export * from './components/CompanyProfile';
 export * from './components/CompareGrid';
 export * from './components/ComplianceFloor';
 export * from './components/CustomerSurface';
