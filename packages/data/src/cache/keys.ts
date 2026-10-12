@@ -20,6 +20,11 @@ export const queryKeys = {
     businessProfile: (tenantId: string) => ['settings', tenantId, 'business-profile'] as const,
     taxRegistrations: (tenantId: string) => ['settings', tenantId, 'tax-registrations'] as const,
   },
+  /** A stored file's link. It dies in minutes, so a screen asks again when it next opens. */
+  files: {
+    downloadUrl: (tenantId: string, fileId: string) =>
+      ['files', tenantId, fileId, 'download-url'] as const,
+  },
   /** A market's published pack: reference data with no company's fact in it, so keyed by market alone. */
   market: {
     pack: (marketCode: string) => ['market', marketCode, 'pack'] as const,

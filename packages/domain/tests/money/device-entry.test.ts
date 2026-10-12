@@ -107,6 +107,8 @@ type ReviewedComputesNothing =
   | 'centreView'
   /* parses a spec envelope and computes nothing: a zod schema outruns the type walk's depth */
   | 'catalogSpecSchema'
+  /* decodes a file's bytes; a `Uint8Array` outruns the depth the check walks, and it holds no figure */
+  | 'bytesOfBase64'
   /* label a figure they are handed (`F8`) */
   | 'qualifyMoney'
   | 'qualifyMinorUnits'

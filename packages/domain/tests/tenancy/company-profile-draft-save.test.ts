@@ -144,3 +144,27 @@ describe('registrationsChanged — whether the registrations are written', () =>
     expect(registrationsChanged(stored, next)).toBe(changed);
   });
 });
+
+describe('companyProfileSaveOf — the logo is named only by the save that stored it', () => {
+  const values = companyProfileValuesAtRead(atSignup, IN_TAX);
+  const STORED_NOW = '0b9f1c8e-52a7-4d0e-9a3b-6f2d1c4e7a90';
+
+  it('a save that stored a logo sends its id, and the step is completed', () => {
+    const save = companyProfileSaveOf(values, atSignup, IN_TAX, STORED_NOW);
+    expect(save).toMatchObject({ profile: { logoFileId: STORED_NOW }, step: 'completed' });
+  });
+
+  it('any other save leaves the key out, so the api keeps the logo it holds', () => {
+    const held = { ...atSignup, profile: { ...atSignup.profile, logoFileId: STORED_NOW } };
+    expect(companyProfileSaveOf(values, atSignup, IN_TAX).profile).not.toHaveProperty('logoFileId');
+    expect(companyProfileSaveOf(values, held, IN_TAX).profile).not.toHaveProperty('logoFileId');
+  });
+});
+
+describe('companyProfileView — a logo chosen and not yet saved', () => {
+  it('stands as added, as a typed address does', () => {
+    const values = companyProfileValuesAtRead(atSignup, IN_TAX);
+    expect(companyProfileView(values, atSignup, IN_TAX).standings.identity).toBe('name_only');
+    expect(companyProfileView(values, atSignup, IN_TAX, true).standings.identity).toBe('added');
+  });
+});

@@ -115,7 +115,13 @@ export function Dropzone({
           isError ? styles.surfaceError : undefined,
         ]}
       >
-        {busy ? <DropzoneSpinner /> : isImage ? <CameraGlyph /> : <FileGlyph />}
+        {busy ? (
+          <DropzoneSpinner />
+        ) : isImage ? (
+          <CameraGlyph refused={isError} />
+        ) : (
+          <FileGlyph refused={isError} />
+        )}
         {/* THE NAME OF THE ACT SURVIVES THE WAIT — the spinner is the progress channel and the
             state goes in the line below, never in place of the label. */}
         <Text variant="h4" align="center" color={disabled ? 'disabled' : 'primary'}>

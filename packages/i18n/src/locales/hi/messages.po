@@ -113,7 +113,7 @@ msgid "{home}, switch home"
 msgstr "{home}, होम बदलें"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:26
+#: src/copy/company-logo.ts:27
 msgid "{how} · {limits}"
 msgstr "{how} · {limits}"
 
@@ -138,12 +138,12 @@ msgid "{match} match · {unread} unread in all"
 msgstr "{match} मिलीं · कुल {unread} अपठित"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:32
+#: src/copy/company-logo.ts:33
 msgid "{megabytes} MB · needs {maxMegabytes} MB or less"
 msgstr "{megabytes} MB · {maxMegabytes} MB या कम चाहिए"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:22
+#: src/copy/company-logo.ts:23
 msgid "{megabytes} MB, {width} px wide · needs {maxMegabytes} MB or less, at least {minWidth} px"
 msgstr "{megabytes} MB, {width} px चौड़ा · {maxMegabytes} MB या कम, कम से कम {minWidth} px चाहिए"
 
@@ -233,7 +233,7 @@ msgid "{weekday} · {date}"
 msgstr "{weekday} · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:33
+#: src/copy/company-logo.ts:34
 msgid "{width} px wide · needs at least {minWidth} px"
 msgstr "{width} px चौड़ा · कम से कम {minWidth} px चाहिए"
 
@@ -333,7 +333,7 @@ msgid "Add the size you sell most often."
 msgstr "वह आकार जोड़ें जो आप सबसे ज़्यादा बेचते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:16
+#: src/copy/company-logo.ts:17
 msgid "Add your logo"
 msgstr "अपना लोगो जोड़ें"
 
@@ -489,7 +489,7 @@ msgid "Check the SMS, or send a new code."
 msgstr "SMS जाँचें, या नया कोड भेजें।"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:19
+#: src/copy/company-logo.ts:20
 msgid "Choose a file or drop one here"
 msgstr "फ़ाइल चुनें या यहाँ छोड़ें"
 
@@ -995,7 +995,7 @@ msgid "Name, phone or city"
 msgstr "नाम, फ़ोन या शहर"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:31
+#: src/copy/company-logo.ts:32
 msgid "Needs a PNG or JPG"
 msgstr "PNG या JPG चाहिए"
 
@@ -1222,7 +1222,7 @@ msgid "PIN code"
 msgstr "पिन कोड"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:21
+#: src/copy/company-logo.ts:22
 msgid "PNG or JPG, up to {maxMegabytes} MB, at least {minWidth} px wide"
 msgstr "PNG या JPG, अधिकतम {maxMegabytes} MB, कम से कम {minWidth} px चौड़ा"
 
@@ -1587,7 +1587,7 @@ msgid "Taking you to {destination}"
 msgstr "आपको {destination} पर ले जा रहे हैं"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:18
+#: src/copy/company-logo.ts:19
 msgid "Tap to choose a file"
 msgstr "फ़ाइल चुनने के लिए टैप करें"
 
@@ -2239,7 +2239,7 @@ msgid "Your letterhead"
 msgstr "आपका लेटरहेड"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:17
+#: src/copy/company-logo.ts:18
 msgid "Your logo"
 msgstr "आपका लोगो"
 

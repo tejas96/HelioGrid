@@ -63,6 +63,9 @@ Reached from: the onboarding sequence after "What do you sell?" (M01 §M01.3 beh
 48. **The letterhead's tile shows the logo's picture**, fitted inside the tile, and the word `Logo` until the screen holds one. A company with no picture shows no initial: the preview shows only what the fields hold (ruling 10).
 49. **The capture area's hint follows the pointer.** Where a finger chooses, `Tap to choose a file`; where a pointer can drop a file, `Choose a file or drop one here`; each is followed by the limits. `d-default`, which draws the finger's line, is to be corrected to match.
 50. **No control takes a logo out.** Choosing another file replaces the held one, as `m-normal` draws.
+51. **A logo is stored by the act, not when it is chosen.** A chosen image is checked and held on the device and shows at once as `Your logo`; `Save and continue` stores it and then saves the profile with it. So an upload has no look of its own: the act's busy look is its look, and one that fails is the failed save (`m-save-failed`), everything kept. An image chosen and then abandoned stores nothing.
+52. **An image over the size limit is refused with its measured size, never shrunk** — on a phone too. A logo is a made image; re-encoding it without telling its owner would change what every document prints.
+53. **An image the api reads as another type than the device declared is refused in the type's line**, `Needs a PNG or JPG`, and that save writes nothing; the next press saves without it.
 
 
 ## Requirements (verbatim)

@@ -25,6 +25,7 @@ export {
   RequestTimeoutError,
   UnauthorizedError,
 } from './errors/errors';
+export type { FileRepository, FileToStore } from './file/repository';
 export type { HealthRepository } from './health/repository';
 export type { InvitationRepository } from './invitation/repository';
 export type { MarketRepository } from './market/repository';

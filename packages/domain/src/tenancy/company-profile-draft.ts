@@ -127,11 +127,13 @@ export function companyProfileView(
   values: CompanyProfileValues,
   stored: CompanyProfileStored,
   tax: TaxPack,
+  /** A logo is chosen and not yet stored: it stands as held, as a typed field does. */
+  logoChosen = false,
 ): CompanyProfileView {
   const facts = companyProfileFacts(values, stored, tax);
   return {
     standings: {
-      identity: companyProfileStanding('identity', facts, tax),
+      identity: logoChosen ? 'added' : companyProfileStanding('identity', facts, tax),
       address: companyProfileStanding('address', facts, tax),
       tax: companyProfileStanding('tax', facts, tax),
       bank: companyProfileStanding('bank', facts, tax),
@@ -230,23 +232,35 @@ export function companyProfileSaveOf(
   values: CompanyProfileValues,
   stored: CompanyProfileStored,
   tax: TaxPack,
-): CompanyProfileSave {
+  /** The logo this save stored. Any other save leaves the key out: a whole replace would clear a logo another device added. */
+  logoStoredNow: string | null = null,
+): CompanyProfileSaveSent {
   const facts = companyProfileFacts(values, stored, tax);
-  const save = companyProfileSave(
+  const written = companyProfileSave(
     {
       ...facts,
+      logoFileId: logoStoredNow ?? facts.logoFileId,
       companyName: orAsRead(facts.companyName, stored.profile.companyName),
       city: orAsRead(facts.city, stored.profile.city),
       bank: bankAsTyped(facts.bank, stored.profile.companyName),
     },
     tax,
   );
+  const save: CompanyProfileSaveSent =
+    logoStoredNow === null
+      ? written
+      : { ...written, profile: { ...written.profile, logoFileId: logoStoredNow } };
   const nothingToWrite =
     drawnRegistrationType(tax) === null ||
     companyProfileStanding('tax', facts, tax) === 'check_format';
   if (!nothingToWrite) return save;
   const kept = stored.registrations;
   return { ...save, registrations: kept, step: kept.length > 0 ? 'completed' : save.step };
+}
+
+/** What the act sends, with the logo's pointer when this save stored one. */
+export interface CompanyProfileSaveSent extends CompanyProfileSave {
+  readonly profile: CompanyProfileSave['profile'] & { readonly logoFileId?: string };
 }
 
 function bankAsTyped(bank: BankDetails, nameAsRead: string): BankDetails {
