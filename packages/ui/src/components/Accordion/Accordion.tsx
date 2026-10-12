@@ -4,7 +4,7 @@ import { classNames } from '../../primitives/class-names';
 import { renderMarks } from '../ChipGroup';
 import { renderProvenance } from '../Provenance';
 import type { AccordionItem, AccordionProps } from './Accordion.types';
-import { accordionStateWord, markedState } from './Accordion.types';
+import { accordionStateWord, markedState, standingPlace } from './Accordion.types';
 import { useAccordion } from './useAccordion';
 
 interface WebAccordionProps extends AccordionProps {
@@ -32,14 +32,27 @@ function Chevron({ open }: { open: boolean }) {
   );
 }
 
+/** Where the section stands, beside its title: a word, and a dot before it for a marked state. */
+function Standing({ item }: { item: AccordionItem }) {
+  const word = accordionStateWord(item);
+  if (word === undefined || standingPlace(item) !== 'title') return null;
+  return (
+    <span className="hg-accordion-standing">
+      {markedState(item) !== undefined ? (
+        <span aria-hidden="true" className="hg-accordion-standing-dot" />
+      ) : null}
+      {word}
+    </span>
+  );
+}
+
 function HeaderFacts({ item }: { item: AccordionItem }) {
   const word = accordionStateWord(item);
-  const marked = markedState(item);
   return (
     <>
-      {word !== undefined ? (
+      {word !== undefined && standingPlace(item) === 'end' ? (
         <span className="hg-accordion-state">
-          {marked !== undefined ? <span aria-hidden="true" className="hg-accordion-dot" /> : null}
+          <span aria-hidden="true" className="hg-accordion-dot" />
           {word}
         </span>
       ) : null}
@@ -115,12 +128,13 @@ export function Accordion({
                   onClick={() => toggle(item.key)}
                   onKeyDown={(event) => onKeyDown(index, event)}
                 >
-                  <Chevron open={isOpen} />
                   <span className="hg-accordion-title-wrap">
                     <span className="hg-accordion-title">{item.title}</span>
                     {renderMarks(item.marks)}
+                    <Standing item={item} />
                   </span>
                   <HeaderFacts item={item} />
+                  <Chevron open={isOpen} />
                 </button>
               </h3>
               {/* A sibling of the toggle, never inside it. */}

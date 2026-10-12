@@ -1,13 +1,15 @@
 /* Accordion — long forms and settings, split into sections you can collapse. Each section is a
    heading and its body on the page (F7-49) — a body may hold a field, and a tile never does — so
-   sections separate by an 8px gap alone, NEVER a divider line or a fill. The chevron LEADS: with
-   four facts on the right of the header (marks, state word, meta, total, tier) a trailing chevron
-   sat between the total and the action. */
+   a section has NO fill and no side padding: it starts at the page's own edge, and a thin line
+   above it is all that parts it from the section before. The chevron closes the header. */
 
 .hg-accordion {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-2);
+}
+
+.hg-accordion-item + .hg-accordion-item {
+  border-top: 1px solid var(--line-soft);
 }
 
 .hg-accordion-head {
@@ -35,11 +37,11 @@
   font-family: var(--font-sans);
   text-align: left;
   color: inherit;
-  padding: 18px;
+  padding: 18px 0;
 }
 
 .hg-accordion[data-density="functional"] .hg-accordion-toggle {
-  padding: 14px;
+  padding-block: 14px;
 }
 
 .hg-accordion-toggle[data-has-action="true"] {
@@ -53,7 +55,7 @@
 
 .hg-accordion-chevron {
   flex-shrink: 0;
-  color: var(--text-tertiary);
+  color: var(--text-primary);
   transition: transform var(--dur-standard) var(--ease-standard);
 }
 
@@ -77,13 +79,33 @@
   color: var(--text-primary);
 }
 
-/* The word carries the state; the dot is the second, non-colour channel. An item in errors has no
-   tint (F7-49), so these two are the whole of its danger. */
-/* CALLER TEXT WRAPS, AND A STATE WORD IS NOT DECORATION. `state` and `meta` are caller strings the
-   product translates, so `nowrap` here holds in English and clips in Hindi and Marathi. Which
-   sections are unfilled is the caller's PRIMARY information (`N4`), never the quiet tertiary role.
-   `.hg-accordion-total` keeps its nowrap: a number is one token, and wrapping one is worse than any
-   overflow. */
+/* WHERE A SECTION STANDS, beside its title. The word is the reader's PRIMARY information (`N4`),
+   so it is never the quiet tertiary role, and it is caller text, so it wraps. The dot is the
+   second, non-colour channel. */
+.hg-accordion-standing {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+
+.hg-accordion-standing-dot {
+  width: var(--sp-2);
+  height: var(--sp-2);
+  border-radius: var(--r-pill);
+  flex-shrink: 0;
+  background: var(--mark-subtle);
+}
+
+.hg-accordion-item[data-state="done"] .hg-accordion-standing-dot {
+  background: var(--success);
+}
+
+/* A section in errors says so at the header's end. It has no tint (F7-49), so the word and its dot
+   are the whole of its danger. */
 .hg-accordion-state {
   display: inline-flex;
   align-items: center;
@@ -91,17 +113,7 @@
   flex-shrink: 0;
   font-size: var(--fs-caption);
   font-weight: var(--fw-medium);
-  color: var(--text-secondary);
-}
-
-.hg-accordion-item[data-state="errors"] .hg-accordion-state {
   color: var(--danger-text);
-}
-.hg-accordion-item[data-state="done"] .hg-accordion-state {
-  color: var(--success-text);
-}
-.hg-accordion-item[data-state="empty"] .hg-accordion-state {
-  color: var(--text-tertiary);
 }
 
 .hg-accordion-dot {
@@ -109,16 +121,7 @@
   height: 6px;
   border-radius: var(--r-pill);
   flex-shrink: 0;
-}
-
-.hg-accordion-item[data-state="errors"] .hg-accordion-dot {
   background: var(--danger);
-}
-.hg-accordion-item[data-state="done"] .hg-accordion-dot {
-  background: var(--success);
-}
-.hg-accordion-item[data-state="empty"] .hg-accordion-dot {
-  background: var(--neutral);
 }
 
 .hg-accordion-meta {
@@ -127,7 +130,8 @@
   color: var(--text-tertiary);
 }
 
-/* A total is a figure, never prose — mono and tabular. */
+/* A total is a figure, never prose — mono and tabular. It keeps its nowrap: a number is one token,
+   and wrapping one is worse than any overflow. */
 .hg-accordion-total {
   font-family: var(--font-mono);
   font-size: var(--fs-body-sm);
@@ -145,18 +149,16 @@
 /* A SIBLING of the toggle, never inside it — a button inside a button is invalid. */
 .hg-accordion-action {
   flex-shrink: 0;
-  padding-right: 18px;
-}
-
-.hg-accordion[data-density="functional"] .hg-accordion-action {
-  padding-right: 14px;
 }
 
 .hg-accordion-panel {
-  padding: 0 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-1) 0 var(--sp-6);
   animation: hg-sheet-fade var(--dur-standard) var(--ease-enter);
 }
 
 .hg-accordion[data-density="functional"] .hg-accordion-panel {
-  padding: 0 14px 14px;
+  padding-bottom: var(--sp-5);
 }

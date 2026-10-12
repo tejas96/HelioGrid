@@ -26,11 +26,11 @@ Reached from: the onboarding sequence after "What do you sell?" (M01 §M01.3 beh
 11. **Bank details hold four facts** (`M06-17`), in this order: `Bank name` · `Account holder` · `Account number` · the pack's bank-routing identifier.
 12. **The address is three fields: `Street address` · `City` · `PIN code`.** The city is read back with `From your signup` and nothing more — the market comes from the phone number the company signed up with, never from the city. The PIN code is stored on the profile. No state field is drawn.
 13. **One short format line serves the help and the error** — `15 characters · like 27ABCDE1234F1Z5` in the India pack — and the screen never counts the characters typed. A field that is optional on its own says so in its label: `GSTIN (optional)`.
-14. **No line at the act says the step is skippable**: a live act with nothing filled in is what skippable looks like. Only the re-seed scope and the cost of an undeclared value keep a line there.
+14. **No line at the act says the step is skippable**: a live act with nothing filled in is what skippable looks like. Only the re-seed scope, the cost of an undeclared value and a save that failed keep a line there.
 15. **The prompt at the first send is built with the send** (`T-M06-022`): this screen's tax part, mounted in `EditorSurface` over the proposal. `m-prompt` and `d-prompt` are proven there, where a proposal exists to hold up.
 16. **The bank code's label is the market pack's**, as the tax registration's is: `IFSC` in the India pack, never a word of the screen's own.
 17. **Bank details typed half way are kept as typed.** The part reads `Not added` until all four facts exist, and the bank details' prompt stays owed until then.
-18. **A save that fails keeps everything typed on screen**, with a retry and a way on without saving; its frame is drawn by the owner before the screen's shared parts are built.
+18. **A save that fails keeps everything typed on screen**, with a retry and a way on without saving. `m-save-failed` draws it: one line at the act, `Not saved · our end · nothing typed is lost`, then `Try again` and `Continue without it`; the settings life shows the same line at `Save changes` and no second act.
 19. **`skipped` has no way in yet**: a recorded step is never resumed, and no screen offers a way back into setup. The state is built and waits for that screen.
 20. **The settings life waits on the settings list** its back control returns to; the owner draws that list before this life is built.
 
@@ -55,6 +55,7 @@ Screen-specific:
 - **normal** — the profile filled and saved: logo, the market's tax registration(s), address, bank details, and the two declarations `M01-23` places here. The main frame of the screen, and the one the other states are departures from. *(Added 2026-08-28 — this list named four edge states and no default; every neighbouring brief names one.)*
 - **logo-invalid-limits-stated** — a logo uploaded at the profile step is invalid → validated on upload with the actual limits stated (M01 §M01.3 edge list, the `S6B.wrong.5` pattern).
 - **declarations-edited-reseed-scope** — the segment and typical system size (`kWp`) edited after onboarding, with the scope of the change stated on the surface: it re-seeds only what comes next, and **a sent proposal keeps its prices** (`M01-23`; the price-book law of `F1`). The size carries its tier — `estimated · Declared by you` — wherever it renders, exactly as on `SCR-M01-04`. *(Added 2026-08-28 with the ruling that placed the declarations here, which reached Entry & exit and not this list.)*
+- **save-failed** — the act was pressed and the save got no answer: every typed value stays where it was typed, no part closes, and one line at the act says so, with a retry first and a way on without saving second (ruling 18). Not *arrived-from-a-failed-save*, which is the step before failing.
 - **arrived-from-a-failed-save** — reached by `SCR-M01-04`'s *Finish later* route, where a save of those two declarations failed. The screen says what is still undeclared rather than presenting an empty field as a choice, so the owner does not have to remember what the previous screen lost. *(Added 2026-08-28: placing the declarations here made this an entry point, and an entry with no state is how a route arrives somewhere that does not expect it.)*
 
 ## Data volume

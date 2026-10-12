@@ -4353,7 +4353,7 @@ Who gains: every owner, and every document a later module prints. The problem: t
 
 ##### Goals
 - The api holds every fact the board asks for, and an older client's save loses none of them — part a.
-- A section list drawn flat, with a state mark beside each title, and a field that carries a line a reader depends on, on the web and the phone — part b.
+- A section list drawn flat, with a state mark beside each title, and the loading bars, on the web and the phone — part b.
 - `CompanyProfile` in `packages/ui` draws every state the apps can reach from one prop contract; every word in English, Hindi and Marathi; domain decides where each part stands and what a save writes — part c.
 - An owner whose company resumes at `business_profile` lands on the step on the web, iOS and Android; `Continue` and `Finish later` of `SCR-M01-04` open it (D202); a malformed registration is explained live against the pack's format and the act stays live (`M01-25`) — part d.
 - The logo is chosen, checked against its stated limits, uploaded and shown — part e.
@@ -4401,7 +4401,7 @@ Each part's flow is in its own RFC. Shared here:
   3. **The format line.** The India pack's `format` words become the board's short line, so the screen and the api's refusal print one sentence (pack data, `packages/domain/src/tax/pack.ts`; published again per environment) — or the pack keeps its sentence and the board is redrawn to it.
   4. **The bank code's label.** The formats pack gains `bankRoutingLabel` beside `taxIdLabel`, `IFSC` in India — or the word `IFSC` is screen copy in `packages/i18n`.
   5. **Half-typed bank details.** They are stored as typed (each fact may be empty in the contract), and the part reads `Not added` until all four exist — or a new state word is drawn for a part that is half filled. (Built in part d, as a new field beside the screen that needs it: part a first made the four facts nullable on the read, and CI's breaking-change judge refused that — *Part a · RFC*, *CI fix*.)
-  6. **A save that fails.** The owner draws one frame for it (one prompt) — or the read's error frame `m-error` is built for it with the title's verb changed, hiding what was typed while it shows.
+  6. **A save that fails.** Closed: the owner drew `m-save-failed` (`#### Design check`, the second entry). The owner draws one frame for it (one prompt) — or the read's error frame `m-error` is built for it with the title's verb changed, hiding what was typed while it shows.
   7. **The settings list.** The owner draws the list `Back to settings` returns to, before part f; parts a–e do not wait — or part f ships reachable by its address alone until a later task draws the list.
   8. **`m-skipped`.** Built in the shared component and proven on the component page, with a `deferred.md` row until a screen offers a way back into the corridor — or the settings life shows the skipped line, which the board does not draw there.
   9. **Deferred rows.** D202, D200 and D145's `Accordion` join; D197 and the rest of D145 stay, re-pointed to `T-M01-012 starts`; D118 and D43 stay. (D197's cell was then written `touches apps/web/features/auth/` — review: the sign-in screens are its home, no screen task is.)
@@ -4421,7 +4421,7 @@ flowchart LR
   rules["domain: where a part stands, what a save writes (c)"] --> hook
   words["i18n: companyProfileWords (c)"] --> ui["ui: CompanyProfile (c)"]
   screens --> ui
-  ui --> parts["ui: Accordion flat form, a field's line (b)"]
+  ui --> parts["ui: Accordion flat form, LoadingBars (b)"]
   more["shell: the settings list under More (f)"] --> screens
 ```
 
@@ -4456,7 +4456,7 @@ Six parts, about 135 files in all. No smaller part can be accepted alone: the ap
 | part | what | AC | depends on | status |
 |---|---|---|---|---|
 | a | the api holds what the board asks: the PIN code's column and field, the typical size bounded (D200), the pack's short format line and its bank-routing label (`#### Part a · RFC`) | AC-3 — on the running api | `T-M01-004` | shipped |
-| b | the design system's parts: `Accordion` drawn flat with a state mark beside the title (D145's share), a field's line a reader depends on, the loading bars — by component spec | AC-4 (the parts every frame is built from) — on the component page | a | open |
+| b | the design system's parts: `Accordion` drawn flat with a state mark beside the title (D145's share), the loading bars — by component spec; a field's line a reader depends on is part c's, placed with `Text` (`#### Part b · RFC`, *Decisions*, 1) | AC-4 (the parts every frame is built from) — on the component page | a | shipped |
 | c | the screen's shared parts: `CompanyProfile` in `packages/ui` with its five field sets and the 1536 letterhead preview, its words in three languages, domain's rules for where a part stands and what a save writes | AC-2 (the format explained, the act live), AC-4 — on the component page | b | open |
 | d | the step owed, the landing, the reads and the save, and the screen on the web and both phones; `SCR-M01-04`'s ways on open it (D202); half-typed bank details kept, as a new field on the profile's read and write (*Decisions*, 5); `createCompany` passes the step | AC-2, AC-4 — on the running apps | c | open |
 | e | the logo: its pointer in the api, the upload from the web and both phones, the limits stated and the refusal (`m-logo-invalid`) | AC-4 (`logo-invalid-limits-stated`) | d | open |
@@ -4598,6 +4598,147 @@ One part of six. Planned: 21 files, one generated; code about 150 authored lines
 
 **After the CI fix (2026-10-12).** 27 files, one generated (the shared-index file left the list, `packages/contracts/CLAUDE.md` joined it). Code: 139 lines. Tests: 238. Total 377 — under the size the owner approved: the bank rule and its tests went to part d.
 
+#### Part b · RFC
+
+##### Title
+`T-M01-005b` — The design system's parts for the company profile: a flat section list with a standing mark, and the loading bars
+
+##### Description
+**User impact.** None — internal. No screen a person meets changes in this part. It gives part c the two shared parts every frame of the board is built from: a list of sections drawn flat, each with a word and a dot beside its title that says where the section stands, and the bars a list shows while its record loads. Indirectly, every later settings screen and long form draws its sections the same way.
+
+Who gains: part c, and the screens after it that hold a section list. The problem: `Accordion` draws its sections 8 px apart with the chevron first and the standing on the right (`packages/ui/src/components/Accordion/Accordion.css:7`, `Accordion.tsx:122`), where the board draws a thin line between sections, the standing beside the title and the chevron last (the record, decision 1 and gap 1; D145's `Accordion` share); and the board hand-draws five loading bars where `packages/ui` has no shared loading part — about ten components each draw their own shimmer (`Card.css:48`, `Block.css:104`; `docs/tasks/UI.md`, the `Skeleton` row). Sources: the task RFC, the record's decisions 1 and 17 and gaps 1, 2, 11 and 12, the board's source, `UI.md`, D145.
+
+##### Goals
+- `Accordion` draws its sections flat on the web and the phone: no gap, a `--line-soft` line above every section after the first, a header with no side padding and at least 56 tall, the chevron last in the primary ink.
+- A section's standing — `done`, `empty`, or a word of the screen's own — reads beside the title: the word in `--text-secondary`, an 8 px dot before it, `--success` for `done` and `--mark-subtle` otherwise. A section in errors keeps its word on the right in `--danger-text`.
+- `LoadingBars` in `packages/ui` draws a named, busy region of bars on the web and the phone, each bar a closed section's height or an open one's.
+- D145 loses its `Accordion` share; the `UI.md` rows this part answers are rewritten.
+
+##### Non-goals
+- No word of the profile, no `CompanyProfile`, no screen — parts c and d.
+- **No change to `Input`** (*Proposal*, finding 1): the lines a reader depends on under a field are placed by part c.
+- No tint on a section in errors: ruled out by `F7-49` and recorded as owed to the design system (`docs/tasks/UI.md`, the containers paragraph). The board's tint and its 12 px bleed (the record, gaps 11 and 12) are that ruled difference.
+- The English defaults `Done`, `Empty`, `N to fix` in `accordionStateWord` — D2's, which stays.
+- The ten per-component shimmers are not moved onto `LoadingBars`.
+- The design system's typing is not pulled: no prop is added to or taken from `Accordion`.
+
+##### Readiness and dependencies
+- Part a is merged (#284, `b1d54eda`); this branch is cut from `origin/main` (`98083f66`).
+- Design check: `READY` on the 21-frame board (`#### Design check`, the second entry). Main read the record again on 2026-10-12 and had the board's source read for this part's three subjects.
+- `light cycle`: the proof matrix names no web, phone or api surface. No built screen draws `Accordion` (`rg '<Accordion' apps packages/ui/src` finds none outside its folder) and `LoadingBars` is new; with finding 1's first way, `Input` — which company signup draws — is untouched.
+- The board's pictures are not taken in this part: it draws no whole frame, and the browser pane is signed out of Claude Design. Part c takes all 21 at its design step.
+- No blocker.
+
+##### Proposal
+**What testing the requirements found** (`/task` step 2).
+1. **"A field's line a reader depends on" needs no new part.** The board places these lines by hand under the field — `From your signup`, the format-check sentence — as body-small text in `--text-secondary`, and never through `Input`'s `helper` (the board's source; the record, gaps 3 and 6). The `Text` primitive already draws that role on both halves. A new slot on `Input` would change a component company signup draws on the web and both phones, so this part would owe a live run on three surfaces for a prop no built screen passes. → *Decisions*, 1.
+2. **The chevron trails.** The pulled contract's comment says it leads (`packages/theme/src/_generated/contracts/data/Accordion.d.ts.txt`); the design system's component and every frame draw it last. Built as drawn; the comment is the design system's to correct (listed for the owner).
+3. **The standing is the component's own, not a hand-built mark.** The board builds a word and a dot by hand and passes it through `marks`, because the design system's own word is tertiary (gap 1: *the fix still belongs in the component*). The port's contract already holds `state` and `stateLabel`; it draws them beside the title, so part c passes `{ state: 'empty', stateLabel }` and builds nothing.
+4. **The loading bars are raised white bars; the list they stand for is flat.** `m-loading` draws five bars in `--surface` with `--e1` and `--r-lg`, 8 px apart — one 188 tall, four 56 — where the loaded list has no surface, no shadow and no gap. → *Decisions*, 2.
+5. **The board's title is 16 px at weight 600.** The theme has no 600 weight and its body role is 15 px (`typography.css`); the title keeps `--fs-body` and `--fw-bold`, as every title in the port does. Listed for the owner.
+
+**Flow.**
+1. Part c renders `<Accordion items value />` with five items; each closed item passes `state` and `stateLabel`. The list draws flat; the standing reads after the title; the chevron closes the row.
+2. A refused registration sets that item to `errors`: the section opens itself (`useAccordion`, unchanged), its word moves to the right in the danger tone, the header says `aria-invalid`.
+3. While the record loads, part c renders `<LoadingBars label bars={['panel', 'row', 'row', 'row', 'row']} />` in the list's place.
+
+**Key decisions.**
+- **One form, no `flat` prop.** The design system's `Accordion` is flat everywhere (its readme, *Open page layout*: forms are flat), and no built screen draws the old form.
+- **Where the word sits is one rule both halves read** — `standingPlace(item)` beside `accordionStateWord` in `Accordion.types.ts`: `errors` on the right, every other word beside the title.
+- **The word wraps.** A standing is caller text, so it takes no `nowrap` (`.claude/rules/ui-adherence.md`); the title row already wraps.
+- **`LoadingBars` takes sizes by name** — `'row'` (56) and `'panel'` (188) — never a number from the caller, and a required `label`: a busy region with no name is silent.
+- **The phone's bars pulse** in opacity over the same 1.4 s, as `Card`'s do; the web's sweep is the theme's `hg-sheet-shimmer`, which reduced motion already stills.
+
+**Order.** The `Accordion` spec, red · the stylesheet, the web half, the rule, the phone half · the `LoadingBars` spec, red · its five files and the two entries · the registers · review · the gate.
+
+**Refusals.** None — this part makes no call.
+
+**The twin.** Both halves of both components change together. The phone halves are typechecked here and first seen on a phone in part d.
+
+**Deferred rows this part's files meet.** D2 and D92 (`touches packages/ui/src/components/`, English inside components) — stay: each waits on `T-M12-004`. D145 — its `Accordion` share is built here and leaves the row. With finding 1's first way no file under `Input/` changes, so D174 and D189 are not met. Opened by this part's review: D205 (the phone's loading pulse, written three times) and D206 (`Accordion`'s phone half says less than its web half).
+
+**Decisions** (the owner's; the recommended way first).
+1. **The line under a field.** Part c places it with `Text` inside `CompanyProfile`, as the board does; `Input` is untouched and this part stays a light cycle — or `Input` gains a slot for it now, and this part runs company signup once on the web and both phones.
+2. **The loading bars' look.** Built as `m-loading` draws them — white raised bars, 8 px apart — or the owner redraws the frame flat first (one prompt) and the bars follow it.
+3. **Deferred rows.** D2 and D92 stay.
+
+**Ruled by the owner, 2026-10-12, with the approval: the first way of each of the three.**
+
+##### Architecture diagram
+No boundary change — see the task diagram: the node `ui: Accordion flat form, LoadingBars (b)`.
+
+##### Package changes
+- `ui` — `Accordion`: the same props, a new look, `standingPlace` exported with the component's other helpers. `LoadingBars`: new, exported from the root entry (`LoadingBars`, `LoadingBarsProps`, `LoadingBarSize`). No new dependency.
+- Law 12: no brand, enum, token, route, table or error code is new. `LoadingBarSize` is a union `tsc` holds. `LoadingBars` has no design-system contract, so `design-system-props` skips it — said here; `UI.md` lists the component as owed to the design system.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/ui/src/components/Accordion/Accordion.types.ts` | `standingPlace`; the contract's comments say the flat form | the one prop contract (Law 7) |
+| modify | `packages/ui/src/components/Accordion/Accordion.css` | no gap, the line, the header's and panel's padding, the standing beside the title, the chevron last | the web styles |
+| modify | `packages/ui/src/components/Accordion/Accordion.tsx` | the standing in the title row; the chevron after the facts | the web half |
+| modify | `packages/ui/src/components/Accordion/Accordion.native.tsx` | the same on the phone | the phone half |
+| modify | `tests/e2e/components/Accordion.spec.tsx` | the flat form, measured | one spec per component |
+| add | `packages/ui/src/components/LoadingBars/LoadingBars.types.ts` | the prop contract | the folder shape (`packages/ui/CLAUDE.md`) |
+| add | `packages/ui/src/components/LoadingBars/LoadingBars.tsx` · `LoadingBars.css` | the web half | the same |
+| add | `packages/ui/src/components/LoadingBars/LoadingBars.native.tsx` | the phone half | the same |
+| add | `packages/ui/src/components/LoadingBars/index.ts` | the folder's entry | the same |
+| modify | `packages/ui/src/index.ts` · `packages/ui/src/styles.css` | the export; the stylesheet | the package's two entries |
+| add | `tests/e2e/components/LoadingBars.spec.tsx` | the bars, measured | one spec per component |
+| modify | `docs/tasks/UI.md` | the `Skeleton` row rewritten; the design-system side of this part | the register |
+| modify | `docs/tasks/deferred.md` | D145 without its `Accordion` share | the row's file |
+| modify | `docs/ux/briefs/SCR-M01-05-business-profile.md` | the failed save: ruling 14's third line at the act, ruling 18 as drawn, the state in the list | the brief owns the screen's facts |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the design check's second entry, *Decisions* 6 closed, the ledger, part b `shipped` | the task |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **A look fault is first seen whole in part c.** This part measures the board's numbers by spec — the line, the 56 and 57 headers, the 8 px dot, the bars — and compares no picture; part c sets every frame beside its board picture and fixes what it finds.
+- **The phone halves are unseen until part d.** A fault found there is fixed and counted there.
+- **Callers.** None today for either component, so no built screen changes.
+- **Rollout.** Nothing a person meets changes; no stored or sent shape changes.
+
+##### Acceptance criteria and proof
+The task's AC-4 is this part's, for the parts every frame is built from. AC-1, AC-2 and AC-3 have no row here.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-4 · b1 the list is flat | main-dev | required | `3100` | three items mounted: the first has no top line, each later one a 1 px `--line-soft` top line; no gap between items; a header's left edge is the list's; a closed first header is 56 tall, a later one 57; no fill, shadow or radius. Planted red: the line's rule taken out | `tests/e2e/components/Accordion.spec.tsx` |
+| AC-4 · b2 the standing beside the title | main-dev | required | `3100` | `state: 'done'` and `'empty'` with a `stateLabel`: the word is `--text-secondary`, its dot 8 × 8, `--success` and `--mark-subtle`; the word starts after the title and ends before the chevron. Planted red: `standingPlace` answering the right for `empty` | the same |
+| AC-4 · b3 a section in errors | main-dev | required | `3100` | the word is `--danger-text` and sits right of the title row; the header is `aria-invalid`; the item has no tint (the test that exists, kept) | the same |
+| AC-4 · b4 the chevron | main-dev | required | `3100` | it is the header's last element, in `--text-primary`; it turns when the section opens | the same |
+| AC-4 · b5 the settings density | main-dev | required | `3100` | `density="functional"`: the header is still 56 tall and the open panel's bottom padding is 20; a header with an act keeps 8 before it (review) | the same |
+| AC-4 · b6 a longer language | main-dev | required | `3100` at 375 | a Hindi title too long for one line, with a Hindi standing: the title wraps and the header grows past 56, nothing is clipped, the list has no sideways scroll | the same |
+| AC-4 · b7 the loading bars | main-dev | required | `3100` | `bars` of one `panel` and four `row`: five bars, 188 and 56 tall, 8 px apart, the list's width; the region is `aria-busy` and carries its `label`; each bar runs `hg-sheet-shimmer`. Planted red: the `panel` height set to the row's | `tests/e2e/components/LoadingBars.spec.tsx` |
+| side-by-side | — | not_applicable | — | — | this part draws no whole frame, and its specs borrow words the profile does not use; part c compares all 21 frames on the component page |
+| the running web, phones and api | — | not_applicable | — | — | no built screen draws `Accordion` or `LoadingBars`; this part makes no call |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part: **17 files** — 13 of code and tests, 4 documents. No generated file planned. Under both targets.
+- **Code: about 230 authored lines** — `Accordion` 110 (a changed row counts twice), `LoadingBars` 120.
+- **Tests: about 160 authored lines** — the `Accordion` spec 110, the `LoadingBars` spec 50.
+- Order: as *Proposal*.
+
+**Built, and the size ruling asked again (2026-10-12).** 17 files, as planned; no generated file. Code: 346 lines (279 added, 67 removed) — `Accordion` 205, `LoadingBars` and the two entries 141. Tests: 211 (210 added, 1 removed) — the `Accordion` spec 164, the `LoadingBars` spec 47. Total 557 against 390 planned — 43% over, past the rule's 20% (`docs/tasks/README.md`, *Delivery size*). The cause is the estimate, not the scope: the phone half's styles are written one value per line, the standing's rule and its two drawings were counted as one, and seven measured tests wrap to more lines than planned. No behaviour, route, contract, table, package or file beyond the RFC. Asked: this one part, approved at this exact size — approved by the owner, 2026-10-12.
+
+**After the review (2026-10-12).** 17 files, as planned. Code: 380 lines (300 added, 80 removed). Tests: 235 (232 added, 3 removed). Total 615 — 10% over the size approved, inside the rule. The review's round added the lines: the phone's bars wait on reduced motion, the settings header keeps its gap before an act with a test for it, the chevron's turn and the wrapped Hindi title are measured, and the phone half lost its `quiet` ink for a style of its own.
+
+Checklist:
+- [x] the `Accordion` spec, red
+- [x] `Accordion`: stylesheet, web, rule, phone
+- [x] the `LoadingBars` spec, red
+- [x] `LoadingBars`: five files, the two entries
+- [x] `UI.md`, `deferred.md`, the brief
+- [x] review
+- [x] the gate
+
+**Planted reds seen (part b).** `Accordion.css` with the line's rule taken out failed `Accordion.spec.tsx` › *the sections are flat: a thin line above every section after the first, no gap, no side padding* (the line read `0px`); `standingPlace` answering the end for `empty` failed › *where a section stands reads beside its title: the word secondary, an 8px dot before it* (the word read the danger ink); `LoadingBars.css` with the panel's height set to the row's failed `LoadingBars.spec.tsx` › *one bar per part, at its size, the list wide and 8 apart, in a busy region that carries its name* (188 expected, 56 read). After the review, `Accordion.css` with the settings header's rule written `padding: 14px 0` again failed › *in the settings density a header with an act keeps the gap before it* (8px expected, 0px read). Each file was restored from a scratchpad copy and touched. Seen red before their code: four `Accordion` tests and both `LoadingBars` tests.
+
 #### Design check
 `READY` — 2026-10-12, on the record `SCR-M01-05 - decisions & self-audit.md` (29,484 bytes) read beside the board `SCR-M01-05 Business Profile - Mobile.dc.html` (142,409 bytes, under the read cap). Three checks on one helper. The first found the record behind the board (four frame counts, no Hindi frame, no 1536 alignment numbers, no word plan, a standing FAIL); the owner's redraw closed every finding. Main then found three product facts wrong against the code — three bank fields where `M06-17` and the contract hold four, a city line saying the city sets the market, a count of typed characters the pack cannot give — and the owner corrected them and redrew the 1536 arrangement in the same pass; the third check found nothing.
 
@@ -4606,6 +4747,8 @@ The board holds twenty frames. Sixteen at 375: `m-default`, `m-loading`, `m-erro
 Noted by the helper and not blocking: three stale board notes and three stale record lines that touch no frame; `Check the format` now reads in the danger tone (record, gap 12).
 
 **Board pictures (2026-10-12).** `qa-web` pictured the twenty frames in the browser pane, into the session's scratchpad as `board/<frame>.png`: the sixteen phone frames 338 × 731 each, one shot at the board's 90%; the four 1536 frames 766 × 500 each, one shot at 50%, the right 2 px of each outside the pane. Main opened `d-default` and `m-bank-open` and they show the right state. A 1536 comparison reads the half-size pictures beside the record's measured positions.
+
+**Second entry — the failed save drawn.** `READY` — 2026-10-12, after part a's commit, on the same record file, `SCR-M01-05 - decisions & self-audit.md` (32,106 bytes), read beside the board (148,156 bytes, under the read cap): the owner drew `m-save-failed` (the task RFC's *Decisions*, 6, now closed). The board holds twenty-one frames — seventeen at 375, the sixteen above and `m-save-failed`; four at 1536. `m-save-failed` keeps everything typed, shows one `role="alert"` line at the act, `Not saved · our end · nothing typed is lost`, with `Try again` first and `Continue without it` second; the settings life shows the same line at `Save changes` with no second act and no frame. It is not `m-failed-save`, the arrival from `SCR-M01-04`'s failed save. Main read the record again when part b began and it holds these twenty-one frames; one board note still says twenty. The pictures of that session are gone with its scratchpad: part c takes all twenty-one again.
 
 #### Runtime
 Branch `feat/T-M01-005`, cut from `feat/T-M01-004c` (`99ed0bcc`, draft PR #283 open, its `quality`, `e2e-web` and `android` checks running) on a clean tree, by the owner's word, 2026-10-12: the walk reads `origin/main`, where `T-M01-004`'s part c is not yet merged.
@@ -4692,6 +4835,51 @@ End state after the reruns: api, web and Metro stopped; the simulator and the em
 | `heliogrid_test` | migrations to `0022`, pack revision 1 | `0023` applied, pack revision 2 published by the api tests; the standing owner `…904`'s profile as it was |
 | runtime logs | `api.log` 23,838,532 · `web.log` 625,691 · `metro.log` 1,876,185 bytes | 24,030,825 · 638,136 · 1,903,806 bytes |
 | test data left in `heliogrid_test` | — | four owners with a company each, made through the app: `…10451` and `…10454` (web), `…10452` (iPhone), `…10453` (Android) |
+| watchers | no `tsx … watch` process | none |
+
+**Part b · Runtime (2026-10-12).** Branch `feat/T-M01-005b`, cut from `origin/main` (`98083f66`) on a clean tree. A light cycle: no stack is prepared.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | one tab opened on the board by Main (`started_by_task`): it met the Claude sign-in page, and Main closed it |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | — |
+| watchers | no `tsx … watch` process | — |
+
+**Part b · QA (2026-10-12)** — no stack: this part makes no call and no built screen draws its components. The one server was the component test page (`3100`), started and stopped by each `test:ct` run.
+
+- **Order.** The reviewer read alone: six findings and six notes in round one, all applied or carried by a deferred row (the settings header lost its gap before an act; the phone's bars ignored reduced motion; a third copy of the phone's pulse, now D205; a stale comment; a dead `quiet` ink; a Hindi test that did not wrap); one finding and one note in round two (the record behind the fixes, a comment the wrong way round); round three read the task file seconds before Main's write landed and was sent again; clean in round four. Then the Evaluator, once.
+- **The gate.** One run of `pnpm check:all`, passed; nothing regenerated. The Evaluator read the end of its output, not the whole: the command chains every stage with `&&` (`package.json:20`) and the last stage ended `invariants green`, so every stage before it passed. The tree's hash was the same before and after the helper.
+- **Main's proofs.** `test:ct` on the two specs: 10 passed on the final code. `pnpm check` exit 0. The invariants green after the `deferred.md` change.
+
+**As proven (part b).**
+
+| row | result | evidence |
+|---|---|---|
+| b1 – b7 | passed | `Accordion.spec.tsx` 8 tests, `LoadingBars.spec.tsx` 2 tests; four planted reds, each by name (*Planted reds seen (part b)*) |
+| side-by-side · the running web, phones and api | not_applicable | as the proof matrix says |
+| the gate | passed | `pnpm check:all`, one run |
+
+**Mistakes found (part b)**, each with the rule that now holds it:
+- The size estimate was 43% under the build (390 planned, 557 built, 615 after review). Part a's record already said to size with room for a review round; the estimate also counted the phone half's styles as if they were the web's. The owner approved the built size; the next part's estimate counts each half's lines on its own line.
+- The settings density's header rule overrode the gap before an act (reviewer). Now `padding-block`, with a test seen red.
+- The phone's bars pulsed under reduced motion where the web's are still (reviewer). The pulse now waits on the setting; the two older copies are D205.
+- A test named for a wrap did not wrap (reviewer). It borrows a sentence long enough and asserts the taller header.
+- A record edit was reported to the reviewer before it was on disk: the write's anchor matched twice and failed. Main now reads a write's result before it reports it.
+
+**Measurements (part b)** — helper runs: one `general-purpose` read of the board's source (128 k), `reviewer` 1 with three continuations (105 k, 121 k, 127 k, 130 k), `evaluator` 1 (24 k); no QA helper; one full gate, passed. Main: about 75 tool-call turns and about 390 k context tokens at the commit card, the walk, the record fetch and the RFC among them. Size: planned 17 files, code about 230, tests about 160; built 17 files, code 380, tests 235.
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | none listening |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| simulator · emulator | none booted | none booted |
+| browser tabs | pane closed | pane closed (the one tab Main opened is closed) |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | unchanged |
 | watchers | no `tsx … watch` process | none |
 
 ### T-M01-006 · Setup — You're Ready

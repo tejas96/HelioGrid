@@ -6,7 +6,8 @@ import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
  * `errors` shows "N to fix" from `errorCount`, sets `aria-invalid` on the header, marks the state
  * word and its dot in the danger tone, and **opens the section** — a system that refuses a save must
  * not then hide which of eight sections to fix (`M07-19`). The section takes no tint: it is a heading
- * on the page, and its body may hold a field (`F7-49`).
+ * on the page, and its body may hold a field (`F7-49`). Every other word reads beside the title
+ * (`standingPlace`), a marked state's with a dot before it.
  */
 export type AccordionItemState = 'default' | 'done' | 'empty' | 'errors';
 
@@ -71,6 +72,17 @@ export function accordionStateWord(item: AccordionItem): string | undefined {
   if (item.state === 'done') return 'Done';
   if (item.state === 'empty') return 'Empty';
   return undefined;
+}
+
+/**
+ * Where the header prints the word. A section in errors says so at the row's end, in the danger
+ * tone; every other standing reads beside the title. Both halves place the word by this one rule,
+ * so a section cannot stand in two places on two platforms.
+ */
+export type StandingPlace = 'title' | 'end';
+
+export function standingPlace(item: AccordionItem): StandingPlace {
+  return item.state === 'errors' ? 'end' : 'title';
 }
 
 /** The marked states only — `default` has no mark, so its word (if any) renders unmarked. */

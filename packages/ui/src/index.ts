@@ -67,6 +67,7 @@ export * from './components/JobTray';
 export * from './components/Kanban';
 export * from './components/LanguageSwitcher';
 export * from './components/ListRow';
+export * from './components/LoadingBars';
 export * from './components/MapSurface';
 export * from './components/MarketProvider';
 export { useFormat } from './components/MarketProvider';
