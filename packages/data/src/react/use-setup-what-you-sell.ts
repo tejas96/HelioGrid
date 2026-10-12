@@ -31,7 +31,7 @@ export interface SetupWhatYouSellStep {
   declareSize(kwp: number): void;
   /** Refuses at the questions still owed; with both answered, saves them and records the step. */
   submit(): void;
-  /** Moves on without the answers; the next sign-in asks for the step again. */
+  /** Opens the next step without the answers; the next sign-in asks for this step again. */
   putOff(): void;
 }
 
@@ -90,7 +90,7 @@ export function useSetupWhatYouSell(): SetupWhatYouSellStep {
         dispatch({ type: 'continue-pressed', stored });
         if (whatYouSellUnanswered(answers).length === 0) mutate(answers);
       },
-      putOff: putOffSetup,
+      putOff: () => putOffSetup('what_you_sell'),
     };
   }, [step, stored, checking, isPending, isError, mutate, putOffSetup]);
 }

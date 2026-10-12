@@ -43,6 +43,6 @@ export function useLanding(phase: SessionPhase): SessionLanding {
 
 /** What is held wins: a later read that fails never sends a person back to a step already answered. */
 function setupReadOf(held: OnboardingProgress | undefined, unanswered: boolean): SetupRead {
-  if (held !== undefined) return { status: 'ready', resumeStep: held.resumeStep };
+  if (held !== undefined) return { status: 'ready', steps: held.steps };
   return { status: unanswered ? 'failed' : 'pending' };
 }

@@ -150,7 +150,7 @@ test('while the stored answers are read the way on waits and says why, and an an
   await expect(cards(page).nth(2)).toBeChecked();
 });
 
-test('a save that fails keeps both answers and offers two ways on; Finish later opens the home, and the step comes back with what was stored', async ({
+test('a save that fails keeps both answers and offers two ways on; Finish later opens the company profile, and the next visit asks for the step again with what was stored', async ({
   page,
 }) => {
   await reachWhatYouSellStep(page, en, freshMobile());
@@ -166,11 +166,12 @@ test('a save that fails keeps both answers and offers two ways on; Finish later 
   await expectNoSeriousViolations(page);
 
   await page.getByRole('button', { name: en.t(SETUP_WHAT_YOU_SELL.finishLater) }).click();
-  await expect(shell(page)).toBeVisible();
+  await expect(nextStep(page)).toBeVisible();
+  await expect(shell(page)).toHaveCount(0);
   await page.unroute(theStepsSave);
 
-  // The profile's write landed and the step's did not: the step is owed again, and the stored
-  // answers fill it.
+  // The profile's write landed and the step's did not, and a put-off lasts for the session: a
+  // fresh load asks for the step again, and the stored answers fill it.
   await page.reload();
   await expect(heading(page)).toBeVisible();
   await expect(cards(page).first()).toBeChecked();

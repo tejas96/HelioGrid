@@ -271,8 +271,9 @@ export function createSessionStore(config: {
     chooseHome(preset) {
       if (snapshot.status === 'authenticated') emit({ ...snapshot, chosenHome: preset });
     },
-    putOffSetup() {
-      if (snapshot.status === 'authenticated') emit({ ...snapshot, setupPutOff: true });
+    putOffSetup(step) {
+      if (snapshot.status !== 'authenticated' || snapshot.setupPutOff.includes(step)) return;
+      emit({ ...snapshot, setupPutOff: [...snapshot.setupPutOff, step] });
     },
     async signOutEverywhere() {
       await config.auth.signOutEverywhere().catch(() => undefined);

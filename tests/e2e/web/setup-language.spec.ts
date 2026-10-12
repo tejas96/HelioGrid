@@ -1,4 +1,4 @@
-import { can, RESEND_SECONDS, ROLE_PRESETS } from '@heliogrid/domain';
+import { can, ROLE_PRESETS } from '@heliogrid/domain';
 import {
   createTranslator,
   LANGUAGE_META,
@@ -10,10 +10,9 @@ import {
 } from '@heliogrid/i18n';
 import { expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
-import { passLanguageStep, reachLanguageStep, requestCode, typeCode } from '../support/door';
+import { passLanguageStep, reachLanguageStep } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
 import { freshMobile } from '../support/phone';
-import { passTheOwnersMark } from '../support/shell';
 
 /**
  * The language step a new owner meets once, straight after the company is made (`SCR-M01-03`,
@@ -182,29 +181,18 @@ test('a language that does not save keeps the step open: the banner shows and th
   expect(stepRecords).toEqual([]);
 });
 
-test('Continue anyway opens the home, and the next sign-in asks for the step again', async ({
+test('Continue anyway opens the next step, and the next visit asks for the language again', async ({
   page,
 }) => {
-  // The number's signup code is seconds old, and a second one is sent only after the resend gap.
-  test.setTimeout(90_000);
-  const mobile = freshMobile();
-  await reachLanguageStep(page, en, mobile);
+  await reachLanguageStep(page, en, freshMobile());
   await page.route(theStepsSave, (route) => route.abort());
   await page.getByRole('button', { name: en.t(SETUP_LANGUAGE.continue) }).click();
   await page.getByRole('button', { name: en.t(SETUP_LANGUAGE.continueAnyway) }).click();
-  await expect(shell(page, en)).toBeVisible();
+  await expect(nextStep(page, en)).toBeVisible();
+  await expect(shell(page, en)).toHaveCount(0);
   await page.unroute(theStepsSave);
 
-  await passTheOwnersMark(page, en);
-  await page
-    .getByRole('button', { name: en.t(SHELL.accountOf, { name: `Owner ${mobile.national}` }) })
-    .click();
-  await page.getByRole('menuitem', { name: en.t(SHELL.signOut) }).click();
-  await expect(page.getByRole('heading', { name: en.t(SIGN_IN.signIn) })).toBeVisible();
-
-  await page.waitForTimeout((RESEND_SECONDS + 1) * 1000);
-  await typeCode(page, en, await requestCode(page, en, mobile));
-  await page.getByRole('button', { name: en.t(SIGN_IN.verifyAndSignIn) }).click();
+  // A put-off lasts for the session and records nothing: a fresh load asks for the step again.
+  await page.reload();
   await expect(heading(page, en)).toBeVisible();
-  await expect(shell(page, en)).toHaveCount(0);
 });

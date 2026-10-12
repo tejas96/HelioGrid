@@ -4464,7 +4464,7 @@ Eleven parts since part c's RFC split c in three, part g's added i and part d's 
 | i | the 1536 arrangement and the letterhead preview: `d-default`, `d-tax-invalid`; the letterhead's address and bank lines as one domain rule (`#### Part i · RFC`) | AC-4 — on the component page | h | shipped |
 | d | the api keeps bank details typed half way: one new field on the profile's own read and write, never on what a document reads (*Decisions*, 5; `#### Part d · RFC`) | AC-3 — on the running api | i | shipped |
 | j | the step owed, the landing, the reads (the profile, the registrations, the market pack) and the save, and the screen on the web and both phones; `Continue` of `SCR-M01-04` opens it (D202); `createCompany` passes the step (`#### Part j · RFC`). Its RFC rules the design check's fifth-entry rows 1 and 20, the lede at a size of 0, and whether a typed half makes the step `completed` | AC-2, AC-4 — on the running apps | d | shipped |
-| k | `Finish later` of `SCR-M01-04` opens the profile without recording its step (D202): a put-off that is per step; the arrival `m-failed-save` on the running apps | AC-4 (`arrived-from-a-failed-save`) — on the running apps | j | open |
+| k | `Finish later` of `SCR-M01-04` opens the profile without recording its step (D202): a put-off that is per step; the arrival `m-failed-save` on the running apps (`#### Part k · RFC`) | AC-4 (`arrived-from-a-failed-save`) — on the running apps | j |shipped |
 | e | the logo: its pointer in the api, the upload from the web and both phones, the limits stated and the refusal (`m-logo-invalid`) | AC-4 (`logo-invalid-limits-stated`) | k | open |
 | f | the settings life inside the shell on the web and both phones: the functional density, `Save changes`, the re-seed scope | AC-4 (`declarations-edited-reseed-scope`, `m-settings`, `d-settings`) | e · the settings list drawn (*Decisions*, 7) | open |
 
@@ -5748,6 +5748,182 @@ Checklist:
 - [x] the live rows: web, iOS, Android, with one api-down window
 - [x] the gate
 
+#### Part k · RFC
+
+##### Title
+`T-M01-005k` — `Finish later` opens the company profile: a setup step is put off one at a time, and the profile says what the step before did not save
+
+##### Description
+**User impact.** An owner whose *What you sell* answers did not save presses `Finish later` and now lands on the company profile, the next step, as the button's own words promise — today they land on the home. The profile says at its top that the two answers were not saved, opens that part, and lets the owner give them there. Indirectly, an owner who gives both answers on the profile is not asked for them again at the next sign-in.
+
+Who gains: every owner whose save fails once, on the web, iOS and Android. The problem: a put-off is one yes-or-no for the whole session (`packages/domain/src/auth/session.ts:112`), so any put-off sends the owner to the home (`packages/domain/src/auth/setup-step.ts:36`), and the arrival the board draws as `m-failed-save` is reached by no running app. Sources: the task RFC (*Decisions*, 9), D202, `M01-23`, `M01-24`, the brief of `SCR-M01-04` (ruling 1), the brief of `SCR-M01-05` (*arrived-from-a-failed-save*, rulings 25, 30, 37), the design record's decisions 5 and 14.
+
+##### Goals
+- `Finish later` on `SCR-M01-04` opens the company profile on the web, iOS and Android and records nothing.
+- The profile reached that way draws `m-failed-save` when the two answers are not stored.
+- A step put off is asked again at the next sign-in; the steps after it are still asked in this session.
+- A save of the profile that sends both answers also records *What you sell* (*Decisions*, 2).
+
+##### Non-goals
+- No change to any word, any component in `packages/ui`, either app's screens, the gate or the guard.
+- No api, contract, schema or migration change.
+- The logo — part e. The settings life — part f. The prompt at the send — `T-M06-022`.
+- A way back to *What you sell* inside the same session: the profile's own part holds the two answers.
+
+##### Readiness and dependencies
+- Parts a, b, c, g, h, i, d and j are merged (`origin/main` at `3b3a3731`). This branch is cut from it.
+- Design check: `READY` stands (`#### Design check`, ninth entry). The record is unchanged since the sixth entry.
+- Not a light cycle: the proof matrix names the web and both phones.
+- The local database is at migration `0024`, as `main`. This part adds none.
+- No blocker.
+
+##### Proposal
+**What testing the requirements found** (`/task` step 2).
+1. **"Per step" also moves the language step.** D202 asks for *a put-off that is per step*. The language step's `Continue anyway` uses the same put-off (`packages/data/src/react/use-setup-language.ts:46`) and opens the home today (`tests/e2e/web/setup-language.spec.ts:185`). Its brief says only that the step is asked again at the next sign-in (ruling 8), and calls the failure *a corridor, not a wall*. One rule for every step is the smaller code; keeping the language step as it is needs a second kind of put-off. → *Decisions*, 1.
+2. **An owner who gives both answers on the profile would be asked for them again.** `Finish later` records nothing, so the company still resumes at `what_you_sell` (`packages/domain/src/tenancy/onboarding-steps.ts:44`). The profile's save writes both answers but records only its own step (`packages/data/src/react/use-company-profile.ts:148`). At the next sign-in *What you sell* opens again, filled in, for nothing. → *Decisions*, 2.
+3. **The same cost is worded two ways** (design check, fifth entry, row 21, owed a ruling by no part until now). `m-failed-save` says `Market defaults until you set these` at the act; the step before says `Until you finish, proposals start without your answers.` Both are drawn, built and tested. → *Decisions*, 3.
+4. **The arrival is already built and proven on the component page** (part h, row h6): the lede, the part that opens itself, `Not declared`, the act's line. The hook already knows the profile was read without the answers (`use-company-profile.ts:107`). This part adds the way in and nothing to the screen.
+5. **With the api down the owner meets the profile's failed read first.** `Finish later` shows only after a failed save. If the api is still down, the profile's other reads fail too and `m-error` is drawn, with `Try again` and `Continue without it`. That is the brief's ruling (*a corridor, not a wall*) and needs no new frame. `m-failed-save` is drawn once the reads answer.
+6. **`Continue without it` on the profile stays as ruled** (the brief's ruling 39): it puts the profile off, no later step has a screen, and the home opens.
+7. **Nothing stored changes shape.** The put-off lives in memory only and ends with the session (`session.ts:108`), so no older app, api or running workflow reads it.
+
+**Flow.**
+1. On `SCR-M01-04` a save fails. `Finish later` puts off `what_you_sell` for this session. Nothing is recorded.
+2. The step asked is now the first step that is neither answered nor put off: `business_profile`. `landingFor` answers `company-profile-step`; the web's gate and the phone's guard draw the profile as they do today.
+3. `useCompanyProfile` reads as today. When the profile holds no answers, `arrivedUndeclared` is true and the words draw `m-failed-save`. When the first save's profile write landed and only its step did not, the part stands `Answered` and the screen is `m-default`.
+4. `Save and continue` writes the profile, then the registrations when they changed, then `what_you_sell` as `completed` when both answers were sent and that step holds no answer, then `business_profile`. The home opens.
+5. `Continue without it` puts off `business_profile` too. No step with a screen is left; the home opens.
+6. At the next sign-in the put-offs are gone. A company that still owes `what_you_sell` is asked for it; after it, the home, because the profile's step is recorded.
+
+**Key decisions.**
+- **The session holds the steps put off, not a yes-or-no** — one reason: the rule *the first step neither answered nor put off* is then one line, and the three hooks each name their own step.
+- **`resumeStep` takes the steps to pass over** (`onboarding-steps.ts`), empty by default, so the api's call is unchanged and the corridor's order is written once (`CLAUDE.md` §8, zero duplication).
+- **The device's read carries each step's answer**, not only where the company resumes: the progress the api answers already holds them (`packages/contracts/src/onboarding.ts:31`).
+- **Domain says whether a save answers the step before** (`whatYouSellAnsweredBy`, `what-you-sell.ts`); the hook sends the step's record before its own (Law 11).
+
+**Order.** Domain's tests, red · the put-off list and the step asked · the save's steps · the store and the hooks · the web flows · review · live rows · the gate.
+
+**Refusals.** None new. Each step write is a whole replace, so `Try again` after a save that failed half way sends every write again.
+
+**The twin.** No screen file changes: both apps call the same three hooks and draw the same `CompanyProfile`.
+
+**Deferred rows this part's files meet** (*Decisions*, 4).
+- D202 (`T-M01-005 starts`) — joins: this part is its fix. The row is deleted in this commit.
+- D203 (`touches packages/data/src/react/use-setup-language.ts`) — stays: its proof is a dropped network on the web and a phone, a drive of its own.
+- D8 (`touches packages/data/src/session/store.ts`) — stays: roles after a token refresh, not setup.
+- D209 (`touches packages/domain/src/tenancy/`) — stays: the account holder's rule in two functions; this part reads neither.
+
+**Decisions** (the owner's; the recommended way first).
+1. **The language step's `Continue anyway`.** It opens *What you sell*, the next step, by the one rule every step now follows — or it still opens the home, and only *What you sell* is put off one step at a time (a second kind of put-off, about 15 more lines).
+2. **Both answers given on the profile.** The save also records *What you sell* as `completed`, so the next sign-in opens the home — or nothing more is recorded, and the next sign-in opens *What you sell* once more, filled in.
+3. **Two wordings of one cost** (row 21). Both stay as drawn: each screen keeps its board's line — or one wording on both, which is one paste-ready prompt for the board that changes and one catalog line.
+4. **Deferred rows.** D202 joins; D203, D8 and D209 stay.
+
+**Ruled by the owner, 2026-10-12, with the approval: the first way of each of the four.**
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  later["Owner: Finish later on What You Sell"] --> store["data: session store, the steps put off"]
+  anyway["Owner: Continue anyway on Language"] --> store
+  without["Owner: Continue without it on the profile"] --> store
+  store --> owed["domain: setupStepOwed, the first step neither answered nor put off"]
+  progress[("api: GET /onboarding/progress, each step's answer")] --> owed
+  owed --> landing["domain: landingFor"]
+  landing --> web["web: SessionGate draws the profile"]
+  landing --> phone["phone: SetupCompanyProfile"]
+  hook["data/react: useCompanyProfile"] --> web
+  hook --> phone
+  steps["domain: whatYouSellAnsweredBy"] --> hook
+  hook --> record[("api: PUT /onboarding/progress, what_you_sell then business_profile")]
+```
+
+##### Package changes
+- `domain` — `auth`: `SessionSnapshot.setupPutOff` becomes the list of steps put off; `SetupRead`'s ready arm carries the steps' answers; `setupStepOwed` takes the list. `tenancy`: `resumeStep` takes steps to pass over; `whatYouSellAnsweredBy` on the folder's index. Imports nothing new.
+- `data` — `SessionStore.putOffSetup` takes the step; `useLanding` hands the steps' answers; the three setup hooks name their step; `useCompanyProfile` sends the steps domain names. No new export.
+- `contracts`, `i18n`, `ui`, `web`, `mobile`, `api` — none.
+- Law 12: no brand, enum, token, route, table or error code is new. The put-off's steps are typed `OnboardingStep`, held by the compiler.
+
+##### Data and schema changes
+None — no stored shape changes. The put-off is held in memory and is gone with the session.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/domain/src/auth/session.ts` | `setupPutOff` is the steps put off | the snapshot's type |
+| modify | `packages/domain/src/auth/session-transitions.ts` | it starts empty | the snapshot's start |
+| modify | `packages/domain/src/tenancy/onboarding-steps.ts` | `resumeStep` passes over the steps handed to it | the corridor's one order |
+| modify | `packages/domain/src/auth/setup-step.ts` | the read's answers; the step asked | the step's one decision |
+| modify | `packages/domain/src/tenancy/what-you-sell.ts` · `index.ts` | built against planned: `whatYouSellAnsweredBy` — whether a write of both answers answers the step put off; planned as a list of steps in `company-profile-draft.ts`, which stands at 277 lines | the step's own rules; one yes-or-no is the smaller shape |
+| modify | `packages/domain/tests/auth/setup-step.test.ts` | rows k-d2 | its test |
+| modify | `packages/domain/tests/auth/session-transitions.test.ts` | row k-d3 | its test |
+| modify | `packages/domain/tests/tenancy/onboarding-steps.test.ts` | row k-d1 | its test |
+| modify | `packages/domain/tests/tenancy/what-you-sell.test.ts` | row k-d4 | the rule's test |
+| modify | `packages/data/src/session/store.ts` · `types.ts` | `putOffSetup(step)` | the one store and its contract |
+| modify | `packages/data/src/react/use-landing.ts` | hands the steps' answers and the list | the landing's hook |
+| modify | `packages/data/src/react/use-setup-language.ts` · `use-setup-what-you-sell.ts` | each puts off its own step | the steps' hooks |
+| modify | `packages/data/src/react/use-company-profile.ts` | puts off its own step; sends the steps the save records | the profile's hook |
+| modify | `tests/e2e/web/setup-what-you-sell.spec.ts` | `Finish later` now opens the profile | the step's spec |
+| add | `tests/e2e/web/company-profile-finish-later.spec.ts` | rows k-c1 to k-c4. Built against planned: `company-profile.spec.ts` stands at 244 lines and four more flows pass 300 | named for the way in it drives (`CLAUDE.md` §8, *Shape*) |
+| modify | `tests/e2e/web/setup-language.spec.ts` | row k-c5 (*Decisions*, 1) | the step's spec |
+| modify | `tests/e2e/support/door.ts` | one helper: reach the profile by `Finish later`; `abortWrites` (review) | the specs' shared way in |
+| modify | `tests/e2e/web/company-profile.spec.ts` | built, not planned (review): its three copies of the aborted write call `abortWrites` | zero duplication (`CLAUDE.md` §8) |
+| modify | `docs/ux/briefs/SCR-M01-04-setup-what-you-sell.md` | ruling 1: `Finish later` opens the profile | the brief owns the screen's facts |
+| modify | `docs/ux/briefs/SCR-M01-03-onboarding-language.md` | ruling 8: where `Continue anyway` goes | the same |
+| modify | `docs/ux/briefs/SCR-M01-05-business-profile.md` | rulings of *Decisions* 2 and 3 | the same |
+| modify | `docs/tasks/deferred.md` | D202 deleted | the register |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, `#### Parts`, the design check's ninth entry, the ledger, part k `shipped` | the task |
+
+##### API and contract changes
+None — no wire boundary changes. The profile's save may now call the landed `PUT /onboarding/progress/what_you_sell`, as the step before does.
+
+##### Risks and rollout
+- **An older phone build.** It keeps the old put-off and opens the home on `Finish later`, as today. Nothing it wrote is read differently.
+- **A save that fails between the two step writes.** *What you sell* is recorded and the profile's step is not: the screen says `Not saved`, and `Try again` sends every write again. Nothing is doubled.
+- **The shared `resumeStep`.** The api calls it with no second value and reads as before; the unit rows hold both calls.
+- **The estimate.** Part j ran 26% over on tests. The size here counts one review round in.
+
+##### Acceptance criteria and proof
+The task's AC-4 (`arrived-from-a-failed-save`) is this part's. AC-1 is `not_applicable` in the task; AC-2 and AC-3 were parts a, c, d, h and j.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| k-d1 the order | main-dev | required | unit | `resumeStep` with `what_you_sell` passed over and unanswered → `business_profile`; with nothing passed over → as before | `packages/domain/tests/tenancy/onboarding-steps.test.ts` |
+| k-d2 the step asked | main-dev | required | unit | `what_you_sell` put off → `business_profile`; `language` put off → `what_you_sell`; `what_you_sell` and `business_profile` put off → none; a step put off that is already answered changes nothing; the read still out → `wait` | `packages/domain/tests/auth/setup-step.test.ts` |
+| k-d3 the session | main-dev | required | unit | the list is empty at the start, after a sign-in and after a sign-out | `packages/domain/tests/auth/session-transitions.test.ts` |
+| k-d4 the step before, answered here | main-dev | required | unit | both answers sent and `what_you_sell` unanswered → yes; a kind or a size missing, a size of 0, or `what_you_sell` already answered → no. The order of the writes is the hook's, proven by k-c1 and k-c3 | `packages/domain/tests/tenancy/what-you-sell.test.ts` |
+| AC-4 · k-m1 Hindi and Marathi | main-dev | required | component page | the arrival in both at 375 and 1536: no sideways scroll, no clipped box, the act on screen — the component is unchanged since part i | `tests/e2e/components/CompanyProfile.what-you-sell.spec.tsx` · `CompanyProfile.wide.spec.tsx` |
+| AC-4 · k-c1 | ci | required | CI `e2e-web` | the step before's profile write aborted → `Finish later` → the profile's heading, no shell, the lede `What you sell · not saved on the last step`, the part open and `Not declared`, the act's line; a kind and a size chosen → the lede and the line turn back; `Save and continue` → the profile's write, `what_you_sell` `completed`, `business_profile`, in order; the home; a reload stays on the home | `tests/e2e/web/company-profile-finish-later.spec.ts` |
+| k-c2 | ci | required | CI `e2e-web` | the same arrival, `Save and continue` with nothing chosen → `business_profile` alone is recorded; the home; a reload opens *What you sell* | the same file |
+| k-c3 | ci | required | CI `e2e-web` | the step's write alone aborted → `Finish later` → the profile with the part `Answered` and the default lede; the save records both steps | the same file |
+| k-c4 | ci | required | CI `e2e-web` | after `Finish later`, `Continue without it` on a failed profile save → the home, no step recorded | the same file |
+| k-c5 | ci | required | CI `e2e-web` | the language step's save aborted → `Continue anyway` → *What you sell*; a reload asks for the language again | `tests/e2e/web/setup-language.spec.ts` |
+| k-c6 | ci | required | CI `e2e-web` | the step before's own flow: `Finish later` opens the profile, not the shell | `tests/e2e/web/setup-what-you-sell.spec.ts` |
+| AC-4 · w1 | qa-web | required | web 375 and 1536, `api stopped` | sign up; at the language step the api is stopped; `Continue`, `Continue anyway` → *What you sell*; answer, `Continue` → not saved; `Finish later` → the profile's failed read; the api started, `Try again` → the arrival; a kind and a size, `Save and continue` → the home; the three `PUT`s 200 in order; a reload asks for the language once more, the step put off at the start, and `Continue` there opens the home with no other step asked (corrected in QA: the row first said the reload stays on the home) | the destinations, the log's slice |
+| AC-4 · side-by-side web | qa-web | required | web 375 and 1536 | `m-failed-save` at 375 against its phone frame; at 1536 against the phone frame and the record's 1536 rule (*Not drawn at 1536*, failed save) | one picture pair per width |
+| AC-4 · i1 | qa-ios | required | iOS, `api stopped` | the w1 journey on the iPhone → the home | the destinations, the log |
+| AC-4 · side-by-side iOS | qa-ios | required | iOS | `m-failed-save` (en) against the board | one picture pair |
+| AC-4 · n1 | qa-android | required | Android, `api stopped` | the w1 journey on the emulator; no frame compared | the destinations, the log, logcat |
+| api rows | — | not_applicable | — | no route, contract shape or stored shape changes; the one route the profile newly calls is driven by w1, i1 and n1 | — |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part: **about 21 files** and five docs.
+- **Code: about 110 authored lines** — domain 60 (the list and the step asked 35, the save's steps 25), data 50 (the store 10, the hooks 40).
+- **Tests: about 300 authored lines** — domain 110, the web flows 170, the helper 20.
+- About 410 in all. No smaller part can be accepted alone: the put-off without the hooks moves nobody, and the flows are the proof.
+- Order: as *Proposal*.
+
+Checklist:
+- [x] domain: the order, the step asked, the session's list, their tests, red first
+- [x] domain: the save's steps and its test, red first
+- [x] data: the store, the landing, the three hooks
+- [x] the web flows and the helper
+- [x] the briefs and the deferred row
+- [x] review
+- [x] the live rows: web, iOS, Android, in one api-down window
+- [x] the gate
+
 #### Design check
 `READY` — 2026-10-12, on the record `SCR-M01-05 - decisions & self-audit.md` (29,484 bytes) read beside the board `SCR-M01-05 Business Profile - Mobile.dc.html` (142,409 bytes, under the read cap). Three checks on one helper. The first found the record behind the board (four frame counts, no Hindi frame, no 1536 alignment numbers, no word plan, a standing FAIL); the owner's redraw closed every finding. Main then found three product facts wrong against the code — three bank fields where `M06-17` and the contract hold four, a city line saying the city sets the market, a count of typed characters the pack cannot give — and the owner corrected them and redrew the 1536 arrangement in the same pass; the third check found nothing.
 
@@ -5800,6 +5976,8 @@ Noted by the helper and not blocking: three stale board notes and three stale re
 **Seventh entry — part d (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part d began: twenty-one frames, seventeen at 375 and four at 1536, and the three corrections of the sixth entry stand in it (`needs 2 MB or less`; `m-failed-save` at 3 lines and 21 words). Part d draws no frame, so the board was not fetched and no picture was taken; part j, the first part that draws on a running app, reads the board again. The fifth entry's rows 1 and 20, named for part d, are part j's: they rule what the screen's save sends.
 
 **Eighth entry — part j (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part j began: twenty-one frames, seventeen at 375 and four at 1536; `needs 2 MB or less` and `m-failed-save` at 3 lines and 21 words stand in it, so nothing changed since the sixth entry and no helper ran. Part j takes the fifth entry's rows 1 and 20; its RFC rules both (*Decisions*, 1 and 2). The board's source is fetched and the frames this part compares are pictured after the RFC is approved and before the first edit: `m-default`, `m-address-open`, `m-tax-invalid`, `m-bank-open`, `m-declarations-open`, `m-save-failed`, `d-default`, `d-tax-invalid`.
+
+**Ninth entry — part k (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part k began: twenty-one frames, seventeen at 375 and four at 1536; `needs 2 MB or less` and `m-failed-save` at 3 lines and 21 words stand in it, and its decision 5 names `Finish later` as the second way in. Nothing changed since the sixth entry, so no helper ran. Part k takes the fifth entry's row 21; its RFC puts it to the owner (*Decisions*, 3). The board's source is not fetched: this part draws nothing new, and the frame's numbers were read for part h. `m-failed-save`, the one frame this part compares, is pictured before QA, into the scratchpad as `board/m-failed-save.png`.
 
 #### Runtime
 Branch `feat/T-M01-005`, cut from `feat/T-M01-004c` (`99ed0bcc`, draft PR #283 open, its `quality`, `e2e-web` and `android` checks running) on a clean tree, by the owner's word, 2026-10-12: the walk reads `origin/main`, where `T-M01-004`'s part c is not yet merged.
@@ -6308,6 +6486,65 @@ End state after the reruns: api, web and Metro stopped; the simulator and the em
 | watchers | no `tsx … watch` process | none |
 
 Left on `heliogrid_test` by this part: eight companies made through the app — `…10571`, `…10574`, `…10561` (web), `…10572`, `…10575`, `…10472` (iPhone), `…10573`, `…10473` (Android); the three *QA Part D* companies of the surfaces now have their step recorded.
+
+**Part k · Runtime (2026-10-12).** Branch `feat/T-M01-005k`, cut from `origin/main` (`3b3a3731`, part j merged as #294) on a clean tree.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | — |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 24,884,867 · `web.log` 685,290 · `metro.log` 2,039,529 bytes | — |
+| watchers | no `tsx … watch` process | — |
+
+**Part k · QA (2026-10-12)** — one stack on `heliogrid_test` (migrations at `0024`, the pack stored): the api, the web and Metro from source (`api`, `web`, `mobile-metro` launch configurations, `started_by_task`), the iPhone 17 Pro simulator and the `Pixel_8_Emulator` booted by Main, on the apps already installed — no native file changed, so nothing was rebuilt. Main cold-started both apps and saw Metro serve each a bundle before the helpers ran.
+
+- **Order.** The reviewer alone: two should-fix items and three notes in round one (the flows heard the step records apart from the profile's write, so the promised order was not held; a doc line and a comment in the hook said less than the code; the unit row worded as a list; the aborted write written three times), all applied; clean in round two. Then `qa-web`, `qa-ios` and `qa-android` together, in three groups around one api-down window: a new company to the language step; the api stopped — `Continue anyway`, the answers, `Finish later`, the profile's failed read; the api started — `Try again`, the arrival, both answers, the save.
+- **Reds seen (part k).** The four domain test files were written before the code and failed by name, 19 rows: *passes over … put off for the session and asks for …* (4), *still waits for the read with a step put off*, the five older `setupStepOwed` rows on the read's new shape, *with … put off it resumes at …* (2), *is closed when every step left is put off*, *drops a setup step put off for the session…*, and the five `whatYouSellAnsweredBy` rows. No money, tenancy or permission rule changed, so no red was planted after the code.
+- **Main's own proofs.** `pnpm check` exit 0 on the final code (11 related test files, 283 tests).
+- **The mutation guard.** The tree's hash was the same before and after the helpers (`c172cb09675184bd`).
+- **A wrong row, Main's.** Row w1 said a reload after the save stays on the home. The journey put the language step off at its start, so the reload asks for the language again; `qa-web` reported the row failed, Main corrected the expected result, and the helper's one retry passed: `Continue` there records the step and opens the home with no other step asked.
+- **Seen in QA, outside this part's rows.** At 1536 with *What you sell* open the act stands below a 900 px window's first screen (y 997): the list is as long as its parts and the act follows it, as part i built it. The letterhead holds no line for the two answers, so nothing in it changes on this frame. `qa-web` drove the save at 1,188 px wide: the pane changed width mid-row.
+- **Board frame.** Main pictured `m-failed-save` in the pane, the board at 50%, 158 × 332, into the scratchpad as `board/m-failed-save.png`, and set it beside the web's 375 and 1536 pictures and the iPhone's, one image each (`qa/pairs/`). Every difference is a ruled one: no tint band behind the errored header (`docs/tasks/UI.md`, the `Accordion` row), the option cards as flat grey tiles, the phone chrome.
+
+**As proven (part k).**
+
+| row | result | evidence |
+|---|---|---|
+| k-d1 · k-d2 · k-d3 · k-d4 | passed | the four domain test files, red first by name, green on the code |
+| AC-4 · k-m1 | passed in CI's `e2e-web` lane | the component is unchanged since part i; its specs run there |
+| k-c1 to k-c6 | owed to CI's `e2e-web` lane | the three specs; never run locally |
+| AC-4 · w1 | passed on its one retry | `qa-web`, `…10581`: `Continue anyway` → *What you sell*; `Finish later` → the profile's failed read; `Try again` → the arrival; the three `PUT`s 200 in order (`c159239d`, `57d576e3`, `716992f3`); the corrected reload |
+| AC-4 · side-by-side web | passed | `qa/web-375-m-failed-save.png`, `qa/web-1536-m-failed-save.png`; ruled differences alone |
+| AC-4 · i1 | passed | `qa-ios`, `…10583`: the same journey; the three `PUT`s 200 in order; the home |
+| AC-4 · side-by-side iOS | passed | `qa/ios-m-failed-save.png`; ruled differences alone |
+| AC-4 · n1 | passed | `qa-android`, `…10584`: the same journey; the three `PUT`s 200 in order (`eb194165`, `55db709d`, `e563d94e`); no fatal line in logcat |
+
+Left on `heliogrid_test` by this part: three companies made through the app — *QA Part K Web* (`…10581`), *QA Part K iOS* (`…10583`), *QA Part K Android* (`…10584`). The iPhone's and Android's still owe the language step, put off in the journey.
+
+**The gate (part k).** `pnpm check:all` passed on its first run, read to the end by the Evaluator: 223 test files, 3,999 tests; the invariants green with no SKIP or VACUOUS line; nothing regenerated.
+
+**Mistakes found (part k)**, each with the rule that now holds it:
+- Main put the RFC into the task by the first match of `#### Design check`, which is also quoted inside the task's own description, so the text landed mid-sentence (Main, at once, before the RFC was shown). The file was restored and the heading matched as a whole line; no rule is added — the second insert asserts one match.
+- QA row w1 expected the home after a reload though its own journey had put the language step off (`qa-web`). The row is corrected in the RFC. A journey row that puts a step off now says what the next visit asks for; `.claude/skills/task/references/qa.md` holds the retry that caught it.
+- The web flows heard the step records apart from the profile's write, so the order the RFC promised was not held (reviewer). One listener now collects every write in order.
+- The ninth design-check entry first said the board is pictured before the first edit; the board showed an error line on its first load and was pictured before QA. The entry says what was done.
+
+**Measurements (part k)** — helper runs: `reviewer` 1 with one continuation (122 k, 130 k), `qa-web` 1 with three continuations (41 k, 53 k, 69 k, 72 k), `qa-ios` 1 with two (37 k, 48 k, 58 k), `qa-android` 1 with two (31 k, 36 k, 49 k), `evaluator` 1 (29 k); no `design-check` run and no `qa-api` row; one full gate, passed. Main: about 75 tool-call turns and about 383 k context tokens at the commit card, the walk, the record fetch and the RFC among them. Size: planned about 21 files, code about 110, tests about 300; built 21 files and five docs, code 87 authored lines (60 added, 27 removed), tests 327 (272 added, 55 removed).
+
+**Teardown (part k).**
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` | none listening | none listening — each started through its launch configuration and stopped by its preview id; the api stopped and started once more for the api-down window |
+| Postgres · object store · Temporal | running (`pre_existing`) | running, untouched |
+| simulator · emulator | none booted | none booted — iPhone 17 Pro (`40ED0117-…`) shut down, `emulator-5554` killed |
+| browser tabs | pane closed | the board's tab closed |
+| database routing | `heliogrid_test` / `heliogrid_test` | the same; never changed |
+| runtime logs | `api.log` 24,884,867 · `web.log` 685,290 · `metro.log` 2,039,529 bytes | 25,070,751 · 700,953 · 2,054,268 bytes, kept |
+| watchers | none | none |
 
 ### T-M01-006 · Setup — You're Ready
 **Type:** screen · **Tier:** P0

@@ -158,6 +158,34 @@ export async function reachCompanyProfileStep(
   return company;
 }
 
+/** Every write to `pattern` fails from here on, as with no answer; its reads still pass. */
+export async function abortWrites(page: Page, pattern: string): Promise<void> {
+  await page.route(pattern, (route) =>
+    route.request().method() === 'PUT' ? route.abort() : route.continue(),
+  );
+}
+
+/**
+ * A new number to the company profile by the step before's second way on: its save fails at
+ * `failing` — a route pattern, aborted for a write and lifted again here — and `Finish later`
+ * opens the profile with that step unrecorded. The profile is read and nothing is typed there.
+ */
+export async function reachCompanyProfileByFinishLater(
+  page: Page,
+  t: Translator,
+  mobile: Mobile,
+  failing: string,
+): Promise<void> {
+  await reachWhatYouSellStep(page, t, mobile);
+  await abortWrites(page, failing);
+  await answerWhatYouSell(page, t);
+  await page.getByRole('button', { name: t.t(SETUP_LANGUAGE.continue) }).click();
+  await page.getByRole('button', { name: t.t(SETUP_WHAT_YOU_SELL.finishLater) }).click();
+  await page.unroute(failing);
+  await expect(page.getByRole('heading', { name: t.t(COMPANY_PROFILE.title) })).toBeVisible();
+  await expect(companyProfileAct(page, t)).not.toHaveAttribute('aria-disabled', 'true');
+}
+
 /** The company profile's one act, `Save and continue`: it waits while the profile is read. */
 export function companyProfileAct(page: Page, t: Translator) {
   return page.getByRole('button', { name: t.t(COMPANY_PROFILE.saveSpoken) });

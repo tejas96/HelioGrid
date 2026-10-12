@@ -11,6 +11,7 @@ import {
 import { expect, type Page, type Request, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import {
+  abortWrites,
   companyProfileAct,
   passWhatYouSellStep,
   reachCompanyProfileStep,
@@ -177,9 +178,7 @@ test('a save that fails keeps what was typed and says so once; Try again saves i
   page,
 }) => {
   await reachCompanyProfileStep(page, en, freshMobile());
-  await page.route(theProfile, (route) =>
-    route.request().method() === 'PUT' ? route.abort() : route.continue(),
-  );
+  await abortWrites(page, theProfile);
   await part(page, 'address').click();
   await street(page).fill('Plot 14, Baner Road');
   await companyProfileAct(page, en).click();
@@ -202,9 +201,7 @@ test('a save that lands half way is sent again whole: the profile is stored, the
   page,
 }) => {
   await reachCompanyProfileStep(page, en, freshMobile());
-  await page.route(theRegistrations, (route) =>
-    route.request().method() === 'PUT' ? route.abort() : route.continue(),
-  );
+  await abortWrites(page, theRegistrations);
   await part(page, 'tax').click();
   await taxNumber(page).fill(WELL_FORMED);
   await companyProfileAct(page, en).click();
@@ -226,9 +223,7 @@ test('after a failed save, Continue without it opens the home with nothing writt
   page,
 }) => {
   await reachCompanyProfileStep(page, en, freshMobile());
-  await page.route(theProfile, (route) =>
-    route.request().method() === 'PUT' ? route.abort() : route.continue(),
-  );
+  await abortWrites(page, theProfile);
   await part(page, 'address').click();
   await street(page).fill('Plot 14, Baner Road');
   await companyProfileAct(page, en).click();

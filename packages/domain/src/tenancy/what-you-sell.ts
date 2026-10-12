@@ -1,3 +1,4 @@
+import type { StepStates } from './onboarding-steps';
 import type { TenantSegment } from './segment';
 
 /**
@@ -36,6 +37,15 @@ export function columnHoldsTypicalSystemSize(kwp: number): boolean {
   return (
     kwp <= TYPICAL_SYSTEM_KWP.ceiling && Number(kwp.toFixed(TYPICAL_SYSTEM_KWP.precision)) === kwp
   );
+}
+
+/**
+ * Whether a write of both answers from another screen answers this step too: only while the step
+ * holds no answer, as after `Finish later`. Left unrecorded, the next sign-in would ask for
+ * answers the company already gave.
+ */
+export function whatYouSellAnsweredBy(sent: WhatYouSellAnswers, steps: StepStates): boolean {
+  return steps.what_you_sell === undefined && whatYouSellUnanswered(sent).length === 0;
 }
 
 /** The questions still owed, in the screen's order — where `Continue` refuses. */

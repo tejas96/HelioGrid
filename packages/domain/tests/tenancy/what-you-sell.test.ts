@@ -7,6 +7,7 @@ import {
   type WhatYouSellAnswers,
   type WhatYouSellEvent,
   whatYouSellAfterRead,
+  whatYouSellAnsweredBy,
   whatYouSellAnswers,
   whatYouSellRefused,
   whatYouSellStep,
@@ -195,5 +196,22 @@ describe('whatYouSellStep — the step as a device holds it until Continue', () 
     const step = stepAfter(pressed, kind, size, pressed);
     expect(whatYouSellRefused(step, null)).toEqual([]);
     expect(step.refusals).toBe(1);
+  });
+});
+
+describe('whatYouSellAnsweredBy — a later write of both answers answers the step put off', () => {
+  const both: WhatYouSellAnswers = { segment: 'residential', typicalSystemKwp: 5 };
+
+  it('answers the step when both answers are sent and the step holds no answer', () => {
+    expect(whatYouSellAnsweredBy(both, { language: 'completed' })).toBe(true);
+  });
+
+  it.each([
+    { sent: { ...both, segment: null }, steps: {}, why: 'no kind is sent' },
+    { sent: { ...both, typicalSystemKwp: null }, steps: {}, why: 'no size is sent' },
+    { sent: { ...both, typicalSystemKwp: 0 }, steps: {}, why: 'a size of 0 is no declaration' },
+    { sent: both, steps: { what_you_sell: 'completed' }, why: 'the step is already answered' },
+  ] as const)('does not when $why', ({ sent, steps }) => {
+    expect(whatYouSellAnsweredBy(sent, steps)).toBe(false);
   });
 });

@@ -1,5 +1,6 @@
 import type { RolePreset } from '../authz/roles';
 import type { UiLanguage } from '../format/languages';
+import type { OnboardingStep } from '../tenancy/onboarding-steps';
 import type { OtpVerifyOutcome } from './login-state';
 
 /**
@@ -106,10 +107,10 @@ export interface SessionSnapshot {
    */
   chosenHome: RolePreset | null;
   /**
-   * The person went past a setup step whose answer did not save. Held in memory only and gone
-   * with the session, so the next sign-in asks for the step again.
+   * The setup steps the person went past without an answer saved. Held in memory only and gone
+   * with the session, so the next sign-in asks for each again.
    */
-  setupPutOff: boolean;
+  setupPutOff: readonly OnboardingStep[];
   /** Set when the server removed this person's access: held while signed in, else at the door. */
   ended: EndedAccess | null;
   /**

@@ -39,10 +39,16 @@ export type PromptPointStates = Readonly<Partial<Record<PromptPointFact, PromptP
 
 /**
  * Where a returning owner resumes (`M01-10`): the first step neither completed nor skipped, in
- * sequence; `null` once every step is answered — the corridor is closed and never reopens.
+ * sequence; `null` once every step is answered — the corridor is closed and never reopens. A
+ * session passes over the steps it put off: they stay unanswered, so the next sign-in asks again.
  */
-export function resumeStep(states: StepStates): OnboardingStep | null {
-  return ONBOARDING_STEPS.find((step) => states[step] === undefined) ?? null;
+export function resumeStep(
+  states: StepStates,
+  putOff: readonly OnboardingStep[] = [],
+): OnboardingStep | null {
+  return (
+    ONBOARDING_STEPS.find((step) => states[step] === undefined && !putOff.includes(step)) ?? null
+  );
 }
 
 /** A step's answer, recorded; answering again replaces it, so a skipped step may still be completed. */
