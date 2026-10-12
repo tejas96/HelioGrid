@@ -57,6 +57,11 @@ export const UNREAD_GLYPH: readonly GlyphMark[] = [
 /** The glyph's drawn size, as `m-error` draws it inside the message's disc. */
 export const UNREAD_GLYPH_SIZE = 28;
 
+/** The bloom behind the letterhead's sheet (`d-default`): art, never layout. */
+export const LETTERHEAD_BLOOM_SIZE = 760;
+/** The lines of a letter under the letterhead, as `d-default` draws them: two paragraphs of bars. */
+export const LETTER_PARAGRAPHS = [4, 2] as const;
+
 /** One field of a part: what it asks, what it holds, and the line a reader depends on under it. */
 export interface ProfileFieldSpec {
   readonly field: CompanyProfileField;

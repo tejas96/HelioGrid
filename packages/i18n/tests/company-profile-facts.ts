@@ -16,6 +16,12 @@ export const AT_SIGNUP: CompanyProfileWordFacts = {
   taxIdLabel: 'GSTIN',
   taxFormat: '15 characters · like 27ABCDE1234F1Z5',
   bankRoutingLabel: 'IFSC',
+  letterhead: {
+    companyName: 'Suryodaya Solar Solutions Pvt Ltd',
+    addressLine: 'Pune',
+    registration: null,
+    bank: null,
+  },
 };
 
 /** The same company with one part standing elsewhere. */

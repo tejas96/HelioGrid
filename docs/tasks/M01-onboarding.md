@@ -4418,8 +4418,9 @@ flowchart LR
   pack[("api: GET /market-packs, pack.tax (a)")] --> hook
   files[("api: POST /files, the logo pointer (e)")] --> logo["data/react: the logo upload (e)"]
   logo --> screens
-  rules["domain: where a part stands, what a save writes (c)"] --> hook
-  words["i18n: companyProfileWords (c)"] --> ui["ui: CompanyProfile (g, h, i)"]
+  rules["domain: where a part stands, what a save writes (c), the letterhead's lines (i)"] --> hook
+  rules --> words
+  words["i18n: companyProfileWords (c, i)"] --> ui["ui: CompanyProfile (g, h, i)"]
   screens --> ui
   ui --> parts["ui: Accordion flat form, LoadingBars (b)"]
   more["shell: the settings list under More (f)"] --> screens
@@ -4460,7 +4461,7 @@ Nine parts since part c's RFC split c in three and part g's added i (`#### Parts
 | c | the rules and the words: domain's rules for where a part stands and what a save writes; every word of the setup life in three languages (`#### Part c · RFC`) | AC-2 (the format line is the pack's; a malformed registration is never written and never stops the save) — by unit test | b | shipped |
 | g | the shared component at 375 and on the phone: `CompanyProfile` in `packages/ui` — the frame, the list, the act, loading, a failed read, a failed save, the name, address and bank field sets (`#### Part g · RFC`) | AC-4 — on the component page | c | shipped |
 | h | the shared component, second half: the tax and what-you-sell field sets, the arrival from a failed save (`m-failed-save`), the Hindi and Marathi renders (`#### Part h · RFC`) | AC-2 (the format explained, the act live), AC-4 — on the component page | g | shipped |
-| i | the 1536 arrangement and the letterhead preview: `d-default`, `d-tax-invalid` (`#### Part g · RFC`, *Decisions*, 1) | AC-4 — on the component page | h | open |
+| i | the 1536 arrangement and the letterhead preview: `d-default`, `d-tax-invalid`; the letterhead's address and bank lines as one domain rule (`#### Part i · RFC`) | AC-4 — on the component page | h | shipped |
 | d | the step owed, the landing, the reads and the save, and the screen on the web and both phones; `SCR-M01-04`'s ways on open it (D202); half-typed bank details kept, as a new field on the profile's read and write (*Decisions*, 5); `createCompany` passes the step | AC-2, AC-4 — on the running apps | i | open |
 | e | the logo: its pointer in the api, the upload from the web and both phones, the limits stated and the refusal (`m-logo-invalid`) | AC-4 (`logo-invalid-limits-stated`) | d | open |
 | f | the settings life inside the shell on the web and both phones: the functional density, `Save changes`, the re-seed scope | AC-4 (`declarations-edited-reseed-scope`, `m-settings`, `d-settings`) | e · the settings list drawn (*Decisions*, 7) | open |
@@ -5188,6 +5189,167 @@ Checklist:
 - [x] the side-by-side
 - [x] the gate
 
+#### Part i · RFC
+
+##### Title
+`T-M01-005i` — The company profile on a wide screen: the list on the left at its own measure, the act at its natural width, and a letterhead preview on the right that fills as the owner types
+
+##### Description
+**User impact.** None yet — no app draws this until part d. On a laptop the owner will see the same five parts on the left and, on the right, a calm picture of the letterhead the profile builds: the company name, the address, the tax registration and the bank. Each line fills as its field is typed, and a mistyped tax number shows there in red, where it would sit on a document. Indirectly, the owner sees what each part is for while filling it, and nothing is learnt twice: the list, the words and the one act are the phone's.
+
+Who gains: part d, which mounts the component on the web. The problem: from 968 px `CompanyProfile` sits in `DoorFrame`'s two fields — the title left, the task right (`packages/ui/src/components/DoorFrame/DoorFrame.css:223`) — where `d-default` and `d-tax-invalid` put everything left and a preview right; the act is always full width (`CompanyProfile.tsx:87`); the ui contract holds no `letterhead` words, which i18n already returns (`packages/i18n/src/copy/company-profile-words.ts:185`); and no rule says what the letterhead's address line and bank line read. Sources: the task RFC, the brief's rulings 10 and 17, the record's word plan (*What the profile builds*), its *1536 arrangement*, *Not drawn at 1536* and list 4, the board's source, and `#### Design check`'s fifth entry, rows 8–13 and 23.
+
+##### Goals
+- From the door's breakpoint the web half draws `d-default` and `d-tax-invalid`: wordmark, heading, list and act on one left edge at a 600 measure, the act at its natural width, the preview in its own track.
+- The letterhead shows only what the fields hold: the name, one address line, the registration as typed, one bank line; an empty bar for a part with nothing.
+- The address line and the bank line are one domain rule, written once and unit-tested.
+- Every state with no 1536 frame follows the record's stated rule (*Not drawn at 1536*).
+- One prop contract, both halves; the phone half draws no preview and changes in nothing but its types.
+
+##### Non-goals
+- The logo's capture area, its 1536 hint and the logo tile's image — part e (rows 8 and 11); the tile reads `Logo`.
+- `d-settings` and its filled sample — part f. `d-prompt` — `T-M06-022`.
+- No change to `DoorFrame`, `Accordion`, `Button`, `BrandBloom` or `LoadingBars`.
+- No hook, no read, no save, no screen in an app — part d.
+- No second breakpoint and no new token (*Decisions*, 1 and 4).
+
+##### Readiness and dependencies
+- Parts a, b, c, g and h are merged (#284, #287, #288, #289, #290); the board sweep is merged (#291). This branch is cut from `origin/main` (`d043fcd3`).
+- Design check: `READY` stands (`#### Design check`, sixth entry); Main pictured `d-default` and `d-tax-invalid`.
+- `light cycle`: the proof matrix names the component page (`3100`) and no web, phone or api surface — no built screen draws `CompanyProfile`.
+- No blocker.
+
+##### Proposal
+**What testing the requirements found** (`/task` step 2).
+1. **The door's frame cannot draw this arrangement, and one screen asks for it.** `DoorFrame.css` is 297 lines and has one caller for an editor beside a preview. So the arrangement is `CompanyProfile`'s own: its stylesheet re-places the frame's slots from the breakpoint under its own class, and the preview is a sibling of the frame. A new `DoorFrame` arrangement would be configuration for one caller (`CLAUDE.md` §8) and a split of its stylesheet; `d-settings` sits in the shell, not the door, so no second caller is coming.
+2. **No frame says what happens between 968 and 1536.** The board's tracks are `minmax(0,1fr)` and 672: at 968 the editor would be 296 wide with 96 of padding each side. D26 holds that a second breakpoint is the owner's ruling. → *Decisions*, 1.
+3. **No rule joins the street, the city and the PIN code** (row 10). `d-default` reads `Pune`; `d-settings` reads `Plot 14, Baner Road, Pune 411045`. A PIN code with no street is not drawn. → *Decisions*, 2.
+4. **No rule or word makes the bank line** (row 9). `d-settings` reads `HDFC Bank · account ending 4821`; the setup life reaches it as soon as the bank part is typed at 1536 (*the preview filling the matching line*). Half-typed bank details (ruling 17) are not drawn. → *Decisions*, 3.
+5. **Seven sizes of the preview are off the spacing scale** (row 13): the card's gap 28, the bars 10 high with 10 between them, the editor's top padding 56; and three are the drawing's own — the tile 56, the card 440, the bar 140. AC-4 asks for no off-scale value. → *Decisions*, 4.
+6. **A malformed number is drawn on the letterhead as typed, in the danger tone** (row 23, `d-tax-invalid`); a well-formed one in the primary ink (`d-settings`); both mono. Built so: the domain rule says whether it reads as the market's format.
+7. **The board's list scrolls inside a fixed 1000 px frame.** A real window scrolls the page: the editor is the page, and the preview is held to the window's height beside it.
+8. **Four states have no 1536 frame; the record states each rule.** *Loading*: the list's bars, and the letterhead's bars sweeping with them. *A failed read*: no preview — the same centred message, with the way on under it. *A failed save*: the same line at the same act — the alert above, `Try again` then `Continue without it` side by side at their natural widths. *Skipped*: one line changed. The act's one line stands beside the act, as `d-settings` draws the re-seed line.
+9. **The board draws the page in `--canvas`; the door's page is `--surface`** (`DoorFrame.css:22`). Both are white (`packages/theme/src/_generated/tokens/colors.css:39`, `:45`). Nothing to build.
+
+**Flow.**
+1. The screen (part d) builds `companyLetterhead(facts, tax)` in domain: the name, the address line, the registration with whether it reads well, the bank line's two facts or none.
+2. `companyProfileWords` takes it as a fact and returns `words.letterhead`: the overline, the logo word, the name, the address line, the tax label with its value and tone, the bank label with its line.
+3. The web half draws `<div class="hg-company-profile">` holding the `DoorFrame` and an `aria-hidden` preview. Under the breakpoint the preview is not drawn and nothing else changes.
+4. A line with nothing to show is a bar. While `words.loading` is set every line is a bar and the bars sweep. With `words.unread` there is no preview.
+
+**Key decisions.**
+- **The lines are domain's, the words i18n's, the drawing ui's.** `packages/ui` holds no product logic, so it joins nothing: it draws `words.letterhead`.
+- **The account's last four letters and digits, whatever separates them as typed**; a shorter number shows whole. The line appears only when domain's `bankDetailsHeld` holds all four facts (*Decisions*, 3).
+- **The preview is a grey field holding one white sheet and no control**, so it is no tile and joins no ground list (`packages/ui/CLAUDE.md`); the sheet's white carries its `biome-ignore` with the reason, as `LoadingBars` does. The bloom is `BrandBloom`'s art placement.
+- **The markup stays in `CompanyProfile.tsx`** while the file is under 300 lines; past it, the preview takes `CompanyProfileLetterhead.tsx` and the file table says so.
+- **The breakpoint is the door's 968, written as the door writes it**; D26 gains this stylesheet's name.
+
+**Order.** The domain rule's test, red · the rule · the words' test, red · the words and the one message · the wide spec, red, frame by frame · the contract · the web half and its stylesheet · the story · Main's pictures · review · the side-by-side · the gate.
+
+**Refusals.** None — this part makes no call.
+
+**The twin.** The phone half takes the same contract and draws no preview: a phone has no wide arrangement, as it reads no `taskMeasure`.
+
+**Deferred rows this part's files meet.** D2 and D92 (`touches packages/ui/src/components/`) — stay, as ruled in parts b, g and h. D26 — stays; its text gains `CompanyProfile.css`. D102 and D109 name `DoorFrame/`, which this part does not touch. No other row's cell names a file of this part.
+
+**Decisions** (the owner's; the recommended way first).
+1. **Between 968 and 1536.** Both halves from 968, sized from the board's own 1536 numbers as shares of the window — the preview's track 44% of it, never under 472 nor over 672; the editor's side padding 6.25% of it, never under 32 nor over 96 — so 1536 is the board exactly and no breakpoint is added — or the preview appears only from a second breakpoint (about 1280), which is D26's design-system ruling first.
+2. **The address line.** The street when there is one, then the city and the PIN code: `Plot 14, Baner Road, Pune 411045`; with no street, `Pune 411045` — or the PIN code is shown only once the street is.
+3. **The bank line.** Shown only when all four bank facts are held, as the part's `Added` is (ruling 17): `HDFC Bank · account ending 4821`, one new message in three languages; until then a bar — or shown as soon as the bank name and the account number are typed.
+4. **The off-scale sizes.** The nearest token for each: 28 → `sp-6`, the bars 10 → `sp-2` high and `sp-2` apart, the top padding 56 → `sp-12`; the tile 56, the card 440 and the bar 140 stay as the drawing's own sizes, as `LoadingBars` keeps 56 and 188 — or the design system gains the sizes first and this part waits for the pull.
+5. **The size.** One part, about 23 files and 850 lines, inside the target.
+
+**Ruled by the owner, 2026-10-12, with the approval: the first way of each of the five.** The brief holds the first four as rulings 31–34.
+
+##### Architecture diagram
+One new edge inside the task diagram: `domain: … (c, i)` → `i18n: companyProfileWords (c, i)` → `ui: CompanyProfile (g, h, i)`. See the task diagram.
+
+##### Package changes
+- `domain` — new on the index: `companyLetterhead`, `CompanyLetterhead`. It formats what a screen is handed and computes no money figure, so it stays on the device entry.
+- `i18n` — `CompanyProfileWordFacts` gains `letterhead`; `CompanyProfileWords['letterhead']` gains the name, the address line, the tax value with its tone and the bank line; one new message.
+- `ui` — `CompanyProfileWords` gains `letterhead`. No new export name, no new dependency.
+- Law 12: no brand, enum, token, route, table or error code is new. The new message joins the catalogs, held by `check:catalogs`. `CompanyProfile` has no design-system contract, so `design-system-props` skips it — said in part g, unchanged. A raw size in a `packages/ui` stylesheet is held by review alone — said here.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/domain/src/tenancy/company-profile.ts` | `companyLetterhead`: the address line, the registration and whether it reads well, the bank line's facts | beside the rules it shares (`typed`, `bankDetailsHeld`, `registrationsRead`) |
+| modify | `packages/domain/src/tenancy/index.ts` | the export | the folder's entry |
+| add | `packages/domain/tests/tenancy/company-letterhead.test.ts` | row i-d1 | the profile's test is 221 lines |
+| modify | `packages/i18n/src/copy/company-profile.ts` | the bank line's message | the screen's copy |
+| modify | `packages/i18n/src/copy/company-profile-words.ts` | `letterhead` from the fact | the words |
+| modify | `packages/i18n/tests/company-profile.test.ts` · `company-profile-facts.ts` | row i-w1 in three languages | the words' test and its facts |
+| modify | `packages/i18n/src/locales/{en,hi,mr}/messages.po` | the entry | the catalogs |
+| generated | `packages/i18n/src/locales/{en,hi,mr}/messages.ts` | compiled | never hand-edited |
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfile.types.ts` | `words.letterhead` | the one prop contract |
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfile.tsx` | the wrapper, the preview, the failed read with no preview | the web half |
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfile.css` | the wide arrangement and the letterhead | the web styles |
+| modify | `tests/e2e/components/CompanyProfile.story.tsx` | hand the letterhead fact to the words | the story |
+| add | `tests/e2e/components/CompanyProfile.wide.spec.tsx` | rows i1–i4 and i6 | one file per arrangement's proofs |
+| add | `tests/e2e/components/CompanyProfile.wide-states.spec.tsx` | rows i5, i7 and i8 | the first would pass 300 lines |
+| modify | `tests/e2e/components/CompanyProfile.what-you-sell.spec.tsx` | built, not planned: its own call of the words takes the new fact | the words' one other caller |
+| modify | `packages/i18n/tests/company-profile-states.test.ts` | built, not planned: a profile not yet read shows nothing on the letterhead | the words' states |
+| modify | `tests/e2e/support/touch-target.ts` · `tests/e2e/components/CompanyProfile.spec.tsx` | built, not planned (review): `expectTouchFloor`, the one touch-floor loop three specs wrote | the specs' shared checks |
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfile.logic.ts` | built, not planned: the bloom's size and the letter's two paragraphs, as named values | anything that is not markup |
+| modify | `docs/ux/briefs/SCR-M01-05-business-profile.md` | the rulings of *Decisions* 1–4 | the brief owns the screen's facts |
+| modify | `docs/tasks/deferred.md` | D26 names `CompanyProfile.css` | the register |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, `#### Parts`, the task diagram's two labels, the design check's sixth entry, the ledger, part i `shipped` | the task |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **One stylesheet re-places another component's slots.** A change to `DoorFrame`'s wide rules can move this screen. The wide spec measures every edge, so it fails by name.
+- **A prop contract grows with no caller.** Nothing mounts the component before part d; the story is its one consumer and changes here.
+- **Rollout.** Nothing a person meets changes; nothing stored or sent changes.
+
+##### Acceptance criteria and proof
+The task's AC-4, for the two 1536 frames this part draws and the states with a stated 1536 rule. AC-1, AC-2 and AC-3 have no row here.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-4 · i-d1 the letterhead's lines | main-dev | required | unit | street, city and PIN code join as *Decisions*, 2 rules, each edge: all three, no street, no PIN code, spaces alone; the registration empty, well-formed, malformed; the bank with four facts, three, the holder alone; an account number of 2, 4 and 16 characters and one with spaces. Planted red: a bank line from three facts | `packages/domain/tests/tenancy/company-letterhead.test.ts` |
+| AC-4 · i-w1 the letterhead's words | main-dev | required | unit | in English, Hindi and Marathi: the overline, `Logo`, the tax label, the bank label; the bank line carries the bank's name and the ending; no line where domain gives none | `packages/i18n/tests/company-profile.test.ts` |
+| AC-4 · i1 the wide arrangement | main-dev | required | `3100` at 1536 × 1000 | the wordmark, the `h1`, the lede, five headers, the name field and the act share the left edge 96; the headers and the field are 600 wide, right edge 696; the act is 48 tall and narrower than 300; the title is the `h1` size and `sp-3` over the lede, the heading `sp-8` over the list; the preview's field spans 880–1520; the sheet is 440 wide at 980–1420; no sideways scroll. Planted red: the act at full width | `tests/e2e/components/CompanyProfile.wide.spec.tsx` |
+| AC-4 · i2 the empty letterhead | main-dev | required | the same | the overline `Your letterhead`; the tile reads `Logo`; the name; `Pune`; `GSTIN` and `Bank` each beside a bar; the preview is `aria-hidden` and holds no focus stop | the same |
+| AC-4 · i3 the letterhead fills as typed | main-dev | required | the same | a typed street and PIN code show as one line; a well-formed registration shows mono in the primary ink; four bank facts show the bank line and three show a bar. Planted red: the bar kept after four facts | the same |
+| AC-4 · i4 a malformed registration | main-dev | required | the same | `d-tax-invalid`: the tax part open and errored at 96–696, the act live; the letterhead shows `27AAACH7409R1Z` mono in `--danger-text`. Planted red: the number in the primary ink | the same |
+| AC-4 · i5 the states with a stated rule | main-dev | required | the same | loading: five bars in the list, every letterhead line a bar, the act off with its reason; a failed read: no preview, the message centred, both ways reporting; a failed save: one alert, the two acts side by side at natural width, every typed value kept, the preview still drawn; what you sell open: the act's line beside the act | the wide spec, or its states file |
+| AC-4 · i6 between the widths | main-dev | required | `3100` at 968 and at 967 | at 968 both halves, no sideways scroll, the list at least 335 wide, the sheet whole; at 967 the phone's column and no preview (*Decisions*, 1) | the same |
+| AC-4 · i7 Hindi and Marathi | main-dev | required | `3100` at 1536 | in each: no sideways scroll, no clipped text box, every standing inside its header, the act on screen, the letterhead's lines inside the sheet | the same |
+| AC-4 · i8 the touch floor | main-dev | required | `3100` at 1536 | every header, field and act is at least 44 on both axes | the same |
+| AC-4 · side-by-side | qa-web | required | component page `3100`, Main's pictures | `d-default` and `d-tax-invalid` beside their board pictures at 1536, element by element; ruled differences: the capture area and its hint (part e), the sizes of *Decisions*, 4, the flat errored header (part b), the page scrolling where the board's list does, the board's small pictures (603 × 394) | Main's pictures in the scratchpad, `qa-web`'s report |
+| the phone | — | not_applicable | — | — | the phone half draws no preview and changes in its types alone; first seen in part d |
+| the running web and api | — | not_applicable | — | — | no built screen draws `CompanyProfile`; this part makes no call |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part: **about 23 files** — 3 in `packages/domain`, 4 of words and their tests, 3 catalogs, 3 generated, 3 in `packages/ui`, 3 component-test files, 3 documents, and the split file a 300-line limit may add (counted: 1).
+- **Code: about 400 authored lines** — the domain rule 50, the words 35, the catalogs 12, the contract 25, the web half 95, the stylesheet 175, the phone half 0, the changed header comments counted in.
+- **Tests: about 450 authored lines** — the domain test 80, the words' tests 45, the story 20, the wide specs 305.
+- About 850 in all, inside the target; one review round is counted in.
+- Order: as *Proposal*.
+
+**Built, before review (2026-10-12) — over the estimate, asked again.** 25 files against 23 planned: the three unplanned rows of the file table, less the spare. Code: about 490 lines against 400 — the stylesheet is 234 against 175 (re-placing the frame's slots takes one rule per slot, and a failed read needed its own five), the web half 112 against 95, the words 50 against 35, the domain rule 54, the contract 20, the logic 5, the catalogs' three entries 12 (the extraction also moved 93 source-line references in the three `.po` files, which nobody wrote). Tests: about 595 against 450 — the wide specs 383 against 305 (the failed read, the line beside the act and the breakpoint's two widths each took a test of their own), the domain test 117 against 80, the words' tests 93 against 45. About 1,085 in all against 850: 27% over the estimate and 8% over the 1,000 target. No behaviour, route, contract, table or package was added. No smaller part can be accepted alone: the arrangement without the letterhead draws neither frame, and the letterhead without its rule and words draws no line.
+
+**Ruled by the owner, 2026-10-12: approved at about 1,085 lines.**
+
+**After review.** 27 files: the review added two (the file table's touch-floor row) and took a copied loop out of two specs.
+
+Checklist:
+- [x] the domain rule and its test, red first
+- [x] the words, the message and their test
+- [x] the wide specs, red
+- [x] the contract, the web half, the stylesheet
+- [x] the story
+- [x] Main's pictures of each state
+- [x] review
+- [x] the side-by-side
+- [x] the gate
+
 #### Design check
 `READY` — 2026-10-12, on the record `SCR-M01-05 - decisions & self-audit.md` (29,484 bytes) read beside the board `SCR-M01-05 Business Profile - Mobile.dc.html` (142,409 bytes, under the read cap). Three checks on one helper. The first found the record behind the board (four frame counts, no Hindi frame, no 1536 alignment numbers, no word plan, a standing FAIL); the owner's redraw closed every finding. Main then found three product facts wrong against the code — three bank fields where `M06-17` and the contract hold four, a city line saying the city sets the market, a count of typed characters the pack cannot give — and the owner corrected them and redrew the 1536 arrangement in the same pass; the third check found nothing.
 
@@ -5232,6 +5394,10 @@ Noted by the helper and not blocking: three stale board notes and three stale re
 | 16 | f | `m-settings`, `d-settings` | shell props the repo's shell does not have (`fab`, a rail with no label) | part f mounts inside the built shell | none to build; said in part f's RFC |
 | 18 | f | `m-reseed` | `correctionMessage: null` | the type refuses `null`; `sizeField` leaves it out, the same look | none |
 | 21 | none | `m-failed-save` against `SCR-M01-04` | `Market defaults until you set these` | the step before says `Until you finish, proposals start without your answers.` for the same cost | the owner rules: one wording or two |
+
+**Sixth entry — part i (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again when part i began, beside the board (148,243 bytes, under the read cap, saved to the scratchpad by a script). After the fifth entry the owner corrected the board in three places and nothing else: the hint stands under `m-failed-save`'s empty size field (ruling 30), `m-logo-invalid`'s refusal reads `needs 2 MB or less` (row 6), and the stale note above `m-normal` is gone. Still twenty-one frames. No helper ran again: Main found each of the three in the board's source, and the record's `m-failed-save` count (3 lines, 21 words) and its logo-refused row agree. Part i takes rows 8–13 and 23 of the fifth entry; its RFC rules each (*Proposal*, 1–6).
+
+**Board pictures, part i.** Main pictured the two frames in the pane at its own size, the chat panel shut and the board at 50%, into the scratchpad as `board/<frame>.png`: `d-default` and `d-tax-invalid`, 603 × 394 each, whole. `qa-web` was not asked: under a set viewport the board's canvas does not scroll (third entry). The pictures are small: a comparison reads them beside the record's measured positions (list 4) and the board's source.
 
 #### Runtime
 Branch `feat/T-M01-005`, cut from `feat/T-M01-004c` (`99ed0bcc`, draft PR #283 open, its `quality`, `e2e-web` and `android` checks running) on a clean tree, by the owner's word, 2026-10-12: the walk reads `origin/main`, where `T-M01-004`'s part c is not yet merged.
@@ -5539,6 +5705,71 @@ End state after the reruns: api, web and Metro stopped; the simulator and the em
 | Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
 | simulator · emulator | none booted | none booted |
 | browser tabs | pane closed | the board's tab `seed` closed by Main; the pane is closed; the board's zoom was left at 75% |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | unchanged |
+| watchers | no `tsx … watch` process | none |
+
+**Part i · Runtime (2026-10-12).** Branch `feat/T-M01-005i`, cut from `origin/main` (`d043fcd3`, part h merged as #290 and the board sweep as #291) on a clean tree. A light cycle: no stack is prepared.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | the board's tab `seed`, opened by Main for the pictures (`started_by_task`); the owner's sign-in was still held; Main shut the board's chat panel and set its zoom from 75% to 50% |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | — |
+| watchers | no `tsx … watch` process | — |
+
+**Part i · QA (2026-10-12)** — no stack: no built screen draws the component. The one server was the component test page (`3100`), started and stopped by each `test:ct` run.
+
+- **Order.** The owner approved the RFC with the first way of all five rulings. The build then ran 27% over the estimate; Main stopped before review and the owner approved the built size. The reviewer read alone: five should-fix findings and notes in round one, all applied (*Mistakes found (part i)*); clean in round two. Then `qa-web` on Main's two pictures, taken on the final code: both frames passed at the first read. Then the Evaluator's gate.
+- **Main's proofs.** `test:ct` on the six `CompanyProfile` specs: 41 passed on the final code. The domain rule's test: 28 passed. The words' tests: 28 passed. `pnpm check` exit 0 (27 files, 492 tests). `check:catalogs` and the invariants: see *The gate*.
+- **Main's pictures.** `d-default` and `d-tax-invalid` at 1536 × 1000, and loading, a failed read, a failed save, Marathi and the 968 width for Main's own look, by a temporary spec that mounted the story and was deleted after; each of the two set under its board picture in the scratchpad as `pairs/<frame>.png`.
+
+**Planted reds seen (part i).** Each file was restored from a scratchpad copy, compared equal and touched.
+- `company-profile.ts` (domain) with the bank named from its name alone failed `company-letterhead.test.ts` › *names the bank only once all four facts are held* (no account holder, no account number, no routing identifier).
+- `CompanyProfile.css` with the act's row at full width failed `CompanyProfile.wide.spec.tsx` › *everything the owner fills stands on one left edge at the list’s measure, the act at its own width, and the letterhead in its track*.
+- `CompanyProfile.tsx` with a bar kept after four bank facts failed › *the letterhead fills as its fields are typed*; with the malformed number in the primary ink › *a registration that does not read as the format shows on the letterhead as typed, in the danger tone, and the act stays live*.
+- Seen red before their code: the domain test (the function did not exist), the Hindi and Marathi bank lines, and eleven of the fifteen wide tests by assertion. The four that passed before the code — the phone's column at 967 and the three touch-floor rows — hold behaviour this part must not change.
+
+**Mistakes found (part i)**, each with the rule that now holds it:
+- The estimate was 27% under the build (850 planned, about 1,085 built): re-placing another component's slots takes one rule per slot, and each state with a stated 1536 rule took a test of its own. Main stopped and the owner approved the built size. A later part that re-places a frame counts one rule and one assertion per slot.
+- The words and their English test landed in one step, so only the Hindi and Marathi rows were seen red (Main). The domain rule and the wide specs were written and seen red first.
+- A second caller of the words (`CompanyProfile.what-you-sell.spec.tsx`) was not in the file table: the component suite is not typechecked with the words' contract, and the suite found it at run time (Main). The RFC's file table now names it.
+- Wrapping the web half in one more element re-indented 90 lines nobody changed (Main, at the size count). The column is its own function, and the old lines stand as they were.
+- Two proof rows said more than their tests asserted — *errored* on i4 and the letterhead's lines in Hindi and Marathi, which never drew the bank line (reviewer). Both are asserted.
+- The touch-floor loop was a third copy (reviewer). One `expectTouchFloor` in `tests/e2e/support/touch-target.ts`.
+- The account's ending kept a dash typed between groups (reviewer). Everything that is not a letter or a digit is left out, with two test rows.
+- The stylesheet's header still said 375 and tokens alone (reviewer). Reworded.
+- The letterhead's last bar was 62% wide in both paragraphs where the board draws 78% in the second (Main, on the first pictures). Corrected before the side-by-side.
+
+**For part d's packet.** At 968 the sheet fills its field edge to edge (440 in 440), as ruling 31's 472 floor gives it; a wider floor is the owner's to rule if it reads cramped on a real window. The failed read at wide width keeps the door's bloom. The account's ending is called digits in the Hindi and Marathi drafts (`अंक`), for the localisation pass. For part e: `CompanyProfile.css` is 294 lines, so the logo's rules take the letterhead's own stylesheet.
+
+**Newly drafted lines for a native review:** `{bankName} · account ending {ending}` — Hindi `{bankName} · खाते के अंतिम अंक {ending}`, Marathi `{bankName} · खात्याचे शेवटचे अंक {ending}`.
+
+- **The gate.** One run of `pnpm check:all`, passed: 218 test files, 3,883 tests, the api tests on `heliogrid_test`, no skipped or vacuous check, the last stage `invariants green`; `check:catalogs` and `check:openapi` found nothing to regenerate. Its duplication report names two pairs in this folder, both there before this part and under the threshold: the two halves of the field sets (47 lines) and of the act block (33). The component suite is not in the gate; its proof is Main's run. After the gate, Main wrote only this record and ran `pnpm check` and the invariants again.
+
+**As proven (part i).**
+
+| row | result | evidence |
+|---|---|---|
+| AC-4 · i-d1 | passed | `company-letterhead.test.ts`, 28 tests; planted red by name |
+| AC-4 · i-w1 | passed | `company-profile.test.ts` and `company-profile-states.test.ts` (i18n), 28 tests; the Hindi and Marathi lines seen red before their entries |
+| AC-4 · i1 – i4 · i6 | passed | `CompanyProfile.wide.spec.tsx`, 6 tests; planted reds by name |
+| AC-4 · i5 · i7 · i8 | passed | `CompanyProfile.wide-states.spec.tsx`, 9 tests |
+| side-by-side | passed at the first read | `qa-web` on Main's two pictures; every difference is a ruled one: the capture area (part e), the nearest-token sizes (ruling 34), the flat errored header (part b), the page scrolling where the board's list does, soft board pictures |
+| the phone · the running web and api | not_applicable | as the proof matrix says |
+| the gate | passed | `pnpm check:all`, one run |
+
+**Measurements (part i)** — helper runs: `reviewer` 1 with one continuation (120 k, 133 k), `qa-web` 1 (38 k), `evaluator` 1 (39 k); one full gate, passed. Main: about 85 tool-call turns and about 449 k context tokens at the commit card, the walk, the record and board fetch and the RFC among them. Size: planned 23 files, code about 400, tests about 450; built 27 files, 1,374 lines added and 86 removed in all, of which the task file is about 330, the catalogs' moved references about 95 and code and tests about 1,090.
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | none listening |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| simulator · emulator | none booted | none booted |
+| browser tabs | pane closed | the board's tab `seed` closed by Main; the pane is closed; the board's chat panel left shut and its zoom at 50% |
 | database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
 | runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | unchanged |
 | watchers | no `tsx … watch` process | none |

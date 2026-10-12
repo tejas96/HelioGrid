@@ -5,6 +5,7 @@
  */
 import {
   COMPANY_PROFILE_PARTS,
+  type CompanyLetterhead,
   type CompanyProfilePart,
   type CompanyProfileStanding,
   type StandingMark,
@@ -79,11 +80,17 @@ export interface CompanyProfileWords {
     /** Where the size comes from — beside its tier. */
     readonly sizeSource: string;
   };
+  /** The wide screen's preview: only what the fields hold; a `null` or an empty line is drawn as nothing. */
   readonly letterhead: {
     readonly overline: string;
     readonly logo: string;
+    readonly name: string;
+    readonly address: string;
     readonly taxLabel: string;
+    /** The registration as typed; `owed` while it does not read as the market's format. */
+    readonly tax: { readonly value: string; readonly owed: boolean } | null;
     readonly bank: string;
+    readonly bankLine: string | null;
   };
   /** The busy region's name while the record loads. */
   readonly loading: string | null;
@@ -125,6 +132,8 @@ export interface CompanyProfileWordFacts {
   readonly taxIdLabel: string;
   readonly taxFormat: string;
   readonly bankRoutingLabel: string;
+  /** Domain's `companyLetterhead` for what the fields hold. */
+  readonly letterhead: CompanyLetterhead;
 }
 
 export function companyProfileWords(
@@ -182,15 +191,43 @@ export function companyProfileWords(
       sizeHint: translate(COMPANY_PROFILE.sizeHint),
       sizeSource: translate(SETUP_WHAT_YOU_SELL.declaredByYou),
     },
-    letterhead: {
-      overline: translate(COMPANY_PROFILE.letterhead),
-      logo: translate(COMPANY_PROFILE.letterheadLogo),
-      taxLabel: taxIdLabel,
-      bank: translate(COMPANY_PROFILE.letterheadBank),
-    },
+    letterhead: letterheadWords(translate, facts),
     loading: status === 'loading' ? translate(COMPANY_PROFILE.loading) : null,
     unread: status === 'unread' ? unreadWords(translate) : null,
     act: status === 'unread' ? null : actWords(translate, facts),
+  };
+}
+
+/** Until the profile is read nothing is known to be on it, whatever the screen was handed. */
+const NOTHING_READ: CompanyLetterhead = {
+  companyName: '',
+  addressLine: '',
+  registration: null,
+  bank: null,
+};
+
+function letterheadWords(
+  translate: Translator['t'],
+  { status, letterhead, taxIdLabel }: CompanyProfileWordFacts,
+): CompanyProfileWords['letterhead'] {
+  const { companyName, addressLine, registration, bank } =
+    status === 'ready' || status === 'save-failed' ? letterhead : NOTHING_READ;
+  return {
+    overline: translate(COMPANY_PROFILE.letterhead),
+    logo: translate(COMPANY_PROFILE.letterheadLogo),
+    name: companyName,
+    address: addressLine,
+    taxLabel: taxIdLabel,
+    tax:
+      registration === null ? null : { value: registration.value, owed: !registration.wellFormed },
+    bank: translate(COMPANY_PROFILE.letterheadBank),
+    bankLine:
+      bank === null
+        ? null
+        : translate(COMPANY_PROFILE.letterheadBankLine, {
+            bankName: bank.bankName,
+            ending: bank.accountEnding,
+          }),
   };
 }
 

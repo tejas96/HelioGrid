@@ -1,4 +1,5 @@
 export type {
+  CompanyLetterhead,
   CompanyProfileFacts,
   CompanyProfilePart,
   CompanyProfileSave,
@@ -8,6 +9,7 @@ export type {
 export {
   COMPANY_PROFILE_PARTS,
   COMPANY_PROFILE_STANDINGS,
+  companyLetterhead,
   companyProfileSave,
   companyProfileStanding,
   standingMark,

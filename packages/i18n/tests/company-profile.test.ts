@@ -11,7 +11,7 @@ import { AT_SIGNUP } from './company-profile-facts';
  * Marathi line below is drafted for the localisation pass: the two other ledes, `{city} only`,
  * `Added`, `Answered`, `Not declared`, `Check the format`, `From your signup`, the address and
  * bank fields and their lines, `(optional)`, the format-check sentence, the market-defaults line,
- * the loading, failed-read and failed-save words, and the letterhead's three.
+ * the loading, failed-read and failed-save words, the letterhead's three and its bank line.
  */
 const ACT_AT_REST = {
   waiting: null,
@@ -19,6 +19,14 @@ const ACT_AT_REST = {
   secondarySpoken: null,
   alert: null,
   line: null,
+};
+
+/** A new company's letterhead: its name and its city, and nothing it has not added. */
+const EMPTY_LETTERHEAD = {
+  name: 'Suryodaya Solar Solutions Pvt Ltd',
+  address: 'Pune',
+  tax: null,
+  bankLine: null,
 };
 
 const WORDS = {
@@ -77,7 +85,13 @@ const WORDS = {
       sizeHint: 'The size you sell most often',
       sizeSource: 'Declared by you',
     },
-    letterhead: { overline: 'Your letterhead', logo: 'Logo', taxLabel: 'GSTIN', bank: 'Bank' },
+    letterhead: {
+      ...EMPTY_LETTERHEAD,
+      overline: 'Your letterhead',
+      logo: 'Logo',
+      taxLabel: 'GSTIN',
+      bank: 'Bank',
+    },
     loading: null,
     unread: null,
     act: {
@@ -139,7 +153,13 @@ const WORDS = {
       sizeHint: 'जो आकार आप सबसे ज़्यादा बेचते हैं',
       sizeSource: 'आपके द्वारा बताया गया',
     },
-    letterhead: { overline: 'आपका लेटरहेड', logo: 'लोगो', taxLabel: 'GSTIN', bank: 'बैंक' },
+    letterhead: {
+      ...EMPTY_LETTERHEAD,
+      overline: 'आपका लेटरहेड',
+      logo: 'लोगो',
+      taxLabel: 'GSTIN',
+      bank: 'बैंक',
+    },
     loading: null,
     unread: null,
     act: {
@@ -201,7 +221,13 @@ const WORDS = {
       sizeHint: 'तुम्ही सर्वाधिक विकता तो आकार',
       sizeSource: 'तुम्ही सांगितलेले',
     },
-    letterhead: { overline: 'तुमचे लेटरहेड', logo: 'लोगो', taxLabel: 'GSTIN', bank: 'बँक' },
+    letterhead: {
+      ...EMPTY_LETTERHEAD,
+      overline: 'तुमचे लेटरहेड',
+      logo: 'लोगो',
+      taxLabel: 'GSTIN',
+      bank: 'बँक',
+    },
     loading: null,
     unread: null,
     act: {
@@ -220,4 +246,39 @@ describe('companyProfileWords', () => {
       expect(companyProfileWords(t, AT_SIGNUP)).toEqual(WORDS[reader]);
     },
   );
+
+  it.each([
+    ['en', 'HDFC Bank · account ending 4821'],
+    ['hi', 'HDFC Bank · खाते के अंतिम अंक 4821'],
+    ['mr', 'HDFC Bank · खात्याचे शेवटचे अंक 4821'],
+  ] as const)('in %s the letterhead shows what the fields hold', async (reader, bankLine) => {
+    const { t } = await createTranslator(reader);
+    const words = companyProfileWords(t, {
+      ...AT_SIGNUP,
+      letterhead: {
+        companyName: 'Suryodaya Solar',
+        addressLine: 'Plot 14, Baner Road, Pune 411045',
+        registration: { value: '27AAACS4821K1Z3', wellFormed: true },
+        bank: { bankName: 'HDFC Bank', accountEnding: '4821' },
+      },
+    });
+    expect(words.letterhead).toMatchObject({
+      name: 'Suryodaya Solar',
+      address: 'Plot 14, Baner Road, Pune 411045',
+      tax: { value: '27AAACS4821K1Z3', owed: false },
+      bankLine,
+    });
+  });
+
+  it('a registration that does not read as the format is owed on the letterhead too', async () => {
+    const { t } = await createTranslator('en');
+    const words = companyProfileWords(t, {
+      ...AT_SIGNUP,
+      letterhead: {
+        ...AT_SIGNUP.letterhead,
+        registration: { value: '27AAACH7409R1Z', wellFormed: false },
+      },
+    });
+    expect(words.letterhead.tax).toEqual({ value: '27AAACH7409R1Z', owed: true });
+  });
 });

@@ -119,4 +119,22 @@ describe('companyProfileWords, by state', () => {
       expect(words.act?.line ?? null).toBeNull();
     },
   );
+
+  it.each(['loading', 'unread'] as const)(
+    'while the profile is %s the letterhead shows nothing of it',
+    async (status) => {
+      const { t } = await createTranslator('en');
+      const { letterhead } = companyProfileWords(t, { ...AT_SIGNUP, status });
+      expect(letterhead).toMatchObject({ name: '', address: '', tax: null, bankLine: null });
+    },
+  );
+
+  it('a failed save keeps the letterhead as the fields hold it', async () => {
+    const { t } = await createTranslator('en');
+    const { letterhead } = companyProfileWords(t, { ...AT_SIGNUP, status: 'save-failed' });
+    expect(letterhead).toMatchObject({
+      name: 'Suryodaya Solar Solutions Pvt Ltd',
+      address: 'Pune',
+    });
+  });
 });

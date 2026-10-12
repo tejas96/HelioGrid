@@ -18,12 +18,17 @@ msgid "411038"
 msgstr "411038"
 
 #. js-lingui-explicit-id
+#: src/copy/company-profile.ts:56
+msgid "{bankName} · account ending {ending}"
+msgstr "{bankName} · खात्याचे शेवटचे अंक {ending}"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:66
 msgid "{chain} codes were invalidated in a row"
 msgstr "सलग {chain} कोड अवैध झाले"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:73
+#: src/copy/company-profile.ts:74
 msgid "{city} only"
 msgstr "फक्त {city}"
 
@@ -308,12 +313,12 @@ msgid "Add the size you sell most often."
 msgstr "तुम्ही सर्वाधिक विकता तो आकार भरा."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:75
+#: src/copy/company-profile.ts:76
 msgid "Added"
 msgstr "जोडलेले"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:64
+#: src/copy/company-profile.ts:65
 msgid "Address"
 msgstr "पत्ता"
 
@@ -328,7 +333,7 @@ msgid "An invite already went to this number and is still open."
 msgstr "या नंबरवर आधीच एक आमंत्रण पाठवले आहे आणि ते अजून खुले आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:76
+#: src/copy/company-profile.ts:77
 msgid "Answered"
 msgstr "उत्तर दिले"
 
@@ -363,7 +368,7 @@ msgid "Bank"
 msgstr "बँक"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:66
+#: src/copy/company-profile.ts:67
 msgid "Bank details"
 msgstr "बँक तपशील"
 
@@ -449,7 +454,7 @@ msgid "Changed your mind, or it is not the same company?"
 msgstr "विचार बदलला, किंवा ही तीच कंपनी नाही?"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:78
+#: src/copy/company-profile.ts:79
 msgid "Check the format"
 msgstr "स्वरूप तपासा"
 
@@ -674,7 +679,7 @@ msgid "Estimated"
 msgstr "अंदाजित"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:84
+#: src/copy/company-profile.ts:85
 msgid "Factories, offices, warehouses"
 msgstr "कारखाने, कार्यालये, गोदामे"
 
@@ -809,7 +814,7 @@ msgid "Home"
 msgstr "होम"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:83
+#: src/copy/company-profile.ts:84
 msgid "Homes and housing societies"
 msgstr "घरे आणि गृहनिर्माण संस्था"
 
@@ -899,7 +904,7 @@ msgid "Logo"
 msgstr "लोगो"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:63
+#: src/copy/company-profile.ts:64
 msgid "Logo and company name"
 msgstr "लोगो आणि कंपनीचे नाव"
 
@@ -950,7 +955,7 @@ msgid "My Visits Today"
 msgstr "आजच्या माझ्या भेटी"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:72
+#: src/copy/company-profile.ts:73
 msgid "Name only"
 msgstr "फक्त नाव"
 
@@ -986,7 +991,7 @@ msgid "Not a structural certification"
 msgstr "संरचनात्मक प्रमाणपत्र नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:74
+#: src/copy/company-profile.ts:75
 msgid "Not added"
 msgstr "जोडलेले नाही"
 
@@ -1001,7 +1006,7 @@ msgid "Not checked"
 msgstr "तपासले नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:77
+#: src/copy/company-profile.ts:78
 msgid "Not declared"
 msgstr "सांगितलेले नाही"
 
@@ -1547,7 +1552,7 @@ msgid "tax rates"
 msgstr "कर दर"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:65
+#: src/copy/company-profile.ts:66
 msgid "Tax registration"
 msgstr "कर नोंदणी"
 
@@ -1997,7 +2002,7 @@ msgid "What you mostly sell"
 msgstr "तुम्ही मुख्यतः काय विकता"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:67
+#: src/copy/company-profile.ts:68
 msgid "What you sell"
 msgstr "तुम्ही काय विकता"
 
@@ -2072,7 +2077,7 @@ msgid "You don't have access to do that."
 msgstr "तुम्हाला हे करण्याची परवानगी नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:85
+#: src/copy/company-profile.ts:86
 msgid "You sell to either"
 msgstr "तुम्ही दोघांनाही विकता"
 
