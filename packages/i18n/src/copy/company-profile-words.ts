@@ -15,6 +15,11 @@ import {
 } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import {
+  type CompanyLogoCapture,
+  type CompanyLogoCaptureFacts,
+  companyLogoCapture,
+} from './company-logo';
+import {
   COMPANY_PROFILE,
   COMPANY_PROFILE_PART_TITLE,
   COMPANY_PROFILE_SEGMENT_LINE,
@@ -92,6 +97,8 @@ export interface CompanyProfileWords {
     readonly bank: string;
     readonly bankLine: string | null;
   };
+  /** The logo's capture area; none until a screen can upload one. */
+  readonly logo: CompanyLogoCapture | null;
   /** The busy region's name while the record loads. */
   readonly loading: string | null;
   /** The profile could not be read: the message in the list's place. */
@@ -136,6 +143,7 @@ export interface CompanyProfileWordFacts {
   readonly bankRoutingLabel: string;
   /** Domain's `companyLetterhead` for what the fields hold. */
   readonly letterhead: CompanyLetterhead;
+  readonly logo: CompanyLogoCaptureFacts | null;
 }
 
 export function companyProfileWords(
@@ -194,6 +202,7 @@ export function companyProfileWords(
       sizeSource: translate(SETUP_WHAT_YOU_SELL.declaredByYou),
     },
     letterhead: letterheadWords(translate, facts),
+    logo: facts.logo === null ? null : companyLogoCapture(translate, facts.logo),
     loading: status === 'loading' ? translate(COMPANY_PROFILE.loading) : null,
     unread: status === 'unread' ? unreadWords(translate) : null,
     act: status === 'unread' ? null : actWords(translate, facts),

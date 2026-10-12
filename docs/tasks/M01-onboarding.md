@@ -4467,8 +4467,8 @@ Eleven parts since part c's RFC split c in three, part g's added i and part d's 
 | k | `Finish later` of `SCR-M01-04` opens the profile without recording its step (D202): a put-off that is per step; the arrival `m-failed-save` on the running apps (`#### Part k · RFC`) | AC-4 (`arrived-from-a-failed-save`) — on the running apps | j |shipped |
 | e | the api holds the logo's pointer: one column and one field on the profile, kept by a save that never names it, refused unless it is this company's own stored logo, carried by what every document reads (`#### Part e · RFC`) | AC-3 — on the running api | k | shipped |
 | l | the logo's rules and words: the stated limits, the check that names every limit missed, the first part's `Added`, the step's rule; every word in three languages | AC-4 (`logo-invalid-limits-stated`) — by unit test (`#### Part l · RFC`) | e | shipped |
-| m | the capture area in the shared component on both halves: `m-logo-invalid`, the held logo, the letterhead's tile | AC-4 (`logo-invalid-limits-stated`) — on the component page | l | open |
-| n | the upload on the web and both phones: the file calls, the phone's picker, the pointer saved with the act | AC-4 (`logo-invalid-limits-stated`) — on the running apps | m | open |
+| m | the capture area in the shared component on both halves: `m-logo-invalid`, the held logo, the letterhead's tile | AC-4 (`logo-invalid-limits-stated`) — on the component page | l | shipped |
+| n | the upload on the web and both phones: the file calls, the phone's picker, the pointer saved with the act; the step's words hand the logo's facts (part m's gate opens); `qa-ios` compares `m-default` and `m-logo-invalid` on the phone half, which part m only typechecks; the look of an upload under way is ruled in its RFC, which also says which prop each app passes (`onChooseLogo` on the web, `onRequestLogo` on the phone) and holds one web row on a touch viewport with no hydration error once the gate opens | AC-4 (`logo-invalid-limits-stated`) — on the running apps | m | open |
 | f | the settings life inside the shell on the web and both phones: the functional density, `Save changes`, the re-seed scope | AC-4 (`declarations-edited-reseed-scope`, `m-settings`, `d-settings`) | n · the settings list drawn (*Decisions*, 7) | open |
 
 #### Part a · RFC
@@ -6261,6 +6261,176 @@ Checklist:
 - [x] the live rows: web, iOS, Android
 - [x] the gate
 
+#### Part m · RFC
+
+##### Title
+`T-M01-005m` — The logo's capture area in the shared component: at rest, refused, held, and the letterhead's tile
+
+##### Description
+**User impact.** None yet on a running app — the area is drawn and stays off until an owner can upload (the brief's ruling 26). On the component page the first part now shows where a logo goes: the area with its limits stated before any upload, a refusal that names what the chosen image missed, the held logo, and the logo's picture on the letterhead. The owner meets it in part n, with the upload.
+
+Who gains: part n, which only has to choose a file and upload it. The problem: `CompanyProfile` draws the first part as the company name alone (`packages/ui/src/components/CompanyProfile/CompanyProfile.logic.ts:109`), its contract holds no logo word (`CompanyProfile.types.ts:28`), the letterhead's tile can only print a word (`CompanyProfile.tsx:208`), and nothing joins part l's words (`packages/i18n/src/copy/company-logo.ts:52`) to the screen's (`company-profile-words.ts:141`). Sources: the task RFC, part e's RFC (*Decisions*, 1), part l's RFC, the brief (rulings 6, 10, 26, 44–47; the state `logo-invalid-limits-stated`), the design record's word plan and gap 4, the design check's fifth entry (rows 8, 11, 19).
+
+##### Goals
+- `CompanyProfile`'s one contract holds the capture area's words, and both halves draw it from `Dropzone` — at rest, refused and held — above the company name.
+- With no logo words the first part is the company name alone, so the web and both phones look as they do today.
+- On the web the letterhead's tile shows the logo's picture when the screen holds one, and the word `Logo` until then.
+- Every word the area shows is the catalog's, in English, Hindi and Marathi; `Dropzone` prints none of its own.
+
+##### Non-goals
+- No file call, no picker on the phone, no reading of an image's width, no pointer in the save — part n. Until then the step's words carry no logo (`company-profile-step-words.ts`), so no running app draws the area.
+- No look for an upload under way: no frame draws it, and `Dropzone`'s own word for it is English (`dropzone-copy.ts:34`). Part n rules it in its RFC.
+- No control that takes a logo out (*Decisions*, 3).
+- No change to `Dropzone`: every word it shows here is passed to it.
+- The settings life's frames (`m-normal` whole, `m-settings`, `d-settings`) — part f.
+
+##### Readiness and dependencies
+- Part l is committed (`716cf187`), draft PR #297 open, stacked on part e's #296; this branch is cut from it by the walk and the owner's word (`#### Runtime`, part m).
+- Design check: `READY` stands (`#### Design check`, twelfth entry). The frames this part compares — `m-default`, `m-logo-invalid`, `m-normal`'s open first part, `d-default` — are pictured after this RFC is approved and before the first edit.
+- Not a light cycle: the built screens on the web and both phones draw the component this part changes (`apps/web/features/onboarding/CompanyProfileScreen.tsx:17`, `apps/mobile/src/screens/company-profile/CompanyProfileScreen.tsx:18`), so each surface gets one live journey.
+- No migration, no contract change, no new dependency. The local database stays at `0025`.
+- No blocker.
+
+##### Proposal
+**What testing the requirements found** (`/task` step 2; the fifth entry's rows first).
+1. **Row 8 — the 1536 hint.** The record's word plan holds two lines: `Tap to choose a file · …` at 375 and `Choose a file or drop one here · …` at 1536. The board's `d-default` still draws the phone's line: both frames read one `identityFields` (the board's source, line 848). The record and ruling 26 (*its hint by device*) agree; the frame is behind. → *Decisions*, 2.
+2. **Row 11 — the letterhead's tile.** `d-settings` draws a white `S` on near-black; no field holds an initial, and ruling 10 says the preview shows only what the fields hold. → *Decisions*, 1.
+3. **Row 19 — the remove control.** `m-normal` passes `Dropzone` one file and no `onRemove`, so the frame draws no remove control, and its English name (`DropzoneThumbs.tsx:38`) is never printed. A new file replaces the old one. → *Decisions*, 3.
+4. **`Dropzone` prints English wherever a word is not passed** — the default label, the generated hint, the size error, a picture's name (`Dropzone.tsx:38`, `dropzone-copy.ts:44`, `DropzoneThumbs.tsx:23`). This part passes the label, the hint, the refusal and the picture's name, so none is reached; a spec row proves no default line is on the page. D2 and `docs/tasks/UI.md`'s `Dropzone` row keep the sweep.
+5. **The board passes `accept: "image/*"` and `maxSizeMB: 2`.** The code passes the rule's two types (`COMPANY_LOGO_LIMITS.contentTypes`) and no `maxSizeMB` (the fifth entry's rows 7 and 22, ruled in part l): the picker then offers only what is taken, and the check stays domain's.
+6. **Ruling 26 needs a gate.** The area must not show on a running app before the upload exists. The words are the state (`CompanyProfile.types.ts:18`): `words.logo` is `null` until part n hands the step its logo facts, and the component draws nothing for `null`.
+7. **Two files stand near 300 lines.** `CompanyProfile.css` is 294 and `company-profile-words.ts` 285. The tile's picture rule goes to its own stylesheet (as `CompareGridStates.css` beside `CompareGrid.css`), and the logo's lines are built in `company-logo.ts`, which the profile's words call.
+8. **The hint and the limits are two facts on one line.** One new message joins them, `{how} · {limits}`, as `{time} · {body}` does (`packages/i18n/src/copy/notifications.ts:61`); it holds no word, so nothing is drafted in Hindi or Marathi.
+9. **The phone half cannot be seen on a running phone in this part** (finding 6). It is typechecked here, as parts g and h were; its frames are part n's `qa-ios` rows, written into part n's row of `#### Parts`.
+
+**Flow** (part n drives it; this part draws each step).
+1. The screen's words carry the logo's lines → the first part shows the area above the company name: the name of the act, how to choose, the limits.
+2. The owner chooses a file. The web half reports the file; the phone half reports the press, and the app opens its picker (`Dropzone.types.ts:104`).
+3. The screen hands back a refusal → the line stands under the area in the danger tone, spoken once; the area keeps its name and its limits; the act stays live.
+4. The profile holds a logo → the area reads `Your logo` with the limits alone and one thumbnail; on the web the letterhead's tile shows the picture when the screen has one.
+
+**Key decisions.**
+- **`Dropzone` draws the area on both halves** — one reason: the board draws it with that component, and it already owns the dashed edge, the one tab stop and the phone's press (Law 5).
+- **One shared answer for both halves**: `logoCapture` in `CompanyProfile.logic.ts` turns the words and the picture into `Dropzone`'s props, as `sizeField` does for the size.
+- **Which hint by the pointer, on the web**: `useCoarsePointer` (`packages/ui/src/components/MapSurface/use-coarse-pointer.ts`) — a finger reads `Tap to choose a file`, a pointer reads `Choose a file or drop one here`. The phone half always reads the first. One reason: a touch tablet at a wide window cannot drop a file, so the width would lie.
+- **The component's three new props are optional** (`logoPicture`, `onChooseLogo`, `onRequestLogo`): with `words.logo` `null` nothing reads them, so no app file changes before part n.
+- **The thumbnail's name is `Your logo`**, never the file's name: a file name is not a word of the screen's.
+
+**Order.** The words' tests, red · the logo's lines, the join, the step's `null` · `extract`, the catalogs · the contract · the story's logo states · the component spec, red · `logoCapture` and both halves · the tile · the brief · review · the component-page rows · the live rows · the gate.
+
+**Refusals.** None on the wire. On the screen: part l's four, printed as handed.
+
+**The twin.** Both halves draw the same `Dropzone` from `logoCapture`. The phone half has no letterhead and no second hint.
+
+**Deferred rows this part's files meet.**
+- D2 and D92 (`touches packages/ui/src/components/`) — *Decisions*, 4.
+- No row reads `T-M01-005m starts`.
+
+**Decisions** (the owner's; the recommended way first).
+1. **The letterhead's tile with a logo** (row 11). It shows the logo's picture, fitted inside the 56 tile, and the word `Logo` until the screen holds one; `d-settings`' `S` stands for that picture — or a company with no picture shows its first letter on near-black: a new fallback no field holds, against ruling 10.
+2. **The 1536 hint** (row 8). Built as the record writes it — `Choose a file or drop one here · …` where a pointer can drop — and the owner corrects `d-default` on the board with one prompt, at any time before part n; until then the frame's first four words are a ruled difference. Or one line for both, `Tap to choose a file · …`, as the frame draws: a desktop owner is then told to tap.
+3. **Taking a logo out** (row 19). No control, as drawn: choosing another file replaces it. Or a remove control is added: one new spoken name in three languages and a state no frame draws.
+4. **Deferred rows.** D2 and D92 stay: this part prints no word of `Dropzone`'s own, and the sweep is about fourteen components.
+
+**Ruled by the owner, 2026-10-12, with the approval: the first way of each of the four.** The brief holds 1, 2 and 3 as rulings 48, 49 and 50.
+
+##### Architecture diagram
+No boundary change — see the task diagram: the node `ui: CompanyProfile (g, h, i)` gains the capture area, and `i18n: companyProfileWords` gains its lines.
+
+##### Package changes
+- `packages/ui` — `CompanyProfileWords` gains `logo` (`null`, or the area's name, its two hint lines, the refusal, and whether a logo is held); `CompanyProfileProps` gains three optional props. No new export: `PickedFile` is already `Dropzone`'s. `CompanyProfile` imports `Dropzone` and `MapSurface`'s `useCoarsePointer`, both inside this package.
+- `packages/i18n` — `companyProfileWords` takes `logo` facts (`null`, or the limits, the refusal and whether one is held) and returns the area's words; `companyProfileStepWords` passes `null`. New on the root entry: nothing — `companyLogoWords` is already there. One new message.
+- Law 12: no brand, enum, token, route, table or error code is new. The new message is held by `pnpm check:catalogs`.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfile.types.ts` | `words.logo`; the three optional props | the one contract (Law 7) |
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfile.logic.ts` | `logoCapture`: the words and the picture as `Dropzone`'s props | what is not markup, shared by both halves |
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfileSets.tsx` | the area above the name; the hint by pointer; a chosen file reported | the web half's field sets |
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfileSets.native.tsx` | the area above the name; the press reported | the phone half's field sets |
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfile.tsx` | `logoPicture` and `onChooseLogo` handed on; the tile's picture | the web half |
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfile.native.tsx` | `logoPicture` and `onRequestLogo` handed on | the phone half |
+| add | `packages/ui/src/components/CompanyProfile/CompanyProfileLogo.css` | the picture inside the tile | a second stylesheet named for what it styles; `CompanyProfile.css` stands at 294 lines |
+| modify | `packages/i18n/src/copy/company-logo.ts` | the join message; the area's words as the screen takes them | the logo's words |
+| modify | `packages/i18n/src/copy/company-profile-words.ts` | `logo` on the facts and on the words | the screen's words |
+| modify | `packages/i18n/src/copy/company-profile-step-words.ts` | `logo: null` until part n | the step's words |
+| modify | `packages/i18n/tests/company-profile-facts.ts` | the facts fixture needs the field | the tests' one fixture |
+| modify | `packages/i18n/tests/company-logo.test.ts` | rows m9, m10 | the logo's words' test |
+| modify | `packages/i18n/tests/company-profile-step-words.test.ts` | row m11 | the step's test |
+| modify | `packages/i18n/tests/company-profile.test.ts` | built, not planned: its three whole-words expectations need `logo: null` | the test names it |
+| modify | `packages/i18n/src/locales/en/messages.po` · `hi/messages.po` · `mr/messages.po` | the join message, by `extract` | the catalogs |
+| generated | `packages/i18n/src/locales/en/messages.ts` · `hi/messages.ts` · `mr/messages.ts` | compiled by `build` | never hand-edited |
+| modify | `tests/e2e/components/CompanyProfile.story.tsx` | the logo's states: none, at rest, refused, held, with a picture | the component's one story |
+| modify | `packages/ui/src/components/MapSurface/use-coarse-pointer.ts` | built, not planned (review): its comment says what the hook answers, now that a second component reads it | the hook's home |
+| add | `tests/e2e/support/company-logo.ts` | built, not planned (review): the refused image the story draws and the spec expects, written once; the component transform refuses a value imported beside a component | plain values a spec reads live in `support/` (`tests/e2e/CLAUDE.md`) |
+| add | `tests/e2e/components/CompanyProfile.logo.spec.tsx` | rows m1–m8 | one spec per concern; `CompanyProfile.spec.tsx` stands at 282 lines |
+| modify | `tests/e2e/components/CompanyProfile.what-you-sell.spec.tsx` | built, not planned: its typed word facts need `logo: null` | the compiler names it |
+| modify | `packages/ui/src/styles.css` | built, not planned: the new stylesheet's `@import` | the one list of component stylesheets |
+| modify | `docs/ux/briefs/SCR-M01-05-business-profile.md` | the rulings of *Decisions*, 1–3 | the brief owns the screen's facts |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the design check's twelfth entry, the ledger, part n's row, part m `shipped` | the task |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **The area shows on a running app before the upload exists.** Held by the `null` gate: row m1 on the component page, row m11 on the step's words, and the three live rows.
+- **Touch emulation does not turn the pointer query in the component runner.** Row m5 then cannot show the finger's line at 375; the build stops with that evidence (`CLAUDE.md` §3, two attempts), and the clearing path is *Decisions*, 2's second way or a hint by width.
+- **An English default of `Dropzone` reaches the page.** Row m2 reads the page for the three default lines and finds none.
+- **Rollout.** Nothing stored or sent changes. An app from before this part draws the first part as today.
+
+##### Acceptance criteria and proof
+The task's AC-4 (`logo-invalid-limits-stated`) is this part's on the component page; part n holds it on the running apps. AC-1 is `not_applicable` in the task; AC-2 and AC-3 have no row here.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| m1 the gate | main-dev | required | `3100` at 375 | no logo words → the first part holds the company name alone, no capture area. Planted red: the area drawn with `words.logo` `null` | `tests/e2e/components/CompanyProfile.logo.spec.tsx` |
+| AC-4 · m2 at rest | main-dev | required | `3100` at 375, touch | the area stands above the name: `Add your logo`, then `Tap to choose a file · PNG or JPG, up to 2 MB, at least 400 px wide`; its input takes `image/png,image/jpeg` and one file; a chosen PNG is reported once; none of `Dropzone`'s default lines is on the page | the same |
+| AC-4 · m3 refused | main-dev | required | `3100` at 375 | the refusal `3.4 MB, 320 px wide · needs 2 MB or less, at least 400 px` stands under the area as an alert in the danger tone; the name and the limits stay; the act is live; the shut first part reads `Name only` | the same |
+| m4 held | main-dev | required | `3100` at 375 | `Your logo`, the limits alone, one thumbnail named `Your logo`, the picture when one is given, no remove control; the shut first part reads `Added` | the same |
+| m5 the hint by pointer | main-dev | required | `3100` at 1536 | a pointer reads `Choose a file or drop one here · …`; a finger reads `Tap to choose a file · …`. Planted red: the two lines swapped | the same |
+| m6 the tile | main-dev | required | `3100` at 1536 | no picture → the word `Logo`; a picture → the picture inside the 56 tile and no word; the preview stays hidden from a screen reader | the same |
+| m7 Hindi and Marathi | main-dev | required | `3100` at 375 and 1536 | the refused state in each: no sideways scroll, no clipped text box, the act on screen | the same |
+| m8 the touch floor | main-dev | required | `3100` at 375 | the capture surface meets the 44 px floor | the same |
+| m9 the area's words | main-dev | required | unit | English, Hindi and Marathi, whole: at rest the two hint lines joined with the limits; held → `Your logo` and the limits alone on both; a refusal carried as part l prints it | `packages/i18n/tests/company-logo.test.ts` |
+| m10 the screen's words | main-dev | required | unit | logo facts → `words.logo` holds them; `null` → `null` | the same |
+| m11 the step | main-dev | required | unit | the setup step's words carry `logo: null`. Planted red: the step handing logo facts | `packages/i18n/tests/company-profile-step-words.test.ts` |
+| m12 the catalogs | main-dev | required | repo | `pnpm --filter @heliogrid/i18n extract` leaves the tree clean; no missing message in Hindi or Marathi | the command's output |
+| AC-4 · side-by-side `m-default` | qa-web | required | `3100` at 375, touch | the first part at rest beside the frame | the two pictures |
+| AC-4 · side-by-side `m-logo-invalid` | qa-web | required | `3100` at 375 and 1536 | the refused state beside the frame; at 1536 beside the phone frame, inside `d-default`'s list (the record, *Not drawn at 1536*) | the pictures |
+| side-by-side `m-normal`, the first part | qa-web | required | `3100` at 375 and 1536 | the held area beside the frame's open first part; the rest of the frame is part f's | the pictures |
+| AC-4 · side-by-side `d-default` | qa-web | required | `3100` at 1536 | the list and the letterhead beside the frame; the hint's first words are *Decisions*, 2's ruled difference | the two pictures |
+| w1 | qa-web | required | web 375 and 1536 | sign up a new company, pass the two steps before; the first part holds the company name alone, no capture area; type a street, `Save and continue` → the home; no console error | the page, the destination, the log's 200 |
+| i1 | qa-ios | required | iOS | the same journey on the iPhone → the name alone, then the home | the tree, the log's 200 |
+| n1 | qa-android | required | Android | the same journey on the emulator → the same | the tree, the log's 200, logcat |
+| the phone half's frames | — | not_applicable | — | — | no running phone draws the area before part n (finding 6); `tsc` holds the half here, and part n's `qa-ios` rows compare `m-default` and `m-logo-invalid` |
+| the running api | — | not_applicable | — | — | no route, contract or service file changes |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+No row needs the api stopped.
+
+##### Delivery size
+- One part of the four the logo was cut in: **23 files** — 7 of `packages/ui`, 6 of `packages/i18n`, 3 catalogs, 3 generated, 2 of `tests/e2e/components`, 2 documents.
+- **Code: about 190 authored lines** — the contract 30, `logoCapture` 35, the two halves' field sets 50, the two halves' hand-on and the tile 25, the stylesheet 10, the words 40.
+- **Tests: about 290 authored lines** — the component spec 170, the story 45, i18n 75.
+- About 480 in all. Under both targets.
+- Order: as *Proposal*.
+- **Built:** 28 files — the five more are the file table's *built, not planned* rows, 22% over the plan (*Mistakes*: the owner approves this size on the commit card). Code 196 authored lines (188 added, 8 removed) and two catalog lines by hand; tests 314 (310 added, 4 removed). 512 against 480 planned, 7% over.
+
+Checklist:
+- [x] the board's four frames pictured
+- [x] the words' tests, red; the logo's lines, the join, the step's `null`; the catalogs
+- [x] the contract; the story's logo states
+- [x] the component spec, red; `logoCapture`; both halves; the tile
+- [x] the brief
+- [x] review
+- [x] the component-page rows
+- [x] the live rows: web, iOS, Android
+- [x] the gate
+
 #### Design check
 `READY` — 2026-10-12, on the record `SCR-M01-05 - decisions & self-audit.md` (29,484 bytes) read beside the board `SCR-M01-05 Business Profile - Mobile.dc.html` (142,409 bytes, under the read cap). Three checks on one helper. The first found the record behind the board (four frame counts, no Hindi frame, no 1536 alignment numbers, no word plan, a standing FAIL); the owner's redraw closed every finding. Main then found three product facts wrong against the code — three bank fields where `M06-17` and the contract hold four, a city line saying the city sets the market, a count of typed characters the pack cannot give — and the owner corrected them and redrew the 1536 arrangement in the same pass; the third check found nothing.
 
@@ -6319,6 +6489,10 @@ Noted by the helper and not blocking: three stale board notes and three stale re
 **Tenth entry — part e (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part e began: twenty-one frames, seventeen at 375 and four at 1536; the logo's hint lines and the refusal `3.4 MB, 320 px wide · needs 2 MB or less, at least 400 px` stand in its word plan, so nothing changed since the sixth entry and no helper ran. Part e was cut in four (its RFC, *Decisions*, 1): this part draws no frame, so the board was not fetched and no picture was taken. The fifth entry's rows named for part e go on: rows 2, 5, 6, 7 and 22 to part l, rows 8, 11 and 19 to part m. Part m fetches the board's source and pictures `m-logo-invalid`, `m-default`, `m-normal` and `d-default` before its first edit.
 
 **Eleventh entry — part l (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part l began: twenty-one frames, seventeen at 375 and four at 1536. Its word plan holds the logo's three hint lines — `Tap to choose a file · …` at 375, `Choose a file or drop one here · …` at 1536, the limits alone on `m-normal` — and the refusal `3.4 MB, 320 px wide · needs 2 MB or less, at least 400 px`; its decision 9 calls the limits build-side configuration drawn at realistic values. Nothing changed since the sixth entry, so no helper ran. This part draws no frame: the board was not fetched and no picture was taken. It takes the fifth entry's rows 2, 5, 6, 7 and 22; its RFC rules each (*Proposal*, 1–5).
+
+**Twelfth entry — part m (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part m began: twenty-one frames, seventeen at 375 and four at 1536; the logo's three hint lines, the refusal and gap 4 (`Dropzone`'s fallback hint) stand in it as the eleventh entry read them. The board was fetched again (148,243 bytes, under the read cap, the sixth entry's size) and saved to the scratchpad by a script: nothing changed, so no helper ran. Main read the three capture areas in its source — `identityFields`, `logoErrorFields`, `filledIdentityFields` — and the two tiles. One frame is behind its record: `d-default` draws the phone's hint, where the word plan writes `Choose a file or drop one here · …` at 1536 (part m's RFC, *Decisions*, 2). This part takes the fifth entry's rows 8, 11 and 19; its RFC rules each (*Proposal*, 1–3). The frames it compares — `m-default`, `m-logo-invalid`, `m-normal`, `d-default` — are pictured after the RFC is approved and before the first edit.
+
+**Board pictures, part m.** Main pictured the frames in the pane at its own size (800 × 600, the board at 50%, the chat panel open: its toggle did not answer), into the scratchpad as `board/<frame>.png`: `m-default` and `m-normal` whole at 154 × 324; `d-default` in two pictures, its list (400 × 394) and its letterhead (270 × 394); `m-logo-invalid` as its left half only (82 × 324) — the frame stands in the board's third column, which the pane cut, and the canvas did not scroll sideways on that row. The refusal's line, its tone and its place are read from the board's source (`logoErrorFields`) and the record's measurements (2 lines, 40 px). `qa-web` was not asked: under a set viewport the board's canvas does not scroll (third entry).
 
 #### Runtime
 Branch `feat/T-M01-005`, cut from `feat/T-M01-004c` (`99ed0bcc`, draft PR #283 open, its `quality`, `e2e-web` and `android` checks running) on a clean tree, by the owner's word, 2026-10-12: the walk reads `origin/main`, where `T-M01-004`'s part c is not yet merged.
@@ -7004,6 +7178,69 @@ Seen and not a fault of this part: each web run shows one console line, a 401 on
 | browser tabs | pane closed | the two preview tabs closed, pane closed |
 | database routing | `heliogrid_test` / `heliogrid_test` | the same; never changed |
 | runtime logs | `api.log` 25,271,282 · `web.log` 716,832 · `metro.log` 2,103,968 bytes | 25,495,921 · 733,124 · 2,154,249 bytes, kept |
+| watchers | none | none |
+
+**Part m · Runtime (2026-10-12).** Branch `feat/T-M01-005m`, cut from `feat/T-M01-005l` (`716cf187`, part l, draft PR #297 open, its checks running) on a clean tree, as the walk says for an open earlier part and by the owner's word.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | — |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 25,495,921 · `web.log` 733,124 · `metro.log` 2,154,249 bytes | — |
+| watchers | none (read before the first runtime start) | — |
+
+**Part m · QA (2026-10-12)** — one stack on `heliogrid_test` (at `0025`, nothing to migrate): the api, the web and Metro from source (`api`, `web`, `mobile-metro` launch configurations, `started_by_task`), the iPhone 17 Pro simulator and the `Pixel_8_Emulator` booted by Main, on the apps already installed — no native file changed, so nothing was rebuilt. Main cold-started both apps and saw each on a fresh bundle before the helpers ran. The component page (`3100`) was up only inside each `test:ct` run.
+
+- **Order.** The reviewer read alone: two should-fix items and six notes in round one (the two file-table rows, the hook's stale comment, typed English in the spec, a dead export, a redundant type; two notes written into part n's row), all applied; one note in round two (the refused image typed twice), applied through `tests/e2e/support/company-logo.ts`; clean in round three. Then `qa-web`, `qa-ios` and `qa-android` together; the tree's hash was the same before and after (`2e68c4b4…`). Then the gate.
+- **Planted reds seen (part m).** The gate: the area drawn with `words.logo` `null` → *a screen that cannot upload yet holds the company name alone* failed by name. The hint: the two lines swapped in `logoCapture` → *a pointer is told it can drop a file* and *a finger is told to tap, whatever the width* failed by name (and the two 375 rows that read the hint). The step: `companyProfileStepWords` handing logo facts → *carries no logo: no screen can upload one yet* failed by name. Each restored from a scratchpad copy.
+- **Touch emulation turns the pointer query** in the component runner (`hasTouch: true`): the RFC's one stated risk did not occur.
+
+**As proven (part m).**
+
+| row | result | evidence |
+|---|---|---|
+| m1–m8 | passed | `tests/e2e/components/CompanyProfile.logo.spec.tsx`, 13 tests; the seven `CompanyProfile*` specs together, 55 passed |
+| m9–m11 | passed | `packages/i18n`, 26 files and 451 tests |
+| m12 | passed | `extract`: 454 messages, 0 missing in Hindi and Marathi; `pnpm check:catalogs` exit 0 |
+| side-by-side `m-default` | passed | `qa-web` on Main's pictures: order, words, colour and spacing match; ruled differences only |
+| side-by-side `m-logo-invalid` | passed | the danger tint and dashed edge, the refusal in the danger tone under the area, two lines at 375 and one at 1536; compared with the frame's left half (`#### Design check`, twelfth entry) |
+| side-by-side `m-normal`, the first part | passed | `Your logo`, the limits alone, one thumbnail, no remove control |
+| side-by-side `d-default` | passed | the list and the letterhead match; the hint's first words are the ruled difference (the brief's ruling 49) |
+| Hindi and Marathi pictures | passed | no clipped or overlapping text at 375 |
+| w1 | passed | web at 375 (`…10601`) and 1536 (`…10604`): the first part is the name and `From your signup` alone, no `.hg-dropzone` and no file input; `/home` reached; `PUT /settings/business-profile` 200 with no `logoFileId` in its body; no sideways overflow; the act 48 px tall · log bytes 25,615,123–25,665,265 |
+| i1 | passed | iPhone (`…10602`): the same first part in the tree; home reached; the `PUT` 200 and the step recorded · log bytes 25,590,663–25,600,089 |
+| n1 | passed | Android (`…10603`): the same; home reached; no fatal, ANR or React Native error · log bytes 25,551,355–25,633,749 |
+
+Seen by the helpers and outside this part: one `401` in the web console on each run with no request to tie it to (the session check of a signed-out visitor is the likely one); on the iPhone the development build's *Open debugger to view warnings* toast stands over the lower edge of the act from the signup step on. Neither is on a file of this part; Metro's log holds only the `@formatjs` export warnings.
+
+- **The gate (part m).** One run, passed whole: 226 test files and 4,068 tests, the api tests on `heliogrid_test`, the invariants on real tables, nothing regenerated.
+
+**Mistakes found (part m)**, each with the rule that now holds it:
+- **The RFC's file table missed three files** (Main): the stylesheet list `packages/ui/src/styles.css`, and two tests whose typed word facts needed the new field. With the review's two more the part is 28 files against 23 planned, 22% over; the lines are 7% over. Past the 20% rule (`docs/tasks/README.md`): put to the owner on the commit card, who approved the commit at this size. An RFC that adds a stylesheet now lists `styles.css`, and one that adds a required field lists every typed fixture the compiler will name — found by `rg` for the type before the table is written.
+- **The first built pictures were taken while the open part was still fading in** (Main, on reading them): pale words that looked like a tone defect. Retaken after the animation; a picture of an accordion's open part waits for it.
+- **`m-logo-invalid` was pictured as its left half** (Main): the pane was 800 wide with the board's chat panel open, and the third column did not scroll into view. Said in `#### Design check`; the row was compared with the half and the board's source.
+- **The spec typed the English lines the i18n test already pins** (the reviewer). They now come from the catalog through `companyLogoWords`.
+- **The refused image was typed in the story and again in the spec** (the reviewer). Written once, in `tests/e2e/support/company-logo.ts`; the component transform refuses a value imported from a story.
+- **`logoCapture`'s return type carried a `Partial` that added nothing, and the story exported a type nothing imports** (the reviewer). Both removed.
+
+**Measurements (part m)** — helper runs: `reviewer` 1 with two continuations (105 k, 112 k, 115 k), `qa-web` 1 (83 k), `qa-ios` 1 (56 k), `qa-android` 1 (36 k), `evaluator` 1 (31 k); one full gate, passed. `design-check` did not run: the record and the board were unchanged. Main's context tokens at the commit card were not read. Planned 23 files and 480 lines; built 28 files and 512 lines.
+
+**Left on `heliogrid_test` (part m):** four signup companies of the surface rows (`…10601`, `…10604`, `…10602`, `…10603`), made through the app.
+
+**Teardown (part m).**
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` | none listening | none listening — each started through its launch configuration and stopped by its preview id |
+| component tests `3100` | none listening | none listening |
+| Postgres · object store · Temporal | running (`pre_existing`) | running, untouched |
+| simulator · emulator | none booted | none booted — iPhone 17 Pro (`40ED0117-…`) shut down, `emulator-5554` killed |
+| browser tabs | pane closed | the board's tab (`seed`, `started_by_task`) left open for the owner's `d-default` correction; the preview tabs closed with their servers |
+| database routing | `heliogrid_test` / `heliogrid_test` | the same; never changed |
+| runtime logs | `api.log` 25,495,921 · `web.log` 733,124 · `metro.log` 2,154,249 bytes | 25,665,265 · 749,900 · 2,209,784 bytes, kept |
 | watchers | none | none |
 
 ### T-M01-006 · Setup — You're Ready

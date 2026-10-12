@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 const QUERY = '(pointer: coarse)';
 
 /**
- * Coarse pointer = the touch additions. A media query, not a user-agent sniff, and it
- * re-evaluates: a tablet with a keyboard attached is both, which is what `input="both"` is for.
- * Web only — React Native is always coarse, so the native half passes `true`.
+ * Whether the main pointer is a finger. A media query, not a user-agent sniff, and it
+ * re-evaluates when a mouse or a keyboard is attached. Web only — React Native is always coarse,
+ * so a native half never asks. It answers `false` on the server: what it picks must not be in
+ * server HTML, or a touch device hydrates another answer.
  */
 export function useCoarsePointer(): boolean {
   const [coarse, setCoarse] = useState(

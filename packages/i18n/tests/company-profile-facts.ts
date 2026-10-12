@@ -23,6 +23,7 @@ export const AT_SIGNUP: CompanyProfileWordFacts = {
     registration: null,
     bank: null,
   },
+  logo: null,
 };
 
 /** The same company with one part standing elsewhere. */

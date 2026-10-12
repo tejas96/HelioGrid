@@ -21,7 +21,8 @@ export interface CompanyProfileStepFacts extends CompanyProfileView {
 
 /**
  * The words of the company profile as a setup step (`SCR-M01-05`), built once for both screens.
- * Never `skipped`: a recorded step is not asked again, so nobody is back from a skip. The two
+ * Never `skipped`: a recorded step is not asked again, so nobody is back from a skip. No logo:
+ * the capture area lands with the upload, whole (`SCR-M01-05`'s brief, ruling 26). The two
  * labels are the format layer's; the format line is the market pack's, in the reader's language.
  */
 export function companyProfileStepWords(
@@ -41,5 +42,6 @@ export function companyProfileStepWords(
     taxFormat: step.taxFormat === null ? '' : inLanguage(step.taxFormat, reader),
     bankRoutingLabel: labels.bankRoutingLabel,
     letterhead: step.letterhead,
+    logo: null,
   });
 }

@@ -27,7 +27,13 @@ export function CompanyProfile(props: CompanyProfileProps) {
   return (
     <div className="hg-company-profile" data-preview={previewed ? 'true' : undefined}>
       <ProfileColumn {...props} />
-      {previewed ? <Letterhead words={words.letterhead} loading={words.loading !== null} /> : null}
+      {previewed ? (
+        <Letterhead
+          words={words.letterhead}
+          picture={props.logoPicture ?? null}
+          loading={words.loading !== null}
+        />
+      ) : null}
     </div>
   );
 }
@@ -49,6 +55,8 @@ function ProfileColumn({
   onSave,
   onRetryRead,
   onContinueWithout,
+  logoPicture,
+  onChooseLogo,
 }: CompanyProfileProps) {
   if (words.unread !== null) {
     return (
@@ -148,6 +156,8 @@ function ProfileColumn({
                 onEdit={onEdit}
                 onChooseSegment={onChooseSegment}
                 onDeclareSize={onDeclareSize}
+                logoPicture={logoPicture}
+                onChooseLogo={onChooseLogo}
               />
             ))}
             value={open}
@@ -188,13 +198,16 @@ function UnreadGlyph() {
 
 /**
  * Decorative: every value on it is a field beside it, so it is hidden from a screen reader and
- * holds no control. A line with nothing to show is a bar.
+ * holds no control. A line with nothing to show is a bar; the tile shows the logo's picture once
+ * the screen has one, and a word until then.
  */
 function Letterhead({
   words,
+  picture,
   loading,
 }: {
   words: CompanyProfileWords['letterhead'];
+  picture: string | null;
   loading: boolean;
 }) {
   return (
@@ -206,9 +219,13 @@ function Letterhead({
       <div className="hg-company-profile-sheet" data-loading={loading ? 'true' : undefined}>
         <div className="hg-company-profile-sheet-head">
           <span className="hg-company-profile-sheet-logo">
-            <Text variant="caption" color="secondary">
-              {words.logo}
-            </Text>
+            {picture === null ? (
+              <Text variant="caption" color="secondary">
+                {words.logo}
+              </Text>
+            ) : (
+              <img className="hg-company-profile-sheet-picture" src={picture} alt="" />
+            )}
           </span>
           <div className="hg-company-profile-sheet-name">
             {words.name === '' ? (

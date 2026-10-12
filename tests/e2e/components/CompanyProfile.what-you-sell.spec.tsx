@@ -68,6 +68,7 @@ const KINDS = companyProfileWords(en.t, {
   taxFormat: '',
   bankRoutingLabel: '',
   letterhead: { companyName: '', addressLine: '', registration: null, bank: null },
+  logo: null,
 }).declarations.options;
 
 /* Two lines of text stand more than twice their font size tall; a box under that holds one line. */

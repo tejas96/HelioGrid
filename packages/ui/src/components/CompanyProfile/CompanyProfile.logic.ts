@@ -1,4 +1,5 @@
 import {
+  COMPANY_LOGO_LIMITS,
   COMPANY_PROFILE_PARTS,
   type CompanyProfilePart,
   isTypicalSystemSize,
@@ -8,6 +9,7 @@ import {
 import type { ReactNode } from 'react';
 import type { AccordionItem, AccordionItemState } from '../Accordion/Accordion.types';
 import type { GlyphMark } from '../AppShell/ShellGlyph.logic';
+import type { DropzoneProps } from '../Dropzone/Dropzone.types';
 import type { NumberFieldProps } from '../NumberField/NumberField.types';
 import type {
   CompanyProfileField,
@@ -195,5 +197,32 @@ export function sizeField(
       ? { tier: 'estimated', source: words.sizeSource, emphasis: 'load-bearing' }
       : 'unmarked',
     commits: 'as-typed',
+  };
+}
+
+/**
+ * The logo's capture area as `Dropzone` draws it (`m-default`, `m-logo-invalid`, `m-normal`), one
+ * answer for both halves. Every word `Dropzone` shows is handed to it, so none of its English
+ * defaults is reached. The picker offers the types the limits take and one file; the check stays
+ * domain's, so no size is passed. A held logo is one thumbnail named as the area is, with no
+ * remove control: choosing another file replaces it.
+ */
+export function logoCapture(
+  logo: NonNullable<CompanyProfileWords['logo']>,
+  picture: string | null,
+  pointer: boolean,
+): Pick<
+  DropzoneProps,
+  'label' | 'hint' | 'accept' | 'multiple' | 'state' | 'errorMessage' | 'files'
+> {
+  return {
+    label: logo.name,
+    hint: pointer ? logo.hintPointer : logo.hint,
+    accept: COMPANY_LOGO_LIMITS.contentTypes.join(','),
+    multiple: false,
+    files: logo.held
+      ? [{ id: 'logo', name: logo.name, ...(picture === null ? {} : { url: picture }) }]
+      : [],
+    ...(logo.refusal === null ? { state: 'idle' } : { state: 'error', errorMessage: logo.refusal }),
   };
 }

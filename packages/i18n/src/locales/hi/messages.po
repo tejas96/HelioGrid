@@ -113,6 +113,11 @@ msgid "{home}, switch home"
 msgstr "{home}, होम बदलें"
 
 #. js-lingui-explicit-id
+#: src/copy/company-logo.ts:26
+msgid "{how} · {limits}"
+msgstr "{how} · {limits}"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:23
 msgid "{label} (optional)"
 msgstr "{label} (वैकल्पिक)"
@@ -133,7 +138,7 @@ msgid "{match} match · {unread} unread in all"
 msgstr "{match} मिलीं · कुल {unread} अपठित"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:30
+#: src/copy/company-logo.ts:32
 msgid "{megabytes} MB · needs {maxMegabytes} MB or less"
 msgstr "{megabytes} MB · {maxMegabytes} MB या कम चाहिए"
 
@@ -228,7 +233,7 @@ msgid "{weekday} · {date}"
 msgstr "{weekday} · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:31
+#: src/copy/company-logo.ts:33
 msgid "{width} px wide · needs at least {minWidth} px"
 msgstr "{width} px चौड़ा · कम से कम {minWidth} px चाहिए"
 
@@ -990,7 +995,7 @@ msgid "Name, phone or city"
 msgstr "नाम, फ़ोन या शहर"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:29
+#: src/copy/company-logo.ts:31
 msgid "Needs a PNG or JPG"
 msgstr "PNG या JPG चाहिए"
 

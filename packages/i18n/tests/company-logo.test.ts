@@ -5,8 +5,10 @@
  */
 import { COMPANY_LOGO_LIMITS, type CompanyLogoRefusal } from '@heliogrid/domain';
 import { describe, expect, it } from 'vitest';
-import { companyLogoWords } from '../src/copy/company-logo';
+import { companyLogoCapture, companyLogoWords } from '../src/copy/company-logo';
+import { companyProfileWords } from '../src/copy/company-profile-words';
 import { createTranslator } from '../src/runtime';
+import { AT_SIGNUP } from './company-profile-facts';
 
 const refused = (missed: CompanyLogoRefusal['missed']): CompanyLogoRefusal => ({
   missed,
@@ -94,4 +96,82 @@ describe('companyLogoWords — a refused image is told every limit it missed, an
       expect(JSON.stringify(lines)).not.toMatch(/\b2 MB|400/);
     },
   );
+});
+
+const AT_REST = { limits: COMPANY_LOGO_LIMITS, refusal: null, held: false };
+
+describe('companyLogoCapture — the area as the company profile draws it', () => {
+  it.each([
+    [
+      'en',
+      'Add your logo',
+      'Tap to choose a file · PNG or JPG, up to 2 MB, at least 400 px wide',
+      'Choose a file or drop one here · PNG or JPG, up to 2 MB, at least 400 px wide',
+    ],
+    [
+      'hi',
+      'अपना लोगो जोड़ें',
+      'फ़ाइल चुनने के लिए टैप करें · PNG या JPG, अधिकतम 2 MB, कम से कम 400 px चौड़ा',
+      'फ़ाइल चुनें या यहाँ छोड़ें · PNG या JPG, अधिकतम 2 MB, कम से कम 400 px चौड़ा',
+    ],
+    [
+      'mr',
+      'तुमचा लोगो जोडा',
+      'फाइल निवडण्यासाठी टॅप करा · PNG किंवा JPG, कमाल 2 MB, किमान 400 px रुंद',
+      'फाइल निवडा किंवा येथे टाका · PNG किंवा JPG, कमाल 2 MB, किमान 400 px रुंद',
+    ],
+  ] as const)(
+    'at rest in %s it names the act, and each hint is followed by the limits',
+    async (reader, name, hint, hintPointer) => {
+      const { t } = await createTranslator(reader);
+      expect(companyLogoCapture(t, AT_REST)).toEqual({
+        name,
+        hint,
+        hintPointer,
+        refusal: null,
+        held: false,
+      });
+    },
+  );
+
+  it.each([
+    ['en', 'Your logo', 'PNG or JPG, up to 2 MB, at least 400 px wide'],
+    ['hi', 'आपका लोगो', 'PNG या JPG, अधिकतम 2 MB, कम से कम 400 px चौड़ा'],
+    ['mr', 'तुमचा लोगो', 'PNG किंवा JPG, कमाल 2 MB, किमान 400 px रुंद'],
+  ] as const)(
+    'a held logo in %s is named, and both hints are the limits alone',
+    async (reader, name, limits) => {
+      const { t } = await createTranslator(reader);
+      expect(companyLogoCapture(t, { ...AT_REST, held: true })).toEqual({
+        name,
+        hint: limits,
+        hintPointer: limits,
+        refusal: null,
+        held: true,
+      });
+    },
+  );
+
+  it('carries a refusal as its own line, and keeps the name and the hints', async () => {
+    const { t } = await createTranslator('en');
+    const capture = companyLogoCapture(t, { ...AT_REST, refusal: SIZE_AND_WIDTH });
+    expect(capture).toEqual({
+      ...companyLogoCapture(t, AT_REST),
+      refusal: '3.4 MB, 320 px wide · needs 2 MB or less, at least 400 px',
+    });
+  });
+});
+
+describe('companyProfileWords — the logo on the screen’s words', () => {
+  it('holds the capture area when the screen is handed the logo’s facts', async () => {
+    const { t } = await createTranslator('en');
+    expect(companyProfileWords(t, { ...AT_SIGNUP, logo: AT_REST }).logo).toEqual(
+      companyLogoCapture(t, AT_REST),
+    );
+  });
+
+  it('holds none when the screen is handed none', async () => {
+    const { t } = await createTranslator('en');
+    expect(companyProfileWords(t, AT_SIGNUP).logo).toBeNull();
+  });
 });
