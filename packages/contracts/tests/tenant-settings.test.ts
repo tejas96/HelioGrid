@@ -93,7 +93,7 @@ describe('tax registrations on the wire — one entry per type (M01-24)', () => 
   });
 });
 
-describe('the business profile on the wire — each bound at its edge (M01-23, M01-24, M06-17)', () => {
+describe('the business profile on the wire — each bound at its edge (M01-23, M01-24)', () => {
   const profile = {
     companyName: 'Sunrise Solar',
     city: 'Pune',
@@ -102,12 +102,6 @@ describe('the business profile on the wire — each bound at its edge (M01-23, M
     address: null,
     postalCode: null,
     bankDetails: null,
-  };
-  const noBankFact = {
-    bankName: null,
-    accountName: null,
-    accountNumber: null,
-    bankRoutingIdentifier: null,
   };
 
   it.each([
@@ -139,16 +133,4 @@ describe('the business profile on the wire — each bound at its edge (M01-23, M
     expect(businessProfileWriteSchema.safeParse(fromAnOlderClient).success).toBe(true);
     expect(businessProfileSchema.safeParse(fromAnOlderClient).success).toBe(false);
   });
-
-  it.each([
-    [{ ...noBankFact, bankName: 'Bank of Pune' }, true],
-    [{ ...noBankFact, accountNumber: '0012345678', bankRoutingIdentifier: 'PUNE0001234' }, true],
-    [noBankFact, false],
-    [{ ...noBankFact, bankName: '' }, false],
-  ])(
-    'bank details %o are %s — typed half way is kept, nothing at all is null',
-    (bankDetails, ok) => {
-      expect(businessProfileWriteSchema.safeParse({ ...profile, bankDetails }).success).toBe(ok);
-    },
-  );
 });

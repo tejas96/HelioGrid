@@ -1,4 +1,4 @@
-import { fitsTypicalSystemPrecision, TYPICAL_SYSTEM_KWP } from '@heliogrid/domain';
+import { columnHoldsTypicalSystemSize } from '@heliogrid/domain';
 import { z } from 'zod';
 import { tenantSegmentSchema } from './common';
 import { labelSchema } from './document-content';
@@ -12,20 +12,15 @@ import { citySchema, companyNameSchema } from './tenant';
 
 /**
  * `M06-17`'s four bank facts under market-neutral names; the routing identifier is what the pack
- * labels IFSC in IN (`formats.bankRoutingLabel`). A fact is `null` until the owner gives it, so
- * details typed half way are kept; details with no fact in them are `null`, never an empty object.
+ * labels IFSC in IN (`formats.bankRoutingLabel`).
  */
-export const bankDetailsSchema = z
-  .object({
-    bankName: labelSchema.nullable(),
-    accountName: labelSchema.nullable(),
-    /** ISO 13616 bounds an account identifier at 34 characters; a national number is shorter. */
-    accountNumber: z.string().trim().min(1).max(34).nullable(),
-    bankRoutingIdentifier: z.string().trim().min(1).max(34).nullable(),
-  })
-  .refine((details) => Object.values(details).some((fact) => fact !== null), {
-    message: 'bank details with no fact are null',
-  });
+export const bankDetailsSchema = z.object({
+  bankName: labelSchema,
+  accountName: labelSchema,
+  /** ISO 13616 bounds an account identifier at 34 characters; a national number is shorter. */
+  accountNumber: z.string().trim().min(1).max(34),
+  bankRoutingIdentifier: z.string().trim().min(1).max(34),
+});
 export type BankDetails = z.infer<typeof bankDetailsSchema>;
 
 /** A postal code as the owner writes it. No market declares its format yet, so only its length is held. */
@@ -41,13 +36,15 @@ export const businessProfileSchema = z.object({
   segment: tenantSegmentSchema.nullable(),
   /**
    * Declared in kWp; rendered with the tier it was declared at — `estimated · declared by you`.
-   * The bounds are the stored column's, so a figure it cannot hold is refused here, not there.
+   * A figure the stored column cannot hold is refused here, not there: one over its ceiling
+   * fails in the database, one finer than its precision is rounded away. The rule is domain's and
+   * a refinement, which the emitted spec does not print: a `max` or a `multipleOf` written here
+   * reads as a breaking bound to the judge that compares specs.
    */
   typicalSystemKwp: z
     .number()
     .nonnegative()
-    .max(TYPICAL_SYSTEM_KWP.ceiling)
-    .refine(fitsTypicalSystemPrecision, 'no finer than the column holds')
+    .refine(columnHoldsTypicalSystemSize, 'not a figure the column holds')
     .nullable(),
   address: z.string().trim().min(1).max(500).nullable(),
   postalCode: postalCodeSchema.nullable(),

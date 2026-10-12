@@ -206,23 +206,6 @@ describe.skipIf(skip)('the settings writes, against a migrated database', () => 
     expect((await settings.businessProfile(here.tenantId)).postalCode).toBeNull();
   });
 
-  it('keeps bank details typed half way, and still owes their prompt-point until all four exist', async () => {
-    const stored = await settings.businessProfile(here.tenantId);
-    const halfTyped = {
-      ...stored,
-      bankDetails: {
-        bankName: 'Bank of Nagpur',
-        accountName: null,
-        accountNumber: '00123456789',
-        bankRoutingIdentifier: null,
-      },
-    };
-    expect(await settings.saveBusinessProfile(here.tenantId, halfTyped, by())).toEqual(halfTyped);
-    expect(await settings.businessProfile(here.tenantId)).toEqual(halfTyped);
-    const effective = await settings.effective(here.tenantId);
-    expect(effective.pendingPromptPoints).toEqual(['payment_terms', 'bank_details']);
-  });
-
   it('keeps the terms in a proposal template whatever the list said, and records the two template writes', async () => {
     const saved = await templates.saveProposalTemplate(
       here.tenantId,

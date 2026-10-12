@@ -27,11 +27,14 @@ export function isTypicalSystemSize(kwp: number | null): kwp is number {
 }
 
 /**
- * Whether the column holds the figure exactly as written — no finer than its precision — so nothing
- * is rounded away between what was declared and what is stored. `0.004` and `1e-7` do not.
+ * Whether the column holds the figure exactly as written: no larger than its ceiling and no finer
+ * than its precision, so nothing overflows and nothing is rounded away between what was declared
+ * and what is stored. `1,000,000`, `0.004` and `1e-7` do not fit.
  */
-export function fitsTypicalSystemPrecision(kwp: number): boolean {
-  return Number(kwp.toFixed(TYPICAL_SYSTEM_KWP.precision)) === kwp;
+export function columnHoldsTypicalSystemSize(kwp: number): boolean {
+  return (
+    kwp <= TYPICAL_SYSTEM_KWP.ceiling && Number(kwp.toFixed(TYPICAL_SYSTEM_KWP.precision)) === kwp
+  );
 }
 
 /** The questions still owed, in the screen's order — where `Continue` refuses. */

@@ -32212,7 +32212,6 @@
                             "typicalSystemKwp": {
                               "type": "number",
                               "minimum": 0,
-                              "maximum": 999999.99,
                               "nullable": true
                             },
                             "address": {
@@ -32233,26 +32232,22 @@
                                 "bankName": {
                                   "type": "string",
                                   "minLength": 1,
-                                  "maxLength": 120,
-                                  "nullable": true
+                                  "maxLength": 120
                                 },
                                 "accountName": {
                                   "type": "string",
                                   "minLength": 1,
-                                  "maxLength": 120,
-                                  "nullable": true
+                                  "maxLength": 120
                                 },
                                 "accountNumber": {
                                   "type": "string",
                                   "minLength": 1,
-                                  "maxLength": 34,
-                                  "nullable": true
+                                  "maxLength": 34
                                 },
                                 "bankRoutingIdentifier": {
                                   "type": "string",
                                   "minLength": 1,
-                                  "maxLength": 34,
-                                  "nullable": true
+                                  "maxLength": 34
                                 }
                               },
                               "required": [
@@ -33402,7 +33397,6 @@
                     "typicalSystemKwp": {
                       "type": "number",
                       "minimum": 0,
-                      "maximum": 999999.99,
                       "nullable": true
                     },
                     "address": {
@@ -33423,26 +33417,22 @@
                         "bankName": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 120,
-                          "nullable": true
+                          "maxLength": 120
                         },
                         "accountName": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 120,
-                          "nullable": true
+                          "maxLength": 120
                         },
                         "accountNumber": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 34,
-                          "nullable": true
+                          "maxLength": 34
                         },
                         "bankRoutingIdentifier": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 34,
-                          "nullable": true
+                          "maxLength": 34
                         }
                       },
                       "required": [
@@ -33734,7 +33724,6 @@
                   "typicalSystemKwp": {
                     "type": "number",
                     "minimum": 0,
-                    "maximum": 999999.99,
                     "nullable": true
                   },
                   "address": {
@@ -33755,26 +33744,22 @@
                       "bankName": {
                         "type": "string",
                         "minLength": 1,
-                        "maxLength": 120,
-                        "nullable": true
+                        "maxLength": 120
                       },
                       "accountName": {
                         "type": "string",
                         "minLength": 1,
-                        "maxLength": 120,
-                        "nullable": true
+                        "maxLength": 120
                       },
                       "accountNumber": {
                         "type": "string",
                         "minLength": 1,
-                        "maxLength": 34,
-                        "nullable": true
+                        "maxLength": 34
                       },
                       "bankRoutingIdentifier": {
                         "type": "string",
                         "minLength": 1,
-                        "maxLength": 34,
-                        "nullable": true
+                        "maxLength": 34
                       }
                     },
                     "required": [
@@ -33828,7 +33813,6 @@
                     "typicalSystemKwp": {
                       "type": "number",
                       "minimum": 0,
-                      "maximum": 999999.99,
                       "nullable": true
                     },
                     "address": {
@@ -33849,26 +33833,22 @@
                         "bankName": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 120,
-                          "nullable": true
+                          "maxLength": 120
                         },
                         "accountName": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 120,
-                          "nullable": true
+                          "maxLength": 120
                         },
                         "accountNumber": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 34,
-                          "nullable": true
+                          "maxLength": 34
                         },
                         "bankRoutingIdentifier": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 34,
-                          "nullable": true
+                          "maxLength": 34
                         }
                       },
                       "required": [

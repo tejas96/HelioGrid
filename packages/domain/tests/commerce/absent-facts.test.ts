@@ -30,17 +30,6 @@ describe('absentFacts — what a skip left behind, judged from the rows (M01-29)
       absent: ['company_profile', 'payment_terms'],
     },
     {
-      rows: {
-        ...nothingSet,
-        businessProfile: {
-          address: null,
-          postalCode: null,
-          bankDetails: { ...wholeBank, bankRoutingIdentifier: null },
-        },
-      },
-      absent: ['company_profile', 'bank_details', 'payment_terms'],
-    },
-    {
       rows: { ...nothingSet, trancheTemplates: [seeded] },
       absent: ['company_profile', 'bank_details', 'payment_terms'],
     },

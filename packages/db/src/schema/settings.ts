@@ -60,7 +60,7 @@ export const businessProfile = pgTable(
     tenantId: tenantId(),
     address: text('address'),
     postalCode: text('postal_code'),
-    /** `M06-17`'s four bank facts under market-neutral names, each null until given; financial (sensitive-data register). */
+    /** `M06-17`'s four bank facts under market-neutral names; financial (sensitive-data register). */
     bankDetails: jsonb('bank_details').$type<BankDetails>(),
     createdAt: instant('created_at').notNull(),
     updatedAt: instant('updated_at').notNull(),
