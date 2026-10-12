@@ -30,6 +30,7 @@ const REDACTED_PATHS = [
   // The business profile's financial and business-PII parts, and the regulated tax
   // identifiers, wherever a serializer nests them (`T-M01-026`, the sensitive-data register).
   '*.address',
+  '*.postalCode',
   '*.bankDetails',
   '*.registrations',
   'req.body.email',

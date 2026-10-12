@@ -26,6 +26,14 @@ export function isTypicalSystemSize(kwp: number | null): kwp is number {
   return kwp !== null && kwp > 0 && kwp <= TYPICAL_SYSTEM_KWP.ceiling;
 }
 
+/**
+ * Whether the column holds the figure exactly as written — no finer than its precision — so nothing
+ * is rounded away between what was declared and what is stored. `0.004` and `1e-7` do not.
+ */
+export function fitsTypicalSystemPrecision(kwp: number): boolean {
+  return Number(kwp.toFixed(TYPICAL_SYSTEM_KWP.precision)) === kwp;
+}
+
 /** The questions still owed, in the screen's order — where `Continue` refuses. */
 export function whatYouSellUnanswered(answers: WhatYouSellAnswers): readonly WhatYouSellQuestion[] {
   return WHAT_YOU_SELL_QUESTIONS.filter((question) =>

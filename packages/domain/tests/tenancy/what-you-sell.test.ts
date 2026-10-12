@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  fitsTypicalSystemPrecision,
   isTypicalSystemSize,
   TYPICAL_SYSTEM_KWP,
   WHAT_YOU_SELL_STEP_AT_OPEN,
@@ -13,6 +14,19 @@ import {
 } from '../../src/tenancy/what-you-sell';
 
 const nothing: WhatYouSellAnswers = { segment: null, typicalSystemKwp: null };
+
+describe('fitsTypicalSystemPrecision — a figure the column stores as written (M01-23)', () => {
+  it.each([
+    [0.01, true],
+    [5.5, true],
+    [TYPICAL_SYSTEM_KWP.ceiling, true],
+    [0.004, false],
+    [5.125, false],
+    [1e-7, false],
+  ])('%s kWp fits: %s', (kwp, fits) => {
+    expect(fitsTypicalSystemPrecision(kwp)).toBe(fits);
+  });
+});
 
 describe('isTypicalSystemSize — what counts as a declared size (M01-23)', () => {
   it.each([

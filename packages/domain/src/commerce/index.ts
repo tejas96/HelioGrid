@@ -58,8 +58,14 @@ export type {
   TrancheTemplate,
   TrancheTemplateContent,
   TrancheTemplateInForce,
+  WholeBankDetails,
 } from './effective-settings';
-export { absentFacts, resolveEffectiveSettings, SETTING_SOURCES } from './effective-settings';
+export {
+  absentFacts,
+  bankDetailsAreWhole,
+  resolveEffectiveSettings,
+  SETTING_SOURCES,
+} from './effective-settings';
 export { appliesImmediately, forfeitsPriceProtection } from './grandfathering';
 export type { Meter } from './meters';
 export { METERS } from './meters';

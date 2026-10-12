@@ -1,19 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import {
-  absentFacts,
   resolveEffectiveSettings,
   type TenantFacts,
   type TenantSettings,
-  type TrancheTemplate,
 } from '../../src/commerce/effective-settings';
 import {
   DEFAULT_SECTIONS_INCLUDED,
   DEFAULT_TERMS,
 } from '../../src/commerce/proposal-template-defaults';
 import { DEFAULT_TIMELINE_PHASES } from '../../src/commerce/timeline-template-defaults';
-import { STANDARD_TRANCHE_TEMPLATES } from '../../src/commerce/tranche-template-defaults';
 import { IN_FORMATS } from '../../src/format/pack';
-import { basisPoints } from '../../src/money/basis-points';
+import { nothingSet, seeded, standard } from './settings-rows';
 
 const signupOnly: TenantFacts = {
   companyName: 'Sunrise Solar',
@@ -24,29 +21,10 @@ const signupOnly: TenantFacts = {
   timezone: IN_FORMATS.timeZone,
 };
 
-const nothingSet: TenantSettings = {
-  businessProfile: null,
-  taxRegistrations: [],
-  branding: null,
-  proposalTemplate: null,
-  timelineTemplate: null,
-  trancheTemplates: [],
-  holidays: [],
-};
-
-const [standard] = STANDARD_TRANCHE_TEMPLATES;
-const seeded: TrancheTemplate = {
-  id: 'tt-1',
-  name: standard.name,
-  lines: standard.lines,
-  isDefault: true,
-  archived: false,
-  changed: false,
-};
-
 const everythingSet: TenantSettings = {
   businessProfile: {
     address: '12 MG Road, Pune',
+    postalCode: '411001',
     bankDetails: {
       bankName: 'Bank of Pune',
       accountName: 'Sunrise Solar',
@@ -85,7 +63,7 @@ describe('resolveEffectiveSettings — a tenant with no rows gets the platform e
   it('marks every setting platform and fills each with its default', () => {
     expect(effective.companyIdentity).toEqual({
       source: 'platform',
-      value: { ...signupOnly, address: null, bankDetails: null },
+      value: { ...signupOnly, address: null, postalCode: null, bankDetails: null },
     });
     expect(effective.taxRegistrations).toEqual({ source: 'platform', value: [] });
     expect(effective.branding).toEqual({
@@ -141,6 +119,7 @@ describe('resolveEffectiveSettings — the tenant’s own rows win, each marked 
   it('reads the profile, registrations, template and timeline from the rows', () => {
     expect(effective.companyIdentity.source).toBe('tenant');
     expect(effective.companyIdentity.value.address).toBe('12 MG Road, Pune');
+    expect(effective.companyIdentity.value.postalCode).toBe('411001');
     expect(effective.companyIdentity.value.segment).toBe('both');
     expect(effective.taxRegistrations).toEqual({
       source: 'tenant',
@@ -216,6 +195,19 @@ describe('the seeded split is the platform’s until touched (SCR-M01-20: given,
     expect(effective.locale.source).toBe('tenant');
   });
 
+  it('reads the identity as the tenant’s from a PIN code alone', () => {
+    const effective = resolveEffectiveSettings({
+      formats: IN_FORMATS,
+      tenant: signupOnly,
+      settings: {
+        ...nothingSet,
+        businessProfile: { address: null, postalCode: '411001', bankDetails: null },
+      },
+      promptPoints: {},
+    });
+    expect(effective.companyIdentity.source).toBe('tenant');
+  });
+
   it('reads branding as the tenant’s from a letterhead alone, with no shades to derive', () => {
     const effective = resolveEffectiveSettings({
       formats: IN_FORMATS,
@@ -231,49 +223,5 @@ describe('the seeded split is the platform’s until touched (SCR-M01-20: given,
     });
     expect(effective.branding.source).toBe('tenant');
     expect(effective.branding.value.shades).toBeNull();
-  });
-});
-
-describe('absentFacts — what a skip left behind, judged from the rows (M01-29)', () => {
-  it.each([
-    { rows: nothingSet, absent: ['company_profile', 'bank_details', 'payment_terms'] },
-    {
-      rows: { ...nothingSet, businessProfile: { address: 'x', bankDetails: null } },
-      absent: ['bank_details', 'payment_terms'],
-    },
-    {
-      rows: { ...nothingSet, taxRegistrations: [{ registrationType: 'IN_GST', value: 'x' }] },
-      absent: ['bank_details', 'payment_terms'],
-    },
-    {
-      rows: {
-        ...nothingSet,
-        businessProfile: {
-          address: null,
-          bankDetails: {
-            bankName: 'b',
-            accountName: 'a',
-            accountNumber: '1',
-            bankRoutingIdentifier: 'r',
-          },
-        },
-      },
-      absent: ['company_profile', 'payment_terms'],
-    },
-    {
-      rows: { ...nothingSet, trancheTemplates: [seeded] },
-      absent: ['company_profile', 'bank_details', 'payment_terms'],
-    },
-    {
-      rows: { ...nothingSet, trancheTemplates: [{ ...seeded, changed: true }] },
-      absent: ['company_profile', 'bank_details'],
-    },
-  ])('$absent are absent', ({ rows, absent }) => {
-    expect(absentFacts(rows)).toEqual(absent);
-  });
-
-  it('never judges the catalog — that is the catalog slice’s own (T-M01-027)', () => {
-    expect(absentFacts(nothingSet)).not.toContain('catalog');
-    expect(basisPoints(0)).toBe(0);
   });
 });

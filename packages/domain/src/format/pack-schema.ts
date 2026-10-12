@@ -20,6 +20,7 @@ export const FORMAT_PACK_SCHEMA: z.ZodType<FormatPack, z.ZodTypeDef, unknown> = 
   timeZone: z.string(),
   firstDayOfWeek: oneOf([1, 2, 3, 4, 5, 6, 7]),
   taxIdLabel: z.string(),
+  bankRoutingLabel: z.string(),
   phone: z.object({ dialCode: z.string(), nsnGroups: z.array(packWhole), nsnLength: packWhole }),
   measurementSystem: z.enum(MEASUREMENT_SYSTEMS),
   holidayCalendar: z.array(z.string()),

@@ -28,6 +28,7 @@ export type {
   WhatYouSellStep,
 } from './what-you-sell';
 export {
+  fitsTypicalSystemPrecision,
   isTypicalSystemSize,
   TYPICAL_SYSTEM_KWP,
   WHAT_YOU_SELL_STEP_AT_OPEN,

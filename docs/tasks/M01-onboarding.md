@@ -4341,6 +4341,334 @@ Branch `feat/T-M01-004`, cut from `origin/main` (`54bd8ced`, #280 merged) on a c
 - Given the business profile, when any consumer surface needs company identity facts, then it reads the one profile and the user is never asked to re-enter them (M01-31). → proof: QA (api) `GET /settings/effective` carries the profile's facts and no consumer route re-asks them; the document renders are proven with `T-M06-017`'s first render
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: QA (web and phone) every base and brief-listed state drawn at 375px and 1536px, the colour-literal lint clean on both
 
+#### RFC
+
+##### Title
+`T-M01-005` — The company profile: one screen the owner fills once, as the third setup step and later from settings
+
+##### Description
+**User impact.** After *what you sell*, a new owner meets one calm screen with five parts — logo and company name, address, tax registration, bank details, what you sell — and one act, `Save and continue`, that is live with nothing filled in. A mistyped tax number is explained at the field and never blocks. Indirectly, every proposal, invoice and customer link later reads these facts from one place, so nothing is asked twice, and the two answers from the step before can be changed here.
+
+Who gains: every owner, and every document a later module prints. The problem: the routes and the tables exist (`GET`, `PUT /settings/business-profile`, `/settings/tax-registrations` — `T-M01-026`), but no screen calls them, `setupStepOwed` knows two steps (`packages/domain/src/auth/setup-step.ts:11`), `SCR-M01-04`'s ways on name a company profile that does not exist (D202), and the board asks for four things the api cannot hold yet: a PIN code, half-typed bank details, a logo pointer and a short format line (*Proposal*, findings 2–5). Sources: this task, `M01-24`, `M01-25`, `M01-31`, `M06-17`, the brief, the design record (`#### Design check`).
+
+##### Goals
+- The api holds every fact the board asks for, and an older client's save loses none of them — part a.
+- A section list drawn flat, with a state mark beside each title, and a field that carries a line a reader depends on, on the web and the phone — part b.
+- `CompanyProfile` in `packages/ui` draws every state the apps can reach from one prop contract; every word in English, Hindi and Marathi; domain decides where each part stands and what a save writes — part c.
+- An owner whose company resumes at `business_profile` lands on the step on the web, iOS and Android; `Continue` and `Finish later` of `SCR-M01-04` open it (D202); a malformed registration is explained live against the pack's format and the act stays live (`M01-25`) — part d.
+- The logo is chosen, checked against its stated limits, uploaded and shown — part e.
+- The same profile opens from settings inside the shell, where the two declarations are edited with the re-seed scope stated — part f.
+
+##### Non-goals
+- The prompt at the first proposal send — `T-M06-022` (*Proposal*, finding 1).
+- The consumers that read the profile — M06, M07, F5, M11; the document renders — `T-M06-017`.
+- Audit of the change — written by the landed routes (`T-M01-026`, `T-FPLAT-004`).
+- A second registration type in one market: the India pack declares one (`packages/domain/src/tax/pack.ts:112`), and the screen draws one field per declared type.
+- The count of sent proposals on the re-seed line (`m-reseed`'s *the 4 sent*): no proposal exists before M06, so the count-free line is built and the count joins with M06's first sent proposal.
+- No offline state (the brief's amendment).
+
+##### Readiness and dependencies
+- `T-M01-026`, `T-FCORE-016`, `T-FCORE-001`, `T-M01-025` and `T-FPLAT-035` (the first `file` slice, #186) are shipped. `T-M01-004` is shipped on its branch, draft PR #283; this branch is cut from it by the owner's word (`#### Runtime`).
+- Design check: `READY`, see `#### Design check`. Part a draws no frame of the board.
+- Owner rulings already taken, 2026-10-12: the PIN code field stays and gets storage; the board's three product facts were corrected (four bank facts, the city's line, no count of typed characters).
+- Part a is not a light cycle: its proof matrix names the api surface.
+- Part f waits on one drawing (*Decisions*, 7); parts a–e do not.
+
+##### Proposal
+Each part's flow is in its own RFC. Shared here:
+
+- **Six parts.** a — the api holds what the board asks. b — the design system's parts. c — the screen's shared parts. d — the step on the web and both phones. e — the logo. f — the settings life.
+- **The flow.** `Continue` on `SCR-M01-04` records its step; the company then resumes at `business_profile` and the landing draws this screen in the shell's place. The screen reads the profile, the registrations and the market pack; fields hold drafts; `Save and continue` writes the profile, then the registrations when they changed and read well-formed, then records the step — `completed` when any of the four own parts holds a fact, `skipped` when none does — and the owner goes on. Until `SCR-M01-07` is built the way on is the home, as `SCR-M01-04` did (a `deferred.md` row added by part d, which builds that way on; it reopens at `T-M01-007 starts`).
+- **The twin.** Web and phone draw one `CompanyProfile` from `packages/ui`; the 1536 letterhead preview is the web half's alone, decorative, and reads the same props. Each app keeps only its adapter: the safe-area inset and the keyboard on the phone, the file picker on each.
+- **What testing the requirements found** (`/task` step 2):
+  1. **The prompt's proof waits on block 8.** AC-1 needs a proposal at its send, and no send exists before M06 (`docs/build-order.md`, block 8). `m-prompt` and `d-prompt` sit over M06's send surface. The tax part is built here as a field set the prompt can mount; the prompt, its two frames and the `PUT /onboarding/prompt-points/company_profile` call are `T-M06-022`'s. → *Decisions*, 2.
+  2. **The PIN code had no home.** `businessProfileSchema` holds one `address` text (`packages/contracts/src/business-profile.ts:32`). Ruled by the owner: the field stays; part a adds `business_profile.postal_code` and the contract field.
+  3. **Half-typed bank details cannot be saved.** `bankDetailsSchema` needs all four facts (`business-profile.ts:13`), while the screen saves whatever is typed and requires nothing. → *Decisions*, 5.
+  4. **The format line is not the pack's.** The board prints `15 characters · like 27ABCDE1234F1Z5` as help and as the error; the pack's `format` label is a longer sentence (`packages/domain/src/tax/pack.ts:120`), and the api's refusal prints the pack's (`settings.service.ts:92`). One fact, two wordings. → *Decisions*, 3.
+  5. **`IFSC` has no owner.** The contract and domain say the pack labels the routing identifier (`business-profile.ts:12`, `effective-settings.ts:45`); no pack field carries the word, and M01's localisation note forbids a market's identifier in screen copy. `GSTIN` already comes from `formats.taxIdLabel` (`packages/domain/src/format/pack.ts:147`). → *Decisions*, 4.
+  6. **A malformed registration is never stored.** The api refuses it (`TAX_REGISTRATION_MALFORMED`), so the act writes everything else and goes on; the part stays empty and `M01-24`'s prompt asks again. This is `M01-25`'s *skip remains available* — no ruling needed.
+  7. **A save that fails has no frame.** `m-error` is a profile that could not be read. → *Decisions*, 6.
+  8. **Nothing re-enters the corridor.** A recorded step is never resumed (`onboarding-steps.ts:44`) and no screen offers *finish setting up*, so `m-skipped` cannot be reached in the running app. → *Decisions*, 8.
+  9. **The settings life has no way in.** `m-settings`' back control reads `Back to settings`; no screen draws a settings list and `More` is a placeholder on both apps (`apps/web/features/shell/PlaceholderScreen.tsx:15`, `apps/mobile/src/navigation/routes/app.ts:41`). → *Decisions*, 7.
+  10. **The logo needs more than the file slice.** No column or contract field points at a logo, no client uploads a file, the phone has no picker, and nothing checks *at least 400 px wide* — the server checks type and 2,000,000 bytes (`packages/domain/src/files/rules.ts:49`). All of it is part e's, ruled in its RFC.
+  11. **Two writes, two audit entries.** The record's decision 8 says one settings change and one audit event; the landed routes are two, each with its own entry, and a body equal to what is stored writes nothing. Kept as landed: no new route.
+  12. **The board's `Account holder` is the contract's `accountName`** (`M06-17` lists *Account name*); the board's word is built, the key stays.
+  13. **`Check the format` is drawn in the danger tone** (record, gap 12). Built as drawn: the field's own error is that tone, and the act stays live.
+- **Deferred rows this task meets** (*Decisions*, 9). D202 — joins, part d. D200 — joins, part a. D145 — its flat `Accordion` joins, part b; the rest stays, re-pointed to `T-M01-012 starts`: `T-M01-006` waits on `T-M01-007` and that on `T-M01-012`, so the walk takes the Team screen first (`walk.md`, a same-block dependency goes before its consumer), and a roster is the first board likely to draw the list parts. D197 — stays: the fix is in the sign-in screens, so its cell is now `touches apps/web/features/auth/`, which part d's file table meets and rules on. Rows a part's file table touches are in that part's RFC.
+- **Decisions** (the owner's; the recommended way first). **Ruled by the owner, 2026-10-12: the first way of each of the nine.**
+  1. **The split.** Six parts, a–f, as `#### Parts` — or none: the task is one inseparable PR of about 135 files.
+  2. **AC-1, the prompt at the send.** Its proof, `m-prompt` and `d-prompt` move to `T-M06-022`; this task builds the tax field set the prompt mounts — or the prompt is built now on the component page and AC-1 stays `blocked` here until block 8.
+  3. **The format line.** The India pack's `format` words become the board's short line, so the screen and the api's refusal print one sentence (pack data, `packages/domain/src/tax/pack.ts`; published again per environment) — or the pack keeps its sentence and the board is redrawn to it.
+  4. **The bank code's label.** The formats pack gains `bankRoutingLabel` beside `taxIdLabel`, `IFSC` in India — or the word `IFSC` is screen copy in `packages/i18n`.
+  5. **Half-typed bank details.** They are stored as typed (each fact may be empty in the contract), and the part reads `Not added` until all four exist — or a new state word is drawn for a part that is half filled.
+  6. **A save that fails.** The owner draws one frame for it (one prompt) — or the read's error frame `m-error` is built for it with the title's verb changed, hiding what was typed while it shows.
+  7. **The settings list.** The owner draws the list `Back to settings` returns to, before part f; parts a–e do not wait — or part f ships reachable by its address alone until a later task draws the list.
+  8. **`m-skipped`.** Built in the shared component and proven on the component page, with a `deferred.md` row until a screen offers a way back into the corridor — or the settings life shows the skipped line, which the board does not draw there.
+  9. **Deferred rows.** D202, D200 and D145's `Accordion` join; D197 and the rest of D145 stay, re-pointed to `T-M01-012 starts`; D118 and D43 stay. (D197's cell was then written `touches apps/web/features/auth/` — review: the sign-in screens are its home, no screen task is.)
+
+##### Architecture diagram
+The whole task; the letter on a node is the part that builds it.
+
+```mermaid
+flowchart LR
+  owner["Owner: Continue on What You Sell"] --> landing["domain: setupStepOwed, landingFor (d)"]
+  landing --> screens["web and phone screens (d, f)"]
+  hook["data/react: useCompanyProfile (d)"] --> screens
+  api[("api: business profile, tax registrations, progress (a)")] --> hook
+  pack[("api: GET /market-packs, pack.tax (a)")] --> hook
+  files[("api: POST /files, the logo pointer (e)")] --> logo["data/react: the logo upload (e)"]
+  logo --> screens
+  rules["domain: where a part stands, what a save writes (c)"] --> hook
+  words["i18n: companyProfileWords (c)"] --> ui["ui: CompanyProfile (c)"]
+  screens --> ui
+  ui --> parts["ui: Accordion flat form, a field's line (b)"]
+  more["shell: the settings list under More (f)"] --> screens
+```
+
+##### Package changes
+Per part.
+
+##### Data and schema changes
+Part a adds `business_profile.postal_code` and widens `bank_details`; part e adds the logo's pointer. Each part's RFC names its readers and its roll.
+
+##### File and folder changes
+Per part; `#### Parts` is the budget.
+
+##### API and contract changes
+Part a changes `businessProfileSchema` and the body of `PUT /settings/business-profile`; part e adds the logo's field. No new route in parts a–d. Each part's RFC holds its rows.
+
+##### Risks and rollout
+Per part.
+
+##### Acceptance criteria and proof
+- **AC-1** — Given a skipped company profile, when the first proposal is about to be sent, then the prompt to complete it fires there, inline (M01-24, M01-29).
+- **AC-2** — Given a malformed tax registration, when it is typed, then validation is live against the market pack's format, the format is explained, and skip remains available (M01-25).
+- **AC-3** — Given the business profile, when any consumer surface needs company identity facts, then it reads the one profile and the user is never asked to re-enter them (M01-31).
+- **AC-4** — Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+
+AC-1 is `not_applicable` in this task (*Decisions*, 2, ruled): its proof is `T-M06-022`'s, written into that task. Each part's RFC holds its rows of the one matrix.
+
+##### Delivery size
+Six parts, about 135 files in all. No smaller part can be accepted alone: the api must hold a fact before a screen saves it, a shared component lands before either app draws it (Law 7), and the logo and the settings life each need a surface the step does not. a: about 20 files, sized in its RFC. b: about 15. c: about 28. d: about 30. e: about 25. f: about 20. Each later RFC is written when the part before it has shipped.
+
+#### Parts
+
+| part | what | AC | depends on | status |
+|---|---|---|---|---|
+| a | the api holds what the board asks: the PIN code's column and field, bank facts that may be half typed, the typical size bounded (D200), the pack's short format line and its bank-routing label (`#### Part a · RFC`) | AC-3 — on the running api | `T-M01-004` | shipped |
+| b | the design system's parts: `Accordion` drawn flat with a state mark beside the title (D145's share), a field's line a reader depends on, the loading bars — by component spec | AC-4 (the parts every frame is built from) — on the component page | a | open |
+| c | the screen's shared parts: `CompanyProfile` in `packages/ui` with its five field sets and the 1536 letterhead preview, its words in three languages, domain's rules for where a part stands and what a save writes | AC-2 (the format explained, the act live), AC-4 — on the component page | b | open |
+| d | the step owed, the landing, the reads and the save, and the screen on the web and both phones; `SCR-M01-04`'s ways on open it (D202); `createCompany` passes the step | AC-2, AC-4 — on the running apps | c | open |
+| e | the logo: its pointer in the api, the upload from the web and both phones, the limits stated and the refusal (`m-logo-invalid`) | AC-4 (`logo-invalid-limits-stated`) | d | open |
+| f | the settings life inside the shell on the web and both phones: the functional density, `Save changes`, the re-seed scope | AC-4 (`declarations-edited-reseed-scope`, `m-settings`, `d-settings`) | e · the settings list drawn (*Decisions*, 7) | open |
+
+#### Part a · RFC
+
+##### Title
+`T-M01-005a` — The api holds every fact the company profile's board asks for
+
+##### Description
+**User impact.** None yet — internal. It makes four things true that the screen in parts c–f depends on: a PIN code is kept, bank details typed half way are kept, the tax format line the owner reads on the screen is the line the api refuses with, and the bank code's label comes from the market, not from the screen.
+
+Who gains: the owner who fills the profile in parts d and f, and the documents that read it. The problem and its sources are the task RFC's findings 2–5 and D200.
+
+##### Goals
+- `PUT /settings/business-profile` takes and returns a PIN code; a save that does not name it keeps what is stored.
+- Bank details hold any of their four facts; `bank_details` stays owed to its prompt-point until all four exist.
+- A typical size over the column's ceiling, or finer than its precision, is refused at the contract (D200).
+- The India pack's registration format reads `15 characters · like 27ABCDE1234F1Z5` in three languages, and its formats name the bank-routing identifier `IFSC`.
+
+##### Non-goals
+- No screen, hook or client call — parts c–f.
+- The logo's pointer — part e.
+- No format check on a PIN code: no pack declares one; the field is free text of at most 16 characters.
+- No new route, table, enum or error code.
+
+##### Readiness and dependencies
+- The task RFC's readiness holds. The local stack's Postgres is up (`#### Runtime`); the migration runs on `heliogrid_test`.
+- The new pack label is required in the stored shape, as every pack field is: a release publishes the pack right after the migration and before a new machine serves, and an older machine drops a field it does not declare (`docs/engineering/09-observability-and-ops.md`, *Market packs*). Checked in the build's first step; the RFC first planned it optional, which would have needed a fallback word no one owns.
+- No blocker: *Decisions*, 3–5 are ruled. The contract changes with no consuming screen in this part — staged by this RFC (`packages/contracts/CLAUDE.md`, *Done means*); parts c–f consume it.
+
+##### Proposal
+- **Order.** Domain first (the shapes, `absentFacts`, the pack's words), then contracts, then the migration and the api, then the tests' api rows; `pnpm check` after each.
+- **The PIN code.** `postalCode` is on the profile's read always, `null` until given. On the write it is optional: absent keeps what is stored, `null` clears it, a string sets it. `SCR-M01-04`'s hook sends back what it read (`use-setup-what-you-sell.ts`), so a build from before this part — which reads no `postalCode` — cannot wipe one.
+- **Bank details.** Each of the four facts may be `null`; an object with all four `null` is refused, the body sends `bankDetails: null` instead. `absentFacts` owes `bank_details` until all four exist (`effective-settings.ts`, `bankDetailsAreWhole`), so M06's prompt still fires for half-typed details.
+- **The typical size.** The contract takes the bounds from domain: at most `TYPICAL_SYSTEM_KWP.ceiling` (`packages/domain/src/tenancy/what-you-sell.ts:8`), and no finer than the column holds — `fitsTypicalSystemPrecision`, beside it. D200 is reproduced past the contract before the fix (row a2).
+- **The pack's words.** `IN_TAX`'s `format` label becomes the board's line in English, and in Hindi and Marathi from the pack's own words for *characters* and *like* (`15 अक्षर · जैसे 27ABCDE1234F1Z5`, `15 अक्षरे · जसे 27ABCDE1234F1Z5`). `FormatPack` gains `bankRoutingLabel`, `IFSC` in `IN_FORMATS`, beside `taxIdLabel`, required in `FORMAT_PACK_SCHEMA`. The local pack is published again with `pnpm --filter @heliogrid/api pack:publish`; each other environment owes one publish, recorded in `.ops/`.
+- **Refusals.** A PIN code over 16 characters, an all-empty bank object and a size out of bounds answer the contract's 400 with the field's path. Nothing else changes.
+- **The twin.** None — no screen.
+- **Deferred rows this part's files meet.** D200 — joins. D118 (`touches packages/db/src/schema/`, the column helpers copied across nine files) — stays: a nine-file tidy outside this change. D43 (`touches packages/domain/src/format/`, two stage labels reading as one word) — stays: this part adds one label to no vocabulary.
+
+##### Architecture diagram
+No boundary change — see the task diagram: the two `api` nodes marked (a) gain fields, and no edge moves.
+
+##### Package changes
+- `packages/domain` — `commerce`: `BankDetails`' facts may be absent, `postalCode` on the profile and the identity, and `bankDetailsAreWhole` with its type `WholeBankDetails`; `tenancy`: `fitsTypicalSystemPrecision` beside the size's other policy; `tax` and `format`: the pack's words and one label. Three new exports. Depends on nothing new.
+- `packages/contracts` — `businessProfileSchema` gains `postalCode`; `businessProfileWriteSchema` is the body, the same shape with `postalCode` optional; the size's bounds come from domain. Depends on domain, as it does.
+- `packages/db` — one column.
+- `apps/api` — the settings module's read, write and mapping; `*.postalCode` in the shared redaction list (`common/logging.ts`).
+- Law 12: the column joins the invariants that scan every table (`table-tenant-scoped`; the schema-equals-code check, `.claude/protections.md` *Schema and migrations*); the contract change is held by `pnpm check:openapi`; the audited `PUT` stays in `unchanged-replace.test.ts`. A pack label's presence is held by the `FormatPack` type alone — no check holds a label's words, said here.
+
+##### Data and schema changes
+- **Migration** (started with `pnpm db:migration:new`): `ALTER TABLE business_profile ADD COLUMN postal_code text` — nullable, no default, no index (read with its row by `tenant_id`, which is unique). No backfill: every row reads `null`.
+- **`bank_details` jsonb**: the stored shape widens from four strings to four strings-or-null. Rows written before are valid in the new shape.
+- **Readers and the roll.** An api machine from before this part reads a row this part wrote: it never selects `postal_code`, and it meets no half-typed bank row, because no client sends one before part d ships — by then every machine runs this part. A client from before this part reads the new response: it drops the unknown `postalCode`, and its save keeps the stored one (the optional write). Expand only; nothing contracts.
+- **Rollback.** The column is ignored by older code and may stay.
+- **The pack.** No shape is removed. The release's publish stores the new words and the new label before a new machine serves; a machine from before this part reads that revision and drops the label it does not declare. A database that is migrated but not published — a developer's — refuses the stored pack by name until `pack:publish` runs.
+
+##### File and folder changes
+
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/domain/src/commerce/effective-settings.ts` | `BankDetails` facts may be absent; `postalCode`; `bank_details` owed until whole | the settings view-models' home |
+| modify | `packages/domain/tests/commerce/effective-settings.test.ts` | the identity's source with a PIN code alone | its test |
+| add | `packages/domain/tests/commerce/absent-facts.test.ts` | built, not planned: the `absentFacts` cases, moved out when the file passed 300 lines, with the three-fact bank row | split by responsibility (`CLAUDE.md` §8) |
+| add | `packages/domain/tests/commerce/settings-rows.ts` | built, not planned (the gate's duplication report): the two fixtures both test files read — a company with no rows, and the seeded split — written once | beside the two tests that import it |
+| modify | `packages/domain/src/commerce/index.ts` | built, not planned: `bankDetailsAreWhole` and `WholeBankDetails` exported | the slice's index |
+| modify | `packages/domain/src/tax/pack.ts` | the short format line, three languages | the pack's tax data |
+| — | `packages/domain/tests/tax/registration.test.ts` | **planned, not built:** its cases read the count and the example, which both lines carry; pinning the whole sentence would test a constant | — |
+| modify | `packages/domain/src/format/pack.ts` · `pack-schema.ts` | `bankRoutingLabel`, required | the pack's format data |
+| — | `packages/domain/tests/format/tenant-pack.test.ts` | **planned, not built:** the label is required, so there is no optional read to prove | — |
+| modify | `packages/contracts/src/business-profile.ts` | `postalCode`; bank facts; the size's bounds; the write schema | the profile's contract |
+| modify | `packages/contracts/src/tenant-settings.ts` | the `PUT` body is the write schema | the route's contract |
+| modify | `packages/contracts/tests/tenant-settings.test.ts` | each new bound, one either side: the size (the exponent form too), the PIN code, the write without one, bank facts and the all-empty object | its test |
+| modify | `packages/domain/src/tenancy/what-you-sell.ts` · `index.ts` · `tests/tenancy/what-you-sell.test.ts` | built, not planned (review): `fitsTypicalSystemPrecision` — zod's `multipleOf` passes `1e-7`, so the precision is judged by domain | beside `isTypicalSystemSize`, the size's one policy |
+| modify | `apps/api/src/common/logging.ts` | built, not planned (review): `*.postalCode` joins the redacted paths beside `*.address` | the one redaction list |
+| modify | `packages/contracts/openapi/openapi.json` | regenerated (generated) | `pnpm check:openapi` |
+| add | `packages/db/migrations/0023_*.sql` | the column (made by the command) | migrations |
+| modify | `packages/db/src/schema/settings.ts` | `postalCode` | the table's schema |
+| modify | `apps/api/src/modules/settings/settings.admin.repository.ts` | write the PIN code; absent keeps it | the profile's one write |
+| modify | `apps/api/src/modules/settings/settings.repository.ts` | read it | the tenant read |
+| modify | `apps/api/src/modules/settings/settings.service.ts` | map it both ways | the service |
+| modify | `apps/api/tests/settings/settings-writes.test.ts` | the PIN code round trip; absent keeps, and its repeat writes nothing; half-typed bank kept and `bank_details` still pending | the service's test on real tables |
+| modify | `apps/api/tests/settings/effective-settings.test.ts` | a company with no rows reads `postalCode: null` in its identity | the read's test |
+| modify | `docs/ux/briefs/SCR-M01-05-business-profile.md` | the owner's rulings of 2026-10-12 | the brief owns the screen's facts |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the parts, the ledger; part a `shipped` | the task |
+| modify | `docs/tasks/M06-proposals.md` | `T-M06-022` gains AC-1's line and the two prompt frames | *Decisions*, 2 |
+| modify | `docs/tasks/deferred.md` | D200 out; D145 and D197 re-pointed. The way on to `SCR-M01-07` is part d's row and the re-seed count part f's, each added when its behaviour ships | the ledger of found work |
+
+##### API and contract changes
+
+| route | change | compatibility |
+|---|---|---|
+| `GET /settings/business-profile` · `GET /settings/effective` | the profile carries `postalCode: string \| null`; each bank fact may be `null` | an older client drops the new field; it meets a `null` bank fact only after part d |
+| `PUT /settings/business-profile` | body: `postalCode` optional (string of 1–16, or `null`); bank facts may be `null`, not all four; `typicalSystemKwp` at most 999,999.99, two decimals | an older client's body is still valid; its absent `postalCode` keeps the stored one |
+
+Auth, permission (`onboarding.manage_tenant_settings`), tenancy and the error codes are unchanged. `GET /market-packs/{marketCode}` serves the pack's new words with no contract change.
+
+##### Risks and rollout
+- **A whole-replace write loses a field an older client never read.** Held by the optional `postalCode`, proven by an api test that saves without it.
+- **A half-typed bank row reaches a reader that wants four strings.** No client sends one before part d; the response schema and domain's type change together here, and `absentFacts` keeps the prompt owed.
+- **The pack and the code disagree until a publish.** New code refuses a stored pack without the label, naming `formats.bankRoutingLabel`. The release order publishes before a machine serves; `.ops/` records the publish owed per environment, and the local database is published in this part's QA.
+- **One shared local database.** The migration puts the local database ahead of `main` until this part merges; the next branch starts after the merge.
+
+##### Acceptance criteria and proof
+The task's AC-3 is this part's; AC-1, AC-2 and AC-4 have no row here.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-3 · a1 | `qa-api` | required | api | the standing owner saves an address, a PIN code and four bank facts, then reads `GET /settings/effective` → `companyIdentity` carries all of them with `source: tenant`; `pendingPromptPoints` holds neither `company_profile` nor `bank_details` | status, body, request id |
+| a1b | `qa-api` | required | api | a `PUT` with no `postalCode` key and a changed address → 200; the read-back keeps the PIN code | the two fields |
+| a1c | `qa-api` | required | api | a `PUT` with one bank fact and three `null` → 200, read back as sent, `bank_details` pending again; all four `null` → 400 at `bankDetails` | statuses, fields, the refusal's path |
+| a2 | `qa-api` | required | api | `PUT` a size of 1,000,000, 0.004 and `1e-7` → 400 at `typicalSystemKwp`, the stored size unchanged; 999,999.99 → 200. The refusal at the route is this live row's alone; no HTTP suite drives this route | the four statuses, code and path |
+| a2-before | `main-dev` | required | api test | D200 reproduced past the contract (the reviewer reads before any live row, so the code before the fix is reached through the service on the test database): a size of 1,000,000 → the database's `numeric field overflow`; 0.004 → stored as 0 | the probe's output, run once and removed |
+| a3 | `main-dev` | required | api test | a `PUT` without `postalCode` over a stored one → the stored one stays; with `null` → cleared | `settings-writes.test.ts`, planted red on the keep rule |
+| a4 | `main-dev` | required | api test · unit | two bank facts and two `null` → kept and read back as sent, `bank_details` still pending (`settings-writes.test.ts`); four `null` refused by the schema (`tenant-settings.test.ts`) | the two tests |
+| a5 | `main-dev` | required | unit | the size at 999,999.99, 1,000,000, 0.004, 5.125 and `1e-7`; the PIN code at 16 and 17 characters | `tenant-settings.test.ts`, one `it.each` per bound, the ceiling and the `1e-7` row each seen red; `what-you-sell.test.ts` |
+| a6 | `main-dev` | required | unit | `absentFacts` with three bank facts, with four; the identity's source with a PIN code alone | `absent-facts.test.ts` · `effective-settings.test.ts`, the three-fact row seen red before the rule |
+| a7 | `qa-api` | required | api | a malformed registration `PUT` after the local publish → 422 `TAX_REGISTRATION_MALFORMED`, `details[0].issue` reads the short line in the owner's own language, English (the language is the session's, `settings.controller.ts:68`; the Marathi line is `settings-writes.test.ts`'s) | the body |
+| a9 | `qa-api` | required | api log | after the rows above, the helper's slice of `.qa/api.log` → no line carries the address, the PIN code or a bank fact it sent | the byte range and the count, 0 |
+| a8 | `evaluator` | required | gate | the migration applies; the invariants scan `business_profile` on real tables; the OpenAPI is fresh | `pnpm check:all` |
+| w1 | `qa-web` | required | web 375 and 1536 | sign up a new company, pass the language step, answer *What you sell* (a segment, a size), `Continue` → the save goes through the changed route and the owner lands on the home; no error frame, no console error | the destination, the `PUT /settings/business-profile` 200 in the log |
+| i1 | `qa-ios` | required | iOS | the same journey on the iPhone → home | the destination, the log's 200 |
+| n1 | `qa-android` | required | Android | the same journey on the emulator → home | the destination, the log's 200 |
+
+Rows w1, i1 and n1 were added on the owner's word, 2026-10-12, after the first commit card: no screen file changes in this part, but `SCR-M01-04`'s step reads and saves the profile through the route this part changes (`packages/data/src/react/use-setup-what-you-sell.ts`), so each surface that reaches it gets one live journey. No board frame is compared: no frame changes.
+
+##### Delivery size
+One part of six. Planned: 21 files, one generated; code about 150 authored lines; tests about 190. Docs are listed and not counted. Order: domain, contracts, migration and api, the api rows, then the docs.
+
+**Built, and the size ruling asked again (2026-10-12).** 22 files, one generated. Code: 170 lines (134 added, 36 removed). Tests: 241 (194 added, 47 removed). Total 411 against 340 planned — 21% over, one point past the rule's 20% (`docs/tasks/README.md`, *Delivery size*). The cause is one move: `effective-settings.test.ts` passed 300 lines with this part's cases, so its `absentFacts` cases went to `absent-facts.test.ts` — 84 lines added and 47 removed that prove nothing new. Kept in one file the part is 280 lines, but the file is 302. No behaviour, route, contract, table or package beyond the RFC. Asked: this one part, approved at this exact size — approved by the owner, 2026-10-12.
+
+**After the review (2026-10-12).** 26 files, one generated. Code: 183 lines. Tests: 259. Total 442 — 8% over the size approved, inside the rule. The review's round added four files and their lines: the precision rule in domain with its edges (zod's `multipleOf` passed `1e-7`), the postal code in the api's redaction list, the repeat proof over a stored PIN code, and the type predicate for whole bank details.
+
+**After the first gate (2026-10-12).** 27 files, one generated. Code: 183 lines. Tests: 283. Total 466 — 13% over the size approved; the file count is 23% over (27 against 22), one file past the rule. The gate passed and its duplication report named one clone this part made: the fixture block the test-file split had copied. It is now written once, in `settings-rows.ts` — the twenty-seventh file. The size is asked again on the commit card.
+
+#### Design check
+`READY` — 2026-10-12, on the record `SCR-M01-05 - decisions & self-audit.md` (29,484 bytes) read beside the board `SCR-M01-05 Business Profile - Mobile.dc.html` (142,409 bytes, under the read cap). Three checks on one helper. The first found the record behind the board (four frame counts, no Hindi frame, no 1536 alignment numbers, no word plan, a standing FAIL); the owner's redraw closed every finding. Main then found three product facts wrong against the code — three bank fields where `M06-17` and the contract hold four, a city line saying the city sets the market, a count of typed characters the pack cannot give — and the owner corrected them and redrew the 1536 arrangement in the same pass; the third check found nothing.
+
+The board holds twenty frames. Sixteen at 375: `m-default`, `m-loading`, `m-error`, `m-skipped`, `m-logo-invalid`, `m-tax-invalid`, `m-prompt`, `m-address-open`, `m-bank-open`, `m-declarations-open`, `m-normal`, `m-reseed`, `m-failed-save`, `m-declarations-hi`, `m-declarations-mr`, `m-settings`. Four at 1536: `d-default`, `d-tax-invalid`, `d-prompt`, `d-settings`. The parts are flat collapsible sections at both widths; at 1536 a decorative letterhead preview sits beside the list (editor x 96–696, preview 880–1520; settings 96–736 and 936–1520). The record prints the 1536 alignment numbers and the measured Hindi and Marathi proof on `m-declarations-open`.
+
+Noted by the helper and not blocking: three stale board notes and three stale record lines that touch no frame; `Check the format` now reads in the danger tone (record, gap 12).
+
+**Board pictures (2026-10-12).** `qa-web` pictured the twenty frames in the browser pane, into the session's scratchpad as `board/<frame>.png`: the sixteen phone frames 338 × 731 each, one shot at the board's 90%; the four 1536 frames 766 × 500 each, one shot at 50%, the right 2 px of each outside the pane. Main opened `d-default` and `m-bank-open` and they show the right state. A 1536 comparison reads the half-size pictures beside the record's measured positions.
+
+#### Runtime
+Branch `feat/T-M01-005`, cut from `feat/T-M01-004c` (`99ed0bcc`, draft PR #283 open, its `quality`, `e2e-web` and `android` checks running) on a clean tree, by the owner's word, 2026-10-12: the walk reads `origin/main`, where `T-M01-004`'s part c is not yet merged.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | the board's tab, `tab-1`, opened at the owner's word (`started_by_task`) |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 23,838,532 · `web.log` 625,691 · `metro.log` 1,876,185 bytes | — |
+| watchers | no `tsx … watch` process | — |
+
+**Part a · QA (2026-10-12)** — one stack on `heliogrid_test`, in two sittings: first the api alone, from source (`api` launch configuration, `started_by_task`); then, on the owner's word after the first commit card, the api, the web and Metro from source with the iPhone 17 Pro simulator and the `Pixel_8_Emulator`, on the apps already installed — no native file changed, so nothing was rebuilt. Main migrated the test database (`0023`), built domain, contracts and db, and confirmed the stored pack is the code's (`pack:publish`: revision 2, nothing written — the api tests had published it).
+
+- **Order.** The reviewer read alone: ten findings in round one, all applied (two were bugs: zod's `multipleOf` passed `1e-7`, and the PIN code was missing from the log's redacted paths); one finding and two notes in round two (the stale size, a stale line citation, a 301-line file left as Biome counts it); clean in round three, and clean again on the proof matrix and this record. Then `qa-api`, once, and the two gate runs. The surface helpers came after the first commit card, on the owner's word — outside the usual order, where an unchanged surface is omitted (`references/qa.md`) — and the reviewer and the Evaluator then read their rows with no gate run, no checked file having changed.
+- **The api.** Six rows as the standing owner `…904`, all passed on the final code (*As proven (part a)*). The tree's hash was the same before and after the helper.
+- **The gate.** The first run passed whole — 214 test files, 3,783 tests, the api tests on `heliogrid_test`, the invariants on real tables, nothing regenerated — and its duplication report named the copied fixture block. Main shared it (`settings-rows.ts`) and the reviewer read the change clean; the second and last run then passed whole too — the same 214 files and 3,783 tests, the duplication report one clone shorter, none under `packages/domain/tests/commerce/`.
+- **Planted reds seen (part a).** The size's ceiling: `.max(TYPICAL_SYSTEM_KWP.ceiling)` taken out of `business-profile.ts` → *a typical size of 1000000 kWp is false* failed by name. The keep rule: `write.postalCode ?? null` in `settings.admin.repository.ts` → *keeps the PIN code a save never names* failed by name. The three-of-four bank row failed by name before `bankDetailsAreWhole` existed, and the `1e-7` row before `fitsTypicalSystemPrecision` did. Each restored from a scratchpad copy.
+- **D200 reproduced.** A probe through the service, past the contract, run once and removed: 1,000,000 → `PostgresError: numeric field overflow`; 0.004 → stored as 0.
+
+**As proven (part a).**
+
+| row | result | evidence |
+|---|---|---|
+| AC-3 · a1 | passed | `PUT` 200 as sent; read-back equal; `companyIdentity.source` `tenant` with the address, `411001` and four bank facts; pending `["payment_terms"]` · requests `cc3dff18`, `620d73ab`, `8f42d265` |
+| a1b | passed | no `postalCode` key, address changed → `411001` kept · `abca0bbd`, `d9b8b9ad` |
+| a1c | passed | one bank fact kept with three `null`; pending `["payment_terms","bank_details"]`; four `null` → 400 at `bankDetails` · `4d46859e`, `93f7696d`, `85b25c1f` |
+| a2 | passed | 1,000,000 → 400 at `typicalSystemKwp`; 0.004 and `1e-7` → 400, *no finer than the column holds*; stored size unchanged; 999,999.99 → 200 · `77b44371`, `9027d117`, `3f228711`, `0aa2c644` |
+| a7 | passed | 422 `TAX_REGISTRATION_MALFORMED`, `registrations.0.value`, issue `15 characters · like 27ABCDE1234F1Z5`; the list unchanged · `79994fe5` |
+| a9 | passed | log bytes 23,863,829–23,896,558, 24 lines, 0 carrying a sent address, PIN code or bank fact |
+| a2-before · a3 · a4 · a5 · a6 | passed | Main's tests and reds above; `pnpm check` exit 0 |
+| w1 | passed | web at 375 (`…10451`, size 5.5) and at 1536 (`…10454`, size 999,999.99): no failure block, `/home` reached, `GET` and `PUT /settings/business-profile` 200, `PUT /onboarding/progress/what_you_sell` 200, no console error, no sideways overflow, `Continue` 48 px tall · log bytes 23,934,161–24,013,546 |
+| i1 | passed | iPhone (`…10452`, size 5.5): home reached, the three calls 200 in order, no red box, `Continue` 362 × 48 pt · log bytes 23,932,381–23,956,194 |
+| n1 | passed on its one retry (flake) | Android (`…10453`, size 5.5): home reached, the three calls 200 in order, no fatal or React Native error in logcat, `Continue` 126 px tall · log bytes 24,018,394–24,030,825 |
+
+The helper put the profile and the registrations back as it found them (all `null`, none).
+
+- **The surfaces (second sitting).** `qa-web`, `qa-ios` and `qa-android` together, one signup journey each through `SCR-M01-04`'s `Continue`; the tree's hash was the same before and after. No board frame was compared: no frame changes in this part.
+- **Android's first try was blocked before the changed screen.** On the company step the helper sent thirty delete presses in a burst and the app stopped answering (Android's own *isn't responding* dialog), with the host under heavy load and Fast Refresh disconnected. Main cold-started the app, Metro served a fresh bundle, and the row passed on its one retry with slow typing, the host's load average 38–43 while it ran; logcat shows no fatal error and no ANR in the retry. Main's own reading, between the two tries: the emulator had been cold-booted minutes before, and `adb shell uptime` gave a load average of 10 to 16. Nothing in it touches this part's change.
+- **Main's own observation, in no helper's report:** the emulator's cold boot raised a *System UI isn't responding* dialog once, before any helper ran (`qa/android/ready.png` in the scratchpad); Main tapped *Wait* and cold-started the app.
+
+**Mistakes found (part a)**, each with the rule that now holds it:
+- The size's precision was held by zod's `multipleOf`, which passes `1e-7` (the reviewer read it in the library). Now `fitsTypicalSystemPrecision` in domain, with the exponent form in its edges.
+- The PIN code was not in the log's redacted paths. Now `*.postalCode` beside `*.address` (`apps/api/src/common/logging.ts`); the list has no test, so review holds it (`.claude/protections.md`, *logs hide personal data*).
+- The RFC planned the new pack label optional, with no owner for the fallback word. The release order already publishes the pack before a new machine serves (`09-observability-and-ops.md`), so it is required.
+- The RFC's first proof matrix gave one row two owners and named three tests in the wrong files (reviewer). Each row now has one owner and its real file.
+- Splitting a test file at 300 lines copied its fixture block (the gate's duplication report). Written once, in `settings-rows.ts`.
+- The size estimate was passed twice: once by the split, once by the review round's four files and the shared fixture file. The owner approved both, the second on the commit card.
+- The web and the phones were marked `not_applicable` because no screen file changed, though a built screen calls the changed route (the owner, at the first commit card). Rows w1, i1 and n1 were added and passed; a part that changes a route or a contract now lists every built screen that calls it and gives each surface one live row.
+
+**Measurements (part a)** — helper runs: `design-check` 1 (two continuations), `Explore` 1 for the code map, `qa-web` 2 (the board capture; the journey), `reviewer` 1 (five continuations), `qa-api` 1, `qa-ios` 1, `qa-android` 1 (one continuation), `evaluator` 1 (two continuations, the second for the three surface rows with no gate run); two full gates, both passed. Helper tokens, as reported per run: `design-check` about 119 k, 186 k and 233 k; `Explore` 260 k; `qa-web` 106 k and 77 k; `reviewer` 121 k, 149 k, 151 k, 160 k and 169 k, and its last read; `qa-api` 27 k; `qa-ios` 44 k; `qa-android` 40 k and 59 k; `evaluator` 33 k and 35 k, and its last read. Main: about 175 tool-call turns and about 650 k context tokens at the second commit card, the walk, four design fetches, the task RFC and this part's RFC among them. Size: planned 21 files, code about 150, tests about 190; built 27 files, one generated, code 183, tests 283 (*Delivery size*).
+
+| resource | initial | final |
+|---|---|---|
+| api `8084` · web `3002` · Metro `8081` | none listening | stopped (`started_by_task`, the `api`, `web` and `mobile-metro` launch configurations; the api started twice, once per sitting) |
+| component tests `3100` | none listening | none listening |
+| simulator · emulator | none booted | shut down (`started_by_task`): iPhone 17 Pro `40ED0117-…`, `emulator-5554`; both apps are the builds that were installed |
+| browser tabs | pane closed | the board's tab `tab-1` (`started_by_task`), kept open for the owner's failed-save frame; the api's tab closed with its server |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| `heliogrid_test` | migrations to `0022`, pack revision 1 | `0023` applied, pack revision 2 published by the api tests; the standing owner `…904`'s profile as it was |
+| runtime logs | `api.log` 23,838,532 · `web.log` 625,691 · `metro.log` 1,876,185 bytes | 24,030,825 · 638,136 · 1,903,806 bytes |
+| test data left in `heliogrid_test` | — | four owners with a company each, made through the app: `…10451` and `…10454` (web), `…10452` (iPhone), `…10453` (Android) |
+| watchers | no `tsx … watch` process | none |
+
 ### T-M01-006 · Setup — You're Ready
 **Type:** screen · **Tier:** P0
 **Status:** designed

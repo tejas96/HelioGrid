@@ -18,7 +18,21 @@ Reached from: the onboarding sequence after "What do you sell?" (M01 §M01.3 beh
 6. **A logo's limits are stated before the upload, not only inside the refusal**, and the refusal names **every** limit missed — a file can be small enough and still too low-resolution, and a refusal mentioning only size sends the owner back with the wrong fix.
 7. **A limit is not a value and carries no tier.** A size ceiling, a minimum edge, a format's character count — a tier says how a value was arrived at, and a limit was not arrived at, it was set. Recurs on every screen that states a constraint.
 8. **Density follows the life, not the screen (`F7-17`, owner ruling 2026-08-28).** The onboarding and prompt appearances are **expressive** — onboarding and authentication are on that list. The **settings appearance is `functional`**, because `F7-17` names *settings and administration* on the functional list and the method is to pick the mode from what the screen **is**. The corridor argument that carries the onboarding appearance does not reach the settings one: it sits in no corridor, it is one destination among many. `SCR-SHELL-03` used the same method to rule its inbox *not* settings; this life is. Spacing and radius tighten on those two frames only — the 44px floor is the components' and does not move, and capability is untouched.
-9. **The settings appearance reuses `SCR-SHELL-01`'s shell exactly** — four destinations, `Home · Leads · Proposals · More` (`F6-22`), with the pill footer's add action; settings is reached from **More**, never as a rail entry. Three things change with the chrome and nothing else: the wordmark goes, the corridor's act becomes this screen's own `Save changes`, and the centred two-column composition goes at 1536 because a settings screen sits in the app's grid. **Capability is identical across all three lives.**
+9. **The settings appearance reuses `SCR-SHELL-01`'s shell exactly** — four destinations, `Home · Leads · Proposals · More` (`F6-22`), with the pill footer's add action; settings is reached from **More**, never as a rail entry. Three things change with the chrome and nothing else: the wordmark goes, the corridor's act becomes this screen's own `Save changes`, and at 1536 the list starts at the header title's edge, in the app's grid, with the filled letterhead beside it. **Capability is identical across all three lives.**
+
+**Owner rulings in the redraw of 2026-10-12 — the build follows these, never the older form.**
+
+10. **The same flat list at both widths; at 1536 a letterhead preview sits beside it.** The index and panel are gone. The preview is decorative, holds no control, and shows only what the fields hold.
+11. **Bank details hold four facts** (`M06-17`), in this order: `Bank name` · `Account holder` · `Account number` · the pack's bank-routing identifier.
+12. **The address is three fields: `Street address` · `City` · `PIN code`.** The city is read back with `From your signup` and nothing more — the market comes from the phone number the company signed up with, never from the city. The PIN code is stored on the profile. No state field is drawn.
+13. **One short format line serves the help and the error** — `15 characters · like 27ABCDE1234F1Z5` in the India pack — and the screen never counts the characters typed. A field that is optional on its own says so in its label: `GSTIN (optional)`.
+14. **No line at the act says the step is skippable**: a live act with nothing filled in is what skippable looks like. Only the re-seed scope and the cost of an undeclared value keep a line there.
+15. **The prompt at the first send is built with the send** (`T-M06-022`): this screen's tax part, mounted in `EditorSurface` over the proposal. `m-prompt` and `d-prompt` are proven there, where a proposal exists to hold up.
+16. **The bank code's label is the market pack's**, as the tax registration's is: `IFSC` in the India pack, never a word of the screen's own.
+17. **Bank details typed half way are kept as typed.** The part reads `Not added` until all four facts exist, and the bank details' prompt stays owed until then.
+18. **A save that fails keeps everything typed on screen**, with a retry and a way on without saving; its frame is drawn by the owner before the screen's shared parts are built.
+19. **`skipped` has no way in yet**: a recorded step is never resumed, and no screen offers a way back into setup. The state is built and waits for that screen.
+20. **The settings life waits on the settings list** its back control returns to; the owner draws that list before this life is built.
 
 
 ## Requirements (verbatim)
@@ -45,7 +59,7 @@ Screen-specific:
 
 ## Data volume
 
-One company-profile record: one logo, the market's tax-registration types (from `pack.tax` — the set and formats are market-pack data; the module never names one market's tax ID in UI copy, M01 §M01.3 localization notes), one address, one set of bank details.
+One company-profile record: one logo, the market's tax-registration types (from `pack.tax` — the set and formats are market-pack data; the module never names one market's tax ID in UI copy, M01 §M01.3 localization notes), one address with its PIN code, one set of bank details — four facts (`M06-17`).
 
 ## Numbers carrying provenance
 

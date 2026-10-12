@@ -405,6 +405,7 @@ they are the specification.
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **Owed by `T-FPLAT-029` (`F8-21`):** Generate is refused while any figure's tier fails `tierFitsBasis(basis, tier)` from `@heliogrid/domain` — a no-design document holding a `derived` or `measured` figure — and the refusal names the figure; the gate never weakens the tier to pass.
+**Owed by `T-M01-005` (`M01-24`, `M01-29`; owner ruling 2026-10-12):** the prompt at the first send. *Given a skipped company profile, when the first proposal is about to be sent, then the prompt to complete it fires there, inline (M01-24, M01-29).* → proof: QA (web and phone) skip the profile step, build a proposal to its send: `SCR-M01-05`'s tax part opens in `EditorSurface` over the proposal (board frames `m-prompt`, `d-prompt`), *Add it and send* saves the registration and *Send without it* leaves the default in place; the fact's state goes through `PUT /onboarding/prompt-points/company_profile` (fired, then completed or declined). The field set is `T-M01-005`'s shared component; this task mounts it and adds the client call.
 **PRD rows:** M06-20, M06-36, M06-37
 
 **Requirements (verbatim):**

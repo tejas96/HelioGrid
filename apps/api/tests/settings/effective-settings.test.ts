@@ -82,6 +82,7 @@ describe.skipIf(skip)('the effective settings read, against a migrated database'
         defaultLanguage: 'en',
         timezone: IN_FORMATS.timeZone,
         address: null,
+        postalCode: null,
         bankDetails: null,
       },
     });

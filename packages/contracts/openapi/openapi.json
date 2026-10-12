@@ -32212,6 +32212,7 @@
                             "typicalSystemKwp": {
                               "type": "number",
                               "minimum": 0,
+                              "maximum": 999999.99,
                               "nullable": true
                             },
                             "address": {
@@ -32220,28 +32221,38 @@
                               "maxLength": 500,
                               "nullable": true
                             },
+                            "postalCode": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 16,
+                              "nullable": true
+                            },
                             "bankDetails": {
                               "type": "object",
                               "properties": {
                                 "bankName": {
                                   "type": "string",
                                   "minLength": 1,
-                                  "maxLength": 120
+                                  "maxLength": 120,
+                                  "nullable": true
                                 },
                                 "accountName": {
                                   "type": "string",
                                   "minLength": 1,
-                                  "maxLength": 120
+                                  "maxLength": 120,
+                                  "nullable": true
                                 },
                                 "accountNumber": {
                                   "type": "string",
                                   "minLength": 1,
-                                  "maxLength": 34
+                                  "maxLength": 34,
+                                  "nullable": true
                                 },
                                 "bankRoutingIdentifier": {
                                   "type": "string",
                                   "minLength": 1,
-                                  "maxLength": 34
+                                  "maxLength": 34,
+                                  "nullable": true
                                 }
                               },
                               "required": [
@@ -32271,6 +32282,7 @@
                             "segment",
                             "typicalSystemKwp",
                             "address",
+                            "postalCode",
                             "bankDetails",
                             "defaultLanguage",
                             "timezone"
@@ -33390,6 +33402,7 @@
                     "typicalSystemKwp": {
                       "type": "number",
                       "minimum": 0,
+                      "maximum": 999999.99,
                       "nullable": true
                     },
                     "address": {
@@ -33398,28 +33411,38 @@
                       "maxLength": 500,
                       "nullable": true
                     },
+                    "postalCode": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 16,
+                      "nullable": true
+                    },
                     "bankDetails": {
                       "type": "object",
                       "properties": {
                         "bankName": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 120
+                          "maxLength": 120,
+                          "nullable": true
                         },
                         "accountName": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 120
+                          "maxLength": 120,
+                          "nullable": true
                         },
                         "accountNumber": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 34
+                          "maxLength": 34,
+                          "nullable": true
                         },
                         "bankRoutingIdentifier": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 34
+                          "maxLength": 34,
+                          "nullable": true
                         }
                       },
                       "required": [
@@ -33437,6 +33460,7 @@
                     "segment",
                     "typicalSystemKwp",
                     "address",
+                    "postalCode",
                     "bankDetails"
                   ]
                 }
@@ -33710,6 +33734,7 @@
                   "typicalSystemKwp": {
                     "type": "number",
                     "minimum": 0,
+                    "maximum": 999999.99,
                     "nullable": true
                   },
                   "address": {
@@ -33718,28 +33743,38 @@
                     "maxLength": 500,
                     "nullable": true
                   },
+                  "postalCode": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 16,
+                    "nullable": true
+                  },
                   "bankDetails": {
                     "type": "object",
                     "properties": {
                       "bankName": {
                         "type": "string",
                         "minLength": 1,
-                        "maxLength": 120
+                        "maxLength": 120,
+                        "nullable": true
                       },
                       "accountName": {
                         "type": "string",
                         "minLength": 1,
-                        "maxLength": 120
+                        "maxLength": 120,
+                        "nullable": true
                       },
                       "accountNumber": {
                         "type": "string",
                         "minLength": 1,
-                        "maxLength": 34
+                        "maxLength": 34,
+                        "nullable": true
                       },
                       "bankRoutingIdentifier": {
                         "type": "string",
                         "minLength": 1,
-                        "maxLength": 34
+                        "maxLength": 34,
+                        "nullable": true
                       }
                     },
                     "required": [
@@ -33793,6 +33828,7 @@
                     "typicalSystemKwp": {
                       "type": "number",
                       "minimum": 0,
+                      "maximum": 999999.99,
                       "nullable": true
                     },
                     "address": {
@@ -33801,28 +33837,38 @@
                       "maxLength": 500,
                       "nullable": true
                     },
+                    "postalCode": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 16,
+                      "nullable": true
+                    },
                     "bankDetails": {
                       "type": "object",
                       "properties": {
                         "bankName": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 120
+                          "maxLength": 120,
+                          "nullable": true
                         },
                         "accountName": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 120
+                          "maxLength": 120,
+                          "nullable": true
                         },
                         "accountNumber": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 34
+                          "maxLength": 34,
+                          "nullable": true
                         },
                         "bankRoutingIdentifier": {
                           "type": "string",
                           "minLength": 1,
-                          "maxLength": 34
+                          "maxLength": 34,
+                          "nullable": true
                         }
                       },
                       "required": [
@@ -33840,6 +33886,7 @@
                     "segment",
                     "typicalSystemKwp",
                     "address",
+                    "postalCode",
                     "bankDetails"
                   ]
                 }

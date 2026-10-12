@@ -118,9 +118,9 @@ export const IN_TAX: TaxPack = {
       /** `F1-29` — a B2B tenant needs it on the invoice for input tax credit. */
       capturedAt: 'conversion',
       format: {
-        en: '15 characters: a 2-digit state code, the 10-character PAN, an entity digit, Z and a check character — like 27ABCDE1234F1Z5',
-        hi: '15 अक्षर: 2 अंकों का राज्य कोड, 10 अक्षरों का PAN, एक इकाई अंक, Z और एक जाँच अक्षर — जैसे 27ABCDE1234F1Z5',
-        mr: '15 अक्षरे: 2 अंकी राज्य कोड, 10 अक्षरी PAN, एक संस्था अंक, Z आणि एक तपासणी अक्षर — जसे 27ABCDE1234F1Z5',
+        en: '15 characters · like 27ABCDE1234F1Z5',
+        hi: '15 अक्षर · जैसे 27ABCDE1234F1Z5',
+        mr: '15 अक्षरे · जसे 27ABCDE1234F1Z5',
       },
     },
   ],

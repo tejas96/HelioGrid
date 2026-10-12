@@ -42,16 +42,28 @@ export interface Resolved<T, S extends string = SettingSource> {
   readonly value: T;
 }
 
-/** `M06-17`'s four bank facts, market-neutral names: the routing identifier is IFSC in IN, labelled by the pack. */
+/**
+ * `M06-17`'s four bank facts, market-neutral names: the routing identifier is IFSC in IN, labelled
+ * by the pack (`formats.bankRoutingLabel`). A fact is `null` until the owner gives it: the profile
+ * keeps details typed half way, and a reader that prints them asks `bankDetailsAreWhole` first.
+ */
 export interface BankDetails {
-  readonly bankName: string;
-  readonly accountName: string;
-  readonly accountNumber: string;
-  readonly bankRoutingIdentifier: string;
+  readonly bankName: string | null;
+  readonly accountName: string | null;
+  readonly accountNumber: string | null;
+  readonly bankRoutingIdentifier: string | null;
+}
+
+/** Bank details with every fact given — the only ones a document may print (`M06-17`). */
+export type WholeBankDetails = { readonly [Fact in keyof BankDetails]: string };
+
+export function bankDetailsAreWhole(details: BankDetails | null): details is WholeBankDetails {
+  return details !== null && Object.values(details).every((fact) => fact !== null);
 }
 
 export interface BusinessProfileSettings {
   readonly address: string | null;
+  readonly postalCode: string | null;
   readonly bankDetails: BankDetails | null;
 }
 
@@ -130,6 +142,7 @@ export interface TenantFacts {
 
 export interface CompanyIdentity extends TenantFacts {
   readonly address: string | null;
+  readonly postalCode: string | null;
   readonly bankDetails: BankDetails | null;
 }
 
@@ -171,7 +184,7 @@ export interface EffectiveSettingsInput {
 
 /**
  * The facts a skip left absent, judged from the rows alone: the profile until an address or a
- * registration exists, the bank details until they exist, the payment terms until any template is
+ * registration exists, the bank details until all four exist, the payment terms until any template is
  * the tenant's own. The catalog's absence is `T-M01-027`'s to judge, so it is never absent here.
  */
 export function absentFacts(settings: TenantSettings): readonly PromptPointFact[] {
@@ -180,7 +193,7 @@ export function absentFacts(settings: TenantSettings): readonly PromptPointFact[
   if ((profile?.address ?? null) === null && settings.taxRegistrations.length === 0) {
     absent.push('company_profile');
   }
-  if ((profile?.bankDetails ?? null) === null) absent.push('bank_details');
+  if (!bankDetailsAreWhole(profile?.bankDetails ?? null)) absent.push('bank_details');
   if (!settings.trancheTemplates.some((template) => template.changed)) absent.push('payment_terms');
   return absent;
 }
@@ -194,10 +207,11 @@ function identityInForce(
   profile: BusinessProfileSettings | null,
 ): Resolved<CompanyIdentity> {
   const address = profile?.address ?? null;
+  const postalCode = profile?.postalCode ?? null;
   const bankDetails = profile?.bankDetails ?? null;
   return {
-    source: address === null && bankDetails === null ? 'platform' : 'tenant',
-    value: { ...tenant, address, bankDetails },
+    source: address === null && postalCode === null && bankDetails === null ? 'platform' : 'tenant',
+    value: { ...tenant, address, postalCode, bankDetails },
   };
 }
 
