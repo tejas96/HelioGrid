@@ -48,9 +48,10 @@ const tenantId = () =>
  */
 
 /**
- * The company's identity facts beyond the signup ones (`M01-24`, `M01-31`): the address and the
- * bank details. Company name, city and the two `M01-23` declarations stay on `tenant`; the logo's
- * column arrives with the first `file` slice (Law 9). One row per tenant, empty from creation.
+ * The company's identity facts beyond the signup ones (`M01-24`, `M01-31`): the address, its
+ * postal code and the bank details. Company name, city and the two `M01-23` declarations stay on
+ * `tenant`; the logo's column arrives with the logo's own slice (Law 9). One row per tenant, empty
+ * from creation.
  */
 export const businessProfile = pgTable(
   'business_profile',
@@ -58,6 +59,7 @@ export const businessProfile = pgTable(
     id: id(),
     tenantId: tenantId(),
     address: text('address'),
+    postalCode: text('postal_code'),
     /** `M06-17`'s four bank facts under market-neutral names; financial (sensitive-data register). */
     bankDetails: jsonb('bank_details').$type<BankDetails>(),
     createdAt: instant('created_at').notNull(),

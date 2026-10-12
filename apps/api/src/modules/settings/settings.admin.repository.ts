@@ -81,14 +81,23 @@ export async function seedTenantSettings(
   }
 }
 
-/** The profile as one write (`M01-31`): the company facts on `tenant`, the rest on its own row. */
-export interface ProfileToWrite {
+/** The profile as stored (`M01-31`): the company facts on `tenant`, the rest on its own row. */
+export interface StoredProfile {
   readonly companyName: string;
   readonly city: string;
   readonly segment: TenantSegment | null;
   readonly typicalSystemKwp: number | null;
   readonly address: string | null;
+  readonly postalCode: string | null;
   readonly bankDetails: BankDetails | null;
+}
+
+/**
+ * The profile as one write. A client built before the postal code existed sends back what it
+ * read, so a write that leaves the postal code out keeps the stored one; `null` clears it.
+ */
+export interface ProfileToWrite extends Omit<StoredProfile, 'postalCode'> {
+  readonly postalCode?: string | null;
 }
 
 /**
@@ -103,9 +112,14 @@ export class SettingsAdminRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(@Inject(ADMIN_DB) private readonly db: Db) {}
 
-  async saveProfile(tenantId: string, profile: ProfileToWrite, act: Act): Promise<ProfileToWrite> {
+  async saveProfile(tenantId: string, write: ProfileToWrite, act: Act): Promise<StoredProfile> {
     return this.db.transaction(async (tx) => {
       const stored = await storedProfile(tx, tenantId);
+      const profile: StoredProfile = {
+        ...write,
+        postalCode:
+          write.postalCode === undefined ? (stored?.postalCode ?? null) : write.postalCode,
+      };
       if (stored !== null && isDeepStrictEqual(stored, profile)) return stored;
       const now = new Date(act.now);
       const [facts] = await tx
@@ -130,17 +144,24 @@ export class SettingsAdminRepository {
         .values({
           tenantId,
           address: profile.address,
+          postalCode: profile.postalCode,
           bankDetails: profile.bankDetails,
           createdAt: now,
           updatedAt: now,
         })
         .onConflictDoUpdate({
           target: businessProfile.tenantId,
-          set: { address: profile.address, bankDetails: profile.bankDetails, updatedAt: now },
+          set: {
+            address: profile.address,
+            postalCode: profile.postalCode,
+            bankDetails: profile.bankDetails,
+            updatedAt: now,
+          },
         })
         .returning({
           id: businessProfile.id,
           address: businessProfile.address,
+          postalCode: businessProfile.postalCode,
           bankDetails: businessProfile.bankDetails,
         });
       if (!row) throw new Error('business_profile upsert returned no row');
@@ -153,12 +174,17 @@ export class SettingsAdminRepository {
           act,
         ),
       );
-      return withKwp({ ...facts, address: row.address, bankDetails: row.bankDetails });
+      return withKwp({
+        ...facts,
+        address: row.address,
+        postalCode: row.postalCode,
+        bankDetails: row.bankDetails,
+      });
     });
   }
 }
 
-async function storedProfile(tx: DbTransaction, tenantId: string): Promise<ProfileToWrite | null> {
+async function storedProfile(tx: DbTransaction, tenantId: string): Promise<StoredProfile | null> {
   const [row] = await tx
     .select({
       companyName: tenant.companyName,
@@ -166,6 +192,7 @@ async function storedProfile(tx: DbTransaction, tenantId: string): Promise<Profi
       segment: tenant.segment,
       typicalSystemKwp: tenant.typicalSystemKwp,
       address: businessProfile.address,
+      postalCode: businessProfile.postalCode,
       bankDetails: businessProfile.bankDetails,
     })
     .from(tenant)

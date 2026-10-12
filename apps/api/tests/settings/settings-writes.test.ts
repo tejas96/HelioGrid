@@ -160,6 +160,7 @@ describe.skipIf(skip)('the settings writes, against a migrated database', () => 
       segment: 'both' as const,
       typicalSystemKwp: 5.5,
       address: '4 Civil Lines, Nagpur',
+      postalCode: '440001',
       bankDetails: {
         bankName: 'Bank of Nagpur',
         accountName: 'Writes Solar Pvt Ltd',
@@ -184,6 +185,25 @@ describe.skipIf(skip)('the settings writes, against a migrated database', () => 
     const effective = await settings.effective(here.tenantId);
     expect(effective.companyIdentity.source).toBe('tenant');
     expect(effective.pendingPromptPoints).toEqual(['payment_terms']);
+  });
+
+  it('keeps the PIN code a save never names — a client built before the field — and clears it only when told', async () => {
+    const { postalCode: _unread, ...asAnOlderClientRead } = await settings.businessProfile(
+      here.tenantId,
+    );
+    const moved = { ...asAnOlderClientRead, address: '9 Sadar Bazaar, Nagpur' };
+    expect(await settings.saveBusinessProfile(here.tenantId, moved, by())).toEqual({
+      ...moved,
+      postalCode: '440001',
+    });
+    const recorded = await entriesOf(pools, here.tenantId, 'settings.business_profile_changed');
+    await settings.saveBusinessProfile(here.tenantId, moved, by());
+    expect(await entriesOf(pools, here.tenantId, 'settings.business_profile_changed')).toHaveLength(
+      recorded.length,
+    );
+    const cleared = { ...moved, postalCode: null };
+    expect(await settings.saveBusinessProfile(here.tenantId, cleared, by())).toEqual(cleared);
+    expect((await settings.businessProfile(here.tenantId)).postalCode).toBeNull();
   });
 
   it('keeps the terms in a proposal template whatever the list said, and records the two template writes', async () => {

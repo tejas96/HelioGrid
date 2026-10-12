@@ -2,6 +2,7 @@ import type {
   Branding,
   BrandingWrite,
   BusinessProfile,
+  BusinessProfileWrite,
   EffectiveSettings as EffectiveSettingsWire,
   Holidays,
   QuietHours,
@@ -60,13 +61,14 @@ export class SettingsService {
       segment: value.segment,
       typicalSystemKwp: value.typicalSystemKwp,
       address: value.address,
+      postalCode: value.postalCode,
       bankDetails: value.bankDetails,
     };
   }
 
   async saveBusinessProfile(
     tenantId: string,
-    body: BusinessProfile,
+    body: BusinessProfileWrite,
     act: Act,
   ): Promise<BusinessProfile> {
     return this.crossTenant.saveProfile(tenantId, body, act);

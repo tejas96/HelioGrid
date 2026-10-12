@@ -59,7 +59,11 @@ export class SettingsRepository {
       const own = await tenantRead(tx, tenantId);
       if (own === null) return null;
       const [profile] = await tx
-        .select({ address: businessProfile.address, bankDetails: businessProfile.bankDetails })
+        .select({
+          address: businessProfile.address,
+          postalCode: businessProfile.postalCode,
+          bankDetails: businessProfile.bankDetails,
+        })
         .from(businessProfile)
         .where(eq(businessProfile.tenantId, tenantId))
         .limit(1);

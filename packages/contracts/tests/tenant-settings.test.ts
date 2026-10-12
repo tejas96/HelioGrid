@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+  businessProfileSchema,
+  businessProfileWriteSchema,
   calendarDateSchema,
   hexColourSchema,
   taxRegistrationsSchema,
@@ -88,5 +90,47 @@ describe('tax registrations on the wire — one entry per type (M01-24)', () => 
     expect(result.error.issues.map((issue) => issue.path)).toEqual([
       ['registrations', 1, 'registrationType'],
     ]);
+  });
+});
+
+describe('the business profile on the wire — each bound at its edge (M01-23, M01-24)', () => {
+  const profile = {
+    companyName: 'Sunrise Solar',
+    city: 'Pune',
+    segment: null,
+    typicalSystemKwp: null,
+    address: null,
+    postalCode: null,
+    bankDetails: null,
+  };
+
+  it.each([
+    [999_999.99, true],
+    [1_000_000, false],
+    [0.01, true],
+    [0.004, false],
+    [5.125, false],
+    [1e-7, false],
+    [-1, false],
+  ])(
+    'a typical size of %s kWp is %s — the column holds two decimals under a million',
+    (kwp, ok) => {
+      const result = businessProfileWriteSchema.safeParse({ ...profile, typicalSystemKwp: kwp });
+      expect(result.success).toBe(ok);
+    },
+  );
+
+  it.each([
+    ['4'.repeat(16), true],
+    ['4'.repeat(17), false],
+    ['', false],
+  ])('a PIN code %o is %s', (postalCode, ok) => {
+    expect(businessProfileWriteSchema.safeParse({ ...profile, postalCode }).success).toBe(ok);
+  });
+
+  it('takes a write that never names the PIN code, and never a read without one', () => {
+    const { postalCode: _unread, ...fromAnOlderClient } = profile;
+    expect(businessProfileWriteSchema.safeParse(fromAnOlderClient).success).toBe(true);
+    expect(businessProfileSchema.safeParse(fromAnOlderClient).success).toBe(false);
   });
 });

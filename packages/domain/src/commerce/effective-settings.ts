@@ -42,7 +42,10 @@ export interface Resolved<T, S extends string = SettingSource> {
   readonly value: T;
 }
 
-/** `M06-17`'s four bank facts, market-neutral names: the routing identifier is IFSC in IN, labelled by the pack. */
+/**
+ * `M06-17`'s four bank facts, market-neutral names: the routing identifier is IFSC in IN, labelled
+ * by the pack (`formats.bankRoutingLabel`).
+ */
 export interface BankDetails {
   readonly bankName: string;
   readonly accountName: string;
@@ -52,6 +55,7 @@ export interface BankDetails {
 
 export interface BusinessProfileSettings {
   readonly address: string | null;
+  readonly postalCode: string | null;
   readonly bankDetails: BankDetails | null;
 }
 
@@ -130,6 +134,7 @@ export interface TenantFacts {
 
 export interface CompanyIdentity extends TenantFacts {
   readonly address: string | null;
+  readonly postalCode: string | null;
   readonly bankDetails: BankDetails | null;
 }
 
@@ -194,10 +199,11 @@ function identityInForce(
   profile: BusinessProfileSettings | null,
 ): Resolved<CompanyIdentity> {
   const address = profile?.address ?? null;
+  const postalCode = profile?.postalCode ?? null;
   const bankDetails = profile?.bankDetails ?? null;
   return {
-    source: address === null && bankDetails === null ? 'platform' : 'tenant',
-    value: { ...tenant, address, bankDetails },
+    source: address === null && postalCode === null && bankDetails === null ? 'platform' : 'tenant',
+    value: { ...tenant, address, postalCode, bankDetails },
   };
 }
 

@@ -3,6 +3,7 @@ import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
   businessProfileSchema,
+  businessProfileWriteSchema,
   taxRegistrationSchema,
   taxRegistrationsSchema,
 } from './business-profile';
@@ -146,7 +147,7 @@ export const tenantSettingsContract = c.router({
   saveBusinessProfile: {
     method: 'PUT',
     path: '/settings/business-profile',
-    body: businessProfileSchema,
+    body: businessProfileWriteSchema,
     summary: 'Replace the business profile — the one write-point every document reads by reference',
     responses: { 200: businessProfileSchema, ...guarded },
   },

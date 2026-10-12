@@ -32220,6 +32220,12 @@
                               "maxLength": 500,
                               "nullable": true
                             },
+                            "postalCode": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 16,
+                              "nullable": true
+                            },
                             "bankDetails": {
                               "type": "object",
                               "properties": {
@@ -32271,6 +32277,7 @@
                             "segment",
                             "typicalSystemKwp",
                             "address",
+                            "postalCode",
                             "bankDetails",
                             "defaultLanguage",
                             "timezone"
@@ -33398,6 +33405,12 @@
                       "maxLength": 500,
                       "nullable": true
                     },
+                    "postalCode": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 16,
+                      "nullable": true
+                    },
                     "bankDetails": {
                       "type": "object",
                       "properties": {
@@ -33437,6 +33450,7 @@
                     "segment",
                     "typicalSystemKwp",
                     "address",
+                    "postalCode",
                     "bankDetails"
                   ]
                 }
@@ -33718,6 +33732,12 @@
                     "maxLength": 500,
                     "nullable": true
                   },
+                  "postalCode": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 16,
+                    "nullable": true
+                  },
                   "bankDetails": {
                     "type": "object",
                     "properties": {
@@ -33801,6 +33821,12 @@
                       "maxLength": 500,
                       "nullable": true
                     },
+                    "postalCode": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 16,
+                      "nullable": true
+                    },
                     "bankDetails": {
                       "type": "object",
                       "properties": {
@@ -33840,6 +33866,7 @@
                     "segment",
                     "typicalSystemKwp",
                     "address",
+                    "postalCode",
                     "bankDetails"
                   ]
                 }

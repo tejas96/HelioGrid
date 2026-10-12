@@ -90,6 +90,11 @@ export interface FormatPack {
    * name, so it belongs to the never-translated set alongside operator names (`F3-08`, `F1-51`).
    */
   readonly taxIdLabel: string;
+  /**
+   * What a customer document calls the bank's routing code — `IFSC` in IN (`M06-17`). A statutory
+   * identifier's name, never translated, as `taxIdLabel` is.
+   */
+  readonly bankRoutingLabel: string;
   readonly phone: PhoneFormats;
   /** The market's default (`F1-50`). A per-user preference may override it — never for procurement. */
   readonly measurementSystem: MeasurementSystem;
@@ -145,6 +150,7 @@ export const IN_FORMATS: FormatPack = {
   /** CLDR territory IN. Declared rather than probed, so the shipped answer is readable. */
   firstDayOfWeek: 7,
   taxIdLabel: 'GSTIN',
+  bankRoutingLabel: 'IFSC',
   /** `F1-49` — `+91`, E.164 identity, 10-digit national number read in two groups of five. */
   phone: { dialCode: '+91', nsnGroups: [5, 5], nsnLength: 10 },
   /** `F1-50` — metric. */
