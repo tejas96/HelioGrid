@@ -43,6 +43,22 @@ describe('resumeStep — a returning owner resumes exactly where they stopped (M
   });
 });
 
+describe('resumeStep — a step put off is passed over, never answered', () => {
+  it.each([
+    { states: { language: 'completed' }, putOff: ['what_you_sell'], next: 'business_profile' },
+    { states: {}, putOff: ['language'], next: 'what_you_sell' },
+    { states: {}, putOff: ['what_you_sell'], next: 'language' },
+    { states: { language: 'completed' }, putOff: ['language'], next: 'what_you_sell' },
+    { states: { language: 'completed' }, putOff: [], next: 'what_you_sell' },
+  ] as const)('with $putOff put off it resumes at $next', ({ states, putOff, next }) => {
+    expect(resumeStep(states, putOff)).toBe(next);
+  });
+
+  it('is closed when every step left is put off', () => {
+    expect(resumeStep({}, ONBOARDING_STEPS)).toBeNull();
+  });
+});
+
 describe('recordStep — an answer replaces the last one, so a skipped step may still be completed', () => {
   it('replaces skipped with completed and keeps the rest', () => {
     const states = recordStep(

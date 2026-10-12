@@ -1,4 +1,5 @@
 'use client';
+import type { OnboardingProgress } from '@heliogrid/contracts';
 import {
   COMPANY_PROFILE_UNREAD,
   type CompanyProfileField,
@@ -15,6 +16,7 @@ import {
   type TaxPack,
   type TenantSegment,
   taxPackOf,
+  whatYouSellAnsweredBy,
   whatYouSellUnanswered,
 } from '@heliogrid/domain';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -36,7 +38,10 @@ export interface CompanyProfileStep extends CompanyProfileView {
   edit(field: CompanyProfileField, typed: string): void;
   chooseSegment(segment: TenantSegment): void;
   declareSize(kwp: number): void;
-  /** Writes the profile, then the registrations when they changed, then records the step. */
+  /**
+   * Writes the profile, then the registrations when they changed, then records the step before
+   * when this save answers it, then its own step.
+   */
   save(): void;
   /** Asks again for the reads that got no answer. */
   retryRead(): void;
@@ -65,6 +70,7 @@ export function useCompanyProfile(): CompanyProfileStep {
   const tenantId = user?.tenant?.id ?? '';
   const profileKey = queryKeys.settings.businessProfile(tenantId);
   const registrationsKey = queryKeys.settings.taxRegistrations(tenantId);
+  const progressKey = queryKeys.setup.progress(tenantId);
 
   const profile = useQuery({
     queryKey: profileKey,
@@ -145,10 +151,14 @@ export function useCompanyProfile(): CompanyProfileStep {
         });
         queryClient.setQueryData(registrationsKey, list);
       }
+      const progress = queryClient.getQueryData<OnboardingProgress>(progressKey);
+      if (whatYouSellAnsweredBy(writes.profile, progress?.steps ?? {})) {
+        await repositories.onboarding.recordStep('what_you_sell', 'completed');
+      }
       return repositories.onboarding.recordStep('business_profile', writes.step);
     },
     onSuccess: (progress) => {
-      queryClient.setQueryData(queryKeys.setup.progress(tenantId), progress);
+      queryClient.setQueryData(progressKey, progress);
     },
   });
   const { mutate, isPending, isError } = save;
@@ -182,7 +192,7 @@ export function useCompanyProfile(): CompanyProfileStep {
       }
       if (pack.data !== undefined && tax === null) void pack.refetch();
     },
-    continueWithout: putOffSetup,
+    continueWithout: () => putOffSetup('business_profile'),
   };
 }
 

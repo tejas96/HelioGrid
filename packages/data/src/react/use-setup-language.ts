@@ -13,7 +13,7 @@ export interface SetupLanguageStep {
   readonly failed: boolean;
   /** Saves the language the person reads, then records the step as answered. */
   record(language: UiLanguage): void;
-  /** Moves on without the record; the next sign-in asks for the step again. */
+  /** Opens the next step without the record; the next sign-in asks for this step again. */
   putOff(): void;
 }
 
@@ -43,7 +43,7 @@ export function useSetupLanguage(): SetupLanguageStep {
       saving: isPending,
       failed: isError || data === null,
       record: mutate,
-      putOff: putOffSetup,
+      putOff: () => putOffSetup('language'),
     }),
     [isPending, isError, data, mutate, putOffSetup],
   );

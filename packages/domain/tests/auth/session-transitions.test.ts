@@ -59,10 +59,10 @@ describe('sessionAfter — why a session ended, and what the device keeps of it 
   });
 
   it('drops a setup step put off for the session at the next sign-in and at a sign-out', () => {
-    const putOff: SessionSnapshot = { ...signedIn, setupPutOff: true };
+    const putOff: SessionSnapshot = { ...signedIn, setupPutOff: ['what_you_sell'] };
     const again = sessionAfter(putOff, { kind: 'signed-in', user: priya, restored: false });
-    expect(again.setupPutOff).toBe(false);
-    expect(sessionAfter(putOff, { kind: 'signed-out' }).setupPutOff).toBe(false);
+    expect(again.setupPutOff).toEqual([]);
+    expect(sessionAfter(putOff, { kind: 'signed-out' }).setupPutOff).toEqual([]);
   });
 
   it('sends a boot check that found no credential to the door', () => {

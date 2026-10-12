@@ -51,9 +51,11 @@ Reached from: the onboarding sequence after "What do you sell?" (M01 §M01.3 beh
 36. **A tax number that reads well only in capitals is taken in capitals.** The owner who typed the right number in small letters is not told to check its format.
 37. **The lede names the step before only for answers that arrived missing.** An answer the owner takes out on this screen marks the part `Not declared` and keeps the line at the act; the lede stays as drawn on `m-default`.
 38. **A bank fact typed half way makes the step `completed`**, as a street or a PIN code does. With nothing of this screen's own typed the step is `skipped`.
-39. **`Continue without it` puts setup off for the session and records nothing.** The next sign-in asks for the step again.
+39. **`Continue without it` puts this step off for the session and records nothing.** The next sign-in asks for the step again.
 40. **The live check reads the api's own market pack**, so the field and the save never disagree about a tax number.
 41. **A tax number typed malformed takes nothing away.** It is never stored, and a number already stored stays as it is; a stored number the owner empties is taken out. A number that stays stored completes the step, as a typed one does. The account holder that still holds the name read at arrival, beside no other bank fact, is nothing typed, also when the company was renamed on this screen.
+42. **Both answers given here after `Finish later` answer the step before too.** `SCR-M01-04`'s `Finish later` opens this screen with its step unrecorded; a save here that sends a kind and a size records that step `completed`, so the next sign-in does not ask again. A save without both leaves it unrecorded, and the next sign-in asks.
+43. **The cost of an undeclared answer keeps each screen's own words.** `Market defaults until you set these` here and `Until you finish, proposals start without your answers.` on `SCR-M01-04` both stay as drawn.
 
 
 ## Requirements (verbatim)

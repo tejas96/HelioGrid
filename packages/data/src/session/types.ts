@@ -2,6 +2,7 @@ import type { CreateTenant, OtpChannel, UiLanguage } from '@heliogrid/contracts'
 import type {
   GoogleResult,
   GoogleToken,
+  OnboardingStep,
   OtpRequestOutcome,
   OtpVerifyResult,
   RolePreset,
@@ -60,10 +61,11 @@ export interface SessionStore {
    */
   chooseHome(preset: RolePreset): void;
   /**
-   * The person went past a setup step whose answer did not save. Memory only, as `chooseHome`:
-   * the next sign-in's snapshot carries none, so the step is asked again.
+   * The person went past this setup step without an answer saved; the steps after it are still
+   * asked. Memory only, as `chooseHome`: the next sign-in's snapshot carries none, so the step is
+   * asked again.
    */
-  putOffSetup(): void;
+  putOffSetup(step: OnboardingStep): void;
   signOutEverywhere(): Promise<void>;
   /**
    * The person chose a language (`F3-04`): the snapshot moves at once and the choice is

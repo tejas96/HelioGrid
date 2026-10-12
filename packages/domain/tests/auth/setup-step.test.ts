@@ -19,38 +19,50 @@ const withoutCompany: SessionUser = { ...person, tenant: null };
 
 const reading: SetupRead = { status: 'pending' };
 const unanswered: SetupRead = { status: 'failed' };
-const atLanguage: SetupRead = { status: 'ready', resumeStep: 'language' };
-const atWhatYouSell: SetupRead = { status: 'ready', resumeStep: 'what_you_sell' };
-const atCompanyProfile: SetupRead = { status: 'ready', resumeStep: 'business_profile' };
-const closed: SetupRead = { status: 'ready', resumeStep: null };
+const atLanguage: SetupRead = { status: 'ready', steps: {} };
+const atWhatYouSell: SetupRead = { status: 'ready', steps: { language: 'completed' } };
+const atCompanyProfile: SetupRead = {
+  status: 'ready',
+  steps: { language: 'completed', what_you_sell: 'completed' },
+};
+const atInviteTeam: SetupRead = {
+  status: 'ready',
+  steps: { language: 'completed', what_you_sell: 'completed', business_profile: 'skipped' },
+};
+const atReady: SetupRead = {
+  status: 'ready',
+  steps: { ...atInviteTeam.steps, invite_team: 'skipped' },
+};
+const closed: SetupRead = { status: 'ready', steps: { ...atReady.steps, ready: 'completed' } };
 
 describe('setupStepOwed — the setup step a session is asked for (M01-10, F3-03)', () => {
   it.each([
     { who: 'an owner whose company resumes at the language step', user: owner, read: atLanguage },
     { who: 'an owner who holds a second role', user: ownerWhoSells, read: atLanguage },
   ])('asks $who for the language step', ({ user, read }) => {
-    expect(setupStepOwed(user, false, read)).toBe('language');
+    expect(setupStepOwed(user, [], read)).toBe('language');
   });
 
   it('asks an owner whose company resumes at what-you-sell for that step', () => {
-    expect(setupStepOwed(owner, false, atWhatYouSell)).toBe('what_you_sell');
+    expect(setupStepOwed(owner, [], atWhatYouSell)).toBe('what_you_sell');
   });
 
   it('asks an owner whose company resumes at the company profile for that step', () => {
-    expect(setupStepOwed(owner, false, atCompanyProfile)).toBe('business_profile');
+    expect(setupStepOwed(owner, [], atCompanyProfile)).toBe('business_profile');
   });
 
   it('waits while an owner’s progress is still being read', () => {
-    expect(setupStepOwed(owner, false, reading)).toBe('wait');
+    expect(setupStepOwed(owner, [], reading)).toBe('wait');
   });
 
   it.each([
     { why: 'the read got no answer: setup never holds a person', user: owner, read: unanswered },
-    ...(['invite_team', 'ready'] as const).map((resumeStep) => ({
-      why: `the company resumes at ${resumeStep}, which has no screen yet`,
+    {
+      why: 'the company resumes at invite_team, which has no screen yet',
       user: owner,
-      read: { status: 'ready', resumeStep } satisfies SetupRead,
-    })),
+      read: atInviteTeam,
+    },
+    { why: 'the company resumes at ready, which has no screen yet', user: owner, read: atReady },
     { why: 'the roles do not manage them, at the second step', user: seller, read: atWhatYouSell },
     { why: 'every step is answered', user: owner, read: closed },
     { why: 'the roles do not manage the company’s settings', user: seller, read: atLanguage },
@@ -62,15 +74,38 @@ describe('setupStepOwed — the setup step a session is asked for (M01-10, F3-03
     { why: 'there is no company yet', user: withoutCompany, read: reading },
     { why: 'nobody is signed in', user: null, read: reading },
   ])('asks for no step when $why', ({ user, read }) => {
-    expect(setupStepOwed(user, false, read)).toBeNull();
+    expect(setupStepOwed(user, [], read)).toBeNull();
   });
 
   it.each([
-    { read: atLanguage, when: 'the step is owed' },
-    { read: atWhatYouSell, when: 'the second step is owed' },
-    { read: atCompanyProfile, when: 'the third step is owed' },
-    { read: reading, when: 'the read is still in flight' },
-  ])('asks for no step in a session that put it off, when $when', ({ read }) => {
-    expect(setupStepOwed(owner, true, read)).toBeNull();
+    { putOff: ['what_you_sell'], read: atWhatYouSell, asked: 'business_profile' },
+    { putOff: ['language'], read: atLanguage, asked: 'what_you_sell' },
+    { putOff: ['language', 'what_you_sell'], read: atLanguage, asked: 'business_profile' },
+    { putOff: ['language'], read: atWhatYouSell, asked: 'what_you_sell' },
+  ] as const)(
+    'passes over $putOff put off for the session and asks for $asked',
+    ({ putOff, read, asked }) => {
+      expect(setupStepOwed(owner, putOff, read)).toBe(asked);
+    },
+  );
+
+  it.each([
+    {
+      putOff: ['what_you_sell', 'business_profile'],
+      read: atWhatYouSell,
+      why: 'no later step has a screen',
+    },
+    {
+      putOff: ['business_profile'],
+      read: atCompanyProfile,
+      why: 'the last step with a screen is put off',
+    },
+    { putOff: ['what_you_sell'], read: unanswered, why: 'the read got no answer' },
+  ] as const)('asks for no step with $putOff put off, when $why', ({ putOff, read }) => {
+    expect(setupStepOwed(owner, putOff, read)).toBeNull();
+  });
+
+  it('still waits for the read with a step put off', () => {
+    expect(setupStepOwed(owner, ['what_you_sell'], reading)).toBe('wait');
   });
 });
