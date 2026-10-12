@@ -188,11 +188,3 @@ Digest of the foundations `F1`–`F8`, which are canonical.
   never translated.
 - Read and export work regardless of billing state. Never hold data hostage.
 - The server assigns business identifiers. No feature flags — entitlements are the only gating.
-
-## 10. Compact instructions
-
-When this conversation is compacted, keep: the task and part id and its branch · the RFC's approval
-state and whatever voided it · every owner decision still open, with its options · each failing
-check with its exact output · how many full-gate runs are used · the commit card not yet answered.
-Drop file dumps and passed checks: the task in `docs/tasks/` holds the RFC and its `#### Runtime`
-ledger, so re-read them there.
