@@ -101,8 +101,7 @@ fact to pass a count; name the collision in the self-audit instead.
   counted as a provenance line, one line each, never as a sentence.
 
 **A line is one short sentence — about ten words in English.** It may wrap in Hindi or Marathi, and
-the layout holds when it does (contract item 4). Count the English frames; a Hindi or Marathi frame
-carries the same sentences.
+the layout holds when it does (contract item 4).
 
 **Budgets. Each is counted in the self-audit, and a frame over budget FAILS:**
 
@@ -379,8 +378,10 @@ contrast `N4`, target size `N2`, provenance `N7`, light-only, density. Beware th
    a 221-panel design. Long content scrolls inside its own region. **Every data table carries a
    caption (`F7-27`)**: it names what the table is and, where the table is filtered or scoped, what
    it currently shows — the bill of materials and the proposal are documents a customer may hold.
-4. Survives **language expansion**: the layout holds in Hindi and Marathi, not only English. No
-   text baked into images.
+4. Survives **language expansion**: draw in English only, and let every text box grow — no fixed
+   height on text, no `nowrap` on words, no text baked into images. Hindi and Marathi are rendered
+   on the built screen (`F7-41`); a frame in another language is a second copy of words the catalog
+   owns, and copies drift.
 5. **No orphan screens**: every screen is reachable and leads somewhere, and where the brief pins
    the entry and exit the design shows those affordances. Where the brief says **"not pinned by PRD
    — designer decides"**, choose one, draw it, and write the choice into the brief's Entry & exit
