@@ -91,6 +91,7 @@
 @import "./components/Kanban/Kanban.css";
 @import "./components/LanguageSwitcher/LanguageSwitcher.css";
 @import "./components/ListRow/ListRow.css";
+@import "./components/LoadingBars/LoadingBars.css";
 @import "./components/MapSurface/MapControls.css";
 @import "./components/MapSurface/MapFrame.css";
 @import "./components/MapSurface/MapMarkers.css";

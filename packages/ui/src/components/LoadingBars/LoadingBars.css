@@ -1,0 +1,34 @@
+/* LoadingBars — the bars a list shows while its record loads (`SCR-M01-05`, `m-loading`): one per
+   part, a closed section's height or an open one's. The sweep is the theme's, which reduced motion
+   stills. */
+
+.hg-loading-bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-loading-bar {
+  display: block;
+  flex-shrink: 0;
+  border-radius: var(--r-lg);
+  box-shadow: var(--e1);
+  /* Drawn in --surface on the white page: the shadow and the sweep are what show the bar. */
+  /* biome-ignore lint/plugin/raw-white-css: shimmer — a loading bar's shimmer */
+  background: linear-gradient(
+    90deg,
+    var(--surface) 25%,
+    var(--canvas-sunken) 50%,
+    var(--surface) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-loading-bar[data-size="row"] {
+  height: 56px;
+}
+
+.hg-loading-bar[data-size="panel"] {
+  height: 188px;
+}
