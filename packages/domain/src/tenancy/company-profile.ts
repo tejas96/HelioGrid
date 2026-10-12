@@ -130,6 +130,64 @@ export function companyProfileSave(facts: CompanyProfileFacts, tax: TaxPack): Co
   };
 }
 
+/**
+ * The letterhead the profile builds, as the wide screen previews it (`SCR-M01-05`, `d-default`):
+ * only what the fields hold. A fact that is `null` or empty is drawn as nothing.
+ */
+export interface CompanyLetterhead {
+  readonly companyName: string;
+  /** The street when there is one, then the city and the PIN code. */
+  readonly addressLine: string;
+  /** The first registration typed, and whether it reads as the market's format. */
+  readonly registration: { readonly value: string; readonly wellFormed: boolean } | null;
+  /** Held once all four bank facts are, as the bank part's standing is. */
+  readonly bank: { readonly bankName: string; readonly accountEnding: string } | null;
+}
+
+/**
+ * An account is named by its last letters and digits, whatever separates them as typed; a number
+ * no longer than this shows whole.
+ */
+const ACCOUNT_ENDING_LENGTH = 4;
+const NOT_LETTER_OR_DIGIT = /[^\p{L}\p{N}]/gu;
+
+export function companyLetterhead(facts: CompanyProfileFacts, tax: TaxPack): CompanyLetterhead {
+  const cityAndPostalCode = [typed(facts.city), typed(facts.postalCode)].filter(isHeld).join(' ');
+  const bank = bankDetailsHeld(facts.bank);
+  return {
+    companyName: facts.companyName.trim(),
+    addressLine: [typed(facts.address), typed(cityAndPostalCode)].filter(isHeld).join(', '),
+    registration: registrationTyped(facts, tax),
+    bank:
+      bank === null
+        ? null
+        : {
+            bankName: bank.bankName,
+            accountEnding: bank.accountNumber
+              .replace(NOT_LETTER_OR_DIGIT, '')
+              .slice(-ACCOUNT_ENDING_LENGTH),
+          },
+  };
+}
+
+function registrationTyped(
+  facts: CompanyProfileFacts,
+  tax: TaxPack,
+): CompanyLetterhead['registration'] {
+  for (const { registrationType, value } of facts.registrations) {
+    const trimmed = typed(value);
+    if (trimmed === null) continue;
+    const check = checkTaxRegistration(tax, registrationType, trimmed);
+    if (check.ok) return { value: trimmed, wellFormed: true };
+    if (check.reason === 'malformed') return { value: trimmed, wellFormed: false };
+  }
+  return null;
+}
+
+function isHeld(value: string | null): value is string {
+  return value !== null;
+}
+
 function typed(value: string): string | null {
   const trimmed = value.trim();
   return trimmed === '' ? null : trimmed;

@@ -18,7 +18,7 @@ import {
   rightOf,
 } from '../support/layout';
 import { resolvedColour } from '../support/token';
-import { MIN_TOUCH_TARGET } from '../support/touch-target';
+import { expectTouchFloor, MIN_TOUCH_TARGET } from '../support/touch-target';
 import { CompanyProfileAsHeld } from './CompanyProfile.story';
 
 /**
@@ -66,6 +66,7 @@ const KINDS = companyProfileWords(en.t, {
   taxIdLabel: '',
   taxFormat: '',
   bankRoutingLabel: '',
+  letterhead: { companyName: '', addressLine: '', registration: null, bank: null },
 }).declarations.options;
 
 /* Two lines of text stand more than twice their font size tall; a box under that holds one line. */
@@ -241,11 +242,7 @@ for (const state of [
     ] as const;
     for (const [targets, expected] of kinds) {
       await expect(targets).toHaveCount(expected);
-      for (const target of await targets.all()) {
-        const box = await target.boundingBox();
-        expect(box?.width).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
-        expect(box?.height).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
-      }
+      if (expected > 0) await expectTouchFloor(await targets.all());
     }
   });
 }

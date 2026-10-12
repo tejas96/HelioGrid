@@ -43,6 +43,10 @@ Reached from: the onboarding sequence after "What do you sell?" (M01 §M01.3 beh
 28. **The typical size has `+` and `−` steppers on this screen, 0.5 kWp a press**, as drawn; the step before keeps its field without them. The field holds two decimals, the stored column's precision, where the board passes one.
 29. **A word two screens share is the catalog's one word in every language.** *Declared by you*, *Typical system size* and the tier word read here as the step before and every tier line show them; the board's two language frames are not read (`.claude/rules/ui-adherence.md`, *Screens*).
 30. **The size's hint stands under an empty size field too.** `m-failed-save` draws the field with no hint; *The size you sell most often* helps most where nothing is declared, so it is built in every state, and the frame is to be corrected to match.
+31. **From 968 px both halves are drawn, sized from the 1536 frame as shares of the window**: the letterhead's track 44% of it, never under 472 nor over 672; the list's side padding 6.25% of it, never under 32 nor over 96. No second breakpoint.
+32. **The letterhead's address is one line**: the street when there is one, then the city and the PIN code — `Plot 14, Baner Road, Pune 411045`; with no street, `Pune 411045`.
+33. **The letterhead names the bank only when all four bank facts are held**, as the part's `Added` is (ruling 17): the bank's name and the account's last four characters — `HDFC Bank · account ending 4821`; until then a bar.
+34. **A size of the letterhead that is off the spacing scale takes the nearest token**: the sheet's gap 28 → `sp-6`, the bars 10 → `sp-2` high and `sp-2` apart, the list's top padding 56 → `sp-12`. The tile's 56, the sheet's 440 and a bar's 140 are the drawing's own sizes.
 
 
 ## Requirements (verbatim)

@@ -14,7 +14,7 @@ import {
   expectSharedEdge,
 } from '../support/layout';
 import { resolvedColour, resolvedLength } from '../support/token';
-import { MIN_TOUCH_TARGET } from '../support/touch-target';
+import { expectTouchFloor } from '../support/touch-target';
 import { CompanyProfileAsHeld } from './CompanyProfile.story';
 
 /**
@@ -277,11 +277,6 @@ for (const state of [
       ...(await profile.locator('.hg-input-shell').all()),
       ...(await profile.locator('.hg-button').all()),
     ];
-    expect(targets.length).toBeGreaterThan(1);
-    for (const target of targets) {
-      const box = await target.boundingBox();
-      expect(box?.width).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
-      expect(box?.height).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
-    }
+    await expectTouchFloor(targets);
   });
 }

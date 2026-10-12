@@ -66,6 +66,23 @@ export interface CompanyProfileWords {
     /** Where the size comes from — beside its tier. */
     readonly sizeSource: string;
   };
+  /**
+   * The letterhead the profile builds, previewed beside the list on a wide screen. It shows only
+   * what the fields hold: an empty line, or a `null`, is drawn as a bar.
+   */
+  readonly letterhead: {
+    readonly overline: string;
+    /** Stands in the logo's place until one is added. */
+    readonly logo: string;
+    readonly name: string;
+    readonly address: string;
+    /** The market pack's name for its registration. */
+    readonly taxLabel: string;
+    /** The registration as typed; `owed` while it does not read as the market's format. */
+    readonly tax: { readonly value: string; readonly owed: boolean } | null;
+    readonly bank: string;
+    readonly bankLine: string | null;
+  };
   readonly loading: string | null;
   readonly unread: {
     readonly title: string;
@@ -114,7 +131,8 @@ export type CompanyProfileValues = Readonly<Record<CompanyProfileField, string>>
 
 /**
  * The company profile's setup life (`SCR-M01-05`; `M01-24`, `M01-31`): five flat parts with where
- * each stands, one open at a time, and one act that is live with nothing filled in. The component
+ * each stands, one open at a time, and one act that is live with nothing filled in. From the door's
+ * breakpoint the web half sets a decorative letterhead beside the list. The component
  * holds no draft and saves nothing: every keystroke is reported by its field, so a field can also
  * be emptied, and the screen that holds the values decides what a save writes.
  */

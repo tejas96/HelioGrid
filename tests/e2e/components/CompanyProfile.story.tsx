@@ -2,6 +2,7 @@ import {
   COMPANY_PROFILE_PARTS,
   type CompanyProfileFacts,
   type CompanyProfilePart,
+  companyLetterhead,
   companyProfileStanding,
   IN_PACK,
   inLanguage,
@@ -108,6 +109,7 @@ export function CompanyProfileAsHeld({
             taxIdLabel: IN_PACK.formats.taxIdLabel,
             taxFormat: REGISTRATION === undefined ? '' : inLanguage(REGISTRATION.format, reader),
             bankRoutingLabel: IN_PACK.formats.bankRoutingLabel,
+            letterhead: companyLetterhead(facts, IN_PACK.tax),
           })}
           values={values}
           open={open}

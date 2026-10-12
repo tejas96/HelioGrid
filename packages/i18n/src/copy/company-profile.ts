@@ -53,6 +53,7 @@ export const COMPANY_PROFILE = {
   letterhead: /*i18n*/ { id: 'Your letterhead' },
   letterheadLogo: /*i18n*/ { id: 'Logo' },
   letterheadBank: /*i18n*/ { id: 'Bank' },
+  letterheadBankLine: /*i18n*/ { id: '{bankName} · account ending {ending}' },
 };
 
 /**

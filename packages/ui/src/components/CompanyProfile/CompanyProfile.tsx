@@ -1,20 +1,43 @@
 import { Text } from '../../primitives/Text/Text';
 import { Accordion } from '../Accordion/Accordion';
+import { BrandBloom } from '../BrandBloom/BrandBloom';
 import { Button } from '../Button/Button';
 import { DoorFrame } from '../DoorFrame/DoorFrame';
 import { EmptyState } from '../EmptyState/EmptyState';
 import { LoadingBars } from '../LoadingBars/LoadingBars';
-import { openedPart, profileItems, UNREAD_GLYPH, UNREAD_GLYPH_SIZE } from './CompanyProfile.logic';
-import type { CompanyProfileProps } from './CompanyProfile.types';
+import {
+  LETTER_PARAGRAPHS,
+  LETTERHEAD_BLOOM_SIZE,
+  openedPart,
+  profileItems,
+  UNREAD_GLYPH,
+  UNREAD_GLYPH_SIZE,
+} from './CompanyProfile.logic';
+import type { CompanyProfileProps, CompanyProfileWords } from './CompanyProfile.types';
 import { ProfileSet } from './CompanyProfileSets';
 
 /**
- * The company profile in the door's frame under its breakpoint (`SCR-M01-05` at 375): the heading
- * and its line, the five flat parts with one open, and the act held at the foot. While the record
- * is read, bars stand in the list's place; a profile that could not be read is one centred message
- * with its retry, and the way on at the foot.
+ * The company profile (`SCR-M01-05`). Under the door's breakpoint it is the column alone; from it
+ * the column stands on the left at the list's wide measure, beside a letterhead that shows what
+ * the fields hold (`d-default`). A profile that could not be read has no letterhead.
  */
-export function CompanyProfile({
+export function CompanyProfile(props: CompanyProfileProps) {
+  const { words } = props;
+  const previewed = words.unread === null;
+  return (
+    <div className="hg-company-profile" data-preview={previewed ? 'true' : undefined}>
+      <ProfileColumn {...props} />
+      {previewed ? <Letterhead words={words.letterhead} loading={words.loading !== null} /> : null}
+    </div>
+  );
+}
+
+/**
+ * The column in the door's frame: the heading and its line, the five flat parts with one open,
+ * and the act. While the record is read, bars stand in the list's place; a profile that could not
+ * be read is one centred message with its retry, and the way on at the foot.
+ */
+function ProfileColumn({
   words,
   values,
   open,
@@ -161,4 +184,79 @@ function UnreadGlyph() {
       )}
     </svg>
   );
+}
+
+/**
+ * Decorative: every value on it is a field beside it, so it is hidden from a screen reader and
+ * holds no control. A line with nothing to show is a bar.
+ */
+function Letterhead({
+  words,
+  loading,
+}: {
+  words: CompanyProfileWords['letterhead'];
+  loading: boolean;
+}) {
+  return (
+    <aside className="hg-company-profile-preview" aria-hidden="true">
+      <BrandBloom size={LETTERHEAD_BLOOM_SIZE} />
+      <Text variant="overline" color="secondary" className="hg-company-profile-overline">
+        {words.overline}
+      </Text>
+      <div className="hg-company-profile-sheet" data-loading={loading ? 'true' : undefined}>
+        <div className="hg-company-profile-sheet-head">
+          <span className="hg-company-profile-sheet-logo">
+            <Text variant="caption" color="secondary">
+              {words.logo}
+            </Text>
+          </span>
+          <div className="hg-company-profile-sheet-name">
+            {words.name === '' ? (
+              <Bar />
+            ) : (
+              <Text variant="body" bold>
+                {words.name}
+              </Text>
+            )}
+            {words.address === '' ? (
+              <Bar />
+            ) : (
+              <Text variant="caption" color="secondary">
+                {words.address}
+              </Text>
+            )}
+          </div>
+        </div>
+        <span className="hg-company-profile-sheet-rule" />
+        <div className="hg-company-profile-sheet-facts">
+          <Text variant="caption" color="secondary">
+            {words.taxLabel}
+          </Text>
+          {words.tax === null ? (
+            <Bar />
+          ) : (
+            <Text variant="mono" color={words.tax.owed ? 'danger' : 'primary'}>
+              {words.tax.value}
+            </Text>
+          )}
+          <Text variant="caption" color="secondary">
+            {words.bank}
+          </Text>
+          {words.bankLine === null ? <Bar /> : <Text variant="caption">{words.bankLine}</Text>}
+        </div>
+        {LETTER_PARAGRAPHS.map((lines) => (
+          <div key={lines} className="hg-company-profile-sheet-lines">
+            {Array.from({ length: lines }, (_, line) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: identical bars that never reorder
+              <Bar key={line} />
+            ))}
+          </div>
+        ))}
+      </div>
+    </aside>
+  );
+}
+
+function Bar() {
+  return <span className="hg-company-profile-bar" />;
 }
