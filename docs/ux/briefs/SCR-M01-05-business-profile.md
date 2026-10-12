@@ -33,6 +33,9 @@ Reached from: the onboarding sequence after "What do you sell?" (M01 §M01.3 beh
 18. **A save that fails keeps everything typed on screen**, with a retry and a way on without saving. `m-save-failed` draws it: one line at the act, `Not saved · our end · nothing typed is lost`, then `Try again` and `Continue without it`; the settings life shows the same line at `Save changes` and no second act.
 19. **`skipped` has no way in yet**: a recorded step is never resumed, and no screen offers a way back into setup. The state is built and waits for that screen.
 20. **The settings life waits on the settings list** its back control returns to; the owner draws that list before this life is built.
+21. **A kind of business has one name on every screen.** The three card titles here are the ones `SCR-M01-04` shows — `Residential` · `Commercial & industrial (C&I)` · `Both`; the card lines, the group's name (`What you mostly sell`) and the size's hint are this screen's own, as drawn. The board's three titles are to be corrected to match before the part that draws the cards.
+22. **The account holder opens holding the company name.** A holder that still equals the company name, with the other three bank facts empty, is not a bank fact: nothing is written for it and the part reads `Not added`.
+23. **The address reads `Added` once the street address is filled.** A PIN code alone leaves it at the city read back from signup.
 
 
 ## Requirements (verbatim)

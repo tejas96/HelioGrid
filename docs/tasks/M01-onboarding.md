@@ -4419,7 +4419,7 @@ flowchart LR
   files[("api: POST /files, the logo pointer (e)")] --> logo["data/react: the logo upload (e)"]
   logo --> screens
   rules["domain: where a part stands, what a save writes (c)"] --> hook
-  words["i18n: companyProfileWords (c)"] --> ui["ui: CompanyProfile (c)"]
+  words["i18n: companyProfileWords (c)"] --> ui["ui: CompanyProfile (g, h)"]
   screens --> ui
   ui --> parts["ui: Accordion flat form, LoadingBars (b)"]
   more["shell: the settings list under More (f)"] --> screens
@@ -4449,16 +4449,18 @@ Per part.
 AC-1 is `not_applicable` in this task (*Decisions*, 2, ruled): its proof is `T-M06-022`'s, written into that task. Each part's RFC holds its rows of the one matrix.
 
 ##### Delivery size
-Six parts, about 135 files in all. No smaller part can be accepted alone: the api must hold a fact before a screen saves it, a shared component lands before either app draws it (Law 7), and the logo and the settings life each need a surface the step does not. a: about 20 files, sized in its RFC. b: about 15. c: about 28. d: about 30. e: about 25. f: about 20. Each later RFC is written when the part before it has shipped.
+Eight parts since part c's RFC split it in three (`#### Parts`: a, b, c, g, h, d, e, f), about 135 files in all. No smaller part can be accepted alone: the api must hold a fact before a screen saves it, a shared component lands before either app draws it (Law 7), and the logo and the settings life each need a surface the step does not. a: about 20 files, sized in its RFC. b: about 15. c, g and h together: about 28 planned, sized in their own RFCs. d: about 30. e: about 25. f: about 20. Each later RFC is written when the part before it has shipped.
 
 #### Parts
 
 | part | what | AC | depends on | status |
 |---|---|---|---|---|
 | a | the api holds what the board asks: the PIN code's column and field, the typical size bounded (D200), the pack's short format line and its bank-routing label (`#### Part a · RFC`) | AC-3 — on the running api | `T-M01-004` | shipped |
-| b | the design system's parts: `Accordion` drawn flat with a state mark beside the title (D145's share), the loading bars — by component spec; a field's line a reader depends on is part c's, placed with `Text` (`#### Part b · RFC`, *Decisions*, 1) | AC-4 (the parts every frame is built from) — on the component page | a | shipped |
-| c | the screen's shared parts: `CompanyProfile` in `packages/ui` with its five field sets and the 1536 letterhead preview, its words in three languages, domain's rules for where a part stands and what a save writes | AC-2 (the format explained, the act live), AC-4 — on the component page | b | open |
-| d | the step owed, the landing, the reads and the save, and the screen on the web and both phones; `SCR-M01-04`'s ways on open it (D202); half-typed bank details kept, as a new field on the profile's read and write (*Decisions*, 5); `createCompany` passes the step | AC-2, AC-4 — on the running apps | c | open |
+| b | the design system's parts: `Accordion` drawn flat with a state mark beside the title (D145's share), the loading bars — by component spec; a field's line a reader depends on is the component's (parts g and h), placed with `Text` (`#### Part b · RFC`, *Decisions*, 1) | AC-4 (the parts every frame is built from) — on the component page | a | shipped |
+| c | the rules and the words: domain's rules for where a part stands and what a save writes; every word of the setup life in three languages (`#### Part c · RFC`) | AC-2 (the format line is the pack's; a malformed registration is never written and never stops the save) — by unit test | b | shipped |
+| g | the shared component, first half: `CompanyProfile` in `packages/ui` — the frame, the list, the act, loading, a failed read, a failed save, the logo-and-name, address and bank field sets, the 1536 letterhead preview (`#### Part c · RFC`, *Decisions*, 1) | AC-4 — on the component page | c | open |
+| h | the shared component, second half: the tax and what-you-sell field sets, the Hindi and Marathi renders | AC-2 (the format explained, the act live), AC-4 — on the component page | g | open |
+| d | the step owed, the landing, the reads and the save, and the screen on the web and both phones; `SCR-M01-04`'s ways on open it (D202); half-typed bank details kept, as a new field on the profile's read and write (*Decisions*, 5); `createCompany` passes the step | AC-2, AC-4 — on the running apps | h | open |
 | e | the logo: its pointer in the api, the upload from the web and both phones, the limits stated and the refusal (`m-logo-invalid`) | AC-4 (`logo-invalid-limits-stated`) | d | open |
 | f | the settings life inside the shell on the web and both phones: the functional density, `Save changes`, the re-seed scope | AC-4 (`declarations-edited-reseed-scope`, `m-settings`, `d-settings`) | e · the settings list drawn (*Decisions*, 7) | open |
 
@@ -4739,6 +4741,152 @@ Checklist:
 
 **Planted reds seen (part b).** `Accordion.css` with the line's rule taken out failed `Accordion.spec.tsx` › *the sections are flat: a thin line above every section after the first, no gap, no side padding* (the line read `0px`); `standingPlace` answering the end for `empty` failed › *where a section stands reads beside its title: the word secondary, an 8px dot before it* (the word read the danger ink); `LoadingBars.css` with the panel's height set to the row's failed `LoadingBars.spec.tsx` › *one bar per part, at its size, the list wide and 8 apart, in a busy region that carries its name* (188 expected, 56 read). After the review, `Accordion.css` with the settings header's rule written `padding: 14px 0` again failed › *in the settings density a header with an act keeps the gap before it* (8px expected, 0px read). Each file was restored from a scratchpad copy and touched. Seen red before their code: four `Accordion` tests and both `LoadingBars` tests.
 
+#### Part c · RFC
+
+##### Title
+`T-M01-005c` — The company profile's rules and words: where each part stands, what a save writes, and every word in three languages
+
+##### Description
+**User impact.** None — internal. No screen a person meets changes in this part. It gives the screen two things it must not decide for itself: the word each of the five parts shows when shut (`Name only`, `Pune only`, `Not added`, `Added`, `Answered`), and what `Save and continue` sends — so a mistyped tax number is explained and never stops the save. Indirectly, the web and both phones will say the same words and save the same facts, in English, Hindi and Marathi.
+
+Who gains: the component (parts g and h) and the step (part d). The problem: nothing says where a part of the profile stands or what a save writes — `packages/domain/src/tenancy/` holds the step before (`what-you-sell.ts`) and no rule for this one — and `packages/i18n` holds none of the screen's words. Sources: the task RFC, `M01-24`, `M01-25`, `M01-31`, the brief's rulings 10–19, the record's word plan and decisions 3, 8–14, the board's source (read whole for this part).
+
+##### Goals
+- `packages/domain` answers, from the facts a device holds and the market's tax pack: where each of the five parts stands, and what a save writes — the profile, the well-formed registrations, and the step's outcome (`completed` or `skipped`).
+- `packages/i18n` returns every word the setup life of the screen draws, from one function, in English, Hindi and Marathi; the tax label, the bank-routing label and the format line are the pack's, passed in, never typed here.
+- The part titles and the standing words are closed vocabularies, enrolled where `F3-12` is held.
+- `#### Parts` holds the split this RFC asks for (*Decisions*, 1).
+
+##### Non-goals
+- No component, no screen, no hook — parts g, h and d.
+- The words of the settings life (`Company profile`, `Save changes`, `Back to settings`, `… · change it here`) — part f. The logo's words and its refusal — part e. The prompt's words — `T-M06-022`.
+- Half-typed bank details: this part writes bank details only when all four facts exist, as the contract stands; part d adds the field that keeps a half (*task RFC*, *Decisions*, 5).
+- The identity part's `Added`: it needs a logo, so until part e the part stands `Name only`.
+- No change to `SCR-M01-04`'s words.
+
+##### Readiness and dependencies
+- Part b is committed (`a1e474fb`), draft PR #287, its checks running; this branch is cut from it by the owner's word (`#### Runtime`, part c).
+- Design check: `READY` (`#### Design check`, the second entry). Main read the record again on 2026-10-12 (21 frames, as recorded) and had the board's source read whole.
+- `light cycle`: the proof matrix names no web, phone or api surface — no built screen imports what this part adds.
+- The board's pictures are not taken in this part: it draws no frame. The browser pane is signed out of Claude Design; part g needs the owner signed in there before it starts.
+- No blocker.
+
+##### Proposal
+**What testing the requirements found** (`/task` step 2).
+1. **Part c as planned is two and a half times the size rule.** Counted from the board's source: the component is about 1,200 lines on its two halves, its story and spec about 450, the words about 330 with 230 of tests, the rules about 150 with 200 of tests — about 2,550 lines against the rule's 1,000 (`docs/tasks/README.md`, *Delivery size*), and the last two parts each built past their estimate. It separates cleanly: rules and words have no surface; the frame with the three plain field sets draws eight whole frames; the tax and what-you-sell sets draw the other six. → *Decisions*, 1.
+2. **One kind of business, two names.** The board's cards read `Residential rooftop` · `Commercial and industrial` · `Both`; the step one tap earlier — built, shipped and enrolled as a closed vocabulary — reads `Residential` · `Commercial & industrial (C&I)` · `Both` (`packages/i18n/src/copy/setup-what-you-sell.ts:54`). The card lines, the group's name (`What you mostly sell`) and the size's hint differ too, but those are a screen's own lines. → *Decisions*, 2.
+3. **The account holder is drawn already filled** with the company name (`m-bank-open`), and no line says where it came from. Saved as it stands, it would be one bank fact of four on every company that never opened the part. → *Decisions*, 3.
+4. **No source says when the address reads `Added`.** The board draws `Pune only` and `Added` and no case between; the PIN code is new (part a). → *Decisions*, 4.
+5. **The size field's precision is domain's, not the board's.** The board passes `precision: 1`; the column holds two decimals (`TYPICAL_SYSTEM_KWP`, `what-you-sell.ts:8`). The stored fact wins; part h builds the field on it.
+6. **The line at the act for the re-seed scope shows while the what-you-sell part is open.** `m-declarations-open` draws it with nothing changed and `m-default` does not, so *open* is the board's rule, not *edited*.
+7. **The lede for an arrival from the failed save needs no new fact.** Step two refuses to go on until both are declared, so an owner here with one undeclared came by `Finish later`; the lede and the act's line follow from the part standing `Not declared`.
+8. **The board renders 23 strings in Hindi and Marathi and not the rest** — not `Answered`, `Added`, `Not declared`, `Check the format`, `From your signup`, the format-check sentence, any address or bank word, or the loading, error and failed-save lines. Those are drafted and listed in the test's header for a native review (`.claude/rules/ui-adherence.md`, *Screens*).
+9. **The board names its acts for a screen reader** (`Save your company profile and continue setting up HelioGrid`); `Button` takes that as `spokenName`. The words are this part's.
+
+**Flow.**
+1. The hook (part d) holds what the owner typed and what the api read. It asks domain `companyProfileStanding(part, facts, taxPack)` for each part and passes the five answers, the open part, the read's state and the pack's three labels to `companyProfileWords(t, facts)`.
+2. The component (parts g and h) draws what the words hold. It picks no word by state.
+3. On the act, the hook asks `companyProfileSave(facts, taxPack)` and sends what it returns: the profile; the registrations, when one is well-formed; then the step's outcome.
+
+**Key decisions.**
+- **Where a part stands is one closed list** — `name_only` · `city_only` · `not_added` · `added` · `answered` · `not_declared` · `check_format` — and each maps to one of three marks (`met`, `open`, `owed`), which the component hands to `Accordion` as `done`, `empty` and `errors`.
+- **Tax:** empty → `not_added`; a value `checkTaxRegistration` calls malformed → `check_format`; well-formed → `added`. The check that exists is reused (`packages/domain/src/tax/registration.ts:19`).
+- **A malformed registration is left out of the save and stops nothing** (`M01-25`; the task RFC's finding 6): everything else is written and the step is recorded.
+- **The step is `completed` when the address, the tax or the bank part holds a fact, `skipped` when none does** (the task RFC's flow). Part e adds the logo to that list.
+- **What you sell** reuses `whatYouSellUnanswered`: both declared → `answered`, else `not_declared`. A size that is no declaration is written as none (review): what is stored then stands as the screen says it. A figure finer than two decimals is the field's to round (part h), as on step two.
+- **One registration per type is written** (review): the api refuses a list that names a type twice, so a second entry of a type is left out.
+- **Only a profile that was read says something is missing** (review): while it loads, after a failed read and after a failed save the lede is the plain one and the act keeps no line. A failed read has no act: its two ways are the message's.
+- **Limit, for part h:** the words hold one tax label and one format line. A market with two registration types needs one per field; no market declares two today.
+- **The words function takes strings for the pack's facts.** The caller reads the tax label, the bank-routing label and the format line in the reader's language with domain's `inLanguage`; this module names no market's tax or bank identifier (`PIN code` is the brief's ruling 12).
+- **Rules live in `tenancy/company-profile.ts`**, beside `what-you-sell.ts`: the profile is the tenant's.
+
+**Order.** The rules' tests, red · the rules · the words' tests, red · the words, the registry, `extract`, the Hindi and Marathi lines · the brief and this record · review · the gate.
+
+**Refusals.** None — this part makes no call.
+
+**The twin.** Nothing platform-shaped: both halves will read the one module.
+
+**Deferred rows this part's files meet.** None: no row's cell names `packages/domain/src/tenancy/`, `packages/i18n/src/copy/company-profile.ts`, `company-profile-words.ts`, `setup-what-you-sell.ts` or the catalogs (D5 names the phone screen of that name, not the copy file). D202 (`T-M01-005 starts`) was ruled in the task RFC: it joins part d.
+
+**Decisions** (the owner's; the recommended way first).
+1. **The split.** Part c becomes three small parts — **c** the rules and words (this RFC), **g** the component's frame, list, act, loading, error and failed save with the logo-and-name, address and bank sets and the 1536 letterhead, **h** the tax and what-you-sell sets and the Hindi and Marathi renders; d, e and f keep their letters, so nothing written about them changes — or part c stays one pull request of about 30 files and 2,550 lines, approved at that exact size.
+2. **The kinds' names.** The three card titles are the one vocabulary's, as step two shows them; the card lines, the group's name and the hint are built as this board draws them, and the owner corrects the board's three titles with one prompt before part h — or the board's titles are built here too, and step two keeps other names for the same three kinds until a later task changes it.
+3. **The account holder.** Built as drawn — the field opens holding the company name — and a holder that still equals the company name, with the other three empty, is not a bank fact: nothing is written and the part reads `Not added` — or the field opens empty and the owner corrects the frame (one prompt).
+4. **When the address reads `Added`.** When the street address is filled; a PIN code alone leaves `Pune only` — or only when both the street address and the PIN code are filled.
+
+**Ruled by the owner, 2026-10-12, with the approval: the first way of each of the four.** The brief holds 2–4 as rulings 21–23.
+
+##### Architecture diagram
+No boundary change — see the task diagram: the nodes `domain: where a part stands, what a save writes (c)` and `i18n: companyProfileWords (c)`.
+
+##### Package changes
+- `domain` — new, exported from the index every device bundles (no money is computed): `COMPANY_PROFILE_PARTS`, `COMPANY_PROFILE_STANDINGS`, their types, `CompanyProfileFacts`, `companyProfileStanding`, `standingMark`, `companyProfileSave`, and the types `StandingMark` and `CompanyProfileSave`. Imports nothing new.
+- `i18n` — new, exported from the root entry: `COMPANY_PROFILE`, `COMPANY_PROFILE_PART_TITLE`, `COMPANY_PROFILE_STANDING_WORD`, `companyProfileWords` and its types. Depends on `domain`, as today.
+- Law 12: two new vocabularies. Their tuples are held by `tsc` (each word map is a `Record` over the tuple); their displays join `CLOSED_VOCABULARY_GROUPS` as one group, `company profile`, which `closed-vocabularies.test.ts` holds in three languages. No brand, token, route, table or error code is new.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| add | `packages/domain/src/tenancy/company-profile.ts` | the parts, the standings, the facts, the two rules | beside the step before it; the profile is the tenant's |
+| modify | `packages/domain/src/tenancy/index.ts` | the exports | the slice's entry |
+| add | `packages/domain/tests/tenancy/company-profile.test.ts` | rows c1–c3 | domain's tests mirror `src/` |
+| add | `packages/i18n/src/copy/company-profile.ts` | the messages and the two word maps | copy both platforms need |
+| add | `packages/i18n/src/copy/company-profile-words.ts` | built, not planned: `companyProfileWords` and its types — one file passed 300 lines, so the messages and the picking by state are two files | the same |
+| modify | `packages/i18n/src/copy/setup-what-you-sell.ts` | built, not planned: `KWP` exported, so the unit is written once (review) | the unit's first home |
+| modify | `packages/i18n/src/index.ts` | the exports | the root entry |
+| modify | `packages/i18n/src/copy/closed-vocabularies.ts` | the `company profile` group | the registry (Law 12) |
+| add | `packages/i18n/tests/company-profile.test.ts` | row c4, against the real catalogs | the package's tests |
+| add | `packages/i18n/tests/company-profile-states.test.ts` · `company-profile-facts.ts` | built, not planned: row c5 — the one test file passed 300 lines; the fixture both files read is written once | the same |
+| modify | `packages/i18n/src/locales/en/messages.po` · `hi/messages.po` · `mr/messages.po` | the new entries, written by `extract`; the Hindi and Marathi lines by hand | the catalogs |
+| generated | `packages/i18n/src/locales/en/messages.ts` · `hi/messages.ts` · `mr/messages.ts` | compiled by `build` | never hand-edited |
+| modify | `docs/ux/briefs/SCR-M01-05-business-profile.md` | the rulings of *Decisions* 2–4 | the brief owns the screen's facts |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, `#### Parts`, the task diagram's letters, the ledger, part c `shipped` | the task |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **A drafted Hindi or Marathi line reads wrong.** Each is listed for the native review; the board's 23 are copied character for character.
+- **A rule is first used in part d.** A fault found there is fixed and counted there; the tests here cover every standing and every branch of the save.
+- **Rollout.** Nothing a person meets changes; nothing stored or sent changes.
+
+##### Acceptance criteria and proof
+The task's AC-2 is this part's for its rule and its words; AC-4 has no row here (parts g and h). AC-1 and AC-3 have no row.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-2 · c1 where each part stands | main-dev | required | unit | a new company → `name_only`, `city_only`, `not_added`, `not_added`, `answered`; a street address → `added`; a PIN code alone → `city_only`; four bank facts → `added`, three → `not_added`; one declaration missing → `not_declared`; each standing gives its mark | `packages/domain/tests/tenancy/company-profile.test.ts` |
+| AC-2 · c2 the tax part | main-dev | required | unit | empty → `not_added`; `27AAACH7409R1Z` → `check_format`; `27AAACH7409R1ZV` → `added`; a pack with no registration type → `not_added`; lower case or an inner space → `check_format`; with two types, one malformed → `check_format`, both well-formed or one empty → `added`. Planted red: the malformed branch answering `added` | the same |
+| AC-2 · c3 what a save writes | main-dev | required | unit | nothing typed → the profile as read, no registration, `skipped`; a street address → `completed`; a malformed registration → left out, the address still written, the step still recorded; three bank facts → no bank details; a holder equal to the company name alone → no bank details, `skipped`; blank and spaces → `null`; a PIN code alone → written, `completed`; a type typed twice → written once; with two types, the well-formed one written and the malformed left out; a size that is no declaration (0, below 0, over the ceiling) → `null`. Planted red: the malformed registration let through | the same |
+| AC-2 · c4 the words at rest | main-dev | required | unit | English, Hindi and Marathi, whole: title, lede, five titles, five standings (`Pune only` built from the city), every label, line and act; with a made-up pack (`VAT no.`, `Sort code`, its own format line) those three read as passed and no `GSTIN` or `IFSC` appears | `packages/i18n/tests/company-profile.test.ts`; the made-up pack's case sits in `company-profile-states.test.ts` (Evaluator) |
+| AC-2 · c5 the words by state | main-dev | required | unit | loading → the act's reason; a failed read → its title, line and two acts; a failed save → the alert line, `Try again`, `Continue without it`; skipped → its lede; `not_declared` → its lede and the act's line; what-you-sell open → the re-seed line; otherwise no line at the act; a malformed registration → the format line as the field's error; a failed read → no act; while loading, after a failed read or a failed save → the plain lede and no line, whatever the parts hold | `packages/i18n/tests/company-profile-states.test.ts` |
+| c6 one word per member | main-dev | required | unit | the five titles and the seven standings read as different words in each language. Planted red: two standings given one Hindi word | `packages/i18n/tests/closed-vocabularies.test.ts` (the test that exists) |
+| c7 the catalogs | main-dev | required | repo | `pnpm --filter @heliogrid/i18n extract` leaves the tree clean; no missing message in Hindi or Marathi | the command's output |
+| side-by-side | — | not_applicable | — | — | this part draws no frame; parts g and h compare them on the component page |
+| the running web, phones and api | — | not_applicable | — | — | no built screen imports these exports; this part makes no call |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part: **15 files** (first written as 14, a miscount) — 7 of code and tests, 3 catalogs, 3 generated, 2 documents (the task and the brief; counted once each). Under the file target.
+- **Code: about 560 authored lines** — the rules 160, the words 290, the registry and the two entries 20, the Hindi and Marathi lines 90 (the catalogs' other lines are `extract`'s).
+- **Tests: about 470 authored lines** — the rules 220, the words 250.
+- About 1,030 in all — at the rule's target, with room for one review round counted in.
+- Order: as *Proposal*.
+
+**Built, and the size ruling asked again (2026-10-12).** 19 files against 15 planned (the plan's line said 14 and listed 15) — 27% over, past the rule's 20% (`docs/tasks/README.md`, *Delivery size*): 11 of code and tests against 7, 3 catalogs, 3 generated, 2 documents. The four more are the file table's three *built, not planned* rows: two files that each passed 300 lines and were split in two, the fixture the split tests share, and the one-word export that removes a second `kWp`. Code: 624 lines (526 in the seven source files, 98 Hindi and Marathi lines; 2 removed). Tests: 583. Total 1,207 against 1,030 planned — 17% over, inside the rule. No behaviour, route, contract, table or package beyond the RFC; the review added three small rules, each in *Key decisions*. Asked: this one part, approved at this exact size — approved by the owner, 2026-10-12.
+
+Checklist:
+- [x] the rules' tests, red
+- [x] the rules
+- [x] the words' tests — written after the words (*Mistakes found (part c)*), then seen red by planted breaks
+- [x] the words, the registry, the catalogs
+- [x] the brief
+- [x] review
+- [x] the gate
+
 #### Design check
 `READY` — 2026-10-12, on the record `SCR-M01-05 - decisions & self-audit.md` (29,484 bytes) read beside the board `SCR-M01-05 Business Profile - Mobile.dc.html` (142,409 bytes, under the read cap). Three checks on one helper. The first found the record behind the board (four frame counts, no Hindi frame, no 1536 alignment numbers, no word plan, a standing FAIL); the owner's redraw closed every finding. Main then found three product facts wrong against the code — three bank fields where `M06-17` and the contract hold four, a city line saying the city sets the market, a count of typed characters the pack cannot give — and the owner corrected them and redrew the 1536 arrangement in the same pass; the third check found nothing.
 
@@ -4871,6 +5019,66 @@ End state after the reruns: api, web and Metro stopped; the simulator and the em
 - A record edit was reported to the reviewer before it was on disk: the write's anchor matched twice and failed. Main now reads a write's result before it reports it.
 
 **Measurements (part b)** — helper runs: one `general-purpose` read of the board's source (128 k), `reviewer` 1 with three continuations (105 k, 121 k, 127 k, 130 k), `evaluator` 1 (24 k); no QA helper; one full gate, passed. Main: about 75 tool-call turns and about 390 k context tokens at the commit card, the walk, the record fetch and the RFC among them. Size: planned 17 files, code about 230, tests about 160; built 17 files, code 380, tests 235.
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | none listening |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| simulator · emulator | none booted | none booted |
+| browser tabs | pane closed | pane closed (the one tab Main opened is closed) |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | unchanged |
+| watchers | no `tsx … watch` process | none |
+
+**Part c · Runtime (2026-10-12).** Branch `feat/T-M01-005c`, cut from `feat/T-M01-005b` (`a1e474fb`, draft PR #287 open, its `quality`, `e2e-web` and `android` checks running) on a clean tree, by the owner's word. A light cycle: no stack is prepared.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | one tab opened on the board by Main (`started_by_task`, tab `seed`): it met the Claude sign-in page |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | — |
+| watchers | no `tsx … watch` process | — |
+
+**Part c · QA (2026-10-12)** — no stack: this part makes no call and no built screen imports what it adds.
+
+- **Order.** The reviewer read alone: nine should-fix findings and no blocker in round one, all applied (*Mistakes found (part c)*); its notes on the Hindi and Marathi lines were applied where they named a wrong word. Round two confirmed every one closed and found two lines of this record behind the build and four notes; the record was corrected, and round three read it clean. Then the Evaluator, once. One note is the owner's to rule on the commit card: after a failed save a skipped arrival's lede reads the plain one until the retry lands.
+- **Main's proofs.** `pnpm check` exit 0 on the final code: 26 test files, 457 tests. `pnpm check:catalogs`: extraction produced no change; Hindi and Marathi have no missing message (440 of 440).
+- **The board's lines.** The 23 Hindi and 23 Marathi lines copied from the board were each found, character for character, in the board's source by the script that filled the catalogs.
+- **The gate.** One run of `pnpm check:all`, passed: 217 test files, 3,848 tests, no skipped or vacuous check, the last stage `invariants green`; nothing regenerated. The tree's hash was the same before and after the helper. After it, Main wrote only this record — the gate's line, row c4's proof cell, the measurements and the final table — and ran `pnpm check` and the invariants again.
+
+**As proven (part c).**
+
+| row | result | evidence |
+|---|---|---|
+| c1 – c3 | passed | `company-profile.test.ts` (domain); planted reds by name |
+| c4 – c5 | passed | `company-profile.test.ts` and `company-profile-states.test.ts` (i18n); planted reds by name |
+| c6 | passed | `closed-vocabularies.test.ts`; planted red by name |
+| c7 | passed | `check:catalogs`: no change; Hindi and Marathi 440 of 440 |
+| side-by-side · the running web, phones and api | not_applicable | as the proof matrix says |
+| the gate | passed | `pnpm check:all`, one run |
+
+**Planted reds seen (part c).** Each file was restored from a scratchpad copy and touched.
+- `company-profile.ts` (domain) with the malformed branch answering `added` failed `company-profile.test.ts` › *the tax part holding … stands by the pack’s format*.
+- The same file with a malformed registration let through failed › *a malformed registration is left out and stops nothing: the rest is written and the step recorded* and › *a malformed registration alone leaves the step skipped*.
+- With the one-per-type rule taken out it failed › *a type typed twice is written once, the first as typed*; with the size written as held it failed › *a size of 0 is no declaration and is written as none* (and −1, 1,000,000).
+- The Hindi catalog with `Answered` given `Added`'s word failed `closed-vocabularies.test.ts` › *every closed vocabulary shows each member in its own words, in every language* (`hi · company profile`: `standing.added`, `standing.answered`).
+- `company-profile-words.ts` with the undeclared value's line taken out failed `company-profile-states.test.ts` › *an undeclared answer names the failed save and its cost, whatever else is true* (three rows); with a skip put before the failed save, its `{ skipped: true }` row; with the read's guard taken out of the lede › *while the profile is loading nothing is said to be missing, whatever the parts hold* (and `unread`, `save-failed` — for `unread` the act's line is absent because the act is, so the lede carries that row); with the field's error always none › *a malformed registration is answered with the format line; a well-formed one with nothing*; with the act kept after a failed read › *a profile that could not be read says so, with a retry and a way on*.
+- Seen red before their code: the rules' tests (the module did not exist).
+
+**Mistakes found (part c)**, each with the rule that now holds it:
+- The words were written before their test, against `CLAUDE.md` §3 *Build* 1. The test then pinned what the code returned, and the reviewer found two states it never asked about. Each branch of the words now has a planted red seen by name; the next part writes each proof row's test before the file it proves.
+- While loading or after a failed read, an unread profile's parts read as *not declared*, so the words named a failed save that never happened (reviewer). The lede and the act's line now wait for a profile that was read, with a test seen red.
+- A failed read still returned the save act (reviewer): the component would have had to hide it. The act is now none there, with a test seen red.
+- A registration type typed twice was written twice, which the api refuses whole (reviewer). One per type, with a test seen red.
+- A size that is no declaration was written as held (reviewer). Written as none, with a test seen red.
+- `kWp` was written a second time (reviewer). One export, `KWP`.
+- The Hindi and Marathi drafts used a second word for *format* where the api's refusal already had one, an alley for a street, and a misspelt *default* (reviewer). Corrected; the drafted lines stay listed for the native review.
+- Two files passed 300 lines (Biome) and the plan counted 14 files where it listed 15. The size ruling was asked again (*Delivery size*).
+
+**Measurements (part c)** — helper runs: one `general-purpose` read of the board's source (150 k), `reviewer` 1 with two continuations (103 k, 139 k, 141 k), `evaluator` 1 (29 k); no QA helper; one full gate, passed. Main: about 85 tool-call turns and about 353 k context tokens at the commit card, the walk, the record fetch and the RFC among them. Size: planned 15 files, code about 560, tests about 470; built 19 files, code 624, tests 583.
 
 | resource | initial | final |
 |---|---|---|

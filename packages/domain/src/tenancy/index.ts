@@ -1,3 +1,17 @@
+export type {
+  CompanyProfileFacts,
+  CompanyProfilePart,
+  CompanyProfileSave,
+  CompanyProfileStanding,
+  StandingMark,
+} from './company-profile';
+export {
+  COMPANY_PROFILE_PARTS,
+  COMPANY_PROFILE_STANDINGS,
+  companyProfileSave,
+  companyProfileStanding,
+  standingMark,
+} from './company-profile';
 export type { MembershipStatus } from './membership';
 export { MEMBERSHIP_STATUSES } from './membership';
 export type {
