@@ -6,8 +6,9 @@ behavior like a person on the running API and changed surfaces.
 No web flow of the `test:web` suite runs locally, not even a spec this task adds or changes. CI's
 `e2e-web` lane runs the whole suite and is each spec's one proof; a web flow is the one check
 exempt from the planted-red rule, by the owner's ruling. Edge cases are proven by live QA on the
-running app, never by a local flow run. The component suite (`test:ct`, port `3100`) is a local
-proof like a unit test and keeps the planted-red rule.
+running app, never by a local flow run. Every web journey row belongs to `qa-web`; a `ci` owner on
+a web journey row is a finding. The component suite (`test:ct`, port `3100`) is a local proof like
+a unit test and keeps the planted-red rule.
 
 ## Prepare one stack
 

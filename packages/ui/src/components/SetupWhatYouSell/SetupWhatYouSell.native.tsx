@@ -1,6 +1,6 @@
 import { TYPICAL_SYSTEM_KWP } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
-import { AccessibilityInfo, StyleSheet, View } from 'react-native';
+import { AccessibilityInfo, Keyboard, StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
 import { DoorFrame } from '../DoorFrame/DoorFrame.native';
@@ -36,7 +36,7 @@ export function SetupWhatYouSell({
   return (
     <DoorFrame
       trailing={null}
-      column="deep"
+      column={words.failure === null ? 'deep' : 'near'}
       identity={
         words.failure === null ? (
           <DoorTitle title={words.title} explainer={words.explainer} />
@@ -62,7 +62,12 @@ export function SetupWhatYouSell({
                 loading={saving}
                 disabled={words.waiting !== null}
                 disabledReason={words.waiting ?? undefined}
-                onClick={onContinue}
+                onClick={() => {
+                  // The field is left before the way on: a box emptied over a declared size shows
+                  // that size again, which is the one that is saved.
+                  Keyboard.dismiss();
+                  onContinue();
+                }}
               >
                 {words.primary}
               </Button>
@@ -112,6 +117,7 @@ export function SetupWhatYouSell({
             steppers={false}
             error={words.sizeError ?? undefined}
             provenance={{ tier: 'estimated', source: words.sizeSource, emphasis: 'load-bearing' }}
+            commits="as-typed"
             onCommit={onDeclareSize}
           />
         </View>

@@ -1,8 +1,15 @@
 import { DOOR_SEGMENT } from '@heliogrid/domain';
 import { CompanySignupScreen } from '../../screens/company-signup';
 import { SetupLanguageScreen } from '../../screens/setup-language';
+import { SetupWhatYouSellScreen } from '../../screens/setup-what-you-sell';
 import { PlaceholderScreen, ShellScreen } from '../../screens/shell';
-import { useHasHome, useHasNoTenant, useOwesLanguageStep, useShowsShell } from '../guards';
+import {
+  useHasHome,
+  useHasNoTenant,
+  useOwesLanguageStep,
+  useOwesWhatYouSellStep,
+  useShowsShell,
+} from '../guards';
 
 /**
  * Authenticated routes.
@@ -24,6 +31,8 @@ export const appScreens = {
   CompanySetup: { screen: CompanySignupScreen, if: useHasNoTenant },
   /** An owner whose company still owes its first setup step lands here before the shell (`SCR-M01-03`, `F3-03`). */
   SetupLanguage: { screen: SetupLanguageScreen, if: useOwesLanguageStep },
+  /** Then the step that asks what the company sells (`SCR-M01-04`, `M01-23`). */
+  SetupWhatYouSell: { screen: SetupWhatYouSellScreen, if: useOwesWhatYouSellStep },
   Leads: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.leads },
   Proposals: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.proposals },
   Projects: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.projects },

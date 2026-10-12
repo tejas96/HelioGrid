@@ -105,8 +105,9 @@ unit, contract and planted-red proofs, never a live API journey. `qa-api` owns r
 behavior — status, body, headers, sign-in, permission, tenant isolation, idempotency and persistence
 only where declared. A task with no reachable API behavior marks it not applicable. An API test
 runs on `heliogrid_test`. CI ownership names a path-selected lane that must actually run; a skipped
-lane proves nothing. A `test:web` flow's row is owned by `ci` on `e2e-web`, never run locally
-(`.claude/skills/task/references/qa.md`). Android phone flows may be CI-owned only when the `Phone flows` step runs;
+lane proves nothing. A web journey is a local `qa-web` proof, like an iOS journey. A `test:web`
+flow proves regression coverage in CI's `e2e-web` lane, is never run locally, and never replaces
+the `qa-web` row (`.claude/skills/task/references/qa.md`). Android phone flows may be CI-owned only when the `Phone flows` step runs;
 the step must be `Phone flows (tests/e2e/mobile) on the emulator`. A run of `Phone flows OFF`
 proves nothing and the row is `blocked`, never passed. iOS journeys are local `qa-ios` proofs.
 A screen task with a board (a studio screen has none) has one `side-by-side` row per board frame

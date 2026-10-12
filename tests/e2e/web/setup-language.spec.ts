@@ -3,6 +3,7 @@ import {
   createTranslator,
   LANGUAGE_META,
   SETUP_LANGUAGE,
+  SETUP_WHAT_YOU_SELL,
   SHELL,
   SIGN_IN,
   type Translator,
@@ -24,6 +25,8 @@ const en = await createTranslator('en');
 
 const heading = (page: Page, t: Translator) =>
   page.getByRole('heading', { name: t.t(SETUP_LANGUAGE.title) });
+const nextStep = (page: Page, t: Translator) =>
+  page.getByRole('heading', { name: t.t(SETUP_WHAT_YOU_SELL.title) });
 const shell = (page: Page, t: Translator) =>
   page.getByRole('navigation', { name: t.t(SHELL.mainNavigation) });
 const card = (page: Page, language: keyof typeof LANGUAGE_META) =>
@@ -32,7 +35,7 @@ const notSaved = (page: Page) =>
   page.getByRole('alert').filter({ hasText: en.t(SETUP_LANGUAGE.notSavedTitle) });
 const theStepsSave = '**/onboarding/progress/language';
 
-test('a new owner is asked for the language once, each under its own name, and Continue opens the home', async ({
+test('a new owner is asked for the language once, each under its own name, and Continue opens the next step', async ({
   page,
 }) => {
   await reachLanguageStep(page, en, freshMobile());
@@ -44,10 +47,11 @@ test('a new owner is asked for the language once, each under its own name, and C
   await expectNoSeriousViolations(page);
 
   await passLanguageStep(page, en);
-  await expect(shell(page, en)).toBeVisible();
+  await expect(nextStep(page, en)).toBeVisible();
+  await expect(shell(page, en)).toHaveCount(0);
 
   await page.reload();
-  await expect(shell(page, en)).toBeVisible();
+  await expect(nextStep(page, en)).toBeVisible();
   await expect(heading(page, en)).toHaveCount(0);
 });
 
@@ -72,7 +76,7 @@ test('a tap redraws the step in that language and saves it, with no Save to pres
   expect((await saved).postDataJSON()).toEqual({ interfaceLanguage: 'mr' });
 
   await passLanguageStep(page, mr);
-  await expect(shell(page, mr)).toBeVisible();
+  await expect(nextStep(page, mr)).toBeVisible();
 });
 
 test.describe('a hi-IN browser', () => {
@@ -138,7 +142,7 @@ test('a person whose roles do not manage the company’s settings goes straight 
   expect(progressReads).toEqual([]);
 });
 
-test('a save that fails says so with two ways on, and Try again opens the home', async ({
+test('a save that fails says so with two ways on, and Try again opens the next step', async ({
   page,
 }) => {
   await reachLanguageStep(page, en, freshMobile());
@@ -154,7 +158,7 @@ test('a save that fails says so with two ways on, and Try again opens the home',
 
   await page.unroute(theStepsSave);
   await page.getByRole('button', { name: en.t(SIGN_IN.tryAgain) }).click();
-  await expect(shell(page, en)).toBeVisible();
+  await expect(nextStep(page, en)).toBeVisible();
   await expect(heading(page, en)).toHaveCount(0);
 });
 

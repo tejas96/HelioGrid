@@ -15,6 +15,10 @@ export const queryKeys = {
   setup: {
     progress: (tenantId: string) => ['setup', tenantId, 'progress'] as const,
   },
+  /** A company's settings as stored; a write's answer replaces what is held. */
+  settings: {
+    businessProfile: (tenantId: string) => ['settings', tenantId, 'business-profile'] as const,
+  },
   /**
    * The reader's notifications in one company. The list and the bell's count share the prefix, so
    * a read invalidates both at once and the badge never disagrees with the list (`F6-17`).

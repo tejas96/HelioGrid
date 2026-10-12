@@ -101,6 +101,17 @@ test.describe('at 375', () => {
     expect(gap).toBe(await resolvedLength(page, '--sp-8'));
   });
 
+  test('a near column puts its heading sp-4 under the step header', async ({ mount, page }) => {
+    const door = await mount(placedDoor('near', true));
+    const lead = await door.getByTestId('lead').boundingBox();
+    const heading = await door
+      .getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) })
+      .boundingBox();
+
+    const gap = (heading?.y ?? 0) - ((lead?.y ?? 0) + (lead?.height ?? 0));
+    expect(gap).toBe(await resolvedLength(page, '--sp-4'));
+  });
+
   test('the step header leads, the heading and intro are the phone sizes, and the action stays on screen', async ({
     mount,
     page,

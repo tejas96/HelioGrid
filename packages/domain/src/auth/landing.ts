@@ -1,6 +1,14 @@
 import { hasCompany } from './company';
 import type { EndedAccess, SessionPhase, SessionUser } from './session';
-import type { SetupStepOwed } from './setup-step';
+import type { SetupScreenStep, SetupStepOwed } from './setup-step';
+
+/** The landing each setup step with a screen draws. */
+const LANDING_OF_STEP = {
+  language: 'language-step',
+  what_you_sell: 'what-you-sell-step',
+} as const satisfies Record<SetupScreenStep, string>;
+export type SetupLanding = (typeof LANDING_OF_STEP)[SetupScreenStep];
+const SETUP_LANDINGS: readonly SessionLanding[] = Object.values(LANDING_OF_STEP);
 
 /**
  * Where a visitor belongs, as a DECISION rather than a route. Both platforms ask the same
@@ -15,7 +23,7 @@ export type SessionLanding =
   | 'wait'
   | 'door'
   | 'company-step'
-  | 'language-step'
+  | SetupLanding
   | 'home'
   | 'access-removed';
 
@@ -37,5 +45,10 @@ export function landingFor(
   if (ended !== null) return 'access-removed';
   if (!hasCompany(user)) return 'company-step';
   if (owed === 'wait') return 'wait';
-  return owed === 'language' ? 'language-step' : 'home';
+  return owed === null ? 'home' : LANDING_OF_STEP[owed];
+}
+
+/** Whether a setup step is drawn for this landing, in the home's place. */
+export function isSetupLanding(landing: SessionLanding): landing is SetupLanding {
+  return SETUP_LANDINGS.includes(landing);
 }

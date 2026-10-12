@@ -8,6 +8,7 @@ import {
   fillCompanyDetails,
   fillCompanyStep,
   passLanguageStep,
+  passWhatYouSellStep,
   requestCode,
   typeCode,
 } from '../support/door';
@@ -212,6 +213,7 @@ test('a language chosen on the door is the new account’s, and where sign-out r
   await page.getByRole('button', { name: mr.t(COMPANY_SIGNUP.createCompany) }).click();
   expect(await languageOfTheCreate(created)).toBe('mr');
   await passLanguageStep(page, mr);
+  await passWhatYouSellStep(page, mr);
 
   await passTheOwnersMark(page, mr);
   await page

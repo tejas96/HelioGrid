@@ -21,10 +21,19 @@ export {
 } from './onboarding-steps';
 export type { DealSegment, TenantSegment } from './segment';
 export { DEAL_SEGMENTS, TENANT_SEGMENTS } from './segment';
-export type { WhatYouSellAnswers, WhatYouSellQuestion } from './what-you-sell';
+export type {
+  WhatYouSellAnswers,
+  WhatYouSellEvent,
+  WhatYouSellQuestion,
+  WhatYouSellStep,
+} from './what-you-sell';
 export {
   isTypicalSystemSize,
   TYPICAL_SYSTEM_KWP,
+  WHAT_YOU_SELL_STEP_AT_OPEN,
   whatYouSellAfterRead,
+  whatYouSellAnswers,
+  whatYouSellRefused,
+  whatYouSellStep,
   whatYouSellUnanswered,
 } from './what-you-sell';

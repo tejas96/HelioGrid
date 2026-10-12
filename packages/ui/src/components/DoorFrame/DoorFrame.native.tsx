@@ -17,7 +17,7 @@ const WORDMARK_SIZE = 24;
  * market's mobile screen padding at the sides. One column, so `lead` and then `identity` are
  * drawn above the task and `taskMeasure` names nothing here. `column` places the identity: centred
  * takes the free height above it, as much as the task's own spacer takes below; deep puts it `sp-8`
- * under the step header. `footer` stays under the scrolling column. The safe-area insets are the
+ * under the step header and near `sp-4`. `footer` stays under the scrolling column. The safe-area insets are the
  * screen's: the export's 375×812 frame starts under the status bar, and the app hands that band's
  * height in through `DoorTopInset` — this package holds no platform adapter.
  */
@@ -38,8 +38,8 @@ export function DoorFrame({ trailing, lead, identity, footer, column, children }
             </View>
             {lead}
             {column === 'centred' ? <View style={styles.centring} /> : null}
-            {column === 'deep' && identity !== undefined ? (
-              <View style={styles.deep}>{identity}</View>
+            {column !== 'centred' && column !== undefined && identity !== undefined ? (
+              <View style={styles[column]}>{identity}</View>
             ) : (
               identity
             )}
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
   /** Never under `sp-8`, so the heading keeps its distance from the header row on a short screen. */
   centring: { flex: 1, minHeight: theme.spacing['sp-8'] },
   deep: { paddingTop: theme.spacing['sp-8'] },
+  near: { paddingTop: theme.spacing['sp-4'] },
   /** With a footer the column's bottom padding moves to the footer, so the action sits `sp-6` under the last line. */
   columnAboveFooter: { paddingBottom: 0 },
   footer: {

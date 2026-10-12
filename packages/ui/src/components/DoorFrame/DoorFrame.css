@@ -159,6 +159,13 @@
   margin-top: var(--sp-2);
 }
 
+/* A near column puts its heading `sp-4` under what leads it: a failure that takes the heading is
+   taller than a title, and the column still holds its last line above the action (`SCR-M01-04`
+   `m-error`). */
+.hg-door[data-column="near"] .hg-door-identity {
+  margin-top: calc(var(--sp-2) * -1);
+}
+
 .hg-door-task {
   display: flex;
   /* Takes the column's free height, so a road at its end (`margin-top: auto`) reaches the foot. */
@@ -248,7 +255,7 @@
     line-height: var(--lh-body-lg);
   }
 
-  /* From the breakpoint the identity is centred in its own column, so both placements go. */
+  /* From the breakpoint the identity is centred in its own column, so every placement goes. */
   .hg-door[data-column="centred"] .hg-door-body::before {
     display: none;
   }
@@ -263,7 +270,8 @@
     width: 100%;
   }
 
-  .hg-door[data-column="deep"] .hg-door-identity {
+  .hg-door[data-column="deep"] .hg-door-identity,
+  .hg-door[data-column="near"] .hg-door-identity {
     margin-top: 0;
   }
 

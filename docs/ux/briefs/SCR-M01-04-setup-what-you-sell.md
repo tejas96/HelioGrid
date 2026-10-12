@@ -35,7 +35,7 @@ Reached from: directly after signup's three fields — "after M01-01's three fie
 6. **The buttons carry no spoken name**: the visible word is the name, and the line at the act and the ask say the rest.
 7. **The Marathi tier word is the product's, `अंदाजित`**, wherever the tier prints; the board's `अंदाजे` is a working word.
 8. **At 1536 a failed save keeps the door frame's rule**: the identity half takes its full width when it holds the fix, so the wordmark and the heading start further left than at rest, as on the language step.
-9. **The door frame's spacing stays**: at 375 the heading sits about 69 px under the wordmark where the board has about 43, and at 1536 the task column sits about 18 px lower than the board's — one frame for every door.
+9. **The door frame's spacing stays**: at 375 the heading sits about 69 px under the wordmark where the board has about 43, and at 1536 the task column sits about 18 px lower than the board's — one frame for every door. **After a failed save the block sits `sp-4` under the wordmark, as the board draws it** (the frame's `near` column): the block is taller than the title, and at the frame's own spacing the tier line fell under the fold on a phone.
 
 
 ## Requirements (verbatim)

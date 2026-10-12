@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { landingFor } from '../../src/auth/landing';
+import { isSetupLanding, landingFor } from '../../src/auth/landing';
 import type { SessionUser } from '../../src/auth/session';
 
 /**
@@ -48,8 +48,11 @@ describe('landingFor', () => {
     expect(landingFor(phase, null, { tenantId: null }, null)).toBe(expected);
   });
 
-  it('lands a settled person who owes the language step on it', () => {
-    expect(landingFor('signedIn', withCompany, null, 'language')).toBe('language-step');
+  it.each([
+    ['language', 'language-step'],
+    ['what_you_sell', 'what-you-sell-step'],
+  ] as const)('lands a settled person who owes the %s step on %s', (owed, expected) => {
+    expect(landingFor('signedIn', withCompany, null, owed)).toBe(expected);
   });
 
   it('waits while the step a settled person owes is not known', () => {
@@ -68,6 +71,21 @@ describe('landingFor', () => {
     ['a removal', 'signedIn', withCompany, { tenantId: 't1' }, 'access-removed'],
   ] as const)('never puts a setup step before %s', (_name, phase, user, ended, expected) => {
     expect(landingFor(phase, user, ended, 'language')).toBe(expected);
+    expect(landingFor(phase, user, ended, 'what_you_sell')).toBe(expected);
     expect(landingFor(phase, user, ended, 'wait')).toBe(expected);
+  });
+});
+
+describe('isSetupLanding — the landings a setup step draws', () => {
+  it.each([
+    ['language-step', true],
+    ['what-you-sell-step', true],
+    ['home', false],
+    ['company-step', false],
+    ['access-removed', false],
+    ['door', false],
+    ['wait', false],
+  ] as const)('%s → %s', (landing, expected) => {
+    expect(isSetupLanding(landing)).toBe(expected);
   });
 });

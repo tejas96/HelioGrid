@@ -3,8 +3,8 @@ import { createDataLayer } from '@heliogrid/data';
 import { DataProvider, useSession } from '@heliogrid/data/react';
 import { uiLanguageOfTag } from '@heliogrid/domain';
 import { installFormsErrorMap } from '@heliogrid/forms';
-import type { I18nRuntime } from '@heliogrid/i18n';
-import { MarketProvider, PortalHost } from '@heliogrid/ui';
+import { type I18nRuntime, provenanceWords } from '@heliogrid/i18n';
+import { MarketProvider, PortalHost, ProvenanceWordsProvider } from '@heliogrid/ui';
 import { type ReactNode, useCallback, useState } from 'react';
 import { StatusBar } from 'react-native';
 import { getVersion } from 'react-native-device-info';
@@ -89,10 +89,17 @@ export default function App() {
 /**
  * The market's formats in the reader's words: the language the mount follows names a date's month
  * and weekday (`F3-22`). Inside the language provider, because only it knows the active language.
+ * Every provenance label's words are mounted here too, once: a label has no English of its own and
+ * throws without them (`F3-12`). Built on each render of this mount, which a language change
+ * causes, so every label redraws in the new language.
  */
 function ReaderMarket({ children }: { children: ReactNode }) {
-  const { locale } = useI18n();
-  return <MarketProvider language={locale}>{children}</MarketProvider>;
+  const { locale, t } = useI18n();
+  return (
+    <MarketProvider language={locale}>
+      <ProvenanceWordsProvider value={provenanceWords(t)}>{children}</ProvenanceWordsProvider>
+    </MarketProvider>
+  );
 }
 
 /**

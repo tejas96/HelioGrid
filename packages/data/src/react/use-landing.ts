@@ -22,8 +22,8 @@ import { useSession } from './use-session';
  * computes it once.
  *
  * The answer never goes stale by itself: only a step's answer changes it, and that answer replaces
- * what is held (`useSetupLanguage`). A read made again on a focus could land after it and put the
- * step just answered back.
+ * what is held (`useSetupLanguage`, `useSetupWhatYouSell`). A read made again on a focus could land
+ * after it and put the step just answered back.
  */
 export function useLanding(phase: SessionPhase): SessionLanding {
   const { status, user, ended, setupPutOff } = useSession();
