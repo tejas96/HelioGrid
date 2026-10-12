@@ -26,6 +26,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { uuidv7 } from '../uuid';
 import { creationKeyColumns } from './creation-key';
+import { file } from './file';
 import { tenant } from './tenant';
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
@@ -50,9 +51,9 @@ const tenantId = () =>
 
 /**
  * The company's identity facts beyond the signup ones (`M01-24`, `M01-31`): the address, its
- * postal code, the bank details and the bank details typed half way. Company name, city and the
- * two `M01-23` declarations stay on `tenant`; the logo's column arrives with the logo's own slice
- * (Law 9). One row per tenant, empty from creation.
+ * postal code, the logo's pointer, the bank details and the bank details typed half way. Company
+ * name, city and the two `M01-23` declarations stay on `tenant`. One row per tenant, empty from
+ * creation.
  */
 export const businessProfile = pgTable(
   'business_profile',
@@ -61,6 +62,8 @@ export const businessProfile = pgTable(
     tenantId: tenantId(),
     address: text('address'),
     postalCode: text('postal_code'),
+    /** The stored file that is the logo; the api takes only the company's own confirmed image. */
+    logoFileId: uuid('logo_file_id').references(() => file.id),
     /** `M06-17`'s four bank facts under market-neutral names; financial (sensitive-data register). */
     bankDetails: jsonb('bank_details').$type<BankDetails>(),
     /** One to three bank facts typed and not yet bank details; financial (sensitive-data register). */
@@ -110,8 +113,9 @@ export const onboardingProgress = pgTable(
 
 /**
  * Customer-document branding only (`M01-50`, `F7-07`): the brand colour and the letterhead's
- * text. The compliant shades are derived on every read and never stored; the logo and letterhead
- * imagery arrive with the first `file` slice. One row per tenant, absent until first saved.
+ * text. The compliant shades are derived on every read and never stored; the logo is the profile's
+ * (`business_profile.logo_file_id`) and letterhead imagery arrives with its own slice. One row per
+ * tenant, absent until first saved.
  */
 export const brandingSettings = pgTable(
   'branding_settings',

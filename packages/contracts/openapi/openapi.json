@@ -32226,6 +32226,11 @@
                               "maxLength": 16,
                               "nullable": true
                             },
+                            "logoFileId": {
+                              "type": "string",
+                              "format": "uuid",
+                              "nullable": true
+                            },
                             "bankDetails": {
                               "type": "object",
                               "properties": {
@@ -32278,6 +32283,7 @@
                             "typicalSystemKwp",
                             "address",
                             "postalCode",
+                            "logoFileId",
                             "bankDetails",
                             "defaultLanguage",
                             "timezone"
@@ -33411,6 +33417,11 @@
                       "maxLength": 16,
                       "nullable": true
                     },
+                    "logoFileId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "nullable": true
+                    },
                     "bankDetails": {
                       "type": "object",
                       "properties": {
@@ -33487,6 +33498,7 @@
                     "typicalSystemKwp",
                     "address",
                     "postalCode",
+                    "logoFileId",
                     "bankDetails"
                   ]
                 }
@@ -33774,6 +33786,11 @@
                     "maxLength": 16,
                     "nullable": true
                   },
+                  "logoFileId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true
+                  },
                   "bankDetails": {
                     "type": "object",
                     "properties": {
@@ -33899,6 +33916,11 @@
                       "maxLength": 16,
                       "nullable": true
                     },
+                    "logoFileId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "nullable": true
+                    },
                     "bankDetails": {
                       "type": "object",
                       "properties": {
@@ -33975,6 +33997,7 @@
                     "typicalSystemKwp",
                     "address",
                     "postalCode",
+                    "logoFileId",
                     "bankDetails"
                   ]
                 }

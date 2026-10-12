@@ -247,7 +247,6 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
   for (const catalogTable of TENANT_CATALOG_TABLES) {
     await db.delete(catalogTable).where(inArray(catalogTable.tenantId, companies));
   }
-  await db.delete(file).where(inArray(file.tenantId, companies));
   await db.delete(orchestrationOutbox).where(inArray(orchestrationOutbox.tenantId, companies));
   await db.delete(notification).where(inArray(notification.tenantId, companies));
   await db
@@ -257,6 +256,8 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
   for (const setting of TENANT_SETTING_TABLES) {
     await db.delete(setting).where(inArray(setting.tenantId, companies));
   }
+  // After the settings: a company's profile points at its logo's file.
+  await db.delete(file).where(inArray(file.tenantId, companies));
   await db.delete(invitationRole).where(inArray(invitationRole.tenantId, companies));
   await db.delete(invitation).where(inArray(invitation.tenantId, companies));
   await db.delete(membershipRole).where(inArray(membershipRole.tenantId, companies));

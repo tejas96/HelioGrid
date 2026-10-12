@@ -64,6 +64,7 @@ export class SettingsRepository {
         .select({
           address: businessProfile.address,
           postalCode: businessProfile.postalCode,
+          logoFileId: businessProfile.logoFileId,
           bankDetails: businessProfile.bankDetails,
           bankDetailsTyped: businessProfile.bankDetailsTyped,
         })

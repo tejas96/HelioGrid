@@ -102,6 +102,7 @@ describe('the business profile on the wire — each bound at its edge (M01-23, M
     typicalSystemKwp: null,
     address: null,
     postalCode: null,
+    logoFileId: null,
     bankDetails: null,
   };
 
@@ -134,6 +135,23 @@ describe('the business profile on the wire — each bound at its edge (M01-23, M
     expect(businessProfileWriteSchema.safeParse(fromAnOlderClient).success).toBe(true);
     expect(businessProfileSchema.safeParse(fromAnOlderClient).success).toBe(false);
   });
+
+  it.each([
+    ['0199d3a0-7c1e-7b7a-9d7e-4f6a2b8c1d3e', true],
+    [null, true],
+    ['logo.png', false],
+    ['', false],
+  ])('a logo pointer %o is %s — a file id or nothing', (logoFileId, ok) => {
+    const result = businessProfileWriteSchema.safeParse({ ...profile, logoFileId });
+    expect(result.success).toBe(ok);
+    if (!result.success) expect(result.error.issues[0]?.path).toEqual(['logoFileId']);
+  });
+
+  it('takes a write that never names the logo, and never a read without one', () => {
+    const { logoFileId: _unread, ...fromAnOlderClient } = profile;
+    expect(businessProfileWriteSchema.safeParse(fromAnOlderClient).success).toBe(true);
+    expect(businessProfileSchema.safeParse(fromAnOlderClient).success).toBe(false);
+  });
 });
 
 describe('bank details typed half way on the wire — one to three facts, never beside the whole (M06-17)', () => {
@@ -144,6 +162,7 @@ describe('bank details typed half way on the wire — one to three facts, never 
     typicalSystemKwp: null,
     address: null,
     postalCode: null,
+    logoFileId: null,
     bankDetails: null,
   };
   const nothingTyped = {

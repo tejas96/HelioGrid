@@ -14,7 +14,7 @@ describe('absentFacts — what a skip left behind, judged from the rows (M01-29)
     {
       rows: {
         ...nothingSet,
-        businessProfile: { address: 'x', postalCode: null, bankDetails: null },
+        businessProfile: { address: 'x', postalCode: null, logoFileId: null, bankDetails: null },
       },
       absent: ['bank_details', 'payment_terms'],
     },
@@ -25,7 +25,12 @@ describe('absentFacts — what a skip left behind, judged from the rows (M01-29)
     {
       rows: {
         ...nothingSet,
-        businessProfile: { address: null, postalCode: null, bankDetails: wholeBank },
+        businessProfile: {
+          address: null,
+          postalCode: null,
+          logoFileId: null,
+          bankDetails: wholeBank,
+        },
       },
       absent: ['company_profile', 'payment_terms'],
     },

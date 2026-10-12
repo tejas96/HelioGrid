@@ -56,6 +56,7 @@ Reached from: the onboarding sequence after "What do you sell?" (M01 §M01.3 beh
 41. **A tax number typed malformed takes nothing away.** It is never stored, and a number already stored stays as it is; a stored number the owner empties is taken out. A number that stays stored completes the step, as a typed one does. The account holder that still holds the name read at arrival, beside no other bank fact, is nothing typed, also when the company was renamed on this screen.
 42. **Both answers given here after `Finish later` answer the step before too.** `SCR-M01-04`'s `Finish later` opens this screen with its step unrecorded; a save here that sends a kind and a size records that step `completed`, so the next sign-in does not ask again. A save without both leaves it unrecorded, and the next sign-in asks.
 43. **The cost of an undeclared answer keeps each screen's own words.** `Market defaults until you set these` here and `Until you finish, proposals start without your answers.` on `SCR-M01-04` both stay as drawn.
+44. **The device checks a logo's width before it uploads.** `At least 400 px wide` is one rule the screen reads; the api checks the file's type and size, and reads no image's width.
 
 
 ## Requirements (verbatim)

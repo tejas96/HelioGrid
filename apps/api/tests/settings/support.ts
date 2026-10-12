@@ -9,6 +9,7 @@ import { SettingsService } from '../../src/modules/settings/settings.service';
 import { SettingsTemplatesRepository } from '../../src/modules/settings/settings.templates.repository';
 import { SettingsTemplatesService } from '../../src/modules/settings/settings.templates.service';
 import { SettingsTranchesRepository } from '../../src/modules/settings/settings.tranches.repository';
+import { fileServiceOf } from '../files/support';
 import type { openPools } from '../support/fixture';
 import { marketsOf } from '../support/market';
 
@@ -27,16 +28,22 @@ export function entriesOf(pools: Pools, tenantId: string, eventType: string) {
     .orderBy(auditLogEntry.occurredAt, auditLogEntry.id);
 }
 
-/** The two services as `settings.module.ts` composes them, over the real repositories on both pools. */
+/**
+ * The two services as `settings.module.ts` composes them, over the real repositories on both pools,
+ * and the file service the settings read a logo through, with the memory store a test fills.
+ */
 export function settingsServicesOf(pools: Pools): {
   settings: SettingsService;
   templates: SettingsTemplatesService;
+  files: ReturnType<typeof fileServiceOf>;
 } {
+  const files = fileServiceOf(pools);
   const settings = new SettingsService(
     new SettingsRepository(pools.tenants),
     new SettingsAdminRepository(pools.admin.db),
     marketsOf(pools),
     new QuietHoursRepository(pools.tenants),
+    files.service,
   );
   const templates = new SettingsTemplatesService(
     new SettingsTemplatesRepository(pools.tenants),
@@ -44,5 +51,5 @@ export function settingsServicesOf(pools: Pools): {
     settings,
     new CreationReplies(new PinoLogger({ pinoHttp: { level: 'silent' } })),
   );
-  return { settings, templates };
+  return { settings, templates, files };
 }

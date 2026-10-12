@@ -56,6 +56,8 @@ export interface BankDetails {
 export interface BusinessProfileSettings {
   readonly address: string | null;
   readonly postalCode: string | null;
+  /** The stored file that is the company's logo (`M01-31`, `M01-50`): a `file` id, never the image. */
+  readonly logoFileId: string | null;
   readonly bankDetails: BankDetails | null;
 }
 
@@ -135,6 +137,7 @@ export interface TenantFacts {
 export interface CompanyIdentity extends TenantFacts {
   readonly address: string | null;
   readonly postalCode: string | null;
+  readonly logoFileId: string | null;
   readonly bankDetails: BankDetails | null;
 }
 
@@ -200,10 +203,14 @@ function identityInForce(
 ): Resolved<CompanyIdentity> {
   const address = profile?.address ?? null;
   const postalCode = profile?.postalCode ?? null;
+  const logoFileId = profile?.logoFileId ?? null;
   const bankDetails = profile?.bankDetails ?? null;
+  const nothingOfItsOwn = [address, postalCode, logoFileId, bankDetails].every(
+    (fact) => fact === null,
+  );
   return {
-    source: address === null && postalCode === null && bankDetails === null ? 'platform' : 'tenant',
-    value: { ...tenant, address, postalCode, bankDetails },
+    source: nothingOfItsOwn ? 'platform' : 'tenant',
+    value: { ...tenant, address, postalCode, logoFileId, bankDetails },
   };
 }
 

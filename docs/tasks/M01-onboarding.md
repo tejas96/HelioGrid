@@ -4450,7 +4450,7 @@ Per part.
 AC-1 is `not_applicable` in this task (*Decisions*, 2, ruled): its proof is `T-M06-022`'s, written into that task. Each part's RFC holds its rows of the one matrix.
 
 ##### Delivery size
-Eleven parts since part c's RFC split c in three, part g's added i and part d's split d in three (`#### Parts`: a, b, c, g, h, i, d, j, k, e, f), about 150 files in all. No smaller part can be accepted alone: the api must hold a fact before a screen saves it, a shared component lands before either app draws it (Law 7), and the logo and the settings life each need a surface the step does not. a: about 20 files, sized in its RFC. b: about 15. c, g, h, i, d, j and k: sized in their own RFCs. e: about 25. f: about 20. Each later RFC is written when the part before it has shipped.
+Eleven parts since part c's RFC split c in three, part g's added i and part d's split d in three (`#### Parts`: a, b, c, g, h, i, d, j, k, e, f), about 150 files in all. No smaller part can be accepted alone: the api must hold a fact before a screen saves it, a shared component lands before either app draws it (Law 7), and the logo and the settings life each need a surface the step does not. a: about 20 files, sized in its RFC. b: about 15. c, g, h, i, d, j and k: sized in their own RFCs. e: about 25. f: about 20. Each later RFC is written when the part before it has shipped. Part e was then cut in four — e, l, m, n — by its own RFC (*Decisions*, 1): fourteen parts.
 
 #### Parts
 
@@ -4465,8 +4465,11 @@ Eleven parts since part c's RFC split c in three, part g's added i and part d's 
 | d | the api keeps bank details typed half way: one new field on the profile's own read and write, never on what a document reads (*Decisions*, 5; `#### Part d · RFC`) | AC-3 — on the running api | i | shipped |
 | j | the step owed, the landing, the reads (the profile, the registrations, the market pack) and the save, and the screen on the web and both phones; `Continue` of `SCR-M01-04` opens it (D202); `createCompany` passes the step (`#### Part j · RFC`). Its RFC rules the design check's fifth-entry rows 1 and 20, the lede at a size of 0, and whether a typed half makes the step `completed` | AC-2, AC-4 — on the running apps | d | shipped |
 | k | `Finish later` of `SCR-M01-04` opens the profile without recording its step (D202): a put-off that is per step; the arrival `m-failed-save` on the running apps (`#### Part k · RFC`) | AC-4 (`arrived-from-a-failed-save`) — on the running apps | j |shipped |
-| e | the logo: its pointer in the api, the upload from the web and both phones, the limits stated and the refusal (`m-logo-invalid`) | AC-4 (`logo-invalid-limits-stated`) | k | open |
-| f | the settings life inside the shell on the web and both phones: the functional density, `Save changes`, the re-seed scope | AC-4 (`declarations-edited-reseed-scope`, `m-settings`, `d-settings`) | e · the settings list drawn (*Decisions*, 7) | open |
+| e | the api holds the logo's pointer: one column and one field on the profile, kept by a save that never names it, refused unless it is this company's own stored logo, carried by what every document reads (`#### Part e · RFC`) | AC-3 — on the running api | k | shipped |
+| l | the logo's rules and words: the stated limits, the check that names every limit missed, the first part's `Added`, the step's rule; every word in three languages | AC-4 (`logo-invalid-limits-stated`) — by unit test | e | open |
+| m | the capture area in the shared component on both halves: `m-logo-invalid`, the held logo, the letterhead's tile | AC-4 (`logo-invalid-limits-stated`) — on the component page | l | open |
+| n | the upload on the web and both phones: the file calls, the phone's picker, the pointer saved with the act | AC-4 (`logo-invalid-limits-stated`) — on the running apps | m | open |
+| f | the settings life inside the shell on the web and both phones: the functional density, `Save changes`, the re-seed scope | AC-4 (`declarations-edited-reseed-scope`, `m-settings`, `d-settings`) | n · the settings list drawn (*Decisions*, 7) | open |
 
 #### Part a · RFC
 
@@ -5924,6 +5927,186 @@ Checklist:
 - [x] the live rows: web, iOS, Android, in one api-down window
 - [x] the gate
 
+#### Part e · RFC
+
+##### Title
+`T-M01-005e` — The api holds the company's logo: one pointer on the profile, read by every document
+
+##### Description
+**User impact.** None yet — internal. It makes one thing true that the logo on the screen depends on: the company profile can hold which stored file is the company's logo, and a proposal, an invoice or a customer link later reads that one answer. The owner meets the logo itself in parts l, m and n.
+
+Who gains: the owner who adds a logo in part n, and every document that prints it (`M01-31`). The problem: the `file` slice stores a company's image (`packages/domain/src/files/rules.ts:48`), but nothing says which stored file is the logo — `business_profile` has no such column (`packages/db/src/schema/settings.ts:57`), `businessProfileSchema` no such field (`packages/contracts/src/business-profile.ts:55`), and the file routes cannot list a company's files (`packages/contracts/src/file.ts:95`). Sources: the task RFC (finding 10), `M01-24`, `M01-31`, the brief (rulings 6 and 26), the design check's fifth entry (rows 2, 5–8, 11, 19, 22).
+
+##### Goals
+- `PUT /settings/business-profile` takes a logo's file id and returns it; a save that never names it keeps what is stored; `null` takes it out.
+- A file id is taken only when it is this company's own stored image; anything else is refused at the field and nothing is written.
+- `GET /settings/business-profile` and `GET /settings/effective` carry the pointer, so a document reads the logo from the one profile.
+
+##### Non-goals
+- No screen, hook, client call, word or component — parts l, m and n.
+- No check of an image's width on the api (*Decisions*, 2).
+- No new route, table, enum or error code. The three file routes are unchanged.
+- No removal of a stored file: the slice has no delete route, and a pointer taken out leaves the file where it is (*Risks*).
+- The prompt at the send still asks for the tax registration alone: a logo does not clear `company_profile` in `absentFacts` (`packages/domain/src/commerce/effective-settings.ts:182`).
+
+##### Readiness and dependencies
+- Parts a, b, c, g, h, i, d, j and k are merged (`origin/main` at `76774bdc`). `T-FPLAT-035`, the `file` slice, is shipped (#186). This branch is cut from `origin/main`.
+- Design check: `READY` stands (`#### Design check`, tenth entry). This part draws no frame.
+- Not a light cycle: the proof matrix names the api, the web and both phones.
+- The local database is at migration `0024`, as `main`. This part adds `0025`.
+- The local object store runs (`heliogrid-object-store-local`, `.env.local:39`), so the live rows store real bytes.
+- No blocker. The contract changes with no consuming screen in this part — staged by this RFC (`packages/contracts/CLAUDE.md`, *Done means*); part n consumes it.
+
+##### Proposal
+**What testing the requirements found** (`/task` step 2).
+1. **The part is four parts.** The logo touches every layer: the api's pointer, domain's limits and the words, the shared component on both halves, and an upload no client has — with a picker the phone does not own (`apps/mobile/package.json` holds none). Counted from the code map it is about 50 files and 1,500 lines, against the task RFC's guess of 25 files and the rule's 30 and 1,000 (`docs/tasks/README.md`, *Delivery size*). → *Decisions*, 1.
+2. **Nothing can check `at least 400 px wide` today.** The api checks the type, the size and the first bytes (`apps/api/src/modules/file/file.service.ts:176`); it decodes no image, and a JPEG's width can sit past the 512 bytes it reads. The device knows the width before it uploads. → *Decisions*, 2.
+3. **The pointer must be checked, or one company could name another's file.** `FileService.confirmed` answers only a file of this company, of the kind asked, with its bytes confirmed (`file.service.ts:147`). The save calls it before it writes.
+4. **The route declares no 404 and no 409** (`packages/contracts/src/tenant-settings.ts:148`), so the file service's own refusals would answer `INTERNAL` (`.claude/protections.md`, *a status a route throws*). The save answers the shared 400 at the field `logoFileId`, as the catalog's writes do (`apps/api/src/modules/catalog/internal/write-checks.ts:70`). No new code, and no new words in three languages.
+5. **A whole replace would wipe a logo an older app never read.** The same trap as the PIN code (part a). The field is optional on the write: absent keeps, `null` clears (`settings.admin.repository.ts:109`).
+6. **The typed half's rule does not apply.** A document does read the logo (`M01-31`), so the pointer sits on `businessProfileSchema` itself and `/settings/effective` carries it — unlike `bankDetailsTyped`.
+7. **A pointer needs no second read to draw.** A member reads a file through `GET /files/{id}/download-url` (`rules.ts:89`); part n uses it. This part adds no link to the profile's read.
+
+**Flow** (part n drives it; this part makes the last two steps true).
+1. The device declares the image (`POST /files`, subject `tenant`), sends the bytes to the store, and confirms (`POST /files/{id}/complete`).
+2. `Save and continue` sends the profile with `logoFileId`.
+3. The api asks the file service whether that id is this company's confirmed `tenant` file. No → 400 at `logoFileId`; nothing is written.
+4. Yes → the pointer is stored in the same transaction as the rest of the profile, with the one audit entry the save already writes. A save equal to what is stored writes and records nothing, as today.
+5. Every read of the profile, and `/settings/effective`, answers the pointer.
+
+**Key decisions.**
+- **One nullable column, `business_profile.logo_file_id`, with a foreign key to `file`** — one reason: the row already holds every identity fact beyond signup, and `catalog_import.file_id` points at a file the same way (`packages/db/src/schema/catalog-import.ts:83`).
+- **The check runs in the service, before the transaction** — the file module is reached through its public surface (`file.public.ts`), and the admin repository stays a writer.
+- **The check runs on every save that sends a pointer.** Built against planned: the RFC first skipped it when the pointer equalled the stored one, which needs a second read of the profile to save one read of a file by its id. A repeat of a stored profile still writes and records nothing.
+- **A logo alone makes the identity the company's own** (`source: tenant`), as a PIN code alone does (`effective-settings.ts:197`).
+
+**Order.** Domain's identity and its test, red · the contract and its test · the migration and the schema · the api's read, write and check, tests red first · `oasdiff` against `main` · review · live rows · the gate.
+
+**Refusals.** One: a `logoFileId` that is not this company's confirmed `tenant` file → 400 `VALIDATION_FAILED`, `details[0].path` `logoFileId`. A value that is not a uuid is the contract's own 400.
+
+**The twin.** None — no screen.
+
+**Deferred rows this part's files meet.**
+- D118 (`touches packages/db/src/schema/`, the column helpers copied across nine files) — stays: a nine-file tidy outside this change.
+- No row reads `T-M01-005e starts`. D2, D92, D209 and the phone rows are met by parts l, m and n and ruled in their RFCs.
+
+**Decisions** (the owner's; the recommended way first).
+1. **The split.** Part e becomes four small parts — **e** the api's pointer (this RFC), **l** the rules and the words, **m** the capture area in the shared component, **n** the upload on the web and both phones — as parts c, g, h and i were cut. Or three: l and m as one part of about 28 files and 830 lines, at the edge of the rule before any review round.
+2. **`At least 400 px wide`.** The device checks it before it uploads, by one domain rule (part l); the api keeps its checks of type and size. Or the api also reads the width from the image's own header — a new parser for two formats, about 120 more lines, and it changes nothing an owner sees.
+3. **Deferred rows.** D118 stays.
+
+**Ruled by the owner, 2026-10-12, with the approval: the first way of each of the three.**
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  device["Device: Save and continue, with logoFileId (n)"] --> put[("api: PUT /settings/business-profile")]
+  put --> service["settings service: is it this company's stored logo?"]
+  service --> files["file service: confirmed(tenant)"]
+  files --> filerow[("db: file")]
+  service --> writer["settings admin repository: absent keeps, null clears"]
+  writer --> profile[("db: business_profile.logo_file_id")]
+  profile --> read[("api: GET /settings/business-profile")]
+  profile --> effective[("api: GET /settings/effective, companyIdentity")]
+  effective --> documents["Documents: proposal, invoice, customer link (M06, F5, M11)"]
+```
+
+##### Package changes
+- `packages/domain` — `commerce`: `logoFileId` on `BusinessProfileSettings` and `CompanyIdentity`; the identity's source counts it. No new export.
+- `packages/contracts` — `businessProfileSchema` gains `logoFileId`; `businessProfileWriteSchema` takes it optional. Depends on domain, as it does.
+- `packages/db` — one column.
+- `apps/api` — the settings module reads, writes and checks the pointer; it imports `FileModule` through `file.public.ts`. The file module imports nothing of settings, so no cycle.
+- Law 12: the column joins the invariants that scan every table (`schema-parity`, `tenancy-rls`; `.claude/protections.md:20` and `:44`); the contract change is held by `pnpm check:openapi` and CI's breaking-change judge; the audited `PUT` stays in `unchanged-replace.test.ts`. No brand, enum, token, route, table or error code is new.
+
+##### Data and schema changes
+- **Migration `0025`** (started with `pnpm db:migration:new`): `ALTER TABLE business_profile ADD COLUMN logo_file_id uuid REFERENCES file(id)` — nullable, no default, no index (read with its row by `tenant_id`, which is unique). No backfill: every row reads `null`.
+- **Readers and the roll.** An api machine from before this part reads a row this part wrote: it never selects the column. An app from before this part reads the new response and drops the unknown field; its save does not name it, and the api keeps the stored pointer. No client reads the field before part n. Expand only; nothing contracts.
+- **Rollback.** The column is ignored by older code and may stay.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/domain/src/commerce/effective-settings.ts` | `logoFileId` on the profile and the identity; the identity's source | the settings view-models' home |
+| modify | `packages/domain/tests/commerce/effective-settings.test.ts` | row e-u1 | its test |
+| — | `packages/domain/tests/commerce/settings-rows.ts` | **planned, not built:** its fixtures hold no profile | — |
+| modify | `packages/domain/tests/commerce/absent-facts.test.ts` | built, not planned: its two typed profiles need the field | the compiler names it |
+| modify | `packages/contracts/src/business-profile.ts` | the field on the profile; optional on the write | the profile's contract |
+| modify | `packages/contracts/tests/tenant-settings.test.ts` | row e-u2 | its test |
+| modify | `packages/contracts/openapi/openapi.json` | regenerated (generated) | `pnpm check:openapi` |
+| add | `packages/db/migrations/0025_*.sql` | the column (made by the command) | migrations |
+| modify | `packages/db/src/schema/settings.ts` | `logoFileId` | the table's schema |
+| modify | `apps/api/src/modules/settings/settings.admin.repository.ts` | write the pointer; absent keeps it | the profile's one write |
+| modify | `apps/api/src/modules/settings/settings.repository.ts` | read it | the tenant read |
+| modify | `apps/api/src/modules/settings/settings.service.ts` | map it; refuse a pointer that is not this company's stored logo | the service orders reads and writes |
+| modify | `apps/api/src/modules/settings/settings.module.ts` | imports `FileModule` | the module composes |
+| modify | `apps/api/tests/settings/support.ts` | the service composed with the file service | the suites' one composition |
+| add | `apps/api/tests/settings/logo-pointer.test.ts` | rows e-t1 to e-t4 | beside the settings suites; `settings-writes.test.ts` stands at 235 lines |
+| modify | `apps/api/tests/settings/effective-settings.test.ts` | a company with no rows reads `logoFileId: null` | the read's test |
+| modify | `apps/api/tests/settings/settings-writes.test.ts` | its one typed profile needs the field | the compiler names it |
+| — | `apps/api/tests/settings/bank-details-typed.test.ts` · `unchanged-replace.test.ts` | **planned, not built:** each saves what it read | — |
+| modify | `apps/api/tests/support/fixture.ts` | built, not planned: a fixture's files are removed after its settings rows, because a profile now points at a file | the suites' one teardown |
+| modify | `docs/ux/briefs/SCR-M01-05-business-profile.md` | the ruling of *Decisions*, 2 | the brief owns the screen's facts |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, `#### Parts`, the design check's tenth entry, the ledger, part e `shipped` | the task |
+
+##### API and contract changes
+| route | change | compatibility |
+|---|---|---|
+| `GET /settings/business-profile` · `GET /settings/effective` | the profile and `companyIdentity` carry `logoFileId: uuid \| null` | an older client drops the new field |
+| `PUT /settings/business-profile` | body: `logoFileId` optional (a uuid, or `null`). A uuid that is not this company's confirmed `tenant` file → 400 `VALIDATION_FAILED` at `logoFileId` | an older client's body is still valid; its absent `logoFileId` keeps the stored one |
+
+Auth, permission (`onboarding.manage_tenant_settings`), tenancy and the error codes are unchanged.
+
+##### Risks and rollout
+- **Another company's file as a logo.** Held by the file service's own tenant read (`file.repository.ts:86`) and proven by row e-t3, seen red once.
+- **A whole-replace write loses the pointer.** Held by the optional field, proven by row e-t2, seen red once on the keep rule.
+- **A contract change reads as breaking only in CI.** `oasdiff breaking` runs locally against `main`'s spec before the gate (`packages/contracts/CLAUDE.md`, *Traps*); row e-c1 is CI's own.
+- **A file with no pointer stays stored.** A logo replaced or taken out leaves its file row and its bytes: the slice has no delete. One `docs/tasks/deferred.md` row is added by part n, the part that first makes such a file.
+- **One shared local database.** The migration puts the local database ahead of `main` until this part merges; the next branch starts after the merge.
+
+##### Acceptance criteria and proof
+The task's AC-3 is this part's. AC-1 is `not_applicable` in the task; AC-2 has no row here; AC-4 (`logo-invalid-limits-stated`) is parts l, m and n.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| e-u1 the identity | main-dev | required | unit | a logo and nothing else → `source: tenant`, the pointer in the value; no logo, address, PIN code or bank details → `platform` | `packages/domain/tests/commerce/effective-settings.test.ts` |
+| e-u2 the contract | main-dev | required | unit | the read carries `logoFileId`; a write without the key parses; `null` parses; a string that is no uuid is refused at `logoFileId` | `packages/contracts/tests/tenant-settings.test.ts` |
+| AC-3 · e-t1 stored and read | main-dev | required | api test | a confirmed logo's id saved → the profile's read and `/settings/effective` carry it; one audit entry | `apps/api/tests/settings/logo-pointer.test.ts` |
+| e-t2 kept and cleared | main-dev | required | api test | a save without the key over a stored pointer → kept; with `null` → cleared | the same file, planted red on the keep rule |
+| e-t3 refused | main-dev | required | api test | another company's confirmed file; this company's file declared and not confirmed; this company's price-list file (kind `catalog`); a file id that does not exist → each 400 at `logoFileId`, the stored pointer and the audit log unchanged | the same file, planted red on the check |
+| e-t4 a repeat | main-dev | required | api test | the stored profile sent again → no write and no entry | the same file |
+| AC-3 · e-a1 | qa-api | required | api | the standing owner declares a PNG, sends its bytes to the local store, confirms, then saves the profile with the id → 200; `GET /settings/business-profile` and `GET /settings/effective` carry it with `source: tenant`; `GET /files/{id}/download-url` → 200 | statuses, bodies, request ids |
+| e-a2 | qa-api | required | api | a `PUT` with no `logoFileId` key and a changed address → 200, the pointer kept; a `PUT` with `null` → 200, the pointer `null` | the two read-backs |
+| e-a3 | qa-api | required | api | the second standing company's confirmed file id; a file declared and not confirmed → each 400 `VALIDATION_FAILED` at `logoFileId`; the stored pointer unchanged | statuses, paths |
+| e-o1 the judge | main-dev | required | repo | the head's spec against `main`'s → `oasdiff breaking` exit 0 | the command's output |
+| e-c1 | ci | required | CI `quality` | *No breaking API change against the base* passes | the job's step |
+| w1 | qa-web | required | web 375 and 1536 | sign up a new company, pass the two steps before, type a street on the profile, `Save and continue` → the home; the `PUT /settings/business-profile` 200; no error frame, no console error | the destination, the log's 200 |
+| i1 | qa-ios | required | iOS | the same journey on the iPhone → the home | the destination, the log's 200 |
+| n1 | qa-android | required | Android | the same journey on the emulator → the home | the destination, the log's 200, logcat |
+| side-by-side | — | not_applicable | — | this part draws no frame; `m-logo-invalid` and the capture area are parts m and n | — |
+| the gate | evaluator | required | repo | the migration applies; the invariants scan `business_profile` on real tables; the OpenAPI is fresh | `pnpm check:all` |
+
+Rows w1, i1 and n1: no screen file changes, but the profile's screen reads and saves through the route this part changes (`packages/data/src/react/use-company-profile.ts:140`), so each surface that reaches it gets one live journey. No row needs the api stopped.
+
+##### Delivery size
+- One part of four (*Decisions*, 1): **about 18 files**, one generated, and two docs.
+- **Code: about 90 authored lines** — domain 8, contracts 12, the migration and the schema 12, the api 58.
+- **Tests: about 235 authored lines** — domain 20, contracts 30, the api 185.
+- About 325 in all. No smaller part can be accepted alone: the column without the check lets one company name another's file.
+- Parts l, m and n: about 12, 16 and 20 files; each is sized in its own RFC.
+- Order: as *Proposal*.
+- **Built:** 18 files and one generated, with three docs. Code 108 authored lines (91 added, 17 removed); tests 242 (234 added, 8 removed). 350 against 325 planned, 8% over. The owner's diagram button (`.claude/skills/task/references/diagram.md`, 22 lines) is outside this count: asked for in chat, outside this RFC.
+
+Checklist:
+- [x] domain: the identity and its test, red first
+- [x] contracts: the field, its test, the regenerated OpenAPI
+- [x] db: the migration and the schema
+- [x] api: the read, the write, the check; the api tests, red first
+- [x] `oasdiff breaking` against `main`
+- [x] the brief
+- [x] review
+- [x] the live rows: api, web, iOS, Android
+- [x] the gate
+
 #### Design check
 `READY` — 2026-10-12, on the record `SCR-M01-05 - decisions & self-audit.md` (29,484 bytes) read beside the board `SCR-M01-05 Business Profile - Mobile.dc.html` (142,409 bytes, under the read cap). Three checks on one helper. The first found the record behind the board (four frame counts, no Hindi frame, no 1536 alignment numbers, no word plan, a standing FAIL); the owner's redraw closed every finding. Main then found three product facts wrong against the code — three bank fields where `M06-17` and the contract hold four, a city line saying the city sets the market, a count of typed characters the pack cannot give — and the owner corrected them and redrew the 1536 arrangement in the same pass; the third check found nothing.
 
@@ -5978,6 +6161,8 @@ Noted by the helper and not blocking: three stale board notes and three stale re
 **Eighth entry — part j (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part j began: twenty-one frames, seventeen at 375 and four at 1536; `needs 2 MB or less` and `m-failed-save` at 3 lines and 21 words stand in it, so nothing changed since the sixth entry and no helper ran. Part j takes the fifth entry's rows 1 and 20; its RFC rules both (*Decisions*, 1 and 2). The board's source is fetched and the frames this part compares are pictured after the RFC is approved and before the first edit: `m-default`, `m-address-open`, `m-tax-invalid`, `m-bank-open`, `m-declarations-open`, `m-save-failed`, `d-default`, `d-tax-invalid`.
 
 **Ninth entry — part k (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part k began: twenty-one frames, seventeen at 375 and four at 1536; `needs 2 MB or less` and `m-failed-save` at 3 lines and 21 words stand in it, and its decision 5 names `Finish later` as the second way in. Nothing changed since the sixth entry, so no helper ran. Part k takes the fifth entry's row 21; its RFC puts it to the owner (*Decisions*, 3). The board's source is not fetched: this part draws nothing new, and the frame's numbers were read for part h. `m-failed-save`, the one frame this part compares, is pictured before QA, into the scratchpad as `board/m-failed-save.png`.
+
+**Tenth entry — part e (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part e began: twenty-one frames, seventeen at 375 and four at 1536; the logo's hint lines and the refusal `3.4 MB, 320 px wide · needs 2 MB or less, at least 400 px` stand in its word plan, so nothing changed since the sixth entry and no helper ran. Part e was cut in four (its RFC, *Decisions*, 1): this part draws no frame, so the board was not fetched and no picture was taken. The fifth entry's rows named for part e go on: rows 2, 5, 6, 7 and 22 to part l, rows 8, 11 and 19 to part m. Part m fetches the board's source and pictures `m-logo-invalid`, `m-default`, `m-normal` and `d-default` before its first edit.
 
 #### Runtime
 Branch `feat/T-M01-005`, cut from `feat/T-M01-004c` (`99ed0bcc`, draft PR #283 open, its `quality`, `e2e-web` and `android` checks running) on a clean tree, by the owner's word, 2026-10-12: the walk reads `origin/main`, where `T-M01-004`'s part c is not yet merged.
@@ -6544,6 +6729,67 @@ Left on `heliogrid_test` by this part: three companies made through the app — 
 | browser tabs | pane closed | the board's tab closed |
 | database routing | `heliogrid_test` / `heliogrid_test` | the same; never changed |
 | runtime logs | `api.log` 24,884,867 · `web.log` 685,290 · `metro.log` 2,039,529 bytes | 25,070,751 · 700,953 · 2,054,268 bytes, kept |
+| watchers | none | none |
+
+**Part e · Runtime (2026-10-12).** Branch `feat/T-M01-005e`, cut from `origin/main` (`76774bdc`, part k merged as #295) on a clean tree.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | — |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 25,070,751 · `web.log` 700,953 · `metro.log` 2,054,268 bytes | — |
+| watchers | no `tsx … watch` process | — |
+
+**Part e · QA (2026-10-12)** — one stack on `heliogrid_test` (Main migrated it to `0025`; the pack stored): the api, the web and Metro from source (`api`, `web`, `mobile-metro` launch configurations, `started_by_task`), the iPhone 17 Pro simulator and the `Pixel_8_Emulator` booted by Main, on the apps already installed — no native file changed, so nothing was rebuilt. Main cold-started both apps and saw Metro serve a bundle before the helpers ran.
+
+- **Order.** The reviewer alone: three should-fix items and four notes in round one (the task's Data model block and a schema comment still said the logo's column was to come; the check turned every refusal of the file service into a 400, where only its 404 and 409 mean *not a stored logo*; two notes on the diagram button; one on the PRD rows cited), all applied; clean in round two. Then `qa-api`, `qa-web`, `qa-ios` and `qa-android` together; no row needed the api stopped.
+- **Reds seen (part e).** Written before the code and failed by name: *reads the identity as the tenant's from a logo alone*. Planted after the code, each file restored from a scratchpad copy and compared equal: the keep rule (`logoFileId: kept(…)` → `write.logoFileId ?? null`) → *keeps the logo a save never names…* failed; the check (the call to `refuseUnlessOwnLogo` taken out) → the four *refuses … at the logo's field…* cases failed. The api's tests were written after the api's code, so these two planted reds are their proof.
+- **Main's own proofs.** `pnpm check` exit 0 on the final code (70 related test files, 1,257 tests); `check:openapi` writes nothing; `oasdiff breaking` against `main`'s spec exits 0; the invariants are green (schema parity on 39 tables, RLS on 30, the deferred rows).
+- **The mutation guard.** The tree's hash was the same before and after the helpers (`6b409944eaf73312`).
+- **A wrong plan line, Main's.** The RFC skipped the check when the pointer equalled the stored one; that needs a second read of the profile to save one read of a file. Built without it and recorded in the RFC (*Key decisions*).
+- **Found at build.** A fixture removed its files before its settings rows; with the new foreign key that order fails, so `apps/api/tests/support/fixture.ts` removes the files after.
+
+**As proven (part e).**
+
+| row | result | evidence |
+|---|---|---|
+| e-u1, e-u2 | passed | the two unit files, in `pnpm check` and the gate |
+| e-t1 – e-t4 | passed | `logo-pointer.test.ts`, 8 tests on `heliogrid_test`; the two planted reds above |
+| AC-3 · e-a1 | passed | `…904`: declare 201, the bytes to the local store 200, confirm 200; the profile's `PUT` 200 with the id; both reads and `/settings/effective` carry it, `source: tenant`; the download link 200 · request `1a0ff69f…` · log bytes 25,110,833–25,116,931 |
+| e-a2 | passed | the key left out → the pointer kept, the address changed; `null` → cleared · requests `16a3dabb…`, `14698f77…` |
+| e-a3 | passed | `…905`'s confirmed file, a file declared and never stored, and `not-a-uuid` → each 400 `VALIDATION_FAILED` at `logoFileId`; the stored pointer unchanged · requests `ced48c43…`, `b616bee2…`, `e8269415…` |
+| e-o1 | passed | `oasdiff breaking`: *No breaking changes to report*, exit 0 |
+| e-c1 | pending ci | CI `quality`, *No breaking API change against the base* |
+| w1 | passed | 375 (`…10591`) and 1536 (`…10592`): `/home` reached, every `business-profile` call 200, no error frame, no console error; no sideways scroll; the act 335 × 48 and 175 × 48 |
+| i1 | passed | `…10593`: the home; `GET` and two `PUT`s 200 from the app; no red box; the act 362 × 48 pt |
+| n1 | passed | `…10594`: the home; `GET` and `PUT` 200; no fatal or React Native line in logcat; the act 371 × 48 dp |
+| the gate | passed | one run of `pnpm check:all` by the Evaluator: exit 0, read to the end, nine of nine tasks, the api tests on `heliogrid_test`, no SKIP and no VACUOUS line, nothing regenerated |
+
+**Mistakes found (part e)**, each with what now holds it:
+
+- **Two docs still said the logo's column was to come** (the reviewer; Law 8). Fixed in this change. No check reads a task's Data model block against the schema: held by review, said here.
+- **The check caught too much** (the reviewer). `isNoStoredLogo` takes the file service's 404 and 409 alone; anything else is thrown on.
+- **The fixture's removal order** (Main, at build). Fixed where it fires: the one teardown every suite calls.
+- **The pointer's foreign key does not hold the company** (the reviewer's note). Not a fault of this part alone — `catalog_import_job.file_id` is the same. `docs/tasks/deferred.md` D211.
+- **The task RFC guessed the logo at 25 files.** Counted from the code it is about 50, so part e was cut in four before anything was built.
+
+**Measurements (part e)** — helper runs: `Explore` 1 for the code map (209 k), `reviewer` 1 with one continuation (91 k, 105 k), `qa-api` 1 (25 k), `qa-web` 1 (70 k), `qa-ios` 1 (58 k), `qa-android` 1 (40 k), `evaluator` 1 (27 k); one full gate, passed. Main's context at the commit card: 395 k tokens. Planned 18 files and 325 lines; built 18 files and 350 lines.
+
+**Left on `heliogrid_test` (part e):** four signup companies of the surface rows (`…10591`, `…10592`, `…10593`, `…10594`), made through the app; three stored test images and one declared and never stored, on the two standing api companies; `…904`'s profile restored. The local database is at migration `0025`, ahead of `main` until this part merges.
+
+**Teardown (part e).**
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` | none listening | none listening — each started through its launch configuration and stopped by its preview id |
+| Postgres · object store · Temporal | running (`pre_existing`) | running, untouched |
+| simulator · emulator | none booted | none booted — iPhone 17 Pro (`40ED0117-…`) shut down, `emulator-5554` killed |
+| browser tabs | pane closed | the two preview tabs closed, pane closed |
+| database routing | `heliogrid_test` / `heliogrid_test` | the same; never changed |
+| runtime logs | `api.log` 25,070,751 · `web.log` 700,953 · `metro.log` 2,054,268 bytes | 25,271,282 · 716,832 · 2,103,968 bytes, kept |
 | watchers | none | none |
 
 ### T-M01-006 · Setup — You're Ready
@@ -7337,10 +7583,10 @@ Every setting has a platform default, and each default lives in exactly one owne
 
 | entity | key fields | rules | rows |
 |---|---|---|---|
-| business_profile | tenant_id (unique); address; bank_details (bank name, account name, account number, the market's bank-routing identifier — `M06-17`'s four) | Single write-point for company identity facts fed to proposal, agent script, customer link and invoice — every consumer references it and never re-asks; skippable until the first proposal send, when the prompt fires inline. One empty row per tenant from creation; company name, city and the M01-23 declarations (`segment`, `typical_system_kwp`) stay on `tenant` and the profile route writes them there. The logo column arrives with the first `file` slice. `bank_details` is financial and `address` business PII (sensitive-data register). Condition: the tenant-set OTP-at-accept value threshold (F5-44 — off at launch, no threshold set) has no carrier entity; F5's slice places it here or on `tenant` when it enables the challenge, never pre-built. | M01-24, M01-31, M01-51 |
+| business_profile | tenant_id (unique); address; logo_file_id (the company's own confirmed `tenant` file); bank_details (bank name, account name, account number, the market's bank-routing identifier — `M06-17`'s four) | Single write-point for company identity facts fed to proposal, agent script, customer link and invoice — every consumer references it and never re-asks; skippable until the first proposal send, when the prompt fires inline. One empty row per tenant from creation; company name, city and the M01-23 declarations (`segment`, `typical_system_kwp`) stay on `tenant` and the profile route writes them there. `bank_details` is financial and `address` business PII (sensitive-data register). Condition: the tenant-set OTP-at-accept value threshold (F5-44 — off at launch, no threshold set) has no carrier entity; F5's slice places it here or on `tenant` when it enables the challenge, never pre-built. | M01-24, M01-31, M01-51 |
 | tax_registration | tenant_id; registration_type (a value from `pack.tax`); value (pack-format validated) | A tenant tax registration of a pack-declared type, live-validated against the pack format with the format explained, skippable, never a hard wall; empty until the first proposal forces the prompt. `registration_type` is `text` validated against the pack, never a closed enum; unique (tenant_id, registration_type). The value is a regulated business identifier (sensitive-data register). It lives in tenant configuration, not billing data: M12's subscription invoice renders it from here (M12-44, F1-13, F1-29). | M01-24, M01-25 |
 | onboarding_progress | tenant_id (unique); resume_step (null once the corridor is closed); step_states (per step: completed / skipped); prompt_point_states (per skipped fact: fired / completed / declined) | Persisted setup resume point, one row per tenant; abandonment loses nothing and a returning account resumes exactly where it stopped. Exactly one later in-context prompt-point per skipped fact, checked at the moment of need; declining leaves the working default in place. | M01-10, M01-22, M01-29 |
-| branding_settings | tenant_id (unique); brand_colour; letterhead (tagline, band lines, footer note — per language) | Customer-document branding only — proposal PDFs and customer-link pages; the operator app is never restyled per tenant. A palette is never rejected: compliant shades are derived computationally on every read and previewed live, never stored. Generated documents never restyle retroactively (F8-15). The logo is the profile's; logo and letterhead imagery arrive with the first `file` slice (sensitive-data register). | M01-50, M01-28 |
+| branding_settings | tenant_id (unique); brand_colour; letterhead (tagline, band lines, footer note — per language) | Customer-document branding only — proposal PDFs and customer-link pages; the operator app is never restyled per tenant. A palette is never rejected: compliant shades are derived computationally on every read and previewed live, never stored. Generated documents never restyle retroactively (F8-15). The logo is the profile's (`business_profile.logo_file_id`); letterhead imagery arrives with its own slice (sensitive-data register). | M01-50, M01-28 |
 | proposal_template_settings | tenant_id (unique); cover (about-company text per language; installed kW, happy customers, cities served — `estimated · declared by you`); sections_included; default_terms (one `RichTextValue` — the design system's block list — per language) | Document defaults the builder and Quick mode consume; sent documents are unchanged, new generations use the new template; the document is named "Proposal" in every locale. Bank details are read from the profile — no column. Condition: the T&C save-as-template round-trip in M06's builder implies a named set of T&C templates (`M06-15`; `RichText`'s `templates` prop) — one `default_terms` here; the named set is a later M01 task that lands before `T-M06-027`, which authors no template set of its own. | M01-51, M01-53 |
 | timeline_template | tenant_id (unique); phases (ordered: name + description, per language) | Default project-timeline template — ordered, editable, reorderable phases with descriptions — consumed as the builder's timeline-step default. One per tenant; absent → the platform phases. | M01-52, M01-28 |
 | tranche_template | tenant_id; name (per language); is_default (exactly one per tenant — a partial unique key on tenant_id where default); archived | Named payment-term template; two standards seeded at tenant creation, exactly one default; archive never deletes and generated documents carry their own snapshot (F8-15); the default is never archived — make another default first; feeds the builder's payment step, Quick mode and — at Won — M11's collection schedule (one money path). Index (tenant_id, archived, is_default). Edits are audit events (F2-22). | M01-53, M01-54 |
