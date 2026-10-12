@@ -1,5 +1,6 @@
 import type { UiLanguage } from '@heliogrid/contracts';
 import type { MessageRef, Translator } from '../runtime';
+import { COMPANY_PROFILE_PART_TITLE, COMPANY_PROFILE_STANDING_WORD } from './company-profile';
 import { DISCLOSURE_LEAD_WORD } from './disclosure';
 import { BASIS_LINE_WORD } from './document-basis';
 import { ENERGY_SOURCE_WORD } from './energy-source';
@@ -44,6 +45,10 @@ export const CLOSED_VOCABULARY_GROUPS: readonly ClosedVocabularyGroup[] = [
   {
     surface: 'what a company sells',
     vocabularies: { segment: TENANT_SEGMENT_WORD },
+  },
+  {
+    surface: 'company profile',
+    vocabularies: { part: COMPANY_PROFILE_PART_TITLE, standing: COMPANY_PROFILE_STANDING_WORD },
   },
 ];
 

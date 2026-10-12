@@ -14,6 +14,18 @@
 export type { ApiErrorLike, AttemptFailureLike } from './copy/api-error';
 export { apiErrorMessageId, apiErrorRef, attemptFailureMessageId } from './copy/api-error';
 export { shownInNote } from './copy/authored-content';
+export {
+  COMPANY_PROFILE,
+  COMPANY_PROFILE_PART_TITLE,
+  COMPANY_PROFILE_STANDING_WORD,
+} from './copy/company-profile';
+export type {
+  CompanyProfileOption,
+  CompanyProfilePartWords,
+  CompanyProfileWordFacts,
+  CompanyProfileWords,
+} from './copy/company-profile-words';
+export { companyProfileWords } from './copy/company-profile-words';
 export type {
   CompanySignupCopyKey,
   SignupExplainers,

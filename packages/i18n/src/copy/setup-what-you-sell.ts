@@ -70,7 +70,7 @@ const TENANT_SEGMENT_DESCRIPTION: Record<TenantSegment, MessageRef> = {
 };
 
 /** A unit is a quantity, not a word: it is outside the catalogs so no translation can change it. */
-const KWP = 'kWp';
+export const KWP = 'kWp';
 
 export interface SetupWhatYouSellOption {
   readonly value: TenantSegment;
