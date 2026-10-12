@@ -39,6 +39,7 @@ const WORDS = {
       city: 'City',
       fromSignup: 'From your signup',
       postalCode: 'PIN code',
+      postalCodeExample: '411038',
       purpose: 'Shown to customers on every document',
     },
     tax: {
@@ -50,10 +51,12 @@ const WORDS = {
     },
     bank: {
       bankName: 'Bank name',
+      bankNameExample: 'HDFC Bank',
       accountHolder: 'Account holder',
       accountNumber: 'Account number',
       accountNumberExample: 'Your current account',
       routing: 'IFSC',
+      routingExample: 'HDFC0001234',
       checked:
         "We check the format against your market's rules — never with the issuing authority.",
       purpose: 'On your invoices · never used to move your money',
@@ -100,6 +103,7 @@ const WORDS = {
       city: 'शहर',
       fromSignup: 'आपके साइनअप से',
       postalCode: 'पिन कोड',
+      postalCodeExample: '411038',
       purpose: 'हर दस्तावेज़ पर ग्राहकों को दिखता है',
     },
     tax: {
@@ -110,10 +114,12 @@ const WORDS = {
     },
     bank: {
       bankName: 'बैंक का नाम',
+      bankNameExample: 'HDFC Bank',
       accountHolder: 'खाताधारक',
       accountNumber: 'खाता संख्या',
       accountNumberExample: 'आपका चालू खाता',
       routing: 'IFSC',
+      routingExample: 'HDFC0001234',
       checked: 'हम प्रारूप को आपके बाज़ार के नियमों से जाँचते हैं — जारी करने वाले प्राधिकरण से कभी नहीं।',
       purpose: 'आपके बिलों पर · आपके पैसे के लेन-देन के लिए कभी नहीं',
     },
@@ -159,6 +165,7 @@ const WORDS = {
       city: 'शहर',
       fromSignup: 'तुमच्या साइनअपमधून',
       postalCode: 'पिन कोड',
+      postalCodeExample: '411038',
       purpose: 'प्रत्येक दस्तऐवजावर ग्राहकांना दिसतो',
     },
     tax: {
@@ -169,10 +176,12 @@ const WORDS = {
     },
     bank: {
       bankName: 'बँकेचे नाव',
+      bankNameExample: 'HDFC Bank',
       accountHolder: 'खातेधारक',
       accountNumber: 'खाते क्रमांक',
       accountNumberExample: 'तुमचे चालू खाते',
       routing: 'IFSC',
+      routingExample: 'HDFC0001234',
       checked: 'आम्ही स्वरूप तुमच्या बाजाराच्या नियमांनुसार तपासतो — जारी करणाऱ्या प्राधिकरणाकडून कधीच नाही.',
       purpose: 'तुमच्या बिलांवर · तुमच्या पैशांच्या व्यवहारासाठी कधीच नाही',
     },

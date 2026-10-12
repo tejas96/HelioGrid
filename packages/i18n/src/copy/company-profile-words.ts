@@ -48,6 +48,7 @@ export interface CompanyProfileWords {
     readonly city: string;
     readonly fromSignup: string;
     readonly postalCode: string;
+    readonly postalCodeExample: string;
     readonly purpose: string;
   };
   readonly tax: {
@@ -60,10 +61,12 @@ export interface CompanyProfileWords {
   };
   readonly bank: {
     readonly bankName: string;
+    readonly bankNameExample: string;
     readonly accountHolder: string;
     readonly accountNumber: string;
     readonly accountNumberExample: string;
     readonly routing: string;
+    readonly routingExample: string;
     readonly checked: string;
     readonly purpose: string;
   };
@@ -147,6 +150,7 @@ export function companyProfileWords(
       city: translate(COMPANY_SIGNUP.city),
       fromSignup,
       postalCode: translate(COMPANY_PROFILE.postalCode),
+      postalCodeExample: translate(COMPANY_PROFILE.postalCodeExample),
       purpose: translate(COMPANY_PROFILE.addressPurpose),
     },
     tax: {
@@ -157,10 +161,12 @@ export function companyProfileWords(
     },
     bank: {
       bankName: translate(COMPANY_PROFILE.bankName),
+      bankNameExample: translate(COMPANY_PROFILE.bankNameExample),
       accountHolder: translate(COMPANY_PROFILE.accountHolder),
       accountNumber: translate(COMPANY_PROFILE.accountNumber),
       accountNumberExample: translate(COMPANY_PROFILE.accountNumberExample),
       routing: bankRoutingLabel,
+      routingExample: translate(COMPANY_PROFILE.routingExample),
       checked,
       purpose: translate(COMPANY_PROFILE.bankPurpose),
     },

@@ -4419,7 +4419,7 @@ flowchart LR
   files[("api: POST /files, the logo pointer (e)")] --> logo["data/react: the logo upload (e)"]
   logo --> screens
   rules["domain: where a part stands, what a save writes (c)"] --> hook
-  words["i18n: companyProfileWords (c)"] --> ui["ui: CompanyProfile (g, h)"]
+  words["i18n: companyProfileWords (c)"] --> ui["ui: CompanyProfile (g, h, i)"]
   screens --> ui
   ui --> parts["ui: Accordion flat form, LoadingBars (b)"]
   more["shell: the settings list under More (f)"] --> screens
@@ -4449,7 +4449,7 @@ Per part.
 AC-1 is `not_applicable` in this task (*Decisions*, 2, ruled): its proof is `T-M06-022`'s, written into that task. Each part's RFC holds its rows of the one matrix.
 
 ##### Delivery size
-Eight parts since part c's RFC split it in three (`#### Parts`: a, b, c, g, h, d, e, f), about 135 files in all. No smaller part can be accepted alone: the api must hold a fact before a screen saves it, a shared component lands before either app draws it (Law 7), and the logo and the settings life each need a surface the step does not. a: about 20 files, sized in its RFC. b: about 15. c, g and h together: about 28 planned, sized in their own RFCs. d: about 30. e: about 25. f: about 20. Each later RFC is written when the part before it has shipped.
+Nine parts since part c's RFC split c in three and part g's added i (`#### Parts`: a, b, c, g, h, i, d, e, f), about 135 files in all. No smaller part can be accepted alone: the api must hold a fact before a screen saves it, a shared component lands before either app draws it (Law 7), and the logo and the settings life each need a surface the step does not. a: about 20 files, sized in its RFC. b: about 15. c, g, h and i: sized in their own RFCs. d: about 30. e: about 25. f: about 20. Each later RFC is written when the part before it has shipped.
 
 #### Parts
 
@@ -4458,9 +4458,10 @@ Eight parts since part c's RFC split it in three (`#### Parts`: a, b, c, g, h, d
 | a | the api holds what the board asks: the PIN code's column and field, the typical size bounded (D200), the pack's short format line and its bank-routing label (`#### Part a · RFC`) | AC-3 — on the running api | `T-M01-004` | shipped |
 | b | the design system's parts: `Accordion` drawn flat with a state mark beside the title (D145's share), the loading bars — by component spec; a field's line a reader depends on is the component's (parts g and h), placed with `Text` (`#### Part b · RFC`, *Decisions*, 1) | AC-4 (the parts every frame is built from) — on the component page | a | shipped |
 | c | the rules and the words: domain's rules for where a part stands and what a save writes; every word of the setup life in three languages (`#### Part c · RFC`) | AC-2 (the format line is the pack's; a malformed registration is never written and never stops the save) — by unit test | b | shipped |
-| g | the shared component, first half: `CompanyProfile` in `packages/ui` — the frame, the list, the act, loading, a failed read, a failed save, the logo-and-name, address and bank field sets, the 1536 letterhead preview (`#### Part c · RFC`, *Decisions*, 1) | AC-4 — on the component page | c | open |
+| g | the shared component at 375 and on the phone: `CompanyProfile` in `packages/ui` — the frame, the list, the act, loading, a failed read, a failed save, the name, address and bank field sets (`#### Part g · RFC`) | AC-4 — on the component page | c | shipped |
 | h | the shared component, second half: the tax and what-you-sell field sets, the Hindi and Marathi renders | AC-2 (the format explained, the act live), AC-4 — on the component page | g | open |
-| d | the step owed, the landing, the reads and the save, and the screen on the web and both phones; `SCR-M01-04`'s ways on open it (D202); half-typed bank details kept, as a new field on the profile's read and write (*Decisions*, 5); `createCompany` passes the step | AC-2, AC-4 — on the running apps | h | open |
+| i | the 1536 arrangement and the letterhead preview: `d-default`, `d-tax-invalid` (`#### Part g · RFC`, *Decisions*, 1) | AC-4 — on the component page | h | open |
+| d | the step owed, the landing, the reads and the save, and the screen on the web and both phones; `SCR-M01-04`'s ways on open it (D202); half-typed bank details kept, as a new field on the profile's read and write (*Decisions*, 5); `createCompany` passes the step | AC-2, AC-4 — on the running apps | i | open |
 | e | the logo: its pointer in the api, the upload from the web and both phones, the limits stated and the refusal (`m-logo-invalid`) | AC-4 (`logo-invalid-limits-stated`) | d | open |
 | f | the settings life inside the shell on the web and both phones: the functional density, `Save changes`, the re-seed scope | AC-4 (`declarations-edited-reseed-scope`, `m-settings`, `d-settings`) | e · the settings list drawn (*Decisions*, 7) | open |
 
@@ -4887,6 +4888,160 @@ Checklist:
 - [x] review
 - [x] the gate
 
+#### Part g · RFC
+
+##### Title
+`T-M01-005g` — The company profile's shared component at 375 and on the phone: the frame, the five-part list, the act, loading, a failed read, a failed save, and the name, address and bank field sets
+
+##### Description
+**User impact.** None yet — no app draws this until part d. It builds the screen itself as one shared component: the owner sees five parts and where each stands, opens one, types the address or the bank details, and presses one act that is live with nothing filled in. While the profile loads, bars stand in the list's place; if it cannot be read or saved, the screen says so and keeps a way on. Indirectly, the web and both phones draw the same thing from one prop contract.
+
+Who gains: part d, which mounts it, and part h, which fills its last two parts. The problem: `packages/ui` has the list (`Accordion`, part b), the bars (`LoadingBars`, part b) and the words (part c), and nothing that composes them into `SCR-M01-05`. Sources: the task RFC, the brief's rulings 10–23, the record's decisions 1–3, 8, 11–17 and its 375 measurements, the board's source and its pictures (`#### Design check`, third entry).
+
+##### Goals
+- `CompanyProfile` in `packages/ui` draws, on the web under the door's breakpoint and on the phone, the seven 375 frames this part owns: `m-default`, `m-loading`, `m-error`, `m-save-failed`, `m-skipped`, `m-address-open`, `m-bank-open`.
+- One prop contract (`CompanyProfile.types.ts`); it holds no word and picks none by state — it draws part c's words.
+- The name, address and bank field sets report each typed value by its field; the component holds no draft.
+- The tax and what-you-sell parts show their header and standing; their field sets are part h's.
+
+##### Non-goals
+- The 1536 arrangement and the letterhead preview (`d-default`, `d-tax-invalid`) — new part i (*Decisions*, 1).
+- The tax and what-you-sell field sets and the Hindi and Marathi renders — part h. (A part that owes something opening itself was planned for part h; the list already does it, so its rule is built and tested here — *Key decisions*.)
+- The logo's capture area, its words and its refusal — part e (*Decisions*, 4).
+- No hook, no read, no save, no screen in an app — part d. No settings density — part f.
+- No change to `DoorFrame`, `Accordion`, `Input`, `EmptyState`, `LoadingBars` or `Button`.
+
+##### Readiness and dependencies
+- Parts a, b and c are merged (#284, #287, #288); this branch is cut from `origin/main` (`a51abba9`).
+- Design check: `READY` (`#### Design check`); the third entry lists this part's eight board pictures, taken by Main.
+- `light cycle`: the proof matrix names the component page (`3100`) and no web, phone or api surface — no built screen draws `CompanyProfile`.
+- No blocker.
+
+##### Proposal
+**What testing the requirements found** (`/task` step 2).
+1. **Part g as planned is over the size rule again.** Both halves of one component count every line twice. With the 1536 arrangement and the letterhead it is about 1,900 lines; without them about 1,450. The 1536 arrangement is its own problem — the shared frame (`DoorFrame`) puts the title left and the task right from 968 px, where this board puts everything left and a preview right — and it draws two frames (`d-default`, `d-tax-invalid`), the second of which needs part h's tax set. → *Decisions*, 1.
+2. **The frame at 375 is the door's frame that exists.** `DoorFrame` already draws this board's page under its breakpoint and on the phone: the bloom, the 24 px wordmark, the `sp-6` page, the column that scrolls, the act held at the foot (`packages/ui/src/components/DoorFrame/DoorFrame.css:36`, `:174`). Reused as it is. Two of its gaps differ from this board — the title to its line (12, the board 8) and the title block to the list (24, the board 20) — so the component places its own heading block with `Text` and takes 4 px back above the list; nothing in `DoorFrame` changes.
+3. **The board draws three India examples inside fields** — `411038`, `HDFC Bank`, `HDFC0001234` — and no market pack holds an example. Company signup already draws examples as copy (`Suryodaya Solar Solutions`, `Pune`, `packages/i18n/src/copy/company-signup.ts`). → *Decisions*, 2.
+4. **An open part's standing is drawn two ways.** The setup frames draw no word on the open part — but for `m-failed-save`, whose open part owes something and keeps `Not declared`; `m-normal` and the two settings frames keep `Added` on it. → *Decisions*, 3.
+5. **The capture area asks a question only the logo part can answer.** Its hint reads `Tap to choose a file` at 375 and `Choose a file or drop one here` at 1536; `Dropzone` takes one `hint`, and nothing uploads a file before part e. → *Decisions*, 4.
+6. **`m-error` has no heading and two separated acts.** `Try again` sits in the centred message, `Continue without it` is held at the foot as the secondary. Built as drawn; part c's words already hold both in `unread` and return no act.
+7. **`m-save-failed` stacks its two acts**, the alert line above them — unlike `SCR-M01-04`'s failed save, which sets them in one row. Built as this board draws it.
+8. **The board names acts with `aria-label`; `Button` takes `spokenName`.** Same fact, the repo's prop.
+9. **The board's pictures are small** (a phone frame is 238 × 514): the pane gave no larger whole frame. The side-by-side reads them beside the record's measured sizes and the board's source, which Main holds whole.
+
+**Flow.**
+1. The app (part d) passes `words` (part c), `values` (what the fields hold), `open`, `saving` and five handlers.
+2. `words.loading` → the heading and `LoadingBars` (`panel`, then four `row`), the act off with its reason. `words.unread` → the wordmark, the centred message with its glyph and retry, the way on held at the foot. Otherwise the heading, the list and the act.
+3. The list is `Accordion`, one part open, controlled: each item takes its title, and — when shut — its standing as `state` and `stateLabel` (`met` → `done`, `open` → `empty`, `owed` → `errors`).
+4. A field reports `onEdit(field, value)` as it is typed; the act reports `onSave`; after a failed save the second act reports `onContinueWithout`. (Planned as commit on blur, as the board marks its fields; built as typed — `Input`'s commit-once mode never commits an empty box (`packages/ui/src/components/Input/commit-draft.ts:38`), so a typed address could never be emptied. Ruled by the owner on the commit card, 2026-10-12: as typed; the brief's ruling 27.)
+
+**Key decisions.**
+- **Words are the state.** No `status` prop: `words.loading`, `words.unread` and `words.act.alert` already say which frame it is, so the component cannot disagree with its words.
+- **`onEdit(field, value)` with one closed list of fields** — `companyName`, `city`, `address`, `postalCode`, `bankName`, `accountName`, `accountNumber`, `bankRoutingIdentifier` — in `CompanyProfile.types.ts`; part h adds its own.
+- **The lines a reader depends on are `Text`**, body-small or caption in the secondary ink, never `Input`'s `helper` (part b, *Decisions*, 1).
+- **The field sets are one file per half** (`CompanyProfileSets.tsx`, `.native.tsx`), so the main file stays the frame and the states.
+- **The failed read's glyph is drawn here** (`packages/ui/CLAUDE.md`: an icon is drawn, never imported), one drawing both halves read.
+- **An open part that owes something keeps its word** (review, a blocker): `Accordion` opens an owed section itself; had the open part dropped its mark, the list would have opened it again each time the owner left it, and no other part could open. `m-failed-save` draws it so.
+- **Each part's fields are authored once** (`profileSet` in the logic file): both halves map the same list to `Input` and `Text`, so neither can ask a different field.
+- **The phone says a failed save aloud** (review): a live region speaks on Android alone, so the phone half also announces the alert.
+- **The phone halves are typechecked here and first seen on a phone in part d**, as part b's were. For part d's packet: the phone's act stands 24 under the list (the frame's own, the board 20); the failed save's held foot is about 180 tall, to be seen on a short phone with the keyboard up; the phone's title carries no heading role (`DoorTitle.native`); the failed save's line is heard once, not twice, on Android (it is both a live region and an announcement). For part i: the two negative margins in `CompanyProfile.css` hold under the door's breakpoint only. For part h: `CompanyProfile.spec.tsx` is 290 lines, so its rows take a third spec file.
+
+**Order.** The spec, red, state by state · types and logic · the web half and its stylesheet · the phone half · the three examples' words · Main's pictures of each state · review · the side-by-side · the gate.
+
+**Refusals.** None — this part makes no call.
+
+**The twin.** Both halves in this part, on one contract.
+
+**Deferred rows this part's files meet.** D2 and D92 (`touches packages/ui/src/components/`) — stay, as ruled in part b: each waits on `T-M12-004`. No other row's cell names a file of this part. One row opens with *Decisions*, 2's first way.
+
+**Decisions** (the owner's; the recommended way first).
+1. **The size.** This part is the component at 375 and on the phone, about 27 files and 1,450 lines, approved at that size — no smaller part draws a whole frame — and the 1536 arrangement with the letterhead becomes part i, after part h — or one part with both, about 32 files and 1,900 lines.
+2. **The three examples in fields.** Built as drawn, as copy in `packages/i18n` like signup's examples, with a `deferred.md` row (D207, reopening when the market pack's file is next touched) that moves them to the market pack — or left out, and the owner corrects the two frames (one prompt).
+3. **An open part's standing.** An open part shows no word, as every setup frame draws; `m-normal` and the settings frames are corrected to match before parts e and f (one prompt) — or an open part keeps its word everywhere, and the ten setup frames that drop it are corrected.
+4. **The logo's capture area.** It lands whole with part e — its words, its hint by device, its refusal and the upload together — so this part's `m-default` and `m-skipped` carry one ruled difference, the missing capture area — or it is drawn here with nothing behind it and shown only on the component page.
+
+**Ruled by the owner, 2026-10-12, with the approval: the first way of each of the four.**
+
+##### Architecture diagram
+No boundary change — see the task diagram: the node `ui: CompanyProfile (g, h)`.
+
+##### Package changes
+- `ui` — new, exported from the root entry: `CompanyProfile`, `CompanyProfileProps`, `CompanyProfileWords`, `CompanyProfilePartWords`, `CompanyProfileValues`, `CompanyProfileField`. Composes `DoorFrame`, `Accordion`, `LoadingBars`, `EmptyState`, `Input`, `Button`, `Text`. No new dependency.
+- `i18n` — with *Decisions*, 2's first way: three example messages and three fields on `CompanyProfileWords`.
+- Law 12: `CompanyProfileField` is a union `tsc` holds. `CompanyProfile` has no design-system contract, so `design-system-props` skips it — said here. No brand, token, route, table or error code is new.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| add | `packages/ui/src/components/CompanyProfile/CompanyProfile.types.ts` | the prop contract, the words' shape, the fields | the folder shape (`packages/ui/CLAUDE.md`) |
+| add | `packages/ui/src/components/CompanyProfile/CompanyProfile.logic.ts` | the list's items from the words, the open part the list reports, each part's fields (`profileSet`), the glyph | shared by both halves |
+| add | `packages/ui/src/components/CompanyProfile/CompanyProfile.tsx` · `CompanyProfile.css` | the web half: the frame, the states, the act | the same |
+| add | `packages/ui/src/components/CompanyProfile/CompanyProfile.native.tsx` | the phone half | the same |
+| add | `packages/ui/src/components/CompanyProfile/CompanyProfileSets.tsx` · `CompanyProfileSets.native.tsx` | the name, address and bank field sets | one responsibility per file, under 300 lines |
+| add | `packages/ui/src/components/CompanyProfile/index.ts` | the folder's entry | the same |
+| modify | `packages/ui/src/index.ts` · `packages/ui/src/styles.css` | the export; the stylesheet | the package's two entries |
+| add | `tests/e2e/components/CompanyProfile.story.tsx` | the component as a screen holds it, words from `companyProfileWords` | the words hold functions' results a spec cannot pass |
+| add | `tests/e2e/components/CompanyProfile.spec.tsx` · `CompanyProfile.states.spec.tsx` | rows g1–g5 · g6–g10 | planned as two files: one would pass 300 lines |
+| modify | `packages/i18n/src/copy/company-profile.ts` · `company-profile-words.ts` | the three examples (*Decisions*, 2) | the screen's copy |
+| modify | `packages/i18n/tests/company-profile.test.ts` | the examples in three languages | the words' test |
+| modify | `packages/i18n/src/locales/{en,hi,mr}/messages.po` | the entries | the catalogs |
+| generated | `packages/i18n/src/locales/{en,hi,mr}/messages.ts` | compiled | never hand-edited |
+| modify | `docs/tasks/deferred.md` | the examples' row | the register |
+| modify | `docs/ux/briefs/SCR-M01-05-business-profile.md` | the rulings of *Decisions* 2–4 | the brief owns the screen's facts |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, `#### Parts` (g narrowed, i added), the design check's third entry, the ledger, part g `shipped` | the task |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **The phone half is unseen until part d.** A fault found there is fixed and counted there.
+- **Two parts open to an empty panel until part h.** No app mounts the component before part d, which comes after h.
+- **From 968 px the web half shows the door's two-field arrangement until part i.** Same reason: nothing mounts it before d.
+- **Rollout.** Nothing a person meets changes; nothing stored or sent changes.
+
+##### Acceptance criteria and proof
+The task's AC-4 is this part's, for the seven 375 frames it draws. AC-1, AC-2 and AC-3 have no row here.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-4 · g1 the default frame | main-dev | required | `3100` at 375 | the wordmark, the `h1`, the lede; five headers in order, each 335 wide and at least 56 tall; the open first part has no standing, the other four read `Pune only`, `Not added`, `Not added`, `Answered` with an 8 px dot, `--success` on `Answered` alone; `Company name` holds the name, `From your signup` 8 px under it in the secondary ink; the act is live, 335 × 48, with no line; no sideways scroll | `tests/e2e/components/CompanyProfile.spec.tsx` |
+| AC-4 · g2 one part open | main-dev | required | `3100` at 375 | pressing a shut header reports that part; with it open its standing is gone and the part before reads its own; pressing the open header reports none; a part that owes something opens itself, keeps its word, and lets another part open. Planted red: the open part keeping its standing; the owed part losing it | the same |
+| AC-4 · g3 the address set | main-dev | required | `3100` at 375 | `Street address` (its example), `City` with `From your signup`, `PIN code` in mono (its example), then `Shown to customers on every document`; each field 54 tall; a typed street reports `address` with its value as typed, and emptying it reports the empty value | the same |
+| AC-4 · g4 the bank set | main-dev | required | `3100` at 375 | `Bank name`, `Account holder`, `Account number`, the pack's routing label, in that order, the last two in mono; the format-check sentence under the last; then the bank's line; each reports its own field | the same |
+| AC-4 · g5 a longer language | main-dev | required | `3100` at 375 | in Hindi and in Marathi: no sideways scroll, no clipped text box, every standing inside its header, the act on screen | the same |
+| AC-4 · g6 loading | main-dev | required | `3100` at 375 | the heading stays; a busy region named by the words holds five bars, 188 then four of 56; the act is off, says `Profile still loading`, and takes focus; no list. Planted red: the act live while loading | `tests/e2e/components/CompanyProfile.states.spec.tsx` |
+| AC-4 · g7 a failed read | main-dev | required | `3100` at 375 | no `h1` and no list; the message's title and line, a glyph, `Try again` in it; `Continue without it` at the foot as the secondary, 335 × 48; each reports its own handler | the same |
+| AC-4 · g8 a failed save | main-dev | required | `3100` at 375 | every typed value still in its field and the same part open; one `role="alert"` line in `--danger-text` above the acts; `Try again` first, `Continue without it` second, stacked, each 335 × 48, each reporting its own handler. Planted red: the alert without its role | the same |
+| AC-4 · g9 saving | main-dev | required | `3100` at 375 | while `saving` the primary is busy and the second act, when there is one, is off | the same |
+| AC-4 · g10 the touch floor | main-dev | required | `3100` at 375 | every header, field and act is at least 44 on both axes | the same |
+| AC-4 · side-by-side | qa-web | required | component page `3100`, Main's pictures | each of seven frames beside its board picture at 375 — `m-default`, `m-loading`, `m-error`, `m-save-failed`, `m-skipped`, `m-address-open`, `m-bank-open` — element by element; ruled differences: the capture area (*Decisions*, 4); the board's pictures are 238 wide, so sizes are read from the record | Main's pictures in the scratchpad, `qa-web`'s report |
+| the phone | — | not_applicable | — | — | no app draws the component; typechecked here, first seen in part d, where `qa-ios` compares each state |
+| 1536 | — | not_applicable | — | — | part i (*Decisions*, 1) |
+| the running web and api | — | not_applicable | — | — | no built screen draws `CompanyProfile`; this part makes no call |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part: **27 files** — 9 in `packages/ui`, 2 entries, 3 component tests, 3 of words and their test, 3 catalogs, 3 generated, 3 documents, and the shared fixture or split file a 300-line limit may add (counted: 1).
+- **Code: about 800 authored lines** — the web half and its stylesheet 230, the phone half 190, the two sets files 260 (web 115, phone 145), types and logic 110, words 10.
+- **Tests: about 650 authored lines** — the story 140, the two specs 490, the words' test 20.
+- About 1,450 in all, over the 1,000 target: asked at this exact size (*Decisions*, 1). Each half is counted on its own line, and one review round is counted in.
+- Order: as *Proposal*.
+
+**Built (2026-10-12).** 25 files against 27 planned: no fixture file was needed. Code: 751 lines — `packages/ui` 735 (types 104, logic 141, the web half and its stylesheet 201, the phone half 178, the two sets files 107, the entries 4), the words 10, the Hindi and Marathi lines 6. Tests: 549 — the story 107, the two specs 433, the words' test 9. Total 1,300 against 1,450 planned, 10% under. The sets files are 107 against 260 planned and the logic 141 against its share of 110: the review's round moved each part's fields into the logic, written once.
+
+Checklist:
+- [x] the specs, red
+- [x] types, logic, the web half
+- [x] the phone half
+- [x] the examples' words
+- [x] Main's pictures of each state
+- [x] review
+- [x] the side-by-side
+- [x] the gate
+
 #### Design check
 `READY` — 2026-10-12, on the record `SCR-M01-05 - decisions & self-audit.md` (29,484 bytes) read beside the board `SCR-M01-05 Business Profile - Mobile.dc.html` (142,409 bytes, under the read cap). Three checks on one helper. The first found the record behind the board (four frame counts, no Hindi frame, no 1536 alignment numbers, no word plan, a standing FAIL); the owner's redraw closed every finding. Main then found three product facts wrong against the code — three bank fields where `M06-17` and the contract hold four, a city line saying the city sets the market, a count of typed characters the pack cannot give — and the owner corrected them and redrew the 1536 arrangement in the same pass; the third check found nothing.
 
@@ -4897,6 +5052,8 @@ Noted by the helper and not blocking: three stale board notes and three stale re
 **Board pictures (2026-10-12).** `qa-web` pictured the twenty frames in the browser pane, into the session's scratchpad as `board/<frame>.png`: the sixteen phone frames 338 × 731 each, one shot at the board's 90%; the four 1536 frames 766 × 500 each, one shot at 50%, the right 2 px of each outside the pane. Main opened `d-default` and `m-bank-open` and they show the right state. A 1536 comparison reads the half-size pictures beside the record's measured positions.
 
 **Second entry — the failed save drawn.** `READY` — 2026-10-12, after part a's commit, on the same record file, `SCR-M01-05 - decisions & self-audit.md` (32,106 bytes), read beside the board (148,156 bytes, under the read cap): the owner drew `m-save-failed` (the task RFC's *Decisions*, 6, now closed). The board holds twenty-one frames — seventeen at 375, the sixteen above and `m-save-failed`; four at 1536. `m-save-failed` keeps everything typed, shows one `role="alert"` line at the act, `Not saved · our end · nothing typed is lost`, with `Try again` first and `Continue without it` second; the settings life shows the same line at `Save changes` with no second act and no frame. It is not `m-failed-save`, the arrival from `SCR-M01-04`'s failed save. Main read the record again when part b began and it holds these twenty-one frames; one board note still says twenty. The pictures of that session are gone with its scratchpad: part c takes all twenty-one again.
+
+**Third entry — part g's pictures (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again when part c began (21 frames). Part c drew no frame and took no picture. For part g, `qa-web` reported all eight frames `BLOCKED` — under a set viewport the board's canvas does not scroll — so Main pictured them in the pane at its own size, into the scratchpad as `board/<frame>.png`: `m-default`, `m-loading`, `m-error`, `m-save-failed`, `m-skipped`, `m-address-open`, `m-bank-open` at 238 × 514 each (the board at 90%), `d-default` at 538 × 352 (the board at 50%), and `m-tax-invalid` beside them for part h. Main opened all seven phone pictures side by side and each shows its named state whole. They are small: a comparison reads them beside the record's measured sizes and the board's source (148,156 bytes, read whole for part c).
 
 #### Runtime
 Branch `feat/T-M01-005`, cut from `feat/T-M01-004c` (`99ed0bcc`, draft PR #283 open, its `quality`, `e2e-web` and `android` checks running) on a clean tree, by the owner's word, 2026-10-12: the walk reads `origin/main`, where `T-M01-004`'s part c is not yet merged.
@@ -5086,6 +5243,64 @@ End state after the reruns: api, web and Metro stopped; the simulator and the em
 | Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
 | simulator · emulator | none booted | none booted |
 | browser tabs | pane closed | pane closed (the one tab Main opened is closed) |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | unchanged |
+| watchers | no `tsx … watch` process | none |
+
+**Part g · Runtime (2026-10-12).** Branch `feat/T-M01-005g`, cut from `origin/main` (`a51abba9`, part c merged as #288) on a clean tree. A light cycle: no stack is prepared.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | one tab on the board, opened at the owner's word and signed in by the owner (`pre_existing`, tab `seed`) | Main set the board's zoom to 50% for the pictures |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | — |
+| watchers | no `tsx … watch` process | — |
+
+**Part g · QA (2026-10-12)** — no stack: no built screen draws the component. The one server was the component test page (`3100`), started and stopped by each `test:ct` run.
+
+- **Order.** The reviewer read alone: one blocker, six should-fix findings and notes in round one, all applied (*Mistakes found (part g)*); clean in round two. `qa-web` compared Main's seven pictures with the board's while round two ran — outside the usual order, on pictures alone. It failed one frame: in `m-save-failed` at rest the address part's last line is cut by the held acts. Main measured it: the column scrolls under the held acts, as the board's own frame is drawn scrolled, and scrolled into view the line stands whole above them — now a line of the failed save's test. On its one retry with that measurement `qa-web` passed all seven frames; the reviewer read the added line clean in round three.
+- **Main's proofs.** `test:ct` on the two specs: 16 passed on the final code. `pnpm check` exit 0 (406 unit tests). `check:catalogs`: no change. The invariants green after the `deferred.md` row.
+- **Main's pictures.** Each of the seven states, 375 × 812, by a temporary spec that mounted the story and was deleted after; set beside its board picture in the scratchpad as `pairs/<frame>.png`.
+
+**Planted reds seen (part g).** Each file was restored from a scratchpad copy and touched.
+- `CompanyProfile.logic.ts` with every part keeping its standing failed `CompanyProfile.spec.tsx` › *a new company meets five flat parts, the first open on its name, and a live act with no line* and › *one part is open at a time: an open part shows no standing, and pressing it again shuts it*.
+- The same file with an owed part losing its standing when open failed › *a part that owes something opens itself, keeps its word while open, and lets every other part open* (the part it left opened again).
+- `CompanyProfile.tsx` with the act live while loading failed `CompanyProfile.states.spec.tsx` › *while the record loads the heading stays, bars stand for the five parts, and the act is off and says why*; with the alert's role taken out › *a failed save keeps everything typed and the same part open, and says so once at the act: the retry first, the way on second*.
+- Seen red before their code: all three spec files (the component did not exist).
+
+**Mistakes found (part g)**, each with the rule that now holds it:
+- An open part dropped its standing even when it owed something, so the list reopened it each time and locked every other part (reviewer, a blocker; no spec reached it). An owed part keeps its word; a spec row with an undeclared company now holds it, seen red.
+- The RFC said every setup frame draws no word on the open part; `m-failed-save` draws one (reviewer). The RFC and the brief's ruling 25 say the exception.
+- The board marks its fields commit-on-blur and the RFC followed it; the shared field's commit-once mode cannot empty a box. Built as typed, with a test that empties the street; the owner ruled for it on the commit card (the brief's ruling 27). The owner also asked whether web, iPhone, Android and api ran live: none did — no app draws the component before part d — and ruled to commit so, with live QA on all four in part d.
+- The phone's glyph was the primary ink where the web's is the tertiary, and the phone's failed save was silent on iOS (reviewer). Both corrected.
+- Five proof rows said more than their tests asserted — the mono fields, the holder's report, the 8 px dot, the wordmark, the act in Hindi and Marathi (reviewer). The assertions were added.
+- The two field-set files repeated each other across the halves (the duplication report). Each part's fields are now one list in the logic file.
+- A deferred row's `reopens when` cell was written in free words; the invariant refused it. It is one of the four forms.
+- `qa-web` could not picture the board: under a set viewport its canvas does not scroll. Main pictured it at the pane's own size; the pictures are small.
+
+- **The gate.** One run of `pnpm check:all`, passed: 217 test files, 3,848 tests, no skipped or vacuous check, the last stage `invariants green`; nothing regenerated. Its duplication report still lists the act block of `CompanyProfile.tsx` against its phone half, under the threshold, as other two-half components are. The tree's hash was the same before and after the helper. After it, Main wrote only this record and ran `pnpm check` and the invariants again.
+
+**As proven (part g).**
+
+| row | result | evidence |
+|---|---|---|
+| g1 – g5 · g10 | passed | `CompanyProfile.spec.tsx`, 11 tests; planted reds by name |
+| g6 – g9 | passed | `CompanyProfile.states.spec.tsx`, 5 tests; planted reds by name |
+| side-by-side | passed on its one retry | `qa-web` on Main's seven pictures; every difference left is a ruled one: the phone chrome in the board's frame, the logo box (part e), the board's scrolled `m-save-failed`, the held foot at rest, `EmptyState`'s grey disc, the off `Button`'s ink, soft pictures, a lede's line break |
+| the phone · 1536 · the running web and api | not_applicable | as the proof matrix says |
+| the gate | passed | `pnpm check:all`, one run |
+
+**Measurements (part g)** — helper runs: `qa-web` 2 (the board capture, blocked, 43 k; the side-by-side with one continuation, 36 k and 38 k), `reviewer` 1 with two continuations (186 k, 205 k, 210 k), `evaluator` 1 (35 k); one full gate, passed. Main: about 95 tool-call turns for this part and about 582 k context tokens at the commit card, parts c and g in one session by the owner's word. Size: planned 27 files, code about 800, tests about 650; built 25 files, code 751, tests 549.
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | none listening |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| simulator · emulator | none booted | none booted |
+| browser tabs | the board's tab `seed`, signed in by the owner | open, the board's zoom left at 50% (Main changed it from 90% for the pictures) |
 | database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
 | runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | unchanged |
 | watchers | no `tsx … watch` process | none |

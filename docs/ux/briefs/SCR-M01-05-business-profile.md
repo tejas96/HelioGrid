@@ -36,6 +36,10 @@ Reached from: the onboarding sequence after "What do you sell?" (M01 §M01.3 beh
 21. **A kind of business has one name on every screen.** The three card titles here are the ones `SCR-M01-04` shows — `Residential` · `Commercial & industrial (C&I)` · `Both`; the card lines, the group's name (`What you mostly sell`) and the size's hint are this screen's own, as drawn. The board's three titles are to be corrected to match before the part that draws the cards.
 22. **The account holder opens holding the company name.** A holder that still equals the company name, with the other three bank facts empty, is not a bank fact: nothing is written for it and the part reads `Not added`.
 23. **The address reads `Added` once the street address is filled.** A PIN code alone leaves it at the city read back from signup.
+24. **The three examples inside fields are screen copy**, as drawn — `411038`, `HDFC Bank`, `HDFC0001234` — like company signup's examples; `docs/tasks/deferred.md` D207 holds their move to the market pack.
+25. **An open part shows no standing, unless it owes something.** Its fields say what it holds; a part that owes something (`m-failed-save`, `Not declared`) opens itself and keeps its word while open. `m-normal` and the two settings frames, which keep `Added` on the open part, are to be corrected to match before the parts that build them.
+26. **The logo's capture area lands whole with the logo** — its words, its hint by device, its refusal and the upload together; until then the first part holds the company name alone.
+27. **A field reports what is typed as it is typed, and can be emptied.** The board marks the fields commit-on-blur; the shared field's commit-once mode never commits an empty box, so a typed address could not be taken out again. Nothing is saved before the act either way.
 
 
 ## Requirements (verbatim)
