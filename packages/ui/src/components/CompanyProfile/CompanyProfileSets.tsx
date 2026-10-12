@@ -1,14 +1,22 @@
 import type { CompanyProfilePart } from '@heliogrid/domain';
 import { Text } from '../../primitives/Text/Text';
+import { Dropzone } from '../Dropzone/Dropzone';
 import { Input } from '../Input/Input';
+import { useCoarsePointer } from '../MapSurface/use-coarse-pointer';
 import { NumberField } from '../NumberField/NumberField';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup';
-import { type ProfileFieldSpec, profileSet, sizeField } from './CompanyProfile.logic';
+import { logoCapture, type ProfileFieldSpec, profileSet, sizeField } from './CompanyProfile.logic';
 import type { CompanyProfileProps } from './CompanyProfile.types';
 
 type SetProps = Pick<
   CompanyProfileProps,
-  'words' | 'values' | 'onEdit' | 'onChooseSegment' | 'onDeclareSize'
+  | 'words'
+  | 'values'
+  | 'onEdit'
+  | 'onChooseSegment'
+  | 'onDeclareSize'
+  | 'logoPicture'
+  | 'onChooseLogo'
 > & {
   part: CompanyProfilePart;
 };
@@ -24,6 +32,8 @@ export function ProfileSet({
   onEdit,
   onChooseSegment,
   onDeclareSize,
+  logoPicture = null,
+  onChooseLogo,
 }: SetProps) {
   if (part === 'declarations') {
     return (
@@ -49,6 +59,9 @@ export function ProfileSet({
   );
   return (
     <div className="hg-company-profile-set" data-disclosed={set.disclosure !== null}>
+      {part === 'identity' && words.logo !== null ? (
+        <LogoCapture logo={words.logo} picture={logoPicture} onChoose={onChooseLogo} />
+      ) : null}
       {/* One wrapper whether or not the field has a line: a field whose line gives way to its
           error keeps its place in the tree, and so its focus, while a person types. */}
       {set.fields.map((spec) => (
@@ -72,6 +85,30 @@ export function ProfileSet({
         </Text>
       )}
     </div>
+  );
+}
+
+/**
+ * Where the company's logo goes, above its name. A finger is told to tap; a pointer can also drop
+ * a file, and is told so.
+ */
+function LogoCapture({
+  logo,
+  picture,
+  onChoose,
+}: {
+  logo: NonNullable<SetProps['words']['logo']>;
+  picture: string | null;
+  onChoose: SetProps['onChooseLogo'];
+}) {
+  const finger = useCoarsePointer();
+  return (
+    <Dropzone
+      {...logoCapture(logo, picture, !finger)}
+      onFiles={([chosen]) => {
+        if (chosen !== undefined) onChoose?.(chosen);
+      }}
+    />
   );
 }
 

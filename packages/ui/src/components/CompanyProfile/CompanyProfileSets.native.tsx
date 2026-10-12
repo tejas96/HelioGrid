@@ -2,15 +2,22 @@ import type { CompanyProfilePart } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { Dropzone } from '../Dropzone/Dropzone.native';
 import { Input } from '../Input/Input.native';
 import { NumberField } from '../NumberField/NumberField.native';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup.native';
-import { type ProfileFieldSpec, profileSet, sizeField } from './CompanyProfile.logic';
+import { logoCapture, type ProfileFieldSpec, profileSet, sizeField } from './CompanyProfile.logic';
 import type { CompanyProfileProps } from './CompanyProfile.types';
 
 type SetProps = Pick<
   CompanyProfileProps,
-  'words' | 'values' | 'onEdit' | 'onChooseSegment' | 'onDeclareSize'
+  | 'words'
+  | 'values'
+  | 'onEdit'
+  | 'onChooseSegment'
+  | 'onDeclareSize'
+  | 'logoPicture'
+  | 'onRequestLogo'
 > & {
   part: CompanyProfilePart;
 };
@@ -26,6 +33,8 @@ export function ProfileSet({
   onEdit,
   onChooseSegment,
   onDeclareSize,
+  logoPicture = null,
+  onRequestLogo,
 }: SetProps) {
   if (part === 'declarations') {
     return (
@@ -51,6 +60,10 @@ export function ProfileSet({
   );
   return (
     <View style={set.disclosure === null ? styles.set : styles.disclosed}>
+      {/* Where the logo goes, above the name. A phone has no pointer to drop with: the finger's hint. */}
+      {part === 'identity' && words.logo !== null ? (
+        <Dropzone {...logoCapture(words.logo, logoPicture, false)} onRequestFiles={onRequestLogo} />
+      ) : null}
       {/* One wrapper whether or not the field has a line: a field whose line gives way to its
           error keeps its place in the tree, and so its focus, while a person types. */}
       {set.fields.map((spec) => (

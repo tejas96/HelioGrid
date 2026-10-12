@@ -1,8 +1,10 @@
 import {
+  COMPANY_LOGO_LIMITS,
   COMPANY_PROFILE_PARTS,
   type CompanyProfileFacts,
   type CompanyProfilePart,
   companyLetterhead,
+  companyLogoRefusal,
   companyProfileStanding,
   IN_PACK,
   inLanguage,
@@ -16,6 +18,7 @@ import {
   ProvenanceWordsProvider,
 } from '@heliogrid/ui';
 import { useState } from 'react';
+import { REFUSED_IMAGE } from '../support/company-logo';
 
 const READERS = {
   en: await createTranslator('en'),
@@ -46,12 +49,18 @@ const UNDECLARED = { segment: null, typicalSystemKwp: null } as const;
 
 const [REGISTRATION] = IN_PACK.tax.registrationTypes;
 
-function factsOf(values: CompanyProfileValues): CompanyProfileFacts {
+/**
+ * The logo's capture area by state: `off` is a screen that cannot upload yet (the running apps),
+ * `empty` no logo, `refused` the image last chosen missed both limits, `held` the profile holds one.
+ */
+type LogoState = 'off' | 'empty' | 'refused' | 'held';
+
+function factsOf(values: CompanyProfileValues, logo: LogoState): CompanyProfileFacts {
   const { bankName, accountName, accountNumber, bankRoutingIdentifier, taxRegistration, ...rest } =
     values;
   return {
     ...rest,
-    logoFileId: null,
+    logoFileId: logo === 'held' ? 'the-held-logo' : null,
     registrations:
       REGISTRATION === undefined
         ? []
@@ -74,6 +83,8 @@ export function CompanyProfileAsHeld({
   undeclared = false,
   open: openAtStart = 'identity',
   typed = {},
+  logo = 'off',
+  picture = null,
 }: {
   reader: UiLanguage;
   status?: 'loading' | 'ready' | 'unread' | 'save-failed';
@@ -83,6 +94,9 @@ export function CompanyProfileAsHeld({
   undeclared?: boolean;
   open?: CompanyProfilePart | null;
   typed?: Partial<CompanyProfileValues>;
+  logo?: LogoState;
+  /** The held logo's picture, where the screen has one. */
+  picture?: string | null;
 }) {
   const [values, setValues] = useState({
     ...AT_SIGNUP,
@@ -92,8 +106,9 @@ export function CompanyProfileAsHeld({
   const [open, setOpen] = useState(openAtStart);
   const [edits, setEdits] = useState<readonly string[]>([]);
   const [pressed, setPressed] = useState('');
+  const [chosen, setChosen] = useState<readonly string[]>([]);
   const { t } = READERS[reader];
-  const facts = factsOf(values);
+  const facts = factsOf(values, logo);
   const standings = Object.fromEntries(
     COMPANY_PROFILE_PARTS.map((part) => [part, companyProfileStanding(part, facts, IN_PACK.tax)]),
   ) as Record<CompanyProfilePart, ReturnType<typeof companyProfileStanding>>;
@@ -112,6 +127,17 @@ export function CompanyProfileAsHeld({
             taxFormat: REGISTRATION === undefined ? '' : inLanguage(REGISTRATION.format, reader),
             bankRoutingLabel: IN_PACK.formats.bankRoutingLabel,
             letterhead: companyLetterhead(facts, IN_PACK.tax),
+            logo:
+              logo === 'off'
+                ? null
+                : {
+                    limits: COMPANY_LOGO_LIMITS,
+                    refusal:
+                      logo === 'refused'
+                        ? companyLogoRefusal(REFUSED_IMAGE, COMPANY_LOGO_LIMITS)
+                        : null,
+                    held: logo === 'held',
+                  },
           })}
           values={values}
           open={open}
@@ -126,6 +152,8 @@ export function CompanyProfileAsHeld({
           onSave={() => setPressed('save')}
           onRetryRead={() => setPressed('retry-read')}
           onContinueWithout={() => setPressed('continue-without')}
+          logoPicture={picture}
+          onChooseLogo={(file) => setChosen((list) => [...list, `${file.name}:${file.type}`])}
         />
       </ProvenanceWordsProvider>
       {/* Read by a spec, never drawn: a long report would widen the page it measures. */}
@@ -133,6 +161,7 @@ export function CompanyProfileAsHeld({
         <output data-testid="open">{open ?? ''}</output>
         <output data-testid="edits">{edits.join('|')}</output>
         <output data-testid="pressed">{pressed}</output>
+        <output data-testid="chosen">{chosen.join('|')}</output>
         <output data-testid="segment">{values.segment ?? ''}</output>
         <output data-testid="size">
           {values.typicalSystemKwp === null ? '' : String(values.typicalSystemKwp)}

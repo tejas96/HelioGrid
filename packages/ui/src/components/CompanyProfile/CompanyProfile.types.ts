@@ -5,6 +5,7 @@ import type {
   StandingMark,
   TenantSegment,
 } from '@heliogrid/domain';
+import type { PickedFile } from '../Dropzone/Dropzone.types';
 
 /** One part of the profile as its header says it: its title, where it stands, and how that is marked. */
 export interface CompanyProfilePartWords {
@@ -89,6 +90,18 @@ export interface CompanyProfileWords {
     readonly bank: string;
     readonly bankLine: string | null;
   };
+  /**
+   * The logo's capture area, above the company name; `null` draws none. `name` is the act, or the
+   * held logo once `held`. `hint` stands under it where a finger chooses and `hintPointer` where a
+   * pointer can also drop a file; `refusal` is what the image last chosen missed.
+   */
+  readonly logo: {
+    readonly name: string;
+    readonly hint: string;
+    readonly hintPointer: string;
+    readonly refusal: string | null;
+    readonly held: boolean;
+  } | null;
   readonly loading: string | null;
   readonly unread: {
     readonly title: string;
@@ -141,4 +154,10 @@ export interface CompanyProfileProps {
   onRetryRead: () => void;
   /** Leaves the step with nothing saved: after a failed read, or a failed save. */
   onContinueWithout: () => void;
+  /** The held logo's picture, where the screen has one to show. */
+  logoPicture?: string | null;
+  /** A file chosen or dropped on the web. The screen checks it; the component takes any file. */
+  onChooseLogo?: (file: PickedFile) => void;
+  /** The capture area pressed on the phone, which has no file input: the app opens its picker. */
+  onRequestLogo?: () => void;
 }

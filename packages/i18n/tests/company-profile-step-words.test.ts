@@ -41,4 +41,9 @@ describe('companyProfileStepWords — the setup step’s words', () => {
     expect(words.bank.routing).toBe('IFSC');
     expect(words.tax.label).toBe(t(COMPANY_PROFILE.optional, { label: 'GSTIN' }));
   });
+
+  it('carries no logo: no screen can upload one yet', async () => {
+    const { t } = await createTranslator('en');
+    expect(companyProfileStepWords(t, 'en', STEP, LABELS).logo).toBeNull();
+  });
 });

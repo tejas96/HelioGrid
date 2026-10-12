@@ -31,6 +31,8 @@ export function CompanyProfile({
   onSave,
   onRetryRead,
   onContinueWithout,
+  logoPicture,
+  onRequestLogo,
 }: CompanyProfileProps) {
   // A live region speaks on Android alone, so the failed save is also announced: iOS hears it too.
   const alert = words.act?.alert ?? null;
@@ -135,6 +137,8 @@ export function CompanyProfile({
                 onEdit={onEdit}
                 onChooseSegment={onChooseSegment}
                 onDeclareSize={onDeclareSize}
+                logoPicture={logoPicture}
+                onRequestLogo={onRequestLogo}
               />
             ))}
             value={open}

@@ -1,0 +1,9 @@
+/* The logo's picture in the letterhead's tile (`SCR-M01-05`, the brief's ruling 48): shown whole,
+   never cropped — a wide logo keeps its sides. */
+.hg-company-profile-sheet-picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: contain;
+}

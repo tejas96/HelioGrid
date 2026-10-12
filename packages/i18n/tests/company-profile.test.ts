@@ -92,6 +92,7 @@ const WORDS = {
       taxLabel: 'GSTIN',
       bank: 'Bank',
     },
+    logo: null,
     loading: null,
     unread: null,
     act: {
@@ -160,6 +161,7 @@ const WORDS = {
       taxLabel: 'GSTIN',
       bank: 'बैंक',
     },
+    logo: null,
     loading: null,
     unread: null,
     act: {
@@ -228,6 +230,7 @@ const WORDS = {
       taxLabel: 'GSTIN',
       bank: 'बँक',
     },
+    logo: null,
     loading: null,
     unread: null,
     act: {

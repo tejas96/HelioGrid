@@ -22,6 +22,8 @@ export const COMPANY_LOGO = {
   refusedSizeAndWidth: /*i18n*/ {
     id: '{megabytes} MB, {width} px wide · needs {maxMegabytes} MB or less, at least {minWidth} px',
   },
+  /** How to choose, then the limits: two facts on one line. */
+  hinted: /*i18n*/ { id: '{how} · {limits}' },
 };
 
 /** A refusal for one limit missed. Whole messages, never joined pieces: word order differs by language. */
@@ -73,4 +75,38 @@ export function companyLogoWords(
 
 function refusalMessage(missed: CompanyLogoRefusal['missed']): MessageRef {
   return missed.length === 2 ? COMPANY_LOGO.refusedSizeAndWidth : REFUSED_FOR[missed[0]];
+}
+
+/** The capture area as the company profile draws it: what it is called and the line under it. */
+export interface CompanyLogoCapture {
+  /** The act while no logo is held, then the held logo. */
+  readonly name: string;
+  /** Where a finger chooses: how, then the limits. The limits alone once a logo is held. */
+  readonly hint: string;
+  /** The same where a pointer can also drop a file. */
+  readonly hintPointer: string;
+  readonly refusal: string | null;
+  readonly held: boolean;
+}
+
+export interface CompanyLogoCaptureFacts extends CompanyLogoWordFacts {
+  /** The profile holds a logo. */
+  readonly held: boolean;
+}
+
+export function companyLogoCapture(
+  translate: Translator['t'],
+  facts: CompanyLogoCaptureFacts,
+): CompanyLogoCapture {
+  const { held } = facts;
+  const words = companyLogoWords(translate, facts);
+  const hinted = (how: string) =>
+    held ? words.limits : translate(COMPANY_LOGO.hinted, { how, limits: words.limits });
+  return {
+    name: held ? words.held : words.add,
+    hint: hinted(words.hintTouch),
+    hintPointer: hinted(words.hintDrop),
+    refusal: words.refusal,
+    held,
+  };
 }
