@@ -19,6 +19,8 @@ export {
   COMPANY_PROFILE_PART_TITLE,
   COMPANY_PROFILE_STANDING_WORD,
 } from './copy/company-profile';
+export type { CompanyProfileStepFacts } from './copy/company-profile-step-words';
+export { companyProfileStepWords } from './copy/company-profile-step-words';
 export type {
   CompanyProfileOption,
   CompanyProfilePartWords,

@@ -22,4 +22,5 @@ export type {
   TaxStrategy,
 } from './pack';
 export { IN_TAX, TAX_STRATEGIES } from './pack';
+export { taxPackOf } from './pack-schema';
 export { checkTaxRegistration, type TaxRegistrationCheck } from './registration';

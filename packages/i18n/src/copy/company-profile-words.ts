@@ -120,12 +120,14 @@ export interface CompanyProfileWords {
 
 /**
  * `status` — the read is still out, it answered, it failed, or the last save failed. `skipped` —
- * the step was skipped and the owner is back. `standings` — domain's `companyProfileStanding` for
+ * the step was skipped and the owner is back. `arrivedUndeclared` — the profile was read without
+ * the two answers of the step before. `standings` — domain's `companyProfileStanding` for
  * each part. `open` — the part that is open. The three pack facts arrive in the reader's language.
  */
 export interface CompanyProfileWordFacts {
   readonly status: 'loading' | 'ready' | 'unread' | 'save-failed';
   readonly skipped: boolean;
+  readonly arrivedUndeclared: boolean;
   readonly standings: Readonly<Record<CompanyProfilePart, CompanyProfileStanding>>;
   readonly open: CompanyProfilePart | null;
   readonly city: string;
@@ -262,11 +264,14 @@ function actWords(
 /**
  * One lede: a failed save of the step before outranks a skip, since it names what is missing.
  * Only a profile that was read says either — until then nothing is known to be missing, and a
- * failed save here is the alert's alone.
+ * failed save here is the alert's alone. The step before is named only while its answers are
+ * still missing as they were read: an answer the owner took out on this screen was saved there.
  */
 function lede(facts: CompanyProfileWordFacts): MessageRef {
   if (facts.status !== 'ready') return COMPANY_PROFILE.lede;
-  if (facts.standings.declarations === 'not_declared') return COMPANY_PROFILE.ledeNotSaved;
+  if (facts.arrivedUndeclared && facts.standings.declarations === 'not_declared') {
+    return COMPANY_PROFILE.ledeNotSaved;
+  }
   return facts.skipped ? COMPANY_PROFILE.ledeSkipped : COMPANY_PROFILE.lede;
 }
 

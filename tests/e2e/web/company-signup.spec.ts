@@ -7,6 +7,7 @@ import {
   expectNumberFieldRinged,
   fillCompanyDetails,
   fillCompanyStep,
+  passCompanyProfileStep,
   passLanguageStep,
   passWhatYouSellStep,
   requestCode,
@@ -214,6 +215,7 @@ test('a language chosen on the door is the new account’s, and where sign-out r
   expect(await languageOfTheCreate(created)).toBe('mr');
   await passLanguageStep(page, mr);
   await passWhatYouSellStep(page, mr);
+  await passCompanyProfileStep(page, mr);
 
   await passTheOwnersMark(page, mr);
   await page

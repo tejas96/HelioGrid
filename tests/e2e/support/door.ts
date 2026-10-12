@@ -1,5 +1,6 @@
 import { OTP_LENGTH } from '@heliogrid/domain';
 import {
+  COMPANY_PROFILE,
   COMPANY_SIGNUP,
   SETUP_LANGUAGE,
   SETUP_WHAT_YOU_SELL,
@@ -132,7 +133,7 @@ export async function answerWhatYouSell(page: Page, t: Translator, kwp = '5'): P
   await size.blur();
 }
 
-/** The what-you-sell step answered and passed: Continue saves both answers, and the home opens. */
+/** The what-you-sell step answered and passed: Continue saves both answers, and the next setup step takes its place. */
 export async function passWhatYouSellStep(page: Page, t: Translator): Promise<void> {
   const step = page.getByRole('heading', { name: t.t(SETUP_WHAT_YOU_SELL.title) });
   await expect(step).toBeVisible();
@@ -142,12 +143,43 @@ export async function passWhatYouSellStep(page: Page, t: Translator): Promise<vo
 }
 
 /**
- * A new number through signup and its two setup steps to the company's home: the one way a spec
+ * A new number through signup and the two steps before it to the company profile every new owner
+ * meets next (`SCR-M01-05`), read and with nothing typed there. Answers the company's name.
+ */
+export async function reachCompanyProfileStep(
+  page: Page,
+  t: Translator,
+  mobile: Mobile,
+): Promise<string> {
+  const company = await reachWhatYouSellStep(page, t, mobile);
+  await passWhatYouSellStep(page, t);
+  await expect(page.getByRole('heading', { name: t.t(COMPANY_PROFILE.title) })).toBeVisible();
+  await expect(companyProfileAct(page, t)).not.toHaveAttribute('aria-disabled', 'true');
+  return company;
+}
+
+/** The company profile's one act, `Save and continue`: it waits while the profile is read. */
+export function companyProfileAct(page: Page, t: Translator) {
+  return page.getByRole('button', { name: t.t(COMPANY_PROFILE.saveSpoken) });
+}
+
+/** The company profile passed as it stands: the act is live with nothing typed, and the home opens. */
+export async function passCompanyProfileStep(page: Page, t: Translator): Promise<void> {
+  const step = page.getByRole('heading', { name: t.t(COMPANY_PROFILE.title) });
+  await expect(step).toBeVisible();
+  await expect(companyProfileAct(page, t)).not.toHaveAttribute('aria-disabled', 'true');
+  await companyProfileAct(page, t).click();
+  await expect(step).toBeHidden();
+}
+
+/**
+ * A new number through signup and its three setup steps to the company's home: the one way a spec
  * obtains a person with a company of their own. Answers the company's name.
  */
 export async function createCompany(page: Page, t: Translator, mobile: Mobile): Promise<string> {
   const company = await reachWhatYouSellStep(page, t, mobile);
   await passWhatYouSellStep(page, t);
+  await passCompanyProfileStep(page, t);
   return company;
 }
 

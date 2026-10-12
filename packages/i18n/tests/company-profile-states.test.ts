@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { COMPANY_PROFILE } from '../src/copy/company-profile';
 import { companyProfileWords } from '../src/copy/company-profile-words';
 import { createTranslator } from '../src/runtime';
 import { AT_SIGNUP, standing } from './company-profile-facts';
@@ -98,6 +99,7 @@ describe('companyProfileWords, by state', () => {
       const { t } = await createTranslator('en');
       const words = companyProfileWords(t, {
         ...standing('declarations', 'not_declared'),
+        arrivedUndeclared: true,
         ...facts,
       });
       expect(words.lede).toBe('What you sell · not saved on the last step');
@@ -105,12 +107,29 @@ describe('companyProfileWords, by state', () => {
     },
   );
 
+  it.each(['en', 'hi', 'mr'] as const)(
+    'an answer taken out on this screen keeps the lede and states its cost (%s)',
+    async (reader) => {
+      const { t } = await createTranslator(reader);
+      const words = companyProfileWords(t, standing('declarations', 'not_declared'));
+      expect(words.lede).toBe(t(COMPANY_PROFILE.lede));
+      expect(words.act?.line).toBe(t(COMPANY_PROFILE.marketDefaults));
+    },
+  );
+
+  it('answers that arrived missing and were given here no longer name the step before', async () => {
+    const { t } = await createTranslator('en');
+    const words = companyProfileWords(t, { ...AT_SIGNUP, arrivedUndeclared: true });
+    expect(words.lede).toBe(LEDE);
+  });
+
   it.each(['loading', 'unread', 'save-failed'] as const)(
     'while the profile is %s nothing is said to be missing, whatever the parts hold',
     async (status) => {
       const { t } = await createTranslator('en');
       const words = companyProfileWords(t, {
         ...standing('declarations', 'not_declared'),
+        arrivedUndeclared: true,
         status,
         skipped: true,
         open: 'declarations',

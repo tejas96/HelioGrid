@@ -16,6 +16,23 @@ export {
   isBankDetailsTyped,
   standingMark,
 } from './company-profile';
+export type {
+  CompanyProfileField,
+  CompanyProfileStored,
+  CompanyProfileValues,
+  CompanyProfileView,
+} from './company-profile-draft';
+export {
+  COMPANY_PROFILE_FIELD_CAP,
+  COMPANY_PROFILE_UNREAD,
+  companyProfileEdited,
+  companyProfileFacts,
+  companyProfileOpenAtRead,
+  companyProfileSaveOf,
+  companyProfileValuesAtRead,
+  companyProfileView,
+  registrationsChanged,
+} from './company-profile-draft';
 export type { MembershipStatus } from './membership';
 export { MEMBERSHIP_STATUSES } from './membership';
 export type {

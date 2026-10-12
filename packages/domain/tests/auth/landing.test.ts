@@ -51,6 +51,7 @@ describe('landingFor', () => {
   it.each([
     ['language', 'language-step'],
     ['what_you_sell', 'what-you-sell-step'],
+    ['business_profile', 'company-profile-step'],
   ] as const)('lands a settled person who owes the %s step on %s', (owed, expected) => {
     expect(landingFor('signedIn', withCompany, null, owed)).toBe(expected);
   });
@@ -72,6 +73,7 @@ describe('landingFor', () => {
   ] as const)('never puts a setup step before %s', (_name, phase, user, ended, expected) => {
     expect(landingFor(phase, user, ended, 'language')).toBe(expected);
     expect(landingFor(phase, user, ended, 'what_you_sell')).toBe(expected);
+    expect(landingFor(phase, user, ended, 'business_profile')).toBe(expected);
     expect(landingFor(phase, user, ended, 'wait')).toBe(expected);
   });
 });
@@ -80,6 +82,7 @@ describe('isSetupLanding — the landings a setup step draws', () => {
   it.each([
     ['language-step', true],
     ['what-you-sell-step', true],
+    ['company-profile-step', true],
     ['home', false],
     ['company-step', false],
     ['access-removed', false],

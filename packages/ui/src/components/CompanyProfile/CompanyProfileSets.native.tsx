@@ -41,7 +41,6 @@ export function ProfileSet({
   if (set === null) return null;
   const field = (spec: ProfileFieldSpec) => (
     <Input
-      key={spec.field}
       label={spec.label}
       value={spec.value}
       placeholder={spec.example}
@@ -52,18 +51,18 @@ export function ProfileSet({
   );
   return (
     <View style={set.disclosure === null ? styles.set : styles.disclosed}>
-      {set.fields.map((spec) =>
-        spec.line === null ? (
-          field(spec)
-        ) : (
-          <View key={spec.field} style={styles.pair}>
-            {field(spec)}
+      {/* One wrapper whether or not the field has a line: a field whose line gives way to its
+          error keeps its place in the tree, and so its focus, while a person types. */}
+      {set.fields.map((spec) => (
+        <View key={spec.field} style={styles.pair}>
+          {field(spec)}
+          {spec.line === null ? null : (
             <Text variant="body-sm" color="secondary">
               {spec.line}
             </Text>
-          </View>
-        ),
-      )}
+          )}
+        </View>
+      ))}
       {set.disclosure === null ? null : (
         <Text variant="body-sm" color="secondary">
           {set.disclosure}

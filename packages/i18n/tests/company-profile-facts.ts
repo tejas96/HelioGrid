@@ -4,6 +4,7 @@ import type { CompanyProfileWordFacts } from '../src/copy/company-profile-words'
 export const AT_SIGNUP: CompanyProfileWordFacts = {
   status: 'ready',
   skipped: false,
+  arrivedUndeclared: false,
   standings: {
     identity: 'name_only',
     address: 'city_only',

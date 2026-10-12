@@ -54,6 +54,7 @@ const TIER_LINE = [tierLabel(en.t, 'estimated'), en.t(SETUP_WHAT_YOU_SELL.declar
 const KINDS = companyProfileWords(en.t, {
   status: 'ready',
   skipped: false,
+  arrivedUndeclared: false,
   standings: {
     identity: 'name_only',
     address: 'city_only',

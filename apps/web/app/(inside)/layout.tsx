@@ -1,6 +1,10 @@
 import type { ReactNode } from 'react';
 import { SessionGate } from '../../features/auth';
-import { SetupLanguageScreen, SetupWhatYouSellScreen } from '../../features/onboarding';
+import {
+  CompanyProfileScreen,
+  SetupLanguageScreen,
+  SetupWhatYouSellScreen,
+} from '../../features/onboarding';
 import { ShellScreen } from '../../features/shell';
 
 /**
@@ -15,6 +19,7 @@ export default function InsideLayout({ children }: { children: ReactNode }) {
       setupSteps={{
         'language-step': <SetupLanguageScreen />,
         'what-you-sell-step': <SetupWhatYouSellScreen />,
+        'company-profile-step': <CompanyProfileScreen />,
       }}
     >
       <ShellScreen>{children}</ShellScreen>

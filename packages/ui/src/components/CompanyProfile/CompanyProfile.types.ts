@@ -1,4 +1,10 @@
-import type { CompanyProfilePart, StandingMark, TenantSegment } from '@heliogrid/domain';
+import type {
+  CompanyProfileField,
+  CompanyProfilePart,
+  CompanyProfileValues,
+  StandingMark,
+  TenantSegment,
+} from '@heliogrid/domain';
 
 /** One part of the profile as its header says it: its title, where it stands, and how that is marked. */
 export interface CompanyProfilePartWords {
@@ -107,27 +113,8 @@ export interface CompanyProfileWords {
   } | null;
 }
 
-/** The fields a person types text into, each reported by its own name. */
-export type CompanyProfileField =
-  | 'companyName'
-  | 'city'
-  | 'address'
-  | 'postalCode'
-  | 'taxRegistration'
-  | 'bankName'
-  | 'accountName'
-  | 'accountNumber'
-  | 'bankRoutingIdentifier';
-
-/**
- * What the screen holds: each text field as typed, an empty string where nothing is, and the two
- * declarations of the step before, null until declared.
- */
-export type CompanyProfileValues = Readonly<Record<CompanyProfileField, string>> & {
-  readonly segment: TenantSegment | null;
-  /** In kWp. */
-  readonly typicalSystemKwp: number | null;
-};
+/** The screen's fields and what they hold are domain's, where the save's rule reads them. */
+export type { CompanyProfileField, CompanyProfileValues };
 
 /**
  * The company profile's setup life (`SCR-M01-05`; `M01-24`, `M01-31`): five flat parts with where

@@ -1,4 +1,5 @@
 import { DOOR_SEGMENT } from '@heliogrid/domain';
+import { CompanyProfileScreen } from '../../screens/company-profile';
 import { CompanySignupScreen } from '../../screens/company-signup';
 import { SetupLanguageScreen } from '../../screens/setup-language';
 import { SetupWhatYouSellScreen } from '../../screens/setup-what-you-sell';
@@ -6,6 +7,7 @@ import { PlaceholderScreen, ShellScreen } from '../../screens/shell';
 import {
   useHasHome,
   useHasNoTenant,
+  useOwesCompanyProfileStep,
   useOwesLanguageStep,
   useOwesWhatYouSellStep,
   useShowsShell,
@@ -33,6 +35,8 @@ export const appScreens = {
   SetupLanguage: { screen: SetupLanguageScreen, if: useOwesLanguageStep },
   /** Then the step that asks what the company sells (`SCR-M01-04`, `M01-23`). */
   SetupWhatYouSell: { screen: SetupWhatYouSellScreen, if: useOwesWhatYouSellStep },
+  /** Then the company profile, skippable: its act is live with nothing filled in (`SCR-M01-05`, `M01-24`). */
+  SetupCompanyProfile: { screen: CompanyProfileScreen, if: useOwesCompanyProfileStep },
   Leads: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.leads },
   Proposals: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.proposals },
   Projects: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.projects },

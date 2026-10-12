@@ -18,6 +18,11 @@ export const queryKeys = {
   /** A company's settings as stored; a write's answer replaces what is held. */
   settings: {
     businessProfile: (tenantId: string) => ['settings', tenantId, 'business-profile'] as const,
+    taxRegistrations: (tenantId: string) => ['settings', tenantId, 'tax-registrations'] as const,
+  },
+  /** A market's published pack: reference data with no company's fact in it, so keyed by market alone. */
+  market: {
+    pack: (marketCode: string) => ['market', marketCode, 'pack'] as const,
   },
   /**
    * The reader's notifications in one company. The list and the bell's count share the prefix, so

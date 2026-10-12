@@ -11,6 +11,7 @@ export type SetupRead =
 const STEPS_WITH_A_SCREEN = [
   'language',
   'what_you_sell',
+  'business_profile',
 ] as const satisfies readonly OnboardingStep[];
 export type SetupScreenStep = (typeof STEPS_WITH_A_SCREEN)[number];
 

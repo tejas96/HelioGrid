@@ -4463,7 +4463,7 @@ Eleven parts since part c's RFC split c in three, part g's added i and part d's 
 | h | the shared component, second half: the tax and what-you-sell field sets, the arrival from a failed save (`m-failed-save`), the Hindi and Marathi renders (`#### Part h · RFC`) | AC-2 (the format explained, the act live), AC-4 — on the component page | g | shipped |
 | i | the 1536 arrangement and the letterhead preview: `d-default`, `d-tax-invalid`; the letterhead's address and bank lines as one domain rule (`#### Part i · RFC`) | AC-4 — on the component page | h | shipped |
 | d | the api keeps bank details typed half way: one new field on the profile's own read and write, never on what a document reads (*Decisions*, 5; `#### Part d · RFC`) | AC-3 — on the running api | i | shipped |
-| j | the step owed, the landing, the reads (the profile, the registrations, the market pack) and the save, and the screen on the web and both phones; `Continue` of `SCR-M01-04` opens it (D202); `createCompany` passes the step. Its RFC rules the design check's fifth-entry rows 1 and 20, the lede at a size of 0, and whether a typed half makes the step `completed` | AC-2, AC-4 — on the running apps | d | open |
+| j | the step owed, the landing, the reads (the profile, the registrations, the market pack) and the save, and the screen on the web and both phones; `Continue` of `SCR-M01-04` opens it (D202); `createCompany` passes the step (`#### Part j · RFC`). Its RFC rules the design check's fifth-entry rows 1 and 20, the lede at a size of 0, and whether a typed half makes the step `completed` | AC-2, AC-4 — on the running apps | d | shipped |
 | k | `Finish later` of `SCR-M01-04` opens the profile without recording its step (D202): a put-off that is per step; the arrival `m-failed-save` on the running apps | AC-4 (`arrived-from-a-failed-save`) — on the running apps | j | open |
 | e | the logo: its pointer in the api, the upload from the web and both phones, the limits stated and the refusal (`m-logo-invalid`) | AC-4 (`logo-invalid-limits-stated`) | k | open |
 | f | the settings life inside the shell on the web and both phones: the functional density, `Save changes`, the re-seed scope | AC-4 (`declarations-edited-reseed-scope`, `m-settings`, `d-settings`) | e · the settings list drawn (*Decisions*, 7) | open |
@@ -5517,6 +5517,237 @@ Checklist:
 - [x] the live rows: api, web, iOS, Android
 - [x] the gate
 
+#### Part j · RFC
+
+##### Title
+`T-M01-005j` — The company profile step on the web and both phones: `Continue` of *What you sell* opens it, the owner fills what they have, and `Save and continue` writes it
+
+##### Description
+**User impact.** After *What you sell*, a new owner now meets the company profile in place of the home: five parts, the name and the city already there, and one act that is live with nothing filled in. A tax number that does not read right is explained at its field and never blocks. Indirectly, the address, the tax registration and the bank details typed here are the ones every later proposal and invoice reads, so nothing is asked twice.
+
+Who gains: every owner, on the web, iOS and Android. The problem: `CompanyProfile` is built and proven on the component page (parts g, h, i) and the api holds every fact (parts a, d), but no screen mounts it — `setupStepOwed` knows two steps (`packages/domain/src/auth/setup-step.ts:11`), no hook reads the registrations or the market pack, and nothing calls `companyProfileSave`. Sources: the task RFC (*Proposal*, the flow), `M01-24`, `M01-25`, `M01-31`, the brief's rulings 14, 17–19, 22 and 27, the design record, D202.
+
+##### Goals
+- A company that resumes at `business_profile` lands on the step on the web, iOS and Android; `Continue` of `SCR-M01-04` opens it.
+- The screen reads the profile, the registrations and the market's tax rules; a read that fails draws `m-error` with both its ways.
+- `Save and continue` writes the profile, then the registrations when they changed, then the step; the owner lands on the home.
+- A malformed registration is explained live against the api's own pack and never stops the save (`M01-25`).
+- A save that fails keeps every typed value, with `Try again` and `Continue without it` (`m-save-failed`).
+- Every web spec that makes a company still reaches the home.
+
+##### Non-goals
+- `Finish later`'s way in, the per-step put-off and the arrival `m-failed-save` on a running app — part k.
+- The logo — part e. The settings life — part f. The prompt at the send — `T-M06-022`.
+- `m-skipped` on a running app: nothing re-enters the corridor (the brief's ruling 19).
+- No api, contract-shape, schema or migration change.
+- The invite step: the way on is the home until `SCR-M01-07` is built.
+
+##### Readiness and dependencies
+- Parts a, b, c, g and h are merged. Part i is PR #292 and part d is draft PR #293, stacked on it; this branch is cut from part d's head (`431a06a6`) by the walk's rule and the owner's word (`#### Runtime`, part j).
+- Design check: `READY` stands (`#### Design check`, eighth entry). The record was read again whole and is unchanged since the sixth entry.
+- Not a light cycle: the proof matrix names the web and both phones.
+- One shared local database: it is at migration `0024`, part d's, ahead of `main` until #293 merges. This part adds none.
+- No blocker.
+
+##### Proposal
+**What testing the requirements found** (`/task` step 2).
+1. **An emptied name or city would be answered with an untrue line** (design check, fifth entry, row 1). The fields can be emptied (ruling 27); the save sends them as typed (`packages/domain/src/tenancy/company-profile.ts:142`); the contract refuses an empty one (`packages/contracts/src/tenant.ts:24`); the screen would say `Not saved · our end`. The same happens past a length cap (address 500, PIN code 16, account number and bank code 34, name 120, city 80). → *Decisions*, 1.
+2. **A right number in small letters reads `Check the format`** (row 20). The pattern takes capitals only (`packages/domain/src/tax/pack.ts:117`). → *Decisions*, 2.
+3. **The lede can say something untrue.** `lede()` picks `What you sell · not saved on the last step` whenever the declarations part stands `not_declared` (`packages/i18n/src/copy/company-profile-words.ts:263`). An owner who steps the size down to nothing on this screen would read that the step before failed. → *Decisions*, 3.
+4. **A typed bank half does not count as a fact.** `holdsAFact` reads whole bank details alone (`company-profile.ts:138`), so an owner who typed the bank's name and nothing else is recorded `skipped`. → *Decisions*, 4.
+5. **The live check must be the api's check.** Every built screen takes its market facts from `useFormat()`, which binds the code's India pack (`packages/ui/src/utils/format.ts:15`). The api refuses a registration against the stored pack (`settings.service.ts`). A device that checked against the code's copy could say *fine* where the api says *malformed*. A simpler way exists — the code's `IN_TAX` — and saves one read and about 60 lines. → *Decisions*, 5.
+6. **`Continue without it` has no stated effect.** The brief says *a way on without saving*. Recording the step `skipped` needs the api that just failed, and would close the step for good. → *Decisions*, 6.
+7. **A half left beside whole details** (part d's risk, whose proof this part takes). Only an api built before the field can leave one. The draft reads whole details and ignores a half beside them: one unit row.
+8. **Every spec that makes a company would stop on the new step.** `createCompany` in `tests/e2e/support/door.ts:148` ends at *What you sell*'s `Continue`; six specs call it. It gains one helper that passes the profile as it stands.
+
+**Flow.**
+1. `Continue` on `SCR-M01-04` records `what_you_sell`. The progress it answers resumes at `business_profile`; `setupStepOwed` now returns it and `landingFor` answers `company-profile-step`. The web's gate draws the screen in the shell's place; the phone mounts it as the App group's first screen.
+2. `useCompanyProfile` reads the profile (held from the step before), the registrations, the company (for its market code) and that market's pack. Until all four answer the words are `loading`; when one fails they are `unread`. `Try again` asks the failed reads again; `Continue without it` puts setup off.
+3. Domain turns the reads into the draft: every field as stored, the account holder holding the company name when no bank fact is stored (ruling 22), the first part open, a part that owes something open in its place. Each keystroke replaces one field.
+4. `Save and continue`: `companyProfileSave` says what is written. The hook sends `PUT /settings/business-profile`, then `PUT /settings/tax-registrations` when the well-formed list differs from what was read, then `PUT /onboarding/progress/business_profile` with the step's state. The answer replaces the held progress; no later step has a screen, so the landing is `home`.
+5. A write that fails stops the chain and the words are `save-failed`. Every value stays. `Try again` runs the chain again — each write is a whole replace, so a second send is safe. `Continue without it` puts setup off.
+
+**Key decisions.**
+- **The draft's rules are domain's** (`company-profile-draft.ts`), a new file because `company-profile.ts` is 273 lines — one reason: both apps and the hook read one rule (Law 11).
+- **The hook holds the draft; the screens compose** — as `useSetupWhatYouSell` and its two screens do.
+- **The pack's `tax` key is parsed by domain's own schema** (`TAX_PACK_SCHEMA`), reached through one new function; a pack that does not parse is an unread profile.
+- **The company's read shares the shell's key** (`queryKeys.shell.tenant`), so the home that opens next does not read it again.
+- **No address of its own on the web**, as the two steps before.
+
+**Order.** Domain's tests, red · the step and the landing · the draft · the save's changes · the pack read · the words' lede · the data repositories and keys · the hook · the web screen and gate · the phone screen and guard · the test helper and the web flow · review · live rows · the gate.
+
+**Refusals.** None new. A `400` or `422` on a write is a failed save. A `403` on a read is an unread profile; only a person who manages settings is sent here.
+
+**The twin.** `CompanyProfileScreen` on the web and on the phone draw the one `CompanyProfile`. The phone wraps it in `InsetDoor`, as the step before. The 1536 letterhead is the component's web half.
+
+**Deferred rows this part's files meet.**
+- D202 (`T-M01-005 starts`) — `Continue`'s half ships here. The row stays, cut down to `Finish later`, which is part k's.
+- D197 (`touches apps/web/features/auth/`) — stays: the sign-in line is not this screen's. Its text gains the third step.
+- D169 (`touches apps/web/app/(inside)/` · `routes/app.ts`) — stays: the step is drawn in the shell's place, so the shell's no-connection screen never unmounts it.
+- D105, D175 (`touches apps/mobile/src/…`) — stay: Android's push refusal and an iOS warning toast.
+- New row: the way on after the profile is the home until `SCR-M01-07` is built; reopens at `T-M01-007 starts`.
+
+**Decisions** (the owner's; the recommended way first).
+1. **An emptied name or city, and a field past its cap.** An emptied name or city is saved as it was read, and a field takes no more than its cap: the caps become one domain list that the contract and the draft both read — or the owner draws a field's refusal and the save is held on it.
+2. **Small letters in a tax number.** A registration that reads well-formed in capitals is taken in capitals — or it stays as typed and reads `Check the format`.
+3. **The lede when the size is taken to nothing here.** The lede says `not saved on the last step` only when the profile was read without the two answers; a size emptied on this screen marks the part `Not declared` and keeps the line at the act — or the lede follows the part's standing, as built.
+4. **A typed bank half.** It makes the step `completed`, as a street or a PIN code does — or the step stays `skipped` until all four bank facts exist.
+5. **Where the tax rules come from.** The api's pack, read through `GET /market-packs/{marketCode}`, so the field and the api never disagree — or the code's `IN_TAX`, one read and about 60 lines fewer, with the risk in finding 5.
+6. **`Continue without it`.** It puts setup off for this session and records nothing; the next sign-in asks again — or it records the step `skipped`, which never asks again.
+7. **The size.** One pull request of about 34 files and 1,080 authored lines, above the 1,000 target: the step, the hook and both screens cannot be accepted apart, and the flows prove them — or decisions 1 and 2 move to part k, about 30 files and 990 lines.
+
+**Ruled by the owner, 2026-10-12, with the approval: the first way of each of the seven.**
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  continue["Owner: Continue on What You Sell"] --> progress[("api: PUT /onboarding/progress")]
+  progress --> landing["domain: setupStepOwed, landingFor: company-profile-step"]
+  landing --> web["web: SessionGate draws CompanyProfileScreen"]
+  landing --> phone["phone: SetupCompanyProfile screen"]
+  hook["data/react: useCompanyProfile"] --> web
+  hook --> phone
+  profile[("api: business profile, tax registrations")] <--> hook
+  pack[("api: GET /tenants/me, GET /market-packs")] --> hook
+  draft["domain: the draft, companyProfileSave, the tax pack read"] --> hook
+  words["i18n: companyProfileWords"] --> web
+  words --> phone
+  web --> ui["ui: CompanyProfile"]
+  phone --> ui
+  hook --> progress
+```
+
+##### Package changes
+- `domain` — `auth`: `business_profile` joins the steps with a screen; `company-profile-step` joins `SessionLanding`. `tenancy`: new `company-profile-draft.ts` (the draft from the reads, an edit, the part that opens, the field caps); `companyProfileSave` takes what was read for the name and the city, counts a typed half, and reads a registration in capitals. `tax`: `taxPackOf(value)` on the index. Imports nothing new.
+- `contracts` — the profile's and the company's length caps read domain's list. No schema changes shape; the emitted spec is the same.
+- `data` — new `market/repository.ts` (`currentPack(marketCode)`); `SettingsRepository` gains `taxRegistrations` and `saveTaxRegistrations`; two query keys; `useCompanyProfile` on `./react`.
+- `i18n` — `CompanyProfileWordFacts` gains `arrivedUndeclared`; new `companyProfileStepWords` and `CompanyProfileStepFacts` on the index, the one place both screens' words are built from the step; no new message.
+- `web`, `mobile` — one screen each; the gate's and the guard's records.
+- Law 12: the new landing is held by the two `Record`s over `SessionLanding` (`apps/web/features/auth/constants.ts:20`, `apps/mobile/src/navigation/guards.ts:27`) and by `setupSteps`' type — a missing key does not compile. The new step is held by `satisfies readonly OnboardingStep[]`. Query keys have no check: held by review, said here. No brand, enum, token, route, table or error code is new.
+
+##### Data and schema changes
+None — no stored shape changes. This part is the first client to write `bankDetailsTyped` (part d's column).
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/domain/src/auth/setup-step.ts` | `business_profile` has a screen | the steps' list |
+| modify | `packages/domain/src/auth/landing.ts` | `company-profile-step` | the landings |
+| modify | `packages/domain/tests/auth/setup-step.test.ts` · `landing.test.ts` | rows j-d1, j-d2 | their tests |
+| add | `packages/domain/src/tenancy/company-profile-draft.ts` | the draft from the reads, an edit, the open part, the caps | beside the save's rule; that file is 273 lines |
+| modify | `packages/domain/src/tenancy/company-profile.ts` | a half counts; capitals. Built against planned: the name and city as read are `companyProfileSaveOf`'s in the draft's file, so `companyProfileSave` keeps its two arguments and its thirteen test calls | the save's one rule |
+| modify | `packages/domain/src/tenancy/index.ts` | exports | the folder's entry |
+| add | `packages/domain/tests/tenancy/company-profile-draft.test.ts` | rows j-d3, j-d4 | the rule's test |
+| modify | `packages/domain/tests/tenancy/company-profile.test.ts` | rows j-d5, j-d6 | the rule's test |
+| modify | `packages/domain/src/tax/pack-schema.ts` · `index.ts` | `taxPackOf` | the schema's owner |
+| modify | `packages/domain/tests/money/device-entry.test.ts` | built, not planned: `taxPackOf` joins the reviewed list of what a device bundles — it returns a pack as written and computes nothing | the list's own check refused the export until it was named (Law 12) |
+| add | `packages/domain/tests/tax/pack-read.test.ts` | row j-d7 | the function's test |
+| modify | `packages/contracts/src/business-profile.ts` · `tenant.ts` | the caps read domain's list | zero duplication (`CLAUDE.md` §8) |
+| modify | `packages/data/src/settings/repository.ts` | the registrations' read and write | the wire call's owner |
+| add | `packages/data/src/market/repository.ts` | the pack's read | one folder per contract router, as `settings/`, `onboarding/` |
+| modify | `packages/data/src/composition.ts` | the market repository | the one composition |
+| modify | `packages/data/src/index.ts` | built, not planned: exports the `MarketRepository` type, as every repository's is | the entry |
+| modify | `packages/data/src/cache/keys.ts` | the registrations' and the pack's keys | every key lives here |
+| add | `packages/data/src/react/use-company-profile.ts` | the reads, the draft, the save | every hook lives in `src/react/` |
+| modify | `packages/data/src/react/index.ts` | export | the entry |
+| modify | `packages/i18n/src/copy/company-profile-words.ts` | the lede reads `arrivedUndeclared` | the words' function |
+| modify | `packages/i18n/tests/company-profile-states.test.ts` · `company-profile-facts.ts` | row j-i1 | its test |
+| add | `packages/i18n/src/copy/company-profile-step-words.ts` · modify `packages/i18n/src/index.ts` · add `packages/i18n/tests/company-profile-step-words.test.ts` | built, not planned (review): the step's words built once — the two screens wrote the same mapping | words chosen by state are a copy function (`.claude/rules/screen-parts.md`) |
+| add | `packages/domain/tests/tenancy/company-profile-draft-save.test.ts` · `company-profile-stored.ts` | built, not planned (review): the draft's test passed 300 lines — the save's rows and the shared stored fixtures each get a file | split by responsibility (`CLAUDE.md` §8); the fixture file follows `packages/i18n/tests/company-profile-facts.ts` |
+| modify | `packages/data/src/react/use-landing.ts` · `docs/ux/briefs/SCR-M01-04-setup-what-you-sell.md` | built, not planned (review): a comment and the step before's ruling 1 named the old way on (Law 8) | their owners |
+| modify | `tests/e2e/components/CompanyProfile.story.tsx` | passes the new fact | the story that builds the words |
+| modify | `tests/e2e/components/CompanyProfile.what-you-sell.spec.tsx` | built, not planned: the spec builds the words itself and passes the new fact | the second caller of `companyProfileWords` in the suite |
+| modify | `apps/web/features/auth/SessionGate.tsx` | built, not planned: its comment lists the steps the gate draws (Law 8) | the gate |
+| modify | `tests/invariants/src/e2e-flow-per-screen.ts` | built, not planned, ruled by the owner 2026-10-12: `company-profile` joins the phone screens held without a flow, for the reason the two steps before are held | the check's own list (Law 12) |
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfile.types.ts` | built, not planned, ruled by the owner 2026-10-12: the screen's two value types are domain's, re-exported | zero duplication (`CLAUDE.md` §8) |
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfileSets.tsx` · `CompanyProfileSets.native.tsx` · `tests/e2e/components/CompanyProfile.tax.spec.tsx` | built, not planned (QA, row n2): a field whose line gave way to its error was drawn in another wrapper, so it remounted and lost focus after the first key — on Android one character of fourteen was kept. Each field now keeps one wrapper; the spec types key by key and was seen red on the old file | the component's two halves and its spec |
+| modify | `tests/e2e/web/company-signup.spec.ts` | built, not planned: the Marathi flow passes the steps by hand, so it passes the new one too | the one spec that does not use `createCompany` |
+| add | `apps/web/features/onboarding/CompanyProfileScreen.tsx` | composes | the setup steps' feature |
+| modify | `apps/web/features/onboarding/index.ts` · `apps/web/app/(inside)/layout.tsx` · `apps/web/features/auth/constants.ts` | the gate's step; the landing's route | the group's layout; the routes' record |
+| add | `apps/mobile/src/screens/company-profile/CompanyProfileScreen.tsx` · `index.ts` | composes | one folder per screen |
+| modify | `apps/mobile/src/navigation/guards.ts` · `routes/app.ts` | the entry and its guard | the navigator's records |
+| modify | `tests/e2e/support/door.ts` | `passCompanyProfileStep`; `createCompany` passes it | the one way a spec gets a company |
+| add | `tests/e2e/web/company-profile.spec.ts` | rows j-c1 to j-c5 | named for the screen, as `setup-what-you-sell.spec.ts` |
+| modify | `tests/e2e/web/setup-what-you-sell.spec.ts` | `Continue` now opens the profile | the step before's spec |
+| modify | `docs/ux/briefs/SCR-M01-05-business-profile.md` | the rulings of *Decisions* 1–4 and 6 | the brief owns the screen's facts |
+| modify | `docs/tasks/deferred.md` | D202 cut down, D197's text, the new row | the register |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, `#### Parts`, the design check's eighth entry, the ledger, part j `shipped` | the task |
+
+##### API and contract changes
+None — no wire boundary changes. First client calls of landed routes: `GET` and `PUT /settings/tax-registrations`, `GET /market-packs/{marketCode}`, `PUT /onboarding/progress/business_profile`; all four are guarded as landed. `oasdiff breaking` against `main`'s spec runs after the contract edit and must show no change at all.
+
+##### Risks and rollout
+- **An older phone build.** It does not know the step has a screen, so a company that resumes at `business_profile` lands on the home, as today.
+- **A new client against an api older than part d.** The half is dropped, silently (part d's *Mid-roll*). No such api serves once #293 is deployed before a new client.
+- **A partly written save.** The profile lands and the registrations do not: the screen says `Not saved`, and `Try again` sends both again. Nothing is lost and nothing is doubled.
+- **The test helper.** `createCompany` gains one step, so every web flow that makes a company takes one more screen; CI's `e2e-web` lane proves they still pass.
+- **The estimate.** The three parts before ran 30–50% over on tests. The size here counts one review round in.
+
+##### Acceptance criteria and proof
+The task's AC-2 and AC-4 are this part's. AC-1 is `not_applicable` in the task; AC-3 was parts a and d.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| j-d1 the step owed | main-dev | required | unit | a manager whose company resumes at `business_profile` owes it; a later step owes nothing | `packages/domain/tests/auth/setup-step.test.ts` |
+| j-d2 the landing | main-dev | required | unit | that step lands on `company-profile-step`, and it is a setup landing | `packages/domain/tests/auth/landing.test.ts` |
+| j-d3 the draft | main-dev | required | unit | the reads fill every field; no bank fact → the holder is the company name; a stored half fills its fields; whole details beside a half → the whole alone (part d's risk); the first part opens, or the part that owes | `packages/domain/tests/tenancy/company-profile-draft.test.ts` |
+| j-d4 an edit | main-dev | required | unit | an edit replaces one field and can empty it; a value past its cap is cut at the cap | the same file |
+| AC-2 · j-d5 the save | main-dev | required | unit | an emptied name or city is sent as read; small letters that read well in capitals are sent in capitals; a malformed registration is left out and the step still has a state. Planted red: the emptied name sent empty | `packages/domain/tests/tenancy/company-profile-draft.test.ts` (the name and the city) · `company-profile.test.ts` (capitals, the malformed one) |
+| j-d6 the step's state | main-dev | required | unit | nothing typed → `skipped`; a typed bank half alone → `completed` | the same file |
+| j-d7 the pack read | main-dev | required | unit | the India pack's `tax` key reads back equal; a value that is no tax pack reads `null` | `packages/domain/tests/tax/pack-read.test.ts` |
+| j-i1 the lede | main-dev | required | unit | read without the answers → `not saved on the last step`; the size emptied here → the default lede and the act's line, in en, hi, mr | `packages/i18n/tests/company-profile-states.test.ts` |
+| AC-4 · j-m1 Hindi and Marathi | main-dev | required | component page | the shared component at 375 and 1536 in both: no sideways scroll, no clipped box, the act on screen — the component is unchanged since part i | `tests/e2e/components/CompanyProfile.what-you-sell.spec.tsx` · `CompanyProfile.wide.spec.tsx` |
+| AC-4 · j-c1 | ci | required | CI `e2e-web` | a new owner passes *What you sell* → the profile's heading, five parts, the name and the city read back, no shell; `Save and continue` with nothing typed → the profile's write and the step's, in order — the registrations did not change, so they are not written — the step `skipped`, the home; a reload stays on the home | `tests/e2e/web/company-profile.spec.ts` |
+| AC-2 · j-c2 | ci | required | CI `e2e-web` | a malformed number → the format line as the field's error, `Check the format`, the act live; the save sends no registrations write and reaches the home | the same file |
+| j-c3 | ci | required | CI `e2e-web` | an address, a PIN code, a well-formed number and one bank fact → the profile's body holds them and the half; the registrations' body holds the number; the step is `completed` | the same file |
+| AC-4 · j-c4 | ci | required | CI `e2e-web` | the registrations' read aborted → `m-error`'s title and both ways; `Try again` with the read restored → the list | the same file |
+| AC-4 · j-c5 | ci | required | CI `e2e-web` | the profile's write aborted → the alert, every typed value kept, `Try again` then saves; `Continue without it` → the home with nothing written | the same file |
+| j-c6 | ci | required | CI `e2e-web` | the six specs that call `createCompany` still pass | the lane's run |
+| AC-4 · w1 | qa-web | required | web 375 and 1536 | sign up, pass the language step, answer *What you sell*, `Continue` → the profile opens; type a street and a PIN code; `Save and continue` → the home; the three `PUT`s 200 in order | the destination, the log's slice |
+| AC-2 · w2 | qa-web | required | web 375 and 1536 | type `27ABCDE1234F1Z` → the error line and `Check the format`; correct it in small letters → `Added` on shutting the part; save → the registrations' `PUT` holds capitals | the frame's text, the log |
+| w3 | qa-web | required | web 375, `api stopped` | fields typed, the api stopped, `Save and continue` → the alert and both acts, every value kept; the api started, `Try again` → the home | the frame, the log |
+| AC-4 · side-by-side web | qa-web | required | web 375 and 1536 | `m-default`, `m-address-open`, `m-tax-invalid`, `m-bank-open`, `m-declarations-open`, `m-save-failed` at 375 against their phone frames; `d-default`, `d-tax-invalid` at 1536; the rest at 1536 against the phone frame and the record's 1536 rule | one picture pair per frame |
+| AC-4 · i1 | qa-ios | required | iOS | the w1 journey on the iPhone → the home | the destination, the log |
+| AC-2 · i2 | qa-ios | required | iOS | the w2 journey. (Ruled by the owner, 2026-10-12, on the commit card: *the keyboard never covers the field typed in or the act* is D210's on both phones — the simulator showed no software keyboard, so it was not measured here) | the tree, a screenshot |
+| i3 | qa-ios | required | iOS, `api stopped` | the w3 journey | the frame, the log |
+| AC-4 · side-by-side iOS | qa-ios | required | iOS | `m-default` (en), `m-address-open` (hi), `m-tax-invalid` (mr), `m-bank-open` (en), `m-declarations-open` (hi), `m-save-failed` (mr) against the board; layout alone in hi and mr | one picture pair per frame |
+| AC-4 · n1 · n2 · n3 | qa-android | required | Android (n3 `api stopped`) | the w1, w2 and w3 journeys on the emulator; no frame compared | the destinations, the log, logcat |
+| `m-loading`, `m-error` side by side | — | not_applicable | — | a running app cannot hold either: a read cannot be stopped without stopping the sign-in before it | part g's component spec; j-c4 for `m-error` on the web |
+| `m-skipped`, `m-failed-save`, `m-normal`, `m-reseed`, the logo, settings and prompt frames | — | not_applicable | — | no path of this part reaches them | parts k, e, f; `T-M06-022` |
+| api rows | — | not_applicable | — | no route, contract shape or stored shape changes | — |
+| j-o1 | main-dev | required | repo | `oasdiff breaking` against `main`'s spec → exit 0; `check:openapi` writes nothing | the command's output |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part: **about 34 files** and three docs (*Decisions*, 7).
+- **Code: about 600 authored lines** — domain 190 (the draft 120, the save 30, the step, landing and pack read 40), contracts 15, data 240 (the hook 160, the repositories and keys 80), i18n 15, the web 65, the phone 75.
+- **Tests: about 480 authored lines** — domain 200, i18n 25, the test helper 30, the web flow 210, the step before's spec 15.
+- About 1,080 in all. No smaller part can be accepted alone: a step with no screen sends nobody anywhere, a screen on one platform breaks the twin, and the flows are the proof.
+- Order: as *Proposal*.
+
+**Built, before review (2026-10-12) — over the estimate, asked again.** 40 files and three docs against 34 planned: six small ones joined (the file table). Code: 746 authored lines against 600 — domain 333 against 190 (the draft's file is 254: the unread values, the screen's view of the draft and the caps' list were not counted, and its constraint comments were), data 252 against 240, contracts 37 against 15, the web 54, the phone 59, i18n 11. Tests: 615 against 480 — domain 320 against 200 (the draft's test is 261 lines), the web flow 220, the helper 36, the two older specs 17, i18n 20. About 1,360 in all against 1,080: 26% over. No behaviour, route, contract shape, table or package beyond the RFC. The estimate was wrong, not the scope.
+
+**One finding of the build, for the owner.** Domain now owns the screen's values and field names (`CompanyProfileValues`, `CompanyProfileField` in `company-profile-draft.ts`), because the hook and the save's rule read them. `packages/ui` still writes the same two types itself (`CompanyProfile.types.ts:111`, `:126`): two copies of one shape, which today agree and are held only by the compiler where the screens pass one to the other. The fix is three lines in that one file — the two types become domain's, re-exported — and `packages/ui` is a package this RFC does not name.
+
+**After review (2026-10-12).** Two review rounds: four findings and six notes, then one finding and three notes, all applied or carried by D209. 51 files and four docs. The review fixes added about 250 lines — the shared words builder and its test, the registration and holder rules with their rows, one more web flow — and the QA fix about 60 (the field's one wrapper in both halves and its key-by-key test), so the part is about 1,670 authored lines against the 1,360 approved: 23% over that ruling. Nothing was built after that count but the gate's run; the owner rules the size on the commit card. A ruling made in the build is the brief's 41 (a malformed number takes nothing away; a kept one completes the step): the owner sees it on the commit card.
+
+**Ruled by the owner, 2026-10-12: approved at about 1,360 lines in one pull request; `packages/ui`'s two types become domain's (`packages/ui/src/components/CompanyProfile/CompanyProfile.types.ts`, built and now planned).**
+
+Checklist:
+- [x] domain: the step, the landing, their tests, red first
+- [x] domain: the draft and its tests, red first
+- [x] domain: the save's changes, the pack read, their tests
+- [x] contracts: the caps; `oasdiff breaking` exit 0
+- [x] i18n: the lede's fact and its test; the story
+- [x] data: the repositories, the keys, the hook
+- [x] the web screen and the gate
+- [x] the phone screen and the guard
+- [x] the test helper; the web flow; the step before's spec
+- [x] the brief and the deferred rows
+- [x] review
+- [x] the live rows: web, iOS, Android, with one api-down window
+- [x] the gate
+
 #### Design check
 `READY` — 2026-10-12, on the record `SCR-M01-05 - decisions & self-audit.md` (29,484 bytes) read beside the board `SCR-M01-05 Business Profile - Mobile.dc.html` (142,409 bytes, under the read cap). Three checks on one helper. The first found the record behind the board (four frame counts, no Hindi frame, no 1536 alignment numbers, no word plan, a standing FAIL); the owner's redraw closed every finding. Main then found three product facts wrong against the code — three bank fields where `M06-17` and the contract hold four, a city line saying the city sets the market, a count of typed characters the pack cannot give — and the owner corrected them and redrew the 1536 arrangement in the same pass; the third check found nothing.
 
@@ -5567,6 +5798,8 @@ Noted by the helper and not blocking: three stale board notes and three stale re
 **Board pictures, part i.** Main pictured the two frames in the pane at its own size, the chat panel shut and the board at 50%, into the scratchpad as `board/<frame>.png`: `d-default` and `d-tax-invalid`, 603 × 394 each, whole. `qa-web` was not asked: under a set viewport the board's canvas does not scroll (third entry). The pictures are small: a comparison reads them beside the record's measured positions (list 4) and the board's source.
 
 **Seventh entry — part d (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part d began: twenty-one frames, seventeen at 375 and four at 1536, and the three corrections of the sixth entry stand in it (`needs 2 MB or less`; `m-failed-save` at 3 lines and 21 words). Part d draws no frame, so the board was not fetched and no picture was taken; part j, the first part that draws on a running app, reads the board again. The fifth entry's rows 1 and 20, named for part d, are part j's: they rule what the screen's save sends.
+
+**Eighth entry — part j (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part j began: twenty-one frames, seventeen at 375 and four at 1536; `needs 2 MB or less` and `m-failed-save` at 3 lines and 21 words stand in it, so nothing changed since the sixth entry and no helper ran. Part j takes the fifth entry's rows 1 and 20; its RFC rules both (*Decisions*, 1 and 2). The board's source is fetched and the frames this part compares are pictured after the RFC is approved and before the first edit: `m-default`, `m-address-open`, `m-tax-invalid`, `m-bank-open`, `m-declarations-open`, `m-save-failed`, `d-default`, `d-tax-invalid`.
 
 #### Runtime
 Branch `feat/T-M01-005`, cut from `feat/T-M01-004c` (`99ed0bcc`, draft PR #283 open, its `quality`, `e2e-web` and `android` checks running) on a clean tree, by the owner's word, 2026-10-12: the walk reads `origin/main`, where `T-M01-004`'s part c is not yet merged.
@@ -6005,6 +6238,76 @@ End state after the reruns: api, web and Metro stopped; the simulator and the em
 | watchers | no `tsx … watch` process | none |
 
 **Left on `heliogrid_test` (part d):** four signup companies of the surface rows (`…10561`, `…10564`, `…10562`, `…10563`), made through the app; each phone is signed in to its own. The local database is at migration `0024`, ahead of `main` until this part merges.
+
+**Part j · Runtime (2026-10-12).** Branch `feat/T-M01-005j`, cut from `feat/T-M01-005d` (`431a06a6`, draft PR #293 open, stacked on #292) on a clean tree, by the walk's rule and the owner's word: part d is not yet merged into `main`.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | — |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 24,428,878 · `web.log` 667,084 · `metro.log` 1,956,847 bytes | — |
+| watchers | no `tsx … watch` process | — |
+
+**Part j · QA (2026-10-12)** — one stack on `heliogrid_test` (migrations already at `0024`, the pack stored): the api, the web and Metro from source (`api`, `web`, `mobile-metro` launch configurations, `started_by_task`), the iPhone 17 Pro simulator and the `Pixel_8_Emulator` on the apps already installed — no native file changed, so nothing was rebuilt. Main cold-started both apps and saw Metro serve a bundle before the helpers ran, and again after the fix below.
+
+- **Order.** The reviewer alone: four findings and six notes in round one (a renamed company left its old name as a bank fact; the lede's fact followed the cache mid-save; the step before's brief named the old way on; edits read a render's closure), all applied; one finding and three notes in round two (five files outside the table, two registration edges, the holder's rule in two places — the last carried by D209); clean in round three. Then `qa-web`, `qa-ios` and `qa-android` together, with one api-down window. QA found one bug; Main fixed it, the reviewer read the fix clean (round four), and each helper reran its touched row.
+- **The bug QA found (row n2).** The tax field lost focus after the first key: Android kept one character of fourteen, and the iPhone and the web dropped typed tails. The shared component drew a field with a line in a wrapper and one without bare, so the field moved in the tree when its line gave way to its error. Each field now keeps one wrapper. Planted red: `tests/e2e/components/CompanyProfile.tax.spec.tsx`, *a number typed key by key keeps the field's focus…* failed at `toBeFocused` on the old web file and passes on the fix; restored from a scratchpad copy.
+- **Planted reds seen (part j).** The emptied name: `orAsRead` returning what was typed → *a name emptied is sent as it was read*, *a name left as spaces…*, *an emptied city…* and *the holder that still holds the read name…* failed by name. The focus test above. Each restored from a scratchpad copy.
+- **Main's own proofs.** `pnpm check` exit 0 on the final code (51 test files, 1,226 tests); the 42 `CompanyProfile` component tests pass; `check:openapi` writes nothing and `oasdiff breaking` against `main`'s spec exits 0; the invariants are green; the catalogs did not change.
+- **The mutation guard.** The tree's hash was the same before and after the rerun round (`fed43f97…`). It was taken before the first round (`8dc18d3d…`) and not compared after it: Main changed files for the fix first. Said, not hidden.
+- **Not measured.** The iPhone's software keyboard never showed (a hardware keyboard is attached to the simulator), so *the keyboard never covers the field* is unverified on iOS; Android's is D210. The iPhone could not clear a field, so the all-small-letters entry was typed on the web and Android only; the four stored numbers read `27AAACH7409R1ZV` (Main's one read of `tax_registration` on `heliogrid_test`).
+- **Board frames.** `qa-web` and `qa-ios` reported the errored header's pink band as a difference: the built `Accordion` draws no tint by ruling (`docs/tasks/UI.md`, the `Accordion` row), and the first part's logo area is part e's (the brief's ruling 26). `qa-ios` also noted that a focused field shows the focus ring, not the error's red border, until it loses focus — the shared field's own behaviour, unchanged by this part. Main set each board frame beside the web's and the iPhone's picture, one image per frame, in the scratchpad (`qa/pairs/`).
+
+**As proven (part j).**
+
+| row | result | evidence |
+|---|---|---|
+| j-d1 – j-d7 · j-i1 | passed | Main's tests and reds above; `pnpm check` exit 0 |
+| AC-4 · j-m1 | passed | the 42 component tests, Hindi and Marathi among them |
+| w0 (added) | passed | an owner made before the step met it at 1536 and passed it with nothing typed: the profile's and the step's `PUT` 200, no registrations write |
+| AC-4 · w1 | passed | signups `…10574` (1536) and `…10571` (375): the profile opened in the home's place, no shell, no sideways overflow, the act 175 × 48 and 335 × 48; at 1536 the save's three `PUT`s 200 in order and the home after a reload |
+| AC-2 · w2 | passed; rerun passed | the error line and `Check the format` at both widths, the act live, the letterhead printing the number in the danger ink; small letters read `Added`. Rerun on the fix (`…10561`): 14 then 15 keys with one click, focus kept, the three `PUT`s 200 |
+| w3 | passed | api stopped: the alert, `Try again` and `Continue without it` 335 × 48 each, the typed parts still `Added`; api started: the home, the three `PUT`s 200 |
+| side-by-side web | passed with ruled differences | eight pictures, `qa/web/` |
+| i0 (added) · AC-4 · i1 | passed | the existing owner passed the step with nothing typed; signup `…10572` in Hindi: the address and what-you-sell parts, the save's `PUT`s 200, the home |
+| AC-2 · i2 | passed on the rerun | Marathi (`…10575`): the error line, the owing header, the act live — typed tails dropped. Rerun on the fix (`…10472`, English): 14 characters in one call, all kept; `Added`; the three `PUT`s 200 |
+| i3 | passed | api stopped: the alert and both acts 362 × 48, every value kept; api started: the home, the three `PUT`s 200 |
+| side-by-side iOS | passed with ruled differences | six pictures, `qa/ios/` |
+| n0 (added) · n1 | passed | the existing owner passed the step; signup `…10573`: the profile opened, every part read, nothing clipped |
+| AC-2 · n2 | failed, then passed on the rerun | one character of fourteen kept — the bug above. Rerun on the fix (`…10473`): 14 and 15 characters kept, `Added`, the three `PUT`s 200. The lines under the keyboard on first focus still show: D210 |
+| n3 | passed | api stopped: the alert and both acts 371 × 48 dp, every value kept, no fatal or ANR; api started: the home, the three `PUT`s 200 |
+| j-c1 – j-c6 | pending ci | the web flows run in CI's `e2e-web` lane alone |
+| j-o1 | passed | `oasdiff breaking` exit 0; the spec unchanged |
+
+**Mistakes found (part j)**, each with what now holds it:
+- The size estimate was passed twice (1,080 planned, 1,360 approved, about 1,670 built with the review and QA fixes). The draft's rules, the test rows and the review fixes were under-counted. No rule holds an estimate; the owner approved each size.
+- Two shapes of one fact: domain and `packages/ui` both wrote the screen's fields. Now `packages/ui` re-exports domain's.
+- A renamed company left its old name as a bank fact (reviewer). Now `bankAsTyped` and two test rows.
+- The lede's fact was read from a cache the save rewrites (reviewer). Now fixed at the first read.
+- Edits were built from a render's values (reviewer). Now the updater form.
+- The step before's brief still named the old way on (reviewer, Law 8). Rewritten.
+- A field remounted when its error appeared (QA, Android). Now one wrapper per field and a key-by-key component test.
+- Main sent three helpers to sign in with numbers that had no company. They stopped and asked; each row then ran as a signup row.
+
+**The gate (part j).** One run of `pnpm check:all` by the Evaluator, passed: exit 0, 7,358 lines read to the end, nine of nine tasks, the api tests on `heliogrid_test`, *invariants green*, nothing regenerated. The Evaluator's verdict is `FAIL` on one row alone, `AC-2 · i2`: its clause *the keyboard never covers the field typed in or the act* was not measured on iOS, because the simulator showed no software keyboard. Every other row passed or is `pending ci`. **Ruled by the owner, 2026-10-12, on the commit card: the clause is D210's; the part ships at about 1,670 lines; the brief's ruling 41 stands.**
+
+**Measurements (part j)** — helper runs: `reviewer` 1 (three continuations), `qa-web` 1 (five continuations), `qa-ios` 1 (four), `qa-android` 1 (four), `evaluator` 1; one full gate, passed. No `design-check` and no `Explore` ran: the record was unchanged and Main read the code itself. Helper tokens, as reported at each helper's last return: `reviewer` 197 k; `qa-web` 139 k; `qa-ios` 148 k; `qa-android` 110 k; `evaluator` 30 k. Main: about 150 tool-call turns and 557 k context tokens at the commit card (the session's usage reading), the walk, one design fetch, the RFC, three approval stops and the build among them. Size: planned 34 files and 1,080 lines; approved 1,360; built 51 files and about 1,670 lines (*Delivery size*).
+
+| resource | initial | final |
+|---|---|---|
+| api `8084` · web `3002` · Metro `8081` | none listening | stopped (`started_by_task`, the `api`, `web` and `mobile-metro` launch configurations; the api started twice — once before and once after the api-down window) |
+| component tests `3100` | none listening | none listening (started and stopped by each `test:ct` run) |
+| simulator · emulator | none booted | shut down (`started_by_task`): iPhone 17 Pro `40ED0117-…`, `emulator-5554`; both apps are the builds that were installed |
+| browser tabs | pane closed | closed: the board's tab (opened once, the pictures came from the earlier sessions' scratchpads), the api's and the web's tabs |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| runtime logs | `api.log` 24,428,878 · `web.log` 667,084 · `metro.log` 1,956,847 bytes | 24,884,867 · 685,290 · 2,039,529 bytes, kept |
+| watchers | no `tsx … watch` process | none |
+
+Left on `heliogrid_test` by this part: eight companies made through the app — `…10571`, `…10574`, `…10561` (web), `…10572`, `…10575`, `…10472` (iPhone), `…10573`, `…10473` (Android); the three *QA Part D* companies of the surfaces now have their step recorded.
 
 ### T-M01-006 · Setup — You're Ready
 **Type:** screen · **Tier:** P0

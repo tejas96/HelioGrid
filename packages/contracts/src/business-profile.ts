@@ -1,7 +1,10 @@
-import { columnHoldsTypicalSystemSize, isBankDetailsTyped } from '@heliogrid/domain';
+import {
+  COMPANY_PROFILE_FIELD_CAP,
+  columnHoldsTypicalSystemSize,
+  isBankDetailsTyped,
+} from '@heliogrid/domain';
 import { z } from 'zod';
 import { tenantSegmentSchema } from './common';
-import { labelSchema } from './document-content';
 import { citySchema, companyNameSchema } from './tenant';
 
 /**
@@ -10,16 +13,21 @@ import { citySchema, companyNameSchema } from './tenant';
  * `TaxRegistration`.
  */
 
+/** A fact the company profile's screen types: its length is domain's, where the field stops at it. */
+function boundedText(field: keyof typeof COMPANY_PROFILE_FIELD_CAP) {
+  return z.string().trim().min(1).max(COMPANY_PROFILE_FIELD_CAP[field]);
+}
+
 /**
  * `M06-17`'s four bank facts under market-neutral names; the routing identifier is what the pack
  * labels IFSC in IN (`formats.bankRoutingLabel`).
  */
 export const bankDetailsSchema = z.object({
-  bankName: labelSchema,
-  accountName: labelSchema,
+  bankName: boundedText('bankName'),
+  accountName: boundedText('accountName'),
   /** ISO 13616 bounds an account identifier at 34 characters; a national number is shorter. */
-  accountNumber: z.string().trim().min(1).max(34),
-  bankRoutingIdentifier: z.string().trim().min(1).max(34),
+  accountNumber: boundedText('accountNumber'),
+  bankRoutingIdentifier: boundedText('bankRoutingIdentifier'),
 });
 export type BankDetails = z.infer<typeof bankDetailsSchema>;
 
@@ -38,7 +46,7 @@ export const bankDetailsTypedSchema = z
 export type BankDetailsTyped = z.infer<typeof bankDetailsTypedSchema>;
 
 /** A postal code as the owner writes it. No market declares its format yet, so only its length is held. */
-const postalCodeSchema = z.string().trim().min(1).max(16);
+const postalCodeSchema = boundedText('postalCode');
 
 /**
  * The business profile (`M01-31`): the five parts as one write, the two `M01-23` declarations
@@ -60,7 +68,7 @@ export const businessProfileSchema = z.object({
     .nonnegative()
     .refine(columnHoldsTypicalSystemSize, 'not a figure the column holds')
     .nullable(),
-  address: z.string().trim().min(1).max(500).nullable(),
+  address: boundedText('address').nullable(),
   postalCode: postalCodeSchema.nullable(),
   bankDetails: bankDetailsSchema.nullable(),
 });
@@ -96,7 +104,7 @@ export type BusinessProfileWrite = z.infer<typeof businessProfileWriteSchema>;
 /** One registration of a type the tenant's market declares (`M01-24`, `M01-25`); the type is `pack.tax`'s word. */
 export const taxRegistrationSchema = z.object({
   registrationType: z.string().trim().min(1).max(40),
-  value: z.string().trim().min(1).max(40),
+  value: boundedText('taxRegistration'),
 });
 export type TaxRegistration = z.infer<typeof taxRegistrationSchema>;
 
