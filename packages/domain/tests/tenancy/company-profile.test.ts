@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { IN_TAX, type TaxPack } from '../../src/tax/pack';
 import {
   COMPANY_PROFILE_PARTS,
-  type CompanyProfileFacts,
   companyProfileSave,
   companyProfileStanding,
   isBankDetailsTyped,
   standingMark,
 } from '../../src/tenancy/company-profile';
+import { factsAtSignup } from './company-profile-stored';
 
 const WELL_FORMED = '27AAACH7409R1ZV';
 const ONE_SHORT = '27AAACH7409R1Z';
@@ -27,17 +27,7 @@ const TWO_TYPES: TaxPack = {
 };
 const second = (value: string) => ({ registrationType: 'XX_SECOND', value });
 
-/** A company as signup leaves it: the name, the city and the two declarations of the step before. */
-const atSignup: CompanyProfileFacts = {
-  companyName: 'Suryodaya Solar Solutions Pvt Ltd',
-  city: 'Pune',
-  address: '',
-  postalCode: '',
-  registrations: [],
-  bank: { bankName: '', accountName: '', accountNumber: '', bankRoutingIdentifier: '' },
-  segment: 'residential',
-  typicalSystemKwp: 5,
-};
+const atSignup = factsAtSignup;
 
 const fourBankFacts = {
   bankName: 'HDFC Bank',

@@ -4466,7 +4466,7 @@ Eleven parts since part c's RFC split c in three, part g's added i and part d's 
 | j | the step owed, the landing, the reads (the profile, the registrations, the market pack) and the save, and the screen on the web and both phones; `Continue` of `SCR-M01-04` opens it (D202); `createCompany` passes the step (`#### Part j · RFC`). Its RFC rules the design check's fifth-entry rows 1 and 20, the lede at a size of 0, and whether a typed half makes the step `completed` | AC-2, AC-4 — on the running apps | d | shipped |
 | k | `Finish later` of `SCR-M01-04` opens the profile without recording its step (D202): a put-off that is per step; the arrival `m-failed-save` on the running apps (`#### Part k · RFC`) | AC-4 (`arrived-from-a-failed-save`) — on the running apps | j |shipped |
 | e | the api holds the logo's pointer: one column and one field on the profile, kept by a save that never names it, refused unless it is this company's own stored logo, carried by what every document reads (`#### Part e · RFC`) | AC-3 — on the running api | k | shipped |
-| l | the logo's rules and words: the stated limits, the check that names every limit missed, the first part's `Added`, the step's rule; every word in three languages | AC-4 (`logo-invalid-limits-stated`) — by unit test | e | open |
+| l | the logo's rules and words: the stated limits, the check that names every limit missed, the first part's `Added`, the step's rule; every word in three languages | AC-4 (`logo-invalid-limits-stated`) — by unit test (`#### Part l · RFC`) | e | shipped |
 | m | the capture area in the shared component on both halves: `m-logo-invalid`, the held logo, the letterhead's tile | AC-4 (`logo-invalid-limits-stated`) — on the component page | l | open |
 | n | the upload on the web and both phones: the file calls, the phone's picker, the pointer saved with the act | AC-4 (`logo-invalid-limits-stated`) — on the running apps | m | open |
 | f | the settings life inside the shell on the web and both phones: the functional density, `Save changes`, the re-seed scope | AC-4 (`declarations-edited-reseed-scope`, `m-settings`, `d-settings`) | n · the settings list drawn (*Decisions*, 7) | open |
@@ -6107,6 +6107,160 @@ Checklist:
 - [x] the live rows: api, web, iOS, Android
 - [x] the gate
 
+#### Part l · RFC
+
+##### Title
+`T-M01-005l` — The logo's rules and words: the stated limits, the check that names every limit missed, and the first part's `Added`
+
+##### Description
+**User impact.** None yet — internal. It decides three things the logo on the screen must not decide for itself: what a logo may be (PNG or JPG, 2 MB or less, at least 400 px wide), what a refused file is told (its own size and width, and only the limits it missed), and that a company with a logo reads `Added` on the first part and has done the step. The owner meets the capture area in part m and the upload in part n.
+
+Who gains: the component (part m) and the upload (part n). The problem: nothing holds `at least 400 px wide` (the brief's ruling 44), no function checks a chosen image, `companyProfileStanding('identity')` always answers `name_only` (`packages/domain/src/tenancy/company-profile.ts:94`), the step's rule counts no logo (`:139`), and `packages/i18n` holds none of the capture area's words. Sources: the task RFC, part e's RFC (*Decisions*, 1 and 2), `M01-24`, the brief (rulings 6, 26, 44; the state `logo-invalid-limits-stated`), the design record's word plan and decision 9, the design check's fifth entry (rows 2, 5, 6, 7, 22).
+
+##### Goals
+- `packages/domain` holds the logo's limits once — the file rule's two types and its size, and the width — and one check that answers every limit a chosen image misses, with the size and the width to print.
+- A profile that holds a logo stands `added` on its first part, and a logo alone makes the step `completed`.
+- `packages/i18n` returns every word of the capture area in English, Hindi and Marathi, the numbers read from the limits, never typed in a message.
+
+##### Non-goals
+- No component, prop or picture — part m. No file call, picker or pointer in the save's body — part n: a save still never names `logoFileId`, so the api keeps what is stored (part e).
+- No check on the api: it keeps its checks of type and size (part e, *Decisions*, 2).
+- No new standing word: `Added` exists.
+- The settings life's words — part f.
+
+##### Readiness and dependencies
+- Part e is committed (`ef107fde`), draft PR #296 open; this branch is cut from it (`#### Runtime`, part l). Its `quality` job failed at `Secret scan` before any scan ran: the action was refused the pull request's commit list (403). Nothing of part e's content was named; the owner cleared it with `5359f59d`, which this branch carries.
+- Design check: `READY` stands (`#### Design check`, eleventh entry). This part draws no frame.
+- Not a light cycle: the built screens on the web and both phones run the rules this part changes (`packages/data/src/react/use-company-profile.ts:145`, `:179`), so each surface gets one live journey.
+- No migration, no contract change. The local database stays at `0025`.
+- No blocker.
+
+##### Proposal
+**What testing the requirements found** (`/task` step 2; the fifth entry's rows first).
+1. **Row 2 — the first part's `Added`.** True as written. The profile's read already carries `logoFileId` (part e), and the hook hands that read to domain whole (`use-company-profile.ts:103`). So the standing reads the stored pointer now; part n adds the pointer the screen holds after an upload.
+2. **Row 5 — the words.** The record draws the limits as numbers inside sentences. Typed into a message they would be a second copy of `FILE_SUBJECT_RULES.tenant.maxBytes` (`packages/domain/src/files/rules.ts:52`). Each message takes the number as a slot, and a test with made-up limits proves no `2 MB` or `400` is typed.
+3. **Row 6 — closed.** The board reads `needs 2 MB or less` (sixth entry); a file of exactly 2,000,000 bytes is taken.
+4. **Row 7 — a wrong type has no words.** The picker is given the rule's two types, and a dropped file can still be another type. No frame draws its refusal. → *Decisions*, 1.
+5. **Row 22 — the check is domain's.** `Dropzone`'s `maxSizeMB` checks nothing; part m does not pass it and reads this part's check.
+6. **A size just over the limit would read as the limit.** 2,000,001 bytes rounds to `2.0 MB · needs 2 MB or less`. The printed size is rounded up to one decimal, so a refused size always reads above the limit (`2.1 MB`).
+7. **The refusal is four whole messages, never joined pieces.** Size alone, width alone, both (as drawn), and the wrong type. Joined fragments read wrong in Hindi and Marathi.
+8. **`MB` and `px` are units, printed as they are in every language**, as `kWp` is; the figures print in Latin digits with no grouping.
+9. **`company-profile.ts` stands at 295 lines.** The check and the limits get their own file; the lines the standing and the step need bring it to 299.
+
+**Flow** (parts m and n drive it).
+1. The device reads a chosen image's type, bytes and width, and asks domain's check.
+2. Nothing missed → part n uploads. Something missed → the words print the refusal under the capture area; nothing is uploaded.
+3. On the next read the profile holds the pointer; the first part reads `Added` when shut, and the act records the step `completed`.
+
+**Key decisions.**
+- **The limits are one object built from the file rule** — one reason: the api refuses by that rule, so the screen can never state another size or type.
+- **A megabyte is 1,000,000 bytes**, as `FILE_MAX_BYTES` is written.
+- **The misses are a closed set in a fixed order** — `type`, `size`, `width` — held by `tsc`: a refusal's `missed` is one of four exact lists, and the words' `Record` names each member.
+- **A wrong type is answered alone.** A file of another type is not measured: the right file is a different file, with its own size and width.
+- **An image whose width cannot be read** (a broken file) is refused as the wrong type: no device could draw it, and there is no figure to print.
+- **The words are their own function, `companyLogoWords`**, beside `companyProfileWords` (285 lines): part m places its result in the component's contract.
+- **The stored pointer is optional on what the device read** (`CompanyProfileStored`), as `bankDetailsTyped` is: an api from before part e sends none.
+
+**Order.** The check's tests, red · the limits and the check · the standing's and the step's tests, red · the three lines · the words' tests, red · the words, `extract`, the Hindi and Marathi lines · the brief · review · the live rows · the gate.
+
+**Refusals.** None on the wire. On the device: the four refusals of finding 7.
+
+**The twin.** Nothing platform-shaped: both halves read the one module.
+
+**Deferred rows this part's files meet.**
+- D209 (`touches packages/domain/src/tenancy/`, the account holder's rule held in two functions) — *Decisions*, 3.
+- No row reads `T-M01-005 starts`. D2 and D92 name `packages/ui`, which part m meets.
+
+**Decisions** (the owner's; the recommended way first).
+1. **A wrong type's words** (row 7). Built now as one short line, `Needs a PNG or JPG`, the types read from the limits, and written into the brief as a ruling; part m draws it where the drawn refusal stands — or the owner draws the wrong-type refusal on the board first (one prompt), and this part waits for it.
+2. **Seeing `Added` on a running app.** Proven here by unit test, with one plain journey on each surface to show nothing broke; the first live `Added` is part n's, when an owner can upload — or a live row now on each surface, with a logo put on a new company through the api: three more helper tasks, each needing that owner's session.
+3. **D209.** Stays: the logo does not touch the account holder's rule — or it joins, about 40 more lines and moved test rows.
+
+**Ruled by the owner, 2026-10-12, with the approval: the first way of each of the three.** The brief holds 1 as ruling 45, and findings 6 and 7 as rulings 46 and 47.
+
+**Built against planned.** The check judges the type and the size through `judgeFileDeclaration`, as the api does (review). The words name the two types in their text (`PNG or JPG`) and do not read them from the limits: a test holds the limits to exactly those two types, so a third type fails by name and asks for new words. `megabytesShown` is exported: the words print the limit's size and the image's size by the one rule.
+
+##### Architecture diagram
+No boundary change — see the task diagram: the nodes `domain: where a part stands, what a save writes` and `i18n: companyProfileWords` gain the logo's rule and words.
+
+##### Package changes
+- `packages/domain` — new on the index every device bundles (no money is computed): `COMPANY_LOGO_LIMITS`, `companyLogoRefusal`, `megabytesShown`, and their types. `judgeFileDeclaration` takes the two facts it reads, so the device's check and the api's are one comparison. `CompanyProfileFacts` gains `logoFileId`; `CompanyProfileStored`'s profile takes it optional. `tenancy/` imports `files/`, both inside this package.
+- `packages/i18n` — new on the root entry: `COMPANY_LOGO`, `companyLogoWords` and its types. Depends on `domain`, as today.
+- Law 12: one new closed set, the type `CompanyLogoMiss`, held by `tsc`; its members have no word of their own (the four refusals are whole messages), so it joins no group of `closed-vocabularies.ts` — said out loud. No brand, token, route, table or error code is new.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| add | `packages/domain/src/tenancy/company-logo.ts` | the limits, the misses, the check, the printed size | beside the profile's rules; the logo is the tenant's |
+| modify | `packages/domain/src/tenancy/company-profile.ts` | `logoFileId` on the facts; the first part's standing; the step's rule | the rules' home |
+| modify | `packages/domain/src/tenancy/company-profile-draft.ts` | the stored pointer read into the facts | the draft's home |
+| modify | `packages/domain/src/tenancy/index.ts` | the exports | the slice's entry |
+| modify | `packages/domain/src/files/rules.ts` | built, not planned (review): `judgeFileDeclaration` takes a rule's type and size alone, so the logo's check calls it and writes no second comparison | the file rule's home |
+| modify | `packages/domain/tests/tenancy/company-profile-stored.ts` | built, not planned (review): the facts fixture three tests each held, written once | the tenancy tests' one fixture file |
+| add | `packages/domain/tests/tenancy/company-logo.test.ts` | rows l1–l4 | domain's tests mirror `src/` |
+| modify | `packages/domain/tests/tenancy/company-profile-draft-save.test.ts` | row l5 | the save's test |
+| modify | `packages/domain/tests/tenancy/company-profile.test.ts` · `company-letterhead.test.ts` | each typed facts fixture needs the field | the compiler names it |
+| modify | `tests/e2e/components/CompanyProfile.story.tsx` | its facts builder needs the field | the compiler names it |
+| add | `packages/i18n/src/copy/company-logo.ts` | the messages and `companyLogoWords` | copy both platforms need |
+| modify | `packages/i18n/src/index.ts` | the exports | the root entry |
+| add | `packages/i18n/tests/company-logo.test.ts` | rows l6, l7 | the package's tests |
+| modify | `packages/i18n/src/locales/en/messages.po` · `hi/messages.po` · `mr/messages.po` | the new entries, by `extract`; the Hindi and Marathi lines by hand | the catalogs |
+| generated | `packages/i18n/src/locales/en/messages.ts` · `hi/messages.ts` · `mr/messages.ts` | compiled by `build` | never hand-edited |
+| modify | `docs/ux/briefs/SCR-M01-05-business-profile.md` | the rulings of *Decisions*, 1, and of findings 6 and 7 | the brief owns the screen's facts |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the design check's eleventh entry, the ledger, part l `shipped` | the task |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **A drafted Hindi or Marathi line reads wrong.** Each is marked a draft in the test's header for the native review; no frame draws these words in either language.
+- **`company-profile.ts` passes 300 lines.** It stands at 299. If a later change adds a line, the letterhead's rule moves to its own file, and the file table gains that row with its reason.
+- **A screen says `Added` for a logo the owner cannot see yet.** Only a company whose pointer was set through the api reads so before part n; no client uploads today.
+- **Rollout.** Nothing stored or sent changes. An older app reads no pointer and stands `Name only`, as today.
+
+##### Acceptance criteria and proof
+The task's AC-4 (`logo-invalid-limits-stated`) is this part's for its rule and its words; parts m and n hold its frames and its running apps. AC-1 is `not_applicable` in the task; AC-2 and AC-3 have no row here.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| l1 the limits | main-dev | required | unit | the limits' types and size are `FILE_SUBJECT_RULES.tenant`'s own; the width is 400 | `packages/domain/tests/tenancy/company-logo.test.ts` |
+| AC-4 · l2 the check | main-dev | required | unit | a PNG of 2,000,000 bytes and 400 px → taken; 2,000,001 bytes → `size`; 399 px → `width`; both → `size`, `width` in that order; a GIF of any size → `type` alone. Planted red: the size compared with `>=` | the same |
+| l3 the printed size | main-dev | required | unit | 3,400,000 bytes → 3.4; 2,000,001 → 2.1; 2,100,000 → 2.1 | the same |
+| l4 the first part | main-dev | required | unit | a pointer held → `added`, mark `met`; none → `name_only`. Planted red: the standing answering `name_only` with a pointer | the same |
+| l5 the step and the save | main-dev | required | unit | a stored pointer and nothing typed → the step `completed`, the view's first part `added`, and the save's profile names no `logoFileId`; no pointer and nothing typed → `skipped`; a read with no `logoFileId` key → `name_only` | `packages/domain/tests/tenancy/company-profile-draft-save.test.ts` |
+| AC-4 · l6 the words | main-dev | required | unit | English, Hindi and Marathi, whole: `Add your logo`, `Your logo`, the two hints, the limits line `PNG or JPG, up to 2 MB, at least 400 px wide`; the refusals `3.4 MB, 320 px wide · needs 2 MB or less, at least 400 px`, `3.4 MB · needs 2 MB or less`, `320 px wide · needs at least 400 px`, and the wrong type's line; nothing refused → no refusal | `packages/i18n/tests/company-logo.test.ts` |
+| l7 no typed limit | main-dev | required | unit | with made-up limits (5 MB, 600 px) every line prints them and no `2 MB` or `400` appears. Planted red: `2` typed into the limits line | the same |
+| l8 the catalogs | main-dev | required | repo | `pnpm --filter @heliogrid/i18n extract` leaves the tree clean; no missing message in Hindi or Marathi | the command's output |
+| w1 | qa-web | required | web 375 and 1536 | sign up a new company, pass the two steps before; on the profile open `Address` → the first part shuts and reads `Name only`; type a street, `Save and continue` → the home; the `PUT /settings/business-profile` is 200 and its body names no `logoFileId`; no console error | the destination, the request's body, the log's 200 |
+| i1 | qa-ios | required | iOS | the same journey on the iPhone → `Name only` on the shut first part, then the home | the tree, the log's 200 |
+| n1 | qa-android | required | Android | the same journey on the emulator → the same | the tree, the log's 200, logcat |
+| the running api | — | not_applicable | — | — | no route, contract or service file changes; `judgeFileDeclaration`'s parameter type is narrowed to what it reads, and its body is unchanged |
+| side-by-side | — | not_applicable | — | — | this part draws no frame; `m-logo-invalid` and the capture area are part m's, on the component page |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+No row needs the api stopped.
+
+##### Delivery size
+- One part of the four the logo was cut in: **20 files** — 9 of domain (4 source, 4 tests, the story), 3 of i18n, 3 catalogs, 3 generated, 2 documents.
+- **Built lines:** code 190 (the check and the limits 73, the rules, the draft and the exports 20, the words 78, the story 1, the Hindi and Marathi lines 18); tests 274. 464 against 600 planned, 23% under: the words' tests are tables.
+- **Built:** 22 files — 11 of domain (5 source, 4 tests, the fixture file, the story), 3 of i18n, 3 catalogs, 3 generated, 2 documents; the two more are the review's (the file table's *built, not planned* rows). 10% over the plan.
+- **Code: about 240 authored lines** — the check and the limits 75, the three rule lines and the draft 15, the words 100, the Hindi and Marathi lines 50.
+- **Tests: about 360 authored lines** — domain 170, i18n 190.
+- About 600 in all, with one review round counted in. Under both targets.
+- Order: as *Proposal*.
+
+Checklist:
+- [x] the check's tests, red; the limits and the check
+- [x] the standing's and the step's tests, red; the three lines; the draft
+- [x] the words' tests, red; the words, the catalogs
+- [x] the brief
+- [x] review
+- [x] the live rows: web, iOS, Android
+- [x] the gate
+
 #### Design check
 `READY` — 2026-10-12, on the record `SCR-M01-05 - decisions & self-audit.md` (29,484 bytes) read beside the board `SCR-M01-05 Business Profile - Mobile.dc.html` (142,409 bytes, under the read cap). Three checks on one helper. The first found the record behind the board (four frame counts, no Hindi frame, no 1536 alignment numbers, no word plan, a standing FAIL); the owner's redraw closed every finding. Main then found three product facts wrong against the code — three bank fields where `M06-17` and the contract hold four, a city line saying the city sets the market, a count of typed characters the pack cannot give — and the owner corrected them and redrew the 1536 arrangement in the same pass; the third check found nothing.
 
@@ -6163,6 +6317,8 @@ Noted by the helper and not blocking: three stale board notes and three stale re
 **Ninth entry — part k (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part k began: twenty-one frames, seventeen at 375 and four at 1536; `needs 2 MB or less` and `m-failed-save` at 3 lines and 21 words stand in it, and its decision 5 names `Finish later` as the second way in. Nothing changed since the sixth entry, so no helper ran. Part k takes the fifth entry's row 21; its RFC puts it to the owner (*Decisions*, 3). The board's source is not fetched: this part draws nothing new, and the frame's numbers were read for part h. `m-failed-save`, the one frame this part compares, is pictured before QA, into the scratchpad as `board/m-failed-save.png`.
 
 **Tenth entry — part e (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part e began: twenty-one frames, seventeen at 375 and four at 1536; the logo's hint lines and the refusal `3.4 MB, 320 px wide · needs 2 MB or less, at least 400 px` stand in its word plan, so nothing changed since the sixth entry and no helper ran. Part e was cut in four (its RFC, *Decisions*, 1): this part draws no frame, so the board was not fetched and no picture was taken. The fifth entry's rows named for part e go on: rows 2, 5, 6, 7 and 22 to part l, rows 8, 11 and 19 to part m. Part m fetches the board's source and pictures `m-logo-invalid`, `m-default`, `m-normal` and `d-default` before its first edit.
+
+**Eleventh entry — part l (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part l began: twenty-one frames, seventeen at 375 and four at 1536. Its word plan holds the logo's three hint lines — `Tap to choose a file · …` at 375, `Choose a file or drop one here · …` at 1536, the limits alone on `m-normal` — and the refusal `3.4 MB, 320 px wide · needs 2 MB or less, at least 400 px`; its decision 9 calls the limits build-side configuration drawn at realistic values. Nothing changed since the sixth entry, so no helper ran. This part draws no frame: the board was not fetched and no picture was taken. It takes the fifth entry's rows 2, 5, 6, 7 and 22; its RFC rules each (*Proposal*, 1–5).
 
 #### Runtime
 Branch `feat/T-M01-005`, cut from `feat/T-M01-004c` (`99ed0bcc`, draft PR #283 open, its `quality`, `e2e-web` and `android` checks running) on a clean tree, by the owner's word, 2026-10-12: the walk reads `origin/main`, where `T-M01-004`'s part c is not yet merged.
@@ -6790,6 +6946,64 @@ Left on `heliogrid_test` by this part: three companies made through the app — 
 | browser tabs | pane closed | the two preview tabs closed, pane closed |
 | database routing | `heliogrid_test` / `heliogrid_test` | the same; never changed |
 | runtime logs | `api.log` 25,070,751 · `web.log` 700,953 · `metro.log` 2,054,268 bytes | 25,271,282 · 716,832 · 2,103,968 bytes, kept |
+| watchers | none | none |
+
+**Part l · Runtime (2026-10-12).** Branch `feat/T-M01-005l`, cut from `origin/feat/T-M01-005e` (`ef107fde`, part e, draft PR #296 open) on a clean tree, as the walk says for an open earlier part.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | — |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 25,271,282 · `web.log` 716,832 · `metro.log` 2,103,968 bytes | — |
+| watchers | no `tsx … watch` process | — |
+
+**Part l · QA (2026-10-12)** — one stack on `heliogrid_test` (at `0025`, nothing to migrate): the api, the web and Metro from source (`api`, `web`, `mobile-metro` launch configurations, `started_by_task`), the iPhone 17 Pro simulator and the `Pixel_8_Emulator` booted by Main, on the apps already installed — no native file changed, so nothing was rebuilt. Main cold-started both apps after the review's fixes and saw Metro serve a bundle to each before the helpers ran.
+
+- **Order.** The reviewer read alone, three rounds on one helper: one should-fix (the type and the size compared a second time; the check now calls `judgeFileDeclaration`) and six notes in round one, one note in round two (the built file count), clean in round three. Then `qa-web`, `qa-ios` and `qa-android` together, once each; the tree's hash was the same before and after. Then `pnpm check:catalogs`, and the Evaluator's one gate run.
+- **The gate.** `pnpm check:all` passed whole on its first run: 226 test files, 4,058 tests, the api tests on `heliogrid_test`, the invariants on real tables, nothing regenerated.
+- **Planted reds seen (part l).** The size compared with `>=`, first in `company-logo.ts` and again in `judgeFileDeclaration` after the review moved the comparison there → *a PNG at the size and the width exactly is taken* failed by name. The first part answering `name_only` with a pointer → *with a logo the first part stands …* failed. The step's rule without the logo → *a logo and nothing typed records the step …* failed. `2` typed into the limits message → *in en no limit is typed into a line…* failed. Each restored from a scratchpad copy.
+
+**As proven (part l).**
+
+| row | result | evidence |
+|---|---|---|
+| l1–l4 | pass | `packages/domain/tests/tenancy/company-logo.test.ts`, 22 tests |
+| l5 | pass | `company-profile-draft-save.test.ts`, *a logo the profile holds*; seen red before the rule (`expected 'name_only' to be 'added'`) |
+| l6, l7 | pass | `packages/i18n/tests/company-logo.test.ts`, 19 tests; 10 were red before the Hindi and Marathi lines |
+| l8 | pass | `catalogs OK - extraction produced no change`; no missing message in Hindi or Marathi |
+| w1 at 375 | pass | `…10595`: the shut first part reads `Name only`; `/home`; `PUT /settings/business-profile` 200, request `c3862621-…`, body length 183 with no `logoFileId`; 375 = 375; the act 335 × 48 |
+| w1 at 1536 | pass | `…10596`: `Name only`; `/home`; 200, request `2e4c4ec0-…`; the body's keys read in the page, no `logoFileId`; 1536 = 1536; the act 175 × 48 |
+| i1 | pass | `…10597`: `Logo and company name, Name only`; the home; 200, request `07a311b0-…`; the act 362 × 48 pt |
+| n1 | pass | `…10598`: `Logo and company name, Name only`; the home; 200, request `4d687a38-…`; the act 371 × 48 dp; no fatal line in logcat |
+| the gate | pass | `pnpm check:all`, exit 0 |
+
+Seen and not a fault of this part: each web run shows one console line, a 401 on a resource, with no script error; at 375 the pane's network list showed a body with `logoFileId: null` where the api's log counts a body without it, so the row is judged by the log and by the 1536 run's read in the page. The save of *What you sell*, the step before, sends back the profile it read, `logoFileId` included: it sends the value it read, so it changes nothing a company holds.
+
+**Mistakes found (part l)**, each with what now holds it:
+
+- **The type and the size were compared a second time** (the reviewer; Law 5). The check calls `judgeFileDeclaration`; the planted `>=` on that one function fails the logo's test by name.
+- **A refusal's `missed` was any list** (the reviewer). It is one of four exact lists, so the words cannot be handed a pair they have no line for: held by `tsc`.
+- **The same facts fixture stood in three tests** (the reviewer). Written once, in `company-profile-stored.ts`.
+- **The words' test was not run red before the words were written** (Main). Both were written in one step; the test was then seen red on the missing Hindi and Marathi lines and by the planted `2`. Held by the build's order, tests first: no check can decide it.
+- **The RFC's line count and its file count were wrong after the fixes** (the reviewer; Law 8). Corrected in this change.
+
+**Measurements (part l)** — helper runs: `ci-investigator` 1 for part e's `quality` job (38 k), `reviewer` 1 with two continuations (90 k, 106 k, 107 k), `qa-web` 1 (80 k), `qa-ios` 1 (44 k), `qa-android` 1 (36 k), `evaluator` 1 (39 k); one full gate, passed. Main's context at the commit card: 336 k tokens. Planned 20 files and 600 lines; built 22 files and 464 lines.
+
+**Left on `heliogrid_test` (part l):** four signup companies of the surface rows (`…10595`, `…10596`, `…10597`, `…10598`), made through the app.
+
+**Teardown (part l).**
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` | none listening | none listening — each started through its launch configuration and stopped by its preview id |
+| Postgres · object store · Temporal | running (`pre_existing`) | running, untouched |
+| simulator · emulator | none booted | none booted — iPhone 17 Pro (`40ED0117-…`) shut down, `emulator-5554` killed |
+| browser tabs | pane closed | the two preview tabs closed, pane closed |
+| database routing | `heliogrid_test` / `heliogrid_test` | the same; never changed |
+| runtime logs | `api.log` 25,271,282 · `web.log` 716,832 · `metro.log` 2,103,968 bytes | 25,495,921 · 733,124 · 2,154,249 bytes, kept |
 | watchers | none | none |
 
 ### T-M01-006 · Setup — You're Ready

@@ -1,4 +1,5 @@
 import { IN_TAX, type TaxPack } from '../../src/tax/pack';
+import type { CompanyProfileFacts } from '../../src/tenancy/company-profile';
 import type { CompanyProfileStored } from '../../src/tenancy/company-profile-draft';
 
 export const COMPANY = 'Suryodaya Solar Solutions Pvt Ltd';
@@ -18,6 +19,19 @@ export const TWO_TYPES: TaxPack = {
       format: { en: '4 digits' },
     },
   ],
+};
+
+/** What a device holds for a company the two steps before left: nothing of this screen's own. */
+export const factsAtSignup: CompanyProfileFacts = {
+  companyName: COMPANY,
+  city: 'Pune',
+  logoFileId: null,
+  address: '',
+  postalCode: '',
+  registrations: [],
+  bank: { bankName: '', accountName: '', accountNumber: '', bankRoutingIdentifier: '' },
+  segment: 'residential',
+  typicalSystemKwp: 5,
 };
 
 /** A company as the two steps before leave it: nothing of this screen's own is stored. */

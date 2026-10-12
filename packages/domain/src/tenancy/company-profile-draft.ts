@@ -58,6 +58,8 @@ export interface CompanyProfileStored {
     readonly bankDetails: BankDetails | null;
     /** Absent from an api built before the field. */
     readonly bankDetailsTyped?: BankDetailsTyped | null;
+    /** Absent from an api built before the field. */
+    readonly logoFileId?: string | null;
   };
   readonly registrations: readonly TaxRegistration[];
 }
@@ -199,6 +201,7 @@ export function companyProfileFacts(
   return {
     companyName: values.companyName,
     city: values.city,
+    logoFileId: stored.profile.logoFileId ?? null,
     address: values.address,
     postalCode: values.postalCode,
     registrations:

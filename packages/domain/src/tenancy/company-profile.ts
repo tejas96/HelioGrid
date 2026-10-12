@@ -70,6 +70,8 @@ export function isBankDetailsTyped(typed: BankDetailsTyped): boolean {
 export interface CompanyProfileFacts {
   readonly companyName: string;
   readonly city: string;
+  /** The stored image that is the company's logo; `null` while it has none. */
+  readonly logoFileId: string | null;
   readonly address: string;
   readonly postalCode: string;
   /** One entry per registration field the owner typed in; the type is the market pack's. */
@@ -91,7 +93,7 @@ export function companyProfileStanding(
 ): CompanyProfileStanding {
   switch (part) {
     case 'identity':
-      return 'name_only';
+      return facts.logoFileId === null ? 'name_only' : 'added';
     case 'address':
       return typed(facts.address) === null ? 'city_only' : 'added';
     case 'tax': {
@@ -128,7 +130,8 @@ export interface CompanyProfileSave {
  * malformed registration is left out and stops nothing — the api would refuse the whole list for
  * it, and `M01-25` keeps the way on open. A size that is no declaration is written as none, so what
  * is stored stands as the screen says it. The step is `completed` once a part of this screen's own
- * holds a fact — a bank fact typed half way is one — and `skipped` while none does (`M01-24`).
+ * holds a fact — a logo, or a bank fact typed half way, is one — and `skipped` while none does
+ * (`M01-24`). The logo is never in what is sent: the api keeps the one it holds.
  */
 export function companyProfileSave(facts: CompanyProfileFacts, tax: TaxPack): CompanyProfileSave {
   const address = typed(facts.address);
@@ -137,6 +140,7 @@ export function companyProfileSave(facts: CompanyProfileFacts, tax: TaxPack): Co
   const registrations = registrationsRead(facts, tax).wellFormed;
   const bankDetailsTyped = bankDetailsHalf(facts);
   const holdsAFact =
+    facts.logoFileId !== null ||
     address !== null ||
     postalCode !== null ||
     bankDetails !== null ||
