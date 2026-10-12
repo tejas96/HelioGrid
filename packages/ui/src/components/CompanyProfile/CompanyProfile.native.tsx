@@ -25,6 +25,8 @@ export function CompanyProfile({
   open,
   onOpen,
   onEdit,
+  onChooseSegment,
+  onDeclareSize,
   saving,
   onSave,
   onRetryRead,
@@ -126,7 +128,14 @@ export function CompanyProfile({
         {words.loading === null ? (
           <Accordion
             items={profileItems(words, open, (part) => (
-              <ProfileSet part={part} words={words} values={values} onEdit={onEdit} />
+              <ProfileSet
+                part={part}
+                words={words}
+                values={values}
+                onEdit={onEdit}
+                onChooseSegment={onChooseSegment}
+                onDeclareSize={onDeclareSize}
+              />
             ))}
             value={open}
             onChange={(reported) => onOpen(openedPart(reported))}

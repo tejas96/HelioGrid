@@ -7,8 +7,13 @@ import {
   inLanguage,
   type UiLanguage,
 } from '@heliogrid/domain';
-import { companyProfileWords, createTranslator } from '@heliogrid/i18n';
-import { CompanyProfile, type CompanyProfileField, type CompanyProfileValues } from '@heliogrid/ui';
+import { companyProfileWords, createTranslator, provenanceWords } from '@heliogrid/i18n';
+import {
+  CompanyProfile,
+  type CompanyProfileField,
+  type CompanyProfileValues,
+  ProvenanceWordsProvider,
+} from '@heliogrid/ui';
 import { useState } from 'react';
 
 const READERS = {
@@ -17,26 +22,39 @@ const READERS = {
   mr: await createTranslator('mr'),
 };
 
-/** A company as signup leaves it (`SCR-M01-05`, `m-default`): the name and the city, nothing added. */
+/**
+ * A company as the two steps before leave it (`SCR-M01-05`, `m-default`): the name and the city
+ * from signup, the kind of business and the typical size from the step before, nothing added.
+ */
 const AT_SIGNUP: CompanyProfileValues = {
   companyName: 'Suryodaya Solar Solutions Pvt Ltd',
   city: 'Pune',
   address: '',
   postalCode: '',
+  taxRegistration: '',
   bankName: '',
   accountName: 'Suryodaya Solar Solutions Pvt Ltd',
   accountNumber: '',
   bankRoutingIdentifier: '',
+  segment: 'residential',
+  typicalSystemKwp: 5,
 };
 
-function factsOf(values: CompanyProfileValues, undeclared: boolean): CompanyProfileFacts {
-  const { bankName, accountName, accountNumber, bankRoutingIdentifier, ...rest } = values;
+/** The step before did not save (`m-failed-save`): neither answer is held. */
+const UNDECLARED = { segment: null, typicalSystemKwp: null } as const;
+
+const [REGISTRATION] = IN_PACK.tax.registrationTypes;
+
+function factsOf(values: CompanyProfileValues): CompanyProfileFacts {
+  const { bankName, accountName, accountNumber, bankRoutingIdentifier, taxRegistration, ...rest } =
+    values;
   return {
     ...rest,
-    registrations: [],
+    registrations:
+      REGISTRATION === undefined
+        ? []
+        : [{ registrationType: REGISTRATION.type, value: taxRegistration }],
     bank: { bankName, accountName, accountNumber, bankRoutingIdentifier },
-    segment: undeclared ? null : 'residential',
-    typicalSystemKwp: 5,
   };
 }
 
@@ -64,44 +82,58 @@ export function CompanyProfileAsHeld({
   open?: CompanyProfilePart | null;
   typed?: Partial<CompanyProfileValues>;
 }) {
-  const [values, setValues] = useState({ ...AT_SIGNUP, ...typed });
+  const [values, setValues] = useState({
+    ...AT_SIGNUP,
+    ...(undeclared ? UNDECLARED : {}),
+    ...typed,
+  });
   const [open, setOpen] = useState(openAtStart);
   const [edits, setEdits] = useState<readonly string[]>([]);
   const [pressed, setPressed] = useState('');
   const { t } = READERS[reader];
-  const facts = factsOf(values, undeclared);
-  const [registration] = IN_PACK.tax.registrationTypes;
+  const facts = factsOf(values);
   const standings = Object.fromEntries(
     COMPANY_PROFILE_PARTS.map((part) => [part, companyProfileStanding(part, facts, IN_PACK.tax)]),
   ) as Record<CompanyProfilePart, ReturnType<typeof companyProfileStanding>>;
   return (
     <div lang={reader}>
-      <CompanyProfile
-        words={companyProfileWords(t, {
-          status,
-          skipped,
-          standings,
-          open,
-          city: values.city,
-          taxIdLabel: IN_PACK.formats.taxIdLabel,
-          taxFormat: registration === undefined ? '' : inLanguage(registration.format, reader),
-          bankRoutingLabel: IN_PACK.formats.bankRoutingLabel,
-        })}
-        values={values}
-        open={open}
-        onOpen={setOpen}
-        onEdit={(field: CompanyProfileField, value: string) => {
-          setValues((held) => ({ ...held, [field]: value }));
-          setEdits((list) => [...list, `${field}=${value}`]);
-        }}
-        saving={saving}
-        onSave={() => setPressed('save')}
-        onRetryRead={() => setPressed('retry-read')}
-        onContinueWithout={() => setPressed('continue-without')}
-      />
-      <output data-testid="open">{open ?? ''}</output>
-      <output data-testid="edits">{edits.join('|')}</output>
-      <output data-testid="pressed">{pressed}</output>
+      <ProvenanceWordsProvider value={provenanceWords(t)}>
+        <CompanyProfile
+          words={companyProfileWords(t, {
+            status,
+            skipped,
+            standings,
+            open,
+            city: values.city,
+            taxIdLabel: IN_PACK.formats.taxIdLabel,
+            taxFormat: REGISTRATION === undefined ? '' : inLanguage(REGISTRATION.format, reader),
+            bankRoutingLabel: IN_PACK.formats.bankRoutingLabel,
+          })}
+          values={values}
+          open={open}
+          onOpen={setOpen}
+          onEdit={(field: CompanyProfileField, value: string) => {
+            setValues((held) => ({ ...held, [field]: value }));
+            setEdits((list) => [...list, `${field}=${value}`]);
+          }}
+          onChooseSegment={(segment) => setValues((held) => ({ ...held, segment }))}
+          onDeclareSize={(typicalSystemKwp) => setValues((held) => ({ ...held, typicalSystemKwp }))}
+          saving={saving}
+          onSave={() => setPressed('save')}
+          onRetryRead={() => setPressed('retry-read')}
+          onContinueWithout={() => setPressed('continue-without')}
+        />
+      </ProvenanceWordsProvider>
+      {/* Read by a spec, never drawn: a long report would widen the page it measures. */}
+      <div hidden>
+        <output data-testid="open">{open ?? ''}</output>
+        <output data-testid="edits">{edits.join('|')}</output>
+        <output data-testid="pressed">{pressed}</output>
+        <output data-testid="segment">{values.segment ?? ''}</output>
+        <output data-testid="size">
+          {values.typicalSystemKwp === null ? '' : String(values.typicalSystemKwp)}
+        </output>
+      </div>
     </div>
   );
 }

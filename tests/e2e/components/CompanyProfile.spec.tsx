@@ -7,7 +7,12 @@ import {
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator } from '@playwright/test';
-import { bottomOf, expectNoSidewaysScroll, expectSharedEdge } from '../support/layout';
+import {
+  bottomOf,
+  expectNoSidewaysScroll,
+  expectNothingClipped,
+  expectSharedEdge,
+} from '../support/layout';
 import { resolvedColour, resolvedLength } from '../support/token';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 import { CompanyProfileAsHeld } from './CompanyProfile.story';
@@ -15,7 +20,7 @@ import { CompanyProfileAsHeld } from './CompanyProfile.story';
 /**
  * The company profile at the board's phone width (`SCR-M01-05`): five flat parts with where each
  * stands beside its title, one part open, and one act that is live with nothing filled in. The
- * tax and what-you-sell parts hold no fields yet; the 1536 arrangement is a later part's.
+ * tax and what-you-sell parts have their own specs; the 1536 arrangement is a later part's.
  */
 const en = await createTranslator('en');
 
@@ -252,15 +257,7 @@ for (const reader of ['hi', 'mr'] as const) {
         expect(await bottomOf(standing)).toBeLessThanOrEqual(await bottomOf(headers.nth(index)));
       }
     }
-    /* A block box that scrolls inside itself, either way, is a clipped line. */
-    const clipped = await page.evaluate(
-      () =>
-        [...document.querySelectorAll('.hg-text, .hg-accordion-toggle, .hg-input-label')].filter(
-          (node) =>
-            node.scrollWidth > node.clientWidth + 1 || node.scrollHeight > node.clientHeight + 1,
-        ).length,
-    );
-    expect(clipped).toBe(0);
+    await expectNothingClipped(page, '.hg-text, .hg-accordion-toggle, .hg-input-label');
     const act = profile.locator('.hg-door-footer').getByRole('button');
     await expect(act).toHaveCount(1);
     await expect(act).toBeInViewport();

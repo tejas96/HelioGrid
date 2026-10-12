@@ -3,9 +3,10 @@ import type { TenantSegment } from './segment';
 /**
  * The typical system size an EPC declares (`M01-23`), in kWp. The precision and the ceiling are the
  * stored column's — two decimals under one million — so a figure outside them cannot be stored and
- * no screen may send one.
+ * no screen may send one. The step is what one press of a size field's stepper adds or takes
+ * (`SCR-M01-05`).
  */
-export const TYPICAL_SYSTEM_KWP = { precision: 2, ceiling: 999_999.99 } as const;
+export const TYPICAL_SYSTEM_KWP = { precision: 2, ceiling: 999_999.99, step: 0.5 } as const;
 
 /** The step's two questions, in the order the screen asks them. */
 const WHAT_YOU_SELL_QUESTIONS = ['segment', 'size'] as const;

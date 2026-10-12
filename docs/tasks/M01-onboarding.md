@@ -4459,7 +4459,7 @@ Nine parts since part c's RFC split c in three and part g's added i (`#### Parts
 | b | the design system's parts: `Accordion` drawn flat with a state mark beside the title (D145's share), the loading bars — by component spec; a field's line a reader depends on is the component's (parts g and h), placed with `Text` (`#### Part b · RFC`, *Decisions*, 1) | AC-4 (the parts every frame is built from) — on the component page | a | shipped |
 | c | the rules and the words: domain's rules for where a part stands and what a save writes; every word of the setup life in three languages (`#### Part c · RFC`) | AC-2 (the format line is the pack's; a malformed registration is never written and never stops the save) — by unit test | b | shipped |
 | g | the shared component at 375 and on the phone: `CompanyProfile` in `packages/ui` — the frame, the list, the act, loading, a failed read, a failed save, the name, address and bank field sets (`#### Part g · RFC`) | AC-4 — on the component page | c | shipped |
-| h | the shared component, second half: the tax and what-you-sell field sets, the Hindi and Marathi renders | AC-2 (the format explained, the act live), AC-4 — on the component page | g | open |
+| h | the shared component, second half: the tax and what-you-sell field sets, the arrival from a failed save (`m-failed-save`), the Hindi and Marathi renders (`#### Part h · RFC`) | AC-2 (the format explained, the act live), AC-4 — on the component page | g | shipped |
 | i | the 1536 arrangement and the letterhead preview: `d-default`, `d-tax-invalid` (`#### Part g · RFC`, *Decisions*, 1) | AC-4 — on the component page | h | open |
 | d | the step owed, the landing, the reads and the save, and the screen on the web and both phones; `SCR-M01-04`'s ways on open it (D202); half-typed bank details kept, as a new field on the profile's read and write (*Decisions*, 5); `createCompany` passes the step | AC-2, AC-4 — on the running apps | i | open |
 | e | the logo: its pointer in the api, the upload from the web and both phones, the limits stated and the refusal (`m-logo-invalid`) | AC-4 (`logo-invalid-limits-stated`) | d | open |
@@ -5042,6 +5042,152 @@ Checklist:
 - [x] the side-by-side
 - [x] the gate
 
+#### Part h · RFC
+
+##### Title
+`T-M01-005h` — The company profile's last two parts: the tax registration field with its format explained, what you sell with its cards and its size, the arrival from a failed save, and the Hindi and Marathi renders
+
+##### Description
+**User impact.** None yet — no app draws this until part d. It fills the two parts that open to nothing today. In *Tax registration* the owner types a number; a mistyped one is answered at the field with the market's format, the part reads `Check the format`, and the act stays live. In *What you sell* the owner sees the two answers of the step before — the kind of business and the typical size — and can change them, with one line at the act saying only new proposals reprice. Indirectly, an owner who left the step before with nothing saved lands on a screen that says what is still undeclared.
+
+Who gains: part d, which mounts the component, and `T-M06-022`, whose prompt mounts the tax set. The problem: `profileSet` returns nothing for `tax` and `declarations` (`packages/ui/src/components/CompanyProfile/CompanyProfile.logic.ts:140`), and the contract holds no registration, no kind and no size (`CompanyProfile.types.ts:70`). Sources: the task RFC, `M01-25`, the brief's rulings 13, 15 and 21, the record's word plan, its decisions 6, 9, 10 and 14 and its list 3 item 4, the board's source (`#### Design check`, fourth entry).
+
+##### Goals
+- `CompanyProfile` draws, on the web under the door's breakpoint and on the phone, the five 375 frames this part owns: `m-tax-invalid`, `m-declarations-open`, `m-failed-save`, `m-declarations-hi`, `m-declarations-mr`.
+- A malformed registration is explained at its field by the pack's format line, once; the act stays live (`M01-25`).
+- The kind of business and the typical size are reported by their own handlers; the component holds no draft.
+- One prop contract, both halves; no word and no number of its own.
+
+##### Non-goals
+- The prompt at the first send, `m-prompt` and `d-prompt` — `T-M06-022` (the task RFC's *Decisions*, 2). The tax set is built so that it can be mounted there.
+- A second registration field: the words hold one label and one format line (part c, *Key decisions*), and the India pack declares one type.
+- `m-reseed` and the settings density — part f. The 1536 arrangement and `d-tax-invalid` — part i.
+- No hook, no read, no save, no screen in an app — part d.
+- No change to `Input`, `NumberField`, `OptionCardGroup`, `Provenance`, `Accordion` or `DoorFrame`.
+- No new word: part c wrote every word this part draws.
+
+##### Readiness and dependencies
+- Parts a, b, c and g are merged (#284, #287, #288, #289); this branch is cut from `origin/main` (`3464ce4f`).
+- Design check: `READY` stands (`#### Design check`, fourth entry).
+- `light cycle`: the proof matrix names the component page (`3100`) and no web, phone or api surface — no built screen draws `CompanyProfile`.
+- No blocker.
+
+##### Proposal
+**What testing the requirements found** (`/task` step 2).
+1. **The size field is drawn two ways on two screens.** This board draws it with `+` and `−` steppers at a step of 0.5 (`m-declarations-open`, the record's N2: steppers 44 × 54); the step before draws the same field with none (`SetupWhatYouSell.tsx:123`, `steppers={false}`). No source holds the 0.5. → *Decisions*, 1.
+2. **Four Hindi and Marathi words of this board are not the catalog's.** The board's two language frames print `आपने बताया` and `तुम्ही सांगितले` for *Declared by you*, `नेहमीचा सिस्टम आकार` for the Marathi *Typical system size* and `अनुमानित` for the Marathi tier word; the catalogs hold `आपके द्वारा बताया गया`, `तुम्ही सांगितलेले`, `सामान्य सिस्टम आकार` and `अंदाजित`, which the step before and every tier line in the product already show (`packages/i18n/src/locales/{hi,mr}/messages.po`). Part c's record says the board's 23 strings were copied character for character; these four were not, because their messages are shared. → *Decisions*, 2.
+3. **The board's precision is 1; the column's is 2.** Ruled in part c (finding 5): `TYPICAL_SYSTEM_KWP.precision` is passed, as the step before passes it.
+4. **A size nobody declared shows no tier here** (`m-failed-save`: the tier slot is `unmarked`; `NumberField.types.ts:22`, `F8-01`), where the step before keeps its tier line under an empty field, as its own board draws. Built as each board draws its own screen; said here so that the difference is a known one.
+5. **`m-failed-save` had no part.** The owed rule was built in part g; the frame needs the what-you-sell set, so it is this part's. `#### Parts` now says so.
+6. **The format line is drawn once.** As the field's error on `m-tax-invalid`; as help on the prompt frames. So the open tax part with no malformed value shows the line as help, in the secondary ink as `Text` (part b, *Decisions*, 1), and a malformed value replaces it with the field's error — never both.
+7. **The web `Input` does not tie its error to its field for a screen reader** (D174, `touches packages/ui/src/components/Input/`). This part does not touch `Input`, so the row stays; the part's header carries `aria-invalid` and the word `Check the format`.
+8. **The board passes no error to the kinds' group on `m-failed-save`.** The part's `Not declared`, the lede and the act's line say it; the act never refuses here, so no group error is built.
+9. **The size cannot be emptied once declared**: `NumberField` reports figures only (`NumberField.types.ts:25`), as on the step before. A declared `0` is no declaration (`what-you-sell.ts:27`), so stepping down to 0 turns the part to `Not declared`. Three ways reach 0: `−` from 0.5, `−` on an empty field, and a typed `0`. The field then drops its tier line, as the header turns (review). **For part d's packet:** the lede also turns to `What you sell · not saved on the last step` (`company-profile-words.ts:232`, keyed on the standing alone), which is untrue for an owner whose answers did save and who then stepped the size to 0; part d, which first holds what the read answered, rules whether the lede needs that fact.
+10. **Found in the build: the steppers are named in English.** `NumberField` types its steppers' spoken names (*Decrease …*, *Increase …*) and the line it prints when a typed figure is under its floor (`NumberFieldBox.tsx:87`, `NumberField.logic.ts:68`), so a Hindi or Marathi screen-reader user hears English at this field. It is D2's kind and outside this part (*Non-goals*: no change to `NumberField`); D2 now names it. A press of a stepper prints no line; only a typed negative figure does, on leaving the field, and on the web alone — the phone's decimal pad has no minus key. `NumberField`'s `correctionMessage` could replace the line, but it needs a word, and this part writes none. No ceiling is passed, as on the step before: a figure over `TYPICAL_SYSTEM_KWP.ceiling` is read by domain as no declaration, and a `max` would print the second English line.
+11. **Found in the build: `m-failed-save` draws the size with no hint**, where the words give the hint in every state. Built with the hint — an empty field is where *The size you sell most often* helps most. Ruled by the owner on the commit card, 2026-10-12: the hint stays, and the frame is to be corrected (the brief's ruling 30). The owner approved the built size, 16 files and about 806 lines, on the same card.
+
+**Flow.**
+1. The app (part d) passes, beside part g's props, `values.taxRegistration`, `values.segment`, `values.typicalSystemKwp` and two handlers, `onChooseSegment` and `onDeclareSize`.
+2. **Tax.** One `Input`, mono, labelled by `words.tax.label`; it reports `onEdit('taxRegistration', value)` as typed. `words.tax.error` set → the field's error; otherwise `words.tax.format` as the help line. Then `words.tax.checked`, whole. The words already turn the part to `Check the format` and `Accordion` opens it (part g's rule).
+3. **What you sell.** `OptionCardGroup`, one column, the three kinds; then `NumberField` with the unit, the steppers (*Decisions*, 1), the tier line `estimated · Declared by you` when a figure is held and none when it is not, and the hint. The field reports as typed (`commits="as-typed"`), because the act is pressed without leaving it.
+4. The words (part c) already give the lede and the act's line for `m-declarations-open` and `m-failed-save`.
+
+**Key decisions.**
+- **`CompanyProfileField` stays the closed list of text fields**, with `taxRegistration` added; the kind and the size are typed values with their own handlers, as `SetupWhatYouSell` has them (`SetupWhatYouSell.types.ts:49`), so no handler takes a string for a number.
+- **The tax field joins `profileSet`** (`ProfileFieldSpec` gains `error`), so both halves keep one list of what a part asks. The what-you-sell set is not text fields; each half draws it in its sets file from the same words.
+- **One registration field.** Part d writes it as the pack's first registration type.
+- **The size field's facts are one function, `sizeField`, in the logic file** (review): the step and the precision are domain's (`TYPICAL_SYSTEM_KWP`), the tier follows domain's `isTypicalSystemSize`, and the floor of nothing is written there once; both halves spread it into `NumberField`.
+- **The phone halves are typechecked here and first seen on a phone in part d**, as part g's were.
+
+**Order.** The two specs, red, frame by frame · the contract and the logic · the web half · the phone half · the story · Main's pictures of each state · review · the side-by-side · the gate.
+
+**Refusals.** None — this part makes no call.
+
+**The twin.** Both halves in this part, on one contract.
+
+**Deferred rows this part's files meet.** D2 and D92 (`touches packages/ui/src/components/`) — stay, as ruled in parts b and g. D174 — its cell names `Input/`, which this part does not touch (finding 7). No other row's cell names a file of this part.
+
+**Decisions** (the owner's; the recommended way first).
+1. **The size's steppers.** Built as this board draws them — `+` and `−`, 0.5 a press, the 0.5 held in domain beside the precision — and the step before keeps its field without them — or no steppers here either, one field drawn one way on both screens, and the owner corrects this board's seven frames that draw them (one prompt).
+2. **The four Hindi and Marathi words.** The catalog's words are built — one word per fact on every screen, as ruling 21 did for the kinds' names — and the owner corrects the board's two language frames (one prompt) before part d's live comparison; until then the four are ruled differences — or the board's four words replace the catalog's, which changes the step before and every Marathi tier line.
+
+**Ruled by the owner, 2026-10-12, with the approval: the first way of both.** The brief holds them as rulings 28 and 29.
+
+##### Architecture diagram
+No boundary change — see the task diagram: the node `ui: CompanyProfile (g, h, i)`.
+
+##### Package changes
+- `ui` — `CompanyProfileValues` gains `taxRegistration`, `segment` and `typicalSystemKwp`; `CompanyProfileWords` gains `tax` and `declarations`; `CompanyProfileProps` gains `onChooseSegment` and `onDeclareSize`. Composes `OptionCardGroup`, `NumberField` and `Provenance` beside part g's parts. No new export name, no new dependency.
+- `domain` — with *Decisions*, 1's first way: `TYPICAL_SYSTEM_KWP.step`. The dependency direction is unchanged (`ui` already reads `TYPICAL_SYSTEM_KWP`).
+- Law 12: `CompanyProfileField` is a union `tsc` holds; no brand, enum, token, route, table or error code is new. `CompanyProfile` has no design-system contract, so `design-system-props` skips it — said in part g, unchanged.
+
+##### Data and schema changes
+None — no stored shape changes.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfile.types.ts` | the three values, the two handlers, the words' two blocks | the one prop contract |
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfile.logic.ts` | the tax field in `profileSet`, a field's error | shared by both halves |
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfileSets.tsx` · `CompanyProfileSets.native.tsx` | a field's error and help line; the what-you-sell set | the parts' field sets |
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfile.tsx` · `CompanyProfile.native.tsx` | hand the two handlers to the sets | the frame |
+| modify | `packages/ui/src/components/CompanyProfile/CompanyProfile.css` | the what-you-sell set's gap (`sp-5`), the tax set's (`sp-3`) | the web styles |
+| modify | `packages/domain/src/tenancy/what-you-sell.ts` | `TYPICAL_SYSTEM_KWP.step` (*Decisions*, 1) | the size's facts live here |
+| modify | `tests/e2e/components/CompanyProfile.story.tsx` | hold a registration, a kind and a size; mount the tier's words | the story |
+| add | `tests/e2e/components/CompanyProfile.tax.spec.tsx` | rows h1–h3 | the first spec is 290 lines |
+| add | `tests/e2e/components/CompanyProfile.what-you-sell.spec.tsx` | rows h4–h8 | one file per part's proofs, under 300 lines |
+| modify | `tests/e2e/support/layout.ts` | `expectNothingClipped` — not planned; the review found the clipped-box check written twice, so both specs now call one | the specs' shared layout checks |
+| modify | `tests/e2e/components/CompanyProfile.spec.tsx` | its header no longer says two parts hold no fields | a comment made wrong (Law 8) |
+| modify | `docs/ux/briefs/SCR-M01-05-business-profile.md` | the rulings of *Decisions* 1–2 | the brief owns the screen's facts |
+| modify | `docs/tasks/deferred.md` | D2 gains `NumberField`'s English stepper names and correction lines — not planned; found in the build, outside this part's scope (`CLAUDE.md` §8) | the register |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, `#### Parts`, the design check's fourth entry, the ledger, part h `shipped` | the task |
+
+##### API and contract changes
+None — no wire boundary changes.
+
+##### Risks and rollout
+- **The phone half is unseen until part d.** A fault found there is fixed and counted there.
+- **A prop contract grows with no caller.** Nothing mounts the component before part d; the story is its one consumer and changes here.
+- **Rollout.** Nothing a person meets changes; nothing stored or sent changes.
+
+##### Acceptance criteria and proof
+The task's AC-2 (the format explained, the act live) and AC-4, for the five 375 frames this part draws. AC-1 and AC-3 have no row here.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-2 · h1 the tax part, nothing typed | main-dev | required | `3100` at 375 | opened: one field labelled `GSTIN (optional)`, mono, 335 × 54; the pack's format line under it in the secondary ink; then the format-check sentence, whole; no error; the act is live; typing reports `taxRegistration` as typed, and emptying it reports the empty value | `tests/e2e/components/CompanyProfile.tax.spec.tsx` |
+| AC-2 · h2 a malformed registration | main-dev | required | `3100` at 375 | with `27AAACH7409R1Z` held: the part is open by itself and its header reads `Check the format`; the format line is the field's error in `--danger-text`, drawn once; the format-check sentence stays; the act is enabled and pressing it reports the save; another part can still be opened. Planted red: the field drawn without its error; the act off while the format is wrong | the same |
+| AC-2 · h3 a well-formed registration | main-dev | required | `3100` at 375 | with a registration the pack's check accepts: no error, the format line back as help; shut, the header reads `Added` with the success dot | the same |
+| AC-4 · h4 what you sell, open | main-dev | required | `3100` at 375 | the group named `What you mostly sell`; three cards in one column, each 335 wide, titled `Residential` · `Commercial & industrial (C&I)` · `Both` with this screen's lines, `Residential` chosen; `Typical system size` holding `5` beside `kWp`, 54 tall, two steppers 44 × 54; `estimated · Declared by you` under it; the hint; the act with `Only new proposals reprice · sent ones keep theirs` under it; no sideways scroll | `tests/e2e/components/CompanyProfile.what-you-sell.spec.tsx` |
+| AC-4 · h5 the two answers are reported | main-dev | required | `3100` at 375 | pressing `Both` reports that kind; typing `7.25` reports 7.25 as typed; `+` reports 0.5 more and `−` 0.5 less, never under 0. Planted red: a stepper moving by 1 | the same |
+| AC-4 · h6 the arrival from a failed save | main-dev | required | `3100` at 375 | the lede `What you sell · not saved on the last step`; the part open by itself, its header `Not declared`; no card chosen; the size empty with no tier line; `Market defaults until you set these` under a live act; choosing a kind and a size turns the lede and the line back. Planted red: the tier line drawn with no figure | the same |
+| AC-4 · h7 Hindi and Marathi | main-dev | required | `3100` at 375 | `m-declarations-open` in each: no sideways scroll, no clipped text box, every card title on one line and 335 wide, every standing inside its header, the act's line one line, the act reachable | the same |
+| AC-4 · h8 the touch floor | main-dev | required | `3100` at 375 | the tax field, each card, the size field, each stepper and the act are at least 44 on both axes | the same |
+| AC-4 · side-by-side | qa-web | required | component page `3100`, Main's pictures | each of five frames beside its board picture at 375 — `m-tax-invalid`, `m-declarations-open`, `m-failed-save`, `m-declarations-hi`, `m-declarations-mr` — element by element; ruled differences: the phone chrome, the precision (finding 3), the four words of *Decisions*, 2, the flat errored header (part b), the board's small pictures | Main's pictures in the scratchpad, `qa-web`'s report |
+| the phone | — | not_applicable | — | — | no app draws the component; typechecked here, first seen in part d, where `qa-ios` compares each state |
+| 1536 | — | not_applicable | — | — | part i |
+| the running web and api | — | not_applicable | — | — | no built screen draws `CompanyProfile`; this part makes no call |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part: **14 files** planned — 7 in `packages/ui`, 1 in `packages/domain`, 4 component-test files, 2 documents. Built: **16** — the two unplanned rows of the file table, `tests/e2e/support/layout.ts` and `docs/tasks/deferred.md`.
+
+**Built (2026-10-12).** 16 files against 14 planned. Code: 288 changed lines in `packages/ui` and `packages/domain` (258 added, 30 removed) against about 210 planned — the contract's two word blocks and `sizeField` are longer than counted. Tests: 518 (the two new specs 377, the story, the first spec and the shared helper 141) against about 420 — the review's stronger assertions and the story's rewrite. About 806 against 630 planned, 28% over the estimate and inside the 1,000 target; the overage was the review round's, and no behaviour, route, contract or package was added.
+- **Code: about 210 authored lines** — the contract 35, the logic 45, the web sets 45, the phone sets 55, the two frames 12, the stylesheet 10, domain 3; the changed header comments counted in.
+- **Tests: about 420 authored lines** — the story 45, the tax spec 150, the what-you-sell spec 225.
+- About 630 in all, inside the target. With *Decisions*, 2's second way: 4 more files (two catalogs, two compiled) and about 10 lines.
+- Order: as *Proposal*.
+
+Checklist:
+- [x] the specs, red
+- [x] the contract, the logic, the web half
+- [x] the phone half
+- [x] the story
+- [x] Main's pictures of each state
+- [x] review
+- [x] the side-by-side
+- [x] the gate
+
 #### Design check
 `READY` — 2026-10-12, on the record `SCR-M01-05 - decisions & self-audit.md` (29,484 bytes) read beside the board `SCR-M01-05 Business Profile - Mobile.dc.html` (142,409 bytes, under the read cap). Three checks on one helper. The first found the record behind the board (four frame counts, no Hindi frame, no 1536 alignment numbers, no word plan, a standing FAIL); the owner's redraw closed every finding. Main then found three product facts wrong against the code — three bank fields where `M06-17` and the contract hold four, a city line saying the city sets the market, a count of typed characters the pack cannot give — and the owner corrected them and redrew the 1536 arrangement in the same pass; the third check found nothing.
 
@@ -5054,6 +5200,10 @@ Noted by the helper and not blocking: three stale board notes and three stale re
 **Second entry — the failed save drawn.** `READY` — 2026-10-12, after part a's commit, on the same record file, `SCR-M01-05 - decisions & self-audit.md` (32,106 bytes), read beside the board (148,156 bytes, under the read cap): the owner drew `m-save-failed` (the task RFC's *Decisions*, 6, now closed). The board holds twenty-one frames — seventeen at 375, the sixteen above and `m-save-failed`; four at 1536. `m-save-failed` keeps everything typed, shows one `role="alert"` line at the act, `Not saved · our end · nothing typed is lost`, with `Try again` first and `Continue without it` second; the settings life shows the same line at `Save changes` with no second act and no frame. It is not `m-failed-save`, the arrival from `SCR-M01-04`'s failed save. Main read the record again when part b began and it holds these twenty-one frames; one board note still says twenty. The pictures of that session are gone with its scratchpad: part c takes all twenty-one again.
 
 **Third entry — part g's pictures (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again when part c began (21 frames). Part c drew no frame and took no picture. For part g, `qa-web` reported all eight frames `BLOCKED` — under a set viewport the board's canvas does not scroll — so Main pictured them in the pane at its own size, into the scratchpad as `board/<frame>.png`: `m-default`, `m-loading`, `m-error`, `m-save-failed`, `m-skipped`, `m-address-open`, `m-bank-open` at 238 × 514 each (the board at 90%), `d-default` at 538 × 352 (the board at 50%), and `m-tax-invalid` beside them for part h. Main opened all seven phone pictures side by side and each shows its named state whole. They are small: a comparison reads them beside the record's measured sizes and the board's source (148,156 bytes, read whole for part c).
+
+**Fourth entry — part h (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again when part h began, beside the board (148,245 bytes, under the read cap, saved to the scratchpad by a script). After part g's commit the owner corrected the board to rulings 21 and 25: the three card titles are the step before's names in English, Hindi and Marathi; the open part carries no word on `m-normal`, `m-settings` and `d-settings`; the record gained decision 18, the word plan's row for the kinds and re-measured cards (335 × 74; 76 in Hindi and Marathi). Still twenty-one frames. No helper ran again: Main read the changed lines against the two rulings in the board's source, and they match. One stale board note above `m-normal` (*Five parts marked Added*) touches no frame. Part h's findings on the board are in its RFC (*Proposal*, 1, 2 and 4).
+
+**Board pictures, part h.** Main pictured the five frames in the pane at its own size, the board at 75%, into the scratchpad as `board/<frame>.png`: `m-tax-invalid`, `m-declarations-open`, `m-declarations-hi`, `m-declarations-mr` at 223 × 480 and `m-failed-save` at 223 × 461 (its top 15 px, the phone's status bar, under the board's bar). `qa-web` was not asked: under a set viewport the board's canvas does not scroll (third entry). Each frame shows the list from its top; the size field stands under the fold in all five, so its steppers, tier line and hint are read from the board's source and the record's measurements, not from a picture.
 
 #### Runtime
 Branch `feat/T-M01-005`, cut from `feat/T-M01-004c` (`99ed0bcc`, draft PR #283 open, its `quality`, `e2e-web` and `android` checks running) on a clean tree, by the owner's word, 2026-10-12: the walk reads `origin/main`, where `T-M01-004`'s part c is not yet merged.
@@ -5301,6 +5451,66 @@ End state after the reruns: api, web and Metro stopped; the simulator and the em
 | Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
 | simulator · emulator | none booted | none booted |
 | browser tabs | the board's tab `seed`, signed in by the owner | open, the board's zoom left at 50% (Main changed it from 90% for the pictures) |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | unchanged |
+| watchers | no `tsx … watch` process | none |
+
+**Part h · Runtime (2026-10-12).** Branch `feat/T-M01-005h`, cut from `origin/main` (`3464ce4f`, part g merged as #289) on a clean tree. A light cycle: no stack is prepared.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | the board's tab `seed`, opened by Main for the pictures (`started_by_task`); the owner's sign-in was still held; Main set the board's zoom from 50% to 75% |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | — |
+| watchers | no `tsx … watch` process | — |
+
+**Part h · QA (2026-10-12)** — no stack: no built screen draws the component. The one server was the component test page (`3100`), started and stopped by each `test:ct` run.
+
+- **Order.** The reviewer read alone: four should-fix findings and six notes in round one, all applied (*Mistakes found (part h)*); one note in round two, applied; no blocker. Then `qa-web` on Main's five pictures, taken again on the final code. Its first read passed `m-tax-invalid` and failed four frames on the option cards' flat grey tiles, the typed city inside a Hindi and a Marathi standing, and a lede's line break; on its one retry, with `docs/tasks/UI.md`'s tile row and `Ground.css` as evidence, it passed all five and checked every Hindi and Marathi word against the board's source. Then the Evaluator's gate.
+- **Main's proofs.** `test:ct` on the four specs: 26 passed on the final code. `pnpm check` exit 0. The invariants green after the `deferred.md` change.
+- **Main's pictures.** Each of the five states at 375 × 812, and the four what-you-sell states again scrolled to the size field, by a temporary spec that mounted the story and was deleted after; set beside its board picture in the scratchpad as `pairs/<frame>.png`.
+
+**Planted reds seen (part h).** Each file was restored from a scratchpad copy, compared equal and touched.
+- `CompanyProfileSets.tsx` with the field drawn without its error failed `CompanyProfile.tax.spec.tsx` › *a malformed registration is explained at its field by the format, once; its part opens and says so, and the act stays live*.
+- `CompanyProfile.tsx` with the act off while the format is wrong failed the same test.
+- `CompanyProfile.logic.ts` with `sizeField` lacking the step, and again with the tier kept on a held 0, failed `CompanyProfile.what-you-sell.spec.tsx` › *a pressed card reports its kind, a typed size is reported as typed, and each stepper moves it by the size’s step, never under nothing*.
+- The same file with the tier drawn with no figure failed › *an owner whose answers did not save reads that in the lede, meets the part open and owed with nothing chosen and no tier, and a live act that says what it costs*.
+- Seen red before their code: all ten new tests, by assertion.
+
+**Mistakes found (part h)**, each with the rule that now holds it:
+- The what-you-sell set was written twice, once per half, with its floor, step, precision and tier rule in both (reviewer). One function, `sizeField`, in the logic file; both halves spread it.
+- The field drew `estimated · Declared by you` under a held 0 while the header read `Not declared` (reviewer). The tier follows domain's `isTypicalSystemSize`; a test line holds it, seen red.
+- Two proof rows said more than their tests asserted: the touch floor passed with no card or stepper matched, and a standing was checked on its bottom edge alone (reviewer). Each kind is counted before it is measured; a standing is checked on both edges, four counted. Three row words — *whole*, *under it*, *under a live act* — had no assertion and have one.
+- The clipped-box check was a second copy of the first spec's (reviewer). One `expectNothingClipped` in `tests/e2e/support/layout.ts`.
+- The story's report outputs widened the page a spec measured, so a sideways-scroll check failed on the story, not the component (Main). They sit in a hidden block.
+- Two exports the specs reached for are not in `@heliogrid/i18n`'s entry (Main, at the first run). The specs read the kinds from `companyProfileWords`, as the screen does.
+- The RFC cited a line three off and counted 14 files after two unplanned ones landed (reviewer). Corrected.
+- Part c's record says the board's 23 Hindi and Marathi strings were copied character for character; four were not, their messages being shared with the step before (Main, at the RFC). Ruled by the owner: the catalog's words stand (the brief's ruling 29).
+- `qa-web`'s packet named `docs/tasks/UI.md`'s open rows in general, not the tile row that decides the option cards' look, and it failed four frames on it (Main). The retry carried the row; a later packet names it.
+
+- **The gate.** One run of `pnpm check:all`, passed: 217 test files, 3,848 tests, the api tests on `heliogrid_test`, no skipped or vacuous check, the last stage `invariants green`; nothing regenerated, and the tree was the same before and after. Its duplication report lists the two halves of the field sets (47 lines) and of the act block (33) against each other, under the threshold, as other two-half components are: what is left alike is each half's markup. After it, Main wrote only this record and ran `pnpm check` and the invariants again.
+
+**As proven (part h).**
+
+| row | result | evidence |
+|---|---|---|
+| AC-2 · h1 – h3 | passed | `CompanyProfile.tax.spec.tsx`, 3 tests; planted reds by name |
+| AC-4 · h4 – h8 | passed | `CompanyProfile.what-you-sell.spec.tsx`, 7 tests; planted reds by name |
+| side-by-side | passed on its one retry | `qa-web` on Main's five pictures; every difference left is a ruled one: the phone chrome, the flat errored header (part b), the option cards as flat grey tiles with a ring when chosen (`docs/tasks/UI.md`, the tile row), the four catalog words (ruling 29), the typed city inside a Hindi or Marathi standing, the tier line as `Provenance` draws it, a lede's line break, soft board pictures. The hint under `m-failed-save`'s empty size field is ruled too (*Proposal*, 11; the brief's ruling 30) |
+| the phone · 1536 · the running web and api | not_applicable | as the proof matrix says |
+| the gate | passed | `pnpm check:all`, one run |
+
+**Measurements (part h)** — helper runs: `reviewer` 1 with one continuation (110 k, 135 k), `qa-web` 1 with one continuation (35 k, 49 k), `evaluator` 1 (42 k); one full gate, passed. Main: about 85 tool-call turns and about 438 k context tokens at the commit card. Size: planned 14 files, code about 210, tests about 420; built 16 files, code 288, tests 518.
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | none listening |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| simulator · emulator | none booted | none booted |
+| browser tabs | pane closed | the board's tab `seed` closed by Main; the pane is closed; the board's zoom was left at 75% |
 | database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
 | runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | unchanged |
 | watchers | no `tsx … watch` process | none |

@@ -16,6 +16,7 @@
 
 /* One part's fields, `sp-4` apart; a field and the line that belongs to it, `sp-2` apart. */
 .hg-company-profile-set,
+.hg-company-profile-sells,
 .hg-company-profile-pair,
 .hg-company-profile-act,
 .hg-company-profile-unread {
@@ -29,6 +30,16 @@
 
 .hg-company-profile-pair {
   gap: var(--sp-2);
+}
+
+/* A field and the disclosure of what was checked, `sp-3` apart (`m-tax-invalid`). */
+.hg-company-profile-set[data-disclosed="true"] {
+  gap: var(--sp-3);
+}
+
+/* The kinds of business over the typical size, `sp-5` apart (`m-declarations-open`). */
+.hg-company-profile-sells {
+  gap: var(--sp-5);
 }
 
 /* A failed read is one message, centred in the column's free height (`m-error`). It has no
