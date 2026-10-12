@@ -8,6 +8,22 @@ export async function expectNoSidewaysScroll(page: Page): Promise<void> {
   expect(overflow).toBeLessThanOrEqual(0);
 }
 
+/**
+ * `F7-43` item 7: none of the boxes the selector names scrolls inside itself, either way — one
+ * that does holds a clipped line.
+ */
+export async function expectNothingClipped(page: Page, selector: string): Promise<void> {
+  const clipped = await page.evaluate(
+    (boxes) =>
+      [...document.querySelectorAll(boxes)].filter(
+        (node) =>
+          node.scrollWidth > node.clientWidth + 1 || node.scrollHeight > node.clientHeight + 1,
+      ).length,
+    selector,
+  );
+  expect(clipped).toBe(0);
+}
+
 /** Where an element ends down the page. One with no box ends nowhere, so an upper bound on it fails. */
 export async function bottomOf(locator: Locator): Promise<number> {
   const box = await locator.boundingBox();

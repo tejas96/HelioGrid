@@ -1,4 +1,4 @@
-import type { CompanyProfilePart, StandingMark } from '@heliogrid/domain';
+import type { CompanyProfilePart, StandingMark, TenantSegment } from '@heliogrid/domain';
 
 /** One part of the profile as its header says it: its title, where it stands, and how that is marked. */
 export interface CompanyProfilePartWords {
@@ -29,6 +29,16 @@ export interface CompanyProfileWords {
     readonly postalCodeExample: string;
     readonly purpose: string;
   };
+  readonly tax: {
+    /** The market pack's name for its registration, marked optional. */
+    readonly label: string;
+    /** The market's format in one line: the field's help, until `error` says it instead. */
+    readonly format: string;
+    /** The format again, as the field's error, while what is typed does not read as one. */
+    readonly error: string | null;
+    /** What was checked and what was not — printed whole under the field. */
+    readonly checked: string;
+  };
   readonly bank: {
     readonly bankName: string;
     readonly bankNameExample: string;
@@ -41,6 +51,20 @@ export interface CompanyProfileWords {
     /** What was checked and what was not — printed whole under the routing field. */
     readonly checked: string;
     readonly purpose: string;
+  };
+  readonly declarations: {
+    /** The kinds' group, named above its cards. */
+    readonly group: string;
+    readonly options: readonly {
+      readonly value: TenantSegment;
+      readonly title: string;
+      readonly description: string;
+    }[];
+    readonly sizeLabel: string;
+    readonly unit: string;
+    readonly sizeHint: string;
+    /** Where the size comes from — beside its tier. */
+    readonly sizeSource: string;
   };
   readonly loading: string | null;
   readonly unread: {
@@ -66,19 +90,27 @@ export interface CompanyProfileWords {
   } | null;
 }
 
-/** What the fields hold, as typed; an empty string where nothing is. */
-export interface CompanyProfileValues {
-  readonly companyName: string;
-  readonly city: string;
-  readonly address: string;
-  readonly postalCode: string;
-  readonly bankName: string;
-  readonly accountName: string;
-  readonly accountNumber: string;
-  readonly bankRoutingIdentifier: string;
-}
+/** The fields a person types text into, each reported by its own name. */
+export type CompanyProfileField =
+  | 'companyName'
+  | 'city'
+  | 'address'
+  | 'postalCode'
+  | 'taxRegistration'
+  | 'bankName'
+  | 'accountName'
+  | 'accountNumber'
+  | 'bankRoutingIdentifier';
 
-export type CompanyProfileField = keyof CompanyProfileValues;
+/**
+ * What the screen holds: each text field as typed, an empty string where nothing is, and the two
+ * declarations of the step before, null until declared.
+ */
+export type CompanyProfileValues = Readonly<Record<CompanyProfileField, string>> & {
+  readonly segment: TenantSegment | null;
+  /** In kWp. */
+  readonly typicalSystemKwp: number | null;
+};
 
 /**
  * The company profile's setup life (`SCR-M01-05`; `M01-24`, `M01-31`): five flat parts with where
@@ -93,6 +125,9 @@ export interface CompanyProfileProps {
   open: CompanyProfilePart | null;
   onOpen: (part: CompanyProfilePart | null) => void;
   onEdit: (field: CompanyProfileField, value: string) => void;
+  onChooseSegment: (segment: TenantSegment) => void;
+  /** The size as typed or stepped, in kWp; a field never reports an empty size. */
+  onDeclareSize: (kwp: number) => void;
   /** A save is under way. */
   saving: boolean;
   /** The primary, whichever word it carries: the save, or its retry. */
