@@ -121,7 +121,7 @@ allowed imports; §4 decides where a new file goes. Run §4 before creating one.
 |---|---|
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
 | `docs/engineering/` | how this repo is built. |
-| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers), `skills/task/` (the one step runner — it walks the order and holds the two gates), `agents/` (its read-only helpers), `settings.json` (hard-safety denies). |
+| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers), `skills/task/` (the one step runner — it walks the order and holds the two gates), `agents/` (its read-only helpers), `settings.json` (hard-safety denies, and the plugins switched off here because `skills/task/` is the one step runner). |
 | `.qa/` | git-ignored: `api.log`, `web.log`, `metro.log` — the development logs the launch configurations append to and the e2e suite reads. |
 | `.ops/` | the owner's private infra record, git-ignored: every external account, project and client id, what is still owed, and each environment's values (`dev.env`, `prod.env`). A console change updates it in the same sitting. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
@@ -188,3 +188,11 @@ Digest of the foundations `F1`–`F8`, which are canonical.
   never translated.
 - Read and export work regardless of billing state. Never hold data hostage.
 - The server assigns business identifiers. No feature flags — entitlements are the only gating.
+
+## 10. Compact instructions
+
+When this conversation is compacted, keep: the task and part id and its branch · the RFC's approval
+state and whatever voided it · every owner decision still open, with its options · each failing
+check with its exact output · how many full-gate runs are used · the commit card not yet answered.
+Drop file dumps and passed checks: the task in `docs/tasks/` holds the RFC and its `#### Runtime`
+ledger, so re-read them there.
