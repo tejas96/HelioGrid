@@ -29,7 +29,7 @@ Reached from: the onboarding sequence after "What do you sell?" (M01 §M01.3 beh
 14. **No line at the act says the step is skippable**: a live act with nothing filled in is what skippable looks like. Only the re-seed scope, the cost of an undeclared value and a save that failed keep a line there.
 15. **The prompt at the first send is built with the send** (`T-M06-022`): this screen's tax part, mounted in `EditorSurface` over the proposal. `m-prompt` and `d-prompt` are proven there, where a proposal exists to hold up.
 16. **The bank code's label is the market pack's**, as the tax registration's is: `IFSC` in the India pack, never a word of the screen's own.
-17. **Bank details typed half way are kept as typed.** The part reads `Not added` until all four facts exist, and the bank details' prompt stays owed until then.
+17. **Bank details typed half way are kept as typed.** The part reads `Not added` until all four facts exist, and the bank details' prompt stays owed until then. The half is on this screen's own read alone: a proposal, an invoice or a customer link reads all four facts or none.
 18. **A save that fails keeps everything typed on screen**, with a retry and a way on without saving. `m-save-failed` draws it: one line at the act, `Not saved · our end · nothing typed is lost`, then `Try again` and `Continue without it`; the settings life shows the same line at `Save changes` and no second act.
 19. **`skipped` has no way in yet**: a recorded step is never resumed, and no screen offers a way back into setup. The state is built and waits for that screen.
 20. **The settings life waits on the settings list** its back control returns to; the owner draws that list before this life is built.

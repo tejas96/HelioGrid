@@ -2,6 +2,7 @@ import { CLOCK_TIME_PATTERN, SETTING_SOURCES } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
+  businessProfileReadSchema,
   businessProfileSchema,
   businessProfileWriteSchema,
   taxRegistrationSchema,
@@ -142,14 +143,14 @@ export const tenantSettingsContract = c.router({
     method: 'GET',
     path: '/settings/business-profile',
     summary: 'The business profile: the five parts as stored, the two declarations among them',
-    responses: { 200: businessProfileSchema, ...guarded },
+    responses: { 200: businessProfileReadSchema, ...guarded },
   },
   saveBusinessProfile: {
     method: 'PUT',
     path: '/settings/business-profile',
     body: businessProfileWriteSchema,
     summary: 'Replace the business profile — the one write-point every document reads by reference',
-    responses: { 200: businessProfileSchema, ...guarded },
+    responses: { 200: businessProfileReadSchema, ...guarded },
   },
   taxRegistrations: {
     method: 'GET',

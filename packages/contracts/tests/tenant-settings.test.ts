@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  businessProfileReadSchema,
   businessProfileSchema,
   businessProfileWriteSchema,
   calendarDateSchema,
@@ -132,5 +133,83 @@ describe('the business profile on the wire — each bound at its edge (M01-23, M
     const { postalCode: _unread, ...fromAnOlderClient } = profile;
     expect(businessProfileWriteSchema.safeParse(fromAnOlderClient).success).toBe(true);
     expect(businessProfileSchema.safeParse(fromAnOlderClient).success).toBe(false);
+  });
+});
+
+describe('bank details typed half way on the wire — one to three facts, never beside the whole (M06-17)', () => {
+  const profile = {
+    companyName: 'Sunrise Solar',
+    city: 'Pune',
+    segment: null,
+    typicalSystemKwp: null,
+    address: null,
+    postalCode: null,
+    bankDetails: null,
+  };
+  const nothingTyped = {
+    bankName: null,
+    accountName: null,
+    accountNumber: null,
+    bankRoutingIdentifier: null,
+  };
+  const whole = {
+    bankName: 'HDFC Bank',
+    accountName: 'Sunrise Solar',
+    accountNumber: '50100123454821',
+    bankRoutingIdentifier: 'HDFC0001234',
+  };
+  const refusalsOf = (write: unknown) => {
+    const result = businessProfileWriteSchema.safeParse(write);
+    return result.success ? [] : result.error.issues.map((issue) => issue.path.join('.'));
+  };
+
+  it.each([
+    ['one fact', { ...nothingTyped, bankName: 'HDFC Bank' }],
+    ['two facts', { ...nothingTyped, bankName: 'HDFC Bank', accountNumber: '5010' }],
+    ['three facts', { ...whole, bankRoutingIdentifier: null }],
+    ['none, said as null', null],
+  ])('takes a write with %s', (_what, bankDetailsTyped) => {
+    expect(refusalsOf({ ...profile, bankDetailsTyped })).toEqual([]);
+  });
+
+  it('takes a write that never names it, from a client built before the field', () => {
+    expect(refusalsOf(profile)).toEqual([]);
+  });
+
+  it.each([
+    ['four facts, which are bank details', { ...profile, bankDetailsTyped: whole }],
+    ['no fact at all', { ...profile, bankDetailsTyped: nothingTyped }],
+    [
+      'a half beside whole bank details',
+      { ...profile, bankDetails: whole, bankDetailsTyped: { ...nothingTyped, bankName: 'HDFC' } },
+    ],
+  ])('refuses %s, on the field', (_what, write) => {
+    expect(refusalsOf(write)).toEqual(['bankDetailsTyped']);
+  });
+
+  it.each([
+    ['4'.repeat(34), []],
+    ['4'.repeat(35), ['bankDetailsTyped.accountNumber']],
+    ['', ['bankDetailsTyped.accountNumber']],
+  ])('an account number %o typed alone is refused at %o', (accountNumber, refused) => {
+    const bankDetailsTyped = { ...nothingTyped, accountNumber };
+    expect(refusalsOf({ ...profile, bankDetailsTyped })).toEqual(refused);
+  });
+
+  it('reads a profile with the half, with none, and from an api built before the field', () => {
+    const half = { ...nothingTyped, bankName: 'HDFC Bank' };
+    expect(businessProfileReadSchema.parse({ ...profile, bankDetailsTyped: half })).toEqual({
+      ...profile,
+      bankDetailsTyped: half,
+    });
+    expect(
+      businessProfileReadSchema.safeParse({ ...profile, bankDetailsTyped: null }).success,
+    ).toBe(true);
+    expect(businessProfileReadSchema.safeParse(profile).success).toBe(true);
+  });
+
+  it('keeps the half off the profile a document reads', () => {
+    const half = { ...nothingTyped, bankName: 'HDFC Bank' };
+    expect(businessProfileSchema.parse({ ...profile, bankDetailsTyped: half })).toEqual(profile);
   });
 });

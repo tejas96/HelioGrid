@@ -5,6 +5,7 @@ import {
   type CompanyProfileFacts,
   companyProfileSave,
   companyProfileStanding,
+  isBankDetailsTyped,
   standingMark,
 } from '../../src/tenancy/company-profile';
 
@@ -46,6 +47,13 @@ const fourBankFacts = {
 };
 
 const gst = (value: string) => [{ registrationType: 'IN_GST', value }];
+
+const noBankFact = {
+  bankName: null,
+  accountName: null,
+  accountNumber: null,
+  bankRoutingIdentifier: null,
+};
 
 describe('companyProfileStanding — where each part stands when shut (SCR-M01-05)', () => {
   it('a new company stands as signup left it', () => {
@@ -128,6 +136,7 @@ describe('companyProfileSave — what the act writes (M01-24, M01-25)', () => {
         address: null,
         postalCode: null,
         bankDetails: null,
+        bankDetailsTyped: null,
       },
       registrations: [],
       step: 'skipped',
@@ -177,6 +186,53 @@ describe('companyProfileSave — what the act writes (M01-24, M01-25)', () => {
     expect(save.step).toBe('skipped');
   });
 
+  it.each([
+    ['nothing typed', atSignup.bank],
+    ['spaces alone', { ...atSignup.bank, bankName: '  ' }],
+    [
+      'the holder still the company name, alone',
+      { ...atSignup.bank, accountName: atSignup.companyName },
+    ],
+    [
+      'the holder the company name with spaces around it',
+      { ...atSignup.bank, accountName: ` ${atSignup.companyName} ` },
+    ],
+  ])('with %s no half is kept', (_what, bank) => {
+    const { profile } = companyProfileSave({ ...atSignup, bank }, IN_TAX);
+    expect(profile).toMatchObject({ bankDetails: null, bankDetailsTyped: null });
+  });
+
+  it.each([
+    [
+      'one fact',
+      { ...atSignup.bank, bankName: ' HDFC Bank ' },
+      { ...noBankFact, bankName: 'HDFC Bank' },
+    ],
+    [
+      'the holder changed from the company name, alone',
+      { ...atSignup.bank, accountName: 'S. Deshmukh' },
+      { ...noBankFact, accountName: 'S. Deshmukh' },
+    ],
+    [
+      'the holder still the company name beside another fact',
+      { ...atSignup.bank, accountName: atSignup.companyName, bankName: 'HDFC Bank' },
+      { ...noBankFact, accountName: atSignup.companyName, bankName: 'HDFC Bank' },
+    ],
+    [
+      'three facts',
+      { ...fourBankFacts, bankRoutingIdentifier: '' },
+      { ...fourBankFacts, bankRoutingIdentifier: null },
+    ],
+  ])('with %s the half is kept as typed, trimmed, and is not bank details', (_what, bank, half) => {
+    const { profile } = companyProfileSave({ ...atSignup, bank }, IN_TAX);
+    expect(profile).toMatchObject({ bankDetails: null, bankDetailsTyped: half });
+  });
+
+  it('four facts are bank details, and no half is kept beside them', () => {
+    const { profile } = companyProfileSave({ ...atSignup, bank: fourBankFacts }, IN_TAX);
+    expect(profile).toMatchObject({ bankDetails: fourBankFacts, bankDetailsTyped: null });
+  });
+
   it('with two types, the well-formed one is written and the malformed one left out', () => {
     const registrations = [...gst(WELL_FORMED), second('12')];
     const save = companyProfileSave({ ...atSignup, registrations }, TWO_TYPES);
@@ -217,5 +273,16 @@ describe('companyProfileSave — what the act writes (M01-24, M01-25)', () => {
       segment: null,
       typicalSystemKwp: null,
     });
+  });
+});
+
+describe('isBankDetailsTyped — a half holds one to three facts (M06-17)', () => {
+  it.each([
+    [noBankFact, false],
+    [{ ...noBankFact, bankName: 'HDFC Bank' }, true],
+    [{ ...fourBankFacts, bankRoutingIdentifier: null }, true],
+    [fourBankFacts, false],
+  ])('%o → %s', (typed, held) => {
+    expect(isBankDetailsTyped(typed)).toBe(held);
   });
 });

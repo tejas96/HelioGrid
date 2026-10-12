@@ -32,6 +32,7 @@ const REDACTED_PATHS = [
   '*.address',
   '*.postalCode',
   '*.bankDetails',
+  '*.bankDetailsTyped',
   '*.registrations',
   'req.body.email',
   'req.body.otp',

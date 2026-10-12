@@ -1,12 +1,12 @@
-import type { BusinessProfile } from '@heliogrid/contracts';
+import type { BusinessProfileRead, BusinessProfileWrite } from '@heliogrid/contracts';
 import type { ApiClient } from '../client/client';
 import { normalizeClientError, toApiError } from '../errors/errors';
 
 /** A company's settings (`M01-31`). The api answers only a person who manages them. */
 export interface SettingsRepository {
-  businessProfile(signal?: AbortSignal): Promise<BusinessProfile>;
+  businessProfile(signal?: AbortSignal): Promise<BusinessProfileRead>;
   /** Replaces the profile whole: send what was read, changed where the person answered. */
-  saveBusinessProfile(profile: BusinessProfile): Promise<BusinessProfile>;
+  saveBusinessProfile(profile: BusinessProfileWrite): Promise<BusinessProfileRead>;
 }
 
 /** The types are INFERRED from the contract, never a hand-written copy of the response. */

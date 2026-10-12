@@ -10,6 +10,7 @@ import {
 } from '@heliogrid/db';
 import {
   type BankDetails,
+  type BankDetailsTyped,
   ONBOARDING_STEPS,
   STANDARD_TRANCHE_TEMPLATES,
   type TenantSegment,
@@ -90,14 +91,23 @@ export interface StoredProfile {
   readonly address: string | null;
   readonly postalCode: string | null;
   readonly bankDetails: BankDetails | null;
+  /** Held only while `bankDetails` is not: no document reads it. */
+  readonly bankDetailsTyped: BankDetailsTyped | null;
 }
 
 /**
- * The profile as one write. A client built before the postal code existed sends back what it
- * read, so a write that leaves the postal code out keeps the stored one; `null` clears it.
+ * The profile as one write. A client built before the postal code or the typed bank details
+ * existed sends back what it read, so a write that leaves one out keeps the stored one; `null`
+ * clears it.
  */
-export interface ProfileToWrite extends Omit<StoredProfile, 'postalCode'> {
+export interface ProfileToWrite extends Omit<StoredProfile, 'postalCode' | 'bankDetailsTyped'> {
   readonly postalCode?: string | null;
+  readonly bankDetailsTyped?: BankDetailsTyped | null;
+}
+
+/** A fact a write may leave out: absent keeps what is stored, `null` clears it. */
+function kept<Fact>(sent: Fact | null | undefined, stored: Fact | null | undefined): Fact | null {
+  return sent === undefined ? (stored ?? null) : sent;
 }
 
 /**
@@ -117,8 +127,12 @@ export class SettingsAdminRepository {
       const stored = await storedProfile(tx, tenantId);
       const profile: StoredProfile = {
         ...write,
-        postalCode:
-          write.postalCode === undefined ? (stored?.postalCode ?? null) : write.postalCode,
+        postalCode: kept(write.postalCode, stored?.postalCode),
+        // Whole bank details replace the half: the two are never stored together.
+        bankDetailsTyped:
+          write.bankDetails === null
+            ? kept(write.bankDetailsTyped, stored?.bankDetailsTyped)
+            : null,
       };
       if (stored !== null && isDeepStrictEqual(stored, profile)) return stored;
       const now = new Date(act.now);
@@ -146,6 +160,7 @@ export class SettingsAdminRepository {
           address: profile.address,
           postalCode: profile.postalCode,
           bankDetails: profile.bankDetails,
+          bankDetailsTyped: profile.bankDetailsTyped,
           createdAt: now,
           updatedAt: now,
         })
@@ -155,6 +170,7 @@ export class SettingsAdminRepository {
             address: profile.address,
             postalCode: profile.postalCode,
             bankDetails: profile.bankDetails,
+            bankDetailsTyped: profile.bankDetailsTyped,
             updatedAt: now,
           },
         })
@@ -163,6 +179,7 @@ export class SettingsAdminRepository {
           address: businessProfile.address,
           postalCode: businessProfile.postalCode,
           bankDetails: businessProfile.bankDetails,
+          bankDetailsTyped: businessProfile.bankDetailsTyped,
         });
       if (!row) throw new Error('business_profile upsert returned no row');
       await recordAuditEntry(
@@ -179,6 +196,7 @@ export class SettingsAdminRepository {
         address: row.address,
         postalCode: row.postalCode,
         bankDetails: row.bankDetails,
+        bankDetailsTyped: row.bankDetailsTyped,
       });
     });
   }
@@ -194,6 +212,7 @@ async function storedProfile(tx: DbTransaction, tenantId: string): Promise<Store
       address: businessProfile.address,
       postalCode: businessProfile.postalCode,
       bankDetails: businessProfile.bankDetails,
+      bankDetailsTyped: businessProfile.bankDetailsTyped,
     })
     .from(tenant)
     .innerJoin(businessProfile, eq(businessProfile.tenantId, tenant.id))

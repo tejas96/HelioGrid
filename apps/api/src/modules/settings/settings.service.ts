@@ -1,7 +1,7 @@
 import type {
   Branding,
   BrandingWrite,
-  BusinessProfile,
+  BusinessProfileRead,
   BusinessProfileWrite,
   EffectiveSettings as EffectiveSettingsWire,
   Holidays,
@@ -30,7 +30,7 @@ import type { TenantQuietHours } from '../notification/notification.public';
 import { brandingWire, effectiveWire } from './internal/wire';
 import { SettingsAdminRepository } from './settings.admin.repository';
 import { QuietHoursRepository } from './settings.quiet-hours.repository';
-import { SettingsRepository } from './settings.repository';
+import { SettingsRepository, type TenantSettingsRead } from './settings.repository';
 
 /**
  * Tenant settings (`M01-28`, `M01-31`, `M01-50`, `M01-59`): the one resolved read, and the
@@ -53,8 +53,10 @@ export class SettingsService {
     return effectiveWire(await this.inForce(tenantId));
   }
 
-  async businessProfile(tenantId: string): Promise<BusinessProfile> {
-    const { value } = (await this.inForce(tenantId)).companyIdentity;
+  /** The identity facts in force, and beside them the bank details typed half way, as stored. */
+  async businessProfile(tenantId: string): Promise<BusinessProfileRead> {
+    const read = await this.stored(tenantId);
+    const { value } = (await this.resolved(read)).companyIdentity;
     return {
       companyName: value.companyName,
       city: value.city,
@@ -63,6 +65,8 @@ export class SettingsService {
       address: value.address,
       postalCode: value.postalCode,
       bankDetails: value.bankDetails,
+      // A half left beside whole details by an api built before the field is never answered.
+      bankDetailsTyped: value.bankDetails === null ? read.bankDetailsTyped : null,
     };
   }
 
@@ -70,7 +74,7 @@ export class SettingsService {
     tenantId: string,
     body: BusinessProfileWrite,
     act: Act,
-  ): Promise<BusinessProfile> {
+  ): Promise<BusinessProfileRead> {
     return this.crossTenant.saveProfile(tenantId, body, act);
   }
 
@@ -143,8 +147,16 @@ export class SettingsService {
 
   /** Every setting resolved for this tenant — one read, one rule (`M01-28`). */
   private async inForce(tenantId: string): Promise<EffectiveSettings> {
+    return this.resolved(await this.stored(tenantId));
+  }
+
+  private async stored(tenantId: string): Promise<TenantSettingsRead> {
     const read = await this.scoped.everything(tenantId);
     if (read === null) throw notVisible();
+    return read;
+  }
+
+  private async resolved(read: TenantSettingsRead): Promise<EffectiveSettings> {
     const { marketCode, ...tenant } = read.tenant;
     const pack = await this.markets.currentPackOf(marketCode);
     return resolveEffectiveSettings({
