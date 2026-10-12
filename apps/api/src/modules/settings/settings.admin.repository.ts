@@ -90,18 +90,21 @@ export interface StoredProfile {
   readonly typicalSystemKwp: number | null;
   readonly address: string | null;
   readonly postalCode: string | null;
+  readonly logoFileId: string | null;
   readonly bankDetails: BankDetails | null;
   /** Held only while `bankDetails` is not: no document reads it. */
   readonly bankDetailsTyped: BankDetailsTyped | null;
 }
 
 /**
- * The profile as one write. A client built before the postal code or the typed bank details
- * existed sends back what it read, so a write that leaves one out keeps the stored one; `null`
- * clears it.
+ * The profile as one write. A client built before the postal code, the logo or the typed bank
+ * details existed sends back what it read, so a write that leaves one out keeps the stored one;
+ * `null` clears it.
  */
-export interface ProfileToWrite extends Omit<StoredProfile, 'postalCode' | 'bankDetailsTyped'> {
+export interface ProfileToWrite
+  extends Omit<StoredProfile, 'postalCode' | 'logoFileId' | 'bankDetailsTyped'> {
   readonly postalCode?: string | null;
+  readonly logoFileId?: string | null;
   readonly bankDetailsTyped?: BankDetailsTyped | null;
 }
 
@@ -128,6 +131,7 @@ export class SettingsAdminRepository {
       const profile: StoredProfile = {
         ...write,
         postalCode: kept(write.postalCode, stored?.postalCode),
+        logoFileId: kept(write.logoFileId, stored?.logoFileId),
         // Whole bank details replace the half: the two are never stored together.
         bankDetailsTyped:
           write.bankDetails === null
@@ -159,6 +163,7 @@ export class SettingsAdminRepository {
           tenantId,
           address: profile.address,
           postalCode: profile.postalCode,
+          logoFileId: profile.logoFileId,
           bankDetails: profile.bankDetails,
           bankDetailsTyped: profile.bankDetailsTyped,
           createdAt: now,
@@ -169,6 +174,7 @@ export class SettingsAdminRepository {
           set: {
             address: profile.address,
             postalCode: profile.postalCode,
+            logoFileId: profile.logoFileId,
             bankDetails: profile.bankDetails,
             bankDetailsTyped: profile.bankDetailsTyped,
             updatedAt: now,
@@ -178,6 +184,7 @@ export class SettingsAdminRepository {
           id: businessProfile.id,
           address: businessProfile.address,
           postalCode: businessProfile.postalCode,
+          logoFileId: businessProfile.logoFileId,
           bankDetails: businessProfile.bankDetails,
           bankDetailsTyped: businessProfile.bankDetailsTyped,
         });
@@ -195,6 +202,7 @@ export class SettingsAdminRepository {
         ...facts,
         address: row.address,
         postalCode: row.postalCode,
+        logoFileId: row.logoFileId,
         bankDetails: row.bankDetails,
         bankDetailsTyped: row.bankDetailsTyped,
       });
@@ -211,6 +219,7 @@ async function storedProfile(tx: DbTransaction, tenantId: string): Promise<Store
       typicalSystemKwp: tenant.typicalSystemKwp,
       address: businessProfile.address,
       postalCode: businessProfile.postalCode,
+      logoFileId: businessProfile.logoFileId,
       bankDetails: businessProfile.bankDetails,
       bankDetailsTyped: businessProfile.bankDetailsTyped,
     })

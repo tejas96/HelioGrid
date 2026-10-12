@@ -4,7 +4,7 @@ import {
   isBankDetailsTyped,
 } from '@heliogrid/domain';
 import { z } from 'zod';
-import { tenantSegmentSchema } from './common';
+import { tenantSegmentSchema, uuidSchema } from './common';
 import { citySchema, companyNameSchema } from './tenant';
 
 /**
@@ -70,6 +70,8 @@ export const businessProfileSchema = z.object({
     .nullable(),
   address: boundedText('address').nullable(),
   postalCode: postalCodeSchema.nullable(),
+  /** The company's logo: the id of its stored `file`, read through `GET /files/{id}/download-url`. */
+  logoFileId: uuidSchema.nullable(),
   bankDetails: bankDetailsSchema.nullable(),
 });
 export type BusinessProfile = z.infer<typeof businessProfileSchema>;
@@ -85,14 +87,15 @@ export const businessProfileReadSchema = businessProfileSchema.extend({
 export type BusinessProfileRead = z.infer<typeof businessProfileReadSchema>;
 
 /**
- * The profile as a client writes it. `postalCode` and `bankDetailsTyped` may be left out: a client
- * built before a field existed sends back what it read, and a whole replace must not clear a fact
+ * The profile as a client writes it. `postalCode`, `logoFileId` and `bankDetailsTyped` may be left
+ * out: a client built before a field existed sends back what it read, and a whole replace must not clear a fact
  * it never saw — absent keeps what is stored, `null` clears it. Whole bank details and a half are
  * never written together.
  */
 export const businessProfileWriteSchema = businessProfileSchema
   .extend({
     postalCode: postalCodeSchema.nullable().optional(),
+    logoFileId: uuidSchema.nullable().optional(),
     bankDetailsTyped: bankDetailsTypedSchema.nullable().optional(),
   })
   .refine(({ bankDetails, bankDetailsTyped }) => bankDetails === null || !bankDetailsTyped, {

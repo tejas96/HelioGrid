@@ -161,6 +161,7 @@ describe.skipIf(skip)('the settings writes, against a migrated database', () => 
       typicalSystemKwp: 5.5,
       address: '4 Civil Lines, Nagpur',
       postalCode: '440001',
+      logoFileId: null,
       bankDetails: {
         bankName: 'Bank of Nagpur',
         accountName: 'Writes Solar Pvt Ltd',

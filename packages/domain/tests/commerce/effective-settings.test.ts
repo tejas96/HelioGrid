@@ -25,6 +25,7 @@ const everythingSet: TenantSettings = {
   businessProfile: {
     address: '12 MG Road, Pune',
     postalCode: '411001',
+    logoFileId: null,
     bankDetails: {
       bankName: 'Bank of Pune',
       accountName: 'Sunrise Solar',
@@ -63,7 +64,13 @@ describe('resolveEffectiveSettings — a tenant with no rows gets the platform e
   it('marks every setting platform and fills each with its default', () => {
     expect(effective.companyIdentity).toEqual({
       source: 'platform',
-      value: { ...signupOnly, address: null, postalCode: null, bankDetails: null },
+      value: {
+        ...signupOnly,
+        address: null,
+        postalCode: null,
+        logoFileId: null,
+        bankDetails: null,
+      },
     });
     expect(effective.taxRegistrations).toEqual({ source: 'platform', value: [] });
     expect(effective.branding).toEqual({
@@ -195,17 +202,27 @@ describe('the seeded split is the platform’s until touched (SCR-M01-20: given,
     expect(effective.locale.source).toBe('tenant');
   });
 
-  it('reads the identity as the tenant’s from a PIN code alone', () => {
+  it.each([
+    ['a PIN code', { postalCode: '411001' }],
+    ['a logo', { logoFileId: '0199d3a0-7c1e-7b7a-9d7e-4f6a2b8c1d3e' }],
+  ])('reads the identity as the tenant’s from %s alone', (_fact, held) => {
     const effective = resolveEffectiveSettings({
       formats: IN_FORMATS,
       tenant: signupOnly,
       settings: {
         ...nothingSet,
-        businessProfile: { address: null, postalCode: '411001', bankDetails: null },
+        businessProfile: {
+          address: null,
+          postalCode: null,
+          logoFileId: null,
+          bankDetails: null,
+          ...held,
+        },
       },
       promptPoints: {},
     });
     expect(effective.companyIdentity.source).toBe('tenant');
+    expect(effective.companyIdentity.value).toMatchObject(held);
   });
 
   it('reads branding as the tenant’s from a letterhead alone, with no shades to derive', () => {

@@ -15,6 +15,7 @@ import {
   clockTimeHhmm,
   compliantShades,
   type EffectiveSettings,
+  type FileSubjectKind,
   type MarketPack,
   marketQuietHours,
   packLabel,
@@ -22,15 +23,26 @@ import {
   resolveEffectiveSettings,
   type UiLanguage,
 } from '@heliogrid/domain';
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
 import { ContractException } from '../../common/errors/contract-exception';
+import { FileService } from '../file/file.public';
 import { MarketPackService } from '../market/market.public';
 import type { TenantQuietHours } from '../notification/notification.public';
 import { brandingWire, effectiveWire } from './internal/wire';
 import { SettingsAdminRepository } from './settings.admin.repository';
 import { QuietHoursRepository } from './settings.quiet-hours.repository';
 import { SettingsRepository, type TenantSettingsRead } from './settings.repository';
+
+/** The subject a company's logo is stored against (`FILE_SUBJECT_RULES.tenant`). */
+const LOGO: FileSubjectKind = 'tenant';
+
+/** The file service's two ways of saying a file is not a confirmed one of this company and kind. */
+function isNoStoredLogo(refusal: unknown): boolean {
+  if (!(refusal instanceof HttpException)) return false;
+  const status = refusal.getStatus();
+  return status === HttpStatus.NOT_FOUND || status === HttpStatus.CONFLICT;
+}
 
 /**
  * Tenant settings (`M01-28`, `M01-31`, `M01-50`, `M01-59`): the one resolved read, and the
@@ -47,6 +59,7 @@ export class SettingsService {
     @Inject(SettingsAdminRepository) private readonly crossTenant: SettingsAdminRepository,
     @Inject(MarketPackService) private readonly markets: MarketPackService,
     @Inject(QuietHoursRepository) private readonly quiet: QuietHoursRepository,
+    @Inject(FileService) private readonly files: FileService,
   ) {}
 
   async effective(tenantId: string): Promise<EffectiveSettingsWire> {
@@ -64,6 +77,7 @@ export class SettingsService {
       typicalSystemKwp: value.typicalSystemKwp,
       address: value.address,
       postalCode: value.postalCode,
+      logoFileId: value.logoFileId,
       bankDetails: value.bankDetails,
       // A half left beside whole details by an api built before the field is never answered.
       bankDetailsTyped: value.bankDetails === null ? read.bankDetailsTyped : null,
@@ -75,7 +89,32 @@ export class SettingsService {
     body: BusinessProfileWrite,
     act: Act,
   ): Promise<BusinessProfileRead> {
+    await this.refuseUnlessOwnLogo(tenantId, body.logoFileId);
     return this.crossTenant.saveProfile(tenantId, body, act);
+  }
+
+  /**
+   * A logo is this company's own confirmed image or it is refused at its field: a pointer taken on
+   * trust would let one company name another's file. The file service refuses with a 404 (no such
+   * file of this company and kind) or a 409 (declared, never stored) — statuses this route does not
+   * declare — so those two become the shared 400, and anything else is thrown on as it is.
+   */
+  private async refuseUnlessOwnLogo(
+    tenantId: string,
+    logoFileId: string | null | undefined,
+  ): Promise<void> {
+    if (logoFileId === null || logoFileId === undefined) return;
+    try {
+      await this.files.confirmed(tenantId, logoFileId, LOGO);
+    } catch (refusal) {
+      if (!isNoStoredLogo(refusal)) throw refusal;
+      throw new ContractException(
+        'VALIDATION_FAILED',
+        'That file is not a stored logo of this company.',
+        HttpStatus.BAD_REQUEST,
+        [{ path: 'logoFileId', issue: 'not a stored logo of this company' }],
+      );
+    }
   }
 
   async taxRegistrations(tenantId: string): Promise<TaxRegistrations> {

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { FileModule } from '../file/file.public';
 import { MarketModule } from '../market/market.public';
 import { SettingsAdminRepository } from './settings.admin.repository';
 import { SettingsController } from './settings.controller';
@@ -14,12 +15,13 @@ import { SettingsTranchesRepository } from './settings.tranches.repository';
 
 /**
  * Tenant settings and the setup corridor (`T-M01-026`). It reads the tenant's market pack for
- * the tax formats and the holiday floor; the tenant module calls its seed inside the creation
+ * the tax formats and the holiday floor, and asks the file module whether a logo is the company's
+ * own; the tenant module calls its seed inside the creation
  * transaction and reads a company's quiet hours through the public surface, never the other way
  * round.
  */
 @Module({
-  imports: [MarketModule],
+  imports: [MarketModule, FileModule],
   controllers: [SettingsController, SettingsOnboardingController],
   providers: [
     SettingsService,
