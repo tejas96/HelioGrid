@@ -111,11 +111,12 @@ the `qa-web` row (`.claude/skills/task/references/qa.md`). Android phone flows m
 the step must be `Phone flows (tests/e2e/mobile) on the emulator`. A run of `Phone flows OFF`
 proves nothing and the row is `blocked`, never passed. iOS journeys are local `qa-ios` proofs.
 A screen task with a board (a studio screen has none) has one `side-by-side` row per board frame
-it renders on the web — each state, 375, 1536, each language render — owned by `qa-web`, and one
+it renders on the web — each state, 375, 1536 — owned by `qa-web`, and one
 per phone state owned by `qa-ios` alone, its language rotating state by state (English, Hindi,
-Marathi) so the phone shows each language the states allow. `qa-android` walks the same journey
-rows and compares no frame: both phones draw the one shared component, and the web at 375 already
-compares every language render. Web at 375 is compared with the phone frame. A state the board draws only at 375 is compared at 1536 with
+Marathi); in Hindi and Marathi it compares the layout, the words being the catalog's. `qa-android`
+walks the same journey rows and compares no frame: both phones draw the one shared component.
+Hindi and Marathi have no board frame: one `main-dev` row per shared component proves them by its
+component spec at 375 and 1536 — no sideways scroll, no clipped text box, the act on screen. Web at 375 is compared with the phone frame. A state the board draws only at 375 is compared at 1536 with
 its phone frame and the board's stated 1536 rule (`docs/start-here.md`, desktop states), not flagged
 as missing. A frame with no row, or a built state with no frame and no stated rule, is a finding. A side-by-side row names only a frame the running app reaches today with data QA can make through the app; a frame it cannot reach is decided in the RFC — `not_applicable` with the reason, or proven by its component's spec — never found by QA. In a
 light cycle the row's surface is the component page on `3100`, where `qa-web` compares the frames

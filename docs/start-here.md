@@ -171,10 +171,6 @@ reason is "it explains…" is Help — push back before looking at the frame.
 > Draw each state at **375px**. Then draw at **1536px only the states whose desktop arrangement
 > genuinely differs** from the mobile answer. For every state you do *not* draw at desktop, name it
 > and say in one line why the desktop version is the mobile one at width.
->
-> **Then the language proof (contract item 4).** Take the 375 frame with the longest copy and draw
-> it again in Hindi and in Marathi. Measure both: nothing clips, nothing overlaps, no fixed height.
-> A screen without this proof is not finished.
 
 **Message 4:**
 
@@ -228,11 +224,11 @@ AFTER   DESIGN: SCR-… → <link>
 ```
 
 The link is the screen's main (Mobile) board. **When the screen has more than one board** (States,
-Desktop States, Language …), the `DESIGN:` line lists every other board after the main link, so
+Desktop States …), the `DESIGN:` line lists every other board after the main link, so
 whoever builds the screen reaches all of them in one click:
 
 ```
-AFTER   DESIGN: SCR-… → <main link> · also: States <link> · Language <link>
+AFTER   DESIGN: SCR-… → <main link> · also: States <link> · Desktop States <link>
 ```
 
 Once every `DESIGN:` line a task carries holds a link, its `Status:` turns `designed`.

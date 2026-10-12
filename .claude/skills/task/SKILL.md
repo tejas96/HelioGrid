@@ -64,10 +64,14 @@ listing; anything else goes to the owner as the helper's one prompt. The owner's
 means: fetch again, check again. A studio screen reads `ported from the POC` and has no check.
 
 After `READY`, `qa-web` pictures every frame the task renders from the board in the browser pane
-Main opened (the owner signed in): each state, at 375 and 1536, and each language render, a phone
+Main opened (the owner signed in): each state, at 375 and 1536, a phone
 frame at least 375 px wide, into the scratchpad as `board/<frame>.png`, and returns their paths; a
 frame it reports `BLOCKED` Main captures itself. `#### Design check` lists them; the build reads
 the pictures with the record.
+
+The check's `against code` rows go to the owner once, before the task's first RFC: the helper's
+prompt for the rows the board must change, a brief ruling for each of the rest. A later part reads
+only what the board changed since.
 
 The board is the design, not an order. A frame that looks wrong — against a PRD row, the brief, a
 law or rule, accessibility or another frame, or with a clearly simpler way to the same row — goes to
@@ -132,7 +136,7 @@ stops for the owner. Never respawn the Evaluator; one lost to a restart follows 
 ## 6. Pre-commit card
 
 Show, and stop: the AC proof summary (the evaluator's rows), the side-by-side images of a screen
-task, the review result, every planted-red line, the changed files in three lists (planned and
+task, its built Hindi and Marathi pictures, the review result, every planted-red line, the changed files in three lists (planned and
 built · built but not planned, each with its reason · planned but not built), the exact commit message (the task's `Status:` or the part's row
 turns `shipped` in this commit), mistakes found and the rule that now prevents each, unresolved
 blockers, the runtime cleanup state, and the measurements — tool-call turns, Main's context tokens

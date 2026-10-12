@@ -41,7 +41,7 @@ Reached from: the onboarding sequence after "What do you sell?" (M01 §M01.3 beh
 26. **The logo's capture area lands whole with the logo** — its words, its hint by device, its refusal and the upload together; until then the first part holds the company name alone.
 27. **A field reports what is typed as it is typed, and can be emptied.** The board marks the fields commit-on-blur; the shared field's commit-once mode never commits an empty box, so a typed address could not be taken out again. Nothing is saved before the act either way.
 28. **The typical size has `+` and `−` steppers on this screen, 0.5 kWp a press**, as drawn; the step before keeps its field without them. The field holds two decimals, the stored column's precision, where the board passes one.
-29. **A word two screens share is the catalog's one word in every language.** The board's two language frames print other Hindi and Marathi words for *Declared by you* (both), *Typical system size* (Marathi) and the tier word (Marathi) than the step before and every tier line show; the catalog's are built, and the two frames are to be corrected to match before the part that compares them on a running app.
+29. **A word two screens share is the catalog's one word in every language.** *Declared by you*, *Typical system size* and the tier word read here as the step before and every tier line show them; the board's two language frames are not read (`.claude/rules/ui-adherence.md`, *Screens*).
 30. **The size's hint stands under an empty size field too.** `m-failed-save` draws the field with no hint; *The size you sell most often* helps most where nothing is declared, so it is built in every state, and the frame is to be corrected to match.
 
 
