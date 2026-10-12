@@ -86,6 +86,11 @@ jobs:
     name: quality
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    # The secret scan lists the pull request's commits to scan exactly those; without this read the
+    # step fails before it scans anything. A job's block replaces the workflow's, so both are named.
+    permissions:
+      contents: read
+      pull-requests: read
     services:
       postgres:
         # The digest infra/compose.yaml pins, so the gate lane and a developer's
