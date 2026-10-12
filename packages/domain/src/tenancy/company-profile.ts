@@ -45,6 +45,25 @@ export function standingMark(standing: CompanyProfileStanding): StandingMark {
 }
 
 /**
+ * Bank details typed half way (`M06-17`): one to three of the four facts, kept so the owner is not
+ * asked for them again. Never bank details: a document reads the whole or nothing.
+ */
+export type BankDetailsTyped = { readonly [Fact in keyof BankDetails]: BankDetails[Fact] | null };
+
+const BANK_FACTS = [
+  'bankName',
+  'accountName',
+  'accountNumber',
+  'bankRoutingIdentifier',
+] as const satisfies readonly (keyof BankDetails)[];
+
+/** A half holds one to three facts: none is nothing typed, and four are bank details. */
+export function isBankDetailsTyped(typed: BankDetailsTyped): boolean {
+  const held = BANK_FACTS.filter((fact) => typed[fact] !== null).length;
+  return held > 0 && held < BANK_FACTS.length;
+}
+
+/**
  * The profile as a device holds it until the act: every field as typed, an empty string where
  * nothing is. The name, the city and the two declarations arrive from the steps before.
  */
@@ -97,16 +116,19 @@ export interface CompanyProfileSave {
     readonly address: string | null;
     readonly postalCode: string | null;
     readonly bankDetails: BankDetails | null;
+    /** Set only while `bankDetails` is not: the two are never written together. */
+    readonly bankDetailsTyped: BankDetailsTyped | null;
   };
   readonly registrations: readonly TaxRegistration[];
   readonly step: StepState;
 }
 
 /**
- * What a save writes. A malformed registration is left out and stops nothing — the api would
- * refuse the whole list for it, and `M01-25` keeps the way on open. A size that is no declaration
- * is written as none, so what is stored stands as the screen says it. The step is `completed` once
- * a part of this screen's own holds a fact, and `skipped` while none does (`M01-24`).
+ * What a save writes. Bank details are written whole, or as the half that is typed, never both. A
+ * malformed registration is left out and stops nothing — the api would refuse the whole list for
+ * it, and `M01-25` keeps the way on open. A size that is no declaration is written as none, so what
+ * is stored stands as the screen says it. The step is `completed` once a part of this screen's own
+ * holds a fact, and `skipped` while none does (`M01-24`).
  */
 export function companyProfileSave(facts: CompanyProfileFacts, tax: TaxPack): CompanyProfileSave {
   const address = typed(facts.address);
@@ -124,6 +146,7 @@ export function companyProfileSave(facts: CompanyProfileFacts, tax: TaxPack): Co
       address,
       postalCode,
       bankDetails,
+      bankDetailsTyped: bankDetailsHalf(facts),
     },
     registrations,
     step: holdsAFact ? 'completed' : 'skipped',
@@ -193,11 +216,17 @@ function typed(value: string): string | null {
   return trimmed === '' ? null : trimmed;
 }
 
+function bankFactsTyped(bank: BankDetails): BankDetailsTyped {
+  return {
+    bankName: typed(bank.bankName),
+    accountName: typed(bank.accountName),
+    accountNumber: typed(bank.accountNumber),
+    bankRoutingIdentifier: typed(bank.bankRoutingIdentifier),
+  };
+}
+
 function bankDetailsHeld(bank: BankDetails): BankDetails | null {
-  const bankName = typed(bank.bankName);
-  const accountName = typed(bank.accountName);
-  const accountNumber = typed(bank.accountNumber);
-  const bankRoutingIdentifier = typed(bank.bankRoutingIdentifier);
+  const { bankName, accountName, accountNumber, bankRoutingIdentifier } = bankFactsTyped(bank);
   if (
     bankName === null ||
     accountName === null ||
@@ -207,6 +236,18 @@ function bankDetailsHeld(bank: BankDetails): BankDetails | null {
     return null;
   }
   return { bankName, accountName, accountNumber, bankRoutingIdentifier };
+}
+
+/**
+ * The half a save keeps. The account holder opens holding the company name, so that name with no
+ * other fact beside it is nothing the owner typed.
+ */
+function bankDetailsHalf(facts: CompanyProfileFacts): BankDetailsTyped | null {
+  const half = bankFactsTyped(facts.bank);
+  if (!isBankDetailsTyped(half)) return null;
+  const others = BANK_FACTS.filter((fact) => fact !== 'accountName');
+  const holderAlone = others.every((fact) => half[fact] === null);
+  return holderAlone && half.accountName === facts.companyName.trim() ? null : half;
 }
 
 /**

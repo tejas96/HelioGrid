@@ -167,6 +167,7 @@ describe.skipIf(skip)('the settings writes, against a migrated database', () => 
         accountNumber: '00123456789',
         bankRoutingIdentifier: 'NAGP0001234',
       },
+      bankDetailsTyped: null,
     };
     expect(await settings.saveBusinessProfile(here.tenantId, profile, by())).toEqual(profile);
     const [row] = await pools.admin.db

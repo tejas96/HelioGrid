@@ -4411,14 +4411,14 @@ The whole task; the letter on a node is the part that builds it.
 
 ```mermaid
 flowchart LR
-  owner["Owner: Continue on What You Sell"] --> landing["domain: setupStepOwed, landingFor (d)"]
-  landing --> screens["web and phone screens (d, f)"]
-  hook["data/react: useCompanyProfile (d)"] --> screens
-  api[("api: business profile, tax registrations, progress (a)")] --> hook
+  owner["Owner: Continue on What You Sell"] --> landing["domain: setupStepOwed, landingFor (j, k)"]
+  landing --> screens["web and phone screens (j, k, f)"]
+  hook["data/react: useCompanyProfile (j)"] --> screens
+  api[("api: business profile, tax registrations, progress (a, d)")] --> hook
   pack[("api: GET /market-packs, pack.tax (a)")] --> hook
   files[("api: POST /files, the logo pointer (e)")] --> logo["data/react: the logo upload (e)"]
   logo --> screens
-  rules["domain: where a part stands, what a save writes (c), the letterhead's lines (i)"] --> hook
+  rules["domain: where a part stands, what a save writes (c, d), the letterhead's lines (i)"] --> hook
   rules --> words
   words["i18n: companyProfileWords (c, i)"] --> ui["ui: CompanyProfile (g, h, i)"]
   screens --> ui
@@ -4450,7 +4450,7 @@ Per part.
 AC-1 is `not_applicable` in this task (*Decisions*, 2, ruled): its proof is `T-M06-022`'s, written into that task. Each part's RFC holds its rows of the one matrix.
 
 ##### Delivery size
-Nine parts since part c's RFC split c in three and part g's added i (`#### Parts`: a, b, c, g, h, i, d, e, f), about 135 files in all. No smaller part can be accepted alone: the api must hold a fact before a screen saves it, a shared component lands before either app draws it (Law 7), and the logo and the settings life each need a surface the step does not. a: about 20 files, sized in its RFC. b: about 15. c, g, h and i: sized in their own RFCs. d: about 30. e: about 25. f: about 20. Each later RFC is written when the part before it has shipped.
+Eleven parts since part c's RFC split c in three, part g's added i and part d's split d in three (`#### Parts`: a, b, c, g, h, i, d, j, k, e, f), about 150 files in all. No smaller part can be accepted alone: the api must hold a fact before a screen saves it, a shared component lands before either app draws it (Law 7), and the logo and the settings life each need a surface the step does not. a: about 20 files, sized in its RFC. b: about 15. c, g, h, i, d, j and k: sized in their own RFCs. e: about 25. f: about 20. Each later RFC is written when the part before it has shipped.
 
 #### Parts
 
@@ -4462,8 +4462,10 @@ Nine parts since part c's RFC split c in three and part g's added i (`#### Parts
 | g | the shared component at 375 and on the phone: `CompanyProfile` in `packages/ui` — the frame, the list, the act, loading, a failed read, a failed save, the name, address and bank field sets (`#### Part g · RFC`) | AC-4 — on the component page | c | shipped |
 | h | the shared component, second half: the tax and what-you-sell field sets, the arrival from a failed save (`m-failed-save`), the Hindi and Marathi renders (`#### Part h · RFC`) | AC-2 (the format explained, the act live), AC-4 — on the component page | g | shipped |
 | i | the 1536 arrangement and the letterhead preview: `d-default`, `d-tax-invalid`; the letterhead's address and bank lines as one domain rule (`#### Part i · RFC`) | AC-4 — on the component page | h | shipped |
-| d | the step owed, the landing, the reads and the save, and the screen on the web and both phones; `SCR-M01-04`'s ways on open it (D202); half-typed bank details kept, as a new field on the profile's read and write (*Decisions*, 5); `createCompany` passes the step | AC-2, AC-4 — on the running apps | i | open |
-| e | the logo: its pointer in the api, the upload from the web and both phones, the limits stated and the refusal (`m-logo-invalid`) | AC-4 (`logo-invalid-limits-stated`) | d | open |
+| d | the api keeps bank details typed half way: one new field on the profile's own read and write, never on what a document reads (*Decisions*, 5; `#### Part d · RFC`) | AC-3 — on the running api | i | shipped |
+| j | the step owed, the landing, the reads (the profile, the registrations, the market pack) and the save, and the screen on the web and both phones; `Continue` of `SCR-M01-04` opens it (D202); `createCompany` passes the step. Its RFC rules the design check's fifth-entry rows 1 and 20, the lede at a size of 0, and whether a typed half makes the step `completed` | AC-2, AC-4 — on the running apps | d | open |
+| k | `Finish later` of `SCR-M01-04` opens the profile without recording its step (D202): a put-off that is per step; the arrival `m-failed-save` on the running apps | AC-4 (`arrived-from-a-failed-save`) — on the running apps | j | open |
+| e | the logo: its pointer in the api, the upload from the web and both phones, the limits stated and the refusal (`m-logo-invalid`) | AC-4 (`logo-invalid-limits-stated`) | k | open |
 | f | the settings life inside the shell on the web and both phones: the functional density, `Save changes`, the re-seed scope | AC-4 (`declarations-edited-reseed-scope`, `m-settings`, `d-settings`) | e · the settings list drawn (*Decisions*, 7) | open |
 
 #### Part a · RFC
@@ -5350,6 +5352,171 @@ Checklist:
 - [x] the side-by-side
 - [x] the gate
 
+#### Part d · RFC
+
+##### Title
+`T-M01-005d` — The api keeps bank details typed half way: one new field on the profile's own read and write, never on what a document reads
+
+##### Description
+**User impact.** None yet — internal. When the screen lands (part j), an owner who types the bank's name and stops will find it there the next time, and is never asked for it twice. Indirectly, no proposal or invoice can print half a bank account: what a document reads stays all four facts or none.
+
+Who gains: part j, whose save sends what is typed, and every consumer of `GET /settings/effective`. The problem: `bankDetailsSchema` needs all four facts (`packages/contracts/src/business-profile.ts:17`), so a half-typed part is lost at the save, against the brief's ruling 17; part a's first way — the four facts nullable on the read — was refused by CI's breaking-change judge (*Part a · RFC*, *CI fix*). Sources: the task RFC (*Decisions*, 5), the brief's rulings 17 and 22, `M06-17`, `M01-31`.
+
+##### Goals
+- `PUT /settings/business-profile` takes one, two or three bank facts as `bankDetailsTyped`, and `GET /settings/business-profile` gives them back.
+- `GET /settings/effective` is unchanged: `companyIdentity.bankDetails` is four facts or `null`, and `bank_details` stays owed until four exist.
+- A client built before the field loses nothing: a save that never names it keeps what is stored.
+- The two never disagree: whole bank details and a typed half are never stored together.
+- Domain's `companyProfileSave` says which of the two a save writes, once, for both apps.
+
+##### Non-goals
+- No screen, no hook, no read of the registrations or the market pack on a device — part j.
+- No new route, no new error code, no change to `bankDetailsSchema` or `GET /settings/effective`.
+- No check of a bank fact's format: the brief asks for none.
+- Whether a typed half makes the step `completed` — part j, which records the step.
+
+##### Readiness and dependencies
+- Parts a, b, c, g and h are merged (#284, #287, #288, #289, #290). Part i is draft PR #292, its checks running; this branch is cut from its head (`800b2523`) by the walk's rule and the owner's word.
+- Design check: `READY` stands (`#### Design check`, seventh entry). This part draws no frame.
+- Not a light cycle: the proof matrix names the api, the web and both phones.
+- One shared local database: migration `0024` puts it ahead of `main` until this part merges.
+- No blocker.
+
+##### Proposal
+**What testing the requirements found** (`/task` step 2).
+1. **The part as planned is about 50 files and 1,700 lines.** The `#### Parts` row said about 30 files. Counted from the code: the api's new field (this RFC), then the step — the step owed and the landing in domain, three reads and the save in `packages/data`, the hook, two screens, their routes and guards, the flows — about 30 files and 1,000 lines, then `Finish later`'s way in with a put-off that is per step, about 14 files and 400. → *Decisions*, 1.
+2. **A half-typed bank part must not reach a document.** `effectiveSettingsSchema` reuses `businessProfileSchema` (`packages/contracts/src/tenant-settings.ts:96`), so a field added there would travel to every consumer. The half goes on the profile's own read alone: `businessProfileReadSchema`, the profile plus `bankDetailsTyped`. Ruling 17 already keeps the bank prompt owed until four facts exist; this is its wire form.
+3. **Two homes for one fact can disagree.** With `bankDetails` and `bankDetailsTyped` both writable, a body could hold four facts in one and two in the other. The contract refuses a body that holds both, a typed half with four facts and one with none; the store clears the half when whole details are written.
+4. **A whole-replace write loses a field an older client never read.** The data client validates responses and drops unknown keys (`packages/data/src/client/client.ts:19`), so the shipped *What you sell* step sends the profile back without the new key. Absent keeps what is stored, as `postalCode` does (`settings.admin.repository.ts:130`).
+5. **The log's redacted paths name `bankDetails` and not the new key** (`apps/api/src/common/logging.ts:34`). It joins the list — part a's review found the same gap for the PIN code.
+6. **An account holder that equals the company name, alone, is not a bank fact** (ruling 22). The rule exists for the whole (`bankDetailsHeld`); the half follows it, so opening the bank part and saving writes nothing.
+
+**Flow.**
+1. The screen (part j) hands domain what is typed. `companyProfileSave` returns `bankDetails` when all four facts are held and `bankDetailsTyped: null`; with one to three it returns `bankDetails: null` and the typed facts, each a string or `null`; with none, both `null`.
+2. `PUT /settings/business-profile` validates the body, writes the profile row in the one transaction it has today, and answers the profile with the half.
+3. `GET /settings/business-profile` reads the half from the profile's row. `GET /settings/effective` does not select it.
+
+**Key decisions.**
+- **A new nullable `jsonb` column, `business_profile.bank_details_typed`**, beside `bank_details` — one reason: every reader of `bank_details` keeps a column that is four facts or `null`.
+- **Optional on the read and on the write** — an old api machine answers without it and a new client reads that as none.
+- **The keep rule stays in the repository**, beside the PIN code's.
+- **The name says what it is**: bank details as typed, not yet bank details.
+
+**Order.** The contract's test, red · the contract · the domain rule's test, red · the rule · the migration (`pnpm db:migration:new`) and the schema · the api test, red · the repository and the service · the redacted path · the data repository's types · the emitted spec and `oasdiff breaking` against `main`'s · review · live rows · the gate.
+
+**Refusals.** `400` at `bankDetailsTyped`: sent beside whole `bankDetails`; holding four facts; holding none. The shared envelope; no new code.
+
+**The twin.** None — no screen changes. Both apps reach the changed route through *What you sell* (`use-setup-what-you-sell.ts:65`), so each surface gets one live journey.
+
+**Deferred rows this part's files meet.** D118 (`touches packages/db/src/schema/`) — stays, as ruled in the task RFC. D35, D122 and D134 name other contract files; D164 another settings repository. D202 (`T-M01-005 starts`) — stays as written: it joins the parts that build the step (j and k), and its cell cannot name a part — the register's check reads a task id (`tests/invariants/src/deferred-rows.ts`).
+
+**Decisions** (the owner's; the recommended way first).
+1. **The size.** Three parts in place of one: **d** this RFC, the api's field, about 20 files and 310 lines; **j** the step on the web and both phones, where `Continue` of `SCR-M01-04` opens it; **k** `Finish later`'s way in and the arrival `m-failed-save`. Each has its own live QA. Parts e and f follow — or one pull request of about 50 files and 1,700 lines, approved at that size.
+
+**Ruled by the owner, 2026-10-12, with the approval: the first way — three parts, d, j and k.**
+
+##### Architecture diagram
+No boundary change — see the task diagram: this part is its node `api: business profile, tax registrations, progress (a, d)`.
+
+##### Package changes
+- `contracts` — new exports: `bankDetailsTypedSchema`, `BankDetailsTyped`, `businessProfileReadSchema`, `BusinessProfileRead`. `businessProfileWriteSchema` gains the optional field and its three refusals.
+- `domain` — new on the index: `BankDetailsTyped`, `isBankDetailsTyped` (`tenancy/company-profile.ts`); `CompanyProfileSave['profile']` gains `bankDetailsTyped`. `BusinessProfileSettings` and `CompanyIdentity` are unchanged: the api hands the half beside the settings, never among them.
+- `db` — one column. `data` — the settings repository's two types. `api` — the settings module and the log's redacted paths.
+- Law 12: the column joins the schema-parity invariant (`.claude/protections.md`, *Schema and migrations*) when the migration applies; the contract field joins `check:openapi` and CI's breaking-change judge; the redacted path is held by review and this part's live log row — no check holds that kind, said here. No brand, enum, token, route, table or error code is new.
+
+##### Data and schema changes
+- Migration `0024`, made by `pnpm db:migration:new`: `ALTER TABLE business_profile ADD COLUMN bank_details_typed jsonb` — nullable, no default, no index, no backfill.
+- Old readers: every query names its columns, so none reads the new one; an older api machine ignores it. New code reads an old row as `null`.
+- Rollback: the column is dropped; whole bank details are untouched.
+- Sensitive: financial, as `bank_details` is.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/contracts/src/business-profile.ts` | the typed half's schema; the read schema; the write's optional field and refusals | the profile's contract |
+| modify | `packages/contracts/src/tenant-settings.ts` | the two profile routes answer the read schema | the routes |
+| modify | `packages/contracts/tests/tenant-settings.test.ts` | row d-c1 | the contract's test |
+| generated | `packages/contracts/openapi/openapi.json` | emitted | never hand-edited |
+| — | `packages/domain/src/commerce/effective-settings.ts` · `index.ts` · `tests/commerce/absent-facts.test.ts` | **planned, not built:** the half never enters the settings the resolver is handed (`TenantSettingsRead.bankDetailsTyped` sits beside them, `settings.repository.ts`), so `BusinessProfileSettings` and its tests are unchanged and row d-d2 is held by the type | — |
+| modify | `packages/domain/src/tenancy/index.ts` | built, not planned: exports `BankDetailsTyped` and `isBankDetailsTyped`, which live beside the save's rule | the folder's entry |
+| modify | `packages/domain/src/tenancy/company-profile.ts` | `BankDetailsTyped`, `isBankDetailsTyped` (the contract's refinement reads it); the save writes the whole or the half | the save's one rule |
+| modify | `packages/domain/tests/tenancy/company-profile.test.ts` | row d-d1 | the rule's test |
+| modify | `packages/db/src/schema/settings.ts` | the column | the table's schema |
+| generated | `packages/db/migrations/0024_*.sql` and what the command writes beside it | the migration | never hand-authored |
+| modify | `apps/api/src/modules/settings/settings.admin.repository.ts` | write the half; absent keeps it; whole details clear it | the profile's one write |
+| modify | `apps/api/src/modules/settings/settings.repository.ts` | read it | the tenant read |
+| modify | `apps/api/src/modules/settings/settings.service.ts` | the profile read carries it | the service |
+| modify | `apps/api/src/common/logging.ts` | `*.bankDetailsTyped` redacted | the log's one list |
+| add | `apps/api/tests/settings/bank-details-typed.test.ts` | row d-a1, on real tables | `settings-writes.test.ts` is 234 lines |
+| modify | `apps/api/tests/settings/settings-writes.test.ts` | built, not planned: the profile it compares whole now answers `bankDetailsTyped: null` | the older test of the same write |
+| modify | `packages/data/src/settings/repository.ts` | reads `BusinessProfileRead`, writes `BusinessProfileWrite` | the wire call's owner |
+| modify | `docs/ux/briefs/SCR-M01-05-business-profile.md` | ruling 17 gains one sentence: the half is on the profile's own read, never on a document's | the brief owns the screen's facts |
+| — | `docs/tasks/deferred.md` | **planned, not built:** D202's cell stays `T-M01-005 starts`; a part's id is refused by the `deferred-rows` invariant | — |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, `#### Parts`, the task's size line and diagram labels, the design check's seventh entry, the ledger, part d `shipped` | the task |
+
+##### API and contract changes
+| route | change | compatibility |
+|---|---|---|
+| `GET /settings/business-profile` | the answer may carry `bankDetailsTyped`: four keys, each a string or `null`; or `null` | an older client drops the new field |
+| `PUT /settings/business-profile` | body: `bankDetailsTyped` optional, the same shape or `null`; refused `400` beside whole `bankDetails`, with four facts, or with none. The answer as the `GET` | an older client's body is still valid; its absent key keeps the stored half |
+| `GET /settings/effective` | none | — |
+
+Auth, permission (`onboarding.manage_tenant_settings`), tenancy, audit (one entry per changed save, none for an equal body) and the error codes are unchanged.
+
+##### Risks and rollout
+- **A half reaches a document.** Held by the type: `CompanyIdentity` has no such field, and the effective read does not select the column; an api test asserts its absence.
+- **A half left beside whole details.** Only an api built before the field can leave one, by saving whole details without clearing the column. The read then answers no half (`settings.service.ts`, `businessProfile`). No test reaches that arm, because the one write cannot store the pair: it is held by review alone, and part j's RFC, whose client first writes a half, takes its proof.
+- **A contract change reads as breaking only in CI.** `oasdiff breaking` against `main`'s spec runs locally after the contract edit, before the gate (`packages/contracts/CLAUDE.md`, *Traps*); CI's step is the proof.
+- **Mid-roll.** A new client that writes a half to an old api machine has it dropped, silently. No shipped client writes one before part j.
+- **One shared local database.** The next branch starts after this part merges, or is cut from it.
+
+##### Acceptance criteria and proof
+The task's AC-3 is this part's: the owner is never asked again for what was typed, and a consumer reads whole facts alone. AC-1, AC-2 and AC-4 have no row here.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| AC-3 · d-c1 the contract | main-dev | required | unit | the write takes a half of one, two and three facts, `null`, and no key; refuses a half beside whole details, one with four facts, one with none, and a fact over 34 characters; the read parses with and without the key. Planted red: the refusal beside whole details | `packages/contracts/tests/tenant-settings.test.ts` |
+| AC-3 · d-d1 what a save writes | main-dev | required | unit | no bank fact → both `null`; the holder equal to the company name alone → both `null`; one, two and three facts → `bankDetails: null` and the typed facts trimmed, the rest `null`; four → whole details and `bankDetailsTyped: null`. Planted red: a half written beside whole details | `packages/domain/tests/tenancy/company-profile.test.ts` |
+| d-d2 the prompt stays owed | — | not_applicable | — | the resolver is never handed the half (`TenantSettingsRead`), so no domain rule can read it; row d-a1 asserts on real tables that the effective read still owes `bank_details` and its source is unchanged | — |
+| AC-3 · d-a1 the store | main-dev | required | api test on `heliogrid_test` | a half is saved and read back; a save that never names it keeps it; `null` clears it; whole details clear it; an equal body writes nothing and records nothing; the effective read carries no half and still owes `bank_details`. Planted reds: the keep rule, and the clear on whole details | `apps/api/tests/settings/bank-details-typed.test.ts` |
+| AC-3 · d1 | `qa-api` | required | api | the standing owner `PUT`s `bankDetails: null` and a half holding the bank's name → 200; `GET /settings/business-profile` gives it back; `GET /settings/effective` has no `bankDetailsTyped`, `companyIdentity.bankDetails` is `null`, and `pendingPromptPoints` holds `bank_details` | statuses, bodies, request ids |
+| d2 | `qa-api` | required | api | a `PUT` with no `bankDetailsTyped` key and a changed address → 200; the half is kept | the read-back |
+| d3 | `qa-api` | required | api | a `PUT` with four facts as `bankDetails` → 200; the read-back holds them and `bankDetailsTyped: null`; `pendingPromptPoints` no longer holds `bank_details` | the bodies |
+| d4 | `qa-api` | required | api | three `PUT`s — a half beside whole details, a half of four facts, a half of none → 400 at `bankDetailsTyped` each; the stored profile unchanged | statuses, paths, the read-back |
+| d5 | `qa-api` | required | api log | the helper's slice of `.qa/api.log` after the rows above → no line carries a bank fact it sent | the byte range and the count, 0 |
+| w1 | `qa-web` | required | web 375 and 1536 | sign up a new company, pass the language step, answer *What you sell*, `Continue` → the save goes through the changed route and the owner lands on the home; no error frame, no console error | the destination, the `PUT` 200 in the log |
+| i1 | `qa-ios` | required | iOS | the same journey on the iPhone → home | the destination, the log's 200 |
+| n1 | `qa-android` | required | Android | the same journey on the emulator → home | the destination, the log's 200 |
+| side-by-side | — | not_applicable | — | — | no frame changes in this part |
+| d6 | `ci` | required | CI `quality` | the head's spec against the base's → *No breaking API change against the base* passes | the job's step; `oasdiff breaking` exit 0 locally first |
+| the gate | `evaluator` | required | repo | the migration applies; the invariants scan `business_profile` on real tables; the OpenAPI is fresh | `pnpm check:all` |
+
+After the rows, `qa-api` puts the standing owner's profile back as it found it.
+
+##### Delivery size
+- One part of three (*Decisions*, 1): **about 20 files**, two generated.
+- **Code: about 130 authored lines** — the contract 40, domain 35, the schema 3, the api 40, the log 1, the data repository 10.
+- **Tests: about 180 authored lines** — the contract 45, domain 60, the api test 75.
+- About 310 in all, inside the target; one review round is counted in. Docs are listed and not counted.
+- Order: as *Proposal*.
+
+**Built, before review (2026-10-12) — over the estimate, asked again.** 19 files against 20 planned, one generated. Code: 195 authored lines against 130 — the api 68 against 40 (five places name the profile row's columns, and the service's read was split in two so the half rides beside the settings), domain 53 against 35 (the half's own rule and the type), the contract 48 against 40, the schema and the migration 17, the data repository 6, the log 1. Tests: 280 against 180 — the api test is 128 lines against 75 (six cases on real tables), the contract's 79 against 45, domain's 73 against 60. About 475 in all against 310: 53% over the estimate, and under half the 1,000 target. No behaviour, route, contract field, table, package or file group beyond the RFC; three planned files were not needed and two small ones joined (the file table). The estimate was wrong, not the scope: it counted one line per touched place in the api and one case per test row.
+
+**Ruled by the owner, 2026-10-12: approved at about 475 lines.**
+
+**After review.** 18 files, one generated: `deferred.md` left the diff. Code 191 lines, tests 280, 471 in all — inside the size approved.
+
+Checklist:
+- [x] the contract and its test, red first
+- [x] the domain rule and its tests, red first
+- [x] the migration and the schema
+- [x] the api test, red; the repository, the service, the redacted path
+- [x] the data repository's types
+- [x] the emitted spec; `oasdiff breaking` exit 0
+- [x] review
+- [x] the live rows: api, web, iOS, Android
+- [x] the gate
+
 #### Design check
 `READY` — 2026-10-12, on the record `SCR-M01-05 - decisions & self-audit.md` (29,484 bytes) read beside the board `SCR-M01-05 Business Profile - Mobile.dc.html` (142,409 bytes, under the read cap). Three checks on one helper. The first found the record behind the board (four frame counts, no Hindi frame, no 1536 alignment numbers, no word plan, a standing FAIL); the owner's redraw closed every finding. Main then found three product facts wrong against the code — three bank fields where `M06-17` and the contract hold four, a city line saying the city sets the market, a count of typed characters the pack cannot give — and the owner corrected them and redrew the 1536 arrangement in the same pass; the third check found nothing.
 
@@ -5398,6 +5565,8 @@ Noted by the helper and not blocking: three stale board notes and three stale re
 **Sixth entry — part i (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again when part i began, beside the board (148,243 bytes, under the read cap, saved to the scratchpad by a script). After the fifth entry the owner corrected the board in three places and nothing else: the hint stands under `m-failed-save`'s empty size field (ruling 30), `m-logo-invalid`'s refusal reads `needs 2 MB or less` (row 6), and the stale note above `m-normal` is gone. Still twenty-one frames. No helper ran again: Main found each of the three in the board's source, and the record's `m-failed-save` count (3 lines, 21 words) and its logo-refused row agree. Part i takes rows 8–13 and 23 of the fifth entry; its RFC rules each (*Proposal*, 1–6).
 
 **Board pictures, part i.** Main pictured the two frames in the pane at its own size, the chat panel shut and the board at 50%, into the scratchpad as `board/<frame>.png`: `d-default` and `d-tax-invalid`, 603 × 394 each, whole. `qa-web` was not asked: under a set viewport the board's canvas does not scroll (third entry). The pictures are small: a comparison reads them beside the record's measured positions (list 4) and the board's source.
+
+**Seventh entry — part d (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part d began: twenty-one frames, seventeen at 375 and four at 1536, and the three corrections of the sixth entry stand in it (`needs 2 MB or less`; `m-failed-save` at 3 lines and 21 words). Part d draws no frame, so the board was not fetched and no picture was taken; part j, the first part that draws on a running app, reads the board again. The fifth entry's rows 1 and 20, named for part d, are part j's: they rule what the screen's save sends.
 
 #### Runtime
 Branch `feat/T-M01-005`, cut from `feat/T-M01-004c` (`99ed0bcc`, draft PR #283 open, its `quality`, `e2e-web` and `android` checks running) on a clean tree, by the owner's word, 2026-10-12: the walk reads `origin/main`, where `T-M01-004`'s part c is not yet merged.
@@ -5773,6 +5942,69 @@ End state after the reruns: api, web and Metro stopped; the simulator and the em
 | database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
 | runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | unchanged |
 | watchers | no `tsx … watch` process | none |
+
+**Part d · ledger (2026-10-12).** Branch `feat/T-M01-005d`, cut from `feat/T-M01-005i` (`800b2523`, draft PR #292 open, its `quality`, `e2e-web` and `android` checks running) on a clean tree: the walk reads the task's parts from that open head, and the owner said to cut from it.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | — |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | — |
+| watchers | no `tsx … watch` process | — |
+
+**Part d · QA (2026-10-12)** — one stack on `heliogrid_test`: the api, the web and Metro from source (`api`, `web`, `mobile-metro` launch configurations, `started_by_task`), the iPhone 17 Pro simulator and the `Pixel_8_Emulator` booted by Main, on the apps already installed — no native file changed, so nothing was rebuilt. Main migrated the test database (`0024`) and built domain, contracts, db and data.
+
+- **Order.** The reviewer read alone: one should-fix (the settings repository at 299 lines, a generic helper with one caller) and five notes, all applied — the read answers no half beside whole details, one fixture for two test blocks, each api case seeds its own half, a stale line citation; clean on the second read, with one note taken into *Risks* (the read's defensive arm has no test). Then `qa-api`, `qa-web`, `qa-ios` and `qa-android` together, once each; the tree's hash was the same before and after (`fb7d0f6b8e17e68f`).
+- **Planted reds seen (part d).** Domain: `isBankDetailsTyped` without its upper bound → *four facts are bank details, and no half is kept beside them* failed by name. Contract: the refusal of a half beside whole details switched off → *refuses a half beside whole bank details, on the field* failed by name. Api, on `heliogrid_test`: the keep rule written as `?? null` → *keeps the half a save never names…* failed by name; the clear on whole details taken out → *replaces the half with whole bank details…* failed by name. Each restored from a scratchpad copy.
+- **The breaking-change judge, locally.** `oasdiff breaking` (1.26.1) against `origin/main`'s spec: *No breaking changes to report*, exit 0.
+
+**As proven (part d).**
+
+| row | result | evidence |
+|---|---|---|
+| AC-3 · d-c1 | passed | `tenant-settings.test.ts`, 42 tests; planted red by name |
+| AC-3 · d-d1 | passed | `company-profile.test.ts`, 62 tests; planted red by name |
+| d-d2 | not_applicable | as the proof matrix says |
+| AC-3 · d-a1 | passed | `bank-details-typed.test.ts`, 6 tests on `heliogrid_test`; two planted reds by name |
+| AC-3 · d1 | passed | `PUT`, `GET` 200 with the half; the effective read has no `bankDetailsTyped`, `bankDetails` null, `bank_details` pending · requests `1799e829`, `8272f8f8`, `c5ab6cc7` |
+| d2 | passed | no key, address changed → the half kept · `d7e9a036`, `c4a6e31c` |
+| d3 | passed | four facts → the read holds them and `bankDetailsTyped: null`; `bank_details` no longer pending · `60fb3c41`, `068db707`, `b7889977` |
+| d4 | passed | three `PUT`s → 400 `VALIDATION_FAILED` at `bankDetailsTyped` each; the stored profile unchanged · `a8bc9738`, `9bda789b`, `48113c6b`, `89b68e7b` |
+| d5 | passed | log bytes 24,304,716–24,323,005, 12 lines, 0 carrying a sent bank fact or address |
+| w1 | passed | web at 375 (`…10561`) and at 1536 (`…10564`): `/home` reached, `PUT /settings/business-profile` 200, `PUT /onboarding/progress/what_you_sell` 200, no console error, no sideways scroll · log bytes 24,303,448–24,392,588 |
+| i1 | passed | iPhone (`…10562`): home reached, the three calls 200 in order, no red box, `Continue` 362 × 48 pt · log bytes 24,324,736–24,358,752 |
+| n1 | passed | Android (`…10563`): home reached, the three calls 200 in order, no fatal or React Native error in logcat, `Continue` 126 px tall · log bytes 24,335,107–24,403,129 |
+
+`qa-api` put the standing owner's profile back as it found it (no bank details, no half).
+
+**Seen in QA, outside this part's rows.** On the web at 1536 the Next.js development badge covers the account menu's control, so a real click meets the badge (`qa-web`); a development build alone draws that badge. On Android the six-digit code field dropped repeated digits sent by `adb input text`, and took them key by key (`qa-android`) — the helper's typing, as in part a.
+
+**Mistakes found (part d).**
+- The estimate ran 53% over on lines (310 → 475): it counted one line per touched place in the api and one case per test row (Main, at the size count). The owner approved the built size after a stop. For the next estimate: an api field costs one line in each of five column lists, and a test row costs about 20 lines a case.
+- The first form of the api read used a generic helper with one caller and left the file at 299 lines (reviewer). The half is taken out at the select; the file is 294.
+- The api test's cases leaned on each other's stored state (reviewer). Each seeds its own.
+- The RFC re-pointed D202 to a part's id, which the `deferred-rows` invariant refuses (Main, at the freshness check before the gate). The cell stays as written and the RFC says why.
+- The RFC planned the half on domain's stored settings type; the build keeps it beside the settings, so no document's resolver can be handed it (Main, at build). Three planned files were not needed.
+
+- **The gate (part d).** One run of `pnpm check:all`, passed: 9 of 9 tasks, the api tests on `heliogrid_test`, the migration applied, `business_profile` scanned on real tables, schema parity held, no skipped or vacuous check, the last stage `invariants green`; nothing regenerated — the spec was emitted before the gate. After the gate, Main wrote only this record and ran `pnpm check` and the invariants again.
+- **Pending CI:** row d6, the `quality` lane's *No breaking API change against the base*.
+
+**Measurements (part d)** — helper runs: `reviewer` 1 with two continuations (86 k, 93 k, 108 k), `qa-api` 1 (23 k), `qa-web` 1 (69 k), `qa-ios` 1 (42 k), `qa-android` 1 (48 k), `evaluator` 1 (27 k); one full gate, passed. Main: about 110 tool-call turns and about 434 k context tokens at the commit card, the walk, the record fetch and the RFC among them. Size: planned 20 files, code about 130, tests about 180; built 18 files, code 191, tests 280; 767 lines added and 43 removed in all, of which the task file is about 250 and the emitted spec 108.
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | none listening — the three launch configurations Main started are stopped |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| simulator · emulator | none booted | none booted — the iPhone 17 Pro (`40ED0117`) shut down, `emulator-5554` killed |
+| browser tabs | pane closed | both of Main's tabs closed; the pane is closed |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| runtime logs | `api.log` 24,211,264 · `web.log` 652,128 · `metro.log` 1,930,459 bytes | 24,428,878 · 667,084 · 1,956,847 bytes, kept |
+| watchers | no `tsx … watch` process | none |
+
+**Left on `heliogrid_test` (part d):** four signup companies of the surface rows (`…10561`, `…10564`, `…10562`, `…10563`), made through the app; each phone is signed in to its own. The local database is at migration `0024`, ahead of `main` until this part merges.
 
 ### T-M01-006 · Setup — You're Ready
 **Type:** screen · **Tier:** P0

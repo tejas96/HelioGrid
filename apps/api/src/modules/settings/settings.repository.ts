@@ -10,6 +10,7 @@ import {
   tenantHoliday,
 } from '@heliogrid/db';
 import type {
+  BankDetailsTyped,
   BrandingSettings,
   PromptPointStates,
   TaxRegistration,
@@ -34,6 +35,7 @@ export interface TenantRead extends TenantFacts {
 export interface TenantSettingsRead {
   readonly tenant: TenantRead;
   readonly settings: TenantSettings;
+  readonly bankDetailsTyped: BankDetailsTyped | null;
   readonly promptPoints: PromptPointStates;
 }
 
@@ -58,11 +60,12 @@ export class SettingsRepository {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
       const own = await tenantRead(tx, tenantId);
       if (own === null) return null;
-      const [profile] = await tx
+      const [{ bankDetailsTyped, ...profile } = { bankDetailsTyped: null }] = await tx
         .select({
           address: businessProfile.address,
           postalCode: businessProfile.postalCode,
           bankDetails: businessProfile.bankDetails,
+          bankDetailsTyped: businessProfile.bankDetailsTyped,
         })
         .from(businessProfile)
         .where(eq(businessProfile.tenantId, tenantId))
@@ -75,7 +78,8 @@ export class SettingsRepository {
       return {
         tenant: own,
         settings: {
-          businessProfile: profile ?? null,
+          // The typed half is taken out first: every document resolves from these settings.
+          businessProfile: 'address' in profile ? profile : null,
           taxRegistrations: await registrationsOf(tx, tenantId),
           branding: await brandingOf(tx, tenantId),
           proposalTemplate: await storedProposalTemplate(tx, tenantId),
@@ -83,6 +87,7 @@ export class SettingsRepository {
           trancheTemplates: await trancheTemplatesOf(tx, tenantId),
           holidays: await holidaysOf(tx, tenantId),
         },
+        bankDetailsTyped,
         promptPoints: progress?.promptPointStates ?? {},
       };
     });

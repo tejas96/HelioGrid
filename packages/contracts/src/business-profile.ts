@@ -1,4 +1,4 @@
-import { columnHoldsTypicalSystemSize } from '@heliogrid/domain';
+import { columnHoldsTypicalSystemSize, isBankDetailsTyped } from '@heliogrid/domain';
 import { z } from 'zod';
 import { tenantSegmentSchema } from './common';
 import { labelSchema } from './document-content';
@@ -22,6 +22,20 @@ export const bankDetailsSchema = z.object({
   bankRoutingIdentifier: z.string().trim().min(1).max(34),
 });
 export type BankDetails = z.infer<typeof bankDetailsSchema>;
+
+/**
+ * Bank details typed half way: one to three of the four facts, each bounded as in the whole, the
+ * rest `null`. Mirrors domain's `BankDetailsTyped`; four facts are bank details and none is `null`.
+ */
+export const bankDetailsTypedSchema = z
+  .object({
+    bankName: bankDetailsSchema.shape.bankName.nullable(),
+    accountName: bankDetailsSchema.shape.accountName.nullable(),
+    accountNumber: bankDetailsSchema.shape.accountNumber.nullable(),
+    bankRoutingIdentifier: bankDetailsSchema.shape.bankRoutingIdentifier.nullable(),
+  })
+  .refine(isBankDetailsTyped, 'one to three facts: four are bank details, none is null');
+export type BankDetailsTyped = z.infer<typeof bankDetailsTypedSchema>;
 
 /** A postal code as the owner writes it. No market declares its format yet, so only its length is held. */
 const postalCodeSchema = z.string().trim().min(1).max(16);
@@ -53,13 +67,30 @@ export const businessProfileSchema = z.object({
 export type BusinessProfile = z.infer<typeof businessProfileSchema>;
 
 /**
- * The profile as a client writes it. `postalCode` may be left out: a client built before the field
- * existed sends back what it read, and a whole replace must not clear a fact it never saw — absent
- * keeps what is stored, `null` clears it.
+ * The profile as its own screen reads it: the facts every document reads, and the bank details
+ * typed half way, which no document does — so the half is here and never on `businessProfileSchema`.
+ * Optional, because an api built before the field answers without it.
  */
-export const businessProfileWriteSchema = businessProfileSchema.extend({
-  postalCode: postalCodeSchema.nullable().optional(),
+export const businessProfileReadSchema = businessProfileSchema.extend({
+  bankDetailsTyped: bankDetailsTypedSchema.nullable().optional(),
 });
+export type BusinessProfileRead = z.infer<typeof businessProfileReadSchema>;
+
+/**
+ * The profile as a client writes it. `postalCode` and `bankDetailsTyped` may be left out: a client
+ * built before a field existed sends back what it read, and a whole replace must not clear a fact
+ * it never saw — absent keeps what is stored, `null` clears it. Whole bank details and a half are
+ * never written together.
+ */
+export const businessProfileWriteSchema = businessProfileSchema
+  .extend({
+    postalCode: postalCodeSchema.nullable().optional(),
+    bankDetailsTyped: bankDetailsTypedSchema.nullable().optional(),
+  })
+  .refine(({ bankDetails, bankDetailsTyped }) => bankDetails === null || !bankDetailsTyped, {
+    path: ['bankDetailsTyped'],
+    message: 'whole bank details are sent alone',
+  });
 export type BusinessProfileWrite = z.infer<typeof businessProfileWriteSchema>;
 
 /** One registration of a type the tenant's market declares (`M01-24`, `M01-25`); the type is `pack.tax`'s word. */

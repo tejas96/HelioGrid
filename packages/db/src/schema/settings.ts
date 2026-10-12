@@ -1,5 +1,6 @@
 import type {
   BankDetails,
+  BankDetailsTyped,
   Letterhead,
   PackLabel,
   PerLanguage,
@@ -49,9 +50,9 @@ const tenantId = () =>
 
 /**
  * The company's identity facts beyond the signup ones (`M01-24`, `M01-31`): the address, its
- * postal code and the bank details. Company name, city and the two `M01-23` declarations stay on
- * `tenant`; the logo's column arrives with the logo's own slice (Law 9). One row per tenant, empty
- * from creation.
+ * postal code, the bank details and the bank details typed half way. Company name, city and the
+ * two `M01-23` declarations stay on `tenant`; the logo's column arrives with the logo's own slice
+ * (Law 9). One row per tenant, empty from creation.
  */
 export const businessProfile = pgTable(
   'business_profile',
@@ -62,6 +63,8 @@ export const businessProfile = pgTable(
     postalCode: text('postal_code'),
     /** `M06-17`'s four bank facts under market-neutral names; financial (sensitive-data register). */
     bankDetails: jsonb('bank_details').$type<BankDetails>(),
+    /** One to three bank facts typed and not yet bank details; financial (sensitive-data register). */
+    bankDetailsTyped: jsonb('bank_details_typed').$type<BankDetailsTyped>(),
     createdAt: instant('created_at').notNull(),
     updatedAt: instant('updated_at').notNull(),
   },

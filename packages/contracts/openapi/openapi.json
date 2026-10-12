@@ -33442,6 +33442,42 @@
                         "bankRoutingIdentifier"
                       ],
                       "nullable": true
+                    },
+                    "bankDetailsTyped": {
+                      "type": "object",
+                      "properties": {
+                        "bankName": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120,
+                          "nullable": true
+                        },
+                        "accountName": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120,
+                          "nullable": true
+                        },
+                        "accountNumber": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 34,
+                          "nullable": true
+                        },
+                        "bankRoutingIdentifier": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 34,
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "bankName",
+                        "accountName",
+                        "accountNumber",
+                        "bankRoutingIdentifier"
+                      ],
+                      "nullable": true
                     }
                   },
                   "required": [
@@ -33769,6 +33805,42 @@
                       "bankRoutingIdentifier"
                     ],
                     "nullable": true
+                  },
+                  "bankDetailsTyped": {
+                    "type": "object",
+                    "properties": {
+                      "bankName": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120,
+                        "nullable": true
+                      },
+                      "accountName": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120,
+                        "nullable": true
+                      },
+                      "accountNumber": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 34,
+                        "nullable": true
+                      },
+                      "bankRoutingIdentifier": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 34,
+                        "nullable": true
+                      }
+                    },
+                    "required": [
+                      "bankName",
+                      "accountName",
+                      "accountNumber",
+                      "bankRoutingIdentifier"
+                    ],
+                    "nullable": true
                   }
                 },
                 "required": [
@@ -33849,6 +33921,42 @@
                           "type": "string",
                           "minLength": 1,
                           "maxLength": 34
+                        }
+                      },
+                      "required": [
+                        "bankName",
+                        "accountName",
+                        "accountNumber",
+                        "bankRoutingIdentifier"
+                      ],
+                      "nullable": true
+                    },
+                    "bankDetailsTyped": {
+                      "type": "object",
+                      "properties": {
+                        "bankName": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120,
+                          "nullable": true
+                        },
+                        "accountName": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120,
+                          "nullable": true
+                        },
+                        "accountNumber": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 34,
+                          "nullable": true
+                        },
+                        "bankRoutingIdentifier": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 34,
+                          "nullable": true
                         }
                       },
                       "required": [

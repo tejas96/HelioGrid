@@ -1,4 +1,5 @@
 export type {
+  BankDetailsTyped,
   CompanyLetterhead,
   CompanyProfileFacts,
   CompanyProfilePart,
@@ -12,6 +13,7 @@ export {
   companyLetterhead,
   companyProfileSave,
   companyProfileStanding,
+  isBankDetailsTyped,
   standingMark,
 } from './company-profile';
 export type { MembershipStatus } from './membership';
