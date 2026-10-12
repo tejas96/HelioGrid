@@ -51,6 +51,7 @@ function factsOf(values: CompanyProfileValues): CompanyProfileFacts {
     values;
   return {
     ...rest,
+    logoFileId: null,
     registrations:
       REGISTRATION === undefined
         ? []

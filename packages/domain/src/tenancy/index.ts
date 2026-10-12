@@ -1,4 +1,11 @@
 export type {
+  ChosenImage,
+  CompanyLogoLimits,
+  CompanyLogoMiss,
+  CompanyLogoRefusal,
+} from './company-logo';
+export { COMPANY_LOGO_LIMITS, companyLogoRefusal, megabytesShown } from './company-logo';
+export type {
   BankDetailsTyped,
   CompanyLetterhead,
   CompanyProfileFacts,

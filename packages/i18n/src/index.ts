@@ -14,6 +14,8 @@
 export type { ApiErrorLike, AttemptFailureLike } from './copy/api-error';
 export { apiErrorMessageId, apiErrorRef, attemptFailureMessageId } from './copy/api-error';
 export { shownInNote } from './copy/authored-content';
+export type { CompanyLogoWordFacts, CompanyLogoWords } from './copy/company-logo';
+export { COMPANY_LOGO, companyLogoWords } from './copy/company-logo';
 export {
   COMPANY_PROFILE,
   COMPANY_PROFILE_PART_TITLE,

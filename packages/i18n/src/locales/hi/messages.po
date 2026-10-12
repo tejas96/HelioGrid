@@ -133,6 +133,16 @@ msgid "{match} match · {unread} unread in all"
 msgstr "{match} मिलीं · कुल {unread} अपठित"
 
 #. js-lingui-explicit-id
+#: src/copy/company-logo.ts:30
+msgid "{megabytes} MB · needs {maxMegabytes} MB or less"
+msgstr "{megabytes} MB · {maxMegabytes} MB या कम चाहिए"
+
+#. js-lingui-explicit-id
+#: src/copy/company-logo.ts:22
+msgid "{megabytes} MB, {width} px wide · needs {maxMegabytes} MB or less, at least {minWidth} px"
+msgstr "{megabytes} MB, {width} px चौड़ा · {maxMegabytes} MB या कम, कम से कम {minWidth} px चाहिए"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:19
 msgid "{n}-digit code"
 msgstr "{n} अंकों का कोड"
@@ -216,6 +226,11 @@ msgstr "{unread} अपठित · पिछले {days} दिनों म�
 #: src/copy/notifications.ts:30
 msgid "{weekday} · {date}"
 msgstr "{weekday} · {date}"
+
+#. js-lingui-explicit-id
+#: src/copy/company-logo.ts:31
+msgid "{width} px wide · needs at least {minWidth} px"
+msgstr "{width} px चौड़ा · कम से कम {minWidth} px चाहिए"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:150
@@ -311,6 +326,11 @@ msgstr "लीड जोड़ें"
 #: src/copy/setup-what-you-sell.ts:32
 msgid "Add the size you sell most often."
 msgstr "वह आकार जोड़ें जो आप सबसे ज़्यादा बेचते हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/company-logo.ts:16
+msgid "Add your logo"
+msgstr "अपना लोगो जोड़ें"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:76
@@ -462,6 +482,11 @@ msgstr "प्रारूप जाँचें"
 #: src/copy/sign-in.ts:44
 msgid "Check the SMS, or send a new code."
 msgstr "SMS जाँचें, या नया कोड भेजें।"
+
+#. js-lingui-explicit-id
+#: src/copy/company-logo.ts:19
+msgid "Choose a file or drop one here"
+msgstr "फ़ाइल चुनें या यहाँ छोड़ें"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-language.ts:14
@@ -965,6 +990,11 @@ msgid "Name, phone or city"
 msgstr "नाम, फ़ोन या शहर"
 
 #. js-lingui-explicit-id
+#: src/copy/company-logo.ts:29
+msgid "Needs a PNG or JPG"
+msgstr "PNG या JPG चाहिए"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:15
 msgid "New company on HelioGrid?"
 msgstr "HelioGrid पर नई कंपनी?"
@@ -1185,6 +1215,11 @@ msgstr "वह चुनें जो आपके काम को बतात
 #: src/copy/company-profile.ts:19
 msgid "PIN code"
 msgstr "पिन कोड"
+
+#. js-lingui-explicit-id
+#: src/copy/company-logo.ts:21
+msgid "PNG or JPG, up to {maxMegabytes} MB, at least {minWidth} px wide"
+msgstr "PNG या JPG, अधिकतम {maxMegabytes} MB, कम से कम {minWidth} px चौड़ा"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:26
@@ -1545,6 +1580,11 @@ msgstr "{date} को लिए गए और अपलोड नहीं ह�
 #: src/copy/sign-in.ts:70
 msgid "Taking you to {destination}"
 msgstr "आपको {destination} पर ले जा रहे हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/company-logo.ts:18
+msgid "Tap to choose a file"
+msgstr "फ़ाइल चुनने के लिए टैप करें"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:31
@@ -2192,6 +2232,11 @@ msgstr "आपकी भाषा सहेजी नहीं गई"
 #: src/copy/company-profile.ts:53
 msgid "Your letterhead"
 msgstr "आपका लेटरहेड"
+
+#. js-lingui-explicit-id
+#: src/copy/company-logo.ts:17
+msgid "Your logo"
+msgstr "आपका लोगो"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:18

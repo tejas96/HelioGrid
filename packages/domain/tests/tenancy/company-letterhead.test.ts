@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { IN_TAX, type TaxPack } from '../../src/tax/pack';
-import { type CompanyProfileFacts, companyLetterhead } from '../../src/tenancy/company-profile';
+import { companyLetterhead } from '../../src/tenancy/company-profile';
+import { factsAtSignup } from './company-profile-stored';
 
 const [GST] = IN_TAX.registrationTypes;
 const gst = (value: string) => ({ registrationType: GST?.type ?? '', value });
@@ -14,17 +15,7 @@ const BANK = {
   bankRoutingIdentifier: 'HDFC0001234',
 };
 
-/** A company as signup leaves it: the name and the city, nothing added. */
-const atSignup: CompanyProfileFacts = {
-  companyName: 'Suryodaya Solar Solutions Pvt Ltd',
-  city: 'Pune',
-  address: '',
-  postalCode: '',
-  registrations: [],
-  bank: NO_BANK,
-  segment: 'residential',
-  typicalSystemKwp: 5,
-};
+const atSignup = factsAtSignup;
 
 describe('the letterhead a company profile builds', () => {
   it('shows a new company its name and its city, and nothing it has not added', () => {

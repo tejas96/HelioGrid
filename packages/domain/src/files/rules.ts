@@ -68,7 +68,7 @@ export const FILE_SUBJECT_RULES: Readonly<Record<FileSubjectKind, FileSubjectRul
 export type FileDeclarationVerdict = 'accepted' | 'too-large' | 'type-not-taken';
 
 export function judgeFileDeclaration(
-  rule: FileSubjectRule,
+  rule: Pick<FileSubjectRule, 'contentTypes' | 'maxBytes'>,
   contentType: FileContentType,
   byteSize: number,
 ): FileDeclarationVerdict {

@@ -3,6 +3,7 @@ import { IN_TAX } from '../../src/tax/pack';
 import {
   companyProfileSaveOf,
   companyProfileValuesAtRead,
+  companyProfileView,
   registrationsChanged,
 } from '../../src/tenancy/company-profile-draft';
 import {
@@ -11,6 +12,7 @@ import {
   gst,
   NO_REGISTRATION_TYPE,
   other,
+  storing,
   TWO_TYPES,
   WELL_FORMED,
 } from './company-profile-stored';
@@ -99,6 +101,34 @@ describe('companyProfileSaveOf — the registrations it sends', () => {
   it('a stored number the owner empties is taken out', () => {
     const save = companyProfileSaveOf({ ...values, taxRegistration: '' }, withStored, TWO_TYPES);
     expect(save.registrations).toEqual([other]);
+  });
+});
+
+describe('companyProfileSaveOf — a logo the profile holds', () => {
+  const held = storing({ logoFileId: '0190a1b2-0000-7000-8000-000000000001' });
+  const { logoFileId: _absent, ...beforeTheLogo } = atSignup.profile;
+
+  it.each([
+    ['a stored logo', 'added', 'completed', held],
+    ['a stored `null`', 'name_only', 'skipped', storing({ logoFileId: null })],
+    [
+      'a read from before the logo',
+      'name_only',
+      'skipped',
+      { ...atSignup, profile: beforeTheLogo },
+    ],
+  ] as const)(
+    '%s and nothing typed: the first part %s, the step %s',
+    (_name, standing, step, stored) => {
+      const values = companyProfileValuesAtRead(stored, IN_TAX);
+      expect(companyProfileView(values, stored, IN_TAX).standings.identity).toBe(standing);
+      expect(companyProfileSaveOf(values, stored, IN_TAX).step).toBe(step);
+    },
+  );
+
+  it('the save never names the logo, so the api keeps the one it holds', () => {
+    const save = companyProfileSaveOf(companyProfileValuesAtRead(held, IN_TAX), held, IN_TAX);
+    expect(save.profile).not.toHaveProperty('logoFileId');
   });
 });
 

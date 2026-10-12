@@ -57,6 +57,9 @@ Reached from: the onboarding sequence after "What do you sell?" (M01 §M01.3 beh
 42. **Both answers given here after `Finish later` answer the step before too.** `SCR-M01-04`'s `Finish later` opens this screen with its step unrecorded; a save here that sends a kind and a size records that step `completed`, so the next sign-in does not ask again. A save without both leaves it unrecorded, and the next sign-in asks.
 43. **The cost of an undeclared answer keeps each screen's own words.** `Market defaults until you set these` here and `Until you finish, proposals start without your answers.` on `SCR-M01-04` both stay as drawn.
 44. **The device checks a logo's width before it uploads.** `At least 400 px wide` is one rule the screen reads; the api checks the file's type and size, and reads no image's width.
+45. **A file of another type is refused alone, in one line: `Needs a PNG or JPG`.** It is not measured — the right file is another file, with its own size and width — and an image whose width no device can read is refused the same way. No frame draws this refusal; it stands where the drawn one does.
+46. **A refusal names only the limits the image missed**, each as a whole line: its size and its width when both are missed (as drawn), its size alone, or its width alone.
+47. **A refused image's size is printed in megabytes to one decimal, rounded up**, so a file one byte over never reads as the limit (`2.1 MB · needs 2 MB or less`). `MB` and `px` are units and read the same in every language.
 
 
 ## Requirements (verbatim)
