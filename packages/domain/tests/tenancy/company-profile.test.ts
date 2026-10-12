@@ -80,7 +80,8 @@ describe('companyProfileStanding — where each part stands when shut (SCR-M01-0
     [gst(` ${WELL_FORMED} `), IN_TAX, 'added'],
     [gst(WELL_FORMED), NO_REGISTRATION_TYPE, 'not_added'],
     [[{ registrationType: 'XX_VAT', value: 'anything' }], IN_TAX, 'not_added'],
-    [gst('27aaach7409r1zv'), IN_TAX, 'check_format'],
+    [gst('27aaach7409r1zv'), IN_TAX, 'added'],
+    [gst('27aaach7409r1z'), IN_TAX, 'check_format'],
     [gst('27AAACH 7409R1ZV'), IN_TAX, 'check_format'],
     [[...gst(WELL_FORMED), second('12')], TWO_TYPES, 'check_format'],
     [[...gst(WELL_FORMED), second('1234')], TWO_TYPES, 'added'],
@@ -178,12 +179,20 @@ describe('companyProfileSave — what the act writes (M01-24, M01-25)', () => {
   });
 
   it.each([
-    [{ ...fourBankFacts, accountNumber: '' }],
-    [{ ...atSignup.bank, accountName: atSignup.companyName }],
-  ])('bank details short of four facts, %o, are not written and complete nothing', (bank) => {
-    const save = companyProfileSave({ ...atSignup, bank }, IN_TAX);
-    expect(save.profile.bankDetails).toBeNull();
-    expect(save.step).toBe('skipped');
+    [{ ...fourBankFacts, accountNumber: '' }, 'completed'],
+    [{ ...atSignup.bank, bankName: 'HDFC Bank' }, 'completed'],
+    [{ ...atSignup.bank, accountName: atSignup.companyName }, 'skipped'],
+  ] as const)(
+    'bank details short of four facts, %o, are not written whole and leave the step %s',
+    (bank, step) => {
+      const save = companyProfileSave({ ...atSignup, bank }, IN_TAX);
+      expect(save).toMatchObject({ profile: { bankDetails: null }, step });
+    },
+  );
+
+  it('a registration typed in small letters that reads well in capitals is written in capitals', () => {
+    const typed = { ...atSignup, registrations: gst(' 27aaach7409r1zv ') };
+    expect(companyProfileSave(typed, IN_TAX).registrations).toEqual(gst(WELL_FORMED));
   });
 
   it.each([

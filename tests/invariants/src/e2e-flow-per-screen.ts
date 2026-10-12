@@ -64,6 +64,11 @@ const PHONE_SCREENS_HELD: ReadonlyMap<string, string> = new Map([
     'reached only after Create company and the language step, behind the press no Maestro flow ' +
       'lands on iOS (the shell above): its flows are the web suite and the phone QA rows of its task',
   ],
+  [
+    'company-profile',
+    'reached only after Create company and the two steps before it, behind the press no Maestro ' +
+      'flow lands on iOS (the shell above): its flows are the web suite and the phone QA rows of its task',
+  ],
 ]);
 
 /** Files under `folder` whose name passes `test`, never inside a hidden folder. */

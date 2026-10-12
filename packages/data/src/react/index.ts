@@ -6,6 +6,8 @@ export { useRepositories } from './context';
 export type { HostLifecycle } from './host-lifecycle';
 export { followHostLifecycle } from './host-lifecycle';
 export { DataProvider } from './provider';
+export type { CompanyProfileStep } from './use-company-profile';
+export { useCompanyProfile } from './use-company-profile';
 export type { CompanyCreation, CompanySignup, JoinRequesting } from './use-company-signup';
 export { failureOf, useCompanySignup, useSteerDroppedOnEdit } from './use-company-signup';
 export { useConnection } from './use-connection';

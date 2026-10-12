@@ -1,6 +1,6 @@
 import type { BankDetails, TaxRegistration } from '../commerce/effective-settings';
 import type { TaxPack } from '../tax/pack';
-import { checkTaxRegistration } from '../tax/registration';
+import { checkTaxRegistration, type TaxRegistrationCheck } from '../tax/registration';
 import type { StepState } from './onboarding-steps';
 import type { TenantSegment } from './segment';
 import { isTypicalSystemSize, whatYouSellUnanswered } from './what-you-sell';
@@ -128,15 +128,20 @@ export interface CompanyProfileSave {
  * malformed registration is left out and stops nothing — the api would refuse the whole list for
  * it, and `M01-25` keeps the way on open. A size that is no declaration is written as none, so what
  * is stored stands as the screen says it. The step is `completed` once a part of this screen's own
- * holds a fact, and `skipped` while none does (`M01-24`).
+ * holds a fact — a bank fact typed half way is one — and `skipped` while none does (`M01-24`).
  */
 export function companyProfileSave(facts: CompanyProfileFacts, tax: TaxPack): CompanyProfileSave {
   const address = typed(facts.address);
   const postalCode = typed(facts.postalCode);
   const bankDetails = bankDetailsHeld(facts.bank);
   const registrations = registrationsRead(facts, tax).wellFormed;
+  const bankDetailsTyped = bankDetailsHalf(facts);
   const holdsAFact =
-    address !== null || postalCode !== null || bankDetails !== null || registrations.length > 0;
+    address !== null ||
+    postalCode !== null ||
+    bankDetails !== null ||
+    bankDetailsTyped !== null ||
+    registrations.length > 0;
   return {
     profile: {
       companyName: facts.companyName.trim(),
@@ -146,7 +151,7 @@ export function companyProfileSave(facts: CompanyProfileFacts, tax: TaxPack): Co
       address,
       postalCode,
       bankDetails,
-      bankDetailsTyped: bankDetailsHalf(facts),
+      bankDetailsTyped,
     },
     registrations,
     step: holdsAFact ? 'completed' : 'skipped',
@@ -198,13 +203,31 @@ function registrationTyped(
   tax: TaxPack,
 ): CompanyLetterhead['registration'] {
   for (const { registrationType, value } of facts.registrations) {
-    const trimmed = typed(value);
-    if (trimmed === null) continue;
-    const check = checkTaxRegistration(tax, registrationType, trimmed);
-    if (check.ok) return { value: trimmed, wellFormed: true };
-    if (check.reason === 'malformed') return { value: trimmed, wellFormed: false };
+    const read = registrationRead(tax, registrationType, value);
+    if (read === null) continue;
+    if (read.check.ok) return { value: read.value, wellFormed: true };
+    if (read.check.reason === 'malformed') return { value: read.value, wellFormed: false };
   }
   return null;
+}
+
+/**
+ * One typed registration against the market's format, `null` when nothing is typed. A value that
+ * reads well only in capitals is taken in capitals: the format is the market's, and an owner who
+ * typed the right number in small letters has nothing to put right.
+ */
+function registrationRead(
+  tax: TaxPack,
+  registrationType: string,
+  value: string,
+): { readonly value: string; readonly check: TaxRegistrationCheck } | null {
+  const trimmed = typed(value);
+  if (trimmed === null) return null;
+  const check = checkTaxRegistration(tax, registrationType, trimmed);
+  if (check.ok) return { value: trimmed, check };
+  const inCapitals = trimmed.toUpperCase();
+  const capitalsCheck = checkTaxRegistration(tax, registrationType, inCapitals);
+  return capitalsCheck.ok ? { value: inCapitals, check: capitalsCheck } : { value: trimmed, check };
 }
 
 function isHeld(value: string | null): value is string {
@@ -261,12 +284,11 @@ function registrationsRead(
   const wellFormed: TaxRegistration[] = [];
   let malformed = false;
   for (const { registrationType, value } of facts.registrations) {
-    const trimmed = typed(value);
-    if (trimmed === null) continue;
-    const check = checkTaxRegistration(tax, registrationType, trimmed);
-    if (!check.ok) malformed ||= check.reason === 'malformed';
+    const read = registrationRead(tax, registrationType, value);
+    if (read === null) continue;
+    if (!read.check.ok) malformed ||= read.check.reason === 'malformed';
     else if (!wellFormed.some((held) => held.registrationType === registrationType)) {
-      wellFormed.push({ registrationType, value: trimmed });
+      wellFormed.push({ registrationType, value: read.value });
     }
   }
   return { wellFormed, malformed };

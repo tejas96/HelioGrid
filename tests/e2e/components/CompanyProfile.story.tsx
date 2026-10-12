@@ -103,6 +103,7 @@ export function CompanyProfileAsHeld({
           words={companyProfileWords(t, {
             status,
             skipped,
+            arrivedUndeclared: undeclared,
             standings,
             open,
             city: values.city,

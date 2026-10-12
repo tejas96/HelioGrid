@@ -1,4 +1,4 @@
-import { FIRST_RUN_COACH_MARKS } from '@heliogrid/domain';
+import { COMPANY_PROFILE_FIELD_CAP, FIRST_RUN_COACH_MARKS } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
@@ -21,8 +21,13 @@ import { sessionProjectionSchema } from './session';
 
 const c = initContract();
 
-export const companyNameSchema = z.string().trim().min(1).max(120);
-export const citySchema = z.string().trim().min(1).max(80);
+/** Bounded by domain's list, where the company profile's fields stop at the same lengths. */
+export const companyNameSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(COMPANY_PROFILE_FIELD_CAP.companyName);
+export const citySchema = z.string().trim().min(1).max(COMPANY_PROFILE_FIELD_CAP.city);
 const personNameSchema = z.string().trim().min(1).max(120);
 
 /** Company signup from a verified OTP (`M01-01`): exactly these three, nothing else. */

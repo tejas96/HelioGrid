@@ -39,7 +39,6 @@ export function ProfileSet({
   if (set === null) return null;
   const field = (spec: ProfileFieldSpec) => (
     <Input
-      key={spec.field}
       label={spec.label}
       value={spec.value}
       placeholder={spec.example}
@@ -50,18 +49,18 @@ export function ProfileSet({
   );
   return (
     <div className="hg-company-profile-set" data-disclosed={set.disclosure !== null}>
-      {set.fields.map((spec) =>
-        spec.line === null ? (
-          field(spec)
-        ) : (
-          <div key={spec.field} className="hg-company-profile-pair">
-            {field(spec)}
+      {/* One wrapper whether or not the field has a line: a field whose line gives way to its
+          error keeps its place in the tree, and so its focus, while a person types. */}
+      {set.fields.map((spec) => (
+        <div key={spec.field} className="hg-company-profile-pair">
+          {field(spec)}
+          {spec.line === null ? null : (
             <Text variant="body-sm" color="secondary">
               {spec.line}
             </Text>
-          </div>
-        ),
-      )}
+          )}
+        </div>
+      ))}
       {set.disclosure === null ? null : (
         <Text variant="body-sm" color="secondary">
           {set.disclosure}

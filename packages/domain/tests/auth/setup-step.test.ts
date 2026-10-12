@@ -21,6 +21,7 @@ const reading: SetupRead = { status: 'pending' };
 const unanswered: SetupRead = { status: 'failed' };
 const atLanguage: SetupRead = { status: 'ready', resumeStep: 'language' };
 const atWhatYouSell: SetupRead = { status: 'ready', resumeStep: 'what_you_sell' };
+const atCompanyProfile: SetupRead = { status: 'ready', resumeStep: 'business_profile' };
 const closed: SetupRead = { status: 'ready', resumeStep: null };
 
 describe('setupStepOwed — the setup step a session is asked for (M01-10, F3-03)', () => {
@@ -35,13 +36,17 @@ describe('setupStepOwed — the setup step a session is asked for (M01-10, F3-03
     expect(setupStepOwed(owner, false, atWhatYouSell)).toBe('what_you_sell');
   });
 
+  it('asks an owner whose company resumes at the company profile for that step', () => {
+    expect(setupStepOwed(owner, false, atCompanyProfile)).toBe('business_profile');
+  });
+
   it('waits while an owner’s progress is still being read', () => {
     expect(setupStepOwed(owner, false, reading)).toBe('wait');
   });
 
   it.each([
     { why: 'the read got no answer: setup never holds a person', user: owner, read: unanswered },
-    ...(['business_profile', 'invite_team', 'ready'] as const).map((resumeStep) => ({
+    ...(['invite_team', 'ready'] as const).map((resumeStep) => ({
       why: `the company resumes at ${resumeStep}, which has no screen yet`,
       user: owner,
       read: { status: 'ready', resumeStep } satisfies SetupRead,
@@ -63,6 +68,7 @@ describe('setupStepOwed — the setup step a session is asked for (M01-10, F3-03
   it.each([
     { read: atLanguage, when: 'the step is owed' },
     { read: atWhatYouSell, when: 'the second step is owed' },
+    { read: atCompanyProfile, when: 'the third step is owed' },
     { read: reading, when: 'the read is still in flight' },
   ])('asks for no step in a session that put it off, when $when', ({ read }) => {
     expect(setupStepOwed(owner, true, read)).toBeNull();

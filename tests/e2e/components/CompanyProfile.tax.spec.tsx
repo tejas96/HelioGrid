@@ -124,3 +124,16 @@ test('a registration the market’s format accepts has no error, keeps the forma
     await resolvedColour(page, '--success'),
   );
 });
+
+test('a number typed key by key keeps the field’s focus while its line turns into the error and back', async ({
+  mount,
+}) => {
+  const profile = await mount(<CompanyProfileAsHeld reader="en" open="tax" />);
+  const field = profile.getByRole('textbox', { name: LABEL });
+  await field.click();
+  // The first key makes the value malformed and the last makes it well formed: both swap the line.
+  await field.pressSequentially(WELL_FORMED);
+  await expect(field).toBeFocused();
+  await expect(field).toHaveValue(WELL_FORMED);
+  await expect(profile.locator('.hg-input-error')).toHaveCount(0);
+});

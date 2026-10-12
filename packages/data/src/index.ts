@@ -27,6 +27,7 @@ export {
 } from './errors/errors';
 export type { HealthRepository } from './health/repository';
 export type { InvitationRepository } from './invitation/repository';
+export type { MarketRepository } from './market/repository';
 export type {
   NotificationCentreQuery,
   NotificationRepository,

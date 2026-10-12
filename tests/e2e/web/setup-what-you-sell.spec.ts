@@ -1,5 +1,6 @@
 import { TENANT_SEGMENTS } from '@heliogrid/domain';
 import {
+  COMPANY_PROFILE,
   createTranslator,
   SETUP_LANGUAGE,
   SETUP_WHAT_YOU_SELL,
@@ -33,6 +34,8 @@ const UNIT = 'kWp';
 
 const heading = (page: Page) =>
   page.getByRole('heading', { name: en.t(SETUP_WHAT_YOU_SELL.title) });
+/** The company profile, the setup step that takes this one's place once it is recorded. */
+const nextStep = (page: Page) => page.getByRole('heading', { name: en.t(COMPANY_PROFILE.title) });
 const shell = (page: Page) => page.getByRole('navigation', { name: en.t(SHELL.mainNavigation) });
 const cards = (page: Page) => page.getByRole('radio');
 const size = (page: Page) =>
@@ -53,7 +56,7 @@ function writesOf(page: Page): string[] {
   return writes;
 }
 
-test('a new owner is asked what the company sells once: two questions, no way round, and Continue saves both and opens the home', async ({
+test('a new owner is asked what the company sells once: two questions, no way round, and Continue saves both and opens the company profile', async ({
   page,
 }) => {
   const read = page.waitForResponse(
@@ -90,10 +93,10 @@ test('a new owner is asked what the company sells once: two questions, no way ro
     typicalSystemKwp: 5,
   });
   expect((await recorded).postDataJSON()).toEqual({ state: 'completed' });
-  await expect(shell(page)).toBeVisible();
+  await expect(nextStep(page)).toBeVisible();
 
   await page.reload();
-  await expect(shell(page)).toBeVisible();
+  await expect(nextStep(page)).toBeVisible();
   await expect(heading(page)).toHaveCount(0);
 });
 
@@ -173,10 +176,10 @@ test('a save that fails keeps both answers and offers two ways on; Finish later 
   await expect(cards(page).first()).toBeChecked();
   await expect(size(page)).toHaveValue('8');
   await wayOn(page).click();
-  await expect(shell(page)).toBeVisible();
+  await expect(nextStep(page)).toBeVisible();
 });
 
-test('a read that fails never holds the owner: Continue reads again, says the save failed, and Try again opens the home', async ({
+test('a read that fails never holds the owner: Continue reads again, says the save failed, and Try again opens the company profile', async ({
   page,
 }) => {
   // The data layer tries a failed read three times, a second apart and then two, before it gives up.
@@ -196,5 +199,5 @@ test('a read that fails never holds the owner: Continue reads again, says the sa
 
   await page.unroute(theProfile);
   await page.getByRole('button', { name: en.t(SIGN_IN.tryAgain) }).click();
-  await expect(shell(page)).toBeVisible();
+  await expect(nextStep(page)).toBeVisible();
 });

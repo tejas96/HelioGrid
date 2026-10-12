@@ -95,6 +95,7 @@ type ReviewedComputesNothing =
   | 'activeStatutoryExtras'
   /* return a whole pack as written */
   | 'marketOfPhone'
+  | 'taxPackOf'
   | 'phoneReach'
   | 'parseStoredPack'
   | 'readStoredPack'

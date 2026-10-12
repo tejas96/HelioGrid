@@ -26,3 +26,12 @@ export const TAX_PACK_SCHEMA: z.ZodType<TaxPack, z.ZodTypeDef, unknown> = z.obje
   fiscalYearStartMonth: oneOf([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
   recordRetentionYears: packWhole,
 });
+
+/**
+ * `pack.tax` as a device reads it off the wire, where a pack's keys travel opaque: the pack, or
+ * `null` for a value that is not one — a screen that needs the tax rules then has none to show.
+ */
+export function taxPackOf(value: unknown): TaxPack | null {
+  const read = TAX_PACK_SCHEMA.safeParse(value);
+  return read.success ? read.data : null;
+}

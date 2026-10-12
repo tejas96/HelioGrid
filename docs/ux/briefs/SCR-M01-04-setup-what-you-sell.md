@@ -27,7 +27,7 @@ Reached from: directly after signup's three fields — "after M01-01's three fie
 
 **Rulings made in the build (owner, 2026-10-11) — the board and later screens inherit them.**
 
-1. **Until `SCR-M01-05` is built, `Continue` lands on the home and `Finish later` puts the step off for the session**, so the next sign-in asks again. The words are the board's as drawn and name the company profile; `T-M01-005` re-points the route.
+1. **`Continue` opens the company profile (`SCR-M01-05`); `Finish later` puts the step off for the session**, so the next sign-in asks again, until it too opens the company profile (`docs/tasks/deferred.md`, D202). The words are the board's as drawn and name the company profile.
 2. **The screen is built on the door frame**, at a `list` measure of 560: the task column is the board's width, and the identity half keeps the frame's own width and place.
 3. **The failure takes the heading at every width, as one block, as the board draws it at 375**: the danger block holds what went wrong as the page's heading in the danger ink, the error's ask at the row's far end, and the fix sentence under them, said as one alert. At 1536 the block stands in the question's place, where the board keeps the question above it.
 4. **A size of 0 or less, or over 999,999.99, is unanswered**; the size holds two decimals. The field has no bound of its own: `Continue` refuses at the field with its one line.

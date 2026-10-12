@@ -3,6 +3,7 @@ import { type AuthRepository, createAuthRepository } from './auth/repository';
 import { createApiClient } from './client/client';
 import { createHealthRepository, type HealthRepository } from './health/repository';
 import { createInvitationRepository, type InvitationRepository } from './invitation/repository';
+import { createMarketRepository, type MarketRepository } from './market/repository';
 import {
   createNotificationRepository,
   type NotificationRepository,
@@ -27,6 +28,7 @@ export interface Repositories {
   auth: AuthRepository;
   health: HealthRepository;
   invitation: InvitationRepository;
+  market: MarketRepository;
   onboarding: OnboardingRepository;
   settings: SettingsRepository;
   tenant: TenantRepository;
@@ -79,6 +81,7 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
     auth: createAuthRepository(api),
     health: createHealthRepository(api),
     invitation: createInvitationRepository(api),
+    market: createMarketRepository(api),
     onboarding: createOnboardingRepository(api),
     settings: createSettingsRepository(api),
     tenant: createTenantRepository(api),
