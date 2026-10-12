@@ -7,11 +7,18 @@ export type SetupRead =
   | { readonly status: 'pending' | 'failed' }
   | { readonly status: 'ready'; readonly resumeStep: OnboardingStep | null };
 
+/** The setup steps that have a screen. A step joins when its screen lands, never before. */
+const STEPS_WITH_A_SCREEN = [
+  'language',
+  'what_you_sell',
+] as const satisfies readonly OnboardingStep[];
+export type SetupScreenStep = (typeof STEPS_WITH_A_SCREEN)[number];
+
 /**
  * `wait` while the answer is not known and nothing may render; the step that is owed, of the steps
  * that have a screen; `null` when the session owes none.
  */
-export type SetupStepOwed = 'wait' | 'language' | null;
+export type SetupStepOwed = 'wait' | SetupScreenStep | null;
 
 /**
  * The setup step a signed-in session is asked for (`M01-10`), decided once for both apps. Only a
@@ -27,7 +34,7 @@ export function setupStepOwed(
 ): SetupStepOwed {
   if (!managesSetup(user) || putOff) return null;
   if (read.status !== 'ready') return read.status === 'pending' ? 'wait' : null;
-  return read.resumeStep === 'language' ? 'language' : null;
+  return STEPS_WITH_A_SCREEN.find((step) => step === read.resumeStep) ?? null;
 }
 
 /** Whether this person is asked for setup at all — and so whether a device reads its progress for them. */

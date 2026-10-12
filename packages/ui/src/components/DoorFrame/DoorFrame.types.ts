@@ -11,10 +11,12 @@ export type DoorTaskMeasure = 'field' | 'steps' | 'list' | 'choices';
 /**
  * Where the column sits under the door's breakpoint, and on the phone. `centred` — between the
  * header row and the column's foot, the front door's place (`SCR-M01-01` "375 vertical layout").
- * `deep` — the heading `sp-8` under what leads it, a signup step's place (`SCR-M01-02`). Omitted,
- * the column starts under the header row at the frame's own gap.
+ * `deep` — the heading `sp-8` under what leads it, a signup step's place (`SCR-M01-02`). `near` —
+ * the heading `sp-4` under what leads it, for a failure that takes the heading: its block is taller
+ * than a title, and the column must still hold its last line above the action (`SCR-M01-04`
+ * `m-error`). Omitted, the column starts under the header row at the frame's own gap.
  */
-export type DoorColumn = 'centred' | 'deep';
+export type DoorColumn = 'centred' | 'deep' | 'near';
 
 /** A door's heading, the one ask beside it, and the line under it (`SCR-M01-02` decision 26). */
 export interface DoorTitleProps {

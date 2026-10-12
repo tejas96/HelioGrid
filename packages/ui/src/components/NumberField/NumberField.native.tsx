@@ -22,7 +22,8 @@ const styles = StyleSheet.create({
 
 /**
  * Typed dimensions on touch. Commits once on blur or the keyboard's Done key, never per
- * keystroke; empty or invalid restores the last good value.
+ * keystroke unless the caller asks for `commits="as-typed"`; empty or invalid restores the last
+ * good value.
  *
  * Escape has no touch equivalent — a cancel gesture would be invented UI, and blurring already
  * commits nothing when the draft is empty or invalid. ArrowUp/ArrowDown likewise: the +/− targets
@@ -45,6 +46,7 @@ export function NumberField({
   override,
   attribution,
   outOfRange = 'clamp',
+  commits = 'on-leave',
   refusalMessage,
   refusalPath,
   steppers,
@@ -64,6 +66,7 @@ export function NumberField({
     unit,
     outOfRange,
     correctionMessage,
+    commits,
   });
 
   const refused =

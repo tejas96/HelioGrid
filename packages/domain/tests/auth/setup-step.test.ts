@@ -31,17 +31,22 @@ describe('setupStepOwed — the setup step a session is asked for (M01-10, F3-03
     expect(setupStepOwed(user, false, read)).toBe('language');
   });
 
+  it('asks an owner whose company resumes at what-you-sell for that step', () => {
+    expect(setupStepOwed(owner, false, atWhatYouSell)).toBe('what_you_sell');
+  });
+
   it('waits while an owner’s progress is still being read', () => {
     expect(setupStepOwed(owner, false, reading)).toBe('wait');
   });
 
   it.each([
     { why: 'the read got no answer: setup never holds a person', user: owner, read: unanswered },
-    {
-      why: 'the company resumes at a later step, which has no screen yet',
+    ...(['business_profile', 'invite_team', 'ready'] as const).map((resumeStep) => ({
+      why: `the company resumes at ${resumeStep}, which has no screen yet`,
       user: owner,
-      read: atWhatYouSell,
-    },
+      read: { status: 'ready', resumeStep } satisfies SetupRead,
+    })),
+    { why: 'the roles do not manage them, at the second step', user: seller, read: atWhatYouSell },
     { why: 'every step is answered', user: owner, read: closed },
     { why: 'the roles do not manage the company’s settings', user: seller, read: atLanguage },
     {
@@ -57,6 +62,7 @@ describe('setupStepOwed — the setup step a session is asked for (M01-10, F3-03
 
   it.each([
     { read: atLanguage, when: 'the step is owed' },
+    { read: atWhatYouSell, when: 'the second step is owed' },
     { read: reading, when: 'the read is still in flight' },
   ])('asks for no step in a session that put it off, when $when', ({ read }) => {
     expect(setupStepOwed(owner, true, read)).toBeNull();

@@ -1,6 +1,6 @@
 'use client';
 import { useLanding, useSession, useSessionPhase } from '@heliogrid/data/react';
-import type { SessionLanding } from '@heliogrid/domain';
+import { isSetupLanding, type SessionLanding, type SetupLanding } from '@heliogrid/domain';
 import { useRouter } from 'next/navigation';
 import { type ReactNode, useEffect } from 'react';
 import { ROUTE_OF } from './constants';
@@ -9,12 +9,13 @@ import { UnreachableScreen } from './UnreachableScreen';
 
 /**
  * What a route group asks of its visitor: `signed-in` means a settled session WITH a company. That
- * group also hands in the language step, which this gate draws in the group's place — required
- * there, so a signed-in group that forgets it does not compile and can never show a blank page.
+ * group also hands in the setup steps, one per setup landing, which this gate draws in the group's
+ * place — required there, so a signed-in group that forgets one does not compile and can never
+ * show a blank page.
  */
 type GateProps = { children: ReactNode } & (
   | { need: 'signed-out' }
-  | { need: 'signed-in'; languageStep: ReactNode }
+  | { need: 'signed-in'; setupSteps: Record<SetupLanding, ReactNode> }
 );
 type Need = GateProps['need'];
 
@@ -32,9 +33,9 @@ type Need = GateProps['need'];
  * it once they are in (`M01-61`). One who was inside and left is not followed: after a sign-out the
  * next person in this tab starts at their own home.
  *
- * An owner who owes the language step (`SCR-M01-03`) is inside, at the address they asked for: the
- * step is drawn there in the group's place and has no address of its own, so the link they opened
- * is the page that follows it and Back has no step to return to.
+ * An owner who owes a setup step (`SCR-M01-03`, `SCR-M01-04`) is inside, at the address they asked
+ * for: the step is drawn there in the group's place and has no address of its own, so the link
+ * they opened is the page that follows it and Back has no step to return to.
  */
 export function SessionGate(props: GateProps) {
   const { need, children } = props;
@@ -57,12 +58,14 @@ export function SessionGate(props: GateProps) {
 
   if (unreachable) return <UnreachableScreen />;
   if (landing === 'wait' || sendTo !== null) return null;
-  return props.need === 'signed-in' && landing === 'language-step' ? props.languageStep : children;
+  return props.need === 'signed-in' && isSetupLanding(landing)
+    ? props.setupSteps[landing]
+    : children;
 }
 
-/** The landings that open the link a person followed while signed out: the home, and the step before it. */
+/** The landings that open the link a person followed while signed out: the home, and a setup step before it. */
 function opensTheLink(landing: SessionLanding): boolean {
-  return landing === 'home' || landing === 'language-step';
+  return landing === 'home' || isSetupLanding(landing);
 }
 
 /**
@@ -75,6 +78,6 @@ function destinationOf(need: Need, landing: SessionLanding): string | null {
   // A group for signed-OUT visitors keeps anyone still at the door and moves anyone past it.
   if (need === 'signed-out') return landing === 'door' ? null : ROUTE_OF[landing];
   // A signed-IN group keeps a person who belongs inside with a company, one held there, and one
-  // who owes the language step, which is drawn here.
+  // who owes a setup step, which is drawn here.
   return opensTheLink(landing) || landing === 'access-removed' ? null : ROUTE_OF[landing];
 }

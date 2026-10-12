@@ -15,7 +15,8 @@ interface WebNumberFieldProps extends NumberFieldProps {
 }
 
 /**
- * Typed dimensions in the display unit that COMMIT ONCE on blur or Enter, never per keystroke.
+ * Typed dimensions in the display unit that COMMIT ONCE on blur or Enter, never per keystroke
+ * unless the caller asks for `commits="as-typed"`.
  * Empty or invalid never commits — the last good value returns. Escape cancels the edit.
  *
  * Money is not a dimension: `outOfRange="refuse"` writes nothing and states the constraint, and
@@ -38,6 +39,7 @@ export function NumberField({
   override,
   attribution,
   outOfRange = 'clamp',
+  commits = 'on-leave',
   refusalMessage,
   refusalPath,
   steppers,
@@ -61,6 +63,7 @@ export function NumberField({
     unit,
     outOfRange,
     correctionMessage,
+    commits,
   });
 
   const refused =

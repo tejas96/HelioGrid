@@ -3,6 +3,8 @@ import type { FieldOverrideSpec } from '../FieldOverride/FieldOverride.types';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance/Provenance.types';
 import type { ValueSourceLevel, ValueSourceSpec } from '../ValueSource/ValueSource.types';
 
+export type NumberFieldCommits = 'on-leave' | 'as-typed';
+
 /**
  * Number entry. Commits once on blur or Enter; empty or invalid never commits (the last good value
  * is restored). Escape cancels the edit.
@@ -23,8 +25,17 @@ export interface NumberFieldProps {
    * leaves it unset; `onCommit` only ever receives a figure.
    */
   value?: number;
-  /** Fires once, on blur or Enter. Never per keystroke. */
+  /** Fires once, on blur or Enter. Never per keystroke, unless `commits` is `as-typed`. */
   onCommit?: (value: number) => void;
+  /**
+   * When a figure reaches `onCommit`. `on-leave` (default): once the field is left. `as-typed`:
+   * also each figure the draft would commit, while it is typed; the draft stays as typed. For a
+   * screen whose way on cannot wait for the field to be left: on touch a tap on a button does not
+   * leave a field, and a number pad has no Done key. As typed, Escape has nothing to take back —
+   * the figure was already reported — and a field with a bound reports the bound until the draft
+   * is inside it.
+   */
+  commits?: NumberFieldCommits;
   min?: number;
   max?: number;
   /** The nudge size. Meaningless with `steppers={false}`, which is money's default. Default 1. */

@@ -17,6 +17,7 @@ export function HeldNumberField({
   steppers = false,
   tier = false,
   emphasis,
+  asTyped = false,
 }: {
   label: string;
   unit: string;
@@ -28,6 +29,8 @@ export function HeldNumberField({
   tier?: boolean;
   /** The line's emphasis; left out, the component's own default. */
   emphasis?: ProvenanceEmphasis;
+  /** The field reports each figure while it is typed, not only once it is left. */
+  asTyped?: boolean;
 }) {
   const [value, setValue] = useState<number | undefined>(initial);
   const [commits, setCommits] = useState(0);
@@ -39,6 +42,7 @@ export function HeldNumberField({
         value={value}
         min={min}
         steppers={steppers}
+        commits={asTyped ? 'as-typed' : 'on-leave'}
         onCommit={(next) => {
           setValue(next);
           setCommits((count) => count + 1);

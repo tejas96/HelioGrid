@@ -15,8 +15,8 @@ export const useIsBooting = () => useNavigationLanding() === 'wait';
 export const useIsSignedOut = () => useNavigationPhase() === 'signedOut';
 export const useIsSignedIn = () => useNavigationPhase() === 'signedIn';
 
-/** The App group's first screens: the shell, the step that makes a company, or the setup step that company owes. */
-type AppEntry = 'Shell' | 'CompanySetup' | 'SetupLanguage';
+/** The App group's first screens: the shell, the step that makes a company, or a setup step that company owes. */
+type AppEntry = 'Shell' | 'CompanySetup' | 'SetupLanguage' | 'SetupWhatYouSell';
 
 /**
  * Which first screen each landing inside the App group mounts. The shell holds a person whose
@@ -29,6 +29,7 @@ const ROUTE_OF_LANDING: Record<Exclude<SessionLanding, 'wait' | 'door'>, AppEntr
   'access-removed': 'Shell',
   'company-step': 'CompanySetup',
   'language-step': 'SetupLanguage',
+  'what-you-sell-step': 'SetupWhatYouSell',
 };
 
 /**
@@ -43,6 +44,7 @@ const useEntry = (): AppEntry | null => {
 export const useShowsShell = () => useEntry() === 'Shell';
 export const useHasNoTenant = () => useEntry() === 'CompanySetup';
 export const useOwesLanguageStep = () => useEntry() === 'SetupLanguage';
+export const useOwesWhatYouSellStep = () => useEntry() === 'SetupWhatYouSell';
 /** The doors the shell opens exist only while the person is inside, never while held. */
 export const useHasHome = () => useNavigationLanding() === 'home';
 

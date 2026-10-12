@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { commitDraft, displayNumber, nudgeValue } from './NumberField.logic';
-import type { OutOfRangeMode } from './NumberField.types';
+import type { NumberFieldCommits, OutOfRangeMode } from './NumberField.types';
 
 export interface NumberDraftOptions {
   /** None: the field is unset and edits as an empty draft. */
@@ -14,6 +14,7 @@ export interface NumberDraftOptions {
   unit?: string;
   outOfRange: OutOfRangeMode;
   correctionMessage?: string;
+  commits: NumberFieldCommits;
 }
 
 export interface NumberDraftState {
@@ -38,7 +39,9 @@ export interface NumberDraftState {
  *
  * The rules it holds: commit ONCE on blur or Enter, never per keystroke; empty or invalid never
  * commits; a correction and a refusal are cleared by focus because they were about the last
- * keystroke, while the caller's `error` is not this hook's business at all.
+ * keystroke, while the caller's `error` is not this hook's business at all. A caller that asks for
+ * `as-typed` also hears each figure the draft would commit; the draft and its notes wait for the
+ * commit, so nothing is rewritten under the person's fingers.
  */
 export function useNumberFieldDraft(opts: NumberDraftOptions): NumberDraftState {
   const { value, onCommit } = opts;
@@ -79,6 +82,13 @@ export function useNumberFieldDraft(opts: NumberDraftOptions): NumberDraftState 
     if (outcome.value !== value) onCommit?.(outcome.value);
   };
 
+  const type = (next: string) => {
+    setDraft(next);
+    if (opts.commits !== 'as-typed') return;
+    const outcome = commitDraft({ ...opts, draft: next });
+    if (outcome.kind === 'accept' && outcome.value !== value) onCommit?.(outcome.value);
+  };
+
   const nudge = (direction: 1 | -1) => {
     const next = nudgeValue({ ...opts, draft, direction });
     setDraft(displayNumber(next));
@@ -91,7 +101,7 @@ export function useNumberFieldDraft(opts: NumberDraftOptions): NumberDraftState 
     correction,
     refusal,
     focus,
-    setDraft,
+    setDraft: type,
     onFocus: () => {
       setFocus(true);
       clearNotes();

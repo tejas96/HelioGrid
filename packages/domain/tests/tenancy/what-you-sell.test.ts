@@ -2,8 +2,13 @@ import { describe, expect, it } from 'vitest';
 import {
   isTypicalSystemSize,
   TYPICAL_SYSTEM_KWP,
+  WHAT_YOU_SELL_STEP_AT_OPEN,
   type WhatYouSellAnswers,
+  type WhatYouSellEvent,
   whatYouSellAfterRead,
+  whatYouSellAnswers,
+  whatYouSellRefused,
+  whatYouSellStep,
   whatYouSellUnanswered,
 } from '../../src/tenancy/what-you-sell';
 
@@ -80,5 +85,100 @@ describe('whatYouSellAfterRead — a stored declaration never changes an answer 
 
   it('leaves a company that declared nothing with nothing', () => {
     expect(whatYouSellAfterRead(nothing, [], nothing)).toEqual(nothing);
+  });
+});
+
+describe('whatYouSellStep — the step as a device holds it until Continue', () => {
+  const stepAfter = (...events: readonly WhatYouSellEvent[]) =>
+    events.reduce(whatYouSellStep, WHAT_YOU_SELL_STEP_AT_OPEN);
+  const kind: WhatYouSellEvent = { type: 'segment-chosen', segment: 'residential' };
+  const size: WhatYouSellEvent = { type: 'size-declared', kwp: 5 };
+  const pressed: WhatYouSellEvent = { type: 'continue-pressed', stored: null };
+  const stored: WhatYouSellAnswers = { segment: 'ci', typicalSystemKwp: 250 };
+
+  it('opens with nothing answered, nothing touched and nothing refused', () => {
+    expect(whatYouSellAnswers(WHAT_YOU_SELL_STEP_AT_OPEN, null)).toEqual(nothing);
+    expect(WHAT_YOU_SELL_STEP_AT_OPEN.touched).toEqual([]);
+    expect(WHAT_YOU_SELL_STEP_AT_OPEN.refusals).toBe(0);
+  });
+
+  it.each([
+    {
+      name: 'a kind chosen',
+      events: [kind],
+      touched: ['segment'],
+      answers: { segment: 'residential', typicalSystemKwp: null },
+    },
+    {
+      name: 'a size declared',
+      events: [size],
+      touched: ['size'],
+      answers: { segment: null, typicalSystemKwp: 5 },
+    },
+    {
+      name: 'a kind chosen twice',
+      events: [kind, kind],
+      touched: ['segment'],
+      answers: { segment: 'residential', typicalSystemKwp: null },
+    },
+    {
+      name: 'both answered',
+      events: [size, kind],
+      touched: ['size', 'segment'],
+      answers: { segment: 'residential', typicalSystemKwp: 5 },
+    },
+  ] as const)('holds $name and marks it touched once', ({ events, touched, answers }) => {
+    const step = stepAfter(...events);
+    expect(step.touched).toEqual(touched);
+    expect(whatYouSellAnswers(step, null)).toEqual(answers);
+  });
+
+  it('fills an untouched question from the stored declaration, and never a touched one', () => {
+    expect(whatYouSellAnswers(stepAfter(kind), stored)).toEqual({
+      segment: 'residential',
+      typicalSystemKwp: 250,
+    });
+  });
+
+  it.each([
+    { name: 'nothing answered', events: [], refused: ['segment', 'size'], refusals: 1 },
+    { name: 'the kind chosen', events: [kind], refused: ['size'], refusals: 1 },
+    { name: 'the size declared', events: [size], refused: ['segment'], refusals: 1 },
+    {
+      name: 'a size of 0 declared',
+      events: [kind, { type: 'size-declared', kwp: 0 }],
+      refused: ['size'],
+      refusals: 1,
+    },
+    { name: 'both answered', events: [kind, size], refused: [], refusals: 0 },
+  ] as const)(
+    'Continue with $name is refused at $refused, and the count rises with the questions',
+    ({ events, refused, refusals }) => {
+      const step = stepAfter(...events, pressed);
+      expect(whatYouSellRefused(step, null)).toEqual(refused);
+      expect(step.refusals).toBe(refusals);
+    },
+  );
+
+  it('counts each refusal, so the same questions refused again are answered again', () => {
+    expect(stepAfter(pressed, pressed).refusals).toBe(2);
+  });
+
+  it('is not refused at a question the stored declaration answers', () => {
+    const step = whatYouSellStep(stepAfter(kind), { type: 'continue-pressed', stored });
+    expect(whatYouSellRefused(step, stored)).toEqual([]);
+    expect(step.refusals).toBe(0);
+  });
+
+  it('drops a refused question once it is answered, and keeps the one still owed', () => {
+    const step = stepAfter(pressed, kind);
+    expect(whatYouSellRefused(step, null)).toEqual(['size']);
+    expect(step.refusals).toBe(1);
+  });
+
+  it('forgets the last refusal when Continue is pressed with both answered', () => {
+    const step = stepAfter(pressed, kind, size, pressed);
+    expect(whatYouSellRefused(step, null)).toEqual([]);
+    expect(step.refusals).toBe(1);
   });
 });

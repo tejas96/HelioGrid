@@ -3570,7 +3570,7 @@ Branch `feat/T-M01-003a`, cut from `feat/T-M01-041g` (`afe6f00b`), 2026-10-11 �
 
 ### T-M01-004 · Setup — What You Sell
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped
 **Why:** The owner says whether they sell residential, C&I or both and their typical system size in kWp, and the first proposal opens close to a real job instead of at zero; without it every seeded default is a guess nobody declared.
 **PRD rows:** M01-23 (P0)
 **DESIGN:** SCR-M01-04 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M01-04+What+You+Sell+-+Mobile.dc.html
@@ -3680,7 +3680,7 @@ Three parts. a: about 15 files, sized in its RFC. b: the screen's shared parts, 
 |---|---|---|---|---|
 | a | `NumberField` can be unset and `Provenance` can be load-bearing, both halves; `provenanceWords` in `packages/i18n`; a component spec for the field; the two `UI.md` rows go (`#### Part a · RFC`) | AC-1 (an undeclared size is empty, never 0 — by component spec) | `T-M01-003` | shipped |
 | b | the screen's shared parts: `SetupWhatYouSell` in `packages/ui`, its words in three languages, domain's rule for the answers (what is missing, what a read fills, what counts as a size) — by unit test and on the component page | AC-1 (the two questions, the tier), AC-2 — on the component page | a · `SCR-M01-04` `READY` | shipped |
-| c | the step owed, the landing, the business-profile read and write, and the screen on the web and both phones; `createCompany` passes the step | AC-1 (first run, the refusal, the failed save), AC-2 — on the running apps | b | open |
+| c | the step owed, the landing, the business-profile read and write, and the screen on the web and both phones; `createCompany` passes the step | AC-1 (first run, the refusal, the failed save), AC-2 — on the running apps | b | shipped |
 
 #### Part a · RFC
 
@@ -3988,6 +3988,239 @@ Checklist:
 - [x] review
 - [x] the gate
 
+#### Part c · RFC
+
+##### Title
+`T-M01-004c` — A new owner is asked what the company sells, once, on the web and on both phones
+
+##### Description
+**User impact.** A new owner chooses the language, and the next screen asks two things: who the company sells to, and the size of a typical job in kWp. `Continue` saves both and opens the home, and the step is not asked again. Indirectly, the first proposal can start from a declared size that says *Estimated · Declared by you*, and a save that fails never holds the owner: both answers stay on screen with two ways on.
+
+Who gains: every new owner, and every proposal built from their defaults. The problem: part b built the screen, its words and the rule for the two answers, and no app mounts them. `setupStepOwed` asks for the language step alone (`packages/domain/src/auth/setup-step.ts:30`), `landingFor` knows no second setup landing (`packages/domain/src/auth/landing.ts:40`), no repository calls `GET` or `PUT /settings/business-profile` (`packages/data/src/composition.ts:23`), and no root mounts `ProvenanceWordsProvider`, without which the size's tier line throws (`packages/ui/src/components/Provenance/Provenance.words.ts:16`). Sources: the task RFC and its rulings, `M01-23`, the brief and its nine rulings, `#### Design check`, part b's *Risks and rollout*.
+
+##### Goals
+- An owner whose company resumes at `what_you_sell` lands on the step on the web, iOS and Android, straight after the language step.
+- The step asks the two questions and draws no Skip and no Back; an undeclared size is an empty box under `Estimated · Declared by you`.
+- `Continue` with a question owed refuses at that question and sends nothing.
+- `Continue` with both answered saves the profile, then records the step, and the home opens; a reload, a cold start and a new sign-in open the home.
+- A returning owner's stored answers fill only the questions they have not touched.
+- A failed save keeps both answers and offers `Try again` and `Finish later`; `Finish later` opens the home and the next sign-in asks again.
+
+##### Non-goals
+- The route to the company profile: until `SCR-M01-05` is built `Continue` and `Finish later` land on the home (the brief's ruling 1; new row D202).
+- The later steps and the two-door landing — `T-M01-005`, `T-M01-006`, `T-M01-007`.
+- No api route, contract field, table, word or shared component is new.
+- A Maestro flow for the phone screen (D5, extended).
+- The sign-in beat's line (D197), the Boot placeholder (D199), the size's bound at the contract (D200).
+
+##### Readiness and dependencies
+- Parts a and b are shipped: a is on `main` (#281); b was PR #282, open when this part began. This branch was cut from `feat/T-M01-004b` (`47a19d0e`) by the owner's word; #282 merged during the build (`44f8080d`, the same tree), and the branch, which held no commit of its own, was moved onto `main` (`#### Runtime`).
+- The api routes are landed (`T-M01-026`): `GET` and `PUT /settings/business-profile` ask `onboarding.manage_tenant_settings` (`apps/api/src/modules/settings/settings.controller.ts:26`), as the progress routes do.
+- Design check: `READY`, 2026-10-11 (`#### Design check`). The nine board pictures are part b's capture, copied into this session's scratchpad.
+- No native file changes: neither phone app is rebuilt.
+- No blocker.
+
+##### Proposal
+**Flow.**
+1. The language step's `Continue` records `language`; the answer names `what_you_sell` as the step to resume. `setupStepOwed` answers `what_you_sell`, and `landingFor` answers the new landing `what-you-sell-step`.
+2. Web: the inside gate draws the step in the shell's place, as it draws the language step. Phone: the App group mounts `SetupWhatYouSell` for that landing.
+3. The screen is about twenty lines on each app: `useSetupWhatYouSell` (new, `packages/data/src/react`) gives the answers, `checking`, `refused`, `refusals`, `saving`, `failed` and the four acts; `setupWhatYouSellWords` gives the words.
+4. On mount the hook reads `GET /settings/business-profile`. While it is in flight `checking` is true: the questions are live and `Continue` waits with its reason. When it lands, `whatYouSellAfterRead` fills the questions the owner has not touched.
+5. A tap on a card and a committed size go to domain's new `whatYouSellStep` reducer, which holds the answers, the questions touched, the questions refused and the refusal count.
+6. `Continue` with a question owed: the reducer marks the questions and raises the count in one move; nothing is sent.
+7. `Continue` with both answered: the hook writes `PUT /settings/business-profile` with the profile as read and the two declarations, then `PUT /onboarding/progress/what_you_sell`. The answer replaces the progress `useLanding` holds; the next step has no screen yet, so the landing turns `home`.
+8. A read that failed is read again by `Continue` before the write. A failure of the read or of either write sets `failed`: the failure block, `Try again` and `Finish later`. `Finish later` calls the store's `putOffSetup`, as the language step's `Continue anyway` does.
+
+**What testing the requirements found** (`/task` step 2).
+1. *The step's state is a flow, not a visual fact.* The answers, what was touched and where `Continue` refused are policy both apps share. A screen's `useState` holds only a visual fact and `packages/data` holds no business logic (`apps/web/CLAUDE.md`, `packages/data/CLAUDE.md`), so it is a small domain reducer with its own table of tests, beside the three rules part b wrote. Web flows never run on this machine (`.claude/skills/task/references/qa.md`), so the reducer's tests are the local proof of the refusal and the fill.
+2. *The gate's slot grows by one step per task.* `SessionGate` takes `languageStep` (`apps/web/features/auth/SessionGate.tsx:17`); four more setup steps follow. The slot becomes one map keyed by setup landing, typed so a landing with no screen does not compile — one change now, none in the gate later.
+3. *`m-loading` cannot be pictured on a running app.* The read answers in a few milliseconds. The frame is proven by part b's component spec, which measures the checking state, and by this part's web flow that holds the read. → *Decisions*, 2.
+4. *A put-off is one fact for the session.* `setupPutOff` puts off every setup step, so an owner who pressed `Continue anyway` on the language step is not asked this step until the next sign-in. That is the rule as written (`packages/data/src/session/types.ts:63`): setup never holds a person out of their home.
+5. *The write replaces the profile whole* (`packages/contracts/src/business-profile.ts:26`). The hook sends the name, the city, the address and the bank details exactly as it read them. A second device that changed the profile between the read and the write would be overwritten; during setup one owner holds the company, and `T-M01-005` owns editing.
+6. *Every company made before this part resumes at `what_you_sell`* once its language step is passed, so each existing owner meets the step once (the task RFC's finding 3). The standing QA owners meet it once too.
+7. *An old phone app is safe.* It knows the language step alone and opens the home for any other step.
+8. *Found by the phones' QA: a size typed on a phone is not counted when `Continue` is tapped.* `NumberField` reports a figure only when the field is left or Enter is pressed (`packages/ui/src/components/NumberField/NumberField.state.ts`, `onBlur` and `commit`). On the web a click on `Continue` leaves the field first. On a phone it does not: the door keeps the keyboard up through a tap on a button (`DoorFrame.native.tsx:33`, `keyboardShouldPersistTaps="handled"`), the iPhone's number pad has no Done key (`NumberFieldBox.native.tsx:84`), and Android's Back hides the keyboard without leaving the field. So `5` typed and `Continue` tapped is refused with *Add the size you sell most often.* while the box shows `5` (`qa-ios` I2, `qa-android` A4). The fix is in the field, for both halves: `commits: 'on-leave' | 'as-typed'`, default `on-leave`; as typed, each figure the draft would commit is reported while the person types, and the draft is left as typed. The screen asks for `as-typed`, and its phone half closes the keyboard on `Continue`, so an emptied box shows the figure that is saved. → the delta's *Decisions*, 1.
+9. *Found by `qa-ios`: after a failed save the tier line is under the fold on an iPhone 17 Pro.* The failure block is taller than the title, and the door frame puts the heading `sp-8` under the wordmark where every phone frame of the board has `sp-4` (the brief's ruling 9), so the column is about 14 pt too tall and `Estimated · Declared by you` sits behind the act (`qa-ios` I5; Android shows it). The board's own note on `m-error` says the frame was arranged so the tier line is not clipped. The fix is the frame's: `DoorColumn` gains `near` — the heading `sp-4` under what leads it — on both halves, and this screen asks for it while the failure holds the heading. At rest the frame's spacing stays as ruled; no other door changes.
+
+**Deferred rows this part meets.** D169 (`apps/web/app/(inside)/`, `routes/app.ts`) — the step is drawn in the shell's place, not inside it, so a short drop does not unmount it and the failed-save rows prove both answers stay. D105 (`apps/mobile/src/`) and D175 (`apps/mobile/src/navigation/`) — Android's notification refusals and iOS's dev toast, ruled differences in the phone rows. D196 (`providers.tsx`) — the first HTML's language. All stay. D5 is extended with `setup-what-you-sell`, by the task's ruling. New: D202 — the route to the company profile, `T-M01-005 starts`. → *Decisions*, 3.
+
+**Key decisions.**
+- The landing per step follows the language step's: one new member of `SessionLanding`, one key in each app's exhaustive route map.
+- One hook holds the step for both apps (Law 11); the screens compose and hold nothing.
+- The profile read is cached per company; the write's answer replaces it, so `Try again` and a returning owner read nothing twice.
+- A new repository, `settings`, for the `tenantSettings` router: one repository per contract router (`packages/data/src/composition.ts:22`).
+- Both roots mount `ProvenanceWordsProvider` with `provenanceWords(t)` beside `MarketProvider`, in `ReaderMarket`.
+
+**Order.** The reducer's table, then the reducer · the step-owed and landing tests, then the two rules · the repository, the key, the hook · the web flows · the web gate, screen, layout and root · the phone guards, route, screen and root · `createCompany` and the two older specs · the held screen, `deferred.md` · review · QA · the gate.
+
+**Refusals.** A question owed → refused at the question, nothing sent. A read that fails → once its retries end, about three seconds, `Continue` is live and reads again. A failed read or write on `Continue` → the failure block; with no connection too, since neither the read nor the save waits for one. No connection at the boot check → the shared no-connection screen, as today.
+
+**The twin.** Both screens land together and draw the one `SetupWhatYouSell`.
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  progress[("api: GET and PUT /onboarding/progress")] --> landing["data/react: useLanding"]
+  owed["domain: setupStepOwed and landingFor, what-you-sell-step"] --> landing
+  landing --> gate["web: SessionGate, the setup steps"]
+  landing --> guards["phone: navigation guards"]
+  gate --> webScreen["web: SetupWhatYouSellScreen"]
+  guards --> phoneScreen["phone: SetupWhatYouSellScreen"]
+  profile[("api: GET and PUT /settings/business-profile")] --> repo["data: settings repository"]
+  repo --> hook["data/react: useSetupWhatYouSell"]
+  step["domain: whatYouSellStep, the answers held"] --> hook
+  hook --> progress
+  hook --> webScreen
+  hook --> phoneScreen
+  webScreen --> ui["ui: SetupWhatYouSell (part b)"]
+  phoneScreen --> ui
+  roots["app roots: ProvenanceWordsProvider"] --> ui
+```
+
+##### Package changes
+- `domain` — `SetupStepOwed` gains `what_you_sell`; `SessionLanding` gains `what-you-sell-step`; `SetupLanding` names the landings a setup step draws. `tenancy/what-you-sell.ts` gains the `whatYouSellStep` reducer, its state and its events. Imports nothing new.
+- `data` — `settings/repository.ts`: `SettingsRepository` (`businessProfile`, `saveBusinessProfile`), enrolled in `createRepositoryRegistry`. `queryKeys.settings.businessProfile`. `./react`: `useSetupWhatYouSell`. `data` → `contracts`, `domain`, as today.
+- `web` — `features/onboarding/SetupWhatYouSellScreen.tsx`; `SessionGate` takes the setup steps as one map; the root mounts the provenance words.
+- `mobile` — `src/screens/setup-what-you-sell/`; one entry in `routes/app.ts`; the root mounts the provenance words.
+- `ui` — `NumberFieldProps.commits?: 'on-leave' | 'as-typed'` (finding 8), read by the shared draft hook, so both halves take it; `SetupWhatYouSell` asks for `as-typed` on both halves, and its phone half closes the keyboard on the primary. No other change: a look fault the phones show is fixed in `SetupWhatYouSell.native.tsx` and listed as it lands.
+- Law 12: `what-you-sell-step` joins the two exhaustive `Record`s that `tsc` holds — the web's `ROUTE_OF` (`apps/web/features/auth/constants.ts:20`) and the phone's `ROUTE_OF_LANDING` (`apps/mobile/src/navigation/guards.ts:27`) — and the gate's new map. The phone screen folder joins the `e2e-flow-per-screen` invariant's held list. No route, table, token, brand or error code is new. `packages/data` has no unit tests, so the hook is held by the web flows and QA — said out loud.
+
+##### Data and schema changes
+None — no stored shape changes. The clients write `tenant.segment`, `tenant.typical_system_kwp` and `onboarding_progress` through routes that are landed.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `packages/domain/src/auth/setup-step.ts` | `what_you_sell` is a step with a screen | the rule's file |
+| modify | `packages/domain/src/auth/landing.ts` | `what-you-sell-step`; `SetupLanding` | the landing's owner |
+| modify | `packages/domain/src/auth/index.ts` | the export | the folder's door |
+| modify | `packages/domain/tests/auth/setup-step.test.ts` · `landing.test.ts` | the second step owed, and its landing | the files' tests |
+| modify | `packages/domain/src/tenancy/what-you-sell.ts` | the `whatYouSellStep` reducer | beside the three rules it calls |
+| modify | `packages/domain/src/tenancy/index.ts` | the exports | the folder's door |
+| modify | `packages/domain/tests/tenancy/what-you-sell.test.ts` | the reducer's table | the file's test |
+| add | `packages/data/src/settings/repository.ts` | the profile's read and write | one repository per contract router |
+| modify | `packages/data/src/composition.ts` · `src/index.ts` | enrols it; its type | the one registry; the entry |
+| modify | `packages/data/src/cache/keys.ts` | `settings.businessProfile` | every query key |
+| add | `packages/data/src/react/use-setup-what-you-sell.ts` | the step, for both apps | every hook lives in `src/react/` |
+| modify | `packages/data/src/react/use-landing.ts` | built, not planned: its comment names the second hook whose answer replaces the progress it holds (Law 8) | the comment's file |
+| modify | `packages/data/src/react/index.ts` | the export | the entry |
+| add | `apps/web/features/onboarding/SetupWhatYouSellScreen.tsx` | the web screen | the feature the language step opened |
+| modify | `apps/web/features/onboarding/index.ts` | the barrel | the feature's door |
+| modify | `apps/web/features/auth/SessionGate.tsx` · `constants.ts` | the setup steps as one map; `ROUTE_OF` | the web's one gate; the route map |
+| modify | `apps/web/app/(inside)/layout.tsx` | hands both steps to the gate | the inside group's gate |
+| modify | `apps/web/app/providers.tsx` | mounts the provenance words | the web's provider root |
+| add | `apps/mobile/src/screens/setup-what-you-sell/SetupWhatYouSellScreen.tsx` · `index.ts` | the phone screen | `apps/mobile/CLAUDE.md`: `src/screens/<name>/` |
+| modify | `apps/mobile/src/navigation/guards.ts` · `routes/app.ts` | the step's guard; its entry | the guards; one entry per screen |
+| modify | `apps/mobile/App.tsx` | mounts the provenance words | the phone's provider root |
+| modify | `packages/ui/src/components/NumberField/NumberField.types.ts` · `NumberField.state.ts` | built, not planned (finding 8): `commits`, and the figure reported as it is typed | the one prop contract; the shared draft |
+| modify | `packages/ui/src/components/NumberField/NumberField.tsx` · `NumberField.native.tsx` | the same: each half hands `commits` to the draft | the two halves |
+| modify | `packages/ui/src/components/SetupWhatYouSell/SetupWhatYouSell.tsx` · `SetupWhatYouSell.native.tsx` | the same: the size is reported as typed; the phone half closes the keyboard on the primary | the screen's two halves |
+| modify | `tests/e2e/components/NumberField.spec.tsx` · `NumberField.story.tsx` · `SetupWhatYouSell.spec.tsx` | the same: a figure typed and not left is reported, and the story mounts the field that way; the screen's size is held before the field is left | one spec per component, its story beside it |
+| modify | `packages/ui/src/components/DoorFrame/DoorFrame.types.ts` · `DoorFrame.native.tsx` · `DoorFrame.css` | built, not planned (finding 9): the `near` column | the frame owns its heading's place |
+| modify | `tests/e2e/components/DoorFrame.spec.tsx` | the same: a near column's heading is `sp-4` under the step header | the frame's spec |
+| modify | `docs/ux/briefs/SCR-M01-04-setup-what-you-sell.md` | the same: ruling 9 says the failed save's place | the screen's brief |
+| modify | `tests/e2e/support/door.ts` | `createCompany` passes both steps | the one way a spec gets a company |
+| add | `tests/e2e/web/setup-what-you-sell.spec.ts` | the step's flows | the step has no route, so the file is named for the screen |
+| modify | `tests/e2e/web/setup-language.spec.ts` · `company-signup.spec.ts` | `Continue` now opens the next step; the waits for the home | the flows this part moves |
+| modify | `tests/invariants/src/e2e-flow-per-screen.ts` | `setup-what-you-sell` held, with its reason | the held list |
+| modify | `docs/tasks/deferred.md` | D5 extended; D202; D203 added from the review; D204 added from QA | the rows' file |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the ledger, the part's row, the task's `Status:` | the task |
+
+##### API and contract changes
+None — no wire boundary changes. The clients call two landed routes for the first time: `GET /settings/business-profile` once per visit to the step, and `PUT /settings/business-profile` with the profile as read and the two declarations. `PUT /onboarding/progress/what_you_sell` carries `{ state: "completed" }`. All three ask `onboarding.manage_tenant_settings`, which the person on this step holds by the rule that put them there. An old phone calls none of them and opens the home.
+
+##### Risks and rollout
+- **Existing owners** meet the step once (finding 6).
+- **Every web flow passes two steps.** `createCompany` answers both; a flow that forgets lands on the step and fails at its first shell check.
+- **The profile is replaced whole** (finding 5): the hook sends back what it read.
+- **The phone half is first seen here.** A look fault is fixed here and counted here. The size field sits low on the screen, so the keyboard may cover its error line (D132, the frame's own fault); a field the owner cannot reach is a finding, not a ruled difference.
+- **The shared frame gains a column.** `near` is a new value; `centred`, `deep` and an omitted column draw as before, and no other door asks for it. D102, D109, D132 and D188 (`touches packages/ui/src/components/DoorFrame/`) stay: none is about the heading's place.
+- **A shared field changes.** `commits` defaults to `on-leave`, so every other `NumberField` behaves as before; no app mounts another one today (`rg '<NumberField' apps packages/ui/src`). The design system's contract does not declare the prop — said to the owner in the PR body, as part a did for the unset value.
+- **The spoken refusal and the spoken failure are not heard on a device.** The simulators drive no screen reader, so both stand on the code (`SetupWhatYouSell.logic.ts`, `TintedBlock.native.tsx`); the owner hears them once with VoiceOver and TalkBack.
+- **Rollout.** No stored or sent shape changes. Old and new clients mix safely: the step is asked by a new client alone.
+
+##### Acceptance criteria and proof
+AC-1 and AC-2 are the task RFC's. A web journey's proof is its `qa-web` row; the `ci` rows on `e2e-web` are regression coverage and replace none (`docs/tasks/README.md`). This part's rows:
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| the step owed, and its landing | main-dev | required | unit | a manager whose company resumes at `what_you_sell` owes it and lands on `what-you-sell-step`; `language` still comes first; `business_profile`, `invite_team`, `ready` and none → `home`; put off → `home`; the read in flight → `wait`; planted red: the second step dropped from the steps with a screen | `packages/domain/tests/auth/setup-step.test.ts` · `landing.test.ts` |
+| the answers held | main-dev | required | unit | a kind chosen and a size declared are held and marked touched; `Continue` with both owed marks both and counts one refusal, with the kind chosen marks the size alone, with both answered marks none and counts none; a marked question leaves the list once answered; planted red: the count raised without its questions | `packages/domain/tests/tenancy/what-you-sell.test.ts` |
+| a figure counted as it is typed | main-dev | required | `3100` | `NumberField` with `commits="as-typed"`: `12.` typed and the field not left → 1 then 12 reported, the box still reads `12.`; emptied → no report, and leaving shows 12 again; with no `commits`, typing reports nothing until the field is left; planted red: the report dropped. `SetupWhatYouSell`: `5` typed → the screen holds 5 before the field is left, declared once; the tap on `Continue` with the keyboard up is the phones' journey rows | `tests/e2e/components/NumberField.spec.tsx` · `SetupWhatYouSell.spec.tsx` |
+| the failed save's place | main-dev | required | `3100` | a near column's heading is `sp-4` under the step header at 375; seen red before its code (24 where 16 is expected) | `tests/e2e/components/DoorFrame.spec.tsx` |
+| AC-1 · AC-2 · the live web | qa-web | required | the running web, fresh numbers, 375 and 1536 | first run with the measures; `12.5` typed and `Continue` clicked at once → the home, the write's body as read plus the two answers, a reload → the home; a new sign-in → the home; the refusal with focus and no write; the keyboard alone; the standing owner | QA |
+| AC-1 · the live web's failed save | qa-web | required | `api stopped` | both answered, `Continue` → the failure block as an alert, both answers on screen; `Try again` → the block again; `Finish later` → the home; with the api back, a reload → the step again | QA |
+| regression flow · first run, on the web | ci | required | `e2e-web` | after the language step the step shows three cards with none chosen, an empty size beside `kWp`, the line `Estimated · Declared by you`, and no button but the ask and `Continue`; a kind chosen and `5` typed, `Continue` → the profile's write carries the company's name and city as read, the kind and 5; the step's write follows; the home opens; a reload → the home | `tests/e2e/web/setup-what-you-sell.spec.ts` |
+| regression flow · the refusal | ci | required | `e2e-web` | `Continue` with nothing → both errors, focus on the first card, no write sent; a kind chosen → its error leaves and the size's stays; `0` typed, `Continue` → refused at the field | the same |
+| regression flow · the read in flight, which needs a held request | ci | required | `e2e-web` | the profile's read held → `Continue` is `aria-disabled` with its reason; a card tapped meanwhile stays chosen when the read lands; then `Continue` is live | the same |
+| regression flow · the failed save, and the returning owner | ci | required | `e2e-web` | the step's write aborted → the failure block as an alert, both answers on screen, `Try again` then `Finish later`; `Finish later` → the home; a reload → the step again with both stored answers filled; `Continue` → the home | the same |
+| regression flow · a read that fails, which needs an aborted request | ci | required | `e2e-web` | the profile's read aborted → once its retries end `Continue` is live; pressed with both answered → the failure block and no write; the route back, `Try again` → the home | the same |
+| regression flow · every other flow | ci | required | `e2e-web` | every spec passes both steps through `createCompany`; the language step's flows end on this step where they ended on the home; the committed looks are unchanged | the lane |
+| the phone flows | ci | required | `android` | `Phone flows (tests/e2e/mobile) on the emulator` runs `boot.yaml`, `login.yaml`, `company-signup.yaml` | CI step |
+| AC-2 · side-by-side, the web | qa-web | required | the running web, Main's pictures, a fresh number per frame | at 375 `m-default`, `m-answered`, `m-refused`; at 1536 `d-default`, and the answered and refused states by the board's 1536 rule; ruled: the brief's rulings 2, 3, 7, 8 and 9, D172, `docs/tasks/UI.md` (the option cards' grey tiles; a field error described, not announced) | QA |
+| AC-2 · side-by-side, the web's failed save | qa-web | required | the running web, the step's write aborted in Main's script | at 375 `m-error`, `m-error-hi`, `m-error-mr`; at 1536 `d-error`; both answers on screen in each; ruled: the same list | QA |
+| AC-1 · the journey, iOS | qa-ios | required | a fresh number, a cold start | `Create company` → the language step → `Continue` → this step with no shell behind it and no Skip; `Continue` with nothing → both errors; a kind and `12.5` typed with the keyboard up and the field not left, `Continue` tapped → the shell; a cold start → the shell; the standing owner meets the step once | QA |
+| AC-2 · side-by-side, iOS | qa-ios | required | fresh numbers, the language chosen on the step before | `m-default` in English, `m-answered` in Hindi, `m-refused` in Marathi, each beside its board picture; no word clipped; the tier line reads the catalog's word in each language; ruled: the web row's list, D132, D175 | QA |
+| AC-1 · the failed save, iOS | qa-ios | required | `api stopped` | both answered, `Continue` → `m-error` in English beside its board picture, both answers on screen; `Try again` → the block stays; `Finish later` → the shell; with the api back, a cold start → the step again | QA |
+| AC-1 · the journey, Android | qa-android | required | a fresh number, a cold start | the iOS journey row, on the emulator; no frame compared; ruled: D105 | QA |
+| AC-1 · the failed save, Android | qa-android | required | `api stopped` | the iOS failed-save row, on the emulator; no frame compared | QA |
+| `m-loading` on the running apps | — | not_applicable | — | — | the read answers in milliseconds; part b's component spec measures the state and the *read in flight* flow holds it (*Decisions*, 2) |
+| AC-1 · the profile, the invites, the two doors | — | not_applicable | — | — | `T-M01-005`, `T-M01-007`, `T-M01-006` (the task RFC) |
+| the running api | — | not_applicable | — | — | no route changes; `T-M01-026` proved these |
+| AC-2 · no raw colour, the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+##### Delivery size
+- One part: **32 files** — 30 of code and tests, 2 documents. No generated file. It is two above the target of about 30 and cannot split: a landing with no screen strands the owner, and the web and phone halves of one flow stay together. The owner approves this exact size (*Decisions*, 1).
+- **Code: about 390 authored lines** — `data` 150, `domain` 70, the web 75, the phone 65, the held screen 5, `deferred.md` 4, and about 20 for the documents' ledger rows.
+- **Tests: about 390 authored lines** — the reducer's table 80, the step-owed and landing tables 30, `createCompany` and the two older specs 50, the step's spec 230.
+- About 780 authored lines, under the target. Approval is void above 936 lines or 38 files.
+- Order: as *Proposal*.
+- **As built: 33 files** — the 32 planned and `packages/data/src/react/use-landing.ts`, whose comment the change made wrong (Law 8).
+- **With finding 9: 47 files** — five more: the frame's three files, its spec and the brief; about 15 more code lines and 10 more test lines.
+- **With finding 8: 42 files** — nine more in `packages/ui` and the component specs, the field's story among them — about 35 more code lines and about 50 more test lines: about 900 authored lines, under the line target, and four files over the 38 the first estimate allowed. The size is ruled again (the delta's *Decisions*, 1).
+
+**Owner rulings (2026-10-11, with the approval).** The RFC is approved with every recommendation: one part at 32 files; `m-loading` is not pictured on the running apps — part b's component spec and the *read in flight* flow prove it; D105, D169, D175 and D196 stay, D5 is extended, and D202 is new.
+
+**Owner ruling (2026-10-11, on the iPhone's failed-save frame).** The tier line must show: fixed now, not ruled a difference (finding 9). The owner also asked why the web had no live run: the first matrix gave `qa-web` pictures alone and left the web's journey to the CI flows; the two *live web* rows are added and run.
+
+**Owner ruling (2026-10-11, on the phones' finding).** Finding 8 is fixed in the field: `NumberField` takes `commits="as-typed"`, the screen asks for it on both halves, and the part stays one part at its new size.
+
+**As proven (part c).**
+- *The web, side by side.* Main pictured the step on the running web by a scratchpad script — six frames at 375 × 812 and four at 1536 × 1000, one fresh number each, the failed save by aborting the step's write. `qa-web` judged ten pairs. Its first read failed the three 375 failed-save pairs on one difference outside the ruled list, the gap above the two ways on; rechecked with the frame's code beside it, the gap is free height under a foot held at the bottom, and a browser page has no status bar and no home bar where the board's phone frame has both: passed. After finding 9 the three failed-save pictures were retaken and judged again, the other seven being byte-identical: passed, the block now 16 px under the header row against the board's about 18. One small difference is not ruled and was not failed: the block stands about 6 px further above the group's label than the board's (about 33 against 27, read off the pictures to about 3 px).
+- *The web, live.* `qa-web` drove the running web at 375 and 1536 on fresh numbers: the first run with its measures; `12.5` typed and `Continue` clicked at once, the write's body holding the name, the city and both answers; a reload and a new sign-in to the home; the refusal with focus on the first card, then in the size field, and no write; the keyboard alone; the standing owner. With the api stopped: the failure block as an alert 16 px under the header row, both answers kept, `Try again` back to the block, `Finish later` to the home; with the api back a reload asked the step again and `Continue` finished it. The *read in flight* and *a read that fails* rows are reachable only with a held or aborted request, so they stay the `e2e-web` lane's.
+- *The phones.* `qa-ios` on the iPhone 17 Pro and `qa-android` on the `Pixel_8_Emulator`, fresh numbers, the apps already installed. Passed on both, on the final code: the language step then this step with no shell behind it and no Skip; the empty size beside `kWp` under its tier line; the refusal's two lines and no write; `12.5` typed with the field not left and `Continue` tapped at once → the shell and the two writes; a cold start → the shell; with the api stopped the failure block, both answers and the tier line on screen, `Try again` back to the block, `Finish later` to the shell; with the api back a cold start asked the step again. `qa-ios` compared `m-default` in English, `m-answered` in Hindi, `m-refused` in Marathi and `m-error` in English with their board pictures: every difference a ruled one.
+- *The standing owners* (`…901`, `…902`, `…903`) still owed the language step: each met it, then this step, then the home.
+- *Not shown by a device.* The simulators drive no screen reader, so the spoken refusal and the spoken failure stand on the code, as *Risks and rollout* says. Neither helper caught the busy state of a save that fails at once. The iPhone simulator shows no touch keyboard, so the field under a keyboard was seen on Android alone: the field's lower edge and its tier line sit under the held action while the keyboard is up (D132); `Continue` stays reachable.
+- *Judged, not a difference.* `qa-ios` read the typed figure as a monospaced face against the board's: the field's value is the design system's number face on the web, the phone and the board (`NumberField.css`, `NumberFieldBox.native.tsx`).
+
+**Planted reds seen (part c):** `setup-step.ts` with the second step dropped from the steps with a screen failed `setup-step.test.ts` › *asks an owner whose company resumes at what-you-sell for that step*; `whatYouSellStep` raising the count without naming the questions failed `what-you-sell.test.ts` › *Continue with nothing answered is refused at [ 'segment', 'size' ], and the count rises with the questions*, its three sibling cases and › *drops a refused question once it is answered, and keeps the one still owed*; `NumberField.state.ts` with the as-typed report dropped failed `NumberField.spec.tsx` › *a field that commits as typed reports each figure before it is left…* and `SetupWhatYouSell.spec.tsx` › *a size is reported as it is typed, once, before the field is left…*. Each file was restored from a scratchpad copy. Seen red before their code: those two component cases, and `DoorFrame.spec.tsx` › *a near column puts its heading sp-4 under the step header* (24 where 16 is expected). The web flows are the `e2e-web` lane's and are not run here.
+
+**Review (part c).** `reviewer`, one helper, four continuations. First read: no blocker, three should-fix findings and three notes, all applied — a save pressed offline would have spun with no end, so the read and the save no longer wait for a connection (the language step's same hold is D203); a save's own read no longer draws the checking reason; the step-owed table holds every later step; a second press during a save sends nothing. Then clean. On the as-typed fix: two should-fix findings, both applied — the proof row claims only what the spec proves, and the field's contract says what Escape and a bound do as typed. On the near column: clean, one comment word corrected.
+
+**Mistakes found, and what prevents each.**
+- *The web had no live run.* The first matrix gave `qa-web` pictures to judge and left the web's journey to the CI flows; the owner asked why. `.claude/skills/task/references/qa.md` already says edge cases are proven by live QA on the running app; the matrix did not follow it. The two *live web* rows were added and run. The owner wrote the rule the same hour, as its own commit on this branch (`5cee0e53`): a web journey is a local `qa-web` proof, and a `ci` owner on a web journey row is a finding (`docs/tasks/README.md`, `references/qa.md`). The six `ci` rows of this matrix are named regression flows to match.
+- *A size typed on a phone was not counted* (finding 8), and *the tier line fell under the fold after a failed save* (finding 9). Both are faults of the phone half, which part b could only typecheck; the phones' QA found them, as part b's risk said it might. The field's `commits` and the frame's `near` column now hold them, each with its spec.
+- *The helpers could not sign the standing owners in.* The first packets said a code is read from the api's log; a standing number takes the fixed development code. Two rows were blocked and ran in the next round. The packets now name where the code is read.
+- *The browser pane held another task's half-made signup*, which blocked the live web rows once; Main signed it out through the app's own route.
+- *Main told the owner the near column would move the language step's failed frame.* It does not: that screen keeps `deep` on both halves. Said to the owner before the build.
+- *Android's Back lost the typed answers in one QA row* — the app's own exit, not this part's code; new row D204.
+- The first `pnpm check` stopped on a test helper named `after`, which Biome reads as a test hook, and on a table whose `as const` rows could not be searched by `includes`; both fixed before the first review.
+
+Checklist:
+- [x] the reducer's table, then the reducer
+- [x] the step-owed and landing tests, then the two rules
+- [x] the repository, the key, `useSetupWhatYouSell`
+- [x] the web flows
+- [x] the web gate, screen, layout and root
+- [x] the phone guards, route, screen and root
+- [x] `createCompany` and the two older specs
+- [x] the held screen, `deferred.md`
+- [x] the field's `commits` and its specs (finding 8)
+- [x] the frame's `near` column and its spec (finding 9)
+- [x] review
+- [x] QA on the web, iOS and Android
+- [x] the gate
+
 #### Design check
 `READY` — 2026-10-11, on the record `SCR-M01-04 - decisions &amp; self-audit.md` (19,088 bytes) read beside the board `SCR-M01-04 What You Sell - Mobile.dc.html` (80,706 bytes, under the read cap). The owner redrew the screen from the brief's `## Redesign owed` the same day, in three passes: the words moved to their budget homes and the Hindi frame drawn; the 1536 task column stacked as a list at 520 / 560; the error pair put in one order at both widths. Four checks on the same helper; the fourth found nothing.
 
@@ -4056,6 +4289,40 @@ Branch `feat/T-M01-004`, cut from `origin/main` (`54bd8ced`, #280 merged) on a c
 | database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
 | runtime logs | `api.log` 22,848,497 · `web.log` 608,147 · `metro.log` 1,800,722 bytes | unchanged |
 | watchers | no `tsx … watch` process | none |
+
+**Part c · ledger (2026-10-11).** Branch `feat/T-M01-004c`, cut from `feat/T-M01-004b` (`47a19d0e`, PR #282 open, its `e2e-web` and `android` checks running) on a clean tree, by the owner's word. The walk read part c as the first open row on that branch (`#### Parts`). #282 merged during the build (`44f8080d`, the same tree as `47a19d0e`), and the branch, which held no commit of its own, was moved onto `main`. The nine board pictures are part b's, copied into this session's scratchpad as `board/<frame>.png`.
+
+| resource | initial | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` (with `-admin`, `-jwks`) |
+| simulator · emulator | none booted | — |
+| browser tabs | pane closed | — |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local` lines 7 and 12 |
+| runtime logs | `api.log` 22,848,497 · `web.log` 608,147 · `metro.log` 1,800,722 bytes | — |
+| watchers | no `tsx … watch` process | — |
+
+**Part c · QA (2026-10-11)** — one stack on `heliogrid_test`: the api and the web from source, one Metro, the iPhone 17 Pro simulator and the `Pixel_8_Emulator` on the apps already installed — no native file changed, so nothing was rebuilt. Main started and stopped the api for the two api-down windows, cold-started the apps after each fix, and took the web's pictures; the helpers drove only the app.
+
+- **Order.** The reviewer read alone and was clean after one round; then `qa-web` on Main's pictures, `qa-android` and `qa-ios`. The phones found finding 8; the owner approved its fix; the reviewer read it; every phone row ran again. `qa-ios` then found finding 9 in the first api-down window, and the owner asked for the web's live run: the live web rows ran, the reviewer read the near column, and one second api-down window covered the web, the iPhone and Android together on the final code.
+- **The web.** Ten pairs judged on pictures, one recheck; three retaken and judged again after finding 9, the other seven byte-identical. Ten live rows at 375 and 1536, all passed; the first try was blocked by a half-made signup another task had left in the pane.
+- **The phones.** `qa-ios` and `qa-android`, seven turns each. Every row passed on the final code (*As proven*). Two standing-owner rows were blocked once for want of the fixed code; one Android row lost its answers to the app's own Back (D204).
+- **The simulator's first boot hung** — `Booted`, with no screen surface for eight minutes; shut down and booted again, it was ready in under a minute.
+- **One flake.** Android's first `Send code` answered *could not be reached* twice while the api answered the host; the third try passed, and no later row saw it.
+- **The gate** ran once and passed whole: 213 test files, 3,758 tests, the api tests on `heliogrid_test`, the invariants on real tables (RLS on 30, 40 base tables scanned), nothing regenerated.
+
+**Measurements (part c)** — helper runs: `reviewer` 1 (four continuations), `qa-web` 1 (six), `qa-ios` 1 (six), `qa-android` 1 (six), `evaluator` 1; one full gate; no `design-check` and no board capture — part a's verdict and part b's pictures were reused. Helper tokens, as reported per run: `reviewer` about 141 k, 146 k, 163 k, 165 k and 186 k; `qa-web` 47 k, 50 k, 62 k, 145 k, 154 k and 162 k; `qa-ios` 96 k, 122 k, 132 k, 140 k, 147 k, 154 k and 157 k; `qa-android` 82 k, 100 k, 104 k, 107 k, 108 k, 112 k and 115 k; `evaluator` 43 k. Main: about 215 tool-call turns and about 607 k context tokens at the commit card, the walk and the RFC among them. Size: planned 32 files, code about 390, tests about 390; built 47 files, code about 440 added and 55 removed, tests about 425 added and 20 removed (*Delivery size*).
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` | none listening | stopped (`started_by_task`); the api was stopped and started twice more for the api-down windows |
+| simulator · emulator | none booted | shut down (`started_by_task`); both apps are the builds that were installed |
+| browser tabs | pane closed | closed (`seed`, `tab-1` were `started_by_task`) |
+| Postgres · object store · Temporal | running (`pre_existing`) | unchanged |
+| database routing | `heliogrid_test` / `heliogrid_test` | unchanged |
+| runtime logs | `api.log` 22,848,497 · `web.log` 608,147 · `metro.log` 1,800,722 bytes | 23,838,532 · 625,691 · 1,876,185 bytes |
+| watchers | no `tsx … watch` process | none |
+| test data left in `heliogrid_test` | — | six owners with a company each from the iPhone (+91 98765 10411–10416), four from Android (10421–10424), three from the live web (10431–10433), about thirty from Main's web pictures; the three standing owners (`…901`, `…902`, `…903`) now hold `Both` and 10 kWp — all made through the app |
 
 ### T-M01-005 · Business Profile
 **Type:** screen · **Tier:** P0

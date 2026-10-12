@@ -33,6 +33,7 @@ test('a figure commits once on blur, and an empty draft on a set field commits n
   const input = field.getByRole('textbox', { name: LABEL });
 
   await input.fill('5');
+  await expect(field.getByTestId('commits')).toHaveText('0');
   await input.blur();
   await expect(field.getByTestId('held')).toHaveText('5');
   await expect(field.getByTestId('commits')).toHaveText('1');
@@ -55,6 +56,24 @@ test('an empty draft on an unset field leaves it unset', async ({ mount }) => {
   await expect(input).toHaveValue('');
   await expect(field.getByTestId('held')).toHaveText('');
   await expect(field.getByTestId('commits')).toHaveText('0');
+});
+
+test('a field that commits as typed reports each figure before it is left, leaves the draft as typed, and reports nothing for an emptied box', async ({
+  mount,
+}) => {
+  const field = await mount(<HeldNumberField label={LABEL} unit={UNIT} asTyped />);
+  const input = field.getByRole('textbox', { name: LABEL });
+
+  await input.pressSequentially('12.');
+  await expect(field.getByTestId('held')).toHaveText('12');
+  await expect(field.getByTestId('commits')).toHaveText('2');
+  await expect(input).toHaveValue('12.');
+
+  await input.fill('');
+  await expect(field.getByTestId('held')).toHaveText('12');
+  await input.blur();
+  await expect(input).toHaveValue('12');
+  await expect(field.getByTestId('commits')).toHaveText('2');
 });
 
 test('from an unset field a step lands on the floor where there is one, and one step from 0 where there is none', async ({

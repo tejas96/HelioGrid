@@ -51,3 +51,72 @@ export function whatYouSellAfterRead(
     typicalSystemKwp: touched.includes('size') ? held.typicalSystemKwp : storedSize,
   };
 }
+
+/**
+ * The step as a device holds it until `Continue` (`SCR-M01-04`): what the person answered here,
+ * which questions they answered themselves, and where `Continue` was last refused.
+ */
+export interface WhatYouSellStep {
+  /** The answers given on this screen; a stored declaration fills the rest (`whatYouSellAnswers`). */
+  readonly given: WhatYouSellAnswers;
+  readonly touched: readonly WhatYouSellQuestion[];
+  readonly refusedAt: readonly WhatYouSellQuestion[];
+  /**
+   * How many times `Continue` was refused. It rises in the move that names the questions: a screen
+   * answers each new count once, at the first question named, and a count that rose alone would be
+   * answered by nothing.
+   */
+  readonly refusals: number;
+}
+
+export const WHAT_YOU_SELL_STEP_AT_OPEN: WhatYouSellStep = {
+  given: { segment: null, typicalSystemKwp: null },
+  touched: [],
+  refusedAt: [],
+  refusals: 0,
+};
+
+/** `stored` is the company's declaration as read, or null while no read has answered. */
+export type WhatYouSellEvent =
+  | { readonly type: 'segment-chosen'; readonly segment: TenantSegment }
+  | { readonly type: 'size-declared'; readonly kwp: number }
+  | { readonly type: 'continue-pressed'; readonly stored: WhatYouSellAnswers | null };
+
+export function whatYouSellStep(step: WhatYouSellStep, event: WhatYouSellEvent): WhatYouSellStep {
+  switch (event.type) {
+    case 'segment-chosen':
+      return answered(step, 'segment', { ...step.given, segment: event.segment });
+    case 'size-declared':
+      return answered(step, 'size', { ...step.given, typicalSystemKwp: event.kwp });
+    case 'continue-pressed': {
+      const owed = whatYouSellUnanswered(whatYouSellAnswers(step, event.stored));
+      return { ...step, refusedAt: owed, refusals: step.refusals + (owed.length > 0 ? 1 : 0) };
+    }
+  }
+}
+
+function answered(
+  step: WhatYouSellStep,
+  question: WhatYouSellQuestion,
+  given: WhatYouSellAnswers,
+): WhatYouSellStep {
+  const touched = step.touched.includes(question) ? step.touched : [...step.touched, question];
+  return { ...step, given, touched };
+}
+
+/** The two answers the screen shows and `Continue` saves. */
+export function whatYouSellAnswers(
+  step: WhatYouSellStep,
+  stored: WhatYouSellAnswers | null,
+): WhatYouSellAnswers {
+  return stored === null ? step.given : whatYouSellAfterRead(step.given, step.touched, stored);
+}
+
+/** The questions the last `Continue` was refused at and that are still owed — each shows its fix. */
+export function whatYouSellRefused(
+  step: WhatYouSellStep,
+  stored: WhatYouSellAnswers | null,
+): readonly WhatYouSellQuestion[] {
+  const owed = whatYouSellUnanswered(whatYouSellAnswers(step, stored));
+  return step.refusedAt.filter((question) => owed.includes(question));
+}

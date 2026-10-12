@@ -40,7 +40,7 @@ export function SetupWhatYouSell({
     <DoorFrame
       trailing={null}
       taskMeasure="list"
-      column="deep"
+      column={words.failure === null ? 'deep' : 'near'}
       identity={
         words.failure === null ? (
           <DoorTitle title={words.title} explainer={words.explainer} />
@@ -123,6 +123,7 @@ export function SetupWhatYouSell({
             steppers={false}
             error={words.sizeError ?? undefined}
             provenance={{ tier: 'estimated', source: words.sizeSource, emphasis: 'load-bearing' }}
+            commits="as-typed"
             onCommit={onDeclareSize}
           />
         </div>

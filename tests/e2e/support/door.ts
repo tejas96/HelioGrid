@@ -1,5 +1,11 @@
 import { OTP_LENGTH } from '@heliogrid/domain';
-import { COMPANY_SIGNUP, SETUP_LANGUAGE, SIGN_IN, type Translator } from '@heliogrid/i18n';
+import {
+  COMPANY_SIGNUP,
+  SETUP_LANGUAGE,
+  SETUP_WHAT_YOU_SELL,
+  SIGN_IN,
+  type Translator,
+} from '@heliogrid/i18n';
 import { expect, type Page } from '@playwright/test';
 import { codeSentTo } from './api-log';
 import { expectNoSidewaysScroll } from './layout';
@@ -91,7 +97,10 @@ export async function reachLanguageStep(
   return company;
 }
 
-/** The language step passed as it stands: Continue records it, and the company's home opens. */
+/**
+ * The language step passed as it stands: Continue records it, and the next setup step takes its
+ * place at the same address.
+ */
 export async function passLanguageStep(page: Page, t: Translator): Promise<void> {
   const step = page.getByRole('heading', { name: t.t(SETUP_LANGUAGE.title) });
   await expect(step).toBeVisible();
@@ -101,12 +110,44 @@ export async function passLanguageStep(page: Page, t: Translator): Promise<void>
 }
 
 /**
- * A new number through signup and its one language step to the company's home: the one way a spec
+ * A new number through signup and the language step to the what-you-sell step every new owner
+ * meets next (`SCR-M01-04`), with nothing answered there. Answers the company's name.
+ */
+export async function reachWhatYouSellStep(
+  page: Page,
+  t: Translator,
+  mobile: Mobile,
+): Promise<string> {
+  const company = await reachLanguageStep(page, t, mobile);
+  await passLanguageStep(page, t);
+  await expect(page.getByRole('heading', { name: t.t(SETUP_WHAT_YOU_SELL.title) })).toBeVisible();
+  return company;
+}
+
+/** The step's two answers given and nothing pressed: the first kind of business, and a size. */
+export async function answerWhatYouSell(page: Page, t: Translator, kwp = '5'): Promise<void> {
+  await page.getByRole('radio').first().click();
+  const size = page.getByRole('textbox', { name: t.t(SETUP_WHAT_YOU_SELL.sizeLabel) });
+  await size.fill(kwp);
+  await size.blur();
+}
+
+/** The what-you-sell step answered and passed: Continue saves both answers, and the home opens. */
+export async function passWhatYouSellStep(page: Page, t: Translator): Promise<void> {
+  const step = page.getByRole('heading', { name: t.t(SETUP_WHAT_YOU_SELL.title) });
+  await expect(step).toBeVisible();
+  await answerWhatYouSell(page, t);
+  await page.getByRole('button', { name: t.t(SETUP_LANGUAGE.continue) }).click();
+  await expect(step).toBeHidden();
+}
+
+/**
+ * A new number through signup and its two setup steps to the company's home: the one way a spec
  * obtains a person with a company of their own. Answers the company's name.
  */
 export async function createCompany(page: Page, t: Translator, mobile: Mobile): Promise<string> {
-  const company = await reachLanguageStep(page, t, mobile);
-  await passLanguageStep(page, t);
+  const company = await reachWhatYouSellStep(page, t, mobile);
+  await passWhatYouSellStep(page, t);
   return company;
 }
 

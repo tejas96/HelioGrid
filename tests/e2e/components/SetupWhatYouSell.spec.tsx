@@ -84,14 +84,14 @@ test.describe('at 375', () => {
     });
   }
 
-  test('a size typed and left is reported once, and a tap on a card reports its kind', async ({
+  test('a size is reported as it is typed, once, before the field is left, and a tap on a card reports its kind', async ({
     mount,
   }) => {
     const step = await mount(<WhatYouSellStepAsHeld reader="en" />);
     const { cards, size, tier } = partsOf(step);
     await size.fill('5');
-    await size.blur();
     await expect(step.getByTestId('size')).toHaveText('5');
+    await size.blur();
     await expect(step.getByTestId('declarations')).toHaveText('1');
     await expect(size).toHaveValue('5');
     for (const word of TIER_LINE) await expect(tier).toContainText(word);

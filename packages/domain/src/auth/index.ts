@@ -23,8 +23,8 @@ export {
   inviteCapReached,
   inviteLandingPath,
 } from './invitation-policy';
-export type { SessionLanding } from './landing';
-export { landingFor } from './landing';
+export type { SessionLanding, SetupLanding } from './landing';
+export { isSetupLanding, landingFor } from './landing';
 export type {
   LoginBindingFacts,
   LoginBindingRoad,

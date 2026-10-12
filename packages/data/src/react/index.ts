@@ -19,6 +19,8 @@ export { useSession } from './use-session';
 export { useSessionPhase } from './use-session-phase';
 export type { SetupLanguageStep } from './use-setup-language';
 export { useSetupLanguage } from './use-setup-language';
+export type { SetupWhatYouSellStep } from './use-setup-what-you-sell';
+export { useSetupWhatYouSell } from './use-setup-what-you-sell';
 export type { Shell } from './use-shell';
 export { useShell } from './use-shell';
 export type { OpenGoogle, SignIn } from './use-sign-in';
