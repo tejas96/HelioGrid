@@ -15,6 +15,7 @@ compatibility pointer and the code.
 | [`prd/`](prd/) | The product spec — the owner brief, foundations, modules, and the screens register; every row carries its own ruling | **Source of truth** |
 | [`ux/`](ux/) | One design brief per screen, plus the Claude Design session context; the boards and decisions records live in the Claude Design project that each task's `DESIGN:` line links, and are read from there — the repo holds no copy | **Source of truth** |
 | [`tasks/`](tasks/) | Engineering work, one file per module, derived from the PRD registers | **Source of truth** |
+| [`tasks/archive/`](tasks/archive/) | Shipped parts' RFC bodies and runtime ledgers, moved there unchanged when the part ships | history |
 | [`engineering/`](engineering/) | How this repo is built; `architecture.md` is the canonical spine and each other file states its current status or fate | Support, ranked below `prd/` |
 
 `CLAUDE.md` §7 fixes the order: `prd/` (a row carries its own ruling) →
@@ -25,7 +26,7 @@ compatibility pointer and the code.
 `architecture.md` is stable and canonical. Each other file's first line names its current fate;
 those files shrink only through reviewed moves. What holds each protection is
 `.claude/protections.md`, and each package's live traps sit under `## Traps` in its own
-`CLAUDE.md`. External-account setup notes moved to `infra/ops/`.
+`CLAUDE.md`. External-account setup notes moved to `.ops/`.
 
 | Path | What it is |
 |---|---|

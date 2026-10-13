@@ -21,7 +21,9 @@ named. `/task <id>` for a task that is not the walk's step is refused with the s
 
 Step 1 is read-only and comes first. When it answers `build <id>`, read
 `references/runtime.md` before switching a branch, inspecting a runtime or changing anything.
-Create the task's `#### Runtime` ledger exactly as that reference requires. No runtime command,
+Create the `#### Part <x> · RFC` heading (`#### RFC` for an unsplit task) with the `#### Runtime`
+ledger under it, exactly as that reference requires; step 2 writes the RFC sections above the
+ledger. No runtime command,
 infra start, database switch or device lifecycle action precedes it.
 
 ## 1. Select — the walk, fail closed
@@ -32,8 +34,15 @@ continues through runtime setup to step 2.
 
 ## 2. The RFC — one document, one approval
 
-Read `docs/tasks/README.md` before drafting. It is the sole authority for RFC sections, proof
-ownership, delivery size and Parts. Write its complete shape under the task's header lines.
+Read `docs/tasks/README.md` before drafting a task RFC. It is the sole authority for RFC sections,
+proof ownership, delivery size and Parts. A task RFC is written in its complete shape under the
+task's header lines. A part RFC reads the task RFC and its own Parts row, never a shipped part or
+its ledger, and does not re-read the README: this step holds the part's shape, and the task RFC
+holds the proof owners and budget the part extends. It keeps every heading: its
+own Title, Description, Proposal, File and folder changes, Acceptance criteria and proof and
+Delivery size in full; each other section is one declared line — `The task RFC's, unchanged`,
+`None — <reason>`, Readiness's `light cycle — <reason>`, or the diagram's `No boundary change —
+see the task diagram` — and is written in full only where the part differs from the task RFC. A missing heading is a defect; a copied task section is one too.
 
 An approved legacy `#### Plan`, `#### Acceptance criteria` and `#### QA plan` remains valid until
 step 4 voids it. Then preserve it as history and write one complete replacement RFC for the
@@ -42,7 +51,8 @@ migration is the exception to keeping shared AC only in the task RFC. Never appe
 Plan or make the owner reconstruct the decision from old sections.
 
 Before showing the RFC, test every carried requirement from the PRD, brief, design record and task
-for a defect, contradiction, ownerless fact or drifting list, and for a simpler way to meet it.
+— for a part, the lines its Parts row carries — for a defect, contradiction, ownerless fact or
+drifting list, and for a simpler way to meet it.
 Put each finding, codebase example, switching cost and recommendation in the RFC. A clear higher
 source corrects the task before approval. Silence or ambiguity gives the owner at most two options;
 the ruling lands in the PRD row or brief first, then the task. Implementation invents nothing.
@@ -63,11 +73,17 @@ verdict's date and the record's exact file name, which a later fetch uses in pla
 listing; anything else goes to the owner as the helper's one prompt. The owner's "done"
 means: fetch again, check again. A studio screen reads `ported from the POC` and has no check.
 
-After `READY`, `qa-web` pictures every frame the task renders from the board in the browser pane
-Main opened (the owner signed in): each state, at 375 and 1536, a phone
-frame at least 375 px wide, into the scratchpad as `board/<frame>.png`, and returns their paths; a
-frame it reports `BLOCKED` Main captures itself. `#### Design check` lists them; the build reads
-the pictures with the record.
+A screen's board is pictured ONCE, at its first `READY`: `qa-web` pictures every frame of the
+board in the browser pane Main opened (the owner signed in) — each state, at 375 and 1536, a phone
+frame whole in one shot — into `.qa/board/<SCR-id>/<frame>.png`, a git-ignored folder that
+outlives the session, and returns their paths; Main's capture prompt names the folder a pane screenshot lands in,
+`~/.claude/projects/<project>/<session id>/tool-results/` (the session id is in the scratchpad
+path). `#### Design check` lists them beside
+the record's exact file name. Every later part reuses them: it pictures again only a frame that is missing
+there, or every frame when the record's file name differs from the one listed or the owner says
+the board changed. A frame reported `BLOCKED` is
+retried once with the pane shown; still `BLOCKED`, it goes to the owner. Main never pictures a
+board and never reads a picture: the helpers compare, and the card shows the files.
 
 The check's `against code` rows go to the owner once, before the task's first RFC: the helper's
 prompt for the rows the board must change, a brief ruling for each of the rest. A later part reads
@@ -81,11 +97,12 @@ it silently, and build neither way before the owner answers.
 
 The RFC is written in full under the task, then the chat shows its short view, never the whole
 text: the title; a link to the `#### … RFC` heading by file and line; the user impact from
-`##### Description`; the `##### Architecture diagram` drawn in the inline widget by the Mermaid
-library from the file's own Mermaid block, never hand-placed, so the picture and the record are
-one text (`references/diagram.md` holds the one widget recipe); a chat that cannot draw shows the
-Mermaid block as it is; the `##### Delivery size` numbers on one line; then the decision block,
-nothing after it. Every other section is read at the link.
+`##### Description`; the `##### Architecture diagram` — drawn for a task RFC in the inline widget
+by the Mermaid library from the file's own Mermaid block, never hand-placed, so the picture and
+the record are one text (`references/diagram.md` holds the one widget recipe), and for a part
+linked by file and line, drawn only when the part has a diagram of its own; a chat that cannot
+draw shows the Mermaid block as it is; the `##### Delivery size` numbers on one line; then the
+decision block, nothing after it. Every other section is read at the link.
 
 - `Decisions for you:` each open ruling on one line — the section that holds it, its options,
   the recommended one first — or `none`.
@@ -96,7 +113,10 @@ nothing after it. Every other section is read at the link.
 Stop. No test, migration or source edit begins before the owner's explicit approval
 (`CLAUDE.md` §3). The approval covers the RFC as written at the link and nothing else. A request
 for changes is answered the way step 4 shows a delta: one line per changed section, then the
-decision block.
+decision block. One case does not stop: a part whose card reads `Decisions for you: none` and
+whose file table sits inside the budget the approved task RFC gave that part. Its short view is
+shown with `Decision required: none — inside the approved task RFC` and the build begins; the
+owner's approval of the task RFC covers it.
 
 ## 4. Build
 
@@ -112,10 +132,11 @@ for a full replacement RFC for a legacy Plan, which gets the step 3 short view. 
 `Plan` is not a replacement RFC. So does a requirement the build shows to be wrong or over-built:
 the step 2 test applies, and the owner hears it before the code follows it.
 The RFC's file table and authored-line estimate are the budget and record: a file that lands
-outside it is added with its reason as it lands; when the budget rule in `docs/tasks/README.md` is
-breached, or a file lands in a package the RFC does not name, approval is void — stop, show the delta
-(planned and built · built but not planned, each with its reason · planned but not built),
-update the RFC and present the delta as above — never trim a proof to fit. Tick the part's checklist as each file group and proof
+outside it is added with its reason as it lands; a file in a package the RFC does not name voids
+approval — stop, show the delta (planned and built · built but not planned, each with its reason ·
+planned but not built), update the RFC and present the delta as above — never trim a proof to
+fit. Files or lines more than 20% above the estimate void nothing: the commit card says by how
+much and why (`docs/tasks/README.md`, Delivery size). Tick the part's checklist as each file group and proof
 lands; the owner reads it, never a transcript.
 A planted red that needs a database runs on `heliogrid_test`; no task creates a database of its
 own.
@@ -123,7 +144,8 @@ own.
 ## 5. QA — helpers once, on one stack
 
 Read `references/qa.md` before preparing the stack or starting a helper. Follow its database,
-account, packet, readiness, hash, timing, log and retry rules exactly.
+account, packet, readiness, hash, timing, log and retry rules exactly. Only the surfaces the proof
+rows name are started; a phone the last part left booted is reused.
 
 The normal path has one `pnpm check:all`. If its failure is environmental and changes no checked
 file, rerun only the failing command and continue the Evaluator. A checked-file change left by or
@@ -135,20 +157,25 @@ stops for the owner. Never respawn the Evaluator; one lost to a restart follows 
 
 ## 6. Pre-commit card
 
-Show, and stop: the AC proof summary (the evaluator's rows), the side-by-side images of a screen
-task, its built Hindi and Marathi pictures, the review result, every planted-red line, the changed files in three lists (planned and
-built · built but not planned, each with its reason · planned but not built), the exact commit message (the task's `Status:` or the part's row
-turns `shipped` in this commit), mistakes found and the rule that now prevents each, unresolved
-blockers, the runtime cleanup state, and the measurements — tool-call turns, Main's context tokens
-from the session's usage reading, each helper's tokens (or `lost to a restart`), helper runs,
-planned versus built —
-written under the task's `#### Runtime` in the same commit.
+Show, and stop. First, five fixed lines: the surfaces QA ran on with each one's rows and results;
+the board compared, `yes` with the frames or `no` with the reason; the reviewer's last verdict;
+the gate's result; mistakes found. Then the AC proof summary (the evaluator's rows), the
+side-by-side images of a screen task and its built Hindi and Marathi pictures, attached as files
+Main composed by name and never read, the review result, every planted-red line, the changed files in three lists (planned and built · built
+but not planned, each with its reason · planned but not built; more than 20% above the estimate
+says by how much and why), the exact commit message (the task's `Status:` or the part's row turns
+`shipped` in this commit), the rule that now prevents each mistake, unresolved blockers, the
+runtime cleanup state, and two measurements — Main's context tokens from the session's usage reading, the helpers'
+tokens summed from their completion notices — written under the `#### Runtime` ledger (step 0)
+in the same commit, which also moves a shipped part's RFC body and ledger to the archive
+(`docs/tasks/README.md`, Task anatomy).
 
 The commit waits for the owner's yes to THIS card (`CLAUDE.md` §4).
 
 ## 7. Draft PR and CI
 
-Push, open a DRAFT PR whose body carries the proof and the mistakes record. The session stays
+Push, open a DRAFT PR whose body carries the proof, the mistakes record and the reviewer's notes
+left outside the diff (`references/qa.md`). The session stays
 bound to its PR after the task ends: the app sends it every CI event, and it acts on each one
 without the owner. Judge only the latest run of the head SHA, step by step for a phone lane
 (`docs/tasks/README.md` proof rules), never its colour alone. When every required lane has passed,
@@ -162,8 +189,8 @@ body says so; the folder is never switched under a running task.
 ## 8. Teardown — on success, block, cancellation or failure
 
 Follow `references/runtime.md` teardown on every exit. Report each resource's initial and final
-state. `DONE` is refused while a task-owned process lives or database routing differs from its
-initial state.
+state. `DONE` is refused while a task-owned server, watcher or tab lives or database routing
+differs from its initial state; a phone left booted is not one of those.
 
 ## Helpers — `.claude/agents/`
 
