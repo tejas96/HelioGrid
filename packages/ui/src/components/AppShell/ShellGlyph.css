@@ -11,3 +11,7 @@
 .hg-shell-glyph[data-tone="primary"] {
   color: var(--text-primary);
 }
+
+.hg-shell-glyph[data-tone="accent"] {
+  color: var(--accent);
+}

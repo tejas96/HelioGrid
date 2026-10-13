@@ -348,6 +348,11 @@ msgid "Address"
 msgstr "Address"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:39
+msgid "Agent & voice"
+msgstr "Agent & voice"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:22
 msgid "Already on HelioGrid?"
 msgstr "Already on HelioGrid?"
@@ -404,6 +409,7 @@ msgstr "Bank name"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:71
+#: src/copy/settings.ts:41
 msgid "Billing"
 msgstr "Billing"
 
@@ -411,6 +417,11 @@ msgstr "Billing"
 #: src/copy/setup-what-you-sell.ts:56
 msgid "Both"
 msgstr "Both"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:35
+msgid "Branding"
+msgstr "Branding"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:18
@@ -421,6 +432,11 @@ msgstr "Building, street, area"
 #: src/copy/energy-source.ts:11
 msgid "Built-in estimate ±{tolerance}%"
 msgstr "Built-in estimate ±{tolerance}%"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:34
+msgid "Business profile"
+msgstr "Business profile"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:27
@@ -452,6 +468,11 @@ msgstr "Campaigns"
 #: src/copy/freshness.ts:25
 msgid "catalog"
 msgstr "catalog"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:38
+msgid "Catalog"
+msgstr "Catalog"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:35
@@ -527,6 +548,11 @@ msgstr "Code filled from your SMS"
 #: src/copy/sign-in.ts:60
 msgid "Code limits"
 msgstr "Code limits"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:40
+msgid "Collections"
+msgstr "Collections"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:55
@@ -647,6 +673,11 @@ msgstr "Create your own company instead"
 #: src/copy/company-signup.ts:48
 msgid "Creating your company"
 msgstr "Creating your company"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:26
+msgid "Customer calls"
+msgstr "Customer calls"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:37
@@ -969,6 +1000,11 @@ msgid "Mobile number"
 msgstr "Mobile number"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:27
+msgid "Money"
+msgstr "Money"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:95
 msgid "More"
 msgstr "More"
@@ -1197,6 +1233,11 @@ msgid "payment methods"
 msgstr "payment methods"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:37
+msgid "Payment terms"
+msgstr "Payment terms"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:69
 msgid "Payments"
 msgstr "Payments"
@@ -1237,6 +1278,11 @@ msgid "Prices and subsidy move"
 msgstr "Prices and subsidy move"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:31
+msgid "Profile & preferences"
+msgstr "Profile & preferences"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:41
 msgid "Profile still loading"
 msgstr "Profile still loading"
@@ -1255,6 +1301,11 @@ msgstr "Project Manager"
 #: src/copy/shell.ts:92
 msgid "Projects"
 msgstr "Projects"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:36
+msgid "Proposal templates"
+msgstr "Proposal templates"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:91
@@ -1320,6 +1371,11 @@ msgstr "Resend code, available in {seconds, plural, one {# second} other {# seco
 #: src/copy/setup-what-you-sell.ts:54
 msgid "Residential"
 msgstr "Residential"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:33
+msgid "Roles reference"
+msgstr "Roles reference"
 
 #. js-lingui-explicit-id
 #: src/copy/document-basis.ts:14
@@ -1405,6 +1461,11 @@ msgstr "Sent as"
 #: src/copy/sign-in.ts:21
 msgid "Sent by SMS to"
 msgstr "Sent by SMS to"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:18
+msgid "Settings"
+msgstr "Settings"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:36
@@ -1603,6 +1664,7 @@ msgstr "Tax registration"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:70
+#: src/copy/settings.ts:32
 msgid "Team"
 msgstr "Team"
 
@@ -1892,6 +1954,11 @@ msgid "Uploading held photographs arrives with the survey capture."
 msgstr "Uploading held photographs arrives with the survey capture."
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:42
+msgid "Usage"
+msgstr "Usage"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:99
 msgid "Use a different Google account"
 msgstr "Use a different Google account"
@@ -2048,6 +2115,7 @@ msgstr "What you mostly sell"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:68
+#: src/copy/settings.ts:25
 msgid "What you sell"
 msgstr "What you sell"
 
@@ -2090,6 +2158,11 @@ msgstr "Writing these three details now."
 #: src/copy/notifications.ts:29
 msgid "Yesterday · {date}"
 msgstr "Yesterday · {date}"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:22
+msgid "You"
+msgstr "You"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:69
@@ -2170,6 +2243,7 @@ msgstr "Your answers set the starting point for every proposal HelioGrid builds.
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:27
 #: src/copy/company-signup.ts:35
+#: src/copy/settings.ts:24
 msgid "Your company"
 msgstr "Your company"
 
@@ -2287,3 +2361,8 @@ msgstr "Your request is with the owner"
 #: src/copy/company-signup.ts:79
 msgid "Your request may already be with the owner."
 msgstr "Your request may already be with the owner."
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:23
+msgid "Your team"
+msgstr "Your team"

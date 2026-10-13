@@ -1,0 +1,119 @@
+import type { Capability } from '../authz/capabilities';
+import { can } from '../authz/policy';
+import type { RolePreset } from '../authz/roles';
+
+/**
+ * The groups of the settings list behind `More` (`SCR-SHELL-01`, *More: the settings list*), in
+ * the order the page draws them. The words are `packages/i18n`'s.
+ */
+export const SETTINGS_GROUPS = ['you', 'team', 'company', 'catalog', 'agent', 'money'] as const;
+export type SettingsGroup = (typeof SETTINGS_GROUPS)[number];
+
+/** Every settings screen a row may lead to — V1 screens only, in the order the page draws them. */
+export const SETTINGS_ROWS = [
+  'profile',
+  'team',
+  'roles',
+  'company_profile',
+  'branding',
+  'proposal_templates',
+  'payment_terms',
+  'catalog',
+  'agent',
+  'collections',
+  'billing',
+  'usage',
+] as const;
+export type SettingsRow = (typeof SETTINGS_ROWS)[number];
+
+/**
+ * Where each row sits and what opens it: the F2 matrix's own capability (`F7-48` — the list
+ * never offers a screen the role cannot open), or none for a screen every signed-in person has.
+ * A limited grant opens the row (`can`), as it opens the screen.
+ */
+const SETTINGS_ROW_RULE: Record<SettingsRow, { group: SettingsGroup; opens: Capability | null }> = {
+  profile: { group: 'you', opens: null },
+  team: { group: 'team', opens: 'onboarding.manage_team' },
+  roles: { group: 'team', opens: 'onboarding.manage_team' },
+  company_profile: { group: 'company', opens: 'onboarding.manage_tenant_settings' },
+  branding: { group: 'company', opens: 'onboarding.manage_tenant_settings' },
+  proposal_templates: { group: 'company', opens: 'onboarding.manage_tenant_settings' },
+  payment_terms: { group: 'company', opens: 'onboarding.manage_tenant_settings' },
+  catalog: { group: 'catalog', opens: 'onboarding.manage_catalog' },
+  agent: { group: 'agent', opens: 'onboarding.configure_agent' },
+  collections: { group: 'money', opens: 'payments.connect_gateway' },
+  billing: { group: 'money', opens: 'billing.manage_billing' },
+  usage: { group: 'money', opens: 'billing.view_usage_and_invoices' },
+};
+
+/**
+ * Each row's address segment under `More`, one fact on both apps: the web's `/more/team` and the
+ * phone's `heliogrid://more/team` are the same link (`M01-61`). A segment changed here changes a
+ * public address.
+ */
+export const SETTINGS_SEGMENT: Record<SettingsRow, string> = {
+  profile: 'profile',
+  team: 'team',
+  roles: 'roles',
+  company_profile: 'company-profile',
+  branding: 'branding',
+  proposal_templates: 'proposal-templates',
+  payment_terms: 'payment-terms',
+  catalog: 'catalog',
+  agent: 'agent',
+  collections: 'collections',
+  billing: 'billing',
+  usage: 'usage',
+};
+
+/** One group of the list as a person sees it: its rows, in order, never empty. */
+export interface SettingsGroupRows {
+  readonly group: SettingsGroup;
+  readonly rows: readonly SettingsRow[];
+}
+
+/** One row of the list, worded: the screen it leads to and its name. */
+export interface SettingsListRow {
+  readonly key: SettingsRow;
+  readonly name: string;
+}
+
+/** One group of the list, worded: its name and its rows in order. */
+export interface SettingsListGroup {
+  readonly key: SettingsGroup;
+  readonly name: string;
+  readonly rows: readonly SettingsListRow[];
+}
+
+/**
+ * The list as a screen draws it — the groups a person's presets leave them, each row named. One
+ * shape: `packages/i18n` words it, `packages/ui` draws it, and neither may import the other.
+ */
+export interface SettingsListView {
+  readonly title: string;
+  readonly groups: readonly SettingsListGroup[];
+}
+
+/** Whether the held presets open this row — a row every person has, or one the matrix grants. */
+export function opensSettingsRow(roles: readonly RolePreset[], row: SettingsRow): boolean {
+  const { opens } = SETTINGS_ROW_RULE[row];
+  return opens === null || can(roles, opens);
+}
+
+/**
+ * The list for a person holding `roles`: each group in order with the rows the presets open, a
+ * group with none left out. A role's rows follow the matrix, never a table of their own.
+ */
+export function settingsRowsFor(roles: readonly RolePreset[]): readonly SettingsGroupRows[] {
+  return SETTINGS_GROUPS.flatMap((group) => {
+    const rows = SETTINGS_ROWS.filter(
+      (row) => SETTINGS_ROW_RULE[row].group === group && opensSettingsRow(roles, row),
+    );
+    return rows.length === 0 ? [] : [{ group, rows }];
+  });
+}
+
+/** The row a link's segment names, or null for an address that is no row's. */
+export function settingsRowOfSegment(segment: string): SettingsRow | null {
+  return SETTINGS_ROWS.find((row) => SETTINGS_SEGMENT[row] === segment) ?? null;
+}

@@ -48,8 +48,10 @@ Screen-specific:
    their citations.)*
 6. **`empty` is a language set holding only the language already in use.** The other two
    preferences cannot be empty by construction, and *nothing arrived* is `error`, not empty.
-7. **Sign-out and the name field are not here.** The shell fixes sign-out to More; name and photo are
-   edited on `SCR-M01-09` where they were first set. Two homes for one field is how they drift.
+7. **Sign-out and the name field are not here.** The shell fixes sign-out behind the account avatar's
+   menu (`SCR-SHELL-01` decision 2, built by `T-SHELL-012`); this screen is a row of the settings list
+   `More` opens (`T-M01-005f`). Name and photo are edited on `SCR-M01-09` where they were first set.
+   Two homes for one field is how they drift.
 
 **Owed to F6's notification catalogue, not to the board.** The **five push type-groups are drawn, not specified** —
 neither this brief nor `F6-15` names them, and a per-group control cannot be specified without the

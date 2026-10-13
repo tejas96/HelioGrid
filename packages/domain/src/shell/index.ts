@@ -28,6 +28,22 @@ export {
 } from './explainer';
 export type { ComposedHome } from './home';
 export { composedHome, HOME_LADDER, homeFor, homesOf } from './home';
+export type {
+  SettingsGroup,
+  SettingsGroupRows,
+  SettingsListGroup,
+  SettingsListRow,
+  SettingsListView,
+  SettingsRow,
+} from './settings-rows';
+export {
+  opensSettingsRow,
+  SETTINGS_GROUPS,
+  SETTINGS_ROWS,
+  SETTINGS_SEGMENT,
+  settingsRowOfSegment,
+  settingsRowsFor,
+} from './settings-rows';
 export type { ShellLoad, ShellView } from './shell-view';
 export { shellViewFor } from './shell-view';
 export type {

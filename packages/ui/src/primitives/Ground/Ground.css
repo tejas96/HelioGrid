@@ -48,6 +48,8 @@
 .hg-stat-card,
 /* A tappable tile is a `Pressable`, whose reset loads later and clears a one-class fill. */
 .hg-pressable.hg-stat-card-button,
+.hg-pressable.hg-settings-person,
+.hg-settings-tile,
 .hg-record-card,
 .hg-notification-card,
 .hg-notification-member,

@@ -348,6 +348,11 @@ msgid "Address"
 msgstr "पत्ता"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:39
+msgid "Agent & voice"
+msgstr "एजंट आणि आवाज"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:22
 msgid "Already on HelioGrid?"
 msgstr "आधीच HelioGrid वर आहात?"
@@ -404,6 +409,7 @@ msgstr "बँकेचे नाव"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:71
+#: src/copy/settings.ts:41
 msgid "Billing"
 msgstr "बिलिंग"
 
@@ -411,6 +417,11 @@ msgstr "बिलिंग"
 #: src/copy/setup-what-you-sell.ts:56
 msgid "Both"
 msgstr "दोन्ही"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:35
+msgid "Branding"
+msgstr "ब्रँडिंग"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:18
@@ -421,6 +432,11 @@ msgstr "इमारत, रस्ता, परिसर"
 #: src/copy/energy-source.ts:11
 msgid "Built-in estimate ±{tolerance}%"
 msgstr "अंगभूत अंदाज ±{tolerance}%"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:34
+msgid "Business profile"
+msgstr "व्यवसाय प्रोफाइल"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:27
@@ -451,6 +467,11 @@ msgstr "कॅम्पेन"
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:25
 msgid "catalog"
+msgstr "कॅटलॉग"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:38
+msgid "Catalog"
 msgstr "कॅटलॉग"
 
 #. js-lingui-explicit-id
@@ -527,6 +548,11 @@ msgstr "तुमच्या SMS मधून कोड भरला"
 #: src/copy/sign-in.ts:60
 msgid "Code limits"
 msgstr "कोडची मर्यादा"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:40
+msgid "Collections"
+msgstr "वसुली"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:55
@@ -647,6 +673,11 @@ msgstr "त्याऐवजी तुमची स्वतःची कंप
 #: src/copy/company-signup.ts:48
 msgid "Creating your company"
 msgstr "तुमची कंपनी तयार होत आहे"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:26
+msgid "Customer calls"
+msgstr "ग्राहक कॉल"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:37
@@ -969,6 +1000,11 @@ msgid "Mobile number"
 msgstr "मोबाइल नंबर"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:27
+msgid "Money"
+msgstr "पैसे"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:95
 msgid "More"
 msgstr "आणखी"
@@ -1197,6 +1233,11 @@ msgid "payment methods"
 msgstr "पेमेंट पद्धती"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:37
+msgid "Payment terms"
+msgstr "पेमेंटच्या अटी"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:69
 msgid "Payments"
 msgstr "पेमेंट"
@@ -1237,6 +1278,11 @@ msgid "Prices and subsidy move"
 msgstr "किंमती आणि अनुदान बदलतात"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:31
+msgid "Profile & preferences"
+msgstr "प्रोफाइल आणि प्राधान्ये"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:41
 msgid "Profile still loading"
 msgstr "प्रोफाइल अजून लोड होत आहे"
@@ -1255,6 +1301,11 @@ msgstr "प्रोजेक्ट मॅनेजर"
 #: src/copy/shell.ts:92
 msgid "Projects"
 msgstr "प्रोजेक्ट्स"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:36
+msgid "Proposal templates"
+msgstr "प्रस्ताव टेम्पलेट"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:91
@@ -1320,6 +1371,11 @@ msgstr "कोड पुन्हा पाठवा, {seconds, plural, one {# �
 #: src/copy/setup-what-you-sell.ts:54
 msgid "Residential"
 msgstr "निवासी"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:33
+msgid "Roles reference"
+msgstr "भूमिकांची माहिती"
 
 #. js-lingui-explicit-id
 #: src/copy/document-basis.ts:14
@@ -1405,6 +1461,11 @@ msgstr "या नावाने पाठवली"
 #: src/copy/sign-in.ts:21
 msgid "Sent by SMS to"
 msgstr "SMS ने या नंबरवर पाठवला"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:18
+msgid "Settings"
+msgstr "सेटिंग्ज"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:36
@@ -1603,6 +1664,7 @@ msgstr "कर नोंदणी"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:70
+#: src/copy/settings.ts:32
 msgid "Team"
 msgstr "टीम"
 
@@ -1892,6 +1954,11 @@ msgid "Uploading held photographs arrives with the survey capture."
 msgstr "थांबवलेले फोटो अपलोड करण्याची सोय सर्व्हे कॅप्चरसोबत येईल."
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:42
+msgid "Usage"
+msgstr "वापर"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:99
 msgid "Use a different Google account"
 msgstr "दुसरे Google खाते वापरा"
@@ -2048,6 +2115,7 @@ msgstr "तुम्ही मुख्यतः काय विकता"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:68
+#: src/copy/settings.ts:25
 msgid "What you sell"
 msgstr "तुम्ही काय विकता"
 
@@ -2090,6 +2158,11 @@ msgstr "हे तीन तपशील आता लिहिले जात 
 #: src/copy/notifications.ts:29
 msgid "Yesterday · {date}"
 msgstr "काल · {date}"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:22
+msgid "You"
+msgstr "तुम्ही"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:69
@@ -2170,6 +2243,7 @@ msgstr "तुमची उत्तरे HelioGrid तयार करत अ�
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:27
 #: src/copy/company-signup.ts:35
+#: src/copy/settings.ts:24
 msgid "Your company"
 msgstr "तुमची कंपनी"
 
@@ -2287,3 +2361,8 @@ msgstr "तुमची विनंती मालकाकडे आहे"
 #: src/copy/company-signup.ts:79
 msgid "Your request may already be with the owner."
 msgstr "तुमची विनंती कदाचित मालकापर्यंत पोहोचली असेल."
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:23
+msgid "Your team"
+msgstr "तुमची टीम"
