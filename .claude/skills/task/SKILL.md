@@ -145,7 +145,7 @@ own.
 
 Read `references/qa.md` before preparing the stack or starting a helper. Follow its database,
 account, packet, readiness, hash, timing, log and retry rules exactly. Only the surfaces the proof
-rows name are started; a phone the last part left booted is reused.
+rows name are started; a phone is booted for its rows and shut at teardown.
 
 The normal path has one `pnpm check:all`. If its failure is environmental and changes no checked
 file, rerun only the failing command and continue the Evaluator. A checked-file change left by or
@@ -189,8 +189,8 @@ body says so; the folder is never switched under a running task.
 ## 8. Teardown — on success, block, cancellation or failure
 
 Follow `references/runtime.md` teardown on every exit. Report each resource's initial and final
-state. `DONE` is refused while a task-owned server, watcher or tab lives or database routing
-differs from its initial state; a phone left booted is not one of those.
+state. `DONE` is refused while a task-owned server, watcher, tab or phone lives or database
+routing differs from its initial state.
 
 ## Helpers — `.claude/agents/`
 
