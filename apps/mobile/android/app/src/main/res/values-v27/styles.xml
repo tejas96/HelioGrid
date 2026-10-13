@@ -1,0 +1,21 @@
+<resources>
+
+    <!--
+      API 27+ ONLY: the first level that can draw dark buttons on a light bottom bar.
+
+      The app is light-only (F7-04), so the three system buttons are dark on the page's ground.
+      - API 27–34: the bar is opaque and takes `navigationBarColor`.
+      - API 35+: the app draws under the bar and the colour is ignored; with 3-button
+        navigation the system lays its own contrast scrim, LIGHT because the buttons are dark.
+        The scrim is left on: page content scrolls under the bar, and a sheet's dark backdrop
+        covers it, so the buttons must stay readable over anything.
+      Without `windowLightNavigationBar` the buttons are light and that scrim is dark grey.
+
+      Gesture navigation draws only the system's own handle and is unchanged.
+    -->
+    <style name="AppTheme.SystemBars" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:navigationBarColor">@android:color/white</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+</resources>

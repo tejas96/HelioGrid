@@ -1,0 +1,21 @@
+<resources>
+
+    <!--
+      API 35+ (Android 15 and later) ONLY.
+
+      From API 35 a TextView sizes its text by glyph BOUNDS, no longer by advance widths
+      (`useBoundsForWidth`, on by default for an app that targets 35+). React Native 0.86 still
+      measures every `Text` by advance widths (TextLayoutManager builds its StaticLayout without the
+      flag), then hands the TextView a box of exactly that width. Devanagari glyphs overhang their
+      advances, so the TextView finds the line wider than its box and wraps it: a title, a button
+      label, in the end single words, on two lines with room to spare. Latin bounds match their
+      advances, so English never showed it.
+
+      Off, the TextView lays out by the same rule React Native measured with, as every API before
+      35 does. Drop this file when React Native measures with `setUseBoundsForWidth` itself.
+    -->
+    <style name="AppTheme.Text" parent="Widget.AppCompat.TextView">
+        <item name="android:useBoundsForWidth">false</item>
+    </style>
+
+</resources>

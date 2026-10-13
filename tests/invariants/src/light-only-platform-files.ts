@@ -6,8 +6,8 @@ import { gitFiles, lineAt, newlinesOf } from './repo-files';
  * v1 is light-only, on the platform files no lint plugin reads.
  *
  * The web page declares `color-scheme: only light`, so the browser never darkens it; iOS pins the
- * interface style to Light; every Android theme has a Light parent, never one that follows the
- * system (DayNight), and refuses forced dark; and the design system's semantic aliases are each a
+ * interface style to Light; the Android theme rests on a Light platform theme, never one that
+ * follows the system (DayNight), and refuses forced dark; and the design system's semantic aliases are each a
  * var() chain, which is what keeps a later dark set one block of values rather than a rewrite.
  * The XML is read as text — a comment can never be a declaration, so comments are blanked first.
  */
@@ -74,29 +74,58 @@ function iosProblems(repo: string): string[] {
   return style === 'Light' ? [] : [`${INFO_PLIST}: UIUserInterfaceStyle is not Light`];
 }
 
-function androidStyleProblems(file: string, xml: string): string[] {
+interface AndroidStyle {
+  at: string;
+  name: string;
+  parent: string;
+  body: string;
+}
+
+function androidStyles(file: string, xml: string): AndroidStyle[] {
   const text = withoutXmlComments(xml);
-  const problems: string[] = [];
-  for (const style of text.matchAll(/<style\b([^>]*?)(\/?)>/g)) {
+  return [...text.matchAll(/<style\b([^>]*?)(\/?)>/g)].map((style) => {
     const attrs = attributes(style[1] ?? '');
-    const name = attrs.get('name');
-    const parent = attrs.get('parent') ?? '';
-    const at = `${file}:${lineAt(text, style.index)}`;
     const bodyEnd = style[2] ? style.index : text.indexOf('</style>', style.index);
-    const body = text.slice(style.index, bodyEnd === -1 ? text.length : bodyEnd);
-    if (parent.includes('DayNight')) {
-      problems.push(`${at}: style ${name} follows the system (DayNight)`);
-    } else if (name === 'AppTheme' && !parent.includes('Light')) {
-      problems.push(`${at}: style AppTheme's parent '${parent}' is not a Light theme`);
+    return {
+      at: `${file}:${lineAt(text, style.index)}`,
+      name: attrs.get('name') ?? '',
+      parent: attrs.get('parent') ?? '',
+      body: text.slice(style.index, bodyEnd === -1 ? text.length : bodyEnd),
+    };
+  });
+}
+
+/**
+ * The platform themes a style rests on: its parent followed through every style these files
+ * define, in each API range that defines it. A parent no file defines is the platform's, and a
+ * cycle ends where it closes.
+ */
+function platformThemesOf(parent: string, styles: AndroidStyle[], seen: Set<string>): string[] {
+  const own = styles.filter((style) => style.name === parent && !seen.has(parent));
+  if (own.length === 0) return [parent];
+  const path = new Set(seen).add(parent);
+  return own.flatMap((style) => platformThemesOf(style.parent, styles, path));
+}
+
+function androidStyleProblems(style: AndroidStyle, styles: AndroidStyle[]): string[] {
+  const { at, name, parent, body } = style;
+  const problems: string[] = [];
+  if (parent.includes('DayNight')) {
+    problems.push(`${at}: style ${name} follows the system (DayNight)`);
+  }
+  if (name !== 'AppTheme') return problems;
+  for (const theme of platformThemesOf(parent, styles, new Set())) {
+    if (!theme.includes('Light')) {
+      problems.push(`${at}: style AppTheme rests on '${theme}', which is not a Light theme`);
     }
-    const optedOut = [...body.matchAll(/<item\b([^>]*)>([\s\S]*?)<\/item>/g)].some(
-      (item) =>
-        attributes(item[1] ?? '').get('name') === 'android:forceDarkAllowed' &&
-        decode(item[2] ?? '').trim() === 'false',
-    );
-    if (name === 'AppTheme' && !optedOut) {
-      problems.push(`${at}: style AppTheme does not set android:forceDarkAllowed to false`);
-    }
+  }
+  const optedOut = [...body.matchAll(/<item\b([^>]*)>([\s\S]*?)<\/item>/g)].some(
+    (item) =>
+      attributes(item[1] ?? '').get('name') === 'android:forceDarkAllowed' &&
+      decode(item[2] ?? '').trim() === 'false',
+  );
+  if (!optedOut) {
+    problems.push(`${at}: style AppTheme does not set android:forceDarkAllowed to false`);
   }
   return problems;
 }
@@ -105,8 +134,9 @@ function androidProblems(repo: string): { problems: string[]; files: number } {
   const files = gitFiles(repo, [ANDROID_STYLES]);
   if (files.length === 0)
     return { problems: [`${ANDROID_STYLES}: none tracked — nothing to read`], files: 0 };
+  const styles = files.flatMap((file) => androidStyles(file, read(repo, file) ?? ''));
   return {
-    problems: files.flatMap((file) => androidStyleProblems(file, read(repo, file) ?? '')),
+    problems: styles.flatMap((style) => androidStyleProblems(style, styles)),
     files: files.length,
   };
 }
