@@ -34,14 +34,18 @@ discarded or overwritten.
 - Choose the booted simulator with the newest `com.heliogrid.app` install. Rebuild native code only
   when native files changed after that install or the app is absent. JavaScript reloads through
   the one shared Metro.
+- The emulator is `Pixel_8_API_36` (Android 16, the app's own target); the Android 14 image is
+  CI's alone. A phone is booted only when a proof row runs on it.
 
 ## Teardown
 
 On success, blocker, cancellation or failure:
 
 1. Restore both database URLs to their initial values; restart the api only if the task restarted it.
-2. Stop each `started_by_task` resource by exact identity: preview stop, simulator UDID, emulator
-   serial, or tab id. Run `pnpm infra:down` only when this task ran `pnpm infra:up`.
+2. Stop each `started_by_task` server and tab by exact identity: preview stop or tab id. A
+   simulator or emulator stays booted for the next part — the owner shuts it when they want the
+   memory back — and is recorded as left booted. Run `pnpm infra:down` only when this task ran
+   `pnpm infra:up`.
 3. Leave every `pre_existing` resource and standing test company alone. Keep logs and proof.
 4. Confirm no task-owned `tsx ... watch` process survives; a watcher can outlive its listener.
 5. Report `resource → initial state → final state`.
