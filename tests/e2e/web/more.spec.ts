@@ -19,7 +19,8 @@ const OWNER_ROWS = settingsRowsFor(['epc_owner']).flatMap((group) => group.rows)
 test('More opens Settings: the owner’s twelve rows in six groups, More in view', async ({
   page,
 }) => {
-  const company = await createCompany(page, en, freshMobile());
+  const mobile = freshMobile();
+  const company = await createCompany(page, en, mobile);
   await passTheOwnersMark(page, en);
   const rail = page.getByRole('navigation', { name: en.t(SHELL.mainNavigation) });
 
@@ -37,5 +38,6 @@ test('More opens Settings: the owner’s twelve rows in six groups, More in view
   await expectNoSidewaysScroll(page);
   await expect(page).toHaveTitle(/\S/);
   await expectNoSeriousViolations(page);
-  await expectTheLook(page, [page.getByText(company)]);
+  // The person's tile names the owner, and the flow names each fresh owner by their number.
+  await expectTheLook(page, [page.getByText(company), page.getByText(`Owner ${mobile.national}`)]);
 });
