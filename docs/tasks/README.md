@@ -14,7 +14,8 @@ explicit `realized-by` pointer to the requirement that carries it); a task whose
 
 A task is its header lines, written when the task is. The RFC adds its sections under them —
 one `#### RFC`, whose `#####` sections below fix; for a split task `#### Parts` and each
-part's `#### Part <x> · RFC`. A task approved under the earlier `#### Plan` shape keeps it while
+part's `#### Part <x> · RFC`; a screen task's `#### Design check`; and one `#### Runtime` ledger
+under each part's RFC, or under `#### RFC` for an unsplit task. A task approved under the earlier `#### Plan` shape keeps it while
 that approval remains valid; if scope voids the approval, the affected task or part gets one
 complete replacement RFC and the earlier sections remain as history (`/task` steps 2 and 4). The
 header lines:
@@ -47,6 +48,12 @@ not presented for approval.
 `Used by:`, `QA plan:`, `Rounds:` and `Verified:` lines, and its verification record, stay as
 history and are never rewritten. An open task that still carries one of those lines keeps it the
 same way: the RFC adds its sections under the header lines and changes nothing above them.
+**A shipped part leaves the live file.** The commit that turns a part's row `shipped` moves its
+`#### Part <x> · RFC` body and its `#### Runtime` ledger, unchanged, to
+`docs/tasks/archive/<task id>.md` under a `## <task id> · part <x>` heading — never a `### T-`
+heading and never a `**Status:**` line, which the `deferred-rows` check reads as a task. The
+header lines, the task RFC, `#### Design check` and the `#### Parts` table stay here; a later part
+reads only them.
 
 ## RFC — the one implementation contract
 
@@ -55,7 +62,8 @@ diagram when a boundary changes. No parallel plan, ASCII diagram, second summary
 repository law: cite its owner. Every section below is present and in this order; a section that
 does not apply says why. A part writes
 `#### Part <x> · RFC`, carries only its own facts and proof rows, and cites the task RFC for shared
-facts. The task's acceptance lines appear once, except a replacement RFC for an invalidated legacy
+facts: every heading is present, and one the part does not change is one declared line
+(`.claude/skills/task/SKILL.md` step 2). The task's acceptance lines appear once, except a replacement RFC for an invalidated legacy
 part repeats that part's applicable AC and proof rows so the owner reads one complete decision.
 
 1. `##### Title` — `<task id> — <clear change name>`.
@@ -113,14 +121,21 @@ proves nothing and the row is `blocked`, never passed. iOS journeys are local `q
 A screen task with a board (a studio screen has none) has one `side-by-side` row per board frame
 it renders on the web — each state, 375, 1536 — owned by `qa-web`, and one
 per phone state owned by `qa-ios` alone, its language rotating state by state (English, Hindi,
-Marathi); in Hindi and Marathi it compares the layout, the words being the catalog's. `qa-android`
-walks the same journey rows and compares no frame: both phones draw the one shared component.
+Marathi); in Hindi and Marathi it compares the layout, the words being the catalog's. The board
+pictures are the ones taken once at the screen's first `READY`, in `.qa/board/<SCR-id>/`
+(`/task` step 3). `qa-android` walks the same journey rows and compares no frame: both phones
+draw the one shared component; one journey row per part carries the surface `android · Hindi`,
+and every phone row measures that no button label wrapped and that the focused field sits above
+the keyboard, `n/a` when the row has neither (`.claude/agents/`).
 Hindi and Marathi have no board frame: one `main-dev` row per shared component proves them by its
-component spec at 375 and 1536 — no sideways scroll, no clipped text box, the act on screen. Web at 375 is compared with the phone frame. A state the board draws only at 375 is compared at 1536 with
+component spec at 375 and 1536 — no sideways scroll, no clipped text box, the act on screen — and
+that spec saves one picture per language and width with `page.screenshot`, under
+`tests/e2e/test-results-ct/<Name>/<lang>-<width>.png`, which the commit card shows. Web at 375 is compared with the phone frame. A state the board draws only at 375 is compared at 1536 with
 its phone frame and the board's stated 1536 rule (`docs/start-here.md`, desktop states), not flagged
 as missing. A frame with no row, or a built state with no frame and no stated rule, is a finding. A side-by-side row names only a frame the running app reaches today with data QA can make through the app; a frame it cannot reach is decided in the RFC — `not_applicable` with the reason, or proven by its component's spec — never found by QA. In a
-light cycle the row's surface is the component page on `3100`, where `qa-web` compares the frames
-the part draws.
+light cycle no helper drives a browser: the component spec saves each drawn frame's picture the
+same way, and the `qa-web` row names the two files — the board's and the spec's — and compares
+them without a browser.
 
 ## Delivery size and Parts
 
@@ -136,10 +151,11 @@ subset, dependency, files and proof rows; web and phone halves of one flow stay 
 part carries one checklist item per file group and proof. A cap decides where work splits; it never
 drops a test, proof, protection or required doc fix.
 
-During build, a new behavior, route, contract, table, package or affected package — or actual files
-or authored lines more than 20% above the RFC estimate — voids approval. Update the complete RFC
-including a fresh `##### Delivery size` ruling: split into parts, or an inseparable deliverable
-approved at its new exact size. Obtain approval again. A legacy Plan invalidated this way is
+During build, a new behavior, route, contract, table, package or affected package voids approval.
+Update the complete RFC including a fresh `##### Delivery size` ruling: split into parts, or an
+inseparable deliverable approved at its new exact size. Obtain approval again. Actual files or
+authored lines more than 20% above the estimate void nothing: the commit card states the overrun
+and its reason, and the next RFC's estimate learns from it. A legacy Plan invalidated this way is
 preserved as history and followed by one complete replacement RFC, never a delta-only Plan.
 
 ## Binding rules

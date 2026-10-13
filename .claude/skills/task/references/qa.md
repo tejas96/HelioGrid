@@ -13,11 +13,14 @@ a unit test and keeps the planted-red rule.
 ## Prepare one stack
 
 A part whose proof matrix names no web, phone or api surface prepares no stack: its proofs are
-unit tests, the component suite on `3100`, `qa-web` on the component page, the reviewer and the
+unit tests, the component suite, whose spec saves each drawn frame's picture, a `qa-web` row that
+compares those files with the board pictures and drives no browser, the reviewer and the
 Evaluator's gate. The RFC's `##### Readiness and dependencies` says `light cycle` and why.
 
-Start or reuse the runtime already recorded by Main. Point both `.env.local` database URLs at
-`heliogrid_test`, export that file into the shell, run `pnpm db:migrate`, and publish the market
+Start or reuse the runtime already recorded by Main, and only the surfaces the proof rows name:
+no web server for a part with no web row, no phone for a part with no row on it. A phone the last
+part left booted is reused when it holds the newest install (`references/runtime.md`). Point both
+`.env.local` database URLs at `heliogrid_test`, export that file into the shell, run `pnpm db:migrate`, and publish the market
 pack only when the test database has none. Restart only the api and verify both database names.
 The test database uses the existing Postgres container; never create another.
 
@@ -28,11 +31,15 @@ once through the app, never per run. API tests use their own fixtures, not these
 ## Packets and mutation guard
 
 Give each QA helper only its proof rows, the AC lines they prove, runtime identity, log paths and
-its URL/device/account. A screen row carries the board pictures of the frames it covers and, as
-ruled differences, every open `docs/tasks/deferred.md` row that names its screen or one of those
+its URL/device/account, and `qa-web` the session's `tool-results` folder (the session id is in
+the scratchpad path). A screen row carries the board pictures of the frames it covers (`.qa/board/<SCR-id>/`), the path
+its own screenshot is saved at, and, as ruled differences, every open `docs/tasks/deferred.md` row that names its screen or one of those
 frames and every open `docs/tasks/UI.md` row of a component those frames draw; after QA returns,
-Main sets each board frame beside the web's and iOS's screenshot of it, one image per frame, and
-the commit card shows them. `qa-android` rows name no board frame. `qa-api` receives
+Main composes each board frame beside the web's and iOS's screenshot of it by file name with a
+script, one image per frame, never reading a picture, and the commit card attaches them.
+`qa-android` rows name no board frame; one journey row per part carries the surface
+`android · Hindi` and runs in Hindi, the helper switching its standing account's language in the
+app and restoring it before it finishes. `qa-api` receives
 `http://localhost:8084`, both API numbers and the api log. The reviewer receives the approved RFC,
 changed-file list, diff and named protection rows. The Evaluator receives the RFC proof section
 verbatim, every report, Main's proof and commands.
@@ -44,8 +51,11 @@ helper contract and are not hash-detected.
 
 ## Review first, then QA
 
-Start `reviewer` alone on the finished diff. Fix each evidenced finding and continue the same
-reviewer with the fixes until it returns clean. Only then start the helpers for changed surfaces
+Start `reviewer` alone on the finished diff. Fix each evidenced `blocker` and `should-fix`; a
+`note` is fixed only when it sits in a file the diff already changes, and is otherwise listed in
+the PR body. Continue the same reviewer with the fixes; every continuation, after a review fix, a QA fix or
+a gate fix alike, counts, and it reads at most twice more. The cap reached with a finding still
+open stops for the owner, and so does a fix the cap leaves unread. Only then start the helpers for changed surfaces
 together: `qa-web`, `qa-ios`, `qa-android`, and `qa-api` when the proof matrix has live API rows.
 Each uses its own account on the one stack. Omit an unchanged surface. A row touching global state
 such as the platform catalog or a market pack runs after surface helpers return, and the RFC names
@@ -53,6 +63,10 @@ that serialization. Main changes no checked file until every surface helper has 
 
 Main performs readiness checks only — health, route/app launch, database routing, accounts and log
 paths — and never duplicates a helper's journey.
+
+Nobody waits turn by turn. A wait — a boot, a page, a screen, a log line — is one command that
+polls with its own timeout and returns when the condition holds, never a `sleep` in its own turn.
+Browser steps a helper can foresee go into one `browser_batch`.
 
 A task has one api-down window. Each helper's packet holds its `api stopped` rows as a second group
 after its api-up rows, with the order written in. When every helper has returned from its api-up
@@ -72,8 +86,7 @@ costs another.
 
 A helper whose id no longer answers after an app restart is started anew with every report it and
 Main produced since the task began. Its earlier runs still count toward its limits — a QA row's one
-retry, the Evaluator's two gate runs — and the Runtime record says `lost to a restart` beside its
-tokens.
+retry, the Evaluator's two gate runs — and the Runtime record says `lost to a restart` for it.
 
 ## Evaluator gate
 
