@@ -15,6 +15,12 @@ import type { freshMobile } from './phone';
 type Mobile = ReturnType<typeof freshMobile>;
 
 /**
+ * Every flow's owner. One fixed name, since a look draws it: only the number must be fresh, and a
+ * name carrying the run's number changes the route's pixels on every run.
+ */
+export const OWNER_NAME = 'Asha Patil';
+
+/**
  * Types the number and asks for its code, on either door (`/login`, `/company-signup`), and
  * returns the code the api sent. The clock is read before the press, so the code is this
  * request's and never an older one's.
@@ -63,21 +69,18 @@ export async function fillCompanyStep(
   await typeCode(page, t, code);
   await page.getByRole('button', { name: t.t(COMPANY_SIGNUP.verifyAndContinue) }).click();
 
-  await fillCompanyDetails(page, t, mobile, company);
+  await fillCompanyDetails(page, t, company);
   await expectNoSidewaysScroll(page);
 }
 
-/** The company step's three details, typed and nothing pressed: the owner is `Owner <number>`. */
+/** The company step's three details, typed and nothing pressed: the owner is `OWNER_NAME`. */
 export async function fillCompanyDetails(
   page: Page,
   t: Translator,
-  mobile: Mobile,
   company: string,
 ): Promise<void> {
   await page.getByRole('textbox', { name: t.t(COMPANY_SIGNUP.companyName) }).fill(company);
-  await page
-    .getByRole('textbox', { name: t.t(COMPANY_SIGNUP.yourName) })
-    .fill(`Owner ${mobile.national}`);
+  await page.getByRole('textbox', { name: t.t(COMPANY_SIGNUP.yourName) }).fill(OWNER_NAME);
   await page.getByRole('textbox', { name: t.t(COMPANY_SIGNUP.city) }).fill('Pune');
 }
 

@@ -10,7 +10,7 @@ import {
 } from '@heliogrid/i18n';
 import { expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
-import { createCompany } from '../support/door';
+import { createCompany, OWNER_NAME } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
 import { expectTheLook } from '../support/look';
 import { freshMobile } from '../support/phone';
@@ -104,7 +104,7 @@ test('the account menu holds the grievance contact and sign-out', async ({ page 
   await createCompany(page, en, mobile);
   await passTheOwnersMark(page, en);
   const account = page.getByRole('button', {
-    name: en.t(SHELL.accountOf, { name: `Owner ${mobile.national}` }),
+    name: en.t(SHELL.accountOf, { name: OWNER_NAME }),
   });
 
   await account.click();

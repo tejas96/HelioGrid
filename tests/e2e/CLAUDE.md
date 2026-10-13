@@ -28,7 +28,9 @@ Deps: `architecture.md` §2 tests/e2e.
   tokens (`support/token.ts`), the touch floor from `@heliogrid/ui`.
 - Never a shared account: every flow signs up its own fresh number (`support/phone.ts`), so no spec
   reads another's data or the developer's, and no count or empty state is asserted.
-- A flow names its company `E2E <its 10-digit number>`.
+- A flow names its company `E2E <its 10-digit number>`, which every look masks, and its owner
+  `support/door.ts`'s `OWNER_NAME`: a look draws the owner's name and initials, so they never
+  carry the run's number.
 - Never a retry: a flake is a bug and is fixed.
 - Every web spec ends its landing with `support/axe.ts`'s `expectNoSeriousViolations` once the
   landing's words are visible: a `serious` or `critical` violation fails the suite (`F7-26`).

@@ -38,6 +38,5 @@ test('More opens Settings: the owner’s twelve rows in six groups, More in view
   await expectNoSidewaysScroll(page);
   await expect(page).toHaveTitle(/\S/);
   await expectNoSeriousViolations(page);
-  // The person's tile names the owner, and the flow names each fresh owner by their number.
-  await expectTheLook(page, [page.getByText(company), page.getByText(`Owner ${mobile.national}`)]);
+  await expectTheLook(page, [page.getByText(company)]);
 });
