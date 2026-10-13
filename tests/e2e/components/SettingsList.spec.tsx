@@ -70,6 +70,26 @@ test.describe('at 375', () => {
     await page.screenshot({ path: `${PICTURES}/more-technician-375.png`, fullPage: true });
   });
 
+  test('a name with no space to break at stays inside the tile at the web’s narrowed width', async ({
+    mount,
+  }) => {
+    // 375 less the web's 72 rail and 2 × 16 page padding: the tile is 263 wide inside the shell.
+    const list = await mount(
+      <div style={{ width: 263 }}>
+        <SettingsListAsHeld reader="en" held={['epc_owner']} name="Owner 9112345678" />
+      </div>,
+    );
+    const name = list.locator('.hg-settings-person-words h3');
+    const inkRight = await name.evaluate((node) => {
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      return range.getBoundingClientRect().right;
+    });
+    const box = await name.boundingBox();
+    expect(inkRight).toBeLessThanOrEqual((box?.x ?? 0) + (box?.width ?? 0) + 1);
+    await expect(name).toHaveText('Owner 9112345678');
+  });
+
   test('a pressed row reports the screen it opens', async ({ mount }) => {
     const list = await mount(<SettingsListAsHeld reader="en" held={['epc_owner']} />);
     await list.getByRole('button', { name: WORDS.rows.payment_terms }).click();
