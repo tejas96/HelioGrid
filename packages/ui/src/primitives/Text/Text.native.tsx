@@ -1,7 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { Children, isValidElement, type ReactNode } from 'react';
 import type { StyleProp, TextStyle } from 'react-native';
-import { Text as RNText } from 'react-native';
+import { Platform, Text as RNText, StyleSheet } from 'react-native';
 import { isMono, lineHeightFor, roleOf, runsOfString } from './Text.logic';
 import type { TextAlign, TextColor, TextProps, TextVariant } from './Text.types';
 
@@ -131,6 +131,16 @@ const ALIGN: Record<TextAlign, TextStyle['textAlign']> = {
 };
 
 /**
+ * Android measures a line twice — once to size the box, once to break it — and the two measurers
+ * trim letter spacing at run edges differently, so a tracked line of more than one run comes out a
+ * fraction of a pixel wider the second time and wraps inside its own box. A tracked line of one
+ * run, and every line on iOS, keeps its tracking, whether the role's or a consumer's.
+ */
+function runTracking(tracked: boolean, runCount: number): TextStyle | undefined {
+  return Platform.OS === 'android' && tracked && runCount > 1 ? { letterSpacing: 0 } : undefined;
+}
+
+/**
  * A native `Text` carries ONE family, and the brand face has no Devanagari — so the runs are
  * resolved explicitly here (`F3-13`) and each is drawn by the family the theme read from the
  * bundled files. A nested `Text` inherits size, weight and colour, so a run changes the face
@@ -139,18 +149,19 @@ const ALIGN: Record<TextAlign, TextStyle['textAlign']> = {
  * An element child draws its own text and keeps its own box; only words this `Text` holds
  * directly are split.
  */
-function drawRuns(children: ReactNode, variant: TextVariant): ReactNode {
+function drawRuns(children: ReactNode, variant: TextVariant, tracked: boolean): ReactNode {
   if (isMono(variant)) return children;
   return Children.map(children, (child) => {
     if (isValidElement(child) || (typeof child !== 'string' && typeof child !== 'number')) {
       return child;
     }
     const runs = runsOfString(String(child));
+    const tracking = runTracking(tracked, runs.length);
     return runs.map((run, index) => (
       <RNText
         // biome-ignore lint/suspicious/noArrayIndexKey: runs are positional slices of one string
         key={`${run.family}-${index}`}
-        style={{ fontFamily: run.family }}
+        style={{ fontFamily: run.family, ...tracking }}
       >
         {run.text}
       </RNText>
@@ -180,6 +191,8 @@ export function Text({
      every object it is given, `undefined` values included, so an entry written unconditionally
      would erase the variant's line height on every line that needs no raise. */
   const raised = lineHeightFor(variant, children);
+  const letterSpacing = StyleSheet.flatten(style)?.letterSpacing ?? VARIANT[variant].letterSpacing;
+  const tracked = letterSpacing !== undefined && letterSpacing !== 0;
   return (
     <RNText
       style={[
@@ -196,7 +209,7 @@ export function Text({
       numberOfLines={oneLine === true ? 1 : undefined}
       ellipsizeMode={oneLine === true ? 'tail' : undefined}
     >
-      {drawRuns(children, variant)}
+      {drawRuns(children, variant, tracked)}
     </RNText>
   );
 }
