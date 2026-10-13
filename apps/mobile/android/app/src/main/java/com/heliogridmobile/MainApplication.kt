@@ -1,6 +1,7 @@
 package com.heliogridmobile
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactHost
@@ -23,6 +24,10 @@ class MainApplication : Application(), ReactApplication {
 
   override fun onCreate() {
     super.onCreate()
+    // The app is light-only (F7-04). Without this a phone in dark mode reports night to every
+    // window, and React Native then draws light system buttons on a dark bar under a white page —
+    // on the activity and on each dialog it opens.
+    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     // Android finds a font by FILE name, so `fontFamily: 'Geist'` with a weight matches nothing and
     // draws Roboto; each family is registered here under the theme's name, with its weights from
     // res/font/<family>.xml. The invariant language-fonts refuses a family this list does not
