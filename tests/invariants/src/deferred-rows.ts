@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { gitFiles } from './repo-files';
-import { type PartEntry, readTaskLedger, type TaskEntry } from './task-ledger';
+import { type PartEntry, readTaskLedger, TASK_ID, type TaskEntry } from './task-ledger';
 
 /**
  * Every deferred row can reopen (`docs/tasks/deferred.md`, its header): each part of its
@@ -12,7 +12,7 @@ import { type PartEntry, readTaskLedger, type TaskEntry } from './task-ledger';
 const DEFERRED = 'docs/tasks/deferred.md';
 const LOOKS_LIKE_A_ROW = /^\| D\d+ \|/;
 const ROW = /^\| (D\d+) \|.*\| ([^|]+) \|\s*$/;
-const NAMES_A_TASK = /^(T-[A-Z0-9]+-\d+)([a-z]?) (starts|ships)$/;
+const NAMES_A_TASK = new RegExp(`^(${TASK_ID})([a-z]?) (starts|ships)$`);
 const TOUCHES = /^touches (\S+)$/;
 const OWNER = /^owner: .+$/;
 /** A struck task, or a part merged into another, never fires: its row would wait forever. */

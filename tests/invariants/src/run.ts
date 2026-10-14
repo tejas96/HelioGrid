@@ -2,6 +2,7 @@ import { loadInvariantsEnv } from '@heliogrid/env/server';
 import { runBannedWordOtherFiles } from './banned-word-other-files';
 import { runBiomePluginScopes } from './biome-plugin-scopes';
 import { runBrandRegistry } from './brand-registry';
+import { runBuildOrderHolds } from './build-order-holds';
 import { runDeferredRows } from './deferred-rows';
 import { runDesignSystemProps } from './design-system-props';
 import { runDesignSystemSnapshot } from './design-system-snapshot';
@@ -17,6 +18,7 @@ import { runMatrixMirrorsF2 } from './matrix-mirrors-f2';
 import { REPO_ROOT } from './repo-root';
 import { runSchemaParity } from './schema-parity';
 import { runTableTenancyScan } from './table-tenancy-scan';
+import { runTaskLedgerAgrees } from './task-ledger-agrees';
 import { runTemplateKeysMirrorF6 } from './template-keys-mirror-f6';
 import { runTenancyInvariants } from './tenancy-rls';
 import { runTenantIdOnTheWire } from './tenant-id-on-the-wire';
@@ -32,7 +34,7 @@ import { runVocabularyCopies } from './vocabulary-copies';
  * checks: vocabulary-copies, dockerfile-unprivileged, light-only-platform-files,
  * banned-word-other-files, env-example-complete, language-fonts, e2e-flow-per-screen,
  * design-system-props, design-system-snapshot, biome-plugin-scopes, launch-reuses-running-servers,
- * deferred-rows, ui-colour-pairs.
+ * deferred-rows, task-ledger-agrees, build-order-holds, ui-colour-pairs.
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
@@ -55,6 +57,8 @@ async function main() {
   runBiomePluginScopes(REPO_ROOT); // static — every lint plugin covers a place that exists
   runLaunchReusesRunningServers(REPO_ROOT); // static — a dev-server start kills nothing, appends its log
   runDeferredRows(REPO_ROOT); // static — every deferred row can reopen, and none is overdue
+  runTaskLedgerAgrees(REPO_ROOT); // static — statuses, design links and history agree, no task vanished
+  runBuildOrderHolds(REPO_ROOT); // static — every file placed, no loop, later-block waits recorded
   runUiColourPairs(REPO_ROOT); // static — every colour ui sets on a background is a declared pair
   const env = loadInvariantsEnv();
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;
