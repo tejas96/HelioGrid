@@ -18,8 +18,9 @@ compares those files with the board pictures and drives no browser, the reviewer
 Evaluator's gate. The RFC's `##### Readiness and dependencies` says `light cycle` and why.
 
 Start or reuse the runtime already recorded by Main, and only the surfaces the proof rows name:
-no web server for a part with no web row, no phone for a part with no row on it. A phone the last
-part left booted is reused when it holds the newest install (`references/runtime.md`). Point both
+no web server for a part with no web row, no phone for a part with no row on it. A phone is booted
+for the rows that need it and shut at teardown; its install and sign-in survive, so no reinstall
+and no new sign-in is owed unless native files changed (`references/runtime.md`). Point both
 `.env.local` database URLs at `heliogrid_test`, export that file into the shell, run `pnpm db:migrate`, and publish the market
 pack only when the test database has none. Restart only the api and verify both database names.
 The test database uses the existing Postgres container; never create another.

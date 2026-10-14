@@ -26,6 +26,13 @@ export interface ChosenImage {
   readonly widthPx: number | null;
 }
 
+/** The capture area as a screen's words read it: the limits, the last refusal, and whether a logo is held. */
+export interface CompanyLogoCaptureFacts {
+  readonly limits: CompanyLogoLimits;
+  readonly refusal: CompanyLogoRefusal | null;
+  readonly held: boolean;
+}
+
 export interface CompanyLogoRefusal {
   /** Every limit missed, in the order a refusal names them. A wrong type stands alone. */
   readonly missed:
@@ -53,12 +60,17 @@ export function companyLogoRefusal(
   const declared = FILE_CONTENT_TYPES.find((known) => known === image.contentType);
   const verdict =
     declared === undefined ? 'type-not-taken' : judgeFileDeclaration(limits, declared, byteSize);
-  if (verdict === 'type-not-taken' || widthPx === null) return { missed: ['type'], ...measured };
+  if (verdict === 'type-not-taken' || widthPx === null) return companyLogoTypeRefusal(image);
   const tooLarge = verdict === 'too-large';
   const tooNarrow = widthPx < limits.minWidthPx;
   if (tooLarge && tooNarrow) return { missed: ['size', 'width'], ...measured };
   if (tooLarge) return { missed: ['size'], ...measured };
   return tooNarrow ? { missed: ['width'], ...measured } : null;
+}
+
+/** The refusal of an image that is not a type the logo takes — as the device reads it, or as the api reads its bytes. */
+export function companyLogoTypeRefusal({ byteSize, widthPx }: ChosenImage): CompanyLogoRefusal {
+  return { missed: ['type'], megabytes: megabytesShown(byteSize), widthPx };
 }
 
 const BYTES_PER_TENTH_OF_A_MEGABYTE = 100_000;

@@ -31,9 +31,10 @@ discarded or overwritten.
 - A pre-existing stale server is an owner blocker. A foreign listener is freed by the owner
   through the `clean-dev-ports` launch configuration; never kill by port or process name.
 - Start web, api, Metro and worker only through `.claude/launch.json` with the preview tool.
-- Choose the booted simulator with the newest `com.heliogrid.app` install. Rebuild native code only
-  when native files changed after that install or the app is absent. JavaScript reloads through
-  the one shared Metro.
+- Boot the simulator and the emulator that hold the newest `com.heliogrid.app` install, each only
+  when a proof row runs on it; a shut phone keeps its install and its sign-in. Rebuild native code
+  only when native files changed after that install or the app is absent. JavaScript reloads
+  through the one shared Metro.
 - The emulator is `Pixel_8_API_36` (Android 16, the app's own target); the Android 14 image is
   CI's alone. A phone is booted only when a proof row runs on it.
 
@@ -42,9 +43,10 @@ discarded or overwritten.
 On success, blocker, cancellation or failure:
 
 1. Restore both database URLs to their initial values; restart the api only if the task restarted it.
-2. Stop each `started_by_task` server and tab by exact identity: preview stop or tab id. A
-   simulator or emulator stays booted for the next part — the owner shuts it when they want the
-   memory back — and is recorded as left booted. Run `pnpm infra:down` only when this task ran
+2. Stop each `started_by_task` server, tab and phone by exact identity: preview stop, tab id,
+   `xcrun simctl shutdown <udid>`, `adb -s <serial> emu kill`. An idle phone burns the battery; the
+   next part boots it again in a minute with the app and the sign-in still in place. A phone found
+   booted is `pre_existing` and is left as found. Run `pnpm infra:down` only when this task ran
    `pnpm infra:up`.
 3. Leave every `pre_existing` resource and standing test company alone. Keep logs and proof.
 4. Confirm no task-owned `tsx ... watch` process survives; a watcher can outlive its listener.

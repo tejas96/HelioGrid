@@ -129,7 +129,16 @@ export type ShellGlyphName =
   | 'search'
   | 'bell'
   | 'chevron'
+  | 'chevron-right'
   | 'shield'
+  | 'building'
+  | 'palette'
+  | 'calendar-clock'
+  | 'package'
+  | 'headset'
+  | 'wallet'
+  | 'credit-card'
+  | 'gauge'
   | 'sign-out'
   | 'lock'
   | 'download';
@@ -142,9 +151,9 @@ export interface ShellGlyphProps {
   size?: 'md' | 'lg' | 'xl';
   /**
    * `secondary` at rest, `inverse` on the near-black pill, `primary` on a state's mark and in a
-   * round shell button.
+   * round shell button, `accent` in a settings row's icon circle (`SCR-SHELL-01`, *More*).
    */
-  tone?: 'primary' | 'secondary' | 'inverse';
+  tone?: 'primary' | 'secondary' | 'inverse' | 'accent';
 }
 
 export interface AppShellProps {

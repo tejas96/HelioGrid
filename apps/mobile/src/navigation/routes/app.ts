@@ -1,6 +1,7 @@
 import { DOOR_SEGMENT } from '@heliogrid/domain';
 import { CompanyProfileScreen } from '../../screens/company-profile';
 import { CompanySignupScreen } from '../../screens/company-signup';
+import { SettingsRowScreen, SettingsScreen } from '../../screens/settings';
 import { SetupLanguageScreen } from '../../screens/setup-language';
 import { SetupWhatYouSellScreen } from '../../screens/setup-what-you-sell';
 import { PlaceholderScreen, ShellScreen } from '../../screens/shell';
@@ -42,7 +43,13 @@ export const appScreens = {
   Projects: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.projects },
   People: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.people },
   Campaigns: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.campaigns },
-  More: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.more },
+  /** `More` opens the settings list (`SCR-SHELL-01`, *More: the settings list*); a row's screen replaces its placeholder when it lands. */
+  More: { screen: SettingsScreen, if: useHasHome, linking: DOOR_SEGMENT.more },
+  SettingsRow: {
+    screen: SettingsRowScreen,
+    if: useHasHome,
+    linking: `${DOOR_SEGMENT.more}/:segment`,
+  },
   QuickAddLead: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.add_lead },
   StartSurvey: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.start_survey },
   Search: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.search },

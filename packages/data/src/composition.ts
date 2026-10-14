@@ -1,6 +1,7 @@
 import { type AuditRepository, createAuditRepository } from './audit/repository';
 import { type AuthRepository, createAuthRepository } from './auth/repository';
 import { createApiClient } from './client/client';
+import { createFileRepository, type FileRepository } from './file/repository';
 import { createHealthRepository, type HealthRepository } from './health/repository';
 import { createInvitationRepository, type InvitationRepository } from './invitation/repository';
 import { createMarketRepository, type MarketRepository } from './market/repository';
@@ -26,6 +27,7 @@ export interface Repositories {
   audit: AuditRepository;
   notification: NotificationRepository;
   auth: AuthRepository;
+  file: FileRepository;
   health: HealthRepository;
   invitation: InvitationRepository;
   market: MarketRepository;
@@ -79,6 +81,7 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
     audit: createAuditRepository(api),
     notification: createNotificationRepository(api),
     auth: createAuthRepository(api),
+    file: createFileRepository(api),
     health: createHealthRepository(api),
     invitation: createInvitationRepository(api),
     market: createMarketRepository(api),

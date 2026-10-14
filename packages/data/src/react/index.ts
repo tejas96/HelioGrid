@@ -6,6 +6,7 @@ export { useRepositories } from './context';
 export type { HostLifecycle } from './host-lifecycle';
 export { followHostLifecycle } from './host-lifecycle';
 export { DataProvider } from './provider';
+export type { ChosenLogo } from './use-company-logo';
 export type { CompanyProfileStep } from './use-company-profile';
 export { useCompanyProfile } from './use-company-profile';
 export type { CompanyCreation, CompanySignup, JoinRequesting } from './use-company-signup';

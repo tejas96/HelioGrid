@@ -32,7 +32,7 @@ Reached from: the onboarding sequence after "What do you sell?" (M01 §M01.3 beh
 17. **Bank details typed half way are kept as typed.** The part reads `Not added` until all four facts exist, and the bank details' prompt stays owed until then. The half is on this screen's own read alone: a proposal, an invoice or a customer link reads all four facts or none.
 18. **A save that fails keeps everything typed on screen**, with a retry and a way on without saving. `m-save-failed` draws it: one line at the act, `Not saved · our end · nothing typed is lost`, then `Try again` and `Continue without it`; the settings life shows the same line at `Save changes` and no second act.
 19. **`skipped` has no way in yet**: a recorded step is never resumed, and no screen offers a way back into setup. The state is built and waits for that screen.
-20. **The settings life waits on the settings list** its back control returns to; the owner draws that list before this life is built.
+20. **The settings life waits on the settings list** its back control returns to; the owner draws that list before this life is built. Drawn 2026-10-13 as three frames on the `SCR-SHELL-01` board (its record, *More: the settings list*): the page is titled `Settings`, its row for this screen reads `Business profile`, and `T-M01-005f` builds it under `More` on the web and both phones.
 21. **A kind of business has one name on every screen.** The three card titles here are the ones `SCR-M01-04` shows — `Residential` · `Commercial & industrial (C&I)` · `Both`; the card lines, the group's name (`What you mostly sell`) and the size's hint are this screen's own, as drawn. The board's three titles are to be corrected to match before the part that draws the cards.
 22. **The account holder opens holding the company name.** A holder that still equals the company name, with the other three bank facts empty, is not a bank fact: nothing is written for it and the part reads `Not added`.
 23. **The address reads `Added` once the street address is filled.** A PIN code alone leaves it at the city read back from signup.
@@ -63,6 +63,9 @@ Reached from: the onboarding sequence after "What do you sell?" (M01 §M01.3 beh
 48. **The letterhead's tile shows the logo's picture**, fitted inside the tile, and the word `Logo` until the screen holds one. A company with no picture shows no initial: the preview shows only what the fields hold (ruling 10).
 49. **The capture area's hint follows the pointer.** Where a finger chooses, `Tap to choose a file`; where a pointer can drop a file, `Choose a file or drop one here`; each is followed by the limits. `d-default`, which draws the finger's line, is to be corrected to match.
 50. **No control takes a logo out.** Choosing another file replaces the held one, as `m-normal` draws.
+51. **A logo is stored by the act, not when it is chosen.** A chosen image is checked and held on the device and shows at once as `Your logo`; `Save and continue` stores it and then saves the profile with it. So an upload has no look of its own: the act's busy look is its look, and one that fails is the failed save (`m-save-failed`), everything kept. An image chosen and then abandoned stores nothing.
+52. **An image over the size limit is refused with its measured size, never shrunk** — on a phone too. A logo is a made image; re-encoding it without telling its owner would change what every document prints.
+53. **An image the api reads as another type than the device declared is refused in the type's line**, `Needs a PNG or JPG`, and that save writes nothing; the next press saves without it.
 
 
 ## Requirements (verbatim)

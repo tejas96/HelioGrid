@@ -7,6 +7,7 @@ import {
   expectNumberFieldRinged,
   fillCompanyDetails,
   fillCompanyStep,
+  OWNER_NAME,
   passCompanyProfileStep,
   passLanguageStep,
   passWhatYouSellStep,
@@ -209,7 +210,7 @@ test('a language chosen on the door is the new account’s, and where sign-out r
 
   await typeCode(page, mr, await requestCode(page, mr, mobile));
   await page.getByRole('button', { name: mr.t(COMPANY_SIGNUP.verifyAndContinue) }).click();
-  await fillCompanyDetails(page, mr, mobile, `E2E ${mobile.national}`);
+  await fillCompanyDetails(page, mr, `E2E ${mobile.national}`);
   const created = page.waitForResponse(theCreate);
   await page.getByRole('button', { name: mr.t(COMPANY_SIGNUP.createCompany) }).click();
   expect(await languageOfTheCreate(created)).toBe('mr');
@@ -218,9 +219,7 @@ test('a language chosen on the door is the new account’s, and where sign-out r
   await passCompanyProfileStep(page, mr);
 
   await passTheOwnersMark(page, mr);
-  await page
-    .getByRole('button', { name: mr.t(SHELL.accountOf, { name: `Owner ${mobile.national}` }) })
-    .click();
+  await page.getByRole('button', { name: mr.t(SHELL.accountOf, { name: OWNER_NAME }) }).click();
   await page.getByRole('menuitem', { name: mr.t(SHELL.signOut) }).click();
   await expect(page.getByRole('heading', { name: mr.t(SIGN_IN.signIn) })).toBeVisible();
 });

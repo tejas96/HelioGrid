@@ -131,7 +131,7 @@ export interface CompanyProfileSave {
  * it, and `M01-25` keeps the way on open. A size that is no declaration is written as none, so what
  * is stored stands as the screen says it. The step is `completed` once a part of this screen's own
  * holds a fact — a logo, or a bank fact typed half way, is one — and `skipped` while none does
- * (`M01-24`). The logo is never in what is sent: the api keeps the one it holds.
+ * (`M01-24`). The logo is not sent here: `companyProfileSaveOf` names one a save stored.
  */
 export function companyProfileSave(facts: CompanyProfileFacts, tax: TaxPack): CompanyProfileSave {
   const address = typed(facts.address);

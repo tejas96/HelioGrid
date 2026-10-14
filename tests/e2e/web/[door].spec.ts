@@ -11,7 +11,13 @@ import {
 } from '@heliogrid/i18n';
 import { type BrowserContext, expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
-import { createCompany, fillCompanyDetails, requestCode, typeCode } from '../support/door';
+import {
+  createCompany,
+  fillCompanyDetails,
+  OWNER_NAME,
+  requestCode,
+  typeCode,
+} from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
 import { expectTheLook } from '../support/look';
 import { freshMobile } from '../support/phone';
@@ -217,7 +223,7 @@ test('a new company opens on the link its owner came by', async ({ page }) => {
 
   // A new number has no company: the door hands it to the company step.
   await enterTheDoor(page, mobile);
-  await fillCompanyDetails(page, en, mobile, `E2E ${mobile.national}`);
+  await fillCompanyDetails(page, en, `E2E ${mobile.national}`);
   await page.getByRole('button', { name: en.t(COMPANY_SIGNUP.createCompany) }).click();
 
   await expect(page).toHaveURL(/\/leads$/);
@@ -234,9 +240,7 @@ test('signing out, then in, opens the home — also after Back to a page left op
   await expect(page).toHaveURL(/\/leads$/);
   await rail.getByRole('button', { name: destinationLabel(en.t, 'projects') }).click();
   await expect(page).toHaveURL(/\/projects$/);
-  await page
-    .getByRole('button', { name: en.t(SHELL.accountOf, { name: `Owner ${mobile.national}` }) })
-    .click();
+  await page.getByRole('button', { name: en.t(SHELL.accountOf, { name: OWNER_NAME }) }).click();
   await page.getByRole('menuitem', { name: en.t(SHELL.signOut) }).click();
   await expect(page).toHaveURL(/\/login$/);
 

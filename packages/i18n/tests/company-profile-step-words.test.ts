@@ -1,10 +1,13 @@
+import { COMPANY_LOGO_LIMITS } from '@heliogrid/domain';
 import { describe, expect, it } from 'vitest';
+import { COMPANY_LOGO, companyLogoCapture } from '../src/copy/company-logo';
 import { COMPANY_PROFILE } from '../src/copy/company-profile';
 import { companyProfileStepWords } from '../src/copy/company-profile-step-words';
 import { createTranslator } from '../src/runtime';
 import { AT_SIGNUP } from './company-profile-facts';
 
 const LABELS = { taxIdLabel: 'GSTIN', bankRoutingLabel: 'IFSC' };
+const LOGO = { limits: COMPANY_LOGO_LIMITS, refusal: null, held: false };
 const STEP = {
   status: 'ready',
   arrivedUndeclared: false,
@@ -13,6 +16,7 @@ const STEP = {
   values: { city: 'Pune' },
   letterhead: AT_SIGNUP.letterhead,
   taxFormat: { en: '15 characters', hi: '15 अक्षर' },
+  logo: LOGO,
 } as const;
 
 describe('companyProfileStepWords — the setup step’s words', () => {
@@ -42,8 +46,28 @@ describe('companyProfileStepWords — the setup step’s words', () => {
     expect(words.tax.label).toBe(t(COMPANY_PROFILE.optional, { label: 'GSTIN' }));
   });
 
-  it('carries no logo: no screen can upload one yet', async () => {
+  it.each(['en', 'hi', 'mr'] as const)(
+    'hands the capture area the logo’s facts in %s',
+    async (reader) => {
+      const { t } = await createTranslator(reader);
+      const refused = {
+        ...LOGO,
+        refusal: { missed: ['width'], megabytes: 0.4, widthPx: 320 },
+      } as const;
+      expect(companyProfileStepWords(t, reader, { ...STEP, logo: refused }, LABELS).logo).toEqual(
+        companyLogoCapture(t, refused),
+      );
+    },
+  );
+
+  it('a held logo reads as held', async () => {
     const { t } = await createTranslator('en');
-    expect(companyProfileStepWords(t, 'en', STEP, LABELS).logo).toBeNull();
+    const words = companyProfileStepWords(
+      t,
+      'en',
+      { ...STEP, logo: { ...LOGO, held: true } },
+      LABELS,
+    );
+    expect(words.logo).toMatchObject({ held: true, name: t(COMPANY_LOGO.held) });
   });
 });

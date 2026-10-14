@@ -2,6 +2,7 @@
 import type { OnboardingProgress } from '@heliogrid/contracts';
 import {
   COMPANY_PROFILE_UNREAD,
+  type CompanyLogoCaptureFacts,
   type CompanyProfileField,
   type CompanyProfilePart,
   type CompanyProfileStored,
@@ -23,6 +24,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { useRepositories } from './context';
+import { type ChosenLogo, useCompanyLogo } from './use-company-logo';
 import { useSession } from './use-session';
 
 /** The company profile's setup step, as both screens consume it (Law 11). */
@@ -34,13 +36,18 @@ export interface CompanyProfileStep extends CompanyProfileView {
   /** The profile was read without the two answers of the step before. */
   readonly arrivedUndeclared: boolean;
   readonly saving: boolean;
+  readonly logo: CompanyLogoCaptureFacts;
+  /** The chosen image, or the stored logo's; `null` while there is neither. */
+  readonly logoPicture: string | null;
+  /** Checks the image against the logo's limits and holds it for the save. */
+  chooseLogo(image: ChosenLogo): void;
   openPart(part: CompanyProfilePart | null): void;
   edit(field: CompanyProfileField, typed: string): void;
   chooseSegment(segment: TenantSegment): void;
   declareSize(kwp: number): void;
   /**
-   * Writes the profile, then the registrations when they changed, then records the step before
-   * when this save answers it, then its own step.
+   * Stores a chosen logo, writes the profile, then the registrations when they changed, then
+   * records the step before when this save answers it, then its own step.
    */
   save(): void;
   /** Asks again for the reads that got no answer. */
@@ -134,6 +141,7 @@ export function useCompanyProfile(): CompanyProfileStep {
     [stored, tax],
   );
   const draft = typed ?? asRead;
+  const logo = useCompanyLogo(tenantId, profile.data?.logoFileId);
 
   const save = useMutation({
     networkMode: 'always',
@@ -141,8 +149,13 @@ export function useCompanyProfile(): CompanyProfileStep {
       values: CompanyProfileValues;
       stored: CompanyProfileStored;
       tax: TaxPack;
+      logo: ChosenLogo | null;
     }) => {
-      const writes = companyProfileSaveOf(sent.values, sent.stored, sent.tax);
+      const logoStoredNow = sent.logo === null ? null : await logo.store(sent.logo);
+      // The api found another type in the bytes: the image is refused at its field and nothing is
+      // written, or the same save would fail for ever.
+      if (sent.logo !== null && logoStoredNow === null) return null;
+      const writes = companyProfileSaveOf(sent.values, sent.stored, sent.tax, logoStoredNow);
       const saved = await repositories.settings.saveBusinessProfile(writes.profile);
       queryClient.setQueryData(profileKey, saved);
       if (registrationsChanged(sent.stored.registrations, writes.registrations)) {
@@ -157,8 +170,9 @@ export function useCompanyProfile(): CompanyProfileStep {
       }
       return repositories.onboarding.recordStep('business_profile', writes.step);
     },
-    onSuccess: (progress) => {
-      queryClient.setQueryData(progressKey, progress);
+    onSuccess: (progress, sent) => {
+      if (sent.logo !== null) (progress === null ? logo.refuse : logo.saved)(sent.logo);
+      if (progress !== null) queryClient.setQueryData(progressKey, progress);
     },
   });
   const { mutate, isPending, isError } = save;
@@ -176,15 +190,18 @@ export function useCompanyProfile(): CompanyProfileStep {
     open: held?.open ?? null,
     ...(held === null
       ? COMPANY_PROFILE_UNREAD.view
-      : companyProfileView(held.values, held.stored, held.tax)),
+      : companyProfileView(held.values, held.stored, held.tax, logo.chosen !== null)),
     arrivedUndeclared: arrivedUndeclared.current ?? false,
     saving: isPending,
+    logo: logo.facts,
+    logoPicture: logo.picture,
+    chooseLogo: logo.choose,
     openPart: (part) => change(({ values }) => ({ values, open: part })),
     edit: (field, text) => edited((values) => companyProfileEdited(values, field, text)),
     chooseSegment: (segment) => edited((values) => ({ ...values, segment })),
     declareSize: (kwp) => edited((values) => ({ ...values, typicalSystemKwp: kwp })),
     save: () => {
-      if (held !== null && !isPending) mutate(held);
+      if (held !== null && !isPending) mutate({ ...held, logo: logo.chosen });
     },
     retryRead: () => {
       for (const query of [profile, registrations, company, pack]) {

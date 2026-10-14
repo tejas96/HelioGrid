@@ -113,7 +113,7 @@ msgid "{home}, switch home"
 msgstr "{home}, होम बदलें"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:26
+#: src/copy/company-logo.ts:27
 msgid "{how} · {limits}"
 msgstr "{how} · {limits}"
 
@@ -138,12 +138,12 @@ msgid "{match} match · {unread} unread in all"
 msgstr "{match} मिलीं · कुल {unread} अपठित"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:32
+#: src/copy/company-logo.ts:33
 msgid "{megabytes} MB · needs {maxMegabytes} MB or less"
 msgstr "{megabytes} MB · {maxMegabytes} MB या कम चाहिए"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:22
+#: src/copy/company-logo.ts:23
 msgid "{megabytes} MB, {width} px wide · needs {maxMegabytes} MB or less, at least {minWidth} px"
 msgstr "{megabytes} MB, {width} px चौड़ा · {maxMegabytes} MB या कम, कम से कम {minWidth} px चाहिए"
 
@@ -233,7 +233,7 @@ msgid "{weekday} · {date}"
 msgstr "{weekday} · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:33
+#: src/copy/company-logo.ts:34
 msgid "{width} px wide · needs at least {minWidth} px"
 msgstr "{width} px चौड़ा · कम से कम {minWidth} px चाहिए"
 
@@ -333,7 +333,7 @@ msgid "Add the size you sell most often."
 msgstr "वह आकार जोड़ें जो आप सबसे ज़्यादा बेचते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:16
+#: src/copy/company-logo.ts:17
 msgid "Add your logo"
 msgstr "अपना लोगो जोड़ें"
 
@@ -346,6 +346,11 @@ msgstr "जोड़ा गया"
 #: src/copy/company-profile.ts:65
 msgid "Address"
 msgstr "पता"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:39
+msgid "Agent & voice"
+msgstr "एजेंट और आवाज़"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:22
@@ -404,6 +409,7 @@ msgstr "बैंक का नाम"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:71
+#: src/copy/settings.ts:41
 msgid "Billing"
 msgstr "बिलिंग"
 
@@ -411,6 +417,11 @@ msgstr "बिलिंग"
 #: src/copy/setup-what-you-sell.ts:56
 msgid "Both"
 msgstr "दोनों"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:35
+msgid "Branding"
+msgstr "ब्रांडिंग"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:18
@@ -421,6 +432,11 @@ msgstr "इमारत, गली, इलाक़ा"
 #: src/copy/energy-source.ts:11
 msgid "Built-in estimate ±{tolerance}%"
 msgstr "अंतर्निर्मित अनुमान ±{tolerance}%"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:34
+msgid "Business profile"
+msgstr "व्यवसाय प्रोफ़ाइल"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:27
@@ -451,6 +467,11 @@ msgstr "कैंपेन"
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:25
 msgid "catalog"
+msgstr "कैटलॉग"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:38
+msgid "Catalog"
 msgstr "कैटलॉग"
 
 #. js-lingui-explicit-id
@@ -489,7 +510,7 @@ msgid "Check the SMS, or send a new code."
 msgstr "SMS जाँचें, या नया कोड भेजें।"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:19
+#: src/copy/company-logo.ts:20
 msgid "Choose a file or drop one here"
 msgstr "फ़ाइल चुनें या यहाँ छोड़ें"
 
@@ -527,6 +548,11 @@ msgstr "आपके SMS से कोड भर गया"
 #: src/copy/sign-in.ts:60
 msgid "Code limits"
 msgstr "कोड की सीमा"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:40
+msgid "Collections"
+msgstr "वसूली"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:55
@@ -647,6 +673,11 @@ msgstr "इसके बजाय अपनी कंपनी बनाएँ"
 #: src/copy/company-signup.ts:48
 msgid "Creating your company"
 msgstr "आपकी कंपनी बन रही है"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:26
+msgid "Customer calls"
+msgstr "ग्राहक कॉल"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:37
@@ -969,6 +1000,11 @@ msgid "Mobile number"
 msgstr "मोबाइल नंबर"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:27
+msgid "Money"
+msgstr "पैसा"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:95
 msgid "More"
 msgstr "और"
@@ -995,7 +1031,7 @@ msgid "Name, phone or city"
 msgstr "नाम, फ़ोन या शहर"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:31
+#: src/copy/company-logo.ts:32
 msgid "Needs a PNG or JPG"
 msgstr "PNG या JPG चाहिए"
 
@@ -1197,6 +1233,11 @@ msgid "payment methods"
 msgstr "भुगतान के तरीके"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:37
+msgid "Payment terms"
+msgstr "भुगतान की शर्तें"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:69
 msgid "Payments"
 msgstr "भुगतान"
@@ -1222,7 +1263,7 @@ msgid "PIN code"
 msgstr "पिन कोड"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:21
+#: src/copy/company-logo.ts:22
 msgid "PNG or JPG, up to {maxMegabytes} MB, at least {minWidth} px wide"
 msgstr "PNG या JPG, अधिकतम {maxMegabytes} MB, कम से कम {minWidth} px चौड़ा"
 
@@ -1235,6 +1276,11 @@ msgstr "मूल्य सूची"
 #: src/copy/disclosure.ts:29
 msgid "Prices and subsidy move"
 msgstr "कीमतें और सब्सिडी बदलती हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:31
+msgid "Profile & preferences"
+msgstr "प्रोफ़ाइल और पसंद"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:41
@@ -1255,6 +1301,11 @@ msgstr "प्रोजेक्ट मैनेजर"
 #: src/copy/shell.ts:92
 msgid "Projects"
 msgstr "प्रोजेक्ट्स"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:36
+msgid "Proposal templates"
+msgstr "प्रस्ताव टेम्पलेट"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:91
@@ -1320,6 +1371,11 @@ msgstr "कोड दोबारा भेजें, {seconds, plural, one {# �
 #: src/copy/setup-what-you-sell.ts:54
 msgid "Residential"
 msgstr "आवासीय"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:33
+msgid "Roles reference"
+msgstr "भूमिकाओं की जानकारी"
 
 #. js-lingui-explicit-id
 #: src/copy/document-basis.ts:14
@@ -1405,6 +1461,11 @@ msgstr "इस नाम से भेजा"
 #: src/copy/sign-in.ts:21
 msgid "Sent by SMS to"
 msgstr "SMS से इस नंबर पर भेजा"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:18
+msgid "Settings"
+msgstr "सेटिंग्स"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:36
@@ -1587,7 +1648,7 @@ msgid "Taking you to {destination}"
 msgstr "आपको {destination} पर ले जा रहे हैं"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:18
+#: src/copy/company-logo.ts:19
 msgid "Tap to choose a file"
 msgstr "फ़ाइल चुनने के लिए टैप करें"
 
@@ -1603,6 +1664,7 @@ msgstr "कर पंजीकरण"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:70
+#: src/copy/settings.ts:32
 msgid "Team"
 msgstr "टीम"
 
@@ -1892,6 +1954,11 @@ msgid "Uploading held photographs arrives with the survey capture."
 msgstr "रोके गए फ़ोटो अपलोड करने की सुविधा सर्वे कैप्चर के साथ आएगी।"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:42
+msgid "Usage"
+msgstr "उपयोग"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:99
 msgid "Use a different Google account"
 msgstr "दूसरा Google खाता इस्तेमाल करें"
@@ -2048,6 +2115,7 @@ msgstr "आप ज़्यादातर क्या बेचते है�
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:68
+#: src/copy/settings.ts:25
 msgid "What you sell"
 msgstr "आप क्या बेचते हैं"
 
@@ -2090,6 +2158,11 @@ msgstr "ये तीन जानकारियाँ अभी लिखी �
 #: src/copy/notifications.ts:29
 msgid "Yesterday · {date}"
 msgstr "कल · {date}"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:22
+msgid "You"
+msgstr "आप"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:69
@@ -2170,6 +2243,7 @@ msgstr "आपके जवाब HelioGrid के बनाए हर प्र
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:27
 #: src/copy/company-signup.ts:35
+#: src/copy/settings.ts:24
 msgid "Your company"
 msgstr "आपकी कंपनी"
 
@@ -2239,7 +2313,7 @@ msgid "Your letterhead"
 msgstr "आपका लेटरहेड"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:17
+#: src/copy/company-logo.ts:18
 msgid "Your logo"
 msgstr "आपका लोगो"
 
@@ -2287,3 +2361,8 @@ msgstr "आपका अनुरोध मालिक के पास है"
 #: src/copy/company-signup.ts:79
 msgid "Your request may already be with the owner."
 msgstr "आपका अनुरोध शायद मालिक तक पहुँच चुका हो।"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:23
+msgid "Your team"
+msgstr "आपकी टीम"

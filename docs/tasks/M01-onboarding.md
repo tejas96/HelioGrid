@@ -4372,7 +4372,7 @@ Who gains: every owner, and every document a later module prints. The problem: t
 - Design check: `READY`, see `#### Design check`. Part a draws no frame of the board.
 - Owner rulings already taken, 2026-10-12: the PIN code field stays and gets storage; the board's three product facts were corrected (four bank facts, the city's line, no count of typed characters).
 - Part a is not a light cycle: its proof matrix names the api surface.
-- Part f waits on one drawing (*Decisions*, 7); parts a–e do not.
+- Part f waits on one drawing (*Decisions*, 7); parts a–e do not. Drawn 2026-10-13: three frames on the SCR-SHELL-01 board (`#### Design check`, fourteenth entry).
 
 ##### Proposal
 Each part's flow is in its own RFC. Shared here:
@@ -4402,7 +4402,7 @@ Each part's flow is in its own RFC. Shared here:
   4. **The bank code's label.** The formats pack gains `bankRoutingLabel` beside `taxIdLabel`, `IFSC` in India — or the word `IFSC` is screen copy in `packages/i18n`.
   5. **Half-typed bank details.** They are stored as typed (each fact may be empty in the contract), and the part reads `Not added` until all four exist — or a new state word is drawn for a part that is half filled. (Built in part d, as a new field beside the screen that needs it: part a first made the four facts nullable on the read, and CI's breaking-change judge refused that — *Part a · RFC*, *CI fix*.)
   6. **A save that fails.** Closed: the owner drew `m-save-failed` (`#### Design check`, the second entry). The owner draws one frame for it (one prompt) — or the read's error frame `m-error` is built for it with the title's verb changed, hiding what was typed while it shows.
-  7. **The settings list.** The owner draws the list `Back to settings` returns to, before part f; parts a–e do not wait — or part f ships reachable by its address alone until a later task draws the list.
+  7. **The settings list.** The owner draws the list `Back to settings` returns to, before part f; parts a–e do not wait — or part f ships reachable by its address alone until a later task draws the list. Drawn 2026-10-13 on the SCR-SHELL-01 board, its record's section *More: the settings list*; part f builds the list, part o the life (*Part f · RFC*, *Decisions*, 1).
   8. **`m-skipped`.** Built in the shared component and proven on the component page, with a `deferred.md` row until a screen offers a way back into the corridor — or the settings life shows the skipped line, which the board does not draw there.
   9. **Deferred rows.** D202, D200 and D145's `Accordion` join; D197 and the rest of D145 stay, re-pointed to `T-M01-012 starts`; D118 and D43 stay. (D197's cell was then written `touches apps/web/features/auth/` — review: the sign-in screens are its home, no screen task is.)
 
@@ -4450,7 +4450,7 @@ Per part.
 AC-1 is `not_applicable` in this task (*Decisions*, 2, ruled): its proof is `T-M06-022`'s, written into that task. Each part's RFC holds its rows of the one matrix.
 
 ##### Delivery size
-Eleven parts since part c's RFC split c in three, part g's added i and part d's split d in three (`#### Parts`: a, b, c, g, h, i, d, j, k, e, f), about 150 files in all. No smaller part can be accepted alone: the api must hold a fact before a screen saves it, a shared component lands before either app draws it (Law 7), and the logo and the settings life each need a surface the step does not. a: about 20 files, sized in its RFC. b: about 15. c, g, h, i, d, j and k: sized in their own RFCs. e: about 25. f: about 20. Each later RFC is written when the part before it has shipped. Part e was then cut in four — e, l, m, n — by its own RFC (*Decisions*, 1): fourteen parts.
+Eleven parts since part c's RFC split c in three, part g's added i and part d's split d in three (`#### Parts`: a, b, c, g, h, i, d, j, k, e, f), about 150 files in all. No smaller part can be accepted alone: the api must hold a fact before a screen saves it, a shared component lands before either app draws it (Law 7), and the logo and the settings life each need a surface the step does not. a: about 20 files, sized in its RFC. b: about 15. c, g, h, i, d, j and k: sized in their own RFCs. e: about 25. f: about 20. Each later RFC is written when the part before it has shipped. Part e was then cut in four — e, l, m, n — by its own RFC (*Decisions*, 1): fourteen parts. Part f was then cut in two — f, o — by its own RFC (*Decisions*, 1): fifteen.
 
 #### Parts
 
@@ -4468,8 +4468,9 @@ Eleven parts since part c's RFC split c in three, part g's added i and part d's 
 | e | the api holds the logo's pointer: one column and one field on the profile, kept by a save that never names it, refused unless it is this company's own stored logo, carried by what every document reads (`#### Part e · RFC`) | AC-3 — on the running api | k | shipped |
 | l | the logo's rules and words: the stated limits, the check that names every limit missed, the first part's `Added`, the step's rule; every word in three languages | AC-4 (`logo-invalid-limits-stated`) — by unit test (`#### Part l · RFC`) | e | shipped |
 | m | the capture area in the shared component on both halves: `m-logo-invalid`, the held logo, the letterhead's tile | AC-4 (`logo-invalid-limits-stated`) — on the component page | l | shipped |
-| n | the upload on the web and both phones: the file calls, the phone's picker, the pointer saved with the act; the step's words hand the logo's facts (part m's gate opens); `qa-ios` compares `m-default` and `m-logo-invalid` on the phone half, which part m only typechecks; the look of an upload under way is ruled in its RFC, which also says which prop each app passes (`onChooseLogo` on the web, `onRequestLogo` on the phone) and holds one web row on a touch viewport with no hydration error once the gate opens | AC-4 (`logo-invalid-limits-stated`) — on the running apps | m | open |
-| f | the settings life inside the shell on the web and both phones: the functional density, `Save changes`, the re-seed scope | AC-4 (`declarations-edited-reseed-scope`, `m-settings`, `d-settings`) | n · the settings list drawn (*Decisions*, 7) | open |
+| n | the upload on the web and both phones: the file calls, the phone's picker, the pointer saved with the act; the step's words hand the logo's facts (part m's gate opens); `qa-ios` compares `m-default` and `m-logo-invalid` on the phone half, which part m only typechecks; the look of an upload under way is ruled in its RFC, which also says which prop each app passes (`onChooseLogo` on the web, `onRequestLogo` on the phone) and holds one web row on a touch viewport with no hydration error once the gate opens (`#### Part n · RFC`) | AC-4 (`logo-invalid-limits-stated`) — on the running apps | m | shipped |
+| f | the settings list under `More` on the web and both phones: the rows a role may open (`F7-48`, from the F2 matrix), their words in three languages, one `SettingsList`, the routes; a row whose screen is not built yet opens the shell's placeholder (`#### Part f · RFC`) | AC-4 (the three `More` frames of the SCR-SHELL-01 record) — on the running apps | n · the settings list drawn (*Decisions*, 7; drawn 2026-10-13) | shipped |
+| o | the company profile's settings life inside the shell on the web and both phones: `Back to settings`, the functional density, `Save changes`, the re-seed scope | AC-4 (`declarations-edited-reseed-scope`, `m-settings`, `d-settings`) | f | open |
 
 #### Part a · RFC
 
@@ -6431,6 +6432,212 @@ Checklist:
 - [x] the live rows: web, iOS, Android
 - [x] the gate
 
+#### Part n · RFC
+
+##### Title
+`T-M01-005n` — The logo is uploaded: chosen on the web and both phones, checked on the device, stored and saved with the act
+
+##### Description
+**User impact.** On the company profile's first part an owner now meets `Add your logo` with its limits stated. They choose an image; one that misses a limit is told every limit it missed, and the act stays live. A good one shows at once as `Your logo`, and `Save and continue` stores it with the rest of the profile. Indirectly, every proposal, invoice and customer link later prints that one logo (`M01-31`).
+
+Who gains: every owner, on the web, iOS and Android. The problem: the api holds the pointer (part e), domain and the catalog hold the rules and the words (part l), and the shared component draws the area (part m) — but no client can store a file (`packages/data/src` has no file repository), the phone owns no picker (`apps/mobile/package.json`), nothing reads an image's width, the save never names a logo (`packages/domain/src/tenancy/company-profile.ts:134`), and the step's words hand `logo: null` (`packages/i18n/src/copy/company-profile-step-words.ts:45`). Sources: the task RFC, the RFCs of parts e, l and m, `M01-24`, `M01-31`, the brief (rulings 6, 26, 44, 48–50; the state `logo-invalid-limits-stated`), the design record's word plan.
+
+##### Goals
+- An owner chooses a PNG or JPG on the web, iOS and Android; the device checks type, size and width by `companyLogoRefusal` before anything is sent.
+- `Save and continue` declares the file, sends its bytes to the store, confirms it, and saves the profile with its id; the next read shows the logo.
+- A held logo's picture shows in the area, and on the web in the letterhead's tile.
+- The step's words hand the logo's facts, so the area part m drew shows on every running app.
+
+##### Non-goals
+- No new api route, table, contract field or error code. The three file routes and the profile's `PUT` are used as landed.
+- No removal of a stored file and no control that takes a logo out (ruling 50).
+- No cropping, no shrinking of a large image (*Decisions*, 4).
+- No look of its own for an upload under way (*Decisions*, 2).
+- The settings life — part f. The production bucket: it does not exist yet (*Decisions*, 1).
+- No phone flow in CI for the picker: the system's photo picker is not the app's to drive (`tests/e2e/mobile`); the phone rows are local.
+
+##### Readiness and dependencies
+- Parts a–k and e are on `main`; part l is PR #297 and part m draft PR #298, both open. This branch is cut from `origin/feat/T-M01-005m` by the walk (`references/walk.md`, step 3) and the owner's word.
+- Design check: `READY` stands (`#### Design check`, thirteenth entry). `m-default` and `m-logo-invalid` are pictured after this RFC is approved and before the first edit.
+- Not a light cycle: the proof matrix names the api, the web and both phones.
+- No migration; the local database stays at `0025`.
+- **The local store answers no browser.** A preflight from `http://localhost:3002` to `localhost:9000` returns 200 with no `Access-Control-Allow-Origin` (measured 2026-10-13), so a browser's `PUT` of the bytes is blocked. The store's image holds the setting `RUSTFS_CORS_ALLOWED_ORIGINS` (read from its binary). → *Decisions*, 1. The first build step proves it by row n-o1 before any other edit.
+- Two new dependencies, one native (*Decisions*, 3): both phones are rebuilt once.
+- No blocker once *Decisions* 1 and 3 are ruled.
+
+##### Proposal
+**What testing the requirements found** (`/task` step 2).
+1. **A browser cannot reach the store today** (*Readiness*). The file slice was proven by the api's tests and `curl`, never from a page. → *Decisions*, 1.
+2. **The look of an upload under way** (part m's non-goal; `#### Parts`, row n). No frame draws it. If the upload runs inside the act, the act's own busy look and `m-save-failed` already say everything, and the hook's rule *nothing is written before the act* (`use-company-profile.ts:62`) stays true. → *Decisions*, 2.
+3. **The phone's engine has no hash.** `POST /files` needs the bytes' SHA-256 (`packages/contracts/src/file.ts:45`); a browser has `crypto.subtle`, Hermes has none. One pure implementation serves both. → *Decisions*, 3.
+4. **A whole-replace write must not clear another device's logo.** The pointer is sent only by a save that stored a logo; any other save leaves the key out, and the api keeps what it holds (part e, finding 5).
+5. **`rules.ts:9` says a phone photograph is shrunk on the device.** A logo is a made image, rarely a photograph, and the board draws the refusal with its measured size. → *Decisions*, 4.
+6. **A file the device takes and the api refuses.** The api reads the first bytes (`file.service.ts:176`): a renamed file answers 422 `FILE_CONTENT_MISMATCH` or `FILE_TYPE_NOT_TAKEN` (any other 422 is a failed save). The chosen image is then dropped with the type's refusal, `Needs a PNG or JPG`, and nothing of the profile is sent; the next press saves without it. Without this rule `Try again` would fail forever.
+7. **A chosen logo counts before it is saved**, as a typed address does: the shut first part reads `Added` and the step is `completed`.
+8. **The hint differs by pointer on the web** (`use-coarse-pointer.ts`), so the first render on a touch device must not disagree with the server's. Row n-w3 holds it (`#### Parts`, row n).
+9. **Which prop each app passes** (`#### Parts`, row n): the web `onChooseLogo`, the phone `onRequestLogo`; both `logoPicture`.
+
+**Flow.**
+1. The step's words carry the logo's facts → the area shows.
+2. The owner chooses. Web: the file input or a drop hands a `File`; the app reads its bytes and its width. Phone: the press opens the system's photo picker; the app takes the bytes, the type, the size and the width it reports.
+3. `useCompanyLogo` asks `companyLogoRefusal`. Refused → the line under the area; nothing is held. Taken → the image is held on the device and its own picture shows.
+4. `Save and continue`: with a held image the hook stores it — `POST /files` (subject `tenant`, with the retry key), `PUT` the bytes to the link with the headers given, `POST /files/{id}/complete` — then saves the profile with `logoFileId`, the registrations and the step, as today.
+5. A store or api that does not answer → the save fails as any save does: `m-save-failed`, everything kept, `Try again` sends the same key. A 422 → finding 6.
+6. A profile read with a pointer → `GET /files/{id}/download-url` gives the picture.
+
+**Key decisions.**
+- **One file repository in `packages/data`** (`store`, `downloadUrl`), enrolled in `createRepositoryRegistry` — one reason: `packages/data/CLAUDE.md`, *a new repository is one edit*; the next file screen (the price list) reuses it.
+- **`useCompanyLogo` holds the chosen image and the picture; `useCompanyProfile` calls it** — one reason: `use-company-profile.ts` stands at 207 lines, and both screens read one step (Law 11).
+- **The checksum is domain's** (`files/checksum.ts`): pure, so it is unit-tested against a known vector.
+- **Each app keeps only its adapter**: the web reads a `File`; the phone opens its picker (`apps/mobile/CLAUDE.md`, *native capability is isolated in its own module*).
+
+**Order.** The store's setting and row n-o1 · the two dependencies · domain: the checksum and the save's rule, tests red first · the file repository · `useCompanyLogo` and the save · the step's words, test red first · the web adapter and screen · the web flow · the phone adapter and screen, both phones rebuilt · the brief · review · the live rows · the gate.
+
+**Refusals.** No new one on the wire. On the screen: part l's four, and finding 6.
+
+**The twin.** Both screens pass the same step to the same `CompanyProfile`; they differ in one adapter each.
+
+**Deferred rows this part's files meet.**
+- D209 (the bank rule written twice in `packages/domain/src/tenancy/`) — stays: this part touches the save's logo line, not the bank's.
+- D211 (two columns point at a file by id alone) — stays: a database rule, outside this part.
+- New, D212: a logo replaced leaves its old file stored — the slice has no delete route; `reopens when` the first task that deletes a stored file starts (part e, *Risks*).
+- No row reads `T-M01-005n starts`.
+
+**Decisions** (the owner's; the recommended way first).
+1. **How a browser's bytes reach the store.** Straight to the store, as the file slice was built: `RUSTFS_CORS_ALLOWED_ORIGINS` in `infra/compose.yaml` for the local store (`pnpm infra:up` makes the container again; its volume is kept), and one owed line in `.ops/todo.md` for the production bucket's rule. Or through the api: a new route that takes the bytes — every file then crosses our servers, and it voids the slice's design.
+2. **When the upload runs.** Inside `Save and continue`: no new frame, a file chosen and then abandoned stores nothing. Or at the moment of choosing: the owner draws two frames (under way, failed) and an abandoned choice leaves a stored file.
+3. **Two new dependencies.** `react-native-image-picker` 8.2.1 in `apps/mobile` (the system's photo picker, no permission asked; it reports type, size and width) and `@noble/hashes` in `packages/domain` (SHA-256 in plain TypeScript, one path for both platforms). Or a document picker plus a second native module to read the width, and a native hash on the phone: three dependencies and two code paths.
+4. **A phone image over 2 MB.** Refused with its measured size, as `m-logo-invalid` draws. Or shrunk by the picker before the check: an owner's logo is then re-encoded without being told.
+5. **Deferred rows.** D209 and D211 stay; D212 is added.
+
+**Ruled by the owner, 2026-10-13, with the approval: the first way of each of the five.**
+
+##### Architecture diagram
+```mermaid
+flowchart LR
+  owner["Owner: chooses an image"] --> web["web: reads the File, bytes and width"]
+  owner --> phone["phone: system photo picker"]
+  web --> logo["data/react: useCompanyLogo"]
+  phone --> logo
+  rule["domain: companyLogoRefusal, checksum"] --> logo
+  logo --> step["data/react: useCompanyProfile, Save and continue"]
+  step --> files["data: file repository"]
+  files --> declare[("api: POST /files, complete, download-url")]
+  files --> store[("object store: PUT the bytes")]
+  step --> put[("api: PUT /settings/business-profile, logoFileId")]
+  words["i18n: step words hand the logo facts"] --> ui["ui: CompanyProfile capture area"]
+  logo --> ui
+```
+
+##### Package changes
+- `packages/domain` — `files`: `checksumSha256Of(bytes)`, exported. `tenancy`: `companyProfileSaveOf` and `companyProfileView` take the logo this screen holds. Gains `@noble/hashes` (pure; no platform API, Law 10).
+- `packages/data` — new `file/repository.ts`, in the registry; `queryKeys.files.downloadUrl`; `useCompanyLogo` (not exported: the step carries it); `CompanyProfileStep` gains `logo`, `logoPicture`, `chooseLogo`. Depends on contracts and domain, as it does.
+- `packages/i18n` — `CompanyProfileStepFacts` gains `logo`; no new message.
+- `packages/ui` — built, not planned (the owner's yes to the delta, 2026-10-13): the phone half of `Dropzone` draws its glyph in the danger tone when refused, as the web half's stylesheet does (`Dropzone.css:67`). Found by `qa-ios` on `m-logo-invalid`: no phone drew a refused area before this part. No export changes.
+- `apps/mobile` — `src/files/pick-image.ts`, a native adapter beside `src/auth/` and `src/push/` (`apps/mobile/CLAUDE.md`, the layout, which gains the line); `react-native-image-picker`.
+- Law 12: no brand, enum, token, route, table or error code is new. The dependencies are held by `sherif` and the lockfile; the query key by its one list.
+
+##### Data and schema changes
+None — no stored shape changes. A stored `file` row and a `business_profile.logo_file_id` are written through routes that already exist; an older app never sends the key, and the api keeps the pointer.
+
+##### File and folder changes
+| action | path | purpose | placement reason |
+|---|---|---|---|
+| modify | `infra/compose.yaml` | the local store answers the web's origin | the local stack |
+| modify | `packages/domain/package.json` · `pnpm-lock.yaml` | `@noble/hashes`, by `pnpm add` (lockfile generated) | the checksum's home |
+| add | `packages/domain/src/files/checksum.ts` | the bytes' SHA-256 as the contract takes it | the file rules' home |
+| add | `packages/domain/src/files/base64.ts` | built, not planned: bytes to base64 and back, written once — the checksum encodes with it and the phone's picker hands its file as base64 | the file rules' home; the decoder is unit-tested here |
+| modify | `packages/domain/tests/money/device-entry.test.ts` | built, not planned: the guard asked for `bytesOfBase64` by name; enrolled with its reason | Law 12 |
+| modify | `packages/domain/src/files/index.ts` | export | the entry |
+| add | `packages/domain/tests/files/checksum.test.ts` | row n-u1 | its test |
+| modify | `packages/domain/src/tenancy/company-profile-draft.ts` | a held logo in the view and in what a save sends | the screen's rules |
+| modify | `packages/domain/src/tenancy/company-profile.ts` | the comment that says the logo is never sent | Law 8; the file stands at 299 lines and gains none |
+| modify | `packages/domain/tests/tenancy/company-profile-draft-save.test.ts` | rows n-u2, n-u3 (`company-profile-draft.test.ts` **planned, not built**: both rows sit beside the save's) | their test |
+| modify | `packages/domain/src/tenancy/company-logo.ts` · `index.ts` · `packages/i18n/src/copy/company-logo.ts` | built, not planned (review): the type's refusal built once, and the capture area's facts as one type both packages read | the logo's rules |
+| add | `packages/data/src/file/repository.ts` | declare, send, confirm; the download link | one repository per resource |
+| modify | `packages/data/src/composition.ts` · `packages/data/src/cache/keys.ts` | the registry; the key | the one list of each |
+| modify | `packages/data/src/index.ts` · `packages/data/src/react/index.ts` | built, not planned: the repository's and the chosen image's types on the two entries | the entries |
+| add | `packages/data/src/react/use-company-logo.ts` | the chosen image, its refusal, the picture | every hook lives in `src/react/` |
+| modify | `packages/data/src/react/use-company-profile.ts` | the step carries the logo; the save stores it first | the step's hook |
+| modify | `packages/i18n/src/copy/company-profile-step-words.ts` | the logo's facts in place of `null` | the step's words |
+| modify | `packages/i18n/tests/company-profile-step-words.test.ts` | row n-u4 | its test |
+| modify | `packages/i18n/src/locales/{en,hi,mr}/messages.po` | built, not planned: `extract` moved ten source-line references by one (`company-logo.ts` gained a line); no message, no word and no compiled catalog changes | the catalogs |
+| — | `packages/i18n/tests/company-profile-facts.ts` | **planned, not built:** the fixture is the words' facts, which did not change | — |
+| add | `apps/web/features/onboarding/hooks/use-logo-file.ts` | a `File`'s bytes and width (planned as `logo-file.ts`; the app's layout puts a platform adapter in `hooks/`) | `apps/web/CLAUDE.md` |
+| modify | `apps/web/features/onboarding/CompanyProfileScreen.tsx` | `logoPicture`, `onChooseLogo` | the screen |
+| add | `apps/mobile/src/files/pick-image.ts` | the picker's answer as a chosen image | a native adapter per capability |
+| modify | `apps/mobile/src/screens/company-profile/CompanyProfileScreen.tsx` | `logoPicture`, `onRequestLogo` | the screen |
+| modify | `apps/mobile/package.json` · `apps/mobile/ios/Podfile.lock` | the picker, by `pnpm add` and `pod install` (lockfile generated) | the app |
+| generated | `apps/mobile/ios/HelioGridMobile.xcodeproj/project.pbxproj` · `apps/mobile/ios/HelioGridMobile/PrivacyInfo.xcprivacy` | built, not planned: written by `pod install` for the picker (its privacy reason `3B52.1`) | never hand-edited |
+| modify | `apps/mobile/CLAUDE.md` | `src/files/` in the layout | Law 8 |
+| modify | `packages/ui/src/components/Dropzone/DropzoneGlyphs.native.tsx` · `Dropzone.native.tsx` | built, not planned (QA, approved as a delta): the refused glyph's tone on the phone | the component's phone half |
+| add | `tests/e2e/web/company-profile-logo.spec.ts` | rows n-c1 to n-c3 | one spec per concern; `company-profile.spec.ts` stands at 239 lines |
+| add | `tests/e2e/support/png.ts` | a real PNG of a chosen size, built in the test process (planned in `company-logo.ts`, which a component story bundles and so cannot import `node:zlib`) | plain values a spec reads |
+| modify | `docs/ux/briefs/SCR-M01-05-business-profile.md` | the rulings of *Decisions*, 2 and 4 | the brief owns the screen's facts |
+| modify | `docs/tasks/deferred.md` | D212 | out of scope |
+| modify | `docs/tasks/M01-onboarding.md` | this RFC, the design check's thirteenth entry, the ledger, part n `shipped` | the task |
+
+##### API and contract changes
+None — no wire boundary changes. First client use of `POST /files`, `POST /files/{id}/complete`, `GET /files/{id}/download-url` and of `logoFileId` on `PUT /settings/business-profile`.
+
+##### Risks and rollout
+- **The store's setting does not make it answer a browser.** Row n-o1 is the first build step; after two attempts the build stops with the evidence (`CLAUDE.md` §3).
+- **The phone cannot send typed bytes with the store's headers.** Proven by row n-i1 on the first phone build, before the Android half.
+- **The production bucket needs the same rule.** Owed in `.ops/todo.md`; without it the web's upload fails as a failed save, and nothing is lost.
+- **A replaced logo's file stays stored.** D212.
+- **Rollout.** An app from before this part draws no area and never sends the key. This part's app against an api from before part e cannot happen: part e is on `main`.
+
+##### Acceptance criteria and proof
+The task's AC-4 (`logo-invalid-limits-stated`) is this part's on the running apps. AC-1 is `not_applicable` in the task; AC-2 and AC-3 have no row here.
+
+| AC/row | owner | tier | surface | action → expected | proof |
+|---|---|---|---|---|---|
+| n-o1 the store | main-dev | required | repo | a preflight from `http://localhost:3002` for a `PUT` with the three headers → `Access-Control-Allow-Origin` in the answer | the command's output |
+| n-u1 the checksum | main-dev | required | unit | the bytes of `abc` → the known SHA-256 in base64; the contract's `checksumSha256Schema` takes it | `packages/domain/tests/files/checksum.test.ts` |
+| n-u2 what a save sends | main-dev | required | unit | a save that stored a logo names `logoFileId`; any other save leaves the key out. Planted red: the key always sent | `company-profile-draft-save.test.ts` |
+| n-u3 a held logo counts | main-dev | required | unit | a chosen logo → the first part `added`; a save that stored one → the step `completed` | `company-profile-draft-save.test.ts` |
+| n-u4 the step's words | main-dev | required | unit | the step hands the limits, the refusal and `held`; English, Hindi, Marathi. Planted red: `logo: null` | `company-profile-step-words.test.ts` |
+| AC-4 · n-c1 refused | ci | required | CI `e2e-web`, 375 and 1536 | a 320 px image over 2 MB chosen → the refusal with both measured values; no file call; the act live | `tests/e2e/web/company-profile-logo.spec.ts` |
+| n-c2 taken and saved | ci | required | CI `e2e-web` | a good PNG chosen → `Your logo`; `Save and continue` → declare, the store's `PUT` with the given headers, complete, then the profile's `PUT` with that id (the file calls and the store answered by the spec) | the same |
+| n-c3 never cleared | ci | required | CI `e2e-web` | a save with no image chosen → the profile's `PUT` has no `logoFileId` key | the same |
+| n-c4 stored once | ci | required | CI `e2e-web` | the profile's `PUT` fails after the logo is stored; `Try again` → the same file id, one declare, one send, one confirm (built, not planned — review) | the same |
+| n-c5 another type | ci | required | CI `e2e-web` | `complete` answers 422 `FILE_CONTENT_MISMATCH` → `Needs a PNG or JPG` at the area, no profile `PUT`, the act live (built, not planned — review; finding 6) | the same |
+| AC-4 · n-w1 | qa-web | required | web 375 and 1536 | a new company reaches the profile; the area at rest; a large narrow image → the refusal; a good PNG → `Your logo` with its picture, at 1536 in the letterhead's tile; `Save and continue` → the home; the log's four 2xx calls; no console error | the pages, the log |
+| n-w2 read back | qa-web | required | web 1536 | the same owner opens the step again by its address after the save, or a second sign-in → the stored picture loads from the download link | the page, the network row |
+| n-w3 touch | qa-web | required | web 375, touch | the hint reads `Tap to choose a file · …`; no hydration error in the console | the page, the console |
+| AC-4 · side-by-side `m-default` | qa-ios | required | iOS, English | the first part at rest beside the frame | the two pictures |
+| AC-4 · side-by-side `m-logo-invalid` | qa-ios | required | iOS, Hindi | the refused state beside the frame; the layout, the words being the catalog's | the two pictures |
+| n-i1 | qa-ios | required | iOS | a library image over the limit → the refusal; a good image → `Your logo`; the act → the home; the log's calls 2xx | the tree, the log |
+| n-a1 | qa-android | required | Android | the same journey on the emulator | the tree, the log, logcat |
+| n-q1 | qa-api | required | api | after n-w1: `GET /settings/business-profile` and `GET /settings/effective` carry the id; `GET /files/{id}/download-url` → 200 and the link serves a PNG | statuses, bodies |
+| side-by-side on the web | — | not_applicable | — | — | part m compared the four frames on the component page; the running web draws the same component (n-w1 reads it) |
+| Hindi and Marathi component row | — | not_applicable | — | — | no shared component changes; part m's row m7 stands |
+| the gate | evaluator | required | repo | — | `pnpm check:all` |
+
+No row needs the api stopped. The images the phone rows choose are put in each device's library by Main before the helpers start.
+
+##### Delivery size
+- One part: **27 files**, and two generated lockfiles.
+- **Code: about 330 authored lines** — domain 45, data 170 (the repository 70, `useCompanyLogo` 65, the step 35), i18n 10, the web 45, the phone 60.
+- **Tests: about 270 authored lines** — domain 75, i18n 25, the web flow and its images 170.
+- About 600 in all, under both targets. No smaller part is acceptable alone: a picker with no upload shows an area that saves nothing (ruling 26).
+- Order: as *Proposal*.
+- **Built:** 35 files and four generated (two lockfiles, and the two files `pod install` writes). Code 464 authored lines against 330 planned; tests 344 against 270: 808 against 600, 35% over, and 38 files against 27 (three of them the catalogs' source-line references). Over the 20% rule (`docs/tasks/README.md`): put to the owner on the commit card. What the plan missed: the review's rounds (the file stored once across a retry, the store's deadline, two more flow cases — about 130 lines), both base64 directions in domain (60), the PNG maker for the flow (41), and the phone glyph's tone (the delta, 23).
+
+Checklist:
+- [x] the board's two frames pictured
+- [x] the store's setting, row n-o1
+- [x] the two dependencies; both phones rebuilt
+- [x] domain: the checksum, the save's rule, tests red first
+- [x] data: the file repository, `useCompanyLogo`, the save
+- [x] i18n: the step's words, test red first
+- [x] the web adapter and screen; the web flow
+- [x] the phone adapter and screen
+- [x] the brief, `deferred.md`, `apps/mobile/CLAUDE.md`
+- [x] review
+- [x] the live rows: web, iOS, Android, api
+- [x] the gate
+
 #### Design check
 `READY` — 2026-10-12, on the record `SCR-M01-05 - decisions & self-audit.md` (29,484 bytes) read beside the board `SCR-M01-05 Business Profile - Mobile.dc.html` (142,409 bytes, under the read cap). Three checks on one helper. The first found the record behind the board (four frame counts, no Hindi frame, no 1536 alignment numbers, no word plan, a standing FAIL); the owner's redraw closed every finding. Main then found three product facts wrong against the code — three bank fields where `M06-17` and the contract hold four, a city line saying the city sets the market, a count of typed characters the pack cannot give — and the owner corrected them and redrew the 1536 arrangement in the same pass; the third check found nothing.
 
@@ -6493,6 +6700,14 @@ Noted by the helper and not blocking: three stale board notes and three stale re
 **Twelfth entry — part m (2026-10-12).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part m began: twenty-one frames, seventeen at 375 and four at 1536; the logo's three hint lines, the refusal and gap 4 (`Dropzone`'s fallback hint) stand in it as the eleventh entry read them. The board was fetched again (148,243 bytes, under the read cap, the sixth entry's size) and saved to the scratchpad by a script: nothing changed, so no helper ran. Main read the three capture areas in its source — `identityFields`, `logoErrorFields`, `filledIdentityFields` — and the two tiles. One frame is behind its record: `d-default` draws the phone's hint, where the word plan writes `Choose a file or drop one here · …` at 1536 (part m's RFC, *Decisions*, 2). This part takes the fifth entry's rows 8, 11 and 19; its RFC rules each (*Proposal*, 1–3). The frames it compares — `m-default`, `m-logo-invalid`, `m-normal`, `d-default` — are pictured after the RFC is approved and before the first edit.
 
 **Board pictures, part m.** Main pictured the frames in the pane at its own size (800 × 600, the board at 50%, the chat panel open: its toggle did not answer), into the scratchpad as `board/<frame>.png`: `m-default` and `m-normal` whole at 154 × 324; `d-default` in two pictures, its list (400 × 394) and its letterhead (270 × 394); `m-logo-invalid` as its left half only (82 × 324) — the frame stands in the board's third column, which the pane cut, and the canvas did not scroll sideways on that row. The refusal's line, its tone and its place are read from the board's source (`logoErrorFields`) and the record's measurements (2 lines, 40 px). `qa-web` was not asked: under a set viewport the board's canvas does not scroll (third entry).
+
+**Thirteenth entry — part n (2026-10-13).** The verdict stands on the same record file, `SCR-M01-05 - decisions & self-audit.md`, which Main read again whole when part n began: twenty-one frames, seventeen at 375 and four at 1536; the logo's three hint lines and the refusal `3.4 MB, 320 px wide · needs 2 MB or less, at least 400 px` stand in its word plan as the twelfth entry read them, so no helper ran. No frame draws an upload under way or an upload that failed; part n's RFC rules it (*Decisions*, 2). The board's source was not fetched: this part changes no shared component. `m-default` and `m-logo-invalid`, the two frames `qa-ios` compares, are pictured after the RFC is approved and before the first edit.
+
+**Board pictures, part n.** The browser pane was hidden for this session and a hidden pane draws no frame, so no new picture could be taken. Main copied the two whole frames of the first entry's capture (338 × 731 each, 2026-10-12) into the scratchpad as `board/m-default.png` and `board/m-logo-invalid.png` and opened the second: it shows the refused state whole. That picture predates one word fix on the board (`needs under 2 MB` → `needs 2 MB or less`, the sixth entry); the Hindi row compares layout and tone only, so the word is not read from it.
+
+**Fourteenth entry — part f (2026-10-13).** The settings list the task RFC's *Decisions*, 7 waited on is drawn: three frames added to the SCR-SHELL-01 board (`More · EPC Owner` at 375 and 1536, `More · Field Technician` at 375) and one section, *More: the settings list, 13 Oct 2026*, in its record `SCR-SHELL-01 mobile - decisions & self-audit.md`, both read whole by Main after the owner's drawing; the board itself was not fetched (66 pages, over the read cap). The record for this screen, `SCR-M01-05 - decisions & self-audit.md`, is unchanged since the thirteenth entry and was not read again: this part draws none of its frames. One helper read the new section against `F7-48`, `M01-29`, the F2 matrix as the code mirrors it and `docs/start-here.md`: `NEEDS_CHANGE`, on six record lines and no frame — *Who sees each row* gives Finance Collections and Usage, which `payments.ts:28` and `billing.ts:28` grant to the owner alone; the words cite *the brief's table* and *the PRD's six groups*, which no document holds (the labels are the register's screen names, shortened; the groups are the designer's); the technician's frame is not named as undrawn at 1536; the base-state line is paraphrased, not quoted; the middle column is 438 wide against *three equal columns*. The three frames agree with every rule and need no redraw. The helper's prompt went to the owner (part f's RFC, *Decisions*, 4). Pictures: the three frames are pictured into `.qa/board/SCR-SHELL-01/` after the RFC is approved and before the first edit.
+
+**Fifteenth entry — part f, the redraw (2026-10-13).** At the first commit card the owner redrew the three frames and the record's section *More: the settings list*, read again whole by Main: the person's group is now their own tile — a grey tile with the brand bloom in its corner, the avatar in a `--gradient-brand` ring, the name (`--fs-h3` bold) over *Profile & preferences*, a chevron in a raised white circle, one control, 96 tall (128 at 1536 with a 72 avatar); each other group is ONE grey tile holding its rows, each row 56 tall with a 40 px white icon circle (`--e1`) holding a Lucide-shaped icon in `--accent`, the name and a chevron, rows inset 8, no rules; the icons are named per row; the title stays `Settings`. The board's bottom now holds three 1536 frames — Option A (three columns, the record's), B and C (*identity panel and index*, two columns) — and the owner chose **A**. `qa-web` pictured the three frames again, and the person's tile and first group tile at 100%, into `.qa/board/SCR-SHELL-01/`; the component was rebuilt on both halves and compared twice by a helper against the pictures: the second compare matches every measured item within 2 px (the avatar 56 and 72, the tile 96 and 128, the icon circle 40, the chevron circle 36, the row pitch 58, the heading-to-tile gap 21, the group gap 32); what remains is the bloom's own strength (the token's) and the title's font width. No helper design-check ran on the redraw: the record's rules did not change, only the frames' drawing, and the compare is the check. The *Who sees each row* cells of the record are unchanged (the fourteenth entry's finding stands).
 
 #### Runtime
 Branch `feat/T-M01-005`, cut from `feat/T-M01-004c` (`99ed0bcc`, draft PR #283 open, its `quality`, `e2e-web` and `android` checks running) on a clean tree, by the owner's word, 2026-10-12: the walk reads `origin/main`, where `T-M01-004`'s part c is not yet merged.
@@ -7241,6 +7456,71 @@ Seen by the helpers and outside this part: one `401` in the web console on each 
 | browser tabs | pane closed | the board's tab (`seed`, `started_by_task`) left open for the owner's `d-default` correction; the preview tabs closed with their servers |
 | database routing | `heliogrid_test` / `heliogrid_test` | the same; never changed |
 | runtime logs | `api.log` 25,495,921 · `web.log` 733,124 · `metro.log` 2,154,249 bytes | 25,665,265 · 749,900 · 2,209,784 bytes, kept |
+| watchers | none | none |
+
+**Ledger (part n, 2026-10-13).** Branch `feat/T-M01-005n`, cut from `origin/feat/T-M01-005m` (`b2cc3d28`) on a clean tree, by the walk and the owner's word.
+
+| resource | state at the start | identity |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` · component tests `3100` | none listening | — |
+| Postgres `5544` · object store `9000` · Temporal `7233` | running (`pre_existing`) | `heliogrid-pg-local` · `heliogrid-object-store-local` · `heliogrid-temporal` |
+| simulators · emulators | none booted | — |
+| browser tabs | not read before the RFC | — |
+| database routing | `heliogrid_test` / `heliogrid_test` | `.env.local:7`, `:12` |
+| runtime logs | `api.log` 25,665,265 · `web.log` 749,900 · `metro.log` 2,209,784 bytes | — |
+
+- **Started by the task.** The object store's container was made again once (`docker compose -f infra/compose.yaml up -d object-store`, the owner's ruling on *Decisions*, 1; its volume kept). `api`, `web` and `mobile-metro` through their launch configurations. The iPhone 17 Pro simulator (`40ED0117-…`) and `emulator-5554` booted; both apps rebuilt natively for the picker. `adb reverse` for `8081`, `8084` and `9000` — the emulator sends the bytes to the store on the host. Two test images in each phone's library, made by Main: a 600 × 400 PNG and a 320 × 3500 PNG of 3.4 MB.
+- **Planted reds (part n).** `packages/domain/tests/tenancy/company-profile-draft-save.test.ts` with the pointer always sent failed › *any other save leaves the key out, so the api keeps the logo it holds* (and the older › *the save never names the logo*). `packages/i18n/tests/company-profile-step-words.test.ts` with the step handing `logo: null` failed › *hands the capture area the logo’s facts* in three languages and › *a held logo reads as held*. Row n-o1's check was seen to refuse: a preflight from `http://evil.example` gets no `Access-Control-Allow-Origin`. Each was restored from a scratchpad copy.
+- **Order.** The reviewer read alone: five findings and eight notes in round one, all applied (a logo stored twice when a save failed after the store step; the another-type path with no proof; a store `PUT` with no deadline; a refusal built by hand; a hand-written upload shape); one blocker and two notes in round two (the new flow case's 422 body lacked `requestId`); clean in round three. Then `qa-web`, `qa-ios` and `qa-android` together, then `qa-api`. `qa-ios` found the refused glyph grey on the phone: the owner approved the delta, the reviewer read the fix clean (round four), and `qa-ios` and `qa-android` each looked again.
+
+**As proven (part n).**
+
+| row | result | evidence |
+|---|---|---|
+| n-o1 | passed | the preflight from `http://localhost:3002` answers `access-control-allow-origin: http://localhost:3002`; from another origin, none |
+| n-u1 | passed | `packages/domain/tests/files/checksum.test.ts`, 9 tests (the two known vectors; seven round trips of the decoder) |
+| n-u2, n-u3 | passed | `packages/domain/tests/tenancy/company-profile-draft-save.test.ts`, planted red on n-u2 |
+| n-u4 | passed | `packages/i18n/tests/company-profile-step-words.test.ts`, 9 tests, planted red |
+| n-c1 to n-c5 | CI's | `tests/e2e/web/company-profile-logo.spec.ts`, five cases; never run locally (`references/qa.md`) |
+| n-w1 | passed | web at 375 (`…99910`) and 1536 (`…99911`): the refusal `3.4 MB, 320 px wide · needs 2 MB or less, at least 400 px` as one alert in the danger tone with no file call; the good image held as `Your logo`, at 1536 in the letterhead's tile; then `POST /files` 201, the store's `PUT` 200, `complete` 200, the profile's `PUT` 200 naming that file, the step recorded; no sideways scroll · log bytes 25,787,179–25,927,456 |
+| n-w2 | passed | the same owner reads `logoFileId`, the download link answers 200, and the picture loads 600 px wide |
+| n-w3 | passed | 375 with touch: `Tap to choose a file · …`; no hydration message in the console |
+| side-by-side `m-default` | passed | iPhone (`…31905`), English: order, tones, the dashed area and the glyph as the frame; the hint breaks one word later on the 402 pt screen, and the frame is cropped at its fold |
+| n-i1 | passed | iPhone: the system picker with no permission prompt; the refusal line; `Your logo` with one thumbnail; the home; `POST /files` 201, `complete` 200, the profile's `PUT` 200 · log bytes 25,952,339–25,959,444 |
+| side-by-side `m-logo-invalid` | passed on the rerun | iPhone (`…31906`), Hindi: the first run failed on the glyph's tone (grey against the frame's red); after the fix the glyph, the dashed edge and the line are the danger tone, and the held look is unchanged |
+| n-a1 | passed | Android (`…00531`): the same journey; the picker asked no permission; no fatal, ANR or React Native error. The rerun (`…00642`) saw the red glyph; an ANR while the helper typed the sign-in code fast on an emulator with 170 MB free, before the profile, is on no file of this part |
+| n-q1 | passed | the api as `…99911`: the profile and `/settings/effective` carry the id with `source: tenant`; the link serves `image/png`, 6,409 bytes, with the PNG signature. Three `POST /files` in the QA window, three different files |
+
+Seen by the helpers and outside this part: one `401` on `GET /auth/session` in the web console before sign-in; on the iPhone a 17-letter company name typed by the helper was kept as 16 — no length cap was found in the code, so a dropped key press is as likely, and it is not recorded as a defect.
+
+**Mistakes found (part n)**, each with the rule that now holds it:
+- **The first iOS build failed at `pod install` and Main read its exit code, 0** (found by `qa-ios`: the picker's module was `null`). The command lacked the UTF-8 locale `apps/mobile/CLAUDE.md` names. A native build's output is read to its last line, and the installed app's date is read before a phone helper starts.
+- **The frames were not pictured before the first edit** (Main): the pane was hidden. Said in `#### Design check`; the earlier whole-frame pictures were used.
+- **A logo was stored twice when a save failed after the store step** (the reviewer). The image's file id is remembered beside it; flow case n-c4 holds it.
+- **The store's `PUT` had no deadline** (the reviewer): a save could wait with no end. It stops at the link's own life.
+- **A refusal was built by hand in the hook, and the capture facts were typed twice** (the reviewer). Both are authored once in domain.
+- **The another-type path had no proof, and its first flow case sent an error body the client's own check refuses** (the reviewer, twice). Flow case n-c5, with the envelope's `requestId`.
+- **The phone half of `Dropzone` drew a refused glyph grey** (`qa-ios`): a gap older than this part, seen now because no phone drew a refused area before. Fixed here as an approved delta.
+- **The catalogs were stale at the first gate run** (the Evaluator): `company-logo.ts` gained one import line, so `extract` moved its ten source-line references, and Main had not run `pnpm check:catalogs` before the gate as `references/qa.md` says for a file a catalog sweeps. The gate's own run wrote the three `.po` files; only `#:` lines differ. The check is run after any edit under `packages/i18n/src/copy/`, word or not.
+- **The size estimate was 35% under the build.** The plan counted no review round and no test helper. The next part's estimate adds a third for review.
+
+- **The gate (part n).** Two runs by one Evaluator. The first stopped at `check:catalogs` and wrote the three `.po` files (above); the reviewer read them clean and no QA row reran. The second passed whole: 227 test files and 4,083 tests, the api tests on `heliogrid_test`, the invariants on real tables, no skipped or vacuous check, nothing regenerated.
+
+**Measurements (part n)** — helper runs: `ci-investigator` 2 for part m's PR #298 (39 k, 49 k: a runner's full disk and a one-worker runner at the 20-minute limit; both lanes passed on a rerun), `reviewer` 1 with four continuations (136 k at the end), `qa-web` 1 (83 k), `qa-ios` 1 with two continuations (85 k), `qa-android` 1 with one continuation (88 k), `qa-api` 1 (24 k), `evaluator` 1 with one continuation (47 k); two full gates, the second passed. `design-check` did not run: the record was unchanged. Main's context tokens at the commit card were not read. Planned 27 files and 600 lines; built 38 files and 808 lines.
+
+**Left on `heliogrid_test` (part n):** seven signup companies of the surface rows (`…99910`, `…99911`, `…31905`, `…31906`, `…00531`, `…00642`, and the api row's sign-in to `…99911`), made through the app; three stored logos in the local object store.
+
+**Teardown (part n).**
+
+| resource | initial | final |
+|---|---|---|
+| web `3002` · api `8084` · Metro `8081` | none listening | none listening — each started through its launch configuration and stopped by its preview id |
+| Postgres · Temporal | running (`pre_existing`) | running, untouched |
+| object store | running (`pre_existing`) | running; its container made again once with the web's origin allowed, its volume kept |
+| simulator · emulator | none booted | none booted — iPhone 17 Pro (`40ED0117-…`) shut down, `emulator-5554` killed; both hold the rebuilt app and two test images |
+| browser tabs | pane hidden | the board's tab (`tab-2`, `started_by_task`) closed; the preview tabs closed with their servers |
+| database routing | `heliogrid_test` / `heliogrid_test` | the same; never changed |
+| runtime logs | `api.log` 25,665,265 · `web.log` 749,900 · `metro.log` 2,209,784 bytes | 26,038,158 · 766,241 · 2,607,310 bytes, kept |
 | watchers | none | none |
 
 ### T-M01-006 · Setup — You're Ready

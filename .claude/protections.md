@@ -24,6 +24,7 @@ catalog freshness checks, the unit tests and the invariants; off CI it leaves ou
 | Every web page sits in one session group — `(door)`, `(open)` or `(inside)` — whose layout is its gate | dependency-cruiser `web-page-sits-in-a-session-group` |
 | A permission decision is taken in `packages/domain`: no role name is written outside domain and contracts | Biome plugin `role-literal` · every role against each changed route: review |
 | The permission model equals `F2`: both matrices cell for cell, `F2-01`'s twelve presets in order, OR across held roles and widest-wins per domain (`F2-11`, `F2-13`–`F2-15`) | invariant `matrix-mirrors-f2` · unit test `packages/domain/tests/authz/resolution.test.ts` |
+| A settings row's public address under `More` is a distinct plain word and never a door's; a role's rows follow the F2 matrix, never a table of their own | unit test `packages/domain/tests/shell/settings-rows.test.ts` · the exhaustive `Record` typecheck of `SETTINGS_ROW_RULE`. The shell glyph list and `Ground.css`'s tiles list are held by review and the exhaustive `Record` typecheck of `SHELL_GLYPHS` |
 
 ## Money
 

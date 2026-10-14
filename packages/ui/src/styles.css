@@ -128,6 +128,7 @@
 @import "./components/SearchField/SearchField.css";
 @import "./components/SegmentedControl/SegmentedControl.css";
 @import "./components/Select/Select.css";
+@import "./components/SettingsList/SettingsList.css";
 @import "./components/SetupLanguage/SetupLanguage.css";
 @import "./components/SetupWhatYouSell/SetupWhatYouSell.css";
 @import "./components/Sheet/OverlayShared.css";

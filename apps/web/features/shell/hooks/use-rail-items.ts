@@ -34,7 +34,12 @@ export function useRailItems(
       filled: true,
     }),
   }));
-  const inView = destinations.find((destination) => pathOf.get(destination) === pathname);
+  // A destination is in view on its own page and on every page under it (`/more/team` keeps
+  // `More` lit, as the phone does), never on a sibling that merely starts with its word.
+  const inView = destinations.find((destination) => {
+    const path = pathOf.get(destination);
+    return path !== undefined && (pathname === path || pathname.startsWith(`${path}/`));
+  });
   const choose = (key: string) => {
     const path = pathOf.get(key);
     if (path !== undefined) goTo(path);

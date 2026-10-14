@@ -50,6 +50,7 @@ services:
   # the api's one adapter speaks, so the same code reaches the production vendor with other
   # settings. MinIO no longer publishes images. The credentials are development values and the
   # bind is loopback only; a browser uploads to it directly, so it listens on the host.
+  # The web's origin is named because a browser sends the bytes only to a store that answers it.
   object-store:
     image: rustfs/rustfs:1.0.0@sha256:8cc9801755448b71a786705ce76692c77e14936cccd87cf2fc31842e58f4d1ff
     container_name: heliogrid-object-store-local
@@ -57,6 +58,7 @@ services:
     environment:
       RUSTFS_ACCESS_KEY: heliogrid
       RUSTFS_SECRET_KEY: heliogrid-local-secret
+      RUSTFS_CORS_ALLOWED_ORIGINS: 'http://localhost:3002'
     ports: ['127.0.0.1:9000:9000']
     volumes:
       - 'heliogrid-objects:/data'

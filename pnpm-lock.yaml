@@ -192,6 +192,9 @@ importers:
       react-native-device-info:
         specifier: 15.0.2
         version: 15.0.2(react-native@0.86.0(@babel/core@7.29.7)(@react-native-community/cli@20.1.0(typescript@5.8.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))
+      react-native-image-picker:
+        specifier: 8.2.1
+        version: 8.2.1(react-native@0.86.0(@babel/core@7.29.7)(@react-native-community/cli@20.1.0(typescript@5.8.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
       react-native-keychain:
         specifier: 10.0.0
         version: 10.0.0
@@ -458,6 +461,9 @@ importers:
 
   packages/domain:
     dependencies:
+      '@noble/hashes':
+        specifier: 1.8.0
+        version: 1.8.0
       zod:
         specifier: 3.25.76
         version: 3.25.76
@@ -2721,6 +2727,10 @@ packages:
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
+
+  '@noble/hashes@1.8.0':
+    resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
+    engines: {node: ^14.21.3 || >=16}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -5972,6 +5982,12 @@ packages:
     peerDependencies:
       react-native: '*'
 
+  react-native-image-picker@8.2.1:
+    resolution: {integrity: sha512-FBeGYJGFDjMdGCcyubDJgBAPCQ4L1D3hwLXyUU91jY9ahOZMTbluceVvRmrEKqnDPFJ0gF1NVhJ0nr1nROFLdg==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+
   react-native-keychain@10.0.0:
     resolution: {integrity: sha512-YzPKSAnSzGEJ12IK6CctNLU79T1W15WDrElRQ+1/FsOazGX9ucFPTQwgYe8Dy8jiSEDJKM4wkVa3g4lD2Z+Pnw==}
     engines: {node: '>=16'}
@@ -8992,6 +9008,8 @@ snapshots:
 
   '@next/swc-win32-x64-msvc@15.5.21':
     optional: true
+
+  '@noble/hashes@1.8.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -12530,6 +12548,11 @@ snapshots:
 
   react-native-device-info@15.0.2(react-native@0.86.0(@babel/core@7.29.7)(@react-native-community/cli@20.1.0(typescript@5.8.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)):
     dependencies:
+      react-native: 0.86.0(@babel/core@7.29.7)(@react-native-community/cli@20.1.0(typescript@5.8.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)
+
+  react-native-image-picker@8.2.1(react-native@0.86.0(@babel/core@7.29.7)(@react-native-community/cli@20.1.0(typescript@5.8.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3):
+    dependencies:
+      react: 19.2.3
       react-native: 0.86.0(@babel/core@7.29.7)(@react-native-community/cli@20.1.0(typescript@5.8.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3)
 
   react-native-keychain@10.0.0: {}

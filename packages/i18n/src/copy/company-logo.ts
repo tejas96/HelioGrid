@@ -5,6 +5,7 @@
  * `MB` and `px` are units and read the same in every language.
  */
 import {
+  type CompanyLogoCaptureFacts,
   type CompanyLogoLimits,
   type CompanyLogoMiss,
   type CompanyLogoRefusal,
@@ -89,10 +90,7 @@ export interface CompanyLogoCapture {
   readonly held: boolean;
 }
 
-export interface CompanyLogoCaptureFacts extends CompanyLogoWordFacts {
-  /** The profile holds a logo. */
-  readonly held: boolean;
-}
+export type { CompanyLogoCaptureFacts };
 
 export function companyLogoCapture(
   translate: Translator['t'],

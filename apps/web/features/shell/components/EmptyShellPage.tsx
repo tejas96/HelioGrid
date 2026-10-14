@@ -1,3 +1,4 @@
+'use client';
 import { EmptyState, Text } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 

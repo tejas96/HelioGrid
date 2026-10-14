@@ -5,6 +5,7 @@ import {
   type UiLanguage,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
+import type { CompanyLogoCaptureFacts } from './company-logo';
 import {
   type CompanyProfileWordFacts,
   type CompanyProfileWords,
@@ -17,12 +18,12 @@ export interface CompanyProfileStepFacts extends CompanyProfileView {
   readonly arrivedUndeclared: boolean;
   readonly open: CompanyProfilePart | null;
   readonly values: { readonly city: string };
+  readonly logo: CompanyLogoCaptureFacts;
 }
 
 /**
  * The words of the company profile as a setup step (`SCR-M01-05`), built once for both screens.
- * Never `skipped`: a recorded step is not asked again, so nobody is back from a skip. No logo:
- * the capture area lands with the upload, whole (`SCR-M01-05`'s brief, ruling 26). The two
+ * Never `skipped`: a recorded step is not asked again, so nobody is back from a skip. The two
  * labels are the format layer's; the format line is the market pack's, in the reader's language.
  */
 export function companyProfileStepWords(
@@ -42,6 +43,6 @@ export function companyProfileStepWords(
     taxFormat: step.taxFormat === null ? '' : inLanguage(step.taxFormat, reader),
     bankRoutingLabel: labels.bankRoutingLabel,
     letterhead: step.letterhead,
-    logo: null,
+    logo: step.logo,
   });
 }

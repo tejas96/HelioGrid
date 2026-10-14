@@ -22,7 +22,8 @@ src/screens/<name>/       same shape as web's feature, in RN's location
 src/screens/shared/       the door's inset wrapper two screens share, and the boot screen's placeholder
                           scaffold; a part the web also draws is `packages/ui`'s (`screen-parts.md`)
 src/navigation/           React Navigation static config
-src/auth/ · src/push/     native adapters, one per capability; push isolates Firebase/Notifee
+src/auth/ · src/push/ · src/files/   native adapters, one per capability; push isolates
+                          Firebase/Notifee, files the system's photo picker
 src/react-query-host.tsx  the ONE host-lifecycle adapter (AppState → focus, NetInfo → online)
 ```
 
