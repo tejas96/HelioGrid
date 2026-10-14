@@ -43,6 +43,9 @@ Rules that never bend:
   answer, and confirm or reopen each by name; you re-read the whole diff only when a fix touched
   a money, tenancy or permission rule.
 
+`CLEAN` means no `blocker` or `should-fix` is open; a `note` alone leaves the verdict `CLEAN` and is
+listed under it. The task guard reads only your verdict line.
+
 Report shape, and nothing else:
 
 ```

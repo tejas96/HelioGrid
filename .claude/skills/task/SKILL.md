@@ -161,7 +161,7 @@ own.
 ## 5. QA — helpers once, on one stack
 
 Read `references/qa.md` before preparing the stack or starting a helper. Follow its database,
-account, packet, readiness, hash, timing, log and retry rules exactly. Only the surfaces the proof
+account, packet, readiness, timing, log and retry rules exactly. Only the surfaces the proof
 rows name are started; a phone is booted for its rows and shut at teardown.
 
 The full gate's limits are the Evaluator's own rules (`.claude/agents/evaluator.md`). Main's part:
@@ -173,7 +173,13 @@ continuing the same Evaluator. Never respawn the Evaluator; one lost to a restar
 
 ## 6. Pre-commit card
 
-Show, and stop. First, five fixed lines: the surfaces QA ran on with each one's rows and results;
+Tear down first (`references/runtime.md`, Teardown), so the card reports the final state and the
+commit carries it. Then show, and stop. The task guard (`.claude/hooks/guard.mjs`) refuses the
+commit on a `feat/T-…` branch until the reviewer's CLEAN and the Evaluator's PASS were given on
+the code the last full gate ran on, each QA helper's last verdict is PASS (a fix reruns only the
+rows it touched), no code changed after that gate, the
+invariants read the task files as they stand, no helper changed a repository file, and every
+resource is back to its start state. First, five fixed lines: the surfaces QA ran on with each one's rows and results;
 the board compared, `yes` with the frames or `no` with the reason; the reviewer's last verdict;
 the gate's result; mistakes found. Then the AC proof summary (the evaluator's rows), the
 side-by-side images of a screen task and its built Hindi and Marathi pictures, attached as files
@@ -202,17 +208,19 @@ by a later part of the same task — its branch checked out, or a dirty tree —
 later branch, which carries this part, and this PR is closed as superseded by the later PR, whose
 body says so; the folder is never switched under a running task.
 
-## 8. Teardown — on success, block, cancellation or failure
+## 8. Teardown — on block, cancellation or failure
 
-Follow `references/runtime.md` teardown on every exit. Report each resource's initial and final
-state. `DONE` is refused while a task-owned server, watcher, tab or phone lives or database
-routing differs from its initial state.
+On success teardown ran before the card (step 6). On every other exit follow `references/runtime.md`
+teardown; its report starts with `Teardown:`, and the task guard blocks that report once while a
+listener or phone the task started still runs or the database routing differs from its start.
 
 ## Helpers — `.claude/agents/`
 
 `design-check` and `qa-web`'s board capture run in step 3; changed-surface QA, `qa-api` and
 `reviewer` run in step 5; `evaluator` follows them; `ci-investigator` reads one failed job in step
 7. Their own files are the only report contracts. Helpers start no helper and edit no repository
-file. QA drives only its assigned API/browser/device surface; Evaluator alone may run the full gate
+file: on a task branch the task guard refuses a helper's git, `gh`, install and in-place edit
+commands and records any repository file another of its commands changed, and the commit waits
+for the owner to see it. QA drives only its assigned API/browser/device surface; Evaluator alone may run the full gate
 and cause its declared generated-file writes. Only Main reads the design record. A rerun continues
 the same helper with the delta.
