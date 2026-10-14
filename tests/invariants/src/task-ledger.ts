@@ -16,13 +16,14 @@ export const TASK_ID = 'T-[A-Z0-9]+-\\d+';
 export const SCREEN_ID = 'SCR-[A-Z0-9]+-\\d{2}';
 const DESIGN_SCREEN = new RegExp(`(${SCREEN_ID})\\s*→\\s*`, 'g');
 export const FENCE = /^\s*```/;
-const TASK_HEADING = new RegExp(`^### (${TASK_ID}[a-z]?) · (.*)$`);
+export const TASK_HEADING = new RegExp(`^### (${TASK_ID}[a-z]?) · (.*)$`);
 const ANY_HIGHER_HEADING = /^#{1,3} /;
 const STATUS = /^\*\*Status:\*\* (.+)$/;
 const PARTS_HEADING = /^#### Parts\s*$/;
 /** A build begins with its RFC heading (`/task` step 0); a legacy task began with its `Plan`. */
 const BUILD_HEADING = /^#### (?:RFC|Plan|Part ([a-z]) · RFC)\b/;
-const PART_ROW = /^\| ([a-z]) \|.*\|([^|]*)\|\s*$/;
+/** A Parts row: its letter, then its last cell, the status. */
+export const PART_ROW = /^\| ([a-z]) \|.*\|([^|]*)\|\s*$/;
 /** A header line, `**Depends on:** …`; only those above the task's first `####` heading count. */
 const HEADER_LINE = /^\*\*([A-Za-z][A-Za-z ]*):\*\*\s*(.*)$/;
 

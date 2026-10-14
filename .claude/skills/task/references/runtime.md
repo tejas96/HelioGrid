@@ -5,7 +5,7 @@ Read this file after the walk returns `build <id>` and before any runtime mutati
 ## Ledger
 
 On a clean tree, continue `feat/<id>` when it exists or create it from `origin/main`, or from the
-open PR head of the task's earlier part when `references/walk.md` names one. The directory is
+open PR head of the task's earlier part when the walk's line names one (`from origin/<branch>`). The directory is
 shared: a tree dirty on any branch but this task's own `feat/<id>` belongs to its owner, is never
 discarded or overwritten, and ends the step with its files named; on `feat/<id>` it is this task's
 work, resumed. Record every

@@ -28,6 +28,7 @@ import { runTenantIdOnTheWire } from './tenant-id-on-the-wire';
 import { runTenantPin, runTenantPinCallSites } from './tenant-pin';
 import { runUiColourPairs } from './ui-colour-pairs';
 import { runVocabularyCopies } from './vocabulary-copies';
+import { runWalkReadsParts } from './walk-reads-parts';
 
 /**
  * Locked invariant runner. Sets: tenancy (live), table scoping (live), enum parity (live),
@@ -37,7 +38,7 @@ import { runVocabularyCopies } from './vocabulary-copies';
  * checks: vocabulary-copies, dockerfile-unprivileged, light-only-platform-files,
  * banned-word-other-files, env-example-complete, language-fonts, e2e-flow-per-screen,
  * design-system-props, design-system-snapshot, biome-plugin-scopes, launch-reuses-running-servers,
- * deferred-rows, task-ledger-agrees, build-order-holds, prd-rows-cited, screens-register-whole,
+ * deferred-rows, task-ledger-agrees, build-order-holds, walk-reads-parts, prd-rows-cited, screens-register-whole,
  * design-check-fresh, ui-colour-pairs.
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
@@ -63,6 +64,7 @@ async function main() {
   runDeferredRows(REPO_ROOT); // static — every deferred row can reopen, and none is overdue
   runTaskLedgerAgrees(REPO_ROOT); // static — statuses, design links and history agree, no task vanished
   runBuildOrderHolds(REPO_ROOT); // static — every file placed, no loop, later-block waits recorded
+  runWalkReadsParts(REPO_ROOT); // static — the walk's command reads the Parts rows the ledger reads
   runPrdRowsCited(REPO_ROOT); // static — every cited PRD row is live, every quote matches its cell
   runScreensRegisterWhole(REPO_ROOT); // static — every screen briefed and designed, every row landed once
   runDesignCheckFresh(REPO_ROOT); // static — every open design check stands on its briefs, every finding ruled
