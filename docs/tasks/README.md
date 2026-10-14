@@ -124,7 +124,7 @@ A screen task with a board (a studio screen has none) has one `side-by-side` row
 it renders on the web — each state, 375, 1536 — owned by `qa-web`, and one
 per phone state owned by `qa-ios` alone, its language rotating state by state (English, Hindi,
 Marathi); in Hindi and Marathi it compares the layout, the words being the catalog's. The board
-pictures are the ones taken once at the screen's first `READY`, in `.qa/board/<SCR-id>/`
+pictures are the ones taken once per record and board, in `.qa/board/<SCR-id>/<digests>/`
 (`/task` step 3). `qa-android` walks the same journey rows and compares no frame: both phones
 draw the one shared component; one journey row per part carries the surface `android · Hindi`,
 and every phone row measures that no button label wrapped and that the focused field sits above
@@ -132,7 +132,7 @@ the keyboard, `n/a` when the row has neither (`.claude/agents/`).
 Hindi and Marathi have no board frame: one `main-dev` row per shared component proves them by its
 component spec at 375 and 1536 — no sideways scroll, no clipped text box, the act on screen — and
 that spec saves one picture per language and width with `page.screenshot`, under
-`tests/e2e/test-results-ct/<Name>/<lang>-<width>.png`, which the commit card shows. Web at 375 is compared with the phone frame. A state the board draws only at 375 is compared at 1536 with
+`.qa/components/<name>/<lang>-<width>.png`, which the commit card shows. Web at 375 is compared with the phone frame. A state the board draws only at 375 is compared at 1536 with
 its phone frame and the board's stated 1536 rule (`docs/start-here.md`, desktop states), not flagged
 as missing. A frame with no row, or a built state with no frame and no stated rule, is a finding. A side-by-side row names only a frame the running app reaches today with data QA can make through the app; a frame it cannot reach is decided in the RFC — `not_applicable` with the reason, or proven by its component's spec — never found by QA. In a
 light cycle no helper drives a browser: the component spec saves each drawn frame's picture the

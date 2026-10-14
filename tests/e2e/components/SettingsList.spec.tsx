@@ -1,3 +1,4 @@
+import { join } from 'node:path';
 import { SETTINGS_GROUPS, SETTINGS_ROWS, settingsRowsFor } from '@heliogrid/domain';
 import { createTranslator, settingsWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
@@ -23,7 +24,8 @@ const PERSON = 'Rajesh Patil';
 
 /** The record's measured tile (list 5, N2). */
 const ROW = 56;
-const PICTURES = 'test-results-ct/settings-list';
+/** In the repo's git-ignored `.qa/`, never in Playwright's output folder, which every run empties. */
+const PICTURES = join(import.meta.dirname, '../../../.qa/components/settings-list');
 
 test.describe('at 375', () => {
   test.use({ viewport: { width: 375, height: 812 } });

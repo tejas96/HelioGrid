@@ -14,8 +14,8 @@ const ARCHIVE = `${TASKS}/archive/`;
 /** A task's id; a part adds its letter (`T-M01-005f`). Every ledger check builds on this one. */
 export const TASK_ID = 'T-[A-Z0-9]+-\\d+';
 export const SCREEN_ID = 'SCR-[A-Z0-9]+-\\d{2}';
-const DESIGN_LINK = new RegExp(`(${SCREEN_ID})\\s*→\\s*(\\S+)`, 'g');
-const FENCE = /^\s*```/;
+const DESIGN_SCREEN = new RegExp(`(${SCREEN_ID})\\s*→\\s*`, 'g');
+export const FENCE = /^\s*```/;
 const TASK_HEADING = new RegExp(`^### (${TASK_ID}[a-z]?) · (.*)$`);
 const ANY_HIGHER_HEADING = /^#{1,3} /;
 const STATUS = /^\*\*Status:\*\* (.+)$/;
@@ -45,11 +45,35 @@ export interface TaskEntry extends PartEntry {
 }
 
 /** Each screen a task's `DESIGN:` line names, with its board link, `PENDING` or `ported from …`. */
-export function designLinks(task: TaskEntry): { screen: string; link: string }[] {
-  return [...(task.header.get('DESIGN') ?? '').matchAll(DESIGN_LINK)].map((m) => ({
-    screen: m[1] ?? '',
-    link: m[2] ?? '',
-  }));
+export function designLinks(task: TaskEntry): DesignLink[] {
+  const value = task.header.get('DESIGN') ?? '';
+  const screens = [...value.matchAll(DESIGN_SCREEN)];
+  return screens.map((match, i) => {
+    const from = (match.index ?? 0) + match[0].length;
+    const segment = value.slice(from, screens[i + 1]?.index ?? value.length);
+    return {
+      screen: match[1] ?? '',
+      link: segment.split(/\s/)[0] ?? '',
+      alsoBoards: alsoBoards(segment),
+    };
+  });
+}
+
+export interface DesignLink {
+  screen: string;
+  link: string;
+  /** The boards a screen keeps beside its main one, by name: `· also: States <link> · Language <link>`. */
+  alsoBoards: string[];
+}
+
+function alsoBoards(segment: string): string[] {
+  const at = segment.indexOf('also:');
+  if (at < 0) return [];
+  return segment
+    .slice(at + 'also:'.length)
+    .split(' · ')
+    .map((entry) => entry.split(/\s+https?:\/\//)[0]?.trim() ?? '')
+    .filter((name) => name !== '');
 }
 
 /** Where a `#### Parts` heading's table is: after the heading, prose may come before its rows. */
