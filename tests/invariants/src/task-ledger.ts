@@ -8,7 +8,7 @@ import { gitFiles } from './repo-files';
  * Only task files hold tasks — the registers and the archive hold none — and a fenced block is an
  * example, never a task: README's own example task once overwrote the real one it shares an id with.
  */
-const TASKS = 'docs/tasks';
+export const TASKS = 'docs/tasks';
 const NOT_TASK_FILES = new Set([`${TASKS}/README.md`, `${TASKS}/deferred.md`, `${TASKS}/UI.md`]);
 const ARCHIVE = `${TASKS}/archive/`;
 /** A task's id; a part adds its letter (`T-M01-005f`). Every ledger check builds on this one. */
@@ -34,6 +34,8 @@ export interface PartEntry {
 export interface TaskEntry extends PartEntry {
   file: string;
   line: number;
+  /** The first line after the task: the next `#`–`###` heading outside a fence, or past the file's end. */
+  endLine: number;
   /** The heading after the id, as written: `STRUCK …` marks a struck task. */
   title: string;
   /** Each header line by its label (`Type`, `Depends on`, `DESIGN`, `Design`, `Parked` …). */
@@ -91,19 +93,25 @@ function taskFiles(repo: string): string[] {
 function tasksIn(file: string, text: string): [string, TaskEntry][] {
   const found: [string, TaskEntry][] = [];
   const reading: Reading = { inFence: false, partsTable: 'none', inHeaderLines: false };
-  text.split('\n').forEach((line, index) => {
+  const lines = text.split('\n');
+  lines.forEach((line, index) => {
     if (FENCE.test(line)) reading.inFence = !reading.inFence;
     if (reading.inFence) return;
-    const opened = openedTask(file, line, index);
+    if (ANY_HIGHER_HEADING.test(line)) closeTask(reading, index + 1);
+    const opened = openedTask(file, line, index, lines.length + 1);
     if (opened !== undefined) {
       found.push(opened);
       Object.assign(reading, { task: opened[1], partsTable: 'none', inHeaderLines: true });
       return;
     }
-    if (ANY_HIGHER_HEADING.test(line)) reading.task = undefined;
     if (reading.task !== undefined) readTaskLine(reading, reading.task, line);
   });
   return found;
+}
+
+function closeTask(reading: Reading, line: number): void {
+  if (reading.task !== undefined) reading.task.endLine = line;
+  reading.task = undefined;
 }
 
 /** Where the reader stands in a file: inside a fence, a task's header lines, or its Parts table. */
@@ -114,7 +122,12 @@ interface Reading {
   inHeaderLines: boolean;
 }
 
-function openedTask(file: string, line: string, index: number): [string, TaskEntry] | undefined {
+function openedTask(
+  file: string,
+  line: string,
+  index: number,
+  pastEnd: number,
+): [string, TaskEntry] | undefined {
   const heading = TASK_HEADING.exec(line);
   const id = heading?.[1];
   if (id === undefined) return undefined;
@@ -122,6 +135,7 @@ function openedTask(file: string, line: string, index: number): [string, TaskEnt
   const task = {
     file,
     line: index + 1,
+    endLine: pastEnd,
     title,
     header: new Map(),
     status: '',

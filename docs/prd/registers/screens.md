@@ -1,6 +1,6 @@
 # Screens register — the complete surface of HelioGrid V2
 
-Status: generated 2026-08-06 · machine-verified · Source: all 35 requirement-bearing PRD documents
+Status: generated 2026-08-06 · held since by the invariants `screens-register-whole` and `prd-rows-cited` · Source: all 35 requirement-bearing PRD documents
 · §1, §2 row counts and §4 recomputed 2026-08-15 against the live PRD after the 2026-08-07
 offline/sync removal (owner ruling), corrected the same day for a suffixed row id
 (`MS7-24b`) that the first recompute's pattern dropped, and recomputed again the same day for the
@@ -2301,7 +2301,7 @@ Nothing below is renumbered.*
 | M13-53 | P0 | policy | policy | T-M13-012 |
 | M13-54 | P0 | policy | policy | T-M13-012 |
 
-## 4. Gates (machine-checked)
+## 4. Gates (the 2026-08-15 record — its numbers are not rechecked; the invariants above hold the rules)
 
 Recomputed 2026-08-15 against the live PRD, corrected the same day, and recomputed again the same
 day for the three restored rows. The live set is every id

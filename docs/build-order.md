@@ -203,11 +203,11 @@ task that builds what it needs. A record here keeps the order honest; it does no
 
 ## Checking the suite
 
-Invariants check the task documents (`.claude/protections.md`, Process): `deferred-rows`,
-`task-ledger-agrees` (each status, design link, cited task id and the history) and
-`build-order-holds`. The RFC tests the requirements the task it takes carries (`/task` step 2).
-The owner checks a screen's design in Claude Design.
-What no check holds yet — a citation of a deleted PRD row, a quote drifting from its PRD cell, the
-V1 count, a row dispositioned twice in the screens register — is held by review and the owner.
+Invariants check the task and PRD documents (`.claude/protections.md`, Process):
+`deferred-rows`, `task-ledger-agrees` (each status, design link, cited task id and the history),
+`build-order-holds`, `prd-rows-cited` (every cited PRD row is live and every quote matches its
+cell) and `screens-register-whole` (every screen briefed and designed, every PRD row landed once,
+the V1 count as the scope lock states it). The RFC tests the requirements the task it takes
+carries (`/task` step 2). The owner checks a screen's design in Claude Design.
 
 Design progress is how many V1 screens have a link on their task's `DESIGN:` line.

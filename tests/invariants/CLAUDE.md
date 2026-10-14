@@ -12,8 +12,8 @@ an invariant proves the seam between them.
 - Never a fixture factory, a mock, or a helper library. An invariant that needs scaffolding to be
   readable is testing the wrong thing. The shared files are `repo-root.ts`; `repo-files.ts`, the
   one file lister every static invariant reads the tree through; and one reader per document
-  several checks read — `task-ledger.ts` (the task files) and `screens-register.ts` (the screen
-  index).
+  several checks read — `task-ledger.ts` (the task files), `screens-register.ts` (the screens
+  register) and `prd-rows.ts` (the PRD's requirement rows).
 - A repo-scanning invariant is a pure `find…(repo)` returning findings plus a `run…(repo)` that
   throws them, and it refuses an empty scan.
 
