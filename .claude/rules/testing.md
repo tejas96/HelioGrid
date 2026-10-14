@@ -20,7 +20,8 @@ paths:
 - **Test the DECISION at its edges** — the boundary and one either side, the empty, the negative,
   the zero, as one `it.each` table per rule. Never test a type, a constant or a re-export. Never mock what this repo owns. An invisible
   character (a no-break space, a zero-width space) is written as a `\u` escape.
-- **A money, tenancy or permission rule, and a check a change adds or alters, is proven red once.**
+- **A money, tenancy or permission rule, and a check a change adds or alters, is proven red once**
+  — a `test:web` flow excepted: it never runs locally (`.claude/skills/task/references/qa.md`).
   Break the rule its test names — never a neighbour or its input data — see the test fail BY NAME,
   then restore it. A crash or a compile error is not red. A test of a race FORCES its overlap — it holds
   a lock both sides need until both are seen waiting (`apps/api/tests/support/held-lock.ts`) —

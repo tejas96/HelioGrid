@@ -47,10 +47,11 @@ pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows by hand, 
 
 The web and component suites run in CI (`e2e-web`); the phone flows run in CI on Android
 (`android`; `.github/workflows/ci.yml` says how, and how the repository variable `PHONE_E2E=off`
-switches them off) and on iOS by hand or by the `qa-ios` helper, never in CI — a macOS runner
-spends 20 minutes on the Xcode build alone. `test:mobile` runs the flows on a device by hand; it
-needs Metro, the api and the app installed on the device. An emulator a local run uses matches CI's:
-API 34, 4 cores and 4 GB of RAM, given on the command line (`emulator -avd <name> -memory 4096`;
+switches them off) and on iOS by hand, never in CI — a macOS runner spends 20 minutes on the Xcode
+build alone; the `qa-ios` helper drives a task's iOS rows, not these flows. `test:mobile` runs the
+flows on a device by hand; it needs Metro, the api and the app installed on the device. The local
+emulator is `Pixel_8_API_36` (`.claude/skills/task/references/runtime.md`) and CI's is API 34;
+either gets 4 cores and 4 GB of RAM, given on the command line (`emulator -avd <name> -cores 4 -memory 4096`;
 the emulator ignores `hw.ramSize` in the AVD's file) — at 2 GB and below Maestro's on-device
 server dies mid-suite (`DeviceServerDiedException`) while the app shows no fault.
 Maestro drives one device per `run.sh` (two at once lose the first keys typed), but the three QA

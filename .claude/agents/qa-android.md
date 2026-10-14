@@ -37,8 +37,8 @@ For every row, in this order:
    bottom is above the keyboard's top, read as the screen height minus the ime inset in
    `dumpsys window` (`InsetsSource … ime … Insets{… bottom=N}`). The screenshot is the row's
    evidence; no row of yours names a board frame, so you compare none (`qa-ios` owns the phone's
-   side-by-side). The row your packet marks `Hindi` runs after you switch your standing account's
-   language in the app; you switch it back before you finish.
+   side-by-side). The row marked `android · Hindi` runs in Hindi; it says whether you set the
+   language in the app — then you set it back before you finish — or find it already set.
 4. **Observe** the words, the state and the destination against the row's expected result.
 5. **Report** one line per row in the shape below.
 

@@ -12,10 +12,15 @@ a unit test and keeps the planted-red rule.
 
 ## Prepare one stack
 
-A part whose proof matrix names no web, phone or api surface prepares no stack: its proofs are
+A part whose proof matrix names no web, phone or api surface starts no server and boots no phone: its proofs are
 unit tests, the component suite, whose spec saves each drawn frame's picture, a `qa-web` row that
 compares those files with the board pictures and drives no browser, the reviewer and the
-Evaluator's gate. The RFC's `##### Readiness and dependencies` says `light cycle` and why.
+Evaluator's gate. The RFC's `##### Readiness and dependencies` says `light cycle` and why. A light
+cycle whose proofs include `apps/api/tests` still points both `.env.local` database URLs at
+`heliogrid_test` and migrates it in one command (`packages/db/CLAUDE.md`) before the gate, with
+the local Postgres up (`pnpm infra:up`), so those tests are collected (`.claude/rules/testing.md`);
+the tests bring their own fixtures, so no market pack is published. It restores the URLs at
+teardown.
 
 Start or reuse the runtime already recorded by Main, and only the surfaces the proof rows name:
 no web server for a part with no web row, no phone for a part with no row on it. A phone is booted
@@ -35,19 +40,22 @@ once through the app, never per run. API tests use their own fixtures, not these
 
 ## Packets and mutation guard
 
-Give each QA helper only its proof rows, the AC lines they prove, runtime identity, log paths and
-its URL/device/account, and `qa-web` the session's `tool-results` folder (the session id is in
-the scratchpad path). A screen row carries the board pictures of the frames it covers (`.qa/board/<SCR-id>/`), the path
-its own screenshot is saved at, and, as ruled differences, every open `docs/tasks/deferred.md` row that names its screen or one of those
-frames and every open `docs/tasks/UI.md` row of a component those frames draw; after QA returns,
-Main composes each board frame beside the web's and iOS's screenshot of it by file name with a
-script, one image per frame, never reading a picture, and the commit card attaches them.
-`qa-android` rows name no board frame; one journey row per part carries the surface
-`android · Hindi` and runs in Hindi, the helper switching its standing account's language in the
-app and restoring it before it finishes. `qa-api` receives
-`http://localhost:8084`, both API numbers and the api log. The reviewer receives the approved RFC,
-changed-file list, diff and named protection rows. The Evaluator receives the RFC proof section
-verbatim, every report, Main's proof and commands.
+Give each helper exactly what its own file's "Your prompt gives you" lists, and nothing it does not
+list; the session's `tool-results` folder is in the scratchpad path. Main decides three of those
+things:
+
+- A screen row's **ruled differences** are every open `docs/tasks/deferred.md` row that names its
+  screen or one of its frames, and every open `docs/tasks/UI.md` row of a component those frames
+  draw.
+- A row run in Hindi or Marathi has its standing account's language set before it: in the app
+  where a built screen sets it, otherwise by Main through `PATCH /users/me` signed in as that
+  account the way `qa-api` signs in (`.claude/agents/qa-api.md`) — setup, never proof — and set
+  back after it. The row says which.
+- The `android · Hindi` row is the one `docs/tasks/README.md` names under its proof owners.
+
+After QA returns, Main composes each board frame beside the web's and iOS's screenshot of it by
+file name with a script, one image per frame, never reading a picture, and the commit card
+attaches them.
 
 Before helpers start, hash the tracked status and diff, untracked-file hashes, and the two database
 URL lines. Compare after they return. A changed hash is a blocker named by file. Helpers have Bash,
@@ -66,8 +74,8 @@ Each uses its own account on the one stack. Omit an unchanged surface. A row tou
 such as the platform catalog or a market pack runs after surface helpers return, and the RFC names
 that serialization. Main changes no checked file until every surface helper has returned.
 
-Main performs readiness checks only — health, route/app launch, database routing, accounts and log
-paths — and never duplicates a helper's journey.
+Main performs readiness checks only — health, route/app launch, database routing, accounts, a
+row's language setup and log paths — and never duplicates a helper's journey.
 
 Nobody waits turn by turn. A wait — a boot, a page, a screen, a log line — is one command that
 polls with its own timeout and returns when the condition holds, never a `sleep` in its own turn.
@@ -104,8 +112,8 @@ catalog sweeps, `pnpm check:openapi` after a contract change, and
 Start `evaluator` only after QA returns, review fixes land, and touched rows pass again. Stop a web
 dev server the task started before the gate. If a checked-file change after that run requires QA,
 restart only the task-owned runtimes those rows need, then stop the web dev server again before the
-final run. A pre-existing server is an owner prerequisite: state what the gate would affect and
-wait before touching it.
+final run. A pre-existing server is an owner blocker (`references/runtime.md`, Reuse and start):
+name what the gate would affect and end the step.
 
-Return to the step 5 spine for the full-gate failure policy. A check's proof is its complete output
+The full-gate failure policy is the Evaluator's Rules (`.claude/agents/evaluator.md`). A check's proof is its complete output
 read to the end, never one grepped line.
