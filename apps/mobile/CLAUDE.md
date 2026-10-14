@@ -10,7 +10,7 @@ Deps: `architecture.md` §2 apps/mobile · platform rules: §3.
 
 ## Where files go
 
-`src/` is `{auth, navigation, push, screens}` plus root `env.ts`, `i18n.ts` and `react-query-host.tsx`.
+`src/` is `{auth, files, navigation, push, screens}` plus root `env.ts`, `i18n.ts` and `react-query-host.tsx`.
 
 ```
 src/screens/<name>/       same shape as web's feature, in RN's location

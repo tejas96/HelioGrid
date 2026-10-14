@@ -26,6 +26,7 @@ header lines:
 **Status:** planned                    (planned | designed | shipped | struck — the one ledger)
 **PRD rows:** M02-<nn> (P0), M02-<nn> (P0), M02-<nn> (P1)        — every id carries its tier (rule 6)
 **DESIGN:** SCR-<module>-<nn> → PENDING          — filled when the screen is approved; a screen with more than one board lists the others after the main link: `· also: <board> <link>`; a studio screen reads `ported from the POC`
+**Design:** (older tasks, instead of DESIGN:) `none — <reason>` for a task with no screen, the existing boards it reuses, or `the same canvas as <task id>'s DESIGN line` and the frames it uses — only the last makes the walk wait, until that task's `DESIGN:` holds a link
 **PORT:** (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-claims.md
         — files to READ AND PORT FROM, never files to create here. A PORT entry that names a
         POC `*.test.ts` ports the LOGIC it proves into the studio package's own
@@ -83,7 +84,7 @@ part repeats that part's applicable AC and proof rows so the owner reads one com
    participants, showing only changed and directly relevant boundaries. If none:
    `No boundary change — <where the change remains>.` A task RFC always draws its diagram, whole,
    lettered by part; a part's section may read `No boundary change — see the task diagram`, and
-   the chat then draws the task's.
+   the chat then links the task's (`/task` step 3).
 8. `##### Package changes` — each package's responsibility, public exports and dependency direction;
    each new brand, enum, token, route, table or error code's protection row, and any kind no check
    holds (Law 12); otherwise a reasoned `None`.
@@ -102,7 +103,8 @@ part repeats that part's applicable AC and proof rows so the owner reads one com
     that needs the api stopped says `api stopped` in its surface column, so local QA runs every such
     row in the task's one api-down window (`.claude/skills/task/references/qa.md`).
 14. `##### Delivery size` — estimated files and authored changed lines, one part or split, and the
-    planned implementation order.
+    planned implementation order. A split gives each part its own files and lines: that part's
+    budget.
 
 Proof owners are `main-dev`, `qa-api`, `qa-web`, `qa-ios`, `qa-android`, `evaluator`, or `ci`;
 tiers are `required`, `blocked` with what clears it, or `not_applicable` with why. Every required
@@ -145,9 +147,11 @@ line estimate. A change to a shared primitive's look counts every spec that meas
 counted, never assumed small. It counts every authored line the diff will show — a constraint comment is a line, and a row that changes is two, one removed and one added. A file moved and rewritten counts whole on both sides, as one file deleted and one added: git records a move only when the two are at least half alike. An inseparable end-to-end deliverable may exceed a target only when its RFC explains
 why no smaller part can be independently accepted and the owner approves that exact size.
 
-`#### Parts` is a separate heading because the build-order walk reads it. Its `Where` rows are the
-complete file budget. Each part is end to end, independently acceptable, and names its id, AC
-subset, dependency, files and proof rows; web and phone halves of one flow stay together. Each
+`#### Parts` is a separate heading because the build-order walk reads it: one row per part, its
+first cell the part's letter and its last cell its status (a new table:
+`part | what | AC | depends on | status`). Each part's files and lines are its budget in the task
+RFC's `##### Delivery size`; its file table and proof rows are in its own RFC. Each part is end to
+end and independently acceptable; web and phone halves of one flow stay together. Each
 part carries one checklist item per file group and proof. A cap decides where work splits; it never
 drops a test, proof, protection or required doc fix.
 

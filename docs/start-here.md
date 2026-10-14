@@ -2,7 +2,8 @@
 
 > ## ▶ Your next screen is the first undrawn V1 screen on the walk in `docs/build-order.md`.
 
-This file is how you design **one** screen. Then you repeat it until all 99 V1 screens are drawn.
+This file is how you design **one** screen. Then you repeat it until all 81 drawn V1 screens are
+drawn; the other 18 V1 screens are the studio's, ported from the POC and never drawn.
 Nothing else in this repository needs your attention while you do that.
 
 The register holds 150 screens; **99 are V1**. The `V` column in `docs/prd/registers/screens.md` §2
@@ -284,7 +285,8 @@ sweep the others for the same break before recording anything.
 
 ## How you know you're finished
 
-Count the V1 screens whose task's `DESIGN:` line holds a link. **99 when you're done.**
+Count the V1 screens whose task's `DESIGN:` line holds a link. **81 when you're done** — the 18
+studio screens read `ported from the POC`.
 
 ---
 

@@ -34,6 +34,9 @@ continues through runtime setup to step 2.
 
 ## 2. The RFC — one document, one approval
 
+A screen task runs step 3's design check and board capture (its first four paragraphs) before this
+step: the RFC needs its verdict, its record and the owner's rulings on its `against code` rows.
+
 Read `docs/tasks/README.md` before drafting a task RFC. It is the sole authority for RFC sections,
 proof ownership, delivery size and Parts. A task RFC is written in its complete shape under the
 task's header lines. A part RFC reads the task RFC and its own Parts row, never a shipped part or
@@ -114,7 +117,8 @@ Stop. No test, migration or source edit begins before the owner's explicit appro
 (`CLAUDE.md` §3). The approval covers the RFC as written at the link and nothing else. A request
 for changes is answered the way step 4 shows a delta: one line per changed section, then the
 decision block. One case does not stop: a part whose card reads `Decisions for you: none` and
-whose file table sits inside the budget the approved task RFC gave that part. Its short view is
+whose file table sits inside the files and lines the approved task RFC's `##### Delivery size`
+gave that part. Its short view is
 shown with `Decision required: none — inside the approved task RFC` and the build begins; the
 owner's approval of the task RFC covers it.
 
@@ -147,13 +151,12 @@ Read `references/qa.md` before preparing the stack or starting a helper. Follow 
 account, packet, readiness, hash, timing, log and retry rules exactly. Only the surfaces the proof
 rows name are started; a phone is booted for its rows and shut at teardown.
 
-The normal path has one `pnpm check:all`. If its failure is environmental and changes no checked
-file, rerun only the failing command and continue the Evaluator. A checked-file change left by or
-made after the first run is never planned: return to `references/qa.md`, continue the reviewer,
-then rerun every affected proof row. Then run the command that proves the change and `pnpm check`,
-and continue the same Evaluator with the updated reports for one final `pnpm check:all`. At most two
-full-gate runs belong to one Evaluator. A failure of the second, or a checked-file change after it,
-stops for the owner. Never respawn the Evaluator; one lost to a restart follows `references/qa.md`.
+The full gate's limits are the Evaluator's own rules (`.claude/agents/evaluator.md`). Main's part:
+fix an environmental failure and rerun only the failing command; a checked-file change left by or
+made after a run is never planned — return to `references/qa.md`, continue the reviewer, rerun
+every affected proof row, then run the command that proves the change and `pnpm check` before
+continuing the same Evaluator. Never respawn the Evaluator; one lost to a restart follows
+`references/qa.md`.
 
 ## 6. Pre-commit card
 
@@ -176,9 +179,9 @@ The commit waits for the owner's yes to THIS card (`CLAUDE.md` §4).
 
 Push, open a DRAFT PR whose body carries the proof, the mistakes record and the reviewer's notes
 left outside the diff (`references/qa.md`). The session stays
-bound to its PR after the task ends: the app sends it every CI event, and it acts on each one
-without the owner. Judge only the latest run of the head SHA, step by step for a phone lane
-(`docs/tasks/README.md` proof rules), never its colour alone. When every required lane has passed,
+bound to its PR after the task ends: the app sends it every CI event, and it reads each one
+without being asked. Judge only the latest run of the head SHA, step by step for a phone lane
+(`docs/tasks/README.md`, the proof owners under RFC), never its colour alone. When every required lane has passed,
 mark the PR ready yourself (`gh pr ready <number>`); the owner merges. A failed required job goes
 to `ci-investigator` for that job only; show a CI-fix card (cause, files, proof, message); the
 owner's `fix` approves that card and the push, nothing unshown. When the folder is already held

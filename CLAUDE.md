@@ -58,7 +58,7 @@ it is design → backend → UI.
 |---|---|---|
 | plan | read the task, write its RFC into it | yes — approve RFC; a part inside the approved task RFC with no open decision does not stop |
 | build | inside the approved RFC | when scope voids the approval |
-| verify | review, then running-app QA, then the Evaluator's full gate | when the second full-gate run fails or the checked diff changes after it |
+| verify | review, then running-app QA, then the Evaluator's full gate | when the second full-gate run fails other than environmentally, the checked diff changes after it, or the reviewer's cap is reached with a finding open or a fix unread |
 | commit | the commit, the push, the PR, CI | yes — every commit |
 
 **One turn, many calls.** Batch every read, search and check that does not wait on another's result
@@ -100,7 +100,7 @@ or by its CI lane before the PR is marked ready (`docs/tasks/README.md` proof ow
 |---|---|
 | `pnpm infra:up` · `pnpm infra:down` | Before infra-dependent work. The read-only build-order walk and RFC need no stack. |
 | `pnpm check` | **While building.** Biome on files that differ from `origin/main`, the workspace typecheck (cached), and `vitest related` on changed .ts files. Fast; never the proof. |
-| `pnpm check:all` | **Normally once, after review and live QA.** Build, lint (Biome, dependency-cruiser, sherif, turbo boundaries), typecheck, duplication, OpenAPI and catalog freshness, unit tests, invariants. A checked-file change left by or made after the first run returns to the reviewer, then affected QA; then run its proving command and `pnpm check`, and give the same Evaluator the updated reports for one final `check:all`. Two full-gate runs maximum: a failure of the second, or a checked-file change after it, stops. |
+| `pnpm check:all` | **Normally once, after review and live QA.** Build, lint (Biome, dependency-cruiser, sherif, turbo boundaries), typecheck, duplication, OpenAPI and catalog freshness, unit tests, invariants. Two full-gate runs at most; what a failure or a later change does is the Evaluator's rules (`.claude/agents/evaluator.md`). |
 | `pnpm lint:fix` | Format and auto-fix. |
 | `pnpm test:watch` · `pnpm test:coverage` | Tests while writing · the edge cases you missed (read it, not the pass count). |
 | `pnpm db:migration:new` · `pnpm db:migrate` | Where a migration starts; never hand-author one. |
@@ -125,7 +125,7 @@ allowed imports; §4 decides where a new file goes. Run §4 before creating one.
 | `.qa/` | git-ignored: `api.log`, `web.log`, `metro.log` — the development logs the launch configurations append to and the e2e suite reads — and `board/<SCR-id>/`, a screen's board pictures, taken once at its first design `READY` and reused by every part. |
 | `.ops/` | the owner's private infra record, git-ignored: every external account, project and client id, what is still owed, and each environment's values (`dev.env`, `prod.env`). A console change updates it in the same sitting. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
-| the Claude Design project | NOT in the repo: each screen's board and decisions record — the pixel-perfect reference. A task's `DESIGN:` line links it; read the record with `DesignSync` and view the board in the browser pane; keep no copy in the repo — frame pictures live in the git-ignored `.qa/board/<SCR-id>/`. A studio screen (`ported from the POC`) has none. |
+| the Claude Design project | NOT in the repo: each screen's board and decisions record — the pixel-perfect reference. A task's `DESIGN:` line links it; read the record with `DesignSync`, and a helper pictures the board in the browser pane (`/task` step 3); keep no copy in the repo — frame pictures live in the git-ignored `.qa/board/<SCR-id>/`. A studio screen (`ported from the POC`) has none. |
 
 Import a package only through an entry its `package.json` `exports` declares. **Never invent a folder**: every tree is a closed set, and a new category is a
 plan-time decision. `docs/README.md` maps every document.
