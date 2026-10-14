@@ -21,8 +21,12 @@ Start or reuse the runtime already recorded by Main, and only the surfaces the p
 no web server for a part with no web row, no phone for a part with no row on it. A phone is booted
 for the rows that need it and shut at teardown; its install and sign-in survive, so no reinstall
 and no new sign-in is owed unless native files changed (`references/runtime.md`). Point both
-`.env.local` database URLs at `heliogrid_test`, export that file into the shell, run `pnpm db:migrate`, and publish the market
+`.env.local` database URLs at `heliogrid_test`, then export that file and run `pnpm db:migrate` in one
+command (`packages/db/CLAUDE.md`) and read the database it prints, and publish the market
 pack only when the test database has none. Restart only the api and verify both database names.
+Only a task-owned api is restarted or stopped: an api recorded `pre_existing` that this switch or
+the api-down window would restart is an owner blocker (`references/runtime.md`, Reuse and start):
+name what the restart needs and end the step.
 The test database uses the existing Postgres container; never create another.
 
 Standing accounts are reused: `…901` web, `…902` iOS, `…903` Android, and `…904` plus `…905`

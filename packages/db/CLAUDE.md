@@ -28,8 +28,9 @@ pnpm --filter @heliogrid/db build | migrate
 pnpm db:migration:new                # DRAFT into drizzle-draft/ — review, then move
 ```
 
-`migrate` takes the URL as its first argument. `pnpm db:migrate` passes `$DATABASE_ADMIN_URL`
-(else `$DATABASE_URL`) from the SHELL, so load `.env.local` first: `set -a; . ./.env.local; set +a`.
+`pnpm db:migrate` migrates the database `$DATABASE_ADMIN_URL` (else `$DATABASE_URL`) names in the
+SHELL, so load `.env.local` in the same command: `set -a; . ./.env.local; set +a; pnpm db:migrate`.
+It prints the database it migrates before it applies anything, and refuses a URL typed after it.
 
 ## Rules
 

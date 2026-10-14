@@ -140,16 +140,25 @@ export async function runMigrations(url: string) {
 }
 
 // CLI entry. The shell supplies the URL (see the package's `migrate` script), which keeps the
-// env→argv translation in one visible place instead of inside the library.
-const cliUrl = process.argv[2];
-if (!cliUrl) {
+// env→argv translation in one visible place instead of inside the library. The script already
+// passes that URL, so a second argument is refused: a URL typed after the command would be
+// ignored and the shell's database migrated in its place.
+const [cliUrl, ...extraArguments] = process.argv.slice(2);
+if (!cliUrl || extraArguments.length > 0) {
   console.error(
     'usage: migrate <postgres-url>\n' +
-      'Run it via `pnpm --filter @heliogrid/db migrate`, which passes ' +
-      'DATABASE_ADMIN_URL (falling back to DATABASE_URL).',
+      'Run it via `pnpm db:migrate`, which passes DATABASE_ADMIN_URL (falling back to ' +
+      'DATABASE_URL) from the shell. A URL typed after the command is never used, so it is refused.',
   );
   process.exit(1);
 }
+// URL.canParse, not a throwing parse: a thrown TypeError prints its input, the password with it.
+if (!URL.canParse(cliUrl)) {
+  console.error('migrate: the shell database URL is not a URL');
+  process.exit(1);
+}
+const target = new URL(cliUrl);
+console.log(`migrate → database ${target.pathname.slice(1)} on ${target.host}`);
 runMigrations(cliUrl).catch((err) => {
   console.error(err);
   process.exit(1);
