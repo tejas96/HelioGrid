@@ -205,9 +205,11 @@ task that builds what it needs. A record here keeps the order honest; it does no
 
 Invariants check the task and PRD documents (`.claude/protections.md`, Process):
 `deferred-rows`, `task-ledger-agrees` (each status, design link, cited task id and the history),
-`build-order-holds`, `prd-rows-cited` (every cited PRD row is live and every quote matches its
-cell) and `screens-register-whole` (every screen briefed and designed, every PRD row landed once,
-the V1 count as the scope lock states it). The RFC tests the requirements the task it takes
+`build-order-holds`, `walk-reads-parts` (the walk's command reads the Parts rows the ledger reads),
+`design-check-fresh` (every open design check stands on its briefs, record and board, every finding
+ruled), `prd-rows-cited` (every cited PRD row is live and every quote matches its cell) and
+`screens-register-whole` (every screen briefed and designed, every PRD row landed once, the V1
+count as the scope lock states it). The RFC tests the requirements the task it takes
 carries (`/task` step 2). The owner checks a screen's design in Claude Design.
 
 Design progress is how many V1 screens have a link on their task's `DESIGN:` line.

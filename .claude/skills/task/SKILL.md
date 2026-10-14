@@ -199,9 +199,15 @@ The commit waits for the owner's yes to THIS card (`CLAUDE.md` §4).
 Push, open a DRAFT PR whose body carries the proof, the mistakes record and the reviewer's notes
 left outside the diff (`references/qa.md`). The session stays
 bound to its PR after the task ends: the app sends it every CI event, and it reads each one
-without being asked. Judge only the latest run of the head SHA, step by step for a phone lane
-(`docs/tasks/README.md`, the proof owners under RFC), never its colour alone. When every required lane has passed,
-mark the PR ready yourself (`gh pr ready <number>`); the owner merges. A failed required job goes
+without being asked. Judge only the latest run of the head SHA: the head from
+`gh pr view <number> --json headRefOid`, its newest run (latest `createdAt`) from `gh run list --commit <sha> --json
+databaseId,status,conclusion,createdAt`, waited for until `completed`, and its jobs from
+`gh run view <id> --json jobs`. Every job of that run must pass. A job passed when its
+conclusion is `success`, or `skipped` while `changes` is `success` (its path rule turned the lane
+off); any other conclusion fails it, and so does a skip after a failed `changes`. A lane a `ci` proof
+row names must be `success`, and a phone lane is judged step by step (`docs/tasks/README.md`, the
+proof owners under RFC), never by its colour alone. When every job has passed, mark the PR ready
+yourself (`gh pr ready <number>`); the owner merges. A failed job goes
 to `ci-investigator` for that job only; show a CI-fix card (cause, files, proof, message); the
 owner's `fix` approves that card and the push, nothing unshown. When the folder is already held
 by a later part of the same task — its branch checked out, or a dirty tree — the fix lands on that
