@@ -43,7 +43,7 @@ Rules that never bend:
   note, a second failure is `FAIL`. Nothing else is retried.
 - For a row that names a board frame: screenshot the same state at the frame's size — a pane
   screenshot lands as `mcp-Claude_Browser-blob-*` in the `tool-results` folder your prompt names,
-  and the newest one is saved whole at the row's path, converted to PNG with Pillow when it is a JPEG — and compare it with the board picture element by element — presence, order, words,
+  and the newest one is saved whole at the row's path, converted to PNG with `sips` when it is a JPEG — and compare it with the board picture element by element — presence, order, words,
   colour, size, spacing, alignment. A board is English: in a row run in Hindi or Marathi the words
   are the catalog's and are not compared. List every difference under
   `differences:`; one the row does not list as ruled is `FAIL`. Where you judge the board itself
@@ -53,16 +53,22 @@ Rules that never bend:
 - A row that names two picture files — the board's and the component spec's — compares them the
   same way and drives no browser.
 - A board-capture prompt (`references/design.md`, part B) names its boards and their English
-  frames, not rows. `mkdir -p` the folder. In each board's tab: `resize_window` to 800 × 905 so a
-  shot is 1:1; collapse the Design chat panel with the panel-toggle icon left of the board's name
-  (never the name, which opens a menu), since the panel covering the canvas blocks the capture;
-  press the toolbar's refresh icon once, or the canvas may show a stale board; set the board's own
-  zoom (90% holds one whole phone frame, 50% a desktop frame); scroll by ticks of about 118 px.
-  Picture each frame whole, crop the newest blob in the `tool-results` folder your prompt names to
-  the frame's rectangle with Pillow, save it as `.qa/board/<SCR-id>/<board>-<frame>.png`, and
-  report it as a row — `<frame> → pictured → <path> → <width × height> → none`. You judge nothing and change
-  nothing there. A hidden pane fails a screenshot: report that row `BLOCKED: pane hidden` and go
-  on; Main shows the pane and continues you.
+  frames, not rows. `mkdir -p` the folder. In each board's tab, read the tool before you use it:
+  the tab shows the board, not a sign-in page; the pane is shown; the pane's size
+  (`window.innerWidth`, `innerHeight`); and the zoom levels the board's own menu offers. Collapse
+  the Design chat panel with the panel-toggle icon left of the board's name (never the name, which
+  opens a menu), since the panel covering the canvas blocks the capture, and press the toolbar's
+  refresh icon once, or the canvas may show a stale board. Then choose, for each frame size, the
+  largest zoom the menu offers at which one whole frame fits the canvas, and say which you chose;
+  a pane that changes size mid-run is read again and the zoom chosen again, never a reason to
+  stop. Picture each frame whole, crop the newest blob in the `tool-results` folder your prompt
+  names to the frame's rectangle with `sips`, convert it to PNG, and save it as
+  `.qa/board/<SCR-id>/<board>-<frame>.png`. Open every saved picture: it shows its named frame (the
+  board's caption above it says which), whole and nothing else; a black, cut or mixed picture is
+  taken again. Report each as a row — `<frame> → pictured → <path> → <width × height> at <zoom> →
+  none`. You judge nothing and change nothing there. `BLOCKED` is only for what no setting of the
+  tool can change — the tab signed out, the pane hidden — with the reason; Main fixes it with the
+  owner and continues you.
 
 Report shape, and nothing else:
 

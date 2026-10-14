@@ -49,10 +49,15 @@ are read live each time; no earlier picture is reused, but every earlier ruling 
    find it. Fetch each board file too when it is under the read cap. Save every file in the
    scratchpad by a script, never typed.
 2. Run `rm -rf .qa/board/<SCR-id>` (a relative path). Open every board the `DESIGN:` line names in
-   the browser pane, one tab each (the owner signed in), and give `qa-web` a board-capture prompt:
-   each board's name, tab and English frames, the folder `.qa/board/<SCR-id>/`, and the folder a
-   pane screenshot lands in, `~/.claude/projects/<project>/<session id>/tool-results/` (the session id
-   is in the scratchpad path). A board drawn only in another language is not pictured. A frame it
+   the browser pane, one tab each, and look at each tab before any helper uses it: it shows the
+   board, not a sign-in page, and the pane is shown. A signed-out tab or a hidden pane goes to the
+   owner first, with the one thing to do. Then give `qa-web` a board-capture prompt:
+   each board's name, tab and the English frames to picture, the folder `.qa/board/<SCR-id>/`, and
+   the folder a pane screenshot lands in, `~/.claude/projects/<project>/<session id>/tool-results/`
+   (the session id is in the scratchpad path). A screen just drawn in part A has every
+   English frame pictured; a task or part pictures only the frames its Parts row and QA rows name,
+   and `design-check` reads the rest in the board's source. A board drawn only in another language
+   is not pictured. A frame it
    reports `BLOCKED` is retried once with the pane shown; still `BLOCKED`, it goes to the owner.
 3. Give `design-check` the task id and the `DESIGN:` line read in 1, the brief path, the saved
    record and board files (a board over the read cap is named so), the pictures folder, and every
@@ -67,6 +72,9 @@ are read live each time; no earlier picture is reused, but every earlier ruling 
    share is shown with the other drawn screens of its corridor; each runs part B at its own turn.
 5. `NEEDS_CHANGE` or `NOT_DRAWN`: show the owner the findings, one line each, and copy the fix
    prompt to the clipboard by a script, built as *The fix prompt* of `docs/start-here.md` says.
+   Before copying it, read every line of its list against the board's source: the frame and the
+   element it names exist, what it says the frame shows is what the source holds, and the size the
+   prompt takes is the one that rule picks for this list.
    The owner pastes it into the screen's own file in the screens project. The owner's "done" means:
    run part B again from 1.
 6. `READY`: append one entry to the task's `#### Design check` — the date, the part, `READY`, the
