@@ -50,7 +50,9 @@ On success, blocker, cancellation or failure:
    next part boots it again in a minute with the app and the sign-in still in place. A phone found
    booted is `pre_existing` and is left as found. Run `pnpm infra:down` only when the stack was
    down at the start; a container that stopped mid-task is started again with `pnpm infra:up` and
-   left running when it ran at the start.
+   left running when it ran at the start. Docker Desktop itself is left running, even when it was
+   off at the start: quitting it after `pnpm infra:down` has left the Postgres container unable to
+   start, which costs the owner a rebuild.
 3. Leave every `pre_existing` resource and standing test company alone. Keep logs and proof.
 4. Confirm no task-owned `tsx ... watch` process survives; a watcher can outlive its listener. A
    survivor is named to the owner with its pid, who stops it: the agent is denied `kill`.
