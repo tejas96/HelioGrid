@@ -26,7 +26,7 @@ One screen at a time: when the walk names several, take the first; the walk name
    PRD does not hold, or a simpler way to the same row, and fix the brief. A question the sources
    do not answer goes to the owner before the prompt, at most two options, recommended first.
 2. Build *The drawing prompt* of `docs/start-here.md` as one text and copy it to the clipboard by a
-   script (`pbcopy < <file>`), never typed. Tell the owner where to paste it
+   script, never typed, as part B step 5 copies a prompt. Tell the owner where to paste it
    (`docs/start-here.md`, *The Claude Design project*) — one screen per session.
 3. When the owner says the screen is drawn and gives its board links, fill the task's `DESIGN:`
    line with them (`docs/start-here.md`, *Recording a drawn screen*), then run part B.
@@ -71,7 +71,10 @@ are read live each time; no earlier picture is reused, but every earlier ruling 
    `design-check` for a fix prompt that carries it. A finding that breaks a rule other screens
    share is shown with the other drawn screens of its corridor; each runs part B at its own turn.
 5. `NEEDS_CHANGE` or `NOT_DRAWN`: show the owner the findings, one line each, and copy the fix
-   prompt to the clipboard by a script, built as *The fix prompt* of `docs/start-here.md` says.
+   prompt to the clipboard by a script, built as *The fix prompt* of `docs/start-here.md` says:
+   `LANG=en_US.UTF-8 pbcopy < <file>`, then `LANG=en_US.UTF-8 pbpaste | cmp - <file>`. This
+   shell sets no language, and without it `pbcopy` reads the file as MacRoman, so every `·`, `—`
+   and `×` reaches Claude Design broken.
    Before copying it, read every line of its list against the board's source: the frame and the
    element it names exist, what it says the frame shows is what the source holds, and the size the
    prompt takes is the one that rule picks for this list.
