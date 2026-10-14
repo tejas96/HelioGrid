@@ -11,11 +11,22 @@
       "Bash(git push -f*)",
       "Bash(git push * --force*)",
       "Bash(git push * -f *)",
+      "Bash(git push * +*)",
       "Bash(git push origin main*)",
       "Bash(git push * main)",
+      "Bash(git push * main *)",
+      "Bash(git push *:main*)",
+      "Bash(git push *refs/heads/main*)",
       "Bash(git commit --no-verify*)",
-      "Bash(git commit -n *)",
+      "Bash(git commit -n*)",
+      "Bash(git commit -an*)",
+      "Bash(git commit * -n)",
+      "Bash(git commit * -n *)",
       "Bash(git commit * --no-verify*)",
+      "Bash(*SKIP_SIMPLE_GIT_HOOKS=*)",
+      "Bash(gh pr merge*)",
+      "Bash(gh pr review*)",
+      "Bash(gh api *pulls/*/merge*)",
       "Edit(pnpm-lock.yaml)",
       "Bash(docker volume rm*)",
       "Bash(docker volume prune*)",
@@ -31,6 +42,12 @@
       "Bash(rm -rf /Volumes/works-space/heliogrid*)",
       "Bash(rm -rf ~*)",
       "Bash(rm -rf $HOME*)"
+    ],
+    "ask": [
+      "Bash(git commit*)",
+      "Bash(git push*)",
+      "Bash(git -C * commit*)",
+      "Bash(git -C * push*)"
     ]
   }
 }
