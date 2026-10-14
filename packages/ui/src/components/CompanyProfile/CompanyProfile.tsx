@@ -1,32 +1,36 @@
 import { Text } from '../../primitives/Text/Text';
 import { Accordion } from '../Accordion/Accordion';
-import { BrandBloom } from '../BrandBloom/BrandBloom';
 import { Button } from '../Button/Button';
 import { DoorFrame } from '../DoorFrame/DoorFrame';
 import { EmptyState } from '../EmptyState/EmptyState';
 import { LoadingBars } from '../LoadingBars/LoadingBars';
 import {
-  LETTER_PARAGRAPHS,
-  LETTERHEAD_BLOOM_SIZE,
   openedPart,
+  PARTS_DENSITY,
   profileItems,
   UNREAD_GLYPH,
   UNREAD_GLYPH_SIZE,
 } from './CompanyProfile.logic';
 import type { CompanyProfileProps, CompanyProfileWords } from './CompanyProfile.types';
+import { Letterhead } from './CompanyProfileLetterhead';
 import { ProfileSet } from './CompanyProfileSets';
 
 /**
- * The company profile (`SCR-M01-05`). Under the door's breakpoint it is the column alone; from it
- * the column stands on the left at the list's wide measure, beside a letterhead that shows what
- * the fields hold (`d-default`). A profile that could not be read has no letterhead.
+ * The company profile (`SCR-M01-05`). In setup it fills the door's frame; in settings it is the
+ * shell's page. Under the door's breakpoint it is the column alone; from it the column stands on
+ * the left at the list's wide measure, beside a letterhead that shows what the fields hold
+ * (`d-default`, `d-settings`). A profile that could not be read has no letterhead.
  */
 export function CompanyProfile(props: CompanyProfileProps) {
-  const { words } = props;
+  const { words, life } = props;
   const previewed = words.unread === null;
   return (
-    <div className="hg-company-profile" data-preview={previewed ? 'true' : undefined}>
-      <ProfileColumn {...props} />
+    <div
+      className="hg-company-profile"
+      data-life={life}
+      data-preview={previewed ? 'true' : undefined}
+    >
+      {life === 'settings' ? <SettingsColumn {...props} /> : <SetupColumn {...props} />}
       {previewed ? (
         <Letterhead
           words={words.letterhead}
@@ -40,58 +44,35 @@ export function CompanyProfile(props: CompanyProfileProps) {
 
 /**
  * The column in the door's frame: the heading and its line, the five flat parts with one open,
- * and the act. While the record is read, bars stand in the list's place; a profile that could not
- * be read is one centred message with its retry, and the way on at the foot.
+ * and the act. A profile that could not be read is one centred message with its retry, and the
+ * way on at the foot.
  */
-function ProfileColumn({
-  words,
-  values,
-  open,
-  onOpen,
-  onEdit,
-  onChooseSegment,
-  onDeclareSize,
-  saving,
-  onSave,
-  onRetryRead,
-  onContinueWithout,
-  logoPicture,
-  onChooseLogo,
-}: CompanyProfileProps) {
-  if (words.unread !== null) {
+function SetupColumn(props: CompanyProfileProps) {
+  const { words, onContinueWithout } = props;
+  const { unread } = words;
+  if (unread !== null) {
     return (
       <DoorFrame
         trailing={null}
         taskMeasure="list"
         footer={
-          <Button
-            variant="secondary"
-            size="lg"
-            fullWidth
-            spokenName={words.unread.onwardSpoken}
-            onClick={onContinueWithout}
-          >
-            {words.unread.onward}
-          </Button>
+          unread.onward === null ? undefined : (
+            <Button
+              variant="secondary"
+              size="lg"
+              fullWidth
+              spokenName={unread.onwardSpoken ?? undefined}
+              onClick={onContinueWithout}
+            >
+              {unread.onward}
+            </Button>
+          )
         }
       >
-        <div className="hg-company-profile-unread">
-          <EmptyState
-            icon={<UnreadGlyph />}
-            title={words.unread.title}
-            description={words.unread.line}
-            action={
-              <Button variant="primary" size="lg" onClick={onRetryRead}>
-                {words.unread.retry}
-              </Button>
-            }
-          />
-        </div>
+        <Unread unread={unread} onRetry={props.onRetryRead} />
       </DoorFrame>
     );
   }
-
-  const { act } = words;
   return (
     <DoorFrame
       trailing={null}
@@ -104,70 +85,152 @@ function ProfileColumn({
           </Text>
         </div>
       }
-      footer={
-        act === null ? undefined : (
-          <div className="hg-company-profile-act">
-            {act.alert === null ? null : (
-              <Text variant="caption" color="danger" align="center" live>
-                {act.alert}
-              </Text>
-            )}
-            <Button
-              variant="primary"
-              size="lg"
-              fullWidth
-              loading={saving}
-              disabled={act.waiting !== null}
-              disabledReason={act.waiting ?? undefined}
-              spokenName={act.primarySpoken}
-              onClick={onSave}
-            >
-              {act.primary}
-            </Button>
-            {act.secondary === null ? null : (
-              <Button
-                variant="secondary"
-                size="lg"
-                fullWidth
-                disabled={saving}
-                spokenName={act.secondarySpoken ?? undefined}
-                onClick={onContinueWithout}
-              >
-                {act.secondary}
-              </Button>
-            )}
-            {act.line === null ? null : (
-              <Text variant="caption" color="secondary" align="center">
-                {act.line}
-              </Text>
-            )}
-          </div>
-        )
-      }
+      footer={<ProfileAct {...props} />}
     >
-      <div className="hg-company-profile-list">
-        {words.loading === null ? (
-          <Accordion
-            items={profileItems(words, open, (part) => (
-              <ProfileSet
-                part={part}
-                words={words}
-                values={values}
-                onEdit={onEdit}
-                onChooseSegment={onChooseSegment}
-                onDeclareSize={onDeclareSize}
-                logoPicture={logoPicture}
-                onChooseLogo={onChooseLogo}
-              />
-            ))}
-            value={open}
-            onChange={(reported) => onOpen(openedPart(reported))}
-          />
-        ) : (
-          <LoadingBars label={words.loading} bars={['panel', 'row', 'row', 'row', 'row']} />
-        )}
-      </div>
+      <ProfileList {...props} />
     </DoorFrame>
+  );
+}
+
+/**
+ * The page inside the shell (`m-settings`, `d-settings`): the heading, unless the app's bar holds
+ * it, its line, the parts at the functional density and the act after them. A profile that could
+ * not be read is the message and its retry alone: settings sits in no corridor, so there is
+ * nowhere onward to go without it.
+ */
+function SettingsColumn(props: CompanyProfileProps) {
+  const { words, titleInBar = false } = props;
+  if (words.unread !== null) {
+    return (
+      <div className="hg-company-profile-page">
+        <Unread unread={words.unread} onRetry={props.onRetryRead} />
+      </div>
+    );
+  }
+  return (
+    <div className="hg-company-profile-page">
+      <div className="hg-company-profile-head">
+        {titleInBar ? null : (
+          <Text as="h1" variant="h2">
+            {words.title}
+          </Text>
+        )}
+        <Text variant="body" color="secondary">
+          {words.lede}
+        </Text>
+      </div>
+      <ProfileList {...props} />
+      <ProfileAct {...props} />
+    </div>
+  );
+}
+
+/** The five flat parts with one open, or the bars that stand in their place while it is read. */
+function ProfileList({
+  life,
+  words,
+  values,
+  open,
+  onOpen,
+  onEdit,
+  onChooseSegment,
+  onDeclareSize,
+  logoPicture,
+  onChooseLogo,
+}: CompanyProfileProps) {
+  return (
+    <div className="hg-company-profile-list">
+      {words.loading === null ? (
+        <Accordion
+          density={PARTS_DENSITY[life]}
+          items={profileItems(words, open, (part) => (
+            <ProfileSet
+              part={part}
+              words={words}
+              values={values}
+              onEdit={onEdit}
+              onChooseSegment={onChooseSegment}
+              onDeclareSize={onDeclareSize}
+              density={PARTS_DENSITY[life]}
+              logoPicture={logoPicture}
+              onChooseLogo={onChooseLogo}
+            />
+          ))}
+          value={open}
+          onChange={(reported) => onOpen(openedPart(reported))}
+        />
+      ) : (
+        <LoadingBars label={words.loading} bars={['panel', 'row', 'row', 'row', 'row']} />
+      )}
+    </div>
+  );
+}
+
+/** The act: a failed save said once above it, the way on under it in setup, and its one line. */
+function ProfileAct({ words, saving, onSave, onContinueWithout }: CompanyProfileProps) {
+  const { act } = words;
+  if (act === null) return null;
+  return (
+    <div className="hg-company-profile-act">
+      {act.alert === null ? null : (
+        <Text variant="caption" color="danger" align="center" live>
+          {act.alert}
+        </Text>
+      )}
+      <Button
+        variant="primary"
+        size="lg"
+        fullWidth
+        loading={saving}
+        disabled={act.waiting !== null}
+        disabledReason={act.waiting ?? undefined}
+        spokenName={act.primarySpoken}
+        onClick={onSave}
+      >
+        {act.primary}
+      </Button>
+      {act.secondary === null ? null : (
+        <Button
+          variant="secondary"
+          size="lg"
+          fullWidth
+          disabled={saving}
+          spokenName={act.secondarySpoken ?? undefined}
+          onClick={onContinueWithout}
+        >
+          {act.secondary}
+        </Button>
+      )}
+      {act.line === null ? null : (
+        <Text variant="caption" color="secondary" align="center">
+          {act.line}
+        </Text>
+      )}
+    </div>
+  );
+}
+
+/** A profile that could not be read: one centred message and its retry. */
+function Unread({
+  unread,
+  onRetry,
+}: {
+  unread: NonNullable<CompanyProfileWords['unread']>;
+  onRetry: () => void;
+}) {
+  return (
+    <div className="hg-company-profile-unread">
+      <EmptyState
+        icon={<UnreadGlyph />}
+        title={unread.title}
+        description={unread.line}
+        action={
+          <Button variant="primary" size="lg" onClick={onRetry}>
+            {unread.retry}
+          </Button>
+        }
+      />
+    </div>
   );
 }
 
@@ -194,86 +257,4 @@ function UnreadGlyph() {
       )}
     </svg>
   );
-}
-
-/**
- * Decorative: every value on it is a field beside it, so it is hidden from a screen reader and
- * holds no control. A line with nothing to show is a bar; the tile shows the logo's picture once
- * the screen has one, and a word until then.
- */
-function Letterhead({
-  words,
-  picture,
-  loading,
-}: {
-  words: CompanyProfileWords['letterhead'];
-  picture: string | null;
-  loading: boolean;
-}) {
-  return (
-    <aside className="hg-company-profile-preview" aria-hidden="true">
-      <BrandBloom size={LETTERHEAD_BLOOM_SIZE} />
-      <Text variant="overline" color="secondary" className="hg-company-profile-overline">
-        {words.overline}
-      </Text>
-      <div className="hg-company-profile-sheet" data-loading={loading ? 'true' : undefined}>
-        <div className="hg-company-profile-sheet-head">
-          <span className="hg-company-profile-sheet-logo">
-            {picture === null ? (
-              <Text variant="caption" color="secondary">
-                {words.logo}
-              </Text>
-            ) : (
-              <img className="hg-company-profile-sheet-picture" src={picture} alt="" />
-            )}
-          </span>
-          <div className="hg-company-profile-sheet-name">
-            {words.name === '' ? (
-              <Bar />
-            ) : (
-              <Text variant="body" bold>
-                {words.name}
-              </Text>
-            )}
-            {words.address === '' ? (
-              <Bar />
-            ) : (
-              <Text variant="caption" color="secondary">
-                {words.address}
-              </Text>
-            )}
-          </div>
-        </div>
-        <span className="hg-company-profile-sheet-rule" />
-        <div className="hg-company-profile-sheet-facts">
-          <Text variant="caption" color="secondary">
-            {words.taxLabel}
-          </Text>
-          {words.tax === null ? (
-            <Bar />
-          ) : (
-            <Text variant="mono" color={words.tax.owed ? 'danger' : 'primary'}>
-              {words.tax.value}
-            </Text>
-          )}
-          <Text variant="caption" color="secondary">
-            {words.bank}
-          </Text>
-          {words.bankLine === null ? <Bar /> : <Text variant="caption">{words.bankLine}</Text>}
-        </div>
-        {LETTER_PARAGRAPHS.map((lines) => (
-          <div key={lines} className="hg-company-profile-sheet-lines">
-            {Array.from({ length: lines }, (_, line) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: identical bars that never reorder
-              <Bar key={line} />
-            ))}
-          </div>
-        ))}
-      </div>
-    </aside>
-  );
-}
-
-function Bar() {
-  return <span className="hg-company-profile-bar" />;
 }

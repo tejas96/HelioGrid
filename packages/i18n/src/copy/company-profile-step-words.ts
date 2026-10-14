@@ -1,4 +1,5 @@
 import {
+  type CompanyProfileLife,
   type CompanyProfilePart,
   type CompanyProfileView,
   inLanguage,
@@ -12,8 +13,9 @@ import {
   companyProfileWords,
 } from './company-profile-words';
 
-/** The setup step as its hook hands it to a screen: what is held, and what it says about it. */
+/** The profile as its hook hands it to a screen: its life, what is held, and what it says about it. */
 export interface CompanyProfileStepFacts extends CompanyProfileView {
+  readonly life: CompanyProfileLife;
   readonly status: CompanyProfileWordFacts['status'];
   readonly arrivedUndeclared: boolean;
   readonly open: CompanyProfilePart | null;
@@ -22,9 +24,10 @@ export interface CompanyProfileStepFacts extends CompanyProfileView {
 }
 
 /**
- * The words of the company profile as a setup step (`SCR-M01-05`), built once for both screens.
- * Never `skipped`: a recorded step is not asked again, so nobody is back from a skip. The two
- * labels are the format layer's; the format line is the market pack's, in the reader's language.
+ * The words of the company profile in the life its hook reads it in (`SCR-M01-05`) — the setup
+ * step or the settings page — built once for both screens. Never `skipped`: a recorded step is not
+ * asked again, so nobody is back from a skip. The two labels are the format layer's; the format
+ * line is the market pack's, in the reader's language.
  */
 export function companyProfileStepWords(
   translate: Translator['t'],
@@ -33,6 +36,7 @@ export function companyProfileStepWords(
   labels: { readonly taxIdLabel: string; readonly bankRoutingLabel: string },
 ): CompanyProfileWords {
   return companyProfileWords(translate, {
+    life: step.life,
     status: step.status,
     skipped: false,
     arrivedUndeclared: step.arrivedUndeclared,

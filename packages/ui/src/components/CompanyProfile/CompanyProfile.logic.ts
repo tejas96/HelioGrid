@@ -1,12 +1,14 @@
 import {
   COMPANY_LOGO_LIMITS,
   COMPANY_PROFILE_PARTS,
+  type CompanyProfileLife,
   type CompanyProfilePart,
   isTypicalSystemSize,
   type StandingMark,
   TYPICAL_SYSTEM_KWP,
 } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
+import type { Density } from '../../primitives/Surface/Surface.types';
 import type { AccordionItem, AccordionItemState } from '../Accordion/Accordion.types';
 import type { GlyphMark } from '../AppShell/ShellGlyph.logic';
 import type { DropzoneProps } from '../Dropzone/Dropzone.types';
@@ -16,6 +18,16 @@ import type {
   CompanyProfileValues,
   CompanyProfileWords,
 } from './CompanyProfile.types';
+
+/**
+ * The density the parts are drawn at (`F7-17`): expressive in the setup corridor, functional in
+ * settings — the list headers and the option cards; every field keeps its size (the record's
+ * decision 4 and gap 10).
+ */
+export const PARTS_DENSITY: Record<CompanyProfileLife, Density> = {
+  setup: 'expressive',
+  settings: 'functional',
+};
 
 const STATE_OF: Record<StandingMark, AccordionItemState> = {
   met: 'done',

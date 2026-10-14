@@ -4,6 +4,7 @@ import {
   COMPANY_PROFILE_UNREAD,
   type CompanyLogoCaptureFacts,
   type CompanyProfileField,
+  type CompanyProfileLife,
   type CompanyProfilePart,
   type CompanyProfileStored,
   type CompanyProfileValues,
@@ -27,8 +28,9 @@ import { useRepositories } from './context';
 import { type ChosenLogo, useCompanyLogo } from './use-company-logo';
 import { useSession } from './use-session';
 
-/** The company profile's setup step, as both screens consume it (Law 11). */
+/** The company profile in one of its lives, as both screens consume it (Law 11). */
 export interface CompanyProfileStep extends CompanyProfileView {
+  readonly life: CompanyProfileLife;
   /** The reads are still out, they answered, one got no answer, or the last save did not land. */
   readonly status: 'loading' | 'ready' | 'unread' | 'save-failed';
   readonly values: CompanyProfileValues;
@@ -46,14 +48,21 @@ export interface CompanyProfileStep extends CompanyProfileView {
   chooseSegment(segment: TenantSegment): void;
   declareSize(kwp: number): void;
   /**
-   * Stores a chosen logo, writes the profile, then the registrations when they changed, then
-   * records the step before when this save answers it, then its own step.
+   * Stores a chosen logo, writes the profile, then the registrations when they changed; in setup,
+   * then records the step before when this save answers it, then its own step. Settings records
+   * no step: its company passed setup long ago, and a save there must not move it.
    */
   save(): void;
   /** Asks again for the reads that got no answer. */
   retryRead(): void;
   /** Moves on with nothing saved; the next sign-in asks for the step again. */
   continueWithout(): void;
+}
+
+/** What a save came to: the logo refused before anything was written, or the progress setup moved to. */
+interface Saved {
+  readonly logoRefused: boolean;
+  readonly progress: OnboardingProgress | null;
 }
 
 interface Draft {
@@ -70,7 +79,7 @@ const ASKED_ONCE = { staleTime: Number.POSITIVE_INFINITY, networkMode: 'always' 
  * act; each write replaces its record whole, so a save that failed half way is sent again whole.
  * The step's answer replaces the progress `useLanding` holds, which is what moves the person on.
  */
-export function useCompanyProfile(): CompanyProfileStep {
+export function useCompanyProfile(life: CompanyProfileLife): CompanyProfileStep {
   const { user, putOffSetup } = useSession();
   const repositories = useRepositories();
   const queryClient = useQueryClient();
@@ -136,9 +145,9 @@ export function useCompanyProfile(): CompanyProfileStep {
         ? null
         : {
             values: companyProfileValuesAtRead(stored, tax),
-            open: companyProfileOpenAtRead(stored, tax),
+            open: companyProfileOpenAtRead(stored, tax, life),
           },
-    [stored, tax],
+    [stored, tax, life],
   );
   const draft = typed ?? asRead;
   const logo = useCompanyLogo(tenantId, profile.data?.logoFileId);
@@ -150,11 +159,12 @@ export function useCompanyProfile(): CompanyProfileStep {
       stored: CompanyProfileStored;
       tax: TaxPack;
       logo: ChosenLogo | null;
-    }) => {
+    }): Promise<Saved> => {
       const logoStoredNow = sent.logo === null ? null : await logo.store(sent.logo);
       // The api found another type in the bytes: the image is refused at its field and nothing is
       // written, or the same save would fail for ever.
-      if (sent.logo !== null && logoStoredNow === null) return null;
+      if (sent.logo !== null && logoStoredNow === null)
+        return { logoRefused: true, progress: null };
       const writes = companyProfileSaveOf(sent.values, sent.stored, sent.tax, logoStoredNow);
       const saved = await repositories.settings.saveBusinessProfile(writes.profile);
       queryClient.setQueryData(profileKey, saved);
@@ -164,15 +174,19 @@ export function useCompanyProfile(): CompanyProfileStep {
         });
         queryClient.setQueryData(registrationsKey, list);
       }
+      if (life === 'settings') return { logoRefused: false, progress: null };
       const progress = queryClient.getQueryData<OnboardingProgress>(progressKey);
       if (whatYouSellAnsweredBy(writes.profile, progress?.steps ?? {})) {
         await repositories.onboarding.recordStep('what_you_sell', 'completed');
       }
-      return repositories.onboarding.recordStep('business_profile', writes.step);
+      return {
+        logoRefused: false,
+        progress: await repositories.onboarding.recordStep('business_profile', writes.step),
+      };
     },
-    onSuccess: (progress, sent) => {
-      if (sent.logo !== null) (progress === null ? logo.refuse : logo.saved)(sent.logo);
-      if (progress !== null) queryClient.setQueryData(progressKey, progress);
+    onSuccess: (saved, sent) => {
+      if (sent.logo !== null) (saved.logoRefused ? logo.refuse : logo.saved)(sent.logo);
+      if (saved.progress !== null) queryClient.setQueryData(progressKey, saved.progress);
     },
   });
   const { mutate, isPending, isError } = save;
@@ -185,6 +199,7 @@ export function useCompanyProfile(): CompanyProfileStep {
   const edited = (next: (values: CompanyProfileValues) => CompanyProfileValues) =>
     change(({ values, open }) => ({ values: next(values), open }));
   return {
+    life,
     status: statusOf(held !== null, unread, isError),
     values: held?.values ?? COMPANY_PROFILE_UNREAD.values,
     open: held?.open ?? null,
@@ -209,7 +224,10 @@ export function useCompanyProfile(): CompanyProfileStep {
       }
       if (pack.data !== undefined && tax === null) void pack.refetch();
     },
-    continueWithout: () => putOffSetup('business_profile'),
+    // Settings sits in no corridor: there is no step to put off.
+    continueWithout: () => {
+      if (life === 'setup') putOffSetup('business_profile');
+    },
   };
 }
 

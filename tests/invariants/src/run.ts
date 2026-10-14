@@ -43,6 +43,7 @@ import { runWalkReadsParts } from './walk-reads-parts';
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
 async function main() {
+  const env = loadInvariantsEnv();
   runTenantIdOnTheWire(); // static — needs no database, must never be skipped
   runFormatInvariants(); // static — the format layer needs no database either
   runMatrixMirrorsF2(); // static — the permission matrices equal the PRD, cell for cell
@@ -55,7 +56,7 @@ async function main() {
   runBannedWordOtherFiles(REPO_ROOT); // static — no "quote" in catalogs, SQL or markup
   runEnvExampleComplete(REPO_ROOT); // static — .env.example names every schema variable
   await runLanguageFonts(REPO_ROOT); // static — reads the BUILT i18n and theme packages
-  runE2eFlowPerScreen(REPO_ROOT); // static — every route and screen has its regression flow
+  runE2eFlowPerScreen(REPO_ROOT, Boolean(env.CI)); // static — every route and screen has its regression flow
   runDesignSystemProps(REPO_ROOT); // static — no design-system prop dropped by its port
   runDesignSystemSnapshot(REPO_ROOT); // static — the pulled tokens equal the pulled census
   runBiomePluginScopes(REPO_ROOT); // static — every lint plugin covers a place that exists
@@ -67,7 +68,6 @@ async function main() {
   runPrdRowsCited(REPO_ROOT); // static — every cited PRD row is live, every quote matches its cell
   runScreensRegisterWhole(REPO_ROOT); // static — every screen briefed and designed, every row landed once
   runUiColourPairs(REPO_ROOT); // static — every colour ui sets on a background is a declared pair
-  const env = loadInvariantsEnv();
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;
   if (!url) {
     // Fail CLOSED in CI: a skipped invariant that reports success is worse than no

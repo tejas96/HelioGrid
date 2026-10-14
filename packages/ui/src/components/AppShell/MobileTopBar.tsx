@@ -14,8 +14,8 @@ interface WebMobileTopBarProps extends MobileTopBarProps {
 
 /**
  * The phone header — the product tile and the company's name as words on the left; the round
- * search, the bell and the avatar on the right. No page title: the title starts the content below.
- * The name gives way first, so every button keeps its 44.
+ * search, the bell and the avatar on the right; or, on a page opened from a list, its way back and
+ * its title alone. The name gives way first, so every button keeps its 44.
  */
 export function MobileTopBar({
   company,
@@ -29,6 +29,7 @@ export function MobileTopBar({
   onNotificationsClick,
   avatar,
   leading,
+  title,
   actions,
   safeTop = false,
   sticky = true,
@@ -43,16 +44,22 @@ export function MobileTopBar({
       style={style}
     >
       {leading}
-      <div className="hg-app-shell-topbar-identity">
-        <span className="hg-app-shell-header-slot">
-          {brand ?? <LogoTile size={theme.spacing['sp-8']} radius={theme.radius['r-sm']} />}
-        </span>
-        {company !== undefined ? (
-          <Text variant="body" bold oneLine fixedSize className="hg-app-shell-topbar-company">
-            {company}
-          </Text>
-        ) : null}
-      </div>
+      {title !== undefined ? (
+        <Text as="h1" variant="h3" bold className="hg-app-shell-topbar-title">
+          {title}
+        </Text>
+      ) : (
+        <div className="hg-app-shell-topbar-identity">
+          <span className="hg-app-shell-header-slot">
+            {brand ?? <LogoTile size={theme.spacing['sp-8']} radius={theme.radius['r-sm']} />}
+          </span>
+          {company !== undefined ? (
+            <Text variant="body" bold oneLine fixedSize className="hg-app-shell-topbar-company">
+              {company}
+            </Text>
+          ) : null}
+        </div>
+      )}
       <div className="hg-app-shell-topbar-actions">
         {actions}
         {jobs}

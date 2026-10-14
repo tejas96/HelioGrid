@@ -70,7 +70,7 @@ export {
 } from './copy/notifications';
 export { provenanceWords, standingLabel, tierLabel } from './copy/provenance';
 export type { SettingsWords } from './copy/settings';
-export { settingsListFor, settingsRowName, settingsWords } from './copy/settings';
+export { backToSettings, settingsListFor, settingsRowName, settingsWords } from './copy/settings';
 export type { SetupLanguageOption, SetupLanguageWords } from './copy/setup-language';
 export { SETUP_LANGUAGE, setupLanguageWords } from './copy/setup-language';
 export type {

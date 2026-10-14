@@ -66,8 +66,9 @@ const PHONE_SCREENS_HELD: ReadonlyMap<string, string> = new Map([
   ],
   [
     'company-profile',
-    'reached only after Create company and the two steps before it, behind the press no Maestro ' +
-      'flow lands on iOS (the shell above): its flows are the web suite and the phone QA rows of its task',
+    'reached only by a member with a company — after Create company and the two steps before it, ' +
+      'or through More in settings — behind the press no Maestro flow lands on iOS (the shell ' +
+      'above): its flows are the web suite and the phone QA rows of its task (T-M01-005o)',
   ],
   [
     'settings',
@@ -91,6 +92,7 @@ function flowName(file: string, under: string, dropGroups: boolean): string {
 
 function scanFlows(repo: string): {
   findings: string[];
+  missingLooks: string[];
   routes: number;
   screens: number;
   looks: number;
@@ -137,6 +139,7 @@ function scanFlows(repo: string): {
     );
   return {
     findings: [...missing, ...staleHolds, ...missingLooks, ...staleLookHolds],
+    missingLooks,
     routes: routes.size,
     screens: screens.size,
     looks: looks.length,
@@ -187,10 +190,24 @@ export function findScreensWithoutFlow(repo: string): string[] {
   return [...scanFlows(repo).findings, ...scanPhoneSuite(repo).findings];
 }
 
-export function runE2eFlowPerScreen(repo: string): void {
+/**
+ * A route's look is drawn only by CI, on Linux (`tests/e2e/CLAUDE.md`), so off CI a missing one is
+ * owed to CI's first run of the branch: it is printed, loudly, and never failed — a local gate could
+ * otherwise never pass on a branch that adds a route. On CI it fails like every other finding.
+ */
+export function runE2eFlowPerScreen(repo: string, onCi: boolean): void {
   const screenFlows = scanFlows(repo);
   const phoneSuite = scanPhoneSuite(repo);
-  const findings = [...screenFlows.findings, ...phoneSuite.findings];
+  const owedToCi = onCi ? [] : screenFlows.missingLooks;
+  const findings = [
+    ...screenFlows.findings.filter((finding) => !owedToCi.includes(finding)),
+    ...phoneSuite.findings,
+  ];
+  if (owedToCi.length > 0) {
+    console.warn(
+      `\n  e2e-flow-per-screen: OWED TO CI — ${owedToCi.length} look baselines CI draws on its first run, then a commit lands them:\n  ${owedToCi.join('\n  ')}\n`,
+    );
+  }
   if (findings.length > 0) {
     throw new Error(
       `e2e-flow-per-screen: every web route and phone screen has its regression flow, every web route its look, and every phone flow runs:\n  ${findings.join('\n  ')}`,

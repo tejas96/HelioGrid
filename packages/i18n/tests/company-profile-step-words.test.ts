@@ -9,6 +9,7 @@ import { AT_SIGNUP } from './company-profile-facts';
 const LABELS = { taxIdLabel: 'GSTIN', bankRoutingLabel: 'IFSC' };
 const LOGO = { limits: COMPANY_LOGO_LIMITS, refusal: null, held: false };
 const STEP = {
+  life: 'setup',
   status: 'ready',
   arrivedUndeclared: false,
   standings: AT_SIGNUP.standings,

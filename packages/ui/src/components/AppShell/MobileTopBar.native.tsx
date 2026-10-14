@@ -14,7 +14,8 @@ interface NativeMobileTopBarProps extends MobileTopBarProps {
 
 /**
  * The phone header — the product tile and the company's name as words on the left; the round
- * search, the bell and the avatar on the right. No page title: the title starts the content below.
+ * search, the bell and the avatar on the right; or, on a page opened from a list, its way back and
+ * its title alone.
  *
  * The name keeps its drawn size at every system text size: the bar is a fixed band, and a grown
  * name only loses more of itself to the ellipsis. `sticky` and `safeTop` are accepted and
@@ -33,6 +34,7 @@ export function MobileTopBar({
   onNotificationsClick,
   avatar,
   leading,
+  title,
   actions,
   style,
 }: NativeMobileTopBarProps) {
@@ -40,18 +42,26 @@ export function MobileTopBar({
   return (
     <View style={[styles.bar, { backgroundColor: ground }, style]}>
       {leading}
-      <View style={styles.identity}>
-        <View style={styles.slot}>
-          {brand ?? <LogoTile size={theme.spacing['sp-8']} radius={theme.radius['r-sm']} />}
+      {title !== undefined ? (
+        <View style={styles.title} accessibilityRole="header">
+          <Text variant="h3" bold>
+            {title}
+          </Text>
         </View>
-        {company !== undefined ? (
-          <View style={styles.company}>
-            <Text variant="body" bold oneLine fixedSize>
-              {company}
-            </Text>
+      ) : (
+        <View style={styles.identity}>
+          <View style={styles.slot}>
+            {brand ?? <LogoTile size={theme.spacing['sp-8']} radius={theme.radius['r-sm']} />}
           </View>
-        ) : null}
-      </View>
+          {company !== undefined ? (
+            <View style={styles.company}>
+              <Text variant="body" bold oneLine fixedSize>
+                {company}
+              </Text>
+            </View>
+          ) : null}
+        </View>
+      )}
       <View style={styles.actions}>
         {actions}
         {jobs}
@@ -95,6 +105,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing['sp-2'],
+  },
+  /* The title `sp-3` from the back control, as `m-settings` draws it; it wraps before it cuts. */
+  title: {
+    flex: 1,
+    minWidth: 0,
+    marginLeft: theme.spacing['sp-1'],
   },
   slot: {
     flexShrink: 0,

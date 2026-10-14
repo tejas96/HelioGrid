@@ -14,6 +14,7 @@ import {
   companyProfileStanding,
   standingMark,
 } from './company-profile';
+import { type CompanyProfileLife, FIRST_OPEN_PART } from './company-profile-life';
 import type { TenantSegment } from './segment';
 
 /**
@@ -103,16 +104,17 @@ function bankAtRead({
   };
 }
 
-/** The first part, or the part that owes something in its place — it opens itself (`SCR-M01-05`). */
+/** The life's first part, or the part that owes something in its place — it opens itself (`SCR-M01-05`). */
 export function companyProfileOpenAtRead(
   stored: CompanyProfileStored,
   tax: TaxPack,
+  life: CompanyProfileLife,
 ): CompanyProfilePart {
   const facts = companyProfileFacts(companyProfileValuesAtRead(stored, tax), stored, tax);
   const owing = COMPANY_PROFILE_PARTS.find(
     (part) => standingMark(companyProfileStanding(part, facts, tax)) === 'owed',
   );
-  return owing ?? 'identity';
+  return owing ?? FIRST_OPEN_PART[life];
 }
 
 /** What the screen says about what it holds: where each part stands, the letterhead, the format's words. */

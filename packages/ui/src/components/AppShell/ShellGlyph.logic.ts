@@ -47,6 +47,7 @@ export const SHELL_GLYPHS: Record<ShellGlyphName, readonly GlyphMark[]> = {
   bell: [path('M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8'), path('M13.7 21a2 2 0 0 1-3.4 0')],
   chevron: [path('m6 9 6 6 6-6')],
   'chevron-right': [path('m9 6 6 6-6 6')],
+  'chevron-left': [path('m15 6-6 6 6 6')],
   building: [
     path('M6 2.5h12a1 1 0 0 1 1 1v18H5v-18a1 1 0 0 1 1-1z'),
     path('M9 21.5v-4h6v4'),

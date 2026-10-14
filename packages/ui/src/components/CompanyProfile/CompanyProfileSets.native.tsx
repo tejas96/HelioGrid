@@ -1,6 +1,7 @@
 import type { CompanyProfilePart } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import type { Density } from '../../primitives/Surface/Surface.types';
 import { Text } from '../../primitives/Text/Text.native';
 import { Dropzone } from '../Dropzone/Dropzone.native';
 import { Input } from '../Input/Input.native';
@@ -20,6 +21,8 @@ type SetProps = Pick<
   | 'onRequestLogo'
 > & {
   part: CompanyProfilePart;
+  /** The option cards' density: functional in settings (`PARTS_DENSITY`). */
+  density: Density;
 };
 
 /**
@@ -33,6 +36,7 @@ export function ProfileSet({
   onEdit,
   onChooseSegment,
   onDeclareSize,
+  density,
   logoPicture = null,
   onRequestLogo,
 }: SetProps) {
@@ -43,6 +47,7 @@ export function ProfileSet({
         values={values}
         onChooseSegment={onChooseSegment}
         onDeclareSize={onDeclareSize}
+        density={density}
       />
     );
   }
@@ -96,13 +101,15 @@ function WhatYouSellSet({
   values,
   onChooseSegment,
   onDeclareSize,
-}: Pick<SetProps, 'values' | 'onChooseSegment' | 'onDeclareSize'> & {
+  density,
+}: Pick<SetProps, 'values' | 'onChooseSegment' | 'onDeclareSize' | 'density'> & {
   words: SetProps['words']['declarations'];
 }) {
   return (
     <View style={styles.sells}>
       <OptionCardGroup
         label={words.group}
+        density={density}
         options={[...words.options]}
         value={values.segment ?? undefined}
         onChange={(value) => {

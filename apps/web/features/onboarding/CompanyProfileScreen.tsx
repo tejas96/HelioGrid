@@ -1,23 +1,35 @@
 'use client';
-import { useCompanyProfile } from '@heliogrid/data/react';
+import { useCompanyProfile, useSession } from '@heliogrid/data/react';
+import { type CompanyProfileLife, opensSettingsRow } from '@heliogrid/domain';
 import { companyProfileStepWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import { CompanyProfile, useFormat } from '@heliogrid/ui';
+import { notFound } from 'next/navigation';
 import { useLogoFile } from './hooks/use-logo-file';
 
 /**
- * The third setup step on the web (`SCR-M01-05`, `M01-24`), drawn by the inside group's gate for
- * an owner whose company still owes it. What is read, typed and saved is `useCompanyProfile`'s,
- * and every word is `companyProfileStepWords`'. A chosen logo is read from its file by
- * `useLogoFile`. This composes.
+ * The company profile on the web (`SCR-M01-05`): the third setup step, drawn by the inside
+ * group's gate for an owner whose company still owes it (`M01-24`), or the settings page behind
+ * `More` (`M01-29`), which only a person whose presets open its row reaches (`F7-48`). What is
+ * read, typed and saved is `useCompanyProfile`'s, and every word is `companyProfileStepWords`'. A
+ * chosen logo is read from its file by `useLogoFile`. This composes.
  */
-export function CompanyProfileScreen() {
+export function CompanyProfileScreen({ life }: { life: CompanyProfileLife }) {
+  const { user } = useSession();
+  if (life === 'settings' && !opensSettingsRow(user?.tenant?.roles ?? [], 'company_profile')) {
+    notFound();
+  }
+  return <CompanyProfileIn life={life} />;
+}
+
+function CompanyProfileIn({ life }: { life: CompanyProfileLife }) {
   const { t, locale } = useI18n();
   const { pack } = useFormat();
-  const step = useCompanyProfile();
+  const step = useCompanyProfile(life);
   const chooseLogoFile = useLogoFile(step.chooseLogo);
-  return (
+  const profile = (
     <CompanyProfile
+      life={life}
       words={companyProfileStepWords(t, locale, step, pack)}
       values={step.values}
       open={step.open}
@@ -33,4 +45,6 @@ export function CompanyProfileScreen() {
       onChooseLogo={chooseLogoFile}
     />
   );
+  // Inside the shell the page takes the shell's region, as every page behind `More` does.
+  return life === 'settings' ? <div className="hg-shell-page">{profile}</div> : profile;
 }

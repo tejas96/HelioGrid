@@ -2,6 +2,7 @@ import {
   COMPANY_LOGO_LIMITS,
   COMPANY_PROFILE_PARTS,
   type CompanyProfileFacts,
+  type CompanyProfileLife,
   type CompanyProfilePart,
   companyLetterhead,
   companyLogoRefusal,
@@ -77,6 +78,8 @@ function factsOf(values: CompanyProfileValues, logo: LogoState): CompanyProfileF
  */
 export function CompanyProfileAsHeld({
   reader,
+  life = 'setup',
+  titleInBar = false,
   status = 'ready',
   skipped = false,
   saving = false,
@@ -87,6 +90,10 @@ export function CompanyProfileAsHeld({
   picture = null,
 }: {
   reader: UiLanguage;
+  /** Where the profile is met: the setup corridor, or the settings page (`m-settings`, `d-settings`). */
+  life?: CompanyProfileLife;
+  /** The phone's settings bar holds the title. */
+  titleInBar?: boolean;
   status?: 'loading' | 'ready' | 'unread' | 'save-failed';
   skipped?: boolean;
   saving?: boolean;
@@ -113,10 +120,17 @@ export function CompanyProfileAsHeld({
     COMPANY_PROFILE_PARTS.map((part) => [part, companyProfileStanding(part, facts, IN_PACK.tax)]),
   ) as Record<CompanyProfilePart, ReturnType<typeof companyProfileStanding>>;
   return (
-    <div lang={reader}>
+    // In settings the page sits in the shell's region, whose side padding the apps give it.
+    <div
+      lang={reader}
+      style={life === 'settings' ? { paddingInline: 'var(--screen-pad-mobile)' } : undefined}
+    >
       <ProvenanceWordsProvider value={provenanceWords(t)}>
         <CompanyProfile
+          life={life}
+          titleInBar={titleInBar}
           words={companyProfileWords(t, {
+            life,
             status,
             skipped,
             arrivedUndeclared: undeclared,

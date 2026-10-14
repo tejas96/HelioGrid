@@ -1,9 +1,9 @@
 /**
- * Every message of the company profile's setup life (`SCR-M01-05`; `M01-24`, `M01-25`, `M01-31`):
- * the five parts, where each stands, every field and line, and what a failed read or save says —
- * authored once for both platforms (Law 11). `companyProfileWords` picks among them by state. The
- * tax label, the bank-routing label and the format line are the market pack's: this module names
- * no market's tax or bank identifier.
+ * Every message of the company profile's two lives, setup and settings (`SCR-M01-05`; `M01-24`,
+ * `M01-25`, `M01-31`): the five parts, where each stands, every field and line, and what a failed
+ * read or save says — authored once for both platforms (Law 11). `companyProfileWords` picks among
+ * them by state. The tax label, the bank-routing label and the format line are the market pack's:
+ * this module names no market's tax or bank identifier.
  */
 import type { CompanyProfilePart, CompanyProfileStanding, TenantSegment } from '@heliogrid/domain';
 import type { MessageRef } from '../runtime';
@@ -11,6 +11,7 @@ import type { MessageRef } from '../runtime';
 export const COMPANY_PROFILE = {
   title: /*i18n*/ { id: 'Your company profile' },
   lede: /*i18n*/ { id: 'On every proposal, invoice and customer link · asked for once' },
+  settingsLede: /*i18n*/ { id: 'On every proposal, invoice and customer link · change it here' },
   ledeSkipped: /*i18n*/ { id: 'Skipped during setup · your first proposal needs it' },
   ledeNotSaved: /*i18n*/ { id: 'What you sell · not saved on the last step' },
   fromSignup: /*i18n*/ { id: 'From your signup' },
@@ -37,6 +38,8 @@ export const COMPANY_PROFILE = {
   marketDefaults: /*i18n*/ { id: 'Market defaults until you set these' },
   save: /*i18n*/ { id: 'Save and continue' },
   saveSpoken: /*i18n*/ { id: 'Save your company profile and continue setting up HelioGrid' },
+  saveChanges: /*i18n*/ { id: 'Save changes' },
+  saveChangesSpoken: /*i18n*/ { id: 'Save changes to your business profile' },
   loading: /*i18n*/ { id: 'Loading your company profile' },
   stillLoading: /*i18n*/ { id: 'Profile still loading' },
   unreadTitle: /*i18n*/ { id: "We couldn't load your profile" },

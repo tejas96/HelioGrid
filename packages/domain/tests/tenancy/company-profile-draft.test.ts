@@ -87,14 +87,17 @@ describe('companyProfileValuesAtRead — what the fields hold when the screen op
 });
 
 describe('companyProfileOpenAtRead — the part that is open on arrival', () => {
-  it('the first part, when nothing is owed', () => {
-    expect(companyProfileOpenAtRead(atSignup, IN_TAX)).toBe('identity');
+  it.each([
+    ['setup', 'identity'],
+    ['settings', 'declarations'],
+  ] as const)('in %s, %s when nothing is owed', (life, part) => {
+    expect(companyProfileOpenAtRead(atSignup, IN_TAX, life)).toBe(part);
   });
 
   it.each([[{ segment: null }], [{ typicalSystemKwp: null }], [{ typicalSystemKwp: 0 }]] as const)(
     'what you sell, when %o was read',
     (undeclared) => {
-      expect(companyProfileOpenAtRead(storing(undeclared), IN_TAX)).toBe('declarations');
+      expect(companyProfileOpenAtRead(storing(undeclared), IN_TAX, 'setup')).toBe('declarations');
     },
   );
 });
