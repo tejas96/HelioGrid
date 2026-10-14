@@ -54,4 +54,5 @@ Classify the first remaining task:
 Emit exactly one line — `build <id>`, `owner draws <SCR-…>`, or `owner clears <id>` — with the
 file and line that decided it. A `build <id>` read from an open PR head adds
 `from origin/<branch>`: runtime setup cuts the part's branch from it (`references/runtime.md`).
-`owner draws` and `owner clears` end this `/task` run.
+`owner draws` continues with part A of `references/design.md`; `owner clears` ends this
+`/task` run.

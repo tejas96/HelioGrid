@@ -360,7 +360,7 @@ the owner merges. `main` is PR-only. A PR is one complete task, never half of on
 |---|---|
 | [`CLAUDE.md`](CLAUDE.md) | The constitution — rules governing every change in this repo |
 | [`.claude/rules/`](.claude/rules/) | Path-scoped rules that load automatically for the paths they name |
-| [`docs/start-here.md`](docs/start-here.md) | **Designing a screen** — the one file a design session starts from |
+| [`docs/start-here.md`](docs/start-here.md) | **Designing a screen** — the drawing prompt, the fix prompt and the checklist |
 | [`docs/prd/01-product-overview.md`](docs/prd/01-product-overview.md) | Product vision, V1 scope, non-goals — and the **glossary** (EPC, tenant, market pack, tranche, provenance tier) |
 | [`docs/prd/registers/screens.md`](docs/prd/registers/screens.md) | **The screen register** — 150 screens and the 99 locked to V1; a screen is drawn when its task's `DESIGN:` line holds a link |
 | [`docs/build-order.md`](docs/build-order.md) | Build order across modules |

@@ -4,7 +4,6 @@ import { runBiomePluginScopes } from './biome-plugin-scopes';
 import { runBrandRegistry } from './brand-registry';
 import { runBuildOrderHolds } from './build-order-holds';
 import { runDeferredRows } from './deferred-rows';
-import { runDesignCheckFresh } from './design-check-fresh';
 import { runDesignSystemProps } from './design-system-props';
 import { runDesignSystemSnapshot } from './design-system-snapshot';
 import { runDockerfileUnprivileged } from './dockerfile-unprivileged';
@@ -38,8 +37,8 @@ import { runWalkReadsParts } from './walk-reads-parts';
  * checks: vocabulary-copies, dockerfile-unprivileged, light-only-platform-files,
  * banned-word-other-files, env-example-complete, language-fonts, e2e-flow-per-screen,
  * design-system-props, design-system-snapshot, biome-plugin-scopes, launch-reuses-running-servers,
- * deferred-rows, task-ledger-agrees, build-order-holds, walk-reads-parts, prd-rows-cited, screens-register-whole,
- * design-check-fresh, ui-colour-pairs.
+ * deferred-rows, task-ledger-agrees, build-order-holds, walk-reads-parts, prd-rows-cited,
+ * screens-register-whole, ui-colour-pairs.
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
@@ -67,7 +66,6 @@ async function main() {
   runWalkReadsParts(REPO_ROOT); // static — the walk's command reads the Parts rows the ledger reads
   runPrdRowsCited(REPO_ROOT); // static — every cited PRD row is live, every quote matches its cell
   runScreensRegisterWhole(REPO_ROOT); // static — every screen briefed and designed, every row landed once
-  runDesignCheckFresh(REPO_ROOT); // static — every open design check stands on its briefs, every finding ruled
   runUiColourPairs(REPO_ROOT); // static — every colour ui sets on a background is a declared pair
   const env = loadInvariantsEnv();
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;

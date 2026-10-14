@@ -13,8 +13,9 @@ task in `docs/tasks/` is the operational source; the PRD rows and brief it cites
 authority when it is unclear, silent or contradicts them.
 
 Two approval classes and only two: the RFC is authored in step 2 and approved at the end of step
-3; the initial commit uses the step 6 card and each additional CI-fix commit uses its step 7 card.
-A design or dependency blocker is a prerequisite, not a gate: the step ends with the blocker
+3; the initial commit uses the step 6 card, each additional CI-fix commit uses its step 7 card, and
+a drawn screen's commit uses the card of `references/design.md` part A. A drawing is a
+prerequisite, not a gate: `owner draws` runs that part A. A dependency blocker ends the step with the blocker
 named. `/task <id>` for a task that is not the walk's step is refused with the step named.
 
 ## 0. Runtime rules — nothing runs before the walk
@@ -29,13 +30,16 @@ infra start, database switch or device lifecycle action precedes it.
 ## 1. Select — the walk, fail closed
 
 Read `references/walk.md`, execute it exactly, and emit its one line with the deciding file and
-line. A result of `owner draws` or `owner clears` ends this `/task` run. A result of `build <id>`
+line. A result of `owner draws` continues with part A of `references/design.md` and ends this
+`/task` run when its draft PR opens; `owner clears` ends it. Between tasks, on a clean tree, the
+owner may ask to draw ahead: part A then takes the first V1 screen on the walk, read on past the
+first remaining task, whose `DESIGN:` reads `PENDING` and which has no open `design/<SCR-id>` PR. A result of `build <id>`
 continues through runtime setup to step 2.
 
 ## 2. The RFC — one document, one approval
 
-A screen task runs step 3's design check and board capture (its first four paragraphs) before this
-step: the RFC needs its verdict, its record and the owner's rulings on its `against code` rows.
+A screen task runs its design check first (step 3): the RFC needs its `READY` and the owner's
+`board or code` rulings.
 
 Read `docs/tasks/README.md` before drafting a task RFC. It is the sole authority for RFC sections,
 proof ownership, delivery size and Parts. A task RFC is written in its complete shape under the
@@ -68,48 +72,13 @@ rewritten to that part's trigger (`T-<task><x> starts`), and a `starts` row that
 `reopens when` cell, all in this commit, since its trigger is spent (the `deferred-rows` invariant
 fails it otherwise).
 
-## 3. Design check — screen tasks
+## 3. Design check, then the RFC's approval
 
-Fetch the record yourself with `DesignSync` `get_file` (the project and file name are in the
-task's `DESIGN:` link; the `… decisions … .md` sits beside the board) and hand its text, the brief
-and `docs/start-here.md` to `design-check`. Fetch the board file too when it is under the read cap,
-save it in the scratchpad by a script — never typed — and hand its path beside the record; a board
-over the cap is said in `#### Design check`. `READY` goes into `#### Design check` with the
-verdict's date and the record's exact file name, which a later fetch uses in place of a file
-listing, and every entry — a first `READY` or a later part's "the verdict stands" — ends in one
-line per screen the task designs, its digests the first 12 hex of `shasum -a 256` on the files as
-read, never typed:
-``Read: `<SCR-id>` · brief sha256:<12> · record sha256:<12> · board main sha256:<12>``, then
-`· board <name> sha256:<12>` for each `also:` board its DESIGN line names; a board too large to
-read says `board <name> over the read cap`. A brief edited after it fails the invariant
-`design-check-fresh`: check the board again. Anything
-else goes to the owner as the helper's one prompt. The owner's "done"
-means: fetch again, check again. A studio screen reads `ported from the POC` and has no check.
-
-A screen's board is pictured ONCE, at its first `READY`: `qa-web` pictures every frame of the
-board in the browser pane Main opened (the owner signed in) — each state, at 375 and 1536, a phone
-frame whole in one shot — into `.qa/board/<SCR-id>/<digests>/<frame>.png`, a git-ignored folder
-named by its `Read:` line's record and board digests joined by `-` (a board over the cap adds none,
-so its change is held only by the owner's word) that outlives the session, and returns their paths; Main's capture prompt names the folder a pane screenshot lands in,
-`~/.claude/projects/<project>/<session id>/tool-results/` (the session id is in the scratchpad
-path). `#### Design check` lists them beside
-the `Read:` line. Every later part reuses them: it pictures again a frame missing from the folder
-its own `Read:` line names — so a record or board that changed, under the same file name, starts
-an empty folder — or every frame when the owner says the board changed. A frame reported `BLOCKED` is
-retried once with the pane shown; still `BLOCKED`, it goes to the owner. Main never pictures a
-board and never reads a picture: the helpers compare, and the card shows the files.
-
-The check's `against code` rows go to the owner once, before the task's first RFC: the helper's
-prompt for the rows the board must change, a brief ruling for each of the rest. Each row goes into
-`#### Design check` as `| frame | the board | the code | ruling |`, the last cell `ruled: <the
-owner's decision>` — the helper's `board`, `code` or `owner` is its suggestion, never a ruling; the
-task's first RFC is written only when every row is ruled (the invariant `design-check-fresh`). A later part reads only what the board changed since.
-
-The board is the design, not an order. A frame that looks wrong — against a PRD row, the brief, a
-law or rule, accessibility or another frame, or with a clearly simpler way to the same row — goes to
-the owner with at most two options, recommended first: fix the board (one paste-ready prompt), or
-build the better way and record the ruling in the task. Never copy it silently, never depart from
-it silently, and build neither way before the owner answers.
+A screen task runs part B of `references/design.md` before its RFC: the board is read live, a
+helper pictures it, `design-check` judges it, every fix goes to the owner as one prompt to paste,
+and each new `board or code` difference gets the owner's ruling in `#### Design check`. Only a
+`READY` check lets the RFC be written. Any other task or part whose QA rows name a board frame runs
+the same part B before its QA, so the pictures it compares with are fresh.
 
 The RFC is written in full under the task, then the chat shows its short view, never the whole
 text: the title; a link to the `#### … RFC` heading by file and line; the user impact from
@@ -222,11 +191,12 @@ listener or phone the task started still runs or the database routing differs fr
 
 ## Helpers — `.claude/agents/`
 
-`design-check` and `qa-web`'s board capture run in step 3; changed-surface QA, `qa-api` and
+`design-check` and `qa-web`'s board capture run in step 3, before step 5's QA of a part whose rows
+name a board frame, and in `references/design.md` part A; changed-surface QA, `qa-api` and
 `reviewer` run in step 5; `evaluator` follows them; `ci-investigator` reads one failed job in step
 7. Their own files are the only report contracts. Helpers start no helper and edit no repository
 file: on a task branch the task guard refuses a helper's git, `gh`, install and in-place edit
 commands and records any repository file another of its commands changed, and the commit waits
 for the owner to see it. QA drives only its assigned API/browser/device surface; Evaluator alone may run the full gate
-and cause its declared generated-file writes. Only Main reads the design record. A rerun continues
+and cause its declared generated-file writes. Only Main fetches the design record. A rerun continues
 the same helper with the delta.

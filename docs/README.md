@@ -5,7 +5,7 @@ compatibility pointer and the code.
 
 | | |
 |---|---|
-| [`start-here.md`](start-here.md) | **Designing a screen.** The one file a design session starts from. |
+| [`start-here.md`](start-here.md) | **Designing a screen.** The drawing prompt, the fix prompt and the checklist. |
 | [`build-order.md`](build-order.md) | **Building.** The sequence engineering works in. |
 
 ## The four trees

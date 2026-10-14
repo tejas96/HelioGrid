@@ -15,7 +15,7 @@ const ARCHIVE = `${TASKS}/archive/`;
 export const TASK_ID = 'T-[A-Z0-9]+-\\d+';
 export const SCREEN_ID = 'SCR-[A-Z0-9]+-\\d{2}';
 const DESIGN_SCREEN = new RegExp(`(${SCREEN_ID})\\s*→\\s*`, 'g');
-export const FENCE = /^\s*```/;
+const FENCE = /^\s*```/;
 export const TASK_HEADING = new RegExp(`^### (${TASK_ID}[a-z]?) · (.*)$`);
 const ANY_HIGHER_HEADING = /^#{1,3} /;
 const STATUS = /^\*\*Status:\*\* (.+)$/;
@@ -55,26 +55,13 @@ export function designLinks(task: TaskEntry): DesignLink[] {
     return {
       screen: match[1] ?? '',
       link: segment.split(/\s/)[0] ?? '',
-      alsoBoards: alsoBoards(segment),
     };
   });
 }
 
-export interface DesignLink {
+interface DesignLink {
   screen: string;
   link: string;
-  /** The boards a screen keeps beside its main one, by name: `· also: States <link> · Language <link>`. */
-  alsoBoards: string[];
-}
-
-function alsoBoards(segment: string): string[] {
-  const at = segment.indexOf('also:');
-  if (at < 0) return [];
-  return segment
-    .slice(at + 'also:'.length)
-    .split(' · ')
-    .map((entry) => entry.split(/\s+https?:\/\//)[0]?.trim() ?? '')
-    .filter((name) => name !== '');
 }
 
 /** Where a `#### Parts` heading's table is: after the heading, prose may come before its rows. */
