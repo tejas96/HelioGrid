@@ -91,8 +91,8 @@ or by its CI lane before the PR is marked ready (`docs/tasks/README.md` proof ow
   write it into that module's task in `docs/tasks/`, and carry on.
 - **Committing.** Each commit waits for the owner's yes to the shown file list and message — a go,
   a green check or an earlier yes never counts. In that commit the task's Status (or the part's row
-  in its Parts table) turns `shipped`; then push and open the PR. The owner merges. Never
-  `--no-verify`, never force-push.
+  in its Parts table) turns `shipped` — a design commit turns it `designed`; then push and open the
+  PR. The owner merges. Never `--no-verify`, never force-push.
 
 ## 5. Commands
 
@@ -122,10 +122,10 @@ allowed imports; §4 decides where a new file goes. Run §4 before creating one.
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
 | `docs/engineering/` | how this repo is built. |
 | `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers), `skills/task/` (the one step runner — it walks the order and holds the two gates), `agents/` (its read-only helpers), `hooks/` (the task guard, which refuses on a task branch what a written rule alone could not hold, and `guard-suite.mjs`, its proof), `settings.json` (hard-safety denies, the owner's prompts, the guard's wiring, and the plugins switched off here because `skills/task/` is the one step runner). |
-| `.qa/` | git-ignored: `api.log`, `web.log`, `metro.log` — the development logs the launch configurations append to and the e2e suite reads — `board/<SCR-id>/<digests>/`, a screen's board pictures, taken once per record and board digest (`/task` step 3) and reused by every part that reads the same; `components/<name>/`, the pictures a component spec saves for the commit card; and `guard/`, the task guard's record of each task branch, the owner's alone to clear. |
+| `.qa/` | git-ignored: `api.log`, `web.log`, `metro.log` — the development logs the launch configurations append to and the e2e suite reads — `board/<SCR-id>/`, a screen's board pictures, taken fresh by each design check (`.claude/skills/task/references/design.md`, part B); `components/<name>/`, the pictures a component spec saves for the commit card; and `guard/`, the task guard's record of each task branch, the owner's alone to clear. |
 | `.ops/` | the owner's private infra record, git-ignored: every external account, project and client id, what is still owed, and each environment's values (`dev.env`, `prod.env`). A console change updates it in the same sitting. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
-| the Claude Design project | NOT in the repo: each screen's board and decisions record — the pixel-perfect reference. A task's `DESIGN:` line links it; read the record with `DesignSync`, and a helper pictures the board in the browser pane (`/task` step 3); keep no copy in the repo — frame pictures live in the git-ignored `.qa/board/<SCR-id>/<digests>/`. A studio screen (`ported from the POC`) has none. |
+| the Claude Design project | NOT in the repo: each screen's board and decisions record — the pixel-perfect reference. A task's `DESIGN:` line links it; read the record with `DesignSync`, and a helper pictures the board in the browser pane (`.claude/skills/task/references/design.md`); keep no copy in the repo — frame pictures live in the git-ignored `.qa/board/<SCR-id>/`. A studio screen (`ported from the POC`) has none. |
 
 Import a package only through an entry its `package.json` `exports` declares. **Never invent a folder**: every tree is a closed set, and a new category is a
 plan-time decision. `docs/README.md` maps every document.

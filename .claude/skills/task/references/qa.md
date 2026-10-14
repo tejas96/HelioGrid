@@ -41,12 +41,13 @@ once through the app, never per run. API tests use their own fixtures, not these
 ## Packets and mutation guard
 
 Give each helper exactly what its own file's "Your prompt gives you" lists, and nothing it does not
-list; the session's `tool-results` folder is in the scratchpad path. Main decides three of those
+list; the session's `tool-results` folder is `~/.claude/projects/<project>/<session id>/tool-results/`,
+the session id being in the scratchpad path. Main decides three of those
 things:
 
 - A screen row's **ruled differences** are every open `docs/tasks/deferred.md` row that names its
-  screen or one of its frames, and every open `docs/tasks/UI.md` row of a component those frames
-  draw.
+  screen or one of its frames, every open `docs/tasks/UI.md` row of a component those frames
+  draw, and every ruling the task's `#### Design check` holds for those frames.
 - A row run in Hindi or Marathi has its standing account's language set before it: in the app
   where a built screen sets it, otherwise by Main through `PATCH /users/me` signed in as that
   account the way `qa-api` signs in (`.claude/agents/qa-api.md`) — setup, never proof — and set

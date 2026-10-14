@@ -5,23 +5,12 @@ The master list — every screen, its brief, whether it is V1 — is `docs/prd/r
 That register is the single source of truth for what exists; whether a screen is drawn is its
 task's `DESIGN:` line in `docs/tasks/`. This folder is the register's working material.
 
-## The loop (one screen per Claude Design session)
+## How a brief becomes a screen
 
-1. Open a fresh Claude Design session (the HelioGrid design system already selected).
-2. Paste `docs/ux/claude-design-context.md` — unchanged, every session.
-3. Paste ONE brief from this folder.
-4. Send the four messages `docs/start-here.md` carries, word for word: the 375px layout with its
-   word plan, the 1536px layer, every state, then the self-audit with the word inventory first.
-5. Record the result in ONE place: `docs/tasks/<module>.md`, that screen's
-   `DESIGN: SCR-… → PENDING` line → the artifact link, and the task's `Status:` → `designed` once
-   every link it carries is filled. The register is not edited.
-6. If the brief said **"not pinned by PRD — designer decides"** anywhere and you made the call,
-   write the decision back into the brief so the next screen inherits it.
-
-**`docs/start-here.md` holds the exact messages and the edit.** They are written once, there.
-
-Do not batch screens into one session. A session that has drawn several screens starts
-forgetting the laws.
+Claude Code checks the brief, builds one drawing prompt from it, and the owner pastes that prompt
+into a fresh Claude Design session (`.claude/skills/task/references/design.md`, part A). The prompt,
+the fix prompt and the checklist a drawn screen is judged by are written once, in
+`docs/start-here.md`.
 
 ## What a brief contains (and what it never contains)
 
@@ -56,8 +45,9 @@ redraw before its build, which buys nothing for a screen already drawn.
 
 ## The one thing no check can hold: the States list
 
-The owner checks a screen's board before its build — but **nothing checks that a brief's States list is complete**. It cannot be checked: states are a
-design decomposition, not a projection of the
+A drawn screen's board is checked live before each build
+(`.claude/skills/task/references/design.md`, part B) — but **nothing checks that a brief's States
+list is complete**. It cannot be checked: states are a design decomposition, not a projection of the
 requirement rows, so no 1:1 rule exists to enforce (three formulations were measured on
 2026-08-26 and all three fired on 17–43% of correct briefs).
 

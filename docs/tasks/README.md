@@ -14,7 +14,7 @@ explicit `realized-by` pointer to the requirement that carries it); a task whose
 
 A task is its header lines, written when the task is. The RFC adds its sections under them —
 one `#### RFC`, whose `#####` sections below fix; for a split task `#### Parts` and each
-part's `#### Part <x> · RFC`; a screen task's `#### Design check`; and one `#### Runtime` ledger
+part's `#### Part <x> · RFC`; the `#### Design check` of a task that runs one (`.claude/skills/task/references/design.md`); and one `#### Runtime` ledger
 under each part's RFC, or under `#### RFC` for an unsplit task. A task approved under the earlier `#### Plan` shape keeps it while
 that approval remains valid; if scope voids the approval, the affected task or part gets one
 complete replacement RFC and the earlier sections remain as history (`/task` steps 2 and 4). The
@@ -25,7 +25,7 @@ header lines:
 **Type:** screen · **Tier:** P0        (screen | engine | policy | integration | port · the highest tier among its rows)
 **Status:** planned                    (planned | designed | shipped | struck — the one ledger)
 **PRD rows:** M02-<nn> (P0), M02-<nn> (P0), M02-<nn> (P1)        — every id carries its tier (rule 6)
-**DESIGN:** SCR-<module>-<nn> → PENDING          — filled when the screen is approved; a screen with more than one board lists the others after the main link: `· also: <board> <link>`; a studio screen reads `ported from the POC`
+**DESIGN:** SCR-<module>-<nn> → PENDING          — filled by Claude Code when the owner hands over the drawn screen (`.claude/skills/task/references/design.md`, part A); a screen with more than one board lists the others after the main link: `· also: <board> <link>`; a studio screen reads `ported from the POC`
 **Design:** (older tasks, instead of DESIGN:) `none — <reason>` for a task with no screen, the existing boards it reuses, or `the same canvas as <task id>'s DESIGN line` and the frames it uses — only the last makes the walk wait, until that task's `DESIGN:` holds a link
 **PORT:** (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-claims.md
         — files to READ AND PORT FROM, never files to create here. A PORT entry that names a
@@ -124,8 +124,9 @@ A screen task with a board (a studio screen has none) has one `side-by-side` row
 it renders on the web — each state, 375, 1536 — owned by `qa-web`, and one
 per phone state owned by `qa-ios` alone, its language rotating state by state (English, Hindi,
 Marathi); in Hindi and Marathi it compares the layout, the words being the catalog's. The board
-pictures are the ones taken once per record and board, in `.qa/board/<SCR-id>/<digests>/`
-(`/task` step 3). `qa-android` walks the same journey rows and compares no frame: both phones
+pictures are the ones this run's design check took, in `.qa/board/<SCR-id>/`
+(`.claude/skills/task/references/design.md`, part B).
+`qa-android` walks the same journey rows and compares no frame: both phones
 draw the one shared component; one journey row per part carries the surface `android · Hindi`,
 and every phone row measures that no button label wrapped and that the focused field sits above
 the keyboard, `n/a` when the row has neither (`.claude/agents/`).
@@ -133,7 +134,7 @@ Hindi and Marathi have no board frame: one `main-dev` row per shared component p
 component spec at 375 and 1536 — no sideways scroll, no clipped text box, the act on screen — and
 that spec saves one picture per language and width with `page.screenshot`, under
 `.qa/components/<name>/<lang>-<width>.png`, which the commit card shows. Web at 375 is compared with the phone frame. A state the board draws only at 375 is compared at 1536 with
-its phone frame and the board's stated 1536 rule (`docs/start-here.md`, desktop states), not flagged
+its phone frame and the board's stated 1536 rule (`docs/start-here.md`, *The drawing prompt*, Pass 3), not flagged
 as missing. A frame with no row, or a built state with no frame and no stated rule, is a finding. A side-by-side row names only a frame the running app reaches today with data QA can make through the app; a frame it cannot reach is decided in the RFC — `not_applicable` with the reason, or proven by its component's spec — never found by QA. In a
 light cycle no helper drives a browser: the component spec saves each drawn frame's picture the
 same way, and the `qa-web` row names the two files — the board's and the spec's — and compares
