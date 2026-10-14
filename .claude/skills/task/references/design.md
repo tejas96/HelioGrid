@@ -52,9 +52,12 @@ are read live each time; no earlier picture is reused, but every earlier ruling 
    the browser pane, one tab each, and look at each tab before any helper uses it: it shows the
    board, not a sign-in page, and the pane is shown. A signed-out tab or a hidden pane goes to the
    owner first, with the one thing to do. Then give `qa-web` a board-capture prompt:
-   each board's name, tab and English frames, the folder `.qa/board/<SCR-id>/`, and the folder a
-   pane screenshot lands in, `~/.claude/projects/<project>/<session id>/tool-results/` (the session id
-   is in the scratchpad path). A board drawn only in another language is not pictured. A frame it
+   each board's name, tab and the English frames to picture, the folder `.qa/board/<SCR-id>/`, and
+   the folder a pane screenshot lands in, `~/.claude/projects/<project>/<session id>/tool-results/`
+   (the session id is in the scratchpad path). A screen just drawn in part A has every
+   English frame pictured; a task or part pictures only the frames its Parts row and QA rows name,
+   and `design-check` reads the rest in the board's source. A board drawn only in another language
+   is not pictured. A frame it
    reports `BLOCKED` is retried once with the pane shown; still `BLOCKED`, it goes to the owner.
 3. Give `design-check` the task id and the `DESIGN:` line read in 1, the brief path, the saved
    record and board files (a board over the read cap is named so), the pictures folder, and every
