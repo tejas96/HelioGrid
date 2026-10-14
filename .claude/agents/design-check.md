@@ -31,7 +31,7 @@ Check, and cite the brief row or contract item for each answer:
 7. **Board against code.** Where a board path is given, on the whole board: every control's
    settings against the repo component's contract; every fact a frame shows against the rule or
    contract that decides it. Skip what the brief rules. These rows are the owner's to rule and never
-   change the verdict.
+   change the verdict; your last field is a suggestion, and Main records the owner's ruling (`/task` step 3).
 
 Answer in this shape and nothing else:
 
@@ -41,7 +41,7 @@ boards: <each board link checked, or "none">
 findings:
 - <brief row or contract item> → <what the record shows> → <what is missing>
 against code:
-- <frame> → <the board's value> → <the code's file and line> → <board | code | owner>
+- <frame> → <the board's value> → <the code's file and line> → suggests <board | code | owner>
 prompt: <ONE paste-ready Claude Design prompt that fixes every finding and every `board` row, or "none">
 ```
 

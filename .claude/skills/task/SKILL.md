@@ -76,24 +76,34 @@ and `docs/start-here.md` to `design-check`. Fetch the board file too when it is 
 save it in the scratchpad by a script — never typed — and hand its path beside the record; a board
 over the cap is said in `#### Design check`. `READY` goes into `#### Design check` with the
 verdict's date and the record's exact file name, which a later fetch uses in place of a file
-listing; anything else goes to the owner as the helper's one prompt. The owner's "done"
+listing, and every entry — a first `READY` or a later part's "the verdict stands" — ends in one
+line per screen the task designs, its digests the first 12 hex of `shasum -a 256` on the files as
+read, never typed:
+``Read: `<SCR-id>` · brief sha256:<12> · record sha256:<12> · board main sha256:<12>``, then
+`· board <name> sha256:<12>` for each `also:` board its DESIGN line names; a board too large to
+read says `board <name> over the read cap`. A brief edited after it fails the invariant
+`design-check-fresh`: check the board again. Anything
+else goes to the owner as the helper's one prompt. The owner's "done"
 means: fetch again, check again. A studio screen reads `ported from the POC` and has no check.
 
 A screen's board is pictured ONCE, at its first `READY`: `qa-web` pictures every frame of the
 board in the browser pane Main opened (the owner signed in) — each state, at 375 and 1536, a phone
-frame whole in one shot — into `.qa/board/<SCR-id>/<frame>.png`, a git-ignored folder that
-outlives the session, and returns their paths; Main's capture prompt names the folder a pane screenshot lands in,
+frame whole in one shot — into `.qa/board/<SCR-id>/<digests>/<frame>.png`, a git-ignored folder
+named by its `Read:` line's record and board digests joined by `-` (a board over the cap adds none,
+so its change is held only by the owner's word) that outlives the session, and returns their paths; Main's capture prompt names the folder a pane screenshot lands in,
 `~/.claude/projects/<project>/<session id>/tool-results/` (the session id is in the scratchpad
 path). `#### Design check` lists them beside
-the record's exact file name. Every later part reuses them: it pictures again only a frame that is missing
-there, or every frame when the record's file name differs from the one listed or the owner says
-the board changed. A frame reported `BLOCKED` is
+the `Read:` line. Every later part reuses them: it pictures again a frame missing from the folder
+its own `Read:` line names — so a record or board that changed, under the same file name, starts
+an empty folder — or every frame when the owner says the board changed. A frame reported `BLOCKED` is
 retried once with the pane shown; still `BLOCKED`, it goes to the owner. Main never pictures a
 board and never reads a picture: the helpers compare, and the card shows the files.
 
 The check's `against code` rows go to the owner once, before the task's first RFC: the helper's
-prompt for the rows the board must change, a brief ruling for each of the rest. A later part reads
-only what the board changed since.
+prompt for the rows the board must change, a brief ruling for each of the rest. Each row goes into
+`#### Design check` as `| frame | the board | the code | ruling |`, the last cell `ruled: <the
+owner's decision>` — the helper's `board`, `code` or `owner` is its suggestion, never a ruling; the
+task's first RFC is written only when every row is ruled (the invariant `design-check-fresh`). A later part reads only what the board changed since.
 
 The board is the design, not an order. A frame that looks wrong — against a PRD row, the brief, a
 law or rule, accessibility or another frame, or with a clearly simpler way to the same row — goes to
