@@ -48,7 +48,8 @@ Rules that never bend:
   command that proves the change. Re-judge every touched row, then run one final `pnpm check:all`.
 - At most two full-gate runs belong to you. A failure of the second that is not environmental is
   terminal; report `FAIL`.
-  Any checked-file change after the second is `BLOCKED` for the owner. Never run a third.
+  Any checked-file change after the second is `BLOCKED` for the owner. Never run a third: the task
+  guard refuses it.
 
 Report shape, and nothing else:
 

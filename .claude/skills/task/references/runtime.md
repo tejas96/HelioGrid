@@ -41,7 +41,7 @@ the exact identity that stops or restores it:
 
 ## Teardown
 
-On success, blocker, cancellation or failure:
+Before the commit card on success (`/task` step 6), and on a blocker, cancellation or failure:
 
 1. Restore both database URLs to their initial values; restart the api only if the task restarted it.
    Set each standing account whose language a row changed back to its initial language.
@@ -56,6 +56,7 @@ On success, blocker, cancellation or failure:
 3. Leave every `pre_existing` resource and standing test company alone. Keep logs and proof.
 4. Confirm no task-owned `tsx ... watch` process survives; a watcher can outlive its listener. A
    survivor is named to the owner with its pid, who stops it: the agent is denied `kill`.
-5. Report `resource → initial state → final state`.
+5. Report it in a block starting `Teardown:`, one line per resource, `resource → initial state →
+   final state`; the task guard checks the listeners, phones and routing behind that line.
 
 The next task starts in a fresh session; this one stays bound to its PR for CI (`/task` step 7).

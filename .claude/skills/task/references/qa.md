@@ -57,10 +57,11 @@ After QA returns, Main composes each board frame beside the web's and iOS's scre
 file name with a script, one image per frame, never reading a picture, and the commit card
 attaches them.
 
-Before helpers start, hash the tracked status and diff, untracked-file hashes, and the two database
-URL lines. Compare after they return. A changed hash is a blocker named by file. Helpers have Bash,
-so repository writes are detected, not prevented; database and device writes are governed by each
-helper contract and are not hash-detected.
+The task guard (`.claude/hooks/guard.mjs`) watches every helper's Bash command on a task branch:
+it refuses git, `gh`, install and in-place edit commands, and records any repository file another
+command changed — outside the helpers' `.qa/` and the gate's own rewrites — which stops the commit
+until the owner has seen it. Main changes no file while a helper's command runs, or the record
+names Main's change as the helper's. Database and device writes stay held by each helper's contract.
 
 ## Review first, then QA
 
