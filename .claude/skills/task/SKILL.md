@@ -63,7 +63,10 @@ the ruling lands in the PRD row or brief first, then the task. Implementation in
 Before showing the RFC, list every `docs/tasks/deferred.md` row this task meets: `T-<this> starts`,
 `T-<x> ships` where x has shipped, and `touches <path>` where a path in the file table sits under
 it. Each goes into the decision block as join this task or stays, recommended first; a row that
-joins is deleted in this task's commit.
+joins is deleted in this task's commit, a `T-<task> starts` row that joins a later part is
+rewritten to that part's trigger (`T-<task><x> starts`), and a `starts` row that stays gets a new
+`reopens when` cell, all in this commit, since its trigger is spent (the `deferred-rows` invariant
+fails it otherwise).
 
 ## 3. Design check — screen tasks
 

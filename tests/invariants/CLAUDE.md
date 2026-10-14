@@ -10,8 +10,9 @@ an invariant proves the seam between them.
   means something.
 - NEVER a unit test (`.claude/rules/testing.md`).
 - Never a fixture factory, a mock, or a helper library. An invariant that needs scaffolding to be
-  readable is testing the wrong thing. The two shared files are `repo-root.ts` and
-  `repo-files.ts`, the one file lister every static invariant reads the tree through.
+  readable is testing the wrong thing. The three shared files are `repo-root.ts`,
+  `repo-files.ts`, the one file lister every static invariant reads the tree through, and
+  `task-ledger.ts`, the one reader of the task files every ledger check reads them through.
 - A repo-scanning invariant is a pure `find…(repo)` returning findings plus a `run…(repo)` that
   throws them, and it refuses an empty scan.
 

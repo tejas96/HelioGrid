@@ -52,7 +52,7 @@ same way: the RFC adds its sections under the header lines and changes nothing a
 **A shipped part leaves the live file.** The commit that turns a part's row `shipped` moves its
 `#### Part <x> · RFC` body and its `#### Runtime` ledger, unchanged, to
 `docs/tasks/archive/<task id>.md` under a `## <task id> · part <x>` heading — never a `### T-`
-heading and never a `**Status:**` line, which the `deferred-rows` check reads as a task. The
+heading and never a `**Status:**` line: a part is history there, never a task. The
 header lines, the task RFC, `#### Design check` and the `#### Parts` table stay here; a later part
 reads only them.
 
