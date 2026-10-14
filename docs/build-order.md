@@ -33,7 +33,8 @@ the architecture keeps its extension points, but nothing V2 is designed or built
 ## One order, walked one step at a time
 
 Every task is built in ONE fixed order, and `/task` (`.claude/skills/task/SKILL.md`) walks it to
-pick the next step; no check holds the order. The order is walked, never chosen:
+pick the next step; the invariant `build-order-holds` keeps the order itself whole — every task
+file placed, no loop, every later-block wait recorded. The order is walked, never chosen:
 
 1. the blocks below, lowest first;
 2. inside a block, its cells in the order the block's row writes them — a file, or a task placed
@@ -202,10 +203,11 @@ task that builds what it needs. A record here keeps the order honest; it does no
 
 ## Checking the suite
 
-No script checks the documents any more. The RFC checks the task it takes: every row id the task
-cites exists in the PRD, and every quoted row still matches its PRD cell. The owner checks a
-screen's design in Claude Design.
-What nothing checks — a dangling id in a task not yet started, the V1 count, a row dispositioned
-twice in the screens register — is held by review and the owner.
+Invariants check the task documents (`.claude/protections.md`, Process): `deferred-rows`,
+`task-ledger-agrees` (each status, design link, cited task id and the history) and
+`build-order-holds`. The RFC tests the requirements the task it takes carries (`/task` step 2).
+The owner checks a screen's design in Claude Design.
+What no check holds yet — a citation of a deleted PRD row, a quote drifting from its PRD cell, the
+V1 count, a row dispositioned twice in the screens register — is held by review and the owner.
 
 Design progress is how many V1 screens have a link on their task's `DESIGN:` line.

@@ -11,14 +11,20 @@ import { gitFiles } from './repo-files';
 const TASKS = 'docs/tasks';
 const NOT_TASK_FILES = new Set([`${TASKS}/README.md`, `${TASKS}/deferred.md`, `${TASKS}/UI.md`]);
 const ARCHIVE = `${TASKS}/archive/`;
+/** A task's id; a part adds its letter (`T-M01-005f`). Every ledger check builds on this one. */
+export const TASK_ID = 'T-[A-Z0-9]+-\\d+';
+export const SCREEN_ID = 'SCR-[A-Z0-9]+-\\d{2}';
+const DESIGN_LINK = new RegExp(`(${SCREEN_ID})\\s*→\\s*(\\S+)`, 'g');
 const FENCE = /^\s*```/;
-const TASK_HEADING = /^### (T-[A-Z0-9]+-\d+[a-z]?) · /;
+const TASK_HEADING = new RegExp(`^### (${TASK_ID}[a-z]?) · (.*)$`);
 const ANY_HIGHER_HEADING = /^#{1,3} /;
 const STATUS = /^\*\*Status:\*\* (.+)$/;
 const PARTS_HEADING = /^#### Parts\s*$/;
 /** A build begins with its RFC heading (`/task` step 0); a legacy task began with its `Plan`. */
 const BUILD_HEADING = /^#### (?:RFC|Plan|Part ([a-z]) · RFC)\b/;
 const PART_ROW = /^\| ([a-z]) \|.*\|([^|]*)\|\s*$/;
+/** A header line, `**Depends on:** …`; only those above the task's first `####` heading count. */
+const HEADER_LINE = /^\*\*([A-Za-z][A-Za-z ]*):\*\*\s*(.*)$/;
 
 export interface PartEntry {
   status: string;
@@ -28,7 +34,20 @@ export interface PartEntry {
 export interface TaskEntry extends PartEntry {
   file: string;
   line: number;
+  /** The heading after the id, as written: `STRUCK …` marks a struck task. */
+  title: string;
+  /** Each header line by its label (`Type`, `Depends on`, `DESIGN`, `Design`, `Parked` …). */
+  header: Map<string, string>;
+  statusLines: number;
   parts: Map<string, PartEntry>;
+}
+
+/** Each screen a task's `DESIGN:` line names, with its board link, `PENDING` or `ported from …`. */
+export function designLinks(task: TaskEntry): { screen: string; link: string }[] {
+  return [...(task.header.get('DESIGN') ?? '').matchAll(DESIGN_LINK)].map((m) => ({
+    screen: m[1] ?? '',
+    link: m[2] ?? '',
+  }));
 }
 
 /** Where a `#### Parts` heading's table is: after the heading, prose may come before its rows. */
@@ -53,6 +72,8 @@ export function readTaskLedger(repo: string): TaskLedger {
         continue;
       }
       firstHeading.set(id, here);
+      if (entry.statusLines > 1)
+        problems.push(`${id} at ${here} has ${entry.statusLines} **Status:** lines`);
       if (entry.status === '') problems.push(`${id} at ${here} has no **Status:** line`);
       else tasks.set(id, entry);
     }
@@ -69,26 +90,53 @@ function taskFiles(repo: string): string[] {
 /** One file's tasks, read line by line outside fenced blocks. */
 function tasksIn(file: string, text: string): [string, TaskEntry][] {
   const found: [string, TaskEntry][] = [];
-  let task: TaskEntry | undefined;
-  let inFence = false;
-  let partsTable: PartsTable = 'none';
+  const reading: Reading = { inFence: false, partsTable: 'none', inHeaderLines: false };
   text.split('\n').forEach((line, index) => {
-    if (FENCE.test(line)) inFence = !inFence;
-    if (inFence) return;
-    const heading = TASK_HEADING.exec(line);
-    if (heading?.[1] !== undefined) {
-      task = { file, line: index + 1, status: '', begun: false, parts: new Map() };
-      found.push([heading[1], task]);
-      partsTable = 'none';
+    if (FENCE.test(line)) reading.inFence = !reading.inFence;
+    if (reading.inFence) return;
+    const opened = openedTask(file, line, index);
+    if (opened !== undefined) {
+      found.push(opened);
+      Object.assign(reading, { task: opened[1], partsTable: 'none', inHeaderLines: true });
       return;
     }
-    if (ANY_HIGHER_HEADING.test(line)) task = undefined;
-    if (task === undefined) return;
-    partsTable = nextPartsTable(line, partsTable);
-    if (partsTable === 'in rows') recordPart(task, line);
-    else if (partsTable === 'none') recordTaskLine(task, line);
+    if (ANY_HIGHER_HEADING.test(line)) reading.task = undefined;
+    if (reading.task !== undefined) readTaskLine(reading, reading.task, line);
   });
   return found;
+}
+
+/** Where the reader stands in a file: inside a fence, a task's header lines, or its Parts table. */
+interface Reading {
+  task?: TaskEntry;
+  inFence: boolean;
+  partsTable: PartsTable;
+  inHeaderLines: boolean;
+}
+
+function openedTask(file: string, line: string, index: number): [string, TaskEntry] | undefined {
+  const heading = TASK_HEADING.exec(line);
+  const id = heading?.[1];
+  if (id === undefined) return undefined;
+  const title = heading?.[2] ?? '';
+  const task = {
+    file,
+    line: index + 1,
+    title,
+    header: new Map(),
+    status: '',
+    statusLines: 0,
+    begun: false,
+  };
+  return [id, { ...task, parts: new Map() }];
+}
+
+function readTaskLine(reading: Reading, task: TaskEntry, line: string): void {
+  if (line.startsWith('#### ')) reading.inHeaderLines = false;
+  if (reading.inHeaderLines) recordHeaderLine(task, line);
+  reading.partsTable = nextPartsTable(line, reading.partsTable);
+  if (reading.partsTable === 'in rows') recordPart(task, line);
+  else if (reading.partsTable === 'none') recordTaskLine(task, line);
 }
 
 /** The table ends at its first line that is not a row, and any heading ends the search for it. */
@@ -108,8 +156,17 @@ function recordPart(task: TaskEntry, line: string): void {
   task.parts.set(letter, { status, begun: part?.begun ?? false });
 }
 
+/** A label written twice among the header lines keeps its first value. */
+function recordHeaderLine(task: TaskEntry, line: string): void {
+  const [, label, value] = HEADER_LINE.exec(line) ?? [];
+  if (label !== undefined && value !== undefined && !task.header.has(label)) {
+    task.header.set(label, value);
+  }
+}
+
 function recordTaskLine(task: TaskEntry, line: string): void {
   const status = STATUS.exec(line)?.[1];
+  if (status !== undefined) task.statusLines += 1;
   if (status !== undefined && task.status === '') task.status = status.trim();
   const build = BUILD_HEADING.exec(line);
   if (build === null) return;
