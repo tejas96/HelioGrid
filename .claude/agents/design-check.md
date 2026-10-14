@@ -21,7 +21,9 @@ brief row, PRD row or checklist item for each answer:
    with its reason. A frame in another language is not read: the catalog owns those words.
 2. **Words.** Every word the brief fixes — a disclosure, a disclaimer, a label the PRD quotes — is
    on its frame word for word. A paragraph that explains, or a requirement met by a sentence about
-   it, is a finding.
+   it, is a finding. A word that leads to another screen — a list row, a link, a back control —
+   is the title of the screen it opens, and a title is the word that opens it; when one side is
+   built, read it in the catalog (`packages/i18n/src/copy/`).
 3. **Calm.** One focal point per region, no card inside a card, one banner at a time, the one
    action plain, and a state that changes the data, the status chip and the action, never adds a
    paragraph.
@@ -48,5 +50,7 @@ prompt: <ONE paste-ready fix prompt for every finding and every row Main says th
 ```
 
 `NOT_DRAWN` when the `DESIGN:` line reads `PENDING` or a required frame is absent. The prompt
-is the instruction part of `docs/start-here.md`, *The fix prompt*, with the list filled in. You
-never invent a layout, a size or a word.
+is the instruction of `docs/start-here.md`, *The fix prompt*, with the list filled in; its first
+line says `size: full` or `size: short`, as that section picks for the list, and Main adds the two
+texts a full prompt carries. Each line of the list is read in the board's source before you write
+it. You never invent a layout, a size or a word.

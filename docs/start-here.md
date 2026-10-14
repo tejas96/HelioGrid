@@ -122,8 +122,17 @@ unchanged; the whole brief the screens register names; then this:
 
 Every change to a drawn screen — a check's findings, a `board` ruling, a brief's
 `## Redesign owed` — is one message in the screen's own file, with the live design system
-selected, and three texts in this order: the whole of `docs/ux/claude-design-context.md`,
-unchanged; the whole brief; then this, its list filled in:
+selected. Its size follows the change:
+
+- **Full** — when the list adds or redraws a state, changes a layout across frames, or carries a
+  rewritten brief: three texts in this order, the whole of `docs/ux/claude-design-context.md`,
+  unchanged; the whole brief; then the instruction below, its list filled in.
+- **Short** — every other list (a word, a title, an element moved inside a frame, a count): the
+  instruction below alone, its list filled in. The board already holds the laws and the brief;
+  pasting them again buys nothing.
+
+Each line of the list names the frame, the element, what it shows now, what it must show, and
+the brief row, PRD row or ruling that requires it.
 
 > This EDITS the existing `<file>` in place — no new file, no copy, no v2. Fix these, and nothing
 > else: *(the list, one line each)*. Keep every artboard, name, state and layout the list does not
