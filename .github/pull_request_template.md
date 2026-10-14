@@ -35,8 +35,8 @@
 | rule | break | red line |
 |---|---|---|
 
-<!-- Each money, tenancy or permission rule the reviewer named: the break applied and the test's
-     FAIL line. -->
+<!-- Every planted red: each money, tenancy or permission rule, and each check this change adds or
+     alters — the break applied and its FAIL line. -->
 
 ## Mistakes found
 

@@ -66,43 +66,44 @@ does not apply says why. A part writes
 facts: every heading is present, and one the part does not change is one declared line
 (`.claude/skills/task/SKILL.md` step 2). The task's acceptance lines appear once, except a replacement RFC for an invalidated legacy
 part repeats that part's applicable AC and proof rows so the owner reads one complete decision.
+An RFC approved with `##### Goals` and `##### Non-goals` keeps them as written; a part written
+under it folds its own outcomes and non-goals into its `##### Description`.
 
 1. `##### Title` — `<task id> — <clear change name>`.
 2. `##### Description` — opens with the user impact in plain words, two or three sentences: where
    in the product this helps, what the user gets directly, and what they get indirectly;
-   `None — internal` when nothing a user meets changes. Then who gains what and the technical
-   problem solved; cite the task, PRD rows and brief or design record without copying them.
-3. `##### Goals` — short, measurable outcomes.
-4. `##### Non-goals` — behavior and surfaces deliberately unchanged.
-5. `##### Readiness and dependencies` — landed dependencies, design-check verdict for screen work,
+   `None — internal` when nothing a user meets changes. Then who gains what, the technical problem
+   solved, its outcomes as short measurable lines, and the behavior and surfaces deliberately left
+   unchanged; cite the task, PRD rows and brief or design record without copying them.
+3. `##### Readiness and dependencies` — landed dependencies, design-check verdict for screen work,
    assumptions and blockers; `light cycle` with its reason when the proof matrix names no web,
    phone or api surface (`.claude/skills/task/references/qa.md`). No `TBD` or open blocker when
    shown.
-6. `##### Proposal` — end-to-end request, user or event flow; key decisions with one reason;
+4. `##### Proposal` — end-to-end request, user or event flow; key decisions with one reason;
    implementation order; material errors and refusals; the twin platform screen.
-7. `##### Architecture diagram` — Mermaid `flowchart LR` or `sequenceDiagram`, at most 15 nodes or
+5. `##### Architecture diagram` — Mermaid `flowchart LR` or `sequenceDiagram`, at most 15 nodes or
    participants, showing only changed and directly relevant boundaries. If none:
    `No boundary change — <where the change remains>.` A task RFC always draws its diagram, whole,
    lettered by part; a part's section may read `No boundary change — see the task diagram`, and
    the chat then links the task's (`/task` step 3).
-8. `##### Package changes` — each package's responsibility, public exports and dependency direction;
+6. `##### Package changes` — each package's responsibility, public exports and dependency direction;
    each new brand, enum, token, route, table or error code's protection row, and any kind no check
    holds (Law 12); otherwise a reasoned `None`.
-9. `##### Data and schema changes` — migration, tables, columns, enums, indexes, constraints,
+7. `##### Data and schema changes` — migration, tables, columns, enums, indexes, constraints,
    seed/backfill, old/new readers, rollout and rollback or expand/contract; otherwise
    `None — no stored shape changes`.
-10. `##### File and folder changes` — `action | path | purpose | placement reason`, one planned file
+8. `##### File and folder changes` — `action | path | purpose | placement reason`, one planned file
     per row. Actions are `add`, `modify`, `move`, `delete`; a new folder carries architecture §4's
     placement answer.
-11. `##### API and contract changes` — route/event/activity, method, request and response, errors,
+9. `##### API and contract changes` — route/event/activity, method, request and response, errors,
     auth, permission, tenancy and compatibility; otherwise `None — no wire boundary changes`.
-12. `##### Risks and rollout` — material tenancy/security, money/data, workflow/release, migration,
+10. `##### Risks and rollout` — material tenancy/security, money/data, workflow/release, migration,
     deployment and operational risks, each with its mitigation. No invented risk.
-13. `##### Acceptance criteria and proof` — every `DONE WHEN` line verbatim as `AC-1`, `AC-2`, …,
+11. `##### Acceptance criteria and proof` — every `DONE WHEN` line verbatim as `AC-1`, `AC-2`, …,
     followed by one matrix: `AC/row | owner | tier | surface | action → expected | proof`. A row
     that needs the api stopped says `api stopped` in its surface column, so local QA runs every such
     row in the task's one api-down window (`.claude/skills/task/references/qa.md`).
-14. `##### Delivery size` — estimated files and authored changed lines, one part or split, and the
+12. `##### Delivery size` — estimated files and authored changed lines, one part or split, and the
     planned implementation order. A split gives each part its own files and lines: that part's
     budget.
 

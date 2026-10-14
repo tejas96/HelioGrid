@@ -108,7 +108,7 @@ owner's approval of the task RFC covers it.
 
 Build as `CLAUDE.md` §3 and `.claude/rules/testing.md` say, one slice at a time, each slice the
 smallest code that meets its line (`CLAUDE.md` §8 *Solve today's problem*, Law 5); each planted
-red line is recorded for the commit card. Before the first edit under a package or app, read its
+red line is recorded for the PR body. Before the first edit under a package or app, read its
 `CLAUDE.md`; an edit from the shell loads nothing. A new route, table, contract, package, affected
 package or behaviour voids the approval: update the RFC and present the delta — a banner with files and
 lines built against planned, the link, then one line per changed section saying what changed and
@@ -148,25 +148,30 @@ commit on a `feat/T-…` branch until the reviewer's CLEAN and the Evaluator's P
 the code the last full gate ran on, each QA helper's last verdict is PASS (a fix reruns only the
 rows it touched), no code changed after that gate, the
 invariants read the task files as they stand, no helper changed a repository file, and every
-resource is back to its start state. First, five fixed lines: the surfaces QA ran on with each one's rows and results;
-the board compared, `yes` with the frames or `no` with the reason; the reviewer's last verdict;
-the gate's result; mistakes found. Then the AC proof summary (the evaluator's rows), the
-side-by-side images of a screen task and its built Hindi and Marathi pictures, attached as files
-Main composed by name and never read, the review result, every planted-red line, the changed files in three lists (planned and built · built
-but not planned, each with its reason · planned but not built; more than 20% above the estimate
-says by how much and why), the exact commit message (the task's `Status:` or the part's row turns
-`shipped` in this commit), the rule that now prevents each mistake, unresolved blockers, the
-runtime cleanup state, and two measurements — Main's context tokens from the session's usage reading, the helpers'
-tokens summed from their completion notices — written under the `#### Runtime` ledger (step 0)
-in the same commit, which also moves a shipped part's RFC body and ledger to the archive
-(`docs/tasks/README.md`, Task anatomy).
+resource is back to its start state.
+
+The card holds, in this order: five fixed lines — the surfaces QA ran on with each one's rows and
+results; the board compared, `yes` with the frames or `no` with the reason; the reviewer's last
+verdict; the gate's result; the mistakes found, one line each — then the side-by-side images of a
+screen task and its built Hindi and Marathi pictures, attached as files Main composed by name and
+never read; the changed files in three lists (planned and built · built but not planned, each with
+its reason · planned but not built; more than 20% above the estimate says by how much and why);
+unresolved blockers; the runtime cleanup state; and the exact commit message (the task's `Status:`
+or the part's row turns `shipped` in this commit). The full proof is not on the card: it is
+written once, into the PR body (step 7).
+
+The same commit writes two measurements under the `#### Runtime` ledger (step 0) — Main's context
+tokens from the session's usage reading, the helpers' tokens summed from their completion notices
+— and moves a shipped part's RFC body and ledger to the archive (`docs/tasks/README.md`, Task
+anatomy).
 
 The commit waits for the owner's yes to THIS card (`CLAUDE.md` §4).
 
 ## 7. Draft PR and CI
 
-Push, open a DRAFT PR whose body carries the proof, the mistakes record and the reviewer's notes
-left outside the diff (`references/qa.md`). The session stays
+Push, open a DRAFT PR whose body carries the full proof, once: the AC proof summary (the
+Evaluator's rows), the review result, every planted-red line, each mistake with the rule that now
+prevents it, and the reviewer's notes left outside the diff (`references/qa.md`). The session stays
 bound to its PR after the task ends: the app sends it every CI event, and it reads each one
 without being asked. Judge only the latest run of the head SHA: the head from
 `gh pr view <number> --json headRefOid`, its newest run (latest `createdAt`) from `gh run list --commit <sha> --json
