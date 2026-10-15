@@ -53,7 +53,10 @@ test('the business profile row opens the profile in the shell; a save writes the
     page.getByRole('textbox', { name: en.t(COMPANY_SIGNUP.companyName) }),
   ]);
 
-  await page.getByRole('button', { name: en.t(COMPANY_PROFILE_PART_TITLE.declarations) }).click();
+  // In settings *What you sell* opens itself on arrival (the brief's ruling 58): a click would shut it.
+  await expect(
+    page.getByRole('button', { name: en.t(COMPANY_PROFILE_PART_TITLE.declarations) }),
+  ).toHaveAttribute('aria-expanded', 'true');
   await expect(page.getByText(en.t(COMPANY_PROFILE.reseedScope))).toBeVisible();
   const size = page.getByRole('textbox', { name: en.t(SETUP_WHAT_YOU_SELL.sizeLabel) });
   await size.fill('8');
@@ -75,7 +78,10 @@ test('the business profile row opens the profile in the shell; a save writes the
   await expect(page).toHaveURL(/\/more\/company-profile$/);
 
   await page.reload();
-  await page.getByRole('button', { name: en.t(COMPANY_PROFILE_PART_TITLE.declarations) }).click();
+  // In settings *What you sell* opens itself on arrival (the brief's ruling 58): a click would shut it.
+  await expect(
+    page.getByRole('button', { name: en.t(COMPANY_PROFILE_PART_TITLE.declarations) }),
+  ).toHaveAttribute('aria-expanded', 'true');
   await expect(
     page.getByRole('textbox', { name: en.t(SETUP_WHAT_YOU_SELL.sizeLabel) }),
   ).toHaveValue('8');
