@@ -28,9 +28,11 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
    the product, and a progress count on a form invites the Next-disabled pattern `M06-22` killed.
 7. **Enter specs manually from a selection opens pre-filled.** From a picker with a component already
    selected, the sheet opens with that item's brand, model and typed specs; the scheme-certification
-   flags and the rate fields open blank and the tenant fills them — a spec-edited variant is not the
-   listed model, so nothing that certifies or prices the listed one is copied (`M01-39`; owner ruling
-   2026-09-07). Saving creates a new own SKU; the platform item is untouched (`M01-34`, `M01-36`).
+   flags and the rate fields open blank for the tenant to enter, and a price stays optional
+   (`MS4-13`) — a spec-edited variant is not the listed model, so nothing that certifies or prices
+   the listed one is copied (`M01-39`; owner ruling 2026-09-07). Saving creates a new own SKU; the platform item is untouched (`M01-34`, `M01-36`).
+8. **No preferred control.** The own SKU's `preferred` flag (`M01-38`) has no control on this form.
+   A new item is not preferred; it is set later on `SCR-M01-15`.
 
 ## Requirements (verbatim)
 
@@ -49,6 +51,7 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
 - **prefilled-from-selection** — path (a) from a picker with a component already selected: the single form opens pre-filled with that item's brand, model and typed specs; the scheme-certification flags and the rate fields are blank for the tenant to enter; save creates a new own SKU and selects it in place, the platform item untouched (M01-39, M01-36, M01-34; owner ruling 2026-09-07).
 - **pdf-extraction-review** — path (b): extracted fields shown in the same typed form as manual entry, each field editable, with the datasheet preview alongside; nothing commits until the person saves (M01-40, §M01.4 behavior detail).
 - **extraction-failed-prefilled-manual** — extraction fails entirely (scan, photo, unusual layout): manual form with whatever was salvaged pre-filled; the datasheet still attaches to the item (M01-40, §M01.4 edge cases).
+- **inline-add-without-manage-grant** — an inline add from a picker by someone without `F2.M01.manage-catalog` held outright (a Sales Executive): the form has no price and no tax fields, and the caller's list shows that person no prices. One line at the act says the item can be picked without a price and someone who manages the catalog prices it later (§M01.4 Permissions; contract `createItem`).
 - **saved-and-selected-in-place** — on save the sheet closes and the new SKU is selected in place; the invoking flow continues (M01-39, §M01.4 behavior detail).
 
 ## Data volume

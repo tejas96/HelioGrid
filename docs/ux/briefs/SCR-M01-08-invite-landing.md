@@ -22,7 +22,7 @@ Screen-specific:
 
 - **normal** — the landing names the inviter and the company, phone pre-filled, 6-digit OTP (M01-13).
 - **otp-auto-read** — OTP auto-read where the platform allows (M01-13).
-- **expired-one-tap-re-request** — invite expired → "Ask {inviter} to invite you again", with a one-tap request that notifies the inviter; nothing dead-ends (M01 §M01.2 edge list, `S1.wrong.1`).
+- **expired-one-tap-re-request** — invite expired → "Ask {inviter} to invite you again", with a one-tap request that notifies the inviter; nothing dead-ends (M01 §M01.2 edge list, `S1.wrong.1`). It shows no sent date and no expiry date: the landing contract returns neither (`invitationLandingSchema`, `packages/contracts/src/invitation.ts:60`). The warning banner says an invite lasts 7 days and this one has run out (`M01-12`; `packages/domain/src/auth/invitation-policy.ts:20`).
 - **declined-notifies-owner** — wrong person got the invite → decline action on the landing; declining notifies the EPC Owner and voids the invite (M01 §M01.2 edge list, `S1.wrong.2`).
 
 **Decisions made in design (2026-08-31) — later screens inherit them.**
@@ -36,9 +36,12 @@ Screen-specific:
    input is worse — disabled is never the only signal (`N4`) and a greyed field reads as *editable,
    later*. It renders as a labelled mono value with one sentence saying who entered it and where the
    code went, and the exit named (*if it is wrong, decline*).
-3. **The evidence stops at the role's NAME.** Inviter with role and company, the company in the
-   heading, the number, and the role. What a `Sales Executive` can DO is `SCR-M01-10`'s job; repeating it
-   here would be the whole control surface at once (`F7-34`).
+3. **The evidence stops at the role's NAME.** The inviter by name, labelled *EPC Owner · <company>*,
+   with no town; the company in the heading, the number, and the role. The landing contract
+   (`invitationLandingSchema`, `packages/contracts/src/invitation.ts:60`) carries no inviter role. The
+   label is safe because inviting needs `F2.M01.manage-team`, which only the EPC Owner holds (M01
+   §M01.2 Permissions). What a `Sales Executive` can DO is `SCR-M01-10`'s job; repeating it here
+   would be the whole control surface at once (`F7-34`).
 4. **One landing, not two.** Someone who already has a HelioGrid account — a surveyor at a second
    EPC, an owner joining a partner's tenant — lands here and joins with the same one act; membership
    attaches to the account the number already identifies. No *you already have an account* variant
@@ -57,7 +60,7 @@ One invite: inviter name, company name, one pre-filled phone number, one 6-digit
 
 ## Numbers carrying provenance
 
-Every rendered number carries its F8 provenance tier in the design. This screen's numeric content is the 6-digit OTP; no money, business quantity or business date renders here.
+Every rendered number carries its F8 provenance tier in the design. This screen's numeric content is the 6-digit OTP and, on the expired state, the invite's 7-day life (`INVITATION_EXPIRY_DAYS`, a policy number); no money, business quantity or business date renders here.
 
 ---
 

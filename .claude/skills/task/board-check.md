@@ -38,8 +38,8 @@ Check, citing the frame and element for each finding:
    (`packages/theme/src/_generated/contracts/`); every colour, size and space is a token of
    `packages/theme/src/_generated/tokens/`. An element no component draws is a finding.
 4. **Product rules on the frame.** English only (Hindi and Marathi come from the catalog); a
-   provenance tier on every number `F8-01` tiers (an identifier and a count of the reader's own
-   records excepted); money in lakh/crore grouping; kW/kWh/kWp as they are. The words themselves are
+   provenance tier on every number `F8-01` tiers (an identifier, a count of the reader's own
+   records and a limit the product enforces excepted); money in lakh/crore grouping; kW/kWh/kWp as they are. The words themselves are
    the brief's word plan, checked once when the brief is written — not swept again here.
 5. **Known differences.** Each deferred row given to you is either fixed on the board or still
    open; say which. An open one is not a fix.

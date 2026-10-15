@@ -16,7 +16,9 @@ Reached from: First-Run Profile (SCR-M01-09) in the first-run sequence — "the 
 
 ## States
 
-Base: **loading** · **empty** · **error**.
+Base: **loading** · **error**.
+
+No `empty` state: every invite carries at least one preset and joining attaches it in one step, so no one reaches this card without a role (`F2-21`; `M01-12`; `M01-13`; `roleSetSchema` `.min(1)` in `packages/contracts/src/common.ts:116`).
 
 Screen-specific:
 
@@ -27,8 +29,9 @@ Screen-specific:
 
 1. **The card is self-contained, because it has two lives.** The brief says *the same card* re-opens
    from the person's profile, so everything the explanation needs sits INSIDE it — the preset's
-   name, who assigned it, both halves of what it carries — and nothing load-bearing lives in the
-   first-run chrome around it.
+   name, who last set the person's roles, both halves of what it carries — and nothing load-bearing
+   lives in the first-run chrome around it. The credit line names who last set the roles, never
+   *when he invited you*: a later role change (`M01-19`, `M01-20`, `F2-22`) would make that false.
 2. **The act names the destination, not the step.** *Go to my leads*, never *Continue*: the home is
    decided by the role, and a person told where they are going does not have to read the pill footer to
    find out.
@@ -42,11 +45,17 @@ Screen-specific:
    that beat on the owner's path, and the honest end of an explainer is the work itself.
 6. **The re-open route is Profile & preferences** — the same destination `SCR-M01-09` promises for
    the name and photo, so first run makes one promise about where its results live, not two.
+7. **The grant and limit rows are the role card's own part.** Each row is a glyph and a phrase that
+   wraps. No shared component draws a wrapping capability row yet, so the card builds them itself,
+   at tokens.
+8. **The owner note lists only what the EPC Owner alone holds** — adding a teammate
+   (`F2.M01.manage-team`). Changing a price list is not on it: Operations holds
+   `F2.M01.manage-catalog` too. Approving a discount is not on it either: there is no discount
+   approval and no per-rep discount limit (`D34`, `M06-36`).
 
 **THE PRESET IS NAMED `Sales Executive`.** `M01-15`'s example sentence quotes prototype vocabulary;
 `F2`'s preset table is canon — row 3 is **Sales Executive**, with `Sales rep` recorded as its *v1*
-name — and `F2-01` names the twelve verbatim while `F2-02` forbids renaming them. The drawn board
-uses `Sales rep` throughout and is wrong on the one word the card exists to explain.
+name — and `F2-01` names the twelve verbatim while `F2-02` forbids renaming them.
 
 ## Data volume
 

@@ -2,7 +2,7 @@
 
 Permanent per-user language picker and measurement-unit preference.
 
-**Module:** M01 · **Personas:** All personas — with special weight on Survey Engineer, Field Technician, Installation Team Member (the personas who live on the phone and are most likely to work in Hindi or Marathi — F3 §2) and Sales Executive; all staff · **Context of use:** every user's own settings, reachable by every persona on both platforms — "from More → Profile (mobile) and the sidebar (desktop)" (F3-03 source pointer). Field personas reach for the high-contrast field mode here while working outdoors on a phone in direct sun (F7-16). Everything on this screen is per-user: no tenant configuration, admin action or plan tier sets or restricts it (F3-02 context; F7-16; F6-15).
+**Module:** M01 · **Personas:** All personas — with special weight on Survey Engineer, Field Technician, Installation Team Member (the personas who live on the phone and are most likely to work in Hindi or Marathi — F3 §2) and Sales Executive; all staff · **Context of use:** every user's own settings, reachable by every persona on both platforms — "from More → Profile (mobile) and the sidebar (desktop)" (F3-03 source pointer). Everything on this screen is per-user: no tenant configuration, admin action or plan tier sets or restricts it (F3-02 context; F6-15).
 
 ## Entry & exit
 
@@ -28,7 +28,13 @@ Screen-specific:
 - **normal** / **default** — language picker (each language in its own script and name — F3-03), measurement-unit preference beside it (F3-23), notification push mutes per type-group (F6-15).
 - **language-switched-rerender** — changing language re-renders the whole application immediately, no reload, no loss of in-progress work (context: F3 §F3.1 / F3-04, not a row of this slice; the slice names this state).
 - **type-group-muted** — a push type-group muted by the user; the in-app record still always lands (F6-15).
+  The one line at the act names this, and is read before muting: *"Turn a group off to stop its
+  push. Every notification still arrives in HelioGrid — Notifications keeps the record either
+  way."*
 - **protected-types-locked** — audit-relevant billing/compliance events for the Owner are never mutable; the control shows they cannot be muted (F6-15).
+
+A refused preference save shows on the control that failed, through that control's own `error`
+prop (Switch, OptionCardGroup, SegmentedControl). It has no state or frame of its own.
 
 **Decisions made in design (2026-08-31) — later screens inherit them.**
 
@@ -53,13 +59,14 @@ Screen-specific:
    `More` opens (`T-M01-005f`). Name and photo are edited on `SCR-M01-09` where they were first set.
    Two homes for one field is how they drift.
 
-**Owed to F6's notification catalogue, not to the board.** The **five push type-groups are drawn, not specified** —
-neither this brief nor `F6-15` names them, and a per-group control cannot be specified without the
-groups. Replace them from F6's notification catalogue rather than transcribing them from the frame.
+**The push type-groups are the product's own:** Sales · Delivery · Payments · Team · Billing
+(`NOTIFICATION_TYPE_GROUPS`, `packages/domain/src/notifications/types.ts:74`). Every billing type
+addresses only `epc_owner`, so the Billing row shows only on the EPC Owner's account, locked
+(`protected-types-locked`). Everyone else sees four groups.
 
 ## Data volume
 
-Three launch languages (English, Hindi, Marathi — F3-01 context), each in its own script; the picker must remain legible when it lists a script the current language does not use (F3 §F3.1 localization notes). One two-value measurement preference (m/ft — F3-23 source pointer) whose market default is pack data. Push mutes per type-group — a short list of type-groups, not per-event controls ("no per-event snooze theatre" — F6-15). One field-mode toggle.
+Three launch languages (English, Hindi, Marathi — F3-01 context), each in its own script; the picker must remain legible when it lists a script the current language does not use (F3 §F3.1 localization notes). One two-value measurement preference (m/ft — F3-23 source pointer) whose market default is pack data. Push mutes per type-group — a short list of type-groups, not per-event controls ("no per-event snooze theatre" — F6-15).
 
 ## Numbers carrying provenance
 

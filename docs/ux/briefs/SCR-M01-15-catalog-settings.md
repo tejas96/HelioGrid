@@ -25,7 +25,8 @@ Reached from: the tenant-config settings surface map — *Catalog · Price book*
 - **Loading** — the resolved catalog list, rates panel and filters being fetched.
 - **Empty / empty-teaching** — a fresh tenant before any own SKU or override: the platform market slice still renders (there is never "no catalog"); teaching empty treatment applies to the own-SKU/override dimensions per F7's empty-state contract.
 - **Error** — a load or edit fails; what happened and what to do next.
-- **normal** — one resolved list: platform slice + own SKUs + overrides collapsed into one browsing/search surface with a rates panel (M01-32); provenance labels visible per item (M01-35); compliance badges per the market's declared schemes, and no badges when the scheme set is empty (M01-34).
+- **normal** — one resolved list: platform slice + own SKUs + overrides collapsed into one browsing/search surface with a rates panel (M01-32); provenance labels visible per item (M01-35); compliance badges per the market's declared schemes (M01-34). A market pack that declares no certification schemes shows no Compliance column, no badges, no named gap and no certification-scheme filter.
+- **hidden-from-pickers** — a hidden item stays in the Catalog settings list, marked "Hidden from pickers", with the act to un-hide it. Hide removes an item from pickers only (M01-37), never from this list. The list query takes a settings-scoped flag that includes hidden rows; the shipped list read leaves them out (`apps/api/src/modules/catalog/catalog.slice.repository.ts:194`).
 - **search-filtered** — unified search active with filters: source (platform / own), component kind, key spec ranges, certification-scheme badges, preferred, archived (M01-38); preferred items rank first, archived items appear only under the archived filter (§M01.4 behavior detail).
 - **rates-panel-tier-attribution** — the rates panel shows, per item, which tier supplied each field (the pack's category tax rate struck under a tax override; a platform item has no price of its own, so an item with no tenant rate shows its rate as missing per F8-01 rather than a struck value; own-SKU values plain) so an owner can always answer "why is this price showing" (§M01.4 behavior detail); sparse override editing: price, tax rate, hide, preferred (M01-37).
 - **archived-filter** — archived items surfaced by the archived filter only.
@@ -45,9 +46,9 @@ Reached from: the tenant-config settings surface map — *Catalog · Price book*
    already has the platform slice (`M01-32`: there is never "no catalogue"), so what is empty is the
    tenant's own two dimensions — own SKUs and overrides — and the teaching card sits above a full
    list.
-3. **An archived row claims no price tier.** Its price is not what anyone would be charged, so it
-   renders `unmarked` — the reserved value that records a deliberate absence — rather than a
-   `measured` that is true of a number nobody can use.
+3. **An archived own SKU's price carries its tier beside it, as on a live row.** Every
+   user-visible number carries one tier (`F8-01`, which outranks this brief). `unmarked` is
+   `M05-52`'s exception only and never applies here.
 4. **Publishing asks for a name, not a serial** (`M01-43`: a release is a human-readable name plus a
    date), and states the consequence as a number before the act: *N designs pinned to <label> will
    show as out of date*. A release's contents are a **before-and-after**, not a list of names — a
@@ -57,6 +58,9 @@ Reached from: the tenant-config settings surface map — *Catalog · Price book*
    acts at full size elsewhere.
 6. **Returning from `SCR-M01-16` and `SCR-M01-17` lands on the panel and scroll position the caller
    was on.** Written into both briefs.
+7. **The catalog keeps its own search.** It is the one exception to `F7-47`'s one global search,
+   because the picker searches this catalog with the same engine (`M01-38`, DD12; the contract's
+   `q`).
 
 ## Data volume
 

@@ -6,7 +6,7 @@ Phone-keyed invite with name and at least one preset role; skippable during onbo
 
 ## Entry & exit
 
-Reached from: the skippable onboarding invite step (`S0.screen.4` per M01-12) and one-tap invite on the Team screen (SCR-M01-12, M01-12). Leads to: on send, an invite in state pending (states pending / accepted / expired / revoked, with an expiry — M01-12), visible and revocable on Team; during onboarding, skipping continues to the two-door landing (M01 §M01.3 behavior detail). The invitee's side is Invite Landing (SCR-M01-08).
+Reached from: the skippable onboarding invite step (`S0.screen.4` per M01-12) and one-tap invite on the Team screen (SCR-M01-12, M01-12). The `join_requested` notice (T-M01-035) opens this screen in its Team life with the asker's name and number filled in — no frame of its own. Leads to: on send, an invite in state pending (states pending / accepted / expired / revoked, with an expiry — M01-12), visible and revocable on Team; during onboarding, skipping continues to the two-door landing (M01 §M01.3 behavior detail). The invitee's side is Invite Landing (SCR-M01-08).
 
 ## Requirements (verbatim)
 
@@ -24,11 +24,15 @@ Base: **loading** · **empty** · **error**.
 
 Screen-specific:
 
-- **normal** — name, phone number, one or more of F2's twelve presets (M01-12).
-- **skippable-onboarding-step** — the onboarding appearance: skippable, never a gate (M01-12, `S0.screen.4`).
+- **normal** — name, phone number, one or more of F2's twelve presets (M01-12). `empty` and `normal` are the same blank default form, folded into the default frames — no frames of their own.
+- **skippable-onboarding-step** — the corridor life: skippable, never a gate (M01-12, `S0.screen.4`). Folded into the default frames — no frame of its own.
 - **no-role-blocked** / **blocked-no-role** — an invite with zero roles is blocked before sending (F2-21; M01 §M01.2 acceptance: "Given an invite with zero roles, when it is submitted, then it is blocked before sending").
 - **already-a-member** — invite sent to a number that is already a member → the invite surface says so and offers the Team screen instead of sending (M01 §M01.2 edge list).
-- **invite-cap-reached** — invite flooding → the per-tenant daily invite cap with an honest message (M01 §M01.2 edge list; the cap is M01-04's, carried on SCR-M01-01).
+- **already-invited** — a live invite already went to this number: the create (`POST /invitations`, `packages/contracts/src/invitation.ts`) refuses with 409 `ALREADY_INVITED`. Works like already-a-member and points to Team, where the pending invite can be cancelled.
+- **number-not-covered** — a number no market covers (F1-49): the create refuses with 422 `DOMAIN_RULE_VIOLATION`, shown as the PhoneField's error line.
+- **invite-cap-reached** — invite flooding → the invite cap (50 sends per company in any rolling 24 hours, so no midnight reset) with an honest message (M01 §M01.2 edge list; the cap is M01-04's, carried on SCR-M01-01).
+
+**The role picker.** All twelve F2 presets in one list, in F2's fixed order, each with its capability line — the same list SCR-M01-13 draws — in both lives. There is no "Show all twelve roles". The list is built as `OptionCardGroup` in a multi-select mode; each row carries a title, a description and a `disabledReason`. One prop contract on both platforms, shared with SCR-M01-13.
 
 ## Data volume
 
@@ -36,7 +40,7 @@ One invite at a time: one name, one phone number, and a role selection across F2
 
 ## Numbers carrying provenance
 
-Every rendered number carries its F8 provenance tier in the design. User-visible here: the invite expiry (invite states carry an expiry — M01-12) and, in the cap-reached state, the per-tenant daily invite cap (M01 §M01.2 edge list). No money or business quantity renders here.
+The numbers here are limits the product enforces, which carry no provenance tier (F8-01). User-visible here: the invite expiry, 7 days from the send (M01-12; `INVITATION_EXPIRY_DAYS` in `packages/domain/src/auth/invitation-policy.ts`), and, in the cap-reached state, the invite cap, 50 invite sends per company in any rolling 24 hours (M01-04; `INVITATIONS_PER_TENANT_PER_DAY` and `invitationsSince`, same file). There is no resend: a live invite can only be cancelled on Team. No money or business quantity renders here.
 
 ---
 

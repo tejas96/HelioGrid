@@ -18,6 +18,10 @@ Reached from: Invite Landing (SCR-M01-08) after OTP verification — "the next s
 
 Base: **loading** · **empty** · **error**.
 
+- **empty** — the person has cleared the pre-filled name. The field never arrives blank: an invite
+  always carries a name (`M01-12`; `inviteeNameSchema` is `min(1)` in
+  `packages/contracts/src/invitation.ts`).
+
 Screen-specific:
 
 - **normal** — name plus optional photo; nothing else (M01-14).
@@ -29,10 +33,16 @@ Screen-specific:
    enter *Their name*, keyed to the invite just accepted. A blank field throws that away and makes a
    person retype what the product knows, on the screen whose promise is under two minutes (`M01-17`).
    One sentence beneath says who wrote it and that it is theirs to change.
-2. **The photo is a circle with one act, never a `Dropzone`.** Nothing drags on a phone, `Dropzone`
-   is built for many files where this is exactly one, a dashed rectangle promises a rectangle when
-   the crop is circular, and its held-on-device queue is wrong for an ordinary server write. The
-   camera-or-gallery choice is the platform's own sheet.
+2. **The photo is the repo's `PhotoField` (`packages/ui/src/components/PhotoField/`) — a circle
+   with one act, never a `Dropzone`.** `Dropzone` is built for many files where this is exactly one,
+   a dashed rectangle promises a rectangle when the crop is circular, and its held-on-device queue
+   is wrong for an ordinary server write. The camera-or-gallery choice is the platform's own sheet.
+   `PhotoField` is extended to what the board draws:
+   - the act is medium size and carries its icon;
+   - a refused photo shows as the danger `Banner` inside the photo group, so a name that saved is
+     not put in doubt;
+   - at 1536 a photo can also be dropped onto the circle. Nothing drags on a phone, so the drop
+     exists only there.
 3. **The fallback is on screen, which is what makes *optional* honest.** Initials on `--accent-subtle`
    show the exact result of skipping. That is also why **no `Skip` control exists** — the photo has no
    gate to skip past, and a second act would invent a decision nobody has to make.

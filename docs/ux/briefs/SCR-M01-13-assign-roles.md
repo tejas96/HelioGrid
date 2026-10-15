@@ -17,7 +17,7 @@ Reached from: the PRD groups this screen in the Team / Assign roles / Roles refe
 ## States
 
 - **Loading** — the person's current presets and the preset list are being fetched.
-- **Empty** — the person holds no presets yet; the grant line reflects the empty combination honestly.
+- **Empty** — a mid-edit state, never a saved one: no person holds zero presets (F2-21; `roleSetSchema` in `packages/contracts/src/common.ts`, `.min(1)`). It appears when the owner clears every preset on someone's sheet. The grant line says they would hold nothing, and Save stays off, with its reason shown, until one preset is ticked.
 - **Error** — an assignment save fails; what happened and what to do next, per F7's contract.
 - **grant-line-updating-live** — as presets are toggled on/off, the plain-English grant line updates live to describe exactly the resulting grants (M01-20 acceptance).
 
@@ -41,11 +41,18 @@ Reached from: the PRD groups this screen in the Team / Assign roles / Roles refe
    confirm and again beside the undo. An undo lives for seconds; the question arrives an hour later.
    The toast is a `ToastHost`, which owns its own placement and clearance.
 
+**The preset rows.** Each preset is an `OptionCardGroup` row in a multi-select mode: a title, a
+description and a `disabledReason`. The `disabledReason` carries the sole-EPC-Owner guard: the last
+EPC Owner cannot be unticked, and the row says why (F2-19). One prop contract on both platforms,
+shared with SCR-M01-07.
+
 **The grant line is a whole translated sentence with slots** (owner ruling 2026-08-31), never
 `name + "can" + phrases`. Each language supplies its own template and its own list joiner, so word
 order belongs to the translator rather than to the code — Hindi and Marathi put the verb after the
 list, which is what a concatenation cannot express. **A preset supplies a full CLAUSE, not a
-fragment**: `Viewer` reads *"can look but change nothing"* and joins cleanly.
+fragment**: `Viewer` reads *"can look but change nothing"* and joins cleanly. **The line drops a held
+preset whose grants another held preset already covers**, so EPC Owner speaks alone. Each
+combination still yields exactly the grants the F2 matrix ORs together.
 
 ## Data volume
 

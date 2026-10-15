@@ -6,7 +6,7 @@ Read-only render of F2 preset descriptions, matrices and per-preset holder count
 
 ## Entry & exit
 
-Reached from: the PRD groups this screen in the Team / Assign roles / Roles reference / Invite family that renders F2's semantics (M01 §1, §M01.2); a specific entry point is not pinned by the PRD — designer decides, note the decision. Leads to: not pinned by PRD — designer decides, note the decision. Permission context: the Team family's read view follows the `F2.M01.manage-team` grant in v1 (M01 §M01.2 permissions).
+Reached from: three places, each by the same act, **What each role can do** — the assign sheet on SCR-M01-13, the role picker on SCR-M01-07, and the Team header on SCR-M01-12. Leads to: back to the screen that opened it, with that screen's state kept (on SCR-M01-13, the ticks not yet saved stay as they were). Permission context: the Team family's read view follows the `F2.M01.manage-team` grant in v1 (M01 §M01.2 permissions).
 
 ## Requirements (verbatim)
 
@@ -16,9 +16,9 @@ Reached from: the PRD groups this screen in the Team / Assign roles / Roles refe
 
 ## States
 
-- **Loading** — preset descriptions, matrices and holder counts being fetched.
+- **Loading** — only the holder counts load. The presets, their descriptions and the matrix are static (`ROLE_PRESETS` in `packages/domain/src/authz/roles.ts`, `CAPABILITY_MATRIX` in `packages/domain/src/authz/capabilities.ts`, names and descriptions in `packages/i18n`), so all twelve rows draw at once, with a loading form only where each count goes.
 - **Empty** — not applicable in the ordinary sense (the twelve presets always exist); the nearest real case is a preset with zero holders, covered below. If the designer needs a distinct empty treatment, note the decision.
-- **Error** — the reference fails to load; what happened and what to do next.
+- **counts-unavailable** — the error state. The holder counts fail to load: one banner says so, and each count's place shows a named gap. The presets, descriptions and matrix still render. There is no full-page error.
 - **normal** — descriptions, matrices and holder counts rendered read-only; no create, edit, duplicate or delete action exists anywhere (M01-21).
 - **zero-holders-shown** — a preset held by nobody still renders, showing zero (M01-21: "including zero").
 

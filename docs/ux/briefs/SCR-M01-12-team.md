@@ -28,9 +28,10 @@ Screen-specific:
 - **normal** — people with role chips (all presets held), status (invited / active / deactivated), last-active; one-tap invite and one-tap deactivate (M01-19, F2-10).
 - **empty-teaching** — before anyone is invited, a teaching empty state per F7's empty-state contract (M01 §M01.1 behavior detail pattern), inviting the first teammate.
 - **guard-rail-blocked** / **guard-rail-blocked-explained** — removing the last EPC Owner or last Manage-team holder is blocked with an explanation and the blocked attempt is audit-logged (F2-19, M01-19; M01 §M01.2 acceptance).
-- **deactivate-warns-open-work-reassign** — deactivation warns about open work and prompts reassignment (M01-19).
+- **deactivate-confirm** — the confirm states only that the person loses access and that their history stays theirs. Reassigning open work (leads, visits, proposals) and the open-work counts wait for the modules that own that work (M02's lead owner, M08); no bulk-reassign contract exists, so this confirm carries neither (M01-19).
 - **deactivated-member** — a deactivated person's history remains attributed to them, their role chips and status render, and they are absent from assignment pickers (M01 §M01.2 acceptance).
 - **pending-invite-revoke** — revocation of a pending invite is one tap on this screen (M01 §M01.2 behavior detail); invite states are pending / accepted / expired / revoked (M01-12 context, carried on SCR-M01-07).
+- **expired-invite** — the list shows expired invites as well as pending ones (`GET /invitations` returns both; M01-12). An expired row carries the status Expired and the act *Invite again*, which sends a new invite.
 
 **Decisions made in design (2026-08-31) — later screens inherit them.**
 
@@ -57,9 +58,9 @@ Screen-specific:
 8. **Relative times are refused.** *"2 hours ago"* turns a recorded fact into a computed one and would
    put a tier on every row for no gain.
 
-**One roster correction owed.** `SCR-M01-13`'s `empty` frame needs a person holding NO presets, and
-nobody in this screen's roster has none — it is drawn on **Nitin Pawar**, who must gain a row here or
-the two boards disagree about who is on this team.
+**Every person on this list holds at least one preset.** A member with no preset cannot exist: an
+invite, a role change and a session all refuse an empty role set (F2-21; `roleSetSchema` `.min(1)` in
+`packages/contracts/src/common.ts:116`). No row is drawn without a role chip.
 
 **Two holes this screen reports rather than invents.** There is **no reactivation control** — a list
 that can deactivate and never reactivate is a one-way door, and bringing someone back is not a row of
@@ -68,7 +69,7 @@ table, never transcribed from the frame.
 
 ## Data volume
 
-The PRD pins no team-size number; design for the small-firm reality the stacking law names — one person is rep *and* surveyor *and* designer (F2-10) — through a list long enough to scroll, where each person may carry several of the twelve preset chips at once plus a status and a last-active value. Role names use localized capability phrases (M01 §M01.2 localization notes).
+The PRD pins no team-size number; design for the small-firm reality the stacking law names — one person is rep *and* surveyor *and* designer (F2-10) — through a list long enough to scroll, where each person may carry several of the twelve preset chips at once plus a status and a last-active value. Role names use localized capability phrases (M01 §M01.2 localization notes). At 375 a person's preset chips show two whole plus *+1* (`ChipGroup` max 2), and *+1* opens the rest in place; at 1536 every chip shows whole.
 
 ## Numbers carrying provenance
 
