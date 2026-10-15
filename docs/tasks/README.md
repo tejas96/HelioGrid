@@ -19,7 +19,7 @@ A task is its header lines, written when the task is:
 **Type:** screen · **Tier:** P0        (screen | engine | policy | integration | port · the highest tier among its rows)
 **Status:** planned                    (planned | designed | shipped | struck — the one ledger)
 **PRD rows:** M02-<nn> (P0), M02-<nn> (P0), M02-<nn> (P1)        — every id carries its tier (rule 6)
-**DESIGN:** SCR-<module>-<nn> → PENDING          — filled by Claude Code when the module's boards are locked (`.claude/skills/task/design-track.md`); a screen with more than one board lists the others after the main link: `· also: <board> <link>`; a studio screen reads `ported from the POC`
+**DESIGN:** SCR-<module>-<nn> → PENDING          — filled by Claude Code with the module's canvas link when the screen's boards are locked (`.claude/skills/task/design-track.md`, `docs/start-here.md` *Recording a drawn screen*); a studio screen reads `ported from the POC`
 **Design:** (older tasks, instead of DESIGN:) `none — <reason>` for a task with no screen, the existing boards it reuses, or `the same canvas as <task id>'s DESIGN line` and the frames it uses — only the last makes the walk wait, until that task's `DESIGN:` holds a link
 **PORT:** (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-claims.md
         — files to READ AND PORT FROM, never files to create here. A PORT entry that names a
@@ -62,7 +62,7 @@ hold its history. A split task's `#### Parts` table and task RFC stay until its 
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
 2. **Requirement reference whitelist.** A task's header and requirement text may cite only:
-   `docs/prd/**`, the screen's board and decisions record in the Claude Design project, by the link on its `DESIGN:` line (the one source of a design; the repo keeps only the git-ignored lock in `.design/<module>/`),
+   `docs/prd/**`, the screen's boards on its module's canvas, by the link on its `DESIGN:` line (the one source of a design; the repo keeps only the git-ignored lock in `.design/<module>/`),
    `docs/engineering/data-model.md` and `docs/engineering/forward-compat.md` (a schema-bearing
    task, where naming its entities or its first-migration row is clearer than restating them),
    `docs/ux/briefs/**`, `docs/prd/modules/M05-studio/defect-register.md`
@@ -77,7 +77,7 @@ hold its history. A split task's `#### Parts` table and task RFC stay until its 
    waits for the drawings of the screens it serves. A screen's UI is not "done" until it matches
    its board.
 4. **Studio tasks are ports, not rewrites** (ruling S12-1): engineering core moves as-is with
-   its tests; the UI is rebuilt from the POC and improved on the way, with no Claude Design board;
+   its tests; the UI is rebuilt from the POC and improved on the way, with no board;
    the defect register is the change list.
 5. A task is complete when every DONE WHEN line passes and — for screen tasks — the **three**
    base states (loading, empty, error) plus brief-listed states exist at both 375px and 1536px

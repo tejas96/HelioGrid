@@ -34,7 +34,7 @@ export interface TaskEntry {
   statusLines: number;
 }
 
-/** Each screen a task's `DESIGN:` line names, with its board link, `PENDING` or `ported from …`. */
+/** Each screen a task's `DESIGN:` line names, with its canvas link, `PENDING` or `ported from …`. */
 export function designLinks(task: TaskEntry): DesignLink[] {
   const value = task.header.get('DESIGN') ?? '';
   const screens = [...value.matchAll(DESIGN_SCREEN)];

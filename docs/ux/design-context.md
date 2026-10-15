@@ -1,8 +1,8 @@
-# HelioGrid V2 — Claude Design session context
+# HelioGrid V2 — the design context
 
-Paste this file, unchanged, at the top of every drawing session and every Full fix prompt
-(`docs/start-here.md`), followed by exactly one screen brief from `docs/ux/briefs/`. The design system is already selected in Claude Design and owns
-how everything looks. Everything in this file is **product law**: what a screen must do, carry and
+Give this file, unchanged, to every drawing agent and with every Full fix prompt
+(`docs/start-here.md`), followed by exactly one screen brief from `docs/ux/briefs/`. The design
+system installed on the module's canvas owns how everything looks. Everything in this file is **product law**: what a screen must do, carry and
 survive. Authority: `docs/prd/foundations/F7-design-language.md` (`F7-23`, `F7-43`, `F7-46`),
 `docs/prd/foundations/F8-data-honesty.md`.
 
@@ -145,8 +145,8 @@ on the screen.
 touch feedback, and a card that only reveals itself on hover has revealed nothing. Draw hover as
 polish on the wide frame if you like — never as the place a fact lives.
 
-**Board notes are not screen copy.** Explanation about the design lives outside the frame; a frame
-contains only what the product renders.
+**Board notes are not screen copy.** Explanation about the design goes in your report, never on a
+board; a frame contains only what the product renders.
 
 ## 3 · Composition — the screen's shape, not its skin
 
@@ -211,7 +211,7 @@ anything** (contract item 6): a thing that moves is re-placed, and your notes sa
     the empty state included. Money reads in one face and one alignment across the frame.
   - **A panel with nothing to show is closed.** No region is parked open and empty; an editor opens
     on its act at both widths (`F7-21`). A gap larger than the gap between regions needs its reason
-    on the board.
+    in your report.
 - **When one surface carries too much, split it — and name which way:** one region with a selector
   (sibling lists that answer one question, each keeping its caption, provenance and export) · a
   sheet or side panel for anything edited or decided (`F7-21` — never a page for an editor) · a
@@ -347,14 +347,14 @@ More). Never draw a tab the persona's role cannot read. At 1536 the icon rail ca
 **More** and from the avatar menu. The centre action's *verb* follows the home in force; the
 destinations never change with the screen. **Most screens carry no shell at all:** anything running
 before roles exist — sign-in, signup, the whole onboarding corridor — has none at either width; say
-so on the board. Where one screen has more than one life (an onboarding step now, a settings
-destination later), the shell appears only on the life that is inside the app, and the board labels
-which life each frame is.
+so in your report. Where one screen has more than one life (an onboarding step now, a settings
+destination later), the shell appears only on the life that is inside the app, and each frame's
+name says which life it is.
 
 **What a designed screen already drew is REUSED, never redrawn.** The shell is the first case; the
 billing strip and its denial sheet (`SCR-SHELL-06`) are the next. Where this screen shows an object
-another screen owns, open that screen's file in this project, reuse the object as drawn, and name
-the file on the board. A second design of one object is a FAIL — two screens that disagree about
+another screen owns, read that screen's board (given to you with this file), reuse the object as
+drawn, and name that board in your report. A second design of one object is a FAIL — two screens that disagree about
 the same strip cannot both be built.
 
 ## 5 · The completion contract (from `F7-43`)
@@ -416,22 +416,20 @@ contrast `N4`, target size `N2`, provenance `N7`, light-only, density. Beware th
 draw it as a clearly separable element so it can be removed without redrawing the screen around
 it, and say in your notes which element it is.
 
-## 6 · The self-audit (run at the end of every session, before the screen is accepted)
+## 6 · The self-audit (run before you report, before the screen is accepted)
 
 Walk **five lists**, in this order. For every entry, answer **PASS or FAIL, pointing at the
 specific element that satisfies it**. A PASS without a pointed-at element is a FAIL. Fix every FAIL
-in the same session, walk that list again, and keep only the final walk in the record.
+before you report, walk that list again, and report only the final walk.
 
-**The record — one file, the design as it stands.** Each screen has ONE record beside its board,
-named `<screen id> - decisions and self-audit.md`: the word plan, the decisions and this self-audit.
-It is read when the screen is built, so it says what the design IS, never what it was. After any
-fix, REWRITE every line the fix made wrong, in place — one word plan, one inventory, one set of
-counts, and ONE version of every line a frame prints. Never append a second inventory, never keep a
-fixed FAIL's old wording, never write "was … now …". What you changed goes in your reply to me, not
-in the record. **A record that holds two versions of one line is a FAIL.** Last of all, after every
-walk and every fix, **read the record top to bottom against the frames as they now stand**: every
-line it quotes equals the frame's, every count equals the frame's, and no number appears with two
-values. A mismatch is a FAIL, fixed before you hand the screen over.
+**The report — the design as it stands.** Your report carries the word plan, this self-audit and
+every decision the brief should now carry; nothing of it is kept on the canvas, and a decision is
+written into the brief, where the build reads it. The report says what the design IS, never what it
+was: one word plan, one inventory, one set of counts, and ONE version of every line a frame prints.
+**A report that holds two versions of one line is a FAIL.** Last of all, after every walk and every
+fix, **read the report top to bottom against the frames as they now stand**: every line it quotes
+equals the frame's, every count equals the frame's, and no number appears with two values. A
+mismatch is a FAIL, fixed before you hand the screen over.
 
 1. **The word inventory — first, because it is what fails most.** For every 375 frame, list every
    sentence on the frame: any run of words with a verb that is not a label, a value, a chip, a

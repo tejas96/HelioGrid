@@ -27,7 +27,7 @@ the architecture keeps its extension points, but nothing V2 is designed or built
 
 | | waits on |
 |---|---|
-| Screen tasks | their turn, and their screen drawn in Claude Design — except a studio screen, which reads `ported from the POC` and is never drawn |
+| Screen tasks | their turn, and their screen's boards locked — except a studio screen, which reads `ported from the POC` and is never drawn |
 | Engine · policy · integration · port tasks | their turn, and the drawings of the screens they serve in their block; none carries a drawing of its own |
 
 ## One order, walked one step at a time
@@ -48,12 +48,12 @@ file placed, no loop, every later-block wait recorded. The order is walked, neve
 The step is the first open part of a split task, else the first open V1 task on that walk. A part
 lives in its task's `#### Parts` table; this file never lists parts.
 
-What the step is for each task — build, owner draws, design <module>, owner merges, owner clears —
+What the step is for each task — build, design <module>, owner merges, owner clears —
 is `/task` step 1's table (`.claude/skills/task/SKILL.md`). A backend task waits for the lock of
 the screens it serves in its block: a checked drawing states the facts the backend serves. A `**Parked:**` task is stepped over and pulls nothing ahead.
 
 A screen that is not drawn is never skipped for one that is. Design runs one module ahead: while
-the build is on one module, the owner draws the next and the Design track checks and locks it (`.claude/skills/task/design-track.md`), so the
+the build is on one module, the Design track draws, checks and locks the next (`.claude/skills/task/design-track.md`), so the
 build waits only when that track falls behind.
 
 Note the `V` column lives on screens, not tasks. A task is V1 if the V1 workflow needs it —
@@ -202,7 +202,7 @@ Invariants check the task and PRD documents (`.claude/protections.md`, Process):
 `build-order-holds`, `prd-rows-cited` (every cited PRD row is live and every quote matches its
 cell) and `screens-register-whole` (every screen briefed and designed, every PRD row landed once,
 the V1 count as the scope lock states it). The RFC tests the requirements the task it takes
-carries (`/task` step 2). A screen's design is read straight from Claude Design and checked against its
+carries (`/task` step 2). A screen's boards are drawn on its module's canvas and checked against its
 brief, before the build reaches it (`.claude/skills/task/design-track.md`).
 
 Design progress is how many V1 screens have a link on their task's `DESIGN:` line.

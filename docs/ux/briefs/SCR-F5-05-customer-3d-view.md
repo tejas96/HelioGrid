@@ -2,7 +2,7 @@
 
 Read-only 3D behind the proposal link's View-in-3D button; tokenised, no login.
 
-**Module:** F5 (Customer link framework; the 3D surface itself is produced by M05 Design Studio) · **Personas:** Customer (an audience, never a role — no login, no account, no app) · **Context of use:** phone, in the evening, inside the one-sitting proposal reading — this is the differentiating moment where the customer sees their own roof; opened from the proposal page, never from a separate URL; slow connections are normal, so the proposal's decisive figures never wait on this view. The scene is light like every other surface — v1 is light-only, with no dark theme and no dark variant of any surface (`foundations/F7`, `F7-04`, P0; the global law sheet `docs/ux/claude-design-context.md` carries it for every session).
+**Module:** F5 (Customer link framework; the 3D surface itself is produced by M05 Design Studio) · **Personas:** Customer (an audience, never a role — no login, no account, no app) · **Context of use:** phone, in the evening, inside the one-sitting proposal reading — this is the differentiating moment where the customer sees their own roof; opened from the proposal page, never from a separate URL; slow connections are normal, so the proposal's decisive figures never wait on this view. The scene is light like every other surface — v1 is light-only, with no dark theme and no dark variant of any surface (`foundations/F7`, `F7-04`, P0; the global law sheet `docs/ux/design-context.md` carries it for every session).
 
 ## Entry & exit
 

@@ -2,7 +2,7 @@
 
 Turn a lead into a designable site: project info, market-scoped parameters, confirmed location with honest solar data.
 
-**Module:** MS (Design Studio) · **Personas:** Design Engineer, Sales Executive, Survey Engineer, EPC Owner · **Context of use:** Design Engineer is the primary author at a desk; Sales Executive and Survey Engineer may run remote-survey-derived setup (F2.M04.run-remote-survey) — often on a phone. Web primary authoring; mobile 375 px full parity (F7-30); touch behaviors per the S1-5a ruling and F7-32. Read access per lead visibility (F2). The canvas is light like every other surface — v1 is light-only, with no dark theme and no dark variant of any surface (`foundations/F7`, `F7-04`, P0; the global law sheet `docs/ux/claude-design-context.md` carries it for every session).
+**Module:** MS (Design Studio) · **Personas:** Design Engineer, Sales Executive, Survey Engineer, EPC Owner · **Context of use:** Design Engineer is the primary author at a desk; Sales Executive and Survey Engineer may run remote-survey-derived setup (F2.M04.run-remote-survey) — often on a phone. Web primary authoring; mobile 375 px full parity (F7-30); touch behaviors per the S1-5a ruling and F7-32. Read access per lead visibility (F2). The canvas is light like every other surface — v1 is light-only, with no dark theme and no dark variant of any surface (`foundations/F7`, `F7-04`, P0; the global law sheet `docs/ux/design-context.md` carries it for every session).
 
 **One job:** confirm where the site is, and the few facts the design needs.
 **Order of attention:** 1 the location — search, pin, confirm · 2 the project and market facts, already filled · 3 what the confirmed location tells us — solar data, site intelligence.

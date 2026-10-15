@@ -1,8 +1,8 @@
 /**
  * packages/theme generator — docs/engineering/17 §2/§6, the canonical mechanism.
  *
- * Parses src/_generated/tokens/*.css (written by ds:pull from the live design system,
- * project c8aa4326-21bf-453a-8d11-749cc81dee12) and emits:
+ * Parses src/_generated/tokens/*.css (written by ds:pull from the live design system, the
+ * artifact packages/theme/README.md names) and emits:
  *   dist/tokens.css           fonts (url-rewritten) + token files in the DS's order + base
  *   dist/base.css             the DS global stylesheet (styles.css with its imports inlined)
  *   dist/print.css            the print surface — verbatim; @page presence is asserted
