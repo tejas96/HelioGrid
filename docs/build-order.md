@@ -48,15 +48,10 @@ file placed, no loop, every later-block wait recorded. The order is walked, neve
 The step is the first open part of a split task, else the first open V1 task on that walk. A part
 lives in its task's `#### Parts` table; this file never lists parts.
 
-| the task | the step |
-|---|---|
-| ready | `build <task>` |
-| a screen whose `DESIGN:` line reads `PENDING` | `owner draws <SCR>` from the prompt Claude Code builds (`/task`, Design track), then `build <task>` |
-| a backend task whose screens in its block are not all drawn — its own file's, and any whose `Depends on:` names it | `owner draws <SCR>, …` before the backend is built: a drawing states facts the backend serves. A redraw does not hold it — that drawing exists, and the redraw stops only the screen task |
-| carries a `**Blocked:**` line — a ruling, an account | `owner clears` it; nothing after it is taken until it is cleared, or the task is moved or parked with a recorded reason |
-| waits on a parked task | `owner clears` it: unpark that task, or move or park this one |
-| waits on an open task of a later block | `owner clears` it: move one of the two tasks, with a recorded reason |
-| carries a `**Parked:**` line | stepped over; it pulls nothing ahead |
+What the step is for each task — build, owner draws, owner exports, owner merges, owner clears —
+is `/task` step 1's table (`.claude/skills/task/SKILL.md`). A backend task waits for the drawings of
+the screens it serves in its block: a drawing states facts the backend serves; a redraw stops only
+the screen task. A `**Parked:**` task is stepped over and pulls nothing ahead.
 
 A screen that is not drawn is never skipped for one that is. Design runs one module ahead: while
 the build is on one module, the owner draws and exports the next (`/task`, Design track), so the

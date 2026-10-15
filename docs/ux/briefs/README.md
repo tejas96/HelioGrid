@@ -40,8 +40,8 @@ first — and grep every other brief for the same line and fix each one. A word 
 fact the brief does not pin.
 
 Write them **before** the design session, for the screen you are about to draw. A brief whose
-screen is already designed is left alone: a brief that moves past its design makes the screen due a
-redraw before its build, which buys nothing for a screen already drawn.
+screen is already drawn changes only as `docs/start-here.md` *When a brief changes after its screen
+was drawn* says.
 
 ## The one thing no check can hold: the States list
 

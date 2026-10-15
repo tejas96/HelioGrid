@@ -65,7 +65,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "for port in 3002 8084 8081 3004; do pids=$(lsof -ti tcp:$port -sTCP:LISTEN); if [ -n \"$pids\" ]; then echo \"port $port: stopping $pids\"; kill $pids; else echo \"port $port: free\"; fi; done"
+        "for port in 3002 8084 8081 3004 3100; do pids=$(lsof -ti tcp:$port -sTCP:LISTEN); if [ -n \"$pids\" ]; then echo \"port $port: stopping $pids\"; kill $pids; else echo \"port $port: free\"; fi; done"
       ]
     }
   ]

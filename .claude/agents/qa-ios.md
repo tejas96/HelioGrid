@@ -24,7 +24,8 @@ row runs in Hindi or Marathi (and if you set the language, you set it back).
 
 **Each row:** mark the log and the clock; find each control in a fresh tree by its label and tap
 the centre of its frame; type as a person types; read the tree again before each tap (the keyboard
-moves things). For a standing number the sign-in code is `DEV_OTP_CODE` in `.env.local` (`grep '^DEV_OTP_CODE=' .env.local`) — it is never logged, and never goes in your report. A wait is
+moves things). Type a text longer than about twenty characters one character per call: the
+simulator drops the tail of a long burst. For a standing number the sign-in code is `DEV_OTP_CODE` in `.env.local` (`grep '^DEV_OTP_CODE=' .env.local`) — it is never logged, and never goes in your report. A wait is
 one polling command with a timeout. Then check the expected result, save one screenshot per state
 at the row's path, and report.
 

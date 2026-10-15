@@ -119,7 +119,8 @@ slice Main builds:
 
 1. Read the package's `CLAUDE.md` before its first edit (an edit from the shell loads nothing).
 2. Tests first: each AC's test before its code (`.claude/rules/testing.md`). A money, tenancy or
-   permission test, and a check you add or change, is seen red once; note each for the PR body.
+   permission test, and a check you add or change, is seen red once, as `.claude/rules/testing.md`
+   says; note each for the PR body.
    An `apps/api/tests` file runs on the test database with the step 8 export in front:
    `export $(grep -E '^DATABASE_(ADMIN_)?URL=' .env.local | sed 's/heliogrid_dev/heliogrid_test/' | xargs) && pnpm db:migrate && pnpm exec vitest run <file>`.
 3. The smallest code that meets the line. Reuse what step 2 found.
@@ -147,8 +148,8 @@ Pick the surfaces from what changed, never more:
 | surface | runs when |
 |---|---|
 | `qa-api` | `apps/api`, `apps/worker`, `packages/contracts` or `packages/db` changed |
-| `qa-web` | `apps/web`, or a `packages/ui`, `i18n`, `data` or `domain` file a web screen draws, changed — or an api route a built web screen calls changed (then one live row on that screen) |
-| `qa-ios` | `apps/mobile`, or a shared file a phone screen draws, changed — or an api route a built phone screen calls changed (then one live row on that screen) |
+| `qa-web` | `apps/web`, or a `packages/ui`, `i18n`, `data` or `domain` file a web screen draws, changed — or an api route a built web screen calls changed, or the screen is the twin of a changed phone screen (then one live row on that screen) |
+| `qa-ios` | `apps/mobile`, or a shared file a phone screen draws, changed — or an api route a built phone screen calls changed, or the screen is the twin of a changed web screen (then one live row on that screen) |
 | `qa-android` | `apps/mobile/android/**`, a `.android.*` file, a native module or the app config changed, or an RFC row names Android. Otherwise CI's `android` lane covers it. |
 
 No surface changed (a pure domain or docs task): no server starts and no phone boots; the unit
@@ -183,7 +184,9 @@ failure stops for the owner.
 
 ## 8. Gate and clean up
 
-1. Stop the web dev server this task started: `next dev` breaks while the build runs.
+1. Stop every web dev server before the gate: `next dev` breaks while the build runs. One this task
+   started is stopped by its preview id; one running at step 1 is stopped the same way and started
+   again after the gate, and one the owner started outside the preview tool is the owner's to stop.
 2. After a copy or contract change run `pnpm check:catalogs` and `pnpm check:openapi` first.
 3. Run the gate once, on the test database, without touching `.env.local`:
 
@@ -210,10 +213,8 @@ into the PR body — a part's RFC goes; the task RFC stays until the last part s
 `deferred.md` row the task joined is deleted; a `starts` row that stays gets a new `reopens when`.
 
 - Commit message: `feat: <id> — <what the user gets>`, then a short body.
-- `git push -u origin feat/<id>`, then `gh pr create --base main`. The body holds: the RFC; the
-  review result; QA, one line per row with its verdict; the gate result; every planted red; every
-  mistake found and the check that now catches it (`CLAUDE.md` §1); Low findings left; unresolved
-  items.
+- `git push -u origin feat/<id>`, then `gh pr create --base main`, the body filled in as
+  `.github/pull_request_template.md` lays it out.
 - Bind the PR to the session (the `ccd_pr` tools). A failed CI job goes to `ci-investigator`; fix,
   commit, push. The owner merges.
 - Review comments on the PR: read them, fix, continue `code-reviewer` on the fixed files, rerun
@@ -230,16 +231,16 @@ The build never waits for a drawing. When the owner asks to prepare the next mod
 1. Take the module after the one being built (`docs/build-order.md`). Read every V1 brief of its
    undrawn screens and the PRD rows they cite, fix what is wrong or missing in each brief, and build
    one drawing prompt per screen as *The drawing prompt* of `docs/start-here.md` says. Copy each to
-   the clipboard by a script (`LANG=en_US.UTF-8 pbcopy < <file>`); the owner pastes them into
-   parallel Claude Design chats.
-2. When the owner has drawn the module, they export it to `.design/<module>/` (git-ignored). Fill
-   each task's `DESIGN:` line with the board link and turn its `Status:` to `designed`; commit on
-   `design/<module>` and open a PR as step 9 does.
+   the clipboard by a script (`LANG=en_US.UTF-8 pbcopy < <file>`, then `LANG=en_US.UTF-8 pbpaste | cmp - <file>`); the owner
+   pastes them into parallel Claude Design chats.
+2. When the owner has drawn the module, they export it to `.design/<module>/` (git-ignored).
 3. Check every board from the export, by reading its code, against its brief, its PRD rows and
    *The checklist* of `docs/start-here.md`. Each fix goes to the owner as one paste-ready prompt per
-   screen; the owner fixes it in Claude Design and exports that module again. A brief's
-   `## Redesign owed` section that the board now meets is deleted in the `design/<module>` commit.
-4. A board that breaks a law or a PRD row goes to the owner with two options — fix the board, or
+   screen; the owner fixes it in Claude Design and exports that module again.
+4. When every board passes: fill each task's `DESIGN:` line with its board link, turn its `Status:`
+   to `designed`, delete each brief's `## Redesign owed` section the board now meets, then commit
+   on `design/<module>` and open a PR as step 9 does.
+5. A board that breaks a law or a PRD row goes to the owner with two options — fix the board, or
    build the better way and record the ruling in the brief. Never copy it or depart from it silently.
 
 Claude Design stays the source of truth: the export is a read-only copy, replaced whole when the

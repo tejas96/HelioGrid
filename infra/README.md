@@ -99,9 +99,8 @@ connect and holds no write grants. Its `SELECT` grants come from the migrations,
 understanding.** Every tenant table is RLS ENABLED and FORCEd
 (`tests/invariants/src/tenancy-rls.ts` asserts it), and the policies are written for
 `app_user`. A read-only role with no applicable policy therefore reads **zero rows from
-every tenant table** — and an agent would report those empty
-results as observed values, producing a confident green that proves nothing. That is exactly
-the vacuous-pass failure this repo's invariants exist to prevent.
+every tenant table** — a confident empty answer that proves nothing. That is exactly the
+vacuous-pass failure this repo's invariants exist to prevent.
 
 So `qa_readonly` inherits `app_user`'s policies but holds no write grants of its own, and a
 tenant-scoped query must set the tenant first:
@@ -109,8 +108,6 @@ tenant-scoped query must set the tenant first:
 ```sql
 SET LOCAL app.tenant_id = '<uuid>';   -- inside a transaction; without it, fail-closed = 0 rows
 ```
-
-A db step that returns zero rows without a tenant pin is `inconclusive`, never a pass.
 
 ## One-command provisioning (run top-to-bottom AFTER the card is added)
 

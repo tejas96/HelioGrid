@@ -137,8 +137,7 @@ declared in `packages/contracts`, not `packages/i18n`** — `packages/ui` may no
 there could never be named by a UI prop. `packages/i18n` stays the only CONSTRUCTOR. A hardcoded English literal then
 fails to COMPILE rather than waiting for an audit; verified against the three shapes that leak
 today (a literal, a template literal, an English default). Every row above that names an
-unreachable or defaulted English string closes with that one change plus its own prop, and
-`.claude/rules/ui-adherence.md`'s regenerate-the-list command stops being how this is tracked.
+unreachable or defaulted English string closes with that one change plus its own prop.
 Sequenced with `docs/engineering/17`, per that rule; enrol the brand in a `brand-cast-<owner>.grit`
 Biome plugin on the day it lands — the invariant `brand-registry` refuses it otherwise — or the
 cast hole stays open.

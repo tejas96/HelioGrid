@@ -15,6 +15,8 @@ Your prompt gives you: the acceptance lines (`AC-n`), your rows, the web URL
 screen task the RFC's frame map, each frame's board URL under `http://localhost:3004/` and the
 known differences (open `docs/tasks/deferred.md` rows that name a frame).
 
+Before the first row, sign out of any other account the pane holds.
+
 **Each row:** mark the log (`wc -c < .qa/api.log`); drive the page by its controls' accessible
 names (`find`, `read_page`); put every step you can foresee into one `browser_batch`; a wait is one
 polling call with a timeout, never a bare sleep. For a standing number the sign-in code is `DEV_OTP_CODE` in `.env.local` (`grep '^DEV_OTP_CODE=' .env.local`) — it is never logged, and never goes in your report. Then check the expected result and report.

@@ -12,7 +12,7 @@ Deps: `architecture.md` §2 tests/e2e.
   is printed as owed to CI's first run, never failed. Any changed pixel fails
   `e2e-web`. A baseline is
   drawn only by CI, on Linux — a Mac draws text with other edges, so off CI the comparison is
-  skipped. A baseline changes only in a commit the owner approves: from the failed run's
+  skipped. A baseline changes only in a task whose approved RFC names that change, and the PR body lists each changed image: from the failed run's
   `e2e-web-traces` artifact, a missing one is in `tests/e2e/web/<route>.spec.ts-snapshots/` and a
   changed one is `tests/e2e/test-results/<test>/landing-actual.png`, copied over the committed file.
 - `components/<Name>.spec.tsx` — the real `@heliogrid/ui` web halves, mounted with the app's
@@ -41,7 +41,7 @@ Deps: `architecture.md` §2 tests/e2e.
 ## Commands
 
 ```
-pnpm --filter @heliogrid/e2e test:web                 # the web flows; starts the BUILT api and web, or reuses running ones
+pnpm --filter @heliogrid/e2e test:web                 # the web flows — CI's e2e-web lane only, never run locally (.claude/rules/testing.md)
 pnpm --filter @heliogrid/e2e test:ct [<spec files>]   # the component tests (port 3100)
 pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows by hand, one device per call
 ```

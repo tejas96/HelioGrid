@@ -42,7 +42,6 @@
       "Bash(rm -rf /Volumes/works-space/heliogrid*)",
       "Bash(rm -rf ~*)",
       "Bash(rm -rf $HOME*)"
-    ],
-    "ask": ["Bash(git merge*)", "Bash(git -C * merge*)"]
+    ]
   }
 }

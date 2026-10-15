@@ -17,12 +17,13 @@ switch. Never switch silently.
 **Verify reality.** A claim about this repo names the file and line that proves it. A bug is
 reproduced on the RUNNING app, never a mock. Read failures, not exit codes, and call sites, not
 declarations. A check you add or change is trusted only after it fires on a planted bad line
-(a `test:web` flow excepted: CI's `e2e-web` lane is its one proof, and it never runs locally).
+(`.claude/rules/testing.md`).
 
 **Every mistake leaves a record.** A mistake found in the work — yours, a reviewer's, a check's or
 the owner's — is fixed at once and listed in the PR body by its kind. One a machine could have
 caught gets that check: a type, a lint rule or a test. One no machine can decide gets one line in
-`.claude/agents/code-reviewer.md` or `rfc-template.md` — never a new rule file or a new step.
+`.claude/agents/code-reviewer.md`, `rfc-template.md` or its package's `CLAUDE.md` Traps — never a
+new rule file or a new step.
 
 **No new script.** A code fact goes into a type, Biome, dependency-cruiser or a test. Ask the owner
 before adding a script or a command.
@@ -57,7 +58,7 @@ build never waits for a drawing.
 
 | step | what | stops for the owner |
 |---|---|---|
-| pick · analyse · RFC | the next task; its gaps; its RFC, checked by `rfc-reviewer` | yes — approve the RFC, once |
+| pick · analyse · RFC | the next task; its gaps; its RFC, checked by `rfc-reviewer` | yes — approve the RFC, once; a part inside the approved task RFC with no open decision needs none |
 | build | inside the approved RFC | when scope voids the approval |
 | verify | `code-reviewer`, then QA on the changed surfaces in parallel, then `pnpm check:all` | when a finding or a failing row survives its fixes |
 | ship | clean up, commit, push, open the PR, CI | no — the owner merges the PR |

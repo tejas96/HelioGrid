@@ -195,11 +195,11 @@ disagreeing about the same flow.
 
 ## When a brief changes after its screen was drawn
 
-- The screen's next check reads the board against the brief as it now stands: a mismatch is a
-  finding, and its fix prompt goes to the owner before the build.
+- The module's next export check reads the board against the brief as it now stands: a mismatch
+  is a finding, and its fix prompt goes to the owner before the build.
 - A change that must wait for the screen's turn is written into the brief as a `## Redesign owed`
   section — what the design shows and what the brief now requires — and the section is deleted
-  in the change whose design check passes (`/task`, Design track).
+  in the `design/<module>` commit once the board meets it (`/task`, Design track).
 - A screen already BUILT that no longer matches gets the task that changes it, in `docs/tasks/`.
 
 ## How you know you're finished

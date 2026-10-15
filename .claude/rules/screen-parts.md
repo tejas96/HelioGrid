@@ -37,8 +37,8 @@ hook's state — and the screen, which may import both sides, supplies it.
 
 ## Verify
 
-- Verify a twinned screen on both platforms, side by side; a one-platform change to a twinned screen
-  is where drift starts.
+- A change to one twin gets a live QA row on the other (`/task` step 7); a one-platform change to a
+  twinned screen is where drift starts.
 
 A pair that already exists is a finding, not a rule to bend: it goes to `docs/tasks/deferred.md`
 with what blocks the lift, and the next screen task on either twin lifts it.

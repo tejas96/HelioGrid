@@ -28,7 +28,12 @@
 | finding | fix |
 |---|---|
 
-<!-- The review's findings and what was done about each. -->
+<!-- The review's findings and what was done about each; a Low finding left unfixed says why. -->
+
+## Gate
+
+<!-- `pnpm check:all` on the test database: the result, and the first failing line if it failed
+     once. -->
 
 ## Red proofs
 
@@ -45,4 +50,5 @@
 
 ## Deferred
 
-<!-- The docs/tasks/deferred.md rows this task added, and what is deliberately not handled yet. -->
+<!-- The docs/tasks/deferred.md rows this task met — joined (deleted here) or stays (its new
+     `reopens when`) — the rows it added, and anything left unresolved. -->
