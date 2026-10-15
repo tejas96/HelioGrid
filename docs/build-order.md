@@ -51,16 +51,16 @@ lives in its task's `#### Parts` table; this file never lists parts.
 | the task | the step |
 |---|---|
 | ready | `build <task>` |
-| a screen whose `DESIGN:` line reads `PENDING` | `owner draws <SCR>` from the prompt Claude Code builds (`.claude/skills/task/references/design.md`), then `build <task>` |
+| a screen whose `DESIGN:` line reads `PENDING` | `owner draws <SCR>` from the prompt Claude Code builds (`/task`, Design track), then `build <task>` |
 | a backend task whose screens in its block are not all drawn — its own file's, and any whose `Depends on:` names it | `owner draws <SCR>, …` before the backend is built: a drawing states facts the backend serves. A redraw does not hold it — that drawing exists, and the redraw stops only the screen task |
 | carries a `**Blocked:**` line — a ruling, an account | `owner clears` it; nothing after it is taken until it is cleared, or the task is moved or parked with a recorded reason |
 | waits on a parked task | `owner clears` it: unpark that task, or move or park this one |
 | waits on an open task of a later block | `owner clears` it: move one of the two tasks, with a recorded reason |
 | carries a `**Parked:**` line | stepped over; it pulls nothing ahead |
 
-So a module runs design → backend → UI. A screen that is not drawn is never skipped for one that is. The owner
-may draw the next undrawn screen on the same walk between tasks, while the build is still on
-earlier work (`.claude/skills/task/references/design.md`, part A).
+A screen that is not drawn is never skipped for one that is. Design runs one module ahead: while
+the build is on one module, the owner draws and exports the next (`/task`, Design track), so the
+build does not stop on a drawing.
 
 Note the `V` column lives on screens, not tasks. A task is V1 if the V1 workflow needs it —
 which for the foundations means all of them, since permissions, formats and honesty underpin
@@ -205,12 +205,10 @@ task that builds what it needs. A record here keeps the order honest; it does no
 ## Checking the suite
 
 Invariants check the task and PRD documents (`.claude/protections.md`, Process):
-`deferred-rows`, `task-ledger-agrees` (each status, design link, cited task id and the history),
-`build-order-holds`, `walk-reads-parts` (the walk's command reads the Parts rows the ledger reads),
-`prd-rows-cited` (every cited PRD row is live and every quote matches its cell) and
-`screens-register-whole` (every screen briefed and designed, every PRD row landed once, the V1
-count as the scope lock states it). The RFC tests the requirements the task it takes
-carries (`/task` step 2). A screen's design is checked live, against its brief, each time a task
-starts it (`.claude/skills/task/references/design.md`).
+`build-order-holds`, `prd-rows-cited` (every cited PRD row is live and every quote matches its
+cell) and `screens-register-whole` (every screen briefed and designed, every PRD row landed once,
+the V1 count as the scope lock states it). The RFC tests the requirements the task it takes
+carries (`/task` step 2). A screen's design is checked from its module's export, against its
+brief, before the build reaches it (`/task`, Design track).
 
 Design progress is how many V1 screens have a link on their task's `DESIGN:` line.

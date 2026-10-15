@@ -51,7 +51,7 @@ The web and component suites run in CI (`e2e-web`); the phone flows run in CI on
 switches them off) and on iOS by hand, never in CI — a macOS runner spends 20 minutes on the Xcode
 build alone; the `qa-ios` helper drives a task's iOS rows, not these flows. `test:mobile` runs the
 flows on a device by hand; it needs Metro, the api and the app installed on the device. The local
-emulator is `Pixel_8_API_36` (`.claude/skills/task/references/runtime.md`) and CI's is API 34;
+emulator is `Pixel_8_API_36` (`/task` step 7) and CI's is API 34;
 either gets 4 cores and 4 GB of RAM, given on the command line (`emulator -avd <name> -cores 4 -memory 4096`;
 the emulator ignores `hw.ramSize` in the AVD's file) — at 2 GB and below Maestro's on-device
 server dies mid-suite (`DeviceServerDiedException`) while the app shows no fault.

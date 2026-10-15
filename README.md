@@ -146,10 +146,10 @@ Or from inside the app's own directory, plain `pnpm dev`/`pnpm start` works the 
 **A server never kills what is already on its port.** A running HelioGrid server is reused as it
 is. A launch configuration that finds its port busy refuses to start and says so — it never kills
 the listener and never moves to another port (`next dev` would otherwise drift to 3003). A stale or
-foreign listener on 3002, 8084 or 8081 is freed on purpose, by you, with the `clean-dev-ports`
+foreign listener on 3002, 8084, 8081 or 3004 is freed on purpose, by you, with the `clean-dev-ports`
 launch configuration in `.claude/launch.json` — the one command allowed to stop them. The launch
 configurations append their output to `.qa/api.log`, `.qa/web.log` and `.qa/metro.log` and never
-truncate them (`tests/invariants/src/launch-reuses-running-servers.ts` holds both rules).
+truncate them.
 
 `apps/web`'s dev-server port is a **literal** in `apps/web/package.json` (`next dev --port
 3002`), not read from `.env` — Next.js's CLI has no environment-variable equivalent for its
@@ -350,8 +350,8 @@ every test) — run it once before considering any non-trivial change done. See
 
 ## Git workflow
 
-Work starts on a branch off `main` and ends with a PR; every commit waits for the owner's yes, and
-the owner merges. `main` is PR-only. A PR is one complete task, never half of one. Full detail:
+Work starts on a branch off `main` and ends with a PR. The owner approves the RFC; Claude commits,
+pushes and opens the PR; the owner merges. `main` is PR-only. A PR is one complete task, never half of one. Full detail:
 [`CLAUDE.md`](CLAUDE.md) §3, §4.
 
 ## Where to find things

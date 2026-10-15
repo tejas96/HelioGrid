@@ -5,9 +5,9 @@
 
 ## RFC
 
-<!-- The approved RFC lives under the task (`#### RFC` in `docs/tasks/`); link it by task id and
-     repeat none of its sections. Here only: what changed after approval and the re-approval it
-     got, and any owner ruling applied, stated as the rule it became. -->
+<!-- The approved RFC, pasted whole: it leaves the task file in this commit (`/task` step 9).
+     Then what changed after approval and the re-approval it got, and any owner ruling applied,
+     stated as the rule it became. -->
 
 ## Acceptance criteria → proof
 

@@ -1,207 +1,220 @@
 ---
 name: task
-description: Use when the owner asks for HelioGrid's next build-order step or asks to start, continue, or finish a specific task or part. Never starts on its own.
+description: Use when the owner asks for HelioGrid's next build-order task, asks to start or continue a specific task, or asks to prepare the next module's design. Never starts on its own.
 user-invocable: true
 disable-model-invocation: true
 ---
 
-# /task — one engineering step, from the walk to the owner's merge
+# /task — one task, from the build order to its pull request
 
-You are Main: the one writer. Helpers read and report; you decide, build, fix and clean up. The
-laws are `CLAUDE.md`, cited by section and never copied; the order is `docs/build-order.md`; the
-task in `docs/tasks/` is the operational source; the PRD rows and brief it cites are the higher
-authority when it is unclear, silent or contradicts them.
+You are Main, the one writer. Agents in `.claude/agents/` read and report; you decide, build, fix
+and clean up. The laws are `CLAUDE.md`, cited and never copied. One task runs in one session and
+ends in one pull request. The owner says yes once — to the RFC — and merges the PR.
 
-Two approval classes and only two: the RFC is authored in step 2 and approved at the end of step
-3; the initial commit uses the step 6 card, each additional CI-fix commit uses its step 7 card, and
-a drawn screen's commit uses the card of `references/design.md` part A. A drawing is a
-prerequisite, not a gate: `owner draws` runs that part A. A dependency blocker ends the step with the blocker
-named. `/task <id>` for a task that is not the walk's step is refused with the step named.
+## 1. Pick the task
 
-## 0. Runtime rules — nothing runs before the walk
+Read-only; nothing runs before it. Every `git` or `gh` read must succeed: a failed read stops the
+step with the command and its error, and a failed `gh pr list` never reads as "no open PR".
 
-Step 1 is read-only and comes first. When it answers `build <id>`, read
-`references/runtime.md` before switching a branch, inspecting a runtime or changing anything.
-Create the `#### Part <x> · RFC` heading (`#### RFC` for an unsplit task) with the `#### Runtime`
-ledger under it, exactly as that reference requires; step 2 writes the RFC sections above the
-ledger. No runtime command,
-infra start, database switch or device lifecycle action precedes it.
+1. `git fetch origin`, then read `docs/build-order.md` with `git show origin/main:docs/build-order.md`.
+2. Walk its blocks from 0. Inside a block, take the task files in the order its row writes them;
+   inside a file, its backend tasks (engine, policy, integration, port) before its screens, each in
+   file order; a `Depends on:` in the same block pulls that task ahead. Read each task's header
+   lines from `origin/main`. Skip a task that is `shipped` or `struck`, carries `**Parked:**`, or
+   serves only V2 screens (`docs/prd/registers/screens.md` §2, column `V`).
+3. A task with a `#### Parts` table is taken by its first row that is not `shipped`, by its own id
+   (`T-SHELL-003a`).
+4. Read the open pull requests once: `gh pr list --state open --json number,headRefName,files`.
 
-## 1. Select — the walk, fail closed
+Classify the first task left, and say one line with the file and line that decided it:
 
-Read `references/walk.md`, execute it exactly, and emit its one line with the deciding file and
-line. A result of `owner draws` continues with part A of `references/design.md` and ends this
-`/task` run when its draft PR opens; `owner clears` ends it. Between tasks, on a clean tree, the
-owner may ask to draw ahead: part A then takes the first V1 screen on the walk, read on past the
-first remaining task, whose `DESIGN:` reads `PENDING` and which has no open `design/<SCR-id>` PR. A result of `build <id>`
-continues through runtime setup to step 2.
+| the task | the step |
+|---|---|
+| any open PR adds a migration (a file under `packages/db/migrations/`), or is a `design/<module>` PR | `owner merges #<n>` — the shared local database and the `DESIGN:` lines read from `origin/main` are only right after it merges. Stop. |
+| the task itself, or a task it depends on, has an open PR (`feat/<id>`) | `owner merges #<n>` — its `shipped` reaches `origin/main` only on merge. Stop. |
+| carries `**Blocked:**`, waits on a parked task or on an open task of a later block | `owner clears <id>` — the blocker and at most two ways to clear it, recommended first. Stop. |
+| a screen it builds or serves reads `PENDING` on its `DESIGN:` line — or its older `**Design:**` line names another task's canvas whose `DESIGN:` reads `PENDING` | `owner draws <SCR-…>` — the design track is behind (§ Design track). Stop. |
+| a screen it builds has a board, but `.design/<module>/` does not hold it, or its brief has a `## Redesign owed` section | `owner exports <module>` (after redrawing what the section lists). Stop. |
+| otherwise | `build <id>` |
 
-## 2. The RFC — one document, one approval
+A studio screen reads `ported from the POC`: it has no board, and the POC
+(`/Volumes/works-space/Solar-App-POC`) is its reference.
 
-A screen task runs its design check first (step 3): the RFC needs its `READY` and the owner's
-`board or code` rulings.
+**Branch.** The tree must be clean. Continue `feat/<id>` when it exists, else cut it from
+`origin/main`. A dirty tree on another branch belongs to its owner: name its files and stop.
+Write down what is running before you start anything — listeners on 3002, 8084, 8081, 3100 and
+3004, booted phones (`xcrun simctl list devices booted`, `adb devices`), `docker ps` — so step 8
+stops only what this task started.
 
-Read `docs/tasks/README.md` before drafting a task RFC. It is the sole authority for RFC sections,
-proof ownership, delivery size and Parts. A task RFC is written in its complete shape under the
-task's header lines. A part RFC reads the task RFC and its own Parts row, never a shipped part or
-its ledger, and does not re-read the README: this step holds the part's shape, and the task RFC
-holds the proof owners and budget the part extends. It keeps every heading: its
-own Title, Description, Proposal, File and folder changes, Acceptance criteria and proof and
-Delivery size in full; each other section is one declared line — `The task RFC's, unchanged`,
-`None — <reason>`, Readiness's `light cycle — <reason>`, or the diagram's `No boundary change —
-see the task diagram` — and is written in full only where the part differs from the task RFC. A missing heading is a defect; a copied task section is one too.
+## 2. Analyse
 
-An approved legacy `#### Plan`, `#### Acceptance criteria` and `#### QA plan` remains valid until
-step 4 voids it. Then preserve it as history and write one complete replacement RFC for the
-remaining task or part, including that part's applicable AC and proof rows. This explicit legacy
-migration is the exception to keeping shared AC only in the task RFC. Never append a delta-only
-Plan or make the owner reconstruct the decision from old sections.
+Read, in one batch: the task's header lines and `DONE WHEN`; every PRD row it cites, whole; its
+brief (`docs/ux/briefs/`); its board in `.design/<module>/` for a screen task; every
+`docs/tasks/deferred.md` row it meets (`T-<this> starts`, `T-<x> ships` where x has shipped, and
+`touches <path>` where a planned file sits under that path); `docs/engineering/architecture.md`
+§4; and the `CLAUDE.md` of every package the change will touch. Search the code for what already
+exists before planning anything new (Law 5) — an `Explore` agent for a broad sweep.
 
-Before showing the RFC, test every carried requirement from the PRD, brief, design record and task
-— for a part, the lines its Parts row carries — for a defect, contradiction, ownerless fact or
-drifting list, and for a simpler way to meet it.
-Put each finding, codebase example, switching cost and recommendation in the RFC. A clear higher
-source corrects the task before approval. Silence or ambiguity gives the owner at most two options;
-the ruling lands in the PRD row or brief first, then the task. Implementation invents nothing.
+Test every line the task carries, once, quickly:
 
-Before showing the RFC, list every `docs/tasks/deferred.md` row this task meets: `T-<this> starts`,
-`T-<x> ships` where x has shipped, and `touches <path>` where a path in the file table sits under
-it. Each goes into the decision block as join this task or stays, recommended first; a row that
-joins is deleted in this task's commit, a `T-<task> starts` row that joins a later part is
-rewritten to that part's trigger (`T-<task><x> starts`), and a `starts` row that stays gets a new
-`reopens when` cell, all in this commit, since its trigger is spent (the `deferred-rows` invariant
-fails it otherwise).
+- **Wrong** — it contradicts a higher source (`CLAUDE.md` §7) or the code as it stands.
+- **Missing** — a state, an edge case from the list in `rfc-template.md`, or a role is not covered.
+- **Over-built** — a simpler way meets the same PRD row, or the line builds for a future no row asks for.
 
-## 3. Design check, then the RFC's approval
+A higher source corrects the task. Silence or ambiguity goes to the owner as a decision in the RFC,
+at most two options, recommended first; the ruling lands in the PRD row or brief first, then in the
+task. The build invents nothing.
 
-A screen task runs part B of `references/design.md` before its RFC: the board is read live, a
-helper pictures it, `design-check` judges it, every fix goes to the owner as one prompt to paste,
-and each new `board or code` difference gets the owner's ruling in `#### Design check`. Only a
-`READY` check lets the RFC be written. Any other task or part whose QA rows name a board frame runs
-the same part B before its QA, so the pictures it compares with are fresh.
+## 3. Write the RFC
 
-The RFC is written in full under the task, then the chat shows its short view, never the whole
-text: the title; a link to the `#### … RFC` heading by file and line; the user impact from
-`##### Description`; the `##### Architecture diagram` — drawn for a task RFC in the inline widget
-by the Mermaid library from the file's own Mermaid block, never hand-placed, so the picture and
-the record are one text (`references/diagram.md` holds the one widget recipe), and for a part
-linked by file and line, drawn only when the part has a diagram of its own; a chat that cannot
-draw shows the Mermaid block as it is; the `##### Delivery size` numbers on one line; then the
-decision block, nothing after it. Every other section is read at the link.
+Write it under the task's header lines as `#### RFC` (a part: `#### Part <x> · RFC`), in the shape
+of `rfc-template.md`. It is the one plan every agent works from: nobody downstream invents a
+requirement it does not hold.
 
-- `Decisions for you:` each open ruling on one line — the section that holds it, its options,
-  the recommended one first — or `none`.
-- `Simplest build:` one line — what is reused, what is left out, and the simpler way taken when
-  the step 2 test found one.
-- exactly `Decision required: approve RFC / request changes`.
+**A task is one PR.** Split only when the RFC plans more than 30 changed files, into at most three
+parts. Each part is end to end and holds the web and phone halves of its flow together; the task
+gets a `#### Parts` table (`part | what | AC | depends on | status`).
 
-Stop. No test, migration or source edit begins before the owner's explicit approval
-(`CLAUDE.md` §3). The approval covers the RFC as written at the link and nothing else. A request
-for changes is answered the way step 4 shows a delta: one line per changed section, then the
-decision block. One case does not stop: a part whose card reads `Decisions for you: none` and
-whose file table sits inside the files and lines the approved task RFC's `##### Delivery size`
-gave that part. Its short view is
-shown with `Decision required: none — inside the approved task RFC` and the build begins; the
-owner's approval of the task RFC covers it.
+## 4. Review the RFC, then ask once
 
-## 4. Build
+Give `rfc-reviewer` the RFC, the task, its PRD rows, its brief and the board path. Fix every
+finding it confirms in the RFC. A finding you reject gets one line of reason in the RFC.
 
-Build as `CLAUDE.md` §3 and `.claude/rules/testing.md` say, one slice at a time, each slice the
-smallest code that meets its line (`CLAUDE.md` §8 *Solve today's problem*, Law 5); each planted
-red line is recorded for the PR body. Before the first edit under a package or app, read its
-`CLAUDE.md`; an edit from the shell loads nothing. A new route, table, contract, package, affected
-package or behaviour voids the approval: update the RFC and present the delta — a banner with files and
-lines built against planned, the link, then one line per changed section saying what changed and
-why; an unchanged section is not named — closing with the decision block as step 3 says. The
-owner's yes to a delta covers the updated RFC whole. The chat never shows the whole RFC, not even
-for a full replacement RFC for a legacy Plan, which gets the step 3 short view. A delta-only
-`Plan` is not a replacement RFC. So does a requirement the build shows to be wrong or over-built:
-the step 2 test applies, and the owner hears it before the code follows it.
-The RFC's file table and authored-line estimate are the budget and record: a file that lands
-outside it is added with its reason as it lands; a file in a package the RFC does not name voids
-approval — stop, show the delta (planned and built · built but not planned, each with its reason ·
-planned but not built), update the RFC and present the delta as above — never trim a proof to
-fit. Files or lines more than 20% above the estimate void nothing: the commit card says by how
-much and why (`docs/tasks/README.md`, Delivery size). Tick the part's checklist as each file group and proof
-lands; the owner reads it, never a transcript.
-A planted red that needs a database runs on `heliogrid_test`; no task creates a database of its
-own.
+Then show the owner the short view, never the whole RFC: the title; a link to the `#### RFC`
+heading by file and line; the user impact; the diagram, when the RFC has one (draw its Mermaid
+block in the inline widget, or show the block as it is); the size on one line; what the review
+changed, one line each; then:
 
-## 5. QA — helpers once, on one stack
+- `Decisions for you:` each open decision on one line — options, recommended first — or `none`.
+- `Simplest build:` one line — what is reused, what is left out.
+- `Decision required: approve RFC / request changes`
 
-Read `references/qa.md` before preparing the stack or starting a helper. Follow its database,
-account, packet, readiness, timing, log and retry rules exactly. Only the surfaces the proof
-rows name are started; a phone is booted for its rows and shut at teardown.
+Stop. Nothing is built before the owner's yes. A change request is answered with one line per
+changed section, then the same three lines.
 
-The full gate's limits are the Evaluator's own rules (`.claude/agents/evaluator.md`). Main's part:
-fix an environmental failure and rerun only the failing command; a checked-file change left by or
-made after a run is never planned — return to `references/qa.md`, continue the reviewer, rerun
-every affected proof row, then run the command that proves the change and `pnpm check` before
-continuing the same Evaluator. Never respawn the Evaluator; one lost to a restart follows
-`references/qa.md`.
+## 5. Build
 
-## 6. Pre-commit card
+Inside the approved RFC only, one slice at a time:
 
-Tear down first (`references/runtime.md`, Teardown), so the card reports the final state and the
-commit carries it. Then show, and stop. The task guard (`.claude/hooks/guard.mjs`) refuses the
-commit on a `feat/T-…` branch until the reviewer's CLEAN and the Evaluator's PASS were given on
-the code the last full gate ran on, each QA helper's last verdict is PASS (a fix reruns only the
-rows it touched), no code changed after that gate, the
-invariants read the task files as they stand, no helper changed a repository file, and every
-resource is back to its start state.
+1. Read the package's `CLAUDE.md` before its first edit (an edit from the shell loads nothing).
+2. Tests first: each AC's test before its code (`.claude/rules/testing.md`). A money, tenancy or
+   permission test, and a check you add or change, is seen red once; note each for the PR body.
+   An `apps/api/tests` file runs on the test database with the step 8 export in front:
+   `export $(grep -E '^DATABASE_(ADMIN_)?URL=' .env.local | sed 's/heliogrid_dev/heliogrid_test/' | xargs) && pnpm db:migrate && pnpm exec vitest run <file>`.
+3. The smallest code that meets the line. Reuse what step 2 found.
+4. `pnpm check` after each slice.
+5. One step gets two attempts. After both fail, stop with the evidence and at most two ways forward.
 
-The card holds, in this order: five fixed lines — the surfaces QA ran on with each one's rows and
-results; the board compared, `yes` with the frames or `no` with the reason; the reviewer's last
-verdict; the gate's result; the mistakes found, one line each — then the side-by-side images of a
-screen task and its built Hindi and Marathi pictures, attached as files Main composed by name and
-never read; the changed files in three lists (planned and built · built but not planned, each with
-its reason · planned but not built; more than 20% above the estimate says by how much and why);
-unresolved blockers; the runtime cleanup state; and the exact commit message (the task's `Status:`
-or the part's row turns `shipped` in this commit). The full proof is not on the card: it is
-written once, into the PR body (step 7).
+A new route, table, contract, package or behaviour voids the approval: update the RFC, show what
+changed, and wait for a yes again. A file outside the RFC's file table is added to it with its
+reason as it lands.
 
-The same commit writes two measurements under the `#### Runtime` ledger (step 0) — Main's context
-tokens from the session's usage reading, the helpers' tokens summed from their completion notices
-— and moves a shipped part's RFC body and ledger to the archive (`docs/tasks/README.md`, Task
-anatomy).
+When the build is done, one tidy pass over the whole diff: reuse, names, dead code, files over 300
+lines, comments that explain code instead of a constraint.
 
-The commit waits for the owner's yes to THIS card (`CLAUDE.md` §4).
+## 6. Code review
 
-## 7. Draft PR and CI
+Give `code-reviewer` the RFC, the changed-file list and `git diff origin/main`. Fix every confirmed
+Critical, High and Medium finding. A Low finding is fixed when it sits in a file the diff already
+changes, else listed in the PR body. Continue the same reviewer with only the fixed files; it reads
+at most twice more. A finding still open after that stops for the owner.
 
-Push, open a DRAFT PR whose body carries the full proof, once: the AC proof summary (the
-Evaluator's rows), the review result, every planted-red line, each mistake with the rule that now
-prevents it, and the reviewer's notes left outside the diff (`references/qa.md`). The session stays
-bound to its PR after the task ends: the app sends it every CI event, and it reads each one
-without being asked. Judge only the latest run of the head SHA: the head from
-`gh pr view <number> --json headRefOid`, its newest run (latest `createdAt`) from `gh run list --commit <sha> --json
-databaseId,status,conclusion,createdAt`, waited for until `completed`, and its jobs from
-`gh run view <id> --json jobs`. Every job of that run must pass. A job passed when its
-conclusion is `success`, or `skipped` while `changes` is `success` (its path rule turned the lane
-off); any other conclusion fails it, and so does a skip after a failed `changes`. A lane a `ci` proof
-row names must be `success`, and a phone lane is judged step by step (`docs/tasks/README.md`, the
-proof owners under RFC), never by its colour alone. When every job has passed, mark the PR ready
-yourself (`gh pr ready <number>`); the owner merges. A failed job goes
-to `ci-investigator` for that job only; show a CI-fix card (cause, files, proof, message); the
-owner's `fix` approves that card and the push, nothing unshown. When the folder is already held
-by a later part of the same task — its branch checked out, or a dirty tree — the fix lands on that
-later branch, which carries this part, and this PR is closed as superseded by the later PR, whose
-body says so; the folder is never switched under a running task.
+## 7. QA, in parallel
 
-## 8. Teardown — on block, cancellation or failure
+Pick the surfaces from what changed, never more:
 
-On success teardown ran before the card (step 6). On every other exit follow `references/runtime.md`
-teardown; its report starts with `Teardown:`, and the task guard blocks that report once while a
-listener or phone the task started still runs or the database routing differs from its start.
+| surface | runs when |
+|---|---|
+| `qa-api` | `apps/api`, `apps/worker`, `packages/contracts` or `packages/db` changed |
+| `qa-web` | `apps/web`, or a `packages/ui`, `i18n`, `data` or `domain` file a web screen draws, changed — or an api route a built web screen calls changed (then one live row on that screen) |
+| `qa-ios` | `apps/mobile`, or a shared file a phone screen draws, changed — or an api route a built phone screen calls changed (then one live row on that screen) |
+| `qa-android` | `apps/mobile/android/**`, a `.android.*` file, a native module or the app config changed, or an RFC row names Android. Otherwise CI's `android` lane covers it. |
 
-## Helpers — `.claude/agents/`
+No surface changed (a pure domain or docs task): no server starts and no phone boots; the unit
+tests, the review and the gate are the proof.
 
-`design-check` and `qa-web`'s board capture run in step 3, before step 5's QA of a part whose rows
-name a board frame, and in `references/design.md` part A; changed-surface QA, `qa-api` and
-`reviewer` run in step 5; `evaluator` follows them; `ci-investigator` reads one failed job in step
-7. Their own files are the only report contracts. Helpers start no helper and edit no repository
-file: on a task branch the task guard refuses a helper's git, `gh`, install and in-place edit
-commands and records any repository file another of its commands changed, and the commit waits
-for the owner to see it. QA drives only its assigned API/browser/device surface; Evaluator alone may run the full gate
-and cause its declared generated-file writes. Only Main fetches the design record. A rerun continues
-the same helper with the delta.
+**Prepare.** `pnpm infra:up` when the stack is down. Start only the servers the rows need, through
+`.claude/launch.json` with `preview_start`; reuse a healthy HelioGrid one. Boot only the phones the
+rows need: the simulator that holds the newest `com.heliogrid.app`, the emulator `Pixel_8_API_36`.
+Rebuild native code only when native files changed or the app is missing. Cold-start the app after
+JavaScript edits; Fast Refresh can drop silently. For a screen task, start `design-export` (port
+3004) so `qa-web` can open the board.
+
+QA runs on `heliogrid_test`, never on the owner's `heliogrid_dev` (`infra/README.md`). When
+`.env.local` names `heliogrid_dev`, switch both database lines
+(`sed -i '' 's/heliogrid_dev/heliogrid_test/' .env.local`) and switch them back in step 8. Migrate
+it before the api starts (the step 8 export line, then `pnpm db:migrate`); a test database with no
+market pack gets `pnpm --filter @heliogrid/api pack:publish`. A running api restarts only when this
+task switched the database, added a migration or changed api code it does not hot-reload.
+
+**Run.** Start every QA agent in one message. Each gets what its own file lists under "Your prompt
+gives you"; `qa-web` also gets every open `docs/tasks/deferred.md` row that names a frame it
+compares — a known difference, noted and not failed. An agent that returns `NEEDS MAIN: <action>` (kill,
+restart or open the app by a link) gets that action done by you and is continued. Standing accounts: `…901` web, `…902` iOS, `…903` Android, `…904` and `…905` for the
+api's two tenants; all are in `DEV_OTP_PHONES`. A missing one is created once through the app. A row
+that needs the api stopped runs last, after every agent has returned: stop the api once, continue
+each agent that has such rows, start the api once.
+
+**Fix.** Fix only evidenced failures. Continue the same `code-reviewer` on the fixed files, then
+continue the same QA agent with only the rows the fix touched. A row gets one retry; a third
+failure stops for the owner.
+
+## 8. Gate and clean up
+
+1. Stop the web dev server this task started: `next dev` breaks while the build runs.
+2. After a copy or contract change run `pnpm check:catalogs` and `pnpm check:openapi` first.
+3. Run the gate once, on the test database, without touching `.env.local`:
+
+   ```bash
+   export $(grep -E '^DATABASE_(ADMIN_)?URL=' .env.local | sed 's/heliogrid_dev/heliogrid_test/' | xargs) && pnpm db:migrate && pnpm check:all
+   ```
+
+   Read the failures, not the exit code. A fix goes back through `pnpm check`, the reviewer on
+   the fixed files and the QA rows it touched, then one more gate run. A second failure that is
+   not environmental stops for the owner. A stale `dist/` after a delete: `CLAUDE.md` §3.
+4. Clean up: switch `.env.local` back if step 7 switched it, and restart the api only if it was
+   running at step 1. Stop every server, phone (`xcrun simctl shutdown <udid>`,
+   `adb -s <serial> emu kill`) and browser tab this task started; leave alone what was running at
+   step 1; run
+   `pnpm infra:down` only when the stack was down at step 1; never quit Docker. Delete the
+   screenshots and temporary files this task made in `.qa/` and the scratchpad; keep the logs.
+   A watcher that survives (`tsx … watch`) is named to the owner with its pid.
+
+## 9. Commit and PR
+
+One commit holds the change and the task's `Status:` turned `shipped` (a part: its Parts row; the
+task turns `shipped` with its last part). The same commit moves the task's RFC out of the task file
+into the PR body — a part's RFC goes; the task RFC stays until the last part ships. Each
+`deferred.md` row the task joined is deleted; a `starts` row that stays gets a new `reopens when`.
+
+- Commit message: `feat: <id> — <what the user gets>`, then a short body.
+- `git push -u origin feat/<id>`, then `gh pr create --base main`. The body holds: the RFC; the
+  review result; QA, one line per row with its verdict; the gate result; every planted red; every
+  mistake found and the check that now catches it (`CLAUDE.md` §1); Low findings left; unresolved
+  items.
+- Bind the PR to the session (the `ccd_pr` tools). A failed CI job goes to `ci-investigator`; fix,
+  commit, push. The owner merges.
+
+Close with one line: the next task starts in a new session with `/task`.
+
+## Design track — one module ahead
+
+The build never waits for a drawing. When the owner asks to prepare the next module's design:
+
+1. Take the module after the one being built (`docs/build-order.md`). Read every V1 brief of its
+   undrawn screens and the PRD rows they cite, fix what is wrong or missing in each brief, and build
+   one drawing prompt per screen as *The drawing prompt* of `docs/start-here.md` says. Copy each to
+   the clipboard by a script (`LANG=en_US.UTF-8 pbcopy < <file>`); the owner pastes them into
+   parallel Claude Design chats.
+2. When the owner has drawn the module, they export it to `.design/<module>/` (git-ignored). Fill
+   each task's `DESIGN:` line with the board link and turn its `Status:` to `designed`; commit on
+   `design/<module>` and open a PR as step 9 does.
+3. Check every board from the export, by reading its code, against its brief, its PRD rows and
+   *The checklist* of `docs/start-here.md`. Each fix goes to the owner as one paste-ready prompt per
+   screen; the owner fixes it in Claude Design and exports that module again. A brief's
+   `## Redesign owed` section that the board now meets is deleted in the `design/<module>` commit.
+4. A board that breaks a law or a PRD row goes to the owner with two options — fix the board, or
+   build the better way and record the ruling in the brief. Never copy it or depart from it silently.
+
+Claude Design stays the source of truth: the export is a read-only copy, replaced whole when the
+owner exports again. Boards are English; Hindi and Marathi come from the catalog.

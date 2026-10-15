@@ -43,57 +43,6 @@
       "Bash(rm -rf ~*)",
       "Bash(rm -rf $HOME*)"
     ],
-    "ask": [
-      "Bash(git commit*)",
-      "Bash(git push*)",
-      "Bash(git -C * commit*)",
-      "Bash(git -C * push*)",
-      "Bash(git merge*)",
-      "Bash(git -C * merge*)"
-    ]
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash|Edit|Write|NotebookEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard.mjs\""
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard.mjs\""
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard.mjs\""
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard.mjs\""
-          }
-        ]
-      }
-    ]
+    "ask": ["Bash(git merge*)", "Bash(git -C * merge*)"]
   }
 }
