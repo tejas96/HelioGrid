@@ -34,6 +34,8 @@ at the row's path, and report.
 - every control the row uses is at least 44 points on both axes;
 - no button label wraps (its text node is under 30 points tall);
 - with the keyboard open, the focused field's bottom sits above the keyboard's top;
+- nothing the row uses sits under the status bar, the notch or the home indicator;
+- every control the row uses has an `AXLabel` from the catalog;
 - no crash or error line in the app's log since the row began.
 
 **Check only when a row asks:** offline and retry, background and foreground, a deep link,

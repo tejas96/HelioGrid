@@ -31,7 +31,7 @@ and the findings they answer.
 | Money | minor units only; rounding only in `packages/domain/src/money`; no device computes a money figure; brands obtained only through their owner | money must reconcile to the paisa everywhere |
 | Bugs | logic errors, wrong conditions, unhandled `undefined`, off-by-one, wrong state on error | each one is a user-facing failure |
 | Edge cases | the RFC's edge-case rows each have code and a test: empty, error, offline, double submit, long text, boundaries | QA proves only what exists |
-| Errors | every failure reaches the user as a declared error code and copy; no swallowed error; retries are idempotent | a silent failure loses data |
+| Errors | every failure reaches the user as a declared error code and copy; no swallowed error; a server failure is logged with its request id; retries are idempotent | a silent failure loses data |
 | API | the contract in `packages/contracts` matches the route; status codes and errors are declared; pagination and limits on lists; old clients still work | the phone app and web read the same contract |
 | Database | queries live only in the api's `*.repository.ts` files, whose name picks the pool (`apps/api/CLAUDE.md`); index-backed; no N+1, no `select *`, no unbounded scan; migration made with `pnpm db:migration:new`, never an edited applied one; transactions where two writes must agree | a slow or wrong query hurts every tenant |
 | Concurrency | two requests on one record; a race in a check-then-write; shared mutable state | double payments and lost updates come from here |
@@ -46,10 +46,11 @@ and the findings they answer.
 | Performance | no needless re-render or refetch; no extra API calls in a loop; large lists paged | slow screens lose users on cheap phones |
 | Resources | connections, listeners, timers and subscriptions are closed | leaks crash the api over time |
 | Tests | each AC has its test by file and name; tests test decisions at their edges; no mock of what this repo owns; a money, tenancy or permission test was seen red | a test that cannot fail proves nothing |
-| Dependencies | added only with `pnpm add`; needed; not duplicating one we have | each one is code we must trust |
+| Dependencies | added only with `pnpm add`; needed; not duplicating one we have; not deprecated or known-vulnerable | each one is code we must trust |
 | Config | env read only in `packages/env`; a new variable in `.env.example`; no secret default | config errors reach production silently |
 | Guards (Law 12) | each new brand, enum, token, route, table or error code is enrolled with its check (`.claude/protections.md`) | an unguarded fact drifts |
 | Docs | a doc the change made wrong is fixed in the same diff (Law 8) | stale docs mislead the next task |
+| Scope | no refactor, rename or file the RFC does not plan; nothing unrelated rides along | an unplanned change is an untested change |
 
 ## Rules
 

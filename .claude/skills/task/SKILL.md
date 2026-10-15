@@ -7,9 +7,10 @@ disable-model-invocation: true
 
 # /task — one task, from the build order to its pull request
 
-You are Main, the one writer. Agents in `.claude/agents/` read and report; you decide, build, fix
-and clean up. The laws are `CLAUDE.md`, cited and never copied. One task runs in one session and
-ends in one pull request. The owner says yes once — to the RFC — and merges the PR.
+You are Main: you decide, build, fix and clean up. Agents in `.claude/agents/` read and report; only
+you and the step 5 build agents edit files. The laws are `CLAUDE.md`, cited and never copied. One
+task runs in one session and ends in one pull request. The owner says yes once — to the RFC — and
+merges the PR.
 
 ## 1. Pick the task
 
@@ -22,16 +23,22 @@ step with the command and its error, and a failed `gh pr list` never reads as "n
    file order; a `Depends on:` in the same block pulls that task ahead. Read each task's header
    lines from `origin/main`. Skip a task that is `shipped` or `struck`, carries `**Parked:**`, or
    serves only V2 screens (`docs/prd/registers/screens.md` §2, column `V`).
-3. A task with a `#### Parts` table is taken by its first row that is not `shipped`, by its own id
-   (`T-SHELL-003a`).
-4. Read the open pull requests once: `gh pr list --state open --json number,headRefName,files`.
+3. A task with a `#### Parts` table is taken by its first row that is not `shipped` and has no open
+   PR, by its own id (`T-SHELL-003a`).
+4. Read the open pull requests once:
+   `gh pr list --state open --json number,headRefName,files,statusCheckRollup,reviewDecision`.
+5. Two cases skip the walk. A task's open PR has a red CI job or review comments: take it on its
+   own branch, at step 9's CI loop. The owner names a task: take that task, still classified by
+   the table below.
 
 Classify the first task left, and say one line with the file and line that decided it:
 
 | the task | the step |
 |---|---|
 | any open PR adds a migration (a file under `packages/db/migrations/`), or is a `design/<module>` PR | `owner merges #<n>` — the shared local database and the `DESIGN:` lines read from `origin/main` are only right after it merges. Stop. |
-| the task itself, or a task it depends on, has an open PR (`feat/<id>`) | `owner merges #<n>` — its `shipped` reaches `origin/main` only on merge. Stop. |
+| an earlier part of the same task has an open PR | `owner merges #<n>` — this part builds on that code. Stop. |
+| the task itself has an open PR (`feat/<id>`) | in review: skip it and walk on — its `shipped` reaches `origin/main` when the owner merges. |
+| a task it depends on has an open PR | `owner merges #<n>` — this task builds on that code. Stop. |
 | carries `**Blocked:**`, waits on a parked task or on an open task of a later block | `owner clears <id>` — the blocker and at most two ways to clear it, recommended first. Stop. |
 | a screen it builds or serves reads `PENDING` on its `DESIGN:` line — or its older `**Design:**` line names another task's canvas whose `DESIGN:` reads `PENDING` | `owner draws <SCR-…>` — the design track is behind (§ Design track). Stop. |
 | a screen it builds has a board, but `.design/<module>/` does not hold it, or its brief has a `## Redesign owed` section | `owner exports <module>` (after redrawing what the section lists). Stop. |
@@ -40,8 +47,10 @@ Classify the first task left, and say one line with the file and line that decid
 A studio screen reads `ported from the POC`: it has no board, and the POC
 (`/Volumes/works-space/Solar-App-POC`) is its reference.
 
-**Branch.** The tree must be clean. Continue `feat/<id>` when it exists, else cut it from
-`origin/main`. A dirty tree on another branch belongs to its owner: name its files and stop.
+**Branch.** Continue `feat/<id>` when it exists — a dirty tree on it is this task's work, resumed —
+else cut it from `origin/main` on a clean tree. A dirty tree on another branch belongs to its
+owner: name its files and stop. An RFC that already carries `**RFC approved:**` resumes where its
+branch stands — build, review, QA or gate — and is not asked again.
 Write down what is running before you start anything — listeners on 3002, 8084, 8081, 3100 and
 3004, booted phones (`xcrun simctl list devices booted`, `adb devices`), `docker ps` — so step 8
 stops only what this task started.
@@ -54,6 +63,9 @@ brief (`docs/ux/briefs/`); its board in `.design/<module>/` for a screen task; e
 `touches <path>` where a planned file sits under that path); `docs/engineering/architecture.md`
 §4; and the `CLAUDE.md` of every package the change will touch. Search the code for what already
 exists before planning anything new (Law 5) — an `Explore` agent for a broad sweep.
+
+A planned file that an open PR adds or changes, or an export only an open PR adds, stops the
+task: `owner merges #<n>`. `docs/tasks/` files are excepted: step 9 merges them.
 
 Test every line the task carries, once, quickly:
 
@@ -89,12 +101,21 @@ changed, one line each; then:
 - `Simplest build:` one line — what is reused, what is left out.
 - `Decision required: approve RFC / request changes`
 
-Stop. Nothing is built before the owner's yes. A change request is answered with one line per
+Stop. Nothing is built before the owner's yes. On the yes, write `**RFC approved:** <date>` as the
+first line under the RFC heading just approved (a part: `#### Part <x> · RFC`). A part with no open
+decision inside the approved task RFC needs no new yes (`CLAUDE.md` §3) and gets the line too,
+citing the task RFC's approval; a part with one asks. A change request is answered with one line per
 changed section, then the same three lines.
 
 ## 5. Build
 
-Inside the approved RFC only, one slice at a time:
+Inside the approved RFC only, slice by slice in the order of its *Build steps*. Contracts and
+shared types land first (Law 3). After that, the slices the RFC marks parallel — disjoint files —
+may go to `general-purpose` agents at once, each with its slice, the RFC and the `CLAUDE.md` of
+its package. They edit only their slice's files and run nothing — no `pnpm`, no test, no
+formatter. A slice that holds a money, tenancy or permission rule is never parallel. Main reads
+every diff they made, runs their tests on the test database, then `pnpm check` once. For each
+slice Main builds:
 
 1. Read the package's `CLAUDE.md` before its first edit (an edit from the shell loads nothing).
 2. Tests first: each AC's test before its code (`.claude/rules/testing.md`). A money, tenancy or
@@ -149,11 +170,12 @@ task switched the database, added a migration or changed api code it does not ho
 
 **Run.** Start every QA agent in one message. Each gets what its own file lists under "Your prompt
 gives you"; `qa-web` also gets every open `docs/tasks/deferred.md` row that names a frame it
-compares — a known difference, noted and not failed. An agent that returns `NEEDS MAIN: <action>` (kill,
-restart or open the app by a link) gets that action done by you and is continued. Standing accounts: `…901` web, `…902` iOS, `…903` Android, `…904` and `…905` for the
-api's two tenants; all are in `DEV_OTP_PHONES`. A missing one is created once through the app. A row
-that needs the api stopped runs last, after every agent has returned: stop the api once, continue
-each agent that has such rows, start the api once.
+compares — a known difference, noted and not failed. An agent that returns `NEEDS MAIN: <action>`
+(kill, restart or open the app by a link) gets that action done by you and is continued. Standing
+accounts: `…901` web, `…902` iOS, `…903` Android, `…904` and `…905` for the api's two tenants; all
+are in `DEV_OTP_PHONES`. A missing one is created once through the app. A row that needs the api
+stopped runs last, after every agent has returned: stop the api once, continue each agent that has
+such rows, start the api once.
 
 **Fix.** Fix only evidenced failures. Continue the same `code-reviewer` on the fixed files, then
 continue the same QA agent with only the rows the fix touched. A row gets one retry; a third
@@ -194,6 +216,10 @@ into the PR body — a part's RFC goes; the task RFC stays until the last part s
   items.
 - Bind the PR to the session (the `ccd_pr` tools). A failed CI job goes to `ci-investigator`; fix,
   commit, push. The owner merges.
+- Review comments on the PR: read them, fix, continue `code-reviewer` on the fixed files, rerun
+  the QA rows they touched, push.
+- A PR that conflicts after an earlier PR merged: `git merge origin/main` into the branch (never a
+  rebase, never a force-push), rerun the gate, push.
 
 Close with one line: the next task starts in a new session with `/task`.
 

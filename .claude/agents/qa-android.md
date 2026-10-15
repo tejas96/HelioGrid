@@ -36,6 +36,7 @@ polling command with a timeout. Then check the expected result and report.
 - with the keyboard open, the focused field's bottom sits above the keyboard's top (screen height
   minus the ime inset in `dumpsys window`);
 - the system back button goes where the row expects;
+- every control the row uses has a `content-desc` or text a screen reader speaks;
 - no crash, ANR or error line in logcat since the row began.
 
 **Check only when a row asks:** offline and retry, background and foreground, process death and

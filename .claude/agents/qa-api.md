@@ -31,9 +31,12 @@ request id or number); report.
 - no other tenant's data in a list or a read; another tenant's record answers 404, never 403;
 - no personal data or token in the log lines you read.
 
+A row whose expected result states a time limit reports each call's time
+(`curl -w '%{time_total}'`) against it.
+
 **Check only when a row asks:** validation at each boundary, role and permission refusals, the same
-idempotency key sent twice, pagination and sorting, concurrent writes, persistence by a read-back,
-a background job's effect, behaviour with the api stopped.
+idempotency key sent twice, pagination, sorting, filters and search, concurrent writes, a timeout,
+persistence by a read-back, a background job's or webhook's effect, behaviour with the api stopped.
 
 **Rules:** you start, stop, build or migrate nothing — no `pnpm`, no `docker`, no `psql`. You create
 no company: a missing tenant is `BLOCKED` with the reason. A row you cannot run is `BLOCKED`; you

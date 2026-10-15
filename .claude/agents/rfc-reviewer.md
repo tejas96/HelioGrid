@@ -31,7 +31,10 @@ Check, citing `file:line` for each finding:
 6. **Proof.** Every AC has exactly one owner; each QA row says the action, the expected result and
    the test data; the surfaces match what changes (`/task` step 7). A money, tenancy or permission
    rule has a test that will be seen red.
-7. **Size.** More than 30 files without a split, or a split into parts that are not each end to end.
+7. **Build steps and regression.** Contracts and shared types come first; a slice marked
+   `parallel` shares no file with another and needs nothing another open slice adds; every
+   existing feature the change touches has the test, flow or QA row that keeps it working.
+8. **Size.** More than 30 files without a split, or a split into parts that are not each end to end.
 
 Rules: you run nothing but read-only commands (`git`, `grep`, `ls`); you edit nothing; a finding
 without evidence is not a finding; keep each line short and plain.
