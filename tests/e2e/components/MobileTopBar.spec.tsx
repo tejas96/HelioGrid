@@ -1,5 +1,5 @@
-import { createTranslator, SHELL } from '@heliogrid/i18n';
-import { Avatar, MobileTopBar, ShellAction, ShellGlyph } from '@heliogrid/ui';
+import { backToSettings, createTranslator, SHELL, settingsRowName } from '@heliogrid/i18n';
+import { Avatar, IconButton, MobileTopBar, ShellAction, ShellGlyph } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour, resolvedLength } from '../support/token';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
@@ -7,7 +7,7 @@ import { MIN_TOUCH_TARGET } from '../support/touch-target';
 /**
  * The phone header (`MS12-19`, the design system's open-page `MobileTopBar`): the product tile,
  * the company's name as words — no chip, it opens nothing (`F7-15`) — then the round grey search
- * and bell, and the avatar. No page title rides in the bar.
+ * and bell, and the avatar. A page opened from a list shows its way back and its title instead.
  */
 const en = await createTranslator('en');
 const words = { searchLabel: en.t(SHELL.search), notificationsLabel: en.t(SHELL.notifications) };
@@ -111,5 +111,39 @@ test('a shell button that is not round is transparent at --r-md', async ({ mount
   await expect(button).toHaveCSS(
     'border-top-left-radius',
     `${await resolvedLength(page, '--r-md')}px`,
+  );
+});
+
+test('a page opened from a list shows its way back and its title alone, the title wrapping before it cuts', async ({
+  mount,
+  page,
+}) => {
+  const hindi = await createTranslator('hi');
+  const title = settingsRowName(hindi.t, 'company_profile');
+  const back = backToSettings(hindi.t);
+  const screen = await mount(
+    <div style={{ width: 375 }}>
+      <MobileTopBar
+        {...words}
+        title={title}
+        leading={
+          <IconButton label={back} size={MIN_TOUCH_TARGET}>
+            <ShellGlyph name="chevron-left" size="md" tone="primary" />
+          </IconButton>
+        }
+      />
+    </div>,
+  );
+  const heading = screen.getByRole('heading', { level: 1 });
+  await expect(heading).toHaveText(title);
+  await expect(heading).toHaveCSS('font-size', `${await resolvedLength(page, '--fs-h3')}px`);
+  await expect(heading).not.toHaveCSS('white-space', 'nowrap');
+  await expect(screen.getByRole('button', { name: back })).toBeVisible();
+  await expect(screen.getByRole('button')).toHaveCount(1);
+  await expect(screen.locator('.hg-logo-tile, .hg-app-shell-topbar-company')).toHaveCount(0);
+  const gap = (await heading.boundingBox())?.x ?? 0;
+  const button = await screen.getByRole('button', { name: back }).boundingBox();
+  expect(gap - ((button?.x ?? 0) + (button?.width ?? 0))).toBe(
+    await resolvedLength(page, '--sp-3'),
   );
 });

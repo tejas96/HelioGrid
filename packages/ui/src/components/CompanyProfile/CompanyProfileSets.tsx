@@ -1,4 +1,5 @@
 import type { CompanyProfilePart } from '@heliogrid/domain';
+import type { Density } from '../../primitives/Surface/Surface.types';
 import { Text } from '../../primitives/Text/Text';
 import { Dropzone } from '../Dropzone/Dropzone';
 import { Input } from '../Input/Input';
@@ -19,6 +20,8 @@ type SetProps = Pick<
   | 'onChooseLogo'
 > & {
   part: CompanyProfilePart;
+  /** The option cards' density: functional in settings (`PARTS_DENSITY`). */
+  density: Density;
 };
 
 /**
@@ -32,6 +35,7 @@ export function ProfileSet({
   onEdit,
   onChooseSegment,
   onDeclareSize,
+  density,
   logoPicture = null,
   onChooseLogo,
 }: SetProps) {
@@ -42,6 +46,7 @@ export function ProfileSet({
         values={values}
         onChooseSegment={onChooseSegment}
         onDeclareSize={onDeclareSize}
+        density={density}
       />
     );
   }
@@ -118,13 +123,15 @@ function WhatYouSellSet({
   values,
   onChooseSegment,
   onDeclareSize,
-}: Pick<SetProps, 'values' | 'onChooseSegment' | 'onDeclareSize'> & {
+  density,
+}: Pick<SetProps, 'values' | 'onChooseSegment' | 'onDeclareSize' | 'density'> & {
   words: SetProps['words']['declarations'];
 }) {
   return (
     <div className="hg-company-profile-sells">
       <OptionCardGroup
         label={words.group}
+        density={density}
         options={[...words.options]}
         value={values.segment ?? undefined}
         onChange={(value) => {

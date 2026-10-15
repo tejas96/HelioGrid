@@ -1,8 +1,9 @@
-/* The company profile inside the door's frame (`SCR-M01-05`): at 375 the frame owns the page, the
-   bloom, the wordmark and the held act, and these rules place what this screen adds; from the
-   door's breakpoint they re-place the frame's slots beside a letterhead. Every value is a token
-   var() but the drawing's own sizes, which the brief's rulings 31 and 34 name: the wide measure,
-   the letterhead's track, its sheet, its logo tile and a bar. */
+/* The company profile (`SCR-M01-05`). In setup it is inside the door's frame: at 375 the frame
+   owns the page, the bloom, the wordmark and the held act, and these rules place what this screen
+   adds; from the door's breakpoint they re-place the frame's slots beside a letterhead. In settings
+   it is the shell's page (the last rules). Every value is a token var() but the drawing's own
+   sizes, which the brief's rulings 31, 34 and 57 name: the wide measures and the letterhead's track;
+   the letterhead itself is `CompanyProfileLetterhead.css`. */
 
 /* The heading and its line, `sp-2` apart (`m-default`). */
 .hg-company-profile-head {
@@ -56,11 +57,6 @@
 .hg-company-profile-act {
   gap: var(--sp-3);
   padding-top: var(--sp-5);
-}
-
-/* The letterhead is the wide arrangement's alone. */
-.hg-company-profile-preview {
-  display: none;
 }
 
 /* From the door's breakpoint (`d-default`, `d-tax-invalid`): the frame's slots re-placed as one
@@ -166,129 +162,46 @@
   .hg-company-profile:not([data-preview]) .hg-door-footer {
     padding: var(--sp-6) 0;
   }
+}
 
-  /* A grey field held to the window while the column scrolls, `sp-4` in from its track. It holds
-     no control, so it is no tile and sets no ground. */
-  .hg-company-profile-preview {
-    position: sticky;
-    top: var(--sp-4);
-    align-self: start;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+/* The settings life (`m-settings`, `d-settings`): the shell owns the page's edges and its scroll,
+   so the column is the heading and its line, the list and the act after it, `sp-6` apart. */
+.hg-company-profile[data-life="settings"] {
+  flex: 1;
+}
+
+.hg-company-profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  min-width: 0;
+}
+
+.hg-company-profile-page .hg-company-profile-list,
+.hg-company-profile-page .hg-company-profile-unread {
+  margin-top: 0;
+}
+
+.hg-company-profile-page .hg-company-profile-act {
+  padding-top: 0;
+}
+
+/* From the door's breakpoint: the list at the board's settings measure, 640, and the letterhead's
+   field in its 600 track, stretched beside the column — the shell, not the window, scrolls. */
+@media (min-width: 968px) {
+  .hg-company-profile[data-life="settings"][data-preview] {
+    grid-template-columns: minmax(0, 1fr) clamp(472px, 39vw, 600px);
     gap: var(--sp-6);
-    height: calc(100dvh - var(--sp-4) * 2);
-    margin: var(--sp-4);
-    overflow: hidden;
-    border-radius: var(--r-xl);
-    background: var(--fill);
   }
 
-  /* Over the bloom. */
-  .hg-company-profile-overline,
-  .hg-company-profile-sheet {
-    position: relative;
+  .hg-company-profile-page {
+    max-width: 640px;
   }
 
-  .hg-company-profile-sheet {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-6);
-    box-sizing: border-box;
-    width: 440px;
-    max-width: 100%;
-    padding: var(--sp-10);
-    border-radius: var(--r-md);
-    box-shadow: var(--e4);
-    /* biome-ignore lint/plugin/raw-white-css: paper — the letterhead's sheet on its grey field */
-    background: var(--surface);
-  }
-
-  .hg-company-profile-sheet-head {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-4);
-  }
-
-  .hg-company-profile-sheet-logo {
-    display: grid;
-    flex-shrink: 0;
-    place-items: center;
-    width: 56px;
-    height: 56px;
-    border-radius: var(--r-sm);
-    background: var(--fill);
-  }
-
-  .hg-company-profile-sheet-name {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: var(--sp-0-5);
-    min-width: 0;
-  }
-
-  .hg-company-profile-sheet-rule {
-    display: block;
-    height: 1px;
-    background: var(--line-tile);
-  }
-
-  .hg-company-profile-sheet-facts {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: center;
-    gap: var(--sp-3) var(--sp-6);
-  }
-
-  /* An identifier at the size of the lines beside it. */
-  .hg-company-profile-sheet-facts .hg-text[data-variant="mono"] {
-    font-size: var(--fs-caption);
-    line-height: var(--lh-caption);
-  }
-
-  .hg-company-profile-sheet-lines {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-2);
-  }
-
-  /* A line with nothing to show yet. */
-  .hg-company-profile-bar {
-    display: block;
-    width: 140px;
-    max-width: 100%;
-    height: var(--sp-2);
-    border-radius: var(--r-pill);
-    background: var(--fill);
-  }
-
-  /* A letter's lines run ragged, as `d-default` draws them. */
-  .hg-company-profile-sheet-lines > .hg-company-profile-bar {
-    width: 100%;
-  }
-
-  .hg-company-profile-sheet-lines > .hg-company-profile-bar:nth-child(2) {
-    width: 94%;
-  }
-
-  .hg-company-profile-sheet-lines > .hg-company-profile-bar:nth-child(3) {
-    width: 86%;
-  }
-
-  .hg-company-profile-sheet-lines > .hg-company-profile-bar:last-child {
-    width: 62%;
-  }
-
-  .hg-company-profile-sheet-lines:last-child > .hg-company-profile-bar:last-child {
-    width: 78%;
-  }
-
-  /* While the record loads every bar takes the list's sweep, which reduced motion stills. */
-  .hg-company-profile-sheet[data-loading="true"] .hg-company-profile-bar {
-    background: linear-gradient(90deg, var(--fill) 25%, var(--canvas-sunken) 50%, var(--fill) 75%);
-    background-size: 320px 100%;
-    animation: hg-sheet-shimmer 1.4s linear infinite;
+  .hg-company-profile[data-life="settings"] .hg-company-profile-preview {
+    position: static;
+    align-self: stretch;
+    height: auto;
+    margin: 0;
   }
 }

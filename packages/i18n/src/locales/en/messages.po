@@ -13,12 +13,12 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:21
+#: src/copy/company-profile.ts:22
 msgid "411038"
 msgstr "411038"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:56
+#: src/copy/company-profile.ts:59
 msgid "{bankName} · account ending {ending}"
 msgstr "{bankName} · account ending {ending}"
 
@@ -28,7 +28,7 @@ msgid "{chain} codes were invalidated in a row"
 msgstr "{chain} codes were invalidated in a row"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:74
+#: src/copy/company-profile.ts:77
 msgid "{city} only"
 msgstr "{city} only"
 
@@ -118,7 +118,7 @@ msgid "{how} · {limits}"
 msgstr "{how} · {limits}"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:23
+#: src/copy/company-profile.ts:24
 msgid "{label} (optional)"
 msgstr "{label} (optional)"
 
@@ -308,12 +308,12 @@ msgid "Account"
 msgstr "Account"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:29
+#: src/copy/company-profile.ts:30
 msgid "Account holder"
 msgstr "Account holder"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:30
+#: src/copy/company-profile.ts:31
 msgid "Account number"
 msgstr "Account number"
 
@@ -338,17 +338,17 @@ msgid "Add your logo"
 msgstr "Add your logo"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:76
+#: src/copy/company-profile.ts:79
 msgid "Added"
 msgstr "Added"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:65
+#: src/copy/company-profile.ts:68
 msgid "Address"
 msgstr "Address"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:39
+#: src/copy/settings.ts:41
 msgid "Agent & voice"
 msgstr "Agent & voice"
 
@@ -363,7 +363,7 @@ msgid "An invite already went to this number and is still open."
 msgstr "An invite already went to this number and is still open."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:77
+#: src/copy/company-profile.ts:80
 msgid "Answered"
 msgstr "Answered"
 
@@ -388,28 +388,33 @@ msgid "Back"
 msgstr "Back"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:20
+msgid "Back to settings"
+msgstr "Back to settings"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:59
 msgid "Back to the list"
 msgstr "Back to the list"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:55
+#: src/copy/company-profile.ts:58
 msgid "Bank"
 msgstr "Bank"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:67
+#: src/copy/company-profile.ts:70
 msgid "Bank details"
 msgstr "Bank details"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:27
+#: src/copy/company-profile.ts:28
 msgid "Bank name"
 msgstr "Bank name"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:71
-#: src/copy/settings.ts:41
+#: src/copy/settings.ts:43
 msgid "Billing"
 msgstr "Billing"
 
@@ -419,12 +424,12 @@ msgid "Both"
 msgstr "Both"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:35
+#: src/copy/settings.ts:37
 msgid "Branding"
 msgstr "Branding"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:18
+#: src/copy/company-profile.ts:19
 msgid "Building, street, area"
 msgstr "Building, street, area"
 
@@ -434,7 +439,7 @@ msgid "Built-in estimate ±{tolerance}%"
 msgstr "Built-in estimate ±{tolerance}%"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:34
+#: src/copy/settings.ts:36
 msgid "Business profile"
 msgstr "Business profile"
 
@@ -470,7 +475,7 @@ msgid "catalog"
 msgstr "catalog"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:38
+#: src/copy/settings.ts:40
 msgid "Catalog"
 msgstr "Catalog"
 
@@ -500,7 +505,7 @@ msgid "Changed your mind, or it is not the same company?"
 msgstr "Changed your mind, or it is not the same company?"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:79
+#: src/copy/company-profile.ts:82
 msgid "Check the format"
 msgstr "Check the format"
 
@@ -550,7 +555,7 @@ msgid "Code limits"
 msgstr "Code limits"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:40
+#: src/copy/settings.ts:42
 msgid "Collections"
 msgstr "Collections"
 
@@ -590,12 +595,12 @@ msgid "Continue anyway"
 msgstr "Continue anyway"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:50
+#: src/copy/company-profile.ts:53
 msgid "Continue setting up HelioGrid without saving your company profile"
 msgstr "Continue setting up HelioGrid without saving your company profile"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:45
+#: src/copy/company-profile.ts:48
 msgid "Continue setting up HelioGrid without your company profile"
 msgstr "Continue setting up HelioGrid without your company profile"
 
@@ -610,7 +615,7 @@ msgid "Continue with Google. Signs you in to the same account as your mobile num
 msgstr "Continue with Google. Signs you in to the same account as your mobile number."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:44
+#: src/copy/company-profile.ts:47
 msgid "Continue without it"
 msgstr "Continue without it"
 
@@ -675,7 +680,7 @@ msgid "Creating your company"
 msgstr "Creating your company"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:26
+#: src/copy/settings.ts:28
 msgid "Customer calls"
 msgstr "Customer calls"
 
@@ -740,7 +745,7 @@ msgid "Estimated"
 msgstr "Estimated"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:85
+#: src/copy/company-profile.ts:88
 msgid "Factories, offices, warehouses"
 msgstr "Factories, offices, warehouses"
 
@@ -785,7 +790,7 @@ msgid "From HelioGrid · product news"
 msgstr "From HelioGrid · product news"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:16
+#: src/copy/company-profile.ts:17
 msgid "From your signup"
 msgstr "From your signup"
 
@@ -825,12 +830,12 @@ msgid "Grievance officer"
 msgstr "Grievance officer"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:28
+#: src/copy/company-profile.ts:29
 msgid "HDFC Bank"
 msgstr "HDFC Bank"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:32
+#: src/copy/company-profile.ts:33
 msgid "HDFC0001234"
 msgstr "HDFC0001234"
 
@@ -875,7 +880,7 @@ msgid "Home"
 msgstr "Home"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:84
+#: src/copy/company-profile.ts:87
 msgid "Homes and housing societies"
 msgstr "Homes and housing societies"
 
@@ -955,17 +960,17 @@ msgid "Links {email}"
 msgstr "Links {email}"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:40
+#: src/copy/company-profile.ts:43
 msgid "Loading your company profile"
 msgstr "Loading your company profile"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:54
+#: src/copy/company-profile.ts:57
 msgid "Logo"
 msgstr "Logo"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:64
+#: src/copy/company-profile.ts:67
 msgid "Logo and company name"
 msgstr "Logo and company name"
 
@@ -975,7 +980,7 @@ msgid "Main"
 msgstr "Main"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:37
+#: src/copy/company-profile.ts:38
 msgid "Market defaults until you set these"
 msgstr "Market defaults until you set these"
 
@@ -1000,7 +1005,7 @@ msgid "Mobile number"
 msgstr "Mobile number"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:27
+#: src/copy/settings.ts:29
 msgid "Money"
 msgstr "Money"
 
@@ -1021,7 +1026,7 @@ msgid "My Visits Today"
 msgstr "My Visits Today"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:73
+#: src/copy/company-profile.ts:76
 msgid "Name only"
 msgstr "Name only"
 
@@ -1062,7 +1067,7 @@ msgid "Not a structural certification"
 msgstr "Not a structural certification"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:75
+#: src/copy/company-profile.ts:78
 msgid "Not added"
 msgstr "Not added"
 
@@ -1077,7 +1082,7 @@ msgid "Not checked"
 msgstr "Not checked"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:78
+#: src/copy/company-profile.ts:81
 msgid "Not declared"
 msgstr "Not declared"
 
@@ -1087,7 +1092,7 @@ msgid "Not published yet"
 msgstr "Not published yet"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:48
+#: src/copy/company-profile.ts:51
 msgid "Not saved · our end · nothing typed is lost"
 msgstr "Not saved · our end · nothing typed is lost"
 
@@ -1167,7 +1172,12 @@ msgid "On every proposal, invoice and customer link · asked for once"
 msgstr "On every proposal, invoice and customer link · asked for once"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:33
+#: src/copy/company-profile.ts:14
+msgid "On every proposal, invoice and customer link · change it here"
+msgstr "On every proposal, invoice and customer link · change it here"
+
+#. js-lingui-explicit-id
+#: src/copy/company-profile.ts:34
 msgid "On your invoices · never used to move your money"
 msgstr "On your invoices · never used to move your money"
 
@@ -1182,7 +1192,7 @@ msgid "One number, one account"
 msgstr "One number, one account"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:36
+#: src/copy/company-profile.ts:37
 msgid "Only new proposals reprice · sent ones keep theirs"
 msgstr "Only new proposals reprice · sent ones keep theirs"
 
@@ -1207,7 +1217,7 @@ msgid "or"
 msgstr "or"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:43
+#: src/copy/company-profile.ts:46
 msgid "Our end, not yours · nothing is lost"
 msgstr "Our end, not yours · nothing is lost"
 
@@ -1233,7 +1243,7 @@ msgid "payment methods"
 msgstr "payment methods"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:37
+#: src/copy/settings.ts:39
 msgid "Payment terms"
 msgstr "Payment terms"
 
@@ -1258,7 +1268,7 @@ msgid "Pick the one that describes your work."
 msgstr "Pick the one that describes your work."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:19
+#: src/copy/company-profile.ts:20
 msgid "PIN code"
 msgstr "PIN code"
 
@@ -1278,12 +1288,12 @@ msgid "Prices and subsidy move"
 msgstr "Prices and subsidy move"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:31
+#: src/copy/settings.ts:33
 msgid "Profile & preferences"
 msgstr "Profile & preferences"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:41
+#: src/copy/company-profile.ts:44
 msgid "Profile still loading"
 msgstr "Profile still loading"
 
@@ -1303,7 +1313,7 @@ msgid "Projects"
 msgstr "Projects"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:36
+#: src/copy/settings.ts:38
 msgid "Proposal templates"
 msgstr "Proposal templates"
 
@@ -1373,7 +1383,7 @@ msgid "Residential"
 msgstr "Residential"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:33
+#: src/copy/settings.ts:35
 msgid "Roles reference"
 msgstr "Roles reference"
 
@@ -1398,12 +1408,22 @@ msgid "Sales Manager"
 msgstr "Sales Manager"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:38
+#: src/copy/company-profile.ts:39
 msgid "Save and continue"
 msgstr "Save and continue"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:39
+#: src/copy/company-profile.ts:41
+msgid "Save changes"
+msgstr "Save changes"
+
+#. js-lingui-explicit-id
+#: src/copy/company-profile.ts:42
+msgid "Save changes to your business profile"
+msgstr "Save changes to your business profile"
+
+#. js-lingui-explicit-id
+#: src/copy/company-profile.ts:40
 msgid "Save your company profile and continue setting up HelioGrid"
 msgstr "Save your company profile and continue setting up HelioGrid"
 
@@ -1488,7 +1508,7 @@ msgid "Shown in {shown} — not yet written in {requested}."
 msgstr "Shown in {shown} — not yet written in {requested}."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:22
+#: src/copy/company-profile.ts:23
 msgid "Shown to customers on every document"
 msgstr "Shown to customers on every document"
 
@@ -1548,7 +1568,7 @@ msgid "Signing up again would not make a second company"
 msgstr "Signing up again would not make a second company"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:14
+#: src/copy/company-profile.ts:15
 msgid "Skipped during setup · your first proposal needs it"
 msgstr "Skipped during setup · your first proposal needs it"
 
@@ -1608,7 +1628,7 @@ msgid "Still no answer from HelioGrid."
 msgstr "Still no answer from HelioGrid."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:17
+#: src/copy/company-profile.ts:18
 msgid "Street address"
 msgstr "Street address"
 
@@ -1658,13 +1678,13 @@ msgid "tax rates"
 msgstr "tax rates"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:66
+#: src/copy/company-profile.ts:69
 msgid "Tax registration"
 msgstr "Tax registration"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:70
-#: src/copy/settings.ts:32
+#: src/copy/settings.ts:34
 msgid "Team"
 msgstr "Team"
 
@@ -1759,7 +1779,7 @@ msgid "The prices and the subsidy in this document were current on the issue dat
 msgstr "The prices and the subsidy in this document were current on the issue date. Both change, so confirm them before you pay."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:35
+#: src/copy/company-profile.ts:36
 msgid "The size you sell most often"
 msgstr "The size you sell most often"
 
@@ -1894,7 +1914,7 @@ msgid "Try again. If it keeps failing, tell your admin what you were doing."
 msgstr "Try again. If it keeps failing, tell your admin what you were doing."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:49
+#: src/copy/company-profile.ts:52
 msgid "Try saving your company profile again"
 msgstr "Try saving your company profile again"
 
@@ -1954,7 +1974,7 @@ msgid "Uploading held photographs arrives with the survey capture."
 msgstr "Uploading held photographs arrives with the survey capture."
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:42
+#: src/copy/settings.ts:44
 msgid "Usage"
 msgstr "Usage"
 
@@ -2024,7 +2044,7 @@ msgid "We call and read the code out to"
 msgstr "We call and read the code out to"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:24
+#: src/copy/company-profile.ts:25
 msgid "We check the format against your market's rules — never with the issuing authority."
 msgstr "We check the format against your market's rules — never with the issuing authority."
 
@@ -2054,7 +2074,7 @@ msgid "We could not sign you in"
 msgstr "We could not sign you in"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:42
+#: src/copy/company-profile.ts:45
 msgid "We couldn't load your profile"
 msgstr "We couldn't load your profile"
 
@@ -2109,18 +2129,18 @@ msgid "What the code does"
 msgstr "What the code does"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:34
+#: src/copy/company-profile.ts:35
 msgid "What you mostly sell"
 msgstr "What you mostly sell"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:68
-#: src/copy/settings.ts:25
+#: src/copy/company-profile.ts:71
+#: src/copy/settings.ts:27
 msgid "What you sell"
 msgstr "What you sell"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:15
+#: src/copy/company-profile.ts:16
 msgid "What you sell · not saved on the last step"
 msgstr "What you sell · not saved on the last step"
 
@@ -2160,7 +2180,7 @@ msgid "Yesterday · {date}"
 msgstr "Yesterday · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:22
+#: src/copy/settings.ts:24
 msgid "You"
 msgstr "You"
 
@@ -2195,7 +2215,7 @@ msgid "You don't have access to do that."
 msgstr "You don't have access to do that."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:86
+#: src/copy/company-profile.ts:89
 msgid "You sell to either"
 msgstr "You sell to either"
 
@@ -2243,7 +2263,7 @@ msgstr "Your answers set the starting point for every proposal HelioGrid builds.
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:27
 #: src/copy/company-signup.ts:35
-#: src/copy/settings.ts:24
+#: src/copy/settings.ts:26
 msgid "Your company"
 msgstr "Your company"
 
@@ -2268,7 +2288,7 @@ msgid "Your company profile"
 msgstr "Your company profile"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:31
+#: src/copy/company-profile.ts:32
 msgid "Your current account"
 msgstr "Your current account"
 
@@ -2308,7 +2328,7 @@ msgid "Your language was not saved"
 msgstr "Your language was not saved"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:53
+#: src/copy/company-profile.ts:56
 msgid "Your letterhead"
 msgstr "Your letterhead"
 
@@ -2363,6 +2383,6 @@ msgid "Your request may already be with the owner."
 msgstr "Your request may already be with the owner."
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:23
+#: src/copy/settings.ts:25
 msgid "Your team"
 msgstr "Your team"

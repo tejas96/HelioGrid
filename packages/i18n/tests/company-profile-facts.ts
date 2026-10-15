@@ -2,6 +2,7 @@ import type { CompanyProfileWordFacts } from '../src/copy/company-profile-words'
 
 /** A new company's profile as its screen first holds it: nothing added, the first part open. */
 export const AT_SIGNUP: CompanyProfileWordFacts = {
+  life: 'setup',
   status: 'ready',
   skipped: false,
   arrivedUndeclared: false,

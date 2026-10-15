@@ -104,6 +104,12 @@ export interface MobileTopBarProps {
   avatar?: ReactNode;
   /** Back button or menu, before the mark. */
   leading?: ReactNode;
+  /**
+   * A page opened from a list (`SCR-M01-05`, `m-settings`): its title, after `leading`, in place of
+   * the product tile and the company — the bar shows its way back and its title. It wraps rather
+   * than cuts, so a longer language keeps every word.
+   */
+  title?: string;
   /** Extra round `ShellAction`s. */
   actions?: ReactNode;
   /**
@@ -130,6 +136,7 @@ export type ShellGlyphName =
   | 'bell'
   | 'chevron'
   | 'chevron-right'
+  | 'chevron-left'
   | 'shield'
   | 'building'
   | 'palette'

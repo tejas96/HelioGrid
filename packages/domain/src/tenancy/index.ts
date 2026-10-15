@@ -46,6 +46,8 @@ export {
   companyProfileView,
   registrationsChanged,
 } from './company-profile-draft';
+export type { CompanyProfileLife } from './company-profile-life';
+export { COMPANY_PROFILE_LIVES } from './company-profile-life';
 export type { MembershipStatus } from './membership';
 export { MEMBERSHIP_STATUSES } from './membership';
 export type {

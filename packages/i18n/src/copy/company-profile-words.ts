@@ -6,6 +6,7 @@
 import {
   COMPANY_PROFILE_PARTS,
   type CompanyLetterhead,
+  type CompanyProfileLife,
   type CompanyProfilePart,
   type CompanyProfileStanding,
   type StandingMark,
@@ -14,6 +15,7 @@ import {
   type TenantSegment,
 } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
+import { type CompanyLetterheadWords, companyLetterheadWords } from './company-letterhead-words';
 import {
   type CompanyLogoCapture,
   type CompanyLogoCaptureFacts,
@@ -26,6 +28,7 @@ import {
   COMPANY_PROFILE_STANDING_WORD,
 } from './company-profile';
 import { COMPANY_SIGNUP } from './company-signup';
+import { settingsRowName } from './settings';
 import { KWP, SETUP_WHAT_YOU_SELL, TENANT_SEGMENT_WORD } from './setup-what-you-sell';
 import { SIGN_IN } from './sign-in';
 
@@ -86,28 +89,18 @@ export interface CompanyProfileWords {
     readonly sizeSource: string;
   };
   /** The wide screen's preview: only what the fields hold; a `null` or an empty line is drawn as nothing. */
-  readonly letterhead: {
-    readonly overline: string;
-    readonly logo: string;
-    readonly name: string;
-    readonly address: string;
-    readonly taxLabel: string;
-    /** The registration as typed; `owed` while it does not read as the market's format. */
-    readonly tax: { readonly value: string; readonly owed: boolean } | null;
-    readonly bank: string;
-    readonly bankLine: string | null;
-  };
+  readonly letterhead: CompanyLetterheadWords;
   /** The logo's capture area; none until a screen can upload one. */
   readonly logo: CompanyLogoCapture | null;
   /** The busy region's name while the record loads. */
   readonly loading: string | null;
-  /** The profile could not be read: the message in the list's place. */
+  /** The profile could not be read: the message in the list's place; a way on in setup alone. */
   readonly unread: {
     readonly title: string;
     readonly line: string;
     readonly retry: string;
-    readonly onward: string;
-    readonly onwardSpoken: string;
+    readonly onward: string | null;
+    readonly onwardSpoken: string | null;
   } | null;
   /** The act and what stands at it; none when the profile could not be read — `unread` holds both ways. */
   readonly act: {
@@ -132,6 +125,8 @@ export interface CompanyProfileWords {
  * each part. `open` — the part that is open. The three pack facts arrive in the reader's language.
  */
 export interface CompanyProfileWordFacts {
+  /** Setup, the corridor's step; settings, the same profile behind `More`, with nowhere onward. */
+  readonly life: CompanyProfileLife;
   readonly status: 'loading' | 'ready' | 'unread' | 'save-failed';
   readonly skipped: boolean;
   readonly arrivedUndeclared: boolean;
@@ -154,7 +149,10 @@ export function companyProfileWords(
   const fromSignup = translate(COMPANY_PROFILE.fromSignup);
   const checked = translate(COMPANY_PROFILE.formatChecked);
   return {
-    title: translate(COMPANY_PROFILE.title),
+    title:
+      facts.life === 'settings'
+        ? settingsRowName(translate, 'company_profile')
+        : translate(COMPANY_PROFILE.title),
     lede: translate(lede(facts)),
     parts: COMPANY_PROFILE_PARTS.map((part) => ({
       key: part,
@@ -201,54 +199,30 @@ export function companyProfileWords(
       sizeHint: translate(COMPANY_PROFILE.sizeHint),
       sizeSource: translate(SETUP_WHAT_YOU_SELL.declaredByYou),
     },
-    letterhead: letterheadWords(translate, facts),
+    letterhead: companyLetterheadWords(
+      translate,
+      status === 'ready' || status === 'save-failed',
+      facts.letterhead,
+      taxIdLabel,
+    ),
     logo: facts.logo === null ? null : companyLogoCapture(translate, facts.logo),
     loading: status === 'loading' ? translate(COMPANY_PROFILE.loading) : null,
-    unread: status === 'unread' ? unreadWords(translate) : null,
+    unread: status === 'unread' ? unreadWords(translate, facts.life) : null,
     act: status === 'unread' ? null : actWords(translate, facts),
   };
 }
 
-/** Until the profile is read nothing is known to be on it, whatever the screen was handed. */
-const NOTHING_READ: CompanyLetterhead = {
-  companyName: '',
-  addressLine: '',
-  registration: null,
-  bank: null,
-};
-
-function letterheadWords(
+function unreadWords(
   translate: Translator['t'],
-  { status, letterhead, taxIdLabel }: CompanyProfileWordFacts,
-): CompanyProfileWords['letterhead'] {
-  const { companyName, addressLine, registration, bank } =
-    status === 'ready' || status === 'save-failed' ? letterhead : NOTHING_READ;
-  return {
-    overline: translate(COMPANY_PROFILE.letterhead),
-    logo: translate(COMPANY_PROFILE.letterheadLogo),
-    name: companyName,
-    address: addressLine,
-    taxLabel: taxIdLabel,
-    tax:
-      registration === null ? null : { value: registration.value, owed: !registration.wellFormed },
-    bank: translate(COMPANY_PROFILE.letterheadBank),
-    bankLine:
-      bank === null
-        ? null
-        : translate(COMPANY_PROFILE.letterheadBankLine, {
-            bankName: bank.bankName,
-            ending: bank.accountEnding,
-          }),
-  };
-}
-
-function unreadWords(translate: Translator['t']): NonNullable<CompanyProfileWords['unread']> {
+  life: CompanyProfileLife,
+): NonNullable<CompanyProfileWords['unread']> {
+  const onward = life === 'setup';
   return {
     title: translate(COMPANY_PROFILE.unreadTitle),
     line: translate(COMPANY_PROFILE.unreadLine),
     retry: translate(SIGN_IN.tryAgain),
-    onward: translate(COMPANY_PROFILE.onward),
-    onwardSpoken: translate(COMPANY_PROFILE.onwardUnreadSpoken),
+    onward: onward ? translate(COMPANY_PROFILE.onward) : null,
+    onwardSpoken: onward ? translate(COMPANY_PROFILE.onwardUnreadSpoken) : null,
   };
 }
 
@@ -257,26 +231,39 @@ function actWords(
   facts: CompanyProfileWordFacts,
 ): NonNullable<CompanyProfileWords['act']> {
   const saveFailed = facts.status === 'save-failed';
+  // Settings is in no corridor: after a failed save there is nowhere onward to go without it.
+  const onward = saveFailed && facts.life === 'setup';
+  const [primary, primarySpoken] = primaryAct(facts);
   return {
-    primary: translate(saveFailed ? SIGN_IN.tryAgain : COMPANY_PROFILE.save),
-    primarySpoken: translate(
-      saveFailed ? COMPANY_PROFILE.retrySaveSpoken : COMPANY_PROFILE.saveSpoken,
-    ),
+    primary: translate(primary),
+    primarySpoken: translate(primarySpoken),
     waiting: facts.status === 'loading' ? translate(COMPANY_PROFILE.stillLoading) : null,
-    secondary: saveFailed ? translate(COMPANY_PROFILE.onward) : null,
-    secondarySpoken: saveFailed ? translate(COMPANY_PROFILE.onwardUnsavedSpoken) : null,
+    secondary: onward ? translate(COMPANY_PROFILE.onward) : null,
+    secondarySpoken: onward ? translate(COMPANY_PROFILE.onwardUnsavedSpoken) : null,
     alert: saveFailed ? translate(COMPANY_PROFILE.notSaved) : null,
     line: actLine(translate, facts),
   };
 }
 
+/** The primary and its spoken name: settings always saves changes; setup retries a failed save. */
+function primaryAct(facts: CompanyProfileWordFacts): readonly [MessageRef, MessageRef] {
+  if (facts.life === 'settings') {
+    return [COMPANY_PROFILE.saveChanges, COMPANY_PROFILE.saveChangesSpoken];
+  }
+  return facts.status === 'save-failed'
+    ? [SIGN_IN.tryAgain, COMPANY_PROFILE.retrySaveSpoken]
+    : [COMPANY_PROFILE.save, COMPANY_PROFILE.saveSpoken];
+}
+
 /**
- * One lede: a failed save of the step before outranks a skip, since it names what is missing.
- * Only a profile that was read says either — until then nothing is known to be missing, and a
- * failed save here is the alert's alone. The step before is named only while its answers are
- * still missing as they were read: an answer the owner took out on this screen was saved there.
+ * One lede, and the settings life's is always its own. In setup a failed save of the step before
+ * outranks a skip, since it names what is missing. Only a profile that was read says either —
+ * until then nothing is known to be missing, and a failed save here is the alert's alone. The step
+ * before is named only while its answers are still missing as they were read: an answer the owner
+ * took out on this screen was saved there.
  */
 function lede(facts: CompanyProfileWordFacts): MessageRef {
+  if (facts.life === 'settings') return COMPANY_PROFILE.settingsLede;
   if (facts.status !== 'ready') return COMPANY_PROFILE.lede;
   if (facts.arrivedUndeclared && facts.standings.declarations === 'not_declared') {
     return COMPANY_PROFILE.ledeNotSaved;

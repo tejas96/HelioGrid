@@ -19,7 +19,7 @@ export default function InsideLayout({ children }: { children: ReactNode }) {
       setupSteps={{
         'language-step': <SetupLanguageScreen />,
         'what-you-sell-step': <SetupWhatYouSellScreen />,
-        'company-profile-step': <CompanyProfileScreen />,
+        'company-profile-step': <CompanyProfileScreen life="setup" />,
       }}
     >
       <ShellScreen>{children}</ShellScreen>

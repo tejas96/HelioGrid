@@ -16,6 +16,8 @@ import type { Translator } from '../runtime';
 const SETTINGS = {
   /** The page's title: the bar reads `More`, the page it opens reads this (`SCR-M01-05`'s `Back to settings`). */
   title: /*i18n*/ { id: 'Settings' },
+  /** A settings screen's way back to the list, on the phone's bar (`SCR-M01-05`, `m-settings`). */
+  back: /*i18n*/ { id: 'Back to settings' },
 } as const;
 
 const GROUP_NAME: Record<SettingsGroup, { id: string }> = {
@@ -75,6 +77,11 @@ export function settingsWords(translate: Translator['t']): SettingsWords {
       usage: translate(ROW_NAME.usage),
     },
   };
+}
+
+/** A settings screen's way back to the list — the name of its back control. */
+export function backToSettings(translate: Translator['t']): string {
+  return translate(SETTINGS.back);
 }
 
 /** One row's name — the title its screen takes when it lands. */

@@ -1,5 +1,6 @@
 import type {
   CompanyProfileField,
+  CompanyProfileLife,
   CompanyProfilePart,
   CompanyProfileValues,
   StandingMark,
@@ -107,8 +108,9 @@ export interface CompanyProfileWords {
     readonly title: string;
     readonly line: string;
     readonly retry: string;
-    readonly onward: string;
-    readonly onwardSpoken: string;
+    /** The way on without the profile — the setup life's alone: settings has nowhere onward. */
+    readonly onward: string | null;
+    readonly onwardSpoken: string | null;
   } | null;
   /** None when the profile could not be read: `unread` holds both ways. */
   readonly act: {
@@ -130,13 +132,19 @@ export interface CompanyProfileWords {
 export type { CompanyProfileField, CompanyProfileValues };
 
 /**
- * The company profile's setup life (`SCR-M01-05`; `M01-24`, `M01-31`): five flat parts with where
- * each stands, one open at a time, and one act that is live with nothing filled in. From the door's
- * breakpoint the web half sets a decorative letterhead beside the list. The component
- * holds no draft and saves nothing: every keystroke is reported by its field, so a field can also
- * be emptied, and the screen that holds the values decides what a save writes.
+ * The company profile (`SCR-M01-05`; `M01-24`, `M01-31`): five flat parts with where each stands,
+ * one open at a time, and one act that is live with nothing filled in. In setup it fills the door's
+ * frame; in settings it sits inside the app's shell, its parts drawn at the functional density
+ * (`F7-17`) and its act after the list. From the door's breakpoint the web half sets a decorative
+ * letterhead beside the list. The component holds no draft and saves nothing: every keystroke is
+ * reported by its field, so a field can also be emptied, and the screen that holds the values
+ * decides what a save writes.
  */
 export interface CompanyProfileProps {
+  /** Where the profile is met: the setup corridor, or the settings page inside the shell. */
+  life: CompanyProfileLife;
+  /** The app's bar holds the title (the phone's settings bar, `m-settings`): the page draws none. */
+  titleInBar?: boolean;
   words: CompanyProfileWords;
   values: CompanyProfileValues;
   /** The part that is open, or none. */
