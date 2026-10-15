@@ -8,7 +8,7 @@ paths:
 
 ## The twin question
 
-Before writing a screen part, name the screen's twin in the RFC's `##### Proposal` — the same
+Before writing a screen part, name the screen's twin in the RFC's *Proposal* (`.claude/skills/task/rfc-template.md`) — the same
 screen on the other platform, built or not — or say it has none, and, part by part, where each
 shared part lives. For each part ask: does the other platform draw the same thing? If yes, the part is authored ONCE and both screens import it.
 "Not built over there yet" is not a no: the phone's number step and the web's are one door.
@@ -37,8 +37,8 @@ hook's state — and the screen, which may import both sides, supplies it.
 
 ## Verify
 
-- Verify a twinned screen on both platforms, side by side; a one-platform change to a twinned screen
-  is where drift starts.
+- A change to one twin gets a live QA row on the other (`/task` step 7); a one-platform change to a
+  twinned screen is where drift starts.
 
 A pair that already exists is a finding, not a rule to bend: it goes to `docs/tasks/deferred.md`
 with what blocks the lift, and the next screen task on either twin lifts it.

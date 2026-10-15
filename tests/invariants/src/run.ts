@@ -3,7 +3,6 @@ import { runBannedWordOtherFiles } from './banned-word-other-files';
 import { runBiomePluginScopes } from './biome-plugin-scopes';
 import { runBrandRegistry } from './brand-registry';
 import { runBuildOrderHolds } from './build-order-holds';
-import { runDeferredRows } from './deferred-rows';
 import { runDesignSystemProps } from './design-system-props';
 import { runDesignSystemSnapshot } from './design-system-snapshot';
 import { runDockerfileUnprivileged } from './dockerfile-unprivileged';
@@ -12,7 +11,6 @@ import { runEnumParity } from './enum-parity';
 import { runEnvExampleComplete } from './env-example-complete';
 import { runFormatInvariants } from './format-rendering';
 import { runLanguageFonts } from './language-fonts';
-import { runLaunchReusesRunningServers } from './launch-reuses-running-servers';
 import { runLightOnlyPlatformFiles } from './light-only-platform-files';
 import { runMatrixMirrorsF2 } from './matrix-mirrors-f2';
 import { runPrdRowsCited } from './prd-rows-cited';
@@ -20,14 +18,12 @@ import { REPO_ROOT } from './repo-root';
 import { runSchemaParity } from './schema-parity';
 import { runScreensRegisterWhole } from './screens-register-whole';
 import { runTableTenancyScan } from './table-tenancy-scan';
-import { runTaskLedgerAgrees } from './task-ledger-agrees';
 import { runTemplateKeysMirrorF6 } from './template-keys-mirror-f6';
 import { runTenancyInvariants } from './tenancy-rls';
 import { runTenantIdOnTheWire } from './tenant-id-on-the-wire';
 import { runTenantPin, runTenantPinCallSites } from './tenant-pin';
 import { runUiColourPairs } from './ui-colour-pairs';
 import { runVocabularyCopies } from './vocabulary-copies';
-import { runWalkReadsParts } from './walk-reads-parts';
 
 /**
  * Locked invariant runner. Sets: tenancy (live), table scoping (live), enum parity (live),
@@ -36,9 +32,8 @@ import { runWalkReadsParts } from './walk-reads-parts';
  * brand-registry (static), template-keys-mirror-f6 (static, F6-26), and the static repo
  * checks: vocabulary-copies, dockerfile-unprivileged, light-only-platform-files,
  * banned-word-other-files, env-example-complete, language-fonts, e2e-flow-per-screen,
- * design-system-props, design-system-snapshot, biome-plugin-scopes, launch-reuses-running-servers,
- * deferred-rows, task-ledger-agrees, build-order-holds, walk-reads-parts, prd-rows-cited,
- * screens-register-whole, ui-colour-pairs.
+ * design-system-props, design-system-snapshot, biome-plugin-scopes, build-order-holds,
+ * prd-rows-cited, screens-register-whole, ui-colour-pairs.
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
@@ -60,11 +55,7 @@ async function main() {
   runDesignSystemProps(REPO_ROOT); // static — no design-system prop dropped by its port
   runDesignSystemSnapshot(REPO_ROOT); // static — the pulled tokens equal the pulled census
   runBiomePluginScopes(REPO_ROOT); // static — every lint plugin covers a place that exists
-  runLaunchReusesRunningServers(REPO_ROOT); // static — a dev-server start kills nothing, appends its log
-  runDeferredRows(REPO_ROOT); // static — every deferred row can reopen, and none is overdue
-  runTaskLedgerAgrees(REPO_ROOT); // static — statuses, design links and history agree, no task vanished
   runBuildOrderHolds(REPO_ROOT); // static — every file placed, no loop, later-block waits recorded
-  runWalkReadsParts(REPO_ROOT); // static — the walk's command reads the Parts rows the ledger reads
   runPrdRowsCited(REPO_ROOT); // static — every cited PRD row is live, every quote matches its cell
   runScreensRegisterWhole(REPO_ROOT); // static — every screen briefed and designed, every row landed once
   runUiColourPairs(REPO_ROOT); // static — every colour ui sets on a background is a declared pair

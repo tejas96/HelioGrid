@@ -20,7 +20,7 @@ an invariant proves the seam between them.
 ## Commands
 
 ```
-pnpm --filter @heliogrid/invariants test     # db checks need DATABASE_URL (.env.local)
+pnpm --filter @heliogrid/invariants test     # db checks run on heliogrid_test: the export line of /task step 8 first
 pnpm turbo test                              # the same, through the gate
 ```
 

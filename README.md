@@ -65,7 +65,7 @@ authoritative doc for that layer; this table is only the index.
 | `packages/theme` | Tokens, semantic layer and the RN theme object — GENERATED from the live design system, never hand-edited | — |
 | `packages/ui` | The design system, BOTH platforms: one folder per component as `<Name>.tsx` (web) + `<Name>.native.tsx` (RN) over one shared `<Name>.types.ts` | — |
 | `tests/invariants` | Cross-cutting invariant checks (tenancy, enum parity, schema parity, format rendering) against real state | [tests/invariants/CLAUDE.md](tests/invariants/CLAUDE.md) |
-| `<package>/tests` | Unit tests for the logic layers only — domain, contracts, forms, api, worker (`pnpm test:unit`) | [CLAUDE.md §8](CLAUDE.md) |
+| `<package>/tests` | Unit tests for the logic layers only — the set in `packages/config/unit-test-packages.json` (`pnpm test:unit`) | [CLAUDE.md §8](CLAUDE.md) |
 | `docs/` | How THIS REPO is built — architecture, tech stack, gates, ADRs | — |
 | `docs/prd/` | **What the product does** — product overview, personas, journey, 8 foundations, 13 modules, and the screens register | — |
 | `docs/tasks/` | Per-module build tasks, written to as work completes | — |
@@ -118,8 +118,7 @@ brew install gitleaks                      # the pre-commit secret scan needs it
 pnpm check:all                            # build · lint · typecheck · duplication · freshness · unit tests · invariants
 ```
 
-The header of `.env.example` carries this same order; that header is the canonical one, and this
-block mirrors it.
+This block is the full cold start; the header of `.env.example` is its short form.
 
 `pnpm install` also installs this repo's git pre-commit hook automatically (via the root
 `prepare` script — see [Code quality gates](#code-quality-gates--pre-commit-hook)).
@@ -146,10 +145,10 @@ Or from inside the app's own directory, plain `pnpm dev`/`pnpm start` works the 
 **A server never kills what is already on its port.** A running HelioGrid server is reused as it
 is. A launch configuration that finds its port busy refuses to start and says so — it never kills
 the listener and never moves to another port (`next dev` would otherwise drift to 3003). A stale or
-foreign listener on 3002, 8084 or 8081 is freed on purpose, by you, with the `clean-dev-ports`
+foreign listener on 3002, 8084, 8081 or 3004 is freed on purpose, by you, with the `clean-dev-ports`
 launch configuration in `.claude/launch.json` — the one command allowed to stop them. The launch
 configurations append their output to `.qa/api.log`, `.qa/web.log` and `.qa/metro.log` and never
-truncate them (`tests/invariants/src/launch-reuses-running-servers.ts` holds both rules).
+truncate them.
 
 `apps/web`'s dev-server port is a **literal** in `apps/web/package.json` (`next dev --port
 3002`), not read from `.env` — Next.js's CLI has no environment-variable equivalent for its
@@ -159,8 +158,10 @@ own port, only a `--port` flag, so this is the standard convention almost every 
 
 ## Ports
 
-**A port here is dedicated and never reassigned** (`CLAUDE.md` §5): a busy one is a stale service
-to kill, never a reason to move to another. The table says where each is set, for when you are
+**A port here is dedicated and never reassigned** (`CLAUDE.md` §5): a busy one is reused when it is
+a healthy HelioGrid service, else freed with `clean-dev-ports` — never a reason to move to another.
+The full list, the object store `9000`, component tests `3100` and exported boards `3004` included,
+is `CLAUDE.md` §5. The table says where each is set, for when you are
 chasing one down — not as an invitation to change it.
 
 | App | Port | Where it's set |
@@ -236,8 +237,9 @@ Postgres, then `pnpm check:all`, and on a pull request the OpenAPI breaking-chan
 (`oasdiff`, pinned by version and sha256). A `changes` job switches the other lanes on by path:
 `e2e-web` (the web flows and component tests, whenever the web, the api, a package or the suite
 changes), `mobile-js` (the Metro bundle, whenever `apps/mobile` or a package mobile bundles
-changes) and `android` / `ios` (native builds on pull requests, only when native files, the mobile
-`package.json` or the lockfile change). Markdown never counts. A skipped lane reports success, so
+changes), `android` (the native build and the phone flows on an emulator, whenever native files, the
+api, a package, `infra/postgres` or the phone flows change) and `ios` (the native build on pull
+requests, only when native files, the mobile `package.json` or the lockfile change). Markdown never counts. A skipped lane reports success, so
 every lane is safe to require on `main`. If `quality` is not green, `pnpm check:all` locally should
 already have told you.
 
@@ -350,8 +352,8 @@ every test) — run it once before considering any non-trivial change done. See
 
 ## Git workflow
 
-Work starts on a branch off `main` and ends with a PR; every commit waits for the owner's yes, and
-the owner merges. `main` is PR-only. A PR is one complete task, never half of one. Full detail:
+Work starts on a branch off `main` and ends with a PR. The owner approves the RFC and every commit;
+Claude then pushes and opens the PR; the owner merges. `main` is PR-only. A PR is one complete task, never half of one. Full detail:
 [`CLAUDE.md`](CLAUDE.md) §3, §4.
 
 ## Where to find things

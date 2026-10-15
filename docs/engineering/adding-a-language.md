@@ -1,4 +1,4 @@
-> **Fate:** becomes a skill step when the agent harness is rebuilt; then this file is deleted.
+> **Fate:** stays the one guide for adding a language; `packages/i18n/CLAUDE.md` points here.
 
 # Adding a language
 

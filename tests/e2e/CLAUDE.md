@@ -12,7 +12,7 @@ Deps: `architecture.md` §2 tests/e2e.
   is printed as owed to CI's first run, never failed. Any changed pixel fails
   `e2e-web`. A baseline is
   drawn only by CI, on Linux — a Mac draws text with other edges, so off CI the comparison is
-  skipped. A baseline changes only in a commit the owner approves: from the failed run's
+  skipped. A baseline changes only in a task whose approved RFC names that change, and the PR body lists each changed image: from the failed run's
   `e2e-web-traces` artifact, a missing one is in `tests/e2e/web/<route>.spec.ts-snapshots/` and a
   changed one is `tests/e2e/test-results/<test>/landing-actual.png`, copied over the committed file.
 - `components/<Name>.spec.tsx` — the real `@heliogrid/ui` web halves, mounted with the app's
@@ -41,7 +41,7 @@ Deps: `architecture.md` §2 tests/e2e.
 ## Commands
 
 ```
-pnpm --filter @heliogrid/e2e test:web                 # the web flows; starts the BUILT api and web, or reuses running ones
+pnpm --filter @heliogrid/e2e test:web                 # the web flows — CI's e2e-web lane only, never run locally (.claude/rules/testing.md)
 pnpm --filter @heliogrid/e2e test:ct [<spec files>]   # the component tests (port 3100)
 pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows by hand, one device per call
 ```
@@ -51,7 +51,7 @@ The web and component suites run in CI (`e2e-web`); the phone flows run in CI on
 switches them off) and on iOS by hand, never in CI — a macOS runner spends 20 minutes on the Xcode
 build alone; the `qa-ios` helper drives a task's iOS rows, not these flows. `test:mobile` runs the
 flows on a device by hand; it needs Metro, the api and the app installed on the device. The local
-emulator is `Pixel_8_API_36` (`.claude/skills/task/references/runtime.md`) and CI's is API 34;
+emulator is `Pixel_8_API_36` (`/task` step 7) and CI's is API 34;
 either gets 4 cores and 4 GB of RAM, given on the command line (`emulator -avd <name> -cores 4 -memory 4096`;
 the emulator ignores `hw.ramSize` in the AVD's file) — at 2 GB and below Maestro's on-device
 server dies mid-suite (`DeviceServerDiedException`) while the app shows no fault.

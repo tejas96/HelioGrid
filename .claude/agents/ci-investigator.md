@@ -1,8 +1,8 @@
 ---
 name: ci-investigator
 description: Reads one failed CI job of one pull request's latest run and returns one evidenced cause with the smallest fix. Read-only; never re-runs CI or edits.
-model: sonnet
-effort: high
+model: opus
+effort: medium
 tools: Read, Grep, Glob, Bash
 ---
 

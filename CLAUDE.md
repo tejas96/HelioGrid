@@ -17,11 +17,13 @@ switch. Never switch silently.
 **Verify reality.** A claim about this repo names the file and line that proves it. A bug is
 reproduced on the RUNNING app, never a mock. Read failures, not exit codes, and call sites, not
 declarations. A check you add or change is trusted only after it fires on a planted bad line
-(a `test:web` flow excepted: `.claude/skills/task/references/qa.md`).
+(`.claude/rules/testing.md`).
 
 **Every mistake leaves a record.** A mistake found in the work — yours, a reviewer's, a check's or
-the owner's — is fixed at once and listed in the PR body by its kind. One a rule could have
-prevented gets that rule where it fires, as a type, a lint rule or a test wherever one can decide it.
+the owner's — is fixed at once and listed in the PR body by its kind. One a machine could have
+caught gets that check: a type, a lint rule or a test. One no machine can decide gets one line in
+`.claude/agents/code-reviewer.md`, `rfc-template.md` or its package's `CLAUDE.md` Traps — never a
+new rule file or a new step.
 
 **No new script.** A code fact goes into a type, Biome, dependency-cruiser or a test. Ask the owner
 before adding a script or a command.
@@ -50,16 +52,16 @@ Law ids are stable — never reuse or renumber one.
 
 ## 3. Workflow
 
-The work follows ONE order, `docs/build-order.md` — the next open part of
-a split task, build a task, the owner draws a screen, or the owner clears a blocker. Inside a module
-it is design → backend → UI.
+The work follows ONE order, `docs/build-order.md`, and `/task` (`.claude/skills/task/SKILL.md`)
+runs it: one task per session, one PR per task. Design runs one module ahead of the build, so the
+build never waits for a drawing.
 
 | step | what | stops for the owner |
 |---|---|---|
-| plan | read the task, write its RFC into it | yes — approve RFC; a part inside the approved task RFC with no open decision does not stop |
+| pick · analyse · RFC | the next task; its gaps; its RFC, checked by `rfc-reviewer` | yes — approve the RFC, once; a part inside the approved task RFC with no open decision needs none |
 | build | inside the approved RFC | when scope voids the approval |
-| verify | review, then running-app QA, then the Evaluator's full gate | when the second full-gate run fails other than environmentally, the checked diff changes after it, or the reviewer's cap is reached with a finding open or a fix unread |
-| commit | the commit, the push, the PR, CI | yes — every commit |
+| verify | `code-reviewer`, then QA on the changed surfaces in parallel, then `pnpm check:all` | when a finding or a failing row survives its fixes |
+| ship | clean up, commit, push, open the PR, CI | yes — every commit, then the owner merges the PR |
 
 **One turn, many calls.** Batch every read, search and check that does not wait on another's result
 into one turn.
@@ -72,15 +74,15 @@ into one turn.
 3. After each coherent slice, `pnpm check`.
 4. One build step gets two attempts. After both fail, stop with the evidence and at most two
    clearing paths, recommended first.
-5. When done, one tidy pass over the diff — reuse, names, dead code — then review, then local QA.
-   The Evaluator owns the full gate after both.
+5. When done, one tidy pass over the diff — reuse, names, dead code — then review, then local QA,
+   then the full gate.
 6. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code
    that is gone. `tsc -p` never removes old output, so delete the app's git-ignored `dist/`
    (`rm -r apps/api/dist`), then `pnpm turbo build --force`.
 
 **A PR is one complete task or part:** every acceptance line is met and proven before it opens,
-or by its CI lane before the PR is marked ready (`docs/tasks/README.md` proof owners).
-`docs/tasks/README.md` owns the RFC and part-size rules.
+or by its CI lane. A task splits only above 30 files, into at most three parts. The RFC's shape and
+its edge-case list are `.claude/skills/task/rfc-template.md`.
 
 ## 4. Stop and ask the owner before
 
@@ -89,10 +91,10 @@ or by its CI lane before the PR is marked ready (`docs/tasks/README.md` proof ow
 - A layer conflict §7 **When rules conflict** does not resolve.
 - A feature or a number no PRD row implies. A decision that belongs to a LATER module is not an ask:
   write it into that module's task in `docs/tasks/`, and carry on.
+- **Building before the RFC is approved.** Nothing is built before the owner's yes to the RFC.
 - **Committing.** Each commit waits for the owner's yes to the shown file list and message — a go,
-  a green check or an earlier yes never counts. In that commit the task's Status (or the part's row
-  in its Parts table) turns `shipped` — a design commit turns it `designed`; then push and open the
-  PR. The owner merges. Never `--no-verify`, never force-push.
+  a green check, an approved RFC or an earlier yes never counts. Then push and open the PR (`/task`
+  step 9). The owner merges. Never `--no-verify`, never force-push, never push to `main`.
 
 ## 5. Commands
 
@@ -100,7 +102,7 @@ or by its CI lane before the PR is marked ready (`docs/tasks/README.md` proof ow
 |---|---|
 | `pnpm infra:up` · `pnpm infra:down` | Before infra-dependent work. The read-only build-order walk and RFC need no stack. |
 | `pnpm check` | **While building.** Biome on files that differ from `origin/main`, the workspace typecheck (cached), and `vitest related` on changed .ts files. Fast; never the proof. |
-| `pnpm check:all` | **Normally once, after review and live QA.** Build, lint (Biome, dependency-cruiser, sherif, turbo boundaries), typecheck, duplication, OpenAPI and catalog freshness, unit tests, invariants. Two full-gate runs at most; what a failure or a later change does is the Evaluator's rules (`.claude/agents/evaluator.md`). |
+| `pnpm check:all` | **Normally once, after review and live QA.** Build, lint (Biome, dependency-cruiser, sherif, turbo boundaries), typecheck, duplication, OpenAPI and catalog freshness, unit tests, invariants. Run it on the test database (`/task` step 8). Two runs at most; a second failure that is not environmental stops for the owner. |
 | `pnpm lint:fix` | Format and auto-fix. |
 | `pnpm test:watch` · `pnpm test:coverage` | Tests while writing · the edge cases you missed (read it, not the pass count). |
 | `pnpm db:migration:new` · `pnpm db:migrate` | Where a migration starts; never hand-author one. |
@@ -109,7 +111,7 @@ The database invariants need the local Postgres; without it they SKIP loudly, an
 schema they report VACUOUS. Neither is a pass. Never weaken a check to make a change pass.
 
 **Ports are dedicated** — web `3002` · api `8084` · metro `8081` · postgres `5544` · object store
-`9000` · temporal `7233` · component tests `3100`. Reuse a healthy HelioGrid service; free a
+`9000` · temporal `7233` · component tests `3100` · exported boards `3004`. Reuse a healthy HelioGrid service; free a
 foreign listener only through `clean-dev-ports`, never by port or process name.
 
 ## 6. Where everything lives
@@ -121,11 +123,12 @@ allowed imports; §4 decides where a new file goes. Run §4 before creating one.
 |---|---|
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
 | `docs/engineering/` | how this repo is built. |
-| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers), `skills/task/` (the one step runner — it walks the order and holds the two gates), `agents/` (its read-only helpers), `hooks/` (the task guard, which refuses on a task branch what a written rule alone could not hold, and `guard-suite.mjs`, its proof), `settings.json` (hard-safety denies, the owner's prompts, the guard's wiring, and the plugins switched off here because `skills/task/` is the one step runner). |
-| `.qa/` | git-ignored: `api.log`, `web.log`, `metro.log` — the development logs the launch configurations append to and the e2e suite reads — `board/<SCR-id>/`, a screen's board pictures, taken fresh by each design check (`.claude/skills/task/references/design.md`, part B); `components/<name>/`, the pictures a component spec saves for the commit card; and `guard/`, the task guard's record of each task branch, the owner's alone to clear. |
+| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers), `skills/task/` (the one step runner and its RFC template), `agents/` (its read-only helpers), `settings.json` (hard-safety denies, and the plugins switched off here because `skills/task/` is the one step runner). |
+| `.qa/` | git-ignored: `api.log`, `web.log`, `metro.log` — the development logs the launch configurations append to and the e2e suite reads — and `components/<name>/`, the pictures a component spec saves. A task deletes the screenshots it made before its PR opens. |
+| `.design/` | git-ignored: `<module>/`, that module's boards exported from Claude Design — a read-only copy, served on port `3004` by the `design-export` launch configuration — and `<module>.LOCKED` beside it, the checksums of the boards the Design track checked; a screen is built only while its board's lock holds. |
 | `.ops/` | the owner's private infra record, git-ignored: every external account, project and client id, what is still owed, and each environment's values (`dev.env`, `prod.env`). A console change updates it in the same sitting. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
-| the Claude Design project | NOT in the repo: each screen's board and decisions record — the pixel-perfect reference. A task's `DESIGN:` line links it; read the record with `DesignSync`, and a helper pictures the board in the browser pane (`.claude/skills/task/references/design.md`); keep no copy in the repo — frame pictures live in the git-ignored `.qa/board/<SCR-id>/`. A studio screen (`ported from the POC`) has none. |
+| the Claude Design project | NOT in the repo: each screen's board and decisions record — the source of truth for design. A task's `DESIGN:` line links it; the build reads the module's export in `.design/` (`/task`, Design track). A studio screen (`ported from the POC`) has none. |
 
 Import a package only through an entry its `package.json` `exports` declares. **Never invent a folder**: every tree is a closed set, and a new category is a
 plan-time decision. `docs/README.md` maps every document.

@@ -61,7 +61,7 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 bundle exec pod install
 
 ## Done means
 
-Runs on BOTH simulators · the per-screen DoD in `docs/prd/foundations/F7-design-language.md`
+Runs on the iOS simulator, and on Android through `qa-android` when `/task` step 7 calls it, else CI's `android` lane · the per-screen DoD in `docs/prd/foundations/F7-design-language.md`
 `F7-43`.
 
 ## Traps
@@ -71,5 +71,5 @@ Runs on BOTH simulators · the per-screen DoD in `docs/prd/foundations/F7-design
 - A navigation group keyed by ROLE declares a shared screen twice, because roles are stackable, and a duplicate route name throws → key groups by CAPABILITY.
 - react-native-firebase needs `use_modular_headers!` in the Podfile → keep it.
 - A library imported by BOTH this app and a workspace package loads twice under Metro (the package's CommonJS build beside the app's ES build), so React contexts and singletons split — `useQueryClient()` throws inside `QueryClientProvider`, and nothing fails a check → import the library only through the workspace package that owns it (`followHostLifecycle` in `@heliogrid/data/react`); never add it to this app's dependencies.
-- Port 8081 may be held by another React Native project's Metro, and the preview tool will not start over it → it is a foreign listener, freed by the owner (`.claude/skills/task/references/runtime.md`, Reuse and start).
+- Port 8081 may be held by another React Native project's Metro, and the preview tool will not start over it → it is a foreign listener, freed through the `clean-dev-ports` launch configuration.
 - The native splash colour (android `splash_canvas` in `res/values/colors.xml`, and its iOS launch screen) has no generator → never hand-edit it.

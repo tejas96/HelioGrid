@@ -5,9 +5,9 @@
 
 ## RFC
 
-<!-- The approved RFC lives under the task (`#### RFC` in `docs/tasks/`); link it by task id and
-     repeat none of its sections. Here only: what changed after approval and the re-approval it
-     got, and any owner ruling applied, stated as the rule it became. -->
+<!-- The approved RFC, pasted whole: it leaves the task file in this commit (`/task` step 9).
+     Then what changed after approval and the re-approval it got, and any owner ruling applied,
+     stated as the rule it became. -->
 
 ## Acceptance criteria → proof
 
@@ -28,7 +28,12 @@
 | finding | fix |
 |---|---|
 
-<!-- The review's findings and what was done about each. -->
+<!-- The review's findings and what was done about each; a Low finding left unfixed says why. -->
+
+## Gate
+
+<!-- `pnpm check:all` on the test database: the result, and the first failing line if it failed
+     once. -->
 
 ## Red proofs
 
@@ -45,4 +50,5 @@
 
 ## Deferred
 
-<!-- The docs/tasks/deferred.md rows this task added, and what is deliberately not handled yet. -->
+<!-- The docs/tasks/deferred.md rows this task met — joined (deleted here) or stays (its new
+     `reopens when`) — the rows it added, and anything left unresolved. -->

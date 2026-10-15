@@ -7,9 +7,9 @@ import { designLinks, readTaskLedger, SCREEN_ID, TASK_ID, type TaskEntry } from 
  * The build order holds (`docs/build-order.md`): every task file sits in a block or is wholly V2,
  * every task placed apart exists and every exclusion is placed elsewhere, no open tasks wait on each
  * other in a loop or on a struck task, a V1 task waits on no V2 one, a V1 task that waits on a later
- * block is recorded and its ruling is owed before its block opens, and every V1 screen task names the
- * screen it builds. The walk (`.claude/skills/task/references/walk.md`) picks the next step; this
- * keeps what it reads true.
+ * block is recorded and its ruling is owed before its block opens, every V1 screen task names the
+ * screen it builds, and every task id is defined once, with one status line. `/task`
+ * (`.claude/skills/task/SKILL.md`) picks the next step; this keeps what it reads true.
  */
 const ORDER = 'docs/build-order.md';
 const BLOCK_ROW = /^\| \*\*(\d+)\*\* \|/;
@@ -33,7 +33,7 @@ type Wait = [string, string];
 export function findBuildOrderProblems(repo: string): string[] {
   const text = readFileSync(join(repo, ORDER), 'utf8');
   const blocks = readBlocks(text);
-  const { tasks } = readTaskLedger(repo);
+  const { tasks, problems: ledgerProblems } = readTaskLedger(repo);
   if (blocks.ofFile.size === 0 || tasks.size === 0) {
     throw new Error(
       'build-order-holds: no block table or no tasks read — a vacuous pass is worse than none',
@@ -46,6 +46,7 @@ export function findBuildOrderProblems(repo: string): string[] {
   );
   const order = new Order(tasks, blocks, v2);
   return [
+    ...ledgerProblems,
     ...order.placementProblems(),
     ...order.waitProblems(recordedWaits(text)),
     ...order.unnamedScreens(),

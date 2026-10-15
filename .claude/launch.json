@@ -52,11 +52,20 @@
       "runtimeArgs": ["-c", "pnpm infra:token && exec pnpm --filter @heliogrid/worker dev"]
     },
     {
+      "name": "design-export",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "lsof -ti tcp:3004 -sTCP:LISTEN >/dev/null && { echo \"port 3004 is busy: reuse that server, or free it with clean-dev-ports\"; exit 1; }; exec python3 -m http.server 3004 --bind 127.0.0.1 --directory \"$(git rev-parse --show-toplevel)/.design\""
+      ],
+      "port": 3004
+    },
+    {
       "name": "clean-dev-ports",
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "for port in 3002 8084 8081; do pids=$(lsof -ti tcp:$port -sTCP:LISTEN); if [ -n \"$pids\" ]; then echo \"port $port: stopping $pids\"; kill $pids; else echo \"port $port: free\"; fi; done"
+        "for port in 3002 8084 8081 3004 3100; do pids=$(lsof -ti tcp:$port -sTCP:LISTEN); if [ -n \"$pids\" ]; then echo \"port $port: stopping $pids\"; kill $pids; else echo \"port $port: free\"; fi; done"
       ]
     }
   ]

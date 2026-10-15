@@ -13,9 +13,8 @@ compatibility pointer and the code.
 | Tree | What it is | Authority |
 |---|---|---|
 | [`prd/`](prd/) | The product spec — the owner brief, foundations, modules, and the screens register; every row carries its own ruling | **Source of truth** |
-| [`ux/`](ux/) | One design brief per screen, plus the Claude Design session context; the boards and decisions records live in the Claude Design project that each task's `DESIGN:` line links, and are read from there — the repo holds no copy | **Source of truth** |
+| [`ux/`](ux/) | One design brief per screen, plus the Claude Design session context; the boards and decisions records live in the Claude Design project that each task's `DESIGN:` line links — the source of truth; the build reads the owner's git-ignored export in `.design/<module>/` | **Source of truth** |
 | [`tasks/`](tasks/) | Engineering work, one file per module, derived from the PRD registers | **Source of truth** |
-| [`tasks/archive/`](tasks/archive/) | Shipped parts' RFC bodies and runtime ledgers, moved there unchanged when the part ships | history |
 | [`engineering/`](engineering/) | How this repo is built; `architecture.md` is the canonical spine and each other file states its current status or fate | Support, ranked below `prd/` |
 
 `CLAUDE.md` §7 fixes the order: `prd/` (a row carries its own ruling) →
@@ -46,5 +45,7 @@ convention `CLAUDE.md` §2 uses for the Laws and `engineering/adr/` uses for ADR
 Moving one of these breaks a tool silently.
 
 Two invariants read a PRD file: `matrix-mirrors-f2` reads `prd/foundations/F2-roles-and-permissions.md` and `template-keys-mirror-f6` reads
-`prd/foundations/F6-notifications-and-search.md`. `.dependency-cruiser.cjs` cites
+`prd/foundations/F6-notifications-and-search.md`. The document invariants read `build-order.md`,
+`tasks/`, `prd/` and `prd/registers/screens.md` with `ux/briefs/` (`tests/invariants/src/`
+`task-ledger.ts`, `prd-rows.ts`, `screens-register.ts`), and `/task` reads `build-order.md`. `.dependency-cruiser.cjs` cites
 `engineering/02`, `03`, `07` and `17`, and `biome.json`'s messages cite `engineering/03` and `17`.

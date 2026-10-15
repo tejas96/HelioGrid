@@ -29,7 +29,7 @@ const FIELD = 54;
 const ACT = 48;
 const SAVE = en.t(COMPANY_PROFILE.saveChangesSpoken);
 const TITLE = settingsRowName(en.t, 'company_profile');
-/* One picture per language and width, for the commit card (`docs/tasks/README.md`, proof owners). */
+/* One picture per language and width, so the fit can be seen by eye. */
 const PICTURES = join(import.meta.dirname, '../../../.qa/components/company-profile-settings');
 
 test.describe('at 375', () => {
