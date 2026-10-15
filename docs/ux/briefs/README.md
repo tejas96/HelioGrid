@@ -7,9 +7,9 @@ task's `DESIGN:` line in `docs/tasks/`. This folder is the register's working ma
 
 ## How a brief becomes a screen
 
-Claude Code checks the brief, builds one drawing prompt from it, and the owner pastes that prompt
-into a fresh Claude Design session (`.claude/skills/task/design-track.md`). The prompt,
-the fix prompt and the checklist a drawn screen is judged by are written once, in
+Claude Code checks the brief, and one drawing agent draws the screen from it on the module's
+canvas (`.claude/skills/task/design-track.md`); the owner reviews the board there. The drawing
+prompt, the fix prompt and the checklist a drawn screen is judged by are written once, in
 `docs/start-here.md`.
 
 ## What a brief contains (and what it never contains)
@@ -18,7 +18,7 @@ Contains: who uses the screen and where; **the screen's one job and its order of
 **the words on the screen** — every fact it carries, its kind and its form; the verbatim requirement
 rows it must satisfy; the states it needs; entry and exit points; realistic
 data volume; which numbers carry provenance tiers. Never contains: colours, spacing, typography,
-component styling — the design system in Claude Design owns all of that.
+component styling — the design system owns all of that.
 
 **One job · Order of attention.** Two lines under the header, and the reason they exist is
 composition: a brief that lists only obligations makes every row read as equally important, and a
@@ -45,7 +45,7 @@ was drawn* says.
 
 ## The one thing no check can hold: the States list
 
-A drawn screen's board is checked straight from Claude Design and locked
+A drawn screen's board is checked on its canvas and locked
 (`.claude/skills/task/design-track.md`) — but **nothing checks that a brief's States
 list is complete**. It cannot be checked: states are a design decomposition, not a projection of the
 requirement rows, so no 1:1 rule exists to enforce (three formulations were measured on
@@ -59,5 +59,5 @@ gets built without it, and the first thing that catches it is verify on the runn
 
 That is allowed — the register is updated, never bypassed: the SCR row is split/merged there
 first, briefs are regenerated to match, and the affected engineering tasks in `docs/tasks/` are
-re-pointed. A screen that exists only in a Claude Design artifact and not in the register does
+re-pointed. A screen that exists only on a canvas and not in the register does
 not exist.

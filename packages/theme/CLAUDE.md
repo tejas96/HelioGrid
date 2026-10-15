@@ -29,4 +29,5 @@ pnpm --filter @heliogrid/theme build     # prints token, field-mode and contrast
 
 ## Traps
 
-- There is no `pnpm ds:pull`: pull with the DesignSync tool in a session and commit exactly what it writes.
+- There is no `pnpm ds:pull`: read the design system artifact's files with the Artifact tool in a session (`read` with `paths`, under `project/`), save each file byte for byte under the name
+  `packages/theme/README.md` maps it to, and commit exactly that.

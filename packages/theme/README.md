@@ -5,10 +5,14 @@ raw tokens, the RN theme object, the web stylesheets and the fonts all come from
 
 ## Source of truth: `src/_generated/` (never hand-edit)
 
-`src/_generated/` is written by **ds:pull** — a Claude session action that uses the
-DesignSync MCP to fetch the live design system (Claude Design project
-`c8aa4326-21bf-453a-8d11-749cc81dee12`) byte-verbatim into the repo. The output is
-committed; hand-editing anything under `_generated/` is a bug. `ds:pull` re-pulls and
+`src/_generated/` is written by **ds:pull** — a Claude session action that reads the live
+design system, the artifact <https://claude.ai/artifact/XCdYE4onpt9oovdNMi91rn>, byte-verbatim
+into the repo with the Artifact tool: `project/tokens/*.css` → `tokens/`, `project/styles.css` →
+`styles.css`, `project/_ds_manifest.json` → `manifest.json`, and
+`project/components/<family>/<Name>.d.ts` → `contracts/<family>/<Name>.d.ts.txt`. The artifact
+carries no adherence file, so `adherence.oxlintrc.json` is the last one pulled; the invariant
+`design-system-props` still reads it.
+The output is committed; hand-editing anything under `_generated/` is a bug. `ds:pull` re-pulls and
 diffs the manifest to catch stale or drifted components (docs/engineering/17 §6).
 
 ## What `build.ts` emits (`pnpm --filter @heliogrid/theme build`)

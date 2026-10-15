@@ -21,8 +21,9 @@ export $(grep -E '^DATABASE_(ADMIN_)?URL=' .env.local | sed 's/heliogrid_dev/hel
 
 ## 1. Pick the task
 
-Nothing but reads runs before it — the only file it writes is a board pulled into the scratchpad.
-Every `git`, `gh` or `DesignSync` read must succeed: a failed read stops the step with the command
+Nothing but reads runs before it — the only files it writes are boards and a canvas's
+`project/canvas.json`, read into the scratchpad.
+Every `git`, `gh` or Artifact read must succeed: a failed read stops the step with the command
 and its error, and a failed `gh pr list` never reads as "no open PR".
 
 1. `git fetch origin`, then read `docs/build-order.md` with `git show origin/main:docs/build-order.md`.
@@ -49,8 +50,10 @@ Classify the first task left, and say one line with the file and line that decid
 | the task itself has an open PR (`feat/<id>`) | in review: skip it and walk on — its `shipped` reaches `origin/main` when the owner merges. |
 | a task it depends on has an open PR | `owner merges #<n>` — this task builds on that code. Stop. |
 | carries `**Blocked:**`, waits on a parked task or on an open task of a later block | `owner clears <id>` — the blocker and at most two ways to clear it, recommended first. Stop. |
-| a screen it builds or serves reads `PENDING` on its `DESIGN:` line — or its older `**Design:**` line names another task's canvas whose `DESIGN:` reads `PENDING` | `design <module>` — run `design-track.md` on `design/<module>`, cut from `origin/main` on a clean tree; its step 1 writes the drawing prompts. |
-| a screen it builds or serves, whose own task is not `shipped`, has a board that is not locked — an English board its `DESIGN:` line names is missing from `.design/<module>/` or differs from a fresh pull (`design-track.md`, *Is a board locked?*); or its brief has a `## Redesign owed` section | `design <module>` — run `design-track.md` on `design/<module>`, cut from `origin/main` on a clean tree, then walk again. |
+| an owner-named task that serves only V2 screens (`docs/prd/registers/screens.md` §2) | `owner rules <screen>` — draw it ahead of V1, or not now; the Design track draws only V1 screens. Stop. |
+| a screen it builds or serves would go to `design <module>` below while `docs/tasks/deferred.md` holds `D221` | `owner clears D221` — the boards drawn in Claude Design have not moved to the canvases yet. Stop. |
+| a screen it builds or serves reads `PENDING` on its `DESIGN:` line — or its older `**Design:**` line names another task's canvas whose `DESIGN:` reads `PENDING` | `design <module>` — run `design-track.md` on `design/<module>`, cut from `origin/main` on a clean tree; its step 1 draws the missing boards. |
+| a screen it builds or serves, whose own task is not `shipped`, has boards that are not locked (`design-track.md`, *Is a board locked?*), or its brief has a `## Redesign owed` section | `design <module>` — run `design-track.md` on `design/<module>`, cut from `origin/main` on a clean tree, then walk again. |
 | a task it depends on is not `shipped` and has no PR (an owner-named task) | take that task instead, walked the same way, and say so |
 | otherwise | `build <id>` |
 
