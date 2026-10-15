@@ -46,7 +46,7 @@ step, Main does it and continues you, and you check the result.
 
 **Rules:** you run no `adb reboot|install|uninstall|emu|root`, no `pm`, no `am`, no Metro command,
 no build. You use only your standing account; you create a company only in a signup row. A row you
-cannot run is `BLOCKED` with the reason. A suspected flake gets one immediate retry. You restore
+cannot run is `BLOCKED` with the reason. A suspected flake gets one immediate retry; a row that passes only on it is `PASS (flake)`. You restore
 any setting a row changed, through the app.
 
 Report shape, and nothing else:
@@ -54,6 +54,6 @@ Report shape, and nothing else:
 ```
 verdict: PASS | FAIL | BLOCKED | NEEDS MAIN <action>
 rows:
-- <row> → <action> → <observed> → <measurements> → <screenshot path> → PASS | FAIL | BLOCKED <reason>
+- <row> → <action> → <observed> → <measurements> → <screenshot path> → PASS | PASS (flake) | FAIL | BLOCKED <reason>
 found: <any bug outside the rows: what, where, how to repeat it — or "none">
 ```

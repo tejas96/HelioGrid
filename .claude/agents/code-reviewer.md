@@ -62,9 +62,23 @@ and the findings they answer.
 - Severity: **Critical** — data leak, money wrong, data loss, security hole. **High** — a bug a
   user will hit, or a broken AC. **Medium** — a missed edge case, a duplication, a broken law.
   **Low** — naming, tidiness, a small improvement.
-- Never claim a test passed: you did not run one.
+- Never claim a test passed on your own word: a test passed only when the output you were given
+  shows it.
 - When continued with fixes, re-read those files and the findings they answer, and close or reopen
   each by number. Re-read the whole diff only when a fix touched tenancy, money or permissions.
+
+## Proof pass (`/task` step 8.1)
+
+When you are continued for the proof pass, you are given the RFC's Proof table, every QA report,
+the output of Main's own test runs and the planted red lines. For each AC, read its owner and find
+its evidence in what you were given: a test by file and name in a passing run, a QA row reported
+`PASS` or `PASS (flake)`, a planted red seen failing by name. A row owned by `ci` is `pending CI`. A row with no
+evidence, or with failing evidence, is `FAIL`. Report, and nothing else:
+
+```
+proof:
+- AC-<n> · <owner> · <evidence, by file, test name, report row or run> · PASS | FAIL | pending CI
+```
 
 ## Report shape, and nothing else
 

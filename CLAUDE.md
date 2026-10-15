@@ -53,8 +53,8 @@ Law ids are stable — never reuse or renumber one.
 ## 3. Workflow
 
 The work follows ONE order, `docs/build-order.md`, and `/task` (`.claude/skills/task/SKILL.md`)
-runs it: one task per session, one PR per task. Design runs one module ahead of the build, so the
-build never waits for a drawing.
+runs it: one task per session, one PR per task. Design is checked and locked a module ahead of the
+build (`.claude/skills/task/design-track.md`), so the build waits only when that track falls behind.
 
 | step | what | stops for the owner |
 |---|---|---|
@@ -81,7 +81,7 @@ into one turn.
    (`rm -r apps/api/dist`), then `pnpm turbo build --force`.
 
 **A PR is one complete task or part:** every acceptance line is met and proven before it opens,
-or by its CI lane. A task splits only above 30 files, into at most three parts. The RFC's shape and
+or by its CI lane. When a task splits into parts: `/task` step 3. The RFC's shape and
 its edge-case list are `.claude/skills/task/rfc-template.md`.
 
 ## 4. Stop and ask the owner before
@@ -111,7 +111,7 @@ The database invariants need the local Postgres; without it they SKIP loudly, an
 schema they report VACUOUS. Neither is a pass. Never weaken a check to make a change pass.
 
 **Ports are dedicated** — web `3002` · api `8084` · metro `8081` · postgres `5544` · object store
-`9000` · temporal `7233` · component tests `3100` · exported boards `3004`. Reuse a healthy HelioGrid service; free a
+`9000` · temporal `7233` · component tests `3100`. Reuse a healthy HelioGrid service; free a
 foreign listener only through `clean-dev-ports`, never by port or process name.
 
 ## 6. Where everything lives
@@ -123,12 +123,12 @@ allowed imports; §4 decides where a new file goes. Run §4 before creating one.
 |---|---|
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
 | `docs/engineering/` | how this repo is built. |
-| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers), `skills/task/` (the one step runner and its RFC template), `agents/` (its read-only helpers), `settings.json` (hard-safety denies, and the plugins switched off here because `skills/task/` is the one step runner). |
+| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers), `skills/task/` (the one step runner, its RFC template, the design track and the board check), `agents/` (its read-only helpers), `settings.json` (hard-safety denies, and the plugins switched off here because `skills/task/` is the one step runner). |
 | `.qa/` | git-ignored: `api.log`, `web.log`, `metro.log` — the development logs the launch configurations append to and the e2e suite reads — and `components/<name>/`, the pictures a component spec saves. A task deletes the screenshots it made before its PR opens. |
-| `.design/` | git-ignored: `<module>/`, that module's boards exported from Claude Design — a read-only copy, served on port `3004` by the `design-export` launch configuration — and `<module>.LOCKED` beside it, the checksums of the boards the Design track checked; a screen is built only while its board's lock holds. |
-| `.ops/` | the owner's private infra record, git-ignored: every external account, project and client id, what is still owed, and each environment's values (`dev.env`, `prod.env`). A console change updates it in the same sitting. |
+| `.design/` | git-ignored: `<module>/`, that module's locked boards — each one exactly as the Design track checked it, pulled from Claude Design (a board `DesignSync` cannot return whole is exported by the owner); a read-only copy. A screen is built only while its board here equals a fresh pull (`/task` step 1). |
+| `.ops/` | the owner's private infra record, git-ignored: every external account, project and client id, what is still owed, and each environment's values (`env/dev.env`, `env/prod.env`). A console change updates it in the same sitting. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
-| the Claude Design project | NOT in the repo: each screen's board and decisions record — the source of truth for design. A task's `DESIGN:` line links it; the build reads the module's export in `.design/` (`/task`, Design track). A studio screen (`ported from the POC`) has none. |
+| the Claude Design project | NOT in the repo: each screen's board and decisions record — the source of truth for design. A task's `DESIGN:` line links it; the Design track (`.claude/skills/task/design-track.md`) reads it with `DesignSync` and locks a copy in `.design/`. A studio screen (`ported from the POC`) has none. |
 
 Import a package only through an entry its `package.json` `exports` declares. **Never invent a folder**: every tree is a closed set, and a new category is a
 plan-time decision. `docs/README.md` maps every document.

@@ -1,7 +1,7 @@
 # HelioGrid V2 — Claude Design session context
 
-Paste this file, unchanged, at the top of EVERY Claude Design session, followed by exactly one
-screen brief from `docs/ux/briefs/`. The design system is already selected in Claude Design and owns
+Paste this file, unchanged, at the top of every drawing session and every Full fix prompt
+(`docs/start-here.md`), followed by exactly one screen brief from `docs/ux/briefs/`. The design system is already selected in Claude Design and owns
 how everything looks. Everything in this file is **product law**: what a screen must do, carry and
 survive. Authority: `docs/prd/foundations/F7-design-language.md` (`F7-23`, `F7-43`, `F7-46`),
 `docs/prd/foundations/F8-data-honesty.md`.

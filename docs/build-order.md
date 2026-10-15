@@ -53,8 +53,8 @@ is `/task` step 1's table (`.claude/skills/task/SKILL.md`). A backend task waits
 the screens it serves in its block: a checked drawing states the facts the backend serves. A `**Parked:**` task is stepped over and pulls nothing ahead.
 
 A screen that is not drawn is never skipped for one that is. Design runs one module ahead: while
-the build is on one module, the owner draws and exports the next (`/task`, Design track), so the
-build does not stop on a drawing.
+the build is on one module, the owner draws the next and the Design track checks and locks it (`.claude/skills/task/design-track.md`), so the
+build waits only when that track falls behind.
 
 Note the `V` column lives on screens, not tasks. A task is V1 if the V1 workflow needs it —
 which for the foundations means all of them, since permissions, formats and honesty underpin
@@ -202,7 +202,7 @@ Invariants check the task and PRD documents (`.claude/protections.md`, Process):
 `build-order-holds`, `prd-rows-cited` (every cited PRD row is live and every quote matches its
 cell) and `screens-register-whole` (every screen briefed and designed, every PRD row landed once,
 the V1 count as the scope lock states it). The RFC tests the requirements the task it takes
-carries (`/task` step 2). A screen's design is checked from its module's export, against its
-brief, before the build reaches it (`/task`, Design track).
+carries (`/task` step 2). A screen's design is read straight from Claude Design and checked against its
+brief, before the build reaches it (`.claude/skills/task/design-track.md`).
 
 Design progress is how many V1 screens have a link on their task's `DESIGN:` line.

@@ -19,7 +19,7 @@ A task is its header lines, written when the task is:
 **Type:** screen · **Tier:** P0        (screen | engine | policy | integration | port · the highest tier among its rows)
 **Status:** planned                    (planned | designed | shipped | struck — the one ledger)
 **PRD rows:** M02-<nn> (P0), M02-<nn> (P0), M02-<nn> (P1)        — every id carries its tier (rule 6)
-**DESIGN:** SCR-<module>-<nn> → PENDING          — filled by Claude Code when the module's boards are locked (`/task`, Design track); a screen with more than one board lists the others after the main link: `· also: <board> <link>`; a studio screen reads `ported from the POC`
+**DESIGN:** SCR-<module>-<nn> → PENDING          — filled by Claude Code when the module's boards are locked (`.claude/skills/task/design-track.md`); a screen with more than one board lists the others after the main link: `· also: <board> <link>`; a studio screen reads `ported from the POC`
 **Design:** (older tasks, instead of DESIGN:) `none — <reason>` for a task with no screen, the existing boards it reuses, or `the same canvas as <task id>'s DESIGN line` and the frames it uses — only the last makes the walk wait, until that task's `DESIGN:` holds a link
 **PORT:** (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-claims.md
         — files to READ AND PORT FROM, never files to create here. A PORT entry that names a
@@ -41,9 +41,7 @@ in the shape of `.claude/skills/task/rfc-template.md`. The commit that ships it 
 the PR body and out of this file: a shipped task keeps only its header lines, and git and the PR
 hold its history. A split task's `#### Parts` table and task RFC stay until its last part ships.
 
-**Size.** A task is one PR. It splits only when its RFC plans more than 30 changed files, into at
-most three parts, each end to end with its web and phone halves together:
-`part | what | AC | depends on | status`.
+**Size.** A task is one PR; when it splits into parts, and how: `/task` step 3.
 
 ## Binding rules
 
@@ -64,7 +62,7 @@ most three parts, each end to end with its web and phone halves together:
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
 2. **Requirement reference whitelist.** A task's header and requirement text may cite only:
-   `docs/prd/**`, the screen's board and decisions record in the Claude Design project, by the link on its `DESIGN:` line (the one source of a design — the repo holds no copy),
+   `docs/prd/**`, the screen's board and decisions record in the Claude Design project, by the link on its `DESIGN:` line (the one source of a design; the repo keeps only the git-ignored lock in `.design/<module>/`),
    `docs/engineering/data-model.md` and `docs/engineering/forward-compat.md` (a schema-bearing
    task, where naming its entities or its first-migration row is clearer than restating them),
    `docs/ux/briefs/**`, `docs/prd/modules/M05-studio/defect-register.md`
