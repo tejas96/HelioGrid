@@ -73,7 +73,7 @@ jobs:
           lane mobile_js '^(apps/mobile/|packages/(config|contracts|data|domain|env|forms|i18n|theme|ui)/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|tsconfig\.base\.json$|\.github/workflows/ci\.yml$)'
           # The web regression suite: what the web and the api serve, every package either imports,
           # the suite itself, and the files that shape the build.
-          lane e2e_web '^(apps/(web|api)/|packages/|tests/e2e/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|tsconfig\.base\.json$|\.github/workflows/ci\.yml$)'
+          lane e2e_web '^(apps/(web|api)/|packages/|infra/postgres/|tests/e2e/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|turbo\.json$|tsconfig\.base\.json$|\.github/workflows/ci\.yml$)'
           # The Android build and the phone flows on it: what the app and the api run (native
           # sources and manifests included), every package either imports, the database roles the
           # api connects as, the phone suite and what it reads, and the build files.

@@ -1,9 +1,9 @@
 # Designing a screen — the prompt and the checklist
 
-Claude Code runs every design step (`/task`, Design track — a module's boards are checked and
+Claude Code runs every design step (`.claude/skills/task/design-track.md` — a module's boards are checked and
 locked before its build): it builds the drawing prompts from this file, the owner pastes them into
-Claude Design and exports the module to `.design/<module>/`, and `board-check` judges each exported
-board by *The checklist* below. Each rule is written here once.
+Claude Design, and one agent per screen reads each board straight from Claude Design and judges it
+by *The checklist* below (`.claude/skills/task/board-check.md`). Each rule is written here once.
 
 The register holds 150 screens; **99 are V1** — the `V` column in `docs/prd/registers/screens.md`
 §2. A `V2` row is not drawn until V1 ships. 81 of the V1 screens are drawn from a brief; the other 18 are the
@@ -195,11 +195,11 @@ disagreeing about the same flow.
 
 ## When a brief changes after its screen was drawn
 
-- The module's next export check reads the board against the brief as it now stands: a mismatch
+- The module's next board check reads the board against the brief as it now stands: a mismatch
   is a finding, and its fix prompt goes to the owner before the build.
 - A change that must wait for the screen's turn is written into the brief as a `## Redesign owed`
   section — what the design shows and what the brief now requires — and the section is deleted
-  in the `design/<module>` commit once the board meets it (`/task`, Design track).
+  in the `design/<module>` commit once the board meets it (`.claude/skills/task/design-track.md`).
 - A screen already BUILT that no longer matches gets the task that changes it, in `docs/tasks/`.
 
 ## How you know you're finished

@@ -17,9 +17,10 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
    real alternative, only when one exists, with its trade-off; what is reused, by path; the twin
    screen on the other platform and which parts are shared (`.claude/rules/screen-parts.md`).
 6. **Frame map** (screen task) — one row per board frame: `frame | state that shows it | element →
-   component + props + copy key`. A frame the running app cannot reach with data QA can make
-   through the app says how it is proven instead (its component spec, or `not reachable — <why>`).
-   The board file it was read from, under the module's lock.
+   component + props + copy key + the tokens, size and gaps the board gives it`, read from the board's code in
+   `.design/<module>/`, under the module's lock. `qa-web` compares the app with these values. A
+   frame the running app cannot reach with data QA can make through the app says how it is proven
+   instead (its component spec, or `not reachable — <why>`).
 7. **Changes**
    - Packages: new public exports and dependency direction; each new brand, enum, token, route,
      table or error code with the check that guards it (Law 12), or `no check holds it`.
@@ -52,6 +53,8 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
     outside the diff decides is read from that code, by file and line. A row that needs the api
     stopped says `api stopped`. A PRD performance target from *Scope* is written into its row's expected result
     as a time limit.
+    A screen task has one Hindi and one Marathi layout row on the phone, and its shared
+    component's spec covers both languages at 375 and 1536.
 14. **Deferred rows** — each `docs/tasks/deferred.md` row this task meets: joins (and is deleted
     in this commit) or stays (with its new `reopens when`). `None` when none.
 15. **Size** — changed files, code lines, test lines; one PR, or the parts (`/task` step 3).

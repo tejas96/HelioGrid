@@ -8,7 +8,7 @@ task's `DESIGN:` line in `docs/tasks/`. This folder is the register's working ma
 ## How a brief becomes a screen
 
 Claude Code checks the brief, builds one drawing prompt from it, and the owner pastes that prompt
-into a fresh Claude Design session (`/task`, Design track). The prompt,
+into a fresh Claude Design session (`.claude/skills/task/design-track.md`). The prompt,
 the fix prompt and the checklist a drawn screen is judged by are written once, in
 `docs/start-here.md`.
 
@@ -45,8 +45,8 @@ was drawn* says.
 
 ## The one thing no check can hold: the States list
 
-A drawn screen's board is checked from its module's export
-(`/task`, Design track) — but **nothing checks that a brief's States
+A drawn screen's board is checked straight from Claude Design and locked
+(`.claude/skills/task/design-track.md`) — but **nothing checks that a brief's States
 list is complete**. It cannot be checked: states are a design decomposition, not a projection of the
 requirement rows, so no 1:1 rule exists to enforce (three formulations were measured on
 2026-08-26 and all three fired on 17–43% of correct briefs).

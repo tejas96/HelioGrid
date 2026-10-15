@@ -70,7 +70,7 @@ authoritative doc for that layer; this table is only the index.
 | `docs/prd/` | **What the product does** — product overview, personas, journey, 8 foundations, 13 modules, and the screens register | — |
 | `docs/tasks/` | Per-module build tasks, written to as work completes | — |
 | `docs/ux/` | The 150 screen briefs plus the context file every design session is given | — |
-| `.claude/` | Rules, the protections map and the dev-server launch file for AI-assisted changes here | — |
+| `.claude/` | The `/task` skill, its helper agents, rules, the protections map and the dev-server launch file | [CLAUDE.md](CLAUDE.md) §6 |
 
 ## Prerequisites
 
@@ -145,7 +145,7 @@ Or from inside the app's own directory, plain `pnpm dev`/`pnpm start` works the 
 **A server never kills what is already on its port.** A running HelioGrid server is reused as it
 is. A launch configuration that finds its port busy refuses to start and says so — it never kills
 the listener and never moves to another port (`next dev` would otherwise drift to 3003). A stale or
-foreign listener on 3002, 8084, 8081 or 3004 is freed on purpose, by you, with the `clean-dev-ports`
+foreign listener on 3002, 8084, 8081 or 3100 is freed on purpose, by you, with the `clean-dev-ports`
 launch configuration in `.claude/launch.json` — the one command allowed to stop them. The launch
 configurations append their output to `.qa/api.log`, `.qa/web.log` and `.qa/metro.log` and never
 truncate them.
@@ -160,7 +160,7 @@ own port, only a `--port` flag, so this is the standard convention almost every 
 
 **A port here is dedicated and never reassigned** (`CLAUDE.md` §5): a busy one is reused when it is
 a healthy HelioGrid service, else freed with `clean-dev-ports` — never a reason to move to another.
-The full list, the object store `9000`, component tests `3100` and exported boards `3004` included,
+The full list, the object store `9000` and component tests `3100` included,
 is `CLAUDE.md` §5. The table says where each is set, for when you are
 chasing one down — not as an invitation to change it.
 
@@ -370,7 +370,7 @@ Claude then pushes and opens the PR; the owner merges. `main` is PR-only. A PR i
 | `docs/engineering/02-system-architecture.md` | How the system runs — request path, tenancy, background work, storage, studio data flow |
 | `docs/engineering/03-tech-stack.md` | Every technology choice, pinned and justified |
 | `docs/engineering/08-security-and-tenancy.md` | Security & tenancy model |
-| [`docs/engineering/17-ui-architecture-v2.md`](docs/engineering/17-ui-architecture-v2.md) | The UI layer: theme, primitives, the 98 components, and the gates that hold them |
+| [`docs/engineering/17-ui-architecture-v2.md`](docs/engineering/17-ui-architecture-v2.md) | The UI layer: theme, primitives, the 122 components, and the gates that hold them |
 | [`docs/prd/foundations/F3-localization.md`](docs/prd/foundations/F3-localization.md) | i18n law (EN/HI/MR) |
 | [`docs/prd/foundations/F7-design-language.md`](docs/prd/foundations/F7-design-language.md) | Design language |
 | `docs/engineering/forward-compat.md` | What each module's first migration must satisfy so later modules aren't blocked |

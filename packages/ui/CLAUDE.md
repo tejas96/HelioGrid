@@ -5,7 +5,7 @@ Native half from one folder. The compose-don't-invent and no-raw-values laws are
 `.claude/rules/ui-adherence.md`, which loads with this folder.
 
 **Before changing a component, read its rows in `docs/tasks/UI.md`.** Fix the repo side, give
-the owner the design-system side, then delete the row.
+the owner the design-system side, and delete the row once both sides have landed.
 
 ## What lives here / what must never live here
 

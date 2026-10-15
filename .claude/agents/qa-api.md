@@ -40,7 +40,7 @@ persistence by a read-back, a background job's or webhook's effect, behaviour wi
 
 **Rules:** you start, stop, build or migrate nothing — no `pnpm`, no `docker`, no `psql`. You create
 no company: a missing tenant is `BLOCKED` with the reason. A row you cannot run is `BLOCKED`; you
-never substitute another route. A suspected flake gets one immediate retry. You restore any
+never substitute another route. A suspected flake gets one immediate retry; a row that passes only on it is `PASS (flake)`. You restore any
 setting a row changed, through the api. Your report holds no cookie, code or token, and no number
 beyond its last three digits.
 
@@ -49,6 +49,6 @@ Report shape, and nothing else:
 ```
 verdict: PASS | FAIL | BLOCKED
 rows:
-- <row> → <method path, each> → <status and fields checked> → <request id · log bytes a–b> → PASS | FAIL | BLOCKED <reason>
+- <row> → <method path, each> → <status and fields checked> → <request id · log bytes a–b> → PASS | PASS (flake) | FAIL | BLOCKED <reason>
 found: <any bug outside the rows: what, where, how to repeat it — or "none">
 ```
