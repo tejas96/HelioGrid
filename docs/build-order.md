@@ -48,10 +48,9 @@ file placed, no loop, every later-block wait recorded. The order is walked, neve
 The step is the first open part of a split task, else the first open V1 task on that walk. A part
 lives in its task's `#### Parts` table; this file never lists parts.
 
-What the step is for each task — build, owner draws, owner exports, owner merges, owner clears —
-is `/task` step 1's table (`.claude/skills/task/SKILL.md`). A backend task waits for the drawings of
-the screens it serves in its block: a drawing states facts the backend serves; a redraw stops only
-the screen task. A `**Parked:**` task is stepped over and pulls nothing ahead.
+What the step is for each task — build, owner draws, design <module>, owner merges, owner clears —
+is `/task` step 1's table (`.claude/skills/task/SKILL.md`). A backend task waits for the lock of
+the screens it serves in its block: a checked drawing states the facts the backend serves. A `**Parked:**` task is stepped over and pulls nothing ahead.
 
 A screen that is not drawn is never skipped for one that is. Design runs one module ahead: while
 the build is on one module, the owner draws and exports the next (`/task`, Design track), so the

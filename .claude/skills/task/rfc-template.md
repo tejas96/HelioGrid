@@ -19,7 +19,7 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
 6. **Frame map** (screen task) — one row per board frame: `frame | state that shows it | element →
    component + props + copy key`. A frame the running app cannot reach with data QA can make
    through the app says how it is proven instead (its component spec, or `not reachable — <why>`).
-   The board file and the export date it was read from.
+   The board file it was read from, under the module's lock.
 7. **Changes**
    - Packages: new public exports and dependency direction; each new brand, enum, token, route,
      table or error code with the check that guards it (Law 12), or `no check holds it`.

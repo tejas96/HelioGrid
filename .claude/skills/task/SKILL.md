@@ -41,7 +41,7 @@ Classify the first task left, and say one line with the file and line that decid
 | a task it depends on has an open PR | `owner merges #<n>` — this task builds on that code. Stop. |
 | carries `**Blocked:**`, waits on a parked task or on an open task of a later block | `owner clears <id>` — the blocker and at most two ways to clear it, recommended first. Stop. |
 | a screen it builds or serves reads `PENDING` on its `DESIGN:` line — or its older `**Design:**` line names another task's canvas whose `DESIGN:` reads `PENDING` | `owner draws <SCR-…>` — the design track is behind (§ Design track). Stop. |
-| a screen it builds has a board, but `.design/<module>/` does not hold it, or its brief has a `## Redesign owed` section | `owner exports <module>` (after redrawing what the section lists). Stop. |
+| a screen it builds or serves, whose own task is not `shipped`, has a board that is not locked — a board file its `DESIGN:` line names, `also:` boards included, is missing from `.design/<module>.LOCKED`, the lock fails `(cd .design/<module> && shasum -a 256 -c ../<module>.LOCKED)`, or its brief has a `## Redesign owed` section | `design <module>` — run the Design track below on `design/<module>`, cut from `origin/main` on a clean tree, then walk again. |
 | otherwise | `build <id>` |
 
 A studio screen reads `ported from the POC`: it has no board, and the POC
@@ -227,24 +227,43 @@ into the PR body — a part's RFC goes; the task RFC stays until the last part s
 
 Close with one line: the next task starts in a new session with `/task`.
 
-## Design track — one module ahead
+## Design track — lock a module before its build
 
-The build never waits for a drawing. When the owner asks to prepare the next module's design:
+The build never waits for, or goes back to, a drawing. A module's boards are checked, fixed and
+locked once, before the first task that builds or serves them, and while the module before it is
+being built. Run it when the owner asks, or when step 1 answers `design <module>`.
 
-1. Take the module after the one being built (`docs/build-order.md`). Read every V1 brief of its
-   undrawn screens and the PRD rows they cite, fix what is wrong or missing in each brief, and build
-   one drawing prompt per screen as *The drawing prompt* of `docs/start-here.md` says. Copy each to
-   the clipboard by a script (`LANG=en_US.UTF-8 pbcopy < <file>`, then `LANG=en_US.UTF-8 pbpaste | cmp - <file>`); the owner
+`<module>` is a screen id's module (`SCR-SHELL-06` → `SHELL`). The screens in scope are the V1
+screens whose tasks are not `shipped` and sit in the block being prepared; a shipped screen is never
+re-checked, and a studio screen (`ported from the POC`) has no board.
+
+1. **Draw what is missing.** For each screen in scope whose `DESIGN:` reads `PENDING`: read its
+   brief and the PRD rows it cites, fix what is wrong or missing in the brief, and build one drawing
+   prompt as *The drawing prompt* of `docs/start-here.md` says. Copy each by a script
+   (`LANG=en_US.UTF-8 pbcopy < <file>`, then `LANG=en_US.UTF-8 pbpaste | cmp - <file>`); the owner
    pastes them into parallel Claude Design chats.
-2. When the owner has drawn the module, they export it to `.design/<module>/` (git-ignored).
-3. Check every board from the export, by reading its code, against its brief, its PRD rows and
-   *The checklist* of `docs/start-here.md`. Each fix goes to the owner as one paste-ready prompt per
-   screen; the owner fixes it in Claude Design and exports that module again.
-4. When every board passes: fill each task's `DESIGN:` line with its board link, turn its `Status:`
-   to `designed`, delete each brief's `## Redesign owed` section the board now meets, then show
-   the commit and, on the owner's yes, commit on `design/<module>` and open a PR as step 9 does.
-5. A board that breaks a law or a PRD row goes to the owner with two options — fix the board, or
-   build the better way and record the ruling in the brief. Never copy it or depart from it silently.
+2. **Export.** The owner exports the screens in scope into `.design/<module>/` (git-ignored), with
+   each screen's decisions record and the design-system bundle (`_ds/`) the boards load. A missing
+   record or bundle is named to the owner before the check.
+3. **Check, in parallel.** Start one `board-check` agent per screen in one message; each gets what
+   its file lists under "Your prompt gives you". Then read their reports together: a rule one
+   screen breaks is named for every screen that breaks it.
+4. **Fix.** Show the owner every `decision` first — two options each. A ruling to build the better
+   way goes into the brief and into a `docs/tasks/deferred.md` row that names the frame, so
+   `board-check` and `qa-web` read it as a known difference. Then give the owner each screen's fix
+   prompt, copied by the same script, to paste into that screen's own file in Claude Design; the
+   owner exports again, and only the boards that got a fix prompt are checked again. Two fix rounds
+   at most: a board still failing after the second goes to the owner, who rules each difference a
+   fix or a `deferred.md` row.
+5. **Lock.** When every board in scope is `READY` or its open differences are `deferred.md` rows,
+   add each one to the lock, after removing a re-checked board's old line from it:
+   `(cd .design/<module> && shasum -a 256 -- "<board file>" … >> ../<module>.LOCKED)`.
+   Then fill each task's `DESIGN:` line with its board link, turn a `planned` task's `Status:` to
+   `designed`, and delete each brief's `## Redesign owed` section the board now meets. Show the
+   commit and, on the owner's yes, commit on `design/<module>` and open a PR as step 9 does. A
+   module whose briefs, deferred rows and task lines did not change needs no commit.
 
-Claude Design stays the source of truth: the export is a read-only copy, replaced whole when the
-owner exports again. Boards are English; Hindi and Marathi come from the catalog.
+The lock sits beside the folder, so a new export never deletes it; a board changed or added by a
+later export fails or misses the lock, and step 1 sends the module back here. Claude Design stays
+the source of truth; the export is a read-only copy. Boards are English; Hindi and Marathi come
+from the catalog.

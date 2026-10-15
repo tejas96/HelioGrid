@@ -169,4 +169,5 @@ when both database URLs name `heliogrid_test` (`.claude/rules/testing.md`). CI j
 | A PR opens only after review, QA and `pnpm check:all` pass on the final code | review — `/task` steps 6–9 |
 | A doc the change made wrong is fixed in the same change | review |
 | Every `docs/tasks/deferred.md` row a task meets is shown in its RFC as join or stays | review — `/task` step 2 |
+| A board is checked against its brief, PRD rows, laws and components, and locked, before the first task that builds or serves it; a board changed or added after the lock sends its module back to the check | the `board-check` agent · `.design/<module>.LOCKED`, checked by `/task` step 1 (`shasum -c`, and the `DESIGN:` link's file listed) |
 | A screen task's build matches its board, read from the module's local export | review — the RFC's frame map (`/task` step 3), the `code-reviewer`, and the `qa-web` numbers compare |

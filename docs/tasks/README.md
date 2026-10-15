@@ -19,7 +19,7 @@ A task is its header lines, written when the task is:
 **Type:** screen · **Tier:** P0        (screen | engine | policy | integration | port · the highest tier among its rows)
 **Status:** planned                    (planned | designed | shipped | struck — the one ledger)
 **PRD rows:** M02-<nn> (P0), M02-<nn> (P0), M02-<nn> (P1)        — every id carries its tier (rule 6)
-**DESIGN:** SCR-<module>-<nn> → PENDING          — filled by Claude Code when the owner exports the drawn module (`/task`, Design track); a screen with more than one board lists the others after the main link: `· also: <board> <link>`; a studio screen reads `ported from the POC`
+**DESIGN:** SCR-<module>-<nn> → PENDING          — filled by Claude Code when the module's boards are locked (`/task`, Design track); a screen with more than one board lists the others after the main link: `· also: <board> <link>`; a studio screen reads `ported from the POC`
 **Design:** (older tasks, instead of DESIGN:) `none — <reason>` for a task with no screen, the existing boards it reuses, or `the same canvas as <task id>'s DESIGN line` and the frames it uses — only the last makes the walk wait, until that task's `DESIGN:` holds a link
 **PORT:** (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-claims.md
         — files to READ AND PORT FROM, never files to create here. A PORT entry that names a
@@ -74,8 +74,8 @@ most three parts, each end to end with its web and phone halves together:
    instructions. Anything else —
    old research docs, the v1 repo — is a defect in the task. A task never cites an open-question
    id: a PRD row carries its own ruling, and git carries the history.
-3. **`DESIGN: PENDING` blocks the task at its turn.** Design runs one module ahead, so this
-   should not happen; when it does, the owner draws and exports the module first. A backend task
+3. **`DESIGN: PENDING` blocks the task at its turn**, and so does a board not yet locked
+   (`/task` step 1): the Design track draws, checks and locks the module first. A backend task
    waits for the drawings of the screens it serves. A screen's UI is not "done" until it matches
    its board.
 4. **Studio tasks are ports, not rewrites** (ruling S12-1): engineering core moves as-is with
