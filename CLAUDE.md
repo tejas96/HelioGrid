@@ -61,7 +61,7 @@ build never waits for a drawing.
 | pick · analyse · RFC | the next task; its gaps; its RFC, checked by `rfc-reviewer` | yes — approve the RFC, once; a part inside the approved task RFC with no open decision needs none |
 | build | inside the approved RFC | when scope voids the approval |
 | verify | `code-reviewer`, then QA on the changed surfaces in parallel, then `pnpm check:all` | when a finding or a failing row survives its fixes |
-| ship | clean up, commit, push, open the PR, CI | no — the owner merges the PR |
+| ship | clean up, commit, push, open the PR, CI | yes — every commit, then the owner merges the PR |
 
 **One turn, many calls.** Batch every read, search and check that does not wait on another's result
 into one turn.
@@ -91,9 +91,10 @@ its edge-case list are `.claude/skills/task/rfc-template.md`.
 - A layer conflict §7 **When rules conflict** does not resolve.
 - A feature or a number no PRD row implies. A decision that belongs to a LATER module is not an ask:
   write it into that module's task in `docs/tasks/`, and carry on.
-- **Building before the RFC is approved.** The owner's yes to the RFC covers the build, the
-  commit, the push and the PR (`/task` step 9). The owner merges. Never `--no-verify`, never
-  force-push, never push to `main`.
+- **Building before the RFC is approved.** Nothing is built before the owner's yes to the RFC.
+- **Committing.** Each commit waits for the owner's yes to the shown file list and message — a go,
+  a green check, an approved RFC or an earlier yes never counts. Then push and open the PR (`/task`
+  step 9). The owner merges. Never `--no-verify`, never force-push, never push to `main`.
 
 ## 5. Commands
 

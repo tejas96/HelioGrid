@@ -9,8 +9,8 @@ disable-model-invocation: true
 
 You are Main: you decide, build, fix and clean up. Agents in `.claude/agents/` read and report; only
 you and the step 5 build agents edit files. The laws are `CLAUDE.md`, cited and never copied. One
-task runs in one session and ends in one pull request. The owner says yes once — to the RFC — and
-merges the PR.
+task runs in one session and ends in one pull request. The owner says yes to the RFC and to every
+commit, and merges the PR.
 
 ## 1. Pick the task
 
@@ -213,6 +213,9 @@ into the PR body — a part's RFC goes; the task RFC stays until the last part s
 `deferred.md` row the task joined is deleted; a `starts` row that stays gets a new `reopens when`.
 
 - Commit message: `feat: <id> — <what the user gets>`, then a short body.
+- Show the owner the changed files and the exact message, then stop. Commit only on the owner's
+  yes to that list and message (`CLAUDE.md` §4); every later commit — a CI fix, a review fix, a
+  merge of `origin/main` — is shown and waits the same way.
 - `git push -u origin feat/<id>`, then `gh pr create --base main`, the body filled in as
   `.github/pull_request_template.md` lays it out.
 - Bind the PR to the session (the `ccd_pr` tools). A failed CI job goes to `ci-investigator`; fix,
@@ -238,8 +241,8 @@ The build never waits for a drawing. When the owner asks to prepare the next mod
    *The checklist* of `docs/start-here.md`. Each fix goes to the owner as one paste-ready prompt per
    screen; the owner fixes it in Claude Design and exports that module again.
 4. When every board passes: fill each task's `DESIGN:` line with its board link, turn its `Status:`
-   to `designed`, delete each brief's `## Redesign owed` section the board now meets, then commit
-   on `design/<module>` and open a PR as step 9 does.
+   to `designed`, delete each brief's `## Redesign owed` section the board now meets, then show
+   the commit and, on the owner's yes, commit on `design/<module>` and open a PR as step 9 does.
 5. A board that breaks a law or a PRD row goes to the owner with two options — fix the board, or
    build the better way and record the ruling in the brief. Never copy it or depart from it silently.
 

@@ -352,8 +352,8 @@ every test) — run it once before considering any non-trivial change done. See
 
 ## Git workflow
 
-Work starts on a branch off `main` and ends with a PR. The owner approves the RFC; Claude commits,
-pushes and opens the PR; the owner merges. `main` is PR-only. A PR is one complete task, never half of one. Full detail:
+Work starts on a branch off `main` and ends with a PR. The owner approves the RFC and every commit;
+Claude then pushes and opens the PR; the owner merges. `main` is PR-only. A PR is one complete task, never half of one. Full detail:
 [`CLAUDE.md`](CLAUDE.md) §3, §4.
 
 ## Where to find things
