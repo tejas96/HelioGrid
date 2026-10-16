@@ -13,13 +13,19 @@ Reached from: the search box in the app shell on web and mobile (F6-20; the shel
 **Decisions made in design (2026-08-19) — the brief left these open; later screens inherit them.**
 
 1. **Exit — `See all` leads to that entity's own list screen with the query applied.** The rows themselves deep-link to the record (`F6-20`). The count pill is *all* matches; the meta line says how many you are looking at ("Top 3 of 23 · best match first").
-2. **Search is a sheet on the phone and a layer over the content column on desktop — never a page.** `F7-21`'s one grammar: modal, focus trapped and handed back to the control that opened it, Esc, a 44×44 close. On desktop the rail and header stay crisp above the backdrop, so the query being edited is never behind the blur it caused.
+2. **Search opens inside the bar on the phone and as a layer over the content column on desktop — never a page.** On the phone, on every screen that has the search button: the field takes the place of the title (or of the tile and the company), a way back stays where it is, one 44×44 close replaces the bar's other buttons, and the results fill the screen below the bar. Close, or Esc, gives the bar back and hands focus to the search button. On desktop the rail and header stay crisp above the backdrop, so the query being edited is never behind the blur it caused.
+
 3. **A result is a row, not a record card.** A working list is a decision surface and takes `RecordCard`; a search hit is a wayfinder and takes `ListRow`, same props at both widths.
 4. **Every result row is a real `<a href>`** — `F6-20` requires the deep link, and a bare `onClick` row is neither keyboard-operable nor named. The whole row is the target, ringed by the system's focus style, named record-first. **Every later result surface in this product does the same.**
 5. **The one exception is a row carrying a second act.** The junk row's Reopen is a real button in the trailing slot, so the *name* is the link and carries the 44px floor itself — two acts cannot share one target, and a button inside a link is not legal markup.
 6. **A group with no matches keeps its place and teaches in one line** ("Catalog items are found by name — try a wattage like 540 W"). When nothing matches at all, that becomes one teaching empty state instead of seven quiet lines.
 7. **Expressive density at both widths** (`F7-17`) — the screen is a wayfinder, not a data table. What desktop changes is how much is on screen (three columns, more rows per group), never spacing or radius. The functional rhythm belongs to the list screens `See all` opens.
 
+
+## Redesign owed
+
+- The phone frames draw search as a sheet. Redraw them with the field inside the bar (decision 2), on a top-level screen and on a page opened from a list.
+- `MobileTopBar` has no open-search state. Draft it as a design-system change at this redesign, for the owner's yes: the field in place of the title, a way back kept, one close in place of the other buttons.
 
 ## Requirements (verbatim)
 

@@ -390,53 +390,58 @@ class Component extends DCLogic {
     const unchanged = "Tick or clear a preset first.";
 
     const back = h(NS.IconButton, {
-      label: "Back to More", variant: "ghost", size: 44, onClick: this.noop,
+      label: "Back to settings", variant: "ghost", size: 44, onClick: this.noop,
     }, glyph("chevron-left", false, "primary"));
 
-    const account = h(NS.AccountMenu, {
-      name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account", menuLabel: "Account",
-      grievanceLabel: "Grievance officer", signOutLabel: "Sign out",
-      onGrievance: this.noop, onSignOut: this.noop, align: "end",
+    /* THE CARDS BEHIND ARE SCR-M01-12's card(), as that board draws them for the same people. Only an
+       active member's row opens this screen; a deactivated row has no row tap and no act. */
+    const STATUS = {
+      active: { label: "Active", tone: "success" },
+      deactivated: { label: "Deactivated", tone: "neutral" },
+    };
+    const you = h(NS.Badge, { key: "you", tone: "accent", density: "functional" }, "You");
+    const GUARD = "Suryodaya Solar must keep one EPC Owner, so make someone else one first.";
+    const act = (label, reason) => h(NS.Button, {
+      variant: "ghost", size: "sm", onClick: reason ? undefined : this.noop,
+      disabled: !!reason, disabledReason: reason || undefined,
+      style: { marginLeft: "calc(-1 * var(--sp-3))" },
+    }, label);
+    const card = (p) => ({
+      name: p.name,
+      chip: status(STATUS[p.kind].label, STATUS[p.kind].tone),
+      marks: p.you ? [you, roles(p.roles)] : roles(p.roles),
+      meta: ["Last active " + p.at],
+      action: p.kind === "active" ? act("Deactivate", p.reason) : undefined,
+      onClick: p.kind === "active" ? this.noop : undefined,
+      density: "functional",
     });
-
-    /* Only an active member's row opens this screen: an invite or a deactivated person has nothing
-       to assign, so their card is no target and names no act. */
-    const behindCard = (name, roleNames, when, word, tone) => Object.assign({
-      name: name, chip: status(word, tone), marks: roles(roleNames), meta: [when], density: "functional",
-    }, word === "Active" ? {
-      onClick: this.noop,
-      ariaLabel: name + ", active, " + roleNames.join(", ") + ". Open role administration",
-    } : {});
+    const VIKRAM = { name: "Vikram Deshpande", kind: "active", roles: ["Survey Engineer", "Design Engineer", "Installation Team Member"], at: "30 Aug 2026, 12:40" };
+    const DEEPAK = { name: "Deepak Jadhav", kind: "deactivated", roles: ["Installation Team Member"], at: "12 Aug 2026, 15:58" };
+    const RAJESH = { name: "Rajesh Kulkarni", kind: "active", you: true, roles: ["EPC Owner"], at: "31 Aug 2026, 09:05", reason: GUARD };
+    const SUNIL = { name: "Sunil Bhosale", kind: "active", roles: ["Installation Team Member"], at: "31 Aug 2026, 07:55" };
 
     const vals = {
       /* F7-48's EPC Owner bar: Home · Leads · the verb · Projects · More, More in view. */
       topBar: {
         title: "Team", leading: back, sticky: false,
         searchLabel: "Search", onSearchClick: this.noop,
-        notificationsLabel: "Notifications", onNotificationsClick: this.noop,
-        avatar: account,
+        notificationsLabel: "Notifications",
       },
       nav: {
         value: "more", onChange: this.noop,
         items: [
           { key: "home", label: "Home", icon: glyph(dest("home")), activeIcon: glyph(dest("home"), true, "inverse") },
           { key: "leads", label: "Leads", icon: glyph(dest("leads")), activeIcon: glyph(dest("leads"), true, "inverse") },
-          { key: "add", verb: true, label: "Add lead", icon: glyph("plus"), onClick: this.noop },
+          { key: "add", verb: true, label: "Add lead", icon: glyph("plus-circle"), onClick: this.noop },
           { key: "projects", label: "Projects", icon: glyph(dest("projects")), activeIcon: glyph(dest("projects"), true, "inverse") },
           { key: "more", label: "More", icon: glyph(dest("more")), activeIcon: glyph(dest("more"), true, "inverse") },
         ],
       },
 
-      behindVikram: behindCard("Vikram Deshpande",
-        ["Survey Engineer", "Design Engineer", "Installation Team Member"],
-        "Last active 30 Aug 2026, 12:40", "Active", "success"),
-      behindDeepak: Object.assign(behindCard("Deepak Jadhav", ["Installation Team Member"],
-        "Last active 12 Aug 2026, 15:58", "Deactivated", "neutral"),
-        { meta: ["Last active 12 Aug 2026, 15:58", "deactivated 12 Aug 2026, 16:05"] }),
-      behindRajesh: behindCard("Rajesh Kulkarni", ["EPC Owner"],
-        "Last active 31 Aug 2026, 09:05", "Active", "success"),
-      behindSunil: behindCard("Sunil Bhosale", ["Installation Team Member"],
-        "Last active 31 Aug 2026, 07:55", "Active", "success"),
+      behindVikram: card(VIKRAM),
+      behindDeepak: card(DEEPAK),
+      behindRajesh: card(RAJESH),
+      behindSunil: card(SUNIL),
 
       /* SCR-M01-14, the read-only reference. */
       rolesRefBtn: { variant: "ghost", size: "md", onClick: this.noop },
@@ -452,7 +457,7 @@ class Component extends DCLogic {
       metaRow("Active", "success", "rajesh.k@suryodayasolar.in"),
       footer(grantSentence("Rajesh", ["owner"]), saveOff(unchanged)));
     vals.presetsGuard = mkRows(held(this.presetSpec(), ["owner"]).map((p) => (p.id === "owner"
-      ? Object.assign({}, p, { locked: true, reason: "The company needs one EPC Owner — make someone else one first." })
+      ? Object.assign({}, p, { locked: true, reason: "Suryodaya Solar must keep one EPC Owner, so make someone else one first." })
       : p)), "m13g-");
 
     /* LOADING keeps the header the tapped row already carried; the grant line and Save are absent. */
@@ -503,8 +508,7 @@ class Component extends DCLogic {
     };
     vals.peopleAfter = [
       vals.behindSunil,
-      behindCard("Vikram Deshpande", ["Survey Engineer", "Installation Team Member"],
-        "Last active 30 Aug 2026, 12:40", "Active", "success"),
+      card(Object.assign({}, VIKRAM, { roles: ["Survey Engineer", "Installation Team Member"] })),
       vals.behindDeepak,
     ];
 

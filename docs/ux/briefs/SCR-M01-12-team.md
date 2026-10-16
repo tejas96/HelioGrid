@@ -90,7 +90,7 @@ Every rendered number carries its F8 provenance tier in the design.
 
 **Corrected 2026-08-31 against the owner's recorded-date ruling, which outranks a brief (`CLAUDE.md` §7).** Only ONE value here
 is tiered: **the pending invite's expiry**, computed from sent-on plus a seven-day window, so it
-renders `derived` with the derivation named beside it. **Last-active carries NO tier** — the owner ruled
+renders `derived` with the derivation named beside it: the card's meta line reads the send time and the window (`Sent 29 Aug 2026, 17:40 · expires after 7 days`) beside the tier mark. **Last-active carries NO tier** — the owner ruled
 that a *recorded* date is a record fact showing when it was recorded, and `F8-02`'s four values all
 describe how a QUANTITY was arrived at, none of which describes a timestamp the system wrote down.
 This brief previously listed last-active as tiered and was wrong. No money or business quantity

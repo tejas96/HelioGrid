@@ -147,11 +147,9 @@ html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:v
       <div style="position:absolute;inset:0">
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" dc-props="{{ shellMore }}" hint-size="100%,100%">
           <div style="height:100%;width:calc(100% - 900px);box-sizing:border-box;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-6) var(--screen-pad-desktop-fn);overflow:hidden">
-            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-4)">
-              <div style="display:flex;flex-direction:column;gap:var(--sp-2);gap:var(--sp-1)">
-                <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Catalog · items</span>
-                <span style="font-size:var(--fs-h3);line-height:var(--lh-h3);font-weight:var(--fw-bold);letter-spacing:var(--tr-h3);color:var(--text-primary)">Everything you can sell</span>
-              </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Catalog</h1>
             </div>
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ searchCatalog }}" hint-size="100%,44px"></x-import>
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ settingsItems }}" hint-size="100%,470px"></x-import>
@@ -439,7 +437,7 @@ class Component extends DCLogic {
       }),
       header: h(NS.AppHeader, {
         sticky: false,
-        tenant: h(NS.TenantMark, { name: "Suryodaya Solar", size: 28 }),
+        tenant: h("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
         search: h(NS.SearchField, { placeholder: "Search", ariaLabel: "Search Suryodaya Solar", value: "", onChange: noop, density: "functional" }),
       }),
       style: { height: "100%" },
@@ -490,8 +488,8 @@ class Component extends DCLogic {
       meta: "PDF · 2 pages · 1.4 MB · uploaded 22 Aug 2026",
       state: "ready",
       pages: [
-        { url: "/_blob/c8593ce859630dd31a4b00730de270ab", width: 840, height: 1188, label: "Page 1 · Mechanical and general" },
-        { url: "/_blob/99bc561584c14d6d86acd043e9b5cf95", width: 840, height: 1188, label: "Page 2 · Electrical characteristics" },
+        { url: "assets/datasheet-p1.png", width: 840, height: 1188, label: "Page 1 · Mechanical and general" },
+        { url: "assets/datasheet-p2.png", width: 840, height: 1188, label: "Page 2 · Electrical characteristics" },
       ],
       page: 1, onPageChange: noop, fit: fit, onFitChange: noop,
       height: height, density: "functional", label: "The datasheet you uploaded",
@@ -504,7 +502,7 @@ class Component extends DCLogic {
       /* 375 callers */
       topLeads: topBar("Back to Leads", "Proposal 0412", OWNER),
       topStudio: topBar("Back to Leads", "Design DS-0188", OWNER),
-      topSettings: topBar("Back to Settings", "Catalog", OWNER),
+      topSettings: topBar("Back to settings", "Catalog", OWNER),
       topProposals: topBar("Back to Proposals", "Proposal 0419", SALES),
       navOwnerLeads: bottomNav("leads", false),
       navOwnerMore: bottomNav("more", false),
@@ -661,6 +659,7 @@ class Component extends DCLogic {
       /* 1536 caller lists */
       searchPanels: { placeholder: "Search brand or model", value: "", onChange: noop, density: "functional", ariaLabel: "Search panels in your catalog" },
       searchInverters: { placeholder: "Search brand or model", value: "", onChange: noop, density: "functional", ariaLabel: "Search inverters in your catalog" },
+      trailProps: { items: [{ key: "settings", label: "Settings", onClick: noop }, { key: "here", label: "Catalog" }] },
       searchCatalog: { placeholder: "Search brand or model", value: "", onChange: noop, density: "functional", ariaLabel: "Search the catalog" },
       pickerPanels: table(PANELS.slice(0, 6), { caption: PANELS_CAPTION, summary: "47 panels · the platform list, your own items and your overrides", count: 47 }),
       pickerPanelsUnpriced: table(PANELS.slice(0, 6), { priced: false, caption: PANELS_CAPTION, summary: "47 panels · the platform list and your own items", count: 47 }),

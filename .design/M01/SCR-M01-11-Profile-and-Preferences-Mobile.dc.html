@@ -341,9 +341,9 @@ class Component extends DCLogic {
     this._vals = {
       ready: true,
       topBar: {
-        leading: h(NS.IconButton, { variant: "ghost", label: "Back to More", onClick: noop },
+        leading: h(NS.IconButton, { variant: "ghost", label: "Back to settings", onClick: noop },
           glyph("chevron-left", { size: "md", tone: "primary" })),
-        title: "Profile & preferences", searchLabel: "Search", notificationsLabel: "Notifications", sticky: false,
+        title: "Profile & preferences", searchLabel: "Search", onSearchClick: noop, notificationsLabel: "Notifications", sticky: false,
       },
       navSales: bar(["home", "leads", "proposals", "more"], "Add lead"),
       navOwner: bar(["home", "leads", "projects", "more"], "Add lead"),
@@ -359,7 +359,7 @@ class Component extends DCLogic {
         avatar: account("Anjali Kulkarni"),
       }),
       deskHeader: h(NS.AppHeader, {
-        tenant: h(NS.TenantMark, { name: "Suryodaya Solar", size: 32 }),
+        tenant: h("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
         search: h(NS.SearchField, { density: "functional", placeholder: "Name, phone or city", ariaLabel: "Search", value: "", onChange: noop }),
         sticky: false,
       }),
@@ -376,7 +376,7 @@ class Component extends DCLogic {
       languagePickerOne: picker("en", 1, languages.slice(0, 1)),
       languagePickerSwitched: picker("mr", 1, languages),
       languagePickerSwitchedDesk: picker("mr", 3, languages),
-      languageSource: source("inherited", "Your phone's language"),
+      languageSource: source("inherited", "Your device's language"),
       languageSourceOwn: source("own", "Your choice"),
 
       units: {

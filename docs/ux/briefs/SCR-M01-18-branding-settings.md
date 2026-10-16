@@ -24,6 +24,11 @@ Decided: reached from More · Settings · Branding, and the phone's back control
    the control, so `logo-invalid-limits-stated` is met by the resting state, not only by the error.
 5. **The operator app is never restyled** (`F7-07`). The brand colour appears only inside the two
    framed previews — the proposal cover and the customer-link header.
+6. **The letterhead has three fields, in print order:** *Tagline*; *Lines under your address* — one
+   line each, up to 6 (`brandingWriteSchema.letterhead.lines`), where the phone, email and website go;
+   *Note along the foot of every page*. The cover band prints the profile's GSTIN line, then those lines.
+7. **The company details are only what the business profile writes:** legal name, registered address,
+   GSTIN. The profile holds no phone, so the page footer prints none; the phone rides the letterhead lines.
 
 **Layout, decided in design.**
 
@@ -64,7 +69,7 @@ Decided: reached from More · Settings · Branding, and the phone's back control
   The form and the preview fill together. A preview placeholder is never a white rectangle — that
   reads as an empty letterhead. The shell is drawn whole.
 - **Empty** — a tenant that has never set branding: platform defaults are in place and everything still works (M01-28's zero-config law applies to every setting); teaching treatment per F7's empty-state contract.
-  The previews do the teaching: they show what goes out today — the company name in place of a mark,
+  The previews do the teaching: they show what goes out today — on the cover the company name in place of a mark, on the link page the design system's initials badge,
   the platform's near-black, no tagline. No centred empty state.
 - **Error** — a save or upload fails; what happened and what to do next.
   A failed save keeps the edit and the act bar; the previews read *not saved yet*, and the standing

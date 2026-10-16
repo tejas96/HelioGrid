@@ -8,7 +8,7 @@ Document defaults: cover, included sections, default T&C, bank details, and the 
 
 Reached from: the tenant-config settings surface map — *Proposal templates* is a named surface in M01 §4's stable vocabulary; a deeper entry path is not pinned by PRD — designer decides, note the decision. Leads to: not pinned by PRD — designer decides, note the decision. What the screen feeds: the proposal builder consumes these document defaults, including everything Quick mode fills for its hidden steps (M01-51, M01-53 context, M01 §4 contracts); T&C templates support the builder's "save as template" round-trip (§M01.6 behavior detail, M06's step).
 
-Entry and exits, decided: one entry — More · Settings · Proposal templates, the back control named *Back to Settings*; no entry from the onboarding corridor. Out: back to Settings, plus a row to **Branding** (SCR-M01-18 — the cover's logo, colour and letterhead) and a row to **Business profile** (the bank details, M01-31) — the single write-points this screen shows and never edits. No link to the proposal builder or to Payment terms. Leaving with an unsaved change asks first; leaving unchanged does not.
+Entry and exits, decided: one entry — More · Settings · Proposal templates, the back control named *Back to settings*; no entry from the onboarding corridor. Out: back to Settings, plus a row to **Branding** (SCR-M01-18 — the cover's logo, colour and letterhead) and a row to **Business profile** (the bank details, M01-31) — the single write-points this screen shows and never edits. No link to the proposal builder or to Payment terms. Leaving with an unsaved change asks first; leaving unchanged does not.
 
 **Decisions made in design (2026-09-02) — later screens inherit them.**
 
@@ -54,7 +54,7 @@ The page runs in the order the document reads: cover, sections, terms, bank deta
   a proposal's terms are edited, never skipped.
 - **One default terms per language, and no template list here.** The contract holds one
   `defaultTerms` per language; a set of named terms templates is not this screen's.
-- **At 1536 the way back is the header's breadcrumb, *Settings*.**
+- **At 1536 the way back is the breadcrumb *Settings / Proposal template* above the page title** (`SCR-SHELL-01`, *More: the settings list*).
 
 ## Data volume
 

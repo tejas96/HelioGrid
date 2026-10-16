@@ -8,7 +8,7 @@ The one two-tier catalog surface: browse, search, rates panel with tier attribut
 
 Reached from: the tenant-config settings surface map — *Catalog · Price book* are named surfaces in M01 §4's stable vocabulary; a deeper entry path is not pinned by PRD — designer decides, note the decision. Leads to: **Add Catalog Item** (SCR-M01-16) — inline add is available from Catalog settings as well as the pickers (M01-39); **Catalog Import Wizard** (SCR-M01-17) — Catalog settings is one of the wizard's three entry points (M01-41, §M01.4 behavior detail); release publish and price-book version browsing happen on this surface (M01-43, M01-48, §M01.5 behavior detail: "The price book renders as the rates panel of the one catalog surface").
 
-Entry is More → Settings → *Catalog*. The back control names the caller (*Back to settings*); at 1536 a breadcrumb, *Settings / Catalog*. *Add an item* and *Import a file* sit at the foot of the list, where an owner concludes the item is missing.
+Entry is More → Settings → *Catalog*. The back control names the caller (*Back to settings*); at 1536 the breadcrumb *Settings / Catalog* above the page title. *Add an item* and *Import a file* sit at the foot of the list, where an owner concludes the item is missing.
 
 ## Requirements (verbatim)
 
@@ -79,8 +79,9 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
    with nothing new is refused (`CATALOG_NOTHING_CHANGED`). *release-contents-inspect* opens a
    published release from the append-only list (label, date, counts) as its before-and-after
    (owner ruling 2026-10-16).
-9. **The settings shell is `SCR-SHELL-01`'s at both widths**, the one search and the bell included
-   (owner ruling 2026-10-16).
+9. **The settings shell is `SCR-SHELL-01`'s at both widths** (owner ruling 2026-10-16): at 375 the bar of a page
+   opened from a list (decision 8: back, title, search); at 1536 the `AppHeader` search, with the bell and the avatar
+   at the rail's foot.
 
 **The surface.**
 

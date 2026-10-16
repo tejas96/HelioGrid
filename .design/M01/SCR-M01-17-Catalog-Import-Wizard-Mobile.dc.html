@@ -563,10 +563,9 @@ class Component extends DCLogic {
     const avatar = (size) => React.createElement(NS.Avatar, { name: "Rajesh Kulkarni", size: size });
     const topBar = {
       title: "Catalog", sticky: false,
-      leading: React.createElement(NS.IconButton, { label: "Back to Settings", variant: "ghost", size: 44, onClick: this.noop }, this.glyph("chevron-left", "lg", "primary")),
+      leading: React.createElement(NS.IconButton, { label: "Back to settings", variant: "ghost", size: 44, onClick: this.noop }, this.glyph("chevron-left", "lg", "primary")),
       searchLabel: "Search", onSearchClick: this.noop,
-      notificationsLabel: "Notifications", onNotificationsClick: this.noop, notifications: 3,
-      avatar: avatar(40),
+      notificationsLabel: "Notifications",
     };
     const bottomNav = {
       value: "more", onChange: this.noop, safeBottom: false,
@@ -594,7 +593,7 @@ class Component extends DCLogic {
       }),
       header: React.createElement(NS.AppHeader, {
         sticky: false,
-        tenant: React.createElement(NS.TenantMark, { name: "Suryodaya Solar", size: 32, showName: true }),
+        tenant: React.createElement("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
         search: React.createElement(NS.SearchField, { density: "functional", placeholder: "Name, phone or city", ariaLabel: "Search", value: "", onChange: this.noop }),
       }),
       style: { height: "100%" },

@@ -73,16 +73,15 @@ class Component extends DCLogic {
       ],
     };
     const account = (align) => h(NS.AccountMenu, {
-      name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account", menuLabel: "Account",
-      grievanceLabel: "Grievance contact", signOutLabel: "Sign out",
+      name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account, grievance contact and sign out", menuLabel: "Account",
+      grievanceLabel: "Grievance officer", signOutLabel: "Sign out",
       onGrievance: this.noop, onSignOut: this.noop, align: align,
     });
     const topBar = {
       title: "Proposal template", sticky: false,
-      leading: h(NS.IconButton, { label: "Back to Settings", variant: "ghost", onClick: this.noop }, g("chevron-left", "lg", false, "primary")),
+      leading: h(NS.IconButton, { label: "Back to settings", variant: "ghost", onClick: this.noop }, g("chevron-left", "lg", false, "primary")),
       searchLabel: "Search", onSearchClick: this.noop,
-      notificationsLabel: "Notifications", onNotificationsClick: this.noop,
-      avatar: account("end"),
+      notificationsLabel: "Notifications",
     };
     const rail = h(NS.AppRail, {
       label: "Main", value: "more", onChange: this.noop,
@@ -94,12 +93,6 @@ class Component extends DCLogic {
       ],
       footer: [{ key: "notifications", label: "Notifications", icon: g("bell"), onClick: this.noop }],
       avatar: account("start"),
-    });
-    /* Whose HelioGrid this is, the one search, and the way back (owner ruling: the breadcrumb, Settings). */
-    const header = h(NS.AppHeader, {
-      tenant: h(NS.TenantMark, { name: "Suryodaya Solar", size: 32 }),
-      search: h(NS.SearchField, { density: "functional", placeholder: "Name, phone or city", value: "", onChange: this.noop }),
-      breadcrumb: h(NS.Breadcrumb, { items: [{ key: "settings", label: "Settings", onClick: this.noop }, { key: "here", label: "Proposal template" }] }),
     });
 
     /* ══ The tenant's saved facts, shown here and written elsewhere ══ */
@@ -242,7 +235,7 @@ class Component extends DCLogic {
     const docBase = {
       sample: false,
       brandColor: "#0D7A4F", companyName: NAME, logoSrc: "assets/tenant-suryodaya-logo.svg",
-      taxId: "27AABCS1429P1ZQ", address: "Shop 14, Laxmi Complex, Baner Road, Pune 411045", phone: "+91 98200 41123",
+      taxId: "27AABCS1429P1ZQ", address: "Shop 14, Laxmi Complex, Baner Road, Pune 411045", phone: undefined,
       letterhead: letterhead,
       customerName: "Meena Deshpande", customerMeta: "Kothrud, Pune",
       docTitle: "Proposal", docNumber: "PRO-2026-0431", docDate: "2026-08-30",
@@ -267,7 +260,7 @@ class Component extends DCLogic {
     const vals = {
       market: { pack: NS.IN_PACK },
       noop: this.noop,
-      topBar: topBar, nav: nav, rail: rail, header: header,
+      topBar: topBar, nav: nav, rail: rail,
       changedOn: fmtDate("2026-08-28"),
       formCard: { density: "functional", style: { background: "var(--surface-form)" } },
       formCardFill: { density: "functional", style: { background: "var(--surface-form)", height: "100%", boxSizing: "border-box" } },

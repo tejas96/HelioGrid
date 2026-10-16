@@ -484,11 +484,6 @@ class Component extends DCLogic {
     const back = h(NS.IconButton, {
       label: "Back to assign roles", variant: "ghost", size: 44, onClick: this.noop,
     }, glyph("chevron-left", false, "primary"));
-    const account = h(NS.AccountMenu, {
-      name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account", menuLabel: "Account",
-      grievanceLabel: "Grievance officer", signOutLabel: "Sign out",
-      onGrievance: this.noop, onSignOut: this.noop, align: "end",
-    });
 
     /* THE PRESET LIST. The count rides the header as a mark beside the name; its tier is stated once,
        at the foot of the list (decision 3). One section opens at a time. */
@@ -511,15 +506,14 @@ class Component extends DCLogic {
       topBar: {
         title: "Roles reference", leading: back, sticky: false,
         searchLabel: "Search", onSearchClick: this.noop,
-        notificationsLabel: "Notifications", onNotificationsClick: this.noop,
-        avatar: account,
+        notificationsLabel: "Notifications",
       },
       nav: {
         value: "more", onChange: this.noop,
         items: [
           { key: "home", label: "Home", icon: glyph(dest("home")), activeIcon: glyph(dest("home"), true, "inverse") },
           { key: "leads", label: "Leads", icon: glyph(dest("leads")), activeIcon: glyph(dest("leads"), true, "inverse") },
-          { key: "add", verb: true, label: "Add lead", icon: glyph("plus"), onClick: this.noop },
+          { key: "add", verb: true, label: "Add lead", icon: glyph("plus-circle"), onClick: this.noop },
           { key: "projects", label: "Projects", icon: glyph(dest("projects")), activeIcon: glyph(dest("projects"), true, "inverse") },
           { key: "more", label: "More", icon: glyph(dest("more")), activeIcon: glyph(dest("more"), true, "inverse") },
         ],

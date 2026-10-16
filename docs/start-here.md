@@ -204,6 +204,8 @@ A drawn screen is judged by this list, and a fix prompt fixes what it finds.
 - **One review, complete.** The frames at both widths, every state's words and the
   product facts against the brief's rows — then at most ONE fix prompt per screen per round, and two
   rounds at most. Only a fault that changes what gets built or what a person reads goes back.
+- **The shell header holds the company and the one search, nothing of the page.** A page's way back,
+  title and acts sit in its page head, in the content (`SCR-SHELL-01` decision 8).
 - **A fault is usually shared.** A rule broken in one design is reported with the other drawn
   screens of its corridor, which may break it too.
 

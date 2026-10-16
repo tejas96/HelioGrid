@@ -337,14 +337,9 @@ class Component extends DCLogic {
 
     const topBar = {
       title: "Team", sticky: false,
-      leading: h(NS.IconButton, { label: "Back to More", variant: "ghost", onClick: this.noop }, g("chevron-left", "lg", false, "primary")),
+      leading: h(NS.IconButton, { label: "Back to settings", variant: "ghost", onClick: this.noop }, g("chevron-left", "lg", false, "primary")),
       searchLabel: "Search", onSearchClick: this.noop,
-      notificationsLabel: "Notifications", onNotificationsClick: this.noop,
-      avatar: h(NS.AccountMenu, {
-        name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account", menuLabel: "Account",
-        grievanceLabel: "Grievance contact", signOutLabel: "Sign out",
-        onGrievance: this.noop, onSignOut: this.noop, align: "end",
-      }),
+      notificationsLabel: "Notifications",
     };
 
     /* Membership and invite status: a word and a dot in its tone (N6b). */
@@ -371,16 +366,6 @@ class Component extends DCLogic {
       style: { marginLeft: "calc(-1 * var(--sp-3))" },
     }, label));
 
-    /* The expiry date is computed from the send and the 7-day invite window: the tier rides as a
-       mark on the row and the working opens under it. The 7 days is a product limit, untiered. */
-    const expiryHonesty = (p) => (h("div", {
-      style: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--sp-1)" },
-    }, h(NS.Provenance, { tier: "derived", size: 12 }),
-      h(NS.Derivation, {
-        label: "Invite expiry · " + p.name,
-        parts: [{ kind: "formula", text: "Sent " + p.sent + ", plus the 7-day invite window." }],
-      })));
-
     const ROSTER = [
       { name: "Priya Deshmukh", kind: "invited", roles: ["Sales Executive"], sent: "29 Aug 2026, 17:40", expires: "5 Sep 2026, 17:40" },
       { name: "Rohan Gaikwad", kind: "expired", roles: ["Survey Engineer"], sent: "20 Aug 2026, 11:05" },
@@ -395,15 +380,17 @@ class Component extends DCLogic {
       { name: "Deepak Jadhav", kind: "deactivated", roles: ["Installation Team Member"], at: "12 Aug 2026, 15:58" },
     ];
 
-    /* Only an active member's row opens Assign Roles; an invite or a deactivated row has no row tap. */
+    /* Only an active member's row opens Assign Roles; an invite or a deactivated row has no row tap.
+       A pending invite's expiry is computed from the send and the 7-day invite window, so the meta
+       line names both and the card marks it derived. The 7 days is a product limit, untiered. */
     const card = (p) => ({
       name: p.name,
       chip: statusChip(p.kind),
       marks: p.you ? [you, roles(p.roles)] : roles(p.roles),
-      meta: p.kind === "invited" ? [gap("Never signed in"), "Invite expires " + p.expires]
+      meta: p.kind === "invited" ? [gap("Never signed in"), "Invite expires " + p.expires, "Sent " + p.sent, "expires after 7 days"]
         : p.kind === "expired" ? [gap("Never signed in"), "Invite sent " + p.sent]
         : ["Last active " + p.at],
-      provenance: p.kind === "invited" ? expiryHonesty(p) : undefined,
+      provenance: p.kind === "invited" ? "derived" : undefined,
       action: p.kind === "invited" ? act("Revoke invite")
         : p.kind === "expired" ? act("Invite again")
         : p.kind === "active" ? act("Deactivate", p.reason)
@@ -503,7 +490,7 @@ class Component extends DCLogic {
         title: "Deactivate Rajesh Kulkarni?",
         sheetProps: { handle: false }, modalProps: { tone: "danger", size: "sm" },
         footer: h(NS.SheetActions, null,
-          h(NS.Button, { key: "go", variant: "destructive", size: "lg", disabled: true, disabledReason: "Make someone else an EPC Owner first." }, "Deactivate Rajesh"),
+          h(NS.Button, { key: "go", variant: "destructive", size: "lg", disabled: true, disabledReason: "Suryodaya Solar must keep one EPC Owner, so make someone else one first." }, "Deactivate Rajesh"),
           h(NS.Button, { key: "no", variant: "ghost", size: "lg", onClick: this.noop }, "Close")),
       },
       refusalBanner: h(NS.Banner, { kind: "validation", title: "Not done — Suryodaya Solar must keep one EPC Owner", density: "functional" },

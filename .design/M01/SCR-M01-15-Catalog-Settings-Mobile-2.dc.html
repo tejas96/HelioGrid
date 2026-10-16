@@ -173,12 +173,11 @@ class Component extends DCLogic {
 
     /* ---------------------------------------------------------------- the shell (SCR-SHELL-01) */
     const avatar = (who, size) => h(NS.Avatar, { name: who, size: size });
-    const topBar = (who) => ({
+    const topBar = {
       leading: h(NS.IconButton, { label: "Back to settings", variant: "ghost", size: 44, onClick: noop }, sg("chevron-left", "lg", "primary")),
       title: "Catalog", searchLabel: "Search", onSearchClick: noop,
-      notifications: 3, notificationsLabel: "Notifications", onNotificationsClick: noop,
-      avatar: avatar(who, 44), sticky: false,
-    });
+      notificationsLabel: "Notifications", sticky: false,
+    };
     const navOwner = {
       value: "more", onChange: noop,
       items: [
@@ -216,7 +215,7 @@ class Component extends DCLogic {
     /* AppHeader holds the tenant's mark and the one search, and nothing else (F7-22). */
     const header = (tenant) => h(NS.AppHeader, {
       sticky: false,
-      tenant: h(NS.TenantMark, { name: tenant, size: 32, showName: true }),
+      tenant: h("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, tenant),
       search: h(NS.SearchField, { density: "functional", placeholder: "Name, phone or city", value: "", onChange: noop, ariaLabel: "Search HelioGrid" }),
     });
     const shell = (tenant, who, finance) => ({ rail: rail(who, finance), header: header(tenant), style: { height: "100%" } });
@@ -424,20 +423,15 @@ class Component extends DCLogic {
       h(NS.Button, { key: "a", variant: "secondary", size: "sm", onClick: noop, icon: sg("plus", "md", "primary") }, "Add an item"),
       h(NS.Button, { key: "i", variant: "ghost", size: "sm", onClick: noop, icon: icon(M.upload, "md") }, "Import a file"));
 
-    const ownerTop = topBar("Rajesh Kulkarni");
-
     return {
       /* shell */
-      topBar: ownerTop,
-      topBarFin: topBar("Meera Joshi"),
-      topBarLumen: topBar("Sam Taylor"),
+      topBar: topBar,
       nav: navOwner,
       navFin: navFin,
       shellDesk: shell("Suryodaya Solar", "Rajesh Kulkarni", false),
       shellDeskFin: shell("Suryodaya Solar", "Meera Joshi", true),
       shellDeskLumen: shell("Lumen Solar Works", "Sam Taylor", false),
       backVersions: back("Back to versions"),
-      crumbs: { items: [{ key: "settings", label: "Settings", onClick: noop }, { key: "catalog", label: "Catalog" }], onNavigate: noop },
 
       /* the panel switch */
       segItems: { options: [{ value: "items", label: "Items" }, { value: "rates", label: "Rates" }], value: "items", onChange: noop },

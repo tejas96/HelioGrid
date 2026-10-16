@@ -62,6 +62,8 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `error
    of what `M01-15` asks for.
 10. **No shell, back control, step counter or language control in the first-run life.** The language
     was chosen on `SCR-M01-09`, and the only honest back would un-save the profile.
+11. **The re-opened life's backdrop is `SCR-M01-11`'s page as its boards draw it** — its rows, sections,
+    spacing and, at 1536, its trail above the title — reused, never redrawn.
 
 **THE PRESET IS NAMED `Sales Executive`.** `M01-15`'s example sentence quotes prototype vocabulary;
 `F2`'s preset table is canon — row 3 is **Sales Executive**, with `Sales rep` recorded as its *v1*

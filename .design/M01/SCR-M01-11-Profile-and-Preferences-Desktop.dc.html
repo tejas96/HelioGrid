@@ -35,7 +35,10 @@ a:hover{color:var(--link-hover)}
       <div data-screen-label="Profile and preferences — default, 1536" data-frame="d-default" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
           <div style="box-sizing:content-box;width:calc(var(--form-max) * 2 + var(--sp-12));display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--sp-12);row-gap:var(--sp-8);align-content:start;padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-            <h1 style="grid-column:1 / -1;margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Profile &amp; preferences</h1>
+            <div style="grid-column:1 / -1;display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Profile &amp; preferences</h1>
+            </div>
             <div style="grid-column:1 / -1"><section style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--sp-12);row-gap:var(--sp-2)">
               <div style="grid-column:1 / -1"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2></div>
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ nameRow }}" hint-size="100%,52px"></x-import>
@@ -70,7 +73,10 @@ a:hover{color:var(--link-hover)}
       <div data-screen-label="Profile and preferences — error, 1536" data-frame="d-error" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
           <div style="box-sizing:content-box;width:calc(var(--form-max) * 2 + var(--sp-12));display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--sp-12);row-gap:var(--sp-8);align-content:start;padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-            <h1 style="grid-column:1 / -1;margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Profile &amp; preferences</h1>
+            <div style="grid-column:1 / -1;display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Profile &amp; preferences</h1>
+            </div>
             <div style="grid-column:1 / -1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" dc-props="{{ errorBanner }}" hint-size="100%,72px">Nothing you saved has changed.</x-import></div>
           </div>
         </x-import>
@@ -81,7 +87,10 @@ a:hover{color:var(--link-hover)}
       <div data-screen-label="Profile and preferences — language switched, 1536" data-frame="d-rerender" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
           <div style="box-sizing:content-box;width:calc(var(--form-max) * 2 + var(--sp-12));display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--sp-12);row-gap:var(--sp-8);align-content:start;padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-            <h1 style="grid-column:1 / -1;margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Profile &amp; preferences</h1>
+            <div style="grid-column:1 / -1;display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Profile &amp; preferences</h1>
+            </div>
             <div style="grid-column:1 / -1"><section style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--sp-12);row-gap:var(--sp-2)">
               <div style="grid-column:1 / -1"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2></div>
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ nameRow }}" hint-size="100%,52px"></x-import>
@@ -182,7 +191,7 @@ class Component extends DCLogic {
     this._vals = {
       ready: true,
       topBar: {
-        leading: h(NS.IconButton, { variant: "ghost", label: "Back to More", onClick: noop },
+        leading: h(NS.IconButton, { variant: "ghost", label: "Back to settings", onClick: noop },
           glyph("chevron-left", { size: "md", tone: "primary" })),
         title: "Profile & preferences", searchLabel: "Search", notificationsLabel: "Notifications", sticky: false,
       },
@@ -200,7 +209,7 @@ class Component extends DCLogic {
         avatar: account("Anjali Kulkarni"),
       }),
       deskHeader: h(NS.AppHeader, {
-        tenant: h(NS.TenantMark, { name: "Suryodaya Solar", size: 32 }),
+        tenant: h("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
         search: h(NS.SearchField, { density: "functional", placeholder: "Name, phone or city", ariaLabel: "Search", value: "", onChange: noop }),
         sticky: false,
       }),
@@ -217,8 +226,9 @@ class Component extends DCLogic {
       languagePickerOne: picker("en", 1, languages.slice(0, 1)),
       languagePickerSwitched: picker("mr", 1, languages),
       languagePickerSwitchedDesk: picker("mr", 3, languages),
-      languageSource: source("inherited", "Your phone's language"),
+      languageSource: source("inherited", "Your device's language"),
       languageSourceOwn: source("own", "Your choice"),
+      trailProps: { items: [{ key: "settings", label: "Settings", onClick: noop }, { key: "here", label: "Profile & preferences" }] },
 
       units: {
         label: "Measurements", value: "m", onChange: noop,

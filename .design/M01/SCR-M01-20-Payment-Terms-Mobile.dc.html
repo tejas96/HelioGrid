@@ -350,7 +350,7 @@ class Component extends DCLogic {
     const docBase = {
       sample: false,
       brandColor: "#0D7A4F", companyName: "Suryodaya Solar Pvt Ltd", logoSrc: "assets/tenant-suryodaya-logo.svg",
-      taxId: "27AABCS1429P1ZQ", address: "Shop 14, Laxmi Complex, Baner Road, Pune 411045", phone: "+91 98200 41123",
+      taxId: "27AABCS1429P1ZQ", address: "Shop 14, Laxmi Complex, Baner Road, Pune 411045", phone: undefined,
       letterhead: { tagline: "Rooftop solar since 2011", lines: ["GSTIN 27AABCS1429P1ZQ", "+91 98200 41123", "suryodayasolar.in"], footerNote: "Thank you for choosing Suryodaya Solar." },
       parts: ["tranches"], tranchesTitle: "Payment schedule", fit: "content", caption: "",
     };
@@ -361,8 +361,8 @@ class Component extends DCLogic {
     const readerSheet = (o) => sheet(Object.assign({ sheetProps: { bodyStyle: { overflow: "hidden" } } }, o));
 
     const account = (align) => h(NS.AccountMenu, {
-      name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account", menuLabel: "Account",
-      grievanceLabel: "Grievance contact", signOutLabel: "Sign out", align: align,
+      name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account, grievance contact and sign out", menuLabel: "Account",
+      grievanceLabel: "Grievance officer", signOutLabel: "Sign out", align: align,
       onGrievance: this.noop, onSignOut: this.noop,
     });
     const destination = (key, label, size) => ({
@@ -377,10 +377,9 @@ class Component extends DCLogic {
       /* ══ The shell ══ */
       topBar: {
         title: "Payment terms",
-        leading: h(NS.IconButton, { label: "Back to Settings", variant: "ghost", onClick: this.noop }, glyph("chevron-left", "lg", { tone: "primary" })),
+        leading: h(NS.IconButton, { label: "Back to settings", variant: "ghost", onClick: this.noop }, glyph("chevron-left", "lg", { tone: "primary" })),
         searchLabel: "Search", onSearchClick: this.noop,
-        notificationsLabel: "Notifications", onNotificationsClick: this.noop,
-        avatar: account("end"), sticky: false,
+        notificationsLabel: "Notifications", sticky: false,
       },
       nav: {
         value: "more", onChange: this.noop,
@@ -397,10 +396,6 @@ class Component extends DCLogic {
         items: [destination("home", "Home", "md"), destination("leads", "Leads", "md"), destination("projects", "Projects", "md"), destination("more", "More", "md")],
         footer: [{ key: "notifications", label: "Notifications", icon: glyph("bell", "md"), onClick: this.noop }],
         avatar: account("start"),
-      },
-      headerProps: {
-        tenant: h(NS.TenantMark, { name: "Suryodaya Solar", logo: "assets/tenant-suryodaya-logo.svg", size: 32 }),
-        search: h(NS.SearchField, { density: "functional", placeholder: "Name, phone or city", value: "", onChange: this.noop, ariaLabel: "Search" }),
       },
       askTerms: askTerms,
 

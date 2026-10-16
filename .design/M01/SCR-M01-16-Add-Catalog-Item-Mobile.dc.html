@@ -315,11 +315,10 @@ class Component extends DCLogic {
     const OWNER = "Anjali Kulkarni";
     const SALES = "Rahul Patil";
     const backTo = (label) => h(NS.IconButton, { label: label, variant: "ghost", onClick: noop }, glyph("chevron-left", "lg"));
-    const topBar = (back, title, who) => ({
+    const topBar = (back, title) => ({
       title: title, leading: backTo(back),
       searchLabel: "Search", onSearchClick: noop,
-      notificationsLabel: "Notifications", notifications: 3, onNotificationsClick: noop,
-      avatar: h(NS.Avatar, { name: who, size: 44 }),
+      notificationsLabel: "Notifications",
     });
     const navItem = (key, label) => ({ key: key, label: label, icon: glyph(DEST[key], "lg"), activeIcon: glyph(DEST[key], "lg", { filled: true, tone: "inverse" }) });
     const listsFor = (sales) => (sales
@@ -330,7 +329,7 @@ class Component extends DCLogic {
       return {
         value: value, onChange: noop,
         items: [navItem("home", "Home"), lists[0],
-          { key: "add", verb: true, label: "Add lead", icon: glyph("plus", "lg"), onClick: noop },
+          { key: "add", verb: true, label: "Add lead", icon: glyph("plus-circle", "lg"), onClick: noop },
           lists[1], navItem("more", "More")],
       };
     };
@@ -347,7 +346,7 @@ class Component extends DCLogic {
       }),
       header: h(NS.AppHeader, {
         sticky: false,
-        tenant: h(NS.TenantMark, { name: "Suryodaya Solar", size: 28 }),
+        tenant: h("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
         search: h(NS.SearchField, { placeholder: "Search", ariaLabel: "Search Suryodaya Solar", value: "", onChange: noop, density: "functional" }),
       }),
       style: { height: "100%" },
@@ -398,8 +397,8 @@ class Component extends DCLogic {
       meta: "PDF · 2 pages · 1.4 MB · uploaded 22 Aug 2026",
       state: "ready",
       pages: [
-        { url: "/_blob/c8593ce859630dd31a4b00730de270ab", width: 840, height: 1188, label: "Page 1 · Mechanical and general" },
-        { url: "/_blob/99bc561584c14d6d86acd043e9b5cf95", width: 840, height: 1188, label: "Page 2 · Electrical characteristics" },
+        { url: "assets/datasheet-p1.png", width: 840, height: 1188, label: "Page 1 · Mechanical and general" },
+        { url: "assets/datasheet-p2.png", width: 840, height: 1188, label: "Page 2 · Electrical characteristics" },
       ],
       page: 1, onPageChange: noop, fit: fit, onFitChange: noop,
       height: height, density: "functional", label: "The datasheet you uploaded",
@@ -410,10 +409,10 @@ class Component extends DCLogic {
       noop: noop,
 
       /* 375 callers */
-      topLeads: topBar("Back to Leads", "Proposal 0412", OWNER),
-      topStudio: topBar("Back to Leads", "Design DS-0188", OWNER),
-      topSettings: topBar("Back to Settings", "Catalog", OWNER),
-      topProposals: topBar("Back to Proposals", "Proposal 0419", SALES),
+      topLeads: topBar("Back to Leads", "Proposal 0412"),
+      topStudio: topBar("Back to Leads", "Design DS-0188"),
+      topSettings: topBar("Back to settings", "Catalog"),
+      topProposals: topBar("Back to Proposals", "Proposal 0419"),
       navOwnerLeads: bottomNav("leads", false),
       navOwnerMore: bottomNav("more", false),
       navSalesProposals: bottomNav("proposals", true),
