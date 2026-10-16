@@ -36,6 +36,8 @@ Reached from: the product's signed-out front door as the self-serve signup path.
 
 Base: **loading** · **empty** · **error** (empty/error states carry F7's teaching-empty-state contract — M01 §M01.1 behavior detail).
 
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `error`, `not-reached`, `resume-after-abandon`, `number-invalid`, `fields-invalid`.
+
 Screen-specific:
 
 - **normal** — phone → OTP → exactly three fields (company name, owner's name, city); nothing else (M01-01). No billing, plan or payment step exists anywhere in the flow (M01 §M01.1 context, M01-11 — not a row of this slice).

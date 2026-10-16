@@ -29,20 +29,25 @@ number.
 | The connection dropped mid-import | status | ONE line on return: how far it got |
 | The report (`M02-21`) | data | headed by the import's own record — the file name, who ran it, when — then label–value rows — landed, skipped as duplicates, logged as enquiries, rejected, columns not imported — then the rejected rows as a list: the row and its named reason. `Download report`. That landed rows stay is shown by the landed count, not by a sentence |
 | Where the landed leads went (M02 §M02.4) | action | they wait unassigned in the inbox with source = file import: ONE act, `Open the inbox`. No sentence |
-| Every row failed (`F8-36`) | error | one banner: no lead was created, and the reasons as the same list |
+| Every row failed (`F8-36`) | error | one banner: no lead was created, and the reasons as the same list. The report keeps its shape, and `Open the inbox` becomes `Import another file` |
 | The file cannot be read | error | one banner — what is wrong and what fixes it |
 
 ## Arrangement
 
 - **375.** A full-height sheet with the stepper (`F7-21`). On the preview the row list is the volume
-  region and takes the height; the footer holds its two acts and no sentence.
+  region and takes the height; the footer holds its two acts and no sentence. The four count chips wrap
+  to two lines, so all four are in view before the import act.
 - **1536.** The desk form, which is this screen's home: mapping as a table with its samples in view;
   the preview's count chips above a captioned table (`F7-27`); the report as totals beside the rejected
-  rows.
+  rows. The editor is a side panel over the Leads List, and it is modal: nothing behind it is read
+  during an import.
+- **Both widths.** On the preview and the report only the rows scroll: the stepper, the counts, their
+  tier and the duplicates choice stay pinned, the caption sticks at the rows' top, and a readout names
+  the rows in view (*1–3 of 400*). No pager.
 
 ## Entry & exit
 
-Reached from: the leads surface, by the owner or sales manager holding `F2.M02.import-leads` — the PRD pins the persona and posture ("the owner at a desk"), not a single navigation path; not pinned by PRD — designer decides, note the decision. Leads to: the import report at the end of the four steps; imported leads land unassigned in the Lead Inbox (SCR-M02-02) with source = file import, so triage is unchanged by volume; the import's own record — file name, who ran it, when, and its report — stays on the tenant's import history.
+Reached from: `Import leads` in the Leads List's head (SCR-M02-03), shown only to holders of `F2.M02.import-leads` — a secondary button beside `Add lead` at 1536, an icon button carrying those words as its name at 375. Leaving before `Import` writes nothing and is not confirmed; after `Import` there is no cancel, and leaving is safe — the job runs on the server. Leads to: the import report at the end of the four steps; imported leads land unassigned in the Lead Inbox (SCR-M02-02) with source = file import, so triage is unchanged by volume; the import's own record — file name, who ran it, when, and its report — stays on the tenant's import history. The report's exit is `Open the inbox`, or `Import another file` when every row failed.
 
 ## Requirements (verbatim)
 
@@ -59,15 +64,17 @@ Reached from: the leads surface, by the owner or sales manager holding `F2.M02.i
 
 ## States
 
-- **Loading** (base).
-- **Empty** (base) — no file uploaded yet; upload accepts the spreadsheet formats an EPC actually has.
-- **Error** (base) — an unreadable file or failed step reported honestly; every-row-failure states so plainly and no lead exists (`F8-36`).
-- **upload** — step 1 of the wizard.
-- **column-mapping-autoguess** — each detected column beside its guessed lead field with the first rows as sample values; every guess correctable; only the phone column required to proceed (M02-03's law applies to imported rows exactly as to typed ones); an unmappable column proceeds without it and is listed in the report rather than silently dropped.
-- **preview-counts** — the gate: total rows, rows that will create leads, rows that duplicate an existing customer by phone, rows that cannot be read at all — each count tappable to see the rows behind it; "N rows · M duplicates by phone" stated before any import runs (M02-19). Two rows inside the same file sharing a number are counted as duplicates of each other and resolved by the same choice.
+- **Loading** (base) — the preview's check against the tenant's leads, counted (rows checked of the total), because the count chips need its output; the import act waits, its one line saying why.
+- **Empty** (base) — no file uploaded yet; upload accepts the spreadsheet formats an EPC actually has. The drop surface alone; `Continue`'s one line says a file unlocks it.
+- **Error** (base) — an unreadable file or failed step reported honestly; every-row-failure states so plainly and no lead exists (`F8-36`). `Continue`'s one line says replacing the file unlocks it.
+- **upload** — step 1 of the wizard, drawn with the file chosen: the file row with `Replace`, and no drop surface once a file is chosen (at 1536 a file dropped on the row replaces it).
+- **column-mapping-autoguess** — each detected column, in the file's own order, beside its guessed lead field with the first rows as sample values; every guess correctable; only the phone column required to proceed (M02-03's law applies to imported rows exactly as to typed ones); an unmappable column proceeds without it and is listed in the report rather than silently dropped.
+- **preview-counts** — the gate: total rows, rows that will create leads, rows that duplicate an existing customer by phone, rows that cannot be read at all — each count tappable to see the rows behind it; "N rows · M duplicates by phone" stated before any import runs (M02-19). Two rows inside the same file sharing a number are counted as duplicates of each other and resolved by the same choice. A duplicate row names what it matches — the lead's owner (*Lead owned by Priya Sharma*, as `M02-08` allows across scope) or *Same as row 2*; only a row that matches a lead opens the sheet, so only it ends in a chevron.
 - **dedupe-sheet-bulk** — the same three-choice sheet reused (M02-20): skip all duplicates (default — the choice that cannot create a double-chase), or log them all as enquiries on their existing leads; create-anyway requires the audited reason per row.
-- **importing-progress** — background job with visible progress; the person may leave and return to progress or the finished report; a connection drop mid-import continues server-side and the person is told where it got to.
+- **importing-progress** — background job with visible progress; the person may leave and return to progress or the finished report; a connection drop mid-import continues server-side and the person is told where it got to. Once `Import` is pressed no step can be re-entered: the rows are written.
 - **report-partial-failure** — the report names every rejected row and why (unreadable number, missing required column, malformed row), says exactly how many landed, and landed rows are never rolled back (M02-21).
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Empty`, `Error` (the unreadable file and every row failed), the phone-not-chosen line on `column-mapping-autoguess`, the duplicates chip opened on `preview-counts`, the per-row sheet of `dedupe-sheet-bulk`, `importing-progress` — the same objects in the wider panel.
 
 ## Data volume
 

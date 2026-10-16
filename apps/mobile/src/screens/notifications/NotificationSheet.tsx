@@ -29,7 +29,7 @@ interface NotificationSheetProps {
 
 /**
  * The notification centre on the phone (`SCR-SHELL-03`): a sheet at 92% over the shell, its filter
- * bar pinned under the title while the list scrolls (brief decision 1). It is mounted only while
+ * bar pinned under the title while the list scrolls (brief decision 10). It is mounted only while
  * open, so the list is read only when someone looks; the bell's count is read apart.
  */
 export function NotificationSheet({ onClose, onGoToLeads }: NotificationSheetProps) {

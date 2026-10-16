@@ -17,26 +17,27 @@ figure that is commercial — and no sentence saying any of that.
 | Today's assigned installation (`M13-36`) | data | the site and its address as the title block; the system as a plain description; the date |
 | The site's access constraints (`M04-44`) | data | label–value rows as captured on the survey. Their text is content. None captured is a named gap, never an empty block |
 | The checklist's progress | data · action | done of total as two counts, and the screen's ONE primary act — open the checklist (`SCR-M08-04`) |
-| The design is not signed off yet (`M08-41`) | status | the progress reads that it waits on engineer sign-off, with no count; the act still opens the checklist |
+| The design is not signed off yet (`M08-41`) | status | the progress reads that it waits on engineer sign-off, with no count; the act still opens the checklist. The photographs read *No steps yet* |
 | The photographs expected (`M08-45`) | data · status | one per checklist step: steps with a photo of all steps, as two counts. The next steps still without a photo as rows, at most three, each leading to its step in the checklist. There is no named shot list |
 | No commercial figure (`M13-36`) | — | nothing is drawn and nothing is said. It holds wherever this job's today-block is composed into another home |
 | The site's access constraints, their words (`M04-43`) | data | the survey's Access group only — stairs, lift, crane, lane. No other field and no contact's phone number |
-| The pill's add action (`SCR-SHELL-01`) | action | `Add photo`, opening the checklist at the next step still without a photo (owner ruling 2026-09-26). Absent while there is no job or no step |
+| The pill's add action (`SCR-SHELL-01`) | action | `Add photo`, opening the checklist at the next step still without a photo (owner ruling 2026-09-26). At 1536 it is the page head's small primary. Absent while there is no job or no step |
 | This person's destinations | — | the bar and rail hold Home and More only: this preset holds no leads or proposals grant (F2) |
-| No installation today | teaching | at most two short sentences — what will appear here |
+| No installation today | teaching | at most two short sentences — what will appear here. No act: jobs are assigned, not taken |
 | The job failed to load | error | one banner — what failed and what to do |
 | Checking in and out of the site | — | not on this screen: check-in is M09's (`F2.M09.check-in-out`), and M09 is V2 |
 
 ## Arrangement
 
 - **375.** Its home: the job, the way in, the progress with its act, the photographs. One screenful
-  where the content allows.
+  where the content allows. Under the title block the regions are *Getting in* · *Checklist* · *Photos*.
 - **1536.** Honestly the same frame in a centred column with more room. Say so on the board; nothing
-  is added to fill the width.
+  is added to fill the width. The column spans 8 of the 12 columns. *Getting in* and *Checklist* share one
+  row, read together before setting off, which brings *Open checklist* onto the first screen.
 
 ## Entry & exit
 
-Reached from: it is the Installation Team Member's home — the screen the app opens on for this preset (PS-26, M13-36). Leads to: the Installation Checklist (SCR-M08-04) for the assigned job (its checklist with progress). Other entry/exit: not pinned by PRD — designer decides, note the decision.
+Reached from: it is the Installation Team Member's home — the screen the app opens on for this preset (PS-26, M13-36). Leads to: the Installation Checklist (SCR-M08-04) for the assigned job (its checklist with progress). *Open checklist* lands on the next step, so no next-step row is drawn here; each row in the photographs opens its step there. Other exits: the shell's destinations only.
 
 ## Composed home (M13-10, P0 — this screen is a role home)
 
@@ -76,6 +77,8 @@ Screen-specific states from the slice:
 - **normal** — today's assigned installation with its checklist progress, the site's access constraints, and the photographs expected — and nothing else.
 - **empty-teaching** — no installation assigned today: the empty state teaches what will appear here, never apologises.
 - **awaiting-sign-off** — today's job's design has no engineer sign-off yet: the progress says the checklist waits on it (`M08-41`).
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `error`, `empty-teaching`, `awaiting-sign-off`.
 
 By construction, no price, discount, tranche, margin or customer value exists on this home or any block composed into it — a property of the surface, not of the viewer, holding in every state above rather than being one of them. There is nothing to hide or mask: the figures are not on the surface to begin with.
 

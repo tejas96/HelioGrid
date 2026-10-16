@@ -8,6 +8,8 @@ People with role chips, status, last-active; one-tap invite, deactivate, revoke;
 
 Reached from: the tenant administration area — the precise navigation is not pinned by PRD — designer decides, note the decision. Leads to: one-tap invite → Invite Teammate (SCR-M01-07); a person's role administration → Assign Roles (SCR-M01-13); the read-only Roles Reference (SCR-M01-14) sits beside these role-administration screens (M01 §M01.2). Revocation of a pending invite is one tap on this screen (M01 §M01.2 behavior detail).
 
+*What each role can do* is one ghost text act under *Invite teammate*, not a per-row link. A person's whole row opens Assign Roles.
+
 ## Requirements (verbatim)
 
 ### From `docs/prd/foundations/F2-roles-and-permissions.md`
@@ -32,6 +34,15 @@ Screen-specific:
 - **deactivated-member** — a deactivated person's history remains attributed to them, their role chips and status render, and they are absent from assignment pickers (M01 §M01.2 acceptance).
 - **pending-invite-revoke** — revocation of a pending invite is one tap on this screen (M01 §M01.2 behavior detail); invite states are pending / accepted / expired / revoked (M01-12 context, carried on SCR-M01-07).
 - **expired-invite** — the list shows expired invites as well as pending ones (`GET /invitations` returns both; M01-12). An expired row carries the status Expired and the act *Invite again*, which sends a new invite.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `empty-teaching`, `error`, `deactivated-member`, `pending-invite-revoke`, `guard-rail-blocked`, `guard-rail-blocked-explained`.
+
+- **empty** cannot occur — the reader is always on the list — so **empty-teaching** answers it: only the owner so far, and the invite.
+- **loading** draws three placeholder cards. *Invite teammate* and *What each role can do* stay live in loading and in error; neither waits on this read. **error** draws no roster and no caption.
+- **deactivate-confirm** is a sheet at 375 and a centred modal at 1536 — a decision, not an editor — not dismissible, with no close button.
+- **guard-rail-blocked-explained** is a refused write: the tenant changed on another device after the list was read. It renders on the confirm surface — nothing applied, what changed, the act off with the route out.
+- **deactivated-member** is the after-state of the act: the row moves to the end of the list, its status reads Deactivated and its act is gone.
+- Status is a word plus a dot in its tone: invited `info`, active `success`, deactivated `neutral`.
 
 **Decisions made in design (2026-08-31) — later screens inherit them.**
 
@@ -71,6 +82,8 @@ table, never transcribed from the frame.
 
 The PRD pins no team-size number; design for the small-firm reality the stacking law names — one person is rep *and* surveyor *and* designer (F2-10) — through a list long enough to scroll, where each person may carry several of the twelve preset chips at once plus a status and a last-active value. Role names use localized capability phrases (M01 §M01.2 localization notes). At 375 a person's preset chips show two whole plus *+1* (`ChipGroup` max 2), and *+1* opens the rest in place; at 1536 every chip shows whole.
 
+At 1536 the list is one captioned table — Person · Roles · Status · Last active, the row act in its own column — inside the page's own scroll, with *Invite teammate* and *What each role can do* in the page header. No sortable headers, no selection.
+
 ## Numbers carrying provenance
 
 Every rendered number carries its F8 provenance tier in the design.
@@ -82,6 +95,8 @@ that a *recorded* date is a record fact showing when it was recorded, and `F8-02
 describe how a QUANTITY was arrived at, none of which describes a timestamp the system wrote down.
 This brief previously listed last-active as tiered and was wrong. No money or business quantity
 renders here.
+
+A pending invite has no last-active; that place names the absence — *never signed in* (`NamedGap`).
 
 ---
 

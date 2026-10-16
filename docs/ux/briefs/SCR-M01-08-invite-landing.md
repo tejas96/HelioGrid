@@ -18,12 +18,19 @@ Reached from: the invite message on the invitee's phone — platform-sent, on th
 
 Base: **loading** · **empty** · **error**.
 
+- **loading** — a `Card` in its loading state under the wordmark and the language control; no act renders until the invite arrives.
+- **empty** — the link has no invite behind it (used, or taken back): nobody is named, and the way on is *Sign in to HelioGrid*.
+- **error** comes in two forms. `load-error` — the invite did not load: nothing about it is known, so nobody is named and the one act is *Try again*. `join-error` — joining failed after a right code: the invite stays on screen, with the error above the code.
+
 Screen-specific:
 
 - **normal** — the landing names the inviter and the company, phone pre-filled, 6-digit OTP (M01-13).
 - **otp-auto-read** — OTP auto-read where the platform allows (M01-13).
-- **expired-one-tap-re-request** — invite expired → "Ask {inviter} to invite you again", with a one-tap request that notifies the inviter; nothing dead-ends (M01 §M01.2 edge list, `S1.wrong.1`). It shows no sent date and no expiry date: the landing contract returns neither (`invitationLandingSchema`, `packages/contracts/src/invitation.ts:60`). The warning banner says an invite lasts 7 days and this one has run out (`M01-12`; `packages/domain/src/auth/invitation-policy.ts:20`).
-- **declined-notifies-owner** — wrong person got the invite → decline action on the landing; declining notifies the EPC Owner and voids the invite (M01 §M01.2 edge list, `S1.wrong.2`).
+- **wrong-code** — a wrong code shows as the code field's own error; nothing else on the landing changes.
+- **expired-one-tap-re-request** — invite expired → "Ask {inviter} to invite you again", with a one-tap request that notifies the inviter; nothing dead-ends (M01 §M01.2 edge list, `S1.wrong.1`). It shows no sent date and no expiry date: the landing contract returns neither (`invitationLandingSchema`, `packages/contracts/src/invitation.ts:60`). The warning banner says an invite lasts 7 days and this one has run out (`M01-12`; `packages/domain/src/auth/invitation-policy.ts:20`). Asking has its own after-state, `reinvite-requested`: it says the inviter has been asked, offers no code (the old link stays dead) and leads to *Sign in to HelioGrid*.
+- **declined-notifies-owner** — wrong person got the invite → decline action on the landing; declining notifies the EPC Owner and voids the invite (M01 §M01.2 edge list, `S1.wrong.2`). The confirm is a bottom sheet at 375 and a centred dialog at 1536; the after-state leads to *Sign in to HelioGrid*.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `load-error`, `join-error`, `otp-auto-read`, `wrong-code`, `expired-one-tap-re-request`, `reinvite-requested`, and the after-state of `declined-notifies-owner`.
 
 **Decisions made in design (2026-08-31) — later screens inherit them.**
 
@@ -53,6 +60,8 @@ Screen-specific:
    the invite is gone and someone else has been told. The confirm names both consequences and carries
    the recovery — *Rajesh can invite you again* — on the confirm AND the after-state. A grace window
    was refused: it holds a destructive write in limbo and delays another person's notification.
+7. **The landing carries the corridor's language control** — the same control `SCR-M01-09` draws,
+   at both widths.
 
 ## Data volume
 

@@ -8,6 +8,8 @@ Permanent per-user language picker and measurement-unit preference.
 
 Reached from: More → Profile (mobile) and the sidebar (desktop) — per F3-03's source pointer. Leads to: nowhere in particular — changes apply in place; switching language re-renders the whole application immediately with no reload and no loss of in-progress work (context: F3 §F3.1 / F3-04, not a row of this slice). Exit is not otherwise pinned by PRD — designer decides, note the decision. The user's own role card (SCR-M01-10) is re-openable from here (M01 §M01.2 permissions).
 
+The role card opens over this screen in its `reopened-from-profile` form (`SCR-M01-10`). The name row opens `SCR-M01-09` in its settings life.
+
 ## Requirements (verbatim)
 
 ### From `docs/prd/foundations/F3-localization.md`
@@ -35,6 +37,8 @@ Screen-specific:
 
 A refused preference save shows on the control that failed, through that control's own `error`
 prop (Switch, OptionCardGroup, SegmentedControl). It has no state or frame of its own.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `type-group-muted`, `protected-types-locked`.
 
 **Decisions made in design (2026-08-31) — later screens inherit them.**
 
@@ -66,7 +70,7 @@ addresses only `epc_owner`, so the Billing row shows only on the EPC Owner's acc
 
 ## Data volume
 
-Three launch languages (English, Hindi, Marathi — F3-01 context), each in its own script; the picker must remain legible when it lists a script the current language does not use (F3 §F3.1 localization notes). One two-value measurement preference (m/ft — F3-23 source pointer) whose market default is pack data. Push mutes per type-group — a short list of type-groups, not per-event controls ("no per-event snooze theatre" — F6-15).
+Three launch languages (English, Hindi, Marathi — F3-01 context), each in its own script; the picker must remain legible when it lists a script the current language does not use (F3 §F3.1 localization notes). One two-value measurement preference (m/ft — F3-23 source pointer) whose market default is pack data. Push mutes per type-group — a short list of type-groups, not per-event controls ("no per-event snooze theatre" — F6-15). A person with several roles sees every one in the role row, comma-separated and wrapping, under *Your roles* — no count, no *+2 more* and no primary role: the permission model assigns a set.
 
 ## Numbers carrying provenance
 

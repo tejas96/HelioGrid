@@ -18,13 +18,13 @@ sentence explaining their absence.
 | Each card — customer, system size, value, days in the stage, collected against due, the blocker and its party (`M08-10`) | data · status | one card: the customer as its title; size and value as its line; days in the stage as the card's ONE headline figure; collected and due as two figures, never a bar; the blocker as a chip naming the party waited on |
 | The stage columns | data | each column's header is the pack's stage label and its card count |
 | What has waited longest is seen first (`M08-12`) | — | arrangement, no words: oldest first in every column. No "aged" badge, no invented threshold |
-| Money due and not yet collected (`M08-37`, `M08-39`) | status | where due is more than collected, the gap carries a word and a mark on the card, never colour alone. It blocks nothing — no move, no document, no customer link |
+| Money due and not yet collected (`M08-37`, `M08-39`) | status | where due is more than collected, the gap carries a word and a mark on the card (*₹… unpaid*), never colour alone. It blocks nothing — no move, no document, no customer link |
 | Provenance (`F8-07`) | honesty label | one label at the foot of the board serves the figures that share it — never a key above them. A money figure that cannot be reconciled carries its own provisional mark (`F8-12`) |
 | Moving a stage (`M08-14`) | action | a drag at 1536 and an explicit move act at 375 (`N1`). The confirm's ONE line names the target stage by its pack label. A move backwards uses the same confirm, with no warning paragraph |
 | What a forward move does (`M08-15`, `M08-36`) | data | two label–value rows in the confirm, read before the act: the tranche that becomes due, by its schedule label and amount (none when the stage has no tranche), and that the customer's progress link will show the new stage. Nothing is sent by the move; asking for the money stays the coordinator's act on the project (`M08-38`). A backward move shows neither row |
 | The next stage is skippable for this project (`F1-35`, `F1-51`) | action | the confirm offers the following stage instead, and moving through the skippable one stays a second choice. In India the one skippable stage is the pack's incentive claim, for commercial and no-incentive projects |
 | The next stage is Handed over (`M08-32`, `M08-46`) | action | the confirm's act starts the handover (SCR-M08-06) instead of moving the card: a project reaches Handed over only through it |
-| The centre action (`F7-22`, `M02-06`) | action | *Add lead* on this home, at 375 in the pill footer and at 1536 as the head's primary (owner ruling 2026-09-24) |
+| The centre action (`F7-48`) | — | none: a Project Manager holds no add-lead grant, so the pill has no add action and the desk's head carries no primary |
 | The move has not reached the server | status | a light pending mark on the card, in place. Never drawn as moved before the server says so |
 | Setting a blocker (`M08-20`, `M08-21`) | action | a sheet: the party as a four-way choice of the pack's labels, a reason field, an optional expected-until date. An unknown date reads as a named gap, never as an empty date. Where the party is the utility, the sheet names the utility the site belongs to (`M08-28`), read-only |
 | What the customer sees of a blocker (`M08-24`, `M08-25`, `M08-29`) | action line | ONE line at the sheet's act: the customer's link shows who is waited on and the dates — never the reason typed here |
@@ -39,10 +39,18 @@ sentence explaining their absence.
 ## Arrangement
 
 - **375.** One column, chosen by a stage selector that opens on *All stages*: every project, oldest first, each
-  card naming its stage; picking a stage narrows it. A composed block is a row.
+  card naming its stage; picking a stage narrows it. A composed block is a row. The selector lists *All stages*,
+  then the nine stages with their counts, and its trigger names the choice and the place in the list
+  (*All stages · 1–2 of 197*). *Find in this list* (`F7-47`) sits under it; the selector is the list's filter, so
+  no chip row is added. On a card the title opens Project Detail, *Move stage* is the one visible act, at the foot
+  beside the card's stage, and every other act sits in the card's menu; the blocker chip sits under the size line.
 - **1536.** Every stage at once on one band — its count and its longest wait, *All stages* first — above one
   ranked list of the chosen view, which scrolls inside its own region and proves the portfolio's volume
-  (owner ruling 2026-09-24). Grouping by party is the Operations home's (`PS-34`), not this screen's.
+  (owner ruling 2026-09-24). Grouping by party is the Operations home's (`PS-34`), not this screen's. The list
+  head carries the same readout and *Find in this list* at its right; the band is the filter. *All stages* adds a
+  Stage column, and a single-stage list does not repeat it. Every editor — move, blocker, cancel — opens as a
+  non-modal side panel: the page narrows beside it and the project's row stays in view, marked. A drag and
+  *Move stage* reach the same confirm.
 
 ## Entry & exit
 
@@ -113,6 +121,10 @@ Screen-specific states from the slice:
 - **aged-card-surfaced** — an aged card risen to the top of its column carrying its days-in-stage and its blocker if it has one.
 - **cancel-confirm** — mandatory reason, explicit confirm that states what happens ("this project stops counting as revenue immediately"), no undo.
 - **read-only-scoped** — the Sales Executive's board: only their own won deals are on it, every card reads in full (customer, size, value, days-in-stage, collected against due, the blocker flag with the party), and no control mutates anything — no drag, no stage move, no set-blocker sheet, no cancel; a preset with read scope and no capability sees the card and no card action — the same board, scoped.
+
+*Find in this list* is drawn in `loading` too; `error` and `no-won-deals-yet` have no list, so no find.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `error`, `no-won-deals-yet`, `empty-column-teaching`, `read-only-scoped`, `move-waiting-server`, `blocker-cleared`, `cancel-confirm`, `cancelled`, and the composed home.
 
 Every stage, blocker and payment state renders as a label plus a mark — never colour alone (F7-12; behavior, not styling).
 

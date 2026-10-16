@@ -34,6 +34,27 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
 8. **No preferred control.** The own SKU's `preferred` flag (`M01-38`) has no control on this form.
    A new item is not preferred; it is set later on `SCR-M01-15`.
 
+**Layout, decided in design.**
+
+- The two accelerators — the datasheet and the spreadsheet — sit at the top of the sheet, above the
+  form. There is no path chooser: the form is where every path lands.
+- The datasheet accelerator is the only upload control; the file stays on the item whichever way the
+  fields get filled. No second *attach the datasheet* field.
+- The kind field's helper names the caller that set it. On the phone the sheet's overline names the
+  caller, because the sheet covers it.
+- A sentence above the footer buttons states what the act will do. *Cancel* is in the footer; the
+  phone sheet has no close button, the 1536 panel has one in its header.
+- At 1536 the editor is a 900px side panel, non-modal — no backdrop, no focus trap; focus moves in and
+  is restored — with the caller's list live beside it. The phone sheet is modal. Identity (kind,
+  brand, model, SKU) is one row of four at 1536 and two rows of two at 375; certification and price
+  sit side by side at 1536.
+- Spec fields have no steppers: their values are transcribed. A price outside its range is refused
+  with the limit named, never clamped.
+- Certification is one checkbox per scheme the market pack declares, and a sentence under them says an
+  empty set shows no badges. No per-scheme certificate number field.
+- The *Tenant-provided* label is stated once per section, not per field. A pre-filled field states its
+  own origin in its helper.
+
 ## Requirements (verbatim)
 
 ### From `docs/prd/modules/M01-onboarding-and-tenant-config.md`
@@ -45,14 +66,34 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
 ## States
 
 - **Loading** — the typed per-kind form loading, or a datasheet upload/extraction in progress.
+  While the form loads, the sheet's words, both accelerators, the identity fields and the footer show
+  at once; only the kind's spec block is a placeholder, at the shape it will become. A datasheet being
+  read is narrated: the file by name, the stage in words, an indeterminate rail, and a cancel that
+  says what it stops. The form stays live while it reads, and the datasheet fills only fields still
+  blank.
 - **Empty** — the fresh single-product form for the pre-scoped component kind, before entry.
+  An unfilled form, not an empty-state screen: one line says which fields are required and what the
+  rest buy, and each placeholder says what belongs there in the datasheet's own words.
 - **Error** — save or upload fails; what happened and what to do next.
+  A failed save is one line beside the act — nothing was created, nothing was selected, everything
+  typed is still here — with the retry; the footer drops its consequence sentence and the form stays
+  live. A refused upload turns the datasheet accelerator into the drop surface, states the problem and
+  the fix with the real limit, offers another file or the manual form, and says nothing was created or
+  attached.
 - **single-form** — path (a): the single-product form with the component kind's typed spec fields (M01-39, M01-36).
+  It is the screen's default; `Empty` is the same form before entry.
 - **prefilled-from-selection** — path (a) from a picker with a component already selected: the single form opens pre-filled with that item's brand, model and typed specs; the scheme-certification flags and the rate fields are blank for the tenant to enter; save creates a new own SKU and selects it in place, the platform item untouched (M01-39, M01-36, M01-34; owner ruling 2026-09-07).
+  Each copied field says so in its own helper. The certification flags, the rate fields and *Your SKU
+  code* open blank with the reason under them as content; a blank price is empty, never 0. At 1536 the
+  selected platform row stays on the caller's list, marked unchanged.
 - **pdf-extraction-review** — path (b): extracted fields shown in the same typed form as manual entry, each field editable, with the datasheet preview alongside; nothing commits until the person saves (M01-40, §M01.4 behavior detail).
 - **extraction-failed-prefilled-manual** — extraction fails entirely (scan, photo, unusual layout): manual form with whatever was salvaged pre-filled; the datasheet still attaches to the item (M01-40, §M01.4 edge cases).
+  Each salvaged value is marked as salvaged, to be checked against the page.
 - **inline-add-without-manage-grant** — an inline add from a picker by someone without `F2.M01.manage-catalog` held outright (a Sales Executive): the form has no price and no tax fields, and the caller's list shows that person no prices. One line at the act says the item can be picked without a price and someone who manages the catalog prices it later (§M01.4 Permissions; contract `createItem`).
 - **saved-and-selected-in-place** — on save the sheet closes and the new SKU is selected in place; the invoking flow continues (M01-39, §M01.4 behavior detail).
+  A toast confirms it, with no undo: adding destroys nothing, and archiving reverses it.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Empty`, `Error`, `extraction-failed-prefilled-manual`, and the discard confirm (a centred modal at 1536).
 
 ## Data volume
 

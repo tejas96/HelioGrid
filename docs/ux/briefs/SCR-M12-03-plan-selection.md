@@ -45,6 +45,7 @@ Every fact below is carried. None is a paragraph. The kinds are the context file
   sales` as its act. The full four-plan matrix is ONE region with the same three-way selector — not
   three tables stacked down the page. The review is `F7-21`'s side panel: it opens on the act, as
   the sheet does at 375 — never parked open and empty.
+- **Density.** Expressive throughout; the comparison matrix is functional at both widths.
 
 ## Sample data — the book's rows, drawn and never invented
 
@@ -60,7 +61,7 @@ are these rows' values. A frame that shows a plan name or a figure these rows do
 
 ## Entry & exit
 
-Reached from: trial expiry — "expiry leads to a plan-pick screen" (M12-53); the trial countdown chip (chip surface is SCR-SHELL-06, shared row M12-53); Billing Home's plan-selection surface (M12-55, SCR-M12-02); soft-block prompts — post-expiry create/edit paths are "blocked with a plan prompt" (M12-53); a return after a lapse — in `halted`/`expired`/`cancelled` the billing screens "are the guaranteed way back" and plan selection is one of them (M12-55). Leads to: the gateway's hosted checkout — "pick tier and cycle → hosted checkout → mandate per the pack's rails → `active` immediately" (M12-54); on downgrade, confirming schedules the change at the cycle boundary and returns to Billing Home's scheduled-downgrade state (M12-49; §M12.8 behavior detail); on checkout failure, "conversion fails honestly (`F8-36`); the trial state is unchanged; nothing half-converts" (§M12.2 edge case) — the tenant lands back here.
+Reached from: trial expiry — "expiry leads to a plan-pick screen" (M12-53); the trial countdown chip (chip surface is SCR-SHELL-06, shared row M12-53); Billing Home's plan-selection surface (M12-55, SCR-M12-02); soft-block prompts — post-expiry create/edit paths are "blocked with a plan prompt" (M12-53); a return after a lapse — in `halted`/`expired`/`cancelled` the billing screens "are the guaranteed way back" and plan selection is one of them (M12-55). Leads to: the gateway's hosted checkout — "pick tier and cycle → hosted checkout → mandate per the pack's rails → `active` immediately" (M12-54); on downgrade, confirming schedules the change at the cycle boundary and returns to Billing Home's scheduled-downgrade state (M12-49; §M12.8 behavior detail); on checkout failure, "conversion fails honestly (`F8-36`); the trial state is unchanged; nothing half-converts" (§M12.2 edge case) — the tenant lands back here. Back is the top bar's button at 375 and a `Billing / Plans` breadcrumb at 1536, both to Billing Home (SCR-M12-02).
 
 **Inherited from `SCR-SHELL-06` (designed) — reuse, never redraw.**
 
@@ -103,16 +104,18 @@ Preview mechanics (`docs/prd/modules/M12-platform-billing.md` §M12.8 behavior d
 ## States
 
 - **loading** — book values / usage-derived preview not yet computed.
-- **empty** — no state where plan choices are absent (plan selection is available in every billing state, M12-55); if a market book has no sellable value for a slot it cannot be sold (M12 §M12.5 edge case; `BM-41`'s slots) — behavior beyond that is not pinned by PRD — designer decides, note the decision.
+- **empty** — no state where plan choices are absent (plan selection is available in every billing state, M12-55); if a market book has no sellable value for a slot it cannot be sold (M12 §M12.5 edge case; `BM-41`'s slots) — decided here: there is no empty state; such a plan keeps its place, its price is a named gap, and its act is absent.
 - **error** — preview computation or book load failed; honest failure, no confirm without a preview (the preview is the consent surface, M12-49).
-- **trial-expiry-entry** — arrived from expiry: the plan-pick moment; read + export still work behind it; expiry must convert, never destroy (M12-53).
+- **trial-expiry-entry** — arrived from expiry: the plan-pick moment; read + export still work behind it; expiry must convert, never destroy (M12-53). `SCR-SHELL-06`'s strip shows without its act, because its act leads here; the same holds after a lapse.
 - **post-lapse-reprice-at-current-book** — arrived after a lapse, the guaranteed way back from `halted`/`expired`/`cancelled` (M12-55): for a tenant who was inside a protection horizon, the lapse has ended the price protection, so the prices on this screen are the **current list book's rows**, never the signed-up rows (M12-57 mechanics; the forfeiture disclosure their dunning copy already carried from day 0, M12-39 — SCR-SHELL-06). The screen names the current book's price as the price; nothing here implies the old price survives the lapse, and no win-back framing on this surface may suggest otherwise (M12-41 context). For an unprotected tenant this is the ordinary plan pick and no repricing statement applies.
 - **upgrade-prorated-preview** — upgrade path: entitlements immediate, prorated delta for the remaining cycle billed as a one-time invoice, plan swaps at the boundary; cycle switches follow the same mechanics (M12-48).
-- **downgrade-blocked-preview** — usage exceeds the target tier's ceilings: the screen shows exactly what will be blocked before confirming; over-ceiling designs remain readable and exportable forever (M12-49).
+- **downgrade-blocked-preview** — usage exceeds the target tier's ceilings: the screen shows exactly what will be blocked before confirming; over-ceiling designs remain readable and exportable forever (M12-49). A `Today · Nothing to pay` row follows `This cycle · No refund`.
 - **preview-recomputed-changed** — "the preview re-computes at confirmation time and again at the boundary; the tenant is told if the picture changed" (§M12.8 edge case, M12-49's honesty).
 - **checkout-handoff** — handing to the gateway's hosted flow; the platform's screens collect nothing sensitive (M12-54; M12-10 context); payment collects at that moment and never before.
-- **non-owner-read-only** — a person who is not the Owner arrives, from the expiry route or from Billing Home: the state is visible, the acts are not, no price or amount renders, and the screen says whose act it is (M12-56 context; the same rule SCR-M12-02 carries).
+- **non-owner-read-only** — a person who is not the Owner arrives, from the expiry route or from Billing Home: the state is visible, the acts are not, no price or amount renders, and the screen says whose act it is (M12-56 context; the same rule SCR-M12-02 carries). The plans stand as plain cards with no cycle selector.
 - **checkout-failed-honest** — gateway failure at conversion: fails honestly, trial state unchanged, nothing half-converts (§M12.2 edge case; `F8-36` context).
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `error`, `trial-expiry-entry`, `post-lapse-reprice-at-current-book`, `downgrade-blocked-preview`, `preview-recomputed-changed`, `checkout-handoff`, `checkout-failed-honest`.
 
 ## Data volume
 

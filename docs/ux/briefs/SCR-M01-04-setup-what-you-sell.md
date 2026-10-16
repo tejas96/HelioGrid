@@ -48,6 +48,8 @@ Reached from: directly after signup's three fields — "after M01-01's three fie
 
 Base: **loading** · **empty** · **error** (empty/error states carry F7's teaching-empty-state contract — M01 behavior detail).
 
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, and the refusal — Continue pressed with nothing answered.
+
 Screen-specific:
 
 - **normal** — the one step: segment choice (Residential / C&I / both) plus typical system size (M01-23).

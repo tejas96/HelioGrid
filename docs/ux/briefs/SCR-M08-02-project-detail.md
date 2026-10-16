@@ -30,7 +30,7 @@ a row that leads into the module that owns it.
 | A block with nothing in it | teaching | ONE line saying so. A block never disappears |
 | No design, or no payment terms | data | ONE plain line in that block. Never a placeholder design, never a fabricated row. With no design, the line leads to the proposal's own indicative labelling (`M06-04`) |
 | An OPEX or PPA project | fixed note | the brief's own line — monthly energy billing is handled outside this platform — drawn once, as written |
-| Hand over (`M08-32`, `M08-46`) | action | only when the next stage is Handed over, the Stage region's act becomes *Start handover* (`SCR-M08-06`); while documents are pending its ONE line says how many and leads to `SCR-M08-03`. Mid-chain there is no handover act |
+| Hand over (`M08-32`, `M08-46`) | action | only when the next stage is Handed over, the Stage region's act becomes *Start handover* (`SCR-M08-06`); while documents are pending its ONE line says how many and leads to `SCR-M08-03`. Mid-chain there is no handover act, and a handed-over project has no *Move stage* |
 | Cancelling (`M08-51`, `N8`) | action | `SCR-M08-01`'s confirm, unchanged |
 | A person with read scope only | status | every block in full; no act is drawn, and nothing is greyed |
 | A cancelled project (`M08-51`, `M08-53`) | status · data | a *Cancelled* chip in the header and the reason as a label–value row. Every block stays readable, receipts included; no act is drawn, because the state is terminal |
@@ -40,14 +40,24 @@ a row that leads into the module that owns it.
 
 - **375.** `What is wrong`, only when something is · the current stage and its days, with a row opening
   all nine · the composed blocks as rows that lead · the activity's latest few and `All activity`.
-  Every editor is a sheet (`F7-21`).
+  Every editor is a sheet (`F7-21`). *Request payment* stays on the first screenful: *Since* carries the wait,
+  and *Due on* carries the days overdue. *Record a payment* also sits under the due card's act, next to the
+  money it records.
 - **1536.** Two columns: what is wrong, the stage timeline, payments and documents on the left; the
   activity stream on the right, as the ONE region that proves the volume. Design and proposal
-  summaries sit side by side. Every editor is a side panel (`F7-21`).
+  summaries sit side by side. Every editor is a side panel (`F7-21`). The records take 8 of the 12 columns
+  and scroll; Activity takes the other 4, its head pinned, and a side panel opens over it. The two
+  `What is wrong` cards sit side by side; a lone one spans the records' width.
+
+Region headings, after `What is wrong`: *Stage* · *Payments* · *Design and paperwork* · *Blockers* (*Cleared
+blockers*) · *Activity*. *Request payment* is the one primary; *Clear blocker*, *Move stage* and *Set blocker*
+are secondary. The header menu holds the rare acts, *Move back a stage* and *Cancel project*. A rejected or
+delayed incentive claim sits in `What is wrong`. The schedule lists every tranche, the lifted one included, so
+the shares add up to 100%.
 
 ## Entry & exit
 
-Reached from: opening a card on the Project Board (SCR-M08-01). Leads to: the Document Checklist (SCR-M08-03); the Installation Checklist (SCR-M08-04); the Handover Flow (SCR-M08-06 — the handover action lives on the project detail); the payments screen where money is actually recorded is M11's, and this screen links into it rather than duplicating a control; the design and proposal blocks are read-only summaries with a link into the owning module (M05, M06); the set-blocker sheet and the cancel confirm are detail actions. The screen opens on what is wrong: an active blocker, if there is one, sits above the stage timeline; a due-but-unpaid tranche sits second. Other exits: not pinned by PRD — designer decides, note the decision.
+Reached from: opening a card on the Project Board (SCR-M08-01). Leads to: the Document Checklist (SCR-M08-03); the Installation Checklist (SCR-M08-04); the Handover Flow (SCR-M08-06 — the handover action lives on the project detail); the payments screen where money is actually recorded is M11's, and this screen links into it rather than duplicating a control; the design and proposal blocks are read-only summaries with a link into the owning module (M05, M06); the set-blocker sheet and the cancel confirm are detail actions. The screen opens on what is wrong: an active blocker, if there is one, sits above the stage timeline; a due-but-unpaid tranche sits second. Other exits: at 375 *All 9 stages* opens a sheet and *All activity* a full-height sheet; at 1536 both are on the page. The back arrow at 375 and *Project board* at 1536 return to the board.
 
 ## Requirements (verbatim)
 
@@ -89,9 +99,11 @@ Screen-specific states from the slice:
 - **set-blocker-sheet** — party from the pack's four labels, reason, optional expected-until.
 - **cancel-confirm** — mandatory reason, explicit confirm stating "this project stops counting as revenue immediately", no undo.
 - **overdue-chase-prompt** — an unpaid due tranche impossible to miss, with the prompt to chase the person.
-- **cancelled-project** — after the cancel confirm: the chip and the reason; every block readable, no act (M08-51, M08-53).
+- **cancelled-project** — after the cancel confirm: the chip and the reason; every block readable, no act (M08-51, M08-53). A blocker open at cancellation stays under *Blockers* with its wait.
 - **stage-move-confirm** — `SCR-M08-01`'s confirm from the detail: what falls due and the customer's link; *Start handover* when the next stage is Handed over.
 - **copy-request-message** — the no-channel fallback: the composed request message ready-to-paste, with no delivery state anywhere.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `error`, `empty-blocks-say-so`, `read-only-scoped`, `no-design-reference`, `empty-payment-schedule`, `opex-billing-note`, `incentive-rejected`, `provisional-money`, `timeline-filtered`, `set-blocker-sheet`, `stage-move-confirm`, `cancel-confirm`, `cancelled-project`, an act failed, and *Start handover* in the Stage region.
 
 ## Data volume
 

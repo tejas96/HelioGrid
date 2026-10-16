@@ -15,8 +15,8 @@ no sentence.
 | Fact | Kind | Its form here |
 |---|---|---|
 | Each lead — name, city, source, age, value if known (`M02-24`, `M02-13`) | data · status | one list row: the name; city and age as its second line; the source as its mark; the value, where known, with its tier mark. One provenance label heads the list for the ages (`F8-07`); the value differs, so it keeps its own. A missing name or city is a named gap (`M02-03`), never a blank |
-| The two decisions (`M02-24`) | action | two single-tap acts on every row — assign and mark junk. A swipe may speed them up and is never the only way (`N1`). Junk is not a delete — the lead leaves every queue and is kept (`M02-55`) — so it takes no confirm |
-| A lead leaves the queue (`M02-24`, `M02-55`) | status | ONE toast naming what happened — who it went to, or that it is junk. The junk toast carries `Undo`, which reopens the lead (`M02-55`'s exit), so a mis-tap at three-second speed costs one tap |
+| The two decisions (`M02-24`) | action | two single-tap acts on every row — assign and mark junk. A swipe may speed them up and is never the only way (`N1`). Junk is not a delete — the lead leaves every queue and is kept (`M02-55`) — so it takes no confirm. Assign carries its word; junk is a slashed-circle icon, never a bin, named per row (*Mark Meera Kulkarni as junk*; a nameless lead is named by its city) |
+| A lead leaves the queue (`M02-24`, `M02-55`) | status | ONE toast naming the lead and what happened — who it went to, or that it is junk; it names the lead because two acts can be in flight at once. The junk toast carries `Undo`, which reopens the lead (`M02-55`'s exit), so a mis-tap at three-second speed costs one tap |
 | A lead unassigned for more than a day (`M02-50`) | status | the age carries the state as a chip. No sentence about escalation |
 | One queue, newest first (`M02-23`) | — | arrangement, no words: no sort control is drawn, and nothing explains why |
 | Who can take it, and their load (`M02-28`) | data | the assign picker: one row per person with two label–value pairs — open leads, overdue. One tap assigns; no confirm. One provenance label heads the list (`F8-07`). No suggested person, no rule, no auto-assign (`M02-27`). A buried person is shown by their counts, never blocked or warned in words ("the product warns by showing, never by blocking") |
@@ -32,13 +32,21 @@ no sentence.
 
 - **375.** A list, its count in the header. Rows at a height the thumb can work, both acts on the
   row. The assign picker is a sheet.
+- **Both widths.** The head is pinned above the list's own scroller: title, the ask *About the lead inbox*
+  (newest first; the owner is told past a day; junk keeps the lead), `Select` at 375, count with its
+  tier mark, *Find in this list* (`F7-47`), and a warning chip counting the leads over a day. The chip jumps the
+  list to a pinned *Over a day* line; it never filters or sorts, and there is no pager. Find narrows the
+  queue and never sorts it; there are no filter chips, because a source chip would split the one queue
+  (`M02-23`).
 - **1536.** The dense form: a table with multi-select, the assign picker open beside the selection so
   the load figures are in view while rows are chosen (`F7-21`). The 300-lead morning is proven here,
-  in this one region.
+  in this one region. The panel is always docked and non-modal: read-only *Team load* before anything
+  is chosen, the picker once leads are chosen, titled with the lead's name when one row's Assign opens
+  it. Nothing moves when a row is ticked. The head shows the rows in view (*1–10 of 300*).
 
 ## Entry & exit
 
-Reached from: the owner's navigation — the inbox is the morning entry point; onboarding's first door (`M01-26`) lands on exactly this screen in its empty-teaching state (M02-25); the owner dashboard's "needs you" surface reads the same unassigned set (`modules/M13`). Leads to: Lead Detail (SCR-M02-04) — everything beyond the triage decision waits for the lead detail (M02-24); the assign picker (same picker as lead detail, M02-29); a lead leaves the inbox the moment it is assigned or binned, and nothing else removes it.
+Reached from: the owner's navigation — the inbox is the morning entry point; onboarding's first door (`M01-26`) lands on exactly this screen in its empty-teaching state (M02-25); the owner dashboard's "needs you" surface reads the same unassigned set (`modules/M13`). Leads to: Lead Detail (SCR-M02-04) by tapping anywhere on the row, the two acts being separate targets — everything beyond the triage decision waits for the lead detail (M02-24); the assign picker (same picker as lead detail, M02-29); a lead leaves the inbox the moment it is assigned or binned, and nothing else removes it; the empty state's `Add lead` opens Quick Add Lead (SCR-M02-01). The page is titled *Leads*, and *Inbox · Leads* tabs under the title switch between this queue and the Leads List (SCR-M02-03) — unassigned leads here, assigned ones there (`M02-58`). The tabs show only to people who hold `F2.M02.assign-leads`; a Sales Executive sees the list alone. No count rides a tab. Home's "needs you" opens the Inbox tab.
 
 ## Requirements (verbatim)
 
@@ -60,11 +68,13 @@ Reached from: the owner's navigation — the inbox is the morning entry point; o
 - **Error** (base) — a failed assign/junk is acknowledged honestly, never applied locally then reversed.
 - **normal** — one queue, all channels, newest first, no configurable sort that could hide the oldest item; each row: name, city, source badge, age, value if known; assign and mark-junk each single-tap.
 - **empty-teaching** — see Empty above (M02-25).
-- **multi-select-bulk-assign** — inbox multi-select, one target assigns the whole selection (M02-29); a bulk assign that partially fails states which leads moved and which did not, and why.
-- **assign-picker** — every candidate shows their current open-lead count and overdue count; one tap assigns, no confirm step (M02-28).
+- **multi-select-bulk-assign** — inbox multi-select, one target assigns the whole selection (M02-29); a bulk assign that partially fails states which leads moved and which did not, and why. At 375, `Select` enters it: each name becomes its checkbox's label and the row acts step back; at 1536 the checkbox is always there. The result's title says how many moved (*2 of 3 assigned to Priya Sharma*); its rows say which. Reassigning a rep's assigned leads is not here: the inbox holds only unassigned ones.
+- **assign-picker** — every candidate shows their current open-lead count and overdue count; one tap assigns, no confirm step (M02-28). People are listed A–Z, the neutral order, since any other order would be a suggestion (`M02-27`).
 - **overdue-age-visible** — the age column makes the twenty-four-hour escalation visible before it fires; a lead older than 24h unassigned has escalated to the owner and its state is unchanged (M02-50).
 - **assign-waiting** — an assign or a mark-junk shows **in progress, never as done**, until the server confirms it; the pending treatment is light and in-row, leaving the row operable — never a blocking overlay and never a spinner wall — so triage still completes in under three seconds per lead, and no dialog is added to the one-tap assign; a failure returns the lead to the queue naming the reason (M02-67, M02-24, M02-28, `F4-27`, `F8-36`).
 - **row-already-assigned** — two people triage at once: assignment is server-completed, so the second person sees the lead already assigned rather than overwriting the first (M02-67).
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Empty`, `Error`, `assign-waiting`, `row-already-assigned`, the leave-the-queue toasts, and *Find in this list* with a query applied.
 
 ## Data volume
 
@@ -77,6 +87,8 @@ Design at a bulk-import morning: **300 leads landing at once** in the same newes
 - **Value if known** on an inbox row — a lead's estimated value is a forecast input, never revenue, rendered in the tenant's currency.
 - **Age** per row — derived from capture time on the tenant's timezone (`F3-22`); it is what makes the 24-hour escalation visible.
 - **Open-lead count and overdue count** per candidate in the assign picker — computed at the moment the picker opens, from the same definition of "open" the leads list uses; overdue is derived, never stored.
+- **The over-a-day count** in the head — the same set the owner dashboard's "needs you" reads (`M02-50`); it carries the head's tier mark.
+- **The selection count** in bulk assign carries no tier: it is the person's own choice, not a computed figure.
 
 ---
 

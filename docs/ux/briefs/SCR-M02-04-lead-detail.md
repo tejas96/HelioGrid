@@ -14,26 +14,26 @@ row below is a field, a chip, an act or a row that leads somewhere.
 
 | Fact | Kind | Its form here |
 |---|---|---|
-| Name, phone, city, value, stage, owner (`M02-32`) | data · status | the header: the name as the title, phone and city as its line, the stage — one of `M02-41`'s eight words — as the ONE status chip, owner and value as label–value. The value carries its tier mark (`F8-23`) |
+| Name, phone, city, value, stage, owner (`M02-32`) | data · status | the header: the name as the title, phone and city as its line, the stage — one of `M02-41`'s eight words — as the ONE status chip, owner and value as label–value. The value carries its tier mark (`F8-23`). A parking, terminal or flag chip (`Do not call`, `Possible duplicate`, `Snoozed till …`, `Disqualified`) rides beside the stage chip, which always stays: the state is orthogonal to the stage, and the stage is where the lead returns |
 | The language to call in (`M02-37`) | data | the customer's preferred language as one label–value beside owner and value |
 | Acts this person does not hold (`F2.M02.add-edit-leads`, `F2.M02.book-site-visit`, `F2.M02.lead-state-changes`, `F2.M02.assign-leads`) | — | behaviour: an act the person does not hold is absent, never greyed. A Survey or Design Engineer reads this lead in assigned scope and does not capture, assign or close it (§2) |
-| A missing name or city (`M02-03`) | data | a named gap in the value's place, tappable to fill. Never a blank, never a sentence |
-| Call · Message · Log activity · Book visit · Create design (`M02-32`) | action | one action row: `Call` is the primary act, the other four are secondary. No sentence |
-| The customer must not be called (`M02-37`) | status | a chip on the header. What the call act then does is `modules/M07`'s gate; where this screen shows a refusal it is ONE line naming why — never a greyed act with no reason (`N4`) |
+| A missing name or city (`M02-03`) | data | a named gap in the value's place, tappable to fill; a missing value or language is a named gap too. With no name, the phone number is the title and the name's gap takes its line. Never a blank, never a sentence |
+| Call · Message · Log activity · Book visit · Create design (`M02-32`) | action | one action row: `Call` is the primary act, the other four are secondary. No sentence. The row holds exactly these five; Snooze, Disqualify and Merge open from the header's `More actions` menu |
+| The customer must not be called (`M02-37`) | status | a chip on the header. What the call act then does is `modules/M07`'s gate; where this screen shows a refusal it is ONE line naming why — never a greyed act with no reason (`N4`). Under the chip, `Call` stays drawn, off, with that one line |
 | Snoozing (`M02-51`) | action | a first-class act: a sheet with ONE required date. The confirm's one line says the date unlocks it. Never a note in someone's head |
 | Snoozed (`M02-51`) | status · action | the chip reading `Snoozed till …` with its wake date, and ONE act, `Wake up now` |
 | A possible duplicate (`M02-66`) | status · more detail | a chip, and a row naming the other record; the three-choice sheet is `SCR-M02-01`'s, opened on entry |
 | Came from a referral, or referred others (`M02-16`) | data | a `Came from` link on the referred lead; a `Referred` row on the referrer |
 | A proposal draft to resume (`M06-25`) | more detail | a row carrying the draft's progress, leading to the builder |
-| Two proposals on one customer (`M06-58`) | status · action | both proposals drawn, a warning chip on the pair, and a `Withdraw` act on each. Withdrawing is a sheet with its two outcomes as a choice |
-| The six qualification facts (`M02-39`) | data | one region of six single controls, saved as answered. No submit act, no progress count, no nag for the unanswered. Call-captured facts are `assumed`, and one provenance label heads the region for them; a fact with another tier keeps its own mark |
-| Additional contacts, one primary (`M02-34`) | data · status | list rows — name, phone, role as its mark, a `Primary` chip on exactly one. `Add contact` is the region's act; making another contact primary is one act on its row |
+| Two proposals on one customer (`M06-58`) | status · action | both proposals drawn, a warning chip on the pair, and a `Withdraw` act on each. Withdrawing is a sheet with its two outcomes as a choice; the toast's `Undo` reverses it, and whether it is permanent after that is `modules/M06`'s |
+| The six qualification facts (`M02-39`) | data | one region of six single controls, saved as answered. No submit act, no progress count, no nag for the unanswered. Call-captured facts are `assumed`, and one provenance label heads the region for them, shown once a fact is answered; a fact with another tier keeps its own mark. An unanswered either-or (ownership) is two unpressed choices, never a control that looks answered |
+| Additional contacts, one primary (`M02-34`) | data · status | list rows, the primary first — name, phone, role as its mark, a `Primary` chip on exactly one. `Add contact` is the region's act; making another contact primary is one act on its row |
 | A contact's consent trail (`M03-34`, `M02-37`) | more detail | one tap from the contact: per channel class, a row with its state chip, its source and its recorded time. For an imported contact the source row is the import declaration — who, when |
 | The timeline (`M02-35`) | data | one stream: each entry its kind, its actor, one line and its time; filter chips by kind. No edit affordance is drawn, and no sentence says the stream is append-only. An entry's text is content, not screen copy |
 | The visit (`M02-46`, `M09-28`, `M02-48`) | data · action | a record row — date, time, surveyor, address. After the visit: arrival, departure, outcome as label–value rows. After a no-show: ONE act, reschedule |
-| Booking a visit (`M02-46`, `M02-47`) | action | a sheet: four inputs and one confirm. The composed message is shown as content. With a connected channel the confirm's one line says it sends; with none, the act copies the message and no delivery is ever claimed |
+| Booking a visit (`M02-46`, `M02-47`) | action | a sheet: four inputs and one confirm; the address is a two-line field, so it is read whole. The composed message is shown as content, in the customer's language whatever the rep's, and its label names that language (*Message to Anil · Marathi*); the copy-paste text follows the same rule. With a connected channel the confirm's one line says it sends; with none, the act copies the message and no delivery is ever claimed |
 | Sending a message (`M02-33`) | action · status | connected: compose and send, and the delivery state is a chip on the timeline entry. Not connected: ready-to-paste text and a copy act — no delivery chip, ever |
-| Disqualifying (`M02-42`) | action | a sheet: the six reasons as one single-choice list. The confirm's one line says a reason unlocks it |
+| Disqualifying (`M02-42`) | action | a sheet: the six reasons as one single-choice list. The confirm's one line says a reason unlocks it. The toast's `Undo` reverses it, and afterwards `Reopen` |
 | Assigning (`M02-28`, `M02-29`) | action | the inbox's picker, unchanged |
 | Site information, designs, proposals, tasks, files (`M02-32`) | more detail | one region each: the owning module's summary of the latest one or two, and a row that leads to the rest. An empty region says what will appear, in ONE line |
 | A freshly captured lead | teaching | the header with its gaps, the capture event on the timeline, and each empty region's one line. No paragraph |
@@ -50,7 +50,7 @@ row below is a field, a chip, an act or a row that leads somewhere.
 
 ## Entry & exit
 
-Reached from: the Lead Inbox (SCR-M02-02 — everything beyond triage waits for the lead detail, M02-24); the Leads List (SCR-M02-03); the dedupe sheet's "Open existing" (M02-09); the possible-duplicate flag's sheet-on-next-open (M02-66); assignment notifications; the referral "came from" link on either record (M02-16). Leads to: the assign picker (M02-28/M02-29); the book-visit flow that creates the visit `modules/M04` owns (M02-46); Create design into the studio (`modules/M05`); the resumable proposal draft into the proposal builder (M06-25); Customer Merge (SCR-M02-06) from the customer record or the deliberate-duplicate link; Call and Message actions; the consent trail opens one tap from the contact record (M03-34).
+Reached from: the Lead Inbox (SCR-M02-02 — everything beyond triage waits for the lead detail, M02-24); the Leads List (SCR-M02-03); the dedupe sheet's "Open existing" (M02-09); the possible-duplicate flag's sheet-on-next-open (M02-66); assignment notifications; the referral "came from" link on either record (M02-16). Leads to: the assign picker (M02-28/M02-29); the book-visit flow that creates the visit `modules/M04` owns (M02-46); Create design into the studio (`modules/M05`); the resumable proposal draft into the proposal builder (M06-25); Customer Merge (SCR-M02-06) from the customer record — the header's `More actions` menu, shown only to holders of `F2.M02.merge-customers` with both records in scope — or the deliberate-duplicate link; Call and Message actions; the consent trail opens one tap from the contact record (M03-34).
 
 ## Requirements (verbatim)
 
@@ -117,6 +117,8 @@ Reached from: the Lead Inbox (SCR-M02-02 — everything beyond triage waits for 
 - **imported-declaration-basis** — consent basis is the tenant's import declaration (who, when) for legacy lists (M03-34).
 - **two-proposals-collision** — both proposals visible on the customer record; the collision is impossible to miss; one must be withdrawn by a person (M06-58).
 - **withdraw-action** — the withdrawing rep marks their proposal superseded/declined-by-tenant (M06-58).
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Empty`, `Error`, `field-gaps`, `contacts`, `contact-primary`, `contact-consent-trail`, `possible-duplicate-flag`, `dedupe-sheet-on-open`, `qualification-inline`, `assign-picker`, `disqualify-reason-sheet`, `message-compose-fallback`, `message-delivery-states`, `snooze-sheet`, `timeline-filtered`, `proposal-draft-chip-n-of-11`, `visit-facts-present`, `no-visit-yet`, `consented-per-channel`, `opted-out`, `imported-declaration-basis`, `withdraw-action` — rows in their column's place, Needs-you rows as `snoozed-chip`, editors in the side panel as `book-visit-sheet`.
 
 ## Data volume
 

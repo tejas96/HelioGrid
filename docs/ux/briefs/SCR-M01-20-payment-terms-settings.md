@@ -8,6 +8,8 @@ Named tranche templates (label + percentage per canonical stage) with a tenant d
 
 Reached from: the tenant-config settings surface map — *Payment terms* is a named surface in M01 §4's stable vocabulary; a deeper entry path is not pinned by PRD — designer decides, note the decision. Leads to: not pinned by PRD — designer decides, note the decision. What the screen feeds: the builder's payment-terms step default, Quick mode, and — at Won — the project's collection schedule (§M01.7 behavior detail; M11's one-money-path contract). The template editor is the same control the builder's payment step uses — one pattern (§M01.7 behavior detail).
 
+Entry and exit, decided: one entry — More · Settings · Payment terms, the back control named *Back to Settings*; no entry from the onboarding corridor (the seeded templates already let a tenant sell). Out: back to Settings only — every value here is written here, so no onward row, and no link to the builder or to Proposal templates. What the screen feeds is shown as the previewed band and said in the page's closing line.
+
 **Decisions made in design (2026-09-02) — later screens inherit them.**
 
 1. **The stage a tranche falls due on is `M08-08`'s canonical chain, not this screen's.** Nine
@@ -40,13 +42,17 @@ Reached from: the tenant-config settings surface map — *Payment terms* is a na
 ## States
 
 - **Loading** — templates loading.
-- **Empty** — never truly empty: the two seeded standard templates exist from tenant creation with one marked default (M01-54 acceptance: "Given a new tenant, when settings are first opened, then the two seeded templates exist and one is marked default"). Treat the seeded state as the floor.
-- **Error** — a save fails; what happened and what to do next.
-- **seeded-defaults** — the two platform-seeded standard templates (the source's 10/60/20/10 and 30/60/10 splits), one marked tenant default (M01-54).
-- **sum-not-100-blocked-remainder-shown** — the 100.00 rule validates in the editor with the remainder shown ("12% unallocated" — §M01.7 behavior detail); save is blocked with the unallocated remainder stated (M01-54 acceptance).
-- **live-customer-preview** — a live preview shows the tranches as the customer will see them (§M01.7 behavior detail; M01-30's law).
-- **skippable-stage-warning** — a stage a tranche is due on is skippable in this market: the editor warns and M11's due-derivation rules govern (§M01.7 edge cases); the editor only offers real stages for the tenant's market (§M01.7 behavior detail).
-- **archived-template** — templates archive, never delete; generated documents carry their own snapshot (F8-15) and never point back live (§M01.7 edge cases).
+- **Empty** — never truly empty: the two seeded standard templates exist from tenant creation with one marked default (M01-54 acceptance: "Given a new tenant, when settings are first opened, then the two seeded templates exist and one is marked default"). Treat the seeded state as the floor. Drawn once with `seeded-defaults`: a teaching `Banner` (not an `EmptyState`) above the two seeded rows; the archived scope chip shows 0 and stays.
+- **Error** — a save fails; what happened and what to do next. The banner sits above the act that failed with no *Try again* — Save is the retry — and says nothing typed is lost and customers keep getting the terms already in force.
+- **seeded-defaults** — the two platform-seeded standard templates (the source's 10/60/20/10 and 30/60/10 splits), one marked tenant default (M01-54). Each row's subtitle is its split (*4 tranches · 10% / 60% / 20% / 10%*); a seeded row carries a *Platform standard* badge, information only. *Default* is a `Badge` and *Archived* a `StatusChip`, neither tappable — the row is the control. The default moves only from the template's editor (*Use for new proposals*); on the default template's own editor that control is replaced by the fact in words.
+- **sum-not-100-blocked-remainder-shown** — the 100.00 rule validates in the editor with the remainder shown ("12% unallocated" — §M01.7 behavior detail); save is blocked with the unallocated remainder stated (M01-54 acceptance). Under 100 reads neutral; over 100 is drawn past the target, never clamped. On the phone the meter sits in the editor's sticky footer above Save; at 1536 it sits under the tranches it sums. Save stays focusable (`aria-disabled`) with the refusal under it — *Allocate the remaining 12% to save these terms.* / *Take 18% off the tranches to save these terms.*
+- **live-customer-preview** — a live preview shows the tranches as the customer will see them (§M01.7 behavior detail; M01-30's law). On the phone the editor carries no preview of its own: the preview opens as a reader chained from the editor, showing the unsaved change, and *not saved yet* is said in words. The band is the tranche schedule only; each tranche's *when* is its stage's own sentence, not a field the tenant writes.
+- **skippable-stage-warning** — a stage a tranche is due on is skippable in this market: the editor warns and M11's due-derivation rules govern (§M01.7 edge cases); the editor only offers real stages for the tenant's market (§M01.7 behavior detail). A caveat, not a refusal: a tinted warning badge on the binding and on the picker row, the rule in words beside it; the stage stays choosable and Save stays live.
+- **archived-template** — templates archive, never delete; generated documents carry their own snapshot (F8-15) and never point back live (§M01.7 edge cases). Archived rows carry *Restore*. Archiving asks first in a centred `Modal` — not the destructive variant — saying it can be restored any time and nothing is deleted. Removing a tranche asks nothing: it lands only on save.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Empty` / `seeded-defaults`, `Error`, `skippable-stage-warning`, `archived-template`, the archive confirm.
+
+A tranche's stage is picked in a chained sheet (a side panel at 1536), not `Select` or `Menu`: radio rows of the nine chain stages, the pack's label over the canonical name, the description outside the label; `CANCELLED` is never offered. No reorder control: tranches list in the order of their stages. At 1536 the set (each row with its schedule inline) stands beside the schedule at print size, so no *Open full size*; the editor and the stage picker open as non-modal side panels side by side, the set giving way first.
 
 ## Data volume
 
@@ -57,7 +63,7 @@ A small named set: the two seeded templates plus tenant-created ones, each a lis
 Each carries its F8 provenance tier in the design:
 
 - **Tranche percentages** — tenant-authored config values that must sum to exactly 100.00 (M01-54).
-- **The unallocated remainder** shown when the sum is not 100.00 — editor-computed (§M01.7 behavior detail).
+- **The unallocated remainder** shown when the sum is not 100.00 — editor-computed (§M01.7 behavior detail); `derived`, a line beside the meter.
 - **The customer-preview tranche figures** — the live preview of the tranches as the customer will see them (§M01.7 behavior detail); percentages and money render per F3 (§M01.7 localization notes).
 
 ---
