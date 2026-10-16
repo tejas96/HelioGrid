@@ -42,7 +42,7 @@ Check, citing the frame and element for each finding:
    known difference (item 5), not a finding.
 4. **Product rules on the frame.** English only (Hindi and Marathi come from the catalog); a
    provenance tier on every number `F8-01` tiers (an identifier, a count of the reader's own
-   records and a limit the product enforces excepted); money in lakh/crore grouping; kW/kWh/kWp as they are. The words themselves are
+   records, a limit the product enforces and a value the company sets in its own settings excepted); money in lakh/crore grouping; kW/kWh/kWp as they are. The words themselves are
    the brief's word plan, checked once when the brief is written — not swept again here.
 5. **Known differences.** Each deferred row given to you is either fixed on the board or still
    open; say which. An open one is not a fix.

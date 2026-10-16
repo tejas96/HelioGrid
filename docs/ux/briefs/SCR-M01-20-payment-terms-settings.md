@@ -16,7 +16,10 @@ Entry and exit, decided: one entry — More · Settings · Payment terms, the ba
    market-neutral values — `WON → MATERIAL_ORDERED → DISPATCHED → INSTALLATION →
    ELECTRICAL_METERING → UTILITY_INSPECTION → COMMISSIONED → INCENTIVE_CLAIMED → HANDED_OVER`,
    plus `CANCELLED`. The five-state shorthand is deprecated and appears nowhere. Display labels are
-   the pack's (`F1-22`); `F1-51` fixes two of them — *DISCOM inspection*, *Subsidy claimed*.
+   the pack's (`F1-22`); `F1-51` fixes two of them — *DISCOM inspection*, *Subsidy claimed*. The
+   other seven take neutral labels, and every stage's *when* sentence is `packages/i18n` copy keyed to
+   the canonical stage, built at `T-M01-020`; a sentence names no scheme — a scheme's name comes from
+   the pack (owner ruling 2026-10-16).
 2. **A split that must total exactly 100% is an `AllocationMeter`.** Never `ProgressBar` or
    `UsageMeter`. `met` is **exact**: lines are two-decimal percentages and must sum to 100.00
    (`M01-54`) — three equal tranches are 33.33 / 33.33 / 33.34, and 33.33 × 3 shows its 0.01
@@ -32,6 +35,11 @@ Entry and exit, decided: one entry — More · Settings · Payment terms, the ba
    platform split" would imply an upstream that does not exist.
 5. **Archived templates are reached by a scope chip**, absent from the list otherwise — the shape
    `SCR-M01-15` already set for archived catalog items, so the two settings screens agree.
+6. **Two tranches may fall due on one stage, and a later stage may carry a bigger share.** `M01-54`
+   forbids neither (owner ruling 2026-10-16).
+7. **A template row and a stage row are `ListRow`s** (title, `Badge` marks, the split as subtitle, a
+   trailing chevron), never a restyled `Button`; the build makes a pressable `ListRow` keyboard-operable
+   (`D238`, owner ruling 2026-10-16).
 
 ## Requirements (verbatim)
 
@@ -44,7 +52,7 @@ Entry and exit, decided: one entry — More · Settings · Payment terms, the ba
 - **Loading** — templates loading.
 - **Empty** — never truly empty: the two seeded standard templates exist from tenant creation with one marked default (M01-54 acceptance: "Given a new tenant, when settings are first opened, then the two seeded templates exist and one is marked default"). Treat the seeded state as the floor. Drawn once with `seeded-defaults`: a teaching `Banner` (not an `EmptyState`) above the two seeded rows; the archived scope chip shows 0 and stays.
 - **Error** — a save fails; what happened and what to do next. The banner sits above the act that failed with no *Try again* — Save is the retry — and says nothing typed is lost and customers keep getting the terms already in force.
-- **seeded-defaults** — the two platform-seeded standard templates (the source's 10/60/20/10 and 30/60/10 splits), one marked tenant default (M01-54). Each row's subtitle is its split (*4 tranches · 10% / 60% / 20% / 10%*); a seeded row carries a *Platform standard* badge, information only. *Default* is a `Badge` and *Archived* a `StatusChip`, neither tappable — the row is the control. The default moves only from the template's editor (*Use for new proposals*); on the default template's own editor that control is replaced by the fact in words.
+- **seeded-defaults** — the two platform-seeded standard templates (the source's 10/60/20/10 and 30/60/10 splits), one marked tenant default (M01-54). Each row's subtitle is its split (*4 tranches · 10% / 60% / 20% / 10%*); a seeded row carries a *Platform standard* badge, information only. *Default* is a `Badge` and *Archived* a `StatusChip`, neither tappable — the row is the control. The default moves only from the template's editor (*Use for new proposals*); on the default template's own editor that control is replaced by the fact in words, and *Archive* is absent: the default moves to another template before it can be archived (`M01-54` keeps one default).
 - **sum-not-100-blocked-remainder-shown** — the 100.00 rule validates in the editor with the remainder shown ("12% unallocated" — §M01.7 behavior detail); save is blocked with the unallocated remainder stated (M01-54 acceptance). Under 100 reads neutral; over 100 is drawn past the target, never clamped. On the phone the meter sits in the editor's sticky footer above Save; at 1536 it sits under the tranches it sums. Save stays focusable (`aria-disabled`) with the refusal under it — *Allocate the remaining 12% to save these terms.* / *Take 18% off the tranches to save these terms.*
 - **live-customer-preview** — a live preview shows the tranches as the customer will see them (§M01.7 behavior detail; M01-30's law). On the phone the editor carries no preview of its own: the preview opens as a reader chained from the editor, showing the unsaved change, and *not saved yet* is said in words. The band is the tranche schedule only; each tranche's *when* is its stage's own sentence, not a field the tenant writes.
 - **skippable-stage-warning** — a stage a tranche is due on is skippable in this market: the editor warns and M11's due-derivation rules govern (§M01.7 edge cases); the editor only offers real stages for the tenant's market (§M01.7 behavior detail). A caveat, not a refusal: a tinted warning badge on the binding and on the picker row, the rule in words beside it; the stage stays choosable and Save stays live.
@@ -62,7 +70,7 @@ A small named set: the two seeded templates plus tenant-created ones, each a lis
 
 Each carries its F8 provenance tier in the design:
 
-- **Tranche percentages** — tenant-authored config values that must sum to exactly 100.00 (M01-54).
+- **Tranche percentages** — tenant-authored config values that must sum to exactly 100.00 (M01-54). No tier: a value the company sets in its own settings (`F8-01`, owner ruling 2026-10-16).
 - **The unallocated remainder** shown when the sum is not 100.00 — editor-computed (§M01.7 behavior detail); `derived`, a line beside the meter.
 - **The customer-preview tranche figures** — the live preview of the tranches as the customer will see them (§M01.7 behavior detail); percentages and money render per F3 (§M01.7 localization notes).
 

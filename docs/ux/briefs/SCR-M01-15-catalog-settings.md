@@ -35,6 +35,7 @@ Entry is More → Settings → *Catalog*. The back control names the caller (*Ba
 - **archive-warns-referenced-drafts** — archiving from settings warns when the item is referenced by open drafts (count shown) and proceeds without breaking them (§M01.4 behavior detail).
 - **release-publish-summary** — publishing catalog changes is an explicit act producing a labelled release — human-readable name plus date — with a summary of what changed (M01-43; §M01.4/§M01.5 behavior detail).
 - **release-contents-inspect** — what a release contains (which items changed) is inspectable (§M01.4 behavior detail).
+- **price-book-version-new** — the new-version editor names each rate in English; authoring a rate's name per language (the contract stores it per language, `F3-10`) comes with the language-switcher pattern at the build (owner ruling 2026-10-16; `D248`).
 - **price-book-version-browse** — past price-book versions are browsable read-only; exactly one version is active; the default margin rides the version (M01-48; §M01.5 behavior detail).
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and edit), `archived-filter`, `archive-warns-referenced-drafts`, `release-publish-summary`, `release-contents-inspect`.
@@ -51,20 +52,20 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
 
 1. **One destination, two panels.** *Catalog* is the one row in the settings surface map; *Price
    book* is not its own destination. At 375 the two panels switch with a `SegmentedControl`; at 1536
-   the rates panel sits **beside** the list. `M01-32` forbids two catalogues to administer and
+   the rates panel sits **beside** the list. `M01-32` forbids two catalogs to administer and
    §M01.5 calls the price book *the rates panel of the one catalog surface* — the switch exists only
    because 375 has no *beside*.
 2. **`empty` on the items panel is not an empty list and never will be.** A tenant's first day
-   already has the platform slice (`M01-32`: there is never "no catalogue"), so what is empty is the
+   already has the platform slice (`M01-32`: there is never "no catalog"), so what is empty is the
    tenant's own two dimensions — own SKUs and overrides — and the teaching card sits above a full
    list.
-3. **An archived own SKU's price carries its tier beside it, as on a live row.** Every
-   user-visible number carries one tier (`F8-01`, which outranks this brief). `unmarked` is
-   `M05-52`'s exception only and never applies here.
+3. **A price the company set carries no F8 tier here — live or archived.** It is the company's own
+   setting, read back where it is set (`F8-01`, owner ruling 2026-10-16); the layer chip says where it
+   came from. `unmarked` is `M05-52`'s exception only and never applies here.
 4. **Publishing asks for a name, not a serial** (`M01-43`: a release is a human-readable name plus a
    date), and states the consequence as a number before the act: *N designs pinned to <label> will
-   show as out of date*. A release's contents are a **before-and-after**, not a list of names — a
-   tier on each side.
+   show as out of date*. A release's contents are a **before-and-after**, not a list of names. Until
+   `T-FPLAT-028` lands that count renders as a named absence; the board draws the end state (`D235`).
 5. **The three row acts are 32px at 1536 and 44px on the phone card.** The design system's one
    in-row exception, whose three conditions all hold: a `<table>` row, pointer-only, and the same
    acts at full size elsewhere.
@@ -73,6 +74,13 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
 7. **The catalog keeps its own search.** It is the one exception to `F7-47`'s one global search,
    because the picker searches this catalog with the same engine (`M01-38`, DD12; the contract's
    `q`).
+8. **The Items strip shows the release in force and *Publish*, and counts no unpublished changes.**
+   No route serves pending changes (`GET /catalog/releases` lists published releases only); a publish
+   with nothing new is refused (`CATALOG_NOTHING_CHANGED`). *release-contents-inspect* opens a
+   published release from the append-only list (label, date, counts) as its before-and-after
+   (owner ruling 2026-10-16).
+9. **The settings shell is `SCR-SHELL-01`'s at both widths**, the one search and the bell included
+   (owner ruling 2026-10-16).
 
 **The surface.**
 
@@ -83,9 +91,9 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
   chips; none selected is everything.
 - A row's mark line: the layer (*Platform* · *Your SKU* · *Overridden*) and `M01-35`'s spec label as
   plain chips; tinted badges for compliance (success), *Representative data* and *Hidden from
-  pickers* (warning) and *Preferred* (accent). The F8 tier sits under the price and nothing else
-  does; the spec label never sits beside a price. Where the pack declares schemes and an item records
-  none, the row names the gap (*No BIS or ALMM flag recorded*).
+  pickers* (warning) and *Preferred* (accent). No F8 tier sits on a price the company set
+  (decision 3); the spec label never sits beside a price. Where the pack declares schemes and an item records
+  none, the row names the gap (*No ALMM or DCR flag recorded*; the IN pack's schemes, `F1-44`).
 - *Preferred* and *Hidden from pickers* are each stated by a chip and set by a pressed toggle — never
   one icon doing both.
 - A platform item with no tenant price reads *No price set*, with no tier; the *Platform* chip says why.
@@ -106,10 +114,10 @@ The PRD fixes no item count for the catalog; it does classify catalog administra
 Each of these is user-visible on this screen and carries its F8 provenance tier in the design:
 
 - **Effective (resolved) price per item** — resolved through tenant override → own item (M01-32); the platform tier supplies no price, so an item with neither shows its rate as missing (M01-37); tier attribution shown in the rates panel (the pack's tax rate struck under a tax override).
-- **Override price and tax rate** — tenant-entered override fields (M01-37).
+- **Override price and tax rate** — tenant-entered override fields (M01-37). No tier: a value the company sets in its own settings (`F8-01`, owner ruling 2026-10-16).
 - **Item spec values** (e.g. wattage, technology as filterable spec ranges, M01-38/M01-34) — each item's provenance label (verified-datasheet / tenant-provided / representative) is exactly this screen's honesty mechanism (M01-35).
-- **Price-book rates** — service/installation charges, engineering fees, per-kW adders, from the active immutable version (M01-48).
-- **Default margin percentage** — rides the price-book version (M01-48).
+- **Price-book rates** — service/installation charges, engineering fees, per-kW adders, from the active immutable version (M01-48). No tier, as above.
+- **Default margin percentage** — rides the price-book version (M01-48). No tier, as above.
 - **Release label + date** — the publish act's human-readable name plus date (M01-43, §M01.4 behavior detail).
 - **Open-draft reference count** shown in the archive warning (§M01.4 behavior detail).
 

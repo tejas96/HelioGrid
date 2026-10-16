@@ -1,6 +1,6 @@
 # SCR-M06-11 · Builder Step 9 — Terms & Conditions
 
-Optional rich-text T&C up to three pages with save-as-template.
+Rich-text T&C up to three pages, never skipped, with save-as-template.
 
 **Module:** M06 (Proposals — the commercial document: built, priced, versioned, generated, shared) · **Personas:** Sales Executive (primary — builds on both paths), Sales Manager (team-scoped), EPC Owner (full capability; their T&C template default is what this step pre-fills), Design Engineer (builds and edits, does not send) · **Context of use:** the builder must be fully workable at phone width — the PRD's Path B scene is *"the rep is standing in their living room"* — as well as at desk; every field commits on blur.
 
@@ -12,15 +12,14 @@ Reached from: the Proposal Builder shell (SCR-M06-02) — any chip on the chip r
 
 ### From `docs/prd/modules/M06-proposals.md`
 
-- **M06-15** (P0) — **Step 9 · Terms & Conditions (optional, up to 3 pages):** Add / Skip choice. When added: add-logo toggle · rich-text toolbar + textarea · **"Save as template"** (round-trips into the tenant's template set, `M01-51` consumed) · char count · ≈ PDF page estimate.
+- **M06-15** (P0) — **Step 9 · Terms & Conditions (up to 3 pages):** always in the proposal, never skipped — the terms are a floor (owner ruling 2026-10-16, M01 board check; `SCR-M01-19` decision 4). The step offers: add-logo toggle · rich-text toolbar + textarea · **"Save as template"** (round-trips into the tenant's template set, `M01-51` consumed) · char count · ≈ PDF page estimate.
 
 ## States
 
 - **loading** — the step opening inside the builder shell with the draft's committed values.
-- **empty** — no T&C added yet: the Add / Skip choice is the empty state.
+- **empty** — none: the step opens on the tenant's default terms (`SCR-M01-19`), because the terms always print (M06-15).
 - **error** — a failed save-as-template round-trip or a failed field commit, stated plainly; the draft keeps what was committed on blur.
-- **add-or-skip-choice** — the step's optional nature made explicit: Add or Skip.
-- **added-editing** — T&C added: add-logo toggle, rich-text toolbar + textarea, char count live.
+- **added-editing** — the terms being edited: add-logo toggle, rich-text toolbar + textarea, char count live.
 - **save-as-template** — the "Save as template" round-trip into the tenant's template set (`M01-51` consumed).
 - **page-estimate** — the ≈ PDF page estimate reflecting the content, up to the 3-page cap.
 

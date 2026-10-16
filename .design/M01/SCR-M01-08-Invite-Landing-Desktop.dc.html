@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invite landing, 1536</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/fonts.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/colors.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/typography.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/spacing.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/radius.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/elevation.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/motion.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/keyframes.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/base.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/print.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/field-mode.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/styles.css">
+<script src="ds/heliogriddesignsystem_c8aa43/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}
+a:hover{color:var(--link-hover)}
+</style>
+</helmet>
+
+<div style="width:1616px;height:2180px;box-sizing:border-box;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-10);padding:var(--sp-10);background:var(--canvas)">
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:1536px">
+    <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">1536 · normal</span>
+    <div data-screen-label="Invite landing — normal, 1536" data-frame="d-normal" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="desktop" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;box-sizing:border-box;display:flex;flex-direction:column;padding:var(--sp-8) var(--screen-pad-desktop)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmDesktop }}" hint-size="180px,40px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
+        </div>
+        <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:var(--sp-16);padding-bottom:var(--sp-16)">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-6);max-width:600px;justify-self:end">
+            <div style="display:flex;align-items:center;gap:var(--sp-4)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="Rajesh Kulkarni" size="{{ avatarDesktop }}" hint-size="56px,56px"></x-import>
+              <div style="display:flex;flex-direction:column;gap:var(--sp-0-5)">
+                <span style="font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">Rajesh Kulkarni</span>
+                <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary)">EPC Owner · Suryodaya Solar</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+              <h1 style="margin:0;font-size:var(--fs-h1);line-height:var(--lh-h1);letter-spacing:var(--tr-h1);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Rajesh invited you to Suryodaya Solar</h1>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
+              {{ inviteFacts }}
+              <p style="margin:0;max-width:44em;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">The code went to the number Rajesh entered; if it is wrong, decline.</p>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-5);width:420px">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OtpInput" label="Code from the SMS" value="" auto-focus="{{ yes }}" hint-size="100%,110px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Join Suryodaya Solar</x-import>
+            <div style="display:flex;flex-direction:column;align-items:center">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" disabled="{{ yes }}" disabled-reason="You can ask for a new code in 30 s." hint-size="auto,72px">Send the code again</x-import>
+            </div>
+            <div style="display:flex;justify-content:center">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">This invite isn't for me</x-import>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:1536px">
+    <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">1536 · declined-notifies-owner · confirm</span>
+    <div data-screen-label="Invite landing — decline confirm, 1536" data-frame="d-decline-confirm" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="desktop" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;box-sizing:border-box;display:flex;flex-direction:column;padding:var(--sp-8) var(--screen-pad-desktop)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmDesktop }}" hint-size="180px,40px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
+        </div>
+        <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:var(--sp-16);padding-bottom:var(--sp-16)">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-6);max-width:600px;justify-self:end">
+            <div style="display:flex;align-items:center;gap:var(--sp-4)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="Rajesh Kulkarni" size="{{ avatarDesktop }}" hint-size="56px,56px"></x-import>
+              <div style="display:flex;flex-direction:column;gap:var(--sp-0-5)">
+                <span style="font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">Rajesh Kulkarni</span>
+                <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary)">EPC Owner · Suryodaya Solar</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+              <h1 style="margin:0;font-size:var(--fs-h1);line-height:var(--lh-h1);letter-spacing:var(--tr-h1);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Rajesh invited you to Suryodaya Solar</h1>
+            </div>
+            <div style="padding-top:var(--sp-2)">{{ inviteFacts }}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-5);width:420px">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OtpInput" label="Code from the SMS" value="" hint-size="100%,110px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Join Suryodaya Solar</x-import>
+            <div style="display:flex;justify-content:center">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">This invite isn't for me</x-import>
+            </div>
+          </div>
+        </div>
+      </div>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Modal" open="{{ yes }}" on-close="{{ noop }}" inset="{{ yes }}" size="sm" density="expressive" tone="danger" dismissible="{{ no }}" show-close="{{ no }}" z-index="{{ overlayZ }}" title="Decline this invite?" description="Rajesh Kulkarni is told it was not for you, and the link stops working. If it was meant for you after all, Rajesh can invite you again." footer="{{ declineActions }}" hint-size="420px,280px"></x-import>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1616,"height":2180}}'>
+class Component extends DCLogic {
+  /* Pinned: inviter Rajesh Kulkarni (EPC Owner · Suryodaya Solar), invitee +91 98450 27746, the
+     invite's preset list ["Sales Executive"]. No date, no wall-clock time, no countdown. */
+  presets = ["Sales Executive"];
+  facts() {
+    const NS = window.HelioGridDesignSystem_c8aa43, h = React.createElement;
+    const phone = h("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, "+91 98450 27746");
+    return h(NS.FactRows, { label: "Your invite", density: "expressive" }, [
+      h(NS.FactRow, { key: "r", label: "Rajesh set you up as", values: this.presets, stack: false }),
+      h(NS.FactRow, { key: "p", label: "Mobile number", value: phone })
+    ]);
+  }
+  declineActions() {
+    const NS = window.HelioGridDesignSystem_c8aa43, h = React.createElement;
+    return h(NS.SheetActions, null,
+      h(NS.Button, { key: "keep", variant: "secondary", size: "lg" }, "Keep the invite"),
+      h(NS.Button, { key: "decline", variant: "destructive", size: "lg" }, "Decline the invite"));
+  }
+  renderVals() {
+    return {
+      yes: true,
+      no: false,
+      noop: () => {},
+      overlayZ: 60,
+      wmDesktop: 30,
+      avatarDesktop: 56,
+      inviteFacts: this.facts(),
+      declineActions: this.declineActions()
+    };
+  }
+}
+</script>
+</body>
+</html>

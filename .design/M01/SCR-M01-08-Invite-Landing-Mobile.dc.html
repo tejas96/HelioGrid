@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invite landing, 375</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/fonts.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/colors.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/typography.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/spacing.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/radius.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/elevation.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/motion.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/keyframes.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/base.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/print.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/field-mode.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/styles.css">
+<script src="ds/heliogriddesignsystem_c8aa43/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}
+a:hover{color:var(--link-hover)}
+</style>
+</helmet>
+
+<div style="width:1700px;height:2686px;box-sizing:border-box;overflow:hidden;display:flex;flex-wrap:wrap;align-content:flex-start;gap:var(--sp-10);padding:var(--sp-10);background:var(--canvas)">
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
+    <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · normal</span>
+    <div data-screen-label="Invite landing — normal" data-frame="m-normal" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile) var(--sp-6)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
+        </div>
+        <div style="flex:1;min-height:0;overflow:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) 0 var(--sp-4)">
+          <div style="display:flex;align-items:center;gap:var(--sp-3)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="Rajesh Kulkarni" size="{{ avatarSize }}" hint-size="40px,40px"></x-import>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-0-5);min-width:0">
+              <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Rajesh Kulkarni</span>
+              <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">EPC Owner · Suryodaya Solar</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Rajesh invited you to Suryodaya Solar</h1>
+          </div>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" density="expressive" hint-size="100%,180px">
+            <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+              <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your invite</span>
+              {{ inviteFacts }}
+              <p style="margin:0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">The code went to the number Rajesh entered; if it is wrong, decline.</p>
+            </div>
+          </x-import>
+          <div style="padding-inline:var(--sp-0-5)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OtpInput" label="Code from the SMS" value="" hint-size="100%,110px"></x-import>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;padding-top:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" disabled="{{ yes }}" disabled-reason="You can ask for a new code in 30 s." hint-size="auto,72px">Send the code again</x-import>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Join Suryodaya Solar</x-import>
+          <div style="display:flex;justify-content:center">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">This invite isn't for me</x-import>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
+    <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · loading</span>
+    <div data-screen-label="Invite landing — loading" data-frame="m-loading" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
+        </div>
+        <div role="status" aria-busy="true" aria-label="Loading the invite" style="flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) 0 var(--sp-4)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="loading" density="expressive" hint-size="100%,180px"></x-import>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
+    <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · empty</span>
+    <div data-screen-label="Invite landing — no invite behind the link" data-frame="m-empty" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
+        </div>
+        <div style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EmptyState" icon="{{ linkGoneIcon }}" title="This invite is not there any more" description="It may already have been used, or taken back by the person who sent it." action="{{ emptyAction }}" hint-size="100%,420px"></x-import>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
+    <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · load-error</span>
+    <div data-screen-label="Invite landing — invite did not load" data-frame="m-load-error" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
+        </div>
+        <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) 0 var(--sp-4)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" kind="validation" tone="danger" title="Your invite did not load" hint-size="100%,96px">Something on our side failed; try again in a moment.</x-import>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Try again</x-import>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <sc-for list="{{ stateFrames }}" as="s" hint-placeholder-count="4">
+    <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
+      <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">{{ s.name }}</span>
+      <div data-screen-label="{{ s.screenLabel }}" data-frame="{{ s.id }}" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+        <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
+          </div>
+          <div style="flex:1;min-height:0;overflow:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) 0 var(--sp-4)">
+            <div style="display:flex;align-items:center;gap:var(--sp-3)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="Rajesh Kulkarni" size="{{ avatarSize }}" hint-size="40px,40px"></x-import>
+              <div style="display:flex;flex-direction:column;gap:var(--sp-0-5);min-width:0">
+                <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Rajesh Kulkarni</span>
+                <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">EPC Owner · Suryodaya Solar</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Rajesh invited you to Suryodaya Solar</h1>
+            </div>
+            <sc-if value="{{ s.danger }}">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" kind="validation" tone="danger" title="{{ s.danger.title }}" hint-size="100%,96px">{{ s.danger.body }}</x-import>
+            </sc-if>
+            <sc-if value="{{ s.warn }}">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" kind="state" tone="warning" title="{{ s.warn.title }}" hint-size="100%,96px">{{ s.warn.body }}</x-import>
+            </sc-if>
+            <sc-if value="{{ s.card }}" hint-placeholder-val="{{ true }}">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" density="expressive" hint-size="100%,180px">
+                <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+                  <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your invite</span>
+                  {{ inviteFacts }}
+                  <p style="margin:0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">The code went to the number Rajesh entered; if it is wrong, decline.</p>
+                </div>
+              </x-import>
+            </sc-if>
+            <sc-if value="{{ s.code }}">
+              <div style="padding-inline:var(--sp-0-5)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OtpInput" label="Code from the SMS" value="{{ s.code.value }}" helper="{{ s.code.helper }}" error="{{ s.code.error }}" disabled="{{ s.code.disabled }}" hint-size="100%,110px"></x-import>
+              </div>
+            </sc-if>
+            <sc-if value="{{ s.resendWaiting }}">
+              <div style="display:flex;flex-direction:column;align-items:center;padding-top:var(--sp-2)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" disabled="{{ yes }}" disabled-reason="You can ask for a new code in 30 s." hint-size="auto,72px">Send the code again</x-import>
+              </div>
+            </sc-if>
+            <sc-if value="{{ s.resendLive }}">
+              <div style="display:flex;justify-content:center">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">Send the code again</x-import>
+              </div>
+            </sc-if>
+            <sc-if value="{{ s.foot }}">
+              <p style="margin:0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">{{ s.foot }}</p>
+            </sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">{{ s.primary }}</x-import>
+            <sc-if value="{{ s.decline }}">
+              <div style="display:flex;justify-content:center">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">This invite isn't for me</x-import>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-for>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
+    <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · declined-notifies-owner · confirm</span>
+    <div data-screen-label="Invite landing — decline confirm" data-frame="m-decline-confirm" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-6) var(--screen-pad-mobile)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--sp-3);padding-top:var(--sp-2)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="Rajesh Kulkarni" size="{{ avatarSize }}" hint-size="40px,40px"></x-import>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-0-5);min-width:0">
+            <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Rajesh Kulkarni</span>
+            <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">EPC Owner · Suryodaya Solar</span>
+          </div>
+        </div>
+        <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Rajesh invited you to Suryodaya Solar</h1>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" density="expressive" hint-size="100%,180px">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+            <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your invite</span>
+            {{ phoneFacts }}
+          </div>
+        </x-import>
+      </div>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Sheet" open="{{ yes }}" on-close="{{ noop }}" inset="{{ yes }}" size="auto" density="expressive" handle="{{ no }}" dismissible="{{ no }}" z-index="{{ overlayZ }}" title="Decline this invite?" footer="{{ declineActions }}" hint-size="100%,340px">
+        <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Rajesh Kulkarni is told it was not for you, and the link stops working. If it was meant for you after all, Rajesh can invite you again.</p>
+      </x-import>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
+    <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · declined-notifies-owner · after</span>
+    <div data-screen-label="Invite landing — declined" data-frame="m-declined" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
+        </div>
+        <div style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EmptyState" icon="{{ doneIcon }}" title="This invite is closed" description="We have told Rajesh Kulkarni it was not for you. If it was meant for you after all, Rajesh can invite you again." action="{{ declinedAction }}" hint-size="100%,440px"></x-import>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
+    <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · reinvite-requested</span>
+    <div data-screen-label="Invite landing — re-invite requested" data-frame="m-reinvite-requested" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
+        </div>
+        <div style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EmptyState" icon="{{ doneIcon }}" title="Rajesh has been asked for a new invite" description="When he sends it, a new link reaches this phone." action="{{ reinviteAction }}" hint-size="100%,400px"></x-import>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1700,"height":2686}}'>
+class Component extends DCLogic {
+  /* Pinned: inviter Rajesh Kulkarni (EPC Owner · Suryodaya Solar), invitee +91 98450 27746, the
+     invite's preset list ["Sales Executive"], the code 482913. No date, no wall-clock time, no
+     countdown. */
+  presets = ["Sales Executive"];
+  /* The invite's facts: the preset list and the number, which comes last so its line sits
+     directly under it. */
+  facts(withRole) {
+    const NS = window.HelioGridDesignSystem_c8aa43, h = React.createElement;
+    const phone = h("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, "+91 98450 27746");
+    const rows = [];
+    if (withRole) rows.push(h(NS.FactRow, { key: "r", label: "Rajesh set you up as", values: this.presets, stack: false }));
+    rows.push(h(NS.FactRow, { key: "p", label: "Mobile number", value: phone }));
+    return h(NS.FactRows, { label: "Your invite", density: "expressive" }, rows);
+  }
+  /* A line-drawn glyph in the system's Icon at xl; the EmptyState's well gives it its colour. */
+  glyph(paths) {
+    const NS = window.HelioGridDesignSystem_c8aa43, h = React.createElement;
+    return h(NS.Icon, { size: "xl" },
+      h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" },
+        paths.map((d, i) => h("path", { key: i, d }))));
+  }
+  /* An EmptyState's action with the one line that belongs at it. */
+  actionWithLine(variant, line) {
+    const NS = window.HelioGridDesignSystem_c8aa43, h = React.createElement;
+    return h("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--sp-3)" } },
+      h(NS.Button, { variant, size: "lg" }, "Sign in to HelioGrid"),
+      h("p", { style: { margin: 0, fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)", textWrap: "pretty" } }, line));
+  }
+  declineActions() {
+    const NS = window.HelioGridDesignSystem_c8aa43, h = React.createElement;
+    return h(NS.SheetActions, null,
+      h(NS.Button, { key: "keep", variant: "secondary", size: "lg" }, "Keep the invite"),
+      h(NS.Button, { key: "decline", variant: "destructive", size: "lg" }, "Decline the invite"));
+  }
+  stateFrames() {
+    return [
+      {
+        id: "m-otp-auto-read",
+        name: "375 · otp-auto-read",
+        screenLabel: "Invite landing — code filled from the SMS",
+        card: true,
+        code: { value: "482913", helper: "Filled from the SMS — check it, or type over it." },
+        resendWaiting: true,
+        primary: "Join Suryodaya Solar",
+        decline: true
+      },
+      {
+        id: "m-wrong-code",
+        name: "375 · wrong-code",
+        screenLabel: "Invite landing — wrong code",
+        card: true,
+        code: { value: "482913", error: "That is not the code we sent. 2 wrong tries so far — check the last SMS, or ask for a new one." },
+        resendLive: true,
+        primary: "Join Suryodaya Solar",
+        decline: true
+      },
+      {
+        id: "m-error",
+        name: "375 · join-error",
+        screenLabel: "Invite landing — joining failed",
+        danger: { title: "Something on our side failed", body: "You have not joined yet, and this invite still works." },
+        card: true,
+        code: { value: "482913", disabled: true },
+        primary: "Try again",
+        decline: true
+      },
+      {
+        id: "m-expired",
+        name: "375 · expired-one-tap-re-request",
+        screenLabel: "Invite landing — expired",
+        warn: { title: "This invite has expired", body: "An invite lasts 7 days, and this one is past that." },
+        card: false,
+        foot: "One tap tells him you are still waiting.",
+        primary: "Ask Rajesh to invite you again",
+        decline: false
+      }
+    ];
+  }
+
+  renderVals() {
+    const signInLine = "For an account you already have with another company.";
+    return {
+      yes: true,
+      no: false,
+      noop: () => {},
+      overlayZ: 60,
+      wmMobile: 24,
+      avatarSize: 40,
+      inviteFacts: this.facts(true),
+      phoneFacts: this.facts(false),
+      linkGoneIcon: this.glyph(["M9 17H7A5 5 0 0 1 7 7h2", "M15 7h2a5 5 0 0 1 4 8", "M8 12h4", "m2 2 20 20"]),
+      doneIcon: this.glyph(["M20 6 9 17l-5-5"]),
+      emptyAction: this.actionWithLine("primary", "If you have not joined yet, ask whoever invited you for a new invite."),
+      declinedAction: this.actionWithLine("secondary", signInLine),
+      reinviteAction: this.actionWithLine("secondary", signInLine),
+      declineActions: this.declineActions(),
+      stateFrames: this.stateFrames()
+    };
+  }
+}
+</script>
+</body>
+</html>

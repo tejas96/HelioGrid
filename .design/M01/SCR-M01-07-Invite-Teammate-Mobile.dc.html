@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/fonts.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/colors.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/typography.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/spacing.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/radius.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/elevation.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/motion.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/keyframes.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/base.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/print.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/field-mode.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/styles.css">
+<script src="ds/heliogriddesignsystem_c8aa43/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}
+a:hover{color:var(--link-hover)}
+</style>
+</helmet>
+
+<div style="width:1365px;height:2728px;overflow:hidden;box-sizing:border-box;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--sp-20);row-gap:var(--sp-16);align-content:start;padding:var(--sp-10);background:var(--canvas)">
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · default · onboarding life</span>
+    <div data-screen-label="Invite teammate — default" data-frame="m-default" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile) var(--sp-5)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-6) 0 var(--sp-4)">
+          <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Invite someone</h1>
+        </div>
+        <div data-ask-box="1" style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-5)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Their name" placeholder="Anjali Kulkarni" hint-size="100%,80px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneField" label="Their phone number" helper="HelioGrid sends the message to this number — it does not come from your phone." hint-size="100%,100px"></x-import>
+          <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-h3);line-height:var(--lh-h3);letter-spacing:var(--tr-h3);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">What can they do?</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ rolesAsk.m_default }}" hint-size="44px,44px"></x-import></div>
+          <div role="group" aria-label="Roles for this invite" style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <sc-for list="{{ roles }}" as="r" hint-placeholder-count="12">
+              <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-2) var(--sp-4) var(--sp-3);background:var(--fill);border-radius:var(--r-tile)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" label="{{ r.name }}" hint-size="100%,44px"></x-import>
+                <span style="padding-left:var(--sp-8);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">{{ r.desc }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;margin-left:calc(-1 * var(--sp-4))"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">What each role can do</x-import></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-5)">
+          <div style="display:flex;align-items:flex-start;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="lg" hint-size="auto,48px">Skip for now</x-import>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ on }}" hint-size="100%,48px">Send invite</x-import></div>
+          </div>
+          <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">The invite works for 7 days — cancel it on Team.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · loading</span>
+    <div data-screen-label="Invite teammate — loading" data-frame="m-loading" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile) var(--sp-5)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-6) 0 var(--sp-4)">
+          <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Invite someone</h1>
+        </div>
+        <div data-ask-box="1" style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-5)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Their name" placeholder="Anjali Kulkarni" hint-size="100%,80px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneField" label="Their phone number" helper="HelioGrid sends the message to this number — it does not come from your phone." hint-size="100%,100px"></x-import>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+            <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-h3);line-height:var(--lh-h3);letter-spacing:var(--tr-h3);font-weight:var(--fw-bold);color:var(--text-primary)">What can they do?</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ rolesAsk.m_loading }}" hint-size="44px,44px"></x-import></div>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="loading" hint-size="100%,160px"></x-import>
+          </div>
+          <div style="display:flex;margin-left:calc(-1 * var(--sp-4))"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">What each role can do</x-import></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-5)">
+          <div style="display:flex;align-items:flex-start;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="lg" hint-size="auto,48px">Skip for now</x-import>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ on }}" disabled="{{ on }}" disabled-reason="{{ loadingReason }}" hint-size="100%,48px">Send invite</x-import></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · error</span>
+    <div data-screen-label="Invite teammate — error" data-frame="m-error" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile) var(--sp-5)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-6) 0 var(--sp-4)">
+          <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Invite someone</h1>
+        </div>
+        <div data-ask-box="1" style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-5)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Their name" placeholder="Anjali Kulkarni" hint-size="100%,80px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneField" label="Their phone number" helper="HelioGrid sends the message to this number — it does not come from your phone." hint-size="100%,100px"></x-import>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+            <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-h3);line-height:var(--lh-h3);letter-spacing:var(--tr-h3);font-weight:var(--fw-bold);color:var(--text-primary)">What can they do?</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ rolesAsk.m_error }}" hint-size="44px,44px"></x-import></div>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="error" error-title="We couldn't load the roles" error-message="Try again, or skip for now." on-retry="{{ noop }}" hint-size="100%,160px"></x-import>
+          </div>
+          <div style="display:flex;margin-left:calc(-1 * var(--sp-4))"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">What each role can do</x-import></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-5)">
+          <div style="display:flex;align-items:flex-start;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="lg" hint-size="auto,48px">Skip for now</x-import>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ on }}" disabled="{{ on }}" disabled-reason="{{ errorReason }}" hint-size="100%,48px">Send invite</x-import></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · blocked · no role picked</span>
+    <div data-screen-label="Invite teammate — blocked, no role" data-frame="m-blocked-no-role" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile) var(--sp-5)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-6) 0 var(--sp-4)">
+          <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Invite someone</h1>
+        </div>
+        <div data-ask-box="1" style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-5)">
+          <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-h3);line-height:var(--lh-h3);letter-spacing:var(--tr-h3);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">What can they do?</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ rolesAsk.m_blocked_no_role }}" hint-size="44px,44px"></x-import></div>
+          <sc-if value="{{ bannersReady }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" kind="validation" tone="danger" hint-size="100%,72px">Tick at least one role before sending — an invite with none would open an empty app.</x-import></sc-if>
+          <div role="group" aria-label="Roles for this invite" aria-invalid="true" style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <sc-for list="{{ roles }}" as="r" hint-placeholder-count="12">
+              <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-2) var(--sp-4) var(--sp-3);background:var(--fill);border-radius:var(--r-tile)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" label="{{ r.name }}" hint-size="100%,44px"></x-import>
+                <span style="padding-left:var(--sp-8);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">{{ r.desc }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;margin-left:calc(-1 * var(--sp-4))"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">What each role can do</x-import></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-5)">
+          <div style="display:flex;align-items:flex-start;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="lg" hint-size="auto,48px">Skip for now</x-import>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ on }}" hint-size="100%,48px">Send invite</x-import></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · already a member</span>
+    <div data-screen-label="Invite teammate — already a member" data-frame="m-already-member" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile) var(--sp-5)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-6) 0 var(--sp-4)">
+          <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Invite someone</h1>
+        </div>
+        <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-5)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Their name" value="Rohit Pawar" hint-size="100%,80px"></x-import>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneField" label="Their phone number" value="98220 41187" hint-size="100%,80px"></x-import>
+            <sc-if value="{{ bannersReady }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" kind="state" tone="info" title="This number is already on your team" action="{{ openTeamAction }}" hint-size="100%,72px"></x-import></sc-if>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-5)">
+          <div style="display:flex;align-items:flex-start;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="lg" hint-size="auto,48px">Skip for now</x-import>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ on }}" hint-size="100%,48px">Use a different number</x-import></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · already invited</span>
+    <div data-screen-label="Invite teammate — already invited" data-frame="m-already-invited" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile) var(--sp-5)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-6) 0 var(--sp-4)">
+          <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Invite someone</h1>
+        </div>
+        <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-5)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Their name" value="Kavita Shinde" hint-size="100%,80px"></x-import>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneField" label="Their phone number" value="99701 26654" hint-size="100%,80px"></x-import>
+            <sc-if value="{{ bannersReady }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" kind="state" tone="info" title="This number already has an invite waiting" action="{{ openTeamAction }}" hint-size="100%,100px">Nothing to send — to invite this number again, cancel the pending invite on Team.</x-import></sc-if>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-5)">
+          <div style="display:flex;align-items:flex-start;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="lg" hint-size="auto,48px">Skip for now</x-import>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ on }}" hint-size="100%,48px">Use a different number</x-import></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · number not covered</span>
+    <div data-screen-label="Invite teammate — number not covered" data-frame="m-number-not-covered" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile) var(--sp-5)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-6) 0 var(--sp-4)">
+          <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Invite someone</h1>
+        </div>
+        <div data-ask-box="1" style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-5)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Their name" value="Anjali Kulkarni" hint-size="100%,80px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneField" label="Their phone number" value="40 1234 5678" error="We can't send invites to this number — check it or use another." hint-size="100%,100px"></x-import>
+          <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-h3);line-height:var(--lh-h3);letter-spacing:var(--tr-h3);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">What can they do?</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ rolesAsk.m_number_not_covered }}" hint-size="44px,44px"></x-import></div>
+          <div role="group" aria-label="Roles for this invite" style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <sc-for list="{{ roles }}" as="r" hint-placeholder-count="12">
+              <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-2) var(--sp-4) var(--sp-3);background:var(--fill);border-radius:var(--r-tile)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" label="{{ r.name }}" hint-size="100%,44px"></x-import>
+                <span style="padding-left:var(--sp-8);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">{{ r.desc }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;margin-left:calc(-1 * var(--sp-4))"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">What each role can do</x-import></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-5)">
+          <div style="display:flex;align-items:flex-start;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="lg" hint-size="auto,48px">Skip for now</x-import>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ on }}" hint-size="100%,48px">Send invite</x-import></div>
+          </div>
+          <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">The invite works for 7 days — cancel it on Team.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · invite cap reached</span>
+    <div data-screen-label="Invite teammate — cap reached" data-frame="m-cap-reached" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile) var(--sp-5)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-6) 0 var(--sp-4)">
+          <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Invite someone</h1>
+        </div>
+        <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-4)">
+          <sc-if value="{{ bannersReady }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" kind="cap" title="50 invites in the last 24 hours — the limit for one company" action="{{ openTeamAction }}" hint-size="100%,132px">Each invite counts for 24 hours from when it was sent.</x-import></sc-if>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-5)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ on }}" hint-size="100%,48px">Continue setup</x-import>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · Team life</span>
+    <div data-screen-label="Invite teammate — Team life, 375" data-frame="m-team" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+      <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile) var(--sp-6)">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ on }}" hint-size="100%,48px">Invite teammate</x-import>
+          <div style="display:flex;margin-left:calc(-1 * var(--sp-4))"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">What each role can do</x-import></div>
+        </div>
+        <section aria-label="Everyone at Suryodaya Solar" style="display:flex;flex-direction:column;gap:var(--tile-gap)">
+          <sc-for list="{{ people }}" as="p" hint-placeholder-count="11">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ p }}" hint-size="100%,148px"></x-import>
+          </sc-for>
+        </section>
+      </div>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ bottomNavProps }}" hint-size="100%,84px"></x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" open="{{ on }}" inset="{{ on }}" show-close="{{ on }}" title="Invite someone" footer="{{ teamSheetFooter }}" hint-size="100%,560px">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Their name" placeholder="Anjali Kulkarni" hint-size="100%,80px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneField" label="Their phone number" helper="HelioGrid sends the message to this number — it does not come from your phone." hint-size="100%,100px"></x-import>
+          <div style="display:flex;align-items:center;gap:var(--sp-1)"><span style="font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">What can they do?</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ rolesAsk.m_team }}" hint-size="44px,44px"></x-import></div>
+          <div role="group" aria-label="Roles for this invite" style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <sc-for list="{{ roles }}" as="r" hint-placeholder-count="12">
+              <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-2) var(--sp-4) var(--sp-3);background:var(--fill);border-radius:var(--r-tile)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" label="{{ r.name }}" hint-size="100%,44px"></x-import>
+                <span style="padding-left:var(--sp-8);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">{{ r.desc }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;margin-left:calc(-1 * var(--sp-4))"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">What each role can do</x-import></div>
+          <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">The invite works for 7 days — cancel it on Team.</span>
+        </div>
+      </x-import>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1365,"height":2728}}'>
+class Component extends DCLogic {
+  state = { ds: null, bannersReady: false };
+
+  componentDidMount() {
+    const ready = () => (typeof window === "undefined" ? null : window.HelioGridDesignSystem_c8aa43);
+    const go = (ds) => {
+      /* The bound bundle can evaluate before the page's React global exists, which leaves FactRow
+         (Banner's body ink) and MarketProvider unregistered. Re-run it once React is present; banners
+         render only after that. */
+      const broken = (ds.__errors || []).some((e) => /React is not defined/.test(e.error));
+      if (!broken || !window.React) { this.setState({ ds, bannersReady: !!ds.FactInk || !broken }); return; }
+      if (window.__hgBundleRerun) { window.__hgBundleRerun.then(() => this.setState({ ds: ready(), bannersReady: true })); return; }
+      ds.__errors = [];
+      window.__hgBundleRerun = new Promise((res) => {
+        const el = document.createElement("script");
+        el.src = "ds/heliogriddesignsystem_c8aa43/_ds_bundle.js?rerun=1";
+        el.onload = res; el.onerror = res;
+        document.head.appendChild(el);
+      });
+      window.__hgBundleRerun.then(() => this.setState({ ds: ready(), bannersReady: true }));
+    };
+    if (ready()) { go(ready()); return; }
+    this._poll = setInterval(() => {
+      const ds = ready();
+      if (ds) { clearInterval(this._poll); go(ds); }
+    }, 60);
+  }
+
+  componentWillUnmount() { clearInterval(this._poll); }
+
+  /* F2's twelve presets, F2's fixed order, names word for word. Capability lines are SCR-M01-13's,
+     except EPC Owner's, which says "company settings" (F7-42: a frame never says tenant). */
+  roles() {
+    return [
+      { name: "EPC Owner", desc: "Everything below, plus billing, team and company settings" },
+      { name: "Sales Manager", desc: "See every lead in the company and reassign them" },
+      { name: "Sales Executive", desc: "Own leads, log visits and send proposals" },
+      { name: "Survey Engineer", desc: "Run site surveys and record roof measurements" },
+      { name: "Design Engineer", desc: "Lay out arrays, size strings and pick inverters" },
+      { name: "Project Manager", desc: "Schedule installs and run a project to commissioning" },
+      { name: "Field Technician", desc: "Take service tickets and close them on site" },
+      { name: "Installation Team Member", desc: "Work the installation checklist on site" },
+      { name: "HR/Admin", desc: "Manage staff records, leave and company documents" },
+      { name: "Finance", desc: "Record payments, raise invoices and chase dues" },
+      { name: "Operations", desc: "Hold inventory, raise purchase orders and track dispatch" },
+      { name: "Marketing", desc: "Manage campaigns, lead sources and the public price list" }
+    ];
+  }
+
+  renderVals() {
+    const ds = this.state.ds;
+    const noop = () => {};
+    const base = {
+      on: true,
+      noop: noop,
+      wmMobile: 22,
+      roles: this.roles(),
+      bannersReady: !!this.state.bannersReady,
+      loadingReason: "Waiting for the role list — an invite needs at least one role.",
+      errorReason: "Needs the role list.",
+      /* The ask on the role set (F7-46): the rule's reasoning is teaching, so it lives here, not in the
+         reading flow. The rule itself is enforced at the act by the danger banner. */
+      rolesAsk: (() => {
+        const ask = { label: "About roles", title: "Roles", pages: ["Pick at least one role. Someone invited with no role would sign in to an empty app.",
+                "More than one is fine, and roles can change later on Team."] };
+        const frames = { m_default: "m-default", m_loading: "m-loading", m_error: "m-error", m_blocked_no_role: "m-blocked-no-role", m_number_not_covered: "m-number-not-covered", m_team: "m-team" };
+        const o = {};
+        Object.keys(frames).forEach((k) => {
+          const f = frames[k];
+          o[k] = Object.assign({}, ask, f !== "m-team"
+            ? { placement: "top", within: '[data-frame="' + f + '"] [data-ask-box]' }
+            : { placement: "bottom", within: '[data-frame="' + f + '"]' });
+        });
+        return o;
+      })()
+    };
+    /* Components are created only once the bundle has registered its global. */
+    if (!ds) return base;
+    const h = React.createElement;
+    const G = (name, o) => h(ds.ShellGlyph, Object.assign({ name: name }, o || {}));
+    const inView = (name) => G(name, { filled: true, tone: "inverse" });
+    const D = ds.DESTINATION_GLYPH;
+
+    /* EPC Owner bar (F7-48): Home · Leads · Add lead · Projects · More, More in view. */
+    const navItems = [
+      { key: "home", label: "Home", icon: G(D.home), activeIcon: inView(D.home) },
+      { key: "leads", label: "Leads", icon: G(D.leads), activeIcon: inView(D.leads) },
+      { key: "add", verb: true, label: "Add lead", icon: G("plus-circle"), onClick: noop },
+      { key: "projects", label: "Projects", icon: G(D.projects), activeIcon: inView(D.projects) },
+      { key: "more", label: "More", icon: G(D.more), activeIcon: inView(D.more) }
+    ];
+
+    const GUARD = "Suryodaya Solar must keep one EPC Owner, so make someone else one first.";
+    const ROSTER = [
+      { name: "Priya Deshmukh", kind: "invited", roles: ["Sales Executive"], sent: "29 Aug 2026, 17:40", expires: "5 Sep 2026, 17:40" },
+      { name: "Rohan Gaikwad", kind: "expired", roles: ["Survey Engineer"], sent: "20 Aug 2026, 11:05" },
+      { name: "Amit Rane", kind: "active", roles: ["Sales Executive", "Survey Engineer"], at: "30 Aug 2026, 19:12" },
+      { name: "Anjali Kulkarni", kind: "active", roles: ["Sales Executive"], at: "31 Aug 2026, 08:47" },
+      { name: "Kavita Shirke", kind: "active", roles: ["Survey Engineer"], at: "28 Aug 2026, 13:20" },
+      { name: "Meera Iyer", kind: "active", roles: ["Design Engineer"], at: "29 Aug 2026, 17:30" },
+      { name: "Nitin Pawar", kind: "active", roles: ["Project Manager"], at: "31 Aug 2026, 08:12" },
+      { name: "Rajesh Kulkarni", kind: "active", you: true, roles: ["EPC Owner"], at: "31 Aug 2026, 09:05", reason: GUARD },
+      { name: "Sunil Bhosale", kind: "active", roles: ["Installation Team Member"], at: "31 Aug 2026, 07:55" },
+      { name: "Vikram Deshpande", kind: "active", roles: ["Survey Engineer", "Design Engineer", "Installation Team Member"], at: "30 Aug 2026, 12:40" },
+      { name: "Deepak Jadhav", kind: "deactivated", roles: ["Installation Team Member"], at: "12 Aug 2026, 15:58" }
+    ];
+    /* Membership and invite status: a word and a dot in its tone (N6b). */
+    const STATUS = {
+      invited: { label: "Invited", tone: "info" },
+      expired: { label: "Expired", tone: "warning" },
+      active: { label: "Active", tone: "success" },
+      deactivated: { label: "Deactivated", tone: "neutral" }
+    };
+    const statusChip = (kind) => h(ds.StatusChip, { status: kind, label: STATUS[kind].label, tone: STATUS[kind].tone, density: "functional" });
+    const gap = (words) => h(ds.NamedGap, { scale: "cell", gap: words });
+    /* SCR-M01-12's roster and row acts as its 375 board draws them: every preset held, in F2's
+       order, two whole and a `+N`; only an active member's row opens Assign Roles. */
+    const roles = (names) => h(ds.ChipGroup, { max: 2, label: "roles", density: "functional" },
+      names.map((n) => h(ds.Badge, { key: n, tone: "neutral", density: "functional" }, n)));
+    const you = h(ds.Badge, { key: "you", tone: "accent", density: "functional" }, "You");
+    const act = (label, reason) => h(ds.Button, {
+      variant: "ghost", size: "sm", onClick: reason ? undefined : noop,
+      disabled: !!reason, disabledReason: reason || undefined,
+      style: { marginLeft: "calc(-1 * var(--sp-3))" }
+    }, label);
+    /* The expiry date is computed from the send and the 7-day invite window: the tier rides as a
+       mark on the row and the working opens under it. The 7 days is a product limit, untiered. */
+    const expiryHonesty = (p) => h("div", {
+      style: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--sp-1)" }
+    }, h(ds.Provenance, { tier: "derived", size: 12 }),
+      h(ds.Derivation, {
+        label: "Invite expiry · " + p.name,
+        parts: [{ kind: "formula", text: "Sent " + p.sent + ", plus the 7-day invite window." }]
+      }));
+    const card = (p) => ({
+      name: p.name,
+      chip: statusChip(p.kind),
+      marks: p.you ? [you, roles(p.roles)] : roles(p.roles),
+      meta: p.kind === "invited" ? [gap("Never signed in"), "Invite expires " + p.expires]
+        : p.kind === "expired" ? [gap("Never signed in"), "Invite sent " + p.sent]
+        : ["Last active " + p.at],
+      provenance: p.kind === "invited" ? expiryHonesty(p) : undefined,
+      action: p.kind === "invited" ? act("Revoke invite")
+        : p.kind === "expired" ? act("Invite again")
+        : p.kind === "active" ? act("Deactivate", p.reason)
+        : undefined,
+      onClick: p.kind === "active" ? noop : undefined,
+      density: "functional"
+    });
+
+    return Object.assign(base, {
+      openTeamAction: h(ds.BannerAction, null, "Open Team"),
+      /* SheetActions' order: secondary first, primary last — the primary sits at the trailing edge in a
+         row and on top when the row stacks. Same order as the corridor's foot row. */
+      teamSheetFooter: h(ds.SheetActions, null,
+        h(ds.Button, { variant: "ghost", size: "lg" }, "Cancel"),
+        h(ds.Button, { variant: "primary", size: "lg" }, "Send invite")
+      ),
+      /* A page opened from More: its way back and its title in the bar, no h1 copy below (C9). */
+      topBar: {
+        title: "Team",
+        leading: h(ds.IconButton, { label: "Back to More", variant: "ghost", onClick: noop }, G("chevron-left", { tone: "primary" })),
+        searchLabel: "Search", onSearchClick: noop,
+        notificationsLabel: "Notifications", onNotificationsClick: noop,
+        avatar: h(ds.AccountMenu, { name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account", menuLabel: "Account",
+          grievanceLabel: "Grievance contact", signOutLabel: "Sign out", align: "end", onGrievance: noop, onSignOut: noop })
+      },
+      people: ROSTER.map(card),
+      bottomNavProps: { items: navItems, value: "more", onChange: noop }
+    });
+  }
+}
+</script>
+</body>
+</html>

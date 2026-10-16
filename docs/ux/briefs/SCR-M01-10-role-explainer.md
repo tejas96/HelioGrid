@@ -37,22 +37,23 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `error
    name, who last set the person's roles, both halves of what it carries — and nothing load-bearing
    lives in the first-run chrome around it. The credit line names who last set the roles, never
    *when he invited you*: a later role change (`M01-19`, `M01-20`, `F2-22`) would make that false.
-2. **The act names the destination, not the step.** *Go to my leads*, never *Continue*: the home is
-   decided by the role, and a person told where they are going does not have to read the pill footer to
+2. **The act names the destination, not the step.** *Go to my day*, never *Continue*: the
+   Sales Executive's home is My Day (`PS-11`, `M13-10`), and the home is decided by the role, and a person told where they are going does not have to read the pill footer to
    find out.
 3. **The second life is a sheet, not a page** (`F7-21`). Re-opening the card from profile is seeing
    something in context without navigating away from it; the card inside the sheet is byte-for-byte
    this one, which is what decision 1 buys.
 4. **Stacked presets take the UNION of grants and the complement of that union as limits** — never
    one list per preset. A limit one preset carries and another lifts is not a limit, and printing
-   both would tell a surveyor-and-rep they cannot do what they can.
+   both would tell a surveyor-and-rep they cannot do what they can. The board's stacked example is
+   Sales Executive + Design Engineer, a pair whose second preset adds grants (owner ruling 2026-10-16).
 5. **The corridor ends with no confirmation.** No toast, no "you're all set" — `SCR-M01-06` spends
    that beat on the owner's path, and the honest end of an explainer is the work itself.
 6. **The re-open route is Profile & preferences** — the same destination `SCR-M01-09` promises for
    the name and photo, so first run makes one promise about where its results live, not two.
 7. **The grant and limit rows are the role card's own part.** Each row is a glyph and a phrase that
    wraps. No shared component draws a wrapping capability row yet, so the card builds them itself,
-   at tokens.
+   at tokens — and its loading lines with them (`D218`, owner ruling 2026-10-16).
 8. **The owner note lists only what the EPC Owner alone holds** — adding a teammate
    (`F2.M01.manage-team`). Changing a price list is not on it: Operations holds
    `F2.M01.manage-catalog` too. Approving a discount is not on it either: there is no discount

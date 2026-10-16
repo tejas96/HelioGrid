@@ -63,6 +63,19 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty
 7. **The landing carries the corridor's language control** — the same control `SCR-M01-09` draws,
    at both widths.
 
+**Rulings at the M01 board check (owner, 2026-10-16).**
+
+8. **The invite facts are `FactRows`.** The board composes the system's `FactRow`/`FactRows`; the
+   build ports them into `packages/ui` at this task, the first that needs them (`D231`).
+9. **The 1536 landing is the door.** It is built on `DoorFrame` (`taskMeasure="field"`) with
+   `DoorLanguage`, so its measures come from the frame, never transcribed from the board (`D232`).
+10. **A code held while joining is `readOnly`, never greyed.** `disabled` is for a field with
+    nothing to take; the board's `disabled` is the design system's nearest prop (`D232`).
+11. **The decline confirm cannot be dismissed.** The sheet at 375 and the dialog at 1536 set
+    `dismissible: false`: it resolves only through *Keep the invite* or *Decline the invite*.
+12. **The code takes focus on arrival at 1536 only.** On the phone the platform's auto-read fills it,
+    and a keyboard opening over the landing hides who invited you.
+
 ## Data volume
 
 One invite: inviter name, company name, one pre-filled phone number, one 6-digit OTP. The invite message renders in the tenant's default language, with the invitee able to switch language at first run (M01 §M01.2 localization notes).

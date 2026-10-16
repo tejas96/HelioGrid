@@ -8,7 +8,7 @@ People with role chips, status, last-active; one-tap invite, deactivate, revoke;
 
 Reached from: the tenant administration area — the precise navigation is not pinned by PRD — designer decides, note the decision. Leads to: one-tap invite → Invite Teammate (SCR-M01-07); a person's role administration → Assign Roles (SCR-M01-13); the read-only Roles Reference (SCR-M01-14) sits beside these role-administration screens (M01 §M01.2). Revocation of a pending invite is one tap on this screen (M01 §M01.2 behavior detail).
 
-*What each role can do* is one ghost text act under *Invite teammate*, not a per-row link. A person's whole row opens Assign Roles.
+*What each role can do* is one ghost text act under *Invite teammate*, not a per-row link. An active member's whole row opens Assign Roles. An invite row and a deactivated row carry no row tap: Assign Roles refuses anyone who is not active, and an invite has no membership to edit (owner ruling 2026-10-16).
 
 ## Requirements (verbatim)
 
@@ -37,7 +37,7 @@ Screen-specific:
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `empty-teaching`, `error`, `deactivated-member`, `pending-invite-revoke`, `guard-rail-blocked`, `guard-rail-blocked-explained`.
 
-- **empty** cannot occur — the reader is always on the list — so **empty-teaching** answers it: only the owner so far, and the invite.
+- **empty** cannot occur — the reader is always on the list — so **empty-teaching** answers it: only the owner so far, and the invite. It is the system's `EmptyState`, centred as its contract fixes — the one exception to *no centred block* on this screen (owner ruling 2026-10-16; `D233`).
 - **loading** draws three placeholder cards. *Invite teammate* and *What each role can do* stay live in loading and in error; neither waits on this read. **error** draws no roster and no caption.
 - **deactivate-confirm** is a sheet at 375 and a centred modal at 1536 — a decision, not an editor — not dismissible, with no close button.
 - **guard-rail-blocked-explained** is a refused write: the tenant changed on another device after the list was read. It renders on the confirm surface — nothing applied, what changed, the act off with the route out.
@@ -60,7 +60,7 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `empty-teaching`,
    a semantic colour for an identity.
 5. **The deactivated row is not dimmed.** Greyness as the signal pulls the name and both dates under
    the contrast floor; the chip carries the word.
-6. **List order is pending invites, then everyone by name, deactivated last** — stated in the caption.
+6. **List order is invites first (pending, then expired), then everyone by name, deactivated last** — stated in the caption in those words (owner ruling 2026-10-16).
    No group headings: a heading that vanishes when its group is empty is a second answer to one
    question, and the status is already on the record (`N6b`).
 7. **The `F2-19` guard is the RESTING state of the owner's own row**, not a refusal after a tap. In a
