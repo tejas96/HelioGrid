@@ -33,7 +33,7 @@ a:hover{color:var(--link-hover)}
 
   <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
     <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · normal</span>
-    <div data-screen-label="Invite landing — normal" data-frame="m-normal" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+    <div data-screen-label="Invite landing — normal" data-frame="m-normal" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)"><div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
       <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile) var(--sp-6)">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
@@ -62,7 +62,7 @@ a:hover{color:var(--link-hover)}
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OtpInput" label="Code from the SMS" value="" hint-size="100%,110px"></x-import>
           </div>
           <div style="display:flex;flex-direction:column;align-items:center;padding-top:var(--sp-2)">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" disabled="{{ yes }}" disabled-reason="You can ask for a new code in 30 s." hint-size="auto,72px">Send the code again</x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" disabled="{{ yes }}" aria-label="Resend code, available in 30 seconds" hint-size="auto,44px">Resend code in 0:30</x-import>
           </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
@@ -77,7 +77,7 @@ a:hover{color:var(--link-hover)}
 
   <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
     <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · loading</span>
-    <div data-screen-label="Invite landing — loading" data-frame="m-loading" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+    <div data-screen-label="Invite landing — loading" data-frame="m-loading" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)"><div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
       <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
@@ -93,7 +93,7 @@ a:hover{color:var(--link-hover)}
 
   <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
     <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · empty</span>
-    <div data-screen-label="Invite landing — no invite behind the link" data-frame="m-empty" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+    <div data-screen-label="Invite landing — no invite behind the link" data-frame="m-empty" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)"><div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
       <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
@@ -109,7 +109,7 @@ a:hover{color:var(--link-hover)}
 
   <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
     <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · load-error</span>
-    <div data-screen-label="Invite landing — invite did not load" data-frame="m-load-error" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+    <div data-screen-label="Invite landing — invite did not load" data-frame="m-load-error" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)"><div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
       <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
@@ -129,7 +129,7 @@ a:hover{color:var(--link-hover)}
   <sc-for list="{{ stateFrames }}" as="s" hint-placeholder-count="4">
     <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
       <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">{{ s.name }}</span>
-      <div data-screen-label="{{ s.screenLabel }}" data-frame="{{ s.id }}" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+      <div data-screen-label="{{ s.screenLabel }}" data-frame="{{ s.id }}" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)"><div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
         <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
@@ -169,12 +169,12 @@ a:hover{color:var(--link-hover)}
             </sc-if>
             <sc-if value="{{ s.resendWaiting }}">
               <div style="display:flex;flex-direction:column;align-items:center;padding-top:var(--sp-2)">
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" disabled="{{ yes }}" disabled-reason="You can ask for a new code in 30 s." hint-size="auto,72px">Send the code again</x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" disabled="{{ yes }}" aria-label="Resend code, available in 30 seconds" hint-size="auto,44px">Resend code in 0:30</x-import>
               </div>
             </sc-if>
             <sc-if value="{{ s.resendLive }}">
               <div style="display:flex;justify-content:center">
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">Send the code again</x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">Resend code</x-import>
               </div>
             </sc-if>
             <sc-if value="{{ s.foot }}">
@@ -196,7 +196,7 @@ a:hover{color:var(--link-hover)}
 
   <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
     <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · declined-notifies-owner · confirm</span>
-    <div data-screen-label="Invite landing — decline confirm" data-frame="m-decline-confirm" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+    <div data-screen-label="Invite landing — decline confirm" data-frame="m-decline-confirm" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)"><div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
       <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-6) var(--screen-pad-mobile)">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
@@ -226,7 +226,7 @@ a:hover{color:var(--link-hover)}
 
   <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
     <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · declined-notifies-owner · after</span>
-    <div data-screen-label="Invite landing — declined" data-frame="m-declined" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+    <div data-screen-label="Invite landing — declined" data-frame="m-declined" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)"><div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
       <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
@@ -242,7 +242,7 @@ a:hover{color:var(--link-hover)}
 
   <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
     <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · reinvite-requested</span>
-    <div data-screen-label="Invite landing — re-invite requested" data-frame="m-reinvite-requested" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+    <div data-screen-label="Invite landing — re-invite requested" data-frame="m-reinvite-requested" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)"><div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
       <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
@@ -342,6 +342,7 @@ class Component extends DCLogic {
   renderVals() {
     const signInLine = "For an account you already have with another company.";
     return {
+      phoneChrome: { style: { background: "transparent" } },
       yes: true,
       no: false,
       noop: () => {},

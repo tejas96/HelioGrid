@@ -206,6 +206,8 @@ A drawn screen is judged by this list, and a fix prompt fixes what it finds.
   rounds at most. Only a fault that changes what gets built or what a person reads goes back.
 - **The shell header holds the company and the one search, nothing of the page.** A page's way back,
   title and acts sit in its page head, in the content (`SCR-SHELL-01` decision 8).
+- **A phone frame draws the phone's status row** (`PhoneScreen`) in its top safe area, so the band
+  reads as a phone, not as empty margin.
 - **A fault is usually shared.** A rule broken in one design is reported with the other drawn
   screens of its corridor, which may break it too.
 
