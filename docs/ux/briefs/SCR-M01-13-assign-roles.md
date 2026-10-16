@@ -6,7 +6,7 @@ Stack F2 presets per person with a live plain-English grant line.
 
 ## Entry & exit
 
-Reached from: the PRD groups this screen in the Team / Assign roles / Roles reference / Invite family that renders F2's semantics (M01 §1, §M01.2), and M01-20 assigns presets "to a person" — the per-person entry from the Team screen (SCR-M01-12) is the natural path but is not explicitly pinned by the PRD — designer decides, note the decision. Leads to: back to Team (SCR-M01-12) — dismiss leaves the set unsaved, **Save roles** writes it — and to the Roles Reference (SCR-M01-14) through *What each role can do*; all role changes write old → new audit entries (M01 §M01.2 behavior detail, F2-22). Permission: requires `F2.M01.manage-team` (EPC Owner-only; M01 §M01.2 permissions).
+Reached from: the PRD groups this screen in the Team / Assign roles / Roles reference / Invite family that renders F2's semantics (M01 §1, §M01.2), and M01-20 assigns presets "to a person" — the per-person entry from the Team screen (SCR-M01-12) is the natural path but is not explicitly pinned by the PRD — designer decides, note the decision. Only an active member's row opens this screen; an invite or a deactivated person has nothing to assign (owner ruling 2026-10-16). Leads to: back to Team (SCR-M01-12) — dismiss leaves the set unsaved, **Save roles** writes it — and to the Roles Reference (SCR-M01-14) through *What each role can do*; all role changes write old → new audit entries (M01 §M01.2 behavior detail, F2-22). Permission: requires `F2.M01.manage-team` (EPC Owner-only; M01 §M01.2 permissions).
 
 ## Requirements (verbatim)
 
@@ -23,7 +23,7 @@ Reached from: the PRD groups this screen in the Team / Assign roles / Roles refe
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `empty`, `error`, `grant-line-updating-live`.
 
-- **Loading** keeps the header — name, status and email came off the tapped row. Only the preset list is placeholder; the grant line and Save are absent.
+- **Loading** keeps the header — name, status and email came off the tapped row. The body is the editor's own loading state (decision 2); the grant line and Save are absent (owner ruling 2026-10-16).
 - In **Error** the ticks stay as composed and Save is the retry; no second button.
 - Only a save that REMOVES a preset is confirmed, and the confirm names what is leaving. One confirm, one audit entry and one undo cover the whole diff. A save that only adds goes straight through.
 
@@ -51,7 +51,7 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `empty`, `error`,
 backdrop, focus trap and scroll lock — so a second row cannot open while a set is uncommitted. The
 whole row is the control, and the list never re-sorts by what is held. One **Save roles** commits the
 whole set; it is off, with its reason, while nothing has changed. The grant line is pinned above Save
-at both widths. Above it, one sentence says every change is recorded, old → new; it is not a control.
+at both widths. Above it, one sentence says every change is recorded, old → new; it is not a control. The build mounts `EditorSurface`, which is the sheet at 375 and the side panel at 1536; the board mounts `Sheet` and `DetailPanel` directly only because a board has no width probe (owner ruling 2026-10-16; `D234`).
 
 **The preset rows.** Each preset is an `OptionCardGroup` row in a multi-select mode: a title, a
 description and a `disabledReason`. The `disabledReason` carries the sole-EPC-Owner guard: the last

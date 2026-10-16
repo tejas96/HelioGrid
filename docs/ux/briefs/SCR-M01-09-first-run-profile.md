@@ -67,6 +67,18 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `photo
    that every user be given a screen for it.
 7. **At 1536 the name field takes initial focus, and Enter commits.**
 
+**Rulings at the M01 board check (owner, 2026-10-16).**
+
+8. **The sentence under the name is `Input`'s `helper`, in secondary text.** It is load-bearing, and
+   `F7-11` keeps tertiary text off load-bearing words; the design system's `Input` draws `helper` in
+   secondary text (a design-system change, as `PhotoField` already does for its message).
+9. **The circle with no name is a plain disc** on `--canvas-sunken` — `PhotoField`'s own nameless
+   form, no glyph.
+10. **The heading stays *How your team sees you* in every state.** A state changes the data, the
+    chip and the one act, never the heading.
+11. **At 1536 the photo act reads *Choose a photo* with the upload icon** (a file is chosen there,
+    not taken), and in `error-save` the refusal banner sits just above the act in the right column.
+
 ## Data volume
 
 One profile record: one name field, one optional photo. That is all (M01-14).

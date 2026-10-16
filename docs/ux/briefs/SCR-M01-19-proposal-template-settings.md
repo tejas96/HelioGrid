@@ -40,13 +40,21 @@ Entry and exits, decided: one entry — More · Settings · Proposal templates, 
 - **Loading** — current template defaults loading. The form and the document preview arrive together; the preview's placeholder is a sunken shimmer, never a white page.
 - **Empty** — a tenant with untouched template settings: working platform defaults are in place from day one and Quick mode is still generable (M01-28, M01-53 context); teaching treatment per F7's empty-state contract. Drawn as inherited, not blank: each part names the platform as its source with *Write our own*, and the teaching is a `Banner` above the form, not an `EmptyState`.
 - **Error** — a save fails; what happened and what to do next. The banner sits just above the act bar with no *Try again* — the bar's Save is the retry — and the edit is kept.
-- **normal** — cover, included sections, default terms & conditions and bank details editable; bank details are the business profile's single write-point (M01-51, M01-31); template edits version forward simply — last saved wins, audit-logged (§M01.6 behavior detail). At rest there is no act bar: a standing line under the title reads *saved and in force · last changed by <name>, <date>*. The intro says a Quick proposal is exactly what this screen holds, and the page closes on *Proposals already sent keep the template they were built with.* Sections are checkboxes (none on the terms row, decision 4) in the document's fixed order, with no reorder control; each row's description sits outside its label, so tapping a word does not toggle it. The default T&C is edited in `RichText`, the builder's own editor.
+- **normal** — cover, included sections, default terms & conditions and bank details editable; bank details are the business profile's single write-point (M01-51, M01-31); template edits version forward simply — last saved wins, audit-logged (§M01.6 behavior detail). At rest there is no act bar: a standing line under the title reads *saved and in force · last changed by <name>, <date>*. The intro says a Quick proposal is exactly what this screen holds, and the page closes on *Proposals already sent keep the template they were built with.* Sections are an `OptionCardGroup` in its multi-select mode (`D216`) — a title and a description per row, the terms row its floor (decision 4) — in the document's fixed order, with no reorder control (owner ruling 2026-10-16). The default T&C is edited in `RichText`, the builder's own editor.
 - **live-preview** — every config screen shows the effect: live preview of the affected customer document before saving (M01-30's law, §M01.6 behavior detail; documents already generated are immutable per F8-15 and never restyle retroactively). Any change raises the act bar — *Discard changes* and Save, with what the save does. The preview shows the document only; on the phone it is a window at the page's foot with *Open full size*. Its sample customer and number are called a sample in the page's own text.
 - **timeline-phases-reorder** — the project-timeline template's default phases and descriptions being edited and reordered (M01-52). Arrows, never drag; the first row's up arrow stays focusable and says the phase is already first, and each move is announced. No duration column. At least one phase — the route to no timeline is the section's checkbox — and no reset to the platform phases. Deleting a phase asks first in a destructive `Modal` that says *Discard changes* brings it back: the delete lands only on save.
 
-Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Empty`, `Error`, the delete-a-phase confirm.
+Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Empty`, `Error`, the delete-a-phase confirm, and the leave-with-an-unsaved-change confirm (owner ruling 2026-10-16).
 
 The page runs in the order the document reads: cover, sections, terms, bank details, timeline, then the preview. At 1536 the form (cover and sections paired on the first row) stands left and the preview right at full scale, standing while the form scrolls; phases take the row arrangement; the phase editor and the full-size reader open as non-modal side panels; the act bar belongs to the form column.
+
+**Rulings at the M01 board check (owner, 2026-10-16).**
+
+- **The terms always print, in the builder too.** Decision 4 stands, and `M06-15` drops its *Skip*:
+  a proposal's terms are edited, never skipped.
+- **One default terms per language, and no template list here.** The contract holds one
+  `defaultTerms` per language; a set of named terms templates is not this screen's.
+- **At 1536 the way back is the header's breadcrumb, *Settings*.**
 
 ## Data volume
 
@@ -56,6 +64,7 @@ One tenant's document-default set: a cover, a list of included sections, one def
 
 - **Bank details** rendered here read from the business profile's single write-point (M01-51, M01-31) — identifiers, not computed numbers, so no tier (`F8-01`); a source line names the business profile and the date it was written.
 - **Page estimate** under the terms editor — `estimated`, a persistent line.
+- **The three cover counts** (total capacity installed in kW, happy customers, cities served) — `estimated · declared by you`, stated once for the three. They are claims about the world, not the company's own decisions, so `F8-01`'s own-settings exception does not reach them (owner ruling 2026-10-16).
 - The **live preview** renders a customer document; figures inside it belong to the document's own surfaces and provenance tiers, not new ones minted here (F8-15 immutability per §M01.6 behavior detail).
 
 ---

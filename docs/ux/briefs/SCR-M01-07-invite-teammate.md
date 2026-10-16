@@ -25,6 +25,7 @@ In the corridor, *Send invite* and *Skip for now* both continue to SCR-M01-06; a
 Base: **loading** · **empty** · **error**.
 
 - **loading** — only the presets are in flight: a `Card` in its loading state holds the role set's place, and *Send invite* is the one unavailable control, its `disabledReason` saying it waits for the role list.
+- **error** — the presets failed to load. The form stays as drawn: a `Card` in its error state, with its own *Try again*, holds the role set's place, and *Send invite* is off with its `disabledReason`, mirroring loading — never a whole-screen empty state (owner ruling 2026-10-16).
 
 Screen-specific:
 
@@ -34,11 +35,11 @@ Screen-specific:
 - **already-a-member** — invite sent to a number that is already a member → the invite surface says so and offers the Team screen instead of sending (M01 §M01.2 edge list). *Open Team* is the banner's own action; the foot pairs *Skip for now* with *Use a different number*.
 - **already-invited** — a live invite already went to this number: the create (`POST /invitations`, `packages/contracts/src/invitation.ts`) refuses with 409 `ALREADY_INVITED`. Works like already-a-member and points to Team, where the pending invite can be cancelled.
 - **number-not-covered** — a number no market covers (F1-49): the create refuses with 422 `DOMAIN_RULE_VIOLATION`, shown as the PhoneField's error line.
-- **invite-cap-reached** — invite flooding → the invite cap (50 sends per company in any rolling 24 hours, so no midnight reset) with an honest message (M01 §M01.2 edge list; the cap is M01-04's, carried on SCR-M01-01). The forward act becomes *Continue setup*.
+- **invite-cap-reached** — invite flooding → the invite cap (50 sends per company in any rolling 24 hours, so no midnight reset) with an honest message (M01 §M01.2 edge list; the cap is M01-04's, carried on SCR-M01-01). The forward act becomes *Continue setup*. The cap `Banner` and *Continue setup* carry the state alone — no second region under the banner (owner ruling 2026-10-16).
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `error`, `already-a-member`, `already-invited`, `number-not-covered`, `invite-cap-reached`.
 
-**The role picker.** All twelve F2 presets in one list, in F2's fixed order, each with its capability line — the same list SCR-M01-13 draws — in both lives. There is no "Show all twelve roles". The list is built as `OptionCardGroup` in a multi-select mode; each row carries a title, a description and a `disabledReason`. One prop contract on both platforms, shared with SCR-M01-13.
+**The role picker.** All twelve F2 presets in one list, in F2's fixed order, each with its capability line — the same list SCR-M01-13 draws, word for word (the EPC Owner's line says *company settings*, never *tenant settings*, `F7-42`) — in both lives. Under the list sits *What each role can do*, a ghost text act that opens the Roles Reference (`SCR-M01-14`) as a reader (owner ruling 2026-10-16). There is no "Show all twelve roles". The list is built as `OptionCardGroup` in a multi-select mode; each row carries a title, a description and a `disabledReason`. One prop contract on both platforms, shared with SCR-M01-13.
 
 ## Data volume
 

@@ -34,7 +34,9 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `zero-holders-sho
    preset with **zero holders**, which renders as zero rather than as an absence (`M01-21`: *"including
    zero"*).
 3. **The holder count is a live count from membership, so it carries a tier** — `measured`, counted
-   from the tenant's own records, with the count named beside it.
+   from the tenant's own records, with the count named beside it. The tier is stated once for the
+   region: at the foot of the preset list at 375, as the People column's `provenance` at 1536
+   (owner ruling 2026-10-16).
 4. **The twelve presets are `F2-01`'s, verbatim and in `F2`'s order.** This screen's whole job is
    rendering `F2`'s preset set, so the names are the requirement rather than sample data.
 
@@ -45,10 +47,10 @@ row shows the preset's name, description and count, and its matrix opens on tap,
 At 1536 nothing opens or closes: a captioned preset table (name, description, held by, count) above a
 captioned matrix with capabilities down and all twelve presets across — never a master–detail pane.
 
-- The matrix draws withheld rows too. A grant is a word, with F2's scope phrase where the cell has one;
+- The matrix draws withheld rows too. A grant is a word, with F2's scope phrase where the cell has one — the person's part of the phrase only: a PRD rule id in a cell ("F2-07 attribution", "surface obeys F2-06") stays in `CAPABILITY_MATRIX`'s source, never on screen (owner ruling 2026-10-16; `D247`);
   a withheld cell is a hollow ring with *Not granted* — beside it at 375, and at 1536 in a legend above
   the grid and a visually hidden label in each cell.
-- **The holder count counts active members only**, and the sentence above the list says so. An invited
+- **The holder count counts active members only**, and the counts' source label says so ("Your team list, active members only"), with the reason behind the screen's ask (owner ruling 2026-10-16). An invited
   or deactivated person is named in words inside the preset they would hold, never counted.
 - Zero reads `0 people`, with the same tier as any count, on a row at full strength — never dimmed. At
   1536 its *Held by* cell reads *Nobody holds this yet*.

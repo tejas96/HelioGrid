@@ -14,7 +14,7 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
    Catalog settings — open the same editor, pre-scoped to the kind being picked, and the kind stays
    changeable.
 2. **The footer verb names what it returns to.** From a picker: **Add and select** — the SKU is
-   selected in place and the flow continues. From Catalog settings: **Add to catalogue** — landing on
+   selected in place and the flow continues. From Catalog settings: **Add to catalog** — landing on
    the Items panel at the caller's row (`SCR-M01-15` decision 6).
 3. **The datasheet path stays inside this sheet** and becomes the review state; only the spreadsheet
    path leaves, to `SCR-M01-17`. Two accelerators, one form.
@@ -46,12 +46,16 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
   phone sheet has no close button, the 1536 panel has one in its header.
 - At 1536 the editor is a 900px side panel, non-modal — no backdrop, no focus trap; focus moves in and
   is restored — with the caller's list live beside it. The phone sheet is modal. Identity (kind,
-  brand, model, SKU) is one row of four at 1536 and two rows of two at 375; certification and price
+  brand, model) is one row of three at 1536; at 375 the kind sits on its own row and brand and model
+  share the next; certification and price
   sit side by side at 1536.
 - Spec fields have no steppers: their values are transcribed. A price outside its range is refused
   with the limit named, never clamped.
 - Certification is one checkbox per scheme the market pack declares, and a sentence under them says an
-  empty set shows no badges. No per-scheme certificate number field.
+  empty set shows no badges. A scheme the pack collects as a list reference (ALMM) shows its reference
+  field once ticked; a flag scheme (DCR) is the tick alone (`IN_CERTIFICATION_SCHEMES`, owner ruling 2026-10-16).
+- No SKU-code field and no tax field: the own-item contract holds neither, and an own SKU's tax
+  follows the pack's category rate (`M01-37`, owner ruling 2026-10-16).
 - The *Tenant-provided* label is stated once per section, not per field. A pre-filled field states its
   own origin in its helper.
 
@@ -83,13 +87,12 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
 - **single-form** — path (a): the single-product form with the component kind's typed spec fields (M01-39, M01-36).
   It is the screen's default; `Empty` is the same form before entry.
 - **prefilled-from-selection** — path (a) from a picker with a component already selected: the single form opens pre-filled with that item's brand, model and typed specs; the scheme-certification flags and the rate fields are blank for the tenant to enter; save creates a new own SKU and selects it in place, the platform item untouched (M01-39, M01-36, M01-34; owner ruling 2026-09-07).
-  Each copied field says so in its own helper. The certification flags, the rate fields and *Your SKU
-  code* open blank with the reason under them as content; a blank price is empty, never 0. At 1536 the
+  Each copied field says so in its own helper. The certification flags and the rate fields open blank with the reason under them as content; a blank price is empty, never 0. At 1536 the
   selected platform row stays on the caller's list, marked unchanged.
 - **pdf-extraction-review** — path (b): extracted fields shown in the same typed form as manual entry, each field editable, with the datasheet preview alongside; nothing commits until the person saves (M01-40, §M01.4 behavior detail).
 - **extraction-failed-prefilled-manual** — extraction fails entirely (scan, photo, unusual layout): manual form with whatever was salvaged pre-filled; the datasheet still attaches to the item (M01-40, §M01.4 edge cases).
   Each salvaged value is marked as salvaged, to be checked against the page.
-- **inline-add-without-manage-grant** — an inline add from a picker by someone without `F2.M01.manage-catalog` held outright (a Sales Executive): the form has no price and no tax fields, and the caller's list shows that person no prices. One line at the act says the item can be picked without a price and someone who manages the catalog prices it later (§M01.4 Permissions; contract `createItem`).
+- **inline-add-without-manage-grant** — an inline add from a picker by someone without `F2.M01.manage-catalog` held outright (a Sales Executive): the form has no price field, and the caller's list shows that person no prices. One line at the act says the item can be picked without a price and someone who manages the catalog prices it later (§M01.4 Permissions; contract `createItem`). Neither accelerator shows: the datasheet upload and the import are catalog administration (`manage_catalog`).
 - **saved-and-selected-in-place** — on save the sheet closes and the new SKU is selected in place; the invoking flow continues (M01-39, §M01.4 behavior detail).
   A toast confirms it, with no undo: adding destroys nothing, and archiving reverses it.
 

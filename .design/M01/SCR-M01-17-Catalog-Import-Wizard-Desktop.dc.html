@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catalog import wizard · 1536</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/fonts.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/colors.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/typography.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/spacing.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/radius.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/elevation.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/motion.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/keyframes.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/base.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/print.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/field-mode.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/styles.css">
+<script src="ds/heliogriddesignsystem_c8aa43/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}
+a:hover{color:var(--link-hover)}
+[role="dialog"]{animation:none !important;transform:none !important}
+</style>
+</helmet>
+<div style="width:1616px;height:5824px;box-sizing:border-box;display:flex;flex-direction:column;gap:var(--sp-10);padding:var(--sp-10);background:var(--canvas);overflow:hidden">
+  <div style="display:flex;gap:var(--sp-10);align-items:flex-start">
+    <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:1536px">
+      <span style="display:block;height:var(--sp-6);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · step 1 of 4 · file</span>
+      <div data-screen-label="Import — desktop, step 1 file" data-frame="m17-f" style="position:relative;flex:0 0 auto;width:1536px;height:1040px;overflow:hidden;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+        <div style="position:absolute;inset:0">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" dc-props="{{ shellDesk }}" hint-size="100%,100%"><div style="height:100%;width:calc(100% - 960px);box-sizing:border-box;padding:var(--sp-6) var(--screen-pad-desktop-fn);overflow:hidden"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ callerItems }}" hint-size="100%,900px"></x-import></div></x-import>
+        </div>
+        <div style="position:absolute;inset:0">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ panelFile }}" hint-size="100%,100%"><div style="display:flex;flex-direction:column;gap:var(--sp-5)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Stepper" dc-props="{{ deskStep0 }}" hint-size="100%,44px"></x-import><div style="display:flex;flex-direction:column;gap:var(--sp-3)"><span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">The file you are importing</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ fileRow }}" hint-size="100%,84px"></x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-3)"><span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What we read from it</span><div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:var(--sp-6)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ selSheet }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ selHeader }}" hint-size="100%,84px"></x-import></div></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Dropzone" dc-props="{{ dzDrop }}" hint-size="100%,150px"></x-import></div></x-import>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:var(--sp-10);align-items:flex-start">
+    <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:1536px">
+      <span style="display:block;height:var(--sp-6);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · step 2 of 4 · columns, all nine at once</span>
+      <div data-screen-label="Import — desktop, step 2 columns" data-frame="m17-g" style="position:relative;flex:0 0 auto;width:1536px;height:1040px;overflow:hidden;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+        <div style="position:absolute;inset:0">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" dc-props="{{ shellDesk }}" hint-size="100%,100%"><div style="height:100%;width:calc(100% - 960px);box-sizing:border-box;padding:var(--sp-6) var(--screen-pad-desktop-fn);overflow:hidden"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ callerItems }}" hint-size="100%,900px"></x-import></div></x-import>
+        </div>
+        <div style="position:absolute;inset:0">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ panelColumns }}" hint-size="100%,100%"><div style="display:flex;flex-direction:column;gap:var(--sp-5)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Stepper" dc-props="{{ deskStep1 }}" hint-size="100%,44px"></x-import><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">We matched <strong style="color:var(--text-primary)">7 of your 9 columns</strong>; 1 still needs you.</p><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provGuess }}" hint-size="100%,18px"></x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-3)"><span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Columns we could not match</span><div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:var(--sp-6);align-items:start"><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><span style="font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Supplier code</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ mapUnmatched }}" hint-size="100%,84px"></x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><span style="font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Remarks</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ mapLeftOut }}" hint-size="100%,84px"></x-import></div></div></div><div style="display:flex;flex-direction:column;gap:var(--sp-3)"><span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Matched automatically · check them</span><div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:var(--sp-5) var(--sp-6);align-items:start"><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><span style="font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Item description</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ mapName }}" hint-size="100%,66px"></x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><span style="font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">मॉडल क्रमांक</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ mapModel }}" hint-size="100%,84px"></x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><span style="font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Rate</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ mapRate }}" hint-size="100%,66px"></x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><span style="font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Wattage</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ mapWatt }}" hint-size="100%,66px"></x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><span style="font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">GST %</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ mapGst }}" hint-size="100%,66px"></x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><span style="font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">HSN</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ mapHsn }}" hint-size="100%,66px"></x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><span style="font-family:var(--font-mono);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Unit</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ mapUnit }}" hint-size="100%,66px"></x-import></div></div></div></div></x-import>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:var(--sp-10);align-items:flex-start">
+    <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:1536px">
+      <span style="display:block;height:var(--sp-6);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · step 3 of 4 · preview</span>
+      <div data-screen-label="Import — desktop, step 3 preview" data-frame="m17-h" style="position:relative;flex:0 0 auto;width:1536px;height:1040px;overflow:hidden;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+        <div style="position:absolute;inset:0">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" dc-props="{{ shellDesk }}" hint-size="100%,100%"><div style="height:100%;width:calc(100% - 960px);box-sizing:border-box;padding:var(--sp-6) var(--screen-pad-desktop-fn);overflow:hidden"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ callerItems }}" hint-size="100%,900px"></x-import></div></x-import>
+        </div>
+        <div style="position:absolute;inset:0">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ panelPreview }}" hint-size="100%,100%"><div style="display:flex;flex-direction:column;gap:var(--sp-4)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Stepper" dc-props="{{ deskStep2 }}" hint-size="100%,44px"></x-import><p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">A row that matches a product we already carry becomes a <strong style="color:var(--text-primary)">price override</strong> — never a second copy of it.</p><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><div style="display:flex;align-items:center;gap:var(--sp-4)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ scopeChips }}" hint-size="auto,44px"></x-import><div style="flex:1;min-width:0;max-width:var(--form-max);margin-left:auto"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findPreview }}" hint-size="100%,44px"></x-import></div></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provCounts }}" hint-size="100%,18px"></x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ previewTable }}" hint-size="100%,700px"></x-import></div></x-import>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:var(--sp-10);align-items:flex-start">
+    <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:1536px">
+      <span style="display:block;height:var(--sp-6);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · needs attention · all seven rows</span>
+      <div data-screen-label="Import — desktop, needs attention" data-frame="m17-p" style="position:relative;flex:0 0 auto;width:1536px;height:1264px;overflow:hidden;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+        <div style="position:absolute;inset:0">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" dc-props="{{ shellDesk }}" hint-size="100%,100%"><div style="height:100%;width:calc(100% - 960px);box-sizing:border-box;padding:var(--sp-6) var(--screen-pad-desktop-fn);overflow:hidden"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ callerItems }}" hint-size="100%,900px"></x-import></div></x-import>
+        </div>
+        <div style="position:absolute;inset:0">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ panelAttention }}" hint-size="100%,100%"><div style="display:flex;flex-direction:column;gap:var(--sp-4)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Stepper" dc-props="{{ deskStep2 }}" hint-size="100%,44px"></x-import><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><div style="display:flex;align-items:center;gap:var(--sp-4)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ attentionChips }}" hint-size="auto,44px"></x-import><div style="flex:1;min-width:0;max-width:var(--form-max);margin-left:auto"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findPreview }}" hint-size="100%,44px"></x-import></div></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provCounts }}" hint-size="100%,18px"></x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ attentionTable }}" hint-size="100%,600px"></x-import></div></x-import>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:var(--sp-10);align-items:flex-start">
+    <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:1536px">
+      <span style="display:block;height:var(--sp-6);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · the report</span>
+      <div data-screen-label="Import — desktop, report" data-frame="m17-q" style="position:relative;flex:0 0 auto;width:1536px;height:1040px;overflow:hidden;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+        <div style="position:absolute;inset:0">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" dc-props="{{ shellDesk }}" hint-size="100%,100%"><div style="height:100%;width:calc(100% - 960px);box-sizing:border-box;padding:var(--sp-6) var(--screen-pad-desktop-fn);overflow:hidden"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ callerItems }}" hint-size="100%,900px"></x-import></div></x-import>
+        </div>
+        <div style="position:absolute;inset:0">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ panelReport }}" hint-size="100%,100%"><div style="display:flex;flex-direction:column;gap:var(--sp-4)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Stepper" dc-props="{{ deskStep3 }}" hint-size="100%,44px"></x-import><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><div style="display:flex;align-items:center;gap:var(--sp-4)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ reportChips }}" hint-size="auto,44px"></x-import><div style="flex:1;min-width:0;max-width:var(--form-max);margin-left:auto"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findReport }}" hint-size="100%,44px"></x-import></div></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provRun }}" hint-size="100%,18px"></x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ reportTable }}" hint-size="100%,700px"></x-import></div></x-import>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview": {"width": 1616, "height": 5824}}'>
+class Component extends DCLogic {
+  state = { ready: !!window.HelioGridDesignSystem_c8aa43 };
+
+  /* A static frame draws a scroll POSITION, never a scroller, so these refs set it after layout:
+     each clip is scrolled so the named line sits just under the pinned list head (or at the clip's
+     foot), and each one-of-N strip is scrolled to its selected chip (finding 49, D236). */
+  footRef = React.createRef();
+  findRef = React.createRef();
+  failedRef = React.createRef();
+  attentionStripRef = React.createRef();
+  failedStripRef = React.createRef();
+
+  componentDidMount() {
+    this._timers = [];
+    if (!this.state.ready) {
+      this._poll = setInterval(() => {
+        if (window.HelioGridDesignSystem_c8aa43) { clearInterval(this._poll); this.setState({ ready: true }); }
+      }, 30);
+    }
+    this.drawScrollPositions();
+  }
+  componentDidUpdate() { this.drawScrollPositions(); }
+  componentWillUnmount() { clearInterval(this._poll); (this._timers || []).forEach(clearTimeout); }
+
+  scrollClip(ref, text, edge) {
+    const clip = ref.current;
+    if (!clip) return;
+    const hits = Array.from(clip.querySelectorAll("*")).filter((el) => el.children.length === 0 && (el.textContent || "").indexOf(text) >= 0);
+    const target = hits[0];
+    if (!target) return;
+    const head = clip.querySelector("[data-list-head]");
+    if (edge === "pin" && head) {
+      clip.scrollTop = 0;
+      clip.scrollTop = head.getBoundingClientRect().top - clip.getBoundingClientRect().top;
+      return;
+    }
+    const t = target.getBoundingClientRect();
+    const c = clip.getBoundingClientRect();
+    const under = head ? head.getBoundingClientRect().bottom : c.top;
+    clip.scrollTop += edge === "foot" ? t.bottom - c.bottom + 16 : t.top - under - 8;
+  }
+
+  drawScrollPositions() {
+    const apply = () => {
+      this.scrollClip(this.footRef, "2,380/pc", "head");
+      this.scrollClip(this.findRef, "Rows matching", "pin");
+      this.scrollClip(this.failedRef, "changed in your catalog after the preview", "foot");
+      [this.attentionStripRef, this.failedStripRef].forEach((ref) => {
+        const strip = ref.current;
+        const chosen = strip && strip.querySelector('[aria-selected="true"]');
+        if (!chosen) return;
+        let scroller = chosen.parentElement;
+        while (scroller && scroller !== strip && scroller.scrollWidth <= scroller.clientWidth) scroller = scroller.parentElement;
+        if (scroller && scroller.scrollWidth > scroller.clientWidth) {
+          scroller.scrollLeft = chosen.offsetLeft + chosen.offsetWidth - scroller.clientWidth;
+        }
+      });
+    };
+    [60, 300, 900, 2000].forEach((ms) => this._timers.push(setTimeout(apply, ms)));
+  }
+
+  noop = () => {};
+
+  /* The shell's own glyphs, from the system: tone follows the ground the glyph sits on. */
+  glyph(name, size, tone, filled) {
+    const NS = window.HelioGridDesignSystem_c8aa43;
+    return React.createElement(NS.ShellGlyph, { name: name, size: size || "lg", tone: tone || "secondary", filled: !!filled });
+  }
+
+  FILE = "Price list Aug 2026.xlsx";
+  STEPS = ["File", "Columns", "Preview", "Import report"];
+
+  /* N6b — an outcome is a word plus a dot from the system's registry, never a colour. */
+  OUTCOME = {
+    override: { label: "Price override", tone: "info" },
+    own: { label: "New price on your item", tone: "info" },
+    new: { label: "New product", tone: "neutral" },
+    attention: { label: "Needs attention", tone: "warning" },
+    applied: { label: "Price applied", tone: "success" },
+    ownApplied: { label: "New price on your item", tone: "success" },
+    created: { label: "Product created", tone: "success" },
+    out: { label: "Left out", tone: "warning" },
+    failed: { label: "Failed", tone: "danger" },
+  };
+
+  chip(NS, key) {
+    return React.createElement(NS.StatusChip, Object.assign({ density: "functional" }, this.OUTCOME[key]));
+  }
+
+  priced(money, n, per) { return n == null ? null : money(n) + (per ? " " + per : ""); }
+
+  /* One column set for the preview, read by every frame that draws it. Prices are the company's
+     own, so they carry no tier (F8-01, owner ruling 2026-10-16). */
+  previewColumns(NS, money) {
+    return [
+      { key: "line", label: "Row", mono: true, width: 64 },
+      { key: "item", label: "Item in your file", primary: true },
+      {
+        key: "match", label: "Matched to", secondary: true,
+        render: (r) => r.match,
+        gap: (r) => (r.match ? null : (r.matchGap || "No match — it becomes your own SKU")),
+      },
+      { key: "outcome", label: "What happens", trailing: true, render: (r) => this.chip(NS, r.outcome) },
+      {
+        key: "price", label: "Price in your file", numeric: true,
+        render: (r) => this.priced(money, r.price, r.per),
+        gap: (r) => (r.price == null ? (r.priceGap || "Not a number") : null),
+      },
+      {
+        key: "now", label: "In your catalog now", numeric: true,
+        render: (r) => this.priced(money, r.now, r.per),
+        gap: (r) => (r.now != null ? null : (r.match ? "No price" : "Not carried yet")),
+      },
+    ];
+  }
+
+  /* The report says what DID happen, so the money columns are before and now. */
+  reportColumns(NS, money) {
+    return [
+      { key: "line", label: "Row", mono: true, width: 64 },
+      { key: "item", label: "Item in your file", primary: true },
+      {
+        key: "target", label: "Item in your catalog", secondary: true,
+        render: (r) => r.target,
+        gap: (r) => (r.target ? null : (r.did === "created" ? "Created as your own SKU" : "Not created")),
+      },
+      { key: "did", label: "What happened", trailing: true, render: (r) => this.chip(NS, r.did) },
+      {
+        key: "was", label: "Price before", numeric: true,
+        render: (r) => this.priced(money, r.was, r.per),
+        gap: (r) => (r.was != null ? null : (r.target ? "No price" : "Not carried before")),
+      },
+      {
+        key: "now", label: "Price now", numeric: true, strong: true,
+        render: (r) => this.priced(money, r.now, r.per),
+        gap: (r) => (r.now == null ? "Unchanged" : null),
+      },
+    ];
+  }
+
+  /* The footer is the act: one line at the button and, where the act carries a figure, its tier as
+     a mark on that line. */
+  footerFor(NS, line, tierMark, secondaryLabel, primaryLabel) {
+    return React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-2)" } },
+      React.createElement("div", { key: "l", style: { display: "flex", flexWrap: "wrap", alignItems: "baseline", columnGap: "var(--sp-2)" } },
+        React.createElement("p", {
+          key: "s",
+          style: { margin: 0, fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)", textWrap: "pretty" },
+        }, line),
+        tierMark ? React.createElement(NS.Provenance, { key: "p", tier: tierMark, size: 12, inline: true }) : null),
+      React.createElement(NS.SheetActions, { key: "a" },
+        React.createElement(NS.Button, { key: "back", variant: "secondary", onClick: this.noop }, secondaryLabel),
+        React.createElement(NS.Button, { key: "go", variant: "primary", onClick: this.noop }, primaryLabel)));
+  }
+
+  /* A gated act: one line at the button — the reason only (`disabledReason`, focusable). */
+  footerGated(NS, secondaryLabel, primaryLabel, reason) {
+    return React.createElement(NS.SheetActions, null,
+      React.createElement(NS.Button, { key: "back", variant: "secondary", onClick: this.noop }, secondaryLabel),
+      React.createElement(NS.Button, { key: "go", variant: "primary", disabled: true, disabledReason: reason, onClick: this.noop }, primaryLabel));
+  }
+
+  footerOne(NS, line, label) {
+    const actions = React.createElement(NS.SheetActions, { key: "a" },
+      React.createElement(NS.Button, { key: "go", variant: "secondary", onClick: this.noop }, label));
+    if (!line) return actions;
+    return React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-2)" } },
+      React.createElement("p", {
+        key: "s",
+        style: { margin: 0, fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)", textWrap: "pretty" },
+      }, line),
+      actions);
+  }
+
+  /* 375: a full sheet over the caller. The body draws a scroll position, so its own overflow is off. */
+  sheetFor(subtitle, title, footer) {
+    return {
+      open: true, inset: true, panelAbove: 720, size: "full", density: "functional",
+      overline: "Catalog settings · items", title: title, subtitle: subtitle,
+      footer: footer, onClose: this.noop, showClose: true,
+      sheetProps: { bodyStyle: { overflowY: "hidden" } },
+    };
+  }
+
+  /* 1536: the same wizard as a 960 side panel, non-modal, with the catalog live beside it. */
+  panelFor(subtitle, title, footer) {
+    return {
+      open: true, inset: true, panelAbove: 0, width: 960, density: "functional",
+      overline: "Catalog settings · items", title: title, subtitle: subtitle,
+      footer: footer, onClose: this.noop, showClose: true, modal: false,
+    };
+  }
+
+  /* SCR-M01-15's Items region, as that board draws it — the caller the panel sits beside. Its
+     prices are the company's own, so they carry no tier. */
+  callerItems(NS, money) {
+    const LAYER = { platform: "Platform", own: "Your SKU", override: "Overridden" };
+    const chip = (k, t) => React.createElement(NS.Chip, { key: k, density: "functional" }, t);
+    const badge = (k, t, tone) => React.createElement(NS.Badge, { key: k, tone: tone, density: "functional" }, t);
+    const marksFor = (r) => {
+      const chips = [chip("layer", LAYER[r.layer])];
+      if (r.preferred) chips.push(badge("pref", "Preferred", "accent"));
+      if (r.hidden) chips.push(badge("hid", "Hidden from pickers", "warning"));
+      chips.push(r.prov === "Representative data" ? badge("prov", r.prov, "warning") : chip("prov", r.prov));
+      r.schemes.forEach((s) => chips.push(badge("s" + s, s, "success")));
+      return React.createElement(NS.ChipGroup, { max: 0, density: "functional", label: "Layer, spec data and compliance", empty: null }, chips);
+    };
+    const secondaryFor = (r) => React.createElement("span", {
+      style: { display: "flex", flexDirection: "column", gap: "var(--sp-2)" },
+    },
+      React.createElement("span", { key: "spec", style: { color: "var(--text-secondary)" } }, r.kind + " · " + r.spec),
+      React.createElement("span", { key: "marks" }, marksFor(r)),
+      r.schemes.length === 0 ? React.createElement(NS.NamedGap, { key: "gap", scale: "cell", gap: "No ALMM or DCR flag recorded" }) : null);
+    const rows = [
+      { id: "ad545", name: "Adani Solar AS-7-545", kind: "Panel", spec: "545 Wp · Mono PERC", layer: "override", price: 14100, prov: "Verified datasheet", schemes: ["ALMM", "DCR"], preferred: true },
+      { id: "rs550", name: "Rayzon Solar RS-550", kind: "Panel", spec: "550 Wp · TOPCon", layer: "own", price: 13600, prov: "Tenant-provided", schemes: ["ALMM"], preferred: true },
+      { id: "hv5", name: "Havells Enviro 5 kW", kind: "Inverter", spec: "5 kW string · 2 MPPT", layer: "platform", prov: "Verified datasheet", schemes: [], preferred: true },
+      { id: "pe550", name: "Premier Energies PE-M550", kind: "Panel", spec: "550 Wp · TOPCon", layer: "override", price: 14900, prov: "Verified datasheet", schemes: ["ALMM", "DCR"] },
+      { id: "ex150", name: "Exide Solar Tubular 150 Ah", kind: "Battery", spec: "150 Ah · lead-acid", layer: "own", price: 16800, prov: "Tenant-provided", schemes: [] },
+      { id: "wa545", name: "Waaree WSMD-545", kind: "Panel", spec: "545 Wp · Mono PERC", layer: "platform", prov: "Verified datasheet", schemes: ["ALMM", "DCR"] },
+      { id: "rn540", name: "RenewSys DESERV M6-540", kind: "Panel", spec: "540 Wp · Mono PERC", layer: "platform", prov: "Verified datasheet", schemes: ["ALMM"] },
+      { id: "tp540", name: "Tata Power Solar TP540M", kind: "Panel", spec: "540 Wp · Mono PERC", layer: "platform", prov: "Representative data", schemes: ["ALMM", "DCR"] },
+    ];
+    return {
+      rowKey: "id", rows: rows, density: "compact", stackBelow: 4000, onRowClick: this.noop,
+      style: { background: "transparent", boxShadow: "none", borderRadius: 0, overflow: "visible", "--surface-alt": "var(--fill)" },
+      columns: [
+        { key: "name", label: "Item", primary: true, render: (r) => r.name },
+        { key: "spec", label: "What it is", secondary: true, render: secondaryFor },
+        {
+          key: "price", label: "Effective price", trailing: true, numeric: true,
+          gap: (r) => (r.price == null ? "No price set" : null),
+          render: (r) => money(r.price),
+        },
+      ],
+      rowLabel: (r) => r.name + ", " + (r.price == null ? "no price set" : money(r.price)),
+      caption: "Catalog — archived hidden",
+      summary: "342 items · every kind · preferred first",
+      page: 0, pageSize: 20, rowCount: 342, onPageChange: this.noop,
+    };
+  }
+
+  renderVals() {
+    const NS = window.HelioGridDesignSystem_c8aa43;
+    if (!NS) return {};
+    const money = (n) => (NS.IN_FORMAT ? NS.IN_FORMAT.money(n) : String(n));
+    /* Dates are the market pack's: recorded, so no tier. */
+    const savedOn = NS.IN_FORMAT ? NS.IN_FORMAT.date("2026-08-12") : "2026-08-12";
+    const ranOn = NS.IN_FORMAT ? NS.IN_FORMAT.date("2026-08-31") : "2026-08-31";
+    const ranAt = NS.IN_FORMAT ? NS.IN_FORMAT.time("16:42") : "16:42";
+    const FILE = this.FILE;
+    const STEPS = this.STEPS;
+    const fileLine = FILE + " · saved " + savedOn;
+    const reportLine = fileLine + " · imported " + ranOn + ", " + ranAt;
+    const countsTier = { tier: "derived", source: "Counted by the matching pass over all 412 rows", size: 12 };
+    const runTier = { tier: "derived", source: "Counted over all 412 rows of this run", size: 12 };
+
+    /* ── The caller's shell (C5): EPC Owner — Home · Leads · Projects · More, More in view ── */
+    const nav = (name) => this.glyph(name, "lg", "secondary");
+    const navOn = (name, filled) => this.glyph(name, "lg", "inverse", filled);
+    const avatar = (size) => React.createElement(NS.Avatar, { name: "Rajesh Kulkarni", size: size });
+    const topBar = {
+      title: "Catalog", sticky: false,
+      leading: React.createElement(NS.IconButton, { label: "Back to Settings", variant: "ghost", size: 44, onClick: this.noop }, this.glyph("chevron-left", "lg", "primary")),
+      searchLabel: "Search", onSearchClick: this.noop,
+      notificationsLabel: "Notifications", onNotificationsClick: this.noop, notifications: 3,
+      avatar: avatar(40),
+    };
+    const bottomNav = {
+      value: "more", onChange: this.noop, safeBottom: false,
+      items: [
+        { key: "home", label: "Home", icon: nav("house"), activeIcon: navOn("house", true) },
+        { key: "leads", label: "Leads", icon: nav("people"), activeIcon: navOn("people", true) },
+        { key: "add", verb: true, label: "Add lead", icon: nav("plus-circle"), onClick: this.noop },
+        { key: "projects", label: "Projects", icon: nav("board"), activeIcon: navOn("board") },
+        { key: "more", label: "More", icon: nav("dots"), activeIcon: navOn("dots", true) },
+      ],
+    };
+    const r20 = (name) => this.glyph(name, "md", "secondary");
+    const r20On = (name, filled) => this.glyph(name, "md", "accent", filled);
+    const shellDesk = {
+      rail: React.createElement(NS.AppRail, {
+        label: "Primary", value: "more", onChange: this.noop,
+        items: [
+          { key: "home", label: "Home", icon: r20("house"), activeIcon: r20On("house", true) },
+          { key: "leads", label: "Leads", icon: r20("people"), activeIcon: r20On("people", true) },
+          { key: "projects", label: "Projects", icon: r20("board"), activeIcon: r20On("board") },
+          { key: "more", label: "More", icon: r20("dots"), activeIcon: r20On("dots", true) },
+        ],
+        footer: [{ key: "notifications", label: "Notifications", icon: r20("bell"), badge: 3, onClick: this.noop }],
+        avatar: avatar(32),
+      }),
+      header: React.createElement(NS.AppHeader, {
+        sticky: false,
+        tenant: React.createElement(NS.TenantMark, { name: "Suryodaya Solar", size: 32, showName: true }),
+        search: React.createElement(NS.SearchField, { density: "functional", placeholder: "Name, phone or city", ariaLabel: "Search", value: "", onChange: this.noop }),
+      }),
+      style: { height: "100%" },
+    };
+
+    /* ── The wizard's steps: `entered` reachability, the component's named case for an import ── */
+    const indicator = (current) => ({
+      steps: STEPS, current: current, variant: "indicator", reachability: "entered",
+      label: "Import", onStepClick: this.noop, onOpenStepList: this.noop, style: { flexShrink: 0 },
+    });
+    const numbered = (current) => ({
+      steps: STEPS, current: current, variant: "numbered", density: "functional",
+      reachability: "entered", label: "Import", onStepClick: this.noop,
+    });
+
+    /* ── Step 1 · the file. Its counts are read out of the file: measured. ── */
+    const fileRow = {
+      icon: this.glyph("document", "md", "accent"), density: "functional",
+      title: "412 rows · 9 columns",
+      provenance: { tier: "measured", source: "Counted in this file", size: 12 },
+      trailing: React.createElement(NS.Button, { variant: "ghost", onClick: this.noop }, "Replace"),
+    };
+    const sel = (label, value, options, extra) => Object.assign({
+      label: label, value: value, options: options, density: "functional", onChange: this.noop,
+    }, extra || {});
+    const selSheet = sel("Sheet in the file", "Price list", ["Price list", "Notes", "Discontinued 2025"], {
+      helper: "Three sheets. We read the one with a header row.",
+    });
+    const selHeader = sel("Header row", "Row 1", ["Row 1", "Row 2", "Row 3", "There is no header row"], {
+      helper: "Row 1 reads: Item description · मॉडल क्रमांक · Rate · Wattage · GST %…",
+    });
+    /* The file's real ceiling: FILE_MAX_BYTES (packages/domain files/rules.ts), 2 MB. */
+    const dzDrop = {
+      label: "Drop a different spreadsheet here", hint: "Excel or CSV · up to 2 MB · or browse for it",
+      accept: ".xlsx,.csv", multiple: false, maxSizeMB: 2, density: "functional", onFiles: this.noop,
+    };
+    const dzEmpty = {
+      label: "Choose your price list", hint: "Excel or CSV · up to 2 MB · one row per item",
+      accept: ".xlsx,.csv", multiple: false, maxSizeMB: 2, density: "functional", onFiles: this.noop,
+      style: { height: "100%", display: "grid", gridTemplateRows: "minmax(0, 1fr)" },
+    };
+
+    /* ── Step 2 · the mapping, guessed from the header row: derived ── */
+    const provGuess = { tier: "derived", source: "Read from the header row of " + FILE, size: 12 };
+    const FIELDS = [
+      "Leave this column out", "Product name", "Brand", "Model / SKU", "Kind",
+      "Peak power (Wp)", "Price per unit", "Tax rate (GST %)", "HSN code", "Sold as", "Warranty (years)",
+    ];
+    const map = (header, value, extra) => Object.assign({
+      value: value, options: FIELDS, density: "functional", onChange: this.noop,
+      ariaLabel: "Import the column “" + header + "” as",
+    }, extra || {});
+
+    /* ── Step 3 · the preview: 412 rows = 318 matched + 87 new + 7 need attention ── */
+    const scopeOptions = [
+      { value: "all", label: "All rows" },
+      { value: "matched", label: "Matched" },
+      { value: "new", label: "New products" },
+      { value: "attention", label: "Need attention" },
+    ];
+    const scopeChips = {
+      options: scopeOptions, counts: { all: 412, matched: 318, new: 87, attention: 7 },
+      value: "all", scroll: true, label: "What the import will do", onChange: this.noop,
+    };
+    const findBox = (value) => ({
+      placeholder: "Find in this list", ariaLabel: "Find in this list", value: value || "", density: "functional",
+      onChange: this.noop, onClear: value ? this.noop : undefined, style: { width: "100%" },
+    });
+
+    const ROWS = [
+      { id: "r3", line: "3", item: "Vikram Solar Somera 540 Wp mono PERC", match: "Vikram Solar Somera 540", outcome: "override", price: 14320, now: null },
+      { id: "r4", line: "4", item: "Waaree WSMD-545 545 W", match: "Waaree WSMD-545", outcome: "override", price: 14780, now: null },
+      { id: "r5", line: "5", item: "Adani AS-7-545 545 Wp", match: "Adani Solar AS-7-545", outcome: "override", price: 14050, now: 14100 },
+      { id: "r6", line: "6", item: "Rayzon Solar RS-550 550 Wp TOPCon", match: "Rayzon Solar RS-550", outcome: "own", price: 13450, now: 13600 },
+      { id: "r7", line: "7", item: "Rayzon Solar RSM-580 580 Wp TOPCon", match: null, outcome: "new", price: 16240, now: null },
+      { id: "r8", line: "8", item: "Growatt MIN 5000TL-X 5 kW", match: "Growatt MIN 5000TL-X", outcome: "override", price: 30900, now: null },
+      { id: "r9", line: "9", item: "Sungrow SG5.0RS", match: "Sungrow SG5.0RS", outcome: "override", price: 34200, now: null },
+      { id: "r10", line: "10", item: "Deye SUN-5K-SG04LP1 hybrid", match: "Deye SUN-5K-SG04LP1", outcome: "override", price: 57600, now: null },
+      {
+        id: "r11", line: "11", item: "Polycab 6 sq mm DC cable, per metre", match: "Polycab 6 sq mm DC solar cable",
+        outcome: "attention", price: null, priceGap: "Empty", now: null, per: "per m",
+        issue: "The price cell is empty — we need a price per metre.",
+      },
+      { id: "r12", line: "12", item: "Elmex MC4 connector pair", match: null, outcome: "new", price: 165, now: null },
+      { id: "r13", line: "13", item: "Premier Energies PE-M550 TOPCon", match: "Premier Energies PE-M550", outcome: "override", price: 15400, now: 14900 },
+      {
+        id: "r14", line: "14", item: "Havells ACDB 1-in 1-out", match: "Havells ACDB 1-in 1-out",
+        outcome: "attention", price: null, now: null,
+        issue: "The price reads “2,380/pc” — not a number.",
+      },
+    ];
+    const leaveOut = (key) => React.createElement(NS.Button, { key: key || "leave", variant: "ghost", size: "sm", onClick: this.noop }, "Leave this row out");
+    const previewTable = {
+      rowKey: "id", rows: ROWS, columns: this.previewColumns(NS, money), density: "compact",
+      caption: "What this import will do · all 412 rows of " + FILE + ", in file order",
+      stackBelow: 640, rowLabel: (r) => r.item,
+      rowIssue: (r) => r.issue || null,
+      rowIssueAction: (r) => (r.issue ? leaveOut() : null),
+      page: 0, pageSize: 12, rowCount: 412, onPageChange: this.noop,
+    };
+    /* Find in this list, with a query applied: the one search, scoped to this grid. */
+    const findRows = [
+      ROWS[3],
+      ROWS[4],
+      {
+        id: "r19", line: "19", item: "Rayzon Solar RSM-550 550 Wp", match: "Rayzon Solar RSM-550",
+        outcome: "attention", price: 15900, now: null,
+        issue: "Your file says 550 Wp; the product we carry is 545 Wp.",
+      },
+    ];
+    const findTable = Object.assign({}, previewTable, {
+      rows: findRows,
+      caption: "Rows matching “Rayzon” · 3 of 412 rows of " + FILE,
+      page: undefined, pageSize: undefined, rowCount: undefined, onPageChange: undefined,
+    });
+
+    /* ── needs attention: all seven in scope, six open and one fixed ── */
+    const priceFix = (row) => React.createElement("span", { style: { display: "flex", flexWrap: "wrap", gap: "var(--sp-2)", alignItems: "flex-end" } },
+      React.createElement(NS.NumberField, { key: "f", label: "Price for row " + row.line, currency: true, value: row.typed, density: "functional", onCommit: this.noop }),
+      React.createElement(NS.Button, { key: "u", variant: "secondary", size: "sm", onClick: this.noop }, "Use this price"),
+      leaveOut());
+    const pickFix = (label, placeholder, options) => React.createElement("span", { style: { display: "flex", flexWrap: "wrap", gap: "var(--sp-2)", alignItems: "flex-end" } },
+      React.createElement(NS.Select, { key: "s", ariaLabel: label, placeholder: placeholder, options: options, density: "functional", onChange: this.noop }),
+      leaveOut());
+    const ATTENTION = [
+      {
+        id: "a11", line: "11", item: "Polycab 6 sq mm DC cable, per metre", match: "Polycab 6 sq mm DC solar cable",
+        outcome: "override", price: 104, now: null, per: "per m", fixed: "You typed ₹104. This row goes in with the rest.",
+      },
+      {
+        id: "a14", line: "14", item: "Havells ACDB 1-in 1-out", match: "Havells ACDB 1-in 1-out",
+        outcome: "attention", price: null, now: null, typed: 2380,
+        issue: "The price reads “2,380/pc” — not a number.", fix: "price",
+      },
+      {
+        id: "a19", line: "19", item: "Rayzon Solar RSM-550 550 Wp", match: "Rayzon Solar RSM-550",
+        outcome: "attention", price: 15900, now: null,
+        issue: "Your file says 550 Wp; the product we carry is 545 Wp.",
+        fix: "spec",
+      },
+      {
+        id: "a52", line: "52", item: "Waaree 540 W mono PERC", match: null, matchGap: "Two products match",
+        outcome: "attention", price: 13980, now: null,
+        issue: "Two products we carry match this row.", fix: "which",
+      },
+      {
+        id: "a143", line: "143", item: "SPD Type 2, 1000 V DC", match: null,
+        outcome: "attention", price: 1850, now: null,
+        issue: "We cannot tell what kind of item this is.", fix: "kind",
+      },
+      {
+        id: "a266", line: "266", item: "Luminous LPTT12150H 150 Ah", match: "Luminous LPTT12150H",
+        outcome: "attention", price: null, priceGap: "Below zero", now: null, typed: 13900,
+        issue: "The price reads −13,900 — below zero.", fix: "price",
+      },
+      {
+        id: "a390", line: "390", item: "Secure Elite 301 net meter", match: "Secure Elite 301 net meter",
+        outcome: "attention", price: 7450, now: null,
+        issue: "Row 388 has the same item at ₹7,250.", fix: "repeat",
+      },
+    ];
+    const attentionTable = {
+      rowKey: "id", density: "compact", stackBelow: 640,
+      caption: "Rows that need you · 6 still open and 1 you fixed, of 412 rows of " + FILE,
+      columns: this.previewColumns(NS, money),
+      rows: ATTENTION,
+      rowIssue: (r) => r.issue || null,
+      rowResolved: (r) => r.fixed || false,
+      /* The fix sits in the row's issue slot, never an editable column across all 412 (D236). */
+      rowIssueAction: (r) => {
+        if (r.fix === "price") return priceFix(r);
+        if (r.fix === "spec") {
+          return React.createElement("span", { style: { display: "flex", flexWrap: "wrap", gap: "var(--sp-2)" } },
+            React.createElement(NS.Button, { key: "k", variant: "secondary", size: "sm", onClick: this.noop }, "Keep 545 Wp, set only the price"),
+            React.createElement(NS.Button, { key: "o", variant: "ghost", size: "sm", onClick: this.noop }, "Import as your own SKU"),
+            leaveOut());
+        }
+        if (r.fix === "which") return pickFix("Which product is it?", "Choose a product", ["Waaree WSMD-540", "Waaree WS-540 Elite"]);
+        if (r.fix === "kind") return pickFix("Kind", "Choose a kind", ["Module", "Inverter", "Mounting structure", "Cabling", "Protection", "Metering", "Battery"]);
+        if (r.fix === "repeat") {
+          return React.createElement("span", { style: { display: "flex", flexWrap: "wrap", gap: "var(--sp-2)" } },
+            React.createElement(NS.Button, { key: "u", variant: "secondary", size: "sm", onClick: this.noop }, "Use this row’s price"),
+            leaveOut());
+        }
+        return null;
+      },
+      rowLabel: (r) => r.item,
+    };
+    /* Fixing row 11 moves it from Need attention to Matched: 319 / 87 / 6, and the act reads 406. */
+    const attentionChips = {
+      options: scopeOptions, counts: { all: 412, matched: 319, new: 87, attention: 6 },
+      value: "attention", scroll: true, label: "What the import will do", onChange: this.noop,
+    };
+
+    /* ── The report: 412 = 317 applied + 86 created + 7 left out + 2 failed ── */
+    const reportOptions = [
+      { value: "all", label: "All rows" },
+      { value: "applied", label: "Prices applied" },
+      { value: "created", label: "Products created" },
+      { value: "out", label: "Left out" },
+      { value: "failed", label: "Failed" },
+    ];
+    const reportCounts = { all: 412, applied: 317, created: 86, out: 7, failed: 2 };
+    const REPORT = [
+      { id: "p3", line: "3", item: "Vikram Solar Somera 540 Wp mono PERC", target: "Vikram Solar Somera 540", did: "applied", was: null, now: 14320 },
+      { id: "p4", line: "4", item: "Waaree WSMD-545 545 W", target: "Waaree WSMD-545", did: "applied", was: null, now: 14780 },
+      { id: "p5", line: "5", item: "Adani AS-7-545 545 Wp", target: "Adani Solar AS-7-545", did: "applied", was: 14100, now: 14050 },
+      { id: "p6", line: "6", item: "Rayzon Solar RS-550 550 Wp TOPCon", target: "Rayzon Solar RS-550", did: "ownApplied", was: 13600, now: 13450 },
+      { id: "p7", line: "7", item: "Rayzon Solar RSM-580 580 Wp TOPCon", target: null, did: "created", was: null, now: 16240 },
+      {
+        id: "p8", line: "8", item: "Growatt MIN 5000TL-X 5 kW", target: "Growatt MIN 5000TL-X", did: "failed", was: null, now: null,
+        reason: "This product changed in your catalog after the preview, so the row was not written.",
+      },
+      { id: "p9", line: "9", item: "Sungrow SG5.0RS", target: "Sungrow SG5.0RS", did: "applied", was: null, now: 34200 },
+      { id: "p10", line: "10", item: "Deye SUN-5K-SG04LP1 hybrid", target: "Deye SUN-5K-SG04LP1", did: "applied", was: null, now: 57600 },
+      {
+        id: "p11", line: "11", item: "Polycab 6 sq mm DC cable, per metre", target: "Polycab 6 sq mm DC solar cable", did: "out", was: null, now: null, per: "per m",
+        reason: "The price cell was empty. Nothing was changed for this item.",
+      },
+      { id: "p12", line: "12", item: "Elmex MC4 connector pair", target: null, did: "created", was: null, now: 165 },
+      { id: "p13", line: "13", item: "Premier Energies PE-M550 TOPCon", target: "Premier Energies PE-M550", did: "applied", was: 14900, now: 15400 },
+      {
+        id: "p14", line: "14", item: "Havells ACDB 1-in 1-out", target: "Havells ACDB 1-in 1-out", did: "out", was: null, now: null,
+        reason: "The price read “2,380/pc” — not a number. Nothing was changed for this item.",
+      },
+    ];
+    const FAILED = [
+      REPORT[5],
+      {
+        id: "p233", line: "233", item: "Elmex MC4 connector, 6 mm", target: null, did: "failed", was: null, now: null,
+        reason: "Your catalog could not be reached, so the row was not written.",
+      },
+    ];
+    const reportBase = {
+      rowKey: "id", density: "compact", stackBelow: 640,
+      columns: this.reportColumns(NS, money),
+      rowIssue: (r) => r.reason || null,
+      rowLabel: (r) => r.item,
+    };
+    const reportTable = Object.assign({}, reportBase, {
+      caption: "What the import did · all 412 rows of " + FILE + ", in file order",
+      rows: REPORT, page: 0, pageSize: 12, rowCount: 412, onPageChange: this.noop,
+    });
+    const failedTable = Object.assign({}, reportBase, {
+      caption: "What the import did · the 2 failed rows of " + FILE,
+      rows: FAILED,
+    });
+    const undoLine = "Undo any override or new SKU in Catalog settings.";
+    const reportFooter = this.footerFor(NS, "Kept — reopen this report from Catalog settings.", "derived", "Close", "Fix the 9 rows");
+    const previewFooter = this.footerFor(NS, undoLine, "derived", "Back", "Import 405 rows");
+    const attentionFooter = this.footerFor(NS, undoLine, "derived", "Back", "Import 406 rows");
+    const fileFooter = this.footerFor(NS, "Next, match your columns to catalog fields.", null, "Cancel", "Continue");
+    const columnsFooter = this.footerFor(NS, "Next, see what the import will do to each row.", null, "Back", "Continue");
+    const TITLE = "Import from a spreadsheet";
+
+    return {
+      noop: this.noop,
+      footRef: this.footRef,
+      findRef: this.findRef,
+      failedRef: this.failedRef,
+      attentionStripRef: this.attentionStripRef,
+      failedStripRef: this.failedStripRef,
+
+      topBar: topBar,
+      bottomNav: bottomNav,
+      shellDesk: shellDesk,
+      callerItems: this.callerItems(NS, money),
+
+      ind0: indicator(0), ind1: indicator(1), ind2: indicator(2), ind3: indicator(3),
+      deskStep0: numbered(0), deskStep1: numbered(1), deskStep2: numbered(2), deskStep3: numbered(3),
+
+      fileRow: fileRow, selSheet: selSheet, selHeader: selHeader, dzDrop: dzDrop, dzEmpty: dzEmpty,
+
+      provGuess: provGuess,
+      mapUnmatched: map("Supplier code", undefined, {
+        placeholder: "Choose a field",
+      }),
+      mapLeftOut: map("Remarks", "Leave this column out", { helper: "Nothing in it reaches your catalog." }),
+      mapName: map("Item description", "Product name"),
+      mapModel: map("मॉडल क्रमांक", "Model / SKU"),
+      mapRate: map("Rate", "Price per unit"),
+      mapWatt: map("Wattage", "Peak power (Wp)"),
+      mapGst: map("GST %", "Tax rate (GST %)"),
+      mapHsn: map("HSN", "HSN code"),
+      mapUnit: map("Unit", "Sold as"),
+
+      scopeChips: scopeChips, provCounts: countsTier, provRun: runTier,
+      findPreview: findBox(""), findApplied: findBox("Rayzon"), findReport: findBox(""),
+      previewTable: previewTable, findTable: findTable,
+      attentionTable: attentionTable, attentionChips: attentionChips,
+      reportChips: { options: reportOptions, counts: reportCounts, value: "all", scroll: true, label: "What the import did", onChange: this.noop },
+      failedChips: { options: reportOptions, counts: reportCounts, value: "failed", scroll: true, label: "What the import did", onChange: this.noop },
+      reportTable: reportTable, failedTable: failedTable,
+      reportLoading: Object.assign({}, reportBase, { rows: [], state: "loading", caption: "What the import did · all 412 rows of " + FILE + ", in file order" }),
+
+      progMatching: {
+        label: "Matching your rows to products we carry", value: null, state: "running",
+        onCancel: this.noop, cancelEffect: "stops-the-work", cancelLabel: "Stop",
+      },
+      /* The run's figures are counted as rows are written: derived. OperationProgress has no tier
+         slot, so the mark sits beside it (D249). */
+      progressTier: { tier: "derived", size: 12 },
+      progImporting: {
+        label: "Importing 405 rows into your catalog",
+        value: 54, count: { done: 218, total: 405 }, unit: "rows",
+        stage: "Applying price overrides to products you already carry",
+        stageIndex: 1, stageTotal: 2, state: "running",
+        leaveNote: "You can leave — the report will be waiting in Catalog settings.",
+        onCancel: this.noop, cancelEffect: "stops-watching", cancelLabel: "Stop watching", cancelNote: "The import keeps running.",
+      },
+
+      /* `cannot_open` — one of CATALOG_IMPORT_UNREADABLE_REASONS; the answer is another file. */
+      errBanner: { kind: "validation", title: "We could not open this file", dismissible: false, density: "functional" },
+      fileRowUnread: {
+        icon: this.glyph("document", "md", "secondary", false), density: "functional",
+        title: FILE, subtitle: "Could not be opened",
+      },
+
+      stepList: { steps: STEPS, current: 2, reachability: "entered", label: "Import steps", onStepClick: this.noop },
+      sheetSteps: {
+        open: true, inset: true, panelAbove: 720, size: "auto", density: "functional",
+        overline: TITLE, title: "Where you are", onClose: this.noop, showClose: true, zIndex: 50,
+      },
+
+      sheetFile: this.sheetFor(fileLine, TITLE, fileFooter),
+      sheetColumns: this.sheetFor(fileLine, TITLE, columnsFooter),
+      sheetPreview: this.sheetFor(fileLine, TITLE, previewFooter),
+      sheetAttention: this.sheetFor(fileLine, TITLE, attentionFooter),
+      sheetMatching: this.sheetFor(fileLine, TITLE,
+        this.footerGated(NS, "Back", "Continue", "We are still matching your rows — the preview needs the result.")),
+      sheetEmpty: this.sheetFor("Nothing changes in your catalog until you import.", TITLE,
+        this.footerGated(NS, "Cancel", "Continue", "Choose a spreadsheet to continue.")),
+      sheetError: this.sheetFor(undefined, TITLE,
+        this.footerGated(NS, "Cancel", "Continue", "No readable file yet — your catalog is untouched.")),
+      sheetImporting: this.sheetFor(fileLine, "Importing from a spreadsheet",
+        this.footerOne(NS, null, "Close")),
+      sheetReportLoading: this.sheetFor(reportLine, "Import report", this.footerOne(NS, "Opening the report you kept.", "Close")),
+      sheetReport: this.sheetFor(reportLine, "Import report", reportFooter),
+
+      panelFile: this.panelFor(fileLine, TITLE, fileFooter),
+      panelColumns: this.panelFor(fileLine, TITLE, columnsFooter),
+      panelPreview: this.panelFor(fileLine, TITLE, previewFooter),
+      panelAttention: this.panelFor(fileLine, TITLE, attentionFooter),
+      panelReport: this.panelFor(reportLine, "Import report", reportFooter),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

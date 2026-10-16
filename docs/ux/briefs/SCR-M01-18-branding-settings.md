@@ -74,11 +74,23 @@ Decided: reached from More · Settings · Branding, and the phone's back control
 - **palette-derived-compliant-shades / contrast-derived-shade** — a palette that fails contrast is never rejected: compliant shades are derived from what the tenant chose and previewed live, so the tenant sees exactly what customers will (M01-50, F7-07).
   Three varieties: a colour text cannot sit on (the darker shade offered); one that clears the 3:1
   mark floor but cannot be a word (fills and rules, never type); one under the mark floor (fill only).
-- **logo-invalid-limits-stated** — a logo too large / wrong format is validated on upload with the actual limits stated (§M01.6 edge cases, the `S6B.wrong.5` pattern).
+- **logo-invalid-limits-stated** — a logo too large / wrong format is validated on upload with the actual limits stated (§M01.6 edge cases, the `S6B.wrong.5` pattern). The refusal names the declined file and states the limits; it does not print the file's own size, at either width (owner ruling 2026-10-16).
   At 375 the rejection is a block on the logo card; at 1536 the drop surface carries it, its limits
   hint underneath.
 
-Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Empty`, `Error`, `palette-derived-compliant-shades / contrast-derived-shade`, and the remove-logo confirm.
+Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Empty`, `Error`, `palette-derived-compliant-shades / contrast-derived-shade`, the remove-logo confirm, and the leave-with-an-unsaved-change confirm (owner ruling 2026-10-16).
+
+**Rulings at the M01 board check (owner, 2026-10-16).**
+
+- **The company details are `FactRows`**, as they print (`D231`).
+- **The act bar and the preview's loading form are the design system's.** The sticky act bar at 375,
+  the form-column footer at 1536 and a `PreviewFrame` loading state are design-system changes, never
+  this screen's own parts.
+- **A colour that cannot be a word on paper is offered its derived ink** (`compliantShades`) in the
+  colour field, and the previews use that ink wherever the brand colour would be a word — the field's
+  offer no longer waits for a colour no text can sit on (a `BrandColorField` change).
+- **The logo has two doors to one value.** It is written here and on the business profile, both
+  writing the same `logoFileId` under the same `COMPANY_LOGO_LIMITS` (`M01-50`; `D237`).
 
 ## Data volume
 

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/fonts.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/colors.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/typography.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/spacing.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/radius.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/elevation.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/motion.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/keyframes.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/base.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/print.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/field-mode.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/styles.css">
+<script src="ds/heliogriddesignsystem_c8aa43/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+[role="dialog"]{animation:none !important;transform:none !important}
+</style>
+</helmet>
+
+<x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MarketProvider" dc-props="{{ market }}" hint-size="1616px,5920px">
+<div style="width:1616px;height:5920px;box-sizing:border-box;padding:var(--sp-10);background:var(--canvas);display:grid;grid-template-columns:repeat(1, minmax(0, 1fr));column-gap:var(--sp-10);row-gap:var(--sp-10);align-content:start">
+<div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+  <span style="height:var(--sp-6);display:flex;align-items:center;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · the page</span>
+<div data-screen-label="Payment terms — desktop, the page" data-frame="m20-f" style="position:relative;flex:0 0 auto;width:1536px;height:1100px;overflow:hidden;display:flex;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppRail" dc-props="{{ railProps }}" hint-size="72px,100%"></x-import>
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppHeader" dc-props="{{ headerProps }}" hint-size="100%,64px"></x-import>
+    <div style="flex:1;min-height:0;overflow:hidden;display:grid;grid-template-columns:repeat(12, minmax(0, 1fr));column-gap:var(--sp-8);row-gap:var(--sp-6);align-content:start;align-items:start;padding:var(--sp-8)">
+      <div style="grid-column:1 / span 12;min-width:0"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--sp-2) var(--sp-6)"><div style="display:flex;align-items:center;gap:var(--sp-1)"><h1 style="margin:0;font-size:var(--fs-h3);line-height:var(--lh-h3);font-weight:var(--fw-bold);letter-spacing:var(--tr-h3);color:var(--text-primary)">Payment terms</h1></div><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Saved and in force · last changed by Rajesh Kulkarni, {{ changedOn }}</span></div></div>
+      <div style="grid-column:1 / span 7;min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" dc-props="{{ formCard }}" hint-size="100%,520px"><div style="display:flex;flex-direction:column;gap:var(--sp-4)"><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2)"><span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your payment terms</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askTerms }}" hint-size="44px,44px"></x-import></div></div><div style="display:flex;flex-wrap:wrap;gap:var(--sp-2)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" dc-props="{{ chipInUse }}" hint-size="auto,32px">In use · 4</x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" dc-props="{{ chipArchived }}" hint-size="auto,32px">Archived · 2</x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><sc-for list="{{ templateRows }}" as="r" hint-placeholder-count="4"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ r.props }}" hint-size="100%,68px"></x-import></sc-for></div><div style="display:flex"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnNewTerms }}" hint-size="auto,44px">Add payment terms</x-import></div></div></x-import></div>
+      <div style="grid-column:8 / span 5;min-width:0"><div style="display:flex;flex-direction:column;gap:var(--sp-3)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PreviewFrame" dc-props="{{ pfScheduleDesk }}" hint-size="100%,460px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DocumentPreview" dc-props="{{ docScheduleDesk }}" hint-size="480px,414px"></x-import></x-import><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary)">Drawn against a sample contract value of <strong>{{ basisMoney }}</strong>.</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provBasis }}" hint-size="100%,18px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provDerived }}" hint-size="100%,18px"></x-import></div></div></div>
+      <div style="grid-column:8 / span 5;min-width:0"><p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">These terms start every new and Quick proposal and become the project’s collection schedule at Won; a proposal already sent keeps its own.</p></div>
+    </div>
+  </div>
+
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+  <span style="height:var(--sp-6);display:flex;align-items:center;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · editor panel</span>
+<div data-screen-label="Payment terms — desktop, the editor panel" data-frame="m20-g" style="position:relative;flex:0 0 auto;width:1536px;height:1100px;overflow:hidden;display:flex;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppRail" dc-props="{{ railProps }}" hint-size="72px,100%"></x-import>
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppHeader" dc-props="{{ headerProps }}" hint-size="100%,64px"></x-import>
+    <div style="flex:1;min-height:0;overflow:hidden;display:grid;grid-template-columns:repeat(12, minmax(0, 1fr));column-gap:var(--sp-8);row-gap:var(--sp-6);align-content:start;align-items:start;padding:var(--sp-8)">
+      <div style="grid-column:1 / span 8;min-width:0"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--sp-2) var(--sp-6)"><div style="display:flex;align-items:center;gap:var(--sp-1)"><h1 style="margin:0;font-size:var(--fs-h3);line-height:var(--lh-h3);font-weight:var(--fw-bold);letter-spacing:var(--tr-h3);color:var(--text-primary)">Payment terms</h1></div><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Saved and in force · {{ changedOn }}</span></div></div>
+      <div style="grid-column:1 / span 3;min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" dc-props="{{ formCard }}" hint-size="100%,560px"><div style="display:flex;flex-direction:column;gap:var(--sp-4)"><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2)"><span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your payment terms</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askTerms }}" hint-size="44px,44px"></x-import></div></div><div style="display:flex;flex-wrap:wrap;gap:var(--sp-2)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" dc-props="{{ chipInUse }}" hint-size="auto,32px">In use · 4</x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" dc-props="{{ chipArchived }}" hint-size="auto,32px">Archived · 2</x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><sc-for list="{{ templateRows }}" as="r" hint-placeholder-count="4"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ r.props }}" hint-size="100%,68px"></x-import></sc-for></div></div></x-import></div>
+      <div style="grid-column:4 / span 5;min-width:0"><div style="display:flex;flex-direction:column;gap:var(--sp-3)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PreviewFrame" dc-props="{{ pfScheduleDesk }}" hint-size="100%,460px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DocumentPreview" dc-props="{{ docScheduleDesk }}" hint-size="480px,414px"></x-import></x-import><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary)">Drawn against a sample contract value of <strong>{{ basisMoney }}</strong>.</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provBasis }}" hint-size="100%,18px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provDerived }}" hint-size="100%,18px"></x-import></div></div></div>
+    </div>
+  </div>
+  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ panelEditorDraft }}" hint-size="480px,100%"><div style="display:flex;flex-direction:column;gap:var(--sp-5)"><sc-for list="{{ editorDraft }}" as="t" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><div style="display:flex;gap:var(--sp-2);align-items:flex-end"><div style="flex:2 1 0;min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ t.nameField }}" hint-size="100%,76px"></x-import></div><div style="flex:1 1 0;min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ t.shareField }}" hint-size="100%,76px"></x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconButton" dc-props="{{ t.removeBtn }}" hint-size="44px,44px">{{ t.removeGlyph }}</x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ t.stageRow }}" hint-size="100%,56px"></x-import><sc-if value="{{ t.skippable }}" hint-placeholder-val="{{ false }}"><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">{{ skipRule }}</span></sc-if></div></sc-for><div style="display:flex"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnAddTranche }}" hint-size="auto,44px">Add a tranche</x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AllocationMeter" dc-props="{{ meterDraft }}" hint-size="100%,88px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provTier }}" hint-size="100%,18px"></x-import></div><div style="display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:center"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnMakeDefault }}" hint-size="auto,44px">Use for new proposals</x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnArchive }}" hint-size="auto,44px">Archive</x-import></div></div></x-import>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+  <span style="height:var(--sp-6);display:flex;align-items:center;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · editor and stage picker</span>
+<div data-screen-label="Payment terms — desktop, the chain" data-frame="m20-h" style="position:relative;flex:0 0 auto;width:1536px;height:1100px;overflow:hidden;display:flex;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppRail" dc-props="{{ railProps }}" hint-size="72px,100%"></x-import>
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppHeader" dc-props="{{ headerProps }}" hint-size="100%,64px"></x-import>
+    <div style="flex:1;min-height:0;overflow:hidden;display:grid;grid-template-columns:repeat(12, minmax(0, 1fr));column-gap:var(--sp-8);row-gap:var(--sp-6);align-content:start;align-items:start;padding:var(--sp-8)">
+      <div style="grid-column:1 / span 5;min-width:0"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--sp-2) var(--sp-6)"><div style="display:flex;align-items:center;gap:var(--sp-1)"><h1 style="margin:0;font-size:var(--fs-h3);line-height:var(--lh-h3);font-weight:var(--fw-bold);letter-spacing:var(--tr-h3);color:var(--text-primary)">Payment terms</h1><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askTerms }}" hint-size="44px,44px"></x-import></div></div></div>
+      <div style="grid-column:1 / span 5;min-width:0"><div style="display:flex;flex-direction:column;gap:var(--sp-3)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PreviewFrame" dc-props="{{ pfScheduleDesk }}" hint-size="100%,460px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DocumentPreview" dc-props="{{ docScheduleDesk }}" hint-size="480px,414px"></x-import></x-import><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary)">Drawn against a sample contract value of <strong>{{ basisMoney }}</strong>.</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provBasis }}" hint-size="100%,18px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provDerived }}" hint-size="100%,18px"></x-import></div></div></div>
+    </div>
+  </div>
+  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ panelEditorBehind }}" hint-size="480px,100%"><div style="display:flex;flex-direction:column;gap:var(--sp-5)"><sc-for list="{{ editorDraft }}" as="t" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><div style="display:flex;gap:var(--sp-2);align-items:flex-end"><div style="flex:2 1 0;min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ t.nameField }}" hint-size="100%,76px"></x-import></div><div style="flex:1 1 0;min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ t.shareField }}" hint-size="100%,76px"></x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconButton" dc-props="{{ t.removeBtn }}" hint-size="44px,44px">{{ t.removeGlyph }}</x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ t.stageRow }}" hint-size="100%,56px"></x-import><sc-if value="{{ t.skippable }}" hint-placeholder-val="{{ false }}"><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">{{ skipRule }}</span></sc-if></div></sc-for><div style="display:flex"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnAddTranche }}" hint-size="auto,44px">Add a tranche</x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AllocationMeter" dc-props="{{ meterDraft }}" hint-size="100%,88px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provTier }}" hint-size="100%,18px"></x-import></div><div style="display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:center"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnMakeDefault }}" hint-size="auto,44px">Use for new proposals</x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnArchive }}" hint-size="auto,44px">Archive</x-import></div></div></x-import>
+  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ panelStage }}" hint-size="380px,100%"><div style="display:flex;flex-direction:column;gap:var(--sp-3)"><sc-for list="{{ stageOptions }}" as="s" hint-placeholder-count="9"><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Radio" dc-props="{{ s.radio }}" hint-size="100%,44px"></x-import><span style="display:block;padding-left:var(--sp-8);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty"><span style="font-family:var(--font-mono);color:var(--text-primary)">{{ s.canonical }}</span> · {{ s.due }}</span><sc-if value="{{ s.skippable }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-1);padding-left:var(--sp-8)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" dc-props="{{ badgeSkippable }}" hint-size="auto,24px">This stage can be skipped</x-import><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">{{ skipRule }}</span></div></sc-if></div></sc-for></div></x-import>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+  <span style="height:var(--sp-6);display:flex;align-items:center;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · sum-not-100 · 12% under</span>
+<div data-screen-label="Payment terms — desktop, 12% unallocated" data-frame="m20-n10" style="position:relative;flex:0 0 auto;width:1536px;height:1100px;overflow:hidden;display:flex;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppRail" dc-props="{{ railProps }}" hint-size="72px,100%"></x-import>
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppHeader" dc-props="{{ headerProps }}" hint-size="100%,64px"></x-import>
+    <div style="flex:1;min-height:0;overflow:hidden;display:grid;grid-template-columns:repeat(12, minmax(0, 1fr));column-gap:var(--sp-8);row-gap:var(--sp-6);align-content:start;align-items:start;padding:var(--sp-8)">
+      <div style="grid-column:1 / span 8;min-width:0"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--sp-2) var(--sp-6)"><div style="display:flex;align-items:center;gap:var(--sp-1)"><h1 style="margin:0;font-size:var(--fs-h3);line-height:var(--lh-h3);font-weight:var(--fw-bold);letter-spacing:var(--tr-h3);color:var(--text-primary)">Payment terms</h1></div><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Saved and in force · {{ changedOn }}</span></div></div>
+      <div style="grid-column:1 / span 3;min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" dc-props="{{ formCard }}" hint-size="100%,560px"><div style="display:flex;flex-direction:column;gap:var(--sp-4)"><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2)"><span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your payment terms</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askTerms }}" hint-size="44px,44px"></x-import></div></div><div style="display:flex;flex-wrap:wrap;gap:var(--sp-2)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" dc-props="{{ chipInUse }}" hint-size="auto,32px">In use · 4</x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" dc-props="{{ chipArchived }}" hint-size="auto,32px">Archived · 2</x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><sc-for list="{{ templateRows }}" as="r" hint-placeholder-count="4"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ r.props }}" hint-size="100%,68px"></x-import></sc-for></div></div></x-import></div>
+      <div style="grid-column:4 / span 5;min-width:0"><div style="display:flex;flex-direction:column;gap:var(--sp-3)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PreviewFrame" dc-props="{{ pfScheduleDesk }}" hint-size="100%,460px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DocumentPreview" dc-props="{{ docScheduleDesk }}" hint-size="480px,414px"></x-import></x-import><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary)">Drawn against a sample contract value of <strong>{{ basisMoney }}</strong>.</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provBasis }}" hint-size="100%,18px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provDerived }}" hint-size="100%,18px"></x-import></div></div></div>
+    </div>
+  </div>
+  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ panelEditorUnder }}" hint-size="480px,100%"><div style="display:flex;flex-direction:column;gap:var(--sp-5)"><sc-for list="{{ editorUnder }}" as="t" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><div style="display:flex;gap:var(--sp-2);align-items:flex-end"><div style="flex:2 1 0;min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ t.nameField }}" hint-size="100%,76px"></x-import></div><div style="flex:1 1 0;min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ t.shareField }}" hint-size="100%,76px"></x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconButton" dc-props="{{ t.removeBtn }}" hint-size="44px,44px">{{ t.removeGlyph }}</x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ t.stageRow }}" hint-size="100%,56px"></x-import><sc-if value="{{ t.skippable }}" hint-placeholder-val="{{ false }}"><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">{{ skipRule }}</span></sc-if></div></sc-for><div style="display:flex"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnAddTranche }}" hint-size="auto,44px">Add a tranche</x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AllocationMeter" dc-props="{{ meterUnder }}" hint-size="100%,88px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provTier }}" hint-size="100%,18px"></x-import></div><div style="display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:center"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnMakeDefault }}" hint-size="auto,44px">Use for new proposals</x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnArchive }}" hint-size="auto,44px">Archive</x-import></div></div></x-import>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+  <span style="height:var(--sp-6);display:flex;align-items:center;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · live-customer-preview</span>
+<div data-screen-label="Payment terms — desktop, live customer preview" data-frame="m20-n11" style="position:relative;flex:0 0 auto;width:1536px;height:1100px;overflow:hidden;display:flex;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppRail" dc-props="{{ railProps }}" hint-size="72px,100%"></x-import>
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppHeader" dc-props="{{ headerProps }}" hint-size="100%,64px"></x-import>
+    <div style="flex:1;min-height:0;overflow:hidden;display:grid;grid-template-columns:repeat(12, minmax(0, 1fr));column-gap:var(--sp-8);row-gap:var(--sp-6);align-content:start;align-items:start;padding:var(--sp-8)">
+      <div style="grid-column:1 / span 8;min-width:0"><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--sp-2) var(--sp-6)"><div style="display:flex;align-items:center;gap:var(--sp-1)"><h1 style="margin:0;font-size:var(--fs-h3);line-height:var(--lh-h3);font-weight:var(--fw-bold);letter-spacing:var(--tr-h3);color:var(--text-primary)">Payment terms</h1></div><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Saved and in force · {{ changedOn }}</span></div></div>
+      <div style="grid-column:1 / span 3;min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" dc-props="{{ formCard }}" hint-size="100%,560px"><div style="display:flex;flex-direction:column;gap:var(--sp-4)"><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2)"><span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your payment terms</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askTerms }}" hint-size="44px,44px"></x-import></div></div><div style="display:flex;flex-wrap:wrap;gap:var(--sp-2)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" dc-props="{{ chipInUse }}" hint-size="auto,32px">In use · 4</x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" dc-props="{{ chipArchived }}" hint-size="auto,32px">Archived · 2</x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><sc-for list="{{ templateRows }}" as="r" hint-placeholder-count="4"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ r.props }}" hint-size="100%,68px"></x-import></sc-for></div></div></x-import></div>
+      <div style="grid-column:4 / span 5;min-width:0"><div style="display:flex;flex-direction:column;gap:var(--sp-3)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PreviewFrame" dc-props="{{ pfScheduleLive }}" hint-size="100%,460px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DocumentPreview" dc-props="{{ docScheduleLive }}" hint-size="480px,414px"></x-import></x-import><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary)">Drawn against a sample contract value of <strong>{{ basisMoney }}</strong>.</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provBasis }}" hint-size="100%,18px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provDerived }}" hint-size="100%,18px"></x-import></div></div></div>
+    </div>
+  </div>
+  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ panelEditorLive }}" hint-size="480px,100%"><div style="display:flex;flex-direction:column;gap:var(--sp-5)"><sc-for list="{{ editorChanged }}" as="t" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><div style="display:flex;gap:var(--sp-2);align-items:flex-end"><div style="flex:2 1 0;min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ t.nameField }}" hint-size="100%,76px"></x-import></div><div style="flex:1 1 0;min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ t.shareField }}" hint-size="100%,76px"></x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconButton" dc-props="{{ t.removeBtn }}" hint-size="44px,44px">{{ t.removeGlyph }}</x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ t.stageRow }}" hint-size="100%,56px"></x-import><sc-if value="{{ t.skippable }}" hint-placeholder-val="{{ false }}"><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">{{ skipRule }}</span></sc-if></div></sc-for><div style="display:flex"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnAddTranche }}" hint-size="auto,44px">Add a tranche</x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AllocationMeter" dc-props="{{ meterChanged }}" hint-size="100%,88px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provTier }}" hint-size="100%,18px"></x-import></div><div style="display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:center"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnMakeDefault }}" hint-size="auto,44px">Use for new proposals</x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnArchive }}" hint-size="auto,44px">Archive</x-import></div></div></x-import>
+</div>
+</div>
+</div>
+</x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1616,"height":5920}}'>
+class Component extends DCLogic {
+  state = { ds: typeof window === "undefined" ? null : (window.HelioGridDesignSystem_c8aa43 || null) };
+
+  componentDidMount() {
+    const ready = () => (typeof window === "undefined" ? null : window.HelioGridDesignSystem_c8aa43);
+    if (ready()) { this.setState({ ds: ready() }); return; }
+    this._poll = setInterval(() => {
+      const ds = ready();
+      if (ds) { clearInterval(this._poll); this.setState({ ds }); }
+    }, 60);
+  }
+
+  componentWillUnmount() { clearInterval(this._poll); }
+
+  noop = () => {};
+
+  renderVals() {
+    const NS = this.state.ds;
+    if (!NS) return {};
+    if (this._vals) return this._vals;
+    const h = React.createElement;
+    const FMT = NS.IN_FORMAT;
+    const fmtDate = (iso) => FMT.date(iso);
+    const money = (n) => FMT.money(n);
+    const pct = (n) => FMT.number(n, { maximumFractionDigits: 2 }) + "%";
+    const glyph = (name, size, extra) => h(NS.ShellGlyph, Object.assign({ name: name, size: size }, extra || {}));
+    const G = NS.DESTINATION_GLYPH;
+
+    /* M08-08's chain. Labels: the India pack names two (F1-51); the other seven are neutral.
+       Each `due` is the canonical stage's own sentence, and none names a scheme. */
+    const STAGES = [
+      { id: "WON", label: "Won", due: "your customer signs and the order is confirmed" },
+      { id: "MATERIAL_ORDERED", label: "Material ordered", due: "you place the order with your supplier" },
+      { id: "DISPATCHED", label: "Dispatched", due: "the modules and inverter leave for site" },
+      { id: "INSTALLATION", label: "Installation", due: "the plant is mounted and wired on the roof" },
+      { id: "ELECTRICAL_METERING", label: "Electrical metering", due: "the meter for the plant is fitted" },
+      { id: "UTILITY_INSPECTION", label: "DISCOM inspection", due: "the utility inspects and clears the plant" },
+      { id: "COMMISSIONED", label: "Commissioned", due: "the plant is tested and generating" },
+      { id: "INCENTIVE_CLAIMED", label: "Subsidy claimed", due: "the incentive claim is filed and acknowledged" },
+      { id: "HANDED_OVER", label: "Handed over", due: "the readings and paperwork are handed over" },
+    ];
+    const SKIPPABLE = { INCENTIVE_CLAIMED: true };
+    const stageOf = (id) => STAGES.filter((s) => s.id === id)[0];
+
+    /* The two seeded templates are the seed's own rows (STANDARD_TRANCHE_TEMPLATES). */
+    const TEMPLATES = [
+      { name: "Standard 10/60/20/10", seeded: true, isDefault: true, tranches: [
+        ["Advance on signing", 10, "WON"], ["Before dispatch", 60, "MATERIAL_ORDERED"],
+        ["On installation", 20, "INSTALLATION"], ["On commissioning", 10, "COMMISSIONED"]] },
+      { name: "Standard 30/60/10", seeded: true, tranches: [
+        ["Advance on signing", 30, "WON"], ["Before dispatch", 60, "MATERIAL_ORDERED"], ["On commissioning", 10, "COMMISSIONED"]] },
+      { name: "Housing society, in thirds", tranches: [
+        ["First instalment", 33.33, "WON"], ["Second instalment", 33.33, "DISPATCHED"], ["Final instalment", 33.34, "COMMISSIONED"]] },
+      { name: "Commercial, above 100 kWp", tranches: [
+        ["Advance with order", 15, "WON"], ["Before dispatch", 55, "MATERIAL_ORDERED"],
+        ["On metering", 20, "ELECTRICAL_METERING"], ["Retention on handover", 10, "HANDED_OVER"]] },
+    ];
+    const DRAFT = [["First instalment", 33.33, "WON"], ["Second instalment", 33.33, "DISPATCHED"], ["Final instalment", 33.33, "COMMISSIONED"]];
+    const UNDER = [["First instalment", 30, "WON"], ["Second instalment", 28, "DISPATCHED"], ["Final instalment", 30, "COMMISSIONED"]];
+    const OVER = [["First instalment", 30, "WON"], ["Second instalment", 60, "DISPATCHED"], ["Final instalment", 28, "COMMISSIONED"]];
+    const CHANGED = [["Booking advance", 40, "WON"], ["Second instalment", 30, "DISPATCHED"], ["Final instalment", 30, "COMMISSIONED"]];
+    const SKIP = [["Booking advance", 20, "WON"], ["Before dispatch", 60, "MATERIAL_ORDERED"], ["On subsidy", 20, "INCENTIVE_CLAIMED"]];
+    const DEFAULT = TEMPLATES[0].tranches;
+    const SAVED = TEMPLATES[2].tranches;
+
+    const chevron = glyph("chevron-right", "md", { tone: "secondary" });
+    const badge = (tone, words, key) => h(NS.Badge, { key: key, tone: tone, density: "functional" }, words);
+    const splitOf = (list) => list.length + " tranches · " + list.map((x) => pct(x[1])).join(" / ");
+    const marksOf = (t) => {
+      const m = [t.isDefault ? badge("accent", "Default", "d") : null, t.seeded ? badge("neutral", "Platform standard", "s") : null].filter(Boolean);
+      return m.length ? m : undefined;
+    };
+    const templateRow = (t) => ({ props: {
+      title: t.name, subtitle: splitOf(t.tranches), marks: marksOf(t),
+      trailing: chevron, onClick: this.noop, density: "functional",
+    } });
+
+    const closeMark = h(NS.Icon, { size: "md" }, h("svg", {
+      viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round",
+    }, h("path", { d: "M18 6 6 18M6 6l12 12" })));
+
+    const trancheRow = (x) => {
+      const st = stageOf(x[2]);
+      const skippable = !!SKIPPABLE[x[2]];
+      return {
+        nameField: { label: "Tranche name", value: x[0], onChange: this.noop, onCommit: this.noop, commitOnBlur: true, density: "functional" },
+        shareField: {
+          label: "Share", value: x[1], onCommit: this.noop, density: "functional", unit: "%", min: 0.01, max: 100,
+          precision: 2, steppers: false, outOfRange: "refuse", refusalPath: "A tranche carries a share between 0.01% and 100%.",
+        },
+        removeBtn: { label: "Remove the " + x[0] + " tranche", variant: "ghost", onClick: this.noop },
+        removeGlyph: closeMark,
+        stageRow: {
+          title: st.label, subtitle: h("span", { style: { fontFamily: "var(--font-mono)" } }, st.id),
+          marks: skippable ? [badge("warning", "This stage can be skipped", "k")] : undefined,
+          trailing: chevron, onClick: this.noop, density: "functional",
+        },
+        skippable: skippable,
+      };
+    };
+
+    /* One rule serves the meter and the save: met is exact (tolerance 0). The meter states the
+       arithmetic; the act states the refusal; the rule itself is the editor's ask. */
+    const meterFor = (list, extra) => Object.assign({
+      label: "Tranche allocation", parts: list.map((x) => ({ label: x[0], value: x[1] })),
+      tolerance: 0, enforcement: "immediate", enforcementNote: "", density: "functional",
+    }, extra || {});
+    const TIER = { tier: "derived", size: 12 };
+
+    const button = (variant, words, extra) => h(NS.Button, Object.assign({ variant: variant, size: "md", onClick: this.noop }, extra || {}), words);
+    const commits = (why) => (why
+      ? h("div", { key: "acts", style: { display: "flex", flexDirection: "column", gap: "var(--sp-2)" } }, [
+        button("primary", "Save terms", { key: "s", fullWidth: true, disabled: true, disabledReason: why, onClick: undefined }),
+        button("ghost", "Cancel", { key: "c", fullWidth: true }),
+      ])
+      : h(NS.SheetActions, { key: "acts" }, button("ghost", "Cancel", { key: "c" }), button("primary", "Save terms", { key: "s" })));
+
+    /* The phone's sticky footer: the meter with its tier as a mark, the route to the customer's
+       view, then the commit. */
+    const footer375 = (list, why, extra) => h("div", {
+      style: { display: "flex", flexDirection: "column", gap: "var(--sp-2)" },
+    }, [
+      extra && extra.banner ? extra.banner : null,
+      h(NS.AllocationMeter, Object.assign({ key: "m" }, meterFor(list, extra && extra.meter))),
+      h(NS.Provenance, Object.assign({ key: "t" }, TIER)),
+      button("secondary", "See what your customer would get", { key: "see", fullWidth: true }),
+      commits(why),
+    ]);
+
+    /* The screen's ask (one per frame): what the set is for. The editor's own ask: the rule. */
+    const askTerms = {
+      label: "About payment terms", title: "Payment terms", density: "functional",
+      pages: [
+        "Every proposal's payment schedule starts from one of these. Your default is what a new proposal gets, and what a Quick proposal sends without asking.",
+        "Each is a list of tranches that together total exactly 100%. The two platform standards are yours to edit like any other.",
+        "Changing a template changes what the next proposal starts from and, once a proposal is won, what the project collects against.",
+      ],
+    };
+    const editorAsk = h(NS.Explainer, {
+      label: "About the 100% rule", title: "Tranches and stages", density: "functional",
+      pages: [
+        "Every tranche together must total exactly 100% before these terms can be saved.",
+        "Each tranche falls due on the project stage it is tied to, and tranches list in stage order. Only the stages this market has are offered.",
+      ],
+    });
+
+    const sheet = (o) => Object.assign({
+      open: true, inset: true, panelAbove: 720, size: "full", density: "functional", onClose: this.noop, showClose: true,
+    }, o);
+    const editorSheet = (o) => sheet(Object.assign({}, o, { sheetProps: Object.assign({ meta: editorAsk }, o.sheetProps || {}) }));
+    const AT_FOOT = { bodyStyle: { overflowY: "hidden", display: "flex", flexDirection: "column", justifyContent: "flex-end" } };
+    const PICKER_W = 380;
+    const panel = (o) => Object.assign({
+      open: true, inset: true, panelAbove: 0, width: 480, modal: false, density: "functional",
+      onClose: this.noop, showClose: true, zIndex: 30, meta: editorAsk,
+    }, o);
+
+    const SUB_DRAFT = "The saved terms are still 33.33 / 33.33 / 33.34.";
+    const WHY_DRAFT = "Allocate the remaining 0.01% to save these terms.";
+    const WHY_UNDER = "Allocate the remaining 12% to save these terms.";
+    const WHY_OVER = "Take 18% off the tranches to save these terms.";
+
+    /* The tenant's saved branding (SCR-M01-18), shown here and never written here. */
+    const BASIS = 420000;
+    const docBase = {
+      sample: false,
+      brandColor: "#0D7A4F", companyName: "Suryodaya Solar Pvt Ltd", logoSrc: "assets/tenant-suryodaya-logo.svg",
+      taxId: "27AABCS1429P1ZQ", address: "Shop 14, Laxmi Complex, Baner Road, Pune 411045", phone: "+91 98200 41123",
+      letterhead: { tagline: "Rooftop solar since 2011", lines: ["GSTIN 27AABCS1429P1ZQ", "+91 98200 41123", "suryodayasolar.in"], footerNote: "Thank you for choosing Suryodaya Solar." },
+      parts: ["tranches"], tranchesTitle: "Payment schedule", fit: "content", caption: "",
+    };
+    const bandOf = (list) => list.map((x) => ({
+      label: x[0], when: "When " + stageOf(x[2]).due, share: pct(x[1]), amount: Math.round(BASIS * x[1]) / 100,
+    }));
+    const doc = (list, width) => Object.assign({}, docBase, { width: width, tranches: bandOf(list) });
+    const readerSheet = (o) => sheet(Object.assign({ sheetProps: { bodyStyle: { overflow: "hidden" } } }, o));
+
+    const account = (align) => h(NS.AccountMenu, {
+      name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account", menuLabel: "Account",
+      grievanceLabel: "Grievance contact", signOutLabel: "Sign out", align: align,
+      onGrievance: this.noop, onSignOut: this.noop,
+    });
+    const destination = (key, label, size) => ({
+      key: key, label: label,
+      icon: glyph(G[key], size), activeIcon: glyph(G[key], size, { filled: true, tone: size === "lg" ? "inverse" : "accent" }),
+    });
+
+    const vals = {
+      market: { pack: NS.IN_PACK },
+      changedOn: fmtDate("2026-08-22"),
+
+      /* ══ The shell ══ */
+      topBar: {
+        title: "Payment terms",
+        leading: h(NS.IconButton, { label: "Back to Settings", variant: "ghost", onClick: this.noop }, glyph("chevron-left", "lg", { tone: "primary" })),
+        searchLabel: "Search", onSearchClick: this.noop,
+        notificationsLabel: "Notifications", onNotificationsClick: this.noop,
+        avatar: account("end"), sticky: false,
+      },
+      nav: {
+        value: "more", onChange: this.noop,
+        items: [
+          destination("home", "Home", "lg"),
+          destination("leads", "Leads", "lg"),
+          { key: "add", verb: true, label: "Add lead", icon: glyph("plus-circle", "lg"), onClick: this.noop },
+          destination("projects", "Projects", "lg"),
+          destination("more", "More", "lg"),
+        ],
+      },
+      railProps: {
+        label: "Main navigation", value: "more", onChange: this.noop,
+        items: [destination("home", "Home", "md"), destination("leads", "Leads", "md"), destination("projects", "Projects", "md"), destination("more", "More", "md")],
+        footer: [{ key: "notifications", label: "Notifications", icon: glyph("bell", "md"), onClick: this.noop }],
+        avatar: account("start"),
+      },
+      headerProps: {
+        tenant: h(NS.TenantMark, { name: "Suryodaya Solar", logo: "assets/tenant-suryodaya-logo.svg", size: 32 }),
+        search: h(NS.SearchField, { density: "functional", placeholder: "Name, phone or city", value: "", onChange: this.noop, ariaLabel: "Search" }),
+      },
+      askTerms: askTerms,
+
+      /* ══ The set ══ */
+      formCard: { density: "functional", style: { background: "var(--surface-form)" } },
+      loadingBars: { label: "Loading your payment terms", bars: ["row", "row", "row", "row", "panel"] },
+      chipInUse: { active: true, onClick: this.noop, density: "functional" },
+      chipArchived: { onClick: this.noop, density: "functional" },
+      chipInUseTwo: { active: true, onClick: this.noop, density: "functional" },
+      chipArchivedNone: { onClick: this.noop, density: "functional" },
+      chipInUseIdle: { onClick: this.noop, density: "functional" },
+      chipArchivedActive: { active: true, onClick: this.noop, density: "functional" },
+      templateRows: TEMPLATES.map(templateRow),
+      templateRowsSeeded: TEMPLATES.slice(0, 2).map(templateRow),
+      templateRowsArchived: [
+        { name: "Subsidy-linked, 2024", list: [30, 50, 20] },
+        { name: "Standard 20/70/10 (old)", list: [20, 70, 10] },
+      ].map((a) => ({ props: {
+        title: a.name,
+        subtitle: a.list.length + " tranches · " + a.list.map(pct).join(" / "),
+        marks: [h(NS.StatusChip, { key: "a", status: "archived", label: "Archived", tone: "neutral", density: "functional" })],
+        trailing: button("secondary", "Restore", { size: "sm" }),
+        density: "functional",
+      } })),
+      btnNewTerms: { variant: "secondary", size: "md", onClick: this.noop },
+      bannerEmpty: { kind: "preliminary", title: "You're starting with the two standard terms.", density: "functional" },
+
+      /* ══ The schedule ══ */
+      basisMoney: money(BASIS),
+      provBasis: { tier: "assumed", size: 12, source: "Sample value" },
+      provDerived: { tier: "derived", size: 12, source: "Share of the sample value" },
+      pfSchedule: {
+        label: "What your customer sees", surface: "sheet", designWidth: 343, maxHeight: 306,
+        caption: "Your default terms, Standard 10/60/20/10.",
+        action: button("ghost", "Open full size", { size: "sm" }),
+      },
+      docSchedule: doc(DEFAULT, 343),
+      pfScheduleDesk: {
+        label: "What your customer sees", surface: "sheet", designWidth: 480, maxHeight: 420,
+        caption: "Your default terms, Standard 10/60/20/10.",
+      },
+      docScheduleDesk: doc(DEFAULT, 480),
+      pfScheduleLive: {
+        label: "What your customer would see", surface: "sheet", designWidth: 480, maxHeight: 420,
+        caption: "Housing society, in thirds, with your change.", note: "Not saved yet.",
+      },
+      docScheduleLive: doc(CHANGED, 480),
+
+      /* ══ The editor at 375 ══ */
+      editorDraft: DRAFT.map(trancheRow),
+      editorDefault: DEFAULT.map(trancheRow),
+      editorSaved: SAVED.map(trancheRow),
+      editorUnder: UNDER.map(trancheRow),
+      editorOver: OVER.map(trancheRow),
+      editorChanged: CHANGED.map(trancheRow),
+      editorSkip: SKIP.map(trancheRow),
+      btnAddTranche: { variant: "secondary", size: "md", onClick: this.noop },
+      btnMakeDefault: { variant: "secondary", size: "md", onClick: this.noop },
+      btnArchive: { variant: "ghost", size: "md", onClick: this.noop },
+      skipRule: "If a project skips this stage, the tranche falls due at the next stage that happens.",
+      badgeSkippable: { tone: "warning", density: "functional" },
+
+      sheetEditor: editorSheet({ overline: "Payment terms · not saved yet", title: "Housing society, in thirds", subtitle: SUB_DRAFT, footer: footer375(DRAFT, WHY_DRAFT) }),
+      sheetEditorFoot: editorSheet({ overline: "Payment terms · not saved yet", title: "Housing society, in thirds", subtitle: SUB_DRAFT, footer: footer375(DRAFT, WHY_DRAFT), sheetProps: AT_FOOT }),
+      sheetEditorDefault: editorSheet({ overline: "Payment terms", title: "Standard 10/60/20/10", footer: footer375(DEFAULT, null), sheetProps: AT_FOOT }),
+      sheetEditorBehind: editorSheet({ overline: "Payment terms · not saved yet", title: "Housing society, in thirds", subtitle: SUB_DRAFT, footer: footer375(DRAFT, WHY_DRAFT), zIndex: 40 }),
+      sheetStage: sheet({ overline: "Final instalment · 33.33%", title: "Falls due at", zIndex: 50, sheetProps: AT_FOOT }),
+      stageOptions: STAGES.map((s) => ({
+        radio: { label: s.label, checked: s.id === "COMMISSIONED", onChange: this.noop, name: "stage", value: s.id },
+        canonical: s.id, due: "when " + s.due, skippable: !!SKIPPABLE[s.id],
+      })),
+      sheetReader: readerSheet({ overline: "Payment terms · preview", title: "Payment schedule", subtitle: "Scroll across for the shares and the amounts." }),
+      docReader: doc(DEFAULT, 480),
+
+      sheetEditorError: editorSheet({
+        overline: "Payment terms", title: "Housing society, in thirds",
+        footer: footer375(SAVED, null, {
+          meter: { state: "met" },
+          banner: h(NS.Banner, { key: "b", kind: "validation", title: "We couldn't save these payment terms.", density: "functional" },
+            "Nothing you typed is lost, and customers keep the terms already in force."),
+        }),
+      }),
+      sheetEditorUnder: editorSheet({ overline: "Payment terms", title: "Housing society, in thirds", footer: footer375(UNDER, WHY_UNDER) }),
+      sheetEditorOver: editorSheet({ overline: "Payment terms", title: "Housing society, in thirds", footer: footer375(OVER, WHY_OVER) }),
+      sheetEditorLive: editorSheet({ overline: "Payment terms · not saved yet", title: "Housing society, in thirds", footer: footer375(CHANGED, null) }),
+      sheetReaderLive: readerSheet({ overline: "Housing society, in thirds · not saved yet", title: "What your customer would see", zIndex: 60 }),
+      docReaderLive: doc(CHANGED, 480),
+      sheetEditorSkip: editorSheet({ overline: "Payment terms", title: "Residential with subsidy", footer: footer375(SKIP, null), sheetProps: AT_FOOT }),
+
+      modalArchive: {
+        open: true, inset: true, size: "sm", density: "functional", tone: "neutral",
+        title: "Archive Housing society, in thirds?",
+        description: "New proposals stop offering it; you can restore it any time and nothing is deleted.",
+        onClose: this.noop, showClose: true,
+        footer: h(NS.SheetActions, null, button("secondary", "Keep it", { key: "k" }), button("primary", "Archive", { key: "a" })),
+      },
+
+      /* ══ The editor at 1536: the meter sits under the tranches it sums ══ */
+      meterDraft: meterFor(DRAFT), meterUnder: meterFor(UNDER), meterChanged: meterFor(CHANGED), provTier: TIER,
+      panelEditorDraft: panel({ overline: "Payment terms · not saved yet", title: "Housing society, in thirds", subtitle: SUB_DRAFT, footer: commits(WHY_DRAFT) }),
+      panelEditorBehind: panel({ overline: "Payment terms · not saved yet", title: "Housing society, in thirds", subtitle: SUB_DRAFT, footer: commits(WHY_DRAFT), style: { right: PICKER_W } }),
+      panelStage: panel({ width: PICKER_W, zIndex: 60, meta: undefined, overline: "Final instalment · 33.33%", title: "Falls due at" }),
+      panelEditorUnder: panel({ overline: "Payment terms", title: "Housing society, in thirds", footer: commits(WHY_UNDER) }),
+      panelEditorLive: panel({ overline: "Payment terms", title: "Housing society, in thirds", footer: commits(null) }),
+    };
+
+    this._vals = vals;
+    return vals;
+  }
+}
+
+</script>
+</body>
+</html>

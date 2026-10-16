@@ -68,6 +68,12 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty
 addresses only `epc_owner`, so the Billing row shows only on the EPC Owner's account, locked
 (`protected-types-locked`). Everyone else sees four groups.
 
+**Rulings at the M01 board check (owner, 2026-10-16).**
+
+- **The roles row wraps.** A person holding several presets reads every name: the design system's
+  `ListRow` gains a wrap option for its title (a design-system change), the second screen after
+  `SCR-M01-10` to need a wrapping row.
+
 ## Data volume
 
 Three launch languages (English, Hindi, Marathi — F3-01 context), each in its own script; the picker must remain legible when it lists a script the current language does not use (F3 §F3.1 localization notes). One two-value measurement preference (m/ft — F3-23 source pointer) whose market default is pack data. Push mutes per type-group — a short list of type-groups, not per-event controls ("no per-event snooze theatre" — F6-15). A person with several roles sees every one in the role row, comma-separated and wrapping, under *Your roles* — no count, no *+2 more* and no primary role: the permission model assigns a set.

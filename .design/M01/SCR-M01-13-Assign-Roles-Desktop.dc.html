@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assign roles · 1536</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/fonts.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/colors.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/typography.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/spacing.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/radius.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/elevation.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/motion.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/keyframes.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/base.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/print.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/field-mode.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/styles.css">
+<script src="ds/heliogriddesignsystem_c8aa43/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}
+a:hover{color:var(--link-hover)}
+</style>
+</helmet>
+
+<div style="width:1616px;height:2890px;box-sizing:border-box;overflow:hidden;padding:var(--sp-10);background:var(--canvas);display:flex;flex-direction:column;gap:var(--sp-10)">
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · default</span>
+    <div data-screen-label="Assign roles — default, 1536" data-frame="d-default" style="position:relative;flex:0 0 auto;width:1536px;height:960px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
+        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
+            <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+            <div style="display:flex;align-items:center;gap:var(--sp-3)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefDesk }}" hint-size="auto,44px">What each role can do</x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteDesk }}" hint-size="auto,48px">Invite teammate</x-import>
+            </div>
+          </div>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ teamTable }}" hint-size="100%,700px"></x-import>
+        </div>
+      </x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DetailPanel" dc-props="{{ panel }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+          <div style="display:flex;margin-left:calc(-1 * var(--sp-5))">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
+          </div>
+        </div>
+        <span id="m13d-presets-lbl" style="display:block;margin-top:var(--sp-4);margin-bottom:var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-tertiary)">Presets</span>
+        <div role="group" aria-labelledby="m13d-presets-lbl" style="display:flex;flex-direction:column;gap:var(--sp-2)">
+          <sc-for list="{{ presetsDesk }}" as="p" hint-placeholder-count="12">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ p }}" hint-size="100%,60px"></x-import>
+          </sc-for>
+        </div>
+        <p style="margin:var(--sp-4) 0 0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Every change is recorded under your name — roles before and after.</p>
+      </x-import>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · loading</span>
+    <div data-screen-label="Assign roles — loading, 1536" data-frame="d-loading" style="position:relative;flex:0 0 auto;width:1536px;height:720px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
+        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
+            <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+            <div style="display:flex;align-items:center;gap:var(--sp-3)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefDesk }}" hint-size="auto,44px">What each role can do</x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteDesk }}" hint-size="auto,48px">Invite teammate</x-import>
+            </div>
+          </div>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ teamTable }}" hint-size="100%,700px"></x-import>
+        </div>
+      </x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DetailPanel" dc-props="{{ panelLoading }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60"></x-import>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · remove confirm</span>
+    <div data-screen-label="Assign roles — remove confirm, 1536" data-frame="d-confirm" style="position:relative;flex:0 0 auto;width:1536px;height:960px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
+        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
+            <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+            <div style="display:flex;align-items:center;gap:var(--sp-3)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefDesk }}" hint-size="auto,44px">What each role can do</x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteDesk }}" hint-size="auto,48px">Invite teammate</x-import>
+            </div>
+          </div>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ teamTable }}" hint-size="100%,700px"></x-import>
+        </div>
+      </x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DetailPanel" dc-props="{{ panelConfirm }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+          <div style="display:flex;margin-left:calc(-1 * var(--sp-5))">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
+          </div>
+        </div>
+        <span id="m13dc-presets-lbl" style="display:block;margin-top:var(--sp-4);margin-bottom:var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-tertiary)">Presets</span>
+        <div role="group" aria-labelledby="m13dc-presets-lbl" style="display:flex;flex-direction:column;gap:var(--sp-2)">
+          <sc-for list="{{ presetsConfirm }}" as="p" hint-placeholder-count="12">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ p }}" hint-size="100%,60px"></x-import>
+          </sc-for>
+        </div>
+        <p style="margin:var(--sp-4) 0 0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Every change is recorded under your name — roles before and after.</p>
+      </x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Modal" dc-props="{{ confirmModal }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:70">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+          <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Once saved, he can't open or change designs.</p>
+          <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty"><strong style="font-weight:var(--fw-bold)">You can give it back at any time</strong> — tick Design Engineer on his row again.</p>
+        </div>
+      </x-import>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1616,"height":2890}}'>
+class Component extends DCLogic {
+  /* Static frames: every control holds a literal value and a noop handler. The board mounts
+     DetailPanel and Modal directly because a board has no width probe; the build mounts
+     EditorSurface (D234). The panel is modal: a second row cannot open over an uncommitted set. */
+
+  state = { ds: null };
+
+  componentDidMount() {
+    const ready = () => (typeof window === "undefined" ? null : window.HelioGridDesignSystem_c8aa43);
+    if (ready()) { this.setState({ ds: ready() }); return; }
+    this._poll = setInterval(() => {
+      const ds = ready();
+      if (ds) { clearInterval(this._poll); this.setState({ ds }); }
+    }, 60);
+  }
+
+  componentWillUnmount() { clearInterval(this._poll); }
+
+  noop = () => {};
+
+  /* The same twelve rows as the 375 board, word for word: F2-01's names, F2 §F2.1's grant summaries. */
+  presetSpec() {
+    return [
+      { id: "owner", name: "EPC Owner", verb: "run the whole business", desc: "Everything, including team and roles, the agent, billing and company settings", held: false },
+      { id: "sales-manager", name: "Sales Manager", verb: "oversee sales", desc: "The team's leads and proposals, project stages, payments and team reports", held: false },
+      { id: "sales-exec", name: "Sales Executive", verb: "sell", desc: "Their own leads, surveys and proposals, including discounts, sending and marking won or lost", held: false },
+      { id: "survey", name: "Survey Engineer", verb: "survey", desc: "Capture and submit surveys for the leads assigned to them", held: true },
+      { id: "design", name: "Design Engineer", verb: "design", desc: "Designs and proposals for the leads assigned to them, and design sign-off", held: true },
+      { id: "project", name: "Project Manager", verb: "run projects", desc: "Their own projects' stages, documents, payments and installation checklist", held: false },
+      { id: "field-tech", name: "Field Technician", verb: "work assigned stops", desc: "Their own stops, check-ins, timeline and attendance", held: false },
+      { id: "install", name: "Installation Team Member", verb: "install", desc: "The installation job assigned to them, its checklist and photos", held: true },
+      { id: "hr-admin", name: "HR/Admin", verb: "handle people and admin", desc: "Employee records, documents, attendance and leave", held: false },
+      { id: "finance", name: "Finance", verb: "handle money", desc: "Record payments, attach receipts, read any project's money, and see catalog prices and margins", held: false },
+      { id: "operations", name: "Operations", verb: "run operations", desc: "Project stages, documents and blockers across all projects, plus the catalog and price book", held: false },
+      { id: "marketing", name: "Marketing", verb: "run marketing", desc: "Create and run campaigns, see what they captured, and pass enquiries into the lead queue", held: false },
+    ];
+  }
+
+  renderVals() {
+    const ds = this.state.ds;
+    /* Nothing renders until the bundle has loaded; then one set of values serves every frame. */
+    if (!ds) return {};
+    if (this._vals) return this._vals;
+    const h = React.createElement;
+    const NS = ds;
+
+    const glyph = (name, filled) => h(NS.ShellGlyph, { name: name, size: "md", filled: !!filled });
+    const dest = (key) => NS.DESTINATION_GLYPH[key];
+
+    const status = (label, tone) => h(NS.StatusChip, {
+      status: label.toLowerCase(), label: label, tone: tone, density: "functional",
+    });
+
+    const rowLabel = (p) => h("span", {
+      style: { display: "flex", flexDirection: "column", gap: "var(--sp-0-5)", minWidth: 0 },
+    }, [
+      h("span", {
+        key: "t",
+        style: {
+          fontSize: "var(--fs-body)", lineHeight: "var(--lh-body)", fontWeight: "var(--fw-bold)",
+          letterSpacing: "var(--tr-h4)", color: "var(--text-primary)",
+        },
+      }, p.name),
+      h("span", {
+        key: "d",
+        style: {
+          fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)",
+          fontWeight: "var(--fw-regular)", color: "var(--text-secondary)", textWrap: "pretty",
+        },
+      }, p.desc),
+    ]);
+    const rowStyle = {
+      display: "flex", alignItems: "flex-start", gap: "var(--sp-3)", width: "100%", boxSizing: "border-box",
+      padding: "var(--sp-3) var(--sp-4)", background: "var(--fill)", boxShadow: "none",
+      borderRadius: "var(--r-tile)",
+    };
+    const mkRows = (list, pfx) => list.map((p) => ({
+      id: pfx + p.id, checked: p.held, onChange: this.noop, label: rowLabel(p), style: rowStyle,
+    }));
+    const held = (list, ids) => list.map((p) => Object.assign({}, p, { held: ids.indexOf(p.id) > -1 }));
+    const byId = (id) => this.presetSpec().filter((p) => p.id === id)[0];
+
+    const metaRow = (word, tone, email) => h("span", {
+      style: { display: "flex", alignItems: "center", gap: "var(--sp-2)", flexWrap: "wrap" },
+    }, [
+      h("span", { key: "s" }, status(word, tone)),
+      h("span", { key: "e", style: { color: "var(--text-secondary)" } }, email),
+    ]);
+
+    const grantSentence = (name, ids) => {
+      const verbs = ids.map((id) => byId(id).verb);
+      const parts = [name + " can "];
+      verbs.forEach((v, i) => {
+        if (i > 0) parts.push(i === verbs.length - 1 ? " and " : ", ");
+        parts.push(h("strong", { key: "v" + i, style: { fontWeight: "var(--fw-bold)" } }, v));
+      });
+      parts.push(".");
+      return parts;
+    };
+    const grantCard = (sentence) => h(NS.Card, { key: "g", density: "functional" },
+      h("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-1)" } }, [
+        h("span", {
+          key: "o",
+          style: {
+            fontSize: "var(--fs-overline)", fontWeight: "var(--fw-bold)", letterSpacing: "var(--tr-overline)",
+            textTransform: "uppercase", color: "var(--text-tertiary)",
+          },
+        }, "What this gives them"),
+        h("p", {
+          key: "s", "aria-live": "polite",
+          style: {
+            margin: 0, fontSize: "var(--fs-body-lg)", lineHeight: "var(--lh-body-lg)",
+            color: "var(--text-primary)", textWrap: "pretty",
+          },
+        }, sentence),
+      ]));
+
+    /* DetailPanel.footer pins the grant line and Save. */
+    const footer = (sentence, save) => h("div", {
+      style: { display: "flex", flexDirection: "column", gap: "var(--sp-3)" },
+    }, [
+      grantCard(sentence),
+      h(NS.Button, Object.assign({ key: "b" }, save), "Save roles"),
+    ]);
+    const saveOff = {
+      variant: "primary", size: "lg", fullWidth: true, disabled: true,
+      disabledReason: "Tick or clear a preset first.",
+    };
+    const saveOn = { variant: "primary", size: "lg", fullWidth: true, onClick: this.noop };
+
+    const vals = {};
+
+    /* THE SHELL (F7-22, F7-48): the EPC Owner's destinations on the rail, the bell and the account at
+       its foot; the header holds only the tenant's mark and the one search. */
+    vals.rail = h(NS.AppRail, {
+      label: "Main", value: "more", onChange: this.noop,
+      items: [
+        { key: "home", label: "Home", icon: glyph(dest("home")), activeIcon: glyph(dest("home"), true) },
+        { key: "leads", label: "Leads", icon: glyph(dest("leads")), activeIcon: glyph(dest("leads"), true) },
+        { key: "projects", label: "Projects", icon: glyph(dest("projects")), activeIcon: glyph(dest("projects"), true) },
+        { key: "more", label: "More", icon: glyph(dest("more")), activeIcon: glyph(dest("more"), true) },
+      ],
+      footer: [{ key: "notifications", label: "Notifications", icon: glyph("bell"), onClick: this.noop }],
+      avatar: h(NS.AccountMenu, {
+        name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account", menuLabel: "Account",
+        grievanceLabel: "Grievance officer", signOutLabel: "Sign out",
+        onGrievance: this.noop, onSignOut: this.noop, align: "start",
+      }),
+    });
+    vals.deskHeader = h(NS.AppHeader, {
+      tenant: h(NS.TenantMark, { name: "Suryodaya Solar", size: 32 }),
+      search: h(NS.SearchField, {
+        density: "functional", placeholder: "Name, phone or city", value: "", onChange: this.noop,
+      }),
+    });
+
+    vals.inviteDesk = { variant: "primary", size: "lg", onClick: this.noop };
+    vals.rolesRefDesk = { variant: "ghost", size: "md", onClick: this.noop };
+    vals.rolesRefBtn = { variant: "ghost", size: "md", onClick: this.noop };
+
+    /* THE TABLE BEHIND IS SCR-M01-12's: same people, same columns, same caption. */
+    const rolesAll = (names) => h(NS.ChipGroup, {
+      max: 0, label: "roles", density: "functional",
+    }, names.map((n) => h(NS.Badge, { key: n, tone: "neutral", density: "functional" }, n)));
+    const atCell = (r) => h("span", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-0-5)" } }, [
+      h("span", { key: "a" }, r.at || h(NS.NamedGap, { scale: "cell", gap: "Never signed in" })),
+      r.at2 ? h("span", { key: "b", style: { color: "var(--text-secondary)" } }, r.at2) : null,
+    ]);
+    const teamRows = [
+      { name: "Priya Deshmukh", roles: ["Sales Executive"], st: "Invited", tone: "info", at: null, at2: "Invite expires 5 Sep 2026, 17:40", prov: { tier: "derived", source: "Sent 29 Aug 2026 + the 7-day invite window" } },
+      { name: "Amit Rane", roles: ["Sales Executive", "Survey Engineer"], st: "Active", tone: "success", at: "30 Aug 2026, 19:12" },
+      { name: "Anjali Kulkarni", roles: ["Sales Executive"], st: "Active", tone: "success", at: "31 Aug 2026, 08:47" },
+      { name: "Kavita Shirke", roles: ["Survey Engineer"], st: "Active", tone: "success", at: "28 Aug 2026, 13:20" },
+      { name: "Meera Iyer", roles: ["Design Engineer"], st: "Active", tone: "success", at: "29 Aug 2026, 17:30" },
+      { name: "Rajesh Kulkarni", roles: ["EPC Owner"], st: "Active", tone: "success", at: "31 Aug 2026, 09:05", you: true },
+      { name: "Sunil Bhosale", roles: ["Installation Team Member"], st: "Active", tone: "success", at: "31 Aug 2026, 07:55" },
+      { name: "Vikram Deshpande", roles: ["Survey Engineer", "Design Engineer", "Installation Team Member"], st: "Active", tone: "success", at: "30 Aug 2026, 12:40" },
+      { name: "Deepak Jadhav", roles: ["Installation Team Member"], st: "Deactivated", tone: "neutral", at: "12 Aug 2026, 15:58", at2: "Deactivated 12 Aug 2026, 16:05" },
+    ];
+    vals.teamTable = {
+      caption: "Everyone at Suryodaya Solar — invites first (pending, then expired), then everyone by name, deactivated last",
+      /* No row tap here: DataTable opens every row or none, and only an active member's row opens
+         this screen, so the frames behind the modal panel draw none. */
+      rows: teamRows, rowKey: (r) => r.name, density: "comfortable",
+      columns: [
+        { key: "name", label: "Person", primary: true, width: 230, render: (r) => h("span", {
+          style: { display: "inline-flex", alignItems: "center", gap: "var(--sp-2)", flexWrap: "wrap" },
+        }, [
+          h("span", { key: "n", style: { fontWeight: "var(--fw-bold)", color: "var(--text-primary)" } }, r.name),
+          r.you ? h(NS.Badge, { key: "y", tone: "neutral", density: "functional" }, "You") : null,
+        ]) },
+        { key: "roles", label: "Roles", wrap: true, width: 420, render: (r) => rolesAll(r.roles) },
+        { key: "st", label: "Status", width: 140, render: (r) => status(r.st, r.tone) },
+        { key: "at", label: "Last active", mono: true, width: 300, render: atCell,
+          provenanceFor: (r) => r.prov || null },
+      ],
+    };
+
+    /* THE EDITOR AT 1536 (F7-21): a modal side panel at the right edge of the table. */
+    const panelBase = {
+      open: true, inset: true, zIndex: 60, modal: true, side: "right", width: 560,
+      density: "functional", overline: "Assign roles", title: "Vikram Deshpande",
+      meta: metaRow("Active", "success", "vikram.d@suryodayasolar.in"),
+      showClose: true, closeLabel: "Close", dismissible: true, onClose: this.noop,
+    };
+    vals.panel = Object.assign({}, panelBase, {
+      footer: footer(grantSentence("Vikram", ["survey", "design", "install"]), saveOff),
+    });
+    vals.presetsDesk = mkRows(this.presetSpec(), "m13d-");
+
+    /* LOADING keeps the header the tapped row already carried; the grant line and Save are absent. */
+    vals.panelLoading = Object.assign({}, panelBase, { state: "loading" });
+
+    /* THE REMOVE (N8) at 1536: a Modal over the panel, answered by an action; the diff is visible in
+       the panel behind it. */
+    vals.panelConfirm = Object.assign({}, panelBase, {
+      footer: footer(grantSentence("Vikram", ["survey", "install"]), saveOn),
+    });
+    vals.presetsConfirm = mkRows(held(this.presetSpec(), ["survey", "install"]), "m13dc-");
+    vals.confirmModal = {
+      open: true, inset: true, zIndex: 70, size: "md", density: "functional",
+      showClose: false, closeLabel: "Close", dismissible: false,
+      title: "Remove Design Engineer from Vikram?",
+      footer: h(NS.ModalActions, null, [
+        h(NS.Button, { key: "go", variant: "destructive", size: "lg", onClick: this.noop }, "Remove role"),
+        h(NS.Button, { key: "no", variant: "ghost", size: "lg", onClick: this.noop }, "Cancel"),
+      ]),
+    };
+
+    this._vals = vals;
+    return vals;
+  }
+}
+</script>
+</body>
+</html>

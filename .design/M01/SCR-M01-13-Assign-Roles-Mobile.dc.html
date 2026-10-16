@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assign roles · 375</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/fonts.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/colors.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/typography.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/spacing.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/radius.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/elevation.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/motion.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/keyframes.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/base.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/print.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/field-mode.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/styles.css">
+<script src="ds/heliogriddesignsystem_c8aa43/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}
+a:hover{color:var(--link-hover)}
+</style>
+</helmet>
+
+<div style="width:1269px;height:2686px;box-sizing:border-box;overflow:hidden;padding:var(--sp-10);background:var(--canvas);display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));column-gap:var(--sp-8);row-gap:var(--sp-10);align-content:start">
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · default</span>
+    <div data-screen-label="Assign roles — default" data-frame="m-default" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+      <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4) var(--screen-pad-mobile) var(--sp-6)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindVikram }}" hint-size="100%,148px"></x-import>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindDeepak }}" hint-size="100%,148px"></x-import>
+      </div>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ nav }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Sheet" dc-props="{{ sheet }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-2);padding-top:var(--sp-1)">
+          <div style="display:flex;margin-left:calc(-1 * var(--sp-5))">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
+          </div>
+        </div>
+        <span id="m13-presets-lbl" style="display:block;margin-top:var(--sp-4);margin-bottom:var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-tertiary)">Presets</span>
+        <div role="group" aria-labelledby="m13-presets-lbl" style="display:flex;flex-direction:column;gap:var(--sp-2)">
+          <sc-for list="{{ presets }}" as="p" hint-placeholder-count="12">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ p }}" hint-size="100%,64px"></x-import>
+          </sc-for>
+        </div>
+        <p style="margin:var(--sp-4) 0 0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Every change is recorded under your name — roles before and after.</p>
+      </x-import>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · sole EPC Owner</span>
+    <div data-screen-label="Assign roles — sole EPC Owner" data-frame="m-guard" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+      <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4) var(--screen-pad-mobile) var(--sp-6)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindRajesh }}" hint-size="100%,148px"></x-import>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindSunil }}" hint-size="100%,148px"></x-import>
+      </div>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ nav }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Sheet" dc-props="{{ sheetGuard }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-2);padding-top:var(--sp-1)">
+          <div style="display:flex;margin-left:calc(-1 * var(--sp-5))">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
+          </div>
+        </div>
+        <span id="m13g-presets-lbl" style="display:block;margin-top:var(--sp-4);margin-bottom:var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-tertiary)">Presets</span>
+        <div role="group" aria-labelledby="m13g-presets-lbl" style="display:flex;flex-direction:column;gap:var(--sp-2)">
+          <sc-for list="{{ presetsGuard }}" as="p" hint-placeholder-count="12">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ p }}" hint-size="100%,64px"></x-import>
+          </sc-for>
+        </div>
+        <p style="margin:var(--sp-4) 0 0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Every change is recorded under your name — roles before and after.</p>
+      </x-import>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · loading</span>
+    <div data-screen-label="Assign roles — loading" data-frame="m-loading" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+      <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4) var(--screen-pad-mobile) var(--sp-6)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindVikram }}" hint-size="100%,148px"></x-import>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindDeepak }}" hint-size="100%,148px"></x-import>
+      </div>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ nav }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Sheet" dc-props="{{ sheetLoading }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60"></x-import>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · empty · every tick cleared</span>
+    <div data-screen-label="Assign roles — empty" data-frame="m-empty" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+      <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4) var(--screen-pad-mobile) var(--sp-6)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindVikram }}" hint-size="100%,148px"></x-import>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindDeepak }}" hint-size="100%,148px"></x-import>
+      </div>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ nav }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Sheet" dc-props="{{ sheetEmpty }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-2);padding-top:var(--sp-1)">
+          <div style="display:flex;margin-left:calc(-1 * var(--sp-5))">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
+          </div>
+        </div>
+        <span id="m13e-presets-lbl" style="display:block;margin-top:var(--sp-4);margin-bottom:var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-tertiary)">Presets</span>
+        <div role="group" aria-labelledby="m13e-presets-lbl" style="display:flex;flex-direction:column;gap:var(--sp-2)">
+          <sc-for list="{{ presetsEmpty }}" as="p" hint-placeholder-count="12">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ p }}" hint-size="100%,64px"></x-import>
+          </sc-for>
+        </div>
+        <p style="margin:var(--sp-4) 0 0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Every change is recorded under your name — roles before and after.</p>
+      </x-import>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · error · the save failed</span>
+    <div data-screen-label="Assign roles — error" data-frame="m-error" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+      <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4) var(--screen-pad-mobile) var(--sp-6)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindVikram }}" hint-size="100%,148px"></x-import>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindDeepak }}" hint-size="100%,148px"></x-import>
+      </div>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ nav }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Sheet" dc-props="{{ sheetError }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60">
+        <div role="group" aria-label="Presets, continued" style="display:flex;flex-direction:column;gap:var(--sp-2);padding-top:var(--sp-1)">
+          <sc-for list="{{ presetsError }}" as="p" hint-placeholder-count="6">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ p }}" hint-size="100%,64px"></x-import>
+          </sc-for>
+        </div>
+        <p style="margin:var(--sp-4) 0 0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Every change is recorded under your name — roles before and after.</p>
+      </x-import>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · live · before the tap</span>
+    <div data-screen-label="Assign roles — live, before" data-frame="m-live-before" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+      <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4) var(--screen-pad-mobile) var(--sp-6)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindVikram }}" hint-size="100%,148px"></x-import>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindDeepak }}" hint-size="100%,148px"></x-import>
+      </div>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ nav }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Sheet" dc-props="{{ sheetLiveBefore }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60">
+        <div role="group" aria-label="Presets, continued" style="display:flex;flex-direction:column;gap:var(--sp-2);padding-top:var(--sp-1)">
+          <sc-for list="{{ presetsLiveBefore }}" as="p" hint-placeholder-count="6">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ p }}" hint-size="100%,64px"></x-import>
+          </sc-for>
+        </div>
+      </x-import>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · live · after the tap</span>
+    <div data-screen-label="Assign roles — live, after" data-frame="m-live-after" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+      <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4) var(--screen-pad-mobile) var(--sp-6)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindVikram }}" hint-size="100%,148px"></x-import>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindDeepak }}" hint-size="100%,148px"></x-import>
+      </div>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ nav }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Sheet" dc-props="{{ sheetLiveAfter }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60">
+        <div role="group" aria-label="Presets, continued" style="display:flex;flex-direction:column;gap:var(--sp-2);padding-top:var(--sp-1)">
+          <sc-for list="{{ presetsLiveAfter }}" as="p" hint-placeholder-count="6">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ p }}" hint-size="100%,64px"></x-import>
+          </sc-for>
+        </div>
+      </x-import>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · remove confirm</span>
+    <div data-screen-label="Assign roles — remove confirm" data-frame="m-confirm" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+      <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4) var(--screen-pad-mobile) var(--sp-6)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindVikram }}" hint-size="100%,148px"></x-import>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ behindDeepak }}" hint-size="100%,148px"></x-import>
+      </div>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ nav }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Sheet" dc-props="{{ sheetConfirmBehind }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-2);padding-top:var(--sp-1)">
+          <div style="display:flex;margin-left:calc(-1 * var(--sp-5))">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
+          </div>
+        </div>
+        <span id="m13c-presets-lbl" style="display:block;margin-top:var(--sp-4);margin-bottom:var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-tertiary)">Presets</span>
+        <div role="group" aria-labelledby="m13c-presets-lbl" style="display:flex;flex-direction:column;gap:var(--sp-2)">
+          <sc-for list="{{ presetsConfirm }}" as="p" hint-placeholder-count="12">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ p }}" hint-size="100%,64px"></x-import>
+          </sc-for>
+        </div>
+        <p style="margin:var(--sp-4) 0 0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Every change is recorded under your name — roles before and after.</p>
+      </x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Sheet" dc-props="{{ confirmSheet }}" hint-size="100%,46%" style="position:absolute;inset:0;z-index:70">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+          <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Once saved, he can't open or change designs.</p>
+          <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty"><strong style="font-weight:var(--fw-bold)">You can give it back at any time</strong> — tick Design Engineer on his row again.</p>
+        </div>
+      </x-import>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · after the remove · undo</span>
+    <div data-screen-label="Assign roles — after the act, undo available" data-frame="m-after" style="position:relative;contain:paint;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4) var(--screen-pad-mobile) calc(var(--bottomnav-h) + var(--sp-16))">
+        <section aria-label="Everyone at Suryodaya Solar, scrolled to Vikram Deshpande" style="display:flex;flex-direction:column;gap:var(--tile-gap)">
+          <sc-for list="{{ peopleAfter }}" as="p" hint-placeholder-count="3">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ p }}" hint-size="100%,148px"></x-import>
+          </sc-for>
+        </section>
+      </div>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ nav }}" hint-size="100%,72px"></x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ToastHost" dc-props="{{ undoRoles }}" hint-size="100%,84px"></x-import>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1269,"height":2686}}'>
+class Component extends DCLogic {
+  /* Static frames: every control holds a literal value and a noop handler. The board mounts Sheet
+     directly because a board has no width probe; the build mounts EditorSurface (D234). */
+
+  state = { ds: null };
+
+  componentDidMount() {
+    const ready = () => (typeof window === "undefined" ? null : window.HelioGridDesignSystem_c8aa43);
+    if (ready()) { this.setState({ ds: ready() }); return; }
+    this._poll = setInterval(() => {
+      const ds = ready();
+      if (ds) { clearInterval(this._poll); this.setState({ ds }); }
+    }, 60);
+  }
+
+  componentWillUnmount() { clearInterval(this._poll); }
+
+  noop = () => {};
+
+  /* F2-01's twelve, verbatim and in F2's order; F2-02 forbids renaming them. `desc` follows F2 §F2.1's
+     grant summary for each preset. `verb` is the clause the grant line composes from, in row order. */
+  presetSpec() {
+    return [
+      { id: "owner", name: "EPC Owner", verb: "run the whole business", desc: "Everything, including team and roles, the agent, billing and company settings", held: false },
+      { id: "sales-manager", name: "Sales Manager", verb: "oversee sales", desc: "The team's leads and proposals, project stages, payments and team reports", held: false },
+      { id: "sales-exec", name: "Sales Executive", verb: "sell", desc: "Their own leads, surveys and proposals, including discounts, sending and marking won or lost", held: false },
+      { id: "survey", name: "Survey Engineer", verb: "survey", desc: "Capture and submit surveys for the leads assigned to them", held: true },
+      { id: "design", name: "Design Engineer", verb: "design", desc: "Designs and proposals for the leads assigned to them, and design sign-off", held: true },
+      { id: "project", name: "Project Manager", verb: "run projects", desc: "Their own projects' stages, documents, payments and installation checklist", held: false },
+      { id: "field-tech", name: "Field Technician", verb: "work assigned stops", desc: "Their own stops, check-ins, timeline and attendance", held: false },
+      { id: "install", name: "Installation Team Member", verb: "install", desc: "The installation job assigned to them, its checklist and photos", held: true },
+      { id: "hr-admin", name: "HR/Admin", verb: "handle people and admin", desc: "Employee records, documents, attendance and leave", held: false },
+      { id: "finance", name: "Finance", verb: "handle money", desc: "Record payments, attach receipts, read any project's money, and see catalog prices and margins", held: false },
+      { id: "operations", name: "Operations", verb: "run operations", desc: "Project stages, documents and blockers across all projects, plus the catalog and price book", held: false },
+      { id: "marketing", name: "Marketing", verb: "run marketing", desc: "Create and run campaigns, see what they captured, and pass enquiries into the lead queue", held: false },
+    ];
+  }
+
+  renderVals() {
+    const ds = this.state.ds;
+    /* Nothing renders until the bundle has loaded; then one set of values serves every frame. */
+    if (!ds) return {};
+    if (this._vals) return this._vals;
+    const h = React.createElement;
+    const NS = ds;
+
+    const glyph = (name, filled, tone) => h(NS.ShellGlyph, { name: name, size: "lg", filled: !!filled, tone: tone });
+    const dest = (key) => NS.DESTINATION_GLYPH[key];
+
+    const status = (label, tone) => h(NS.StatusChip, {
+      status: label.toLowerCase(), label: label, tone: tone, density: "functional",
+    });
+
+    const roles = (names) => h(NS.ChipGroup, {
+      max: 2, label: "roles", density: "functional",
+    }, names.map((n) => h(NS.Badge, { key: n, tone: "neutral", density: "functional" }, n)));
+
+    /* THE PRESET ROW (D216): a Checkbox whose label carries the title, the grant summary and, when the
+       row is off, its reason on its own line under the description. The build draws it with
+       OptionCardGroup's multi-select mode. */
+    const rowLabel = (p) => h("span", {
+      style: { display: "flex", flexDirection: "column", gap: "var(--sp-0-5)", minWidth: 0 },
+    }, [
+      h("span", {
+        key: "t",
+        style: {
+          fontSize: "var(--fs-body)", lineHeight: "var(--lh-body)", fontWeight: "var(--fw-bold)",
+          letterSpacing: "var(--tr-h4)", color: "var(--text-primary)",
+        },
+      }, p.name),
+      h("span", {
+        key: "d",
+        style: {
+          fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)",
+          fontWeight: "var(--fw-regular)", color: "var(--text-secondary)", textWrap: "pretty",
+        },
+      }, p.desc),
+      p.reason ? h(NS.ActionReason, { key: "r", reason: p.reason }) : null,
+    ]);
+
+    const rowStyle = {
+      display: "flex", alignItems: "flex-start", gap: "var(--sp-3)", width: "100%", boxSizing: "border-box",
+      padding: "var(--sp-3) var(--sp-4)", background: "var(--fill)", boxShadow: "none",
+      borderRadius: "var(--r-tile)",
+    };
+
+    const mkRows = (list, pfx) => list.map((p) => ({
+      id: pfx + p.id, checked: p.held, disabled: !!p.locked, onChange: this.noop,
+      label: rowLabel(p), style: rowStyle,
+    }));
+    const held = (list, ids) => list.map((p) => Object.assign({}, p, { held: ids.indexOf(p.id) > -1 }));
+    const byId = (id) => this.presetSpec().filter((p) => p.id === id)[0];
+
+    /* The status-and-email row: Sheet.meta, the slot DetailPanel.meta also is. */
+    const metaRow = (word, tone, email) => h("span", {
+      style: { display: "flex", alignItems: "center", gap: "var(--sp-2)", flexWrap: "wrap" },
+    }, [
+      h("span", { key: "s" }, status(word, tone)),
+      h("span", { key: "e", style: { color: "var(--text-secondary)" } }, email),
+    ]);
+
+    /* THE GRANT LINE: one sentence in a Card, the clauses in row order, bold so the sentence reads as
+       composed from the ticks. */
+    const grantSentence = (name, ids) => {
+      const verbs = ids.map((id) => byId(id).verb);
+      const parts = [name + " can "];
+      verbs.forEach((v, i) => {
+        if (i > 0) parts.push(i === verbs.length - 1 ? " and " : ", ");
+        parts.push(h("strong", { key: "v" + i, style: { fontWeight: "var(--fw-bold)" } }, v));
+      });
+      parts.push(".");
+      return parts;
+    };
+    const grantCard = (sentence) => h(NS.Card, { key: "g", density: "functional" },
+      h("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-1)" } }, [
+        h("span", {
+          key: "o",
+          style: {
+            fontSize: "var(--fs-overline)", fontWeight: "var(--fw-bold)", letterSpacing: "var(--tr-overline)",
+            textTransform: "uppercase", color: "var(--text-tertiary)",
+          },
+        }, "What this gives them"),
+        h("p", {
+          key: "s", "aria-live": "polite",
+          style: {
+            margin: 0, fontSize: "var(--fs-body-lg)", lineHeight: "var(--lh-body-lg)",
+            color: "var(--text-primary)", textWrap: "pretty",
+          },
+        }, sentence),
+      ]));
+
+    /* Save is off at rest and says why; it stays focusable (aria-disabled through disabledReason). */
+    const saveOff = (reason) => ({
+      variant: "primary", size: "lg", fullWidth: true, disabled: true, disabledReason: reason,
+    });
+    const saveOn = { variant: "primary", size: "lg", fullWidth: true, onClick: this.noop };
+
+    /* Sheet.footer pins the grant line and Save, and an error's Banner above them. */
+    const footer = (sentence, save, banner) => h("div", {
+      style: { display: "flex", flexDirection: "column", gap: "var(--sp-3)" },
+    }, [
+      banner || null,
+      grantCard(sentence),
+      h(NS.Button, Object.assign({ key: "b" }, save), "Save roles"),
+    ]);
+
+    const sheetBase = {
+      open: true, inset: true, zIndex: 60, modal: true, size: "full", density: "functional",
+      overline: "Assign roles", showClose: true, closeLabel: "Close", dismissible: true,
+      dragToDismiss: true, onClose: this.noop,
+    };
+    const sheetFor = (title, meta, foot, extra) => Object.assign({}, sheetBase,
+      { title: title, meta: meta, footer: foot }, extra || {});
+
+    const vikramMeta = metaRow("Active", "success", "vikram.d@suryodayasolar.in");
+    const unchanged = "Tick or clear a preset first.";
+
+    const back = h(NS.IconButton, {
+      label: "Back to More", variant: "ghost", size: 44, onClick: this.noop,
+    }, glyph("chevron-left", false, "primary"));
+
+    const account = h(NS.AccountMenu, {
+      name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account", menuLabel: "Account",
+      grievanceLabel: "Grievance officer", signOutLabel: "Sign out",
+      onGrievance: this.noop, onSignOut: this.noop, align: "end",
+    });
+
+    /* Only an active member's row opens this screen: an invite or a deactivated person has nothing
+       to assign, so their card is no target and names no act. */
+    const behindCard = (name, roleNames, when, word, tone) => Object.assign({
+      name: name, chip: status(word, tone), marks: roles(roleNames), meta: [when], density: "functional",
+    }, word === "Active" ? {
+      onClick: this.noop,
+      ariaLabel: name + ", active, " + roleNames.join(", ") + ". Open role administration",
+    } : {});
+
+    const vals = {
+      /* F7-48's EPC Owner bar: Home · Leads · the verb · Projects · More, More in view. */
+      topBar: {
+        title: "Team", leading: back, sticky: false,
+        searchLabel: "Search", onSearchClick: this.noop,
+        notificationsLabel: "Notifications", onNotificationsClick: this.noop,
+        avatar: account,
+      },
+      nav: {
+        value: "more", onChange: this.noop,
+        items: [
+          { key: "home", label: "Home", icon: glyph(dest("home")), activeIcon: glyph(dest("home"), true, "inverse") },
+          { key: "leads", label: "Leads", icon: glyph(dest("leads")), activeIcon: glyph(dest("leads"), true, "inverse") },
+          { key: "add", verb: true, label: "Add lead", icon: glyph("plus"), onClick: this.noop },
+          { key: "projects", label: "Projects", icon: glyph(dest("projects")), activeIcon: glyph(dest("projects"), true, "inverse") },
+          { key: "more", label: "More", icon: glyph(dest("more")), activeIcon: glyph(dest("more"), true, "inverse") },
+        ],
+      },
+
+      behindVikram: behindCard("Vikram Deshpande",
+        ["Survey Engineer", "Design Engineer", "Installation Team Member"],
+        "Last active 30 Aug 2026, 12:40", "Active", "success"),
+      behindDeepak: Object.assign(behindCard("Deepak Jadhav", ["Installation Team Member"],
+        "Last active 12 Aug 2026, 15:58", "Deactivated", "neutral"),
+        { meta: ["Last active 12 Aug 2026, 15:58", "deactivated 12 Aug 2026, 16:05"] }),
+      behindRajesh: behindCard("Rajesh Kulkarni", ["EPC Owner"],
+        "Last active 31 Aug 2026, 09:05", "Active", "success"),
+      behindSunil: behindCard("Sunil Bhosale", ["Installation Team Member"],
+        "Last active 31 Aug 2026, 07:55", "Active", "success"),
+
+      /* SCR-M01-14, the read-only reference. */
+      rolesRefBtn: { variant: "ghost", size: "md", onClick: this.noop },
+
+      sheet: sheetFor("Vikram Deshpande", vikramMeta,
+        footer(grantSentence("Vikram", ["survey", "design", "install"]), saveOff(unchanged))),
+      presets: mkRows(this.presetSpec(), "m13-"),
+    };
+
+    /* SOLE EPC OWNER (F2-19): on Rajesh's own sheet the last EPC Owner cannot be cleared, and the row
+       says why. */
+    vals.sheetGuard = sheetFor("Rajesh Kulkarni",
+      metaRow("Active", "success", "rajesh.k@suryodayasolar.in"),
+      footer(grantSentence("Rajesh", ["owner"]), saveOff(unchanged)));
+    vals.presetsGuard = mkRows(held(this.presetSpec(), ["owner"]).map((p) => (p.id === "owner"
+      ? Object.assign({}, p, { locked: true, reason: "The company needs one EPC Owner — make someone else one first." })
+      : p)), "m13g-");
+
+    /* LOADING keeps the header the tapped row already carried; the grant line and Save are absent. */
+    vals.sheetLoading = sheetFor("Vikram Deshpande", vikramMeta, null, { state: "loading" });
+
+    /* EMPTY is mid-edit, never saved (F2-21, roleSetSchema .min(1)): every tick cleared on Vikram. */
+    vals.sheetEmpty = sheetFor("Vikram Deshpande", vikramMeta,
+      footer(["Vikram would hold no presets."], saveOff("Everyone needs at least one preset — tick one.")));
+    vals.presetsEmpty = mkRows(held(this.presetSpec(), []), "m13e-");
+
+    /* ERROR: the composed set stays; the same Save is the retry. */
+    vals.sheetError = sheetFor("Vikram Deshpande", vikramMeta,
+      footer(grantSentence("Vikram", ["survey", "design", "install", "finance"]), saveOn,
+        h(NS.Banner, { key: "x", kind: "validation", title: "Vikram's roles weren't saved" },
+          "Nothing changed for Vikram — try Save again.")));
+    vals.presetsError = mkRows(held(this.presetSpec().slice(6), ["install", "finance"]), "m13err-");
+
+    /* LIVE, a pair, scrolled to rows seven to twelve. */
+    vals.sheetLiveBefore = sheetFor("Vikram Deshpande", vikramMeta,
+      footer(grantSentence("Vikram", ["survey", "design", "install"]), saveOff(unchanged)));
+    vals.presetsLiveBefore = mkRows(this.presetSpec().slice(6), "m13lb-");
+    vals.sheetLiveAfter = sheetFor("Vikram Deshpande", vikramMeta,
+      footer(grantSentence("Vikram", ["survey", "design", "install", "finance"]), saveOn));
+    vals.presetsLiveAfter = mkRows(held(this.presetSpec().slice(6), ["install", "finance"]), "m13la-");
+
+    /* THE REMOVE (N8): only a save that removes is confirmed; one confirm, one audit entry, one undo. */
+    vals.sheetConfirmBehind = sheetFor("Vikram Deshpande", vikramMeta,
+      footer(grantSentence("Vikram", ["survey", "install"]), saveOn));
+    vals.presetsConfirm = mkRows(held(this.presetSpec(), ["survey", "install"]), "m13c-");
+    vals.confirmSheet = {
+      open: true, inset: true, zIndex: 70, size: "auto", density: "functional",
+      handle: true, showClose: false, closeLabel: "Close", dismissible: false, dragToDismiss: false,
+      title: "Remove Design Engineer from Vikram?",
+      footer: h(NS.SheetActions, null, [
+        h(NS.Button, { key: "go", variant: "destructive", size: "lg", onClick: this.noop }, "Remove role"),
+        h(NS.Button, { key: "no", variant: "ghost", size: "lg", onClick: this.noop }, "Cancel"),
+      ]),
+    };
+
+    /* AFTER: the Team list, his row one chip lighter; ToastHost owns its placement and clearance. */
+    vals.undoRoles = {
+      toasts: [{
+        id: "t-roles", tone: "neutral",
+        title: "Design Engineer removed from Vikram Deshpande",
+        description: "Tick it again on his row whenever you like.",
+        action: h(NS.Button, { variant: "ghost", size: "sm", onClick: this.noop }, "Undo"),
+      }],
+    };
+    vals.peopleAfter = [
+      vals.behindSunil,
+      behindCard("Vikram Deshpande", ["Survey Engineer", "Installation Team Member"],
+        "Last active 30 Aug 2026, 12:40", "Active", "success"),
+      vals.behindDeepak,
+    ];
+
+    this._vals = vals;
+    return vals;
+  }
+}
+</script>
+</body>
+</html>
