@@ -37,6 +37,10 @@ Reached from: the search box in the app shell on web and mobile (F6-20; the shel
 - **empty-teaching-no-results** — see empty above
 - **junk-lead-result** — a junk lead returned with its junk state plain and Reopen available (F6-23)
 
+`loading` keeps the field and the query typed; the seven groups shimmer in their fixed order, with no counts. `error` is a region inside the body with its retry, so the sheet, the query and the way out survive it. On the phone the box open with nothing typed is its own frame: it teaches and points at the phone-number path; at 1536 it has no surface, because the field rests in the header and the page is untouched.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `error`, `junk-lead-result`.
+
 ## Data volume
 
 Results span seven entity groups — leads, customers, sites, proposals, projects, catalog items, people (F6-20). Leads in this product exist at 200-lead list scale, so design a common-name or city query returning matches across several groups at once, and a phone-number query resolving to one exact record first.

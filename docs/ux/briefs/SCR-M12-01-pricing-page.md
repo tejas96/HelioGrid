@@ -34,10 +34,12 @@ public page and it is still not a manual: its claim is one line, and its proof i
   switch, `Sign in` — and says so on the board.
 - **375.** The title and its one claim · the cycle selector · the four plans as cards · `Compare two
   plans`, a row that opens the two-plan comparison · `Compared with` · the trial act, pinned at the
-  foot with its one line.
+  foot with its one line. The comparison's three selectors — `Plan`, `Against`, `Show` — sit together
+  directly above its grid.
 - **1536.** The four plans side by side. The full four-plan matrix is ONE region with the three-way
   selector — not three tables stacked down the page. `Compared with` sits beside it. The trial act
-  lives in the page header.
+  lives in the page header. The trial caps stand open under `Compared with`, on its value edge.
+- **Density.** Expressive for the page; functional for the comparison and the matrix, at both widths.
 
 ## Sample data — the book's rows, drawn and never invented
 
@@ -93,8 +95,10 @@ Reached from: the public web — the PRD names the pricing page as an M12-owned 
 - **empty** — no authored market book resolves for the visitor's market; the PRD defines one price/cap source of truth (the market book, BM-09/BM-41 context) but does not pin this page's no-book behavior — decided here: the page says no prices are published for this market yet and offers the sales contact; never an empty grid, never another market's prices.
 - **error** — book data failed to load; honest failure, no stale or invented numbers.
 - **normal** — the four-tier comparison: every cap published and visible per tier (BM-07), with the "every module in every tier / competitors ransom capabilities, we don't" statement the page is required to make (BM-05).
-- **monthly-yearly-toggle** — the page presents both billing cycles; every tier bills monthly or yearly (BM-13 context: yearly = pay for 10 months, get 12; prices exclusive of the market's tax scheme).
-- **benchmark-comparison** — competitor benchmark rows cited on the page; every equivalent-capacity comparison must be lower-priced and traceable to the book's recorded benchmarks, with benchmark provenance shown (`docs/prd/04-business-model.md` §04.7 acceptance criteria and localization notes; BM-39/BM-41/BM-44 context).
+- **monthly-yearly-toggle** — the page presents both billing cycles; every tier bills monthly or yearly (BM-13 context: yearly = pay for 10 months, get 12; prices exclusive of the market's tax scheme). On yearly, Enterprise keeps its monthly anchor: the book publishes no yearly figure for it.
+- **benchmark-comparison** — competitor benchmark rows cited on the page; every equivalent-capacity comparison must be lower-priced and traceable to the book's recorded benchmarks, with benchmark provenance shown (`docs/prd/04-business-model.md` §04.7 acceptance criteria and localization notes; BM-39/BM-41/BM-44 context). Each rung pairs the two yearly figures and adds nothing: the book's percentages are not printed.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `error`, `monthly-yearly-toggle`.
 
 ## Data volume
 

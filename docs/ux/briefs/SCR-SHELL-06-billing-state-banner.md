@@ -36,6 +36,7 @@ in the self-audit. The strip spends its height on rows, never on sentences.
   rows, then the act on its own line. One banner at a time — the broadest true fact speaks.
 - **1536.** The same strip in the content column: title and rows on the left, the act in the strip's
   action row on the right; the four-item list runs in one wrapping row.
+- The strip and the denials are Expressive at both widths (`F7-17`).
 
 ## Sample data — the PRD's own rows, drawn and never invented
 
@@ -58,7 +59,7 @@ Reached from: not navigated to — the state banner and countdown chip render in
 **Decisions made in design (2026-09-20) — later screens inherit them.**
 
 1. **The slot.** One pinned slot between the top bar and the scrolling content, one banner at a time (`BannerStack mode="single"`). It never scrolls away and is never dismissed: `BM-32` makes the strip the guaranteed way back.
-2. **The strip's form.** One title line; rows of ONE family — a mark, the row's word leading the line, then its values — `Paused`, `Still works`, and a dated row (`Until`, `Account halts`, `Cycle resets`, `New detections pause`); then ONE row with the tier mark and the `Derivation` beside it; then the act. The act sits on its own line at 375 and in the banner's action row at 1536, where the strip caps at 1080.
+2. **The strip's form.** One title line; rows of ONE family — a mark, the row's word leading the line, then its values — `Paused`, `Still works`, and a dated row (`Until`, `Account halts`, `Cycle resets`, `New detections pause`) — the dated row and an amount row take a neutral mark, only the two pause rows a semantic one; then ONE row with the tier mark and the `Derivation` beside it; then the act. The act sits on its own line at 375 and in the banner's action row at 1536, where the strip caps at 1080.
 3. **Where the act goes.** Every dunning, trial and halted act, and both denials' act, route to `SCR-M12-03` and return to the surface they were pressed from; the day-6 act is that route with the card already chosen. The 80% cap's act is `See usage` and routes to `SCR-M12-04`; at 100% and after the grace the act is `Upgrade plan`.
 4. **A person who is not the Owner.** `ScopeNote` takes the act's place, its holder in the design system's form — `Mahesh Bhosale (owner)` — and no amount is rendered.
 5. **The default frame is `past_due`, day 4 of 7** — the one ordinary rung where something has paused while core selling still works.
@@ -97,6 +98,10 @@ figure across every billing screen.
 - **cap-post-grace-paused** — new creations of that type paused until upgrade or the next cycle; reading, editing existing records and exporting never pause (M12-30, M12-31)
 - **typed-denial-with-reactivate-route** — the typed entitlement-blocked denial rendering the state banner and a "Reactivate" (or upgrade) path (M12-21)
 - **no-amounts-for-employees** — state banners render for all employees; billing acts render only for the Owner (M12 §M12.2 permissions)
+
+`loading` is a skeleton in the slot's own footprint with no tone, no glyph and no numeral — a strip that guessed a warning would alarm a tenant whose account is fine. `error` is neutral, never danger.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `error`, `trial-countdown-d7-prominent`, `trial-expired-soft-block` (its denial is `typed-denial-with-reactivate-route`'s centred modal), `past-due-day0-3-banner`, `day6-final-warning-one-tap-pay`, `protected-tenant-forfeiture-variant`, `cap-80-warning`, `cap-100-grace`, `cap-post-grace-paused`.
 
 ## Data volume
 

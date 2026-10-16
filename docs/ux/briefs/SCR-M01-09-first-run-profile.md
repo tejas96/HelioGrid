@@ -21,11 +21,19 @@ Base: **loading** · **empty** · **error**.
 - **empty** — the person has cleared the pre-filled name. The field never arrives blank: an invite
   always carries a name (`M01-12`; `inviteeNameSchema` is `min(1)` in
   `packages/contracts/src/invitation.ts`).
+- **error** comes in two forms. `error-save` — the save was refused: a danger `Banner` says so, the
+  name stays in the field, and the act tries again. `error-photo` — the name saved and the photo did
+  not: the field says the name is saved, and the act reads *Continue without a photo*.
 
 Screen-specific:
 
 - **normal** — name plus optional photo; nothing else (M01-14).
 - **photo-skipped** — the photo is optional; skipping it proceeds (M01-14).
+- **photo-added** — the chosen photo fills the circle, with *Replace* and *Remove* beside it;
+  *Remove* brings the initials back.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `photo-skipped` (it is
+`normal`), `photo-added`, and `empty` after the act is pressed.
 
 **Decisions made in design (2026-08-31) — later screens inherit them.**
 
@@ -57,6 +65,7 @@ Screen-specific:
    2026-08-31): `SCR-M01-03` is the signing-up owner's first-run screen and an invited
    employee never reaches it, because `F3-03` asks that a picker be REACHABLE at first run, not
    that every user be given a screen for it.
+7. **At 1536 the name field takes initial focus, and Enter commits.**
 
 ## Data volume
 

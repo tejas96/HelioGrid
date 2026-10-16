@@ -20,10 +20,15 @@ Base: **loading** · **error**.
 
 No `empty` state: every invite carries at least one preset and joining attaches it in one step, so no one reaches this card without a role (`F2-21`; `M01-12`; `M01-13`; `roleSetSchema` `.min(1)` in `packages/contracts/src/common.ts:116`).
 
+- **loading** — the role is known before its explanation: the preset's name and the credit line render at once, only the grant and limit rows wait, and the act stays live.
+- **error** — one frame, because nothing here writes: the card says the membership is not in doubt and offers its own retry, and the corridor's act stays live beside it.
+
 Screen-specific:
 
 - **first-run** — the card in the first-run sequence, between profile capture and the role home (M01 §M01.2 acceptance).
-- **reopened-from-profile** — the same card re-opened later from the user's own profile (M01 §M01.2 permissions).
+- **reopened-from-profile** — the same card re-opened later from the user's own profile (M01 §M01.2 permissions). A sheet at 375 and a side panel at 1536, titled *Your role*; its dismissal takes the place of the corridor's act.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `error`, and stacked presets.
 
 **Decisions made in design (2026-08-31) — later screens inherit them.**
 
@@ -52,6 +57,10 @@ Screen-specific:
    (`F2.M01.manage-team`). Changing a price list is not on it: Operations holds
    `F2.M01.manage-catalog` too. Approving a discount is not on it either: there is no discount
    approval and no per-rep discount limit (`D34`, `M06-36`).
+9. **Both halves sit on the card at once.** The limits are never behind a disclosure: they are half
+   of what `M01-15` asks for.
+10. **No shell, back control, step counter or language control in the first-run life.** The language
+    was chosen on `SCR-M01-09`, and the only honest back would un-save the profile.
 
 **THE PRESET IS NAMED `Sales Executive`.** `M01-15`'s example sentence quotes prototype vocabulary;
 `F2`'s preset table is canon — row 3 is **Sales Executive**, with `Sales rep` recorded as its *v1*
@@ -59,7 +68,7 @@ name — and `F2-01` names the twelve verbatim while `F2-02` forbids renaming th
 
 ## Data volume
 
-One card. Its copy covers the person's assigned preset role(s) — a person may hold several presets (F2 stacking context), so the card must read well when the assignment spans more than one. Role names and capability phrases are localized per F2's localization notes (M01 §M01.2 localization notes).
+One card. Its copy covers the person's assigned preset role(s) — a person may hold several presets (F2 stacking context), so the card must read well when the assignment spans more than one. With several presets the heading turns plural and the act names the one home `SCR-SHELL-01`'s preset-precedence ladder picks (`M13-10`). Role names and capability phrases are localized per F2's localization notes (M01 §M01.2 localization notes).
 
 ## Numbers carrying provenance
 

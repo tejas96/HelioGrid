@@ -14,11 +14,14 @@ Reached from: the bell in the app shell on both platforms (F6-17; the shell is S
 2. **Exits** — an item card's whole face → its subject; a group member's name → its record; each one-step act → the act; `Show older` → the next page; `Mark all read` → the same list with nothing unread; the filter bar's on buttons → tapped again, the unfiltered list; the honest landing's `Back to the list`; close / Esc / drag → back to the home.
 3. **A group row is not an exit.** Grouping is presentation only (`F6-12`), so the group has no subject of its own — its members carry the links. A bulk act reaches its members through its subject record, never by opening 400 rows in place.
 4. **A monthly summary is read where it arrived** (`M13-21`'s own reason), with the full dashboard one control away. A summary that only deep-links to the dashboard the owner never opens has not been read either.
-5. **A lifecycle chip sits in `RecordCard.marks`, not `chip`.** `chip` renders on the name's line, and a notification's name is a sentence — at 335px that pushed it to four lines, and Hindi and Marathi push further.
+5. **A row draws only what the record holds:** its type glyph, the title sentence, the body line, the recorded time, the `Unread` word, and the whole card → its subject. No lifecycle chip, no figure, no per-row tier.
 6. **Row acts are `secondary`, never the near-black primary.** On an inbox nothing is *the* primary action — it belongs to the record the row opens — and a column of near-black pills makes the identity marker meaningless.
-7. **An act on a nested member row is an icon button; an act on a card is a verb.** A card has width for "Send over WhatsApp"; a member row carries a wrapping record name in the same 335px. The icon button keeps the 44px floor and the full accessible name, and the same act returns with its verb on the record the row opens.
+7. **An act on a nested member row is an icon button; an act on a card is a verb** — except Call, a 44px icon button at the row's right edge on cards and members alike. A card has width for "Send over WhatsApp"; a member row carries a wrapping record name in the same 335px. The icon button keeps the 44px floor and the full accessible name, and the same act returns with its verb on the record the row opens.
 8. **Nesting reads from elevation and position, never an indent.** Group members run the full row width at `e1` under the group's `e2`.
 9. **A control with nothing to do removes itself rather than going grey** (`F4-27`) — `Mark all read` is absent when nothing is unread.
+10. **Filters are one icon bar, the same at 375 and 1536:** an Unread toggle, a hairline, then one 44px icon pill per type group. One type group is open at a time — the open one turns dark and shows its name, and tapping it again closes it; Unread toggles on its own and combines with any group. On the phone the bar scrolls sideways when it outgrows the width. Only the bar is pinned: the head line and `Mark all read` scroll with the list.
+11. **The head is one line** — the unread count and the count over the horizon, or, filtered, the matches and the unread in all — with `Mark all read` as a 44px icon button at its right end at both widths. It is absent while loading; the toast after the act says nothing was deleted.
+12. **Expressive density at both widths** (`F7-17`).
 
 
 ## Requirements (verbatim)
@@ -49,6 +52,10 @@ Reached from: the bell in the app shell on both platforms (F6-17; the shell is S
 - **summary-received** — the owner's monthly dashboard summary / monthly agent summary arrived in-app (M13-21, M13-45)
 - **summary-opened** — a monthly summary item opened via its deep link (M13-21, M13-45)
 
+The honest landing names no one — no name, date or new owner — and offers one way back, `Back to the list`. On the phone it replaces the list inside the sheet, under the tapped row; at 1536 it sits at the top of the panel with the list still under it, so the row is not repeated.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `error`, `system-announcement-distinct`, `history-horizon`, `mark-all-read`, `summary-received`, `summary-opened` (its figures stay one column — two up clips the headline figure).
+
 ## Data volume
 
 Design at dozens of items across the practical horizon (F6-19), newest first, with groups like "3 proposals opened today" (F6-12) and a bulk act summarised as one grouped notification — the PRD's own case is "400 leads imported" as one row, not 400 facts (F6.3 edge cases).
@@ -58,7 +65,7 @@ Design at dozens of items across the practical horizon (F6-19), newest first, wi
 Each of these user-visible numbers/dates carries its F8 provenance tier in the design:
 
 - The unread badge count — derived from the records, never from push state (F6-17)
-- Group counts on grouped items ("3 proposals opened today") (F6-12)
+- The head line and the group counts on grouped items ("3 proposals opened today") (F6-12) — counts of the reader's own records listed beneath, so **no tier** (`F8-01`)
 - Item timestamps ordering the list newest first (F6-17)
 - Whatever figures the two monthly summaries surface come from their owning module's published numbers with qualifiers intact (M13-21, M13-45)
 

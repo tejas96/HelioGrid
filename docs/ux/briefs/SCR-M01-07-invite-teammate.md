@@ -8,6 +8,8 @@ Phone-keyed invite with name and at least one preset role; skippable during onbo
 
 Reached from: the skippable onboarding invite step (`S0.screen.4` per M01-12) and one-tap invite on the Team screen (SCR-M01-12, M01-12). The `join_requested` notice (T-M01-035) opens this screen in its Team life with the asker's name and number filled in — no frame of its own. Leads to: on send, an invite in state pending (states pending / accepted / expired / revoked, with an expiry — M01-12), visible and revocable on Team; during onboarding, skipping continues to the two-door landing (M01 §M01.3 behavior detail). The invitee's side is Invite Landing (SCR-M01-08).
 
+In the corridor, *Send invite* and *Skip for now* both continue to SCR-M01-06; a send stops on no confirmation and does not re-arm the form. In its Team life the invite is one editor over Team — a bottom sheet at 375, a side panel at 1536 — with *Cancel* in place of *Skip for now*.
+
 ## Requirements (verbatim)
 
 ### From `docs/prd/foundations/F2-roles-and-permissions.md`
@@ -22,15 +24,19 @@ Reached from: the skippable onboarding invite step (`S0.screen.4` per M01-12) an
 
 Base: **loading** · **empty** · **error**.
 
+- **loading** — only the presets are in flight: a `Card` in its loading state holds the role set's place, and *Send invite* is the one unavailable control, its `disabledReason` saying it waits for the role list.
+
 Screen-specific:
 
 - **normal** — name, phone number, one or more of F2's twelve presets (M01-12). `empty` and `normal` are the same blank default form, folded into the default frames — no frames of their own.
 - **skippable-onboarding-step** — the corridor life: skippable, never a gate (M01-12, `S0.screen.4`). Folded into the default frames — no frame of its own.
-- **no-role-blocked** / **blocked-no-role** — an invite with zero roles is blocked before sending (F2-21; M01 §M01.2 acceptance: "Given an invite with zero roles, when it is submitted, then it is blocked before sending").
-- **already-a-member** — invite sent to a number that is already a member → the invite surface says so and offers the Team screen instead of sending (M01 §M01.2 edge list).
+- **no-role-blocked** / **blocked-no-role** — an invite with zero roles is blocked before sending (F2-21; M01 §M01.2 acceptance: "Given an invite with zero roles, when it is submitted, then it is blocked before sending"). *Send invite* stays live: the refusal is a danger `Banner` at the top of the role set, never a disabled act.
+- **already-a-member** — invite sent to a number that is already a member → the invite surface says so and offers the Team screen instead of sending (M01 §M01.2 edge list). *Open Team* is the banner's own action; the foot pairs *Skip for now* with *Use a different number*.
 - **already-invited** — a live invite already went to this number: the create (`POST /invitations`, `packages/contracts/src/invitation.ts`) refuses with 409 `ALREADY_INVITED`. Works like already-a-member and points to Team, where the pending invite can be cancelled.
 - **number-not-covered** — a number no market covers (F1-49): the create refuses with 422 `DOMAIN_RULE_VIOLATION`, shown as the PhoneField's error line.
-- **invite-cap-reached** — invite flooding → the invite cap (50 sends per company in any rolling 24 hours, so no midnight reset) with an honest message (M01 §M01.2 edge list; the cap is M01-04's, carried on SCR-M01-01).
+- **invite-cap-reached** — invite flooding → the invite cap (50 sends per company in any rolling 24 hours, so no midnight reset) with an honest message (M01 §M01.2 edge list; the cap is M01-04's, carried on SCR-M01-01). The forward act becomes *Continue setup*.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `error`, `already-a-member`, `already-invited`, `number-not-covered`, `invite-cap-reached`.
 
 **The role picker.** All twelve F2 presets in one list, in F2's fixed order, each with its capability line — the same list SCR-M01-13 draws — in both lives. There is no "Show all twelve roles". The list is built as `OptionCardGroup` in a multi-select mode; each row carries a title, a description and a `disabledReason`. One prop contract on both platforms, shared with SCR-M01-13.
 

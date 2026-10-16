@@ -8,6 +8,8 @@ The one two-tier catalog surface: browse, search, rates panel with tier attribut
 
 Reached from: the tenant-config settings surface map — *Catalog · Price book* are named surfaces in M01 §4's stable vocabulary; a deeper entry path is not pinned by PRD — designer decides, note the decision. Leads to: **Add Catalog Item** (SCR-M01-16) — inline add is available from Catalog settings as well as the pickers (M01-39); **Catalog Import Wizard** (SCR-M01-17) — Catalog settings is one of the wizard's three entry points (M01-41, §M01.4 behavior detail); release publish and price-book version browsing happen on this surface (M01-43, M01-48, §M01.5 behavior detail: "The price book renders as the rates panel of the one catalog surface").
 
+Entry is More → Settings → *Catalog*. The back control names the caller (*Back to settings*); at 1536 a breadcrumb, *Settings / Catalog*. *Add an item* and *Import a file* sit at the foot of the list, where an owner concludes the item is missing.
+
 ## Requirements (verbatim)
 
 ### From `docs/prd/modules/M01-onboarding-and-tenant-config.md`
@@ -35,6 +37,16 @@ Reached from: the tenant-config settings surface map — *Catalog · Price book*
 - **release-contents-inspect** — what a release contains (which items changed) is inspectable (§M01.4 behavior detail).
 - **price-book-version-browse** — past price-book versions are browsable read-only; exactly one version is active; the default margin rides the version (M01-48; §M01.5 behavior detail).
 
+Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and edit), `archived-filter`, `archive-warns-referenced-drafts`, `release-publish-summary`, `release-contents-inspect`.
+
+- **Loading** keeps every fixed word, the panel switch and the search box; the release strip, the kind facets and six placeholder rows load.
+- **Empty** on the rates panel is a real empty: nobody else supplies those rates. It teaches that the first set entered becomes version 1.
+- **Error** is two things. A load error is the page and says nothing has changed — items, overrides and the price book are as left, nothing published or archived. A failed edit is one row: what did not save, what is therefore still true, and a retry in place; the row stays operable.
+- **archived-filter** rows are muted and carry one act, *Restore*.
+- **archive-warns-referenced-drafts** is followed by an undo in a toast.
+- **price-book-version-browse** — the version in force says so in words with its status chip; past versions say *Read-only*, never greyed.
+- Giving an item its first price shows in a release as an addition, with no before.
+
 **Decisions made in design (2026-09-01) — later screens inherit them.**
 
 1. **One destination, two panels.** *Catalog* is the one row in the settings surface map; *Price
@@ -61,6 +73,29 @@ Reached from: the tenant-config settings surface map — *Catalog · Price book*
 7. **The catalog keeps its own search.** It is the one exception to `F7-47`'s one global search,
    because the picker searches this catalog with the same engine (`M01-38`, DD12; the contract's
    `q`).
+
+**The surface.**
+
+- Each panel opens with its own versioning strip: the release in force on Items, the active version
+  and its margin on Rates.
+- Source (platform / own) is a dimension in the filter panel, never a toolbar toggle — a toggle would
+  split again what `M01-32` collapses. Component kind stays on the toolbar as multi-select facet
+  chips; none selected is everything.
+- A row's mark line: the layer (*Platform* · *Your SKU* · *Overridden*) and `M01-35`'s spec label as
+  plain chips; tinted badges for compliance (success), *Representative data* and *Hidden from
+  pickers* (warning) and *Preferred* (accent). The F8 tier sits under the price and nothing else
+  does; the spec label never sits beside a price. Where the pack declares schemes and an item records
+  none, the row names the gap (*No BIS or ALMM flag recorded*).
+- *Preferred* and *Hidden from pickers* are each stated by a chip and set by a pressed toggle — never
+  one icon doing both.
+- A platform item with no tenant price reads *No price set*, with no tier; the *Platform* chip says why.
+- At 375 tier attribution lives in the rates panel and the row carries only the layer chip. At 1536
+  every row carries a *Price comes from* column, and the list and the rates panel scroll independently.
+- At 1536 the override editor is a side panel that does not trap focus: the row being priced stays
+  reachable.
+- Without the manage grant every administration act is absent, never disabled — publish, add,
+  import, the row acts, the row click, a new price-book version — and a `ScopeNote` names whose act
+  it is.
 
 ## Data volume
 

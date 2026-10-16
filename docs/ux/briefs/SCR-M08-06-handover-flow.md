@@ -15,24 +15,28 @@ what it sets in motion.
 | Fact | Kind | Its form here |
 |---|---|---|
 | Rows are still pending (`M08-46`) | status · more detail | the flow opens on it: the title names how many documents are pending, the pending rows are a list, each leading to the checklist (`SCR-M08-03`). No send act is drawn |
-| The pack as it will be shared (`M08-32`) | data | every row's files in pack order — the row's pack label (IN: `F1-52`), its files, and its last act, who and when. Every row is past pending; a row still uploaded, not verified, keeps its Uploaded chip, because handover waits on pending rows only. The document count with its provenance label |
-| Sending, with a connected channel (`M08-46`) | action · status | the primary act. Its ONE line: the customer's link becomes this pack. The composed message is content. The four parts happen together or not at all. Afterwards the delivery state is a chip, as the channel reports it; a later delivery failure is that chip, with resend, and the project stays handed over |
-| Sending, with no channel connected (`M08-46`) | action | two acts — download the pack, copy the message. No delivery state is drawn anywhere on this path |
+| The pack as it will be shared (`M08-32`) | data | every row's files in pack order — the row's pack label (IN: `F1-52`), its files, and its last act, who and when. Every row is past pending; a row still uploaded, not verified, keeps its Uploaded chip, because handover waits on pending rows only. The document count with its provenance label, as the check's headline, not a chip. A *To* row names the customer and the number it goes to |
+| Sending, with a connected channel (`M08-46`) | action · status | the primary act. Its ONE line: the customer's link becomes this pack. The composed message is content, and it names no figure. The four parts happen together or not at all. Afterwards the delivery state is a chip, as the channel reports it; a later delivery failure is that chip, with resend, and the project stays handed over |
+| Sending, with no channel connected (`M08-46`) | action | two acts — download the pack, copy the message. *Download pack* is the handover act: the link becomes the pack and the stage moves; *Copy message* stands on its own. Afterwards the pack reads *Downloaded* with its date and time, and carries no chip. No delivery state is drawn anywhere on this path |
 | The project reaches handed over | status | the stage chip on return to the project. No sentence announces it |
-| The referral ask (`M08-47`) | action | the flow's last step: the outcomes as one-tap acts — the customer named someone, or the ask was declined — and a quiet skip, for when no ask was made (the PRD's analytics outcomes: named · declined · skipped). Naming someone reveals two fields, name and phone; the named person becomes a lead with source Referral and the came-from chip (`M02-16`), and a phone that is already a customer's links to that customer, never a second record (`M02-02`) |
+| The referral ask (`M08-47`) | action | the flow's last step: the outcomes as one-tap acts — the customer named someone, or the ask was declined — and a quiet skip, for when no ask was made (the PRD's analytics outcomes: named · declined · skipped). Naming someone reveals two fields, name and phone; the named person becomes a lead with source Referral and the came-from chip (`M02-16`), and a phone that is already a customer's links to that customer, never a second record (`M02-02`). *Declined* shows the ask's date and its outcome as two rows, then *Back to project* |
 | No credit, no balance (`M08-47`) | — | nothing is drawn and nothing is said about rewards |
 | The send failed | error | one line at the act — what failed and what to do. Nothing is shown as sent, and the project has not moved |
 
 ## Arrangement
 
 - **375.** A full-height sheet that moves through its parts in order — check, pack, send, referral
-  (`F7-21`). The pack's file list is the volume region.
+  (`F7-21`). The pack's file list is the volume region. The check, the pack and the message are one scroll,
+  with the act pinned at the foot; after sending, the referral step replaces the body. There is no *Not now*:
+  the sheet's close is the way out.
 - **1536.** A side panel beside the project: the pack list and the message preview side by side, the
-  act beneath them, the referral ask taking the panel last.
+  act beneath them, the referral ask taking the panel last. The panel is modal, because handover is finished or
+  abandoned in one sitting, and the message column is sticky. The refusal and the referral step hold one column
+  of content, so they take a narrower panel.
 
 ## Entry & exit
 
-Reached from: the handover action on the Project Detail (SCR-M08-02) — per the PRD, "the handover action lives on the project detail" — which appears only when the project's next stage is Handed over (`SCR-M08-02`'s brief). Leads to: the share itself completes here — with a connected transactional channel the handover message sends from the tenant's own official channel and carries that channel's honest delivery states; with none, the rep downloads the pack and sends the composed message themselves and no delivery is claimed on that path alone (`M08-46`, owner ruling 2026-08-04; `M03-03`); the project reaches `HANDED_OVER`; the customer's link becomes the pack (F5's transition — owned by foundations/F5); the referral ask is the last step of the same flow rather than a separate errand, and any referral it produces is the CRM's referral row (M02's object); then back to the project, which stays readable with everything intact. If any checklist row is pending, the flow is refused with the pending rows named (reading SCR-M08-03's checklist). Other exits: not pinned by PRD — designer decides, note the decision.
+Reached from: the handover action on the Project Detail (SCR-M08-02) — per the PRD, "the handover action lives on the project detail" — which appears only when the project's next stage is Handed over (`SCR-M08-02`'s brief). Leads to: the share itself completes here — with a connected transactional channel the handover message sends from the tenant's own official channel and carries that channel's honest delivery states; with none, the rep downloads the pack and sends the composed message themselves and no delivery is claimed on that path alone (`M08-46`, owner ruling 2026-08-04; `M03-03`); the project reaches `HANDED_OVER`; the customer's link becomes the pack (F5's transition — owned by foundations/F5); the referral ask is the last step of the same flow rather than a separate errand, and any referral it produces is the CRM's referral row (M02's object); then back to the project, which stays readable with everything intact. If any checklist row is pending, the flow is refused with the pending rows named (reading SCR-M08-03's checklist). Other exits: close returns to SCR-M08-02 unchanged; a file opens SCR-M08-03's file sheet at 375 and its side panel at 1536; a pending row opens SCR-M08-03 with `Pending` selected; after the referral step the flow returns to SCR-M08-02, its stage chip reading Handed over.
 
 ## Requirements (verbatim)
 
@@ -50,7 +54,7 @@ Reached from: the handover action on the Project Detail (SCR-M08-02) — per the
 
 ## States
 
-Base states (always designed): loading · empty · error.
+Base states (always designed): loading · empty · error. Empty is the refusal at full volume: every row pending, with one teaching line that leads to the checklist.
 
 Screen-specific states from the slice:
 
@@ -62,6 +66,8 @@ Screen-specific states from the slice:
 - **referral-named** — the customer names a referred person there and then; what it produces is the CRM's referral row, on both records.
 - **referral-declined** — the ask was made and declined; the outcome is recorded. No credit, redemption or balance exists anywhere.
 - **referral-skipped** — no ask was made (the customer was not there); the outcome is recorded as skipped, and the flow ends.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `error`, `empty`, `referral-ask`, `referral-named`, `referral-declined`, sending, the send failed, and a later delivery failure.
 
 ## Data volume
 

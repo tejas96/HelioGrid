@@ -14,31 +14,34 @@ never with a sentence.**
 
 | Fact | Kind | Its form here |
 |---|---|---|
-| How many rows are verified | data | the screen's ONE headline figure — verified of the row set — with its provenance label |
-| Each row — its pack name, its state, its files (`M08-30`, `M08-31`) | data · status | one list row: the pack's own label; the state as its ONE chip — pending, uploaded, verified; the file count as a mark. A filed row's second line is its last act, who and when — verified by, or uploaded by — a recorded fact, so it carries no tier. The row names are the pack's (IN: `F1-52`) |
+| How many rows are verified | data | the screen's ONE headline figure — verified of the row set — with its provenance label, whose source reads *project records* |
+| Each row — its pack name, its state, its files (`M08-30`, `M08-31`) | data · status | one list row: the pack's own label; the state as its ONE chip — pending, uploaded, verified, in the warning, info and success tones; the file count as a mark. A filed row's second line is its last act, who and when — verified by, or uploaded by — a recorded fact, so it carries no tier; a pending row's is the named gap *No file yet*. The row names are the pack's (IN: `F1-52`) |
 | What can be done to a row (`M08-31`) | action | ONE primary act per row, by state: upload when pending, mark verified when uploaded, view when verified. View, add file and replace sit in the row's menu |
 | A row holding more than one file | more detail | the row opens to its files — name, uploaded when, by whom. Upload takes several files at once; add file adds one later, and on a verified row it returns the row to uploaded (`M08-31`) |
 | Who may verify | — | behaviour, no words: the person who uploaded a file may verify it. M08's permissions: "Upload and verify are the same grant by source" |
 | A row the segment omits (`M08-30`) | — | it is absent, not greyed, and the count follows the real row set. No sentence explains it |
 | Completed rows stay | — | arrangement, no words |
-| Replacing a verified file | action | the replace confirm's ONE line says the row will need verifying again. Both acts then stand on the timeline |
-| Rows still pending | action | a `Pending` filter chip with its count; pack order holds under it |
+| Replacing a verified file | action | the replace confirm's ONE line says the row will need verifying again. The confirm is a sheet at 375 and a modal side panel at 1536. Both acts then stand on the timeline |
+| Rows still pending | action | a `Pending` filter chip with its count; pack order holds under it. The chip is the pending count beside the headline, so the count prints once |
 | What handover waits on (`M08-32`) | data | the pending count is the figure handover reads — every row past pending, uploaded or verified. It sits beside the headline as a count, never a sentence; the handover itself is `SCR-M08-06`'s |
 | The checklist never blocks a stage (`M08-34`) | — | behaviour, no words: no lock, no warning and no disabled move anywhere because a document is pending |
 | A person with read scope only (`M08-18`) | status | every row and file can be opened and read; no upload, replace or verify act is drawn, and nothing is greyed |
-| An upload failed | error | the file stays on its row with `Try again`, and nothing is lost. No offline, queued or syncing state is drawn (context file §1) |
+| An upload failed | error | the file stays on its row by name, with *Didn't upload* beside it and `Try again`, and nothing is lost; the chip stays Pending. No offline, queued or syncing state is drawn (context file §1) |
 | The checklist failed to load | error | one banner — what failed and what to do |
 
 ## Arrangement
 
 - **375.** The count, then the rows in pack order. The row's act opens the camera or the file picker
   directly. A file opens in a sheet: its preview, the row's files, their history, and the row's act at the foot.
+  The list head is sticky.
 - **1536.** A captioned table (`F7-27`) — document, state, files, verified by, when, act — with the
-  opened file, its history and the row's act in a side panel (`F7-21`).
+  opened file, its history and the row's act in a side panel (`F7-21`). The filter chips sit at the bar's right,
+  above the table. The panel takes the last three columns, only the document column gives up width, and the
+  viewed row is marked in its files cell.
 
 ## Entry & exit
 
-Reached from: the project card on the Project Board (SCR-M08-01) as well as the Project Detail (SCR-M08-02) — per the PRD, "the checklist is reachable from the card as well as the detail screen, because on site it is the reason the coordinator opened their phone". Leads to: back to the project; the Handover Flow (SCR-M08-06) reads this checklist as its condition — handover is refused while any row is pending, with the pending rows named. Other exits: not pinned by PRD — designer decides, note the decision.
+Reached from: the project card on the Project Board (SCR-M08-01) as well as the Project Detail (SCR-M08-02) — per the PRD, "the checklist is reachable from the card as well as the detail screen, because on site it is the reason the coordinator opened their phone". Leads to: back to the project; the Handover Flow (SCR-M08-06) reads this checklist as its condition — handover is refused while any row is pending, with the pending rows named. Other exits: back at 375 and the project's name at 1536 return to SCR-M08-02, or to SCR-M08-01 when the checklist was opened from the board's card; a file opens in a sheet at 375 and in the side panel at 1536.
 
 ## Requirements (verbatim)
 
@@ -56,15 +59,17 @@ Reached from: the project card on the Project Board (SCR-M08-01) as well as the 
 
 ## States
 
-Base states (always designed): loading · empty · error.
+Base states (always designed): loading · empty · error. Empty means nothing uploaded yet: the pack seeds every row (`M08-30`), so the list shows every row pending, with a teaching line under the count.
 
 Screen-specific states from the slice:
 
 - **normal** — the pack's rows in pack order, a status chip each (pending / uploaded / verified — label plus mark, never colour alone), the count at the top ("*n* of *m* verified"), per-row actions: upload, replace, view, mark verified; a row may hold more than one file; rows never disappear when complete — a completed row is information.
 - **row-omitted-by-segment** — a commercial project in a market whose pack omits the incentive row: the row is absent, not greyed; the count reflects the real row set.
 - **replace-and-reverify** — the wrong file was uploaded and verified: replace and re-verify; both acts stand on the timeline, nothing deleted from history.
-- **read-only-scoped** — the Sales Executive's own won deal: rows and files readable, no act, nothing greyed (M08-18).
-- **handover-refused-pending-rows-named** — a handover attempt with a pending row is refused with the pending rows named (the refusal reads this checklist).
+- **read-only-scoped** — the Sales Executive's own won deal: rows and files readable, no act, nothing greyed (M08-18). *View* stays on filed rows; no change act and no menu are drawn.
+- **handover-refused-pending-rows-named** — a handover attempt with a pending row is refused with the pending rows named (the refusal reads this checklist). It lands here with `Pending` selected, so the pending rows are the list, under one banner.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `error`, `empty`, `row-omitted-by-segment`, `handover-refused-pending-rows-named`, `read-only-scoped`, and an upload failed.
 
 ## Data volume
 

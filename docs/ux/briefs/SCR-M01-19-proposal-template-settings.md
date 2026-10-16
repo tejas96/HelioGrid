@@ -8,6 +8,8 @@ Document defaults: cover, included sections, default T&C, bank details, and the 
 
 Reached from: the tenant-config settings surface map — *Proposal templates* is a named surface in M01 §4's stable vocabulary; a deeper entry path is not pinned by PRD — designer decides, note the decision. Leads to: not pinned by PRD — designer decides, note the decision. What the screen feeds: the proposal builder consumes these document defaults, including everything Quick mode fills for its hidden steps (M01-51, M01-53 context, M01 §4 contracts); T&C templates support the builder's "save as template" round-trip (§M01.6 behavior detail, M06's step).
 
+Entry and exits, decided: one entry — More · Settings · Proposal templates, the back control named *Back to Settings*; no entry from the onboarding corridor. Out: back to Settings, plus a row to **Branding** (SCR-M01-18 — the cover's logo, colour and letterhead) and a row to **Business profile** (the bank details, M01-31) — the single write-points this screen shows and never edits. No link to the proposal builder or to Payment terms. Leaving with an unsaved change asks first; leaving unchanged does not.
+
 **Decisions made in design (2026-09-02) — later screens inherit them.**
 
 1. **Bank details are shown as they print and written once elsewhere** (`M01-31`'s single
@@ -35,12 +37,16 @@ Reached from: the tenant-config settings surface map — *Proposal templates* is
 
 ## States
 
-- **Loading** — current template defaults loading.
-- **Empty** — a tenant with untouched template settings: working platform defaults are in place from day one and Quick mode is still generable (M01-28, M01-53 context); teaching treatment per F7's empty-state contract.
-- **Error** — a save fails; what happened and what to do next.
-- **normal** — cover, included sections, default terms & conditions and bank details editable; bank details are the business profile's single write-point (M01-51, M01-31); template edits version forward simply — last saved wins, audit-logged (§M01.6 behavior detail).
-- **live-preview** — every config screen shows the effect: live preview of the affected customer document before saving (M01-30's law, §M01.6 behavior detail; documents already generated are immutable per F8-15 and never restyle retroactively).
-- **timeline-phases-reorder** — the project-timeline template's default phases and descriptions being edited and reordered (M01-52).
+- **Loading** — current template defaults loading. The form and the document preview arrive together; the preview's placeholder is a sunken shimmer, never a white page.
+- **Empty** — a tenant with untouched template settings: working platform defaults are in place from day one and Quick mode is still generable (M01-28, M01-53 context); teaching treatment per F7's empty-state contract. Drawn as inherited, not blank: each part names the platform as its source with *Write our own*, and the teaching is a `Banner` above the form, not an `EmptyState`.
+- **Error** — a save fails; what happened and what to do next. The banner sits just above the act bar with no *Try again* — the bar's Save is the retry — and the edit is kept.
+- **normal** — cover, included sections, default terms & conditions and bank details editable; bank details are the business profile's single write-point (M01-51, M01-31); template edits version forward simply — last saved wins, audit-logged (§M01.6 behavior detail). At rest there is no act bar: a standing line under the title reads *saved and in force · last changed by <name>, <date>*. The intro says a Quick proposal is exactly what this screen holds, and the page closes on *Proposals already sent keep the template they were built with.* Sections are checkboxes (none on the terms row, decision 4) in the document's fixed order, with no reorder control; each row's description sits outside its label, so tapping a word does not toggle it. The default T&C is edited in `RichText`, the builder's own editor.
+- **live-preview** — every config screen shows the effect: live preview of the affected customer document before saving (M01-30's law, §M01.6 behavior detail; documents already generated are immutable per F8-15 and never restyle retroactively). Any change raises the act bar — *Discard changes* and Save, with what the save does. The preview shows the document only; on the phone it is a window at the page's foot with *Open full size*. Its sample customer and number are called a sample in the page's own text.
+- **timeline-phases-reorder** — the project-timeline template's default phases and descriptions being edited and reordered (M01-52). Arrows, never drag; the first row's up arrow stays focusable and says the phase is already first, and each move is announced. No duration column. At least one phase — the route to no timeline is the section's checkbox — and no reset to the platform phases. Deleting a phase asks first in a destructive `Modal` that says *Discard changes* brings it back: the delete lands only on save.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Empty`, `Error`, the delete-a-phase confirm.
+
+The page runs in the order the document reads: cover, sections, terms, bank details, timeline, then the preview. At 1536 the form (cover and sections paired on the first row) stands left and the preview right at full scale, standing while the form scrolls; phases take the row arrangement; the phase editor and the full-size reader open as non-modal side panels; the act bar belongs to the form column.
 
 ## Data volume
 
@@ -48,7 +54,8 @@ One tenant's document-default set: a cover, a list of included sections, one def
 
 ## Numbers carrying provenance
 
-- **Bank details** rendered here read from the business profile's single write-point (M01-51, M01-31) — identity facts, not computed numbers; their F8 provenance tier follows the profile datum in the design.
+- **Bank details** rendered here read from the business profile's single write-point (M01-51, M01-31) — identifiers, not computed numbers, so no tier (`F8-01`); a source line names the business profile and the date it was written.
+- **Page estimate** under the terms editor — `estimated`, a persistent line.
 - The **live preview** renders a customer document; figures inside it belong to the document's own surfaces and provenance tiers, not new ones minted here (F8-15 immutability per §M01.6 behavior detail).
 
 ---

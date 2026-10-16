@@ -12,7 +12,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 **Type:** screen · **Tier:** P0
 **Status:** designed
 **PRD rows:** M08-10 (P0), M08-11 (P0), M08-12 (P0), M08-14 (P1), M08-51 (P0)
-**DESIGN:** SCR-M08-01 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-01+Project+Board+v3.dc.html · also: States https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-01+Project+Board+-+States.dc.html
+**DESIGN:** SCR-M08-01 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
 
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M08-01-project-board.md`; they are the specification.
 
@@ -29,7 +29,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 **Type:** screen · **Tier:** P0
 **Status:** designed
 **PRD rows:** M08-16 (P0), M08-17 (P0), M08-21 (P0), M08-27 (P0), M08-38 (P0)
-**DESIGN:** SCR-M08-02 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-02+Project+Detail+-+Mobile.dc.html · also: States https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-02+Project+Detail+-+States.dc.html · States Desktop https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-02+Project+Detail+-+States+Desktop.dc.html · Language https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-02+Project+Detail+-+Language.dc.html
+**DESIGN:** SCR-M08-02 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
 
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M08-02-project-detail.md`; they are the specification.
 
@@ -50,7 +50,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 **Type:** screen · **Tier:** P0
 **Status:** designed
 **PRD rows:** M08-30 (P0), M08-31 (P0)
-**DESIGN:** SCR-M08-03 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-03+Document+Checklist+-+Mobile.dc.html · also: States https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-03+Document+Checklist+-+States.dc.html · States Desktop https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-03+Document+Checklist+-+States+Desktop.dc.html
+**DESIGN:** SCR-M08-03 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
 
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M08-03-document-checklist.md`; they are the specification.
 
@@ -65,7 +65,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 **Type:** screen · **Tier:** P0
 **Status:** designed
 **PRD rows:** M08-41 (P0), M08-42 (P0)
-**DESIGN:** SCR-M08-04 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-04+Installation+Checklist+-+Mobile.dc.html · also: States https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-04+Installation+Checklist+-+States.dc.html
+**DESIGN:** SCR-M08-04 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
 
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M08-04-installation-checklist.md`; they are the specification.
 
@@ -80,7 +80,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 **Type:** screen · **Tier:** P1
 **Status:** designed
 **PRD rows:** M08-45 (P1)
-**DESIGN:** SCR-M08-05 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-05+Installer+Job+Home+-+Mobile.dc.html · also: States https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-05+Installer+Job+Home+-+States.dc.html
+**DESIGN:** SCR-M08-05 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
 
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M08-05-installer-job-home.md`; they are the specification.
 
@@ -96,7 +96,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 **Type:** screen · **Tier:** P0
 **Status:** designed
 **PRD rows:** M08-46 (P0), M08-47 (P0)
-**DESIGN:** SCR-M08-06 → https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-06+Handover+Flow+-+Mobile.dc.html · also: States https://claude.ai/design/p/2b5c5a1e-561a-4116-a710-63b85f669b70?file=SCR-M08-06+Handover+Flow+-+States.dc.html
+**DESIGN:** SCR-M08-06 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
 
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M08-06-handover-flow.md`; they are the specification.
 

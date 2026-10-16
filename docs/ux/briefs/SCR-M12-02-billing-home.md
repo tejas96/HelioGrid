@@ -108,8 +108,8 @@ The screen answers three questions at a glance: "what am I on, what am I using (
 ## States
 
 - **loading** — plan/invoice/dunning data not yet resolved.
-- **empty** — a fresh trialing tenant with no invoices, no dunning history, no mandate yet (signup carried no billing step; billing's first appearance is the trial state itself — M12-14 context).
-- **error** — billing data failed to load; honest failure. This screen is the guaranteed way back, so the error state must still route to retry/pay.
+- **empty** — a fresh trialing tenant with no invoices, no dunning history, no mandate yet (signup carried no billing step; billing's first appearance is the trial state itself — M12-14 context). With no mandate, the payment method row says it is set up when a plan is chosen, and carries no act; the same holds in `trialing` and `expired`.
+- **error** — billing data failed to load; honest failure. This screen is the guaranteed way back, so the error state must still route to retry/pay. The pay route it names is the link in the last payment reminder.
 - **trialing** — trial state with countdown context (chip itself is SCR-SHELL-06); no mandate exists yet.
 - **active** — mandate live, current period paid; current plan and cycle with the book's published caps/bundles.
 - **past-due-grace** — the 7-day grace: days 0–3 full function plus banner; days 4–7 metered features paused (M12-06 context); dunning state and history visible.
@@ -117,13 +117,15 @@ The screen answers three questions at a glance: "what am I on, what am I using (
 - **halted** — soft-block set in force; read/export/customer-links/billing all still work (BM-32); the screen is the way back.
 - **halted-reactivate** — the same screen with one primary action: pay → new gateway subscription, entitlements immediate (M12-08).
 - **expired** — trial expired, terminal, behaves as halted; reactivation permanently offered (M12-08; M12-07 context).
-- **cancelled-running-to-period-end** — service runs to the paid period end; data retained; reactivation always offered (M12-50).
+- **cancelled-running-to-period-end** — service runs to the paid period end; data retained; reactivation always offered (M12-50). `Your plan` shows `Runs until` in the next-bill row's place, and `Cancel subscription` is gone.
 - **cancelled** — after period end, behaves as halted; the always-on rows hold; reactivation one payment away (M12-08).
 - **cancel-reason-dialog** — owner-initiated cancellation with a reason captured as product signal, never as a gate (M12-50).
 - **refund-window-visible** — first paid cycle, first 7 days: refund eligibility renders plainly and disappears after — never a hidden clause (M12-47; §M12.8 behavior detail).
-- **scheduled-downgrade-pending** — a confirmed downgrade awaiting the cycle boundary shows under "what needs me" (§M12.10 behavior detail).
+- **scheduled-downgrade-pending** — a confirmed downgrade awaiting the cycle boundary shows under "what needs me" (§M12.10 behavior detail). Its one act keeps the current plan instead.
 - **enterprise-contact-us** — Enterprise's sales-assisted arrangements surface here only as "contact us"; no self-serve surface invents Enterprise mechanics (§M12.10 behavior detail).
 - **non-owner-read-only** — a non-Owner opens billing: state visible, acts absent, no amounts shown; the screen says whose act it is (M12-56 context).
+
+Drawn at 375 only (at 1536 the phone's answer holds at width; the cancel sheet becomes a side panel): `loading`, `empty`, `error`, `trialing`, `halted`, `halted-reactivate`, `expired`, `cancelled-running-to-period-end`, `cancelled`, `cancel-reason-dialog`, `refund-window-visible`, `scheduled-downgrade-pending`, `enterprise-contact-us`, `non-owner-read-only`.
 
 ## Data volume
 

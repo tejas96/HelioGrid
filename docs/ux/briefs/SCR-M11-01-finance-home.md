@@ -26,13 +26,17 @@ and no control here records, waives or reverses.
 ## Arrangement
 
 - **375.** Due tranches, longest-waiting first, then payments awaiting confirmation, then the month. Tens of rows scroll in
-  the due region, which is this screen's volume.
+  the due region, which is this screen's volume. The due list's head (`F7-47`) is *Find in this list* and the
+  chips *All · Due · Part-received*. The other preset's block sits last.
 - **1536.** Due tranches as one captioned table grouped by project, longest-waiting first (`F7-27`);
   payments awaiting confirmation and the month's figures in a side column, in view while the table scrolls.
+  Columns *Project · Payment · Fell due · Status · Amount*; the table does not sort, so a project's rows stay
+  together, and it pages at 20 rows. The other preset's block sits last in the side column. No side panel:
+  nothing is edited here.
 
 ## Entry & exit
 
-Reached from: sign-in — this is the home screen the product composes for a person holding the Finance preset (`PS-32`, `M13-38`; M13 §M13.5's acceptance: when the person signs in, their home matches their row). Leads to: the Payments Ledger (SCR-M11-02) — M11 §M11.8's behavior detail pins that the payments screen "is reachable from the project (`M08-35`) and from Finance's own home (`M11-54`); it is the same screen in both places." Other exits: not pinned by PRD — designer decides, note the decision.
+Reached from: sign-in — this is the home screen the product composes for a person holding the Finance preset (`PS-32`, `M13-38`; M13 §M13.5's acceptance: when the person signs in, their home matches their row). Leads to: the Payments Ledger (SCR-M11-02) — M11 §M11.8's behavior detail pins that the payments screen "is reachable from the project (`M08-35`) and from Finance's own home (`M11-54`); it is the same screen in both places." Other exits: the Installer Job Home (SCR-M08-05) from the composed block and the switcher, global search (SCR-SHELL-02), and the shell's destinations. No other exit.
 
 ## Composed home (M13-10, P0 — this screen is a role home)
 
@@ -68,10 +72,12 @@ The ladder itself is a product constant, not tenant configuration (`M13-10`).
 ## States
 
 - **Loading** (base).
-- **Empty** (base) — empty-teaching: a new tenant whose modules publish nothing yet gets the teaching empty state per home (M13 §M13.5 edge case); nothing is fabricated to fill blocks.
+- **Empty** (base) — empty-teaching: a new tenant whose modules publish nothing yet gets the teaching empty state per home (M13 §M13.5 edge case); nothing is fabricated to fill blocks. No act: payment terms are the owner's (SCR-M01-20).
 - **Error** (base).
 - **Normal** — due tranches by project, longest-waiting first; payments awaiting confirmation; the month's collections against what fell due.
-- **Stale-money-qualified** — a figure that cannot be reconciled at display time renders visibly provisional with its qualifier, never presented as settled fact; `M11-54`'s qualifiers stay intact in every block M13 composes (`M13-38`).
+- **Stale-money-qualified** — a figure that cannot be reconciled at display time renders visibly provisional with its qualifier, never presented as settled fact; `M11-54`'s qualifiers stay intact in every block M13 composes (`M13-38`). On a tranche the mark sits beside its chip; on a collections figure it leads the tier line.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `Empty`, `Error`.
 
 ## Data volume
 

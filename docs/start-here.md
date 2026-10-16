@@ -23,11 +23,34 @@ Every board lives on its module's canvas — a Design artifact in Claude, titled
 | module | canvas |
 |---|---|
 | `M01` | <https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN> |
+| `M02` | <https://claude.ai/artifact/3JumEcRCTvCSvgHGf7yPYi> |
+| `M08` | <https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9> |
+| `M11` | <https://claude.ai/artifact/JHuQqFRnGtCZmpMUczga7g> |
+| `M12` | <https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy> |
+| `SHELL` | <https://claude.ai/artifact/GmgFEzuBNQFfZBBMuPABoP> |
 
-- A board is one `.dc.html` file named `<screen id>-<Screen-Name>-<Mobile|Desktop>.dc.html`
-  (`SCR-M01-06-Youre-Ready-Mobile.dc.html`); its height is the height it declares, and a board
-  past the canvas's 8000 px goes on to a second one ending `-2`. A screen's boards are exactly the boards whose names start with
-  `<screen id>-`.
+Every canvas is laid out the same way, in its `project/canvas.json`:
+
+- **The canvas.** Its `title` is `HelioGrid <module>` and its `launch` is `{"view":"canvas"}`. It
+  keeps nothing but its boards, the design system copy and the support files a board loads (beside
+  the boards under `project/`) — no notes, and no `title` on a board: the page and the file name say what a
+  board is.
+- **One page per screen.** Each screen with a board has its own page, and the page holds all of
+  that screen's boards. Its `pages` entry is `{"id":"<screen id>","name":"<screen id> <Screen
+  Name>"}` (`{"id":"SCR-M01-06","name":"SCR-M01-06 Youre Ready"}`), `pages` runs in screen id order,
+  and each of the screen's boards carries `"page":"<screen id>"`. A screen's page is added with its
+  first board and taken out with its last. A canvas holds 40 pages; the largest module has 24
+  screens.
+- **A board** is one `.dc.html` file named `<screen id>-<Screen-Name>-<Mobile|Desktop>.dc.html`
+  (`SCR-M01-06-Youre-Ready-Mobile.dc.html`) — letters, digits and `-` only, no space. A `Mobile`
+  board holds the 375 frames and a `Desktop` board the 1536 frames. A board's `w` and `h` are the
+  width and height it declares (`$preview`), each at most 8000 px: more frames go on to a next board
+  ending `-2`, `-3`. A screen's boards are exactly the boards whose names start with `<screen id>-`.
+- **On its page** a screen's boards sit in one row at `y` 0, in this order: `Mobile`, `Mobile-2` …,
+  then `Desktop`, `Desktop-2` …; the first at `x` 0 and each next one 80 px right of the one before.
+  `order` lists the boards page by page in that order.
+- A board moved from Claude Design is kept as it was until its module's board check
+  (`docs/tasks/deferred.md`, D223): a taller one sits in an 8000 px frame with `"expand":"fill"`.
 - A board draws only with the design system's components and tokens, mounted as the canvas's
   `design-system-components.md` says. What the system lacks is a design system change
   (`design-track.md`, *Changing the design system*), never a look-alike in markup.

@@ -5,10 +5,6 @@ serves them, so the build waits only when this track falls behind. Run it when t
 between two build tasks, after the current task's PR is open — or when `/task` step 1 answers
 `design <module>` (`SKILL.md`).
 
-**First: while `docs/tasks/deferred.md` holds `D221`, stop — `owner clears D221`.** The boards
-drawn in Claude Design have not moved to the canvases yet, and running this track now would redraw
-them.
-
 `<module>` is a screen id's module (`SCR-SHELL-06` → `SHELL`). The screens in scope are the V1
 screens of `<module>` whose tasks are not `shipped` — or, when `/task` step 1 found a locked board
 that differs, only those screens; a shipped screen is never re-checked, and a studio screen
@@ -40,23 +36,24 @@ board on the canvas renders.
 
 **A publish.** Main alone publishes to a canvas: ONE Artifact call with `root`
 `<scratchpad>/canvas/<module>`, only the boards that changed, and `project/canvas.json` only when a
-board is added, moved or resized (read it again right before; change only those keys). A publish
-refused because someone saved meanwhile — the owner editing — reads the files the refusal names,
-redoes the change on them and publishes once more; a second refusal goes to the owner.
+board or a page is added, moved or resized — laid out as *The canvases* says (read it again right
+before; change only those keys). A publish refused because someone saved meanwhile — the owner
+editing — reads the files the refusal names, redoes the change on them and publishes once more; a
+second refusal goes to the owner.
 
 0. **The canvas.** A module with no canvas in *The canvases* gets one: one Artifact call with the
    Design type's `type_url` and the `title` `HelioGrid <module>`, then the design system installed on
-   it as `design-system-components.md` says, and its row added to *The canvases*.
+   it as `design-system-components.md` says, its `project/canvas.json` set as *The canvases* says,
+   and its row added there.
 1. **Draw what is missing.** For each screen in scope with no board on the canvas: read its brief
    and the PRD rows it cites, and fix what is wrong or missing in the brief. Then start one
    `general-purpose` agent per screen, on Opus, in the foreground, all in one message; each gets
    *The drawing prompt* of `docs/start-here.md` with the three texts it names, the
    `<scratchpad>/canvas-ref/` paths, the working folder's `project/` to write its boards into, and
    the boards of any screen its brief says it reuses, read from that screen's canvas into that
-   module's own working folder, never this one. A drawing
-   agent never publishes. Main reads each report, writes the decisions it names into the brief,
-   places the new boards in `project/canvas.json` (the canvas `SKILL.md` spacing) and publishes
-   them in one call.
+   module's own working folder, never this one. A drawing agent never publishes. Main reads each
+   report, writes the decisions it names into the brief, places the new boards and their pages in
+   `project/canvas.json` as *The canvases* lays them out, and publishes them in one call.
 2. **Read, then check in parallel.** Read every board in scope into the working folder. Then start
    one `general-purpose` agent per screen, on Opus, in the foreground, all in one message. Each
    prompt says to follow `.claude/skills/task/board-check.md` and gives what that file lists under

@@ -16,29 +16,38 @@ and nothing says so** — there is no hidden value to explain.
 |---|---|---|
 | Phases and their steps, in build order (`M08-41`, `MS11-28`, `MS11-29`) | data | the seven trade phases as sections, steps as tick rows: the tick, the step's number and name, and the materials it needs as its second line — quantity and unit. The step's detail opens from the row. Phase and step names are the design's own, in the viewer's language. One provenance label sits at the foot of each phase's quantities (`F8-07`, `N7`); a quantity whose confidence differs carries its own (`MS11-31`) |
 | Done of total | data | the screen's ONE headline figure, as two counts — done, of total |
-| Ticking a step (`M08-42`) | action | one tap on a target sized for a gloved hand; a second tap unticks it (`M05-76`: tap toggles done). A ticked step's second line is who ticked it and when |
+| The next step | data | marked by its place, a tint and the caption *Next step* above its name — never a chip, because *next* is a position, not a status |
+| Ticking a step (`M08-42`) | action | one tap on a target sized for a gloved hand; a second tap unticks it (`M05-76`: tap toggles done). A ticked step's second line is who ticked it and when. At 1536 the side panel's foot repeats the tick as *Mark done* / *Mark not done*, so the photos and the tick are made in one place |
 | Who actually did the work (`M08-42`, `F2-07`) | data | ONE optional field on the ticked step, with no helper text. It is there whether or not the crew has accounts. What is typed is never translated |
 | Photo evidence | action | a camera act on the step; its photographs as thumbnails on the step |
-| A step the design could not know about | action · status | `Add a step` ends each phase. A manual step carries its own chip, so the derived sequence stays legible |
+| A step the design could not know about | action · status | `Add a step` ends each phase. A manual step carries its own chip and no number, so the derived sequence stays legible |
+| Printing the checklist (`M05-76`) | action | *Print* in the head: an icon at 375, a button at 1536 |
 | The design changed after work began | status · more detail | one banner saying so; each changed step carries a chip; every tick and its attribution stays. A row leads to what changed. No paragraph reconciles it |
 | What the structure steps are, and are not (`F8-28`) | honesty | ONE line in the head, the structure disclaimer carrying `F8-28`'s content: a material estimate, not a structural check — an engineer verifies. It never repeats per step |
 | Which design this is (`MS11-33`) | data | the head's line: design version and its engineer sign-off — who and when, a recorded fact with no tier |
 | Every step ticked | status | the headline reads all of them done. The stage does not move: a person moves it (`M08-14`) |
-| A person with read scope only (`F2-12`) | status | every phase, step, photo and attribution can be opened and read; no tick, camera, add-step or done-by act is drawn, and nothing is greyed |
-| The design is not signed off yet (`M08-41`, `MS11-17`) | status | one line: waiting on engineer sign-off. No step is drawn until it is |
+| A person with read scope only (`F2-12`) | status | every phase, step, photo and attribution can be opened and read; no tick, camera, add-step or done-by act is drawn, and nothing is greyed. A *View only* chip sits in the head, and a step not done draws no box |
+| The design is not signed off yet (`M08-41`, `MS11-17`) | status | one line: waiting on engineer sign-off, and *Open design*. No step is drawn until it is |
 | No design to build from | teaching | the design's own empty line |
 | The checklist failed to load | error | one banner — what failed and what to do |
 
 ## Arrangement
 
 - **375.** Its home. The phase in progress is open and the others are closed, each showing its counts.
-  Done-of-total stays in view as the pinned header's one line.
+  Done-of-total stays in view as the pinned header's one line. The phases finished before the one in progress
+  fold into one row (*4 phases done · 52 of 52*) that opens to them; with every step done, all seven show. Inside
+  the open phase the done steps fold behind one row naming their numbers (*Show steps 53–57*), so the next step
+  is its first row. *Find in this list* (`F7-47`) and the step-state chips with their counts (*All · To do ·
+  Done*) sit under the pinned count and scroll away with the head.
 - **1536.** The phases as one strip under the head, each with its count, and the chosen phase's steps as a
-  table under it; a step's evidence in a side panel (`F7-21`) (owner ruling 2026-09-26).
+  table under it; a step's evidence in a side panel (`F7-21`) (owner ruling 2026-09-26). The table's columns are
+  Done · Step · Materials · By · When · Done by · Photos; with the panel open, When and Done by move into it.
+  Every step of the chosen phase shows, with no fold. *Find in this list* and the chips, counted over the chosen
+  phase, sit in its heading row before *Add a step*.
 
 ## Entry & exit
 
-Reached from: the Project Detail (SCR-M08-02), and from the Installer Job Home (SCR-M08-05 — today's job leads to its checklist). Leads to: back to the project, which reads the checklist's progress; completing the checklist does not by itself move the stage — a person moves stages. Other exits: not pinned by PRD — designer decides, note the decision.
+Reached from: the Project Detail (SCR-M08-02), and from the Installer Job Home (SCR-M08-05 — today's job leads to its checklist). Leads to: back to the project, which reads the checklist's progress; completing the checklist does not by itself move the stage — a person moves stages. Other exits: back returns to SCR-M08-02, or to SCR-M08-05 when opened from today's job; a photo opens its viewer; *Print* makes the sheet; *Open design* goes to the design. No stage act is drawn (`M08-14`).
 
 ## Requirements (verbatim)
 
@@ -84,6 +93,10 @@ Screen-specific states from the slice:
 - **done-by-captured** — the optional free-text "done by" recorded against a step, naming who actually did the work.
 - **all-done** — every step ticked: the coordinator sees the job complete without anyone phoning to say so (`PS-25`'s day); the stage has not moved.
 - **read-only-scoped** — a preset with read scope and no checklist grant: everything readable, no act, nothing greyed (`F2-12`).
+
+A tick waiting on the server keeps its box with a line on the row, and the count does not move until it lands; a tick that failed says the step is still not done, with *Try again* (`F8-36`). `loading`, `error`, `awaiting-sign-off` and `empty-design-first` have no list, so no list head.
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `error`, `awaiting-sign-off`, `empty-design-first`, `design-diverged-visible`, `all-done`, `read-only-scoped`, and a tick waiting on the server.
 
 No commercial figure appears on this surface, ever — no price, no discount, no tranche, no margin, no customer value — a property of the surface, holding even when an EPC Owner is the viewer.
 

@@ -13,7 +13,7 @@ Reached from: onboarding on first run (F3-03) — for both the signing-up owner 
 1. **The ghost language control in `SCR-M01-01` and `SCR-M01-02` chrome is not this picker, and does not duplicate it.** Before onboarding the app runs on the device's language with nothing saved, and that control exists for a shared field phone. **This screen is the one that records the preference.** Once recorded, the permanent home is Profile & preferences (`SCR-M01-11`), which this screen names in words.
 2. **Choosing applies immediately; Continue only moves on.** No Save control — the screen redrawing in the language just touched is the only honest confirmation that the choice took, and it is the same behaviour `device-language-default` describes.
 3. **The device default is stated, not merely pre-selected.** A ring and a filled dot say *this is chosen*; they cannot say *and you did not choose it*. So the device's language carries a word in a neutral pill — deliberately never the accent that selection uses. Two channels, both persistent content, neither a colour alone.
-4. **No count of the set, anywhere.** Nothing may assume the size of the language set and it is expected to grow, so no copy says how many languages there are. Growth is answered structurally: the list is the scroll region and the primary sits below it.
+4. **No count of the set, anywhere.** Nothing may assume the size of the language set and it is expected to grow, so no copy says how many languages there are. Growth is answered structurally: the list is the scroll region and the primary sits below it, and at 1536 the row of cards wraps.
 5. **No step counter and no `Stepper`.** The onboarding sequence's length is not pinned by the PRD, so a counter would put a number on screen that nobody has decided — a transcription with no honest provenance.
 6. **Nothing loads on this screen, so it has no loading frame** (owner ruling 2026-10-11). The language set ships inside the app (`F3-01`: a product-level list), so no request stands between the person and the list. The one wait is Continue's own save, and the button shows it.
 7. **`empty` means *nothing to choose between*, not *nothing arrived*.** The second is a failure and already has the error frame. Onboarding **skips this step when there is nothing to choose** — the frame exists because a step that can render must be specified, not because a user should meet it.
@@ -42,6 +42,8 @@ Reached from: onboarding on first run (F3-03) — for both the signing-up owner 
 ## States
 
 Base: **loading** — no frame: nothing waits on a request before this screen draws (decision 6) · **empty** — nothing to choose between (decision 7) · **error** — Continue's save failed (decision 8).
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `empty`.
 
 Screen-specific:
 

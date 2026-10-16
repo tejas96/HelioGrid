@@ -6,7 +6,7 @@ Read-only render of F2 preset descriptions, matrices and per-preset holder count
 
 ## Entry & exit
 
-Reached from: three places, each by the same act, **What each role can do** — the assign sheet on SCR-M01-13, the role picker on SCR-M01-07, and the Team header on SCR-M01-12. Leads to: back to the screen that opened it, with that screen's state kept (on SCR-M01-13, the ticks not yet saved stay as they were). Permission context: the Team family's read view follows the `F2.M01.manage-team` grant in v1 (M01 §M01.2 permissions).
+Reached from: three places, each by the same act, **What each role can do** — the assign sheet on SCR-M01-13, the role picker on SCR-M01-07, and the Team header on SCR-M01-12. Leads to: back to the screen that opened it, with that screen's state kept (on SCR-M01-13, the ticks not yet saved stay as they were). The back control names the caller (*Back to assign roles*); at 1536 a breadcrumb shows the path. Permission context: the Team family's read view follows the `F2.M01.manage-team` grant in v1 (M01 §M01.2 permissions).
 
 ## Requirements (verbatim)
 
@@ -22,6 +22,10 @@ Reached from: three places, each by the same act, **What each role can do** — 
 - **normal** — descriptions, matrices and holder counts rendered read-only; no create, edit, duplicate or delete action exists anywhere (M01-21).
 - **zero-holders-shown** — a preset held by nobody still renders, showing zero (M01-21: "including zero").
 
+Drawn at 375 only (at 1536 the phone's answer holds at width): `zero-holders-shown` (the 1536 `normal` frame already shows its zero rows), `counts-unavailable` (the gap moves to the count column, the banner above the table).
+
+- In **counts-unavailable** the banner carries a retry, a gap carries no tier, and the sentence saying what a count counts is removed.
+
 **Decisions made in design (2026-08-31) — later screens inherit them.**
 
 1. **Read-only means no act anywhere.** No create, edit, duplicate or delete on any frame — `M01-21`
@@ -33,6 +37,21 @@ Reached from: three places, each by the same act, **What each role can do** — 
    from the tenant's own records, with the count named beside it.
 4. **The twelve presets are `F2-01`'s, verbatim and in `F2`'s order.** This screen's whole job is
    rendering `F2`'s preset set, so the names are the requirement rather than sample data.
+
+**The page.** A page with the shell around it, never a sheet: nothing here is edited, and it opens over
+SCR-M01-13's unsaved ticks. One sentence at the top says the presets are fixed and that roles are
+assigned on a person's row — plain text, not a `ComplianceFloor`, since no law fixes them. At 375 each
+row shows the preset's name, description and count, and its matrix opens on tap, one preset at a time.
+At 1536 nothing opens or closes: a captioned preset table (name, description, held by, count) above a
+captioned matrix with capabilities down and all twelve presets across — never a master–detail pane.
+
+- The matrix draws withheld rows too. A grant is a word, with F2's scope phrase where the cell has one;
+  a withheld cell is a hollow ring with *Not granted* — beside it at 375, and at 1536 in a legend above
+  the grid and a visually hidden label in each cell.
+- **The holder count counts active members only**, and the sentence above the list says so. An invited
+  or deactivated person is named in words inside the preset they would hold, never counted.
+- Zero reads `0 people`, with the same tier as any count, on a row at full strength — never dimmed. At
+  1536 its *Held by* cell reads *Nobody holds this yet*.
 
 ## Data volume
 

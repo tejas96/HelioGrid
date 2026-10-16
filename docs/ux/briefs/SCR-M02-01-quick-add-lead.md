@@ -14,14 +14,14 @@ act and nothing to read.
 
 | Fact | Kind | Its form here |
 |---|---|---|
-| Name, phone number, city, type (`M02-01`, `M02-05`) | data | four labelled fields on one surface; `type` is a two-way selector already set to the tenant's segment. No helper text under any field |
+| Name, phone number, city, type (`M02-01`, `M02-05`) | data | four labelled fields on one surface; `type` is a two-way selector already set to the tenant's segment — two radios, not a segmented control, because the two labels differ in length. No helper text under any field |
 | Only the phone number is required (`M02-01`, `M02-03`) | action line | while save cannot be pressed, its ONE line says what unlocks it (`N4`). No "optional" sentence on the other three |
 | A phone-only capture still saves, and its gaps are named on the record (`M02-03`) | — | behaviour, no words here: the named gaps are drawn on the lead, not on this screen |
 | The live duplicate check (`M02-06`) | status | a quiet in-field mark on the phone field while it runs. Never a sentence, and it never holds the save act |
 | A slow check (`M02-66`) | — | behaviour, no words here: the save goes through, and the possible-duplicate flag appears on the two records |
 | A number that cannot be a phone number | error | ONE inline line: the shape expected. The field normalises in silence — no sentence about spaces or prefixes |
 | The number is already in the system (`M02-08`) | data | the dedupe sheet opens OVER the capture: its title is that fact, the existing person's name and city are its object line, and the three facts are label–value rows — owner, stage, last contacted. Never the record's contents |
-| Exactly three choices (`M02-09`, `M02-11`, `M02-12`) | action | three acts, each with ONE line saying what it does: open the existing lead and drop this capture · log this enquiry on the existing lead and tell its owner · create a second lead anyway. Opening the existing lead confirms before it drops what was typed (`N8`). No fourth act, no default |
+| Exactly three choices (`M02-09`, `M02-11`, `M02-12`) | action | three acts, each with ONE line saying what it does: open the existing lead and drop this capture · log this enquiry on the existing lead and tell its owner · create a second lead anyway, labelled `Keep both leads` at every entry point. Opening the existing lead confirms before it drops what was typed (`N8`). No fourth act, no default |
 | `Create anyway` needs a reason (`M02-12`) | action | choosing it reveals ONE required field; its one line of helper says the reason is recorded on both leads, because that changes what is typed. The confirm's one line says what unlocks it |
 | The existing record is outside the person's scope (`M02-08`) | data · action | the same three facts; the first act becomes a request to the record's owner, and its one line names that owner |
 | The sheet is dismissed (`M02-09`) | — | behaviour, no words: nothing is created, and the capture stays as typed |
@@ -32,12 +32,16 @@ act and nothing to read.
 
 - **375.** One surface: the four fields, the phone first, and the save act pinned at the foot with its
   one line. The dedupe sheet opens over it and never replaces it. Nothing scrolls on the default frame.
+  On open, focus lands in the phone field and the tel keypad rises; with the keypad up the body
+  scrolls and save stays pinned above it.
 - **1536.** The capture is an editor, so it is a side panel over the leads surface (`F7-21`); the dedupe
-  result takes the panel's place without losing what was typed.
+  result takes the panel's place without losing what was typed. The panel is non-modal: Tab reaches
+  the list. The two confirms — open existing and discard — are modal: a sheet at 375, a centred modal
+  at 1536.
 
 ## Entry & exit
 
-Reached from: the primary add action on every surface — on mobile the add action in the shell's pill footer, on web the primary action on the leads surface (M02-06); one tap opens it. Onboarding's first door lands on the empty Lead Inbox (SCR-M02-02, M02-25) whose teaching state points here for the first lead. Leads to: the dedupe sheet opens over the capture (never replacing it) when the typed number matches an existing customer or contact; "Open existing" discards the in-progress capture after confirming and opens the existing lead (SCR-M02-04); "Log enquiry on existing" lands the enquiry on the existing lead and creates nothing new; a successful save creates the lead. Post-save destination is not pinned by PRD — designer decides, note the decision.
+Reached from: the primary add action on every surface — on mobile the add action in the shell's pill footer, on web the primary action on the leads surface (M02-06); one tap opens it. Onboarding's first door lands on the empty Lead Inbox (SCR-M02-02, M02-25) whose teaching state points here for the first lead. Leads to: the dedupe sheet opens over the capture (never replacing it) when the typed number matches an existing customer or contact; "Open existing" discards the in-progress capture after confirming and opens the existing lead (SCR-M02-04); "Log enquiry on existing" lands the enquiry on the existing lead and creates nothing new; a successful save creates the lead and returns the person to where they came from, with the toast `Lead saved` and its `Open` action into the lead (SCR-M02-04). "Log enquiry on existing" and the cross-scope request also return to where the person came from, each with its toast; "Create anyway" saves once the reason is in. Close on a blank capture returns at once; Close with anything typed is a discard, so it confirms first and its toast offers `Undo` (`N8`). After "Open existing" drops a capture, its `Undo` toast shows on SCR-M02-04, where the person lands.
 
 ## Requirements (verbatim)
 
@@ -60,11 +64,13 @@ Reached from: the primary add action on every surface — on mobile the add acti
 - **Error** (base) — save failure acknowledged honestly; the rest of the capture is preserved.
 - **normal** — four fields, keyboard-appropriate inputs, save available.
 - **live-duplicate-check** — the check fires as the number becomes complete; it never blocks the save button while it runs.
-- **check-inconclusive** — no answer yet (a slow check): the save proceeds and the check completes on apply; a collision found on apply flags both records and fires the three-choice sheet on next open, never an automatic merge and never a silent drop (M02-66).
-- **dedupe-sheet** — opens over the capture, never loses what was typed; shows owner, stage, last contact only; exactly three choices; header states the entry point ("This number is already in the system"); dismissing creates nothing. Cross-scope variant: three facts still shown, Open-existing resolves to a request-to-owner (M02-08).
+- **check-inconclusive** — no answer yet (a slow check): the save proceeds and the check completes on apply; a collision found on apply flags both records and fires the three-choice sheet on next open, never an automatic merge and never a silent drop (M02-66). It looks exactly like `live-duplicate-check`: a slow check has no mark or words of its own.
+- **dedupe-sheet** — opens over the capture, never loses what was typed; shows owner, stage, last contact only; exactly three choices; header states the entry point ("This number is already in the system"); dismissing creates nothing. The existing record's card is not a button; the first act is the only way in. Cross-scope variant: three facts still shown, Open-existing resolves to a request-to-owner (M02-08) — a request to see the lead, which the owner decides.
 - **create-anyway-reason-required** — the confirm is unavailable until the mandatory reason is entered (M02-12).
 - **invalid-phone-refused** — only a number that cannot be a phone number at all is refused, with the expected shape stated; the field normalises rather than scolds (spaces, leading zero, national prefix are normalised to the pack's canonical form); the rest of the capture is preserved.
 - **gaps-on-save** — a phone-only capture saves; missing fields become named gaps ("no name yet", "no city yet") on the record (M02-03).
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Error`, `normal`, `live-duplicate-check`, `check-inconclusive`, `invalid-phone-refused`, `create-anyway-reason-required`, the cross-scope `dedupe-sheet` — in the panel's single column, or in the panel's place.
 
 ## Data volume
 

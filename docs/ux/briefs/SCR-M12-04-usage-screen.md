@@ -39,7 +39,8 @@ other meter has, and its chip carries the state — never a red wall, never an a
   name, used of included, a quiet meter — never a table: used-of-included is ONE value.
 - **1536.** The two meter regions become tables with their columns in view — meter · used · included
   · extra usage · rate — side by side where they fit. `Needs you` and the overage total sit in a side
-  column, in view while the tables scroll. A meter's ledger opens as a side panel.
+  column, in view while the tables scroll. A meter's ledger opens as a side panel. The `Limits` table
+  reads limit · used this cycle · allowed; a ceiling's used cell is empty, because a ceiling has no count.
 - **Inside a card, ONE row form.** Every row reads label left, figure right, on one edge; a meter's bar sits
   under its own row, and a row with no meter looks like the rows that have one. Never a label–value pair
   packed to the left beside meter rows whose figures sit at the right.
@@ -58,7 +59,7 @@ is wrong. A V2 meter has no sellable rate in `BM-41`, which is what the
 
 ## Entry & exit
 
-Reached from: Billing Home's deep link — "what am I using (deep link to the usage screen)" (`docs/prd/modules/M12-platform-billing.md` §M12.10 behavior detail, SCR-M12-02); the 80% pre-warning and cap banners reference this screen — no gate may fire without the pre-warning having been available here (M12-34; banner surface is SCR-SHELL-06, shared row M12-30). Leads to: ledger detail via deep links (M12-36); the upgrade path when a cap is the signal — "new creations of that type pause until upgrade" (M12-30) and "outgrowing a cap IS the upgrade signal" (BM-07) — the upgrade path leads to SCR-M12-03, the corridor's one plan-selection surface (M12-55 context); decided here, so the billing screens have one way to a bigger plan and not two.
+Reached from: Billing Home's deep link — "what am I using (deep link to the usage screen)" (`docs/prd/modules/M12-platform-billing.md` §M12.10 behavior detail, SCR-M12-02); the 80% pre-warning and cap banners reference this screen — no gate may fire without the pre-warning having been available here (M12-34; banner surface is SCR-SHELL-06, shared row M12-30). Leads to: ledger detail via deep links (M12-36); the upgrade path when a cap is the signal — "new creations of that type pause until upgrade" (M12-30) and "outgrowing a cap IS the upgrade signal" (BM-07) — the upgrade path leads to SCR-M12-03, the corridor's one plan-selection surface (M12-55 context); decided here, so the billing screens have one way to a bigger plan and not two. Back is the top bar's button at 375 and a `Billing / Usage` breadcrumb at 1536, both to Billing Home (SCR-M12-02).
 
 **Inherited from `SCR-SHELL-06` (designed) — reuse, never redraw.**
 
@@ -76,10 +77,10 @@ Reached from: Billing Home's deep link — "what am I using (deep link to the us
 
 1. **Two cards, and the meters are rows inside them.** `Limits` and `Included each month`. Every row reads label left, figure right, on ONE edge; a meter's bar sits under its own row, and a row with no meter — `Biggest design · 500 kW`, a sub-fact — looks like the rows that have one.
 2. **One status chip always answers the job.** `Within plan` · `Nearing a limit` · `Past what's included` · `On trial` · `At a limit` · `Paused` — beside the cycle line at 375, on the `This cycle` card at 1536.
-3. **`Needs you` exists only while a meter qualifies.** A row per meter: its name with its own chip, used of included as the figure, and ONE line saying what happens next and when. It is never parked open and empty.
+3. **`Needs you` exists only while a meter qualifies.** A row per meter: its name with its own chip, used of included as the figure, and ONE line saying what happens next and when. It is never parked open and empty. A meter in `Needs you` drops its own percentage line, so no meter says it twice.
 4. **Extra charges ride the meter's own row** as its one note line — `₹6 a minute · ₹858 so far`, the amount marked `Derived` — and the card ends in `Extra charges` and `Bills on`.
 5. **The trust label is two quiet lines at each card's foot**, after the figures: `Actual usage`, then `Limits and rates · India price list · 1 Apr 2026`. The storage gauge carries its own `As of` under its figure.
-6. **One named chevron per metered row opens that meter's events** — a sheet at 375, `F7-21`'s side panel at 1536. No ledger screen is invented.
+6. **One named chevron per metered row opens that meter's events** — a sheet at 375, `F7-21`'s side panel at 1536. No ledger screen is invented. The ceiling row and the seat-months row carry none: a size has no events, and seat-months' events are the seats row's.
 7. **1536 is two lanes.** The tables — meter · used this cycle · included · rate · charges so far — and a standing column: `This cycle`, `Needs you` where it exists, `Extra charges`, `Bigger plans`. A state with no figure to draw is ONE lane.
 8. **`Bigger plans` leads to `SCR-M12-03`**, the one way to a bigger plan. A person who is not the Owner sees which meter is paused as its chip, no figure, and `ScopeNote` — `Only Mahesh Bhosale (owner) can see this cycle's usage.`
 9. **Dates, `₹`, `GB`, `kW`, `OTP`, `WhatsApp`, `SMS`, the plan names and the price list's name stay as they are in every language. The paused meter is built as the English frame draws it** — the quiet grey bar with its status line under it — in every language; the board's two language frames are not read (`.claude/rules/ui-adherence.md`, *Screens*).
@@ -103,7 +104,7 @@ Reached from: Billing Home's deep link — "what am I using (deep link to the us
 
 ## States
 
-- **loading** — rollups not yet resolved; never a placeholder number presented as a rollup.
+- **loading** — rollups not yet resolved; never a placeholder number presented as a rollup. The ceiling, which needs no rollup, stays; the total row and the trust lines are absent.
 - **empty** — a fresh tenant with no ledgered usage this period; every published cap still visible (BM-07).
 - **error** — rollup query failed; honest failure — this screen may only ever show the enforced/billed numbers, so no fallback or approximate figures (BM-27, M12-34).
 - **normal** — per-period rollups against bundles with plain overage pricing and ledger deep links; every cap visible; informational, "no scary meters" (M12-36).
@@ -115,6 +116,8 @@ Reached from: Billing Home's deep link — "what am I using (deep link to the us
 - **non-owner-read-only** — a person who is not the Owner arrives, from a cap banner or from Billing Home: which meter is at its cap or paused stays visible, no usage figure or amount renders, and the screen says whose screen it is (M12-56 context; the same rule SCR-M12-02 carries).
 - **cap-reached-grace** — a cap at 100%: banner appeared, the 7-day grace is running; reading, editing existing records and exporting never pause (BM-34, M12-30).
 - **creations-paused** — grace elapsed: new creations of that type pause until upgrade or the next cycle; the reset lands on the tenant's own billing anchor (BM-34, M12-30).
+
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `eighty-percent-warning / 80-percent-pre-warning`, `overage-accruing`, `trialing`, `creations-paused`.
 
 ## Data volume
 
