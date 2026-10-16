@@ -8,7 +8,7 @@ Named tranche templates (label + percentage per canonical stage) with a tenant d
 
 Reached from: the tenant-config settings surface map — *Payment terms* is a named surface in M01 §4's stable vocabulary; a deeper entry path is not pinned by PRD — designer decides, note the decision. Leads to: not pinned by PRD — designer decides, note the decision. What the screen feeds: the builder's payment-terms step default, Quick mode, and — at Won — the project's collection schedule (§M01.7 behavior detail; M11's one-money-path contract). The template editor is the same control the builder's payment step uses — one pattern (§M01.7 behavior detail).
 
-Entry and exit, decided: one entry — More · Settings · Payment terms, the back control named *Back to Settings*; no entry from the onboarding corridor (the seeded templates already let a tenant sell). Out: back to Settings only — every value here is written here, so no onward row, and no link to the builder or to Proposal templates. What the screen feeds is shown as the previewed band and said in the page's closing line.
+Entry and exit, decided: one entry — More · Settings · Payment terms, the back control named *Back to settings*; no entry from the onboarding corridor (the seeded templates already let a tenant sell). Out: back to Settings only — every value here is written here, so no onward row, and no link to the builder or to Proposal templates. What the screen feeds is shown as the previewed band and said in the page's closing line.
 
 **Decisions made in design (2026-09-02) — later screens inherit them.**
 

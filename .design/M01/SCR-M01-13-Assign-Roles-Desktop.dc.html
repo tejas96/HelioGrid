@@ -35,15 +35,19 @@ a:hover{color:var(--link-hover)}
     <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · default</span>
     <div data-screen-label="Assign roles — default, 1536" data-frame="d-default" style="position:relative;flex:0 0 auto;width:1536px;height:960px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
-        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
-            <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
-            <div style="display:flex;align-items:center;gap:var(--sp-3)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefDesk }}" hint-size="auto,44px">What each role can do</x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteDesk }}" hint-size="auto,48px">Invite teammate</x-import>
+        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+              <div style="display:flex;align-items:center;gap:var(--sp-3)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefDesk }}" hint-size="auto,44px">What each role can do</x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteDesk }}" hint-size="auto,48px">Invite teammate</x-import>
+              </div>
             </div>
           </div>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ teamTable }}" hint-size="100%,700px"></x-import>
+          <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);padding-block:var(--sp-2);background:var(--canvas)"><div style="flex:0 1 var(--form-max);min-width:0">{{ findEmpty }}</div>{{ chipsAll }}</div>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ teamTable }}" hint-size="100%,760px"></x-import>
         </div>
       </x-import>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DetailPanel" dc-props="{{ panel }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60">
@@ -67,15 +71,19 @@ a:hover{color:var(--link-hover)}
     <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · loading</span>
     <div data-screen-label="Assign roles — loading, 1536" data-frame="d-loading" style="position:relative;flex:0 0 auto;width:1536px;height:720px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
-        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
-            <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
-            <div style="display:flex;align-items:center;gap:var(--sp-3)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefDesk }}" hint-size="auto,44px">What each role can do</x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteDesk }}" hint-size="auto,48px">Invite teammate</x-import>
+        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+              <div style="display:flex;align-items:center;gap:var(--sp-3)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefDesk }}" hint-size="auto,44px">What each role can do</x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteDesk }}" hint-size="auto,48px">Invite teammate</x-import>
+              </div>
             </div>
           </div>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ teamTable }}" hint-size="100%,700px"></x-import>
+          <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);padding-block:var(--sp-2);background:var(--canvas)"><div style="flex:0 1 var(--form-max);min-width:0">{{ findEmpty }}</div>{{ chipsAll }}</div>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ teamTable }}" hint-size="100%,760px"></x-import>
         </div>
       </x-import>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DetailPanel" dc-props="{{ panelLoading }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60"></x-import>
@@ -86,15 +94,19 @@ a:hover{color:var(--link-hover)}
     <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · remove confirm</span>
     <div data-screen-label="Assign roles — remove confirm, 1536" data-frame="d-confirm" style="position:relative;flex:0 0 auto;width:1536px;height:960px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
-        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
-            <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
-            <div style="display:flex;align-items:center;gap:var(--sp-3)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefDesk }}" hint-size="auto,44px">What each role can do</x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteDesk }}" hint-size="auto,48px">Invite teammate</x-import>
+        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+              <div style="display:flex;align-items:center;gap:var(--sp-3)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefDesk }}" hint-size="auto,44px">What each role can do</x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteDesk }}" hint-size="auto,48px">Invite teammate</x-import>
+              </div>
             </div>
           </div>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ teamTable }}" hint-size="100%,700px"></x-import>
+          <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);padding-block:var(--sp-2);background:var(--canvas)"><div style="flex:0 1 var(--form-max);min-width:0">{{ findEmpty }}</div>{{ chipsAll }}</div>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ teamTable }}" hint-size="100%,760px"></x-import>
         </div>
       </x-import>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DetailPanel" dc-props="{{ panelConfirm }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60">
@@ -268,59 +280,117 @@ class Component extends DCLogic {
       ],
       footer: [{ key: "notifications", label: "Notifications", icon: glyph("bell"), onClick: this.noop }],
       avatar: h(NS.AccountMenu, {
-        name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account", menuLabel: "Account",
+        name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account, grievance contact and sign out", menuLabel: "Account",
         grievanceLabel: "Grievance officer", signOutLabel: "Sign out",
         onGrievance: this.noop, onSignOut: this.noop, align: "start",
       }),
     });
     vals.deskHeader = h(NS.AppHeader, {
-      tenant: h(NS.TenantMark, { name: "Suryodaya Solar", size: 32 }),
+      tenant: h("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
       search: h(NS.SearchField, {
         density: "functional", placeholder: "Name, phone or city", value: "", onChange: this.noop,
       }),
     });
 
-    vals.inviteDesk = { variant: "primary", size: "lg", onClick: this.noop };
+    vals.inviteDesk = { variant: "primary", size: "lg", onClick: this.noop, icon: h(NS.ShellGlyph, { name: "plus", size: "md", tone: "inverse" }) };
     vals.rolesRefDesk = { variant: "ghost", size: "md", onClick: this.noop };
+    /* The page's way back at 1536: the settings trail above the h1, never in AppHeader. */
+    vals.trailProps = { items: [{ key: "settings", label: "Settings", onClick: this.noop }, { key: "here", label: "Team" }] };
     vals.rolesRefBtn = { variant: "ghost", size: "md", onClick: this.noop };
 
-    /* THE TABLE BEHIND IS SCR-M01-12's: same people, same columns, same caption. */
+    /* THE TABLE BEHIND IS SCR-M01-12's d-default, as that board draws it: the same roster, columns,
+       caption, row acts and list head. */
+    const STATUS = {
+      invited: { label: "Invited", tone: "info" },
+      expired: { label: "Expired", tone: "warning" },
+      active: { label: "Active", tone: "success" },
+      deactivated: { label: "Deactivated", tone: "neutral" },
+    };
     const rolesAll = (names) => h(NS.ChipGroup, {
       max: 0, label: "roles", density: "functional",
     }, names.map((n) => h(NS.Badge, { key: n, tone: "neutral", density: "functional" }, n)));
-    const atCell = (r) => h("span", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-0-5)" } }, [
-      h("span", { key: "a" }, r.at || h(NS.NamedGap, { scale: "cell", gap: "Never signed in" })),
-      r.at2 ? h("span", { key: "b", style: { color: "var(--text-secondary)" } }, r.at2) : null,
-    ]);
-    const teamRows = [
-      { name: "Priya Deshmukh", roles: ["Sales Executive"], st: "Invited", tone: "info", at: null, at2: "Invite expires 5 Sep 2026, 17:40", prov: { tier: "derived", source: "Sent 29 Aug 2026 + the 7-day invite window" } },
-      { name: "Amit Rane", roles: ["Sales Executive", "Survey Engineer"], st: "Active", tone: "success", at: "30 Aug 2026, 19:12" },
-      { name: "Anjali Kulkarni", roles: ["Sales Executive"], st: "Active", tone: "success", at: "31 Aug 2026, 08:47" },
-      { name: "Kavita Shirke", roles: ["Survey Engineer"], st: "Active", tone: "success", at: "28 Aug 2026, 13:20" },
-      { name: "Meera Iyer", roles: ["Design Engineer"], st: "Active", tone: "success", at: "29 Aug 2026, 17:30" },
-      { name: "Rajesh Kulkarni", roles: ["EPC Owner"], st: "Active", tone: "success", at: "31 Aug 2026, 09:05", you: true },
-      { name: "Sunil Bhosale", roles: ["Installation Team Member"], st: "Active", tone: "success", at: "31 Aug 2026, 07:55" },
-      { name: "Vikram Deshpande", roles: ["Survey Engineer", "Design Engineer", "Installation Team Member"], st: "Active", tone: "success", at: "30 Aug 2026, 12:40" },
-      { name: "Deepak Jadhav", roles: ["Installation Team Member"], st: "Deactivated", tone: "neutral", at: "12 Aug 2026, 15:58", at2: "Deactivated 12 Aug 2026, 16:05" },
+    const gap = (words) => h(NS.NamedGap, { scale: "cell", gap: words });
+    const column = (kids) => h("div", {
+      style: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--sp-1)" },
+    }, kids);
+
+    const GUARD = "Suryodaya Solar must keep one EPC Owner, so make someone else one first.";
+    const ROSTER = [
+      { name: "Priya Deshmukh", kind: "invited", roles: ["Sales Executive"], sent: "29 Aug 2026, 17:40", expires: "5 Sep 2026, 17:40" },
+      { name: "Rohan Gaikwad", kind: "expired", roles: ["Survey Engineer"], sent: "20 Aug 2026, 11:05" },
+      { name: "Amit Rane", kind: "active", roles: ["Sales Executive", "Survey Engineer"], at: "30 Aug 2026, 19:12" },
+      { name: "Anjali Kulkarni", kind: "active", roles: ["Sales Executive"], at: "31 Aug 2026, 08:47" },
+      { name: "Kavita Shirke", kind: "active", roles: ["Survey Engineer"], at: "28 Aug 2026, 13:20" },
+      { name: "Meera Iyer", kind: "active", roles: ["Design Engineer"], at: "29 Aug 2026, 17:30" },
+      { name: "Nitin Pawar", kind: "active", roles: ["Project Manager"], at: "31 Aug 2026, 08:12" },
+      { name: "Rajesh Kulkarni", kind: "active", you: true, roles: ["EPC Owner"], at: "31 Aug 2026, 09:05", reason: GUARD },
+      { name: "Sunil Bhosale", kind: "active", roles: ["Installation Team Member"], at: "31 Aug 2026, 07:55" },
+      { name: "Vikram Deshpande", kind: "active", roles: ["Survey Engineer", "Design Engineer", "Installation Team Member"], at: "30 Aug 2026, 12:40" },
+      { name: "Deepak Jadhav", kind: "deactivated", roles: ["Installation Team Member"], at: "12 Aug 2026, 15:58" },
     ];
+
+    const nameCell = (r) => h("span", {
+      style: { display: "inline-flex", alignItems: "center", gap: "var(--sp-2)", minWidth: 0 },
+    }, h("span", { key: "n" }, r.name), r.you ? h(NS.Badge, { key: "y", tone: "accent", density: "functional" }, "You") : null);
+
+    /* The expiry date is computed from the send and the 7-day invite window, so the line under it
+       names both and the column's provenanceFor marks it derived. Every other date here is recorded. */
+    const atCell = (r) => {
+      if (r.kind === "invited") return column([
+        h("span", { key: "g" }, gap("Never signed in")),
+        h("span", { key: "e" }, "Invite expires " + r.expires),
+        h("span", { key: "s" }, "Sent " + r.sent + " · expires after 7 days"),
+      ]);
+      if (r.kind === "expired") return column([
+        h("span", { key: "g" }, gap("Never signed in")),
+        h("span", { key: "s" }, "Invite sent " + r.sent),
+      ]);
+      return r.at;
+    };
+
+    /* Only an active member opens Assign Roles: the chevron is that act, and an invite or a
+       deactivated row carries none. */
+    const rowActions = (r) => {
+      const act = (label, reason) => h(NS.Button, {
+        key: "act", variant: "ghost", size: "sm", onClick: reason ? undefined : this.noop,
+        disabled: !!reason, disabledReason: reason || undefined,
+      }, label);
+      if (r.kind === "invited") return act("Revoke invite");
+      if (r.kind === "expired") return act("Invite again");
+      if (r.kind === "deactivated") return null;
+      return h("span", { style: { display: "inline-flex", alignItems: "flex-start", gap: "var(--sp-2)" } },
+        act("Deactivate", r.reason),
+        h(NS.IconButton, { key: "open", variant: "ghost", label: "Assign roles for " + r.name, onClick: this.noop },
+          h(NS.ShellGlyph, { name: "chevron-right", size: "md" })));
+    };
+
     vals.teamTable = {
       caption: "Everyone at Suryodaya Solar — invites first (pending, then expired), then everyone by name, deactivated last",
-      /* No row tap here: DataTable opens every row or none, and only an active member's row opens
-         this screen, so the frames behind the modal panel draw none. */
-      rows: teamRows, rowKey: (r) => r.name, density: "comfortable",
+      rows: ROSTER, rowKey: "name", density: "comfortable",
       columns: [
-        { key: "name", label: "Person", primary: true, width: 230, render: (r) => h("span", {
-          style: { display: "inline-flex", alignItems: "center", gap: "var(--sp-2)", flexWrap: "wrap" },
-        }, [
-          h("span", { key: "n", style: { fontWeight: "var(--fw-bold)", color: "var(--text-primary)" } }, r.name),
-          r.you ? h(NS.Badge, { key: "y", tone: "neutral", density: "functional" }, "You") : null,
-        ]) },
-        { key: "roles", label: "Roles", wrap: true, width: 420, render: (r) => rolesAll(r.roles) },
-        { key: "st", label: "Status", width: 140, render: (r) => status(r.st, r.tone) },
-        { key: "at", label: "Last active", mono: true, width: 300, render: atCell,
-          provenanceFor: (r) => r.prov || null },
+        { key: "name", label: "Person", primary: true, strong: true, width: "16%", render: nameCell },
+        { key: "roles", label: "Roles", wrap: true, width: "26%", render: (r) => rolesAll(r.roles) },
+        { key: "status", label: "Status", width: "10%", render: (r) => status(STATUS[r.kind].label, STATUS[r.kind].tone) },
+        { key: "at", label: "Last active", mono: true, width: "24%", render: atCell,
+          provenanceFor: (r) => (r.kind === "invited" ? "derived" : null) },
       ],
+      rowActions: rowActions,
     };
+
+    /* The list head over it: Find in this list and the Status chips with their counts. */
+    const count = (kind) => ROSTER.filter((p) => p.kind === kind).length;
+    vals.findEmpty = h(NS.SearchField, {
+      density: "functional", placeholder: "Find in this list", ariaLabel: "Find in this list",
+      value: "", onChange: this.noop,
+    });
+    vals.chipsAll = h(NS.FilterChips, {
+      label: "Status", value: "all", onChange: this.noop,
+      counts: { all: ROSTER.length, invited: count("invited"), expired: count("expired"), active: count("active"), deactivated: count("deactivated") },
+      options: [
+        { value: "all", label: "All" }, { value: "invited", label: "Invited" }, { value: "expired", label: "Expired" },
+        { value: "active", label: "Active" }, { value: "deactivated", label: "Deactivated" },
+      ],
+    });
 
     /* THE EDITOR AT 1536 (F7-21): a modal side panel at the right edge of the table. */
     const panelBase = {

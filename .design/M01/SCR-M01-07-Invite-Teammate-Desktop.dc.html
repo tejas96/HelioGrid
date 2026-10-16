@@ -98,15 +98,19 @@ a:hover{color:var(--link-hover)}
     <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · Team life</span>
     <div data-screen-label="Invite teammate — Team life, 1536" data-frame="d-team" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ teamHeader }}" hint-size="100%,100%" style="height:100%">
-        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
-            <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
-            <div style="display:flex;align-items:center;gap:var(--sp-3)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">What each role can do</x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" hint-size="auto,48px">Invite teammate</x-import>
+        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+            <div style="align-self:stretch;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+              <div style="display:flex;align-items:center;gap:var(--sp-3)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+              </div>
             </div>
           </div>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ table }}" hint-size="100%,560px"></x-import>
+          <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);padding-block:var(--sp-2);background:var(--canvas)"><div style="flex:0 1 var(--form-max);min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,44px"></x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAll }}" hint-size="auto,44px"></x-import></div>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ table }}" hint-size="100%,760px"></x-import>
         </div>
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" open="{{ on }}" inset="{{ on }}" show-close="{{ on }}" title="Invite someone" footer="{{ teamSheetFooter }}" hint-size="480px,100%">
           <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
@@ -255,6 +259,9 @@ class Component extends DCLogic {
       roles: this.roles(),
       bannersReady: !!this.state.bannersReady,
       stepCircle: 44,
+      /* The way back to the settings list opens the Team page head (owner ruling: never in the AppHeader). */
+      trailProps: { items: [{ key: "settings", label: "Settings", onClick: noop }, { key: "here", label: "Team" }] },
+      rolesRefBtn: { variant: "ghost", size: "md", onClick: noop },
       /* The ask on the role set (F7-46): the rule's reasoning is teaching, so it lives here, not in the
          reading flow. The rule itself is enforced at the act by the danger banner. */
       rolesAsk: (() => {
@@ -282,8 +289,8 @@ class Component extends DCLogic {
       { key: "projects", label: "Projects", icon: G(D.projects), activeIcon: inView(D.projects) },
       { key: "more", label: "More", icon: G(D.more), activeIcon: inView(D.more) }
     ];
-    const account = h(ds.AccountMenu, { name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account", menuLabel: "Account",
-      grievanceLabel: "Grievance contact", signOutLabel: "Sign out", align: "start", onGrievance: noop, onSignOut: noop });
+    const account = h(ds.AccountMenu, { name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account, grievance contact and sign out", menuLabel: "Account",
+      grievanceLabel: "Grievance officer", signOutLabel: "Sign out", align: "start", onGrievance: noop, onSignOut: noop });
 
     const GUARD = "Suryodaya Solar must keep one EPC Owner, so make someone else one first.";
     const ROSTER = [
@@ -318,17 +325,13 @@ class Component extends DCLogic {
     const nameCell = (r) => h("span", {
       style: { display: "inline-flex", alignItems: "center", gap: "var(--sp-2)", minWidth: 0 }
     }, h("span", { key: "n" }, r.name), r.you ? h(ds.Badge, { key: "y", tone: "accent", density: "functional" }, "You") : null);
-    /* The expiry date is computed from the send and the 7-day invite window: the tier rides as a
-       mark under it and the working opens under that. Every other date here is recorded. */
+    /* The expiry date is computed from the send and the 7-day invite window, so the line under it
+       names both and the column's provenanceFor marks it derived. Every other date here is recorded. */
     const atCell = (r) => {
       if (r.kind === "invited") return column([
         h("span", { key: "g" }, gap("Never signed in")),
         h("span", { key: "e" }, "Invite expires " + r.expires),
-        h(ds.Provenance, { key: "t", tier: "derived", size: 12 }),
-        h(ds.Derivation, {
-          key: "d", label: "Invite expiry · " + r.name,
-          parts: [{ kind: "formula", text: "Sent " + r.sent + ", plus the 7-day invite window." }]
-        })
+        h("span", { key: "s" }, "Sent " + r.sent + " · expires after 7 days")
       ]);
       if (r.kind === "expired") return column([
         h("span", { key: "g" }, gap("Never signed in")),
@@ -348,6 +351,12 @@ class Component extends DCLogic {
         act("Deactivate", r.reason),
         h(ds.IconButton, { key: "open", variant: "ghost", label: "Assign roles for " + r.name, onClick: noop }, G("chevron-right")));
     };
+    /* SCR-M01-12's list head: Find in this list, then the status chips with their counts. */
+    const STATUS_OPTIONS = [
+      { value: "all", label: "All" }, { value: "invited", label: "Invited" }, { value: "expired", label: "Expired" },
+      { value: "active", label: "Active" }, { value: "deactivated", label: "Deactivated" }
+    ];
+    const count = (kind) => ROSTER.filter((p) => p.kind === kind).length;
 
     /* The step marks: the system's shapes where it has one; the send mark is an inline glyph on the
        system's Icon ladder, since ShellGlyph has no send shape. All three sit in the accent tone. */
@@ -360,6 +369,11 @@ class Component extends DCLogic {
       stepJoin: G("pair", { tone: "accent" }),
       /* SheetActions' order: secondary first, primary last — the primary sits at the trailing edge in a
          row and on top when the row stacks. Same order as the corridor's foot row. */
+      inviteBtn: { variant: "primary", size: "lg", onClick: noop, icon: G("plus", { tone: "inverse" }) },
+      /* Mounted as x-imports, not printed: a {{ }} holding a React element prints "[object Object]" in some renders. */
+      findEmpty: { density: "functional", placeholder: "Find in this list", ariaLabel: "Find in this list", value: "", onChange: noop },
+      chipsAll: { label: "Status", value: "all", onChange: noop, options: STATUS_OPTIONS,
+        counts: { all: ROSTER.length, invited: count("invited"), expired: count("expired"), active: count("active"), deactivated: count("deactivated") } },
       teamSheetFooter: h(ds.SheetActions, null,
         h(ds.Button, { variant: "ghost", size: "lg" }, "Cancel"),
         h(ds.Button, { variant: "primary", size: "lg" }, "Send invite")
@@ -367,7 +381,7 @@ class Component extends DCLogic {
       rail: h(ds.AppRail, { label: "Main", items: railItems, value: "more", onChange: noop,
         footer: [{ key: "notifications", label: "Notifications", icon: G("bell"), onClick: noop }], avatar: account }),
       teamHeader: h(ds.AppHeader, {
-        tenant: h(ds.TenantMark, { name: "Suryodaya Solar", size: 32 }),
+        tenant: h("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
         search: h(ds.SearchField, { density: "functional", placeholder: "Name, phone or city", value: "", onChange: noop }) }),
       table: {
         caption: "Everyone at Suryodaya Solar — invites first (pending, then expired), then everyone by name, deactivated last",
@@ -376,7 +390,8 @@ class Component extends DCLogic {
           { key: "name", label: "Person", primary: true, strong: true, width: "16%", render: nameCell },
           { key: "roles", label: "Roles", wrap: true, width: "26%", render: (r) => roles(r.roles) },
           { key: "status", label: "Status", width: "10%", render: (r) => statusChip(r.kind) },
-          { key: "at", label: "Last active", mono: true, width: "24%", render: atCell }
+          { key: "at", label: "Last active", mono: true, width: "24%", render: atCell,
+            provenanceFor: (r) => (r.kind === "invited" ? "derived" : null) }
         ],
         rowActions: rowActions
       }

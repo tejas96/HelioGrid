@@ -21,7 +21,7 @@ Reached from: the PRD groups this screen in the Team / Assign roles / Roles refe
 - **Error** — an assignment save fails; what happened and what to do next, per F7's contract.
 - **grant-line-updating-live** — as presets are toggled on/off, the plain-English grant line updates live to describe exactly the resulting grants (M01-20 acceptance).
 
-Drawn at 375 only (at 1536 the phone's answer holds at width): `empty`, `error`, `grant-line-updating-live`.
+Drawn at 375 only (at 1536 the phone's answer holds at width): `empty`, `error`, `grant-line-updating-live`, the sole-EPC-Owner guard, the after-remove undo toast.
 
 - **Loading** keeps the header — name, status and email came off the tapped row. The body is the editor's own loading state (decision 2); the grant line and Save are absent (owner ruling 2026-10-16).
 - In **Error** the ticks stay as composed and Save is the retry; no second button.
@@ -46,6 +46,8 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `empty`, `error`,
 5. **`N8` is closed with both halves** — the undo in a toast, AND the recovery route in words, on the
    confirm and again beside the undo. An undo lives for seconds; the question arrives an hour later.
    The toast is a `ToastHost`, which owns its own placement and clearance.
+6. **The list behind the editor is `SCR-M01-12`'s list as its boards draw it**, at both widths — roster,
+   row acts, list head, page head and invite line — reused, never redrawn.
 
 **The editor.** A `Sheet` over the Team list at 375. At 1536 a modal side panel over the Team table —
 backdrop, focus trap and scroll lock — so a second row cannot open while a set is uncommitted. The

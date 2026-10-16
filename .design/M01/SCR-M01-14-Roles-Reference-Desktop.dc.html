@@ -432,13 +432,13 @@ class Component extends DCLogic {
       ],
       footer: [{ key: "notifications", label: "Notifications", icon: glyph("bell"), onClick: this.noop }],
       avatar: h(NS.AccountMenu, {
-        name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account", menuLabel: "Account",
+        name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account, grievance contact and sign out", menuLabel: "Account",
         grievanceLabel: "Grievance officer", signOutLabel: "Sign out",
         onGrievance: this.noop, onSignOut: this.noop, align: "start",
       }),
     });
     vals.deskHeader = h(NS.AppHeader, {
-      tenant: h(NS.TenantMark, { name: "Suryodaya Solar", size: 32 }),
+      tenant: h("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
       search: h(NS.SearchField, {
         density: "functional", placeholder: "Name, phone or city", value: "", onChange: this.noop,
       }),

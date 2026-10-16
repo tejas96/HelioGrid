@@ -130,18 +130,37 @@ a:hover{color:var(--link-hover)}
   <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
     <span style="height:var(--sp-4);display:flex;align-items:center;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · reopened from profile</span>
     <div data-screen-label="Role explainer — reopened from profile, 1536" data-frame="d-reopened" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
-      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ header }}" hint-size="100%,100%">
-        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-8) var(--screen-pad-desktop)">
-          <div style="max-width:var(--form-max);display:flex;flex-direction:column;gap:var(--sp-6)">
-            <h1 style="margin:0;font-size:var(--fs-h1);line-height:var(--lh-h1);letter-spacing:var(--tr-h1);font-weight:var(--fw-bold);color:var(--text-primary)">Profile &amp; preferences</h1>
-            <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-          <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</span>
-          <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ profileNameRow }}" hint-size="100%,64px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ profileRoleRow }}" hint-size="100%,64px"></x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ header }}" hint-size="100%,100%" style="height:100%">
+        <div style="box-sizing:content-box;width:calc(var(--form-max) * 2 + var(--sp-12));display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--sp-12);row-gap:var(--sp-8);align-content:start;padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
+          <div style="grid-column:1 / -1;display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+            <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Profile &amp; preferences</h1>
           </div>
+          <div style="grid-column:1 / -1"><section style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--sp-12);row-gap:var(--sp-2)">
+            <div style="grid-column:1 / -1"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2></div>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ profileNameRow }}" hint-size="100%,52px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ profileRoleRow }}" hint-size="100%,52px"></x-import>
+          </section></div>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-4)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">How HelioGrid reads to you</h2>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ profileLanguagePicker }}" hint-size="100%,190px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ profileLanguageSource }}" hint-size="100%,18px"></x-import>
             </div>
-          </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SegmentedControl" dc-props="{{ profileUnits }}" hint-size="100%,66px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ profileUnitSource }}" hint-size="100%,18px"></x-import>
+            </div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2>
+            <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way.</p>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
+              <sc-for list="{{ profilePushGroups }}" as="g" hint-placeholder-count="4">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ g }}" hint-size="100%,44px"></x-import>
+              </sc-for>
+            </div>
+          </section>
         </div>
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DetailPanel" dc-props="{{ rolePanel }}" hint-size="480px,100%">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" hint-size="100%,420px">
@@ -241,37 +260,57 @@ class Component extends DCLogic {
 
   ns() { return window.HelioGridDesignSystem_c8aa43; }
 
-  glyph(name, filled, size) {
-    return React.createElement(this.ns().ShellGlyph, { name: name, filled: !!filled, size: size });
+  glyph(name, filled, size, tone) {
+    return React.createElement(this.ns().ShellGlyph, { name: name, filled: !!filled, size: size, tone: tone });
   }
 
-  /* A Sales Executive's standing destinations (F7-48): Home · Leads · Proposals · More, the
-     verb Add lead in the pill's middle. More is in view: Profile & preferences is reached from it. */
-  destinations(size) {
+  /* A Sales Executive's standing destinations (F7-48): Home · Leads · Proposals · More, drawn as
+     SCR-M01-11's rail draws them. More is in view: Profile & preferences is reached from it. */
+  railItems() {
     const D = this.ns().DESTINATION_GLYPH;
-    const item = (key, label) => ({ key: key, label: label, icon: this.glyph(D[key], false, size), activeIcon: this.glyph(D[key], true, size) });
+    const item = (key, label) => ({ key: key, label: label, icon: this.glyph(D[key], false, "md", key === "more" ? "accent" : "secondary") });
     return [item("home", "Home"), item("leads", "Leads"), item("proposals", "Proposals"), item("more", "More")];
   }
 
   accountMenu(align) {
     return React.createElement(this.ns().AccountMenu, {
-      name: "Anjali Kulkarni", triggerName: "Anjali Kulkarni — account", menuLabel: "Account",
+      name: "Anjali Kulkarni", triggerName: "Anjali Kulkarni — account, grievance contact and sign out", menuLabel: "Account",
       grievanceLabel: "Grievance officer", signOutLabel: "Sign out",
       onGrievance: this.noop, onSignOut: this.noop, align: align,
     });
   }
 
-  /* The two rows of SCR-M01-11 behind the card's second life — indicative of that screen. */
-  profileRows() {
+  /* SCR-M01-11's default page behind the card's second life, drawn exactly as that screen's board draws it. */
+  profilePage(languageColumns) {
     const NS = this.ns();
-    const icon = (children) => React.createElement(NS.Icon, { size: "md" },
-      React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" }, children));
-    const person = icon([React.createElement("circle", { key: "c", cx: 12, cy: 8, r: 3.6 }), React.createElement("path", { key: "p", d: "M5 20a7 7 0 0 1 14 0" })]);
-    const briefcase = icon([React.createElement("rect", { key: "r", x: 2, y: 7, width: 20, height: 14, rx: 2 }), React.createElement("path", { key: "p", d: "M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" })]);
+    const noop = this.noop;
     const chevron = () => this.glyph("chevron-right", false, "md");
+    const rowGround = { background: "var(--fill)", borderRadius: "var(--r-tile)" };
+    const source = (level, layerName) => ({ level: level, layerName: layerName });
     return {
-      profileNameRow: { icon: person, title: "Anjali Kulkarni", subtitle: "Your name", trailing: chevron(), onClick: this.noop },
-      profileRoleRow: { icon: briefcase, title: "Sales Executive", subtitle: "Your role", trailing: chevron(), onClick: this.noop },
+      profileNameRow: {
+        avatar: React.createElement(NS.Avatar, { name: "Anjali Kulkarni", size: 32 }), title: "Anjali Kulkarni", subtitle: "Your name",
+        trailing: chevron(), onClick: noop, density: "functional", style: rowGround,
+      },
+      profileRoleRow: {
+        icon: this.glyph("shield", false, "md", "accent"), title: "Sales Executive", wrapTitle: true, subtitle: "Your role",
+        trailing: chevron(), onClick: noop, density: "functional", style: rowGround,
+      },
+      profileLanguagePicker: {
+        label: "Language", value: "en", columns: languageColumns, density: "functional", onChange: noop,
+        options: [
+          { value: "en", title: "English", lang: "en" },
+          { value: "hi", title: "हिन्दी", lang: "hi" },
+          { value: "mr", title: "मराठी", lang: "mr" },
+        ],
+      },
+      profileLanguageSource: source("inherited", "Your device's language"),
+      profileUnits: {
+        label: "Measurements", value: "m", onChange: noop,
+        options: [{ value: "m", label: "Metres" }, { value: "ft", label: "Feet" }],
+      },
+      profileUnitSource: source("inherited", "Default for India"),
+      profilePushGroups: ["Sales", "Delivery", "Payments", "Team"].map((label) => ({ label: label, checked: true, onChange: noop })),
     };
   }
 
@@ -294,20 +333,21 @@ class Component extends DCLogic {
       noop: this.noop,
       /* The rail carries the phone's destinations, with the bell and the account at its foot. */
       rail: React.createElement(NS.AppRail, {
-        label: "Primary", value: "more", onChange: this.noop,
-        items: this.destinations("md"),
+        label: "Main", value: "more", onChange: this.noop,
+        items: this.railItems(),
         footer: [{ key: "notifications", label: "Notifications", icon: this.glyph("bell", false, "md"), onClick: this.noop }],
         avatar: this.accountMenu("start"),
       }),
       /* The header holds only the tenant's mark and the one search. */
       header: React.createElement(NS.AppHeader, {
-        tenant: React.createElement(NS.TenantMark, { name: "Suryodaya Solar", size: 32 }),
+        tenant: React.createElement("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
         search: React.createElement(NS.SearchField, { density: "functional", placeholder: "Name, phone or city", ariaLabel: "Search", value: "", onChange: this.noop }),
       }),
+      trailProps: { items: [{ key: "settings", label: "Settings", onClick: this.noop }, { key: "here", label: "Profile & preferences" }] },
       rolePanel: Object.assign({ side: "right", width: 480 }, this.roleSurfaceBase()),
       /* What the EPC Owner alone holds (F2.M01.manage-team), composed by ScopeNote. */
       ownerActs: ["add a teammate"],
-    }, this.profileRows());
+    }, this.profilePage(3));
   }
 }
 

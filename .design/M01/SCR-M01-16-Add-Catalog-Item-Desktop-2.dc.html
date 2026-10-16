@@ -344,7 +344,7 @@ class Component extends DCLogic {
       }),
       header: h(NS.AppHeader, {
         sticky: false,
-        tenant: h(NS.TenantMark, { name: "Suryodaya Solar", size: 28 }),
+        tenant: h("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
         search: h(NS.SearchField, { placeholder: "Search", ariaLabel: "Search Suryodaya Solar", value: "", onChange: noop, density: "functional" }),
       }),
       style: { height: "100%" },
@@ -395,8 +395,8 @@ class Component extends DCLogic {
       meta: "PDF · 2 pages · 1.4 MB · uploaded 22 Aug 2026",
       state: "ready",
       pages: [
-        { url: "/_blob/c8593ce859630dd31a4b00730de270ab", width: 840, height: 1188, label: "Page 1 · Mechanical and general" },
-        { url: "/_blob/99bc561584c14d6d86acd043e9b5cf95", width: 840, height: 1188, label: "Page 2 · Electrical characteristics" },
+        { url: "assets/datasheet-p1.png", width: 840, height: 1188, label: "Page 1 · Mechanical and general" },
+        { url: "assets/datasheet-p2.png", width: 840, height: 1188, label: "Page 2 · Electrical characteristics" },
       ],
       page: 1, onPageChange: noop, fit: fit, onFitChange: noop,
       height: height, density: "functional", label: "The datasheet you uploaded",
@@ -409,7 +409,7 @@ class Component extends DCLogic {
       /* 375 callers */
       topLeads: topBar("Back to Leads", "Proposal 0412", OWNER),
       topStudio: topBar("Back to Leads", "Design DS-0188", OWNER),
-      topSettings: topBar("Back to Settings", "Catalog", OWNER),
+      topSettings: topBar("Back to settings", "Catalog", OWNER),
       topProposals: topBar("Back to Proposals", "Proposal 0419", SALES),
       navOwnerLeads: bottomNav("leads", false),
       navOwnerMore: bottomNav("more", false),

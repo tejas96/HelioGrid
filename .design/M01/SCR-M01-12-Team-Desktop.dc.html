@@ -37,11 +37,14 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — default, 1536" data-frame="d-default" style="position:relative;flex:0 0 auto;width:1536px;height:960px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ header }}" hint-size="100%,100%" style="height:100%">
         <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
-            <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
-            <div style="display:flex;align-items:center;gap:var(--sp-3)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+            <div style="align-self:stretch;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+              <div style="display:flex;align-items:center;gap:var(--sp-3)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+              </div>
             </div>
           </div>
           <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);padding-block:var(--sp-2);background:var(--canvas)"><div style="flex:0 1 var(--form-max);min-width:0">{{ findEmpty }}</div>{{ chipsAll }}</div>
@@ -57,11 +60,14 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — query applied, 1536" data-frame="d-query" style="position:relative;flex:0 0 auto;width:1536px;height:640px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ header }}" hint-size="100%,100%" style="height:100%">
         <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
-            <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
-            <div style="display:flex;align-items:center;gap:var(--sp-3)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+            <div style="align-self:stretch;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+              <div style="display:flex;align-items:center;gap:var(--sp-3)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+              </div>
             </div>
           </div>
           <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);padding-block:var(--sp-2);background:var(--canvas)"><div style="flex:0 1 var(--form-max);min-width:0">{{ findQuery }}</div>{{ chipsQuery }}</div>
@@ -77,11 +83,14 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — filter applied, 1536" data-frame="d-filter" style="position:relative;flex:0 0 auto;width:1536px;height:640px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ header }}" hint-size="100%,100%" style="height:100%">
         <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
-            <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
-            <div style="display:flex;align-items:center;gap:var(--sp-3)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+            <div style="align-self:stretch;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+              <div style="display:flex;align-items:center;gap:var(--sp-3)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+              </div>
             </div>
           </div>
           <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);padding-block:var(--sp-2);background:var(--canvas)"><div style="flex:0 1 var(--form-max);min-width:0">{{ findEmpty }}</div>{{ chipsExpired }}</div>
@@ -97,11 +106,14 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — loading, 1536" data-frame="d-loading" style="position:relative;flex:0 0 auto;width:1536px;height:640px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ header }}" hint-size="100%,100%" style="height:100%">
         <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
-            <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
-            <div style="display:flex;align-items:center;gap:var(--sp-3)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+            <div style="align-self:stretch;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+              <div style="display:flex;align-items:center;gap:var(--sp-3)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+              </div>
             </div>
           </div>
           <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);padding-block:var(--sp-2);background:var(--canvas)"><div style="flex:0 1 var(--form-max);min-width:0">{{ findEmpty }}</div>{{ chipsLoading }}</div>
@@ -117,11 +129,14 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — deactivate confirm, 1536" data-frame="d-deactivate" style="position:relative;flex:0 0 auto;width:1536px;height:960px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ header }}" hint-size="100%,100%" style="height:100%">
         <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
-            <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
-            <div style="display:flex;align-items:center;gap:var(--sp-3)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+            <div style="align-self:stretch;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+              <div style="display:flex;align-items:center;gap:var(--sp-3)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+              </div>
             </div>
           </div>
           <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);padding-block:var(--sp-2);background:var(--canvas)"><div style="flex:0 1 var(--form-max);min-width:0">{{ findEmpty }}</div>{{ chipsAll }}</div>
@@ -174,14 +189,14 @@ class Component extends DCLogic {
       ],
       footer: [{ key: "notifications", label: "Notifications", icon: g("bell"), onClick: this.noop }],
       avatar: h(NS.AccountMenu, {
-        name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account", menuLabel: "Account",
-        grievanceLabel: "Grievance contact", signOutLabel: "Sign out",
+        name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account, grievance contact and sign out", menuLabel: "Account",
+        grievanceLabel: "Grievance officer", signOutLabel: "Sign out",
         onGrievance: this.noop, onSignOut: this.noop, align: "start",
       }),
     });
     /* The header holds only whose HelioGrid this is and the one search. */
     const header = h(NS.AppHeader, {
-      tenant: h(NS.TenantMark, { name: "Suryodaya Solar", size: 32 }),
+      tenant: h("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
       search: h(NS.SearchField, { density: "functional", placeholder: "Name, phone or city", value: "", onChange: this.noop }),
     });
 
@@ -221,17 +236,13 @@ class Component extends DCLogic {
       style: { display: "inline-flex", alignItems: "center", gap: "var(--sp-2)", minWidth: 0 },
     }, h("span", { key: "n" }, r.name), r.you ? h(NS.Badge, { key: "y", tone: "accent", density: "functional" }, "You") : null);
 
-    /* The expiry date is computed from the send and the 7-day invite window: the tier rides as a
-       mark under it and the working opens under that. Every other date here is recorded. */
+    /* The expiry date is computed from the send and the 7-day invite window, so the line under it
+       names both and the column's provenanceFor marks it derived. Every other date here is recorded. */
     const atCell = (r) => {
       if (r.kind === "invited") return column([
         h("span", { key: "g" }, gap("Never signed in")),
         h("span", { key: "e" }, "Invite expires " + r.expires),
-        h(NS.Provenance, { key: "t", tier: "derived", size: 12 }),
-        h(NS.Derivation, {
-          key: "d", label: "Invite expiry · " + r.name,
-          parts: [{ kind: "formula", text: "Sent " + r.sent + ", plus the 7-day invite window." }],
-        }),
+        h("span", { key: "s" }, "Sent " + r.sent + " · expires after 7 days"),
       ]);
       if (r.kind === "expired") return column([
         h("span", { key: "g" }, gap("Never signed in")),
@@ -262,7 +273,8 @@ class Component extends DCLogic {
         { key: "name", label: "Person", primary: true, strong: true, width: "16%", render: nameCell },
         { key: "roles", label: "Roles", wrap: true, width: "26%", render: (r) => roles(r.roles) },
         { key: "status", label: "Status", width: "10%", render: (r) => statusChip(r.kind) },
-        { key: "at", label: "Last active", mono: true, width: "24%", render: atCell },
+        { key: "at", label: "Last active", mono: true, width: "24%", render: atCell,
+          provenanceFor: (r) => (r.kind === "invited" ? "derived" : null) },
       ],
       rowActions: rowActions,
     }, extra || {});
@@ -290,6 +302,8 @@ class Component extends DCLogic {
     const vals = {
       rail: rail,
       header: header,
+      /* The way back to the settings list opens the page head (owner ruling: never in the AppHeader). */
+      trailProps: { items: [{ key: "settings", label: "Settings", onClick: this.noop }, { key: "here", label: "Team" }] },
       inviteBtn: { variant: "primary", size: "lg", onClick: this.noop, icon: g("plus", "md", false, "inverse") },
       rolesRefBtn: { variant: "ghost", size: "md", onClick: this.noop },
 

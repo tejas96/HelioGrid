@@ -8,7 +8,7 @@ Phone-keyed invite with name and at least one preset role; skippable during onbo
 
 Reached from: the skippable onboarding invite step (`S0.screen.4` per M01-12) and one-tap invite on the Team screen (SCR-M01-12, M01-12). The `join_requested` notice (T-M01-035) opens this screen in its Team life with the asker's name and number filled in — no frame of its own. Leads to: on send, an invite in state pending (states pending / accepted / expired / revoked, with an expiry — M01-12), visible and revocable on Team; during onboarding, skipping continues to the two-door landing (M01 §M01.3 behavior detail). The invitee's side is Invite Landing (SCR-M01-08).
 
-In the corridor, *Send invite* and *Skip for now* both continue to SCR-M01-06; a send stops on no confirmation and does not re-arm the form. In its Team life the invite is one editor over Team — a bottom sheet at 375, a side panel at 1536 — with *Cancel* in place of *Skip for now*.
+In the corridor, *Send invite* and *Skip for now* both continue to SCR-M01-06; a send stops on no confirmation and does not re-arm the form. In its Team life the invite is one editor over Team — a bottom sheet at 375, a side panel at 1536 — with *Cancel* in place of *Skip for now*. The Team page behind it is `SCR-M01-12`'s page as its boards draw it, at both widths — reused, never redrawn.
 
 ## Requirements (verbatim)
 
