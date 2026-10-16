@@ -15,7 +15,7 @@ import { CompanyProfileAsHeld } from './CompanyProfile.story';
  * The company profile from the door's breakpoint (`SCR-M01-05`, `d-default`, `d-tax-invalid`): the
  * wordmark, the heading, the list and the act on one left edge at the list's wide measure, the act
  * at its natural width, and beside them a letterhead that shows only what the fields hold. The
- * positions are the design record's (list 4, *Alignment, measured*).
+ * positions are the brief's (rulings 10 and 31) and the RFC's frame map.
  */
 const en = await createTranslator('en');
 

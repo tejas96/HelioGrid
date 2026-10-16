@@ -5,8 +5,8 @@ import { expectTouchFloor } from '../support/touch-target';
 import { CompanyProfileAsHeld } from './CompanyProfile.story';
 
 /**
- * The company profile's states the board does not draw at 1536, each by the design record's stated
- * rule (`SCR-M01-05`, *Not drawn at 1536*): loading keeps the list and the letterhead as bars; a
+ * The company profile's states the board does not draw at 1536, each by the brief's stated
+ * rule (`SCR-M01-05`, *Drawn at 375 only*): loading keeps the list and the letterhead as bars; a
  * failed read is the one centred message and no letterhead; a failed save is the same line at the
  * same act with everything typed kept; a line at the act stands beside it.
  */

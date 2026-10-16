@@ -31,7 +31,7 @@ figure that is commercial — and no sentence saying any of that.
 
 - **375.** Its home: the job, the way in, the progress with its act, the photographs. One screenful
   where the content allows. Under the title block the regions are *Getting in* · *Checklist* · *Photos*.
-- **1536.** Honestly the same frame in a centred column with more room. Say so on the board; nothing
+- **1536.** Honestly the same frame in a centred column with more room. Say so in the drawing report; nothing
   is added to fill the width. The column spans 8 of the 12 columns. *Getting in* and *Checklist* share one
   row, read together before setting off, which brings *Open checklist* onto the first screen.
 

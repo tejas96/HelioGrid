@@ -31,7 +31,7 @@ public page and it is still not a manual: its claim is one line, and its proof i
 ## Arrangement
 
 - **No shell.** A public page, before sign-in: it carries its own header — the wordmark, the language
-  switch, `Sign in` — and says so on the board.
+  switch, `Sign in` — and the drawing report says so.
 - **375.** The title and its one claim · the cycle selector · the four plans as cards · `Compare two
   plans`, a row that opens the two-plan comparison · `Compared with` · the trial act, pinned at the
   foot with its one line. The comparison's three selectors — `Plan`, `Against`, `Show` — sit together

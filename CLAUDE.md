@@ -22,8 +22,8 @@ declarations. A check you add or change is trusted only after it fires on a plan
 **Every mistake leaves a record.** A mistake found in the work — yours, a reviewer's, a check's or
 the owner's — is fixed at once and listed in the PR body by its kind. One a machine could have
 caught gets that check: a type, a lint rule or a test. One no machine can decide gets one line in
-`.claude/agents/code-reviewer.md`, `rfc-template.md` or its package's `CLAUDE.md` Traps — never a
-new rule file or a new step.
+`.claude/agents/code-reviewer.md`, `rfc-template.md`, `board-check.md`, `docs/start-here.md` *The
+checklist* or its package's `CLAUDE.md` Traps — never a new rule file or a new step.
 
 **No new script.** A code fact goes into a type, Biome, dependency-cruiser or a test. Ask the owner
 before adding a script or a command.
@@ -125,7 +125,7 @@ allowed imports; §4 decides where a new file goes. Run §4 before creating one.
 | `docs/engineering/` | how this repo is built. |
 | `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers), `skills/task/` (the one step runner, its RFC template, the design track and the board check), `agents/` (its read-only helpers), `settings.json` (hard-safety denies, and the plugins switched off here because `skills/task/` is the one step runner). |
 | `.qa/` | git-ignored: `api.log`, `web.log`, `metro.log` — the development logs the launch configurations append to and the e2e suite reads — and `components/<name>/`, the pictures a component spec saves. A task deletes the screenshots it made before its PR opens. |
-| `.design/` | git-ignored: `<module>/`, that module's locked boards — each one exactly as the Design track checked it, read from the module's canvas — and `design-system.version`, the canvas's design system version at the lock; a read-only copy. A screen is built only while its boards here equal a fresh read (`/task` step 1). |
+| `.design/` | committed, written only by the Design track's lock: `<module>/`, that module's locked boards and the support files they load — each one exactly as the Design track checked it, read from the module's canvas — and `design-system.version`, the canvas's design system version at the lock; a read-only copy. A screen is built only while its boards here equal a fresh read (`/task` step 1). |
 | `.ops/` | the owner's private infra record, git-ignored: every external account, project and client id, what is still owed, and each environment's values (`env/dev.env`, `env/prod.env`). A console change updates it in the same sitting. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
 | the module canvases | NOT in the repo: one Design artifact in Claude per module (`docs/start-here.md`, *The canvases*), holding each screen's boards and a copy of the design system artifact — the source of truth for design. Claude Code draws and fixes the boards; the owner reviews them there, and the owner's yes locks them. A task's `DESIGN:` line links the canvas; the Design track (`.claude/skills/task/design-track.md`) locks a copy in `.design/`. A studio screen (`ported from the POC`) has none. |
@@ -179,7 +179,8 @@ ask.
 Digest of the foundations `F1`–`F8`, which are canonical.
 
 - Every user-visible number carries a provenance tier: measured / derived / estimated / assumed —
-  an identifier, and a count of the reader's own listed records, excepted (`F8-01`).
+  an identifier, a count of the reader's own listed records, and a limit the product enforces
+  excepted (`F8-01`).
 - Money never renders stale — a design changed since the proposal was computed reads provisional.
 - One money path: BOM ↔ proposal ↔ tranches ↔ payments reconcile to the currency's minor unit.
 - One market and one currency per tenant; market facts (tax, stages, checklists, rails, phone spec)

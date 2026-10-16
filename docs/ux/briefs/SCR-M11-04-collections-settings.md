@@ -27,7 +27,7 @@ the act, not in a paragraph of caveats.
 ## Arrangement
 
 - **375.** The state region, then the acts.
-- **1536.** Honestly the same frame in a settings column with more room. Say so on the board.
+- **1536.** Honestly the same frame in a settings column with more room. Say so in the drawing report.
 
 ## Entry & exit
 

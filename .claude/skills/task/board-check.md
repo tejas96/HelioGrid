@@ -25,8 +25,11 @@ Check, citing the frame and element for each finding:
 
 1. **Complete.** Every state the brief lists is drawn, and loading, empty and error unless the brief
    folds that state into another; each at 375, and at 1536 unless the brief names it as the 375
-   frame at width; every frame a `DONE WHEN` line needs. A board taller or wider than 8000 px is a
-   fix: its frames go on to a next board (`docs/start-here.md`, *The canvases*).
+   frame at width; every frame a `DONE WHEN` line needs. Each board is shaped as *The canvases* of
+   `docs/start-here.md` says, and a board that is not is a fix: one taller or wider than 8000 px
+   (its frames go on to a next board), one with no `$preview` or whose `$preview` differs from its
+   `w` and `h`, a `-Mobile` board holding a 1536 frame or a `-Desktop` board holding a 375 frame, and
+   an `"expand":"fill"` on a board 8000 px tall or less.
 2. **True to the PRD.** Every product fact a frame shows — a plan, a price, a limit, a rate, a role,
    fixed copy — matches the WHOLE row it cites; nothing the PRD does not hold; nothing a row asks
    for is missing.

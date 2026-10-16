@@ -13,7 +13,7 @@ compatibility pointer and the code.
 | Tree | What it is | Authority |
 |---|---|---|
 | [`prd/`](prd/) | The product spec — the owner brief, foundations, modules, and the screens register; every row carries its own ruling | **Source of truth** |
-| [`ux/`](ux/) | One design brief per screen, plus the design context every drawing agent gets; the boards live on the module canvases that each task's `DESIGN:` line links — the source of truth; the Design track draws them there and locks a git-ignored copy in `.design/<module>/` | **Source of truth** |
+| [`ux/`](ux/) | One design brief per screen, plus the design context every drawing agent gets; the boards live on the module canvases that each task's `DESIGN:` line links — the source of truth; the Design track draws them there and locks a committed copy in `.design/<module>/` | **Source of truth** |
 | [`tasks/`](tasks/) | Engineering work, one file per module, derived from the PRD registers | **Source of truth** |
 | [`engineering/`](engineering/) | How this repo is built; `architecture.md` is the canonical spine and each other file states its current status or fate | Support, ranked below `prd/` |
 

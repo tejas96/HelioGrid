@@ -9,7 +9,7 @@ Task-id prefix: `T-SHELL-`. RFC and part-size rules live in `docs/tasks/README.m
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#198)
 **PRD rows:** M01-16 (P1), MS12-19 (P0)
-**DESIGN:** none — an engine task; the surfaces are `T-SHELL-001` (375) and `T-SHELL-008` (1536).
+**Design:** none — an engine task; the surfaces are `T-SHELL-001` (375) and `T-SHELL-008` (1536).
 **Why:** Both shells read the same facts — which company, which home is in force and which presets are composed into it, how many coach marks I have passed — and write two of them; without one flow in `packages/data` each platform would fetch and hold them its own way, a dismissal would live in a browser's storage instead of on the membership (`F4-36`), and neither shell screen could be built under the size signal (`/start` §2).
 
 **Depends on:** `T-M01-025` (shipped, #40 — the column, `GET /tenants/me`, the guard, the store) · `T-FPLAT-025` (shipped, #51 — `centreVerbFor`, `standingDestinationsFor`) · `T-M13-006` (shipped, #52 — `composedHome`, `homesOf`).
@@ -28,7 +28,7 @@ Task-id prefix: `T-SHELL-`. RFC and part-size rules live in `docs/tasks/README.m
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#199)
 **PRD rows:** M01-07 (P0), MS12-19 (P0)
-**DESIGN:** none — an engine task. The state it serves is drawn as Frame 8 "access removed" of `SCR-SHELL-01` (`HelioGrid-UX/SCR-SHELL-01 App Shell - Mobile.dc.html`): the top bar keeps the product mark and the company's name, the body is one message, no destinations. It renders at `T-SHELL-001` (375) and `T-SHELL-008` (1536). The sign-in door (`T-M01-001`, shipped) draws no ending; that gap is a `docs/tasks/deferred.md` row.
+**Design:** none — an engine task. The state it serves is drawn as Frame 8 "access removed" of `SCR-SHELL-01` (`SCR-SHELL-01-App-Shell-Mobile.dc.html` on the SHELL canvas): the top bar keeps the product mark and the company's name, the body is one message, no destinations. It renders at `T-SHELL-001` (375) and `T-SHELL-008` (1536). The sign-in door (`T-M01-001`, shipped) draws no ending; that gap is a `docs/tasks/deferred.md` row.
 **Why:** A person whose access was removed must see "your access was removed" — gracefully, no crash, no data lost on the device (`M01` edge `S1.wrong.4`) — and never a false reason. Split from `T-SHELL-007` at its `/start`, whose second actor found the client-side reason wrong four ways on code already on `main`.
 **Depends on:** `T-SHELL-007` (shipped, #198) · `T-M01-025` (shipped, #40).
 **PRD rows (verbatim):**
@@ -47,7 +47,7 @@ Task-id prefix: `T-SHELL-`. RFC and part-size rules live in `docs/tasks/README.m
 **Status:** shipped (#208)
 **Why:** A Survey Engineer, a Finance lead and a Project Manager each see a bar that holds only the lists they can read, and a rep who also surveys keeps the same four slots when they switch home; today only the three sales presets have a bar, and `useShell()` keys the slots by the home in force, so switching home empties them. Both shells (`T-SHELL-001`, `T-SHELL-008`) render this one decision.
 **PRD rows:** F7-48 (P0), M13-10 (P0), M01-16 (P1)
-**DESIGN:** none — an engine task; the surfaces are `T-SHELL-001` (375) and `T-SHELL-008` (1536). The coach-mark order is the export's Frame 7 (`HelioGrid-UX/SCR-SHELL-01 App Shell - Mobile.dc.html`): switch home, the availability pill, the centre verb.
+**Design:** none — an engine task; the surfaces are `T-SHELL-001` (375) and `T-SHELL-008` (1536). The coach-mark order is the board's Frame 7 (`SCR-SHELL-01-App-Shell-Mobile.dc.html` on the SHELL canvas): switch home, the availability pill, the centre verb.
 
 **Depends on:** `T-SHELL-007` (shipped, #198 — `useShell()`) · `T-FPLAT-025` (shipped, #51 — `centreVerbFor`, `standingDestinationsFor`) · `T-M13-006` (shipped, #52 — `composedHome`, `homesOf`, `homeFor`).
 

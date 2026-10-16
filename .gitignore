@@ -84,5 +84,3 @@ coverage/
 # The owner's private infra record: every external account, project, client id and what is still owed.
 .ops/
 
-# Each module's locked boards, read from its canvas: a read-only local copy.
-.design/

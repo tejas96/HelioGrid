@@ -22,7 +22,7 @@ Every fact below is carried. None is a paragraph. The kinds are the context file
 ## Arrangement
 
 - **375.** A sheet over the lead (`F7-21`): the list, the date when it applies, the act at the foot.
-- **1536.** Honestly the same sheet as a side panel. Say so on the board.
+- **1536.** Honestly the same sheet as a side panel. Say so in the drawing report.
 
 ## Entry & exit
 

@@ -6,14 +6,18 @@ between two build tasks, after the current task's PR is open — or when `/task`
 `design <module>` (`SKILL.md`).
 
 `<module>` is a screen id's module (`SCR-SHELL-06` → `SHELL`). The screens in scope are the V1
-screens of `<module>` whose tasks are not `shipped` — or, when `/task` step 1 found a locked board
-that differs, only those screens; a shipped screen is never re-checked, and a studio screen
-(`ported from the POC`) has no board.
+screens of `<module>` whose tasks are not `shipped` — or, when `/task` step 1 sent the run here,
+only the screens it named (a board that differs from its lock, a screen whose boards load a support
+file that differs from its lock, a screen with no lock, a brief with a `## Redesign owed` section); a design system version that differs from the lock puts every screen
+of the module in scope. A shipped screen is never re-checked, and a studio screen (`ported from the
+POC`) has no board. The owner starts the track by asking `/task` to prepare a module's design
+(`design M01`).
 
 **Where boards live.** Claude Code draws and fixes every board on the module's canvas — a Design
 artifact in Claude, listed in *The canvases* of `docs/start-here.md` with the names its boards take.
 The owner reviews on the canvas, by hand edit or comment, and the owner's yes locks a board. The
-canvas is the source of truth; `.design/<module>/` is a read-only copy of what was locked. Every
+canvas is the source of truth; `.design/<module>/` is the committed copy of what was locked, so every
+machine and session reads the same lock. Every
 Artifact call names the canvas by its `url`. Read the canvas's own `SKILL.md`,
 `artifact-type/reference/format.md` and `artifact-type/reference/design-system-components.md`
 (`read` with `paths`, `out_dir` `<scratchpad>/canvas-ref/`) before the first board is drawn or fixed:
@@ -29,10 +33,11 @@ boards are every `project/<screen id>-….dc.html` in the canvas's file listing 
 
 **Is a board locked?** A screen's boards are locked when its `DESIGN:` line links its module's
 canvas, the canvas holds at least one board of the screen, the set of its boards there equals the
-set in `.design/<module>/`, each one equals a fresh read (`cmp`), and
-`.design/<module>/design-system.version` equals the `version` of the canvas's `designSystems`
-record in `project/canvas.json` — a design system copy changed after the lock changes how every
-board on the canvas renders.
+set in `.design/<module>/` on `origin/main`, each one equals a fresh read (`cmp`), every support
+file those boards load from `project/` outside `project/ds/` (`open-page.js`, an image) equals its
+copy in `.design/<module>/` the same way, and `.design/<module>/design-system.version` equals the
+`version` of the first entry of the canvas's `designSystems` list in `project/canvas.json` — a
+design system copy or a support file changed after the lock changes how a board renders.
 
 **A publish.** Main alone publishes to a canvas: ONE Artifact call with `root`
 `<scratchpad>/canvas/<module>`, only the boards that changed, and `project/canvas.json` only when a
@@ -68,23 +73,32 @@ second refusal goes to the owner.
    failing after the second goes to the owner, who rules each difference a fix or a `deferred.md`
    row.
 4. **The owner reviews.** When every board in scope is `READY` or its open differences are
-   `deferred.md` rows, give the owner the canvas link and the screens to review. The owner edits a
-   board by hand or comments on it. Read the comments with `ArtifactComments`: each is a fix, made as
+   `deferred.md` rows, give the owner the canvas link and the screens to review, and tell them how,
+   in these words: open the canvas, pick a screen from the Page menu, change a board by hand or leave
+   a comment on the spot, and say yes here in this chat when every screen looks right — a comment on
+   the canvas is never the yes. Read every comment with `ArtifactComments`: each is a fix, made as
    step 3 makes one but outside its two-round count, or a decision shown to the owner. A board the
    owner edited is read again and its check agent continued, so the lock is always a checked board.
-   The owner's yes ends the review.
+   The owner's yes in this chat ends the review.
 5. **Lock.** In a session that did not run the checks — the owner's yes came later — read every
-   board in scope again and re-run its check first. Copy each checked board of a screen in scope
-   from the working folder's `project/` into `.design/<module>/`, flat, replacing an older copy and removing a copy whose board is gone from the canvas, and write
-   the canvas's `designSystems` `version` into `.design/<module>/design-system.version`: the lock is
-   exactly what was checked. Fill each task's `DESIGN:` line with its canvas link, turn a `planned`
-   task's `Status:` to `designed`, and delete each brief's `## Redesign owed` section the board now
-   meets. Show the commit and, on the owner's yes, commit on `design/<module>` and open a PR as
-   `/task` step 9 does. A module whose briefs, deferred rows and task lines did not change needs no
-   commit.
+   board in scope again and re-run its check first. The first entry of the canvas's `designSystems`
+   list must carry the design system artifact's current version; when it does not, install the
+   current version first (`design-system-components.md`, Update) and re-run the checks it changes.
+   Copy each checked board of a screen in scope, and every support file those boards load from
+   `project/` outside `project/ds/`, from the working folder's `project/` into `.design/<module>/`,
+   flat, replacing an older copy and removing a copy that is gone from the canvas, and write that
+   `version` into `.design/<module>/design-system.version`: the lock is exactly what was checked.
+   Fill each task's `DESIGN:` line with its canvas link, turn a `planned` task's `Status:` to
+   `designed`, delete each brief's `## Redesign owed` section the board now meets, and delete each
+   `deferred.md` row the boards now meet (or, for a row naming several modules, its clause for this
+   one). Run the gate as `/task` step 8 runs it, then show the commit. On the owner's yes, commit on
+   `design/<module>` as `chore: <module> design — <screens> locked`, push it, and open the PR as
+   `/task` step 9 does (a draft, marked ready only when CI is green), its body listing the screens
+   locked, the owner's rulings and the `deferred.md` rows added or closed. A
+   lock is a commit: every lock commits `.design/<module>/`.
 
-A board changed on the canvas after the lock differs from `/task` step 1's fresh read, and only the
-screens whose boards differ come back here. No board is drawn in Hindi or Marathi: those words come
+A board or support file changed on the canvas after the lock differs from `/task` step 1's fresh
+read, and only the screens whose boards, or the support files they load, differ come back here. No board is drawn in Hindi or Marathi: those words come
 from the catalog. The repo already holds the design system (`packages/theme/src/_generated/`,
 `packages/ui`), so no board is ever opened in a browser: QA compares the app with the board's code
 through the RFC's frame map.

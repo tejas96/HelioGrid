@@ -32,9 +32,9 @@ Every board lives on its module's canvas — a Design artifact in Claude, titled
 Every canvas is laid out the same way, in its `project/canvas.json`:
 
 - **The canvas.** Its `title` is `HelioGrid <module>` and its `launch` is `{"view":"canvas"}`. It
-  keeps nothing but its boards, the design system copy and the support files a board loads (beside
-  the boards under `project/`) — no notes, and no `title` on a board: the page and the file name say what a
-  board is.
+  keeps under `project/` nothing but its boards, the design system copy and the support files a
+  board loads (beside the boards) — no notes, and no `title` on a board: the page and the file name
+  say what a board is. The canvas type's own files outside `project/` are not ours.
 - **One page per screen.** Each screen with a board has its own page, and the page holds all of
   that screen's boards. Its `pages` entry is `{"id":"<screen id>","name":"<screen id> <Screen
   Name>"}` (`{"id":"SCR-M01-06","name":"SCR-M01-06 Youre Ready"}`), `pages` runs in screen id order,
@@ -42,21 +42,26 @@ Every canvas is laid out the same way, in its `project/canvas.json`:
   first board and taken out with its last. A canvas holds 40 pages; the largest module has 24
   screens.
 - **A board** is one `.dc.html` file named `<screen id>-<Screen-Name>-<Mobile|Desktop>.dc.html`
-  (`SCR-M01-06-Youre-Ready-Mobile.dc.html`) — letters, digits and `-` only, no space. A `Mobile`
-  board holds the 375 frames and a `Desktop` board the 1536 frames. A board's `w` and `h` are the
-  width and height it declares (`$preview`), each at most 8000 px: more frames go on to a next board
-  ending `-2`, `-3`. A screen's boards are exactly the boards whose names start with `<screen id>-`.
+  (`SCR-M01-06-Youre-Ready-Mobile.dc.html`) — letters, digits and `-` only, no space. `<Screen
+  Name>` is a short form of the screen's name in `docs/prd/registers/screens.md`, set by its first
+  board and never changed: letters and digits kept, every other character dropped, words joined by
+  `-` in a file name and by a space in the page name. A screen is found by its id, never by this
+  name. A `Mobile` board holds only 375 frames and a `Desktop` board only 1536 frames. Every board
+  declares its `$preview`, and its `w` and `h` are that width and height, each at most 8000 px:
+  more frames go on to a next board ending `-2`, `-3`. A screen's boards are exactly the boards
+  whose names start with `<screen id>-`.
 - **On its page** a screen's boards sit in one row at `y` 0, in this order: `Mobile`, `Mobile-2` …,
   then `Desktop`, `Desktop-2` …; the first at `x` 0 and each next one 80 px right of the one before.
   `order` lists the boards page by page in that order.
-- A board moved from Claude Design is kept as it was until its module's board check
-  (`docs/tasks/deferred.md`, D223): a taller one sits in an 8000 px frame with `"expand":"fill"`.
+- A board moved from Claude Design is exempt from every rule of this section — its size, its
+  `$preview`, the `Mobile`/`Desktop` split, `"expand":"fill"`, its Hindi and Marathi frames and its
+  `open-page.js` components — until its module's board check fixes it (`docs/tasks/deferred.md`,
+  D223). No other board carries `"expand":"fill"`.
 - A board draws only with the design system's components and tokens, mounted as the canvas's
   `design-system-components.md` says. What the system lacks is a design system change
   (`design-track.md`, *Changing the design system*), never a look-alike in markup.
-- No board is drawn in Hindi or Marathi, and a canvas keeps nothing but its boards, the design
-  system copy and the support files a board loads: a decision the drawing makes is written into the
-  screen's brief.
+- No board is drawn in Hindi or Marathi, and a decision the drawing makes is written into the
+  screen's brief, never onto the canvas.
 
 ## The drawing prompt
 
@@ -206,7 +211,9 @@ A drawn screen is judged by this list, and a fix prompt fixes what it finds.
 
 Before a screen's design commit, every open question it raised is closed: each is checked against the
 repo first, and the survivors go to the owner as two options at most, with a pick. The register is
-not edited: the task's `DESIGN:` line is the one record that a screen is drawn and locked.
+not edited: the task's `DESIGN:` line is the one record that a screen is drawn on its canvas.
+Whether its boards are locked is answered only by `.design/<module>/` (`design-track.md`, *Is a
+board locked?*).
 
 ```
 BEFORE  DESIGN: SCR-… → PENDING

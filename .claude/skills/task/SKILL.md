@@ -8,7 +8,8 @@ disable-model-invocation: true
 # /task — one task, from the build order to its pull request
 
 You are Main: you decide, build, fix and clean up. Agents in `.claude/agents/` read and report; only
-you and the step 5 build agents edit files. The laws are `CLAUDE.md`, cited and never copied. One
+you, the step 5 build agents and the Design track's drawing and fix agents (in the scratchpad only)
+edit files. The laws are `CLAUDE.md`, cited and never copied. One
 task runs in one session and ends in one pull request. The owner says yes to the RFC and to every
 commit, and merges the PR.
 
@@ -21,8 +22,8 @@ export $(grep -E '^DATABASE_(ADMIN_)?URL=' .env.local | sed 's/heliogrid_dev/hel
 
 ## 1. Pick the task
 
-Nothing but reads runs before it — the only files it writes are boards and a canvas's
-`project/canvas.json`, read into the scratchpad.
+Nothing but reads runs before it — the only files it writes are boards, the support files they load
+and a canvas's `project/canvas.json`, read into the scratchpad.
 Every `git`, `gh` or Artifact read must succeed: a failed read stops the step with the command
 and its error, and a failed `gh pr list` never reads as "no open PR".
 
@@ -69,7 +70,7 @@ stops only what this task started.
 ## 2. Analyse
 
 Read, in one batch: the task's header lines and `DONE WHEN`; every PRD row it cites, whole; its
-brief (`docs/ux/briefs/`); its board in `.design/<module>/` for a screen task; every
+brief (`docs/ux/briefs/`); for a screen task, every `.design/<module>/<screen id>-*.dc.html` of each screen it builds or serves; every
 `docs/tasks/deferred.md` row it meets (`T-<this> starts`, `T-<x> ships` where x has shipped, and
 `touches <path>` where a planned file sits under that path); `docs/engineering/architecture.md`
 §4; and the `CLAUDE.md` of every package the change will touch. Search the code for what already
@@ -100,7 +101,7 @@ gets a `#### Parts` table (`part | what | AC | depends on | status`).
 
 ## 4. Review the RFC, then ask once
 
-Give `rfc-reviewer` the RFC, the task, its PRD rows, its brief and the board path. Fix every
+Give `rfc-reviewer` the RFC, the task, its PRD rows, its brief and every locked board path. Fix every
 finding it confirms in the RFC. A finding you reject gets one line of reason in the RFC.
 
 Then show the owner the short view, never the whole RFC: the title; a link to the `#### RFC`
