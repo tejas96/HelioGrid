@@ -17,9 +17,9 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-002 · Payments Ledger
 **Type:** screen · **Tier:** P0
-**Status:** planned
+**Status:** designed
 **PRD rows:** M11-14 (P0), M11-15 (P0), M11-16 (P0), M11-19 (P0), M11-24 (P0), M11-28 (P0), M11-30 (P1), M11-31 (P0), M11-36 (P0), M11-41 (P0), M11-42 (P0), M11-46 (P0), M11-47 (P0), M11-49 (P0), M11-52 (P0)
-**DESIGN:** SCR-M11-02 → PENDING
+**DESIGN:** SCR-M11-02 → https://claude.ai/artifact/JHuQqFRnGtCZmpMUczga7g
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M11-02-payments-ledger.md`; they are the specification. Every row of this task is carried verbatim in that brief; no row is quoted here.
 **DONE WHEN:**
 - Given a new accepted version with revised terms, when the schedule re-renders, then it follows the version in force, every earlier receipt is still present and readable, and the earlier schedule remains viewable (`M11-14`).

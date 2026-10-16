@@ -333,8 +333,8 @@ page (`--canvas`) → a container that holds controls (`--surface-form`) → a c
 - **A card that holds CONTENT stays `--surface` on the page.** Only a container that *wraps*
   controls takes `--surface-form`. **`--canvas-sunken` means below its CONTAINER** — a well, a
   disabled control, a skeleton base.
-- **The ladder measures itself — do not eyeball it.** `guidelines/ladder-in-a-sheet.card.html`
-  reads its own computed values live. Re-run it after any elevation or ground change, and read its
+- **The ladder measures itself — do not eyeball it.** `project/guidelines/ladder-in-a-sheet.card.html` in the design system artifact
+  <https://claude.ai/artifact/XCdYE4onpt9oovdNMi91rn> reads its own computed values live. Re-run it after any elevation or ground change, and read its
   FIELD MODE column for the ghost button.
 
 **The shell is drawn once, in `SCR-SHELL-01`, and every other screen reuses it (`F7-22`).** At 375

@@ -13,8 +13,8 @@ import { CompanyProfileAsHeld } from './CompanyProfile.story';
 /**
  * The company profile's settings life (`SCR-M01-05`, `m-settings`, `d-settings`; the brief's
  * rulings 54–56): titled by the row that opens it, the parts at the functional density while every
- * field keeps its size, and `Save changes` after the list. The sizes are the design record's
- * (list 5, N2; list 4, `d-settings`).
+ * field keeps its size, and `Save changes` after the list. The sizes are the brief's
+ * (rulings 55–57, `d-settings`).
  */
 const readers = {
   en: await createTranslator('en'),

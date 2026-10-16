@@ -11,8 +11,9 @@ different orders and mixing them up is the main way this goes wrong:
 The two orders are **the same order** — the design run follows the build blocks, V1 rows only.
 That is the whole point of the scope lock.
 
-A design-system gap a screen finds is designed at implementation time inside the owning module's
-slice (`docs/prd/foundations/F7` `F7-45`).
+A design-system gap a screen finds is closed in the design system by the owning module's Design
+track, before the build (`docs/prd/foundations/F7` `F7-45`; `.claude/skills/task/design-track.md`,
+*Changing the design system*).
 
 Nothing here invents scope. Every task already exists in `docs/tasks/`, generated from the
 requirement register; this file only says what order to take them in and why.

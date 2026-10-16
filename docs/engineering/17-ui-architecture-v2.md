@@ -18,8 +18,9 @@ backend/shared code and no part of this document changes them.
 ## 1 · Why we are replacing, not refactoring
 
 The v1 UI layer implemented a 21-component snapshot of the design system. The live design
-system (Claude Design project **HelioGrid Design System**,
-`c8aa4326-21bf-453a-8d11-749cc81dee12`) had already grown well past it through design rounds
+system (then the Claude Design project **HelioGrid Design System**,
+`c8aa4326-21bf-453a-8d11-749cc81dee12`; now the artifact
+<https://claude.ai/artifact/XCdYE4onpt9oovdNMi91rn>) had already grown well past it through design rounds
 13–17, and the v1 layer still carried components for capabilities the product no longer has —
 an `OfflineBanner` under parity contract on both platforms, after the owner ruling of
 2026-08-07 removed the offline capability entirely.

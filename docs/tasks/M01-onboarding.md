@@ -123,7 +123,7 @@ Corrected before approval (2026-10-08): the line read "an off-flow title `sp-8` 
 **Status:** shipped
 **Why:** A deep link opened while signed out lands on home after sign-in (D20); the owner ruled the person returns to the link.
 **PRD rows:** `M01-61` (P1).
-**DESIGN:** none — no new frame; the door is `SCR-M01-01` as drawn.
+**Design:** none — no new frame; the door is `SCR-M01-01` as drawn.
 **Depends on:** `T-M01-039`.
 **DONE WHEN:**
 - `M01-61` → proof: e2e web (a signed-out deep link returns to it after sign-in; a route the roles cannot open shows the not-found frame); QA phone with a deep link.
@@ -133,7 +133,7 @@ Corrected before approval (2026-10-08): the line read "an off-flow title `sp-8` 
 **Status:** shipped
 **Why:** Twelve door parts exist once per platform, drawn the same from the same hooks and words (D24), and the phone's code step lacks the language control the web keeps (D23).
 **PRD rows:** none of its own — Law 7 (one prop contract per shared component); `SCR-M01-01`, `SCR-M01-02` as drawn.
-**DESIGN:** none — the existing boards.
+**Design:** none — the existing boards.
 **Depends on:** `T-FPLAT-082` (part c), `T-M01-040`.
 **DONE WHEN:**
 - Each door part lives in `packages/ui` with one `<Name>.types.ts` and both halves; the apps render them; ~~the phone's code step carries the language control.~~ → proof: typecheck and the e2e door specs; side-by-side of every door frame against its board. *(The struck clause: owner ruling on finding 3, 2026-10-10 — the board stands, and `docs/ux/briefs/SCR-M01-01-sign-in.md` records where the control sits.)*

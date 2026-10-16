@@ -31,15 +31,15 @@ screen where nothing is subordinate is the cluttered screen the product's first 
 
 **Words on this screen.** A table under those two lines: one row per fact the screen carries, its
 kind from the context file's §2 — data, status, action, help, more detail — and the form it takes
-here. It is where a requirement row is sorted BEFORE the session, so the session does not turn the
+here. It is where a requirement row is sorted BEFORE the drawing agent runs, so the agent does not turn the
 row into a sentence. Where the screen shows prices or limits, a `Sample data` section quotes the
-PRD rows that carry them, in the verbatim quote form, so no session invents a name or a figure.
+PRD rows that carry them, in the verbatim quote form, so no drawing agent invents a name or a figure.
 
-A session obeys the form cell to the letter, so when a drawn screen reads wrong, check the brief
+A drawing agent obeys the form cell to the letter, so when a drawn screen reads wrong, check the brief
 first — and grep every other brief for the same line and fix each one. A word plan never states a
 fact the brief does not pin.
 
-Write them **before** the design session, for the screen you are about to draw. A brief whose
+Write them **before** the drawing agent runs, for the screen you are about to draw. A brief whose
 screen is already drawn changes only as `docs/start-here.md` *When a brief changes after its screen
 was drawn* says.
 
@@ -51,7 +51,7 @@ list is complete**. It cannot be checked: states are a design decomposition, not
 requirement rows, so no 1:1 rule exists to enforce (three formulations were measured on
 2026-08-26 and all three fired on 17–43% of correct briefs).
 
-**So read the States list against the requirement rows by hand, once, before the design session.**
+**So read the States list against the requirement rows by hand, once, before the drawing agent runs.**
 A requirement whose failure, empty, refused or in-progress frame has no state is a screen that
 gets built without it, and the first thing that catches it is verify on the running app.
 

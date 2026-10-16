@@ -14,8 +14,9 @@ paths:
 ## Visual values
 
 - **No raw values** — no hex, no px, no inline style; every value comes from `@heliogrid/theme`. On
-  a screen only `0` is written raw; a size or colour the design system lacks is added THERE, in Claude
-  Design, then pulled — never typed into the app.
+  a screen only `0` is written raw; a size or colour the design system lacks is a design system change
+  (`.claude/skills/task/design-track.md`, *Changing the design system*), then pulled into `packages/theme` as
+  `packages/theme/CLAUDE.md` says — never typed into the app.
 - **Primary actions are near-black.** Accent is focus, links, selection, active tab and control
   fills ONLY — never a button fill. Iridescence is atmosphere, never information. Hierarchy comes
   from luminance and elevation, not borders.

@@ -21,7 +21,7 @@ Every fact below is carried. None is a paragraph. The kinds are the context file
 ## Arrangement
 
 - **375.** A small confirm sheet over the lost lead (`F7-21`).
-- **1536.** Honestly the same, as a dialog beside the lead. Say so on the board.
+- **1536.** Honestly the same, as a dialog beside the lead. Say so in the drawing report.
 
 ## Entry & exit
 
