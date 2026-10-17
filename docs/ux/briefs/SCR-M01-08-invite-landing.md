@@ -18,8 +18,8 @@ Reached from: the invite message on the invitee's phone — platform-sent, on th
 
 Base: **loading** · **empty** · **error**.
 
-- **loading** — a `Card` in its loading state under the wordmark and the language control; no act renders until the invite arrives.
-- **empty** — the link has no invite behind it (used, or taken back): nobody is named, and the way on is *Sign in to HelioGrid*.
+- **loading** — the inviter row, the heading and the invite card load at their real heights, under the wordmark and the language control; no act renders until the invite arrives.
+- **empty** — the link has no invite behind it (used, or taken back): nobody is named, and the way on is *Sign in to HelioGrid*. Its note, centred, reads *Not joined yet? Ask whoever invited you for a new invite.*
 - **error** comes in two forms. `load-error` — the invite did not load: nothing about it is known, so nobody is named and the one act is *Try again*. `join-error` — joining failed after a right code: the invite stays on screen, with the error above the code.
 
 Screen-specific:
@@ -27,7 +27,7 @@ Screen-specific:
 - **normal** — the landing names the inviter and the company, phone pre-filled, 6-digit OTP (M01-13).
 - **otp-auto-read** — OTP auto-read where the platform allows (M01-13).
 - **wrong-code** — a wrong code shows as the code field's own error; nothing else on the landing changes.
-- **expired-one-tap-re-request** — invite expired → "Ask {inviter} to invite you again", with a one-tap request that notifies the inviter; nothing dead-ends (M01 §M01.2 edge list, `S1.wrong.1`). It shows no sent date and no expiry date: the landing contract returns neither (`invitationLandingSchema`, `packages/contracts/src/invitation.ts:60`). The warning banner says an invite lasts 7 days and this one has run out (`M01-12`; `packages/domain/src/auth/invitation-policy.ts:20`). Asking has its own after-state, `reinvite-requested`: it says the inviter has been asked, offers no code (the old link stays dead) and leads to *Sign in to HelioGrid*.
+- **expired-one-tap-re-request** — invite expired → "Ask {inviter} to invite you again", with a one-tap request that notifies the inviter; nothing dead-ends (M01 §M01.2 edge list, `S1.wrong.1`). It shows no sent date and no expiry date: the landing contract returns neither (`invitationLandingSchema`, `packages/contracts/src/invitation.ts:60`). The warning banner says an invite lasts 7 days and this one has run out (`M01-12`; `packages/domain/src/auth/invitation-policy.ts:20`). The state's one line sits under its action, centred. Asking has its own after-state, `reinvite-requested`: it says the inviter has been asked, offers no code (the old link stays dead) and leads to *Sign in to HelioGrid*.
 - **declined-notifies-owner** — wrong person got the invite → decline action on the landing; declining notifies the EPC Owner and voids the invite (M01 §M01.2 edge list, `S1.wrong.2`). The confirm is a bottom sheet at 375 and a centred dialog at 1536; the after-state leads to *Sign in to HelioGrid*.
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `load-error`, `join-error`, `otp-auto-read`, `wrong-code`, `expired-one-tap-re-request`, `reinvite-requested`, and the after-state of `declined-notifies-owner`.
@@ -67,14 +67,20 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty
 
 8. **The invite facts are `FactRows`.** The board composes the system's `FactRow`/`FactRows`; the
    build ports them into `packages/ui` at this task, the first that needs them (`D231`).
-9. **The 1536 landing is the door.** It is built on `DoorFrame` (`taskMeasure="field"`) with
-   `DoorLanguage`, so its measures come from the frame, never transcribed from the board (`D232`).
+9. **The 1536 landing is the onboarding two-pane frame** that `SCR-M01-06`, `-07`, `-09` and `-10`
+   share, not `DoorFrame` (decision 13); `D232` keeps only its `readOnly` half (ruling 10).
 10. **A code held while joining is `readOnly`, never greyed.** `disabled` is for a field with
     nothing to take; the board's `disabled` is the design system's nearest prop (`D232`).
 11. **The decline confirm cannot be dismissed.** The sheet at 375 and the dialog at 1536 set
     `dismissible: false`: it resolves only through *Keep the invite* or *Decline the invite*.
 12. **The code takes focus on arrival at 1536 only.** On the phone the platform's auto-read fills it,
     and a keyboard opening over the landing hides who invited you.
+13. **At 1536 the landing is the onboarding two-pane** (owner ruling 2026-10-17, M01 design), the pattern
+    `SCR-M01-07` and `SCR-M01-10` draw: the context pane on the left; on the right the code task,
+    top-aligned in row 2 level with the brand heading, starting at the pane's left edge; the language
+    control on the wordmark's line. The task column is as wide as the code boxes.
+14. **At 375 the actions follow the content** and pin to the foot only when the content overflows —
+    never a gap between the content and the actions.
 
 ## Data volume
 
@@ -82,7 +88,7 @@ One invite: inviter name, company name, one pre-filled phone number, one 6-digit
 
 ## Numbers carrying provenance
 
-Every rendered number carries its F8 provenance tier in the design. This screen's numeric content is the 6-digit OTP and, on the expired state, the invite's 7-day life (`INVITATION_EXPIRY_DAYS`, a policy number); no money, business quantity or business date renders here.
+None carries a tier (`F8-01`). This screen's numeric content is the 6-digit OTP, an identifier, and, on the expired state, the invite's 7-day life (`INVITATION_EXPIRY_DAYS`), a limit the product enforces; no money or energy figure renders here.
 
 ---
 

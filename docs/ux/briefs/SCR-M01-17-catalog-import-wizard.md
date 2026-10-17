@@ -8,7 +8,7 @@ Guided spreadsheet import: upload, column mapping with auto-guess, preview with 
 
 Reached from: its three entry points — onboarding, Catalog settings (SCR-M01-15), and the picker's add-flow (M01-41; §M01.4 behavior detail: "Import is one wizard reused at its three entry points"). Leads to: the import runs async with visible progress; the import report is kept and re-openable (M01-41, §M01.4 behavior detail). Return-to-invoking-surface behaviour beyond that is not pinned by PRD — designer decides, note the decision.
 
-Decided: leaving is a dismissal, never a navigation — the header's close, Esc and *Cancel* all return to the caller with nothing rebuilt. Leaving before the import discards the mapping without a confirm, because nothing has been written to the catalog. The import report outlives the visit: the run continues server-side and the report re-opens from Catalog settings, so the onboarding entry does not own it.
+Decided: leaving is a dismissal, never a navigation — the header's close, Esc and *Cancel* all return to the caller with nothing rebuilt. Leaving before the import discards the mapping without a confirm, because nothing has been written to the catalog. The import report outlives the visit: the run continues server-side and the report is kept under *Import a file* → *Kept reports*, so the onboarding entry does not own it. The wizard's notes name that place.
 
 **Decisions made in design (2026-09-01) — later screens inherit them.**
 
@@ -16,7 +16,9 @@ Decided: leaving is a dismissal, never a navigation — the header's close, Esc 
    wizard reading a parsed file as the case for opt-in gating: the preview of a file whose columns
    are not mapped is a meaningless step. This is **not** the studio's ruled gate (`M05-05`) and does
    not normalise it.
-2. **The three counts are `derived`.** A matching pass computed them; nothing measured them.
+2. **The counts carry no tier.** Row counts, *N of M*, the run's progress and the report's counts are
+   counts and progress, and outside money and energy a number carries none (`F8-01`; owner ruling
+   2026-10-17, M01 design).
 3. **A row fixed in the preview moves the counts, and the act's number with it** —
    `318/87/7 → import 405` becomes `319/87/6 → import 406`. Both close on 412.
 4. **The file's own header text is data and never translates.** *Item description*, *Rate*,
@@ -29,15 +31,20 @@ Decided: leaving is a dismissal, never a navigation — the header's close, Esc 
 
 **Layout, decided in design.**
 
-- At 375 the wizard is a sheet over the caller; at 1536 a 960px side panel, non-modal — no backdrop,
-  no focus trap; focus moves in and is restored — with the catalog live beside it.
+- At 375 the wizard is a sheet over the caller — full height for the four steps, sized to its content
+  for the matching wait and the importing run. At 1536 it is a 960px side panel, non-modal — no
+  backdrop, no focus trap; focus moves in and is restored — lying over the Catalog page, which stays
+  live and keeps its layout (`SCR-M01-15`: the settings side list, no breadcrumb, the release row in
+  its head).
 - Four steps: File · Columns · Preview · Import report. The run is the passage into the report, not a
   fifth step.
 - On the phone the step indicator is a compact location line, and the whole shape opens in a
   step-list sheet that gives each step's state in a word and says the report opens once the import
   has run. At 1536 the four numbered steps sit across the top of the panel, and there is no step-list
   sheet.
-- Every gated act says why in words under its button, and the button stays focusable.
+- Every gated act — each step's *Continue* — says why in its `disabledReason`, which opens in a bubble on a tap, click, focus or hover — no line is drawn under the button (owner ruling 2026-10-17, design-system change 5); the button
+  stays focusable. The one line at the act, a consequence read before acting, sits under the buttons,
+  centred.
 
 ## Requirements (verbatim)
 
@@ -48,16 +55,18 @@ Decided: leaving is a dismissal, never a navigation — the header's close, Esc 
 ## States
 
 - **Loading** — file parsing, matching pass running, or report loading.
-  Two waits look different: the matching pass is a short wait, not a counted figure — the run carries
+  Two waits look different: the matching pass is a short wait with no cancel — *Back* is the way out —
+  not a counted figure — the run carries
   the counted progress — and a re-opened report is the table's own loading form under a caption and
-  stamp that are already true (decision 24).
+  stamp that are already true, its search and outcome chips pinned (decision 24).
 - **Empty** — the upload step before a file is chosen.
-  The drop surface is the whole step, with no template download (owner ruling 2026-10-16). The subtitle names no file; it keeps the promise that nothing
+  The drop surface fills the step, with no template download (owner ruling 2026-10-16). Under it, *Kept reports* lists each kept report by file name and saved date, no counts; a row opens that report (`GET /catalog/imports`). The subtitle names no file; it keeps the promise that nothing
   changes in the catalog until the import.
 - **Error** — an unreadable file; what happened and what to do next.
-  It is the `Empty` step plus the file, named, and a banner that cannot be dismissed, stating the
+  It is the `Empty` step plus the file, named — the drop area still fills the rest of the step — and a banner that cannot be dismissed, stating the
   problem and the fix; the file row shows the problem in place of its counts and carries no tier; the
-  footer says the catalog is untouched (decision 27). A run that fails partway is not this state:
+  sheet's subtitle says the catalog is untouched, *Nothing changes in your catalog until you import.*
+  (decision 27), and *Continue*'s `disabledReason` is *No readable file*, in its bubble (G9). A run that fails partway is not this state:
   its failed rows are the report's, each with its reason.
 - **upload** — the guided import's first step: Excel/CSV file upload (M01-41).
   On the phone, once a file is chosen, there is no drop surface — the file row's *Replace* is the
@@ -81,9 +90,9 @@ Decided: leaving is a dismissal, never a navigation — the header's close, Esc 
   conflict offers two answers — keep the catalog's spec and set only the price, or import the row as
   an own SKU — and no third that edits a platform spec (decision 31). At 1536 every flagged row and its
   fix are on screen at once. A price problem is fixed in the row itself — a `NumberField` in the row's
-  issue slot, never an editable column across every row (`D236`).
+  issue slot, never an editable column across every row (`D236`); a fixed row then reads *Price set to ₹104 — ready to import.*
 - **importing-async-progress** — the import runs async with visible progress (M01-41).
-  Its cancel stops watching, never the run: the import continues server-side.
+  Its cancel stops watching, never the run: the import continues server-side. It shows no stage line.
 - **per-row-report-reopenable** — the per-row failure report; kept and re-openable (M01-41, §M01.4 behavior detail).
   Its act, *Fix the N rows*, re-enters the preview scoped to the rows left open — the report is the
   only surface that knows which they are (decision 32).
@@ -96,11 +105,7 @@ A supplier/stock price list at spreadsheet scale: the preview grid must work wit
 
 ## Numbers carrying provenance
 
-Each carries its F8 provenance tier in the design:
-
-- **The preview's three counts plus total** — "N rows · M match platform products (will become price overrides) · K new products · E rows need attention" (§M01.4 behavior detail) — computed by the matching pass.
 - **Imported prices per row** — become price overrides on matched platform items or rates on new tenant SKUs (M01-41). No F8 tier: a price the company sets for itself (`F8-01`, owner ruling 2026-10-16).
-- **Async progress figure** during the run and the **per-row counts in the import report** (rows, matched, created, errors — §M01.4 analytics vocabulary).
 
 ---
 

@@ -8,7 +8,7 @@ Logo, letterhead, brand colour, company details for customer documents only, wit
 
 Reached from: the tenant-config settings surface map — *Branding* is a named surface in M01 §4's stable vocabulary; a deeper entry path is not pinned by PRD — designer decides, note the decision. Leads to: not pinned by PRD — designer decides, note the decision. What the screen feeds: branding rides proposal PDFs and customer-link pages (M01-50); M06 consumes branding for rendered documents (M01 §4 contracts).
 
-Decided: reached from More · Settings · Branding, and the phone's back control names Settings. It leads back to Settings; the one onward route is the *Business profile* row, where the company details are written. Leaving with an unsaved change is confirmed; leaving with nothing changed is not. This screen owns the brand identity, not the document's structure: `SCR-M01-19` and `SCR-M01-20` preview other bands of the same document through the same frame, and none of the three links to another.
+Decided: reached from More · Settings · Branding, and the phone's back control names Settings. At 1536 the way back is the settings side list, its *Branding* row current (`SCR-SHELL-01`, *More: the settings list*). It leads back to Settings; the one onward route is the *Business profile* row, where the company details are written. Leaving with an unsaved change is confirmed; leaving with nothing changed is not. This screen owns the brand identity, not the document's structure: `SCR-M01-19` and `SCR-M01-20` preview other bands of the same document through the same frame, and none of the three links to another.
 
 **Decisions made in design (2026-09-02) — later screens inherit them.**
 
@@ -40,18 +40,23 @@ Decided: reached from More · Settings · Branding, and the phone's back control
   set is saved and in force, who changed it last and when. The act bar (*Save branding* · *Discard
   changes*, with its consequence above) appears with a change — sticky on the phone, the form column's
   footer at 1536.
-- *Proposals you have already sent keep the branding they were made with* (`F8-15`) closes the page,
-  and repeats in the act bar's consequence line and in the remove-logo confirm.
+- *Sent proposals keep their branding.* (`F8-15`) closes the page — at 1536 it ends the form
+  column — and gives way while the act bar is up; it is also the act bar's line and the remove-logo confirm's line.
 - Removing the logo is confirmed, and the confirm gives the recovery route: add a logo again from this
   screen at any time.
 - The two framed previews form one preview group. At 375 they stack, and the cover is cut at its
-  readable scale, so *Open full size* is on the default screen. At 1536 the form column (500px) and the
-  preview column (860px) sit side by side; each preview is scaled whole, never cut, and the preview
-  column stays put while the form scrolls. Company details go two-up there.
-- *Open full size* is a sheet at 375 and a non-modal side panel at 1536.
+  readable scale, so *Open full size* is on the default screen. At 1536 the settings side list, then the form
+  column — one column of cards, 668 wide — and, 32 px from it, the previews in their own `--surface`
+  card, 420 wide: they stack, each shown whole, never cut, and the card starts level with the title
+  and stays put while the form scrolls. `SCR-M01-19` uses the same preview column. The company details are one `FactRows` group in their card.
+- *Open full size* is a sheet at 375, fitting the cover to the sheet's width, and a non-modal side panel at 1536.
 - The drop surface is the logo's control when there is none, at both widths. Once a logo exists the
   phone offers *Replace* and no drop surface; at 1536 the drop surface is the replace route, with the
-  limits in its hint, and there is no separate *Replace* button.
+  limits in its hint, and there is no separate *Replace* button. At 375 *Replace* and *Remove* sit
+  centred, the limits line centred under them.
+- At 1536 a letterhead row has its label on the left and its field on the right; the lines' rule is
+  the caption under its label.
+- At 1536 the colour card has no title row: the field's label heads it.
 
 ## Requirements (verbatim)
 
@@ -66,7 +71,8 @@ Decided: reached from More · Settings · Branding, and the phone's back control
 ## States
 
 - **Loading** — current branding values and the preview document loading.
-  The form and the preview fill together. A preview placeholder is never a white rectangle — that
+  The form is four `Card`s in their loading state — logo, colour, letterhead, company details — at
+  the loaded cards' heights, then `PreviewFrame`'s loading form; the form and the preview fill together. A preview placeholder is never a white rectangle — that
   reads as an empty letterhead. The shell is drawn whole.
 - **Empty** — a tenant that has never set branding: platform defaults are in place and everything still works (M01-28's zero-config law applies to every setting); teaching treatment per F7's empty-state contract.
   The previews do the teaching: they show what goes out today — on the cover the company name in place of a mark, on the link page the design system's initials badge,
@@ -103,7 +109,7 @@ One tenant's branding set: a logo, a letterhead, one primary brand colour, and t
 
 ## Numbers carrying provenance
 
-None originated by this screen — branding fields are identity facts and assets, not computed numbers. The live document preview renders a customer document; any figures inside that preview belong to the document's own surfaces and carry their own F8 provenance tiers there, not new ones minted here. Documents already generated are immutable per F8-15 and never restyle retroactively (§M01.6 behavior detail).
+None originated by this screen — branding fields are identity facts and assets, not computed numbers. The live document preview renders a customer document; any figures inside that preview belong to the document's own surfaces and carry their own F8 provenance tiers there, not new ones minted here. Documents already generated are immutable per F8-15 and never restyle retroactively (§M01.6 behavior detail). The logo's pixel size carries no tier (`F8-01`).
 
 ---
 

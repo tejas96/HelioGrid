@@ -8,7 +8,7 @@ Phone-keyed invite with name and at least one preset role; skippable during onbo
 
 Reached from: the skippable onboarding invite step (`S0.screen.4` per M01-12) and one-tap invite on the Team screen (SCR-M01-12, M01-12). The `join_requested` notice (T-M01-035) opens this screen in its Team life with the asker's name and number filled in — no frame of its own. Leads to: on send, an invite in state pending (states pending / accepted / expired / revoked, with an expiry — M01-12), visible and revocable on Team; during onboarding, skipping continues to the two-door landing (M01 §M01.3 behavior detail). The invitee's side is Invite Landing (SCR-M01-08).
 
-In the corridor, *Send invite* and *Skip for now* both continue to SCR-M01-06; a send stops on no confirmation and does not re-arm the form. In its Team life the invite is one editor over Team — a bottom sheet at 375, a side panel at 1536 — with *Cancel* in place of *Skip for now*. The Team page behind it is `SCR-M01-12`'s page as its boards draw it, at both widths — reused, never redrawn.
+In the corridor, *Send invite* and *Skip for now* both continue to SCR-M01-06; a send stops on no confirmation and does not re-arm the form. At 1536 the two sit at the right edge of the role set's last row. In its Team life the invite is one editor over Team — a bottom sheet at 375, a side panel at 1536 — with *Cancel* in place of *Skip for now*. The Team page behind it is `SCR-M01-12`'s page as its boards draw it, at both widths — at 1536 inside the settings side list, its *Team* row current (`SCR-SHELL-01`) — reused, never redrawn.
 
 ## Requirements (verbatim)
 
@@ -24,8 +24,8 @@ In the corridor, *Send invite* and *Skip for now* both continue to SCR-M01-06; a
 
 Base: **loading** · **empty** · **error**.
 
-- **loading** — only the presets are in flight: a `Card` in its loading state holds the role set's place, and *Send invite* is the one unavailable control, its `disabledReason` saying it waits for the role list.
-- **error** — the presets failed to load. The form stays as drawn: a `Card` in its error state, with its own *Try again*, holds the role set's place, and *Send invite* is off with its `disabledReason`, mirroring loading — never a whole-screen empty state (owner ruling 2026-10-16).
+- **loading** — only the presets are in flight: one loading tile per preset holds the role set's place, in the role list's grid, and *Send invite* is the one unavailable control, its `disabledReason` *Waiting for the role list*, which opens in a bubble on a tap, click, focus or hover — no line is drawn under the button (owner ruling 2026-10-17, design-system change 5).
+- **error** — the presets failed to load. The form stays as drawn: a `Card` in its error state, with its own *Try again*, holds the role set's place, and *Send invite* is off with its `disabledReason` *Needs the role list*, in the same bubble, mirroring loading — never a whole-screen empty state (owner ruling 2026-10-16).
 
 Screen-specific:
 
@@ -39,7 +39,9 @@ Screen-specific:
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `error`, `already-a-member`, `already-invited`, `number-not-covered`, `invite-cap-reached`.
 
-**The role picker.** All twelve F2 presets in one list, in F2's fixed order, each with its capability line — the same list SCR-M01-13 draws, word for word (the EPC Owner's line says *company settings*, never *tenant settings*, `F7-42`) — in both lives. Under the list sits *What each role can do*, a ghost text act that opens the Roles Reference (`SCR-M01-14`) as a reader (owner ruling 2026-10-16). There is no "Show all twelve roles". The list is built as `OptionCardGroup` in a multi-select mode; each row carries a title, a description and a `disabledReason`. One prop contract on both platforms, shared with SCR-M01-13.
+In the short states — `error`, `already-a-member`, `already-invited`, `invite-cap-reached` — the buttons follow the content.
+
+**The role picker.** All twelve F2 presets in one list, in F2's fixed order, each with its capability line — the same list SCR-M01-13 draws, word for word (the EPC Owner's line says *company settings*, never *tenant settings*, `F7-42`) — in both lives. No *What each role can do* link sits under it: the Roles Reference (`SCR-M01-14`) opens from the settings list (owner ruling 2026-10-17, M01 design). There is no "Show all twelve roles". The list is built as `OptionCardGroup` in a multi-select mode; each row carries a title, a description and a `disabledReason`. One prop contract on both platforms, shared with SCR-M01-13.
 
 ## Data volume
 
@@ -47,7 +49,7 @@ One invite at a time: one name, one phone number, and a role selection across F2
 
 ## Numbers carrying provenance
 
-The numbers here are limits the product enforces, which carry no provenance tier (F8-01). User-visible here: the invite expiry, 7 days from the send (M01-12; `INVITATION_EXPIRY_DAYS` in `packages/domain/src/auth/invitation-policy.ts`), and, in the cap-reached state, the invite cap, 50 invite sends per company in any rolling 24 hours (M01-04; `INVITATIONS_PER_TENANT_PER_DAY` and `invitationsSince`, same file). There is no resend: a live invite can only be cancelled on Team. No money or business quantity renders here.
+The numbers here are limits the product enforces, which carry no provenance tier (F8-01). User-visible here: the invite expiry, 7 days from the send (M01-12; `INVITATION_EXPIRY_DAYS` in `packages/domain/src/auth/invitation-policy.ts`), and, in the cap-reached state, the invite cap, 50 invite sends per company in any rolling 24 hours (M01-04; `INVITATIONS_PER_TENANT_PER_DAY` and `invitationsSince`, same file). There is no resend: a live invite can only be cancelled on Team. The expiry prints as *Invite lasts 7 days · cancel it from Team*, centred under the buttons; in the Team editor it sits in the footer. No money or business quantity renders here.
 
 ---
 

@@ -33,7 +33,7 @@ how it looks, before reading it.
 |---|---|---|---|
 | **Data** | what is true | a label–value row, a list row, a meter, a table cell — never a sentence | the body of a region |
 | **Status** | what state it is in | a status chip: dot and word (`N6b`) | top-right of the object it describes — its domain status is ONE chip, and a stale or provisional mark (`F8-18`) rides beside it when it is true; never two chips that say the same thing |
-| **Action** | what needs me | one primary button per region, a verb; ONE line at the button — what pressing it does, or, while it cannot be pressed, why and what unlocks it (`N4`), never both; an act with several consequences opens a review sheet that lists them as data rows | the foot of the region or sheet |
+| **Action** | what needs me | one primary button per region, a verb; at most ONE line at the button, centred — what pressing it does, a consequence the person must read before acting; while it cannot be pressed, why and what unlocks it is the button's `disabledReason`, which opens in the `Explainer` bubble on a tap, click, focus or hover and is never drawn as a line (owner rulings, design-system changes 5 and 6); an act with several consequences opens a review sheet that lists them as data rows | the foot of the region or sheet |
 | **Help** | how it works, and why | the ask (below) | never in the reading flow |
 | **More detail** | what I may want to see | a row that opens in place or leads somewhere | the end of its region |
 
@@ -241,17 +241,17 @@ anything** (contract item 6): a thing that moves is re-placed, and your notes sa
   status dot** drawn from the fixed status-to-semantic-colour map, so it survives colour blindness,
   greyscale printing and a sunlit screen. No surface substitutes a colour for the word. The map is
   the design system's — you never invent one.
-- **N7** — **every user-visible number carries its provenance tier** (measured / derived /
-  estimated / assumed — `F8-02`). `F8-01` is absolute: every number a user can read, including
-  inside generated documents, money included. **A number whose tier cannot be established is not
+- **N7** — **every money and energy figure carries its provenance tier** (measured / derived /
+  estimated / assumed — `F8-02`). `F8-01` holds for every such figure a user can read, including
+  inside generated documents. **A number whose tier cannot be established is not
   rendered as a number; the surface shows what is missing instead.** An identifier is not a number
   and carries no tier: a tax registration, an account number, an invoice number, a phone number, a
   one-time code.
-  - **Dates — was the value *recorded*, or *computed or guessed*?** Recorded → no tier, and nothing
-    on the frame says that it has none: a payment's
-    received-on date, a visit's check-in time, an audit timestamp, a booked appointment time, a
-    user-set "busy until 17:00". Show when it was recorded. Computed or guessed → tier: a payback
-    month, an expected commissioning date, an estimated arrival window.
+  - **Only money and energy figures carry a tier** (`F8-01`): an amount of money, and a figure of
+    power or energy or a site or system quantity it is computed from (kWp, kWh, roof area, shading
+    loss). A date, time, count, duration or progress figure carries none, recorded or computed — a
+    received-on date, an invite's expiry, "day 2 of 7", an expected commissioning date. A payback
+    month is a money figure and keeps its tier.
   - **A date follows the MARKET, not the reader.** The pack owns the order, the calendar and the
     month name, so `12 Aug 2026` renders identically in Hindi, Marathi and English — the same class
     as `BIS`, `ALMM`, `DISCOM` and `kWp`.
@@ -333,6 +333,10 @@ page (`--canvas`) → a container that holds controls (`--surface-form`) → a c
 - **A card that holds CONTENT stays `--surface` on the page.** Only a container that *wraps*
   controls takes `--surface-form`. **`--canvas-sunken` means below its CONTAINER** — a well, a
   disabled control, a skeleton base.
+- **A 1536 settings section card is the one ruled exception** (`SCR-SHELL-01`, *More: the settings
+  list*): it stays `--surface` at `--e2` although it holds controls, so a secondary button on it is
+  white on white, raised only by its shadow. Fields, switches and segmented controls on it keep their
+  own filled grounds.
 - **The ladder measures itself — do not eyeball it.** `project/guidelines/ladder-in-a-sheet.card.html` in the design system artifact
   <https://claude.ai/artifact/XCdYE4onpt9oovdNMi91rn> reads its own computed values live. Re-run it after any elevation or ground change, and read its
   FIELD MODE column for the ghost button.

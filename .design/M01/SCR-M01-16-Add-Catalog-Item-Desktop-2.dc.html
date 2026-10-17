@@ -49,17 +49,18 @@ html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:v
       <div style="position:absolute;inset:0">
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ panelPrefilled }}" hint-size="100%,100%">
           <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" kind="review-needed" title="Filled in from Vikram Solar Somera 540" density="functional" hint-size="100%,70px">ALMM, DCR and the price are not copied — enter them yourself.</x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" kind="review-needed" title="Filled in from Vikram Solar Somera 540" density="functional" hint-size="100%,48px"></x-import>
             <span style="padding-top:var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What it is</span>
             <div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ kindPicker }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ brandCopied }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ modelCopied }}" hint-size="100%,84px"></x-import></div>
             <div style="display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;padding-top:var(--sp-2)">
               <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Specification</span>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" density="functional" hint-size="auto,24px">Tenant-provided</x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" density="functional" hint-size="auto,24px">Your own</x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askOptional }}" hint-size="44px,44px"></x-import>
             </div>
             <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.watt }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ pC.tech }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.length }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.width }}" hint-size="100%,84px"></x-import></div>
             <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.voc }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.vmp }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.isc }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.imp }}" hint-size="100%,84px"></x-import></div>
             <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.tvoc }}" hint-size="100%,84px"></x-import></div>
-            <div style="display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap"><span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Optional</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askOptional }}" hint-size="44px,44px"></x-import></div>
+            <span style="padding-top:var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Optional</span>
             <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.tpmax }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.bif }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.warranty }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.weight }}" hint-size="100%,84px"></x-import></div>
             <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:var(--sp-3);align-items:start;padding-top:var(--sp-2)">
               <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
@@ -131,12 +132,13 @@ html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:v
             <div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ kindPicker }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ brandSaatvik }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ modelSaatvik }}" hint-size="100%,66px"></x-import></div>
             <div style="display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;padding-top:var(--sp-2)">
               <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Specification</span>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" density="functional" hint-size="auto,24px">Tenant-provided</x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" density="functional" hint-size="auto,24px">Your own</x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askOptional }}" hint-size="44px,44px"></x-import>
             </div>
             <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.watt }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ pS.tech }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.length }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.width }}" hint-size="100%,66px"></x-import></div>
             <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.voc }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.vmp }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.isc }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.imp }}" hint-size="100%,66px"></x-import></div>
             <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.tvoc }}" hint-size="100%,66px"></x-import></div>
-            <div style="display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap"><span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Optional</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askOptional }}" hint-size="44px,44px"></x-import></div>
+            <span style="padding-top:var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Optional</span>
             <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.tpmax }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.bif }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.warranty }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.weight }}" hint-size="100%,66px"></x-import></div>
             <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:var(--sp-3);align-items:start;padding-top:var(--sp-2)">
               <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
@@ -227,12 +229,15 @@ class Component extends DCLogic {
     const SAATVIK = { watt: 575, tech: "Mono PERC", length: 2278, width: 1134, voc: 51.6, vmp: 43.4, isc: 14.0, imp: 13.25, tvoc: -0.27, tpmax: -0.35, bif: 70, warranty: 30, weight: 27.5 };
     const SOMERA = { watt: 540, tech: "Mono PERC", length: 2279, width: 1134, voc: 49.7, vmp: 41.9, isc: 13.8, imp: 12.9, tvoc: -0.28, tpmax: -0.36, bif: 70, warranty: 25, weight: 28.6 };
 
-    /* An engine-read figure is `estimated`, with the page it came from as its source. */
+    /* An engine-read figure names the page it came from. Only the rated power — an energy figure —
+       carries a tier (`estimated`, F8-01); a voltage, a size, a weight or a warranty carries none. */
     const PAGE = { watt: 2, tech: 1, length: 1, width: 1, voc: 2, vmp: 2, isc: 2, imp: 2, tvoc: 2, tpmax: 2, bif: 2, warranty: 1, weight: 1 };
     const readExtra = (key) => (PAGE[key] == null ? null
       : key === "tech"
         ? { helper: "Read from the datasheet, page " + PAGE[key] + " — check it." }
-        : { provenance: { tier: "estimated", source: "Read from the datasheet, page " + PAGE[key], size: 12 } });
+        : key === "watt"
+          ? { provenance: { tier: "estimated", source: "Read from the datasheet, page " + PAGE[key], size: 12 } }
+          : { hint: "Read from the datasheet, page " + PAGE[key] });
     /* A copied value states its origin in its own line: `hint` on a number, `helper` on a choice. */
     const copiedExtra = (key) => (SOMERA[key] == null ? null
       : key === "tech" ? { helper: "Copied from the selected item." } : { hint: "Copied from the selected item." });
@@ -277,7 +282,7 @@ class Component extends DCLogic {
     const footerFor = (sentence, primaryLabel, lead) => {
       const kids = [];
       if (lead) kids.push(lead);
-      if (sentence) kids.push(h("p", { key: "s", style: { margin: 0, fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)", textWrap: "pretty" } }, sentence));
+      if (sentence) kids.push(h("p", { key: "s", style: { margin: 0, fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)", textAlign: "center", textWrap: "pretty" } }, sentence));
       kids.push(h(NS.SheetActions, { key: "a" },
         h(NS.Button, { key: "c", variant: "secondary", onClick: noop }, "Cancel"),
         h(NS.Button, { key: "p", variant: "primary", onClick: noop }, primaryLabel)));
@@ -290,6 +295,11 @@ class Component extends DCLogic {
       footer: footerFor(sentence, primaryLabel, lead), onClose: noop,
       sheetProps: { bodyStyle: { overflowY: "hidden" } },
     });
+    /* 375, scrolled to the form's end: the body is anchored at its foot, so the last field sits on the
+       act and the fields above it pass under the sheet's head. */
+    const atEnd = (sheet) => Object.assign({}, sheet, {
+      sheetProps: { bodyStyle: { overflowY: "hidden", display: "flex", flexDirection: "column", justifyContent: "flex-end" } },
+    });
     /* 1536: the 900 side panel, non-modal, with the caller's list live beside it. */
     const panelFor = (overline, title, sentence, primaryLabel) => ({
       open: true, inset: true, panelAbove: 0, width: 900, density: "functional",
@@ -298,14 +308,14 @@ class Component extends DCLogic {
       footer: footerFor(sentence, primaryLabel), onClose: noop,
     });
 
-    const LINE_PICKER = "Saving adds it to your catalog and selects it in the picker — back on the line you were pricing.";
-    const LINE_STUDIO = "Saving adds it and selects it in the design — back on the inverter you were choosing.";
-    const LINE_PROPOSAL_INV = "Saving adds it and selects it in the proposal — back on the line you were pricing.";
-    const LINE_SETTINGS_375 = "From settings there is nothing to select into: saving lands you back on Items, on your row.";
-    const LINE_SETTINGS_1536 = "From settings there is nothing to select into: saving lands you back on this list, on your row.";
-    const LINE_REVIEW = "Saving adds the checked values to your catalog and selects it in the picker.";
-    const LINE_PREFILLED = "Saving creates your own SKU, selects it here and leaves the platform item unchanged.";
-    const LINE_UNPRICED = "Saving selects it unpriced; someone who manages the catalog prices it later.";
+    const LINE_PICKER = "Adds it to your catalog and selects it in the picker.";
+    const LINE_STUDIO = "Adds it to your catalog and selects it in the design.";
+    const LINE_PROPOSAL_INV = "Adds it to your catalog and selects it in the proposal.";
+    const LINE_SETTINGS_375 = "Adds it to your catalog, then shows its row in Items.";
+    const LINE_SETTINGS_1536 = "Adds it to your catalog, then shows its row in this list.";
+    const LINE_REVIEW = "Adds the checked values to your catalog.";
+    const LINE_PREFILLED = "Creates your own SKU; the platform item stays unchanged.";
+    const LINE_UNPRICED = "No price yet; a catalog manager adds it later.";
 
     /* ── The caller's shell, as SCR-SHELL-01 draws it. EPC Owner: Home · Leads · Projects · More;
        Sales Executive: Home · Leads · Proposals · More (F7-48). ── */
@@ -332,7 +342,7 @@ class Component extends DCLogic {
       };
     };
     const railItem = (key, label) => ({ key: key, label: label, icon: glyph(DEST[key], "lg"), activeIcon: glyph(DEST[key], "lg", { filled: true }) });
-    const shellFor = (value, sales) => ({
+    const shellFor = (value, sales, who) => ({
       rail: h(NS.AppRail, {
         label: "Main navigation", value: value, onChange: noop,
         items: [railItem("home", "Home")].concat(
@@ -340,12 +350,12 @@ class Component extends DCLogic {
                 : [railItem("leads", "Leads"), railItem("projects", "Projects")],
           [railItem("more", "More")]),
         footer: [{ key: "notifications", label: "Notifications", icon: glyph("bell", "lg"), badge: 3, onClick: noop }],
-        avatar: h(NS.Avatar, { name: sales ? SALES : OWNER, size: 32 }),
+        avatar: h(NS.Avatar, { name: who || (sales ? SALES : OWNER), size: 32 }),
       }),
       header: h(NS.AppHeader, {
         sticky: false,
         tenant: h("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
-        search: h(NS.SearchField, { placeholder: "Search", ariaLabel: "Search Suryodaya Solar", value: "", onChange: noop, density: "functional" }),
+        search: h(NS.SearchField, { placeholder: "Name, phone or city", ariaLabel: "Search Suryodaya Solar", value: "", onChange: noop, density: "functional" }),
       }),
       style: { height: "100%" },
     });
@@ -417,7 +427,7 @@ class Component extends DCLogic {
 
       /* 1536 callers */
       shellLeads: shellFor("leads", false),
-      shellMore: shellFor("more", false),
+      shellMore: shellFor("more", false, "Rajesh Kulkarni"),
       shellSales: shellFor("proposals", true),
 
       accDatasheet: accelerators.datasheet,
@@ -448,7 +458,12 @@ class Component extends DCLogic {
       pC: panelFields(SOMERA, copiedExtra),
       inv: inverterFields,
       bat: batteryFields,
-      specBars: ["panel", "panel"],
+      /* the spec block's own grid while it loads: nine required fields, two to a row */
+      specLoading: {
+        label: "Loading the panel specification",
+        bars: ["row", "row", "row", "row", "row", "row", "row", "row", "row"],
+        style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", columnGap: "var(--sp-3)", rowGap: "var(--sp-5)" },
+      },
       askOptional: {
         label: "About the optional fields", title: "Optional fields", density: "functional", placement: "bottom",
         pages: "The panel saves without them. Without the Pmax temp. coefficient, string sizing marks its window estimated. Without bifaciality, the panel's back counts as producing nothing.",
@@ -479,8 +494,9 @@ class Component extends DCLogic {
       sheetReturned: sheetFor("Proposal 0412 · component picker", "Add a panel", "", "Add and select",
         h(NS.PendingAction, {
           key: "p", state: "returned", label: "Add and select",
-          reason: "Not added — nothing was created or selected, and everything you typed is still here.",
+          reason: "Not added or selected — everything you typed is still here.",
           onRetry: noop, retryLabel: "Try again", onDismiss: noop,
+          style: { justifyContent: "center", textAlign: "center" },
         })),
 
       /* 1536 panels */
@@ -511,7 +527,7 @@ class Component extends DCLogic {
         value: null, state: "running",
         stage: "Finding the electrical characteristics table",
         stageIndex: 2, stageTotal: 3,
-        onCancel: noop, cancelEffect: "stops-the-work", cancelLabel: "Stop reading it",
+        onCancel: noop, cancelEffect: "stops-the-work", cancelLabel: "Stop reading it", cancelNote: "Nothing more is read.",
       },
       docLoading: {
         name: "Saatvik SGP-575-BAA-HC datasheet.pdf",

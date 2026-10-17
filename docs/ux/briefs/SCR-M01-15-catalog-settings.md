@@ -8,7 +8,7 @@ The one two-tier catalog surface: browse, search, rates panel with tier attribut
 
 Reached from: the tenant-config settings surface map — *Catalog · Price book* are named surfaces in M01 §4's stable vocabulary; a deeper entry path is not pinned by PRD — designer decides, note the decision. Leads to: **Add Catalog Item** (SCR-M01-16) — inline add is available from Catalog settings as well as the pickers (M01-39); **Catalog Import Wizard** (SCR-M01-17) — Catalog settings is one of the wizard's three entry points (M01-41, §M01.4 behavior detail); release publish and price-book version browsing happen on this surface (M01-43, M01-48, §M01.5 behavior detail: "The price book renders as the rates panel of the one catalog surface").
 
-Entry is More → Settings → *Catalog*. The back control names the caller (*Back to settings*); at 1536 the breadcrumb *Settings / Catalog* above the page title. *Add an item* and *Import a file* sit at the foot of the list, where an owner concludes the item is missing.
+Entry is More → Settings → *Catalog*. The back control names the caller (*Back to settings*); at 1536 the settings side list, its *Catalog* row current (`SCR-SHELL-01`, *More: the settings list*). *Add an item* and *Import a file* sit at the foot of the list, where an owner concludes the item is missing.
 
 ## Requirements (verbatim)
 
@@ -38,15 +38,16 @@ Entry is More → Settings → *Catalog*. The back control names the caller (*Ba
 - **price-book-version-new** — the new-version editor names each rate in English; authoring a rate's name per language (the contract stores it per language, `F3-10`) comes with the language-switcher pattern at the build (owner ruling 2026-10-16; `D248`).
 - **price-book-version-browse** — past price-book versions are browsable read-only; exactly one version is active; the default margin rides the version (M01-48; §M01.5 behavior detail).
 
-Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and edit), `archived-filter`, `archive-warns-referenced-drafts`, `release-publish-summary`, `release-contents-inspect`.
+Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and edit), `archived-filter`, `archive-warns-referenced-drafts`, `release-contents-inspect`.
 
-- **Loading** keeps every fixed word, the panel switch and the search box; the release strip, the kind facets and six placeholder rows load.
+- **Loading** keeps every fixed word, the panel switch and the search box; the release strip, the kind facets and six placeholder rows, in the real row grid, load.
 - **Empty** on the rates panel is a real empty: nobody else supplies those rates. It teaches that the first set entered becomes version 1.
 - **Error** is two things. A load error is the page and says nothing has changed — items, overrides and the price book are as left, nothing published or archived. A failed edit is one row: what did not save, what is therefore still true, and a retry in place; the row stays operable.
 - **archived-filter** rows are muted and carry one act, *Restore*.
 - **archive-warns-referenced-drafts** is followed by an undo in a toast.
-- **price-book-version-browse** — the version in force says so in words with its status chip; past versions say *Read-only*, never greyed.
+- **price-book-version-browse** — the version in force says so in words with its status chip; past versions show their margin, and the opened one says *Read-only*, never greyed.
 - Giving an item its first price shows in a release as an addition, with no before.
+- **release-publish-summary** is a modal at 1536.
 
 **Decisions made in design (2026-09-01) — later screens inherit them.**
 
@@ -63,8 +64,8 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
    setting, read back where it is set (`F8-01`, owner ruling 2026-10-16); the layer chip says where it
    came from. `unmarked` is `M05-52`'s exception only and never applies here.
 4. **Publishing asks for a name, not a serial** (`M01-43`: a release is a human-readable name plus a
-   date), and states the consequence as a number before the act: *N designs pinned to <label> will
-   show as out of date*. A release's contents are a **before-and-after**, not a list of names. Until
+   date), and states the consequence as a number before the act, in the board's words *14 designs on r2026-08
+   will show as out of date.* A release's contents are a **before-and-after**, not a list of names. Until
    `T-FPLAT-028` lands that count renders as a named absence; the board draws the end state (`D235`).
 5. **The three row acts are 32px at 1536 and 44px on the phone card.** The design system's one
    in-row exception, whose three conditions all hold: a `<table>` row, pointer-only, and the same
@@ -77,20 +78,22 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
 8. **The Items strip shows the release in force and *Publish*, and counts no unpublished changes.**
    No route serves pending changes (`GET /catalog/releases` lists published releases only); a publish
    with nothing new is refused (`CATALOG_NOTHING_CHANGED`). *release-contents-inspect* opens a
-   published release from the append-only list (label, date, counts) as its before-and-after
+   published release from the append-only list (label, date, counts as tiles — *2 Added · 1 Changed*) as its before-and-after
    (owner ruling 2026-10-16).
 9. **The settings shell is `SCR-SHELL-01`'s at both widths** (owner ruling 2026-10-16): at 375 the bar of a page
    opened from a list (decision 8: back, title, search); at 1536 the `AppHeader` search, with the bell and the avatar
-   at the rail's foot.
+   at the rail's foot, and the settings side list beside the page, which carries no breadcrumb
+   (`SCR-SHELL-01`, *More: the settings list*).
 
 **The surface.**
 
 - Each panel opens with its own versioning strip: the release in force on Items, the active version
-  and its margin on Rates.
+  and its margin on Rates. At 1536 the two strips sit side by side under the title — the release
+  strip across 8 columns, the price-book strip across 4 — above the list and the rates.
 - Source (platform / own) is a dimension in the filter panel, never a toolbar toggle — a toggle would
   split again what `M01-32` collapses. Component kind stays on the toolbar as multi-select facet
   chips; none selected is everything.
-- A row's mark line: the layer (*Platform* · *Your SKU* · *Overridden*) and `M01-35`'s spec label as
+- A row's mark line: the layer (*Platform* · *Your SKU* · *Overridden*) and `M01-35`'s spec label (a tenant's own spec reads *Your own*) as
   plain chips; tinted badges for compliance (success), *Representative data* and *Hidden from
   pickers* (warning) and *Preferred* (accent). No F8 tier sits on a price the company set
   (decision 3); the spec label never sits beside a price. Where the pack declares schemes and an item records
@@ -99,11 +102,17 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
   one icon doing both.
 - A platform item with no tenant price reads *No price set*, with no tier; the *Platform* chip says why.
 - At 375 tier attribution lives in the rates panel and the row carries only the layer chip. At 1536
-  every row carries a *Price comes from* column, and the list and the rates panel scroll independently.
+  the items table's columns are Item (name, what it is, spec label, marks) · Compliance · Effective
+  price · *Price comes from* · row actions, and the list and the rates panel scroll independently.
 - At 1536 the override editor is a side panel that does not trap focus: the row being priced stays
-  reachable.
+  reachable. It has no title row and no close button: *Cancel* and Escape close it.
+- At 1536 sorting is a `Select`, *Sort*: Preferred first, Name, Price, Recently changed. The list's
+  summary line reads *342 items · every kind · preferred first* at both widths.
+- A panel's head is its plain title, with its caption (and chip) on the line under it.
+- Rates are grouped by how each rate is charged, at both widths — never a rates table.
+- At 1536 the versions list, a past version and the new-version editor open in the side panel.
 - Without the manage grant every administration act is absent, never disabled — publish, add,
-  import, the row acts, the row click, a new price-book version — and a `ScopeNote` names whose act
+  import, the row acts, the row click, a new price-book version — and a `ScopeNote` under the release strip, at the top of the list region, names whose act
   it is.
 
 ## Data volume
@@ -112,15 +121,15 @@ The PRD fixes no item count for the catalog; it does classify catalog administra
 
 ## Numbers carrying provenance
 
-Each of these is user-visible on this screen and carries its F8 provenance tier in the design:
+Each of these is user-visible on this screen; the ones that carry no F8 tier say so (`F8-01`):
 
-- **Effective (resolved) price per item** — resolved through tenant override → own item (M01-32); the platform tier supplies no price, so an item with neither shows its rate as missing (M01-37); tier attribution shown in the rates panel (the pack's tax rate struck under a tax override).
+- **Effective (resolved) price per item** — resolved through tenant override → own item (M01-32); the platform tier supplies no price, so an item with neither shows its rate as missing (M01-37); tier attribution shown in the rates panel (the pack's tax rate struck under a tax override). No tier (decision 3).
 - **Override price and tax rate** — tenant-entered override fields (M01-37). No tier: a value the company sets in its own settings (`F8-01`, owner ruling 2026-10-16).
 - **Item spec values** (e.g. wattage, technology as filterable spec ranges, M01-38/M01-34) — each item's provenance label (verified-datasheet / tenant-provided / representative) is exactly this screen's honesty mechanism (M01-35).
 - **Price-book rates** — service/installation charges, engineering fees, per-kW adders, from the active immutable version (M01-48). No tier, as above.
 - **Default margin percentage** — rides the price-book version (M01-48). No tier, as above.
-- **Release label + date** — the publish act's human-readable name plus date (M01-43, §M01.4 behavior detail).
-- **Open-draft reference count** shown in the archive warning (§M01.4 behavior detail).
+- **Release label + date** — the publish act's human-readable name plus date (M01-43, §M01.4 behavior detail). No tier: a label and a date.
+- **Open-draft reference count** shown in the archive warning (§M01.4 behavior detail). No tier: a count.
 
 ---
 

@@ -178,9 +178,9 @@ ask.
 
 Digest of the foundations `F1`–`F8`, which are canonical.
 
-- Every user-visible number carries a provenance tier: measured / derived / estimated / assumed —
-  an identifier, a count of the reader's own listed records, a limit the product enforces, and a
-  value the company sets in its own settings excepted (`F8-01`).
+- Every money and energy figure a user sees carries a provenance tier: measured / derived /
+  estimated / assumed. Dates, times, counts, durations and progress carry none; nor do an
+  identifier, a limit the product enforces or a value the company sets in its own settings (`F8-01`).
 - Money never renders stale — a design changed since the proposal was computed reads provisional.
 - One money path: BOM ↔ proposal ↔ tranches ↔ payments reconcile to the currency's minor unit.
 - One market and one currency per tenant; market facts (tax, stages, checklists, rails, phone spec)

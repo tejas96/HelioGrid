@@ -6,7 +6,7 @@ Stack F2 presets per person with a live plain-English grant line.
 
 ## Entry & exit
 
-Reached from: the PRD groups this screen in the Team / Assign roles / Roles reference / Invite family that renders F2's semantics (M01 §1, §M01.2), and M01-20 assigns presets "to a person" — the per-person entry from the Team screen (SCR-M01-12) is the natural path but is not explicitly pinned by the PRD — designer decides, note the decision. Only an active member's row opens this screen; an invite or a deactivated person has nothing to assign (owner ruling 2026-10-16). Leads to: back to Team (SCR-M01-12) — dismiss leaves the set unsaved, **Save roles** writes it — and to the Roles Reference (SCR-M01-14) through *What each role can do*; all role changes write old → new audit entries (M01 §M01.2 behavior detail, F2-22). Permission: requires `F2.M01.manage-team` (EPC Owner-only; M01 §M01.2 permissions).
+Reached from: the PRD groups this screen in the Team / Assign roles / Roles reference / Invite family that renders F2's semantics (M01 §1, §M01.2), and M01-20 assigns presets "to a person" — the per-person entry from the Team screen (SCR-M01-12) is the natural path but is not explicitly pinned by the PRD — designer decides, note the decision. Only an active member's row opens this screen; an invite or a deactivated person has nothing to assign (owner ruling 2026-10-16). Leads to: back to Team (SCR-M01-12) — dismiss leaves the set unsaved, **Save roles** writes it — and to the Roles Reference (SCR-M01-14) through the round *Roles reference* info button at the right of the *Presets* heading, at both widths; all role changes write old → new audit entries (M01 §M01.2 behavior detail, F2-22). Permission: requires `F2.M01.manage-team` (EPC Owner-only; M01 §M01.2 permissions).
 
 ## Requirements (verbatim)
 
@@ -17,13 +17,13 @@ Reached from: the PRD groups this screen in the Team / Assign roles / Roles refe
 ## States
 
 - **Loading** — the person's current presets and the preset list are being fetched.
-- **Empty** — a mid-edit state, never a saved one: no person holds zero presets (F2-21; `roleSetSchema` in `packages/contracts/src/common.ts`, `.min(1)`). It appears when the owner clears every preset on someone's sheet. The grant line says they would hold nothing, and Save stays off, with its reason shown, until one preset is ticked.
+- **Empty** — a mid-edit state, never a saved one: no person holds zero presets (F2-21; `roleSetSchema` in `packages/contracts/src/common.ts`, `.min(1)`). It appears when the owner clears every preset on someone's sheet. The grant line says they would hold nothing, and Save stays off until one preset is ticked, its `disabledReason` *Tick at least one preset.*, which opens in a bubble on a tap, click, focus or hover — no line is drawn under the button (owner ruling 2026-10-17, design-system change 5).
 - **Error** — an assignment save fails; what happened and what to do next, per F7's contract.
 - **grant-line-updating-live** — as presets are toggled on/off, the plain-English grant line updates live to describe exactly the resulting grants (M01-20 acceptance).
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `empty`, `error`, `grant-line-updating-live`, the sole-EPC-Owner guard, the after-remove undo toast.
 
-- **Loading** keeps the header — name, status and email came off the tapped row. The body is the editor's own loading state (decision 2); the grant line and Save are absent (owner ruling 2026-10-16).
+- **Loading** keeps the header — name, status and email came off the tapped row. The body is row-sized skeleton rows (decision 2); the grant line and Save are absent (owner ruling 2026-10-16).
 - In **Error** the ticks stay as composed and Save is the retry; no second button.
 - Only a save that REMOVES a preset is confirmed, and the confirm names what is leaving. One confirm, one audit entry and one undo cover the whole diff. A save that only adds goes straight through.
 
@@ -34,7 +34,7 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `empty`, `error`,
 2. **Two of the brief's states are not surface states.** `empty` is a COMBINATION — the twelve presets
    always exist — and `error` is a failed save that must keep the composed ticks. Both are drawn as
    content inside a live screen rather than through the component's own `state`, which would blank the
-   list in one case and discard the owner's work in the other. `loading` does use it.
+   list in one case and discard the owner's work in the other. `loading` draws row-sized skeleton rows.
 3. **`grant-line-updating-live` is drawn as a before/after pair.** A static board cannot show a
    sentence changing, so it shows the two ends of the change.
 4. **The twelve presets carry `F2`'s canonical names** — all twelve, from `F2-01`'s table: `EPC
@@ -46,18 +46,24 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `empty`, `error`,
 5. **`N8` is closed with both halves** — the undo in a toast, AND the recovery route in words, on the
    confirm and again beside the undo. An undo lives for seconds; the question arrives an hour later.
    The toast is a `ToastHost`, which owns its own placement and clearance.
-6. **The list behind the editor is `SCR-M01-12`'s list as its boards draw it**, at both widths — roster,
-   row acts, list head, page head and invite line — reused, never redrawn.
+6. **The list behind the editor is `SCR-M01-12`'s list as its boards draw it**, at both widths (at 1536 inside
+   the settings side list, `SCR-SHELL-01`) — roster, row acts, list head, page head and invite line —
+   reused, never redrawn.
 
 **The editor.** A `Sheet` over the Team list at 375. At 1536 a modal side panel over the Team table —
 backdrop, focus trap and scroll lock — so a second row cannot open while a set is uncommitted. The
+head — the name and its status chip on one line, the email under it, then *Presets* and the *Roles
+reference* button on a thin line — stays fixed while the rows scroll, at both widths. The
 whole row is the control, and the list never re-sorts by what is held. One **Save roles** commits the
-whole set; it is off, with its reason, while nothing has changed. The grant line is pinned above Save
-at both widths. Above it, one sentence says every change is recorded, old → new; it is not a control. The build mounts `EditorSurface`, which is the sheet at 375 and the side panel at 1536; the board mounts `Sheet` and `DetailPanel` directly only because a board has no width probe (owner ruling 2026-10-16; `D234`).
+whole set; it is off while nothing has changed, its `disabledReason` *Tick or clear a preset first.* in the same bubble. The grant line is pinned above Save
+at both widths, in a summary card: one sentence on a light accent ground in body type, each
+capability a chip with its icon (building, gauge, document, search, palette, board, calendar-clock,
+house, pair, wallet, package, megaphone). Above it, one sentence says every change is recorded, old → new; it is not a control. The build mounts `EditorSurface`, which is the sheet at 375 and the side panel at 1536; the board mounts `Sheet` and `DetailPanel` directly only because a board has no width probe (owner ruling 2026-10-16; `D234`).
 
 **The preset rows.** Each preset is an `OptionCardGroup` row in a multi-select mode: a title, a
 description and a `disabledReason`. The `disabledReason` carries the sole-EPC-Owner guard: the last
-EPC Owner cannot be unticked, and the row says why (F2-19). One prop contract on both platforms,
+EPC Owner cannot be unticked, and the row says why (F2-19) — a visible second line in the row, not a
+bubble. One prop contract on both platforms,
 shared with SCR-M01-07.
 
 **The grant line is a whole translated sentence with slots** (owner ruling 2026-08-31), never

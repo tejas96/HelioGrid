@@ -21,7 +21,7 @@ Base: **loading** · **error**.
 No `empty` state: every invite carries at least one preset and joining attaches it in one step, so no one reaches this card without a role (`F2-21`; `M01-12`; `M01-13`; `roleSetSchema` `.min(1)` in `packages/contracts/src/common.ts:116`).
 
 - **loading** — the role is known before its explanation: the preset's name and the credit line render at once, only the grant and limit rows wait, and the act stays live.
-- **error** — one frame, because nothing here writes: the card says the membership is not in doubt and offers its own retry, and the corridor's act stays live beside it.
+- **error** — one frame, because nothing here writes: the card says the membership is not in doubt and offers its own retry, and the corridor's act stays live. The card is short here, so the act follows it directly.
 
 Screen-specific:
 
@@ -57,13 +57,21 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `error
 8. **The owner note lists only what the EPC Owner alone holds** — adding a teammate
    (`F2.M01.manage-team`). Changing a price list is not on it: Operations holds
    `F2.M01.manage-catalog` too. Approving a discount is not on it either: there is no discount
-   approval and no per-rep discount limit (`D34`, `M06-36`).
+   approval and no per-rep discount limit (`D34`, `M06-36`). The note is `ScopeNote`'s panel on the
+   info ground, at the foot of the limit list.
 9. **Both halves sit on the card at once.** The limits are never behind a disclosure: they are half
    of what `M01-15` asks for.
 10. **No shell, back control, step counter or language control in the first-run life.** The language
     was chosen on `SCR-M01-09`, and the only honest back would un-save the profile.
-11. **The re-opened life's backdrop is `SCR-M01-11`'s page as its boards draw it** — its rows, sections,
-    spacing and, at 1536, its trail above the title — reused, never redrawn.
+11. **The re-opened life's backdrop is `SCR-M01-11`'s page as its boards draw it** — its rows, sections
+    and spacing; at 1536 the settings-page form (`SCR-SHELL-01`, *More: the settings list*) — no trail,
+    section cards, and no side list for a person whose list holds one row — reused, never redrawn.
+12. **The page title, the preset's name and the credit line stay fixed in both lives**; only the grant
+    and limit list scrolls, inside the card.
+13. **The line at the act** reads *Reopen anytime from Profile & preferences.* in first run, and
+    *Your designs are one switch away.* for stacked presets.
+14. **At 1536 first run is the onboarding two-pane** (owner ruling 2026-10-17, M01 design): the title in the brand
+    pane, the card and the act in the task pane.
 
 **THE PRESET IS NAMED `Sales Executive`.** `M01-15`'s example sentence quotes prototype vocabulary;
 `F2`'s preset table is canon — row 3 is **Sales Executive**, with `Sales rep` recorded as its *v1*

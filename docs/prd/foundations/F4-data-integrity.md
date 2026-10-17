@@ -61,7 +61,7 @@ is enforced by `modules/M05-design-studio.md` (`M05-09`) and `modules/M02-crm-an
 | `modules/M05-design-studio.md` | the studio editor, its reload prompt and lock behaviour under `F4-15` |
 | `modules/M02-crm-and-leads.md` | lead field edits and the activity log that makes `F4-16` recoverable |
 | `modules/M09-field-workforce.md` | the visit object and its state machine under `F4-17` |
-| `foundations/F8-data-honesty.md` | provenance tiers on every user-visible number; `F4-04` owns *who computes* a figure, `F8` owns *how honestly it is labelled* |
+| `foundations/F8-data-honesty.md` | provenance tiers on every user-visible money and energy figure; `F4-04` owns *who computes* a figure, `F8` owns *how honestly it is labelled* |
 
 ## §5 · Non-goals
 
