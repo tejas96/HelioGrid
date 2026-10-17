@@ -44,9 +44,9 @@ a:hover{color:var(--link-hover)}
           <div style="display:flex;align-items:center;gap:var(--sp-2)"><h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">How your team sees you</h1><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" label="About your name and photo" title="Your name and photo" pages="{{ pagesPhone }}" hint-size="44px,44px"></x-import></div>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Your name" value="Anjali Kulkarni" helper="Rajesh typed this when he invited you — change it if you like." hint-size="100%,80px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhotoField" label="Profile photo, optional" name="Anjali Kulkarni" size="{{ photoPhone }}" choose-label="Add a photo" on-choose="{{ noop }}" helper="Optional — without one, your initials show." hint-size="100%,96px"></x-import>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Save and continue</x-import>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-3)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Save and continue</x-import>
+          </div>
         </div>
       </div>
     </div>
@@ -63,10 +63,18 @@ a:hover{color:var(--link-hover)}
         </div>
         <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) 0 var(--sp-4)">
           <div style="display:flex;align-items:center;gap:var(--sp-2)"><h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">How your team sees you</h1><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" label="About your name and photo" title="Your name and photo" pages="{{ pagesPhone }}" hint-size="44px,44px"></x-import></div>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="loading" hint-size="100%,120px"></x-import>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" disabled="{{ yes }}" disabled-reason="Your name is still arriving from the invite." hint-size="100%,80px">Save and continue</x-import>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <div aria-hidden="true" style="height:calc(var(--fs-field-label) * var(--lh-body));display:flex;align-items:center"><span style="display:block;height:var(--sp-2);border-radius:var(--r-pill);background:var(--canvas-sunken);width:var(--sp-20)"></span></div>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.LoadingBars" dc-props="{{ nameLoading }}" hint-size="100%,56px"></x-import>
+            <div aria-hidden="true" style="height:calc(var(--fs-field-helper) * var(--lh-caption) * 2);display:flex;flex-direction:column;justify-content:space-around"><span style="display:block;height:var(--sp-2);border-radius:var(--r-pill);background:var(--canvas-sunken);width:100%"></span><span style="display:block;height:var(--sp-2);border-radius:var(--r-pill);background:var(--canvas-sunken);width:20%"></span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhotoField" label="Profile photo, optional" name="" size="{{ photoPhone }}" choose-label="Add a photo" loading="{{ yes }}" hint-size="100%,72px"></x-import>
+            <div aria-hidden="true" style="height:calc(var(--fs-caption) * var(--lh-caption));display:flex;align-items:center"><span style="display:block;height:var(--sp-2);border-radius:var(--r-pill);background:var(--canvas-sunken);width:70%"></span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-3)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" disabled="{{ yes }}" disabled-reason="{{ loadingReason }}" hint-size="100%,52px">Save and continue</x-import>
+          </div>
         </div>
       </div>
     </div>
@@ -85,9 +93,9 @@ a:hover{color:var(--link-hover)}
           <div style="display:flex;align-items:center;gap:var(--sp-2)"><h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">How your team sees you</h1><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" label="About your name and photo" title="Your name and photo" pages="{{ pagesPhone }}" hint-size="44px,44px"></x-import></div>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Your name" value="" helper="Rajesh had typed Anjali Kulkarni; type the name your team should use." hint-size="100%,80px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhotoField" label="Profile photo, optional" name="" size="{{ photoPhone }}" choose-label="Add a photo" on-choose="{{ noop }}" helper="Optional — your initials show once you type a name." hint-size="100%,96px"></x-import>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Save and continue</x-import>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-3)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Save and continue</x-import>
+          </div>
         </div>
       </div>
     </div>
@@ -106,9 +114,9 @@ a:hover{color:var(--link-hover)}
           <div style="display:flex;align-items:center;gap:var(--sp-2)"><h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">How your team sees you</h1><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" label="About your name and photo" title="Your name and photo" pages="{{ pagesPhone }}" hint-size="44px,44px"></x-import></div>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Your name" value="" error="Your name is empty — type the name your team should call you." hint-size="100%,80px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhotoField" label="Profile photo, optional" name="" size="{{ photoPhone }}" choose-label="Add a photo" on-choose="{{ noop }}" helper="Optional — your initials show once you type a name." hint-size="100%,96px"></x-import>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Save and continue</x-import>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-3)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Save and continue</x-import>
+          </div>
         </div>
       </div>
     </div>
@@ -128,9 +136,9 @@ a:hover{color:var(--link-hover)}
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" kind="validation" title="Your profile did not save" hint-size="100%,72px">Nothing was lost — press Save and continue to try again.</x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Your name" value="Anjali Kulkarni" helper="Rajesh typed this when he invited you — change it if you like." hint-size="100%,80px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhotoField" label="Profile photo, optional" name="Anjali Kulkarni" size="{{ photoPhone }}" choose-label="Add a photo" on-choose="{{ noop }}" helper="Optional — without one, your initials show." hint-size="100%,96px"></x-import>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Save and continue</x-import>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-3)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Save and continue</x-import>
+          </div>
         </div>
       </div>
     </div>
@@ -149,9 +157,9 @@ a:hover{color:var(--link-hover)}
           <div style="display:flex;align-items:center;gap:var(--sp-2)"><h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">How your team sees you</h1><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" label="About your name and photo" title="Your name and photo" pages="{{ pagesPhone }}" hint-size="44px,44px"></x-import></div>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Your name" value="Anjali Kulkarni" success="Saved. Your team sees this name now." hint-size="100%,80px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhotoField" label="Profile photo, optional" name="Anjali Kulkarni" size="{{ photoPhone }}" act-icon="retry" choose-label="Try the photo again" on-choose="{{ noop }}" error-title="That photo did not upload" error="You can add one later in Profile &amp; preferences." hint-size="100%,170px"></x-import>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Continue without a photo</x-import>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-3)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Continue without a photo</x-import>
+          </div>
         </div>
       </div>
     </div>
@@ -170,9 +178,9 @@ a:hover{color:var(--link-hover)}
           <div style="display:flex;align-items:center;gap:var(--sp-2)"><h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">How your team sees you</h1><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" label="About your name and photo" title="Your name and photo" pages="{{ pagesPhone }}" hint-size="44px,44px"></x-import></div>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Your name" value="Anjali Kulkarni" helper="Rajesh typed this when he invited you — change it if you like." hint-size="100%,80px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhotoField" label="Profile photo, optional" name="Anjali Kulkarni" size="{{ photoPhone }}" choose-label="Add a photo" on-choose="{{ noop }}" helper="Optional — without one, your initials show." hint-size="100%,96px"></x-import>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Save and continue</x-import>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-3)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Save and continue</x-import>
+          </div>
         </div>
       </div>
     </div>
@@ -191,9 +199,9 @@ a:hover{color:var(--link-hover)}
           <div style="display:flex;align-items:center;gap:var(--sp-2)"><h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">How your team sees you</h1><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" label="About your name and photo" title="Your name and photo" pages="{{ pagesPhone }}" hint-size="44px,44px"></x-import></div>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Your name" value="Anjali Kulkarni" helper="Rajesh typed this when he invited you — change it if you like." hint-size="100%,80px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhotoField" label="Profile photo, optional" name="Anjali Kulkarni" src="{{ photoSample }}" size="{{ photoPhone }}" choose-label="Add a photo" replace-label="Replace" on-choose="{{ noop }}" remove-label="Remove" on-remove="{{ noop }}" helper="Remove it and your initials come back." hint-size="100%,96px"></x-import>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Save and continue</x-import>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-3)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Save and continue</x-import>
+          </div>
         </div>
       </div>
     </div>
@@ -232,6 +240,8 @@ class Component extends DCLogic {
       noop: () => {},
       wmMobile: 24,
       photoPhone: 72,
+      nameLoading: { label: "Loading your name", bars: ["row"] },
+      loadingReason: { reason: "Your name is still arriving." },
       photoSample: this.photoSample(),
       pagesPhone: [
         "Suryodaya Solar sees this name beside everything you do.",

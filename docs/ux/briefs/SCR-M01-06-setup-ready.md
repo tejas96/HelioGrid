@@ -21,7 +21,9 @@ Reached from: the end of the onboarding sequence, after the skippable invite ste
 9. **The company name is read back, not asked** — the one tenant fact on the frame, because *you're ready* is worth attaching to a company rather than to nobody.
 10. **The under-a-minute promise is cut, not tiered.** `M01-26`'s own prose invites *a first lead in under a minute* onto the surface; the moment it lands it is a user-visible quantity with no honest tier — nobody measured this owner's minute, and `estimated` on a claim about the product's speed reads as marketing. What survives is the fact behind it, which owes no tier: *a name and a phone number is enough*.
 11. **The desktop room is refused three times, and each refusal is a parity argument.** A demo-project preview is information, so having it at 1536 and not at 375 is a capability gap — drawn at both widths or at neither. A setup-summary column is the same defect in the other direction. Quick-add inline is still `M02`'s field set.
-12. **No shell at either width.** The screen runs before the role-decided home exists, so the wordmark is the only chrome.
+12. **No shell at either width.** The screen runs before the role-decided home exists, so the wordmark is the only chrome — 24 px on the phone.
+13. **At 1536 the screen is the onboarding two-pane** (owner ruling 2026-10-17, M01 design), the pattern `SCR-M01-07` and `SCR-M01-10` draw: a brand pane with the bloom, the wordmark, the title and the company line, and a doors pane with the two cards side by side, top-aligned with the title.
+14. **At 375 the heading and both doors follow the wordmark.** The spare room falls below the last door, never between the wordmark and the heading.
 
 
 ## Requirements (verbatim)
@@ -36,16 +38,16 @@ Base: **loading** · **error** *(in two forms — see below)*. **`empty` resolve
 
 **`error` splits in two, because the screen has two independent failures and one frame cannot answer both honestly (amendment 2026-08-28, from the design):**
 
-- **error-nothing-opens** — the workspace cannot be reached. **The one state where a wall is the honest answer:** both doors are server acts, so offering either would be a promise the screen cannot keep. The doors are **absent, not dead** — a disabled pair of pills is two controls saying nothing twice. One retry, plus a line saying the company is set up, so the owner does not read a fetch failure as a lost signup.
+- **error-nothing-opens** — the workspace cannot be reached. **The one state where a wall is the honest answer:** both doors are server acts, so offering either would be a promise the screen cannot keep. The doors are **absent, not dead** — a disabled pair of pills is two controls saying nothing twice. One retry, plus a line saying the company is set up, so the owner does not read a fetch failure as a lost signup. At 375 the message and *Try again* follow the wordmark, as the doors do (decision 14); at 1536 the brand pane keeps only the wordmark and the bloom, and the wall is centred in the doors pane.
 - **error-demo-unavailable** — only the demo project is missing. **One door failing is not the screen failing:** door one is untouched, full size, still recommended; the demo door states what happened in its own card and offers its own retry. Nothing is disabled — a greyed-out door cannot say why, and `N4` forbids disabled as the only signal.
 
-**`loading`** — only the demo is in flight. The heading, the company line and door one render at once, and door one is live; door two is a `Card` in its own loading state.
+**`loading`** — only the demo is in flight. The heading, the company line and door one render at once, and door one is live; door two is a `Card` in its own loading state, its one line — *Getting the demo ready.* — laid over the card's loading form, centred where its button will appear. Door two keeps the ready door's size while loading and on error, so the heading and door one never move as door two resolves.
 
 Screen-specific:
 
 - **two-doors** — exactly two doors: create your first lead, or open the demo project (M01-26). Analytics distinguishes which door is taken ("first-lead door vs demo door taken" — M01 §M01.3 analytics).
 
-Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `error-nothing-opens`, `error-demo-unavailable`.
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `error-demo-unavailable`.
 
 ## Data volume
 

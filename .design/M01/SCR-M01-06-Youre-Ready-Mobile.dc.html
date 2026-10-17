@@ -39,12 +39,13 @@ a:hover{color:var(--link-hover)}
 
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
 
+        <div style="display:flex;flex-direction:column">
         <div style="display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-8) 0 var(--sp-6)">
           <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">You're ready</h1>
           <p style="margin:0;font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);text-wrap:pretty">Suryodaya Solar Solutions is set up.</p>
         </div>
 
-        <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-4)">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
 
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" hint-size="100%,244px">
             <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
@@ -76,6 +77,7 @@ a:hover{color:var(--link-hover)}
           </x-import>
 
         </div>
+        </div>
       </div>
     </div>
   </div>
@@ -86,11 +88,12 @@ a:hover{color:var(--link-hover)}
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
       <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+        <div style="display:flex;flex-direction:column">
         <div style="display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-8) 0 var(--sp-6)">
           <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">You're ready</h1>
           <p style="margin:0;font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);text-wrap:pretty">Suryodaya Solar Solutions is set up.</p>
         </div>
-        <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-4)">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" hint-size="100%,244px">
             <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
               <div style="display:flex;align-items:center;gap:var(--sp-3)">
@@ -104,11 +107,12 @@ a:hover{color:var(--link-hover)}
             </div>
           </x-import>
 
-          <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="loading" hint-size="100%,88px"></x-import>
-            <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Getting the demo project ready.</span>
+          <div style="position:relative">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="loading" style="{{ doorSize }}" hint-size="100%,191px"></x-import>
+            <span style="position:absolute;left:var(--tile-pad);right:var(--tile-pad);bottom:var(--tile-pad);min-height:var(--sp-12);display:flex;align-items:center;justify-content:center;text-align:center;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Getting the demo ready.</span>
           </div>
 
+        </div>
         </div>
       </div>
     </div>
@@ -120,7 +124,7 @@ a:hover{color:var(--link-hover)}
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
       <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
-        <div style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center">
+        <div style="display:flex;flex-direction:column">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EmptyState" icon="{{ errorIcon }}" title="We couldn't open your workspace" description="Your company is set up." action="{{ errorAction }}" hint-size="100%,300px"></x-import>
         </div>
       </div>
@@ -133,11 +137,12 @@ a:hover{color:var(--link-hover)}
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
       <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
+        <div style="display:flex;flex-direction:column">
         <div style="display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-8) 0 var(--sp-6)">
           <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">You're ready</h1>
           <p style="margin:0;font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);text-wrap:pretty">Suryodaya Solar Solutions is set up.</p>
         </div>
-        <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-4)">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" hint-size="100%,244px">
             <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
               <div style="display:flex;align-items:center;gap:var(--sp-3)">
@@ -151,8 +156,9 @@ a:hover{color:var(--link-hover)}
             </div>
           </x-import>
 
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="error" error-title="We couldn't get the demo project ready" error-message="" on-retry="{{ retryDemo }}" hint-size="100%,120px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="error" error-title="We couldn't get the demo project ready" error-message="" on-retry="{{ retryDemo }}" style="{{ doorSizeCentred }}" hint-size="100%,191px"></x-import>
 
+        </div>
         </div>
       </div>
     </div>
@@ -173,7 +179,12 @@ class Component extends DCLogic {
         h("path", { d: "M12 7.5v5" }),
         h("path", { d: "M12 16.25h.01" })));
     const errorAction = h(NS.Button, { variant: "primary", size: "lg" }, "Try again");
-    return { phoneChrome: { style: { background: "transparent" } }, on: true, wmMobile: 22, iconCircle: 40, retryDemo: () => {}, errorIcon, errorAction };
+    /* Door two keeps the size of the ready door in every state, so the heading and door one never
+       move while the demo loads or fails: card padding, the icon row, two gaps, two lines of the
+       door's line, and the large button. */
+    const doorSize = { minHeight: "calc(var(--tile-pad) * 2 + var(--sp-10) + var(--sp-4) * 2 + var(--fs-body-sm) * var(--lh-body-sm) * 2 + var(--sp-12))" };
+    const doorSizeCentred = Object.assign({ boxSizing: "border-box", display: "flex", flexDirection: "column", justifyContent: "center" }, doorSize);
+    return { phoneChrome: { style: { background: "transparent" } }, on: true, wmMobile: 24, iconCircle: 40, retryDemo: () => {}, errorIcon, errorAction, doorSize: Object.assign({ boxSizing: "border-box" }, doorSize), doorSizeCentred };
   }
 }
 </script>

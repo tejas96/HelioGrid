@@ -35,12 +35,13 @@ a:hover{color:var(--link-hover)}
     <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · normal</span>
     <div data-screen-label="Invite landing — normal" data-frame="m-normal" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)"><div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
-      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile) var(--sp-6)">
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile) 0">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
         </div>
-        <div style="flex:1;min-height:0;overflow:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) 0 var(--sp-4)">
+        <div style="flex:1;min-height:0;overflow:auto;scrollbar-width:none;display:flex;flex-direction:column;padding-top:var(--sp-6)">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
           <div style="display:flex;align-items:center;gap:var(--sp-3)">
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="Rajesh Kulkarni" size="{{ avatarSize }}" hint-size="40px,40px"></x-import>
             <div style="display:flex;flex-direction:column;gap:var(--sp-0-5);min-width:0">
@@ -65,11 +66,12 @@ a:hover{color:var(--link-hover)}
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" disabled="{{ yes }}" aria-label="Resend code, available in 30 seconds" hint-size="auto,44px">Resend code in 0:30</x-import>
           </div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
+        <div data-part="actions" style="position:sticky;bottom:0;display:flex;flex-direction:column;gap:var(--sp-3);padding:var(--sp-4) 0 0;background:var(--canvas)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Join Suryodaya Solar</x-import>
           <div style="display:flex;justify-content:center">
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">This invite isn't for me</x-import>
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -84,8 +86,19 @@ a:hover{color:var(--link-hover)}
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
         </div>
-        <div role="status" aria-busy="true" aria-label="Loading the invite" style="flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) 0 var(--sp-4)">
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="loading" density="expressive" hint-size="100%,180px"></x-import>
+        <div role="status" aria-busy="true" aria-label="Loading the invite" style="flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-5);padding-top:var(--sp-6)">
+          <div aria-hidden="true" style="display:flex;align-items:center;gap:var(--sp-3)">
+            <span style="flex-shrink:0;width:40px;height:40px;border-radius:var(--r-pill);{{ shimmer }}"></span>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <span style="display:block;width:120px;height:var(--sp-3);border-radius:var(--rf-md);{{ shimmer }}"></span>
+              <span style="display:block;width:168px;height:var(--sp-3);border-radius:var(--rf-md);{{ shimmer }}"></span>
+            </div>
+          </div>
+          <div aria-hidden="true" style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <span style="display:block;width:88%;height:var(--sp-6);border-radius:var(--rf-md);{{ shimmer }}"></span>
+            <span style="display:block;width:56%;height:var(--sp-6);border-radius:var(--rf-md);{{ shimmer }}"></span>
+          </div>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="loading" density="expressive" style="{{ cardSkeleton }}" hint-size="100%,160px"></x-import>
         </div>
       </div>
     </div>
@@ -116,10 +129,8 @@ a:hover{color:var(--link-hover)}
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
         </div>
-        <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) 0 var(--sp-4)">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-5);padding-top:var(--sp-6)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" kind="validation" tone="danger" title="Your invite did not load" hint-size="100%,96px">Something on our side failed; try again in a moment.</x-import>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Try again</x-import>
         </div>
       </div>
@@ -131,12 +142,13 @@ a:hover{color:var(--link-hover)}
       <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">{{ s.name }}</span>
       <div data-screen-label="{{ s.screenLabel }}" data-frame="{{ s.id }}" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)"><div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
-        <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
+        <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile) 0">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
           </div>
-          <div style="flex:1;min-height:0;overflow:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) 0 var(--sp-4)">
+          <div style="flex:1;min-height:0;overflow:auto;scrollbar-width:none;display:flex;flex-direction:column;padding-top:var(--sp-6)">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
             <div style="display:flex;align-items:center;gap:var(--sp-3)">
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="Rajesh Kulkarni" size="{{ avatarSize }}" hint-size="40px,40px"></x-import>
               <div style="display:flex;flex-direction:column;gap:var(--sp-0-5);min-width:0">
@@ -177,17 +189,18 @@ a:hover{color:var(--link-hover)}
                 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">Resend code</x-import>
               </div>
             </sc-if>
-            <sc-if value="{{ s.foot }}">
-              <p style="margin:0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">{{ s.foot }}</p>
-            </sc-if>
           </div>
-          <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
+          <div data-part="actions" style="position:sticky;bottom:0;display:flex;flex-direction:column;gap:var(--sp-3);padding:var(--sp-4) 0 0;background:var(--canvas)">
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">{{ s.primary }}</x-import>
+            <sc-if value="{{ s.foot }}">
+              <p style="margin:0;text-align:center;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">{{ s.foot }}</p>
+            </sc-if>
             <sc-if value="{{ s.decline }}">
               <div style="display:flex;justify-content:center">
                 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">This invite isn't for me</x-import>
               </div>
             </sc-if>
+          </div>
           </div>
         </div>
       </div>
@@ -198,25 +211,44 @@ a:hover{color:var(--link-hover)}
     <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">375 · declined-notifies-owner · confirm</span>
     <div data-screen-label="Invite landing — decline confirm" data-frame="m-decline-confirm" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)"><div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
-      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-6) var(--screen-pad-mobile)">
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile) 0">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
         </div>
-        <div style="display:flex;align-items:center;gap:var(--sp-3);padding-top:var(--sp-2)">
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="Rajesh Kulkarni" size="{{ avatarSize }}" hint-size="40px,40px"></x-import>
-          <div style="display:flex;flex-direction:column;gap:var(--sp-0-5);min-width:0">
-            <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Rajesh Kulkarni</span>
-            <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">EPC Owner · Suryodaya Solar</span>
+        <div style="flex:1;min-height:0;overflow:auto;scrollbar-width:none;display:flex;flex-direction:column;padding-top:var(--sp-6)">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+          <div style="display:flex;align-items:center;gap:var(--sp-3)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="Rajesh Kulkarni" size="{{ avatarSize }}" hint-size="40px,40px"></x-import>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-0-5);min-width:0">
+              <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Rajesh Kulkarni</span>
+              <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">EPC Owner · Suryodaya Solar</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Rajesh invited you to Suryodaya Solar</h1>
+          </div>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" density="expressive" hint-size="100%,180px">
+            <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+              <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your invite</span>
+              {{ inviteFacts }}
+              <p style="margin:0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">The code went to the number Rajesh entered; if it is wrong, decline.</p>
+            </div>
+          </x-import>
+          <div style="padding-inline:var(--sp-0-5)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OtpInput" label="Code from the SMS" value="" hint-size="100%,110px"></x-import>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;padding-top:var(--sp-2)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" disabled="{{ yes }}" aria-label="Resend code, available in 30 seconds" hint-size="auto,44px">Resend code in 0:30</x-import>
           </div>
         </div>
-        <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Rajesh invited you to Suryodaya Solar</h1>
-        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" density="expressive" hint-size="100%,180px">
-          <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-            <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your invite</span>
-            {{ phoneFacts }}
+        <div data-part="actions" style="position:sticky;bottom:0;display:flex;flex-direction:column;gap:var(--sp-3);padding:var(--sp-4) 0 0;background:var(--canvas)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Join Suryodaya Solar</x-import>
+          <div style="display:flex;justify-content:center">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">This invite isn't for me</x-import>
           </div>
-        </x-import>
+        </div>
+        </div>
       </div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Sheet" open="{{ yes }}" on-close="{{ noop }}" inset="{{ yes }}" size="auto" density="expressive" handle="{{ no }}" dismissible="{{ no }}" z-index="{{ overlayZ }}" title="Decline this invite?" footer="{{ declineActions }}" hint-size="100%,340px">
         <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Rajesh Kulkarni is told it was not for you, and the link stops working. If it was meant for you after all, Rajesh can invite you again.</p>
@@ -266,13 +298,13 @@ class Component extends DCLogic {
   presets = ["Sales Executive"];
   /* The invite's facts: the preset list and the number, which comes last so its line sits
      directly under it. */
-  facts(withRole) {
+  facts() {
     const NS = window.HelioGridDesignSystem_c8aa43, h = React.createElement;
     const phone = h("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, "+91 98450 27746");
-    const rows = [];
-    if (withRole) rows.push(h(NS.FactRow, { key: "r", label: "Rajesh set you up as", values: this.presets, stack: false }));
-    rows.push(h(NS.FactRow, { key: "p", label: "Mobile number", value: phone }));
-    return h(NS.FactRows, { label: "Your invite", density: "expressive" }, rows);
+    return h(NS.FactRows, { label: "Your invite", density: "expressive" }, [
+      h(NS.FactRow, { key: "r", label: "Rajesh set you up as", values: this.presets, stack: false }),
+      h(NS.FactRow, { key: "p", label: "Mobile number", value: phone })
+    ]);
   }
   /* A line-drawn glyph in the system's Icon at xl; the EmptyState's well gives it its colour. */
   glyph(paths) {
@@ -286,7 +318,7 @@ class Component extends DCLogic {
     const NS = window.HelioGridDesignSystem_c8aa43, h = React.createElement;
     return h("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--sp-3)" } },
       h(NS.Button, { variant, size: "lg" }, "Sign in to HelioGrid"),
-      h("p", { style: { margin: 0, fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)", textWrap: "pretty" } }, line));
+      h("p", { style: { margin: 0, textAlign: "center", fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)", textWrap: "pretty" } }, line));
   }
   declineActions() {
     const NS = window.HelioGridDesignSystem_c8aa43, h = React.createElement;
@@ -343,17 +375,20 @@ class Component extends DCLogic {
     const signInLine = "For an account you already have with another company.";
     return {
       phoneChrome: { style: { background: "transparent" } },
+      /* The skeleton's sweep: the Card's own shimmer, one step darker so it reads on the white page. */
+      shimmer: "background:linear-gradient(90deg,var(--canvas-sunken) 25%,var(--fill) 50%,var(--canvas-sunken) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite",
+      /* The invite card's height, so the skeleton holds the place the card will take. */
+      cardSkeleton: { minHeight: 160, boxSizing: "border-box" },
       yes: true,
       no: false,
       noop: () => {},
       overlayZ: 60,
       wmMobile: 24,
       avatarSize: 40,
-      inviteFacts: this.facts(true),
-      phoneFacts: this.facts(false),
+      inviteFacts: this.facts(),
       linkGoneIcon: this.glyph(["M9 17H7A5 5 0 0 1 7 7h2", "M15 7h2a5 5 0 0 1 4 8", "M8 12h4", "m2 2 20 20"]),
       doneIcon: this.glyph(["M20 6 9 17l-5-5"]),
-      emptyAction: this.actionWithLine("primary", "If you have not joined yet, ask whoever invited you for a new invite."),
+      emptyAction: this.actionWithLine("primary", "Not joined yet? Ask whoever invited you for a new invite."),
       declinedAction: this.actionWithLine("secondary", signInLine),
       reinviteAction: this.actionWithLine("secondary", signInLine),
       declineActions: this.declineActions(),
