@@ -8,7 +8,7 @@ The one two-tier catalog surface: browse, search, rates panel with tier attribut
 
 Reached from: the tenant-config settings surface map — *Catalog · Price book* are named surfaces in M01 §4's stable vocabulary; a deeper entry path is not pinned by PRD — designer decides, note the decision. Leads to: **Add Catalog Item** (SCR-M01-16) — inline add is available from Catalog settings as well as the pickers (M01-39); **Catalog Import Wizard** (SCR-M01-17) — Catalog settings is one of the wizard's three entry points (M01-41, §M01.4 behavior detail); release publish and price-book version browsing happen on this surface (M01-43, M01-48, §M01.5 behavior detail: "The price book renders as the rates panel of the one catalog surface").
 
-Entry is More → Settings → *Catalog*. The back control names the caller (*Back to settings*); at 1536 the settings side list, its *Catalog* row current (`SCR-SHELL-01`, *More: the settings list*). *Add an item* and *Import a file* sit at the foot of the list on the phone, where an owner concludes the item is missing; at 1536 they end the toolbar row (owner pick "Items A", 2026-10-18).
+Entry is More → Settings → *Catalog*. The back control names the caller (*Back to settings*); at 1536 the settings side list, its *Catalog* row current (`SCR-SHELL-01`, *More: the settings list*). *Add an item* and *Import a file* sit at the foot of the list on the phone, where an owner concludes the item is missing; at 1536 they head the list's controls, right-aligned, above the search row (owner ruling 2026-10-18, canvas comment).
 
 ## Requirements (verbatim)
 
@@ -91,8 +91,9 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
 - Each panel opens with its own versioning strip: the release in force on Items, the active version
   and its margin on Rates. At 1536 each strip spans the tab's width under the page head.
 - Source (platform / own) is a dimension in the filter panel, never a toolbar toggle — a toggle would
-  split again what `M01-32` collapses. Component kind stays on the toolbar as chips, *All* then one per
-  kind; kinds are multi-select, and *All* is none selected.
+  split again what `M01-32` collapses. At 1536 the search fills one row with the filter button and the
+  *Sort* menu at its end, and the kind chips sit on the row below — *All* then one per kind; kinds
+  are multi-select, and *All* is none selected (owner ruling 2026-10-18, canvas comment).
 - A row's mark line on the phone: the layer (*Platform* · *Your SKU* · *Overridden*) and `M01-35`'s spec label (a tenant's own spec reads *Your own*) as
   plain chips; tinted badges for compliance (success), *Representative data* and *Hidden from
   pickers* (warning) and *Preferred* (accent). At 1536 one item is one line (owner pick "Items A"):
@@ -101,8 +102,7 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
   from pickers* as a warning `Badge` with the eye-off glyph when hidden; without the manage grant a
   preferred item adds an accent *Preferred* `Badge`, since the star act is absent. The layer moves
   to the *Price comes from* column. The row keeps one line; a long name truncates and its full text
-  stays reachable. The page head is the title and the tabs only — the count lives in the list's
-  summary line and its pager. No F8 tier sits on a price the company set
+  stays reachable. The page head is the title and the tabs only — the count lives in the *Items* tab and the pager. No F8 tier sits on a price the company set
   (decision 3); the spec label never sits beside a price. Where the pack declares schemes and an item records
   none, the row names the gap (*No ALMM or DCR flag recorded*; the IN pack's schemes, `F1-44`).
 - *Preferred* and *Hidden from pickers* are each set by a pressed toggle. *Hidden from pickers* is
@@ -114,8 +114,10 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
   Effective price · *Price comes from* · row actions, one line per item, in one raised card.
 - At 1536 the override editor is a side panel that does not trap focus: the row being priced stays
   reachable. It has no title row and no close button: *Cancel* and Escape close it.
-- At 1536 sorting is a `Select`, *Sort*: Preferred first, Name, Price, Recently changed. The list's
-  summary line reads *342 items · every kind · preferred first* at both widths.
+- At 1536 sorting is a `Menu` switcher behind a trigger with the sort glyph and the current order:
+  Preferred first, Name, Price, Recently changed. The phone's summary line reads *342 items · every
+  kind · preferred first*; at 1536 there is no summary line — the count is in the *Items* tab (which
+  shows *99+* above 99, the `Tabs` cap) and, exactly, in the pager (owner ruling 2026-10-18, canvas comment).
 - A panel's head is its plain title, with its caption (and chip) on the line under it.
 - On the phone rates are grouped by how each rate is charged. At 1536 the Rates tab is one table —
   Rate · Charged · Amount, one rate per line, the charge a tinted badge (per job violet, per kW blue,
