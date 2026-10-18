@@ -184,12 +184,12 @@ class Component extends DCLogic {
     const LOGO = "assets/suryodaya-logo.png";
     const changedOn = NS.IN_FORMAT ? NS.IN_FORMAT.date("2026-08-12") : "";
 
-    /* The letterhead's own lines (brandingWriteSchema.letterhead.lines, up to 6). The GSTIN line is the
-       business profile's; the band prints it, then these. The footer's phone is read from here only. */
+    /* The letterhead's own lines (brandingWriteSchema.letterhead.lines, up to 6). The band prints the
+       business profile's GSTIN itself (from taxId), then these. The footer's phone is read from here only. */
     const LINES = ["+91 98200 41123", "suryodayasolar.in"];
     const letterhead = {
       tagline: "Rooftop solar since 2011",
-      lines: ["GSTIN " + GSTIN].concat(LINES),
+      lines: LINES,
       footerNote: "Thank you for choosing Suryodaya Solar.",
     };
     /* A real tenant's cover: only the values passed print — no sample customer, number or amount. */
@@ -302,7 +302,7 @@ class Component extends DCLogic {
       docPreviewFailA: doc("#F2C200"),
       docPreviewFailB: doc("#26968F"),
       docPreviewDerived: doc("#0070FC"),
-      docPreviewEmpty: doc(PLATFORM, { logoSrc: undefined, phone: undefined, letterhead: { lines: ["GSTIN " + GSTIN] } }),
+      docPreviewEmpty: doc(PLATFORM, { logoSrc: undefined, phone: undefined, letterhead: {} }),
       docPreviewFull: doc(BRAND),
       docPreviewPanel: doc(BRAND, { width: 560 }),
 
