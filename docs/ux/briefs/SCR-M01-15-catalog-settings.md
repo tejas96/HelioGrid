@@ -94,6 +94,12 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
   split again what `M01-32` collapses. At 1536 the search fills one row with the filter button and the
   *Sort* menu at its end, and the kind chips sit on the row below — *All* then one per kind; kinds
   are multi-select, and *All* is none selected (owner ruling 2026-10-18, canvas comment).
+- The filter panel is one column of sections at both widths: each filter's name with what is on at
+  its right, the control under it, a hairline between. *Clear all* shows once, in the footer.
+  *Preferred items only* and *Archived items instead* are switches in a last *Show* section. A chip
+  list longer than six shows its first six and any chosen one, then *Show all N kinds*. Wattage and
+  Technology belong to panels: they fold under *Panel specs* while *Panels* is chosen, and are cleared
+  when it is not (owner pick "F2 · Sections", canvas comment; design-system change 8).
 - A row's mark line on the phone: the layer (*Platform* · *Your SKU* · *Overridden*) and `M01-35`'s spec label (a tenant's own spec reads *Your own*) as
   plain chips; tinted badges for compliance (success), *Representative data* and *Hidden from
   pickers* (warning) and *Preferred* (accent). At 1536 one item is one line (owner pick "Items A"):

@@ -243,14 +243,16 @@ class Component extends DCLogic {
     const KINDS = ["Panels", "Inverters", "Batteries", "Micro-inverters", "Optimisers"];
     const searchRows = rows.filter((r) => r.id === "ad545" || r.id === "wa545");
     /* ONE filter set at both widths: the six dimensions M01-38 names, read off the list query. */
+    /* Wattage and technology belong to panels: they fold under "Panel specs" while Panels is chosen (owner pick F2). */
+    const PANEL_SPECS = { key: "kind", value: "Panels", group: "Panel specs" };
     const filterDims = [
       { key: "source", kind: "facet", label: "Source", options: ["Platform", "Your SKUs"] },
-      { key: "kind", kind: "facet", label: "Component kind", options: KINDS },
-      { key: "wattage", kind: "range", label: "Wattage", min: 0, max: 700, step: 5, unit: "Wp" },
-      { key: "technology", kind: "one-of", label: "Technology", options: ["Any", "Mono PERC", "TOPCon", "Bifacial", "Poly", "HJT"], allValue: "Any" },
+      { key: "kind", kind: "facet", label: "Component kind", noun: "kinds", options: KINDS },
+      { key: "wattage", kind: "range", label: "Wattage", min: 0, max: 700, step: 5, unit: "Wp", under: PANEL_SPECS },
+      { key: "technology", kind: "one-of", label: "Technology", noun: "technologies", options: ["Any", "Mono PERC", "TOPCon", "Bifacial", "Poly", "HJT"], allValue: "Any", under: PANEL_SPECS },
       { key: "schemes", kind: "facet", label: "Certification scheme", options: ["ALMM", "DCR"] },
       { key: "preferred", kind: "flag", label: "Ranking", optionLabel: "Preferred items only" },
-      { key: "archived", kind: "flag", label: "Archived", optionLabel: "Show archived instead" },
+      { key: "archived", kind: "flag", label: "Archived", optionLabel: "Archived items instead" },
     ];
 
     /* ---------------------------------------------------------------- the rates, grouped by how they are charged */
