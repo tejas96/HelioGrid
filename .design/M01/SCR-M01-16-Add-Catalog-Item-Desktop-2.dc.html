@@ -30,11 +30,11 @@ html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:v
 </style>
 </helmet>
 
-<div style="box-sizing:border-box;width:1616px;height:3448px;padding:var(--sp-10);background:var(--canvas);display:flex;flex-direction:column;gap:var(--sp-10)">
+<div style="box-sizing:border-box;width:1616px;height:4022px;padding:var(--sp-10);background:var(--canvas);display:flex;flex-direction:column;gap:var(--sp-10)">
 
   <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
     <span style="display:block;font-size:var(--fs-overline);line-height:var(--sp-4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · prefilled-from-selection · the row it was copied from, still on the list</span>
-    <div data-screen-label="Add item — desktop prefilled from selection" data-frame="d16-c" style="position:relative;width:1536px;overflow:hidden;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);height:1136px">
+    <div data-screen-label="Add item — desktop prefilled from selection" data-frame="d16-c" style="position:relative;width:1536px;overflow:hidden;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);height:1418px">
       <div style="position:absolute;inset:0">
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" dc-props="{{ shellLeads }}" hint-size="100%,100%">
           <div style="height:100%;width:calc(100% - 900px);box-sizing:border-box;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-6) var(--screen-pad-desktop-fn);overflow:hidden">
@@ -48,29 +48,30 @@ html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:v
       </div>
       <div style="position:absolute;inset:0">
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ panelPrefilled }}" hint-size="100%,100%">
-          <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+          <div style="display:flex;flex-direction:column;gap:16px">
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" kind="review-needed" title="Filled in from Vikram Solar Somera 540" density="functional" hint-size="100%,48px"></x-import>
-            <span style="padding-top:var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What it is</span>
-            <div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ kindPicker }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ brandCopied }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ modelCopied }}" hint-size="100%,84px"></x-import></div>
-            <div style="display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;padding-top:var(--sp-2)">
-              <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Specification</span>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" density="functional" hint-size="auto,24px">Your own</x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askOptional }}" hint-size="44px,44px"></x-import>
+            <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);padding:20px;display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;align-items:center;gap:12px"><span aria-hidden="true" style="width:32px;height:32px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-violet) 14%, white);color:color-mix(in srgb, var(--iris-violet) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.panel }}" hint-size="20px,20px"></x-import></span><span style="flex:1;font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">The item</span></div>
+              <div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:12px;align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ kindPicker }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ brandCopied }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ modelCopied }}" hint-size="100%,84px"></x-import></div>
             </div>
-            <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.watt }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ pC.tech }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.length }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.width }}" hint-size="100%,84px"></x-import></div>
-            <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.voc }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.vmp }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.isc }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.imp }}" hint-size="100%,84px"></x-import></div>
-            <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.tvoc }}" hint-size="100%,84px"></x-import></div>
-            <span style="padding-top:var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Optional</span>
-            <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.tpmax }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.bif }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.warranty }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.weight }}" hint-size="100%,84px"></x-import></div>
-            <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:var(--sp-3);align-items:start;padding-top:var(--sp-2)">
-              <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
-                <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Certification</span>
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ almmOff }}" hint-size="100%,44px"></x-import>
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ dcrOff }}" hint-size="100%,44px"></x-import>
+            <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);padding:20px;display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;align-items:center;gap:12px"><span aria-hidden="true" style="width:32px;height:32px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-blue) 14%, white);color:color-mix(in srgb, var(--iris-blue) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.bolt }}" hint-size="20px,20px"></x-import></span><span style="flex:1;font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">Specification</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="neutral" density="functional" hint-size="auto,24px">Your own</x-import></div>
+              <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.watt }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ pC.tech }}" hint-size="100%,84px"></x-import></div>
+              <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.length }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.width }}" hint-size="100%,84px"></x-import></div>
+              <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:12px;align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.voc }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.vmp }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.isc }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.imp }}" hint-size="100%,84px"></x-import></div>
+              <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.tvoc }}" hint-size="100%,84px"></x-import></div>
+              <div style="display:flex;align-items:center;gap:4px"><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-bold);color:var(--text-secondary)">Optional</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askOptional }}" hint-size="44px,44px"></x-import></div>
+              <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:12px;align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.tpmax }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.bif }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.warranty }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pC.weight }}" hint-size="100%,84px"></x-import></div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:16px;align-items:stretch">
+              <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);padding:20px;display:flex;flex-direction:column;gap:16px">
+                <div style="display:flex;align-items:center;gap:12px"><span aria-hidden="true" style="width:32px;height:32px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-magenta) 14%, white);color:color-mix(in srgb, var(--iris-magenta) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.shield }}" hint-size="20px,20px"></x-import></span><span style="flex:1;font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">Certification</span></div>
+                <div style="display:flex;flex-direction:column;gap:10px;padding:0 14px;border-radius:16px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line-soft)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ almmOff }}" hint-size="100%,44px"></x-import></div>
+                <div style="display:flex;flex-direction:column;gap:10px;padding:0 14px;border-radius:16px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line-soft)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ dcrOff }}" hint-size="100%,44px"></x-import></div>
                 <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">ALMM and DCR are not copied: your variant isn't the listed model.</span>
               </div>
-              <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
-                <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Price</span>
+              <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);padding:20px;display:flex;flex-direction:column;gap:16px">
+                <div style="display:flex;align-items:center;gap:12px"><span aria-hidden="true" style="width:32px;height:32px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-violet) 14%, white);color:color-mix(in srgb, var(--iris-violet) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.rupee }}" hint-size="20px,20px"></x-import></span><span style="flex:1;font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">Price</span></div>
                 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ priceBlank }}" hint-size="100%,84px"></x-import>
                 <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">A platform item carries no price to copy.</span>
               </div>
@@ -107,7 +108,7 @@ html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:v
 
   <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
     <span style="display:block;font-size:var(--fs-overline);line-height:var(--sp-4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · inline-add-without-manage-grant · no price field, no prices on the list</span>
-    <div data-screen-label="Add item — desktop, no catalog grant" data-frame="d16-d" style="position:relative;width:1536px;overflow:hidden;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);height:1040px">
+    <div data-screen-label="Add item — desktop, no catalog grant" data-frame="d16-d" style="position:relative;width:1536px;overflow:hidden;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);height:1332px">
       <div style="position:absolute;inset:0">
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" dc-props="{{ shellSales }}" hint-size="100%,100%">
           <div style="height:100%;width:calc(100% - 900px);box-sizing:border-box;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-6) var(--screen-pad-desktop-fn);overflow:hidden">
@@ -127,27 +128,25 @@ html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:v
       </div>
       <div style="position:absolute;inset:0">
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ panelUnpriced }}" hint-size="100%,100%">
-          <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-            <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What it is</span>
-            <div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ kindPicker }}" hint-size="100%,84px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ brandSaatvik }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ modelSaatvik }}" hint-size="100%,66px"></x-import></div>
-            <div style="display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;padding-top:var(--sp-2)">
-              <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Specification</span>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" density="functional" hint-size="auto,24px">Your own</x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askOptional }}" hint-size="44px,44px"></x-import>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);padding:20px;display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;align-items:center;gap:12px"><span aria-hidden="true" style="width:32px;height:32px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-violet) 14%, white);color:color-mix(in srgb, var(--iris-violet) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.panel }}" hint-size="20px,20px"></x-import></span><span style="flex:1;font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">The item</span></div>
+              <div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:12px;align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ kindPicker }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ brandSaatvik }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ modelSaatvik }}" hint-size="100%,66px"></x-import></div>
             </div>
-            <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.watt }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ pS.tech }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.length }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.width }}" hint-size="100%,66px"></x-import></div>
-            <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.voc }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.vmp }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.isc }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.imp }}" hint-size="100%,66px"></x-import></div>
-            <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.tvoc }}" hint-size="100%,66px"></x-import></div>
-            <span style="padding-top:var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Optional</span>
-            <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.tpmax }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.bif }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.warranty }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.weight }}" hint-size="100%,66px"></x-import></div>
-            <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:var(--sp-3);align-items:start;padding-top:var(--sp-2)">
-              <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
-                <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Certification</span>
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ almmOn }}" hint-size="100%,44px"></x-import>
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ almmRef }}" hint-size="100%,66px"></x-import>
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ dcrOn }}" hint-size="100%,44px"></x-import>
-                <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Leave ALMM and DCR unticked and the item shows no badges.</span>
-              </div>
+            <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);padding:20px;display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;align-items:center;gap:12px"><span aria-hidden="true" style="width:32px;height:32px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-blue) 14%, white);color:color-mix(in srgb, var(--iris-blue) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.bolt }}" hint-size="20px,20px"></x-import></span><span style="flex:1;font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">Specification</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="neutral" density="functional" hint-size="auto,24px">Your own</x-import></div>
+              <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.watt }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Select" dc-props="{{ pS.tech }}" hint-size="100%,66px"></x-import></div>
+              <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.length }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.width }}" hint-size="100%,66px"></x-import></div>
+              <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:12px;align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.voc }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.vmp }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.isc }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.imp }}" hint-size="100%,66px"></x-import></div>
+              <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.tvoc }}" hint-size="100%,66px"></x-import></div>
+              <div style="display:flex;align-items:center;gap:4px"><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-bold);color:var(--text-secondary)">Optional</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askOptional }}" hint-size="44px,44px"></x-import></div>
+              <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:12px;align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.tpmax }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.bif }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.warranty }}" hint-size="100%,66px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ pS.weight }}" hint-size="100%,66px"></x-import></div>
+            </div>
+            <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);padding:20px;display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;align-items:center;gap:12px"><span aria-hidden="true" style="width:32px;height:32px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-magenta) 14%, white);color:color-mix(in srgb, var(--iris-magenta) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.shield }}" hint-size="20px,20px"></x-import></span><span style="flex:1;font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">Certification</span></div>
+              <div style="display:flex;flex-direction:column;gap:10px;padding:0 14px 14px;border-radius:16px;background:color-mix(in srgb, var(--success) 8%, white)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ almmOn }}" hint-size="100%,44px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" dc-props="{{ almmRef }}" hint-size="100%,66px"></x-import></div>
+              <div style="display:flex;flex-direction:column;gap:10px;padding:0 14px;border-radius:16px;background:color-mix(in srgb, var(--success) 8%, white)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ dcrOn }}" hint-size="100%,44px"></x-import></div>
+              <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Leave ALMM and DCR off and the item shows no badges.</span>
             </div>
           </div>
         </x-import>
@@ -158,7 +157,7 @@ html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:v
 </div>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1616,"height":3448}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1616,"height":4022}}'>
 class Component extends DCLogic {
   state = { ready: !!window.HelioGridDesignSystem_c8aa43 };
 
@@ -179,8 +178,24 @@ class Component extends DCLogic {
     const noop = this.noop;
     const money = (n) => (NS.IN_FORMAT ? NS.IN_FORMAT.money(n) : String(n));
 
-    /* Every glyph is the system's ShellGlyph; nothing on this board is hand-drawn. */
+    /* The shell's glyphs are the system's ShellGlyph. */
     const glyph = (name, size, extra) => h(NS.ShellGlyph, Object.assign({ name: name, size: size || "lg" }, extra || {}));
+    /* The form's tile glyphs (owner pick A · Cards): inline SVG in the system's Icon, as Icon props for the
+       markup to mount. The kind glyphs are the Catalog's kind tiles on SCR-M01-15. */
+    const svgOf = (paths) => h("svg", { viewBox: "0 0 24 24", width: "100%", height: "100%", fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" },
+      paths.map((d, i) => h("path", { key: i, d: d })));
+    const icon = (paths, size) => ({ size: size || "md", children: svgOf(paths) });
+    const ic = {
+      doc: icon(["M7 3h7l5 5v13H7z", "M14 3v5h5", "M10 13h6", "M10 17h6"]),
+      grid: icon(["M4 5h16v14H4z", "M4 10h16", "M4 15h16", "M10 5v14"]),
+      chevSm: icon(["m9 6 6 6-6 6"], "sm"),
+      panel: icon(["M4 5h16v14H4z", "M4 12h16", "M12 5v14"]),
+      inverter: icon(["M5 4h14v16H5z", "M9 9h6", "M9 13h6"]),
+      battery: icon(["M6 7h10v12H6z", "M10 4h2v3h-2z", "M9 12h4"]),
+      bolt: icon(["M13 3 5 14h6l-1 7 8-11h-6z"]),
+      shield: icon(["M12 3 5 6v6c0 4 3 7 7 9 4-2 7-5 7-9V6z", "m9 12 2 2 4-4"]),
+      rupee: icon(["M7 5h10", "M7 9h10", "M9 5c4 0 5 4 0 6H7l7 8"]),
+    };
     const DEST = NS.DESTINATION_GLYPH;
 
     /* ── Fields. A blank field carries no `value`, so nothing renders as a figure. ── */
@@ -194,7 +209,8 @@ class Component extends DCLogic {
     const sel = (label, value, options, extra) => Object.assign(
       { label: label, options: options, density: "functional", onChange: noop },
       has(value) ? { value: value } : {}, extra || {});
-    const chk = (label, checked) => ({ label: label, checked: checked, onChange: noop });
+    const scheme = (label, checked) => ({ label: label, checked: checked, onChange: noop,
+      style: { width: "100%", flexDirection: "row-reverse", justifyContent: "space-between" } });
 
     /* The five kinds of COMPONENT_KINDS, in the person's words. */
     const KINDS = ["Panel", "Inverter", "Battery", "Micro-inverter", "Optimiser"];
@@ -203,7 +219,7 @@ class Component extends DCLogic {
     const PHASES = ["Single phase", "Three phase"];
     const CHEMISTRY = ["LFP", "NMC", "Lead-acid"];
 
-    const kind = (value, caller) => sel("Component kind", value, KINDS, { helper: "Set by " + caller + "." });
+    const kind = (value, caller) => sel("What it is", value, KINDS, { helper: "Set by " + caller + "." });
 
     /* PANEL_ENVELOPE: nine required fields, four optional. `extra(key)` adds a field's own hint,
        helper or provenance — the copied and the extracted states differ only there. */
@@ -272,21 +288,15 @@ class Component extends DCLogic {
       currency: true, outOfRange: "refuse", min: 0, hint: "What one " + what + " costs you, before tax.",
     });
 
-    /* ── The two accelerators, as the system's list row. ── */
-    const accelerators = {
-      datasheet: { icon: glyph("document", "md", { tone: "accent" }), iconColor: "var(--accent)", title: "Read the specs off a datasheet", subtitle: "One PDF, up to 2 MB", trailing: glyph("chevron-right", "md"), density: "functional", onClick: noop },
-      spreadsheet: { icon: glyph("board", "md", { tone: "accent" }), iconColor: "var(--accent)", title: "Add many at once from a spreadsheet", subtitle: "CSV or Excel file", trailing: glyph("chevron-right", "md"), density: "functional", onClick: noop },
-    };
-
     /* ── The act and its one line. ── */
     const footerFor = (sentence, primaryLabel, lead) => {
       const kids = [];
       if (lead) kids.push(lead);
       if (sentence) kids.push(h("p", { key: "s", style: { margin: 0, fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)", textAlign: "center", textWrap: "pretty" } }, sentence));
-      kids.push(h(NS.SheetActions, { key: "a" },
-        h(NS.Button, { key: "c", variant: "secondary", onClick: noop }, "Cancel"),
-        h(NS.Button, { key: "p", variant: "primary", onClick: noop }, primaryLabel)));
-      return h("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-2)" } }, kids);
+      kids.push(h("div", { key: "a", style: { display: "flex", gap: 12 } },
+        h(NS.Button, { key: "c", variant: "secondary", onClick: noop, style: { flex: 1 } }, "Cancel"),
+        h(NS.Button, { key: "p", variant: "primary", onClick: noop, style: { flex: 1 } }, primaryLabel)));
+      return h("div", { style: { display: "flex", flexDirection: "column", gap: 10 } }, kids);
     };
     /* 375: the modal phone sheet, over the caller. */
     const sheetFor = (overline, title, sentence, primaryLabel, lead) => ({
@@ -430,8 +440,7 @@ class Component extends DCLogic {
       shellMore: shellFor("more", false, "Rajesh Kulkarni"),
       shellSales: shellFor("proposals", true),
 
-      accDatasheet: accelerators.datasheet,
-      accSheet: accelerators.spreadsheet,
+      ic: ic,
 
       /* identity */
       kindPicker: kind("Panel", "the component picker"),
@@ -464,19 +473,20 @@ class Component extends DCLogic {
         bars: ["row", "row", "row", "row", "row", "row", "row", "row", "row"],
         style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", columnGap: "var(--sp-3)", rowGap: "var(--sp-5)" },
       },
-      askOptional: {
-        label: "About the optional fields", title: "Optional fields", density: "functional", placement: "bottom",
-        pages: "The panel saves without them. Without the Pmax temp. coefficient, string sizing marks its window estimated. Without bifaciality, the panel's back counts as producing nothing.",
-      },
       neededPanel: ["Brand", "Model", "Rated power", "Cell technology", "Length", "Width", "Voc", "Vmp", "Isc", "Imp", "Voc temp. coefficient"],
       optionalPanel: ["Price", "Pmax temp. coefficient", "Bifaciality", "Warranty", "Weight"],
 
-      /* certification: one checkbox per scheme IN_CERTIFICATION_SCHEMES declares */
-      almmOn: chk("ALMM listed", true),
-      almmOff: chk("ALMM listed", false),
-      almmRef: txt("ALMM list reference", "List-I, S. No. 38", { mono: true }),
-      dcrOn: chk("DCR compliant", true),
-      dcrOff: chk("DCR compliant", false),
+      /* certification: one switch row per scheme IN_CERTIFICATION_SCHEMES declares */
+      /* what leaving the panel's optional values blank costs — the words the old head button held */
+      askOptional: {
+        label: "About the optional values", title: "Optional values", density: "functional", placement: "bottom",
+        pages: "The panel saves without them. Without the Pmax temp. coefficient, string sizing marks its window estimated. Without bifaciality, the panel's back counts as producing nothing.",
+      },
+      almmOn: scheme("ALMM listed", true),
+      almmOff: scheme("ALMM listed", false),
+      almmRef: txt("ALMM list reference", "List-I, S. No. 38"),
+      dcrOn: scheme("DCR compliant", true),
+      dcrOff: scheme("DCR compliant", false),
 
       /* price */
       pricePanel: price(15650, "panel"),

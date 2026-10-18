@@ -40,7 +40,12 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
 **Layout, decided in design.**
 
 - The two accelerators — the datasheet and the spreadsheet — sit at the top of the sheet, above the
-  form. There is no path chooser: the form is where every path lands.
+  form, as two raised tiles with an iris glyph (datasheet violet, spreadsheet blue), side by side at
+  1536 and stacked at 375, with no overline. There is no path chooser: the form is where every path lands.
+- The form is raised cards, each headed by an iris glyph tile and its title: *The item* (the kind's own
+  tint and glyph, as on `SCR-M01-15`), *Specification* (with *Your own* as a badge), *Certification* and
+  *Price*. The optional values fold behind *Add optional values* while all of them are blank; once any
+  holds a figure they show in the card under *Optional* (owner pick "A · Cards", canvas comment).
 - The datasheet accelerator is the only upload control; the file stays on the item whichever way the
   fields get filled. No second *attach the datasheet* field.
 - The kind field, *What it is*, comes before brand and model; its helper names the caller that set it
@@ -56,12 +61,12 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
   sit side by side at 1536.
 - Spec fields have no steppers: their values are transcribed. A price outside its range is refused
   with the limit named, never clamped.
-- Certification is one checkbox per scheme the market pack declares, and a sentence under them says an
+- Certification is one switch row per scheme the market pack declares, and a sentence under them says an
   empty set shows no badges. A scheme the pack collects as a list reference (ALMM) shows its reference
-  field once ticked; a flag scheme (DCR) is the tick alone (`IN_CERTIFICATION_SCHEMES`, owner ruling 2026-10-16).
+  field once switched on; a flag scheme (DCR) is the switch alone (`IN_CERTIFICATION_SCHEMES`, owner ruling 2026-10-16).
 - No SKU-code field and no tax field: the own-item contract holds neither, and an own SKU's tax
   follows the pack's category rate (`M01-37`, owner ruling 2026-10-16).
-- The *Your own* label is stated once per section, not per field. A pre-filled field states its
+- The *Your own* label is stated once, as a badge on the *Specification* card, not per field. A pre-filled field states its
   own origin in its helper.
 - A frame showing the end of the form is read from its foot: the last field sits on the act.
 
@@ -77,20 +82,19 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
 
 - **Loading** — the typed per-kind form loading, or a datasheet upload/extraction in progress.
   While the form loads, the sheet's words, both accelerators, the identity fields and the footer show
-  at once; only the kind's spec block is a placeholder, at the shape it will become — the block's own
-  two-column grid. A datasheet being
-  read is narrated: the file by name, the stage in words, an indeterminate rail, and a cancel that
-  says what it stops. The form stays live while it reads, and the datasheet fills only fields still
-  blank.
+  at once; only the kind's spec block is a placeholder, at the shape it will become — the specification
+  card's own grid. A datasheet being read keeps its tile, quiet (owner pick "S1 · Quiet row"): the
+  stage and the file by name on one line (*Page 2 of 2 · <file>*), an indeterminate rail, one line
+  that the form stays live and only empty fields fill, and *Stop reading* — no step count, no preview
+  while it reads.
 - **Empty** — the fresh single-product form for the pre-scoped component kind, before entry.
   An unfilled form, not an empty-state screen: one line says which fields are required and what the
   rest buy, and each placeholder says what belongs there in the datasheet's own words.
 - **Error** — save or upload fails; what happened and what to do next.
   A failed save is one line centred under the act — nothing was created, nothing was selected, everything
   typed is still here — with the retry; the footer drops its consequence sentence and the form stays
-  live. A refused upload turns the datasheet accelerator into the drop surface, states the problem and
-  the fix with the real limit, offers another file or the manual form, and says nothing was created or
-  attached.
+  live. A refused upload turns the datasheet tile amber: the problem and the real limit, that nothing
+  was saved, and the fix — *Choose another file*, or the form below.
 - **single-form** — path (a): the single-product form with the component kind's typed spec fields (M01-39, M01-36).
   It is the screen's default; `Empty` is the same form before entry.
 - **prefilled-from-selection** — path (a) from a picker with a component already selected: the single form opens pre-filled with that item's brand, model and typed specs; the scheme-certification flags and the rate fields are blank for the tenant to enter; save creates a new own SKU and selects it in place, the platform item untouched (M01-39, M01-36, M01-34; owner ruling 2026-09-07).
