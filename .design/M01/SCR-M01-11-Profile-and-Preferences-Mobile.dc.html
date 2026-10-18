@@ -28,7 +28,7 @@ a{color:var(--link);text-decoration:none}
 a:hover{color:var(--link-hover)}
 </style>
 </helmet>
-<div style="width:1700px;height:2193px;box-sizing:border-box;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:var(--sp-10);row-gap:var(--sp-12);align-items:start;padding:var(--sp-10);background:var(--canvas);overflow:hidden">
+<div style="width:1700px;height:2152px;box-sizing:border-box;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:var(--sp-10);row-gap:var(--sp-12);align-items:start;padding:var(--sp-10);background:var(--canvas);overflow:hidden">
 <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
     <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:375px">
       <span style="display:block;margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · default</span>
@@ -198,7 +198,7 @@ a:hover{color:var(--link-hover)}
     </div>
     <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:375px">
       <span style="display:block;margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · protected-types-locked</span>
-      <div data-screen-label="Profile and preferences — billing locked, owner" data-frame="m-locked" style="position:relative;flex:0 0 auto;width:375px;height:1203px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+      <div data-screen-label="Profile and preferences — billing locked, owner" data-frame="m-locked" style="position:relative;flex:0 0 auto;width:375px;height:1162px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
         <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
         <div data-scroll style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile-fn) var(--sp-6)">
@@ -228,8 +228,7 @@ a:hover{color:var(--link-hover)}
               </sc-for>
               <div style="display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:var(--sp-3);align-items:center">
                 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ billingLocked }}" id="m-locked-push-billing" hint-size="52px,44px"></x-import>
-                <label for="m-locked-push-billing" style="font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-primary)">Billing</label>
-                <div style="grid-column:2"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ComplianceFloor" dc-props="{{ floorLine }}" hint-size="100%,40px"></x-import></div>
+                <div style="display:flex;align-items:center;gap:var(--sp-1)"><label for="m-locked-push-billing" style="font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-primary)">Billing</label><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ billingAsk }}" hint-size="44px,44px"></x-import></div>
               </div>
             </div>
           </section>
@@ -276,7 +275,7 @@ a:hover{color:var(--link-hover)}
 </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1700,"height":2193}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1700,"height":2152}}'>
 class Component extends DCLogic {
   /* Static spec frames: every control is drawn at a literal value with a noop handler. The page
      shows no number, money, quantity or date, so nothing carries a provenance tier. */
@@ -322,6 +321,13 @@ class Component extends DCLogic {
       background: "transparent", boxShadow: "none", borderRadius: 0,
       borderTop: divided ? "1px solid var(--line-soft)" : "none",
     });
+    /* A role label is a Badge in its kind's iris tone (design-system change 7): violet sells,
+       blue plans and runs, magenta works on site. A role inside a sentence or a heading stays words. */
+    const KIND = {
+      "EPC Owner": "violet", "Sales Manager": "violet", "Sales Executive": "violet", "Marketing": "violet",
+      "Survey Engineer": "blue", "Design Engineer": "blue", "Project Manager": "blue", "Operations": "blue",
+      "Finance": "blue", "HR/Admin": "blue", "Field Technician": "magenta", "Installation Team Member": "magenta",
+    };
     const person = (name, roles) => ({
       name: name,
       avatar: { name: name, size: 48 },
@@ -333,7 +339,7 @@ class Component extends DCLogic {
       roleRow: {
         title: roles.length > 1 ? "Your roles" : "Your role", density: "functional", onClick: noop,
         marks: h(NS.ChipGroup, { label: "roles", max: 0, density: "functional" },
-          roles.map((r) => h(NS.Badge, { key: r, tone: "neutral", density: "functional" }, r))),
+          roles.map((r) => h(NS.Badge, { key: r, tone: KIND[r], density: "functional" }, r))),
         trailing: h(NS.ShellGlyph, { name: "chevron-right", size: "md", tone: "secondary" }),
         style: rowFrame(true),
       },
@@ -386,7 +392,10 @@ class Component extends DCLogic {
         pages: ["Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way."],
       },
       billingLocked: { checked: true, disabled: true, onChange: noop },
-      floorLine: { variant: "line", size: 13, title: "Always sent — cannot be muted · Audit-relevant events, owner account" },
+      billingAsk: {
+        label: "Why Billing stays on", density: "functional",
+        pages: ["Always sent, and it cannot be muted: billing events are audit-relevant for the owner account."],
+      },
 
       loadingBars: { label: "Loading your preferences", bars: ["row", "row", "panel", "row", "panel"] },
       errorBanner: {

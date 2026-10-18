@@ -77,10 +77,20 @@ a:hover{color:var(--link-hover)}
         <div data-ask-box="1" style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-5)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Their name" placeholder="Anjali Kulkarni" hint-size="100%,80px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneField" label="Their phone number" helper="HelioGrid sends the message to this number — it does not come from your phone." hint-size="100%,100px"></x-import>
-          <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
             <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-h3);line-height:var(--lh-h3);letter-spacing:var(--tr-h3);font-weight:var(--fw-bold);color:var(--text-primary)">What can they do?</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ rolesAsk.m_loading }}" hint-size="44px,44px"></x-import></div>
             <div role="group" aria-label="Roles for this invite" aria-busy="true" style="display:flex;flex-direction:column;gap:var(--sp-2)">
-              <sc-for list="{{ roles }}" as="r" hint-placeholder-count="12"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="loading" hint-size="100%,88px"></x-import></sc-for>
+              <sc-for list="{{ roleSkeletons }}" as="s" hint-placeholder-count="12">
+                <div aria-hidden="true" style="display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-2) var(--sp-4) var(--sp-3);background:var(--fill);border-radius:var(--r-tile)">
+                  <span style="display:flex;align-items:center;gap:var(--sp-3);height:44px">
+                    <span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);border-radius:6px;background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span>
+                    <span style="display:block;width:{{ s.title }};height:var(--fs-body-sm);border-radius:var(--r-xs);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span>
+                  </span>
+                  <span style="display:flex;flex-direction:column;padding-left:var(--sp-8)">
+                    <sc-for list="{{ s.lines }}" as="w" hint-placeholder-count="2"><span style="display:flex;align-items:center;height:calc(var(--fs-body-sm) * var(--lh-body-sm))"><span style="display:block;width:{{ w }};height:var(--fs-caption);border-radius:var(--r-xs);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></span></sc-for>
+                  </span>
+                </div>
+              </sc-for>
             </div>
           </div>
         </div>
@@ -288,7 +298,7 @@ a:hover{color:var(--link-hover)}
                 </div>
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:calc(var(--sp-3) / 2)">
-                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="neutral" density="functional" hint-size="auto,24px">{{ r }}</x-import></sc-for>
+                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="{{ r.tone }}" density="functional" hint-size="auto,24px">{{ r.label }}</x-import></sc-for>
               </div>
               <sc-if value="{{ p.invited }}" hint-placeholder-val="{{ false }}">
                 <div style="display:flex;flex-direction:column;gap:calc(var(--sp-3) / 2)">
@@ -386,6 +396,13 @@ class Component extends DCLogic {
       phoneChrome: { style: { background: "transparent" } },
       wmMobile: 24,
       roles: this.roles(),
+      /* The role list's loading rows: each the size and look of the preset row it stands for (m-default) —
+         the checkbox square and the name on the 44 px control line, then one bar per line the description
+         wraps to at 375 (three for Sales Executive, Finance, Operations and Marketing, two for the rest). */
+      roleSkeletons: this.roles().map((r) => ({
+        title: Math.min(30 + r.name.length * 2, 70) + "%",
+        lines: ["Sales Executive", "Finance", "Operations", "Marketing"].indexOf(r.name) > -1 ? ["92%", "86%", "48%"] : ["92%", "58%"]
+      })),
       bannersReady: !!this.state.bannersReady,
       /* Why Send invite is off opens in the button's own bubble on a tap, focus or hover — never a line under it. */
       loadingReason: { reason: "Waiting for the role list" },
@@ -446,13 +463,32 @@ class Component extends DCLogic {
       active: (p) => "Active · last seen " + seen(p),
       deactivated: (p) => "Deactivated · last seen " + seen(p)
     };
+    /* A role label is a Badge in its kind's iris tone: violet sells, blue plans and runs, magenta installs. */
+    const KIND = {
+      "EPC Owner": "violet", "Sales Manager": "violet", "Sales Executive": "violet", "Marketing": "violet",
+      "Survey Engineer": "blue", "Design Engineer": "blue", "Project Manager": "blue", "Operations": "blue", "Finance": "blue", "HR/Admin": "blue",
+      "Field Technician": "magenta", "Installation Team Member": "magenta"
+    };
+    const glyph = (paths) => h("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true },
+      paths.map((d, i) => h("path", { key: i, d: d })));
+    const GLYPH = {
+      userMinus: ["M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2", "M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z", "M22 11h-6"],
+      undo: ["M3 7v6h6", "M21 17a9 9 0 0 0-15-6.7L3 13"],
+      send: ["M22 2 11 13", "M22 2l-7 20-4-9-9-4 20-7z"]
+    };
+    /* Board 12's foot(): the one raised act at the card's foot, full width: Invite again primary, Revoke
+       invite secondary, Deactivate secondary in danger words. The last EPC Owner's Deactivate is
+       switched off; its reason opens on a tap. */
     const foot = (p) => {
-      if (p.kind === "invited" || p.kind === "expired") return { variant: "secondary", size: "md", fullWidth: true, onClick: noop };
-      if (p.onlyOwner) return { variant: "ghost", size: "md", fullWidth: true, disabled: true, disabledReason: "Only EPC Owner" };
-      return { variant: "ghost", size: "md", fullWidth: true, onClick: noop };
+      if (p.kind === "invited") return { variant: "secondary", size: "md", fullWidth: true, icon: glyph(GLYPH.undo), onClick: noop };
+      if (p.kind === "expired") return { variant: "primary", size: "md", fullWidth: true, icon: glyph(GLYPH.send), onClick: noop };
+      const deactivate = { variant: "secondary", size: "md", fullWidth: true, tone: "danger", icon: glyph(GLYPH.userMinus) };
+      return p.onlyOwner
+        ? Object.assign(deactivate, { disabled: true, disabledReason: "Only EPC Owner" })
+        : Object.assign(deactivate, { onClick: noop });
     };
     const card = (p) => ({
-      name: p.name, line: LINE[p.kind](p), mark: MARK[p.kind], roles: p.roles, you: !!p.you, avatar: 48,
+      name: p.name, line: LINE[p.kind](p), mark: MARK[p.kind], roles: p.roles.map((r) => ({ label: r, tone: KIND[r] })), you: !!p.you, avatar: 48,
       invited: p.kind === "invited", progress: p.kind === "invited" ? (p.day / 7) * 100 : 0, day: p.day, expires: p.expires,
       revoke: p.kind === "invited", again: p.kind === "expired", deactivate: p.kind === "active",
       footBtn: foot(p)

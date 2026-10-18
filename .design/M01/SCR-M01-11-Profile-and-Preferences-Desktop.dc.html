@@ -91,7 +91,7 @@ a:hover{color:var(--link-hover)}
   <div style="display:flex;align-items:center;gap:var(--sp-4);min-height:64px;box-sizing:border-box;padding:var(--sp-2) var(--sp-6);border-top:1px solid var(--line-soft);"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><label for="d-owner-push-delivery" style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Delivery</label></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ push.delivery }}" id="d-owner-push-delivery" hint-size="52px,44px"></x-import></div>
   <div style="display:flex;align-items:center;gap:var(--sp-4);min-height:64px;box-sizing:border-box;padding:var(--sp-2) var(--sp-6);border-top:1px solid var(--line-soft);"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><label for="d-owner-push-payments" style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Payments</label></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ push.payments }}" id="d-owner-push-payments" hint-size="52px,44px"></x-import></div>
   <div style="display:flex;align-items:center;gap:var(--sp-4);min-height:64px;box-sizing:border-box;padding:var(--sp-2) var(--sp-6);border-top:1px solid var(--line-soft);"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><label for="d-owner-push-team" style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Team</label></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ push.team }}" id="d-owner-push-team" hint-size="52px,44px"></x-import></div>
-  <div style="display:flex;align-items:center;gap:var(--sp-4);min-height:64px;box-sizing:border-box;padding:var(--sp-2) var(--sp-6);border-top:1px solid var(--line-soft);"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><label for="d-owner-push-billing" style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Billing</label><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ComplianceFloor" dc-props="{{ floorLine }}" hint-size="100%,18px"></x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ billingLocked }}" id="d-owner-push-billing" hint-size="52px,44px"></x-import></div>
+  <div style="display:flex;align-items:center;gap:var(--sp-4);min-height:64px;box-sizing:border-box;padding:var(--sp-2) var(--sp-6);border-top:1px solid var(--line-soft);"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><div style="display:flex;align-items:center;gap:var(--sp-1)"><label for="d-owner-push-billing" style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Billing</label><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ billingAsk }}" hint-size="44px,44px"></x-import></div></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ billingLocked }}" id="d-owner-push-billing" hint-size="52px,44px"></x-import></div>
 </section>
 </div>
 </div>
@@ -179,13 +179,20 @@ class Component extends DCLogic {
       background: "transparent", boxShadow: "none", borderRadius: 0,
       borderTop: divided ? "1px solid var(--line-soft)" : "none",
     });
+    /* A role label is a Badge in its kind's iris tone (design-system change 7): violet sells,
+       blue plans and runs, magenta works on site. A role inside a sentence or a heading stays words. */
+    const KIND = {
+      "EPC Owner": "violet", "Sales Manager": "violet", "Sales Executive": "violet", "Marketing": "violet",
+      "Survey Engineer": "blue", "Design Engineer": "blue", "Project Manager": "blue", "Operations": "blue",
+      "Finance": "blue", "HR/Admin": "blue", "Field Technician": "magenta", "Installation Team Member": "magenta",
+    };
     const person = (name, roles) => ({
       name: name,
       avatar: { name: name, size: 48 },
       roleRow: {
         title: roles.length > 1 ? "Your roles" : "Your role", density: "functional", onClick: noop,
         marks: h(NS.ChipGroup, { label: "roles", max: 0, density: "functional" },
-          roles.map((r) => h(NS.Badge, { key: r, tone: "neutral", density: "functional" }, r))),
+          roles.map((r) => h(NS.Badge, { key: r, tone: KIND[r], density: "functional" }, r))),
         trailing: h(NS.ShellGlyph, { name: "chevron-right", size: "md", tone: "secondary" }),
         style: rowFrame(true),
       },
@@ -254,7 +261,10 @@ class Component extends DCLogic {
 
       push: switches([]),
       billingLocked: { checked: true, disabled: true, onChange: noop },
-      floorLine: { variant: "line", size: 12, title: "Always sent — cannot be muted · Audit-relevant events, owner account" },
+      billingAsk: {
+        label: "Why Billing stays on", density: "functional",
+        pages: ["Always sent, and it cannot be muted: billing events are audit-relevant for the owner account."],
+      },
       pushAsk: {
         label: "About push", density: "functional",
         pages: ["Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way."],

@@ -212,6 +212,11 @@ A drawn screen is judged by this list, and a fix prompt fixes what it finds.
   opens in the `Explainer` bubble on a tap, click, focus or hover. A line that stays at an action — a consequence
   to read before acting, an expiry, a "you can change this later" — is centred under it, in the
   fewest words that keep the fact; never one left-aligned line at a frame's foot.
+- **A row's act is a raised pill with its glyph, never plain text** (`Button` `secondary`, `sm`);
+  an act that ends something says so in danger words (`tone: "danger"`). **A role label is a
+  `Badge` in its kind's iris tone** — violet sell and lead, blue plan and run, magenta on site —
+  and an avatar takes the hue the design system gives its name, never a hand tint (owner pick
+  "A · Colour with purpose", design-system change 7).
 - **At 1536 a settings page draws the settings side list, never a breadcrumb**, and its form
   sections are one column of cards, never a grid of section columns (`SCR-SHELL-01`, *More: the
   settings list*).

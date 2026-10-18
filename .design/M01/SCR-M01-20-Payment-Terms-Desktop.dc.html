@@ -130,6 +130,9 @@ class Component extends DCLogic {
     const pct = (n) => FMT.number(n, { maximumFractionDigits: 2 }) + "%";
     const glyph = (name, size, extra) => h(NS.ShellGlyph, Object.assign({ name: name, size: size }, extra || {}));
     const G = NS.DESTINATION_GLYPH;
+    /* A row's act is a raised pill with its glyph (pick A): 16 px, stroke 1.8. */
+    const actGlyph = (paths) => h("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true },
+      paths.map((d, i) => h("path", { key: i, d: d })));
 
     /* M08-08's chain. Labels: the India pack names two (F1-51); the other seven are neutral.
        Each `due` is the canonical stage's own sentence, and none names a scheme. */
@@ -346,9 +349,10 @@ class Component extends DCLogic {
         { name: "Standard 20/70/10 (old)", list: [20, 70, 10] },
       ].map((a) => ({ props: {
         title: a.name,
-        subtitle: a.list.length + " tranches · " + a.list.map(pct).join(" / "),
+        /* Wraps rather than ellipsing: the Restore pill and its glyph leave the split no single line at 375. */
+        subtitle: h("span", { style: { whiteSpace: "normal" } }, a.list.length + " tranches · " + a.list.map(pct).join(" / ")),
         marks: [h(NS.StatusChip, { key: "a", status: "archived", label: "Archived", tone: "neutral", density: "functional" })],
-        trailing: button("secondary", "Restore", { size: "sm" }),
+        trailing: button("secondary", "Restore", { size: "sm", icon: actGlyph(["M3 7v6h6", "M21 17a9 9 0 0 0-15-6.7L3 13"]) }),
         density: "functional",
       } })),
       btnNewTerms: { variant: "secondary", size: "md", onClick: this.noop },

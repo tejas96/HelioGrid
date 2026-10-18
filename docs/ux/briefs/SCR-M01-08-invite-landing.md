@@ -77,8 +77,9 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty
     and a keyboard opening over the landing hides who invited you.
 13. **At 1536 the landing is the onboarding two-pane** (owner ruling 2026-10-17, M01 design), the pattern
     `SCR-M01-07` and `SCR-M01-10` draw: the context pane on the left; on the right the code task,
-    top-aligned in row 2 level with the brand heading, starting at the pane's left edge; the language
-    control on the wordmark's line. The task column is as wide as the code boxes.
+    centred in the task pane both ways, because a column as narrow as the code boxes left in a corner
+    reads as stranded (owner ruling 2026-10-17, canvas comment); the language control on the
+    wordmark's line. The task column is as wide as the code boxes.
 14. **At 375 the actions follow the content** and pin to the foot only when the content overflows —
     never a gap between the content and the actions.
 

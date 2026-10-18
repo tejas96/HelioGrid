@@ -754,7 +754,9 @@ class Component extends DCLogic {
         issue: "The price reads “2,380/pc” — not a number.",
       },
     ];
-    const leaveOut = (key) => React.createElement(NS.Button, { key: key || "leave", variant: "ghost", size: "sm", onClick: this.noop }, "Leave this row out");
+    const rowGlyph = (d) => React.createElement("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" }, d.map((p, i) => React.createElement("path", { key: i, d: p })));
+    const ROW_GLYPH = { check: ["M20 6 9 17l-5-5"], plus: ["M12 5v14", "M5 12h14"], leave: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z", "M8 12h8"] };
+    const leaveOut = (key) => React.createElement(NS.Button, { key: key || "leave", variant: "secondary", size: "sm", tone: "danger", icon: rowGlyph(ROW_GLYPH.leave), onClick: this.noop }, "Leave this row out");
     const previewTable = {
       rowKey: "id", rows: ROWS, columns: this.previewColumns(NS, money), density: "compact",
       caption: "What this import will do · all 412 rows of " + FILE + ", in file order",
@@ -782,7 +784,7 @@ class Component extends DCLogic {
     /* ── needs attention: all seven in scope, six open and one fixed ── */
     const priceFix = (row) => React.createElement("span", { style: { display: "flex", flexWrap: "wrap", gap: "var(--sp-2)", alignItems: "flex-end" } },
       React.createElement(NS.NumberField, { key: "f", label: "Price for row " + row.line, currency: true, value: row.typed, density: "functional", onCommit: this.noop }),
-      React.createElement(NS.Button, { key: "u", variant: "secondary", size: "sm", onClick: this.noop }, "Use this price"),
+      React.createElement(NS.Button, { key: "u", variant: "secondary", size: "sm", icon: rowGlyph(ROW_GLYPH.check), onClick: this.noop }, "Use this price"),
       leaveOut());
     const pickFix = (label, placeholder, options) => React.createElement("span", { style: { display: "flex", flexWrap: "wrap", gap: "var(--sp-2)", alignItems: "flex-end" } },
       React.createElement(NS.Select, { key: "s", ariaLabel: label, placeholder: placeholder, options: options, density: "functional", onChange: this.noop }),
@@ -836,15 +838,15 @@ class Component extends DCLogic {
         if (r.fix === "price") return priceFix(r);
         if (r.fix === "spec") {
           return React.createElement("span", { style: { display: "flex", flexWrap: "wrap", gap: "var(--sp-2)" } },
-            React.createElement(NS.Button, { key: "k", variant: "secondary", size: "sm", onClick: this.noop }, "Keep 545 Wp, set only the price"),
-            React.createElement(NS.Button, { key: "o", variant: "ghost", size: "sm", onClick: this.noop }, "Import as your own SKU"),
+            React.createElement(NS.Button, { key: "k", variant: "secondary", size: "sm", icon: rowGlyph(ROW_GLYPH.check), onClick: this.noop }, "Keep 545 Wp, set only the price"),
+            React.createElement(NS.Button, { key: "o", variant: "secondary", size: "sm", icon: rowGlyph(ROW_GLYPH.plus), onClick: this.noop }, "Import as your own SKU"),
             leaveOut());
         }
         if (r.fix === "which") return pickFix("Which product is it?", "Choose a product", ["Waaree WSMD-540", "Waaree WS-540 Elite"]);
         if (r.fix === "kind") return pickFix("Kind", "Choose a kind", ["Module", "Inverter", "Mounting structure", "Cabling", "Protection", "Metering", "Battery"]);
         if (r.fix === "repeat") {
           return React.createElement("span", { style: { display: "flex", flexWrap: "wrap", gap: "var(--sp-2)" } },
-            React.createElement(NS.Button, { key: "u", variant: "secondary", size: "sm", onClick: this.noop }, "Use this row’s price"),
+            React.createElement(NS.Button, { key: "u", variant: "secondary", size: "sm", icon: rowGlyph(ROW_GLYPH.check), onClick: this.noop }, "Use this row’s price"),
             leaveOut());
         }
         return null;

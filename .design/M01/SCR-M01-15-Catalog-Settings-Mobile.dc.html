@@ -270,7 +270,8 @@ class Component extends DCLogic {
           : ib("hide", (r.hidden ? "Show " + r.name + " in pickers" : "Hide " + r.name + " from pickers"), M.eyeOff, !!r.hidden, false),
       ];
     };
-    const restoreAction = (r) => [h(NS.Button, { key: "r", variant: "secondary", size: "sm", onClick: noop }, "Restore")];
+    const rowGlyph = (d) => h("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" }, d.map((p, i) => h("path", { key: i, d: p })));
+    const restoreAction = (r) => [h(NS.Button, { key: "r", variant: "secondary", size: "sm", icon: rowGlyph(["M3 7v6h6", "M21 17a9 9 0 0 0-15-6.7L3 13"]), onClick: noop }, "Restore")];
 
     const openPage = { background: "transparent", boxShadow: "none", borderRadius: 0, overflow: "visible", "--surface-alt": "var(--fill)" };
     const rows = this.itemSpec();

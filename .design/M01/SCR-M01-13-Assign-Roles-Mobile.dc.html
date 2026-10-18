@@ -55,7 +55,7 @@ a:hover{color:var(--link-hover)}
                 </div>
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:calc(var(--sp-3) / 2)">
-                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="neutral" density="functional" hint-size="auto,24px">{{ r }}</x-import></sc-for>
+                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="{{ r.tone }}" density="functional" hint-size="auto,24px">{{ r.label }}</x-import></sc-for>
               </div>
               <sc-if value="{{ p.deactivate }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ p.footBtn }}" hint-size="100%,44px">Deactivate</x-import></sc-if>
             </article>
@@ -85,7 +85,7 @@ a:hover{color:var(--link-hover)}
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAll }}" hint-size="100%,44px"></x-import>
         </div>
         <section aria-label="Everyone at Suryodaya Solar, scrolled to Rajesh Kulkarni" style="flex-shrink:0;display:flex;flex-direction:column;gap:var(--tile-gap)">
-          <sc-for list="{{ behindRajesh }}" as="p" hint-placeholder-count="4">
+          <sc-for list="{{ behindRajesh }}" as="p" hint-placeholder-count="5">
             <article aria-label="{{ p.name }}" style="background:var(--fill);border-radius:var(--r-tile);padding:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-3)">
               <div style="display:flex;align-items:center;gap:var(--sp-3)">
                 <div style="position:relative;flex-shrink:0;display:flex">
@@ -98,7 +98,7 @@ a:hover{color:var(--link-hover)}
                 </div>
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:calc(var(--sp-3) / 2)">
-                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="neutral" density="functional" hint-size="auto,24px">{{ r }}</x-import></sc-for>
+                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="{{ r.tone }}" density="functional" hint-size="auto,24px">{{ r.label }}</x-import></sc-for>
               </div>
               <sc-if value="{{ p.deactivate }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ p.footBtn }}" hint-size="100%,44px">Deactivate</x-import></sc-if>
             </article>
@@ -141,7 +141,7 @@ a:hover{color:var(--link-hover)}
                 </div>
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:calc(var(--sp-3) / 2)">
-                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="neutral" density="functional" hint-size="auto,24px">{{ r }}</x-import></sc-for>
+                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="{{ r.tone }}" density="functional" hint-size="auto,24px">{{ r.label }}</x-import></sc-for>
               </div>
               <sc-if value="{{ p.deactivate }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ p.footBtn }}" hint-size="100%,44px">Deactivate</x-import></sc-if>
             </article>
@@ -192,7 +192,7 @@ a:hover{color:var(--link-hover)}
                 </div>
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:calc(var(--sp-3) / 2)">
-                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="neutral" density="functional" hint-size="auto,24px">{{ r }}</x-import></sc-for>
+                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="{{ r.tone }}" density="functional" hint-size="auto,24px">{{ r.label }}</x-import></sc-for>
               </div>
               <sc-if value="{{ p.deactivate }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ p.footBtn }}" hint-size="100%,44px">Deactivate</x-import></sc-if>
             </article>
@@ -235,7 +235,7 @@ a:hover{color:var(--link-hover)}
                 </div>
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:calc(var(--sp-3) / 2)">
-                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="neutral" density="functional" hint-size="auto,24px">{{ r }}</x-import></sc-for>
+                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="{{ r.tone }}" density="functional" hint-size="auto,24px">{{ r.label }}</x-import></sc-for>
               </div>
               <sc-if value="{{ p.deactivate }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ p.footBtn }}" hint-size="100%,44px">Deactivate</x-import></sc-if>
             </article>
@@ -278,7 +278,7 @@ a:hover{color:var(--link-hover)}
                 </div>
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:calc(var(--sp-3) / 2)">
-                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="neutral" density="functional" hint-size="auto,24px">{{ r }}</x-import></sc-for>
+                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="{{ r.tone }}" density="functional" hint-size="auto,24px">{{ r.label }}</x-import></sc-for>
               </div>
               <sc-if value="{{ p.deactivate }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ p.footBtn }}" hint-size="100%,44px">Deactivate</x-import></sc-if>
             </article>
@@ -320,7 +320,7 @@ a:hover{color:var(--link-hover)}
                 </div>
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:calc(var(--sp-3) / 2)">
-                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="neutral" density="functional" hint-size="auto,24px">{{ r }}</x-import></sc-for>
+                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="{{ r.tone }}" density="functional" hint-size="auto,24px">{{ r.label }}</x-import></sc-for>
               </div>
               <sc-if value="{{ p.deactivate }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ p.footBtn }}" hint-size="100%,44px">Deactivate</x-import></sc-if>
             </article>
@@ -362,7 +362,7 @@ a:hover{color:var(--link-hover)}
                 </div>
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:calc(var(--sp-3) / 2)">
-                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="neutral" density="functional" hint-size="auto,24px">{{ r }}</x-import></sc-for>
+                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="{{ r.tone }}" density="functional" hint-size="auto,24px">{{ r.label }}</x-import></sc-for>
               </div>
               <sc-if value="{{ p.deactivate }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ p.footBtn }}" hint-size="100%,44px">Deactivate</x-import></sc-if>
             </article>
@@ -411,7 +411,7 @@ a:hover{color:var(--link-hover)}
                 </div>
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:calc(var(--sp-3) / 2)">
-                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="neutral" density="functional" hint-size="auto,24px">{{ r }}</x-import></sc-for>
+                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="{{ r.tone }}" density="functional" hint-size="auto,24px">{{ r.label }}</x-import></sc-for>
               </div>
               <sc-if value="{{ p.deactivate }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ p.footBtn }}" hint-size="100%,44px">Deactivate</x-import></sc-if>
             </article>
@@ -633,16 +633,28 @@ class Component extends DCLogic {
        status chips pinned, the list scrolled to the person whose card was tapped. Only an active
        member's card opens this screen. */
     /* Board 12's card() and foot(): the status mark on the avatar's corner rides with the status word
-       on the line (N6b); an active card ends with a quiet Deactivate, the last EPC Owner's switched off
-       its reason in the button's bubble; a deactivated card has no act. */
+       on the line (N6b); each role a Badge in its kind's iris tone (violet sells, blue plans and runs,
+       magenta installs); an active card ends with a raised Deactivate in danger words, full width, the
+       last EPC Owner's switched off with its reason in the button's bubble; a deactivated card has no act. */
     const MARK = { active: "var(--success)", deactivated: "var(--neutral)" };
-    const foot = (p) => (p.onlyOwner
-      ? { variant: "ghost", size: "md", fullWidth: true, disabled: true, disabledReason: "Only EPC Owner" }
-      : { variant: "ghost", size: "md", fullWidth: true, onClick: this.noop });
+    const KIND = {
+      "EPC Owner": "violet", "Sales Manager": "violet", "Sales Executive": "violet", "Marketing": "violet",
+      "Survey Engineer": "blue", "Design Engineer": "blue", "Project Manager": "blue", "Operations": "blue", "Finance": "blue", "HR/Admin": "blue",
+      "Field Technician": "magenta", "Installation Team Member": "magenta",
+    };
+    const userMinus = h("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true },
+      ["M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2", "M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z", "M22 11h-6"].map((d, i) => h("path", { key: i, d: d })));
+    const foot = (p) => {
+      const deactivate = { variant: "secondary", size: "md", fullWidth: true, tone: "danger", icon: userMinus };
+      return p.onlyOwner
+        ? Object.assign(deactivate, { disabled: true, disabledReason: "Only EPC Owner" })
+        : Object.assign(deactivate, { onClick: this.noop });
+    };
     const card = (p) => ({
-      name: p.n, line: p.line, mark: MARK[p.k], roles: p.r, you: !!p.you, avatar: 48,
+      name: p.n, line: p.line, mark: MARK[p.k], roles: p.r.map((r) => ({ label: r, tone: KIND[r] })), you: !!p.you, avatar: 48,
       deactivate: p.k === "active", footBtn: foot(p),
     });
+    const NITIN = { n: "Nitin Pawar", k: "active", line: "Active · last seen today", r: ["Project Manager"] };
     const SUNIL = { n: "Sunil Bhosale", k: "active", line: "Active · last seen today", r: ["Installation Team Member"] };
     const VIKRAM = { n: "Vikram Deshpande", k: "active", line: "Active · last seen 30 Aug", r: ["Survey Engineer", "Design Engineer", "Installation Team Member"] };
     const DEEPAK = { n: "Deepak Jadhav", k: "deactivated", line: "Deactivated · last seen 12 Aug", r: ["Installation Team Member"] };
@@ -680,7 +692,8 @@ class Component extends DCLogic {
       },
 
       behindVikram: [card(SUNIL), card(VIKRAM), card(DEEPAK)],
-      behindRajesh: [card(RAJESH), card(SUNIL), card(VIKRAM), card(DEEPAK)],
+      /* Board 12's m-guard, scrolled to your row: Nitin, then Rajesh, Sunil, Vikram and Deepak. */
+      behindRajesh: [card(NITIN), card(RAJESH), card(SUNIL), card(VIKRAM), card(DEEPAK)],
 
       sheet: sheetFor(VIKRAM_HEAD, "m13-presets-lbl",
         footer(grantSentence("Vikram", ["survey", "design", "install"]), saveOff(unchanged))),

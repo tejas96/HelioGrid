@@ -71,7 +71,8 @@ addresses only `epc_owner`, so the Billing row shows only on the EPC Owner's acc
 
 **Rulings at the M01 board check (owner, 2026-10-16).**
 
-- **The roles are chips that wrap, with no cap**, under *Your role* / *Your roles* in the account
+- **The roles are `Badge`s that wrap, with no cap**, each in the iris tone of its kind (violet sell and
+  lead, blue plan and run, magenta on site; design-system change 7), under *Your role* / *Your roles* in the account
   card's second row; that row reopens the role card (`SCR-M01-10`).
 - **The sections are *Your account*, *Language and units* and *Push notifications*** at both widths.
 - **At 1536 the page is one column of cards, at most 760 wide, with no breadcrumb**, and the settings
@@ -79,8 +80,11 @@ addresses only `epc_owner`, so the Billing row shows only on the EPC Owner's acc
   settings list*).
 - **At 1536 *Language and units* are `SegmentedControl`s with captions**; the phone keeps option
   cards with their source labels.
-- **The Billing row is the same `Switch` row as the four groups** — switched on, disabled — with its
-  `ComplianceFloor` line under its name as the caption, at both widths.
+- **The Billing row is the same `Switch` row as the four groups** — switched on, disabled — with an
+  information button beside its name, at both widths (owner ruling 2026-10-17, canvas comment: the
+  line under the name read as clutter). The `Explainer` *Why Billing stays on* opens on a tap with
+  *Always sent, and it cannot be muted: billing events are audit-relevant for the owner account.*
+  The locked switch is what shows it cannot be muted (`F6-15`); the reason is on demand.
 - **The account card holds two rows:** the name row (avatar, name, *Edit name*) and the *Your role*
   row, which keeps the way into `SCR-M01-10`. The *Your role* row is a `ListRow` at both widths; on
   the phone the name row is one too.

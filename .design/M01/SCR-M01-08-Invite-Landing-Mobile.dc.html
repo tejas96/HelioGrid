@@ -98,7 +98,7 @@ a:hover{color:var(--link-hover)}
             <span style="display:block;width:88%;height:var(--sp-6);border-radius:var(--rf-md);{{ shimmer }}"></span>
             <span style="display:block;width:56%;height:var(--sp-6);border-radius:var(--rf-md);{{ shimmer }}"></span>
           </div>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="loading" density="expressive" style="{{ cardSkeleton }}" hint-size="100%,160px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="loading" density="expressive" style="{{ cardSkeleton }}" hint-size="100%,163px"></x-import>
         </div>
       </div>
     </div>
@@ -302,7 +302,7 @@ class Component extends DCLogic {
     const NS = window.HelioGridDesignSystem_c8aa43, h = React.createElement;
     const phone = h("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, "+91 98450 27746");
     return h(NS.FactRows, { label: "Your invite", density: "expressive" }, [
-      h(NS.FactRow, { key: "r", label: "Rajesh set you up as", values: this.presets, stack: false }),
+      h(NS.FactRow, { key: "r", label: "Rajesh set you up as", values: this.presets.map((p) => h(NS.Badge, { key: p, tone: "violet", density: "functional" }, p)), stack: false }),
       h(NS.FactRow, { key: "p", label: "Mobile number", value: phone })
     ]);
   }
@@ -378,7 +378,7 @@ class Component extends DCLogic {
       /* The skeleton's sweep: the Card's own shimmer, one step darker so it reads on the white page. */
       shimmer: "background:linear-gradient(90deg,var(--canvas-sunken) 25%,var(--fill) 50%,var(--canvas-sunken) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite",
       /* The invite card's height, so the skeleton holds the place the card will take. */
-      cardSkeleton: { minHeight: 160, boxSizing: "border-box" },
+      cardSkeleton: { minHeight: 163, boxSizing: "border-box" },
       yes: true,
       no: false,
       noop: () => {},

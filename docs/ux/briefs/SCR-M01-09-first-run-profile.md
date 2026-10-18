@@ -80,13 +80,22 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `photo
 10. **The heading stays *How your team sees you* in every state.** A state changes the data, the
     chip and the one act, never the heading.
 11. **At 1536 the photo act reads *Choose a photo* with the upload icon** (a file is chosen there,
-    not taken), and in `error-save` the refusal banner spans the task pane, just above the act.
+    not taken), and in `error-save` the refusal banner spans the task column, just above the act.
 12. **At 1536 the screen is the onboarding two-pane** (owner ruling 2026-10-17, M01 design), the pattern
-    `SCR-M01-07` and `SCR-M01-10` draw: the brand pane — wordmark, heading, ask — on columns 1–4
-    with the bloom, and the task pane on columns 5–12, the name then the photo side by side and the
-    act at its right foot. The language control sits at the task pane's top right.
+    `SCR-M01-07` and `SCR-M01-10` draw: the brand pane — wordmark, heading, and the three lines of decision 14 — on columns 1–4
+    with the bloom, and the task pane on columns 5–12. The language control sits at the task pane's
+    top right.
 13. **On the phone the act sits right under the photo group**, never pinned to the frame's foot;
     on a short screen nothing fills the space below it.
+14. **At 1536 the brand pane says why, and the task is one centred column** (owner pick "A + L2",
+    2026-10-17, canvas comment). Under the heading, three lines replace the information button, each
+    with an accent icon: *Suryodaya Solar sees this name beside everything you do.* · *A photo helps
+    teammates recognise you.* · *You can change both later in Profile & preferences.* The task is
+    one 440 px column in the exact middle of the task pane, as `SCR-M01-08` draws it: the photo,
+    then the name, then the act at full width. The phone keeps its information button. The three lines
+    never change by state, as the heading does not (decision 10), so the photo error at 1536 does not
+    repeat where to add one later: it reads *Try again, or add one later.* The drop onto the circle
+    needs no words: `PhotoField` highlights the circle while a file is dragged over it.
 
 ## Data volume
 
