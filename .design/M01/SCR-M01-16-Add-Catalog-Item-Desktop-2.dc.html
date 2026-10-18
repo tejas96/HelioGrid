@@ -202,6 +202,8 @@ class Component extends DCLogic {
     const NS = window.HelioGridDesignSystem_c8aa43;
     if (!NS) return {};
     const h = React.createElement;
+    /* A record identifier renders mono and tabular (F7-09); the words around it stay sans. */
+    const inSentence = (before, id, after) => h(React.Fragment, null, before, h("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, id), after);
     const noop = this.noop;
     const money = (n) => (NS.IN_FORMAT ? NS.IN_FORMAT.money(n) : String(n));
 
@@ -431,10 +433,10 @@ class Component extends DCLogic {
       noop: noop,
 
       /* 375 callers */
-      topLeads: topBar("Back to Leads", "Proposal 0412", OWNER),
-      topStudio: topBar("Back to Leads", "Design DS-0188", OWNER),
+      topLeads: topBar("Back to Leads", inSentence("Proposal ", "0412", ""), OWNER),
+      topStudio: topBar("Back to Leads", inSentence("Design ", "DS-0188", ""), OWNER),
       topSettings: topBar("Back to settings", "Catalog", OWNER),
-      topProposals: topBar("Back to Proposals", "Proposal 0419", SALES),
+      topProposals: topBar("Back to Proposals", inSentence("Proposal ", "0419", ""), SALES),
       navOwnerLeads: bottomNav("leads", false),
       navOwnerMore: bottomNav("more", false),
       navSalesProposals: bottomNav("proposals", true),
@@ -499,13 +501,13 @@ class Component extends DCLogic {
       priceBlank: price(null, "panel"),
 
       /* 375 sheets */
-      sheetPanel: sheetFor("Proposal 0412 · component picker", "Add a panel", LINE_PICKER, "Add and select"),
-      sheetInverter: sheetFor("Studio DS-0188 · component picker", "Add an inverter", LINE_STUDIO, "Add and select"),
+      sheetPanel: sheetFor(inSentence("Proposal ", "0412", " · component picker"), "Add a panel", LINE_PICKER, "Add and select"),
+      sheetInverter: sheetFor(inSentence("Studio ", "DS-0188", " · component picker"), "Add an inverter", LINE_STUDIO, "Add and select"),
       sheetBattery: sheetFor("Catalog settings · items", "Add a battery", LINE_SETTINGS_375, "Add to catalog"),
-      sheetReview: sheetFor("Proposal 0412 · from a datasheet", "Add a panel", LINE_REVIEW, "Add and select"),
-      sheetPrefilled: sheetFor("Proposal 0412 · from the selected item", "Add a panel", LINE_PREFILLED, "Add and select"),
-      sheetUnpriced: sheetFor("Proposal 0419 · component picker", "Add a panel", LINE_UNPRICED, "Add and select"),
-      sheetReturned: sheetFor("Proposal 0412 · component picker", "Add a panel", "", "Add and select",
+      sheetReview: sheetFor(inSentence("Proposal ", "0412", " · from a datasheet"), "Add a panel", LINE_REVIEW, "Add and select"),
+      sheetPrefilled: sheetFor(inSentence("Proposal ", "0412", " · from the selected item"), "Add a panel", LINE_PREFILLED, "Add and select"),
+      sheetUnpriced: sheetFor(inSentence("Proposal ", "0419", " · component picker"), "Add a panel", LINE_UNPRICED, "Add and select"),
+      sheetReturned: sheetFor(inSentence("Proposal ", "0412", " · component picker"), "Add a panel", "", "Add and select",
         h(NS.PendingAction, {
           key: "p", state: "returned", label: "Add and select",
           reason: "Not added or selected — everything you typed is still here.",
@@ -514,12 +516,12 @@ class Component extends DCLogic {
         })),
 
       /* 1536 panels */
-      panelPanel: panelFor("Proposal 0412 · component picker", "Add a panel", LINE_PICKER, "Add and select"),
-      panelInverter: panelFor("Proposal 0412 · component picker", "Add an inverter", LINE_PROPOSAL_INV, "Add and select"),
+      panelPanel: panelFor(inSentence("Proposal ", "0412", " · component picker"), "Add a panel", LINE_PICKER, "Add and select"),
+      panelInverter: panelFor(inSentence("Proposal ", "0412", " · component picker"), "Add an inverter", LINE_PROPOSAL_INV, "Add and select"),
       panelBattery: panelFor("Catalog settings · items", "Add a battery", LINE_SETTINGS_1536, "Add to catalog"),
-      panelReview: panelFor("Proposal 0412 · from a datasheet", "Add a panel", LINE_REVIEW, "Add and select"),
-      panelPrefilled: panelFor("Proposal 0412 · from the selected item", "Add a panel", LINE_PREFILLED, "Add and select"),
-      panelUnpriced: panelFor("Proposal 0419 · component picker", "Add a panel", LINE_UNPRICED, "Add and select"),
+      panelReview: panelFor(inSentence("Proposal ", "0412", " · from a datasheet"), "Add a panel", LINE_REVIEW, "Add and select"),
+      panelPrefilled: panelFor(inSentence("Proposal ", "0412", " · from the selected item"), "Add a panel", LINE_PREFILLED, "Add and select"),
+      panelUnpriced: panelFor(inSentence("Proposal ", "0419", " · component picker"), "Add a panel", LINE_UNPRICED, "Add and select"),
 
       /* the discard decision: answered by an act, the recovery route in words */
       confirmDiscard: {
