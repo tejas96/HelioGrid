@@ -46,7 +46,7 @@ Entry and exits, decided: one entry — More · Settings · Proposal template, t
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Empty`, `Error`, the delete-a-phase confirm, and the leave-with-an-unsaved-change confirm (owner ruling 2026-10-16).
 
-The page runs in the order the document reads: cover, sections, terms, bank details, timeline, then the preview. At 1536 the settings side list stands at the left and the title carries no breadcrumb; the form is one column of section cards, at most 760 wide, and the preview is its own `--surface` card, 420 px wide, 32 px from it, level with the title, the cover shown whole, standing while the form scrolls (the preview column `SCR-M01-18` uses); phases take the row arrangement; the phase editor and the full-size reader open as non-modal side panels; the act bar belongs to the form column.
+The page runs in the order the document reads: cover, sections, terms, bank details, timeline, then the preview. At 1536 the settings side list stands at the left and the title carries no breadcrumb; the form is one column of section cards, at most 760 wide, and the preview is its own `--surface` card, 420 px wide, 32 px from it, level with the title, the cover shown whole, standing while the form scrolls; phases take the row arrangement; the phase editor and the full-size reader open as non-modal side panels; the act bar belongs to the form column.
 
 **Rulings at the M01 board check (owner, 2026-10-16).**
 

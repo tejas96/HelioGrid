@@ -33,30 +33,34 @@ Decided: reached from More · Settings · Branding, and the phone's back control
 **Layout, decided in design.**
 
 - A page inside the shell, not a sheet: Branding is a destination with nothing behind it to keep.
-- Reading order: the standing line, logo, colour, letterhead, the company details as they print, then
-  both previews. The logo is shown on white, the paper it prints on.
-- The brand colour is the design system's `BrandColorField`, mounted, not rebuilt.
+- **Preview first, one part at a time** (owner pick "P", canvas comment; references: Dribbble
+  *invoice customization* by Clinton, *Settings & Invoice Customization (Mobile)* by Arafat Ovi for
+  Qubix). The page opens on what customers get: the document on a `--canvas-sunken` stage, with one
+  switch, *Proposal · Link page*, and *Open full size*. One more switch, *Logo · Colour · Letterhead*,
+  shows one part's fields at a time — under the stage at 375, in an editor card beside it at 1536.
+  The editor ends with one row, *Name, address and GSTIN · From your Business profile*, that opens the
+  business profile; the cover prints those details. The logo is shown on white, the paper it prints on.
+- The brand colour is the design system's `BrandColorField`, mounted, not rebuilt, with
+  `specimen={false}` and `verdict="short"` (design-system change 12): the live document is the
+  specimen, and the outcome is one line with no ratio — *Reads well — white text on it, headings in it.*
 - Branding commits once. At rest there is no act bar and no disabled *Save*: a standing line says the
   set is saved and in force, who changed it last and when. The act bar (*Save branding* · *Discard
   changes*, with its consequence above) appears with a change — sticky on the phone, the form column's
-  footer at 1536.
-- *Sent proposals keep their branding.* (`F8-15`) closes the page — at 1536 it ends the form
-  column — and gives way while the act bar is up; it is also the act bar's line and the remove-logo confirm's line.
+  footer at 1536 — the editor card's foot.
+- *Sent proposals keep their branding.* (`F8-15`) closes the page — at 1536 it ends the editor
+  card — and gives way while the act bar is up; it is also the act bar's line and the remove-logo confirm's line.
 - Removing the logo is confirmed, and the confirm gives the recovery route: add a logo again from this
   screen at any time.
-- The two framed previews form one preview group. At 375 they stack, and the cover is cut at its
-  readable scale, so *Open full size* is on the default screen. At 1536 the settings side list, then the form
-  column — one column of cards, 668 wide — and, 32 px from it, the previews in their own `--surface`
-  card, 420 wide: they stack, each shown whole, never cut, and the card starts level with the title
-  and stays put while the form scrolls. `SCR-M01-19` uses the same preview column. The company details are one `FactRows` group in their card.
+- One preview shows at a time, chosen by *Proposal · Link page*. At 375 the stage sits under the
+  title, the cover cut at its readable scale, *Open full size* beside the switch. At 1536 the settings
+  side list, then the stage — the document whole at 480 wide — and, 32 px from it, the editor card,
+  380 wide, starting level with the stage's switch and staying put while the stage scrolls.
 - *Open full size* is a sheet at 375, fitting the cover to the sheet's width, and a non-modal side panel at 1536.
-- The drop surface is the logo's control when there is none, at both widths. Once a logo exists the
-  phone offers *Replace* and no drop surface; at 1536 the drop surface is the replace route, with the
-  limits in its hint, and there is no separate *Replace* button. At 375 *Replace* and *Remove* sit
-  centred, the limits line centred under them.
-- At 1536 a letterhead row has its label on the left and its field on the right; the lines' rule is
-  the caption under its label.
-- At 1536 the colour card has no title row: the field's label heads it.
+- The drop surface is the logo's control when there is none, at both widths. Once a logo exists it
+  sits on white with *Replace* (secondary) and *Remove* (ghost) under it and no drop surface — centred
+  at 375 with the limits line under them, the limits at the row's right at 1536.
+- The letterhead's three fields stack, label over field, at both widths; the lines' rule is the
+  field's hint.
 
 ## Requirements (verbatim)
 
@@ -71,8 +75,8 @@ Decided: reached from More · Settings · Branding, and the phone's back control
 ## States
 
 - **Loading** — current branding values and the preview document loading.
-  The form is four `Card`s in their loading state — logo, colour, letterhead, company details — at
-  the loaded cards' heights, then `PreviewFrame`'s loading form; the form and the preview fill together. A preview placeholder is never a white rectangle — that
+  The stage is `PreviewFrame`'s loading form, and the editor's switch and fields are skeletons at
+  their loaded heights; the stage and the editor fill together. A preview placeholder is never a white rectangle — that
   reads as an empty letterhead. The shell is drawn whole.
 - **Empty** — a tenant that has never set branding: platform defaults are in place and everything still works (M01-28's zero-config law applies to every setting); teaching treatment per F7's empty-state contract.
   The previews do the teaching: they show what goes out today — on the cover the company name in place of a mark, on the link page the design system's initials badge,
@@ -80,20 +84,20 @@ Decided: reached from More · Settings · Branding, and the phone's back control
 - **Error** — a save or upload fails; what happened and what to do next.
   A failed save keeps the edit and the act bar; the previews read *not saved yet*, and the standing
   line still names what customers receive. *Retry* sits in the banner, beside its reason.
-- **normal** — logo, letterhead and brand colour editable; company details are the business profile's single write-point facts (M01-31 context), so they are shown here as they print — they fill the letterhead's registration line — with one row to *Business profile*, where they are written.
+- **normal** — logo, letterhead and brand colour editable; company details are the business profile's single write-point facts (M01-31 context), so they are shown as they print — on the cover's band — with one row to *Business profile*, where they are written.
 - **live-preview / live-document-preview** — the preview shows the actual proposal cover and customer-link header with the tenant's logo and derived-compliant colours before saving (§M01.6 behavior detail; M01-30's law).
 - **palette-derived-compliant-shades / contrast-derived-shade** — a palette that fails contrast is never rejected: compliant shades are derived from what the tenant chose and previewed live, so the tenant sees exactly what customers will (M01-50, F7-07).
   Three varieties: a colour text cannot sit on (the darker shade offered); one that clears the 3:1
   mark floor but cannot be a word (fills and rules, never type); one under the mark floor (fill only).
 - **logo-invalid-limits-stated** — a logo too large / wrong format is validated on upload with the actual limits stated (§M01.6 edge cases, the `S6B.wrong.5` pattern). The refusal names the declined file and states the limits; it does not print the file's own size, at either width (owner ruling 2026-10-16).
-  At 375 the rejection is a block on the logo card; at 1536 the drop surface carries it, its limits
-  hint underneath.
+  The rejection is a block in the *Logo* part, above the mark that stays, at both widths.
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Empty`, `Error`, `palette-derived-compliant-shades / contrast-derived-shade`, the remove-logo confirm, and the leave-with-an-unsaved-change confirm (owner ruling 2026-10-16).
 
 **Rulings at the M01 board check (owner, 2026-10-16).**
 
-- **The company details are `FactRows`**, as they print (`D231`).
+- **The company details are one row to *Business profile*** — the cover prints them as they print
+  (owner pick "P", which replaces the earlier `FactRows` ruling).
 - **The act bar and the preview's loading form are the design system's.** The sticky act bar at 375,
   the form-column footer at 1536 and a `PreviewFrame` loading state are design-system changes, never
   this screen's own parts.
