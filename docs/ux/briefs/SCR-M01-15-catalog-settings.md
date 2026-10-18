@@ -8,7 +8,7 @@ The one two-tier catalog surface: browse, search, rates panel with tier attribut
 
 Reached from: the tenant-config settings surface map — *Catalog · Price book* are named surfaces in M01 §4's stable vocabulary; a deeper entry path is not pinned by PRD — designer decides, note the decision. Leads to: **Add Catalog Item** (SCR-M01-16) — inline add is available from Catalog settings as well as the pickers (M01-39); **Catalog Import Wizard** (SCR-M01-17) — Catalog settings is one of the wizard's three entry points (M01-41, §M01.4 behavior detail); release publish and price-book version browsing happen on this surface (M01-43, M01-48, §M01.5 behavior detail: "The price book renders as the rates panel of the one catalog surface").
 
-Entry is More → Settings → *Catalog*. The back control names the caller (*Back to settings*); at 1536 the settings side list, its *Catalog* row current (`SCR-SHELL-01`, *More: the settings list*). *Add an item* and *Import a file* sit at the foot of the list, where an owner concludes the item is missing.
+Entry is More → Settings → *Catalog*. The back control names the caller (*Back to settings*); at 1536 the settings side list, its *Catalog* row current (`SCR-SHELL-01`, *More: the settings list*). *Add an item* and *Import a file* sit at the foot of the list on the phone, where an owner concludes the item is missing; at 1536 they end the toolbar row (owner pick "Items A", 2026-10-18).
 
 ## Requirements (verbatim)
 
@@ -38,7 +38,7 @@ Entry is More → Settings → *Catalog*. The back control names the caller (*Ba
 - **price-book-version-new** — the new-version editor names each rate in English; authoring a rate's name per language (the contract stores it per language, `F3-10`) comes with the language-switcher pattern at the build (owner ruling 2026-10-16; `D248`).
 - **price-book-version-browse** — past price-book versions are browsable read-only; exactly one version is active; the default margin rides the version (M01-48; §M01.5 behavior detail).
 
-Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and edit), `archived-filter`, `archive-warns-referenced-drafts`, `release-contents-inspect`.
+Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and edit), `archived-filter`, `archive-warns-referenced-drafts`, `release-contents-inspect`, and the rates panel's empty state.
 
 - **Loading** keeps every fixed word, the panel switch and the search box; the release strip, the kind facets and six placeholder rows, in the real row grid, load.
 - **Empty** on the rates panel is a real empty: nobody else supplies those rates. It teaches that the first set entered becomes version 1.
@@ -52,10 +52,11 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
 **Decisions made in design (2026-09-01) — later screens inherit them.**
 
 1. **One destination, two panels.** *Catalog* is the one row in the settings surface map; *Price
-   book* is not its own destination. At 375 the two panels switch with a `SegmentedControl`; at 1536
-   the rates panel sits **beside** the list. `M01-32` forbids two catalogs to administer and
-   §M01.5 calls the price book *the rates panel of the one catalog surface* — the switch exists only
-   because 375 has no *beside*.
+   book* is not its own destination. The two panels, *Items* and *Rates*, switch at both widths: a
+   `SegmentedControl` at 375 and `Tabs` in the page head at 1536 (owner picks "Items A" and "Rates
+   P1", 2026-10-18 — the rates panel beside the list made four columns and read as clutter).
+   `M01-32` forbids two catalogs to administer, and §M01.5 calls the price book *the rates panel of
+   the one catalog surface*.
 2. **`empty` on the items panel is not an empty list and never will be.** A tenant's first day
    already has the platform slice (`M01-32`: there is never "no catalog"), so what is empty is the
    tenant's own two dimensions — own SKUs and overrides — and the teaching card sits above a full
@@ -67,9 +68,9 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
    date), and states the consequence as a number before the act, in the board's words *14 designs on r2026-08
    will show as out of date.* A release's contents are a **before-and-after**, not a list of names. Until
    `T-FPLAT-028` lands that count renders as a named absence; the board draws the end state (`D235`).
-5. **The three row acts are 32px at 1536 and 44px on the phone card.** The design system's one
-   in-row exception, whose three conditions all hold: a `<table>` row, pointer-only, and the same
-   acts at full size elsewhere.
+5. **The row acts are 44px at both widths.** The design system's `IconButton` never draws under the
+   44px floor, so the 1536 table gives its acts column the room (owner pick "Items A" redraw); the
+   old 32px in-row exception is retired.
 6. **Returning from `SCR-M01-16` and `SCR-M01-17` lands on the panel and scroll position the caller
    was on.** Written into both briefs.
 7. **The catalog keeps its own search.** It is the one exception to `F7-47`'s one global search,
@@ -88,32 +89,44 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
 **The surface.**
 
 - Each panel opens with its own versioning strip: the release in force on Items, the active version
-  and its margin on Rates. At 1536 the two strips sit side by side under the title — the release
-  strip across 8 columns, the price-book strip across 4 — above the list and the rates.
+  and its margin on Rates. At 1536 each strip spans the tab's width under the page head.
 - Source (platform / own) is a dimension in the filter panel, never a toolbar toggle — a toggle would
-  split again what `M01-32` collapses. Component kind stays on the toolbar as multi-select facet
-  chips; none selected is everything.
-- A row's mark line: the layer (*Platform* · *Your SKU* · *Overridden*) and `M01-35`'s spec label (a tenant's own spec reads *Your own*) as
+  split again what `M01-32` collapses. Component kind stays on the toolbar as chips, *All* then one per
+  kind; kinds are multi-select, and *All* is none selected.
+- A row's mark line on the phone: the layer (*Platform* · *Your SKU* · *Overridden*) and `M01-35`'s spec label (a tenant's own spec reads *Your own*) as
   plain chips; tinted badges for compliance (success), *Representative data* and *Hidden from
-  pickers* (warning) and *Preferred* (accent). No F8 tier sits on a price the company set
+  pickers* (warning) and *Preferred* (accent). At 1536 one item is one line (owner pick "Items A"):
+  a kind tile tinted by kind, the name, and under it *kind · spec* with the spec label as a small
+  mark (*✓ datasheet* success, *Representative data* as a warning `Badge`, *Your own*) and *Hidden
+  from pickers* as a warning `Badge` with the eye-off glyph when hidden; without the manage grant a
+  preferred item adds an accent *Preferred* `Badge`, since the star act is absent. The layer moves
+  to the *Price comes from* column. The row keeps one line; a long name truncates and its full text
+  stays reachable. The page head is the title and the tabs only — the count lives in the list's
+  summary line and its pager. No F8 tier sits on a price the company set
   (decision 3); the spec label never sits beside a price. Where the pack declares schemes and an item records
   none, the row names the gap (*No ALMM or DCR flag recorded*; the IN pack's schemes, `F1-44`).
-- *Preferred* and *Hidden from pickers* are each stated by a chip and set by a pressed toggle — never
-  one icon doing both.
-- A platform item with no tenant price reads *No price set*, with no tier; the *Platform* chip says why.
+- *Preferred* and *Hidden from pickers* are each set by a pressed toggle. *Hidden from pickers* is
+  always also stated in words (on the phone a badge, at 1536 the mark under the name); at 1536
+  *Preferred* is stated by the pressed star and the list's *preferred first* order (owner pick "Items A").
+- A platform item with no tenant price reads *No price set*, with no tier; *Platform* (the chip on the phone, *Price comes from* at 1536) says why.
 - At 375 tier attribution lives in the rates panel and the row carries only the layer chip. At 1536
-  the items table's columns are Item (name, what it is, spec label, marks) · Compliance · Effective
-  price · *Price comes from* · row actions, and the list and the rates panel scroll independently.
+  the items table's columns are Item (kind tile, name, kind · spec and its marks) · Compliance ·
+  Effective price · *Price comes from* · row actions, one line per item, in one raised card.
 - At 1536 the override editor is a side panel that does not trap focus: the row being priced stays
   reachable. It has no title row and no close button: *Cancel* and Escape close it.
 - At 1536 sorting is a `Select`, *Sort*: Preferred first, Name, Price, Recently changed. The list's
   summary line reads *342 items · every kind · preferred first* at both widths.
 - A panel's head is its plain title, with its caption (and chip) on the line under it.
-- Rates are grouped by how each rate is charged, at both widths — never a rates table.
+- On the phone rates are grouped by how each rate is charged. At 1536 the Rates tab is one table —
+  Rate · Charged · Amount, one rate per line, the charge a tinted badge (per job violet, per kW blue,
+  per visit magenta, per metre blue) (owner pick "Rates P1"). Eleven rates fit one screen, so the
+  tab carries no search and no filter chips.
 - At 1536 the versions list, a past version and the new-version editor open in the side panel.
 - Without the manage grant every administration act is absent, never disabled — publish, add,
-  import, the row acts, the row click, a new price-book version — and a `ScopeNote` under the release strip, at the top of the list region, names whose act
-  it is.
+  import, the row acts, the row click, a new price-book version — and one info alert under the release
+  strip, at the top of the list region, names whose acts they are in one line: *View only — Rajesh or
+  Operations edit.* (owner ruling 2026-10-18, canvas comment: the composed sentence and its separate
+  information button read as too much).
 
 ## Data volume
 
