@@ -18,10 +18,11 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
    the Items panel at the caller's row (`SCR-M01-15` decision 6).
 3. **The datasheet path stays inside this sheet** and becomes the review state; only the spreadsheet
    path leaves, to `SCR-M01-17`. Two accelerators, one form.
-4. **Of the extracted values, only the rated power (Wp/kW) is `estimated`, with the page named** —
-   *read off page 2*. An engine read it and `M01-40` forbids committing it silently, so the tier says
-   so until a person confirms. Every other read value names its page in its helper (*Read from the datasheet, page 1 — check
-   it.*) and carries no
+4. **Of the extracted values, only the rated power (Wp/kW) is `estimated`** — an engine read it and
+   `M01-40` forbids committing it silently, so the tier says so until a person confirms. Every read
+   value sits under the page it came from — the specification card groups them under *Page 1* and
+   *Page 2* heads, and the item card ends with *Brand and model: page 1* — with no note under any field
+   (owner pick "R2 · By page", canvas comment). A read value carries no
    tier: outside money and energy a number carries none (`F8-01`). Values the tenant types carry
    `M01-35`'s label, shown as **Your own**, not an F8 tier: nothing computed them.
 5. **Abandoning a filled sheet is confirmed and un-dismissible**, and the confirm carries the
@@ -101,6 +102,9 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
   A banner titled *Filled in from <item>* (on the board, *Filled in from Vikram Solar Somera 540*), with no body line, heads the form. Each copied field says so in its own helper. The certification flags and the rate fields open blank with the reason under them as content; a blank price is empty, never 0. At 1536 the
   selected platform row stays on the caller's list, marked unchanged.
 - **pdf-extraction-review** — path (b): extracted fields shown in the same typed form as manual entry, each field editable, with the datasheet preview alongside; nothing commits until the person saves (M01-40, §M01.4 behavior detail).
+  One soft violet tile heads the form — a page thumbnail, *Read from your datasheet*, *2 pages · check
+  each value against its page*. At 1536 the document sits beside the specification card; at 375 the
+  tile's *View* opens it, since nothing fits beside.
 - **extraction-failed-prefilled-manual** — extraction fails entirely (scan, photo, unusual layout): manual form with whatever was salvaged pre-filled; the datasheet still attaches to the item (M01-40, §M01.4 edge cases).
   Each salvaged value is marked as salvaged, to be checked against the page.
 - **inline-add-without-manage-grant** — an inline add from a picker by someone without `F2.M01.manage-catalog` held outright (a Sales Executive): the form has no price field, and the caller's list shows that person no prices. One line at the act says the item can be picked without a price and someone who manages the catalog prices it later (§M01.4 Permissions; contract `createItem`). Neither accelerator shows: the datasheet upload and the import are catalog administration (`manage_catalog`).
