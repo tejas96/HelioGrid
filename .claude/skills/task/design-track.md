@@ -103,9 +103,16 @@ from the catalog. The repo already holds the design system (`packages/theme/src/
 `packages/ui`), so no board is ever opened in a browser: QA compares the app with the board's code
 through the RFC's frame map.
 
+**Samples.** When the owner asks for design samples, first find the top 5 Dribbble shots of the
+same kind of screen, most-liked first. The sample message opens with those 5 links, one line each
+on the idea taken; then come the samples, each naming its shot. Draw our own answer in the design
+system, never a copy, and give each extra job to a component already on the screen
+(`docs/ux/design-context.md` §3, *One versatile component before a new one*).
+
 **Changing the design system.** A board draws only with the design system's components and tokens.
 A board that needs what the system lacks stops its screen: the change is proposed to the owner as
-the exact diff of the design system artifact's files, and nothing is published before the owner's
+the exact diff of the design system artifact's files — a new mode or prop on a component the system
+has first, a new component only when none can carry the job — and nothing is published before the owner's
 yes. Its `SKILL.md` says how files are revised; a change to a component's
 `project/components/<family>/<Name>.jsx` is made the same in `project/_ds_bundle.js`, which every
 canvas mounts and which holds each component compiled, and the bundle must still parse

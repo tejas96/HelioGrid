@@ -162,6 +162,11 @@ anything** (contract item 6): a thing that moves is re-placed, and your notes sa
   the decision in front of them is a **row that leads somewhere**, never a panel competing on this
   screen — and a screen is finished when nothing more can come off it without hiding a decision.
   **The first screenful answers the screen's one job**; everything else is below it or behind it.
+- **One versatile component before a new one.** Less UI does more: a job goes first to a component
+  the screen already shows, through a mode or a prop — `ReorderList`'s foot line carries a row's
+  edit, move and delete (`SCR-M01-19`); a page picker replaces a row of tabs. Never two controls for
+  one job. Fewer kinds of control make a screen predictable and calm; a new control is added only
+  when no component on the screen can carry the job.
 - **Which way a thing leaves the screen, in order:** needed to decide now → it stays · a record
   looked up now and then → a row leading to its own screen · something edited or decided → a sheet
   or side panel (`F7-21`) · teaching → the ask (§2).
