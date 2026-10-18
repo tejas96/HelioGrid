@@ -21,14 +21,16 @@ Entry and exits, decided: one entry — More · Settings · Proposal template, t
    locale (`R1` via `F3-11`) — the one fact here a tenant cannot change — and `F7-11` says disabled
    is never the only signal.
 3. **A timeline phase's fields live in a sheet, not inline in the row.** A 205px inline field cannot
-   hold a sentence a customer reads, and the row already spends its width on three 44px controls.
+   hold a sentence a customer reads; the row shows the phase and opens its editor from a pencil.
 4. **Terms and conditions cannot be switched off**. Every other section is the tenant's
    choice; this one is a floor, so the row carries **no toggle** and states the floor by name —
    `ComplianceFloor`'s case, where the control is absent rather than disabled. The wording stays
    the tenant's, through the same standard-terms editor — *whether it prints is not a setting*.
-5. **The reorder row is floored by its controls, not its text** — three 44px buttons give a 132px
-   floor against a 105–122px Devanagari body, so the text has 10–27px of slack before anything
-   moves. Measured in both languages: nothing moves.
+5. **The phase's words take the row's full width; its controls are the row's foot** (owner comment) —
+   ⌃ ⌄ 🗑 sit in one line under the phase, at the row's end (`ReorderList` `controls="foot"`,
+   design-system change 14), and the pencil starts that same line (`actionOf`, design-system change
+   15) — one line of icons per row, so a title and its note wrap only when the words need it, in any
+   language.
 
 ## Requirements (verbatim)
 
@@ -44,7 +46,7 @@ Entry and exits, decided: one entry — More · Settings · Proposal template, t
 - **Error** — a save fails; what happened and what to do next. The banner sits just above the act bar with no *Try again* — the bar's Save is the retry — and the edit is kept.
 - **normal** — cover, included sections, default terms & conditions and bank details editable; bank details are the business profile's single write-point (M01-51, M01-31); template edits version forward simply — last saved wins, audit-logged (§M01.6 behavior detail). At rest there is no act bar: a standing line under the title reads *Saved and in force · <name>, <date>*, as on `SCR-M01-18`. The intro says a Quick proposal is exactly what this screen holds, and the page closes, centred, on *Proposals already sent keep the template they were built with.* Sections are one list of rows in the *Sections* part — each row's title and description are its `Switch`'s label, the toggle at the row's end; the terms row is the floor, a lock and *Always prints* with no toggle (decision 4) — in the document's fixed order, with no reorder control (owner ruling 2026-10-16). The default T&C is edited in `RichText`, the builder's own editor.
 - **live-preview** — every config screen shows the effect: live preview of the affected customer document before saving (M01-30's law, §M01.6 behavior detail; documents already generated are immutable per F8-15 and never restyle retroactively). Any change raises the act bar — *Discard changes* and Save, with what the save does; its note and its buttons are centred. The preview shows the document only — its cover, sections and terms; the achievements, bank-details and timeline bands wait for `DocumentPreview` to gain them; on the phone it is the stage at the page's top, cut at a readable scale, with *Open full size*. Its sample customer and number are called a sample in the page's own text.
-- **timeline-phases-reorder** — the project-timeline template's default phases and descriptions being edited and reordered (M01-52). Arrows, never drag; the first row's up arrow stays focusable and says the phase is already first, and each move is announced. No duration column. At least one phase — the route to no timeline is the section's checkbox — and no reset to the platform phases. Deleting a phase asks first in a destructive `Modal` that says *Discard changes* brings it back: the delete lands only on save.
+- **timeline-phases-reorder** — the project-timeline template's default phases and descriptions being edited and reordered (M01-52). Each phase opens its editor from a pencil at the left of the row's foot, named *Edit <phase>*, with its ⌃ ⌄ 🗑 at the right of the same line (decision 5). Arrows, never drag; the first row's up arrow stays focusable and says the phase is already first, and each move is announced. No duration column. At least one phase — the route to no timeline is the section's checkbox — and no reset to the platform phases. Deleting a phase asks first in a destructive `Modal` that says *Discard changes* brings it back: the delete lands only on save.
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Empty`, `Error`, the delete-a-phase confirm, and the leave-with-an-unsaved-change confirm (owner ruling 2026-10-16).
 

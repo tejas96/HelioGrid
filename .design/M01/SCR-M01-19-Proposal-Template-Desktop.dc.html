@@ -235,22 +235,18 @@ class Component extends DCLogic {
     const phaseNote = (p) => h("span", {
       key: "n", style: { fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)", textWrap: "pretty" },
     }, p.note);
-    /* A row's act is a raised pill with its glyph (pick A): 16 px, stroke 1.8. */
-    const actGlyph = (paths) => h("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true },
-      paths.map((d, i) => h("path", { key: i, d: d })));
-    /* The pill shows "Edit"; its accessible name also carries the phase, in a visually hidden span. */
-    const hidden = { position: "absolute", width: 1, height: 1, margin: -1, padding: 0, overflow: "hidden", clip: "rect(0 0 0 0)", clipPath: "inset(50%)", whiteSpace: "nowrap", border: 0 };
-    const editPhase = (p) => h(NS.Button, { variant: "secondary", size: "sm", icon: actGlyph(["M12 20h9", "M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"]), onClick: this.noop },
-      ["Edit", h("span", { key: "n", style: hidden }, " " + p.title)]);
-    /* The 420 card leaves the words their own column only when Edit sits under them, beside the row's arrows. */
+    /* One line of icons under each phase's words (controls "foot"): the phase's own act, the pencil, at
+       the start; the arrows and delete at the end. Its name says which phase. */
+    const pencil = h(NS.Icon, { size: "sm" }, h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" },
+      ["M12 20h9", "M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"].map((d, i) => h("path", { key: i, d: d }))));
+    const editPhase = (p) => h(NS.IconButton, { label: "Edit " + p.title, size: 40, variant: "ghost", onClick: this.noop }, pencil);
     const phaseStack = (p) => h("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-1)", minWidth: 0 } }, [
       phaseTitle(p), phaseNote(p),
-      h("div", { key: "e", style: { display: "flex" } }, editPhase(p)),
     ]);
     const reorder = (items) => ({
       items: items, keyOf: (p) => p.id, labelOf: (p) => p.title,
-      label: "Project phases", itemNoun: "phases", density: "functional", controls: "row", minItems: 1,
-      onMove: this.noop, onDelete: this.noop, renderItem: phaseStack,
+      label: "Project phases", itemNoun: "phases", density: "functional", controls: "foot", minItems: 1,
+      onMove: this.noop, onDelete: this.noop, renderItem: phaseStack, actionOf: editPhase,
     });
 
     /* ══ The preview: the real document of a real tenant (sample={false}) — the customer and the number are
