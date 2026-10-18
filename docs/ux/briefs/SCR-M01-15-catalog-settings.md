@@ -127,8 +127,9 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
 - A panel's head is its plain title, with its caption (and chip) on the line under it.
 - On the phone rates are grouped by how each rate is charged. At 1536 the Rates tab is one table —
   Rate · Charged · Amount, one rate per line, the charge a tinted badge (per job violet, per kW blue,
-  per visit magenta, per metre blue) (owner pick "Rates P1"). Eleven rates fit one screen, so the
-  tab carries no search and no filter chips.
+  per visit magenta, per metre blue) (owner pick "Rates P1"). At 1536, above the table one row holds *Search
+  rates* and, at its right, one chip per way of charging — *All*, *Per job*, *Per kW*, *Per visit*,
+  *Per metre* — because a price book grows as a company adds rates (owner ruling, canvas comment).
 - At 1536 the versions list, a past version and the new-version editor open in the side panel.
 - Without the manage grant every administration act is absent, never disabled — publish, add,
   import, the row acts, the row click, a new price-book version — and one info alert under the release
