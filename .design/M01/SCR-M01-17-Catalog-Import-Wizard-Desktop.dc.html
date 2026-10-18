@@ -437,7 +437,8 @@ class Component extends DCLogic {
       badgeWarn: { tone: "warning", density: "functional", style: { gap: 4 } },
       pagePrev: { label: "Previous page", size: 44, variant: "ghost", disabled: true },
       pageNext: { label: "Next page", size: 44, variant: "ghost", onClick: noop },
-      chevLeftMd: { name: "chevron-left", size: "md", tone: "primary" },
+      /* only the disabled Previous page button draws it, so it takes the disabled ink */
+      chevLeftMd: { name: "chevron-left", size: "md", tone: "secondary", style: { color: "var(--text-disabled)" } },
     };
   }
 

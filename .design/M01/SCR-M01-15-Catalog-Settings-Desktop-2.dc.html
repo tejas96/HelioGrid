@@ -369,7 +369,8 @@ class Component extends DCLogic {
       warnIcon: iconProps(M.warn, "sm"),
       pagePrev: { label: "Previous page", size: 44, variant: "ghost", disabled: true },
       pageNext: { label: "Next page", size: 44, variant: "ghost", onClick: noop },
-      chevLeftMd: { name: "chevron-left", size: "md", tone: "primary" },
+      /* only the disabled Previous page button draws it, so it takes the disabled ink */
+      chevLeftMd: { name: "chevron-left", size: "md", tone: "secondary", style: { color: "var(--text-disabled)" } },
       btnAdd: { variant: "primary", size: "sm", onClick: noop, icon: icon(M.plus, "sm") },
       btnImport: { variant: "secondary", size: "sm", onClick: noop, icon: icon(M.upload, "sm") },
 

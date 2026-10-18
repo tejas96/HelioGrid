@@ -42,7 +42,16 @@ html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:v
               <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Bill of materials · line 3 of 7</span>
               <span style="font-size:var(--fs-h3);line-height:var(--lh-h3);font-weight:var(--fw-bold);letter-spacing:var(--tr-h3);color:var(--text-primary)">Choose a panel</span>
             </div>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ pickerFromSelection }}" hint-size="100%,520px"></x-import>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:var(--fs-overline);line-height:var(--sp-4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ listFromSelection.overline }}</span>
+                <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">{{ listFromSelection.summary }}</span>
+              </div>
+              <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);overflow:hidden">
+                <sc-for list="{{ listFromSelection.rows }}" as="r" hint-placeholder-count="6"><div style="display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:64px;box-sizing:border-box;{{ r.look }}"><span aria-hidden="true" style="width:36px;height:36px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;{{ r.tint }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ r.icon }}" hint-size="20px,20px"></x-import></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">{{ r.name }}</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">{{ r.spec }}</span><sc-if value="{{ r.unchanged }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;padding-top:4px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" density="functional" hint-size="auto,24px">Platform item · unchanged</x-import></span></sc-if></span><sc-if value="{{ r.priced }}" hint-placeholder-val="{{ false }}"><span style="flex-shrink:0;font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">{{ r.price }}</span></sc-if><sc-if value="{{ r.unpriced }}" hint-placeholder-val="{{ false }}"><span style="flex-shrink:0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">No price set</span></sc-if><sc-if value="{{ r.selected }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="Selected" style="width:24px;height:24px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:var(--text-inverse)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.check }}" hint-size="16px,16px"></x-import></span></sc-if></div></sc-for>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 12px 6px 20px;border-top:1px solid var(--line-soft)"><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ listFromSelection.range }}</span><span style="display:flex;align-items:center"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconButton" dc-props="{{ pager.prev }}" hint-size="44px,44px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" dc-props="{{ pager.left }}" hint-size="20px,20px"></x-import></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconButton" dc-props="{{ pager.next }}" hint-size="44px,44px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" dc-props="{{ pager.right }}" hint-size="20px,20px"></x-import></x-import></span></div>
+              </div>
+            </div>
           </div>
         </x-import>
       </div>
@@ -95,7 +104,16 @@ html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:v
               </div>
             </div>
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ searchPanels }}" hint-size="100%,44px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ pickerAfterDesk }}" hint-size="100%,560px"></x-import>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:var(--fs-overline);line-height:var(--sp-4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ listAfter.overline }}</span>
+                <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">{{ listAfter.summary }}</span>
+              </div>
+              <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);overflow:hidden">
+                <sc-for list="{{ listAfter.rows }}" as="r" hint-placeholder-count="6"><div style="display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:64px;box-sizing:border-box;{{ r.look }}"><span aria-hidden="true" style="width:36px;height:36px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;{{ r.tint }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ r.icon }}" hint-size="20px,20px"></x-import></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">{{ r.name }}</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">{{ r.spec }}</span><sc-if value="{{ r.unchanged }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;padding-top:4px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" density="functional" hint-size="auto,24px">Platform item · unchanged</x-import></span></sc-if></span><sc-if value="{{ r.priced }}" hint-placeholder-val="{{ false }}"><span style="flex-shrink:0;font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">{{ r.price }}</span></sc-if><sc-if value="{{ r.unpriced }}" hint-placeholder-val="{{ false }}"><span style="flex-shrink:0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">No price set</span></sc-if><sc-if value="{{ r.selected }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="Selected" style="width:24px;height:24px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:var(--text-inverse)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.check }}" hint-size="16px,16px"></x-import></span></sc-if></div></sc-for>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 12px 6px 20px;border-top:1px solid var(--line-soft)"><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ listAfter.range }}</span><span style="display:flex;align-items:center"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconButton" dc-props="{{ pager.prev }}" hint-size="44px,44px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" dc-props="{{ pager.left }}" hint-size="20px,20px"></x-import></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconButton" dc-props="{{ pager.next }}" hint-size="44px,44px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" dc-props="{{ pager.right }}" hint-size="20px,20px"></x-import></x-import></span></div>
+              </div>
+            </div>
             <div style="display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnAddMissing }}" hint-size="auto,44px">Add a missing panel</x-import>
             </div>
@@ -119,7 +137,16 @@ html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:v
               </div>
             </div>
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ searchPanels }}" hint-size="100%,44px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ pickerPanelsUnpriced }}" hint-size="100%,520px"></x-import>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:var(--fs-overline);line-height:var(--sp-4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ listUnpriced.overline }}</span>
+                <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">{{ listUnpriced.summary }}</span>
+              </div>
+              <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);overflow:hidden">
+                <sc-for list="{{ listUnpriced.rows }}" as="r" hint-placeholder-count="6"><div style="display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:64px;box-sizing:border-box;{{ r.look }}"><span aria-hidden="true" style="width:36px;height:36px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;{{ r.tint }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ r.icon }}" hint-size="20px,20px"></x-import></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">{{ r.name }}</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">{{ r.spec }}</span><sc-if value="{{ r.unchanged }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;padding-top:4px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" density="functional" hint-size="auto,24px">Platform item · unchanged</x-import></span></sc-if></span><sc-if value="{{ r.priced }}" hint-placeholder-val="{{ false }}"><span style="flex-shrink:0;font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">{{ r.price }}</span></sc-if><sc-if value="{{ r.unpriced }}" hint-placeholder-val="{{ false }}"><span style="flex-shrink:0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">No price set</span></sc-if><sc-if value="{{ r.selected }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="Selected" style="width:24px;height:24px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:var(--text-inverse)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.check }}" hint-size="16px,16px"></x-import></span></sc-if></div></sc-for>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 12px 6px 20px;border-top:1px solid var(--line-soft)"><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ listUnpriced.range }}</span><span style="display:flex;align-items:center"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconButton" dc-props="{{ pager.prev }}" hint-size="44px,44px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" dc-props="{{ pager.left }}" hint-size="20px,20px"></x-import></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconButton" dc-props="{{ pager.next }}" hint-size="44px,44px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" dc-props="{{ pager.right }}" hint-size="20px,20px"></x-import></x-import></span></div>
+              </div>
+            </div>
             <div style="display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnAddMissing }}" hint-size="auto,44px">Add a missing panel</x-import>
             </div>
@@ -195,6 +222,7 @@ class Component extends DCLogic {
       bolt: icon(["M13 3 5 14h6l-1 7 8-11h-6z"]),
       shield: icon(["M12 3 5 6v6c0 4 3 7 7 9 4-2 7-5 7-9V6z", "m9 12 2 2 4-4"]),
       rupee: icon(["M7 5h10", "M7 9h10", "M9 5c4 0 5 4 0 6H7l7 8"]),
+      check: icon(["M5 12.5l4.5 4.5L19 7.5"], "sm"),
     };
     const DEST = NS.DESTINATION_GLYPH;
 
@@ -370,25 +398,10 @@ class Component extends DCLogic {
       style: { height: "100%" },
     });
 
-    /* ── The caller's lists at 1536. A price the company typed carries no tier (F8-01); a row
-       with no price names the absence; a reader without the manage grant sees no price column. ── */
-    const itemCell = (r) => h("span", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-1)" } },
-      h("span", { key: "n" }, r.name),
-      r.spec ? h("span", { key: "s", style: { fontSize: "var(--fs-caption)", color: "var(--text-secondary)" } }, r.spec) : null,
-      r.marks ? h(NS.MarkRow, { key: "m" }, r.marks) : null);
-    const priceCol = { key: "price", label: "Price", trailing: true, numeric: true,
-      gap: (r) => (r.price == null ? "No price set" : null), render: (r) => money(r.price) };
-    const table = (rows, opts) => ({
-      rowKey: "id", rows: rows, density: "compact", stackBelow: 640, onRowClick: noop,
-      columns: opts.columns || [{ key: "name", label: "Item", primary: true, render: itemCell }].concat(opts.priced === false ? [] : [priceCol]),
-      rowLabel: (r) => (opts.priced === false ? r.name : r.name + ", " + (r.price == null ? "no price set" : money(r.price))),
-      caption: opts.caption, summary: opts.summary,
-      page: 0, pageSize: 10, rowCount: opts.count, onPageChange: noop,
-    });
-    const selectedMarks = (second) => [
-      h(NS.Badge, { key: "s", tone: "accent", density: "functional" }, "Selected on line 3"),
-      h(NS.Chip, { key: "o", density: "functional" }, second),
-    ];
+    /* ── The caller's list at 1536 (owner pick L1 · One card): one raised card of rows, each with its
+       kind's tile. A price the company typed carries no tier (F8-01); a row with no price names the
+       absence; a reader without the manage grant sees no price at all. The line's choice is the
+       tinted row with the tick. ── */
     const PANELS = [
       { id: "vs540", name: "Vikram Solar Somera 540", spec: "540 Wp · Mono PERC · ALMM" },
       { id: "wa545", name: "Waaree WSMD-545", spec: "545 Wp · Mono PERC · ALMM, DCR" },
@@ -398,30 +411,21 @@ class Component extends DCLogic {
       { id: "tp540", name: "Tata Power Solar TP540M", spec: "540 Wp · Mono PERC · ALMM, DCR" },
     ];
     const PANELS_CAPTION = "Panels in your catalog — preferred first";
-
-    /* ── The phone picker after the act (the caller's own sheet). ── */
-    const pickerSheet = (overline) => ({
-      open: true, inset: true, size: "full", density: "functional", modal: false,
-      overline: overline, title: "Choose a panel", onClose: noop, bodyStyle: { overflowY: "hidden" },
-    });
-    const priceCell = (n) => h("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", fontSize: "var(--fs-table)", color: "var(--text-primary)" } }, money(n));
-    const noPrice = h(NS.NamedGap, { gap: "No price set", scale: "cell", align: "right" });
-    const row = (title, subtitle, extra) => Object.assign({ density: "functional", onClick: noop, title: title, subtitle: subtitle }, extra || {});
-
-    /* ── The datasheet as the system's SourceDocument. No page image rides on the board: the
-       component's own empty page stands in, naming the page the fields cite. ── */
-    const datasheet = (height, fit) => h(NS.SourceDocument, {
-      name: "Saatvik SGP-575-BAA-HC datasheet.pdf",
-      meta: "PDF · 2 pages · 1.4 MB · uploaded 22 Aug 2026",
-      state: "ready",
-      pages: [
-        { url: "assets/datasheet-p1.png", width: 840, height: 1188, label: "Page 1 · Mechanical and general" },
-        { url: "assets/datasheet-p2.png", width: 840, height: 1188, label: "Page 2 · Electrical characteristics" },
-      ],
-      page: 1, onPageChange: noop, fit: fit, onFitChange: noop,
-      height: height, density: "functional", label: "The datasheet you uploaded",
-      onOpenOriginal: noop, openLabel: "Open the file",
-    });
+    const KIND_TILE = { panel: ["violet", ic.panel], inverter: ["blue", ic.inverter] };
+    const listOf = (kind, overline, summary, range, rows, priced) => {
+      const iris = "var(--iris-" + KIND_TILE[kind][0] + ")";
+      return {
+        overline: overline, summary: summary, range: range,
+        rows: rows.map((r, i) => ({
+          name: r.name, spec: r.spec, icon: KIND_TILE[kind][1],
+          tint: "background:color-mix(in srgb, " + iris + " 14%, white);color:color-mix(in srgb, " + iris + " 70%, black)",
+          look: (i ? "border-top:1px solid var(--line-soft);" : "") + (r.selected ? "background:color-mix(in srgb, var(--iris-violet) 8%, white)" : ""),
+          priced: priced !== false && r.price != null, unpriced: priced !== false && r.price == null,
+          price: r.price == null ? "" : money(r.price),
+          selected: !!r.selected, unchanged: !!r.unchanged,
+        })),
+      };
+    };
 
     return {
       noop: noop,
@@ -552,8 +556,6 @@ class Component extends DCLogic {
         height: 200, density: "functional", label: "The datasheet you uploaded",
         onOpenOriginal: noop, openLabel: "Open the file",
       },
-      alongsideMobile: { document: datasheet(240, "page"), breakpoint: 600, stackedHeight: 240, expandedHeight: 520 },
-      alongsideDesk: { document: datasheet(600, "width"), breakpoint: 600, documentWidth: 276, gap: 12, expandedHeight: 600, label: "Check the extracted fields against the datasheet" },
 
       /* the refused upload: the real ceiling, FILE_MAX_BYTES */
       dzRefused: {
@@ -564,64 +566,24 @@ class Component extends DCLogic {
         onFiles: noop,
       },
 
-      /* 375 caller after the act */
-      pickerSheet: pickerSheet("Proposal 0412 · line 3 of 7"),
-      pickerSheetSales: pickerSheet("Proposal 0419 · line 3 of 7"),
-      pickerSearchMobile: { placeholder: "Search brand or model", value: "", onChange: noop, density: "functional", ariaLabel: "Search panels in your catalog" },
-      rowNewSku: row("Saatvik SGP-575-BAA-HC", "575 Wp · Mono PERC", { marks: selectedMarks("Your own"), trailing: priceCell(15650) }),
-      rowVikram: row("Vikram Solar Somera 540", "540 Wp · Mono PERC", { trailing: noPrice }),
-      rowWaaree: row("Waaree WSMD-545", "545 Wp · Mono PERC", { trailing: noPrice }),
-      rowNewSkuUnpriced: row("Saatvik SGP-575-BAA-HC", "575 Wp · Mono PERC", { marks: selectedMarks("Your own") }),
-      rowVikramUnpriced: row("Vikram Solar Somera 540", "540 Wp · Mono PERC"),
-      rowWaareeUnpriced: row("Waaree WSMD-545", "545 Wp · Mono PERC"),
-      btnAddMissing: { variant: "secondary", size: "sm", onClick: noop, icon: glyph("plus", "md") },
-      btnImport: { variant: "ghost", size: "sm", onClick: noop },
-      toastAdded: {
-        toasts: [{ id: 1, tone: "success", title: "Saatvik SGP-575-BAA-HC is in your catalog", description: "Selected on line 3. It is yours alone — no other company's catalog changed." }],
-        onDismiss: noop, position: "bottom-center", style: { position: "absolute" },
+      /* the caller's list: its pager and its act */
+      pager: {
+        prev: { label: "Previous page", size: 44, variant: "ghost", disabled: true },
+        next: { label: "Next page", size: 44, variant: "ghost", onClick: noop },
+        left: { name: "chevron-left", size: "md", tone: "secondary", style: { color: "var(--text-disabled)" } },
+        right: { name: "chevron-right", size: "md", tone: "secondary" },
       },
-      toastAddedUnpriced: {
-        toasts: [{ id: 1, tone: "success", title: "Saatvik SGP-575-BAA-HC is in your catalog", description: "Selected on line 3, without a price." }],
-        onDismiss: noop, position: "bottom-center", style: { position: "absolute" },
-      },
+      btnAddMissing: { variant: "secondary", size: "md", onClick: noop, icon: h(NS.Icon, icon(["M12 5v14", "M5 12h14"], "sm")) },
+      searchPanels: { placeholder: "Search brand or model", value: "", onChange: noop, density: "functional", ariaLabel: "Search panels in your catalog" },
       toastAddedDesk: {
-        toasts: [{ id: 1, tone: "success", title: "Saatvik SGP-575-BAA-HC is in your catalog", description: "Selected on line 3. It is yours alone — no other company's catalog changed." }],
+        toasts: [{ id: 1, tone: "success", title: "Added to your catalog", description: "Selected on line 3." }],
         onDismiss: noop, position: "bottom-right", style: { position: "absolute" },
       },
-
-      /* 1536 caller lists */
-      searchPanels: { placeholder: "Search brand or model", value: "", onChange: noop, density: "functional", ariaLabel: "Search panels in your catalog" },
-      searchInverters: { placeholder: "Search brand or model", value: "", onChange: noop, density: "functional", ariaLabel: "Search inverters in your catalog" },
-      searchCatalog: { placeholder: "Search brand or model", value: "", onChange: noop, density: "functional", ariaLabel: "Search the catalog" },
-      pickerPanels: table(PANELS.slice(0, 6), { caption: PANELS_CAPTION, summary: "47 panels · the platform list, your own items and your overrides", count: 47 }),
-      pickerPanelsUnpriced: table(PANELS.slice(0, 6), { priced: false, caption: PANELS_CAPTION, summary: "47 panels · the platform list and your own items", count: 47 }),
-      pickerInverters: table([
-        { id: "sg5", name: "Sungrow SG5.0RS", spec: "5 kW · 2 MPPT" },
-        { id: "gw5", name: "Growatt MIN 5000TL-X", spec: "5 kW · 2 MPPT" },
-        { id: "hv5", name: "Havells Enviro 5 kW", spec: "5 kW · 2 MPPT", price: 29800 },
-        { id: "dy5", name: "Deye SUN-5K-SG04LP1", spec: "5 kW hybrid · single phase" },
-      ], { caption: "Inverters in your catalog — preferred first", summary: "23 inverters · the platform list, your own items and your overrides", count: 23 }),
-      settingsItems: table([
-        { id: "vs540", name: "Vikram Solar Somera 540", spec: "Panel · platform item · 540 Wp" },
-        { id: "ex25", name: "Exide Solar LFP 2.5 kWh", spec: "Battery · your own · 2.5 kWh usable", price: 61200 },
-        { id: "ad545", name: "Adani Solar AS-7-545", spec: "Panel · price overridden · 545 Wp", price: 14100 },
-        { id: "sg5", name: "Sungrow SG5.0RS", spec: "Inverter · platform item · 5 kW" },
-        { id: "en8", name: "Enphase IQ8+", spec: "Micro-inverter · platform item · 290 W" },
-        { id: "tg4", name: "Tigo TS4-A-O", spec: "Optimiser · your own · 700 W", price: 4200 },
-      ], { caption: "Catalog — archived hidden", summary: "342 items · every kind · preferred first", count: 342 }),
-      pickerFromSelection: table([
-        Object.assign({}, PANELS[0], { marks: selectedMarks("Platform item · unchanged") }),
-      ].concat(PANELS.slice(1, 5)), { caption: PANELS_CAPTION, summary: "47 panels · one of them selected, and being copied into an item of your own", count: 47 }),
-      pickerAfterDesk: table([
-        { id: "new", name: "Saatvik SGP-575-BAA-HC", spec: "575 Wp · Mono PERC", price: 15650, marks: selectedMarks("Your own") },
-      ].concat(PANELS.slice(0, 6)).map((r) => Object.assign({}, r, { what: r.spec, spec: null })), {
-        columns: [
-          { key: "name", label: "Item", primary: true, render: itemCell },
-          { key: "what", label: "What it is", render: (r) => r.what },
-          priceCol,
-        ],
-        caption: PANELS_CAPTION, summary: "48 panels · one of them added a moment ago", count: 48,
-      }),
+      listFromSelection: listOf("panel", PANELS_CAPTION, "47 panels · one of them selected, and being copied into an item of your own", "1–10 of 47",
+        [Object.assign({}, PANELS[0], { selected: true, unchanged: true })].concat(PANELS.slice(1, 5))),
+      listAfter: listOf("panel", PANELS_CAPTION, "48 panels · one of them added a moment ago", "1–10 of 48",
+        [{ id: "new", name: "Saatvik SGP-575-BAA-HC", spec: "575 Wp · Mono PERC · ALMM, DCR · Your own", price: 15650, selected: true }].concat(PANELS)),
+      listUnpriced: listOf("panel", PANELS_CAPTION, "47 panels · the platform list and your own items", "1–10 of 47", PANELS, false),
     };
   }
 }

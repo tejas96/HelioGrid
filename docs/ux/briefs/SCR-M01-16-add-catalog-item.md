@@ -103,13 +103,21 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
   selected platform row stays on the caller's list, marked unchanged.
 - **pdf-extraction-review** — path (b): extracted fields shown in the same typed form as manual entry, each field editable, with the datasheet preview alongside; nothing commits until the person saves (M01-40, §M01.4 behavior detail).
   One soft violet tile heads the form — a page thumbnail, *Read from your datasheet*, *2 pages · check
-  each value against its page*. At 1536 the document sits beside the specification card; at 375 the
-  tile's *View* opens it, since nothing fits beside.
+  each value against its page*. At 1536 the page sits beside the specification card in one card of the
+  same height — a page dropdown above the page image and *Open full size* under it, nothing else
+  (owner picks "V1 · The page beside, quiet" and "P · Page dropdown"). The dropdown is the one page
+  control at every page count: each page named by what it holds (*Page 2 · Electrical*), the pages that
+  hold read values first, the rest by number; at 375 the tile's *View* opens it, since nothing fits
+  beside.
 - **extraction-failed-prefilled-manual** — extraction fails entirely (scan, photo, unusual layout): manual form with whatever was salvaged pre-filled; the datasheet still attaches to the item (M01-40, §M01.4 edge cases).
   Each salvaged value is marked as salvaged, to be checked against the page.
 - **inline-add-without-manage-grant** — an inline add from a picker by someone without `F2.M01.manage-catalog` held outright (a Sales Executive): the form has no price field, and the caller's list shows that person no prices. One line at the act says the item can be picked without a price and someone who manages the catalog prices it later (§M01.4 Permissions; contract `createItem`). Neither accelerator shows: the datasheet upload and the import are catalog administration (`manage_catalog`).
 - **saved-and-selected-in-place** — on save the sheet closes and the new SKU is selected in place; the invoking flow continues (M01-39, §M01.4 behavior detail).
-  A toast confirms it, with no undo: adding destroys nothing, and archiving reverses it.
+  A toast confirms it, with no undo: adding destroys nothing, and archiving reverses it — *Added to
+  your catalog*, then *Selected on line 3.* The caller's list is one raised card of rows, each a kind
+  tile, the name, the spec line and the price (mono) or *No price set*; the new item is the first row,
+  tinted, with a tick, its spec line ending *Your own* (`M01-35`; the picker screens own every row's label), and *Add a missing panel* stays in view under the card (owner pick "L1 · One
+  card", canvas comment).
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Empty`, `Error`, `extraction-failed-prefilled-manual`, and the discard confirm (a centred modal at 1536).
 

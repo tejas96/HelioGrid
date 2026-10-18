@@ -338,14 +338,15 @@ html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:v
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Sheet" dc-props="{{ pickerSheet }}" hint-size="100%,100%">
           <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ pickerSearchMobile }}" hint-size="100%,44px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ rowNewSku }}" hint-size="100%,96px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ rowVikram }}" hint-size="100%,72px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ rowWaaree }}" hint-size="100%,72px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ rowAdani }}" hint-size="100%,72px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ rowPremier }}" hint-size="100%,72px"></x-import>
-            <div style="display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap;padding-top:var(--sp-1)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnAddMissing }}" hint-size="auto,44px">Add a missing panel</x-import>
+            <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);overflow:hidden">
+              <div style="display:flex;align-items:center;gap:12px;min-height:64px;box-sizing:border-box;padding:12px 14px;background:color-mix(in srgb, var(--iris-violet) 8%, white)"><span aria-hidden="true" style="width:36px;height:36px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-violet) 14%, white);color:color-mix(in srgb, var(--iris-violet) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.panel }}" hint-size="20px,20px"></x-import></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Saatvik SGP-575-BAA-HC</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">575 Wp · Mono PERC · Your own</span></span><span style="flex-shrink:0;font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:var(--fs-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">{{ listPrice.saatvik }}</span><span role="img" aria-label="Selected" style="width:24px;height:24px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:var(--text-inverse)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ tick }}" hint-size="16px,16px"></x-import></span></div>
+              <div style="display:flex;align-items:center;gap:12px;min-height:64px;box-sizing:border-box;padding:12px 14px;border-top:1px solid var(--line-soft)"><span aria-hidden="true" style="width:36px;height:36px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-violet) 14%, white);color:color-mix(in srgb, var(--iris-violet) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.panel }}" hint-size="20px,20px"></x-import></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Vikram Solar Somera 540</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">540 Wp · Mono PERC</span></span><span style="flex-shrink:0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">No price set</span></div>
+              <div style="display:flex;align-items:center;gap:12px;min-height:64px;box-sizing:border-box;padding:12px 14px;border-top:1px solid var(--line-soft)"><span aria-hidden="true" style="width:36px;height:36px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-violet) 14%, white);color:color-mix(in srgb, var(--iris-violet) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.panel }}" hint-size="20px,20px"></x-import></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Waaree WSMD-545</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">545 Wp · Mono PERC</span></span><span style="flex-shrink:0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">No price set</span></div>
+              <div style="display:flex;align-items:center;gap:12px;min-height:64px;box-sizing:border-box;padding:12px 14px;border-top:1px solid var(--line-soft)"><span aria-hidden="true" style="width:36px;height:36px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-violet) 14%, white);color:color-mix(in srgb, var(--iris-violet) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.panel }}" hint-size="20px,20px"></x-import></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Adani Solar AS-7-545</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">545 Wp · Mono PERC</span></span><span style="flex-shrink:0;font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:var(--fs-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">{{ listPrice.adani }}</span></div>
+              <div style="display:flex;align-items:center;gap:12px;min-height:64px;box-sizing:border-box;padding:12px 14px;border-top:1px solid var(--line-soft)"><span aria-hidden="true" style="width:36px;height:36px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-violet) 14%, white);color:color-mix(in srgb, var(--iris-violet) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.panel }}" hint-size="20px,20px"></x-import></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Premier Energies PE-M550</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">550 Wp · TOPCon</span></span><span style="flex-shrink:0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">No price set</span></div>
+              <div style="display:flex;align-items:center;gap:12px;min-height:64px;box-sizing:border-box;padding:12px 14px;border-top:1px solid var(--line-soft)"><span aria-hidden="true" style="width:36px;height:36px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-violet) 14%, white);color:color-mix(in srgb, var(--iris-violet) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.panel }}" hint-size="20px,20px"></x-import></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">RenewSys DESERV M6-540</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">540 Wp · Mono PERC</span></span><span style="flex-shrink:0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">No price set</span></div>
             </div>
+            <div style="display:flex"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnAddMissing }}" hint-size="auto,40px">Add a missing panel</x-import></div>
           </div>
         </x-import>
       </div>
@@ -435,14 +436,15 @@ html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:v
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Sheet" dc-props="{{ pickerSheetSales }}" hint-size="100%,100%">
           <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ pickerSearchMobile }}" hint-size="100%,44px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ rowNewSkuUnpriced }}" hint-size="100%,96px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ rowVikramUnpriced }}" hint-size="100%,72px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ rowWaareeUnpriced }}" hint-size="100%,72px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ rowAdaniUnpriced }}" hint-size="100%,72px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ rowPremierUnpriced }}" hint-size="100%,72px"></x-import>
-            <div style="display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap;padding-top:var(--sp-1)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnAddMissing }}" hint-size="auto,44px">Add a missing panel</x-import>
+            <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);overflow:hidden">
+              <div style="display:flex;align-items:center;gap:12px;min-height:64px;box-sizing:border-box;padding:12px 14px;background:color-mix(in srgb, var(--iris-violet) 8%, white)"><span aria-hidden="true" style="width:36px;height:36px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-violet) 14%, white);color:color-mix(in srgb, var(--iris-violet) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.panel }}" hint-size="20px,20px"></x-import></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Saatvik SGP-575-BAA-HC</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">575 Wp · Mono PERC · Your own</span></span><span role="img" aria-label="Selected" style="width:24px;height:24px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:var(--text-inverse)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ tick }}" hint-size="16px,16px"></x-import></span></div>
+              <div style="display:flex;align-items:center;gap:12px;min-height:64px;box-sizing:border-box;padding:12px 14px;border-top:1px solid var(--line-soft)"><span aria-hidden="true" style="width:36px;height:36px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-violet) 14%, white);color:color-mix(in srgb, var(--iris-violet) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.panel }}" hint-size="20px,20px"></x-import></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Vikram Solar Somera 540</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">540 Wp · Mono PERC</span></span></div>
+              <div style="display:flex;align-items:center;gap:12px;min-height:64px;box-sizing:border-box;padding:12px 14px;border-top:1px solid var(--line-soft)"><span aria-hidden="true" style="width:36px;height:36px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-violet) 14%, white);color:color-mix(in srgb, var(--iris-violet) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.panel }}" hint-size="20px,20px"></x-import></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Waaree WSMD-545</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">545 Wp · Mono PERC</span></span></div>
+              <div style="display:flex;align-items:center;gap:12px;min-height:64px;box-sizing:border-box;padding:12px 14px;border-top:1px solid var(--line-soft)"><span aria-hidden="true" style="width:36px;height:36px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-violet) 14%, white);color:color-mix(in srgb, var(--iris-violet) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.panel }}" hint-size="20px,20px"></x-import></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Adani Solar AS-7-545</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">545 Wp · Mono PERC</span></span></div>
+              <div style="display:flex;align-items:center;gap:12px;min-height:64px;box-sizing:border-box;padding:12px 14px;border-top:1px solid var(--line-soft)"><span aria-hidden="true" style="width:36px;height:36px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-violet) 14%, white);color:color-mix(in srgb, var(--iris-violet) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.panel }}" hint-size="20px,20px"></x-import></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Premier Energies PE-M550</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">550 Wp · TOPCon</span></span></div>
+              <div style="display:flex;align-items:center;gap:12px;min-height:64px;box-sizing:border-box;padding:12px 14px;border-top:1px solid var(--line-soft)"><span aria-hidden="true" style="width:36px;height:36px;border-radius:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--iris-violet) 14%, white);color:color-mix(in srgb, var(--iris-violet) 70%, black)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" dc-props="{{ ic.panel }}" hint-size="20px,20px"></x-import></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">RenewSys DESERV M6-540</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">540 Wp · Mono PERC</span></span></div>
             </div>
+            <div style="display:flex"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnAddMissing }}" hint-size="auto,40px">Add a missing panel</x-import></div>
           </div>
         </x-import>
       </div>
@@ -609,6 +611,7 @@ class Component extends DCLogic {
       shield: ["M12 3 5 6v6c0 4 3 7 7 9 4-2 7-5 7-9V6z", "m9 12 2 2 4-4"],
       rupee: ["M7 5h10", "M7 9h10", "M9 5c4 0 5 4 0 6H7l7 8"],
       plus: ["M12 5v14", "M5 12h14"],
+      check: ["M5 12.5l4.5 4.5L19 7.5"],
       panel: ["M4 5h16v14H4z", "M4 12h16", "M12 5v14"],
       inverter: ["M5 4h14v16H5z", "M9 9h6", "M9 13h6"],
       battery: ["M6 7h10v12H6z", "M10 4h2v3h-2z", "M9 12h4"],
@@ -734,24 +737,7 @@ class Component extends DCLogic {
       open: true, inset: true, size: "full", density: "functional", modal: false,
       overline: overline, title: "Choose a panel", onClose: noop, bodyStyle: { overflowY: "hidden" },
     });
-    const priceCell = (n) => h("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", fontSize: "var(--fs-table)", color: "var(--text-primary)" } }, money(n));
-    const noPrice = h(NS.NamedGap, { gap: "No price set", scale: "cell", align: "right" });
-    const row = (title, subtitle, extra) => Object.assign({ density: "functional", onClick: noop, title: title, subtitle: subtitle }, extra || {});
 
-    /* ── The datasheet as the system's SourceDocument. No page image rides on the board: the
-       component's own empty page stands in, naming the page the fields cite. ── */
-    const datasheet = (height, fit) => h(NS.SourceDocument, {
-      name: "Saatvik SGP-575-BAA-HC datasheet.pdf",
-      meta: "PDF · 2 pages · 1.4 MB · uploaded 22 Aug 2026",
-      state: "ready",
-      pages: [
-        { url: "assets/datasheet-p1.png", width: 840, height: 1188, label: "Page 1 · Mechanical and general" },
-        { url: "assets/datasheet-p2.png", width: 840, height: 1188, label: "Page 2 · Electrical characteristics" },
-      ],
-      page: 1, onPageChange: noop, fit: fit, onFitChange: noop,
-      height: height, density: "functional", label: "The datasheet you uploaded",
-      onOpenOriginal: noop, openLabel: "Open the file",
-    });
 
     /* ── SCR-M01-15 behind this screen, copied as board 15 draws it: m15-a's Items page at 375, m15-g's
        page head, list and rates at 1536. Main's ruling: the spec-data chip reads "Your own". ── */
@@ -1027,32 +1013,25 @@ class Component extends DCLogic {
         height: 200, density: "functional", label: "The datasheet you uploaded",
         onOpenOriginal: noop, openLabel: "Open the file",
       },
-      alongsideDesk: { document: datasheet(600, "width"), breakpoint: 600, documentWidth: 276, gap: 12, expandedHeight: 600, label: "Check the extracted fields against the datasheet" },
 
 
       /* 375 caller after the act */
       pickerSheet: pickerSheet("Proposal 0412 · line 3 of 7"),
       pickerSheetSales: pickerSheet("Proposal 0419 · line 3 of 7"),
       pickerSearchMobile: { placeholder: "Search brand or model", value: "", onChange: noop, density: "functional", ariaLabel: "Search panels in your catalog" },
-      rowNewSku: row("Saatvik SGP-575-BAA-HC", "575 Wp · Mono PERC", { marks: selectedMarks("Your own"), trailing: priceCell(15650) }),
-      rowVikram: row("Vikram Solar Somera 540", "540 Wp · Mono PERC", { trailing: noPrice }),
-      rowWaaree: row("Waaree WSMD-545", "545 Wp · Mono PERC", { trailing: noPrice }),
-      rowAdani: row("Adani Solar AS-7-545", "545 Wp · Mono PERC", { trailing: priceCell(14100) }),
-      rowPremier: row("Premier Energies PE-M550", "550 Wp · TOPCon", { trailing: noPrice }),
-      rowNewSkuUnpriced: row("Saatvik SGP-575-BAA-HC", "575 Wp · Mono PERC", { marks: selectedMarks("Your own") }),
-      rowVikramUnpriced: row("Vikram Solar Somera 540", "540 Wp · Mono PERC"),
-      rowWaareeUnpriced: row("Waaree WSMD-545", "545 Wp · Mono PERC"),
-      rowAdaniUnpriced: row("Adani Solar AS-7-545", "545 Wp · Mono PERC"),
-      rowPremierUnpriced: row("Premier Energies PE-M550", "550 Wp · TOPCon"),
-      btnAddMissing: { variant: "secondary", size: "sm", onClick: noop, icon: glyph("plus", "md") },
+      /* the caller's list after the act (owner pick L1): one raised card, the new item first and ticked */
+      listPrice: { saatvik: money(15650), adani: money(14100) },
+      tick: iconProps(GLYPH.check, "sm"),
+      btnAddMissing: { variant: "secondary", size: "md", onClick: noop, icon: h(NS.Icon, iconProps(GLYPH.plus, "sm")) },
       btnImport: { variant: "ghost", size: "sm", onClick: noop },
+      /* 34px up: above the home bar and clear of Add a missing panel */
       toastAdded: {
-        toasts: [{ id: 1, tone: "success", title: "Saatvik SGP-575-BAA-HC is in your catalog", description: "Selected on line 3. It is yours alone — no other company's catalog changed." }],
-        onDismiss: noop, position: "bottom-center", style: { position: "absolute" },
+        toasts: [{ id: 1, tone: "success", title: "Added to your catalog", description: "Selected on line 3." }],
+        onDismiss: noop, position: "bottom-center", offset: 34, style: { position: "absolute" },
       },
       toastAddedUnpriced: {
-        toasts: [{ id: 1, tone: "success", title: "Saatvik SGP-575-BAA-HC is in your catalog", description: "Selected on line 3, without a price." }],
-        onDismiss: noop, position: "bottom-center", style: { position: "absolute" },
+        toasts: [{ id: 1, tone: "success", title: "Added to your catalog", description: "Selected on line 3, without a price." }],
+        onDismiss: noop, position: "bottom-center", offset: 34, style: { position: "absolute" },
       },
       toastAddedDesk: {
         toasts: [{ id: 1, tone: "success", title: "Saatvik SGP-575-BAA-HC is in your catalog", description: "Selected on line 3. It is yours alone — no other company's catalog changed." }],
