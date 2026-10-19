@@ -143,7 +143,8 @@ slice Main builds:
 5. One step gets two attempts. After both fail, stop with the evidence and at most two ways forward.
 
 A new route, table, contract, package or behaviour voids the approval: update the RFC, show what
-changed, and wait for a yes again. A file outside the RFC's file table is added to it with its
+changed, and wait for a yes again. One asked for after QA is offered as its own PR first: added here,
+it costs another round of review, QA and the gate. A file outside the RFC's file table is added to it with its
 reason as it lands.
 
 When the build is done, one tidy pass over the whole diff: reuse, names, dead code, files over 300
