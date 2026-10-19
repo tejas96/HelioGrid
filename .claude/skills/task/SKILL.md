@@ -197,8 +197,8 @@ owner decides how `heliogrid_test` is reset. A row that needs the api
 stopped runs last, after every agent has returned: stop the api once, continue each agent that has
 such rows, start the api once.
 
-**Fix.** Fix only evidenced failures. Continue the same `code-reviewer` on the fixed files, then
-continue the same QA agent with only the rows the fix touched. A row gets one retry after a fix; a
+**Fix.** Fix only evidenced failures. Continue the same `code-reviewer` on the fixed files — one read
+per fix; a finding still open after it stops for the owner — then continue the same QA agent with only the rows the fix touched. A row gets one retry after a fix; a
 second failure stops for the owner. A row an agent reports `PASS (flake)` gets a `deferred.md` row. `git status --porcelain` is the same before the agents start and after they
 return; any file an agent changed stops the task.
 
@@ -206,7 +206,8 @@ return; any file an agent changed stops the task.
 
 1. **Proof.** Continue `code-reviewer` for its proof pass with the RFC's Proof table, every QA
    report, the output of Main's own test runs and the planted red lines. An AC that is not `PASS`
-   or `pending CI` stops here.
+   or `pending CI` stops here. An AC added after this pass gets its own proof pass before the gate
+   runs again.
 2. Stop every web dev server before the gate: `next dev` breaks while the build runs. One this task
    started is stopped by its preview id; one running at step 1 is stopped the same way and started
    again after the gate (after `rm -rf apps/web/.next`); one the owner started outside the preview
