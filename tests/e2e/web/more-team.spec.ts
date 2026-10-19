@@ -45,5 +45,12 @@ test('the Team row opens the team; a new owner is alone, and the page teaches', 
   await expectNoSidewaysScroll(page);
   await expect(page).toHaveTitle(/\S/);
   await expectNoSeriousViolations(page);
-  await expectTheLook(page, [page.getByText(company)]);
+  // At the desktop width the owner's *Last active* cell reads the run's clock (*Today, 23:08*).
+  const lastActive = page.getByRole('row').nth(1).getByRole('cell').last();
+  await expectTheLook(
+    page,
+    testInfo.project.name === 'desktop'
+      ? [page.getByText(company), lastActive]
+      : [page.getByText(company)],
+  );
 });
