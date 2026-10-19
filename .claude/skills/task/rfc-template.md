@@ -71,7 +71,7 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
 | input | empty · too long · invalid format · each boundary and one either side · zero · negative |
 | data | two people edit the same record · a record deleted while it is open · a list past one page · search and filters with no match |
 | money | minor units · rounding only in `domain/money` · lakh/crore grouping in every locale · stale price reads provisional |
-| words | Hindi and Marathi lengths at 375 · no hard-coded English · provenance tier on every number (`F8-01`) |
+| words | Hindi and Marathi lengths at 375 · no hard-coded English · provenance tier on every money and energy figure, none on dates or counts (`F8-01`) |
 | layout | 375 and 1536 · no sideways scroll · 44 px targets · keyboard open on a phone · safe areas · focus order and screen-reader labels |
 | jobs | a workflow or job retried · run twice · failing half way |
 | billing | a lapsed tenant still reads and exports (`CLAUDE.md` §9) |

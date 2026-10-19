@@ -8,7 +8,7 @@ People with role chips, status, last-active; one-tap invite, deactivate, revoke;
 
 Reached from: the tenant administration area — the precise navigation is not pinned by PRD — designer decides, note the decision. Leads to: one-tap invite → Invite Teammate (SCR-M01-07); a person's role administration → Assign Roles (SCR-M01-13); the read-only Roles Reference (SCR-M01-14) sits beside these role-administration screens (M01 §M01.2). Revocation of a pending invite is one tap on this screen (M01 §M01.2 behavior detail).
 
-*What each role can do* is one ghost text act under *Invite teammate*, not a per-row link. An active member's whole row opens Assign Roles. An invite row and a deactivated row carry no row tap: Assign Roles refuses anyone who is not active, and an invite has no membership to edit (owner ruling 2026-10-16).
+An active member's whole row opens Assign Roles; at 1536 it carries no chevron, and the build gives it a keyboard focus stop. An invite row and a deactivated row carry no row tap: Assign Roles refuses anyone who is not active, and an invite has no membership to edit (owner ruling 2026-10-16).
 
 ## Requirements (verbatim)
 
@@ -38,11 +38,12 @@ Screen-specific:
 Drawn at 375 only (at 1536 the phone's answer holds at width): `empty-teaching`, `error`, `deactivated-member`, `pending-invite-revoke`, `guard-rail-blocked`, `guard-rail-blocked-explained`.
 
 - **empty** cannot occur — the reader is always on the list — so **empty-teaching** answers it: only the owner so far, and the invite. It is the system's `EmptyState`, centred as its contract fixes — the one exception to *no centred block* on this screen (owner ruling 2026-10-16; `D233`).
-- **loading** draws three placeholder cards. *Invite teammate* and *What each role can do* stay live in loading and in error; neither waits on this read. **error** draws no roster and no caption.
+- **loading** draws three placeholder rows, 82 px tall (the rows they stand for), and no head count until the read lands. *Invite teammate* stays live in loading and in error; it does not wait on this read. **error** draws no roster and no caption.
 - **deactivate-confirm** is a sheet at 375 and a centred modal at 1536 — a decision, not an editor — not dismissible, with no close button.
-- **guard-rail-blocked-explained** is a refused write: the tenant changed on another device after the list was read. It renders on the confirm surface — nothing applied, what changed, the act off with the route out.
+- **guard-rail-blocked-explained** is a refused write: the tenant changed on another device after the list was read. It renders on the confirm surface — nothing applied, what changed, the act — *Deactivate <name>*, on the board *Deactivate Rajesh* — off, with the route out *Make someone else an EPC Owner first* as its `disabledReason`, which opens in a bubble on a tap, click, focus or hover — no line is drawn under the button (owner ruling 2026-10-17, design-system change 5).
 - **deactivated-member** is the after-state of the act: the row moves to the end of the list, its status reads Deactivated and its act is gone.
 - Status is a word plus a dot in its tone: invited `info`, active `success`, deactivated `neutral`.
+- At 375 a row's status line reads *Invited as <roles>*, *Expired <date>*, *Active · last seen <date>* (or *today*) and *Deactivated · last seen <date>*; at 1536 a time today reads *Today, HH:MM*.
 
 **Decisions made in design (2026-08-31) — later screens inherit them.**
 
@@ -52,22 +53,28 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `empty-teaching`,
    costs ~100px permanently on a screen that is a list, a footer act collides with the shell's
    pill footer, and a text act in the top bar is the smallest target furthest from a thumb.
 3. **One tap means ON the row.** *Deactivate* and *Revoke invite* sit in the card's action line, not
-   behind a kebab — a menu is a second tap on an act the module calls first-class. **Ghost is the
-   only legal weight**: `secondary` is white at `--e2` on a card that is already white, `destructive`
-   is a red fill on eight rows, `primary` competes with the invite.
+   behind a kebab — a menu is a second tap on an act the module calls first-class. **Each row act is
+   a raised `secondary` pill with its glyph** (owner pick "A · Colour with purpose", 2026-10-17,
+   design-system change 7): *Deactivate* in danger words (`tone: "danger"`), *Revoke invite* plain,
+   and *Invite again* the near-black `primary` pill; a ghost text act read as plain words. At 1536
+   the table sits in one raised white card with hairlines between rows. `destructive`, a red fill,
+   stays the confirm's.
 4. **Status is a chip; a role is not.** invited/active/deactivated is a membership lifecycle, so it is
-   a word plus a dot. Presets held render as `Badge` — a preset drawn as a `StatusChip` would invent
-   a semantic colour for an identity.
+   a word plus a dot. Presets held render as `Badge` in the iris tone of their kind — violet sell and
+   lead, blue plan and run, magenta on site (design-system change 7) — never a semantic state colour,
+   which a `StatusChip` would invent for an identity.
 5. **The deactivated row is not dimmed.** Greyness as the signal pulls the name and both dates under
    the contrast floor; the chip carries the word.
-6. **List order is invites first (pending, then expired), then everyone by name, deactivated last** — stated in the caption in those words (owner ruling 2026-10-16).
+6. **List order is invites first (pending, then expired), then everyone by name, deactivated last** — a behaviour; no caption sentence states it.
    No group headings: a heading that vanishes when its group is empty is a second answer to one
    question, and the status is already on the record (`N6b`).
 7. **The `F2-19` guard is the RESTING state of the owner's own row**, not a refusal after a tap. In a
-   one-owner tenant the last owner is the reader, so the control stays, is `aria-disabled`, stays
-   focusable, and states the route out beside it.
-8. **Relative times are refused.** *"2 hours ago"* turns a recorded fact into a computed one and would
-   put a tier on every row for no gain.
+   one-owner tenant the last owner is the reader, so the owner's row keeps *Deactivate* as the same
+   danger pill, disabled and focusable, at both widths — on the phone card and at 1536 — its
+   `disabledReason` *Only EPC Owner* opening in a bubble on a tap, click, focus or hover; no line is
+   drawn under it.
+8. **Relative times are refused.** *"2 hours ago"* turns a recorded fact into a computed one. *today* is
+   the date, not a span.
 
 **Every person on this list holds at least one preset.** A member with no preset cannot exist: an
 invite, a role change and a session all refuse an empty role set (F2-21; `roleSetSchema` `.min(1)` in
@@ -80,23 +87,14 @@ table, never transcribed from the frame.
 
 ## Data volume
 
-The PRD pins no team-size number; design for the small-firm reality the stacking law names — one person is rep *and* surveyor *and* designer (F2-10) — through a list long enough to scroll, where each person may carry several of the twelve preset chips at once plus a status and a last-active value. Role names use localized capability phrases (M01 §M01.2 localization notes). At 375 a person's preset chips show two whole plus *+1* (`ChipGroup` max 2), and *+1* opens the rest in place; at 1536 every chip shows whole.
+The PRD pins no team-size number; design for the small-firm reality the stacking law names — one person is rep *and* surveyor *and* designer (F2-10) — through a list long enough to scroll, where each person may carry several of the twelve preset chips at once plus a status and a last-active value. Role names use localized capability phrases (M01 §M01.2 localization notes). Every preset chip shows whole at both widths; at 375 the chips wrap, with no cap and no *+1*.
 
-At 1536 the list is one captioned table — Person · Roles · Status · Last active, the row act in its own column — inside the page's own scroll, with *Invite teammate* and *What each role can do* in the page header. No sortable headers, no selection.
+At 1536 the list is one table — Person (with the status chip) · Roles · Last active, the row act in its own 160 px column, the other three in the ratio 2.2 : 2.4 : 1.2 (owner pick A) — filling the content width beside the settings side list (`SCR-SHELL-01`, *More: the settings list*), inside the page's own scroll, with *Invite teammate* in the page header. Its caption is for assistive technology only. No sortable headers, no selection.
 
 ## Numbers carrying provenance
 
-Every rendered number carries its F8 provenance tier in the design.
-
-**Corrected 2026-08-31 against the owner's recorded-date ruling, which outranks a brief (`CLAUDE.md` §7).** Only ONE value here
-is tiered: **the pending invite's expiry**, computed from sent-on plus a seven-day window, so it
-renders `derived` with the derivation named beside it: the card's meta line reads the send time and the window (`Sent 29 Aug 2026, 17:40 · expires after 7 days`) beside the tier mark. **Last-active carries NO tier** — the owner ruled
-that a *recorded* date is a record fact showing when it was recorded, and `F8-02`'s four values all
-describe how a QUANTITY was arrived at, none of which describes a timestamp the system wrote down.
-This brief previously listed last-active as tiered and was wrong. No money or business quantity
-renders here.
-
-A pending invite has no last-active; that place names the absence — *never signed in* (`NamedGap`).
+No tiered value. The pending invite's expiry and last-active are dates, and a date carries no tier
+(`F8-01`); the expiry carries no working line either. No money or energy figure renders here.
 
 ---
 

@@ -35,29 +35,76 @@ a:hover{color:var(--link-hover)}
     <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · default</span>
     <div data-screen-label="Assign roles — default, 1536" data-frame="d-default" style="position:relative;flex:0 0 auto;width:1536px;height:960px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
-        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-          <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+        <div style="box-sizing:border-box;display:flex;align-items:flex-start;gap:var(--sp-8);padding:var(--sp-6) var(--sp-8)">
+          <nav aria-label="Settings" style="width:248px;flex-shrink:0;display:flex;flex-direction:column;gap:var(--sp-1);padding-top:var(--sp-1)">
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2)">Settings</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="people" size="md" tone="secondary" hint-size="20px,20px"></x-import>Profile & preferences</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Your team</span>
+            <a href="#" aria-current="page" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);background:var(--accent-subtle);color:var(--accent);font-size:var(--fs-body-sm);font-weight:var(--fw-bold)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="people" size="md" tone="accent" hint-size="20px,20px"></x-import>Team</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="shield" size="md" tone="secondary" hint-size="20px,20px"></x-import>Roles reference</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Your company</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="building" size="md" tone="secondary" hint-size="20px,20px"></x-import>Business profile</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="palette" size="md" tone="secondary" hint-size="20px,20px"></x-import>Branding</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="document" size="md" tone="secondary" hint-size="20px,20px"></x-import>Proposal template</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="calendar-clock" size="md" tone="secondary" hint-size="20px,20px"></x-import>Payment terms</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">What you sell</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="package" size="md" tone="secondary" hint-size="20px,20px"></x-import>Catalog</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Customer calls</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="headset" size="md" tone="secondary" hint-size="20px,20px"></x-import>Agent & voice</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Money</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="wallet" size="md" tone="secondary" hint-size="20px,20px"></x-import>Collections</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="credit-card" size="md" tone="secondary" hint-size="20px,20px"></x-import>Billing</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="gauge" size="md" tone="secondary" hint-size="20px,20px"></x-import>Usage</a>
+          </nav>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:var(--sp-6)">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
-              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
-              <div style="display:flex;align-items:center;gap:var(--sp-3)">
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefDesk }}" hint-size="auto,44px">What each role can do</x-import>
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteDesk }}" hint-size="auto,48px">Invite teammate</x-import>
+              <div style="display:flex;align-items:baseline;gap:var(--tile-gap)">
+                <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+                <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary)">{{ headCount }}</span>
+              </div>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+            </div>
+            <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);background:var(--canvas)">
+              <div style="flex:0 1 var(--form-max);min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import></div>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAll }}" hint-size="auto,44px"></x-import>
+            </div>
+            <div role="table" aria-label="Everyone at Suryodaya Solar" style="display:flex;flex-direction:column;position:relative">
+                <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 160px;padding:0 var(--sp-5) var(--sp-4);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">
+                  <span role="columnheader">Person</span><span role="columnheader">Roles</span><span role="columnheader">Last active</span><span role="columnheader" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap">Actions</span>
+                </div>
+              <div role="rowgroup">
+                <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);overflow:hidden">
+                  <div style="margin-top:-1px">
+                  <sc-for list="{{ rows }}" as="r" hint-placeholder-count="11">
+                    <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 160px;align-items:center;min-height:82px;box-sizing:border-box;padding:14px var(--sp-5);border-top:1px solid var(--line-soft)">
+                      <div role="cell" style="display:flex;align-items:center;gap:var(--sp-3);min-width:0">
+                        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="{{ r.name }}" size="{{ r.avatar }}" hint-size="40px,40px"></x-import>
+                        <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-1);min-width:0">
+                          <span style="display:flex;align-items:center;gap:var(--sp-2);min-height:var(--sp-6);font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">{{ r.name }}<sc-if value="{{ r.you }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="accent" density="functional" hint-size="auto,22px">You</x-import></sc-if></span>
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.StatusChip" dc-props="{{ r.chip }}" hint-size="auto,24px"></x-import>
+                        </div>
+                      </div>
+                      <div role="cell" style="display:flex;flex-wrap:wrap;gap:calc(var(--sp-3) / 2)">
+                        <sc-for list="{{ r.roles }}" as="role" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="{{ role.tone }}" density="functional" hint-size="auto,24px">{{ role.label }}</x-import></sc-for>
+                      </div>
+                      <span role="cell" style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary)">{{ r.at }}</span>
+                      <div role="cell" style="justify-self:end;display:flex;align-items:center">
+                        <sc-if value="{{ r.revoke }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Revoke invite</x-import></sc-if>
+                        <sc-if value="{{ r.again }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Invite again</x-import></sc-if>
+                        <sc-if value="{{ r.deactivate }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Deactivate</x-import></sc-if>
+                        <sc-if value="{{ r.onlyOwner }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Deactivate</x-import></sc-if>
+                      </div>
+                    </div>
+                  </sc-for>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);padding-block:var(--sp-2);background:var(--canvas)"><div style="flex:0 1 var(--form-max);min-width:0">{{ findEmpty }}</div>{{ chipsAll }}</div>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ teamTable }}" hint-size="100%,760px"></x-import>
         </div>
       </x-import>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DetailPanel" dc-props="{{ panel }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60">
-        <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
-          <div style="display:flex;margin-left:calc(-1 * var(--sp-5))">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
-          </div>
-        </div>
-        <span id="m13d-presets-lbl" style="display:block;margin-top:var(--sp-4);margin-bottom:var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-tertiary)">Presets</span>
-        <div role="group" aria-labelledby="m13d-presets-lbl" style="display:flex;flex-direction:column;gap:var(--sp-2)">
+        <div role="group" aria-labelledby="m13d-presets-lbl" style="display:flex;flex-direction:column;gap:var(--sp-2);padding-top:var(--sp-3)">
           <sc-for list="{{ presetsDesk }}" as="p" hint-placeholder-count="12">
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ p }}" hint-size="100%,60px"></x-import>
           </sc-for>
@@ -71,22 +118,87 @@ a:hover{color:var(--link-hover)}
     <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · loading</span>
     <div data-screen-label="Assign roles — loading, 1536" data-frame="d-loading" style="position:relative;flex:0 0 auto;width:1536px;height:720px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
-        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-          <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+        <div style="box-sizing:border-box;display:flex;align-items:flex-start;gap:var(--sp-8);padding:var(--sp-6) var(--sp-8)">
+          <nav aria-label="Settings" style="width:248px;flex-shrink:0;display:flex;flex-direction:column;gap:var(--sp-1);padding-top:var(--sp-1)">
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2)">Settings</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="people" size="md" tone="secondary" hint-size="20px,20px"></x-import>Profile & preferences</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Your team</span>
+            <a href="#" aria-current="page" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);background:var(--accent-subtle);color:var(--accent);font-size:var(--fs-body-sm);font-weight:var(--fw-bold)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="people" size="md" tone="accent" hint-size="20px,20px"></x-import>Team</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="shield" size="md" tone="secondary" hint-size="20px,20px"></x-import>Roles reference</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Your company</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="building" size="md" tone="secondary" hint-size="20px,20px"></x-import>Business profile</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="palette" size="md" tone="secondary" hint-size="20px,20px"></x-import>Branding</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="document" size="md" tone="secondary" hint-size="20px,20px"></x-import>Proposal template</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="calendar-clock" size="md" tone="secondary" hint-size="20px,20px"></x-import>Payment terms</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">What you sell</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="package" size="md" tone="secondary" hint-size="20px,20px"></x-import>Catalog</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Customer calls</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="headset" size="md" tone="secondary" hint-size="20px,20px"></x-import>Agent & voice</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Money</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="wallet" size="md" tone="secondary" hint-size="20px,20px"></x-import>Collections</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="credit-card" size="md" tone="secondary" hint-size="20px,20px"></x-import>Billing</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="gauge" size="md" tone="secondary" hint-size="20px,20px"></x-import>Usage</a>
+          </nav>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:var(--sp-6)">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
-              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
-              <div style="display:flex;align-items:center;gap:var(--sp-3)">
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefDesk }}" hint-size="auto,44px">What each role can do</x-import>
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteDesk }}" hint-size="auto,48px">Invite teammate</x-import>
+              <div style="display:flex;align-items:baseline;gap:var(--tile-gap)">
+                <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+                <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary)">{{ headCount }}</span>
+              </div>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+            </div>
+            <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);background:var(--canvas)">
+              <div style="flex:0 1 var(--form-max);min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import></div>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAll }}" hint-size="auto,44px"></x-import>
+            </div>
+            <div role="table" aria-label="Everyone at Suryodaya Solar" style="display:flex;flex-direction:column;position:relative">
+                <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 160px;padding:0 var(--sp-5) var(--sp-4);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">
+                  <span role="columnheader">Person</span><span role="columnheader">Roles</span><span role="columnheader">Last active</span><span role="columnheader" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap">Actions</span>
+                </div>
+              <div role="rowgroup">
+                <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);overflow:hidden">
+                  <div style="margin-top:-1px">
+                  <sc-for list="{{ rows }}" as="r" hint-placeholder-count="11">
+                    <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 160px;align-items:center;min-height:82px;box-sizing:border-box;padding:14px var(--sp-5);border-top:1px solid var(--line-soft)">
+                      <div role="cell" style="display:flex;align-items:center;gap:var(--sp-3);min-width:0">
+                        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="{{ r.name }}" size="{{ r.avatar }}" hint-size="40px,40px"></x-import>
+                        <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-1);min-width:0">
+                          <span style="display:flex;align-items:center;gap:var(--sp-2);min-height:var(--sp-6);font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">{{ r.name }}<sc-if value="{{ r.you }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="accent" density="functional" hint-size="auto,22px">You</x-import></sc-if></span>
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.StatusChip" dc-props="{{ r.chip }}" hint-size="auto,24px"></x-import>
+                        </div>
+                      </div>
+                      <div role="cell" style="display:flex;flex-wrap:wrap;gap:calc(var(--sp-3) / 2)">
+                        <sc-for list="{{ r.roles }}" as="role" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="{{ role.tone }}" density="functional" hint-size="auto,24px">{{ role.label }}</x-import></sc-for>
+                      </div>
+                      <span role="cell" style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary)">{{ r.at }}</span>
+                      <div role="cell" style="justify-self:end;display:flex;align-items:center">
+                        <sc-if value="{{ r.revoke }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Revoke invite</x-import></sc-if>
+                        <sc-if value="{{ r.again }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Invite again</x-import></sc-if>
+                        <sc-if value="{{ r.deactivate }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Deactivate</x-import></sc-if>
+                        <sc-if value="{{ r.onlyOwner }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Deactivate</x-import></sc-if>
+                      </div>
+                    </div>
+                  </sc-for>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);padding-block:var(--sp-2);background:var(--canvas)"><div style="flex:0 1 var(--form-max);min-width:0">{{ findEmpty }}</div>{{ chipsAll }}</div>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ teamTable }}" hint-size="100%,760px"></x-import>
         </div>
       </x-import>
-      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DetailPanel" dc-props="{{ panelLoading }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60"></x-import>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DetailPanel" dc-props="{{ panelLoading }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60">
+        <div role="status" aria-busy="true" aria-label="Loading Vikram's presets" style="display:flex;flex-direction:column;gap:var(--sp-2);padding-top:var(--sp-3)">
+          <sc-for list="{{ skeletonRows }}" as="s" hint-placeholder-count="9">
+            <div aria-hidden="true" style="display:flex;align-items:flex-start;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);background:var(--fill);border-radius:var(--r-tile)">
+              <span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);margin-top:var(--sp-0-5);border-radius:var(--r-xs);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span>
+              <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:var(--sp-0-5)">
+                <span style="display:flex;align-items:center;height:calc(var(--fs-body) * var(--lh-body))"><span style="display:block;width:35%;height:var(--fs-body-sm);border-radius:var(--r-xs);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></span>
+                <span style="display:flex;align-items:center;height:calc(var(--fs-caption) * var(--lh-caption))"><span style="display:block;width:80%;height:var(--fs-caption);border-radius:var(--r-xs);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></span>
+              </span>
+            </div>
+          </sc-for>
+        </div>
+      </x-import>
     </div>
   </div>
 
@@ -94,29 +206,76 @@ a:hover{color:var(--link-hover)}
     <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · remove confirm</span>
     <div data-screen-label="Assign roles — remove confirm, 1536" data-frame="d-confirm" style="position:relative;flex:0 0 auto;width:1536px;height:960px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
-        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-          <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
+        <div style="box-sizing:border-box;display:flex;align-items:flex-start;gap:var(--sp-8);padding:var(--sp-6) var(--sp-8)">
+          <nav aria-label="Settings" style="width:248px;flex-shrink:0;display:flex;flex-direction:column;gap:var(--sp-1);padding-top:var(--sp-1)">
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2)">Settings</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="people" size="md" tone="secondary" hint-size="20px,20px"></x-import>Profile & preferences</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Your team</span>
+            <a href="#" aria-current="page" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);background:var(--accent-subtle);color:var(--accent);font-size:var(--fs-body-sm);font-weight:var(--fw-bold)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="people" size="md" tone="accent" hint-size="20px,20px"></x-import>Team</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="shield" size="md" tone="secondary" hint-size="20px,20px"></x-import>Roles reference</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Your company</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="building" size="md" tone="secondary" hint-size="20px,20px"></x-import>Business profile</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="palette" size="md" tone="secondary" hint-size="20px,20px"></x-import>Branding</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="document" size="md" tone="secondary" hint-size="20px,20px"></x-import>Proposal template</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="calendar-clock" size="md" tone="secondary" hint-size="20px,20px"></x-import>Payment terms</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">What you sell</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="package" size="md" tone="secondary" hint-size="20px,20px"></x-import>Catalog</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Customer calls</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="headset" size="md" tone="secondary" hint-size="20px,20px"></x-import>Agent & voice</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Money</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="wallet" size="md" tone="secondary" hint-size="20px,20px"></x-import>Collections</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="credit-card" size="md" tone="secondary" hint-size="20px,20px"></x-import>Billing</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="gauge" size="md" tone="secondary" hint-size="20px,20px"></x-import>Usage</a>
+          </nav>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:var(--sp-6)">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
-              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
-              <div style="display:flex;align-items:center;gap:var(--sp-3)">
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefDesk }}" hint-size="auto,44px">What each role can do</x-import>
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteDesk }}" hint-size="auto,48px">Invite teammate</x-import>
+              <div style="display:flex;align-items:baseline;gap:var(--tile-gap)">
+                <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+                <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary)">{{ headCount }}</span>
+              </div>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+            </div>
+            <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);background:var(--canvas)">
+              <div style="flex:0 1 var(--form-max);min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import></div>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAll }}" hint-size="auto,44px"></x-import>
+            </div>
+            <div role="table" aria-label="Everyone at Suryodaya Solar" style="display:flex;flex-direction:column;position:relative">
+                <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 160px;padding:0 var(--sp-5) var(--sp-4);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">
+                  <span role="columnheader">Person</span><span role="columnheader">Roles</span><span role="columnheader">Last active</span><span role="columnheader" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap">Actions</span>
+                </div>
+              <div role="rowgroup">
+                <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);overflow:hidden">
+                  <div style="margin-top:-1px">
+                  <sc-for list="{{ rows }}" as="r" hint-placeholder-count="11">
+                    <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 160px;align-items:center;min-height:82px;box-sizing:border-box;padding:14px var(--sp-5);border-top:1px solid var(--line-soft)">
+                      <div role="cell" style="display:flex;align-items:center;gap:var(--sp-3);min-width:0">
+                        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="{{ r.name }}" size="{{ r.avatar }}" hint-size="40px,40px"></x-import>
+                        <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-1);min-width:0">
+                          <span style="display:flex;align-items:center;gap:var(--sp-2);min-height:var(--sp-6);font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">{{ r.name }}<sc-if value="{{ r.you }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="accent" density="functional" hint-size="auto,22px">You</x-import></sc-if></span>
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.StatusChip" dc-props="{{ r.chip }}" hint-size="auto,24px"></x-import>
+                        </div>
+                      </div>
+                      <div role="cell" style="display:flex;flex-wrap:wrap;gap:calc(var(--sp-3) / 2)">
+                        <sc-for list="{{ r.roles }}" as="role" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="{{ role.tone }}" density="functional" hint-size="auto,24px">{{ role.label }}</x-import></sc-for>
+                      </div>
+                      <span role="cell" style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary)">{{ r.at }}</span>
+                      <div role="cell" style="justify-self:end;display:flex;align-items:center">
+                        <sc-if value="{{ r.revoke }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Revoke invite</x-import></sc-if>
+                        <sc-if value="{{ r.again }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Invite again</x-import></sc-if>
+                        <sc-if value="{{ r.deactivate }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Deactivate</x-import></sc-if>
+                        <sc-if value="{{ r.onlyOwner }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Deactivate</x-import></sc-if>
+                      </div>
+                    </div>
+                  </sc-for>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);padding-block:var(--sp-2);background:var(--canvas)"><div style="flex:0 1 var(--form-max);min-width:0">{{ findEmpty }}</div>{{ chipsAll }}</div>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ teamTable }}" hint-size="100%,760px"></x-import>
         </div>
       </x-import>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DetailPanel" dc-props="{{ panelConfirm }}" hint-size="100%,100%" style="position:absolute;inset:0;z-index:60">
-        <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
-          <div style="display:flex;margin-left:calc(-1 * var(--sp-5))">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
-          </div>
-        </div>
-        <span id="m13dc-presets-lbl" style="display:block;margin-top:var(--sp-4);margin-bottom:var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-tertiary)">Presets</span>
-        <div role="group" aria-labelledby="m13dc-presets-lbl" style="display:flex;flex-direction:column;gap:var(--sp-2)">
+        <div role="group" aria-labelledby="m13dc-presets-lbl" style="display:flex;flex-direction:column;gap:var(--sp-2);padding-top:var(--sp-3)">
           <sc-for list="{{ presetsConfirm }}" as="p" hint-placeholder-count="12">
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ p }}" hint-size="100%,60px"></x-import>
           </sc-for>
@@ -156,21 +315,22 @@ class Component extends DCLogic {
 
   noop = () => {};
 
-  /* The same twelve rows as the 375 board, word for word: F2-01's names, F2 §F2.1's grant summaries. */
+  /* The same twelve rows as the 375 board, word for word: F2-01's names, F2 §F2.1's grant summaries,
+     and the same glyph per clause in the grant line. */
   presetSpec() {
     return [
-      { id: "owner", name: "EPC Owner", verb: "run the whole business", desc: "Everything, including team and roles, the agent, billing and company settings", held: false },
-      { id: "sales-manager", name: "Sales Manager", verb: "oversee sales", desc: "The team's leads and proposals, project stages, payments and team reports", held: false },
-      { id: "sales-exec", name: "Sales Executive", verb: "sell", desc: "Their own leads, surveys and proposals, including discounts, sending and marking won or lost", held: false },
-      { id: "survey", name: "Survey Engineer", verb: "survey", desc: "Capture and submit surveys for the leads assigned to them", held: true },
-      { id: "design", name: "Design Engineer", verb: "design", desc: "Designs and proposals for the leads assigned to them, and design sign-off", held: true },
-      { id: "project", name: "Project Manager", verb: "run projects", desc: "Their own projects' stages, documents, payments and installation checklist", held: false },
-      { id: "field-tech", name: "Field Technician", verb: "work assigned stops", desc: "Their own stops, check-ins, timeline and attendance", held: false },
-      { id: "install", name: "Installation Team Member", verb: "install", desc: "The installation job assigned to them, its checklist and photos", held: true },
-      { id: "hr-admin", name: "HR/Admin", verb: "handle people and admin", desc: "Employee records, documents, attendance and leave", held: false },
-      { id: "finance", name: "Finance", verb: "handle money", desc: "Record payments, attach receipts, read any project's money, and see catalog prices and margins", held: false },
-      { id: "operations", name: "Operations", verb: "run operations", desc: "Project stages, documents and blockers across all projects, plus the catalog and price book", held: false },
-      { id: "marketing", name: "Marketing", verb: "run marketing", desc: "Create and run campaigns, see what they captured, and pass enquiries into the lead queue", held: false },
+      { id: "owner", name: "EPC Owner", verb: "run the whole business", glyph: "building", desc: "Everything, including team and roles, the agent, billing and company settings", held: false },
+      { id: "sales-manager", name: "Sales Manager", verb: "oversee sales", glyph: "gauge", desc: "The team's leads and proposals, project stages, payments and team reports", held: false },
+      { id: "sales-exec", name: "Sales Executive", verb: "sell", glyph: "document", desc: "Their own leads, surveys and proposals, including discounts, sending and marking won or lost", held: false },
+      { id: "survey", name: "Survey Engineer", verb: "survey", glyph: "search", desc: "Capture and submit surveys for the leads assigned to them", held: true },
+      { id: "design", name: "Design Engineer", verb: "design", glyph: "palette", desc: "Designs and proposals for the leads assigned to them, and design sign-off", held: true },
+      { id: "project", name: "Project Manager", verb: "run projects", glyph: "board", desc: "Their own projects' stages, documents, payments and installation checklist", held: false },
+      { id: "field-tech", name: "Field Technician", verb: "work assigned stops", glyph: "calendar-clock", desc: "Their own stops, check-ins, timeline and attendance", held: false },
+      { id: "install", name: "Installation Team Member", verb: "install", glyph: "house", desc: "The installation job assigned to them, its checklist and photos", held: true },
+      { id: "hr-admin", name: "HR/Admin", verb: "handle people and admin", glyph: "pair", desc: "Employee records, documents, attendance and leave", held: false },
+      { id: "finance", name: "Finance", verb: "handle money", glyph: "wallet", desc: "Record payments, attach receipts, read any project's money, and see catalog prices and margins", held: false },
+      { id: "operations", name: "Operations", verb: "run operations", glyph: "package", desc: "Project stages, documents and blockers across all projects, plus the catalog and price book", held: false },
+      { id: "marketing", name: "Marketing", verb: "run marketing", glyph: "megaphone", desc: "Create and run campaigns, see what they captured, and pass enquiries into the lead queue", held: false },
     ];
   }
 
@@ -182,7 +342,7 @@ class Component extends DCLogic {
     const h = React.createElement;
     const NS = ds;
 
-    const glyph = (name, filled) => h(NS.ShellGlyph, { name: name, size: "md", filled: !!filled });
+    const glyph = (name, filled, tone) => h(NS.ShellGlyph, { name: name, size: "lg", filled: !!filled, tone: tone });
     const dest = (key) => NS.DESTINATION_GLYPH[key];
 
     const status = (label, tone) => h(NS.StatusChip, {
@@ -218,46 +378,93 @@ class Component extends DCLogic {
     const held = (list, ids) => list.map((p) => Object.assign({}, p, { held: ids.indexOf(p.id) > -1 }));
     const byId = (id) => this.presetSpec().filter((p) => p.id === id)[0];
 
-    const metaRow = (word, tone, email) => h("span", {
-      style: { display: "flex", alignItems: "center", gap: "var(--sp-2)", flexWrap: "wrap" },
+    /* THE HEAD, fixed while the presets scroll — the 375 board's head: the name with its status chip
+       on one line, the email under it (DetailPanel.subtitle, set in the sans face), then the Presets
+       heading and the Roles reference action on a hairline (DetailPanel.meta). */
+    const nameLine = (name, word, tone) => h("span", {
+      style: { display: "inline-flex", alignItems: "center", gap: "var(--sp-2)", flexWrap: "wrap" },
+    }, [h("span", { key: "n" }, name), h("span", { key: "s", style: { display: "inline-flex" } }, status(word, tone))]);
+    const email = (words) => h("span", {
+      style: { display: "block", marginTop: "var(--sp-0-5)", fontFamily: "var(--font-sans)", fontSize: "var(--fs-body-sm)", lineHeight: "var(--lh-body-sm)" },
+    }, words);
+
+    /* The info mark is the Explainer's own glyph, drawn at the icon scale's md size. */
+    const infoGlyph = h("svg", {
+      width: NS.ICON_SIZE.md, height: NS.ICON_SIZE.md, viewBox: "0 0 24 24", fill: "none",
+      stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round",
+      "aria-hidden": "true",
     }, [
-      h("span", { key: "s" }, status(word, tone)),
-      h("span", { key: "e", style: { color: "var(--text-secondary)" } }, email),
+      h("circle", { key: "c", cx: "12", cy: "12", r: "9" }),
+      h("path", { key: "l", d: "M12 11.25v5" }),
+      h("circle", { key: "d", cx: "12", cy: "7.6", r: "1", fill: "currentColor", stroke: "none" }),
+    ]);
+    /* SCR-M01-14, the read-only reference, opens from here. */
+    const presetsHead = (lblId) => h("div", {
+      style: {
+        display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--sp-3)",
+        marginTop: "var(--sp-1)", paddingBottom: "var(--sp-2)", borderBottom: "1px solid var(--line-soft)",
+      },
+    }, [
+      h("span", {
+        key: "l", id: lblId,
+        style: {
+          fontSize: "var(--fs-overline)", fontWeight: "var(--fw-bold)", letterSpacing: "var(--tr-overline)",
+          textTransform: "uppercase", color: "var(--text-tertiary)",
+        },
+      }, "Presets"),
+      h(NS.ShellAction, { key: "i", round: true, label: "Roles reference", onClick: this.noop, icon: infoGlyph }),
     ]);
 
+    /* THE GRANT LINE (owner pick G2): the held capabilities' glyphs lead as a quiet cluster, then one
+       plain sentence with each capability in bold, in row order. The cluster is decoration, hidden from
+       a screen reader; the sentence is the meaning. Nothing in the card looks like a control — no pill,
+       no chip, no lift. AvatarGroup owns the overlap, the ring on the card's ground and the "+N" past
+       four; the sentence names every capability. */
+    const grantCluster = (ids) => h("span", { key: "i", "aria-hidden": "true", style: { display: "flex", flexShrink: 0 } },
+      h(NS.AvatarGroup, {
+        people: ids.map((id) => ({ name: byId(id).verb, glyph: h(NS.ShellGlyph, { name: byId(id).glyph, size: "sm", tone: "accent" }) })),
+        size: 36, max: 4, ring: "var(--accent-subtle)",
+      }));
+    /* "<name> can a, b and c." — the board's one joiner: commas, then "and" before the last. */
     const grantSentence = (name, ids) => {
-      const verbs = ids.map((id) => byId(id).verb);
-      const parts = [name + " can "];
-      verbs.forEach((v, i) => {
-        if (i > 0) parts.push(i === verbs.length - 1 ? " and " : ", ");
-        parts.push(h("strong", { key: "v" + i, style: { fontWeight: "var(--fw-bold)" } }, v));
+      const words = [name + " can "];
+      ids.forEach((id, i) => {
+        if (i > 0) words.push(i === ids.length - 1 ? " and " : ", ");
+        words.push(h("strong", { key: id, style: { fontWeight: "var(--fw-bold)", color: "var(--text-primary)" } }, byId(id).verb));
       });
-      parts.push(".");
-      return parts;
+      words.push(".");
+      return { ids: ids, words: words };
     };
-    const grantCard = (sentence) => h(NS.Card, { key: "g", density: "functional" },
-      h("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-1)" } }, [
+    const grantCard = (grant) => h("section", {
+      key: "g", "aria-label": "What this gives them",
+      style: {
+        display: "flex", alignItems: "center", gap: "var(--sp-3)",
+        padding: "var(--sp-3) var(--sp-4)", background: "var(--accent-subtle)", borderRadius: "var(--r-tile)",
+      },
+    }, [
+      grant.ids.length ? grantCluster(grant.ids) : null,
+      h("div", {
+        key: "t", style: { display: "flex", flexDirection: "column", gap: "var(--sp-0-5)", flex: 1, minWidth: 0 },
+      }, [
         h("span", {
-          key: "o",
+          key: "o", "aria-hidden": "true",
           style: {
             fontSize: "var(--fs-overline)", fontWeight: "var(--fw-bold)", letterSpacing: "var(--tr-overline)",
-            textTransform: "uppercase", color: "var(--text-tertiary)",
+            textTransform: "uppercase", color: "var(--text-secondary)",
           },
         }, "What this gives them"),
         h("p", {
           key: "s", "aria-live": "polite",
-          style: {
-            margin: 0, fontSize: "var(--fs-body-lg)", lineHeight: "var(--lh-body-lg)",
-            color: "var(--text-primary)", textWrap: "pretty",
-          },
-        }, sentence),
-      ]));
+          style: { margin: 0, fontSize: "var(--fs-body)", lineHeight: "var(--lh-body)", color: "var(--text-primary)" },
+        }, grant.words),
+      ]),
+    ]);
 
-    /* DetailPanel.footer pins the grant line and Save. */
-    const footer = (sentence, save) => h("div", {
+    /* DetailPanel.footer pins the grant line and Save; Save's reason opens in its bubble (G9). */
+    const footer = (grant, save) => h("div", {
       style: { display: "flex", flexDirection: "column", gap: "var(--sp-3)" },
     }, [
-      grantCard(sentence),
+      grantCard(grant),
       h(NS.Button, Object.assign({ key: "b" }, save), "Save roles"),
     ]);
     const saveOff = {
@@ -269,14 +476,14 @@ class Component extends DCLogic {
     const vals = {};
 
     /* THE SHELL (F7-22, F7-48): the EPC Owner's destinations on the rail, the bell and the account at
-       its foot; the header holds only the tenant's mark and the one search. */
+       its foot; the header holds only the tenant's name and the one search. */
     vals.rail = h(NS.AppRail, {
       label: "Main", value: "more", onChange: this.noop,
       items: [
-        { key: "home", label: "Home", icon: glyph(dest("home")), activeIcon: glyph(dest("home"), true) },
-        { key: "leads", label: "Leads", icon: glyph(dest("leads")), activeIcon: glyph(dest("leads"), true) },
-        { key: "projects", label: "Projects", icon: glyph(dest("projects")), activeIcon: glyph(dest("projects"), true) },
-        { key: "more", label: "More", icon: glyph(dest("more")), activeIcon: glyph(dest("more"), true) },
+        { key: "home", label: "Home", icon: glyph(dest("home")), activeIcon: glyph(dest("home"), true, "primary") },
+        { key: "leads", label: "Leads", icon: glyph(dest("leads")), activeIcon: glyph(dest("leads"), true, "primary") },
+        { key: "projects", label: "Projects", icon: glyph(dest("projects")), activeIcon: glyph(dest("projects"), true, "primary") },
+        { key: "more", label: "More", icon: glyph(dest("more")), activeIcon: glyph(dest("more"), true, "primary") },
       ],
       footer: [{ key: "notifications", label: "Notifications", icon: glyph("bell"), onClick: this.noop }],
       avatar: h(NS.AccountMenu, {
@@ -292,124 +499,98 @@ class Component extends DCLogic {
       }),
     });
 
-    vals.inviteDesk = { variant: "primary", size: "lg", onClick: this.noop, icon: h(NS.ShellGlyph, { name: "plus", size: "md", tone: "inverse" }) };
-    vals.rolesRefDesk = { variant: "ghost", size: "md", onClick: this.noop };
-    /* The page's way back at 1536: the settings trail above the h1, never in AppHeader. */
-    vals.trailProps = { items: [{ key: "settings", label: "Settings", onClick: this.noop }, { key: "here", label: "Team" }] };
-    vals.rolesRefBtn = { variant: "ghost", size: "md", onClick: this.noop };
-
-    /* THE TABLE BEHIND IS SCR-M01-12's d-default, as that board draws it: the same roster, columns,
-       caption, row acts and list head. */
+    /* THE TEAM PAGE BEHIND is the owner's pick for SCR-M01-12 at 1536 (direction 1, the refined
+       table), its head and list head pinned, the rows scrolled to the person whose row was tapped. */
+    vals.inviteBtn = { variant: "primary", size: "lg", onClick: this.noop, icon: h(NS.ShellGlyph, { name: "plus", size: "md", tone: "inverse" }) };
+    vals.findEmpty = { placeholder: "Find in this list", ariaLabel: "Find in this list", value: "", onChange: this.noop };
+    vals.chipsAll = {
+      label: "Status", value: "all", onChange: this.noop,
+      options: [
+        { value: "all", label: "All" }, { value: "invited", label: "Invited" }, { value: "expired", label: "Expired" },
+        { value: "active", label: "Active" }, { value: "deactivated", label: "Deactivated" },
+      ],
+      counts: { all: 11, invited: 1, expired: 1, active: 8, deactivated: 1 },
+    };
     const STATUS = {
       invited: { label: "Invited", tone: "info" },
       expired: { label: "Expired", tone: "warning" },
       active: { label: "Active", tone: "success" },
       deactivated: { label: "Deactivated", tone: "neutral" },
     };
-    const rolesAll = (names) => h(NS.ChipGroup, {
-      max: 0, label: "roles", density: "functional",
-    }, names.map((n) => h(NS.Badge, { key: n, tone: "neutral", density: "functional" }, n)));
-    const gap = (words) => h(NS.NamedGap, { scale: "cell", gap: words });
-    const column = (kids) => h("div", {
-      style: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--sp-1)" },
-    }, kids);
-
-    const GUARD = "Suryodaya Solar must keep one EPC Owner, so make someone else one first.";
+    /* Invites first (pending, then expired), then everyone by name, deactivated last. */
     const ROSTER = [
-      { name: "Priya Deshmukh", kind: "invited", roles: ["Sales Executive"], sent: "29 Aug 2026, 17:40", expires: "5 Sep 2026, 17:40" },
-      { name: "Rohan Gaikwad", kind: "expired", roles: ["Survey Engineer"], sent: "20 Aug 2026, 11:05" },
-      { name: "Amit Rane", kind: "active", roles: ["Sales Executive", "Survey Engineer"], at: "30 Aug 2026, 19:12" },
-      { name: "Anjali Kulkarni", kind: "active", roles: ["Sales Executive"], at: "31 Aug 2026, 08:47" },
-      { name: "Kavita Shirke", kind: "active", roles: ["Survey Engineer"], at: "28 Aug 2026, 13:20" },
-      { name: "Meera Iyer", kind: "active", roles: ["Design Engineer"], at: "29 Aug 2026, 17:30" },
-      { name: "Nitin Pawar", kind: "active", roles: ["Project Manager"], at: "31 Aug 2026, 08:12" },
-      { name: "Rajesh Kulkarni", kind: "active", you: true, roles: ["EPC Owner"], at: "31 Aug 2026, 09:05", reason: GUARD },
-      { name: "Sunil Bhosale", kind: "active", roles: ["Installation Team Member"], at: "31 Aug 2026, 07:55" },
-      { name: "Vikram Deshpande", kind: "active", roles: ["Survey Engineer", "Design Engineer", "Installation Team Member"], at: "30 Aug 2026, 12:40" },
-      { name: "Deepak Jadhav", kind: "deactivated", roles: ["Installation Team Member"], at: "12 Aug 2026, 15:58" },
+      { name: "Priya Deshmukh", kind: "invited", roles: ["Sales Executive"], expires: "5 Sep" },
+      { name: "Rohan Gaikwad", kind: "expired", roles: ["Survey Engineer"], expired: "27 Aug" },
+      { name: "Amit Rane", kind: "active", roles: ["Sales Executive", "Survey Engineer"], at: "30 Aug, 19:12" },
+      { name: "Anjali Kulkarni", kind: "active", roles: ["Sales Executive"], at: "Today, 08:47" },
+      { name: "Kavita Shirke", kind: "active", roles: ["Survey Engineer"], at: "28 Aug, 13:20" },
+      { name: "Meera Iyer", kind: "active", roles: ["Design Engineer"], at: "29 Aug, 17:30" },
+      { name: "Nitin Pawar", kind: "active", roles: ["Project Manager"], at: "Today, 08:12" },
+      { name: "Rajesh Kulkarni", kind: "active", you: true, roles: ["EPC Owner"], at: "Today, 09:05", onlyOwner: true },
+      { name: "Sunil Bhosale", kind: "active", roles: ["Installation Team Member"], at: "Today, 07:55" },
+      { name: "Vikram Deshpande", kind: "active", roles: ["Survey Engineer", "Design Engineer", "Installation Team Member"], at: "30 Aug, 12:40" },
+      { name: "Deepak Jadhav", kind: "deactivated", roles: ["Installation Team Member"], at: "12 Aug, 15:58" },
     ];
-
-    const nameCell = (r) => h("span", {
-      style: { display: "inline-flex", alignItems: "center", gap: "var(--sp-2)", minWidth: 0 },
-    }, h("span", { key: "n" }, r.name), r.you ? h(NS.Badge, { key: "y", tone: "accent", density: "functional" }, "You") : null);
-
-    /* The expiry date is computed from the send and the 7-day invite window, so the line under it
-       names both and the column's provenanceFor marks it derived. Every other date here is recorded. */
-    const atCell = (r) => {
-      if (r.kind === "invited") return column([
-        h("span", { key: "g" }, gap("Never signed in")),
-        h("span", { key: "e" }, "Invite expires " + r.expires),
-        h("span", { key: "s" }, "Sent " + r.sent + " · expires after 7 days"),
-      ]);
-      if (r.kind === "expired") return column([
-        h("span", { key: "g" }, gap("Never signed in")),
-        h("span", { key: "s" }, "Invite sent " + r.sent),
-      ]);
-      return r.at;
+    /* A role label is a Badge in its kind's iris tone: violet sells, blue plans and runs, magenta installs. */
+    const KIND = {
+      "EPC Owner": "violet", "Sales Manager": "violet", "Sales Executive": "violet", "Marketing": "violet",
+      "Survey Engineer": "blue", "Design Engineer": "blue", "Project Manager": "blue", "Operations": "blue", "Finance": "blue", "HR/Admin": "blue",
+      "Field Technician": "magenta", "Installation Team Member": "magenta",
     };
-
-    /* Only an active member opens Assign Roles: the chevron is that act, and an invite or a
-       deactivated row carries none. */
-    const rowActions = (r) => {
-      const act = (label, reason) => h(NS.Button, {
-        key: "act", variant: "ghost", size: "sm", onClick: reason ? undefined : this.noop,
-        disabled: !!reason, disabledReason: reason || undefined,
-      }, label);
-      if (r.kind === "invited") return act("Revoke invite");
-      if (r.kind === "expired") return act("Invite again");
-      if (r.kind === "deactivated") return null;
-      return h("span", { style: { display: "inline-flex", alignItems: "flex-start", gap: "var(--sp-2)" } },
-        act("Deactivate", r.reason),
-        h(NS.IconButton, { key: "open", variant: "ghost", label: "Assign roles for " + r.name, onClick: this.noop },
-          h(NS.ShellGlyph, { name: "chevron-right", size: "md" })));
+    const actGlyph = (paths) => h("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true },
+      paths.map((d, i) => h("path", { key: i, d: d })));
+    const GLYPH = {
+      userMinus: ["M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2", "M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z", "M22 11h-6"],
+      undo: ["M3 7v6h6", "M21 17a9 9 0 0 0-15-6.7L3 13"],
+      send: ["M22 2 11 13", "M22 2l-7 20-4-9-9-4 20-7z"],
     };
-
-    vals.teamTable = {
-      caption: "Everyone at Suryodaya Solar — invites first (pending, then expired), then everyone by name, deactivated last",
-      rows: ROSTER, rowKey: "name", density: "comfortable",
-      columns: [
-        { key: "name", label: "Person", primary: true, strong: true, width: "16%", render: nameCell },
-        { key: "roles", label: "Roles", wrap: true, width: "26%", render: (r) => rolesAll(r.roles) },
-        { key: "status", label: "Status", width: "10%", render: (r) => status(STATUS[r.kind].label, STATUS[r.kind].tone) },
-        { key: "at", label: "Last active", mono: true, width: "24%", render: atCell,
-          provenanceFor: (r) => (r.kind === "invited" ? "derived" : null) },
-      ],
-      rowActions: rowActions,
+    /* Board 12's act() and row(): one raised act per row, right-aligned: Invite again primary, Revoke
+       invite secondary, Deactivate secondary in danger words; the last EPC Owner's Deactivate is off,
+       its reason on a tap. */
+    const act = (p) => {
+      if (p.kind === "invited") return { variant: "secondary", size: "sm", icon: actGlyph(GLYPH.undo), onClick: this.noop };
+      if (p.kind === "expired") return { variant: "primary", size: "sm", icon: actGlyph(GLYPH.send), onClick: this.noop };
+      const deactivate = { variant: "secondary", size: "sm", tone: "danger", icon: actGlyph(GLYPH.userMinus) };
+      return p.onlyOwner
+        ? Object.assign(deactivate, { disabled: true, disabledReason: "Only EPC Owner" })
+        : Object.assign(deactivate, { onClick: this.noop });
     };
-
-    /* The list head over it: Find in this list and the Status chips with their counts. */
-    const count = (kind) => ROSTER.filter((p) => p.kind === kind).length;
-    vals.findEmpty = h(NS.SearchField, {
-      density: "functional", placeholder: "Find in this list", ariaLabel: "Find in this list",
-      value: "", onChange: this.noop,
+    const row = (p) => ({
+      name: p.name, avatar: 40, you: !!p.you,
+      roles: p.roles.map((r) => ({ label: r, tone: KIND[r] })),
+      chip: { status: p.kind, label: STATUS[p.kind].label, tone: STATUS[p.kind].tone, density: "functional" },
+      at: p.kind === "invited" ? "Expires " + p.expires : p.kind === "expired" ? "Expired " + p.expired : p.at,
+      revoke: p.kind === "invited", again: p.kind === "expired",
+      deactivate: p.kind === "active" && !p.onlyOwner, onlyOwner: !!p.onlyOwner,
+      actBtn: act(p),
     });
-    vals.chipsAll = h(NS.FilterChips, {
-      label: "Status", value: "all", onChange: this.noop,
-      counts: { all: ROSTER.length, invited: count("invited"), expired: count("expired"), active: count("active"), deactivated: count("deactivated") },
-      options: [
-        { value: "all", label: "All" }, { value: "invited", label: "Invited" }, { value: "expired", label: "Expired" },
-        { value: "active", label: "Active" }, { value: "deactivated", label: "Deactivated" },
-      ],
-    });
+    const people = ROSTER.filter((p) => p.kind === "active" || p.kind === "deactivated").length;
+    vals.headCount = people + " people · " + (ROSTER.length - people) + " invites";
+    vals.rows = ROSTER.map(row);
 
-    /* THE EDITOR AT 1536 (F7-21): a modal side panel at the right edge of the table. */
+    /* THE EDITOR AT 1536 (F7-21): a modal side panel at the right edge of the page. */
     const panelBase = {
       open: true, inset: true, zIndex: 60, modal: true, side: "right", width: 560,
-      density: "functional", overline: "Assign roles", title: "Vikram Deshpande",
-      meta: metaRow("Active", "success", "vikram.d@suryodayasolar.in"),
+      density: "functional", overline: "Assign roles",
+      title: nameLine("Vikram Deshpande", "Active", "success"),
+      subtitle: email("vikram.d@suryodayasolar.in"),
       showClose: true, closeLabel: "Close", dismissible: true, onClose: this.noop,
     };
     vals.panel = Object.assign({}, panelBase, {
+      meta: presetsHead("m13d-presets-lbl"),
       footer: footer(grantSentence("Vikram", ["survey", "design", "install"]), saveOff),
     });
     vals.presetsDesk = mkRows(this.presetSpec(), "m13d-");
 
-    /* LOADING keeps the header the tapped row already carried; the grant line and Save are absent. */
-    vals.panelLoading = Object.assign({}, panelBase, { state: "loading" });
+    /* LOADING keeps the head the tapped row already carried; the body is the rows' own skeleton; the
+       grant line and Save are absent. */
+    vals.panelLoading = Object.assign({}, panelBase, { meta: presetsHead("m13dl-presets-lbl") });
+    vals.skeletonRows = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
     /* THE REMOVE (N8) at 1536: a Modal over the panel, answered by an action; the diff is visible in
        the panel behind it. */
     vals.panelConfirm = Object.assign({}, panelBase, {
+      meta: presetsHead("m13dc-presets-lbl"),
       footer: footer(grantSentence("Vikram", ["survey", "install"]), saveOn),
     });
     vals.presetsConfirm = mkRows(held(this.presetSpec(), ["survey", "install"]), "m13dc-");

@@ -28,7 +28,7 @@ a{color:var(--link);text-decoration:none}
 a:hover{color:var(--link-hover)}
 </style>
 </helmet>
-<div style="width:1700px;height:2184px;box-sizing:border-box;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:var(--sp-10);row-gap:var(--sp-12);align-items:start;padding:var(--sp-10);background:var(--canvas);overflow:hidden">
+<div style="width:1700px;height:2152px;box-sizing:border-box;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:var(--sp-10);row-gap:var(--sp-12);align-items:start;padding:var(--sp-10);background:var(--canvas);overflow:hidden">
 <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
     <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:375px">
       <span style="display:block;margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · default</span>
@@ -38,13 +38,13 @@ a:hover{color:var(--link-hover)}
         <div data-scroll style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile-fn) var(--sp-6)">
           <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
             <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2>
-            <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ nameRow }}" hint-size="100%,52px"></x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ roleRow }}" hint-size="100%,52px"></x-import>
+            <div style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-1) 0">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.nameRow }}" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.roleRow }}" hint-size="100%,64px"></x-import>
             </div>
           </section>
           <section style="display:flex;flex-direction:column;gap:var(--sp-4)">
-            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">How HelioGrid reads to you</h2>
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Language and units</h2>
             <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ languagePicker }}" hint-size="100%,190px"></x-import>
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ languageSource }}" hint-size="100%,18px"></x-import>
@@ -55,8 +55,7 @@ a:hover{color:var(--link-hover)}
             </div>
           </section>
           <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
-            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2>
-            <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way.</p>
+            <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ pushAsk }}" hint-size="44px,44px"></x-import></div>
             <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
               <sc-for list="{{ pushGroups }}" as="g" hint-placeholder-count="4">
                 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ g }}" hint-size="100%,44px"></x-import>
@@ -86,13 +85,13 @@ a:hover{color:var(--link-hover)}
         <div data-scroll style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile-fn) var(--sp-6)">
           <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
             <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2>
-            <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ nameRow }}" hint-size="100%,52px"></x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ roleRow }}" hint-size="100%,52px"></x-import>
+            <div style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-1) 0">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.nameRow }}" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.roleRow }}" hint-size="100%,64px"></x-import>
             </div>
           </section>
           <section style="display:flex;flex-direction:column;gap:var(--sp-4)">
-            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">How HelioGrid reads to you</h2>
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Language and units</h2>
             <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ languagePickerOne }}" hint-size="100%,190px"></x-import>
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ languageSource }}" hint-size="100%,18px"></x-import>
@@ -103,8 +102,7 @@ a:hover{color:var(--link-hover)}
             </div>
           </section>
           <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
-            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2>
-            <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way.</p>
+            <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ pushAsk }}" hint-size="44px,44px"></x-import></div>
             <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
               <sc-for list="{{ pushGroups }}" as="g" hint-placeholder-count="4">
                 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ g }}" hint-size="100%,44px"></x-import>
@@ -134,13 +132,13 @@ a:hover{color:var(--link-hover)}
         <div data-scroll style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile-fn) var(--sp-6)">
           <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
             <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2>
-            <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ nameRow }}" hint-size="100%,52px"></x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ roleRow }}" hint-size="100%,52px"></x-import>
+            <div style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-1) 0">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.nameRow }}" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.roleRow }}" hint-size="100%,64px"></x-import>
             </div>
           </section>
           <section style="display:flex;flex-direction:column;gap:var(--sp-4)">
-            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">How HelioGrid reads to you</h2>
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Language and units</h2>
             <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ languagePickerSwitched }}" hint-size="100%,190px"></x-import>
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ languageSourceOwn }}" hint-size="100%,18px"></x-import>
@@ -151,8 +149,7 @@ a:hover{color:var(--link-hover)}
             </div>
           </section>
           <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
-            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2>
-            <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way.</p>
+            <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ pushAsk }}" hint-size="44px,44px"></x-import></div>
             <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
               <sc-for list="{{ pushGroups }}" as="g" hint-placeholder-count="4">
                 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ g }}" hint-size="100%,44px"></x-import>
@@ -171,13 +168,13 @@ a:hover{color:var(--link-hover)}
         <div data-scroll style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile-fn) var(--sp-6)">
           <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
             <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2>
-            <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ nameRow }}" hint-size="100%,52px"></x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ roleRow }}" hint-size="100%,52px"></x-import>
+            <div style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-1) 0">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.nameRow }}" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.roleRow }}" hint-size="100%,64px"></x-import>
             </div>
           </section>
           <section style="display:flex;flex-direction:column;gap:var(--sp-4)">
-            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">How HelioGrid reads to you</h2>
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Language and units</h2>
             <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ languagePicker }}" hint-size="100%,190px"></x-import>
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ languageSource }}" hint-size="100%,18px"></x-import>
@@ -188,8 +185,7 @@ a:hover{color:var(--link-hover)}
             </div>
           </section>
           <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
-            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2>
-            <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way.</p>
+            <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ pushAsk }}" hint-size="44px,44px"></x-import></div>
             <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
               <sc-for list="{{ pushGroupsMuted }}" as="g" hint-placeholder-count="4">
                 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ g }}" hint-size="100%,44px"></x-import>
@@ -202,19 +198,19 @@ a:hover{color:var(--link-hover)}
     </div>
     <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:375px">
       <span style="display:block;margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · protected-types-locked</span>
-      <div data-screen-label="Profile and preferences — billing locked, owner" data-frame="m-locked" style="position:relative;flex:0 0 auto;width:375px;height:1194px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+      <div data-screen-label="Profile and preferences — billing locked, owner" data-frame="m-locked" style="position:relative;flex:0 0 auto;width:375px;height:1162px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
         <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
         <div data-scroll style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile-fn) var(--sp-6)">
           <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
             <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2>
-            <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ ownerNameRow }}" hint-size="100%,52px"></x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ ownerRoleRow }}" hint-size="100%,52px"></x-import>
+            <div style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-1) 0">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ owner.nameRow }}" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ owner.roleRow }}" hint-size="100%,64px"></x-import>
             </div>
           </section>
           <section style="display:flex;flex-direction:column;gap:var(--sp-4)">
-            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">How HelioGrid reads to you</h2>
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Language and units</h2>
             <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ languagePicker }}" hint-size="100%,190px"></x-import>
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ languageSource }}" hint-size="100%,18px"></x-import>
@@ -225,15 +221,14 @@ a:hover{color:var(--link-hover)}
             </div>
           </section>
           <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
-            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2>
-            <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way.</p>
+            <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ pushAsk }}" hint-size="44px,44px"></x-import></div>
             <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
               <sc-for list="{{ pushGroups }}" as="g" hint-placeholder-count="4">
                 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ g }}" hint-size="100%,44px"></x-import>
               </sc-for>
-              <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding-top:var(--sp-2);padding-inline-start:var(--sp-16)">
-                <span style="font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-primary)">Billing</span>
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ComplianceFloor" dc-props="{{ floorLine }}" hint-size="100%,40px"></x-import>
+              <div style="display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:var(--sp-3);align-items:center">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ billingLocked }}" id="m-locked-push-billing" hint-size="52px,44px"></x-import>
+                <div style="display:flex;align-items:center;gap:var(--sp-1)"><label for="m-locked-push-billing" style="font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-primary)">Billing</label><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ billingAsk }}" hint-size="44px,44px"></x-import></div>
               </div>
             </div>
           </section>
@@ -249,13 +244,13 @@ a:hover{color:var(--link-hover)}
         <div data-scroll style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile-fn) var(--sp-6)">
           <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
             <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2>
-            <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ multiNameRow }}" hint-size="100%,52px"></x-import>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ multiRoleRow }}" hint-size="100%,52px"></x-import>
+            <div style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-1) 0">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ multi.nameRow }}" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ multi.roleRow }}" hint-size="100%,64px"></x-import>
             </div>
           </section>
           <section style="display:flex;flex-direction:column;gap:var(--sp-4)">
-            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">How HelioGrid reads to you</h2>
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Language and units</h2>
             <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ languagePicker }}" hint-size="100%,190px"></x-import>
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ languageSource }}" hint-size="100%,18px"></x-import>
@@ -266,8 +261,7 @@ a:hover{color:var(--link-hover)}
             </div>
           </section>
           <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
-            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2>
-            <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way.</p>
+            <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ pushAsk }}" hint-size="44px,44px"></x-import></div>
             <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
               <sc-for list="{{ pushGroups }}" as="g" hint-placeholder-count="4">
                 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ g }}" hint-size="100%,44px"></x-import>
@@ -281,7 +275,7 @@ a:hover{color:var(--link-hover)}
 </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1700,"height":2184}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1700,"height":2152}}'>
 class Component extends DCLogic {
   /* Static spec frames: every control is drawn at a literal value with a noop handler. The page
      shows no number, money, quantity or date, so nothing carries a provenance tier. */
@@ -318,32 +312,48 @@ class Component extends DCLogic {
       return { value: "more", onChange: noop, items: items };
     };
 
-    const chevron = glyph("chevron-right", { size: "md" });
-    const rowGround = { background: "var(--fill)", borderRadius: "var(--r-tile)" };
-    const nameRow = (name) => ({
-      avatar: h(NS.Avatar, { name: name, size: 32 }), title: name, subtitle: "Your name",
-      trailing: chevron, onClick: noop, density: "functional", style: rowGround,
+    /* The account card: the person's name with its one act, then their roles as chips that wrap —
+       every preset they hold, never a count or a cut (brief, Data volume). The roles row re-opens the
+       role card titled "Your role" (SCR-M01-10, reopened-from-profile). Both rows are ListRows laid
+       on the card: no ground or lift of their own, the card's row padding, a hairline between. */
+    const rowFrame = (divided) => ({
+      minHeight: 64, boxSizing: "border-box", padding: "var(--sp-2) var(--sp-4)", gap: "var(--sp-3)",
+      background: "transparent", boxShadow: "none", borderRadius: 0,
+      borderTop: divided ? "1px solid var(--line-soft)" : "none",
     });
-    const roleRow = (title, subtitle) => ({
-      icon: glyph("shield", { size: "md", tone: "accent" }), title: title, wrapTitle: true, subtitle: subtitle,
-      trailing: chevron, onClick: noop, density: "functional", style: rowGround,
+    /* A role label is a Badge in its kind's iris tone (design-system change 7): violet sells,
+       blue plans and runs, magenta works on site. A role inside a sentence or a heading stays words. */
+    const KIND = {
+      "EPC Owner": "violet", "Sales Manager": "violet", "Sales Executive": "violet", "Marketing": "violet",
+      "Survey Engineer": "blue", "Design Engineer": "blue", "Project Manager": "blue", "Operations": "blue",
+      "Finance": "blue", "HR/Admin": "blue", "Field Technician": "magenta", "Installation Team Member": "magenta",
+    };
+    const person = (name, roles) => ({
+      name: name,
+      avatar: { name: name, size: 48 },
+      nameRow: {
+        avatar: h(NS.Avatar, { name: name, size: 48 }), title: name, density: "expressive",
+        trailing: h(NS.Button, { variant: "secondary", size: "sm", onClick: noop }, "Edit name"),
+        style: rowFrame(false),
+      },
+      roleRow: {
+        title: roles.length > 1 ? "Your roles" : "Your role", density: "functional", onClick: noop,
+        marks: h(NS.ChipGroup, { label: "roles", max: 0, density: "functional" },
+          roles.map((r) => h(NS.Badge, { key: r, tone: KIND[r], density: "functional" }, r))),
+        trailing: h(NS.ShellGlyph, { name: "chevron-right", size: "md", tone: "secondary" }),
+        style: rowFrame(true),
+      },
     });
-
-    const languages = [
+    const groups = (off) => ["Sales", "Delivery", "Payments", "Team"].map((label) => ({
+      label: label, checked: off.indexOf(label) < 0, onChange: noop,
+    }));
+    const languageOptions = [
       { value: "en", title: "English", lang: "en" },
       { value: "hi", title: "हिन्दी", lang: "hi" },
       { value: "mr", title: "मराठी", lang: "mr" },
     ];
-    const picker = (value, columns, options) => ({
-      label: "Language", value: value, columns: columns, density: "functional", onChange: noop, options: options,
-    });
-    const source = (level, layerName) => ({ level: level, layerName: layerName });
-    const groups = (off) => ["Sales", "Delivery", "Payments", "Team"].map((label) => ({
-      label: label, checked: off.indexOf(label) < 0, onChange: noop,
-    }));
-    const account = (name) => h(NS.AccountMenu, {
-      name: name, triggerName: name + " — account, grievance contact and sign out", menuLabel: "Account",
-      grievanceLabel: "Grievance officer", signOutLabel: "Sign out", onGrievance: noop, onSignOut: noop, align: "start",
+    const picker = (value, options) => ({
+      label: "Language", value: value, columns: 1, density: "functional", onChange: noop, options: options,
     });
 
     this._vals = {
@@ -359,44 +369,33 @@ class Component extends DCLogic {
       /* Design Engineer is the ladder-top of his three presets: Leads · Proposals, and no verb. */
       navMulti: bar(["home", "leads", "proposals", "more"], null),
 
-      rail: h(NS.AppRail, {
-        label: "Main", value: "more", onChange: noop,
-        items: ["home", "leads", "proposals", "more"].map((key) => ({
-          key: key, label: DEST[key], icon: glyph(D[key], { size: "md", tone: key === "more" ? "accent" : "secondary" }),
-        })),
-        footer: [{ key: "notifications", label: "Notifications", icon: glyph("bell", { size: "md" }), onClick: noop }],
-        avatar: account("Anjali Kulkarni"),
-      }),
-      deskHeader: h(NS.AppHeader, {
-        tenant: h("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
-        search: h(NS.SearchField, { density: "functional", placeholder: "Name, phone or city", ariaLabel: "Search", value: "", onChange: noop }),
-        sticky: false,
-      }),
+      me: person("Anjali Kulkarni", ["Sales Executive"]),
+      owner: person("Rajesh Kulkarni", ["EPC Owner"]),
+      multi: person("Vikram Deshpande", ["Survey Engineer", "Design Engineer", "Installation Team Member"]),
 
-      nameRow: nameRow("Anjali Kulkarni"),
-      roleRow: roleRow("Sales Executive", "Your role"),
-      ownerNameRow: nameRow("Rajesh Kulkarni"),
-      ownerRoleRow: roleRow("EPC Owner", "Your role"),
-      multiNameRow: nameRow("Vikram Deshpande"),
-      multiRoleRow: roleRow("Survey Engineer, Design Engineer, Installation Team Member", "Your roles"),
-
-      languagePicker: picker("en", 1, languages),
-      languagePickerDesk: picker("en", 3, languages),
-      languagePickerOne: picker("en", 1, languages.slice(0, 1)),
-      languagePickerSwitched: picker("mr", 1, languages),
-      languagePickerSwitchedDesk: picker("mr", 3, languages),
-      languageSource: source("inherited", "Your device's language"),
-      languageSourceOwn: source("own", "Your choice"),
+      languagePicker: picker("en", languageOptions),
+      languagePickerOne: picker("en", languageOptions.slice(0, 1)),
+      languagePickerSwitched: picker("mr", languageOptions),
+      languageSource: { level: "inherited", layerName: "Your device's language" },
+      languageSourceOwn: { level: "own", layerName: "Your choice" },
 
       units: {
         label: "Measurements", value: "m", onChange: noop,
         options: [{ value: "m", label: "Metres" }, { value: "ft", label: "Feet" }],
       },
-      unitSource: source("inherited", "Default for India"),
+      unitSource: { level: "inherited", layerName: "Default for India" },
 
       pushGroups: groups([]),
       pushGroupsMuted: groups(["Delivery", "Payments"]),
-      floorLine: { variant: "line", size: 13, title: "Always sent — cannot be muted · Audit-relevant events, owner account" },
+      pushAsk: {
+        label: "About push", density: "functional",
+        pages: ["Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way."],
+      },
+      billingLocked: { checked: true, disabled: true, onChange: noop },
+      billingAsk: {
+        label: "Why Billing stays on", density: "functional",
+        pages: ["Always sent, and it cannot be muted: billing events are audit-relevant for the owner account."],
+      },
 
       loadingBars: { label: "Loading your preferences", bars: ["row", "row", "panel", "row", "panel"] },
       errorBanner: {

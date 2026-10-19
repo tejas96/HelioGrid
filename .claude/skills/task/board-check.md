@@ -41,8 +41,11 @@ Check, citing the frame and element for each finding:
    an open deferred row given to you names as a design system change not yet in the repo is a
    known difference (item 5), not a finding.
 4. **Product rules on the frame.** English only (Hindi and Marathi come from the catalog); a
-   provenance tier on every number `F8-01` tiers (an identifier, a count of the reader's own
-   records, a limit the product enforces and a value the company sets in its own settings excepted); money in lakh/crore grouping; kW/kWh/kWp as they are. The words themselves are
+   provenance tier on every money and energy figure `F8-01` tiers, and on nothing else (no tier on a
+   date, time, count, duration, progress, identifier, enforced limit or the company's own setting); money in lakh/crore grouping; kW/kWh/kWp as they are; every amount, record identifier, energy
+   reading, coordinate, invoice number and phone number in the mono face with tabular figures —
+   inside a sentence, a toast, a document preview and the page behind a panel too — and every money
+   column right-aligned (`F7-09`). The words themselves are
    the brief's word plan, checked once when the brief is written — not swept again here.
 5. **Known differences.** Each deferred row given to you is either fixed on the board or still
    open; say which. An open one is not a fix.

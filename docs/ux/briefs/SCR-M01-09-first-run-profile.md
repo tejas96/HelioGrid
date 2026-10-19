@@ -18,6 +18,9 @@ Reached from: Invite Landing (SCR-M01-08) after OTP verification — "the next s
 
 Base: **loading** · **empty** · **error**.
 
+- **loading** — placeholders for the label line, the field, the helper lines and the photo helper, so
+  the photo act and the act stay where `normal` puts them; the act waits,
+  its `disabledReason` *Your name is still arriving.*, which opens in a bubble on a tap, click, focus or hover — no line is drawn under the button (owner ruling 2026-10-17, design-system change 5).
 - **empty** — the person has cleared the pre-filled name. The field never arrives blank: an invite
   always carries a name (`M01-12`; `inviteeNameSchema` is `min(1)` in
   `packages/contracts/src/invitation.ts`).
@@ -77,7 +80,22 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `photo
 10. **The heading stays *How your team sees you* in every state.** A state changes the data, the
     chip and the one act, never the heading.
 11. **At 1536 the photo act reads *Choose a photo* with the upload icon** (a file is chosen there,
-    not taken), and in `error-save` the refusal banner sits just above the act in the right column.
+    not taken), and in `error-save` the refusal banner spans the task column, just above the act.
+12. **At 1536 the screen is the onboarding two-pane** (owner ruling 2026-10-17, M01 design), the pattern
+    `SCR-M01-07` and `SCR-M01-10` draw: the brand pane — wordmark, heading, and the three lines of decision 14 — on columns 1–4
+    with the bloom, and the task pane on columns 5–12. The language control sits at the task pane's
+    top right.
+13. **On the phone the act sits right under the photo group**, never pinned to the frame's foot;
+    on a short screen nothing fills the space below it.
+14. **At 1536 the brand pane says why, and the task is one centred column** (owner pick "A + L2",
+    2026-10-17, canvas comment). Under the heading, three lines replace the information button, each
+    with an accent icon: *Suryodaya Solar sees this name beside everything you do.* · *A photo helps
+    teammates recognise you.* · *You can change both later in Profile & preferences.* The task is
+    one 440 px column in the exact middle of the task pane, as `SCR-M01-08` draws it: the photo,
+    then the name, then the act at full width. The phone keeps its information button. The three lines
+    never change by state, as the heading does not (decision 10), so the photo error at 1536 does not
+    repeat where to add one later: it reads *Try again, or add one later.* The drop onto the circle
+    needs no words: `PhotoField` highlights the circle while a file is dragged over it.
 
 ## Data volume
 

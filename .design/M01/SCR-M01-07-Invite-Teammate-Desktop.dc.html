@@ -84,11 +84,10 @@ a:hover{color:var(--link-hover)}
               </div>
             </sc-for>
           </div>
-          <div style="display:flex;margin-left:calc(-1 * var(--sp-4))"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">What each role can do</x-import></div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:flex-end;gap:var(--sp-3)">
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="lg" hint-size="auto,48px">Skip for now</x-import>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" hint-size="auto,48px">Send invite</x-import>
+          <div style="display:flex;align-items:center;justify-content:flex-end;gap:var(--sp-3);padding-top:var(--sp-3)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="lg" hint-size="auto,48px">Skip for now</x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" hint-size="auto,48px">Send invite</x-import>
+          </div>
         </div>
       </div>
     </div>
@@ -98,19 +97,59 @@ a:hover{color:var(--link-hover)}
     <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · Team life</span>
     <div data-screen-label="Invite teammate — Team life, 1536" data-frame="d-team" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ teamHeader }}" hint-size="100%,100%" style="height:100%">
-        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import>
-            <div style="align-self:stretch;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
-              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
-              <div style="display:flex;align-items:center;gap:var(--sp-3)">
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ rolesRefBtn }}" hint-size="auto,44px">What each role can do</x-import>
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+        <div style="box-sizing:border-box;display:flex;align-items:flex-start;gap:var(--sp-8);padding:var(--sp-6) var(--sp-8)">
+          <nav aria-label="Settings" style="width:248px;flex-shrink:0;display:flex;flex-direction:column;gap:var(--sp-1);padding-top:var(--sp-1)">
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2)">Settings</span>
+            <sc-for list="{{ settingsGroups }}" as="grp" hint-placeholder-count="6">
+              <sc-if value="{{ grp.heading }}" hint-placeholder-val="{{ false }}"><span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">{{ grp.name }}</span></sc-if>
+              <sc-for list="{{ grp.rows }}" as="row" hint-placeholder-count="2">
+                <sc-if value="{{ row.current }}" hint-placeholder-val="{{ false }}"><div aria-current="page" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);font-size:var(--fs-body-sm);background:var(--accent-subtle);color:var(--accent);font-weight:var(--fw-bold)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="{{ row.glyph }}" size="md" tone="accent" hint-size="20px,20px"></x-import>{{ row.name }}</div></sc-if>
+                <sc-if value="{{ row.other }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);font-size:var(--fs-body-sm);color:var(--text-primary);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="{{ row.glyph }}" size="md" tone="secondary" hint-size="20px,20px"></x-import>{{ row.name }}</div></sc-if>
+              </sc-for>
+            </sc-for>
+          </nav>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:var(--sp-6)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
+              <div style="display:flex;align-items:baseline;gap:var(--tile-gap)">
+                <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+                <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary)">9 people · 2 invites</span>
+              </div>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" icon="{{ plusInverse }}" on-click="{{ noop }}" hint-size="auto,48px">Invite teammate</x-import>
+            </div>
+            <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);background:var(--canvas)"><div style="flex:0 1 var(--form-max);min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAll }}" hint-size="auto,44px"></x-import></div>
+            <div role="table" aria-label="Everyone at Suryodaya Solar" style="display:flex;flex-direction:column;position:relative">
+                <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 160px;padding:0 var(--sp-5) var(--sp-4);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">
+                  <span role="columnheader">Person</span><span role="columnheader">Roles</span><span role="columnheader">Last active</span><span role="columnheader" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap">Actions</span>
+                </div>
+              <div role="rowgroup">
+                <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);overflow:hidden">
+                  <div style="margin-top:-1px">
+                  <sc-for list="{{ rows }}" as="r" hint-placeholder-count="11">
+                    <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 160px;align-items:center;min-height:82px;box-sizing:border-box;padding:14px var(--sp-5);border-top:1px solid var(--line-soft)">
+                      <div role="cell" style="display:flex;align-items:center;gap:var(--sp-3);min-width:0">
+                        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="{{ r.name }}" size="{{ r.avatar }}" hint-size="40px,40px"></x-import>
+                        <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-1);min-width:0">
+                          <span style="display:flex;align-items:center;gap:var(--sp-2);min-height:var(--sp-6);font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">{{ r.name }}<sc-if value="{{ r.you }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="accent" density="functional" hint-size="auto,22px">You</x-import></sc-if></span>
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.StatusChip" dc-props="{{ r.chip }}" hint-size="auto,24px"></x-import>
+                        </div>
+                      </div>
+                      <div role="cell" style="display:flex;flex-wrap:wrap;gap:calc(var(--sp-3) / 2)">
+                        <sc-for list="{{ r.roles }}" as="role" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="{{ role.tone }}" density="functional" hint-size="auto,24px">{{ role.label }}</x-import></sc-for>
+                      </div>
+                      <span role="cell" style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary)">{{ r.at }}</span>
+                      <div role="cell" style="justify-self:end;display:flex;align-items:center">
+                        <sc-if value="{{ r.revoke }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Revoke invite</x-import></sc-if>
+                        <sc-if value="{{ r.again }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Invite again</x-import></sc-if>
+                        <sc-if value="{{ r.deactivate }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Deactivate</x-import></sc-if>
+                        <sc-if value="{{ r.onlyOwner }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ r.actBtn }}" hint-size="auto,44px">Deactivate</x-import></sc-if>
+                      </div>
+                    </div>
+                  </sc-for>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);padding-block:var(--sp-2);background:var(--canvas)"><div style="flex:0 1 var(--form-max);min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,44px"></x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAll }}" hint-size="auto,44px"></x-import></div>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ table }}" hint-size="100%,760px"></x-import>
         </div>
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" open="{{ on }}" inset="{{ on }}" show-close="{{ on }}" title="Invite someone" footer="{{ teamSheetFooter }}" hint-size="480px,100%">
           <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
@@ -125,8 +164,6 @@ a:hover{color:var(--link-hover)}
                 </div>
               </sc-for>
             </div>
-            <div style="display:flex;margin-left:calc(-1 * var(--sp-4))"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">What each role can do</x-import></div>
-            <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">The invite works for 7 days — cancel it on Team.</span>
           </div>
         </x-import>
       </x-import>
@@ -188,11 +225,10 @@ a:hover{color:var(--link-hover)}
               </div>
             </sc-for>
           </div>
-          <div style="display:flex;margin-left:calc(-1 * var(--sp-4))"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">What each role can do</x-import></div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:flex-end;gap:var(--sp-3)">
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="lg" hint-size="auto,48px">Skip for now</x-import>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" hint-size="auto,48px">Send invite</x-import>
+          <div style="display:flex;align-items:center;justify-content:flex-end;gap:var(--sp-3);padding-top:var(--sp-3)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="lg" hint-size="auto,48px">Skip for now</x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" hint-size="auto,48px">Send invite</x-import>
+          </div>
         </div>
       </div>
     </div>
@@ -232,21 +268,21 @@ class Component extends DCLogic {
   componentWillUnmount() { clearInterval(this._poll); }
 
   /* F2's twelve presets, F2's fixed order, names word for word. Capability lines are SCR-M01-13's,
-     except EPC Owner's, which says "company settings" (F7-42: a frame never says tenant). */
+     word for word (one list on both screens). */
   roles() {
     return [
-      { name: "EPC Owner", desc: "Everything below, plus billing, team and company settings" },
-      { name: "Sales Manager", desc: "See every lead in the company and reassign them" },
-      { name: "Sales Executive", desc: "Own leads, log visits and send proposals" },
-      { name: "Survey Engineer", desc: "Run site surveys and record roof measurements" },
-      { name: "Design Engineer", desc: "Lay out arrays, size strings and pick inverters" },
-      { name: "Project Manager", desc: "Schedule installs and run a project to commissioning" },
-      { name: "Field Technician", desc: "Take service tickets and close them on site" },
-      { name: "Installation Team Member", desc: "Work the installation checklist on site" },
-      { name: "HR/Admin", desc: "Manage staff records, leave and company documents" },
-      { name: "Finance", desc: "Record payments, raise invoices and chase dues" },
-      { name: "Operations", desc: "Hold inventory, raise purchase orders and track dispatch" },
-      { name: "Marketing", desc: "Manage campaigns, lead sources and the public price list" }
+      { name: "EPC Owner", desc: "Everything, including team and roles, the agent, billing and company settings" },
+      { name: "Sales Manager", desc: "The team's leads and proposals, project stages, payments and team reports" },
+      { name: "Sales Executive", desc: "Their own leads, surveys and proposals, including discounts, sending and marking won or lost" },
+      { name: "Survey Engineer", desc: "Capture and submit surveys for the leads assigned to them" },
+      { name: "Design Engineer", desc: "Designs and proposals for the leads assigned to them, and design sign-off" },
+      { name: "Project Manager", desc: "Their own projects' stages, documents, payments and installation checklist" },
+      { name: "Field Technician", desc: "Their own stops, check-ins, timeline and attendance" },
+      { name: "Installation Team Member", desc: "The installation job assigned to them, its checklist and photos" },
+      { name: "HR/Admin", desc: "Employee records, documents, attendance and leave" },
+      { name: "Finance", desc: "Record payments, attach receipts, read any project's money, and see catalog prices and margins" },
+      { name: "Operations", desc: "Project stages, documents and blockers across all projects, plus the catalog and price book" },
+      { name: "Marketing", desc: "Create and run campaigns, see what they captured, and pass enquiries into the lead queue" }
     ];
   }
 
@@ -259,9 +295,19 @@ class Component extends DCLogic {
       roles: this.roles(),
       bannersReady: !!this.state.bannersReady,
       stepCircle: 44,
-      /* The way back to the settings list opens the Team page head (owner ruling: never in the AppHeader). */
-      trailProps: { items: [{ key: "settings", label: "Settings", onClick: noop }, { key: "here", label: "Team" }] },
-      rolesRefBtn: { variant: "ghost", size: "md", onClick: noop },
+      noop: noop,
+      /* The settings side list for an EPC Owner, who opens every row: groups and rows in the order
+         packages/domain/src/shell/settings-rows.ts gives them, words from packages/i18n settings.ts,
+         glyphs from SettingsList.logic.ts. "You" carries no heading. Team is the page in view. */
+      settingsGroups: [
+        { name: "You", rows: [["Profile & preferences", "people"]] },
+        { name: "Your team", rows: [["Team", "people"], ["Roles reference", "shield"]] },
+        { name: "Your company", rows: [["Business profile", "building"], ["Branding", "palette"], ["Proposal template", "document"], ["Payment terms", "calendar-clock"]] },
+        { name: "What you sell", rows: [["Catalog", "package"]] },
+        { name: "Customer calls", rows: [["Agent & voice", "headset"]] },
+        { name: "Money", rows: [["Collections", "wallet"], ["Billing", "credit-card"], ["Usage", "gauge"]] }
+      ].map((g, i) => ({ name: g.name, heading: i > 0,
+        rows: g.rows.map(([name, glyph]) => ({ name: name, glyph: glyph, current: name === "Team", other: name !== "Team" })) })),
       /* The ask on the role set (F7-46): the rule's reasoning is teaching, so it lives here, not in the
          reading flow. The rule itself is enforced at the act by the danger banner. */
       rolesAsk: (() => {
@@ -279,84 +325,86 @@ class Component extends DCLogic {
     if (!ds) return base;
     const h = React.createElement;
     const G = (name, o) => h(ds.ShellGlyph, Object.assign({ name: name, size: "md" }, o || {}));
-    const inView = (name) => G(name, { filled: true, tone: "primary" });
     const D = ds.DESTINATION_GLYPH;
 
-    /* EPC Owner rail (F7-48): Home · Leads · Projects · More, More in view; bell and account at its foot. */
-    const railItems = [
-      { key: "home", label: "Home", icon: G(D.home), activeIcon: inView(D.home) },
-      { key: "leads", label: "Leads", icon: G(D.leads), activeIcon: inView(D.leads) },
-      { key: "projects", label: "Projects", icon: G(D.projects), activeIcon: inView(D.projects) },
-      { key: "more", label: "More", icon: G(D.more), activeIcon: inView(D.more) }
-    ];
-    const account = h(ds.AccountMenu, { name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account, grievance contact and sign out", menuLabel: "Account",
-      grievanceLabel: "Grievance officer", signOutLabel: "Sign out", align: "start", onGrievance: noop, onSignOut: noop });
+    /* SCR-M01-12's rail: the EPC Owner's destinations (F7-48), More in view; the bell and the account at its foot. */
+    const g = (name, size, filled, tone) => h(ds.ShellGlyph, { name: name, size: size || "lg", filled: !!filled, tone: tone });
+    const rail = h(ds.AppRail, {
+      label: "Main", value: "more", onChange: noop,
+      items: [
+        { key: "home", label: "Home", icon: g(D.home), activeIcon: g(D.home, "lg", true, "primary") },
+        { key: "leads", label: "Leads", icon: g(D.leads), activeIcon: g(D.leads, "lg", true, "primary") },
+        { key: "projects", label: "Projects", icon: g(D.projects), activeIcon: g(D.projects, "lg", true, "primary") },
+        { key: "more", label: "More", icon: g(D.more), activeIcon: g(D.more, "lg", true, "primary") }
+      ],
+      footer: [{ key: "notifications", label: "Notifications", icon: g("bell"), onClick: noop }],
+      avatar: h(ds.AccountMenu, {
+        name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account, grievance contact and sign out", menuLabel: "Account",
+        grievanceLabel: "Grievance officer", signOutLabel: "Sign out",
+        onGrievance: noop, onSignOut: noop, align: "start"
+      })
+    });
 
-    const GUARD = "Suryodaya Solar must keep one EPC Owner, so make someone else one first.";
-    const ROSTER = [
-      { name: "Priya Deshmukh", kind: "invited", roles: ["Sales Executive"], sent: "29 Aug 2026, 17:40", expires: "5 Sep 2026, 17:40" },
-      { name: "Rohan Gaikwad", kind: "expired", roles: ["Survey Engineer"], sent: "20 Aug 2026, 11:05" },
-      { name: "Amit Rane", kind: "active", roles: ["Sales Executive", "Survey Engineer"], at: "30 Aug 2026, 19:12" },
-      { name: "Anjali Kulkarni", kind: "active", roles: ["Sales Executive"], at: "31 Aug 2026, 08:47" },
-      { name: "Kavita Shirke", kind: "active", roles: ["Survey Engineer"], at: "28 Aug 2026, 13:20" },
-      { name: "Meera Iyer", kind: "active", roles: ["Design Engineer"], at: "29 Aug 2026, 17:30" },
-      { name: "Nitin Pawar", kind: "active", roles: ["Project Manager"], at: "31 Aug 2026, 08:12" },
-      { name: "Rajesh Kulkarni", kind: "active", you: true, roles: ["EPC Owner"], at: "31 Aug 2026, 09:05", reason: GUARD },
-      { name: "Sunil Bhosale", kind: "active", roles: ["Installation Team Member"], at: "31 Aug 2026, 07:55" },
-      { name: "Vikram Deshpande", kind: "active", roles: ["Survey Engineer", "Design Engineer", "Installation Team Member"], at: "30 Aug 2026, 12:40" },
-      { name: "Deepak Jadhav", kind: "deactivated", roles: ["Installation Team Member"], at: "12 Aug 2026, 15:58" }
-    ];
-    /* Membership and invite status: a word and a dot in its tone (N6b). */
+    /* SCR-M01-12's roster, cells and acts as its d-default draws them: invites first (pending, then
+       expired), then everyone by name, deactivated last. Status is a word and a dot (N6b); an expiry
+       date carries no tier (F8-01). */
     const STATUS = {
       invited: { label: "Invited", tone: "info" },
       expired: { label: "Expired", tone: "warning" },
       active: { label: "Active", tone: "success" },
       deactivated: { label: "Deactivated", tone: "neutral" }
     };
-    const statusChip = (kind) => h(ds.StatusChip, { status: kind, label: STATUS[kind].label, tone: STATUS[kind].tone, density: "functional" });
-    const gap = (words) => h(ds.NamedGap, { scale: "cell", gap: words });
-    /* SCR-M01-12's roster, cells and row acts as its 1536 board draws them: every chip whole, no row
-       tap; only an active member carries the chevron that opens Assign Roles (D242). */
-    const roles = (names) => h(ds.ChipGroup, { max: 0, label: "roles", density: "functional" },
-      names.map((n) => h(ds.Badge, { key: n, tone: "neutral", density: "functional" }, n)));
-    const column = (kids) => h("div", {
-      style: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--sp-1)" }
-    }, kids);
-    const nameCell = (r) => h("span", {
-      style: { display: "inline-flex", alignItems: "center", gap: "var(--sp-2)", minWidth: 0 }
-    }, h("span", { key: "n" }, r.name), r.you ? h(ds.Badge, { key: "y", tone: "accent", density: "functional" }, "You") : null);
-    /* The expiry date is computed from the send and the 7-day invite window, so the line under it
-       names both and the column's provenanceFor marks it derived. Every other date here is recorded. */
-    const atCell = (r) => {
-      if (r.kind === "invited") return column([
-        h("span", { key: "g" }, gap("Never signed in")),
-        h("span", { key: "e" }, "Invite expires " + r.expires),
-        h("span", { key: "s" }, "Sent " + r.sent + " · expires after 7 days")
-      ]);
-      if (r.kind === "expired") return column([
-        h("span", { key: "g" }, gap("Never signed in")),
-        h("span", { key: "s" }, "Invite sent " + r.sent)
-      ]);
-      return r.at;
+    const ROSTER = [
+      { name: "Priya Deshmukh", kind: "invited", roles: ["Sales Executive"], expires: "5 Sep" },
+      { name: "Rohan Gaikwad", kind: "expired", roles: ["Survey Engineer"], expired: "27 Aug" },
+      { name: "Amit Rane", kind: "active", roles: ["Sales Executive", "Survey Engineer"], at: "30 Aug, 19:12" },
+      { name: "Anjali Kulkarni", kind: "active", roles: ["Sales Executive"], at: "Today, 08:47" },
+      { name: "Kavita Shirke", kind: "active", roles: ["Survey Engineer"], at: "28 Aug, 13:20" },
+      { name: "Meera Iyer", kind: "active", roles: ["Design Engineer"], at: "29 Aug, 17:30" },
+      { name: "Nitin Pawar", kind: "active", roles: ["Project Manager"], at: "Today, 08:12" },
+      { name: "Rajesh Kulkarni", kind: "active", you: true, roles: ["EPC Owner"], at: "Today, 09:05", onlyOwner: true },
+      { name: "Sunil Bhosale", kind: "active", roles: ["Installation Team Member"], at: "Today, 07:55" },
+      { name: "Vikram Deshpande", kind: "active", roles: ["Survey Engineer", "Design Engineer", "Installation Team Member"], at: "30 Aug, 12:40" },
+      { name: "Deepak Jadhav", kind: "deactivated", roles: ["Installation Team Member"], at: "12 Aug, 15:58" }
+    ];
+    /* A role label is a Badge in its kind's iris tone: violet sells, blue plans and runs, magenta installs. */
+    const KIND = {
+      "EPC Owner": "violet", "Sales Manager": "violet", "Sales Executive": "violet", "Marketing": "violet",
+      "Survey Engineer": "blue", "Design Engineer": "blue", "Project Manager": "blue", "Operations": "blue", "Finance": "blue", "HR/Admin": "blue",
+      "Field Technician": "magenta", "Installation Team Member": "magenta"
     };
-    const rowActions = (r) => {
-      const act = (label, reason) => h(ds.Button, {
-        key: "act", variant: "ghost", size: "sm", onClick: reason ? undefined : noop,
-        disabled: !!reason, disabledReason: reason || undefined
-      }, label);
-      if (r.kind === "invited") return act("Revoke invite");
-      if (r.kind === "expired") return act("Invite again");
-      if (r.kind === "deactivated") return null;
-      return h("span", { style: { display: "inline-flex", alignItems: "flex-start", gap: "var(--sp-2)" } },
-        act("Deactivate", r.reason),
-        h(ds.IconButton, { key: "open", variant: "ghost", label: "Assign roles for " + r.name, onClick: noop }, G("chevron-right")));
+    const glyph = (paths) => h("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true },
+      paths.map((d, i) => h("path", { key: i, d: d })));
+    const GLYPH = {
+      userMinus: ["M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2", "M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z", "M22 11h-6"],
+      undo: ["M3 7v6h6", "M21 17a9 9 0 0 0-15-6.7L3 13"],
+      send: ["M22 2 11 13", "M22 2l-7 20-4-9-9-4 20-7z"]
     };
+    /* Board 12's act(): one raised act per row, right-aligned: Invite again primary, Revoke invite
+       secondary, Deactivate secondary in danger words; the last EPC Owner's Deactivate is switched off
+       and its reason opens on a tap. */
+    const act = (p) => {
+      if (p.kind === "invited") return { variant: "secondary", size: "sm", icon: glyph(GLYPH.undo), onClick: noop };
+      if (p.kind === "expired") return { variant: "primary", size: "sm", icon: glyph(GLYPH.send), onClick: noop };
+      const deactivate = { variant: "secondary", size: "sm", tone: "danger", icon: glyph(GLYPH.userMinus) };
+      return p.onlyOwner
+        ? Object.assign(deactivate, { disabled: true, disabledReason: "Only EPC Owner" })
+        : Object.assign(deactivate, { onClick: noop });
+    };
+    const row = (p) => ({
+      name: p.name, avatar: 40, you: !!p.you,
+      roles: p.roles.map((r) => ({ label: r, tone: KIND[r] })),
+      chip: { status: p.kind, label: STATUS[p.kind].label, tone: STATUS[p.kind].tone, density: "functional" },
+      at: p.kind === "invited" ? "Expires " + p.expires : p.kind === "expired" ? "Expired " + p.expired : p.at,
+      revoke: p.kind === "invited", again: p.kind === "expired",
+      deactivate: p.kind === "active" && !p.onlyOwner, onlyOwner: !!p.onlyOwner,
+      actBtn: act(p)
+    });
     /* SCR-M01-12's list head: Find in this list, then the status chips with their counts. */
     const STATUS_OPTIONS = [
       { value: "all", label: "All" }, { value: "invited", label: "Invited" }, { value: "expired", label: "Expired" },
       { value: "active", label: "Active" }, { value: "deactivated", label: "Deactivated" }
     ];
-    const count = (kind) => ROSTER.filter((p) => p.kind === kind).length;
 
     /* The step marks: the system's shapes where it has one; the send mark is an inline glyph on the
        system's Icon ladder, since ShellGlyph has no send shape. All three sit in the accent tone. */
@@ -367,34 +415,27 @@ class Component extends DCLogic {
       stepSend: h(ds.Icon, { size: "md", style: { color: "var(--accent)" } }, sendGlyph),
       stepClock: G("calendar-clock", { tone: "accent" }),
       stepJoin: G("pair", { tone: "accent" }),
+      plusInverse: G("plus", { tone: "inverse" }),
+      rows: ROSTER.map(row),
+      /* Mounted as x-imports, not printed: a {{ }} holding a React element prints "[object Object]" in some renders. */
+      findEmpty: { placeholder: "Find in this list", ariaLabel: "Find in this list", value: "", onChange: noop },
+      chipsAll: { label: "Status", value: "all", onChange: noop, options: STATUS_OPTIONS,
+        counts: { all: 11, invited: 1, expired: 1, active: 8, deactivated: 1 } },
       /* SheetActions' order: secondary first, primary last — the primary sits at the trailing edge in a
          row and on top when the row stacks. Same order as the corridor's foot row. */
-      inviteBtn: { variant: "primary", size: "lg", onClick: noop, icon: G("plus", { tone: "inverse" }) },
-      /* Mounted as x-imports, not printed: a {{ }} holding a React element prints "[object Object]" in some renders. */
-      findEmpty: { density: "functional", placeholder: "Find in this list", ariaLabel: "Find in this list", value: "", onChange: noop },
-      chipsAll: { label: "Status", value: "all", onChange: noop, options: STATUS_OPTIONS,
-        counts: { all: ROSTER.length, invited: count("invited"), expired: count("expired"), active: count("active"), deactivated: count("deactivated") } },
-      teamSheetFooter: h(ds.SheetActions, null,
-        h(ds.Button, { variant: "ghost", size: "lg" }, "Cancel"),
-        h(ds.Button, { variant: "primary", size: "lg" }, "Send invite")
+      /* A note under the acts is centred across their width, never left on its own. */
+      teamSheetFooter: h("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-3)" } },
+        h(ds.SheetActions, null,
+          h(ds.Button, { variant: "ghost", size: "lg" }, "Cancel"),
+          h(ds.Button, { variant: "primary", size: "lg" }, "Send invite")
+        ),
+        h("span", { style: { fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)", textAlign: "center", textWrap: "pretty" } },
+          "Invite lasts 7 days · cancel it from Team")
       ),
-      rail: h(ds.AppRail, { label: "Main", items: railItems, value: "more", onChange: noop,
-        footer: [{ key: "notifications", label: "Notifications", icon: G("bell"), onClick: noop }], avatar: account }),
+      rail: rail,
       teamHeader: h(ds.AppHeader, {
         tenant: h("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
-        search: h(ds.SearchField, { density: "functional", placeholder: "Name, phone or city", value: "", onChange: noop }) }),
-      table: {
-        caption: "Everyone at Suryodaya Solar — invites first (pending, then expired), then everyone by name, deactivated last",
-        rows: ROSTER, rowKey: "name", density: "comfortable",
-        columns: [
-          { key: "name", label: "Person", primary: true, strong: true, width: "16%", render: nameCell },
-          { key: "roles", label: "Roles", wrap: true, width: "26%", render: (r) => roles(r.roles) },
-          { key: "status", label: "Status", width: "10%", render: (r) => statusChip(r.kind) },
-          { key: "at", label: "Last active", mono: true, width: "24%", render: atCell,
-            provenanceFor: (r) => (r.kind === "invited" ? "derived" : null) }
-        ],
-        rowActions: rowActions
-      }
+        search: h(ds.SearchField, { density: "functional", placeholder: "Name, phone or city", value: "", onChange: noop }) })
     });
   }
 }

@@ -208,6 +208,21 @@ A drawn screen is judged by this list, and a fix prompt fixes what it finds.
   title and acts sit in its page head, in the content (`SCR-SHELL-01` decision 8).
 - **A phone frame draws the phone's status row** (`PhoneScreen`) in its top safe area, so the band
   reads as a phone, not as empty margin.
+- **A disabled button never carries a line under it.** Why it is off is its `disabledReason`, which
+  opens in the `Explainer` bubble on a tap, click, focus or hover. A line that stays at an action — a consequence
+  to read before acting, an expiry, a "you can change this later" — is centred under it, in the
+  fewest words that keep the fact; never one left-aligned line at a frame's foot.
+- **A row's act is a raised pill with its glyph, never plain text** (`Button` `secondary`, `sm`);
+  an act that ends something says so in danger words (`tone: "danger"`). **A role label is a
+  `Badge` in its kind's iris tone** — violet sell and lead, blue plan and run, magenta on site —
+  and an avatar takes the hue the design system gives its name, never a hand tint (owner pick
+  "A · Colour with purpose", design-system change 7).
+- **At 1536 a settings page draws the settings side list, never a breadcrumb**, and its form
+  sections are one column of cards, never a grid of section columns (`SCR-SHELL-01`, *More: the
+  settings list*).
+- **No empty room on a phone.** Actions sit right under their content; a head the reader needs
+  stays put while only its list scrolls; a loading skeleton has the size and grid of what it
+  stands for.
 - **A fault is usually shared.** A rule broken in one design is reported with the other drawn
   screens of its corridor, which may break it too.
 

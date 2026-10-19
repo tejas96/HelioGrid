@@ -29,90 +29,73 @@ a:hover{color:var(--link-hover)}
 </style>
 </helmet>
 
-<div style="width:1616px;height:3250px;box-sizing:border-box;overflow:hidden;padding:var(--sp-10);background:var(--canvas);display:flex;flex-direction:column;gap:var(--sp-10)">
-
+<div style="width:1616px;height:4096px;box-sizing:border-box;overflow:hidden;padding:var(--sp-10);background:var(--canvas);display:flex;flex-direction:column;gap:var(--sp-10)">
+  <sc-for list="{{ frames }}" as="f" hint-placeholder-count="4">
   <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · default · the top of the page</span>
-    <div data-screen-label="Roles reference — 1536, top of page" data-frame="d-top" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ f.label }}</span>
+    <div data-screen-label="{{ f.screenLabel }}" data-frame="{{ f.id }}" style="position:relative;flex:0 0 auto;width:1536px;height:940px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
-        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-          <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ crumbs }}" hint-size="auto,24px"></x-import>
-            <div style="display:flex;align-items:center;gap:var(--sp-2)">
-              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Roles reference</h1>
-              {{ ask }}
-            </div>
-            <p style="margin:0;font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);text-wrap:pretty">The twelve presets are fixed — assign them from a person's row in Team.</p>
-          </div>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ presetTable }}" hint-size="100%,820px"></x-import>
-          <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
-            {{ legend }}
-            <sc-for list="{{ grids }}" as="g" hint-placeholder-count="14">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.CompareGrid" dc-props="{{ g }}" hint-size="100%,320px"></x-import>
+        <div style="box-sizing:border-box;display:flex;align-items:flex-start;gap:var(--sp-8);padding:var(--sp-6) {{ f.rightPad }} var(--sp-6) var(--sp-8)">
+
+          <nav aria-label="Settings" style="flex:0 0 248px;width:248px;display:flex;flex-direction:column;padding-top:var(--sp-1)">
+            <span style="padding:0 var(--sp-3) var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Settings</span>
+            <sc-for list="{{ sideGroups }}" as="g" hint-placeholder-count="6">
+              <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding-top:{{ g.above }}">
+                <sc-if value="{{ g.named }}" hint-placeholder-val="{{ true }}">
+                  <span style="padding:0 var(--sp-3) var(--sp-2);font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ g.name }}</span>
+                </sc-if>
+                <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="2">
+                  <a href="#" aria-current="{{ r.current }}" style="box-sizing:border-box;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);background:{{ r.ground }};color:{{ r.ink }};font-size:var(--fs-body-sm);font-weight:{{ r.weight }};text-decoration:none">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="{{ r.glyph }}" size="md" tone="{{ r.tone }}" hint-size="20px,20px"></x-import>
+                    <span>{{ r.name }}</span>
+                  </a>
+                </sc-for>
+              </div>
             </sc-for>
+          </nav>
+
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:var(--sp-4)">
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <div style="display:flex;align-items:center;gap:var(--sp-2)">
+                <sc-if value="{{ f.fromAssign }}" hint-placeholder-val="{{ false }}">
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellAction" dc-props="{{ backToAssign }}" hint-size="44px,44px"></x-import>
+                </sc-if>
+                <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Roles reference</h1>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ ask }}" hint-size="44px,44px"></x-import>
+              </div>
+              <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Twelve fixed roles. Choose one to see what it can do.</p>
+            </div>
+            <div role="group" aria-label="Roles" style="display:grid;grid-template-columns:repeat({{ f.columns }}, minmax(0, 1fr));gap:var(--tile-gap)">
+              <sc-for list="{{ f.tiles }}" as="t" hint-placeholder-count="12">
+                <button type="button" aria-haspopup="dialog" aria-expanded="{{ t.open }}" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;min-height:104px;margin:0;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:14px;border-radius:20px;background:{{ t.ground }};font-family:var(--font-sans);text-align:left;color:var(--text-primary)">
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconCircle" size="{{ 36 }}" color="{{ t.iconTone }}" hint-size="36px,36px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="{{ t.glyph }}" size="md" tone="{{ t.glyphTone }}" hint-size="20px,20px"></x-import></x-import>
+                  <span style="font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold)">{{ t.name }}</span>
+                  <sc-if value="{{ t.counted }}" hint-placeholder-val="{{ true }}">
+                    <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">{{ t.count }}</span>
+                  </sc-if>
+                  <sc-if value="{{ t.loading }}" hint-placeholder-val="{{ false }}">
+                    <span role="status" aria-busy="true" aria-label="{{ t.loadingLabel }}" style="display:flex;align-items:center;height:calc(var(--fs-caption) * var(--lh-caption))"><span aria-hidden="true" style="display:block;width:var(--sp-16);height:var(--sp-3);border-radius:var(--r-pill);background:linear-gradient(90deg,var(--surface) 25%,var(--canvas-sunken) 50%,var(--surface) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></span>
+                  </sc-if>
+                </button>
+              </sc-for>
+            </div>
           </div>
         </div>
       </x-import>
+
+      <sc-if value="{{ f.panelOpen }}" hint-placeholder-val="{{ false }}">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DetailPanel" dc-props="{{ f.panel }}" hint-size="480px,100%"></x-import>
+      </sc-if>
     </div>
   </div>
-
-  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · default · the same page, scrolled to the matrix</span>
-    <div data-screen-label="Roles reference — 1536, the matrix" data-frame="d-grid" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
-      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
-        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10);margin-top:calc(-10 * var(--sp-24))">
-          <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ crumbs }}" hint-size="auto,24px"></x-import>
-            <div style="display:flex;align-items:center;gap:var(--sp-2)">
-              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Roles reference</h1>
-              {{ ask }}
-            </div>
-            <p style="margin:0;font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);text-wrap:pretty">The twelve presets are fixed — assign them from a person's row in Team.</p>
-          </div>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ presetTable }}" hint-size="100%,820px"></x-import>
-          <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
-            {{ legend }}
-            <sc-for list="{{ grids }}" as="g" hint-placeholder-count="14">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.CompareGrid" dc-props="{{ g }}" hint-size="100%,320px"></x-import>
-            </sc-for>
-          </div>
-        </div>
-      </x-import>
-    </div>
-  </div>
-
-  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-    <span style="font-size:var(--fs-overline);line-height:var(--lh-h4);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · loading</span>
-    <div data-screen-label="Roles reference — 1536, loading" data-frame="d-loading" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
-      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
-        <div style="box-sizing:border-box;max-width:var(--content-max);display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-6) var(--screen-pad-desktop-fn) var(--sp-10)">
-          <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ crumbs }}" hint-size="auto,24px"></x-import>
-            <div style="display:flex;align-items:center;gap:var(--sp-2)">
-              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Roles reference</h1>
-              {{ ask }}
-            </div>
-            <p style="margin:0;font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);text-wrap:pretty">The twelve presets are fixed — assign them from a person's row in Team.</p>
-          </div>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ presetTableLoading }}" hint-size="100%,820px"></x-import>
-          <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
-            {{ legend }}
-            <sc-for list="{{ grids }}" as="g" hint-placeholder-count="14">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.CompareGrid" dc-props="{{ g }}" hint-size="100%,320px"></x-import>
-            </sc-for>
-          </div>
-        </div>
-      </x-import>
-    </div>
-  </div>
-
+  </sc-for>
 </div>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1616,"height":3250}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1616,"height":4096}}'>
 class Component extends DCLogic {
-  /* Static frames: nothing on this screen mutates anything (M01-21). At 1536 nothing opens or closes:
-     the preset table above F2's tables, every cell on screen. */
+  /* Static frames: nothing on this screen mutates anything (M01-21). The same tiles as the phone in a
+     wider grid; a role's details open in the side panel, never a page (F7-21). */
 
   state = { ds: null };
 
@@ -129,28 +112,28 @@ class Component extends DCLogic {
 
   noop = () => {};
 
-  /* F2-01's twelve, verbatim and in F2's order; F2-02 forbids renaming them. `desc` is F2 §F2.1's
-     grant summary for each preset, in the person's words. The same twelve rows on the 375 and 1536
-     boards, word for word. */
-  presetSpec() {
+  /* F2-01's twelve, verbatim and in F2's order; F2-02 forbids renaming them. `desc` is one line of
+     F2 §F2.1's grant summary in the person's words; the details list carries every cell. `glyph` is
+     the role's ShellGlyph. The same twelve on the 375 and 1536 boards, word for word. */
+  roleSpec() {
     return [
-      { id: "epc-owner", name: "EPC Owner", desc: "Everything, including team and roles, the agent, billing and company settings" },
-      { id: "sales-manager", name: "Sales Manager", desc: "The team's leads and proposals, project stages, payments and team reports" },
-      { id: "sales-exec", name: "Sales Executive", desc: "Their own leads, surveys and proposals, including discounts, sending and marking won or lost" },
-      { id: "survey", name: "Survey Engineer", desc: "Capture and submit surveys for the leads assigned to them" },
-      { id: "design", name: "Design Engineer", desc: "Designs and proposals for the leads assigned to them, and design sign-off" },
-      { id: "project", name: "Project Manager", desc: "Their own projects' stages, documents, payments and installation checklist" },
-      { id: "field-tech", name: "Field Technician", desc: "Their own stops, check-ins, timeline and attendance" },
-      { id: "install", name: "Installation Team Member", desc: "The installation job assigned to them, its checklist and photos" },
-      { id: "hr-admin", name: "HR/Admin", desc: "Employee records, documents, attendance and leave" },
-      { id: "finance", name: "Finance", desc: "Record payments, attach receipts, read any project's money, and see catalog prices and margins" },
-      { id: "operations", name: "Operations", desc: "Project stages, documents and blockers across all projects, plus the catalog and price book" },
-      { id: "marketing", name: "Marketing", desc: "Create and run campaigns, see what they captured, and pass enquiries into the lead queue" },
+      { id: "epc-owner", name: "EPC Owner", glyph: "shield", desc: "Everything, always" },
+      { id: "sales-manager", name: "Sales Manager", glyph: "people", desc: "The team's leads, proposals and payments" },
+      { id: "sales-exec", name: "Sales Executive", glyph: "people", desc: "Their own leads, surveys and proposals" },
+      { id: "survey", name: "Survey Engineer", glyph: "calendar-clock", desc: "Surveys for the leads assigned to them" },
+      { id: "design", name: "Design Engineer", glyph: "board", desc: "Designs, proposals and design sign-off" },
+      { id: "project", name: "Project Manager", glyph: "board", desc: "Their own projects and payments" },
+      { id: "field-tech", name: "Field Technician", glyph: "building", desc: "Their own stops, check-ins and attendance" },
+      { id: "install", name: "Installation Team Member", glyph: "package", desc: "The installation job assigned to them" },
+      { id: "hr-admin", name: "HR/Admin", glyph: "pair", desc: "Employee records, attendance and leave" },
+      { id: "finance", name: "Finance", glyph: "wallet", desc: "Payments, receipts and project money" },
+      { id: "operations", name: "Operations", glyph: "gauge", desc: "All projects, the catalog and price book" },
+      { id: "marketing", name: "Marketing", glyph: "megaphone", desc: "Campaigns and the enquiries they capture" },
     ];
   }
 
   /* Holders, counted from SCR-M01-12's roster: active members only. An open invite and a deactivated
-     member are named under the preset they would hold, never counted. Six presets are held by nobody. */
+     member are named under the role they would hold, never counted. Six roles are held by nobody. */
   holderSpec() {
     return {
       "epc-owner": { n: 1, who: ["Rajesh Kulkarni"] },
@@ -168,242 +151,101 @@ class Component extends DCLogic {
     };
   }
 
-  /* F2 §F2.5, table by table in F2's order, cells in F2's preset order (F2-25). A capability is F2's
+  /* F2 §F2.5, table by table in F2's order, cells in F2's role order (F2-25). A permission is F2's
      own phrase up to its first qualifier; a cell is F2's cell verbatim — `✓` the grant, `—` not
      granted, any other text the scoped grant. `CAPABILITY_MATRIX` and the visibility rows in
      packages/domain/src/authz hold the same cells. */
   matrixSpec() {
     return [
-      { id: "M01", label: "Onboarding & tenant configuration", rows: [
-        ["Manage team and roles", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Configure the agent and its knowledge", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Manage catalog and price book", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "view prices & margins", "✓", "—"]],
-        ["Configure tenant settings", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Add tenant catalog products inline while designing or quoting", ["✓", "✓", "✓", "—", "✓", "—", "—", "—", "—", "—", "✓", "—"]],
-      ] },
-      { id: "M02", label: "CRM & leads", rows: [
-        ["Lead visibility scope", ["All", "Team", "Own", "Assigned", "Assigned", "Own projects' deals (read)", "—", "—", "—", "—", "Portfolio deals (read)", "Own captures until triage"]],
-        ["Add and edit leads", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Assign leads to others", ["✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Delete leads", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Create a lead despite a detected duplicate", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Bulk-import leads from a file", ["✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Move a lead into and out of the parking/terminal states", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Book a site visit from a lead", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Merge two customer records onto a survivor", ["✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-      ] },
-      { id: "M03", label: "Marketing", rows: [
-        ["Campaign visibility scope", ["All", "Read (results)", "—", "—", "—", "—", "—", "—", "—", "—", "—", "All"]],
-        ["Create, schedule, run, pause and cancel campaigns", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "✓"]],
-        ["Build a campaign audience from CRM segments", ["✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "✓"]],
-        ["Author campaign content and per-language campaign templates, and submit them for channel registration", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "✓"]],
-        ["Connect, reconnect and disconnect a channel identity", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Approve spend-adjacent campaign settings", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-      ] },
-      { id: "M04", label: "Survey", rows: [
-        ["Capture site surveys", ["✓", "✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Run a remote survey", ["✓", "✓", "✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Schedule, reassign and cancel site-survey visits", ["✓", "✓", "✓", "Own visits", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Resolve or waive a remote-survey gap", ["✓", "✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—"]],
-      ] },
-      { id: "M05", label: "Design studio", rows: [
-        ["Create and edit designs", ["✓", "—", "—", "—", "✓", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Approve designs", ["✓", "—", "—", "—", "✓", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Run in-canvas AI roof detection on the studio canvas", ["✓", "—", "—", "—", "✓", "—", "—", "—", "—", "—", "—", "—"]],
-      ] },
-      { id: "M06", label: "Proposals", rows: [
-        ["Create and edit proposals", ["✓", "✓", "✓", "—", "✓", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Send proposals to customers", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-      ] },
-      { id: "M07", label: "Sales execution", rows: [
-        ["See agent performance", ["✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Hand a lead to the voice agent on demand", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["See the agent call queue", ["All", "Team", "Own", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Remove or cancel queued agent calls", ["✓", "Own queued", "Own queued", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Mark a lead won or lost", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-      ] },
-      { id: "M08", label: "Projects", rows: [
-        ["Update project stages", ["✓", "✓", "—", "—", "—", "✓", "—", "—", "—", "—", "✓", "—"]],
-        ["Upload and verify project documents", ["✓", "✓", "—", "—", "—", "✓", "—", "—", "—", "—", "✓", "—"]],
-        ["Work the installation checklist", ["✓", "—", "—", "—", "—", "✓ (coordinator, F2-07 attribution)", "—", "✓ (surface obeys F2-06)", "—", "—", "—", "—"]],
-        ["Project visibility scope", ["All", "Team", "Own (read-only)", "—", "—", "Own projects", "—", "Assigned job only", "—", "All (money scope)", "Portfolio", "—"]],
-      ] },
-      { id: "M09", label: "Field workforce", rows: [
-        ["Field-work visibility scope", ["All", "—", "—", "Own", "—", "Own projects' field work", "Own", "Own", "—", "—", "Team", "—"]],
-        ["Check in and out of a site, and log a visit and its outcome", ["✓", "✓", "✓", "✓", "—", "✓", "✓", "✓", "—", "—", "✓", "—"]],
-        ["Mark one's own day start and day end", ["✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓"]],
-        ["Read others' attendance records", ["All", "Team", "—", "—", "—", "Own projects' field workers", "—", "—", "All", "—", "Team", "—"]],
-        ["Turn per-employee field tracking on or off", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Define a site's geofence and adjust its radius", ["✓", "✓", "—", "—", "—", "✓", "—", "—", "—", "—", "✓", "—"]],
-        ["See another person's live position, route timeline, movement history and day playback", ["All", "—", "—", "—", "—", "Own projects' field work", "—", "—", "—", "—", "Team", "—"]],
-      ] },
-      { id: "M10", label: "HR-lite", rows: [
-        ["Read and edit employee records; upload and manage employee documents", ["✓ (all)", "—", "—", "—", "—", "—", "—", "—", "✓ (all)", "—", "—", "—"]],
-        ["Request one's own leave", ["✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓"]],
-        ["Approve or decline a leave request", ["✓", "—", "—", "—", "—", "—", "—", "—", "✓", "—", "—", "—"]],
-        ["Set or change an employee's manager mapping", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-      ] },
-      { id: "M11", label: "Payments & collections", rows: [
-        ["Record payments against tranches", ["✓", "✓", "—", "—", "—", "✓", "—", "—", "—", "✓", "—", "—"]],
-        ["Connect, rotate and disconnect the tenant's own collections account", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Send the plain payment-request message", ["✓", "✓", "✓", "—", "—", "✓", "—", "—", "—", "✓", "✓", "—"]],
-        ["Waive a tranche", ["✓", "✓", "—", "—", "—", "✓", "—", "—", "—", "✓", "—", "—"]],
-      ] },
-      { id: "M12", label: "Platform billing", rows: [
-        ["Manage the tenant's platform billing", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Open the usage screen and the subscription invoice list", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-      ] },
-      { id: "M13", label: "Dashboards & reporting", rows: [
-        ["See company reports", ["✓ (all)", "✓ (team-scoped)", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-      ] },
-      { id: "F5", label: "Customer-link surfaces", rows: [
-        ["Mint, label and re-mint a customer link for a named contact", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-        ["Revoke a customer link, including regenerate-with-revoke", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
-      ] },
+      ["Manage team and roles", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Configure the agent and its knowledge", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Manage catalog and price book", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "view prices & margins", "✓", "—"]],
+      ["Configure tenant settings", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Add tenant catalog products inline while designing or quoting", ["✓", "✓", "✓", "—", "✓", "—", "—", "—", "—", "—", "✓", "—"]],
+      ["Lead visibility scope", ["All", "Team", "Own", "Assigned", "Assigned", "Own projects' deals (read)", "—", "—", "—", "—", "Portfolio deals (read)", "Own captures until triage"]],
+      ["Add and edit leads", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Assign leads to others", ["✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Delete leads", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Create a lead despite a detected duplicate", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Bulk-import leads from a file", ["✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Move a lead into and out of the parking/terminal states", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Book a site visit from a lead", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Merge two customer records onto a survivor", ["✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Campaign visibility scope", ["All", "Read (results)", "—", "—", "—", "—", "—", "—", "—", "—", "—", "All"]],
+      ["Create, schedule, run, pause and cancel campaigns", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "✓"]],
+      ["Build a campaign audience from CRM segments", ["✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "✓"]],
+      ["Author campaign content and per-language campaign templates, and submit them for channel registration", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "✓"]],
+      ["Connect, reconnect and disconnect a channel identity", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Approve spend-adjacent campaign settings", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Capture site surveys", ["✓", "✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Run a remote survey", ["✓", "✓", "✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Schedule, reassign and cancel site-survey visits", ["✓", "✓", "✓", "Own visits", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Resolve or waive a remote-survey gap", ["✓", "✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Create and edit designs", ["✓", "—", "—", "—", "✓", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Approve designs", ["✓", "—", "—", "—", "✓", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Run in-canvas AI roof detection on the studio canvas", ["✓", "—", "—", "—", "✓", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Create and edit proposals", ["✓", "✓", "✓", "—", "✓", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Send proposals to customers", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["See agent performance", ["✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Hand a lead to the voice agent on demand", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["See the agent call queue", ["All", "Team", "Own", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Remove or cancel queued agent calls", ["✓", "Own queued", "Own queued", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Mark a lead won or lost", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Update project stages", ["✓", "✓", "—", "—", "—", "✓", "—", "—", "—", "—", "✓", "—"]],
+      ["Upload and verify project documents", ["✓", "✓", "—", "—", "—", "✓", "—", "—", "—", "—", "✓", "—"]],
+      ["Work the installation checklist", ["✓", "—", "—", "—", "—", "✓ (coordinator, F2-07 attribution)", "—", "✓ (surface obeys F2-06)", "—", "—", "—", "—"]],
+      ["Project visibility scope", ["All", "Team", "Own (read-only)", "—", "—", "Own projects", "—", "Assigned job only", "—", "All (money scope)", "Portfolio", "—"]],
+      ["Field-work visibility scope", ["All", "—", "—", "Own", "—", "Own projects' field work", "Own", "Own", "—", "—", "Team", "—"]],
+      ["Check in and out of a site, and log a visit and its outcome", ["✓", "✓", "✓", "✓", "—", "✓", "✓", "✓", "—", "—", "✓", "—"]],
+      ["Mark one's own day start and day end", ["✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓"]],
+      ["Read others' attendance records", ["All", "Team", "—", "—", "—", "Own projects' field workers", "—", "—", "All", "—", "Team", "—"]],
+      ["Turn per-employee field tracking on or off", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Define a site's geofence and adjust its radius", ["✓", "✓", "—", "—", "—", "✓", "—", "—", "—", "—", "✓", "—"]],
+      ["See another person's live position, route timeline, movement history and day playback", ["All", "—", "—", "—", "—", "Own projects' field work", "—", "—", "—", "—", "Team", "—"]],
+      ["Read and edit employee records; upload and manage employee documents", ["✓ (all)", "—", "—", "—", "—", "—", "—", "—", "✓ (all)", "—", "—", "—"]],
+      ["Request one's own leave", ["✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓", "✓"]],
+      ["Approve or decline a leave request", ["✓", "—", "—", "—", "—", "—", "—", "—", "✓", "—", "—", "—"]],
+      ["Set or change an employee's manager mapping", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Record payments against tranches", ["✓", "✓", "—", "—", "—", "✓", "—", "—", "—", "✓", "—", "—"]],
+      ["Connect, rotate and disconnect the tenant's own collections account", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Send the plain payment-request message", ["✓", "✓", "✓", "—", "—", "✓", "—", "—", "—", "✓", "✓", "—"]],
+      ["Waive a tranche", ["✓", "✓", "—", "—", "—", "✓", "—", "—", "—", "✓", "—", "—"]],
+      ["Manage the tenant's platform billing", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Open the usage screen and the subscription invoice list", ["✓", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["See company reports", ["✓ (all)", "✓ (team-scoped)", "—", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Mint, label and re-mint a customer link for a named contact", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
+      ["Revoke a customer link, including regenerate-with-revoke", ["✓", "✓", "✓", "—", "—", "—", "—", "—", "—", "—", "—", "—"]],
     ];
   }
 
-  /* One set of builders for both widths, so the phone and the desk cannot disagree about a preset, a
-     holder or a cell. */
-  parts(NS) {
-    const h = React.createElement;
-    const overline = (text, id) => h("span", {
-      id: id,
-      style: {
-        fontSize: "var(--fs-overline)", fontWeight: "var(--fw-bold)", letterSpacing: "var(--tr-overline)",
-        textTransform: "uppercase", color: "var(--text-tertiary)",
-      },
-    }, text);
-
-    /* Every grant reads "Granted" beside the check, plus F2's phrase where the cell has one; a withheld
-       cell is the hollow ring. `wide` is the 1536 grid: a 96px column takes the 12px check, and the
-       ring's "Not granted" moves to the legend, kept as the ring's accessible name. */
-    const check = (size) => h(NS.Icon, { size: size, style: { color: "var(--text-primary)" } },
-      h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" },
-        h("path", { d: "m5 12.5 4.5 4.5L19 7" })));
-    const ring = (size, label) => h(NS.Icon, { size: size, label: label, style: { color: "var(--mark-subtle)" } },
-      h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5 },
-        h("circle", { cx: 12, cy: 12, r: 7.5 })));
-    const cellRow = (kids, tone) => h("span", {
-      style: {
-        display: "inline-flex", alignItems: "center", gap: "var(--sp-1)", flexWrap: "wrap",
-        color: tone || "var(--text-primary)",
-      },
-    }, kids);
-    /* The person's part of a phrase that carries a PRD rule id — no rule id is shown on screen
-       (D247). `null`: nothing of the phrase is the person's, so the grant reads "Granted" alone. */
-    const personPart = {
-      "(coordinator, F2-07 attribution)": "coordinator",
-      "(surface obeys F2-06)": null,
-    };
-    const cell = (raw, wide) => {
-      const size = wide ? "xs" : "sm";
-      if (raw === "—") {
-        return wide
-          ? cellRow([h("span", { key: "r" }, ring(size, "Not granted"))])
-          : cellRow([h("span", { key: "r" }, ring(size)), h("span", { key: "w" }, "Not granted")], "var(--text-secondary)");
-      }
+  /* One role's two lists, in F2's order. A scoped cell keeps the person's part of F2's phrase; a
+     PRD rule id never reaches the screen (D247), so a phrase that is only a rule id drops. */
+  permissionsOf(roleIndex) {
+    const ruleOnly = { "(surface obeys F2-06)": null, "(coordinator, F2-07 attribution)": "coordinator" };
+    const can = [];
+    const cant = [];
+    this.matrixSpec().forEach(([text, cells], i) => {
+      const raw = cells[roleIndex];
+      if (raw === "—") { cant.push({ key: "x" + i, text: text }); return; }
       const written = raw === "✓" ? null : (raw.indexOf("✓ ") === 0 ? raw.slice(2) : raw);
-      const phrase = written in personPart ? personPart[written] : written;
-      return cellRow([
-        h("span", { key: "g", style: { display: "inline-flex", alignItems: "center", gap: "var(--sp-1)" } },
-          [h("span", { key: "c" }, check(size)), h("span", { key: "w" }, "Granted")]),
-        phrase ? h("span", { key: "p" }, phrase) : null,
-      ]);
-    };
-
-    const ask = h(NS.Explainer, {
-      label: "About presets", title: "About presets", density: "functional",
-      pages: [
-        "Presets can't be created, renamed or deleted, so a preset means the same for everyone who holds it.",
-        "Someone whose invite is still open, or who has been deactivated, can't act yet. They are named under the preset, but not counted.",
-      ],
+      const kept = written in ruleOnly ? ruleOnly[written] : written;
+      const scope = kept ? kept.replace(/^\((.*)\)$/, "$1") : null;
+      can.push({ key: "c" + i, text: text, scope: scope });
     });
+    return { can, cant };
+  }
 
-    const tier = { tier: "measured", source: "Your team list, active members only" };
-    const countFoot = h(NS.Provenance, tier);
-
-    const holderChips = (who) => h(NS.ChipGroup, { max: 0, label: "holders", density: "functional" },
-      who.map((n) => h(NS.Badge, { key: n, tone: "neutral", density: "functional" }, n)));
-    const nobody = h("span", {
-      style: { fontSize: "var(--fs-body-sm)", lineHeight: "var(--lh-body-sm)", color: "var(--text-primary)" },
-    }, "Nobody holds this yet");
-    const heldBy = (hold) => (hold.n === 0 ? nobody : holderChips(hold.who));
-    const notCounted = (aside) => h("span", {
-      style: { display: "flex", alignItems: "center", gap: "var(--sp-2)", flexWrap: "wrap" },
-    }, [
-      h(NS.StatusChip, { key: "s", status: aside.word.toLowerCase(), label: aside.word, tone: aside.tone, density: "functional" }),
-      h("span", { key: "n", style: { fontSize: "var(--fs-body-sm)", lineHeight: "var(--lh-body-sm)", color: "var(--text-primary)" } }, aside.name),
-    ]);
-
-    const presets = this.presetSpec();
-    const areas = this.matrixSpec();
-    const column = (p) => presets.findIndex((q) => q.id === p.id);
-
-    /* 375: the opened preset — who holds it, who is named but not counted, then F2's tables as
-       captioned lists, withheld rows included. */
-    const presetPanel = (p) => {
-      const hold = this.holderSpec()[p.id];
-      const ix = column(p);
-      return h("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-4)" } }, [
-        h("div", { key: "who", style: { display: "flex", flexDirection: "column", gap: "var(--sp-2)" } }, [
-          h("span", { key: "l" }, overline("Held by")),
-          h("span", { key: "v" }, heldBy(hold)),
-        ]),
-        hold.aside ? h("div", { key: "aside", style: { display: "flex", flexDirection: "column", gap: "var(--sp-2)" } }, [
-          h("span", { key: "l" }, overline("Not counted")),
-          h("span", { key: "v" }, notCounted(hold.aside)),
-        ]) : null,
-        ...areas.map((a) => h("div", {
-          key: a.id, role: "group", "aria-labelledby": "m14-" + p.id + "-" + a.id,
-          style: { display: "flex", flexDirection: "column", gap: "var(--sp-1)" },
-        }, [
-          h("span", { key: "l" }, overline(a.label, "m14-" + p.id + "-" + a.id)),
-          ...a.rows.map((r, i) => h(NS.ListRow, {
-            key: a.id + i, title: r[0], wrapTitle: true, subtitle: cell(r[1][ix], false), density: "functional",
-          })),
-        ])),
-      ]);
-    };
-
-    /* 1536: the same holders as table cells, and F2's tables as grids — capabilities down, the
-       twelve presets across. */
-    const heldByCell = (hold) => h("span", {
-      style: { display: "flex", flexDirection: "column", gap: "var(--sp-2)", minWidth: 0 },
-    }, [
-      h("span", { key: "v" }, heldBy(hold)),
-      hold.aside ? h("span", { key: "a", style: { display: "flex", alignItems: "center", gap: "var(--sp-2)", flexWrap: "wrap" } }, [
-        h("span", { key: "l", style: { fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)" } }, "Not counted"),
-        h("span", { key: "c" }, notCounted(hold.aside)),
-      ]) : null,
-    ]);
-    const legend = h("div", {
-      style: {
-        display: "flex", alignItems: "center", gap: "var(--sp-1)",
-        fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)",
-      },
-    }, [h("span", { key: "r" }, ring("xs")), h("span", { key: "w" }, "Not granted")]);
-    /* All twelve columns fit the 1392px content column without a sideways scroll: 240 + 12 × 96.
-       A 96px column holds 68px of text, so the six names with a longer word carry a soft break
-       (Exec-utive, Tech-nician, Instal-lation, HR/Admin after the slash, Oper-ations, Market-ing):
-       the name F2-01 fixes, broken only where the line ends. */
-    const gridName = {
-      "Sales Executive": "Sales Exec\u00ADutive", "Field Technician": "Field Tech\u00ADnician",
-      "Installation Team Member": "Instal\u00ADlation Team Member", "HR/Admin": "HR/\u200BAdmin",
-      Operations: "Oper\u00ADations", Marketing: "Market\u00ADing",
-    };
-    const grids = areas.map((a) => ({
-      caption: a.label,
-      attributes: a.rows.map((r, i) => ({ key: a.id + i, label: r[0] })),
-      options: presets.map((p, ix) => {
-        const values = {};
-        a.rows.forEach((r, i) => { values[a.id + i] = cell(r[1][ix], true); });
-        return { key: p.id, name: gridName[p.name] || p.name, values: values };
-      }),
-      columnWidth: 96, labelWidth: 240, density: "functional",
-    }));
-
-    return { ask, countFoot, tier, presetPanel, heldByCell, legend, grids };
+  /* The settings side list (SCR-SHELL-01's list, `settingsRowsFor` for the EPC Owner): every group,
+     "You" without a heading, the current page's row on the accent. Glyphs are SETTINGS_ROW_GLYPH. */
+  sideSpec() {
+    return [
+      { key: "you", name: null, rows: [["profile", "Profile & preferences", "people"]] },
+      { key: "team", name: "Your team", rows: [["team", "Team", "people"], ["roles", "Roles reference", "shield"]] },
+      { key: "company", name: "Your company", rows: [["company_profile", "Business profile", "building"], ["branding", "Branding", "palette"], ["proposal_templates", "Proposal template", "document"], ["payment_terms", "Payment terms", "calendar-clock"]] },
+      { key: "catalog", name: "What you sell", rows: [["catalog", "Catalog", "package"]] },
+      { key: "agent", name: "Customer calls", rows: [["agent", "Agent & voice", "headset"]] },
+      { key: "money", name: "Money", rows: [["collections", "Collections", "wallet"], ["billing", "Billing", "credit-card"], ["usage", "Usage", "gauge"]] },
+    ];
   }
 
   renderVals() {
@@ -413,15 +255,25 @@ class Component extends DCLogic {
     if (this._vals) return this._vals;
     const h = React.createElement;
     const NS = ds;
-    const parts = this.parts(NS);
 
     const glyph = (name, filled) => h(NS.ShellGlyph, { name: name, size: "md", filled: !!filled });
     const dest = (key) => NS.DESTINATION_GLYPH[key];
+    const roles = this.roleSpec();
+    const holders = this.holderSpec();
+    const people = (n) => (n === 1 ? "1 person" : n + " people");
+    const textStyle = (ink) => ({ fontSize: "var(--fs-body-sm)", lineHeight: "var(--lh-body-sm)", color: ink || "var(--text-primary)" });
 
-    const vals = { ask: parts.ask, legend: parts.legend, grids: parts.grids };
+    const vals = { noop: this.noop };
+
+    /* Opened from Assign roles (SCR-M01-13): the way back names the caller and returns to its
+       unsaved ticks; the side list still says where the page lives. */
+    vals.backToAssign = {
+      round: true, label: "Back to assign roles", onClick: this.noop,
+      icon: h(NS.ShellGlyph, { name: "chevron-left", size: "md", tone: "primary" }),
+    };
 
     /* THE SHELL (F7-22, F7-48): the EPC Owner's destinations on the rail, the bell and the account at
-       its foot; the header holds only the tenant's mark and the one search. */
+       its foot; the header holds only the tenant's name and the one search. */
     vals.rail = h(NS.AppRail, {
       label: "Main", value: "more", onChange: this.noop,
       items: [
@@ -444,39 +296,113 @@ class Component extends DCLogic {
       }),
     });
 
-    /* The way back at this width is the trail, not a chevron. */
-    vals.crumbs = {
-      items: [
-        { key: "settings", label: "Settings", onClick: this.noop },
-        { key: "team", label: "Team", onClick: this.noop },
-        { key: "ref", label: "Roles reference" },
+    /* G4's side list: the way back at this width, so the page carries no breadcrumb. */
+    vals.sideGroups = this.sideSpec().map((g, gi) => ({
+      key: g.key, name: g.name || "", named: !!g.name,
+      above: gi === 0 ? "0" : "var(--sp-4)",
+      rows: g.rows.map(([key, name, glyphName]) => {
+        const current = key === "roles";
+        return {
+          key: key, name: name, glyph: glyphName,
+          current: current ? "page" : undefined,
+          ground: current ? "var(--accent-subtle)" : "transparent",
+          ink: current ? "var(--accent)" : "var(--text-primary)",
+          weight: current ? "var(--fw-bold)" : "var(--fw-regular)",
+          tone: current ? "accent" : "secondary",
+        };
+      }),
+    }));
+
+    vals.ask = {
+      label: "About roles", title: "About roles", density: "functional", placement: "bottom",
+      pages: [
+        "Roles can't be created, renamed or deleted, so a role means the same for everyone. You give someone a role from their row in Team.",
+        "Counts include active members only. Someone whose invite is still open, or who was deactivated, is named under the role but not counted.",
       ],
-      onNavigate: this.noop,
     };
 
-    /* THE PRESET TABLE. The count's tier is stated once, as the People column's provenance
-       (decision 3). `stackBelow: 0` keeps the table form: a board has no width probe, and the stacked
-       card form here would be the phone stretched wide. */
-    const holders = this.holderSpec();
-    const rows = this.presetSpec().map((p) => Object.assign({}, p, { hold: holders[p.id] }));
-    const columns = (loading) => [
-      { key: "name", label: "Preset", primary: true, width: 220 },
-      { key: "desc", label: "What it grants", wrap: true, muted: true, width: 380 },
-      { key: "who", label: "Held by", wrap: true, width: 420, render: (r) => (loading
-        ? h(NS.LoadingBars, { label: "Loading who holds " + r.name, bars: ["row"] })
-        : parts.heldByCell(r.hold)) },
-      { key: "n", label: "People", numeric: true, width: 160, provenance: loading ? undefined : parts.tier, render: (r) => (loading
-        ? h(NS.LoadingBars, { label: "Loading how many people hold " + r.name, bars: ["row"] })
-        : String(r.hold.n)) },
-    ];
-    const table = {
-      caption: "The twelve presets — what each grants, who holds it and how many people",
-      rows: rows, rowKey: "id", density: "compact", stackBelow: 0,
+    /* THE TILES — the phone's tiles, four across; three across while the side panel is open, so no
+       tile sits under it. The count is a count, so it carries no tier (F8-01). */
+    const tiles = (openId, count) => roles.map((r) => {
+      const open = r.id === openId;
+      return {
+        key: r.id, name: r.name, glyph: r.glyph, open: open,
+        ground: open ? "var(--accent-subtle)" : "var(--fill)",
+        iconTone: open ? "var(--accent)" : "var(--text-secondary)",
+        glyphTone: open ? "accent" : "secondary",
+        counted: count === "shown", loading: count === "loading",
+        count: people(holders[r.id].n),
+        loadingLabel: "Loading how many people hold " + r.name,
+      };
+    });
+
+    /* THE SIDE PANEL — the phone's sheet at this width: head, holders and the Show switch stay put
+       in the panel's head; only the list scrolls. Non-modal, so another tile swaps the role. */
+    const panel = (roleId, side) => {
+      const ix = roles.findIndex((r) => r.id === roleId);
+      const role = roles[ix];
+      const hold = holders[roleId];
+      const lists = this.permissionsOf(ix);
+      const tick = h("svg", { width: 18, height: 18, viewBox: "0 0 24 24", fill: "none", stroke: "var(--success-text)", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true, style: { flex: "0 0 auto" } }, h("path", { d: "M5 12.5l4.5 4.5L19 7.5" }));
+      const dash = h("svg", { width: 18, height: 18, viewBox: "0 0 24 24", fill: "none", stroke: "var(--mark-subtle)", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true, style: { flex: "0 0 auto" } }, h("path", { d: "M7 12h10" }));
+      const can = side === "can";
+      const rows = (can ? lists.can : lists.cant).map((p) => h("li", {
+        key: p.key, style: { display: "flex", alignItems: "center", gap: "var(--sp-3)", minHeight: 36 },
+      }, [
+        h("span", { key: "m", style: { display: "inline-flex" } }, can ? tick : dash),
+        h("span", { key: "t", style: { minWidth: 0, fontSize: "var(--fs-body)", lineHeight: "var(--lh-body)", color: can ? "var(--text-primary)" : "var(--text-secondary)" } }, [
+          p.text,
+          p.scope ? h("span", { key: "s", style: { color: "var(--text-secondary)" } }, " · " + p.scope) : null,
+        ]),
+      ]));
+      const holdersRow = h("div", { style: { display: "flex", alignItems: "center", gap: 10, minHeight: 32 } }, hold.n > 0
+        ? [h(NS.AvatarGroup, { key: "a", size: 32, people: hold.who.map((n) => ({ name: n })) }), h("span", { key: "n", style: textStyle() }, hold.who.join(", "))]
+        : [h("span", { key: "z", style: textStyle() }, "Nobody holds this yet")]);
+      const aside = hold.aside ? h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", gap: "var(--sp-2)" } }, [
+        h(NS.StatusChip, { key: "c", status: hold.aside.word.toLowerCase(), label: hold.aside.word, tone: hold.aside.tone, density: "functional" }),
+        h("span", { key: "n", style: textStyle() }, hold.aside.name),
+      ]) : null;
+      return {
+        open: true, inset: true, modal: false, side: "right", width: 480, density: "functional",
+        onClose: this.noop, showClose: true,
+        title: role.name,
+        leading: h(NS.IconCircle, { size: 44, color: "var(--accent)" }, h(NS.ShellGlyph, { name: role.glyph, size: "md", tone: "accent" })),
+        meta: h("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-4)", paddingBottom: "var(--sp-2)" } }, [
+          h("span", { key: "d", style: textStyle("var(--text-secondary)") }, role.desc),
+          h("div", { key: "h" }, holdersRow),
+          aside ? h("div", { key: "x" }, aside) : null,
+          h(NS.SegmentedControl, {
+            key: "s", label: "Show", value: side, onChange: this.noop,
+            options: [
+              { value: "can", label: "Can do · " + lists.can.length },
+              { value: "cant", label: "Can't · " + lists.cant.length },
+            ],
+          }),
+        ]),
+        children: h("ul", {
+          "aria-label": can ? "What " + role.name + " can do" : "What " + role.name + " can't do",
+          style: { listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column" },
+        }, rows),
+      };
     };
-    vals.presetTable = Object.assign({ columns: columns(false) }, table);
-    /* LOADING: names, descriptions and the whole grid are static and draw at once; the holders and
-       the count are one read of the team, so both wait in their own cells. */
-    vals.presetTableLoading = Object.assign({ columns: columns(true) }, table);
+
+    const frame = (id, label, screenLabel, opts) => Object.assign({
+      id: id, label: label, screenLabel: screenLabel,
+      columns: 4, rightPad: "var(--sp-8)", tiles: tiles(null, "shown"),
+      panelOpen: false, panel: null, fromAssign: false,
+    }, opts || {});
+
+    vals.frames = [
+      frame("d-default", "1536 · default · the roles at rest", "Roles reference — 1536, at rest"),
+      frame("d-open", "1536 · default · one role opened in the side panel", "Roles reference — 1536, one role opened", {
+        columns: 3, rightPad: "calc(480px + var(--sp-8))",
+        tiles: tiles("sales-exec", "shown"), panelOpen: true, panel: panel("sales-exec", "can"),
+      }),
+      /* LOADING: the twelve names are static and draw at once; only each count waits, in its own
+         place, so the skeleton is the tile grid itself. */
+      frame("d-from-assign", "1536 · opened from Assign roles", "Roles reference — 1536, opened from Assign roles", { fromAssign: true }),
+      frame("d-loading", "1536 · loading", "Roles reference — 1536, loading", { tiles: tiles(null, "loading") }),
+    ];
 
     this._vals = vals;
     return vals;

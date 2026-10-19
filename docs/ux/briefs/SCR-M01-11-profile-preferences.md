@@ -8,7 +8,7 @@ Permanent per-user language picker and measurement-unit preference.
 
 Reached from: More → Profile (mobile) and the sidebar (desktop) — per F3-03's source pointer. Leads to: nowhere in particular — changes apply in place; switching language re-renders the whole application immediately with no reload and no loss of in-progress work (context: F3 §F3.1 / F3-04, not a row of this slice). Exit is not otherwise pinned by PRD — designer decides, note the decision. The user's own role card (SCR-M01-10) is re-openable from here (M01 §M01.2 permissions).
 
-The role card opens over this screen in its `reopened-from-profile` form (`SCR-M01-10`). The name row opens `SCR-M01-09` in its settings life.
+The role card opens over this screen in its `reopened-from-profile` form (`SCR-M01-10`). *Edit name* opens `SCR-M01-09` in its settings life.
 
 ## Requirements (verbatim)
 
@@ -30,7 +30,8 @@ Screen-specific:
 - **normal** / **default** — language picker (each language in its own script and name — F3-03), measurement-unit preference beside it (F3-23), notification push mutes per type-group (F6-15).
 - **language-switched-rerender** — changing language re-renders the whole application immediately, no reload, no loss of in-progress work (context: F3 §F3.1 / F3-04, not a row of this slice; the slice names this state).
 - **type-group-muted** — a push type-group muted by the user; the in-app record still always lands (F6-15).
-  The one line at the act names this, and is read before muting: *"Turn a group off to stop its
+  The *About push* `Explainer` beside *Push notifications* names this at both widths, read before
+  muting (owner ruling 2026-10-17, M01 design): *"Turn a group off to stop its
   push. Every notification still arrives in HelioGrid — Notifications keeps the record either
   way."*
 - **protected-types-locked** — audit-relevant billing/compliance events for the Owner are never mutable; the control shows they cannot be muted (F6-15).
@@ -51,7 +52,7 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty
 3. **A switch reads as capability, not as mute** — it is *on* when push is on, so muting turns
    something off. *"Mute leads"* switched *on* to stop something is a double negative on a control a
    thumb hits without reading.
-4. **Language and measurements sit together, not in a section of their own.** Both are per-user
+4. **Language and measurements sit together, in one section, *Language and units*.** Both are per-user
    facts about how the product renders to this person; a section headed *Appearance* is an
    invitation to the light/dark switch `F7-04` forbids.
 5. *(Struck with field mode — see the amendment below. The number stays so decisions 6 and 7 keep
@@ -70,13 +71,27 @@ addresses only `epc_owner`, so the Billing row shows only on the EPC Owner's acc
 
 **Rulings at the M01 board check (owner, 2026-10-16).**
 
-- **The roles row wraps.** A person holding several presets reads every name: the design system's
-  `ListRow` gains a wrap option for its title (a design-system change), the second screen after
-  `SCR-M01-10` to need a wrapping row.
+- **The roles are `Badge`s that wrap, with no cap**, each in the iris tone of its kind (violet sell and
+  lead, blue plan and run, magenta on site; design-system change 7), under *Your role* / *Your roles* in the account
+  card's second row; that row reopens the role card (`SCR-M01-10`).
+- **The sections are *Your account*, *Language and units* and *Push notifications*** at both widths.
+- **At 1536 the page is one column of cards, at most 760 wide, with no breadcrumb**, and the settings
+  side list shows only when the person's list holds more than one row (`SCR-SHELL-01`, *More: the
+  settings list*).
+- **At 1536 *Language and units* are `SegmentedControl`s with captions**; the phone keeps option
+  cards with their source labels.
+- **The Billing row is the same `Switch` row as the four groups** — switched on, disabled — with an
+  information button beside its name, at both widths (owner ruling 2026-10-17, canvas comment: the
+  line under the name read as clutter). The `Explainer` *Why Billing stays on* opens on a tap with
+  *Always sent, and it cannot be muted: billing events are audit-relevant for the owner account.*
+  The locked switch is what shows it cannot be muted (`F6-15`); the reason is on demand.
+- **The account card holds two rows:** the name row (avatar, name, *Edit name*) and the *Your role*
+  row, which keeps the way into `SCR-M01-10`. The *Your role* row is a `ListRow` at both widths; on
+  the phone the name row is one too.
 
 ## Data volume
 
-Three launch languages (English, Hindi, Marathi — F3-01 context), each in its own script; the picker must remain legible when it lists a script the current language does not use (F3 §F3.1 localization notes). One two-value measurement preference (m/ft — F3-23 source pointer) whose market default is pack data. Push mutes per type-group — a short list of type-groups, not per-event controls ("no per-event snooze theatre" — F6-15). A person with several roles sees every one in the role row, comma-separated and wrapping, under *Your roles* — no count, no *+2 more* and no primary role: the permission model assigns a set.
+Three launch languages (English, Hindi, Marathi — F3-01 context), each in its own script; the picker must remain legible when it lists a script the current language does not use (F3 §F3.1 localization notes). One two-value measurement preference (m/ft — F3-23 source pointer) whose market default is pack data. Push mutes per type-group — a short list of type-groups, not per-event controls ("no per-event snooze theatre" — F6-15). A person with several roles sees every one as a chip, the chips wrapping with no cap, under *Your roles* — no count, no *+2 more* and no primary role: the permission model assigns a set.
 
 ## Numbers carrying provenance
 

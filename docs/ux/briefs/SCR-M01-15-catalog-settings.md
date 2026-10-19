@@ -8,7 +8,7 @@ The one two-tier catalog surface: browse, search, rates panel with tier attribut
 
 Reached from: the tenant-config settings surface map — *Catalog · Price book* are named surfaces in M01 §4's stable vocabulary; a deeper entry path is not pinned by PRD — designer decides, note the decision. Leads to: **Add Catalog Item** (SCR-M01-16) — inline add is available from Catalog settings as well as the pickers (M01-39); **Catalog Import Wizard** (SCR-M01-17) — Catalog settings is one of the wizard's three entry points (M01-41, §M01.4 behavior detail); release publish and price-book version browsing happen on this surface (M01-43, M01-48, §M01.5 behavior detail: "The price book renders as the rates panel of the one catalog surface").
 
-Entry is More → Settings → *Catalog*. The back control names the caller (*Back to settings*); at 1536 the breadcrumb *Settings / Catalog* above the page title. *Add an item* and *Import a file* sit at the foot of the list, where an owner concludes the item is missing.
+Entry is More → Settings → *Catalog*. The back control names the caller (*Back to settings*); at 1536 the settings side list, its *Catalog* row current (`SCR-SHELL-01`, *More: the settings list*). *Add an item* and *Import a file* sit at the foot of the list on the phone, where an owner concludes the item is missing; at 1536 they head the list's controls, right-aligned, above the search row (owner ruling 2026-10-18, canvas comment).
 
 ## Requirements (verbatim)
 
@@ -38,23 +38,25 @@ Entry is More → Settings → *Catalog*. The back control names the caller (*Ba
 - **price-book-version-new** — the new-version editor names each rate in English; authoring a rate's name per language (the contract stores it per language, `F3-10`) comes with the language-switcher pattern at the build (owner ruling 2026-10-16; `D248`).
 - **price-book-version-browse** — past price-book versions are browsable read-only; exactly one version is active; the default margin rides the version (M01-48; §M01.5 behavior detail).
 
-Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and edit), `archived-filter`, `archive-warns-referenced-drafts`, `release-publish-summary`, `release-contents-inspect`.
+Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and edit), `archived-filter`, `archive-warns-referenced-drafts`, `release-contents-inspect`, and the rates panel's empty state.
 
-- **Loading** keeps every fixed word, the panel switch and the search box; the release strip, the kind facets and six placeholder rows load.
+- **Loading** keeps every fixed word, the panel switch and the search box; the release strip, the kind facets and six placeholder rows, in the real row grid, load.
 - **Empty** on the rates panel is a real empty: nobody else supplies those rates. It teaches that the first set entered becomes version 1.
 - **Error** is two things. A load error is the page and says nothing has changed — items, overrides and the price book are as left, nothing published or archived. A failed edit is one row: what did not save, what is therefore still true, and a retry in place; the row stays operable.
 - **archived-filter** rows are muted and carry one act, *Restore*.
 - **archive-warns-referenced-drafts** is followed by an undo in a toast.
-- **price-book-version-browse** — the version in force says so in words with its status chip; past versions say *Read-only*, never greyed.
+- **price-book-version-browse** — the version in force says so in words with its status chip; past versions show their margin, and the opened one says *Read-only*, never greyed.
 - Giving an item its first price shows in a release as an addition, with no before.
+- **release-publish-summary** is a modal at 1536.
 
 **Decisions made in design (2026-09-01) — later screens inherit them.**
 
 1. **One destination, two panels.** *Catalog* is the one row in the settings surface map; *Price
-   book* is not its own destination. At 375 the two panels switch with a `SegmentedControl`; at 1536
-   the rates panel sits **beside** the list. `M01-32` forbids two catalogs to administer and
-   §M01.5 calls the price book *the rates panel of the one catalog surface* — the switch exists only
-   because 375 has no *beside*.
+   book* is not its own destination. The two panels, *Items* and *Rates*, switch at both widths: a
+   `SegmentedControl` at 375 and `Tabs` in the page head at 1536 (owner picks "Items A" and "Rates
+   P1", 2026-10-18 — the rates panel beside the list made four columns and read as clutter).
+   `M01-32` forbids two catalogs to administer, and §M01.5 calls the price book *the rates panel of
+   the one catalog surface*.
 2. **`empty` on the items panel is not an empty list and never will be.** A tenant's first day
    already has the platform slice (`M01-32`: there is never "no catalog"), so what is empty is the
    tenant's own two dimensions — own SKUs and overrides — and the teaching card sits above a full
@@ -63,12 +65,12 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
    setting, read back where it is set (`F8-01`, owner ruling 2026-10-16); the layer chip says where it
    came from. `unmarked` is `M05-52`'s exception only and never applies here.
 4. **Publishing asks for a name, not a serial** (`M01-43`: a release is a human-readable name plus a
-   date), and states the consequence as a number before the act: *N designs pinned to <label> will
-   show as out of date*. A release's contents are a **before-and-after**, not a list of names. Until
+   date), and states the consequence as a number before the act, in the board's words *14 designs on r2026-08
+   will show as out of date.* A release's contents are a **before-and-after**, not a list of names. Until
    `T-FPLAT-028` lands that count renders as a named absence; the board draws the end state (`D235`).
-5. **The three row acts are 32px at 1536 and 44px on the phone card.** The design system's one
-   in-row exception, whose three conditions all hold: a `<table>` row, pointer-only, and the same
-   acts at full size elsewhere.
+5. **The row acts are 44px at both widths.** The design system's `IconButton` never draws under the
+   44px floor, so the 1536 table gives its acts column the room (owner pick "Items A" redraw); the
+   old 32px in-row exception is retired.
 6. **Returning from `SCR-M01-16` and `SCR-M01-17` lands on the panel and scroll position the caller
    was on.** Written into both briefs.
 7. **The catalog keeps its own search.** It is the one exception to `F7-47`'s one global search,
@@ -77,34 +79,63 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `error` (load and
 8. **The Items strip shows the release in force and *Publish*, and counts no unpublished changes.**
    No route serves pending changes (`GET /catalog/releases` lists published releases only); a publish
    with nothing new is refused (`CATALOG_NOTHING_CHANGED`). *release-contents-inspect* opens a
-   published release from the append-only list (label, date, counts) as its before-and-after
+   published release from the append-only list (label, date, counts as tiles — *2 Added · 1 Changed*) as its before-and-after
    (owner ruling 2026-10-16).
 9. **The settings shell is `SCR-SHELL-01`'s at both widths** (owner ruling 2026-10-16): at 375 the bar of a page
    opened from a list (decision 8: back, title, search); at 1536 the `AppHeader` search, with the bell and the avatar
-   at the rail's foot.
+   at the rail's foot, and the settings side list beside the page, which carries no breadcrumb
+   (`SCR-SHELL-01`, *More: the settings list*).
 
 **The surface.**
 
 - Each panel opens with its own versioning strip: the release in force on Items, the active version
-  and its margin on Rates.
+  and its margin on Rates. At 1536 each strip spans the tab's width under the page head.
 - Source (platform / own) is a dimension in the filter panel, never a toolbar toggle — a toggle would
-  split again what `M01-32` collapses. Component kind stays on the toolbar as multi-select facet
-  chips; none selected is everything.
-- A row's mark line: the layer (*Platform* · *Your SKU* · *Overridden*) and `M01-35`'s spec label as
+  split again what `M01-32` collapses. At 1536 the search fills one row with the filter button and the
+  *Sort* menu at its end, and the kind chips sit on the row below — *All* then one per kind; kinds
+  are multi-select, and *All* is none selected (owner ruling 2026-10-18, canvas comment).
+- The filter panel is one column of sections at both widths: each filter's name with what is on at
+  its right, the control under it, a hairline between. *Clear all* shows once, in the footer.
+  *Preferred items only* and *Archived items instead* are switches in a last *Show* section. A chip
+  list longer than six shows its first six and any chosen one, then *Show all N kinds*. Wattage and
+  Technology belong to panels: they fold under *Panel specs* while *Panels* is chosen, and are cleared
+  when it is not (owner pick "F2 · Sections", canvas comment; design-system change 8).
+- A row's mark line on the phone: the layer (*Platform* · *Your SKU* · *Overridden*) and `M01-35`'s spec label (a tenant's own spec reads *Your own*) as
   plain chips; tinted badges for compliance (success), *Representative data* and *Hidden from
-  pickers* (warning) and *Preferred* (accent). No F8 tier sits on a price the company set
+  pickers* (warning) and *Preferred* (accent). At 1536 one item is one line (owner pick "Items A"):
+  a kind tile tinted by kind, the name, and under it *kind · spec* with the spec label as a small
+  mark (*✓ datasheet* success, *Representative data* as a warning `Badge`, *Your own*) and *Hidden
+  from pickers* as a warning `Badge` with the eye-off glyph when hidden; without the manage grant a
+  preferred item adds an accent *Preferred* `Badge`, since the star act is absent. The layer moves
+  to the *Price comes from* column. The row keeps one line; a long name truncates and its full text
+  stays reachable. The page head is the title and the tabs only — the count lives in the *Items* tab and the pager. No F8 tier sits on a price the company set
   (decision 3); the spec label never sits beside a price. Where the pack declares schemes and an item records
   none, the row names the gap (*No ALMM or DCR flag recorded*; the IN pack's schemes, `F1-44`).
-- *Preferred* and *Hidden from pickers* are each stated by a chip and set by a pressed toggle — never
-  one icon doing both.
-- A platform item with no tenant price reads *No price set*, with no tier; the *Platform* chip says why.
+- *Preferred* and *Hidden from pickers* are each set by a pressed toggle. *Hidden from pickers* is
+  always also stated in words (on the phone a badge, at 1536 the mark under the name); at 1536
+  *Preferred* is stated by the pressed star and the list's *preferred first* order (owner pick "Items A").
+- A platform item with no tenant price reads *No price set*, with no tier; *Platform* (the chip on the phone, *Price comes from* at 1536) says why.
 - At 375 tier attribution lives in the rates panel and the row carries only the layer chip. At 1536
-  every row carries a *Price comes from* column, and the list and the rates panel scroll independently.
+  the items table's columns are Item (kind tile, name, kind · spec and its marks) · Compliance ·
+  Effective price · *Price comes from* · row actions, one line per item, in one raised card.
 - At 1536 the override editor is a side panel that does not trap focus: the row being priced stays
-  reachable.
+  reachable. It has no title row and no close button: *Cancel* and Escape close it.
+- At 1536 sorting is a `Menu` switcher behind a trigger with the sort glyph and the current order:
+  Preferred first, Name, Price, Recently changed. The phone's summary line reads *342 items · every
+  kind · preferred first*; at 1536 there is no summary line — the count is in the *Items* tab (which
+  shows *99+* above 99, the `Tabs` cap) and, exactly, in the pager (owner ruling 2026-10-18, canvas comment).
+- A panel's head is its plain title, with its caption (and chip) on the line under it.
+- On the phone rates are grouped by how each rate is charged. At 1536 the Rates tab is one table —
+  Rate · Charged · Amount, one rate per line, the charge a tinted badge (per job violet, per kW blue,
+  per visit magenta, per metre blue) (owner pick "Rates P1"). At 1536, above the table one row holds *Search
+  rates* and, at its right, one chip per way of charging — *All*, *Per job*, *Per kW*, *Per visit*,
+  *Per metre* — because a price book grows as a company adds rates (owner ruling, canvas comment).
+- At 1536 the versions list, a past version and the new-version editor open in the side panel.
 - Without the manage grant every administration act is absent, never disabled — publish, add,
-  import, the row acts, the row click, a new price-book version — and a `ScopeNote` names whose act
-  it is.
+  import, the row acts, the row click, a new price-book version — and one info alert under the release
+  strip, at the top of the list region, names whose acts they are in one line: *View only — Rajesh or
+  Operations edit.* (owner ruling 2026-10-18, canvas comment: the composed sentence and its separate
+  information button read as too much).
 
 ## Data volume
 
@@ -112,15 +143,15 @@ The PRD fixes no item count for the catalog; it does classify catalog administra
 
 ## Numbers carrying provenance
 
-Each of these is user-visible on this screen and carries its F8 provenance tier in the design:
+Each of these is user-visible on this screen; the ones that carry no F8 tier say so (`F8-01`):
 
-- **Effective (resolved) price per item** — resolved through tenant override → own item (M01-32); the platform tier supplies no price, so an item with neither shows its rate as missing (M01-37); tier attribution shown in the rates panel (the pack's tax rate struck under a tax override).
+- **Effective (resolved) price per item** — resolved through tenant override → own item (M01-32); the platform tier supplies no price, so an item with neither shows its rate as missing (M01-37); tier attribution shown in the rates panel (the pack's tax rate struck under a tax override). No tier (decision 3).
 - **Override price and tax rate** — tenant-entered override fields (M01-37). No tier: a value the company sets in its own settings (`F8-01`, owner ruling 2026-10-16).
 - **Item spec values** (e.g. wattage, technology as filterable spec ranges, M01-38/M01-34) — each item's provenance label (verified-datasheet / tenant-provided / representative) is exactly this screen's honesty mechanism (M01-35).
 - **Price-book rates** — service/installation charges, engineering fees, per-kW adders, from the active immutable version (M01-48). No tier, as above.
 - **Default margin percentage** — rides the price-book version (M01-48). No tier, as above.
-- **Release label + date** — the publish act's human-readable name plus date (M01-43, §M01.4 behavior detail).
-- **Open-draft reference count** shown in the archive warning (§M01.4 behavior detail).
+- **Release label + date** — the publish act's human-readable name plus date (M01-43, §M01.4 behavior detail). No tier: a label and a date.
+- **Open-draft reference count** shown in the archive warning (§M01.4 behavior detail). No tier: a count.
 
 ---
 

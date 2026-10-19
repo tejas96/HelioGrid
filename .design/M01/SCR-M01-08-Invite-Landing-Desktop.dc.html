@@ -33,39 +33,42 @@ a:hover{color:var(--link-hover)}
 
   <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:1536px">
     <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">1536 · normal</span>
-    <div data-screen-label="Invite landing — normal, 1536" data-frame="d-normal" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
-      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="desktop" hint-size="0px,0px"></x-import>
-      <div style="position:relative;flex:1;min-height:0;box-sizing:border-box;display:flex;flex-direction:column;padding:var(--sp-8) var(--screen-pad-desktop)">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4)">
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmDesktop }}" hint-size="180px,40px"></x-import>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
+    <div data-screen-label="Invite landing — normal, 1536" data-frame="d-normal" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:auto minmax(0,1fr);background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+      <div data-part="context" style="position:relative;overflow:hidden;grid-column:1 / span 4;grid-row:1 / 3;display:grid;grid-template-rows:subgrid">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="desktop-wide" hint-size="0px,0px"></x-import>
+        <div style="position:relative;padding:var(--sp-10) var(--sp-12) 0">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmDesktop }}" hint-size="220px,52px"></x-import>
         </div>
-        <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:var(--sp-16);padding-bottom:var(--sp-16)">
-          <div style="display:flex;flex-direction:column;gap:var(--sp-6);max-width:600px;justify-self:end">
+        <div style="position:relative;display:flex;flex-direction:column;gap:var(--sp-10);padding:var(--sp-16) var(--sp-12) var(--sp-10)">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-6)">
             <div style="display:flex;align-items:center;gap:var(--sp-4)">
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="Rajesh Kulkarni" size="{{ avatarDesktop }}" hint-size="56px,56px"></x-import>
-              <div style="display:flex;flex-direction:column;gap:var(--sp-0-5)">
+              <div style="display:flex;flex-direction:column;gap:var(--sp-0-5);min-width:0">
                 <span style="font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">Rajesh Kulkarni</span>
                 <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary)">EPC Owner · Suryodaya Solar</span>
               </div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-              <h1 style="margin:0;font-size:var(--fs-h1);line-height:var(--lh-h1);letter-spacing:var(--tr-h1);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Rajesh invited you to Suryodaya Solar</h1>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
-              {{ inviteFacts }}
-              <p style="margin:0;max-width:44em;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">The code went to the number Rajesh entered; if it is wrong, decline.</p>
-            </div>
+            <h1 style="margin:0;font-size:var(--fs-h1);line-height:var(--lh-h1);letter-spacing:var(--tr-h1);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Rajesh invited you to Suryodaya Solar</h1>
           </div>
-          <div style="display:flex;flex-direction:column;gap:var(--sp-5);width:420px">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OtpInput" label="Code from the SMS" value="" auto-focus="{{ yes }}" hint-size="100%,110px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Join Suryodaya Solar</x-import>
-            <div style="display:flex;flex-direction:column;align-items:center">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" disabled="{{ yes }}" aria-label="Resend code, available in 30 seconds" hint-size="auto,44px">Resend code in 0:30</x-import>
-            </div>
-            <div style="display:flex;justify-content:center">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">This invite isn't for me</x-import>
-            </div>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+            <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your invite</span>
+            {{ inviteFacts }}
+              <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">The code went to the number Rajesh entered; if it is wrong, decline.</p>
+          </div>
+        </div>
+      </div>
+      <div style="position:relative;z-index:1;grid-column:5 / span 8;grid-row:1;align-self:start;display:flex;justify-content:flex-end;padding:var(--sp-8) var(--sp-16) 0;margin-bottom:calc(-1 * var(--sp-2))">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
+      </div>
+      <div data-part="task" style="grid-column:5 / span 8;grid-row:1 / 3;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--sp-16)">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-5);width:max-content;max-width:100%">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OtpInput" label="Code from the SMS" value="" auto-focus="{{ yes }}" hint-size="100%,110px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Join Suryodaya Solar</x-import>
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" disabled="{{ yes }}" aria-label="Resend code, available in 30 seconds" hint-size="auto,44px">Resend code in 0:30</x-import>
+          </div>
+          <div style="display:flex;justify-content:center">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">This invite isn't for me</x-import>
           </div>
         </div>
       </div>
@@ -74,33 +77,42 @@ a:hover{color:var(--link-hover)}
 
   <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:1536px">
     <span style="font-size:var(--fs-caption);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--text-secondary)">1536 · declined-notifies-owner · confirm</span>
-    <div data-screen-label="Invite landing — decline confirm, 1536" data-frame="d-decline-confirm" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
-      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="desktop" hint-size="0px,0px"></x-import>
-      <div style="position:relative;flex:1;min-height:0;box-sizing:border-box;display:flex;flex-direction:column;padding:var(--sp-8) var(--screen-pad-desktop)">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4)">
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmDesktop }}" hint-size="180px,40px"></x-import>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
+    <div data-screen-label="Invite landing — decline confirm, 1536" data-frame="d-decline-confirm" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:auto minmax(0,1fr);background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+      <div data-part="context" style="position:relative;overflow:hidden;grid-column:1 / span 4;grid-row:1 / 3;display:grid;grid-template-rows:subgrid">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="desktop-wide" hint-size="0px,0px"></x-import>
+        <div style="position:relative;padding:var(--sp-10) var(--sp-12) 0">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmDesktop }}" hint-size="220px,52px"></x-import>
         </div>
-        <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:var(--sp-16);padding-bottom:var(--sp-16)">
-          <div style="display:flex;flex-direction:column;gap:var(--sp-6);max-width:600px;justify-self:end">
+        <div style="position:relative;display:flex;flex-direction:column;gap:var(--sp-10);padding:var(--sp-16) var(--sp-12) var(--sp-10)">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-6)">
             <div style="display:flex;align-items:center;gap:var(--sp-4)">
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="Rajesh Kulkarni" size="{{ avatarDesktop }}" hint-size="56px,56px"></x-import>
-              <div style="display:flex;flex-direction:column;gap:var(--sp-0-5)">
+              <div style="display:flex;flex-direction:column;gap:var(--sp-0-5);min-width:0">
                 <span style="font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">Rajesh Kulkarni</span>
                 <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary)">EPC Owner · Suryodaya Solar</span>
               </div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-              <h1 style="margin:0;font-size:var(--fs-h1);line-height:var(--lh-h1);letter-spacing:var(--tr-h1);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Rajesh invited you to Suryodaya Solar</h1>
-            </div>
-            <div style="padding-top:var(--sp-2)">{{ inviteFacts }}</div>
+            <h1 style="margin:0;font-size:var(--fs-h1);line-height:var(--lh-h1);letter-spacing:var(--tr-h1);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Rajesh invited you to Suryodaya Solar</h1>
           </div>
-          <div style="display:flex;flex-direction:column;gap:var(--sp-5);width:420px">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OtpInput" label="Code from the SMS" value="" hint-size="100%,110px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Join Suryodaya Solar</x-import>
-            <div style="display:flex;justify-content:center">
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">This invite isn't for me</x-import>
-            </div>
+          <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+            <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your invite</span>
+            {{ inviteFacts }}
+              <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">The code went to the number Rajesh entered; if it is wrong, decline.</p>
+          </div>
+        </div>
+      </div>
+      <div style="position:relative;z-index:1;grid-column:5 / span 8;grid-row:1;align-self:start;display:flex;justify-content:flex-end;padding:var(--sp-8) var(--sp-16) 0;margin-bottom:calc(-1 * var(--sp-2))">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="sm" hint-size="auto,44px">English</x-import>
+      </div>
+      <div data-part="task" style="grid-column:5 / span 8;grid-row:1 / 3;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--sp-16)">
+        <div style="display:flex;flex-direction:column;gap:var(--sp-5);width:max-content;max-width:100%">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OtpInput" label="Code from the SMS" value="" hint-size="100%,110px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" hint-size="100%,52px">Join Suryodaya Solar</x-import>
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" disabled="{{ yes }}" aria-label="Resend code, available in 30 seconds" hint-size="auto,44px">Resend code in 0:30</x-import>
+          </div>
+          <div style="display:flex;justify-content:center">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="ghost" size="md" hint-size="auto,44px">This invite isn't for me</x-import>
           </div>
         </div>
       </div>
@@ -119,7 +131,7 @@ class Component extends DCLogic {
     const NS = window.HelioGridDesignSystem_c8aa43, h = React.createElement;
     const phone = h("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, "+91 98450 27746");
     return h(NS.FactRows, { label: "Your invite", density: "expressive" }, [
-      h(NS.FactRow, { key: "r", label: "Rajesh set you up as", values: this.presets, stack: false }),
+      h(NS.FactRow, { key: "r", label: "Rajesh set you up as", values: this.presets.map((p) => h(NS.Badge, { key: p, tone: "violet", density: "functional" }, p)), stack: false }),
       h(NS.FactRow, { key: "p", label: "Mobile number", value: phone })
     ]);
   }

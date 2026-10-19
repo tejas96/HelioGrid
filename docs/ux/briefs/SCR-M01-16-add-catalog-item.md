@@ -18,9 +18,13 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
    the Items panel at the caller's row (`SCR-M01-15` decision 6).
 3. **The datasheet path stays inside this sheet** and becomes the review state; only the spreadsheet
    path leaves, to `SCR-M01-17`. Two accelerators, one form.
-4. **Extracted values are `estimated`, with the page named** — *read off page 2*. An engine read them
-   and `M01-40` forbids committing them silently, so the tier says so until a person confirms. Values
-   the tenant types carry `M01-35`'s **Tenant-provided** label, not an F8 tier: nothing computed them.
+4. **Of the extracted values, only the rated power (Wp/kW) is `estimated`** — an engine read it and
+   `M01-40` forbids committing it silently, so the tier says so until a person confirms. Every read
+   value sits under the page it came from — the specification card groups them under *Page 1* and
+   *Page 2* heads, and the item card ends with *Brand and model: page 1* — with no note under any field
+   (owner pick "R2 · By page", canvas comment). A read value carries no
+   tier: outside money and energy a number carries none (`F8-01`). Values the tenant types carry
+   `M01-35`'s label, shown as **Your own**, not an F8 tier: nothing computed them.
 5. **Abandoning a filled sheet is confirmed and un-dismissible**, and the confirm carries the
    recovery route in words — nothing was created, so there is nothing to restore, and the
    sentence says the datasheet can be uploaded again in one tap.
@@ -37,27 +41,35 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
 **Layout, decided in design.**
 
 - The two accelerators — the datasheet and the spreadsheet — sit at the top of the sheet, above the
-  form. There is no path chooser: the form is where every path lands.
+  form, as two raised tiles with an iris glyph (datasheet violet, spreadsheet blue), side by side at
+  1536 and stacked at 375, with no overline. There is no path chooser: the form is where every path lands.
+- The form is raised cards, each headed by an iris glyph tile and its title: *The item* (the kind's own
+  tint and glyph, as on `SCR-M01-15`), *Specification* (with *Your own* as a badge), *Certification* and
+  *Price*. The optional values fold behind *Add optional values* while all of them are blank; once any
+  holds a figure they show in the card under *Optional* (owner pick "A · Cards", canvas comment).
 - The datasheet accelerator is the only upload control; the file stays on the item whichever way the
   fields get filled. No second *attach the datasheet* field.
-- The kind field's helper names the caller that set it. On the phone the sheet's overline names the
+- The kind field, *What it is*, comes before brand and model; its helper names the caller that set it
+  (*Set by the component picker.*). On the phone the sheet's overline names the
   caller, because the sheet covers it.
-- A sentence above the footer buttons states what the act will do. *Cancel* is in the footer; the
+- One line, centred under the act, states in the fewest words what the act will do. *Cancel* is in the footer; the
   phone sheet has no close button, the 1536 panel has one in its header.
 - At 1536 the editor is a 900px side panel, non-modal — no backdrop, no focus trap; focus moves in and
-  is restored — with the caller's list live beside it. The phone sheet is modal. Identity (kind,
+  is restored — with the caller's list live beside it. From Catalog settings it lies over `SCR-M01-15` inside the
+  settings side list, and *Publish* is hidden while it is open. The phone sheet is modal. Identity (kind,
   brand, model) is one row of three at 1536; at 375 the kind sits on its own row and brand and model
   share the next; certification and price
   sit side by side at 1536.
 - Spec fields have no steppers: their values are transcribed. A price outside its range is refused
   with the limit named, never clamped.
-- Certification is one checkbox per scheme the market pack declares, and a sentence under them says an
+- Certification is one switch row per scheme the market pack declares, and a sentence under them says an
   empty set shows no badges. A scheme the pack collects as a list reference (ALMM) shows its reference
-  field once ticked; a flag scheme (DCR) is the tick alone (`IN_CERTIFICATION_SCHEMES`, owner ruling 2026-10-16).
+  field once switched on; a flag scheme (DCR) is the switch alone (`IN_CERTIFICATION_SCHEMES`, owner ruling 2026-10-16).
 - No SKU-code field and no tax field: the own-item contract holds neither, and an own SKU's tax
   follows the pack's category rate (`M01-37`, owner ruling 2026-10-16).
-- The *Tenant-provided* label is stated once per section, not per field. A pre-filled field states its
+- The *Your own* label is stated once, as a badge on the *Specification* card, not per field. A pre-filled field states its
   own origin in its helper.
+- A frame showing the end of the form is read from its foot: the last field sits on the act.
 
 ## Requirements (verbatim)
 
@@ -71,30 +83,41 @@ Reached from: the proposal builder's and studio's component picker, and from Cat
 
 - **Loading** — the typed per-kind form loading, or a datasheet upload/extraction in progress.
   While the form loads, the sheet's words, both accelerators, the identity fields and the footer show
-  at once; only the kind's spec block is a placeholder, at the shape it will become. A datasheet being
-  read is narrated: the file by name, the stage in words, an indeterminate rail, and a cancel that
-  says what it stops. The form stays live while it reads, and the datasheet fills only fields still
-  blank.
+  at once; only the kind's spec block is a placeholder, at the shape it will become — the specification
+  card's own grid. A datasheet being read keeps its tile, quiet (owner pick "S1 · Quiet row"): the
+  stage and the file by name on one line (*Page 2 of 2 · <file>*), an indeterminate rail, one line
+  that the form stays live and only empty fields fill, and *Stop reading* — no step count, no preview
+  while it reads.
 - **Empty** — the fresh single-product form for the pre-scoped component kind, before entry.
   An unfilled form, not an empty-state screen: one line says which fields are required and what the
   rest buy, and each placeholder says what belongs there in the datasheet's own words.
 - **Error** — save or upload fails; what happened and what to do next.
-  A failed save is one line beside the act — nothing was created, nothing was selected, everything
+  A failed save is one line centred under the act — nothing was created, nothing was selected, everything
   typed is still here — with the retry; the footer drops its consequence sentence and the form stays
-  live. A refused upload turns the datasheet accelerator into the drop surface, states the problem and
-  the fix with the real limit, offers another file or the manual form, and says nothing was created or
-  attached.
+  live. A refused upload turns the datasheet tile amber: the problem and the real limit, that nothing
+  was saved, and the fix — *Choose another file*, or the form below.
 - **single-form** — path (a): the single-product form with the component kind's typed spec fields (M01-39, M01-36).
   It is the screen's default; `Empty` is the same form before entry.
 - **prefilled-from-selection** — path (a) from a picker with a component already selected: the single form opens pre-filled with that item's brand, model and typed specs; the scheme-certification flags and the rate fields are blank for the tenant to enter; save creates a new own SKU and selects it in place, the platform item untouched (M01-39, M01-36, M01-34; owner ruling 2026-09-07).
-  Each copied field says so in its own helper. The certification flags and the rate fields open blank with the reason under them as content; a blank price is empty, never 0. At 1536 the
+  A banner titled *Filled in from <item>* (on the board, *Filled in from Vikram Solar Somera 540*), with no body line, heads the form. Each copied field says so in its own helper. The certification flags and the rate fields open blank with the reason under them as content; a blank price is empty, never 0. At 1536 the
   selected platform row stays on the caller's list, marked unchanged.
 - **pdf-extraction-review** — path (b): extracted fields shown in the same typed form as manual entry, each field editable, with the datasheet preview alongside; nothing commits until the person saves (M01-40, §M01.4 behavior detail).
+  One soft violet tile heads the form — a page thumbnail, *Read from your datasheet*, *2 pages · check
+  each value against its page*. At 1536 the page sits beside the specification card in one card of the
+  same height — a page dropdown above the page image and *Open full size* under it, nothing else
+  (owner picks "V1 · The page beside, quiet" and "P · Page dropdown"). The dropdown is the one page
+  control at every page count: each page named by what it holds (*Page 2 · Electrical*), the pages that
+  hold read values first, the rest by number; at 375 the tile's *View* opens it, since nothing fits
+  beside.
 - **extraction-failed-prefilled-manual** — extraction fails entirely (scan, photo, unusual layout): manual form with whatever was salvaged pre-filled; the datasheet still attaches to the item (M01-40, §M01.4 edge cases).
   Each salvaged value is marked as salvaged, to be checked against the page.
 - **inline-add-without-manage-grant** — an inline add from a picker by someone without `F2.M01.manage-catalog` held outright (a Sales Executive): the form has no price field, and the caller's list shows that person no prices. One line at the act says the item can be picked without a price and someone who manages the catalog prices it later (§M01.4 Permissions; contract `createItem`). Neither accelerator shows: the datasheet upload and the import are catalog administration (`manage_catalog`).
 - **saved-and-selected-in-place** — on save the sheet closes and the new SKU is selected in place; the invoking flow continues (M01-39, §M01.4 behavior detail).
-  A toast confirms it, with no undo: adding destroys nothing, and archiving reverses it.
+  A toast confirms it, with no undo: adding destroys nothing, and archiving reverses it — *Added to
+  your catalog*, then *Selected on line 3.* The caller's list is one raised card of rows, each a kind
+  tile, the name, the spec line and the price (mono) or *No price set*; the new item is the first row,
+  tinted, with a tick, its spec line ending *Your own* (`M01-35`; the picker screens own every row's label), and *Add a missing panel* stays in view under the card (owner pick "L1 · One
+  card", canvas comment).
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `Loading`, `Empty`, `Error`, `extraction-failed-prefilled-manual`, and the discard confirm (a centred modal at 1536).
 
@@ -104,7 +127,7 @@ One item at a time, with a full typed per-kind spec set (M01-36: typed specs, ra
 
 ## Numbers carrying provenance
 
-Each carries its F8 provenance tier in the design:
+Only the extracted rated power carries an F8 tier, `estimated` (decision 4); the rest carry `M01-35`'s provenance label and no tier (`F8-01`):
 
 - **Extracted spec values** in the review state — presented for review and correction before the item is created; the created SKU carries **tenant-provided** provenance (M01-40, M01-35 enum).
 - **Manually entered spec and rate values** on the single form — tenant-provided provenance (M01-36, M01-35 enum).

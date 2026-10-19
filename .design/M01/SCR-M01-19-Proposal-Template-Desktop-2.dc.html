@@ -26,12 +26,42 @@
 html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
 a{color:var(--link);text-decoration:none}
 a:hover{color:var(--link-hover)}
+/* Several open overlays on one board can freeze the spring entry at frame 0 in a throttled frame. */
 [role="dialog"]{animation:none !important;transform:none !important}
 </style>
 </helmet>
-<x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MarketProvider" dc-props="{{ market }}" hint-size="1632px,2432px"><div style="box-sizing:border-box;width:1632px;height:2432px;overflow:hidden;padding:var(--sp-12);display:flex;flex-direction:column;gap:var(--sp-16);background:var(--canvas)"><div style="display:flex;flex-direction:column;gap:var(--sp-3);width:1536px"><span style="height:var(--sp-6);display:flex;align-items:center;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · live preview</span><div data-screen-label="Proposal template — live preview, 1536" data-frame="m19-n8" style="position:relative;flex:0 0 auto;width:1536px;height:1100px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ header }}" hint-size="100%,100%" style="height:100%"><div style="box-sizing:border-box;height:100%;display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) var(--screen-pad-desktop)"><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import><h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Proposal template</h1><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Saved and in force · last changed by you, {{ changedOn }}</span><p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">A Quick proposal goes out exactly as this template stands.</p></div><div style="flex:1;min-height:0;display:grid;grid-template-columns:minmax(0, 7fr) minmax(0, 4fr);column-gap:var(--sp-8);align-items:start"><div style="display:flex;flex-direction:column;gap:var(--sp-4);min-width:0;min-height:0;height:100%"><div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start"><div style="flex:0 0 auto;display:flex;flex-direction:column;gap:var(--sp-6)"><div data-region="sections"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" dc-props="{{ formCard }}" hint-size="100%,700px"><div style="display:flex;flex-direction:column;gap:var(--sp-4)"><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);min-height:var(--sp-10)"><span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Sections that print</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askSections }}" hint-size="44px,44px"></x-import></div><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">{{ sectionsChangedCount }}</span></div><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><sc-for list="{{ sectionsChanged }}" as="s" hint-placeholder-count="9"><sc-if value="{{ s.choice }}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Checkbox" dc-props="{{ s.box }}" hint-size="100%,64px"></x-import></sc-if><sc-if value="{{ s.floor }}"><div style="display:flex;align-items:flex-start;gap:calc(var(--sp-2) + var(--sp-0-5));padding:var(--sp-3) var(--sp-4);background:var(--fill);border-radius:var(--r-tile)"><span style="display:inline-flex;flex:0 0 auto;min-height:var(--sp-6);align-items:center"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="lock" size="md" tone="secondary" hint-size="20px,20px"></x-import></span><span style="display:flex;flex-direction:column;gap:var(--sp-0-5);min-width:0"><span style="font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);letter-spacing:var(--tr-h4);color:var(--text-primary)">{{ s.title }}</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">{{ s.desc }}</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ComplianceFloor" dc-props="{{ floorTerms }}" hint-size="100%,18px"></x-import></span></div></sc-if></sc-for></div></div></x-import></div><div data-region="terms"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" dc-props="{{ formCard }}" hint-size="100%,620px"><div style="display:flex;flex-direction:column;gap:var(--sp-4)"><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);min-height:var(--sp-10)"><span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Terms and conditions</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askTerms }}" hint-size="44px,44px"></x-import></div></div><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.LanguageSwitcher" dc-props="{{ langTerms }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NamedGap" dc-props="{{ gapTerms }}" hint-size="100%,20px"></x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RichText" dc-props="{{ rtTerms }}" hint-size="100%,420px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ provPages }}" hint-size="100%,18px"></x-import></div></x-import></div></div></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FormActionBar" dc-props="{{ actBarDesk }}" hint-size="100%,88px"></x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-3);min-width:0"><div data-region="preview" style="display:flex;flex-direction:column;gap:var(--sp-3)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PreviewFrame" dc-props="{{ pfDocChangedDesk }}" hint-size="100%,620px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DocumentPreview" dc-props="{{ docPreviewChanged }}" hint-size="480px,679px"></x-import></x-import><p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Proposals already sent keep the template they were built with.</p></div></div></div></div></x-import></div></div><div style="display:flex;flex-direction:column;gap:var(--sp-3);width:1536px"><span style="height:var(--sp-6);display:flex;align-items:center;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · timeline reorder · after the move</span><div data-screen-label="Proposal template — timeline reorder, 1536" data-frame="m19-n9" style="position:relative;flex:0 0 auto;width:1536px;height:1100px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ header }}" hint-size="100%,100%" style="height:100%"><div style="box-sizing:border-box;height:100%;display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-6) var(--screen-pad-desktop)"><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Breadcrumb" dc-props="{{ trailProps }}" hint-size="auto,24px"></x-import><h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Proposal template</h1><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Saved and in force · last changed by you, {{ changedOn }}</span><p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">A Quick proposal goes out exactly as this template stands.</p></div><div style="flex:1;min-height:0;display:grid;grid-template-columns:minmax(0, 7fr) minmax(0, 4fr);column-gap:var(--sp-8);align-items:start"><div style="display:flex;flex-direction:column;gap:var(--sp-4);min-width:0;min-height:0;height:100%"><div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end"><div style="flex:0 0 auto;display:flex;flex-direction:column;gap:var(--sp-6)"><div data-region="bank"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" dc-props="{{ formCard }}" hint-size="100%,330px"><div style="display:flex;flex-direction:column;gap:var(--sp-4)"><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);min-height:var(--sp-10)"><span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Bank details</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ askBank }}" hint-size="44px,44px"></x-import></div></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ bankGroup }}" hint-size="100%,120px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" dc-props="{{ bankName }}" hint-size="100%,24px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" dc-props="{{ bankAccountName }}" hint-size="100%,24px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" dc-props="{{ bankAccountNumber }}" hint-size="100%,24px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" dc-props="{{ bankIfsc }}" hint-size="100%,24px"></x-import></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ vsBank }}" hint-size="100%,18px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ profileRow }}" hint-size="100%,64px"></x-import></div></x-import></div><div data-region="timeline"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" dc-props="{{ formCard }}" hint-size="100%,1000px"><div style="display:flex;flex-direction:column;gap:var(--sp-4)"><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);min-height:var(--sp-10)"><span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Project timeline</span></div></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ReorderList" dc-props="{{ reorderMovedDesk }}" hint-size="100%,520px"></x-import><div style="display:flex"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnAddPhase }}" hint-size="auto,44px">Add a phase</x-import></div></div></x-import></div></div></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FormActionBar" dc-props="{{ actBarDesk }}" hint-size="100%,88px"></x-import></div><div style="display:flex;flex-direction:column;gap:var(--sp-3);min-width:0"><div data-region="preview" style="display:flex;flex-direction:column;gap:var(--sp-3)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PreviewFrame" dc-props="{{ pfDocDesk }}" hint-size="100%,620px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DocumentPreview" dc-props="{{ docPreviewDesk }}" hint-size="480px,679px"></x-import></x-import><p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Proposals already sent keep the template they were built with.</p></div></div></div></div></x-import></div></div></div></x-import>
+
+<x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MarketProvider" dc-props="{{ market }}" hint-size="100%,100%">
+<div style="box-sizing:border-box;width:1632px;height:4428px;overflow:hidden;padding:var(--sp-12);display:flex;flex-direction:column;gap:var(--sp-16);background:var(--canvas)">
+
+  <!-- 1536 · live preview · not saved yet -->
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:1536px">
+    <span style="height:var(--sp-6);display:flex;align-items:center;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · live preview · not saved yet</span>
+    <div data-screen-label="Proposal template — live preview, 1536" data-frame="m19-n8" style="position:relative;flex:0 0 auto;width:1536px;height:1232px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ header }}" style="height:100%" hint-size="100%,100%"><div style="box-sizing:border-box;height:100%;overflow:hidden;display:flex;gap:var(--sp-8);padding:var(--sp-6) var(--sp-8) 0"><nav aria-label="Settings" style="flex:0 0 248px;width:248px;display:flex;flex-direction:column;gap:var(--sp-1);padding-top:var(--sp-1)"><span style="display:block;padding:0 var(--sp-3) var(--sp-2);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Settings</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="people" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Profile & preferences</span></button><span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your team</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="people" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Team</span></button><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="shield" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Roles reference</span></button><span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your company</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="building" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Business profile</span></button><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="palette" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Branding</span></button><button type="button" aria-current="page" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:var(--accent-subtle);color:var(--accent);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="document" size="md" tone="accent" hint-size="20px,20px"></x-import><span style="min-width:0">Proposal template</span></button><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="calendar-clock" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Payment terms</span></button><span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you sell</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="package" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Catalog</span></button><span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Customer calls</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="headset" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Agent & voice</span></button><span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Money</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="wallet" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Collections</span></button><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="credit-card" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Billing</span></button><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="gauge" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Usage</span></button></nav><div style="flex:1;min-width:0;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 420px;grid-template-rows:auto minmax(0,1fr);column-gap:var(--sp-8);row-gap:var(--sp-4)"><div style="grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:var(--sp-1)"><h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Proposal template</h1><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Saved and in force · Rajesh Kulkarni, {{ changedOn }}</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">A Quick proposal goes out exactly as this template stands.</span></div><section data-region="stage" aria-label="The PDF your customer opens" style="grid-column:1;grid-row:2;min-height:0;overflow:hidden;border-radius:var(--r-xl);background:var(--canvas-sunken);padding:var(--sp-5) var(--sp-8) 0;display:flex;flex-direction:column;align-items:center;gap:var(--sp-4)"><div style="align-self:stretch;display:flex;align-items:center;gap:var(--sp-3)"><span style="flex:1;min-width:0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">The PDF your customer opens · sample customer and number</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnOpenFull }}" hint-size="auto,36px">Open full size</x-import></div><div style="flex:0 0 auto;width:480px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PreviewFrame" dc-props="{{ pfStageUnsaved }}" hint-size="480px,960px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DocumentPreview" dc-props="{{ docPreviewChanged }}" hint-size="480px,960px"></x-import></x-import></div></section><section data-region="editor" aria-label="Edit your proposal template" style="grid-column:2;grid-row:2;align-self:start;background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-5);display:flex;flex-direction:column;gap:var(--sp-4)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SegmentedControl" dc-props="{{ segSections }}" hint-size="100%,44px"></x-import><div style="display:flex;flex-direction:column;gap:var(--sp-2)"><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">{{ sectionsChangedCount }}</span><div style="display:flex;flex-direction:column"><sc-for list="{{ sectionsChanged }}" as="s" hint-placeholder-count="9"><sc-if value="{{ s.choice }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-1) 0;border-top:1px solid var(--line-soft)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ s.sw }}" hint-size="100%,52px"></x-import></div></sc-if><sc-if value="{{ s.floor }}"><div style="display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-1) 0;border-top:1px solid var(--line-soft)"><span style="flex:1;min-width:0;min-height:44px;display:flex;flex-direction:column;justify-content:center"><span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-medium);color:var(--text-primary)">{{ s.title }}</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">{{ s.desc }}</span></span><span style="flex:0 0 auto;display:inline-flex;align-items:center;gap:var(--sp-1);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="lock" size="sm" tone="secondary" hint-size="16px,16px"></x-import>Always prints</span></div></sc-if></sc-for></div></div><div style="height:1px;background:var(--line-soft);margin:0 calc(-1 * var(--sp-5))"></div><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ brandingRow }}" hint-size="100%,44px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ bankRow }}" hint-size="100%,44px"></x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FormActionBar" dc-props="{{ actBarDesk }}" hint-size="100%,104px"></x-import></section></div></div></x-import>
+    </div>
+  </div>
+
+  <!-- 1536 · timeline reorder at its long end · after the move -->
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:1536px">
+    <span style="height:var(--sp-6);display:flex;align-items:center;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · timeline reorder at its long end · after the move</span>
+    <div data-screen-label="Proposal template — timeline reorder at its long end, 1536" data-frame="m19-n9" style="position:relative;flex:0 0 auto;width:1536px;height:1632px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ header }}" style="height:100%" hint-size="100%,100%"><div style="box-sizing:border-box;height:100%;overflow:hidden;display:flex;gap:var(--sp-8);padding:var(--sp-6) var(--sp-8) 0"><nav aria-label="Settings" style="flex:0 0 248px;width:248px;display:flex;flex-direction:column;gap:var(--sp-1);padding-top:var(--sp-1)"><span style="display:block;padding:0 var(--sp-3) var(--sp-2);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Settings</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="people" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Profile & preferences</span></button><span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your team</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="people" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Team</span></button><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="shield" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Roles reference</span></button><span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your company</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="building" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Business profile</span></button><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="palette" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Branding</span></button><button type="button" aria-current="page" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:var(--accent-subtle);color:var(--accent);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="document" size="md" tone="accent" hint-size="20px,20px"></x-import><span style="min-width:0">Proposal template</span></button><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="calendar-clock" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Payment terms</span></button><span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you sell</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="package" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Catalog</span></button><span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Customer calls</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="headset" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Agent & voice</span></button><span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Money</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="wallet" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Collections</span></button><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="credit-card" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Billing</span></button><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="gauge" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Usage</span></button></nav><div style="flex:1;min-width:0;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 420px;grid-template-rows:auto minmax(0,1fr);column-gap:var(--sp-8);row-gap:var(--sp-4)"><div style="grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:var(--sp-1)"><h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Proposal template</h1><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Saved and in force · Rajesh Kulkarni, {{ changedOn }}</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">A Quick proposal goes out exactly as this template stands.</span></div><section data-region="stage" aria-label="The PDF your customer opens" style="grid-column:1;grid-row:2;min-height:0;overflow:hidden;border-radius:var(--r-xl);background:var(--canvas-sunken);padding:var(--sp-5) var(--sp-8) 0;display:flex;flex-direction:column;align-items:center;gap:var(--sp-4)"><div style="align-self:stretch;display:flex;align-items:center;gap:var(--sp-3)"><span style="flex:1;min-width:0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">The PDF your customer opens · sample customer and number</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnOpenFull }}" hint-size="auto,36px">Open full size</x-import></div><div style="flex:0 0 auto;width:480px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PreviewFrame" dc-props="{{ pfStage }}" hint-size="480px,960px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DocumentPreview" dc-props="{{ docPreview }}" hint-size="480px,960px"></x-import></x-import></div></section><section data-region="editor" aria-label="Edit your proposal template" style="grid-column:2;grid-row:2;align-self:start;background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-5);display:flex;flex-direction:column;gap:var(--sp-4)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SegmentedControl" dc-props="{{ segTimeline }}" hint-size="100%,44px"></x-import><div style="display:flex;flex-direction:column;gap:var(--sp-3)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ReorderList" dc-props="{{ reorderLongMovedDesk }}" hint-size="100%,640px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnAddPhase }}" hint-size="100%,36px">Add a phase</x-import></div><div style="height:1px;background:var(--line-soft);margin:0 calc(-1 * var(--sp-5))"></div><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ brandingRow }}" hint-size="100%,44px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ bankRow }}" hint-size="100%,44px"></x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FormActionBar" dc-props="{{ actBarDesk }}" hint-size="100%,104px"></x-import></section></div></div></x-import>
+    </div>
+  </div>
+
+  <!-- 1536 · full-size reader panel -->
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:1536px">
+    <span style="height:var(--sp-6);display:flex;align-items:center;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · full-size reader panel</span>
+    <div data-screen-label="Proposal template — full-size reader panel, 1536" data-frame="m19-m" style="position:relative;flex:0 0 auto;width:1536px;height:1232px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ header }}" style="height:100%" hint-size="100%,100%"><div style="box-sizing:border-box;height:100%;overflow:hidden;display:flex;gap:var(--sp-8);padding:var(--sp-6) var(--sp-8) 0"><nav aria-label="Settings" style="flex:0 0 248px;width:248px;display:flex;flex-direction:column;gap:var(--sp-1);padding-top:var(--sp-1)"><span style="display:block;padding:0 var(--sp-3) var(--sp-2);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Settings</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="people" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Profile & preferences</span></button><span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your team</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="people" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Team</span></button><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="shield" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Roles reference</span></button><span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your company</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="building" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Business profile</span></button><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="palette" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Branding</span></button><button type="button" aria-current="page" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:var(--accent-subtle);color:var(--accent);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="document" size="md" tone="accent" hint-size="20px,20px"></x-import><span style="min-width:0">Proposal template</span></button><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="calendar-clock" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Payment terms</span></button><span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you sell</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="package" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Catalog</span></button><span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Customer calls</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="headset" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Agent & voice</span></button><span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Money</span><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="wallet" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Collections</span></button><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="credit-card" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Billing</span></button><button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="gauge" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">Usage</span></button></nav><div style="flex:1;min-width:0;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 420px;grid-template-rows:auto minmax(0,1fr);column-gap:var(--sp-8);row-gap:var(--sp-4)"><div style="grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:var(--sp-1)"><h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Proposal template</h1><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Saved and in force · Rajesh Kulkarni, {{ changedOn }}</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">A Quick proposal goes out exactly as this template stands.</span></div><section data-region="stage" aria-label="The PDF your customer opens" style="grid-column:1;grid-row:2;min-height:0;overflow:hidden;border-radius:var(--r-xl);background:var(--canvas-sunken);padding:var(--sp-5) var(--sp-8) 0;display:flex;flex-direction:column;align-items:center;gap:var(--sp-4)"><div style="align-self:stretch;display:flex;align-items:center;gap:var(--sp-3)"><span style="flex:1;min-width:0;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">The PDF your customer opens · sample customer and number</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ btnOpenFull }}" hint-size="auto,36px">Open full size</x-import></div><div style="flex:0 0 auto;width:480px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PreviewFrame" dc-props="{{ pfStage }}" hint-size="480px,960px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DocumentPreview" dc-props="{{ docPreview }}" hint-size="480px,960px"></x-import></x-import></div></section><section data-region="editor" aria-label="Edit your proposal template" style="grid-column:2;grid-row:2;align-self:start;background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-5);display:flex;flex-direction:column;gap:var(--sp-4)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SegmentedControl" dc-props="{{ segCover }}" hint-size="100%,44px"></x-import><div style="display:flex;flex-direction:column;gap:var(--sp-4)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.LanguageSwitcher" dc-props="{{ langCover }}" hint-size="100%,72px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" dc-props="{{ docNameRow }}" hint-size="100%,24px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Textarea" dc-props="{{ taAbout }}" hint-size="100%,170px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ nfCapacity }}" hint-size="100%,96px"></x-import><div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));column-gap:var(--sp-3);align-items:start"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ nfCustomers }}" hint-size="100%,72px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.NumberField" dc-props="{{ nfCities }}" hint-size="100%,72px"></x-import></div></div><div style="height:1px;background:var(--line-soft);margin:0 calc(-1 * var(--sp-5))"></div><div style="display:flex;flex-direction:column;gap:var(--sp-1)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ brandingRow }}" hint-size="100%,44px"></x-import><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ bankRow }}" hint-size="100%,44px"></x-import></div><p style="margin:0;text-align:center;text-wrap:pretty;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">Proposals already sent keep the template they were built with.</p></section></div></div></x-import><div style="position:absolute;inset:0;z-index:50"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ panelFull }}" hint-size="100%,100%"><div style="height:100%;overflow:hidden"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DocumentPreview" dc-props="{{ docPreviewPanel }}" hint-size="560px,1100px"></x-import></div></x-import></div>
+    </div>
+  </div>
+
+</div>
+</x-import>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1632,"height":2432}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1632,"height":4428}}'>
 class Component extends DCLogic {
   /* Every value is a literal, so the board never moves: the one recorded date renders through the
      India pack, and no frame reads a clock. */
@@ -58,32 +88,14 @@ class Component extends DCLogic {
     const D = NS.DESTINATION_GLYPH;
     const g = (name, size, filled, tone) => h(NS.ShellGlyph, { name: name, size: size || "lg", filled: !!filled, tone: tone });
     const fmtDate = (iso) => NS.IN_FORMAT.date(iso);
-    const chevron = g("chevron-right", "md", false, "secondary");
     const button = (variant, words, extra) => h(NS.Button, Object.assign({ variant: variant, size: "md", onClick: this.noop }, extra || {}), words);
 
     /* ══ The shell: the EPC Owner's destinations (F7-48), More in view — Settings is reached from More. ══ */
-    const nav = {
-      value: "more", onChange: this.noop,
-      items: [
-        { key: "home", label: "Home", icon: g(D.home), activeIcon: g(D.home, "lg", true, "inverse") },
-        { key: "leads", label: "Leads", icon: g(D.leads), activeIcon: g(D.leads, "lg", true, "inverse") },
-        { key: "add", verb: true, label: "Add lead", icon: g("plus-circle"), onClick: this.noop },
-        { key: "projects", label: "Projects", icon: g(D.projects), activeIcon: g(D.projects, "lg", true, "inverse") },
-        { key: "more", label: "More", icon: g(D.more), activeIcon: g(D.more, "lg", true, "inverse") },
-      ],
-    };
     const account = (align) => h(NS.AccountMenu, {
       name: "Rajesh Kulkarni", triggerName: "Rajesh Kulkarni — account, grievance contact and sign out", menuLabel: "Account",
       grievanceLabel: "Grievance officer", signOutLabel: "Sign out",
       onGrievance: this.noop, onSignOut: this.noop, align: align,
     });
-    const topBar = {
-      title: "Proposal template", sticky: false,
-      leading: h(NS.IconButton, { label: "Back to settings", variant: "ghost", onClick: this.noop }, g("chevron-left", "lg", false, "primary")),
-      searchLabel: "Search", onSearchClick: this.noop,
-      notificationsLabel: "Notifications", onNotificationsClick: this.noop,
-      avatar: account("end"),
-    };
     const rail = h(NS.AppRail, {
       label: "Main", value: "more", onChange: this.noop,
       items: [
@@ -95,7 +107,7 @@ class Component extends DCLogic {
       footer: [{ key: "notifications", label: "Notifications", icon: g("bell"), onClick: this.noop }],
       avatar: account("start"),
     });
-    /* Whose HelioGrid this is and the one search; the way back is the page head's trail (SCR-SHELL-01 decision 8). */
+    /* Whose HelioGrid this is and the one search; the way back is the settings side list beside the page (G4). */
     const header = h(NS.AppHeader, {
       tenant: h("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
       search: h(NS.SearchField, { density: "functional", placeholder: "Name, phone or city", value: "", onChange: this.noop }),
@@ -105,9 +117,15 @@ class Component extends DCLogic {
     const NAME = "Suryodaya Solar Pvt Ltd";
     const letterhead = {
       tagline: "Rooftop solar since 2011",
-      lines: ["GSTIN 27AABCS1429P1ZQ", "+91 98200 41123", "suryodayasolar.in"],
+      lines: ["+91 98200 41123", "suryodayasolar.in"],
       footerNote: "Thank you for choosing Suryodaya Solar.",
     };
+
+    /* ══ The editor: one part's fields at a time, chosen by the switch named "Edit". ══ */
+    const PARTS = ["Cover", "Sections", "Terms", "Timeline"];
+    const seg = (value) => ({
+      ariaLabel: "Edit", options: PARTS.map((o) => ({ value: o, label: o })), value: value, onChange: this.noop, style: { width: "100%" },
+    });
 
     /* ══ The document's nine sections (PROPOSAL_SECTIONS), in its order, in the person's words ══ */
     const SECTIONS = [
@@ -115,37 +133,36 @@ class Component extends DCLogic {
       { id: "system", title: "Solar system", desc: "Size, type and price of your system." },
       { id: "performance", title: "Performance", desc: "Expected generation through the year." },
       { id: "financials", title: "Financials", desc: "Yearly and lifetime savings, payback." },
-      { id: "timeline", title: "Project timeline", desc: "The phases you set below, in order." },
-      { id: "payment_terms", title: "Payment terms", desc: "Your instalments, from Payment terms." },
+      { id: "timeline", title: "Project timeline", desc: "6 phases" },
+      { id: "payment_terms", title: "Payment terms", desc: "From Payment terms" },
       { id: "components", title: "Components", desc: "Every panel, inverter and part, by make." },
-      { id: "terms", title: "Terms and conditions", desc: "The terms you write below.", floor: true },
-      { id: "bank_details", title: "Bank details", desc: "Your account, from Business profile." },
+      { id: "terms", title: "Terms and conditions", desc: "The terms you write.", floor: true },
+      { id: "bank_details", title: "Bank details", desc: "From Business profile" },
     ];
     const OFF = { performance: true, components: true };
-    const OFF_CHANGED = { performance: true };
+    /* The live-preview change: Achievements switched off — the same change the 375 frame shows. */
+    const OFF_CHANGED = { performance: true, components: true, achievements: true };
     const optionalCount = SECTIONS.filter((s) => !s.floor).length;
     const countLine = (off) => (optionalCount - Object.keys(off).length) + " of " + optionalCount + " optional sections print";
 
-    /* THE SECTION ROW (D216): a Checkbox whose label carries the title and the description — the
-       build draws it with OptionCardGroup's multi-select mode. The terms row is the floor: no
-       control, the lock in the control's column, and the floor named. */
-    const rowLabel = (s) => h("span", {
-      style: { display: "flex", flexDirection: "column", gap: "var(--sp-0-5)", minWidth: 0 },
+    /* THE SECTION ROW: a Switch whose label carries the title and the description, the toggle at the
+       row's end. The terms row is the floor: no control — the lock and "Always prints" stand in its place. */
+    const rowWords = (s) => h("span", {
+      style: { display: "flex", flexDirection: "column", minWidth: 0, flex: 1, textAlign: "left" },
     }, [
-      h("span", { key: "t", style: { fontSize: "var(--fs-body)", lineHeight: "var(--lh-body)", fontWeight: "var(--fw-bold)", letterSpacing: "var(--tr-h4)", color: "var(--text-primary)" } }, s.title),
+      h("span", { key: "t", style: { fontSize: "var(--fs-body-sm)", lineHeight: "var(--lh-body-sm)", fontWeight: "var(--fw-medium)", color: "var(--text-primary)" } }, s.title),
       h("span", { key: "d", style: { fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", fontWeight: "var(--fw-regular)", color: "var(--text-secondary)", textWrap: "pretty" } }, s.desc),
     ]);
-    const rowStyle = {
-      display: "flex", alignItems: "flex-start", gap: "calc(var(--sp-2) + var(--sp-0-5))", width: "100%", boxSizing: "border-box",
-      padding: "var(--sp-3) var(--sp-4)", background: "var(--fill)", boxShadow: "none", borderRadius: "var(--r-tile)",
-    };
-    const sectionRows = (off, pfx) => SECTIONS.map((s) => ({
+    const sectionRows = (off) => SECTIONS.map((s) => ({
       choice: !s.floor, floor: !!s.floor, title: s.title, desc: s.desc,
-      box: s.floor ? null : { id: pfx + s.id, checked: !off[s.id], onChange: this.noop, label: rowLabel(s), style: rowStyle },
+      sw: s.floor ? null : {
+        checked: !off[s.id], onChange: this.noop, label: rowWords(s),
+        style: { flexDirection: "row-reverse", justifyContent: "space-between", flex: 1, minWidth: 0 },
+      },
     }));
     const docSections = (off) => SECTIONS.map((s) => ({ label: s.title, included: !!s.floor || !off[s.id] }));
 
-    /* ══ Per-language authoring: a language choice on each editor, a missing version named ══ */
+    /* ══ Per-language authoring: the strip names the language in its tablist, with no overline ══ */
     const LANGS = (hi, mr) => [
       { code: "en", label: "English", state: "authored" },
       { code: "hi", label: "Hindi", state: hi ? "authored" : "empty" },
@@ -153,9 +170,8 @@ class Component extends DCLogic {
     ];
     const switcher = (hi, mr) => ({
       languages: LANGS(hi, mr), value: "en", onChange: this.noop,
-      label: "Language", summary: "", showCounts: false, density: "functional",
+      label: "Language", labelHidden: true, summary: "", showCounts: false, density: "functional",
     });
-    const missing = (words) => ({ gap: words, scale: "field" });
 
     /* ══ The tenant's own terms — a block list, the builder's own content shape ══ */
     const sp = (text) => ({ text: text });
@@ -179,22 +195,10 @@ class Component extends DCLogic {
         { type: "p", spans: [sp("Indian law applies, and the courts at Pune have jurisdiction.")] },
       ],
     };
-    /* The platform's terms: DEFAULT_TERMS.en, word for word (packages/domain, proposal-template-defaults). */
-    const TERMS_PLATFORM = {
-      version: 1,
-      blocks: [
-        { type: "p", spans: [sp("This proposal is valid until the date stated on it. Prices and taxes are as itemised in it.")] },
-        { type: "p", spans: [sp("Payment falls due in the tranches listed in the payment schedule. Work at each stage starts once the tranche for that stage is received.")] },
-        { type: "p", spans: [sp("The installation follows the design agreed in this proposal. A change to the design after acceptance may change the price, and a revised proposal is issued before work continues.")] },
-        { type: "p", spans: [sp("Equipment warranties are the manufacturers’ and are handed over at commissioning.")] },
-      ],
-    };
-    const pages = (value) => h(NS.PageEstimate, { metrics: NS.RichText.measure(value), max: 3 });
-    const richText = (value, label) => ({
-      label: label, value: value, onChange: this.noop, onCommit: this.noop, minHeight: 200, pageEstimate: pages(value),
-    });
 
-    /* ══ The timeline: the tenant's six phases, and the platform's eight (DEFAULT_TIMELINE_PHASES.en) ══ */
+    const pages = (value) => h(NS.PageEstimate, { metrics: NS.RichText.measure(value), max: 3 });
+
+    /* ══ The timeline: the tenant's six phases, and the same list at its long end (eight) ══ */
     const PHASES = [
       { id: "survey", title: "Site survey and design", note: "We measure your roof, check shading and finalise the layout you approved." },
       { id: "discom", title: "DISCOM application", note: "We file your net-metering application and follow it up until it is sanctioned." },
@@ -203,41 +207,34 @@ class Component extends DCLogic {
       { id: "meter", title: "Net meter and commissioning", note: "The DISCOM fits your net meter, we test the plant and hand over the readings." },
       { id: "subsidy", title: "Subsidy claim", note: "We file your PM Surya Ghar claim and share the acknowledgement with you." },
     ];
-    const PHASES_MOVED = [PHASES[0], PHASES[2], PHASES[1], PHASES[3], PHASES[4], PHASES[5]];
-    const PHASES_PLATFORM = [
-      { id: "ordered", title: "Material ordered", note: "Panels, inverter and structure are ordered for your site." },
-      { id: "dispatched", title: "Dispatched", note: "Materials leave the warehouse for your site." },
-      { id: "installation", title: "Installation", note: "The structure, panels and wiring are installed on your roof." },
-      { id: "metering", title: "Electrical work and metering", note: "The inverter is connected and the meter application is filed." },
-      { id: "inspection", title: "Utility inspection", note: "The electricity utility inspects and approves the installation." },
-      { id: "commissioning", title: "Commissioning", note: "The system is switched on and starts generating." },
-      { id: "incentive", title: "Incentive claim", note: "The incentive claim is filed on your behalf." },
+    const PHASES_LONG = PHASES.concat([
+      { id: "inspect", title: "Utility inspection", note: "The electricity utility inspects and approves the installation." },
       { id: "handover", title: "Handover", note: "Documents, warranties and the monitoring login are handed over to you." },
-    ];
+    ]);
+    /* After the move: Material dispatch went up one, above DISCOM application. */
+    const PHASES_LONG_MOVED = [PHASES_LONG[0], PHASES_LONG[2], PHASES_LONG[1]].concat(PHASES_LONG.slice(3));
     const phaseTitle = (p) => h("span", {
       key: "t", style: { fontSize: "var(--fs-body-sm)", lineHeight: "var(--lh-body-sm)", fontWeight: "var(--fw-medium)", color: "var(--text-primary)", textWrap: "pretty" },
     }, p.title);
     const phaseNote = (p) => h("span", {
       key: "n", style: { fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)", textWrap: "pretty" },
     }, p.note);
-    /* Both arrangements carry a ghost Edit: the row is a listed surface, so a white control on it
-       would disappear (F7-15). */
+    /* One line of icons under each phase's words (controls "foot"): the phase's own act, the pencil, at
+       the start; the arrows and delete at the end. Its name says which phase. */
+    const pencil = h(NS.Icon, { size: "sm" }, h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" },
+      ["M12 20h9", "M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"].map((d, i) => h("path", { key: i, d: d }))));
+    const editPhase = (p) => h(NS.IconButton, { label: "Edit " + p.title, size: 40, variant: "ghost", onClick: this.noop }, pencil);
     const phaseStack = (p) => h("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-1)", minWidth: 0 } }, [
       phaseTitle(p), phaseNote(p),
-      h("div", { key: "e", style: { display: "flex", marginLeft: "calc(-1 * var(--sp-4))" } }, h(NS.Button, { variant: "ghost", size: "sm", onClick: this.noop }, "Edit")),
     ]);
-    const phaseRow = (p) => h("div", { style: { display: "flex", alignItems: "center", gap: "var(--sp-4)", minWidth: 0 } }, [
-      h("div", { key: "t", style: { display: "flex", flexDirection: "column", gap: "var(--sp-0-5)", minWidth: 0, flex: 1 } }, [phaseTitle(p), phaseNote(p)]),
-      h(NS.Button, { key: "e", variant: "ghost", size: "sm", onClick: this.noop }, "Edit"),
-    ]);
-    const reorder = (items, controls) => ({
+    const reorder = (items) => ({
       items: items, keyOf: (p) => p.id, labelOf: (p) => p.title,
-      label: "Project phases", itemNoun: "phases", density: "functional", controls: controls, minItems: 1,
-      onMove: this.noop, onDelete: this.noop, renderItem: controls === "row" ? phaseRow : phaseStack,
+      label: "Project phases", itemNoun: "phases", density: "functional", controls: "foot", minItems: 1,
+      onMove: this.noop, onDelete: this.noop, renderItem: phaseStack, actionOf: editPhase,
     });
 
-    /* ══ The preview: the real document of a real tenant (sample={false}) — the customer and the
-       number are named as a sample on the page; no capacity is printed, so nothing untiered is. ══ */
+    /* ══ The preview: the real document of a real tenant (sample={false}) — the customer and the number are
+       named as a sample in the stage's caption; no capacity is printed, so nothing untiered is. ══ */
     const docBase = {
       sample: false,
       brandColor: "#0D7A4F", companyName: NAME, logoSrc: "assets/tenant-suryodaya-logo.svg",
@@ -247,173 +244,100 @@ class Component extends DCLogic {
       docTitle: "Proposal", docNumber: "PRO-2026-0431", docDate: "2026-08-30",
       parts: ["cover", "sections", "terms"], fit: "content", caption: "",
     };
-    const doc = (width, off, terms) => Object.assign({}, docBase, { width: width, sections: docSections(off), terms: terms || TERMS });
-    const openFull = button("ghost", "Open full size", { size: "sm" });
-    const CAPTION = "The PDF your customer opens · sample customer and number";
-    const frame = (maxHeight, extra) => Object.assign({
-      label: "Proposal", surface: "sheet", designWidth: 480, maxHeight: maxHeight, caption: CAPTION, action: openFull,
-    }, extra || {});
+    const doc = (width, off) => Object.assign({}, docBase, { width: width, sections: docSections(off), terms: TERMS });
+    /* At 1536 the stage holds the document whole at 480 wide: no crop. */
+    const stage = (over) => Object.assign({ surface: "sheet", designWidth: 480 }, over || {});
 
-    const askPages = (label, title, list) => ({ label: label, title: title, pages: list, density: "functional", placement: "bottom" });
-    const platform = (layerName, source, fieldName) => ({
-      level: "inherited", layerName: layerName, source: source, fieldName: fieldName,
-      onOverride: this.noop, overrideLabel: "Write our own", size: 12,
+    /* The two single write-points this screen shows and never edits. */
+    const linkRow = (icon, title, subtitle) => ({
+      icon: icon, title: title, subtitle: subtitle, trailing: g("chevron-right", "md"),
+      onClick: this.noop, density: "functional",
+      style: { background: "transparent", boxShadow: "none", paddingLeft: 0, paddingRight: 0 },
     });
-
-    const actBarConsequence = "Applies to every new proposal, Quick ones included.";
-    const sheetActions = (cancel, save) => h(NS.SheetActions, null, button("ghost", cancel, { key: "c" }), button("primary", save, { key: "s" }));
 
     const vals = {
       market: { pack: NS.IN_PACK },
       noop: this.noop,
-      topBar: topBar, nav: nav, rail: rail, header: header,
-      trailProps: { items: [{ key: "settings", label: "Settings", onClick: this.noop }, { key: "here", label: "Proposal template" }] },
+      rail: rail, header: header,
       changedOn: fmtDate("2026-08-28"),
-      formCard: { density: "functional", style: { background: "var(--surface-form)" } },
-      formCardFill: { density: "functional", style: { background: "var(--surface-form)", height: "100%", boxSizing: "border-box" } },
 
-      /* ── the cover: M06-08's cover block ── */
-      askCover: askPages("About the cover", "Cover", [
-        "Your logo, colour and letterhead come from Branding.",
-        "Every customer gets a document called Proposal, in whatever language they read.",
-      ]),
-      docNameGroup: { label: "Document", density: "functional" },
-      docNameRow: { label: "Document name", value: "Proposal", density: "functional" },
+      /* ── the stage ── */
+      pfStage: stage(),
+      pfStageUnsaved: stage({ note: "Not saved yet" }),
+      btnOpenFull: { variant: "ghost", size: "sm", onClick: this.noop },
+      docPreview: doc(480, OFF),
+      docPreviewChanged: doc(480, OFF_CHANGED),
+
+      /* ── the editor's switch ── */
+      segCover: seg("Cover"),
+      segSections: seg("Sections"),
+      segTerms: seg("Terms"),
+      segTimeline: seg("Timeline"),
+
+      /* ── Cover: the language, the name stated as content (decision 2), the words, the three counts ── */
       langCover: switcher(false, false),
-      gapCover: missing("No Hindi or Marathi yet · prints in English"),
-      langCoverEmpty: switcher(false, false),
+      docNameRow: { label: "Document name", value: "Proposal", density: "functional" },
       taAbout: {
-        label: "About your company", density: "functional", rows: 4, maxLength: 2000, onChange: this.noop,
+        label: "About your company", density: "functional", rows: 5, maxLength: 2000, onChange: this.noop,
         value: "Suryodaya Solar has designed and installed rooftop solar across Pune and Nashik since 2011 — homes, housing societies and small factories. One team surveys, designs, installs and services every plant.",
       },
-      taAboutEmpty: {
-        label: "About your company", density: "functional", rows: 3, maxLength: 2000, onChange: this.noop, value: "",
-        attribution: platform("HelioGrid's cover", "name and logo only", "Cover"),
-      },
-      nfCapacity: { label: "Total capacity installed", unit: "kW", value: 1840, min: 0, steppers: false, density: "functional", onCommit: this.noop },
+      /* A power figure keeps its tier on its own field; the two counts beside it carry none (F8-01).
+         The capacity has its own full-width line so its label and tier each read on one line. */
+      nfCapacity: { label: "Total capacity installed", unit: "kW", value: 1840, min: 0, steppers: false, density: "functional", onCommit: this.noop, provenance: { tier: "estimated", source: "declared by you", size: 12 } },
       nfCustomers: { label: "Happy customers", value: 620, min: 0, precision: 0, steppers: false, density: "functional", onCommit: this.noop },
       nfCities: { label: "Cities served", value: 14, min: 0, precision: 0, steppers: false, density: "functional", onCommit: this.noop },
-      nfCapacityEmpty: { label: "Total capacity installed", unit: "kW", min: 0, steppers: false, density: "functional", onCommit: this.noop },
-      nfCustomersEmpty: { label: "Happy customers", min: 0, precision: 0, steppers: false, density: "functional", onCommit: this.noop },
-      nfCitiesEmpty: { label: "Cities served", min: 0, precision: 0, steppers: false, density: "functional", onCommit: this.noop },
-      provCounts: { tier: "estimated", source: "declared by you", size: 12 },
-      brandingRow: {
-        icon: g("palette", "md", false, "accent"), title: "Branding", subtitle: "Logo, colour and letterhead",
-        trailing: chevron, onClick: this.noop, density: "functional",
-      },
 
-      /* ── the sections ── */
-      askSections: askPages("About sections", "Sections", [
-        "Sections print in this order on every proposal. Your team can change what prints on one proposal.",
-      ]),
-      sections: sectionRows(OFF, "s-"),
-      sectionsCount: countLine(OFF),
-      sectionsAll: sectionRows({}, "a-"),
-      sectionsAllCount: countLine({}),
-      sectionsChanged: sectionRows(OFF_CHANGED, "c-"),
-      sectionsChangedCount: countLine(OFF_CHANGED),
-      floorTerms: { variant: "line", title: "Always prints", floor: "Every proposal carries its terms", size: 12 },
-      vsSections: platform("HelioGrid's standard", "every section prints", "Sections that print"),
-
-      /* ── the terms ── */
-      askTerms: askPages("About the terms", "Terms and conditions", [
-        "Your team can edit the terms on one proposal without changing these.",
-      ]),
+      /* ── Terms: the language, then the builder's own editor with its page estimate ── */
       langTerms: switcher(true, false),
-      gapTerms: missing("No Marathi version yet · prints in English"),
-      langTermsPlatform: switcher(true, true),
-      rtTerms: richText(TERMS, "Terms in English"),
-      rtTermsPlatform: richText(TERMS_PLATFORM, "Terms in English"),
-      provPages: { tier: "estimated", source: "counted from this text", size: 12 },
-      vsTerms: platform("HelioGrid's standard terms", "English, Hindi and Marathi", "Terms and conditions"),
+      rtTerms: { label: "Terms in English", value: TERMS, onChange: this.noop, onCommit: this.noop, minHeight: 200, pageEstimate: pages(TERMS) },
 
-      /* ── bank details: M06-17's four facts, written in the business profile (M01-31) ── */
-      askBank: askPages("About bank details", "Bank details", [
-        "Your account is written once, in your business profile, so proposals and invoices always show the same one.",
-      ]),
-      bankGroup: { label: "Bank details", density: "functional" },
-      bankName: { label: "Bank name", value: "HDFC Bank", density: "functional" },
-      bankAccountName: { label: "Account name", value: NAME, density: "functional" },
-      bankAccountNumber: { label: "Account number", value: h("span", { style: { fontFamily: "var(--font-mono)" } }, "50200 0472 88913"), density: "functional" },
-      bankIfsc: { label: "IFSC", value: h("span", { style: { fontFamily: "var(--font-mono)" } }, "HDFC0001204"), density: "functional" },
-      vsBank: { level: "own", layerName: "Your business profile", source: "written " + fmtDate("2026-07-14"), size: 12 },
-      profileRow: {
-        icon: g("building", "md", false, "accent"), title: "Business profile", subtitle: "Where your account is written",
-        trailing: chevron, onClick: this.noop, density: "functional",
+      /* ── Sections ── */
+      sections: sectionRows(OFF),
+      sectionsCount: countLine(OFF),
+      sectionsChanged: sectionRows(OFF_CHANGED),
+      sectionsChangedCount: countLine(OFF_CHANGED),
+
+      /* ── Timeline ── */
+      reorderDesk: reorder(PHASES),
+      reorderLongMovedDesk: reorder(PHASES_LONG_MOVED),
+      btnAddPhase: { variant: "secondary", size: "sm", onClick: this.noop },
+
+      /* ── the editor's foot: the two rows out ── */
+      brandingRow: linkRow(g("palette", "md", false, "secondary"), "Logo, colour and letterhead", "From Branding"),
+      bankRow: linkRow(g("building", "md", false, "secondary"), "Bank details", "HDFC Bank · from Business profile"),
+
+      /* At 1536 the act bar is the editor card's foot: the card's hairline above, its corners below. */
+      actBarDesk: {
+        placement: "footer", consequence: "Applies to every new proposal, Quick ones included.",
+        saveLabel: "Save template", onSave: this.noop, discardLabel: "Discard changes", onDiscard: this.noop,
+        /* The consequence is centred over the acts it qualifies (G1). */
+        style: {
+          alignItems: "center", textAlign: "center", boxShadow: "none", borderTop: "1px solid var(--line-soft)",
+          margin: "0 calc(-1 * var(--sp-5)) calc(-1 * var(--sp-5))", borderRadius: "0 0 var(--r-tile) var(--r-tile)",
+        },
       },
 
-      /* ── the timeline ── */
-      reorder: reorder(PHASES, "stack"),
-      reorderDesk: reorder(PHASES, "row"),
-      reorderMoved: reorder(PHASES_MOVED, "stack"),
-      reorderMovedDesk: reorder(PHASES_MOVED, "row"),
-      reorderPlatform: reorder(PHASES_PLATFORM, "stack"),
-      vsPhases: platform("HelioGrid's standard phases", "English, Hindi and Marathi", "Project timeline"),
-      btnAddPhase: { variant: "secondary", size: "md", onClick: this.noop },
-
-      /* ── the phase editor: a sheet at 375, the non-modal side panel at 1536 (F7-21) ── */
-      sheetPhase: {
-        open: true, inset: true, panelAbove: 720, size: "auto", density: "functional",
-        overline: "Project timeline", title: "Site survey and design", subtitle: "Phase 1 of 6",
-        onClose: this.noop, showClose: true, footer: sheetActions("Cancel", "Save phase"),
-      },
+      /* ── the phase editor: the non-modal side panel at 1536 (F7-21) ── */
       panelPhase: {
         open: true, inset: true, panelAbove: 0, width: 480, modal: false, density: "functional",
-        overline: "Project timeline", title: "Site survey and design", subtitle: "Phase 1 of 6",
-        onClose: this.noop, showClose: true, footer: sheetActions("Cancel", "Save phase"),
+        title: "Site survey and design", subtitle: "Phase 1 of 6",
+        onClose: this.noop, showClose: true,
+        footer: h(NS.SheetActions, null, button("ghost", "Cancel", { key: "c" }), button("primary", "Save phase", { key: "s" })),
       },
       langPhase: switcher(false, false),
-      gapPhase: missing("No Hindi or Marathi yet · prints in English"),
       inPhaseName: { label: "Phase name", value: "Site survey and design", onChange: this.noop, density: "functional" },
       taPhaseNote: {
         label: "What happens in this phase", value: "We measure your roof, check shading and finalise the layout you approved.",
         onChange: this.noop, density: "functional", rows: 3, maxLength: 2000,
       },
 
-      /* ── the preview ── */
-      pfDoc: frame(370),
-      docPreview: doc(480, OFF),
-      pfDocDesk: frame(680),
-      docPreviewDesk: doc(480, OFF),
-      pfDocChanged: frame(400, { note: "Not saved yet" }),
-      pfDocChangedDesk: frame(680, { note: "Not saved yet" }),
-      docPreviewChanged: doc(480, OFF_CHANGED),
-      pfDocEmpty: frame(370),
-      docPreviewEmpty: doc(480, {}, TERMS_PLATFORM),
-      pfLoading: Object.assign(frame(370), { loading: true, loadingLabel: "Loading the proposal preview", action: undefined }),
-      sheetFull: {
-        open: true, inset: true, panelAbove: 720, size: "full", density: "functional",
-        overline: "Proposal template · preview", title: "Proposal", subtitle: "Sample customer and proposal number",
-        onClose: this.noop, showClose: true, sheetProps: { bodyStyle: { overflow: "hidden" } },
-      },
-      docPreviewFull: doc(480, OFF),
+      /* ── the full-size reader at 1536: a non-modal side panel ── */
       panelFull: {
         open: true, inset: true, panelAbove: 0, width: 720, modal: false, density: "functional",
-        overline: "Proposal template · preview", title: "Proposal", subtitle: "Sample customer and proposal number",
+        title: "Proposal", subtitle: "Sample customer and proposal number",
         onClose: this.noop, showClose: true,
       },
       docPreviewPanel: doc(560, OFF),
-
-      /* ── states ── */
-      loadingBars: { label: "Loading your proposal template", bars: ["panel", "row", "row", "row", "row"] },
-      bannerTeach: { kind: "state", tone: "info", density: "functional", title: "You're on HelioGrid's standard template" },
-      bannerSaveFailed: { kind: "state", tone: "danger", density: "functional", title: "Your template didn't save" },
-      actBar: { placement: "sticky", consequence: actBarConsequence, saveLabel: "Save template", onSave: this.noop, discardLabel: "Discard changes", onDiscard: this.noop },
-      actBarDesk: { placement: "footer", consequence: actBarConsequence, saveLabel: "Save template", onSave: this.noop, discardLabel: "Discard changes", onDiscard: this.noop },
-      modalDeletePhase: {
-        open: true, inset: true, tone: "danger", density: "functional", size: "sm",
-        overline: "Project timeline", title: "Delete Material dispatch?",
-        description: "Until you save, Discard changes brings it back.",
-        onClose: this.noop, showClose: true, dismissible: true,
-        footer: h(NS.SheetActions, null, button("ghost", "Keep it", { key: "k" }), button("destructive", "Delete phase", { key: "d" })),
-      },
-      modalLeave: {
-        open: true, inset: true, tone: "warning", density: "functional", size: "sm",
-        title: "Leave without saving?",
-        description: "Your changes are lost, and the saved template stays in force.",
-        onClose: this.noop, showClose: true, dismissible: true,
-        footer: h(NS.SheetActions, null, button("ghost", "Keep editing", { key: "k" }), button("destructive", "Leave", { key: "l" })),
-      },
     };
 
     this._vals = vals;

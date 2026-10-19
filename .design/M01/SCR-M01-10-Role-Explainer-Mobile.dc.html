@@ -35,14 +35,13 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Role explainer — first-run" data-frame="m-first-run" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
-      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-6) var(--screen-pad-mobile)">
         <div style="display:flex;align-items:center;gap:var(--sp-3)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
         </div>
-        <div style="flex:1;min-height:0;overflow:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-4) 0 var(--sp-2)">
           <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Your role at Suryodaya Solar</h1>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" hint-size="100%,420px">
-            <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" dc-props="{{ roleCardFrame }}" hint-size="100%,420px">
+            <div style="flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:var(--sp-5)">
               <div style="display:flex;align-items:flex-start;gap:var(--sp-3)">
                 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconCircle" hint-size="40px,40px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></x-import></x-import>
                 <div style="display:flex;flex-direction:column;gap:var(--sp-0-5);min-width:0">
@@ -50,71 +49,72 @@ a:hover{color:var(--link-hover)}
                   <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Last set by Rajesh Kulkarni</span>
                 </div>
               </div>
-              <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-                <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you can do</span>
-                <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See your own leads and follow-ups</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Add and edit leads</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Survey a site</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Build and edit proposals, discounts included</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Send proposals to customers</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Mark a lead won or lost</span>
-                  </li>
-                </ul>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-                <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you cannot do</span>
-                <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Assign leads to others</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Delete leads</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Update project stages</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Record payments</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See reports beyond your own</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Change company settings</span>
-                  </li>
-                </ul>
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ScopeNote" holder="Rajesh Kulkarni (owner)" acts="{{ ownerActs }}" message="Ask him when you need one." hint-size="100%,72px"></x-import>
+              <div role="region" aria-label="What you can and cannot do" style="flex:1 1 auto;min-height:0;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:var(--sp-5)">
+                <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+                  <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you can do</span>
+                  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See your own leads and follow-ups</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Add and edit leads</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Survey a site</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Build and edit proposals, discounts included</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Send proposals to customers</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Mark a lead won or lost</span>
+                    </li>
+                  </ul>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+                  <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you cannot do</span>
+                  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Assign leads to others</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Delete leads</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Update project stages</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Record payments</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See reports beyond your own</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Change company settings</span>
+                    </li>
+                  </ul>
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ScopeNote" holder="Rajesh Kulkarni (owner)" acts="{{ ownerActs }}" message="Ask him when you need one." variant="panel" dc-props="{{ ownerNote }}" hint-size="100%,92px"></x-import>
+                </div>
               </div>
             </div>
           </x-import>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
+        <div style="flex-shrink:0;display:flex;flex-direction:column;gap:var(--sp-3)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="true" hint-size="100%,52px">Go to my day</x-import>
-          <span style="text-align:center;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Open this card again from Profile &amp; preferences.</span>
+          <span style="text-align:center;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Reopen anytime from Profile &amp; preferences.</span>
         </div>
       </div>
     </div>
@@ -125,14 +125,13 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Role explainer — loading" data-frame="m-loading" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
-      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-6) var(--screen-pad-mobile)">
         <div style="display:flex;align-items:center;gap:var(--sp-3)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
         </div>
-        <div style="flex:1;min-height:0;overflow:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-4) 0 var(--sp-2)">
           <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Your role at Suryodaya Solar</h1>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" hint-size="100%,420px">
-            <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" dc-props="{{ roleCardFrame }}" hint-size="100%,420px">
+            <div style="flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:var(--sp-5)">
               <div style="display:flex;align-items:flex-start;gap:var(--sp-3)">
                 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconCircle" hint-size="40px,40px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></x-import></x-import>
                 <div style="display:flex;flex-direction:column;gap:var(--sp-0-5);min-width:0">
@@ -140,35 +139,43 @@ a:hover{color:var(--link-hover)}
                   <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Last set by Rajesh Kulkarni</span>
                 </div>
               </div>
-              <div role="status" aria-busy="true" aria-label="Loading what your role can and cannot do" style="display:flex;flex-direction:column;gap:var(--sp-5)">
+              <div role="status" aria-busy="true" aria-label="Loading what your role can and cannot do" style="flex:1 1 auto;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:var(--sp-5)">
                 <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
                   <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you can do</span>
-                  <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-                    <div style="height:var(--sp-5);display:flex;align-items:center"><span aria-hidden="true" style="display:block;height:var(--sp-3);width:78%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></div>
-                    <div style="height:var(--sp-5);display:flex;align-items:center"><span aria-hidden="true" style="display:block;height:var(--sp-3);width:64%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></div>
-                    <div style="height:var(--sp-5);display:flex;align-items:center"><span aria-hidden="true" style="display:block;height:var(--sp-3);width:72%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></div>
-                    <div style="height:var(--sp-5);display:flex;align-items:center"><span aria-hidden="true" style="display:block;height:var(--sp-3);width:69%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></div>
-                  </div>
+                  <ul aria-hidden="true" style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
+                    <li style="display:flex;align-items:center;gap:var(--sp-3);height:var(--sp-5)"><span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span><span style="display:block;height:var(--sp-3);width:64%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></li>
+                    <li style="display:flex;align-items:center;gap:var(--sp-3);height:var(--sp-5)"><span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span><span style="display:block;height:var(--sp-3);width:38%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></li>
+                    <li style="display:flex;align-items:center;gap:var(--sp-3);height:var(--sp-5)"><span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span><span style="display:block;height:var(--sp-3);width:30%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></li>
+                    <li style="display:flex;align-items:center;gap:var(--sp-3);height:var(--sp-5)"><span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span><span style="display:block;height:var(--sp-3);width:86%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></li>
+                    <li style="display:flex;align-items:center;gap:var(--sp-3);height:var(--sp-5)"><span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span><span style="display:block;height:var(--sp-3);width:62%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></li>
+                    <li style="display:flex;align-items:center;gap:var(--sp-3);height:var(--sp-5)"><span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span><span style="display:block;height:var(--sp-3);width:50%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></li>
+                  </ul>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
                   <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you cannot do</span>
-                  <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
-                    <div style="height:var(--sp-5);display:flex;align-items:center"><span aria-hidden="true" style="display:block;height:var(--sp-3);width:48%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></div>
-                    <div style="height:var(--sp-5);display:flex;align-items:center"><span aria-hidden="true" style="display:block;height:var(--sp-3);width:94%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></div>
-                    <div style="height:var(--sp-5);display:flex;align-items:center"><span aria-hidden="true" style="display:block;height:var(--sp-3);width:58%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></div>
-                  </div>
-                  <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding-top:var(--sp-2)">
-                    <div style="height:var(--sp-5);display:flex;align-items:center"><span aria-hidden="true" style="display:block;height:var(--sp-3);width:88%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></div>
-                    <div style="height:var(--sp-5);display:flex;align-items:center"><span aria-hidden="true" style="display:block;height:var(--sp-3);width:74%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></div>
+                  <ul aria-hidden="true" style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
+                    <li style="display:flex;align-items:center;gap:var(--sp-3);height:var(--sp-5)"><span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span><span style="display:block;height:var(--sp-3);width:48%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></li>
+                    <li style="display:flex;align-items:center;gap:var(--sp-3);height:var(--sp-5)"><span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span><span style="display:block;height:var(--sp-3);width:30%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></li>
+                    <li style="display:flex;align-items:center;gap:var(--sp-3);height:var(--sp-5)"><span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span><span style="display:block;height:var(--sp-3);width:52%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></li>
+                    <li style="display:flex;align-items:center;gap:var(--sp-3);height:var(--sp-5)"><span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span><span style="display:block;height:var(--sp-3);width:42%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></li>
+                    <li style="display:flex;align-items:center;gap:var(--sp-3);height:var(--sp-5)"><span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span><span style="display:block;height:var(--sp-3);width:60%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></li>
+                    <li style="display:flex;align-items:center;gap:var(--sp-3);height:var(--sp-5)"><span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span><span style="display:block;height:var(--sp-3);width:56%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></li>
+                  </ul>
+                  <div aria-hidden="true" style="display:flex;align-items:flex-start;gap:var(--sp-3);margin-top:var(--sp-2);padding:calc(var(--sp-3) + var(--sp-0-5));border-radius:var(--r-sm);background:var(--info-bg)">
+                    <span style="flex-shrink:0;width:var(--sp-4);height:var(--sp-4);border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span>
+                    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+                      <div style="height:var(--sp-5);display:flex;align-items:center"><span style="display:block;height:var(--sp-3);width:92%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></div>
+                      <div style="height:var(--sp-5);display:flex;align-items:center"><span style="display:block;height:var(--sp-3);width:40%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></div>
+                      <div style="height:var(--sp-5);display:flex;align-items:center;margin-top:var(--sp-1)"><span style="display:block;height:var(--sp-3);width:70%;border-radius:var(--rf-md);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </x-import>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
+        <div style="flex-shrink:0;display:flex;flex-direction:column;gap:var(--sp-3)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="true" hint-size="100%,52px">Go to my day</x-import>
-          <span style="text-align:center;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Open this card again from Profile &amp; preferences.</span>
+          <span style="text-align:center;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Reopen anytime from Profile &amp; preferences.</span>
         </div>
       </div>
     </div>
@@ -179,17 +186,15 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Role explainer — error" data-frame="m-error" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
-      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-6) var(--screen-pad-mobile)">
         <div style="display:flex;align-items:center;gap:var(--sp-3)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
         </div>
-        <div style="flex:1;min-height:0;overflow:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-4) 0 var(--sp-2)">
           <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Your role at Suryodaya Solar</h1>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="error" error-title="We couldn't load your role" error-message="You are still part of Suryodaya Solar. Try again, or ask Rajesh to check." on-retry="{{ noop }}" dc-props="{{ formCard }}" hint-size="100%,150px"></x-import>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="error" error-title="We couldn't load your role" error-message="You are still part of Suryodaya Solar. Try again, or ask Rajesh to check." dc-props="{{ formCard }}" hint-size="100%,150px"></x-import>
+        <div style="flex-shrink:0;display:flex;flex-direction:column;gap:var(--sp-3)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="true" hint-size="100%,52px">Go to my day</x-import>
-          <span style="text-align:center;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Open this card again from Profile &amp; preferences.</span>
+          <span style="text-align:center;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Reopen anytime from Profile &amp; preferences.</span>
         </div>
       </div>
     </div>
@@ -200,14 +205,13 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Role explainer — stacked presets" data-frame="m-stacked" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
-      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-6) var(--screen-pad-mobile)">
         <div style="display:flex;align-items:center;gap:var(--sp-3)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
         </div>
-        <div style="flex:1;min-height:0;overflow:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-4) 0 var(--sp-2)">
           <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Your roles at Suryodaya Solar</h1>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" hint-size="100%,560px">
-            <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" dc-props="{{ roleCardFrame }}" hint-size="100%,560px">
+            <div style="flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:var(--sp-5)">
               <div style="display:flex;align-items:flex-start;gap:var(--sp-3)">
                 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconCircle" hint-size="40px,40px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></x-import></x-import>
                 <div style="display:flex;flex-direction:column;gap:var(--sp-0-5);min-width:0">
@@ -215,79 +219,80 @@ a:hover{color:var(--link-hover)}
                   <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Last set by Rajesh Kulkarni</span>
                 </div>
               </div>
-              <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-                <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you can do</span>
-                <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See your own leads and follow-ups</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Add and edit leads</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Survey a site</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Build and edit proposals, discounts included</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Send proposals to customers</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Mark a lead won or lost</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Create and edit designs</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Approve designs or send them back</span>
-                  </li>
-                </ul>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-                <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you cannot do</span>
-                <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Assign leads to others</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Delete leads</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Update project stages</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Record payments</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See reports beyond your own</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Change company settings</span>
-                  </li>
-                </ul>
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ScopeNote" holder="Rajesh Kulkarni (owner)" acts="{{ ownerActs }}" message="Ask him when you need one." hint-size="100%,72px"></x-import>
+              <div role="region" aria-label="What you can and cannot do" style="flex:1 1 auto;min-height:0;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:var(--sp-5)">
+                <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+                  <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you can do</span>
+                  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See your own leads and follow-ups</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Add and edit leads</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Survey a site</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Build and edit proposals, discounts included</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Send proposals to customers</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Mark a lead won or lost</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Create and edit designs</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Approve designs or send them back</span>
+                    </li>
+                  </ul>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+                  <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you cannot do</span>
+                  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Assign leads to others</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Delete leads</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Update project stages</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Record payments</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See reports beyond your own</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Change company settings</span>
+                    </li>
+                  </ul>
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ScopeNote" holder="Rajesh Kulkarni (owner)" acts="{{ ownerActs }}" message="Ask him when you need one." variant="panel" dc-props="{{ ownerNote }}" hint-size="100%,92px"></x-import>
+                </div>
               </div>
             </div>
           </x-import>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
+        <div style="flex-shrink:0;display:flex;flex-direction:column;gap:var(--sp-3)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="true" hint-size="100%,52px">Go to my day</x-import>
-          <span style="text-align:center;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">My Day opens first; your designs are one switch away.</span>
+          <span style="text-align:center;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Your designs are one switch away.</span>
         </div>
       </div>
     </div>
@@ -298,14 +303,13 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Role explainer — stacked presets, scrolled to the end" data-frame="m-stacked-end" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BrandBloom" placement="top" hint-size="0px,0px"></x-import>
-      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;padding:var(--sp-6) var(--screen-pad-mobile)">
+      <div style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-6) var(--screen-pad-mobile)">
         <div style="display:flex;align-items:center;gap:var(--sp-3)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
         </div>
-        <div data-scrollend="true" ref="{{ pinRef }}" style="flex:1;min-height:0;overflow:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-4) 0 var(--sp-2)">
           <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Your roles at Suryodaya Solar</h1>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" hint-size="100%,560px">
-            <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" dc-props="{{ roleCardFrame }}" hint-size="100%,560px">
+            <div style="flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:var(--sp-5)">
               <div style="display:flex;align-items:flex-start;gap:var(--sp-3)">
                 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconCircle" hint-size="40px,40px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></x-import></x-import>
                 <div style="display:flex;flex-direction:column;gap:var(--sp-0-5);min-width:0">
@@ -313,79 +317,80 @@ a:hover{color:var(--link-hover)}
                   <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Last set by Rajesh Kulkarni</span>
                 </div>
               </div>
-              <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-                <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you can do</span>
-                <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See your own leads and follow-ups</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Add and edit leads</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Survey a site</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Build and edit proposals, discounts included</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Send proposals to customers</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Mark a lead won or lost</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Create and edit designs</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Approve designs or send them back</span>
-                  </li>
-                </ul>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-                <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you cannot do</span>
-                <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Assign leads to others</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Delete leads</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Update project stages</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Record payments</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See reports beyond your own</span>
-                  </li>
-                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Change company settings</span>
-                  </li>
-                </ul>
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ScopeNote" holder="Rajesh Kulkarni (owner)" acts="{{ ownerActs }}" message="Ask him when you need one." hint-size="100%,72px"></x-import>
+              <div role="region" aria-label="What you can and cannot do" data-scrollend="true" ref="{{ pinRef }}" style="flex:1 1 auto;min-height:0;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:var(--sp-5)">
+                <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+                  <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you can do</span>
+                  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See your own leads and follow-ups</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Add and edit leads</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Survey a site</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Build and edit proposals, discounts included</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Send proposals to customers</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Mark a lead won or lost</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Create and edit designs</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Approve designs or send them back</span>
+                    </li>
+                  </ul>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+                  <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you cannot do</span>
+                  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Assign leads to others</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Delete leads</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Update project stages</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Record payments</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See reports beyond your own</span>
+                    </li>
+                    <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                      <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                      <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Change company settings</span>
+                    </li>
+                  </ul>
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ScopeNote" holder="Rajesh Kulkarni (owner)" acts="{{ ownerActs }}" message="Ask him when you need one." variant="panel" dc-props="{{ ownerNote }}" hint-size="100%,92px"></x-import>
+                </div>
               </div>
             </div>
           </x-import>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-2)">
+        <div style="flex-shrink:0;display:flex;flex-direction:column;gap:var(--sp-3)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="true" hint-size="100%,52px">Go to my day</x-import>
-          <span style="text-align:center;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">My Day opens first; your designs are one switch away.</span>
+          <span style="text-align:center;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Your designs are one switch away.</span>
         </div>
       </div>
     </div>
@@ -399,27 +404,26 @@ a:hover{color:var(--link-hover)}
       <div data-scroll style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile-fn) var(--sp-6)">
         <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
           <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2>
-          <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ profileNameRow }}" hint-size="100%,52px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ profileRoleRow }}" hint-size="100%,52px"></x-import>
+          <div style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-1) 0">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.nameRow }}" hint-size="100%,64px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.roleRow }}" hint-size="100%,64px"></x-import>
           </div>
         </section>
         <section style="display:flex;flex-direction:column;gap:var(--sp-4)">
-          <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">How HelioGrid reads to you</h2>
+          <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Language and units</h2>
           <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ profileLanguagePicker }}" hint-size="100%,190px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ profileLanguageSource }}" hint-size="100%,18px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ languagePicker }}" hint-size="100%,190px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ languageSource }}" hint-size="100%,18px"></x-import>
           </div>
           <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SegmentedControl" dc-props="{{ profileUnits }}" hint-size="100%,66px"></x-import>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ profileUnitSource }}" hint-size="100%,18px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SegmentedControl" dc-props="{{ units }}" hint-size="100%,66px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ unitSource }}" hint-size="100%,18px"></x-import>
           </div>
         </section>
         <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
-          <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2>
-          <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way.</p>
+          <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ pushAsk }}" hint-size="44px,44px"></x-import></div>
           <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
-            <sc-for list="{{ profilePushGroups }}" as="g" hint-placeholder-count="4">
+            <sc-for list="{{ pushGroups }}" as="g" hint-placeholder-count="4">
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ g }}" hint-size="100%,44px"></x-import>
             </sc-for>
           </div>
@@ -427,8 +431,8 @@ a:hover{color:var(--link-hover)}
       </div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ nav }}" hint-size="100%,66px"></x-import>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Sheet" dc-props="{{ roleSheet }}" hint-size="100%,520px">
-        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" hint-size="100%,420px">
-          <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" dc-props="{{ roleCardFrame }}" hint-size="100%,420px">
+          <div style="flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:var(--sp-5)">
             <div style="display:flex;align-items:flex-start;gap:var(--sp-3)">
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconCircle" hint-size="40px,40px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></x-import></x-import>
               <div style="display:flex;flex-direction:column;gap:var(--sp-0-5);min-width:0">
@@ -436,64 +440,66 @@ a:hover{color:var(--link-hover)}
                 <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Last set by Rajesh Kulkarni</span>
               </div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-              <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you can do</span>
-              <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
-                <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                  <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                  <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See your own leads and follow-ups</span>
-                </li>
-                <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                  <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                  <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Add and edit leads</span>
-                </li>
-                <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                  <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                  <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Survey a site</span>
-                </li>
-                <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                  <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                  <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Build and edit proposals, discounts included</span>
-                </li>
-                <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                  <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                  <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Send proposals to customers</span>
-                </li>
-                <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                  <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
-                  <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Mark a lead won or lost</span>
-                </li>
-              </ul>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
-              <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you cannot do</span>
-              <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
-                <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                  <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                  <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Assign leads to others</span>
-                </li>
-                <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                  <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                  <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Delete leads</span>
-                </li>
-                <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                  <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                  <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Update project stages</span>
-                </li>
-                <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                  <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                  <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Record payments</span>
-                </li>
-                <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                  <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                  <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See reports beyond your own</span>
-                </li>
-                <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
-                  <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
-                  <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Change company settings</span>
-                </li>
-              </ul>
-              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ScopeNote" holder="Rajesh Kulkarni (owner)" acts="{{ ownerActs }}" message="Ask him when you need one." hint-size="100%,72px"></x-import>
+            <div role="region" aria-label="What you can and cannot do" style="flex:1 1 auto;min-height:0;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:var(--sp-5)">
+              <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+                <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you can do</span>
+                <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
+                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See your own leads and follow-ups</span>
+                  </li>
+                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Add and edit leads</span>
+                  </li>
+                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Survey a site</span>
+                  </li>
+                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Build and edit proposals, discounts included</span>
+                  </li>
+                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Send proposals to customers</span>
+                  </li>
+                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                    <span style="display:flex;flex-shrink:0;color:var(--success-text)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></x-import></span>
+                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Mark a lead won or lost</span>
+                  </li>
+                </ul>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+                <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">What you cannot do</span>
+                <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--sp-3)">
+                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Assign leads to others</span>
+                  </li>
+                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Delete leads</span>
+                  </li>
+                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Update project stages</span>
+                  </li>
+                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Record payments</span>
+                  </li>
+                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">See reports beyond your own</span>
+                  </li>
+                  <li style="display:flex;align-items:flex-start;gap:var(--sp-3)">
+                    <span style="display:flex;flex-shrink:0;color:var(--text-secondary)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Icon" size="md" hint-size="20px,20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.7 5.1a10.7 10.7 0 0 1 11.2 6.6 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"></path><path d="M14.1 14.2a3 3 0 0 1-4.2-4.2"></path><path d="M17.5 17.5a10.8 10.8 0 0 1-15.4-5.2 1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.4-5.1"></path><path d="m2 2 20 20"></path></svg></x-import></span>
+                    <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary);text-wrap:pretty">Change company settings</span>
+                  </li>
+                </ul>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ScopeNote" holder="Rajesh Kulkarni (owner)" acts="{{ ownerActs }}" message="Ask him when you need one." variant="panel" dc-props="{{ ownerNote }}" hint-size="100%,92px"></x-import>
+              </div>
             </div>
           </div>
         </x-import>
@@ -557,37 +563,54 @@ class Component extends DCLogic {
     return [item("home", "Home"), item("leads", "Leads"), item("proposals", "Proposals"), item("more", "More")];
   }
 
-  /* SCR-M01-11's default page behind the card's second life, drawn exactly as that screen's board draws it. */
-  profilePage(languageColumns) {
+  /* SCR-M01-11's m-default page behind the card's second life, with that board's own values. */
+  profilePage() {
     const NS = this.ns();
+    const h = React.createElement;
     const noop = this.noop;
-    const chevron = () => this.glyph("chevron-right", false, "md");
-    const rowGround = { background: "var(--fill)", borderRadius: "var(--r-tile)" };
-    const source = (level, layerName) => ({ level: level, layerName: layerName });
+    const rowFrame = (divided) => ({
+      minHeight: 64, boxSizing: "border-box", padding: "var(--sp-2) var(--sp-4)", gap: "var(--sp-3)",
+      background: "transparent", boxShadow: "none", borderRadius: 0,
+      borderTop: divided ? "1px solid var(--line-soft)" : "none",
+    });
     return {
-      profileNameRow: {
-        avatar: React.createElement(NS.Avatar, { name: "Anjali Kulkarni", size: 32 }), title: "Anjali Kulkarni", subtitle: "Your name",
-        trailing: chevron(), onClick: noop, density: "functional", style: rowGround,
+      /* 11's account rows: ListRows on the card — no ground or lift of their own, the card's row
+         padding, a hairline between. */
+      me: {
+        name: "Anjali Kulkarni",
+        avatar: { name: "Anjali Kulkarni", size: 48 },
+        nameRow: {
+          avatar: h(NS.Avatar, { name: "Anjali Kulkarni", size: 48 }), title: "Anjali Kulkarni", density: "expressive",
+          trailing: h(NS.Button, { variant: "secondary", size: "sm", onClick: noop }, "Edit name"),
+          style: rowFrame(false),
+        },
+        roleRow: {
+          title: "Your role", density: "functional", onClick: noop,
+          marks: h(NS.ChipGroup, { label: "roles", max: 0, density: "functional" },
+            [h(NS.Badge, { key: "Sales Executive", tone: "violet", density: "functional" }, "Sales Executive")]),
+          trailing: h(NS.ShellGlyph, { name: "chevron-right", size: "md", tone: "secondary" }),
+          style: rowFrame(true),
+        },
       },
-      profileRoleRow: {
-        icon: this.glyph("shield", false, "md", "accent"), title: "Sales Executive", wrapTitle: true, subtitle: "Your role",
-        trailing: chevron(), onClick: noop, density: "functional", style: rowGround,
-      },
-      profileLanguagePicker: {
-        label: "Language", value: "en", columns: languageColumns, density: "functional", onChange: noop,
+      languagePicker: {
+        label: "Language", value: "en", columns: 1, density: "functional", onChange: noop,
         options: [
           { value: "en", title: "English", lang: "en" },
           { value: "hi", title: "हिन्दी", lang: "hi" },
           { value: "mr", title: "मराठी", lang: "mr" },
         ],
       },
-      profileLanguageSource: source("inherited", "Your device's language"),
-      profileUnits: {
+      languageSource: { level: "inherited", layerName: "Your device's language" },
+      units: {
         label: "Measurements", value: "m", onChange: noop,
         options: [{ value: "m", label: "Metres" }, { value: "ft", label: "Feet" }],
       },
-      profileUnitSource: source("inherited", "Default for India"),
-      profilePushGroups: ["Sales", "Delivery", "Payments", "Team"].map((label) => ({ label: label, checked: true, onChange: noop })),
+      unitSource: { level: "inherited", layerName: "Default for India" },
+      pushGroups: ["Sales", "Delivery", "Payments", "Team"].map((label) => ({ label: label, checked: true, onChange: noop })),
+      pushAsk: {
+        label: "About push", density: "functional",
+        pages: ["Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way."],
+      },
     };
   }
 
@@ -620,14 +643,22 @@ class Component extends DCLogic {
         value: "more", onChange: this.noop,
         items: [items[0], items[1], { key: "add", verb: true, label: "Add lead", icon: this.glyph("plus-circle", false, "lg"), onClick: this.noop }, items[2], items[3]],
       },
-      roleSheet: Object.assign({ size: "auto", dragToDismiss: false }, this.roleSurfaceBase()),
+      /* The sheet's body does not scroll as a whole: the card inside it bounds itself and only its
+         list scrolls, so the role's name and credit stay in view (G6). */
+      roleSheet: Object.assign({ size: "auto", dragToDismiss: false, bodyStyle: { display: "flex", flexDirection: "column", minHeight: 0, overflow: "hidden" } }, this.roleSurfaceBase()),
+      /* The card takes the room its column leaves and no more: its head stays put and the grant and
+         limit list scrolls inside it. With a short list the card hugs it and the act follows. */
+      roleCardFrame: { style: { flex: "0 1 auto", minHeight: 0, display: "flex", flexDirection: "column", overflow: "hidden" } },
+      /* The owner note reads as information, not as a row of the limit list: ScopeNote's own panel,
+         on the info ground so it lifts off the card's grey fill. */
+      ownerNote: { style: { background: "var(--info-bg)", marginTop: "var(--sp-2)" } },
       pinRef: this.attachScrollEnd,
-      /* The error state is the only state where this card holds a control, so it takes the
-         middle rung there and nowhere else. */
-      formCard: { style: { background: "var(--surface-form)" } },
+      /* The error card keeps the Card's own --fill ground, like the role card in every other
+         state, so its white "Try again" reads raised against it. */
+      formCard: { onRetry: this.noop },
       /* What the EPC Owner alone holds (F2.M01.manage-team), composed by ScopeNote. */
       ownerActs: ["add a teammate"],
-    }, this.profilePage(1));
+    }, this.profilePage());
   }
 }
 
