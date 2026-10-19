@@ -1,8 +1,8 @@
-import type { CSSProperties, KeyboardEvent } from 'react';
+import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
 import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import type { FilterChipsProps } from './FilterBar.types';
-import { optionLabel, optionValue } from './FilterBar.types';
+import { optionIcon, optionLabel, optionValue } from './FilterBar.types';
 
 interface WebFilterChipsProps extends FilterChipsProps {
   className?: string;
@@ -17,8 +17,20 @@ interface WebFilterChipsProps extends FilterChipsProps {
  */
 type Focusable = { focus: () => void };
 
+/** An option's 18px glyph before its label, in the chip's ink — drawn only when there is one. */
+export function OptionIcon({ icon }: { icon: ReactNode }) {
+  if (!icon) return null;
+  return (
+    <span className="hg-filter-icon" aria-hidden="true">
+      {icon}
+    </span>
+  );
+}
+
 /**
- * Stage chips. Active = accent fill; the rest take the control fill, flat. Roving tabindex: one stop in the tab order, arrow keys move between chips.
+ * Kind and stage chips: 44px pills — the pill is the target — in the control fill, flat, with an
+ * optional 18px glyph before the label; the chosen one is the near-black primary marker with
+ * white words. Roving tabindex: one stop in the tab order, arrow keys move between chips.
  *
  * **One-of-N by construction**: `role="tablist"` + `aria-selected`, and its arrow keys change the
  * selection as they move, because in a stage strip moving the highlight *is* choosing. A dimension
@@ -73,6 +85,7 @@ export function FilterChips({
         const optValue = optionValue(option);
         const active = optValue === value;
         const count = counts?.[optValue];
+        const icon = optionIcon(option);
         return (
           <button
             key={optValue}
@@ -91,7 +104,9 @@ export function FilterChips({
               className="hg-filter-pill"
               data-pill="chip"
               data-active={active ? 'true' : undefined}
+              data-lead={icon ? 'true' : undefined}
             >
+              <OptionIcon icon={icon} />
               {optionLabel(option)}
               {count === undefined ? null : <span className="hg-filter-count">{count}</span>}
             </span>

@@ -190,7 +190,7 @@
    field in its 600 track, stretched beside the column — the shell, not the window, scrolls. */
 @media (min-width: 968px) {
   .hg-company-profile[data-life="settings"][data-preview] {
-    grid-template-columns: minmax(0, 1fr) clamp(472px, 39vw, 600px);
+    grid-template-columns: minmax(0, 1fr) clamp(472px, 39cqw, 600px);
     gap: var(--sp-6);
   }
 
@@ -203,5 +203,23 @@
     align-self: stretch;
     height: auto;
     margin: 0;
+  }
+}
+
+/* The settings pair measures the room the shell's page gives it — beside the settings side list it
+   is narrower than the window. Below what both halves need — the 480 column, `--sp-6` (24) and the
+   letterhead's 472 track: 976 — the column stands alone and the letterhead steps aside; a squeezed column
+   is the failure this exists to end. */
+.hg-company-profile-room {
+  container: company-profile / inline-size;
+}
+
+@container company-profile (max-width: 975px) {
+  .hg-company-profile[data-life="settings"][data-preview] {
+    display: block;
+  }
+
+  .hg-company-profile[data-life="settings"] .hg-company-profile-preview {
+    display: none;
   }
 }

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { DOOR_SEGMENT } from '../../src/shell/doors';
 import {
+  firstSettingsPageBeside,
   opensSettingsRow,
   SETTINGS_ROWS,
   SETTINGS_SEGMENT,
@@ -103,5 +104,28 @@ describe('SETTINGS_SEGMENT — one address per row under More (M01-61)', () => {
 
   it.each(['', 'not-a-row', 'Team', 'leads'])('answers null for %j', (segment) => {
     expect(settingsRowOfSegment(segment)).toBeNull();
+  });
+});
+
+describe('firstSettingsPageBeside — the page More opens at the desktop width, beside the list', () => {
+  it.each([
+    {
+      who: 'an EPC Owner — twelve rows: the first, Profile & preferences',
+      held: ['epc_owner'],
+      page: 'profile',
+    },
+    {
+      who: 'a Finance holder — several rows: the first, Profile & preferences',
+      held: ['finance'],
+      page: 'profile',
+    },
+    {
+      who: 'a Field Technician — one row: no side list, the list page stays',
+      held: ['field_technician'],
+      page: null,
+    },
+    { who: 'no preset — one row: the list page stays', held: [], page: null },
+  ] as const)('$who', ({ held, page }) => {
+    expect(firstSettingsPageBeside(held)).toBe(page);
   });
 });

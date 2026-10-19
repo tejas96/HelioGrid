@@ -18,7 +18,7 @@ msgid "411038"
 msgstr "411038"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:59
+#: src/copy/company-profile.ts:61
 msgid "{bankName} · account ending {ending}"
 msgstr "{bankName} · खाते के अंतिम अंक {ending}"
 
@@ -28,7 +28,7 @@ msgid "{chain} codes were invalidated in a row"
 msgstr "लगातार {chain} कोड अमान्य हुए"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:77
+#: src/copy/company-profile.ts:79
 msgid "{city} only"
 msgstr "केवल {city}"
 
@@ -338,12 +338,12 @@ msgid "Add your logo"
 msgstr "अपना लोगो जोड़ें"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:79
+#: src/copy/company-profile.ts:81
 msgid "Added"
 msgstr "जोड़ा गया"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:68
+#: src/copy/company-profile.ts:70
 msgid "Address"
 msgstr "पता"
 
@@ -363,7 +363,7 @@ msgid "An invite already went to this number and is still open."
 msgstr "इस नंबर पर पहले ही एक आमंत्रण भेजा जा चुका है और वह अभी खुला है।"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:80
+#: src/copy/company-profile.ts:82
 msgid "Answered"
 msgstr "उत्तर दिया गया"
 
@@ -398,12 +398,12 @@ msgid "Back to the list"
 msgstr "सूची पर वापस"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:58
+#: src/copy/company-profile.ts:60
 msgid "Bank"
 msgstr "बैंक"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:70
+#: src/copy/company-profile.ts:72
 msgid "Bank details"
 msgstr "बैंक विवरण"
 
@@ -442,6 +442,11 @@ msgstr "अंतर्निर्मित अनुमान ±{tolerance}%"
 #: src/copy/settings.ts:36
 msgid "Business profile"
 msgstr "व्यवसाय प्रोफ़ाइल"
+
+#. js-lingui-explicit-id
+#: src/copy/company-profile.ts:44
+msgid "Business profile saved"
+msgstr "व्यवसाय प्रोफ़ाइल सहेजी गई"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:27
@@ -505,7 +510,7 @@ msgid "Changed your mind, or it is not the same company?"
 msgstr "मन बदल गया, या यह वही कंपनी नहीं है?"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:82
+#: src/copy/company-profile.ts:84
 msgid "Check the format"
 msgstr "प्रारूप जाँचें"
 
@@ -595,12 +600,12 @@ msgid "Continue anyway"
 msgstr "फिर भी आगे बढ़ें"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:53
+#: src/copy/company-profile.ts:55
 msgid "Continue setting up HelioGrid without saving your company profile"
 msgstr "अपनी कंपनी प्रोफ़ाइल सहेजे बिना HelioGrid का सेटअप जारी रखें"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:48
+#: src/copy/company-profile.ts:50
 msgid "Continue setting up HelioGrid without your company profile"
 msgstr "अपनी कंपनी प्रोफ़ाइल के बिना HelioGrid का सेटअप जारी रखें"
 
@@ -615,7 +620,7 @@ msgid "Continue with Google. Signs you in to the same account as your mobile num
 msgstr "Google से जारी रखें। आपको उसी खाते में साइन इन करता है जो आपके मोबाइल नंबर का है।"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:47
+#: src/copy/company-profile.ts:49
 msgid "Continue without it"
 msgstr "इसके बिना आगे बढ़ें"
 
@@ -745,7 +750,7 @@ msgid "Estimated"
 msgstr "अनुमानित"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:88
+#: src/copy/company-profile.ts:90
 msgid "Factories, offices, warehouses"
 msgstr "कारख़ाने, दफ़्तर, गोदाम"
 
@@ -880,7 +885,7 @@ msgid "Home"
 msgstr "होम"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:87
+#: src/copy/company-profile.ts:89
 msgid "Homes and housing societies"
 msgstr "घर और हाउसिंग सोसाइटी"
 
@@ -960,17 +965,17 @@ msgid "Links {email}"
 msgstr "{email} को जोड़ता है"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:43
+#: src/copy/company-profile.ts:45
 msgid "Loading your company profile"
 msgstr "आपकी कंपनी प्रोफ़ाइल लोड हो रही है"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:57
+#: src/copy/company-profile.ts:59
 msgid "Logo"
 msgstr "लोगो"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:67
+#: src/copy/company-profile.ts:69
 msgid "Logo and company name"
 msgstr "लोगो और कंपनी का नाम"
 
@@ -1026,7 +1031,7 @@ msgid "My Visits Today"
 msgstr "आज की मेरी विज़िट"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:76
+#: src/copy/company-profile.ts:78
 msgid "Name only"
 msgstr "केवल नाम"
 
@@ -1067,7 +1072,7 @@ msgid "Not a structural certification"
 msgstr "संरचनात्मक प्रमाणन नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:78
+#: src/copy/company-profile.ts:80
 msgid "Not added"
 msgstr "नहीं जोड़ा गया"
 
@@ -1082,7 +1087,7 @@ msgid "Not checked"
 msgstr "जाँचा नहीं गया"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:81
+#: src/copy/company-profile.ts:83
 msgid "Not declared"
 msgstr "नहीं बताया गया"
 
@@ -1092,7 +1097,7 @@ msgid "Not published yet"
 msgstr "अभी प्रकाशित नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:51
+#: src/copy/company-profile.ts:53
 msgid "Not saved · our end · nothing typed is lost"
 msgstr "सहेजा नहीं गया · गड़बड़ी हमारी ओर से · लिखा हुआ कुछ भी खोया नहीं"
 
@@ -1217,7 +1222,7 @@ msgid "or"
 msgstr "या"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:46
+#: src/copy/company-profile.ts:48
 msgid "Our end, not yours · nothing is lost"
 msgstr "गड़बड़ी हमारी ओर से है, आपकी नहीं · कुछ भी खोया नहीं है"
 
@@ -1293,7 +1298,7 @@ msgid "Profile & preferences"
 msgstr "प्रोफ़ाइल और पसंद"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:44
+#: src/copy/company-profile.ts:46
 msgid "Profile still loading"
 msgstr "प्रोफ़ाइल अभी लोड हो रही है"
 
@@ -1678,7 +1683,7 @@ msgid "tax rates"
 msgstr "कर दरें"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:69
+#: src/copy/company-profile.ts:71
 msgid "Tax registration"
 msgstr "कर पंजीकरण"
 
@@ -1914,7 +1919,7 @@ msgid "Try again. If it keeps failing, tell your admin what you were doing."
 msgstr "फिर से कोशिश करें। अगर यह बार-बार विफल हो, तो अपने एडमिन को बताएँ कि आप क्या कर रहे थे।"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:52
+#: src/copy/company-profile.ts:54
 msgid "Try saving your company profile again"
 msgstr "अपनी कंपनी प्रोफ़ाइल फिर से सहेजने की कोशिश करें"
 
@@ -2074,7 +2079,7 @@ msgid "We could not sign you in"
 msgstr "हम आपको साइन इन नहीं कर सके"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:45
+#: src/copy/company-profile.ts:47
 msgid "We couldn't load your profile"
 msgstr "हम आपकी प्रोफ़ाइल लोड नहीं कर सके"
 
@@ -2134,7 +2139,7 @@ msgid "What you mostly sell"
 msgstr "आप ज़्यादातर क्या बेचते हैं"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:71
+#: src/copy/company-profile.ts:73
 #: src/copy/settings.ts:27
 msgid "What you sell"
 msgstr "आप क्या बेचते हैं"
@@ -2215,7 +2220,7 @@ msgid "You don't have access to do that."
 msgstr "आपके पास यह करने की अनुमति नहीं है।"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:89
+#: src/copy/company-profile.ts:91
 msgid "You sell to either"
 msgstr "आप दोनों को बेचते हैं"
 
@@ -2328,7 +2333,7 @@ msgid "Your language was not saved"
 msgstr "आपकी भाषा सहेजी नहीं गई"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:56
+#: src/copy/company-profile.ts:58
 msgid "Your letterhead"
 msgstr "आपका लेटरहेड"
 

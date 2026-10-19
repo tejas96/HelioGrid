@@ -72,7 +72,9 @@ stops only what this task started.
 Read, in one batch: the task's header lines and `DONE WHEN`; every PRD row it cites, whole; its
 brief (`docs/ux/briefs/`); for a screen task, every `.design/<module>/<screen id>-*.dc.html` of each screen it builds or serves; every
 `docs/tasks/deferred.md` row it meets (`T-<this> starts`, `T-<x> ships` where x has shipped, and
-`touches <path>` where a planned file sits under that path); `docs/engineering/architecture.md`
+`touches <path>` where a planned file sits under that path), and also every row naming a screen it
+builds whatever its trigger — a `Depends on:` can pull this task ahead of the one the row names, and
+a row whose change this task draws joins it; `docs/engineering/architecture.md`
 §4; and the `CLAUDE.md` of every package the change will touch. Search the code for what already
 exists before planning anything new (Law 5) — an `Explore` agent on Opus for a broad sweep.
 
@@ -105,8 +107,9 @@ Give `rfc-reviewer` the RFC, the task, its PRD rows, its brief and every locked 
 finding it confirms in the RFC. A finding you reject gets one line of reason in the RFC.
 
 Then show the owner the short view, never the whole RFC: the title; a link to the `#### RFC`
-heading by file and line; the user impact; the diagram, when the RFC has one (draw its Mermaid
-block in the inline widget, or show the block as it is); the size on one line; what the review
+heading by file and line; the user impact; the diagram, always, drawn in the inline widget — the RFC's Mermaid
+block, or, when it says `No boundary change`, the user's flow: open, read, screen, each act and its
+outcome (show the block as it is only where the chat cannot draw); the size on one line; what the review
 changed, one line each; then:
 
 - `Decisions for you:` each open decision on one line — options, recommended first — or `none`.

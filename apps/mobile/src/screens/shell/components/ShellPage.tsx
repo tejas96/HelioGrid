@@ -1,7 +1,8 @@
 import { useSession, useShell } from '@heliogrid/data/react';
 import { SHELL } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { IconButton, MIN_TOUCH_TARGET, MobileTopBar, ShellGlyph } from '@heliogrid/ui';
+import { MobileTopBar, ShellAction, ShellGlyph } from '@heliogrid/ui';
+import { useNavigation } from '@react-navigation/native';
 import type { ReactNode } from 'react';
 import { useRef, useState } from 'react';
 import type { View } from 'react-native';
@@ -21,8 +22,9 @@ interface DrillDown {
  * A page inside the shell that is not the home: the shell's top bar with the account's acts, the
  * pill with `inView` lit when the pill names it, and the grievance note — written once for every
  * such screen (`PlaceholderScreen`, the settings list and its rows). A page opened from a list
- * (`drillDown`) has a bar of its own instead: its way back and its title alone (`SCR-M01-05`,
- * `m-settings`); the pill stays (`F7-22`).
+ * (`drillDown`) has a bar of its own instead: its round way back, its title and the one search
+ * (`SCR-M01-05`, `m-settings`; `SCR-SHELL-01` decision 8), lifting once content scrolls under it;
+ * the pill stays (`F7-22`).
  */
 export function ShellPage({
   inView,
@@ -37,7 +39,9 @@ export function ShellPage({
   const session = useSession();
   const shell = useShell();
   const actionRef = useRef<View>(null);
+  const navigation = useNavigation();
   const [grievance, setGrievance] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const items = usePillItems(shell, actionRef);
   const lit = inView !== undefined && items.some((item) => item.key === inView);
   return (
@@ -57,16 +61,22 @@ export function ShellPage({
             searchLabel={t(SHELL.search)}
             notificationsLabel={t(SHELL.notifications)}
             title={drillDown.title}
+            scrolled={scrolled}
+            onSearchClick={() => navigation.navigate('Search')}
             leading={
-              <IconButton label={drillDown.back} size={MIN_TOUCH_TARGET} onClick={drillDown.onBack}>
-                <ShellGlyph name="chevron-left" size="md" tone="primary" />
-              </IconButton>
+              <ShellAction
+                round
+                label={drillDown.back}
+                onClick={drillDown.onBack}
+                icon={<ShellGlyph name="chevron-left" size="md" tone="primary" />}
+              />
             }
           />
         )
       }
       items={items}
       inView={lit ? inView : undefined}
+      onScrolledChange={drillDown === undefined ? undefined : setScrolled}
     >
       {children}
       <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />

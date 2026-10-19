@@ -96,9 +96,10 @@
   --hg-control-fill: var(--surface);
 }
 
-/* A field's well that holds controls of its own — `RichText`'s toolbar and link address: the well is
-   `FieldBox`'s, and a control in it turns white, as in a tile. */
-.hg-rich-text-frame {
+/* A field's well that holds controls of its own — `RichText`'s toolbar and link address, the search
+   pill's clear button: the well is `FieldBox`'s, and a control in it turns white, as in a tile. */
+.hg-rich-text-frame,
+.hg-search-field {
   --hg-ground: var(--fill);
   /* biome-ignore lint/plugin/raw-white-css: ground — the ground itself, and Surface, which sets it */
   --hg-control-fill: var(--surface);

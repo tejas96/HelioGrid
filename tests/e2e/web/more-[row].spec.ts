@@ -9,15 +9,17 @@ import { passTheOwnersMark } from '../support/shell';
 
 /**
  * `/more/[row]` (`SCR-SHELL-01`, *More: the settings list*): a row opens its screen's address
- * inside the shell — the shell's placeholder until that screen lands — with `More` still in view,
- * Back returns to the list, and an address no row owns is not found.
+ * inside the shell — the shell's placeholder until that screen lands — with `More` still in view;
+ * Back returns to where the row was opened from: the list page on the phone's width, the first
+ * settings page beside the side list at the desktop width (`More` opens there); an address no row
+ * owns is not found.
  */
 const en = await createTranslator('en');
 const WORDS = settingsWords(en.t);
 
-test('a row opens its screen’s address inside the shell, More in view; Back returns to the list', async ({
+test('a row opens its screen’s address inside the shell, More in view; Back returns to where it was opened', async ({
   page,
-}) => {
+}, testInfo) => {
   const company = await createCompany(page, en, freshMobile());
   await passTheOwnersMark(page, en);
   await page.goto('/more');
@@ -38,8 +40,17 @@ test('a row opens its screen’s address inside the shell, More in view; Back re
   await expectTheLook(page, [page.getByText(company)]);
 
   await page.goBack();
-  await expect(page).toHaveURL(/\/more$/);
-  await expect(page.getByRole('heading', { level: 1, name: WORDS.title })).toBeVisible();
+  if (testInfo.project.name === 'desktop') {
+    await expect(page).toHaveURL(/\/more\/profile$/);
+    await expect(
+      page
+        .getByRole('navigation', { name: WORDS.title })
+        .getByRole('button', { name: WORDS.rows.profile }),
+    ).toHaveAttribute('aria-current', 'page');
+  } else {
+    await expect(page).toHaveURL(/\/more$/);
+    await expect(page.getByRole('heading', { level: 1, name: WORDS.title })).toBeVisible();
+  }
 });
 
 test('an address no row owns is not found, inside the shell', async ({ page }) => {

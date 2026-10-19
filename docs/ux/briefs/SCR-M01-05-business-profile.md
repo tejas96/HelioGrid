@@ -73,6 +73,7 @@ In onboarding the act leads on to the invite step (`SCR-M01-07`), then the two-d
 56. **The settings life's top bar holds only its way back, its title and the search button**: the 44 × 44 back button `Back to settings`, beside it the h1 `Business profile`, and at the end the round search button (`SCR-SHELL-01` decision 8); the content starts with the lede. A page opened from the settings list shows its way back, its title and the search button, not the shell's tile, company, bell and avatar. The pill footer stays (`F7-22`, `M02-06`).
 57. **The settings life's wide measures are `d-settings`' own**: the list at 640, and the letterhead's field in a 600 track — 39% of 1536, never narrower than its 472 sheet and inset, as ruling 31 holds the setup life's 672.
 58. **The settings life opens *What you sell* on arrival**, as `m-settings` draws it: changing the two declarations is the reason to come back after setup, and the re-seed line then stands at the act at once. A part that owes something still opens itself first; setup keeps opening *Logo and company name* (owner ruling, `T-M01-005o` QA).
+59. **A save that lands in the settings life says so** (owner ruling 2026-10-19): the page stays as it is and a neutral toast reads *Business profile saved*, as the M01 boards confirm an act (`SCR-M01-12`'s *Anjali Kulkarni deactivated*). In setup the next step is the answer, so no toast is shown; a save whose logo is refused writes nothing and shows its refusal, not the toast.
 
 
 ## Requirements (verbatim)
@@ -99,6 +100,7 @@ Screen-specific:
 - **normal** — the profile filled and saved: logo, the market's tax registration(s), address, bank details, and the two declarations `M01-23` places here. The main frame of the screen, and the one the other states are departures from. *(Added 2026-08-28 — this list named four edge states and no default; every neighbouring brief names one.)*
 - **logo-invalid-limits-stated** — a logo uploaded at the profile step is invalid → validated on upload with the actual limits stated (M01 §M01.3 edge list, the `S6B.wrong.5` pattern).
 - **declarations-edited-reseed-scope** — the segment and typical system size (`kWp`) edited after onboarding, with the scope of the change stated on the surface: it re-seeds only what comes next, and **a sent proposal keeps its prices** (`M01-23`; the price-book law of `F1`). The size carries its tier — `estimated · Declared by you` — wherever it renders, exactly as on `SCR-M01-04`. *(Added 2026-08-28 with the ruling that placed the declarations here, which reached Entry & exit and not this list.)*
+- **saved** (settings life) — the save landed: everything stays where it was, and a neutral toast says *Business profile saved* (ruling 59).
 - **save-failed** — the act was pressed and the save got no answer: every typed value stays where it was typed, no part closes, and one line at the act says so, with a retry first and a way on without saving second (ruling 18). Not *arrived-from-a-failed-save*, which is the step before failing.
 - **arrived-from-a-failed-save** — reached by `SCR-M01-04`'s *Finish later* route, where a save of those two declarations failed. The screen says what is still undeclared rather than presenting an empty field as a choice, so the owner does not have to remember what the previous screen lost. *(Added 2026-08-28: placing the declarations here made this an entry point, and an entry with no state is how a route arrives somewhere that does not expect it.)*
 
@@ -113,3 +115,8 @@ Every rendered **quantity** carries its F8 provenance tier in the design. **The 
 ---
 
 *Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried an `offline` base state (tenant-config edits failing fast, never queued) and a matching online-only sentence in Context of use. Both are deleted.*
+
+
+## Redesign owed
+
+- `m-settings` and `d-settings` draw no saved state: the toast of ruling 59 is to be drawn at both widths at the board's next redraw.

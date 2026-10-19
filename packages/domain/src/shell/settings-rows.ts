@@ -117,3 +117,13 @@ export function settingsRowsFor(roles: readonly RolePreset[]): readonly Settings
 export function settingsRowOfSegment(segment: string): SettingsRow | null {
   return SETTINGS_ROWS.find((row) => SETTINGS_SEGMENT[row] === segment) ?? null;
 }
+
+/**
+ * The settings page a person's list opens first when it stands beside settings pages at the shell's
+ * desktop width — its first row — or null when it has nothing to move between (one row), and so
+ * stays a list page with no side list (`SCR-SHELL-01`, *More: the settings list*).
+ */
+export function firstSettingsPageBeside(roles: readonly RolePreset[]): SettingsRow | null {
+  const rows = settingsRowsFor(roles).flatMap((group) => group.rows);
+  return rows.length > 1 ? (rows[0] ?? null) : null;
+}

@@ -49,6 +49,7 @@ function ariaState(
     'aria-checked': state.checked,
     'aria-busy': state.busy,
     'aria-expanded': state.expanded,
+    'aria-current': state.current === true ? 'page' : undefined,
   };
 }
 

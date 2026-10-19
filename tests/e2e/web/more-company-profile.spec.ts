@@ -28,7 +28,7 @@ const SAVE = en.t(COMPANY_PROFILE.saveChangesSpoken);
 
 test('the business profile row opens the profile in the shell; a save writes the profile, records no step, and stays', async ({
   page,
-}) => {
+}, testInfo) => {
   const company = await createCompany(page, en, freshMobile());
   await passTheOwnersMark(page, en);
   await page.goto('/more');
@@ -45,6 +45,16 @@ test('the business profile row opens the profile in the shell; a save writes the
     'aria-current',
     'page',
   );
+  // At 1536 the settings list stands beside the page, the page in view marked; at 375 it does not.
+  const side = page.getByRole('navigation', { name: WORDS.title });
+  if (testInfo.project.name === 'desktop') {
+    await expect(side.getByRole('button', { name: WORDS.rows.company_profile })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+  } else {
+    await expect(side).toBeHidden();
+  }
   await expectNoSidewaysScroll(page);
   await expect(page).toHaveTitle(/\S/);
   await expectNoSeriousViolations(page);
@@ -73,6 +83,8 @@ test('the business profile row opens the profile in the shell; a save writes the
   );
   await page.getByRole('button', { name: SAVE }).click();
   expect((await saved).status()).toBe(200);
+  // A save that lands in settings says so (`SCR-M01-05` ruling 59).
+  await expect(page.getByText(en.t(COMPANY_PROFILE.saved), { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: SAVE })).toBeEnabled();
   expect(steps).toEqual([]);
   await expect(page).toHaveURL(/\/more\/company-profile$/);
@@ -86,6 +98,9 @@ test('the business profile row opens the profile in the shell; a save writes the
     page.getByRole('textbox', { name: en.t(SETUP_WHAT_YOU_SELL.sizeLabel) }),
   ).toHaveValue('8');
 
+  // At the desktop width More opens the first settings page beside the side list (owner ruling).
   await rail.getByRole('button', { name: destinationLabel(en.t, 'more') }).click();
-  await expect(page).toHaveURL(/\/more$/);
+  await expect(page).toHaveURL(
+    testInfo.project.name === 'desktop' ? /\/more\/profile$/ : /\/more$/,
+  );
 });

@@ -2,19 +2,38 @@ import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
+import { FiltersButton } from '../FilterBar';
 import type { SearchFieldProps } from './SearchField.types';
 
-interface WebSearchFieldProps extends SearchFieldProps {
+type WebSearchFieldProps = SearchFieldProps & {
   className?: string;
   style?: CSSProperties;
-}
+};
+
+type SearchPillProps = Omit<SearchFieldProps, 'onFilterClick' | 'filterCount' | 'filterLabel'> & {
+  className?: string;
+  style?: CSSProperties;
+};
 
 /**
  * Borderless search input with a leading magnifier: a well (`FieldBox`) with the system focus
- * ring, never a border. 44px tall so it clears the touch-target floor on a phone. It is the first
- * control on every records screen: leads, projects, payments, call log.
+ * ring, never a border. Expressive is the open page's grey pill, 50 tall; functional is the dense
+ * 40px box; both clear the 44px touch floor. It is the first control on every records screen:
+ * leads, projects, payments, call log. With `onFilterClick` the 50×50 filter square rides beside
+ * the pill — the one way into the filter sheet on a list screen.
  */
-export function SearchField({
+export function SearchField(props: WebSearchFieldProps) {
+  if (props.onFilterClick === undefined) return <SearchPill {...props} />;
+  const { onFilterClick, filterCount, filterLabel, className, style, ...pill } = props;
+  return (
+    <div className={classNames('hg-search-field-row', className)} style={style}>
+      <SearchPill {...pill} />
+      <FiltersButton onClick={onFilterClick} count={filterCount} label={filterLabel} />
+    </div>
+  );
+}
+
+function SearchPill({
   value,
   onChange,
   placeholder = 'Search name, phone or city',
@@ -24,7 +43,7 @@ export function SearchField({
   ariaLabel,
   className,
   style,
-}: WebSearchFieldProps) {
+}: SearchPillProps) {
   const [focus, setFocus] = useState(false);
   const hasValue = value !== undefined && value !== '';
   return (

@@ -10,7 +10,6 @@
   gap: var(--sp-6);
 }
 
-.hg-settings-columns,
 .hg-settings-column {
   display: flex;
   flex-direction: column;
@@ -121,22 +120,44 @@
   flex-shrink: 0;
 }
 
-/* The shell's desktop width: the columns stand side by side, each its whole groups stacked from
-   the top — the person and their team · the company, what it sells and says on calls · money. */
 @media (min-width: 968px) {
-  .hg-settings-columns {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: var(--sp-8);
-  }
-
-  .hg-settings-column {
-    flex: 1 1 0;
-    min-width: 0;
-  }
-
   /* The person's tile grows with its 72 avatar (the record's 1536 frame). */
   .hg-pressable.hg-settings-person {
     min-height: 128px;
   }
+}
+
+/* The `side` form — the 248 px column beside a settings page at the shell's desktop width
+   (`SCR-SHELL-01`): overlines over 44 px rows, the page in view on --accent-subtle. No tile: the
+   column is navigation, not content. */
+.hg-settings-side {
+  width: 248px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding-top: var(--sp-1);
+}
+
+.hg-settings-side-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  margin-top: var(--sp-3);
+}
+
+.hg-settings-side-overline {
+  padding: 0 var(--sp-3) var(--sp-2);
+}
+
+.hg-pressable.hg-settings-side-row {
+  justify-content: flex-start;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-sm);
+  text-align: start;
+}
+
+.hg-pressable.hg-settings-side-row[aria-current="page"] {
+  background: var(--accent-subtle);
 }

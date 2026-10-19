@@ -3,14 +3,14 @@ import { SETTINGS_GROUPS, SETTINGS_ROWS, settingsRowsFor } from '@heliogrid/doma
 import { createTranslator, settingsWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { expectNoSidewaysScroll, expectNothingClipped, expectSharedEdge } from '../support/layout';
-import { resolvedLength } from '../support/token';
+import { resolvedColour } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 import { SettingsListAsHeld } from './SettingsList.story';
 
 /**
  * The settings list behind More at the board's two widths (`SCR-SHELL-01`, *More: the settings
- * list*): the owner's twelve rows in six groups, one column at 375 and three columns of whole
- * groups at 1536; the technician's one row; every row a 56-tall tile that reports which screen it
+ * list*): the owner's twelve rows in six groups in one column; at 1536 the `side` form a settings
+ * page stands beside; the technician's one row; every row a 56-tall tile that reports which screen it
  * opens; in Hindi and Marathi every word the catalog's and nothing clipped. Each frame's picture
  * is saved beside the suite's results for the board comparison.
  */
@@ -119,44 +119,47 @@ test.describe('at 375', () => {
   });
 });
 
-test.describe('at 1536', () => {
+test.describe('the side form, beside a settings page at 1536', () => {
   test.use({ viewport: { width: 1536, height: 960 } });
 
-  test('the groups sit in three columns of whole groups, the same rows at the same height', async ({
+  test('a 248 column named for the list: the person’s row first, each group an overline over its rows, the page in view marked', async ({
     mount,
     page,
   }) => {
-    const list = await mount(<SettingsListAsHeld reader="en" held={['epc_owner']} />);
-    const columns = list.locator('.hg-settings-column');
-    await expect(columns).toHaveCount(3);
-    const groupsIn = (n: number) => columns.nth(n).locator('.hg-block');
-    await expect(columns.nth(0).locator('.hg-settings-person')).toHaveCount(1);
-    await expect(groupsIn(0)).toHaveCount(1);
-    await expect(groupsIn(1)).toHaveCount(3);
-    await expect(groupsIn(2)).toHaveCount(1);
-    const you = columns.nth(0).locator('.hg-settings-person');
-    const [team] = await groupsIn(0).all();
-    const [company] = await groupsIn(1).all();
-    const [money] = await groupsIn(2).all();
-    if (!team || !company || !money) throw new Error('a column has no group');
-    await expectSharedEdge([you, team], 'left');
-    // The second group stands right under the first: one section gap, never a row track's height.
-    const gap = await resolvedLength(page, '--sp-6');
-    const youBox = await you.boundingBox();
-    const teamBox = await team.boundingBox();
-    expect(teamBox?.y).toBeLessThanOrEqual((youBox?.y ?? 0) + (youBox?.height ?? 0) + gap + 1);
-    const left = await you.boundingBox();
-    const middle = await company.boundingBox();
-    const right = await money.boundingBox();
-    expect((left?.x ?? 0) + (left?.width ?? 0)).toBeLessThan(middle?.x ?? 0);
-    expect((middle?.x ?? 0) + (middle?.width ?? 0)).toBeLessThan(right?.x ?? 0);
-    const rows = await list.getByRole('button').all();
-    expect(rows).toHaveLength(OWNER_ROWS.length);
-    for (const row of rows.slice(1)) {
-      const box = await row.boundingBox();
-      expect(box?.height).toBeGreaterThanOrEqual(ROW);
-    }
-    await expectNoSidewaysScroll(page);
-    await page.screenshot({ path: `${PICTURES}/more-owner-1536.png`, fullPage: true });
+    const list = await mount(
+      <SettingsListAsHeld reader="en" held={['epc_owner']} form="side" current="company_profile" />,
+    );
+    const nav = list.getByRole('navigation', { name: WORDS.title });
+    expect((await nav.boundingBox())?.width).toBe(248);
+    const rows = nav.getByRole('button');
+    await expect(rows).toHaveText(OWNER_ROWS.map((row) => WORDS.rows[row]));
+    for (const group of HEADED)
+      await expect(nav.getByText(WORDS.groups[group], { exact: true })).toBeVisible();
+    await expect(nav.getByText(WORDS.groups.you, { exact: true })).toHaveCount(0);
+    const here = nav.getByRole('button', { name: WORDS.rows.company_profile });
+    await expect(here).toHaveAttribute('aria-current', 'page');
+    await expect(here).toHaveCSS('background-color', await resolvedColour(page, '--accent-subtle'));
+    await expect(nav.locator('[aria-current]')).toHaveCount(1);
+    await expect(nav.locator('.hg-settings-person, .hg-settings-tile')).toHaveCount(0);
+    await expectTouchFloor(await rows.all());
+    await rows.nth(1).click();
+    await expect(list).toHaveAttribute('data-opened', OWNER_ROWS[1] ?? '');
+    await page.screenshot({ path: `${PICTURES}/side-owner-1536.png`, fullPage: true });
   });
+
+  for (const reader of ['hi', 'mr'] as const) {
+    test(`every word is the catalog's and nothing is clipped — ${reader}`, async ({
+      mount,
+      page,
+    }) => {
+      const words = settingsWords((await createTranslator(reader)).t);
+      const list = await mount(
+        <SettingsListAsHeld reader={reader} held={['epc_owner']} form="side" current="team" />,
+      );
+      const nav = list.getByRole('navigation', { name: words.title });
+      await expect(nav.getByRole('button')).toHaveText(OWNER_ROWS.map((row) => words.rows[row]));
+      await expectNothingClipped(page, '.hg-settings-side');
+      await page.screenshot({ path: `${PICTURES}/side-owner-1536-${reader}.png`, fullPage: true });
+    });
+  }
 });

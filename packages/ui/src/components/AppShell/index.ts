@@ -6,3 +6,4 @@ export { MobileTopBar } from './MobileTopBar';
 export { ShellAction } from './ShellAction';
 export { ShellGlyph } from './ShellGlyph';
 export { DESTINATION_GLYPH } from './ShellGlyph.logic';
+export { useDesktopShell } from './use-desktop-shell';

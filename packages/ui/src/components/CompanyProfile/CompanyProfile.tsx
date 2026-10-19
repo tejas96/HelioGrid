@@ -19,9 +19,18 @@ import { ProfileSet } from './CompanyProfileSets';
  * The company profile (`SCR-M01-05`). In setup it fills the door's frame; in settings it is the
  * shell's page. Under the door's breakpoint it is the column alone; from it the column stands on
  * the left at the list's wide measure, beside a letterhead that shows what the fields hold
- * (`d-default`, `d-settings`). A profile that could not be read has no letterhead.
+ * (`d-default`, `d-settings`). A profile that could not be read has no letterhead. In settings the
+ * pair measures the room the shell's page gives it, not the window: beside the settings side list
+ * that room is narrower than the window, and below what the two halves need the column stands
+ * alone (`CompanyProfile.css`).
  */
 export function CompanyProfile(props: CompanyProfileProps) {
+  const { life } = props;
+  const profile = <ProfileAndLetterhead {...props} />;
+  return life === 'settings' ? <div className="hg-company-profile-room">{profile}</div> : profile;
+}
+
+function ProfileAndLetterhead(props: CompanyProfileProps) {
   const { words, life } = props;
   const previewed = words.unread === null;
   return (

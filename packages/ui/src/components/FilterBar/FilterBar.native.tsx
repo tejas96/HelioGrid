@@ -1,18 +1,51 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg, { Circle, Path } from 'react-native-svg';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { FacetChips } from './FacetChips.native';
 import type { FiltersButtonProps, ScopeToggleProps, SortPillsProps } from './FilterBar.types';
-import { optionLabel, optionValue } from './FilterBar.types';
+import { optionLabel, optionValue, PILL_HEIGHT } from './FilterBar.types';
 import { FilterChips } from './FilterChips.native';
-import { FilterPill, filterStyles, PillLabel, pillWords } from './FilterPill.native';
+import { FilterPill, filterStyles, PillLabel } from './FilterPill.native';
+
+/* The square's 50dp side and the badge's 20dp size, 5dp inset, 2dp ring and corner offset are the
+   design system's own and sit off the 4dp scale, so no token carries them. The ring is a border,
+   so the badge's box grows by it on each side and its offset grows with it: the drawn badge lands
+   where the web's outer ring puts it. */
+const BADGE = 20;
+const BADGE_RING = 2;
+const BADGE_OFFSET = -5;
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-1'] },
   sortLabel: { marginRight: theme.spacing['sp-1'] },
+  square: {
+    width: PILL_HEIGHT.filters,
+    height: PILL_HEIGHT.filters,
+    flexShrink: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: theme.radius['r-field'],
+    backgroundColor: theme.colors['action-primary'],
+  },
+  squarePressed: { backgroundColor: theme.colors['action-primary-pressed'] },
+  badge: {
+    position: 'absolute',
+    top: BADGE_OFFSET - BADGE_RING,
+    right: BADGE_OFFSET - BADGE_RING,
+    minWidth: BADGE + 2 * BADGE_RING,
+    height: BADGE + 2 * BADGE_RING,
+    paddingHorizontal: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: BADGE_RING,
+    borderRadius: theme.radius['r-pill'],
+    backgroundColor: theme.colors.accent,
+  },
+  badgeWords: { fontVariant: ['tabular-nums'] },
 });
 
 interface NativeScopeToggleProps extends ScopeToggleProps {
@@ -90,9 +123,15 @@ export function SortPills({
   );
 }
 
+/** The sliders' ink: white on the near-black square. */
+const SQUARE_INK = theme.colors['text-inverse'];
+
 /**
- * White pill that opens the filter body — `FilterPanel`, **at every width**. Not a phone
- * affordance: on a wide screen the same body opens as a side panel (`F7-31`).
+ * The filter square that opens the filter body — `FilterPanel`, **at every width**, beside the
+ * search pill (`SearchField`'s `onFilterClick` draws it). 50×50, the near-black primary fill,
+ * darker while pressed, radius `r-field`, white sliders; the active count rides its top-right
+ * corner, ringed in what holds the square. Not a phone affordance: on a wide screen the same body
+ * opens as a side panel (`F7-31`).
  */
 export function FiltersButton({
   onClick,
@@ -100,36 +139,33 @@ export function FiltersButton({
   label = 'Filters',
   style,
 }: NativeFiltersButtonProps) {
+  const { ground } = useGround();
   return (
     <RNPressable
       accessibilityRole="button"
       accessibilityLabel={count > 0 ? `${label}, ${count} active` : label}
       onPress={onClick}
-      style={[filterStyles.target, style]}
+      style={({ pressed }) => [styles.square, pressed ? styles.squarePressed : undefined, style]}
     >
-      <FilterPill kind="filters">
-        <Icon size="sm" color={theme.colors['text-primary']}>
-          <Svg viewBox="0 0 24 24" fill="none">
-            <Path
-              d="M4 6h16M7 12h10M10 18h4"
-              stroke={theme.colors['text-primary']}
-              strokeWidth={1.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </Svg>
-        </Icon>
-        <PillLabel kind="filters" active={false}>
-          {label}
-        </PillLabel>
-        {count > 0 ? (
-          <View style={filterStyles.badge}>
-            <Text variant="caption" color="inverse" style={pillWords}>
-              {String(count)}
-            </Text>
-          </View>
-        ) : null}
-      </FilterPill>
+      <Icon size="md" color={SQUARE_INK}>
+        <Svg viewBox="0 0 24 24" fill="none">
+          <Path
+            d="M4 7h9M17 7h3M4 17h3M11 17h9"
+            stroke={SQUARE_INK}
+            strokeWidth={1.75}
+            strokeLinecap="round"
+          />
+          <Circle cx={15} cy={7} r={2.2} stroke={SQUARE_INK} strokeWidth={1.75} />
+          <Circle cx={9} cy={17} r={2.2} stroke={SQUARE_INK} strokeWidth={1.75} />
+        </Svg>
+      </Icon>
+      {count > 0 ? (
+        <View style={[styles.badge, { borderColor: ground }]}>
+          <Text variant="caption" color="inverse" bold style={styles.badgeWords}>
+            {String(count)}
+          </Text>
+        </View>
+      ) : null}
     </RNPressable>
   );
 }

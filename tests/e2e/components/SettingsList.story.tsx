@@ -18,17 +18,28 @@ export function SettingsListAsHeld({
   reader,
   held,
   name = 'Rajesh Patil',
+  form,
+  current,
 }: {
   reader: UiLanguage;
   held: readonly RolePreset[];
   /** The person's name; the default is the board's persona. */
   name?: string;
+  form?: 'page' | 'side';
+  current?: SettingsRow;
 }) {
   const [opened, setOpened] = useState<SettingsRow | ''>('');
   const list = settingsListFor(READERS[reader].t, held);
   return (
     <div lang={reader} data-opened={opened}>
-      <SettingsList title={list.title} person={{ name }} groups={list.groups} onOpen={setOpened} />
+      <SettingsList
+        title={list.title}
+        person={{ name }}
+        groups={list.groups}
+        onOpen={setOpened}
+        form={form}
+        current={current}
+      />
     </div>
   );
 }

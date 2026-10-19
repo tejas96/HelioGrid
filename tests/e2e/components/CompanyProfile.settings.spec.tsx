@@ -162,6 +162,22 @@ test.describe('at 1536', () => {
     await page.screenshot({ path: `${PICTURES}/en-1536.png`, fullPage: true });
   });
 
+  test('beside the settings side list at a narrower window the room is too small for both: the column takes it and the letterhead steps aside', async ({
+    mount,
+    page,
+  }) => {
+    // The room a 1015 window leaves beside the rail and the 248 side list.
+    const profile = await mount(
+      <div style={{ width: 599 }}>
+        <CompanyProfileAsHeld reader="en" life="settings" open="declarations" />
+      </div>,
+    );
+    await expect(profile.locator('.hg-company-profile-preview')).toBeHidden();
+    const room = (await profile.locator('.hg-company-profile-room').boundingBox())?.width;
+    expect((await profile.locator('.hg-company-profile-page').boundingBox())?.width).toBe(room);
+    await expectNoSidewaysScroll(page);
+  });
+
   for (const reader of ['hi', 'mr'] as const) {
     test(`reads in ${reader} at 1536 with nothing pushed sideways`, async ({ mount, page }) => {
       const { t } = readers[reader];

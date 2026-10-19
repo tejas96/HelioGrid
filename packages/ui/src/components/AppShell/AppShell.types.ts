@@ -119,6 +119,8 @@ export interface MobileTopBarProps {
    */
   safeTop?: boolean;
   sticky?: boolean;
+  /** Content has scrolled under the bar: it lifts on `--e2`, so the two never read as overlapped. */
+  scrolled?: boolean;
 }
 
 /** The shapes the shell draws itself — named for the shape, never the product word. */

@@ -1,18 +1,42 @@
-/* SearchField — a well (the FieldBox primitive owns its ground, radius and rings), NEVER a border.
-   44px tall so it clears the touch-target floor on a phone; functional density drops the box to
-   40px but the min-height keeps the target at 44. */
+/* SearchField — a well (the FieldBox primitive owns its ground, its focus ring and the functional
+   radius), NEVER a border. Expressive is the open page's grey pill: 50 tall, --r-pill, 18 of side
+   padding. Functional is the dense box: 40 tall, FieldBox's radius, 14 of side padding. Both keep
+   the 44px touch floor. The heights, the side paddings and the 10px gaps are the design system's
+   own and sit off the 4px spacing scale, so no token carries them.
+
+   With `onFilterClick` the pill and the 50×50 filter square ride side by side in
+   `.hg-search-field-row`, which takes the caller's className and style; the pill fills the rest. */
 
 .hg-search-field {
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 44px;
+  height: 50px;
   min-height: 44px;
-  padding: 0 14px;
+  flex-shrink: 0;
+  padding: 0 18px;
+}
+
+/* Two attributes, so this outranks FieldBox's one-attribute radius whatever order the sheets load. */
+.hg-search-field[data-density="expressive"] {
+  border-radius: var(--r-pill);
 }
 
 .hg-search-field[data-density="functional"] {
   height: 40px;
+  padding: 0 14px;
+}
+
+.hg-search-field-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.hg-search-field-row > .hg-search-field {
+  flex: 1;
+  min-width: 0;
 }
 
 /* The ring is the focus state of the INPUT, not of the box — the box is `focused` from the
@@ -57,12 +81,14 @@
   outline-offset: 2px;
 }
 
+/* A control inside the well: the opposite of the well, read from Ground (the well is a ground in
+   Ground.css's list, as RichText's frame is), so it is white on the grey pill. */
 .hg-search-field-clear-pill {
   width: 28px;
   height: 28px;
   display: grid;
   place-items: center;
   border-radius: var(--r-pill);
-  background: var(--neutral-bg);
+  background: var(--hg-control-fill);
   color: var(--text-secondary);
 }

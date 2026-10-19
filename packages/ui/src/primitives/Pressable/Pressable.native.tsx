@@ -63,7 +63,10 @@ export function Pressable({
       /* An omitted `state.disabled` follows the prop — today's behaviour exactly. Stating it
          announces off WITHOUT going inert, which is the reachable-with-a-reason row. */
       accessibilityState={{
-        ...accessibilityState,
+        selected: accessibilityState?.selected ?? accessibilityState?.current,
+        checked: accessibilityState?.checked,
+        busy: accessibilityState?.busy,
+        expanded: accessibilityState?.expanded,
         disabled: accessibilityState?.disabled ?? disabled,
       }}
       accessibilityLabel={accessibilityLabel}

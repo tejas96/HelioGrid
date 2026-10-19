@@ -10,8 +10,9 @@ import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { Block } from '../Block/Block.native';
 import { BrandBloom } from '../BrandBloom/BrandBloom.native';
-import { personRow, SETTINGS_ROW_GLYPH, settingsColumns } from './SettingsList.logic';
+import { personRow, SETTINGS_ROW_GLYPH } from './SettingsList.logic';
 import type { SettingsListPerson, SettingsListProps } from './SettingsList.types';
+import { SettingsSideList } from './SettingsSideList.native';
 
 /** The person's avatar diameter in their tile, and the ring's 2px around it. */
 const AVATAR = 56;
@@ -109,7 +110,17 @@ function PersonTile({
  * icon circle, its name and a chevron. Functional density. One column: the phone has no desktop
  * width.
  */
-export function SettingsList({ title, person, groups, onOpen }: SettingsListProps) {
+export function SettingsList({
+  title,
+  person,
+  groups,
+  onOpen,
+  form = 'page',
+  current,
+}: SettingsListProps) {
+  if (form === 'side') {
+    return <SettingsSideList title={title} groups={groups} onOpen={onOpen} current={current} />;
+  }
   return (
     <View style={styles.list}>
       {/* The primitive has no role prop; the heading's role sits on the node around it. */}
@@ -118,40 +129,38 @@ export function SettingsList({ title, person, groups, onOpen }: SettingsListProp
           {title}
         </Text>
       </View>
-      {settingsColumns(groups)
-        .flat()
-        .map((group) => {
-          const own = personRow(group);
-          if (own !== null) {
-            return (
-              <PersonTile
-                key={group.key}
-                person={person}
-                rowName={own.name}
-                onPress={() => onOpen(own.key)}
-              />
-            );
-          }
+      {groups.map((group) => {
+        const own = personRow(group);
+        if (own !== null) {
           return (
-            <Block key={group.key} overline={group.name} density="functional" style={styles.group}>
-              <View style={[tileSurface, styles.tile]}>
-                <GroundProvider ground="tile">
-                  {group.rows.map((row) => (
-                    <Pressable key={row.key} onPress={() => onOpen(row.key)} style={styles.row}>
-                      <TileCircle raised={false}>
-                        <ShellGlyph name={SETTINGS_ROW_GLYPH[row.key]} size="md" tone="accent" />
-                      </TileCircle>
-                      <View style={styles.name}>
-                        <Text variant="body">{row.name}</Text>
-                      </View>
-                      <ShellGlyph name="chevron-right" size="md" />
-                    </Pressable>
-                  ))}
-                </GroundProvider>
-              </View>
-            </Block>
+            <PersonTile
+              key={group.key}
+              person={person}
+              rowName={own.name}
+              onPress={() => onOpen(own.key)}
+            />
           );
-        })}
+        }
+        return (
+          <Block key={group.key} overline={group.name} density="functional" style={styles.group}>
+            <View style={[tileSurface, styles.tile]}>
+              <GroundProvider ground="tile">
+                {group.rows.map((row) => (
+                  <Pressable key={row.key} onPress={() => onOpen(row.key)} style={styles.row}>
+                    <TileCircle raised={false}>
+                      <ShellGlyph name={SETTINGS_ROW_GLYPH[row.key]} size="md" tone="accent" />
+                    </TileCircle>
+                    <View style={styles.name}>
+                      <Text variant="body">{row.name}</Text>
+                    </View>
+                    <ShellGlyph name="chevron-right" size="md" />
+                  </Pressable>
+                ))}
+              </GroundProvider>
+            </View>
+          </Block>
+        );
+      })}
     </View>
   );
 }
