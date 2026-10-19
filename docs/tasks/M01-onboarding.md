@@ -288,6 +288,224 @@ Corrected before approval (2026-10-08): the line read "an off-flow title `sp-8` 
 - (F2-10 carries no Team-screen Given/When/Then line in the PRD's acceptance blocks; the requirement text in the brief — all held presets shown as chips — is the binding criterion.) → proof: QA web · ios · android a person holding three presets shows them in F2's order, every held preset a whole chip that wraps — no cap and no *+1* — at 375 and at 1536
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: QA (web and phone) every base and brief-listed state drawn at 375px and 1536px, the colour-literal lint clean on both
 
+#### RFC
+
+**RFC approved:** 2026-10-19 — D1 A, D2 A, D3 A, D4 A (owner rulings)
+
+**1. Title** — `T-M01-012` — the owner sees the whole team in one list and ends a leaver's access in one tap.
+
+**2. User impact** — Today More → Team opens a "coming later" page, so an EPC Owner cannot see who is on the team, whose invite is waiting, or stop a leaver's phone. After this task the owner opens Team on the phone or at 1536, sees every person with their role chips, status and last-active, finds a person by name or status, deactivates a leaver (every device signed out within 10 minutes), revokes a waiting invite and re-sends an expired one. The sole EPC Owner can never lock the company out.
+
+**3. Analysis**
+
+| line | finding | source | fix |
+|---|---|---|---|
+| Contract, Depends on (also `T-M01-007`, `-013`, `-014`) | **Wrong** — the capability is `onboarding.manage_team`; m01.manage_team (as written in those tasks) does not exist; only `epc_owner` holds it | `packages/domain/src/authz/onboarding.ts:10` | corrected in all four tasks in this change |
+| Contract | **Wrong** — the roster route is guarded `member`, not by the capability; the screen is reached through the settings row `onboarding.manage_team` opens | `apps/api/src/modules/tenant/tenant.controller.ts:25`; `packages/domain/src/shell/settings-rows.ts:36` | the screen gates on `opensSettingsRow`, as `apps/mobile/src/screens/settings/SettingsRowScreen.tsx:30` does |
+| AC-2 proof | **Wrong** — "their lead history still names them" and "a lead-assignment picker omits them" cannot run: no lead record and no picker exist before block 3 | `packages/domain/src/authz/crm.ts:37` is the only `assign_leads` fact | history → the audit log still names them as actor; picker → the roster read returns `status: deactivated`, the field a picker filters on; a deferred row for the first M02 picker (§14) |
+| brief, States | **Missing** — the locked boards draw states the brief does not list: *Find in this list* and the Status chips with counts (`m-query`, `m-filter`, `d-query`, `d-filter`), the pending invite's *Day N of 7* bar at 375, the head count at 1536, the *You* badge, the revoke confirm and both toasts, the refused write's banner, *Expired* in `warning` | `.design/M01/SCR-M01-12-Team-Mobile.dc.html:43`, `:64`, `:432`, `:578`, `:769`; `-Desktop.dc.html:464`, `:544` | the brief gains these states in build step 1 (the locked board is the source for the look) |
+| brief, States | **Missing** — no frame shows a search with no match | both boards | D2 |
+| board copy | **Wrong** — three sentences guess a pronoun from a name (*her history stays hers*, *invite her again*, *Inviting her again*); the product holds no gender | `-Mobile.dc.html:334`, `:433`, `:770` | D3 |
+| brief, States | **Missing** — no words for: an active member never seen (`lastActiveAt` null), a deactivate that answers 409 (already deactivated elsewhere), *Invite again* refused (409 `ALREADY_MEMBER`/`ALREADY_INVITED`, 429 `INVITE_CAP_REACHED`, 422), one of the two reads failing, a second Owner deactivating themself | `packages/contracts/src/tenant.ts:66`, `:224`; `packages/contracts/src/invitation.ts:110-113` | §5 *Edges* — each reuses words that exist, or drops a part of a line; no new copy |
+| Contract | **Missing** — "Invite again" has no route of its own; `POST /invitations` with the expired invite's name, phone and roles sends a new one, because an expired invite is not live | `apps/api/src/modules/invitation/invitation.repository.ts:103` (`hasLiveInvite` at `act.now`) | reuse `create` with a creation key; no new route |
+| Contract | **Missing** — `GET /invitations` returns every expired invite ever sent, repeats for one phone and phones now on the team | `apps/api/tests/invitations/lifecycle.test.ts:156-167` | the view-model keeps the newest invite per phone and drops a phone that is on the team (AC-10) |
+| Contract | **Missing** — the 422 refusal carries only `LAST_OWNER`; the refused banner names who stopped being an Owner | `packages/contracts/src/tenant.ts:97`; `packages/domain/src/authz/administration.ts:15` | on the refusal the screen re-reads the roster; `ownerLostBetween(before, after)` names the one Owner present before and gone after; not exactly one → the banner shows its title only |
+| Reuse | **Missing** — `formatDate` always prints the year; the boards print *30 Aug*, *Expires 5 Sep*, *Today, 08:47* | `packages/domain/src/format/datetime.ts:73-77`; `-Desktop.dc.html:475-483` | add `formatDayMonth` and `isTenantToday` beside it, unit-tested (part b) |
+| Contract comment | **Wrong** — `expiresAt` "rendered with its provenance tier"; a date carries none | `packages/contracts/src/invitation.ts:50`; `F8-01` | fix the comment (Law 8, part b) |
+| deferred D264, D259 | **Wrong trigger** — written for `T-M01-007` and `T-M01-011`, but Team, earlier in the walk, draws the reason bubble (`m-guard`) and the side list (`d-default`) first | build order walk 006 → 007 → 012 | D259 joins part a, D264 part c |
+| Out of scope | holds — *Invite teammate*, the teaching state's action and the active row's open to Assign Roles are wired by `T-M01-007` and `T-M01-013` | task *Out of scope* | D1 |
+| Over-built | none — the acts reuse every route `T-M01-028` and `T-FPLAT-003` shipped; no migration, no api route |
+
+Assumptions:
+- A team fits in a few pages: the screen reads every page of `GET /tenants/me/members` and `GET /invitations?status=pending` and `?status=expired` at `limit=100` (`packages/contracts/src/common.ts:184`). `assumed` — no PRD team size.
+- A second Owner who deactivates themself loses the session on the server (`apps/api/src/modules/tenant/tenant.service.ts:144`). The screen then calls the store's `signOut()` (`packages/data/src/session/store.ts:249`), which lands on the sign-in door — no reliance on the next call's refusal.
+
+**4. Scope**
+- In: the Team screen on web (`/more/team`) and phone (More → Team), every board state, search and the Status chips, deactivate with its confirm and refusal, the sole Owner's resting guard, revoke with confirm and toast, invite again; the settings side list at 1536 on every built settings page; the phone sub-page bar; the design-system ports Team draws (§7).
+- Out: the Invite screen and its entry (`T-M01-007`), Assign Roles and the row open (`T-M01-013`), reactivation (no PRD row), reassigning open work (D220 → `T-M02-011`), `DataTable`'s per-row open (→ `T-M01-013`).
+- Targets: `M01-07` ≤10 minutes, held by `API_TOKEN_MINUTES = 10` (`packages/domain/src/auth/session-policy.ts:19`).
+
+**5. Proposal**
+- Read: More → Team → `useTeam()` reads members and both invite statuses → `teamRoster(members, invites, viewerUserId, now, pack)` returns rows → `teamRosterView(rows, query, status)` returns the visible rows, the chip counts (each over the rows matching the search) and the head count. Order (AC-10): pending invites by name, expired invites by name, active members by name, deactivated by name; names compare with `Intl.Collator` in the reader's language (`assumed` acceptable for Devanagari names).
+- Row: status, line, role chips in F2 order with their kind, the one act and whether it is off (sole EPC Owner: `keepsControl`, `administration.ts:15`), *You* when `userId` equals the session's `actor.userId` (`packages/contracts/src/session.ts:25`).
+- Acts: Deactivate → confirm (sheet at 375, modal at 1536, not dismissible) → `POST …/deactivate` → 200: the roster refreshes, the row moves last, toast. 422 `LAST_OWNER`: the confirm turns into the refused form. Revoke → confirm → `POST /invitations/{id}/revoke` → toast. Invite again → `POST /invitations` with a creation key → the roster refreshes, the row reads *Invited*.
+- Edges: deactivate 409 → refresh, the row shows *Deactivated*, no toast. Invite again 409 → refresh; 429 and 422 → a danger toast with the shipped words for the code (`packages/i18n/src/copy/api-error.ts:55-65`). A read fails, or one of the two → the error state; *Try again* re-reads both. `lastActiveAt` null → the line reads *Active* alone; the 1536 cell is empty. Self-deactivate → `signOut()` → the sign-in door.
+- Law 11: one view-model in `packages/domain/src/tenancy/team-roster.ts`; role kind is `Record<RolePreset, RoleKind>` in `packages/domain/src/authz/role-kinds.ts` (D265), so a new preset fails typecheck until it has a kind.
+- Twin: web `apps/web/features/team/` ↔ phone `apps/mobile/src/screens/team/`. Shared: the view-model, the words (`packages/i18n/src/copy/team.ts`), the member card (D4 — the web draws it below 768, the phone always), the confirm (`EditorSurface`), `Avatar`, `Badge`, `StatusChip`, `SearchField`, `FilterChips`, `Banner`, `ToastHost`. Web only: the 1536 table, `DataTable` with `head="quiet"` (its stacked form is not used; the card is D4's).
+- Reused: `TenantRepository`, `InvitationRepository` (`packages/data/src/tenant/repository.ts:24`, `invitation/repository.ts:18`), `presetName` (`packages/i18n/src/copy/shell.ts:127`), `INVITATION_EXPIRY_DAYS` (`packages/domain/src/auth/invitation-policy.ts:21`), `formatClockAt` (`datetime.ts:102`), `EditorSurface`, `ToastHost`, `Banner`, `LoadingBars`, `FilterChips` (`packages/ui/src/components/FilterBar/FilterBar.types.ts:27`).
+
+**6. Frame map** (`.design/M01/`, lock `1792385892-ae04`). *Invite teammate* on m-default, m-query, m-filter, m-loading, m-error, m-deactivate and every d-frame, and the teaching action, are **not built here** (D1).
+
+| frame | state | element → component + props + copy + tokens |
+|---|---|---|
+| m-default | normal, 375 | `MobileTopBar` title *Team*, leading round `ShellAction` *Back to settings* chevron-left, search; body pad `--sp-1 --screen-pad-mobile --sp-6`, gap `--sp-4`; list head sticky, gap `--tile-gap`: `SearchField` 50 tall *Find in this list*, `FilterChips` label *Status*, `scroll`, All · Invited · Expired · Active · Deactivated with counts; card (D4): `--fill`, `--r-tile`, pad `--sp-4`, gap `--sp-3`; `Avatar` 48 `hue`, status mark 11 px in an 18 px `--canvas` ring (invited `--info`, expired `--warning`, active `--success`, deactivated `--neutral`); name `--fs-body` bold + `Badge` accent functional *You*; line `--fs-body-sm` `--text-secondary`; roles `Badge` functional, kind tone, gap `calc(--sp-3/2)`; foot `Button` md fullWidth |
+| m-default | invited row | line *Invited as <roles>* (presets joined by the reader's list joiner); `ProgressBar` 6 px, value day/7·100; *Day N of 7* secondary, *Expires 5 Sep* primary; *Revoke invite* secondary + undo glyph |
+| m-default | expired row | *Expired 27 Aug*; *Invite again* primary + send glyph |
+| m-default | active row | *Active · last seen today* / *Active · last seen 30 Aug*; *Deactivate* secondary `tone="danger"` + user-minus glyph |
+| m-query | search | `SearchField` *Kulkarni* with clear; counts of matches; section label *Everyone at <company> matching <query>* |
+| m-filter | Expired chip | only expired rows |
+| m-loading | loading | chips without counts; three placeholder cards (avatar 48, two bars `--sp-3`, chip bar `--sp-6`, 44 act bar), shimmer 1.4 s; `role=status` *Loading your team* |
+| m-teaching | only the reader | the reader's card, then `EmptyState` icon people xl, *It's just you so far*, *Invite the people who sell, survey, design and install.*; no list head |
+| m-error | a read failed | `Banner` state functional *The team list didn't load*, `BannerAction` *Try again*; no roster |
+| m-deactivate | confirm | `EditorSurface` inset, `desktop="modal"`, not dismissible, no close, no handle, modal danger sm; title *Deactivate Anjali Kulkarni?*; body `--fs-body-sm` secondary (D3); `SheetActions`: `destructive` lg *Deactivate Anjali*, ghost lg *Cancel* |
+| m-deactivated | after | bar `scrolled`; row last, *Deactivated · last seen …*, no act, not dimmed; toast neutral *Anjali Kulkarni deactivated* |
+| m-revoke | revoke confirm | as m-deactivate; *Revoke Priya Deshmukh's invite?*; go *Revoke invite*; body (D3) |
+| m-revoked | after | row gone; toast neutral *Invite to Priya Deshmukh revoked* + line (D3) |
+| m-guard | sole Owner at rest | own card's *Deactivate* danger pill `disabled`, `disabledReason` *Only EPC Owner* in the `Explainer` bubble on tap, focus or hover; no line under it |
+| m-refused | 422 `LAST_OWNER` | `Banner` validation *Not done — <company> must keep one EPC Owner*, body *<name> stopped being an EPC Owner on another device.*; `destructive` *Deactivate Rajesh* off, reason *Make someone else an EPC Owner first*; ghost *Close* |
+| d-default | normal, 1536 | `AppShell`; side list 248 px, current row `--accent-subtle` `--accent` bold, rows 44, group overlines; content gap `--sp-6`; *Team* `--fs-h2` bold + *9 people · 2 invites* `--fs-body-sm` secondary (people = active + deactivated, invites = pending + expired, each singular or plural); list head sticky: `SearchField` to `--form-max`, `FilterChips` wrapping; `DataTable` `head="quiet"`: 2.2 : 2.4 : 1.2 : 160 px, head `--fs-caption` secondary, *Actions* visually hidden; one `--surface` card radius 20 `--e2`; rows min 82, pad `14px --sp-5`, hairline `--line-soft`; Person = `Avatar` 40 + name + `StatusChip` functional; Roles = `Badge`s; Last active = *Today, 08:47* / *30 Aug, 19:12* / *Expires 5 Sep* (no bar) / *Expired 27 Aug*; act `Button` sm right-aligned |
+| d-query, d-filter | search, chip | as at 375 |
+| d-loading | loading | head row kept; three placeholder rows 82 tall; no head count |
+| d-deactivate | confirm | centred modal sm, as m-deactivate |
+
+**7. Changes**
+- Packages: domain exports `ROLE_KINDS`, `RoleKind`, `roleKind`, `teamRoster`, `teamRosterView`, `ownerLostBetween`, `inviteAgainOf`, `formatDayMonth`, `isTenantToday`; ui extends `RecordCard` (D4), `Avatar.hue`, `Badge` tones `violet`/`blue`/`magenta`, `Button.tone="danger"`, `Explainer.trigger` (D264), `DataTable.head="quiet"`, `MobileTopBar.scrolled`, `SettingsList`'s side form, `SearchField` and `FilterChips` in the open page's look (D145), glyphs undo, user-minus, send; i18n adds `copy/team.ts`; data adds `queryKeys.team.*`, `useTeam`, `useTeamActs`. Direction unchanged.
+- Law 12: `ROLE_KINDS` → `Record<RolePreset, RoleKind>` (typecheck) and invariant `vocabulary-copies`; the iris tones → the adherence lint; the new web route `/more/team` and phone screen `team` → invariant `e2e-flow-per-screen` (`.claude/protections.md:137`). No api route, table or error code.
+- Data and schema: none. API and contracts: none (reads `members`, `invitations.list`; writes `deactivateMember`, `invitations.revoke`, `invitations.create`); one comment fixed. Jobs: none.
+- Files:
+
+| part | action | path | purpose |
+|---|---|---|---|
+| a | modify | `packages/theme/src/_generated/contracts/{navigation/AppShell,forms/SearchField,data/FilterBar}.d.ts.txt` | `ds:pull` at the lock, only the typings part a ports; parts b and c pull their own (Avatar, Chip, NextAction, DataTable; Button, IconButton, Explainer) |
+| a | modify | `packages/ui/src/components/SettingsList/{SettingsList.types.ts,SettingsList.tsx,SettingsList.css}` | side form (D259) |
+| a | modify | `packages/ui/src/components/AppShell/{AppShell.types.ts,AppShell.css,MobileTopBar.tsx,MobileTopBar.native.tsx}`, add `MobileTopBar.css`, modify `packages/ui/src/styles.css` | `scrolled` (D255); the bar's rules move to their own sheet so `AppShell.css` stays under 300 lines |
+| a | modify | `packages/ui/src/components/SearchField/*`, `FilterBar/*` (`FilterChips`, `FacetChips`, `FiltersButton`, `FilterPill.native`, types) | the open page's look (D145). Added as they landed: the pulled `SearchField` typing declares `onFilterClick`, `filterCount`, `filterLabel`, which `design-system-props` makes the repo declare, so the 50×50 filter square beside the pill (`FiltersButton`) is ported with it; `FacetChips` shares the chip pill, so it takes the near-black chosen look too; `FilterOption` takes the design system's `icon`. No screen draws the square yet |
+| a | modify | `apps/mobile/src/screens/shell/components/ShellPage.tsx` | round back, search, scroll lift (D252, D255) |
+| a | add | `tests/e2e/components/SettingsList.spec.tsx` + `SettingsList.story.tsx` (extend), `SearchField.spec.tsx`, `MobileTopBar.spec.tsx` (extend); modify `packages/ui/src/primitives/Ground/Ground.css` (the search pill is a ground, so its clear button is white) | specs; ground |
+| a | modify | `tests/e2e/web/more-company-profile.spec.ts` + snapshots | regression |
+| a | modify | `packages/ui/src/components/CompanyProfile/{CompanyProfile.tsx,CompanyProfile.css}`, `tests/e2e/components/CompanyProfile.settings.spec.tsx` | found live after QA: beside the side list the profile's two columns were sized from the window, so at a 1015 window the column was 103 px; the settings pair now measures its own room (a container) and below 976 px the column takes it and the letterhead steps aside |
+| a | modify | `packages/domain/src/tenancy/{company-profile-life.ts,index.ts}` (`announcesSave`) + `tests/tenancy/company-profile-life.test.ts`, `packages/data/src/react/use-company-profile.ts` (`onSaved`), `packages/i18n/src/copy/company-profile.ts` + `src/locales/{en,hi,mr}/messages.{po,ts}`, `apps/web/features/onboarding/CompanyProfileScreen.tsx`, `apps/mobile/src/screens/company-profile/components/ProfileEditor.tsx`, `docs/ux/briefs/SCR-M01-05-business-profile.md` (ruling 59, `## Redesign owed`) | AC-20 (owner ruling after QA): a save that lands in the settings life says so in a toast |
+| a | modify | `packages/domain/src/shell/{settings-rows.ts,index.ts}` + `tests/shell/settings-rows.test.ts` (`firstSettingsPageBeside`); add `packages/ui/src/components/AppShell/use-desktop-shell{,.native}.ts` (exported; the one desktop-width hook, read from the theme's `--bp-desktop`); modify `apps/web/features/settings/{SettingsScreen.tsx,SettingsLayout.tsx,hooks/use-settings-list.ts}`, `apps/web/features/shell/ShellScreen.tsx` (a rail press closes the notification centre); `packages/ui/src/components/SettingsList/{SettingsList.tsx,.native.tsx,.css,.logic.ts,.types.ts}`; `tests/e2e/web/{more.spec.ts,more-[row].spec.ts}`, `tests/e2e/components/SettingsList.spec.tsx`; `docs/ux/briefs/SCR-SHELL-01-app-shell.md` (ruling + `## Redesign owed`), `SCR-SHELL-03` brief | AC-19 (owner ruling after QA): `More` at the desktop width opens the first settings page beside the side list; the list page's three-column desktop form it orphans is removed; a rail press closes the centre, so `More` never lands on a page whose side list the open centre hides |
+| a | modify | `tests/e2e/web/more-[row].spec.ts` desktop look; add `apps/web/app/(inside)/more/layout.tsx`, `apps/web/features/settings/{SettingsLayout.tsx,settings.css}`; modify `packages/ui/src/primitives/Pressable/*` (`current` → `aria-current="page"`), add `packages/ui/src/components/SettingsList/SettingsSideList{,.native}.tsx` | added as they landed: one layout gives every page under `/more` the side list, so every settings page's 1536 look changes; the side rows announce the page in view through `Pressable` |
+| b | modify | `docs/ux/briefs/SCR-M01-12-team.md`, `docs/tasks/M01-onboarding.md` (`T-M01-007` AC, D1 A) | brief states; task lines |
+| b | add | `packages/domain/src/authz/role-kinds.ts`, `src/tenancy/team-roster.ts`; modify `src/format/datetime.ts`, both indexes; add `tests/authz/role-kinds.test.ts`, `tests/tenancy/team-roster.test.ts`, extend `tests/format/datetime.test.ts` | kinds, view-model, day-month |
+| b | add | `packages/i18n/src/copy/team.ts`, index line, `tests/team.test.ts`; `src/locales/{en,hi,mr}/messages.{po,ts}` | words |
+| b | modify | `packages/data/src/cache/keys.ts`; add `src/react/use-team.ts`; `src/react/index.ts` | the read |
+| b | modify | `packages/ui/src/components/{Avatar,Chip,NextAction,DataTable}/*` | hue, iris tones, the card (D4), quiet head |
+| b | modify | `packages/contracts/src/invitation.ts` | the `expiresAt` comment |
+| b | add | `apps/web/app/(inside)/more/team/page.tsx`, `apps/web/features/team/{TeamScreen.tsx,components/TeamTable.tsx,team.css,index.ts}` | web screen |
+| b | add | `apps/mobile/src/screens/team/{TeamScreen.tsx,styles.ts,index.ts}`; modify `screens/settings/SettingsRowScreen.tsx` | phone screen, `BUILT_ROW.team` |
+| b | add | `tests/e2e/web/more-team.spec.ts` + `landing-{phone,desktop}-linux.png`, `tests/e2e/mobile/team.yaml`, `tests/e2e/mobile/run.sh`, `tests/e2e/components/NextAction.spec.tsx` (extend); modify `tests/e2e/web/more-[row].spec.ts` (+ snapshots) to an unbuilt row (`roles`) | proof, regression |
+| c | modify | `packages/ui/src/components/{Button,IconButton,Explainer,ActionReason}/*`, `AppShell/ShellGlyph.logic.ts` | danger tone, glyphs (D265), reason bubble (D264) |
+| c | add | `packages/data/src/react/use-team-acts.ts`, index line | deactivate, revoke, invite again |
+| c | modify | `packages/domain/src/tenancy/team-roster.ts` + test | `ownerLostBetween` |
+| c | modify | `packages/i18n/src/copy/team.ts` + locales | confirm, toast, refusal words |
+| c | add | `apps/web/features/team/components/TeamConfirm.tsx`, `apps/mobile/src/screens/team/components/TeamConfirm.tsx`; modify both screens | the acts |
+| c | add | `tests/e2e/components/{Explainer,TeamConfirm}.spec.tsx`; extend `more-team.spec.ts`, `team.yaml` | proof |
+
+**8. Diagram** — No boundary change.
+
+**9. Build steps**
+
+| step | part | files | AC | done when |
+|---|---|---|---|---|
+| 1 | a | `ds:pull` of the three typings part a ports | — | typings at the lock |
+| 2 | a | `SettingsList` side form, Business profile at desktop | AC-8 | spec green EN/HI/MR; 1536 shows the side list, no breadcrumb |
+| 3 | a | `MobileTopBar.scrolled`, `ShellPage`, `SearchField`/`FilterChips` look | AC-9 | specs green; Business profile on iOS: round back, search, lift |
+| 4 | b | brief, task lines | — | brief lists every board state |
+| 5 | b | domain kinds, view-model, day-month (tests first) | AC-10, AC-11, AC-15 | tables green; order seen red once |
+| 6 | b | i18n `team.ts`, data `useTeam` | — | extract clean; every page read |
+| 7 | b | ui `Avatar`, `Badge`, `RecordCard`, `DataTable` head — `parallel` with step 6 | AC-5s | the owner's design-system yes for D4 A is in; specs green at 375/1536, EN/HI/MR |
+| 8 | b | both screens, route, flows | AC-5w … AC-7, AC-14 | both match the frame map's read frames |
+| 9 | c | ui `Button` tone + glyphs, `Explainer.trigger` | AC-1s | spec: announced, opens, stays after hover then click, closes |
+| 10 | c | `useTeamActs`, `ownerLostBetween`, both confirms — a permission path, not parallel | AC-1 … AC-4, AC-12, AC-13, AC-16 … AC-18 | live rows pass |
+
+**10. Risks**
+- Tenancy: only the shipped tenant-scoped routes; a foreign `membershipId` answers 404 (P3).
+- Permission: the client hides acts, the server decides (`onboarding.manage_team`, `keepsControl`); a stale read meets the refused form.
+- Release: no stored or wire shape changes.
+- Performance: one read per 100 members per status.
+
+**11. Regression**
+- Settings list and Business profile: `tests/e2e/web/more.spec.ts`, `more-company-profile.spec.ts`; qa-web P10 and qa-ios P11 (no phone settings flow exists, so the phone side is qa-ios only).
+- Other settings rows' placeholder: `more-[row].spec.ts`, moved to `roles`.
+- `Button`, `Explainer`, `Avatar`, `Badge`, `DataTable`, `SearchField`, `FilterChips` callers: their component specs, run whole. `RecordCard`'s callers `NotificationCard.tsx` and `ListRow.tsx`: `NextAction.spec.tsx` and the notification centre's spec, run whole, and a qa-web row on the notification centre.
+
+**12. Acceptance criteria** — `w` web, `i` iOS, `a` Android, `s` component spec or unit, `u` unit: one line proven on several surfaces is one AC per surface, each with one owner.
+
+- AC-1 Given an attempt to deactivate the last EPC Owner, when it is submitted, then it is blocked with an explanation and the blocked attempt is audit-logged (M01-19, M01-18, F2-19/F2-22). → proof: QA (web and phone) in a one-owner tenant the owner's own row keeps *Deactivate* as the danger row pill, disabled, `aria-disabled` and focusable, at both widths, with no line under it, and a tap or keyboard focus opens its `disabledReason` *Only EPC Owner* in the reason bubble; QA (api) the write is refused with the F2-19 reason and an audit row exists — the guard's unit is `T-FPLAT-003`'s
+- AC-2 Given a deactivated person, when the Team screen is read, then their history remains attributed to them, their role chips and status render, and they are absent from assignment pickers (M01-19, M01-18, F2-20). → proof: QA (web and phone) a deactivated row keeps name, chips, status and last-active undimmed, their lead history still names them, and a lead-assignment picker omits them
+- AC-3 Given a deactivation or "sign out everywhere", when it is issued, then every session of that user ends within 10 minutes (M01-07). → proof: QA (api) deactivate a member holding a live mobile token: `/auth/refresh` on that device is refused within the revocation window `T-M01-025` fixes; the sweep itself is `T-M01-025`'s unit
+- AC-4 Given a tenant with one EPC Owner, when anyone attempts to remove that person's Owner preset or deactivate them, then the attempt is blocked with an explanation and the blocked attempt is audit-logged (F2-19, F2-22). → proof: QA (api) removing the sole Owner's preset and deactivating them are both refused with the explanation and both attempts appear in the audit log
+- AC-5 (F2-10 carries no Team-screen Given/When/Then line in the PRD's acceptance blocks; the requirement text in the brief — all held presets shown as chips — is the binding criterion.) → proof: QA web · ios · android a person holding three presets shows them in F2's order, every held preset a whole chip that wraps — no cap and no *+1* — at 375 and at 1536
+- AC-6 Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: QA (web and phone) every base and brief-listed state drawn at 375px and 1536px, the colour-literal lint clean on both
+- AC-7 Given people and invites, when the owner types in *Find in this list* or picks a Status chip, then only matching rows show and each chip's count counts the rows matching the search.
+- AC-8 Given a built settings page at 1536, when it opens, then the person's settings list stands beside it, 248 px, the current row marked, and no breadcrumb shows.
+- AC-9 Given a phone settings page opened from More, when it shows, then its bar has the round way back and the search button, and lifts once content scrolls under it.
+- AC-10 Given members and invites in any arrival order, with repeats for one phone and an expired invite for a phone now on the team, when the list renders, then it shows pending invites, then expired, then active members, then deactivated, each by name, one invite per phone, and none for a phone on the team.
+- AC-11 Given a pending invite at 375, when its row renders, then it shows *Day N of 7* on a bar and its expiry date; at 1536 it shows *Expires <date>* alone; an expired one shows *Expired <date>* and *Invite again*.
+- AC-12 Given a pending invite, when the owner confirms *Revoke invite*, then the invite is revoked, its row leaves the list and the toast names the person; a second revoke answers 200, the status stays revoked and the log holds one `team.invite_revoked`.
+- AC-13 Given an expired invite, when the owner taps *Invite again*, then one new pending invite with the same name, phone and roles exists and the row reads *Invited*; the same key twice makes one invite.
+- AC-14 Given a reader without `onboarding.manage_team`, when they open `/more/team` or `heliogrid://more/team`, then the page says it does not exist (`F7-48`), as other unopened rows do.
+- AC-15 Given a roster, when the 1536 heading renders, then it reads *<n> people · <m> invites* — people active plus deactivated, invites pending plus expired — singular at one, and nothing while loading.
+- AC-16 Given a deactivate answered 409 or an *Invite again* answered 409, 422 or 429, when the answer lands, then a 409 refreshes the list with no error, and a 422 or 429 shows a danger toast in the shipped words for its code (`packages/i18n/src/copy/api-error.ts`); a code with no words of its own takes the `INTERNAL` words (`:43`) — `IDEMPOTENCY_KEY_REUSED` cannot arise here, since each tap mints one key for one fixed body.
+- AC-19 Given a person whose settings list holds more than one row, when they open `More` on the web at the shell's desktop width, then their first settings page opens beside the settings side list, the browser's Back never returns to `/more`, and below that width and on the phone `More` stays the list page (owner ruling 2026-10-19).
+- AC-20 Given the Business profile in settings on the web or the phone, when a save lands, then the page stays as it is and a neutral toast says *Business profile saved*; a failed save keeps its *Not saved* line and no toast; in setup no toast shows (owner ruling 2026-10-19, `SCR-M01-05` ruling 59).
+- AC-18 Given the confirm open on a stale read, when another device has already left the reader the only EPC Owner, then the write is refused and the confirm shows the refused form, naming the Owner who stopped being one when exactly one did.
+- AC-17 Given a second EPC Owner, when they deactivate themself and confirm, then the deactivation lands and their app goes to the sign-in door.
+
+**13. Proof** — one owner per AC.
+
+| row | AC | owner | surface | action → expected | data, setup, cleanup |
+|---|---|---|---|---|---|
+| P1 | AC-1 | qa-api | live | sole Owner deactivated → 422 `LAST_OWNER`; `GET /tenants/me/audit-log` holds a `team.member_deactivated` entry with `blocked: true` | `…904` |
+| P1w | AC-1w | qa-web | live | one-owner tenant, 375 and 1536: own *Deactivate* is the danger pill, disabled, `aria-disabled`, focusable; click, focus or hover opens *Only EPC Owner*; no line under it | `…901` |
+| P1i | AC-1i | qa-ios | live | the same on the phone, tap opens the bubble | `…902` |
+| P1s | AC-1s | main-dev | spec | `tests/e2e/components/Explainer.spec.tsx` — the reason is announced, opens, stays after hover then click, closes on a second tap, outside, scroll, Escape | — |
+| P2 | AC-2 | qa-api | live | deactivate a member → `GET /tenants/me/members` returns them `status: deactivated`; the audit log still names them as actor of their accept | a member invited and accepted through the app |
+| P2w | AC-2w | qa-web | live | the row moves last, *Deactivated · last seen …*, name, chips and dates at ≥ 4.5:1, no act; toast | same |
+| P2i | AC-2i | qa-ios | live | the same on the phone | same |
+| P3 | AC-3 | qa-api | live | deactivate a member holding a live mobile token: their next call is refused, ≤ `API_TOKEN_MINUTES` = 10 (`session-policy.ts:19`, refused at `admission.ts:6-9`); their web cookie is refused on its next call; *sign out everywhere* (`auth.ts:208`) does the same for the actor's own two sessions; a foreign `membershipId` → 404 | `…904`, `…905` |
+| P4 | AC-4 | qa-api | live | `PUT …/roles` dropping the sole Owner's `epc_owner` → 422 `LAST_OWNER`; deactivating them → 422; both logged `blocked: true` | `…904` |
+| P5w | AC-5w | qa-web | live | a person holding three presets shows them in F2 order, whole chips that wrap, no cap, no *+1*, at 375 and 1536 | member with three presets |
+| P5i | AC-5i | qa-ios | live | the same on iOS | same |
+| P5a | AC-5a | qa-android | live | the same on Android (no phone settings flow of its own before this task) | `…903` |
+| P5s | AC-5s | main-dev | spec | `NextAction.spec.tsx` three presets wrap whole at 375, EN/HI/MR | — |
+| P6w | AC-6w | qa-web | live | every frame of §6 at 375 and 1536 except m-refused (part b: the read frames without row acts; part c: the acts and the act frames); m-error with the api stopped; the colour-literal lint clean | api stopped for m-error, last |
+| P6i | AC-6i | qa-ios | live | every m-frame except m-refused (split by part as P6w); m-error with the api stopped; Hindi and Marathi layout: chips wrap, nothing clips | same |
+| P6s | AC-6s | main-dev | spec | `TeamConfirm.spec.tsx` m-refused at 375 and 1536, EN/HI/MR | — |
+| P7 | AC-7 | qa-web | live | type a surname → matching rows, counts follow; Expired chip → expired rows only | two invites, two Kulkarnis |
+| P8 | AC-8 | qa-web | live | `/more/company-profile` and `/more/team` at 1536: side list 248 px, current row marked, no breadcrumb | `…901` |
+| P19w | AC-19 | qa-web | live | at 1536 the rail's `More` → `/more/profile` with the side list, *Profile & preferences* current; Back leaves `More` instead of returning to `/more`; at 375 `/more` is the list page | `…901` |
+| P20w | AC-20w | qa-web | live | `/more/company-profile`: change a field, *Save changes* → `PUT /settings/business-profile` 200 and the toast *Business profile saved*; a save made to fail in the browser → *Not saved* line, no toast; `more-company-profile.spec.ts` asserts the toast in CI; `company-profile.spec.ts` keeps a no-toast regression line for web setup | `…901` |
+| P20u | AC-20u | main-dev | unit | `packages/domain/tests/tenancy/company-profile-life.test.ts` — `announcesSave`: settings and written → yes; settings with the logo refused → no; setup → no, both ways; both decisions seen red once | — |
+| P20i | AC-20i | qa-ios | live | Business profile: change a field, *Save changes* → the toast; in Hindi the toast's words are the catalog's | `…902` |
+| P9 | AC-9 | qa-ios | live | Business profile and Team: round back, search opens Search, bar lifts on scroll | `…902` |
+| P10 | AC-10 | main-dev | unit | `packages/domain/tests/tenancy/team-roster.test.ts` — every arrival order, repeats per phone, a phone on the team, Devanagari names; seen red once | — |
+| P11 | AC-11 | main-dev | unit | same file — day 0, 1, 6, 7, expired; `formatDayMonth` and `isTenantToday` at midnight either side in the tenant's zone | — |
+| P12 | AC-12 | qa-api | live | revoke → 200 revoked; again → 200, one `team.invite_revoked` | invite sent through the app |
+| P13s | AC-13u | main-dev | unit | `team-roster.test.ts` — `inviteAgainOf(row)` gives the expired invite's name, phone and roles in F2 order, and nothing for any other row; `useTeamActs` sends exactly that body with one creation key per tap (read in review) | — |
+| P13 | AC-13 | main-dev | unit | `apps/api/tests/invitations/lifecycle.test.ts` — a send for a phone whose invite expired makes one new pending invite; one key twice makes one (a case added if missing). Live: not reachable — an invite expires after 7 days and QA cannot move the api's clock | test database |
+| P14 | AC-14 | qa-web | live | a Sales Executive opens `/more/team` → not-found state | `…903` member in `…901`'s tenant |
+| P15 | AC-15 | main-dev | unit | `team-roster.test.ts` — counts 0, 1, 2 of each, words singular and plural through `packages/i18n/tests/team.test.ts` | — |
+| P16w | AC-16w | qa-web | live | open the confirm on a member; Main deactivates them through the api; confirm → no error, the row reads *Deactivated* | a member |
+| P16 | AC-16 | main-dev | unit | `packages/i18n/tests/team.test.ts` and `team-roster.test.ts` — each code's words and the refresh decision | — |
+| P17 | AC-17 | qa-web | live | a second Owner deactivates themself → their tab lands on the sign-in door | two Owners in `…901`'s tenant |
+| P18 | AC-18 | qa-web | live | open the confirm on your own row with two Owners; Main drops the other Owner's preset through `PUT …/roles`; confirm → the refused form: banner *Not done — <company> must keep one EPC Owner*, *<name> stopped being an EPC Owner on another device.*, the act off with its reason, *Close* | two Owners in `…901`'s tenant |
+| P18u | AC-18u | main-dev | unit | `team-roster.test.ts` — `ownerLostBetween`: one lost, none, two, the reader's own; seen red once | — |
+| P19 | flows | ci | `e2e-web`, `android` | `more-team.spec.ts` and `team.yaml` (the reader's own card: the teaching state, since CI's company has no team) run and pass | — |
+
+**14. Deferred rows**
+- Join and delete: D252, D255, D259 (part a; the settings section card moves to a new row, `T-M01-011 starts`), D145 (part a, the `SearchField`, filter square and chips look; the row stays for `TileActions` and the open-page `RecordCard`, `reopens when T-M01-012b starts`, which extends `RecordCard` under D4), D242 (part b, the quiet head; the per-row open moves to a new row, `T-M01-013 starts`), D264 (part c), D265 (parts b and c: `Avatar` hue, `Badge` tones, `Button` danger, role kinds, three glyphs; `IconButton` tone and the other six glyphs move to a new row, `T-M01-020 starts`), D257 (part b: Team renders no tiered date and the `expiresAt` comment is fixed; the two template comments move to a new row, `T-M01-019 starts`).
+- Stay: D220 → `reopens when T-M02-011 starts`; D233 → owner only (drops `T-M01-012 starts`); D238 → `T-M01-015 starts` (Team draws no pressable `ListRow`).
+- New: the first M02 assignment picker omits deactivated members — `T-M02-011 starts`.
+
+**15. Size** — about 100 changed files: part a ~28, part b ~44, part c ~27; ~2,800 code lines, ~1,500 test lines. Part b is over 30: the read view cannot split again without shipping half a screen, and three parts is the cap.
+
+**16. Decisions for the owner**
+- D1 · Invite acts before `T-M01-007`: (A, recommended) Team ships without *Invite teammate* and the teaching state's action; `T-M01-007`, the next screen in the walk, adds both, and its DONE WHEN gains that line in this change. (B) Build `T-M01-007` first, so Team ships with them — two `Depends on:` lines change.
+- D2 · A search with no match: (A, recommended) I draw a no-match frame (375 and 1536) on the M01 canvas before part b, and you lock it. (B) The build uses the system `EmptyState` with *No one matches "<text>"* and *Clear search*, shown to you at QA.
+- D3 · Pronouns: (A, recommended) the name, never a pronoun — *Anjali loses access to Suryodaya Solar. Everything Anjali did stays in Anjali's name.* · *The invite link stops working now. You can invite Priya again any time.* · *Inviting Priya again sends a new link.* (B) keep the board's words.
+- D4 · The member card: (A, recommended) extend `RecordCard` — it already holds the name, avatar, one status chip, wrapping marks and a bottom act — with a sub-line, a badge beside the name, the avatar's status mark and a detail slot (the invite bar); the design system's `RecordCard` gets the same props as a design-system change, which needs your yes on the canvas before part b builds. (B) a new `PersonCard`, which adds a second card shape.
+
+#### Parts
+
+| part | what | AC | depends on | status |
+|---|---|---|---|---|
+| a | Settings pages: the side list at 1536, and `More` opening the first settings page there; the phone sub-page bar (round back, search, lift); the open page's search and chips | AC-8, AC-9, AC-19, AC-20w, AC-20i, AC-20u | — | shipped |
+| b | Team — read the whole team on web and phone: rows, every read state, search, Status chips, head count; no row act yet — the card's and the table's act slot stays empty until part c | AC-5w/i/a/s, AC-6w/i (read frames), AC-7, AC-10, AC-11, AC-14, AC-15 | a | planned |
+| c | Team — deactivate, the sole Owner's guard and the refusal, revoke, invite again, self-deactivate | AC-1, AC-1w/i/s, AC-2, AC-2w/i, AC-3, AC-4, AC-6w/i/s (act frames), AC-12, AC-13, AC-13u, AC-16, AC-16w, AC-17, AC-18, AC-18u | b | planned |
+
 ### T-M01-013 · Assign Roles
 **Type:** screen · **Tier:** P0
 **Status:** designed

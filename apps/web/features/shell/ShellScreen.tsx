@@ -42,10 +42,15 @@ export function ShellScreen({ children }: { children: ReactNode }) {
   const session = useSession();
   const shell = useShell();
   const router = useRouter();
-  const rail = useRailItems(shell, (path) => router.push(path));
   const unread = useUnreadCount();
   const [grievance, setGrievance] = useState(false);
   const [centreOpen, setCentreOpen] = useState(false);
+  /* Leaving the page the centre stands beside closes it — an item's subject, or a rail press. */
+  const goTo = (path: string) => {
+    setCentreOpen(false);
+    router.push(path);
+  };
+  const rail = useRailItems(shell, goTo);
   const showGrievance = () => setGrievance(true);
   const signOut = () => void session.signOut();
   const note = <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />;
@@ -75,10 +80,6 @@ export function ShellScreen({ children }: { children: ReactNode }) {
     badge: unread ?? undefined,
     open: centreOpen,
     onClick: () => setCentreOpen((open) => !open),
-  };
-  const goTo = (path: string) => {
-    setCentreOpen(false);
-    router.push(path);
   };
   const offersLeads = offersDoor(shell, 'leads');
   return (

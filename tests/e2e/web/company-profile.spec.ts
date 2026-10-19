@@ -151,6 +151,8 @@ test('what the owner types is what is saved: the address, a tax number taken in 
   });
   expect((await recorded).postDataJSON()).toEqual({ state: 'completed' });
   await expect(shell(page)).toBeVisible();
+  // In setup the next step is the answer: no saved toast (`SCR-M01-05` ruling 59).
+  await expect(page.getByText(en.t(COMPANY_PROFILE.saved), { exact: true })).toHaveCount(0);
 });
 
 test('a profile that cannot be read is not a wall: Try again reads it, and the parts appear', async ({

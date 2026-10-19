@@ -1,0 +1,32 @@
+/* A settings page beside the settings list (`SCR-SHELL-01`, *More: the settings list*). Below the
+   shell's desktop width the list is not drawn and the page keeps its own padding. With the
+   notification centre open the list steps aside too, and the page takes the shell's own clearance
+   (`SCR-SHELL-03` d-default): list, page and panel side by side leave the page no room at 1536. */
+.hg-settings-page-side {
+  display: none;
+}
+
+@media (min-width: 968px) {
+  .hg-shell:not(.hg-shell-centre-open) .hg-settings-page {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-8);
+    padding: var(--sp-6) var(--sp-8);
+  }
+
+  .hg-shell:not(.hg-shell-centre-open) .hg-settings-page-side {
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .hg-settings-page-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* The pair takes the page's padding once: a settings page's own shell padding would set its
+     heading in below the list's first overline. */
+  .hg-shell:not(.hg-shell-centre-open) .hg-settings-page-content > .hg-shell-page {
+    padding: 0;
+  }
+}

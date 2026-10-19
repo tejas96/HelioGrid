@@ -5,14 +5,19 @@ import Svg, { Path } from 'react-native-svg';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import type { FacetChipsProps } from './FilterBar.types';
-import { optionLabel, optionValue } from './FilterBar.types';
-import { FilterPill, filterStyles, PillCount, PillLabel } from './FilterPill.native';
+import { optionIcon, optionLabel, optionValue } from './FilterBar.types';
+import {
+  FilterPill,
+  filterStyles,
+  OptionGlyph,
+  PillCount,
+  PillLabel,
+  pillInkColor,
+} from './FilterPill.native';
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
   wrap: { flexWrap: 'wrap' },
-  /* A ticked chip gives the tick its room back on the leading edge (10 vs 14). */
-  ticked: { paddingLeft: 10, paddingRight: theme.spacing['sp-3'] },
 });
 
 /** The tick is the second, non-colour channel — a set has to be readable without hue. */
@@ -37,8 +42,10 @@ interface NativeFacetChipsProps extends FacetChipsProps {
 }
 
 /**
- * **Multi-select chips — how a dimension holds several values.** Selected chips take the accent
- * fill *and a tick*, so a set is readable without hue.
+ * **Multi-select chips — how a dimension holds several values.** The kind chips' 44dp pill — the
+ * pill is the target. Selected chips take the near-black primary fill *and a tick*, so a set is
+ * readable without hue; an option's 18dp glyph shows only while it is not selected, where the tick
+ * takes its place.
  *
  * The web half is a `<fieldset aria-label>`, which IS `role="group"`; RN spells the same role
  * `role="group"`, so that is what the container takes — never `accessible`, which would fold every
@@ -73,6 +80,8 @@ export function FacetChips({
     const optValue = optionValue(option);
     const on = selected.has(optValue);
     const count = counts?.[optValue];
+    const icon = on ? undefined : optionIcon(option);
+    const ink = pillInkColor('chip', on);
     return (
       <Pressable
         key={optValue}
@@ -81,8 +90,9 @@ export function FacetChips({
         onPress={() => toggle(optValue)}
         style={filterStyles.target}
       >
-        <FilterPill kind="chip" active={on} style={on ? styles.ticked : undefined}>
-          {on ? <Tick color={theme.colors['text-inverse']} /> : null}
+        <FilterPill kind="chip" active={on} lead={on || Boolean(icon)}>
+          {on ? <Tick color={ink} /> : null}
+          <OptionGlyph icon={icon} color={ink} />
           <PillLabel kind="chip" active={on}>
             {optionLabel(option)}
           </PillLabel>

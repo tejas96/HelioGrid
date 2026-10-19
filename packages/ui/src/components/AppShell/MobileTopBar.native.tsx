@@ -36,11 +36,14 @@ export function MobileTopBar({
   leading,
   title,
   actions,
+  scrolled = false,
   style,
 }: NativeMobileTopBarProps) {
   const { ground } = useGround();
   return (
-    <View style={[styles.bar, { backgroundColor: ground }, style]}>
+    <View
+      style={[styles.bar, { backgroundColor: ground }, scrolled ? styles.lifted : undefined, style]}
+    >
       {leading}
       {title !== undefined ? (
         <View style={styles.title} accessibilityRole="header">
@@ -97,6 +100,11 @@ const styles = StyleSheet.create({
     minHeight: theme.layout['topbar-h-mobile'],
     paddingVertical: theme.spacing['sp-2'],
     paddingHorizontal: theme.layout['screen-pad-mobile'],
+  },
+  /* Content under the bar lifts it, so the two never read as overlapped. */
+  lifted: {
+    ...theme.elevation.e2,
+    zIndex: 1,
   },
   /* The name gives way first, so Search, the bell and the avatar keep their 44. */
   identity: {

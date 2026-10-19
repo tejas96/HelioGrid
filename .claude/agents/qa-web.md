@@ -21,7 +21,9 @@ Before the first row, sign out of any other account the pane holds.
 names (`find`, `read_page`); put every step you can foresee into one `browser_batch`; a wait is one
 polling call with a timeout, never a bare sleep. For a standing number the sign-in code is `DEV_OTP_CODE` in `.env.local` (`grep '^DEV_OTP_CODE=' .env.local`) — it is never logged, and never goes in your report. Then check the expected result and report.
 
-**Always check, on every screen a row reaches, at 375 and at 1536 wide** (`resize_window`):
+**Always check, on every screen a row reaches, at 375 and at 1536 wide** (`resize_window`), and at
+1024 where a column stands beside another (a side list, a panel, a preview) — the narrowest width that
+shows both:
 
 - no console error and no failed network request since the row began;
 - no sideways scroll (`documentElement.scrollWidth <= clientWidth`);

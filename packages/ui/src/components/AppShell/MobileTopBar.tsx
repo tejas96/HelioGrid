@@ -33,6 +33,7 @@ export function MobileTopBar({
   actions,
   safeTop = false,
   sticky = true,
+  scrolled = false,
   className,
   style,
 }: WebMobileTopBarProps) {
@@ -41,6 +42,7 @@ export function MobileTopBar({
       className={classNames('hg-app-shell-topbar', className)}
       data-sticky={sticky ? 'true' : undefined}
       data-safe-top={safeTop ? 'true' : undefined}
+      data-scrolled={scrolled ? 'true' : undefined}
       style={style}
     >
       {leading}

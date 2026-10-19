@@ -1,5 +1,5 @@
-/* AppShell — the header half of F7-22's sidebar-and-header shell, plus the phone top bar.
-   Heights come from --header-h and --topbar-h-mobile. */
+/* AppShell — the header half of F7-22's sidebar-and-header shell; the phone top bar is
+   MobileTopBar.css. The header's height comes from --header-h. */
 
 .hg-app-shell {
   display: flex;
@@ -111,61 +111,6 @@
   display: flex;
   align-items: center;
   gap: 6px;
-}
-
-/* ── the phone top bar ─────────────────────────────────────────────────────────────────── */
-
-.hg-app-shell-topbar {
-  position: static;
-  top: 0;
-  z-index: 20;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  box-sizing: border-box;
-  min-height: var(--topbar-h-mobile);
-  padding: var(--sp-2) var(--screen-pad-mobile);
-  background: var(--hg-ground);
-  font-family: var(--font-sans);
-}
-
-.hg-app-shell-topbar[data-sticky="true"] {
-  position: sticky;
-}
-
-/* The device's own inset, read by the browser — never the typed --safe-top. */
-.hg-app-shell-topbar[data-safe-top="true"] {
-  padding-top: max(var(--sp-2), env(safe-area-inset-top));
-}
-
-/* The tile and the company's name. The name gives way first, so Search, the bell and the avatar
-   keep their 44. The board's 10 between them is no token; --sp-2 is the nearest step. */
-.hg-app-shell-topbar-identity {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-}
-
-.hg-app-shell-topbar-company {
-  min-width: 0;
-}
-
-/* A page opened from a list: its title `sp-3` from the back control (`SCR-M01-05`, `m-settings`),
-   wrapping before it cuts. */
-.hg-app-shell-topbar-title {
-  flex: 1;
-  min-width: 0;
-  margin-inline-start: var(--sp-1);
-}
-
-.hg-app-shell-topbar-actions {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
 }
 
 /* ── the 44px shell button ─────────────────────────────────────────────────────────────── */

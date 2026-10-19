@@ -1,9 +1,9 @@
 'use client';
 import { useCompanyProfile, useSession } from '@heliogrid/data/react';
 import { type CompanyProfileLife, opensSettingsRow } from '@heliogrid/domain';
-import { companyProfileStepWords } from '@heliogrid/i18n';
+import { COMPANY_PROFILE, companyProfileStepWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
-import { CompanyProfile, useFormat } from '@heliogrid/ui';
+import { CompanyProfile, ToastHost, useFormat, useToasts } from '@heliogrid/ui';
 import { notFound } from 'next/navigation';
 import { useLogoFile } from './hooks/use-logo-file';
 
@@ -25,7 +25,10 @@ export function CompanyProfileScreen({ life }: { life: CompanyProfileLife }) {
 function CompanyProfileIn({ life }: { life: CompanyProfileLife }) {
   const { t, locale } = useI18n();
   const { pack } = useFormat();
-  const step = useCompanyProfile(life);
+  const toasts = useToasts();
+  const step = useCompanyProfile(life, {
+    onSaved: () => toasts.push({ tone: 'neutral', title: t(COMPANY_PROFILE.saved) }),
+  });
   const chooseLogoFile = useLogoFile(step.chooseLogo);
   const profile = (
     <CompanyProfile
@@ -45,6 +48,13 @@ function CompanyProfileIn({ life }: { life: CompanyProfileLife }) {
       onChooseLogo={chooseLogoFile}
     />
   );
-  // Inside the shell the page takes the shell's region, as every page behind `More` does.
-  return life === 'settings' ? <div className="hg-shell-page">{profile}</div> : profile;
+  // Inside the shell the page takes the shell's region, as every page behind `More` does; a save
+  // that lands there says so (`SCR-M01-05` ruling 59).
+  if (life !== 'settings') return profile;
+  return (
+    <div className="hg-shell-page">
+      {profile}
+      <ToastHost toasts={toasts.toasts} onDismiss={toasts.dismiss} />
+    </div>
+  );
 }

@@ -133,16 +133,26 @@ export interface MobileTopBarProps {
   /** Pass the 44px Avatar. */
   avatar?: React.ReactNode;
   leading?: React.ReactNode;
+  /**
+   * A page opened from a list (`SCR-M01-05`, `m-settings`): its title, after `leading`, in place of
+   * the product tile and the company — the bar shows its way back and its title. `--fs-h3` bold, and
+   * it wraps rather than cuts, so a longer language keeps every word.
+   */
+  title?: string;
   /** Extra round ShellActions (pass `round`). */
   actions?: React.ReactNode;
   /** Pad the top 54px (--safe-top) so nothing sits under a centred camera. Default false — use it
    *  when no device frame reserves the status bar. */
   safeTop?: boolean;
   sticky?: boolean;
+  /** Content has scrolled under the bar: the bar lifts with a soft shadow (--e2), so the two
+   *  never read as overlapped. Default false. */
+  scrolled?: boolean;
   style?: React.CSSProperties;
 }
-/** The phone header — LogoTile and company name left; round bell and 44px avatar right. No page title: the
- *  title is the first thing in the content below. */
+/** The phone header — LogoTile and company name left; round bell and 44px avatar right. No page title on a
+ *  home: the title is the first thing in the content below. A page opened from a list passes `leading` (its
+ *  way back) and `title` instead of the tile and the company. */
 export function MobileTopBar(props: MobileTopBarProps): JSX.Element;
 
 export interface AppShellProps {

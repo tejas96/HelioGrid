@@ -52,6 +52,9 @@ export interface PressableAccessibilityState {
   busy?: boolean;
   /** THE THING THIS TARGET OPENS IS OPEN. `aria-expanded`. */
   expanded?: boolean;
+  /** THE PAGE IN VIEW of a set of places — a settings side list's row. `aria-current="page"` on
+   *  web; `selected` on native, which has no current. */
+  current?: boolean;
 }
 
 export interface PressableProps {

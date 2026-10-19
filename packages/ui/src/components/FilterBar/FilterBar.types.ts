@@ -1,21 +1,28 @@
+import type { ReactNode } from 'react';
+
 /* THE TOUCH TARGET AND THE VISIBLE PILL ARE TWO DIFFERENT RECTANGLES (N2 / F7-29 / F7-32).
 
-   All four parts appear unchanged on a 375px phone, so every one clears 44×44 — but a 44px-tall
-   pill turns a dense desktop filter row into a toolbar of buttons. So each control's target is
-   44px and the pill drawn inside it keeps its own height: scope 36, chips 34, sort 32, filters 36.
-   The difference is transparent padding owned by the target.
+   All four parts appear unchanged on a 375px phone, so every one clears 44×44. Each control's
+   target is 44px and the pill drawn inside it keeps its own height: scope 36, sort 32. The kind
+   and stage chips are 44 — the pill IS the target — and the filter square is 50×50, above the
+   floor. Where a pill is shorter, the difference is transparent padding owned by the target.
 
    This is expressed once, in the component, rather than left to twenty records screens to
    remember. Callers get the floor for free and cannot opt out of it. */
 
-export type FilterOption = string | { value: string; label: string };
+/**
+ * `icon` — an 18px glyph drawn before the label (kind chips), in the chip's own ink: an inline
+ * `<svg>` stroked in `currentColor` on the web, a `react-native-svg` element stroked in
+ * `currentColor` on the phone, which the chip hands its words' colour.
+ */
+export type FilterOption = string | { value: string; label: string; icon?: ReactNode };
 
-/** The pill heights, one declaration for both platforms. Never above the 44px touch floor. */
+/** The pill heights and the filter square's side, one declaration for both platforms. */
 export const PILL_HEIGHT = {
   scope: 36,
-  chip: 34,
+  chip: 44,
   sort: 32,
-  filters: 36,
+  filters: 50,
 } as const;
 
 export interface ScopeToggleProps {
@@ -67,11 +74,15 @@ export interface FiltersButtonProps {
   label?: string;
 }
 
-/** `{ value, label }` for a plain string option or a spec object, in one place. */
+/** `{ value, label, icon }` for a plain string option or a spec object, in one place. */
 export function optionValue(option: FilterOption): string {
   return typeof option === 'string' ? option : option.value;
 }
 
 export function optionLabel(option: FilterOption): string {
   return typeof option === 'string' ? option : option.label;
+}
+
+export function optionIcon(option: FilterOption): ReactNode {
+  return typeof option === 'string' ? undefined : option.icon;
 }

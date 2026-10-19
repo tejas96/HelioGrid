@@ -9,8 +9,15 @@ export interface SearchFieldProps {
   onClear?: () => void;
   disabled?: boolean;
   ariaLabel?: string;
+  /** Draws the 50×50 black filter square beside the pill; opens the filter sheet. */
+  onFilterClick?: () => void;
+  /** Active filter count on the square — feed `FilterSet.countActive`. */
+  filterCount?: number;
+  /** Accessible name of the filter square. Default "Filters". */
+  filterLabel?: string;
   style?: React.CSSProperties;
 }
 
-/** Borderless search input with a leading magnifier. e1 at rest, 2px accent ring on focus. */
+/** Grey search pill (50 tall), magnifier left, tertiary placeholder; 1.5px accent edge on focus.
+ *  Pass `onFilterClick` for the black filter square beside it. */
 export function SearchField(props: SearchFieldProps): JSX.Element;

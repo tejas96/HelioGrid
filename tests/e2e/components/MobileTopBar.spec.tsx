@@ -147,3 +147,31 @@ test('a page opened from a list shows its way back and its title alone, the titl
     await resolvedLength(page, '--sp-3'),
   );
 });
+
+test('a bar with content scrolled under it lifts on --e2; at the top it has no shadow', async ({
+  mount,
+  page,
+}) => {
+  const resting = await mount(
+    <div>
+      <MobileTopBar {...words} title="Team" />
+    </div>,
+  );
+  await expect(resting.getByRole('banner')).toHaveCSS('box-shadow', 'none');
+  await resting.unmount();
+  const lifted = await mount(
+    <div>
+      <MobileTopBar {...words} title="Team" scrolled />
+    </div>,
+  );
+  const shadow = await page.evaluate(() => {
+    const probe = document.createElement('div');
+    probe.style.boxShadow = 'var(--e2)';
+    document.body.append(probe);
+    const value = getComputedStyle(probe).boxShadow;
+    probe.remove();
+    return value;
+  });
+  expect(shadow).not.toBe('none');
+  await expect(lifted.getByRole('banner')).toHaveCSS('box-shadow', shadow);
+});

@@ -22,8 +22,9 @@ export interface ToastHostProps {
   /** Most toasts on screen at once. Older ones drop rather than piling up. */
   max?: number;
   duration?: number;
-  /** Overrides the derived clearance. The default already clears the bottom nav — pass this only
-   *  where something else sits under the toast. */
+  /** Overrides the derived clearance. The default clears the nav's own height; on the phone the pill
+   *  also stands on the device's home-bar inset, which this package reads nowhere — the app passes
+   *  the shell's pill clearance there. */
   offset?: number;
 }
 

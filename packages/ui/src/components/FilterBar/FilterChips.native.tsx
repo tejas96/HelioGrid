@@ -2,8 +2,15 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, ScrollView, StyleSheet, View } from 'react-native';
 import type { FilterChipsProps } from './FilterBar.types';
-import { optionLabel, optionValue } from './FilterBar.types';
-import { FilterPill, filterStyles, PillCount, PillLabel } from './FilterPill.native';
+import { optionIcon, optionLabel, optionValue } from './FilterBar.types';
+import {
+  FilterPill,
+  filterStyles,
+  OptionGlyph,
+  PillCount,
+  PillLabel,
+  pillInkColor,
+} from './FilterPill.native';
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
@@ -14,7 +21,9 @@ interface NativeFilterChipsProps extends FilterChipsProps {
 }
 
 /**
- * Stage chips. Active = accent fill; the rest take the control fill, flat.
+ * Kind and stage chips: 44dp pills — the pill is the target — in the control fill, flat, with an
+ * optional 18dp glyph before the label; the chosen one is the near-black primary marker with
+ * white words.
  *
  * **One-of-N by construction** — `accessibilityRole="tablist"` with each chip a `tab` carrying
  * `selected`, the RN reading of the web half's `role="tablist"` + `aria-selected`. A dimension
@@ -37,6 +46,7 @@ export function FilterChips({
     const optValue = optionValue(option);
     const active = optValue === value;
     const count = counts?.[optValue];
+    const icon = optionIcon(option);
     return (
       <RNPressable
         key={optValue}
@@ -45,7 +55,8 @@ export function FilterChips({
         onPress={() => onChange?.(optValue)}
         style={filterStyles.target}
       >
-        <FilterPill kind="chip" active={active}>
+        <FilterPill kind="chip" active={active} lead={Boolean(icon)}>
+          <OptionGlyph icon={icon} color={pillInkColor('chip', active)} />
           <PillLabel kind="chip" active={active}>
             {optionLabel(option)}
           </PillLabel>

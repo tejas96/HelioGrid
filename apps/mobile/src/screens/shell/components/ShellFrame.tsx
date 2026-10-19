@@ -11,6 +11,8 @@ interface ShellFrameProps {
   items: BottomNavItem[];
   /** The item in view, or none on a door the pill does not name. */
   inView?: string;
+  /** Told when content first scrolls under the bar and when it comes back to the top. */
+  onScrolledChange?: (scrolled: boolean) => void;
   children: ReactNode;
 }
 
@@ -20,7 +22,7 @@ interface ShellFrameProps {
  * device's own home-indicator inset — read at run time, never a typed number (`F7-50`). While the
  * keyboard is up the pill steps aside, so it never covers the field being typed in.
  */
-export function ShellFrame({ topBar, items, inView, children }: ShellFrameProps) {
+export function ShellFrame({ topBar, items, inView, onScrolledChange, children }: ShellFrameProps) {
   const insets = useSafeAreaInsets();
   const pill = items.length > 0;
   const keyboardUp = useKeyboardUp();
@@ -35,6 +37,12 @@ export function ShellFrame({ topBar, items, inView, children }: ShellFrameProps)
       >
         <ScrollView
           keyboardShouldPersistTaps="handled"
+          scrollEventThrottle={16}
+          onScroll={
+            onScrolledChange === undefined
+              ? undefined
+              : (event) => onScrolledChange(event.nativeEvent.contentOffset.y > 0)
+          }
           contentContainerStyle={[
             styles.scroll,
             // With no pill the page is Frame 8, centred in the whole region: the home's top gap

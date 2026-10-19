@@ -1,6 +1,5 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { Icon } from '../../primitives/Icon';
 import { FacetChips } from './FacetChips';
 import type { FiltersButtonProps, ScopeToggleProps, SortPillsProps } from './FilterBar.types';
 import { optionLabel, optionValue } from './FilterBar.types';
@@ -89,9 +88,11 @@ export function SortPills({
 }
 
 /**
- * White pill that opens the filter body — `FilterPanel`, **at every width**. Not a phone
- * affordance: on desktop the same body opens as a side panel, because a six-dimension set has no
- * room in a toolbar row at either size (`F7-31`). 36px pill in a 44px target.
+ * The filter square that opens the filter body — `FilterPanel`, **at every width**, beside the
+ * search pill (`SearchField`'s `onFilterClick` draws it). 50×50, the near-black primary fill
+ * (pressed darker), radius `--r-field`, white sliders; the active count rides its top-right
+ * corner. Not a phone affordance: on desktop the same body opens as a side panel, because a
+ * six-dimension set has no room in a toolbar row at either size (`F7-31`).
  */
 export function FiltersButton({
   onClick,
@@ -103,32 +104,35 @@ export function FiltersButton({
   return (
     <button
       type="button"
-      className={classNames('hg-filter-target', className)}
-      /* THE COUNTER IS A BARE NUMBER, and a bare number is not a name. Left to the content the
-         button announced "Filters 3" — the badge saying nothing about what the 3 counts. The
-         native half states the whole sentence; this is the same one, so both halves name the
-         control identically. */
+      className={classNames('hg-filters-button', className)}
+      /* THE SQUARE HAS NO WORDS and the counter is a bare number, so the name is the whole
+         sentence: left to the content it would announce "3", saying nothing about what the 3
+         counts. The native half states the same sentence, so both halves name the control
+         identically. */
       aria-label={count > 0 ? `${label}, ${count} active` : label}
+      title={label}
       onClick={onClick}
       style={style}
     >
-      <span className="hg-filter-pill" data-pill="filters">
-        <Icon size="sm">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M4 6h16M7 12h10M10 18h4" />
-          </svg>
-        </Icon>
-        {label}
-        {count > 0 ? <span className="hg-filters-badge">{count}</span> : null}
-      </span>
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        aria-hidden="true"
+      >
+        <path d="M4 7h9M17 7h3M4 17h3M11 17h9" />
+        <circle cx="15" cy="7" r="2.2" />
+        <circle cx="9" cy="17" r="2.2" />
+      </svg>
+      {count > 0 ? (
+        <span className="hg-filters-badge" aria-hidden="true">
+          {count}
+        </span>
+      ) : null}
     </button>
   );
 }

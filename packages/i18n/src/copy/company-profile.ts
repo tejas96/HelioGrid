@@ -40,6 +40,8 @@ export const COMPANY_PROFILE = {
   saveSpoken: /*i18n*/ { id: 'Save your company profile and continue setting up HelioGrid' },
   saveChanges: /*i18n*/ { id: 'Save changes' },
   saveChangesSpoken: /*i18n*/ { id: 'Save changes to your business profile' },
+  /** The toast a save that lands in settings raises (`SCR-M01-05` ruling 59). */
+  saved: /*i18n*/ { id: 'Business profile saved' },
   loading: /*i18n*/ { id: 'Loading your company profile' },
   stillLoading: /*i18n*/ { id: 'Profile still loading' },
   unreadTitle: /*i18n*/ { id: "We couldn't load your profile" },

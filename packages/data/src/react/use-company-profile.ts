@@ -1,6 +1,7 @@
 'use client';
 import type { OnboardingProgress } from '@heliogrid/contracts';
 import {
+  announcesSave,
   COMPANY_PROFILE_UNREAD,
   type CompanyLogoCaptureFacts,
   type CompanyProfileField,
@@ -78,8 +79,13 @@ const ASKED_ONCE = { staleTime: Number.POSITIVE_INFINITY, networkMode: 'always' 
  * check and the api's check of the save cannot disagree (`M01-25`). Nothing is written before the
  * act; each write replaces its record whole, so a save that failed half way is sent again whole.
  * The step's answer replaces the progress `useLanding` holds, which is what moves the person on.
+ * In settings nothing moves, so `onSaved` is told when a save lands and wrote — the screen says so
+ * (`SCR-M01-05` ruling 59); a refused logo wrote nothing and is not a save.
  */
-export function useCompanyProfile(life: CompanyProfileLife): CompanyProfileStep {
+export function useCompanyProfile(
+  life: CompanyProfileLife,
+  { onSaved }: { onSaved?: () => void } = {},
+): CompanyProfileStep {
   const { user, putOffSetup } = useSession();
   const repositories = useRepositories();
   const queryClient = useQueryClient();
@@ -187,6 +193,7 @@ export function useCompanyProfile(life: CompanyProfileLife): CompanyProfileStep 
     onSuccess: (saved, sent) => {
       if (sent.logo !== null) (saved.logoRefused ? logo.refuse : logo.saved)(sent.logo);
       if (saved.progress !== null) queryClient.setQueryData(progressKey, saved.progress);
+      if (announcesSave(life, saved.logoRefused)) onSaved?.();
     },
   });
   const { mutate, isPending, isError } = save;

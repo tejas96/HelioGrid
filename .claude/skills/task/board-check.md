@@ -25,13 +25,17 @@ Check, citing the frame and element for each finding:
 
 1. **Complete.** Every state the brief lists is drawn, and loading, empty and error unless the brief
    folds that state into another; each at 375, and at 1536 unless the brief names it as the 375
-   frame at width; every frame a `DONE WHEN` line needs. Each board is shaped as *The canvases* of
+   frame at width; every frame a `DONE WHEN` line needs; every state the screen's own parts create —
+   a search or filter with no match, a value its contract allows to be empty, one of several reads
+   failing, each refusal its writes can answer. A state a board draws that the brief does not list
+   is a fix to the brief, which Main makes. Each board is shaped as *The canvases* of
    `docs/start-here.md` says, and a board that is not is a fix: one taller or wider than 8000 px
    (its frames go on to a next board), one with no `$preview` or whose `$preview` differs from its
    `w` and `h`, a `-Mobile` board holding a 1536 frame or a `-Desktop` board holding a 375 frame, and
    an `"expand":"fill"` on a board 8000 px tall or less.
 2. **True to the PRD.** Every product fact a frame shows — a plan, a price, a limit, a rate, a role,
-   fixed copy — matches the WHOLE row it cites; nothing the PRD does not hold; nothing a row asks
+   fixed copy — matches the WHOLE row it cites; nothing the PRD does not hold — a pronoun for a person
+   is one, since the product stores no gender, so a line names the person; nothing a row asks
    for is missing.
 3. **Buildable.** Each element is a design-system component this repo has
    (`packages/ui/src/components/`), with props its contract declares

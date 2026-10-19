@@ -122,5 +122,5 @@ module canvas that carries the system (`design-system-components.md`, Update) â€
 locked module back here through *Is a board locked?* â€” and write one `docs/tasks/deferred.md` row
 for the repo's side: the typings re-pulled into `packages/theme/src/_generated/` and the component
 ported in `packages/ui`, naming each screen whose board uses the change, its `reopens when` the
-first of their tasks starting. Until that row ships, the board check reads the change as a known
+first of their tasks starting in the build walk (`/task` step 1), not in file order. Until that row ships, the board check reads the change as a known
 difference, and a drawing agent is given the changed typing.

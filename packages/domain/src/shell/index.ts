@@ -37,6 +37,7 @@ export type {
   SettingsRow,
 } from './settings-rows';
 export {
+  firstSettingsPageBeside,
   opensSettingsRow,
   SETTINGS_GROUPS,
   SETTINGS_ROWS,

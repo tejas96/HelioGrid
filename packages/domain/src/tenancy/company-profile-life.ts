@@ -18,3 +18,12 @@ export const FIRST_OPEN_PART = {
   setup: 'identity',
   settings: 'declarations',
 } as const satisfies Record<CompanyProfileLife, CompanyProfilePart>;
+
+/**
+ * Whether a save that came back says so (`SCR-M01-05` ruling 59): only in settings, where nothing
+ * moves on, and only when it wrote — a logo the api refused stops the save before any write, and
+ * its refusal is the answer. In setup the next step is the answer.
+ */
+export function announcesSave(life: CompanyProfileLife, logoRefused: boolean): boolean {
+  return life === 'settings' && !logoRefused;
+}

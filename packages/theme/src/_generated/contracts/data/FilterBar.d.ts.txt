@@ -10,7 +10,8 @@ import React from "react";
    This is expressed once, in the component, rather than left to twenty records screens to
    remember. Callers get the floor for free and cannot opt out of it. */
 
-export type FilterOption = string | { value: string; label: string };
+/** `icon` — an 18px glyph drawn before the label (kind chips). */
+export type FilterOption = string | { value: string; label: string; icon?: React.ReactNode };
 
 export interface ScopeToggleProps {
   options: FilterOption[];
@@ -41,7 +42,8 @@ export interface FilterChipsProps {
   style?: React.CSSProperties;
 }
 /**
- * Stage chips (All / New / Contacted / Qualified …). Active = accent fill; 34px pill in a 44px target.
+ * Kind / stage chips. 44px grey-filled pills with an optional 18px `icon` per option and a label;
+ * selected = black with white text. `scroll` makes the row scroll sideways, bleeding to the screen edge.
  *
  * **One-of-N by construction.** `role="tablist"` + `aria-selected`, and its arrow keys change the
  * selection as they move, because in a stage strip moving the highlight *is* choosing. A dimension
@@ -92,9 +94,9 @@ export interface FiltersButtonProps {
   style?: React.CSSProperties;
 }
 /**
- * White pill that opens the filter body — `FilterPanel`, **at every width**. Not a phone
- * affordance: on desktop the same body opens as a side panel, because a six-dimension set has no
- * room in a toolbar row at either size (`F7-31`). 36px pill in a 44px target.
+ * The 50×50 black square (radius 16, white sliders icon) that opens the filter body — `FilterPanel`,
+ * **at every width**. It sits beside the search pill (pass `onFilterClick` to `SearchField` and it
+ * is drawn for you) and replaces the old "Filters" chip. `label` is its accessible name.
  *
  * Feed `count` from `FilterSet.countActive(dimensions, value)` so the counter and the body can
  * never disagree.

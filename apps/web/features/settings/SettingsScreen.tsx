@@ -1,31 +1,30 @@
 'use client';
-import { useSession } from '@heliogrid/data/react';
-import { SETTINGS_SEGMENT, type SettingsRow } from '@heliogrid/domain';
-import { settingsListFor } from '@heliogrid/i18n';
-import { useTranslate } from '@heliogrid/i18n/react';
-import { SettingsList } from '@heliogrid/ui';
+import { SETTINGS_SEGMENT } from '@heliogrid/domain';
+import { SettingsList, useDesktopShell } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { settingsRowPath } from './constants';
+import { useSettingsList } from './hooks/use-settings-list';
 
 /**
- * The page behind `More` (`SCR-SHELL-01`, *More: the settings list*): the settings screens the
- * signed-in person's presets open, as one `SettingsList`. The rows are domain's and the words are
- * i18n's; this reads the session, draws and routes.
+ * The page behind `More` (`SCR-SHELL-01`, *More: the settings list*). At the shell's desktop
+ * width a person whose list stands beside settings pages goes straight to its first page, beside
+ * that list — the list page would only repeat it (owner ruling). The move REPLACES `/more` in the
+ * history, so Back never lands here to be sent on again. Below that width, and for a list of one
+ * row, it is the list page: one `SettingsList`, rows domain's, words i18n's.
  */
 export function SettingsScreen() {
-  const t = useTranslate();
-  const { user } = useSession();
+  const { list, person, open, first } = useSettingsList();
+  const desktop = useDesktopShell();
   const router = useRouter();
-  const list = settingsListFor(t, user?.tenant?.roles ?? []);
-  const open = (row: SettingsRow) => router.push(settingsRowPath(SETTINGS_SEGMENT[row]));
+  useEffect(() => {
+    if (desktop === true && first !== null)
+      router.replace(settingsRowPath(SETTINGS_SEGMENT[first]));
+  }, [desktop, first, router]);
+  if (first !== null && desktop !== false) return null;
   return (
     <div className="hg-shell-page">
-      <SettingsList
-        title={list.title}
-        person={{ name: user?.name ?? '' }}
-        groups={list.groups}
-        onOpen={open}
-      />
+      <SettingsList title={list.title} person={person} groups={list.groups} onOpen={open} />
     </div>
   );
 }

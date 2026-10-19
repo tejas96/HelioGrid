@@ -3,7 +3,8 @@ import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Icon } from '../../primitives/Icon';
 import type { FacetChipsProps } from './FilterBar.types';
-import { optionLabel, optionValue } from './FilterBar.types';
+import { optionIcon, optionLabel, optionValue } from './FilterBar.types';
+import { OptionIcon } from './FilterChips';
 
 interface WebFacetChipsProps extends FacetChipsProps {
   className?: string;
@@ -37,8 +38,10 @@ function Tick() {
 }
 
 /**
- * **Multi-select chips — how a dimension holds several values.** Selected chips take the accent
- * fill *and a tick*, so a set is readable without hue. 34px pill in a 44px target.
+ * **Multi-select chips — how a dimension holds several values.** The kind chips' 44px pill — the
+ * pill is the target. Selected chips take the near-black primary fill *and a tick*, so a set is
+ * readable without hue; an option's 18px glyph shows only while it is not selected, where the tick
+ * takes its place.
  *
  * **The keyboard differs from `FilterChips` deliberately:** `role="group"` with `aria-pressed`,
  * arrows move focus and change nothing, Space/Enter toggles. In a set, moving and choosing are
@@ -91,6 +94,7 @@ export function FacetChips({
         const optValue = optionValue(option);
         const on = selected.has(optValue);
         const count = counts?.[optValue];
+        const icon = on ? undefined : optionIcon(option);
         return (
           <button
             key={optValue}
@@ -107,10 +111,11 @@ export function FacetChips({
             <span
               className="hg-filter-pill"
               data-pill="chip"
-              data-ticked={on ? 'true' : undefined}
               data-active={on ? 'true' : undefined}
+              data-lead={on || icon ? 'true' : undefined}
             >
               {on ? <Tick /> : null}
+              <OptionIcon icon={icon} />
               {optionLabel(option)}
               {count === undefined ? null : <span className="hg-filter-count">{count}</span>}
             </span>
