@@ -34,16 +34,24 @@ Screen-specific:
 - **deactivated-member** — a deactivated person's history remains attributed to them, their role chips and status render, and they are absent from assignment pickers (M01 §M01.2 acceptance).
 - **pending-invite-revoke** — revocation of a pending invite is one tap on this screen (M01 §M01.2 behavior detail); invite states are pending / accepted / expired / revoked (M01-12 context, carried on SCR-M01-07).
 - **expired-invite** — the list shows expired invites as well as pending ones (`GET /invitations` returns both; M01-12). An expired row carries the status Expired and the act *Invite again*, which sends a new invite.
+- **query** / **filter** — *Find in this list* narrows the list by name, and the Status chips (All, Invited, Expired, Active, Deactivated) narrow it by status, each chip counting what the search matches.
+- **invite-again-refused** — *Invite again* answered 422 or 429 leaves the card as it was and says why in a danger toast, in the shipped words for the code (`packages/i18n/src/copy/api-error.ts`); a 409 refreshes the list instead.
+- **no-match** — a search that matches no one: the list is the system's `EmptyState` naming the words — *No one matches "<text>"* — with *Clear search*; the status chips count what the search matches (owner ruling D2 A).
 
-Drawn at 375 only (at 1536 the phone's answer holds at width): `empty-teaching`, `error`, `deactivated-member`, `pending-invite-revoke`, `guard-rail-blocked`, `guard-rail-blocked-explained`.
+Drawn at 375 only (at 1536 the phone's answer holds at width): `empty-teaching`, `error`, `deactivated-member`, `pending-invite-revoke`, `invite-again-refused`, `guard-rail-blocked`, `guard-rail-blocked-explained`.
 
-- **empty** cannot occur — the reader is always on the list — so **empty-teaching** answers it: only the owner so far, and the invite. It is the system's `EmptyState`, centred as its contract fixes — the one exception to *no centred block* on this screen (owner ruling 2026-10-16; `D233`).
-- **loading** draws three placeholder rows, 82 px tall (the rows they stand for), and no head count until the read lands. *Invite teammate* stays live in loading and in error; it does not wait on this read. **error** draws no roster and no caption.
+- **empty** cannot occur — the reader is always on the list — so **empty-teaching** answers it: only the owner so far, and the invite. It is the system's `EmptyState`, centred as its contract fixes — with **no-match**, the two exceptions to *no centred block* on this screen (owner ruling 2026-10-16; `D233`).
+- **loading** draws three placeholders the size of the rows they stand for — the stacked card at 375, an 82 px row at 1536 — and no head count until the read lands. *Invite teammate* stays live in loading and in error; it does not wait on this read. **error** draws no roster and no caption.
 - **deactivate-confirm** is a sheet at 375 and a centred modal at 1536 — a decision, not an editor — not dismissible, with no close button.
 - **guard-rail-blocked-explained** is a refused write: the tenant changed on another device after the list was read. It renders on the confirm surface — nothing applied, what changed, the act — *Deactivate <name>*, on the board *Deactivate Rajesh* — off, with the route out *Make someone else an EPC Owner first* as its `disabledReason`, which opens in a bubble on a tap, click, focus or hover — no line is drawn under the button (owner ruling 2026-10-17, design-system change 5).
 - **deactivated-member** is the after-state of the act: the row moves to the end of the list, its status reads Deactivated and its act is gone.
-- Status is a word plus a dot in its tone: invited `info`, active `success`, deactivated `neutral`.
-- At 375 a row's status line reads *Invited as <roles>*, *Expired <date>*, *Active · last seen <date>* (or *today*) and *Deactivated · last seen <date>*; at 1536 a time today reads *Today, HH:MM*.
+- Status is a word plus a dot in its tone: invited `info`, expired `warning`, active `success`, deactivated `neutral`.
+- The reader's own row carries a *You* badge beside the name. At 1536 the page header counts *<n> people · <n> invites*.
+- A pending invite shows its seven days as a bar, with *Day <n> of 7* and *Expires <date>* under it.
+- After a deactivation lands, a neutral toast reads *<name> deactivated*. After a revoke lands, it reads *Invite to <name> revoked* · *Inviting <first name> again sends a new link.*
+- **guard-rail-blocked-explained** opens with the banner *Not done — <company> must keep one EPC Owner*.
+- At 375 a person is the system's `RecordCard` in its `stacked` layout, the dot drawn by `Avatar`'s `mark` (design-system change 11; owner ruling D4 A).
+- At 375 a row's status line reads *Invited* (its roles are the badges under it), *Expired <date>*, *Active · last seen <date>* (or *today*) and *Deactivated · last seen <date>*; at 1536 a time today reads *Today, HH:MM*.
 
 **Decisions made in design (2026-08-31) — later screens inherit them.**
 
