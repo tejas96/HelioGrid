@@ -415,54 +415,56 @@ class Component extends DCLogic {
       h(NS.ShellAction, { key: "i", round: true, label: "Roles reference", onClick: this.noop, icon: infoGlyph }),
     ]);
 
-    /* THE GRANT LINE — the 375 board's: one sentence on a calm accent ground, each clause a chip. */
-    const capChip = (id, tail) => h("span", {
-      style: { display: "inline-flex", alignItems: "center" },
-    }, [
-      h(NS.Chip, {
-        key: "c", density: "expressive",
-        style: { whiteSpace: "normal", fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-medium)" },
-      }, [h(NS.ShellGlyph, { key: "g", name: byId(id).glyph, size: "sm", tone: "accent" }), h("span", { key: "w" }, byId(id).verb)]),
-      tail ? h("span", { key: "t" }, tail) : null,
-    ]);
+    /* THE GRANT LINE (owner pick G2): the held capabilities' glyphs lead as a quiet cluster, then one
+       plain sentence with each capability in bold, in row order. The cluster is decoration, hidden from
+       a screen reader; the sentence is the meaning. Nothing in the card looks like a control — no pill,
+       no chip, no lift. AvatarGroup owns the overlap, the ring on the card's ground and the "+N" past
+       four; the sentence names every capability. */
+    const grantCluster = (ids) => h("span", { key: "i", "aria-hidden": "true", style: { display: "flex", flexShrink: 0 } },
+      h(NS.AvatarGroup, {
+        people: ids.map((id) => ({ name: byId(id).verb, glyph: h(NS.ShellGlyph, { name: byId(id).glyph, size: "sm", tone: "accent" }) })),
+        size: 36, max: 4, ring: "var(--accent-subtle)",
+      }));
+    /* "<name> can a, b and c." — the board's one joiner: commas, then "and" before the last. */
     const grantSentence = (name, ids) => {
-      const parts = [h("span", { key: "lead" }, name + " can")];
+      const words = [name + " can "];
       ids.forEach((id, i) => {
-        if (i > 0 && i === ids.length - 1) parts.push(h("span", { key: "and" }, "and"));
-        const tail = i === ids.length - 1 ? "." : i < ids.length - 2 ? "," : null;
-        parts.push(h(React.Fragment, { key: "c" + i }, capChip(id, tail)));
+        if (i > 0) words.push(i === ids.length - 1 ? " and " : ", ");
+        words.push(h("strong", { key: id, style: { fontWeight: "var(--fw-bold)", color: "var(--text-primary)" } }, byId(id).verb));
       });
-      return parts;
+      words.push(".");
+      return { ids: ids, words: words };
     };
-    const grantCard = (sentence) => h("section", {
+    const grantCard = (grant) => h("section", {
       key: "g", "aria-label": "What this gives them",
       style: {
-        display: "flex", flexDirection: "column", gap: "var(--sp-2)",
+        display: "flex", alignItems: "center", gap: "var(--sp-3)",
         padding: "var(--sp-3) var(--sp-4)", background: "var(--accent-subtle)", borderRadius: "var(--r-tile)",
       },
     }, [
-      h("span", {
-        key: "o", "aria-hidden": "true",
-        style: {
-          fontSize: "var(--fs-overline)", fontWeight: "var(--fw-bold)", letterSpacing: "var(--tr-overline)",
-          textTransform: "uppercase", color: "var(--text-secondary)",
-        },
-      }, "What this gives them"),
-      h("p", {
-        key: "s", "aria-live": "polite",
-        style: {
-          margin: 0, display: "flex", flexWrap: "wrap", alignItems: "center",
-          columnGap: "var(--sp-1)", rowGap: "var(--sp-2)",
-          fontSize: "var(--fs-body)", lineHeight: "var(--lh-body)", color: "var(--text-primary)",
-        },
-      }, sentence),
+      grant.ids.length ? grantCluster(grant.ids) : null,
+      h("div", {
+        key: "t", style: { display: "flex", flexDirection: "column", gap: "var(--sp-0-5)", flex: 1, minWidth: 0 },
+      }, [
+        h("span", {
+          key: "o", "aria-hidden": "true",
+          style: {
+            fontSize: "var(--fs-overline)", fontWeight: "var(--fw-bold)", letterSpacing: "var(--tr-overline)",
+            textTransform: "uppercase", color: "var(--text-secondary)",
+          },
+        }, "What this gives them"),
+        h("p", {
+          key: "s", "aria-live": "polite",
+          style: { margin: 0, fontSize: "var(--fs-body)", lineHeight: "var(--lh-body)", color: "var(--text-primary)" },
+        }, grant.words),
+      ]),
     ]);
 
     /* DetailPanel.footer pins the grant line and Save; Save's reason opens in its bubble (G9). */
-    const footer = (sentence, save) => h("div", {
+    const footer = (grant, save) => h("div", {
       style: { display: "flex", flexDirection: "column", gap: "var(--sp-3)" },
     }, [
-      grantCard(sentence),
+      grantCard(grant),
       h(NS.Button, Object.assign({ key: "b" }, save), "Save roles"),
     ]);
     const saveOff = {

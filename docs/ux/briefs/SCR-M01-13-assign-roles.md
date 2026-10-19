@@ -56,9 +56,15 @@ head — the name and its status chip on one line, the email under it, then *Pre
 reference* button on a thin line — stays fixed while the rows scroll, at both widths. The
 whole row is the control, and the list never re-sorts by what is held. One **Save roles** commits the
 whole set; it is off while nothing has changed, its `disabledReason` *Tick or clear a preset first.* in the same bubble. The grant line is pinned above Save
-at both widths, in a summary card: one sentence on a light accent ground in body type, each
-capability a chip with its icon (building, gauge, document, search, palette, board, calendar-clock,
-house, pair, wallet, package, megaphone). Above it, one sentence says every change is recorded, old → new; it is not a control. The build mounts `EditorSurface`, which is the sheet at 375 and the side panel at 1536; the board mounts `Sheet` and `DetailPanel` directly only because a board has no width probe (owner ruling 2026-10-16; `D234`).
+at both widths, in a summary card on a light accent ground (owner pick "G2 · Icons lead, the
+sentence is plain"; references: Dribbble *User role management* by Eugen Eşanu, *Share modal —
+Untitled UI* by Jordan Hughes): at its left the held capabilities' icons as one `AvatarGroup` of
+glyph discs (design-system change 18 — `Avatar` `glyph`, `AvatarGroup` `ring` in the card's ground;
+at most four, then its own *+N*) — building, gauge, document, search, palette, board,
+calendar-clock, house, pair, wallet, package, megaphone; decoration, hidden from a screen reader; beside it the overline
+*What this gives them* and one plain sentence in body type, each capability in bold — *Vikram can
+**survey**, **design** and **install**.* Nothing in the card looks like a control: no pill, no
+chip, no shadow. Above it, one sentence says every change is recorded, old → new; it is not a control. The build mounts `EditorSurface`, which is the sheet at 375 and the side panel at 1536; the board mounts `Sheet` and `DetailPanel` directly only because a board has no width probe (owner ruling 2026-10-16; `D234`).
 
 **The preset rows.** Each preset is an `OptionCardGroup` row in a multi-select mode: a title, a
 description and a `disabledReason`. The `disabledReason` carries the sole-EPC-Owner guard: the last
