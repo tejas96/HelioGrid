@@ -201,7 +201,8 @@ task that builds what it needs. A record here keeps the order honest; it does no
 
 Invariants check the task and PRD documents (`.claude/protections.md`, Process):
 `build-order-holds`, `prd-rows-cited` (every cited PRD row is live and every quote matches its
-cell) and `screens-register-whole` (every screen briefed and designed, every PRD row landed once,
+cell), `capability-ids-cited` (every capability a task or brief names, by id or by row key, is
+one the matrix holds) and `screens-register-whole` (every screen briefed and designed, every PRD row landed once,
 the V1 count as the scope lock states it). The RFC tests the requirements the task it takes
 carries (`/task` step 2). A screen's boards are drawn on its module's canvas and checked against its
 brief, before the build reaches it (`.claude/skills/task/design-track.md`).
