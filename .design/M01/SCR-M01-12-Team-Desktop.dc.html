@@ -29,7 +29,7 @@ a:hover{color:var(--link-hover)}
 </style>
 </helmet>
 
-<div style="box-sizing:border-box;width:1632px;height:5289px;overflow:hidden;padding:var(--sp-12);display:flex;flex-direction:column;gap:var(--sp-16);background:var(--canvas)">
+<div style="box-sizing:border-box;width:1632px;height:6342px;overflow:hidden;padding:var(--sp-12);display:flex;flex-direction:column;gap:var(--sp-16);background:var(--canvas)">
 
   <!-- 1536 · default -->
   <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:1536px">
@@ -74,7 +74,7 @@ a:hover{color:var(--link-hover)}
                   <span role="columnheader">Person</span><span role="columnheader">Roles</span><span role="columnheader">Last active</span><span role="columnheader" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap">Actions</span>
                 </div>
               <div role="rowgroup">
-                <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);overflow:hidden">
+                <div style="background:var(--surface);border-radius:var(--r-md);box-shadow:var(--e2);overflow:hidden">
                   <div style="margin-top:-1px">
                   <sc-for list="{{ rows }}" as="r" hint-placeholder-count="11">
                     <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 160px;align-items:center;min-height:82px;box-sizing:border-box;padding:14px var(--sp-5);border-top:1px solid var(--line-soft)">
@@ -150,7 +150,7 @@ a:hover{color:var(--link-hover)}
                   <span role="columnheader">Person</span><span role="columnheader">Roles</span><span role="columnheader">Last active</span><span role="columnheader" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap">Actions</span>
                 </div>
               <div role="rowgroup">
-                <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);overflow:hidden">
+                <div style="background:var(--surface);border-radius:var(--r-md);box-shadow:var(--e2);overflow:hidden">
                   <div style="margin-top:-1px">
                   <sc-for list="{{ rowsQuery }}" as="r" hint-placeholder-count="2">
                     <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 160px;align-items:center;min-height:82px;box-sizing:border-box;padding:14px var(--sp-5);border-top:1px solid var(--line-soft)">
@@ -177,6 +177,51 @@ a:hover{color:var(--link-hover)}
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </x-import>
+    </div>
+  </div>
+
+  <!-- 1536 · no match -->
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:1536px">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · no match</span>
+    <div data-screen-label="Team — no match, 1536" data-frame="d-nomatch" style="position:relative;flex:0 0 auto;width:1536px;height:960px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ header }}" hint-size="100%,100%" style="height:100%">
+        <div style="box-sizing:border-box;display:flex;align-items:flex-start;gap:var(--sp-8);padding:var(--sp-6) var(--sp-8)">
+          <nav aria-label="Settings" style="width:248px;flex-shrink:0;display:flex;flex-direction:column;gap:var(--sp-1);padding-top:var(--sp-1)">
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2)">Settings</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="people" size="md" tone="secondary" hint-size="20px,20px"></x-import>Profile & preferences</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Your team</span>
+            <a href="#" aria-current="page" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);background:var(--accent-subtle);color:var(--accent);font-size:var(--fs-body-sm);font-weight:var(--fw-bold)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="people" size="md" tone="accent" hint-size="20px,20px"></x-import>Team</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="shield" size="md" tone="secondary" hint-size="20px,20px"></x-import>Roles reference</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Your company</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="building" size="md" tone="secondary" hint-size="20px,20px"></x-import>Business profile</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="palette" size="md" tone="secondary" hint-size="20px,20px"></x-import>Branding</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="document" size="md" tone="secondary" hint-size="20px,20px"></x-import>Proposal template</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="calendar-clock" size="md" tone="secondary" hint-size="20px,20px"></x-import>Payment terms</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">What you sell</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="package" size="md" tone="secondary" hint-size="20px,20px"></x-import>Catalog</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Customer calls</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="headset" size="md" tone="secondary" hint-size="20px,20px"></x-import>Agent & voice</a>
+            <span style="font-size:var(--fs-overline);letter-spacing:var(--tr-overline);font-weight:var(--fw-bold);color:var(--text-secondary);text-transform:uppercase;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3)">Money</span>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="wallet" size="md" tone="secondary" hint-size="20px,20px"></x-import>Collections</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="credit-card" size="md" tone="secondary" hint-size="20px,20px"></x-import>Billing</a>
+            <a href="#" style="display:flex;align-items:center;gap:var(--sp-3);height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--text-primary);font-size:var(--fs-body-sm);font-weight:var(--fw-regular)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="gauge" size="md" tone="secondary" hint-size="20px,20px"></x-import>Usage</a>
+          </nav>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:var(--sp-6)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-6);flex-wrap:wrap">
+              <div style="display:flex;align-items:baseline;gap:var(--tile-gap)">
+                <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Team</h1>
+                <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary)">{{ headCount }}</span>
+              </div>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="auto,48px">Invite teammate</x-import>
+            </div>
+            <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);background:var(--canvas)">
+              <div style="flex:0 1 var(--form-max);min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findNoMatch }}" hint-size="100%,50px"></x-import></div>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsNoMatch }}" hint-size="auto,44px"></x-import>
+            </div>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EmptyState" dc-props="{{ noMatchEmpty }}" hint-size="100%,300px" style="flex-shrink:0"></x-import>
           </div>
         </div>
       </x-import>
@@ -226,7 +271,7 @@ a:hover{color:var(--link-hover)}
                   <span role="columnheader">Person</span><span role="columnheader">Roles</span><span role="columnheader">Last active</span><span role="columnheader" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap">Actions</span>
                 </div>
               <div role="rowgroup">
-                <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);overflow:hidden">
+                <div style="background:var(--surface);border-radius:var(--r-md);box-shadow:var(--e2);overflow:hidden">
                   <div style="margin-top:-1px">
                   <sc-for list="{{ rowsExpired }}" as="r" hint-placeholder-count="1">
                     <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 160px;align-items:center;min-height:82px;box-sizing:border-box;padding:14px var(--sp-5);border-top:1px solid var(--line-soft)">
@@ -302,7 +347,7 @@ a:hover{color:var(--link-hover)}
                   <span role="columnheader">Person</span><span role="columnheader">Roles</span><span role="columnheader">Last active</span><span role="columnheader" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap">Actions</span>
                 </div>
               <div role="status" aria-label="Loading your team">
-                <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);overflow:hidden">
+                <div style="background:var(--surface);border-radius:var(--r-md);box-shadow:var(--e2);overflow:hidden">
                   <div style="margin-top:-1px">
                     <div aria-hidden="true" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 160px;align-items:center;min-height:82px;box-sizing:border-box;padding:14px var(--sp-5);border-top:1px solid var(--line-soft)">
                       <div style="display:flex;align-items:center;gap:var(--sp-3)"><span style="width:40px;height:40px;flex-shrink:0;border-radius:var(--r-pill);background:linear-gradient(90deg,var(--canvas-sunken) 25%,var(--fill) 50%,var(--canvas-sunken) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span><div style="flex:1;display:flex;flex-direction:column;gap:var(--sp-2)"><span style="height:var(--sp-3);width:62%;border-radius:var(--r-pill);background:linear-gradient(90deg,var(--canvas-sunken) 25%,var(--fill) 50%,var(--canvas-sunken) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span><span style="height:var(--sp-5);width:64px;border-radius:var(--r-pill);background:linear-gradient(90deg,var(--canvas-sunken) 25%,var(--fill) 50%,var(--canvas-sunken) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span></div></div>
@@ -375,7 +420,7 @@ a:hover{color:var(--link-hover)}
                   <span role="columnheader">Person</span><span role="columnheader">Roles</span><span role="columnheader">Last active</span><span role="columnheader" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap">Actions</span>
                 </div>
               <div role="rowgroup">
-                <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);overflow:hidden">
+                <div style="background:var(--surface);border-radius:var(--r-md);box-shadow:var(--e2);overflow:hidden">
                   <div style="margin-top:-1px">
                   <sc-for list="{{ rows }}" as="r" hint-placeholder-count="11">
                     <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 160px;align-items:center;min-height:82px;box-sizing:border-box;padding:14px var(--sp-5);border-top:1px solid var(--line-soft)">
@@ -406,14 +451,14 @@ a:hover{color:var(--link-hover)}
         </div>
       </x-import>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ deactivateConfirm }}" hint-size="400px,240px">
-        <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Anjali loses access to Suryodaya Solar, and her history stays hers.</p>
+        <p style="margin:0;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Anjali loses access to Suryodaya Solar. Everything Anjali did stays in Anjali’s name.</p>
       </x-import>
     </div>
   </div>
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1632,"height":5289}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1632,"height":6342}}'>
 class Component extends DCLogic {
   /* The screen is read on 31 Aug 2026, 09:20. Every date is a literal, so the board never moves. */
   state = { ds: null };
@@ -548,6 +593,14 @@ class Component extends DCLogic {
       findQuery: find("Kulkarni"),
       chipsAll: chips("all", counts(ROSTER)),
       chipsQuery: chips("all", counts(query)),
+      findNoMatch: find("Joshi"),
+      chipsNoMatch: chips("all", counts([])),
+      /* A search with no match (D2): the system's empty state names the words and clears them. */
+      noMatchEmpty: {
+        icon: g("search", "xl", false, "primary"),
+        title: "No one matches \u201cJoshi\u201d",
+        action: h(NS.Button, { variant: "secondary", size: "lg", onClick: this.noop }, "Clear search"),
+      },
       chipsExpired: chips("expired", counts(ROSTER)),
       chipsLoading: chips("all", null),
 

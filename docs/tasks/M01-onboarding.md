@@ -339,7 +339,7 @@ Assumptions:
 | frame | state | element → component + props + copy + tokens |
 |---|---|---|
 | m-default | normal, 375 | `MobileTopBar` title *Team*, leading round `ShellAction` *Back to settings* chevron-left, search; body pad `--sp-1 --screen-pad-mobile --sp-6`, gap `--sp-4`; list head sticky, gap `--tile-gap`: `SearchField` 50 tall *Find in this list*, `FilterChips` label *Status*, `scroll`, All · Invited · Expired · Active · Deactivated with counts; card (D4): `--fill`, `--r-tile`, pad `--sp-4`, gap `--sp-3`; `Avatar` 48 `hue`, status mark 11 px in an 18 px `--canvas` ring (invited `--info`, expired `--warning`, active `--success`, deactivated `--neutral`); name `--fs-body` bold + `Badge` accent functional *You*; line `--fs-body-sm` `--text-secondary`; roles `Badge` functional, kind tone, gap `calc(--sp-3/2)`; foot `Button` md fullWidth |
-| m-default | invited row | line *Invited as <roles>* (presets joined by the reader's list joiner); `ProgressBar` 6 px, value day/7·100; *Day N of 7* secondary, *Expires 5 Sep* primary; *Revoke invite* secondary + undo glyph |
+| m-default | invited row | line *Invited* (the role badges carry the roles; owner ruling 2026-10-19); `ProgressBar` 6 px, value day/7·100; *Day N of 7* secondary, *Expires 5 Sep* primary; *Revoke invite* secondary + undo glyph |
 | m-default | expired row | *Expired 27 Aug*; *Invite again* primary + send glyph |
 | m-default | active row | *Active · last seen today* / *Active · last seen 30 Aug*; *Deactivate* secondary `tone="danger"` + user-minus glyph |
 | m-query | search | `SearchField` *Kulkarni* with clear; counts of matches; section label *Everyone at <company> matching <query>* |
