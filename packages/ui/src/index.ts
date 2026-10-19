@@ -20,6 +20,8 @@ export * from './components/AppRail';
 export * from './components/AppShell';
 export * from './components/AudioPlayer';
 export * from './components/Avatar';
+// Named as well as starred, for the component tests — see `contrast` below.
+export { IRIS_HUES, irisTintOf } from './components/Avatar';
 export * from './components/BandedFigure';
 export * from './components/Banner';
 export * from './components/Block';
@@ -72,6 +74,7 @@ export * from './components/LoadingBars';
 export * from './components/MapSurface';
 export * from './components/MarketProvider';
 export { useFormat } from './components/MarketProvider';
+export * from './components/MemberCard';
 export * from './components/Menu';
 export * from './components/Modal';
 export * from './components/MoneySummary';
@@ -117,6 +120,7 @@ export * from './components/Tabs';
 export * from './components/TenantHeader';
 export * from './components/Textarea';
 export * from './components/TextDivider';
+export * from './components/TileActions';
 export * from './components/TimeField';
 export * from './components/Timeline';
 export * from './components/TintedBlock';
@@ -158,7 +162,11 @@ export type {
 export { Surface } from './primitives/Surface';
 export type { TextAlign, TextColor, TextProps, TextVariant } from './primitives/Text';
 export { Text } from './primitives/Text';
+export { useOwnWidth } from './primitives/use-own-width';
 export * from './utils/color-contrast';
+/* Named as well as starred: the component tests read only the names an entry lists by name
+   (`tests/e2e/support/iris.ts`). */
+export { contrast } from './utils/color-contrast';
 /* MarketFormat / IN_FORMAT / useFormat were declared TWICE — once here and once in the
    calendar's own `DatePicker/market-format.ts` — which made a bare `export *` ambiguous (TS2308)
    and had to be resolved by hand. The second declaration is GONE: `utils/format` is the one

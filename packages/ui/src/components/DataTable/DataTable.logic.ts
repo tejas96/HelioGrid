@@ -46,6 +46,24 @@ export const DENSITY: Record<NonNullable<DataTableProps['density']>, DensitySpec
   },
 };
 
+/**
+ * The width, of its own room, below which a table becomes one card per record. Published so a
+ * screen that draws its own cards below it (`SCR-M01-12`'s member cards) switches at the same width.
+ */
+export const DATA_TABLE_STACK_BELOW = 640;
+
+/**
+ * **The quiet head's geometry** (design-system change 20, `SCR-M01-12`): a caption line over a 16px
+ * gap, edges at the gutter, and rows that hold a 40px face with a name over a status chip — 82 tall
+ * with their 14px cell padding. The web half names the same numbers in `DataTableQuiet.css`.
+ */
+export const QUIET_HEAD = { headH: 34, headGap: 16, cellPadY: 14, rowH: 82 } as const;
+
+/** The density spec a quiet table's wide form draws with. */
+export function quietSpec(spec: DensitySpec): DensitySpec {
+  return { ...spec, edge: spec.gutter, headH: QUIET_HEAD.headH, rowH: QUIET_HEAD.rowH };
+}
+
 /** Reads a row property by column key without widening the row type to `any`. */
 export function readField(row: unknown, key: string): unknown {
   if (typeof row !== 'object' || row === null) return undefined;

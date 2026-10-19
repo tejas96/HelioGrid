@@ -1,0 +1,149 @@
+/* An open invite's seven days on the member card (`SCR-M01-12`): the bar, then its day on the
+   left and its expiry on the right. */
+.hg-member-card-invite {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--sp-3) / 2);
+}
+
+.hg-member-card-invite-words {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-member-card-day {
+  color: var(--text-secondary);
+}
+
+.hg-member-card-expires {
+  color: var(--text-primary);
+}
+
+/* The three placeholder cards while the team's read is out (`m-loading`): a tile each, its parts
+   in the card's own places and sizes. The sweep is the theme's, which reduced motion stills. */
+.hg-member-loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tile-gap);
+}
+
+.hg-member-loading-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border-radius: var(--r-tile);
+}
+
+.hg-member-loading-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-member-loading-words {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-member-loading-bar {
+  display: block;
+  border-radius: var(--r-pill);
+  /* biome-ignore lint/plugin/raw-white-css: shimmer — a placeholder's sweep on the grey tile */
+  background: linear-gradient(
+    90deg,
+    var(--canvas-sunken) 25%,
+    var(--surface) 50%,
+    var(--canvas-sunken) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-member-loading-bar[data-part="face"] {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.hg-member-loading-bar[data-part="name"],
+.hg-member-loading-bar[data-part="line"] {
+  height: var(--sp-3);
+}
+
+/* Each card's own widths, the board's, so three cards do not read as one shape repeated. */
+.hg-member-loading-card[data-card="a"] [data-part="name"] {
+  width: 46%;
+}
+.hg-member-loading-card[data-card="a"] [data-part="line"] {
+  width: 68%;
+}
+.hg-member-loading-card[data-card="a"] [data-part="roles"] {
+  width: 40%;
+}
+.hg-member-loading-card[data-card="b"] [data-part="name"] {
+  width: 52%;
+}
+.hg-member-loading-card[data-card="b"] [data-part="line"] {
+  width: 60%;
+}
+.hg-member-loading-card[data-card="b"] [data-part="roles"] {
+  width: 34%;
+}
+.hg-member-loading-card[data-card="c"] [data-part="name"] {
+  width: 40%;
+}
+.hg-member-loading-card[data-card="c"] [data-part="line"] {
+  width: 72%;
+}
+.hg-member-loading-card[data-card="c"] [data-part="roles"] {
+  width: 46%;
+}
+
+.hg-member-loading-bar[data-part="roles"] {
+  height: var(--sp-6);
+}
+
+.hg-member-loading-bar[data-part="act"] {
+  width: 100%;
+  height: 44px;
+}
+
+.hg-member-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tile-gap);
+}
+
+/* A person in the team table's first cell (`d-default`). */
+.hg-member-person {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-member-person-who {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.hg-member-person-name {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  min-height: var(--sp-6);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}

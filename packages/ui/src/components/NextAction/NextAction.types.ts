@@ -33,12 +33,27 @@ export interface NextActionProps {
   size?: number;
 }
 
+/**
+ * `inline`: every slot indented beside the face. `stacked`: the face and the name are the head, and
+ * the slots take the full width under it, 12px apart — a person's card on a phone (`SCR-M01-12`).
+ */
+export type RecordCardLayout = 'inline' | 'stacked';
+
 export interface RecordCardProps {
   name: string;
   /** Defaults to the initials of `name`. */
   initials?: string;
   /** Colour of the initials circle tint — a DS colour token reference, never a raw colour. */
   avatarTone?: string;
+  /** A face in place of the initials circle — usually an `Avatar`, with its `mark` (`SCR-M01-12`). */
+  avatar?: ReactNode;
+  /** Beside the name, wrapping with it — usually a `Badge` ("You"). Never a control. */
+  badge?: ReactNode;
+  /**
+   * One sentence under the name, in the body face — the person's standing ("Active · last seen
+   * today"). Money, an ID or a phone goes in the mono `meta` (F7-09).
+   */
+  line?: ReactNode;
   /**
    * The row's **one lifecycle state** — usually a `StatusChip`. What the record *is*. Singular on
    * purpose; facts the record *has* go in `marks`.
@@ -52,6 +67,11 @@ export interface RecordCardProps {
   marks?: ReactNode | ReactNode[];
   /** Mono meta parts, joined by middots: ["Nashik", "8.2 kWp", "₹4,52,000"]. */
   meta?: ReactNode[];
+  /**
+   * What the record shows that is not a figure, above `action` — an invite's day-of-seven bar.
+   * Never a control: a tap on it reaches the row target when there is one.
+   */
+  detail?: ReactNode;
   /**
    * Bottom line — usually a `NextAction`, and **it may hold real buttons**: "Call", "Collect",
    * "Upload WCR". The whole-card target is a target BESIDE the content rather than a wrapper
@@ -80,4 +100,9 @@ export interface RecordCardProps {
   muted?: boolean;
   /** Radius and padding follow the density: 24px card on a phone, 12px inside a data screen. */
   density?: 'expressive' | 'functional';
+  /** `inline` (default) or `stacked` — see `RecordCardLayout`. */
+  layout?: RecordCardLayout;
+  /** The tile's foot: `TileAction` pills (Prefer, Hide, Archive) below a thin rule, full width.
+   *  Never unlabelled icons. */
+  actions?: ReactNode;
 }

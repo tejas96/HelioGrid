@@ -13,6 +13,11 @@ interface ShellFrameProps {
   inView?: string;
   /** Told when content first scrolls under the bar and when it comes back to the top. */
   onScrolledChange?: (scrolled: boolean) => void;
+  /**
+   * A list page's head — its search and filters — held at the top while the list scrolls under it
+   * (`SCR-M01-12`, `list-head`). Such a page keeps the list's own rhythm, `sp-4` between its parts.
+   */
+  stickyHead?: ReactNode;
   children: ReactNode;
 }
 
@@ -22,7 +27,14 @@ interface ShellFrameProps {
  * device's own home-indicator inset — read at run time, never a typed number (`F7-50`). While the
  * keyboard is up the pill steps aside, so it never covers the field being typed in.
  */
-export function ShellFrame({ topBar, items, inView, onScrolledChange, children }: ShellFrameProps) {
+export function ShellFrame({
+  topBar,
+  items,
+  inView,
+  onScrolledChange,
+  stickyHead,
+  children,
+}: ShellFrameProps) {
   const insets = useSafeAreaInsets();
   const pill = items.length > 0;
   const keyboardUp = useKeyboardUp();
@@ -38,6 +50,7 @@ export function ShellFrame({ topBar, items, inView, onScrolledChange, children }
         <ScrollView
           keyboardShouldPersistTaps="handled"
           scrollEventThrottle={16}
+          stickyHeaderIndices={stickyHead === undefined ? undefined : [0]}
           onScroll={
             onScrolledChange === undefined
               ? undefined
@@ -50,8 +63,14 @@ export function ShellFrame({ topBar, items, inView, onScrolledChange, children }
             pill
               ? { paddingBottom: underPill(insets.bottom) }
               : { paddingTop: 0, paddingBottom: insets.bottom },
+            stickyHead === undefined ? null : styles.listRhythm,
           ]}
         >
+          {stickyHead === undefined ? null : (
+            <View style={styles.stickyHead}>
+              <View style={styles.stickyHeadParts}>{stickyHead}</View>
+            </View>
+          )}
           {children}
         </ScrollView>
       </KeyboardAvoidingView>

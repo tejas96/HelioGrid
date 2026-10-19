@@ -1,0 +1,16 @@
+// A React Native `View` with `role="region"` is a named region only while it stays a native view;
+// Android folds a plain `View` into its parent, and the region's name goes with it. So a region
+// `View` also says `collapsable={false}`.
+or {
+  JsxOpeningElement(name=$name, attributes=$attrs),
+  JsxSelfClosingElement(name=$name, attributes=$attrs)
+} as $tag where {
+  $name <: "View",
+  $attrs <: some JsxAttribute() as $role where {
+    $role <: r"(?:role|accessibilityRole)\s*=\s*(?:\x22region\x22|\{\s*\x27region\x27\s*\})"
+  },
+  not $attrs <: some JsxAttribute() as $keep where {
+    $keep <: r"collapsable\s*=\s*\{\s*false\s*\}"
+  },
+  register_diagnostic(span=$tag, message="Android folds this View into its parent and drops the region's name — add collapsable={false}.")
+}

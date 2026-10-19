@@ -1,6 +1,7 @@
 import { UnavailableNote } from '../UnavailableNote';
 import type { DataTableProps } from './DataTable.types';
 import { TableMessage, TableSkeleton } from './DataTableChrome';
+import { QuietSkeleton } from './DataTableQuiet';
 
 /**
  * **The caption is not inside the `<table>`.** As a `<caption>` element it vanished on every phone
@@ -11,14 +12,17 @@ export function TableCaption({
   caption,
   continued,
   id,
+  spokenOnly = false,
 }: {
   caption: string | undefined;
   continued: boolean;
   id: string;
+  /** A quiet table's caption names it for a screen reader only (`F7-27` still holds). */
+  spokenOnly?: boolean;
 }) {
   if (caption === undefined) return null;
   return (
-    <div className="hg-dt-caption" id={id}>
+    <div className={spokenOnly ? 'hg-spoken-only' : 'hg-dt-caption'} id={id}>
       {caption}
       {continued ? ' (continued)' : ''}
     </div>
@@ -34,9 +38,11 @@ export function TableCaption({
 export function TableStates<Row>({
   table,
   stacked,
+  quiet,
 }: {
   table: DataTableProps<Row>;
   stacked: boolean;
+  quiet: boolean;
 }) {
   const {
     state = 'ready',
@@ -53,7 +59,8 @@ export function TableStates<Row>({
 
   return (
     <>
-      {state === 'loading' ? <TableSkeleton stacked={stacked} /> : null}
+      {state === 'loading' && quiet ? <QuietSkeleton table={table} /> : null}
+      {state === 'loading' && !quiet ? <TableSkeleton stacked={stacked} /> : null}
       {state === 'error' ? (
         <TableMessage
           tone="warning"

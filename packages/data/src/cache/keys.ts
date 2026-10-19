@@ -20,6 +20,11 @@ export const queryKeys = {
     businessProfile: (tenantId: string) => ['settings', tenantId, 'business-profile'] as const,
     taxRegistrations: (tenantId: string) => ['settings', tenantId, 'tax-registrations'] as const,
   },
+  /** A company's people and its invites; a write to either refreshes the whole list under the prefix. */
+  team: {
+    members: (tenantId: string) => ['team', tenantId, 'members'] as const,
+    invites: (tenantId: string, status: string) => ['team', tenantId, 'invites', status] as const,
+  },
   /** A stored file's link. It dies in minutes, so a screen asks again when it next opens. */
   files: {
     downloadUrl: (tenantId: string, fileId: string) =>

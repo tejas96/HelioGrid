@@ -70,6 +70,7 @@ export function SourceDocument({
        a region on a screen that also shows a form. */
     <View
       role="region"
+      collapsable={false}
       accessibilityLabel={label || `${name} — source document`}
       style={[styles.root, style]}
     >

@@ -1,0 +1,72 @@
+/* TileActions — a list tile's foot: small LABELLED pills below a thin --line-tile rule, never
+   unlabelled round icons. The pill is 36 tall and the target 44: the transparent difference
+   belongs to the target, which Pressable owns. The pill's fill is the opposite of what holds it
+   (F7-15) — white inside the grey tile. Its height, side padding, icon and inner gap are the
+   design system's drawing and on no token scale, so they are named here. The words take the
+   nearest type step, --fs-body-sm, and are free to wrap: a translated word never clips. */
+
+.hg-tile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--sp-2);
+  row-gap: 0;
+  margin-top: var(--sp-1);
+}
+
+.hg-tile-actions[data-rule="true"] {
+  padding-top: var(--sp-1);
+  border-top: 1px solid var(--line-tile);
+}
+
+.hg-tile-action {
+  flex-shrink: 0;
+  border-radius: var(--r-pill);
+}
+
+.hg-tile-action-pill {
+  --hg-tile-action-h: 36px;
+  --hg-tile-action-pad: 14px;
+  --hg-tile-action-icon: 16px;
+  --hg-tile-action-gap: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hg-tile-action-gap);
+  min-height: var(--hg-tile-action-h);
+  padding: 0 var(--hg-tile-action-pad);
+  border-radius: var(--r-pill);
+  background: var(--hg-control-fill);
+  color: var(--text-primary);
+  box-shadow: var(--control-edge);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.01em;
+  transition: background var(--dur-standard) var(--ease-standard);
+}
+
+.hg-tile-action-pill[data-icon="true"] {
+  padding-left: var(--sp-3);
+}
+
+.hg-tile-action:hover:not(:disabled) .hg-tile-action-pill:not([data-on="true"]) {
+  background: var(--surface-alt);
+}
+
+.hg-tile-action-pill[data-on="true"] {
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  box-shadow: none;
+}
+
+.hg-tile-action:disabled .hg-tile-action-pill {
+  color: var(--text-disabled);
+}
+
+.hg-tile-action-icon {
+  width: var(--hg-tile-action-icon);
+  height: var(--hg-tile-action-icon);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}

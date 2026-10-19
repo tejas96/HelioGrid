@@ -72,6 +72,25 @@ export {
 export type { DealSegment, TenantSegment } from './segment';
 export { DEAL_SEGMENTS, TENANT_SEGMENTS } from './segment';
 export type {
+  RosterInvite,
+  RosterMember,
+  TeamLoad,
+  TeamRosterView,
+  TeamRow,
+  TeamRowStatus,
+  TeamStatusFilter,
+  TeamSurface,
+} from './team-roster';
+export {
+  showsListHead,
+  TEAM_ROW_STATUSES,
+  TEAM_STATUS_FILTERS,
+  teamRoster,
+  teamRosterView,
+  teamStatusFilterOf,
+  teamSurface,
+} from './team-roster';
+export type {
   WhatYouSellAnswers,
   WhatYouSellEvent,
   WhatYouSellQuestion,

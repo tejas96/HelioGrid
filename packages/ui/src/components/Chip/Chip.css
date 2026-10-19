@@ -145,3 +145,5 @@
   color: var(--accent);
   background: var(--accent-subtle);
 }
+/* `violet`, `blue` and `magenta` label a KIND and take the brand iris rule, `.hg-iris` in
+   Avatar.css, so a role badge and a face mix their hue the same way. */

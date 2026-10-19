@@ -44,6 +44,12 @@ export interface RecordCardProps {
   initials?: string;
   /** Colour of the initials circle tint. */
   avatarTone?: string;
+  /** A face in place of the initials circle — usually an `Avatar`, with its `mark` (`SCR-M01-12`). */
+  avatar?: React.ReactNode;
+  /** Beside the name, wrapping with it — usually a `Badge` ("You"). Never a control. */
+  badge?: React.ReactNode;
+  /** One sentence under the name, in the body face — the person's standing ("Active · last seen today"). Money, an ID or a phone goes in the mono `meta` (F7-09). */
+  line?: React.ReactNode;
   /**
    * The row's **one lifecycle state** — usually a `StatusChip`. What the record *is*. Singular on
    * purpose; facts the record *has* go in `marks`.
@@ -57,6 +63,8 @@ export interface RecordCardProps {
   marks?: React.ReactNode | React.ReactNode[];
   /** Mono meta parts, joined by middots: ["Nashik", "8.2 kWp", "₹4,52,000"]. */
   meta?: React.ReactNode[];
+  /** What the record shows that is not a figure, above `action` — an invite's day-of-seven bar. Never a control. */
+  detail?: React.ReactNode;
   /**
    * Bottom line — usually a `NextAction`, and **it may hold real buttons**: "Call", "Collect",
    * "Upload WCR". The whole-card target is an overlay `<button>` **beside** the content rather than a
@@ -91,7 +99,15 @@ export interface RecordCardProps {
   muted?: boolean;
   /** Radius and padding follow the density: 24px card on a phone, 12px inside a data screen. */
   density?: "expressive" | "functional";
+  /**
+   * `inline` (default): every slot indented beside the face. `stacked`: the face and name are the
+   * head, and `marks`, `detail` and `action` take the full width under it, 12px apart — a person's
+   * card on a phone (`SCR-M01-12`), where indented roles and a full-width act would wrap at half width.
+   */
+  layout?: "inline" | "stacked";
   style?: React.CSSProperties;
+  /** The tile's foot: `TileAction` pills (Prefer, Hide, Archive) below a thin rule. Never unlabelled icons. */
+  actions?: React.ReactNode;
 }
 /**
  * The phone form of a table row: initials circle, name + chip, mono meta, next action.

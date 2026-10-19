@@ -1,8 +1,9 @@
 import type { CSSProperties } from 'react';
-import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { useOwnWidth } from '../../primitives/use-own-width';
 import { renderProvenance } from '../Provenance';
-import { showsMessage, sortRows } from './DataTable.logic';
+import { DATA_TABLE_STACK_BELOW, showsMessage, sortRows } from './DataTable.logic';
 import type { DataTableProps } from './DataTable.types';
 import { Pagination, SelectionBar } from './DataTableChrome';
 import { DataTableGrid } from './DataTableGrid';
@@ -13,24 +14,6 @@ import { useTableSelection, useTableSort } from './use-table-state';
 interface WebDataTableProps<Row> extends DataTableProps<Row> {
   className?: string;
   style?: CSSProperties;
-}
-
-/** The table measures ITS OWN width — no layout in this system is tuned to a viewport. */
-function useOwnWidth() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState<number | null>(null);
-  useEffect(() => {
-    const element = ref.current;
-    if (element === null || typeof ResizeObserver === 'undefined') return;
-    const observer = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      if (entry !== undefined) setWidth(entry.contentRect.width);
-    });
-    observer.observe(element);
-    setWidth(element.getBoundingClientRect().width);
-    return () => observer.disconnect();
-  }, []);
-  return [ref, width] as const;
 }
 
 /**
@@ -67,13 +50,14 @@ export function DataTable<Row = Record<string, unknown>>(props: WebDataTableProp
     state = 'ready',
     caption,
     continued = false,
-    stackBelow = 640,
+    stackBelow = DATA_TABLE_STACK_BELOW,
     onFormChange,
     page,
     pageSize = 10,
     rowCount,
     onPageChange,
     density = 'comfortable',
+    head = 'overline',
     className,
     style,
   } = props;
@@ -88,6 +72,8 @@ export function DataTable<Row = Record<string, unknown>>(props: WebDataTableProp
   const { sort: activeSort, setSort } = useTableSort(sort, onSortChange);
 
   const stacked = ownWidth !== null && ownWidth < stackBelow;
+  /* The quiet head is the wide form's; the stacked cards are the same in both. */
+  const quiet = head === 'quiet' && !stacked;
 
   /* The breakpoint is the table's, so the answer is the table's to publish. The callback rides in
      a ref so a caller's inline arrow cannot turn "whenever the answer changes" into "every render"
@@ -105,6 +91,7 @@ export function DataTable<Row = Record<string, unknown>>(props: WebDataTableProp
   const shellStyle = { ...style, '--hg-dt-density': density } as CSSProperties;
   const shell = classNames('hg-dt', className);
   const stackedAttr = stacked ? 'true' : undefined;
+  const headAttr = quiet ? 'quiet' : undefined;
   const labelledBy = caption === undefined ? undefined : captionId;
   /* The table-wide statement, resolved: a caller may write a bare tier or a whole spec, and
      neither is a React child until `renderProvenance` has made one. */
@@ -112,16 +99,22 @@ export function DataTable<Row = Record<string, unknown>>(props: WebDataTableProp
 
   if (showsMessage(state, rows.length)) {
     return (
-      <div className={shell} data-density={density} ref={ref} style={shellStyle}>
-        <TableCaption caption={caption} continued={continued} id={captionId} />
-        <TableStates table={props} stacked={stacked} />
+      <div
+        className={shell}
+        data-density={density}
+        data-head={headAttr}
+        ref={ref}
+        style={shellStyle}
+      >
+        <TableCaption caption={caption} continued={continued} id={captionId} spokenOnly={quiet} />
+        <TableStates table={props} stacked={stacked} quiet={quiet} />
       </div>
     );
   }
 
   return (
-    <div className={shell} data-density={density} ref={ref} style={shellStyle}>
-      <TableCaption caption={caption} continued={continued} id={captionId} />
+    <div className={shell} data-density={density} data-head={headAttr} ref={ref} style={shellStyle}>
+      <TableCaption caption={caption} continued={continued} id={captionId} spokenOnly={quiet} />
 
       {selectable && selection.length > 0 ? (
         <SelectionBar
@@ -170,6 +163,7 @@ export function DataTable<Row = Record<string, unknown>>(props: WebDataTableProp
           labelledBy={labelledBy}
           table={props}
           pageSize={pageSize}
+          quiet={quiet}
         />
       )}
 

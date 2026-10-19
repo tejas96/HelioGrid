@@ -93,6 +93,7 @@ export function Checklist({
        whole list behind one unreachable element. */
     <View
       role="region"
+      collapsable={false}
       accessibilityLabel={typeof label === 'string' ? label : 'Checklist'}
       style={[styles.shell, style]}
     >

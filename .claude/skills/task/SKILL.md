@@ -180,7 +180,7 @@ JavaScript edits; Fast Refresh can drop silently.
 
 QA runs on `heliogrid_test`, never on the owner's `heliogrid_dev` (`infra/README.md`). When
 `.env.local` names `heliogrid_dev`, switch both database lines
-(`sed -i '' 's/heliogrid_dev/heliogrid_test/' .env.local`) and switch them back in step 8. Migrate
+(`sed -i '' 's/heliogrid_dev/heliogrid_test/' .env.local`) and switch them back at step 8's clean-up. Migrate
 it before the api starts (the test-database prefix, then `pnpm db:migrate`), then run
 `pnpm --filter @heliogrid/api pack:publish`, which changes nothing when the pack is there. A running api restarts only when this
 task switched the database, added a migration or changed api code it does not hot-reload.
@@ -196,6 +196,8 @@ setup as a new company takes an unused `DEV_OTP_PHONES` number (`…906` up); wh
 owner decides how `heliogrid_test` is reset. A row that needs the api
 stopped runs last, after every agent has returned: stop the api once, continue each agent that has
 such rows, start the api once.
+
+A row that names a frame is a pass only with its board compare: a report that skipped it, or names a movement or overlap it did not judge, is sent back to the same agent, never read as a pass.
 
 **Fix.** Fix only evidenced failures. Continue the same `code-reviewer` on the fixed files — one read
 per fix; a finding still open after it stops for the owner — then continue the same QA agent with only the rows the fix touched. A row gets one retry after a fix; a
@@ -222,7 +224,9 @@ return; any file an agent changed stops the task.
    fails the gate. A fix goes back through `pnpm check`, the reviewer on
    the fixed files and the QA rows it touched, then one more gate run. A second failure that is
    not environmental stops for the owner. A stale `dist/` after a delete: `CLAUDE.md` §3.
-4. Clean up: switch `.env.local` back if step 7 switched it, and restart the api only if it was
+4. Clean up once the owner says yes to the commit (step 9), never before it: a fault the owner
+   reports between the gate and that yes is reproduced on the stack, the phones and the test
+   database as QA left them. Then switch `.env.local` back if step 7 switched it, and restart the api only if it was
    running at step 1. Stop every server, phone (`xcrun simctl shutdown <udid>`,
    `adb -s <serial> emu kill`) and browser tab this task started; leave alone what was running at
    step 1; run

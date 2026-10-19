@@ -1,4 +1,4 @@
-/* Avatar — perfect circle, initials on a soft brand tint when there is no image.
+/* Avatar — perfect circle, initials on a brand iris tint when there is no image.
    The diameter and the initials size arrive as custom properties because they are a numeric
    prop, not a token step; every colour and radius below is a token. */
 
@@ -18,6 +18,77 @@
   font-weight: var(--fw-medium);
 }
 
+/* A thing, not a person (`glyph`): no name to fall back to and no tint. */
+.hg-avatar--glyph {
+  /* biome-ignore lint/plugin/raw-white-css: illustration — a thing's disc is white on every ground, as the design system draws it */
+  background: var(--surface);
+  color: var(--accent);
+}
+
+/* THE BRAND IRIS (design-system change 7) — a person's initials, and a Badge's kind tone, which
+   takes this class too. The wash is the hue at 14% on white and the words the hue mixed 70% with
+   black, so every hue clears 4.5:1. The phone computes the same two mixes in Avatar.logic.ts
+   (IRIS_WASH_SHARE, IRIS_WORDS_SHARE): a share changed there is changed here in the same commit. */
+.hg-iris[data-iris="violet"] {
+  --hg-iris: var(--iris-violet);
+}
+.hg-iris[data-iris="blue"] {
+  --hg-iris: var(--iris-blue);
+}
+.hg-iris[data-iris="magenta"] {
+  --hg-iris: var(--iris-magenta);
+}
+.hg-iris[data-iris] {
+  /* biome-ignore lint/plugin/raw-white-css: iris — the rule's wash is the hue over white, the page's own white */
+  background: color-mix(in srgb, var(--hg-iris) 14%, var(--surface));
+  color: color-mix(in srgb, var(--hg-iris) 70%, black);
+  /* The design system's iris weight, and the black the words deepen to: the theme holds neither a
+     600 weight nor a black token, so both are written as they are (D284). */
+  font-weight: 600;
+}
+
+/* A person's standing at the disc's foot (`mark`): an 11px dot in an 18px ring of the page, 2px
+   out from the disc. Neither size is on a token scale, so both are named here. */
+.hg-avatar-marked {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.hg-avatar-mark {
+  --hg-avatar-mark-ring: 18px;
+  --hg-avatar-mark-dot: 11px;
+  position: absolute;
+  right: calc(-1 * var(--sp-0-5));
+  bottom: calc(-1 * var(--sp-0-5));
+  width: var(--hg-avatar-mark-ring);
+  height: var(--hg-avatar-mark-ring);
+  border-radius: var(--r-pill);
+  background: var(--canvas);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hg-avatar-mark-dot {
+  width: var(--hg-avatar-mark-dot);
+  height: var(--hg-avatar-mark-dot);
+  border-radius: var(--r-pill);
+}
+
+.hg-avatar-mark[data-mark="info"] .hg-avatar-mark-dot {
+  background: var(--info);
+}
+.hg-avatar-mark[data-mark="success"] .hg-avatar-mark-dot {
+  background: var(--success);
+}
+.hg-avatar-mark[data-mark="warning"] .hg-avatar-mark-dot {
+  background: var(--warning);
+}
+.hg-avatar-mark[data-mark="neutral"] .hg-avatar-mark-dot {
+  background: var(--neutral);
+}
+
 .hg-avatar-img {
   width: 100%;
   height: 100%;
@@ -29,10 +100,11 @@
   align-items: center;
 }
 
-/* The 2px ring is cut in the ground behind the group so overlapping circles stay separable. */
+/* The 2px ring is cut in the ground behind the group (or the caller's `ring`) so overlapping
+   circles stay separable. */
 .hg-avatar-group-item {
   border-radius: var(--r-pill);
-  box-shadow: 0 0 0 2px var(--hg-ground);
+  box-shadow: 0 0 0 2px var(--hg-avatar-ring, var(--hg-ground));
   margin-left: var(--hg-avatar-overlap);
 }
 
@@ -45,7 +117,7 @@
   height: var(--hg-avatar-size);
   margin-left: var(--hg-avatar-overlap);
   border-radius: var(--r-pill);
-  box-shadow: 0 0 0 2px var(--hg-ground);
+  box-shadow: 0 0 0 2px var(--hg-avatar-ring, var(--hg-ground));
   background: var(--canvas-sunken);
   color: var(--text-secondary);
   display: inline-flex;

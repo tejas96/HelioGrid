@@ -1,0 +1,24 @@
+import React from "react";
+export interface TileActionProps {
+  /** 16px glyph before the word. */
+  icon?: React.ReactNode;
+  /** The word — always present. "Prefer", "Hide", "Archive". */
+  label: string;
+  /** Word shown while on — "Preferred". Falls back to `label`. */
+  onLabel?: string;
+  /** Pass to make it a toggle: on = black pill, white text, aria-pressed. */
+  on?: boolean;
+  onClick?: () => void;
+  disabled?: boolean;
+  style?: React.CSSProperties;
+}
+/** A labelled 36px pill (44px target), white on the grey tile. Never an unlabelled round icon. */
+export function TileAction(props: TileActionProps): JSX.Element;
+export interface TileActionsProps {
+  children?: React.ReactNode;
+  /** Thin --line-tile rule above the row. Default true. */
+  rule?: boolean;
+  style?: React.CSSProperties;
+}
+/** The foot of a list tile: its action pills, below a thin line. `RecordCard` draws it from `actions`. */
+export function TileActions(props: TileActionsProps): JSX.Element;

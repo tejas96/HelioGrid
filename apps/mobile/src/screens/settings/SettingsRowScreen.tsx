@@ -8,6 +8,7 @@ import type { ComponentType } from 'react';
 import { CompanyProfileSettingsScreen } from '../company-profile';
 import { ShellNotFoundState } from '../shell/components/ShellNotFoundState';
 import { ShellPage } from '../shell/components/ShellPage';
+import { TeamScreen } from '../team';
 import { useSettingsDrillDown } from './hooks/use-settings-drill-down';
 
 type Props = StaticScreenProps<{ segment: string }>;
@@ -15,6 +16,7 @@ type Props = StaticScreenProps<{ segment: string }>;
 /** The settings screens that have landed; every other row still opens the placeholder below. */
 const BUILT_ROW: Partial<Record<SettingsRow, ComponentType>> = {
   company_profile: CompanyProfileSettingsScreen,
+  team: TeamScreen,
 };
 
 /**

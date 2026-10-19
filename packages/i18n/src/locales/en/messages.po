@@ -108,6 +108,11 @@ msgid "{count} unread"
 msgstr "{count} unread"
 
 #. js-lingui-explicit-id
+#: src/copy/team.ts:55
+msgid "{date}, {time}"
+msgstr "{date}, {time}"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:36
 msgid "{home}, switch home"
 msgstr "{home}, switch home"
@@ -166,6 +171,11 @@ msgstr "{name} asks to join"
 #: src/copy/explainer.ts:8
 msgid "{page} of {total}"
 msgstr "{page} of {total}"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:22
+msgid "{people, plural, one {# person} other {# people}} · {invites, plural, one {# invite} other {# invites}}"
+msgstr "{people, plural, one {# person} other {# people}} · {invites, plural, one {# invite} other {# invites}}"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:64
@@ -318,6 +328,21 @@ msgid "Account number"
 msgstr "Account number"
 
 #. js-lingui-explicit-id
+#: src/copy/team.ts:34
+msgid "Active"
+msgstr "Active"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:50
+msgid "Active · last seen {date}"
+msgstr "Active · last seen {date}"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:51
+msgid "Active · last seen today"
+msgstr "Active · last seen today"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:113
 msgid "Add a lead from your home"
 msgstr "Add a lead from your home"
@@ -351,6 +376,11 @@ msgstr "Address"
 #: src/copy/settings.ts:41
 msgid "Agent & voice"
 msgstr "Agent & voice"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:11
+msgid "All"
+msgstr "All"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:22
@@ -540,6 +570,11 @@ msgid "City"
 msgstr "City"
 
 #. js-lingui-explicit-id
+#: src/copy/team.ts:17
+msgid "Clear search"
+msgstr "Clear search"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:51
 msgid "Close"
 msgstr "Close"
@@ -695,6 +730,26 @@ msgid "data rights"
 msgstr "data rights"
 
 #. js-lingui-explicit-id
+#: src/copy/team.ts:47
+msgid "Day {day} of {days}"
+msgstr "Day {day} of {days}"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:35
+msgid "Deactivated"
+msgstr "Deactivated"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:52
+msgid "Deactivated · last seen {date}"
+msgstr "Deactivated · last seen {date}"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:53
+msgid "Deactivated · last seen today"
+msgstr "Deactivated · last seen today"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:31
 msgid "Declared by you"
 msgstr "Declared by you"
@@ -750,6 +805,31 @@ msgid "Estimated"
 msgstr "Estimated"
 
 #. js-lingui-explicit-id
+#: src/copy/team.ts:20
+msgid "Everyone at {company}"
+msgstr "Everyone at {company}"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:21
+msgid "Everyone at {company} matching {query}"
+msgstr "Everyone at {company} matching {query}"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:33
+msgid "Expired"
+msgstr "Expired"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:49
+msgid "Expired {date}"
+msgstr "Expired {date}"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:48
+msgid "Expires {date}"
+msgstr "Expires {date}"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:90
 msgid "Factories, offices, warehouses"
 msgstr "Factories, offices, warehouses"
@@ -778,6 +858,11 @@ msgstr "Finance"
 #: src/copy/homes.ts:16
 msgid "Finance Home"
 msgstr "Finance Home"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:9
+msgid "Find in this list"
+msgstr "Find in this list"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:45
@@ -945,14 +1030,34 @@ msgid "Installer Job Home"
 msgstr "Installer Job Home"
 
 #. js-lingui-explicit-id
+#: src/copy/team.ts:16
+msgid "Invite the people who sell, survey, design and install."
+msgstr "Invite the people who sell, survey, design and install."
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:32
+msgid "Invited"
+msgstr "Invited"
+
+#. js-lingui-explicit-id
 #: src/copy/connection.ts:11
 msgid "It may be your connection or ours. Try again in a moment."
 msgstr "It may be your connection or ours. Try again in a moment."
 
 #. js-lingui-explicit-id
+#: src/copy/team.ts:15
+msgid "It’s just you so far"
+msgstr "It’s just you so far"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-language.ts:21
 msgid "Language"
 msgstr "Language"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:27
+msgid "Last active"
+msgstr "Last active"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:90
@@ -968,6 +1073,11 @@ msgstr "Links {email}"
 #: src/copy/company-profile.ts:45
 msgid "Loading your company profile"
 msgstr "Loading your company profile"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:13
+msgid "Loading your team"
+msgstr "Loading your team"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:59
@@ -1062,9 +1172,34 @@ msgid "No company was made yet — carry on from here."
 msgstr "No company was made yet — carry on from here."
 
 #. js-lingui-explicit-id
+#: src/copy/team.ts:41
+msgid "No expired invites"
+msgstr "No expired invites"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:58
 msgid "No more codes for {windowMinutes} minutes"
 msgstr "No more codes for {windowMinutes} minutes"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:42
+msgid "No one active"
+msgstr "No one active"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:43
+msgid "No one deactivated"
+msgstr "No one deactivated"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:19
+msgid "No one matches “{query}”"
+msgstr "No one matches “{query}”"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:40
+msgid "No open invites"
+msgstr "No open invites"
 
 #. js-lingui-explicit-id
 #: src/copy/disclosure.ts:28
@@ -1268,6 +1403,11 @@ msgid "People Today"
 msgstr "People Today"
 
 #. js-lingui-explicit-id
+#: src/copy/team.ts:25
+msgid "Person"
+msgstr "Person"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:28
 msgid "Pick the one that describes your work."
 msgstr "Pick the one that describes your work."
@@ -1388,6 +1528,11 @@ msgid "Residential"
 msgstr "Residential"
 
 #. js-lingui-explicit-id
+#: src/copy/team.ts:26
+msgid "Roles"
+msgstr "Roles"
+
+#. js-lingui-explicit-id
 #: src/copy/settings.ts:35
 msgid "Roles reference"
 msgstr "Roles reference"
@@ -1491,6 +1636,11 @@ msgstr "Sent by SMS to"
 #: src/copy/settings.ts:18
 msgid "Settings"
 msgstr "Settings"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:18
+msgid "Show all"
+msgstr "Show all"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:36
@@ -1621,6 +1771,11 @@ msgstr "Start a survey from your home"
 #: src/copy/shell.ts:107
 msgid "Start survey"
 msgstr "Start survey"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:10
+msgid "Status"
+msgstr "Status"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:34
@@ -1794,6 +1949,11 @@ msgid "The SMS network turned it away"
 msgstr "The SMS network turned it away"
 
 #. js-lingui-explicit-id
+#: src/copy/team.ts:14
+msgid "The team list didn’t load"
+msgstr "The team list didn’t load"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:66
 msgid "The tranches must add up to exactly 100%. Place the remainder before saving."
 msgstr "The tranches must add up to exactly 100%. Place the remainder before saving."
@@ -1887,6 +2047,11 @@ msgstr "To join another company, ask its owner to invite you."
 #: src/copy/shell.ts:64
 msgid "Today · {date}"
 msgstr "Today · {date}"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:54
+msgid "Today, {time}"
+msgstr "Today, {time}"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:42
@@ -2186,6 +2351,7 @@ msgstr "Yesterday · {date}"
 
 #. js-lingui-explicit-id
 #: src/copy/settings.ts:24
+#: src/copy/team.ts:12
 msgid "You"
 msgstr "You"
 

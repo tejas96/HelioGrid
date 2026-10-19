@@ -66,6 +66,7 @@ Runs on the iOS simulator, and on Android through `qa-android` when `/task` step
 
 ## Traps
 
+- A `ScrollView` sticky child loses its own style: `ScrollViewStickyHeader` moves the child's `style` onto its wrapper and gives the child `flex: 1`, so a `gap` on the held view spaces one child and its parts sit flush → spacing goes on an inner view, as `ShellFrame`'s `stickyHeadParts` does.
 - `import()` cannot lazy-load: against the dev server it goes through `__loadBundleAsync` and throws `LoadBundleFromServerError`, while a release build inlines it → a `.native.ts` half with static imports, as `packages/i18n/src/catalog-loader.native.ts` does.
 - The root navigator must never be empty: every group is `if`-gated, and per-guard timers can disagree for a frame → keep the ungrouped `Boot` route, and drive the guards from ONE phase value in `src/navigation/phase.tsx`.
 - A navigation group keyed by ROLE declares a shared screen twice, because roles are stackable, and a duplicate route name throws → key groups by CAPABILITY.

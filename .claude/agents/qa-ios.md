@@ -43,7 +43,8 @@ at the row's path, and report.
 **Board compare** (a row that names a phone frame). The frame map gives each element's component,
 words, size and gaps from the board's code, with tokens resolved from
 `packages/theme/src/_generated/tokens/`. Read the same element in the tree (`AXLabel`, `frame`)
-and compare words, size and gap in points. A board is English: in a Hindi or Marathi row only the
+and compare words, size and gap in points. A held or sticky part is compared at rest and again
+after a short scroll. A board is English: in a Hindi or Marathi row only the
 layout is compared. A difference your prompt lists as known is noted; any other fails the row; one
 you judge the board wrong on is marked `board?`.
 

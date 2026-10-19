@@ -198,6 +198,7 @@ The port is then held by checks that run in `pnpm lint` and `pnpm check:all`, an
 | **Weakened prop** — a spec union (`ProvenanceProps \| ProvenanceTierSpec`, `NamedGapSpec`, …) ported as a bare `ReactNode`; **raw emit** — the spec type came across but its renderer did not | typecheck |
 | **Inert accessibility** — `accessibilityState`, `accessibilityLabel` or `accessibilityValue` on a React Native `View` or `Animated.View` that is not an accessibility element (no `accessible`, no role) | Biome plugin `inert-a11y` |
 | **Folded control** — `accessible` on a tag whose subtree holds a control, so the control is out of a screen reader's reach | Biome plugin `folded-control` |
+| **Folded region** — a React Native `View` with `role="region"` and no `collapsable={false}`, which Android folds into its parent with the region's name | Biome plugin `folded-region` |
 | **Dishonest role** — a literal `progressbar` role with no `accessibilityValue` or `aria-valuenow` | Biome plugin `progressbar-value` |
 | **Semantic drift** — the two halves of one component declaring different roles or states for a screen reader | review |
 | **False excuse** — a comment excusing a shortfall by naming something that already exists | review |

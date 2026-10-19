@@ -1,19 +1,51 @@
+import type { ReactNode } from 'react';
+
 /**
  * Perfect-circle avatar with an initials fallback, and the overlapping group built from it.
  * The shared contract both platform halves import (docs/engineering/17 §2).
  */
+
+/** The three brand iris hues (design-system change 7): a person's tint, a label's kind. */
+export type IrisHue = 'violet' | 'blue' | 'magenta';
+
+/** `auto` picks an iris hue from the name; `accent` is the flat lavender. */
+export type AvatarHue = 'auto' | IrisHue | 'accent';
+
+/** A person's standing as a dot — the same four tones the status words beside it take. */
+export type AvatarMark = 'info' | 'success' | 'warning' | 'neutral';
 
 export interface AvatarProps {
   src?: string;
   /** used for initials fallback + alt text */
   name?: string;
   size?: 24 | 32 | 40 | 56 | 80 | number;
+  /**
+   * The brand iris hue behind the initials. `auto` (default) picks violet, blue or magenta from
+   * the name, so a person keeps one colour on every screen and on both platforms; `accent` is the
+   * flat lavender.
+   */
+  hue?: AvatarHue;
+  /** A thing, not a person: the glyph in `--accent` on a white disc, with no initials and no tint
+   *  (`SCR-M01-13`'s capability cluster). */
+  glyph?: ReactNode;
+  /**
+   * The person's standing as a dot at the disc's foot, in a ring of `--canvas` (`SCR-M01-12`). It
+   * repeats what the words beside it say — never the only carrier of the state — so it is not read
+   * aloud. Drawn for a 40–56px disc.
+   */
+  mark?: AvatarMark;
 }
 
 export interface AvatarGroupProps {
   people?: AvatarProps[];
   size?: number;
   max?: number;
+  /**
+   * The colour of the ground the group sits on — each disc's 2px ring takes it, so the overlap
+   * reads. Defaults to the ground that holds the group. A colour token reference on the web
+   * (`var(--canvas)`), the token's value on the phone (`theme.colors.canvas`); never a raw colour.
+   */
+  ring?: string;
 }
 
 /**

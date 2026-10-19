@@ -1,8 +1,9 @@
-import { DENSITY, rowKeyOf } from './DataTable.logic';
+import { DENSITY, quietSpec, rowKeyOf } from './DataTable.logic';
 import type { DataTableProps, DataTableSort } from './DataTable.types';
 import { DataTableBodyRow } from './DataTableBodyRow.native';
 import { DataTableHead } from './DataTableHead.native';
 import { asProvenanceSpec } from './DataTableProvenance.logic';
+import { QuietCard } from './DataTableQuiet.native';
 import { provenanceColumnOf } from './DataTableRow.logic';
 
 export interface NativeRowsProps<Row> {
@@ -44,7 +45,8 @@ export function DataTableRows<Row>({
   density,
 }: NativeRowsProps<Row>) {
   const { columns } = table;
-  const spec = DENSITY[density];
+  const quiet = table.head === 'quiet';
+  const spec = quiet ? quietSpec(DENSITY[density]) : DENSITY[density];
   const provenanceColumn = provenanceColumnOf(columns);
   /* Resolved once for the whole header: the statement each column's tier is measured against. */
   const tableSpec = asProvenanceSpec(table.provenance);
@@ -65,22 +67,25 @@ export function DataTableRows<Row>({
         onSort={onSort}
         hasActions={table.rowActions !== undefined}
         density={density}
+        quiet={quiet}
         tableSpec={tableSpec}
       />
-      {rows.map((row, index) => (
-        <DataTableBodyRow
-          key={rowKeyOf(rowKey, row, index)}
-          row={row}
-          index={index}
-          rowKey={rowKey}
-          selectable={selectable}
-          selected={selected}
-          onToggleRow={onToggleRow}
-          provenanceColumn={provenanceColumn}
-          spec={spec}
-          table={table}
-        />
-      ))}
+      <QuietCard quiet={quiet}>
+        {rows.map((row, index) => (
+          <DataTableBodyRow
+            key={rowKeyOf(rowKey, row, index)}
+            row={row}
+            index={index}
+            rowKey={rowKey}
+            selectable={selectable}
+            selected={selected}
+            onToggleRow={onToggleRow}
+            provenanceColumn={provenanceColumn}
+            spec={spec}
+            table={table}
+          />
+        ))}
+      </QuietCard>
     </>
   );
 }

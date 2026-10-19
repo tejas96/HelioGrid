@@ -29,10 +29,13 @@ interface DrillDown {
 export function ShellPage({
   inView,
   drillDown,
+  stickyHead,
   children,
 }: {
   inView?: string;
   drillDown?: DrillDown;
+  /** A list page's search and filters, held at the top while the list scrolls (`ShellFrame`). */
+  stickyHead?: ReactNode;
   children: ReactNode;
 }) {
   const t = useTranslate();
@@ -77,6 +80,7 @@ export function ShellPage({
       items={items}
       inView={lit ? inView : undefined}
       onScrolledChange={drillDown === undefined ? undefined : setScrolled}
+      stickyHead={stickyHead}
     >
       {children}
       <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />

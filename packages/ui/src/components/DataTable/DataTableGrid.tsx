@@ -20,6 +20,8 @@ export interface GridProps<Row> {
   labelledBy?: string;
   table: DataTableProps<Row>;
   pageSize: number;
+  /** The quiet head: the rows stand in one raised card under the labels. */
+  quiet: boolean;
 }
 
 /**
@@ -41,13 +43,14 @@ export function DataTableGrid<Row>({
   labelledBy,
   table,
   pageSize,
+  quiet,
 }: GridProps<Row>) {
   const { columns, rowActions, totalRow } = table;
   const hasActions = rowActions !== undefined;
   /* Resolved once for the whole header: the statement each column's tier is measured against. */
   const tableSpec = asProvenanceSpec(table.provenance);
 
-  return (
+  const grid = (
     <table className="hg-dt-table" aria-labelledby={labelledBy}>
       <DataTableHead
         columns={columns}
@@ -59,6 +62,7 @@ export function DataTableGrid<Row>({
         onSort={onSort}
         hasActions={hasActions}
         tableSpec={tableSpec}
+        quiet={quiet}
       />
       <DataTableRows
         rows={rows}
@@ -83,4 +87,6 @@ export function DataTableGrid<Row>({
       )}
     </table>
   );
+  /* Only a quiet table grows the wrapper its card is drawn in; every other table is unchanged. */
+  return quiet ? <div className="hg-dt-quiet">{grid}</div> : grid;
 }

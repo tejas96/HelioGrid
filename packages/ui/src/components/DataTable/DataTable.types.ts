@@ -189,4 +189,11 @@ export interface DataTableProps<Row = Record<string, unknown>> {
   onPageChange?: (page: number) => void;
   /** Row rhythm. `comfortable` (default) = 64px rows. `compact` = the 48px grid, dense admin only. */
   density?: 'comfortable' | 'compact';
+  /**
+   * `overline` (default): the uppercase micro-label head. `quiet`: sentence-case labels in the
+   * caption face, the rows in one raised card with a hairline between each and no zebra, 82px rows
+   * — a short list read row by row, a team roster (`SCR-M01-12`, design-system change 20). The
+   * caption then names the table for a screen reader only. The stacked form is the same in both.
+   */
+  head?: 'overline' | 'quiet';
 }

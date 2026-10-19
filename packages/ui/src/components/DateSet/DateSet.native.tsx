@@ -126,6 +126,7 @@ export function DateSet({
        delete buttons into one element nobody could reach. */
     <View
       role="region"
+      collapsable={false}
       accessibilityLabel={label}
       onLayout={onLayout}
       style={[styles.section, style]}

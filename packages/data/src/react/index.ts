@@ -30,4 +30,6 @@ export type { OpenGoogle, SignIn } from './use-sign-in';
 export { useSignIn } from './use-sign-in';
 export type { SignInDwell } from './use-sign-in-dwell';
 export { useSignInDwell } from './use-sign-in-dwell';
+export type { Team } from './use-team';
+export { useTeam } from './use-team';
 export { useUpdateRequired } from './use-update-required';
