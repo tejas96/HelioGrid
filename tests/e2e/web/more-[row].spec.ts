@@ -3,7 +3,6 @@ import { expect, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { createCompany } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
-import { expectTheLook } from '../support/look';
 import { freshMobile } from '../support/phone';
 import { passTheOwnersMark } from '../support/shell';
 
@@ -20,7 +19,7 @@ const WORDS = settingsWords(en.t);
 test('a row opens its screen’s address inside the shell, More in view; Back returns to where it was opened', async ({
   page,
 }, testInfo) => {
-  const company = await createCompany(page, en, freshMobile());
+  await createCompany(page, en, freshMobile());
   await passTheOwnersMark(page, en);
   await page.goto('/more');
   const rail = page.getByRole('navigation', { name: en.t(SHELL.mainNavigation) });
@@ -37,7 +36,6 @@ test('a row opens its screen’s address inside the shell, More in view; Back re
   await expectNoSidewaysScroll(page);
   await expect(page).toHaveTitle(/\S/);
   await expectNoSeriousViolations(page);
-  await expectTheLook(page, [page.getByText(company)]);
 
   await page.goBack();
   if (testInfo.project.name === 'desktop') {

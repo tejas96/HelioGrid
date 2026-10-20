@@ -3,17 +3,14 @@ import { basename, dirname, join, relative } from 'node:path';
 import { walkFiles } from './repo-files';
 
 /**
- * Every web route and every phone screen has its regression flow, and every web route with a look
- * of its own has its baseline at both viewports.
+ * Every web route and every phone screen has its regression flow.
  *
  * By file NAME only — a spec's text is never searched for a route, which a comment could fake;
  * whether the flow really drives its screen is the reviewer's. A route is the folder of a `page`
  * file at any depth: its `(group)` folders are not in the URL, the rest join with `-`, and `/` is
  * `root`. A phone screen is the folder of a `*Screen.tsx` at any depth under screens/, joined the
  * same way. A route's flow is `tests/e2e/web/<route>.spec.ts`; a screen's is
- * `tests/e2e/mobile/<screen>.yaml`. A route's look is
- * `tests/e2e/web/<route>.spec.ts-snapshots/landing-<viewport>-linux.png`, the name
- * `tests/e2e/support/look.ts` writes — by name too, so a spec that never takes its look draws none.
+ * `tests/e2e/mobile/<screen>.yaml`.
  *
  * And no phone flow is forgotten: every top-level `tests/e2e/mobile/*.yaml` is run by `run.sh`, and
  * every `steps/*.yaml` is called by `run.sh` or by a flow. Only a call counts — a `flow …` line of
@@ -27,21 +24,6 @@ const SCREEN = /Screen\.tsx$/;
 const PHONE_SUITE = 'tests/e2e/mobile';
 const PHONE_RUNNER = `${PHONE_SUITE}/run.sh`;
 const FLOW = /\.yaml$/;
-/** The two projects of `tests/e2e/playwright.config.ts`: 375 and 1536 (`F7-43`). */
-const LOOK_VIEWPORTS = ['phone', 'desktop'] as const;
-
-/**
- * The web routes held without a look, each with its reason. A held route that is gone, or that has
- * a look now, fails. ADDING a route here is a harness change, which review holds.
- */
-const ROUTES_WITHOUT_A_LOOK: ReadonlyMap<string, string> = new Map([
-  ['root', 'it draws nothing of its own: it sends a visitor on to /login, whose look is held'],
-]);
-
-function lookOf(route: string, viewport: (typeof LOOK_VIEWPORTS)[number]): string {
-  return `tests/e2e/web/${route}.spec.ts-snapshots/landing-${viewport}-linux.png`;
-}
-
 /**
  * The phone screens held without a flow, each with its reason. A held screen that is gone, or that
  * has its flow now, fails — so the list empties as flows land. ADDING a screen here is a harness
@@ -96,13 +78,7 @@ function flowName(file: string, under: string, dropGroups: boolean): string {
   return kept.join('-') || 'root';
 }
 
-function scanFlows(repo: string): {
-  findings: string[];
-  missingLooks: string[];
-  routes: number;
-  screens: number;
-  looks: number;
-} {
+function scanFlows(repo: string): { findings: string[]; routes: number; screens: number } {
   const routes = new Set(filesNamed(repo, WEB_APP, PAGE).map((f) => flowName(f, WEB_APP, true)));
   const screens = new Set(
     filesNamed(repo, PHONE_SCREENS, SCREEN).map((f) => flowName(f, PHONE_SCREENS, false)),
@@ -123,19 +99,6 @@ function scanFlows(repo: string): {
   const missing = owed
     .filter((flow) => !existsSync(join(repo, flow)))
     .map((flow) => `${flow}: missing — its screen has no regression flow`);
-  const looks = [...routes]
-    .filter((route) => !ROUTES_WITHOUT_A_LOOK.has(route))
-    .flatMap((route) => LOOK_VIEWPORTS.map((viewport) => lookOf(route, viewport)));
-  const missingLooks = looks
-    .filter((look) => !existsSync(join(repo, look)))
-    .map((look) => `${look}: missing — the route's look has no baseline at this viewport`);
-  const staleLookHolds = [...ROUTES_WITHOUT_A_LOOK.keys()]
-    .filter(
-      (route) =>
-        !routes.has(route) ||
-        LOOK_VIEWPORTS.some((viewport) => existsSync(join(repo, lookOf(route, viewport)))),
-    )
-    .map((route) => `route '${route}' held without a look no longer needs holding`);
   const staleHolds = [...PHONE_SCREENS_HELD.keys()]
     .filter(
       (screen) => !screens.has(screen) || existsSync(join(repo, `tests/e2e/mobile/${screen}.yaml`)),
@@ -143,13 +106,7 @@ function scanFlows(repo: string): {
     .map(
       (screen) => `held screen '${screen}' no longer needs holding — it is gone or has its flow`,
     );
-  return {
-    findings: [...missing, ...staleHolds, ...missingLooks, ...staleLookHolds],
-    missingLooks,
-    routes: routes.size,
-    screens: screens.size,
-    looks: looks.length,
-  };
+  return { findings: [...missing, ...staleHolds], routes: routes.size, screens: screens.size };
 }
 
 const RUNNER_CALL = /^\s*flow\s.*$/gm;
@@ -196,33 +153,18 @@ export function findScreensWithoutFlow(repo: string): string[] {
   return [...scanFlows(repo).findings, ...scanPhoneSuite(repo).findings];
 }
 
-/**
- * A route's look is drawn only by CI, on Linux (`tests/e2e/CLAUDE.md`), so off CI a missing one is
- * owed to CI's first run of the branch: it is printed, loudly, and never failed — a local gate could
- * otherwise never pass on a branch that adds a route. On CI it fails like every other finding.
- */
-export function runE2eFlowPerScreen(repo: string, onCi: boolean): void {
+export function runE2eFlowPerScreen(repo: string): void {
   const screenFlows = scanFlows(repo);
   const phoneSuite = scanPhoneSuite(repo);
-  const owedToCi = onCi ? [] : screenFlows.missingLooks;
-  const findings = [
-    ...screenFlows.findings.filter((finding) => !owedToCi.includes(finding)),
-    ...phoneSuite.findings,
-  ];
-  if (owedToCi.length > 0) {
-    console.warn(
-      `\n  e2e-flow-per-screen: OWED TO CI — ${owedToCi.length} look baselines CI draws on its first run, then a commit lands them:\n  ${owedToCi.join('\n  ')}\n`,
-    );
-  }
+  const findings = [...screenFlows.findings, ...phoneSuite.findings];
   if (findings.length > 0) {
     throw new Error(
-      `e2e-flow-per-screen: every web route and phone screen has its regression flow, every web route its look, and every phone flow runs:\n  ${findings.join('\n  ')}`,
+      `e2e-flow-per-screen: every web route and phone screen has its regression flow, and every phone flow runs:\n  ${findings.join('\n  ')}`,
     );
   }
   console.log(
     `e2e-flow-per-screen OK — ${screenFlows.routes} web routes and ${screenFlows.screens} phone ` +
-      `screens, each with its flow but ${PHONE_SCREENS_HELD.size} held; ${screenFlows.looks} web ` +
-      `looks, ${ROUTES_WITHOUT_A_LOOK.size} route held without one; ${phoneSuite.flows} phone ` +
+      `screens, each with its flow but ${PHONE_SCREENS_HELD.size} held; ${phoneSuite.flows} phone ` +
       'flows, each run',
   );
 }

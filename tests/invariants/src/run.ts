@@ -52,7 +52,7 @@ async function main() {
   runBannedWordOtherFiles(REPO_ROOT); // static — no "quote" in catalogs, SQL or markup
   runEnvExampleComplete(REPO_ROOT); // static — .env.example names every schema variable
   await runLanguageFonts(REPO_ROOT); // static — reads the BUILT i18n and theme packages
-  runE2eFlowPerScreen(REPO_ROOT, Boolean(env.CI)); // static — every route and screen has its regression flow
+  runE2eFlowPerScreen(REPO_ROOT); // static — every route and screen has its regression flow
   runDesignSystemProps(REPO_ROOT); // static — no design-system prop dropped by its port
   runDesignSystemSnapshot(REPO_ROOT); // static — the pulled tokens equal the pulled census
   runBiomePluginScopes(REPO_ROOT); // static — every lint plugin covers a place that exists

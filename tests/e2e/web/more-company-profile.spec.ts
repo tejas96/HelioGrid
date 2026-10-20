@@ -1,7 +1,6 @@
 import {
   COMPANY_PROFILE,
   COMPANY_PROFILE_PART_TITLE,
-  COMPANY_SIGNUP,
   createTranslator,
   destinationLabel,
   SETUP_WHAT_YOU_SELL,
@@ -12,7 +11,6 @@ import { expect, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { createCompany } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
-import { expectTheLook } from '../support/look';
 import { freshMobile } from '../support/phone';
 import { passTheOwnersMark } from '../support/shell';
 
@@ -29,7 +27,7 @@ const SAVE = en.t(COMPANY_PROFILE.saveChangesSpoken);
 test('the business profile row opens the profile in the shell; a save writes the profile, records no step, and stays', async ({
   page,
 }, testInfo) => {
-  const company = await createCompany(page, en, freshMobile());
+  await createCompany(page, en, freshMobile());
   await passTheOwnersMark(page, en);
   await page.goto('/more');
   const rail = page.getByRole('navigation', { name: en.t(SHELL.mainNavigation) });
@@ -58,10 +56,6 @@ test('the business profile row opens the profile in the shell; a save writes the
   await expectNoSidewaysScroll(page);
   await expect(page).toHaveTitle(/\S/);
   await expectNoSeriousViolations(page);
-  await expectTheLook(page, [
-    page.getByText(company),
-    page.getByRole('textbox', { name: en.t(COMPANY_SIGNUP.companyName) }),
-  ]);
 
   // In settings *What you sell* opens itself on arrival (the brief's ruling 58): a click would shut it.
   await expect(

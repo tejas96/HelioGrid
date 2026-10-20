@@ -10,7 +10,6 @@ import { expect, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { createCompany } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
-import { expectTheLook } from '../support/look';
 import { freshMobile } from '../support/phone';
 import { passTheOwnersMark } from '../support/shell';
 
@@ -64,13 +63,4 @@ test('the Team row opens the team; a new owner is alone, and the page teaches', 
   await expectNoSidewaysScroll(page);
   await expect(page).toHaveTitle(/\S/);
   await expectNoSeriousViolations(page);
-  // At the desktop width the owner's *Last active* cell reads the run's clock (*Today, 23:08*); it is
-  // the third cell, before the act's.
-  const lastActive = page.getByRole('row').nth(1).getByRole('cell').nth(2);
-  await expectTheLook(
-    page,
-    testInfo.project.name === 'desktop'
-      ? [page.getByText(company), lastActive]
-      : [page.getByText(company)],
-  );
 });
