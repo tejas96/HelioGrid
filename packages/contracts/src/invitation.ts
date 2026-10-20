@@ -1,4 +1,4 @@
-import { INVITATION_STATUSES } from '@heliogrid/domain';
+import { type FormatPack, INVITATION_STATUSES, phoneDigitsMismatch } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
@@ -36,6 +36,19 @@ export const createInvitationSchema = z.object({
   roles: roleSetSchema,
 });
 export type CreateInvitation = z.infer<typeof createInvitationSchema>;
+
+/**
+ * Invite Teammate's form (`SCR-M01-07`): the invite, with the number held to this market's digit
+ * count — the door's rule — so a short number is answered on its field and never sent. The api
+ * reads the market itself (`deliverablePack`); this is the screens' and their spec's one build.
+ */
+export function inviteFormSchema(pack: FormatPack) {
+  return createInvitationSchema.extend({
+    phoneE164: createInvitationSchema.shape.phoneE164.refine(
+      (phone) => phoneDigitsMismatch(pack, phone) === null,
+    ),
+  });
+}
 
 /** One invitation as the Team screen lists it (`M01-19`): who was asked, for what, and where it stands. */
 export const invitationSchema = z.object({

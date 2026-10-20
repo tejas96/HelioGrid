@@ -44,10 +44,32 @@ export interface OptionCardItem {
   disabledReason?: ReactNode | ActionReasonSpec;
 }
 
-export interface OptionCardGroupProps {
-  options: OptionCardItem[];
+/**
+ * `single` (the default) picks one: a radiogroup, one tab stop, arrow keys move the pick. `multiple`
+ * picks any number (`SCR-M01-07`'s presets, owner ruling D216): a group of checkboxes, each its own
+ * tab stop, Space toggles one, and the mark is a square with a tick instead of a dot.
+ */
+export type OptionCardGroupMode = 'single' | 'multiple';
+
+interface OptionCardGroupSingle {
+  mode?: 'single';
   value?: string;
   onChange?: (value: string) => void;
+}
+
+interface OptionCardGroupMultiple {
+  mode: 'multiple';
+  /** Every option picked, in the order they were picked. */
+  value: readonly string[];
+  /** The whole new set, in the order picked, once one option is toggled. */
+  onChange?: (value: readonly string[]) => void;
+}
+
+export type OptionCardGroupProps = OptionCardGroupShared &
+  (OptionCardGroupSingle | OptionCardGroupMultiple);
+
+interface OptionCardGroupShared {
+  options: OptionCardItem[];
   /**
    * **The group's name — a visible line above the cards, and the accessible name via
    * `aria-labelledby`.** It used to be `aria-label` alone, which made an errored group a ring and a
@@ -55,6 +77,11 @@ export interface OptionCardGroupProps {
    * `SegmentedControl.label` was added on.
    */
   label?: string;
+  /**
+   * The group's spoken name when its visible name sits outside it — a heading above, as
+   * `InviteForm`'s *What can they do?* — so no second visible line is drawn. `label` wins.
+   */
+  ariaLabel?: string;
   /** Default 1. */
   columns?: number;
   density?: 'expressive' | 'functional';
@@ -72,4 +99,12 @@ export interface OptionCardGroupProps {
    * the group is perfectly valid.
    */
   error?: ReactNode;
+  /**
+   * The group is refused by a sentence drawn OUTSIDE it — `InviteForm`'s banner above the roles —
+   * so it says it is invalid (`aria-invalid`) and is described by that sentence's id, without a
+   * second sentence or ring. Web only: React Native has no invalid state or described-by; the
+   * phone's banner announces itself.
+   */
+  invalid?: boolean;
+  describedBy?: string;
 }

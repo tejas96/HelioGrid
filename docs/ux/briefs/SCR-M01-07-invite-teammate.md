@@ -24,8 +24,7 @@ In the corridor, *Send invite* and *Skip for now* both continue to SCR-M01-06; a
 
 Base: **loading** · **empty** · **error**.
 
-- **loading** — only the presets are in flight: one loading tile per preset holds the role set's place, in the role list's grid, and *Send invite* is the one unavailable control, its `disabledReason` *Waiting for the role list*, which opens in a bubble on a tap, click, focus or hover — no line is drawn under the button (owner ruling 2026-10-17, design-system change 5).
-- **error** — the presets failed to load. The form stays as drawn: a `Card` in its error state, with its own *Try again*, holds the role set's place, and *Send invite* is off with its `disabledReason` *Needs the role list*, in the same bubble, mirroring loading — never a whole-screen empty state (owner ruling 2026-10-16).
+- **loading**, **error** — none (owner ruling D1 A, `T-M01-007`, 2026-10-20): the twelve presets ship inside the app (`ROLE_PRESETS`, their words in `packages/i18n`), so nothing loads them and neither state can happen. The board's `m-loading` and `m-error` stay drawn and are never reached; *Send invite* is never off for want of the role list.
 
 Screen-specific:
 
@@ -36,6 +35,8 @@ Screen-specific:
 - **already-invited** — a live invite already went to this number: the create (`POST /invitations`, `packages/contracts/src/invitation.ts`) refuses with 409 `ALREADY_INVITED`. Works like already-a-member and points to Team, where the pending invite can be cancelled.
 - **number-not-covered** — a number no market covers (F1-49): the create refuses with 422 `DOMAIN_RULE_VIOLATION`, shown as the PhoneField's error line.
 - **invite-cap-reached** — invite flooding → the invite cap (50 sends per company in any rolling 24 hours, so no midnight reset) with an honest message (M01 §M01.2 edge list; the cap is M01-04's, carried on SCR-M01-01). The forward act becomes *Continue setup*. The cap `Banner` and *Continue setup* carry the state alone — no second region under the banner (owner ruling 2026-10-16).
+
+**The Team life's refusals** (owner ruling D4 A, `T-M01-007`): the same banners as the corridor, without *Open Team* — Team is already behind the editor. Already a member and already invited: the foot is *Cancel* · *Use a different number*. The cap: *Cancel* alone.
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `error`, `already-a-member`, `already-invited`, `number-not-covered`, `invite-cap-reached`.
 

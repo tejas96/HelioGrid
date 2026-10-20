@@ -13,7 +13,7 @@ import {
   teamRowAct,
 } from '@heliogrid/domain';
 import { useCallback, useState } from 'react';
-import { ApiError } from '../errors/errors';
+import { answerOf } from '../errors/errors';
 import { useRepositories } from './context';
 import { useSession } from './use-session';
 import type { Team } from './use-team';
@@ -32,10 +32,6 @@ export interface TeamActs {
   go(): void;
   /** Cancel, or Close on the refused form. */
   shut(): void;
-}
-
-function answerOf(error: unknown): TeamActAnswer {
-  return error instanceof ApiError ? { status: error.status, code: error.code } : null;
 }
 
 /**

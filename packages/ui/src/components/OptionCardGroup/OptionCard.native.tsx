@@ -9,16 +9,22 @@ import { Text } from '../../primitives/Text/Text.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { renderActionReason } from '../ActionReason/ActionReason.native';
-import type { OptionCardItem } from './OptionCardGroup.types';
+import { CheckboxTick } from '../Checkbox/CheckboxTick.native';
+import type { OptionCardGroupMode, OptionCardItem } from './OptionCardGroup.types';
 
 interface OptionCardProps {
   option: OptionCardItem;
   selected: boolean;
+  mode: OptionCardGroupMode;
   off: boolean;
   density: 'expressive' | 'functional';
   onSelect: () => void;
   currentLabel: string;
 }
+
+/** The functional card's padding, and the selection ring's width the picked card takes out of it. */
+const FUNCTIONAL_PAD = 14;
+const RING = 2;
 
 const styles = StyleSheet.create({
   card: {
@@ -30,9 +36,15 @@ const styles = StyleSheet.create({
     padding: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-md'],
   },
-  cardFunctional: { padding: 14, borderRadius: theme.radius['r-card-functional'] },
-  /* RN has no box-shadow ring: the 2px accent selection ring is a border of the same weight. */
-  cardSelected: { borderWidth: 2, borderColor: theme.colors.accent },
+  cardFunctional: { padding: FUNCTIONAL_PAD, borderRadius: theme.radius['r-card-functional'] },
+  /* RN has no box-shadow ring: the 2px accent selection ring is a border of the same weight, taken
+     back out of the padding so a pick never grows the card and the list below never jumps. */
+  cardSelected: {
+    borderWidth: RING,
+    borderColor: theme.colors.accent,
+    padding: theme.spacing['sp-4'] - RING,
+  },
+  cardSelectedFunctional: { padding: FUNCTIONAL_PAD - RING },
   /* Not a tile: it lies on the page with no fill, and its reason line says why. A selected off
      option shows its selection by the dot alone, as on the web. */
   cardOff: { borderWidth: 0 },
@@ -48,6 +60,8 @@ const styles = StyleSheet.create({
     borderColor: theme.colors['text-disabled'],
   },
   dotSelected: { backgroundColor: theme.colors.accent, borderWidth: 0 },
+  /* A multiple group's mark is the checkbox's square (`Checkbox.native.tsx`). */
+  dotSquare: { borderRadius: theme.radius['rf-sm'] },
   dotFill: { width: 7, height: 7, borderRadius: theme.radius['r-pill'] },
   body: { flex: 1, minWidth: 0 },
   head: {
@@ -83,7 +97,9 @@ function cardStyle(
     off ? null : tileSurface,
     styles.card,
     density === 'functional' ? styles.cardFunctional : null,
-    selected ? styles.cardSelected : null,
+    /* An off option has no ring (`cardOff`), so it keeps its whole padding even when picked. */
+    selected && !off ? styles.cardSelected : null,
+    selected && !off && density === 'functional' ? styles.cardSelectedFunctional : null,
     off ? styles.cardOff : null,
   ];
 }
@@ -91,8 +107,24 @@ function cardStyle(
 /** A selected dot keeps the accent whether or not the option is off — selection is a fact, not an
     affordance. An unselected dot takes the control fill; on an off option it is its ring over the
     ground, since a fill is what makes a dot read as pressable. Read inside the card's ground. */
-function Dot({ selected, off }: { selected: boolean; off: boolean }) {
+function Dot({
+  selected,
+  mode,
+  off,
+}: {
+  selected: boolean;
+  mode: OptionCardGroupMode;
+  off: boolean;
+}) {
   const ground = useGround();
+  const shape = mode === 'multiple' ? styles.dotSquare : null;
+  if (selected && mode === 'multiple') {
+    return (
+      <View style={[styles.dot, styles.dotSelected, shape]}>
+        <CheckboxTick ink={theme.colors['text-inverse']} />
+      </View>
+    );
+  }
   if (selected) {
     return (
       <View style={[styles.dot, styles.dotSelected]}>
@@ -103,7 +135,9 @@ function Dot({ selected, off }: { selected: boolean; off: boolean }) {
     );
   }
   return (
-    <View style={[styles.dot, { backgroundColor: off ? ground.ground : ground.controlFill }]} />
+    <View
+      style={[styles.dot, shape, { backgroundColor: off ? ground.ground : ground.controlFill }]}
+    />
   );
 }
 
@@ -116,6 +150,7 @@ function OptionGround({ off, children }: { off: boolean; children: ReactNode }) 
 export function OptionCard({
   option,
   selected,
+  mode,
   off,
   density,
   onSelect,
@@ -146,12 +181,12 @@ export function OptionCard({
          title, the current pill, the price, the description and the reason. An explicit label
          here would REPLACE all of that with the title — which is how the sentence below came to
          be announced to nobody. The children are text, so the card is never left unnamed. */
-      accessibilityRole="radio"
+      accessibilityRole={mode === 'multiple' ? 'checkbox' : 'radio'}
       accessibilityState={{ checked, disabled: off }}
       style={cardStyle(density, selected, off)}
     >
       <OptionGround off={off}>
-        <Dot selected={selected} off={off} />
+        <Dot selected={selected} mode={mode} off={off} />
         <View style={styles.body}>
           <View style={styles.head}>
             <View style={styles.titles}>

@@ -18,6 +18,8 @@ interface ShellFrameProps {
    * (`SCR-M01-12`, `list-head`). Such a page keeps the list's own rhythm, `sp-4` between its parts.
    */
   stickyHead?: ReactNode;
+  /** What scrolls away above the held head — Team's *Invite teammate* (`SCR-M01-12` m-default). */
+  lead?: ReactNode;
   children: ReactNode;
 }
 
@@ -33,6 +35,7 @@ export function ShellFrame({
   inView,
   onScrolledChange,
   stickyHead,
+  lead,
   children,
 }: ShellFrameProps) {
   const insets = useSafeAreaInsets();
@@ -50,7 +53,8 @@ export function ShellFrame({
         <ScrollView
           keyboardShouldPersistTaps="handled"
           scrollEventThrottle={16}
-          stickyHeaderIndices={stickyHead === undefined ? undefined : [0]}
+          /* The held head is the first child, or the second under a lead that scrolls away. */
+          stickyHeaderIndices={stickyHead === undefined ? undefined : [lead === undefined ? 0 : 1]}
           onScroll={
             onScrolledChange === undefined
               ? undefined
@@ -63,9 +67,14 @@ export function ShellFrame({
             pill
               ? { paddingBottom: underPill(insets.bottom) }
               : { paddingTop: 0, paddingBottom: insets.bottom },
-            stickyHead === undefined ? null : styles.listRhythm,
+            stickyHead === undefined && lead === undefined ? null : styles.listRhythm,
           ]}
         >
+          {lead === undefined ? null : (
+            <View style={[styles.lead, stickyHead === undefined ? null : styles.leadOverHead]}>
+              {lead}
+            </View>
+          )}
           {stickyHead === undefined ? null : (
             <View style={styles.stickyHead}>
               <View style={styles.stickyHeadParts}>{stickyHead}</View>

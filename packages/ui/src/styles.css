@@ -91,6 +91,7 @@
 @import "./components/IconButton/IconButton.css";
 @import "./components/Image/Image.css";
 @import "./components/Input/Input.css";
+@import "./components/InviteForm/InviteForm.css";
 @import "./components/JobTray/JobTray.css";
 @import "./components/Kanban/Kanban.css";
 @import "./components/LanguageSwitcher/LanguageSwitcher.css";

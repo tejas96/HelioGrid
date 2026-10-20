@@ -1,19 +1,18 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { CheckboxProps } from './Checkbox.types';
+import { CheckboxTick } from './CheckboxTick.native';
 
 interface NativeCheckboxProps extends CheckboxProps {
   style?: StyleProp<ViewStyle>;
 }
 
 const BOX = 20;
-const TICK = 12;
 
 const styles = StyleSheet.create({
   target: {
@@ -75,17 +74,7 @@ export function Checkbox({
           disabled ? { backgroundColor: controlFillDisabled } : undefined,
         ]}
       >
-        {checked ? (
-          <Svg width={TICK} height={TICK} viewBox="0 0 12 12" fill="none">
-            <Path
-              d="M2.5 6.5L5 9l4.5-5"
-              stroke={tick}
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </Svg>
-        ) : null}
+        {checked ? <CheckboxTick ink={tick} /> : null}
       </View>
       {label === undefined ? null : <Text color={disabled ? 'disabled' : 'primary'}>{label}</Text>}
     </Pressable>
