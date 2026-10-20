@@ -11,10 +11,10 @@ import { TableCaption, TableStates } from './DataTableShell';
 import { DataTableStacked } from './DataTableStacked';
 import { useTableSelection, useTableSort } from './use-table-state';
 
-interface WebDataTableProps<Row> extends DataTableProps<Row> {
+type WebDataTableProps<Row> = DataTableProps<Row> & {
   className?: string;
   style?: CSSProperties;
-}
+};
 
 /**
  * Data table — zebra rows, sticky header, no borders. Comfortable 64px rows by default. Below

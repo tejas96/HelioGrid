@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import type { LayoutChangeEvent, View } from 'react-native';
 import { Dimensions } from 'react-native';
 import {
+  boxKey,
   type ExplainerDensity,
   type ExplainerRect,
   explainerCap,
@@ -15,10 +16,18 @@ interface Measurable {
   measureInWindow(callback: (x: number, y: number, width: number, height: number) => void): void;
 }
 
-/** A ref or a view instance. A CSS selector has no native meaning, so it resolves to the window. */
+/**
+ * A ref, a view instance or a function returning one. A CSS selector has no native meaning, so it
+ * resolves to the window.
+ */
 function measurableOf(box: ExplainerBox | undefined): Measurable | null {
   if (box === undefined || typeof box === 'string') return null;
-  const node: unknown = 'current' in box ? (box as { current: unknown }).current : box;
+  const node: unknown =
+    typeof box === 'function'
+      ? box()
+      : 'current' in box
+        ? (box as { current: unknown }).current
+        : box;
   return typeof node === 'object' && node !== null && 'measureInWindow' in node
     ? (node as Measurable)
     : null;
@@ -61,7 +70,8 @@ export function useExplainerPlace({
   const [anchor, setAnchor] = useState<{ from: ExplainerRect; bounds: ExplainerRect } | null>(null);
   const [size, setSize] = useState<{ width: number; height: number } | null>(null);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: `content` re-measures when a page of another height arrives; `trigger` is a ref.
+  const box = boxKey(within);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `content` re-measures when a page of another height arrives; `trigger` is a ref; `box` stands for `within`.
   useEffect(() => {
     if (!isOpen) {
       setAnchor(null);
@@ -79,7 +89,7 @@ export function useExplainerPlace({
     return () => {
       live = false;
     };
-  }, [isOpen, content, within]);
+  }, [isOpen, content, box]);
 
   const cap = anchor === null ? null : explainerCap(anchor.bounds, density, maxWidth);
   const placed: PlacedExplainer | null =

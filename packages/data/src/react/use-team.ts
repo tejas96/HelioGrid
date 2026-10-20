@@ -1,8 +1,9 @@
 'use client';
-import { MAX_PAGE_LIMIT, type Paginated } from '@heliogrid/contracts';
+import { type Invitation, MAX_PAGE_LIMIT, type Member, type Paginated } from '@heliogrid/contracts';
 import {
   type TeamLoad,
   type TeamRosterView,
+  type TeamRow,
   type TeamStatusFilter,
   type TeamSurface,
   teamRoster,
@@ -27,6 +28,10 @@ export interface Team {
   readonly status: TeamStatusFilter;
   find(query: string): void;
   filter(status: TeamStatusFilter): void;
+  /** The whole list, before any search or Status chip — what a row's act is judged against. */
+  readonly roster: readonly TeamRow[];
+  /** Reads every list again and answers with the whole list as it now stands. */
+  reread(): Promise<readonly TeamRow[]>;
   /** Asks again for every read: a list missing half its people is not shown. */
   retry(): void;
 }
@@ -42,7 +47,7 @@ async function everyPage<T>(read: (page: number) => Promise<Paginated<T>>): Prom
 }
 
 /**
- * The roster and both open-and-run-out invite lists, joined by domain's `teamRoster` and narrowed by
+ * The roster and every invitation, joined by domain's `teamRoster` and narrowed by
  * `teamRosterView`. Mounted only under a session that acts for a company.
  */
 export function useTeam(language: UiLanguage): Team {
@@ -60,35 +65,31 @@ export function useTeam(language: UiLanguage): Team {
       everyPage((page) => repositories.tenant.members({ page, limit: MAX_PAGE_LIMIT }, signal)),
     enabled: reading,
   });
-  const invites = (standing: 'pending' | 'expired') => ({
-    queryKey: queryKeys.team.invites(tenantId, standing),
-    queryFn: ({ signal }: { signal: AbortSignal }) =>
-      everyPage((page) =>
-        repositories.invitation.list({ page, limit: MAX_PAGE_LIMIT, status: standing }, signal),
-      ),
+  const invites = useQuery({
+    queryKey: queryKeys.team.invites(tenantId),
+    queryFn: ({ signal }) =>
+      everyPage((page) => repositories.invitation.list({ page, limit: MAX_PAGE_LIMIT }, signal)),
     enabled: reading,
   });
-  const pending = useQuery(invites('pending'));
-  const expired = useQuery(invites('expired'));
 
-  const reads = [members, pending, expired];
+  const reads = [members, invites];
   const load: TeamLoad = reads.some((read) => read.isError)
     ? 'failed'
     : reads.every((read) => read.isSuccess)
       ? 'ready'
       : 'loading';
-  const rows = useMemo(
-    () =>
-      teamRoster(
-        members.data ?? [],
-        [...(pending.data ?? []), ...(expired.data ?? [])],
-        viewerUserId,
-        Date.now(),
-        language,
-      ),
-    [members.data, pending.data, expired.data, viewerUserId, language],
+  const rosterOf = (held: readonly Member[] | undefined, sent: readonly Invitation[] | undefined) =>
+    teamRoster(held ?? [], sent ?? [], viewerUserId, Date.now(), language);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `rosterOf` reads only these inputs.
+  const roster = useMemo(
+    () => rosterOf(members.data, invites.data),
+    [members.data, invites.data, viewerUserId, language],
   );
-  const view = useMemo(() => teamRosterView(rows, query, status), [rows, query, status]);
+  const reread = async () => {
+    const [held, sent] = await Promise.all([members.refetch(), invites.refetch()]);
+    return rosterOf(held.data, sent.data);
+  };
+  const view = useMemo(() => teamRosterView(roster, query, status), [roster, query, status]);
 
   return {
     load,
@@ -98,8 +99,8 @@ export function useTeam(language: UiLanguage): Team {
     status,
     find,
     filter,
-    retry: () => {
-      for (const read of reads) void read.refetch();
-    },
+    roster,
+    reread,
+    retry: () => void reread(),
   };
 }

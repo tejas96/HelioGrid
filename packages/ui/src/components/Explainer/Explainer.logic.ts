@@ -1,7 +1,7 @@
 import type { ExplainerView } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import { Children, isValidElement } from 'react';
-import type { ExplainerPlacement } from './Explainer.types';
+import type { ExplainerBox, ExplainerPlacement, ExplainerTriggerProps } from './Explainer.types';
 
 /* The design system's own measures (`components/feedback/Explainer.jsx`), shared by both halves so
    the bubble sits in the same place on either platform. */
@@ -26,6 +26,18 @@ export function swipeMove(startX: number | null, endX: number | undefined): 'nex
 }
 
 export type ExplainerDensity = keyof typeof GEOMETRY;
+
+/** A host's control with nothing to explain: drawn, and its press opens nothing. */
+export const INERT_TRIGGER: ExplainerTriggerProps = { onPress: () => undefined, expanded: false };
+
+/**
+ * What the placing effect watches for `within`. A function box is a new arrow on every render, and
+ * watching it would place the bubble, re-render and place it again without end; it is read each time
+ * the bubble is placed instead.
+ */
+export function boxKey(within: ExplainerBox | undefined): unknown {
+  return typeof within === 'function' ? 'function' : within;
+}
 
 export function explainerGeometry(density: ExplainerDensity) {
   return GEOMETRY[density];

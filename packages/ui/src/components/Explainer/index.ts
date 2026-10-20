@@ -6,4 +6,5 @@ export type {
   ExplainerPage,
   ExplainerPlacement,
   ExplainerProps,
+  ExplainerTriggerProps,
 } from './Explainer.types';

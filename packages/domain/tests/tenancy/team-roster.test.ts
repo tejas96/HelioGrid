@@ -62,6 +62,25 @@ describe('teamRoster — the order the list renders in (AC-10)', () => {
     expect(teamRoster([], [invite('Nitin Pawar', 1, { status })], VIEWER, NOW, 'en')).toEqual([]);
   });
 
+  it.each(['revoked', 'declined', 'accepted'] as const)(
+    'lets a newest %s invite hide an older expired one for the phone (AC-22)',
+    (status) => {
+      const phone = '+919700000098';
+      const older = invite('Priya D', 12, { phoneE164: phone, status: 'expired' });
+      const newest = invite('Priya Deshmukh', 2, { phoneE164: phone, status });
+      expect(teamRoster([], [older, newest], VIEWER, NOW, 'en')).toEqual([]);
+    },
+  );
+
+  it('lists a newest expired invite over an older revoked one (AC-22)', () => {
+    const phone = '+919700000097';
+    const older = invite('Priya D', 20, { phoneE164: phone, status: 'revoked' });
+    const newest = invite('Priya Deshmukh', 9, { phoneE164: phone, status: 'expired' });
+    expect(teamRoster([], [older, newest], VIEWER, NOW, 'en').map((row) => row.id)).toEqual([
+      newest.id,
+    ]);
+  });
+
   it('lists no invited membership: an invite is an invitation, never a membership', () => {
     expect(
       teamRoster([member('Sunil Bhosale', { status: 'invited' })], [], VIEWER, NOW, 'en'),

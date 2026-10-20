@@ -14,7 +14,9 @@ export type SessionEvent =
   /** The boot check found no credential: signed out. */
   | { readonly kind: 'boot-signed-out' }
   /** The transport's refresh was refused, and the server named why. */
-  | { readonly kind: 'lost'; readonly loss: SessionLoss };
+  | { readonly kind: 'lost'; readonly loss: SessionLoss }
+  /** The person signed in was read again — their presets changed on another device. */
+  | { readonly kind: 'reread'; readonly user: SessionUser };
 
 /** Where every device starts: asking the server who the cookies belong to. */
 export const CHECKING: SessionSnapshot = {
@@ -46,6 +48,10 @@ export function sessionAfter(current: SessionSnapshot, event: SessionEvent): Ses
       return current.status === 'checking' ? SIGNED_OUT : current;
     case 'lost':
       return afterLoss(current, event.loss);
+    case 'reread':
+      return current.status === 'authenticated' && current.ended === null
+        ? { ...current, user: event.user }
+        : current;
   }
 }
 

@@ -1,5 +1,5 @@
 import type { StandingDestination } from '@heliogrid/domain';
-import type { ShellGlyphName } from './AppShell.types';
+import type { ShellGlyphName, ShellGlyphSize } from './AppShell.types';
 
 /** One mark of a glyph, on a 24-unit square: a path, or a circle. */
 export type GlyphMark =
@@ -111,7 +111,21 @@ export const SHELL_GLYPHS: Record<ShellGlyphName, readonly GlyphMark[]> = {
     path('M8 10.5V8a4 4 0 0 1 8 0v2.5'),
   ],
   download: [path('M12 3v12'), path('m7 10 5 5 5-5'), path('M5 20h14')],
+  undo: [path('M3 7v6h6'), path('M21 17a9 9 0 0 0-15-6.7L3 13')],
+  'user-minus': [
+    path('M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'),
+    circle(9, 7, 4),
+    path('M22 11h-6'),
+  ],
+  send: [path('M22 2 11 13'), path('M22 2l-7 20-4-9-9-4 20-7z')],
 };
+
+/** The stroke each size is drawn at: a 16 glyph at the system's 1.5 reads faint beside its words. */
+const GLYPH_STROKE: Record<ShellGlyphSize, number> = { sm: 1.8, md: 1.5, lg: 1.5, xl: 1.5 };
+
+export function glyphStroke(size: ShellGlyphSize): number {
+  return GLYPH_STROKE[size];
+}
 
 /** The filled forms; a glyph with none stays outlined in view. */
 export const SHELL_GLYPHS_FILLED: Partial<Record<ShellGlyphName, readonly GlyphMark[]>> = {

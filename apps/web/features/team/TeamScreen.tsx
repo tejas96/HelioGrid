@@ -1,19 +1,24 @@
 'use client';
-import { useSession, useShell, useTeam } from '@heliogrid/data/react';
-import { opensSettingsRow, showsListHead, teamStatusFilterOf } from '@heliogrid/domain';
-import { settingsRowName, TEAM, teamListWords } from '@heliogrid/i18n';
+import { useSession, useShell, useTeam, useTeamActs } from '@heliogrid/data/react';
+import { noteLeavesRow, opensSettingsRow, showsListHead, type TeamRow } from '@heliogrid/domain';
+import { settingsRowName, TEAM, teamActWords, teamListWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
   DATA_TABLE_STACK_BELOW,
-  FilterChips,
+  type FocusHandle,
+  MemberAct,
   MemberList,
-  SearchField,
+  MemberListHead,
+  memberActOf,
+  TeamConfirm,
   Text,
+  ToastHost,
   useFormat,
   useOwnWidth,
+  useToasts,
 } from '@heliogrid/ui';
 import { notFound } from 'next/navigation';
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { TeamTable } from './components/TeamTable';
 
 import './team.css';
@@ -22,8 +27,9 @@ import './team.css';
  * The Team page behind `More` on the web (`SCR-M01-12`): every person and open or run-out invite,
  * found by name and narrowed by status. Below the table's width it draws the phone's member cards;
  * at it, the quiet table with the head count. Only a person whose presets open the Team row reaches
- * it (`F7-48`). What is read is `useTeam`'s and every word `teamListWords`'; this composes. The
- * invite act and a row's open land with `T-M01-007` and `T-M01-013` (ruling D1 A).
+ * it (`F7-48`). What is read is `useTeam`'s, what each act does `useTeamActs`', and every word
+ * `teamListWords`' and `teamActWords`'; this composes. The invite act and a row's open land with
+ * `T-M01-007` and `T-M01-013` (ruling D1 A).
  */
 export function TeamScreen() {
   const { user } = useSession();
@@ -47,16 +53,45 @@ function TeamIn() {
     status: team.status,
   });
   const ready = team.load === 'ready';
-  const head = useRef<HTMLDivElement>(null);
+  const actWords = teamActWords(t, shell.companyName ?? '');
+  const toasts = useToasts();
+  const search = useRef<FocusHandle>(null);
+  const allChip = useRef<FocusHandle>(null);
+  /* The act that opened the confirm: a refused form redraws it off, so the overlay's own return of
+     focus finds the old element gone. */
+  const opener = useRef<FocusHandle>(null);
+  const acts = useTeamActs(team, (note) => {
+    const toast = actWords.toast(note);
+    if (toast !== null) toasts.push(toast);
+    if (noteLeavesRow(note)) search.current?.focus();
+  });
+  /* Stable: the overlay re-runs its focus effect whenever its close handler changes. */
+  const { shut } = acts;
+  const leave = useCallback(() => {
+    shut();
+    opener.current?.focus();
+  }, [shut]);
   /* *Clear search* and *Show all* leave with the empty state they sit in; the keyboard's place goes
-     to the search field or the *All* chip, or it falls to the page's start. */
+     to the search field or the *All* chip. */
   const clearSearch = () => {
     team.find('');
-    head.current?.querySelector('input')?.focus();
+    search.current?.focus();
   };
   const showAll = () => {
     team.filter('all');
-    head.current?.querySelector<HTMLElement>('[role="tab"]')?.focus();
+    allChip.current?.focus();
+  };
+  const actOf = (row: TeamRow, size: 'md' | 'sm') => {
+    const act = memberActOf(row, team.roster, actWords, acts.sending);
+    return act === null ? null : (
+      <MemberAct
+        {...act}
+        ref={acts.opener === row.id ? opener : undefined}
+        size={size}
+        fullWidth={size === 'md'}
+        onPress={() => acts.start(row)}
+      />
+    );
   };
 
   return (
@@ -72,28 +107,17 @@ function TeamIn() {
         ) : null}
       </header>
       {showsListHead(team.surface) ? (
-        <div className="hg-team-list-head" data-wide={wide ? 'true' : undefined} ref={head}>
-          <div className="hg-team-find">
-            <SearchField
-              value={team.query}
-              onChange={team.find}
-              onClear={team.query === '' ? undefined : () => team.find('')}
-              placeholder={words.find}
-              ariaLabel={words.find}
-            />
-          </div>
-          <FilterChips
-            label={words.statusFilter}
-            scroll={!wide}
-            value={team.status}
-            onChange={(value) => {
-              const chosen = teamStatusFilterOf(value);
-              if (chosen !== null) team.filter(chosen);
-            }}
-            counts={ready ? team.view.counts : undefined}
-            options={words.statusOptions}
-          />
-        </div>
+        <MemberListHead
+          query={team.query}
+          onFind={team.find}
+          status={team.status}
+          onFilter={team.filter}
+          counts={ready ? team.view.counts : undefined}
+          words={words}
+          wide={wide}
+          searchRef={search}
+          chipsRef={allChip}
+        />
       ) : null}
       <MemberList
         surface={team.surface}
@@ -102,9 +126,36 @@ function TeamIn() {
         onRetry={team.retry}
         onClearSearch={clearSearch}
         onShowAll={showAll}
-        records={wide ? <TeamTable rows={team.view.rows} words={words} /> : undefined}
-        waiting={wide ? <TeamTable rows={[]} words={words} loading /> : undefined}
+        actOf={(row) => actOf(row, 'md')}
+        records={
+          wide ? (
+            <TeamTable
+              rows={team.view.rows}
+              words={words}
+              actions={actWords.actions}
+              actOf={(row) => actOf(row, 'sm')}
+            />
+          ) : undefined
+        }
+        waiting={
+          wide ? (
+            <TeamTable
+              rows={[]}
+              words={words}
+              actions={actWords.actions}
+              actOf={() => null}
+              loading
+            />
+          ) : undefined
+        }
       />
+      <TeamConfirm
+        words={actWords.confirm(acts.confirm)}
+        busy={acts.busy}
+        onGo={acts.go}
+        onLeave={leave}
+      />
+      <ToastHost toasts={toasts.toasts} onDismiss={toasts.dismiss} />
     </div>
   );
 }

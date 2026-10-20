@@ -1,8 +1,16 @@
-import { createTranslator, NOTIFICATION_CENTRE, SHELL, TYPE_GROUP_NAME } from '@heliogrid/i18n';
+import { IN_FORMATS } from '@heliogrid/domain';
+import {
+  createTranslator,
+  NOTIFICATION_CENTRE,
+  SHELL,
+  TYPE_GROUP_NAME,
+  teamListWords,
+} from '@heliogrid/i18n';
 import { FacetChips, FilterChips, SearchField } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
+import { FocusHandlesStory } from './SearchField.story';
 
 /**
  * The open page's list head (the design system's `SearchField` and `FilterChips`): the grey search
@@ -164,4 +172,32 @@ test('a chosen facet is near-black with its tick; the others stay on the control
   await expect(pill.locator('svg')).toHaveCount(1);
   const rest = facets.getByRole('button', { name: delivery }).locator('.hg-filter-pill');
   await expect(rest).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
+});
+
+test('the search field and the chosen chip each take focus through their handle (D286)', async ({
+  mount,
+  page,
+}) => {
+  const words = teamListWords(en.t, {
+    pack: IN_FORMATS,
+    language: 'en',
+    now: 0,
+    company: '',
+    query: '',
+    status: 'all',
+  });
+  await mount(
+    <FocusHandlesStory
+      find={words.find}
+      status={words.statusFilter}
+      options={words.statusOptions}
+      toSearch={words.clearSearch}
+      toChip={words.showAll}
+    />,
+  );
+
+  await page.getByRole('button', { name: words.clearSearch }).click();
+  await expect(page.getByRole('searchbox', { name: words.find })).toBeFocused();
+  await page.getByRole('button', { name: words.showAll }).click();
+  await expect(page.getByRole('tab', { name: words.statusOptions[0]?.label })).toBeFocused();
 });

@@ -1,7 +1,9 @@
+import type { Ref } from 'react';
 import type {
   AccessibilityRole,
   PressableStateCallbackType,
   StyleProp,
+  View,
   ViewStyle,
 } from 'react-native';
 import { Pressable as RNPressable } from 'react-native';
@@ -10,6 +12,8 @@ import { MIN_TOUCH_TARGET } from './Pressable.types';
 
 interface NativePressableProps extends PressableProps {
   style?: StyleProp<ViewStyle>;
+  /** The pressable view itself, for a caller that moves the screen reader's focus to it. */
+  hostRef?: Ref<View>;
 }
 
 const base: ViewStyle = {
@@ -56,9 +60,11 @@ export function Pressable({
   accessibilityRole = 'button',
   accessibilityState,
   style,
+  hostRef,
 }: NativePressableProps) {
   return (
     <RNPressable
+      ref={hostRef}
       accessibilityRole={NATIVE_ROLE[accessibilityRole]}
       /* An omitted `state.disabled` follows the prop — today's behaviour exactly. Stating it
          announces off WITHOUT going inert, which is the reachable-with-a-reason row. */

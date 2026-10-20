@@ -40,6 +40,11 @@ export interface SessionStore {
    * Resolves `false` when it still got none — `unreachable` stays, and the retry screen says so.
    */
   retryBoot(): Promise<boolean>;
+  /**
+   * Reads the signed-in person again — a write refused 403 means their presets changed on another
+   * device — keeping the home they chose and the steps they put off. No answer changes nothing.
+   */
+  rereadUser(): Promise<void>;
   /** Discards the previous user's held work and lets the pending switch complete (`F4-37`). */
   completeSwitch(): Promise<void>;
   /** The person chose the account their number already has: it signs in (`M01-08`). */

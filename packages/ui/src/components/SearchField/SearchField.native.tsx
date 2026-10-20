@@ -1,5 +1,5 @@
 import { theme } from '@heliogrid/theme';
-import { useState } from 'react';
+import { useImperativeHandle, useRef, useState } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { Circle, Path, Svg } from 'react-native-svg';
@@ -11,6 +11,7 @@ import {
 } from '../../primitives/FieldBox/FieldBox.native';
 import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import { FiltersButton } from '../FilterBar/FilterBar.native';
 import type { SearchFieldProps } from './SearchField.types';
 
@@ -48,9 +49,12 @@ function SearchPill({
   onClear,
   disabled = false,
   ariaLabel,
+  ref,
   style,
 }: SearchPillProps) {
   const [focus, setFocus] = useState(false);
+  const input = useRef<TextInput>(null);
+  useImperativeHandle(ref, () => ({ focus: () => focusScreenReaderOn(() => input.current) }), []);
   const hasValue = value !== undefined && value !== '';
   return (
     <View
@@ -76,6 +80,7 @@ function SearchPill({
         <Path d="m20 20-3.5-3.5" />
       </Svg>
       <TextInput
+        ref={input}
         style={[styles.input, fieldBoxText(disabled)]}
         value={value}
         editable={!disabled}

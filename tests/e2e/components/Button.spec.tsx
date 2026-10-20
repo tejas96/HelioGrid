@@ -1,4 +1,4 @@
-import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
+import { createTranslator, SIGN_IN, teamActWords } from '@heliogrid/i18n';
 import { Button, Card } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour, resolvedShadow } from '../support/token';
@@ -94,4 +94,40 @@ test('a resting button is not busy', async ({ mount }) => {
   const button = await mount(<Button>{sendCode}</Button>);
 
   await expect(button).not.toHaveAttribute('aria-busy', 'true');
+});
+
+const team = teamActWords(en.t, 'Suryodaya Solar');
+
+test('a danger secondary pill keeps the white raised pill and says its words in --danger-text (design-system change 7)', async ({
+  mount,
+  page,
+}) => {
+  const button = await mount(
+    <Button variant="secondary" size="md" tone="danger">
+      {team.act('deactivate')}
+    </Button>,
+  );
+
+  await expect(button).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(button).toHaveCSS('color', await resolvedColour(page, '--danger-text'));
+});
+
+test('a disabled button with a reason stays reachable, says off, and draws no line under it (D264)', async ({
+  mount,
+  page,
+}) => {
+  await mount(
+    <Button variant="secondary" tone="danger" disabled disabledReason={team.onlyOwner}>
+      {team.act('deactivate')}
+    </Button>,
+  );
+  const button = page.getByRole('button', { name: team.act('deactivate') });
+
+  await expect(button).toHaveAttribute('aria-disabled', 'true');
+  await expect(button).not.toHaveAttribute('disabled', '');
+  await expect(button).toHaveAccessibleDescription(team.onlyOwner);
+  await expect(page.locator('.hg-action-reason')).toHaveCount(0);
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await page.keyboard.press('Tab');
+  await expect(button).toBeFocused();
 });

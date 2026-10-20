@@ -1,6 +1,6 @@
 import { IN_FORMATS, type TeamStatusFilter, type TeamSurface, teamRoster } from '@heliogrid/domain';
-import { createTranslator, teamListWords } from '@heliogrid/i18n';
-import { MemberList } from '@heliogrid/ui';
+import { createTranslator, teamActWords, teamListWords } from '@heliogrid/i18n';
+import { MemberAct, MemberList, memberActOf } from '@heliogrid/ui';
 
 const en = await createTranslator('en');
 
@@ -49,6 +49,7 @@ export function TeamListStory({
   onRetry = () => undefined,
   onClearSearch = () => undefined,
   onShowAll = () => undefined,
+  withActs = false,
 }: {
   surface: TeamSurface;
   company: string;
@@ -57,6 +58,8 @@ export function TeamListStory({
   onRetry?: () => void;
   onClearSearch?: () => void;
   onShowAll?: () => void;
+  /** Each card's act, as both screens draw it. */
+  withActs?: boolean;
 }) {
   const words = teamListWords(en.t, {
     pack: IN_FORMATS,
@@ -72,8 +75,19 @@ export function TeamListStory({
       : surface === 'empty-chip'
         ? []
         : ROWS;
+  const acts = teamActWords(en.t, company);
   return (
     <MemberList
+      {...(withActs
+        ? {
+            actOf: (row) => {
+              const act = memberActOf(row, ROWS, acts, null);
+              return act === null ? null : (
+                <MemberAct {...act} size="md" fullWidth onPress={() => undefined} />
+              );
+            },
+          }
+        : {})}
       surface={surface}
       rows={rows}
       words={words}

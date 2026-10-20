@@ -92,6 +92,17 @@
   box-shadow: none;
 }
 
+/* A row's act that ends something: the danger words on the variant's own ground. Set only on a
+   secondary or ghost pill, and before the disabled rules, so an act that is off still reads off. The
+   glyph takes the words' colour, over the tone a glyph sets on itself. */
+.hg-button[data-tone="danger"] {
+  color: var(--danger-text);
+}
+
+.hg-button[data-tone="danger"] > svg {
+  color: inherit;
+}
+
 .hg-button[data-variant="primary"]:hover:not(:disabled):not([aria-disabled="true"]) {
   background: var(--action-primary-hover);
   box-shadow: var(--e2);
@@ -158,19 +169,3 @@
   display: inline-block;
   animation: hg-spin 0.7s linear infinite;
 }
-
-/* With a stated reason the button becomes a column: pill, then the sentence. */
-.hg-button-column {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--sp-1);
-  width: auto;
-}
-
-.hg-button-column[data-full-width="true"] {
-  width: 100%;
-}
-
-/* The sentence itself is ActionReason's — including the rule that the control may be grey while the
-   words explaining it are not (--text-secondary, never --text-disabled). Nothing to restate here. */

@@ -1,32 +1,11 @@
-/* The Team page (`SCR-M01-12`): its title and head count, the sticky list head, and the table's
-   roles cell. Everything else is the shared parts' own. */
+/* The Team page (`SCR-M01-12`): its title and head count, and the table's roles cell. Everything
+   else is the shared parts' own. */
 
 .hg-team-head {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
   gap: var(--tile-gap);
-}
-
-.hg-team-list-head {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: var(--tile-gap);
-  background: var(--hg-ground);
-}
-
-.hg-team-list-head[data-wide="true"] {
-  flex-direction: row;
-  align-items: center;
-  gap: var(--sp-4);
-}
-
-.hg-team-list-head[data-wide="true"] .hg-team-find {
-  flex: 0 1 var(--form-max);
-  min-width: 0;
 }
 
 .hg-team-roles {

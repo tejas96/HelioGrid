@@ -8,9 +8,12 @@ export interface ButtonProps {
   size?: "lg" | "md" | "sm";
   disabled?: boolean;
   /**
-   * **Why it is off** — `MS4-15`'s *"when unavailable the control **STATES THE REASON**"*. Rendered by
-   * `ActionReason` directly under the pill, so the button becomes a column (`style` still lands on
-   * the pill). Renders only when `disabled` is also true: an available act has no reason.
+   * **Why it is off** — `MS4-15`'s *"when unavailable the control **STATES THE REASON**"*. It opens in the
+   * `Explainer` bubble above the pill: a tap or click opens it, a second one closes it, and keyboard
+   * focus or a hover (where the pointer can hover) opens it too; no line is drawn under it
+   * (design-system changes 5 and 6). The sentence stays in the DOM and is the button's
+   * description for a screen reader. Renders only when `disabled` is also true: an available act has
+   * no reason.
    *
    * With a reason the button is `aria-disabled` and **stays focusable**, activation suppressed — a
    * native `disabled` leaves the tab order, and a description on an unreachable element is never
@@ -18,12 +21,18 @@ export interface ButtonProps {
    * a `ScopeNote`.
    */
   disabledReason?: React.ReactNode | ActionReasonSpec;
+  /** Holds the reason bubble open (`true`) or shut (`false`); leave unset to let a tap open it. A
+   *  board sets `true` to draw the open state. */
+  reasonOpen?: boolean;
   /** replaces the label with a spinner, keeps width fixed */
   loading?: boolean;
   /** leading icon node (Lucide, 20px, 1.5 stroke) */
   icon?: React.ReactNode;
   iconRight?: React.ReactNode;
   fullWidth?: boolean;
+  /** `danger` on a secondary or ghost pill: danger words and glyph on the white pill, for a row's act
+   *  that ends something (Deactivate). The confirm itself stays `destructive` (design-system change 7). */
+  tone?: "danger";
   style?: React.CSSProperties;
   onClick?: (e: React.MouseEvent) => void;
 }

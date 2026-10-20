@@ -100,19 +100,24 @@ function inviteRow(invite: RosterInvite, now: number): TeamRow {
   };
 }
 
-/** The newest open-or-run-out invite for each phone that is not already on the team. */
+/**
+ * Each phone's newest invite, whatever became of it, listed only while it is open or run out and the
+ * phone is not on the team: a newest invite revoked, declined or accepted hides every older one, so
+ * revoking never brings an older expired invite back (owner ruling D5 A).
+ */
 function listedInvites(members: readonly RosterMember[], invites: readonly RosterInvite[]) {
   const onTeam = new Set(members.map((member) => member.phoneE164));
   const newest = new Map<string, RosterInvite>();
   for (const invite of invites) {
-    if (invite.status !== 'pending' && invite.status !== 'expired') continue;
     if (onTeam.has(invite.phoneE164)) continue;
     const held = newest.get(invite.phoneE164);
     if (!held || Date.parse(invite.sentAt) > Date.parse(held.sentAt)) {
       newest.set(invite.phoneE164, invite);
     }
   }
-  return [...newest.values()];
+  return [...newest.values()].filter(
+    (invite) => invite.status === 'pending' || invite.status === 'expired',
+  );
 }
 
 /** Open invites, run-out invites, people on the team, people let go — each by name (AC-10). */

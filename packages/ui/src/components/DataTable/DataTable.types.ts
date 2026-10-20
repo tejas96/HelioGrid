@@ -54,7 +54,7 @@ export interface DataTableTotalRow {
   note?: ReactNode;
 }
 
-export interface DataTableProps<Row = Record<string, unknown>> {
+interface DataTableBaseProps<Row> {
   columns: DataTableColumn<Row>[];
   rows: Row[];
   /** Property name or getter for the row key. */
@@ -74,12 +74,6 @@ export interface DataTableProps<Row = Record<string, unknown>> {
    * Defaults to the primary column's raw value; pass this when that column renders a node.
    */
   rowLabel?: (row: Row) => string;
-  /**
-   * Trailing per-row actions. **Rendered in both forms**, and told which one it is: `form.stacked`
-   * is true on the card, false in the table row — so a caller can keep the dense pointer-only pill
-   * in the row and hand back full-size targets on the card, where a thumb is the only input.
-   */
-  rowActions?: (row: Row, form: DataTableForm) => ReactNode;
   /**
    * Dim a row without hiding it — snoozed leads, cancelled jobs. **This is not a problem marker:**
    * dimming reads as done-and-inactive. A broken row takes `rowIssue`. Reaches the card too.
@@ -197,3 +191,23 @@ export interface DataTableProps<Row = Record<string, unknown>> {
    */
   head?: 'overline' | 'quiet';
 }
+
+/**
+ * Trailing per-row actions, with the column's name: a column of acts cannot be typed without the
+ * words a screen reader says for its head.
+ */
+type DataTableRowActions<Row> =
+  | { rowActions?: undefined; actionsLabel?: undefined }
+  | {
+      /**
+       * **Rendered in both forms**, and told which one it is: `form.stacked` is true on the card,
+       * false in the table row — so a caller can keep the dense pointer-only pill in the row and hand
+       * back full-size targets on the card, where a thumb is the only input.
+       */
+      rowActions: (row: Row, form: DataTableForm) => ReactNode;
+      /** The actions column's name, spoken only — the caller's words. */
+      actionsLabel: string;
+    };
+
+export type DataTableProps<Row = Record<string, unknown>> = DataTableBaseProps<Row> &
+  DataTableRowActions<Row>;

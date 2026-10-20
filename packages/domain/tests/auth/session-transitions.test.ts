@@ -65,6 +65,24 @@ describe('sessionAfter — why a session ended, and what the device keeps of it 
     expect(sessionAfter(putOff, { kind: 'signed-out' }).setupPutOff).toEqual([]);
   });
 
+  it('takes a re-read person in place, keeping the home chosen and the steps put off (AC-24)', () => {
+    const held: SessionSnapshot = {
+      ...signedIn,
+      chosenHome: 'sales_executive',
+      setupPutOff: ['what_you_sell'],
+    };
+    const fewer: SessionUser = { ...priya, tenant: { id: TENANT_ID, roles: ['finance'] } };
+    expect(sessionAfter(held, { kind: 'reread', user: fewer })).toEqual({ ...held, user: fewer });
+  });
+
+  it.each([
+    ['at the door', SIGNED_OUT],
+    ['still checking', CHECKING],
+    ['held after a removal', removed],
+  ])('ignores a re-read person %s', (_, current) => {
+    expect(sessionAfter(current, { kind: 'reread', user: priya })).toBe(current);
+  });
+
   it('sends a boot check that found no credential to the door', () => {
     expect(sessionAfter(CHECKING, { kind: 'boot-signed-out' })).toEqual(SIGNED_OUT);
   });

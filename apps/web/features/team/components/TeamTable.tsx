@@ -10,19 +10,24 @@ import {
   ROLE_KIND_TONE,
   TEAM_STATUS_TONE,
 } from '@heliogrid/ui';
+import type { ReactNode } from 'react';
 
 interface TeamTableProps {
   rows: readonly TeamRow[];
   words: TeamListWords;
+  /** The act column's name, for a screen reader only. */
+  actions: string;
+  /** A row's act, small and right-aligned, or nothing for a row with none. */
+  actOf: (row: TeamRow) => ReactNode;
   loading?: boolean;
 }
 
 /**
  * The team at the table's width (`SCR-M01-12`, `d-default`): Person (the face, the name, *You* and
  * the status), Roles and Last active, in the owner's 2.2 : 2.4 : 1.2, on `DataTable`'s quiet head
- * (design-system change 20). The row act's column lands with the acts (`T-M01-012c`).
+ * (design-system change 20), and each row's act in its own 160 px column.
  */
-export function TeamTable({ rows, words, loading = false }: TeamTableProps) {
+export function TeamTable({ rows, words, actions, actOf, loading = false }: TeamTableProps) {
   const t = useTranslate();
   const columns: DataTableColumn<TeamRow>[] = [
     {
@@ -69,6 +74,8 @@ export function TeamTable({ rows, words, loading = false }: TeamTableProps) {
       columns={columns}
       rows={[...rows]}
       rowKey="id"
+      rowActions={(row) => actOf(row)}
+      actionsLabel={actions}
       state={loading ? 'loading' : 'ready'}
       stackBelow={0}
     />

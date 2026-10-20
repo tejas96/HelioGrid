@@ -1,4 +1,10 @@
-import { createTranslator, settingsWords, TEAM, teamStatusWord } from '@heliogrid/i18n';
+import {
+  createTranslator,
+  settingsWords,
+  TEAM,
+  teamActWords,
+  teamStatusWord,
+} from '@heliogrid/i18n';
 import { expect, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { createCompany } from '../support/door';
@@ -8,11 +14,12 @@ import { freshMobile } from '../support/phone';
 import { passTheOwnersMark } from '../support/shell';
 
 /**
- * `/more/team` (`SCR-M01-12`, `T-M01-012b`): the team behind `More`, inside the shell. A new
- * company's owner is alone on it, so the page teaches — the owner's own card with *You* and the
- * empty state, with no list head, and at the desktop width the quiet table shows the owner's row
- * and the head count. CI's company has no team, so a search, the chips and the other rows are the
- * qa-web rows of the task.
+ * `/more/team` (`SCR-M01-12`, `T-M01-012b`, `T-M01-012c`): the team behind `More`, inside the
+ * shell. A new company's owner is alone on it, so the page teaches — the owner's own card with
+ * *You*, its *Deactivate* off because they are the only EPC Owner, and the empty state, with no
+ * list head; at the desktop width the quiet table shows the owner's row and the head count. CI's
+ * company has no team, so a search, the chips, the other rows and their acts are the qa-web rows of
+ * the task.
  */
 const en = await createTranslator('en');
 const WORDS = settingsWords(en.t);
@@ -34,6 +41,11 @@ test('the Team row opens the team; a new owner is alone, and the page teaches', 
   await expect(
     page.getByText(teamStatusWord(en.t, 'active'), { exact: false }).first(),
   ).toBeVisible();
+  // The only EPC Owner can never deactivate themself: the act is off and says why (F2-19, AC-1).
+  const acts = teamActWords(en.t, company);
+  const own = page.getByRole('button', { name: acts.act('deactivate') });
+  await expect(own).toHaveAttribute('aria-disabled', 'true');
+  await expect(own).toHaveAccessibleDescription(acts.onlyOwner);
   // The teaching state has no list head: there is nothing to find yet.
   await expect(page.getByRole('searchbox', { name: en.t(TEAM.find) })).toHaveCount(0);
   if (testInfo.project.name === 'desktop') {
@@ -45,8 +57,9 @@ test('the Team row opens the team; a new owner is alone, and the page teaches', 
   await expectNoSidewaysScroll(page);
   await expect(page).toHaveTitle(/\S/);
   await expectNoSeriousViolations(page);
-  // At the desktop width the owner's *Last active* cell reads the run's clock (*Today, 23:08*).
-  const lastActive = page.getByRole('row').nth(1).getByRole('cell').last();
+  // At the desktop width the owner's *Last active* cell reads the run's clock (*Today, 23:08*); it is
+  // the third cell, before the act's.
+  const lastActive = page.getByRole('row').nth(1).getByRole('cell').nth(2);
   await expectTheLook(
     page,
     testInfo.project.name === 'desktop'

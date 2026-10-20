@@ -1,9 +1,9 @@
 import type { CSSProperties } from 'react';
-import { useState } from 'react';
+import { useImperativeHandle, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
 import { FiltersButton } from '../FilterBar';
-import type { SearchFieldProps } from './SearchField.types';
+import type { FocusHandle, SearchFieldProps } from './SearchField.types';
 
 type WebSearchFieldProps = SearchFieldProps & {
   className?: string;
@@ -41,10 +41,13 @@ function SearchPill({
   onClear,
   disabled = false,
   ariaLabel,
+  ref,
   className,
   style,
 }: SearchPillProps) {
   const [focus, setFocus] = useState(false);
+  const input = useRef<FocusHandle>(null);
+  useImperativeHandle(ref, () => ({ focus: () => input.current?.focus() }), []);
   const hasValue = value !== undefined && value !== '';
   return (
     <div
@@ -69,6 +72,9 @@ function SearchPill({
         <path d="m20 20-3.5-3.5" />
       </svg>
       <input
+        ref={(element) => {
+          input.current = element;
+        }}
         className="hg-search-field-input"
         type="search"
         value={value}

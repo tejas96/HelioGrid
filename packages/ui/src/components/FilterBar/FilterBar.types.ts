@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
+import type { FocusHandle } from '../SearchField/SearchField.types';
 
 /* THE TOUCH TARGET AND THE VISIBLE PILL ARE TWO DIFFERENT RECTANGLES (N2 / F7-29 / F7-32).
 
@@ -46,6 +47,11 @@ export interface FilterChipsProps {
    * (Kanban points this at its own visible overline, so one string does both jobs).
    */
   labelledBy?: string;
+  /**
+   * A focus handle for the caller, which sends focus to the chosen chip after it changes the choice
+   * itself (*Show all*): web focuses the selected tab, native moves the screen reader's focus to it.
+   */
+  ref?: Ref<FocusHandle>;
 }
 
 export interface FacetChipsProps {

@@ -33,7 +33,7 @@ Screen-specific:
 - **deactivate-confirm** — the confirm states only that the person loses access and that their history stays theirs. Reassigning open work (leads, visits, proposals) and the open-work counts wait for the modules that own that work (M02's lead owner, M08); no bulk-reassign contract exists, so this confirm carries neither (M01-19).
 - **deactivated-member** — a deactivated person's history remains attributed to them, their role chips and status render, and they are absent from assignment pickers (M01 §M01.2 acceptance).
 - **pending-invite-revoke** — revocation of a pending invite is one tap on this screen (M01 §M01.2 behavior detail); invite states are pending / accepted / expired / revoked (M01-12 context, carried on SCR-M01-07).
-- **expired-invite** — the list shows expired invites as well as pending ones (`GET /invitations` returns both; M01-12). An expired row carries the status Expired and the act *Invite again*, which sends a new invite.
+- **expired-invite** — the list shows expired invites as well as pending ones (`GET /invitations` returns both; M01-12). An expired row carries the status Expired and the act *Invite again*, which sends a new invite. A phone shows only its newest invite: a newest invite that was revoked, declined or accepted hides every older one (owner ruling D5 A).
 - **query** / **filter** — *Find in this list* narrows the list by name, and the Status chips (All, Invited, Expired, Active, Deactivated) narrow it by status, each chip counting what the search matches.
 - **invite-again-refused** — *Invite again* answered 422 or 429 leaves the card as it was and says why in a danger toast, in the shipped words for the code (`packages/i18n/src/copy/api-error.ts`); a 409 refreshes the list instead.
 - **no-match** — a search that matches no one: the list is the system's `EmptyState` naming the words — *No one matches "<text>"* — with *Clear search*; the status chips count what the search matches (owner ruling D2 A).
@@ -48,6 +48,7 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `empty-teaching`,
 - Status is a word plus a dot in its tone: invited `info`, expired `warning`, active `success`, deactivated `neutral`.
 - The reader's own row carries a *You* badge beside the name. At 1536 the page header counts *<n> people · <n> invites*.
 - A pending invite shows its seven days as a bar, with *Day <n> of 7* and *Expires <date>* under it.
+- The confirms and the revoke toast name a person by the first word of their name — *Deactivate Anjali* — and a one-word name whole (owner ruling D6 A).
 - After a deactivation lands, a neutral toast reads *<name> deactivated*. After a revoke lands, it reads *Invite to <name> revoked* · *Inviting <first name> again sends a new link.*
 - **guard-rail-blocked-explained** opens with the banner *Not done — <company> must keep one EPC Owner*.
 - At 375 a person is the system's `RecordCard` in its `stacked` layout, the dot drawn by `Avatar`'s `mark` (design-system change 19; owner ruling D4 A).

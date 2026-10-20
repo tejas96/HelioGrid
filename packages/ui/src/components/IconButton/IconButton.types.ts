@@ -12,13 +12,13 @@ export interface IconButtonProps {
   variant?: IconButtonVariant;
   disabled?: boolean;
   /**
-   * **Why it is off**, rendered by `ActionReason` under the circle; the control becomes
-   * `aria-disabled` and stays focusable. Only with `disabled`.
-   *
-   * If a sentence will not fit the toolbar this button sits in, do **not** disable it silently:
-   * either the act belongs at full size somewhere the reason can be read, or it is someone else's act
-   * and the surface owes a `ScopeNote`.
+   * **Why it is off**, opened in the `Explainer` bubble above the circle on a tap, click, focus or
+   * hover (`ReasonExplainer`); the control becomes `aria-disabled` and stays focusable, and nothing
+   * is drawn under it. Only with `disabled`. Where the act is someone else's, the surface owes a
+   * `ScopeNote` instead.
    */
   disabledReason?: ReactNode | ActionReasonSpec;
+  /** Holds the reason bubble open (`true`) or shut (`false`); unset lets a tap open it. */
+  reasonOpen?: boolean;
   onClick?: () => void;
 }

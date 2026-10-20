@@ -1,6 +1,13 @@
-import type { RolePreset, TeamRow, TeamSurface } from '@heliogrid/domain';
-import type { ReactNode } from 'react';
+import type {
+  RolePreset,
+  TeamAct,
+  TeamRow,
+  TeamStatusFilter,
+  TeamSurface,
+} from '@heliogrid/domain';
+import type { ReactNode, Ref } from 'react';
 import type { AvatarMark, IrisHue } from '../Avatar/Avatar.types';
+import type { FocusHandle } from '../SearchField/SearchField.types';
 
 /** One preset a person holds, worded, in its kind's iris tone (design-system change 7). */
 export interface MemberRole {
@@ -95,6 +102,8 @@ export interface MemberListProps {
   records?: ReactNode;
   /** Drawn in place of the placeholder cards — a wide page's table loading. */
   waiting?: ReactNode;
+  /** A card's one act at its foot — the caller's `MemberAct`, or nothing for a row with none. */
+  actOf?: (row: TeamRow) => ReactNode;
 }
 
 /**
@@ -107,4 +116,80 @@ export interface MemberPersonProps {
   /** The status in words — the chip carries a word as well as its tone. */
   status: string;
   tone: AvatarMark;
+}
+
+/**
+ * **A row's one act** (`SCR-M01-12`): *Deactivate* a raised pill in danger words, *Revoke invite* a
+ * raised pill, *Invite again* the near-black pill, each with its glyph (design-system change 7). The
+ * card draws it full width at `md`; the 1536 table at `sm`, right-aligned.
+ */
+export interface MemberActProps {
+  act: TeamAct;
+  label: string;
+  size: 'md' | 'sm';
+  fullWidth?: boolean;
+  /** Why the act cannot run — the only EPC Owner's own *Deactivate*; opens in the reason bubble. */
+  offReason?: string;
+  /** The act's write is out. */
+  busy?: boolean;
+  onPress: () => void;
+  /** Lets the caller send focus back to this act when a confirm it opened closes. */
+  ref?: Ref<FocusHandle>;
+}
+
+/**
+ * **The confirm a Team act opens** (`SCR-M01-12`, m-deactivate, m-revoke, m-refused): a sheet at
+ * 375 and a centred modal at 1536, a decision — not dismissible, no close button. On the refused
+ * form the banner says what stopped it and the go button is off with its reason.
+ */
+export interface TeamConfirmProps {
+  /** What the open confirm says; null while it is shut. The last words stay while it closes. */
+  words: TeamConfirmWords | null;
+  busy: boolean;
+  onGo: () => void;
+  /** *Cancel*, or *Close* on the refused form. */
+  onLeave: () => void;
+}
+
+/** A confirm's words: its question and act, then what the act does or the refusal (`@heliogrid/i18n`). */
+export interface TeamConfirmWords {
+  /** *Deactivate Anjali Kulkarni?* */
+  title: string;
+  go: string;
+  /** *Cancel*, or *Close* on the refused form. */
+  leave: string;
+  /** What the act does; the refused form shows its banner instead. */
+  body?: string;
+  /** The refused form: what stopped it, and who changed when exactly one person did. */
+  refusal?: { title: string; body: string | null };
+  /** The go button is off, and why — the refused form's route out. */
+  goOffReason?: string;
+}
+
+/**
+ * **A team list's head** (`SCR-M01-12`): *Find in this list* and the Status chips with their counts,
+ * held at the top while the list scrolls. Both screens draw it from this one contract; every word is
+ * the caller's.
+ */
+export interface MemberListHeadProps {
+  query: string;
+  onFind: (query: string) => void;
+  status: TeamStatusFilter;
+  onFilter: (status: TeamStatusFilter) => void;
+  /** Each chip's count; absent while the list's read is out. */
+  counts?: Readonly<Record<TeamStatusFilter, number>>;
+  words: {
+    find: string;
+    statusFilter: string;
+    statusOptions: { value: TeamStatusFilter; label: string }[];
+  };
+  /**
+   * At the table's width the search and the chips share a line and the chips wrap. A phone never
+   * reaches that width, so it always draws the narrow form: search, then one sideways row of chips.
+   */
+  wide?: boolean;
+  /** Where the caller sends focus once a search is cleared. */
+  searchRef?: Ref<FocusHandle>;
+  /** Where the caller sends focus once *Show all* chooses *All*. */
+  chipsRef?: Ref<FocusHandle>;
 }

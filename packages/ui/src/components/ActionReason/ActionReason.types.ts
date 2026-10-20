@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import type { ExplainerTriggerProps } from '../Explainer/Explainer.types';
 
 /**
  * A reason may be a plain sentence, a spec, or a ready node. Sentence case, states the fix:
@@ -26,8 +27,8 @@ export interface ActionReasonSpec {
  * permission boundary must not do, and promising *"not yet"* about a statute is worse still.
  *
  * **Where it renders — the slot rule, declared per host so five hosts cannot answer it five ways:**
- * - **`Button` / `IconButton`** — directly under the control, in the action row. The button becomes
- *   a column: pill, then reason.
+ * - **`Button` / `IconButton`** — in the `Explainer` bubble above the control, which a tap, click,
+ *   focus or hover opens (`ReasonExplainer`); nothing is drawn under the control.
  * - **`MenuItem`** — the second line of the item, under the label. `meta` keeps its own job.
  * - **`SelectOption`** — the second line of the listbox row, under the option label.
  * - **`OptionCardItem`** — its own line under `description`, never *inside* it.
@@ -43,3 +44,34 @@ export interface ActionReasonSpec {
  * suppressed by the host. A `disabled` with no reason keeps the native attribute.
  */
 export type ActionReasonProps = ActionReasonSpec;
+
+/**
+ * What a host's control is handed by `ReasonExplainer`: the ask's trigger props, plus the sentence
+ * for a screen reader while the bubble is shut.
+ */
+export interface ReasonTriggerProps extends ExplainerTriggerProps {
+  /** Web: the id of the visually hidden sentence, the control's `aria-describedby`. */
+  describedBy: string;
+  /**
+   * Native: the sentence as words, which the control speaks after its name — React Native has no
+   * off-screen text node to describe it by. Absent when the reason is not plain words.
+   */
+  spokenReason?: string;
+}
+
+/**
+ * **The reason in the Explainer** — what `Button` and `IconButton` run their `disabledReason`
+ * through. The host's control becomes the `Explainer`'s trigger, so a tap opens the sentence in a
+ * bubble above it; the sentence also stays, visually hidden, under `id`, so the control is described
+ * by it while the bubble is shut.
+ */
+export interface ReasonExplainerProps {
+  spec?: ReactNode | ActionReasonSpec;
+  /** The hidden sentence's id — the host's own `useId()`. */
+  id: string;
+  /** Holds the bubble open or shut; unset lets a tap open it. */
+  open?: boolean;
+  /** Keeps a full-width control full width. */
+  block?: boolean;
+  children: (triggerProps: ReasonTriggerProps) => ReactElement;
+}

@@ -1,3 +1,14 @@
+import type { Ref } from 'react';
+
+/**
+ * What a caller holds to send focus to a control after the thing it opened closes or its row moves:
+ * on web the keyboard's focus, on native the screen reader's. Shared by `Button`, `SearchField` and
+ * `FilterChips`.
+ */
+export interface FocusHandle {
+  focus(): void;
+}
+
 /** Density mode — expressive is the brand's roomy default, functional the dense working set. */
 export type SearchFieldDensity = 'expressive' | 'functional';
 
@@ -10,6 +21,11 @@ interface SearchFieldOwnProps {
   onClear?: () => void;
   disabled?: boolean;
   ariaLabel?: string;
+  /**
+   * A focus handle for the caller, which sends focus here after the thing it acted on leaves (a
+   * row removed, a list cleared): web focuses the input, native the `TextInput`.
+   */
+  ref?: Ref<FocusHandle>;
 }
 
 /** The search pill alone. */
