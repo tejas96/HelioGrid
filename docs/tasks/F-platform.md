@@ -1671,7 +1671,7 @@ These rows are screen rows: their verbatim text is the specification of a screen
 
 ### T-FPLAT-086 · A screenshot baseline holds every web route's look
 **Type:** policy · **Tier:** P1
-**Status:** shipped
+**Status:** struck — owner ruling 2026-10-20: the screenshot baselines are removed. Every visual change cost a CI-only redraw round (a failed `e2e-web` run, an artifact download, an extra commit), and the look is held by the component specs (each part's CSS against its tokens) and `qa-web`'s board compare on every screen a change reaches. D74's risk — a shared part breaking a screen nobody opens — rests on the component specs.
 **Why:** QA checks only the screens a change reaches, so a change to a shared `packages/ui` part can break the look of a screen nobody opens (D74).
 **PRD rows:** none of its own — `F7-43` (Definition of Done at 375 and 1536).
 **Depends on:** `T-FPLAT-082` (part h, its last part — split by `T-FPLAT-082c`'s ruling C1, `T-FPLAT-082f`'s ruling F2 and `T-FPLAT-082g`'s ruling G2), so the baseline is taken on the open page.

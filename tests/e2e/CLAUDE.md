@@ -6,17 +6,9 @@ Deps: `architecture.md` §2 tests/e2e.
 
 - `web/<route>.spec.ts` — one per web route, named as `e2e-flow-per-screen` names it (`/login` →
   `login.spec.ts`, `/` → `root.spec.ts`, a `(group)` folder dropped).
-- `web/<route>.spec.ts-snapshots/landing-{phone,desktop}-linux.png` — the route's look at 375 and
-  1536: each route spec with a look of its own calls `support/look.ts`'s `expectTheLook` once at
-  its landing, and `e2e-flow-per-screen` holds both images by name — on CI; off CI a missing one
-  is printed as owed to CI's first run, never failed. Any changed pixel fails
-  `e2e-web`. A baseline is
-  drawn only by CI, on Linux — a Mac draws text with other edges, so off CI the comparison is
-  skipped. A baseline changes only in a task whose approved RFC names that change, and the PR body lists each changed image: from the failed run's
-  `e2e-web-traces` artifact, a missing one is in `tests/e2e/web/<route>.spec.ts-snapshots/` and a
-  changed one is `tests/e2e/test-results/<test>/landing-actual.png`, copied over the committed file.
-  Never delete a baseline to make CI draw a new one: on CI `e2e-flow-per-screen` fails the missing
-  image in `quality`; keep the old one, let `e2e-web` fail on it, and copy the actual over it.
+- No screenshot baselines (owner ruling 2026-10-20): a flow asserts words, roles, states and
+  measured values, never a whole-page picture. A look is proven by the component specs (each part's
+  CSS against its tokens) and by `qa-web`'s board compare on every screen a change reaches.
 - `components/<Name>.spec.tsx` — the real `@heliogrid/ui` web halves, mounted with the app's
   stylesheets (`playwright/index.tsx`). A mounted component is imported from the `@heliogrid/ui`
   index; a plain value from `@heliogrid/ui` is read through `support/`, since the component
@@ -31,9 +23,8 @@ Deps: `architecture.md` §2 tests/e2e.
   tokens (`support/token.ts`), the touch floor from `@heliogrid/ui`.
 - Never a shared account: every flow signs up its own fresh number (`support/phone.ts`), so no spec
   reads another's data or the developer's, and no count or empty state is asserted.
-- A flow names its company `E2E <its 10-digit number>`, which every look masks, and its owner
-  `support/door.ts`'s `OWNER_NAME`: a look draws the owner's name and initials, so they never
-  carry the run's number.
+- A flow names its company `E2E <its 10-digit number>` and its owner `support/door.ts`'s
+  `OWNER_NAME`, one fixed name, so the owner's words never carry the run's number.
 - Never a retry: a flake is a bug and is fixed.
 - Every web spec ends its landing with `support/axe.ts`'s `expectNoSeriousViolations` once the
   landing's words are visible: a `serious` or `critical` violation fails the suite (`F7-26`).

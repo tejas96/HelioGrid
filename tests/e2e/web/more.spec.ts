@@ -10,7 +10,6 @@ import { expect, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { createCompany } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
-import { expectTheLook } from '../support/look';
 import { freshMobile } from '../support/phone';
 import { passTheOwnersMark } from '../support/shell';
 
@@ -28,7 +27,7 @@ test('More opens Settings: the owner’s twelve rows in six groups, More in view
   page,
 }, testInfo) => {
   const mobile = freshMobile();
-  const company = await createCompany(page, en, mobile);
+  await createCompany(page, en, mobile);
   await passTheOwnersMark(page, en);
   const rail = page.getByRole('navigation', { name: en.t(SHELL.mainNavigation) });
 
@@ -49,7 +48,6 @@ test('More opens Settings: the owner’s twelve rows in six groups, More in view
     );
     await expectNoSidewaysScroll(page);
     await expectNoSeriousViolations(page);
-    await expectTheLook(page, [page.getByText(company)]);
     // `/more` was replaced, so Back returns to the page More was pressed on.
     await page.goBack();
     await expect(page).toHaveURL(before);
@@ -77,5 +75,4 @@ test('More opens Settings: the owner’s twelve rows in six groups, More in view
   await expectNoSidewaysScroll(page);
   await expect(page).toHaveTitle(/\S/);
   await expectNoSeriousViolations(page);
-  await expectTheLook(page, [page.getByText(company)]);
 });
