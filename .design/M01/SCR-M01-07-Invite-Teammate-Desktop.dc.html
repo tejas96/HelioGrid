@@ -118,14 +118,14 @@ a:hover{color:var(--link-hover)}
             </div>
             <div data-part="list-head" style="position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:var(--sp-4);background:var(--canvas)"><div style="flex:0 1 var(--form-max);min-width:0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAll }}" hint-size="auto,44px"></x-import></div>
             <div role="table" aria-label="Everyone at Suryodaya Solar" style="display:flex;flex-direction:column;position:relative">
-                <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 160px;padding:0 var(--sp-5) var(--sp-4);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">
+                <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 176px;padding:0 var(--sp-5) var(--sp-4);font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">
                   <span role="columnheader">Person</span><span role="columnheader">Roles</span><span role="columnheader">Last active</span><span role="columnheader" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap">Actions</span>
                 </div>
               <div role="rowgroup">
-                <div style="background:var(--surface);border-radius:20px;box-shadow:var(--e2);overflow:hidden">
+                <div style="background:var(--surface);border-radius:var(--r-md);box-shadow:var(--e2);overflow:hidden">
                   <div style="margin-top:-1px">
                   <sc-for list="{{ rows }}" as="r" hint-placeholder-count="11">
-                    <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 160px;align-items:center;min-height:82px;box-sizing:border-box;padding:14px var(--sp-5);border-top:1px solid var(--line-soft)">
+                    <div role="row" style="display:grid;grid-template-columns:2.2fr 2.4fr 1.2fr 176px;align-items:center;min-height:82px;box-sizing:border-box;padding:14px var(--sp-5);border-top:1px solid var(--line-soft)">
                       <div role="cell" style="display:flex;align-items:center;gap:var(--sp-3);min-width:0">
                         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="{{ r.name }}" size="{{ r.avatar }}" hint-size="40px,40px"></x-import>
                         <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-1);min-width:0">
@@ -355,7 +355,7 @@ class Component extends DCLogic {
       deactivated: { label: "Deactivated", tone: "neutral" }
     };
     const ROSTER = [
-      { name: "Priya Deshmukh", kind: "invited", roles: ["Sales Executive"], expires: "5 Sep" },
+      { name: "Priya Deshmukh", kind: "invited", roles: ["Sales Executive"], expires: "5 Sept" },
       { name: "Rohan Gaikwad", kind: "expired", roles: ["Survey Engineer"], expired: "27 Aug" },
       { name: "Amit Rane", kind: "active", roles: ["Sales Executive", "Survey Engineer"], at: "30 Aug, 19:12" },
       { name: "Anjali Kulkarni", kind: "active", roles: ["Sales Executive"], at: "Today, 08:47" },
