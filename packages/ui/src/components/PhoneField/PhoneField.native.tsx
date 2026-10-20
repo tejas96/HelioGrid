@@ -1,9 +1,10 @@
 import { nationalNumber } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
-import { useState } from 'react';
+import { useImperativeHandle, useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { FIELD_BOX_EDGE, fieldBox, fieldBoxText } from '../../primitives/FieldBox/FieldBox.native';
+import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/MarketProvider.native';
 import type { PhoneFieldDensity, PhoneFieldProps, PhoneValueProps } from './PhoneField.types';
@@ -74,9 +75,12 @@ export function PhoneField({
   readOnly = false,
   announceError = false,
   autoFocus = false,
+  ref,
   style,
 }: NativePhoneFieldProps) {
   const mkt = useFormat();
+  const input = useRef<TextInput>(null);
+  useImperativeHandle(ref, () => ({ focus: () => focusScreenReaderOn(() => input.current) }), []);
   const [focus, setFocus] = useState(false);
   const { dialCode } = mkt.pack.phone;
 
@@ -109,6 +113,7 @@ export function PhoneField({
       >
         <Text style={styles.dial}>{dialCode}</Text>
         <TextInput
+          ref={input}
           autoFocus={autoFocus}
           // The whole number, so the reader hears one number rather than a code and some groups.
           accessibilityLabel={`${label}, ${mkt.phone(value)}`}

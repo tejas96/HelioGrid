@@ -19,8 +19,9 @@ import { passTheOwnersMark } from '../support/shell';
  * *You*, its *Deactivate* off because they are the only EPC Owner, and the empty state, with no
  * list head; at the desktop width the quiet table shows the owner's row and the head count. CI's
  * company has no team, so a search, the chips, the other rows and their acts are the qa-web rows of
- * the task. At the desktop width the page head holds *Invite teammate*, which opens Invite Teammate
- * over the page (`SCR-M01-07` d-team, `T-M01-007`); a send is the task's qa-web rows.
+ * the task. The teaching state's *Invite your first teammate*, and at the desktop width the page
+ * head's *Invite teammate*, open Invite Teammate over the page (`SCR-M01-07`, `T-M01-007`); a send
+ * is the task's qa-web rows.
  */
 const en = await createTranslator('en');
 const WORDS = settingsWords(en.t);
@@ -49,10 +50,15 @@ test('the Team row opens the team; a new owner is alone, and the page teaches', 
   await expect(own).toHaveAccessibleDescription(acts.onlyOwner);
   // The teaching state has no list head: there is nothing to find yet.
   await expect(page.getByRole('searchbox', { name: en.t(TEAM.find) })).toHaveCount(0);
+  // The teaching state's own act opens Invite Teammate (`SCR-M01-12` m-teaching, `T-M01-007`).
+  const invite = inviteWords(en.t);
+  await page.getByRole('button', { name: invite.inviteFirst }).click();
+  await expect(page.getByRole('dialog', { name: invite.title })).toBeVisible();
+  await page.getByRole('button', { name: invite.cancel }).click();
+  await expect(page.getByRole('dialog', { name: invite.title })).toHaveCount(0);
   if (testInfo.project.name === 'desktop') {
     await expect(page.getByText(en.t(TEAM.headCount, { people: 1, invites: 0 }))).toBeVisible();
     await expect(page.getByRole('table', { name: en.t(TEAM.everyone, { company }) })).toBeVisible();
-    const invite = inviteWords(en.t);
     await page.getByRole('button', { name: invite.inviteTeammate }).click();
     await expect(page.getByRole('dialog', { name: invite.title })).toBeVisible();
     await page.getByRole('button', { name: invite.cancel }).click();

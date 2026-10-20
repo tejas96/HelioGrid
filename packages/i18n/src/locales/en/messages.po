@@ -23,7 +23,7 @@ msgid "{bankName} · account ending {ending}"
 msgstr "{bankName} · account ending {ending}"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:67
+#: src/copy/invite.ts:68
 msgid "{cap} invites in the last 24 hours — the limit for one company"
 msgstr "{cap} invites in the last 24 hours — the limit for one company"
 
@@ -283,7 +283,7 @@ msgid "A company name is needed — it goes on every proposal you send."
 msgstr "A company name is needed — it goes on every proposal you send."
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:72
+#: src/copy/invite.ts:73
 msgid "A name can have up to {max} characters."
 msgstr "A name can have up to {max} characters."
 
@@ -313,7 +313,7 @@ msgid "About one account per number"
 msgstr "About one account per number"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:35
+#: src/copy/invite.ts:36
 msgid "About roles"
 msgstr "About roles"
 
@@ -408,7 +408,7 @@ msgid "Address"
 msgstr "Address"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:53
+#: src/copy/invite.ts:54
 msgid "After you send"
 msgstr "After you send"
 
@@ -433,7 +433,7 @@ msgid "An invite already went to this number and is still open."
 msgstr "An invite already went to this number and is still open."
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:28
+#: src/copy/invite.ts:29
 msgid "Anjali Kulkarni"
 msgstr "Anjali Kulkarni"
 
@@ -550,13 +550,13 @@ msgid "Campaigns"
 msgstr "Campaigns"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:45
+#: src/copy/invite.ts:46
 #: src/copy/team-acts.ts:21
 msgid "Cancel"
 msgstr "Cancel"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:59
+#: src/copy/invite.ts:60
 msgid "Cancel it on Team"
 msgstr "Cancel it on Team"
 
@@ -706,7 +706,7 @@ msgid "Continue setting up HelioGrid without your company profile"
 msgstr "Continue setting up HelioGrid without your company profile"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:47
+#: src/copy/invite.ts:48
 msgid "Continue setup"
 msgstr "Continue setup"
 
@@ -871,7 +871,7 @@ msgid "Designs and proposals for the leads assigned to them, and design sign-off
 msgstr "Designs and proposals for the leads assigned to them, and design sign-off"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:70
+#: src/copy/invite.ts:71
 msgid "Each invite counts for 24 hours from when it was sent."
 msgstr "Each invite counts for 24 hours from when it was sent."
 
@@ -1061,12 +1061,12 @@ msgid "HelioGrid did not answer in time. If you were saving, check whether it sa
 msgstr "HelioGrid did not answer in time. If you were saving, check whether it saved before trying again."
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:54
+#: src/copy/invite.ts:55
 msgid "HelioGrid messages their phone"
 msgstr "HelioGrid messages their phone"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:30
+#: src/copy/invite.ts:31
 msgid "HelioGrid sends the message to this number — it does not come from your phone."
 msgstr "HelioGrid sends the message to this number — it does not come from your phone."
 
@@ -1151,17 +1151,17 @@ msgid "Invite again"
 msgstr "Invite again"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:50
+#: src/copy/invite.ts:51
 msgid "Invite lasts {days, plural, one {# day} other {# days}} · cancel it from Team"
 msgstr "Invite lasts {days, plural, one {# day} other {# days}} · cancel it from Team"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:24
+#: src/copy/invite.ts:25
 msgid "Invite someone"
 msgstr "Invite someone"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:25
+#: src/copy/invite.ts:26
 msgid "Invite teammate"
 msgstr "Invite teammate"
 
@@ -1176,7 +1176,7 @@ msgid "Invite to {name} revoked"
 msgstr "Invite to {name} revoked"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:26
+#: src/copy/invite.ts:27
 msgid "Invite your first teammate"
 msgstr "Invite your first teammate"
 
@@ -1286,7 +1286,7 @@ msgid "More"
 msgstr "More"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:40
+#: src/copy/invite.ts:41
 msgid "More than one is fine, and roles can change later on Team."
 msgstr "More than one is fine, and roles can change later on Team."
 
@@ -1393,7 +1393,7 @@ msgid "Not done — {company} must keep one EPC Owner"
 msgstr "Not done — {company} must keep one EPC Owner"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:55
+#: src/copy/invite.ts:56
 msgid "Not from your number"
 msgstr "Not from your number"
 
@@ -1443,7 +1443,7 @@ msgid "Nothing in the catalog changed since the last release, so there is nothin
 msgstr "Nothing in the catalog changed since the last release, so there is nothing to publish."
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:63
+#: src/copy/invite.ts:64
 msgid "Nothing to send — to invite this number again, cancel the pending invite on Team."
 msgstr "Nothing to send — to invite this number again, cancel the pending invite on Team."
 
@@ -1518,7 +1518,7 @@ msgid "Only new proposals reprice · sent ones keep theirs"
 msgstr "Only new proposals reprice · sent ones keep theirs"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:48
+#: src/copy/invite.ts:49
 msgid "Open Team"
 msgstr "Open Team"
 
@@ -1594,7 +1594,7 @@ msgid "Person"
 msgstr "Person"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:37
+#: src/copy/invite.ts:38
 msgid "Pick at least one role. Someone invited with no role would sign in to an empty app."
 msgstr "Pick at least one role. Someone invited with no role would sign in to an empty app."
 
@@ -1739,13 +1739,13 @@ msgid "Revoke invite"
 msgstr "Revoke invite"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:36
+#: src/copy/invite.ts:37
 #: src/copy/team.ts:26
 msgid "Roles"
 msgstr "Roles"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:34
+#: src/copy/invite.ts:35
 msgid "Roles for this invite"
 msgstr "Roles for this invite"
 
@@ -1815,7 +1815,7 @@ msgid "Send code"
 msgstr "Send code"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:44
+#: src/copy/invite.ts:45
 msgid "Send invite"
 msgstr "Send invite"
 
@@ -1945,7 +1945,7 @@ msgid "Signing up again would not make a second company"
 msgstr "Signing up again would not make a second company"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:46
+#: src/copy/invite.ts:47
 msgid "Skip for now"
 msgstr "Skip for now"
 
@@ -2166,7 +2166,12 @@ msgid "The invite link stops working now. You can invite {first} again any time.
 msgstr "The invite link stops working now. You can invite {first} again any time."
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:56
+#: src/copy/invite.ts:74
+msgid "The invite wasn’t sent. Try again."
+msgstr "The invite wasn’t sent. Try again."
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:57
 msgid "The invite works for {days, plural, one {# day} other {# days}}"
 msgstr "The invite works for {days, plural, one {# day} other {# days}}"
 
@@ -2206,7 +2211,7 @@ msgid "The tranches must add up to exactly 100%. Place the remainder before savi
 msgstr "The tranches must add up to exactly 100%. Place the remainder before saving."
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:27
+#: src/copy/invite.ts:28
 msgid "Their name"
 msgstr "Their name"
 
@@ -2226,12 +2231,12 @@ msgid "Their own stops, check-ins, timeline and attendance"
 msgstr "Their own stops, check-ins, timeline and attendance"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:29
+#: src/copy/invite.ts:30
 msgid "Their phone number"
 msgstr "Their phone number"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:60
+#: src/copy/invite.ts:61
 msgid "They join with the roles you pick"
 msgstr "They join with the roles you pick"
 
@@ -2266,12 +2271,12 @@ msgid "This is version {current}. HelioGrid now needs version {required} or late
 msgstr "This is version {current}. HelioGrid now needs version {required} or later."
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:62
+#: src/copy/invite.ts:63
 msgid "This number already has an invite waiting"
 msgstr "This number already has an invite waiting"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:61
+#: src/copy/invite.ts:62
 msgid "This number is already on your team"
 msgstr "This number is already on your team"
 
@@ -2326,7 +2331,7 @@ msgid "Three details, and you're in."
 msgstr "Three details, and you're in."
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:41
+#: src/copy/invite.ts:42
 msgid "Tick at least one role before sending — an invite with none would open an empty app."
 msgstr "Tick at least one role before sending — an invite with none would open an empty app."
 
@@ -2447,7 +2452,7 @@ msgstr "Use a different Google account"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:68
-#: src/copy/invite.ts:49
+#: src/copy/invite.ts:50
 msgid "Use a different number"
 msgstr "Use a different number"
 
@@ -2507,7 +2512,7 @@ msgid "We call and read the code out to"
 msgstr "We call and read the code out to"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:66
+#: src/copy/invite.ts:67
 msgid "We can’t send invites to this number — check it or use another."
 msgstr "We can’t send invites to this number — check it or use another."
 
@@ -2582,7 +2587,7 @@ msgid "Welcome back — carry on"
 msgstr "Welcome back — carry on"
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:33
+#: src/copy/invite.ts:34
 msgid "What can they do?"
 msgstr "What can they do?"
 
@@ -2679,7 +2684,7 @@ msgid "You can change both later in your company profile, the next step. Proposa
 msgstr "You can change both later in your company profile, the next step. Proposals you have already sent never change."
 
 #. js-lingui-explicit-id
-#: src/copy/invite.ts:71
+#: src/copy/invite.ts:72
 msgid "You can no longer invite people to this company."
 msgstr "You can no longer invite people to this company."
 
@@ -2753,8 +2758,8 @@ msgstr "Your company has not published its grievance officer yet. Ask your admin
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:62
-msgid "Your company has sent today’s invites. Try again tomorrow."
-msgstr "Your company has sent today’s invites. Try again tomorrow."
+msgid "Your company has reached its invite limit for the last 24 hours."
+msgstr "Your company has reached its invite limit for the last 24 hours."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:54

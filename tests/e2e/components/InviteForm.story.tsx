@@ -1,5 +1,5 @@
 import { type CreateInvitation, inviteFormSchema } from '@heliogrid/contracts';
-import { IN_FORMATS, type UiLanguage } from '@heliogrid/domain';
+import { IN_FORMATS, type InviteRefusal, type UiLanguage } from '@heliogrid/domain';
 import { createTranslator, inviteFieldWords, inviteWords } from '@heliogrid/i18n';
 import { Button, type InviteFieldBinder, InviteForm } from '@heliogrid/ui';
 import { useState } from 'react';
@@ -24,11 +24,13 @@ export function InviteFormAsHeld({
   layout,
   heading,
   name = '',
+  refusal = null,
 }: {
   reader: UiLanguage;
   layout?: 'stacked' | 'wide';
   heading?: 'section' | 'quiet';
   name?: string;
+  refusal?: InviteRefusal | null;
 }) {
   const words = inviteWords(READERS[reader].t);
   const [values, setValues] = useState<CreateInvitation>({
@@ -65,6 +67,7 @@ export function InviteFormAsHeld({
         layout={layout}
         heading={heading}
         presses={presses}
+        refusal={refusal}
       />
       <Button onClick={press}>{words.send}</Button>
       <output data-testid="sent">{sent ? 'sent' : ''}</output>

@@ -1,5 +1,6 @@
 import { IN_FORMATS, ROLE_PRESETS } from '@heliogrid/domain';
 import { beforeAll, describe, expect, it } from 'vitest';
+import { apiErrorMessageId } from '../src/copy/api-error';
 import { inviteFieldWords, inviteWords } from '../src/copy/invite';
 import { createTranslator } from '../src/runtime';
 
@@ -75,5 +76,33 @@ describe('inviteFieldWords', () => {
       inviteFieldWords(words, IN_FORMATS, 'inviteeName', { value: 'A'.repeat(121), error: failed })
         .error,
     ).toBe('A name can have up to 120 characters.');
+  });
+});
+
+describe('the refusals’ words', () => {
+  it('each refusal the form draws has its board words', () => {
+    const words = inviteWords(t);
+    expect(words.refusal('already_member')).toEqual({
+      title: 'This number is already on your team',
+      body: null,
+    });
+    expect(words.refusal('already_invited')).toEqual({
+      title: 'This number already has an invite waiting',
+      body: 'Nothing to send — to invite this number again, cancel the pending invite on Team.',
+    });
+    expect(words.refusal('cap')).toEqual({
+      title: '50 invites in the last 24 hours — the limit for one company',
+      body: 'Each invite counts for 24 hours from when it was sent.',
+    });
+    expect(words.refusal('not_covered')).toEqual({ title: words.notCovered, body: null });
+    expect(words.differentNumber).toBe('Use a different number');
+    expect(words.forbidden).toBe('You can no longer invite people to this company.');
+    expect(words.failed).toBe('The invite wasn’t sent. Try again.');
+  });
+
+  it('the cap’s generic words say the rolling 24 hours, never “tomorrow”', () => {
+    expect(t({ id: apiErrorMessageId('INVITE_CAP_REACHED') ?? '' })).toBe(
+      'Your company has reached its invite limit for the last 24 hours.',
+    );
   });
 });

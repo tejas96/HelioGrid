@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
+import type { FocusHandle } from '../SearchField/SearchField.types';
 
 /**
  * A phone number, entered and shown. Both halves take the dial code and the digit grouping from the
@@ -38,6 +39,11 @@ export interface PhoneFieldProps {
    */
   announceError?: boolean;
   id?: string;
+  /**
+   * Takes the focus when the screen sends it here — Invite Teammate's *Use a different number*.
+   * Web: the keyboard's focus. Native: the screen reader's, never the keyboard's (`focusScreenReaderOn`).
+   */
+  ref?: Ref<FocusHandle>;
 }
 
 export interface PhoneValueProps {
