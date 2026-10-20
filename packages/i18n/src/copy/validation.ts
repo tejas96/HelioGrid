@@ -12,6 +12,9 @@ const MSG = {
   tooBig: /*i18n*/ { id: 'This value is too large.' },
 };
 
+/** The empty field's words, for a field whose own refusal is not zod's — Invite Teammate's number. */
+export const REQUIRED_FIELD = MSG.required;
+
 /** Structural mirror of the zod issue fields we branch on — no zod dependency here. */
 export interface ValidationIssueLike {
   code: string;

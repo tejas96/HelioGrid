@@ -42,6 +42,12 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
   },
   stickyHeadParts: { gap: theme.layout['tile-gap'] },
+  /* What scrolls away above the held head (`SCR-M01-12` m-default): `sp-2` under the bar, as the
+     held head keeps (owner ruling D287 over the board's `sp-1`), and `sp-4` to what follows — the
+     head's own `sp-2` makes up the rest when one is held, as in m-default; alone, as in m-error,
+     the lead keeps all of it. */
+  lead: { paddingTop: theme.spacing['sp-2'], paddingBottom: theme.spacing['sp-4'] },
+  leadOverHead: { paddingBottom: theme.spacing['sp-2'] },
   // Frame 10 has no bar and no pill: its block is centred in the whole page, and scrolls when
   // the largest text makes it taller than the screen.
   updateScroll: {

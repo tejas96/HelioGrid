@@ -13,6 +13,8 @@ export type { CompanyCreation, CompanySignup, JoinRequesting } from './use-compa
 export { failureOf, useCompanySignup, useSteerDroppedOnEdit } from './use-company-signup';
 export { useConnection } from './use-connection';
 export { useLiveness } from './use-health';
+export type { Invite } from './use-invite';
+export { useInvite } from './use-invite';
 export { useLanding } from './use-landing';
 export type { NotificationCentre } from './use-notification-centre';
 export { useNotificationCentre, useUnreadCount } from './use-notification-centre';

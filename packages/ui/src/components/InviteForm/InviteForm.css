@@ -1,0 +1,51 @@
+/* InviteForm (`SCR-M01-07`): the board's gaps — sp-5 between the parts in the setup step, sp-4 in
+   Team's editor, sp-8 in the 1536 task pane; the heading row's ask sp-1 from its words. */
+
+.hg-invite-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.hg-invite-form[data-heading="quiet"] {
+  gap: var(--sp-4);
+}
+
+.hg-invite-form[data-layout="wide"] {
+  gap: var(--sp-8);
+}
+
+.hg-invite-form-who {
+  display: flex;
+  flex-direction: column;
+  gap: inherit;
+}
+
+.hg-invite-form[data-layout="wide"] .hg-invite-form-who {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-5);
+}
+
+.hg-invite-form-roles {
+  display: flex;
+  flex-direction: column;
+  gap: inherit;
+}
+
+.hg-invite-form[data-layout="wide"] .hg-invite-form-roles {
+  gap: var(--sp-3);
+}
+
+.hg-invite-form-ask {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+/* The editor's foot (m-team, d-team): the acts, then the expiry centred under them, sp-3 apart. */
+.hg-invite-editor-foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}

@@ -105,6 +105,13 @@
   background: var(--hg-ground);
 }
 
+/* A multiple group's mark is the checkbox's square (`Checkbox.css`: 20px, `--rf-sm`) with a tick in
+   the inverse ink on the accent. */
+.hg-option-card-dot[data-mode="multiple"] {
+  border-radius: var(--rf-sm);
+  color: var(--text-inverse);
+}
+
 .hg-option-card-dot-fill {
   width: 7px;
   height: 7px;

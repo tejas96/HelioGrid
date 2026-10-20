@@ -15,6 +15,8 @@ Deps: `architecture.md` §2 tests/e2e.
   skipped. A baseline changes only in a task whose approved RFC names that change, and the PR body lists each changed image: from the failed run's
   `e2e-web-traces` artifact, a missing one is in `tests/e2e/web/<route>.spec.ts-snapshots/` and a
   changed one is `tests/e2e/test-results/<test>/landing-actual.png`, copied over the committed file.
+  Never delete a baseline to make CI draw a new one: on CI `e2e-flow-per-screen` fails the missing
+  image in `quality`; keep the old one, let `e2e-web` fail on it, and copy the actual over it.
 - `components/<Name>.spec.tsx` — the real `@heliogrid/ui` web halves, mounted with the app's
   stylesheets (`playwright/index.tsx`). A mounted component is imported from the `@heliogrid/ui`
   index; a plain value from `@heliogrid/ui` is read through `support/`, since the component

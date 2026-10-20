@@ -2,38 +2,43 @@ import type { CSSProperties, KeyboardEvent } from 'react';
 import { useId, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { OptionCard } from './OptionCard';
+import { isPicked, pressOption } from './OptionCardGroup.logic';
 import { hasReason } from './OptionCardGroup.options';
 import type { OptionCardGroupProps } from './OptionCardGroup.types';
 
-interface WebOptionCardGroupProps extends OptionCardGroupProps {
+type WebOptionCardGroupProps = OptionCardGroupProps & {
   className?: string;
-  /** Lands on the wrapper around the radiogroup. */
+  /** Lands on the wrapper around the group. */
   style?: CSSProperties;
-}
+};
 
 /**
- * Card-shaped radiogroup: pick one of a few options that each need a title, an explanation and
- * sometimes a price. One tab stop, arrow keys move the selection. Selection is a 2px accent ring
- * plus a filled dot — never colour alone.
+ * Card-shaped choice of a few options that each need a title, an explanation and sometimes a price.
+ * Single: a radiogroup, one tab stop, arrow keys move the pick. Multiple: a group of checkboxes, each
+ * its own tab stop. Selection is a 2px accent ring plus a filled mark — never colour alone.
  */
-export function OptionCardGroup({
-  options,
-  value,
-  onChange,
-  label,
-  columns = 1,
-  density = 'expressive',
-  disabled = false,
-  currentLabel = 'Current plan',
-  error,
-  className,
-  style,
-}: WebOptionCardGroupProps) {
+export function OptionCardGroup(props: WebOptionCardGroupProps) {
+  const {
+    options,
+    label,
+    ariaLabel,
+    columns = 1,
+    density = 'expressive',
+    disabled = false,
+    currentLabel = 'Current plan',
+    error,
+    invalid = false,
+    describedBy,
+    className,
+    style,
+  } = props;
+  const multiple = props.mode === 'multiple';
+  const onChange = (value: string) => pressOption(props, value);
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
   const autoId = useId();
   const idx = Math.max(
     0,
-    options.findIndex((o) => o.value === value),
+    options.findIndex((o) => isPicked(props, o.value)),
   );
 
   const onKey = (i: number, e: KeyboardEvent<HTMLButtonElement>) => {
@@ -51,14 +56,16 @@ export function OptionCardGroup({
         at = options[t];
       }
       refs.current[t]?.focus();
-      if (at !== undefined && at.disabled !== true) onChange?.(at.value);
+      if (at !== undefined && at.disabled !== true) onChange(at.value);
     };
+    /* A checkbox is its own tab stop and Space toggles it as the button's own click does. */
+    if (multiple) return;
     if (e.key === 'ArrowDown' || e.key === 'ArrowRight') go(i + 1);
     else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') go(i - 1);
     else if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
       const here = options[i];
-      if (here !== undefined) onChange?.(here.value);
+      if (here !== undefined) onChange(here.value);
     }
   };
 
@@ -70,10 +77,9 @@ export function OptionCardGroup({
         </span>
       ) : null}
       <div
-        role="radiogroup"
-        aria-labelledby={label !== undefined ? `${autoId}-lbl` : undefined}
-        aria-invalid={error !== undefined ? true : undefined}
-        aria-describedby={error !== undefined ? `${autoId}-err` : undefined}
+        {...groupRole(multiple, label !== undefined ? `${autoId}-lbl` : undefined, ariaLabel)}
+        aria-invalid={error !== undefined || invalid ? true : undefined}
+        aria-describedby={error !== undefined ? `${autoId}-err` : describedBy}
         className="hg-option-card-group-list"
         data-error={error !== undefined}
         style={{ '--hg-option-card-columns': columns } as CSSProperties}
@@ -82,14 +88,15 @@ export function OptionCardGroup({
           <OptionCard
             key={o.value}
             option={o}
-            selected={o.value === value}
+            selected={isPicked(props, o.value)}
+            mode={multiple ? 'multiple' : 'single'}
             off={disabled || o.disabled === true}
             density={density}
-            tabIndex={i === idx ? 0 : -1}
+            tabIndex={multiple || i === idx ? 0 : -1}
             cardRef={(el) => {
               refs.current[i] = el;
             }}
-            onSelect={() => onChange?.(o.value)}
+            onSelect={() => onChange(o.value)}
             onKeyDown={(e) => onKey(i, e)}
             currentLabel={currentLabel}
           />
@@ -102,4 +109,17 @@ export function OptionCardGroup({
       ) : null}
     </div>
   );
+}
+
+/** The list's role and name: a radiogroup, or a group of checkboxes, named by its line or `ariaLabel`. */
+function groupRole(
+  multiple: boolean,
+  labelledBy: string | undefined,
+  ariaLabel: string | undefined,
+) {
+  return {
+    role: multiple ? 'group' : 'radiogroup',
+    'aria-labelledby': labelledBy,
+    'aria-label': labelledBy === undefined ? ariaLabel : undefined,
+  } as const;
 }

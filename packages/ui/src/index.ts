@@ -66,6 +66,7 @@ export * from './components/HomeHead';
 export * from './components/IconButton';
 export * from './components/Image';
 export * from './components/Input';
+export * from './components/InviteForm';
 export * from './components/JobTray';
 export * from './components/Kanban';
 export * from './components/LanguageSwitcher';

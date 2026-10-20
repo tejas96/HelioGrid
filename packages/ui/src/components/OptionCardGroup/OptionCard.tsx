@@ -1,14 +1,16 @@
-// biome-ignore-all lint/a11y/useSemanticElements: the CARD is the radio — an
-// <input type="radio"> cannot hold a title row, a price, a description and a feature list.
+// biome-ignore-all lint/a11y/useSemanticElements: the CARD is the radio or the checkbox — an
+// <input> cannot hold a title row, a price, a description and a feature list.
 
 import type { KeyboardEvent, Ref } from 'react';
 import { StatusMark } from '../../primitives/StatusMark';
 import { renderActionReason } from '../ActionReason';
-import type { OptionCardItem } from './OptionCardGroup.types';
+import { CheckboxTick } from '../Checkbox/CheckboxTick';
+import type { OptionCardGroupMode, OptionCardItem } from './OptionCardGroup.types';
 
 interface OptionCardProps {
   option: OptionCardItem;
   selected: boolean;
+  mode: OptionCardGroupMode;
   /** The group is off, or this option is. */
   off: boolean;
   density: 'expressive' | 'functional';
@@ -21,12 +23,13 @@ interface OptionCardProps {
 }
 
 /**
- * One card. The card IS the radio, which is why `content` is static by contract: a focusable
- * child would be a button inside a button.
+ * One card. The card IS the radio (or, in a multiple group, the checkbox), which is why `content`
+ * is static by contract: a focusable child would be a button inside a button.
  */
 export function OptionCard({
   option,
   selected,
+  mode,
   off,
   density,
   tabIndex,
@@ -44,8 +47,7 @@ export function OptionCard({
     <button
       ref={cardRef}
       type="button"
-      role="radio"
-      aria-checked={selected}
+      {...pickRole(mode, selected)}
       tabIndex={tabIndex}
       disabled={inert}
       aria-disabled={off || undefined}
@@ -58,9 +60,7 @@ export function OptionCard({
       }}
       onKeyDown={onKeyDown}
     >
-      <span className="hg-option-card-dot" data-selected={selected} aria-hidden="true">
-        {selected ? <span className="hg-option-card-dot-fill" /> : null}
-      </span>
+      <OptionMark selected={selected} mode={mode} />
       <span className="hg-option-card-body">
         <span className="hg-option-card-head">
           <span className="hg-option-card-titles">
@@ -96,5 +96,25 @@ export function OptionCard({
         <span className="hg-option-card-icon">{option.icon}</span>
       ) : null}
     </button>
+  );
+}
+
+/** The card's role and its picked state: a radio in a single group, a checkbox in a multiple one. */
+function pickRole(mode: OptionCardGroupMode, selected: boolean) {
+  return { role: mode === 'multiple' ? 'checkbox' : 'radio', 'aria-checked': selected } as const;
+}
+
+/** The pick's mark: a dot in a single group, a square with a tick in a multiple one. */
+function OptionMark({ selected, mode }: { selected: boolean; mode: OptionCardGroupMode }) {
+  return (
+    <span
+      className="hg-option-card-dot"
+      data-selected={selected}
+      data-mode={mode}
+      aria-hidden="true"
+    >
+      {selected && mode === 'single' ? <span className="hg-option-card-dot-fill" /> : null}
+      {selected && mode === 'multiple' ? <CheckboxTick /> : null}
+    </span>
   );
 }

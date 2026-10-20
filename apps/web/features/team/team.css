@@ -1,7 +1,16 @@
 /* The Team page (`SCR-M01-12`): its title and head count, and the table's roles cell. Everything
    else is the shared parts' own. */
 
+/* At 1536 the title and count on the left, *Invite teammate* on the right (`SCR-M01-12` d-default). */
 .hg-team-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--sp-6);
+}
+
+.hg-team-title {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
@@ -12,4 +21,10 @@
   display: flex;
   flex-wrap: wrap;
   gap: calc(var(--sp-3) / 2);
+}
+
+/* At 375 *Invite teammate* stands sp-4 above the list head (`SCR-M01-12` m-default), inside a page
+   whose parts stand sp-6 apart. */
+.hg-team-invite {
+  margin-bottom: calc(var(--sp-4) - var(--sp-6));
 }

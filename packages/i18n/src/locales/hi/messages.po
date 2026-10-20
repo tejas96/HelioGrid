@@ -23,6 +23,11 @@ msgid "{bankName} · account ending {ending}"
 msgstr "{bankName} · खाते के अंतिम अंक {ending}"
 
 #. js-lingui-explicit-id
+#: src/copy/invite.ts:67
+msgid "{cap} invites in the last 24 hours — the limit for one company"
+msgstr "पिछले 24 घंटों में {cap} आमंत्रण — एक कंपनी की सीमा"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:66
 msgid "{chain} codes were invalidated in a row"
 msgstr "लगातार {chain} कोड अमान्य हुए"
@@ -278,6 +283,11 @@ msgid "A company name is needed — it goes on every proposal you send."
 msgstr "कंपनी का नाम ज़रूरी है — यह आपके हर प्रस्ताव पर जाता है।"
 
 #. js-lingui-explicit-id
+#: src/copy/invite.ts:72
+msgid "A name can have up to {max} characters."
+msgstr "नाम में ज़्यादा से ज़्यादा {max} अक्षर हो सकते हैं।"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:72
 msgid "A release already has this name. Choose another name."
 msgstr "इस नाम की रिलीज़ पहले से है। कोई दूसरा नाम चुनें।"
@@ -301,6 +311,11 @@ msgstr "नंबर जोड़ने के बारे में"
 #: src/copy/company-signup.ts:60
 msgid "About one account per number"
 msgstr "एक नंबर, एक खाते के बारे में"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:35
+msgid "About roles"
+msgstr "भूमिकाओं के बारे में"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:19
@@ -393,6 +408,11 @@ msgid "Address"
 msgstr "पता"
 
 #. js-lingui-explicit-id
+#: src/copy/invite.ts:53
+msgid "After you send"
+msgstr "भेजने के बाद"
+
+#. js-lingui-explicit-id
 #: src/copy/settings.ts:41
 msgid "Agent & voice"
 msgstr "एजेंट और आवाज़"
@@ -411,6 +431,11 @@ msgstr "पहले से HelioGrid पर हैं?"
 #: src/copy/api-error.ts:59
 msgid "An invite already went to this number and is still open."
 msgstr "इस नंबर पर पहले ही एक आमंत्रण भेजा जा चुका है और वह अभी खुला है।"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:28
+msgid "Anjali Kulkarni"
+msgstr "अंजली कुलकर्णी"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:82
@@ -525,9 +550,20 @@ msgid "Campaigns"
 msgstr "कैंपेन"
 
 #. js-lingui-explicit-id
+#: src/copy/invite.ts:45
 #: src/copy/team-acts.ts:21
 msgid "Cancel"
 msgstr "रद्द करें"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:59
+msgid "Cancel it on Team"
+msgstr "इसे टीम पर रद्द करें"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:18
+msgid "Capture and submit surveys for the leads assigned to them"
+msgstr "उन्हें सौंपे गए लीड के सर्वे दर्ज करें और जमा करें"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:25
@@ -670,6 +706,11 @@ msgid "Continue setting up HelioGrid without your company profile"
 msgstr "अपनी कंपनी प्रोफ़ाइल के बिना HelioGrid का सेटअप जारी रखें"
 
 #. js-lingui-explicit-id
+#: src/copy/invite.ts:47
+msgid "Continue setup"
+msgstr "सेटअप जारी रखें"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:80
 msgid "Continue with Google"
 msgstr "Google से जारी रखें"
@@ -723,6 +764,11 @@ msgstr "कंपनी का खाता बनाएँ"
 #: src/copy/company-signup.ts:76
 msgid "Create a new company anyway"
 msgstr "फिर भी नई कंपनी बनाएँ"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:36
+msgid "Create and run campaigns, see what they captured, and pass enquiries into the lead queue"
+msgstr "कैंपेन बनाएँ और चलाएँ, देखें कि उनसे क्या मिला, और पूछताछ को लीड की कतार में भेजें"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:47
@@ -820,6 +866,21 @@ msgid "Design Queue"
 msgstr "डिज़ाइन क्यू"
 
 #. js-lingui-explicit-id
+#: src/copy/role-presets.ts:19
+msgid "Designs and proposals for the leads assigned to them, and design sign-off"
+msgstr "उन्हें सौंपे गए लीड के डिज़ाइन और प्रस्ताव, और डिज़ाइन की मंज़ूरी"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:70
+msgid "Each invite counts for 24 hours from when it was sent."
+msgstr "हर आमंत्रण भेजे जाने से 24 घंटे तक गिना जाता है।"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:29
+msgid "Employee records, documents, attendance and leave"
+msgstr "कर्मचारी रिकॉर्ड, दस्तावेज़, हाज़िरी और छुट्टी"
+
+#. js-lingui-explicit-id
 #: src/copy/validation.ts:10
 msgid "Enter a valid value."
 msgstr "मान्य मान दर्ज करें।"
@@ -853,6 +914,11 @@ msgstr "{company} में सभी"
 #: src/copy/team.ts:21
 msgid "Everyone at {company} matching {query}"
 msgstr "{company} में {query} से मेल खाने वाले सभी"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:9
+msgid "Everything, including team and roles, the agent, billing and company settings"
+msgstr "सब कुछ, टीम और भूमिकाएँ, एजेंट, बिलिंग और कंपनी सेटिंग्स समेत"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:33
@@ -995,6 +1061,16 @@ msgid "HelioGrid did not answer in time. If you were saving, check whether it sa
 msgstr "HelioGrid ने समय पर जवाब नहीं दिया। अगर आप कुछ सेव कर रहे थे, तो दोबारा कोशिश करने से पहले देख लें कि वह सेव हुआ या नहीं।"
 
 #. js-lingui-explicit-id
+#: src/copy/invite.ts:54
+msgid "HelioGrid messages their phone"
+msgstr "HelioGrid उनके फ़ोन पर संदेश भेजता है"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:30
+msgid "HelioGrid sends the message to this number — it does not come from your phone."
+msgstr "HelioGrid इस नंबर पर संदेश भेजता है — यह आपके फ़ोन से नहीं जाता।"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:92
 msgid "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid का जवाब पढ़ा नहीं जा सका। अगर आप कुछ सेव कर रहे थे, तो दोबारा कोशिश करने से पहले देख लें कि वह सेव हुआ या नहीं।"
@@ -1075,6 +1151,21 @@ msgid "Invite again"
 msgstr "फिर से आमंत्रित करें"
 
 #. js-lingui-explicit-id
+#: src/copy/invite.ts:50
+msgid "Invite lasts {days, plural, one {# day} other {# days}} · cancel it from Team"
+msgstr "आमंत्रण {days, plural, one {# दिन} other {# दिन}} चलता है · इसे टीम से रद्द करें"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:24
+msgid "Invite someone"
+msgstr "किसी को आमंत्रित करें"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:25
+msgid "Invite teammate"
+msgstr "साथी को आमंत्रित करें"
+
+#. js-lingui-explicit-id
 #: src/copy/team.ts:16
 msgid "Invite the people who sell, survey, design and install."
 msgstr "बेचने, सर्वे, डिज़ाइन और इंस्टॉल करने वाले लोगों को आमंत्रित करें।"
@@ -1083,6 +1174,11 @@ msgstr "बेचने, सर्वे, डिज़ाइन और इंस
 #: src/copy/team-acts.ts:35
 msgid "Invite to {name} revoked"
 msgstr "{name} का आमंत्रण वापस लिया गया"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:26
+msgid "Invite your first teammate"
+msgstr "अपने पहले साथी को आमंत्रित करें"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:32
@@ -1190,6 +1286,11 @@ msgid "More"
 msgstr "और"
 
 #. js-lingui-explicit-id
+#: src/copy/invite.ts:40
+msgid "More than one is fine, and roles can change later on Team."
+msgstr "एक से ज़्यादा भी ठीक है, और भूमिकाएँ बाद में टीम पर बदल सकती हैं।"
+
+#. js-lingui-explicit-id
 #: src/copy/homes.ts:18
 #: src/copy/homes.ts:21
 msgid "My Day"
@@ -1292,6 +1393,11 @@ msgid "Not done — {company} must keep one EPC Owner"
 msgstr "नहीं हुआ — {company} में एक EPC मालिक होना ज़रूरी है"
 
 #. js-lingui-explicit-id
+#: src/copy/invite.ts:55
+msgid "Not from your number"
+msgstr "आपके नंबर से नहीं"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:31
 msgid "Not published yet"
 msgstr "अभी प्रकाशित नहीं"
@@ -1335,6 +1441,11 @@ msgstr "अभी तक आपके पास कुछ नहीं आया
 #: src/copy/api-error.ts:75
 msgid "Nothing in the catalog changed since the last release, so there is nothing to publish."
 msgstr "पिछली रिलीज़ के बाद कैटलॉग में कुछ नहीं बदला, इसलिए प्रकाशित करने को कुछ नहीं है।"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:63
+msgid "Nothing to send — to invite this number again, cancel the pending invite on Team."
+msgstr "भेजने को कुछ नहीं — इस नंबर को फिर से आमंत्रित करने के लिए, टीम पर बाकी आमंत्रण रद्द करें।"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:18
@@ -1405,6 +1516,11 @@ msgstr "अकेले EPC मालिक"
 #: src/copy/company-profile.ts:37
 msgid "Only new proposals reprice · sent ones keep theirs"
 msgstr "सिर्फ़ नए प्रस्तावों की क़ीमत बदलेगी · भेजे गए वैसे ही रहेंगे"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:48
+msgid "Open Team"
+msgstr "टीम खोलें"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:84
@@ -1478,6 +1594,11 @@ msgid "Person"
 msgstr "व्यक्ति"
 
 #. js-lingui-explicit-id
+#: src/copy/invite.ts:37
+msgid "Pick at least one role. Someone invited with no role would sign in to an empty app."
+msgstr "कम से कम एक भूमिका चुनें। बिना भूमिका के आमंत्रित व्यक्ति खाली ऐप में साइन इन करेगा।"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:28
 msgid "Pick the one that describes your work."
 msgstr "वह चुनें जो आपके काम को बताता है।"
@@ -1523,6 +1644,11 @@ msgid "Project Manager"
 msgstr "प्रोजेक्ट मैनेजर"
 
 #. js-lingui-explicit-id
+#: src/copy/role-presets.ts:33
+msgid "Project stages, documents and blockers across all projects, plus the catalog and price book"
+msgstr "सभी प्रोजेक्ट के चरण, दस्तावेज़ और रुकावटें, साथ में कैटलॉग और प्राइस बुक"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:92
 msgid "Projects"
 msgstr "प्रोजेक्ट्स"
@@ -1561,6 +1687,11 @@ msgstr "वास्तविक · PVGIS ({database})"
 #: src/copy/freshness.ts:15
 msgid "Recalculating"
 msgstr "फिर से गणना हो रही है"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:30
+msgid "Record payments, attach receipts, read any project’s money, and see catalog prices and margins"
+msgstr "भुगतान दर्ज करें, रसीदें जोड़ें, किसी भी प्रोजेक्ट का पैसा देखें, और कैटलॉग की कीमतें और मार्जिन देखें"
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:26
@@ -1608,9 +1739,15 @@ msgid "Revoke invite"
 msgstr "आमंत्रण वापस लें"
 
 #. js-lingui-explicit-id
+#: src/copy/invite.ts:36
 #: src/copy/team.ts:26
 msgid "Roles"
 msgstr "भूमिकाएँ"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:34
+msgid "Roles for this invite"
+msgstr "इस आमंत्रण की भूमिकाएँ"
 
 #. js-lingui-explicit-id
 #: src/copy/settings.ts:35
@@ -1676,6 +1813,11 @@ msgstr "नया कोड भेजें"
 #: src/copy/sign-in.ts:13
 msgid "Send code"
 msgstr "कोड भेजें"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:44
+msgid "Send invite"
+msgstr "आमंत्रण भेजें"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:30
@@ -1801,6 +1943,11 @@ msgstr "Google से साइन इन हो रहा है"
 #: src/copy/company-signup.ts:65
 msgid "Signing up again would not make a second company"
 msgstr "दोबारा साइन अप करने से दूसरी कंपनी नहीं बनेगी"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:46
+msgid "Skip for now"
+msgstr "अभी छोड़ें"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:15
@@ -2009,9 +2156,19 @@ msgid "The code we checked was for"
 msgstr "हमने जो कोड जाँचा वह इस नंबर के लिए था"
 
 #. js-lingui-explicit-id
+#: src/copy/role-presets.ts:26
+msgid "The installation job assigned to them, its checklist and photos"
+msgstr "उन्हें सौंपा गया इंस्टॉलेशन काम, उसकी चेकलिस्ट और फ़ोटो"
+
+#. js-lingui-explicit-id
 #: src/copy/team-acts.ts:28
 msgid "The invite link stops working now. You can invite {first} again any time."
 msgstr "आमंत्रण लिंक अभी से काम नहीं करेगा। आप {first} को कभी भी फिर से आमंत्रित कर सकते हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:56
+msgid "The invite works for {days, plural, one {# day} other {# days}}"
+msgstr "आमंत्रण {days, plural, one {# दिन} other {# दिन}} तक चलता है"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:53
@@ -2039,9 +2196,44 @@ msgid "The team list didn’t load"
 msgstr "टीम सूची लोड नहीं हुई"
 
 #. js-lingui-explicit-id
+#: src/copy/role-presets.ts:12
+msgid "The team’s leads and proposals, project stages, payments and team reports"
+msgstr "टीम के लीड और प्रस्ताव, प्रोजेक्ट के चरण, भुगतान और टीम रिपोर्ट"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:66
 msgid "The tranches must add up to exactly 100%. Place the remainder before saving."
 msgstr "किस्तों का योग ठीक 100% होना चाहिए। सेव करने से पहले बची हुई राशि रखें।"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:27
+msgid "Their name"
+msgstr "उनका नाम"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:15
+msgid "Their own leads, surveys and proposals, including discounts, sending and marking won or lost"
+msgstr "अपने लीड, सर्वे और प्रस्ताव, छूट, भेजना और जीता या हारा दर्ज करना समेत"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:22
+msgid "Their own projects’ stages, documents, payments and installation checklist"
+msgstr "अपने प्रोजेक्ट के चरण, दस्तावेज़, भुगतान और इंस्टॉलेशन चेकलिस्ट"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:25
+msgid "Their own stops, check-ins, timeline and attendance"
+msgstr "अपने स्टॉप, चेक-इन, टाइमलाइन और हाज़िरी"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:29
+msgid "Their phone number"
+msgstr "उनका फ़ोन नंबर"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:60
+msgid "They join with the roles you pick"
+msgstr "वे आपकी चुनी भूमिकाओं के साथ जुड़ते हैं"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:71
@@ -2072,6 +2264,16 @@ msgstr "यह सामग्री का अनुमान और एक द
 #: src/copy/shell.ts:66
 msgid "This is version {current}. HelioGrid now needs version {required} or later."
 msgstr "यह वर्शन {current} है। HelioGrid को अब वर्शन {required} या उसके बाद का चाहिए।"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:62
+msgid "This number already has an invite waiting"
+msgstr "इस नंबर का आमंत्रण पहले से बाकी है"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:61
+msgid "This number is already on your team"
+msgstr "यह नंबर पहले से आपकी टीम में है"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:58
@@ -2122,6 +2324,11 @@ msgstr "यह मान बहुत छोटा है।"
 #: src/copy/company-signup.ts:36
 msgid "Three details, and you're in."
 msgstr "तीन जानकारियाँ, और आप अंदर हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:41
+msgid "Tick at least one role before sending — an invite with none would open an empty app."
+msgstr "भेजने से पहले कम से कम एक भूमिका चुनें — बिना भूमिका का आमंत्रण खाली ऐप खोलेगा।"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:66
@@ -2240,6 +2447,7 @@ msgstr "दूसरा Google खाता इस्तेमाल करे�
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:68
+#: src/copy/invite.ts:49
 msgid "Use a different number"
 msgstr "दूसरा नंबर इस्तेमाल करें"
 
@@ -2297,6 +2505,11 @@ msgstr "कोड की जाँच से आपका खाता बनत
 #: src/copy/sign-in.ts:25
 msgid "We call and read the code out to"
 msgstr "हम कॉल करके इस नंबर पर कोड पढ़कर सुनाते हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:66
+msgid "We can’t send invites to this number — check it or use another."
+msgstr "हम इस नंबर पर आमंत्रण नहीं भेज सकते — इसे जाँचें या दूसरा नंबर दें।"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:25
@@ -2367,6 +2580,11 @@ msgstr "हम SMS से एक कोड भेजेंगे।"
 #: src/copy/company-signup.ts:69
 msgid "Welcome back — carry on"
 msgstr "फिर से स्वागत है — आगे बढ़ें"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:33
+msgid "What can they do?"
+msgstr "वे क्या कर सकते हैं?"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:18
@@ -2459,6 +2677,11 @@ msgstr "आप हर {windowMinutes} मिनट में {perWindow} को�
 #: src/copy/setup-what-you-sell.ts:24
 msgid "You can change both later in your company profile, the next step. Proposals you have already sent never change."
 msgstr "दोनों को आप बाद में अगले चरण, कंपनी प्रोफ़ाइल में बदल सकते हैं। जो प्रस्ताव आप भेज चुके हैं, वे कभी नहीं बदलते।"
+
+#. js-lingui-explicit-id
+#: src/copy/invite.ts:71
+msgid "You can no longer invite people to this company."
+msgstr "अब आप इस कंपनी में लोगों को आमंत्रित नहीं कर सकते।"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:29
