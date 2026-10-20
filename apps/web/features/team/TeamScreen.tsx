@@ -88,6 +88,7 @@ function TeamIn() {
   const invite = useTeamInvite(() => team.reread(), toasts.push);
   const inviteAct = (
     <Button
+      ref={invite.act}
       variant="primary"
       size="lg"
       fullWidth={!wide}
@@ -95,6 +96,17 @@ function TeamIn() {
       onClick={invite.open}
     >
       {invite.words.inviteTeammate}
+    </Button>
+  );
+  /* The teaching state's own act under its words (`SCR-M01-12` m-teaching). */
+  const inviteFirstAct = (
+    <Button
+      variant="primary"
+      size="lg"
+      icon={<ShellGlyph name="plus" size="md" tone="inverse" />}
+      onClick={invite.open}
+    >
+      {invite.words.inviteFirst}
     </Button>
   );
   const actOf = (row: TeamRow, size: 'md' | 'sm') => {
@@ -145,6 +157,7 @@ function TeamIn() {
         surface={team.surface}
         rows={team.view.rows}
         words={words}
+        teachingAction={inviteFirstAct}
         onRetry={team.retry}
         onClearSearch={clearSearch}
         onShowAll={showAll}

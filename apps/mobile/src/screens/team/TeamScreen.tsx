@@ -83,6 +83,7 @@ export function TeamScreen() {
         surface={team.surface}
         rows={team.view.rows}
         words={words}
+        teachingAction={<InviteTeammate invite={invite} first />}
         onRetry={team.retry}
         onClearSearch={() => {
           team.find('');

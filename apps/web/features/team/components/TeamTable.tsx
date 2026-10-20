@@ -25,7 +25,7 @@ interface TeamTableProps {
 /**
  * The team at the table's width (`SCR-M01-12`, `d-default`): Person (the face, the name, *You* and
  * the status), Roles and Last active, in the owner's 2.2 : 2.4 : 1.2, on `DataTable`'s quiet head
- * (design-system change 20), and each row's act in its own 160 px column.
+ * (design-system change 20), and each row's act in a column of its own.
  */
 export function TeamTable({ rows, words, actions, actOf, loading = false }: TeamTableProps) {
   const t = useTranslate();

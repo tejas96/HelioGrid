@@ -19,6 +19,7 @@ export function MemberList({
   records,
   waiting,
   actOf,
+  teachingAction,
 }: MemberListProps) {
   if (surface === 'loading') {
     if (waiting === undefined) return <MemberCardsLoading label={words.loading} />;
@@ -71,6 +72,7 @@ export function MemberList({
         icon={<ShellGlyph name="people" size="xl" tone="primary" />}
         title={words.alone}
         description={words.aloneLine}
+        action={teachingAction}
       />
     </>
   );

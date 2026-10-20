@@ -104,6 +104,8 @@ export interface MemberListProps {
   waiting?: ReactNode;
   /** A card's one act at its foot — the caller's `MemberAct`, or nothing for a row with none. */
   actOf?: (row: TeamRow) => ReactNode;
+  /** The teaching state's act under its words — *Invite your first teammate* (`SCR-M01-12` m-teaching). */
+  teachingAction?: ReactNode;
 }
 
 /**

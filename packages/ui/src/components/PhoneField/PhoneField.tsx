@@ -1,7 +1,7 @@
 // biome-ignore-all lint/a11y/noAutofocus: `autoFocus` is the caller's contract (.d.ts) — the desktop door has one task, the number.
 import { nationalNumber } from '@heliogrid/domain';
 import type { CSSProperties } from 'react';
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useImperativeHandle, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
 import { useFormat } from '../MarketProvider';
@@ -35,6 +35,7 @@ export function PhoneField({
   announceError = false,
   autoFocus = false,
   id,
+  ref,
   className,
   style,
 }: WebPhoneFieldProps) {
@@ -45,6 +46,7 @@ export function PhoneField({
   const { dialCode } = mkt.pack.phone;
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  useImperativeHandle(ref, () => ({ focus: () => inputRef.current?.focus() }), []);
 
   /* On a server-rendered page the HTML's own `autofocus` focuses the input before React hydrates
      it, so React never hears that focus: without this read the caret sits in a field that draws no

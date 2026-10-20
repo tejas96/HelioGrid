@@ -84,7 +84,7 @@ export class InvitationService {
       case 'capped':
         throw new ContractException(
           'INVITE_CAP_REACHED',
-          'Your company has sent today’s invites. Try again tomorrow.',
+          'Your company has reached its invite limit for the last 24 hours.',
           HttpStatus.TOO_MANY_REQUESTS,
         );
     }

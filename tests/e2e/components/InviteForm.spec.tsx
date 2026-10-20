@@ -74,6 +74,59 @@ test.describe('at 375', () => {
   });
 });
 
+test.describe('the refusals, at 375', () => {
+  test.use({ viewport: { width: 375, height: 812 } });
+
+  test('already a member: the name, the number with no line, the banner, and no roles', async ({
+    mount,
+  }) => {
+    const form = await mount(
+      <InviteFormAsHeld reader="en" name="Rohit Pawar" refusal="already_member" />,
+    );
+    await expect(form.getByText(en.refusal('already_member').title)).toBeVisible();
+    await expect(form.getByLabel(en.name)).toBeVisible();
+    await expect(form.getByLabel(en.phone)).toBeVisible();
+    await expect(form.getByText(en.phoneHelper)).toHaveCount(0);
+    await expect(form.getByRole('group', { name: en.rolesGroup })).toHaveCount(0);
+  });
+
+  test('already invited: the banner says what to do on Team', async ({ mount }) => {
+    const form = await mount(<InviteFormAsHeld reader="en" refusal="already_invited" />);
+    const words = en.refusal('already_invited');
+    await expect(form.getByText(words.title)).toBeVisible();
+    await expect(form.getByText(words.body ?? '')).toBeVisible();
+    await expect(form.getByRole('group', { name: en.rolesGroup })).toHaveCount(0);
+  });
+
+  test('number not covered: the line is on the number and the roles stay', async ({ mount }) => {
+    const form = await mount(<InviteFormAsHeld reader="en" refusal="not_covered" />);
+    await expect(form.getByText(en.notCovered)).toBeVisible();
+    await expect(form.getByRole('group', { name: en.rolesGroup })).toBeVisible();
+  });
+
+  test('the cap: the banner alone, no fields', async ({ mount }) => {
+    const form = await mount(<InviteFormAsHeld reader="en" refusal="cap" />);
+    const words = en.refusal('cap');
+    await expect(form.getByText(words.title)).toBeVisible();
+    await expect(form.getByText(words.body ?? '')).toBeVisible();
+    await expect(form.getByLabel(en.name)).toHaveCount(0);
+    await expect(form.getByLabel(en.phone)).toHaveCount(0);
+    await expect(form.getByRole('group', { name: en.rolesGroup })).toHaveCount(0);
+  });
+
+  for (const reader of ['hi', 'mr'] as const) {
+    for (const refusal of ['cap', 'already_invited'] as const) {
+      test(`in ${reader} the ${refusal} banner stays inside 375`, async ({ mount, page }) => {
+        await mount(<InviteFormAsHeld reader={reader} refusal={refusal} />);
+        const overflow = await page.evaluate(
+          () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        );
+        expect(overflow).toBeLessThanOrEqual(0);
+      });
+    }
+  }
+});
+
 test.describe('at 1536, wide', () => {
   test.use({ viewport: { width: 1536, height: 1000 } });
 

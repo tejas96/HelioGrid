@@ -1,6 +1,7 @@
-import type { RolePreset } from '@heliogrid/domain';
-import type { ReactElement } from 'react';
+import type { InviteRefusal, RolePreset } from '@heliogrid/domain';
+import type { ReactElement, ReactNode, Ref } from 'react';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
+import type { FocusHandle } from '../SearchField/SearchField.types';
 
 /**
  * One invite field as its binding hands it over: what it holds, how it changes, and its answer to
@@ -46,6 +47,8 @@ export interface InviteFormWords {
   rolesAsk: ExplainerProps;
   /** The refusal at the top of the role list when *Send invite* is pressed with none ticked (F2-21). */
   noRole: string;
+  /** A refusal the form draws in place of the send: its title and the line under it, if any. */
+  refusal: (refusal: InviteRefusal) => { readonly title: string; readonly body: string | null };
 }
 
 /**
@@ -75,6 +78,16 @@ export interface InviteFormProps {
    * sheet cannot be scrolled from inside it yet (D294).
    */
   presses?: number;
+  /**
+   * The api turned the send down (`inviteOutcome`): `already_member` and `already_invited` keep the
+   * name and the number (no line under it) over an info banner and drop the role list; `not_covered`
+   * puts its words on the number and keeps the roles; `cap` draws its banner alone. Null: the form.
+   */
+  refusal?: InviteRefusal | null;
+  /** The banner's own act — the setup step's *Open Team*; Team's editor has none (owner ruling D4 A). */
+  refusalAction?: ReactNode;
+  /** Where *Use a different number* sends the focus. */
+  phoneRef?: Ref<FocusHandle>;
 }
 
 /** The editor's own words, over the form's. */
@@ -86,6 +99,7 @@ export interface InviteEditorWords extends InviteFormWords {
   close: string;
   /** *Invite lasts 7 days · cancel it from Team*, centred under the acts. */
   lasts: string;
+  differentNumber: string;
 }
 
 /**
@@ -104,4 +118,9 @@ export interface InviteEditorProps {
   onSend: () => void;
   /** As `InviteFormProps.presses`. */
   presses?: number;
+  /** As `InviteFormProps.refusal`: the foot follows it — *Cancel* · *Use a different number* for a number already on Team, *Cancel* alone at the cap. */
+  refusal?: InviteRefusal | null;
+  /** Clears the number, takes the refusal down and sends the focus to the number. */
+  onDifferentNumber: () => void;
+  phoneRef?: Ref<FocusHandle>;
 }

@@ -60,7 +60,7 @@ const ROUTE_COPY: Record<
     id: 'An invite already went to this number and is still open.',
   },
   INVITE_CAP_REACHED: /*i18n*/ {
-    id: 'Your company has sent today’s invites. Try again tomorrow.',
+    id: 'Your company has reached its invite limit for the last 24 hours.',
   },
   INVITE_EXPIRED: /*i18n*/ { id: 'This invite has run out. Ask to be invited again.' },
   TRANCHES_NOT_WHOLE: /*i18n*/ {

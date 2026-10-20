@@ -2,13 +2,14 @@ import { createInvitationSchema } from '@heliogrid/contracts';
 import {
   type FormatPack,
   INVITATION_EXPIRY_DAYS,
+  INVITATIONS_PER_TENANT_PER_DAY,
+  type InviteRefusal,
   nationalNumber,
   phoneDigitsMismatch,
   ROLE_PRESETS,
   type RolePreset,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
-import { INTERNAL_ERROR } from './api-error';
 import { type ExplainerWords, explainerPagerWords } from './explainer';
 import { presetAbility } from './role-presets';
 import { presetName, SHELL } from './shell';
@@ -70,6 +71,7 @@ const INVITE = {
   capLine: /*i18n*/ { id: 'Each invite counts for 24 hours from when it was sent.' },
   forbidden: /*i18n*/ { id: 'You can no longer invite people to this company.' },
   nameTooLong: /*i18n*/ { id: 'A name can have up to {max} characters.' },
+  notSent: /*i18n*/ { id: 'The invite wasn’t sent. Try again.' },
 } as const;
 
 /** The longest name an invite carries — the contract's, never a second number. */
@@ -118,6 +120,11 @@ export interface InviteWords {
   readonly required: string;
   /** The name field's answer past the contract's longest name. */
   readonly nameTooLong: string;
+  /** A refusal the form draws in place of the send: its title and the line under it, if any. */
+  refusal(refusal: InviteRefusal): { readonly title: string; readonly body: string | null };
+  readonly differentNumber: string;
+  /** The toast when the reader no longer invites (a 403). */
+  readonly forbidden: string;
 }
 
 export function inviteWords(translate: Translator['t']): InviteWords {
@@ -142,7 +149,7 @@ export function inviteWords(translate: Translator['t']): InviteWords {
     cancel: translate(INVITE.cancel),
     close: translate(SHELL.close),
     lasts: translate(INVITE.lasts, { days: INVITATION_EXPIRY_DAYS }),
-    failed: translate(INTERNAL_ERROR),
+    failed: translate(INVITE.notSent),
     roles: ROLE_PRESETS.map((preset) => ({
       value: preset,
       title: presetName(translate, preset),
@@ -152,7 +159,32 @@ export function inviteWords(translate: Translator['t']): InviteWords {
     notCovered: translate(INVITE.notCovered),
     required: translate(REQUIRED_FIELD),
     nameTooLong: translate(INVITE.nameTooLong, { max: NAME_MAX }),
+    refusal: (refusal) => refusalWords(translate, refusal),
+    differentNumber: translate(INVITE.differentNumber),
+    forbidden: translate(INVITE.forbidden),
   };
+}
+
+function refusalWords(
+  translate: Translator['t'],
+  refusal: InviteRefusal,
+): { title: string; body: string | null } {
+  switch (refusal) {
+    case 'already_member':
+      return { title: translate(INVITE.alreadyMember), body: null };
+    case 'already_invited':
+      return {
+        title: translate(INVITE.alreadyInvited),
+        body: translate(INVITE.alreadyInvitedLine),
+      };
+    case 'not_covered':
+      return { title: translate(INVITE.notCovered), body: null };
+    case 'cap':
+      return {
+        title: translate(INVITE.cap, { cap: INVITATIONS_PER_TENANT_PER_DAY }),
+        body: translate(INVITE.capLine),
+      };
+  }
 }
 
 /**

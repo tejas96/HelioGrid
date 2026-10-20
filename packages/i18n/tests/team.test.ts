@@ -200,7 +200,7 @@ describe('teamActWords — the row acts’ confirms, refusal and toasts', () => 
   });
 
   it.each([
-    ['INVITE_CAP_REACHED', 'Your company has sent today’s invites. Try again tomorrow.'],
+    ['INVITE_CAP_REACHED', 'Your company has reached its invite limit for the last 24 hours.'],
     ['DOMAIN_RULE_VIOLATION', "That change isn't allowed here."],
     ['NO_SUCH_CODE', 'Something went wrong on our side. Try again.'],
   ])('a turned-down act says %s in its shipped words', (code, said) => {

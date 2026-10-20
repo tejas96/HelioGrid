@@ -27,6 +27,13 @@
   gap: var(--sp-5);
 }
 
+/* The number and a refusal under it, sp-3 apart (`SCR-M01-07` m-already-member). */
+.hg-invite-form-number {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
 .hg-invite-form-roles {
   display: flex;
   flex-direction: column;
