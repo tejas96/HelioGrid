@@ -1,3 +1,4 @@
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { useFormat } from '../MarketProvider';
 import type { DrawingTitleBlock, SheetSymbol } from './DrawingSheet.types';
 
@@ -16,9 +17,10 @@ export function NorthMark({ size = 34 }: { size?: number }) {
       role="img"
       className="hg-drawing-sheet-north-mark"
     >
-      <circle cx="12" cy="12" r="9" opacity="0.25" />
-      <path d="M12 4v11" />
-      <path d="m9 7 3-3 3 3" />
+      <g opacity="0.25">
+        <ShellGlyphMarks name="ring" />
+      </g>
+      <ShellGlyphMarks name="arrow-north" />
     </svg>
   );
 }

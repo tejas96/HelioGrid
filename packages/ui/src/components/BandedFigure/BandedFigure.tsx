@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { useFormat } from '../MarketProvider';
 import { renderProvenance } from '../Provenance';
 import { BAND_TONES, BandChip } from './BandChip';
@@ -26,7 +27,7 @@ function RemedyGlyph() {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <path d="M5 12h13M13 6l6 6-6 6" />
+      <ShellGlyphMarks name="arrow-right" />
     </svg>
   );
 }

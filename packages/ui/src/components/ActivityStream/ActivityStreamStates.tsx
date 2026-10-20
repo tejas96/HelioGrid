@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
 
 /** A shimmer bar; width and height are per-line measurements, not scale steps. */
@@ -42,14 +43,7 @@ function MessageGlyph({ warning }: { warning: boolean }) {
       aria-hidden="true"
       role="presentation"
     >
-      {warning ? (
-        <>
-          <path d="M12 9v4M12 17h.01" />
-          <circle cx="12" cy="12" r="9" />
-        </>
-      ) : (
-        <path d="M4 6h16M4 12h16M4 18h10" />
-      )}
+      <ShellGlyphMarks name={warning ? 'alert-circle' : 'lines'} />
     </svg>
   );
 }

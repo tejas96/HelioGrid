@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { FacetChips } from './FacetChips';
 import type { FiltersButtonProps, ScopeToggleProps, SortPillsProps } from './FilterBar.types';
 import { optionLabel, optionValue } from './FilterBar.types';
@@ -124,9 +125,7 @@ export function FiltersButton({
         strokeLinecap="round"
         aria-hidden="true"
       >
-        <path d="M4 7h9M17 7h3M4 17h3M11 17h9" />
-        <circle cx="15" cy="7" r="2.2" />
-        <circle cx="9" cy="17" r="2.2" />
+        <ShellGlyphMarks name="sliders" />
       </svg>
       {count > 0 ? (
         <span className="hg-filters-badge" aria-hidden="true">

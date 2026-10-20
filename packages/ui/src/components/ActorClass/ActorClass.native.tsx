@@ -3,12 +3,13 @@ import type { ReactNode } from 'react';
 import { isValidElement } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { ACTOR_GLYPH } from './ActorClass.logic';
 import type {
   ActorClassName,
   ActorClassProps,
   ActorClassSpec,
-  ActorGlyphName,
   ActorTone,
 } from './ActorClass.types';
 import { ACTOR_CLASSES, actorClassOptions, actorWords } from './ActorClass.types';
@@ -31,31 +32,6 @@ const styles = StyleSheet.create({
      gradient's leading stop (--iris-violet) so it still reads as the brand object, not an icon. */
   agent: { backgroundColor: theme.colors['iris-violet'] },
 });
-
-function glyphBody(glyph: Exclude<ActorGlyphName, 'agent'>, color: string): ReactNode {
-  if (glyph === 'user') {
-    return (
-      <>
-        <Circle cx="12" cy="8" r="3.2" stroke={color} />
-        <Path d="M5.5 20a6.5 6.5 0 0 1 13 0" stroke={color} />
-      </>
-    );
-  }
-  if (glyph === 'customer') {
-    return (
-      <Path d="M20 12a7.5 7.5 0 0 1-10.9 6.7L4 20l1.4-4.7A7.5 7.5 0 1 1 20 12z" stroke={color} />
-    );
-  }
-  return (
-    <>
-      <Circle cx="12" cy="12" r="3" stroke={color} />
-      <Path
-        d="M12 4v2M12 18v2M4 12h2M18 12h2M6.5 6.5 8 8M16 16l1.5 1.5M17.5 6.5 16 8M8 16l-1.5 1.5"
-        stroke={color}
-      />
-    </>
-  );
-}
 
 /** The class's glyph. The agent's is a brand object, not an outlined icon (ICONOGRAPHY). */
 export function ActorGlyph({
@@ -83,11 +59,12 @@ export function ActorGlyph({
       height={size}
       viewBox="0 0 24 24"
       fill="none"
+      stroke={ink}
       strokeWidth={1.5}
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      {glyphBody(descriptor.glyph === 'agent' ? 'cog' : descriptor.glyph, ink)}
+      <ShellGlyphMarks name={ACTOR_GLYPH[descriptor.glyph]} />
     </Svg>
   );
 }

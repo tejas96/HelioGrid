@@ -1,9 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { Path, Svg } from 'react-native-svg';
+import { Svg } from 'react-native-svg';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ResolvedStep } from './resolve-steps';
 import { stateWord } from './resolve-steps';
 import { StepperMarker } from './StepperMarker.native';
@@ -73,7 +74,7 @@ export function StepperRow({
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <Path d="m9 18 6-6-6-6" />
+            <ShellGlyphMarks name="chevron-right" />
           </Svg>
         ) : null}
       </Pressable>

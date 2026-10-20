@@ -1,3 +1,5 @@
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+
 /* Transcript's small shared furniture (web) — the globe glyph on the language line and on the
    in-flow switch marker. One declaration, so the two never drift apart. */
 
@@ -17,8 +19,7 @@ export function GlobeGlyph({ size = 14 }: { size?: number }) {
       aria-hidden="true"
       className="hg-transcript-globe-svg"
     >
-      <circle cx="12" cy="12" r="9" />
-      <path d="M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18" />
+      <ShellGlyphMarks name="globe" />
     </svg>
   );
 }

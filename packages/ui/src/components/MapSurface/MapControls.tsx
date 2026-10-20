@@ -1,17 +1,16 @@
-import type { ReactNode } from 'react';
 import { Icon } from '../../primitives/Icon';
 import { Pressable } from '../../primitives/Pressable';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 
 interface CtrlProps {
   label: string;
   onPress: () => void;
-  /** The glyph path. */
-  d: string;
-  extra?: ReactNode;
+  glyph: ShellGlyphName;
   disabled?: boolean;
 }
 
-function Ctrl({ label, onPress, d, extra, disabled = false }: CtrlProps) {
+function Ctrl({ label, onPress, glyph, disabled = false }: CtrlProps) {
   return (
     <Pressable
       className="hg-map-surface-ctrl"
@@ -29,8 +28,7 @@ function Ctrl({ label, onPress, d, extra, disabled = false }: CtrlProps) {
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <path d={d} />
-          {extra}
+          <ShellGlyphMarks name={glyph} />
         </svg>
       </Icon>
     </Pressable>
@@ -65,13 +63,13 @@ export function MapControls({
           label={zoom === undefined ? 'Zoom in' : `Zoom in — level ${zoom}`}
           onPress={() => onStepZoom(1)}
           disabled={zoom !== undefined && zoom >= maxZoom}
-          d="M12 5v14M5 12h14"
+          glyph="plus"
         />
         <Ctrl
           label={zoom === undefined ? 'Zoom out' : `Zoom out — level ${zoom}`}
           onPress={() => onStepZoom(-1)}
           disabled={zoom !== undefined && zoom <= minZoom}
-          d="M5 12h14"
+          glyph="minus"
         />
       </div>
       {showZoomLevel && zoom !== undefined ? (
@@ -82,8 +80,7 @@ export function MapControls({
           <Ctrl
             label="Recentre — keeps this zoom"
             onPress={() => onRecenter({ zoom })}
-            d="M12 3v3M12 18v3M3 12h3M18 12h3"
-            extra={<circle cx="12" cy="12" r="4" />}
+            glyph="recentre"
           />
         </div>
       )}

@@ -1,10 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Path, Svg } from 'react-native-svg';
+import { Svg } from 'react-native-svg';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderActionReason } from '../ActionReason/ActionReason.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { SelectOption } from './Select.types';
 
 interface NativeSelectListboxProps {
@@ -106,7 +107,7 @@ function OptionRow({ active, onPress, option, selected }: OptionRowProps) {
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <Path d="M20 6 9 17l-5-5" />
+              <ShellGlyphMarks name="tick-long" />
             </Svg>
           ) : null}
         </View>

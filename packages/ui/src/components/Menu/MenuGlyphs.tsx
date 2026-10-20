@@ -1,10 +1,10 @@
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+
 /** The overflow trigger's three dots. */
 export function OverflowGlyph() {
   return (
     <svg aria-hidden="true" fill="currentColor" height="16" viewBox="0 0 24 24" width="16">
-      <circle cx="5" cy="12" r="1.6" />
-      <circle cx="12" cy="12" r="1.6" />
-      <circle cx="19" cy="12" r="1.6" />
+      <ShellGlyphMarks name="dots-small" />
     </svg>
   );
 }
@@ -27,7 +27,7 @@ export function TrashGlyph() {
       viewBox="0 0 24 24"
       width="16"
     >
-      <path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6" />
+      <ShellGlyphMarks name="trash" />
     </svg>
   );
 }
@@ -63,7 +63,7 @@ export function TickGlyph() {
       viewBox="0 0 24 24"
       width="15"
     >
-      <path d="m5 13 4 4L19 7" />
+      <ShellGlyphMarks name="tick" />
     </svg>
   );
 }

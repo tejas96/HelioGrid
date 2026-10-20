@@ -3,8 +3,9 @@ import type { ReactNode } from 'react';
 import { isValidElement } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { Button } from '../Button/Button.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { IndeterminateRail } from './IndeterminateRail.native';
@@ -20,21 +21,17 @@ interface NativePendingActionProps extends PendingActionProps {
  */
 function ReturnGlyph({ size }: { size: number }) {
   return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Path
-        d="M9 14 5 10l4-4"
-        stroke={theme.colors['warning-text']}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <Path
-        d="M5 10h9a5 5 0 0 1 0 10h-3"
-        stroke={theme.colors['warning-text']}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={theme.colors['warning-text']}
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <ShellGlyphMarks name="undo-step" />
     </Svg>
   );
 }

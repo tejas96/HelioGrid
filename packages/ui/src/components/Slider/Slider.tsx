@@ -1,6 +1,8 @@
 import type { CSSProperties } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { renderProvenance } from '../Provenance';
 import type { SliderProps } from './Slider.types';
 import { clampToRange, fillPercent, formatValue } from './slider-math';
@@ -12,7 +14,7 @@ interface WebSliderProps extends SliderProps {
 
 interface StepButtonProps {
   disabled: boolean;
-  glyph: string;
+  glyph: ShellGlyphName;
   label: string;
   onPress: () => void;
 }
@@ -37,7 +39,7 @@ function StepButton({ disabled, glyph, label, onPress }: StepButtonProps) {
         strokeLinecap="round"
         aria-hidden="true"
       >
-        <path d={glyph} />
+        <ShellGlyphMarks name={glyph} />
       </svg>
     </button>
   );
@@ -100,7 +102,7 @@ export function Slider({
         {steppers ? (
           <StepButton
             disabled={disabled || value <= min}
-            glyph="M5 12h14"
+            glyph="minus"
             label={`Decrease ${named}`}
             onPress={() => nudge(-1)}
           />
@@ -134,7 +136,7 @@ export function Slider({
         {steppers ? (
           <StepButton
             disabled={disabled || value >= max}
-            glyph="M12 5v14M5 12h14"
+            glyph="plus"
             label={`Increase ${named}`}
             onPress={() => nudge(1)}
           />

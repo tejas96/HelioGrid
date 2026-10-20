@@ -7,6 +7,8 @@
    The row's own name is in every sentence, because "moved down" alone is useless to someone who
    cannot see which row moved. */
 
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
+
 export type MoveDirection = 'up' | 'down';
 
 /** `it.id ?? it.key`, else the index. The move affordance is keyed by this. */
@@ -74,9 +76,9 @@ export function deleteLabel(name: string, index: number, total: number): string 
 
 /** The row's control glyphs, one declaration for both platforms. */
 export const REORDER_GLYPHS = {
-  up: 'm6 15 6-6 6 6',
-  down: 'm6 9 6 6 6-6',
-  delete: 'M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6',
-} as const;
+  up: 'chevron-up',
+  down: 'chevron',
+  delete: 'trash',
+} as const satisfies Record<string, ShellGlyphName>;
 
 export type ReorderGlyph = keyof typeof REORDER_GLYPHS;

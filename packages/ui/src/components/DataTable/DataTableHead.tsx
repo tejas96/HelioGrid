@@ -1,4 +1,5 @@
 import { Text } from '../../primitives/Text';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { Checkbox } from '../Checkbox';
 import type { ProvenanceProps } from '../Provenance';
 import type { ColumnSortState } from './DataTable.logic';
@@ -12,15 +13,15 @@ function SortGlyph({ dir }: { dir: DataTableSort['dir'] | null }) {
     <svg
       className="hg-dt-sort-glyph"
       data-active={dir === null ? undefined : 'true'}
-      viewBox="0 0 12 12"
+      viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.5"
+      strokeWidth="3"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      {dir === 'desc' ? <path d="M3 5l3 3 3-3" /> : <path d="M3 7l3-3 3 3" />}
+      <ShellGlyphMarks name={dir === 'desc' ? 'caret-down' : 'caret-up'} />
     </svg>
   );
 }

@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Icon } from '../../primitives/Icon';
 import { Text } from '../../primitives/Text';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { BrandBloom } from '../BrandBloom';
 import type { SuccessDwellProps } from './SuccessDwell.types';
 
@@ -26,7 +27,7 @@ export function SuccessDwell({ title, line, className, style }: WebSuccessDwellP
             strokeLinejoin="round"
             aria-hidden="true"
           >
-            <path d="M20 6 9 17l-5-5" />
+            <ShellGlyphMarks name="tick-long" />
           </svg>
         </Icon>
       </span>

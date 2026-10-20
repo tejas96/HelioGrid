@@ -2,7 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
@@ -11,6 +11,7 @@ import { clampCount } from '../../utils/count';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { renderActionReason } from '../ActionReason/ActionReason.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { renderMarks } from '../ChipGroup/ChipGroup.native';
 import { hasReason, normalise } from './SegmentedControl.options';
 import type { SegmentedControlProps, SegmentedOption } from './SegmentedControl.types';
@@ -161,21 +162,16 @@ function Segment({ option, active, isField, onSelect }: SegmentProps) {
  */
 function OffGlyph() {
   return (
-    <Svg width={13} height={13} viewBox="0 0 24 24" fill="none">
-      <Circle
-        cx={12}
-        cy={12}
-        r={9}
-        stroke={theme.colors['text-secondary']}
-        strokeWidth={1.8}
-        strokeLinecap="round"
-      />
-      <Path
-        d="M8.5 12h7"
-        stroke={theme.colors['text-secondary']}
-        strokeWidth={1.8}
-        strokeLinecap="round"
-      />
+    <Svg
+      width={13}
+      height={13}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={theme.colors['text-secondary']}
+      strokeWidth={1.8}
+      strokeLinecap="round"
+    >
+      <ShellGlyphMarks name="minus-circle-short" />
     </Svg>
   );
 }

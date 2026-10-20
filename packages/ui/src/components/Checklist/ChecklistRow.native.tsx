@@ -1,6 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -8,6 +8,7 @@ import { Text } from '../../primitives/Text/Text.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { renderActorClass } from '../ActorClass/ActorClass.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { renderPending } from '../PendingAction/PendingAction.native';
 import type { ChecklistItem, ChecklistProps } from './Checklist.types';
 
@@ -78,15 +79,18 @@ function TickBox({
       ]}
     >
       {filled ? (
-        <Svg width={13} height={13} viewBox="0 0 12 12" fill="none">
-          <Path
-            d="M2.5 6.5 5 9l4.5-5"
-            // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
-            stroke={theme.colors['text-inverse']}
-            strokeWidth={2.2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+        <Svg
+          width={13}
+          height={13}
+          viewBox="0 0 24 24"
+          fill="none"
+          // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
+          stroke={theme.colors['text-inverse']}
+          strokeWidth={4.4}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <ShellGlyphMarks name="tick-small" />
         </Svg>
       ) : null}
     </View>
@@ -130,14 +134,15 @@ function Body({ item, number }: { item: ChecklistItem; number: string | number }
             {item.evidence.label ?? 'See the evidence'}
           </Text>
           <Icon size="sm" color={theme.colors.accent}>
-            <Svg viewBox="0 0 24 24" fill="none">
-              <Path
-                d="M7 17 17 7M17 7h-7m7 0v7"
-                stroke={theme.colors.accent}
-                strokeWidth={1.8}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+            <Svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke={theme.colors.accent}
+              strokeWidth={1.8}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <ShellGlyphMarks name="arrow-up-right" />
             </Svg>
           </Icon>
         </Pressable>

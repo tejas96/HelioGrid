@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { SelectProps } from './Select.types';
 import { SelectListbox } from './SelectListbox';
 import { handleSelectKey } from './select-keys';
@@ -128,7 +129,7 @@ export function Select({
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          <path d="m6 9 6 6 6-6" />
+          <ShellGlyphMarks name="chevron" />
         </svg>
       </button>
       {helper !== undefined || error !== undefined ? (

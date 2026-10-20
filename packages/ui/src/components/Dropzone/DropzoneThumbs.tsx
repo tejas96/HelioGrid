@@ -1,3 +1,4 @@
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { DropzoneFile } from './Dropzone.types';
 import { FileGlyph } from './DropzoneGlyphs';
 
@@ -49,7 +50,7 @@ export function DropzoneThumbs({ files, onRemove }: DropzoneThumbsProps) {
                   strokeLinecap="round"
                   aria-hidden="true"
                 >
-                  <path d="M18 6 6 18M6 6l12 12" />
+                  <ShellGlyphMarks name="close" />
                 </svg>
               </span>
             </button>

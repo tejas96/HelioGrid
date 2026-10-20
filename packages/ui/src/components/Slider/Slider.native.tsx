@@ -1,10 +1,12 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { Path, Svg } from 'react-native-svg';
+import { Svg } from 'react-native-svg';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import type { SliderProps } from './Slider.types';
 import { SliderTrack } from './SliderTrack.native';
@@ -16,7 +18,7 @@ interface NativeSliderProps extends SliderProps {
 
 interface StepButtonProps {
   disabled: boolean;
-  glyph: string;
+  glyph: ShellGlyphName;
   label: string;
   onPress: () => void;
 }
@@ -42,7 +44,7 @@ function StepButton({ disabled, glyph, label, onPress }: StepButtonProps) {
         strokeWidth={2}
         strokeLinecap="round"
       >
-        <Path d={glyph} />
+        <ShellGlyphMarks name={glyph} />
       </Svg>
     </Pressable>
   );
@@ -101,7 +103,7 @@ export function Slider({
         {steppers ? (
           <StepButton
             disabled={disabled || value <= min}
-            glyph="M5 12h14"
+            glyph="minus"
             label={`Decrease ${named}`}
             onPress={() => nudge(-1)}
           />
@@ -122,7 +124,7 @@ export function Slider({
         {steppers ? (
           <StepButton
             disabled={disabled || value >= max}
-            glyph="M12 5v14M5 12h14"
+            glyph="plus"
             label={`Increase ${named}`}
             onPress={() => nudge(1)}
           />

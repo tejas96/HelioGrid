@@ -1,10 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { DerivationProps } from './Derivation.types';
 import { DERIVATION_KINDS } from './Derivation.types';
 import { DerivationGroup } from './DerivationGroup.native';
@@ -35,14 +36,15 @@ function Chevron({ open }: { open: boolean }) {
   return (
     <View style={open ? styles.open : undefined}>
       <Icon size="xs" color={theme.colors['text-secondary']}>
-        <Svg viewBox="0 0 24 24" fill="none">
-          <Path
-            d="M9 6l6 6-6 6"
-            stroke={theme.colors['text-secondary']}
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+        <Svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={theme.colors['text-secondary']}
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <ShellGlyphMarks name="chevron-right" />
         </Svg>
       </Icon>
     </View>

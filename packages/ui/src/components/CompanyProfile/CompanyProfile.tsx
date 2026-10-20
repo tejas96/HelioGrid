@@ -1,16 +1,11 @@
 import { Text } from '../../primitives/Text/Text';
 import { Accordion } from '../Accordion/Accordion';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { Button } from '../Button/Button';
 import { DoorFrame } from '../DoorFrame/DoorFrame';
 import { EmptyState } from '../EmptyState/EmptyState';
 import { LoadingBars } from '../LoadingBars/LoadingBars';
-import {
-  openedPart,
-  PARTS_DENSITY,
-  profileItems,
-  UNREAD_GLYPH,
-  UNREAD_GLYPH_SIZE,
-} from './CompanyProfile.logic';
+import { openedPart, PARTS_DENSITY, profileItems, UNREAD_GLYPH_SIZE } from './CompanyProfile.logic';
 import type { CompanyProfileProps, CompanyProfileWords } from './CompanyProfile.types';
 import { Letterhead } from './CompanyProfileLetterhead';
 import { ProfileSet } from './CompanyProfileSets';
@@ -257,13 +252,7 @@ function UnreadGlyph() {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      {UNREAD_GLYPH.map((mark) =>
-        mark.kind === 'path' ? (
-          <path key={mark.d} d={mark.d} />
-        ) : (
-          <circle key={`${mark.cx}-${mark.cy}`} cx={mark.cx} cy={mark.cy} r={mark.r} />
-        ),
-      )}
+      <ShellGlyphMarks name="alert-ring" />
     </svg>
   );
 }

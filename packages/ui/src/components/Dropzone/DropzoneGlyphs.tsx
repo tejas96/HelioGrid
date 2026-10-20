@@ -1,3 +1,5 @@
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+
 export function CameraGlyph() {
   return (
     <svg
@@ -11,8 +13,7 @@ export function CameraGlyph() {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z" />
-      <circle cx="12" cy="13" r="3.5" />
+      <ShellGlyphMarks name="camera" />
     </svg>
   );
 }
@@ -30,8 +31,7 @@ export function FileGlyph() {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
-      <path d="M14 3v5h5" />
+      <ShellGlyphMarks name="file" />
     </svg>
   );
 }

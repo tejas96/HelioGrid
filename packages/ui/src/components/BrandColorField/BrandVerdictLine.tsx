@@ -1,5 +1,6 @@
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { BrandVerdictKind } from './BrandColorField.types';
-import { VERDICT_PATH } from './BrandVerdictLine.logic';
+import { VERDICT_GLYPH } from './BrandVerdictLine.logic';
 
 interface BrandVerdictLineProps {
   kind: BrandVerdictKind;
@@ -25,7 +26,7 @@ export function BrandVerdictLine({ kind, children }: BrandVerdictLineProps) {
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <path d={VERDICT_PATH[kind]} />
+        <ShellGlyphMarks name={VERDICT_GLYPH[kind]} />
       </svg>
       <span>{children}</span>
     </p>

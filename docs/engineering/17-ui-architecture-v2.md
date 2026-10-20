@@ -66,8 +66,7 @@ packages/
 │       │       ├── Button.css          # web only
 │       │       └── index.ts
 │       └── index.ts
-│
-└── icons/                       # LATER. One SVG source -> RN + web. Not phase 1.
+# Icons: one SVG source for RN + web is SHELL_GLYPHS (ui/src/components/AppShell/ShellGlyph.shapes.ts).
 ```
 
 **Dependency direction:** `theme → ui → apps`. Nothing flows back up. No app imports
@@ -143,7 +142,7 @@ design-system gap register filled up.
 | `Surface` | elevation, radius, density mode |
 | `Field` | label + hint + error + required, shared by every form control |
 | `StatusMark` | **status as label + mark, never colour alone** |
-| `Icon` | sizing, currentColor, a11y role |
+| `Icon` | sizing, currentColor, a11y role — the shape inside it is a named `SHELL_GLYPHS` glyph, never a hand-drawn path |
 | `Portal` | sheets, modals, menus, tooltips |
 
 Two of these encode product law rather than style:
@@ -202,6 +201,7 @@ The port is then held by checks that run in `pnpm lint` and `pnpm check:all`, an
 | **Dishonest role** — a literal `progressbar` role with no `accessibilityValue` or `aria-valuenow` | Biome plugin `progressbar-value` |
 | **Semantic drift** — the two halves of one component declaring different roles or states for a screen reader | review |
 | **False excuse** — a comment excusing a shortfall by naming something that already exists | review |
+| **Hand-drawn icon** — SVG path data, or a `<path>`/`<circle>`/`<rect>`/`<line>`/`<polyline>`/`<polygon>`/`<ellipse>` mark, outside the named glyph set `SHELL_GLYPHS` | Biome plugins `inline-glyph` · `inline-svg-mark` |
 | **Census** — a component missing one of its four files (`<Name>.types.ts`, `<Name>.tsx`, `<Name>.native.tsx`, `index.ts`) | review; nothing checks it |
 
 The three plugins run on `packages/ui/src` only, and each reads one tag's literal attributes: a

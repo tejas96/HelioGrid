@@ -7,8 +7,9 @@
    A named gap suppresses the whole chip: a delta of an absent value is arithmetic on nothing. */
 
 import { Text } from '../../primitives/Text';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { StatCardDeltaDir, StatCardSentiment } from './StatCard.types';
-import { DELTA_DIR_PATH } from './StatCardDelta.logic';
+import { DELTA_DIR_GLYPH } from './StatCardDelta.logic';
 
 /** Sentiment: a tint AND a word. Neutral makes no claim, which is why it is the default. */
 const SENTIMENT_WORD: Record<StatCardSentiment, string | null> = {
@@ -55,7 +56,7 @@ export function StatCardDelta({
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <path d={DELTA_DIR_PATH[dir]} />
+        <ShellGlyphMarks name={DELTA_DIR_GLYPH[dir]} />
       </svg>
       {/* NAME_FROM_CONTENT (check h): the arrow is hidden, so DIRECTION is carried in words — and
           those words are CONTENT here where the native half folds the whole chip into one

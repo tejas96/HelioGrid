@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { FabProps } from './AppRail.types';
 
 type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
@@ -36,7 +37,7 @@ function PlusIcon() {
       aria-hidden="true"
       className="hg-fab-glyph"
     >
-      <path d="M12 5v14M5 12h14" />
+      <ShellGlyphMarks name="plus" />
     </svg>
   );
 }

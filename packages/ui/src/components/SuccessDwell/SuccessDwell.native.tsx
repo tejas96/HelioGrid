@@ -1,9 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { BrandBloom } from '../BrandBloom/BrandBloom.native';
 import type { SuccessDwellProps } from './SuccessDwell.types';
 
@@ -26,7 +27,7 @@ export function SuccessDwell({ title, line, style }: NativeSuccessDwellProps) {
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <Path d="M20 6 9 17l-5-5" />
+            <ShellGlyphMarks name="tick-long" />
           </Svg>
         </Icon>
       </View>

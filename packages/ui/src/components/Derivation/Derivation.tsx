@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Icon } from '../../primitives/Icon';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { DerivationProps } from './Derivation.types';
 import { DERIVATION_KINDS } from './Derivation.types';
 import { DerivationGroup } from './DerivationGroup';
@@ -59,7 +60,7 @@ export function Derivation({
               strokeLinejoin="round"
               aria-hidden="true"
             >
-              <path d="M9 6l6 6-6 6" />
+              <ShellGlyphMarks name="chevron-right" />
             </svg>
           </Icon>
         </span>

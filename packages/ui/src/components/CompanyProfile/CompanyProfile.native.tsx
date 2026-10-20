@@ -1,21 +1,16 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect } from 'react';
 import { AccessibilityInfo, Keyboard, StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
 import { Accordion } from '../Accordion/Accordion.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { Button } from '../Button/Button.native';
 import { DoorFrame } from '../DoorFrame/DoorFrame.native';
 import { DoorTitle } from '../DoorFrame/DoorTitle.native';
 import { EmptyState } from '../EmptyState/EmptyState.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
-import {
-  openedPart,
-  PARTS_DENSITY,
-  profileItems,
-  UNREAD_GLYPH,
-  UNREAD_GLYPH_SIZE,
-} from './CompanyProfile.logic';
+import { openedPart, PARTS_DENSITY, profileItems, UNREAD_GLYPH_SIZE } from './CompanyProfile.logic';
 import type { CompanyProfileProps, CompanyProfileWords } from './CompanyProfile.types';
 import { ProfileSet } from './CompanyProfileSets.native';
 
@@ -232,13 +227,7 @@ function UnreadGlyph() {
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
     >
-      {UNREAD_GLYPH.map((mark) =>
-        mark.kind === 'path' ? (
-          <Path key={mark.d} d={mark.d} />
-        ) : (
-          <Circle key={`${mark.cx}-${mark.cy}`} cx={mark.cx} cy={mark.cy} r={mark.r} />
-        ),
-      )}
+      <ShellGlyphMarks name="alert-ring" />
     </Svg>
   );
 }

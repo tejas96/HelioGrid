@@ -2,7 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useImperativeHandle, useRef, useState } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { Circle, Path, Svg } from 'react-native-svg';
+import { Svg } from 'react-native-svg';
 import {
   FIELD_BOX_EDGE,
   fieldBox,
@@ -12,6 +12,7 @@ import {
 import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { FiltersButton } from '../FilterBar/FilterBar.native';
 import type { SearchFieldProps } from './SearchField.types';
 
@@ -76,8 +77,7 @@ function SearchPill({
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <Circle cx={11} cy={11} r={7} />
-        <Path d="m20 20-3.5-3.5" />
+        <ShellGlyphMarks name="search" />
       </Svg>
       <TextInput
         ref={input}
@@ -120,7 +120,7 @@ function ClearPill() {
         strokeWidth={2}
         strokeLinecap="round"
       >
-        <Path d="M18 6 6 18M6 6l12 12" />
+        <ShellGlyphMarks name="close" />
       </Svg>
     </View>
   );

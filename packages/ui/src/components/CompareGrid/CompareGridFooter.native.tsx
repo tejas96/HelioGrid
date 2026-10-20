@@ -1,10 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { positionReadout } from './CompareGrid.logic';
 
 const styles = StyleSheet.create({
@@ -33,14 +34,15 @@ function Chevron({ back, disabled }: { back?: boolean; disabled: boolean }) {
   return (
     <View style={back === true ? { transform: [{ rotate: '180deg' }] } : undefined}>
       <Icon size="lg" color={stroke}>
-        <Svg viewBox="0 0 24 24" fill="none">
-          <Path
-            d="m9 18 6-6-6-6"
-            stroke={stroke}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+        <Svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={stroke}
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <ShellGlyphMarks name="chevron-right" />
         </Svg>
       </Icon>
     </View>

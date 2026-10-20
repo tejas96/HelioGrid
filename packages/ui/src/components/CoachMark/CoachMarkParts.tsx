@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { Pressable } from '../../primitives/Pressable';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { PlacedCoachMark } from './coach-mark-place';
 import type { AnchorRect } from './use-anchor-rect';
 
@@ -56,7 +57,7 @@ export function CoachMarkHead({ counter, title, dismissLabel, onDismiss }: HeadP
             strokeLinecap="round"
             aria-hidden="true"
           >
-            <path d="M18 6 6 18M6 6l12 12" />
+            <ShellGlyphMarks name="close" />
           </svg>
         </Pressable>
       )}

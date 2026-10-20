@@ -2,6 +2,7 @@ import type { CSSProperties, KeyboardEvent } from 'react';
 import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Icon } from '../../primitives/Icon';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { FacetChipsProps } from './FilterBar.types';
 import { optionIcon, optionLabel, optionValue } from './FilterBar.types';
 import { OptionIcon } from './FilterChips';
@@ -31,7 +32,7 @@ function Tick() {
         strokeLinejoin="round"
       >
         <title>Selected</title>
-        <path d="m5 13 4 4L19 7" />
+        <ShellGlyphMarks name="tick" />
       </svg>
     </Icon>
   );

@@ -1,10 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { FacetChips } from './FacetChips.native';
 import type { FiltersButtonProps, ScopeToggleProps, SortPillsProps } from './FilterBar.types';
 import { optionLabel, optionValue, PILL_HEIGHT } from './FilterBar.types';
@@ -148,15 +149,14 @@ export function FiltersButton({
       style={({ pressed }) => [styles.square, pressed ? styles.squarePressed : undefined, style]}
     >
       <Icon size="md" color={SQUARE_INK}>
-        <Svg viewBox="0 0 24 24" fill="none">
-          <Path
-            d="M4 7h9M17 7h3M4 17h3M11 17h9"
-            stroke={SQUARE_INK}
-            strokeWidth={1.75}
-            strokeLinecap="round"
-          />
-          <Circle cx={15} cy={7} r={2.2} stroke={SQUARE_INK} strokeWidth={1.75} />
-          <Circle cx={9} cy={17} r={2.2} stroke={SQUARE_INK} strokeWidth={1.75} />
+        <Svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={SQUARE_INK}
+          strokeWidth={1.75}
+          strokeLinecap="round"
+        >
+          <ShellGlyphMarks name="sliders" />
         </Svg>
       </Icon>
       {count > 0 ? (

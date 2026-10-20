@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { OperationState } from './OperationProgress.types';
 
 function MessageGlyph({ state }: { state: OperationState }) {
@@ -12,19 +13,9 @@ function MessageGlyph({ state }: { state: OperationState }) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      {state === 'failed' ? (
-        <>
-          <path d="M12 9v4M12 17h.01" />
-          <circle cx="12" cy="12" r="9" />
-        </>
-      ) : null}
-      {state === 'cancelled' ? (
-        <>
-          <circle cx="12" cy="12" r="9" />
-          <path d="M8 12h8" />
-        </>
-      ) : null}
-      {state !== 'failed' && state !== 'cancelled' ? <path d="m5 13 4 4L19 7" /> : null}
+      <ShellGlyphMarks
+        name={state === 'failed' ? 'alert-circle' : state === 'cancelled' ? 'minus-circle' : 'tick'}
+      />
     </svg>
   );
 }

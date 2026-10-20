@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
 
 /** Six shimmer bars — the loading form. Never a placeholder value presented as a real one. */
@@ -48,17 +49,7 @@ export function CompareMessage({
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          {tone === 'warning' ? (
-            <>
-              <path d="M12 9v4M12 17h.01" />
-              <circle cx="12" cy="12" r="9" />
-            </>
-          ) : (
-            <>
-              <rect x="3" y="4" width="7" height="16" rx="1.5" />
-              <rect x="14" y="4" width="7" height="16" rx="1.5" />
-            </>
-          )}
+          <ShellGlyphMarks name={tone === 'warning' ? 'alert-circle' : 'columns'} />
         </svg>
       </span>
       <div className="hg-compare-message-title">{title}</div>

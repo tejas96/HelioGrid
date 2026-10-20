@@ -1,14 +1,13 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 
 /** The overflow trigger's three dots. */
 export function OverflowGlyph() {
   return (
-    <Svg width={16} height={16} viewBox="0 0 24 24">
-      <Circle cx={5} cy={12} r={1.6} fill={theme.colors['text-secondary']} />
-      <Circle cx={12} cy={12} r={1.6} fill={theme.colors['text-secondary']} />
-      <Circle cx={19} cy={12} r={1.6} fill={theme.colors['text-secondary']} />
+    <Svg width={16} height={16} viewBox="0 0 24 24" fill={theme.colors['text-secondary']}>
+      <ShellGlyphMarks name="dots-small" />
     </Svg>
   );
 }
@@ -19,14 +18,17 @@ export function OverflowGlyph() {
  */
 export function TrashGlyph({ color }: { color: string }) {
   return (
-    <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
-      <Path
-        d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6"
-        stroke={color}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <Svg
+      width={16}
+      height={16}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <ShellGlyphMarks name="trash" />
     </Svg>
   );
 }
@@ -51,14 +53,17 @@ export function MenuTick({ checked, twoLine }: { checked: boolean; twoLine: bool
 /** The switcher's tick — `selection="single"`'s non-colour channel beside the checked state. */
 export function TickGlyph() {
   return (
-    <Svg width={15} height={15} viewBox="0 0 24 24" fill="none">
-      <Path
-        d="m5 13 4 4L19 7"
-        stroke={theme.colors.accent}
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <Svg
+      width={15}
+      height={15}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={theme.colors.accent}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <ShellGlyphMarks name="tick" />
     </Svg>
   );
 }

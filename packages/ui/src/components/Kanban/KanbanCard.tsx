@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { Avatar } from '../Avatar';
 import { Card } from '../Card';
 import { renderPending } from '../PendingAction';
@@ -22,7 +24,7 @@ interface MoveControlsProps {
  */
 function MoveControls({ columns, column, item, onMove }: MoveControlsProps) {
   const { prev, next } = moveTargets(columns, column);
-  const button = (target: KanbanColumn | undefined, label: string, d: string) => (
+  const button = (target: KanbanColumn | undefined, label: string, glyph: ShellGlyphName) => (
     <button
       type="button"
       className="hg-kanban-move-button"
@@ -44,14 +46,14 @@ function MoveControls({ columns, column, item, onMove }: MoveControlsProps) {
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <path d={d} />
+        <ShellGlyphMarks name={glyph} />
       </svg>
     </button>
   );
   return (
     <div className="hg-kanban-move">
-      {button(prev, 'Move back a stage', 'm15 18-6-6 6-6')}
-      {button(next, 'Move on a stage', 'm9 18 6-6-6-6')}
+      {button(prev, 'Move back a stage', 'chevron-left')}
+      {button(next, 'Move on a stage', 'chevron-right')}
     </div>
   );
 }

@@ -10,6 +10,7 @@ import { isValidElement } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Icon } from '../../primitives/Icon';
 import { Pressable } from '../../primitives/Pressable';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { resolveValueSourceLevel, valueSourceStep } from './ValueSource.levels';
 import type { ValueSourceLevel, ValueSourceSpec } from './ValueSource.types';
 
@@ -30,8 +31,7 @@ function Glyph({ name }: { name: 'own' | 'inherited' }) {
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <path d="M12 3 3 8l9 5 9-5-9-5Z" />
-        {name === 'inherited' ? <path d="m3 14 9 5 9-5" /> : null}
+        <ShellGlyphMarks name={name === 'inherited' ? 'layers' : 'layer'} />
       </svg>
     </Icon>
   );

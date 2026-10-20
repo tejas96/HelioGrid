@@ -2,7 +2,8 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 
 const type = theme.type.roles;
 
@@ -104,18 +105,12 @@ function MessageGlyph({ warning, color }: { warning: boolean; color: string }) {
       height={22}
       viewBox="0 0 24 24"
       fill="none"
+      stroke={color}
       strokeWidth={1.5}
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      {warning ? (
-        <>
-          <Path d="M12 9v4M12 17h.01" stroke={color} />
-          <Circle cx="12" cy="12" r="9" stroke={color} />
-        </>
-      ) : (
-        <Path d="M4 6h16M4 12h16M4 18h10" stroke={color} />
-      )}
+      <ShellGlyphMarks name={warning ? 'alert-circle' : 'lines'} />
     </Svg>
   );
 }

@@ -1,8 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ToastProps, ToastTone } from './Toast.types';
 
 interface TonePair {
@@ -26,14 +27,17 @@ interface NativeToastProps extends ToastProps {
 /** The default mark: a check. One glyph for every tone — the words carry the tone. */
 function CheckGlyph({ color }: { color: string }) {
   return (
-    <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
-      <Path
-        d="M20 6 9 17l-5-5"
-        stroke={color}
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <Svg
+      width={18}
+      height={18}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <ShellGlyphMarks name="tick-long" />
     </Svg>
   );
 }

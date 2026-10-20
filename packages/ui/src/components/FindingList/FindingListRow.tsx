@@ -1,11 +1,12 @@
 import { Pressable } from '../../primitives/Pressable';
 import type { StatusTone } from '../../primitives/StatusMark';
 import { StatusMark } from '../../primitives/StatusMark';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { Button } from '../Button/Button';
 import { renderPending } from '../PendingAction';
 import type { Finding, FindingStatus } from './FindingList.types';
 import { FINDING_LABEL, statusOf } from './FindingList.verdict';
-import { FINDING_MARK_PATH } from './FindingListRow.logic';
+import { FINDING_MARK_GLYPH } from './FindingListRow.logic';
 
 /** The three statuses in the StatusMark vocabulary. Ready is a pass, not an absence. */
 export const FINDING_TONE: Record<FindingStatus, StatusTone> = {
@@ -29,7 +30,7 @@ function Mark({ status }: { status: FindingStatus }) {
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <path d={FINDING_MARK_PATH[status]} />
+        <ShellGlyphMarks name={FINDING_MARK_GLYPH[status]} />
       </svg>
     </span>
   );
@@ -88,7 +89,7 @@ export function FindingListRow({ finding, onJump, jumpLabel }: FindingListRowPro
                     strokeLinejoin="round"
                     aria-hidden="true"
                   >
-                    <path d="M5 12h13M13 6l6 6-6 6" />
+                    <ShellGlyphMarks name="arrow-right" />
                   </svg>
                 }
               >

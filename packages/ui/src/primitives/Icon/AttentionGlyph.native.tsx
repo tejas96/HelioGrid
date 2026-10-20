@@ -1,4 +1,5 @@
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
+import { ShellGlyphMarks } from '../../components/AppShell/ShellGlyphMarks.native';
 import type { AttentionGlyphProps } from './AttentionGlyph.types';
 
 /**
@@ -16,8 +17,7 @@ export function AttentionGlyph(props: AttentionGlyphProps) {
       strokeLinejoin="round"
       {...props}
     >
-      <Path d="M12 8v5" />
-      <Path d="M12 16h.01" />
+      <ShellGlyphMarks name="attention" />
     </Svg>
   );
 }

@@ -2,11 +2,12 @@ import { theme } from '@heliogrid/theme';
 import { useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import { Path, Svg } from 'react-native-svg';
+import { Svg } from 'react-native-svg';
 import { FIELD_BOX_EDGE, fieldBox, fieldWords } from '../../primitives/FieldBox/FieldBox.native';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { SelectDensity, SelectOption, SelectProps } from './Select.types';
 import { SelectListbox } from './SelectListbox.native';
 import { normaliseOptions } from './select-options';
@@ -104,7 +105,7 @@ function SelectTrigger({
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <Path d={open ? 'm6 15 6-6 6 6' : 'm6 9 6 6 6-6'} />
+        <ShellGlyphMarks name={open ? 'chevron-up' : 'chevron'} />
       </Svg>
     </Pressable>
   );

@@ -2,8 +2,9 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { BandChip } from './BandChip.native';
 import type { BandSpec, BandToneStyle } from './BandedFigure.types';
 
@@ -60,12 +61,13 @@ function RemedyGlyph({ color }: { color: string }) {
       height={15}
       viewBox="0 0 24 24"
       fill="none"
+      stroke={color}
       strokeWidth={1.8}
       strokeLinecap="round"
       strokeLinejoin="round"
       style={{ marginTop: 2 }}
     >
-      <Path d="M5 12h13M13 6l6 6-6 6" stroke={color} />
+      <ShellGlyphMarks name="arrow-right" />
     </Svg>
   );
 }

@@ -1,11 +1,12 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path, Rect } from 'react-native-svg';
+import Svg from 'react-native-svg';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Text`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import type { KanbanBoardState } from './Kanban.logic';
@@ -69,19 +70,16 @@ export function BoardMessage({ tone, title, message, onRetry, retryLabel }: Boar
       {/* The message is a tile: what it holds reads the tile's ground. */}
       <GroundProvider ground="tile">
         <View style={[styles.mark, warning ? styles.markWarning : null]}>
-          <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-            {warning ? (
-              <>
-                <Path d="M12 9v4M12 17h.01" stroke={ink} strokeWidth={1.5} strokeLinecap="round" />
-                <Circle cx={12} cy={12} r={9} stroke={ink} strokeWidth={1.5} />
-              </>
-            ) : (
-              <>
-                <Rect x={3} y={4} width={5} height={16} rx={1.5} stroke={ink} strokeWidth={1.5} />
-                <Rect x={10} y={4} width={5} height={10} rx={1.5} stroke={ink} strokeWidth={1.5} />
-                <Rect x={17} y={4} width={4} height={7} rx={1.5} stroke={ink} strokeWidth={1.5} />
-              </>
-            )}
+          <Svg
+            width={22}
+            height={22}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={ink}
+            strokeWidth={1.5}
+            strokeLinecap="round"
+          >
+            <ShellGlyphMarks name={warning ? 'alert-circle' : 'kanban'} />
           </Svg>
         </View>
         <Text variant="h4" align="center">

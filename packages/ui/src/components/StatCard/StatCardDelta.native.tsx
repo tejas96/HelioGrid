@@ -8,10 +8,11 @@
 
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { StatCardDeltaDir, StatCardSentiment } from './StatCard.types';
-import { DELTA_DIR_PATH } from './StatCardDelta.logic';
+import { DELTA_DIR_GLYPH } from './StatCardDelta.logic';
 
 const SENTIMENT_WORD: Record<StatCardSentiment, string | null> = {
   good: 'better',
@@ -72,14 +73,17 @@ export function StatCardDelta({
       style={[styles.delta, { backgroundColor: tone.bg }]}
     >
       {/* Direction's channel: the arrow. Sentiment's: the tint AND the word after it. */}
-      <Svg width={12} height={12} viewBox="0 0 24 24" fill="none">
-        <Path
-          d={DELTA_DIR_PATH[dir]}
-          stroke={tone.fg}
-          strokeWidth={2.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+      <Svg
+        width={12}
+        height={12}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={tone.fg}
+        strokeWidth={2.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <ShellGlyphMarks name={DELTA_DIR_GLYPH[dir]} />
       </Svg>
       <Text variant="caption" style={[styles.deltaWord, { color: tone.fg }]}>
         {delta}

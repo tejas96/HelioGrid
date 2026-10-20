@@ -1,13 +1,15 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project —
    and a web half's DOM types then fail to compile under the native lib. Metro resolves both
    spellings to the same module, so this is the same import, correctly typed. */
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { Card } from '../Card/Card.native';
 import { renderPending } from '../PendingAction/PendingAction.native';
@@ -30,7 +32,7 @@ interface MoveControlsProps {
  */
 function MoveControls({ columns, column, item, onMove }: MoveControlsProps) {
   const { prev, next } = moveTargets(columns, column);
-  const button = (target: KanbanColumn | undefined, label: string, d: string) => (
+  const button = (target: KanbanColumn | undefined, label: string, glyph: ShellGlyphName) => (
     <Pressable
       disabled={!target}
       accessibilityLabel={target ? `${label} — move to ${target.label}` : label}
@@ -39,21 +41,24 @@ function MoveControls({ columns, column, item, onMove }: MoveControlsProps) {
       }}
       style={styles.moveButton}
     >
-      <Svg width={15} height={15} viewBox="0 0 24 24" fill="none">
-        <Path
-          d={d}
-          stroke={target ? theme.colors['text-tertiary'] : theme.colors['text-disabled']}
-          strokeWidth={1.75}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+      <Svg
+        width={15}
+        height={15}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={target ? theme.colors['text-tertiary'] : theme.colors['text-disabled']}
+        strokeWidth={1.75}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <ShellGlyphMarks name={glyph} />
       </Svg>
     </Pressable>
   );
   return (
     <View style={styles.move}>
-      {button(prev, 'Move back a stage', 'm15 18-6-6 6-6')}
-      {button(next, 'Move on a stage', 'm9 18 6-6-6-6')}
+      {button(prev, 'Move back a stage', 'chevron-left')}
+      {button(next, 'Move on a stage', 'chevron-right')}
     </View>
   );
 }

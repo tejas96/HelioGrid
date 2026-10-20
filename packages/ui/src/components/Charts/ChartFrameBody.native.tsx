@@ -1,9 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Circle, Path, Svg } from 'react-native-svg';
+import { Svg } from 'react-native-svg';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import { ChartSkeleton } from './ChartSkeleton.native';
@@ -58,9 +59,14 @@ const styles = StyleSheet.create({
    NOT drawn here — `UnavailableNote` owns that mark, and this frame composes it. */
 function AlertGlyph() {
   return (
-    <Svg viewBox="0 0 24 24" fill="none">
-      <Path d="M12 9v4M12 17h.01" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" />
-      <Circle cx={12} cy={12} r={9} stroke="currentColor" strokeWidth={1.5} />
+    <Svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+    >
+      <ShellGlyphMarks name="alert-circle" />
     </Svg>
   );
 }

@@ -1,3 +1,4 @@
+import { ShellGlyphMarks } from '../../components/AppShell/ShellGlyphMarks';
 import type { AttentionGlyphProps } from './AttentionGlyph.types';
 
 /**
@@ -16,8 +17,7 @@ export function AttentionGlyph(props: AttentionGlyphProps) {
       aria-hidden="true"
       {...props}
     >
-      <path d="M12 8v5" />
-      <path d="M12 16h.01" />
+      <ShellGlyphMarks name="attention" />
     </svg>
   );
 }

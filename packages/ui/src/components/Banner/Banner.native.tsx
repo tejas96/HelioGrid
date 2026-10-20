@@ -3,10 +3,11 @@ import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { AccessibilityInfo, StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { bannerKind, isNeverDismissible } from './Banner.kinds';
 import {
   ACTION_BELOW,
@@ -48,10 +49,7 @@ function Glyph({ name, size, color }: { name: BannerGlyph; size: number; color: 
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      {BANNER_GLYPH[name].ringed ? <Circle cx={12} cy={12} r={9} /> : null}
-      {BANNER_GLYPH[name].paths.map((d) => (
-        <Path key={d} d={d} />
-      ))}
+      <ShellGlyphMarks name={BANNER_GLYPH[name]} />
     </Svg>
   );
 }
@@ -118,7 +116,7 @@ function Dismiss({ tone, onDismiss }: { tone: string; onDismiss: () => void }) {
         strokeWidth={2}
         strokeLinecap="round"
       >
-        <Path d="M18 6 6 18M6 6l12 12" />
+        <ShellGlyphMarks name="close" />
       </Svg>
     </Pressable>
   );

@@ -1,3 +1,4 @@
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ComplianceFloorSpec } from '../ComplianceFloor';
 import { ComplianceFloor } from '../ComplianceFloor';
 import { weekdayOf } from '../DatePicker/calendar-grid';
@@ -75,7 +76,7 @@ export function DateSetRow({
             strokeLinejoin="round"
             aria-hidden="true"
           >
-            <path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6" />
+            <ShellGlyphMarks name="trash" />
           </svg>
         </button>
       ) : null}

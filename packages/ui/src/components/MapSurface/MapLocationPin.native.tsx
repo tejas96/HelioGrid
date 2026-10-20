@@ -2,8 +2,9 @@ import { theme } from '@heliogrid/theme';
 import { useMemo, useRef } from 'react';
 import type { GestureResponderEvent } from 'react-native';
 import { PanResponder, StyleSheet, View } from 'react-native';
-import { Circle, Path, Svg } from 'react-native-svg';
+import { G, Svg } from 'react-native-svg';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { MapPin } from './MapSurface.types';
 import { MAP_PIN_COLOR } from './MapTokens.native';
 
@@ -79,24 +80,28 @@ export function MapLocationPin({ pin, pinState, fixed, draggable, onDragTo }: Ma
         >
           {confirmed ? null : <View style={styles.halo} />}
           <Svg width={26} height={26} viewBox="0 0 24 24" fill="none">
-            <Path
-              d="M12 22s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"
+            <G
               // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
               fill={confirmed ? colour : theme.colors.surface}
               stroke={colour}
               strokeWidth={1.8}
-            />
+            >
+              <ShellGlyphMarks name="pin" />
+            </G>
             {confirmed ? (
-              <Path
-                d="M8.6 10.9l2.4 2.3 4-4.3"
+              <G
                 // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
                 stroke={theme.colors.surface}
                 strokeWidth={2}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-              />
+              >
+                <ShellGlyphMarks name="pin-tick" />
+              </G>
             ) : (
-              <Circle cx={12} cy={11} r={2.6} stroke={colour} strokeWidth={1.8} />
+              <G stroke={colour} strokeWidth={1.8}>
+                <ShellGlyphMarks name="pin-hole" />
+              </G>
             )}
           </Svg>
         </View>

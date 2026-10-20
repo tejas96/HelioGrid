@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ResolvedStep } from './resolve-steps';
 
 interface NavButtonProps {
@@ -29,7 +30,7 @@ function NavButton({ direction, disabled, name, onPress }: NavButtonProps) {
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <path d={direction < 0 ? 'm15 18-6-6 6-6' : 'm9 18 6-6-6-6'} />
+        <ShellGlyphMarks name={direction < 0 ? 'chevron-left' : 'chevron-right'} />
       </svg>
     </button>
   );
@@ -95,7 +96,7 @@ export function StepperIndicator({
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          <path d="m6 9 6 6 6-6" />
+          <ShellGlyphMarks name="chevron" />
         </svg>
       </button>
       <NavButton

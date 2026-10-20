@@ -1,3 +1,4 @@
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
 import type { KanbanBoardState } from './Kanban.logic';
@@ -49,18 +50,7 @@ export function BoardMessage({ tone, title, message, onRetry, retryLabel }: Boar
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          {tone === 'warning' ? (
-            <>
-              <path d="M12 9v4M12 17h.01" />
-              <circle cx="12" cy="12" r="9" />
-            </>
-          ) : (
-            <>
-              <rect x="3" y="4" width="5" height="16" rx="1.5" />
-              <rect x="10" y="4" width="5" height="10" rx="1.5" />
-              <rect x="17" y="4" width="4" height="7" rx="1.5" />
-            </>
-          )}
+          <ShellGlyphMarks name={tone === 'warning' ? 'alert-circle' : 'kanban'} />
         </svg>
       </span>
       <div className="hg-kanban-message-title">{title}</div>

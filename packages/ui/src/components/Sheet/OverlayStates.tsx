@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
 
 /** `sheet` bodies are 280px wide and 28/24 padded; `panel` bodies 300px and 48 padded. */
@@ -55,8 +56,7 @@ export function OverlayError({ title, message, onRetry, variant, retryLabel }: O
           viewBox="0 0 24 24"
           width="22"
         >
-          <path d="M12 9v4M12 17h.01" />
-          <circle cx="12" cy="12" r="9" />
+          <ShellGlyphMarks name="alert-circle" />
         </svg>
       </span>
       <div className="hg-overlay-state-title">{title}</div>

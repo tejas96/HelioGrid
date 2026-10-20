@@ -12,8 +12,9 @@ import { theme } from '@heliogrid/theme';
 import type { Ref } from 'react';
 import type { PressableStateCallbackType, View } from 'react-native';
 import { Pressable as RNPressable, StyleSheet } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ReorderGlyph } from './ReorderList.defaults';
 import { REORDER_GLYPHS } from './ReorderList.defaults';
 
@@ -68,14 +69,17 @@ export function ReorderControl({
           : null,
       ]}
     >
-      <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
-        <Path
-          d={REORDER_GLYPHS[kind]}
-          stroke={stroke}
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+      <Svg
+        width={18}
+        height={18}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={stroke}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <ShellGlyphMarks name={REORDER_GLYPHS[kind]} />
       </Svg>
     </RNPressable>
   );

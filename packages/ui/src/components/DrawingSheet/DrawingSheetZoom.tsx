@@ -1,5 +1,6 @@
 import { Icon } from '../../primitives/Icon';
 import { Pressable } from '../../primitives/Pressable';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { DrawingSheetZoom } from './DrawingSheet.types';
 
 const DEFAULT_LEVELS = [0.5, 0.75, 1, 1.5, 2];
@@ -18,8 +19,7 @@ function ZoomGlyph({ plus }: { plus: boolean }) {
         strokeWidth="1.75"
         strokeLinecap="round"
       >
-        <path d="M5 12h14" />
-        {plus && <path d="M12 5v14" />}
+        <ShellGlyphMarks name={plus ? 'plus' : 'minus'} />
       </svg>
     </Icon>
   );

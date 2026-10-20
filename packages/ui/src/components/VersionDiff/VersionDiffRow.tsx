@@ -5,6 +5,7 @@
    Each state is a WORD in its own pill (F7-12: never colour alone). */
 
 import type { ReactNode } from 'react';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { NamedGap } from '../NamedGap';
 import type { ProvenanceTierSpec } from '../Provenance';
 import { ProvenanceTier } from '../Provenance';
@@ -105,7 +106,7 @@ export function VersionDiffRow({
               aria-hidden="true"
               className="hg-version-diff-arrow"
             >
-              <path d="M5 12h14M13 6l6 6-6 6" />
+              <ShellGlyphMarks name="arrow-right-full" />
             </svg>
             <ProvenanceTier tier={row.afterTier} size={12} />
           </div>
@@ -148,7 +149,7 @@ export function VersionDiffRow({
               aria-hidden="true"
               className="hg-version-diff-arrow hg-version-diff-arrow-down"
             >
-              <path d="M12 5v14M6 13l6 6 6-6" />
+              <ShellGlyphMarks name="arrow-down" />
             </svg>
             <div className="hg-version-diff-moved-side">
               <Side

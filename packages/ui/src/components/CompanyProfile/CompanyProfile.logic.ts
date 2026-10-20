@@ -10,7 +10,6 @@ import {
 import type { ReactNode } from 'react';
 import type { Density } from '../../primitives/Surface/Surface.types';
 import type { AccordionItem, AccordionItemState } from '../Accordion/Accordion.types';
-import type { GlyphMark } from '../AppShell/ShellGlyph.logic';
 import type { DropzoneProps } from '../Dropzone/Dropzone.types';
 import type { NumberFieldProps } from '../NumberField/NumberField.types';
 import type {
@@ -62,12 +61,6 @@ export function openedPart(reported: string | string[] | null): CompanyProfilePa
   return COMPANY_PROFILE_PARTS.find((part) => part === key) ?? null;
 }
 
-/** The failed read's glyph on a 24-unit square (`m-error`): a ringed mark, one drawing for both halves. */
-export const UNREAD_GLYPH: readonly GlyphMark[] = [
-  { kind: 'circle', cx: 12, cy: 12, r: 9 },
-  { kind: 'path', d: 'M12 7.5v5' },
-  { kind: 'path', d: 'M12 16.25h.01' },
-];
 /** The glyph's drawn size, as `m-error` draws it inside the message's disc. */
 export const UNREAD_GLYPH_SIZE = 28;
 

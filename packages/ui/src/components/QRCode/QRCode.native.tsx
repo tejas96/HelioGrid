@@ -13,6 +13,7 @@ import { StyleSheet, View } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
 import { encodeQR } from '../../utils/qr-encode';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { QRCodeProps } from './QRCode.types';
 
 const styles = StyleSheet.create({
@@ -94,18 +95,16 @@ export function QRCode({
       <View style={[styles.root, style]}>
         {/* `size` is caller data, not a design value — the only reason a dimension is inline. */}
         <View style={[styles.failed, { width: size, height: size }]}>
-          <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
-            <Path
-              d="M12 9v4M12 17h.01"
-              stroke={theme.colors['warning-text']}
-              strokeWidth={1.5}
-              strokeLinecap="round"
-            />
-            <Path
-              d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-              stroke={theme.colors['warning-text']}
-              strokeWidth={1.5}
-            />
+          <Svg
+            width={24}
+            height={24}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={theme.colors['warning-text']}
+            strokeWidth={1.5}
+            strokeLinecap="round"
+          >
+            <ShellGlyphMarks name="alert-circle" />
           </Svg>
           <Text variant="body-sm" style={styles.failedTitle}>
             {errorTitle}

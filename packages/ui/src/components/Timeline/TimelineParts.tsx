@@ -7,6 +7,7 @@
 
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
 import type { TimelineStatus } from './Timeline.types';
 
@@ -25,15 +26,15 @@ export function TimelineNode({
         <svg
           width={inner}
           height={inner}
-          viewBox="0 0 12 12"
+          viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2.2"
+          strokeWidth="4.4"
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          <path d="M2.5 6.5 5 9l4.5-5" />
+          <ShellGlyphMarks name="tick-small" />
         </svg>
       ) : null}
       {status === 'current' ? <span className="hg-timeline-node-core" /> : null}
@@ -41,28 +42,28 @@ export function TimelineNode({
         <svg
           width={inner}
           height={inner}
-          viewBox="0 0 12 12"
+          viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="4"
           strokeLinecap="round"
           aria-hidden="true"
         >
-          <path d="M6 3v3.5M6 9h.01" />
+          <ShellGlyphMarks name="alert-small" />
         </svg>
       ) : null}
       {status === 'failed' ? (
         <svg
           width={inner}
           height={inner}
-          viewBox="0 0 12 12"
+          viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="4"
           strokeLinecap="round"
           aria-hidden="true"
         >
-          <path d="M3.5 3.5l5 5M8.5 3.5l-5 5" />
+          <ShellGlyphMarks name="close-small" />
         </svg>
       ) : null}
     </span>
@@ -127,17 +128,7 @@ export function TimelineMessage({
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          {tone === 'warning' ? (
-            <>
-              <path d="M12 9v4M12 17h.01" />
-              <circle cx="12" cy="12" r="9" />
-            </>
-          ) : (
-            <>
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 7v5l3 2" />
-            </>
-          )}
+          <ShellGlyphMarks name={tone === 'warning' ? 'alert-circle' : 'clock-tall'} />
         </svg>
       </span>
       <div className="hg-timeline-message-title">{title}</div>

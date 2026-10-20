@@ -1,9 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { BrandVerdictKind } from './BrandColorField.types';
-import { VERDICT_PATH } from './BrandVerdictLine.logic';
+import { VERDICT_GLYPH } from './BrandVerdictLine.logic';
 
 const COLOR: Record<BrandVerdictKind, string> = {
   pass: theme.colors['success-text'],
@@ -32,14 +33,18 @@ interface BrandVerdictLineProps {
 export function BrandVerdictLine({ kind, children }: BrandVerdictLineProps) {
   return (
     <View style={styles.row}>
-      <Svg width={15} height={15} viewBox="0 0 24 24" fill="none" style={styles.glyph}>
-        <Path
-          d={VERDICT_PATH[kind]}
-          stroke={COLOR[kind]}
-          strokeWidth={1.9}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+      <Svg
+        width={15}
+        height={15}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={COLOR[kind]}
+        strokeWidth={1.9}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={styles.glyph}
+      >
+        <ShellGlyphMarks name={VERDICT_GLYPH[kind]} />
       </Svg>
       <View style={styles.words}>
         <Text variant="caption" color={TONE[kind]}>

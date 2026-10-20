@@ -1,16 +1,17 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { Button } from '../Button/Button.native';
 import { renderPending } from '../PendingAction/PendingAction.native';
 import type { Finding, FindingStatus } from './FindingList.types';
 import { FINDING_LABEL, statusOf } from './FindingList.verdict';
-import { FINDING_MARK_PATH } from './FindingListRow.logic';
+import { FINDING_MARK_GLYPH } from './FindingListRow.logic';
 
 /** The three statuses in the StatusMark vocabulary. Ready is a pass, not an absence. */
 export const FINDING_TONE: Record<FindingStatus, StatusTone> = {
@@ -41,7 +42,7 @@ function Mark({ status }: { status: FindingStatus }) {
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <Path d={FINDING_MARK_PATH[status]} />
+        <ShellGlyphMarks name={FINDING_MARK_GLYPH[status]} />
       </Svg>
     </View>
   );
@@ -109,7 +110,7 @@ export function FindingListRow({ finding, onJump, jumpLabel }: FindingListRowPro
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     >
-                      <Path d="M5 12h13M13 6l6 6-6 6" />
+                      <ShellGlyphMarks name="arrow-right" />
                     </Svg>
                   }
                 >

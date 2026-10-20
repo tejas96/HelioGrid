@@ -1,10 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { Path, Svg } from 'react-native-svg';
+import { Svg } from 'react-native-svg';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ResolvedStep } from './resolve-steps';
 
 interface NavButtonProps {
@@ -27,7 +28,7 @@ function NavButton({ direction, disabled, name, onPress }: NavButtonProps) {
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <Path d={direction < 0 ? 'm15 18-6-6 6-6' : 'm9 18 6-6-6-6'} />
+        <ShellGlyphMarks name={direction < 0 ? 'chevron-left' : 'chevron-right'} />
       </Svg>
     </Pressable>
   );
@@ -100,7 +101,7 @@ export function StepperIndicator({
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <Path d="m6 9 6 6 6-6" />
+          <ShellGlyphMarks name="chevron" />
         </Svg>
       </Pressable>
       <NavButton

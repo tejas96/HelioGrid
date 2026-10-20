@@ -1,3 +1,4 @@
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { LanguageContentState } from './LanguageSwitcher.types';
 
 interface LanguageStateGlyphProps {
@@ -27,8 +28,7 @@ export function LanguageStateGlyph({ state, active }: LanguageStateGlyphProps) {
         data-state="inherited"
         data-active={active ? 'true' : undefined}
       >
-        <path d="M12 3 3 8l9 5 9-5-9-5Z" />
-        <path d="m3 14 9 5 9-5" />
+        <ShellGlyphMarks name="layers" />
       </svg>
     );
   }

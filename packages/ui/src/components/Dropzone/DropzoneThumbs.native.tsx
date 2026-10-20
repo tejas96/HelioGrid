@@ -1,7 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import { Image, StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { DropzoneFile } from './Dropzone.types';
 import { FileGlyph } from './DropzoneGlyphs.native';
 
@@ -98,13 +99,16 @@ export function DropzoneThumbs({ files, onRemove }: DropzoneThumbsProps) {
               style={styles.remove}
             >
               <View style={styles.removeCircle}>
-                <Svg width={14} height={14} viewBox="0 0 24 24" fill="none">
-                  <Path
-                    d="M18 6 6 18M6 6l12 12"
-                    stroke={theme.colors['text-secondary']}
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                  />
+                <Svg
+                  width={14}
+                  height={14}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke={theme.colors['text-secondary']}
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                >
+                  <ShellGlyphMarks name="close" />
                 </Svg>
               </View>
             </Pressable>

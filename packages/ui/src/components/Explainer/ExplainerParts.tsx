@@ -1,5 +1,6 @@
 import { Pressable } from '../../primitives/Pressable/Pressable';
-import { type ExplainerPagerModel, INFO_GLYPH, type PlacedExplainer } from './Explainer.logic';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import type { ExplainerPagerModel, PlacedExplainer } from './Explainer.logic';
 import type { ExplainerAction } from './Explainer.types';
 
 /** The default "i" — `currentColor`, so the trigger owns its colour and its accessible name. */
@@ -16,9 +17,10 @@ export function InfoGlyph({ size }: { size: number }) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <circle {...INFO_GLYPH.ring} />
-      <path d={INFO_GLYPH.stem} />
-      <circle {...INFO_GLYPH.dot} fill="currentColor" stroke="none" />
+      <ShellGlyphMarks name="info-open" />
+      <g fill="currentColor" stroke="none">
+        <ShellGlyphMarks name="info-dot" />
+      </g>
     </svg>
   );
 }

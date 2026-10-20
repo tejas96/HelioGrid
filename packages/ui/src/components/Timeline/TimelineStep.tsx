@@ -4,6 +4,7 @@
    `actor` is a free string and that is the limit of what this component claims about it; an entry
    whose actor is not a person belongs in `ActivityStream` (M07-03). */
 
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { TimelineItem } from './Timeline.types';
 import { TimelineRailCell } from './TimelineRailCell';
 
@@ -46,8 +47,7 @@ export function TimelineStep({
               strokeLinejoin="round"
               aria-hidden="true"
             >
-              <circle cx="12" cy="8" r="3.5" />
-              <path d="M5 20a7 7 0 0 1 14 0" />
+              <ShellGlyphMarks name="person-slim" />
             </svg>
             {item.actor}
           </div>

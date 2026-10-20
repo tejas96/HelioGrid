@@ -1,6 +1,14 @@
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import type { ImageMissingReason } from './Image.types';
 
 export type ImageGlyphName = 'no-image' | 'no-cloud' | 'eye';
+
+/** The shape each frame mark draws. */
+export const IMAGE_GLYPH: Record<ImageGlyphName, ShellGlyphName> = {
+  'no-image': 'image-off',
+  'no-cloud': 'cloud-off',
+  eye: 'eye-wide',
+};
 
 export interface ImageMissingSpec {
   tone: 'neutral' | 'warning';

@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { OperationProgress } from '../OperationProgress';
 import { IndeterminateRail } from '../PendingAction';
 import { isRunning, summariseJobs } from './JobTray.summary';
@@ -95,8 +96,7 @@ export function JobTray({
             strokeLinejoin="round"
             aria-hidden="true"
           >
-            <circle cx="12" cy="12" r="9" />
-            <path d="M12 7.5V12l3 2" />
+            <ShellGlyphMarks name="clock" />
           </svg>
         )}
         <span className="hg-job-tray-words">{summary.words}</span>

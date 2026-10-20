@@ -1,4 +1,5 @@
 import { Icon } from '../../primitives/Icon';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { positionReadout } from './CompareGrid.logic';
 
 function Chevron({ back }: { back?: boolean }) {
@@ -14,7 +15,7 @@ function Chevron({ back }: { back?: boolean }) {
         aria-hidden="true"
         style={back === true ? { transform: 'rotate(180deg)' } : undefined}
       >
-        <path d="m9 18 6-6-6-6" />
+        <ShellGlyphMarks name="chevron-right" />
       </svg>
     </Icon>
   );

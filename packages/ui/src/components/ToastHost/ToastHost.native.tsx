@@ -2,9 +2,10 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useMemo, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { Toast } from '../Toast/Toast.native';
 import type { ToastHostProps, ToastItem, ToastPosition } from './ToastHost.types';
 
@@ -14,13 +15,16 @@ interface NativeToastHostProps extends ToastHostProps {
 
 function DismissGlyph() {
   return (
-    <Svg width={15} height={15} viewBox="0 0 24 24" fill="none">
-      <Path
-        d="M18 6 6 18M6 6l12 12"
-        stroke={theme.colors['text-tertiary']}
-        strokeWidth={2}
-        strokeLinecap="round"
-      />
+    <Svg
+      width={15}
+      height={15}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={theme.colors['text-tertiary']}
+      strokeWidth={2}
+      strokeLinecap="round"
+    >
+      <ShellGlyphMarks name="close" />
     </Svg>
   );
 }

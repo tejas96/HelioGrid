@@ -2,9 +2,10 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { AllocationModel } from './AllocationMeter.model';
 import { allocationModel, formatAllocation, partValue } from './AllocationMeter.model';
 import type {
@@ -40,15 +41,15 @@ function Mark({ state }: { state: AllocationState }) {
       <Svg
         width={9}
         height={9}
-        viewBox={met ? '0 0 12 12' : '0 0 24 24'}
+        viewBox="0 0 24 24"
         fill="none"
         // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
         stroke={theme.colors['text-inverse']}
-        strokeWidth={met ? 2.4 : 3}
+        strokeWidth={met ? 4.8 : 3}
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <Path d={met ? 'M2.5 6.5 5 9l4.5-5' : 'M12 6v12M6 12h12'} />
+        <ShellGlyphMarks name={met ? 'tick-small' : 'plus-small'} />
       </Svg>
     </View>
   );

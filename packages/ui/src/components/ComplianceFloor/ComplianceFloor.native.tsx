@@ -3,8 +3,9 @@ import type { ReactNode } from 'react';
 import { isValidElement } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ComplianceFloorSpec } from './ComplianceFloor.types';
 import { complianceFloorWords } from './ComplianceFloor.words';
 
@@ -25,8 +26,7 @@ function ShieldGlyph({ size, color }: { size: number; color: string }) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <Path d="M12 3.2 5 6.1v5.6c0 4.1 2.8 7.3 7 9 4.2-1.7 7-4.9 7-9V6.1l-7-2.9Z" />
-      <Path d="M9.2 12.2l2 2 3.6-3.9" />
+      <ShellGlyphMarks name="shield-check" />
     </Svg>
   );
 }

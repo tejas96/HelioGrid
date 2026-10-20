@@ -1,8 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { Path, Svg } from 'react-native-svg';
+import { Svg } from 'react-native-svg';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ResolvedStep } from './resolve-steps';
 
 interface NativeStepperMarkerProps {
@@ -30,15 +31,15 @@ export function StepperMarker({ index, size = 28, step }: NativeStepperMarkerPro
           <Svg
             width={13}
             height={13}
-            viewBox="0 0 12 12"
+            viewBox="0 0 24 24"
             fill="none"
             // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
             stroke={theme.colors['text-inverse']}
-            strokeWidth={2.2}
+            strokeWidth={4.4}
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <Path d="M2.5 6.5 5 9l4.5-5" />
+            <ShellGlyphMarks name="tick-small" />
           </Svg>
         ) : (
           <Svg
@@ -51,7 +52,7 @@ export function StepperMarker({ index, size = 28, step }: NativeStepperMarkerPro
             strokeWidth={2.4}
             strokeLinecap="round"
           >
-            <Path d="M12 7v6m0 3.5v.01" />
+            <ShellGlyphMarks name="alert-bold" />
           </Svg>
         )}
       </View>

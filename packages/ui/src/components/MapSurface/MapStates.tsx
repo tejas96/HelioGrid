@@ -1,4 +1,5 @@
 import { Icon } from '../../primitives/Icon';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
 
@@ -12,8 +13,7 @@ const AlertGlyph = (
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    <path d="M12 9v4M12 17h.01" />
-    <circle cx="12" cy="12" r="9" />
+    <ShellGlyphMarks name="alert-circle" />
   </svg>
 );
 
@@ -27,8 +27,7 @@ const EmptyGlyph = (
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    <path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z" />
-    <path d="M9 4v14M15 6v14" />
+    <ShellGlyphMarks name="map" />
   </svg>
 );
 

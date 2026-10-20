@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { useFormat } from '../MarketProvider/market-context';
 import type { TimeFieldProps } from './TimeField.types';
 import { TimeFieldMessage } from './TimeFieldMessage';
@@ -99,8 +100,7 @@ export function TimeField({
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          <circle cx="12" cy="12" r="9" />
-          <path d="M12 7.5V12l3 2" />
+          <ShellGlyphMarks name="clock" />
         </svg>
         <input
           className="hg-time-field-input"

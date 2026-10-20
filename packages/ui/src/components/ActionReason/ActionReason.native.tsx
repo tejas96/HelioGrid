@@ -3,8 +3,9 @@ import type { ReactNode } from 'react';
 import { isValidElement } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ActionReasonSpec } from './ActionReason.types';
 
 interface NativeActionReasonProps extends ActionReasonSpec {
@@ -24,8 +25,7 @@ function BarredCircle({ size }: { size: number }) {
       strokeWidth={1.5}
       strokeLinecap="round"
     >
-      <Circle cx={12} cy={12} r={9} />
-      <Path d="M8 12h8" />
+      <ShellGlyphMarks name="minus-circle" />
     </Svg>
   );
 }
