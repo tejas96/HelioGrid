@@ -50,7 +50,7 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `empty-teaching`,
 - A pending invite shows its seven days as a bar, with *Day <n> of 7* and *Expires <date>* under it.
 - After a deactivation lands, a neutral toast reads *<name> deactivated*. After a revoke lands, it reads *Invite to <name> revoked* · *Inviting <first name> again sends a new link.*
 - **guard-rail-blocked-explained** opens with the banner *Not done — <company> must keep one EPC Owner*.
-- At 375 a person is the system's `RecordCard` in its `stacked` layout, the dot drawn by `Avatar`'s `mark` (design-system change 11; owner ruling D4 A).
+- At 375 a person is the system's `RecordCard` in its `stacked` layout, the dot drawn by `Avatar`'s `mark` (design-system change 19; owner ruling D4 A).
 - At 375 a row's status line reads *Invited* (its roles are the badges under it), *Expired <date>*, *Active · last seen <date>* (or *today*) and *Deactivated · last seen <date>*; at 1536 a time today reads *Today, HH:MM*.
 
 **Decisions made in design (2026-08-31) — later screens inherit them.**

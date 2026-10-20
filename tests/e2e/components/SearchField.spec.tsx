@@ -36,6 +36,27 @@ test('the expressive pill is 50 tall at --r-pill on --fill, its clear button whi
   );
 });
 
+test('with a value, only the field’s own clear button shows — never the browser’s search cancel too', async ({
+  mount,
+}) => {
+  const field = await mount(
+    <SearchField ariaLabel={search} placeholder={search} value="Kulkarni" onClear={() => {}} />,
+  );
+  // Chrome reports no computed style for the cancel button, so the rule that hides it is read.
+  const hidesBrowserCancel = await field.evaluate(() =>
+    [...document.styleSheets].some((sheet) =>
+      [...sheet.cssRules].some(
+        (rule) =>
+          rule instanceof CSSStyleRule &&
+          rule.selectorText.includes('.hg-search-field-input::-webkit-search-cancel-button') &&
+          rule.style.appearance === 'none',
+      ),
+    ),
+  );
+  expect(hidesBrowserCancel).toBe(true);
+  await expect(field.getByRole('button')).toHaveCount(1);
+});
+
 test('with onFilterClick the 50 square rides beside the pill, near-black, named with its count', async ({
   mount,
   page,

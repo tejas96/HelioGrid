@@ -4,7 +4,7 @@ import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
-import { showsMessage, sortRows } from './DataTable.logic';
+import { DATA_TABLE_STACK_BELOW, showsMessage, sortRows } from './DataTable.logic';
 import type { DataTableProps } from './DataTable.types';
 import { Pagination, SelectionBar } from './DataTableChrome.native';
 import { DataTableGrid } from './DataTableGrid.native';
@@ -56,7 +56,7 @@ export function DataTable<Row = Record<string, unknown>>(props: NativeDataTableP
     state = 'ready',
     caption,
     continued = false,
-    stackBelow = 640,
+    stackBelow = DATA_TABLE_STACK_BELOW,
     onFormChange,
     page,
     pageSize = 10,
@@ -98,11 +98,14 @@ export function DataTable<Row = Record<string, unknown>>(props: NativeDataTableP
      caption's WORDS as their own accessible name rather than pointing at the node that holds them. */
   const labelledBy =
     caption === undefined ? undefined : `${caption}${continued ? ' (continued)' : ''}`;
+  /* A quiet table's caption names it for a screen reader only: the grid already carries its words. */
+  const quiet = props.head === 'quiet' && !stacked;
+  const captionNode = quiet ? null : <TableCaption caption={caption} continued={continued} />;
 
   if (showsMessage(state, rows.length)) {
     return (
       <View onLayout={onLayout} style={[styles.shell, style]}>
-        <TableCaption caption={caption} continued={continued} />
+        {captionNode}
         <TableStates table={props} stacked={stacked} density={density} />
       </View>
     );
@@ -110,7 +113,7 @@ export function DataTable<Row = Record<string, unknown>>(props: NativeDataTableP
 
   return (
     <View onLayout={onLayout} style={[styles.shell, style]}>
-      <TableCaption caption={caption} continued={continued} />
+      {captionNode}
 
       {selectable && selection.length > 0 ? (
         <SelectionBar

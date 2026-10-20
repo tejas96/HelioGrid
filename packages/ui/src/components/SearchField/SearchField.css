@@ -61,6 +61,12 @@
   padding: 0;
 }
 
+/* The field draws its own clear button (`onClear`); a `type="search"` input also gets the browser's,
+   so a reader would see two. */
+.hg-search-field-input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
 /* 44px target, 28px pill: the two rectangles again. The negative margin takes the extra width
    back out of the row so the box geometry is unchanged. */
 .hg-search-field-clear {

@@ -5,15 +5,29 @@ export interface AvatarProps {
   /** used for initials fallback + alt text */
   name?: string;
   size?: 24 | 32 | 40 | 56 | 80 | number;
+  /** The brand iris hue behind the initials. `auto` (default) picks violet, blue or magenta from the
+   *  name, so a person keeps one colour everywhere; `accent` is the old flat lavender. */
+  hue?: "auto" | "violet" | "blue" | "magenta" | "accent";
+  /** A thing, not a person: the glyph in --accent on a --surface disc (`SCR-M01-13`'s capability cluster). */
+  glyph?: React.ReactNode;
+  /** The person's standing as a dot at the disc's foot, in a ring of `--canvas` (`SCR-M01-12`). It
+   *  repeats what the words beside it say — never the only carrier of the state — so it is not read
+   *  aloud. Drawn for a 40–56px disc. */
+  mark?: "info" | "success" | "warning" | "neutral";
   style?: React.CSSProperties;
 }
 export interface AvatarGroupProps {
   people?: AvatarProps[];
   size?: number;
   max?: number;
+  /** The ground the group sits on — each disc's 2px ring takes it, so the overlap reads. Default `var(--surface)`. */
+  ring?: string;
 }
 
-/** Perfect-circle avatar; falls back to initials on a soft brand tint. */
+/** Perfect-circle avatar; falls back to initials on a brand iris tint (design-system change 7). */
 export function Avatar(props: AvatarProps): JSX.Element;
 /** Overlapping avatar stack with white rings. */
 export function AvatarGroup(props: AvatarGroupProps): JSX.Element;
+
+/** The iris wash and words for a hue (`violet` | `blue` | `magenta`), or null. Badge uses it too. */
+export function irisTint(hue: string): { bg: string; fg: string } | null;

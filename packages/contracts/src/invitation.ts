@@ -47,7 +47,7 @@ export const invitationSchema = z.object({
   /** A `user_account` id; attribution survives the inviter's deactivation. */
   inviterUserId: uuidSchema,
   sentAt: z.string().datetime(),
-  /** Derived from the send and the policy window — rendered with its provenance tier (`F8`). */
+  /** Derived from the send and the policy window. A date, so it carries no provenance tier (`F8-01`). */
   expiresAt: z.string().datetime(),
 });
 export type Invitation = z.infer<typeof invitationSchema>;

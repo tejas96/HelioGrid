@@ -5,7 +5,8 @@ import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import type { BadgeProps, ChipDensity, ChipProps, ChipTone } from './Chip.types';
+import { irisTintOf, isIrisHue } from '../Avatar/Avatar.logic';
+import type { BadgeProps, BadgeTone, ChipDensity, ChipProps, ChipTone } from './Chip.types';
 
 /* The DS pill heights, the dot and the pill's inner gap — none of the three is on the 4px scale,
    so no theme token carries them. 44 is MIN_TOUCH_TARGET, the product's own floor. */
@@ -52,6 +53,9 @@ const styles = StyleSheet.create({
 /* The DS chip weight is --fw-medium, which the type scale's body-sm/caption roles do not carry;
    it rides on the Text primitive's style slot rather than in a second text component. */
 const medium: TextStyle = { fontWeight: '500' };
+/* The design system's iris weight. The theme holds no 600 weight token, so it is written as
+   the number. */
+const irisWeight: TextStyle = { fontWeight: '600' };
 
 /**
  * A label's drawn height is a floor, so at a larger text size its words grow the pill instead of
@@ -133,20 +137,30 @@ export function Chip({
   );
 }
 
-/** Tinted semantic badge — semantic bg + `-text` partner. Never interactive; always a View. */
+/** A tone's words and wash: an iris tone mixes its hue, every other tone reads `BADGE`. */
+function badgePair(tone: BadgeTone): { color: string; background?: string } {
+  if (!isIrisHue(tone)) return BADGE[tone];
+  const tint = irisTintOf(tone);
+  return { color: tint.fg, background: tint.bg };
+}
+
+/**
+ * Tinted semantic badge — semantic bg + `-text` partner. Never interactive; always a View. An iris
+ * tone takes Avatar's iris rule (`irisTintOf`), so a role and a face share one mix.
+ */
 export function Badge({
   children,
   tone = 'neutral',
   density = 'expressive',
   style,
 }: NativeBadgeProps) {
-  const pair = BADGE[tone];
+  const pair = badgePair(tone);
   const { controlFill } = useGround();
   return (
     <View style={[pillStyle(density, { backgroundColor: pair.background ?? controlFill }), style]}>
       <Text
         variant={density === 'expressive' ? 'body-sm' : 'caption'}
-        style={[medium, { color: pair.color }]}
+        style={[isIrisHue(tone) ? irisWeight : medium, { color: pair.color }]}
       >
         {children}
       </Text>

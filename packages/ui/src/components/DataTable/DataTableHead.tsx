@@ -39,9 +39,19 @@ function ariaSortOf(state: ColumnSortState): 'ascending' | 'descending' | 'none'
  * which is why `DataTableHead.native.tsx` may spell its own name out (RN has no `aria-sort`, so
  * the sort direction rides in the button's accessible name there) without that being drift.
  */
-function ColumnName({ label, active }: { label: string; active: boolean }) {
+export function ColumnName({
+  label,
+  active,
+  quiet,
+}: {
+  label: string;
+  active: boolean;
+  /** The quiet head's sentence-case caption (design-system change 20) instead of the overline. */
+  quiet: boolean;
+}) {
+  const rest = quiet ? 'secondary' : 'tertiary';
   return (
-    <Text as="span" variant="overline" color={active ? 'primary' : 'tertiary'}>
+    <Text as="span" variant={quiet ? 'caption' : 'overline'} color={active ? 'primary' : rest}>
       {label}
     </Text>
   );
@@ -60,6 +70,7 @@ function HeadCell<Row>({
   hasActions,
   onSort,
   tableSpec,
+  quiet,
 }: {
   column: DataTableColumn<Row>;
   state: ColumnSortState;
@@ -69,6 +80,7 @@ function HeadCell<Row>({
   hasActions: boolean;
   onSort: (next: DataTableSort) => void;
   tableSpec: ProvenanceProps | null;
+  quiet: boolean;
 }) {
   return (
     <th
@@ -87,13 +99,13 @@ function HeadCell<Row>({
           data-active={state.active ? 'true' : undefined}
           onClick={() => onSort(state.next)}
         >
-          <ColumnName label={column.label} active={state.active} />
+          <ColumnName label={column.label} active={state.active} quiet={quiet} />
           <SortGlyph dir={state.dir} />
           <ColumnTier column={column} tableSpec={tableSpec} />
         </button>
       ) : (
         <span className="hg-dt-th-inner">
-          <ColumnName label={column.label} active={false} />
+          <ColumnName label={column.label} active={false} quiet={quiet} />
           <ColumnTier column={column} tableSpec={tableSpec} />
         </span>
       )}
@@ -117,6 +129,7 @@ export function DataTableHead<Row>({
   onSort,
   hasActions,
   tableSpec,
+  quiet = false,
 }: {
   columns: DataTableProps<Row>['columns'];
   selectable: boolean;
@@ -128,6 +141,8 @@ export function DataTableHead<Row>({
   hasActions: boolean;
   /** The table-wide statement a column's tier is measured against, resolved once by the grid. */
   tableSpec: ProvenanceProps | null;
+  /** The quiet head (design-system change 20). */
+  quiet?: boolean;
 }) {
   return (
     <thead className="hg-dt-head">
@@ -153,6 +168,7 @@ export function DataTableHead<Row>({
             hasActions={hasActions}
             onSort={onSort}
             tableSpec={tableSpec}
+            quiet={quiet}
           />
         ))}
         {hasActions ? (

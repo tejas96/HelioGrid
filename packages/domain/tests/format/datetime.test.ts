@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest';
 import {
   formatClockAt,
   formatDate,
+  formatDayMonth,
   formatMonthYear,
   formatTime,
   formatWeekday,
+  isTenantToday,
   monthNames,
   weekdayNames,
 } from '../../src/format/datetime';
@@ -149,5 +151,41 @@ describe("a date's words in the reader's language, its order and digits the pack
 
   it('keeps the tenant clock in every language: 00:30 IST is the next day', () => {
     expect(formatDate(IN_FORMATS, '2026-03-11T19:00:00Z', 'mr')).toBe('12 मार्च 2026');
+  });
+});
+
+describe('formatDayMonth — a date in this year, without the year (SCR-M01-12)', () => {
+  it.each<[string, UiLanguage, string]>([
+    ['2026-08-30T06:00:00Z', 'en', '30 Aug'],
+    ['2026-09-05T06:00:00Z', 'en', '5 Sept'],
+    ['2026-08-30T06:00:00Z', 'mr', '30 ऑग'],
+  ])('%s in %s reads %s', (value, language, expected) => {
+    expect(formatDayMonth(IN_FORMATS, value, language)).toBe(expected);
+  });
+
+  it('crosses midnight on the tenant clock, not UTC', () => {
+    /* 19:00 UTC on 29 Aug is 00:30 on 30 Aug in Asia/Kolkata. */
+    expect(formatDayMonth(IN_FORMATS, '2026-08-29T19:00:00Z', 'en')).toBe('30 Aug');
+  });
+
+  it('renders nothing it cannot parse', () => {
+    expect(formatDayMonth(IN_FORMATS, 'not a date', 'en')).toBe('');
+  });
+});
+
+describe('isTenantToday — the same calendar day on the tenant clock', () => {
+  /* 31 Aug 2026, 09:20 in Asia/Kolkata. */
+  const now = Date.parse('2026-08-31T03:50:00Z');
+  it.each<[string, string, boolean]>([
+    ['local midnight that began today', '2026-08-30T18:30:00Z', true],
+    ['the minute before it', '2026-08-30T18:29:00Z', false],
+    ['the last minute of today', '2026-08-31T18:29:00Z', true],
+    ['local midnight that ends today', '2026-08-31T18:30:00Z', false],
+  ])('%s → %s', (_, value, expected) => {
+    expect(isTenantToday(IN_FORMATS, value, now)).toBe(expected);
+  });
+
+  it('is never today for a stamp it cannot parse', () => {
+    expect(isTenantToday(IN_FORMATS, 'not a date', now)).toBe(false);
   });
 });

@@ -1,6 +1,6 @@
 import type { UiLanguage } from './languages';
 import type { FormatPack } from './pack';
-import { localMinutes } from './zone';
+import { localDate, localMinutes } from './zone';
 
 /**
  * The ONE date and time implementation (`F3-19`, `F3-22`). No surface composes a date string,
@@ -75,6 +75,23 @@ export function formatDate(
     month: 'short',
     year: 'numeric',
   });
+}
+
+/** `2026-08-30` → `30 Aug`: a date close enough that its year goes without saying (`SCR-M01-12`). */
+export function formatDayMonth(
+  pack: FormatPack,
+  value: string | number,
+  language: UiLanguage,
+): string {
+  const epoch = toEpoch(value);
+  if (epoch === null) return '';
+  return withReaderMonth(pack, language, epoch, { day: 'numeric', month: 'short' });
+}
+
+/** Whether an instant falls on the tenant's calendar day that `now` falls on — never the device's. */
+export function isTenantToday(pack: FormatPack, value: string | number, now: number): boolean {
+  const epoch = toEpoch(value);
+  return epoch !== null && localDate(epoch, pack.timeZone) === localDate(now, pack.timeZone);
 }
 
 /**

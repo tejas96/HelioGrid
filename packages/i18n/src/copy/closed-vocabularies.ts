@@ -7,6 +7,7 @@ import { ENERGY_SOURCE_WORD } from './energy-source';
 import { FRESHNESS_WORD, PACK_KEY_WORD, PINNED_INPUT_WORD } from './freshness';
 import { PROVENANCE_STANDING_WORD, PROVENANCE_TIER_WORD } from './provenance';
 import { TENANT_SEGMENT_WORD } from './setup-what-you-sell';
+import { TEAM, TEAM_EMPTY_CHIP, TEAM_STATUS_WORD } from './team';
 
 /**
  * The words one surface shows together. Every member of every vocabulary in a group must read as
@@ -49,6 +50,14 @@ export const CLOSED_VOCABULARY_GROUPS: readonly ClosedVocabularyGroup[] = [
   {
     surface: 'company profile',
     vocabularies: { part: COMPANY_PROFILE_PART_TITLE, standing: COMPANY_PROFILE_STANDING_WORD },
+  },
+  {
+    surface: 'team list',
+    vocabularies: {
+      status: TEAM_STATUS_WORD,
+      chip: { all: TEAM.all },
+      emptyChip: TEAM_EMPTY_CHIP,
+    },
   },
 ];
 

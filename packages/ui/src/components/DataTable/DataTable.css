@@ -1,6 +1,7 @@
 @import "./DataTableCell.css";
 @import "./DataTableCards.css";
 @import "./DataTableChrome.css";
+@import "./DataTableQuiet.css";
 
 /* DataTable — zebra rows, sticky header, no borders anywhere.
 

@@ -41,7 +41,7 @@ and the findings they answer.
 | Types | no `any`, no unsafe cast, no brand cast outside its owner, no inferred shape across a package edge | the compiler is the cheapest check |
 | Maintainability | names say what; a file under 300 lines; no dead code; a comment states a constraint, never what the code does; no speculative abstraction | code is read far more than written |
 | UI | theme tokens only, no raw values; composed from `packages/ui` primitives; `Pressable` for every tap target; loading, empty and error states present; layout holds at 375 and 1536 | `.claude/rules/ui-adherence.md` |
-| Accessibility | labels from the catalog on every control; roles and states set; focus order; never `accessible` on a wrapper of controls | screen-reader users must reach every control |
+| Accessibility | labels from the catalog on every control; roles and states set; focus order; never `accessible` on a wrapper of controls; a control that removes itself when pressed (*Clear search*, *Try again*) moves focus to where the user goes next, never to the page's start | screen-reader users must reach every control |
 | Words | every user-visible string comes from `packages/i18n`; no English in `packages/ui`; kW/kWh/kWp untranslated | Hindi and Marathi users see what English users see |
 | Performance | no needless re-render or refetch; no extra API calls in a loop; large lists paged | slow screens lose users on cheap phones |
 | Resources | connections, listeners, timers and subscriptions are closed | leaks crash the api over time |

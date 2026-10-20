@@ -438,6 +438,10 @@
     {
       "path": "./packages/config/biome/progressbar-value.grit",
       "includes": ["**/packages/ui/src/**/*.{ts,tsx}"]
+    },
+    {
+      "path": "./packages/config/biome/folded-region.grit",
+      "includes": ["**/packages/ui/src/**/*.native.tsx", "**/apps/mobile/src/**/*.tsx"]
     }
   ],
   "javascript": {

@@ -39,6 +39,14 @@ polling command with a timeout. Then check the expected result and report.
 - every control the row uses has a `content-desc` or text a screen reader speaks;
 - no crash, ANR or error line in logcat since the row began.
 
+**Board compare** (a row that names a phone frame). The frame map gives each element's component,
+words, size and gaps from the board's code, with tokens resolved from
+`packages/theme/src/_generated/tokens/`. Read the same element's bounds in a fresh dump and compare
+words, size and the gap to each neighbour in dp (dp = px × 160 ÷ the density `wm density` reports). A held or
+sticky part is compared at rest and again after a short scroll. A board is English: in a Hindi or
+Marathi row only the layout is compared. A difference your prompt lists as known is noted; any
+other fails the row; one you judge the board wrong on is marked `board?`.
+
 **Check only when a row asks:** offline and retry, background and foreground, process death and
 state restore, a deep link, runtime permissions, notifications, display scaling. A row that needs
 the app killed, restarted or opened by a link says so: you return `NEEDS MAIN: <action>` for that

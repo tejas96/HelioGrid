@@ -12,9 +12,11 @@ export { type ChecklistRow, checklistForDeal, IN_DOCUMENT_CHECKLIST } from './ch
 export {
   formatClockAt,
   formatDate,
+  formatDayMonth,
   formatMonthYear,
   formatTime,
   formatWeekday,
+  isTenantToday,
   monthNames,
   weekdayNames,
 } from './datetime';

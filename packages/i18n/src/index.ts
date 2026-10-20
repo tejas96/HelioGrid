@@ -109,6 +109,10 @@ export type {
 } from './copy/sign-in-number';
 export { doorNoticeWords, doorSwitchWords, numberStepWords } from './copy/sign-in-number';
 export { STRUCTURE_DISCLAIMER } from './copy/structure-disclaimer';
+export type { TeamClock, TeamRowWords } from './copy/team';
+export { TEAM, TEAM_EMPTY_CHIP, teamRowWords, teamStatusWord } from './copy/team';
+export type { TeamListWords } from './copy/team-list';
+export { teamListWords } from './copy/team-list';
 export type { ValidationIssueLike } from './copy/validation';
 export { createFormsValidationMessage } from './copy/validation';
 export type { LanguageMeta } from './languages';

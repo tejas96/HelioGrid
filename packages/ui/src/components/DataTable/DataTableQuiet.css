@@ -1,0 +1,61 @@
+/* The quiet head (design-system change 20; `SCR-M01-12`, the owner's refined-table pick). A short
+   list read row by row — a team roster — takes sentence-case labels in the caption face on the
+   page, and its rows in one raised card with a hairline between each, never zebra. The card is
+   drawn under the rows by `.hg-dt-quiet::before`, so it is still one <table>.
+
+   The geometry is the design system's own (a caption line over a 16px gap; rows that hold a 40px
+   face with a name over a status chip, 82px with their cell padding), so it is named here, as the
+   density numbers are, and switched by [data-head]. */
+
+.hg-dt[data-head="quiet"] {
+  --hg-dt-edge: var(--hg-dt-gutter);
+  --hg-dt-head-h: 34px;
+  --hg-dt-quiet-cell-pad: 14px;
+  --hg-dt-row-h: 82px;
+  overflow: visible;
+}
+
+.hg-dt-quiet {
+  position: relative;
+}
+
+.hg-dt-quiet::before {
+  content: "";
+  position: absolute;
+  inset: var(--hg-dt-head-h) 0 0;
+  /* biome-ignore lint/plugin/raw-white-css: the card the quiet rows stand in, raised over the page */
+  background: var(--surface);
+  border-radius: var(--r-md);
+  box-shadow: var(--e2);
+}
+
+.hg-dt-quiet .hg-dt-table {
+  position: relative;
+}
+
+/* The label is a caption-face `Text`; the cell's overline casing and tracking must not reach it. */
+.hg-dt[data-head="quiet"] .hg-dt-th {
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.hg-dt[data-head="quiet"] .hg-dt-th-inner {
+  align-items: flex-start;
+  padding-top: 0;
+  padding-bottom: var(--sp-4);
+}
+
+.hg-dt[data-head="quiet"] .hg-dt-row,
+.hg-dt[data-head="quiet"] .hg-dt-row[data-zebra="true"] {
+  background: transparent;
+}
+
+.hg-dt[data-head="quiet"] .hg-dt-row:not(:first-child) {
+  border-top: 1px solid var(--line-soft);
+}
+
+.hg-dt[data-head="quiet"] .hg-dt-cell-shell {
+  height: var(--hg-dt-row-h);
+  padding-top: var(--hg-dt-quiet-cell-pad);
+  padding-bottom: var(--hg-dt-quiet-cell-pad);
+}

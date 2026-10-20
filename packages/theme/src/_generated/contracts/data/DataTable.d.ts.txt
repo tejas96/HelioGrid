@@ -273,6 +273,14 @@ export interface DataTableProps<Row = any> {
   onPageChange?: (page: number) => void;
   /** Row rhythm. `comfortable` (default) = 64px rows / 14px cells / 24px edges. `compact` = the old 48px grid, dense admin only. */
   density?: "comfortable" | "compact";
+  /**
+   * `overline` (default): the uppercase micro-label head inside the white card, zebra rows. `quiet`:
+   * sentence-case labels in the caption face on the page, the rows in one raised card with a hairline
+   * between each and no zebra, 82px rows — a short list read row by row, a team roster
+   * (`SCR-M01-12`, design-system change 20). The caption names the table for a screen reader only.
+   * Loading keeps the labels and the card. The stacked form is the same in both.
+   */
+  head?: "overline" | "quiet";
   style?: React.CSSProperties;
 }
 

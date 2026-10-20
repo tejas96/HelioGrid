@@ -32,6 +32,8 @@ const styles = StyleSheet.create({
      for a table row: the cells are a full-width line whose columns are sized by `column.width`.
      The floor stays; only the two alignment rules are handed back. */
   pressRow: { alignItems: 'stretch', justifyContent: 'flex-start' },
+  /* A quiet table's rows part by a hairline, never by zebra (design-system change 20). */
+  hairline: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: theme.colors['line-soft'] },
 });
 
 /**
@@ -39,9 +41,15 @@ const styles = StyleSheet.create({
  * the web half's stylesheet holds. A plain row is not a tile — it holds fields — so it paints the
  * ground that holds the table.
  */
-function rowTintStyle(state: RowState, ground: string): StyleProp<ViewStyle> {
+function rowTintStyle(
+  state: RowState,
+  ground: string,
+  quiet: boolean,
+  index: number,
+): StyleProp<ViewStyle> {
   return [
-    state.zebra ? styles.zebra : { backgroundColor: ground },
+    state.zebra && !quiet ? styles.zebra : { backgroundColor: quiet ? 'transparent' : ground },
+    quiet && index > 0 ? styles.hairline : null,
     state.issue !== null ? styles.issue : state.flagged ? styles.fixed : null,
     state.isSelected ? styles.selected : null,
   ];
@@ -218,7 +226,7 @@ export function DataTableBodyRow<Row>({
     <View
       role="row"
       accessibilityState={{ busy: state.waiting }}
-      style={rowTintStyle(state, ground)}
+      style={rowTintStyle(state, ground, table.head === 'quiet', index)}
     >
       {onRowClick === undefined ? (
         cells

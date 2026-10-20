@@ -29,6 +29,19 @@ export const styles = StyleSheet.create({
     paddingTop: theme.spacing['sp-4'],
     gap: theme.spacing['sp-6'],
   },
+  /* A list page with a held head: the head `sp-2` under the bar and the list `sp-4` under the head.
+     Both are the head's own padding, not the page's, so they stay white around it while it is held
+     and the search never meets the bar. */
+  listRhythm: { paddingTop: 0, gap: 0 },
+  /* React Native moves a sticky child's style onto its own wrapper and gives the child `flex: 1`, so
+     a `gap` here would space one child: the head's parts take theirs from `stickyHeadParts`. */
+  stickyHead: {
+    paddingTop: theme.spacing['sp-2'],
+    paddingBottom: theme.spacing['sp-4'],
+    // biome-ignore lint/plugin/raw-white: page-ground — the held head paints the white page the list scrolls under
+    backgroundColor: theme.colors.surface,
+  },
+  stickyHeadParts: { gap: theme.layout['tile-gap'] },
   // Frame 10 has no bar and no pill: its block is centred in the whole page, and scrolls when
   // the largest text makes it taller than the screen.
   updateScroll: {

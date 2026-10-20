@@ -36,6 +36,10 @@ const NOT_ONE_COLOUR = new Map([
     "Card's icon circle: a tone the caller picks over a wash of itself — not held, review",
   ],
   [
+    'hg-iris',
+    "only the `.hg-iris[data-iris]` wash and words mix — Avatar.logic's irisTintOf mixes the same two, and Badge.spec.tsx holds each hue's words at 4.5:1 or more",
+  ],
+  [
     'hg-record-avatar-tone',
     "a record's avatar: a tone the caller picks over a wash of itself — not held, review",
   ],

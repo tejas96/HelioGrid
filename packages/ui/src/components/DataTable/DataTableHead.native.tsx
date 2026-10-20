@@ -8,7 +8,7 @@ import { Text } from '../../primitives/Text/Text.native';
 import { Checkbox } from '../Checkbox/Checkbox.native';
 import type { ProvenanceProps } from '../Provenance/Provenance.types';
 import type { ColumnSortState } from './DataTable.logic';
-import { alignOf, DENSITY, sortStateOf } from './DataTable.logic';
+import { alignOf, DENSITY, QUIET_HEAD, quietSpec, sortStateOf } from './DataTable.logic';
 import type { DataTableProps, DataTableSort } from './DataTable.types';
 import { alignStyle, cellBox } from './DataTableCellShell.native';
 import { tickPullback } from './DataTableChrome.native';
@@ -60,16 +60,18 @@ function HeadCell<Row>({
   gutter,
   onSort,
   tableSpec,
+  quiet,
 }: {
   column: DataTableColumn<Row>;
   state: ColumnSortState;
   gutter: number;
+  quiet: boolean;
   onSort: (next: DataTableSort) => void;
   tableSpec: ProvenanceProps | null;
 }) {
   const inner = (
     <View style={styles.headCell}>
-      <Text variant="overline" color={state.active ? 'primary' : 'secondary'}>
+      <Text variant={quiet ? 'caption' : 'overline'} color={state.active ? 'primary' : 'secondary'}>
         {column.label}
       </Text>
       {state.canSort ? <SortGlyph dir={state.dir} active={state.active} /> : null}
@@ -111,6 +113,7 @@ export function DataTableHead<Row>({
   onSort,
   hasActions,
   density,
+  quiet = false,
   tableSpec,
 }: {
   columns: DataTableProps<Row>['columns'];
@@ -122,10 +125,12 @@ export function DataTableHead<Row>({
   onSort: (next: DataTableSort) => void;
   hasActions: boolean;
   density: NonNullable<DataTableProps<Row>['density']>;
+  /** The quiet head: sentence-case caption labels over a 16px gap (design-system change 20). */
+  quiet?: boolean;
   /** The table-wide statement a column's tier is measured against, resolved once by the grid. */
   tableSpec: ProvenanceProps | null;
 }) {
-  const spec = DENSITY[density];
+  const spec = quiet ? quietSpec(DENSITY[density]) : DENSITY[density];
   const gutter = { paddingHorizontal: spec.gutter };
   const { ground } = useGround();
 
@@ -135,6 +140,7 @@ export function DataTableHead<Row>({
         styles.row,
         { backgroundColor: ground },
         { minHeight: spec.headH, paddingHorizontal: spec.edge - spec.gutter },
+        quiet ? { alignItems: 'flex-start', paddingBottom: QUIET_HEAD.headGap } : null,
       ]}
     >
       {selectable ? (
@@ -155,6 +161,7 @@ export function DataTableHead<Row>({
           gutter={spec.gutter}
           onSort={onSort}
           tableSpec={tableSpec}
+          quiet={quiet}
         />
       ))}
       {hasActions ? <View style={[{ width: spec.actW }, gutter]} /> : null}

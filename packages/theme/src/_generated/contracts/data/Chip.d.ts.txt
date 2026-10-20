@@ -14,7 +14,9 @@ export interface ChipProps {
 }
 export interface BadgeProps {
   children?: React.ReactNode;
-  tone?: "neutral" | "success" | "warning" | "danger" | "info" | "accent";
+  /** `violet` | `blue` | `magenta` are the brand iris tones for a KIND (a role, a category), never a
+   *  state (design-system change 7). */
+  tone?: "neutral" | "success" | "warning" | "danger" | "info" | "accent" | "violet" | "blue" | "magenta";
   density?: "expressive" | "functional";
   style?: React.CSSProperties;
 }

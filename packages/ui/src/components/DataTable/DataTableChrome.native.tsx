@@ -80,7 +80,12 @@ export function SelectionBar({
     /* The band is a named region, as it is on the web (`role="region" aria-label`): a bare `View`
        carrying only `accessibilityLabel` is not an accessibility element, so the count and the bulk
        actions it introduces had no name to arrive under. */
-    <View role="region" accessibilityLabel={`${count} selected`} style={styles.selection}>
+    <View
+      role="region"
+      collapsable={false}
+      accessibilityLabel={`${count} selected`}
+      style={styles.selection}
+    >
       <Pressable accessibilityLabel="Clear selection" onPress={onClear} style={styles.clear}>
         <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
           <Path
