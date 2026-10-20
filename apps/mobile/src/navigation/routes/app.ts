@@ -4,6 +4,7 @@ import { CompanySignupScreen } from '../../screens/company-signup';
 import { SettingsRowScreen, SettingsScreen } from '../../screens/settings';
 import { SetupInviteTeamScreen } from '../../screens/setup-invite-team';
 import { SetupLanguageScreen } from '../../screens/setup-language';
+import { SetupReadyScreen } from '../../screens/setup-ready';
 import { SetupWhatYouSellScreen } from '../../screens/setup-what-you-sell';
 import { PlaceholderScreen, ShellScreen } from '../../screens/shell';
 import {
@@ -12,6 +13,7 @@ import {
   useOwesCompanyProfileStep,
   useOwesInviteTeamStep,
   useOwesLanguageStep,
+  useOwesReadyStep,
   useOwesWhatYouSellStep,
   useShowsShell,
 } from '../guards';
@@ -42,6 +44,8 @@ export const appScreens = {
   SetupCompanyProfile: { screen: CompanyProfileScreen, if: useOwesCompanyProfileStep },
   /** Then the first invite, skippable (`SCR-M01-07`, `M01-12`). */
   SetupInviteTeam: { screen: SetupInviteTeamScreen, if: useOwesInviteTeamStep },
+  /** Then the corridor's end: two doors, and the first taken closes setup (`SCR-M01-06`, `M01-26`). */
+  SetupReady: { screen: SetupReadyScreen, if: useOwesReadyStep },
   Leads: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.leads },
   Proposals: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.proposals },
   Projects: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.projects },

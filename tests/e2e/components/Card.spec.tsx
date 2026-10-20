@@ -28,6 +28,15 @@ test('an errored card with no words for its retry draws no retry', async ({ moun
   await expect(card.getByRole('button')).toHaveCount(0);
 });
 
+test('an errored card with an empty message says its title alone, with no separator', async ({
+  mount,
+}) => {
+  const title = en.t(SIGN_IN.tryAgain);
+  const card = await mount(<Card state="error" errorTitle={title} errorMessage="" />);
+
+  await expect(card.locator('.hg-card-message-text')).toHaveText(title);
+});
+
 test("a card is the open page's tile: the fill, the tile's radius and padding, no shadow", async ({
   mount,
   page,

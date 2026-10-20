@@ -79,6 +79,8 @@ export type { SettingsWords } from './copy/settings';
 export { backToSettings, settingsListFor, settingsRowName, settingsWords } from './copy/settings';
 export type { SetupLanguageOption, SetupLanguageWords } from './copy/setup-language';
 export { SETUP_LANGUAGE, setupLanguageWords } from './copy/setup-language';
+export type { SetupReadyDoorWords, SetupReadyWords } from './copy/setup-ready';
+export { SETUP_READY, setupReadyWords } from './copy/setup-ready';
 export type {
   SetupWhatYouSellFacts,
   SetupWhatYouSellOption,

@@ -53,6 +53,7 @@ describe('landingFor', () => {
     ['what_you_sell', 'what-you-sell-step'],
     ['business_profile', 'company-profile-step'],
     ['invite_team', 'invite-team-step'],
+    ['ready', 'ready-step'],
   ] as const)('lands a settled person who owes the %s step on %s', (owed, expected) => {
     expect(landingFor('signedIn', withCompany, null, owed)).toBe(expected);
   });
@@ -76,6 +77,7 @@ describe('landingFor', () => {
     expect(landingFor(phase, user, ended, 'what_you_sell')).toBe(expected);
     expect(landingFor(phase, user, ended, 'business_profile')).toBe(expected);
     expect(landingFor(phase, user, ended, 'invite_team')).toBe(expected);
+    expect(landingFor(phase, user, ended, 'ready')).toBe(expected);
     expect(landingFor(phase, user, ended, 'wait')).toBe(expected);
   });
 });
@@ -86,6 +88,7 @@ describe('isSetupLanding — the landings a setup step draws', () => {
     ['what-you-sell-step', true],
     ['company-profile-step', true],
     ['invite-team-step', true],
+    ['ready-step', true],
     ['home', false],
     ['company-step', false],
     ['access-removed', false],

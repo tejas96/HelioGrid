@@ -26,6 +26,8 @@ export type { SetupInvite } from './use-setup-invite';
 export { useSetupInvite } from './use-setup-invite';
 export type { SetupLanguageStep } from './use-setup-language';
 export { useSetupLanguage } from './use-setup-language';
+export type { SetupReady, SetupReadyCompany } from './use-setup-ready';
+export { useSetupReady } from './use-setup-ready';
 export type { SetupWhatYouSellStep } from './use-setup-what-you-sell';
 export { useSetupWhatYouSell } from './use-setup-what-you-sell';
 export type { Shell } from './use-shell';

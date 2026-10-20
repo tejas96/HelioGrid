@@ -22,7 +22,8 @@ type AppEntry =
   | 'SetupLanguage'
   | 'SetupWhatYouSell'
   | 'SetupCompanyProfile'
-  | 'SetupInviteTeam';
+  | 'SetupInviteTeam'
+  | 'SetupReady';
 
 /**
  * Which first screen each landing inside the App group mounts. The shell holds a person whose
@@ -38,6 +39,7 @@ const ROUTE_OF_LANDING: Record<Exclude<SessionLanding, 'wait' | 'door'>, AppEntr
   'what-you-sell-step': 'SetupWhatYouSell',
   'company-profile-step': 'SetupCompanyProfile',
   'invite-team-step': 'SetupInviteTeam',
+  'ready-step': 'SetupReady',
 };
 
 /**
@@ -55,6 +57,7 @@ export const useOwesLanguageStep = () => useEntry() === 'SetupLanguage';
 export const useOwesWhatYouSellStep = () => useEntry() === 'SetupWhatYouSell';
 export const useOwesCompanyProfileStep = () => useEntry() === 'SetupCompanyProfile';
 export const useOwesInviteTeamStep = () => useEntry() === 'SetupInviteTeam';
+export const useOwesReadyStep = () => useEntry() === 'SetupReady';
 /** The doors the shell opens exist only while the person is inside, never while held. */
 export const useHasHome = () => useNavigationLanding() === 'home';
 

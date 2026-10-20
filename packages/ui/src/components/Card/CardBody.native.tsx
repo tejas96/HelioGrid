@@ -65,7 +65,7 @@ export function CardMessage({
         {title !== undefined ? (
           <Text style={[text, styles.messageTitle]}>
             {title}
-            {message !== undefined ? ' — ' : ''}
+            {message ? ' — ' : ''}
           </Text>
         ) : null}
         {message}

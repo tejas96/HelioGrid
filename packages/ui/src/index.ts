@@ -105,6 +105,7 @@ export * from './components/Select';
 export * from './components/SettingsList';
 export * from './components/SetupInviteTeam';
 export * from './components/SetupLanguage';
+export * from './components/SetupReady';
 export * from './components/SetupWhatYouSell';
 export * from './components/Sheet';
 export * from './components/SignupCompanyStep';

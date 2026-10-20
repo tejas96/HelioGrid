@@ -11,6 +11,7 @@ const TONE: Record<NonNullable<ShellGlyphProps['tone']>, string> = {
   secondary: theme.colors['text-secondary'],
   inverse: theme.colors['text-inverse'],
   accent: theme.colors.accent,
+  info: theme.colors.info,
   danger: theme.colors['danger-text'],
 };
 

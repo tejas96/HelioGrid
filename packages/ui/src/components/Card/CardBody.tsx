@@ -24,7 +24,7 @@ export function CardMessage({
         {title !== undefined ? (
           <strong className="hg-card-message-title">
             {title}
-            {message !== undefined ? ' — ' : ''}
+            {message ? ' — ' : ''}
           </strong>
         ) : null}
         {message}

@@ -13,7 +13,7 @@ import { useInviteForm } from '../team';
  * The invite step of setup on the web (`SCR-M01-07`, `M01-12`), drawn by the inside group's gate
  * for an owner whose company still owes it. The send and the step's writes are `useSetupInvite`'s,
  * the form `useInviteForm`'s; a send that did not go out is said in this step's own toast host.
- * *Open Team* leaves the step for Team.
+ * *Open Team* leaves setup for Team.
  */
 export function SetupInviteTeamScreen() {
   const { t } = useI18n();
@@ -36,7 +36,7 @@ export function SetupInviteTeamScreen() {
         onSkip={() => void invite.skip()}
         onOpenTeam={() => {
           router.push(settingsRowPath(SETTINGS_SEGMENT.team));
-          void invite.skip();
+          void invite.openTeam();
         }}
       />
       <ToastHost

@@ -10,6 +10,7 @@ import {
   OWNER_NAME,
   passCompanyProfileStep,
   passLanguageStep,
+  passReadyStep,
   passWhatYouSellStep,
   requestCode,
   skipInviteStep,
@@ -217,6 +218,8 @@ test('a language chosen on the door is the new account’s, and where sign-out r
   await passWhatYouSellStep(page, mr);
   await passCompanyProfileStep(page, mr);
   await skipInviteStep(page, mr);
+  await passReadyStep(page, mr);
+  await page.goto('/home');
 
   await passTheOwnersMark(page, mr);
   await page.getByRole('button', { name: mr.t(SHELL.accountOf, { name: OWNER_NAME }) }).click();
