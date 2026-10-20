@@ -12,7 +12,6 @@ import { expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { createCompany, OWNER_NAME } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
-import { expectTheLook } from '../support/look';
 import { freshMobile } from '../support/phone';
 import { passTheOwnersMark } from '../support/shell';
 
@@ -70,11 +69,8 @@ test('a new owner lands on their home inside the shell, with one mark on the ver
   await expect(page.getByText(verbMark?.body ?? '')).toBeVisible();
   await expectNoSidewaysScroll(page);
   await expectNoSeriousViolations(page);
-  // The line over the title, read without its date: today's date is the word a run changes. A mask
-  // that matches nothing is skipped in silence, so the line is found first.
-  const today = page.getByText(todayLine(en.t, ''));
-  await expect(today).toBeVisible();
-  await expectTheLook(page, [page.getByText(company), today]);
+  // The line over the title, read without its date: today's date is the word a run changes.
+  await expect(page.getByText(todayLine(en.t, ''))).toBeVisible();
 
   await passTheOwnersMark(page, en);
   await expect(page.getByText(verbMark?.body ?? '')).toBeHidden();

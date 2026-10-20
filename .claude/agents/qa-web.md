@@ -45,8 +45,9 @@ lists as known (an open `deferred.md` row) is noted; any other difference fails 
 judge the board itself wrong, mark the difference `board?` with your reason; you never decide it.
 
 **Check only when a row asks:** a protected route signed out, session expiry, a role's refusal,
-form validation messages, tables, filters, sorting and search, a deep link. The look baselines are
-CI's `e2e-web` lane; no other browser is tested in v1.
+form validation messages, tables, filters, sorting and search, a deep link. There are no look
+baselines (owner ruling 2026-10-20): your board compare is the look check; no other browser is
+tested in v1.
 
 **Rules:** you start, stop, reload or build no server and run no test command. You use only your
 standing account and the records the rows name; you create a company only in a signup row. A row

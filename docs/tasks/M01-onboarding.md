@@ -346,7 +346,7 @@ Files (part c, ~32 — D5):
 **11. Regression**
 - Team read and row acts (`T-M01-012c`): `MemberList.spec.tsx`, `TeamConfirm.spec.tsx`, `tests/e2e/web/more-team.spec.ts`; the phone's held head on scroll after the `ShellPage` change: P6.
 - `OptionCardGroup` single mode on the company profile and *What you sell*: `OptionCardGroup.spec.tsx`, `setup-what-you-sell.spec.ts`.
-- The doors on `DoorFrame`: `DoorFrame.spec.tsx`, the door landing images.
+- The doors on `DoorFrame`: `DoorFrame.spec.tsx` and the door flows (`login.spec.ts`, `company-signup.spec.ts`).
 - The corridor: `company-profile.spec.ts` and `company-profile-finish-later.spec.ts` now expect the invite step.
 
 **12. Acceptance criteria**
@@ -399,7 +399,7 @@ Files (part c, ~32 — D5):
 | P19 | AC-23 | qa-ios | iOS | no role → the banner, no request (Metro log); an active member's number → the already-member banner; a pending invitee → the already-invited banner; signed in as …908's owner → the cap banner alone | …902, …908 |
 | P20 | AC-24 | qa-web | web | 375: m-default against the frame map; the already-member answer, then *Open Team* → `/more/team`; sign out and in → the invite step again | a fresh company …911 |
 | P21 | AC-25 | main-dev | component | `SetupInviteTeam.spec.tsx` "a failed send shows the toast and keeps the values" | — |
-| P18 | — | ci | e2e-web | `more-team.spec.ts` with its redrawn landing images; `setup-invite-team.spec.ts`; `company-profile*.spec.ts` | — |
+| P18 | — | ci | e2e-web | `more-team.spec.ts`; `setup-invite-team.spec.ts`; `company-profile*.spec.ts` (no screenshot baselines since the owner ruling of 2026-10-20) | — |
 
 Android: `qa-android` rows on Team — the changed phone screen has no Maestro flow of its own (`team` is held in `tests/invariants/src/e2e-flow-per-screen.ts`), so CI's `android` lane never opens it (`/task` step 7; corrected at part a QA).
 

@@ -15,7 +15,6 @@ import {
   typeCode,
 } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
-import { expectTheLook } from '../support/look';
 import { freshMobile } from '../support/phone';
 import { passTheOwnersMark } from '../support/shell';
 
@@ -33,7 +32,6 @@ test('the signup door opens to its first step with every control named, its ask 
   await expect(page.getByText(en.t(COMPANY_SIGNUP.numberHelper))).toBeVisible();
   await expectNoSeriousViolations(page);
   await expectNumberFieldRinged(page, en);
-  await expectTheLook(page);
 });
 
 test('a new number verifies, names its company in one step and lands on home', async ({ page }) => {

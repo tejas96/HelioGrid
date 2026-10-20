@@ -34,8 +34,8 @@ export async function requestCode(page: Page, t: Translator, mobile: Mobile): Pr
 
 /**
  * Waits for the number field to draw its focus ring. The page's HTML focuses the field before React
- * hydrates it; the ring follows only once `PhoneField` has mounted, so a look taken on focus alone
- * can catch the field ringless.
+ * hydrates it; the ring follows only once `PhoneField` has mounted, so a check of focus alone
+ * can pass on a field that is not yet ringed.
  */
 export async function expectNumberFieldRinged(page: Page, t: Translator): Promise<void> {
   const field = page.getByRole('textbox', { name: t.t(SIGN_IN.mobileNumber) });
