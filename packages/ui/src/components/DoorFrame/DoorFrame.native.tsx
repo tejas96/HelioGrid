@@ -21,7 +21,15 @@ const WORDMARK_SIZE = 24;
  * screen's: the export's 375×812 frame starts under the status bar, and the app hands that band's
  * height in through `DoorTopInset` — this package holds no platform adapter.
  */
-export function DoorFrame({ trailing, lead, identity, footer, column, children }: DoorFrameProps) {
+export function DoorFrame({
+  trailing,
+  lead,
+  identity,
+  footer,
+  onFooterHeight,
+  column,
+  children,
+}: DoorFrameProps) {
   const topInset = useContext(DoorTopInset);
   return (
     <View style={[styles.root, { paddingTop: topInset }]}>
@@ -46,7 +54,14 @@ export function DoorFrame({ trailing, lead, identity, footer, column, children }
             {children}
           </View>
         </ScrollView>
-        {footer === undefined ? null : <View style={styles.footer}>{footer}</View>}
+        {footer === undefined ? null : (
+          <View
+            style={styles.footer}
+            onLayout={(event) => onFooterHeight?.(event.nativeEvent.layout.height)}
+          >
+            {footer}
+          </View>
+        )}
       </KeyboardAvoidingView>
     </View>
   );

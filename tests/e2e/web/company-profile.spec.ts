@@ -13,6 +13,7 @@ import { expectNoSeriousViolations } from '../support/axe';
 import {
   abortWrites,
   companyProfileAct,
+  inviteStep,
   passWhatYouSellStep,
   reachCompanyProfileStep,
   reachWhatYouSellStep,
@@ -62,7 +63,7 @@ function writesOf(page: Page): string[] {
 const wroteTo = (writes: readonly string[], path: string) =>
   writes.some((write) => write.endsWith(path));
 
-test('a new owner meets the company profile after what-you-sell: five parts, the name read back, and a live act that records the step skipped and opens the home', async ({
+test('a new owner meets the company profile after what-you-sell: five parts, the name read back, and a live act that records the step skipped and opens the invite step', async ({
   page,
 }) => {
   const company = await reachCompanyProfileStep(page, en, freshMobile());
@@ -83,7 +84,7 @@ test('a new owner meets the company profile after what-you-sell: five parts, the
   const recorded = page.waitForRequest(endsWith('/onboarding/progress/business_profile'));
   await companyProfileAct(page, en).click();
   expect((await recorded).postDataJSON()).toEqual({ state: 'skipped' });
-  await expect(shell(page)).toBeVisible();
+  await expect(inviteStep(page, en)).toBeVisible();
   // Nothing typed changes no registration, so that list is not written.
   expect(writes.map((write) => write.split('/').slice(-2).join('/'))).toEqual([
     'settings/business-profile',
@@ -91,7 +92,7 @@ test('a new owner meets the company profile after what-you-sell: five parts, the
   ]);
 
   await page.reload();
-  await expect(shell(page)).toBeVisible();
+  await expect(inviteStep(page, en)).toBeVisible();
   await expect(heading(page)).toHaveCount(0);
 });
 
@@ -111,7 +112,7 @@ test('a malformed tax number is explained at its field against the market’s fo
 
   const writes = writesOf(page);
   await companyProfileAct(page, en).click();
-  await expect(shell(page)).toBeVisible();
+  await expect(inviteStep(page, en)).toBeVisible();
   expect(wroteTo(writes, '/settings/business-profile')).toBe(true);
   expect(wroteTo(writes, '/settings/tax-registrations')).toBe(false);
 });
@@ -150,7 +151,7 @@ test('what the owner types is what is saved: the address, a tax number taken in 
     registrations: [{ registrationType: REGISTRATION?.type, value: WELL_FORMED }],
   });
   expect((await recorded).postDataJSON()).toEqual({ state: 'completed' });
-  await expect(shell(page)).toBeVisible();
+  await expect(inviteStep(page, en)).toBeVisible();
   // In setup the next step is the answer: no saved toast (`SCR-M01-05` ruling 59).
   await expect(page.getByText(en.t(COMPANY_PROFILE.saved), { exact: true })).toHaveCount(0);
 });
@@ -176,7 +177,7 @@ test('a profile that cannot be read is not a wall: Try again reads it, and the p
   await expect(parts(page)).toHaveCount(5);
 });
 
-test('a save that fails keeps what was typed and says so once; Try again saves it and opens the home', async ({
+test('a save that fails keeps what was typed and says so once; Try again saves it and opens the invite step', async ({
   page,
 }) => {
   await reachCompanyProfileStep(page, en, freshMobile());
@@ -196,10 +197,10 @@ test('a save that fails keeps what was typed and says so once; Try again saves i
   const saved = page.waitForRequest(endsWith('/settings/business-profile'));
   await page.getByRole('button', { name: en.t(COMPANY_PROFILE.retrySaveSpoken) }).click();
   expect((await saved).postDataJSON()).toMatchObject({ address: 'Plot 14, Baner Road' });
-  await expect(shell(page)).toBeVisible();
+  await expect(inviteStep(page, en)).toBeVisible();
 });
 
-test('a save that lands half way is sent again whole: the profile is stored, the registrations fail, and Try again writes them and opens the home', async ({
+test('a save that lands half way is sent again whole: the profile is stored, the registrations fail, and Try again writes them and opens the invite step', async ({
   page,
 }) => {
   await reachCompanyProfileStep(page, en, freshMobile());
@@ -218,10 +219,10 @@ test('a save that lands half way is sent again whole: the profile is stored, the
   expect((await registrations).postDataJSON()).toEqual({
     registrations: [{ registrationType: REGISTRATION?.type, value: WELL_FORMED }],
   });
-  await expect(shell(page)).toBeVisible();
+  await expect(inviteStep(page, en)).toBeVisible();
 });
 
-test('after a failed save, Continue without it opens the home with nothing written, and the next visit asks again', async ({
+test('after a failed save, Continue without it opens the invite step with nothing written, and the next visit asks again', async ({
   page,
 }) => {
   await reachCompanyProfileStep(page, en, freshMobile());
@@ -230,7 +231,7 @@ test('after a failed save, Continue without it opens the home with nothing writt
   await street(page).fill('Plot 14, Baner Road');
   await companyProfileAct(page, en).click();
   await page.getByRole('button', { name: en.t(COMPANY_PROFILE.onwardUnsavedSpoken) }).click();
-  await expect(shell(page)).toBeVisible();
+  await expect(inviteStep(page, en)).toBeVisible();
   await page.unroute(theProfile);
 
   // Putting the step off lasts for the session: a fresh load asks again, and nothing typed was stored.

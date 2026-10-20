@@ -18,6 +18,15 @@ export type DoorTaskMeasure = 'field' | 'steps' | 'list' | 'choices';
  */
 export type DoorColumn = 'centred' | 'deep' | 'near';
 
+/**
+ * How the frame lays out from the door's breakpoint. `door` — the doors' two equal fields
+ * (`SCR-M01-01` … `-05`). `onboarding` — the setup steps' two panes (`SCR-M01-07` d-default, D261):
+ * a brand pane on columns 1–4 at full height, holding the bloom, the wordmark and the identity, and
+ * a task pane on columns 5–12 holding the task and its action; it draws no `lead`. Under the
+ * breakpoint, and on the phone, both are the one column.
+ */
+export type DoorPanes = 'door' | 'onboarding';
+
 /** A door's heading, the one ask beside it, and the line under it (`SCR-M01-02` decision 26). */
 export interface DoorTitleProps {
   title: string;
@@ -34,7 +43,9 @@ export interface DoorTitleProps {
  */
 export interface DoorFrameProps {
   /** The header row's right-hand control — the language control; on the code step, the change-number ghost before it. */
-  trailing: ReactNode;
+  trailing?: ReactNode;
+  /** The layout from the door's breakpoint; the native half has one column and reads none. */
+  panes?: DoorPanes;
   /**
    * The step header (`SCR-M01-02`'s progress stepper). Under the door's breakpoint it leads the
    * column, above the identity's heading; on the web at the breakpoint it heads the task column.
@@ -48,6 +59,11 @@ export interface DoorFrameProps {
    * the window's foot under the breakpoint, and in reading order under the task from it.
    */
   footer?: ReactNode;
+  /**
+   * Told the held action's height, its padding included, each time it changes: what floats over the
+   * frame's foot (a toast) is placed clear of it, though the action's words wrap by language.
+   */
+  onFooterHeight?: (height: number) => void;
   /** Which measure the task column takes. The native half has one column and reads none. */
   taskMeasure?: DoorTaskMeasure;
   column?: DoorColumn;

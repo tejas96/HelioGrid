@@ -51,17 +51,16 @@ describe('setupStepOwed — the setup step a session is asked for (M01-10, F3-03
     expect(setupStepOwed(owner, [], atCompanyProfile)).toBe('business_profile');
   });
 
+  it('asks an owner whose company resumes at invite_team for the invite step', () => {
+    expect(setupStepOwed(owner, [], atInviteTeam)).toBe('invite_team');
+  });
+
   it('waits while an owner’s progress is still being read', () => {
     expect(setupStepOwed(owner, [], reading)).toBe('wait');
   });
 
   it.each([
     { why: 'the read got no answer: setup never holds a person', user: owner, read: unanswered },
-    {
-      why: 'the company resumes at invite_team, which has no screen yet',
-      user: owner,
-      read: atInviteTeam,
-    },
     { why: 'the company resumes at ready, which has no screen yet', user: owner, read: atReady },
     { why: 'the roles do not manage them, at the second step', user: seller, read: atWhatYouSell },
     { why: 'every step is answered', user: owner, read: closed },
@@ -82,6 +81,8 @@ describe('setupStepOwed — the setup step a session is asked for (M01-10, F3-03
     { putOff: ['language'], read: atLanguage, asked: 'what_you_sell' },
     { putOff: ['language', 'what_you_sell'], read: atLanguage, asked: 'business_profile' },
     { putOff: ['language'], read: atWhatYouSell, asked: 'what_you_sell' },
+    { putOff: ['what_you_sell', 'business_profile'], read: atWhatYouSell, asked: 'invite_team' },
+    { putOff: ['business_profile'], read: atCompanyProfile, asked: 'invite_team' },
   ] as const)(
     'passes over $putOff put off for the session and asks for $asked',
     ({ putOff, read, asked }) => {
@@ -91,13 +92,13 @@ describe('setupStepOwed — the setup step a session is asked for (M01-10, F3-03
 
   it.each([
     {
-      putOff: ['what_you_sell', 'business_profile'],
+      putOff: ['what_you_sell', 'business_profile', 'invite_team'],
       read: atWhatYouSell,
       why: 'no later step has a screen',
     },
     {
-      putOff: ['business_profile'],
-      read: atCompanyProfile,
+      putOff: ['invite_team'],
+      read: atInviteTeam,
       why: 'the last step with a screen is put off',
     },
     { putOff: ['what_you_sell'], read: unanswered, why: 'the read got no answer' },

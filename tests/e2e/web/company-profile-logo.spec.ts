@@ -5,10 +5,9 @@ import {
   COMPANY_PROFILE_PART_TITLE,
   companyLogoWords,
   createTranslator,
-  SHELL,
 } from '@heliogrid/i18n';
 import { expect, type Page, test } from '@playwright/test';
-import { companyProfileAct, reachCompanyProfileStep } from '../support/door';
+import { companyProfileAct, inviteStep, reachCompanyProfileStep } from '../support/door';
 import { freshMobile } from '../support/phone';
 import { pngOf } from '../support/png';
 
@@ -30,7 +29,6 @@ const FILE_ID = '5c1e3f0a-8b2d-4e6f-9a70-1d2c3b4a5e6f';
 const THE_STORE = 'http://localhost:9000/heliogrid-files-local/e2e-logo';
 const SIGNED = { 'content-type': 'image/png', 'x-amz-checksum-sha256': checksumSha256Of(TAKEN) };
 
-const shell = (page: Page) => page.getByRole('navigation', { name: en.t(SHELL.mainNavigation) });
 const identity = (page: Page) =>
   page
     .locator('.hg-accordion-toggle')
@@ -158,7 +156,7 @@ test('a good image is held as the logo, and the act stores it — declared, sent
   expect(upload.postDataBuffer()?.equals(TAKEN)).toBe(true);
   expect(upload.headers()).toMatchObject(SIGNED);
 
-  await expect(shell(page)).toBeVisible();
+  await expect(inviteStep(page, en)).toBeVisible();
   expect(named).toEqual([FILE_ID]);
   expect(calls).toEqual(['POST files', 'PUT e2e-logo', 'POST complete']);
 });
@@ -180,7 +178,7 @@ test('a save that fails after the logo is stored is sent again with the same fil
   await expect(page.getByText(en.t(COMPANY_LOGO.held))).toBeVisible();
   await page.getByRole('button', { name: en.t(COMPANY_PROFILE.retrySaveSpoken) }).click();
 
-  await expect(shell(page)).toBeVisible();
+  await expect(inviteStep(page, en)).toBeVisible();
   expect(named).toEqual([FILE_ID, FILE_ID]);
   expect(calls).toEqual(['POST files', 'PUT e2e-logo', 'POST complete']);
 });
@@ -220,5 +218,5 @@ test('a save with no image chosen never names a logo, so the api keeps the one i
   );
   await companyProfileAct(page, en).click();
   expect((await saved).postDataJSON()).not.toHaveProperty('logoFileId');
-  await expect(shell(page)).toBeVisible();
+  await expect(inviteStep(page, en)).toBeVisible();
 });

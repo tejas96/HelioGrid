@@ -33,7 +33,7 @@ type Need = GateProps['need'];
  * it once they are in (`M01-61`). One who was inside and left is not followed: after a sign-out the
  * next person in this tab starts at their own home.
  *
- * An owner who owes a setup step (`SCR-M01-03`, `SCR-M01-04`, `SCR-M01-05`) is inside, at the address they asked
+ * An owner who owes a setup step (`SCR-M01-03`, `SCR-M01-04`, `SCR-M01-05`, `SCR-M01-07`) is inside, at the address they asked
  * for: the step is drawn there in the group's place and has no address of its own, so the link
  * they opened is the page that follows it and Back has no step to return to.
  */

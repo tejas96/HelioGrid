@@ -2,9 +2,11 @@ import { OTP_LENGTH } from '@heliogrid/domain';
 import {
   COMPANY_PROFILE,
   COMPANY_SIGNUP,
+  inviteWords,
   SETUP_LANGUAGE,
   SETUP_WHAT_YOU_SELL,
   SIGN_IN,
+  setupInviteWords,
   type Translator,
 } from '@heliogrid/i18n';
 import { expect, type Page } from '@playwright/test';
@@ -194,7 +196,7 @@ export function companyProfileAct(page: Page, t: Translator) {
   return page.getByRole('button', { name: t.t(COMPANY_PROFILE.saveSpoken) });
 }
 
-/** The company profile passed as it stands: the act is live with nothing typed, and the home opens. */
+/** The company profile passed as it stands: the act is live with nothing typed, and the invite step opens. */
 export async function passCompanyProfileStep(page: Page, t: Translator): Promise<void> {
   const step = page.getByRole('heading', { name: t.t(COMPANY_PROFILE.title) });
   await expect(step).toBeVisible();
@@ -203,14 +205,28 @@ export async function passCompanyProfileStep(page: Page, t: Translator): Promise
   await expect(step).toBeHidden();
 }
 
+/** The invite step of setup (`SCR-M01-07`), by its heading. */
+export function inviteStep(page: Page, t: Translator) {
+  return page.getByRole('heading', { name: inviteWords(t.t).title, level: 1 });
+}
+
+/** The invite step skipped: it is recorded, so the company never asks for it again. */
+export async function skipInviteStep(page: Page, t: Translator): Promise<void> {
+  await expect(inviteStep(page, t)).toBeVisible();
+  await page.getByRole('button', { name: setupInviteWords(t.t).skip }).click();
+  await expect(inviteStep(page, t)).toBeHidden();
+}
+
 /**
- * A new number through signup and its three setup steps to the company's home: the one way a spec
- * obtains a person with a company of their own. Answers the company's name.
+ * A new number through signup and its four setup steps to the company's home, the invite skipped:
+ * the one way a spec obtains a person with a company of their own, and alone on its team. Answers
+ * the company's name.
  */
 export async function createCompany(page: Page, t: Translator, mobile: Mobile): Promise<string> {
   const company = await reachWhatYouSellStep(page, t, mobile);
   await passWhatYouSellStep(page, t);
   await passCompanyProfileStep(page, t);
+  await skipInviteStep(page, t);
   return company;
 }
 

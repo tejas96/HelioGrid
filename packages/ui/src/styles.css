@@ -75,6 +75,7 @@
 @import "./components/DocumentPreview/DocumentSheet.css";
 @import "./components/DoorCodeStep/DoorCodeStep.css";
 @import "./components/DoorFrame/DoorFrame.css";
+@import "./components/DoorFrame/DoorPanes.css";
 @import "./components/DoorLinkStep/DoorLinkStep.css";
 @import "./components/DoorNumberStep/DoorNumberStep.css";
 @import "./components/DoorSwitch/DoorSwitch.css";
@@ -135,6 +136,7 @@
 @import "./components/Select/Select.css";
 @import "./components/SettingsList/SettingsList.css";
 @import "./components/SetupLanguage/SetupLanguage.css";
+@import "./components/SetupInviteTeam/SetupInviteTeam.css";
 @import "./components/SetupWhatYouSell/SetupWhatYouSell.css";
 @import "./components/Sheet/OverlayShared.css";
 @import "./components/Sheet/Sheet.css";

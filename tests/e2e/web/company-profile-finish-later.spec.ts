@@ -13,6 +13,7 @@ import {
   abortWrites,
   answerWhatYouSell,
   companyProfileAct,
+  inviteStep,
   reachCompanyProfileByFinishLater,
 } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
@@ -78,7 +79,7 @@ test('Finish later after answers that were not saved opens the profile, which sa
     segment: TENANT_SEGMENTS[0],
     typicalSystemKwp: 5,
   });
-  await expect(shell(page)).toBeVisible();
+  await expect(inviteStep(page, en)).toBeVisible();
   // The answers are stored before their step is recorded, and no registration changed.
   expect(writes).toEqual([
     THE_PROFILES_WRITE,
@@ -87,7 +88,7 @@ test('Finish later after answers that were not saved opens the profile, which sa
   ]);
 
   await page.reload();
-  await expect(shell(page)).toBeVisible();
+  await expect(inviteStep(page, en)).toBeVisible();
   await expect(stepBefore(page)).toHaveCount(0);
 });
 
@@ -97,7 +98,7 @@ test('the profile saved without the two answers records its own step alone, and 
   await reachCompanyProfileByFinishLater(page, en, freshMobile(), theProfile);
   const writes = writesOf(page);
   await companyProfileAct(page, en).click();
-  await expect(shell(page)).toBeVisible();
+  await expect(inviteStep(page, en)).toBeVisible();
   expect(writes).toEqual([THE_PROFILES_WRITE, 'business_profile skipped']);
 
   await page.reload();
@@ -114,7 +115,7 @@ test('when the answers were stored and only their step was not, the profile read
 
   const writes = writesOf(page);
   await companyProfileAct(page, en).click();
-  await expect(shell(page)).toBeVisible();
+  await expect(inviteStep(page, en)).toBeVisible();
   expect(writes).toEqual([
     THE_PROFILES_WRITE,
     'what_you_sell completed',
@@ -122,7 +123,7 @@ test('when the answers were stored and only their step was not, the profile read
   ]);
 });
 
-test('after Finish later, Continue without it on a failed profile save opens the home with no step recorded', async ({
+test('after Finish later, Continue without it on a failed profile save opens the invite step with no step recorded', async ({
   page,
 }) => {
   await reachCompanyProfileByFinishLater(page, en, freshMobile(), theProfile);
@@ -130,7 +131,7 @@ test('after Finish later, Continue without it on a failed profile save opens the
   const writes = writesOf(page);
   await companyProfileAct(page, en).click();
   await page.getByRole('button', { name: en.t(COMPANY_PROFILE.onwardUnsavedSpoken) }).click();
-  await expect(shell(page)).toBeVisible();
+  await expect(inviteStep(page, en)).toBeVisible();
   expect(writes).toEqual([THE_PROFILES_WRITE]);
   await expect(heading(page)).toHaveCount(0);
 });

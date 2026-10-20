@@ -7,6 +7,7 @@ const LANDING_OF_STEP = {
   language: 'language-step',
   what_you_sell: 'what-you-sell-step',
   business_profile: 'company-profile-step',
+  invite_team: 'invite-team-step',
 } as const satisfies Record<SetupScreenStep, string>;
 export type SetupLanding = (typeof LANDING_OF_STEP)[SetupScreenStep];
 const SETUP_LANDINGS: readonly SessionLanding[] = Object.values(LANDING_OF_STEP);

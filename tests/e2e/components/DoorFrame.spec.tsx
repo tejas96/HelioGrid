@@ -1,6 +1,7 @@
 import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
 import { Button, type DoorColumn, DoorFrame, Text } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import type { Page } from '@playwright/test';
 import { resolvedLength } from '../support/token';
 
 /**
@@ -70,6 +71,14 @@ function placedDoor(column: DoorColumn, withLead: boolean) {
   );
 }
 
+/**
+ * Waits for the web fonts: a heading measured in the fallback face sits a pixel off where the
+ * loaded face puts it, which a busy run catches before the face arrives.
+ */
+async function settledType(page: Page) {
+  await page.evaluate(() => document.fonts.ready.then(() => undefined));
+}
+
 test.describe('at 375', () => {
   test.use({ viewport: { width: 375, height: 812 } });
 
@@ -78,6 +87,7 @@ test.describe('at 375', () => {
     page,
   }) => {
     const door = await mount(placedDoor('centred', false));
+    await settledType(page);
     const header = await door.locator('header').boundingBox();
     const heading = await door
       .getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) })
@@ -92,6 +102,7 @@ test.describe('at 375', () => {
 
   test('a deep column puts its heading sp-8 under the step header', async ({ mount, page }) => {
     const door = await mount(placedDoor('deep', true));
+    await settledType(page);
     const lead = await door.getByTestId('lead').boundingBox();
     const heading = await door
       .getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) })
@@ -103,6 +114,7 @@ test.describe('at 375', () => {
 
   test('a near column puts its heading sp-4 under the step header', async ({ mount, page }) => {
     const door = await mount(placedDoor('near', true));
+    await settledType(page);
     const lead = await door.getByTestId('lead').boundingBox();
     const heading = await door
       .getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) })
@@ -162,5 +174,77 @@ test.describe('at 1536', () => {
     expect(task?.x).toBeGreaterThan(identityRight);
     expect(lead?.y).toBeLessThan(task?.y ?? 0);
     expect(action?.y).toBeGreaterThan(task?.y ?? 0);
+  });
+});
+
+/** The onboarding steps' two panes (`SCR-M01-07` d-default, D261): an identity, a task and its act. */
+function onboardingTree() {
+  return (
+    <DoorFrame
+      panes="onboarding"
+      identity={<Text variant="h1">{en.t(COMPANY_SIGNUP.joinTitle)}</Text>}
+      footer={
+        <Button variant="primary" size="lg">
+          {en.t(COMPANY_SIGNUP.createAnyway)}
+        </Button>
+      }
+    >
+      <div data-testid="task" style={{ height: SHORT_TASK }} />
+    </DoorFrame>
+  );
+}
+
+test.describe('the onboarding panes at 1536', () => {
+  test.use({ viewport: { width: 1536, height: 1000 } });
+
+  test('the brand pane takes columns 1–4 at full height, the task pane columns 5–12', async ({
+    mount,
+    page,
+  }) => {
+    const door = await mount(onboardingTree());
+    const pane = await door.locator('.hg-door-identity').boundingBox();
+    const task = await door.getByTestId('task').boundingBox();
+    const heading = await door
+      .getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) })
+      .boundingBox();
+    const action = await door
+      .getByRole('button', { name: en.t(COMPANY_SIGNUP.createAnyway) })
+      .boundingBox();
+    const sp12 = await resolvedLength(page, '--sp-12');
+    const sp16 = await resolvedLength(page, '--sp-16');
+
+    expect(pane).toEqual({ x: 0, y: 0, width: 512, height: 1000 });
+    expect(heading?.x).toBe(sp12);
+    expect(task?.x).toBe(512 + sp16);
+    expect(task?.width).toBe(1024 - 2 * sp16);
+    expect(task?.y).toBe(heading?.y);
+    expect(action?.y).toBeGreaterThan((task?.y ?? 0) + (task?.height ?? 0));
+    await expect(door.locator('.hg-door-wordmark-desktop > *')).toHaveAttribute(
+      'style',
+      /--hg-wordmark-size: 30px/,
+    );
+  });
+});
+
+test.describe('the held action at 375', () => {
+  test.use({ viewport: { width: 375, height: 812 } });
+
+  test('tells its own height, so a toast can stand clear of it', async ({ mount }) => {
+    const heights: number[] = [];
+    const door = await mount(
+      <DoorFrame
+        identity={<Text variant="h1">{en.t(COMPANY_SIGNUP.joinTitle)}</Text>}
+        footer={
+          <Button variant="primary" size="lg" fullWidth>
+            {en.t(COMPANY_SIGNUP.createAnyway)}
+          </Button>
+        }
+        onFooterHeight={(height) => heights.push(height)}
+      >
+        <div data-testid="task" style={{ height: SHORT_TASK }} />
+      </DoorFrame>,
+    );
+    const footer = await door.locator('.hg-door-footer').boundingBox();
+    await expect.poll(() => heights.at(-1)).toBe(footer?.height);
   });
 });

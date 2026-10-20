@@ -22,6 +22,8 @@ export { usePagedList } from './use-paged-list';
 export { usePaginatedList } from './use-paginated-list';
 export { useSession } from './use-session';
 export { useSessionPhase } from './use-session-phase';
+export type { SetupInvite } from './use-setup-invite';
+export { useSetupInvite } from './use-setup-invite';
 export type { SetupLanguageStep } from './use-setup-language';
 export { useSetupLanguage } from './use-setup-language';
 export type { SetupWhatYouSellStep } from './use-setup-what-you-sell';

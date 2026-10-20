@@ -191,7 +191,7 @@ Corrected before approval (2026-10-08): the line read "an off-flow title `sp-8` 
 
 ### T-M01-007 · Invite Teammate
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped
 **Why:** The owner invites a surveyor by name and phone with the presets they need in one tap, from onboarding or from Team, and the invite reaches that phone as a message; without it a company stays one person.
 **PRD rows:** M01-12 (P0), F2-21 (P1)
 **DESIGN:** SCR-M01-07 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
@@ -213,7 +213,7 @@ Corrected before approval (2026-10-08): the line read "an off-flow title `sp-8` 
 |---|---|---|---|---|
 | a | Team life, the happy path: *Invite teammate* on Team (above the list head at 375, in the page head at 1536), the invite editor (sheet at 375, side panel at 1536), `OptionCardGroup`'s multi-select mode, the invite form, a send, and the no-role refusal — web and phone | AC-2, AC-3, AC-6, AC-11, AC-13, AC-14, AC-16 | `T-M01-012c` (#328, stacked) | shipped |
 | b | Every other answer to a send, in the Team life: already a member, already invited, number not covered, the cap, signed out, not allowed, a failed request — and their words; the teaching state's act — web and phone | AC-1, AC-7, AC-8, AC-9, AC-10, AC-12, AC-15, AC-19, AC-22, AC-23 | part a | shipped |
-| c | The corridor life: `invite_team` joins the steps with a screen (D208), `DoorFrame`'s onboarding panes at 1536 (D261), *Skip for now*, *Continue setup*, *Open Team* and the refusals in the corridor — web and phone | AC-4, AC-5, AC-17, AC-18, AC-20, AC-21, AC-24, AC-25 | part b | planned |
+| c | The corridor life: `invite_team` joins the steps with a screen (D208), `DoorFrame`'s onboarding panes at 1536 (D261), *Skip for now*, *Continue setup*, *Open Team* and the refusals in the corridor — web and phone | AC-4, AC-5, AC-17, AC-18, AC-20, AC-21, AC-24, AC-25 | part b | shipped |
 
 #### RFC
 
@@ -234,14 +234,14 @@ Corrected before approval (2026-10-08): the line read "an off-flow title `sp-8` 
 | Brief *number-not-covered* | **Missing** — the words: `apiErrorMessageId('DOMAIN_RULE_VIOLATION')` says "That change isn't allowed here." (`packages/i18n/src/copy/api-error.ts:38`). And not reachable from the app: `PhoneField` fixes the market's dial code (`PhoneField.types.ts:18`), which the market covers | as cited | the invite copy carries the board's line; the frame is proven by `InviteForm.spec.tsx` and the 422 by the api |
 | Brief *invite-cap-reached* vs `api-error.ts:62-64` | **Wrong** — *Your company has sent today's invites. Try again tomorrow.* contradicts the rolling 24 hours (M01-04; brief) | as cited | the screen draws the board's cap banner; the generic line and the api's envelope message (`apps/api/src/modules/invitation/invitation.service.ts:86-88`) are corrected to *Your company has reached its invite limit for the last 24 hours.* (part b) |
 | Brief, refusals in the Team life | **Missing** — only the corridor life is drawn; there *Open Team* points at the page already behind the editor, and *Skip for now* / *Continue setup* do not exist | brief *Entry & exit* | D4 |
-| Corridor *Open Team* | **Missing** — the gate draws the owed step in place of every inside route (`apps/web/features/auth/SessionGate.tsx:61-62`) and the phone mounts no shell while a step is owed (`apps/mobile/src/navigation/guards.ts:32-39`), so *Open Team* leads nowhere unless the step is put off first | as cited | *Open Team* puts `invite_team` off, then opens Team (AC-20) |
+| Corridor *Open Team* | **Missing** — the gate draws the owed step in place of every inside route (`apps/web/features/auth/SessionGate.tsx:61-62`) and the phone mounts no shell while a step is owed (`apps/mobile/src/navigation/guards.ts:32-39`), so *Open Team* leads nowhere unless the step is answered first | as cited | *Open Team* records `invite_team` `skipped`, then opens Team (AC-20) |
 | Carried from `T-M01-035` — the `join_requested` act | **Missing** — the notice carries the asker's name and phone only inside its translated title and body (`packages/i18n/src/copy/join-request.ts:9-26`); `notificationSchema` has no field for them (`packages/contracts/src/notification.ts:39-59`) and no notice has an act (`apps/web/features/notifications/NotificationCentre.tsx:87-91`) | as cited | D2 |
 | Deferred D261 | `DoorFrame` already draws the doors' two panes (`packages/ui/src/components/DoorFrame/DoorFrame.types.ts`) and the setup steps use it (`SetupWhatYouSell.native.tsx:6,37`) | Law 5 | `DoorFrame` gains `panes: 'door' \| 'onboarding'` (brand pane 4 of 12 with the `desktop-wide` bloom and the wordmark at 30) and an optional `trailing` (m-default draws none); D261's other half (move 01–05, or say why not) stays, `T-M01-006 starts` |
 | Deferred D208, D216, D240, D287, D290, D292, D282 | D208 (part c) and D216 (part a) join; D240 holds nothing these boards draw (`FormActionBar` is not on them; the shell rows shipped with `T-M01-012a`); the Team board fixes D287, D290, D292 and D282's `20px` on `SCR-M01-07` d-team are a `design/M01` lock (`.claude/skills/task/design-track.md` step 5) | `docs/tasks/deferred.md` | §14; D3 |
 | DONE WHEN 1 | confirmed and sharpened — `SCR-M01-12` m-teaching draws no top *Invite teammate*, only the `EmptyState` act (`SCR-M01-12-Team-Mobile.dc.html:199-205`); m-loading and m-error draw the top act | as cited | frame map; the 1536 teaching state keeps the page-head act and adds the `EmptyState` act, as d-default's head and m-teaching's body (`assumed` — the 1536 board has no teaching frame) |
 
 Assumptions:
-- *Skip for now* and *Continue setup* put the step off for this session (`putOffSetup('invite_team')`), as *Continue without it* does on the company profile (`packages/data/src/react/use-company-profile.ts:235-237`); a send records `invite_team` `completed`. The next sign-in asks again until one invite is sent — the rule the other steps follow.
+- *Skip for now* and *Continue setup* record `invite_team` `skipped`, and a send records it `completed`; a failed record puts it off for the session (`putOffSetup('invite_team')`). The step never comes back: Team is its one later place (owner ruling at part c build — the first reading put it off for the session, so it asked again on every reload and sign-in).
 - After the corridor step the company resumes at `ready`, which has no screen until `T-M01-006`, so each act lands on the home (`packages/domain/src/auth/setup-step.ts:38-40`).
 - A sent invite in the Team life closes the editor, the team read refreshes, focus returns to *Invite teammate*; no toast — the board draws none.
 - Name, phone and roles are checked by `useZodForm` over `createInvitationSchema` (`packages/contracts/src/invitation.ts:33`) with the forms error map: no second copy of `roleSetSchema.min(1)`; the zod error on `roles` is what raises the no-role banner. A name over 120 characters is refused by the same schema. The number is also held to the market's digit count (`phoneDigitsMismatch`, the door's rule) by `useInvite`'s schema, and answered in the door's words.
@@ -311,13 +311,14 @@ Files (part c, ~32 — D5):
 | action | path | purpose |
 |---|---|---|
 | modify | `packages/domain/src/auth/{setup-step.ts,landing.ts}`, `tests/auth/{setup-step.test.ts,landing.test.ts}` | `invite_team` has a screen (D208) |
-| modify | `packages/ui/src/components/DoorFrame/{DoorFrame.types.ts,DoorFrame.tsx,DoorFrame.native.tsx,DoorFrame.css}`, `tests/e2e/components/DoorFrame.spec.tsx` | the onboarding panes (D261) |
-| add | `packages/ui/src/components/SetupInviteTeam/{SetupInviteTeam.types.ts,SetupInviteTeam.tsx,SetupInviteTeam.native.tsx,SetupInviteTeam.css,index.ts}`, `tests/e2e/components/SetupInviteTeam.spec.tsx`; modify `packages/ui/src/index.ts` | the corridor step, composed once |
+| modify | `packages/ui/src/components/DoorFrame/{DoorFrame.types.ts,DoorFrame.tsx,DoorFrame.native.tsx}`, add `DoorPanes.css` (`DoorFrame.css` stands at 297 lines); modify `packages/ui/src/styles.css`, `tests/e2e/components/DoorFrame.spec.tsx` | the onboarding panes (D261; the native half draws one column); `onFooterHeight`, the held action's measured height, so a toast stands clear of it in any language (added at QA: a fixed offset overlapped the foot on iOS) |
+| add | `packages/ui/src/components/SetupInviteTeam/{SetupInviteTeam.types.ts,SetupInviteTeam.tsx,SetupInviteTeam.native.tsx,SetupInviteTeam.css,index.ts}`, `tests/e2e/components/{SetupInviteTeam.spec.tsx,SetupInviteTeam.story.tsx}`; modify `packages/ui/src/index.ts`, `packages/i18n/src/{copy/invite.ts,index.ts}`, `tests/invite.test.ts` (`setupInviteWords`: the step's acts and *After you send*, already in the catalog) | the corridor step, composed once; `leaving` holds its acts while the step is recorded (added at review) and `onActsHeight` forwards the frame's foot height to the screen's toast (added at QA) |
 | add | `packages/data/src/react/use-setup-invite.ts`; modify `src/react/index.ts` | the corridor's send, skip, continue and *Open Team* |
-| modify | `apps/web/app/(inside)/layout.tsx`, `apps/web/features/auth/constants.ts`, `apps/web/features/onboarding/index.ts`; add `apps/web/features/onboarding/SetupInviteTeamScreen.tsx` | web corridor |
+| modify | `apps/web/app/(inside)/layout.tsx`, `apps/web/features/auth/constants.ts`, `apps/web/features/onboarding/index.ts`, `apps/web/features/settings/index.ts` (`settingsRowPath`); add `apps/web/features/onboarding/SetupInviteTeamScreen.tsx` | web corridor |
+| add | `apps/web/features/team/components/use-invite-form.ts`, `apps/mobile/src/screens/team/components/use-invite-form.ts`; modify each app's `TeamInvite.tsx` and team `index.ts` | the form half of an invite host, lifted out of `useTeamInvite` so Team's editor and the setup step share it: it joins the form library and the words, which meet only in an app (`architecture.md` §2), so each app holds it once and the setup step reads it through Team's barrel (added at build) |
 | modify | `apps/mobile/src/navigation/{routes/app.ts,guards.ts}`; add `apps/mobile/src/screens/setup-invite-team/{SetupInviteTeamScreen.tsx,index.ts}` | phone corridor |
 | modify | `tests/invariants/src/e2e-flow-per-screen.ts` | `setup-invite-team` held beside its siblings — reached only after Create company, which no Maestro flow lands on iOS (`:57-72`) |
-| modify | `tests/e2e/web/{company-profile.spec.ts,company-profile-finish-later.spec.ts}`, add `tests/e2e/web/setup-invite-team.spec.ts` | the profile's way on now lands on the invite |
+| modify | `tests/e2e/web/{company-profile.spec.ts,company-profile-finish-later.spec.ts,company-profile-logo.spec.ts,company-signup.spec.ts}`, `tests/e2e/support/door.ts` (`createCompany` skips the invite, so every flow that makes a company is still alone on its team), add `tests/e2e/web/setup-invite-team.spec.ts` | the profile's way on now lands on the invite |
 | modify | `docs/tasks/deferred.md`, `docs/tasks/M01-onboarding.md` | records |
 
 **8. Diagram** — No boundary change.
@@ -341,7 +342,7 @@ Files (part c, ~32 — D5):
 **10. Risks**
 - Tenancy: none new — the route takes the tenant from the session; the screen never names one.
 - Permission: Team opens only for `onboarding.manage_team` (`packages/domain/src/shell/settings-rows.ts:36`), the corridor only for `onboarding.manage_tenant_settings` (`setup-step.ts:46`); today both are the EPC Owner's alone.
-- Release: a company whose profile is done meets the invite step on its next sign-in — intended (D208), skippable.
+- Release: a company whose profile is done meets the invite step once, on its next sign-in — intended (D208); a skip records it, so it does not come back.
 
 **11. Regression**
 - Team read and row acts (`T-M01-012c`): `MemberList.spec.tsx`, `TeamConfirm.spec.tsx`, `tests/e2e/web/more-team.spec.ts`; the phone's held head on scroll after the `ShellPage` change: P6.
@@ -351,7 +352,7 @@ Files (part c, ~32 — D5):
 
 **12. Acceptance criteria**
 - AC-1 … AC-4 — the four `DONE WHEN` lines, verbatim, in order.
-- AC-5 — Given the corridor, when the company profile is saved or put off, then the invite step opens; *Send invite* records `invite_team` `completed` and *Skip for now* puts it off, and each lands on the home until `T-M01-006` ships; after a skip the next sign-in asks again (D208).
+- AC-5 — Given the corridor, when the company profile is saved or put off, then the invite step opens; *Send invite* records `invite_team` `completed` and *Skip for now* records it `skipped`, and each lands on the home until `T-M01-006` ships; the step never comes back — Team is its one later place (M01 *Behavior detail*: "exactly one later prompt-point"; owner ruling at part c build, over the first reading that a skip only put it off).
 - AC-6 — Given the Team life, when an invite is sent, then the editor closes, focus returns to *Invite teammate*, and the new row shows among the invites, in name order.
 - AC-7 — Given a number already on the team, when it is sent, then 409 `ALREADY_MEMBER` shows the already-member banner, and *Use a different number* clears and focuses the phone and brings the roles back ticked.
 - AC-8 — Given a number with a live invite, then 409 `ALREADY_INVITED` shows the already-invited banner.
@@ -366,11 +367,11 @@ Files (part c, ~32 — D5):
 - AC-17 — Given the corridor at 1536, then `DoorFrame panes="onboarding"` draws d-default's two panes (D261).
 - AC-18 — Given the corridor at 375 on the phone, then m-default and its refusals draw as the frame map says.
 - AC-19 — Given a send answered 401, then the session ends to the door (the transport's rule); answered 403, then a danger toast says *You can no longer invite people to this company.* (`INVITE.forbidden`), the editor closes and the team reads again.
-- AC-20 — Given the phone corridor's *Open Team*, then the step is put off and the Team row opens.
-- AC-21 — Given the corridor, when the invite is sent but `PUT /onboarding/progress/invite_team` fails, then the step is put off for the session, the home opens, and the invite is not sent twice.
+- AC-20 — Given the phone corridor's *Open Team*, or *Continue setup* at the cap, then the step is recorded `skipped`; *Open Team* then opens the Team row.
+- AC-21 — Given the corridor, when the invite is sent or skipped but `PUT /onboarding/progress/invite_team` fails, then the step is put off for the session, the home opens, and the invite is not sent twice.
 - AC-22 — Given the phone, then AC-1 and AC-6 hold there too: *Invite teammate* and the teaching act open the sheet, a send closes it, and the list head still holds on scroll.
 - AC-23 — Given the phone, then the no-role refusal (AC-2) and the Team-life refusals (AC-7, AC-8, AC-10) hold there as on the web.
-- AC-24 — Given the web corridor at 375, then m-default draws as the frame map says, and *Open Team* puts the step off and opens `/more/team`.
+- AC-24 — Given the web corridor at 375, then m-default draws as the frame map says, and *Open Team* records the step `skipped` and opens `/more/team`.
 - AC-25 — Given the corridor, when a send fails on the network or a 5xx, then the step's own `ToastHost` (mounted as `CompanyProfileScreen.tsx` mounts it) shows AC-12's toast and the form keeps its values.
 - Layout, in every proof row at 375: the keyboard open over the sheet keeps the focused field and *Send invite* in view; every target is 44 px.
 
@@ -391,14 +392,14 @@ Files (part c, ~32 — D5):
 | P11 | AC-9, AC-12, AC-19 | main-dev | unit + component | `invite.test.ts` the outcome table (409 × 2, 422 × 2, 429, 401, 403, 5xx, network); `InviteForm.spec.tsx` the not-covered line; `invite.test.ts` (i18n) the forbidden and failed words | — |
 | P12 | AC-11 | main-dev | component | `InviteForm.spec.tsx` empty, 121-character name, short number → field errors and no send | — |
 | P12b | AC-13 | qa-web | web | double-click *Send invite* → one `POST /invitations` in the network log, one new row (the repo has no hook tests; the creation key is the client's) | …901 |
-| P13 | AC-5 | qa-web | web | a fresh company: profile saved → invite step; send → home; a second fresh company: skip → home; sign out and in → the invite step again | …907, …909 |
+| P13 | AC-5 | qa-web | web | a fresh company: profile saved → invite step; send → home, `invite_team completed` in the network log; a second fresh company: skip → home, `invite_team skipped`; reload, and sign out and in → the home, no invite step | …907, …909 |
 | P14 | AC-17 | qa-web | web | d-default against the frame map at 1536 | …907 |
 | P15 | AC-18 | qa-ios | iOS | m-default, m-blocked-no-role, m-already-member against the frame map | a fresh company …910 |
-| P16 | AC-20 | qa-ios | iOS | corridor *Open Team* (after P15's already-member) → Team opens; sign out and in → the invite step again | …910 |
-| P17 | AC-21 | main-dev | data | `use-setup-invite` spec: create 201, progress PUT 500 → `putOffSetup('invite_team')` called, one create | — |
+| P16 | AC-20 | qa-ios | iOS | corridor *Open Team* (after P15's already-member) → Team opens; sign out and in → the home, no invite step | …910 |
+| P17 | AC-21 | main-dev | web | live, the progress write failed in the page (its `fetch` refuses `PUT …/onboarding/progress/invite_team`): send → 201, the home opens, one `POST /invitations`; reload → the invite step again (put off, not recorded). `data` has no unit tests (`.claude/rules/testing.md`), so not a hook spec (corrected at part c build) | a fresh company …912 |
 | P19 | AC-23 | qa-ios | iOS | no role → the banner, no request (Metro log); an active member's number → the already-member banner; a pending invitee → the already-invited banner; signed in as …908's owner → the cap banner alone | …902, …908 |
-| P20 | AC-24 | qa-web | web | 375: m-default against the frame map; the already-member answer, then *Open Team* → `/more/team`; sign out and in → the invite step again | a fresh company …911 |
-| P21 | AC-25 | main-dev | component | `SetupInviteTeam.spec.tsx` "a failed send shows the toast and keeps the values" | — |
+| P20 | AC-24 | qa-web | web | 375: m-default against the frame map; the already-member answer, then *Open Team* → `/more/team`, `invite_team skipped`; sign out and in → the home | a fresh company …911 |
+| P21 | AC-25 | main-dev, qa-ios | web, iOS | live, the send failed in the page (its `fetch` refuses `POST …/invitations`): the step's toast says it did not send, the name, number and roles stay. The toast is the app's glue, not the component's, so not a component spec (corrected at part c build). iOS, in Hindi: the toast stands clear of the held acts (its offset is the step's own) | a fresh company …912 |
 | P18 | — | ci | e2e-web | `more-team.spec.ts`; `setup-invite-team.spec.ts`; `company-profile*.spec.ts` (no screenshot baselines since the owner ruling of 2026-10-20) | — |
 
 Android: `qa-android` rows on Team — the changed phone screen has no Maestro flow of its own (`team` is held in `tests/invariants/src/e2e-flow-per-screen.ts`), so CI's `android` lane never opens it (`/task` step 7; corrected at part a QA).
@@ -411,6 +412,7 @@ Android: `qa-android` rows on Team — the changed phone screen has no Maestro f
 - New: D293, the `join_requested` act (D2 A), `T-M01-013 starts`.
 - Part b: met by `PhoneField`'s focus handle and staying (they are its look, not focus): D177, D187, D194. New: D295 (the locked Team toast still prints the old cap words; the next `SCR-M01-12` board check), D296 (a 403 on the invite does not read the person again; `T-M01-013 starts`), D297 (the danger toast's tick mark and 43 px *Dismiss*; `touches ToastHost/`).
 - New: D294, the phone sheet does not scroll to the no-role refusal (part a review; needs the native `Sheet`, over 300 lines under D160), `touches packages/ui/src/components/Sheet/Sheet.native.tsx`.
+- Part c: met and staying — D297 (the danger toast's tick, seen again on the corridor's failed send). New: D298, the invite form's glue is one file per app, the same code twice (the gate's duplication report), `owner: rule where app-side form glue both apps share lives`.
 
 **15. Size** — about 95 changed files in all: part a ~57 (as shipped), part b ~38, part c ~32; ~2,000 code lines, ~1,100 test lines. Three parts, each end to end on web and phone; each part is one PR stacked on the one before.
 
