@@ -1,0 +1,28 @@
+// An icon is drawn by name: a component's own <svg> holds <ShellGlyphMarks name="…" />, never its
+// own <path>, <circle>, <rect>, <line>, <polyline>, <polygon> or <ellipse> (web or react-native-svg).
+// The files that draw computed shapes rather than icons — charts, the QR code's modules, the map's
+// vectors, the brand's gradient art — are left out by biome.json's `includes`. It cannot see a mark
+// imported under another name (`import { Path as P }`), nor the failed-panel alert in the two QRCode
+// files, which are left out whole for their modules; `inline-glyph` still refuses path data there.
+or {
+  JsxOpeningElement(name=$name),
+  JsxSelfClosingElement(name=$name)
+} as $mark where {
+  $name <: or {
+    "path",
+    "Path",
+    "circle",
+    "Circle",
+    "rect",
+    "Rect",
+    "line",
+    "Line",
+    "polyline",
+    "Polyline",
+    "polygon",
+    "Polygon",
+    "ellipse",
+    "Ellipse"
+  },
+  register_diagnostic(span=$mark, message="An icon mark drawn by hand — add the shape to SHELL_GLYPHS (AppShell/ShellGlyph.shapes.ts) and draw it by name with ShellGlyph or ShellGlyphMarks.")
+}

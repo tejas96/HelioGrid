@@ -2,8 +2,9 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
 
 /** `sheet` bodies are 280px wide and 28/24 padded; `panel` bodies 300px and 48 padded. */
@@ -58,15 +59,17 @@ export function OverlayError({ title, message, onRetry, variant, retryLabel }: O
   return (
     <View style={[styles.state, variant === 'panel' ? styles.panelPad : styles.sheetPad]}>
       <View style={styles.mark}>
-        <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-          <Path
-            d="M12 9v4M12 17h.01"
-            stroke={theme.colors['warning-text']}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <Circle cx={12} cy={12} r={9} stroke={theme.colors['warning-text']} strokeWidth={1.5} />
+        <Svg
+          width={22}
+          height={22}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={theme.colors['warning-text']}
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <ShellGlyphMarks name="alert-circle" />
         </Svg>
       </View>
       {title === undefined ? null : <Text style={titleStyle}>{title}</Text>}

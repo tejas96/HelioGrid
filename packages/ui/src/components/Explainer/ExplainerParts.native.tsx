@@ -1,9 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import { Linking, StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg, { G } from 'react-native-svg';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { type ExplainerPagerModel, INFO_GLYPH, type PlacedExplainer } from './Explainer.logic';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import type { ExplainerPagerModel, PlacedExplainer } from './Explainer.logic';
 import type { ExplainerAction } from './Explainer.types';
 
 /** The default "i", drawn from the same geometry as the web half's. */
@@ -19,9 +20,10 @@ export function InfoGlyph({ size, color }: { size: number; color: string }) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <Circle {...INFO_GLYPH.ring} />
-      <Path d={INFO_GLYPH.stem} />
-      <Circle {...INFO_GLYPH.dot} fill={color} stroke="none" />
+      <ShellGlyphMarks name="info-open" />
+      <G fill={color} stroke="none">
+        <ShellGlyphMarks name="info-dot" />
+      </G>
     </Svg>
   );
 }

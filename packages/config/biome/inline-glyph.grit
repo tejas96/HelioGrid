@@ -1,0 +1,18 @@
+// An icon's shape is drawn once, as a named entry of SHELL_GLYPHS (packages/ui's
+// AppShell/ShellGlyph.shapes.ts), so a string that is SVG path data is refused anywhere else:
+// M or m and a number, then either a path command letter or three more numbers, and nothing but
+// path characters ("M18 6 6 18M6 6l12 12", "m9 18 6-6-6-6"). A requirement id ("M01-04") has
+// neither, so it is never read as one. It cannot see path data built by concatenation
+// ('M18 6 ' + '6 18') or computed at run time; review holds those.
+or {
+  JsStringLiteralExpression(),
+  JsxString(),
+  JsTemplateChunkElement()
+} as $text where {
+  $text <: or {
+    includes "M",
+    includes "m"
+  },
+  $text <: r"(?s)^[\x22\x27\x60]?\s*[Mm]\s*-?[0-9.](?:[0-9\s.,\-]*[LlHhVvCcSsQqTtAaZzMm][0-9\s.,\-LlHhVvCcSsQqTtAaZzMm]*|[0-9.]*(?:[\s,]+-?[0-9.]+|-[0-9.]+){3,}\s*)[\x22\x27\x60]?$",
+  register_diagnostic(span=$text, message="SVG path data outside the glyph set — add the shape to SHELL_GLYPHS (AppShell/ShellGlyph.shapes.ts) and draw it by name with ShellGlyph or ShellGlyphMarks.")
+}

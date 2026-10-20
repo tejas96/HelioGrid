@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { isValidElement } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ComplianceFloorSpec } from './ComplianceFloor.types';
 import { complianceFloorWords } from './ComplianceFloor.words';
 
@@ -25,8 +26,7 @@ function ShieldGlyph({ size }: { size: number }) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <path d="M12 3.2 5 6.1v5.6c0 4.1 2.8 7.3 7 9 4.2-1.7 7-4.9 7-9V6.1l-7-2.9Z" />
-      <path d="M9.2 12.2l2 2 3.6-3.9" />
+      <ShellGlyphMarks name="shield-check" />
     </svg>
   );
 }

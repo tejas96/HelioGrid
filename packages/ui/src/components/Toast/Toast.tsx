@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ToastProps } from './Toast.types';
 
 interface WebToastProps extends ToastProps {
@@ -19,7 +20,7 @@ function CheckGlyph() {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <path d="M20 6 9 17l-5-5" />
+      <ShellGlyphMarks name="tick-long" />
     </svg>
   );
 }

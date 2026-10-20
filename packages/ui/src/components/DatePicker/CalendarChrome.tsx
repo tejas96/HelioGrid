@@ -1,3 +1,4 @@
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { DayMarker } from './DatePicker.types';
 
 interface CalendarNavProps {
@@ -28,7 +29,7 @@ export function CalendarNav({ dir, label, onClick }: CalendarNavProps) {
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <path d="m9 18 6-6-6-6" />
+        <ShellGlyphMarks name="chevron-right" />
       </svg>
     </button>
   );

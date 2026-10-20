@@ -16,6 +16,7 @@
    44×44 floor is kept in ReorderList.css instead. */
 
 import type { Ref } from 'react';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ReorderGlyph } from './ReorderList.defaults';
 import { REORDER_GLYPHS } from './ReorderList.defaults';
 
@@ -55,7 +56,7 @@ export function ReorderControl({
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <path d={REORDER_GLYPHS[kind]} />
+        <ShellGlyphMarks name={REORDER_GLYPHS[kind]} />
       </svg>
     </button>
   );

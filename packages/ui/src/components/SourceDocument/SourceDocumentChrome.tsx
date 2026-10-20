@@ -8,6 +8,8 @@
 
 import type { ReactNode } from 'react';
 import { Pressable } from '../../primitives/Pressable';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { Button } from '../Button/Button';
 
 export function Chrome({ children }: { children: ReactNode }) {
@@ -16,13 +18,13 @@ export function Chrome({ children }: { children: ReactNode }) {
 
 export function IconBtn({
   label,
-  path,
+  glyph,
   onClick,
   disabled,
   pressed,
 }: {
   label: string;
-  path: string;
+  glyph: ShellGlyphName;
   onClick: () => void;
   disabled?: boolean;
   pressed?: boolean;
@@ -46,7 +48,7 @@ export function IconBtn({
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <path d={path} />
+        <ShellGlyphMarks name={glyph} />
       </svg>
     </Pressable>
   );
@@ -113,17 +115,7 @@ export function Message({
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          {tone === 'warning' ? (
-            <>
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 8v4M12 16h.01" />
-            </>
-          ) : (
-            <>
-              <path d="M14 3v5h5" />
-              <path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8Z" />
-            </>
-          )}
+          <ShellGlyphMarks name={tone === 'warning' ? 'alert-circle-up' : 'file-plain'} />
         </svg>
       </span>
       <span className="hg-source-doc-message-title">{title}</span>

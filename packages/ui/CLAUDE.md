@@ -58,7 +58,11 @@ part there fails it.
 ## Local conventions
 
 - **An icon is drawn here, never imported** (Biome blocks lucide; any other icon package is
-  equally wrong). Copy `AppShell/ShellGlyph.logic.ts`.
+  equally wrong), and **only by name**: its shape is one entry of `SHELL_GLYPHS`
+  (`AppShell/ShellGlyph.shapes.ts`), reused before a new one is drawn. `ShellGlyph` draws it on
+  the size ladder; a component that keeps its own box puts `<ShellGlyphMarks name="…" />` inside
+  its `<svg>` and sets the size, stroke and colour there. Biome's `inline-glyph` and
+  `inline-svg-mark` refuse path data and marks written anywhere else.
 - The `design-system-props` invariant checks only that each design-system prop is declared;
   nothing compares the two halves, so the types file is what you must keep honest.
 - **Existing components still carry hard-coded English** and no check finds it — never copy that
@@ -66,6 +70,7 @@ part there fails it.
 
 ## Traps
 
+- A primitive is built before any component, but `primitives/Icon/AttentionGlyph` imports `components/AppShell/ShellGlyphMarks`: the glyph set lives under its design-system name, `ShellGlyph`, and is the system's, not the shell's → this is the one allowed primitive-to-component import; any other is the wrong direction.
 - Native clips a `Text`'s ink to its own box, so a line box shorter than the face's own line loses ो ी ं off the top and reads as a spacing bug; the box is raised to the bundled face's declared line, but a parent's `overflow: hidden` on a heading's top edge, or a style that shrinks the box, brings the clip back → leave the raised box alone and give the parent room.
 - React Native's `flattenStyle` copies EVERY key of every style object, `undefined` values included, so a later `{ x: maybeUndefined }` ERASES the `x` a variant beneath it set — on the phone only, since the web half does the opposite → append the object conditionally (`cond ? { x } : undefined`), never a key whose value may be undefined.
 - A web layout sized from the window (`vw`, `@media` widths) assumes it owns the page, but inside the shell a side list or a panel takes part of it, so a two-column component squeezes a column to nothing at mid widths → size it from its own room (`container` + `cqw`, `@container`), as `CompanyProfile`'s settings life does.

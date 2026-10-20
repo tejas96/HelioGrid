@@ -1,6 +1,7 @@
 import type { CSSProperties, KeyboardEvent } from 'react';
 import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { renderMarks } from '../ChipGroup';
 import { renderProvenance } from '../Provenance';
 import type { AccordionItem, AccordionProps } from './Accordion.types';
@@ -27,7 +28,7 @@ function Chevron({ open }: { open: boolean }) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <path d="m6 9 6 6 6-6" />
+      <ShellGlyphMarks name="chevron" />
     </svg>
   );
 }

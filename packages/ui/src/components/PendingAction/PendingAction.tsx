@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { isValidElement } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { Button } from '../Button/Button';
 import { RetryButton } from '../Button/RetryButton';
 import { IndeterminateRail } from './IndeterminateRail';
@@ -29,8 +30,7 @@ function ReturnGlyph() {
       aria-hidden="true"
       className="hg-pending-action-glyph"
     >
-      <path d="M9 14 5 10l4-4" />
-      <path d="M5 10h9a5 5 0 0 1 0 10h-3" />
+      <ShellGlyphMarks name="undo-step" />
     </svg>
   );
 }

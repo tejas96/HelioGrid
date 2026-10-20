@@ -2,16 +2,22 @@ import type { KeyboardEvent } from 'react';
 import { fieldBox } from '../../primitives/FieldBox';
 import { Icon } from '../../primitives/Icon';
 import { Pressable } from '../../primitives/Pressable';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { NumberDraftState } from './NumberField.state';
 
-const MINUS = 'M5 12h14';
-const PLUS = 'M12 5v14M5 12h14';
-
-function StepIcon({ d }: { d: string }) {
+function StepIcon({ glyph }: { glyph: ShellGlyphName }) {
   return (
     <Icon size="sm">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-        <path d={d} strokeLinecap="round" />
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        aria-hidden="true"
+      >
+        <ShellGlyphMarks name={glyph} />
       </svg>
     </Icon>
   );
@@ -87,7 +93,7 @@ export function NumberFieldBox({
           accessibilityLabel={`Decrease ${name}`}
           onPress={() => draft.nudge(-1)}
         >
-          <StepIcon d={MINUS} />
+          <StepIcon glyph="minus" />
         </Pressable>
       ) : null}
       <input
@@ -116,7 +122,7 @@ export function NumberFieldBox({
           accessibilityLabel={`Increase ${name}`}
           onPress={() => draft.nudge(1)}
         >
-          <StepIcon d={PLUS} />
+          <StepIcon glyph="plus" />
         </Pressable>
       ) : null}
     </div>

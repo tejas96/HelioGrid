@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { bannerKind, isNeverDismissible } from './Banner.kinds';
 import {
   ACTION_BELOW,
@@ -31,10 +32,7 @@ function Glyph({ name, size }: { name: BannerGlyph; size: number }) {
       aria-hidden="true"
       className="hg-banner-glyph"
     >
-      {BANNER_GLYPH[name].ringed ? <circle cx="12" cy="12" r="9" /> : null}
-      {BANNER_GLYPH[name].paths.map((d) => (
-        <path key={d} d={d} />
-      ))}
+      <ShellGlyphMarks name={BANNER_GLYPH[name]} />
     </svg>
   );
 }
@@ -131,7 +129,7 @@ export function Banner({
             strokeLinecap="round"
             aria-hidden="true"
           >
-            <path d="M18 6 6 18M6 6l12 12" />
+            <ShellGlyphMarks name="close" />
           </svg>
         </Pressable>
       ) : null}

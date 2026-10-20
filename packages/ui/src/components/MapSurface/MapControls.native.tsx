@@ -1,10 +1,11 @@
 import { theme } from '@heliogrid/theme';
-import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Circle, Path, Svg } from 'react-native-svg';
+import { Svg } from 'react-native-svg';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 
 const styles = StyleSheet.create({
   controls: {
@@ -34,31 +35,10 @@ const styles = StyleSheet.create({
   levelText: { fontWeight: '700' },
 });
 
-function stroke(d: string) {
-  return (
-    <Path
-      d={d}
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  );
-}
-
-const ZOOM_IN = stroke('M12 5v14M5 12h14');
-const ZOOM_OUT = stroke('M5 12h14');
-const RECENTRE = (
-  <>
-    {stroke('M12 3v3M12 18v3M3 12h3M18 12h3')}
-    <Circle cx={12} cy={12} r={4} stroke="currentColor" strokeWidth={1.5} fill="none" />
-  </>
-);
-
 interface CtrlProps {
   label: string;
   onPress: () => void;
-  glyph: ReactNode;
+  glyph: ShellGlyphName;
   disabled?: boolean;
 }
 
@@ -69,8 +49,15 @@ function Ctrl({ label, onPress, glyph, disabled = false }: CtrlProps) {
         size="md"
         color={disabled ? theme.colors['text-disabled'] : theme.colors['text-primary']}
       >
-        <Svg viewBox="0 0 24 24" fill="none">
-          {glyph}
+        <Svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <ShellGlyphMarks name={glyph} />
         </Svg>
       </Icon>
     </Pressable>
@@ -105,13 +92,13 @@ export function MapControls({
           label={zoom === undefined ? 'Zoom in' : `Zoom in — level ${zoom}`}
           onPress={() => onStepZoom(1)}
           disabled={zoom !== undefined && zoom >= maxZoom}
-          glyph={ZOOM_IN}
+          glyph="plus"
         />
         <Ctrl
           label={zoom === undefined ? 'Zoom out' : `Zoom out — level ${zoom}`}
           onPress={() => onStepZoom(-1)}
           disabled={zoom !== undefined && zoom <= minZoom}
-          glyph={ZOOM_OUT}
+          glyph="minus"
         />
       </View>
       {showZoomLevel && zoom !== undefined ? (
@@ -126,7 +113,7 @@ export function MapControls({
           <Ctrl
             label="Recentre — keeps this zoom"
             onPress={() => onRecenter({ zoom })}
-            glyph={RECENTRE}
+            glyph="recentre"
           />
         </View>
       )}

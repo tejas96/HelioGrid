@@ -1,6 +1,7 @@
 import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import type { ShellGlyphProps } from './AppShell.types';
 import { glyphMarks, glyphStroke } from './ShellGlyph.logic';
+import { ShellGlyphMarks } from './ShellGlyphMarks';
 
 /**
  * One of the shell's own glyphs. Decorative — the control that holds it carries the name — so it
@@ -12,7 +13,7 @@ export function ShellGlyph({
   size = 'lg',
   tone = 'secondary',
 }: ShellGlyphProps) {
-  const { marks, solid } = glyphMarks(name, filled);
+  const { solid } = glyphMarks(name, filled);
   const px = ICON_SIZE[size];
   return (
     <svg
@@ -28,13 +29,7 @@ export function ShellGlyph({
       className="hg-shell-glyph"
       data-tone={tone}
     >
-      {marks.map((mark) =>
-        mark.kind === 'path' ? (
-          <path key={mark.d} d={mark.d} />
-        ) : (
-          <circle key={`${mark.cx}-${mark.cy}`} cx={mark.cx} cy={mark.cy} r={mark.r} />
-        ),
-      )}
+      <ShellGlyphMarks name={name} filled={filled} />
     </svg>
   );
 }

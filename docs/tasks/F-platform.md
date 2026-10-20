@@ -1687,3 +1687,14 @@ These rows are screen rows: their verbatim text is the specification of a screen
 **DONE WHEN:**
 - A date's month and weekday names follow the reader's language through `useFormat`; the order and style stay the pack's. → proof: unit tests of the date formatter in English, Hindi and Marathi; QA of the centre and home in Hindi and Marathi.
 - Every number renders in Latin digits in every language, an ICU `#` and a plain `{n}` alike. → proof: a unit test of the i18n runtime over a plural and a count in Marathi.
+
+### T-FPLAT-088 · One glyph set — every icon in `packages/ui` drawn from `ShellGlyph`'s named shapes
+**Type:** port · **Tier:** P1
+**Status:** shipped
+**Why:** `packages/ui` draws its icons in many places. The `Icon` primitive only sizes a child svg (`packages/ui/src/primitives/Icon/Icon.tsx`); `ShellGlyph` holds the one named set (`packages/ui/src/components/AppShell/ShellGlyph.logic.ts`, now `ShellGlyph.shapes.ts`), but about 128 other files write their own path data, and the same shape is copied up to 20 times (the alert mark). Copies drift: three different ticks and two clocks already exist. `F7-19` asks for one icon family.
+**PRD rows:** `F7-19` (one icon family, outlined, one stroke).
+**Design:** none — no screen; no pixel moves.
+**Depends on:** none.
+**DONE WHEN:**
+- Every icon shape in `packages/ui/src` is a named entry of `SHELL_GLYPHS`; no SVG path data or icon mark is written anywhere else in `packages/ui/src`. → proof: the Biome plugins refuse a planted copy; `pnpm lint` green.
+- No screen moves: every replaced icon keeps its box, viewBox, stroke, colour and fill. → proof: a machine audit of every swap; component specs green; live rows on the built screens.

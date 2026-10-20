@@ -1,34 +1,15 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { isValidElement } from 'react';
 import { classNames } from '../../primitives/class-names';
-import type {
-  ActorClassName,
-  ActorClassProps,
-  ActorClassSpec,
-  ActorGlyphName,
-} from './ActorClass.types';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ACTOR_GLYPH } from './ActorClass.logic';
+import type { ActorClassName, ActorClassProps, ActorClassSpec } from './ActorClass.types';
 import { ACTOR_CLASSES, actorClassOptions, actorWords } from './ActorClass.types';
 
 interface WebActorClassProps extends ActorClassProps {
   className?: string;
   style?: CSSProperties;
 }
-
-const PATHS: Record<Exclude<ActorGlyphName, 'agent'>, ReactNode> = {
-  user: (
-    <>
-      <circle cx="12" cy="8" r="3.2" />
-      <path d="M5.5 20a6.5 6.5 0 0 1 13 0" />
-    </>
-  ),
-  cog: (
-    <>
-      <circle cx="12" cy="12" r="3" />
-      <path d="M12 4v2M12 18v2M4 12h2M18 12h2M6.5 6.5 8 8M16 16l1.5 1.5M17.5 6.5 16 8M8 16l-1.5 1.5" />
-    </>
-  ),
-  customer: <path d="M20 12a7.5 7.5 0 0 1-10.9 6.7L4 20l1.4-4.7A7.5 7.5 0 1 1 20 12z" />,
-};
 
 /** The class's glyph. The agent's is a gradient object, not an outlined icon (ICONOGRAPHY). */
 export function ActorGlyph({
@@ -56,7 +37,7 @@ export function ActorGlyph({
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      {glyph === 'agent' ? PATHS.cog : PATHS[glyph]}
+      <ShellGlyphMarks name={ACTOR_GLYPH[glyph]} />
     </svg>
   );
 }

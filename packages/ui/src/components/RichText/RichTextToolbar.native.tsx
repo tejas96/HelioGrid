@@ -1,11 +1,13 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { Path, Svg } from 'react-native-svg';
+import { Svg } from 'react-native-svg';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ToolCommand } from './RichText.commands';
-import { CMD, LINK_PATH } from './RichText.commands';
+import { CMD, LINK_GLYPH } from './RichText.commands';
 import type { RichTextTemplate } from './RichText.types';
 
 const styles = StyleSheet.create({
@@ -32,13 +34,13 @@ const styles = StyleSheet.create({
 interface ToolButtonProps {
   active?: boolean;
   label: string;
-  d?: string;
+  glyph?: ShellGlyphName;
   word?: string;
   onPress: () => void;
 }
 
 /** Every toolbar target is a Pressable, so every one of them is 44px. */
-function ToolButton({ active = false, label, d, word, onPress }: ToolButtonProps) {
+function ToolButton({ active = false, label, glyph, word, onPress }: ToolButtonProps) {
   const tint = active ? theme.colors.accent : theme.colors['text-secondary'];
   return (
     <Pressable
@@ -56,8 +58,15 @@ function ToolButton({ active = false, label, d, word, onPress }: ToolButtonProps
     >
       {word === undefined ? (
         <Icon size="sm" color={tint}>
-          <Svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-            <Path d={d} strokeLinecap="round" strokeLinejoin="round" />
+          <Svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            {glyph === undefined ? null : <ShellGlyphMarks name={glyph} />}
           </Svg>
         </Icon>
       ) : (
@@ -108,12 +117,12 @@ export function RichTextToolbar({
         <ToolButton
           key={c.key}
           label={c.label}
-          d={c.d}
+          glyph={c.glyph}
           active={marks[c.key] === true}
           onPress={() => onRun(c)}
         />
       ))}
-      <ToolButton label="Link" d={LINK_PATH} active={linking} onPress={onToggleLink} />
+      <ToolButton label="Link" glyph={LINK_GLYPH} active={linking} onPress={onToggleLink} />
       <View style={styles.divider} />
       <ToolButton
         label={hasLogo ? 'Remove the logo' : 'Add the logo'}

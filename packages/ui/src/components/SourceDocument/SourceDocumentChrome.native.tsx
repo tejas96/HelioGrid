@@ -9,11 +9,13 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { Linking, StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 
 const styles = StyleSheet.create({
   // Pinned, like the web half: a chrome that gives way to a long file name is a chrome that is cut.
@@ -83,13 +85,13 @@ export function Chrome({ children }: { children: ReactNode }) {
 
 export function IconBtn({
   label,
-  path,
+  glyph,
   onPress,
   disabled,
   pressed,
 }: {
   label: string;
-  path: string;
+  glyph: ShellGlyphName;
   onPress: () => void;
   disabled?: boolean;
   pressed?: boolean;
@@ -107,14 +109,17 @@ export function IconBtn({
       onPress={onPress}
       style={[styles.iconBtn, pressed ? styles.iconBtnPressed : null]}
     >
-      <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
-        <Path
-          d={path}
-          stroke={colour}
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+      <Svg
+        width={18}
+        height={18}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={colour}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <ShellGlyphMarks name={glyph} />
       </Svg>
     </Pressable>
   );
@@ -139,19 +144,17 @@ export function Message({
           takes the tile's fill, as on a Banner's tint, or it vanishes into the panel. */}
       <GroundProvider ground="tile">
         <View style={styles.mark}>
-          <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-            {warning ? <Circle cx={12} cy={12} r={9} stroke={mark} strokeWidth={1.5} /> : null}
-            <Path
-              d={
-                warning
-                  ? 'M12 8v4M12 16h.01'
-                  : 'M14 3v5h5M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8Z'
-              }
-              stroke={mark}
-              strokeWidth={1.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+          <Svg
+            width={20}
+            height={20}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={mark}
+            strokeWidth={1.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <ShellGlyphMarks name={warning ? 'alert-circle-up' : 'file-plain'} />
           </Svg>
         </View>
         <Text variant="body-sm" align="center" style={styles.messageTitle}>

@@ -1,3 +1,4 @@
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ResolvedStep } from './resolve-steps';
 import { stateWord } from './resolve-steps';
 import { StepperMarker } from './StepperMarker';
@@ -63,7 +64,7 @@ export function StepperRow({
             strokeLinejoin="round"
             aria-hidden="true"
           >
-            <path d="m9 18 6-6-6-6" />
+            <ShellGlyphMarks name="chevron-right" />
           </svg>
         ) : null}
       </button>

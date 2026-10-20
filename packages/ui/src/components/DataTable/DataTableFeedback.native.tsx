@@ -1,10 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
 
 /* DataTable — the loading skeleton, the blocked-state message and the row's own line. Split out
@@ -118,20 +119,16 @@ export function TableMessage({
   return (
     <View style={styles.message}>
       <View style={[styles.mark, tone === 'warning' ? styles.markWarning : null]}>
-        <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-          {tone === 'warning' ? (
-            <>
-              <Path d="M12 9v4M12 17h.01" stroke={stroke} strokeWidth={1.5} strokeLinecap="round" />
-              <Circle cx={12} cy={12} r={9} stroke={stroke} strokeWidth={1.5} />
-            </>
-          ) : (
-            <Path
-              d="M3 6h18M3 12h18M3 18h10"
-              stroke={stroke}
-              strokeWidth={1.5}
-              strokeLinecap="round"
-            />
-          )}
+        <Svg
+          width={22}
+          height={22}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={stroke}
+          strokeWidth={1.5}
+          strokeLinecap="round"
+        >
+          <ShellGlyphMarks name={tone === 'warning' ? 'alert-circle' : 'lines-wide'} />
         </Svg>
       </View>
       <Text variant="h4" align="center">
@@ -163,21 +160,17 @@ export function RowNote({
   const stroke = warn ? theme.colors['warning-text'] : theme.colors['success-text'];
   return (
     <View style={styles.note}>
-      <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
-        {warn ? (
-          <>
-            <Path d="M12 9v4M12 17h.01" stroke={stroke} strokeWidth={1.5} strokeLinecap="round" />
-            <Circle cx={12} cy={12} r={9} stroke={stroke} strokeWidth={1.5} />
-          </>
-        ) : (
-          <Path
-            d="m5 13 4 4L19 7"
-            stroke={stroke}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        )}
+      <Svg
+        width={16}
+        height={16}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={stroke}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <ShellGlyphMarks name={warn ? 'alert-circle' : 'tick'} />
       </Svg>
       <Text variant="body-sm" color={warn ? 'warning' : 'success'} style={styles.noteText}>
         {text}

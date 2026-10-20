@@ -10,9 +10,10 @@
 
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import type { TimelineStatus } from './Timeline.types';
 
@@ -101,32 +102,46 @@ export function TimelineNode({
         ]}
       >
         {status === 'done' ? (
-          <Svg width={inner} height={inner} viewBox="0 0 12 12" fill="none">
-            <Path
-              d="M2.5 6.5 5 9l4.5-5"
-              stroke={tick}
-              strokeWidth={2.2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+          <Svg
+            width={inner}
+            height={inner}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={tick}
+            strokeWidth={4.4}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <ShellGlyphMarks name="tick-small" />
           </Svg>
         ) : null}
         {status === 'current' ? (
           <View style={[styles.core, { width: inner - 2, height: inner - 2 }]} />
         ) : null}
         {status === 'blocked' ? (
-          <Svg width={inner} height={inner} viewBox="0 0 12 12" fill="none">
-            <Path d="M6 3v3.5M6 9h.01" stroke={tick} strokeWidth={2} strokeLinecap="round" />
+          <Svg
+            width={inner}
+            height={inner}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={tick}
+            strokeWidth={4}
+            strokeLinecap="round"
+          >
+            <ShellGlyphMarks name="alert-small" />
           </Svg>
         ) : null}
         {status === 'failed' ? (
-          <Svg width={inner} height={inner} viewBox="0 0 12 12" fill="none">
-            <Path
-              d="M3.5 3.5l5 5M8.5 3.5l-5 5"
-              stroke={tick}
-              strokeWidth={2}
-              strokeLinecap="round"
-            />
+          <Svg
+            width={inner}
+            height={inner}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={tick}
+            strokeWidth={4}
+            strokeLinecap="round"
+          >
+            <ShellGlyphMarks name="close-small" />
           </Svg>
         ) : null}
       </View>
@@ -185,21 +200,17 @@ export function TimelineMessage({
           },
         ]}
       >
-        <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-          <Circle
-            cx={12}
-            cy={12}
-            r={9}
-            stroke={warning ? theme.colors['warning-text'] : theme.colors['text-tertiary']}
-            strokeWidth={1.5}
-          />
-          <Path
-            d={warning ? 'M12 9v4M12 17h.01' : 'M12 7v5l3 2'}
-            stroke={warning ? theme.colors['warning-text'] : theme.colors['text-tertiary']}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+        <Svg
+          width={22}
+          height={22}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={warning ? theme.colors['warning-text'] : theme.colors['text-tertiary']}
+          strokeWidth={1.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <ShellGlyphMarks name={warning ? 'alert-circle' : 'clock-tall'} />
         </Svg>
       </View>
       <Text variant="body-lg" align="center" style={styles.messageTitle}>

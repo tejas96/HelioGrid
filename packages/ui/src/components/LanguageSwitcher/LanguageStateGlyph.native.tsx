@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { LanguageContentState } from './LanguageSwitcher.types';
 
 const styles = StyleSheet.create({
@@ -26,15 +27,17 @@ export function LanguageStateGlyph({ state, active }: LanguageStateGlyphProps) {
 
   if (state === 'inherited') {
     return (
-      <Svg width={12} height={12} viewBox="0 0 24 24" fill="none">
-        <Path d="M12 3 3 8l9 5 9-5-9-5Z" stroke={colour} strokeWidth={1.5} strokeLinejoin="round" />
-        <Path
-          d="m3 14 9 5 9-5"
-          stroke={colour}
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+      <Svg
+        width={12}
+        height={12}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={colour}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <ShellGlyphMarks name="layers" />
       </Svg>
     );
   }

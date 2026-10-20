@@ -1,8 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { UnavailableNoteProps } from './UnavailableNote.types';
 import { isBlockedState, SURFACE_STATES } from './UnavailableNote.types';
 
@@ -16,14 +17,16 @@ interface NativeUnavailableNoteProps extends UnavailableNoteProps {
  */
 function Glyph({ size }: { size: number }) {
   return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Circle cx={12} cy={12} r={9} stroke={theme.colors['text-tertiary']} strokeWidth={1.5} />
-      <Path
-        d="m5.6 5.6 12.8 12.8"
-        stroke={theme.colors['text-tertiary']}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-      />
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={theme.colors['text-tertiary']}
+      strokeWidth={1.5}
+      strokeLinecap="round"
+    >
+      <ShellGlyphMarks name="blocked" />
     </Svg>
   );
 }

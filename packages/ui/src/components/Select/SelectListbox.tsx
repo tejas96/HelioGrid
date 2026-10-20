@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { renderActionReason } from '../ActionReason';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { SelectOption } from './Select.types';
 
 interface SelectListboxProps {
@@ -85,7 +86,7 @@ export function SelectListbox({
                   strokeLinejoin="round"
                   aria-hidden="true"
                 >
-                  <path d="M20 6 9 17l-5-5" />
+                  <ShellGlyphMarks name="tick-long" />
                 </svg>
               ) : null}
             </span>

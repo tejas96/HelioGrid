@@ -1,8 +1,9 @@
 import { theme } from '@heliogrid/theme';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import type { ShellGlyphProps } from './AppShell.types';
 import { glyphMarks, glyphStroke } from './ShellGlyph.logic';
+import { ShellGlyphMarks } from './ShellGlyphMarks.native';
 
 /* react-native-svg has no currentColor, so the tone resolves to its token here. */
 const TONE: Record<NonNullable<ShellGlyphProps['tone']>, string> = {
@@ -23,7 +24,7 @@ export function ShellGlyph({
   size = 'lg',
   tone = 'secondary',
 }: ShellGlyphProps) {
-  const { marks, solid } = glyphMarks(name, filled);
+  const { solid } = glyphMarks(name, filled);
   const px = ICON_SIZE[size];
   const color = TONE[tone];
   return (
@@ -39,13 +40,7 @@ export function ShellGlyph({
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
     >
-      {marks.map((mark) =>
-        mark.kind === 'path' ? (
-          <Path key={mark.d} d={mark.d} />
-        ) : (
-          <Circle key={`${mark.cx}-${mark.cy}`} cx={mark.cx} cy={mark.cy} r={mark.r} />
-        ),
-      )}
+      <ShellGlyphMarks name={name} filled={filled} />
     </Svg>
   );
 }

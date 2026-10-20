@@ -1,6 +1,7 @@
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import { useState } from 'react';
 import { StatusMark } from '../../primitives/StatusMark';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { MapPin } from './MapSurface.types';
 import { MAP_PIN_COLOR, MAP_SURFACE } from './MapTokens';
 
@@ -65,22 +66,17 @@ export function MapLocationPin({ pin, pinState, fixed, draggable, onDrag }: MapL
       >
         {confirmed ? null : <span aria-hidden="true" className="hg-map-surface-pin-halo" />}
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path
-            d="M12 22s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"
-            fill={confirmed ? colour : MAP_SURFACE}
-            stroke={colour}
-            strokeWidth="1.8"
-          />
+          <g fill={confirmed ? colour : MAP_SURFACE} stroke={colour} strokeWidth="1.8">
+            <ShellGlyphMarks name="pin" />
+          </g>
           {confirmed ? (
-            <path
-              d="M8.6 10.9l2.4 2.3 4-4.3"
-              stroke={MAP_SURFACE}
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+            <g stroke={MAP_SURFACE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <ShellGlyphMarks name="pin-tick" />
+            </g>
           ) : (
-            <circle cx="12" cy="11" r="2.6" stroke={colour} strokeWidth="1.8" />
+            <g stroke={colour} strokeWidth="1.8">
+              <ShellGlyphMarks name="pin-hole" />
+            </g>
           )}
         </svg>
       </span>

@@ -1,8 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { Circle, Path, Svg } from 'react-native-svg';
+import { Svg } from 'react-native-svg';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import { MapSkeleton } from './MapSkeleton.native';
@@ -36,29 +37,29 @@ const styles = StyleSheet.create({
   },
 });
 
-function stroke(d: string) {
-  return (
-    <Path
-      d={d}
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  );
-}
-
 const ALERT = (
-  <Svg viewBox="0 0 24 24" fill="none">
-    {stroke('M12 9v4M12 17h.01')}
-    <Circle cx={12} cy={12} r={9} stroke="currentColor" strokeWidth={1.5} fill="none" />
+  <Svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.5}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <ShellGlyphMarks name="alert-circle" />
   </Svg>
 );
 
 const EMPTY = (
-  <Svg viewBox="0 0 24 24" fill="none">
-    {stroke('M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z')}
-    {stroke('M9 4v14M15 6v14')}
+  <Svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.5}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <ShellGlyphMarks name="map" />
   </Svg>
 );
 

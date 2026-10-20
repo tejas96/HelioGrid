@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { useImperativeHandle, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { FiltersButton } from '../FilterBar';
 import type { FocusHandle, SearchFieldProps } from './SearchField.types';
 
@@ -68,8 +69,7 @@ function SearchPill({
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <circle cx="11" cy="11" r="7" />
-        <path d="m20 20-3.5-3.5" />
+        <ShellGlyphMarks name="search" />
       </svg>
       <input
         ref={(element) => {
@@ -103,7 +103,7 @@ function SearchPill({
               strokeLinecap="round"
               aria-hidden="true"
             >
-              <path d="M18 6 6 18M6 6l12 12" />
+              <ShellGlyphMarks name="close" />
             </svg>
           </span>
         </button>

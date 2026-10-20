@@ -188,10 +188,3 @@ export function auditExplainerPages(pages: readonly ReactNode[]): ExplainerViola
   walk(pages);
   return hits;
 }
-
-/** The default "i", drawn once: a 24-unit circle, the stem, and the dot above it. */
-export const INFO_GLYPH = {
-  ring: { cx: 12, cy: 12, r: 9 },
-  stem: 'M12 11.25v5',
-  dot: { cx: 12, cy: 7.6, r: 1 },
-} as const;

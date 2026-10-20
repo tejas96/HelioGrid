@@ -1,12 +1,14 @@
 import type { MouseEvent, ReactNode } from 'react';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ToolCommand } from './RichText.commands';
-import { CMD, LINK_PATH } from './RichText.commands';
+import { CMD, LINK_GLYPH } from './RichText.commands';
 import type { RichTextTemplate } from './RichText.types';
 
 interface ToolButtonProps {
   active?: boolean;
   label: string;
-  d?: string;
+  glyph?: ShellGlyphName;
   onMouseDown: (e: MouseEvent<HTMLButtonElement>) => void;
   children?: ReactNode;
 }
@@ -16,7 +18,13 @@ interface ToolButtonProps {
  * `preventDefault`, which is the ONLY thing that keeps the caret selection alive while the
  * command runs. Pressable is a click primitive. The 44px floor is held in RichText.css instead.
  */
-export function ToolButton({ active = false, label, d, onMouseDown, children }: ToolButtonProps) {
+export function ToolButton({
+  active = false,
+  label,
+  glyph,
+  onMouseDown,
+  children,
+}: ToolButtonProps) {
   return (
     <button
       type="button"
@@ -35,9 +43,11 @@ export function ToolButton({ active = false, label, d, onMouseDown, children }: 
           fill="none"
           stroke="currentColor"
           strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           aria-hidden="true"
         >
-          <path d={d} strokeLinecap="round" strokeLinejoin="round" />
+          {glyph === undefined ? null : <ShellGlyphMarks name={glyph} />}
         </svg>
       )}
     </button>
@@ -78,14 +88,14 @@ export function RichTextToolbar({
         <ToolButton
           key={c.key}
           label={c.label}
-          d={c.d}
+          glyph={c.glyph}
           active={marks[c.key] === true}
           onMouseDown={(e) => onRun(e, c)}
         />
       ))}
       <ToolButton
         label="Link"
-        d={LINK_PATH}
+        glyph={LINK_GLYPH}
         active={linking}
         onMouseDown={(e) => {
           e.preventDefault();

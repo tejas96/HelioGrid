@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { UnavailableNoteProps } from './UnavailableNote.types';
 import { isBlockedState, SURFACE_STATES } from './UnavailableNote.types';
 
@@ -23,8 +24,7 @@ function Glyph() {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <circle cx="12" cy="12" r="9" />
-      <path d="m5.6 5.6 12.8 12.8" />
+      <ShellGlyphMarks name="blocked" />
     </svg>
   );
 }

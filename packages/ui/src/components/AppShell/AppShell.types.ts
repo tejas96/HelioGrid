@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { ShellGlyphName } from './ShellGlyph.shapes';
 
 /**
  * Which semantic pair the pill uses. The numeral is **words**, so the fill is the `-bg` tint and
@@ -123,37 +124,7 @@ export interface MobileTopBarProps {
   scrolled?: boolean;
 }
 
-/** The shapes the shell draws itself — named for the shape, never the product word. */
-export type ShellGlyphName =
-  | 'house'
-  | 'people'
-  | 'document'
-  | 'board'
-  | 'pair'
-  | 'megaphone'
-  | 'dots'
-  | 'plus-circle'
-  | 'plus'
-  | 'search'
-  | 'bell'
-  | 'chevron'
-  | 'chevron-right'
-  | 'chevron-left'
-  | 'shield'
-  | 'building'
-  | 'palette'
-  | 'calendar-clock'
-  | 'package'
-  | 'headset'
-  | 'wallet'
-  | 'credit-card'
-  | 'gauge'
-  | 'sign-out'
-  | 'lock'
-  | 'download'
-  | 'undo'
-  | 'user-minus'
-  | 'send';
+export type { ShellGlyphName };
 
 export type ShellGlyphSize = 'sm' | 'md' | 'lg' | 'xl';
 

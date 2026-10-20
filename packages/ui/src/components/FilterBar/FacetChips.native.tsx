@@ -1,9 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { FacetChipsProps } from './FilterBar.types';
 import { optionIcon, optionLabel, optionValue } from './FilterBar.types';
 import {
@@ -24,14 +25,15 @@ const styles = StyleSheet.create({
 function Tick({ color }: { color: string }) {
   return (
     <Icon size="sm" color={color}>
-      <Svg viewBox="0 0 24 24" fill="none">
-        <Path
-          d="m5 13 4 4L19 7"
-          stroke={color}
-          strokeWidth={2.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+      <Svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={color}
+        strokeWidth={2.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <ShellGlyphMarks name="tick" />
       </Svg>
     </Icon>
   );

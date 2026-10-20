@@ -3,6 +3,7 @@ import { useId, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { clampCount } from '../../utils/count';
 import { renderActionReason } from '../ActionReason';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { renderMarks } from '../ChipGroup';
 import { hasReason, normalise } from './SegmentedControl.options';
 import type { SegmentedControlProps, SegmentedOption } from './SegmentedControl.types';
@@ -210,8 +211,7 @@ function OffGlyph() {
       aria-hidden="true"
       className="hg-segmented-control-off-glyph"
     >
-      <circle cx="12" cy="12" r="9" />
-      <path d="M8.5 12h7" />
+      <ShellGlyphMarks name="minus-circle-short" />
     </svg>
   );
 }

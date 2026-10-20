@@ -1,8 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path, Rect } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
 
 const styles = StyleSheet.create({
@@ -75,18 +76,16 @@ export function CompareMessage({
   return (
     <View style={styles.message}>
       <View style={[styles.mark, tone === 'warning' ? styles.markWarning : null]}>
-        <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-          {tone === 'warning' ? (
-            <>
-              <Path d="M12 9v4M12 17h.01" stroke={stroke} strokeWidth={1.5} strokeLinecap="round" />
-              <Circle cx={12} cy={12} r={9} stroke={stroke} strokeWidth={1.5} />
-            </>
-          ) : (
-            <>
-              <Rect x={3} y={4} width={7} height={16} rx={1.5} stroke={stroke} strokeWidth={1.5} />
-              <Rect x={14} y={4} width={7} height={16} rx={1.5} stroke={stroke} strokeWidth={1.5} />
-            </>
-          )}
+        <Svg
+          width={22}
+          height={22}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={stroke}
+          strokeWidth={1.5}
+          strokeLinecap="round"
+        >
+          <ShellGlyphMarks name={tone === 'warning' ? 'alert-circle' : 'columns'} />
         </Svg>
       </View>
       <Text variant="h4" align="center">

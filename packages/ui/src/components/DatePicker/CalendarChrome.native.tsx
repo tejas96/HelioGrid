@@ -1,7 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import { Text as RNText, StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { DayMarker, DayMarkerTone } from './DatePicker.types';
 
 const CELL = 44;
@@ -80,14 +81,17 @@ interface CalendarNavProps {
 export function CalendarNav({ dir, label, onPress }: CalendarNavProps) {
   return (
     <Pressable accessibilityLabel={label} onPress={onPress} style={styles.nav}>
-      <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
-        <Path
-          d={dir < 0 ? 'm15 18-6-6 6-6' : 'm9 18 6-6-6-6'}
-          stroke={theme.colors['text-secondary']}
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+      <Svg
+        width={18}
+        height={18}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={theme.colors['text-secondary']}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <ShellGlyphMarks name={dir < 0 ? 'chevron-left' : 'chevron-right'} />
       </Svg>
     </Pressable>
   );

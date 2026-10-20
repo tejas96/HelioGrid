@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { AllocationModel } from './AllocationMeter.model';
 import { allocationModel, formatAllocation, partValue } from './AllocationMeter.model';
 import type {
@@ -26,14 +27,14 @@ function Mark({ state }: { state: AllocationState }) {
         aria-hidden="true"
         width="9"
         height="9"
-        viewBox={met ? '0 0 12 12' : '0 0 24 24'}
+        viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth={met ? '2.4' : '3'}
+        strokeWidth={met ? '4.8' : '3'}
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <path d={met ? 'M2.5 6.5 5 9l4.5-5' : 'M12 6v12M6 12h12'} />
+        <ShellGlyphMarks name={met ? 'tick-small' : 'plus-small'} />
       </svg>
     </span>
   );

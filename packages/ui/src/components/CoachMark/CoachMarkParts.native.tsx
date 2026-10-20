@@ -1,8 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { CoachMarkRect, PlacedCoachMark } from './coach-mark-place';
 
 /** The system's own 2px accent ring around the live control. There is no scrim. */
@@ -54,7 +55,7 @@ export function CoachMarkHead({ counter, title, dismissLabel, onDismiss }: HeadP
             strokeWidth={2}
             strokeLinecap="round"
           >
-            <Path d="M18 6 6 18M6 6l12 12" />
+            <ShellGlyphMarks name="close" />
           </Svg>
         </Pressable>
       )}

@@ -4,8 +4,9 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
 import { ProvenanceTier } from '../Provenance/Provenance.native';
 import type { ProvenanceTierSpec } from '../Provenance/Provenance.types';
@@ -144,14 +145,17 @@ function Side({
 function Arrow({ down }: { down?: boolean }) {
   return (
     <View style={down ? styles.arrowDown : null}>
-      <Svg width={14} height={14} viewBox="0 0 24 24" fill="none">
-        <Path
-          d={down ? 'M12 5v14M6 13l6 6 6-6' : 'M5 12h14M13 6l6 6-6 6'}
-          stroke={theme.colors['text-tertiary']}
-          strokeWidth={1.8}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+      <Svg
+        width={14}
+        height={14}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={theme.colors['text-tertiary']}
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <ShellGlyphMarks name={down ? 'arrow-down' : 'arrow-right-full'} />
       </Svg>
     </View>
   );

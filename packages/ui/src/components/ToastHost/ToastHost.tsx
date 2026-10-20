@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { Toast } from '../Toast/Toast';
 import type { ToastHostProps, ToastItem } from './ToastHost.types';
 
@@ -23,7 +24,7 @@ function DismissGlyph() {
       strokeLinecap="round"
       aria-hidden="true"
     >
-      <path d="M18 6 6 18M6 6l12 12" />
+      <ShellGlyphMarks name="close" />
     </svg>
   );
 }

@@ -1,3 +1,4 @@
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ResolvedStep } from './resolve-steps';
 
 interface StepperMarkerProps {
@@ -22,15 +23,15 @@ export function StepperMarker({ index, size = 28, step }: StepperMarkerProps) {
         <svg
           width="13"
           height="13"
-          viewBox="0 0 12 12"
+          viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2.2"
+          strokeWidth="4.4"
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          <path d="M2.5 6.5 5 9l4.5-5" />
+          <ShellGlyphMarks name="tick-small" />
         </svg>
       ) : null}
       {step.state === 'errors' ? (
@@ -44,7 +45,7 @@ export function StepperMarker({ index, size = 28, step }: StepperMarkerProps) {
           strokeLinecap="round"
           aria-hidden="true"
         >
-          <path d="M12 7v6m0 3.5v.01" />
+          <ShellGlyphMarks name="alert-bold" />
         </svg>
       ) : null}
       {step.state === 'in-progress' || step.state === 'not-started' ? index + 1 : null}

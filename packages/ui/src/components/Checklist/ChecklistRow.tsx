@@ -1,6 +1,7 @@
 import { Icon } from '../../primitives/Icon';
 import { Pressable } from '../../primitives/Pressable';
 import { renderActorClass } from '../ActorClass';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { renderPending } from '../PendingAction';
 import type { ChecklistItem, ChecklistProps } from './Checklist.types';
 
@@ -23,15 +24,15 @@ function TickBox({
     >
       {done && printable !== true ? (
         <svg
-          viewBox="0 0 12 12"
+          viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2.2"
+          strokeWidth="4.4"
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          <path d="M2.5 6.5 5 9l4.5-5" />
+          <ShellGlyphMarks name="tick-small" />
         </svg>
       ) : null}
     </span>
@@ -74,7 +75,7 @@ function Body({ item, number }: { item: ChecklistItem; number: string | number }
               strokeLinejoin="round"
               aria-hidden="true"
             >
-              <path d="M7 17 17 7M17 7h-7m7 0v7" />
+              <ShellGlyphMarks name="arrow-up-right" />
             </svg>
           </Icon>
         </a>

@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { isValidElement } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ActionReasonSpec } from './ActionReason.types';
 
 interface WebActionReasonProps extends ActionReasonSpec {
@@ -23,8 +24,7 @@ function BarredCircle({ size }: { size: number }) {
       strokeLinecap="round"
       aria-hidden="true"
     >
-      <circle cx="12" cy="12" r="9" />
-      <path d="M8 12h8" />
+      <ShellGlyphMarks name="minus-circle" />
     </svg>
   );
 }

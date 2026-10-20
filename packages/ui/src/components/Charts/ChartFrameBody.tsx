@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Icon } from '../../primitives/Icon';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
 import type { ChartNote, ChartSurfaceState } from './chart-state';
@@ -26,8 +27,7 @@ const AlertGlyph = (
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    <path d="M12 9v4M12 17h.01" />
-    <circle cx="12" cy="12" r="9" />
+    <ShellGlyphMarks name="alert-circle" />
   </svg>
 );
 

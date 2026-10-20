@@ -1,8 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Checkbox } from '../Checkbox/Checkbox.native';
@@ -22,14 +23,18 @@ const styles = StyleSheet.create({
 
 function SortGlyph({ dir, active }: { dir: DataTableSort['dir'] | null; active: boolean }) {
   return (
-    <Svg width={12} height={12} viewBox="0 0 12 12" fill="none" opacity={active ? 1 : 0.35}>
-      <Path
-        d={dir === 'desc' ? 'M3 5l3 3 3-3' : 'M3 7l3-3 3 3'}
-        stroke={theme.colors['text-tertiary']}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <Svg
+      width={12}
+      height={12}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={theme.colors['text-tertiary']}
+      strokeWidth={3}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      opacity={active ? 1 : 0.35}
+    >
+      <ShellGlyphMarks name={dir === 'desc' ? 'caret-down' : 'caret-up'} />
     </Svg>
   );
 }

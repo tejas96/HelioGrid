@@ -1,20 +1,5 @@
-import { ACTIVITY_GLYPH, FALLBACK_GLYPH, type GlyphShape } from './ActivityGlyph.logic';
-
-/** One shape, drawn with this platform's own SVG elements. The SHAPE is shared; these are not. */
-function draw(shape: GlyphShape, key: number) {
-  if (shape.kind === 'path') return <path key={key} d={shape.d} />;
-  if (shape.kind === 'circle') return <circle key={key} cx={shape.cx} cy={shape.cy} r={shape.r} />;
-  return (
-    <rect
-      key={key}
-      x={shape.x}
-      y={shape.y}
-      width={shape.width}
-      height={shape.height}
-      rx={shape.rx}
-    />
-  );
-}
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { ACTIVITY_GLYPH, FALLBACK_GLYPH } from './ActivityGlyph.logic';
 
 /**
  * A kind's glyph. `agent` is the one gradient in this component — brand/AI features take a
@@ -30,7 +15,6 @@ export function ActivityGlyph({ name, size = 16 }: { name: string; size?: number
       />
     );
   }
-  const shapes = ACTIVITY_GLYPH[name] ?? ACTIVITY_GLYPH[FALLBACK_GLYPH];
   return (
     <svg
       width={size}
@@ -44,7 +28,7 @@ export function ActivityGlyph({ name, size = 16 }: { name: string; size?: number
       aria-hidden="true"
       role="presentation"
     >
-      {shapes?.map(draw)}
+      <ShellGlyphMarks name={ACTIVITY_GLYPH[name] ?? FALLBACK_GLYPH} />
     </svg>
   );
 }

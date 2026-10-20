@@ -1,12 +1,14 @@
 import type { ReactNode } from 'react';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ModalTone } from './Modal.types';
 
 /** The glyph each tone draws. `success` is a tick, so it takes no ring around it. */
-const TONE_PATH: Record<ModalTone, string | null> = {
+const TONE_GLYPH: Record<ModalTone, ShellGlyphName | null> = {
   neutral: null,
-  danger: 'M12 9v4M12 17h.01',
-  warning: 'M12 9v4M12 17h.01',
-  success: 'M20 6 9 17l-5-5',
+  danger: 'alert-circle',
+  warning: 'alert-circle',
+  success: 'tick-long',
 };
 
 interface ModalMarkProps {
@@ -22,28 +24,28 @@ interface ModalMarkProps {
  * destructive, in which case the caller reaches for `variant="destructive"`.
  */
 export function ModalMark({ icon, tone }: ModalMarkProps) {
-  const path = TONE_PATH[tone];
-  if (icon === undefined && path === null) {
+  const glyph = TONE_GLYPH[tone];
+  if (icon === undefined && glyph === null) {
     return null;
   }
   return (
     <span className="hg-modal-mark" data-tone={tone}>
-      {icon ?? (
-        <svg
-          aria-hidden="true"
-          fill="none"
-          height="20"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          viewBox="0 0 24 24"
-          width="20"
-        >
-          <path d={path ?? undefined} />
-          {tone === 'success' ? null : <circle cx="12" cy="12" r="9" />}
-        </svg>
-      )}
+      {icon ??
+        (glyph === null ? null : (
+          <svg
+            aria-hidden="true"
+            fill="none"
+            height="20"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="1.5"
+            viewBox="0 0 24 24"
+            width="20"
+          >
+            <ShellGlyphMarks name={glyph} />
+          </svg>
+        ))}
     </span>
   );
 }

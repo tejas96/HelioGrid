@@ -1,3 +1,4 @@
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { IndeterminateRail } from '../PendingAction/IndeterminateRail';
 import type { OperationStage, OperationStageState } from './OperationProgress.types';
 
@@ -20,7 +21,7 @@ function DoneGlyph() {
       aria-hidden="true"
       className="hg-operation-progress-stage-check"
     >
-      <path d="m5 13 4 4L19 7" />
+      <ShellGlyphMarks name="tick" />
     </svg>
   );
 }

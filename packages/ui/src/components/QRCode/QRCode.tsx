@@ -13,6 +13,7 @@ import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { encodeQR } from '../../utils/qr-encode';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { QRCodeProps } from './QRCode.types';
 
 interface WebQRCodeProps extends QRCodeProps {
@@ -89,8 +90,7 @@ export function QRCode({
             strokeLinejoin="round"
             aria-hidden="true"
           >
-            <path d="M12 9v4M12 17h.01" />
-            <circle cx="12" cy="12" r="9" />
+            <ShellGlyphMarks name="alert-circle" />
           </svg>
           <span className="hg-qrcode-failed-title">{errorTitle}</span>
         </div>

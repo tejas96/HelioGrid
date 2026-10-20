@@ -60,7 +60,7 @@ export function SourceDocumentHeader({
         <Chrome>
           <IconBtn
             label="Previous page"
-            path="m15 18-6-6 6-6"
+            glyph="chevron-left"
             disabled={pageNumber <= 0}
             onPress={() => onPage(pageNumber - 1)}
           />
@@ -73,7 +73,7 @@ export function SourceDocumentHeader({
           </View>
           <IconBtn
             label="Next page"
-            path="m9 18 6-6-6-6"
+            glyph="chevron-right"
             disabled={pageNumber >= count - 1}
             onPress={() => onPage(pageNumber + 1)}
           />
@@ -84,13 +84,13 @@ export function SourceDocumentHeader({
           <IconBtn
             label="Fit width"
             pressed={fit === 'width'}
-            path="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"
+            glyph="fit-width"
             onPress={() => onFit('width')}
           />
           <IconBtn
             label="Fit whole page"
             pressed={fit === 'page'}
-            path="M5 4h14v16H5zM9 9h6v6H9z"
+            glyph="fit-page"
             onPress={() => onFit('page')}
           />
         </Chrome>

@@ -9,10 +9,11 @@ import type { ReactNode } from 'react';
 import { isValidElement } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { resolveValueSourceLevel, valueSourceStep } from './ValueSource.levels';
 import type { ValueSourceLevel, ValueSourceSpec } from './ValueSource.types';
 
@@ -54,11 +55,15 @@ interface NativeValueSourceProps extends ValueSourceSpec {
 function Glyph({ name, color }: { name: 'own' | 'inherited'; color: string }) {
   return (
     <Icon size="xs" color={color}>
-      <Svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-        <Path d="M12 3 3 8l9 5 9-5-9-5Z" strokeLinecap="round" strokeLinejoin="round" />
-        {name === 'inherited' ? (
-          <Path d="m3 14 9 5 9-5" strokeLinecap="round" strokeLinejoin="round" />
-        ) : null}
+      <Svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <ShellGlyphMarks name={name === 'inherited' ? 'layers' : 'layer'} />
       </Svg>
     </Icon>
   );

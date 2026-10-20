@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
 
 /* THE TICK IS THE SYSTEM `Checkbox` (see `DataTableHead`, `DataTableBodyRow`, `DataTableCard`).
@@ -37,7 +38,7 @@ export function SelectionBar({
           strokeLinecap="round"
           aria-hidden="true"
         >
-          <path d="M18 6 6 18M6 6l12 12" />
+          <ShellGlyphMarks name="close" />
         </svg>
       </button>
       <span className="hg-dt-selection-count">{count} selected</span>
@@ -78,7 +79,7 @@ export function Pagination({
         aria-hidden="true"
         style={direction < 0 ? { transform: 'rotate(180deg)' } : undefined}
       >
-        <path d="m9 18 6-6-6-6" />
+        <ShellGlyphMarks name="chevron-right" />
       </svg>
     </button>
   );
@@ -144,14 +145,7 @@ export function TableMessage({
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          {tone === 'warning' ? (
-            <>
-              <path d="M12 9v4M12 17h.01" />
-              <circle cx="12" cy="12" r="9" />
-            </>
-          ) : (
-            <path d="M3 6h18M3 12h18M3 18h10" />
-          )}
+          <ShellGlyphMarks name={tone === 'warning' ? 'alert-circle' : 'lines-wide'} />
         </svg>
       </span>
       <div className="hg-dt-message-title">{title}</div>
@@ -186,14 +180,7 @@ export function RowNote({
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          {warn ? (
-            <>
-              <path d="M12 9v4M12 17h.01" />
-              <circle cx="12" cy="12" r="9" />
-            </>
-          ) : (
-            <path d="m5 13 4 4L19 7" />
-          )}
+          <ShellGlyphMarks name={warn ? 'alert-circle' : 'tick'} />
         </svg>
       </span>
       <span className="hg-dt-row-note-text">{text}</span>

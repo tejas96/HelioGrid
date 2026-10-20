@@ -1,8 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { OperationState } from './OperationProgress.types';
 
 const TONE: Record<OperationState, string> = {
@@ -15,28 +16,19 @@ const TONE: Record<OperationState, string> = {
 function MessageGlyph({ state }: { state: OperationState }) {
   const stroke = TONE[state];
   return (
-    <Svg width={15} height={15} viewBox="0 0 24 24" fill="none">
-      {state === 'failed' ? (
-        <>
-          <Path d="M12 9v4M12 17h.01" stroke={stroke} strokeWidth={1.5} strokeLinecap="round" />
-          <Circle cx={12} cy={12} r={9} stroke={stroke} strokeWidth={1.5} />
-        </>
-      ) : null}
-      {state === 'cancelled' ? (
-        <>
-          <Circle cx={12} cy={12} r={9} stroke={stroke} strokeWidth={1.5} />
-          <Path d="M8 12h8" stroke={stroke} strokeWidth={1.5} strokeLinecap="round" />
-        </>
-      ) : null}
-      {state !== 'failed' && state !== 'cancelled' ? (
-        <Path
-          d="m5 13 4 4L19 7"
-          stroke={stroke}
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      ) : null}
+    <Svg
+      width={15}
+      height={15}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={stroke}
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <ShellGlyphMarks
+        name={state === 'failed' ? 'alert-circle' : state === 'cancelled' ? 'minus-circle' : 'tick'}
+      />
     </Svg>
   );
 }

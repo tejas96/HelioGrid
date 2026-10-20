@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { useFormat } from '../MarketProvider/market-context';
 import { Calendar } from './Calendar';
 import { asRange, asSet, parse } from './calendar-grid';
@@ -118,8 +119,7 @@ export function DatePicker({
           aria-hidden="true"
           className="hg-date-picker-glyph"
         >
-          <rect x="3" y="5" width="18" height="16" rx="2.5" />
-          <path d="M3 10h18M8 3v4M16 3v4" />
+          <ShellGlyphMarks name="calendar" />
         </svg>
       </button>
       {helper === undefined && error === undefined ? null : (

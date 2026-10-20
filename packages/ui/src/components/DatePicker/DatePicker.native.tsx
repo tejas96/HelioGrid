@@ -2,10 +2,11 @@ import { theme } from '@heliogrid/theme';
 import { useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path, Rect } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { FIELD_BOX_EDGE, fieldBox, fieldWords } from '../../primitives/FieldBox/FieldBox.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { Calendar } from './Calendar.native';
 import { asRange, asSet, parse } from './calendar-grid';
@@ -111,22 +112,16 @@ export function DatePicker({
         <View style={styles.value}>
           <Text color={fieldWords(text === '', disabled)}>{text === '' ? placeholder : text}</Text>
         </View>
-        <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
-          <Rect
-            x={3}
-            y={5}
-            width={18}
-            height={16}
-            rx={2.5}
-            stroke={theme.colors['text-tertiary']}
-            strokeWidth={1.5}
-          />
-          <Path
-            d="M3 10h18M8 3v4M16 3v4"
-            stroke={theme.colors['text-tertiary']}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-          />
+        <Svg
+          width={18}
+          height={18}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={theme.colors['text-tertiary']}
+          strokeWidth={1.5}
+          strokeLinecap="round"
+        >
+          <ShellGlyphMarks name="calendar" />
         </Svg>
       </Pressable>
       {helper === undefined && error === undefined ? null : (

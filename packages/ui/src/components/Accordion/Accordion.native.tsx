@@ -1,8 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { renderMarks } from '../ChipGroup';
 import { renderProvenance } from '../Provenance';
 import type { AccordionItem, AccordionProps } from './Accordion.types';
@@ -104,12 +105,13 @@ function Chevron({ open, color }: { open: boolean; color: string }) {
       height={18}
       viewBox="0 0 24 24"
       fill="none"
+      stroke={color}
       strokeWidth={1.5}
       strokeLinecap="round"
       strokeLinejoin="round"
       style={{ transform: [{ rotate: open ? '180deg' : '0deg' }] }}
     >
-      <Path d="m6 9 6 6 6-6" stroke={color} />
+      <ShellGlyphMarks name="chevron" />
     </Svg>
   );
 }

@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { isValidElement } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ScopeNoteProps, ScopeNoteSpec } from './ScopeNote.types';
 import { composeScopeLine, scopeNoteSize } from './scope-note-line';
 
@@ -27,8 +28,7 @@ function Glyph() {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <circle cx="12" cy="8" r="3.6" />
-      <path d="M5 20a7 7 0 0 1 14 0" />
+      <ShellGlyphMarks name="person" />
     </svg>
   );
 }

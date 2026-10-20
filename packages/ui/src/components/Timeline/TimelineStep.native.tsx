@@ -4,8 +4,9 @@
 
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { TimelineItem } from './Timeline.types';
 import { TimelineRailCell } from './TimelineRailCell.native';
 
@@ -90,20 +91,16 @@ export function TimelineStep({
         ) : null}
         {item.actor ? (
           <View style={styles.actor}>
-            <Svg width={13} height={13} viewBox="0 0 24 24" fill="none">
-              <Circle
-                cx={12}
-                cy={8}
-                r={3.5}
-                stroke={theme.colors['text-tertiary']}
-                strokeWidth={1.5}
-              />
-              <Path
-                d="M5 20a7 7 0 0 1 14 0"
-                stroke={theme.colors['text-tertiary']}
-                strokeWidth={1.5}
-                strokeLinecap="round"
-              />
+            <Svg
+              width={13}
+              height={13}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke={theme.colors['text-tertiary']}
+              strokeWidth={1.5}
+              strokeLinecap="round"
+            >
+              <ShellGlyphMarks name="person-slim" />
             </Svg>
             <Text variant="caption" color="tertiary">
               {item.actor}

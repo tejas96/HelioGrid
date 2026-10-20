@@ -2,10 +2,11 @@ import { theme } from '@heliogrid/theme';
 import { useCallback, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, ScrollView, StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg from 'react-native-svg';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { OperationProgress } from '../OperationProgress/OperationProgress.native';
 import { IndeterminateRail } from '../PendingAction/IndeterminateRail.native';
 import { isRunning, summariseJobs } from './JobTray.summary';
@@ -84,8 +85,7 @@ export function JobTray({
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <Circle cx={12} cy={12} r={9} />
-            <Path d="M12 7.5V12l3 2" />
+            <ShellGlyphMarks name="clock" />
           </Svg>
         )}
         <Text variant="body-sm" style={[styles.words, { color: tone }]}>
