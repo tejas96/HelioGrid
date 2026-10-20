@@ -30,12 +30,15 @@ export function ShellPage({
   inView,
   drillDown,
   stickyHead,
+  lead,
   children,
 }: {
   inView?: string;
   drillDown?: DrillDown;
   /** A list page's search and filters, held at the top while the list scrolls (`ShellFrame`). */
   stickyHead?: ReactNode;
+  /** What scrolls away above the held head (`ShellFrame`). */
+  lead?: ReactNode;
   children: ReactNode;
 }) {
   const t = useTranslate();
@@ -81,6 +84,7 @@ export function ShellPage({
       inView={lit ? inView : undefined}
       onScrolledChange={drillDown === undefined ? undefined : setScrolled}
       stickyHead={stickyHead}
+      lead={lead}
     >
       {children}
       <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />

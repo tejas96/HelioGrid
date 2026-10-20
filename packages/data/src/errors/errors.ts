@@ -120,3 +120,8 @@ export function normalizeClientError(error: unknown): DataError {
   }
   return new InvalidResponseError();
 }
+
+/** What the api answered to a write, as a screen's rule reads it; null when no answer came back. */
+export function answerOf(error: unknown): { status: number; code: string } | null {
+  return error instanceof ApiError ? { status: error.status, code: error.code } : null;
+}

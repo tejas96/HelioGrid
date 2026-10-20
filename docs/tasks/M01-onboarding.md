@@ -207,6 +207,221 @@ Corrected before approval (2026-10-08): the line read "an off-flow title `sp-8` 
 - Given an invite composed with zero roles, when it is submitted, then it is blocked before sending (F2-21). → proof: QA (api) `POST /invitations` with an empty role list answers the refusal and sends nothing — the guard's own unit is `T-FPLAT-003`'s
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: QA (web and phone) every base and brief-listed state drawn at 375px and 1536px, the colour-literal lint clean on both
 
+#### Parts
+
+| part | what | AC | depends on | status |
+|---|---|---|---|---|
+| a | Team life, the happy path: *Invite teammate* on Team (above the list head at 375, in the page head at 1536), the invite editor (sheet at 375, side panel at 1536), `OptionCardGroup`'s multi-select mode, the invite form, a send, and the no-role refusal — web and phone | AC-2, AC-3, AC-6, AC-11, AC-13, AC-14, AC-16 | `T-M01-012c` (#328, stacked) | shipped |
+| b | Every other answer to a send, in the Team life: already a member, already invited, number not covered, the cap, signed out, not allowed, a failed request — and their words; the teaching state's act; the Team look images — web and phone | AC-1, AC-7, AC-8, AC-9, AC-10, AC-12, AC-15, AC-19, AC-22, AC-23 | part a | planned |
+| c | The corridor life: `invite_team` joins the steps with a screen (D208), `DoorFrame`'s onboarding panes at 1536 (D261), *Skip for now*, *Continue setup*, *Open Team* and the refusals in the corridor — web and phone | AC-4, AC-5, AC-17, AC-18, AC-20, AC-21, AC-24, AC-25 | part b | planned |
+
+#### RFC
+
+**RFC approved:** 2026-10-20 — D1 A, D2 A, D3 A, D4 A, D5 A (owner rulings)
+
+**1. Title** — `T-M01-007` — the owner invites a teammate by name, phone and roles, from Team and from setup.
+
+**2. User impact** — Today a company stays one person: Team lists people but has no way to add one. After this task the owner taps *Invite teammate* on Team (or meets the invite step right after the company profile), types a name and a phone number, ticks one or more of the twelve roles and sends; HelioGrid texts the person, and the invite shows on Team at once. A role-less invite, a number already on the team, a number already invited and the 50-a-day cap each stop with their own plain message.
+
+**3. Analysis**
+
+| line | finding | source | fix / decision |
+|---|---|---|---|
+| Brief *States* loading, error | **Over-built** — "only the presets are in flight", but no request carries them: the twelve presets are `ROLE_PRESETS` (`packages/domain/src/authz/roles.ts:18-31`) and their words are i18n copy; no presets route exists (`packages/contracts/src/tenant.ts:199` is the only roles route) | `roles.ts:18-31`; task `Data model:` "never a table" | D1 |
+| Brief *The role picker* | **Missing** — no capability line of any preset exists in code (`PRESET_NAME` holds only the names, `packages/i18n/src/copy/shell.ts:72-85`); `SCR-M01-13` is not built | board `-Mobile.dc.html` `roles()` | the twelve lines land in `packages/i18n/src/copy/role-presets.ts`, word for word from the board, for `T-M01-013` to reuse |
+| DONE WHEN 2 and 3 | **Wrong** (duplicate) — both prove the zero-role refusal; the api answers 400 `VALIDATION_FAILED` from `roleSetSchema.min(1)` (`packages/contracts/src/common.ts:116`, `apps/api/src/common/filters/envelope-exception.filter.ts:88-94`) before the handler, and a message goes out only through the outbox after commit (`apps/api/src/modules/invitation/invitation.service.ts:69`) | as cited | kept verbatim as AC-2 and AC-3; AC-2 is the client's, AC-3 the api's |
+| Contract — the refusals | confirmed — 409 `ALREADY_MEMBER`, 409 `ALREADY_INVITED`, 422 `DOMAIN_RULE_VIOLATION`, 422 `IDEMPOTENCY_KEY_REUSED`, 429 `INVITE_CAP_REACHED` (`packages/contracts/src/invitation.ts:106-114`); the screen keys on the code, never the status; a deactivated member is also `ALREADY_MEMBER` (`invitation.send.repository.ts:24-37`) — still on Team, so the banner holds | as cited | no change |
+| Brief *number-not-covered* | **Missing** — the words: `apiErrorMessageId('DOMAIN_RULE_VIOLATION')` says "That change isn't allowed here." (`packages/i18n/src/copy/api-error.ts:38`). And not reachable from the app: `PhoneField` fixes the market's dial code (`PhoneField.types.ts:18`), which the market covers | as cited | the invite copy carries the board's line; the frame is proven by `InviteForm.spec.tsx` and the 422 by the api |
+| Brief *invite-cap-reached* vs `api-error.ts:62-64` | **Wrong** — *Your company has sent today's invites. Try again tomorrow.* contradicts the rolling 24 hours (M01-04; brief) | as cited | the screen draws the board's cap banner; the generic line and the api's envelope message (`apps/api/src/modules/invitation/invitation.service.ts:86-88`) are corrected to *Your company has reached its invite limit for the last 24 hours.* (part b) |
+| Brief, refusals in the Team life | **Missing** — only the corridor life is drawn; there *Open Team* points at the page already behind the editor, and *Skip for now* / *Continue setup* do not exist | brief *Entry & exit* | D4 |
+| Corridor *Open Team* | **Missing** — the gate draws the owed step in place of every inside route (`apps/web/features/auth/SessionGate.tsx:61-62`) and the phone mounts no shell while a step is owed (`apps/mobile/src/navigation/guards.ts:32-39`), so *Open Team* leads nowhere unless the step is put off first | as cited | *Open Team* puts `invite_team` off, then opens Team (AC-20) |
+| Carried from `T-M01-035` — the `join_requested` act | **Missing** — the notice carries the asker's name and phone only inside its translated title and body (`packages/i18n/src/copy/join-request.ts:9-26`); `notificationSchema` has no field for them (`packages/contracts/src/notification.ts:39-59`) and no notice has an act (`apps/web/features/notifications/NotificationCentre.tsx:87-91`) | as cited | D2 |
+| Deferred D261 | `DoorFrame` already draws the doors' two panes (`packages/ui/src/components/DoorFrame/DoorFrame.types.ts`) and the setup steps use it (`SetupWhatYouSell.native.tsx:6,37`) | Law 5 | `DoorFrame` gains `panes: 'door' \| 'onboarding'` (brand pane 4 of 12 with the `desktop-wide` bloom and the wordmark at 30) and an optional `trailing` (m-default draws none); D261's other half (move 01–05, or say why not) stays, `T-M01-006 starts` |
+| Deferred D208, D216, D240, D287, D290, D292, D282 | D208 (part c) and D216 (part a) join; D240 holds nothing these boards draw (`FormActionBar` is not on them; the shell rows shipped with `T-M01-012a`); the Team board fixes D287, D290, D292 and D282's `20px` on `SCR-M01-07` d-team are a `design/M01` lock (`.claude/skills/task/design-track.md` step 5) | `docs/tasks/deferred.md` | §14; D3 |
+| DONE WHEN 1 | confirmed and sharpened — `SCR-M01-12` m-teaching draws no top *Invite teammate*, only the `EmptyState` act (`SCR-M01-12-Team-Mobile.dc.html:199-205`); m-loading and m-error draw the top act | as cited | frame map; the 1536 teaching state keeps the page-head act and adds the `EmptyState` act, as d-default's head and m-teaching's body (`assumed` — the 1536 board has no teaching frame) |
+
+Assumptions:
+- *Skip for now* and *Continue setup* put the step off for this session (`putOffSetup('invite_team')`), as *Continue without it* does on the company profile (`packages/data/src/react/use-company-profile.ts:235-237`); a send records `invite_team` `completed`. The next sign-in asks again until one invite is sent — the rule the other steps follow.
+- After the corridor step the company resumes at `ready`, which has no screen until `T-M01-006`, so each act lands on the home (`packages/domain/src/auth/setup-step.ts:38-40`).
+- A sent invite in the Team life closes the editor, the team read refreshes, focus returns to *Invite teammate*; no toast — the board draws none.
+- Name, phone and roles are checked by `useZodForm` over `createInvitationSchema` (`packages/contracts/src/invitation.ts:33`) with the forms error map: no second copy of `roleSetSchema.min(1)`; the zod error on `roles` is what raises the no-role banner. A name over 120 characters is refused by the same schema. The number is also held to the market's digit count (`phoneDigitsMismatch`, the door's rule) by `useInvite`'s schema, and answered in the door's words.
+
+**4. Scope**
+- In: everything in *Parts*.
+- Out: the invite record, the send, expiry and the cap value (`T-M01-028`); the landing (`T-M01-008`); the `join_requested` act (D2); *You're ready* (`T-M01-006`); the Team board redraws (D3); D261's doors 01–05.
+- Targets: "held to the same under-a-minute bar as signup" (M01 §M01.2) — a person who knows the name and number sends in under a minute; no other target stated.
+
+**5. Proposal**
+- **One form, two lives.** `InviteForm` in `packages/ui` (both halves, one `InviteForm.types.ts`) draws the name `Input`, `PhoneField`, the *What can they do?* heading with its `Explainer` (*About roles*), the refusal `Banner`, and the twelve presets as `OptionCardGroup` `mode="multiple"`. It takes its words, its values and its refusal as props, and its `layout` (`stacked` at 375, `wide` at 1536: name and phone side by side, roles in three columns). The corridor wraps it in `DoorFrame panes="onboarding"`; the Team life in `EditorSurface` (`desktop="panel"`, width 480) with `SheetActions` *Cancel* · *Send invite* and the expiry caption in its footer.
+- **The answer is read once.** `packages/domain/src/tenancy/invite.ts`: `inviteOutcome(answer)` → `sent` · `already_member` · `already_invited` · `not_covered` · `cap` · `signed_out` · `forbidden` · `failed`, keyed on the answer's code (`IDEMPOTENCY_KEY_REUSED` → `failed`), a closed union both screens switch over (Law 11), unit-tested.
+- **One hook.** `useInvite()` in `packages/data/src/react/` holds the form, the mutation over the shipped `repositories.invitation.create` (its creation key makes a double tap one invite) and the outcome; on `sent` it invalidates the team reads (`packages/data/src/cache/keys.ts`).
+- **The Team entry** (part a). Web `TeamScreen.tsx` puts *Invite teammate* (`lg` primary, `plus` glyph) at the right of `.hg-team-head` at 1536 and full width above `MemberListHead` at 375; the teaching state's `EmptyState` takes its `action` *Invite your first teammate* through `MemberListWords` (`packages/i18n/src/copy/team-list.ts:29-72`). Phone `TeamScreen.tsx` the same: `ShellPage` gains `lead` — content that scrolls above the held head — and `ShellFrame`'s `stickyHeaderIndices` moves to the head's index (`apps/mobile/src/screens/shell/components/ShellFrame.tsx:53`). The editor is screen state, not a route: no new address.
+- **The corridor** (part c). `SetupInviteTeam` in `packages/ui` (both halves, its spec) composes `DoorFrame`, `InviteForm`, the brand pane's *After you send* steps and the foot once, as `SetupWhatYouSell` does; each app only binds it to `useSetupInvite` and mounts a `ToastHost`. `invite_team` joins `STEPS_WITH_A_SCREEN` (`setup-step.ts:11-15`) and `LANDING_OF_STEP` gains `invite-team-step` (`packages/domain/src/auth/landing.ts:6-10`), so the profile's two ways on reach it (D208). Web: `SessionGate`'s `setupSteps` draws `SetupInviteTeamScreen` (`apps/web/app/(inside)/layout.tsx:17-23`). Phone: route `SetupInviteTeam` beside the other steps (`apps/mobile/src/navigation/routes/app.ts:36-40`, `guards.ts:32-39`). `useSetupInvite()` adds the corridor's step writes to `useInvite`.
+- **Twin:** both lives on web and phone; `InviteForm`, `OptionCardGroup`, `DoorFrame`, the words (`packages/i18n/src/copy/invite.ts`) and `inviteOutcome` are shared; only the sheet/panel host, the corridor route and the `ShellPage` slot stay in each app.
+- Alternative: each preset as `Checkbox` plus a hand-placed line, as the boards draw — ruled out by the owner (D216).
+
+**6. Frame map** (`.design/M01/SCR-M01-07-*` and the Team page behind it, `SCR-M01-12-*`; lock `1792423921-7279`)
+
+| frame | state | element → component, props, copy, tokens |
+|---|---|---|
+| SCR-M01-12 m-default, m-loading, m-error | Team at 375 | *Invite teammate* `Button` primary `lg` full width, `plus` `md` inverse, first in the scroll above the held list head, gap `--sp-4`; the head still holds on scroll |
+| SCR-M01-12 m-teaching | Team alone, 375 | no top act; `EmptyState` `action` *Invite your first teammate*, primary `lg`, `plus` inverse |
+| SCR-M01-12 d-default | Team at 1536 | page head: h1 *Team* `--fs-h2` + count, *Invite teammate* `lg` primary with `plus`, right, `justify-content: space-between`, gap `--sp-6`; teaching at 1536: the same head plus the `EmptyState` act (assumed) |
+| m-team | Team life, 375 | `EditorSurface` sheet, title *Invite someone*, close; body gap `--sp-4`: `Input` *Their name* (placeholder *Anjali Kulkarni*); `PhoneField` *Their phone number*, helper *HelioGrid sends the message to this number — it does not come from your phone.*; *What can they do?* `--fs-body` bold + `Explainer` *About roles* (title *Roles*; pages *Pick at least one role. Someone invited with no role would sign in to an empty app.* · *More than one is fine, and roles can change later on Team.*; placement bottom); roles group gap `--sp-2`, each row `--fill`, `--r-tile`, padding `--sp-2 --sp-4 --sp-3`, title, line `--fs-body-sm` secondary; footer `SheetActions` ghost *Cancel* · primary *Send invite* `lg`, gap `--sp-3`, caption *Invite lasts 7 days · cancel it from Team* `--fs-caption` secondary, centred. Known differences: D216 (rows are `OptionCardGroup`), D256 (sheet foot) |
+| d-team | Team life, 1536 | `EditorSurface` panel 480, the same body and footer as m-team, over the d-default page. Known differences: D282 (`20px` → `--r-md`), D290 (act column 176) |
+| m-blocked-no-role, d-blocked-no-role | *Send invite* with no role | danger `Banner` `kind="validation"` *Tick at least one role before sending — an invite with none would open an empty app.* at the top of the role set, scrolled into view (the board draws the form scrolled to it); group `aria-invalid`; *Send invite* stays live; no request (network log) |
+| m-already-member | 409 `ALREADY_MEMBER` | name, `PhoneField` without its helper, then info `Banner` `kind="state"` *This number is already on your team*, gap `--sp-3`; the role set is not drawn; corridor action *Open Team*, foot *Skip for now* · *Use a different number* (clears the phone, focuses it, the role set returns with its ticks). Team life: D4 |
+| m-already-invited | 409 `ALREADY_INVITED` | as m-already-member; title *This number already has an invite waiting*, body *Nothing to send — to invite this number again, cancel the pending invite on Team.* |
+| m-number-not-covered | 422 `DOMAIN_RULE_VIOLATION` | `PhoneField` `error` *We can't send invites to this number — check it or use another.*; roles kept; *Send invite* live. Not reachable from the app — the dial code is fixed; `InviteForm.spec.tsx` |
+| m-cap-reached | 429 `INVITE_CAP_REACHED` | only the title and `Banner` `kind="cap"` *50 invites in the last 24 hours — the limit for one company*, body *Each invite counts for 24 hours from when it was sent.*, action *Open Team*, gap `--sp-4`; no name, phone or role set; foot one primary *Continue setup* full width. Team life: D4 |
+| m-default | corridor, 375 | `DoorFrame` (no `trailing`): `BrandBloom` top, `Wordmark` 24; h1 *Invite someone* `--fs-h2`, padding `--sp-6 0 --sp-4`; body gap `--sp-5`; h2 *What can they do?* `--fs-h3` + `Explainer` (placement top); role rows as m-team; foot gap `--sp-3`, row gap `--sp-2`: ghost *Skip for now* `lg`, primary *Send invite* `lg` filling; caption centred |
+| d-default | corridor, 1536 | `DoorFrame panes="onboarding"`: brand pane cols 1–4, `BrandBloom desktop-wide`, `Wordmark` 30 at `--sp-10 --sp-12`, h1 *Invite someone* `--fs-h1`, overline *After you send*, three steps gap `--sp-5` (`IconCircle` 44 accent: *HelioGrid messages their phone* / *Not from your number* · *The invite works for 7 days* / *Cancel it on Team* · *They join with the roles you pick*); task pane cols 5–12, padding `--sp-16 --sp-16 --sp-10`, gap `--sp-8`; name and phone two columns gap `--sp-5`, `PhoneField` without helper; roles in three columns gap `--sp-3`; foot right-aligned gap `--sp-3`, padding-top `--sp-3`; no expiry caption (the brand pane says it) |
+| m-loading, m-error | none (D1) | not reachable — no request carries the presets |
+
+Hindi and Marathi for every new word drafted by hand in both `.po` files, for a native review.
+
+**7. Changes**
+- Packages: ui adds `OptionCardGroup` `mode: 'single' | 'multiple'` (multiple: `value: readonly string[]`, `onChange(values)`, a `group` of `checkbox`es), `InviteForm`, `DoorFrame` `panes` and optional `trailing`, `MemberListWords.teachingAct`; domain adds `inviteOutcome`, `InviteOutcome`, the `invite-team-step` landing; data adds `useInvite`, `useSetupInvite`; i18n adds `copy/invite.ts`, `copy/role-presets.ts` (`PRESET_LINE`). Direction unchanged.
+- Law 12: `InviteOutcome` → a closed union every caller switches over (typecheck); `PRESET_LINE` → `satisfies Record<RolePreset, …>` (typecheck); `invite_team` → `STEPS_WITH_A_SCREEN` `satisfies readonly OnboardingStep[]` and `LANDING_OF_STEP` `satisfies Record<SetupScreenStep, string>`, which `SessionGate`'s `Record<SetupLanding, ReactNode>` (`SessionGate.tsx:18`) and the phone's `ROUTE_OF_LANDING` must then cover (typecheck). No brand, token, route, table or error code.
+- Data and schema: none — no migration.
+- API and contracts: none — `POST /invitations` and `PUT /onboarding/progress/{step}` are shipped and unchanged.
+- Jobs: none.
+- Release: the only change to stored meaning is a step a session is now asked for; an old app that does not know it lands on the home, as today.
+
+Files (part a, ~35 — D5):
+
+| action | path | purpose |
+|---|---|---|
+| modify | `packages/ui/src/components/OptionCardGroup/{OptionCardGroup.types.ts,OptionCardGroup.tsx,OptionCard.tsx,OptionCardGroup.native.tsx,OptionCard.native.tsx,OptionCardGroup.css}`, add `OptionCardGroup.logic.ts` | the multi-select mode (D216), and `ariaLabel` for a group named by a heading outside it |
+| add | `packages/ui/src/components/InviteForm/{InviteForm.types.ts,InviteForm.tsx,InviteForm.native.tsx,InviteForm.css,InviteEditor.tsx,InviteEditor.native.tsx,index.ts}`; modify `packages/ui/src/styles.css` | the one form, and the editor both apps draw over Team (added at build: `.claude/rules/screen-parts.md`) |
+| modify | `packages/ui/src/index.ts` | exports |
+| add | `packages/domain/src/tenancy/invite.ts`, `packages/domain/tests/tenancy/invite.test.ts`; modify `src/tenancy/index.ts` | the answer, read once |
+| add | `packages/data/src/react/use-invite.ts`; modify `src/react/index.ts`, `src/errors/errors.ts`, `src/react/use-team-acts.ts`; modify `packages/contracts/src/invitation.ts` (`inviteFormSchema`) | the send; the form's schema, held to the market's digit count, where the apps and the form's spec may both read it; `answerOf` shared with the Team acts (added at review) |
+| add | `packages/ui/src/components/Checkbox/CheckboxTick{.tsx,.native.tsx}`; modify `Checkbox.tsx`, `Checkbox.native.tsx` | the one tick a checkbox and a multi-select card draw (added at review) |
+| modify | `packages/i18n/src/copy/validation.ts` | `REQUIRED_FIELD` for the empty number (added at review) |
+| add | `packages/i18n/src/copy/{invite.ts,role-presets.ts}`, `tests/invite.test.ts`; modify `src/index.ts`, `src/locales/{en,hi,mr}/messages.{po,ts}` | words — every word of both lives, the corridor's too (*After you send* and its steps, *Skip for now*, *Continue setup*, *Open Team*), so parts b and c add only `team-list.ts` and the cap line |
+| modify | `apps/web/features/team/{TeamScreen.tsx,team.css}`, add `apps/web/features/team/components/TeamInvite.tsx` | web Team life; the form glue (`useTeamInvite`) — the form library and the words meet only in an app (`architecture.md` §2), so each app holds this one small hook |
+| modify | `apps/mobile/src/screens/team/TeamScreen.tsx`, `apps/mobile/src/screens/shell/{styles.ts,components/ShellPage.tsx,components/ShellFrame.tsx}`, add `apps/mobile/src/screens/team/components/TeamInvite.tsx` | phone Team life; the scrolling lead above the held head |
+| add | `tests/e2e/components/{InviteForm.spec.tsx,InviteForm.story.tsx,OptionCardGroup.story.tsx}`; modify `tests/e2e/components/OptionCardGroup.spec.tsx`, `tests/e2e/web/more-team.spec.ts` (+ its desktop landing image, redrawn by CI: the page head now holds *Invite teammate*) | proof |
+
+Files (part b, ~25): modify `packages/domain/src/tenancy/invite.ts` + test (the other outcomes), `packages/ui/src/components/InviteForm/*` (the refusal banners and the `PhoneField` error), `packages/ui/src/components/MemberCard/{MemberCard.types.ts,MemberList.tsx,MemberList.native.tsx}` (the teaching state's act), `packages/i18n/src/copy/{invite.ts,api-error.ts,team-list.ts}` + `tests/invite.test.ts` + the six locale files, `apps/api/src/modules/invitation/invitation.service.ts` (the cap's envelope message, `:86-88`), `tests/e2e/web/more-team.spec.ts` (+ its phone landing image, redrawn by CI, for the teaching act), `apps/web/features/team/components/TeamInvite.tsx`, `apps/mobile/src/screens/team/components/TeamInvite.tsx`, `tests/e2e/components/InviteForm.spec.tsx`, `docs/ux/briefs/SCR-M01-07-invite-teammate.md` (D1, D4).
+
+Files (part c, ~32 — D5):
+
+| action | path | purpose |
+|---|---|---|
+| modify | `packages/domain/src/auth/{setup-step.ts,landing.ts}`, `tests/auth/{setup-step.test.ts,landing.test.ts}` | `invite_team` has a screen (D208) |
+| modify | `packages/ui/src/components/DoorFrame/{DoorFrame.types.ts,DoorFrame.tsx,DoorFrame.native.tsx,DoorFrame.css}`, `tests/e2e/components/DoorFrame.spec.tsx` | the onboarding panes (D261) |
+| add | `packages/ui/src/components/SetupInviteTeam/{SetupInviteTeam.types.ts,SetupInviteTeam.tsx,SetupInviteTeam.native.tsx,SetupInviteTeam.css,index.ts}`, `tests/e2e/components/SetupInviteTeam.spec.tsx`; modify `packages/ui/src/index.ts` | the corridor step, composed once |
+| add | `packages/data/src/react/use-setup-invite.ts`; modify `src/react/index.ts` | the corridor's send, skip, continue and *Open Team* |
+| modify | `apps/web/app/(inside)/layout.tsx`, `apps/web/features/auth/constants.ts`, `apps/web/features/onboarding/index.ts`; add `apps/web/features/onboarding/SetupInviteTeamScreen.tsx` | web corridor |
+| modify | `apps/mobile/src/navigation/{routes/app.ts,guards.ts}`; add `apps/mobile/src/screens/setup-invite-team/{SetupInviteTeamScreen.tsx,index.ts}` | phone corridor |
+| modify | `tests/invariants/src/e2e-flow-per-screen.ts` | `setup-invite-team` held beside its siblings — reached only after Create company, which no Maestro flow lands on iOS (`:57-72`) |
+| modify | `tests/e2e/web/{company-profile.spec.ts,company-profile-finish-later.spec.ts}`, add `tests/e2e/web/setup-invite-team.spec.ts` | the profile's way on now lands on the invite |
+| modify | `docs/tasks/deferred.md`, `docs/tasks/M01-onboarding.md` | records |
+
+**8. Diagram** — No boundary change.
+
+**9. Build steps**
+
+| step | files | AC | done when |
+|---|---|---|---|
+| a1 | i18n `invite.ts`, `role-presets.ts` + test; domain `invite.ts` (`sent`, `failed`) + test | AC-16 | the twelve lines and the outcome table tested red then green |
+| a2 | ui `OptionCardGroup` multiple | AC-14 | the spec toggles by click and Space, `aria-checked`; single mode unchanged |
+| a3 | ui `InviteForm` | AC-2 | the spec draws the default and the no-role banner at 375 and 1536 in EN/HI/MR |
+| a4 | data `useInvite` | AC-13 | `pnpm check` green; the double send proven live (P12b) |
+| a5 | web Team + editor · phone `ShellPage` lead + Team + sheet (`parallel`) | AC-1, AC-6, AC-11 | `pnpm check` green |
+| b1 | domain the other outcomes; i18n words; `api-error.ts` cap line | AC-7 … AC-10, AC-12 | tested red then green |
+| b2 | ui `InviteForm` refusals, `MemberList` teaching act; web editor, phone sheet (D4); the Team look images | AC-1, AC-15, AC-19, AC-22, AC-23 | spec at 375 and 1536 |
+| c1 | domain `setup-step.ts`, `landing.ts` | AC-5 | tests red then green |
+| c2 | ui `DoorFrame` panes | AC-17 | spec at 1536 |
+| c3 | data `useSetupInvite` | AC-5, AC-20, AC-21 | `pnpm check` green |
+| c4 | web corridor · phone corridor (`parallel`), the hold entry, the corridor specs | AC-4, AC-18, AC-24 | `pnpm check` green |
+
+**10. Risks**
+- Tenancy: none new — the route takes the tenant from the session; the screen never names one.
+- Permission: Team opens only for `onboarding.manage_team` (`packages/domain/src/shell/settings-rows.ts:36`), the corridor only for `onboarding.manage_tenant_settings` (`setup-step.ts:46`); today both are the EPC Owner's alone.
+- Release: a company whose profile is done meets the invite step on its next sign-in — intended (D208), skippable.
+
+**11. Regression**
+- Team read and row acts (`T-M01-012c`): `MemberList.spec.tsx`, `TeamConfirm.spec.tsx`, `tests/e2e/web/more-team.spec.ts`; the phone's held head on scroll after the `ShellPage` change: P6.
+- `OptionCardGroup` single mode on the company profile and *What you sell*: `OptionCardGroup.spec.tsx`, `setup-what-you-sell.spec.ts`.
+- The doors on `DoorFrame`: `DoorFrame.spec.tsx`, the door landing images.
+- The corridor: `company-profile.spec.ts` and `company-profile-finish-later.spec.ts` now expect the invite step.
+
+**12. Acceptance criteria**
+- AC-1 … AC-4 — the four `DONE WHEN` lines, verbatim, in order.
+- AC-5 — Given the corridor, when the company profile is saved or put off, then the invite step opens; *Send invite* records `invite_team` `completed` and *Skip for now* puts it off, and each lands on the home until `T-M01-006` ships; after a skip the next sign-in asks again (D208).
+- AC-6 — Given the Team life, when an invite is sent, then the editor closes, focus returns to *Invite teammate*, and the new row shows among the invites, in name order.
+- AC-7 — Given a number already on the team, when it is sent, then 409 `ALREADY_MEMBER` shows the already-member banner, and *Use a different number* clears and focuses the phone and brings the roles back ticked.
+- AC-8 — Given a number with a live invite, then 409 `ALREADY_INVITED` shows the already-invited banner.
+- AC-9 — Given an answer 422 `DOMAIN_RULE_VIOLATION`, then the `PhoneField` shows its error line and the roles stay ticked.
+- AC-10 — Given 50 sends in the last 24 hours, then 429 `INVITE_CAP_REACHED` shows the cap banner alone.
+- AC-11 — Given an empty name, a name over 120 characters or an incomplete number, when *Send invite* is pressed, then the field says why and no request leaves.
+- AC-12 — Given the network fails, the api answers 5xx or 422 `IDEMPOTENCY_KEY_REUSED`, then the form keeps its values and a danger toast says it did not send; nothing is retried behind the user.
+- AC-13 — Given *Send invite* pressed twice, then one invite exists.
+- AC-14 — Given `OptionCardGroup` `mode="multiple"`, then each option is a checkbox, Space toggles it, and the single mode is unchanged.
+- AC-15 — Given Hindi or Marathi, then the form at 375 has no clipped label and no sideways scroll.
+- AC-16 — Given the role list, then the twelve presets show in F2's order with the board's lines, word for word.
+- AC-17 — Given the corridor at 1536, then `DoorFrame panes="onboarding"` draws d-default's two panes (D261).
+- AC-18 — Given the corridor at 375 on the phone, then m-default and its refusals draw as the frame map says.
+- AC-19 — Given a send answered 401, then the session ends to the door (the transport's rule); answered 403, then a danger toast says *You can no longer invite people to this company.* (`INVITE.forbidden`), the editor closes and the team reads again.
+- AC-20 — Given the phone corridor's *Open Team*, then the step is put off and the Team row opens.
+- AC-21 — Given the corridor, when the invite is sent but `PUT /onboarding/progress/invite_team` fails, then the step is put off for the session, the home opens, and the invite is not sent twice.
+- AC-22 — Given the phone, then AC-1 and AC-6 hold there too: *Invite teammate* and the teaching act open the sheet, a send closes it, and the list head still holds on scroll.
+- AC-23 — Given the phone, then the no-role refusal (AC-2) and the Team-life refusals (AC-7, AC-8, AC-10) hold there as on the web.
+- AC-24 — Given the web corridor at 375, then m-default draws as the frame map says, and *Open Team* puts the step off and opens `/more/team`.
+- AC-25 — Given the corridor, when a send fails on the network or a 5xx, then the step's own `ToastHost` (mounted as `CompanyProfileScreen.tsx` mounts it) shows AC-12's toast and the form keeps its values.
+- Layout, in every proof row at 375: the keyboard open over the sheet keeps the focused field and *Send invite* in view; every target is 44 px.
+
+**13. Proof**
+
+| row | AC | owner | surface | action → expected | data |
+|---|---|---|---|---|---|
+| P1 | AC-3 | qa-api | api | `POST /invitations` `roles: []` → 400 `VALIDATION_FAILED`, a `details` entry on `roles`; `GET /invitations` holds no new row; `.qa/api.log` has no `inviteMessage` run | …904 |
+| P2 | AC-1 | qa-web | web | 375 and 1536: *Invite teammate* opens the editor (sheet / panel); in a company of one, *Invite your first teammate* does the same; SCR-M01-12 rows and m-team, d-team of the frame map | …901; a fresh company …906 for the teaching state |
+| P3 | AC-2 | qa-web | web | no role, *Send invite* → the banner in view, no `POST /invitations` in the network log | …901 |
+| P4 | AC-6 | qa-web | web | one role, a new number → 201, editor closed, focus on *Invite teammate*, the row among the invites | …901 |
+| P5 | AC-7, AC-8 | qa-web | web | an active member's number; then P4's number → each banner against its frame-map row; *Use a different number* | …901 |
+| P6 | AC-22 | qa-ios | iOS | as P2 and P4 on the phone; the list head still holds after scrolling past *Invite teammate*; the keyboard over the sheet | …902 |
+| P7 | AC-15 | qa-ios | iOS | Hindi, then Marathi: the sheet at 402, no clip, no sideways scroll | …902 |
+| P8 | AC-4 | qa-web | web | part c: every base and brief-listed state the app reaches, in both lives, at 375 and 1536, against the frame map; the colour-literal lint clean (the phone's frames: P15, P19) | …901, …907, …908 |
+| P9 | AC-10 | qa-api | api | 50 `POST /invitations` for a fresh company, then one more → 429 `INVITE_CAP_REACHED`, `message` *Your company has reached its invite limit for the last 24 hours.* (part b); that company is used only by P8's cap row | a fresh company …908, its own EPC Owner |
+| P10 | AC-14, AC-16 | main-dev | component | `OptionCardGroup.spec.tsx` "multiple toggles by click and Space"; `InviteForm.spec.tsx` "draws the twelve presets in F2 order with their lines" | — |
+| P11 | AC-9, AC-12, AC-19 | main-dev | unit + component | `invite.test.ts` the outcome table (409 × 2, 422 × 2, 429, 401, 403, 5xx, network); `InviteForm.spec.tsx` the not-covered line; `invite.test.ts` (i18n) the forbidden and failed words | — |
+| P12 | AC-11 | main-dev | component | `InviteForm.spec.tsx` empty, 121-character name, short number → field errors and no send | — |
+| P12b | AC-13 | qa-web | web | double-click *Send invite* → one `POST /invitations` in the network log, one new row (the repo has no hook tests; the creation key is the client's) | …901 |
+| P13 | AC-5 | qa-web | web | a fresh company: profile saved → invite step; send → home; a second fresh company: skip → home; sign out and in → the invite step again | …907, …909 |
+| P14 | AC-17 | qa-web | web | d-default against the frame map at 1536 | …907 |
+| P15 | AC-18 | qa-ios | iOS | m-default, m-blocked-no-role, m-already-member against the frame map | a fresh company …910 |
+| P16 | AC-20 | qa-ios | iOS | corridor *Open Team* (after P15's already-member) → Team opens; sign out and in → the invite step again | …910 |
+| P17 | AC-21 | main-dev | data | `use-setup-invite` spec: create 201, progress PUT 500 → `putOffSetup('invite_team')` called, one create | — |
+| P19 | AC-23 | qa-ios | iOS | no role → the banner, no request (Metro log); an active member's number → the already-member banner; a pending invitee → the already-invited banner; signed in as …908's owner → the cap banner alone | …902, …908 |
+| P20 | AC-24 | qa-web | web | 375: m-default against the frame map; the already-member answer, then *Open Team* → `/more/team`; sign out and in → the invite step again | a fresh company …911 |
+| P21 | AC-25 | main-dev | component | `SetupInviteTeam.spec.tsx` "a failed send shows the toast and keeps the values" | — |
+| P18 | — | ci | e2e-web | `more-team.spec.ts` with its redrawn landing images; `setup-invite-team.spec.ts`; `company-profile*.spec.ts` | — |
+
+Android: `qa-android` rows on Team — the changed phone screen has no Maestro flow of its own (`team` is held in `tests/invariants/src/e2e-flow-per-screen.ts`), so CI's `android` lane never opens it (`/task` step 7; corrected at part a QA).
+
+**14. Deferred rows**
+- Join and delete: D208 (part c).
+- Change: D216 — the mode shipped in part a; the row keeps building `SCR-M01-13` and `-19` on it, `T-M01-013 starts · T-M01-019 starts`.
+- Change: D261 — its frame half ships in part c; the row keeps its 01–05 half, `T-M01-006 starts`.
+- Stay: D240 (`T-M01-009 starts` — nothing these boards draw), D256 (owner), D214 (met in part a: the picked card's +4 is fixed there, the unpicked 74 against 70 stays, `T-M01-013 starts`), D282, D287, D290, D292 (D3).
+- New: D293, the `join_requested` act (D2 A), `T-M01-013 starts`.
+- New: D294, the phone sheet does not scroll to the no-role refusal (part a review; needs the native `Sheet`, over 300 lines under D160), `touches packages/ui/src/components/Sheet/Sheet.native.tsx`.
+
+**15. Size** — about 85 changed files in all: part a ~37, part b ~25, part c ~32; ~2,000 code lines, ~1,100 test lines. Three parts, each end to end on web and phone; each part is one PR stacked on the one before.
+
+**16. Decisions for the owner**
+- D1 · The role list's loading and error frames: (A, recommended) drop them — the twelve presets ship inside the app, nothing loads them, so neither state can happen; the brief says so and the frames stay on the board, unreached. (B) build both behind a prop that only a component test sets.
+- D2 · The `join_requested` *invite this person* act: (A, recommended) a new deferred row — the notice must first carry the asker's name and number as data (a change to the notification shape, F6), `reopens when T-M01-013 starts`. (B) build it here, which makes a fourth part over the three-part cap.
+- D3 · The Team board fixes D287, D290, D292 and D282's `20px` on `SCR-M01-07` and `-12`: (A, recommended) redraw and lock them on `design/M01` in this session, its own PR, while part a builds; until it merges they are known differences. (B) keep them as known differences to the next M01 board check (`T-M01-013`'s).
+- D4 · The refusals in the Team life: (A, recommended) the same banners without *Open Team* (Team is already behind the editor); the foot is *Cancel* · *Use a different number*, and the cap shows *Cancel* alone. (B) keep *Open Team*, and it closes the editor.
+- D5 · Parts a and c run over 30 files (about 37 and 32): (A, recommended) accept them — part a is the least that sends one invite end to end on both apps (the multi-select mode, the shared form, the words in three languages, both Team lives), and part c is the corridor on both apps with its shared step; a fourth part breaks the three-part cap. (B) four parts — but the shared half of part a alone ships nothing a user sees.
+
+Reviewer findings rejected: none.
+
 ### T-M01-008 · Invite Landing
 **Type:** screen · **Tier:** P0
 **Status:** designed

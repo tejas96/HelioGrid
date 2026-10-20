@@ -2,6 +2,7 @@ import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { OptionCardGroup } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour } from '../support/token';
+import { MultipleStory } from './OptionCardGroup.story';
 
 const en = await createTranslator('en');
 const bySms = en.t(SIGN_IN.sendCode);
@@ -52,4 +53,38 @@ test('an off option lies on the page, apart from the grey tiles', async ({ mount
     'background-color',
     await resolvedColour(page, '--hg-ground'),
   );
+});
+
+test('multiple toggles by click and Space: each option is a checkbox, its own tab stop, a square mark', async ({
+  mount,
+  page,
+}) => {
+  const group = await mount(<MultipleStory options={options} label={bySms} start={['call']} />);
+  const first = group.getByRole('checkbox', { name: bySms });
+  const second = group.getByRole('checkbox', { name: byCall });
+
+  await expect(group.getByRole('group', { name: bySms })).toBeVisible();
+  await expect(first).toHaveAttribute('aria-checked', 'false');
+  await expect(second).toHaveAttribute('aria-checked', 'true');
+  await expect(second).toHaveCSS(
+    'box-shadow',
+    `${await resolvedColour(page, '--accent')} 0px 0px 0px 2px`,
+  );
+  await expect(second.locator('.hg-option-card-dot')).toHaveCSS('border-radius', '6px');
+
+  await first.click();
+  await expect(group.getByTestId('picked')).toHaveText('call,sms');
+  await second.focus();
+  await page.keyboard.press('Space');
+  await expect(group.getByTestId('picked')).toHaveText('sms');
+  await expect(second).toHaveAttribute('aria-checked', 'false');
+  await expect(first).toHaveAttribute('tabindex', '0');
+  await expect(second).toHaveAttribute('tabindex', '0');
+});
+
+test('the single mode is unchanged: a radiogroup with one tab stop', async ({ mount }) => {
+  const group = await mount(<OptionCardGroup options={options} value="call" label={bySms} />);
+  await expect(group.getByRole('radiogroup', { name: bySms })).toBeVisible();
+  await expect(group.getByRole('radio', { name: bySms })).toHaveAttribute('tabindex', '-1');
+  await expect(group.getByRole('radio', { name: byCall })).toHaveAttribute('tabindex', '0');
 });

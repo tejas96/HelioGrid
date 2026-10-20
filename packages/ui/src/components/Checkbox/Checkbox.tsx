@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
 import type { CheckboxProps } from './Checkbox.types';
+import { CheckboxTick } from './CheckboxTick';
 
 interface WebCheckboxProps extends CheckboxProps {
   className?: string;
@@ -40,23 +41,7 @@ export function Checkbox({
       style={style}
       htmlFor={cid}
     >
-      <span className="hg-checkbox-box">
-        {checked ? (
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M2.5 6.5L5 9l4.5-5" />
-          </svg>
-        ) : null}
-      </span>
+      <span className="hg-checkbox-box">{checked ? <CheckboxTick /> : null}</span>
       <input
         className="hg-checkbox-input"
         id={cid}

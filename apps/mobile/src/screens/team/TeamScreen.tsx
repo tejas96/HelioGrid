@@ -5,6 +5,7 @@ import { useI18n } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
 import {
   type FocusHandle,
+  InviteEditor,
   MemberAct,
   MemberList,
   MemberListHead,
@@ -19,14 +20,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSettingsDrillDown } from '../settings/hooks/use-settings-drill-down';
 import { ShellPage } from '../shell/components/ShellPage';
 import { underPill } from '../shell/styles';
+import { InviteTeammate, useTeamInvite } from './components/TeamInvite';
 
 /**
  * The Team page behind `More` on the phone (`SCR-M01-12`, the 375 frames): the settings page's bar
  * with its way back, the search and the Status chips held at the top, and one member card per
  * person and open or run-out invite. The settings row opens it once its presets allow (`F7-48`).
  * What is read is `useTeam`'s, what each act does `useTeamActs`', and every word `teamListWords`'
- * and `teamActWords`'; this composes. The invite act and a row's open land with `T-M01-007` and
- * `T-M01-013` (ruling D1 A).
+ * and `teamActWords`'; this composes. *Invite teammate* opens Invite Teammate as a sheet over the
+ * page (`SCR-M01-07`, `T-M01-007`); a row's open lands with `T-M01-013`.
  */
 export function TeamScreen() {
   const drillDown = useSettingsDrillDown('team');
@@ -55,10 +57,13 @@ export function TeamScreen() {
     if (noteLeavesRow(note)) search.current?.focus();
   });
 
+  const invite = useTeamInvite(() => team.reread(), toasts.push);
+
   return (
     <ShellPage
       inView="more"
       drillDown={drillDown}
+      lead={team.surface === 'teaching' ? undefined : <InviteTeammate invite={invite} />}
       stickyHead={
         showsListHead(team.surface) ? (
           <MemberListHead
@@ -109,6 +114,7 @@ export function TeamScreen() {
           opener.current?.focus();
         }}
       />
+      <InviteEditor {...invite.editor} />
       {/* Above the pill, which stands on the device's home-bar inset — the package reads no inset. */}
       <ToastHost
         toasts={toasts.toasts}
