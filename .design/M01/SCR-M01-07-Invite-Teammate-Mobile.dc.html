@@ -83,7 +83,7 @@ a:hover{color:var(--link-hover)}
               <sc-for list="{{ roleSkeletons }}" as="s" hint-placeholder-count="12">
                 <div aria-hidden="true" style="display:flex;flex-direction:column;gap:var(--sp-1);padding:var(--sp-2) var(--sp-4) var(--sp-3);background:var(--fill);border-radius:var(--r-tile)">
                   <span style="display:flex;align-items:center;gap:var(--sp-3);height:44px">
-                    <span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);border-radius:6px;background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span>
+                    <span style="flex-shrink:0;width:var(--sp-5);height:var(--sp-5);border-radius:var(--rf-sm);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span>
                     <span style="display:block;width:{{ s.title }};height:var(--fs-body-sm);border-radius:var(--r-xs);background:linear-gradient(90deg,var(--canvas) 25%,var(--canvas-sunken) 50%,var(--canvas) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite"></span>
                   </span>
                   <span style="display:flex;flex-direction:column;padding-left:var(--sp-8)">
@@ -278,41 +278,17 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Invite teammate — Team life, 375" data-frame="m-team" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
-      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-1) var(--screen-pad-mobile) var(--sp-6)">
-        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import>
-        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);background:var(--canvas)">
+      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:0;padding:0 var(--screen-pad-mobile) var(--sp-6)">
+        <div style="flex-shrink:0;padding:var(--sp-2) 0">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import>
+        </div>
+        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);padding:var(--sp-2) 0 var(--sp-4);background:var(--canvas)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAll }}" hint-size="100%,44px"></x-import>
         </div>
         <section aria-label="Everyone at Suryodaya Solar" style="flex-shrink:0;display:flex;flex-direction:column;gap:var(--tile-gap)">
           <sc-for list="{{ people }}" as="p" hint-placeholder-count="11">
-            <article aria-label="{{ p.name }}" style="background:var(--fill);border-radius:var(--r-tile);padding:var(--sp-4);display:flex;flex-direction:column;gap:var(--sp-3)">
-              <div style="display:flex;align-items:center;gap:var(--sp-3)">
-                <div style="position:relative;flex-shrink:0;display:flex">
-                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" name="{{ p.name }}" size="{{ p.avatar }}" hint-size="48px,48px"></x-import>
-                  <span aria-hidden="true" style="position:absolute;right:-2px;bottom:-2px;width:18px;height:18px;border-radius:var(--r-pill);background:var(--canvas);display:flex;align-items:center;justify-content:center"><span style="width:11px;height:11px;border-radius:var(--r-pill);background:{{ p.mark }}"></span></span>
-                </div>
-                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:calc(var(--sp-1) / 2)">
-                  <span style="display:flex;align-items:center;flex-wrap:wrap;gap:var(--sp-2);font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">{{ p.name }}<sc-if value="{{ p.you }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="accent" density="functional" hint-size="auto,22px">You</x-import></sc-if></span>
-                  <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary)">{{ p.line }}</span>
-                </div>
-              </div>
-              <div style="display:flex;flex-wrap:wrap;gap:calc(var(--sp-3) / 2)">
-                <sc-for list="{{ p.roles }}" as="r" hint-placeholder-count="1"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Badge" tone="{{ r.tone }}" density="functional" hint-size="auto,24px">{{ r.label }}</x-import></sc-for>
-              </div>
-              <sc-if value="{{ p.invited }}" hint-placeholder-val="{{ false }}">
-                <div style="display:flex;flex-direction:column;gap:calc(var(--sp-3) / 2)">
-                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ProgressBar" value="{{ p.progress }}" hint-size="100%,6px"></x-import>
-                  <div style="display:flex;justify-content:space-between;gap:var(--sp-3);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm)">
-                    <span style="color:var(--text-secondary)">Day {{ p.day }} of 7</span>
-                    <span style="color:var(--text-primary)">Expires {{ p.expires }}</span>
-                  </div>
-                </div>
-              </sc-if>
-              <sc-if value="{{ p.revoke }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ p.footBtn }}" hint-size="100%,44px">Revoke invite</x-import></sc-if>
-              <sc-if value="{{ p.again }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ p.footBtn }}" hint-size="100%,44px">Invite again</x-import></sc-if>
-              <sc-if value="{{ p.deactivate }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ p.footBtn }}" hint-size="100%,44px">Deactivate</x-import></sc-if>
-            </article>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ p }}" hint-size="100%,180px"></x-import>
           </sc-for>
         </section>
       </div>
@@ -442,7 +418,7 @@ class Component extends DCLogic {
     /* SCR-M01-12's roster and cards as its m-default draws them: invites first (pending, then expired),
        then everyone by name, deactivated last; one act at each card's foot. */
     const ROSTER = [
-      { name: "Priya Deshmukh", kind: "invited", roles: ["Sales Executive"], day: 2, expires: "5 Sep" },
+      { name: "Priya Deshmukh", kind: "invited", roles: ["Sales Executive"], day: 2, expires: "5 Sept" },
       { name: "Rohan Gaikwad", kind: "expired", roles: ["Survey Engineer"], expired: "27 Aug" },
       { name: "Amit Rane", kind: "active", roles: ["Sales Executive", "Survey Engineer"], seen: "30 Aug" },
       { name: "Anjali Kulkarni", kind: "active", roles: ["Sales Executive"], today: true },
@@ -455,10 +431,10 @@ class Component extends DCLogic {
       { name: "Deepak Jadhav", kind: "deactivated", roles: ["Installation Team Member"], seen: "12 Aug" }
     ];
     /* The status mark on the avatar's corner rides with the status word on the line (N6b). */
-    const MARK = { invited: "var(--info)", expired: "var(--warning)", active: "var(--success)", deactivated: "var(--neutral)" };
+    const MARK = { invited: "info", expired: "warning", active: "success", deactivated: "neutral" };
     const seen = (p) => (p.today ? "today" : p.seen);
     const LINE = {
-      invited: (p) => "Invited as " + p.roles.join(", "),
+      invited: () => "Invited",
       expired: (p) => "Expired " + p.expired,
       active: (p) => "Active · last seen " + seen(p),
       deactivated: (p) => "Deactivated · last seen " + seen(p)
@@ -487,11 +463,22 @@ class Component extends DCLogic {
         ? Object.assign(deactivate, { disabled: true, disabledReason: "Only EPC Owner" })
         : Object.assign(deactivate, { onClick: noop });
     };
+    /* One person is one stacked RecordCard (design-system change 19): the face with its status mark,
+       the name with You, the status line, the roles, an invite's day-of-seven bar, then the one act. */
+    const ACT = { invited: "Revoke invite", expired: "Invite again", active: "Deactivate" };
+    const inviteDays = (p) => h("div", { style: { display: "flex", flexDirection: "column", gap: "calc(var(--sp-3) / 2)" } },
+      h(ds.ProgressBar, { value: (p.day / 7) * 100 }),
+      h("div", { style: { display: "flex", justifyContent: "space-between", gap: "var(--sp-3)", fontSize: "var(--fs-body-sm)", lineHeight: "var(--lh-body-sm)" } },
+        h("span", { style: { color: "var(--text-secondary)" } }, "Day " + p.day + " of 7"),
+        h("span", { style: { color: "var(--text-primary)" } }, "Expires " + p.expires)));
     const card = (p) => ({
-      name: p.name, line: LINE[p.kind](p), mark: MARK[p.kind], roles: p.roles.map((r) => ({ label: r, tone: KIND[r] })), you: !!p.you, avatar: 48,
-      invited: p.kind === "invited", progress: p.kind === "invited" ? (p.day / 7) * 100 : 0, day: p.day, expires: p.expires,
-      revoke: p.kind === "invited", again: p.kind === "expired", deactivate: p.kind === "active",
-      footBtn: foot(p)
+      layout: "stacked", name: p.name, onClick: p.kind === "active" ? noop : undefined,
+      avatar: h(ds.Avatar, { name: p.name, size: 48, mark: MARK[p.kind] }),
+      badge: p.you ? h(ds.Badge, { tone: "accent", density: "functional" }, "You") : null,
+      line: LINE[p.kind](p),
+      marks: p.roles.map((r) => h(ds.Badge, { key: r, tone: KIND[r], density: "functional" }, r)),
+      detail: p.kind === "invited" ? inviteDays(p) : null,
+      action: ACT[p.kind] ? h(ds.Button, foot(p), ACT[p.kind]) : null,
     });
 
     /* SCR-M01-12's list head: Find in this list, then the status chips with their counts. Mounted as

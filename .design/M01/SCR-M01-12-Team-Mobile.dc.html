@@ -37,13 +37,34 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — default" data-frame="m-default" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
-      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-1) var(--screen-pad-mobile) var(--sp-6)">
-        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import>
-        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);background:var(--canvas)">
+      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:0;padding:0 var(--screen-pad-mobile) var(--sp-6)">
+        <div style="flex-shrink:0;padding:var(--sp-2) 0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import></div>
+        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);padding:var(--sp-2) 0 var(--sp-4);background:var(--canvas)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAll }}" hint-size="100%,44px"></x-import>
         </div>
         <section aria-label="Everyone at Suryodaya Solar" style="flex-shrink:0;display:flex;flex-direction:column;gap:var(--tile-gap)">
+          <sc-for list="{{ people }}" as="p" hint-placeholder-count="11">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ p }}" hint-size="100%,180px"></x-import>
+          </sc-for>
+        </section>
+      </div>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ nav }}" hint-size="100%,66px"></x-import>
+    </div>
+  </div>
+
+  <!-- 375 · scrolled, head held -->
+  <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
+    <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · scrolled, head held</span>
+    <div data-screen-label="Team — scrolled, head held" data-frame="m-scrolled" style="position:relative;contain:paint;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+      <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
+      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBarScrolled }}" hint-size="100%,64px"></x-import>
+      <div style="flex:1;min-height:0;overflow-y:hidden;display:flex;flex-direction:column;gap:0;padding:0 var(--screen-pad-mobile) var(--sp-6)">
+        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);padding:var(--sp-2) 0 var(--sp-4);background:var(--canvas)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAll }}" hint-size="100%,44px"></x-import>
+        </div>
+        <section aria-label="Everyone at Suryodaya Solar, scrolled" style="flex-shrink:0;position:relative;z-index:1;margin-top:-120px;display:flex;flex-direction:column;gap:var(--tile-gap)">
           <sc-for list="{{ people }}" as="p" hint-placeholder-count="11">
             <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" dc-props="{{ p }}" hint-size="100%,180px"></x-import>
           </sc-for>
@@ -59,9 +80,9 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — query applied" data-frame="m-query" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
-      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-1) var(--screen-pad-mobile) var(--sp-6)">
-        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import>
-        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);background:var(--canvas)">
+      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:0;padding:0 var(--screen-pad-mobile) var(--sp-6)">
+        <div style="flex-shrink:0;padding:var(--sp-2) 0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import></div>
+        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);padding:var(--sp-2) 0 var(--sp-4);background:var(--canvas)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findQuery }}" hint-size="100%,50px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsQuery }}" hint-size="100%,44px"></x-import>
         </div>
@@ -81,9 +102,9 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — no match" data-frame="m-nomatch" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
-      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-1) var(--screen-pad-mobile) var(--sp-6)">
-        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import>
-        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);background:var(--canvas)">
+      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:0;padding:0 var(--screen-pad-mobile) var(--sp-6)">
+        <div style="flex-shrink:0;padding:var(--sp-2) 0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import></div>
+        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);padding:var(--sp-2) 0 var(--sp-4);background:var(--canvas)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findNoMatch }}" hint-size="100%,50px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsNoMatch }}" hint-size="100%,44px"></x-import>
         </div>
@@ -99,9 +120,9 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — filter applied" data-frame="m-filter" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
-      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-1) var(--screen-pad-mobile) var(--sp-6)">
-        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import>
-        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);background:var(--canvas)">
+      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:0;padding:0 var(--screen-pad-mobile) var(--sp-6)">
+        <div style="flex-shrink:0;padding:var(--sp-2) 0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import></div>
+        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);padding:var(--sp-2) 0 var(--sp-4);background:var(--canvas)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsExpired }}" hint-size="100%,44px"></x-import>
         </div>
@@ -121,9 +142,9 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — invite-again refused" data-frame="m-invite-refused" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
-      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-1) var(--screen-pad-mobile) var(--sp-6)">
-        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import>
-        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);background:var(--canvas)">
+      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:0;padding:0 var(--screen-pad-mobile) var(--sp-6)">
+        <div style="flex-shrink:0;padding:var(--sp-2) 0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import></div>
+        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);padding:var(--sp-2) 0 var(--sp-4);background:var(--canvas)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsExpired }}" hint-size="100%,44px"></x-import>
         </div>
@@ -144,9 +165,9 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — loading" data-frame="m-loading" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
-      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-1) var(--screen-pad-mobile) var(--sp-6)">
-        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import>
-        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);background:var(--canvas)">
+      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:0;padding:0 var(--screen-pad-mobile) var(--sp-6)">
+        <div style="flex-shrink:0;padding:var(--sp-2) 0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import></div>
+        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);padding:var(--sp-2) 0 var(--sp-4);background:var(--canvas)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsLoading }}" hint-size="100%,44px"></x-import>
         </div>
@@ -214,8 +235,8 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — error" data-frame="m-error" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
-      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-1) var(--screen-pad-mobile) var(--sp-6)">
-        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import>
+      <div style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:0;padding:0 var(--screen-pad-mobile) var(--sp-6)">
+        <div style="flex-shrink:0;padding:var(--sp-2) 0 var(--sp-4)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import></div>
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" dc-props="{{ errorBanner }}" hint-size="100%,96px" style="flex-shrink:0"></x-import>
       </div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ nav }}" hint-size="100%,66px"></x-import>
@@ -228,9 +249,9 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — deactivate confirm" data-frame="m-deactivate" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
-      <div style="flex:1;min-height:0;overflow-y:hidden;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-1) var(--screen-pad-mobile) var(--sp-6)">
-        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import>
-        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);background:var(--canvas)">
+      <div style="flex:1;min-height:0;overflow-y:hidden;display:flex;flex-direction:column;gap:0;padding:0 var(--screen-pad-mobile) var(--sp-6)">
+        <div style="flex-shrink:0;padding:var(--sp-2) 0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import></div>
+        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);padding:var(--sp-2) 0 var(--sp-4);background:var(--canvas)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAll }}" hint-size="100%,44px"></x-import>
         </div>
@@ -253,8 +274,8 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — deactivated" data-frame="m-deactivated" style="position:relative;contain:paint;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBarScrolled }}" hint-size="100%,64px"></x-import>
-      <div style="flex:1;min-height:0;overflow-y:hidden;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-1) var(--screen-pad-mobile) var(--sp-6)">
-        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);background:var(--canvas)">
+      <div style="flex:1;min-height:0;overflow-y:hidden;display:flex;flex-direction:column;gap:0;padding:0 var(--screen-pad-mobile) var(--sp-6)">
+        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);padding:var(--sp-2) 0 var(--sp-4);background:var(--canvas)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAfterDeactivate }}" hint-size="100%,44px"></x-import>
         </div>
@@ -275,9 +296,9 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — revoke invite confirm" data-frame="m-revoke" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
-      <div style="flex:1;min-height:0;overflow-y:hidden;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-1) var(--screen-pad-mobile) var(--sp-6)">
-        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import>
-        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);background:var(--canvas)">
+      <div style="flex:1;min-height:0;overflow-y:hidden;display:flex;flex-direction:column;gap:0;padding:0 var(--screen-pad-mobile) var(--sp-6)">
+        <div style="flex-shrink:0;padding:var(--sp-2) 0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import></div>
+        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);padding:var(--sp-2) 0 var(--sp-4);background:var(--canvas)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAll }}" hint-size="100%,44px"></x-import>
         </div>
@@ -300,9 +321,9 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — invite revoked" data-frame="m-revoked" style="position:relative;contain:paint;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
-      <div style="flex:1;min-height:0;overflow-y:hidden;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-1) var(--screen-pad-mobile) var(--sp-6)">
-        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import>
-        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);background:var(--canvas)">
+      <div style="flex:1;min-height:0;overflow-y:hidden;display:flex;flex-direction:column;gap:0;padding:0 var(--screen-pad-mobile) var(--sp-6)">
+        <div style="flex-shrink:0;padding:var(--sp-2) 0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ inviteBtn }}" hint-size="100%,48px" style="flex-shrink:0">Invite teammate</x-import></div>
+        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);padding:var(--sp-2) 0 var(--sp-4);background:var(--canvas)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAfterRevoke }}" hint-size="100%,44px"></x-import>
         </div>
@@ -323,8 +344,8 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — guard-rail blocked at rest" data-frame="m-guard" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBarScrolled }}" hint-size="100%,64px"></x-import>
-      <div style="flex:1;min-height:0;overflow-y:hidden;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-1) var(--screen-pad-mobile) var(--sp-6)">
-        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);background:var(--canvas)">
+      <div style="flex:1;min-height:0;overflow-y:hidden;display:flex;flex-direction:column;gap:0;padding:0 var(--screen-pad-mobile) var(--sp-6)">
+        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);padding:var(--sp-2) 0 var(--sp-4);background:var(--canvas)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAll }}" hint-size="100%,44px"></x-import>
         </div>
@@ -344,8 +365,8 @@ a:hover{color:var(--link-hover)}
     <div data-screen-label="Team — guard-rail refused write" data-frame="m-refused" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
       <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBarScrolled }}" hint-size="100%,64px"></x-import>
-      <div style="flex:1;min-height:0;overflow-y:hidden;display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-1) var(--screen-pad-mobile) var(--sp-6)">
-        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);background:var(--canvas)">
+      <div style="flex:1;min-height:0;overflow-y:hidden;display:flex;flex-direction:column;gap:0;padding:0 var(--screen-pad-mobile) var(--sp-6)">
+        <div data-part="list-head" style="flex-shrink:0;position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:var(--tile-gap);padding:var(--sp-2) 0 var(--sp-4);background:var(--canvas)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SearchField" dc-props="{{ findEmpty }}" hint-size="100%,50px"></x-import>
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ chipsAll }}" hint-size="100%,44px"></x-import>
         </div>

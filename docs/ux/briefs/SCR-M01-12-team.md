@@ -38,7 +38,9 @@ Screen-specific:
 - **invite-again-refused** — *Invite again* answered 422 or 429 leaves the card as it was and says why in a danger toast, in the shipped words for the code (`packages/i18n/src/copy/api-error.ts`); a 409 refreshes the list instead.
 - **no-match** — a search that matches no one: the list is the system's `EmptyState` naming the words — *No one matches "<text>"* — with *Clear search*; the status chips count what the search matches (owner ruling D2 A).
 
-Drawn at 375 only (at 1536 the phone's answer holds at width): `empty-teaching`, `error`, `deactivated-member`, `pending-invite-revoke`, `invite-again-refused`, `guard-rail-blocked`, `guard-rail-blocked-explained`.
+Drawn at 375 only (at 1536 the phone's answer holds at width): `empty-teaching`, `error`, `deactivated-member`, `pending-invite-revoke`, `invite-again-refused`, `guard-rail-blocked`, `guard-rail-blocked-explained`, `scrolled` (the list head held under the bar, *Invite teammate* scrolled away; at 1536 the head holds the same way inside the page's own scroll).
+
+At 375 the list head holds its own spacing — `--sp-2` above and `--sp-4` below, inside the head, on the page ground — so when held it never meets the bar and the list scrolls under it; *Invite teammate* sits with `--sp-2` above and below, so button to search is `--sp-4`; with no head (`error`) the button keeps `--sp-4` below it before the banner (owner ruling 2026-10-19, D287).
 
 - **empty** cannot occur — the reader is always on the list — so **empty-teaching** answers it: only the owner so far, and the invite. It is the system's `EmptyState`, centred as its contract fixes — with **no-match**, the two exceptions to *no centred block* on this screen (owner ruling 2026-10-16; `D233`).
 - **loading** draws three placeholders the size of the rows they stand for — the stacked card at 375, an 82 px row at 1536 — and no head count until the read lands. *Invite teammate* stays live in loading and in error; it does not wait on this read. **error** draws no roster and no caption.
@@ -98,7 +100,7 @@ table, never transcribed from the frame.
 
 The PRD pins no team-size number; design for the small-firm reality the stacking law names — one person is rep *and* surveyor *and* designer (F2-10) — through a list long enough to scroll, where each person may carry several of the twelve preset chips at once plus a status and a last-active value. Role names use localized capability phrases (M01 §M01.2 localization notes). Every preset chip shows whole at both widths; at 375 the chips wrap, with no cap and no *+1*.
 
-At 1536 the list is one table — Person (with the status chip) · Roles · Last active, the row act in its own 160 px column, the other three in the ratio 2.2 : 2.4 : 1.2 (owner pick A) — filling the content width beside the settings side list (`SCR-SHELL-01`, *More: the settings list*), inside the page's own scroll, with *Invite teammate* in the page header. Its caption is for assistive technology only. No sortable headers, no selection.
+At 1536 the list is one table — Person (with the status chip) · Roles · Last active, the row act in its own 176 px column (the `sm` *Revoke invite* act with its 16 px glyph needs 136, plus the row's 20 px padding each side; D290), the other three in the ratio 2.2 : 2.4 : 1.2 (owner pick A) — filling the content width beside the settings side list (`SCR-SHELL-01`, *More: the settings list*), inside the page's own scroll, with *Invite teammate* in the page header. Its caption is for assistive technology only. No sortable headers, no selection.
 
 ## Numbers carrying provenance
 
