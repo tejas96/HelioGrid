@@ -33,7 +33,7 @@ export interface ExplainerProps {
   /** Clamp, flip and cap the width inside this box instead of the viewport — a phone shell, a
    *  `DetailPanel`, the studio canvas. Own width, never viewport: a 375 shell on a 1536 desktop
    *  still gets the 280 cap. Ref, element or selector. */
-  within?: React.RefObject<HTMLElement> | HTMLElement | string;
+  within?: React.RefObject<HTMLElement> | HTMLElement | string | (() => HTMLElement | null);
   /** `auto` (default) opens on hover wherever the pointer can hover — a **capability**, never a
    *  width (`F7-29a`) — and hover is never the only way in (`N1`). `false` turns it off. */
   hover?: "auto" | boolean;
@@ -44,6 +44,10 @@ export interface ExplainerProps {
   inset?: boolean;
   /** A drawn SVG glyph in place of the default "i". No icon package, no emoji. */
   glyph?: React.ReactNode;
+  /** A host's own control in place of the "i": called with the trigger's props (ref, aria, onClick,
+   *  onFocus) and returns the element. A disabled control's reason opens this way (`ReasonExplainer`,
+   *  design-system change 6) — the one ruled case where the bubble says why an act is off. */
+  trigger?: (triggerProps: Record<string, unknown>) => React.ReactElement;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean, meta: { reason: "trigger" | "focus" | "hover" | "hover-out" | "escape" | "outside" | "scroll" }) => void;

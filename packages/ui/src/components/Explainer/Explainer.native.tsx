@@ -1,11 +1,12 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
-import { AccessibilityInfo, BackHandler, findNodeHandle, StyleSheet, View } from 'react-native';
+import { AccessibilityInfo, BackHandler, StyleSheet, View } from 'react-native';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { explainerGeometry } from './Explainer.logic';
-import type { ExplainerProps } from './Explainer.types';
+import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
+import { explainerGeometry, INERT_TRIGGER } from './Explainer.logic';
+import type { ExplainerProps, ExplainerTriggerProps } from './Explainer.types';
 import { ExplainerBubble } from './ExplainerBubble.native';
 import { InfoGlyph } from './ExplainerParts.native';
 import { useExplainer } from './use-explainer';
@@ -14,11 +15,6 @@ import { useExplainerPlace } from './use-explainer-place.native';
 type NativeExplainerProps = ExplainerProps & {
   style?: StyleProp<ViewStyle>;
 };
-
-function focusOn(view: View | null) {
-  const tag = findNodeHandle(view);
-  if (tag !== null) AccessibilityInfo.setAccessibilityFocus(tag);
-}
 
 /**
  * The ask (`F7-46`), the same object as the web half — a bubble anchored to its "i", never a sheet.
@@ -32,11 +28,16 @@ function focusOn(view: View | null) {
  *   on a tap and back to the trigger on closing; iOS hears each new page announced.
  * · `position: absolute` beside the trigger becomes `measureInWindow` plus the `Portal`, so nothing
  *   above the ask can clip it; `within` is measured the same way.
+ * · A host's control given as `trigger` sits in the same measured wrapper the "i" does, so it opens,
+ *   closes and places the bubble exactly as the "i"; the screen reader's focus returns to the
+ *   host's own control, which hands itself over through `ref`.
  */
 export function Explainer(props: NativeExplainerProps) {
   const { label, density = 'expressive', inset = false, glyph } = props;
   const ask = useExplainer(props);
   const trigger = useRef<View>(null);
+  /* The host's own control, when one is the trigger: focus returns to it, not to the wrapper. */
+  const host = useRef<object | null>(null);
   const bubble = useRef<View>(null);
   const geometry = explainerGeometry(density);
   const { placed, cap, onLayout } = useExplainerPlace({
@@ -51,7 +52,7 @@ export function Explainer(props: NativeExplainerProps) {
 
   const close = (reason: 'trigger' | 'outside' | 'escape') => {
     ask.hide(reason);
-    focusOn(trigger.current);
+    focusScreenReaderOn(() => host.current ?? trigger.current);
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: listens only while open; `close` is rebuilt every render.
@@ -67,7 +68,7 @@ export function Explainer(props: NativeExplainerProps) {
   const isPlaced = placed !== null;
   // biome-ignore lint/correctness/useExhaustiveDependencies: moves the reader in once, as the bubble lands; `openedBy` is a ref.
   useEffect(() => {
-    if (isPlaced && ask.openedBy.current === 'trigger') focusOn(bubble.current);
+    if (isPlaced && ask.openedBy.current === 'trigger') focusScreenReaderOn(() => bubble.current);
   }, [isPlaced]);
 
   const position = ask.pager?.position;
@@ -80,26 +81,40 @@ export function Explainer(props: NativeExplainerProps) {
     }
   }, [position, spoken]);
 
-  if (ask.empty) return null;
+  const press = () => (ask.isOpen ? close('trigger') : ask.show('trigger'));
+  const triggerProps: ExplainerTriggerProps = {
+    onPress: press,
+    expanded: ask.isOpen,
+    ref: (node) => {
+      host.current = node;
+    },
+  };
+
+  /* A host's control is the host's act, not an ask for nothing: it stays, with no bubble behind it. */
+  if (ask.empty) return props.trigger === undefined ? null : props.trigger(INERT_TRIGGER);
   return (
     <View ref={trigger} collapsable={false} style={[styles.wrap, props.style]}>
-      <Pressable
-        accessibilityLabel={label}
-        accessibilityState={{ expanded: ask.isOpen }}
-        onPress={() => (ask.isOpen ? close('trigger') : ask.show('trigger'))}
-        style={[
-          styles.trigger,
-          ask.isOpen ? styles.triggerOpen : undefined,
-          inset ? { margin: -(44 - geometry.visual) / 2 } : undefined,
-        ]}
-      >
-        {glyph ?? (
-          <InfoGlyph
-            size={geometry.glyph}
-            color={ask.isOpen ? theme.colors.accent : theme.colors['text-secondary']}
-          />
-        )}
-      </Pressable>
+      {props.trigger === undefined ? (
+        <Pressable
+          accessibilityLabel={label}
+          accessibilityState={{ expanded: ask.isOpen }}
+          onPress={press}
+          style={[
+            styles.trigger,
+            ask.isOpen ? styles.triggerOpen : undefined,
+            inset ? { margin: -(44 - geometry.visual) / 2 } : undefined,
+          ]}
+        >
+          {glyph ?? (
+            <InfoGlyph
+              size={geometry.glyph}
+              color={ask.isOpen ? theme.colors.accent : theme.colors['text-secondary']}
+            />
+          )}
+        </Pressable>
+      ) : (
+        props.trigger(triggerProps)
+      )}
       {ask.isOpen ? (
         <Portal>
           <View

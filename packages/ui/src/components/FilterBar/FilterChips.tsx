@@ -1,5 +1,5 @@
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
-import { useRef } from 'react';
+import { useImperativeHandle, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import type { FilterChipsProps } from './FilterBar.types';
 import { optionIcon, optionLabel, optionValue } from './FilterBar.types';
@@ -48,6 +48,7 @@ export function FilterChips({
   scroll = false,
   label,
   labelledBy,
+  ref,
   className,
   style,
 }: WebFilterChipsProps) {
@@ -55,6 +56,15 @@ export function FilterChips({
   const selectedIndex = Math.max(
     0,
     options.findIndex((option) => optionValue(option) === value),
+  );
+  /* Read when the focus lands, not when it was asked for: a caller asks in the same turn it chooses
+     the chip, before this renders it chosen. */
+  const chosen = useRef(selectedIndex);
+  chosen.current = selectedIndex;
+  useImperativeHandle(
+    ref,
+    () => ({ focus: () => setTimeout(() => refs.current[chosen.current]?.focus(), 0) }),
+    [],
   );
 
   const onKeyDown = (index: number, event: KeyboardEvent<HTMLButtonElement>) => {

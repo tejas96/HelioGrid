@@ -209,6 +209,10 @@ export function createSessionStore(config: {
       }
     },
     retryBoot: checkSession,
+    async rereadUser() {
+      const projection = await config.auth.session().catch(() => null);
+      if (projection !== null) apply({ kind: 'reread', user: userOf(projection) });
+    },
     async signInWithGoogle(token, code): Promise<GoogleResult> {
       // A link proves a number by the code of the challenge this store opened; without one there is nothing to prove.
       if (code !== null && challengeId === null)

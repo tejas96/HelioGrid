@@ -1,14 +1,18 @@
 import { theme } from '@heliogrid/theme';
+import { useId, useImperativeHandle, useRef } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, type View } from 'react-native';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { renderActionReason } from '../ActionReason/ActionReason.native';
-import type { ButtonProps, ButtonSize, ButtonVariant } from './Button.types';
+import { reasonPage } from '../ActionReason/ActionReason.logic';
+import type { ReasonTriggerProps } from '../ActionReason/ActionReason.types';
+import { ReasonExplainer } from '../ActionReason/ReasonExplainer.native';
+import type { ButtonProps, ButtonSize, ButtonTone, ButtonVariant } from './Button.types';
 
 interface NativeButtonProps extends ButtonProps {
-  /** Lands on the pill, never on the reason column — the DS contract for `style`. */
+  /** Lands on the pill — the DS contract for `style`. */
   style?: StyleProp<ViewStyle>;
 }
 
@@ -33,6 +37,9 @@ const VARIANT: Record<ButtonVariant, VariantVisual> = {
   ghost: { background: 'transparent', color: theme.colors['text-secondary'] },
   destructive: { background: theme.colors['danger-text'], color: theme.colors['text-inverse'] },
 };
+
+/* The words a tone gives a secondary or ghost pill; the white pill keeps its own ground. */
+const TONE: Record<ButtonTone, string> = { danger: theme.colors['danger-text'] };
 
 const SIZE: Record<ButtonSize, ViewStyle> = {
   lg: { height: theme.spacing['sp-12'], paddingHorizontal: theme.spacing['sp-6'] },
@@ -60,8 +67,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: theme.type.roles.button.letterSpacing,
   },
-  column: { alignItems: 'flex-start', gap: theme.spacing['sp-1'] },
-  columnFull: { alignSelf: 'stretch' },
 });
 
 /**
@@ -70,9 +75,12 @@ const styles = StyleSheet.create({
  *  · The pressed scale and the 44px floor come from the Pressable primitive, so this file neither
  *    re-answers them nor can undercut them. There is no hover on touch, so the hover elevation the
  *    web half raises has no counterpart here.
- *  · `disabledReason` — RN keeps a disabled element in the accessibility tree (unlike the web's
- *    native `disabled`, which leaves the tab order), so the control can carry its real disabled
- *    state and the sentence beneath it is still reachable by a screen reader.
+ *  · `disabledReason` — a tap opens the sentence in the Explainer bubble above the pill
+ *    (`ReasonExplainer`), so a pill with a reason stays pressable: it announces disabled, its act is
+ *    suppressed, and its press opens the bubble. There is no off-screen text node to describe it by,
+ *    so the pill speaks the sentence after its name.
+ *  · `ref` — the handle moves the screen reader's focus to the pill itself, through `Pressable`'s
+ *    `hostRef`.
  */
 export function Button({
   children,
@@ -80,65 +88,91 @@ export function Button({
   size = 'lg',
   disabled = false,
   disabledReason,
+  reasonOpen,
   loading = false,
   icon = null,
   iconRight = null,
   fullWidth = false,
+  tone,
   expanded,
   spokenName,
+  ref,
   onClick,
   style,
 }: NativeButtonProps) {
   const visual = VARIANT[variant];
   const { controlFillDisabled } = useGround();
-  /* Same resolver as the web half — a string, an `ActionReasonSpec` or a ready node all land on
-     ActionReason, and a spec with no sentence resolves to nothing and states nothing. */
-  const reason = renderActionReason(disabledReason);
-  const stated = disabled && reason !== null;
+  const reasonId = useId();
+  const holder = useRef<View>(null);
+  useImperativeHandle(ref, () => ({ focus: () => focusScreenReaderOn(() => holder.current) }), []);
+  /* A spec with no sentence opens nothing and states nothing — see the web half. */
+  const stated = disabled && reasonPage(disabledReason) !== '';
+  const toned = variant === 'secondary' || variant === 'ghost' ? tone : undefined;
+  const restColor = toned === undefined ? visual.color : TONE[toned];
   /* A stated disabled label is information, not chrome — see the web half. */
   const labelColor = disabled
     ? theme.colors[stated ? 'text-secondary' : 'text-disabled']
-    : visual.color;
+    : restColor;
+  /* Named by its words even while the spinner stands in for them, so a button that is working
+     keeps its name (`F7-26`). */
+  const name = spokenName ?? children;
 
-  const pill = (
-    <Pressable
-      disabled={disabled}
-      onPress={onClick}
-      accessibilityState={expanded === undefined ? { busy: loading } : { expanded, busy: loading }}
-      /* Named by its words even while the spinner stands in for them, so a button that is working
-         keeps its name (`F7-26`). */
-      accessibilityLabel={spokenName ?? children}
-      style={[
-        styles.pill,
-        SIZE[size],
-        { backgroundColor: visual.background },
-        disabled ? undefined : visual.elevation,
-        // A ghost has no ground, and being unavailable does not give it one — see the web half.
-        // Sunk below the page and the tile alike — see the web half.
-        disabled && variant !== 'ghost' ? { backgroundColor: controlFillDisabled } : undefined,
-        fullWidth ? styles.fullWidth : undefined,
-        style,
-      ]}
-    >
-      {loading ? (
-        <ActivityIndicator color={labelColor} size="small" />
-      ) : (
-        <>
-          {icon}
-          <Text style={[styles.label, LABEL_SIZE[size], { color: labelColor }]}>{children}</Text>
-          {iconRight}
-        </>
-      )}
-    </Pressable>
-  );
+  const pill = (reason?: ReasonTriggerProps) => {
+    const open = expanded ?? reason?.expanded;
+    return (
+      <Pressable
+        hostRef={(node) => {
+          holder.current = node;
+          reason?.ref?.(node);
+        }}
+        disabled={disabled && reason === undefined}
+        onPress={reason === undefined ? onClick : reason.onPress}
+        accessibilityState={pillState(loading, open, reason !== undefined)}
+        accessibilityLabel={spokenWithReason(name, reason)}
+        style={[
+          styles.pill,
+          SIZE[size],
+          { backgroundColor: visual.background },
+          disabled ? undefined : visual.elevation,
+          // A ghost has no ground, and being unavailable does not give it one — see the web half.
+          // Sunk below the page and the tile alike — see the web half.
+          disabled && variant !== 'ghost' ? { backgroundColor: controlFillDisabled } : undefined,
+          fullWidth ? styles.fullWidth : undefined,
+          style,
+        ]}
+      >
+        {loading ? (
+          <ActivityIndicator color={labelColor} size="small" />
+        ) : (
+          <>
+            {icon}
+            <Text style={[styles.label, LABEL_SIZE[size], { color: labelColor }]}>{children}</Text>
+            {iconRight}
+          </>
+        )}
+      </Pressable>
+    );
+  };
 
-  if (!stated) {
-    return pill;
-  }
-  return (
-    <View style={[styles.column, fullWidth ? styles.columnFull : undefined]}>
+  return stated ? (
+    <ReasonExplainer spec={disabledReason} id={reasonId} open={reasonOpen} block={fullWidth}>
       {pill}
-      {reason}
-    </View>
+    </ReasonExplainer>
+  ) : (
+    pill()
   );
+}
+
+/** Busy while working; expanded only when something below it shows or hides; off with a reason. */
+function pillState(loading: boolean, open: boolean | undefined, reasoned: boolean) {
+  return {
+    busy: loading,
+    ...(open === undefined ? {} : { expanded: open }),
+    ...(reasoned ? { disabled: true } : {}),
+  };
+}
+
+/* There is no off-screen text node to describe the pill by, so it speaks the sentence after its name. */
+function spokenWithReason(name: string, reason?: ReasonTriggerProps): string {
+  return reason?.spokenReason === undefined ? name : `${name}, ${reason.spokenReason}`;
 }

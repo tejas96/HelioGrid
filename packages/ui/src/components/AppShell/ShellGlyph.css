@@ -15,3 +15,7 @@
 .hg-shell-glyph[data-tone="accent"] {
   color: var(--accent);
 }
+
+.hg-shell-glyph[data-tone="danger"] {
+  color: var(--danger-text);
+}

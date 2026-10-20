@@ -33,8 +33,8 @@ export interface ActionReasonSpec {
  * cannot say which of four buttons it means).
  *
  * **Where it renders — the slot rule, declared per host so five hosts cannot answer it five ways:**
- * - **`Button` / `IconButton`** — directly under the control, in the action row. The button becomes
- *   a column: pill, then reason.
+ * - **`Button` / `IconButton`** — in the `Explainer` bubble above the control, which a tap, click,
+ *   focus or hover opens (design-system changes 5 and 6); nothing is drawn under the control.
  * - **`MenuItem`** — the second line of the item, under the label. `meta` keeps its own job (a count
  *   or a shortcut, one line of text) and never carries a reason.
  * - **`SelectOption`** — the second line of the listbox row, under the option label.
@@ -57,6 +57,26 @@ export function ActionReason(props: ActionReasonSpec): JSX.Element | null;
 
 /** What every `disabledReason` host prop runs through: a string, a spec, or a ready node. */
 export function renderActionReason(spec?: React.ReactNode | ActionReasonSpec, extra?: Partial<ActionReasonSpec>): React.ReactNode;
+
+/** The sentence a spec carries: a string or node as given, a spec's `reason`. */
+export function reasonText(spec?: React.ReactNode | ActionReasonSpec): React.ReactNode;
+
+/**
+ * **The reason in the Explainer** — what `Button` and `IconButton` run their `disabledReason` through
+ * (design-system changes 5 and 6). The host's control becomes the `Explainer`'s trigger: `children`
+ * is called with the trigger's props (ref, aria, onClick, onFocus) and returns the control. The
+ * bubble opens above it, clamped inside the nearest `[data-frame]` or the viewport; the sentence is
+ * also kept visually hidden under `id`, so `aria-describedby` reads it while the bubble is shut.
+ */
+export function ReasonExplainer(props: {
+  spec?: React.ReactNode | ActionReasonSpec;
+  id: string;
+  /** Holds the bubble open or shut; unset lets a tap open it. */
+  open?: boolean;
+  /** Keeps a full-width control full width. */
+  block?: boolean;
+  children: (triggerProps: Record<string, unknown>) => React.ReactElement;
+}): JSX.Element;
 
 export namespace ActionReason {
   const render: typeof renderActionReason;

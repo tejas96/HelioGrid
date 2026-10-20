@@ -1,6 +1,7 @@
 import { IN_FORMATS, INVITATION_EXPIRY_DAYS, type TeamRow } from '@heliogrid/domain';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { TEAM, type TeamClock, teamRowWords } from '../src/copy/team';
+import { teamActWords } from '../src/copy/team-acts';
 import { teamListWords } from '../src/copy/team-list';
 import { createTranslator } from '../src/runtime';
 
@@ -127,5 +128,96 @@ describe('a Status chip with nobody under it — the line under that chip, none 
       status,
     });
     expect(words.emptyChip).toBe(line);
+  });
+});
+
+describe('teamActWords — the row acts’ confirms, refusal and toasts', () => {
+  const words = () => teamActWords(t, 'Suryodaya Solar');
+
+  it('a deactivate confirm names the person, then calls them by their first name', () => {
+    expect(words().deactivate('Anjali Kulkarni')).toEqual({
+      title: 'Deactivate Anjali Kulkarni?',
+      go: 'Deactivate Anjali',
+      body: 'Anjali loses access to Suryodaya Solar. Everything Anjali did stays in Anjali’s name.',
+    });
+  });
+
+  it('a one-word name is used whole', () => {
+    expect(words().deactivate('Sunil').go).toBe('Deactivate Sunil');
+  });
+
+  it('a revoke confirm and its toast', () => {
+    expect(words().revoke('Priya Deshmukh')).toEqual({
+      title: 'Revoke Priya Deshmukh’s invite?',
+      go: 'Revoke invite',
+      body: 'The invite link stops working now. You can invite Priya again any time.',
+    });
+    expect(words().toast({ kind: 'revoked', name: 'Priya Deshmukh' })).toEqual({
+      tone: 'neutral',
+      title: 'Invite to Priya Deshmukh revoked',
+      description: 'Inviting Priya again sends a new link.',
+    });
+  });
+
+  const rajesh = {
+    id: 'm-1',
+    name: 'Rajesh Kulkarni',
+    phoneE164: '+919800000001',
+    roles: [],
+    status: 'active',
+    isViewer: true,
+    lastActiveAt: null,
+    expiresAt: null,
+    inviteDay: null,
+  } as const satisfies TeamRow;
+
+  it('an open deactivate confirm reads its question, act and Cancel', () => {
+    expect(
+      words().confirm({ kind: 'asking', act: 'deactivate', row: rajesh, busy: false }),
+    ).toEqual({
+      title: 'Deactivate Rajesh Kulkarni?',
+      go: 'Deactivate Rajesh',
+      body: 'Rajesh loses access to Suryodaya Solar. Everything Rajesh did stays in Rajesh’s name.',
+      leave: 'Cancel',
+    });
+  });
+
+  it.each([
+    ['Meera Iyer', 'Meera Iyer stopped being an EPC Owner on another device.'],
+    [null, null],
+  ])('the refused form with %s lost', (lostOwner, body) => {
+    expect(words().confirm({ kind: 'refused', row: rajesh, lostOwner })).toEqual({
+      title: 'Deactivate Rajesh Kulkarni?',
+      go: 'Deactivate Rajesh',
+      leave: 'Close',
+      refusal: { title: 'Not done — Suryodaya Solar must keep one EPC Owner', body },
+      goOffReason: 'Make someone else an EPC Owner first',
+    });
+  });
+
+  it('a shut confirm has no words', () => {
+    expect(words().confirm({ kind: 'shut' })).toBeNull();
+  });
+
+  it.each([
+    ['INVITE_CAP_REACHED', 'Your company has sent today’s invites. Try again tomorrow.'],
+    ['DOMAIN_RULE_VIOLATION', "That change isn't allowed here."],
+    ['NO_SUCH_CODE', 'Something went wrong on our side. Try again.'],
+  ])('a turned-down act says %s in its shipped words', (code, said) => {
+    expect(words().toast({ kind: 'turned-down', code })).toEqual({ tone: 'danger', title: said });
+  });
+
+  it.each([
+    [
+      { kind: 'deactivated', name: 'Anjali Kulkarni' } as const,
+      { tone: 'neutral', title: 'Anjali Kulkarni deactivated' },
+    ],
+    [
+      { kind: 'failed' } as const,
+      { tone: 'danger', title: 'Something went wrong on our side. Try again.' },
+    ],
+    [{ kind: 'moved' } as const, null],
+  ])('a settled act %o raises %o', (note, toast) => {
+    expect(words().toast(note)).toEqual(toast);
   });
 });

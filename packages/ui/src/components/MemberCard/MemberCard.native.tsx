@@ -9,6 +9,9 @@ import { ProgressBar } from '../ProgressBar/ProgressBar.native';
 import type { MemberCardProps, MemberInvite } from './MemberCard.types';
 
 const styles = StyleSheet.create({
+  /* The card's act row wraps, and a wrapping row never stretches a child across: the card's one act
+     takes the whole width from this holder. */
+  wholeAct: { width: '100%' },
   invite: { gap: theme.spacing['sp-3'] / 2 },
   words: { flexDirection: 'row', justifyContent: 'space-between', gap: theme.spacing['sp-3'] },
 });
@@ -57,7 +60,11 @@ export function MemberCard({
         </Badge>
       ))}
       detail={invite === undefined ? undefined : <InviteDays invite={invite} />}
-      action={action}
+      action={
+        action === undefined || action === null ? undefined : (
+          <View style={styles.wholeAct}>{action}</View>
+        )
+      }
       onClick={onOpen}
     />
   );

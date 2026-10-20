@@ -55,3 +55,10 @@
 .hg-action-reason-words {
   min-width: 0;
 }
+
+/* ReasonExplainer: a full-width control keeps its width inside the Explainer's wrapper, which
+   otherwise sizes to its content. Two classes, so it holds over Explainer.css, which loads later. */
+.hg-explainer.hg-reason-explainer-block {
+  display: flex;
+  width: 100%;
+}

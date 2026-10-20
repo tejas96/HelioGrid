@@ -1,6 +1,6 @@
 import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import type { ShellGlyphProps } from './AppShell.types';
-import { glyphMarks } from './ShellGlyph.logic';
+import { glyphMarks, glyphStroke } from './ShellGlyph.logic';
 
 /**
  * One of the shell's own glyphs. Decorative — the control that holds it carries the name — so it
@@ -21,7 +21,7 @@ export function ShellGlyph({
       height={px}
       fill={solid ? 'currentColor' : 'none'}
       stroke="currentColor"
-      strokeWidth="1.5"
+      strokeWidth={glyphStroke(size)}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"

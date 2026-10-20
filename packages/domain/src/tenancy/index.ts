@@ -72,6 +72,23 @@ export {
 export type { DealSegment, TenantSegment } from './segment';
 export { DEAL_SEGMENTS, TENANT_SEGMENTS } from './segment';
 export type {
+  TeamAct,
+  TeamActAnswer,
+  TeamActNote,
+  TeamActOutcome,
+  TeamConfirmState,
+  TeamRowAct,
+} from './team-acts';
+export {
+  firstNameOf,
+  inviteAgainOf,
+  noteLeavesRow,
+  ownerLostBetween,
+  teamActNote,
+  teamActOutcome,
+  teamRowAct,
+} from './team-acts';
+export type {
   RosterInvite,
   RosterMember,
   TeamLoad,

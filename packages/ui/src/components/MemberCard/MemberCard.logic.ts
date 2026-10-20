@@ -1,7 +1,19 @@
-import { INVITATION_EXPIRY_DAYS, type RolePreset, roleKind, type TeamRow } from '@heliogrid/domain';
+import {
+  INVITATION_EXPIRY_DAYS,
+  type RolePreset,
+  roleKind,
+  type TeamAct,
+  type TeamRow,
+  teamRowAct,
+} from '@heliogrid/domain';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ROLE_KIND_TONE, TEAM_STATUS_TONE } from '../Chip/Chip.logic';
-import type { MemberCardProps, MemberListProps, MemberRowWords } from './MemberCard.types';
+import type {
+  MemberActProps,
+  MemberCardProps,
+  MemberListProps,
+  MemberRowWords,
+} from './MemberCard.types';
 
 /**
  * One list row as the member card draws it (`SCR-M01-12`): its status as the dot's tone, each
@@ -63,4 +75,39 @@ export function memberListEmptyOf({
     return { glyph: 'people', title: words.emptyChip, act: words.showAll, onAct: onShowAll };
   }
   return null;
+}
+
+/** How each act looks: its pill, its words' tone and its glyph (`SCR-M01-12`, design-system change 7). */
+export const MEMBER_ACT_LOOK: Record<
+  TeamAct,
+  {
+    variant: 'primary' | 'secondary';
+    danger: boolean;
+    glyph: ShellGlyphName;
+    glyphTone: 'primary' | 'inverse' | 'danger';
+  }
+> = {
+  deactivate: { variant: 'secondary', danger: true, glyph: 'user-minus', glyphTone: 'danger' },
+  revoke: { variant: 'secondary', danger: false, glyph: 'undo', glyphTone: 'primary' },
+  'invite-again': { variant: 'primary', danger: false, glyph: 'send', glyphTone: 'inverse' },
+};
+
+/**
+ * A row's act as both apps draw it, judged against the WHOLE `roster` (never the rows a search left in
+ * view), or null for a row with none. The words are the caller's.
+ */
+export function memberActOf(
+  row: TeamRow,
+  roster: readonly TeamRow[],
+  words: { act(act: TeamAct): string; onlyOwner: string },
+  sending: string | null,
+): Pick<MemberActProps, 'act' | 'label' | 'offReason' | 'busy'> | null {
+  const offered = teamRowAct(row, roster);
+  if (offered === null) return null;
+  return {
+    act: offered.act,
+    label: words.act(offered.act),
+    ...(offered.off ? { offReason: words.onlyOwner } : {}),
+    busy: sending === row.id,
+  };
 }

@@ -2,7 +2,7 @@ import { theme } from '@heliogrid/theme';
 import Svg, { Circle, Path } from 'react-native-svg';
 import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import type { ShellGlyphProps } from './AppShell.types';
-import { glyphMarks } from './ShellGlyph.logic';
+import { glyphMarks, glyphStroke } from './ShellGlyph.logic';
 
 /* react-native-svg has no currentColor, so the tone resolves to its token here. */
 const TONE: Record<NonNullable<ShellGlyphProps['tone']>, string> = {
@@ -10,6 +10,7 @@ const TONE: Record<NonNullable<ShellGlyphProps['tone']>, string> = {
   secondary: theme.colors['text-secondary'],
   inverse: theme.colors['text-inverse'],
   accent: theme.colors.accent,
+  danger: theme.colors['danger-text'],
 };
 
 /**
@@ -32,7 +33,7 @@ export function ShellGlyph({
       viewBox="0 0 24 24"
       fill={solid ? color : 'none'}
       stroke={color}
-      strokeWidth={1.5}
+      strokeWidth={glyphStroke(size)}
       strokeLinecap="round"
       strokeLinejoin="round"
       accessibilityElementsHidden

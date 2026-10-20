@@ -25,6 +25,7 @@ export function MemberList({
   onShowAll,
   records,
   waiting,
+  actOf,
 }: MemberListProps) {
   if (surface === 'loading') {
     if (waiting === undefined) return <MemberCardsLoading label={words.loading} />;
@@ -66,7 +67,11 @@ export function MemberList({
   const list = records ?? (
     <View style={styles.list} accessibilityLabel={words.label} role="region" collapsable={false}>
       {rows.map((row) => (
-        <MemberCard key={row.id} {...memberCardOf(row, words.row(row), words.role, words.you)} />
+        <MemberCard
+          key={row.id}
+          {...memberCardOf(row, words.row(row), words.role, words.you)}
+          action={actOf?.(row)}
+        />
       ))}
     </View>
   );

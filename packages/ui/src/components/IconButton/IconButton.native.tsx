@@ -1,13 +1,16 @@
 import { theme } from '@heliogrid/theme';
+import { useId } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { renderActionReason } from '../ActionReason/ActionReason.native';
+import { reasonPage } from '../ActionReason/ActionReason.logic';
+import type { ReasonTriggerProps } from '../ActionReason/ActionReason.types';
+import { ReasonExplainer } from '../ActionReason/ReasonExplainer.native';
 import type { IconButtonProps, IconButtonVariant } from './IconButton.types';
 
 interface NativeIconButtonProps extends IconButtonProps {
-  /** Lands on the circle, never on the reason column — the DS contract for `style`. */
+  /** Lands on the circle — the DS contract for `style`. */
   style?: StyleProp<ViewStyle>;
 }
 
@@ -26,13 +29,13 @@ const VARIANT: Record<IconButtonVariant, VariantVisual> = {
 
 const styles = StyleSheet.create({
   circle: { alignItems: 'center', justifyContent: 'center' },
-  column: { alignItems: 'flex-start', gap: theme.spacing['sp-1'] },
 });
 
 /**
  * Perfect circle, `size` the visual diameter, 44px the target — the Pressable primitive owns the
- * floor, so `size` can go under it visually and never functionally. As on Button, a disabled RN
- * element stays in the accessibility tree, so the sentence beneath it is reachable.
+ * floor, so `size` can go under it visually and never functionally. As on Button, a circle with a
+ * reason stays pressable: it announces disabled, its act is suppressed, a tap opens the reason in
+ * the Explainer bubble above it, and it speaks the sentence after its name.
  */
 export function IconButton({
   children,
@@ -41,19 +44,26 @@ export function IconButton({
   variant = 'surface',
   disabled = false,
   disabledReason,
+  reasonOpen,
   onClick,
   style,
 }: NativeIconButtonProps) {
   const visual = VARIANT[variant];
   const { controlFill, controlFillDisabled } = useGround();
-  const reason = renderActionReason(disabledReason);
-  const stated = disabled && reason !== null;
+  const reasonId = useId();
+  const stated = disabled && reasonPage(disabledReason) !== '';
 
-  const circle = (
+  const circle = (reason?: ReasonTriggerProps) => (
     <Pressable
-      accessibilityLabel={label}
-      disabled={disabled}
-      onPress={onClick}
+      hostRef={reason?.ref}
+      accessibilityLabel={
+        reason?.spokenReason === undefined ? label : `${label}, ${reason.spokenReason}`
+      }
+      accessibilityState={
+        reason === undefined ? undefined : { disabled: true, expanded: reason.expanded }
+      }
+      disabled={disabled && reason === undefined}
+      onPress={reason === undefined ? onClick : reason.onPress}
       style={[
         styles.circle,
         {
@@ -71,12 +81,11 @@ export function IconButton({
   );
 
   if (!stated) {
-    return circle;
+    return circle();
   }
   return (
-    <View style={styles.column}>
+    <ReasonExplainer spec={disabledReason} id={reasonId} open={reasonOpen}>
       {circle}
-      {reason}
-    </View>
+    </ReasonExplainer>
   );
 }

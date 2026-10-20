@@ -85,9 +85,12 @@ export function Sheet({
   const closeOnBack = useRef(onClose);
   closeOnBack.current = onClose;
 
+  /* A sheet that is not dismissible still holds Back while open: a decision is answered by its own
+     buttons, never by leaving the page beneath it. */
   useEffect(() => {
-    if (!open || !dismissible) return;
+    if (!open) return;
     const back = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (!dismissible) return true;
       if (closeOnBack.current === undefined) return false;
       closeOnBack.current();
       return true;

@@ -103,6 +103,9 @@ export interface ApiErrorLike {
   requestId?: string;
 }
 
+/** The words for a failure nothing names: an unknown code, or no answer at all. */
+export const INTERNAL_ERROR = COPY.INTERNAL;
+
 /** Catalog id for a code this package has words for — base or route; undefined → render `error.message`. */
 export function apiErrorMessageId(code: string): string | undefined {
   return (

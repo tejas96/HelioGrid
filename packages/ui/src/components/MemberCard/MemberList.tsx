@@ -18,6 +18,7 @@ export function MemberList({
   onShowAll,
   records,
   waiting,
+  actOf,
 }: MemberListProps) {
   if (surface === 'loading') {
     if (waiting === undefined) return <MemberCardsLoading label={words.loading} />;
@@ -54,7 +55,11 @@ export function MemberList({
   const list = records ?? (
     <section className="hg-member-list" aria-label={words.label}>
       {rows.map((row) => (
-        <MemberCard key={row.id} {...memberCardOf(row, words.row(row), words.role, words.you)} />
+        <MemberCard
+          key={row.id}
+          {...memberCardOf(row, words.row(row), words.role, words.you)}
+          action={actOf?.(row)}
+        />
       ))}
     </section>
   );

@@ -21,10 +21,31 @@ export type ExplainerOpenReason =
 
 /**
  * The box the bubble is capped, flipped and clamped inside — a phone shell, a `DetailPanel`, the
- * studio canvas. Platform-neutral like `CoachMarkAnchor`: the web half takes a ref, an element or a
- * selector, the native half a ref to a view; each narrows it at runtime.
+ * studio canvas. Platform-neutral like `CoachMarkAnchor`: the web half takes a ref, an element, a
+ * selector or a function returning the element, the native half a ref to a view or a function
+ * returning one; each narrows it at runtime. A function is read each time the bubble is placed, so
+ * it may find a box that did not exist when the ask rendered.
  */
-export type ExplainerBox = string | object;
+export type ExplainerBox = string | object | (() => object | null);
+
+/**
+ * What a host's own control is handed when it stands in for the "i" (`trigger`). It spreads them on
+ * the element a press lands on, and the ask behaves exactly as with its own trigger: a press opens, a
+ * second press closes, a press on a bubble that hover or focus opened takes it over; Escape, an
+ * outside tap and scrolling away close it, and focus returns to the control.
+ */
+export interface ExplainerTriggerProps {
+  /** The control's press. */
+  onPress: () => void;
+  /** Whether the bubble is open — `aria-expanded` on web, `accessibilityState.expanded` on native. */
+  expanded: boolean;
+  /**
+   * Hands the control's own element to the ask, which returns focus to it on closing. The web also
+   * places the bubble against it and tells its keyboard focus from the bubble's; native places the
+   * bubble against the view that wraps the control.
+   */
+  ref?: (node: object | null) => void;
+}
 
 /** A button. Never a second action. */
 export interface ExplainerButtonAction {
@@ -66,6 +87,12 @@ export interface ExplainerBaseProps {
   inset?: boolean;
   /** A glyph this package draws, in place of the default "i". */
   glyph?: ReactNode;
+  /**
+   * A host's own control in place of the "i": called with the trigger's props, it returns the
+   * control. `label` then names only the bubble, and `glyph` and `inset` are not read. The one ruled
+   * use is a disabled act's reason (`ReasonExplainer`).
+   */
+  trigger?: (props: ExplainerTriggerProps) => ReactElement;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean, meta: { reason: ExplainerOpenReason }) => void;

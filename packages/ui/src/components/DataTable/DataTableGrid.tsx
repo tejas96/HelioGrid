@@ -61,6 +61,7 @@ export function DataTableGrid<Row>({
         sort={sort}
         onSort={onSort}
         hasActions={hasActions}
+        actionsLabel={table.actionsLabel}
         tableSpec={tableSpec}
         quiet={quiet}
       />

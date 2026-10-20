@@ -113,6 +113,11 @@ msgid "{date}, {time}"
 msgstr "{date}, {time}"
 
 #. js-lingui-explicit-id
+#: src/copy/team-acts.ts:24
+msgid "{first} loses access to {company}. Everything {first} did stays in {first}’s name."
+msgstr "{first} यांचा {company} मधील प्रवेश बंद होईल. {first} यांनी केलेले सर्व काम {first} यांच्याच नावावर राहील."
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:36
 msgid "{home}, switch home"
 msgstr "{home}, होम बदला"
@@ -166,6 +171,16 @@ msgstr "{name} — खाते, तक्रार संपर्क आणि
 #: src/copy/join-request.ts:9
 msgid "{name} asks to join"
 msgstr "{name} सामील होऊ इच्छितात"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:34
+msgid "{name} deactivated"
+msgstr "{name} निष्क्रिय केले"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:32
+msgid "{name} stopped being an EPC Owner on another device."
+msgstr "{name} दुसऱ्या डिव्हाइसवर EPC मालक राहिले नाहीत."
 
 #. js-lingui-explicit-id
 #: src/copy/explainer.ts:8
@@ -326,6 +341,11 @@ msgstr "खातेधारक"
 #: src/copy/company-profile.ts:31
 msgid "Account number"
 msgstr "खाते क्रमांक"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:19
+msgid "Actions"
+msgstr "कृती"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:34
@@ -503,6 +523,11 @@ msgstr "कॉलिंग नियम"
 #: src/copy/shell.ts:94
 msgid "Campaigns"
 msgstr "कॅम्पेन"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:21
+msgid "Cancel"
+msgstr "रद्द करा"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:25
@@ -733,6 +758,21 @@ msgstr "डेटा हक्क"
 #: src/copy/team.ts:47
 msgid "Day {day} of {days}"
 msgstr "{days} पैकी दिवस {day}"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:13
+msgid "Deactivate"
+msgstr "निष्क्रिय करा"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:23
+msgid "Deactivate {first}"
+msgstr "{first} यांना निष्क्रिय करा"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:22
+msgid "Deactivate {name}?"
+msgstr "{name} यांना निष्क्रिय करायचे?"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:35
@@ -1030,14 +1070,29 @@ msgid "Installer Job Home"
 msgstr "इन्स्टॉलर जॉब होम"
 
 #. js-lingui-explicit-id
+#: src/copy/team-acts.ts:15
+msgid "Invite again"
+msgstr "पुन्हा आमंत्रित करा"
+
+#. js-lingui-explicit-id
 #: src/copy/team.ts:16
 msgid "Invite the people who sell, survey, design and install."
 msgstr "विक्री, सर्वे, डिझाइन आणि इन्स्टॉल करणाऱ्या लोकांना आमंत्रित करा."
 
 #. js-lingui-explicit-id
+#: src/copy/team-acts.ts:35
+msgid "Invite to {name} revoked"
+msgstr "{name} यांचे आमंत्रण मागे घेतले"
+
+#. js-lingui-explicit-id
 #: src/copy/team.ts:32
 msgid "Invited"
 msgstr "आमंत्रित"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:36
+msgid "Inviting {first} again sends a new link."
+msgstr "{first} यांना पुन्हा आमंत्रित केल्यास नवीन लिंक जाईल."
 
 #. js-lingui-explicit-id
 #: src/copy/connection.ts:11
@@ -1093,6 +1148,11 @@ msgstr "लोगो आणि कंपनीचे नाव"
 #: src/copy/shell.ts:25
 msgid "Main"
 msgstr "मुख्य"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:33
+msgid "Make someone else an EPC Owner first"
+msgstr "आधी दुसऱ्या कोणाला EPC मालक करा"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:38
@@ -1227,6 +1287,11 @@ msgid "Not declared"
 msgstr "सांगितलेले नाही"
 
 #. js-lingui-explicit-id
+#: src/copy/team-acts.ts:31
+msgid "Not done — {company} must keep one EPC Owner"
+msgstr "झाले नाही — {company} मध्ये एक EPC मालक असणे आवश्यक आहे"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:31
 msgid "Not published yet"
 msgstr "अजून प्रकाशित नाही"
@@ -1330,6 +1395,11 @@ msgstr "एक मोबाइल नंबर म्हणजे एक HelioGr
 #: src/copy/company-signup.ts:61
 msgid "One number, one account"
 msgstr "एक नंबर, एक खाते"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:20
+msgid "Only EPC Owner"
+msgstr "एकमेव EPC मालक"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:37
@@ -1526,6 +1596,16 @@ msgstr "कोड पुन्हा पाठवा, {seconds, plural, one {# �
 #: src/copy/setup-what-you-sell.ts:54
 msgid "Residential"
 msgstr "निवासी"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:27
+msgid "Revoke {name}’s invite?"
+msgstr "{name} यांचे आमंत्रण मागे घ्यायचे?"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:14
+msgid "Revoke invite"
+msgstr "आमंत्रण मागे घ्या"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:26
@@ -1927,6 +2007,11 @@ msgstr "कोड या नंबरसाठी बरोबर होता"
 #: src/copy/sign-in.ts:26
 msgid "The code we checked was for"
 msgstr "आम्ही तपासलेला कोड या नंबरसाठी होता"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:28
+msgid "The invite link stops working now. You can invite {first} again any time."
+msgstr "आमंत्रण लिंक आतापासून चालणार नाही. तुम्ही {first} यांना कधीही पुन्हा आमंत्रित करू शकता."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:53

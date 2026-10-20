@@ -128,6 +128,7 @@ export function DataTableHead<Row>({
   sort,
   onSort,
   hasActions,
+  actionsLabel,
   tableSpec,
   quiet = false,
 }: {
@@ -139,6 +140,7 @@ export function DataTableHead<Row>({
   sort: DataTableSort | null | undefined;
   onSort: (next: DataTableSort) => void;
   hasActions: boolean;
+  actionsLabel?: string;
   /** The table-wide statement a column's tier is measured against, resolved once by the grid. */
   tableSpec: ProvenanceProps | null;
   /** The quiet head (design-system change 20). */
@@ -173,7 +175,7 @@ export function DataTableHead<Row>({
         ))}
         {hasActions ? (
           <th className="hg-dt-th hg-dt-th--actions">
-            <span className="hg-spoken-only">Actions</span>
+            <span className="hg-spoken-only">{actionsLabel}</span>
           </th>
         ) : null}
       </tr>

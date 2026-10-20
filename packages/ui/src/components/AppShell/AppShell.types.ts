@@ -150,19 +150,28 @@ export type ShellGlyphName =
   | 'gauge'
   | 'sign-out'
   | 'lock'
-  | 'download';
+  | 'download'
+  | 'undo'
+  | 'user-minus'
+  | 'send';
+
+export type ShellGlyphSize = 'sm' | 'md' | 'lg' | 'xl';
 
 export interface ShellGlyphProps {
   name: ShellGlyphName;
   /** The filled form, for the pill's item in view only (`F7-19`). Outlined otherwise. */
   filled?: boolean;
-  /** `lg` (24) on the pill, `md` (20) in a menu, `xl` (32) on a full-screen state. */
-  size?: 'md' | 'lg' | 'xl';
+  /**
+   * `lg` (24) on the pill, `md` (20) in a menu, `xl` (32) on a full-screen state, `sm` (16) in a
+   * row act's `Button`. The stroke follows the size (`glyphStroke`).
+   */
+  size?: ShellGlyphSize;
   /**
    * `secondary` at rest, `inverse` on the near-black pill, `primary` on a state's mark and in a
-   * round shell button, `accent` in a settings row's icon circle (`SCR-SHELL-01`, *More*).
+   * round shell button, `accent` in a settings row's icon circle (`SCR-SHELL-01`, *More*), `danger`
+   * on a `Button` whose `tone` is `danger`, so the glyph matches its words.
    */
-  tone?: 'primary' | 'secondary' | 'inverse' | 'accent';
+  tone?: 'primary' | 'secondary' | 'inverse' | 'accent' | 'danger';
 }
 
 export interface AppShellProps {

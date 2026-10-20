@@ -1,4 +1,4 @@
-import { createTranslator, SIGN_IN, TEAM, TEAM_EMPTY_CHIP } from '@heliogrid/i18n';
+import { createTranslator, SIGN_IN, TEAM, TEAM_EMPTY_CHIP, teamActWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { TeamListStory } from './MemberList.story';
 
@@ -93,4 +93,17 @@ test('while the read is out, the placeholder cards are one named busy region', a
 }) => {
   await mount(<TeamListStory company={COMPANY} surface="loading" />);
   await expect(page.getByRole('status', { name: en.t(TEAM.loading) })).toBeVisible();
+});
+
+test('each card carries its one act, and the only EPC Owner’s own Deactivate is off with its reason (AC-1)', async ({
+  mount,
+  page,
+}) => {
+  const acts = teamActWords(en.t, COMPANY);
+  await mount(<TeamListStory company={COMPANY} surface="ready" withActs />);
+
+  await expect(page.getByRole('button', { name: acts.act('revoke') })).toBeEnabled();
+  const own = page.getByRole('button', { name: acts.act('deactivate') });
+  await expect(own).toHaveAttribute('aria-disabled', 'true');
+  await expect(own).toHaveAccessibleDescription(acts.onlyOwner);
 });

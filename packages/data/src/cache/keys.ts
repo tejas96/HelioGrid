@@ -23,7 +23,7 @@ export const queryKeys = {
   /** A company's people and its invites; a write to either refreshes the whole list under the prefix. */
   team: {
     members: (tenantId: string) => ['team', tenantId, 'members'] as const,
-    invites: (tenantId: string, status: string) => ['team', tenantId, 'invites', status] as const,
+    invites: (tenantId: string) => ['team', tenantId, 'invites'] as const,
   },
   /** A stored file's link. It dies in minutes, so a screen asks again when it next opens. */
   files: {

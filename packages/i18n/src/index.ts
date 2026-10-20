@@ -111,6 +111,13 @@ export { doorNoticeWords, doorSwitchWords, numberStepWords } from './copy/sign-i
 export { STRUCTURE_DISCLAIMER } from './copy/structure-disclaimer';
 export type { TeamClock, TeamRowWords } from './copy/team';
 export { TEAM, TEAM_EMPTY_CHIP, teamRowWords, teamStatusWord } from './copy/team';
+export type {
+  TeamActToast,
+  TeamActWords,
+  TeamAskWords,
+  TeamConfirmShown,
+} from './copy/team-acts';
+export { teamActWords } from './copy/team-acts';
 export type { TeamListWords } from './copy/team-list';
 export { teamListWords } from './copy/team-list';
 export type { ValidationIssueLike } from './copy/validation';

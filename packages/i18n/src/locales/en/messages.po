@@ -113,6 +113,11 @@ msgid "{date}, {time}"
 msgstr "{date}, {time}"
 
 #. js-lingui-explicit-id
+#: src/copy/team-acts.ts:24
+msgid "{first} loses access to {company}. Everything {first} did stays in {first}’s name."
+msgstr "{first} loses access to {company}. Everything {first} did stays in {first}’s name."
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:36
 msgid "{home}, switch home"
 msgstr "{home}, switch home"
@@ -166,6 +171,16 @@ msgstr "{name} — account, grievance contact and sign out"
 #: src/copy/join-request.ts:9
 msgid "{name} asks to join"
 msgstr "{name} asks to join"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:34
+msgid "{name} deactivated"
+msgstr "{name} deactivated"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:32
+msgid "{name} stopped being an EPC Owner on another device."
+msgstr "{name} stopped being an EPC Owner on another device."
 
 #. js-lingui-explicit-id
 #: src/copy/explainer.ts:8
@@ -326,6 +341,11 @@ msgstr "Account holder"
 #: src/copy/company-profile.ts:31
 msgid "Account number"
 msgstr "Account number"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:19
+msgid "Actions"
+msgstr "Actions"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:34
@@ -503,6 +523,11 @@ msgstr "calling rules"
 #: src/copy/shell.ts:94
 msgid "Campaigns"
 msgstr "Campaigns"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:21
+msgid "Cancel"
+msgstr "Cancel"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:25
@@ -733,6 +758,21 @@ msgstr "data rights"
 #: src/copy/team.ts:47
 msgid "Day {day} of {days}"
 msgstr "Day {day} of {days}"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:13
+msgid "Deactivate"
+msgstr "Deactivate"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:23
+msgid "Deactivate {first}"
+msgstr "Deactivate {first}"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:22
+msgid "Deactivate {name}?"
+msgstr "Deactivate {name}?"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:35
@@ -1030,14 +1070,29 @@ msgid "Installer Job Home"
 msgstr "Installer Job Home"
 
 #. js-lingui-explicit-id
+#: src/copy/team-acts.ts:15
+msgid "Invite again"
+msgstr "Invite again"
+
+#. js-lingui-explicit-id
 #: src/copy/team.ts:16
 msgid "Invite the people who sell, survey, design and install."
 msgstr "Invite the people who sell, survey, design and install."
 
 #. js-lingui-explicit-id
+#: src/copy/team-acts.ts:35
+msgid "Invite to {name} revoked"
+msgstr "Invite to {name} revoked"
+
+#. js-lingui-explicit-id
 #: src/copy/team.ts:32
 msgid "Invited"
 msgstr "Invited"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:36
+msgid "Inviting {first} again sends a new link."
+msgstr "Inviting {first} again sends a new link."
 
 #. js-lingui-explicit-id
 #: src/copy/connection.ts:11
@@ -1093,6 +1148,11 @@ msgstr "Logo and company name"
 #: src/copy/shell.ts:25
 msgid "Main"
 msgstr "Main"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:33
+msgid "Make someone else an EPC Owner first"
+msgstr "Make someone else an EPC Owner first"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:38
@@ -1227,6 +1287,11 @@ msgid "Not declared"
 msgstr "Not declared"
 
 #. js-lingui-explicit-id
+#: src/copy/team-acts.ts:31
+msgid "Not done — {company} must keep one EPC Owner"
+msgstr "Not done — {company} must keep one EPC Owner"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:31
 msgid "Not published yet"
 msgstr "Not published yet"
@@ -1330,6 +1395,11 @@ msgstr "One mobile number is one HelioGrid account, whichever way you come in."
 #: src/copy/company-signup.ts:61
 msgid "One number, one account"
 msgstr "One number, one account"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:20
+msgid "Only EPC Owner"
+msgstr "Only EPC Owner"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:37
@@ -1526,6 +1596,16 @@ msgstr "Resend code, available in {seconds, plural, one {# second} other {# seco
 #: src/copy/setup-what-you-sell.ts:54
 msgid "Residential"
 msgstr "Residential"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:27
+msgid "Revoke {name}’s invite?"
+msgstr "Revoke {name}’s invite?"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:14
+msgid "Revoke invite"
+msgstr "Revoke invite"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:26
@@ -1927,6 +2007,11 @@ msgstr "The code was correct for"
 #: src/copy/sign-in.ts:26
 msgid "The code we checked was for"
 msgstr "The code we checked was for"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:28
+msgid "The invite link stops working now. You can invite {first} again any time."
+msgstr "The invite link stops working now. You can invite {first} again any time."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:53

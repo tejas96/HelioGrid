@@ -1,29 +1,29 @@
 import type { CSSProperties } from 'react';
-import { useId } from 'react';
+import { useId, useImperativeHandle, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Text } from '../../primitives/Text/Text';
-import { renderActionReason } from '../ActionReason';
+import { ReasonExplainer } from '../ActionReason';
+import { reasonPage } from '../ActionReason/ActionReason.logic';
+import type { ReasonTriggerProps } from '../ActionReason/ActionReason.types';
+import type { FocusHandle } from '../SearchField/SearchField.types';
 import type { ButtonProps } from './Button.types';
 
 interface WebButtonProps extends ButtonProps {
   className?: string;
-  /** Lands on the pill, never on the reason column — the DS contract for `style`. */
+  /** Lands on the pill — the DS contract for `style`. */
   style?: CSSProperties;
 }
 
 /**
  * Primary action is near-black — the strongest identity marker. Always pill-shaped.
  *
- * A DISABLED BUTTON CAN SAY WHY. `disabledReason` is the sentence, rendered by ActionReason directly
- * under the pill — the precondition half of MS4-15's "when unavailable the control STATES THE
- * REASON". Two things come with it, both deliberate:
- *
- *   1. The button becomes a COLUMN (pill, then reason). `style` still lands on the pill, so a
- *      caller's width or margin behaves as before.
- *   2. With a reason the button is `aria-disabled` and STAYS FOCUSABLE, activation suppressed here.
- *      A native `disabled` leaves the tab order, and `aria-describedby` on an unreachable element is
- *      never announced — so the keyboard user who most needs the sentence is the one who cannot get
- *      to it. `disabled` with no reason keeps the native attribute; there is nothing to go and hear.
+ * A DISABLED BUTTON CAN SAY WHY. `disabledReason` is the sentence — the precondition half of
+ * MS4-15's "when unavailable the control STATES THE REASON" — and it opens in the Explainer bubble
+ * above the pill (`ReasonExplainer`), never as a line under it. With a reason the button is
+ * `aria-disabled` and STAYS FOCUSABLE, its act suppressed and its press opening the bubble: a native
+ * `disabled` leaves the tab order, and `aria-describedby` on an unreachable element is never
+ * announced — so the keyboard user who most needs the sentence is the one who cannot get to it.
+ * `disabled` with no reason keeps the native attribute; there is nothing to go and hear.
  *
  * Where the act is ABSENT rather than off, this is the wrong component: don't render a button at all
  * and let the surface carry a `ScopeNote`.
@@ -34,39 +34,58 @@ export function Button({
   size = 'lg',
   disabled = false,
   disabledReason,
+  reasonOpen,
   loading = false,
   icon = null,
   iconRight = null,
   fullWidth = false,
+  tone,
   expanded,
   spokenName,
+  ref,
   onClick,
   className,
   style,
 }: WebButtonProps) {
-  const autoId = useId();
-  /* ActionReason owns the barred-circle glyph, the type floor and the neutral tint, and it resolves
-     a string, a spec or a ready node. A spec with no sentence resolves to nothing, and then there is
-     no description to point at — so the pill keeps the native `disabled` attribute. */
-  const reason = renderActionReason(disabledReason, { id: autoId });
-  const stated = disabled && reason !== null;
+  const reasonId = useId();
+  const element = useRef<FocusHandle | null>(null);
+  /* One turn late, as the native half: a caller asks in the turn it closes an overlay or redraws
+     this button, and the element to focus is the one drawn after it. */
+  useImperativeHandle(
+    ref,
+    () => ({ focus: () => setTimeout(() => element.current?.focus(), 0) }),
+    [],
+  );
+  /* A spec with no sentence opens nothing and describes nothing, so the pill keeps the native
+     `disabled` attribute. */
+  const stated = disabled && reasonPage(disabledReason) !== '';
+  const toned = variant === 'secondary' || variant === 'ghost' ? tone : undefined;
 
-  const pill = (
+  const pill = (reason?: ReasonTriggerProps) => (
     <button
+      ref={(node) => {
+        element.current = node;
+        reason?.ref?.(node);
+      }}
       type="button"
       className={classNames('hg-button', className)}
       data-variant={variant}
       data-size={size}
+      data-tone={toned}
       data-full-width={fullWidth ? 'true' : undefined}
       data-stated={stated ? 'true' : undefined}
       style={style}
       disabled={disabled && !stated}
       aria-disabled={disabled ? true : undefined}
-      aria-describedby={stated ? autoId : undefined}
-      aria-expanded={expanded}
+      aria-describedby={reason?.describedBy}
+      aria-expanded={expanded ?? reason?.expanded}
       aria-busy={loading ? true : undefined}
       aria-label={spokenName}
       onClick={() => {
+        if (reason !== undefined) {
+          reason.onPress();
+          return;
+        }
         if (disabled) {
           return;
         }
@@ -93,12 +112,11 @@ export function Button({
   );
 
   if (!stated) {
-    return pill;
+    return pill();
   }
   return (
-    <span className="hg-button-column" data-full-width={fullWidth ? 'true' : undefined}>
+    <ReasonExplainer spec={disabledReason} id={reasonId} open={reasonOpen} block={fullWidth}>
       {pill}
-      {reason}
-    </span>
+    </ReasonExplainer>
   );
 }

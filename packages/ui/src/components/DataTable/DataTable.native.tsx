@@ -20,9 +20,9 @@ const styles = StyleSheet.create({
   summary: { paddingVertical: 14, paddingHorizontal: theme.spacing['sp-4'] },
 });
 
-interface NativeDataTableProps<Row> extends DataTableProps<Row> {
+type NativeDataTableProps<Row> = DataTableProps<Row> & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 /**
  * Data table — zebra rows, no borders. Comfortable 64px rows by default. Below `stackBelow` px of

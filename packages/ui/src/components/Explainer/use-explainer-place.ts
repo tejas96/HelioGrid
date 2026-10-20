@@ -2,6 +2,7 @@
 import type { RefObject } from 'react';
 import { useLayoutEffect, useState } from 'react';
 import {
+  boxKey,
   type ExplainerDensity,
   type ExplainerRect,
   explainerCap,
@@ -33,7 +34,12 @@ interface PlaceInput {
 function resolveBox(within: ExplainerBox | undefined): HTMLElement | null {
   if (within === undefined) return null;
   if (typeof within === 'string') return document.querySelector<HTMLElement>(within);
-  const node = 'current' in within ? (within as { current: unknown }).current : within;
+  const node =
+    typeof within === 'function'
+      ? within()
+      : 'current' in within
+        ? (within as { current: unknown }).current
+        : within;
   return node instanceof HTMLElement ? node : null;
 }
 
@@ -49,7 +55,8 @@ function boundsOf(box: HTMLElement | null): ExplainerRect {
  */
 export function useExplainerPlace(input: PlaceInput): PlacedBubble | null {
   const [placed, setPlaced] = useState<PlacedBubble | null>(null);
-  const { isOpen, content, within, placement, density, maxWidth } = input;
+  const { isOpen, content, placement, density, maxWidth } = input;
+  const box = boxKey(input.within);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: the refs and callbacks are read at run time; listing them would re-run this on every render.
   useLayoutEffect(() => {
@@ -63,7 +70,7 @@ export function useExplainerPlace(input: PlaceInput): PlacedBubble | null {
       const card = input.bubble.current;
       if (!button || !shell || !card) return;
       const from = button.getBoundingClientRect();
-      const bounds = boundsOf(resolveBox(within));
+      const bounds = boundsOf(resolveBox(input.within));
       if (isScrolledAway(from, bounds)) {
         input.onScrolledAway();
         return;
@@ -87,7 +94,7 @@ export function useExplainerPlace(input: PlaceInput): PlacedBubble | null {
       window.removeEventListener('scroll', place, true);
       window.removeEventListener('resize', place);
     };
-  }, [isOpen, content, placement, density, within, maxWidth]);
+  }, [isOpen, content, placement, density, box, maxWidth]);
 
   return placed;
 }

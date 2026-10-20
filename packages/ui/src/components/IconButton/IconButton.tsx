@@ -1,24 +1,24 @@
 import type { CSSProperties } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { renderActionReason } from '../ActionReason';
+import { ReasonExplainer } from '../ActionReason';
+import { reasonPage } from '../ActionReason/ActionReason.logic';
+import type { ReasonTriggerProps } from '../ActionReason/ActionReason.types';
 import type { IconButtonProps } from './IconButton.types';
 
 interface WebIconButtonProps extends IconButtonProps {
   className?: string;
-  /** Lands on the circle, never on the reason column — the DS contract for `style`. */
+  /** Lands on the circle — the DS contract for `style`. */
   style?: CSSProperties;
 }
 
 /**
  * Perfect-circle icon button. White fill + e1 at rest.
  *
- * A DISABLED ICON BUTTON CAN SAY WHY, on the same terms as Button: `disabledReason` renders through
- * ActionReason under the circle, the control becomes aria-disabled and stays focusable, and
- * activation is suppressed here. One caution that belongs to this component rather than Button: an icon button usually lives
- * in a dense toolbar where a sentence will not fit. If it will not fit, the answer is NOT to disable
- * it silently — either the act belongs at full size somewhere the reason can be read, or the act is
- * someone else's and the surface owes a `ScopeNote` instead.
+ * A DISABLED ICON BUTTON CAN SAY WHY, on the same terms as Button: `disabledReason` opens in the
+ * Explainer bubble above the circle (`ReasonExplainer`), the control becomes aria-disabled and stays
+ * focusable, and its press opens the bubble instead of the act. A spec with no sentence leaves the
+ * circle natively `disabled`.
  */
 export function IconButton({
   children,
@@ -27,18 +27,17 @@ export function IconButton({
   variant = 'surface',
   disabled = false,
   disabledReason,
+  reasonOpen,
   onClick,
   className,
   style,
 }: WebIconButtonProps) {
-  const autoId = useId();
-  /* A string, an `ActionReasonSpec` or a ready node — ActionReason resolves all three, and resolves
-     a spec with no sentence to nothing, which leaves the circle natively `disabled`. */
-  const reason = renderActionReason(disabledReason, { id: autoId });
-  const stated = disabled && reason !== null;
+  const reasonId = useId();
+  const stated = disabled && reasonPage(disabledReason) !== '';
 
-  const circle = (
+  const circle = (reason?: ReasonTriggerProps) => (
     <button
+      ref={reason?.ref}
       type="button"
       className={classNames('hg-icon-button', className)}
       data-variant={variant}
@@ -46,8 +45,13 @@ export function IconButton({
       aria-label={label}
       disabled={disabled && !stated}
       aria-disabled={disabled ? true : undefined}
-      aria-describedby={stated ? autoId : undefined}
+      aria-describedby={reason?.describedBy}
+      aria-expanded={reason?.expanded}
       onClick={() => {
+        if (reason !== undefined) {
+          reason.onPress();
+          return;
+        }
         if (disabled) {
           return;
         }
@@ -59,12 +63,11 @@ export function IconButton({
   );
 
   if (!stated) {
-    return circle;
+    return circle();
   }
   return (
-    <span className="hg-icon-button-column">
+    <ReasonExplainer spec={disabledReason} id={reasonId} open={reasonOpen}>
       {circle}
-      {reason}
-    </span>
+    </ReasonExplainer>
   );
 }

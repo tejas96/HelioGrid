@@ -3,8 +3,8 @@ import type { CSSProperties, FocusEvent } from 'react';
 import { useEffect, useId, useMemo, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable/Pressable';
-import { explainerGeometry } from './Explainer.logic';
-import type { ExplainerOpenReason, ExplainerProps } from './Explainer.types';
+import { explainerGeometry, INERT_TRIGGER } from './Explainer.logic';
+import type { ExplainerOpenReason, ExplainerProps, ExplainerTriggerProps } from './Explainer.types';
 import { ExplainerBubble } from './ExplainerBubble';
 import { InfoGlyph } from './ExplainerParts';
 import { useExplainer } from './use-explainer';
@@ -23,7 +23,9 @@ function pointerCanHover(): boolean {
 
 /**
  * The ask (`F7-46`). Opens on tap and on keyboard focus; hover opens it too where the pointer can
- * hover. Closes on Escape, an outside tap and scrolling away, and focus returns to the trigger.
+ * hover. Closes on Escape, an outside tap and scrolling away, and focus returns to the trigger —
+ * the "i", or the host's control given as `trigger`, which the wrapper's hover, focus and Escape
+ * listeners serve alike.
  * NOT modal: the bubble sits right after the trigger in the DOM, so it is in reading order and Tab
  * carries on through the page.
  */
@@ -33,11 +35,15 @@ export function Explainer(props: WebExplainerProps) {
   const uid = useId();
   const wrap = useRef<HTMLSpanElement>(null);
   const bubble = useRef<HTMLDivElement>(null);
+  const hostControl = useRef<HTMLElement | null>(null);
   const reopenGuard = useRef(false);
   const canHover = useMemo(pointerCanHover, []);
   const hoverOpens = hover === 'auto' ? canHover : hover;
 
-  const trigger = () => wrap.current?.querySelector<HTMLElement>(':scope > .hg-explainer-trigger');
+  const trigger = () =>
+    props.trigger === undefined
+      ? wrap.current?.querySelector<HTMLElement>(':scope > .hg-explainer-trigger')
+      : hostControl.current;
   /* Returning focus must not reopen: programmatic focus can match :focus-visible. */
   const focusTrigger = () => {
     reopenGuard.current = true;
@@ -106,7 +112,16 @@ export function Explainer(props: WebExplainerProps) {
     if (event.target.matches(':focus-visible')) ask.show('focus');
   };
 
-  if (ask.empty) return null;
+  const triggerProps: ExplainerTriggerProps = {
+    onPress: press,
+    expanded: ask.isOpen,
+    ref: (node) => {
+      hostControl.current = node instanceof HTMLElement ? node : null;
+    },
+  };
+
+  /* A host's control is the host's act, not an ask for nothing: it stays, with no bubble behind it. */
+  if (ask.empty) return props.trigger === undefined ? null : props.trigger(INERT_TRIGGER);
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: the wrapper only mirrors its trigger's hover, focus and Escape; the trigger inside keeps every semantic it has.
     <span
@@ -125,14 +140,18 @@ export function Explainer(props: WebExplainerProps) {
         }
       }}
     >
-      <Pressable
-        className="hg-explainer-trigger"
-        accessibilityLabel={label}
-        accessibilityState={{ expanded: ask.isOpen }}
-        onPress={press}
-      >
-        {glyph ?? <InfoGlyph size={explainerGeometry(density).glyph} />}
-      </Pressable>
+      {props.trigger === undefined ? (
+        <Pressable
+          className="hg-explainer-trigger"
+          accessibilityLabel={label}
+          accessibilityState={{ expanded: ask.isOpen }}
+          onPress={press}
+        >
+          {glyph ?? <InfoGlyph size={explainerGeometry(density).glyph} />}
+        </Pressable>
+      ) : (
+        props.trigger(triggerProps)
+      )}
       {ask.isOpen ? (
         <ExplainerBubble
           bubbleRef={bubble}
