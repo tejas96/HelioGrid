@@ -141,7 +141,9 @@ test('while the stored answers are read the way on waits and says why, and an an
 
   await expect(heading(page)).toBeVisible();
   await expect(wayOn(page)).toHaveAttribute('aria-disabled', 'true');
-  await expect(page.getByText(en.t(SETUP_WHAT_YOU_SELL.stillChecking))).toBeVisible();
+  /* The reason is the off button's description: read through it, since its bubble may also be
+     open under a pointer left where the language step's Continue was. */
+  await expect(wayOn(page)).toHaveAccessibleDescription(en.t(SETUP_WHAT_YOU_SELL.stillChecking));
   await cards(page).nth(2).click();
 
   release();
