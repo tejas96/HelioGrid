@@ -23,6 +23,7 @@ export const ROUTE_OF: Record<Exclude<SessionLanding, 'wait'>, string> = {
   'language-step': HOME_ROUTE,
   'what-you-sell-step': HOME_ROUTE,
   'company-profile-step': HOME_ROUTE,
+  'invite-team-step': HOME_ROUTE,
   home: HOME_ROUTE,
   'access-removed': HOME_ROUTE,
 };

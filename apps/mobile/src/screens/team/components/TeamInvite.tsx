@@ -1,7 +1,4 @@
 import { useInvite } from '@heliogrid/data/react';
-import { fieldBinder, useZodForm } from '@heliogrid/forms';
-import { inviteFieldWords, inviteWords } from '@heliogrid/i18n';
-import { useI18n } from '@heliogrid/i18n/react';
 import {
   Button,
   type FocusHandle,
@@ -11,20 +8,18 @@ import {
 } from '@heliogrid/ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Keyboard } from 'react-native';
+import { useInviteForm } from './use-invite-form';
 
 /**
- * Invite Teammate in Team's life: the editor's open fact, the form over the contract's schema, and
- * the send. A sent invite closes the editor and reads the list again; one that did not go out keeps
- * the form and says so. The web and the phone compose it alike; the form library and the words may
- * meet only in an app (`architecture.md` §2).
+ * Invite Teammate in Team's life: the sheet's open fact over the shared form (`useInviteForm`). A
+ * sent invite closes the sheet and reads the list again; a 403 shuts it and reads the team again
+ * (AC-19).
  */
 export function useTeamInvite(
   reread: () => Promise<unknown>,
   push: (toast: { tone: 'danger'; title: string }) => void,
 ) {
-  const { t } = useI18n();
   const { pack } = useFormat();
-  const words = inviteWords(t);
   const [isOpen, setOpen] = useState(false);
   /* The native sheet returns no focus: the screen reader's place goes back to *Invite teammate*.
      The sheet's field lets go first (`Keyboard.dismiss` blurs it): on Android a focused field that
@@ -53,50 +48,15 @@ export function useTeamInvite(
     await reread();
     setRefocus(true);
   });
-  const form = useZodForm(invite.schema, {
-    defaultValues: { inviteeName: '', phoneE164: '', roles: [] },
+  const { words, fields, reset } = useInviteForm(invite, push, async () => {
+    close();
+    await reread();
   });
-  const phone = useRef<FocusHandle>(null);
   const editor: InviteEditorProps = {
+    ...fields,
     open: isOpen,
     onClose: close,
-    bind: fieldBinder(form.control, (name, field) => inviteFieldWords(words, pack, name, field)),
     words,
-    roles: words.roles,
-    sending: invite.sending,
-    presses: form.formState.submitCount,
-    refusal: invite.refusal,
-    phoneRef: phone,
-    onDifferentNumber: () => {
-      form.setValue('phoneE164', '');
-      invite.clearRefusal();
-      phone.current?.focus();
-    },
-    onSend: form.handleSubmit(async (values) => {
-      const read = await invite.send(values);
-      switch (read) {
-        case 'failed':
-        /* A 401 the session store did not end the session on says the same: nothing went out. */
-        case 'signed_out':
-          push({ tone: 'danger', title: words.failed });
-          return;
-        case 'forbidden':
-          /* The reader no longer invites: say so, shut the editor and read the team again (AC-19). */
-          push({ tone: 'danger', title: words.forbidden });
-          close();
-          await reread();
-          return;
-        case 'sent':
-        case 'already_member':
-        case 'already_invited':
-        case 'not_covered':
-        case 'cap':
-        case null:
-          return;
-        default:
-          read satisfies never;
-      }
-    }),
   };
   return {
     words,
@@ -104,8 +64,7 @@ export function useTeamInvite(
     first,
     editor,
     open: () => {
-      form.reset();
-      invite.clearRefusal();
+      reset();
       setOpen(true);
     },
   };

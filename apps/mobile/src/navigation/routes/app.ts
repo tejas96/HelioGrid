@@ -2,6 +2,7 @@ import { DOOR_SEGMENT } from '@heliogrid/domain';
 import { CompanyProfileScreen } from '../../screens/company-profile';
 import { CompanySignupScreen } from '../../screens/company-signup';
 import { SettingsRowScreen, SettingsScreen } from '../../screens/settings';
+import { SetupInviteTeamScreen } from '../../screens/setup-invite-team';
 import { SetupLanguageScreen } from '../../screens/setup-language';
 import { SetupWhatYouSellScreen } from '../../screens/setup-what-you-sell';
 import { PlaceholderScreen, ShellScreen } from '../../screens/shell';
@@ -9,6 +10,7 @@ import {
   useHasHome,
   useHasNoTenant,
   useOwesCompanyProfileStep,
+  useOwesInviteTeamStep,
   useOwesLanguageStep,
   useOwesWhatYouSellStep,
   useShowsShell,
@@ -38,6 +40,8 @@ export const appScreens = {
   SetupWhatYouSell: { screen: SetupWhatYouSellScreen, if: useOwesWhatYouSellStep },
   /** Then the company profile, skippable: its act is live with nothing filled in (`SCR-M01-05`, `M01-24`). */
   SetupCompanyProfile: { screen: CompanyProfileScreen, if: useOwesCompanyProfileStep },
+  /** Then the first invite, skippable (`SCR-M01-07`, `M01-12`). */
+  SetupInviteTeam: { screen: SetupInviteTeamScreen, if: useOwesInviteTeamStep },
   Leads: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.leads },
   Proposals: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.proposals },
   Projects: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.projects },

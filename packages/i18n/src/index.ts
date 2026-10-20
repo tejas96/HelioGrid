@@ -54,8 +54,12 @@ export type { ExplainerWords } from './copy/explainer';
 export { explainerPagerWords } from './copy/explainer';
 export { freshnessLabel } from './copy/freshness';
 export { homeTitle } from './copy/homes';
-export type { InviteRoleWords, InviteWords } from './copy/invite';
-export { inviteFieldWords, inviteWords } from './copy/invite';
+export type {
+  InviteRoleWords,
+  InviteWords,
+  SetupInviteWords,
+} from './copy/invite';
+export { inviteFieldWords, inviteWords, setupInviteWords } from './copy/invite';
 export type { JoinRequestAsker } from './copy/join-request';
 export { joinRequestNotice } from './copy/join-request';
 export { centreActToast, centreFilterWords, centreHeadWords } from './copy/notification-head';

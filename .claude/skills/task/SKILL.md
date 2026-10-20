@@ -192,8 +192,9 @@ failed. An agent that returns `NEEDS MAIN: <action>`
 (kill, restart or open the app by a link) gets that action done by you and is continued. Standing
 accounts: `…901` web, `…902` iOS, `…903` Android, `…904` and `…905` for the api's two tenants; all
 are in `DEV_OTP_PHONES`. A missing one is created once through the app. A row that must walk
-setup as a new company takes an unused `DEV_OTP_PHONES` number (`…906` up); when none is left, the
-owner decides how `heliogrid_test` is reset. A row that needs the api
+setup as a new company takes an unused `DEV_OTP_PHONES` number (`…906` up), one company per agent,
+so no two agents share a one-time step and all start together; when none is left, the owner decides
+how `heliogrid_test` is reset. A row that needs the api
 stopped runs last, after every agent has returned: stop the api once, continue each agent that has
 such rows, start the api once.
 

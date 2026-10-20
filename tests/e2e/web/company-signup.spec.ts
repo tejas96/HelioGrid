@@ -12,6 +12,7 @@ import {
   passLanguageStep,
   passWhatYouSellStep,
   requestCode,
+  skipInviteStep,
   typeCode,
 } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
@@ -215,6 +216,7 @@ test('a language chosen on the door is the new account’s, and where sign-out r
   await passLanguageStep(page, mr);
   await passWhatYouSellStep(page, mr);
   await passCompanyProfileStep(page, mr);
+  await skipInviteStep(page, mr);
 
   await passTheOwnersMark(page, mr);
   await page.getByRole('button', { name: mr.t(SHELL.accountOf, { name: OWNER_NAME }) }).click();

@@ -1,0 +1,66 @@
+/* The invite step of setup (`SCR-M01-07` m-default, d-default): the acts with the expiry under
+   them, and at 1536 the brand pane's *After you send*. Every value a token var(). */
+
+.hg-setup-invite-act {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* *Skip for now* at its own width, the primary taking the rest of the row (m-default). */
+.hg-setup-invite-ways {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+
+/* The row's primary takes what *Skip for now* leaves. A lone act (the cap's *Continue setup*) fills
+   the column by the column's own stretch: `flex: 1` on it would set its height, not its width. */
+.hg-setup-invite-ways > :last-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-setup-invite-after {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-setup-invite-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-setup-invite-step {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.hg-setup-invite-step-words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
+@media (min-width: 968px) {
+  /* The acts at their own widths at the task pane's right edge (d-default). */
+  .hg-setup-invite-act {
+    align-items: flex-end;
+  }
+
+  .hg-setup-invite-ways {
+    gap: var(--sp-3);
+  }
+
+  .hg-setup-invite-ways > :last-child {
+    flex: none;
+  }
+}

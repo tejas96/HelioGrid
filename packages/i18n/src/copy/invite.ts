@@ -165,6 +165,45 @@ export function inviteWords(translate: Translator['t']): InviteWords {
   };
 }
 
+/** One step the setup step's brand pane says comes after a send: what happens, and the line under it. */
+export interface AfterSendStep {
+  readonly title: string;
+  readonly line: string | null;
+}
+
+/** The setup step's own words, over the form's (`SCR-M01-07` m-default, d-default, m-cap-reached). */
+export interface SetupInviteWords {
+  readonly skip: string;
+  /** The way on at the cap, where nothing can be sent. */
+  readonly continueSetup: string;
+  /** The refusal banner's act: Team, where the number's row is. */
+  readonly openTeam: string;
+  /** The brand pane at 1536: its heading, and what happens once the invite is sent. */
+  readonly afterYouSend: {
+    readonly heading: string;
+    readonly message: AfterSendStep;
+    readonly lasts: AfterSendStep;
+    readonly join: AfterSendStep;
+  };
+}
+
+export function setupInviteWords(translate: Translator['t']): SetupInviteWords {
+  return {
+    skip: translate(INVITE.skip),
+    continueSetup: translate(INVITE.continueSetup),
+    openTeam: translate(INVITE.openTeam),
+    afterYouSend: {
+      heading: translate(INVITE.afterYouSend),
+      message: { title: translate(INVITE.stepMessage), line: translate(INVITE.stepMessageLine) },
+      lasts: {
+        title: translate(INVITE.stepLasts, { days: INVITATION_EXPIRY_DAYS }),
+        line: translate(INVITE.stepLastsLine),
+      },
+      join: { title: translate(INVITE.stepJoin), line: null },
+    },
+  };
+}
+
 function refusalWords(
   translate: Translator['t'],
   refusal: InviteRefusal,

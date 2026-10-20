@@ -1,0 +1,95 @@
+/* The setup steps' two panes (`SCR-M01-07` d-default, D261) over the door's frame, from the door's
+   breakpoint: twelve columns, a brand pane on 1–4 from the top of the window to its foot — the
+   `desktop-wide` bloom, the wordmark row, then the identity — and a task pane on 5–12, the task
+   under the wordmark row and its action under the task. Under the breakpoint the one column, at
+   the board's 375 spacing (`SCR-M01-07` m-default). Every value a token var(). */
+
+.hg-door-bloom-pane {
+  display: none;
+}
+
+.hg-door[data-panes="onboarding"] .hg-door-body {
+  gap: 0;
+}
+
+.hg-door[data-panes="onboarding"] .hg-door-identity {
+  padding-bottom: var(--sp-4);
+}
+
+.hg-door[data-panes="onboarding"] .hg-door-footer {
+  padding-top: var(--sp-5);
+  padding-bottom: var(--sp-5);
+}
+
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
+@media (min-width: 968px) {
+  .hg-door[data-panes="onboarding"] .hg-door-bloom-desktop {
+    display: none;
+  }
+
+  .hg-door[data-panes="onboarding"] .hg-door-page,
+  .hg-door[data-panes="onboarding"] .hg-door-page:has(.hg-door-footer) {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+    gap: 0;
+    padding: 0;
+  }
+
+  /* The slots join the page's grid, so the brand pane's rows are the task pane's rows. */
+  .hg-door[data-panes="onboarding"] .hg-door-body {
+    display: contents;
+  }
+
+  .hg-door[data-panes="onboarding"] .hg-door-header {
+    grid-column: 5 / span 8;
+    grid-row: 1;
+    padding: var(--sp-10) var(--sp-16) 0;
+  }
+
+  .hg-door[data-panes="onboarding"] .hg-door-identity {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-column: 1 / span 4;
+    grid-row: 1 / -1;
+    grid-template-rows: subgrid;
+    align-self: stretch;
+    justify-self: stretch;
+    max-width: none;
+    gap: 0;
+    padding: 0 var(--sp-12);
+  }
+
+  .hg-door[data-panes="onboarding"] .hg-door-bloom-pane {
+    display: block;
+  }
+
+  .hg-door[data-panes="onboarding"] .hg-door-wordmark-desktop {
+    position: relative;
+    padding-top: var(--sp-10);
+  }
+
+  .hg-door[data-panes="onboarding"] .hg-door-pane-body {
+    position: relative;
+    grid-row: 2 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-10);
+    padding: var(--sp-16) 0 var(--sp-10);
+  }
+
+  .hg-door[data-panes="onboarding"] .hg-door-task {
+    grid-column: 5 / span 8;
+    grid-row: 2;
+    max-width: none;
+    padding: var(--sp-16) var(--sp-16) 0;
+  }
+
+  .hg-door[data-panes="onboarding"] .hg-door-footer {
+    grid-column: 5 / span 8;
+    grid-row: 3;
+    max-width: none;
+    padding: var(--sp-6) var(--sp-16) var(--sp-10);
+  }
+}

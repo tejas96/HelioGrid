@@ -44,3 +44,4 @@ refused connection).
 - `lib: ["ES2023", "DOM"]` in this package's tsconfig is load-bearing: without DOM, `Headers` is unknown and ts-rest's `FetchOptions` collapses to `never`, typing every fetch option `undefined` → keep the lib entry.
 - React Native suspends timers in the background → a countdown or elapsed time is wall-clock timestamp maths, never an interval decrement.
 - iOS CFNetwork merges its own cookie copy into our header and the server answers 401 → React Native sends `credentials: 'omit'`, set in the transport, never per client.
+- A step's answer is a write that replaces the one before, so a second way out pressed while the first answer is out stores the wrong answer (a skip over a sent invite) → hold the answer in flight and hand it to every other way out (`use-setup-invite.ts`).

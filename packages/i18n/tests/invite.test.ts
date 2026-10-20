@@ -1,7 +1,7 @@
 import { IN_FORMATS, ROLE_PRESETS } from '@heliogrid/domain';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { apiErrorMessageId } from '../src/copy/api-error';
-import { inviteFieldWords, inviteWords } from '../src/copy/invite';
+import { inviteFieldWords, inviteWords, setupInviteWords } from '../src/copy/invite';
 import { createTranslator } from '../src/runtime';
 
 /** Invite Teammate's words (`SCR-M01-07`): the board's, word for word. */
@@ -39,6 +39,30 @@ describe('inviteWords', () => {
       expect(local.roles.map((role) => role.description)).not.toContain(
         english.roles[1]?.description,
       );
+    }
+  });
+});
+
+describe('setupInviteWords', () => {
+  it('says the setup step’s acts and its steps after a send, the expiry from the policy', () => {
+    expect(setupInviteWords(t)).toEqual({
+      skip: 'Skip for now',
+      continueSetup: 'Continue setup',
+      openTeam: 'Open Team',
+      afterYouSend: {
+        heading: 'After you send',
+        message: { title: 'HelioGrid messages their phone', line: 'Not from your number' },
+        lasts: { title: 'The invite works for 7 days', line: 'Cancel it on Team' },
+        join: { title: 'They join with the roles you pick', line: null },
+      },
+    });
+  });
+
+  it('has Hindi and Marathi', async () => {
+    for (const language of ['hi', 'mr'] as const) {
+      const local = setupInviteWords((await createTranslator(language)).t);
+      expect(local.skip).not.toBe('Skip for now');
+      expect(local.afterYouSend.join.title).not.toBe('They join with the roles you pick');
     }
   });
 });

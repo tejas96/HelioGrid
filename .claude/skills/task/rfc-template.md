@@ -53,6 +53,8 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
     outside the diff decides is read from that code, by file and line. A row that needs the api
     stopped says `api stopped`. A PRD performance target from *Scope* is written into its row's expected result
     as a time limit.
+    A behaviour of a `data` hook or of an app's glue (a toast, a navigation) has a live row, never a
+    `main-dev` spec: those layers have no unit tests (`.claude/rules/testing.md`).
     A screen task has one Hindi and one Marathi layout row on the phone, and its shared
     component's spec covers both languages at 375 and 1536.
 14. **Deferred rows** — each `docs/tasks/deferred.md` row this task meets: joins (and is deleted
