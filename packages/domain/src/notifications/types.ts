@@ -18,6 +18,8 @@ export const NOTIFICATION_TYPES = [
   'payment_due',
   'lead_unassigned_24h',
   'join_requested',
+  'invite_declined',
+  'reinvite_requested',
   'system',
 ] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];

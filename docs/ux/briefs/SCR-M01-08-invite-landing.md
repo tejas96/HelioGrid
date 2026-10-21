@@ -82,6 +82,8 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty
     wordmark's line. The task column is as wide as the code boxes.
 14. **At 375 the actions follow the content** and pin to the foot only when the content overflows —
     never a gap between the content and the actions.
+15. **The inviter is named, never given a pronoun** (owner ruling 2026-10-21, T-M01-008 RFC decision 2). The board's *him* / *he* on `m-expired` and `m-reinvite-requested` read *One tap tells {first name} you are still waiting.* and *When {first name} sends it, a new link reaches this phone.*
+16. **The phone opens the invite through the web landing** (owner ruling 2026-10-21, decision 1): the text's https link opens `/invite/<token>` in the phone's browser; the app answers `heliogrid://invite/<token>`; universal and app links wait for the production domain (`docs/tasks/deferred.md`).
 
 ## Data volume
 

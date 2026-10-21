@@ -1,7 +1,16 @@
 import type { Notification, Paginated } from '@heliogrid/contracts';
-import { type DbTransaction, notification, type TenantPool, tenant } from '@heliogrid/db';
+import {
+  type DbTransaction,
+  membershipRole,
+  notification,
+  type TenantPool,
+  tenant,
+  tenantMembership,
+  userAccount,
+} from '@heliogrid/db';
 import {
   centreGroupKey,
+  FOUNDER_ROLE,
   NOTIFICATION_REGISTRY,
   type NotificationType,
   pushDueAt,
@@ -12,6 +21,7 @@ import {
 import { Inject, Injectable } from '@nestjs/common';
 import { and, count, desc, eq, gte, inArray, isNull, lte } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
+import type { NoticeWords } from './notification.words';
 
 /**
  * One notification, as the module raising it states it (`F6-06`). The words arrive already
@@ -64,6 +74,72 @@ export async function recordNotification(
     .returning({ id: notification.id });
   if (written === undefined) throw new Error('the notification insert returned no row');
   return written.id;
+}
+
+/** A person a notice is written to, and the language it is written in. */
+export interface NoticeRecipient {
+  readonly userId: string;
+  readonly language: UiLanguage;
+}
+
+/** One notice to several people: everything but who it goes to, and its words in each language. */
+export type NoticeToEach = Omit<
+  NotificationToWrite,
+  'recipientUserRef' | 'title' | 'body' | 'language'
+>;
+
+/**
+ * The same notice to each recipient, in that recipient's language, ON THE CALLER'S TRANSACTION;
+ * answers the new records' ids for the push after the commit.
+ */
+export async function recordNotificationsTo(
+  tx: DbTransaction,
+  recipients: readonly NoticeRecipient[],
+  notice: NoticeToEach,
+  wordsIn: (language: UiLanguage) => NoticeWords,
+  quietHours: TenantQuietHours,
+): Promise<string[]> {
+  const ids: string[] = [];
+  for (const recipient of recipients) {
+    const words = wordsIn(recipient.language);
+    ids.push(
+      await recordNotification(
+        tx,
+        {
+          ...notice,
+          recipientUserRef: recipient.userId,
+          title: words.title,
+          body: words.body,
+          language: recipient.language,
+        },
+        quietHours,
+      ),
+    );
+  }
+  return ids;
+}
+
+/**
+ * The `epc_owner` recipient rule (`F6-05`): the company's active EPC Owners. Either pool's
+ * transaction will do, so the tenant is named in the query itself — under the admin pool it is the
+ * only thing keeping one company's notice out of another's.
+ */
+export async function activeOwnersOf(
+  tx: DbTransaction,
+  tenantId: string,
+): Promise<NoticeRecipient[]> {
+  return tx
+    .select({ userId: userAccount.id, language: userAccount.interfaceLanguage })
+    .from(membershipRole)
+    .innerJoin(tenantMembership, eq(tenantMembership.id, membershipRole.membershipId))
+    .innerJoin(userAccount, eq(userAccount.id, tenantMembership.userAccountId))
+    .where(
+      and(
+        eq(membershipRole.tenantId, tenantId),
+        eq(membershipRole.rolePreset, FOUNDER_ROLE),
+        eq(tenantMembership.status, 'active'),
+      ),
+    );
 }
 
 /** The columns the wire declares, in one place: a read and a mark-read return the same shape. */

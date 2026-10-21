@@ -16,6 +16,8 @@ const GLYPH_BY_TYPE: Record<Exclude<NotificationType, 'system'>, string> = {
   payment_due: 'rupee',
   lead_unassigned_24h: 'user-plus',
   join_requested: 'users',
+  invite_declined: 'user',
+  reinvite_requested: 'undo',
 };
 
 /** The bell for a type this build does not know yet — never an empty circle. */

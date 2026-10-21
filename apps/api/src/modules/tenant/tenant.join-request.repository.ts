@@ -1,21 +1,14 @@
-import {
-  membershipRole,
-  notification,
-  type TenantPool,
-  tenantMembership,
-  userAccount,
-} from '@heliogrid/db';
-import { FOUNDER_ROLE, type UiLanguage } from '@heliogrid/domain';
+import { notification, type TenantPool } from '@heliogrid/db';
+import type { UiLanguage } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq, inArray } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
-import { recordNotification, type TenantQuietHours } from '../notification/notification.public';
-
-/** The words of one notice, in the language they were rendered in (`F6-08`). */
-export interface NoticeWords {
-  readonly title: string;
-  readonly body: string;
-}
+import {
+  activeOwnersOf,
+  type NoticeWords,
+  recordNotificationsTo,
+  type TenantQuietHours,
+} from '../notification/notification.public';
 
 /**
  * The join request's write (`M01-09`), inside the MATCHED company's own transaction: the asker
@@ -40,18 +33,7 @@ export class JoinRequestRepository {
     now: Date,
   ): Promise<string[]> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
-      const owners = await tx
-        .select({ userId: userAccount.id, language: userAccount.interfaceLanguage })
-        .from(membershipRole)
-        .innerJoin(tenantMembership, eq(tenantMembership.id, membershipRole.membershipId))
-        .innerJoin(userAccount, eq(userAccount.id, tenantMembership.userAccountId))
-        .where(
-          and(
-            eq(membershipRole.tenantId, tenantId),
-            eq(membershipRole.rolePreset, FOUNDER_ROLE),
-            eq(tenantMembership.status, 'active'),
-          ),
-        );
+      const owners = await activeOwnersOf(tx, tenantId);
       if (owners.length === 0) return [];
       const asked = await tx
         .select({ recipient: notification.recipientUserRef })
@@ -68,28 +50,19 @@ export class JoinRequestRepository {
           ),
         );
       const alreadyAsked = new Set(asked.map((row) => row.recipient));
-      const ids: string[] = [];
-      for (const owner of owners.filter((one) => !alreadyAsked.has(one.userId))) {
-        const words = wordsIn(owner.language);
-        ids.push(
-          await recordNotification(
-            tx,
-            {
-              tenantId,
-              recipientUserRef: owner.userId,
-              type: 'join_requested',
-              subjectKind: 'user_account',
-              subjectRef: askerUserId,
-              title: words.title,
-              body: words.body,
-              language: owner.language,
-              emittedAt: now,
-            },
-            quietHours,
-          ),
-        );
-      }
-      return ids;
+      return recordNotificationsTo(
+        tx,
+        owners.filter((one) => !alreadyAsked.has(one.userId)),
+        {
+          tenantId,
+          type: 'join_requested',
+          subjectKind: 'user_account',
+          subjectRef: askerUserId,
+          emittedAt: now,
+        },
+        wordsIn,
+        quietHours,
+      );
     });
   }
 }

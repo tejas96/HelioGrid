@@ -102,6 +102,12 @@ const GROUP_SENTENCE: Record<NotificationType, MessageRef> = {
   join_requested: /*i18n*/ {
     id: '{count, plural, one {# request to join} other {# requests to join}}',
   },
+  invite_declined: /*i18n*/ {
+    id: '{count, plural, one {# invite declined} other {# invites declined}}',
+  },
+  reinvite_requested: /*i18n*/ {
+    id: '{count, plural, one {# ask for a new invite} other {# asks for a new invite}}',
+  },
   system: /*i18n*/ {
     id: '{count, plural, one {# product update} other {# product updates}}',
   },

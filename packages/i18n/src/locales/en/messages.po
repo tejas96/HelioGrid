@@ -48,6 +48,11 @@ msgid "{count, plural, =0 {Notifications} one {Notifications, # unread} other {N
 msgstr "{count, plural, =0 {Notifications} one {Notifications, # unread} other {Notifications, # unread}}"
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:108
+msgid "{count, plural, one {# ask for a new invite} other {# asks for a new invite}}"
+msgstr "{count, plural, one {# ask for a new invite} other {# asks for a new invite}}"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:83
 msgid "{count, plural, one {# call handed to you} other {# calls handed to you}}"
 msgstr "{count, plural, one {# call handed to you} other {# calls handed to you}}"
@@ -63,12 +68,17 @@ msgid "{count, plural, one {# follow-up due} other {# follow-ups due}}"
 msgstr "{count, plural, one {# follow-up due} other {# follow-ups due}}"
 
 #. js-lingui-explicit-id
+#: src/copy/notifications.ts:105
+msgid "{count, plural, one {# invite declined} other {# invites declined}}"
+msgstr "{count, plural, one {# invite declined} other {# invites declined}}"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:99
 msgid "{count, plural, one {# lead unassigned for a day} other {# leads unassigned for a day}}"
 msgstr "{count, plural, one {# lead unassigned for a day} other {# leads unassigned for a day}}"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:110
+#: src/copy/notifications.ts:116
 msgid "{count, plural, one {# notification} other {# notifications}}"
 msgstr "{count, plural, one {# notification} other {# notifications}}"
 
@@ -78,7 +88,7 @@ msgid "{count, plural, one {# payment due} other {# payments due}}"
 msgstr "{count, plural, one {# payment due} other {# payments due}}"
 
 #. js-lingui-explicit-id
-#: src/copy/notifications.ts:105
+#: src/copy/notifications.ts:111
 msgid "{count, plural, one {# product update} other {# product updates}}"
 msgstr "{count, plural, one {# product update} other {# product updates}}"
 
@@ -178,6 +188,11 @@ msgid "{name} — account, grievance contact and sign out"
 msgstr "{name} — account, grievance contact and sign out"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-answer.ts:14
+msgid "{name} asks for a new invite"
+msgstr "{name} asks for a new invite"
+
+#. js-lingui-explicit-id
 #: src/copy/join-request.ts:9
 msgid "{name} asks to join"
 msgstr "{name} asks to join"
@@ -186,6 +201,11 @@ msgstr "{name} asks to join"
 #: src/copy/team-acts.ts:34
 msgid "{name} deactivated"
 msgstr "{name} deactivated"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-answer.ts:10
+msgid "{name} declined the invite"
+msgstr "{name} declined the invite"
 
 #. js-lingui-explicit-id
 #: src/copy/team-acts.ts:32
@@ -2256,6 +2276,11 @@ msgid "The tranches must add up to exactly 100%. Place the remainder before savi
 msgstr "The tranches must add up to exactly 100%. Place the remainder before saving."
 
 #. js-lingui-explicit-id
+#: src/copy/invite-answer.ts:15
+msgid "Their invite to {company} ran out. Send a new one from Team."
+msgstr "Their invite to {company} ran out. Send a new one from Team."
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:28
 msgid "Their name"
 msgstr "Their name"
@@ -2284,6 +2309,11 @@ msgstr "Their phone number"
 #: src/copy/invite.ts:61
 msgid "They join with the roles you pick"
 msgstr "They join with the roles you pick"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-answer.ts:11
+msgid "They said the invite to {company} was not for them. The link no longer works."
+msgstr "They said the invite to {company} was not for them. The link no longer works."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:71

@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.public';
 import { MarketModule } from '../market/market.public';
+import { NotificationModule } from '../notification/notification.public';
+import { SettingsModule } from '../settings/settings.public';
 import { InvitationActivityRegistration } from './invitation.activities';
 import { InvitationAdminRepository } from './invitation.admin.repository';
+import { InvitationAnswersAdminRepository } from './invitation.answers.admin.repository';
+import { InvitationAnswersService } from './invitation.answers.service';
 import { InvitationController } from './invitation.controller';
 import { InvitationMessageService } from './invitation.message.service';
 import { InvitationRepository } from './invitation.repository';
@@ -15,12 +19,14 @@ import { InvitationService } from './invitation.service';
  * is opened or moved.
  */
 @Module({
-  imports: [AuthModule, MarketModule],
+  imports: [AuthModule, MarketModule, NotificationModule, SettingsModule],
   controllers: [InvitationController],
   providers: [
     InvitationService,
+    InvitationAnswersService,
     InvitationRepository,
     InvitationAdminRepository,
+    InvitationAnswersAdminRepository,
     InvitationMessageService,
     InvitationActivityRegistration,
   ],

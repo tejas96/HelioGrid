@@ -1,13 +1,15 @@
 import type { JoinRequest, RequestedCompany, SessionProjection } from '@heliogrid/contracts';
-import { formatPhone, UI_LANGUAGES, type UiLanguage } from '@heliogrid/domain';
-import { createTranslator, joinRequestNotice, type Translator } from '@heliogrid/i18n';
+import { formatPhone } from '@heliogrid/domain';
+import { joinRequestNotice } from '@heliogrid/i18n';
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { PinoLogger } from 'nestjs-pino';
 import { MarketPackService } from '../market/market.public';
-import { NotificationPushService } from '../notification/notification.public';
+import {
+  NotificationPushService,
+  renderedInEveryLanguage,
+} from '../notification/notification.public';
 import { SettingsService } from '../settings/settings.public';
 import { TenantAdminRepository } from './tenant.admin.repository';
-import { JoinRequestRepository, type NoticeWords } from './tenant.join-request.repository';
+import { JoinRequestRepository } from './tenant.join-request.repository';
 
 /**
  * The join request (`M01-09`): someone signing up asks the company they typed to add them. The
@@ -24,10 +26,7 @@ export class JoinRequestService {
     @Inject(SettingsService) private readonly settings: SettingsService,
     @Inject(MarketPackService) private readonly markets: MarketPackService,
     @Inject(NotificationPushService) private readonly push: NotificationPushService,
-    @Inject(PinoLogger) private readonly logger: PinoLogger,
-  ) {
-    this.logger.setContext(JoinRequestService.name);
-  }
+  ) {}
 
   async request(
     session: SessionProjection,
@@ -53,44 +52,7 @@ export class JoinRequestService {
       await this.settings.quietHoursOf(company.id),
       now,
     );
-    for (const id of written) await this.pushAfterCommit(company.id, id, now);
+    await this.push.deliverAfterCommit(company.id, written, now);
     return { companyName: company.companyName, city: company.city };
   }
-
-  /**
-   * The notices are committed, so a push that cannot go out never turns the answer into a
-   * failure: a retry would find them written and send no push at all (`F6-06`, the record is the
-   * truth). Logged by the notice's id alone.
-   */
-  private async pushAfterCommit(
-    tenantId: string,
-    notificationId: string,
-    now: Date,
-  ): Promise<void> {
-    try {
-      await this.push.deliver(tenantId, notificationId, now);
-    } catch (error) {
-      this.logger.warn({ notificationId, err: error }, 'join request push failed after commit');
-    }
-  }
-}
-
-/**
- * The notice rendered once per language before the write, so the transaction picks each owner's
- * without loading a catalog while it holds its locks.
- */
-async function renderedInEveryLanguage(
-  render: (translate: Translator['t']) => NoticeWords,
-): Promise<(language: UiLanguage) => NoticeWords> {
-  const rendered = await Promise.all(
-    UI_LANGUAGES.map(async (language) => ({
-      language,
-      words: render((await createTranslator(language)).t),
-    })),
-  );
-  return (language) => {
-    const found = rendered.find((one) => one.language === language);
-    if (found === undefined) throw new Error(`no words were rendered in ${language}`);
-    return found.words;
-  };
 }

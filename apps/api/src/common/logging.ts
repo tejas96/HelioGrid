@@ -46,15 +46,34 @@ const REDACTED_PATHS = [
 ];
 
 /**
+ * A path segment that IS a secret: the invite link's token opens a stranger's invite
+ * (`invitation.ts`, `landingParamsSchema`), so it never reaches a log line.
+ */
+const SECRET_IN_PATH = /^(\/invitations\/landing\/)[^/]+/i;
+
+/**
  * `redact` reaches STRUCTURED fields only, so `req.query.phone` is censored while the same
  * value sitting inside the raw `req.url` string is not:
  * `?phone=%2B91…` reached the log in full with `req.query.phone` already `[redacted]`.
  * The path alone is what a log reader needs; the parameters survive, redactable, in
- * `req.query`.
+ * `req.query`. The route parameters only repeat the path, secret segments included, so they
+ * are dropped.
  */
+export function loggedRequest<R extends { url?: unknown; params?: unknown }>(
+  serialized: R,
+): Omit<R, 'params'> & { url: string } {
+  const { params: _repeatsThePath, ...rest } = serialized;
+  return { ...rest, url: loggedPath(String(serialized.url ?? '')) };
+}
+
+/** The path a log line may show: no query string, and no secret segment (`SECRET_IN_PATH`). */
+export function loggedPath(url: string): string {
+  const path = url.split('?')[0] ?? '';
+  return path.replace(SECRET_IN_PATH, '$1[redacted]');
+}
+
 function requestSerializer(req: Parameters<typeof stdSerializers.req>[0]) {
-  const serialized = stdSerializers.req(req);
-  return { ...serialized, url: String(serialized.url ?? '').split('?')[0] };
+  return loggedRequest(stdSerializers.req(req));
 }
 
 /**

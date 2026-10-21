@@ -31,9 +31,10 @@ import { InvitationRepository, type InvitationRow } from './invitation.repositor
 
 /**
  * The team invite (`M01-12`, `M01-13`): the send, the Team list, the revoke, and the invited
- * person's side — the landing, the one-step join, the decline and the one-tap ask for a fresh
- * link. Every decision about what an invite IS now is domain's; this orders the reads and the
- * writes, and hands the text to the worker's run once the send has committed.
+ * person's way in — the landing and the one-step join; the two answers are
+ * `InvitationAnswersService`'s. Every decision about what an invite IS now is domain's; this
+ * orders the reads and the writes, and hands the text to the worker's run once the send has
+ * committed.
  */
 @Injectable()
 export class InvitationService {
@@ -160,18 +161,6 @@ export class InvitationService {
       case 'already-member':
         throw new ConflictException('You are already on this team.');
     }
-  }
-
-  async decline(token: string, now: number): Promise<void> {
-    const { outcome } = await this.crossTenant.decline(hashSecret(token), now);
-    if (outcome === 'not-found') throw new NotFoundException('This invite no longer lands.');
-    if (outcome === 'not-pending') throw new ConflictException('This invite is not open any more.');
-  }
-
-  async requestReinvite(token: string, now: number): Promise<void> {
-    const { outcome } = await this.crossTenant.requestReinvite(hashSecret(token), now);
-    if (outcome === 'not-found') throw new NotFoundException('This invite no longer lands.');
-    if (outcome === 'not-expired') throw new ConflictException('This invite is still open.');
   }
 
   /** The row behind a link in one of the states `lands`, as it is NOW; every other state is not-found. */

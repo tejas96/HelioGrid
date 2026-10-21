@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { auditLogEntry, invitation, orchestrationOutbox, uuidv7 } from '@heliogrid/db';
 import {
+  clockTime,
   FOUNDER_ROLE,
   INVITATION_EXPIRY_DAYS,
   INVITATIONS_PER_TENANT_PER_DAY,
@@ -10,7 +11,10 @@ import {
 } from '@heliogrid/domain';
 import { eq, sql } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { InvitationAdminRepository } from '../../src/modules/invitation/invitation.admin.repository';
+import {
+  type AnswerNotice,
+  InvitationAnswersAdminRepository,
+} from '../../src/modules/invitation/invitation.answers.admin.repository';
 import {
   type CreateOutcome,
   InvitationRepository,
@@ -51,6 +55,14 @@ const NOW = Date.now();
 const RAN_OUT_YESTERDAY = NOW - (INVITATION_EXPIRY_DAYS + 1) * DAY;
 const RAN_OUT_EARLIER = RAN_OUT_YESTERDAY - DAY;
 const WHOLE_LIST = { limit: 100, offset: 0 };
+/** The answers' notices are `answer-notifications.test.ts`'s proof; here they only have to be writable. */
+const NOTICE: AnswerNotice = {
+  wordsIn: () => ({ title: 'An answer', body: 'An invite was answered.' }),
+  quietHours: {
+    window: { start: clockTime('00:00'), end: clockTime('00:00') },
+    timezone: 'Asia/Kolkata',
+  },
+};
 
 const here = aCompany('Inviting EPC');
 const crowded = aCompany('Busy EPC');
@@ -95,14 +107,14 @@ const skip = skipWithoutDatabase(
 describe.skipIf(skip)('the invite lifecycle, against a migrated database', () => {
   let pools: ReturnType<typeof openPools>;
   let tenantSide: InvitationRepository;
-  let landingSide: InvitationAdminRepository;
+  let answerSide: InvitationAnswersAdminRepository;
   const newcomerPhone = aPhone();
   let sentToNewcomer: string;
 
   beforeAll(async () => {
     pools = openPools();
     tenantSide = new InvitationRepository(pools.tenants);
-    landingSide = new InvitationAdminRepository(pools.admin.db);
+    answerSide = new InvitationAnswersAdminRepository(pools.admin.db);
     await seed(pools.admin.db, fixture);
   });
 
@@ -190,32 +202,36 @@ describe.skipIf(skip)('the invite lifecycle, against a migrated database', () =>
   it('declines a live invite once; a second decline is the retry; a run-out one is not open to decline, and an answered one is not revoked', async () => {
     const sent = done(await send(here.tenantId, owner.userId, aPhone(), [SALES]));
     const hash = await tokenHashOf(sent.id);
-    expect(await landingSide.decline(hash, NOW)).toEqual({ outcome: 'done' });
+    expect(await answerSide.decline(hash, NOW, NOTICE)).toMatchObject({ outcome: 'done' });
     expect(await statusOf(sent.id)).toBe('declined');
-    expect(await landingSide.decline(hash, NOW + MINUTE)).toEqual({ outcome: 'done' });
+    expect(await answerSide.decline(hash, NOW + MINUTE, NOTICE)).toMatchObject({ outcome: 'done' });
     expect(await declinedAtOf(sent.id)).toEqual(new Date(NOW));
     expect((await tenantSide.revoke(here.tenantId, sent.id, by(owner.userId))).outcome).toBe(
       'not-pending',
     );
-    expect(await landingSide.decline(runOut.tokenHash, NOW)).toEqual({ outcome: 'not-pending' });
-    expect(await landingSide.decline(randomUUID(), NOW)).toEqual({ outcome: 'not-found' });
+    expect(await answerSide.decline(runOut.tokenHash, NOW, NOTICE)).toEqual({
+      outcome: 'not-pending',
+    });
+    expect(await answerSide.decline(randomUUID(), NOW, NOTICE)).toEqual({ outcome: 'not-found' });
   });
 
   it('stamps the one-tap re-invite ask once on a run-out invite, and refuses it on a live one', async () => {
-    expect(await landingSide.requestReinvite(runOutToo.tokenHash, NOW)).toEqual({
+    expect(await answerSide.requestReinvite(runOutToo.tokenHash, NOW, NOTICE)).toMatchObject({
       outcome: 'done',
     });
     const first = await reinviteStampOf(runOutToo.invitationId);
     expect(first).not.toBeNull();
-    expect(await landingSide.requestReinvite(runOutToo.tokenHash, NOW + MINUTE)).toEqual({
-      outcome: 'done',
-    });
+    expect(
+      await answerSide.requestReinvite(runOutToo.tokenHash, NOW + MINUTE, NOTICE),
+    ).toMatchObject({ outcome: 'done' });
     expect(await reinviteStampOf(runOutToo.invitationId)).toEqual(first);
     const live = done(await send(here.tenantId, owner.userId, aPhone(), [SALES]));
-    expect(await landingSide.requestReinvite(await tokenHashOf(live.id), NOW)).toEqual({
+    expect(await answerSide.requestReinvite(await tokenHashOf(live.id), NOW, NOTICE)).toEqual({
       outcome: 'not-expired',
     });
-    expect(await landingSide.requestReinvite(randomUUID(), NOW)).toEqual({ outcome: 'not-found' });
+    expect(await answerSide.requestReinvite(randomUUID(), NOW, NOTICE)).toEqual({
+      outcome: 'not-found',
+    });
   });
 
   function send(tenantId: string, actorUserId: string, phoneE164: string, roles: RolePreset[]) {

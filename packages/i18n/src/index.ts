@@ -60,6 +60,7 @@ export type {
   SetupInviteWords,
 } from './copy/invite';
 export { inviteFieldWords, inviteWords, setupInviteWords } from './copy/invite';
+export { inviteDeclinedNotice, reinviteRequestedNotice } from './copy/invite-answer';
 export type { JoinRequestAsker } from './copy/join-request';
 export { joinRequestNotice } from './copy/join-request';
 export { centreActToast, centreFilterWords, centreHeadWords } from './copy/notification-head';

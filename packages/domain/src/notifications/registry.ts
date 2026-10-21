@@ -95,6 +95,27 @@ export const NOTIFICATION_REGISTRY: Record<NotificationType, NotificationRegistr
     channels: ['in_app', 'push'],
     urgency: 'standard',
   },
+  /**
+   * The person an invite reached says it was not for them (`M01.2` S1.wrong.2); its subject is
+   * the invitation, now void.
+   */
+  invite_declined: {
+    raisedBy: 'team',
+    recipients: ['epc_owner'],
+    channels: ['in_app', 'push'],
+    urgency: 'standard',
+  },
+  /**
+   * The person a run-out invite reached asks for a fresh one (`M01.2` S1.wrong.1); its subject is
+   * the invitation. It goes to whoever sent it; once that person is no EPC Owner, it falls to the
+   * EPC Owners, the recipient of last resort (`NOTIFICATION_RECIPIENT_RULES`).
+   */
+  reinvite_requested: {
+    raisedBy: 'team',
+    recipients: ['subject_owner'],
+    channels: ['in_app', 'push'],
+    urgency: 'standard',
+  },
   /** An announcement from the platform; its subject is the company it is addressed to. */
   system: {
     raisedBy: 'platform',
