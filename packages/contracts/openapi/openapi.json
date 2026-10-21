@@ -23450,6 +23450,8 @@
                               "payment_due",
                               "lead_unassigned_24h",
                               "join_requested",
+                              "invite_declined",
+                              "reinvite_requested",
                               "system"
                             ]
                           },
@@ -25542,6 +25544,8 @@
                         "payment_due",
                         "lead_unassigned_24h",
                         "join_requested",
+                        "invite_declined",
+                        "reinvite_requested",
                         "system"
                       ]
                     },

@@ -9,7 +9,7 @@ import type {
 import { Inject, Injectable } from '@nestjs/common';
 import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { ADMIN_DB } from '../../../common/db/admin.token';
-import { recordAuditEntry } from '../../audit/audit.public';
+import { memberAct, recordAuditEntry } from '../../audit/audit.public';
 
 export interface AccountRow {
   readonly id: string;
@@ -281,17 +281,15 @@ export class AuthAdminRepository {
     at: number,
   ): Promise<void> {
     if (tenantId === null) return;
-    await recordAuditEntry(tx, {
-      tenantId,
-      eventType,
-      actorKind: 'tenant_user',
-      actorRef: userAccountId,
-      occurredAt: new Date(at),
-      blocked: false,
-      subjectKind: 'user_account',
-      subjectRef: userAccountId,
-      changePayload: null,
-    });
+    await recordAuditEntry(
+      tx,
+      memberAct(
+        eventType,
+        tenantId,
+        { kind: 'user_account', ref: userAccountId },
+        { actorUserId: userAccountId, now: at },
+      ),
+    );
   }
 }
 

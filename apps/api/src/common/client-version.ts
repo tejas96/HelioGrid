@@ -8,6 +8,7 @@ import { type ClientVersion, isBelowMinimum, parseClientVersion } from '@heliogr
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
 import type { PinoLogger } from 'nestjs-pino';
 import type { ApiEnv } from '../config/env';
+import { loggedPath } from './logging';
 
 type MinimumSettings = Pick<
   ApiEnv,
@@ -77,12 +78,12 @@ export function refuseClientsBelow(
     }
     const requestId = String(req.id);
     // This answer is written before the request logger runs, so this line is the only record of
-    // it: it names the call, as the request log does — the path without its query.
+    // it: it names the call as the request log does (`loggedPath`).
     logger.warn(
       {
         requestId,
         method: req.method,
-        path: req.path,
+        path: loggedPath(req.path),
         clientVersion: version.slice(0, LOGGED_VERSION_LENGTH),
         requiredVersion: minimum.upgrade.requiredVersion,
       },

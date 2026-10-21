@@ -5,12 +5,16 @@ import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
 import { responseOf, setTokenCookie } from '../../common/auth/cookies';
 import { actOf, sessionIdOf, sessionOf, tenantIdOf } from '../../common/auth/session-context';
+import { InvitationAnswersService } from './invitation.answers.service';
 import { InvitationService } from './invitation.service';
 
 @Controller()
 export class InvitationController {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
-  constructor(@Inject(InvitationService) private readonly invitations: InvitationService) {}
+  constructor(
+    @Inject(InvitationService) private readonly invitations: InvitationService,
+    @Inject(InvitationAnswersService) private readonly answers: InvitationAnswersService,
+  ) {}
 
   @TsRestHandler(invitationContract)
   // The tenant side is the team administrator's (`M01.2` permissions); the landing side is the
@@ -54,11 +58,11 @@ export class InvitationController {
         return { status: 200, body: joined.projection };
       },
       decline: async ({ params }) => {
-        await this.invitations.decline(params.token, Date.now());
+        await this.answers.decline(params.token, Date.now());
         return { status: 204, body: undefined };
       },
       requestReinvite: async ({ params }) => {
-        await this.invitations.requestReinvite(params.token, Date.now());
+        await this.answers.requestReinvite(params.token, Date.now());
         return { status: 204, body: undefined };
       },
     });

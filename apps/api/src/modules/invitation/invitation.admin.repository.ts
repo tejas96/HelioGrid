@@ -12,7 +12,7 @@ import { type InvitationStatus, invitationStatus, type RolePreset } from '@helio
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq, isNull } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
-import { recordAuditEntry } from '../audit/audit.public';
+import { memberAct, recordAuditEntry } from '../audit/audit.public';
 
 /** The invite as the invited person opens it — no session, no tenant; the link's secret is the key. */
 export interface LandingRow {
@@ -36,11 +36,8 @@ export type AcceptOutcome =
   | { readonly outcome: 'done'; readonly tenantId: string }
   | { readonly outcome: 'not-pending' | 'already-member' };
 
-export type DeclineOutcome = { readonly outcome: 'done' | 'not-found' | 'not-pending' };
-export type ReinviteOutcome = { readonly outcome: 'done' | 'not-found' | 'not-expired' };
-
 /**
- * The invited person's side, which crosses tenancy by nature — they hold no membership until the
+ * The invited person's way in, which crosses tenancy by nature — they hold no membership until the
  * accept writes one — so it rides the admin pool, on the same explicit path as signup. Every
  * write here re-reads the row under a lock and asks domain what the invite is NOW, so a revoke
  * and an accept racing on one link cannot both win.
@@ -79,41 +76,6 @@ export class InvitationAdminRepository {
   /** The join (`M01-13`): one transaction, never a half-joined state. */
   async accept(tokenHash: string, userId: string, now: number): Promise<AcceptOutcome> {
     return this.db.transaction((tx) => acceptInvitation(tx, { tokenHash, userId, now }));
-  }
-
-  /** The wrong person got the invite: it is voided, and the record says so (`M01.2` S1.wrong.2). */
-  async decline(tokenHash: string, now: number): Promise<DeclineOutcome> {
-    return this.db.transaction(async (tx) => {
-      const row = await lockedByToken(tx, tokenHash);
-      if (!row) return { outcome: 'not-found' };
-      // Declining a declined invite is the same act repeated — a retry — and writes nothing (`F4-07`).
-      if (row.status === 'declined') return { outcome: 'done' };
-      if (invitationStatus(lifeOf(row), now) !== 'pending') return { outcome: 'not-pending' };
-      await tx
-        .update(invitation)
-        .set({ status: 'declined', declinedAt: new Date(now) })
-        .where(eq(invitation.id, row.id));
-      return { outcome: 'done' };
-    });
-  }
-
-  /**
-   * The link ran out: the one-tap ask (`M01.2` S1.wrong.1). Stamped once — a second tap asks
-   * nobody twice — and the notification the inviter receives is emitted from that first stamp.
-   */
-  async requestReinvite(tokenHash: string, now: number): Promise<ReinviteOutcome> {
-    return this.db.transaction(async (tx) => {
-      const row = await lockedByToken(tx, tokenHash);
-      if (!row) return { outcome: 'not-found' };
-      if (invitationStatus(lifeOf(row), now) !== 'expired') return { outcome: 'not-expired' };
-      if (row.reinviteRequestedAt === null) {
-        await tx
-          .update(invitation)
-          .set({ reinviteRequestedAt: new Date(now) })
-          .where(eq(invitation.id, row.id));
-      }
-      return { outcome: 'done' };
-    });
   }
 }
 
@@ -182,27 +144,26 @@ export async function acceptInvitation(
     .update(userAccount)
     .set({ name: row.inviteeName })
     .where(and(eq(userAccount.id, input.userId), isNull(userAccount.name)));
-  await recordAuditEntry(tx, {
-    tenantId: row.tenantId,
-    eventType: 'team.invite_accepted',
-    actorKind: 'tenant_user',
-    actorRef: input.userId,
-    occurredAt: at,
-    blocked: false,
-    subjectKind: 'invitation',
-    subjectRef: row.id,
-    changePayload: null,
-  });
+  await recordAuditEntry(
+    tx,
+    memberAct(
+      'team.invite_accepted',
+      row.tenantId,
+      { kind: 'invitation', ref: row.id },
+      { actorUserId: input.userId, now: input.now },
+    ),
+  );
   return { outcome: 'done', tenantId: row.tenantId };
 }
 
 /** The row behind a link, locked for the write that follows. */
-async function lockedByToken(tx: DbTransaction, tokenHash: string) {
+export async function lockedByToken(tx: DbTransaction, tokenHash: string) {
   const [row] = await tx
     .select({
       id: invitation.id,
       tenantId: invitation.tenantId,
       inviteeName: invitation.inviteeName,
+      inviterUserId: invitation.inviterUserId,
       phoneE164: invitation.inviteePhoneE164,
       status: invitation.status,
       expiresAt: invitation.expiresAt,
@@ -240,6 +201,6 @@ async function joinedThrough(
   return joined !== undefined;
 }
 
-function lifeOf(row: { status: InvitationStatus; expiresAt: Date }) {
+export function lifeOf(row: { status: InvitationStatus; expiresAt: Date }) {
   return { status: row.status, expiresAt: row.expiresAt.getTime() };
 }

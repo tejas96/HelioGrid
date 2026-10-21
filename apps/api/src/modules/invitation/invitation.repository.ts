@@ -15,7 +15,7 @@ import { type CreationKey, type Keyed, replayOf } from '../../common/creation-ke
 import { lockCreationKey } from '../../common/db/creation-key-lock';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { recordOutboxEvent } from '../../common/temporal/outbox.repository';
-import { recordAuditEntry } from '../audit/audit.public';
+import { memberAct, recordAuditEntry } from '../audit/audit.public';
 import {
   hasLiveInvite,
   isOnTeam,
@@ -128,7 +128,10 @@ export class InvitationRepository {
       await tx
         .insert(invitationRole)
         .values(roles.map((rolePreset) => ({ tenantId, invitationId: row.id, rolePreset })));
-      await recordAuditEntry(tx, inviteAct('team.invite_sent', tenantId, row.id, act));
+      await recordAuditEntry(
+        tx,
+        memberAct('team.invite_sent', tenantId, { kind: 'invitation', ref: row.id }, act),
+      );
       await recordOutboxEvent(tx, tenantId, inviteMessageWorkflow, {
         eventId,
         tenantId,
@@ -190,7 +193,10 @@ export class InvitationRepository {
         )
         .returning(invitationColumns());
       if (!row) return refusalFor(tx, tenantId, id);
-      await recordAuditEntry(tx, inviteAct('team.invite_revoked', tenantId, id, act));
+      await recordAuditEntry(
+        tx,
+        memberAct('team.invite_revoked', tenantId, { kind: 'invitation', ref: id }, act),
+      );
       const [revoked] = await withRoles(tx, tenantId, [row]);
       if (!revoked) throw new Error('the invitation vanished inside its own transaction');
       return { outcome: 'done', invitation: revoked };
@@ -235,25 +241,6 @@ async function madeWithKey(
   const [withItsRoles] = await withRoles(tx, tenantId, [row]);
   if (!withItsRoles) throw new Error('the invitation vanished inside its own transaction');
   return replayOf({ invitation: withItsRoles, eventId: null }, fingerprint, key);
-}
-
-function inviteAct(
-  eventType: 'team.invite_sent' | 'team.invite_revoked',
-  tenantId: string,
-  invitationId: string,
-  act: Act,
-) {
-  return {
-    tenantId,
-    eventType,
-    actorKind: 'tenant_user' as const,
-    actorRef: act.actorUserId,
-    occurredAt: new Date(act.now),
-    blocked: false,
-    subjectKind: 'invitation' as const,
-    subjectRef: invitationId,
-    changePayload: null,
-  };
 }
 
 /** Every preset each invitation carries, in one read over the invitation index, in matrix order. */

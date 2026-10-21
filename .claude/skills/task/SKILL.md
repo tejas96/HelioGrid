@@ -167,7 +167,7 @@ Pick the surfaces from what changed, never more:
 | `qa-api` | `apps/api`, `apps/worker`, `packages/contracts`, `packages/db`, `packages/env`, `infra/postgres`, or a `packages/domain` file the api uses, changed |
 | `qa-web` | `apps/web`, or a `packages/ui`, `theme`, `forms`, `i18n`, `data` or `domain` file a web screen draws, changed — or an api route a built web screen calls changed, or the screen is the twin of a changed phone screen (then one live row on that screen) |
 | `qa-ios` | `apps/mobile`, or a shared file a phone screen draws, changed — or an api route a built phone screen calls changed, or the screen is the twin of a changed web screen (then one live row on that screen) |
-| `qa-android` | `apps/mobile/android/**`, a `.android.*` file, a native module or the app config changed; an RFC row names Android; the changed phone screen has no Maestro flow of its own (held in `tests/invariants/src/e2e-flow-per-screen.ts`); or the repository variable `PHONE_E2E` is `off`. Otherwise CI's `android` lane drives the screen's flow under `tests/e2e/mobile/` — a new phone screen adds one. |
+| `qa-android` | `apps/mobile/android/**`, a `.android.*` file, a native module or the app config changed; an RFC row names Android; a phone screen `qa-ios` runs for has no Maestro flow of its own (held in `tests/invariants/src/e2e-flow-per-screen.ts`); or the repository variable `PHONE_E2E` is `off`. Otherwise CI's `android` lane drives the screen's flow under `tests/e2e/mobile/` — a new phone screen adds one. |
 
 No surface changed (a pure domain or docs task): no server starts and no phone boots; the unit
 tests, the review and the gate are the proof.

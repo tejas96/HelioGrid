@@ -37,6 +37,21 @@ export class NotificationPushService {
   }
 
   /**
+   * The pushes of notices already committed. A push that cannot go out never turns the act that
+   * raised it into a failure: a retry would find the notices written and send no push at all
+   * (`F6-06`, the record is the truth). Logged by the notice's id alone.
+   */
+  async deliverAfterCommit(tenantId: string, ids: readonly string[], now: Date): Promise<void> {
+    for (const notificationId of ids) {
+      try {
+        await this.deliver(tenantId, notificationId, now);
+      } catch (error) {
+        this.logger.warn({ notificationId, err: error }, 'a push failed after its commit');
+      }
+    }
+  }
+
+  /**
    * Sends this record's push if one is owed and due, and marks it. Silent and harmless when it
    * is not: a muted group, a type that never pushes, a window that has not ended, a person with
    * no handset, or a push already sent all take the same quiet exit.
