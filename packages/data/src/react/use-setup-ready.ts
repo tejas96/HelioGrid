@@ -50,6 +50,10 @@ export function useSetupReady(): SetupReady {
     // Offline, a held read would stay pending and the screen blank; it fails to the wall instead.
     networkMode: 'always',
   });
+  /* A read with no answer yet goes back to pending while it is asked again, so once it has failed
+     the wall is held up, its *Try again* working, until a read answers — never a blank screen. */
+  const failedBefore = company.data === undefined && company.errorUpdateCount > 0;
+  const retrying = failedBefore && company.isFetching;
   const [leaving, setLeaving] = useState(false);
   const out = useRef<Promise<void> | null>(null);
   const startWithLead = (): Promise<void> => {
@@ -70,9 +74,9 @@ export function useSetupReady(): SetupReady {
     return answering;
   };
   return {
-    company: companyOf(company.data?.companyName, company.isError),
+    company: companyOf(company.data?.companyName, failedBefore),
     demo: 'unavailable',
-    retrying: company.isError && company.isFetching,
+    retrying,
     tryAgain: () => void company.refetch(),
     leaving,
     startWithLead,
