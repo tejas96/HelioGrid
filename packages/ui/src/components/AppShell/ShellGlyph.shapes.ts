@@ -285,6 +285,11 @@ export const SHELL_GLYPHS = {
   'arrow-right-full': [path('M5 12h14M13 6l6 6-6 6')],
   'arrow-down': [path('M12 5v14M6 13l6 6 6-6')],
   attention: [path('M12 8v5'), path('M12 16h.01')],
+  'person-plus': [
+    circle(9, 7, 4),
+    path('M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M19 8v6M22 11h-6'),
+  ],
+  'house-door': [path('M3 9.5 12 3l9 6.5M5 10.5V21h14V10.5M9 21v-5h6v5')],
 } satisfies Record<string, readonly GlyphMark[]>;
 
 /** A glyph's name: a key of `SHELL_GLYPHS`, so a name with no drawing cannot be written. */

@@ -140,9 +140,10 @@ export interface ShellGlyphProps {
   /**
    * `secondary` at rest, `inverse` on the near-black pill, `primary` on a state's mark and in a
    * round shell button, `accent` in a settings row's icon circle (`SCR-SHELL-01`, *More*), `danger`
-   * on a `Button` whose `tone` is `danger`, so the glyph matches its words.
+   * on a `Button` whose `tone` is `danger`, so the glyph matches its words, `info` in an info icon
+   * circle (`SCR-M01-06`'s demo door).
    */
-  tone?: 'primary' | 'secondary' | 'inverse' | 'accent' | 'danger';
+  tone?: 'primary' | 'secondary' | 'inverse' | 'accent' | 'info' | 'danger';
 }
 
 export interface AppShellProps {

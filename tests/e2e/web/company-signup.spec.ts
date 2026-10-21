@@ -10,6 +10,7 @@ import {
   OWNER_NAME,
   passCompanyProfileStep,
   passLanguageStep,
+  passReadyStep,
   passWhatYouSellStep,
   requestCode,
   skipInviteStep,
@@ -17,7 +18,7 @@ import {
 } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
 import { freshMobile } from '../support/phone';
-import { passTheOwnersMark } from '../support/shell';
+import { openHomeFromShell, passTheOwnersMark } from '../support/shell';
 
 const en = await createTranslator('en');
 
@@ -217,6 +218,8 @@ test('a language chosen on the door is the new account’s, and where sign-out r
   await passWhatYouSellStep(page, mr);
   await passCompanyProfileStep(page, mr);
   await skipInviteStep(page, mr);
+  await passReadyStep(page, mr);
+  await openHomeFromShell(page, mr);
 
   await passTheOwnersMark(page, mr);
   await page.getByRole('button', { name: mr.t(SHELL.accountOf, { name: OWNER_NAME }) }).click();

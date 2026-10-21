@@ -1,5 +1,5 @@
-import { firstRunMarkWords, SHELL, type Translator } from '@heliogrid/i18n';
-import type { Page } from '@playwright/test';
+import { destinationLabel, firstRunMarkWords, SHELL, type Translator } from '@heliogrid/i18n';
+import { expect, type Page } from '@playwright/test';
 
 /** A new owner's one first-run mark, on the verb: its own Got it passes it, for good. */
 export async function passTheOwnersMark(page: Page, t: Translator): Promise<void> {
@@ -16,4 +16,16 @@ export async function passTheOwnersMark(page: Page, t: Translator): Promise<void
     .last()
     .click();
   await stored;
+}
+
+/**
+ * The home through the shell's own Home button, never a reload: a reload drops what the page holds,
+ * the door's chosen language among it (D304), so a walk that must keep it stays one page load.
+ */
+export async function openHomeFromShell(page: Page, t: Translator): Promise<void> {
+  await page
+    .getByRole('navigation', { name: t.t(SHELL.mainNavigation) })
+    .getByRole('button', { name: destinationLabel(t.t, 'home') })
+    .click();
+  await expect(page).toHaveURL(/\/home$/);
 }

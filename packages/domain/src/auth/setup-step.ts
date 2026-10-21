@@ -13,6 +13,7 @@ const STEPS_WITH_A_SCREEN = [
   'what_you_sell',
   'business_profile',
   'invite_team',
+  'ready',
 ] as const satisfies readonly OnboardingStep[];
 export type SetupScreenStep = (typeof STEPS_WITH_A_SCREEN)[number];
 
@@ -40,6 +41,12 @@ export function setupStepOwed(
   const asked = resumeStep(read.steps, putOff);
   return STEPS_WITH_A_SCREEN.find((step) => step === asked) ?? null;
 }
+
+/**
+ * The demo door of *You're ready* (`SCR-M01-06`, `M01-26`): the demo project being read, ready to
+ * open, or not there. One vocabulary for the hook that reads it and the card that draws it.
+ */
+export type DemoDoor = 'loading' | 'ready' | 'unavailable';
 
 /** Whether this person is asked for setup at all — and so whether a device reads its progress for them. */
 export function managesSetup(user: SessionUser | null): boolean {

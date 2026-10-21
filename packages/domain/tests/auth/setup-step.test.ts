@@ -34,6 +34,10 @@ const atReady: SetupRead = {
   steps: { ...atInviteTeam.steps, invite_team: 'skipped' },
 };
 const closed: SetupRead = { status: 'ready', steps: { ...atReady.steps, ready: 'completed' } };
+const closedFromTeam: SetupRead = {
+  status: 'ready',
+  steps: { ...atReady.steps, ready: 'skipped' },
+};
 
 describe('setupStepOwed — the setup step a session is asked for (M01-10, F3-03)', () => {
   it.each([
@@ -55,15 +59,20 @@ describe('setupStepOwed — the setup step a session is asked for (M01-10, F3-03
     expect(setupStepOwed(owner, [], atInviteTeam)).toBe('invite_team');
   });
 
+  it('asks an owner whose company answered invite_team for the ready step', () => {
+    expect(setupStepOwed(owner, [], atReady)).toBe('ready');
+  });
+
   it('waits while an owner’s progress is still being read', () => {
     expect(setupStepOwed(owner, [], reading)).toBe('wait');
   });
 
   it.each([
     { why: 'the read got no answer: setup never holds a person', user: owner, read: unanswered },
-    { why: 'the company resumes at ready, which has no screen yet', user: owner, read: atReady },
+    { why: 'the roles do not manage them, at the ready step', user: seller, read: atReady },
     { why: 'the roles do not manage them, at the second step', user: seller, read: atWhatYouSell },
     { why: 'every step is answered', user: owner, read: closed },
+    { why: 'ready was skipped through Open Team', user: owner, read: closedFromTeam },
     { why: 'the roles do not manage the company’s settings', user: seller, read: atLanguage },
     {
       why: 'the roles do not manage them, and nothing is read for that person',
@@ -83,6 +92,7 @@ describe('setupStepOwed — the setup step a session is asked for (M01-10, F3-03
     { putOff: ['language'], read: atWhatYouSell, asked: 'what_you_sell' },
     { putOff: ['what_you_sell', 'business_profile'], read: atWhatYouSell, asked: 'invite_team' },
     { putOff: ['business_profile'], read: atCompanyProfile, asked: 'invite_team' },
+    { putOff: ['invite_team'], read: atInviteTeam, asked: 'ready' },
   ] as const)(
     'passes over $putOff put off for the session and asks for $asked',
     ({ putOff, read, asked }) => {
@@ -92,14 +102,14 @@ describe('setupStepOwed — the setup step a session is asked for (M01-10, F3-03
 
   it.each([
     {
-      putOff: ['what_you_sell', 'business_profile', 'invite_team'],
+      putOff: ['what_you_sell', 'business_profile', 'invite_team', 'ready'],
       read: atWhatYouSell,
-      why: 'no later step has a screen',
+      why: 'every later step is put off',
     },
     {
-      putOff: ['invite_team'],
-      read: atInviteTeam,
-      why: 'the last step with a screen is put off',
+      putOff: ['ready'],
+      read: atReady,
+      why: 'the last step is put off',
     },
     { putOff: ['what_you_sell'], read: unanswered, why: 'the read got no answer' },
   ] as const)('asks for no step with $putOff put off, when $why', ({ putOff, read }) => {

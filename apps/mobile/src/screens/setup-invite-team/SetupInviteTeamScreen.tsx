@@ -18,7 +18,7 @@ const TEAM_ROW_LINK = `${linkingOptions.prefixes[0]}${DOOR_SEGMENT.more}/${SETTI
  * The invite step of setup on the phone (`SCR-M01-07`, `M01-12`), mounted for an owner whose
  * company still owes it. The send and the step's writes are `useSetupInvite`'s, the form
  * `useInviteForm`'s; a send that did not go out is said in this step's own toast host, standing on
- * its held acts. *Open Team* leaves the step and opens Team (AC-20).
+ * its held acts. *Open Team* leaves setup and opens Team (AC-20; `T-M01-006` D2).
  */
 export function SetupInviteTeamScreen() {
   const { t } = useI18n();
@@ -48,7 +48,7 @@ export function SetupInviteTeamScreen() {
         }}
         onOpenTeam={async () => {
           Keyboard.dismiss();
-          await invite.skip();
+          await invite.openTeam();
           void Linking.openURL(TEAM_ROW_LINK).catch(() => undefined);
         }}
       />

@@ -38,6 +38,11 @@ msgid "{city} only"
 msgstr "{city} only"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-ready.ts:10
+msgid "{company} is set up."
+msgstr "{company} is set up."
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:14
 msgid "{count, plural, =0 {Notifications} one {Notifications, # unread} other {Notifications, # unread}}"
 msgstr "{count, plural, =0 {Notifications} one {Notifications, # unread} other {Notifications, # unread}}"
@@ -283,6 +288,11 @@ msgid "A company name is needed — it goes on every proposal you send."
 msgstr "A company name is needed — it goes on every proposal you send."
 
 #. js-lingui-explicit-id
+#: src/copy/setup-ready.ts:12
+msgid "A name and a phone number is enough to begin."
+msgstr "A name and a phone number is enough to begin."
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:73
 msgid "A name can have up to {max} characters."
 msgstr "A name can have up to {max} characters."
@@ -291,6 +301,11 @@ msgstr "A name can have up to {max} characters."
 #: src/copy/api-error.ts:72
 msgid "A release already has this name. Choose another name."
 msgstr "A release already has this name. Choose another name."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-ready.ts:16
+msgid "A worked rooftop project — survey, design and proposal, all done."
+msgstr "A worked rooftop project — survey, design and proposal, all done."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:72
@@ -781,6 +796,11 @@ msgid "Create your company"
 msgstr "Create your company"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-ready.ts:13
+msgid "Create your first lead"
+msgstr "Create your first lead"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:87
 msgid "Create your own company instead"
 msgstr "Create your own company instead"
@@ -844,6 +864,11 @@ msgstr "Declared by you"
 #: src/copy/notifications.ts:68
 msgid "Delivery"
 msgstr "Delivery"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-ready.ts:15
+msgid "Demo"
+msgstr "Demo"
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:14
@@ -994,6 +1019,11 @@ msgstr "From your signup"
 #: src/copy/sign-in.ts:38
 msgid "Get the code by call"
 msgstr "Get the code by call"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-ready.ts:18
+msgid "Getting the demo ready."
+msgstr "Getting the demo ready."
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:63
@@ -1523,6 +1553,11 @@ msgid "Open Team"
 msgstr "Open Team"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-ready.ts:17
+msgid "Open the demo project"
+msgstr "Open the demo project"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:84
 msgid "Opening Google sign-in"
 msgstr "Opening Google sign-in"
@@ -1805,6 +1840,11 @@ msgid "Search"
 msgstr "Search"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-ready.ts:14
+msgid "See a finished job"
+msgstr "See a finished job"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:29
 msgid "Send a new code"
 msgstr "Send a new code"
@@ -1998,6 +2038,11 @@ msgstr "Start a survey from your home"
 #: src/copy/shell.ts:107
 msgid "Start survey"
 msgstr "Start survey"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-ready.ts:11
+msgid "Start with a real lead"
+msgstr "Start with a real lead"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:10
@@ -2547,9 +2592,19 @@ msgid "We could not sign you in"
 msgstr "We could not sign you in"
 
 #. js-lingui-explicit-id
+#: src/copy/setup-ready.ts:19
+msgid "We couldn’t get the demo project ready"
+msgstr "We couldn’t get the demo project ready"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:47
 msgid "We couldn't load your profile"
 msgstr "We couldn't load your profile"
+
+#. js-lingui-explicit-id
+#: src/copy/setup-ready.ts:20
+msgid "We couldn’t open your workspace"
+msgstr "We couldn’t open your workspace"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:53
@@ -2709,6 +2764,11 @@ msgid "You sell to homes and businesses, and pick which one each proposal is for
 msgstr "You sell to homes and businesses, and pick which one each proposal is for."
 
 #. js-lingui-explicit-id
+#: src/copy/setup-ready.ts:9
+msgid "You’re ready"
+msgstr "You’re ready"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:24
 #: src/copy/api-error.ts:29
 msgid "You're signed out. Sign in to continue."
@@ -2760,6 +2820,11 @@ msgstr "Your company has not published its grievance officer yet. Ask your admin
 #: src/copy/api-error.ts:62
 msgid "Your company has reached its invite limit for the last 24 hours."
 msgstr "Your company has reached its invite limit for the last 24 hours."
+
+#. js-lingui-explicit-id
+#: src/copy/setup-ready.ts:21
+msgid "Your company is set up."
+msgstr "Your company is set up."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:54

@@ -1,5 +1,5 @@
 'use client';
-import type { OnboardingProgress } from '@heliogrid/contracts';
+import type { OnboardingProgress, Tenant } from '@heliogrid/contracts';
 import {
   announcesSave,
   COMPANY_PROFILE_UNREAD,
@@ -174,6 +174,10 @@ export function useCompanyProfile(
       const writes = companyProfileSaveOf(sent.values, sent.stored, sent.tax, logoStoredNow);
       const saved = await repositories.settings.saveBusinessProfile(writes.profile);
       queryClient.setQueryData(profileKey, saved);
+      // The shell's company, which the home and *You're ready* name, takes the saved name at once.
+      queryClient.setQueryData<Tenant>(queryKeys.shell.tenant(tenantId), (held) =>
+        held === undefined ? held : { ...held, companyName: saved.companyName },
+      );
       if (registrationsChanged(sent.stored.registrations, writes.registrations)) {
         const list = await repositories.settings.saveTaxRegistrations({
           registrations: [...writes.registrations],

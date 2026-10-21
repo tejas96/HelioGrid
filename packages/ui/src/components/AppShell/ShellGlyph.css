@@ -16,6 +16,10 @@
   color: var(--accent);
 }
 
+.hg-shell-glyph[data-tone="info"] {
+  color: var(--info);
+}
+
 .hg-shell-glyph[data-tone="danger"] {
   color: var(--danger-text);
 }

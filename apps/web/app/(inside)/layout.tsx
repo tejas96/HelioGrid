@@ -4,6 +4,7 @@ import {
   CompanyProfileScreen,
   SetupInviteTeamScreen,
   SetupLanguageScreen,
+  SetupReadyScreen,
   SetupWhatYouSellScreen,
 } from '../../features/onboarding';
 import { ShellScreen } from '../../features/shell';
@@ -22,6 +23,7 @@ export default function InsideLayout({ children }: { children: ReactNode }) {
         'what-you-sell-step': <SetupWhatYouSellScreen />,
         'company-profile-step': <CompanyProfileScreen life="setup" />,
         'invite-team-step': <SetupInviteTeamScreen />,
+        'ready-step': <SetupReadyScreen />,
       }}
     >
       <ShellScreen>{children}</ShellScreen>

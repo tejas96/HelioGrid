@@ -1,0 +1,111 @@
+/* *You're ready* (`SCR-M01-06` m-default, m-loading, m-error-demo, d-default) in the onboarding
+   frame. Every value a token var(). */
+
+/* The heading `sp-8` under the wordmark, the company line `sp-2` under it, the doors `sp-6` under
+   that (m-default). */
+.hg-setup-ready-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  /* The onboarding frame leaves `sp-4` under its identity; the doors start `sp-6` under the line. */
+  padding-bottom: var(--sp-2);
+}
+
+.hg-setup-ready-doors {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-setup-ready-door {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  height: 100%;
+}
+
+.hg-setup-ready-door-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+/* The door's name and its `Demo` mark, wrapping under the name when the language is long. */
+.hg-setup-ready-door-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+/* Door two while it waits: the ready door lays out unseen, and the waiting card fills its cell, so
+   door two keeps the ready door's size in every language and nothing above or beside it moves. */
+.hg-setup-ready-waiting {
+  position: relative;
+  display: grid;
+}
+
+.hg-setup-ready-waiting > * {
+  grid-area: 1 / 1;
+}
+
+.hg-setup-ready-unseen {
+  visibility: hidden;
+}
+
+.hg-setup-ready-failed {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* The loading line sits where the door's act will appear. */
+.hg-setup-ready-loading-line {
+  position: absolute;
+  inset-inline: var(--tile-pad);
+  bottom: var(--tile-pad);
+  min-height: var(--sp-12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
+@media (min-width: 968px) {
+  /* The wall is centred in the task pane, from the window's top to its foot (d-error). */
+  .hg-door[data-panes="onboarding"] .hg-door-task:has(.hg-setup-ready-wall) {
+    grid-row: 1 / -1;
+    justify-content: center;
+    padding: var(--sp-16);
+  }
+
+  .hg-setup-ready-title {
+    gap: var(--sp-3);
+    padding-bottom: 0;
+  }
+
+  /* The two doors side by side, stretched to one height (d-default). */
+  .hg-setup-ready-doors {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: var(--sp-5);
+  }
+
+  .hg-setup-ready-door {
+    align-items: flex-start;
+  }
+
+  /* The door's line at the body size (d-default); the Text variant's own rule is as specific. */
+  .hg-setup-ready-door .hg-text[data-variant="body-sm"] {
+    flex: 1;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+  }
+
+  /* The doors pane's foot (d-default). */
+  .hg-door[data-panes="onboarding"] .hg-door-task:has(.hg-setup-ready-doors) {
+    padding-bottom: var(--sp-10);
+  }
+}

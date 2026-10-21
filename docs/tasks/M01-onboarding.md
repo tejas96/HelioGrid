@@ -176,7 +176,7 @@ Corrected before approval (2026-10-08): the line read "an off-flow title `sp-8` 
 
 ### T-M01-006 · Setup — You're Ready
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped
 **Why:** Onboarding ends on a real choice — add the first lead or open the finished demo rooftop — so an owner is quoting or learning within a minute of signing up; without it setup ends on a blank dashboard.
 **PRD rows:** M01-26 (P0)
 **DESIGN:** SCR-M01-06 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN

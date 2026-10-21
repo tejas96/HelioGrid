@@ -137,6 +137,7 @@
 @import "./components/SettingsList/SettingsList.css";
 @import "./components/SetupLanguage/SetupLanguage.css";
 @import "./components/SetupInviteTeam/SetupInviteTeam.css";
+@import "./components/SetupReady/SetupReady.css";
 @import "./components/SetupWhatYouSell/SetupWhatYouSell.css";
 @import "./components/Sheet/OverlayShared.css";
 @import "./components/Sheet/Sheet.css";

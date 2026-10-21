@@ -7,12 +7,14 @@ import {
   SETUP_WHAT_YOU_SELL,
   SIGN_IN,
   setupInviteWords,
+  setupReadyWords,
   type Translator,
 } from '@heliogrid/i18n';
 import { expect, type Page } from '@playwright/test';
 import { codeSentTo } from './api-log';
 import { expectNoSidewaysScroll } from './layout';
 import type { freshMobile } from './phone';
+import { openHomeFromShell } from './shell';
 
 type Mobile = ReturnType<typeof freshMobile>;
 
@@ -217,16 +219,31 @@ export async function skipInviteStep(page: Page, t: Translator): Promise<void> {
   await expect(inviteStep(page, t)).toBeHidden();
 }
 
+/** *You're ready*, setup's last screen (`SCR-M01-06`), by its heading. */
+export function readyStep(page: Page, t: Translator) {
+  return page.getByRole('heading', { name: setupReadyWords(t.t).title, level: 1 });
+}
+
+/** *You're ready* left by its first door: setup closes for good and Leads opens. */
+export async function passReadyStep(page: Page, t: Translator): Promise<void> {
+  await expect(readyStep(page, t)).toBeVisible();
+  await page.getByRole('button', { name: setupReadyWords(t.t).lead.act }).click();
+  await expect(page).toHaveURL(/\/leads$/);
+  await expect(readyStep(page, t)).toBeHidden();
+}
+
 /**
- * A new number through signup and its four setup steps to the company's home, the invite skipped:
- * the one way a spec obtains a person with a company of their own, and alone on its team. Answers
- * the company's name.
+ * A new number through signup and its five setup steps to the company's home, the invite skipped
+ * and setup closed by *You're ready*'s first door: the one way a spec obtains a person with a
+ * company of their own, and alone on its team. Answers the company's name.
  */
 export async function createCompany(page: Page, t: Translator, mobile: Mobile): Promise<string> {
   const company = await reachWhatYouSellStep(page, t, mobile);
   await passWhatYouSellStep(page, t);
   await passCompanyProfileStep(page, t);
   await skipInviteStep(page, t);
+  await passReadyStep(page, t);
+  await openHomeFromShell(page, t);
   return company;
 }
 
