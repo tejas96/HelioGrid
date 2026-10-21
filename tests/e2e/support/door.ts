@@ -14,6 +14,7 @@ import { expect, type Page } from '@playwright/test';
 import { codeSentTo } from './api-log';
 import { expectNoSidewaysScroll } from './layout';
 import type { freshMobile } from './phone';
+import { openHomeFromShell } from './shell';
 
 type Mobile = ReturnType<typeof freshMobile>;
 
@@ -242,7 +243,7 @@ export async function createCompany(page: Page, t: Translator, mobile: Mobile): 
   await passCompanyProfileStep(page, t);
   await skipInviteStep(page, t);
   await passReadyStep(page, t);
-  await page.goto('/home');
+  await openHomeFromShell(page, t);
   return company;
 }
 

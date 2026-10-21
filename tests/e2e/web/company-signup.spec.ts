@@ -1,12 +1,5 @@
 import { RESEND_SECONDS } from '@heliogrid/domain';
-import {
-  COMPANY_SIGNUP,
-  createTranslator,
-  destinationLabel,
-  LANGUAGE_META,
-  SHELL,
-  SIGN_IN,
-} from '@heliogrid/i18n';
+import { COMPANY_SIGNUP, createTranslator, LANGUAGE_META, SHELL, SIGN_IN } from '@heliogrid/i18n';
 import { type Browser, expect, type Page, type Response, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import {
@@ -25,7 +18,7 @@ import {
 } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
 import { freshMobile } from '../support/phone';
-import { passTheOwnersMark } from '../support/shell';
+import { openHomeFromShell, passTheOwnersMark } from '../support/shell';
 
 const en = await createTranslator('en');
 
@@ -226,13 +219,7 @@ test('a language chosen on the door is the new account’s, and where sign-out r
   await passCompanyProfileStep(page, mr);
   await skipInviteStep(page, mr);
   await passReadyStep(page, mr);
-  // Home through the shell, not a reload: the door's chosen language lives in the page, and the
-  // sign-out below must return to it.
-  await page
-    .getByRole('navigation', { name: mr.t(SHELL.mainNavigation) })
-    .getByRole('button', { name: destinationLabel(mr.t, 'home') })
-    .click();
-  await expect(page).toHaveURL(/\/home$/);
+  await openHomeFromShell(page, mr);
 
   await passTheOwnersMark(page, mr);
   await page.getByRole('button', { name: mr.t(SHELL.accountOf, { name: OWNER_NAME }) }).click();
