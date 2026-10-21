@@ -5,9 +5,11 @@ import { expect, type Page } from '@playwright/test';
  * `F7-26`: a missing accessible label fails the build. Only `serious` and `critical` fail —
  * `moderate` findings such as a page with no level-one heading stay with review — so raising
  * the bar is one line here, never a spec's own filter. Run it once the landing's words are
- * visible, never on a frame still animating in.
+ * visible, never on a frame still animating in. It waits for the page's title first: a client
+ * move streams the title in after the words, and a page that never gets one still fails.
  */
 export async function expectNoSeriousViolations(page: Page): Promise<void> {
+  await expect(page).toHaveTitle(/\S/);
   const { violations } = await new AxeBuilder({ page }).analyze();
   const serious = violations
     .filter((violation) => violation.impact === 'serious' || violation.impact === 'critical')
