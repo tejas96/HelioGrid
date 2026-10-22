@@ -343,6 +343,7 @@ Files (part c, ~32 — D5):
 - Tenancy: none new — the route takes the tenant from the session; the screen never names one.
 - Permission: Team opens only for `onboarding.manage_team` (`packages/domain/src/shell/settings-rows.ts:36`), the corridor only for `onboarding.manage_tenant_settings` (`setup-step.ts:46`); today both are the EPC Owner's alone.
 - Release: a company whose profile is done meets the invite step once, on its next sign-in — intended (D208); a skip records it, so it does not come back.
+- A join whose code checks on a device signed in as someone else, and whose accept then fails, leaves the store showing the first person while the server holds the invitee (`D307`, found at part b review).
 
 **11. Regression**
 - Team read and row acts (`T-M01-012c`): `MemberList.spec.tsx`, `TeamConfirm.spec.tsx`, `tests/e2e/web/more-team.spec.ts`; the phone's held head on scroll after the `ShellPage` change: P6.
@@ -445,7 +446,7 @@ Reviewer findings rejected: none.
 | part | what | AC | depends on | status |
 |---|---|---|---|---|
 | a | Decline and the re-invite ask tell someone: two notification types, raised by the routes that exist, read in the Notification Center on both platforms | AC-5, AC-6, AC-7 | — | shipped |
-| b | The landing on web and phone: `FactRows`, the read, the code sent on arrival, one act joins, and the expired ask; loading, empty, load-error, normal, otp-auto-read, wrong-code, join-error, expired, reinvite-requested | AC-1, AC-2, AC-3, AC-4, AC-8 … AC-15 | a | planned |
+| b | The landing on web and phone: `FactRows`, the read, the code sent on arrival, one act joins, and the expired ask; loading, empty, load-error, normal, otp-auto-read, wrong-code, join-error, expired, reinvite-requested | AC-1, AC-2, AC-3, AC-4, AC-8 … AC-15 | a | shipped |
 | c | The decline: the confirm that cannot be dismissed and its after-state, on web and phone | AC-16, AC-17, AC-18 | b | planned |
 
 #### RFC
@@ -535,13 +536,15 @@ Not reachable with data QA makes through the app, proven by the `InviteLanding` 
 | add | `tests/e2e/components/FactRow.{spec,story}.tsx` | b · every prop, both halves, 375 / 1536, hi / mr |
 | add | `packages/domain/src/auth/invite-landing.ts` · `invite-landing-frame.ts` · `tests/auth/invite-landing.test.ts` · modify `src/auth/index.ts` | b · the flow |
 | add | `packages/data/src/session/invite-join.ts` · modify `session/store.ts`, `session/types.ts`, `data-layer.ts`, `react/use-session.ts` | b · `joinWithInvite`, `retryJoin` |
-| add | `packages/data/src/react/use-invite-landing.ts` · modify `react/index.ts`, `cache/keys.ts` | b · the hook, the landing's key |
+| add | `packages/data/src/session/wire-answers.ts` | b · the wire's refusal maps and `userOf`, moved out of `store.ts` so the store stays under 300 lines with the join composed in (added at build) |
+| add | `packages/data/src/react/use-invite-landing.ts` · modify `react/index.ts` | b · the hook; the read is the reducer's round trip, so it needs no cache key (`cache/keys.ts` unchanged, at build) |
 | add | `packages/i18n/src/copy/invite-landing.ts` · `tests/invite-landing.test.ts` · modify `src/index.ts`, `locales/*` | b · the words |
-| add | `packages/ui/src/components/InviteLanding/InviteLanding.{tsx,native.tsx,types.ts,css,logic.ts}` · `index.ts` · modify `src/index.ts`, `styles.css` | b · the screen's parts |
+| add | `packages/ui/src/components/InviteLanding/InviteLanding.{tsx,native.tsx,types.ts,css}` · `InviteFacts.{tsx,native.tsx}` · `index.ts` · modify `src/index.ts`, `styles.css` | b · the screen's parts; the inviter row and the facts in their own file (added at build) |
+| add | `packages/ui/src/components/AppShell/ShellGlyph.marks.ts` · modify `ShellGlyph.shapes.ts`, `ShellGlyph.logic.ts` | b · the board's broken-link glyph (`m-empty`); the mark type and its builders move out so the shapes file stays under 300 lines, and path data stays in the one file `inline-glyph` allows (added at build) |
 | add | `tests/e2e/components/InviteLanding.{spec,story}.tsx` | b · every frame both halves |
 | add | `apps/web/app/(open)/invite/[token]/page.tsx` · `apps/web/features/onboarding/InviteLandingScreen.tsx` · modify `features/onboarding/index.ts` | b · the web route (§4: an open-group route, an onboarding feature) |
-| add | `apps/mobile/src/screens/invite-landing/{InviteLandingScreen.tsx,index.ts}` · modify `src/navigation/root.tsx`, `guards.ts` | b · the phone route, `linking: 'invite/:token'` |
-| add | `tests/e2e/web/invite-[token].spec.ts` · `tests/e2e/mobile/invite-landing.yaml` · modify `tests/e2e/mobile/run.sh` | b · the flows the invariant asks for (`tests/invariants/src/e2e-flow-per-screen.ts:5-19`) |
+| add | `apps/mobile/src/screens/invite-landing/{InviteLandingScreen.tsx,index.ts}` · `src/navigation/routes/open.ts` · modify `src/navigation/root.tsx`, `guards.ts`, `apps/mobile/CLAUDE.md` | b · the phone route, `linking: 'invite/:token'`, in the Open group's own route file as `app.ts` and `auth.ts` are (added at build) |
+| add | `tests/e2e/web/invite-[token].spec.ts` · `tests/e2e/mobile/invite-landing.yaml` · modify `tests/e2e/mobile/run.sh`, `tests/e2e/support/mobile-cli.ts` | b · the flows the invariant asks for (`tests/invariants/src/e2e-flow-per-screen.ts:5-19`); the phone flow's words come from the catalog through the CLI (added at build) |
 | modify | `InviteLanding`, `invite-landing*`, `use-invite-landing.ts`, the i18n words and the specs | c · the decline |
 | modify | `docs/tasks/M01-onboarding.md` · `docs/tasks/deferred.md` · `docs/ux/briefs/SCR-M01-08-invite-landing.md` | each part · status, rows, decision 2's words |
 
@@ -637,7 +640,7 @@ sequenceDiagram
 | P13 | AC-8 | qa-web | web | P9's used link → `empty`; the api log shows no code sent | P9's link |
 | P14 | AC-10 | qa-web | web | the page's `fetch` refuses `POST …/accept` once → `join-error`, code held; *Try again* → one more accept, one verify in all, `/home` | `…901` invites `…910` |
 | P15 | AC-11 | qa-web | web | reload P12's landing within 30 s → a fresh 30 s wait, no error, *Join* held; after the resend the new code joins | P12's link |
-| P16 | AC-12 | qa-web | web | `…913` first creates its own company through the signup; `…901` invites `…913`; it joins → `…901`'s company home; the switcher lists both companies | `…901`, `…913` |
+| P16 | AC-12 | qa-web | web | `…913` first creates its own company through the signup; `…901` invites `…913`; it joins → `…901`'s company home (the web has no company switcher in v1, `AppShell.types.ts`, so its listing is not proven here; corrected at part b QA) | `…901`, `…913` |
 | P17 | AC-14 | qa-web | web | the page's `fetch` answers `POST …/accept` once with 409 `INVITE_EXPIRED` → `expired`, no code field | `…901` invites `…914` |
 | P17b | AC-14 | main-dev | domain | supports AC-14: `invite-landing.test.ts` "INVITE_EXPIRED draws expired, CONFLICT hands off". The `CONFLICT` hand-off is not reachable live — the send refuses an active member with `ALREADY_MEMBER` (`packages/data/src/invitation/repository.ts:19`) | — |
 | P18 | AC-15 | main-dev | ui | `InviteLanding.spec.tsx` `m-expired` and `m-reinvite-requested`, both halves, 375 / 1536 | — |
@@ -647,6 +650,8 @@ sequenceDiagram
 | P20 | AC-17 | qa-web | web | *Keep* → landing unchanged; *Decline* → `declined`; reload → `empty`; `…901` holds the notice | `…901` invites `…912` |
 | P21 | AC-18 | main-dev | ui | `InviteLanding.spec.tsx` the confirm and `declined`, both halves, 375 / 1536 | — |
 | P22 | AC-13 | ci | android | supports AC-13: `invite-landing.yaml` opens an unknown token → `m-empty` | — |
+
+**Native review owed (part b).** Drafted Hindi and Marathi lines, every id of `INVITE_LANDING` in `packages/i18n/src/copy/invite-landing.ts`: *Loading the invite* · *{role} · {company}* · *{first} invited you to {company}* · *Your invite* · *{first} set you up as* · *The code went to the number {first} entered; if it is wrong, decline.* · *Code from the SMS* · *Filled from the SMS — check it, or type over it.* · *That is not the code we sent. {tries} wrong tries so far …* · *Join {company}* · *You have not joined yet, and this invite still works.* · *This invite has expired* · *An invite lasts {days} days …* · *Ask {first} to invite you again* · *One tap tells {first} you are still waiting.* · *This invite is not there any more* · *It may already have been used …* · *Not joined yet? …* · *{first} has been asked for a new invite* · *When {first} sends it, a new link reaches this phone.* · *For an account you already have with another company.* · *Sign in to HelioGrid* · *Your invite did not load* · *Something on our side failed; try again in a moment.*
 
 **14. Deferred rows**
 
@@ -658,6 +663,8 @@ sequenceDiagram
 **15. Size** — about 80 changed files in three parts: a ≈ 20, b ≈ 45, c ≈ 12; code ≈ 2,500 lines, tests ≈ 1,600. Part b is past 30 because its one flow cannot be cut further without a dead control: the read, the code and the join are one screen and one act, and `FactRows` has no other consumer to land with. Three PRs.
 
 **16. Decisions for the owner** — ruled 2026-10-21: 1 (a), 2 (a).
+
+**Part b rulings** (owner, 2026-10-22, at part b review): 3 (a) — on the phone app the acts are held at the foot (brief ruling 17); 4 (a) — the failed ask's banner ships with no board frame (brief ruling 18); 5 (a) — the off-scale sizes ship raw and AC-2 is partial until the `docs/tasks/UI.md` row tokenises them. 6 (a) — AC-11's owning proof is `invite-landing.test.ts` "a cooldown answer draws the wait and holds Join" and `InviteLanding.spec.tsx` "a reload inside the gap holds Join until a code of its own is sent": P15 cannot run live, because a `DEV_OTP_PHONES` number is never refused a code inside the gap. 7 — Android QA runs for part b (owner, at QA).
 
 1. **How the phone opens the invite.** (a) *Recommended:* the text's https link opens the web landing in the phone's browser now; the app answers `heliogrid://invite/:token`; universal and app links wait in `deferred.md` for the production domain. (b) Set them up now — it needs the Apple team, the store accounts and a served `apple-app-site-association` (external accounts).
 2. **The board's guessed pronoun.** (a) *Recommended:* the inviter's first name — *One tap tells Rajesh you are still waiting.* · *When Rajesh sends it, a new link reaches this phone.* (b) Keep *him* / *he* as drawn.

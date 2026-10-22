@@ -1,5 +1,5 @@
 import { OTP_LENGTH } from '@heliogrid/domain';
-import { COMPANY_SIGNUP, createTranslator, SIGN_IN } from '@heliogrid/i18n';
+import { COMPANY_SIGNUP, createTranslator, INVITE_LANDING, SIGN_IN } from '@heliogrid/i18n';
 import { codeSentTo } from './api-log.ts';
 import { freshMobile } from './phone.ts';
 
@@ -27,6 +27,10 @@ if (command === 'words') {
     YOUR_NAME_EXAMPLE: COMPANY_SIGNUP.yourNameExample,
     CITY_EXAMPLE: COMPANY_SIGNUP.cityExample,
     CREATE_COMPANY: COMPANY_SIGNUP.createCompany,
+    INVITE_GONE: INVITE_LANDING.goneTitle,
+    INVITE_SIGN_IN: INVITE_LANDING.signIn,
+    /* A well-formed link with no invite behind it: 43 base64url characters, as the token is minted. */
+    UNKNOWN_INVITE_TOKEN: 'A'.repeat(43),
   };
   for (const [key, message] of Object.entries(words)) {
     process.stdout.write(`${key}=${typeof message === 'string' ? message : t.t(message)}\n`);

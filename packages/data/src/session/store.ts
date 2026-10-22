@@ -1,13 +1,10 @@
-import type { PlatformKind, ProviderSignIn, SessionProjection } from '@heliogrid/contracts';
+import type { PlatformKind } from '@heliogrid/contracts';
 import {
   CHECKING,
   canRenew,
-  type GoogleOutcome,
   type GoogleResult,
-  type GoogleToken,
   OTP_MAX_FAILED_VERIFIES,
   type OtpRequestOutcome,
-  type OtpVerifyOutcome,
   type OtpVerifyResult,
   type SessionEvent,
   type SessionSnapshot,
@@ -15,79 +12,36 @@ import {
   SIGNED_OUT,
   type SignInDoor,
   sessionAfter,
-  uiLanguageOrSource,
 } from '@heliogrid/domain';
 import type { AuthRepository } from '../auth/repository';
-import { ApiError, isUnanswered, UnauthorizedError } from '../errors/errors';
+import { isUnanswered, UnauthorizedError } from '../errors/errors';
+import type { InvitationRepository } from '../invitation/repository';
 import type { TenantRepository } from '../tenant/repository';
 import type { SessionSignals } from '../transport/transport';
 import type { UserRepository } from '../user/repository';
 import type { HeldWork } from './held-work';
+import { type CodeCheck, createInviteJoin } from './invite-join';
 import type { SessionStore } from './types';
-
-/**
- * The wire's refusal codes (`packages/contracts/src/auth.ts`), each to the one word the door
- * renders a frame for. A code the wire did not name is `failed` — never guessed from a message.
- */
-const REQUEST_OUTCOME_BY_CODE: Record<string, OtpRequestOutcome> = {
-  OTP_COOLDOWN: 'cooldown',
-  OTP_CAPPED: 'capped',
-  OTP_LOCKED: 'locked',
-  OTP_DELIVERY_FAILED: 'delivery-failed',
-};
-const VERIFY_OUTCOME_BY_CODE: Record<string, OtpVerifyOutcome> = {
-  OTP_MISMATCH: 'mismatch',
-  OTP_EXPIRED: 'expired',
-  OTP_INVALIDATED: 'invalidated',
-  OTP_LOCKED: 'locked',
-};
-/** The Google door's own refusals; every other one it answers renders the one failure frame. */
-const GOOGLE_OUTCOME_BY_CODE: Record<string, GoogleOutcome> = {
-  ...VERIFY_OUTCOME_BY_CODE,
-  LOGIN_NOT_LINKED: 'not-linked',
-  LOGIN_PHONE_TAKEN: 'phone-taken',
-};
-function codeOf(error: unknown): string {
-  return error instanceof ApiError ? error.code : '';
-}
-
-/** The wire's Google request: an optional field is left out, never sent as undefined. */
-function googleSignInBody(
-  token: GoogleToken,
-  platform: PlatformKind,
-  link: ProviderSignIn['link'],
-): ProviderSignIn {
-  return {
-    idToken: token.idToken,
-    platform,
-    ...(token.nonce === null ? {} : { nonce: token.nonce }),
-    ...(link === undefined ? {} : { link }),
-  };
-}
-
-function userOf(projection: SessionProjection): SessionUser {
-  return {
-    id: projection.actor.userId,
-    name: projection.actor.displayName,
-    phoneE164: projection.actor.phoneE164,
-    interfaceLanguage: uiLanguageOrSource(projection.actor.interfaceLanguage),
-    tenant:
-      projection.membership === null
-        ? null
-        : { id: projection.membership.tenantId, roles: projection.membership.roles },
-  };
-}
+import {
+  codeOf,
+  GOOGLE_OUTCOME_BY_CODE,
+  googleSignInBody,
+  REQUEST_OUTCOME_BY_CODE,
+  userOf,
+  VERIFY_OUTCOME_BY_CODE,
+} from './wire-answers';
 
 /**
  * The real session store, authored ONCE for both platforms. It starts `checking` and asks the
  * server who the cookies belong to; the credentials themselves never pass through here — the
- * transport carries them. `verifyOtp` and `signInWithGoogle` are where a shared device changes
- * hands (`F4-37`).
+ * transport carries them. `verifyOtp`, `signInWithGoogle` and the invite's join are where a shared
+ * device changes hands (`F4-37`).
  */
 export function createSessionStore(config: {
   auth: AuthRepository;
   user: UserRepository;
   tenant: TenantRepository;
+  invitation: InvitationRepository;
   platform: PlatformKind;
   heldWork: HeldWork;
 }): SessionStore {
@@ -143,6 +97,27 @@ export function createSessionStore(config: {
     signedIn(next);
   };
 
+  /** Checks the code of the challenge `requestOtp` opened; the account it proves is not admitted here. */
+  const checkCode = async (code: string): Promise<CodeCheck> => {
+    if (challengeId === null) return { kind: 'refused', outcome: 'failed', triesLeft: triesLeft() };
+    try {
+      const user = userOf(await config.auth.verifyOtp(challengeId, code, config.platform));
+      challengeId = null;
+      return { kind: 'verified', user };
+    } catch (error) {
+      if (isUnanswered(error))
+        return { kind: 'refused', outcome: 'unreached', triesLeft: triesLeft() };
+      const outcome = VERIFY_OUTCOME_BY_CODE[codeOf(error)] ?? 'failed';
+      if (outcome === 'mismatch') wrongTries += 1;
+      return { kind: 'refused', outcome, triesLeft: triesLeft() };
+    }
+  };
+  const inviteJoin = createInviteJoin({
+    invitation: config.invitation,
+    checkCode,
+    admit: (user) => admit(user, 'sign-in'),
+  });
+
   // The boot check runs on the FIRST subscription, never at construction: a cookie the server
   // still honours signs the person straight in, and a server render — which builds the store
   // but never subscribes — fires no request and rotates no visitor's cookies.
@@ -195,19 +170,17 @@ export function createSessionStore(config: {
       }
     },
     async verifyOtp(code, door = 'sign-in'): Promise<OtpVerifyResult> {
-      if (challengeId === null) return { outcome: 'failed', triesLeft: triesLeft() };
+      const check = await checkCode(code);
+      if (check.kind === 'refused') return { outcome: check.outcome, triesLeft: check.triesLeft };
       try {
-        const next = userOf(await config.auth.verifyOtp(challengeId, code, config.platform));
-        challengeId = null;
-        await admit(next, door);
+        await admit(check.user, door);
         return { outcome: 'verified', triesLeft: triesLeft() };
-      } catch (error) {
-        if (isUnanswered(error)) return { outcome: 'unreached', triesLeft: triesLeft() };
-        const outcome = VERIFY_OUTCOME_BY_CODE[codeOf(error)] ?? 'failed';
-        if (outcome === 'mismatch') wrongTries += 1;
-        return { outcome, triesLeft: triesLeft() };
+      } catch {
+        return { outcome: 'failed', triesLeft: triesLeft() };
       }
     },
+    joinWithInvite: inviteJoin.joinWithInvite,
+    retryJoin: inviteJoin.retryJoin,
     retryBoot: checkSession,
     async rereadUser() {
       const projection = await config.auth.session().catch(() => null);

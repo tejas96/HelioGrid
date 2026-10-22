@@ -1,0 +1,12 @@
+# Invite landing: a link with no invite behind it opens the landing's empty state (`SCR-M01-08`
+# m-empty), and its one act leads to the door. CI runs no worker, so no flow can mint a live link.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://invite/${UNKNOWN_INVITE_TOKEN}
+- extendedWaitUntil:
+    visible: ${INVITE_GONE}
+    timeout: 30000
+- tapOn: ${INVITE_SIGN_IN}
+- extendedWaitUntil:
+    visible: ${SIGN_IN_TITLE}
+    timeout: 30000

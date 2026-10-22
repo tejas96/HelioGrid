@@ -1,0 +1,220 @@
+/* The invite landing (`SCR-M01-08` m-normal … m-reinvite-requested, d-normal) in the onboarding
+   frame. Every value a token var(). */
+
+/* 375: one stack at `sp-5` from the inviter row to the resend (m-normal). */
+.hg-invite-landing,
+.hg-invite-landing-task,
+.hg-invite-landing-head,
+.hg-invite-landing-who,
+.hg-invite-landing-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.hg-invite-landing {
+  flex: 1;
+}
+
+/* The frame leaves `sp-4` under its identity; the board's stack keeps `sp-5` down to the code. */
+.hg-door[data-panes="onboarding"] .hg-door-identity:has(.hg-invite-landing-head) {
+  padding-bottom: var(--sp-5);
+}
+
+.hg-invite-landing-inviter {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-invite-landing-inviter-name {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-invite-landing-facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-invite-landing-code {
+  padding-inline: var(--sp-0-5);
+}
+
+.hg-invite-landing-resend {
+  display: flex;
+  justify-content: center;
+  padding-top: var(--sp-2);
+}
+
+/* The live resend sits in the stack's own gap (m-wrong-code); only the waiting one is set apart. */
+.hg-invite-landing-resend[data-live] {
+  padding-top: 0;
+}
+
+/* A state with no invite to name draws no identity, so the frame's identity padding is not kept
+   above it: its content starts `sp-6` under the header row (m-loading, m-empty). */
+.hg-door[data-panes="onboarding"]:has(.hg-invite-landing)
+.hg-door-identity:not(:has(.hg-invite-landing-head)) {
+  padding-bottom: 0;
+}
+
+/* The acts follow the content and hold at the window's foot only when the content overflows —
+   never a gap between the two (brief ruling 14). They take no stack gap: their `sp-4` top padding
+   is the whole space above Join, and holds the page's ground while they stick (m-normal). */
+.hg-invite-landing-actions {
+  position: sticky;
+  bottom: 0;
+  margin-top: calc(-1 * var(--sp-5));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding-top: var(--sp-4);
+  background: var(--hg-ground);
+}
+
+/* A state that names no invite is centred in the body (m-empty, m-reinvite-requested). */
+.hg-invite-landing-place {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hg-invite-landing-place-act {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+/* m-loading: the inviter row, the heading's two lines and the card, at their real heights. */
+.hg-invite-landing-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.hg-invite-landing-skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-invite-landing-skeleton-lines {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* The Card's own sweep, one step darker so it reads on the page (the board's `shimmer`). */
+.hg-invite-landing-bar {
+  display: block;
+  height: var(--sp-3);
+  border-radius: var(--rf-md);
+  background: linear-gradient(
+    90deg,
+    var(--canvas-sunken) 25%,
+    var(--fill) 50%,
+    var(--canvas-sunken) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-invite-landing-bar[data-shape="disc"] {
+  flex-shrink: 0;
+  width: var(--sp-10);
+  height: var(--sp-10);
+  border-radius: var(--r-pill);
+}
+
+.hg-invite-landing-bar[data-shape="name"] {
+  width: 120px;
+}
+
+.hg-invite-landing-bar[data-shape="label"] {
+  width: 168px;
+}
+
+.hg-invite-landing-bar[data-shape="title"] {
+  width: 88%;
+  height: var(--sp-6);
+}
+
+.hg-invite-landing-bar[data-shape="title-end"] {
+  width: 56%;
+  height: var(--sp-6);
+}
+
+/* The invite card's height, so the skeleton holds the place the card will take. */
+.hg-invite-landing-skeleton-card {
+  min-height: 163px;
+}
+
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
+@media (min-width: 968px) {
+  /* The context pane: the inviter and the heading `sp-6` apart, the facts `sp-10` under them (d-normal). */
+  .hg-invite-landing-head {
+    gap: var(--sp-10);
+  }
+
+  .hg-invite-landing-who {
+    gap: var(--sp-6);
+  }
+
+  .hg-invite-landing-inviter {
+    gap: var(--sp-4);
+  }
+
+  /* The task is centred in the task pane both ways, from the window's top to its foot, under the
+     language control (ruling 13). */
+  .hg-door[data-panes="onboarding"]:has(.hg-invite-landing) .hg-door-header {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hg-door[data-panes="onboarding"] .hg-door-task:has(.hg-invite-landing) {
+    grid-row: 1 / -1;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-16);
+  }
+
+  /* The column is as wide as the code boxes. */
+  .hg-invite-landing {
+    flex: 0 0 auto;
+    width: max-content;
+    max-width: 100%;
+  }
+
+  .hg-invite-landing-code {
+    padding-inline: 0;
+  }
+
+  /* The code's message wraps inside the boxes' width: a wrong code never widens the column and
+     moves the boxes ("nothing else changes"). */
+  .hg-invite-landing-code .hg-otp-message {
+    width: 0;
+    min-width: 100%;
+  }
+
+  .hg-invite-landing-actions {
+    position: static;
+    margin-top: 0;
+    padding-top: 0;
+    background: none;
+  }
+
+  .hg-invite-landing-resend {
+    padding-top: 0;
+  }
+
+  .hg-invite-landing-place {
+    width: var(--door-measure);
+  }
+}

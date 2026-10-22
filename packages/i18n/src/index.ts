@@ -61,6 +61,8 @@ export type {
 } from './copy/invite';
 export { inviteFieldWords, inviteWords, setupInviteWords } from './copy/invite';
 export { inviteDeclinedNotice, reinviteRequestedNotice } from './copy/invite-answer';
+export type { InviteLandingFacts, InviteLandingWords } from './copy/invite-landing';
+export { INVITE_LANDING, inviteLandingWords } from './copy/invite-landing';
 export type { JoinRequestAsker } from './copy/join-request';
 export { joinRequestNotice } from './copy/join-request';
 export { centreActToast, centreFilterWords, centreHeadWords } from './copy/notification-head';

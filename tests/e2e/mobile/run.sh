@@ -19,6 +19,7 @@ flow() { maestro --device "$device" test "${words[@]}" "$@"; }
 
 read -r national e164 < <(node ../support/mobile-cli.ts phone)
 flow boot.yaml
+flow invite-landing.yaml
 since="$(node -e 'console.log(Date.now())')"
 flow -e "PHONE=$national" login.yaml
 code="$(node ../support/mobile-cli.ts code "$e164" "$since")"

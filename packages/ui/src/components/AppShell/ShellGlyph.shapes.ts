@@ -1,26 +1,4 @@
-/** One mark of a glyph, on a 24-unit square: a path, a circle or a rounded rectangle. */
-export type GlyphMark =
-  | { readonly kind: 'path'; readonly d: string }
-  | { readonly kind: 'circle'; readonly cx: number; readonly cy: number; readonly r: number }
-  | {
-      readonly kind: 'rect';
-      readonly x: number;
-      readonly y: number;
-      readonly width: number;
-      readonly height: number;
-      readonly rx: number;
-    };
-
-const path = (d: string): GlyphMark => ({ kind: 'path', d });
-const circle = (cx: number, cy: number, r: number): GlyphMark => ({ kind: 'circle', cx, cy, r });
-const rect = (x: number, y: number, width: number, height: number, rx: number): GlyphMark => ({
-  kind: 'rect',
-  x,
-  y,
-  width,
-  height,
-  rx,
-});
+import { circle, type GlyphMark, path, rect } from './ShellGlyph.marks';
 
 /**
  * Every icon `packages/ui` draws, once, for both halves (`F7-19`): the shell's own (`SCR-SHELL-01`)
@@ -156,6 +134,8 @@ export const SHELL_GLYPHS = {
     path('M10 13a3.5 3.5 0 0 0 5 0l3-3a3.5 3.5 0 0 0-5-5l-1 1'),
     path('M14 11a3.5 3.5 0 0 0-5 0l-3 3a3.5 3.5 0 0 0 5 5l1-1'),
   ],
+  /** A broken link: an invite with nothing behind it (`SCR-M01-08` m-empty). */
+  'link-off': [path('M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 4 8M8 12h4'), path('m2 2 20 20')],
   clipboard: [rect(6, 4, 12, 17, 2), path('M9 3h6v3H9zM9 12h6M9 16h4')],
   grid: [
     rect(4, 4, 7, 7, 1.5),

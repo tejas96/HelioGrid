@@ -2,6 +2,8 @@ import type { CreateTenant, OtpChannel, UiLanguage } from '@heliogrid/contracts'
 import type {
   GoogleResult,
   GoogleToken,
+  InviteJoinOutcome,
+  InviteJoinResult,
   OnboardingStep,
   OtpRequestOutcome,
   OtpVerifyResult,
@@ -35,6 +37,15 @@ export interface SessionStore {
    * number. A session is admitted as a verify's is, the shared-device switch included (`F4-37`).
    */
   signInWithGoogle(token: GoogleToken, code: string | null): Promise<GoogleResult>;
+  /**
+   * The invite's one act (`M01-13`): checks the code of the challenge `requestOtp` opened, then
+   * joins the company the link's token names, and only then admits the session — a verified number
+   * admitted before the join would land on company signup. A refused code answers on the `code`
+   * step, as `verifyOtp` does; a join that fails keeps the verified account for `retryJoin`.
+   */
+  joinWithInvite(token: string, code: string): Promise<InviteJoinResult>;
+  /** Sends the join alone after one failed on a right code; `failed` when no verified account waits. */
+  retryJoin(token: string): Promise<InviteJoinOutcome>;
   /**
    * Asks the boot check again after it got no answer (`unreachable`); the cookie was never touched.
    * Resolves `false` when it still got none — `unreachable` stays, and the retry screen says so.

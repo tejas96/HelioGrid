@@ -48,7 +48,8 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 bundle exec pod install
 - Focus and reconnect are wired once in `src/react-query-host.tsx`; there is no offline
   persistence and no mutation queue.
 - **Navigation is React Navigation 7 static config.** Add a screen with ONE entry in
-  `src/navigation/routes/app.ts` (signed in) or `auth.ts` (signed out); its param type (inferred),
+  `src/navigation/routes/app.ts` (signed in), `auth.ts` (signed out) or `open.ts` (a link either
+  phase opens, past the boot); its param type (inferred),
   deep link and gate follow. Screens get `route` only and navigate with `useNavigation()`.
   Navigation chrome lives here, never in `@heliogrid/ui` — the shell takes items as props.
 - Protocol constants (`OTP_LENGTH`, `OTP_EXPIRY_SECONDS`) come from `@heliogrid/domain`; the dial
