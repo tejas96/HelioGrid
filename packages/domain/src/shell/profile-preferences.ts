@@ -2,6 +2,8 @@ import type { SessionUser } from '../auth/session';
 import type { RolePreset } from '../authz/roles';
 import { UI_LANGUAGES, type UiLanguage } from '../format/languages';
 import type { MeasurementSystem } from '../format/pack';
+import { pushGroupsShownTo } from '../notifications/mutes';
+import type { NotificationTypeGroup } from '../notifications/types';
 
 /**
  * Where a preference's value comes from, as its line under the control says (`F7-11`):
@@ -44,4 +46,36 @@ export function profilePreferencesView(facts: ProfilePreferencesFacts): ProfileP
       source: user.unitPreference === marketUnits ? 'inherited' : 'own',
     },
   };
+}
+
+/**
+ * One push group as the api answers it (`F6-15`). The group is open: an app older than the api may
+ * meet a group it does not know, and draws no switch for it.
+ */
+export interface PushPreference {
+  readonly group: string;
+  readonly pushMuted: boolean;
+  readonly mutable: boolean;
+}
+
+/** One switch on the page: on while push is on (brief decision 3); locked where it may not move. */
+export interface PushSwitch {
+  readonly group: NotificationTypeGroup;
+  readonly on: boolean;
+  readonly locked: boolean;
+}
+
+/**
+ * The push section's switches, in the registry's order, one per group this person is shown
+ * (`pushGroupsShownTo`). A locked group is always sent, so its switch reads on.
+ */
+export function pushSwitches(
+  preferences: readonly PushPreference[],
+  presets: readonly RolePreset[],
+): readonly PushSwitch[] {
+  return pushGroupsShownTo(presets).flatMap((group) => {
+    const stored = preferences.find((row) => row.group === group);
+    if (stored === undefined) return [];
+    return [{ group, on: !stored.mutable || !stored.pushMuted, locked: !stored.mutable }];
+  });
 }

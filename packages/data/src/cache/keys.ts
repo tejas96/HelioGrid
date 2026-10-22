@@ -44,4 +44,9 @@ export const queryKeys = {
       ['notifications', tenantId, 'inbox', readState, ...typeGroups] as const,
     unreadCount: (tenantId: string) => ['notifications', tenantId, 'unread-count'] as const,
   },
+  /**
+   * The reader's push switches; a write's answer replaces its row. Outside the notifications
+   * prefix, so marking a record read does not read the switches again.
+   */
+  pushPreferences: (tenantId: string) => ['push-preferences', tenantId] as const,
 } as const;

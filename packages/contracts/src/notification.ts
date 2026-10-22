@@ -220,7 +220,8 @@ export const notificationContract = c.router({
     responses: {
       200: notificationPreferenceSchema,
       401: unauthenticatedEnvelope,
-      // The shared 403: `F6-15` — the billing group is not the Owner's to mute.
+      // The shared 403 (`F6-15`): a group the reader is not shown — billing, to anyone but the
+      // EPC Owner — or the Owner's own billing mute.
     },
   },
   markAllRead: {

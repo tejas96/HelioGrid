@@ -398,6 +398,11 @@ msgid "About one account per number"
 msgstr "एक नंबर, एक खाते याबद्दल"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:38
+msgid "About push"
+msgstr "पुशबद्दल"
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:36
 msgid "About roles"
 msgstr "भूमिकांबद्दल"
@@ -521,6 +526,11 @@ msgstr "सर्व"
 #: src/copy/company-signup.ts:22
 msgid "Already on HelioGrid?"
 msgstr "आधीच HelioGrid वर आहात?"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:43
+msgid "Always sent, and it cannot be muted: billing events are audit-relevant for the owner account."
+msgstr "नेहमी पाठवले जाते, आणि ते बंद करता येत नाही: बिलिंगच्या घटना मालकाच्या खात्याच्या ऑडिटसाठी महत्त्वाच्या आहेत."
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:59
@@ -976,7 +986,7 @@ msgid "Decline this invite?"
 msgstr "हे आमंत्रण नाकारायचे?"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:31
+#: src/copy/profile-preferences.ts:34
 msgid "Default for {market}"
 msgstr "{market} साठी डीफॉल्ट"
 
@@ -1091,7 +1101,7 @@ msgid "Factories, warehouses and offices — bigger rooftops, sold to a business
 msgstr "कारखाने, गोदामे आणि कार्यालये — मोठी छते, व्यवसायाला विकलेली."
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:29
+#: src/copy/profile-preferences.ts:32
 msgid "Feet"
 msgstr "फूट"
 
@@ -1386,13 +1396,13 @@ msgid "Keep the invite"
 msgstr "आमंत्रण ठेवा"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:26
+#: src/copy/profile-preferences.ts:29
 #: src/copy/setup-language.ts:21
 msgid "Language"
 msgstr "भाषा"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:23
+#: src/copy/profile-preferences.ts:26
 msgid "Language and units"
 msgstr "भाषा आणि एकके"
 
@@ -1425,6 +1435,11 @@ msgstr "तुमची कंपनी प्रोफाइल लोड ह�
 #: src/copy/first-run-profile.ts:29
 msgid "Loading your name"
 msgstr "तुमचे नाव लोड होत आहे"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:46
+msgid "Loading your preferences"
+msgstr "तुमच्या पसंती लोड होत आहेत"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:13
@@ -1472,12 +1487,12 @@ msgid "Measured"
 msgstr "मोजलेले"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:27
+#: src/copy/profile-preferences.ts:30
 msgid "Measurements"
 msgstr "मापे"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:28
+#: src/copy/profile-preferences.ts:31
 msgid "Metres"
 msgstr "मीटर"
 
@@ -1625,7 +1640,7 @@ msgid "Not saved · our end · nothing typed is lost"
 msgstr "जतन झाले नाही · अडचण आमच्या बाजूने · लिहिलेले काहीही गमावलेले नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:33
+#: src/copy/profile-preferences.ts:36
 msgid "Not saved. Try again."
 msgstr "सेव्ह झाले नाही. पुन्हा प्रयत्न करा."
 
@@ -1698,6 +1713,11 @@ msgstr "काहीही गेले नाही — पुन्हा प�
 #: src/copy/shell.ts:56
 msgid "Nothing you captured on this device is lost. Ask your admin to restore your access, or sign in with another account."
 msgstr "या डिव्हाइसवर तुम्ही नोंदवलेले काहीही हरवलेले नाही. तुमचा प्रवेश परत मिळवण्यासाठी तुमच्या अ‍ॅडमिनला सांगा, किंवा दुसऱ्या खात्याने साइन इन करा."
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:48
+msgid "Nothing you saved has changed."
+msgstr "तुम्ही सेव्ह केलेले काहीही बदललेले नाही."
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:26
@@ -1924,6 +1944,11 @@ msgstr "तात्पुरते"
 #: src/copy/company-signup.ts:45
 msgid "Pune"
 msgstr "पुणे"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:37
+msgid "Push notifications"
+msgstr "पुश सूचना"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:42
@@ -2739,6 +2764,11 @@ msgid "Try the photo again"
 msgstr "फोटो पुन्हा पाठवा"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:39
+msgid "Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way."
+msgstr "एखाद्या गटाचा पुश थांबवण्यासाठी तो बंद करा. प्रत्येक सूचना तरीही HelioGrid मध्ये येते — सूचना मध्ये तिची नोंद कायम राहते."
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:123
 msgid "Two presets, one home"
 msgstr "दोन प्रीसेट, एक होम"
@@ -3011,6 +3041,11 @@ msgid "Who you sell to"
 msgstr "तुम्ही कोणाला विकता"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:42
+msgid "Why Billing stays on"
+msgstr "बिलिंग चालू का राहते"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:20
 msgid "Why we ask"
 msgstr "आम्ही का विचारतो"
@@ -3119,7 +3154,7 @@ msgstr "तुमचा प्रवेश काढून टाकला आ�
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:37
-#: src/copy/profile-preferences.ts:22
+#: src/copy/profile-preferences.ts:25
 msgid "Your account"
 msgstr "तुमचे खाते"
 
@@ -3139,7 +3174,7 @@ msgid "Your answers set the starting point for every proposal HelioGrid builds."
 msgstr "तुमची उत्तरे HelioGrid तयार करत असलेल्या प्रत्येक प्रस्तावाचा सुरुवातीचा बिंदू ठरवतात."
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:32
+#: src/copy/profile-preferences.ts:35
 msgid "Your choice"
 msgstr "तुमची निवड"
 
@@ -3186,7 +3221,7 @@ msgid "Your current plan doesn't include this."
 msgstr "तुमच्या सध्याच्या प्लॅनमध्ये हे समाविष्ट नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:30
+#: src/copy/profile-preferences.ts:33
 msgid "Your device's language"
 msgstr "तुमच्या डिव्हाइसची भाषा"
 
@@ -3287,6 +3322,11 @@ msgid "Your number"
 msgstr "तुमचा नंबर"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:47
+msgid "Your preferences didn't load"
+msgstr "तुमच्या पसंती लोड झाल्या नाहीत"
+
+#. js-lingui-explicit-id
 #: src/copy/first-run-profile.ts:50
 msgid "Your profile did not save"
 msgstr "तुमचे प्रोफाइल जतन झाले नाही"
@@ -3307,12 +3347,12 @@ msgid "Your request may already be with the owner."
 msgstr "तुमची विनंती कदाचित मालकापर्यंत पोहोचली असेल."
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:24
+#: src/copy/profile-preferences.ts:27
 msgid "Your role"
 msgstr "तुमची भूमिका"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:25
+#: src/copy/profile-preferences.ts:28
 msgid "Your roles"
 msgstr "तुमच्या भूमिका"
 

@@ -70,12 +70,12 @@ export class NotificationController {
           params.group,
           body.pushMuted,
         );
-        // `F6-15` — the billing group is not the Owner's to mute, and saying so is not a leak:
-        // the group is one of five the reader was just shown.
+        // `F6-15` — the billing group is the Owner's alone, and not the Owner's to mute. Saying so
+        // is not a leak: the five groups are the product's own, the same for every company.
         if (written === null) {
           throw new ContractException(
             'FORBIDDEN',
-            'Billing notifications stay on for the account owner',
+            'This group cannot be changed from this account',
             httpStatusFor('FORBIDDEN'),
           );
         }

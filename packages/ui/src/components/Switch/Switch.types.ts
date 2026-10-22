@@ -9,6 +9,12 @@ export interface SwitchProps {
    */
   onChange?: (checked: boolean) => void;
   label?: string;
+  /**
+   * The switch's name when its words sit outside it — a row whose name carries an `Explainer`
+   * beside it, which a label inside the switch could not hold. Given with `label`, it is the
+   * spoken name on both platforms. Web: `aria-label` on the input.
+   */
+  ariaLabel?: string;
   disabled?: boolean;
   /**
    * **The caller's validation failure** — a required consent or confirmation flag that is why a send

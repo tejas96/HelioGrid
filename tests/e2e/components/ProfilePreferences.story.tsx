@@ -1,8 +1,12 @@
 import {
   IN_FORMATS,
   type MeasurementSystem,
+  mayMute,
+  type NotificationTypeGroup,
   type ProfilePreference,
   profilePreferencesView,
+  pushGroupsShownTo,
+  pushSwitches,
   type RolePreset,
   type UiLanguage,
 } from '@heliogrid/domain';
@@ -19,7 +23,8 @@ const READERS = {
 /**
  * Profile & preferences as a screen holds it, inside the page's padding: the view and the words from the person, the reader
  * and the India pack; a tap moves the person's choice here, in the browser, and the frame reports
- * it as `data-language` and `data-units`.
+ * it as `data-language`, `data-units` and `data-muted`, and *Try again* as `data-retried`. The push
+ * rows are what the api answers these presets: the groups shown, Billing locked for the Owner.
  */
 export function ProfilePreferencesAsHeld({
   reader,
@@ -27,6 +32,9 @@ export function ProfilePreferencesAsHeld({
   name = 'Anjali Kulkarni',
   refused = [],
   onlyLanguage = false,
+  push = 'ready',
+  muted: mutedAtFirst = [],
+  refusedGroups = [],
 }: {
   reader: UiLanguage;
   roles?: readonly RolePreset[];
@@ -34,9 +42,19 @@ export function ProfilePreferencesAsHeld({
   refused?: readonly ProfilePreference[];
   /** `m-empty`: the set holding only the language in use. */
   onlyLanguage?: boolean;
+  push?: 'loading' | 'error' | 'ready';
+  muted?: readonly NotificationTypeGroup[];
+  refusedGroups?: readonly NotificationTypeGroup[];
 }) {
   const [language, setLanguage] = useState<UiLanguage>(reader);
   const [units, setUnits] = useState<MeasurementSystem>('metric');
+  const [muted, setMuted] = useState<readonly NotificationTypeGroup[]>(mutedAtFirst);
+  const [retried, setRetried] = useState(false);
+  const answered = pushGroupsShownTo(roles).map((group) => ({
+    group,
+    pushMuted: muted.includes(group),
+    mutable: mayMute(group, roles),
+  }));
   const user = {
     id: '8f0c2d1e-0000-4000-8000-0000000000a1',
     name,
@@ -59,6 +77,8 @@ export function ProfilePreferencesAsHeld({
       lang={reader}
       data-language={language}
       data-units={units}
+      data-muted={muted.join(',')}
+      data-retried={retried}
       style={{ padding: 'var(--sp-4) var(--screen-pad-mobile-fn)' }}
     >
       <ProfilePreferences
@@ -67,6 +87,13 @@ export function ProfilePreferencesAsHeld({
         name={name}
         onLanguage={setLanguage}
         onUnits={setUnits}
+        push={{ surface: push, switches: pushSwitches(answered, roles), refused: refusedGroups }}
+        onPush={(group) =>
+          setMuted((held) =>
+            held.includes(group) ? held.filter((one) => one !== group) : [...held, group],
+          )
+        }
+        onRetry={() => setRetried(true)}
       />
     </div>
   );

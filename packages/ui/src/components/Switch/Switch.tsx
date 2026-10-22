@@ -20,6 +20,7 @@ export function Switch({
   checked = false,
   onChange,
   label,
+  ariaLabel,
   error,
   disabled = false,
   id,
@@ -51,6 +52,7 @@ export function Switch({
         role="switch"
         checked={checked}
         aria-checked={checked}
+        aria-label={ariaLabel}
         onChange={(event) => onChange?.(event.target.checked)}
         disabled={disabled}
         aria-invalid={hasError ? true : undefined}

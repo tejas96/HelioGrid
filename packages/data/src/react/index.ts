@@ -24,6 +24,8 @@ export type { NotificationCentre } from './use-notification-centre';
 export { useNotificationCentre, useUnreadCount } from './use-notification-centre';
 export { usePagedList } from './use-paged-list';
 export { usePaginatedList } from './use-paginated-list';
+export type { PushPreferences } from './use-push-preferences';
+export { usePushPreferences } from './use-push-preferences';
 export { useSession } from './use-session';
 export { useSessionPhase } from './use-session-phase';
 export type { SetupInvite } from './use-setup-invite';

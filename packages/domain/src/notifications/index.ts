@@ -21,7 +21,7 @@ export {
   isAnnouncement,
 } from './centre-view';
 export { pushIsDue } from './delivery';
-export { channelsOwed, mayMute, pushMuted } from './mutes';
+export { channelsOwed, mayMute, pushGroupsShownTo, pushMuted } from './mutes';
 export { marketQuietHours, pushDueAt, type QuietWindow } from './quiet-hours';
 export type { NotificationRegistration } from './registry';
 export { NOTIFICATION_REGISTRY, typeGroupOf } from './registry';

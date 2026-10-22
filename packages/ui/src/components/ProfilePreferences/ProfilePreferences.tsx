@@ -1,8 +1,13 @@
+import { useId, useRef } from 'react';
 import { useOwnWidth } from '../../primitives/use-own-width';
 import { Avatar } from '../Avatar/Avatar';
+import { Banner } from '../Banner/Banner';
+import { BannerAction } from '../Banner/BannerAction';
 import { Badge } from '../Chip/Chip';
 import { ChipGroup } from '../ChipGroup/ChipGroup';
+import { Explainer } from '../Explainer/Explainer';
 import { ListRow } from '../ListRow/ListRow';
+import { LoadingBars } from '../LoadingBars/LoadingBars';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup';
 import { SegmentedControl } from '../SegmentedControl/SegmentedControl';
 import {
@@ -10,10 +15,13 @@ import {
   SettingsSection,
   SettingsSectionRow,
 } from '../SettingsSection/SettingsSection';
+import { Switch } from '../Switch/Switch';
 import { ValueSource } from '../ValueSource/ValueSource';
 import {
   languageOf,
+  PROFILE_PREFERENCES_LOADING,
   PROFILE_PREFERENCES_WIDE_FROM,
+  pushSwitchWords,
   roleBadges,
   unitOptions,
   unitsOf,
@@ -28,12 +36,42 @@ import type { ProfilePreferencesProps } from './ProfilePreferences.types';
 export function ProfilePreferences(props: ProfilePreferencesProps) {
   const [room, width] = useOwnWidth<HTMLDivElement>();
   const wide = width !== null && width >= PROFILE_PREFERENCES_WIDE_FROM;
+  const title = useRef<HTMLHeadingElement>(null);
+  /* *Try again* leaves with its banner, so focus goes to the title, which stays through the
+     loading bars and the page that follow. */
+  const onRetry = () => {
+    title.current?.focus({ preventScroll: true });
+    props.onRetry();
+  };
   return (
     <div ref={room} className="hg-profile-preferences" data-wide={wide ? 'true' : undefined}>
-      <h1 className="hg-profile-preferences-title">{props.words.title}</h1>
-      {wide ? <WidePage {...props} /> : <PhonePage {...props} />}
+      <h1 ref={title} tabIndex={-1} className="hg-profile-preferences-title">
+        {props.words.title}
+      </h1>
+      <PageBody {...props} onRetry={onRetry} wide={wide} />
     </div>
   );
+}
+
+/** Until the push read answers, the page is its loading bars (`m-loading`) or its banner (`m-error`). */
+function PageBody({ wide, ...props }: ProfilePreferencesProps & { wide: boolean }) {
+  const { words, push, onRetry } = props;
+  if (push.surface === 'loading') {
+    return <LoadingBars label={words.loading} bars={PROFILE_PREFERENCES_LOADING} />;
+  }
+  if (push.surface === 'error') {
+    return (
+      <Banner
+        kind="state"
+        tone="danger"
+        title={words.loadFailed.title}
+        action={<BannerAction onClick={onRetry}>{words.loadFailed.retry}</BannerAction>}
+      >
+        {words.loadFailed.body}
+      </Banner>
+    );
+  }
+  return wide ? <WidePage {...props} /> : <PhonePage {...props} />;
 }
 
 function Roles({ words }: Pick<ProfilePreferencesProps, 'words'>) {
@@ -48,7 +86,32 @@ function Roles({ words }: Pick<ProfilePreferencesProps, 'words'>) {
   );
 }
 
-function PhonePage({ words, view, name, onLanguage, onUnits }: ProfilePreferencesProps) {
+function AboutPush({ words }: Pick<ProfilePreferencesProps, 'words'>) {
+  return (
+    <Explainer label={words.push.about.label} pages={words.push.about.line} density="functional" />
+  );
+}
+
+function WhyBilling({ words }: Pick<ProfilePreferencesProps, 'words'>) {
+  return (
+    <Explainer
+      label={words.push.whyBilling.label}
+      pages={words.push.whyBilling.line}
+      density="functional"
+    />
+  );
+}
+
+function PhonePage({
+  words,
+  view,
+  name,
+  onLanguage,
+  onUnits,
+  push,
+  onPush,
+}: ProfilePreferencesProps) {
+  const ids = useId();
   return (
     <>
       <section className="hg-profile-preferences-section">
@@ -103,11 +166,52 @@ function PhonePage({ words, view, name, onLanguage, onUnits }: ProfilePreference
           <ValueSource level={view.units.source} layerName={words.units.source} />
         </div>
       </section>
+      <section className="hg-profile-preferences-section">
+        <div className="hg-profile-preferences-heading">
+          <h2 className="hg-profile-preferences-overline">{words.push.title}</h2>
+          <AboutPush words={words} />
+        </div>
+        <div className="hg-profile-preferences-switches">
+          {push.switches.map((one) => {
+            const { label, error } = pushSwitchWords(words, push, one);
+            if (!one.locked) {
+              return (
+                <Switch
+                  key={one.group}
+                  label={label}
+                  checked={one.on}
+                  onChange={() => onPush(one.group)}
+                  error={error}
+                />
+              );
+            }
+            const id = `${ids}-push-${one.group}`;
+            return (
+              <div key={one.group} className="hg-profile-preferences-locked">
+                <Switch id={id} checked={one.on} disabled />
+                <span className="hg-profile-preferences-locked-name">
+                  <label htmlFor={id}>{label}</label>
+                  <WhyBilling words={words} />
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </section>
     </>
   );
 }
 
-function WidePage({ words, view, name, onLanguage, onUnits }: ProfilePreferencesProps) {
+function WidePage({
+  words,
+  view,
+  name,
+  onLanguage,
+  onUnits,
+  push,
+  onPush,
+}: ProfilePreferencesProps) {
+  const ids = useId();
   return (
     <>
       <SettingsSection title={words.account}>
@@ -155,6 +259,29 @@ function WidePage({ words, view, name, onLanguage, onUnits }: ProfilePreferences
             />
           }
         />
+      </SettingsSection>
+      <SettingsSection title={words.push.title} titleAside={<AboutPush words={words} />}>
+        {push.switches.map((one) => {
+          const { label, error } = pushSwitchWords(words, push, one);
+          const id = `${ids}-push-${one.group}`;
+          return (
+            <SettingsSectionRow
+              key={one.group}
+              label={label}
+              labelAside={one.locked ? <WhyBilling words={words} /> : undefined}
+              controlId={id}
+              control={
+                <Switch
+                  id={id}
+                  checked={one.on}
+                  disabled={one.locked}
+                  onChange={() => onPush(one.group)}
+                  error={error}
+                />
+              }
+            />
+          );
+        })}
       </SettingsSection>
     </>
   );

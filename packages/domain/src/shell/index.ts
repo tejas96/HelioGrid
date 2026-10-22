@@ -32,8 +32,10 @@ export type {
   PreferenceSource,
   ProfilePreferencesFacts,
   ProfilePreferencesView,
+  PushPreference,
+  PushSwitch,
 } from './profile-preferences';
-export { profilePreferencesView } from './profile-preferences';
+export { profilePreferencesView, pushSwitches } from './profile-preferences';
 export type {
   SettingsGroup,
   SettingsGroupRows,
