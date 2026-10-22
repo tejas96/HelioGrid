@@ -3,7 +3,9 @@ import {
   COUNTDOWN_TICK_MS,
   INITIAL_INVITE_LANDING,
   type InviteAskOutcome,
+  type InviteDeclineOutcome,
   type InviteJoinResult,
+  type InviteLandingEvent,
   type InviteLandingFrame,
   type InviteLandingPress,
   type InviteLandingState,
@@ -48,12 +50,33 @@ function askOutcomeOf(error: unknown): InviteAskOutcome {
   return answerOf(error)?.code === 'NOT_FOUND' ? 'gone' : 'failed';
 }
 
+/** Why a decline did not close the link: no invite behind it, not live any more, no answer, or refused. */
+function declineOutcomeOf(error: unknown): InviteDeclineOutcome {
+  if (isUnanswered(error)) return 'unreached';
+  const code = answerOf(error)?.code;
+  if (code !== undefined && GONE_CODES.has(code)) return 'gone';
+  return code === 'CONFLICT' ? 'stale' : 'failed';
+}
+
+/** A press the landing's own reducer hears as the event of the same name. */
+type LandingPress = Extract<InviteLandingEvent['type'], InviteLandingPress>;
+
+const LANDING_PRESSES: ReadonlySet<InviteLandingPress> = new Set<LandingPress>([
+  'verify',
+  'resend',
+  'try-again',
+  'ask',
+  'decline',
+  'keep',
+  'confirm-decline',
+]);
+
 /**
  * `SCR-M01-08`'s flow for the link's `token`. The reducer decides; this hook only does what it asked
  * for — the read, the code sent on arrival through the session store (so the challenge is the
- * store's, as the door's is), the join, the retry and the ask — and the once-a-second clock while
- * the resend gap runs. The join admits the session last: the app's navigator then moves the person
- * on by `landingFor`, as after any sign-in.
+ * store's, as the door's is), the join, the retry, the ask and the decline — and the
+ * once-a-second clock while the resend gap runs. The join admits the session last: the app's
+ * navigator then moves the person on by `landingFor`, as after any sign-in.
  */
 export function useInviteLanding(token: string, onJoined?: () => void): InviteLanding {
   const { session, repositories } = useDataLayer();
@@ -89,6 +112,12 @@ export function useInviteLanding(token: string, onJoined?: () => void): InviteLa
           (error: unknown) => dispatch({ type: 'ask-ended', outcome: askOutcomeOf(error) }),
         );
         return;
+      case 'decline':
+        void invitation.decline(token).then(
+          () => dispatch({ type: 'decline-ended', outcome: 'declined' }),
+          (error: unknown) => dispatch({ type: 'decline-ended', outcome: declineOutcomeOf(error) }),
+        );
+        return;
     }
   }, [pending, invitation, session, token, answerJoin]);
 
@@ -121,10 +150,13 @@ export function useInviteLanding(token: string, onJoined?: () => void): InviteLa
       frame: inviteLandingFrame(state),
       typeCode: (next: string) => dispatch({ type: 'code-typed', code: next }),
       press: (control: InviteLandingPress) => {
-        if (control === 'verify' || control === 'resend') dispatch({ type: control });
-        else if (control === 'try-again' || control === 'ask') dispatch({ type: control });
+        if (isLandingPress(control)) dispatch({ type: control });
       },
     }),
     [state],
   );
+}
+
+function isLandingPress(control: InviteLandingPress): control is LandingPress {
+  return LANDING_PRESSES.has(control);
 }

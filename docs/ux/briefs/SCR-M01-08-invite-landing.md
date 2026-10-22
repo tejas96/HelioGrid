@@ -95,6 +95,20 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty
     danger banner on the expired frame, titled with the door's own words — *HelioGrid could not be
     reached, from your side or ours.* for no answer, *Something on our side failed* for a refusal.
     An invite withdrawn meanwhile draws `empty`. No board frame is drawn for it.
+19. **A decline that did not go through keeps the confirm open** (owner ruling 2026-10-22,
+    `T-M01-008` part c decision 8): a danger banner in the confirm — above its words at 375, under
+    them at 1536 — titled with the door's own words, as ruling 18 does for the ask; *Decline the
+    invite* sends it again. A link no longer live is read again; no board frame is drawn for it.
+20. **The decline confirm's two acts stack** (owner ruling 2026-10-22, `T-M01-008` part c decision
+    9): *Decline the invite* full width on top, *Keep the invite* under it, wherever half the row
+    is too narrow for one line — every phone and the 1536 dialog, in every language. Side by side, *Decline the invite* wraps to two
+    lines in half a 375 sheet and half the 1536 dialog: the design system's button keeps one line
+    with `nowrap`, which translated words may not take (`.claude/rules/ui-adherence.md`).
+
+## Redesign owed
+
+- `m-decline-confirm` and `d-decline-confirm` draw the two acts side by side: ruling 20 stacks
+  them, *Decline the invite* on top, at the board's next redraw.
 
 ## Data volume
 

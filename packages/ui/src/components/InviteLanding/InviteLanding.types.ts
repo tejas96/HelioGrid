@@ -1,4 +1,4 @@
-import type { InviteLandingFrame, InviteLandingPress } from '@heliogrid/domain';
+import type { InviteDeclineFrame, InviteLandingFrame, InviteLandingPress } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
 
@@ -15,6 +15,26 @@ export interface InviteLandingBannerWords {
   tone: 'danger' | 'warning';
   title: string;
   line: string | null;
+}
+
+/** The decline on the live invite (brief decision 6): its control, its confirm, and why the last one did not go through. */
+export interface InviteLandingDeclineWords {
+  /** *This invite isn't for me*. */
+  open: string;
+  title: string;
+  /** Both consequences and the way back: the sheet's body at 375, the dialog's description at 1536. */
+  line: string;
+  keep: string;
+  go: string;
+  /** The door's words for a decline with no answer or a refusal (brief ruling 19); `null` when it has not failed. */
+  refused: string | null;
+}
+
+/** The decline's control and its confirm, drawn together wherever the control sits. */
+export interface InviteDeclineProps {
+  words: InviteLandingDeclineWords;
+  decline: InviteDeclineFrame;
+  onPress: (control: InviteLandingPress) => void;
 }
 
 /**
@@ -48,10 +68,11 @@ export interface InviteLandingWords {
   wait: { label: string; spoken: string } | null;
   /** The line under the expired frame's act. */
   foot: string | null;
-  /** The centred state that names no invite: the link is gone, or the ask was sent. */
+  /** The centred state that names no live invite: the link is gone, the ask was sent, or it was declined. */
   place: InviteLandingPlaceWords | null;
   /** The read got no answer: nothing about the invite is known. */
   loadError: { title: string; line: string } | null;
+  decline: InviteLandingDeclineWords | null;
 }
 
 /**

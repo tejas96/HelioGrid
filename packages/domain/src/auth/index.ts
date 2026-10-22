@@ -26,6 +26,7 @@ export {
 export type {
   InviteAskOutcome,
   InviteCall,
+  InviteDeclineOutcome,
   InviteFacts,
   InviteJoinOutcome,
   InviteJoinResult,
@@ -35,6 +36,7 @@ export type {
 } from './invite-landing';
 export { INITIAL_INVITE_LANDING, inviteLandingReducer } from './invite-landing';
 export type {
+  InviteDeclineFrame,
   InviteLandingFrame,
   InviteLandingFrameKind,
   InviteLandingPress,

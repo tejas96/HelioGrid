@@ -11,9 +11,14 @@ import { EmptyState } from '../EmptyState/EmptyState';
 import { OtpInput } from '../OtpInput/OtpInput';
 import type { FocusHandle } from '../SearchField/SearchField.types';
 import { TintedBlock } from '../TintedBlock/TintedBlock';
+import { DeclineConfirm, DeclineControl } from './InviteDecline';
 import { InviteFactsBlock, InviterRow } from './InviteFacts';
 import { useFocusOnNewFrame } from './InviteLanding.logic';
-import type { InviteLandingProps, InviteLandingWords } from './InviteLanding.types';
+import type {
+  InviteDeclineProps,
+  InviteLandingProps,
+  InviteLandingWords,
+} from './InviteLanding.types';
 
 /** The new frame's act, which takes the focus when a press took the old one away. */
 type ActRef = { actRef?: RefObject<FocusHandle | null> };
@@ -40,6 +45,7 @@ export function InviteLanding(props: InviteLandingProps) {
       return shell(undefined, <LandingSkeleton spoken={words.loading} />);
     case 'empty':
     case 'reinvite-requested':
+    case 'declined':
       return shell(undefined, <LandingPlace {...props} actRef={actRef} />);
     case 'load-error':
       return shell(
@@ -54,12 +60,23 @@ export function InviteLanding(props: InviteLandingProps) {
         </div>,
       );
     case 'expired':
-    case 'landing':
+    case 'landing': {
+      const decline = declineOf(props);
       return shell(
         <LandingHead {...props} wide={wide} />,
-        <LandingTask {...props} wide={wide} actRef={actRef} />,
+        <>
+          <LandingTask {...props} wide={wide} actRef={actRef} decline={decline} />
+          {decline === null ? null : <DeclineConfirm {...decline} />}
+        </>,
       );
+    }
   }
+}
+
+/** The decline's part, on a live invite only. */
+function declineOf({ words, frame, onPress }: InviteLandingProps): InviteDeclineProps | null {
+  if (words.decline === null || frame.decline === null) return null;
+  return { words: words.decline, decline: frame.decline, onPress };
 }
 
 /** The context: who invited, the heading, and — at 375 — the banner above the invite card. */
@@ -88,8 +105,10 @@ function LandingHead({ words, frame, phone, wide }: InviteLandingProps & { wide:
 }
 
 /** The task: the code family's block, the code, its resend and the acts, in reading order for the width. */
-function LandingTask(props: InviteLandingProps & ActRef & { wide: boolean }) {
-  const { words, frame, code, onCode, onPress, wide } = props;
+function LandingTask(
+  props: InviteLandingProps & ActRef & { wide: boolean; decline: InviteDeclineProps | null },
+) {
+  const { words, frame, code, onCode, onPress, wide, decline } = props;
   const field = frame.codeField;
   return (
     <div className="hg-invite-landing-task">
@@ -121,8 +140,10 @@ function LandingTask(props: InviteLandingProps & ActRef & { wide: boolean }) {
             {words.foot}
           </Text>
         )}
+        {wide || decline === null ? null : <DeclineControl {...decline} />}
       </div>
       {wide ? <ResendSlot words={words} onPress={onPress} /> : null}
+      {wide && decline !== null ? <DeclineControl {...decline} /> : null}
     </div>
   );
 }

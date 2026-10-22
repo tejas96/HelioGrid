@@ -76,7 +76,20 @@
   background: var(--hg-ground);
 }
 
-/* A state that names no invite is centred in the body (m-empty, m-reinvite-requested). */
+/* The decline's control, centred (m-normal, d-normal); its sheet's body keeps the stack's gap
+   between a refusal and the words (brief ruling 19). */
+.hg-invite-landing-decline {
+  display: flex;
+  justify-content: center;
+}
+
+.hg-invite-landing-decline-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+/* A state that names no invite is centred in the body (m-empty, m-reinvite-requested, m-declined). */
 .hg-invite-landing-place {
   display: flex;
   flex: 1;

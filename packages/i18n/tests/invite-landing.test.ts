@@ -52,6 +52,9 @@ const joinFailed = inviteLandingReducer(joining, {
 });
 const expired = at(read('expired'));
 const asked = at(read('expired'), { type: 'ask' }, { type: 'ask-ended', outcome: 'asked' });
+const confirming = inviteLandingReducer(normal, { type: 'decline' });
+const sending = inviteLandingReducer(confirming, { type: 'confirm-decline' });
+const declined = inviteLandingReducer(sending, { type: 'decline-ended', outcome: 'declined' });
 
 describe('inviteLandingWords', () => {
   it('m-normal: who invited, the heading, the invite card, the code and Join', () => {
@@ -150,6 +153,41 @@ describe('inviteLandingWords', () => {
     });
   });
 
+  it('m-decline-confirm: the control, both consequences and the way back, the two acts', () => {
+    expect(wordsOf(normal).decline).toEqual({
+      open: "This invite isn't for me",
+      title: 'Decline this invite?',
+      line: 'Rajesh Kulkarni is told it was not for you, and the link stops working. If it was meant for you after all, Rajesh can invite you again.',
+      keep: 'Keep the invite',
+      go: 'Decline the invite',
+      refused: null,
+    });
+    expect(wordsOf(expired).decline).toBeNull();
+  });
+
+  it.each([
+    ['unreached', 'HelioGrid could not be reached, from your side or ours.'],
+    ['failed', 'Something on our side failed'],
+  ] as const)(
+    'a decline that did not go through (%s) says why in the door’s words',
+    (outcome, title) => {
+      const refused = inviteLandingReducer(sending, { type: 'decline-ended', outcome });
+      expect(wordsOf(refused).decline?.refused).toBe(title);
+    },
+  );
+
+  it('m-declined: the link closed, the inviter told by name, and sign in', () => {
+    const words = wordsOf(declined);
+    expect(words.place).toEqual({
+      title: 'This invite is closed',
+      line: 'We have told Rajesh Kulkarni it was not for you. If it was meant for you after all, Rajesh can invite you again.',
+      act: 'Sign in to HelioGrid',
+      note: 'For an account you already have with another company.',
+    });
+    expect(words.decline).toBeNull();
+    expect(words.primary).toBeNull();
+  });
+
   it('m-load-error names nobody and offers Try again', () => {
     const words = wordsOf(at({ type: 'read-ended', read: { kind: 'unread' } }));
     expect(words.loadError).toEqual({
@@ -162,7 +200,7 @@ describe('inviteLandingWords', () => {
 
   it.each(['hi', 'mr'] as const)('every landing word has %s', async (language) => {
     const local = (await createTranslator(language)).t;
-    for (const state of [normal, filled, wrong, joinFailed, expired, asked]) {
+    for (const state of [normal, filled, wrong, joinFailed, expired, asked, confirming, declined]) {
       const english = JSON.stringify(wordsOf(state));
       const translated = JSON.stringify(wordsOf(state, local));
       // Every value but the inviter's own name, never translated, and the banners' tones.
