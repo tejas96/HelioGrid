@@ -14,6 +14,12 @@ import {
   RESEND_SECONDS,
 } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
+import {
+  declinedWords,
+  type InviteDeclineWords,
+  inviteDeclineWords,
+  NOT_THROUGH,
+} from './invite-decline';
 import { presetName } from './shell';
 import { SIGN_IN } from './sign-in';
 import { signInWords } from './sign-in-frames';
@@ -86,6 +92,7 @@ export interface InviteLandingWords {
     readonly note: string;
   } | null;
   readonly loadError: { readonly title: string; readonly line: string } | null;
+  readonly decline: InviteDeclineWords | null;
 }
 
 /** The numbers that move: the resend gap and the tries left on this code. */
@@ -108,6 +115,7 @@ const NONE = {
   foot: null,
   place: null,
   loadError: null,
+  decline: null,
 } as const;
 
 export function inviteLandingWords(
@@ -131,6 +139,15 @@ export function inviteLandingWords(
       return { ...base, place: gonePlace(t) };
     case 'reinvite-requested':
       return { ...base, place: askedPlace(t) };
+    case 'declined':
+      return {
+        ...base,
+        place: {
+          ...declinedWords(translate, invite),
+          act: t(INVITE_LANDING.signIn),
+          note: t(INVITE_LANDING.otherAccountNote),
+        },
+      };
     case 'load-error':
       return {
         ...base,
@@ -143,7 +160,7 @@ export function inviteLandingWords(
         ...inviteHead(translate, t, invite),
         banner:
           frame.askRefused !== null
-            ? { tone: 'danger', title: t(ASK_REFUSED[frame.askRefused]), line: null }
+            ? { tone: 'danger', title: t(NOT_THROUGH[frame.askRefused]), line: null }
             : {
                 tone: 'warning',
                 title: t(INVITE_LANDING.expired),
@@ -157,6 +174,7 @@ export function inviteLandingWords(
         ...base,
         ...inviteHead(translate, t, invite),
         ...codeArea(translate, t, frame, facts),
+        decline: inviteDeclineWords(translate, frame, invite),
       };
   }
 }
@@ -222,12 +240,6 @@ function codeArea(
     wait: frame.joinFailed ? null : door.wait,
   };
 }
-
-/** Why the ask did not reach the inviter: no answer names both sides (`F8-36`), a refusal is ours. */
-const ASK_REFUSED: Record<NonNullable<InviteLandingFrame['askRefused']>, MessageRef> = {
-  unreached: SIGN_IN.notReached,
-  failed: SIGN_IN.ourSideFailed,
-};
 
 const LANDING_PRIMARY: Partial<Record<InvitePrimaryLabel, MessageRef>> = {
   join: INVITE_LANDING.join,

@@ -1,5 +1,6 @@
 import {
   INITIAL_INVITE_LANDING,
+  type InviteDeclineOutcome,
   type InviteLandingEvent,
   inviteLandingFrame,
   inviteLandingReducer,
@@ -7,7 +8,7 @@ import {
 } from '@heliogrid/domain';
 import { createTranslator, inviteLandingWords } from '@heliogrid/i18n';
 import { InviteLanding } from '@heliogrid/ui';
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 
 const READERS = {
   en: await createTranslator('en'),
@@ -18,18 +19,22 @@ const READERS = {
 /**
  * The landing as its screen holds it, at the frame `events` lead to, its words `inviteLandingWords`
  * in the reader's language. Each press goes through the reducer and writes its name to `pressed`,
- * where a spec reads it.
+ * where a spec reads it. Each *Decline the invite* takes the next of `declineAnswers`, as the api
+ * answers it.
  */
 export function InviteLandingAt({
   reader,
   events,
   later = [],
+  declineAnswers = ['declined'],
 }: {
   reader: UiLanguage;
   events: readonly InviteLandingEvent[];
   /** Answers that arrive after the mount, as the read's does on a page that opens loading. */
   later?: readonly InviteLandingEvent[];
+  declineAnswers?: readonly InviteDeclineOutcome[];
 }) {
+  const declines = useRef(0);
   const [state, dispatch] = useReducer(
     inviteLandingReducer,
     events.reduce(inviteLandingReducer, INITIAL_INVITE_LANDING),
@@ -54,8 +59,20 @@ export function InviteLandingAt({
         onCode={(code) => dispatch({ type: 'code-typed', code })}
         onPress={(control) => {
           setPressed(control);
-          if (control === 'verify' || control === 'resend' || control === 'try-again')
+          if (
+            control === 'verify' ||
+            control === 'resend' ||
+            control === 'try-again' ||
+            control === 'decline' ||
+            control === 'keep'
+          )
             dispatch({ type: control });
+          if (control === 'confirm-decline') {
+            const outcome = declineAnswers[declines.current] ?? 'declined';
+            declines.current += 1;
+            dispatch({ type: 'confirm-decline' });
+            dispatch({ type: 'decline-ended', outcome });
+          }
           /* The ask answers at once here, as the api's does on a run-out link. */
           if (control === 'ask') {
             dispatch({ type: 'ask' });

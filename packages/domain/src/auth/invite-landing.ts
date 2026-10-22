@@ -1,8 +1,9 @@
 /**
  * The invite landing's flow (`SCR-M01-08`, `M01-13`), decided once for both platforms (Law 11):
- * the read of the link, the code sent on arrival, the one act that joins, and the ask an expired
- * invite offers. Every code event is the door's own (`loginReducer`), so the gap, the caps, the
- * lock and the wrong tries are the front door's, never a second copy (brief decision 5).
+ * the read of the link, the code sent on arrival, the one act that joins, the decline a wrong
+ * person confirms, and the ask an expired invite offers. Every code event is the door's own
+ * (`loginReducer`), so the gap, the caps, the lock and the wrong tries are the front door's, never
+ * a second copy (brief decision 5).
  */
 import type { RolePreset } from '../authz/roles';
 import { loginReducer } from './login-reducer';
@@ -51,20 +52,32 @@ export type InviteJoinResult =
  */
 export type InviteAskOutcome = 'asked' | 'gone' | 'unreached' | 'failed';
 
+/**
+ * How a decline ended: `declined` — the link is closed and the owners are told (a second decline
+ * answers the same); `gone` — no invite behind the link; `stale` — the invite is not live any more
+ * (it ran out, or it was used or withdrawn), so the link is read again; `unreached` — no answer;
+ * `failed` — the server refused or failed.
+ */
+export type InviteDeclineOutcome = 'declined' | 'gone' | 'stale' | 'unreached' | 'failed';
+
 /** A round trip the landing asked for; the code's own trips ride on `code.pending`. */
 export type InviteCall =
   | { readonly kind: 'read' }
   | { readonly kind: 'retry-join' }
-  | { readonly kind: 'ask' };
+  | { readonly kind: 'ask' }
+  | { readonly kind: 'decline' };
 
 export interface InviteLandingState {
-  readonly read: 'loading' | InviteRead['kind'];
+  /** `declined` — this page closed the link; the invite is kept so the after-state names the inviter. */
+  readonly read: 'loading' | InviteRead['kind'] | 'declined';
   readonly invite: InviteFacts | null;
   /** The door's code facts on the invite's number. */
   readonly code: LoginState;
   /** `failed` keeps the right code held, and Try again sends the join alone. */
   readonly join: 'none' | 'failed' | 'joined';
   readonly ask: 'none' | Exclude<InviteAskOutcome, 'gone'>;
+  /** The decline's confirm: open, or open again after a decline that did not go through (brief ruling 19). */
+  readonly decline: 'none' | 'confirming' | 'unreached' | 'failed';
   readonly pending: InviteCall | null;
 }
 
@@ -78,8 +91,10 @@ export type InviteLandingEvent =
   | { readonly type: 'read-ended'; readonly read: InviteRead }
   | { readonly type: 'join-ended'; readonly result: InviteJoinResult }
   | { readonly type: 'ask-ended'; readonly outcome: InviteAskOutcome }
+  | { readonly type: 'decline-ended'; readonly outcome: InviteDeclineOutcome }
   | { readonly type: 'try-again' }
-  | { readonly type: 'ask' };
+  | { readonly type: 'ask' }
+  | { readonly type: 'decline' | 'keep' | 'confirm-decline' };
 
 /** The link opens on its read; nothing is pressable until it answers. */
 export const INITIAL_INVITE_LANDING: InviteLandingState = {
@@ -88,6 +103,7 @@ export const INITIAL_INVITE_LANDING: InviteLandingState = {
   code: INITIAL_LOGIN_STATE,
   join: 'none',
   ask: 'none',
+  decline: 'none',
   pending: { kind: 'read' },
 };
 
@@ -107,8 +123,16 @@ export function inviteLandingReducer(
     case 'ask':
       if (state.read !== 'expired' || state.pending !== null) return state;
       return { ...state, ask: 'none', pending: { kind: 'ask' } };
+    case 'decline':
+    case 'keep':
+    case 'confirm-decline':
+      return onDecline(state, event.type);
+    case 'decline-ended':
+      return declineEnded(state, event.outcome);
     case 'verify':
-      return joinHeld(state) || state.join !== 'none' ? state : onCode(state, event);
+      return joinHeld(state) || state.join !== 'none' || state.decline !== 'none'
+        ? state
+        : onCode(state, event);
     default:
       return onCode(state, event);
   }
@@ -178,9 +202,56 @@ function askEnded(state: InviteLandingState, outcome: InviteAskOutcome): InviteL
   return { ...state, pending: null, ask: outcome };
 }
 
+/**
+ * The wrong person may decline a live invite at any point but while a code check or a join is out,
+ * or once the join is done: the decline would race the accept (`S1.wrong.2`).
+ */
+export function declineOffered(state: InviteLandingState): boolean {
+  if (state.read !== 'pending' || state.join === 'joined') return false;
+  return state.code.pending?.kind !== 'verify' && state.pending?.kind !== 'retry-join';
+}
+
+/** The control opens the confirm; Keep closes it unless the decline is out; Decline sends it once. */
+function onDecline(
+  state: InviteLandingState,
+  press: 'decline' | 'keep' | 'confirm-decline',
+): InviteLandingState {
+  if (press === 'decline') {
+    return declineOffered(state) && state.decline === 'none'
+      ? { ...state, decline: 'confirming' }
+      : state;
+  }
+  if (state.decline === 'none') return state;
+  if (press === 'keep') {
+    return state.pending?.kind === 'decline' ? state : { ...state, decline: 'none' };
+  }
+  return state.pending !== null
+    ? state
+    : { ...state, decline: 'confirming', pending: { kind: 'decline' } };
+}
+
+function declineEnded(
+  state: InviteLandingState,
+  outcome: InviteDeclineOutcome,
+): InviteLandingState {
+  if (state.pending?.kind !== 'decline') return state;
+  switch (outcome) {
+    case 'declined':
+      return { ...INITIAL_INVITE_LANDING, read: 'declined', invite: state.invite, pending: null };
+    case 'gone':
+      return { ...INITIAL_INVITE_LANDING, read: 'gone', pending: null };
+    // The fresh read draws what the link is now: expired, or no invite behind it.
+    case 'stale':
+      return INITIAL_INVITE_LANDING;
+    case 'unreached':
+    case 'failed':
+      return { ...state, pending: null, decline: outcome };
+  }
+}
+
 /** After a read with no answer it reads again; after a failed join it sends the join alone. */
 function tryAgain(state: InviteLandingState): InviteLandingState {
-  if (state.pending !== null) return state;
+  if (state.pending !== null || state.decline !== 'none') return state;
   if (state.read === 'unread') return { ...INITIAL_INVITE_LANDING };
   if (state.join === 'failed') return { ...state, pending: { kind: 'retry-join' } };
   return state;

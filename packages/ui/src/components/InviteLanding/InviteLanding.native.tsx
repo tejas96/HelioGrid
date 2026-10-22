@@ -12,6 +12,7 @@ import { EmptyState } from '../EmptyState/EmptyState.native';
 import { OtpInput } from '../OtpInput/OtpInput.native';
 import type { FocusHandle } from '../SearchField/SearchField.types';
 import { TintedBlock } from '../TintedBlock/TintedBlock.native';
+import { InviteDecline } from './InviteDecline.native';
 import { InviteFactsBlock, InviterRow } from './InviteFacts.native';
 import { useFocusOnNewFrame } from './InviteLanding.logic';
 import type { InviteLandingProps, InviteLandingWords } from './InviteLanding.types';
@@ -45,6 +46,7 @@ export function InviteLanding(props: InviteLandingProps) {
       return shell(undefined, <LandingSkeleton spoken={words.loading} />);
     case 'empty':
     case 'reinvite-requested':
+    case 'declined':
       return shell(undefined, <LandingPlace {...props} actRef={actRef} />);
     case 'load-error':
       return shell(
@@ -130,7 +132,7 @@ function LandingTask(props: InviteLandingProps) {
  * keyboard open.
  */
 function LandingActs(props: InviteLandingProps & ActRef) {
-  const { words } = props;
+  const { words, frame, onPress } = props;
   return (
     <View style={styles.actions}>
       <PrimaryAct {...props} />
@@ -138,6 +140,9 @@ function LandingActs(props: InviteLandingProps & ActRef) {
         <Text variant="caption" color="secondary" align="center">
           {words.foot}
         </Text>
+      )}
+      {words.decline === null || frame.decline === null ? null : (
+        <InviteDecline words={words.decline} decline={frame.decline} onPress={onPress} />
       )}
     </View>
   );

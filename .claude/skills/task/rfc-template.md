@@ -51,8 +51,9 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
     run). Every AC has exactly one owner. An expected result says the status code and body fields,
     the words or state on screen, and the side effect read back. An expected result that code
     outside the diff decides is read from that code, by file and line. A row that needs the api
-    stopped says `api stopped`. A PRD performance target from *Scope* is written into its row's expected result
-    as a time limit.
+    stopped says `api stopped`. A wrong-code step names a code other than `DEV_OTP_CODE`
+    (`.env.local`): the api accepts that code for every dev number, so it joins instead. A PRD
+    performance target from *Scope* is written into its row's expected result as a time limit.
     A behaviour of a `data` hook or of an app's glue (a toast, a navigation) has a live row, never a
     `main-dev` spec: those layers have no unit tests (`.claude/rules/testing.md`).
     A screen task has one Hindi and one Marathi layout row on the phone, and its shared
