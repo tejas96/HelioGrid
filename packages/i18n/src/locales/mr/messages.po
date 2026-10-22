@@ -43,6 +43,11 @@ msgid "{company} is set up."
 msgstr "{company} तयार आहे."
 
 #. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:23
+msgid "{company} sees this name beside everything you do."
+msgstr "तुम्ही करत असलेल्या प्रत्येक कामासोबत {company} हेच नाव पाहते."
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:14
 msgid "{count, plural, =0 {Notifications} one {Notifications, # unread} other {Notifications, # unread}}"
 msgstr "{count, plural, =0 {सूचना} one {सूचना, # न वाचलेली} other {सूचना, # न वाचलेल्या}}"
@@ -133,6 +138,11 @@ msgid "{date}, {time}"
 msgstr "{date}, {time}"
 
 #. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:32
+msgid "{first} had typed {name}; type the name your team should use."
+msgstr "{first} यांनी {name} लिहिले होते; तुमची टीम तुम्हाला ज्या नावाने हाक मारेल ते लिहा."
+
+#. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:55
 msgid "{first} has been asked for a new invite"
 msgstr "{first} यांच्याकडे नवे आमंत्रण मागितले आहे"
@@ -151,6 +161,11 @@ msgstr "{first} यांचा {company} मधील प्रवेश बं
 #: src/copy/invite-landing.ts:32
 msgid "{first} set you up as"
 msgstr "{first} यांनी तुम्हाला ही भूमिका दिली आहे"
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:31
+msgid "{first} typed this when inviting you — change it if you like."
+msgstr "तुम्हाला आमंत्रित करताना {first} यांनी हे लिहिले — हवे तर बदला."
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:36
@@ -188,7 +203,7 @@ msgid "{match} match · {unread} unread in all"
 msgstr "{match} जुळल्या · एकूण {unread} न वाचलेल्या"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:33
+#: src/copy/company-logo.ts:36
 msgid "{megabytes} MB · needs {maxMegabytes} MB or less"
 msgstr "{megabytes} MB · {maxMegabytes} MB किंवा कमी हवे"
 
@@ -313,7 +328,7 @@ msgid "{weekday} · {date}"
 msgstr "{weekday} · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:34
+#: src/copy/company-logo.ts:37
 msgid "{width} px wide · needs at least {minWidth} px"
 msgstr "{width} px रुंद · किमान {minWidth} px हवे"
 
@@ -341,6 +356,16 @@ msgstr "सुरुवात करण्यासाठी एक नाव �
 #: src/copy/invite.ts:73
 msgid "A name can have up to {max} characters."
 msgstr "नावात जास्तीत जास्त {max} अक्षरे असू शकतात."
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:25
+msgid "A photo helps teammates recognise you on a shared job."
+msgstr "फोटोमुळे सहकारी तुम्हाला एकत्र कामावर ओळखतात."
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:26
+msgid "A photo helps teammates recognise you."
+msgstr "फोटोमुळे सहकारी तुम्हाला ओळखतात."
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:72
@@ -403,6 +428,11 @@ msgid "About your language"
 msgstr "तुमच्या भाषेबद्दल"
 
 #. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:21
+msgid "About your name and photo"
+msgstr "तुमचे नाव आणि फोटो याबद्दल"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:27
 msgid "Account"
 msgstr "खाते"
@@ -441,6 +471,11 @@ msgstr "सक्रिय · शेवटचे आज दिसले"
 #: src/copy/shell.ts:113
 msgid "Add a lead from your home"
 msgstr "तुमच्या होममधून लीड जोडा"
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:36
+msgid "Add a photo"
+msgstr "फोटो जोडा"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:106
@@ -686,6 +721,11 @@ msgid "Choose a file or drop one here"
 msgstr "फाइल निवडा किंवा येथे टाका"
 
 #. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:37
+msgid "Choose a photo"
+msgstr "फोटो निवडा"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-language.ts:14
 msgid "Choose your language"
 msgstr "तुमची भाषा निवडा"
@@ -794,6 +834,11 @@ msgstr "Google ने पुढे चला"
 #: src/copy/sign-in.ts:81
 msgid "Continue with Google. Signs you in to the same account as your mobile number."
 msgstr "Google ने पुढे चला. तुमच्या मोबाइल नंबरच्याच खात्यात साइन इन करते."
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:49
+msgid "Continue without a photo"
+msgstr "फोटोशिवाय पुढे जा"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:49
@@ -1211,6 +1256,11 @@ msgid "How linking works"
 msgstr "जोडणी कशी होते"
 
 #. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:20
+msgid "How your team sees you"
+msgstr "तुमची टीम तुम्हाला कसे पाहते"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:79
 msgid "HR/Admin"
 msgstr "HR/अ‍ॅडमिन"
@@ -1356,6 +1406,11 @@ msgid "Loading your company profile"
 msgstr "तुमची कंपनी प्रोफाइल लोड होत आहे"
 
 #. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:29
+msgid "Loading your name"
+msgstr "तुमचे नाव लोड होत आहे"
+
+#. js-lingui-explicit-id
 #: src/copy/team.ts:13
 msgid "Loading your team"
 msgstr "तुमची टीम लोड होत आहे"
@@ -1443,7 +1498,7 @@ msgid "Name, phone or city"
 msgstr "नाव, फोन किंवा शहर"
 
 #. js-lingui-explicit-id
-#: src/copy/company-logo.ts:32
+#: src/copy/company-logo.ts:35
 msgid "Needs a PNG or JPG"
 msgstr "PNG किंवा JPG हवे"
 
@@ -1604,6 +1659,11 @@ msgid "Nothing was lost"
 msgstr "काहीही हरवले नाही"
 
 #. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:51
+msgid "Nothing was lost — press Save and continue to try again."
+msgstr "काहीही गेले नाही — पुन्हा प्रयत्न करण्यासाठी जतन करा आणि पुढे जा दाबा."
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:56
 msgid "Nothing you captured on this device is lost. Ask your admin to restore your access, or sign in with another account."
 msgstr "या डिव्हाइसवर तुम्ही नोंदवलेले काहीही हरवलेले नाही. तुमचा प्रवेश परत मिळवण्यासाठी तुमच्या अ‍ॅडमिनला सांगा, किंवा दुसऱ्या खात्याने साइन इन करा."
@@ -1682,6 +1742,16 @@ msgstr "ऑपरेशन्स"
 #: src/copy/homes.ts:13
 msgid "Operations Home"
 msgstr "ऑपरेशन्स होम"
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:41
+msgid "Optional — without one, your initials show."
+msgstr "ऐच्छिक — फोटो नसेल तर तुमची आद्याक्षरे दिसतात."
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:42
+msgid "Optional — your initials show once you type a name."
+msgstr "ऐच्छिक — नाव लिहिताच तुमची आद्याक्षरे दिसतील."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:79
@@ -1775,6 +1845,11 @@ msgid "Profile & preferences"
 msgstr "प्रोफाइल आणि प्राधान्ये"
 
 #. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:35
+msgid "Profile photo, optional"
+msgstr "प्रोफाइल फोटो, ऐच्छिक"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:46
 msgid "Profile still loading"
 msgstr "प्रोफाइल अजून लोड होत आहे"
@@ -1838,6 +1913,21 @@ msgstr "पुन्हा गणना होत आहे"
 #: src/copy/role-presets.ts:30
 msgid "Record payments, attach receipts, read any project’s money, and see catalog prices and margins"
 msgstr "पेमेंट नोंदवा, पावत्या जोडा, कोणत्याही प्रोजेक्टचे पैसे पाहा, आणि कॅटलॉगच्या किमती आणि मार्जिन पाहा"
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:40
+msgid "Remove"
+msgstr "काढा"
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:43
+msgid "Remove it and your initials come back."
+msgstr "तो काढला की तुमची आद्याक्षरे परत येतात."
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:39
+msgid "Replace"
+msgstr "बदला"
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:26
@@ -1922,6 +2012,7 @@ msgstr "सेल्स मॅनेजर"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:39
+#: src/copy/first-run-profile.ts:48
 msgid "Save and continue"
 msgstr "जतन करा आणि पुढे जा"
 
@@ -1939,6 +2030,11 @@ msgstr "तुमच्या व्यवसाय प्रोफाइलम�
 #: src/copy/company-profile.ts:40
 msgid "Save your company profile and continue setting up HelioGrid"
 msgstr "तुमची कंपनी प्रोफाइल जतन करा आणि पुढे जा"
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:34
+msgid "Saved. Your team sees this name now."
+msgstr "जतन झाले. तुमची टीम आता हेच नाव पाहते."
 
 #. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:33
@@ -2287,6 +2383,16 @@ msgid "That number already has an account"
 msgstr "या नंबरचे खाते आधीच आहे"
 
 #. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:47
+msgid "That photo cannot be used"
+msgstr "हा फोटो वापरता येणार नाही"
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:44
+msgid "That photo did not upload"
+msgstr "तो फोटो अपलोड झाला नाही"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:34
 msgid "That record isn't available."
 msgstr "ते रेकॉर्ड उपलब्ध नाही."
@@ -2567,6 +2673,11 @@ msgid "Try again"
 msgstr "पुन्हा प्रयत्न करा"
 
 #. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:46
+msgid "Try again, or add one later."
+msgstr "पुन्हा प्रयत्न करा, किंवा नंतर जोडा."
+
+#. js-lingui-explicit-id
 #: src/copy/setup-language.ts:29
 msgid "Try again, or continue and be asked again at your next sign-in."
 msgstr "पुन्हा प्रयत्न करा, किंवा पुढे चला — पुढच्या साइन-इनला हे पुन्हा विचारले जाईल."
@@ -2590,6 +2701,11 @@ msgstr "पुन्हा प्रयत्न करा. वारंवा�
 #: src/copy/company-profile.ts:54
 msgid "Try saving your company profile again"
 msgstr "तुमची कंपनी प्रोफाइल पुन्हा जतन करून पाहा"
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:38
+msgid "Try the photo again"
+msgstr "फोटो पुन्हा पाठवा"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:123
@@ -2900,9 +3016,19 @@ msgid "You become the first EPC owner."
 msgstr "तुम्ही पहिले EPC Owner होता."
 
 #. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:45
+msgid "You can add one later in Profile & preferences."
+msgstr "तुम्ही तो नंतर प्रोफाइल आणि प्राधान्ये मध्ये जोडू शकता."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:61
 msgid "You can ask for {perWindow} codes every {windowMinutes} minutes, and {day} a day."
 msgstr "तुम्ही दर {windowMinutes} मिनिटांत {perWindow} कोड, आणि दिवसाला {day} कोड मागू शकता."
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:27
+msgid "You can change both later in Profile & preferences."
+msgstr "तुम्ही दोन्ही नंतर प्रोफाइल आणि प्राधान्ये मध्ये बदलू शकता."
 
 #. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:24
@@ -3089,8 +3215,19 @@ msgstr "तुमचे सर्वात नेहमीचे काम, स�
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:41
+#: src/copy/first-run-profile.ts:28
 msgid "Your name"
 msgstr "तुमचे नाव"
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:22
+msgid "Your name and photo"
+msgstr "तुमचे नाव आणि फोटो"
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:33
+msgid "Your name is empty — type the name your team should call you."
+msgstr "तुमचे नाव रिकामे आहे — तुमची टीम तुम्हाला ज्या नावाने हाक मारेल ते लिहा."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:149
@@ -3098,9 +3235,19 @@ msgid "Your name is needed — you become this company's first EPC owner."
 msgstr "तुमचे नाव आवश्यक आहे — तुम्ही या कंपनीचे पहिले EPC Owner होता."
 
 #. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:30
+msgid "Your name is still arriving."
+msgstr "तुमचे नाव अजून येत आहे."
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:25
 msgid "Your number"
 msgstr "तुमचा नंबर"
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:50
+msgid "Your profile did not save"
+msgstr "तुमचे प्रोफाइल जतन झाले नाही"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:77

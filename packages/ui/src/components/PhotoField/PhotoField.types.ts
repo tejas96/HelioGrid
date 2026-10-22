@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { PickedFile } from '../Dropzone/Dropzone.types';
 
 /**
  * ONE image, captured into the circle it will live in. Not `Dropzone`, which captures MANY files
@@ -13,6 +14,9 @@ import type { ReactNode } from 'react';
 
 /** The circle's diameter. 72 is the phone's row; 120 opens a desktop composition. */
 export type PhotoFieldSize = 72 | 120;
+
+/** The act's glyph: the camera on the phone, the upload arrow at 1536, the retry arrow after a refusal. */
+export type PhotoFieldActIcon = 'camera' | 'upload' | 'retry';
 
 export interface PhotoFieldProps {
   /** The group's accessible name — say that the photo is optional. Already translated. */
@@ -29,20 +33,31 @@ export interface PhotoFieldProps {
   onChoose?: () => void;
   /** Present only when a photo is chosen — removing it returns the initials, destroying nothing. */
   onRemove?: () => void;
+  /**
+   * The 1536 composition only: an image dropped onto the circle, which takes an accent ring while a
+   * file is over it. A `PickedFile`, not the DOM `File` the design system types, which the phone
+   * half cannot hold (Laws 7, 10); the native half ignores it — nothing drags on a phone.
+   */
+  onDrop?: (file: PickedFile) => void;
   /** The act's words when there is no photo yet. Required — a control nobody can read is not one. */
   chooseLabel: string;
   /** The act's words when a photo is already chosen. */
   replaceLabel?: string;
   /** The removal's words. Required whenever `onRemove` is given. */
   removeLabel?: string;
+  /** The act's glyph (`camera` default). The act is always `Button` secondary, size `md`. */
+  actIcon?: PhotoFieldActIcon;
   /**
-   * The upload failed. The words carry it and the ring is the second channel (`F7-12`); it attaches
-   * to this group rather than to the page, so a name that saved is not put in doubt.
+   * The photo was refused or did not upload: a danger `Banner` (`kind="validation"`) INSIDE the
+   * photo group — above the act in the 120 composition, under the circle and act on the 72 row — so
+   * a name that saved is not put in doubt.
    */
   error?: string;
+  /** The refusal banner's bold first line. */
+  errorTitle?: string;
   /** A sentence under the acts — what the fallback will be, where the photo ends up afterwards. */
   helper?: ReactNode;
-  /** The photo is being written. The circle waits; the act is not offered greyed out. */
+  /** The photo is being written. The circle shimmers; the act is not offered greyed out. */
   loading?: boolean;
   disabled?: boolean;
 }

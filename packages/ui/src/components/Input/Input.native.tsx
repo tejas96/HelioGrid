@@ -157,7 +157,7 @@ export function Input({
       ) : note?.kind === 'success' ? (
         <StatusMark tone="success" label={note.text} />
       ) : note?.kind === 'helper' ? (
-        <Text variant="field-helper" color="tertiary">
+        <Text variant="field-helper" color="secondary">
           {note.text}
         </Text>
       ) : null}

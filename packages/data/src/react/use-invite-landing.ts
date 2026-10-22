@@ -91,6 +91,10 @@ export function useInviteLanding(token: string, onJoined?: () => void): InviteLa
     if (result.step === 'join' && result.outcome === 'joined') joined.current?.();
   }, []);
   const { pending, code } = state;
+  // The join is sent only from a read invite, whose inviter and company the step after it names.
+  // Read at the send, so a render never sends the join again.
+  const invite = useRef(state.invite);
+  invite.current = state.invite;
   const codeCall = code.pending;
   const { cooldownLeft } = code;
 
@@ -130,7 +134,12 @@ export function useInviteLanding(token: string, onJoined?: () => void): InviteLa
           .then((outcome) => dispatch({ type: 'request-ended', outcome, now: Date.now() }));
         return;
       case 'verify':
-        void session.joinWithInvite(token, codeCall.code).then(answerJoin);
+        void session
+          .joinWithInvite(token, codeCall.code, {
+            inviterName: invite.current?.inviterName ?? '',
+            companyName: invite.current?.companyName ?? '',
+          })
+          .then(answerJoin);
         return;
       // The landing offers no Google sign-in: the invite is keyed to the number.
       default:

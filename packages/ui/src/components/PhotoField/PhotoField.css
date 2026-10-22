@@ -19,10 +19,10 @@
   transition: box-shadow var(--dur-standard) var(--ease-standard);
 }
 
-/* THE REFUSAL RINGS THE CIRCLE, not the page. A page banner would put a name that saved in doubt;
-   the failure belongs to the thing that failed. Outset, because the crop is what it rings. */
-.hg-photo-field-mark[data-error="true"] {
-  box-shadow: 0 0 0 2px var(--danger);
+/* A file over the circle at 1536: the circle itself is the drop target, so it rings. Outset,
+   because the crop is what it rings. */
+.hg-photo-field-mark[data-over="true"] {
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 .hg-photo-field-mark[data-loading="true"] {
@@ -48,6 +48,27 @@
   --hg-photo-size: 120px;
 }
 
+.hg-photo-field[data-size="120"] {
+  gap: var(--sp-6);
+}
+
+/* The 120 composition: the refusal, the act and the sentence stack beside the circle. */
+.hg-photo-field-column {
+  flex: 1 1 240px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-3);
+}
+
+/* THE REFUSAL BELONGS TO THE PHOTO GROUP, not the page: a page banner would put a name that saved
+   in doubt. On the 72 row it spans the group under the circle and the act. */
+.hg-photo-field-banner {
+  flex-basis: 100%;
+  min-width: 0;
+}
+
 .hg-photo-field-acts {
   display: flex;
   flex-wrap: wrap;
@@ -67,6 +88,6 @@
   text-wrap: pretty;
 }
 
-.hg-photo-field-message[data-error="true"] {
-  color: var(--danger-text);
+.hg-photo-field-column .hg-photo-field-message {
+  flex-basis: auto;
 }

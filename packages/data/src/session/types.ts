@@ -1,5 +1,6 @@
 import type { CreateTenant, OtpChannel, UiLanguage } from '@heliogrid/contracts';
 import type {
+  FirstRunCarry,
   GoogleResult,
   GoogleToken,
   InviteJoinOutcome,
@@ -12,6 +13,7 @@ import type {
   SignInDoor,
 } from '@heliogrid/domain';
 import type { SessionSignals } from '../transport/transport';
+import type { JoinedInvite } from './invite-join';
 
 /**
  * Framework-free session state. It is a STORE, not a plain object: a bare `status` field
@@ -43,9 +45,17 @@ export interface SessionStore {
    * admitted before the join would land on company signup. A refused code answers on the `code`
    * step, as `verifyOtp` does; a join that fails keeps the verified account for `retryJoin`.
    */
-  joinWithInvite(token: string, code: string): Promise<InviteJoinResult>;
+  joinWithInvite(token: string, code: string, invite: JoinedInvite): Promise<InviteJoinResult>;
   /** Sends the join alone after one failed on a right code; `failed` when no verified account waits. */
   retryJoin(token: string): Promise<InviteJoinOutcome>;
+  /**
+   * First-Run Profile, owed to the signed-in person after a join named their account from the
+   * invite (`SCR-M01-09`); `null` otherwise. Memory only: a reload owes nothing. Store mechanics:
+   * read through `useFirstRunProfile`, never `SessionApi`.
+   */
+  firstRunOwed(): FirstRunCarry | null;
+  /** The person moved on from First-Run Profile. */
+  endFirstRun(): void;
   /**
    * Asks the boot check again after it got no answer (`unreachable`); the cookie was never touched.
    * Resolves `false` when it still got none — `unreachable` stays, and the retry screen says so.
@@ -100,4 +110,4 @@ export interface SessionStore {
  * `useSyncExternalStore` consumes them and hands the snapshot down.
  */
 export type SessionApi = SessionSnapshot &
-  Omit<SessionStore, 'getSnapshot' | 'signals' | 'subscribe'>;
+  Omit<SessionStore, 'getSnapshot' | 'signals' | 'subscribe' | 'firstRunOwed' | 'endFirstRun'>;

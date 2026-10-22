@@ -1,27 +1,29 @@
 'use client';
-import { useInviteLanding, useSessionPhase } from '@heliogrid/data/react';
+import { useFirstRunOwed, useInviteLanding, useSessionPhase } from '@heliogrid/data/react';
 import { inviteLandingWords } from '@heliogrid/i18n';
 import { useLanguageChoice, useTranslate } from '@heliogrid/i18n/react';
 import { DoorLanguage, InviteLanding } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { HOME_ROUTE, LOGIN_ROUTE } from '../auth';
+import { HOME_ROUTE, LOGIN_ROUTE, WELCOME_ROUTE } from '../auth';
 
 /**
  * The invite landing on the web (`SCR-M01-08`, `M01-13`) — also the phone's, in its browser, until
- * app links exist (brief ruling 16). Once the join admits the session the person goes inside,
- * where the inside group's gate draws their home.
+ * app links exist (brief ruling 16). Once the join admits the session the person goes on: a newly
+ * named account to First-Run Profile (`SCR-M01-09`), anyone else inside, where the inside group's
+ * gate draws their home.
  */
 export function InviteLandingScreen({ token }: { token: string }) {
   const t = useTranslate();
   const router = useRouter();
   const phase = useSessionPhase();
   const { state, frame, typeCode, press } = useInviteLanding(token);
+  const firstRunOwed = useFirstRunOwed();
   const inside = state.join === 'joined' && phase === 'signedIn';
 
   useEffect(() => {
-    if (inside) router.replace(HOME_ROUTE);
-  }, [inside, router]);
+    if (inside) router.replace(firstRunOwed() ? WELCOME_ROUTE : HOME_ROUTE);
+  }, [inside, router, firstRunOwed]);
 
   const { cooldownLeft, triesLeft } = state.code;
   return (

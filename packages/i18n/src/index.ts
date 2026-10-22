@@ -52,6 +52,8 @@ export { BASIS_LINE_WORD } from './copy/document-basis';
 export { energySourceLabel } from './copy/energy-source';
 export type { ExplainerWords } from './copy/explainer';
 export { explainerPagerWords } from './copy/explainer';
+export type { FirstRunProfileFacts, FirstRunProfileWords } from './copy/first-run-profile';
+export { FIRST_RUN_PROFILE, firstRunProfileWords } from './copy/first-run-profile';
 export { freshnessLabel } from './copy/freshness';
 export { homeTitle } from './copy/homes';
 export type {

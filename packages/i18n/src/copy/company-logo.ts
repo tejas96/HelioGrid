@@ -27,8 +27,11 @@ export const COMPANY_LOGO = {
   hinted: /*i18n*/ { id: '{how} · {limits}' },
 };
 
-/** A refusal for one limit missed. Whole messages, never joined pieces: word order differs by language. */
-const REFUSED_FOR: Record<CompanyLogoMiss, MessageRef> = {
+/**
+ * A refusal for one limit missed. Whole messages, never joined pieces: word order differs by
+ * language. First-Run Profile's photo reads the type and size lines too.
+ */
+export const REFUSED_FOR: Record<CompanyLogoMiss, MessageRef> = {
   type: /*i18n*/ { id: 'Needs a PNG or JPG' },
   size: /*i18n*/ { id: '{megabytes} MB · needs {maxMegabytes} MB or less' },
   width: /*i18n*/ { id: '{width} px wide · needs at least {minWidth} px' },

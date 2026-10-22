@@ -62,6 +62,7 @@ export * from './components/FieldOverride';
 export * from './components/FilterBar';
 export * from './components/FilterPanel';
 export * from './components/FindingList';
+export * from './components/FirstRunProfile';
 export * from './components/HomeBlocks';
 export * from './components/HomeHead';
 export * from './components/IconButton';

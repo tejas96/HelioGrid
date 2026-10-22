@@ -212,6 +212,13 @@ export const SHELL_GLYPHS = {
     path('M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z'),
     circle(12, 13, 3.5),
   ],
+  upload: [
+    path('M12 16V4'),
+    path('m7 9 5-5 5 5'),
+    path('M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3'),
+  ],
+  retry: [path('M21 12a9 9 0 1 1-3.4-7'), path('M21 3v6h-6')],
+  pencil: [path('M4 20h4L19 9l-4-4L4 16v4z')],
   'info-open': [circle(12, 12, 9), path('M12 11.25v5')],
   'info-dot': [circle(12, 7.6, 1)],
   sliders: [path('M4 7h9M17 7h3M4 17h3M11 17h9'), circle(15, 7, 2.2), circle(9, 17, 2.2)],
