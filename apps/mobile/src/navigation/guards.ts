@@ -47,6 +47,9 @@ const ROUTE_OF_LANDING: Record<Exclude<SessionLanding, 'wait' | 'door'>, AppEntr
   'ready-step': 'SetupReady',
 };
 
+/** The App group's route for First-Run Profile, which the invite landing opens after a join (`SCR-M01-09`). */
+export const firstRunRoute = 'FirstRunProfile';
+
 /** Every first screen the App group can mount, read where a render cannot run (a navigation event). */
 export const APP_ENTRY_ROUTES: readonly AppEntry[] = [...new Set(Object.values(ROUTE_OF_LANDING))];
 

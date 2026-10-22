@@ -12,8 +12,14 @@ export interface InputProps {
   density?: "expressive" | "functional";
   /** error message — inset 1.5px danger ring + text below */
   error?: string;
-  /** success = inset 1.5px success ring, no message */
-  success?: boolean;
+  /**
+   * The confirming words — drawn under the field with the success mark (an outlined check drawn
+   * through `Icon` on the success pair, never a `✓` character: `F7-19`), never as a ring: a success
+   * ring differs from the error ring by hue alone (`F7-12`). Replaces the helper, as an error does; an
+   * error wins.
+   */
+  success?: string;
+  /** The sentence under the field, in `--text-secondary` — it is load-bearing (`F7-11`). */
   helper?: string;
   disabled?: boolean;
   /** monospace value (IDs, kWh, coordinates, invoice numbers) */

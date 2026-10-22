@@ -1,0 +1,110 @@
+/* First-Run Profile (`SCR-M01-09`): one column whose order changes at the door's breakpoint — the
+   name before the photo on the phone, the photo before the name in the 1536 task column. */
+
+.hg-first-run {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* Under the heading on the phone (`m-error-save`). */
+.hg-first-run-refusal {
+  order: 0;
+}
+
+.hg-first-run-name {
+  order: 1;
+}
+
+.hg-first-run-photo {
+  order: 2;
+}
+
+/* Right under the photo group, never pinned to the frame's foot (ruling 13). */
+.hg-first-run-act {
+  order: 3;
+  margin-top: var(--sp-3);
+}
+
+/* The frame leaves `sp-4` under its identity; the board keeps `sp-5` down to the field (m-normal). */
+.hg-door[data-panes="onboarding"] .hg-door-identity:has(.hg-first-run-identity) {
+  padding-bottom: var(--sp-5);
+}
+
+.hg-first-run-identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-10);
+}
+
+.hg-first-run-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-first-run-reasons {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-first-run-reason {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.hg-first-run-reason + .hg-first-run-reason {
+  margin-top: var(--sp-5);
+}
+
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
+@media (min-width: 968px) {
+  /* The language control sits `sp-8` under the window's top (d-normal), over the task pane. */
+  .hg-door[data-panes="onboarding"]:has(.hg-first-run) .hg-door-header {
+    position: relative;
+    z-index: 1;
+    padding-top: var(--sp-8);
+  }
+
+  /* The brand pane keeps the frame's own foot: the `sp-5` above is the one-column layout's. */
+  .hg-door[data-panes="onboarding"] .hg-door-identity:has(.hg-first-run-identity) {
+    padding-bottom: 0;
+  }
+
+  /* The task is one column centred in the task pane both ways (ruling 14), as `SCR-M01-08`'s. */
+  .hg-door[data-panes="onboarding"] .hg-door-task:has(.hg-first-run) {
+    grid-row: 1 / -1;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-16);
+  }
+
+  .hg-first-run {
+    flex: 0 0 auto;
+    width: var(--door-measure);
+    max-width: 100%;
+    gap: var(--sp-8);
+  }
+
+  /* The ask's three lines are the brand pane's reasons from here (ruling 14). */
+  .hg-first-run-narrow-only {
+    display: none;
+  }
+
+  .hg-first-run-photo {
+    order: 0;
+  }
+
+  /* Just above the act, across the column (ruling 11). */
+  .hg-first-run-refusal {
+    order: 2;
+    margin-bottom: calc(var(--sp-3) - var(--sp-8));
+  }
+
+  .hg-first-run-act {
+    order: 3;
+    margin-top: 0;
+  }
+}

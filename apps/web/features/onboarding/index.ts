@@ -1,4 +1,5 @@
 export { CompanyProfileScreen } from './CompanyProfileScreen';
+export { FirstRunProfileScreen } from './FirstRunProfileScreen';
 export { InviteLandingScreen } from './InviteLandingScreen';
 export { SetupInviteTeamScreen } from './SetupInviteTeamScreen';
 export { SetupLanguageScreen } from './SetupLanguageScreen';

@@ -26,7 +26,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { useRepositories } from './context';
-import { type ChosenLogo, useCompanyLogo } from './use-company-logo';
+import { type ChosenPicture, useCompanyLogo } from './use-company-logo';
 import { useSession } from './use-session';
 
 /** The company profile in one of its lives, as both screens consume it (Law 11). */
@@ -43,7 +43,7 @@ export interface CompanyProfileStep extends CompanyProfileView {
   /** The chosen image, or the stored logo's; `null` while there is neither. */
   readonly logoPicture: string | null;
   /** Checks the image against the logo's limits and holds it for the save. */
-  chooseLogo(image: ChosenLogo): void;
+  chooseLogo(image: ChosenPicture): void;
   openPart(part: CompanyProfilePart | null): void;
   edit(field: CompanyProfileField, typed: string): void;
   chooseSegment(segment: TenantSegment): void;
@@ -164,7 +164,7 @@ export function useCompanyProfile(
       values: CompanyProfileValues;
       stored: CompanyProfileStored;
       tax: TaxPack;
-      logo: ChosenLogo | null;
+      logo: ChosenPicture | null;
     }): Promise<Saved> => {
       const logoStoredNow = sent.logo === null ? null : await logo.store(sent.logo);
       // The api found another type in the bytes: the image is refused at its field and nothing is

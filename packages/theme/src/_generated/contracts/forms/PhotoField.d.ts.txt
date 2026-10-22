@@ -1,0 +1,58 @@
+import React from "react";
+
+/** The circle's diameter. 72 is the phone's row; 120 opens a desktop composition. */
+export type PhotoFieldSize = 72 | 120;
+
+/** The act's glyph: the camera on the phone, the upload arrow at 1536, the retry arrow after a refusal. */
+export type PhotoFieldActIcon = "camera" | "upload" | "retry";
+
+export interface PhotoFieldProps {
+  /** The group's accessible name — say that the photo is optional. Spoken, not shown. Already translated. */
+  label: string;
+  /** The chosen image. Absent means no photo, which is a legitimate resting state. */
+  src?: string;
+  /**
+   * Whose photo this is. Its initials are the fallback. **Empty is a real state** — a person who has
+   * not said their name yet gets a plain disc on `--canvas-sunken`, no glyph, rather than an empty
+   * tinted circle.
+   */
+  name?: string;
+  size?: PhotoFieldSize;
+  /** Opens the platform's own camera-or-gallery chooser (a file picker at 1536). Absent makes the field read-only. */
+  onChoose?: () => void;
+  /** Present only when a photo is chosen — removing it returns the initials, destroying nothing. */
+  onRemove?: () => void;
+  /**
+   * The 1536 composition only: an image dropped onto the circle. The circle takes an accent ring while
+   * a file is over it. Never pass it on a phone — nothing drags there.
+   */
+  onDrop?: (file: File) => void;
+  /** The act's words when there is no photo yet. Required — a control nobody can read is not one. */
+  chooseLabel: string;
+  /** The act's words when a photo is already chosen. */
+  replaceLabel?: string;
+  /** The removal's words. Required whenever `onRemove` is given. */
+  removeLabel?: string;
+  /** The act's glyph (`camera` default). The act is always `Button` secondary, size `md`. */
+  actIcon?: PhotoFieldActIcon;
+  /**
+   * The upload failed. Drawn as the danger `Banner` (`kind="validation"`) **inside the photo group** —
+   * above the act in the 120 composition's right column, under the circle and act on the 72 row — so a
+   * name that saved is not put in doubt.
+   */
+  error?: string;
+  /** The refusal banner's bold first line ("That photo did not upload"). */
+  errorTitle?: string;
+  /** A sentence under the acts — what the fallback will be, where the photo ends up. `--text-secondary`. */
+  helper?: React.ReactNode;
+  /** The photo is being written. The circle shimmers; the act is not offered greyed out for a reason it cannot state. */
+  loading?: boolean;
+  disabled?: boolean;
+  style?: React.CSSProperties;
+}
+
+/**
+ * ONE image, captured into the circle it will live in — never a `Dropzone`. The fallback is on screen
+ * (the initials), which is what makes "optional" honest, and is why there is no Skip act.
+ */
+export function PhotoField(props: PhotoFieldProps): JSX.Element;

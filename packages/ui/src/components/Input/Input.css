@@ -65,7 +65,8 @@
 }
 
 .hg-input-helper {
-  color: var(--text-tertiary);
+  /* Secondary, not tertiary: the sentence under a field is load-bearing (`F7-11`). */
+  color: var(--text-secondary);
 }
 
 /* The success words sit at their own width under the field, not stretched across the column. */

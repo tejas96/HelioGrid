@@ -19,6 +19,7 @@ import type { InvitationRepository } from '../invitation/repository';
 import type { TenantRepository } from '../tenant/repository';
 import type { SessionSignals } from '../transport/transport';
 import type { UserRepository } from '../user/repository';
+import { createFirstRunHold } from './first-run';
 import type { HeldWork } from './held-work';
 import { type CodeCheck, createInviteJoin } from './invite-join';
 import type { SessionStore } from './types';
@@ -112,10 +113,12 @@ export function createSessionStore(config: {
       return { kind: 'refused', outcome, triesLeft: triesLeft() };
     }
   };
+  const firstRun = createFirstRunHold();
   const inviteJoin = createInviteJoin({
     invitation: config.invitation,
     checkCode,
     admit: (user) => admit(user, 'sign-in'),
+    firstRun,
   });
 
   // The boot check runs on the FIRST subscription, never at construction: a cookie the server
@@ -181,6 +184,8 @@ export function createSessionStore(config: {
     },
     joinWithInvite: inviteJoin.joinWithInvite,
     retryJoin: inviteJoin.retryJoin,
+    firstRunOwed: () => firstRun.owedTo(snapshot.user),
+    endFirstRun: firstRun.end,
     retryBoot: checkSession,
     async rereadUser() {
       const projection = await config.auth.session().catch(() => null);

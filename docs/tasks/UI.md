@@ -71,7 +71,7 @@ are paper, not tiles. `PagedDocument`'s cards stay paper.
 
 | Component | Gap | Found by |
 |---|---|---|
-| `OtpInput` · `Input` | Helper is fixed `--text-tertiary` 12px, which `N4` forbids for anything load-bearing — so every screen with a load-bearing sentence beside a field draws its own `--text-secondary` line outside the component and the spacing becomes a per-screen decision. | `SCR-M01-08` · `SCR-M01-09` |
+| `OtpInput` | Helper is fixed `--text-tertiary` 12px, which `N4` forbids for anything load-bearing — so every screen with a load-bearing sentence beside a field draws its own `--text-secondary` line outside the component and the spacing becomes a per-screen decision. | `SCR-M01-08` |
 | `NumberField` · `OptionCardGroup` | Field `error` is described, not announced. The `Text` primitive now carries `live` (`PhoneField` uses it); these two still need it wired to their own error props. | `SCR-M01-04` |
 | `Stepper` | The `progress` counter ("Step 1 of 3") and the fallback names ("Steps", "Progress") are English inside the component on both halves, so a Hindi screen reads an English counter. Needs the counter as a caller-supplied sentence, or a `counter` prop the caller translates. | `SCR-M01-02` |
 | `CoachMark` | **The counter still falls back to English** — "Step n of m" (`coach-mark-place.ts`) where a caller passes no `counterLabel`, which `CoachMarkSequence` never does. Make `counterLabel` required wherever a counter shows once a sequence has a caller. | `T-SHELL-001` |

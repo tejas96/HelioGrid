@@ -3,6 +3,22 @@ export { admit, refreshVerdict } from './admission';
 export { hasCompany, homeOf } from './company';
 export type { DoorNotice, DoorView } from './door-view';
 export { doorNotice, doorView } from './door-view';
+export type {
+  FirstRunCarry,
+  FirstRunPhoto,
+  FirstRunPhotoChoice,
+  FirstRunProfileEvent,
+  FirstRunProfileFrame,
+  FirstRunProfileFrameKind,
+  FirstRunProfileState,
+} from './first-run-profile';
+export {
+  firstRunProfileFrame,
+  firstRunProfileReducer,
+  firstRunProfileStart,
+  PROFILE_NAME_MAX_LENGTH,
+  PROFILE_PHOTO_MAX_SIDE_PX,
+} from './first-run-profile';
 export type { GoogleLinkFrame, PhoneGoogle } from './google-frame';
 export { googleLinkFrame, phoneGoogle } from './google-frame';
 export type {

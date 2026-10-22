@@ -1,10 +1,14 @@
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { initialsOf } from '../Avatar/Avatar.types';
+import { Banner } from '../Banner/Banner.native';
 import { Button } from '../Button/Button.native';
+import type { FocusHandle } from '../SearchField/SearchField.types';
 import type { PhotoFieldProps } from './PhotoField.types';
 
 interface NativePhotoFieldProps extends PhotoFieldProps {
@@ -19,10 +23,11 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-4'],
     minWidth: 0,
   },
-  mark: { flexShrink: 0, borderRadius: theme.radius['r-pill'] },
-  /* The refusal rings the CIRCLE, not the screen — a screen-level banner would put a name that
-     saved in doubt. RN cannot inset a ring, so it is a border of the same weight. */
-  markError: { borderWidth: 2, borderColor: theme.colors.danger },
+  wide: { gap: theme.spacing['sp-6'] },
+  mark: { flexShrink: 0, borderRadius: theme.radius['r-pill'], overflow: 'hidden' },
+  /* The photo is being written: the web half sweeps a shimmer; RN has no CSS gradient loop, so the
+     circle rests dimmed until the write answers. */
+  waiting: { opacity: 0.5 },
   /* A nameless circle is NEUTRAL: an empty tinted disc reads as a rendering fault rather than as
      "no name yet", and `F7-19` forbids inventing an image to fill it. */
   nameless: {
@@ -36,8 +41,60 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-2'],
     minWidth: 0,
   },
-  message: { flexBasis: '100%' },
+  column: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 240,
+    minWidth: 0,
+    alignItems: 'flex-start',
+    gap: theme.spacing['sp-3'],
+  },
+  across: { flexBasis: '100%', minWidth: 0 },
 });
+
+interface ActsProps {
+  icon: NonNullable<PhotoFieldProps['actIcon']>;
+  label: string;
+  onChoose?: () => void;
+  /** Given only when a photo is chosen. */
+  onRemove?: () => void;
+  removeLabel?: string;
+  inert: boolean;
+}
+
+function Acts({ icon, label, onChoose, onRemove, removeLabel, inert }: ActsProps) {
+  // *Remove* goes away once pressed: the focus stays in the group, on the act that takes its place.
+  const chooseRef = useRef<FocusHandle>(null);
+  return (
+    <View style={styles.acts}>
+      <Button
+        ref={chooseRef}
+        variant="secondary"
+        size="md"
+        icon={<ShellGlyph name={icon} size="md" tone="primary" />}
+        onClick={onChoose}
+        disabled={inert || onChoose === undefined}
+      >
+        {label}
+      </Button>
+      {/* Removing destroys nothing — the file is still the person's and the initials come back —
+          so it needs no confirmation (`N8`). It appears only when there is something to remove. */}
+      {onRemove !== undefined && removeLabel !== undefined ? (
+        <Button
+          variant="ghost"
+          size="md"
+          onClick={() => {
+            onRemove();
+            chooseRef.current?.focus();
+          }}
+          disabled={inert}
+        >
+          {removeLabel}
+        </Button>
+      ) : null}
+    </View>
+  );
+}
 
 /**
  * ONE image, captured into the circle it will live in.
@@ -45,7 +102,7 @@ const styles = StyleSheet.create({
  * The fallback is on screen, which is what makes "optional" honest: with no photo the circle shows
  * the caller's initials, so the frame shows the exact result of not choosing one. There is no
  * `Skip` act — a photo has no gate to skip past, and a second control would invent a decision
- * nobody has to make.
+ * nobody has to make. Nothing drags on a phone, so `onDrop` is not read here.
  *
  * `Avatar` derives its fallback from `name`, so an EMPTY name renders an empty tinted circle. That
  * is a rendering fault rather than "no name yet", so a nameless field draws a neutral mark instead.
@@ -60,58 +117,68 @@ export function PhotoField({
   chooseLabel,
   replaceLabel,
   removeLabel,
+  actIcon = 'camera',
   error,
+  errorTitle,
   helper,
   loading = false,
   disabled = false,
   style,
 }: NativePhotoFieldProps) {
-  const message = error ?? helper;
   const hasPhoto = src !== undefined;
   const nameless = initialsOf(name).length === 0;
 
+  const circle =
+    nameless && !hasPhoto ? (
+      <View style={[styles.nameless, { width: size, height: size }]} />
+    ) : (
+      <Avatar src={src} name={name} size={size} />
+    );
+  const banner =
+    error === undefined ? null : (
+      <Banner kind="validation" title={errorTitle}>
+        {error}
+      </Banner>
+    );
+  const acts = (
+    <Acts
+      icon={actIcon}
+      label={hasPhoto && replaceLabel !== undefined ? replaceLabel : chooseLabel}
+      onChoose={onChoose}
+      onRemove={hasPhoto ? onRemove : undefined}
+      removeLabel={removeLabel}
+      inert={disabled || loading}
+    />
+  );
+  const message =
+    helper === undefined ? null : (
+      <Text variant="caption" color="secondary" style={size === 120 ? undefined : styles.across}>
+        {helper}
+      </Text>
+    );
+
   return (
     <View
-      style={[styles.row, style]}
+      style={[styles.row, size === 120 ? styles.wide : undefined, style]}
       accessibilityRole="none"
       accessibilityLabel={label}
       // The group is named, and its parts stay individually reachable — `accessible` on a wrapper
       // holding controls folds them into one element and takes the acts out of reach.
       accessible={false}
     >
-      <View style={[styles.mark, error === undefined ? undefined : styles.markError]}>
-        {nameless && !hasPhoto ? (
-          <View style={[styles.nameless, { width: size, height: size }]} />
-        ) : (
-          <Avatar src={src} name={name} size={size} />
-        )}
-      </View>
-      <View style={styles.acts}>
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={onChoose}
-          disabled={disabled || loading || onChoose === undefined}
-        >
-          {hasPhoto && replaceLabel !== undefined ? replaceLabel : chooseLabel}
-        </Button>
-        {/* Removing destroys nothing — the file is still the person's and the initials come back —
-            so it needs no confirmation (`N8`). It appears only when there is something to remove. */}
-        {hasPhoto && onRemove !== undefined && removeLabel !== undefined ? (
-          <Button variant="ghost" size="sm" onClick={onRemove} disabled={disabled || loading}>
-            {removeLabel}
-          </Button>
-        ) : null}
-      </View>
-      {message === undefined ? null : (
-        <Text
-          variant="caption"
-          color={error === undefined ? 'secondary' : 'danger'}
-          live={error !== undefined}
-          style={styles.message}
-        >
+      <View style={[styles.mark, loading ? styles.waiting : undefined]}>{circle}</View>
+      {size === 120 ? (
+        <View style={styles.column}>
+          {banner}
+          {acts}
           {message}
-        </Text>
+        </View>
+      ) : (
+        <>
+          {acts}
+          {banner === null ? null : <View style={styles.across}>{banner}</View>}
+          {message}
+        </>
       )}
     </View>
   );

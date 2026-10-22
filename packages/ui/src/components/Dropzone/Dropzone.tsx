@@ -7,6 +7,7 @@ import { DropzoneHeld } from './DropzoneHeld';
 import { DropzoneThumbs } from './DropzoneThumbs';
 import { captureLine, sizeErrorMessage } from './dropzone-copy';
 import { HELD_DEFAULTS, heldCountWords, heldTotal } from './dropzone-held';
+import { pickedFileOf } from './picked-file';
 
 interface WebDropzoneProps extends DropzoneProps {
   className?: string;
@@ -14,12 +15,7 @@ interface WebDropzoneProps extends DropzoneProps {
 }
 
 function toPicked(list: FileList): PickedFile[] {
-  return Array.from(list, (file) => ({
-    name: file.name,
-    size: file.size,
-    type: file.type,
-    source: file,
-  }));
+  return Array.from(list, pickedFileOf);
 }
 
 /**
