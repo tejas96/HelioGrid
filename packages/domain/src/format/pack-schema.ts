@@ -9,6 +9,7 @@ const modeLabel = z.object({ mode: z.string(), label: packLabel });
 /** `pack.formats` as a row stores it, validated whole and re-minted (`T-FCORE-017`). */
 export const FORMAT_PACK_SCHEMA: z.ZodType<FormatPack, z.ZodTypeDef, unknown> = z.object({
   id: packMarketCode,
+  name: packLabel,
   locale: z.string(),
   currency: z.string(),
   currencySymbol: z.string().nullable(),

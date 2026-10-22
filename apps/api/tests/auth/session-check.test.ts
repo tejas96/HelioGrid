@@ -14,7 +14,7 @@ const PATH = '/auth/session';
 
 interface Answer {
   readonly signedIn?: boolean;
-  readonly actor?: { readonly userId: string };
+  readonly actor?: { readonly userId: string; readonly unitPreference: string };
   readonly error?: { readonly code: string };
 }
 
@@ -52,5 +52,18 @@ describe.skipIf(skip)('the boot check, over HTTP', () => {
     const reply = await http.call<Answer>('GET', PATH);
     expect(reply.status).toBe(HttpStatus.OK);
     expect(reply.body.actor?.userId).toBe(signedIn.actor.userId);
+    expect(reply.body.actor?.unitPreference).toBe('metric');
+  });
+
+  it('a unit the person saved is the one the session answers', async () => {
+    await http.signIn();
+    try {
+      const saved = await http.call('PATCH', '/users/me', { unitPreference: 'imperial' });
+      expect(saved.status).toBe(HttpStatus.OK);
+      const reply = await http.call<Answer>('GET', PATH);
+      expect(reply.body.actor?.unitPreference).toBe('imperial');
+    } finally {
+      await http.call('PATCH', '/users/me', { unitPreference: 'metric' });
+    }
   });
 });

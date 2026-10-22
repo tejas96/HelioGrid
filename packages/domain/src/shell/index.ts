@@ -29,6 +29,12 @@ export {
 export type { ComposedHome } from './home';
 export { composedHome, HOME_LADDER, homeFor, homesOf } from './home';
 export type {
+  PreferenceSource,
+  ProfilePreferencesFacts,
+  ProfilePreferencesView,
+} from './profile-preferences';
+export { profilePreferencesView } from './profile-preferences';
+export type {
   SettingsGroup,
   SettingsGroupRows,
   SettingsListGroup,

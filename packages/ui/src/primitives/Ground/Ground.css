@@ -33,7 +33,9 @@
 /* `PagedDocument`'s cards are paper standing where a sheet would, on the grey desk its screen sets
    it on; a tile there would vanish, and without this entry a control on them would read the desk. */
 .hg-paged-document-card,
-.hg-paged-document-unavailable {
+.hg-paged-document-unavailable,
+/* A settings page's raised card (`SettingsCard`): a page ground over the page. */
+.hg-settings-card {
   /* biome-ignore lint/plugin/raw-white-css: ground — the ground itself, and Surface, which sets it */
   --hg-ground: var(--surface);
   --hg-control-fill: var(--fill);

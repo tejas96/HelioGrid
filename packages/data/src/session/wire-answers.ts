@@ -55,6 +55,7 @@ export function userOf(projection: SessionProjection): SessionUser {
     name: projection.actor.displayName,
     phoneE164: projection.actor.phoneE164,
     interfaceLanguage: uiLanguageOrSource(projection.actor.interfaceLanguage),
+    unitPreference: projection.actor.unitPreference,
     tenant:
       projection.membership === null
         ? null

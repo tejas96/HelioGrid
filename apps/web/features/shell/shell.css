@@ -18,6 +18,11 @@
   padding: var(--sp-8) var(--screen-pad-mobile) var(--sp-10);
 }
 
+/* A page of dense rows takes the tighter side padding its board draws (`SCR-M01-11`). */
+.hg-shell-page[data-pad="functional"] {
+  padding-inline: var(--screen-pad-mobile-fn);
+}
+
 /* The home switcher's list keeps inside the window at 375: its drawn width is wider than the room
    right of the rail and the page's sides there. */
 .hg-shell-page .hg-menu-list {
@@ -36,8 +41,14 @@
 }
 
 @media (min-width: 968px) {
-  .hg-shell-page {
+  .hg-shell-page,
+  .hg-shell-page[data-pad="functional"] {
     padding-inline: var(--screen-pad-desktop);
+  }
+
+  /* A page of dense rows opens `--sp-6` under the bar, as its board draws it (`SCR-M01-11`). */
+  .hg-shell-page[data-pad="functional"] {
+    padding-top: var(--sp-6);
   }
 
   .hg-shell-search-field {

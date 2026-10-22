@@ -29,6 +29,7 @@ export const CHECKING: SessionSnapshot = {
   setupPutOff: [],
   ended: null,
   unreachable: false,
+  refusedPreferences: [],
 };
 
 /** The door, with nothing held. */

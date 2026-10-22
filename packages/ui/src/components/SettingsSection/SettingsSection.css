@@ -1,0 +1,73 @@
+/* A settings page's section card (`SCR-SHELL-01`): a raised white card, a title row, and rows of
+   label and control split by hairlines — the owner's settings-page ruling, drawn on the M01 board. */
+/* The card's look, once: a page ground (`Ground.css`) raised over the page. */
+.hg-settings-card {
+  border-radius: var(--r-tile);
+  background: var(--hg-ground);
+  box-shadow: var(--e2);
+}
+
+.hg-settings-section {
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-2) 0;
+}
+
+.hg-settings-section-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-6) var(--sp-1);
+}
+
+.hg-settings-section-title {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.hg-settings-section-rows > * + * {
+  border-top: 1px solid var(--line-soft);
+}
+
+.hg-settings-section-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  min-height: var(--sp-16);
+  box-sizing: border-box;
+  padding: var(--sp-2) var(--sp-6);
+}
+
+.hg-settings-section-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.hg-settings-section-label-line {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.hg-settings-section-label {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.hg-settings-section-caption {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+
+.hg-settings-section-control {
+  flex-shrink: 0;
+}

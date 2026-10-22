@@ -5,7 +5,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { styles, underPill } from '../styles';
 import { useKeyboardUp } from '../use-keyboard-up';
 
-interface ShellFrameProps {
+export interface ShellFrameProps {
   topBar: ReactNode;
   /** The pill's items; none hides the pill, as Frame 8 does. */
   items: BottomNavItem[];
@@ -20,6 +20,11 @@ interface ShellFrameProps {
   stickyHead?: ReactNode;
   /** What scrolls away above the held head — Team's *Invite teammate* (`SCR-M01-12` m-default). */
   lead?: ReactNode;
+  /**
+   * The page's side padding: `expressive` (the default) or the tighter `functional` a board of
+   * dense rows draws (`SCR-M01-11`, `--screen-pad-mobile-fn`).
+   */
+  pad?: 'expressive' | 'functional';
   children: ReactNode;
 }
 
@@ -36,6 +41,7 @@ export function ShellFrame({
   onScrolledChange,
   stickyHead,
   lead,
+  pad = 'expressive',
   children,
 }: ShellFrameProps) {
   const insets = useSafeAreaInsets();
@@ -68,6 +74,7 @@ export function ShellFrame({
               ? { paddingBottom: underPill(insets.bottom) }
               : { paddingTop: 0, paddingBottom: insets.bottom },
             stickyHead === undefined && lead === undefined ? null : styles.listRhythm,
+            pad === 'functional' ? styles.functionalPad : null,
           ]}
         >
           {lead === undefined ? null : (

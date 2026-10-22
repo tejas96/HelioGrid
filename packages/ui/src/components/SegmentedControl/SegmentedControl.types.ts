@@ -4,6 +4,12 @@ export interface SegmentedOption {
   value: string;
   label: string;
   /**
+   * BCP-47 tag for this segment's own words when they differ from the page's — a language
+   * picker's हिन्दी read under English rules fails `F3-03`'s accessible name. Omitted, the segment
+   * inherits the document's language.
+   */
+  lang?: string;
+  /**
    * A tabular numeral inside the segment — no pill: a pill inside a 32px pill is mush. It takes
    * `--text-secondary`, because the track is `--canvas-sunken` — a third background, where
    * `--text-tertiary` measures 4.48 — and a count is a value the reader must read.
@@ -38,6 +44,12 @@ export interface SegmentedControlProps {
    * this control, and a highlighted field with no name is a highlight of nothing.
    */
   label?: string;
+  /**
+   * The group's spoken name when its visible name sits outside it — a settings row's label to its
+   * left (`SCR-M01-11` at 1536) — so no second visible line is drawn. It makes the control a field,
+   * as `label` does; `label` wins.
+   */
+  ariaLabel?: string;
   /**
    * **The caller's validation failure** — danger ring on the pill container, danger words under
    * it, `aria-invalid` on the group, described rather than announced. `M06-22` (P0) kills the

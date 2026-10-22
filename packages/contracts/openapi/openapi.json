@@ -900,13 +900,21 @@
                             "hi",
                             "mr"
                           ]
+                        },
+                        "unitPreference": {
+                          "type": "string",
+                          "enum": [
+                            "metric",
+                            "imperial"
+                          ]
                         }
                       },
                       "required": [
                         "userId",
                         "phoneE164",
                         "displayName",
-                        "interfaceLanguage"
+                        "interfaceLanguage",
+                        "unitPreference"
                       ]
                     },
                     "membership": {
@@ -1420,13 +1428,21 @@
                             "hi",
                             "mr"
                           ]
+                        },
+                        "unitPreference": {
+                          "type": "string",
+                          "enum": [
+                            "metric",
+                            "imperial"
+                          ]
                         }
                       },
                       "required": [
                         "userId",
                         "phoneE164",
                         "displayName",
-                        "interfaceLanguage"
+                        "interfaceLanguage",
+                        "unitPreference"
                       ]
                     },
                     "membership": {
@@ -2763,13 +2779,21 @@
                                 "hi",
                                 "mr"
                               ]
+                            },
+                            "unitPreference": {
+                              "type": "string",
+                              "enum": [
+                                "metric",
+                                "imperial"
+                              ]
                             }
                           },
                           "required": [
                             "userId",
                             "phoneE164",
                             "displayName",
-                            "interfaceLanguage"
+                            "interfaceLanguage",
+                            "unitPreference"
                           ]
                         },
                         "membership": {
@@ -22031,13 +22055,21 @@
                             "hi",
                             "mr"
                           ]
+                        },
+                        "unitPreference": {
+                          "type": "string",
+                          "enum": [
+                            "metric",
+                            "imperial"
+                          ]
                         }
                       },
                       "required": [
                         "userId",
                         "phoneE164",
                         "displayName",
-                        "interfaceLanguage"
+                        "interfaceLanguage",
+                        "unitPreference"
                       ]
                     },
                     "membership": {
@@ -28601,13 +28633,21 @@
                             "hi",
                             "mr"
                           ]
+                        },
+                        "unitPreference": {
+                          "type": "string",
+                          "enum": [
+                            "metric",
+                            "imperial"
+                          ]
                         }
                       },
                       "required": [
                         "userId",
                         "phoneE164",
                         "displayName",
-                        "interfaceLanguage"
+                        "interfaceLanguage",
+                        "unitPreference"
                       ]
                     },
                     "membership": {

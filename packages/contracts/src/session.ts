@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { roleSetSchema, uuidSchema } from './common';
+import { measurementSystemSchema, roleSetSchema, uuidSchema } from './common';
 import { uiLanguageResponseSchema } from './locale';
 
 /**
@@ -35,6 +35,8 @@ export const actorSchema = z.object({
    * USER, never per tenant; written by `PATCH /users/me`.
    */
   interfaceLanguage: uiLanguageResponseSchema,
+  /** The person's own measurement preference (`F3-23`); written by `PATCH /users/me`. */
+  unitPreference: measurementSystemSchema,
 });
 export type Actor = z.infer<typeof actorSchema>;
 

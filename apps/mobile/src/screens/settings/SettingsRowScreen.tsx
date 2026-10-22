@@ -6,6 +6,7 @@ import { EmptyState } from '@heliogrid/ui';
 import type { StaticScreenProps } from '@react-navigation/native';
 import type { ComponentType } from 'react';
 import { CompanyProfileSettingsScreen } from '../company-profile';
+import { ProfileScreen } from '../profile';
 import { ShellNotFoundState } from '../shell/components/ShellNotFoundState';
 import { ShellPage } from '../shell/components/ShellPage';
 import { TeamScreen } from '../team';
@@ -15,6 +16,7 @@ type Props = StaticScreenProps<{ segment: string }>;
 
 /** The settings screens that have landed; every other row still opens the placeholder below. */
 const BUILT_ROW: Partial<Record<SettingsRow, ComponentType>> = {
+  profile: ProfileScreen,
   company_profile: CompanyProfileSettingsScreen,
   team: TeamScreen,
 };

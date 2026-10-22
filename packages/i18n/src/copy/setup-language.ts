@@ -3,9 +3,9 @@
  * own name, where an unmade choice came from, and what a failed save says — authored once for both
  * platforms (Law 11). The component picks no word by state; it draws what this returns.
  */
-import { UI_LANGUAGES, UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
+import { UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
 import type { ExplainerPagerWords } from '@heliogrid/domain';
-import { LANGUAGE_META } from '../languages';
+import { languageOptions } from '../languages';
 import type { Translator } from '../runtime';
 import { type ExplainerWords, explainerPagerWords } from './explainer';
 import { SIGN_IN } from './sign-in';
@@ -81,11 +81,11 @@ export function setupLanguageWords(
       ...explainerPagerWords(translate),
     },
     group: translate(SETUP_LANGUAGE.group),
-    options: UI_LANGUAGES.map((language) => ({
-      value: language,
-      title: LANGUAGE_META[language].endonym,
-      lang: LANGUAGE_META[language].tag,
-      ...(language === unchosen ? { current: true as const, currentLabel: origin } : {}),
+    options: languageOptions().map(({ value, label, lang }) => ({
+      value,
+      title: label,
+      lang,
+      ...(value === unchosen ? { current: true as const, currentLabel: origin } : {}),
     })),
     notice: facts.device === null ? translate(SETUP_LANGUAGE.notInSet) : null,
     failure: facts.failed

@@ -53,6 +53,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **DONE WHEN:**
 - Given a design, Then all six emitters derive their lines over one context (MS10-21) with worst-tier header confidence and correct subtotal/total composition (MS10-22), stable keys and waste defaults (MS10-23), documented cable-length precedence (MS10-25), price-book resolution rounding up (MS10-26), disjoint mounting buckets (MS10-27) and the full emitter coverage listed (MS10-28).
 - MS10-24 is P1 and carries no separate line in the document's P0 acceptance block; its requirement text above is its acceptance.
+- Given a user who chose Feet on Profile & preferences, when they open a BOM quantity, then it is metric (`F3-23`; carried from `T-M01-011`'s AC-2, whose live half needs a BOM). → proof: QA web · ios · android a BOM quantity renders metric with Feet chosen
 - The ported POC tests for this area pass unchanged in the new project.
 
 ### T-MS-303 · Cable-length precedence and price-book resolution (port)

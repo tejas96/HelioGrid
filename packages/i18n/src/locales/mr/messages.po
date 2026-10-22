@@ -976,6 +976,11 @@ msgid "Decline this invite?"
 msgstr "हे आमंत्रण नाकारायचे?"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:31
+msgid "Default for {market}"
+msgstr "{market} साठी डीफॉल्ट"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:68
 msgid "Delivery"
 msgstr "डिलिव्हरी"
@@ -1084,6 +1089,11 @@ msgstr "कारखाने, कार्यालये, गोदामे"
 #: src/copy/setup-what-you-sell.ts:64
 msgid "Factories, warehouses and offices — bigger rooftops, sold to a business."
 msgstr "कारखाने, गोदामे आणि कार्यालये — मोठी छते, व्यवसायाला विकलेली."
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:29
+msgid "Feet"
+msgstr "फूट"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:83
@@ -1376,9 +1386,15 @@ msgid "Keep the invite"
 msgstr "आमंत्रण ठेवा"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:26
 #: src/copy/setup-language.ts:21
 msgid "Language"
 msgstr "भाषा"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:23
+msgid "Language and units"
+msgstr "भाषा आणि एकके"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:27
@@ -1454,6 +1470,16 @@ msgstr "मार्केटिंग"
 #: src/copy/provenance.ts:13
 msgid "Measured"
 msgstr "मोजलेले"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:27
+msgid "Measurements"
+msgstr "मापे"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:28
+msgid "Metres"
+msgstr "मीटर"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:33
@@ -1597,6 +1623,11 @@ msgstr "अजून प्रकाशित नाही"
 #: src/copy/company-profile.ts:53
 msgid "Not saved · our end · nothing typed is lost"
 msgstr "जतन झाले नाही · अडचण आमच्या बाजूने · लिहिलेले काहीही गमावलेले नाही"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:33
+msgid "Not saved. Try again."
+msgstr "सेव्ह झाले नाही. पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:27
@@ -3088,6 +3119,7 @@ msgstr "तुमचा प्रवेश काढून टाकला आ�
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:37
+#: src/copy/profile-preferences.ts:22
 msgid "Your account"
 msgstr "तुमचे खाते"
 
@@ -3105,6 +3137,11 @@ msgstr "तुमची उत्तरे साठवली गेली न�
 #: src/copy/setup-what-you-sell.ts:21
 msgid "Your answers set the starting point for every proposal HelioGrid builds."
 msgstr "तुमची उत्तरे HelioGrid तयार करत असलेल्या प्रत्येक प्रस्तावाचा सुरुवातीचा बिंदू ठरवतात."
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:32
+msgid "Your choice"
+msgstr "तुमची निवड"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:27
@@ -3147,6 +3184,11 @@ msgstr "तुमचे चालू खाते"
 #: src/copy/api-error.ts:31
 msgid "Your current plan doesn't include this."
 msgstr "तुमच्या सध्याच्या प्लॅनमध्ये हे समाविष्ट नाही."
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:30
+msgid "Your device's language"
+msgstr "तुमच्या डिव्हाइसची भाषा"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-language.ts:22
@@ -3263,6 +3305,16 @@ msgstr "तुमची विनंती मालकाकडे आहे"
 #: src/copy/company-signup.ts:79
 msgid "Your request may already be with the owner."
 msgstr "तुमची विनंती कदाचित मालकापर्यंत पोहोचली असेल."
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:24
+msgid "Your role"
+msgstr "तुमची भूमिका"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:25
+msgid "Your roles"
+msgstr "तुमच्या भूमिका"
 
 #. js-lingui-explicit-id
 #: src/copy/settings.ts:25

@@ -14,6 +14,7 @@ const aUser: SessionUser = {
   name: 'Asha',
   phoneE164: '+919876543210',
   interfaceLanguage: 'en',
+  unitPreference: 'metric',
   tenant: null,
 };
 

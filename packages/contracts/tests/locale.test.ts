@@ -44,6 +44,7 @@ describe('a language on the wire — open where a response carries it, closed wh
         phoneE164: '+919876543210',
         displayName: 'Asha',
         interfaceLanguage: 'ta',
+        unitPreference: 'metric',
       }).success,
     ).toBe(true);
     expect(tenantSchema.shape.defaultLanguage.safeParse('ta').success).toBe(true);

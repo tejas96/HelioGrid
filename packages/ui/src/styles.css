@@ -126,6 +126,7 @@
 @import "./components/PendingAction/IndeterminateRail.css";
 @import "./components/PendingAction/PendingAction.css";
 @import "./components/PreviewFrame/PreviewFrame.css";
+@import "./components/ProfilePreferences/ProfilePreferences.css";
 @import "./components/ProgressBar/ProgressBar.css";
 @import "./components/Provenance/Provenance.css";
 @import "./components/QRCode/QRCode.css";
@@ -138,6 +139,7 @@
 @import "./components/SegmentedControl/SegmentedControl.css";
 @import "./components/Select/Select.css";
 @import "./components/SettingsList/SettingsList.css";
+@import "./components/SettingsSection/SettingsSection.css";
 @import "./components/SetupLanguage/SetupLanguage.css";
 @import "./components/SetupInviteTeam/SetupInviteTeam.css";
 @import "./components/SetupReady/SetupReady.css";

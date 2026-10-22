@@ -1,4 +1,4 @@
-import type { PlatformKind } from '@heliogrid/contracts';
+import type { PlatformKind, UpdateUserProfile } from '@heliogrid/contracts';
 import {
   CHECKING,
   canRenew,
@@ -6,6 +6,7 @@ import {
   OTP_MAX_FAILED_VERIFIES,
   type OtpRequestOutcome,
   type OtpVerifyResult,
+  type ProfilePreference,
   type SessionEvent,
   type SessionSnapshot,
   type SessionUser,
@@ -55,6 +56,50 @@ export function createSessionStore(config: {
   const emit = (next: SessionSnapshot) => {
     snapshot = next;
     for (const listener of listeners) listener();
+  };
+
+  /**
+   * Persists one of the person's own preferences after the snapshot already moved. One
+   * preference's writes go out one after another, so the server ends on the last tap; only the
+   * last tap's answer speaks, and only to the person who tapped: a refusal is held as
+   * `refusedPreferences` for the control that made the choice, beside any other refused one, and
+   * the next save of it that lands clears it. A queued write whose person signed out meanwhile never goes out under the next
+   * person's cookies. Two quick taps whose answers came back out of order would otherwise show the
+   * refusal on a value that was stored (`packages/data/CLAUDE.md`, Traps).
+   */
+  const preferenceSaves: Record<ProfilePreference, { latest: number; queue: Promise<unknown> }> = {
+    language: { latest: 0, queue: Promise.resolve() },
+    units: { latest: 0, queue: Promise.resolve() },
+  };
+  const savePreference = async (
+    kind: ProfilePreference,
+    patch: UpdateUserProfile,
+  ): Promise<boolean> => {
+    const saves = preferenceSaves[kind];
+    saves.latest += 1;
+    const ticket = saves.latest;
+    const savedBy = snapshot.user?.id;
+    const answer = saves.queue.then(() =>
+      snapshot.user?.id !== savedBy
+        ? false
+        : config.user.updateMe(patch).then(
+            () => true,
+            () => false,
+          ),
+    );
+    saves.queue = answer;
+    const saved = await answer;
+    if (ticket !== saves.latest || snapshot.user?.id !== savedBy) return saved;
+    const refused = snapshot.refusedPreferences.includes(kind);
+    if (!saved && !refused) {
+      emit({ ...snapshot, refusedPreferences: [...snapshot.refusedPreferences, kind] });
+    } else if (saved && refused) {
+      emit({
+        ...snapshot,
+        refusedPreferences: snapshot.refusedPreferences.filter((other) => other !== kind),
+      });
+    }
+    return saved;
   };
 
   /** Every move is domain's `sessionAfter`; one that changes nothing wakes no listener. */
@@ -243,12 +288,15 @@ export function createSessionStore(config: {
       if (user.interfaceLanguage !== next) {
         emit({ ...snapshot, user: { ...user, interfaceLanguage: next } });
       }
-      try {
-        await config.user.updateMe({ interfaceLanguage: next });
-        return true;
-      } catch {
-        return false;
+      return savePreference('language', { interfaceLanguage: next });
+    },
+    async setUnitPreference(next) {
+      const user = snapshot.user;
+      if (user === null) return false;
+      if (user.unitPreference !== next) {
+        emit({ ...snapshot, user: { ...user, unitPreference: next } });
       }
+      return savePreference('units', { unitPreference: next });
     },
     chooseHome(preset) {
       if (snapshot.status === 'authenticated') emit({ ...snapshot, chosenHome: preset });

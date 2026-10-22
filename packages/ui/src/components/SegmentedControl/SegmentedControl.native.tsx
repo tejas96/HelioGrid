@@ -40,6 +40,7 @@ export function SegmentedControl({
   value,
   onChange,
   label,
+  ariaLabel,
   error,
   style,
 }: NativeSegmentedControlProps) {
@@ -54,7 +55,7 @@ export function SegmentedControl({
   const slide = useRef(new Animated.Value(0)).current;
   const segmentWidth = items.length > 0 ? Math.max(0, trackWidth - PAD * 2) / items.length : 0;
   const reasoned = items.filter((option) => option.disabled === true && hasReason(option));
-  const isField = label !== undefined || error !== undefined;
+  const isField = label !== undefined || ariaLabel !== undefined || error !== undefined;
 
   useEffect(() => {
     Animated.timing(slide, {
@@ -78,6 +79,7 @@ export function SegmentedControl({
       ) : null}
       <View
         accessibilityRole={isField ? 'radiogroup' : undefined}
+        accessibilityLabel={label === undefined ? ariaLabel : undefined}
         onLayout={onLayout}
         style={[
           styles.track,
@@ -143,7 +145,12 @@ function Segment({ option, active, isField, onSelect }: SegmentProps) {
       style={styles.segment}
     >
       {off ? <OffGlyph /> : null}
-      <Text variant="body-sm" color={active ? 'primary' : 'secondary'} style={styles.word}>
+      <Text
+        variant="body-sm"
+        color={active ? 'primary' : 'secondary'}
+        lang={option.lang}
+        style={styles.word}
+      >
         {option.label}
       </Text>
       {option.count !== undefined ? (

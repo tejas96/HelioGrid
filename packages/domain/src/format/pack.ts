@@ -1,6 +1,7 @@
 import { IN_MARKET, type MarketCode } from '../market/code';
 import { type ChecklistRow, IN_DOCUMENT_CHECKLIST } from './checklist';
 import type { CalendarDate } from './holidays';
+import type { PackLabel } from './languages';
 import { IN_UTILITIES, type UtilityDirectory } from './utility';
 import { type DisplayVocabulary, IN_VOCABULARY } from './vocabulary';
 
@@ -53,6 +54,8 @@ export type MeasurementSystem = (typeof MEASUREMENT_SYSTEMS)[number];
 export interface FormatPack {
   /** The market's code (`market/code.ts`), never a label (`F1-09`). */
   readonly id: MarketCode;
+  /** The market's name in each language — what a default names it by (`SCR-M01-11`, *Default for India*). */
+  readonly name: PackLabel;
   /**
    * The market's GROUPING and date ORDER locale — never the reader's (`F3-20`); a date's names are
    * the reader's (`F3-22`, `datetime.ts`). `withLatinDigits` is not decoration: it pins Latin digits
@@ -131,6 +134,7 @@ export function withLatinDigits(tag: string): string {
  */
 export const IN_FORMATS: FormatPack = {
   id: IN_MARKET,
+  name: { en: 'India', hi: 'भारत', mr: 'भारत' },
   /** `en-IN` groups `4,52,471`; the `latn` pin holds `F3-21` whatever tag a pack is authored with. */
   locale: withLatinDigits('en-IN'),
   currency: 'INR',
