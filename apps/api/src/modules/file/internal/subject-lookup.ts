@@ -15,4 +15,9 @@ export const SUBJECT_LOOKUPS: Readonly<Record<FileSubjectKind, SubjectLookup>> =
   tenant: isTheCompany,
   /** The company's catalog is the company's own: its ref is the company's id. */
   catalog: isTheCompany,
+  /**
+   * A person's own photo: the rule refuses every id but the caller's before this runs
+   * (`FileService.declare`), and the session guard already admitted the caller to this company.
+   */
+  user_account: async () => true,
 };

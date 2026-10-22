@@ -60,7 +60,7 @@ describe('mayUploadFile / mayReadFile — the kind names the capability', () => 
     [['sales_executive', 'epc_owner'], true],
     [[], false],
   ] as const)('%j may upload the logo: %s', (roles, allowed) => {
-    expect(mayUploadFile(roles, FILE_SUBJECT_RULES.tenant)).toBe(allowed);
+    expect(mayUploadFile(roles, FILE_SUBJECT_RULES.tenant, false)).toBe(allowed);
   });
 
   it.each([
@@ -71,8 +71,35 @@ describe('mayUploadFile / mayReadFile — the kind names the capability', () => 
     [['sales_executive'], false, false],
     [[], false, false],
   ] as const)('%j may upload a price list: %s, and read one: %s', (roles, upload, read) => {
-    expect(mayUploadFile(roles, FILE_SUBJECT_RULES.catalog)).toBe(upload);
+    expect(mayUploadFile(roles, FILE_SUBJECT_RULES.catalog, false)).toBe(upload);
     expect(mayReadFile(roles, FILE_SUBJECT_RULES.catalog)).toBe(read);
+  });
+
+  it.each([
+    [['field_technician'], true, true],
+    [['epc_owner'], true, true],
+    [[], true, true],
+    [['epc_owner'], false, false],
+    [['field_technician'], false, false],
+    [[], false, false],
+  ] as const)(
+    "a user_account file is stored only against the caller's own id: %j, theirs %s → %s",
+    (roles, own, allowed) => {
+      expect(mayUploadFile(roles, FILE_SUBJECT_RULES.user_account, own)).toBe(allowed);
+    },
+  );
+
+  it('a capability kind ignores whose subject it is', () => {
+    expect(mayUploadFile(['sales_executive'], FILE_SUBJECT_RULES.tenant, true)).toBe(false);
+    expect(mayUploadFile(['epc_owner'], FILE_SUBJECT_RULES.tenant, true)).toBe(true);
+  });
+
+  it('a profile photo is read by any member and takes a 2 MB png or jpeg', () => {
+    const photo = FILE_SUBJECT_RULES.user_account;
+    expect(mayReadFile(['field_technician'], photo)).toBe(true);
+    expect(judgeFileDeclaration(photo, 'image/jpeg', 2_000_000)).toBe('accepted');
+    expect(judgeFileDeclaration(photo, 'image/png', 2_000_001)).toBe('too-large');
+    expect(judgeFileDeclaration(photo, 'text/csv', 10)).toBe('type-not-taken');
   });
 
   it('a member-readable kind is readable by any role and by none', () => {

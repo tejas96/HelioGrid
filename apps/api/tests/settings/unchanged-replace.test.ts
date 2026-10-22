@@ -75,6 +75,7 @@ const NO_REPEAT_TO_PROVE: Readonly<Record<string, string>> = {
   'PATCH /tenants/me/membership': 'records no entry',
   'PUT /settings/quiet-hours': 'records no entry',
   'PATCH /users/me': 'records no entry',
+  'PUT /users/me/photo': 'records no entry',
 };
 
 const skip = skipWithoutDatabase(

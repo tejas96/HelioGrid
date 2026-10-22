@@ -13,17 +13,26 @@ interface FileIds {
   readonly userB: string;
   readonly fileA: string;
   readonly fileB: string;
+  readonly membershipA: string;
+  readonly membershipB: string;
 }
 
-/** Migration 0013 — one pending file per tenant, on the admin path. */
+/**
+ * Migration 0013 — one pending file per tenant, on the admin path; and migration 0027 — one
+ * person's photo per tenant pointing at it, so the leak loop reads `member_photo` over real rows
+ * rather than an empty table isolated whatever RLS does.
+ */
 export async function seedFiles(sql: postgres.Sql, ids: FileIds): Promise<void> {
-  const { tenantA, tenantB, userA, userB, fileA, fileB } = ids;
+  const { tenantA, tenantB, userA, userB, fileA, fileB, membershipA, membershipB } = ids;
   await sql`insert into file (id, tenant_id, subject_kind, subject_ref, provider, external_id,
       content_type, byte_size, checksum_sha256, uploaded_by, declared_at) values
     (${fileA}, ${tenantA}, 'tenant', ${tenantA}, 'local', ${`${tenantA}/${fileA}`},
      'image/png', 1, 'invariant', ${userA}, now()),
     (${fileB}, ${tenantB}, 'tenant', ${tenantB}, 'local', ${`${tenantB}/${fileB}`},
      'image/png', 1, 'invariant', ${userB}, now())`;
+  await sql`insert into member_photo (membership_id, tenant_id, file_id, updated_at) values
+    (${membershipA}, ${tenantA}, ${fileA}, now()),
+    (${membershipB}, ${tenantB}, ${fileB}, now())`;
 }
 
 /**
@@ -31,7 +40,10 @@ export async function seedFiles(sql: postgres.Sql, ids: FileIds): Promise<void> 
  * from tenant A's session touches nothing, though UPDATE on `uploaded_at` is granted; and a file
  * declared into tenant B from there is refused by the policy.
  */
-export async function assertFileWritePath(sql: postgres.Sql, ids: FileIds): Promise<void> {
+export async function assertFileWritePath(
+  sql: postgres.Sql,
+  ids: Omit<FileIds, 'membershipA' | 'membershipB'>,
+): Promise<void> {
   const { tenantA, tenantB, userA, fileB } = ids;
   await sql.begin(async (tx) => {
     await tx`select set_config('app.tenant_id', ${tenantA}, true)`;
