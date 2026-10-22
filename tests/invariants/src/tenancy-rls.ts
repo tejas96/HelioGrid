@@ -174,7 +174,7 @@ export async function runTenancyInvariants(adminUrl: string) {
       (${templateA}, ${tenantA}, '{"en":"Invariant split A"}'::jsonb, true, false, now()),
       (${templateB}, ${tenantB}, '{"en":"Invariant split B"}'::jsonb, true, false, now())`;
     // One stored file per tenant (migration 0013), so the leak loop reads real rows.
-    await seedFiles(sql, { tenantA, tenantB, userA, userB, ...files });
+    await seedFiles(sql, { tenantA, tenantB, userA, userB, membershipA, membershipB, ...files });
 
     assert(
       tenantTables.length >= 2,
@@ -363,12 +363,14 @@ export async function runTenancyInvariants(adminUrl: string) {
         `no partition-child grants; no RLS-bypassing views or SECURITY DEFINER functions; ` +
         `append-only proven on ${ledgerNames.join(', ')}; ` +
         `isolation behaviourally exercised on tenant, user_account, tenant_membership, ` +
-        `membership_role, invitation, invitation_role, tranche_template, audit_log_entry, file`,
+        `membership_role, invitation, invitation_role, tranche_template, audit_log_entry, file, ` +
+        `member_photo`,
     );
   } finally {
     // The seed rows go, in dependency order, on the admin path; a failure mid-run leaves nothing.
     const tenants = [tenantA, tenantB];
     await sql`delete from audit_log_entry where tenant_id in ${sql(tenants)}`.catch(() => {});
+    await sql`delete from member_photo where tenant_id in ${sql(tenants)}`.catch(() => {});
     await sql`delete from file where tenant_id in ${sql(tenants)}`.catch(() => {});
     await sql`delete from tranche_template_line where tenant_id in ${sql(tenants)}`.catch(() => {});
     await sql`delete from tranche_template where tenant_id in ${sql(tenants)}`.catch(() => {});

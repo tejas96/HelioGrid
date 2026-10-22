@@ -30,17 +30,25 @@ describe.skipIf(skip)('declaring a file', () => {
   const elsewhere = aCompany('Other Solar');
   const owner = aPerson('Owner');
   const seller = aPerson('Seller');
+  const elsewhereOwner = aPerson('Elsewhere Owner');
   const fixture = {
     companies: [company, elsewhere],
-    people: [owner, seller],
+    people: [owner, seller, elsewhereOwner],
     memberships: [
       aMembership(company, owner, UPLOADER),
       aMembership(company, seller, NON_UPLOADER),
+      aMembership(elsewhere, elsewhereOwner, UPLOADER),
     ],
   };
   let pools: ReturnType<typeof openPools>;
   let files: ReturnType<typeof fileServiceOf>;
   const act = () => ({ actorUserId: owner.userId, now: Date.now() });
+  /** A profile photo declared against `subjectRef`'s account. */
+  const photoOf = (subjectRef: string) => ({
+    ...declarationOf(company.tenantId, pngOf(A_LOGO)),
+    subjectKind: 'user_account' as const,
+    subjectRef,
+  });
 
   beforeAll(async () => {
     pools = openPools();
@@ -113,6 +121,30 @@ describe.skipIf(skip)('declaring a file', () => {
       act(),
     );
     expect(declared.file.uploadedAt).toBeNull();
+  });
+
+  it('a person stores a photo against their own account, in either case, whatever they hold', async () => {
+    const declared = await files.service.declare(
+      company.tenantId,
+      NON_UPLOADER,
+      { ...photoOf(seller.userId.toUpperCase()) },
+      {},
+      { actorUserId: seller.userId, now: Date.now() },
+    );
+    expect(declared.file).toMatchObject({ subjectKind: 'user_account', uploadedAt: null });
+  });
+
+  it("a teammate's, another company's and an unknown user_account answer 403", async () => {
+    for (const someoneElse of [owner.userId, elsewhereOwner.userId, randomUUID()]) {
+      const refused = files.service.declare(
+        company.tenantId,
+        UPLOADER,
+        photoOf(someoneElse),
+        {},
+        { actorUserId: seller.userId, now: Date.now() },
+      );
+      await expect(refused).rejects.toMatchObject({ status: HttpStatus.FORBIDDEN });
+    }
   });
 
   it('a file for a subject outside this company is not found', async () => {

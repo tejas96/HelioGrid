@@ -47,7 +47,7 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `photo
 2. **The photo is the repo's `PhotoField` (`packages/ui/src/components/PhotoField/`) — a circle
    with one act, never a `Dropzone`.** `Dropzone` is built for many files where this is exactly one,
    a dashed rectangle promises a rectangle when the crop is circular, and its held-on-device queue
-   is wrong for an ordinary server write. The camera-or-gallery choice is the platform's own sheet.
+   is wrong for an ordinary server write. On the phone the act opens the system photo library (ruling 19).
    `PhotoField` is extended to what the board draws:
    - the act is medium size and carries its icon;
    - a refused photo shows as the danger `Banner` inside the photo group, so a name that saved is
@@ -96,6 +96,14 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `photo
     never change by state, as the heading does not (decision 10), so the photo error at 1536 does not
     repeat where to add one later: it reads *Try again, or add one later.* The drop onto the circle
     needs no words: `PhotoField` highlights the circle while a file is dragged over it.
+
+**Rulings at `T-M01-009` (owner, 2026-10-22).**
+
+15. **The inviter is named, never given a pronoun** (`SCR-M01-08` ruling 15): the helper reads *{first} typed this when inviting you — change it if you like.*, and the empty form *{first} had typed {name}; type the name your team should use.*
+16. **The photo is the company's view of you:** one per company membership, never one shared across companies.
+17. **The step follows the join and is not stored:** a reload or a later visit goes to the home; name and photo are changed later in Profile & preferences (`SCR-M01-11`).
+18. **A person whose account already had a name skips this step** — the name is their own, and the helper would be false.
+19. **The phone's act opens the photo library** — no camera prompt; the act keeps the camera glyph the board draws.
 
 ## Data volume
 

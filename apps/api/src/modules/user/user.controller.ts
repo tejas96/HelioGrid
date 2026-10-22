@@ -3,7 +3,7 @@ import { Controller, Inject, Req } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
-import { sessionOf } from '../../common/auth/session-context';
+import { actOf, sessionOf, tenantIdOf } from '../../common/auth/session-context';
 import { UserService } from './user.service';
 
 @Controller()
@@ -12,12 +12,16 @@ export class UserController {
   constructor(@Inject(UserService) private readonly users: UserService) {}
 
   @TsRestHandler(userContract)
-  @RouteAccessMap(userContract, { updateMe: 'session' })
+  @RouteAccessMap(userContract, { updateMe: 'session', setMyPhoto: 'member' })
   handler(@Req() req: Request) {
     return tsRestHandler(userContract, {
       updateMe: async ({ body }) => ({
         status: 200,
         body: await this.users.updateMe(sessionOf(req).actor.userId, body),
+      }),
+      setMyPhoto: async ({ body }) => ({
+        status: 200,
+        body: await this.users.setMyPhoto(tenantIdOf(req), body.fileId, actOf(req)),
       }),
     });
   }

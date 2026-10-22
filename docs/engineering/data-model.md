@@ -300,6 +300,7 @@ A relationship appears once, in the domain of its child (reference-holding) enti
 | From (parent) | Relationship | To (child) | Cardinality | Required? | Delete behavior | PRD refs |
 |---|---|---|---|---|---|---|
 | market_pack | supplies base BOM rates | pack_rate_entry | 1:N | yes | Pack content is versioned (F1-11); never deleted from under a tenant | MS10-39, MS10-26 |
+| tenant_membership | shows its person by | member_photo | 1:0..1 | no (initials when absent) | One photo per company membership (`SCR-M01-09` ruling 16), a pointer at a confirmed file of that company stored against the person's own `user_account`; clearing it deletes the pointer, never the file row | M01-14 |
 
 ### 3.5 CRM & marketing
 

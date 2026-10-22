@@ -66,7 +66,7 @@ export class FileService {
     act: Act,
   ): Promise<DeclaredFile> {
     const rule = FILE_SUBJECT_RULES[body.subjectKind];
-    if (!mayUploadFile(roles, rule)) {
+    if (!mayUploadFile(roles, rule, isTheCaller(body.subjectRef, act))) {
       throw new ForbiddenException('You may not store files against this.');
     }
     refuseUnlessAccepted(judgeFileDeclaration(rule, body.contentType, body.byteSize), rule);
@@ -112,7 +112,7 @@ export class FileService {
   ): Promise<StoredFile> {
     const row = await this.files.find(tenantId, id);
     if (row === null || row.uploadedBy !== act.actorUserId) throw new NotFoundException();
-    if (!mayUploadFile(roles, ruleOf(row.subjectKind))) {
+    if (!mayUploadFile(roles, ruleOf(row.subjectKind), isTheCaller(row.subjectRef, act))) {
       throw new ForbiddenException('You may no longer store files against this.');
     }
     if (row.uploadedAt !== null) return toWire(row);
@@ -146,6 +146,21 @@ export class FileService {
    */
   async confirmed(tenantId: string, id: string, kind: FileSubjectKind): Promise<StoredFile> {
     return toWire(await this.confirmedRow(tenantId, id, kind));
+  }
+
+  /**
+   * A confirmed file of a `self` kind that the person asking stored about themselves — a photo
+   * another person stored about themselves is not found, as another company's is.
+   */
+  async confirmedOwn(
+    tenantId: string,
+    id: string,
+    kind: FileSubjectKind,
+    act: Act,
+  ): Promise<StoredFile> {
+    const stored = await this.confirmed(tenantId, id, kind);
+    if (!isTheCaller(stored.subjectRef, act)) throw new NotFoundException();
+    return stored;
   }
 
   /**
@@ -236,6 +251,11 @@ function ruleOf(kind: SubjectKind): FileSubjectRule {
 
 function isFileSubjectKind(kind: SubjectKind): kind is FileSubjectKind {
   return (FILE_SUBJECT_KINDS as readonly SubjectKind[]).includes(kind);
+}
+
+/** A `self` kind's subject is the person asking; the wire takes a uuid in either case. */
+function isTheCaller(subjectRef: string, act: Act): boolean {
+  return subjectRef.toLowerCase() === act.actorUserId.toLowerCase();
 }
 
 function notUploaded(): ContractException {

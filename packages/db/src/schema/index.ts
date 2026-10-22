@@ -6,6 +6,7 @@ import * as file from './file';
 import * as identity from './identity';
 import * as invitation from './invitation';
 import * as market from './market';
+import * as memberPhoto from './member-photo';
 import * as notification from './notification';
 import * as outbox from './outbox';
 import * as priceBook from './price-book';
@@ -26,6 +27,7 @@ export const schema = {
   ...invitation,
   ...notification,
   ...file,
+  ...memberPhoto,
   ...settings,
   ...subject,
   ...catalogPlatform,
@@ -43,6 +45,7 @@ export * from './file';
 export * from './identity';
 export * from './invitation';
 export * from './market';
+export * from './member-photo';
 export * from './notification';
 export * from './outbox';
 export * from './price-book';

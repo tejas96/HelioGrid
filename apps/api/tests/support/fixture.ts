@@ -8,6 +8,7 @@ import {
   invitation,
   invitationRole,
   marketPack,
+  memberPhoto,
   membershipRole,
   notification,
   notificationPreference,
@@ -256,7 +257,8 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
   for (const setting of TENANT_SETTING_TABLES) {
     await db.delete(setting).where(inArray(setting.tenantId, companies));
   }
-  // After the settings: a company's profile points at its logo's file.
+  // After the settings and the members' photos: a profile and a photo point at their file.
+  await db.delete(memberPhoto).where(inArray(memberPhoto.tenantId, companies));
   await db.delete(file).where(inArray(file.tenantId, companies));
   await db.delete(invitationRole).where(inArray(invitationRole.tenantId, companies));
   await db.delete(invitation).where(inArray(invitation.tenantId, companies));

@@ -12,7 +12,7 @@ export class FileController {
   constructor(@Inject(FileService) private readonly files: FileService) {}
 
   @TsRestHandler(fileContract)
-  // `member` at the door: WHICH capability a file needs is its subject kind's (`FILE_SUBJECT_RULES`),
+  // `member` at the door: who may store or read a file is its subject kind's rule (`FILE_SUBJECT_RULES`),
   // known only once the body or the row is read, so the service decides it — proven by its tests.
   @RouteAccessMap(fileContract, {
     declare: 'member',

@@ -31,7 +31,8 @@ export const FILE_STORE_ATTEMPTS = 2;
  * a slice forgot is the leak this shape exists to prevent.
  */
 export interface FileSubjectRule {
-  readonly upload: Capability;
+  /** A capability held outright, or `self`: only the person the subject is may store against it. */
+  readonly upload: Capability | 'self';
   readonly read: Capability | 'member';
   readonly maxBytes: number;
   readonly contentTypes: readonly FileContentType[];
@@ -41,10 +42,15 @@ export interface FileSubjectRule {
  * The subjects a file may be stored against. It GROWS with the slice that first stores a file
  * for its subject (Law 9); a subject kind absent here owns no file, and the wire refuses it.
  */
-export const FILE_SUBJECT_KINDS = ['tenant', 'catalog'] as const satisfies readonly SubjectKind[];
+export const FILE_SUBJECT_KINDS = [
+  'tenant',
+  'catalog',
+  'user_account',
+] as const satisfies readonly SubjectKind[];
 export type FileSubjectKind = (typeof FILE_SUBJECT_KINDS)[number];
 
-export const FILE_SUBJECT_RULES: Readonly<Record<FileSubjectKind, FileSubjectRule>> = {
+/** `satisfies`, so a reader of one kind's rule sees its own capability, not the union with `self`. */
+export const FILE_SUBJECT_RULES = {
   /** The company's own files — its logo (`M01-50`), changed only by who manages its settings. */
   tenant: {
     upload: 'onboarding.manage_tenant_settings',
@@ -63,7 +69,17 @@ export const FILE_SUBJECT_RULES: Readonly<Record<FileSubjectKind, FileSubjectRul
     maxBytes: FILE_MAX_BYTES,
     contentTypes: ['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
   },
-};
+  /**
+   * A person's photo in this company (`M01-14`): stored by that person alone, whatever they hold,
+   * and seen by everyone they work with. Its ref is their user id.
+   */
+  user_account: {
+    upload: 'self',
+    read: 'member',
+    maxBytes: FILE_MAX_BYTES,
+    contentTypes: ['image/png', 'image/jpeg'],
+  },
+} as const satisfies Readonly<Record<FileSubjectKind, FileSubjectRule>>;
 
 export type FileDeclarationVerdict = 'accepted' | 'too-large' | 'type-not-taken';
 
@@ -79,9 +95,15 @@ export function judgeFileDeclaration(
 
 /**
  * Storing a file is a write, so it needs the capability held outright: a limited cell is a narrower
- * act — Finance's "view prices & margins" on the catalog — and never stores anything.
+ * act — Finance's "view prices & margins" on the catalog — and never stores anything. A `self` kind
+ * needs no capability, only that the subject is the caller (`subjectIsCaller`).
  */
-export function mayUploadFile(roles: readonly RolePreset[], rule: FileSubjectRule): boolean {
+export function mayUploadFile(
+  roles: readonly RolePreset[],
+  rule: FileSubjectRule,
+  subjectIsCaller: boolean,
+): boolean {
+  if (rule.upload === 'self') return subjectIsCaller;
   return can(roles, rule.upload) && limitsOn(roles, rule.upload).length === 0;
 }
 
