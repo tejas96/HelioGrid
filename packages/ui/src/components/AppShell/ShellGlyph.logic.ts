@@ -1,6 +1,7 @@
 import type { StandingDestination } from '@heliogrid/domain';
 import type { ShellGlyphName, ShellGlyphSize } from './AppShell.types';
-import { type GlyphMark, SHELL_GLYPHS, SHELL_GLYPHS_FILLED } from './ShellGlyph.shapes';
+import type { GlyphMark } from './ShellGlyph.marks';
+import { SHELL_GLYPHS, SHELL_GLYPHS_FILLED } from './ShellGlyph.shapes';
 
 /** A stable React key for a mark: no glyph draws the same mark twice. */
 export function markKey(mark: GlyphMark): string {

@@ -7,9 +7,10 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { BootScreen } from '../screens/boot';
-import { useIsBooting, useIsSignedIn, useIsSignedOut } from './guards';
+import { useIsBooting, useIsPastBoot, useIsSignedIn, useIsSignedOut } from './guards';
 import { appScreens } from './routes/app';
 import { authScreens } from './routes/auth';
+import { openScreens } from './routes/open';
 
 /** The home's route name, held to the route map: a renamed home fails to compile here. */
 const HOME: keyof typeof appScreens = 'Shell';
@@ -42,11 +43,12 @@ export function reportUnhandledAction(action: NavigationAction) {
   );
 }
 
-/** A `NAVIGATE` to a screen of the App group: unhandled only while that group is not mounted. */
+/** A `NAVIGATE` to a screen of the App or Open group: unhandled only while that group is not mounted. */
 function namesAnAppScreen(action: NavigationAction): boolean {
   const { type, payload } = action;
   if (type !== 'NAVIGATE' || payload === undefined || !('name' in payload)) return false;
-  return typeof payload.name === 'string' && Object.keys(appScreens).includes(payload.name);
+  const held = [...Object.keys(appScreens), ...Object.keys(openScreens)];
+  return typeof payload.name === 'string' && held.includes(payload.name);
 }
 
 /**
@@ -57,6 +59,8 @@ function namesAnAppScreen(action: NavigationAction): boolean {
  * Boot sits ungrouped on purpose: when every group's `if` is false the navigator has no
  * screens at all, and React Navigation throws. Boot is what guarantees a non-empty tree while
  * the session is still resolving.
+ *
+ * The Open group holds what a link opens in either phase — the invite (`SCR-M01-08`).
  *
  * Swapping GROUPS rather than navigating means a signed-out user has no authenticated screen
  * left in the history to go back to. A false `if` returns null, so the screen never enters
@@ -81,6 +85,8 @@ const RootStack = createNativeStackNavigator({
   groups: {
     Auth: { if: useIsSignedOut, screens: authScreens },
     App: { if: useIsSignedIn, screens: appScreens },
+    /** Declared last, so a cold start with no link never falls to it (`useIsPastBoot`). */
+    Open: { if: useIsPastBoot, screens: openScreens },
   },
 });
 

@@ -71,6 +71,7 @@ export function createDataLayer(config: DataLayerConfig): DataLayer {
     auth: repositories.auth,
     user: repositories.user,
     tenant: repositories.tenant,
+    invitation: repositories.invitation,
     platform: storage ? 'mobile' : 'web',
     heldWork: heldWork ?? NO_HELD_WORK,
   });

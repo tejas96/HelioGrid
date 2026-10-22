@@ -66,11 +66,13 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty
 **Rulings at the M01 board check (owner, 2026-10-16).**
 
 8. **The invite facts are `FactRows`.** The board composes the system's `FactRow`/`FactRows`; the
-   build ports them into `packages/ui` at this task, the first that needs them (`D231`).
+   build ports them into `packages/ui` at this task, the first that needs them
+   (`packages/ui/src/components/FactRow/`).
 9. **The 1536 landing is the onboarding two-pane frame** that `SCR-M01-06`, `-07`, `-09` and `-10`
-   share, not `DoorFrame` (decision 13); `D232` keeps only its `readOnly` half (ruling 10).
+   share, not `DoorFrame` (decision 13).
 10. **A code held while joining is `readOnly`, never greyed.** `disabled` is for a field with
-    nothing to take; the board's `disabled` is the design system's nearest prop (`D232`).
+    nothing to take; the board's `disabled` is the design system's nearest prop, and the build
+    draws the held code with `OtpInput`'s `readOnly`.
 11. **The decline confirm cannot be dismissed.** The sheet at 375 and the dialog at 1536 set
     `dismissible: false`: it resolves only through *Keep the invite* or *Decline the invite*.
 12. **The code takes focus on arrival at 1536 only.** On the phone the platform's auto-read fills it,
@@ -84,6 +86,15 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty
     never a gap between the content and the actions.
 15. **The inviter is named, never given a pronoun** (owner ruling 2026-10-21, T-M01-008 RFC decision 2). The board's *him* / *he* on `m-expired` and `m-reinvite-requested` read *One tap tells {first name} you are still waiting.* and *When {first name} sends it, a new link reaches this phone.*
 16. **The phone opens the invite through the web landing** (owner ruling 2026-10-21, decision 1): the text's https link opens `/invite/<token>` in the phone's browser; the app answers `heliogrid://invite/<token>`; universal and app links wait for the production domain (`docs/tasks/deferred.md`).
+
+17. **On the phone app the acts are held at the foot of the screen** (owner ruling 2026-10-22,
+    `T-M01-008` part b): *Join* never sits below the fold, with long Hindi or Marathi lines or the
+    keyboard open. The web at 375 keeps ruling 14 — the acts follow the content and hold at the
+    window's foot only on overflow.
+18. **An ask that did not reach the inviter says why above the act** (owner ruling 2026-10-22): a
+    danger banner on the expired frame, titled with the door's own words — *HelioGrid could not be
+    reached, from your side or ours.* for no answer, *Something on our side failed* for a refusal.
+    An invite withdrawn meanwhile draws `empty`. No board frame is drawn for it.
 
 ## Data volume
 

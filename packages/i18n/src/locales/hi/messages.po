@@ -133,9 +133,24 @@ msgid "{date}, {time}"
 msgstr "{date}, {time}"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:49
+msgid "{first} has been asked for a new invite"
+msgstr "{first} से नया आमंत्रण माँगा गया है"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:24
+msgid "{first} invited you to {company}"
+msgstr "{first} ने आपको {company} में आमंत्रित किया है"
+
+#. js-lingui-explicit-id
 #: src/copy/team-acts.ts:24
 msgid "{first} loses access to {company}. Everything {first} did stays in {first}’s name."
 msgstr "{first} की {company} तक पहुँच बंद हो जाएगी। {first} ने जो कुछ किया, वह {first} के नाम पर ही रहेगा।"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:26
+msgid "{first} set you up as"
+msgstr "{first} ने आपको यह भूमिका दी है"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:36
@@ -246,6 +261,11 @@ msgstr "{preset} होम · आपके पास {others} भी है"
 #: src/copy/shell.ts:37
 msgid "{preset} home · your only preset"
 msgstr "{preset} होम · आपका एकमात्र प्रीसेट"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:23
+msgid "{role} · {company}"
+msgstr "{role} · {company}"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:53
@@ -468,6 +488,11 @@ msgid "An invite already went to this number and is still open."
 msgstr "इस नंबर पर पहले ही एक आमंत्रण भेजा जा चुका है और वह अभी खुला है।"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:39
+msgid "An invite lasts {days, plural, one {# day} other {# days}}, and this one is past that."
+msgstr "एक आमंत्रण {days, plural, one {# दिन} other {# दिन}} चलता है, और यह उससे पुराना हो चुका है।"
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:29
 msgid "Anjali Kulkarni"
 msgstr "अंजली कुलकर्णी"
@@ -481,6 +506,11 @@ msgstr "उत्तर दिया गया"
 #: src/copy/notifications.ts:48
 msgid "Anything that needs you, or changes on work you hold, lands here — newest first, with the one thing you can do about it."
 msgstr "जिस काम में आपकी ज़रूरत है, या आपके काम में जो बदलता है, वह यहाँ आता है — सबसे नया पहले, और साथ में वह एक काम जो आप कर सकते हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:42
+msgid "Ask {first} to invite you again"
+msgstr "{first} से फिर से आमंत्रित करने को कहें"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:73
@@ -684,6 +714,11 @@ msgstr "कोड"
 #: src/copy/sign-in.ts:41
 msgid "Code filled from your SMS"
 msgstr "आपके SMS से कोड भर गया"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:31
+msgid "Code from the SMS"
+msgstr "SMS में आया कोड"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:60
@@ -996,6 +1031,11 @@ msgid "Field Technician"
 msgstr "फ़ील्ड तकनीशियन"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:32
+msgid "Filled from the SMS — check it, or type over it."
+msgstr "SMS से भरा गया — जाँच लें, या उसके ऊपर टाइप करें।"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:27
 msgid "Filter notifications"
 msgstr "सूचनाएँ छाँटें"
@@ -1024,6 +1064,11 @@ msgstr "बाद में पूरा करें"
 #: src/copy/setup-what-you-sell.ts:42
 msgid "Finish later takes you to your company profile, the next step. You can finish both answers there."
 msgstr "बाद में पूरा करें आपको अगले चरण, कंपनी प्रोफ़ाइल पर ले जाता है। दोनों जवाब वहाँ पूरे कर सकते हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:51
+msgid "For an account you already have with another company."
+msgstr "किसी दूसरी कंपनी के साथ आपके मौजूदा खाते के लिए।"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:35
@@ -1241,6 +1286,11 @@ msgid "Inviting {first} again sends a new link."
 msgstr "{first} को फिर से आमंत्रित करने पर नया लिंक जाएगा।"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:45
+msgid "It may already have been used, or taken back by the person who sent it."
+msgstr "हो सकता है इसका उपयोग हो चुका हो, या भेजने वाले ने इसे वापस ले लिया हो।"
+
+#. js-lingui-explicit-id
 #: src/copy/connection.ts:11
 msgid "It may be your connection or ours. Try again in a moment."
 msgstr "यह आपके कनेक्शन या हमारी ओर से हो सकता है। थोड़ी देर में फिर से कोशिश करें।"
@@ -1249,6 +1299,11 @@ msgstr "यह आपके कनेक्शन या हमारी ओर 
 #: src/copy/team.ts:15
 msgid "It’s just you so far"
 msgstr "अभी तक सिर्फ़ आप हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:36
+msgid "Join {company}"
+msgstr "{company} से जुड़ें"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-language.ts:21
@@ -1269,6 +1324,11 @@ msgstr "लीड्स"
 #: src/copy/sign-in.ts:103
 msgid "Links {email}"
 msgstr "{email} को जोड़ता है"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:22
+msgid "Loading the invite"
+msgstr "आमंत्रण लोड हो रहा है"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:45
@@ -1321,6 +1381,7 @@ msgid "Measured"
 msgstr "मापा गया"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:27
 #: src/copy/sign-in.ts:11
 msgid "Mobile number"
 msgstr "मोबाइल नंबर"
@@ -1448,6 +1509,11 @@ msgid "Not from your number"
 msgstr "आपके नंबर से नहीं"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:48
+msgid "Not joined yet? Ask whoever invited you for a new invite."
+msgstr "अभी तक नहीं जुड़े? जिसने आपको आमंत्रित किया, उनसे नया आमंत्रण माँगें।"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:31
 msgid "Not published yet"
 msgstr "अभी प्रकाशित नहीं"
@@ -1556,6 +1622,11 @@ msgstr "एक मोबाइल नंबर एक HelioGrid खाता ह
 #: src/copy/company-signup.ts:61
 msgid "One number, one account"
 msgstr "एक नंबर, एक खाता"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:43
+msgid "One tap tells {first} you are still waiting."
+msgstr "एक टैप से {first} को पता चलेगा कि आप अभी भी इंतज़ार कर रहे हैं।"
 
 #. js-lingui-explicit-id
 #: src/copy/team-acts.ts:20
@@ -1965,6 +2036,11 @@ msgid "Sign in instead"
 msgstr "इसके बजाय साइन इन करें"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:52
+msgid "Sign in to HelioGrid"
+msgstr "HelioGrid में साइन इन करें"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:59
 msgid "Sign in to reach the company it belongs to."
 msgstr "जिस कंपनी का यह नंबर है, वहाँ पहुँचने के लिए साइन इन करें।"
@@ -2043,6 +2119,11 @@ msgstr "हमारी ओर से कुछ विफल हुआ"
 #: src/copy/company-signup.ts:78
 msgid "Something on our side failed, so nothing was sent."
 msgstr "हमारी ओर से कुछ गड़बड़ हुई, इसलिए कुछ नहीं भेजा गया।"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:54
+msgid "Something on our side failed; try again in a moment."
+msgstr "हमारी ओर से कुछ गड़बड़ हुई; थोड़ी देर में फिर कोशिश करें।"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:43
@@ -2171,6 +2252,11 @@ msgid "That is {typed} digits. A mobile number here has {needed}."
 msgstr "यह {typed} अंक हैं। यहाँ मोबाइल नंबर में {needed} अंक होते हैं।"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:33
+msgid "That is not the code we sent. {tries, plural, one {# wrong try} other {# wrong tries}} so far — check the last SMS, or ask for a new one."
+msgstr "यह वह कोड नहीं है जो हमने भेजा था। अब तक {tries, plural, one {# गलत कोशिश} other {# गलत कोशिशें}} — आख़िरी SMS देखें, या नया कोड माँगें।"
+
+#. js-lingui-explicit-id
 #: src/copy/connection.ts:13
 msgid "That is taking too long to answer."
 msgstr "जवाब आने में बहुत देर हो रही है।"
@@ -2219,6 +2305,11 @@ msgstr "कोड इस नंबर के लिए सही था"
 #: src/copy/sign-in.ts:26
 msgid "The code we checked was for"
 msgstr "हमने जो कोड जाँचा वह इस नंबर के लिए था"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:28
+msgid "The code went to the number {first} entered; if it is wrong, decline."
+msgstr "कोड उस नंबर पर गया है जो {first} ने डाला था; अगर वह गलत है, तो अस्वीकार करें।"
 
 #. js-lingui-explicit-id
 #: src/copy/role-presets.ts:26
@@ -2331,9 +2422,19 @@ msgid "This Google login cannot be linked"
 msgstr "यह Google लॉगिन नहीं जोड़ा जा सकता"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:38
+msgid "This invite has expired"
+msgstr "इस आमंत्रण की अवधि ख़त्म हो गई है"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:65
 msgid "This invite has run out. Ask to be invited again."
 msgstr "इस आमंत्रण की अवधि समाप्त हो गई है। फिर से आमंत्रित करने के लिए कहें।"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:44
+msgid "This invite is not there any more"
+msgstr "यह आमंत्रण अब मौजूद नहीं है"
 
 #. js-lingui-explicit-id
 #: src/copy/structure-disclaimer.ts:9
@@ -2708,6 +2809,11 @@ msgid "What you sell · not saved on the last step"
 msgstr "आप क्या बेचते हैं · पिछले चरण में सहेजा नहीं गया"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:50
+msgid "When {first} sends it, a new link reaches this phone."
+msgstr "जब {first} इसे भेजेंगे, तो इस फ़ोन पर एक नया लिंक आएगा।"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:82
 msgid "When the owner of {company}, {city} adds you, an SMS to your number brings you straight in."
 msgstr "जब {company}, {city} के मालिक आपको जोड़ेंगे, तो आपके नंबर पर आया SMS आपको सीधे अंदर ले आएगा।"
@@ -2782,6 +2888,11 @@ msgstr "आप पूरा कोड पेस्ट कर सकते है
 #: src/copy/api-error.ts:30
 msgid "You don't have access to do that."
 msgstr "आपके पास यह करने की अनुमति नहीं है।"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:37
+msgid "You have not joined yet, and this invite still works."
+msgstr "आप अभी जुड़े नहीं हैं, और यह आमंत्रण अभी भी चालू है।"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:91
@@ -2890,6 +3001,16 @@ msgstr "आपके डिवाइस की भाषा अभी HelioGrid 
 #: src/copy/shell.ts:124
 msgid "Your home is the {preset} one. Open the title to switch."
 msgstr "आपका होम {preset} वाला है। बदलने के लिए शीर्षक खोलें।"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:25
+msgid "Your invite"
+msgstr "आपका आमंत्रण"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:53
+msgid "Your invite did not load"
+msgstr "आपका आमंत्रण लोड नहीं हुआ"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-language.ts:16

@@ -14,6 +14,11 @@ import { useNavigationLanding, useNavigationPhase } from './phase';
 export const useIsBooting = () => useNavigationLanding() === 'wait';
 export const useIsSignedOut = () => useNavigationPhase() === 'signedOut';
 export const useIsSignedIn = () => useNavigationPhase() === 'signedIn';
+/**
+ * The Open group's gate: past the boot, in either phase, so a link opens to a person signed out or
+ * signed in. Never during the boot's wait, so it is never the first route a cold start falls to.
+ */
+export const useIsPastBoot = () => useNavigationLanding() !== 'wait';
 
 /** The App group's first screens: the shell, the step that makes a company, or a setup step that company owes. */
 type AppEntry =
@@ -42,12 +47,15 @@ const ROUTE_OF_LANDING: Record<Exclude<SessionLanding, 'wait' | 'door'>, AppEntr
   'ready-step': 'SetupReady',
 };
 
+/** Every first screen the App group can mount, read where a render cannot run (a navigation event). */
+export const APP_ENTRY_ROUTES: readonly AppEntry[] = [...new Set(Object.values(ROUTE_OF_LANDING))];
+
 /**
  * Inside the App group, WHICH first screen. The decision is domain's `landingFor`, so `M01-10`'s
  * rule (a verified number with no company belongs on the company step, not inside) is answered
  * once rather than twice in two shapes.
  */
-const useEntry = (): AppEntry | null => {
+export const useEntry = (): AppEntry | null => {
   const landing = useNavigationLanding();
   return landing === 'wait' || landing === 'door' ? null : ROUTE_OF_LANDING[landing];
 };

@@ -133,9 +133,24 @@ msgid "{date}, {time}"
 msgstr "{date}, {time}"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:49
+msgid "{first} has been asked for a new invite"
+msgstr "{first} has been asked for a new invite"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:24
+msgid "{first} invited you to {company}"
+msgstr "{first} invited you to {company}"
+
+#. js-lingui-explicit-id
 #: src/copy/team-acts.ts:24
 msgid "{first} loses access to {company}. Everything {first} did stays in {first}’s name."
 msgstr "{first} loses access to {company}. Everything {first} did stays in {first}’s name."
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:26
+msgid "{first} set you up as"
+msgstr "{first} set you up as"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:36
@@ -246,6 +261,11 @@ msgstr "{preset} home · you also hold {others}"
 #: src/copy/shell.ts:37
 msgid "{preset} home · your only preset"
 msgstr "{preset} home · your only preset"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:23
+msgid "{role} · {company}"
+msgstr "{role} · {company}"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:53
@@ -468,6 +488,11 @@ msgid "An invite already went to this number and is still open."
 msgstr "An invite already went to this number and is still open."
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:39
+msgid "An invite lasts {days, plural, one {# day} other {# days}}, and this one is past that."
+msgstr "An invite lasts {days, plural, one {# day} other {# days}}, and this one is past that."
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:29
 msgid "Anjali Kulkarni"
 msgstr "Anjali Kulkarni"
@@ -481,6 +506,11 @@ msgstr "Answered"
 #: src/copy/notifications.ts:48
 msgid "Anything that needs you, or changes on work you hold, lands here — newest first, with the one thing you can do about it."
 msgstr "Anything that needs you, or changes on work you hold, lands here — newest first, with the one thing you can do about it."
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:42
+msgid "Ask {first} to invite you again"
+msgstr "Ask {first} to invite you again"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:73
@@ -684,6 +714,11 @@ msgstr "Code"
 #: src/copy/sign-in.ts:41
 msgid "Code filled from your SMS"
 msgstr "Code filled from your SMS"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:31
+msgid "Code from the SMS"
+msgstr "Code from the SMS"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:60
@@ -996,6 +1031,11 @@ msgid "Field Technician"
 msgstr "Field Technician"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:32
+msgid "Filled from the SMS — check it, or type over it."
+msgstr "Filled from the SMS — check it, or type over it."
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:27
 msgid "Filter notifications"
 msgstr "Filter notifications"
@@ -1024,6 +1064,11 @@ msgstr "Finish later"
 #: src/copy/setup-what-you-sell.ts:42
 msgid "Finish later takes you to your company profile, the next step. You can finish both answers there."
 msgstr "Finish later takes you to your company profile, the next step. You can finish both answers there."
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:51
+msgid "For an account you already have with another company."
+msgstr "For an account you already have with another company."
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:35
@@ -1241,6 +1286,11 @@ msgid "Inviting {first} again sends a new link."
 msgstr "Inviting {first} again sends a new link."
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:45
+msgid "It may already have been used, or taken back by the person who sent it."
+msgstr "It may already have been used, or taken back by the person who sent it."
+
+#. js-lingui-explicit-id
 #: src/copy/connection.ts:11
 msgid "It may be your connection or ours. Try again in a moment."
 msgstr "It may be your connection or ours. Try again in a moment."
@@ -1249,6 +1299,11 @@ msgstr "It may be your connection or ours. Try again in a moment."
 #: src/copy/team.ts:15
 msgid "It’s just you so far"
 msgstr "It’s just you so far"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:36
+msgid "Join {company}"
+msgstr "Join {company}"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-language.ts:21
@@ -1269,6 +1324,11 @@ msgstr "Leads"
 #: src/copy/sign-in.ts:103
 msgid "Links {email}"
 msgstr "Links {email}"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:22
+msgid "Loading the invite"
+msgstr "Loading the invite"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:45
@@ -1321,6 +1381,7 @@ msgid "Measured"
 msgstr "Measured"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:27
 #: src/copy/sign-in.ts:11
 msgid "Mobile number"
 msgstr "Mobile number"
@@ -1448,6 +1509,11 @@ msgid "Not from your number"
 msgstr "Not from your number"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:48
+msgid "Not joined yet? Ask whoever invited you for a new invite."
+msgstr "Not joined yet? Ask whoever invited you for a new invite."
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:31
 msgid "Not published yet"
 msgstr "Not published yet"
@@ -1556,6 +1622,11 @@ msgstr "One mobile number is one HelioGrid account, whichever way you come in."
 #: src/copy/company-signup.ts:61
 msgid "One number, one account"
 msgstr "One number, one account"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:43
+msgid "One tap tells {first} you are still waiting."
+msgstr "One tap tells {first} you are still waiting."
 
 #. js-lingui-explicit-id
 #: src/copy/team-acts.ts:20
@@ -1965,6 +2036,11 @@ msgid "Sign in instead"
 msgstr "Sign in instead"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:52
+msgid "Sign in to HelioGrid"
+msgstr "Sign in to HelioGrid"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:59
 msgid "Sign in to reach the company it belongs to."
 msgstr "Sign in to reach the company it belongs to."
@@ -2043,6 +2119,11 @@ msgstr "Something on our side failed"
 #: src/copy/company-signup.ts:78
 msgid "Something on our side failed, so nothing was sent."
 msgstr "Something on our side failed, so nothing was sent."
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:54
+msgid "Something on our side failed; try again in a moment."
+msgstr "Something on our side failed; try again in a moment."
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:43
@@ -2171,6 +2252,11 @@ msgid "That is {typed} digits. A mobile number here has {needed}."
 msgstr "That is {typed} digits. A mobile number here has {needed}."
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:33
+msgid "That is not the code we sent. {tries, plural, one {# wrong try} other {# wrong tries}} so far — check the last SMS, or ask for a new one."
+msgstr "That is not the code we sent. {tries, plural, one {# wrong try} other {# wrong tries}} so far — check the last SMS, or ask for a new one."
+
+#. js-lingui-explicit-id
 #: src/copy/connection.ts:13
 msgid "That is taking too long to answer."
 msgstr "That is taking too long to answer."
@@ -2219,6 +2305,11 @@ msgstr "The code was correct for"
 #: src/copy/sign-in.ts:26
 msgid "The code we checked was for"
 msgstr "The code we checked was for"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:28
+msgid "The code went to the number {first} entered; if it is wrong, decline."
+msgstr "The code went to the number {first} entered; if it is wrong, decline."
 
 #. js-lingui-explicit-id
 #: src/copy/role-presets.ts:26
@@ -2331,9 +2422,19 @@ msgid "This Google login cannot be linked"
 msgstr "This Google login cannot be linked"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:38
+msgid "This invite has expired"
+msgstr "This invite has expired"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:65
 msgid "This invite has run out. Ask to be invited again."
 msgstr "This invite has run out. Ask to be invited again."
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:44
+msgid "This invite is not there any more"
+msgstr "This invite is not there any more"
 
 #. js-lingui-explicit-id
 #: src/copy/structure-disclaimer.ts:9
@@ -2708,6 +2809,11 @@ msgid "What you sell · not saved on the last step"
 msgstr "What you sell · not saved on the last step"
 
 #. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:50
+msgid "When {first} sends it, a new link reaches this phone."
+msgstr "When {first} sends it, a new link reaches this phone."
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:82
 msgid "When the owner of {company}, {city} adds you, an SMS to your number brings you straight in."
 msgstr "When the owner of {company}, {city} adds you, an SMS to your number brings you straight in."
@@ -2782,6 +2888,11 @@ msgstr "You can paste the whole code."
 #: src/copy/api-error.ts:30
 msgid "You don't have access to do that."
 msgstr "You don't have access to do that."
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:37
+msgid "You have not joined yet, and this invite still works."
+msgstr "You have not joined yet, and this invite still works."
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:91
@@ -2890,6 +3001,16 @@ msgstr "Your device’s language isn’t in HelioGrid yet, so the app started in
 #: src/copy/shell.ts:124
 msgid "Your home is the {preset} one. Open the title to switch."
 msgstr "Your home is the {preset} one. Open the title to switch."
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:25
+msgid "Your invite"
+msgstr "Your invite"
+
+#. js-lingui-explicit-id
+#: src/copy/invite-landing.ts:53
+msgid "Your invite did not load"
+msgstr "Your invite did not load"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-language.ts:16

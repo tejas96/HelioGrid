@@ -1,0 +1,236 @@
+/* FactRow / FactRows — one label and the value it names, in one of two forms decided by whether
+   the value FITS, never by how wide the screen is.
+
+   The 14px expressive value, the 12.5px functional label, the 18px and 14px column gaps, the 9px
+   functional row gap, the 3px expressive line gap, the 18px functional mark column, the 1.45
+   leading and the 0.65 join ink are the design system's own FactRow values; the scale has no
+   step for them. Everything that has a step takes it.
+
+   The reading measure is a count of characters and lives on the room's own padding, never on its
+   width: the measured box stays the room in both forms, so switching form is never a resize that
+   re-opens the question it just answered. */
+
+.hg-fact-rows,
+.hg-fact-alone,
+.hg-fact-row {
+  --hg-fact-leading: 1.45;
+}
+
+.hg-fact-rows[data-density="expressive"],
+.hg-fact-alone[data-density="expressive"],
+.hg-fact-row[data-density="expressive"] {
+  --hg-fact-label-size: var(--fs-body-sm);
+  --hg-fact-value-size: 14px;
+  --hg-fact-row-gap: var(--sp-3);
+  --hg-fact-col-gap: 18px;
+  --hg-fact-line-gap: 3px;
+  --hg-fact-mark: var(--sp-5);
+}
+
+.hg-fact-rows[data-density="functional"],
+.hg-fact-alone[data-density="functional"],
+.hg-fact-row[data-density="functional"] {
+  --hg-fact-label-size: 12.5px;
+  --hg-fact-value-size: var(--fs-body-sm);
+  --hg-fact-row-gap: 9px;
+  --hg-fact-col-gap: 14px;
+  --hg-fact-line-gap: var(--sp-0-5);
+  --hg-fact-mark: 18px;
+}
+
+/* ── the room: a group, or a row on its own ─────────────────────────────── */
+
+.hg-fact-rows,
+.hg-fact-alone {
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+  /* `ch` resolves against the type the room is set in. */
+  font-size: var(--hg-fact-value-size);
+}
+
+.hg-fact-rows {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--hg-fact-row-gap);
+}
+
+.hg-fact-rows[data-fact-group-form="pair"],
+.hg-fact-alone[data-fact-alone-form="pair"] {
+  padding-inline-end: max(0px, calc(100% - var(--hg-fact-measure) * 1ch));
+}
+
+.hg-fact-rows > .hg-fact-row {
+  grid-column: 1 / -1;
+}
+
+/* ── a row ──────────────────────────────────────────────────────────────── */
+
+.hg-fact-term {
+  margin: 0;
+  min-width: 0;
+  font-size: var(--hg-fact-label-size);
+  font-weight: var(--fw-medium);
+  line-height: var(--hg-fact-leading);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-fact-detail {
+  margin: 0;
+  min-width: 0;
+  font-size: var(--hg-fact-value-size);
+  font-weight: var(--fw-medium);
+  line-height: var(--hg-fact-leading);
+  color: var(--text-primary);
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+/* The mark sits in a column of its own, one value line tall, centred on that line. */
+.hg-fact-mark {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+  height: calc(var(--hg-fact-value-size) * var(--hg-fact-leading));
+}
+
+.hg-fact-value {
+  display: block;
+  min-width: 0;
+}
+
+.hg-fact-join {
+  opacity: 0.65;
+}
+
+.hg-fact-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hg-fact-line-gap);
+  min-width: 0;
+}
+
+/* pair — label and value on one line; the provenance under the value, in its column. */
+.hg-fact-row[data-fact-form="pair"] {
+  display: grid;
+  align-items: baseline;
+  column-gap: var(--hg-fact-col-gap);
+  row-gap: var(--hg-fact-line-gap);
+  grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+}
+
+.hg-fact-row[data-fact-form="pair"][data-has-mark="true"] {
+  grid-template-columns: var(--hg-fact-mark) minmax(0, max-content) minmax(0, 1fr);
+}
+
+.hg-fact-row[data-fact-form="pair"] > .hg-fact-detail,
+.hg-fact-row[data-fact-form="stack"] > .hg-fact-detail {
+  grid-column: -2 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+/* The mark lives inside the term; where the column is reserved, the term spans it and the word
+   takes the second track, so a row with no mark keeps the same left edge. */
+.hg-fact-row[data-has-mark="true"]:not([data-fact-form="flow"]) > .hg-fact-term {
+  grid-column: 1 / span 2;
+  display: grid;
+  grid-template-columns: var(--hg-fact-mark) minmax(0, 1fr);
+  column-gap: inherit;
+  align-items: baseline;
+}
+
+.hg-fact-row[data-has-mark="true"]:not([data-fact-form="flow"]) .hg-fact-mark {
+  grid-column: 1;
+  align-self: start;
+}
+
+.hg-fact-row[data-has-mark="true"]:not([data-fact-form="flow"]) .hg-fact-word {
+  grid-column: 2;
+}
+
+@supports (grid-template-columns: subgrid) {
+  .hg-fact-rows[data-fact-group-form="pair"] {
+    column-gap: var(--hg-fact-col-gap);
+    grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+  }
+
+  .hg-fact-rows[data-fact-group-form="pair"][data-has-mark="true"] {
+    grid-template-columns: var(--hg-fact-mark) minmax(0, max-content) minmax(0, 1fr);
+  }
+
+  .hg-fact-rows > .hg-fact-row[data-fact-form="pair"] {
+    grid-template-columns: subgrid;
+  }
+
+  .hg-fact-row[data-has-mark="true"]:not([data-fact-form="flow"]) > .hg-fact-term {
+    grid-template-columns: subgrid;
+  }
+}
+
+/* flow — ONE LINE THAT WRAPS: the word leads, the value flows on from it, and the continuation
+   lines start under the word's left edge; the provenance ends the line. */
+.hg-fact-row[data-fact-form="flow"] {
+  display: block;
+  position: relative;
+}
+
+.hg-fact-row[data-fact-form="flow"][data-has-mark="true"] {
+  padding-inline-start: var(--hg-fact-mark);
+}
+
+.hg-fact-row[data-fact-form="flow"] > .hg-fact-term,
+.hg-fact-row[data-fact-form="flow"] > .hg-fact-detail,
+.hg-fact-row[data-fact-form="flow"] .hg-fact-value {
+  display: inline;
+}
+
+.hg-fact-row[data-fact-form="flow"] .hg-fact-mark {
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+}
+
+.hg-fact-dash {
+  color: var(--text-secondary);
+  font-weight: var(--fw-regular);
+}
+
+.hg-fact-row[data-fact-form="flow"] .hg-fact-provenance {
+  margin-inline-start: var(--sp-2);
+}
+
+/* stack — the word, then each long item on its own line under it. */
+.hg-fact-row[data-fact-form="stack"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--hg-fact-line-gap);
+}
+
+.hg-fact-row[data-fact-form="stack"][data-has-mark="true"] {
+  grid-template-columns: var(--hg-fact-mark) minmax(0, 1fr);
+}
+
+.hg-fact-row[data-fact-form="stack"] > .hg-fact-term {
+  grid-row: 1;
+}
+
+.hg-fact-row[data-fact-form="stack"] > .hg-fact-detail {
+  grid-row: 2;
+}
+
+/* On a tinted ground the row takes the ground's ink: label and value separate by weight. */
+.hg-fact-row[data-ink="inherit"] .hg-fact-term,
+.hg-fact-row[data-ink="inherit"] .hg-fact-dash,
+.hg-fact-row[data-ink="inherit"] .hg-provenance {
+  color: inherit;
+}
+
+.hg-fact-row[data-ink="inherit"] .hg-fact-detail {
+  color: inherit;
+  font-weight: var(--fw-bold);
+}
