@@ -1,4 +1,4 @@
-import type { CreateTenant, OtpChannel, UiLanguage } from '@heliogrid/contracts';
+import type { CreateTenant, MeasurementSystem, OtpChannel, UiLanguage } from '@heliogrid/contracts';
 import type {
   FirstRunCarry,
   GoogleResult,
@@ -100,6 +100,11 @@ export interface SessionStore {
    * because a switch that waits on a round trip, or undoes itself, is F3-04's own failure.
    */
   setInterfaceLanguage(next: UiLanguage): Promise<boolean>;
+  /**
+   * The person chose metres or feet (`F3-23`): as `setInterfaceLanguage`, the snapshot moves at
+   * once and `PATCH /users/me` persists it; a refusal is held in `refusedPreferences`.
+   */
+  setUnitPreference(next: MeasurementSystem): Promise<boolean>;
 }
 
 /**

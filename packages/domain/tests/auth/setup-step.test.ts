@@ -7,6 +7,7 @@ const person = {
   name: 'Priya Kulkarni',
   phoneE164: '+919876543210',
   interfaceLanguage: 'en',
+  unitPreference: 'metric',
 } as const;
 const TENANT_ID = '8f0c2d1e-0000-4000-8000-000000000001';
 const owner: SessionUser = { ...person, tenant: { id: TENANT_ID, roles: ['epc_owner'] } };

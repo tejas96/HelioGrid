@@ -14,6 +14,7 @@ const person = (tenant: SessionUser['tenant']): SessionUser => ({
   name: 'Asha',
   phoneE164: '+919876543210',
   interfaceLanguage: 'en',
+  unitPreference: 'metric',
   tenant,
 });
 const withCompany = person({ id: 't1', roles: ['epc_owner'] });

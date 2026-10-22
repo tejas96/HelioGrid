@@ -1,0 +1,91 @@
+/* Profile & preferences (`SCR-M01-11`), from the M01 board: the phone's page below the desktop
+   room, a column of `SettingsSection` cards at most 760 wide from it. */
+.hg-profile-preferences {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  min-width: 0;
+}
+
+.hg-profile-preferences[data-wide="true"] {
+  gap: var(--sp-5);
+  max-width: 760px;
+}
+
+.hg-profile-preferences-title {
+  margin: 0;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  letter-spacing: var(--tr-h2);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.hg-profile-preferences-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-profile-preferences-section[data-gap="wide"] {
+  gap: var(--sp-4);
+}
+
+.hg-profile-preferences-overline {
+  margin: 0;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* The account's card on the phone — `SettingsCard`'s look, with the board's tighter rows. */
+.hg-profile-preferences-tile {
+  padding: var(--sp-1) 0;
+}
+
+.hg-profile-preferences-tile > * + * {
+  border-top: 1px solid var(--line-soft);
+}
+
+/* A row laid on its card: no ground or lift of its own, the card's row padding. */
+.hg-list-row.hg-profile-preferences-row {
+  min-height: var(--sp-16);
+  box-sizing: border-box;
+  padding: var(--sp-2) var(--sp-4);
+  gap: var(--sp-3);
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.hg-profile-preferences[data-wide="true"] .hg-list-row.hg-profile-preferences-row {
+  padding: var(--sp-2) var(--sp-6);
+  gap: var(--sp-4);
+}
+
+.hg-profile-preferences-control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-profile-preferences-name {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  min-height: var(--sp-16);
+  box-sizing: border-box;
+  padding: var(--sp-2) var(--sp-6);
+}
+
+.hg-profile-preferences-name-words {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}

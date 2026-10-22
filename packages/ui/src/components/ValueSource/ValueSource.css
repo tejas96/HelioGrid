@@ -1,6 +1,7 @@
 /* ValueSource — attribution, not a marker. No pill, no tint: the treatment must not look like
    FieldOverride's, because the two say opposite things about whether anything happened to the
-   value. `inherited` reads one step quieter than `own` — it is not the tenant's value. */
+   value. Both levels read in secondary text: the line is load-bearing (`F7-11`), and the glyph and
+   the word, not a quieter ink, say which level it is. */
 
 .hg-value-source {
   display: flex;
@@ -10,6 +11,7 @@
   min-width: 0;
   font-family: var(--font-sans);
   line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
 }
 
 .hg-value-source[data-size="12"] {
@@ -17,13 +19,6 @@
 }
 .hg-value-source[data-size="13"] {
   font-size: var(--fs-body-sm);
-}
-
-.hg-value-source[data-level="own"] {
-  color: var(--text-secondary);
-}
-.hg-value-source[data-level="inherited"] {
-  color: var(--text-tertiary);
 }
 
 .hg-value-source-layer {

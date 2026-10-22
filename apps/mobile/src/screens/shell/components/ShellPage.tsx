@@ -8,7 +8,7 @@ import { useRef, useState } from 'react';
 import type { View } from 'react-native';
 import { usePillItems } from '../use-pill-items';
 import { GrievanceNote } from './GrievanceNote';
-import { ShellFrame } from './ShellFrame';
+import { ShellFrame, type ShellFrameProps } from './ShellFrame';
 import { ShellTopBar } from './ShellTopBar';
 
 /** A page opened from a list: its title, and its way back with the name the control speaks. */
@@ -31,6 +31,7 @@ export function ShellPage({
   drillDown,
   stickyHead,
   lead,
+  pad,
   children,
 }: {
   inView?: string;
@@ -39,6 +40,8 @@ export function ShellPage({
   stickyHead?: ReactNode;
   /** What scrolls away above the held head (`ShellFrame`). */
   lead?: ReactNode;
+  /** The page's side padding (`ShellFrame`). */
+  pad?: ShellFrameProps['pad'];
   children: ReactNode;
 }) {
   const t = useTranslate();
@@ -85,6 +88,7 @@ export function ShellPage({
       onScrolledChange={drillDown === undefined ? undefined : setScrolled}
       stickyHead={stickyHead}
       lead={lead}
+      pad={pad}
     >
       {children}
       <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />

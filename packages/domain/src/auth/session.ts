@@ -1,5 +1,6 @@
 import type { RolePreset } from '../authz/roles';
 import type { UiLanguage } from '../format/languages';
+import type { MeasurementSystem } from '../format/pack';
 import type { OnboardingStep } from '../tenancy/onboarding-steps';
 import type { OtpVerifyOutcome } from './login-state';
 
@@ -42,6 +43,8 @@ export interface SessionUser {
   phoneE164: string;
   /** The person's own interface language (`F3-02`) — what the i18n provider follows. */
   interfaceLanguage: UiLanguage;
+  /** The person's own measurement preference (`F3-23`), seeded from the market at signup. */
+  unitPreference: MeasurementSystem;
   /** Null until a company exists — the signup that resumes at the company step (`M01-10`). */
   tenant: { id: string; roles: readonly RolePreset[] } | null;
 }
@@ -118,7 +121,17 @@ export interface SessionSnapshot {
    * own rules): still `checking`, the cookie untouched, until a retry answers.
    */
   unreachable: boolean;
+  /**
+   * The person's own preferences whose last save the server refused (`SCR-M01-11`, D219): each
+   * choice stands on screen and the control that made it says so, every refused control at once.
+   * Memory only; a save of that preference that lands drops it, and a sign-in or sign-out clears
+   * them all.
+   */
+  refusedPreferences: readonly ProfilePreference[];
 }
+
+/** The person's own preferences the session holds and saves through `PATCH /users/me`. */
+export type ProfilePreference = 'language' | 'units';
 
 /**
  * How a code check ended, with the tries left ON THIS CODE — counted on the device, because the

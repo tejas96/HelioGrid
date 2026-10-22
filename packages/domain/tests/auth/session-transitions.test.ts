@@ -8,6 +8,7 @@ const priya: SessionUser = {
   name: 'Priya Kulkarni',
   phoneE164: '+919876543210',
   interfaceLanguage: 'en',
+  unitPreference: 'metric',
   tenant: { id: TENANT_ID, roles: ['sales_executive'] },
 };
 const signedIn: SessionSnapshot = sessionAfter(CHECKING, {
@@ -63,6 +64,18 @@ describe('sessionAfter — why a session ended, and what the device keeps of it 
     const again = sessionAfter(putOff, { kind: 'signed-in', user: priya, restored: false });
     expect(again.setupPutOff).toEqual([]);
     expect(sessionAfter(putOff, { kind: 'signed-out' }).setupPutOff).toEqual([]);
+  });
+
+  it('drops every refused preference save at the next sign-in and at a sign-out, and keeps them on a re-read', () => {
+    const refused: SessionSnapshot = { ...signedIn, refusedPreferences: ['language', 'units'] };
+    expect(
+      sessionAfter(refused, { kind: 'signed-in', user: priya, restored: false }).refusedPreferences,
+    ).toEqual([]);
+    expect(sessionAfter(refused, { kind: 'signed-out' }).refusedPreferences).toEqual([]);
+    expect(sessionAfter(refused, { kind: 'reread', user: priya }).refusedPreferences).toEqual([
+      'language',
+      'units',
+    ]);
   });
 
   it('takes a re-read person in place, keeping the home chosen and the steps put off (AC-24)', () => {

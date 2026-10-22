@@ -8,7 +8,7 @@ Permanent per-user language picker and measurement-unit preference.
 
 Reached from: More → Profile (mobile) and the sidebar (desktop) — per F3-03's source pointer. Leads to: nowhere in particular — changes apply in place; switching language re-renders the whole application immediately with no reload and no loss of in-progress work (context: F3 §F3.1 / F3-04, not a row of this slice). Exit is not otherwise pinned by PRD — designer decides, note the decision. The user's own role card (SCR-M01-10) is re-openable from here (M01 §M01.2 permissions).
 
-The role card opens over this screen in its `reopened-from-profile` form (`SCR-M01-10`). *Edit name* opens `SCR-M01-09` in its settings life.
+The role card opens over this screen in its `reopened-from-profile` form (`SCR-M01-10`). *Edit name* changes the name and the photo from this screen, in frames drawn on this board (ruling 1 below).
 
 ## Requirements (verbatim)
 
@@ -88,6 +88,12 @@ addresses only `epc_owner`, so the Billing row shows only on the EPC Owner's acc
 - **The account card holds two rows:** the name row (avatar, name, *Edit name*) and the *Your role*
   row, which keeps the way into `SCR-M01-10`. The *Your role* row is a `ListRow` at both widths; on
   the phone the name row is one too.
+
+**Rulings at `T-M01-011` (owner, 2026-10-22).**
+
+1. **Name and photo are changed from this screen** (`SCR-M01-09` ruling 17): *Edit name* opens an editor drawn on this board at 375 and 1536, holding the name and the photo; the board draws it before it is built.
+2. **The *Your role* row has no act until the role card exists:** it ships without its chevron, and `T-M01-010` adds the act and the chevron.
+3. **Only the EPC Owner is offered Billing:** a person without `epc_owner` sees four groups, and the api refuses their Billing write.
 
 ## Data volume
 

@@ -1,4 +1,4 @@
-import type { UI_SOURCE_LOCALE, UiLanguage } from '@heliogrid/contracts';
+import { UI_LANGUAGES, type UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
 import type { Messages } from '@lingui/core';
 import { messages as sourceMessages } from './locales/en/messages';
 
@@ -32,6 +32,19 @@ export const LANGUAGE_META = {
   hi: { tag: 'hi', endonym: 'हिन्दी', dir: 'ltr' },
   mr: { tag: 'mr', endonym: 'मराठी', dir: 'ltr' },
 } satisfies Record<UiLanguage, LanguageMeta>;
+
+/** Every language a picker offers, each named in itself and tagged for a screen reader (`F3-03`). */
+export function languageOptions(): readonly {
+  readonly value: UiLanguage;
+  readonly label: string;
+  readonly lang: string;
+}[] {
+  return UI_LANGUAGES.map((value) => ({
+    value,
+    label: LANGUAGE_META[value].endonym,
+    lang: LANGUAGE_META[value].tag,
+  }));
+}
 
 /**
  * The SOURCE catalog, statically imported so a runtime can be built synchronously with real

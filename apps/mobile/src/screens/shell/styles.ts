@@ -33,6 +33,7 @@ export const styles = StyleSheet.create({
      Both are the head's own padding, not the page's, so they stay white around it while it is held
      and the search never meets the bar. */
   listRhythm: { paddingTop: 0, gap: 0 },
+  functionalPad: { paddingHorizontal: theme.layout['screen-pad-mobile-fn'] },
   /* React Native moves a sticky child's style onto its own wrapper and gives the child `flex: 1`, so
      a `gap` here would space one child: the head's parts take theirs from `stickyHeadParts`. */
   stickyHead: {

@@ -81,6 +81,12 @@ export {
   showOlderLabel,
   TYPE_GROUP_NAME,
 } from './copy/notifications';
+export type {
+  ProfilePreferencesWordFacts,
+  ProfilePreferencesWords,
+  ProfileRoleWords,
+} from './copy/profile-preferences';
+export { PROFILE_PREFERENCES, profilePreferencesWords } from './copy/profile-preferences';
 export { provenanceWords, standingLabel, tierLabel } from './copy/provenance';
 export type { SettingsWords } from './copy/settings';
 export { backToSettings, settingsListFor, settingsRowName, settingsWords } from './copy/settings';

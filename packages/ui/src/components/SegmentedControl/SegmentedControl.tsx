@@ -47,6 +47,7 @@ export function SegmentedControl({
   value,
   onChange,
   label,
+  ariaLabel,
   error,
   className,
   style,
@@ -59,7 +60,7 @@ export function SegmentedControl({
   const autoId = useId();
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const reasoned = items.filter((option) => option.disabled === true && hasReason(option));
-  const isField = label !== undefined || error !== undefined;
+  const isField = label !== undefined || ariaLabel !== undefined || error !== undefined;
   const wrapped = isField || reasoned.length > 0;
 
   const onKeyDown = (from: number) => (event: KeyboardEvent<HTMLButtonElement>) => {
@@ -88,6 +89,7 @@ export function SegmentedControl({
     <div
       role={isField ? 'radiogroup' : wrapped ? 'group' : undefined}
       aria-labelledby={label === undefined ? undefined : `${autoId}-lbl`}
+      aria-label={label === undefined ? ariaLabel : undefined}
       aria-invalid={error === undefined ? undefined : true}
       aria-describedby={error === undefined ? undefined : `${autoId}-err`}
       className={classNames('hg-segmented-control-pill', wrapped ? undefined : className)}
@@ -186,7 +188,7 @@ function Segment({
       }}
     >
       {off ? <OffGlyph /> : null}
-      {option.label}
+      {option.lang === undefined ? option.label : <span lang={option.lang}>{option.label}</span>}
       {count === undefined ? null : (
         <span className="hg-segmented-control-count">{clampCount(count, option.countMax)}</span>
       )}

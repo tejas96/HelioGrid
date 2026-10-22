@@ -37,6 +37,7 @@ export function useSession(): SessionApi {
       putOffSetup: session.putOffSetup,
       signOutEverywhere: session.signOutEverywhere,
       setInterfaceLanguage: session.setInterfaceLanguage,
+      setUnitPreference: session.setUnitPreference,
     }),
     [snapshot, session],
   );

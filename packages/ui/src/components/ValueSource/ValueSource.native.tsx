@@ -86,20 +86,19 @@ export function ValueSource({
   const word = layerName || entry.word;
   const inherited = level === 'inherited';
   const step = valueSourceStep(size);
-  const tone = inherited ? 'tertiary' : 'secondary';
-  const glyphColor = inherited ? theme.colors['text-tertiary'] : theme.colors['text-secondary'];
+  const glyphColor = theme.colors['text-secondary'];
   return (
     <View style={[styles.row, style]}>
       <View style={styles.layer}>
         <Glyph name={entry.glyph} color={glyphColor} />
-        <Text variant="caption" color={tone} style={[SIZE[step], styles.word]}>
+        <Text variant="caption" color="secondary" style={[SIZE[step], styles.word]}>
           {word}
         </Text>
       </View>
       {source ? (
         <View style={styles.from}>
           {/* One line on the phone too: the layer word is the fact, the source is its detail. */}
-          <Text variant="caption" color={tone} style={SIZE[step]}>
+          <Text variant="caption" color="secondary" style={SIZE[step]}>
             {source}
           </Text>
         </View>

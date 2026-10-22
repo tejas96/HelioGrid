@@ -61,7 +61,7 @@ build (`.claude/skills/task/design-track.md`), so the build waits only when that
 | pick · analyse · RFC | the next task; its gaps; its RFC, checked by `rfc-reviewer` | yes — approve the RFC, once; a part inside the approved task RFC with no open decision needs none |
 | build | inside the approved RFC | when scope voids the approval |
 | verify | `code-reviewer`, then QA on the changed surfaces in parallel, then `pnpm check:all` | when a finding or a failing row survives its fixes |
-| ship | clean up, commit, push, open the PR, CI | yes — every commit, then the owner merges the PR |
+| ship | commit, push, open the PR, clean up, CI | yes — every commit, then the owner merges the PR |
 
 **One turn, many calls.** Batch every read, search and check that does not wait on another's result
 into one turn.

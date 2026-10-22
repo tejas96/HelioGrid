@@ -34,6 +34,7 @@ export function projectionOf(
       phoneE164: account.phoneE164,
       displayName: account.name ?? '',
       interfaceLanguage: account.interfaceLanguage,
+      unitPreference: account.unitPreference,
     },
     membership: claimsOf(account.id, row.id, membership).membership,
     expiry: {

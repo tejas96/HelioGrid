@@ -976,6 +976,11 @@ msgid "Decline this invite?"
 msgstr "Decline this invite?"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:31
+msgid "Default for {market}"
+msgstr "Default for {market}"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:68
 msgid "Delivery"
 msgstr "Delivery"
@@ -1084,6 +1089,11 @@ msgstr "Factories, offices, warehouses"
 #: src/copy/setup-what-you-sell.ts:64
 msgid "Factories, warehouses and offices — bigger rooftops, sold to a business."
 msgstr "Factories, warehouses and offices — bigger rooftops, sold to a business."
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:29
+msgid "Feet"
+msgstr "Feet"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:83
@@ -1376,9 +1386,15 @@ msgid "Keep the invite"
 msgstr "Keep the invite"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:26
 #: src/copy/setup-language.ts:21
 msgid "Language"
 msgstr "Language"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:23
+msgid "Language and units"
+msgstr "Language and units"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:27
@@ -1454,6 +1470,16 @@ msgstr "Marketing"
 #: src/copy/provenance.ts:13
 msgid "Measured"
 msgstr "Measured"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:27
+msgid "Measurements"
+msgstr "Measurements"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:28
+msgid "Metres"
+msgstr "Metres"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:33
@@ -1597,6 +1623,11 @@ msgstr "Not published yet"
 #: src/copy/company-profile.ts:53
 msgid "Not saved · our end · nothing typed is lost"
 msgstr "Not saved · our end · nothing typed is lost"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:33
+msgid "Not saved. Try again."
+msgstr "Not saved. Try again."
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:27
@@ -3088,6 +3119,7 @@ msgstr "Your access was removed"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:37
+#: src/copy/profile-preferences.ts:22
 msgid "Your account"
 msgstr "Your account"
 
@@ -3105,6 +3137,11 @@ msgstr "Your answers did not save"
 #: src/copy/setup-what-you-sell.ts:21
 msgid "Your answers set the starting point for every proposal HelioGrid builds."
 msgstr "Your answers set the starting point for every proposal HelioGrid builds."
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:32
+msgid "Your choice"
+msgstr "Your choice"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:27
@@ -3147,6 +3184,11 @@ msgstr "Your current account"
 #: src/copy/api-error.ts:31
 msgid "Your current plan doesn't include this."
 msgstr "Your current plan doesn't include this."
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:30
+msgid "Your device's language"
+msgstr "Your device's language"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-language.ts:22
@@ -3263,6 +3305,16 @@ msgstr "Your request is with the owner"
 #: src/copy/company-signup.ts:79
 msgid "Your request may already be with the owner."
 msgstr "Your request may already be with the owner."
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:24
+msgid "Your role"
+msgstr "Your role"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:25
+msgid "Your roles"
+msgstr "Your roles"
 
 #. js-lingui-explicit-id
 #: src/copy/settings.ts:25

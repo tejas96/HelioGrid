@@ -137,6 +137,7 @@ export type {
   KnownAccount,
   OtpVerifyResult,
   PendingSwitch,
+  ProfilePreference,
   SessionLoss,
   SessionPhase,
   SessionSnapshot,
