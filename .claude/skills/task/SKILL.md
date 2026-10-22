@@ -172,7 +172,9 @@ Pick the surfaces from what changed, never more:
 No surface changed (a pure domain or docs task): no server starts and no phone boots; the unit
 tests, the review and the gate are the proof.
 
-**Prepare.** `pnpm infra:up` when the stack is down. Start only the servers the rows need, through
+**Prepare.** Only once step 6's reviewer has returned clean and its fixes are in — never while it
+reads: a server or a phone started then idles through the review and its fixes. `pnpm infra:up`
+when the stack is down. Start only the servers the rows need, through
 `.claude/launch.json` with `preview_start`; reuse a healthy HelioGrid one. Boot only the phones the
 rows need: the simulator that holds the newest `com.heliogrid.app`, the emulator `Pixel_8_API_36`.
 Rebuild native code only when native files changed or the app is missing. Cold-start the app after
@@ -225,12 +227,12 @@ return; any file an agent changed stops the task.
    fails the gate. A fix goes back through `pnpm check`, the reviewer on
    the fixed files and the QA rows it touched, then one more gate run. A second failure that is
    not environmental stops for the owner. A stale `dist/` after a delete: `CLAUDE.md` §3.
-4. Clean up once the owner says yes to the commit (step 9), never before it: a fault the owner
-   reports between the gate and that yes is reproduced on the stack, the phones and the test
+4. Clean up once the PR is open (step 9), never before the owner's yes to the commit: a fault the
+   owner reports between the gate and that yes is reproduced on the stack, the phones and the test
    database as QA left them. Then switch `.env.local` back if step 7 switched it, and restart the api only if it was
-   running at step 1. Stop every server, phone (`xcrun simctl shutdown <udid>`,
-   `adb -s <serial> emu kill`) and browser tab this task started; leave alone what was running at
-   step 1; run
+   running at step 1. Stop every server this task started — web, api, Metro, worker — every phone
+   it booted (`xcrun simctl shutdown <udid>`, `adb -s <serial> emu kill`) and every browser tab it
+   opened; leave alone what was running at step 1; run
    `pnpm infra:down` only when the stack was down at step 1; never quit Docker. Delete the
    screenshots and temporary files this task made in `.qa/` and the scratchpad; keep the logs.
    A watcher that survives (`tsx … watch`) is named to the owner with its pid.
@@ -247,7 +249,8 @@ into the PR body — a part's RFC goes; the task RFC stays until the last part s
   yes to that list and message (`CLAUDE.md` §4); every later commit — a CI fix, a review fix, a
   merge of `origin/main` — is shown and waits the same way.
 - `git push -u origin feat/<id>`, then `gh pr create --base main --draft`, the body filled in as
-  `.github/pull_request_template.md` lays it out. Bind it to the session (the `ccd_pr` tools).
+  `.github/pull_request_template.md` lays it out. Bind it to the session (the `ccd_pr` tools), then
+  clean up (step 8.4) before anything else.
 - Mark it ready (`gh pr ready`) only when every job of the head's latest run passed — `success`, or
   `skipped` while `changes` passed — and every lane a `ci` proof row names ran and passed. When the
   `android` job ran and `PHONE_E2E` is not `off`, its step `Phone flows (tests/e2e/mobile) on the
