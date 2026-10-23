@@ -102,6 +102,17 @@ export interface RoleCard {
   readonly ownerNote: boolean;
 }
 
+/**
+ * The names the card prints beside its lines. Each is `null` until its read lands, and stays `null`
+ * when there is none: the founder has no setter (brief ruling 15).
+ */
+export interface RoleCardNames {
+  readonly companyName: string | null;
+  readonly setterName: string | null;
+  /** The company's EPC Owners by name, the first two, and how many more. */
+  readonly owners: { readonly names: readonly string[]; readonly more: number } | null;
+}
+
 export function roleCard(roles: readonly RolePreset[]): RoleCard {
   const presets = inMatrixOrder(roles);
   const grants = ROLE_CARD_LINES.filter((line) => holds(presets, line.decidedBy));

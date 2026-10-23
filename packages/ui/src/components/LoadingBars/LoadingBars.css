@@ -32,3 +32,62 @@
 .hg-loading-bar[data-size="panel"] {
   height: 188px;
 }
+
+/* A list of phrases waits as lines: a mark the size of a row's glyph and a text-high bar beside it,
+   on the card's own grey (`SCR-M01-10`, `m-loading`). The lengths vary so the wait reads as words,
+   six in turn, the board's own. */
+.hg-loading-bars[data-sizes="line"] {
+  gap: var(--sp-3);
+}
+
+.hg-loading-line {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  height: var(--sp-5);
+}
+
+.hg-loading-line-mark,
+.hg-loading-line-bar {
+  display: block;
+  flex-shrink: 0;
+  border-radius: var(--rf-md);
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-loading-line-mark {
+  width: var(--sp-5);
+  height: var(--sp-5);
+}
+
+.hg-loading-line-bar {
+  height: var(--sp-3);
+  width: 64%;
+}
+
+.hg-loading-line:nth-child(6n + 2) .hg-loading-line-bar {
+  width: 38%;
+}
+
+.hg-loading-line:nth-child(6n + 3) .hg-loading-line-bar {
+  width: 30%;
+}
+
+.hg-loading-line:nth-child(6n + 4) .hg-loading-line-bar {
+  width: 86%;
+}
+
+.hg-loading-line:nth-child(6n + 5) .hg-loading-line-bar {
+  width: 62%;
+}
+
+.hg-loading-line:nth-child(6n) .hg-loading-line-bar {
+  width: 50%;
+}

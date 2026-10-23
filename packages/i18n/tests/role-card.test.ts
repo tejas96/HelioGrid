@@ -1,13 +1,19 @@
-import { ROLE_PRESETS, type RolePreset, roleCard, type UiLanguage } from '@heliogrid/domain';
+import {
+  ROLE_PRESETS,
+  type RoleCardNames,
+  type RolePreset,
+  roleCard,
+  type UiLanguage,
+} from '@heliogrid/domain';
 import { describe, expect, it } from 'vitest';
-import { ROLE_CARD, type RoleCardWordFacts, roleCardWords } from '../src/copy/role-card';
+import { ROLE_CARD, roleCardWords } from '../src/copy/role-card';
 import { presetName } from '../src/copy/shell';
 import { createTranslator } from '../src/runtime';
 
 const [OWNER, , SALES_EXECUTIVE, SURVEY_ENGINEER, DESIGN_ENGINEER, , FIELD_TECHNICIAN] =
   ROLE_PRESETS;
 
-const BOARD: RoleCardWordFacts = {
+const BOARD: RoleCardNames = {
   companyName: 'Suryodaya Solar',
   setterName: 'Rajesh Kulkarni',
   owners: { names: ['Rajesh Kulkarni'], more: 0 },
@@ -15,7 +21,7 @@ const BOARD: RoleCardWordFacts = {
 
 async function wordsFor(
   roles: readonly RolePreset[],
-  facts: Partial<RoleCardWordFacts> = {},
+  facts: Partial<RoleCardNames> = {},
   reader: UiLanguage = 'en',
 ) {
   const { t } = await createTranslator(reader);
@@ -177,7 +183,7 @@ describe('roleCardWords — what the board does not draw', () => {
     },
   );
 
-  it.each<{ facts: Partial<RoleCardWordFacts>; body: string }>([
+  it.each<{ facts: Partial<RoleCardNames>; body: string }>([
     {
       facts: { setterName: null },
       body: 'You are still part of Suryodaya Solar. Try again in a moment.',

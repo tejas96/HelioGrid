@@ -1,7 +1,6 @@
 import type { PlatformKind, UpdateUserProfile } from '@heliogrid/contracts';
 import {
   CHECKING,
-  canRenew,
   type GoogleResult,
   OTP_MAX_FAILED_VERIFIES,
   type OtpRequestOutcome,
@@ -18,11 +17,11 @@ import type { AuthRepository } from '../auth/repository';
 import { isUnanswered, UnauthorizedError } from '../errors/errors';
 import type { InvitationRepository } from '../invitation/repository';
 import type { TenantRepository } from '../tenant/repository';
-import type { SessionSignals } from '../transport/transport';
 import type { UserRepository } from '../user/repository';
 import { createFirstRunHold } from './first-run';
 import type { HeldWork } from './held-work';
 import { type CodeCheck, createInviteJoin } from './invite-join';
+import { createRenewal } from './renewal';
 import type { SessionStore } from './types';
 import {
   codeOf,
@@ -111,17 +110,7 @@ export function createSessionStore(config: {
     apply({ kind: 'signed-in', user, restored });
   const signedOut = () => apply({ kind: 'signed-out' });
 
-  /**
-   * What the TRANSPORT reports (`SessionSignals`), joined to this store by `createDataLayer`.
-   * `onSessionLost` is the server refusing a refresh, with its reason: the store must move, or a
-   * screen behind the gate keeps rendering for a person the server no longer recognises. Where
-   * it moves — the door, carrying the reason for a removal — and whether a refused call is worth a
-   * refresh at all are domain's (`sessionAfter`, `canRenew`).
-   */
-  const signals: SessionSignals = {
-    onSessionLost: (loss) => apply({ kind: 'lost', loss }),
-    couldHoldSession: () => canRenew(snapshot),
-  };
+  const renewal = createRenewal({ auth: config.auth, snapshot: () => snapshot, apply });
 
   /**
    * Where a verified account goes: behind the switch on a shared device still holding another
@@ -197,7 +186,7 @@ export function createSessionStore(config: {
   };
 
   return {
-    signals,
+    signals: renewal.signals,
     getSnapshot: () => snapshot,
     subscribe(listener) {
       listeners.add(listener);
@@ -232,10 +221,7 @@ export function createSessionStore(config: {
     firstRunOwed: () => firstRun.owedTo(snapshot.user),
     endFirstRun: firstRun.end,
     retryBoot: checkSession,
-    async rereadUser() {
-      const projection = await config.auth.session().catch(() => null);
-      if (projection !== null) apply({ kind: 'reread', user: userOf(projection) });
-    },
+    rereadUser: renewal.rereadUser,
     async signInWithGoogle(token, code): Promise<GoogleResult> {
       // A link proves a number by the code of the challenge this store opened; without one there is nothing to prove.
       if (code !== null && challengeId === null)

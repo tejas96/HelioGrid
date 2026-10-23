@@ -67,6 +67,7 @@ export function Sheet({
   unavailableAction = null,
   style,
   bodyStyle,
+  bodyScrolls = true,
 }: NativeSheetProps) {
   const offset = useRef(new Animated.Value(0)).current;
   const scrollTop = useRef(0);
@@ -127,6 +128,33 @@ export function Sheet({
   const hasHeader = title !== undefined || overline !== undefined || showClose;
   const onLayout = (event: LayoutChangeEvent) => setPanelHeight(event.nativeEvent.layout.height);
 
+  const bodyPad = [
+    ladder.bodyPad,
+    hasHeader ? styles.bodyNoTop : undefined,
+    footer === null ? undefined : styles.bodyWithFooter,
+    bodyStyle,
+    footer === null ? clearBand(ladder.bodyPad, bottomInset) : undefined,
+  ];
+  const content = (
+    <OverlayBody
+      emptyAction={emptyAction}
+      emptyMessage={emptyMessage}
+      emptyTitle={emptyTitle}
+      errorMessage={errorMessage}
+      errorTitle={errorTitle}
+      onRetry={onRetry}
+      retryLabel={retryLabel}
+      skeleton={<SheetSkeleton density={density} />}
+      state={state}
+      unavailableAction={unavailableAction}
+      unavailableMessage={unavailableMessage}
+      unavailableStyle={styles.unavailable}
+      unavailableTitle={unavailableTitle}
+      variant="sheet"
+    >
+      {children}
+    </OverlayBody>
+  );
   return (
     <Portal>
       <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
@@ -168,40 +196,22 @@ export function Sheet({
 
           <SheetMeta meta={meta} density={density} />
 
-          <ScrollView
-            onScroll={(event) => {
-              scrollTop.current = event.nativeEvent.contentOffset.y;
-              setScrolled(event.nativeEvent.contentOffset.y > 2);
-            }}
-            scrollEventThrottle={16}
-            style={BODY_FLEX[size]}
-            contentContainerStyle={[
-              ladder.bodyPad,
-              hasHeader ? styles.bodyNoTop : undefined,
-              footer === null ? undefined : styles.bodyWithFooter,
-              bodyStyle,
-              footer === null ? clearBand(ladder.bodyPad, bottomInset) : undefined,
-            ]}
-          >
-            <OverlayBody
-              emptyAction={emptyAction}
-              emptyMessage={emptyMessage}
-              emptyTitle={emptyTitle}
-              errorMessage={errorMessage}
-              errorTitle={errorTitle}
-              onRetry={onRetry}
-              retryLabel={retryLabel}
-              skeleton={<SheetSkeleton density={density} />}
-              state={state}
-              unavailableAction={unavailableAction}
-              unavailableMessage={unavailableMessage}
-              unavailableStyle={styles.unavailable}
-              unavailableTitle={unavailableTitle}
-              variant="sheet"
+          {bodyScrolls ? (
+            <ScrollView
+              onScroll={(event) => {
+                scrollTop.current = event.nativeEvent.contentOffset.y;
+                setScrolled(event.nativeEvent.contentOffset.y > 2);
+              }}
+              scrollEventThrottle={16}
+              style={BODY_FLEX[size]}
+              contentContainerStyle={bodyPad}
             >
-              {children}
-            </OverlayBody>
-          </ScrollView>
+              {content}
+            </ScrollView>
+          ) : (
+            /* A held body: its content bounds itself and scrolls its own part. */
+            <View style={[BODY_FLEX[size], styles.bodyHeld, bodyPad]}>{content}</View>
+          )}
 
           {footer === null ? null : (
             <View
@@ -250,6 +260,7 @@ const styles = StyleSheet.create({
   full: { height: percentOf(SHEET_HEIGHT.cap) },
   bodyAuto: { flexGrow: 0, flexShrink: 1 },
   bodyFill: { flexGrow: 1, flexShrink: 1 },
+  bodyHeld: { minHeight: 0 },
   bodyPadExpressive: {
     paddingTop: theme.spacing['sp-3'],
     paddingHorizontal: theme.spacing['sp-5'],

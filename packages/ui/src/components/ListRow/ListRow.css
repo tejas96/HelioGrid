@@ -36,6 +36,12 @@
   cursor: pointer;
 }
 
+/* A clickable row is a button and takes the ring every focusable surface draws. */
+.hg-list-row[data-clickable="true"]:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
 .hg-list-row-body {
   flex: 1;
   min-width: 0;

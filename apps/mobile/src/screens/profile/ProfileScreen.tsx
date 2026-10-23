@@ -2,12 +2,19 @@ import {
   useMyPhoto,
   useNameAndPhotoEditor,
   usePushPreferences,
+  useRoleCard,
   useSession,
 } from '@heliogrid/data/react';
 import { PROFILE_PHOTO_MAX_SIDE_PX, profilePreferencesView } from '@heliogrid/domain';
-import { nameAndPhotoEditorWords, profilePreferencesWords } from '@heliogrid/i18n';
+import {
+  nameAndPhotoEditorWords,
+  profilePreferencesWords,
+  roleCardWords,
+  SHELL,
+} from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
-import { NameAndPhotoEditor, ProfilePreferences, useFormat } from '@heliogrid/ui';
+import { NameAndPhotoEditor, ProfilePreferences, RoleCardSurface, useFormat } from '@heliogrid/ui';
+import { useState } from 'react';
 import { pickImage } from '../../files/pick-image';
 import { useSettingsDrillDown } from '../settings/hooks/use-settings-drill-down';
 import { ShellPage } from '../shell/components/ShellPage';
@@ -17,7 +24,8 @@ import { ShellPage } from '../shell/components/ShellPage';
  * page's bar — its way back, its title and the search. A language applies through the provider,
  * which saves it (`F3-04`); a unit through the session; a push switch through its group's write.
  * A refused save shows on its control (D219). *Edit name* opens the name and photo sheet, whose
- * photo act opens the photo library, shrunk on the device (`SCR-M01-09` ruling 19).
+ * photo act opens the photo library, shrunk on the device (`SCR-M01-09` ruling 19). *Your role*
+ * opens the role card's sheet (`SCR-M01-10`, `m-reopened`).
  */
 export function ProfileScreen() {
   const drillDown = useSettingsDrillDown('profile');
@@ -27,6 +35,8 @@ export function ProfileScreen() {
   const push = usePushPreferences();
   const photo = useMyPhoto();
   const editor = useNameAndPhotoEditor();
+  const role = useRoleCard();
+  const [roleOpen, setRoleOpen] = useState(false);
   if (user === null) return null;
   const view = profilePreferencesView({ user, device, marketUnits: pack.measurementSystem });
   const words = profilePreferencesWords(t, view, {
@@ -34,6 +44,7 @@ export function ProfileScreen() {
     pack,
     refused: refusedPreferences,
   });
+  const roleWords = roleCardWords(t, role.card, role.facts);
   return (
     <ShellPage inView="more" drillDown={drillDown} pad="functional">
       <ProfilePreferences
@@ -42,6 +53,10 @@ export function ProfileScreen() {
         name={user.name}
         photo={photo.picture ?? undefined}
         onEditName={() => editor.open(user.name, photo)}
+        onRole={() => {
+          role.refresh();
+          setRoleOpen(true);
+        }}
         onLanguage={(next) => void setLocale(next)}
         onUnits={(next) => void setUnitPreference(next)}
         push={push}
@@ -64,6 +79,15 @@ export function ProfileScreen() {
         onRetryPhoto={() => editor.press('retry-photo')}
         onSave={() => editor.press('save')}
         onClose={editor.close}
+      />
+      <RoleCardSurface
+        open={roleOpen}
+        onClose={() => setRoleOpen(false)}
+        title={roleWords.surfaceTitle}
+        closeLabel={t(SHELL.close)}
+        words={roleWords}
+        surface={role.surface}
+        onRetry={role.retry}
       />
     </ShellPage>
   );

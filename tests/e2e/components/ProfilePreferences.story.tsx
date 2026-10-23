@@ -24,7 +24,7 @@ const READERS = {
  * Profile & preferences as a screen holds it, inside the page's padding: the view and the words from the person, the reader
  * and the India pack; a tap moves the person's choice here, in the browser, and the frame reports
  * it as `data-language`, `data-units` and `data-muted`, *Try again* as `data-retried` and *Edit name*
- * as `data-edit-opened`. The push
+ * as `data-edit-opened` and *Your role* as `data-role-opened`. The push
  * rows are what the api answers these presets: the groups shown, Billing locked for the Owner.
  */
 export function ProfilePreferencesAsHeld({
@@ -55,6 +55,7 @@ export function ProfilePreferencesAsHeld({
   const [muted, setMuted] = useState<readonly NotificationTypeGroup[]>(mutedAtFirst);
   const [retried, setRetried] = useState(false);
   const [editOpened, setEditOpened] = useState(false);
+  const [roleOpened, setRoleOpened] = useState(0);
   const answered = pushGroupsShownTo(roles).map((group) => ({
     group,
     pushMuted: muted.includes(group),
@@ -85,6 +86,7 @@ export function ProfilePreferencesAsHeld({
       data-muted={muted.join(',')}
       data-retried={retried}
       data-edit-opened={editOpened}
+      data-role-opened={roleOpened}
       style={{ padding: 'var(--sp-4) var(--screen-pad-mobile-fn)' }}
     >
       <ProfilePreferences
@@ -93,6 +95,7 @@ export function ProfilePreferencesAsHeld({
         name={name}
         photo={photo}
         onEditName={() => setEditOpened(true)}
+        onRole={() => setRoleOpened((count) => count + 1)}
         onLanguage={setLanguage}
         onUnits={setUnits}
         push={{ surface: push, switches: pushSwitches(answered, roles), refused: refusedGroups }}

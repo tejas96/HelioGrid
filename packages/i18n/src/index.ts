@@ -90,11 +90,7 @@ export type {
 } from './copy/profile-preferences';
 export { PROFILE_PREFERENCES, profilePreferencesWords } from './copy/profile-preferences';
 export { provenanceWords, standingLabel, tierLabel } from './copy/provenance';
-export type {
-  RoleCardLineWords,
-  RoleCardWordFacts,
-  RoleCardWords,
-} from './copy/role-card';
+export type { RoleCardLineWords, RoleCardWords } from './copy/role-card';
 export { ROLE_CARD, roleCardWords } from './copy/role-card';
 export type { SettingsWords } from './copy/settings';
 export { backToSettings, settingsListFor, settingsRowName, settingsWords } from './copy/settings';

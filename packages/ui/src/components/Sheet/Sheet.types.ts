@@ -39,6 +39,11 @@ export interface SheetProps extends OverlayCloseWords {
    */
   modal?: boolean;
   dragToDismiss?: boolean;
+  /**
+   * `false`: the body does not scroll — its content bounds itself and scrolls its own part, so a
+   * head inside it stays in view (`SCR-M01-10`'s role card, `m-reopened`). Default `true`.
+   */
+  bodyScrolls?: boolean;
   /** Sticky footer. Gets a luminance fade above it, never a divider line. */
   footer?: ReactNode;
   state?: SurfaceState;

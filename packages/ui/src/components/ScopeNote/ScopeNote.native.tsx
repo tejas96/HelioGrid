@@ -141,3 +141,6 @@ const styles = StyleSheet.create({
   startItems: { alignItems: 'flex-start' },
   centredItems: { alignItems: 'center' },
 });
+
+/** The panel's frame, for a wait that stands in for a panel note and must keep its size. */
+export const scopeNotePanelFrame = [styles.note, styles.panel];

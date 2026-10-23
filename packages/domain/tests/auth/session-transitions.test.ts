@@ -96,6 +96,11 @@ describe('sessionAfter — why a session ended, and what the device keeps of it 
     expect(sessionAfter(current, { kind: 'reread', user: priya })).toBe(current);
   });
 
+  it('a re-read of another user changes nothing: an answer sent under the cookies of the person before', () => {
+    const someoneElse: SessionUser = { ...priya, id: '00000000-0000-4000-8000-0000000000ff' };
+    expect(sessionAfter(signedIn, { kind: 'reread', user: someoneElse })).toBe(signedIn);
+  });
+
   it('sends a boot check that found no credential to the door', () => {
     expect(sessionAfter(CHECKING, { kind: 'boot-signed-out' })).toEqual(SIGNED_OUT);
   });

@@ -4,7 +4,13 @@
  * Hermes ships no list formatter (`presetLine`, `shell.ts`).
  */
 
-import { homesOf, type RoleCard, type RoleCardLineKey, type RolePreset } from '@heliogrid/domain';
+import {
+  homesOf,
+  type RoleCard,
+  type RoleCardLineKey,
+  type RoleCardNames,
+  type RolePreset,
+} from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { homeTitle } from './homes';
 import { PROFILE_PREFERENCES } from './profile-preferences';
@@ -94,17 +100,6 @@ const ROLE_CARD_NEXT_HOME: Record<RolePreset, { id: string }> = {
   installation_team_member: /*i18n*/ { id: 'Your job is one switch away.' },
 };
 
-/**
- * What the card is told beside the decided lines. Each name is `null` until its read lands, and
- * stays `null` when there is none: the founder has no setter (brief ruling 15).
- */
-export interface RoleCardWordFacts {
-  readonly companyName: string | null;
-  readonly setterName: string | null;
-  /** The company's EPC Owners by name, the first two, and how many more. */
-  readonly owners: { readonly names: readonly string[]; readonly more: number } | null;
-}
-
 export interface RoleCardLineWords {
   readonly key: RoleCardLineKey;
   readonly text: string;
@@ -132,7 +127,7 @@ export interface RoleCardWords {
 export function roleCardWords(
   translate: Translator['t'],
   card: RoleCard,
-  facts: RoleCardWordFacts,
+  facts: RoleCardNames,
 ): RoleCardWords {
   const many = card.presets.length > 1;
   const line = (key: RoleCardLineKey) => ({ key, text: translate(ROLE_CARD_LINE[key]) });
@@ -189,7 +184,7 @@ function joinAnd(translate: Translator['t'], names: readonly string[]): string {
 
 function ownersHolder(
   translate: Translator['t'],
-  owners: NonNullable<RoleCardWordFacts['owners']>,
+  owners: NonNullable<RoleCardNames['owners']>,
 ): string | null {
   const [first, second] = owners.names;
   if (first === undefined) return null;
@@ -198,7 +193,7 @@ function ownersHolder(
   return translate(ROLE_CARD.ownersMore, { first, second, more: owners.more });
 }
 
-function errorBody(translate: Translator['t'], facts: RoleCardWordFacts): string {
+function errorBody(translate: Translator['t'], facts: RoleCardNames): string {
   const { companyName: company, setterName: name } = facts;
   if (company === null) return translate(ROLE_CARD.errorPlain);
   if (name === null) return translate(ROLE_CARD.errorWait, { company });

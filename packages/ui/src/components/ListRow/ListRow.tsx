@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { pressOnEnterOrSpace } from '../../primitives/press-keys';
 import { IconCircle } from '../Card';
 import { renderMarks } from '../ChipGroup';
 import { renderGap } from '../NamedGap';
@@ -46,19 +47,21 @@ export function ListRow({
   const prov = renderProvenance(provenance, { size: 12 });
   const attr = renderAttribution(attribution, { size: 12 });
   const pend = renderPending(pending);
+  /* A row with `onClick` is the target itself: a button with a tab stop, Enter and Space acting,
+     as `Card` does. Its `trailing` then holds no control — a chevron, a mark — since a button
+     cannot hold one. A row without it stays the DS's plain div, whose `trailing` may hold
+     controls. */
+  const act = onClick
+    ? { role: 'button', tabIndex: 0, onClick, onKeyDown: pressOnEnterOrSpace(onClick) }
+    : {};
   return (
-    /* The DS row is a PLAIN DIV by design: its `trailing` slot carries real controls, and a
-       role="button" wrapper would nest them invalidly — the exact defect RecordCard's
-       sibling-overlay button exists to avoid. Ported as the design system draws it. */
-    // biome-ignore lint/a11y/noStaticElementInteractions: see above — DS markup, ported as-is.
-    // biome-ignore lint/a11y/useKeyWithClickEvents: see above — DS markup, ported as-is.
     <div
       className={classNames('hg-list-row', className)}
       data-density={density}
       data-clickable={onClick ? 'true' : undefined}
       aria-busy={isPendingInFlight(pending) ? 'true' : undefined}
-      onClick={onClick}
       style={style}
+      {...act}
     >
       {avatar ||
         (icon ? (

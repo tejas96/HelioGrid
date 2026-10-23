@@ -45,11 +45,13 @@ export function createDataLayer(config: DataLayerConfig): DataLayer {
    * repositories — so the two cannot be handed to each other directly. This relay is the knot:
    * the transport gets a stable object now and the store fills it in a line later. Until then
    * `couldHoldSession` answers true, which is the safe direction — a refresh that was not needed
-   * costs one call, and one skipped wrongly would sign a person out mid-session.
+   * costs one call, and one skipped wrongly would sign a person out mid-session. A loss or a
+   * renewal reported before then has no store to move and nobody to read again.
    */
   let session: SessionStore | null = null;
   const signals: SessionSignals = {
     onSessionLost: (loss) => session?.signals.onSessionLost(loss),
+    onSessionRenewed: () => session?.signals.onSessionRenewed(),
     couldHoldSession: () => session?.signals.couldHoldSession() ?? true,
   };
 

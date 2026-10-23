@@ -27,7 +27,7 @@ export type RequestHeaders =
   | Readonly<Record<string, string | readonly string[] | undefined>>;
 
 /**
- * What the transport tells the layer above when a refresh cannot save a call. It REPORTS; it
+ * What the transport tells the layer above about a refresh: refused, or renewed. It REPORTS; it
  * never reaches for the session store, which sits above it and would be a cycle. `createDataLayer`
  * is the one place the two are joined.
  *
@@ -39,6 +39,8 @@ export type RequestHeaders =
 export interface SessionSignals {
   /** The refresh was REFUSED (401): whoever held this session no longer has one, and why. */
   onSessionLost(loss: SessionLoss): void;
+  /** The refresh RENEWED the token, which may carry new roles: the person is read again. */
+  onSessionRenewed(): void;
   /** False once the session is known to be gone, so a doomed refresh is not attempted again. */
   couldHoldSession(): boolean;
 }
@@ -293,7 +295,10 @@ async function refreshedOnce(
     },
     signal,
   );
-  if (refreshed.status === OK) return sendRequest(config, args, signal);
+  if (refreshed.status === OK) {
+    config.session.onSessionRenewed();
+    return sendRequest(config, args, signal);
+  }
   /* Only a REFUSAL ends a session. A 5xx during a deploy, a 429, a too-old build turned away by a
      machine that took a raised minimum: each is the truth about this call, handed back as the
      refresh's own answer, and the person stays signed in. */

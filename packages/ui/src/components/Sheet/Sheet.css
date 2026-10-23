@@ -201,6 +201,14 @@
   flex: 0 1 auto;
 }
 
+/* A held body does not scroll: its content takes the room left and scrolls its own part. */
+.hg-sheet-body[data-held="true"] {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
 .hg-sheet-unavailable {
   padding: var(--sp-3) 0 var(--sp-5);
 }

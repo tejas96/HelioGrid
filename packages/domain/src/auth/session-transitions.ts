@@ -15,7 +15,11 @@ export type SessionEvent =
   | { readonly kind: 'boot-signed-out' }
   /** The transport's refresh was refused, and the server named why. */
   | { readonly kind: 'lost'; readonly loss: SessionLoss }
-  /** The person signed in was read again — their presets changed on another device. */
+  /**
+   * The person signed in was read again — their name was saved, or their presets changed: by
+   * another device, or by an owner, met when the token renews. An answer about another person, sent
+   * under the cookies of the one before, is stale and moves nothing.
+   */
   | { readonly kind: 'reread'; readonly user: SessionUser };
 
 /** Where every device starts: asking the server who the cookies belong to. */
@@ -50,7 +54,9 @@ export function sessionAfter(current: SessionSnapshot, event: SessionEvent): Ses
     case 'lost':
       return afterLoss(current, event.loss);
     case 'reread':
-      return current.status === 'authenticated' && current.ended === null
+      return current.status === 'authenticated' &&
+        current.ended === null &&
+        current.user?.id === event.user.id
         ? { ...current, user: event.user }
         : current;
   }
