@@ -8,11 +8,10 @@ import {
   companyLogoRefusal,
   companyLogoTypeRefusal,
 } from '@heliogrid/domain';
-import { useQuery } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
-import { queryKeys } from '../cache/keys';
 import { ApiError } from '../errors/errors';
 import { useRepositories } from './context';
+import { useFileLink } from './use-file-link';
 
 /** An image as an app hands it over: what the device read of it, its bytes, and a picture to draw. */
 export interface ChosenPicture extends ChosenImage {
@@ -60,14 +59,7 @@ export function useCompanyLogo(
   const [chosen, setChosen] = useState<ChosenPicture | null>(null);
   const [refusal, setRefusal] = useState<CompanyLogoRefusal | null>(null);
   const storedNow = useRef<{ readonly image: ChosenPicture; readonly fileId: string } | null>(null);
-  const link = useQuery({
-    queryKey: queryKeys.files.downloadUrl(tenantId, storedFileId ?? ''),
-    queryFn: ({ signal }) => repositories.file.downloadUrl(storedFileId ?? '', signal),
-    enabled: storedFileId !== null && chosen === null,
-    // A new link is another address for the same picture: asking again would only redraw it.
-    staleTime: Number.POSITIVE_INFINITY,
-    networkMode: 'always',
-  });
+  const link = useFileLink(tenantId, storedFileId, chosen === null);
   // Only the image a save sent is let go: another may have been chosen while that save was out.
   const letGo = (sent: ChosenPicture) => setChosen((held) => (held === sent ? null : held));
   return {
@@ -76,7 +68,7 @@ export function useCompanyLogo(
       refusal,
       held: chosen !== null || storedFileId !== null,
     },
-    picture: chosen === null ? (link.data?.url ?? null) : chosen.picture,
+    picture: chosen === null ? link : chosen.picture,
     chosen,
     choose: (image) => {
       const refused = companyLogoRefusal(image, COMPANY_LOGO_LIMITS);

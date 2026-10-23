@@ -5,6 +5,7 @@ import {
   firstRunProfileFrame,
   firstRunProfileReducer,
   firstRunProfileStart,
+  profileEditorStart,
 } from '../../src/auth/first-run-profile';
 
 const PNG = { contentType: 'image/png', byteSize: 1_000, picture: 'blob:a' };
@@ -171,5 +172,99 @@ describe('arriving', () => {
   it('nothing is heard once done', () => {
     const done = run([{ type: 'save' }, { type: 'name-ended', saved: true }]);
     expect(firstRunProfileReducer(done, { type: 'name-typed', name: 'x' })).toBe(done);
+  });
+});
+
+describe('the editor on Profile & preferences (T-M01-011c)', () => {
+  const SAVED = 'https://store.example/photo';
+
+  function edit(events: readonly FirstRunProfileEvent[], saved: string | null = SAVED) {
+    const held = { held: saved !== null, picture: saved };
+    return events.reduce(firstRunProfileReducer, profileEditorStart('Anjali Joshi', held));
+  }
+
+  it('the editor starts from the saved name and photo', () => {
+    const state = edit([]);
+    expect(state).toMatchObject({ phase: 'editing', name: 'Anjali Joshi', nameSaved: true });
+    expect(state.photo).toEqual({ kind: 'saved', picture: SAVED });
+    expect(state.photoOnServer).toBe(true);
+    expect(edit([], null).photo).toEqual({ kind: 'none' });
+    expect(edit([], null).photoOnServer).toBe(false);
+  });
+
+  it('a held photo whose link has not arrived is still held, and Save writes nothing', () => {
+    const state = profileEditorStart('Anjali Joshi', { held: true, picture: null });
+    expect(state.photo).toEqual({ kind: 'saved', picture: null });
+    expect(state.photoOnServer).toBe(true);
+    expect(firstRunProfileReducer(state, { type: 'save' }).phase).toBe('done');
+  });
+
+  it('a saved photo draws as photo-added', () => {
+    const frame = firstRunProfileFrame(edit([]));
+    expect(frame.kind).toBe('photo-added');
+    expect(frame.photo).toEqual({ kind: 'saved', picture: SAVED });
+  });
+
+  it.each([
+    ['a saved photo', SAVED],
+    ['no photo', null],
+  ] as const)('Save with nothing changed is done, with %s', (_, saved) => {
+    expect(edit([{ type: 'save' }], saved).phase).toBe('done');
+  });
+
+  it('a changed name is sent; with the photo unchanged the editor is done once it saves', () => {
+    const typed = edit([{ type: 'name-typed', name: 'Anjali Kulkarni' }, { type: 'save' }]);
+    expect(typed.phase).toBe('saving-name');
+    expect(firstRunProfileReducer(typed, { type: 'name-ended', saved: true }).phase).toBe('done');
+  });
+
+  it('a removed saved photo is written, the name already saved', () => {
+    const removed = edit([{ type: 'photo-removed' }, { type: 'save' }]);
+    expect(removed.phase).toBe('saving-photo');
+    expect(removed.photo).toEqual({ kind: 'none' });
+  });
+
+  it('a removed photo with none saved writes nothing', () => {
+    const state = edit(
+      [{ type: 'photo-chosen', image: PNG }, { type: 'photo-removed' }, { type: 'save' }],
+      null,
+    );
+    expect(state.phase).toBe('done');
+  });
+
+  it('a failed removal retries the removal, and Done leaves the photo saved', () => {
+    const failed = edit([
+      { type: 'photo-removed' },
+      { type: 'save' },
+      { type: 'photo-ended', saved: false },
+    ]);
+    expect(firstRunProfileFrame(failed)).toMatchObject({
+      kind: 'error-photo',
+      act: 'continue',
+      photoAct: 'retry',
+      photo: { kind: 'none' },
+    });
+    expect(failed.photoOnServer).toBe(true);
+    expect(firstRunProfileReducer(failed, { type: 'retry-photo' }).phase).toBe('saving-photo');
+    expect(firstRunProfileReducer(failed, { type: 'save' }).phase).toBe('done');
+  });
+
+  it.each([
+    ['a chosen photo', [{ type: 'photo-chosen', image: PNG }], true],
+    ['a removal', [{ type: 'photo-removed' }], false],
+  ] as const)('a saved write after %s records whether a photo is held', (_, before, held) => {
+    const sent = edit([...before, { type: 'save' }]);
+    const saved = firstRunProfileReducer(sent, { type: 'photo-ended', saved: true });
+    expect(saved.phase).toBe('done');
+    expect(saved.photoOnServer).toBe(held);
+  });
+
+  it('a photo refused on the device over a saved one leaves the saved one unwritten', () => {
+    const refused = edit([
+      { type: 'photo-chosen', image: { contentType: 'image/gif', byteSize: 10, picture: null } },
+      { type: 'save' },
+    ]);
+    expect(refused.phase).toBe('done');
+    expect(refused.photoOnServer).toBe(true);
   });
 });

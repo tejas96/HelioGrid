@@ -101,6 +101,7 @@
 @import "./components/LanguageSwitcher/LanguageSwitcher.css";
 @import "./components/ListRow/ListRow.css";
 @import "./components/MemberCard/MemberCard.css";
+@import "./components/NameAndPhotoEditor/NameAndPhotoEditor.css";
 @import "./components/LoadingBars/LoadingBars.css";
 @import "./components/MapSurface/MapControls.css";
 @import "./components/MapSurface/MapFrame.css";

@@ -19,9 +19,10 @@ import {
 } from '../support/fixture';
 
 /**
- * A person's photo in one company (`T-M01-009` AC-3, AC-4), through the service over the real
- * repositories and a migrated database: only a confirmed file of this company, stored against the
- * caller's own account, is pointed at, and each company keeps its own.
+ * A person's photo in one company (`T-M01-009` AC-3, AC-4; `T-M01-011c` AC-13), through the service
+ * over the real repositories and a migrated database: only a confirmed file of this company, stored
+ * against the caller's own account, is pointed at, each company keeps its own, and the read answers
+ * the one of the company asked.
  */
 const A_PHOTO = 300;
 /** A preset that may not store the company's files: a photo of oneself needs none. */
@@ -152,5 +153,29 @@ describe.skipIf(skip)("a person's photo in a company", () => {
     await users.setMyPhoto(company.tenantId, null, actOf(anjali.userId));
     expect(await heldBy(memberships[2] ?? '')).toBe(there);
     await users.setMyPhoto(elsewhere.tenantId, null, actOf(anjali.userId));
+  });
+
+  it('reads back the photo it set, in that company alone', async () => {
+    const here = await aPhotoOf(company.tenantId, anjali.userId);
+    await users.setMyPhoto(company.tenantId, here, actOf(anjali.userId));
+    await expect(users.myPhoto(company.tenantId, anjali.userId)).resolves.toEqual({
+      photoFileId: here,
+    });
+    await expect(users.myPhoto(elsewhere.tenantId, anjali.userId)).resolves.toEqual({
+      photoFileId: null,
+    });
+    await expect(users.myPhoto(company.tenantId, teammate.userId)).resolves.toEqual({
+      photoFileId: null,
+    });
+    await users.setMyPhoto(company.tenantId, null, actOf(anjali.userId));
+  });
+
+  it('reads null after a clear', async () => {
+    const fileId = await aPhotoOf(company.tenantId, anjali.userId);
+    await users.setMyPhoto(company.tenantId, fileId, actOf(anjali.userId));
+    await users.setMyPhoto(company.tenantId, null, actOf(anjali.userId));
+    await expect(users.myPhoto(company.tenantId, anjali.userId)).resolves.toEqual({
+      photoFileId: null,
+    });
   });
 });

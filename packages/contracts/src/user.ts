@@ -48,6 +48,15 @@ export const userContract = c.router({
       401: unauthenticatedEnvelope,
     },
   },
+  getMyPhoto: {
+    method: 'GET',
+    path: '/users/me/photo',
+    summary: 'My photo in this company, or null for my initials',
+    responses: {
+      200: myPhotoSchema,
+      401: unauthenticatedEnvelope,
+    },
+  },
   setMyPhoto: {
     method: 'PUT',
     path: '/users/me/photo',

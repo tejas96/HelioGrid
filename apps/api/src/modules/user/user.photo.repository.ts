@@ -9,6 +9,25 @@ export class UserPhotoRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(@Inject(TENANT_DB) private readonly db: TenantPool) {}
 
+  /** The file my membership in this company points at, or `null` for my initials. */
+  async find(tenantId: string, userId: string): Promise<string | null> {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const [row] = await tx
+        .select({ fileId: memberPhoto.fileId })
+        .from(memberPhoto)
+        .innerJoin(tenantMembership, eq(tenantMembership.id, memberPhoto.membershipId))
+        .where(
+          and(
+            eq(memberPhoto.tenantId, tenantId),
+            eq(tenantMembership.tenantId, tenantId),
+            eq(tenantMembership.userAccountId, userId),
+          ),
+        )
+        .limit(1);
+      return row?.fileId ?? null;
+    });
+  }
+
   /** Points the membership at the file, or clears it with `null`; answers what it now holds. */
   async set(
     tenantId: string,

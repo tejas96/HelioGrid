@@ -12,12 +12,16 @@ export class UserController {
   constructor(@Inject(UserService) private readonly users: UserService) {}
 
   @TsRestHandler(userContract)
-  @RouteAccessMap(userContract, { updateMe: 'session', setMyPhoto: 'member' })
+  @RouteAccessMap(userContract, { updateMe: 'session', getMyPhoto: 'member', setMyPhoto: 'member' })
   handler(@Req() req: Request) {
     return tsRestHandler(userContract, {
       updateMe: async ({ body }) => ({
         status: 200,
         body: await this.users.updateMe(sessionOf(req).actor.userId, body),
+      }),
+      getMyPhoto: async () => ({
+        status: 200,
+        body: await this.users.myPhoto(tenantIdOf(req), sessionOf(req).actor.userId),
       }),
       setMyPhoto: async ({ body }) => ({
         status: 200,

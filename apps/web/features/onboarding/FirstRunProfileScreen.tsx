@@ -5,8 +5,8 @@ import { useLanguageChoice, useTranslate } from '@heliogrid/i18n/react';
 import { DoorLanguage, FirstRunProfile } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { openImagePicker, useImageFile } from '../../lib/use-image-file';
 import { HOME_ROUTE } from '../auth';
-import { openImagePicker, useImageFile } from './hooks/use-image-file';
 
 /**
  * First-Run Profile on the web (`SCR-M01-09`, `M01-14`): the step after a join, owed only for this

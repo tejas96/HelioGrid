@@ -8,6 +8,7 @@
 import type { ExplainerPagerWords } from '@heliogrid/domain';
 import {
   FILE_SUBJECT_RULES,
+  type FirstRunPhoto,
   type FirstRunProfileFrame,
   firstNameOf,
   megabytesShown,
@@ -112,11 +113,19 @@ function photoErrorOf(
     };
   }
   if (photo.kind !== 'refused') return null;
-  const line = t(REFUSED_FOR[photo.missed], {
+  const line = refusedPhotoLine(t, photo);
+  return { title: t(FIRST_RUN_PROFILE.photoRefused), phone: line, wide: line };
+}
+
+/** Why a photo the device refused cannot be used: the company logo's own limit lines. */
+export function refusedPhotoLine(
+  t: Translator['t'],
+  photo: Extract<FirstRunPhoto, { kind: 'refused' }>,
+): string {
+  return t(REFUSED_FOR[photo.missed], {
     megabytes: photo.megabytes,
     maxMegabytes: MAX_MEGABYTES,
   });
-  return { title: t(FIRST_RUN_PROFILE.photoRefused), phone: line, wide: line };
 }
 
 function photoHelperOf(t: Translator['t'], frame: FirstRunProfileFrame, named: boolean): string {

@@ -23,6 +23,7 @@ import { SIGN_IN } from './sign-in';
 
 export const PROFILE_PREFERENCES = {
   account: /*i18n*/ { id: 'Your account' },
+  editName: /*i18n*/ { id: 'Edit name' },
   languageAndUnits: /*i18n*/ { id: 'Language and units' },
   yourRole: /*i18n*/ { id: 'Your role' },
   yourRoles: /*i18n*/ { id: 'Your roles' },
@@ -65,6 +66,8 @@ export interface ProfileRoleWords {
 export interface ProfilePreferencesWords {
   readonly title: string;
   readonly account: string;
+  /** The name row's act: opens the name and photo editor. */
+  readonly editName: string;
   readonly languageAndUnits: string;
   readonly roles: { readonly title: string; readonly badges: readonly ProfileRoleWords[] };
   readonly language: {
@@ -109,6 +112,7 @@ export function profilePreferencesWords(
   return {
     title: settingsRowName(translate, 'profile'),
     account: translate(PROFILE_PREFERENCES.account),
+    editName: translate(PROFILE_PREFERENCES.editName),
     languageAndUnits: translate(PROFILE_PREFERENCES.languageAndUnits),
     roles: {
       title: translate(

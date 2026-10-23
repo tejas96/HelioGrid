@@ -2,7 +2,8 @@
  * First-Run Profile's flow (`SCR-M01-09`, `M01-14`), decided once for both platforms (Law 11): the
  * name the inviter typed, an optional photo, and one act that saves the name, then the photo. The
  * photo is judged by the file rule the api stores it under, so the screen refuses only what the
- * api would.
+ * api would. Profile & preferences' *Edit name* editor (`SCR-M01-11`) runs the same flow from the
+ * person's saved name and photo (`profileEditorStart`).
  */
 import { FILE_SUBJECT_RULES, judgeFileDeclaration } from '../files/rules';
 import { FILE_CONTENT_TYPES } from '../files/vocabulary';
@@ -38,6 +39,8 @@ export interface FirstRunPhotoChoice {
 
 export type FirstRunPhoto =
   | { readonly kind: 'none' }
+  /** The photo the server holds, as the editor opens over it; its picture `null` until its link arrives. */
+  | { readonly kind: 'saved'; readonly picture: string | null }
   | { readonly kind: 'chosen'; readonly picture: string | null }
   | { readonly kind: 'refused'; readonly missed: 'type' | 'size'; readonly megabytes: number };
 
@@ -47,6 +50,8 @@ export interface FirstRunProfileState {
   /** The name on the server is the one in the field: the photo alone is left to send. */
   readonly nameSaved: boolean;
   readonly photo: FirstRunPhoto;
+  /** The server holds a photo: taking it away is a write, as choosing one is. */
+  readonly photoOnServer: boolean;
   readonly refusal: null | 'save' | 'photo';
   readonly emptyPressed: boolean;
 }
@@ -68,9 +73,35 @@ export function firstRunProfileStart(name: string | null): FirstRunProfileState 
     name: name ?? '',
     nameSaved: false,
     photo: { kind: 'none' },
+    photoOnServer: false,
     refusal: null,
     emptyPressed: false,
   };
+}
+
+/** The person's photo as the server holds it: held or not, and its picture once its link arrives. */
+export interface SavedPhoto {
+  readonly held: boolean;
+  readonly picture: string | null;
+}
+
+/**
+ * The editor over the person's saved name and photo: nothing is owed until one of them changes.
+ * Whether a photo is held is the server's answer, apart from its picture, whose link may not have
+ * arrived — a held photo is never taken for none.
+ */
+export function profileEditorStart(name: string, saved: SavedPhoto): FirstRunProfileState {
+  return {
+    ...firstRunProfileStart(name),
+    nameSaved: true,
+    photo: saved.held ? { kind: 'saved', picture: saved.picture } : { kind: 'none' },
+    photoOnServer: saved.held,
+  };
+}
+
+/** A chosen photo is sent; no photo is sent too when the server still holds one. */
+function photoOwed(state: FirstRunProfileState): boolean {
+  return state.photo.kind === 'chosen' || (state.photo.kind === 'none' && state.photoOnServer);
 }
 
 /** A photo the `user_account` rule takes is `chosen`; any other is refused on the device, never stored. */
@@ -89,9 +120,7 @@ function photoOf(image: FirstRunPhotoChoice): FirstRunPhoto {
 /** After the name is on the server: the chosen photo, else the step is done. */
 function afterName(state: FirstRunProfileState): FirstRunProfileState {
   const next = { ...state, nameSaved: true, refusal: null };
-  return state.photo.kind === 'chosen'
-    ? { ...next, phase: 'saving-photo' }
-    : { ...next, phase: 'done' };
+  return photoOwed(state) ? { ...next, phase: 'saving-photo' } : { ...next, phase: 'done' };
 }
 
 function photoRefusalCleared(state: FirstRunProfileState): FirstRunProfileState['refusal'] {
@@ -147,7 +176,7 @@ export function firstRunProfileReducer(
     case 'saving-photo':
       if (event.type !== 'photo-ended') return state;
       return event.saved
-        ? { ...state, phase: 'done' }
+        ? { ...state, phase: 'done', photoOnServer: state.photo.kind === 'chosen' }
         : { ...state, phase: 'editing', refusal: 'photo' };
     case 'done':
       return state;
@@ -184,7 +213,7 @@ function kindOf(state: FirstRunProfileState): FirstRunProfileFrameKind {
   if (state.refusal === 'save') return 'error-save';
   if (state.refusal === 'photo') return 'error-photo';
   if (state.photo.kind === 'refused') return 'photo-refused';
-  return state.photo.kind === 'chosen' ? 'photo-added' : 'normal';
+  return state.photo.kind === 'none' ? 'normal' : 'photo-added';
 }
 
 export function firstRunProfileFrame(state: FirstRunProfileState): FirstRunProfileFrame {

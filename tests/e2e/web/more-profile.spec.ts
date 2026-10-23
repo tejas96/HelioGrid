@@ -1,6 +1,8 @@
 import {
   createTranslator,
+  FIRST_RUN_PROFILE,
   LANGUAGE_META,
+  NAME_AND_PHOTO_EDITOR,
   PROFILE_PREFERENCES,
   presetName,
   settingsRowName,
@@ -18,7 +20,8 @@ import { passTheOwnersMark } from '../support/shell';
  * in their own scripts and the measurements, each applied as it is touched and kept by the server
  * across a reload, with no Save; a language redraws the page in place (`F3-03`, `F3-04`, `F3-23`);
  * a push group switched off stays off across a reload and a language change, and the Owner's
- * Billing stays on, locked (`F6-15`).
+ * Billing stays on, locked (`F6-15`); *Edit name* changes the name in a panel, and the page and the
+ * account menu follow (`T-M01-011c`).
  */
 const en = await createTranslator('en');
 const hi = await createTranslator('hi');
@@ -92,4 +95,25 @@ test('the Owner turns a push group off, and it stays off; Billing stays on', asy
     page.getByRole('switch', { name: hi.t(TYPE_GROUP_NAME.payments) }),
   ).not.toBeChecked();
   await expect(page.getByRole('switch', { name: hi.t(TYPE_GROUP_NAME.billing) })).toBeChecked();
+});
+
+test('a person changes their name from Edit name, and the page and the account menu follow', async ({
+  page,
+}) => {
+  await createCompany(page, en, freshMobile());
+  await passTheOwnersMark(page, en);
+  await page.goto('/more/profile');
+
+  await page.getByRole('button', { name: W('editName') }).click();
+  const panel = page.getByRole('dialog', { name: en.t(FIRST_RUN_PROFILE.aboutTitle) });
+  await expect(panel).toBeVisible();
+  await expectNoSeriousViolations(page);
+  const renamed = 'Anjali Joshi';
+  await panel.getByLabel(en.t(FIRST_RUN_PROFILE.nameLabel)).fill(renamed);
+  await panel.getByRole('button', { name: en.t(NAME_AND_PHOTO_EDITOR.save) }).click();
+  await expect(panel).toBeHidden();
+  await expect(page.locator('.hg-profile-preferences-name-words')).toHaveText(renamed);
+  await expect(page.getByRole('button', { name: new RegExp(`^${renamed}`) })).toBeVisible();
+  await page.reload();
+  await expect(page.locator('.hg-profile-preferences-name-words')).toHaveText(renamed);
 });
