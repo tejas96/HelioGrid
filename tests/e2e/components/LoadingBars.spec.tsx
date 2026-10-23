@@ -50,3 +50,35 @@ test('a bar is a raised sweep: the first elevation, the large radius, the shimme
   await expect(bar).toHaveCSS('border-radius', `${await resolvedLength(page, '--r-lg')}px`);
   await expect(bar).toHaveCSS('animation-name', 'hg-sheet-shimmer');
 });
+
+test('a line is a mark a glyph wide and a text-high bar beside it, 12 apart, on the card grey', async ({
+  mount,
+  page,
+}) => {
+  const region = await mount(<LoadingBars label={label} bars={['line', 'line']} />);
+  const lines = region.locator('.hg-loading-line');
+  const glyph = await resolvedLength(page, '--sp-5');
+  const text = await resolvedLength(page, '--sp-3');
+
+  await expect(page.getByRole('status', { name: label })).toHaveAttribute('aria-busy', 'true');
+  await expect(lines).toHaveCount(2);
+  const mark = await lines.first().locator('.hg-loading-line-mark').boundingBox();
+  const bar = await lines.first().locator('.hg-loading-line-bar').boundingBox();
+  expect(mark).toMatchObject({ width: glyph, height: glyph });
+  expect(bar?.height).toBe(text);
+  expect(bar?.x).toBe((mark?.x ?? 0) + glyph + text);
+  expect((await lines.nth(1).boundingBox())?.y).toBe((await bottomOf(lines.first())) + text);
+  await expect(lines.first().locator('.hg-loading-line-bar')).toHaveCSS(
+    'animation-name',
+    'hg-sheet-shimmer',
+  );
+});
+
+test('inside a busy region the caller named, the bars are decoration and announce nothing', async ({
+  mount,
+  page,
+}) => {
+  await mount(<LoadingBars inBusyRegion bars={['line']} />);
+  await expect(page.getByRole('status')).toHaveCount(0);
+  await expect(page.locator('.hg-loading-bars')).toHaveAttribute('aria-hidden', 'true');
+});

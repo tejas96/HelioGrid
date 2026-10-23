@@ -1,5 +1,6 @@
-import type { CSSProperties, KeyboardEvent } from 'react';
+import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { pressOnEnterOrSpace } from '../../primitives/press-keys';
 import type { CardProps, IconCircleProps } from './Card.types';
 import { CardBody } from './CardBody';
 
@@ -66,15 +67,15 @@ export function Card({
      keyboard reachable (ui-adherence, "Done means"), so a card WITH a handler takes button
      semantics; without one it stays a plain div and nothing is announced. */
   if (onClick !== undefined) {
-    const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        onClick();
-      }
-    };
     return (
       // biome-ignore lint/a11y/useSemanticElements: a button cannot hold interactive content.
-      <div {...frame} role="button" tabIndex={0} onClick={onClick} onKeyDown={onKeyDown}>
+      <div
+        {...frame}
+        role="button"
+        tabIndex={0}
+        onClick={onClick}
+        onKeyDown={pressOnEnterOrSpace(onClick)}
+      >
         {body}
       </div>
     );

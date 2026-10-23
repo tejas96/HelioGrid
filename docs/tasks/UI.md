@@ -14,6 +14,11 @@ wait until something else opens the same file. `Sheet.jsx`: `aria-labelledby` mu
 and `Modal` on both sides are done). `FilterPanel.jsx`: forward `modal` to its `EditorSurface`, or
 the side-panel form keeps a backdrop over the list it is filtering.
 
+**Owed to the design system by the role card (`T-M01-010b`), repo side done.** `Sheet` takes
+`bodyScrolls={false}`, a body that holds still while its content scrolls its own part (the board
+draws it with `bodyStyle`); `ShellGlyph` takes the `success` tone; `ListRow` with `onClick` is a
+button with a tab stop, Enter and Space; `LoadingBars` (its row below) has a `line` size.
+
 **Owed to the design system by the "Open page" layout (`T-FPLAT-075`), repo side done** — the repo
 led because the design system could not be edited at the time; until these land, a `ds:pull` or a
 drawn screen brings the raised white field back. The token layer: `--bg-page` and `body` become

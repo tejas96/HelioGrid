@@ -1,0 +1,135 @@
+/* RoleCard — the person's presets and who set them, then what they can and cannot do, and who to
+   ask (`SCR-M01-10`). Bounded, the card takes the room its holder leaves: the head stays and the
+   rows scroll inside it (the door, the phone's sheet). Flowing, it is one column at its full
+   height and the surface around it scrolls (the side panel). */
+
+.hg-role-card-bounded {
+  flex: 0 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  container-type: inline-size;
+}
+
+.hg-role-card-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.hg-role-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+}
+
+.hg-role-card-names {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-role-card-presets {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  text-wrap: pretty;
+}
+
+.hg-role-card-credit {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-role-card-region {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.hg-role-card-region[role="region"]:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-role-card-region[aria-busy="true"] {
+  overflow: hidden;
+}
+
+.hg-role-card-lists {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.hg-role-card-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-role-card-overline {
+  margin: 0;
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.hg-role-card-lines {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-role-card-line {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+}
+
+.hg-role-card-phrase {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-primary);
+  text-wrap: pretty;
+}
+
+.hg-role-card-note-lines {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The note reads as information, not as one more limit: the info ground lifts it off the card.
+   It must outrank ScopeNote's own panel ground, whose sheet loads after this one. */
+.hg-role-card .hg-role-card-note[data-variant="panel"] {
+  margin-top: var(--sp-2);
+  background: var(--info-bg);
+}
+
+/* A wide bounded card (the door at 1536, `d-first-run`) sets its two lists side by side; the note
+   stays under the limits. Sized from the card's own room, never the window's. */
+@container (min-width: 640px) {
+  .hg-role-card-bounded .hg-role-card-body {
+    gap: var(--sp-6);
+  }
+
+  .hg-role-card-bounded .hg-role-card-lists {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--sp-8);
+    align-items: start;
+  }
+}

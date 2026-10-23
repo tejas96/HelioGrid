@@ -18,6 +18,8 @@ export interface SheetBodyAttrs {
   'data-footer': BoolAttr;
   /** A header above removes the body's own top padding. */
   'data-header': BoolAttr;
+  /** A held body does not scroll; its content scrolls its own part. */
+  'data-held': BoolAttr;
 }
 
 export interface SheetPanelState {
@@ -48,10 +50,15 @@ export function sheetPanelAttrs({
   };
 }
 
-/** The body's two — whether a header sits above it and whether a footer sits below it. */
-export function sheetBodyAttrs(hasHeader: boolean, hasFooter: boolean): SheetBodyAttrs {
+/** The body's three — whether a header sits above it, a footer below it, and whether it scrolls. */
+export function sheetBodyAttrs(
+  hasHeader: boolean,
+  hasFooter: boolean,
+  scrolls: boolean,
+): SheetBodyAttrs {
   return {
     'data-footer': hasFooter ? 'true' : 'false',
     'data-header': hasHeader ? 'true' : 'false',
+    'data-held': scrolls ? 'false' : 'true',
   };
 }

@@ -1,13 +1,27 @@
 /**
  * What one bar stands for while a list's record loads: `row` a closed section's header, `panel` a
- * section that will open with its fields. A size is a name, never a number from the caller, so two
- * screens cannot draw the same wait at two heights.
+ * section that will open with its fields, `line` one line of a list of phrases — a mark and the
+ * phrase beside it (`SCR-M01-10`, `m-loading`). A size is a name, never a number from the caller,
+ * so two screens cannot draw the same wait at two heights.
  */
-export type LoadingBarSize = 'row' | 'panel';
+export type LoadingBarSize = 'row' | 'panel' | 'line';
 
-export interface LoadingBarsProps {
-  /** Required words — what is loading. A busy region with no name tells a screen reader nothing. */
-  label: string;
+interface LoadingBarsBase {
   /** One bar per part of the list, in the list's order. */
   bars: readonly LoadingBarSize[];
 }
+
+/**
+ * Either the bars are the busy region and carry its name, or they sit inside a busy region the
+ * caller already named — one wait, announced once. A busy region with no name tells a screen
+ * reader nothing, so one of the two is always said.
+ */
+export type LoadingBarsProps = LoadingBarsBase &
+  (
+    | {
+        /** Required words — what is loading. */
+        label: string;
+        inBusyRegion?: never;
+      }
+    | { inBusyRegion: true; label?: never }
+  );

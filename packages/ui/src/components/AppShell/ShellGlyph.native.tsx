@@ -13,6 +13,7 @@ const TONE: Record<NonNullable<ShellGlyphProps['tone']>, string> = {
   accent: theme.colors.accent,
   info: theme.colors.info,
   danger: theme.colors['danger-text'],
+  success: theme.colors['success-text'],
 };
 
 /**

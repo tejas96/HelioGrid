@@ -115,6 +115,23 @@ test.describe('at 375', () => {
     await expect(card).toHaveAttribute('data-edit-opened', 'true');
   });
 
+  test('the role row is a button: a tab stop, and Enter, Space and a tap each open the card', async ({
+    mount,
+    page,
+  }) => {
+    const card = await mount(<ProfilePreferencesAsHeld reader="en" />);
+    const row = card.getByRole('button', { name: W('yourRole') });
+    await expect(row.locator('.hg-shell-glyph')).toHaveCount(1);
+    await row.focus();
+    await expect(row).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(card).toHaveAttribute('data-role-opened', '1');
+    await page.keyboard.press('Space');
+    await expect(card).toHaveAttribute('data-role-opened', '2');
+    await row.click();
+    await expect(card).toHaveAttribute('data-role-opened', '3');
+  });
+
   test('m-empty: a set holding only the language in use', async ({ mount, page }) => {
     const card = await mount(<ProfilePreferencesAsHeld reader="en" onlyLanguage />);
     await expect(

@@ -138,7 +138,7 @@ msgid "{date}, {time}"
 msgstr "{date}, {time}"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:21
+#: src/copy/role-card.ts:27
 msgid "{first} and {second}"
 msgstr "{first} आणि {second}"
 
@@ -163,7 +163,7 @@ msgid "{first} loses access to {company}. Everything {first} did stays in {first
 msgstr "{first} यांचा {company} मधील प्रवेश बंद होईल. {first} यांनी केलेले सर्व काम {first} यांच्याच नावावर राहील."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:24
+#: src/copy/role-card.ts:30
 msgid "{first} or {second} (owners)"
 msgstr "{first} किंवा {second} (मालक)"
 
@@ -178,7 +178,7 @@ msgid "{first} typed this when inviting you — change it if you like."
 msgstr "तुम्हाला आमंत्रित करताना {first} यांनी हे लिहिले — हवे तर बदला."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:25
+#: src/copy/role-card.ts:31
 msgid "{first}, {second} or {more} more (owners)"
 msgstr "{first}, {second} किंवा आणखी {more} (मालक)"
 
@@ -208,7 +208,7 @@ msgid "{left, plural, one {# try left} other {# tries left}} on this code."
 msgstr "या कोडवर {left, plural, one {# प्रयत्न शिल्लक आहे} other {# प्रयत्न शिल्लक आहेत}}."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:22
+#: src/copy/role-card.ts:28
 msgid "{list} and {last}"
 msgstr "{list} आणि {last}"
 
@@ -243,7 +243,7 @@ msgid "{name} — account, grievance contact and sign out"
 msgstr "{name} — खाते, तक्रार संपर्क आणि साइन आउट"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:23
+#: src/copy/role-card.ts:29
 msgid "{name} (owner)"
 msgstr "{name} (मालक)"
 
@@ -508,7 +508,7 @@ msgid "Add a photo"
 msgstr "फोटो जोडा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:42
+#: src/copy/role-card.ts:48
 msgid "Add and edit leads"
 msgstr "लीड जोडा आणि बदला"
 
@@ -588,12 +588,12 @@ msgid "Anything that needs you, or changes on work you hold, lands here — newe
 msgstr "ज्या कामात तुमची गरज आहे, किंवा तुमच्या कामात जे बदलते, ते इथे येते — सर्वात नवे आधी, आणि सोबत तुम्ही करू शकता ते एक काम."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:48
+#: src/copy/role-card.ts:54
 msgid "Approve designs or send them back"
 msgstr "डिझाइन मंजूर करा किंवा परत पाठवा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:57
+#: src/copy/role-card.ts:63
 msgid "Approve leave"
 msgstr "रजा मंजूर करा"
 
@@ -603,7 +603,7 @@ msgid "Ask {first} to invite you again"
 msgstr "{first} यांना पुन्हा आमंत्रित करायला सांगा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:27
+#: src/copy/role-card.ts:33
 msgid "Ask them when you need one."
 msgstr "गरज असेल तेव्हा त्यांना विचारा."
 
@@ -613,7 +613,7 @@ msgid "Asking to join sends its owner a request to add {phone}."
 msgstr "सामील होण्याची विनंती केल्यावर त्याच्या मालकाला {phone} जोडण्याची विनंती जाते."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:50
+#: src/copy/role-card.ts:56
 msgid "Assign leads to others"
 msgstr "इतरांना लीड सोपवा"
 
@@ -669,7 +669,7 @@ msgid "Branding"
 msgstr "ब्रँडिंग"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:44
+#: src/copy/role-card.ts:50
 msgid "Build and edit proposals, discounts included"
 msgstr "प्रस्ताव तयार करा आणि बदला, सवलतीसह"
 
@@ -751,7 +751,7 @@ msgid "certification schemes"
 msgstr "प्रमाणन योजना"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:61
+#: src/copy/role-card.ts:67
 msgid "Change company settings"
 msgstr "कंपनीची सेटिंग बदला"
 
@@ -771,7 +771,7 @@ msgid "Change number"
 msgstr "नंबर बदला"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:59
+#: src/copy/role-card.ts:65
 msgid "Change the price list"
 msgstr "किंमत यादी बदला"
 
@@ -961,12 +961,12 @@ msgid "Create a new company anyway"
 msgstr "तरीही नवी कंपनी तयार करा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:47
+#: src/copy/role-card.ts:53
 msgid "Create and edit designs"
 msgstr "डिझाइन तयार करा आणि बदला"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:49
+#: src/copy/role-card.ts:55
 msgid "Create and run campaigns"
 msgstr "कॅम्पेन तयार करा आणि चालवा"
 
@@ -1066,7 +1066,7 @@ msgid "Default for {market}"
 msgstr "{market} साठी डीफॉल्ट"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:51
+#: src/copy/role-card.ts:57
 msgid "Delete leads"
 msgstr "लीड हटवा"
 
@@ -1261,12 +1261,12 @@ msgid "Getting the demo ready."
 msgstr "डेमो तयार होत आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:71
+#: src/copy/role-card.ts:77
 msgid "Go to campaigns"
 msgstr "कॅम्पेनवर जा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:72
+#: src/copy/role-card.ts:78
 msgid "Go to finance"
 msgstr "फायनान्सवर जा"
 
@@ -1276,28 +1276,28 @@ msgid "Go to home"
 msgstr "होमवर जा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:74
-#: src/copy/role-card.ts:77
+#: src/copy/role-card.ts:80
+#: src/copy/role-card.ts:83
 msgid "Go to my day"
 msgstr "माझ्या दिवसावर जा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:78
+#: src/copy/role-card.ts:84
 msgid "Go to my job"
 msgstr "माझ्या जॉबवर जा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:76
+#: src/copy/role-card.ts:82
 msgid "Go to my visits"
 msgstr "माझ्या भेटींवर जा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:69
+#: src/copy/role-card.ts:75
 msgid "Go to operations"
 msgstr "ऑपरेशन्सवर जा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:73
+#: src/copy/role-card.ts:79
 msgid "Go to people today"
 msgstr "‘आजचे लोक’ वर जा"
 
@@ -1307,18 +1307,18 @@ msgid "Go to sign in"
 msgstr "साइन इनवर जा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:67
-#: src/copy/role-card.ts:68
+#: src/copy/role-card.ts:73
+#: src/copy/role-card.ts:74
 msgid "Go to the dashboard"
 msgstr "डॅशबोर्डवर जा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:75
+#: src/copy/role-card.ts:81
 msgid "Go to the design queue"
 msgstr "डिझाइन क्यूवर जा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:70
+#: src/copy/role-card.ts:76
 msgid "Go to the project board"
 msgstr "प्रोजेक्ट बोर्डवर जा"
 
@@ -1554,7 +1554,7 @@ msgid "Last active"
 msgstr "शेवटचे सक्रिय"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:16
+#: src/copy/role-card.ts:22
 msgid "Last set by {name}"
 msgstr "{name} यांनी शेवटची ठरवली"
 
@@ -1574,7 +1574,7 @@ msgid "Loading the invite"
 msgstr "आमंत्रण लोड होत आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:20
+#: src/copy/role-card.ts:26
 msgid "Loading what your role can and cannot do"
 msgstr "तुमची भूमिका काय करू शकते आणि काय नाही, लोड होत आहे"
 
@@ -1619,12 +1619,12 @@ msgid "Make someone else an EPC Owner first"
 msgstr "आधी दुसऱ्या कोणाला EPC मालक करा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:62
+#: src/copy/role-card.ts:68
 msgid "Manage the plan and billing"
 msgstr "प्लॅन आणि बिलिंग सांभाळा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:46
+#: src/copy/role-card.ts:52
 msgid "Mark a lead won or lost"
 msgstr "लीड जिंकली किंवा गमावली असे चिन्हांकित करा"
 
@@ -1922,7 +1922,7 @@ msgid "One tap tells {first} you are still waiting."
 msgstr "एका टॅपने {first} यांना कळेल की तुम्ही अजून वाट पाहत आहात."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:26
+#: src/copy/role-card.ts:32
 msgid "Only {holder} can add a teammate."
 msgstr "फक्त {holder} नवीन सहकारी जोडू शकतात."
 
@@ -2138,7 +2138,7 @@ msgid "Recalculating"
 msgstr "पुन्हा गणना होत आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:55
+#: src/copy/role-card.ts:61
 msgid "Record payments"
 msgstr "पेमेंट नोंदवा"
 
@@ -2158,7 +2158,7 @@ msgid "Remove it and your initials come back."
 msgstr "तो काढला की तुमची आद्याक्षरे परत येतात."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:28
+#: src/copy/role-card.ts:34
 msgid "Reopen anytime from Profile & preferences."
 msgstr "प्रोफाइल आणि प्राधान्ये येथून कधीही पुन्हा उघडा."
 
@@ -2234,7 +2234,7 @@ msgid "Roof measured from satellite imagery. A site visit will confirm dimension
 msgstr "छताचे मोजमाप उपग्रह प्रतिमांवरून घेतले आहे. साइट भेटीत मापे, सावली आणि वीज जोडणीची सोय निश्चित होईल."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:54
+#: src/copy/role-card.ts:60
 msgid "Run the installation checklist"
 msgstr "इन्स्टॉलेशन चेकलिस्ट चालवा"
 
@@ -2300,32 +2300,32 @@ msgid "See a finished job"
 msgstr "पूर्ण झालेले काम पाहा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:40
+#: src/copy/role-card.ts:46
 msgid "See every lead and follow-up"
 msgstr "प्रत्येक लीड आणि फॉलो-अप पाहा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:58
+#: src/copy/role-card.ts:64
 msgid "See reports beyond your own"
 msgstr "स्वतःपलीकडील रिपोर्ट पाहा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:38
+#: src/copy/role-card.ts:44
 msgid "See the leads your campaigns bring in"
 msgstr "तुमच्या कॅम्पेनमधून आलेल्या लीड पाहा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:37
+#: src/copy/role-card.ts:43
 msgid "See your own leads and follow-ups"
 msgstr "तुमच्या स्वतःच्या लीड आणि फॉलो-अप पाहा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:41
+#: src/copy/role-card.ts:47
 msgid "See your own stops, check-ins and attendance"
 msgstr "तुमचे स्वतःचे स्टॉप, चेक-इन आणि हजेरी पाहा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:39
+#: src/copy/role-card.ts:45
 msgid "See your team's leads and follow-ups"
 msgstr "तुमच्या टीमच्या लीड आणि फॉलो-अप पाहा"
 
@@ -2350,7 +2350,7 @@ msgid "Send it again"
 msgstr "पुन्हा पाठवा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:45
+#: src/copy/role-card.ts:51
 msgid "Send proposals to customers"
 msgstr "ग्राहकांना प्रस्ताव पाठवा"
 
@@ -2385,7 +2385,7 @@ msgid "Sent by SMS to"
 msgstr "SMS ने या नंबरवर पाठवला"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:60
+#: src/copy/role-card.ts:66
 msgid "Set up the calling agent"
 msgstr "कॉलिंग एजंट सेट करा"
 
@@ -2575,7 +2575,7 @@ msgid "subsidy rules"
 msgstr "अनुदान नियम"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:43
+#: src/copy/role-card.ts:49
 msgid "Survey a site"
 msgstr "साइटचा सर्व्हे करा"
 
@@ -2961,7 +2961,7 @@ msgid "Too many attempts. Wait a moment and retry."
 msgstr "खूप प्रयत्न झाले. थोडा वेळ थांबून पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:33
+#: src/copy/role-card.ts:39
 #: src/copy/sign-in.ts:40
 msgid "Try again"
 msgstr "पुन्हा प्रयत्न करा"
@@ -3057,12 +3057,12 @@ msgid "Update on the App Store"
 msgstr "App Store वर अपडेट करा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:52
+#: src/copy/role-card.ts:58
 msgid "Update project stages"
 msgstr "प्रोजेक्टचे टप्पे अपडेट करा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:53
+#: src/copy/role-card.ts:59
 msgid "Upload and check project documents"
 msgstr "प्रोजेक्ट कागदपत्रे अपलोड करा आणि तपासा"
 
@@ -3143,7 +3143,7 @@ msgid "Verifying the code creates your account. Your company is created at the n
 msgstr "कोड तपासल्याने तुमचे खाते तयार होते. तुमची कंपनी पुढच्या पायरीत तयार होते."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:56
+#: src/copy/role-card.ts:62
 msgid "Waive a payment stage"
 msgstr "पेमेंटचा एक टप्पा माफ करा"
 
@@ -3198,7 +3198,7 @@ msgid "We couldn't load your profile"
 msgstr "आम्ही तुमची प्रोफाइल लोड करू शकलो नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:29
+#: src/copy/role-card.ts:35
 msgid "We couldn't load your role"
 msgstr "आम्ही तुमची भूमिका लोड करू शकलो नाही"
 
@@ -3268,17 +3268,17 @@ msgid "What the code does"
 msgstr "कोड काय करतो"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:19
+#: src/copy/role-card.ts:25
 msgid "What you can and cannot do"
 msgstr "तुम्ही काय करू शकता आणि काय नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:17
+#: src/copy/role-card.ts:23
 msgid "What you can do"
 msgstr "तुम्ही काय करू शकता"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:18
+#: src/copy/role-card.ts:24
 msgid "What you cannot do"
 msgstr "तुम्ही काय करू शकत नाही"
 
@@ -3355,12 +3355,12 @@ msgid "You are in"
 msgstr "तुम्ही आत आहात"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:31
+#: src/copy/role-card.ts:37
 msgid "You are still part of {company}. Try again in a moment."
 msgstr "तुम्ही अजूनही {company} चा भाग आहात. थोड्या वेळाने पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:30
+#: src/copy/role-card.ts:36
 msgid "You are still part of {company}. Try again, or ask {name} to check."
 msgstr "तुम्ही अजूनही {company} चा भाग आहात. पुन्हा प्रयत्न करा, किंवा {name} यांना तपासायला सांगा."
 
@@ -3462,7 +3462,7 @@ msgid "Your answers set the starting point for every proposal HelioGrid builds."
 msgstr "तुमची उत्तरे HelioGrid तयार करत असलेल्या प्रत्येक प्रस्तावाचा सुरुवातीचा बिंदू ठरवतात."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:87
+#: src/copy/role-card.ts:93
 msgid "Your campaigns are one switch away."
 msgstr "तुमचे कॅम्पेन फक्त एका स्विचवर आहेत."
 
@@ -3514,19 +3514,19 @@ msgid "Your current plan doesn't include this."
 msgstr "तुमच्या सध्याच्या प्लॅनमध्ये हे समाविष्ट नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:83
-#: src/copy/role-card.ts:84
+#: src/copy/role-card.ts:89
+#: src/copy/role-card.ts:90
 msgid "Your dashboard is one switch away."
 msgstr "तुमचा डॅशबोर्ड फक्त एका स्विचवर आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:90
-#: src/copy/role-card.ts:93
+#: src/copy/role-card.ts:96
+#: src/copy/role-card.ts:99
 msgid "Your day is one switch away."
 msgstr "तुमचा दिवस फक्त एका स्विचवर आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:91
+#: src/copy/role-card.ts:97
 msgid "Your designs are one switch away."
 msgstr "तुमचे डिझाइन फक्त एका स्विचवर आहेत."
 
@@ -3561,7 +3561,7 @@ msgid "Your invite did not load"
 msgstr "तुमचे आमंत्रण लोड झाले नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:94
+#: src/copy/role-card.ts:100
 msgid "Your job is one switch away."
 msgstr "तुमचा जॉब फक्त एका स्विचवर आहे."
 
@@ -3601,7 +3601,7 @@ msgid "Your mobile number is your HelioGrid account."
 msgstr "तुमचा मोबाइल नंबर हेच तुमचे HelioGrid खाते आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:88
+#: src/copy/role-card.ts:94
 msgid "Your money view is one switch away."
 msgstr "तुमचे पैशांचे व्ह्यू फक्त एका स्विचवर आहे."
 
@@ -3647,12 +3647,12 @@ msgid "Your number"
 msgstr "तुमचा नंबर"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:85
+#: src/copy/role-card.ts:91
 msgid "Your operations view is one switch away."
 msgstr "तुमचे ऑपरेशन्स व्ह्यू फक्त एका स्विचवर आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:89
+#: src/copy/role-card.ts:95
 msgid "Your people view is one switch away."
 msgstr "तुमचे लोकांचे व्ह्यू फक्त एका स्विचवर आहे."
 
@@ -3672,7 +3672,7 @@ msgid "Your profile did not save"
 msgstr "तुमचे प्रोफाइल जतन झाले नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:86
+#: src/copy/role-card.ts:92
 msgid "Your projects are one switch away."
 msgstr "तुमचे प्रोजेक्ट फक्त एका स्विचवर आहेत."
 
@@ -3697,12 +3697,12 @@ msgid "Your role"
 msgstr "तुमची भूमिका"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:14
+#: src/copy/role-card.ts:20
 msgid "Your role at {company}"
 msgstr "{company} मधील तुमची भूमिका"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:32
+#: src/copy/role-card.ts:38
 msgid "Your role has not changed. Try again in a moment."
 msgstr "तुमची भूमिका बदललेली नाही. थोड्या वेळाने पुन्हा प्रयत्न करा."
 
@@ -3712,7 +3712,7 @@ msgid "Your roles"
 msgstr "तुमच्या भूमिका"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:15
+#: src/copy/role-card.ts:21
 msgid "Your roles at {company}"
 msgstr "{company} मधील तुमच्या भूमिका"
 
@@ -3722,6 +3722,6 @@ msgid "Your team"
 msgstr "तुमची टीम"
 
 #. js-lingui-explicit-id
-#: src/copy/role-card.ts:92
+#: src/copy/role-card.ts:98
 msgid "Your visits are one switch away."
 msgstr "तुमच्या भेटी फक्त एका स्विचवर आहेत."

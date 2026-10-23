@@ -1,5 +1,6 @@
 import { useId, useRef } from 'react';
 import { useOwnWidth } from '../../primitives/use-own-width';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar/Avatar';
 import { Banner } from '../Banner/Banner';
 import { BannerAction } from '../Banner/BannerAction';
@@ -87,12 +88,17 @@ function Roles({ words }: Pick<ProfilePreferencesProps, 'words'>) {
   );
 }
 
+function Chevron() {
+  return <ShellGlyph name="chevron-right" size="md" tone="secondary" />;
+}
+
 function PhonePage({
   words,
   view,
   name,
   photo,
   onEditName,
+  onRole,
   onLanguage,
   onUnits,
   push,
@@ -120,6 +126,8 @@ function PhonePage({
             title={words.roles.title}
             density="functional"
             marks={<Roles words={words} />}
+            onClick={onRole}
+            trailing={<Chevron />}
           />
         </SettingsCard>
       </section>
@@ -200,6 +208,7 @@ function WidePage({
   name,
   photo,
   onEditName,
+  onRole,
   onLanguage,
   onUnits,
   push,
@@ -221,6 +230,8 @@ function WidePage({
           title={words.roles.title}
           density="functional"
           marks={<Roles words={words} />}
+          onClick={onRole}
+          trailing={<Chevron />}
         />
       </SettingsSection>
       <SettingsSection title={words.languageAndUnits}>

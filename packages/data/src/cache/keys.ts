@@ -24,6 +24,8 @@ export const queryKeys = {
   team: {
     members: (tenantId: string) => ['team', tenantId, 'members'] as const,
     invites: (tenantId: string) => ['team', tenantId, 'invites'] as const,
+    /** The company's owners by name, for the role card's note: a role change refreshes it too. */
+    owners: (tenantId: string) => ['team', tenantId, 'owners'] as const,
   },
   /** My photo in one company: a photo write of mine refreshes it. */
   myPhoto: (tenantId: string) => ['my-photo', tenantId] as const,

@@ -44,8 +44,10 @@ export interface ListRowProps {
   trailing?: ReactNode;
   density?: 'expressive' | 'functional';
   /**
-   * Makes the row the target. The DS declares `(e: React.MouseEvent) => void`; the shared contract
-   * carries no DOM event, so the platform halves call it with nothing.
+   * Makes the row the target: a button on both halves — on the web with a tab stop, Enter and
+   * Space — so its `trailing` holds no control, only a mark such as a chevron. The DS declares
+   * `(e: React.MouseEvent) => void`; the shared contract carries no DOM event, so the platform
+   * halves call it with nothing.
    */
   onClick?: () => void;
 }

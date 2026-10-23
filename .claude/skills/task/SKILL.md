@@ -65,7 +65,9 @@ else cut it from `origin/main` on a clean tree. A dirty tree on another branch b
 owner: name its files and stop. An RFC that already carries `**RFC approved:**` resumes where its
 branch stands — build, review, QA or gate — and is not asked again.
 Write down what is running before you start anything — listeners on 3002, 8084, 8081 and 3100, booted phones (`xcrun simctl list devices booted`, `adb devices`), `docker ps` — so step 8
-stops only what this task started.
+stops only what this task started. A phone booted then is the owner's — another product may use it —
+so it is named in this step's note and never shut down by this task; if it stops and this task boots
+it again, it is this task's from then on.
 
 ## 2. Analyse
 
@@ -112,6 +114,8 @@ block, or, when it says `No boundary change`, the user's flow: open, read, scree
 outcome (show the block as it is only where the chat cannot draw); the size on one line; what the review
 changed, one line each; then:
 
+- `Motion:` one line — each moment the RFC chose, by name; one that moves what a built screen did not
+  move before is also a line of `Decisions for you`.
 - `Decisions for you:` each open decision on one line — options, recommended first — or `none`.
 - `Simplest build:` one line — what is reused, what is left out.
 - `Decision required: approve RFC / request changes`
@@ -172,20 +176,29 @@ Pick the surfaces from what changed, never more:
 No surface changed (a pure domain or docs task): no server starts and no phone boots; the unit
 tests, the review and the gate are the proof.
 
-**Prepare.** Only once step 6's reviewer has returned clean and its fixes are in — never while it
-reads: a server or a phone started then idles through the review and its fixes. `pnpm infra:up`
-when the stack is down. Start only the servers the rows need, through
-`.claude/launch.json` with `preview_start`; reuse a healthy HelioGrid one. Boot only the phones the
-rows need: the simulator that holds the newest `com.heliogrid.app`, the emulator `Pixel_8_API_36`.
-Rebuild native code only when native files changed or the app is missing. Cold-start the app after
-JavaScript edits; Fast Refresh can drop silently.
+**Prepare,** in this order, so no phone idles before its rows. Only once step 6's reviewer has
+returned clean and its fixes are in — never while it reads: a server or a phone started then idles
+through the review and its fixes.
 
-QA runs on `heliogrid_test`, never on the owner's `heliogrid_dev` (`infra/README.md`). When
-`.env.local` names `heliogrid_dev`, switch both database lines
-(`sed -i '' 's/heliogrid_dev/heliogrid_test/' .env.local`) and switch them back at step 8's clean-up. Migrate
-it before the api starts (the test-database prefix, then `pnpm db:migrate`), then run
-`pnpm --filter @heliogrid/api pack:publish`, which changes nothing when the pack is there. A running api restarts only when this
-task switched the database, added a migration or changed api code it does not hot-reload.
+1. **The database.** QA runs on `heliogrid_test`, never on the owner's `heliogrid_dev`
+   (`infra/README.md`). `pnpm infra:up` when the stack is down. When `.env.local` names
+   `heliogrid_dev`, switch both database lines (`sed -i '' 's/heliogrid_dev/heliogrid_test/' .env.local`)
+   and switch them back at step 8's clean-up. Migrate it before the api starts (the test-database
+   prefix, then `pnpm db:migrate`), then run `pnpm --filter @heliogrid/api pack:publish`, which
+   changes nothing when the pack is there.
+2. **The api,** through `.claude/launch.json` with `preview_start`; reuse a healthy HelioGrid one. A
+   running api restarts only when this task switched the database, added a migration or changed api
+   code it does not hot-reload.
+3. **The data** the rows need — the accounts of *Run* and their records — through the api, before
+   any phone boots.
+4. **Together, in one message:** the other servers the rows need (web, Metro), and the phones the
+   rows need, booted in the background (a phone already running is used as it is) — the simulator that holds the newest `com.heliogrid.app`,
+   and the emulator with quick boot (`emulator -avd Pixel_8_API_36 -cores 4 -memory 4096`, never
+   `-no-snapshot-save`, which makes the next boot a cold one). While they come up, write the
+   agents' prompts and the frame map. Rebuild native code only when native files changed or the
+   app is missing.
+5. **Cold-start each app** once its phone has booted and Metro serves (a new `BUNDLE` line in
+   `.qa/metro.log`; Fast Refresh can drop silently), then start the agents in the next message.
 
 **Run.** Start every QA agent in one message. Each gets what its own file lists under "Your prompt
 gives you"; `qa-web` and `qa-ios` also get the RFC's frame map and every open
@@ -207,17 +220,28 @@ per fix; a finding still open after it stops for the owner — then continue the
 second failure stops for the owner. A row an agent reports `PASS (flake)` gets a `deferred.md` row. `git status --porcelain` is the same before the agents start and after they
 return; any file an agent changed stops the task.
 
-## 8. Gate and clean up
+## 8. Proof, clean up, gate
 
 1. **Proof.** Continue `code-reviewer` for its proof pass with the RFC's Proof table, every QA
-   report, the output of Main's own test runs and the planted red lines. An AC that is not `PASS`
-   or `pending CI` stops here. An AC added after this pass gets its own proof pass before the gate
-   runs again.
-2. Stop every web dev server before the gate: `next dev` breaks while the build runs. One this task
-   started is stopped by its preview id; one running at step 1 is stopped the same way and started
-   again after the gate (after `rm -rf apps/web/.next`); one the owner started outside the preview
-   tool: ask the owner to stop it. `pnpm infra:up` when the stack is down.
-3. Run the gate once, on the test database, without touching `.env.local`:
+   report, the output of Main's own test runs and the planted red lines. The stack stays up for it,
+   so a row it finds unproven runs at once. An AC that is not `PASS` or `pending CI` stops here. An
+   AC added after this pass gets its own proof pass before the gate runs again.
+2. **Clean up,** once the proof pass holds — before the gate and before the commit is shown: the
+   gate needs only the local stack, no server and no phone, and nothing may idle through it and the
+   owner's answer. Switch `.env.local` back if step 7 switched it; an api running at step 1 restarts
+   now, so it reads `heliogrid_dev` again. Stop every server this task started — web, api, Metro,
+   worker — every phone it booted or booted again (`xcrun simctl shutdown <udid>`,
+   `adb -s <serial> emu kill`) and every browser tab it opened. Leave alone what was running at
+   step 1, except a web dev server: `next dev` breaks while the build runs, so one running then is
+   stopped by its preview id and started again after the gate (after `rm -rf apps/web/.next`), and
+   one the owner started outside the preview tool is the owner's to stop — ask. Never quit Docker.
+   Delete the screenshots and temporary files this task made in `.qa/` and the scratchpad; keep the
+   logs. A watcher that survives (`tsx … watch`) is named to the owner with its pid. A fault the owner reports before the
+   commit yes, or a gate fix that touches a screen, starts again only what it needs (step 7, on the
+   test database; the phones keep their sign-ins) and is cleaned up again before the commit is
+   shown.
+3. Run the gate once, on the test database, without touching `.env.local`; `pnpm infra:up` when the
+   stack is down:
 
    ```bash
    <the test-database prefix> pnpm db:migrate && pnpm check:all
@@ -226,16 +250,8 @@ return; any file an agent changed stops the task.
    Read the failures, not the exit code; a `SKIP ` line or the warning `apps/api/tests are skipped`
    fails the gate. A fix goes back through `pnpm check`, the reviewer on
    the fixed files and the QA rows it touched, then one more gate run. A second failure that is
-   not environmental stops for the owner. A stale `dist/` after a delete: `CLAUDE.md` §3.
-4. Clean up once the PR is open (step 9), never before the owner's yes to the commit: a fault the
-   owner reports between the gate and that yes is reproduced on the stack, the phones and the test
-   database as QA left them. Then switch `.env.local` back if step 7 switched it, and restart the api only if it was
-   running at step 1. Stop every server this task started — web, api, Metro, worker — every phone
-   it booted (`xcrun simctl shutdown <udid>`, `adb -s <serial> emu kill`) and every browser tab it
-   opened; leave alone what was running at step 1; run
-   `pnpm infra:down` only when the stack was down at step 1; never quit Docker. Delete the
-   screenshots and temporary files this task made in `.qa/` and the scratchpad; keep the logs.
-   A watcher that survives (`tsx … watch`) is named to the owner with its pid.
+   not environmental stops for the owner. A stale `dist/` after a delete: `CLAUDE.md` §3. Once it
+   passes, run `pnpm infra:down` only when the stack was down at step 1.
 
 ## 9. Commit and PR
 
@@ -249,8 +265,7 @@ into the PR body — a part's RFC goes; the task RFC stays until the last part s
   yes to that list and message (`CLAUDE.md` §4); every later commit — a CI fix, a review fix, a
   merge of `origin/main` — is shown and waits the same way.
 - `git push -u origin feat/<id>`, then `gh pr create --base main --draft`, the body filled in as
-  `.github/pull_request_template.md` lays it out. Bind it to the session (the `ccd_pr` tools), then
-  clean up (step 8.4) before anything else.
+  `.github/pull_request_template.md` lays it out. Bind it to the session (the `ccd_pr` tools).
 - Mark it ready (`gh pr ready`) only when every job of the head's latest run passed — `success`, or
   `skipped` while `changes` passed — and every lane a `ci` proof row names ran and passed. When the
   `android` job ran and `PHONE_E2E` is not `off`, its step `Phone flows (tests/e2e/mobile) on the

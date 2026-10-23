@@ -63,7 +63,7 @@ export function ScopeNote({
       role="note"
       data-variant={variant}
       data-align={align}
-      className={classNames('hg-scope-note', className)}
+      className={classNames(scopeNotePanelFrame.className, className)}
       style={{ ...vars, ...style }}
     >
       <span className="hg-scope-note-mark">
@@ -105,3 +105,6 @@ export function renderScopeNote(
   }
   return <ScopeNote {...spec} {...extra} />;
 }
+
+/** The panel's frame, for a wait that stands in for a panel note and must keep its size. */
+export const scopeNotePanelFrame = { className: 'hg-scope-note', 'data-variant': 'panel' } as const;

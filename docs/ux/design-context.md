@@ -185,9 +185,10 @@ anything** (contract item 6): a thing that moves is re-placed, and your notes sa
 - **Whitespace is a component.** Keep a comfortable reading measure, and let a region end before
   the screen does.
 - **Motion is named, never drawn** (`F7-51`). The boards stay static frames. Your report lists the
-  screen's motion moments — `moment | what moves | the design system's motion` — only where motion
-  shows continuity: a sheet that rises from its row, a state that settles, a touch that is heard.
-  Fewer is calmer, and `none` is an answer. A moment the design system has no motion for is named
+  screen's motion moments — `moment | what moves | the design system's motion` — one for every
+  change the frames show: a sheet that rises from its row, a wait that turns to content, a state
+  that settles, a touch that is heard. Calm, not busy: each names the continuity it shows, and a
+  change that should stay still says why. A moment the design system has no motion for is named
   as such in the report, never as a board note. The moments go into the brief's `## Motion` section,
   which no frame draws and the board check does not read.
 - **The 1536 layer is a different ANSWER, never the same answer with more room.** If it is the

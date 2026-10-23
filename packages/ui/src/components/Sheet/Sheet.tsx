@@ -49,6 +49,7 @@ export function Sheet({
   showClose = false,
   dismissible = true,
   dragToDismiss = true,
+  bodyScrolls = true,
   modal = true,
   footer = null,
   state = 'ready',
@@ -126,7 +127,7 @@ export function Sheet({
         <SheetMeta meta={meta} />
 
         <div
-          {...sheetBodyAttrs(hasHeader, footer !== null)}
+          {...sheetBodyAttrs(hasHeader, footer !== null, bodyScrolls)}
           className="hg-sheet-body"
           onScroll={(event: UIEvent<HTMLDivElement>) =>
             setScrolled(event.currentTarget.scrollTop > 2)

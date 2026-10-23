@@ -77,6 +77,8 @@ export interface ProfilePreferencesProps {
   readonly photo?: string;
   /** *Edit name*: opens the name and photo editor. */
   readonly onEditName: () => void;
+  /** *Your role*: opens the role card (`SCR-M01-10`'s reopened life). */
+  readonly onRole: () => void;
   readonly onLanguage: (next: UiLanguage) => void;
   readonly onUnits: (next: MeasurementSystem) => void;
   readonly push: ProfilePush;

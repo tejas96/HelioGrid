@@ -3,7 +3,7 @@
    native tsconfig's program, so it declares the lib it needs instead of failing there. */
 /// <reference lib="dom" />
 import type { RefObject } from 'react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 const FOCUSABLE =
   'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])';
@@ -60,6 +60,13 @@ export function useOverlayDismiss({
   modal = true,
   inset,
 }: OverlayDismissOptions): void {
+  /* Read through refs: a host that passes a new `onClose` each render would otherwise re-run the
+     effect on every render — taking focus back to the panel and forgetting where it came from, so
+     closing could not return it. */
+  const close = useRef(onClose);
+  close.current = onClose;
+  const canDismiss = useRef(dismissible);
+  canDismiss.current = dismissible;
   useEffect(() => {
     if (!open || typeof document === 'undefined') {
       return;
@@ -68,9 +75,10 @@ export function useOverlayDismiss({
     panelRef.current?.focus({ preventScroll: true });
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && dismissible && onClose !== undefined) {
+      const onEscape = close.current;
+      if (event.key === 'Escape' && canDismiss.current && onEscape !== undefined) {
         event.stopPropagation();
-        onClose();
+        onEscape();
       }
       if (modal && event.key === 'Tab') {
         trapTab(event, panelRef.current);
@@ -93,5 +101,5 @@ export function useOverlayDismiss({
         restore.focus({ preventScroll: true });
       }
     };
-  }, [open, panelRef, dismissible, onClose, modal, inset]);
+  }, [open, panelRef, modal, inset]);
 }

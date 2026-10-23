@@ -14,6 +14,7 @@ import { useCallback, useMemo } from 'react';
 import { queryKeys } from '../cache/keys';
 import { ApiError } from '../errors/errors';
 import { useRepositories } from './context';
+import { companyRead, membershipRead } from './shell-reads';
 import { useSession } from './use-session';
 
 /**
@@ -57,16 +58,8 @@ export function useShell(): Shell {
   const accessRemoved = ended !== null;
   const reading = tenantId !== '' && !accessRemoved;
 
-  const company = useQuery({
-    queryKey: queryKeys.shell.tenant(tenantId),
-    queryFn: ({ signal }) => repositories.tenant.me(signal),
-    enabled: reading,
-  });
-  const membership = useQuery({
-    queryKey: membershipKey,
-    queryFn: ({ signal }) => repositories.tenant.myMembership(signal),
-    enabled: reading,
-  });
+  const company = useQuery(companyRead(repositories, tenantId, reading));
+  const membership = useQuery(membershipRead(repositories, tenantId, reading));
 
   // The count moves at once and the server catches up. A refusal means another device is ahead,
   // so the server's count is read again; a lost network leaves the raised count until the next

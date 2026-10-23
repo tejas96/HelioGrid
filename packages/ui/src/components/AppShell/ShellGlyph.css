@@ -23,3 +23,7 @@
 .hg-shell-glyph[data-tone="danger"] {
   color: var(--danger-text);
 }
+
+.hg-shell-glyph[data-tone="success"] {
+  color: var(--success-text);
+}

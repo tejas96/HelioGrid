@@ -37,6 +37,10 @@ Check, citing `file:line` for each finding:
    `parallel` shares no file with another and needs nothing another open slice adds; every
    existing feature the change touches has the test, flow or QA row that keeps it working.
 8. **Size.** More than 30 files without a split, or a split into parts that are not each end to end.
+9. **Motion** (screen task). Every change the frames show has its row in §5's motion table, with a
+   motion or a reason; each motion is the design system's, reuses the one its job has elsewhere,
+   and joins frames already drawn; none holds content back, means by motion alone, ignores reduced
+   motion or loops past its state (`F7-51`); one new to a built screen is a decision for the owner.
 
 Rules: you run nothing but read-only commands (`git`, `grep`, `ls`); you edit nothing; a finding
 without evidence is not a finding; keep each line short and plain.

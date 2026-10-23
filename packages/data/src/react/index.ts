@@ -29,6 +29,8 @@ export { usePagedList } from './use-paged-list';
 export { usePaginatedList } from './use-paginated-list';
 export type { PushPreferences } from './use-push-preferences';
 export { usePushPreferences } from './use-push-preferences';
+export type { RoleCardRead } from './use-role-card';
+export { useRoleCard } from './use-role-card';
 export { useSession } from './use-session';
 export { useSessionPhase } from './use-session-phase';
 export type { SetupInvite } from './use-setup-invite';

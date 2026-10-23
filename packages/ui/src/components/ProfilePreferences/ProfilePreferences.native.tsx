@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, findNodeHandle, StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { Banner } from '../Banner/Banner.native';
 import { BannerAction } from '../Banner/BannerAction.native';
@@ -69,6 +70,7 @@ function Page({
   name,
   photo,
   onEditName,
+  onRole,
   onLanguage,
   onUnits,
   push,
@@ -102,6 +104,8 @@ function Page({
             style={styles.row}
             title={words.roles.title}
             density="functional"
+            onClick={onRole}
+            trailing={<ShellGlyph name="chevron-right" size="md" tone="secondary" />}
             marks={
               <ChipGroup label={words.roles.title} max={0} density="functional">
                 {roleBadges(words).map((badge) => (
