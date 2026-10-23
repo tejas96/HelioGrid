@@ -39,6 +39,44 @@ Screen-specific:
 A refused preference save shows on the control that failed, through that control's own `error`
 prop (Switch, OptionCardGroup, SegmentedControl). It has no state or frame of its own.
 
+The *Edit name* editor (ruling 1 at `T-M01-011`) — a sheet on the phone, a side panel at 1536
+(`F7-21`), over this page, holding only the name and the photo (`M01-14`). It takes `SCR-M01-09`'s
+field and `PhotoField` and their rules (its decisions 2, 3, 4, 8, 9, 11, 16, 19), never its
+onboarding chrome: no brand pane, no inviter helper, no language control.
+
+- **edit-open** — the name field holds the person's current name; the circle holds their photo, or
+  their initials when they have none.
+- **edit-photo-added** — a newly chosen photo fills the circle, with *Replace* and *Remove*.
+- **edit-saving** — the act is busy; the field and the photo keep what was typed and chosen.
+- **edit-empty** — *Save* pressed with the name cleared: the field's own error, nothing saved.
+- **edit-refused** — the name save failed: one danger `Banner` in the editor, the typed name kept,
+  the act tries again.
+- **edit-photo-failed** — the name saved and the photo did not: the danger `Banner` inside the photo
+  group, as `SCR-M01-09` draws it. The name is saved, so the act reads *Done* and closes the editor;
+  the photo's own act retries (the move `SCR-M01-09`'s *Continue without a photo* makes).
+- **edit-saved** — the editor has closed: the page's name row shows the new name and the chosen
+  photo, and at 1536 the account menu shows the new name too (`T-M01-011` AC-11).
+
+The editor's one act is *Save* (*Done* in `edit-photo-failed`). A save closes the editor, and the page's name row shows the new name
+and photo. Closing the editor without *Save* keeps the old name and photo. A name change is not a
+preference that applies as it is touched (decision 2): a half-typed name is never saved.
+
+How the editor is drawn:
+
+- Its title is *Your name and photo* at both widths, and the title is the dialog's accessible name.
+- The name field comes first, then the photo group. No helper line sits under either: the photo
+  group's label says *optional* to a screen reader, and the initials circle shows what skipping does.
+- *Save* is the one full-width primary act in the editor's footer.
+- On the phone the sheet has its handle and no close button: drag down, a tap on the backdrop or Esc
+  leaves without saving. At 1536 the side panel is 480 wide on the right, with its close button.
+- `edit-saving`: only *Save* is busy; the field and the photo stay as typed and chosen, not disabled.
+- `edit-refused`: the Banner sits at the top of the editor body.
+- The editor is one `EditorSurface`, 480 wide, at both widths.
+- The initials in the photo circle follow the name as it is typed.
+- `edit-saved` has no toast: the name row and the photo are the proof the save took.
+- Drawn at 375 only (at 1536 the panel holds the phone's answer at width): `edit-saving`,
+  `edit-empty`, `edit-refused`.
+
 Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `type-group-muted`, `protected-types-locked`.
 
 **Decisions made in design (2026-08-31) — later screens inherit them.**
@@ -59,10 +97,11 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty
    their citations.)*
 6. **`empty` is a language set holding only the language already in use.** The other two
    preferences cannot be empty by construction, and *nothing arrived* is `error`, not empty.
-7. **Sign-out and the name field are not here.** The shell fixes sign-out behind the account avatar's
-   menu (`SCR-SHELL-01` decision 2, built by `T-SHELL-012`); this screen is a row of the settings list
-   `More` opens (`T-M01-005f`). Name and photo are edited on `SCR-M01-09` where they were first set.
-   Two homes for one field is how they drift.
+7. **Sign-out is not here.** The shell fixes sign-out behind the account avatar's menu
+   (`SCR-SHELL-01` decision 2, built by `T-SHELL-012`); this screen is a row of the settings list
+   `More` opens (`T-M01-005f`). Name and photo are set first on `SCR-M01-09` and changed later from
+   this screen's *Edit name* (ruling 1 at `T-M01-011` below); both write the same profile, so the
+   one field has one owner.
 
 **The push type-groups are the product's own:** Sales · Delivery · Payments · Team · Billing
 (`NOTIFICATION_TYPE_GROUPS`, `packages/domain/src/notifications/types.ts:74`). Every billing type

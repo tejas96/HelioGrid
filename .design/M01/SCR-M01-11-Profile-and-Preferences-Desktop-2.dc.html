@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profile & preferences · 1536, saved</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/fonts.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/colors.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/typography.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/spacing.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/radius.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/elevation.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/motion.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/keyframes.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/base.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/print.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/field-mode.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/styles.css">
+<script src="ds/heliogriddesignsystem_c8aa43/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}
+a:hover{color:var(--link-hover)}
+</style>
+</helmet>
+<div style="width:1616px;height:1105px;box-sizing:border-box;display:flex;flex-direction:column;gap:var(--sp-12);padding:var(--sp-10);background:var(--canvas);overflow:hidden">
+<sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:1536px">
+      <span style="display:block;margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">1536 · edit-saved</span>
+      <div data-screen-label="Profile and preferences — edit name, saved, 1536" data-frame="d-edit-saved" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ rail }}" header="{{ deskHeader }}" hint-size="100%,100%" style="height:100%">
+<div style="box-sizing:border-box;width:100%;padding:var(--sp-6) var(--sp-8)">
+<div style="max-width:760px;display:flex;flex-direction:column;gap:var(--sp-5)">
+<h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Profile &amp; preferences</h1>
+<section style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-2) 0">
+  <div style="display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-3) var(--sp-6) var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">Your account</h2></div>
+  <div style="display:flex;align-items:center;gap:var(--sp-4);min-height:64px;box-sizing:border-box;padding:var(--sp-2) var(--sp-6);"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Avatar" dc-props="{{ me.avatar }}" hint-size="48px,48px"></x-import><span style="flex:1;min-width:0;font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary);overflow-wrap:anywhere">{{ me.name }}</span><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ editName }}" hint-size="auto,36px">Edit name</x-import></div>
+  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.roleRow }}" hint-size="100%,64px"></x-import>
+</section>
+<section style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-2) 0">
+  <div style="display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-3) var(--sp-6) var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">Language and units</h2></div>
+  <div style="display:flex;align-items:center;gap:var(--sp-4);min-height:64px;box-sizing:border-box;padding:var(--sp-2) var(--sp-6);"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Language</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">{{ languageCaption }}</span></div><div role="group" aria-label="Language"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SegmentedControl" dc-props="{{ language }}" hint-size="auto,40px"></x-import></div></div>
+  <div style="display:flex;align-items:center;gap:var(--sp-4);min-height:64px;box-sizing:border-box;padding:var(--sp-2) var(--sp-6);border-top:1px solid var(--line-soft);"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Measurements</span><span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">{{ unitCaption }}</span></div><div role="group" aria-label="Measurements"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SegmentedControl" dc-props="{{ units }}" hint-size="auto,40px"></x-import></div></div>
+</section>
+<section style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-2) 0">
+  <div style="display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-3) var(--sp-6) var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-body);line-height:var(--lh-body);font-weight:var(--fw-bold);color:var(--text-primary)">Push notifications</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ pushAsk }}" hint-size="44px,44px"></x-import></div>
+  <div style="display:flex;align-items:center;gap:var(--sp-4);min-height:64px;box-sizing:border-box;padding:var(--sp-2) var(--sp-6);"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><label for="d-edit-saved-push-sales" style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Sales</label></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ push.sales }}" id="d-edit-saved-push-sales" hint-size="52px,44px"></x-import></div>
+  <div style="display:flex;align-items:center;gap:var(--sp-4);min-height:64px;box-sizing:border-box;padding:var(--sp-2) var(--sp-6);border-top:1px solid var(--line-soft);"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><label for="d-edit-saved-push-delivery" style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Delivery</label></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ push.delivery }}" id="d-edit-saved-push-delivery" hint-size="52px,44px"></x-import></div>
+  <div style="display:flex;align-items:center;gap:var(--sp-4);min-height:64px;box-sizing:border-box;padding:var(--sp-2) var(--sp-6);border-top:1px solid var(--line-soft);"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><label for="d-edit-saved-push-payments" style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Payments</label></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ push.payments }}" id="d-edit-saved-push-payments" hint-size="52px,44px"></x-import></div>
+  <div style="display:flex;align-items:center;gap:var(--sp-4);min-height:64px;box-sizing:border-box;padding:var(--sp-2) var(--sp-6);border-top:1px solid var(--line-soft);"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><label for="d-edit-saved-push-team" style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-bold);color:var(--text-primary)">Team</label></div><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ push.team }}" id="d-edit-saved-push-team" hint-size="52px,44px"></x-import></div>
+</section>
+</div>
+</div>
+        </x-import>
+      </div>
+    </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1616,"height":1105}}'>
+class Component extends DCLogic {
+  /* SCR-M01-11 at 1536, continued from SCR-M01-11-Profile-and-Preferences-Desktop.dc.html: edit-saved.
+     Static spec frame: every control is drawn at a literal value with a noop handler. The page shows
+     no number, money, quantity or date, so nothing carries a provenance tier. */
+  state = { ready: !!window.HelioGridDesignSystem_c8aa43 };
+
+  componentDidMount() {
+    if (!this.state.ready) {
+      this._poll = setInterval(() => {
+        if (window.HelioGridDesignSystem_c8aa43) { clearInterval(this._poll); this.setState({ ready: true }); }
+      }, 30);
+    }
+    if (!this.photoSample()) {
+      this._photoPoll = setInterval(() => { if (this.photoSample()) { clearInterval(this._photoPoll); this.forceUpdate(); } }, 100);
+    }
+  }
+
+  componentWillUnmount() { clearInterval(this._poll); clearInterval(this._photoPoll); }
+
+  /* The photo chosen in edit-photo-added, the same sample the first Desktop board builds: neither the
+     canvas nor the design system holds a portrait, so it is built from the system's own colour tokens
+     and resolves once they have loaded. */
+  photoSample() {
+    const css = getComputedStyle(document.documentElement);
+    const sky = css.getPropertyValue("--iris-blue").trim();
+    const dusk = css.getPropertyValue("--iris-violet").trim();
+    const figure = css.getPropertyValue("--surface").trim();
+    if (!sky || !dusk || !figure) return undefined;
+    const art = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">'
+      + '<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + sky + '"/><stop offset="1" stop-color="' + dusk + '"/></linearGradient></defs>'
+      + '<rect width="72" height="72" fill="url(#g)"/>'
+      + '<circle cx="36" cy="29" r="13" fill="' + figure + '"/>'
+      + '<path d="M12 72c2-15 12-23 24-23s22 8 24 23Z" fill="' + figure + '"/></svg>';
+    return "data:image/svg+xml," + encodeURIComponent(art);
+  }
+
+  noop = () => {};
+
+  renderVals() {
+    const NS = window.HelioGridDesignSystem_c8aa43;
+    if (!NS) return { ready: false };
+    if (this._vals) return this.withPhoto();
+    const h = React.createElement;
+    const noop = this.noop;
+    const glyph = (name, more) => h(NS.ShellGlyph, Object.assign({ name: name }, more || {}));
+    const D = NS.DESTINATION_GLYPH;
+    const DEST = { home: "Home", leads: "Leads", proposals: "Proposals", projects: "Projects", more: "More" };
+    const NAME = "Anjali Joshi";
+
+    const rowFrame = (divided) => ({
+      minHeight: 64, boxSizing: "border-box", padding: "var(--sp-2) var(--sp-6)", gap: "var(--sp-4)",
+      background: "transparent", boxShadow: "none", borderRadius: 0,
+      borderTop: divided ? "1px solid var(--line-soft)" : "none",
+    });
+    const segment = (value, options) => ({
+      value: value, onChange: noop, options: options.map((o) => ({ value: o[0], label: o[1] })),
+    });
+    const switches = (off) => {
+      const out = {};
+      ["Sales", "Delivery", "Payments", "Team"].forEach((g) => { out[g.toLowerCase()] = { checked: off.indexOf(g) < 0, onChange: noop }; });
+      return out;
+    };
+
+    this._vals = {
+      ready: true,
+      /* edit-saved: the editor has closed. The page's name row and the rail's account menu show the
+         new name typed in edit-saving; the name row's avatar shows the chosen photo. */
+      rail: h(NS.AppRail, {
+        label: "Main", value: "more", onChange: noop,
+        items: ["home", "leads", "proposals", "more"].map((key) => ({
+          key: key, label: DEST[key], icon: glyph(D[key], { size: "md", tone: key === "more" ? "accent" : "secondary" }),
+        })),
+        footer: [{ key: "notifications", label: "Notifications", icon: glyph("bell", { size: "md" }), onClick: noop }],
+        avatar: h(NS.AccountMenu, {
+          name: NAME, triggerName: NAME + " — account, grievance contact and sign out", menuLabel: "Account",
+          grievanceLabel: "Grievance officer", signOutLabel: "Sign out", onGrievance: noop, onSignOut: noop, align: "start",
+        }),
+      }),
+      deskHeader: h(NS.AppHeader, {
+        tenant: h("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
+        search: h(NS.SearchField, { density: "functional", placeholder: "Name, phone or city", ariaLabel: "Search", value: "", onChange: noop }),
+        sticky: false,
+      }),
+      roleRow: {
+        title: "Your role", density: "functional", onClick: noop,
+        marks: h(NS.ChipGroup, { label: "roles", max: 0, density: "functional" },
+          [h(NS.Badge, { key: "Sales Executive", tone: "violet", density: "functional" }, "Sales Executive")]),
+        trailing: h(NS.ShellGlyph, { name: "chevron-right", size: "md", tone: "secondary" }),
+        style: rowFrame(true),
+      },
+      name: NAME,
+      editName: { variant: "secondary", size: "sm", onClick: noop },
+
+      language: segment("en", [["en", "English"], ["hi", "हिन्दी"], ["mr", "मराठी"]]),
+      languageCaption: "Your device's language",
+      units: segment("m", [["m", "Metres"], ["ft", "Feet"]]),
+      unitCaption: "Default for India",
+
+      push: switches([]),
+      pushAsk: {
+        label: "About push", density: "functional",
+        pages: ["Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way."],
+      },
+    };
+    return this.withPhoto();
+  }
+
+  withPhoto() {
+    const v = this._vals;
+    return Object.assign({}, v, {
+      me: { name: v.name, avatar: { name: v.name, size: 48, src: this.photoSample() }, roleRow: v.roleRow },
+    });
+  }
+}
+</script>
+</body>
+</html>
