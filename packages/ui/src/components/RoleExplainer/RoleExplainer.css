@@ -1,0 +1,32 @@
+/* RoleExplainer — the role card at first run (`SCR-M01-10` m-first-run, d-first-run). The frame is
+   held to the window (`DoorFrame` `bounded`), so the card takes the room under the heading and its
+   act follows it: right under a short card, at the foot when the rows scroll. */
+
+.hg-role-explainer {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-role-explainer-act {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
+@media (min-width: 968px) {
+  .hg-role-explainer {
+    gap: var(--sp-8);
+  }
+
+  /* The act at the pane's right edge, as wide as its words, its line centred under it (d-first-run). */
+  .hg-role-explainer-act {
+    align-self: flex-end;
+    width: max-content;
+    max-width: 100%;
+  }
+}

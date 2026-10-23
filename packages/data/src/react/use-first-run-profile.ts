@@ -26,11 +26,17 @@ export interface FirstRunProfile {
 
 /**
  * Whether the person signed in now is owed First-Run Profile — read at the moment a join ends,
- * so the landing sends a newly named account there and anyone else home.
+ * so the landing sends a newly named account there and anyone else to the role card.
  */
 export function useFirstRunOwed(): () => boolean {
   const { session } = useDataLayer();
   return useCallback(() => session.firstRunOwed() !== null, [session]);
+}
+
+/** The role card's act at first run (`SCR-M01-10`): the steps after the join are over. */
+export function useEndFirstRun(): () => void {
+  const { session } = useDataLayer();
+  return session.endFirstRun;
 }
 
 /**
@@ -51,7 +57,7 @@ export function useFirstRunProfile(onDone: () => void): FirstRunProfile | null {
   useProfileSend(state, dispatch, chosen, {
     onDone: () => {
       onDone();
-      session.endFirstRun();
+      session.profileSaved();
       // The name on the session is the one the join wrote; read the saved one back.
       void session.rereadUser();
     },

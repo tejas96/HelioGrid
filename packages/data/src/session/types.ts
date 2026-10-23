@@ -54,7 +54,14 @@ export interface SessionStore {
    * read through `useFirstRunProfile`, never `SessionApi`.
    */
   firstRunOwed(): FirstRunCarry | null;
-  /** The person moved on from First-Run Profile. */
+  /**
+   * What the join told the signed-in person — the company and who invited them — until the role
+   * card's act (`SCR-M01-10`); `null` otherwise. Read through `useRoleCard`, never `SessionApi`.
+   */
+  firstRunCarry(): FirstRunCarry | null;
+  /** First-Run Profile is saved: no longer owed, and the carry stays for the role card. */
+  profileSaved(): void;
+  /** The person moved on from the steps after a join: the role card's act. */
   endFirstRun(): void;
   /**
    * Asks the boot check again after it got no answer (`unreachable`); the cookie was never touched.
@@ -115,4 +122,13 @@ export interface SessionStore {
  * `useSyncExternalStore` consumes them and hands the snapshot down.
  */
 export type SessionApi = SessionSnapshot &
-  Omit<SessionStore, 'getSnapshot' | 'signals' | 'subscribe' | 'firstRunOwed' | 'endFirstRun'>;
+  Omit<
+    SessionStore,
+    | 'getSnapshot'
+    | 'signals'
+    | 'subscribe'
+    | 'firstRunOwed'
+    | 'firstRunCarry'
+    | 'profileSaved'
+    | 'endFirstRun'
+  >;

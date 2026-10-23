@@ -49,6 +49,8 @@ const ROUTE_OF_LANDING: Record<Exclude<SessionLanding, 'wait' | 'door'>, AppEntr
 
 /** The App group's route for First-Run Profile, which the invite landing opens after a join (`SCR-M01-09`). */
 export const firstRunRoute = 'FirstRunProfile';
+/** The App group's route for the role card at first run, after First-Run Profile or a join (`SCR-M01-10`). */
+export const roleExplainerRoute = 'RoleExplainer';
 
 /** Every first screen the App group can mount, read where a render cannot run (a navigation event). */
 export const APP_ENTRY_ROUTES: readonly AppEntry[] = [...new Set(Object.values(ROUTE_OF_LANDING))];

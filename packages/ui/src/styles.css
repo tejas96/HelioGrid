@@ -136,6 +136,7 @@
 @import "./components/ReorderList/ReorderList.css";
 @import "./components/RichText/RichText.css";
 @import "./components/RoleCard/RoleCard.css";
+@import "./components/RoleExplainer/RoleExplainer.css";
 @import "./components/ScopeNote/ScopeNote.css";
 @import "./components/SearchField/SearchField.css";
 @import "./components/SegmentedControl/SegmentedControl.css";

@@ -6,6 +6,8 @@ export const HOME_ROUTE = '/home';
 export const COMPANY_SIGNUP_ROUTE = '/company-signup';
 /** First-Run Profile (`SCR-M01-09`): the step after a join, in the open group because it has no shell. */
 export const WELCOME_ROUTE = '/welcome';
+/** The role card at first run (`SCR-M01-10`): after First-Run Profile, or a join that owed no name. */
+export const WELCOME_ROLE_ROUTE = '/welcome/role';
 /** Where Google's sign-in page sends the tab back; registered on the web OAuth client. */
 export const GOOGLE_RETURN_ROUTE = '/login/google';
 

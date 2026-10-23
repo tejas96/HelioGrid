@@ -1,12 +1,19 @@
 import { theme } from '@heliogrid/theme';
 import { useContext } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project.
    Metro resolves both spellings to the same module, so this is the same import, correctly typed. */
 import { BrandBloom } from '../BrandBloom/BrandBloom.native';
 import { Wordmark } from '../Wordmark/Wordmark.native';
-import { DoorTopInset } from './DoorFrame.logic';
+import { DOOR_BOUNDED_MIN_HEIGHT, DoorTopInset } from './DoorFrame.logic';
 import type { DoorFrameProps } from './DoorFrame.types';
 
 const WORDMARK_SIZE = 24;
@@ -17,9 +24,10 @@ const WORDMARK_SIZE = 24;
  * market's mobile screen padding at the sides. One column, so `lead` and then `identity` are
  * drawn above the task and `taskMeasure` names nothing here. `column` places the identity: centred
  * takes the free height above it, as much as the task's own spacer takes below; deep puts it `sp-8`
- * under the step header and near `sp-4`. `footer` stays under the scrolling column. The safe-area insets are the
- * screen's: the export's 375×812 frame starts under the status bar, and the app hands that band's
- * height in through `DoorTopInset` — this package holds no platform adapter.
+ * under the step header and near `sp-4`. `footer` stays under the scrolling column; `bounded`
+ * holds the column still at the screen's height, so only a part of the task scrolls. The safe-area
+ * insets are the screen's: the export's 375×812 frame starts under the status bar, and the app
+ * hands that band's height in through `DoorTopInset` — this package holds no platform adapter.
  */
 export function DoorFrame({
   trailing,
@@ -28,9 +36,29 @@ export function DoorFrame({
   footer,
   onFooterHeight,
   column,
+  bounded = false,
   children,
 }: DoorFrameProps) {
   const topInset = useContext(DoorTopInset);
+  const { height, fontScale } = useWindowDimensions();
+  /* Grown text needs the room a taller screen gives, so the floor is read in unscaled points. */
+  const holdsStill = bounded && height / fontScale >= DOOR_BOUNDED_MIN_HEIGHT;
+  const columnView = (
+    <View style={[styles.column, footer === undefined ? null : styles.columnAboveFooter]}>
+      <View style={styles.header}>
+        <Wordmark size={WORDMARK_SIZE} />
+        {trailing}
+      </View>
+      {lead}
+      {column === 'centred' ? <View style={styles.centring} /> : null}
+      {column !== 'centred' && column !== undefined && identity !== undefined ? (
+        <View style={styles[column]}>{identity}</View>
+      ) : (
+        identity
+      )}
+      {children}
+    </View>
+  );
   return (
     <View style={[styles.root, { paddingTop: topInset }]}>
       <BrandBloom placement="top" />
@@ -38,22 +66,13 @@ export function DoorFrame({
         style={styles.fill}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-          <View style={[styles.column, footer === undefined ? null : styles.columnAboveFooter]}>
-            <View style={styles.header}>
-              <Wordmark size={WORDMARK_SIZE} />
-              {trailing}
-            </View>
-            {lead}
-            {column === 'centred' ? <View style={styles.centring} /> : null}
-            {column !== 'centred' && column !== undefined && identity !== undefined ? (
-              <View style={styles[column]}>{identity}</View>
-            ) : (
-              identity
-            )}
-            {children}
-          </View>
-        </ScrollView>
+        {holdsStill ? (
+          <View style={styles.fill}>{columnView}</View>
+        ) : (
+          <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+            {columnView}
+          </ScrollView>
+        )}
         {footer === undefined ? null : (
           <View
             style={styles.footer}

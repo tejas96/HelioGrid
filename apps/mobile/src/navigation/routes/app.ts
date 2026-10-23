@@ -2,6 +2,7 @@ import { DOOR_SEGMENT } from '@heliogrid/domain';
 import { CompanyProfileScreen } from '../../screens/company-profile';
 import { CompanySignupScreen } from '../../screens/company-signup';
 import { FirstRunProfileScreen } from '../../screens/first-run-profile';
+import { RoleExplainerScreen } from '../../screens/role-explainer';
 import { SettingsRowScreen, SettingsScreen } from '../../screens/settings';
 import { SetupInviteTeamScreen } from '../../screens/setup-invite-team';
 import { SetupLanguageScreen } from '../../screens/setup-language';
@@ -10,6 +11,7 @@ import { SetupWhatYouSellScreen } from '../../screens/setup-what-you-sell';
 import { PlaceholderScreen, ShellScreen } from '../../screens/shell';
 import {
   firstRunRoute,
+  roleExplainerRoute,
   useHasHome,
   useHasNoTenant,
   useOwesCompanyProfileStep,
@@ -38,6 +40,8 @@ export const appScreens = {
   Shell: { screen: ShellScreen, if: useShowsShell },
   /** The step after a join that named the account from the invite (`SCR-M01-09`); the landing opens it. */
   [firstRunRoute]: { screen: FirstRunProfileScreen, if: useHasHome },
+  /** The role card at first run (`SCR-M01-10`); First-Run Profile or the landing opens it. */
+  [roleExplainerRoute]: { screen: RoleExplainerScreen, if: useHasHome },
   /** A verified number with no company yet lands on the company step (`SCR-M01-01` decision 1, `M01-10`). */
   CompanySetup: { screen: CompanySignupScreen, if: useHasNoTenant },
   /** An owner whose company still owes its first setup step lands here before the shell (`SCR-M01-03`, `F3-03`). */

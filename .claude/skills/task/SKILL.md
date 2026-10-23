@@ -123,7 +123,11 @@ changed, one line each; then:
 Stop. Nothing is built before the owner's yes. On the yes, write `**RFC approved:** <date>` as the
 first line under the RFC heading just approved (a part: `#### Part <x> · RFC`). A part with no open
 decision inside the approved task RFC needs no new yes (`CLAUDE.md` §3) and gets the line too,
-citing the task RFC's approval; a part with one asks. A change request is answered with one line per
+citing the task RFC's approval; a part with one asks. Before that, the part's screens are held to
+the current `rfc-template.md`, which may have changed since the task RFC was approved: a motion row
+the task RFC lacks for a change those screens' frames show is filled (§5), `rfc-reviewer` reads it
+(check 9), and the part shows its `Motion:` line; a moment that moves what a built screen did not
+move before is an open decision, so the part asks. A change request is answered with one line per
 changed section, then the same three lines.
 
 ## 5. Build
@@ -264,6 +268,13 @@ into the PR body — a part's RFC goes; the task RFC stays until the last part s
 - Show the owner the changed files and the exact message, then stop. Commit only on the owner's
   yes to that list and message (`CLAUDE.md` §4); every later commit — a CI fix, a review fix, a
   merge of `origin/main` — is shown and waits the same way.
+- A branch cut from another unmerged branch (an earlier part's) whose PR has since merged opens with
+  conflicts, so before the push: `git merge --no-commit origin/main` (never a rebase). When `main`'s squash
+  commit holds exactly that branch's last commit (`git diff <its last commit> <the squash commit>`
+  is empty), keep this branch's side of every conflict: the merged tree equals the one the gate
+  passed (`git write-tree` equals `HEAD^{tree}`), so the gate stands. Otherwise resolve, regenerate
+  `pnpm check:catalogs` and `pnpm check:openapi` outputs and rerun the gate. Show the merge commit;
+  commit on the owner's yes.
 - `git push -u origin feat/<id>`, then `gh pr create --base main --draft`, the body filled in as
   `.github/pull_request_template.md` lays it out. Bind it to the session (the `ccd_pr` tools).
 - Mark it ready (`gh pr ready`) only when every job of the head's latest run passed — `success`, or
@@ -274,7 +285,7 @@ into the PR body — a part's RFC goes; the task RFC stays until the last part s
 - Review comments on the PR: read them, fix, continue `code-reviewer` on the fixed files, rerun
   the QA rows they touched, show the commit, commit on the owner's yes, push.
 - A PR that conflicts after an earlier PR merged: `git merge origin/main` into the branch (never a
-  rebase, never a force-push), regenerate `pnpm check:catalogs` and `pnpm check:openapi` outputs,
-  rerun the gate, show the commit, commit on the owner's yes, push.
+  rebase, never a force-push), resolved and gated as the merge before the push is; show the
+  commit, commit on the owner's yes, push.
 
 Close with one line: the next task starts in a new session with `/task`.

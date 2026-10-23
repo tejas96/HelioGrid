@@ -9,8 +9,14 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import { useCallback, useEffect, useRef } from 'react';
-import { APP_ENTRY_ROUTES, firstRunRoute, useEntry } from '../../navigation/guards';
+import {
+  APP_ENTRY_ROUTES,
+  firstRunRoute,
+  roleExplainerRoute,
+  useEntry,
+} from '../../navigation/guards';
 import { InsetDoor } from '../shared/InsetDoor';
+import { useGoInside } from '../shared/use-go-inside';
 
 type Props = StaticScreenProps<{ token: string }>;
 
@@ -18,8 +24,9 @@ type Props = StaticScreenProps<{ token: string }>;
  * The invite landing on the phone (`SCR-M01-08`, `M01-13`), opened by `heliogrid://invite/<token>`
  * signed out or signed in. Once the join admits the session the App group mounts its first screen
  * (`landingFor`), and this screen hands the person there — or, for an account the join named from
- * the invite, to First-Run Profile (`SCR-M01-09`) — (`useHandOffAfterJoin`); *Sign in to
- * HelioGrid* opens the door, or that first screen for a person already inside.
+ * the invite, to First-Run Profile (`SCR-M01-09`), and anyone else to the role card (`SCR-M01-10`)
+ * (`useHandOffAfterJoin`); *Sign in to HelioGrid* opens the door, or that first screen for a person
+ * already inside.
  */
 export function InviteLandingScreen({ route }: Props) {
   const { token } = route.params;
@@ -67,16 +74,15 @@ function InviteLandingFor({ token }: { token: string }) {
 function useHandOffAfterJoin(): () => void {
   const navigation = useNavigation();
   const firstRunOwed = useFirstRunOwed();
+  const goInside = useGoInside();
   const joined = useRef(false);
   const handOff = useCallback(() => {
     if (!joined.current) return;
     const names: readonly string[] = navigation.getState()?.routeNames ?? [];
-    const entry = APP_ENTRY_ROUTES.find((route) => names.includes(route));
-    if (entry === undefined) return;
+    if (!APP_ENTRY_ROUTES.some((route) => names.includes(route))) return;
     joined.current = false;
-    const next = firstRunOwed() && names.includes(firstRunRoute) ? firstRunRoute : entry;
-    navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: next }] }));
-  }, [navigation, firstRunOwed]);
+    goInside(firstRunOwed() ? firstRunRoute : roleExplainerRoute);
+  }, [navigation, firstRunOwed, goInside]);
   useEffect(() => navigation.addListener('state', handOff), [navigation, handOff]);
   return useCallback(() => {
     joined.current = true;

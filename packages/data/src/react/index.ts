@@ -13,7 +13,7 @@ export type { CompanyCreation, CompanySignup, JoinRequesting } from './use-compa
 export { failureOf, useCompanySignup, useSteerDroppedOnEdit } from './use-company-signup';
 export { useConnection } from './use-connection';
 export type { FirstRunProfile } from './use-first-run-profile';
-export { useFirstRunOwed, useFirstRunProfile } from './use-first-run-profile';
+export { useEndFirstRun, useFirstRunOwed, useFirstRunProfile } from './use-first-run-profile';
 export { useLiveness } from './use-health';
 export type { Invite } from './use-invite';
 export { useInvite } from './use-invite';

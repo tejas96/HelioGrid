@@ -2,7 +2,24 @@
    breakpoint: twelve columns, a brand pane on 1–4 from the top of the window to its foot — the
    `desktop-wide` bloom, the wordmark row, then the identity — and a task pane on 5–12, the task
    under the wordmark row and its action under the task. Under the breakpoint the one column, at
-   the board's 375 spacing (`SCR-M01-07` m-default). Every value a token var(). */
+   the board's 375 spacing (`SCR-M01-07` m-default). A bounded frame (`bounded`) is the window's
+   height at every width: the task takes the room under the identity and scrolls only inside itself
+   (`SCR-M01-10` m-stacked-end). These rules sit here, not in `DoorFrame.css`, which is at its size
+   limit. Every value a token var(). */
+
+/* `DOOR_BOUNDED_MIN_HEIGHT` (`DoorFrame.logic.ts`): a shorter window scrolls the column whole. */
+@media (min-height: 560px) {
+  .hg-door[data-bounded] {
+    height: 100dvh;
+    min-height: 0;
+  }
+
+  .hg-door[data-bounded] .hg-door-page,
+  .hg-door[data-bounded] .hg-door-body,
+  .hg-door[data-bounded] .hg-door-task {
+    min-height: 0;
+  }
+}
 
 .hg-door-bloom-pane {
   display: none;
@@ -91,5 +108,17 @@
     grid-row: 3;
     max-width: none;
     padding: var(--sp-6) var(--sp-16) var(--sp-10);
+  }
+
+  /* Bounded, the task pane's foot is `sp-10` above the window's (`SCR-M01-10` d-first-run). */
+  .hg-door[data-panes="onboarding"][data-bounded] .hg-door-task {
+    padding-bottom: var(--sp-10);
+  }
+}
+
+/* Bounded and tall enough, the task pane is the rest of the window under the wordmark row. */
+@media (min-width: 968px) and (min-height: 560px) {
+  .hg-door[data-panes="onboarding"][data-bounded] .hg-door-page {
+    grid-template-rows: auto minmax(0, 1fr);
   }
 }

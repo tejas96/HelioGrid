@@ -67,5 +67,12 @@ export interface DoorFrameProps {
   /** Which measure the task column takes. The native half has one column and reads none. */
   taskMeasure?: DoorTaskMeasure;
   column?: DoorColumn;
+  /**
+   * The frame is the window's height and never scrolls: the task takes the room left under the
+   * identity, and a part of it that holds more than fits scrolls itself (the role card's rows,
+   * `SCR-M01-10` m-stacked-end, whose head and heading stay). On a screen shorter than
+   * `DOOR_BOUNDED_MIN_HEIGHT` the column scrolls whole, as it does when this is omitted.
+   */
+  bounded?: boolean;
   children: ReactNode;
 }
