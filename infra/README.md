@@ -21,7 +21,7 @@ owner-approved operation.
 > Two further Fly apps, `heliogrid-voice` and `heliogrid-powersync`, were created before those
 > capabilities were dropped. Both are machineless and cost nothing. **Deleting them is an owner
 > action** (`CLAUDE.md` §4) — no agent touches Fly.
-| fly.toml per app | ✅ in each app dir (bom primary, min=1; deploy = `flyctl deploy` from repo root; one Fly app per service) |
+| fly.toml per app | ✗ deleted — hosting moved to Oracle; the deploy config comes with that task (`docs/tasks/deferred.md` D50) |
 | Dev Postgres (Fly) | ⏳ blocked on card — use local Docker meanwhile (below) |
 | Upstash Redis | ⏳ blocked on card (plan selection requires billing; no free path pre-card) |
 | Tigris bucket | ⏳ blocked on card (`createAddOn` refuses without payment info) |

@@ -16,7 +16,7 @@ a screen task, every locked board path of each screen it builds or serves
 
 Check, citing `file:line` for each finding:
 
-1. **Requirements.** Every `DONE WHEN` line is an AC, word for word. Every PRD row the task cites
+1. **Requirements.** Every `DONE WHEN` line is an AC, word for word, or the RFC names the higher source that corrected it. Every PRD row the task cites
    is met by an AC. Nothing is built that no row asks for (`CLAUDE.md` §8, solve today's problem).
 2. **Edge cases.** Walk the edge-case table in `.claude/skills/task/rfc-template.md`; each case that
    applies has an AC and a proof row.
@@ -31,7 +31,8 @@ Check, citing `file:line` for each finding:
    change names its readers both ways; a tenant read carries its tenant; a new brand, enum, route,
    table or error code names its guard (Law 12).
 6. **Proof.** Every AC has exactly one owner; each QA row says the action, the expected result and
-   the test data; the surfaces match what changes (`/task` step 7). A money, tenancy or permission
+   the test data and the account it signs in with; every `qa-ios` row has its `qa-android` twin;
+   the surfaces match what changes (`/task` step 7). A money, tenancy or permission
    rule has a test that will be seen red.
 7. **Build steps and regression.** Contracts and shared types come first; a slice marked
    `parallel` shares no file with another and needs nothing another open slice adds; every

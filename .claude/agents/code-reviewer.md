@@ -46,7 +46,7 @@ and the findings they answer.
 | Performance | no needless re-render or refetch; no extra API calls in a loop; large lists paged | slow screens lose users on cheap phones |
 | Motion | only the moments the RFC names; tokens only; `transform`/`opacity` only; UI thread on the phone; the one reduced-motion hook; every loop stops; nothing waits on an animation; a shader loaded lazily with a still fallback (`.claude/rules/ui-adherence.md`, *Motion*) | a dropped frame reads as a slow app, and a loop that never stops drains a field phone's battery |
 | Resources | connections, listeners, timers and subscriptions are closed | leaks crash the api over time |
-| Tests | each AC has its test by file and name; tests test decisions at their edges; no mock of what this repo owns; a money, tenancy or permission test was seen red | a test that cannot fail proves nothing |
+| Tests | each AC has its test by file and name; tests test decisions at their edges; no mock of what this repo owns; a money, tenancy or permission test, and a check the change adds or alters, was seen red | a test that cannot fail proves nothing |
 | Dependencies | added only with `pnpm add`; needed; not duplicating one we have; not deprecated or known-vulnerable | each one is code we must trust |
 | Config | env read only in `packages/env`; a new variable in `.env.example`; no secret default | config errors reach production silently |
 | Guards (Law 12) | each new brand, enum, token, route, table or error code is enrolled with its check (`.claude/protections.md`) | an unguarded fact drifts |

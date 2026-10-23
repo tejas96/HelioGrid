@@ -6,7 +6,8 @@ import this package.
 ## What lives here / what must never live here
 
 - `schema/` DESCRIBES shapes and never reads. `parse.ts` VALIDATES. Each entry module —
-  `server.ts`, `web.ts`, `native.ts` — is the ONLY place a raw source is touched. `server.ts`
+  `server.ts`, `web.ts`, `native.ts` — is the ONLY place a raw source is touched, and
+  `temporal.ts` (re-exported by `server.ts`) reads the Temporal credential files. `server.ts`
   reads Node's `process.env` itself; `web.ts` and `native.ts` take the source as a PARAMETER,
   because neither platform has one this package can reach.
 - NEVER: business logic, a client, a framework, or a second read path.
@@ -26,7 +27,8 @@ variable always WINS over the file, so CI and the production host are never over
 - A new variable is a schema edit here plus a line in `.env.example`, and nothing else; neither
   ever holds a real secret.
 - **`parseEnv` THROWS; it never calls `process.exit`.** A library that exits kills its host and
-  cannot be exercised. Each app's `src/config/env.ts` decides what failure means.
+  cannot be exercised. Each app's env module decides what failure means (`apps/{api,worker}/src/config/env.ts`,
+  `apps/web/lib/env.ts`, `apps/mobile/src/env.ts`).
 - Loaders are functions, not top-level consts, and they memoize. Importing this module therefore
   has no side effect: a consumer that never calls a loader never reads the environment.
 - Audited exceptions to the repo-wide read ban are the `noProcessEnv` override in `biome.json`,

@@ -175,9 +175,8 @@ chasing one down — not as an invitation to change it.
 `.claude/launch.json` mirrors the api/web ports for this repo's browser-preview tooling — if
 you ever change either port, update that file too.
 
-Production (Fly.io) ports live in `apps/api/fly.toml` / `apps/web/fly.toml`
-(`internal_port` + `[env]`) and are **not** driven by the same local dev port — they're kept
-in sync by hand when the local port changes; there's no shared source between the two.
+Production ports belong to the deploy config the Oracle hosting task writes
+(`docs/tasks/deferred.md` D50); no deploy config exists yet.
 
 ## Environment variables
 

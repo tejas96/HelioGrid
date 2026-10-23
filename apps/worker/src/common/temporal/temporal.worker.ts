@@ -12,8 +12,8 @@ import { assertWorkflowBundle } from './workflow-bundle';
  * is what a deploy sends — `shutdown()` stops polling for NEW tasks and lets the in-flight
  * ones finish. Killing the process instead does not lose the workflows (they are durable) but
  * it does abandon activities mid-effect, and an activity is exactly the place where a side
- * effect is half-applied. `fly.toml`'s `kill_timeout` must exceed the longest activity, or
- * the platform kills what this is trying to drain.
+ * effect is half-applied. The deploy's stop timeout must exceed the longest activity, or the
+ * platform kills what this is trying to drain.
  *
  * ONE Worker per task queue, because a task queue is a scaling and isolation boundary: a slow
  * PDF render sharing a queue with lead assignment starves it. The registrations arrive from

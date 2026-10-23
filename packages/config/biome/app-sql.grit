@@ -1,12 +1,13 @@
-// An app writes no SQL: a string, or a template literal (tagged or not), that opens with
-// select / insert into / update … set / delete from. Queries belong to packages/db.
+// An app writes SQL only in its *.repository.ts files: this flags a string, or a template literal
+// (tagged or not), that opens with select / insert into / update … set / delete from anywhere else.
+// The places left out of this check are biome.json's includes for this plugin.
 or {
   JsStringLiteralExpression() as $query where {
     $query <: r"(?is)[\x22\x27](?:select |insert into |update [^\n]* set |delete from ).*",
-    register_diagnostic(span=$query, message="SQL in an app — queries belong to packages/db, which owns the schema, the tenant predicate and the index-backed read.")
+    register_diagnostic(span=$query, message="SQL outside a repository — an app writes its queries only in its *.repository.ts files, on packages/db's schema and pools.")
   },
   JsTemplateExpression() as $query where {
     $query <: r"(?is)[^\x60]*\x60\s*(?:select\s|insert\s+into\s|update\s.*?\sset\s|delete\s+from\s).*",
-    register_diagnostic(span=$query, message="SQL in an app — queries belong to packages/db, which owns the schema, the tenant predicate and the index-backed read.")
+    register_diagnostic(span=$query, message="SQL outside a repository — an app writes its queries only in its *.repository.ts files, on packages/db's schema and pools.")
   }
 }

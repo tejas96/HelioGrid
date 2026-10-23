@@ -66,19 +66,10 @@ build (`.claude/skills/task/design-track.md`), so the build waits only when that
 **One turn, many calls.** Batch every read, search and check that does not wait on another's result
 into one turn.
 
-**Build:**
-
-1. Tests first: each acceptance line's test before its code (`.claude/rules/testing.md`).
-2. Stay in the RFC's scope. A new behaviour, table, route, contract, package or affected package
-   voids approval: update the complete RFC and obtain approval again before continuing.
-3. After each coherent slice, `pnpm check`.
-4. One build step gets two attempts. After both fail, stop with the evidence and at most two
-   clearing paths, recommended first.
-5. When done, one tidy pass over the diff — reuse, names, dead code — then review, then local QA,
-   then the full gate.
-6. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code
-   that is gone. `tsc -p` never removes old output, so delete the app's git-ignored `dist/`
-   (`rm -r apps/api/dist`), then `pnpm turbo build --force`.
+**Build:** `/task` step 5 — tests first, inside the RFC's scope, two attempts per step, then one
+tidy pass, review, local QA and the gate. After a source file is deleted or a branch switches, a
+stale `dist/` can keep a check red on code that is gone. `tsc -p` never removes old output, so
+delete the app's git-ignored `dist/` (`rm -r apps/api/dist`), then `pnpm turbo build --force`.
 
 **A PR is one complete task or part:** every acceptance line is met and proven before it opens,
 or by its CI lane. When a task splits into parts: `/task` step 3. The RFC's shape and
@@ -93,7 +84,8 @@ its edge-case list are `.claude/skills/task/rfc-template.md`.
   write it into that module's task in `docs/tasks/`, and carry on.
 - **Building before the RFC is approved.** Nothing is built before the owner's yes to the RFC.
 - **Committing.** Each commit waits for the owner's yes to the shown file list and message — a go,
-  a green check, an approved RFC or an earlier yes never counts. Then push and open the PR (`/task`
+  a green check, an approved RFC or an earlier yes never counts; one yes covers a change commit and
+  its clean merge of `origin/main` when they are shown together. Then push and open the PR (`/task`
   step 9). The owner merges. Never `--no-verify`, never force-push, never push to `main`.
 
 ## 5. Commands
@@ -101,8 +93,8 @@ its edge-case list are `.claude/skills/task/rfc-template.md`.
 | | |
 |---|---|
 | `pnpm infra:up` · `pnpm infra:down` | Before infra-dependent work. The read-only build-order walk and RFC need no stack. |
-| `pnpm check` | **While building.** Biome on files that differ from `origin/main`, the workspace typecheck (cached), and `vitest related` on changed .ts files. Fast; never the proof. |
-| `pnpm check:all` | **Normally once, after review and live QA.** Build, lint (Biome, dependency-cruiser, sherif, turbo boundaries), typecheck, duplication, OpenAPI and catalog freshness, unit tests, invariants. Run it on the test database (`/task` step 8). Two runs at most; a second failure that is not environmental stops for the owner. |
+| `pnpm check` | **While building** (`/task` step 5). Biome on files that differ from `origin/main`, the workspace typecheck (cached), `vitest related` on changed .ts files, the domain's 100% coverage bars when a barred domain source changed, and catalog freshness when copy, ui or app files changed. Fast; never the proof. |
+| `pnpm check:all` | **Normally once, after review and live QA.** Build, lint (Biome, dependency-cruiser, sherif, turbo boundaries), typecheck, duplication, OpenAPI and catalog freshness, unit tests, invariants. Run it on the test database; how often, and when a failure stops for the owner: `/task` step 8. |
 | `pnpm lint:fix` | Format and auto-fix. |
 | `pnpm test:watch` · `pnpm test:coverage` | Tests while writing · the edge cases you missed (read it, not the pass count). |
 | `pnpm db:migration:new` · `pnpm db:migrate` | Where a migration starts; never hand-author one. |
@@ -123,7 +115,7 @@ allowed imports; §4 decides where a new file goes. Run §4 before creating one.
 |---|---|
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
 | `docs/engineering/` | how this repo is built. |
-| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers), `skills/task/` (the one step runner, its RFC template, the design track and the board check), `agents/` (its read-only helpers), `settings.json` (hard-safety denies, and the plugins switched off here because `skills/task/` is the one step runner). |
+| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers), `skills/task/` (the one step runner, its RFC template, the design track and the board check), `agents/` (its read-only helpers), `settings.json` (hard-safety denies, the asks before every commit, push and merge, and the plugins switched off here because `skills/task/` is the one step runner). |
 | `.qa/` | git-ignored: `api.log`, `web.log`, `metro.log` — the development logs the launch configurations append to and the e2e suite reads — and `components/<name>/`, the pictures a component spec saves. A task deletes the screenshots it made before its PR opens. |
 | `.design/` | committed, written only by the Design track's lock: `<module>/`, that module's locked boards and the support files they load — each one exactly as the Design track checked it, read from the module's canvas — and `design-system.version`, the canvas's design system version at the lock; a read-only copy. A screen is built only while its boards here equal a fresh read (`/task` step 1). |
 | `.ops/` | the owner's private infra record, git-ignored: every external account, project and client id, what is still owed, and each environment's values (`env/dev.env`, `env/prod.env`). A console change updates it in the same sitting. |
@@ -146,7 +138,8 @@ ask.
 - **A shared fact is unspeakable outside its owner.** If a consumer could type the value itself,
   make it a branded type in its owner so importing is the only way to get one. Owners: money and policy numbers → `domain` ·
   user-visible copy → `i18n` · vocabularies → `domain`, derived in `contracts` · visual values →
-  `theme` · queries → `db` · wire calls → `data`.
+  `theme` · schema and pools → `db`, queries → the api's `*.repository.ts` files · wire calls →
+  `data`.
 - **Zero duplication.** A second copy of a definition, formula or shape is a defect even when both
   are correct — they will diverge.
 - **Code reads like English or it is rewritten.** Names say WHAT, never how; a reader new to this

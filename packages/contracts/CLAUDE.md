@@ -12,14 +12,15 @@
 ## Where files go
 
 ```
-src/<area>.ts               one router per feature area, mounted in src/index.ts
+src/<area>.ts               one router per feature area, mounted in src/index.ts — or an
+                            area's shared schemas when it has no routes (locale.ts, session.ts)
 src/common.ts               shared sets and schemas
 src/error.ts                the canonical error envelope
 src/workflows/              Temporal workflow message schemas — the ./workflows subpath
 src/ports/<capability>.ts   a provider port interface and its DI token; its implementation
                             lives with its consumer, never here
 src/scripts/                the OpenAPI emitter run by the openapi script
-src/index.ts                the only entry consumers import
+src/index.ts                the main entry; ./workflows is the only other
 openapi/openapi.json        emitted, committed, checked by `pnpm check:openapi` — never hand-edited
 ```
 

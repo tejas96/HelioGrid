@@ -6,8 +6,8 @@ Deps: `architecture.md` §2 tests/e2e.
 
 - `web/<route>.spec.ts` — one per web route, named as `e2e-flow-per-screen` names it (`/login` →
   `login.spec.ts`, `/` → `root.spec.ts`, a `(group)` folder dropped).
-- No screenshot baselines (owner ruling 2026-10-20): a flow asserts words, roles, states and
-  measured values, never a whole-page picture. A look is proven by the component specs (each part's
+- No screenshot baselines: a flow asserts words, roles, states and measured values, never a
+  whole-page picture. A look is proven by the component specs (each part's
   CSS against its tokens) and by `qa-web`'s board compare on every screen a change reaches.
 - `components/<Name>.spec.tsx` — the real `@heliogrid/ui` web halves, mounted with the app's
   stylesheets (`playwright/index.tsx`). A mounted component is imported from the `@heliogrid/ui`
@@ -16,15 +16,17 @@ Deps: `architecture.md` §2 tests/e2e.
 - `components/<Name>.story.tsx` — a wrapper a spec mounts when a prop is a function the component
   calls while it renders: a function handed to `mount` answers from the test process as a promise,
   so the story binds it in the browser. Never a spec itself (`testMatch` is `*.spec.tsx`).
-- `mobile/<screen>.yaml` — one Maestro flow per phone screen, run in order by `mobile/run.sh`;
-  `mobile/steps/` holds a step two flows share and is not a screen. A flow `run.sh` does not run,
+- `mobile/<screen>.yaml` — one Maestro flow per phone screen, save the screens
+  `e2e-flow-per-screen` holds, each with its reason; run in order by `mobile/run.sh`; `mobile/steps/`
+  holds a step two flows share and is not a screen. A flow `run.sh` does not run,
   or a step nothing calls, fails `e2e-flow-per-screen`.
 - Never a typed word or colour: words come from `@heliogrid/i18n`, colours from the page's own
   tokens (`support/token.ts`), the touch floor from `@heliogrid/ui`.
 - Never a shared account: every flow signs up its own fresh number (`support/phone.ts`), so no spec
   reads another's data or the developer's, and no count or empty state is asserted.
-- A flow names its company `E2E <its 10-digit number>` and its owner `support/door.ts`'s
-  `OWNER_NAME`, one fixed name, so the owner's words never carry the run's number.
+- A flow names its company `E2E <its 10-digit number>`. A web flow names its owner
+  `support/door.ts`'s `OWNER_NAME`, one fixed name, so the owner's words never carry the run's
+  number; the phone flow names it `Owner <number>` (`mobile/run.sh`).
 - Never a retry: a flake is a bug and is fixed.
 - Every web spec ends its landing with `support/axe.ts`'s `expectNoSeriousViolations` once the
   landing's words are visible: a `serious` or `critical` violation fails the suite (`F7-26`).

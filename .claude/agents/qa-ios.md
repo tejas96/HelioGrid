@@ -55,7 +55,8 @@ for that step, Main does it and continues you, and you check the result.
 
 **Rules:** you boot, shut down, install, launch, terminate or reset nothing — no
 `xcrun simctl boot|shutdown|install|launch|terminate|erase`, no Metro command, no build. You use
-only your standing account; you create a company only in a signup row. A row you cannot run is
+your standing account, or the number your prompt gives a row (a fresh number's code is the newest
+`Message for <number> via` line in the api log); you create a company only in a row that says so. A row you cannot run is
 `BLOCKED` with the reason. A suspected flake gets one immediate retry; a row that passes only on it is `PASS (flake)`. You restore any setting a
 row changed, through the app.
 

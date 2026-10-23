@@ -72,7 +72,7 @@ Platform scope: all. Belongs: a new compiler preset, a new lint plugin. Never: a
 JSON preset — Biome parses these as strict JSON, so the reason lives here; runtime code; the Biome
 configuration itself (biome.json is root-owned). Extension point: a new preset per new runtime class. A package with no matching preset
 extends `tsconfig.base.json` directly; apps/mobile extends this package's `base.json` and then
-`@react-native/typescript-config`, in that order (`apps/mobile/CLAUDE.md`).
+`@react-native/typescript-config`, in that order (`apps/mobile/tsconfig.json`).
 
 ### env — the only raw environment reader
 Owns: env schemas + loaders (server/web/native); the .env.example contract. Allowed deps:
@@ -118,7 +118,7 @@ TWO entry points: `.` for everyone, and `./server` (`src/server.ts`) for `apps/a
 alone — the functions that compute a money figure (`F4-04`), and a business-identifier formatter
 when one is written. No package a device bundles imports `./server` (dependency-cruiser
 `devices-never-compute-money`).
-Extension point: one folder per module slice (authz/, auth/, branding/, tenancy/, calling/, catalog/, certification/, commerce/, format/, market/, messaging/, money/, pricing/, projects/, rails/, shell/, subsidy/, tax/ today); each
+Extension point: one folder per module slice (audit/, auth/, authz/, branding/, calling/, catalog/, certification/, commerce/, files/, format/, market/, messaging/, money/, notifications/, pricing/, projects/, rails/, shell/, subject/, subsidy/, tax/, tenancy/ today); each
 module appends its own capability rows when its slice begins.
 
 ### db — schema mirror, migrations, backend client
@@ -190,7 +190,7 @@ package was hand-copied and drifted in days — docs/engineering/17 §1); worksp
 point: emit targets grow here. Replaces the v1 `tokens` package, deleted 2026-08-19.
 
 ### ui — the design system, BOTH platforms  (built ahead of its screens — docs/engineering/17)
-Owns: `primitives/` (the ~8 atoms, two of which hold product law — 44px targets and
+Owns: `primitives/` (the 10 atoms, two of which hold product law — 44px targets and
 status-never-by-colour-alone) and `components/<Name>/` where `<Name>.types.ts` is the one
 prop contract, `<Name>.tsx` is web and `<Name>.native.tsx` is RN. Allowed deps: contracts,
 domain, theme, config. Platform scope: BOTH. Belongs: a new shared visual component — one

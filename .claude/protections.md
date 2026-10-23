@@ -6,8 +6,7 @@ A change that adds, moves or removes a holder updates its row here in the same c
 
 Where each tool runs: `pnpm lint` runs Biome with its plugins, dependency-cruiser, sherif and turbo
 `boundaries`. `pnpm check:all` adds the build, the typecheck, the duplication check, the OpenAPI and
-catalog freshness checks, the unit tests and the invariants; off CI it runs `apps/api/tests/` only
-when both database URLs name `heliogrid_test` (`.claude/rules/testing.md`). CI job `quality` runs `pnpm check:all`.
+catalog freshness checks, the unit tests and the invariants. CI job `quality` runs `pnpm check:all`.
 
 ## Tenancy and permissions
 
@@ -43,7 +42,7 @@ when both database URLs name `heliogrid_test` (`.claude/rules/testing.md`). CI j
 |---|---|
 | An applied migration is never edited, deleted or renamed | the sha256-locked runner (`packages/db/src/migrate.ts`) · CI step `Migrations are append-only` |
 | The database matches the code: every pgEnum equals its contract `z.enum` — and so does every vocabulary a CHECK holds because a value outgrew the 63-byte enum label (`file_content_type_known`) — and the Drizzle schema mirrors the tables, columns, nullability and indexes the migrations built | invariants `enum-parity` · `schema-parity` |
-| An app writes no SQL; queries live in `packages/db` | Biome plugin `app-sql` |
+| An app writes queries only in its `*.repository.ts` files (and `src/common/db/`, `src/scripts/`, tests), on `packages/db`'s schema and pools | Biome plugin `app-sql` |
 | `pnpm db:migrate` migrates only the database the shell names, prints that database before it applies anything, and refuses a URL typed after it | the CLI entry of `packages/db/src/migrate.ts`; no test holds that entry, so its removal is caught by review |
 | Every query is index-backed with no N+1 and no `select *`; no derived value is stored; a stored or sent shape is read both ways while a release rolls | review |
 
@@ -140,7 +139,7 @@ when both database URLs name `heliogrid_test` (`.claude/rules/testing.md`). CI j
 | The invariants run against a real database, and fail closed in CI without one | CI job `quality` (`tests/invariants/src/run.ts`) |
 | The api tests never run against `heliogrid_dev`: off CI they are collected only when both database URLs name `heliogrid_test` and are skipped with a warning otherwise; whenever they are collected (as with `CI` set) a URL naming `heliogrid_dev` throws before collection | `vitest.config.mts` (the guard; seen red on `heliogrid_dev` once) |
 | The regression suite runs on what a change reaches, in CI: the web flows and component tests, the phone's JavaScript bundle, both native builds, and the phone flows on an Android emulator; the iOS flows run by hand (`test:mobile` on a simulator), never in CI, and `qa-ios` drives a task's iOS rows, not these flows. The repository variable `PHONE_E2E=off` switches the Android flows off, and no check holds that: while it is set, nothing proves them | CI jobs `e2e-web` · `mobile-js` · `android` (lane `phone_e2e`) · `ios` (the build) |
-| Each rule is tested at its edges; each proof would fail without its fix; a money, tenancy or permission test is seen to fail once | review |
+| Each rule is tested at its edges; each proof would fail without its fix; a money, tenancy or permission test, and a check a change adds or alters, is seen to fail once | review |
 
 ## Agent safety
 
@@ -150,7 +149,7 @@ when both database URLs name `heliogrid_test` (`.claude/rules/testing.md`). CI j
 | An agent never edits a lockfile | CI's `pnpm install --frozen-lockfile` · `.claude/settings.json` denies edits to `pnpm-lock.yaml` in Claude Code (`Edit` covers every file-editing tool) |
 | An agent never pushes to `main`, never force-pushes, never skips git's pre-commit hook, and never merges or approves a pull request | `.claude/settings.json` denies in Claude Code `git push --force`, `-f`, a `+` refspec and a push naming `main`; `git commit --no-verify`, `-n` and `SKIP_SIMPLE_GIT_HOOKS`; `gh pr merge`, `gh pr review` and a merge through `gh api` (a commit message carrying ` -n ` is denied too, and is reworded) · a spelling the list misses: review. GitHub does not hold it: `main` requires the checks `changes`, `quality`, `e2e-web`, `mobile-js`, `android` and `ios` but no review, and an admin — the agent works with the owner's admin token — bypasses them |
 | An agent never wipes a product volume or kills by port/process name; a foreign dev listener is freed only through `clean-dev-ports` | CLAUDE.md §5 (the ports and `clean-dev-ports`; no instruction in this repo names the product volumes) · `.claude/settings.json` denies its listed destructive command forms in Claude Code as defense in depth, not every shell spelling · another client: review |
-| A helper agent edits no repository file and starts, stops or builds nothing | the `tools` list and contract of each `.claude/agents/*.md` · review |
+| A helper agent edits no repository file and starts, stops or builds nothing | `/task` step 7's `git status --porcelain` before and after the agents · the contract of each `.claude/agents/*.md` · review |
 | Every server, phone and browser tab a task started is stopped, and every temporary file it made is deleted, once QA and its proof pass are done — before the gate runs and the commit is shown; one found running at step 1 is left alone, unless it stops and the task boots it again | review — `/task` step 8.2 |
 | An agent's network writes | nothing |
 
@@ -166,10 +165,10 @@ when both database URLs name `heliogrid_test` (`.claude/rules/testing.md`). CI j
 | Every PRD row a task file, brief, PRD document or register cites is live — a lettered clause (`F2-08a`) counts when its row is — save inside a dated removal record, a brief's amendment footnote or a struck register row; every quote of a row in a task file or brief is its cell, a cut of it or the cell plus a suffix, a shipped or struck task's quotes excepted | invariant `prd-rows-cited` |
 | Every capability a task file or brief cites is one the matrix holds: an `<area>.<name>` id (never a module code such as `m01.`, never a capability's name under another area) or an `F2.<module>.<name>` row key of the capability or visibility matrix | invariant `capability-ids-cited` |
 | The screens register is whole: every screen has exactly one brief file and at least one task whose DESIGN line names it, and nothing briefs or designs a screen it does not hold; every live PRD row lands exactly once in §3, a struck or deleted row is struck there, and no landing names a row the PRD never had; every screen is V1 or V2, in the counts the scope lock states | invariant `screens-register-whole` |
-| The next step is the one the build order picks; nothing is built before the owner approves the RFC; a new route, table, contract, package or behaviour voids the approval | review — `/task` steps 1–5 |
+| The next step is the one the build order picks; nothing is built before the owner approves the RFC; a new route, table, contract, package, affected package or behaviour voids the approval | review — `/task` steps 1–5 |
 | The RFC is checked against the codebase before the owner sees it, and the code is reviewed before QA runs | the `rfc-reviewer` and `code-reviewer` agents — `/task` steps 4 and 6 |
 | Every acceptance line has its owner and a passed proof before the commit, and a PR is marked ready only when every CI job it needs ran and passed | the `code-reviewer` proof pass (`/task` step 8.1) · the draft PR marked ready by `/task` step 9 · review |
 | A doc the change made wrong is fixed in the same change | review |
 | Every `docs/tasks/deferred.md` row a task meets is shown in its RFC as join or stays | review — `/task` step 2 |
 | A board is checked against its brief, PRD rows, laws and components, and locked, before the first task that builds or serves it; a board or a support file it loads changed, added or removed on the canvas after the lock, or a new design system version installed on it, sends it back to the check | the board check (`.claude/skills/task/design-track.md`, `board-check.md`, one agent per screen) and the owner's review on the canvas · the committed copy in `.design/<module>/` and its `design-system.version`, compared by `/task` step 1 with a fresh read |
-| A screen task's build matches its board | review — the RFC's frame map, read from the locked board's code (`/task` step 3) and checked by `rfc-reviewer`, and `qa-web`'s compare of the app with the frame map's values |
+| A screen task's build matches its board | review — the RFC's frame map, read from the locked board's code (`/task` step 3) and checked by `rfc-reviewer`, and the QA agents' compare of the app with the frame map's values |

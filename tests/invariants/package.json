@@ -2,7 +2,7 @@
   "name": "@heliogrid/invariants",
   "version": "0.0.1",
   "private": true,
-  "description": "The locked invariant set (CLAUDE.md \u00a7Testing) \u2014 additions require explicit owner approval",
+  "description": "The locked invariant set (.claude/rules/testing.md) \u2014 additions require explicit owner approval",
   "scripts": {
     "test": "tsx --env-file-if-exists=../../.env.local src/run.ts",
     "typecheck": "tsc -p tsconfig.json"

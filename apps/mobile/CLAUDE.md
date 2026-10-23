@@ -58,8 +58,7 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 bundle exec pod install
 - A screen's `useState` holds only a visual fact (an open sheet, a focused field); its flow is a
   `@heliogrid/domain` reducer driven by a `@heliogrid/data` hook.
 - Paginated screens: `FlatList` + `usePaginatedList`, never inside a `ScrollView`.
-- An API failure's words come from `@heliogrid/i18n`; the first screen that renders one builds
-  `ApiErrorText` in `packages/ui`.
+- An API failure's words come from `@heliogrid/i18n`.
 
 ## Done means
 
