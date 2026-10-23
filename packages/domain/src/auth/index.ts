@@ -11,6 +11,7 @@ export type {
   FirstRunProfileFrame,
   FirstRunProfileFrameKind,
   FirstRunProfileState,
+  SavedPhoto,
 } from './first-run-profile';
 export {
   firstRunProfileFrame,
@@ -18,6 +19,7 @@ export {
   firstRunProfileStart,
   PROFILE_NAME_MAX_LENGTH,
   PROFILE_PHOTO_MAX_SIDE_PX,
+  profileEditorStart,
 } from './first-run-profile';
 export type { GoogleLinkFrame, PhoneGoogle } from './google-frame';
 export { googleLinkFrame, phoneGoogle } from './google-frame';

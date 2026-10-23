@@ -23,13 +23,15 @@ const READERS = {
 /**
  * Profile & preferences as a screen holds it, inside the page's padding: the view and the words from the person, the reader
  * and the India pack; a tap moves the person's choice here, in the browser, and the frame reports
- * it as `data-language`, `data-units` and `data-muted`, and *Try again* as `data-retried`. The push
+ * it as `data-language`, `data-units` and `data-muted`, *Try again* as `data-retried` and *Edit name*
+ * as `data-edit-opened`. The push
  * rows are what the api answers these presets: the groups shown, Billing locked for the Owner.
  */
 export function ProfilePreferencesAsHeld({
   reader,
   roles = ['sales_executive'],
   name = 'Anjali Kulkarni',
+  photo,
   refused = [],
   onlyLanguage = false,
   push = 'ready',
@@ -39,6 +41,8 @@ export function ProfilePreferencesAsHeld({
   reader: UiLanguage;
   roles?: readonly RolePreset[];
   name?: string;
+  /** The person's saved photo. */
+  photo?: string;
   refused?: readonly ProfilePreference[];
   /** `m-empty`: the set holding only the language in use. */
   onlyLanguage?: boolean;
@@ -50,6 +54,7 @@ export function ProfilePreferencesAsHeld({
   const [units, setUnits] = useState<MeasurementSystem>('metric');
   const [muted, setMuted] = useState<readonly NotificationTypeGroup[]>(mutedAtFirst);
   const [retried, setRetried] = useState(false);
+  const [editOpened, setEditOpened] = useState(false);
   const answered = pushGroupsShownTo(roles).map((group) => ({
     group,
     pushMuted: muted.includes(group),
@@ -79,12 +84,15 @@ export function ProfilePreferencesAsHeld({
       data-units={units}
       data-muted={muted.join(',')}
       data-retried={retried}
+      data-edit-opened={editOpened}
       style={{ padding: 'var(--sp-4) var(--screen-pad-mobile-fn)' }}
     >
       <ProfilePreferences
         words={words}
         view={view}
         name={name}
+        photo={photo}
+        onEditName={() => setEditOpened(true)}
         onLanguage={setLanguage}
         onUnits={setUnits}
         push={{ surface: push, switches: pushSwitches(answered, roles), refused: refusedGroups }}

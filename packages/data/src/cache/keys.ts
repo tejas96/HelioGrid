@@ -25,6 +25,8 @@ export const queryKeys = {
     members: (tenantId: string) => ['team', tenantId, 'members'] as const,
     invites: (tenantId: string) => ['team', tenantId, 'invites'] as const,
   },
+  /** My photo in one company: a photo write of mine refreshes it. */
+  myPhoto: (tenantId: string) => ['my-photo', tenantId] as const,
   /** A stored file's link. It dies in minutes, so a screen asks again when it next opens. */
   files: {
     downloadUrl: (tenantId: string, fileId: string) =>

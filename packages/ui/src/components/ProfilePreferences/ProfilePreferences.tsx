@@ -3,9 +3,9 @@ import { useOwnWidth } from '../../primitives/use-own-width';
 import { Avatar } from '../Avatar/Avatar';
 import { Banner } from '../Banner/Banner';
 import { BannerAction } from '../Banner/BannerAction';
+import { Button } from '../Button/Button';
 import { Badge } from '../Chip/Chip';
 import { ChipGroup } from '../ChipGroup/ChipGroup';
-import { Explainer } from '../Explainer/Explainer';
 import { ListRow } from '../ListRow/ListRow';
 import { LoadingBars } from '../LoadingBars/LoadingBars';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup';
@@ -27,6 +27,7 @@ import {
   unitsOf,
 } from './ProfilePreferences.logic';
 import type { ProfilePreferencesProps } from './ProfilePreferences.types';
+import { AboutPush, WhyBilling } from './PushExplainers';
 
 /**
  * The page measures its own room, never the window's: beside the settings side list it has less
@@ -86,26 +87,12 @@ function Roles({ words }: Pick<ProfilePreferencesProps, 'words'>) {
   );
 }
 
-function AboutPush({ words }: Pick<ProfilePreferencesProps, 'words'>) {
-  return (
-    <Explainer label={words.push.about.label} pages={words.push.about.line} density="functional" />
-  );
-}
-
-function WhyBilling({ words }: Pick<ProfilePreferencesProps, 'words'>) {
-  return (
-    <Explainer
-      label={words.push.whyBilling.label}
-      pages={words.push.whyBilling.line}
-      density="functional"
-    />
-  );
-}
-
 function PhonePage({
   words,
   view,
   name,
+  photo,
+  onEditName,
   onLanguage,
   onUnits,
   push,
@@ -119,9 +106,14 @@ function PhonePage({
         <SettingsCard className="hg-profile-preferences-tile">
           <ListRow
             className="hg-profile-preferences-row"
-            avatar={<Avatar name={name} size={48} />}
+            avatar={<Avatar name={name} src={photo} size={48} />}
             title={name}
             density="expressive"
+            trailing={
+              <Button variant="secondary" size="sm" onClick={onEditName}>
+                {words.editName}
+              </Button>
+            }
           />
           <ListRow
             className="hg-profile-preferences-row"
@@ -206,6 +198,8 @@ function WidePage({
   words,
   view,
   name,
+  photo,
+  onEditName,
   onLanguage,
   onUnits,
   push,
@@ -216,8 +210,11 @@ function WidePage({
     <>
       <SettingsSection title={words.account}>
         <div className="hg-profile-preferences-name">
-          <Avatar name={name} size={48} />
+          <Avatar name={name} src={photo} size={48} />
           <span className="hg-profile-preferences-name-words">{name}</span>
+          <Button variant="secondary" size="sm" onClick={onEditName}>
+            {words.editName}
+          </Button>
         </div>
         <ListRow
           className="hg-profile-preferences-row"

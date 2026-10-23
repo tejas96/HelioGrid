@@ -486,7 +486,7 @@ Reviewer findings rejected: none.
 **Contract:** `packages/contracts/src/session.ts` — GET /auth/session (`membership.roles`); the inviter's name from `T-M01-028`'s landing read. Domain type this task adds (Law 11): a role-card view-model in `packages/domain/src/authz/` — the union of grants across the held presets and the complement of that union as limits, one function both platforms render; every clause and preset display name is `packages/i18n` copy.
 **Depends on:** `T-M01-025` (migration 0002; the session projection) · `T-FPLAT-001` (`ROLE_PRESETS`, `CAPABILITY_MATRIX` — landed) · `T-M01-009` (the step before) · `T-M01-011` (the profile it re-opens from) · `T-SHELL-001`, `T-M13-006` (the role-decided home its act names).
 **Out of scope:** the home itself — `T-SHELL-001`, `T-M13-006`; the presets and matrix — `T-FPLAT-001`; the grant line on Assign Roles, composed from the same matrix — `T-M01-013`.
-**Carried from `T-M01-011`** (if its Decision 2 is A): Profile & preferences ships its *Your role* row without an act; this task gives it the act and the chevron the board draws, and the web `ListRow` with `onClick` a button role and a tab stop (D258).
+**Carried from `T-M01-011`** (brief `SCR-M01-11`, ruling 2 at `T-M01-011`): Profile & preferences ships its *Your role* row without an act; this task gives it the act and the chevron the board draws, and the web `ListRow` with `onClick` a button role and a tab stop (D258).
 **DONE WHEN:**
 - Given a valid invite, when the invitee verifies the OTP, then user + membership + roles exist atomically and the next screen is name/photo, then the role card, then their role's home with their real assigned work (M01-13, M01-14, M01-17). → proof: QA (web and phone) the card renders between profile capture and the home, its act names the destination, and the same card opens as a sheet from Profile & preferences
 - (M01-15 carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text in the brief is the binding criterion.) → proof: unit packages/domain/tests/authz/role-card.test.ts — a stacked pair yields the union of grants and no limit either preset lifts; `sales_executive` alone names selling and no money cell beyond its scope
@@ -494,7 +494,7 @@ Reviewer findings rejected: none.
 
 ### T-M01-011 · Profile & Preferences
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped
 **Why:** A field technician switches the app to Marathi and metres from one place and mutes the push groups they do not need, and the whole app follows without a reload; without it those settings have no home.
 **PRD rows:** F3-03 (P0), F3-23 (P1), F6-15 (P2)
 **DESIGN:** SCR-M01-11 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
@@ -509,237 +509,15 @@ Reviewer findings rejected: none.
 - (F6-15 carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text in the brief is the binding criterion.) → proof: QA (web and phone) muting a type-group stops its push while its in-app record still lands; the Owner's billing and compliance group renders locked and cannot be muted
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: QA (web and phone) every base and brief-listed state drawn at 375px and 1536px, the colour-literal lint clean on both
 
-#### RFC
-
-**RFC approved:** 2026-10-22 — Decisions 1A, 2A, 3A.
-
-**1. Title** — `T-M01-011` — every person changes their language, their units and their push groups from one page, and the app follows at once.
-
-**2. User impact** — Today a person who set their language at signup has no place to change it, and nobody can pick metres or feet or stop a noisy push group. A field technician opens More → Profile & preferences on the phone (the settings list on the web), taps मराठी and the whole app redraws in Marathi with no Save; they turn off *Payments* push and still find every payment notification in Notifications. An EPC Owner sees *Billing* switched on and locked, with the reason one tap away.
-
-**3. Analysis**
-
-| line | found | source | fix |
-|---|---|---|---|
-| Contract: "the push-mute read and write per type-group have no route" | **Wrong** — `GET /notifications/preferences` and `PUT /notifications/preferences/:group` exist | `packages/contracts/src/notification.ts:204,213`; `apps/api/src/modules/notification/notification.controller.ts:59-75` | task line corrected; the gap is the client: `packages/data/src/notification/repository.ts:24-120` has no method for either |
-| Contract: `unitsPrefSchema` (`common.ts`) | **Wrong** — the name is `measurementSystemSchema`, values `metric` / `imperial` | `packages/contracts/src/common.ts:94`; `packages/domain/src/format/pack.ts:50` | task line corrected; the board's `m` / `ft` are option values the view-model maps to |
-| Contract: the unit read "through the session projection" | **Missing** — the session carries no unit | `packages/contracts/src/session.ts:24-38`; `apps/api/src/modules/auth/internal/session.projection.ts:33-38`; `packages/domain/src/auth/session.ts:39-47` | `unitPreference` joins `actorSchema` (additive) and domain's `SessionUser` |
-| Brief: "the Billing row shows only on the EPC Owner's account" | **Wrong in the code** — the api answers five groups to everyone, Billing mutable for a non-Owner | `apps/api/src/modules/notification/notification.preferences.service.ts:35`; `packages/domain/src/notifications/mutes.ts:22` | `pushGroupsShownTo(presets)` in domain; the api lists only those — **Decision 3** for the write |
-| D219: a refused save shows on the failing control | **Missing** — a language save's failure is dropped (`apps/web/app/providers.tsx:118` `void`; `apps/mobile/App.tsx:131`) | `packages/data/src/session/store.ts:240-251` | the store keeps the last refused preference as a fact the page reads (part a for language and unit, part b for switches) |
-| Out of scope: "name and photo — `T-M01-009`" | **Wrong** — `SCR-M01-09` ruling 17 (2026-10-22, the later record): name and photo are changed later in Profile & preferences. `M01-14` stays `SCR-M01-09`'s row (`docs/prd/registers/screens.md:968`): it is first-run capture | `docs/ux/briefs/SCR-M01-09-first-run-profile.md` ruling 17; `CLAUDE.md` §7 | task line corrected; the source is brief 09 ruling 17; how — **Decision 1** (no board draws it, and nothing reads a person's own photo, `packages/db/src/schema/member-photo.ts:12`) |
-| The *Your role* row reopens the role card | **Missing** — the role card is `T-M01-010`, unbuilt, after this task | `docs/tasks/M01-onboarding.md:487`; board Mobile:340-343, Desktop:193-196 | **Decision 2** |
-| AC-2's QA half: "a BOM quantity renders metric … once the studio's BOM lands" | waits on block 7 | `docs/build-order.md:187-192` | the live half moves to `T-MS-302`'s done-when (the BOM engine); moved, the line leaves no wait for the build order to record |
-| State `empty` | unreachable live: `UI_LANGUAGES` holds three | brief decision 6 | proven by the component spec |
-
-Assumptions:
-- *assumed* — the language line reads *Your device's language* when the person's language equals `useI18n().device`, else *Your choice*; the unit line reads *Default for {market}* when the unit equals `pack.measurementSystem`, else *Your choice*. No column records "chosen" (`packages/db/src/schema/identity.ts:52-53`).
-- *assumed* — a refused language save keeps the new language on screen and shows the refusal on the picker; a tap retries; the next boot follows the server's.
-- One switch tapped twice fast: the hook sends a group's writes one after another, so the last tap is the last write.
-
-**4. Scope**
-
-In: the page on web (`/more/profile`) and phone (`more/profile`), every state on both boards, the unit on the session, the push-preference client, the Billing rule, the name and photo per Decision 1, deferred rows D219, D276 and the named pieces of D240, D245, D250, D258, D313.
-Out: the role card — `T-M01-010`; push delivery and quiet hours — `T-FPLAT-018`; the photo on Team, the account menu and M10 — D313 stays for them; the BOM's metric quantities — `T-MS-302`.
-Non-functional: none stated beyond `F7-43` and `F3-04`.
-
-**5. Proposal**
-
-- **Flow.** Open: the settings row `profile` (`packages/domain/src/shell/settings-rows.ts:37`) routes to the page on both apps. Read: the session gives name, roles, language and unit; `GET /notifications/preferences` gives the push rows. Act: a language tap calls `useI18n().setLocale` (`packages/i18n/src/react/provider.tsx:106-114`, which saves through the store); a unit tap calls the store's new `setUnitPreference` (`PATCH /users/me`); a switch calls `PUT /notifications/preferences/:group`. Each applies as touched (brief decision 2); a refusal shows on its own control.
-- **One component, both platforms.** `ProfilePreferences` in `packages/ui` takes facts and words as props and draws both widths — option cards and `ValueSource` lines on the phone, `SettingsSection` cards with `SegmentedControl`s and captions, at most 760 px, at 1536. Twin: the same screen on the other platform; only the route and the safe area stay in an app (`.claude/rules/screen-parts.md`). Pattern: `CompanyProfile`'s settings life.
-- **The view-model is domain's.** `profilePreferencesView` in `packages/domain/src/shell/profile-preferences.ts`, beside `settings-rows.ts`: which groups show, which is locked, which caption each line takes, `metric`/`imperial` ↔ the option values.
-- **Billing is decided once.** `pushGroupsShownTo(presets)` beside `mayMute`; the api's list uses it. No type is in the billing group yet (`packages/domain/src/notifications/registry.ts:136-145`), so no push changes.
-- **Reused:** `OptionCardGroup` (has `lang`), `SegmentedControl`, `Switch` (`error`, `disabled`), `Explainer`, `ListRow`, `Badge` with `ROLE_KIND_TONE[roleKind()]` (`packages/ui/src/components/Chip/Chip.logic.ts:10`), `ChipGroup`, `Avatar`, `ValueSource`, `LoadingBars`, `Banner`, the settings side list and sub-page bar (`T-M01-012a`), `useLanguageChoice()` endonyms (`packages/i18n/src/react/language-choice.ts:23`), `TYPE_GROUP_NAME` (`packages/i18n/src/copy/notifications.ts:66`), `ROW_NAME.profile` (`packages/i18n/src/copy/settings.ts:33`).
-- **Alternative:** a `GET /users/me` instead of growing the session — one more route and read where every other fact is already in the store. Rejected.
-
-**6. Frame map** — `.design/M01/SCR-M01-11-Profile-and-Preferences-{Mobile,Desktop}.dc.html`. Copy keys are `PROFILE_PREFERENCES.<key>` (`packages/i18n/src/copy/profile-preferences.ts`) unless named.
-
-| frame | state | element → component + props + copy key + tokens |
-|---|---|---|
-| `m-default` | normal, Sales Executive | `MobileTopBar` round back `backToSettings`, title `ROW_NAME.profile`; scroll pad `--sp-4` `--screen-pad-mobile-fn` `--sp-6`, sections gap `--sp-6`. h2 `account` (overline: `--fs-overline`, bold, `--tr-overline`, secondary) over a tile `--surface` `--r-tile` `--e2`, pad `--sp-1` 0, gap `--sp-2`: name `ListRow` (Avatar 48, title name, density expressive, trailing secondary sm `Button` `editName` — part c; hidden in parts a and b, a known difference for QA), role `ListRow` (title `yourRole`/`yourRoles`, density functional, marks `ChipGroup max 0` of functional `Badge`s in `ROLE_KIND_TONE`; act and chevron per Decision 2), rows min 64, pad `--sp-2 --sp-4`, gap `--sp-3`, divider `1px --line-soft`. h2 `languageAndUnits`, section gap `--sp-4`: `OptionCardGroup` label `language`, columns 1, functional, options endonym + `lang`; `ValueSource` inherited `deviceLanguage` / own `yourChoice` (gap `--sp-2`); `SegmentedControl` label `measurements`, options `metres`/`feet`; `ValueSource` inherited `marketDefault`. h2 `push` + `Explainer` label `aboutPush`, one page `aboutPushLine`; four `Switch` rows labelled `TYPE_GROUP_NAME`, gap `--sp-1`. `BottomNav` on More |
-| `m-loading` | the push read in flight | the whole body is `LoadingBars` label `loading`, bars row·row·panel·row·panel — component spec (the read is too quick to hold live) |
-| `m-empty` | one language | picker with English alone — component spec (`not reachable`: the set holds three) |
-| `m-error` | the push read failed | the whole body is `Banner` kind state, tone danger, title `loadFailed`, body `nothingChanged`, `BannerAction` `tryAgain` |
-| `m-rerender` | after मराठी | picker value `mr`; language `ValueSource` own `yourChoice`; every word Marathi |
-| `m-muted` | Delivery, Payments off | those two `Switch` unchecked |
-| `m-locked` | EPC Owner | after the four, a grid `auto minmax(0,1fr)`, gap `--sp-3`: `Switch` checked disabled, label `TYPE_GROUP_NAME.billing` (`--fs-body`), `Explainer` label `whyBilling`, page `whyBillingLine`; `BottomNav` Home·Leads·Projects·More |
-| `m-multi-role` | three presets | `yourRoles`; Survey Engineer, Design Engineer (blue), Installation Team Member (magenta) wrap |
-| `d-default` | normal, one settings row | `AppShell`, `AppRail` More; no side list; page pad `--sp-6 --sp-8`; column max 760, gap `--sp-5`; h1 `ROW_NAME.profile` at `--fs-h2` bold; three `SettingsSection` cards (`--surface` `--r-tile` `--e2`, pad `--sp-2` 0): title row h2 `--fs-body` bold, pad `--sp-3 --sp-6 --sp-1`; rows min 64, pad `--sp-2 --sp-6`, gap `--sp-4`, hairlines. Account: Avatar 48, name `--fs-body` bold, `Button` secondary sm `editName` (part c; hidden before it); role `ListRow` functional. Language: label `language` `--fs-body-sm` bold + caption `--fs-caption` secondary, right a `role="group"` `aria-label` `language` around `SegmentedControl` (options endonym + `lang`); units the same with `measurements`. Push: h2 + `Explainer`; each row label left, `Switch` right |
-| `d-owner` | EPC Owner | side list beside, current `ROW_NAME.profile`; the Billing row: label + `Explainer` `whyBilling` left, `Switch` checked disabled right |
-| `d-error` | the push read failed | h1, then the danger `Banner` |
-| `d-rerender` | after मराठी | language caption `yourChoice`, value `mr` |
-
-Refusal (D219, no frame): the failing control's own `error` prop — `notSaved` (*Not saved. Try again.*) — on `OptionCardGroup`, `SegmentedControl` or `Switch`.
-
-**7. Changes**
-
-- Packages: domain exports `pushGroupsShownTo`, `profilePreferencesView`; `SessionUser` gains `unitPreference`. ui exports `ProfilePreferences`, `SettingsSection`. data exports `usePushPreferences`, and the store gains `setUnitPreference` and `refusedPreference`. i18n exports `PROFILE_PREFERENCES`. Direction unchanged. No new brand, enum, token, route, table or error code.
-- Data and schema: none.
-- API and contracts: `actorSchema` gains `unitPreference: measurementSystemSchema` (additive; every session answer comes from `projectionOf`). `GET /notifications/preferences` lists only `pushGroupsShownTo(presets)`, and `PUT /notifications/preferences/:group` answers 403 `FORBIDDEN` for a group not shown (Decision 3A: a request the base accepted is refused; no client calls it). Release: an old app ignores the new field; nothing stores a session. **Order, owed by every deploy:** `pack:publish` runs before the new api serves (the pack's new required `name` makes `readStoredPack` refuse an older stored revision, and sign-up and sign-in read the pack), and the api deploys before web and phone (the client validates the session and needs `unitPreference`) — `docs/engineering/09-observability-and-ops.md` `release_command`.
-- Jobs: none.
-- Files:
-
-| part | action | path | purpose |
-|---|---|---|---|
-| a | modify | `packages/contracts/src/session.ts` · `openapi/openapi.json` · `tests/locale.test.ts` | `unitPreference` on the actor |
-| a | modify | `apps/api/src/modules/auth/internal/session.projection.ts` · `apps/api/tests/auth/session-check.test.ts` | fill and prove it, a saved `imperial` read back |
-| a | modify | `packages/domain/src/auth/{session,session-transitions,index}.ts` · `packages/domain/tests/auth/{company,door-view,landing,setup-step,signup-view,session-transitions}.test.ts` | `SessionUser.unitPreference`, the snapshot's `refusedPreference`, and the fixtures |
-| a | modify | `packages/data/src/session/{wire-answers,store,types}.ts` | carry it; `setUnitPreference`; `refusedPreference` |
-| a | modify | `packages/domain/src/format/pack.ts` · `pack-schema.ts` | the market's `name` in each language, for *Default for India* (owner ruling at the build, 2026-10-22); republished by `pack:publish` |
-| a | modify | `packages/data/src/react/use-session.ts` | the unit save reaches screens; the store holds a refused save, so the app roots stay as they are |
-| a | add | `packages/domain/src/shell/profile-preferences.ts` · `packages/domain/tests/shell/profile-preferences.test.ts` · modify `packages/domain/src/shell/index.ts` | the view-model and its export |
-| a | add | `packages/ui/src/components/SettingsSection/{types,tsx,native.tsx,css,index}` · modify `packages/ui/src/primitives/Ground/Ground.css` · `packages/ui/src/styles.css` | D276 card; `SettingsCard`, the raised card drawn once, a page ground |
-| a | add | `packages/ui/src/components/ProfilePreferences/{types,tsx,native.tsx,css,index}` | the page |
-| a | modify | `packages/ui/src/components/SegmentedControl/{types,tsx,native.tsx}` | option `lang` (D258); `ariaLabel`, a named radio group whose name sits outside it (the 1536 rows) |
-| a | modify | `packages/ui/src/components/ValueSource/ValueSource.css` · `.native.tsx` | inherited line in secondary (D245, D250) |
-| a | modify | `packages/ui/src/index.ts` | exports |
-| a | add | `packages/i18n/src/copy/profile-preferences.ts` · `packages/i18n/tests/profile-preferences.test.ts` · modify `src/index.ts`, `src/languages.ts` (`languageOptions`, one list Setup Language now reads too), `src/copy/setup-language.ts`, `locales/{en,hi,mr}/messages.{po,ts}` | words |
-| a | add | `apps/web/app/(inside)/more/profile/page.tsx` · `apps/web/features/profile/{ProfileScreen.tsx,index.ts}` | web route |
-| a | add | `apps/mobile/src/screens/profile/ProfileScreen.tsx` · modify `apps/mobile/src/screens/settings/SettingsRowScreen.tsx` | phone route |
-| a | modify | `apps/mobile/src/screens/shell/components/{ShellFrame,ShellPage}.tsx` · `apps/mobile/src/screens/shell/styles.ts` · `apps/web/features/shell/shell.css` | a shell page may take the board's tighter side padding, `--screen-pad-mobile-fn` (found by iOS QA: 20 against the board's 16) |
-| a | add | `tests/e2e/components/ProfilePreferences.{story,spec}.tsx` (covers `SettingsSection` too) · `tests/e2e/web/more-profile.spec.ts` · modify `tests/invariants/src/e2e-flow-per-screen.ts` (the phone screen `profile` held, as every inside screen is: no Maestro flow lands Create company on iOS, D5) | proof; `more-[row].spec.ts` and `more.spec.ts` assert only the address and the side list, and hold unchanged |
-| a | modify | `docs/tasks/MS-studio-c.md` (`T-MS-302`) · `docs/tasks/deferred.md` · `docs/ux/briefs/SCR-M01-11-profile-preferences.md` | AC-2's live half moves; the deferred rows of §14; the owner's rulings |
-| b | modify | `packages/domain/src/notifications/mutes.ts` · `index.ts` · `packages/domain/tests/notifications/mutes.test.ts` | `pushGroupsShownTo` and its export |
-| b | modify | `apps/api/src/modules/notification/notification.preferences.service.ts` · `notification.controller.ts` (its "five rows" comment) · `packages/contracts/src/notification.ts` (the 403's comment) | list (and, per Decision 3, write) only shown groups |
-| b | modify | `packages/data/src/notification/repository.ts` · `cache/keys.ts` · `src/react/index.ts` · add `src/react/use-push-preferences.ts` | the client, a group's writes in order |
-| b | modify | `ProfilePreferences`, the copy, the view-model, both screens, the specs and flow above | push section, loading, error, locked, muted, refusals |
-| b | add | `apps/api/tests/notifications/preferences-shown.test.ts` | the non-Owner's four groups and refused Billing write, apart because `preferences.test.ts` would pass 300 lines |
-| b | add | `tests/e2e/components/ProfilePreferences.push.spec.tsx` | the push frames, apart because the page's spec would pass 300 lines |
-| b | modify | `packages/ui/src/components/Switch/{types,tsx,native.tsx}` | `ariaLabel`: the locked Billing switch's name sits outside it in primary text beside *Why Billing stays on* (`m-locked`), where a disabled switch's own label turns secondary |
-| c | — | per Decision 1 — at least `GET` of the person's own photo, the name and photo editor, `FirstRunProfile`'s parts reused | Edit name and photo |
-
-**8. Diagram**
-
-```mermaid
-flowchart LR
-  P[ProfilePreferences ui] -->|setLocale| I[i18n provider]
-  I -->|onChosen| S[session store]
-  P -->|setUnitPreference| S
-  S -->|PATCH /users/me| A[api user]
-  A -->|session: unitPreference| S
-  P -->|usePushPreferences| D[data notification repo]
-  D -->|GET/PUT /notifications/preferences| N[api notification]
-  N -->|pushGroupsShownTo| M[domain mutes]
-  V[domain profilePreferencesView] --> P
-```
-
-**9. Build steps**
-
-| step | files | AC | done when |
-|---|---|---|---|
-| a1 | contract, projection, domain `SessionUser` + fixtures, data store, both app roots | AC-5 | `session-check.test.ts` reads `unitPreference`; `pnpm check` |
-| a2 | domain view-model + test | AC-1u, AC-6u | `it.each` over captions, groups, roles, unit mapping |
-| a3 | `SettingsSection`, `SegmentedControl` `lang`, `ValueSource`, their specs | AC-4c | specs green |
-| a4 | i18n copy, `ProfilePreferences` both halves, `ui` exports, spec | AC-4c | 375/1536, EN/HI/MR |
-| a5 | web and phone routes, e2e, the moved AC-2 line | AC-1w/i/a, AC-5w/i/a, AC-10a | `more-profile.spec.ts`; the phone screen held (D5) |
-| b1 | `pushGroupsShownTo` + test; api service + test, seen red once | AC-8u, AC-8 | a non-Owner gets four rows |
-| b2 | data client + hook; push section, states, refusals | AC-3, AC-7, AC-9, AC-10b | specs + live rows |
-| c | per Decision 1 | AC-11 | — |
-
-**10. Risks**
-
-- Permission: Billing is a permission-shaped rule → domain owns it, the api enforces it, a red-first test.
-- Tenancy: preferences are `(tenant, user)` rows under RLS already (`packages/db/migrations/0009_notification_delivery.sql:56-64`); no new query.
-- Release: one required response field → the api deploys first; an older phone ignores it.
-- `F3-04`: a language switch must not unmount the page → no local copy of the language; AC-7 checks a switch survives.
-
-**11. Regression**
-
-- `setLocale` on the door and Setup Language → `setup-language.spec.ts`, `login.spec.ts` in CI; one live switch on Setup Language on web.
-- `PATCH /users/me` callers → `apps/api/tests/auth/account-language.test.ts`, `apps/api/tests/users/photo.test.ts`.
-- The actor shape → `packages/contracts/tests/locale.test.ts` and the six domain auth tests, edited in a1.
-- Push delivery reads mutes (`notification.push.service.ts:63-68`) → `apps/api/tests/notifications/` green.
-- `ValueSource` callers → `CompanyProfile.*.spec.tsx`; one live Business Profile row on web.
-- The settings list → `more-[row].spec.ts` and `more.spec.ts`, edited to the built page; `more-team.spec.ts` unchanged.
-
-**12. Acceptance criteria**
-
-Verbatim (`DONE WHEN`):
-- AC-1 — Given any user of any preset, when they open onboarding for the first time and when they open their profile afterwards, then a language picker is available on both platforms, listing each language in its own script and name (`F3-03`).
-- AC-2 — Given a user with a non-default measurement preference, when they open a procurement or BOM quantity, then it is metric (`F3-23`).
-- AC-3 — (F6-15 carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text in the brief is the binding criterion.)
-- AC-4 — Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-Every AC splits by surface, one owner each: `u` unit, `c` component, `w` web, `i` iOS, `a` Android, `api`.
-
-Added:
-- AC-5 — Given a signed-in person, when the session is read, then it carries `unitPreference`; when they pick Feet, then `PATCH /users/me` stores `imperial` and the session and the line follow with no reload.
-- AC-6 — Given a person whose language equals the device's and whose unit equals the market default, then both lines read inherited; after a change, the changed line reads *Your choice*.
-- AC-7 — Given *Payments* off, when the person picks मराठी, then every word redraws in Marathi, no reload, and *Payments* stays off (`F3-04`).
-- AC-8 — Given a person without `epc_owner`, when they read push preferences, then Billing is not listed and `PUT …/billing` answers 403 `FORBIDDEN`; given an EPC Owner, Billing is listed `mutable: false`, a `{pushMuted:true}` write answers 403, and its switch is on and disabled.
-- AC-9 — Given a group switched off and a device registered, when a notification of that group is raised for the person, then no push leaves and the record lands; switched on, the next one's push leaves.
-- AC-10 — Given a save refused, when the person touches a language or unit (part a) or a switch (part b), then that control shows *Not saved. Try again.* and the others are unchanged.
-- AC-11 — part c, written when Decision 1 is ruled: Given the page, when the person changes their name and saves, then the page and the account menu show it; when they add or replace their photo, then the page's avatar shows it (brief 09 ruling 17).
-- AC-12 — Given a switch tapped off then on fast, when both writes answer, then the switch and a reload both read on.
-
-**13. Proof**
-
-Accounts: `…901` (web), `…902` (iOS), `…903` (Android) are Owners; Sales Executives `…906` (web), `…907` (iOS), `…908` (Android) and the three-preset `…909` (iOS) and `…912` (Android) are invited once through Invite teammate by the matching Owner; `…910` is a non-Owner in `…905`'s company for the api; `…911` declines for AC-9. Every row restores English, Metres and every switch on after itself.
-
-| row | AC | owner | surface | action → expected | data |
-|---|---|---|---|---|---|
-| P1u | AC-1u | main-dev | unit | `packages/domain/tests/shell/profile-preferences.test.ts` "lists every UI language for the picker, the one in use chosen"; `packages/i18n/tests/profile-preferences.test.ts` "names each language in its own script whatever the reader reads" | — |
-| P1w | AC-1w | qa-web | web | `…906` More → Profile & preferences: English, हिन्दी, मराठी in own scripts; pick हिन्दी → page and rail Hindi, URL unchanged | `…906` |
-| P1i | AC-1i | qa-ios | phone | `…907` More → Profile & preferences: option cards in own scripts; pick मराठी → whole screen Marathi | `…907` |
-| P1a | AC-1a | qa-android | phone | as P1i | `…908` |
-| P2 | AC-2 | main-dev | unit | `packages/domain/tests/format/measurement.test.ts` — `PROCUREMENT_SYSTEM` metric for every preference (existing); the live half is `T-MS-302`'s | — |
-| P3 | AC-3 | qa-api | api | P8 and P9 together | — |
-| P4c | AC-4c | main-dev | component | `tests/e2e/components/ProfilePreferences.spec.tsx` — part a's frames at 375 and 1536 (`m-default`, `m-empty`, `m-multi-role`, `d-default`; `m-loading` with part b), the refusal, EN/HI/MR; it covers `SettingsSection` and `SettingsCard` | — |
-| P4w | AC-4w | qa-web | web | compare `d-default` (`…906`), `d-owner` (`…901`), `d-rerender` (`…906`) with the map; `d-error` with `api stopped`, last, the page opened by in-app navigation before the api stops and never reloaded | as named |
-| P4i | AC-4i | qa-ios | phone | compare `m-default`, `m-muted`, `m-rerender` (`…907`), `m-locked` (`…902`), `m-multi-role` (`…909`); `m-error` with `api stopped`, last, the page opened by in-app navigation before the api stops and never reloaded | as named |
-| P4a | AC-4a | qa-android | phone | as P4i on `…908`, `…903`, `…912` | as named |
-| P4h | AC-4i, AC-4a | qa-ios / qa-android | phone | Hindi layout at 375: no clipped word, no sideways scroll, badges wrap; restore English | `…909` / `…912` |
-| P4m | AC-4i, AC-4a | qa-ios / qa-android | phone | Marathi layout at 375, the same, after P4h; restore English | `…909` / `…912` |
-| P5 | AC-5 | qa-api | api | `GET /auth/session` → 200, `actor.unitPreference: "metric"`; `PATCH /users/me {unitPreference:"imperial"}` → 200; session reads `imperial`; `{unitPreference:"feet"}` → 400 `VALIDATION_FAILED`, `details[0].path: "unitPreference"` | `…904` |
-| P5w | AC-5w, AC-6w | qa-web | web | pick Feet → line `yourChoice`, reload keeps Feet; Metres → *Default for India* | `…906` |
-| P5i / P5a | AC-5i/a, AC-6i/a | qa-ios / qa-android | phone | as P5w, cold start for the reload | `…907` / `…908` |
-| P6u | AC-6u | main-dev | unit | `packages/domain/tests/shell/profile-preferences.test.ts` "a language that %s reads %s" and "a unit that is %s reads %s" | — |
-| P7w | AC-7w | qa-web | web | *Payments* off, pick मराठी → Marathi, *Payments* still off (part b) | `…906` |
-| P7i / P7a | AC-7i / AC-7a | qa-ios / qa-android | phone | as P7w | `…907` / `…908` |
-| P8u | AC-8u | main-dev | api test | `apps/api/tests/notifications/preferences-shown.test.ts` "a non-Owner is not offered Billing — four groups, every one mutable" and "refuses a non-Owner any Billing write", seen red once | test db |
-| P8 | AC-8api | qa-api | api | `…910`: `GET /notifications/preferences` → 200, four rows, no `billing`; `PUT …/billing {pushMuted:true}` → 403 `FORBIDDEN`; `…905`: five rows, billing `mutable:false`; `PUT …/billing {pushMuted:true}` → 403 `FORBIDDEN` | `…910`, `…905` |
-| P8w / P8i / P8a | AC-8w / AC-8i / AC-8a | qa-web / qa-ios / qa-android | all | Owner: Billing on and disabled; *Why Billing stays on* opens its line; a Sales Executive sees four rows | `…901`/`…906`, `…902`/`…907`, `…903`/`…908` |
-| P9 | AC-9 | qa-api | api | `POST /notifications/devices` a test token for `…905`; outside quiet hours, `PUT …/team {pushMuted:true}`; `…911` declines an invite from `…905` → a `notification` row for `…905`, `push_sent_at` null; unmute, invite and decline again → `push_sent_at` set. `push_sent_at` is the marker: `notification.push.service.ts` sets it only after the transport's send resolves, whichever adapter `notification.module.ts` wires (a local `.env.local` with an FCM key wires FCM, which logs nothing on success) | `…905`, `…911` |
-| P10a-w / -i / -a | AC-10w / AC-10i / AC-10a (part a) | qa-web / qa-ios / qa-android | all | `api stopped`, last, the page opened by in-app navigation before the api stops: tap हिन्दी, then Feet → each shows *Not saved. Try again.* on its control alone | `…906`/`…907`/`…908` |
-| P10b-w / -i / -a | AC-10w / AC-10i / AC-10a (part b) | qa-web / qa-ios / qa-android | all | `api stopped`, last, the page opened before the api stops: tap *Sales* → its switch alone shows the refusal and returns on | the same |
-| P12 | AC-12w | qa-web | web | tap *Team* off and on within half a second → on; reload → on | `…906` |
-| P12i / P12a | AC-12i / AC-12a | qa-ios / qa-android | phone | as P12 | `…907` / `…908` |
-| P13 | all | ci | e2e-web | `more-profile.spec.ts`; the phone screen is held in `e2e-flow-per-screen` (D5), so its proof is the phone rows above | — |
-
-**14. Deferred rows**
-
-- D219 — joins (parts a and b).
-- D276 — joins (part a); Team and Business profile adopting `SettingsSection` is new row D317 (`T-M01-018 starts`).
-- D318 (new) — the settings card's raised white surface and hairlines against `F7-49` and `F7-15`, for the owner to rule.
-- D240 — the `MobileTopBar` title already landed; nothing else here → stays, `reopens when` `T-M01-018 starts`.
-- D250 — its `ValueSource` piece joins (part a); `OptionCardGroup` `lang` already landed; the rest stays for `T-M01-016`, `-018`, `-019`, `-020`.
-- D245 — its `ValueSource` half joins (part a); its `StatusMark` half stays.
-- D258 — `SegmentedControl` `lang` joins (part a); `ListRow` with `onClick` per Decision 2; the rest stays.
-- D313 — this page's avatar joins part c; Team, the account menu and M10 stay.
-
-**15. Size** — about 60 files, ~2,000 code lines, ~1,000 test lines → three parts (`/task` step 3).
-
 #### Parts
 
 | part | what | AC | depends on | status |
 |---|---|---|---|---|
 | a | The page on web and phone: name and roles, language and units applied as touched and refused on their control, the unit on the session, `SettingsSection` | AC-1, AC-2, AC-4 (a's frames), AC-5, AC-6, AC-10 (language, unit) | — | shipped |
 | b | Push notifications: the groups each person is shown, the switches, About push, locked Billing, muted, loading, error, refusals | AC-3, AC-4 (b's frames), AC-7, AC-8, AC-9, AC-10 (switches), AC-12 | a | shipped |
-| c | Edit name and photo from the page, and the person's own photo on it — drawn on the M01 canvas first (Decision 1A) | AC-11 | b | planned |
+| c | Edit name and photo from the page, and the person's own photo on it — drawn on the M01 canvas first (Decision 1A) | AC-4 (c's frames), AC-11, AC-13, AC-14, AC-15, AC-16 | b | shipped |
 
-**Native review owed:** the drafted Hindi and Marathi lines of every id in `PROFILE_PREFERENCES` (`packages/i18n/src/copy/profile-preferences.ts`) and the pack's market name (`IN_FORMATS.name`).
-
-
-**16. Decisions for the owner** — ruled 2026-10-22: 1A, 2A, 3A.
-
-1. **Edit name and photo (part c)** — no board draws them on this page or in a settings life of `SCR-M01-09`.
-   - **A (recommended):** the Design track draws them on the M01 canvas while parts a and b build; part c builds them once locked.
-   - B: reuse `SCR-M01-09`'s first-run frames as they are, with words ruled now (no helper line, act *Save*, back to Profile & preferences).
-2. **The *Your role* row** — the board gives it a chevron and opens the role card, which `T-M01-010` builds next.
-   - **A (recommended):** ship the row without act or chevron, as a known difference; `T-M01-010` adds both (written into its task).
-   - B: build `T-M01-010`'s role card before part a, so the row ships as drawn.
-3. **A non-Owner writing Billing** — today `PUT /notifications/preferences/billing` answers 200 to a non-Owner; no client calls it yet.
-   - **A (recommended):** refuse it with 403 `FORBIDDEN`, as the Owner's write is refused — a request the base accepted is now refused (`packages/contracts/CLAUDE.md` Traps).
-   - B: keep accepting it and only hide Billing in the list.
+**Native review owed:** the drafted Hindi and Marathi lines of every id in `PROFILE_PREFERENCES` (`packages/i18n/src/copy/profile-preferences.ts`), the pack's market name (`IN_FORMATS.name`), `PROFILE_PREFERENCES.editName` and every id in `NAME_AND_PHOTO_EDITOR` (`packages/i18n/src/copy/name-and-photo-editor.ts`).
 
 ### T-M01-012 · Team
 **Type:** screen · **Tier:** P0

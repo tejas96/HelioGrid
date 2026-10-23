@@ -9,6 +9,7 @@ import {
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { expectNoSidewaysScroll, expectNothingClipped } from '../support/layout';
+import { pngOf } from '../support/png';
 import { resolvedColour, resolvedLength, resolvedShadow } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 import { ProfilePreferencesAsHeld } from './ProfilePreferences.story';
@@ -28,6 +29,8 @@ const ROLE = (preset: Parameters<typeof presetName>[1]) => presetName(en.t, pres
 /** Every box that holds words — the boxes a clipped line would show in. */
 const TEXT =
   '.hg-profile-preferences-title, .hg-profile-preferences-overline, .hg-list-row-title, .hg-chip, .hg-option-card-titles, .hg-segmented-control-segment, .hg-value-source, .hg-settings-section-title, .hg-settings-section-label, .hg-settings-section-caption, .hg-profile-preferences-name-words, .hg-switch-label';
+/** A saved photo, as its download link would draw it. */
+const PHOTO = `data:image/png;base64,${pngOf(8, 8).toString('base64')}`;
 const PICTURES = join(import.meta.dirname, '../../../.qa/components/profile-preferences');
 
 test.describe('at 375', () => {
@@ -100,6 +103,16 @@ test.describe('at 375', () => {
       <ProfilePreferencesAsHeld reader="en" refused={['language', 'units']} />,
     );
     await expect(card.getByText(W('notSaved'))).toHaveCount(2);
+  });
+
+  test('the name row: the saved photo, and Edit name opens the editor', async ({ mount }) => {
+    const card = await mount(<ProfilePreferencesAsHeld reader="en" photo={PHOTO} />);
+    const row = card.locator('.hg-profile-preferences-tile .hg-list-row').first();
+    await expect(row.locator('img')).toHaveAttribute('src', PHOTO);
+    const edit = row.getByRole('button', { name: W('editName') });
+    await expectTouchFloor([edit]);
+    await edit.click();
+    await expect(card).toHaveAttribute('data-edit-opened', 'true');
   });
 
   test('m-empty: a set holding only the language in use', async ({ mount, page }) => {
@@ -182,6 +195,20 @@ test.describe('at 1536', () => {
     await card.getByRole('radio', { name: LANGUAGE_META.hi.endonym }).click();
     await expect(card).toHaveAttribute('data-language', 'hi');
     await expectNoSidewaysScroll(page);
+  });
+
+  test('d-default: the name row ends with Edit name, beside the saved photo', async ({ mount }) => {
+    const card = await mount(<ProfilePreferencesAsHeld reader="en" photo={PHOTO} />);
+    const row = card.locator('.hg-profile-preferences-name');
+    await expect(row.locator('img')).toHaveAttribute('src', PHOTO);
+    const edit = row.getByRole('button', { name: W('editName') });
+    const rowBox = await row.boundingBox();
+    const editBox = await edit.boundingBox();
+    expect(
+      (rowBox?.x ?? 0) + (rowBox?.width ?? 0) - ((editBox?.x ?? 0) + (editBox?.width ?? 0)),
+    ).toBeLessThanOrEqual((await resolvedLength(card.page(), '--sp-6')) + 1);
+    await edit.click();
+    await expect(card).toHaveAttribute('data-edit-opened', 'true');
   });
 
   for (const reader of ['hi', 'mr'] as const) {

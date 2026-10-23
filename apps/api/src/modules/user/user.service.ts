@@ -24,6 +24,10 @@ export class UserService {
     return { ...row, name: row.name ?? '' };
   }
 
+  async myPhoto(tenantId: string, userId: string): Promise<MyPhoto> {
+    return { photoFileId: await this.photos.find(tenantId, userId) };
+  }
+
   /**
    * My photo in this company is a confirmed file of this company, stored against my own account:
    * `confirmedOwn` answers 404 for another company's file, another kind or a teammate's photo, and

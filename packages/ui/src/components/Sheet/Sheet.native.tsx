@@ -1,15 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
-import {
-  Animated,
-  BackHandler,
-  Easing,
-  PanResponder,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Animated, BackHandler, PanResponder, ScrollView, StyleSheet, View } from 'react-native';
 import { Portal, usePortalBottomInset } from '../../primitives/Portal/Portal.native';
 import { OverlayBody } from './OverlayBody.native';
 import type { SheetDensity, SheetProps, SheetSize } from './Sheet.types';
@@ -17,6 +9,8 @@ import { SheetBackdrop } from './SheetBackdrop.native';
 import { SheetHandle } from './SheetHandle.native';
 import { SheetHeader } from './SheetHeader.native';
 import { SheetSkeleton } from './SheetSkeleton.native';
+import { percentOf, SHEET_HEIGHT, useKeyboardLift } from './use-keyboard-lift.native';
+import { useSheetEntry } from './use-sheet-entry.native';
 
 interface NativeSheetProps extends SheetProps {
   style?: StyleProp<ViewStyle>;
@@ -79,7 +73,7 @@ export function Sheet({
   const [panelHeight, setPanelHeight] = useState(0);
   const [scrolled, setScrolled] = useState(false);
   const draggable = dragToDismiss && dismissible;
-  const bottomInset = usePortalBottomInset();
+  const { panelLift, bottomInset } = useKeyboardLift(open, size, usePortalBottomInset());
   /* Read through a ref: Android calls the newest listener first, so re-registering on a new
      `onClose` would put a lower sheet's Back above the sheet on top of it. */
   const closeOnBack = useRef(onClose);
@@ -98,20 +92,7 @@ export function Sheet({
     return () => back.remove();
   }, [open, dismissible]);
 
-  useEffect(() => {
-    if (!open || panelHeight === 0) {
-      return;
-    }
-    offset.setValue(panelHeight);
-    const entry = Animated.timing(offset, {
-      toValue: 0,
-      duration: theme.motion.durations.emphasised,
-      easing: Easing.bezier(...theme.motion.easings.spring),
-      useNativeDriver: true,
-    });
-    entry.start();
-    return () => entry.stop();
-  }, [open, panelHeight, offset]);
+  const reducedMotion = useSheetEntry(open, panelHeight, offset);
 
   const pan = useMemo(
     () =>
@@ -128,10 +109,14 @@ export function Sheet({
             onClose();
             return;
           }
+          if (reducedMotion.current) {
+            offset.setValue(0);
+            return;
+          }
           Animated.spring(offset, { toValue: 0, useNativeDriver: true }).start();
         },
       }),
-    [draggable, onClose, offset],
+    [draggable, onClose, offset, reducedMotion],
   );
 
   if (!open) {
@@ -158,6 +143,7 @@ export function Sheet({
             styles.panel,
             ladder.panel,
             SIZE[size],
+            panelLift,
             { transform: [{ translateY: offset }] },
             style,
           ]}
@@ -246,7 +232,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    maxHeight: '92%',
+    maxHeight: percentOf(SHEET_HEIGHT.cap),
     // biome-ignore lint/plugin/raw-white: panel — a sheet, a modal, a detail panel: a page ground over the page
     backgroundColor: theme.colors.surface,
     ...theme.elevation.e5,
@@ -260,8 +246,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: theme.radius['rf-xl'],
   },
   auto: {},
-  half: { height: '56%' },
-  full: { height: '92%' },
+  half: { height: percentOf(SHEET_HEIGHT.half) },
+  full: { height: percentOf(SHEET_HEIGHT.cap) },
   bodyAuto: { flexGrow: 0, flexShrink: 1 },
   bodyFill: { flexGrow: 1, flexShrink: 1 },
   bodyPadExpressive: {

@@ -5,7 +5,7 @@ import { COMPANY_PROFILE, companyProfileStepWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import { CompanyProfile, ToastHost, useFormat, useToasts } from '@heliogrid/ui';
 import { notFound } from 'next/navigation';
-import { useImageFile } from './hooks/use-image-file';
+import { useImageFile } from '../../lib/use-image-file';
 
 /**
  * The company profile on the web (`SCR-M01-05`): the third setup step, drawn by the inside

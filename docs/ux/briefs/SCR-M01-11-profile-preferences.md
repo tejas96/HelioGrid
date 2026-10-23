@@ -134,6 +134,10 @@ addresses only `epc_owner`, so the Billing row shows only on the EPC Owner's acc
 2. **The *Your role* row has no act until the role card exists:** it ships without its chevron, and `T-M01-010` adds the act and the chevron.
 3. **Only the EPC Owner is offered Billing:** a person without `epc_owner` sees four groups, and the api refuses their Billing write.
 
+**Ruling at `T-M01-011c` (owner, 2026-10-23).**
+
+4. **A failed removal of a saved photo says so:** the photo group's danger `Banner` reads *Your photo was not removed* over *Try again, or remove it later.*; the act reads *Try the photo again*, and *Done* closes with the photo still saved.
+
 ## Data volume
 
 Three launch languages (English, Hindi, Marathi — F3-01 context), each in its own script; the picker must remain legible when it lists a script the current language does not use (F3 §F3.1 localization notes). One two-value measurement preference (m/ft — F3-23 source pointer) whose market default is pack data. Push mutes per type-group — a short list of type-groups, not per-event controls ("no per-event snooze theatre" — F6-15). A person with several roles sees every one as a chip, the chips wrapping with no cap, under *Your roles* — no count, no *+2 more* and no primary role: the permission model assigns a set.

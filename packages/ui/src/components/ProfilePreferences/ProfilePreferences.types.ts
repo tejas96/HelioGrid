@@ -12,6 +12,8 @@ export interface ProfilePreferencesWords {
   /** The page's title — the web draws it as the page's heading; the phone's bar holds it. */
   readonly title: string;
   readonly account: string;
+  /** The name row's act. */
+  readonly editName: string;
   readonly languageAndUnits: string;
   readonly roles: {
     readonly title: string;
@@ -71,6 +73,10 @@ export interface ProfilePreferencesProps {
   readonly view: ProfilePreferencesView;
   /** The person's name, as the account card shows it. */
   readonly name: string;
+  /** The person's photo in this company; absent draws their initials. */
+  readonly photo?: string;
+  /** *Edit name*: opens the name and photo editor. */
+  readonly onEditName: () => void;
   readonly onLanguage: (next: UiLanguage) => void;
   readonly onUnits: (next: MeasurementSystem) => void;
   readonly push: ProfilePush;

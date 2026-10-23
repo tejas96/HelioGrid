@@ -60,6 +60,12 @@
   border-radius: 0;
 }
 
+/* The person's name is caller text beside *Edit name*: it wraps, never cut to an ellipsis. */
+.hg-list-row.hg-profile-preferences-row .hg-list-row-title {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 .hg-profile-preferences[data-wide="true"] .hg-list-row.hg-profile-preferences-row {
   padding: var(--sp-2) var(--sp-6);
   gap: var(--sp-4);

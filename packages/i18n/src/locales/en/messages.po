@@ -43,7 +43,7 @@ msgid "{company} is set up."
 msgstr "{company} is set up."
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:23
+#: src/copy/first-run-profile.ts:24
 msgid "{company} sees this name beside everything you do."
 msgstr "{company} sees this name beside everything you do."
 
@@ -138,7 +138,7 @@ msgid "{date}, {time}"
 msgstr "{date}, {time}"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:32
+#: src/copy/first-run-profile.ts:33
 msgid "{first} had typed {name}; type the name your team should use."
 msgstr "{first} had typed {name}; type the name your team should use."
 
@@ -163,7 +163,7 @@ msgid "{first} set you up as"
 msgstr "{first} set you up as"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:31
+#: src/copy/first-run-profile.ts:32
 msgid "{first} typed this when inviting you — change it if you like."
 msgstr "{first} typed this when inviting you — change it if you like."
 
@@ -358,12 +358,12 @@ msgid "A name can have up to {max} characters."
 msgstr "A name can have up to {max} characters."
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:25
+#: src/copy/first-run-profile.ts:26
 msgid "A photo helps teammates recognise you on a shared job."
 msgstr "A photo helps teammates recognise you on a shared job."
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:26
+#: src/copy/first-run-profile.ts:27
 msgid "A photo helps teammates recognise you."
 msgstr "A photo helps teammates recognise you."
 
@@ -398,7 +398,7 @@ msgid "About one account per number"
 msgstr "About one account per number"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:38
+#: src/copy/profile-preferences.ts:39
 msgid "About push"
 msgstr "About push"
 
@@ -433,7 +433,7 @@ msgid "About your language"
 msgstr "About your language"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:21
+#: src/copy/first-run-profile.ts:22
 msgid "About your name and photo"
 msgstr "About your name and photo"
 
@@ -478,7 +478,7 @@ msgid "Add a lead from your home"
 msgstr "Add a lead from your home"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:36
+#: src/copy/first-run-profile.ts:37
 msgid "Add a photo"
 msgstr "Add a photo"
 
@@ -528,7 +528,7 @@ msgid "Already on HelioGrid?"
 msgstr "Already on HelioGrid?"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:43
+#: src/copy/profile-preferences.ts:44
 msgid "Always sent, and it cannot be muted: billing events are audit-relevant for the owner account."
 msgstr "Always sent, and it cannot be muted: billing events are audit-relevant for the owner account."
 
@@ -731,7 +731,7 @@ msgid "Choose a file or drop one here"
 msgstr "Choose a file or drop one here"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:37
+#: src/copy/first-run-profile.ts:38
 msgid "Choose a photo"
 msgstr "Choose a photo"
 
@@ -846,7 +846,7 @@ msgid "Continue with Google. Signs you in to the same account as your mobile num
 msgstr "Continue with Google. Signs you in to the same account as your mobile number."
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:49
+#: src/copy/first-run-profile.ts:50
 msgid "Continue without a photo"
 msgstr "Continue without a photo"
 
@@ -986,7 +986,7 @@ msgid "Decline this invite?"
 msgstr "Decline this invite?"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:34
+#: src/copy/profile-preferences.ts:35
 msgid "Default for {market}"
 msgstr "Default for {market}"
 
@@ -1026,9 +1026,19 @@ msgid "Designs and proposals for the leads assigned to them, and design sign-off
 msgstr "Designs and proposals for the leads assigned to them, and design sign-off"
 
 #. js-lingui-explicit-id
+#: src/copy/name-and-photo-editor.ts:15
+msgid "Done"
+msgstr "Done"
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:71
 msgid "Each invite counts for 24 hours from when it was sent."
 msgstr "Each invite counts for 24 hours from when it was sent."
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:26
+msgid "Edit name"
+msgstr "Edit name"
 
 #. js-lingui-explicit-id
 #: src/copy/role-presets.ts:29
@@ -1101,7 +1111,7 @@ msgid "Factories, warehouses and offices — bigger rooftops, sold to a business
 msgstr "Factories, warehouses and offices — bigger rooftops, sold to a business."
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:32
+#: src/copy/profile-preferences.ts:33
 msgid "Feet"
 msgstr "Feet"
 
@@ -1276,7 +1286,7 @@ msgid "How linking works"
 msgstr "How linking works"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:20
+#: src/copy/first-run-profile.ts:21
 msgid "How your team sees you"
 msgstr "How your team sees you"
 
@@ -1396,13 +1406,13 @@ msgid "Keep the invite"
 msgstr "Keep the invite"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:29
+#: src/copy/profile-preferences.ts:30
 #: src/copy/setup-language.ts:21
 msgid "Language"
 msgstr "Language"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:26
+#: src/copy/profile-preferences.ts:27
 msgid "Language and units"
 msgstr "Language and units"
 
@@ -1432,12 +1442,12 @@ msgid "Loading your company profile"
 msgstr "Loading your company profile"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:29
+#: src/copy/first-run-profile.ts:30
 msgid "Loading your name"
 msgstr "Loading your name"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:46
+#: src/copy/profile-preferences.ts:47
 msgid "Loading your preferences"
 msgstr "Loading your preferences"
 
@@ -1487,12 +1497,12 @@ msgid "Measured"
 msgstr "Measured"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:30
+#: src/copy/profile-preferences.ts:31
 msgid "Measurements"
 msgstr "Measurements"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:31
+#: src/copy/profile-preferences.ts:32
 msgid "Metres"
 msgstr "Metres"
 
@@ -1640,7 +1650,7 @@ msgid "Not saved · our end · nothing typed is lost"
 msgstr "Not saved · our end · nothing typed is lost"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:36
+#: src/copy/profile-preferences.ts:37
 msgid "Not saved. Try again."
 msgstr "Not saved. Try again."
 
@@ -1705,7 +1715,7 @@ msgid "Nothing was lost"
 msgstr "Nothing was lost"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:51
+#: src/copy/first-run-profile.ts:52
 msgid "Nothing was lost — press Save and continue to try again."
 msgstr "Nothing was lost — press Save and continue to try again."
 
@@ -1715,7 +1725,7 @@ msgid "Nothing you captured on this device is lost. Ask your admin to restore yo
 msgstr "Nothing you captured on this device is lost. Ask your admin to restore your access, or sign in with another account."
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:48
+#: src/copy/profile-preferences.ts:49
 msgid "Nothing you saved has changed."
 msgstr "Nothing you saved has changed."
 
@@ -1795,12 +1805,12 @@ msgid "Operations Home"
 msgstr "Operations Home"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:41
+#: src/copy/first-run-profile.ts:42
 msgid "Optional — without one, your initials show."
 msgstr "Optional — without one, your initials show."
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:42
+#: src/copy/first-run-profile.ts:43
 msgid "Optional — your initials show once you type a name."
 msgstr "Optional — your initials show once you type a name."
 
@@ -1881,6 +1891,11 @@ msgid "PNG or JPG, up to {maxMegabytes} MB, at least {minWidth} px wide"
 msgstr "PNG or JPG, up to {maxMegabytes} MB, at least {minWidth} px wide"
 
 #. js-lingui-explicit-id
+#: src/copy/name-and-photo-editor.ts:17
+msgid "Press Save to try again."
+msgstr "Press Save to try again."
+
+#. js-lingui-explicit-id
 #: src/copy/freshness.ts:26
 msgid "price book"
 msgstr "price book"
@@ -1896,7 +1911,7 @@ msgid "Profile & preferences"
 msgstr "Profile & preferences"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:35
+#: src/copy/first-run-profile.ts:36
 msgid "Profile photo, optional"
 msgstr "Profile photo, optional"
 
@@ -1946,7 +1961,7 @@ msgid "Pune"
 msgstr "Pune"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:37
+#: src/copy/profile-preferences.ts:38
 msgid "Push notifications"
 msgstr "Push notifications"
 
@@ -1971,17 +1986,17 @@ msgid "Record payments, attach receipts, read any project’s money, and see cat
 msgstr "Record payments, attach receipts, read any project’s money, and see catalog prices and margins"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:40
+#: src/copy/first-run-profile.ts:41
 msgid "Remove"
 msgstr "Remove"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:43
+#: src/copy/first-run-profile.ts:44
 msgid "Remove it and your initials come back."
 msgstr "Remove it and your initials come back."
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:39
+#: src/copy/first-run-profile.ts:40
 msgid "Replace"
 msgstr "Replace"
 
@@ -2067,8 +2082,13 @@ msgid "Sales Manager"
 msgstr "Sales Manager"
 
 #. js-lingui-explicit-id
+#: src/copy/name-and-photo-editor.ts:14
+msgid "Save"
+msgstr "Save"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:39
-#: src/copy/first-run-profile.ts:48
+#: src/copy/first-run-profile.ts:49
 msgid "Save and continue"
 msgstr "Save and continue"
 
@@ -2088,7 +2108,7 @@ msgid "Save your company profile and continue setting up HelioGrid"
 msgstr "Save your company profile and continue setting up HelioGrid"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:34
+#: src/copy/first-run-profile.ts:35
 msgid "Saved. Your team sees this name now."
 msgstr "Saved. Your team sees this name now."
 
@@ -2439,12 +2459,12 @@ msgid "That number already has an account"
 msgstr "That number already has an account"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:47
+#: src/copy/first-run-profile.ts:48
 msgid "That photo cannot be used"
 msgstr "That photo cannot be used"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:44
+#: src/copy/first-run-profile.ts:45
 msgid "That photo did not upload"
 msgstr "That photo did not upload"
 
@@ -2729,7 +2749,7 @@ msgid "Try again"
 msgstr "Try again"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:46
+#: src/copy/first-run-profile.ts:47
 msgid "Try again, or add one later."
 msgstr "Try again, or add one later."
 
@@ -2742,6 +2762,11 @@ msgstr "Try again, or continue and be asked again at your next sign-in."
 #: src/copy/setup-what-you-sell.ts:36
 msgid "Try again, or finish this in your company profile."
 msgstr "Try again, or finish this in your company profile."
+
+#. js-lingui-explicit-id
+#: src/copy/name-and-photo-editor.ts:19
+msgid "Try again, or remove it later."
+msgstr "Try again, or remove it later."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:86
@@ -2759,12 +2784,12 @@ msgid "Try saving your company profile again"
 msgstr "Try saving your company profile again"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:38
+#: src/copy/first-run-profile.ts:39
 msgid "Try the photo again"
 msgstr "Try the photo again"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:39
+#: src/copy/profile-preferences.ts:40
 msgid "Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way."
 msgstr "Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way."
 
@@ -3041,7 +3066,7 @@ msgid "Who you sell to"
 msgstr "Who you sell to"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:42
+#: src/copy/profile-preferences.ts:43
 msgid "Why Billing stays on"
 msgstr "Why Billing stays on"
 
@@ -3082,7 +3107,7 @@ msgid "You become the first EPC owner."
 msgstr "You become the first EPC owner."
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:45
+#: src/copy/first-run-profile.ts:46
 msgid "You can add one later in Profile & preferences."
 msgstr "You can add one later in Profile & preferences."
 
@@ -3092,7 +3117,7 @@ msgid "You can ask for {perWindow} codes every {windowMinutes} minutes, and {day
 msgstr "You can ask for {perWindow} codes every {windowMinutes} minutes, and {day} a day."
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:27
+#: src/copy/first-run-profile.ts:28
 msgid "You can change both later in Profile & preferences."
 msgstr "You can change both later in Profile & preferences."
 
@@ -3174,7 +3199,7 @@ msgid "Your answers set the starting point for every proposal HelioGrid builds."
 msgstr "Your answers set the starting point for every proposal HelioGrid builds."
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:35
+#: src/copy/profile-preferences.ts:36
 msgid "Your choice"
 msgstr "Your choice"
 
@@ -3221,7 +3246,7 @@ msgid "Your current plan doesn't include this."
 msgstr "Your current plan doesn't include this."
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:33
+#: src/copy/profile-preferences.ts:34
 msgid "Your device's language"
 msgstr "Your device's language"
 
@@ -3292,17 +3317,22 @@ msgstr "Your most common job, not your biggest."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:41
-#: src/copy/first-run-profile.ts:28
+#: src/copy/first-run-profile.ts:29
 msgid "Your name"
 msgstr "Your name"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:22
+#: src/copy/first-run-profile.ts:23
 msgid "Your name and photo"
 msgstr "Your name and photo"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:33
+#: src/copy/name-and-photo-editor.ts:16
+msgid "Your name did not save"
+msgstr "Your name did not save"
+
+#. js-lingui-explicit-id
+#: src/copy/first-run-profile.ts:34
 msgid "Your name is empty — type the name your team should call you."
 msgstr "Your name is empty — type the name your team should call you."
 
@@ -3312,7 +3342,7 @@ msgid "Your name is needed — you become this company's first EPC owner."
 msgstr "Your name is needed — you become this company's first EPC owner."
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:30
+#: src/copy/first-run-profile.ts:31
 msgid "Your name is still arriving."
 msgstr "Your name is still arriving."
 
@@ -3322,12 +3352,17 @@ msgid "Your number"
 msgstr "Your number"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:47
+#: src/copy/name-and-photo-editor.ts:18
+msgid "Your photo was not removed"
+msgstr "Your photo was not removed"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:48
 msgid "Your preferences didn't load"
 msgstr "Your preferences didn't load"
 
 #. js-lingui-explicit-id
-#: src/copy/first-run-profile.ts:50
+#: src/copy/first-run-profile.ts:51
 msgid "Your profile did not save"
 msgstr "Your profile did not save"
 
@@ -3347,12 +3382,12 @@ msgid "Your request may already be with the owner."
 msgstr "Your request may already be with the owner."
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:27
+#: src/copy/profile-preferences.ts:28
 msgid "Your role"
 msgstr "Your role"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:28
+#: src/copy/profile-preferences.ts:29
 msgid "Your roles"
 msgstr "Your roles"
 

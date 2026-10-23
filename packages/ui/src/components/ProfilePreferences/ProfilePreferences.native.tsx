@@ -5,6 +5,7 @@ import { Text } from '../../primitives/Text/Text.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { Banner } from '../Banner/Banner.native';
 import { BannerAction } from '../Banner/BannerAction.native';
+import { Button } from '../Button/Button.native';
 import { Badge } from '../Chip/Chip.native';
 import { ChipGroup } from '../ChipGroup/ChipGroup.native';
 import { Explainer } from '../Explainer/Explainer.native';
@@ -66,6 +67,8 @@ function Page({
   words,
   view,
   name,
+  photo,
+  onEditName,
   onLanguage,
   onUnits,
   push,
@@ -85,9 +88,14 @@ function Page({
         <SettingsCard style={styles.tile}>
           <ListRow
             style={styles.row}
-            avatar={<Avatar name={name} size={48} />}
+            avatar={<Avatar name={name} src={photo} size={48} />}
             title={name}
             density="expressive"
+            trailing={
+              <Button variant="secondary" size="sm" onClick={onEditName}>
+                {words.editName}
+              </Button>
+            }
           />
           <View style={styles.hairline} />
           <ListRow

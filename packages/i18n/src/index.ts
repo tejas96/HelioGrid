@@ -69,6 +69,8 @@ export type { InviteLandingFacts, InviteLandingWords } from './copy/invite-landi
 export { INVITE_LANDING, inviteLandingWords } from './copy/invite-landing';
 export type { JoinRequestAsker } from './copy/join-request';
 export { joinRequestNotice } from './copy/join-request';
+export type { NameAndPhotoEditorWords } from './copy/name-and-photo-editor';
+export { NAME_AND_PHOTO_EDITOR, nameAndPhotoEditorWords } from './copy/name-and-photo-editor';
 export { centreActToast, centreFilterWords, centreHeadWords } from './copy/notification-head';
 export { type CentreClock, centreListWords } from './copy/notification-list';
 export {

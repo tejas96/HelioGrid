@@ -82,6 +82,7 @@ export * from './components/MemberCard';
 export * from './components/Menu';
 export * from './components/Modal';
 export * from './components/MoneySummary';
+export * from './components/NameAndPhotoEditor';
 export * from './components/NamedGap';
 export * from './components/NextAction';
 export * from './components/NoConnection';
