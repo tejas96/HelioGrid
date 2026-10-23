@@ -1,5 +1,6 @@
 import type {
   AssignRoles,
+  CoachMarks,
   CreateTenant,
   JoinRequest,
   Member,
@@ -9,6 +10,7 @@ import type {
   RequestedCompany,
   SessionProjection,
   Tenant,
+  TenantOwners,
 } from '@heliogrid/contracts';
 import type { ApiClient } from '../client/client';
 import { createCreationKeys } from '../client/creation-key';
@@ -25,10 +27,12 @@ export interface TenantRepository {
   create(input: CreateTenant): Promise<SessionProjection>;
   me(signal?: AbortSignal): Promise<Tenant>;
   members(query: PaginationQuery, signal?: AbortSignal): Promise<Paginated<Member>>;
-  /** My own membership's first-run coach-mark count (`M01-16`). */
+  /** My own membership's first-run coach-mark count (`M01-16`) and who last set my roles. */
   myMembership(signal?: AbortSignal): Promise<MyMembership>;
   /** Raises that count; refused with `DOMAIN_RULE_VIOLATION` below the stored one. */
-  updateMyMembership(body: MyMembership): Promise<MyMembership>;
+  updateMyMembership(body: CoachMarks): Promise<CoachMarks>;
+  /** The company's EPC Owners by name, the first two and a count (`SCR-M01-10`). */
+  owners(signal?: AbortSignal): Promise<TenantOwners>;
   similar(companyName: string, city: string, signal?: AbortSignal): Promise<SimilarTenant[]>;
   /** Asks the oldest company with this name and city to add me (`M01-09`); a repeat sends nothing new. */
   joinRequest(body: JoinRequest): Promise<RequestedCompany>;
@@ -74,6 +78,15 @@ export function createTenantRepository(api: ApiClient): TenantRepository {
     async updateMyMembership(body) {
       try {
         const res = await api.tenant.updateMyMembership({ body });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async owners(signal) {
+      try {
+        const res = await api.tenant.owners({ fetchOptions: { signal } });
         if (res.status !== 200) throw toApiError(res);
         return res.body;
       } catch (error) {

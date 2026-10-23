@@ -22,6 +22,7 @@ export class TenantController {
     me: 'member',
     myMembership: 'member',
     updateMyMembership: 'member',
+    owners: 'member',
     members: 'member',
     similar: 'session',
     joinRequest: 'session',
@@ -59,6 +60,7 @@ export class TenantController {
           body,
         ),
       }),
+      owners: async () => ({ status: 200, body: await this.tenants.owners(tenantIdOf(req)) }),
       members: async ({ query }) => ({
         status: 200,
         body: await this.tenants.members(tenantIdOf(req), query),

@@ -76,13 +76,18 @@ export function useShell(): Shell {
       repositories.tenant.updateMyMembership({ coachMarksDismissed: count }),
     onMutate: async (count) => {
       await queryClient.cancelQueries({ queryKey: membershipKey });
+      // The rest of the membership is kept: a pass never erases who set the roles.
       queryClient.setQueryData<MyMembership>(membershipKey, (held) => ({
+        rolesSetBy: null,
+        ...held,
         coachMarksDismissed: Math.max(held?.coachMarksDismissed ?? 0, count),
       }));
     },
     // Replies can land out of order: an older, lower one never moves the count back down.
     onSuccess: (stored) =>
       queryClient.setQueryData<MyMembership>(membershipKey, (held) => ({
+        rolesSetBy: null,
+        ...held,
         coachMarksDismissed: Math.max(held?.coachMarksDismissed ?? 0, stored.coachMarksDismissed),
       })),
     onError: (error) => {

@@ -482,15 +482,281 @@ Reviewer findings rejected: none.
 **PRD rows:** M01-15 (P1)
 **DESIGN:** SCR-M01-10 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-10-role-explainer.md`; they are the specification.
-**Data model:** none — reads the held presets from `membership_role` authored by `T-M01-025` (migration 0002) through the session projection; the grants are `CAPABILITY_MATRIX` in `packages/domain/src/authz/capabilities.ts`, never a table.
-**Contract:** `packages/contracts/src/session.ts` — GET /auth/session (`membership.roles`); the inviter's name from `T-M01-028`'s landing read. Domain type this task adds (Law 11): a role-card view-model in `packages/domain/src/authz/` — the union of grants across the held presets and the complement of that union as limits, one function both platforms render; every clause and preset display name is `packages/i18n` copy.
+**Data model:** migration `0028` adds `tenant_membership.roles_set_by_user_id` — who last wrote the person's roles, written by the join and by a role change (brief ruling 15). The held presets come from `membership_role` (migration 0002) through the session; the grants are `CAPABILITY_MATRIX` in `packages/domain/src/authz/capabilities.ts`, never a table.
+**Contract:** `packages/contracts/src/tenant.ts` — `GET /tenants/me/membership` answers `rolesSetBy` (the credit line), and `GET /tenants/me/owners` the company's EPC Owners by name (the note); the roles are the session's (`packages/contracts/src/session.ts`). Domain type this task adds (Law 11): `roleCard` in `packages/domain/src/authz/role-card.ts` — the grant and limit lines of the closed `ROLE_CARD_LINES`, each decided by the matrix, and `ROLE_CARD_LIMITS`, each preset's *not theirs* lines from F2; every line and preset name is `packages/i18n` copy.
 **Depends on:** `T-M01-025` (migration 0002; the session projection) · `T-FPLAT-001` (`ROLE_PRESETS`, `CAPABILITY_MATRIX` — landed) · `T-M01-009` (the step before) · `T-M01-011` (the profile it re-opens from) · `T-SHELL-001`, `T-M13-006` (the role-decided home its act names).
 **Out of scope:** the home itself — `T-SHELL-001`, `T-M13-006`; the presets and matrix — `T-FPLAT-001`; the grant line on Assign Roles, composed from the same matrix — `T-M01-013`.
 **Carried from `T-M01-011`** (brief `SCR-M01-11`, ruling 2 at `T-M01-011`): Profile & preferences ships its *Your role* row without an act; this task gives it the act and the chevron the board draws, and the web `ListRow` with `onClick` a button role and a tab stop (D258).
 **DONE WHEN:**
-- Given a valid invite, when the invitee verifies the OTP, then user + membership + roles exist atomically and the next screen is name/photo, then the role card, then their role's home with their real assigned work (M01-13, M01-14, M01-17). → proof: QA (web and phone) the card renders between profile capture and the home, its act names the destination, and the same card opens as a sheet from Profile & preferences
+- Given a valid invite, when the invitee verifies the OTP, then user + membership + roles exist atomically and the next screen is name/photo, then the role card, then the home their roles decide (M01-13, M01-14). → proof: QA (web and phone) the card renders between profile capture and the home, its act names the destination, and the same card opens as a sheet from Profile & preferences
 - (M01-15 carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text in the brief is the binding criterion.) → proof: unit packages/domain/tests/authz/role-card.test.ts — a stacked pair yields the union of grants and no limit either preset lifts; `sales_executive` alone names selling and no money cell beyond its scope
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: QA (web and phone) every base and brief-listed state drawn at 375px and 1536px, the colour-literal lint clean on both
+- Two base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: QA (web and phone) every base and brief-listed state drawn at 375px and 1536px, the colour-literal lint clean on both
+
+#### Parts
+
+| part | what | AC | depends on | status |
+|---|---|---|---|---|
+| a | The card's facts and words, and the two names: `roleCard()` and its line table in domain; `roleCardWords()` in i18n (en, hi, mr); `tenant_membership.roles_set_by_user_id`, written by the join and by a role change; `rolesSetBy` on `GET /tenants/me/membership`; `GET /tenants/me/owners` — proven by unit and api tests | AC-2, AC-4 … AC-11 | — | shipped |
+| b | The card's second life, on web and phone: `RoleCard` in `packages/ui` with its loading and error, `LoadingBars`' `line` bar, the *Your role* row's act and chevron, `ListRow`'s button role (D258), the sheet at 375 and the side panel at 1536 | AC-3w/i/a (reopened frames), AC-12w/i/a, AC-13, AC-14w/i/a, AC-15w/i/a, AC-16 | a | planned |
+| c | The card's first-run life, on web and phone: `RoleExplainer` in `packages/ui`, `/welcome/role` and the phone's `RoleExplainer` route, the hand-off from First-Run Profile and from the landing, *Go to my day* | AC-1w/i/a, AC-3w/i/a (first-run frames), AC-17w, AC-18w/i/a | b | planned |
+
+#### RFC
+
+**RFC approved:** 2026-10-23 — D1 A, D2 A (owner rulings)
+
+**1. Title** — `T-M01-010` — a new teammate reads, in one card, what their role lets them do and what it does not, and can open that card again from Profile & preferences.
+
+**2. User impact** — Today an invited Sales Executive saves their name and lands on their home with no word about what they may do, so the first refusal reads like a bug. After this task the person sees one card between First-Run Profile and the home: their role's name, who set it, what they can do, what they cannot, and who to ask. One act, *Go to my day*, takes them home. The same card opens later from *Your role* on Profile & preferences.
+
+**3. Analysis**
+
+| line | finding | source | fix / decision |
+|---|---|---|---|
+| Credit line *Last set by Rajesh Kulkarni* (brief ruling 1, every frame) | **Missing** — nothing stores who set a person's roles: `membership_role` holds only the preset (`packages/db/migrations/0002_identity_spine.sql:89-94`); the audit log's `team.roles_changed` actor (`apps/api/src/modules/tenant/tenant.repository.ts:96-105`) is readable only with `onboarding.manage_tenant_settings` (`apps/api/src/modules/audit/audit.controller.ts:17-19`); the join records the invitee as actor (`apps/api/src/modules/invitation/invitation.admin.repository.ts:147-153`); `FirstRunCarry.inviterName` is cleared when First-Run Profile saves (`packages/data/src/react/use-first-run-profile.ts:52-56`) | as cited | D1 |
+| Where the setter travels | **Not the session**: `membershipSchema` is also the token's claim (`packages/contracts/src/session.ts:96-100`, built by `claimsOf`, `apps/api/src/modules/auth/internal/session.projection.ts:6-22`), and `M01-07` says the token carries nothing more. The person's own membership already has a self-read, `GET /tenants/me/membership` (`packages/contracts/src/tenant.ts:160-171`), which the shell reads (`packages/data/src/react/use-shell.ts:67`) | as cited | `rolesSetBy` joins `myMembership`'s response (Law 5); the PATCH body keeps today's shape |
+| Owner note *Rajesh Kulkarni (owner)* (brief ruling 8) | **Missing** — the session names only the viewer. The roster `GET /tenants/me/members` answers any member (`apps/api/src/modules/tenant/tenant.controller.ts:25`), phones included, though M01's Permissions say the Team read follows `F2.M01.manage-team` — a separate fault, a `deferred.md` row; this card never leans on it | as cited | D1 — a names-only read, `GET /tenants/me/owners` |
+| Board *Ask him when you need one.* | **Wrong** — the product stores no gender (`user_account`, `0002_identity_spine.sql:27`) | as cited | D2 |
+| Company name in the h1 and the error line | the session has no company name (`packages/domain/src/auth/session.ts:49`); `GET /tenants/me` has it and the shell reads it (`use-shell.ts:119`) | as cited | the card reads it through the shell's own query, so on the reopened life it is already cached |
+| Brief *loading* / *error* | confirmed: the lines are domain facts and need no read (`grantedCapabilities`, `packages/domain/src/authz/policy.ts:59`), but the owners read does, and so do the company name and the setter | as cited | loading: the preset name and the act draw at once; the rows and the note wait for the owners read. The h1 and the credit line draw at once too: on the reopened life the shell's company and membership queries are cached; on the first run the join's carry already holds the company name and the inviter — who set the roles at the join (`FirstRunCarry`, `packages/domain/src/auth/first-run-profile.ts:27-31`; `JoinedInvite`, `packages/data/src/session/invite-join.ts:31`) — so the hold keeps the carry past First-Run Profile's save (its step marked done) and the card's act ends it. With no carry (a reload, an account that had its name) the h1 and the credit wait for their reads — undrawn, proven in `RoleCard.spec.tsx`. Error: any read fails → m-error |
+| "the complement of that union as limits" (task *Contract*, ruling 4) | **Over-built as written** — the matrix has 55 rows (`packages/domain/src/authz/*.ts`); a Sales Executive lacks over thirty, and the board prints six. The boards' lines are F2's preset texts (`docs/prd/foundations/F2-roles-and-permissions.md:146-217`) | as cited | the closed line table below: a grant line shows when the held presets hold its row; a limit line shows when a held preset lists it and no held preset holds its row — so no line can claim what the matrix refuses, and a limit one preset lifts is dropped (ruling 4) |
+| Sales Executive's limits | F2 lists five (`F2-roles-and-permissions.md:157-158`); the board draws a sixth, *Change company settings* (`SCR-M01-10-Role-Explainer-Mobile.dc.html:107`) | as cited | the Sales Executive's list adds `manage_tenant_settings`: the locked board draws it, and F2's Sales Manager text names company settings as *not theirs* for the preset above it |
+| *See your own leads and follow-ups* | not a capability: it is the leads visibility (`visibilityIn(roles, 'leads')`; the Sales Executive's `own` cell is `CRM_VISIBILITY.leads`, `packages/domain/src/authz/crm.ts`) | as cited | one visibility line, by the resolved `scope`: `own`, `team`, `all` each have words, and `own` given by Marketing alone (`scope('own', 'captures until triage')`, `crm.ts:180`) has its own; `none` (an assigned-only preset, `includesAssigned`) draws no line — the board's Design Engineer half draws none. A Field Technician holds no table row, so one line is decided by the preset itself (`own_work`, F2's *their stops, check-ins, timeline and attendance*); every preset alone has at least one grant line |
+| A cell `limited(…)` | its phrase is raw English (`packages/domain/src/authz/field.ts:59`, `onboarding.ts:58`) | as cited | each line says whether a limited cell grants it (`limited: 'grants' \| 'denies'`); the phrase is never printed |
+| Act *Go to my day* | `homeTitle` gives *My Day* (`packages/i18n/src/copy/homes.ts:19`); lower-casing in code breaks hi and mr | as cited | one act message per home, `Record<RolePreset, …>` keyed by `homeFor(roles)` (`packages/domain/src/shell/home.ts:45`) |
+| Line at the act, stacked (ruling 13) | names the next home the switcher holds (`homesOf`, `home.ts:39`); Sales Executive + Field Technician have two homes both titled *My Day* (`homes.ts`) | as cited | one message per home (*Your designs are one switch away.* …), shown only when the next home's title differs from the first's; else *Reopen anytime from Profile & preferences.* |
+| *Sales Executive and Design Engineer*, *… or Meera Shah (owners)* | Hermes ships no list formatter; lists use commas (`packages/i18n/src/copy/shell.ts:263-265`) | as cited | i18n messages *{a} and {b}*, *{list} and {last}*, *{a} or {b}*, *{list} or {last}* per locale; names by `presetName` (`shell.ts:127`) |
+| An EPC Owner | **Missing** — not drawn: lacks nothing, holds `manage_team` | ruling 8 | no *What you cannot do* and no note when the limit list is empty; the note shows only when the viewer lacks `onboarding.manage_team` (`can`, `policy.ts:33`) |
+| The founder | **Missing** — nobody set the founder's roles | `FOUNDER_ROLE`, `roles.ts:36` | no credit line when `rolesSetBy` is null |
+| Two or more owners | **Missing** — the board draws one | — | *Rajesh Kulkarni or Meera Shah (owners)*; three or more: *Rajesh Kulkarni, Meera Shah or 1 more (owners)* |
+| m-error *ask Rajesh to check* | a first name cut from a full name is unsafe in hi and mr; the setter can be absent | board `:194` | *Try again, or ask Rajesh Kulkarni to check.* with the setter's full name; no setter, or the membership read failed: *Try again in a moment.* |
+| An invitee whose account already had a name (ruling 18 of `SCR-M01-09`) | **Missing** — owes no First-Run Profile, so goes straight home (`apps/web/features/onboarding/InviteLandingScreen.tsx:25`, `apps/mobile/src/screens/invite-landing/InviteLandingScreen.tsx:69-79`) | M01-14 | they meet the card too: it explains a role in this company. Assumed — said out loud |
+| `/welcome/role` in the `(open)` group | no gate (`apps/web/app/(open)/welcome/page.tsx`) | as cited | signed out, or no company: the screen replaces itself with `/home`, whose gate sends them to the door or the setup step — as `FirstRunProfileScreen` does (`apps/web/features/onboarding/FirstRunProfileScreen.tsx:26`) |
+| DONE WHEN 1 *their real assigned work*; DONE WHEN 3 *Three base states* | the home is `T-SHELL-001`/`T-M13-006` (M01-17 is not this task's row); the brief has two base states and no empty (`roleSetSchema.min(1)`, `packages/contracts/src/common.ts:116`) | brief | both DONE WHEN lines edited in this change; the ACs copy them |
+| `ScopeNote` composes English: `joinActs` (` or `) and `composeScopeLine` (*Only … can …*, *… is not yours to take*) (`packages/ui/src/components/ScopeNote/scope-note-line.ts:16,28-36`) | **Wrong** for hi and mr | `packages/ui/CLAUDE.md` | the card passes `title` and `message` from i18n, never `acts`; the English stays for its other callers — a `deferred.md` row |
+| D258 — `ListRow` with `onClick` | a plain `div`; `ProfilePreferences` is its only caller (`ListRow.tsx:50-62`; `SettingsList.tsx:54` draws its own) | as cited | with `onClick` only: `role="button"`, `tabIndex=0`, Enter and Space; such a row's trailing slot holds no control (the role row's is a chevron) |
+| D218, D258 (`LoadingBars`), D261 | D218 joins; `LoadingBars` has no text-line size (`LoadingBars.types.ts:6`) — the D258 piece the card needs; `DoorFrame panes="onboarding"` exists (`DoorPanes.css:50-87`) | as cited | §14 |
+
+**The line table** — closed, in this order; `decidedBy` is a matrix row unless marked; the presets are those that list the line as *not theirs* (F2's texts):
+
+| key | English | decided by | limited cell | a limit for |
+|---|---|---|---|---|
+| `leads_own` | *See your own leads and follow-ups* | visibility `leads` = own, given by a preset other than Marketing | — | — |
+| `leads_campaigns` | *See the leads your campaigns bring in* | visibility `leads` = own, given by Marketing alone | — | — |
+| `leads_team` | *See your team's leads and follow-ups* | visibility `leads` = team | — | — |
+| `leads_all` | *See every lead and follow-up* | visibility `leads` = all | — | — |
+| `own_work` | *See your own stops, check-ins and attendance* | the preset `field_technician` held | — | — |
+| `leads_edit` | *Add and edit leads* | `crm.add_edit_leads` | — | survey_engineer, field_technician, installation_team_member, hr_admin, marketing |
+| `site_survey` | *Survey a site* | `survey.capture_surveys` | grants | — |
+| `proposals_edit` | *Build and edit proposals, discounts included* | `proposals.create_edit_proposals` | — | survey_engineer, field_technician, installation_team_member, hr_admin, finance, marketing |
+| `proposals_send` | *Send proposals to customers* | `proposals.send_proposals` | — | design_engineer, project_manager |
+| `won_lost` | *Mark a lead won or lost* | `sales.mark_won_lost` | — | — |
+| `designs_edit` | *Create and edit designs* | `studio.create_edit_designs` | — | hr_admin |
+| `designs_approve` | *Approve designs or send them back* | `studio.approve_designs` | — | — |
+| `campaigns_run` | *Create and run campaigns* | `marketing.manage_campaigns` | — | — |
+| `leads_assign` | *Assign leads to others* | `crm.assign_leads` | — | sales_executive, design_engineer, marketing |
+| `leads_delete` | *Delete leads* | `crm.delete_leads` | — | sales_manager, sales_executive |
+| `stages_update` | *Update project stages* | `projects.update_stages` | — | sales_executive, survey_engineer, design_engineer, installation_team_member, finance |
+| `project_documents` | *Upload and check project documents* | `projects.project_documents` | — | — |
+| `installation_checklist` | *Run the installation checklist* | `projects.installation_checklist` | grants | — |
+| `payments_record` | *Record payments* | `payments.record_payments` | — | sales_executive, survey_engineer, design_engineer, field_technician, installation_team_member, hr_admin, operations |
+| `tranche_waive` | *Waive a payment stage* | `payments.waive_tranche` | — | — |
+| `leave_decide` | *Approve leave* | `hr.decide_leave` | — | — |
+| `reports_company` | *See reports beyond your own* | `reports.company_reports` | grants | sales_executive |
+| `price_list` | *Change the price list* | `onboarding.manage_catalog` | denies | sales_manager, project_manager, finance |
+| `agent_setup` | *Set up the calling agent* | `onboarding.configure_agent` | — | sales_manager, project_manager, operations |
+| `company_settings` | *Change company settings* | `onboarding.manage_tenant_settings` | — | sales_manager, sales_executive, design_engineer |
+| `plan_billing` | *Manage the plan and billing* | `billing.manage_billing` | — | sales_manager, project_manager, finance, operations |
+
+The act per home (`homeFor`): epc_owner and sales_manager *Go to the dashboard* · operations *Go to operations* · project_manager *Go to the project board* · marketing *Go to campaigns* · finance *Go to finance* · hr_admin *Go to people today* · sales_executive and field_technician *Go to my day* · design_engineer *Go to the design queue* · survey_engineer *Go to my visits* · installation_team_member *Go to my job*. The line at the act per next home: *Your dashboard is …*, *Your projects are …*, *Your designs are …*, *Your visits are …*, *Your campaigns are …*, *Your money view is …*, *Your people view is …*, *Your operations view is …*, *Your day is …*, *Your job is …* *one switch away.*
+
+Assumptions:
+- The first-run card is a route, not a hold: it reads only what the session and three reads give, so a reload shows it again — harmless, and nothing has to be carried.
+- *Go to my day* replaces the route with the home, as First-Run Profile's act does today (`FirstRunProfileScreen.tsx:21`; `apps/mobile/src/screens/first-run-profile/FirstRunProfileScreen.tsx:57-66`), so back never returns to the card.
+- Hindi and Marathi for every new word are drafted by hand in both `.po` files, for a native review, as earlier M01 tasks did.
+
+**4. Scope**
+- In: everything in *Parts*.
+- Out: the home and its work (`T-SHELL-001`, `T-M13-006`); Assign Roles (`T-M01-013`); the roster's permission (a `deferred.md` row); D261's doors 01–05; D315's column token; the setter on any other screen.
+- Targets: none stated.
+
+**5. Proposal**
+- **The card is one domain fact** (Law 11). `packages/domain/src/authz/role-card.ts`: `ROLE_CARD_LINES` (the table above, each cell written), `ROLE_CARD_LIMITS: Record<RolePreset, readonly RoleCardLineKey[]>`, and `roleCard(roles)` → `{ presets (matrix order), grants, limits, ownerNote: boolean }`. Pure; 100 % coverage (`authz/`). The home and the next home come from `shell`'s `homesOf` (`home.ts:39`) in the words and the hook: `shell` imports `authz`, so `authz` importing the ladder would be a cycle.
+- **The words are i18n's.** `packages/i18n/src/copy/role-card.ts`: `ROLE_CARD_LINE: Record<RoleCardLineKey, …>` (the visibility line by scope), `ROLE_CARD_ACT` and `ROLE_CARD_NEXT_HOME: Record<RolePreset, …>`, and `roleCardWords(t, card, facts)` → title, preset names joined, credit, act, the line at the act, the note's title and message, the loading label, the error words.
+- **The names come from the server** (part a, D1 A). `tenant_membership.roles_set_by_user_id` (nullable, FK `user_account`), written in the same transaction as the roles: by the join (the invite's `inviter_user_id`) and by `assignRoles` (the actor). `myMembership` answers `rolesSetBy: { name } | null`. `GET /tenants/me/owners` → `{ owners: { name }[] (the first two by name), more }`, any member, one indexed query over `membership_role` = `epc_owner` joined to active memberships, under the tenant predicate and RLS.
+- **One component, two lives.** `RoleCard` in `packages/ui` (both halves, one `RoleCard.types.ts`): the head (`IconCircle` + briefcase glyph, names, credit), the grant and limit rows (its own part, D218), the note (`ScopeNote variant="panel"` on `--info-bg`), its loading (`LoadingBars`' new `line` bar: a `--sp-5` mark and a `--sp-3` bar, both halves — the web sweep and the native pulse it already owns) and its error (`Card state="error"`). `layout: 'door' | 'panel'` — the host says which: the door's card bounds itself and scrolls its rows in a region (at 1536 in two columns, gap `--sp-8`); the panel's card is one column and the panel scrolls. Words and facts arrive as props; it imports no data or i18n (`.claude/rules/screen-parts.md`).
+- **Reopened** (part b). The *Your role* row gains the chevron and `onClick` on both halves of `ProfilePreferences`; each app opens `RoleCard layout="panel"` in `EditorSurface` (sheet at 375, `DetailPanel` 480 above 720), titled *Your role*, as both screens open `NameAndPhotoEditor` today.
+- **First run** (part c). `RoleExplainer` in `packages/ui` composes `DoorFrame` (375: `BrandBloom` top, `Wordmark` 24; 1536: `panes="onboarding"`, the title in the brand pane) + `RoleCard layout="door"` + the act and its line, as `FirstRunProfile` does. Web `/welcome/role` (the `(open)` group, like `/welcome`); phone `RoleExplainer` in `routes/app.ts`. First-Run Profile's done and the landing's *nothing owed* both go there.
+- **One hook.** `useRoleCard()` in `packages/data/src/react/`: the session's roles, the shell's tenant and membership queries, and the owners read (only while `ownerNote`); a 404 from `/owners` (an old api) reads as no note. Opening the sheet refetches the membership and the owners, past the 30 s `staleTime` (`packages/data/src/react/query-client.ts:24`); the roles follow the session, which the api renews when a role change makes the token stale (`packages/domain/src/auth/admission.ts:27`). The shell's coach-mark updaters keep the rest of the cached membership (`...held`, `use-shell.ts:78-84`), so a pass never erases `rolesSetBy`.
+- **Twin:** web and phone draw both lives; `roleCard`, the words, `RoleCard`, `RoleExplainer`, `LoadingBars` and the hook are shared; the route, the sheet host and the navigation stay in each app.
+- **Motion** (`F7-51`):
+
+| moment | what moves | the design system's motion | the component that owns it |
+|---|---|---|---|
+| the sheet / panel opens and closes | the surface | `Sheet`'s and `DetailPanel`'s enter and exit | `EditorSurface` |
+| the rows wait | the loading lines | `LoadingBars`' sweep (web) and pulse (phone), still under reduced motion | `LoadingBars` |
+
+- Alternative (D1 B): no names — no part a server work; the card still reads the company name, so it keeps its loading and error; every frame's credit line and note change.
+
+**6. Frame map** (`.design/M01/SCR-M01-10-*`; lock `1792727572-2244`)
+
+| frame | state | element → component, props, copy, tokens |
+|---|---|---|
+| m-first-run | first run, one preset | `RoleExplainer` 375: `BrandBloom top`, `Wordmark` 24; column gap `--sp-4`, padding `--sp-6` `--screen-pad-mobile`; h1 *Your role at Suryodaya Solar* `--fs-h2`/`--lh-h2`/`--tr-h2` bold; `RoleCard layout="door"` (`flex: 0 1 auto`, overflow hidden): body gap `--sp-5`; head gap `--sp-3`: `IconCircle` 40 + briefcase `md`; name `--fs-body` bold; credit *Last set by Rajesh Kulkarni* `--fs-body-sm` secondary; name–credit gap `--sp-0-5`; region `role="region"` *What you can and cannot do*, scrolls, no scrollbar, gap `--sp-5`; overline *What you can do* `--fs-overline` bold `--tr-overline` secondary; rows gap `--sp-3`, each `tick` `md` `--success-text` + phrase `--fs-body-sm` primary, wraps; *What you cannot do*: `eye-off` `md` secondary; `ScopeNote variant="panel"` on `--info-bg`, margin-top `--sp-2`, title *Only Rajesh Kulkarni (owner) can add a teammate.*, message (D2); act `Button` primary `lg` full width *Go to my day*; line `--fs-caption` secondary centred *Reopen anytime from Profile & preferences.*; gap `--sp-3` |
+| m-loading | owners read in flight | as m-first-run, head drawn; region `role="status"`, `aria-busy`, label *Loading what your role can and cannot do*; six and six `LoadingBars` `line`s and the note's three on `--info-bg`; the act live |
+| m-error | a read failed | no head; `Card state="error"` *We couldn't load your role* / *You are still part of Suryodaya Solar. Try again, or ask Rajesh Kulkarni to check.* (§3) — with no setter *You are still part of Suryodaya Solar. Try again in a moment.*, and with no company read either *Your role has not changed. Try again in a moment.*; *Try again*; the act follows the card |
+| m-stacked | Sales Executive + Design Engineer | h1 *Your roles at …*; *Sales Executive and Design Engineer*; eight grants (+ *Create and edit designs*, *Approve designs or send them back*); the same six limits; line *Your designs are one switch away.* |
+| m-stacked-end | the same, scrolled to the end | head and h1 fixed; the region scrolled to the note (ruling 12) |
+| m-reopened | the second life, 375 | Profile & preferences behind (SCR-M01-11 m-default; the role row with the chevron); `EditorSurface` → `Sheet` `size="auto"`, title *Your role*, close, no drag; the body does not scroll, the card's region does |
+| d-first-run | first run, 1536 | `DoorFrame panes="onboarding"`: brand pane cols 1–4, `BrandBloom desktop-wide`, `Wordmark` 30 at `--sp-10 --sp-12`, h1 `--fs-h1` at `--sp-16 --sp-12 --sp-10`; task cols 5–12 at `--sp-16 --sp-16 --sp-10`, gap `--sp-8`; card body gap `--sp-6`; grants and limits in two columns, gap `--sp-8`; the act right-aligned at `max-content`, its line centred under it |
+| d-reopened | the second life, 1536 | the settings page behind (`max-width` 760); `EditorSurface` → `DetailPanel` right, 480, title *Your role*; `RoleCard layout="panel"`: one column, body gap `--sp-5`, no inner region, the panel scrolls |
+| (not drawn) | an Owner; the founder; two and three owners; no setter in m-error | as §3 — `RoleCard.spec.tsx` |
+
+**7. Changes**
+- Packages: domain adds `ROLE_CARD_LINES`, `RoleCardLineKey`, `ROLE_CARD_LIMITS`, `roleCard`; i18n adds `ROLE_CARD_LINE`, `ROLE_CARD_ACT`, `ROLE_CARD_NEXT_HOME`, `roleCardWords`; ui adds `RoleCard`, `RoleExplainer`, `LoadingBars` `line`, `ListRow`'s keyboard act; data adds `useRoleCard` and `tenant.owners`. Direction unchanged.
+- Law 12: `RoleCardLineKey` → `ROLE_CARD_LINE satisfies Record<RoleCardLineKey, …>`, `ROLE_CARD_LIMITS`, `ROLE_CARD_ACT`, `ROLE_CARD_NEXT_HOME satisfies Record<RolePreset, …>` (typecheck); `GET /tenants/me/owners` → `RouteAccessMap` (typecheck) and `packages/contracts/tests/route-shape.test.ts`; `/welcome/role` → `e2e-flow-per-screen` (a web spec); the phone's `role-explainer` screen → the same invariant, held with its reason (no invite link in CI, as `first-run-profile`); the column → the tenancy invariants already hold `tenant_membership`; no new error code.
+- Data and schema (part a): migration `0028` — `tenant_membership.roles_set_by_user_id uuid NULL REFERENCES user_account(id)`; backfill each membership from the latest written (not blocked, `apps/api/tests/audit/audit-log.test.ts:115-122`) `team.roles_changed` actor, else the inviter of the invite its `team.invite_accepted` audit entry names, else null (the founder). Old api code never reads it; new code reads null for an unset row. Rollback: drop the column.
+- API and contracts (part a): `myMembershipSchema` (the GET's response) gains `rolesSetBy: { name } | null` (absent reads null); the PATCH body and the PATCH response each become their own schema of today's one field (`tenant.ts:175,178`; `tenant.service.ts:94-102`). `GET /tenants/me/owners` — signed in with a company, any preset; 200 `{ owners, more }`; 401 signed out; 403 no company (`apps/api/src/common/auth/session.guard.ts:77`); no pagination (two names and a count). OpenAPI regenerated (`packages/contracts/openapi/openapi.json`).
+- Jobs: none.
+- Release: the api and both apps ship in one release; an old app ignores `rolesSetBy` and never calls `/owners`; a new app on an old api hides the credit line and reads `/owners`' 404 as no note.
+
+Files:
+
+| part | action | path | purpose |
+|---|---|---|---|
+| a | add | `packages/domain/src/authz/role-card.ts`, `packages/domain/tests/authz/role-card.test.ts`; modify `src/authz/index.ts` | the card |
+| a | add | `packages/i18n/src/copy/role-card.ts`, `packages/i18n/tests/role-card.test.ts`, `packages/i18n/tests/role-card-homes.test.ts`; modify `src/index.ts`, `src/locales/{en,hi,mr}/messages.po` and the compiled `messages.ts` | the words |
+| a | add | `packages/db/migrations/0028_membership_roles_set_by.sql` (by `pnpm db:migration:new`); modify `packages/db/src/schema/identity.ts` | the setter |
+| a | modify / add | `packages/contracts/src/tenant.ts`, `packages/contracts/openapi/openapi.json`; add `packages/contracts/tests/my-membership.test.ts` | `rolesSetBy`, the owners route; an old api's reply reads `null`. `route-shape.test.ts` already walks every route, so it needs no edit |
+| a | modify / add | `apps/api/src/modules/invitation/invitation.admin.repository.ts`, `apps/api/src/modules/tenant/{tenant.repository.ts,tenant.my-membership.repository.ts,tenant.service.ts,tenant.controller.ts,tenant.module.ts}`; add `tenant.owners.repository.ts` (`tenant.repository.ts` is at 288 lines) | write the setter; read it and the owners |
+| a | add / modify | `apps/api/tests/tenant/roles-set-by.test.ts`, `apps/api/tests/tenant/owners.test.ts`; `apps/api/tests/tenant/my-membership.test.ts` (reads carry `rolesSetBy`), `apps/api/tests/support/http.ts` (`bearerFor`, lifted from `my-membership.test.ts` so the two new suites do not copy it) | proofs over the api |
+| a | modify | `packages/data/src/tenant/repository.ts`, `packages/data/src/react/use-shell.ts` | `owners()`; the coach-mark updaters keep `rolesSetBy` |
+| b | add | `packages/ui/src/components/RoleCard/{RoleCard.types.ts,RoleCard.tsx,RoleCard.native.tsx,RoleCard.css,index.ts}`; modify `packages/ui/src/index.ts`, `src/styles.css` | the card |
+| b | modify | `packages/ui/src/components/LoadingBars/{LoadingBars.types.ts,LoadingBars.tsx,LoadingBars.native.tsx,LoadingBars.css}` | the `line` bar |
+| b | modify | `packages/ui/src/components/ListRow/{ListRow.tsx,ListRow.types.ts}`, `ProfilePreferences/{ProfilePreferences.tsx,ProfilePreferences.native.tsx,ProfilePreferences.types.ts}` | the row's act |
+| b | add | `packages/data/src/react/use-role-card.ts`; modify `src/react/index.ts` | the hook |
+| b | modify | `apps/web/features/profile/ProfileScreen.tsx`, `apps/mobile/src/screens/profile/ProfileScreen.tsx` | the sheet / panel |
+| b | add / modify | `tests/e2e/components/RoleCard.{spec,story}.tsx`; `tests/e2e/components/ProfilePreferences.spec.tsx`, `tests/e2e/components/LoadingBars.spec.tsx`, `tests/e2e/web/more-profile.spec.ts` | proofs |
+| c | add | `packages/ui/src/components/RoleExplainer/{RoleExplainer.types.ts,RoleExplainer.tsx,RoleExplainer.native.tsx,RoleExplainer.css,index.ts}`; modify `packages/ui/src/index.ts` | the corridor screen |
+| c | add / modify | `apps/web/app/(open)/welcome/role/page.tsx`, `apps/web/features/onboarding/{RoleExplainerScreen.tsx,FirstRunProfileScreen.tsx,InviteLandingScreen.tsx,index.ts}`, `apps/web/features/auth/constants.ts` (`WELCOME_ROLE_ROUTE`) | the web route and hand-off |
+| c | modify | `packages/data/src/session/{first-run.ts,store.ts,types.ts}`, `packages/data/src/react/use-first-run-profile.ts`, `packages/domain/src/auth/first-run-profile.ts` | the carry lasts to the card's act: the store gains `profileSaved()` beside `firstRunOwed()` and `endFirstRun()` |
+| c | add / modify | `apps/mobile/src/screens/role-explainer/{RoleExplainerScreen.tsx,index.ts}`, `src/navigation/routes/app.ts`, `src/navigation/guards.ts` (`roleExplainerRoute`), `screens/first-run-profile/FirstRunProfileScreen.tsx`, `screens/invite-landing/InviteLandingScreen.tsx` | the phone route and hand-off |
+| c | add / modify | `tests/e2e/components/RoleExplainer.{spec,story}.tsx`, `tests/e2e/web/welcome-role.spec.ts`, `tests/invariants/src/e2e-flow-per-screen.ts` (the held phone screen) | proofs |
+| all | modify | `docs/tasks/M01-onboarding.md` (every part); `docs/ux/briefs/SCR-M01-10-role-explainer.md` (a: D1, D2); `docs/tasks/deferred.md` (b, c) | records |
+
+**8. Diagram**
+
+```mermaid
+sequenceDiagram
+  participant P as Person (web / phone)
+  participant A as api
+  participant D as db
+  P->>A: accept invite (OTP)
+  A->>D: membership + roles + roles_set_by = inviter (one tx)
+  P->>P: First-Run Profile saved → the card
+  P->>A: GET /tenants/me · GET /tenants/me/membership
+  A-->>P: company name · rolesSetBy {name}
+  P->>A: GET /tenants/me/owners
+  A-->>P: owners [{name}], more
+  P->>P: roleCard(roles) + words → RoleCard
+  P->>P: Go to my day → the home homeFor picks
+  Note over P,A: owner changes roles → roles_set_by = actor (same tx)
+```
+
+**9. Build steps**
+
+| step | files | AC | done when |
+|---|---|---|---|
+| a1 | `role-card.ts` + test | AC-2, AC-8, AC-9 | 100 % coverage; the limit rule seen red once |
+| a2 | i18n copy + test, `.po` | AC-10, AC-11 | `extract` clean, zero missing |
+| a3 | migration, schema, contracts, route-shape test | AC-4 … AC-7 | `pnpm db:migrate` on `heliogrid_test`; typecheck |
+| a4 | api write and read, api tests, data repository, OpenAPI | AC-4 … AC-7 | both api files green; the tenant predicate seen red once; `pnpm check` |
+| b1 | `LoadingBars` `line`, `RoleCard` + specs | AC-3 (reopened), AC-12, AC-13 | specs green in en, hi, mr at 375 and 1536, reduced motion still |
+| b2 | `ListRow`, `ProfilePreferences`, `useRoleCard`, both screens, specs | AC-14 … AC-16 | `pnpm check` |
+| c1 | `RoleExplainer` + spec | AC-3 (first run) | spec green |
+| c2 | routes, hand-offs, web spec, held entry | AC-1, AC-17, AC-18 | `pnpm check` |
+
+**10. Risks**
+- Tenancy: the owners read is new → `tenant_id` predicate under RLS; `owners.test.ts` proves another tenant's owners never appear, seen red once.
+- Permission: any member learns the owners' names → names only, never phones; the brief puts the name on every preset's card.
+- Migration: the backfill reads the audit log once → one statement over indexed keys; small in v1.
+- Release: one release ships api and apps; the 404 and the absent field are read as *no name*.
+
+**11. Regression**
+- First-Run Profile's done (both apps) → `tests/e2e/web/welcome.spec.ts` (redirects); part c's live rows end on the card.
+- The landing's join → `tests/e2e/mobile/invite-landing.yaml` and its web spec stop at the landing; part c's live rows go on to the card.
+- `myMembership` read by the shell's coach marks (`use-shell.ts:67`) and its PATCH → the shell's specs and `apps/api/tests/tenant/*`.
+- `assignRoles` → its api tests plus the setter assertion.
+- `ListRow` → only `ProfilePreferences` calls it: `ProfilePreferences.spec.tsx` and `more-profile.spec.ts` (the name row keeps *Edit name*).
+
+**12. Acceptance criteria**
+- AC-1 (w web · i iOS · a Android) — Given a valid invite, when the invitee verifies the OTP, then user + membership + roles exist atomically and the next screen is name/photo, then the role card, then the home their roles decide (M01-13, M01-14).
+- AC-2 — (M01-15 carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text in the brief is the binding criterion.)
+- AC-3 (w · i · a) — Two base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+- AC-4 — Given an invite sent by A, when B joins, then B's membership names A as the setter, in the same transaction as the roles.
+- AC-5 — Given B's roles changed by C, when B reads `GET /tenants/me/membership`, then `rolesSetBy.name` is C's; the founder reads `null`; the session and the token are unchanged.
+- AC-6 — Given any member of tenant T, when they read `GET /tenants/me/owners`, then they get T's active owners (two names by name order and the count of the rest), never another tenant's; 401 signed out.
+- AC-7 — Given the migration on a database with joins and role changes, then each row's setter is the latest written (not blocked) role change's actor, else its inviter, else null.
+- AC-8 — Given Sales Executive + Design Engineer, then eight grants (the union) and six limits, and *Send proposals to customers* is no limit though Design Engineer lists it; Sales Executive alone gives the board's six and six.
+- AC-9 — Given each of the twelve presets alone and EPC Owner with any other, then every grant line is decided as the table says (a `limited` cell grants or denies by its line's rule — Finance's limited price list denies), no limit line is granted, every preset has at least one grant line, and an Owner has no limit and no note (`it.each`).
+- AC-10 — Given one, two and three owners, and one, two and three presets, then the joined words read as §3 in en, hi and mr.
+- AC-11 — Given each home, then the act and the line at the act read as §3's table, in en, hi and mr.
+- AC-12 (w · i · a) — Given the owners read in flight, then the head and the act draw and only the rows wait; given a read failed, then the error card and *Try again*, which reloads the card.
+- AC-13 — Given the web `ListRow` with `onClick`, then it is a button with a tab stop, and Enter and Space act.
+- AC-14 (w · i · a) — Given Profile & preferences, when the person activates *Your role*, then the same card opens as a sheet at 375 and a 480 side panel at 1536, titled *Your role*; closing it returns focus to the row.
+- AC-15 (w · i · a) — Given the owner changed this person's roles, when the person reopens the card, then it shows the new roles and the owner's name as the setter.
+- AC-16 — Given reduced motion, then the loading lines are still (web component spec; phones live under AC-12i/a).
+- AC-17 (w) — Given `/welcome/role` signed out, or with no company, then the person lands where `/home` sends them.
+- AC-18 (w · i · a) — Given First-Run Profile saved, or a join that owes no name, when the person presses the act, then they land on `homeFor(roles)`'s home and back does not return to the card.
+
+**13. Proof**
+
+| row | AC | owner | surface | action → expected | data |
+|---|---|---|---|---|---|
+| P1 | AC-4 | main-dev | api | `apps/api/tests/tenant/roles-set-by.test.ts` › *the join names the inviter* | test db |
+| P2 | AC-5 | qa-api | api | …904 (owner) invites one unused number (…906 up) as EPC Owner (O2) and one as Sales Executive (S); both join. S reads `GET /tenants/me/membership` → 200 `rolesSetBy.name` = …904's name; O2 changes S's roles; S reads again → O2's name; …904 itself (founder) → `null`; `GET /auth/session` body unchanged | …904, two unused numbers |
+| P3 | AC-6 | main-dev | api | `apps/api/tests/tenant/owners.test.ts` › *owners of my company only* (seen red: drop the tenant predicate) › *401 signed out* | two tenants |
+| P4 | AC-7 | main-dev | api | `roles-set-by.test.ts` › *the backfill takes the latest written change (a blocked one skipped), else the inviter, else null* | test db |
+| P5 | AC-2, AC-8 | main-dev | domain | `packages/domain/tests/authz/role-card.test.ts` › *Sales Executive alone* · *a stacked pair* (seen red: let a limit skip the union check) | — |
+| P6 | AC-9 | main-dev | domain | same file › *each preset alone* `it.each` | — |
+| P7 | AC-10 | main-dev | i18n | `packages/i18n/tests/role-card.test.ts` › *joined names* | real catalogs |
+| P8 | AC-11 | main-dev | i18n | `packages/i18n/tests/role-card-homes.test.ts` › *act and line per home* | real catalogs |
+| P9 | AC-13 | main-dev | ui | `ProfilePreferences.spec.tsx` › *the role row is a button* | — |
+| P10 | AC-16 | main-dev | ui | `RoleCard.spec.tsx` › *reduced motion stills the lines* | — |
+| P11 | AC-3w (reopened) | qa-web | web | setup (part b's own, before part c exists): …901 invites unused numbers (…906 up) — one as EPC Owner (O2), and one Sales Executive per surface, W, I and A; each joins on its own surface and lands on the home. W → *More* → Profile & preferences → *Your role* at 375 (m-reopened) and 1536 (d-reopened) compared | W |
+| P12 | AC-3i (reopened) | qa-ios | iOS | I → Profile & preferences → *Your role* → the sheet compared to m-reopened, in English, Hindi and Marathi | I |
+| P13 | AC-3a (reopened) | qa-android | Android | the same as A | A |
+| P14 | AC-12w | qa-web | web | Profile & preferences loaded; `api stopped`; *Your role* → m-error in the panel; api started; *Try again* → the card | W |
+| P15 | AC-12i | qa-ios | iOS | the same, `api stopped`; and reduced motion on → the loading lines still | I |
+| P16 | AC-12a | qa-android | Android | the same, `api stopped`; `transition_animation_scale 0` → still | A |
+| P17 | AC-14w | qa-web | web | Enter on *Your role* → the panel; Escape → focus on the row | W |
+| P18 | AC-14i | qa-ios | iOS | tap *Your role* → the sheet; close → the page | I |
+| P19 | AC-14a | qa-android | Android | the same | A |
+| P20 | AC-15w | qa-web | web | O2 adds Design Engineer to W's roles on Team; W reopens the card → *Sales Executive and Design Engineer*, *Last set by* O2's name (it read …901's before) | O2, W |
+| P21 | AC-15i | qa-ios | iOS | the same change for I by O2; I reopens | O2, I |
+| P22 | AC-15a | qa-android | Android | the same for A | O2, A |
+| P23 | AC-1w, AC-3w (first run) | qa-web | web | …901 invites an unused `DEV_OTP_PHONES` number (…906 up) as Sales Executive; join; save the name → the card (m-first-run at 375, d-first-run at 1536 compared) → *Go to my day* → `/home`; back stays home | one unused number |
+| P24 | AC-1i, AC-3i (first run) | qa-ios | iOS | the same with its own unused number, Sales Executive + Design Engineer → m-stacked and m-stacked-end compared; the card in Hindi and Marathi | one unused number |
+| P25 | AC-1a, AC-3a (first run) | qa-android | Android | the same as P24 with its own unused number | one unused number |
+| P26 | AC-18w | qa-web | web | a number that already has a name joins a second company → the card, no name step → the act → home | one unused number |
+| P26i | AC-18i | qa-ios | iOS | the same on the simulator | one unused number |
+| P26a | AC-18a | qa-android | Android | the same on the emulator | one unused number |
+| P27 | AC-17w | ci | e2e-web | `tests/e2e/web/welcome-role.spec.ts` › *signed out goes to the door* · *a new owner opens the card* (no limits, no note) | CI signup |
+
+**14. Deferred rows**
+- D218 — joins (deleted with part b).
+- D258 — the `ListRow` and `LoadingBars` text-line pieces join with part b and are cut from the row; the rest stays (`owner: the next design-system change · T-M01-016 starts`).
+- D261 — *build 10 on it* joins with part c; the row stays for doors 01–05 (`reopens when: owner: move the doors or record why`).
+- D315 — stays; it is First-Run Profile's column (`reopens when: owner: the next design-system change`).
+- New: `ScopeNote` composes English (`joinActs`, `composeScopeLine`) — `touches packages/ui/src/components/ScopeNote/`.
+- New: the roster `GET /tenants/me/members` answers any member, phones included, against M01's Permissions — `T-M01-013 starts`.
+
+**15. Size** — every changed file counted, compiled catalogs and records included: a ≈ 28, b ≈ 28, c ≈ 29 (≈ 85); ≈ 1,500 code lines, ≈ 850 test lines. Three parts, each at most 30.
+
+**16. Decisions for the owner**
+- D1 · The two names on the card. (A, recommended) store them: who set the roles (`roles_set_by_user_id`, on the membership self-read) and a names-only owners read — the card matches every frame; costs one migration and one route, in part a. (B) print no names: no credit line; the note reads *Only the owner can add a teammate.* — no migration, no route; every frame's head and note change.
+- D2 · *Ask him when you need one.* (A, recommended) *Ask them when you need one.* — true for any owner, and for two. (B) *Ask Rajesh Kulkarni when you need one.* — the first owner's full name.
+
+Reviewer findings rejected: none.
 
 ### T-M01-011 · Profile & Preferences
 **Type:** screen · **Tier:** P0

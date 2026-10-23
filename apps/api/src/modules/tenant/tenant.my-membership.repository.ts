@@ -1,7 +1,14 @@
-import { type TenantPool, type TenantScopedDb, tenantMembership } from '@heliogrid/db';
+import { type TenantPool, type TenantScopedDb, tenantMembership, userAccount } from '@heliogrid/db';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq, lte } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
+
+/** My own membership as the shell and the role card read it. */
+export interface MyMembershipRow {
+  readonly coachMarksDismissed: number;
+  /** Who last set my roles; null for the founder (`SCR-M01-10` ruling 15). */
+  readonly rolesSetByName: string | null;
+}
 
 /** How a coach-mark write ended: the count now stored, or why nothing moved. */
 export type CoachMarksOutcome =
@@ -18,9 +25,24 @@ export class MyMembershipRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(@Inject(TENANT_DB) private readonly db: TenantPool) {}
 
-  /** How many first-run coach marks the person has passed here (`M01-16`); null when they hold no membership. */
-  async coachMarksPassed(tenantId: string, userId: string): Promise<number | null> {
-    return this.db.withTenantTransaction(tenantId, (tx) => coachMarksOf(tx, tenantId, userId));
+  /**
+   * The first-run coach marks the person has passed here (`M01-16`) and who last set their roles;
+   * null when they hold no membership. The setter is a member of this company, so the
+   * membership-armed `user_account` policy lets the tenant read their name.
+   */
+  async read(tenantId: string, userId: string): Promise<MyMembershipRow | null> {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const [row] = await tx
+        .select({
+          coachMarksDismissed: tenantMembership.coachMarksDismissed,
+          rolesSetByName: userAccount.name,
+        })
+        .from(tenantMembership)
+        .leftJoin(userAccount, eq(userAccount.id, tenantMembership.rolesSetByUserId))
+        .where(ownMembership(tenantId, userId))
+        .limit(1);
+      return row ?? null;
+    });
   }
 
   /**

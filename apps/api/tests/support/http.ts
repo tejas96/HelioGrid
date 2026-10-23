@@ -1,9 +1,17 @@
-import type { CreateTenant, OtpChallenge, SessionProjection } from '@heliogrid/contracts';
+import type {
+  CreateTenant,
+  OtpChallenge,
+  SessionClaims,
+  SessionProjection,
+} from '@heliogrid/contracts';
 import { IN_PACK } from '@heliogrid/domain';
 import { HttpStatus, type INestApplication } from '@nestjs/common';
 import { createApp } from '../../src/app';
 import { ENV } from '../../src/config/env';
+import { TokenService } from '../../src/modules/auth/internal/token.service';
 import { MarketPackService } from '../../src/modules/market/market.public';
+import type { Device } from './devices';
+import type { Membership } from './fixture';
 import { skipUnless } from './preconditions';
 
 /**
@@ -184,4 +192,31 @@ export async function bootHttp(): Promise<Http> {
     close: () => app.close(),
   };
   return http;
+}
+
+/**
+ * A bearer minted for a seeded membership's own device — never the shared development number,
+ * whose sign-in binds to whichever company another suite left it holding. `none` mints the same
+ * session with no company (`M01-10`).
+ */
+export async function bearerFor(
+  http: Http,
+  membership: Membership,
+  device: Device,
+  company: 'held' | 'none' = 'held',
+): Promise<Record<string, string>> {
+  const claims: SessionClaims = {
+    sub: membership.held.userId,
+    sid: device.sessionId,
+    membership:
+      company === 'none'
+        ? null
+        : {
+            tenantId: membership.of.tenantId,
+            roles: [...membership.roles],
+            authorizationVersion: 0,
+          },
+  };
+  const { token } = await http.app.get(TokenService).mint(claims, Date.now());
+  return { authorization: `Bearer ${token}` };
 }

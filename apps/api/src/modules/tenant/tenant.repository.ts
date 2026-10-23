@@ -130,7 +130,11 @@ export class TenantRepository {
           .values(to.map((rolePreset) => ({ tenantId, membershipId, rolePreset })));
         await tx
           .update(tenantMembership)
-          .set({ authorizationVersion: nextAuthorizationVersion() })
+          .set({
+            authorizationVersion: nextAuthorizationVersion(),
+            // The credit line's person (`SCR-M01-10` ruling 15), in the same write as the roles.
+            rolesSetByUserId: act.actorUserId,
+          })
           .where(
             and(eq(tenantMembership.tenantId, tenantId), eq(tenantMembership.id, membershipId)),
           );

@@ -1,4 +1,8 @@
-import { COMPANY_PROFILE_FIELD_CAP, FIRST_RUN_COACH_MARKS } from '@heliogrid/domain';
+import {
+  COMPANY_PROFILE_FIELD_CAP,
+  FIRST_RUN_COACH_MARKS,
+  ROLE_CARD_OWNERS_SHOWN,
+} from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
@@ -76,10 +80,30 @@ export type Member = z.infer<typeof memberSchema>;
  * dismissing or finishing the run writes the maximum. A count below the stored one is refused —
  * a mark once passed is never shown again.
  */
-export const myMembershipSchema = z.object({
+export const coachMarksSchema = z.object({
   coachMarksDismissed: z.number().int().min(0).max(FIRST_RUN_COACH_MARKS),
 });
+export type CoachMarks = z.infer<typeof coachMarksSchema>;
+
+/**
+ * The read adds who last set the caller's roles — the inviter at the join, the owner at a role
+ * change — for the role card's credit line (`SCR-M01-10` ruling 15). `null` for the founder; an
+ * api from before the field answers without it, read as `null`.
+ */
+export const myMembershipSchema = coachMarksSchema.extend({
+  rolesSetBy: z.object({ name: z.string() }).nullable().default(null),
+});
 export type MyMembership = z.infer<typeof myMembershipSchema>;
+
+/**
+ * The company's EPC Owners by name, for the role card's owner note (`SCR-M01-10` ruling 15): the
+ * first two by name and how many more. Names only — any member reads it, so no phone travels.
+ */
+export const tenantOwnersSchema = z.object({
+  owners: z.array(z.object({ name: z.string() })).max(ROLE_CARD_OWNERS_SHOWN),
+  more: z.number().int().nonnegative(),
+});
+export type TenantOwners = z.infer<typeof tenantOwnersSchema>;
 
 /**
  * The presets a person will hold after the write — the whole set, old → new (`M01-20`), never a
@@ -161,7 +185,7 @@ export const tenantContract = c.router({
     method: 'GET',
     path: '/tenants/me/membership',
     summary:
-      'My own membership in the company the session acts under — the shell’s first-run count',
+      'My own membership in the company the session acts under — the shell’s first-run count and who last set my roles',
     responses: {
       200: myMembershipSchema,
       401: unauthenticated,
@@ -172,14 +196,24 @@ export const tenantContract = c.router({
   updateMyMembership: {
     method: 'PATCH',
     path: '/tenants/me/membership',
-    body: myMembershipSchema,
+    body: coachMarksSchema,
     summary: 'Record the first-run coach marks I have passed — refused below the stored count',
     responses: {
-      200: myMembershipSchema,
+      200: coachMarksSchema,
       401: unauthenticated,
       404: notFound,
       /** The count is below the one already stored: a mark once passed stays passed. */
       422: errorEnvelope(baseError('DOMAIN_RULE_VIOLATION')),
+    },
+  },
+  owners: {
+    method: 'GET',
+    path: '/tenants/me/owners',
+    summary: 'The company’s EPC Owners by name — the first two and a count — for any member',
+    responses: {
+      200: tenantOwnersSchema,
+      401: unauthenticated,
+      // A session with no company yet answers the shared 403 (`M01-10`).
     },
   },
   members: {

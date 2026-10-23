@@ -118,6 +118,8 @@ export async function acceptInvitation(
       coachMarksDismissed: 0,
       authorizationVersion: 0,
       createdAt: at,
+      // The inviter set these roles (`SCR-M01-10` ruling 15), in the same write as the roles.
+      rolesSetByUserId: row.inviterUserId,
     })
     .returning({ id: tenantMembership.id });
   if (!membership) throw new Error('tenant_membership insert returned no row');
