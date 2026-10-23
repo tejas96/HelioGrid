@@ -17,8 +17,15 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
    real alternative, only when one exists, with its trade-off; what is reused, by path; the twin
    screen on the other platform and which parts are shared (`.claude/rules/screen-parts.md`); on a
    screen task, its motion moments (`F7-51`) — `moment | what moves | the design system's motion |
-   the component that owns it` — from the brief's `## Motion` section, or chosen here when the
-   brief has none, each one earning its place by the continuity it shows; or `None — <reason>`.
+   the component that owns it` — one row for every change the frames already show: a surface opens
+   or closes, a wait turns to content, an act to its result, a value changes in place, a list grows
+   or shrinks, a control is pressed. Start from the brief's `## Motion` section when it has one. Each
+   row takes the motion that job already has elsewhere (`F7-38`), else one of the design system's
+   (`tokens/motion.css`, `tokens/keyframes.css`), in the shared component that owns the job — or
+   says in one line why nothing moves. Motion only joins frames already drawn: it adds no state,
+   element or step, and holds `F7-51`'s floors — content is readable on its first frame. A moment
+   that moves what a built screen did not move before, or needs a motion the design system lacks,
+   is a decision for the owner.
 6. **Frame map** (screen task) — one row per board frame: `frame | state that shows it | element →
    component + props + copy key + the tokens, size and gaps the board gives it`, read from the board's code in
    `.design/<module>/`, under the module's lock. `qa-web` compares the app with these values. A
