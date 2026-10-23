@@ -5,19 +5,27 @@ import { useQuery } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'react';
 import { queryKeys } from '../cache/keys';
 import { ApiError } from '../errors/errors';
-import { useRepositories } from './context';
+import { useDataLayer, useRepositories } from './context';
 import { companyRead, membershipRead } from './shell-reads';
 import { useSession } from './use-session';
 
 /**
  * The role card's facts on both platforms (Law 11): the card domain decides from the session's
  * roles, the company and who set the roles from the shell's own reads, and the owners for the note.
- * The rows wait for the owners read; any read failing is the card's error.
+ * At first run the join's carry names the company and the inviter — who set the roles at the join —
+ * until those reads land, so the heading and the credit line draw at once. The rows wait for the
+ * owners read; any read failing is the card's error.
  */
 export interface RoleCardRead {
   readonly card: RoleCard;
   readonly facts: RoleCardNames;
   readonly surface: 'loading' | 'error' | 'ready';
+  /**
+   * The company or the setter is still being read and no carry names them: the first-run heading
+   * and credit line wait undrawn rather than show a title that changes (`SCR-M01-10`).
+   * The reopened card needs none of it: its sheet is titled by the role alone.
+   */
+  readonly namesPending: boolean;
   /**
    * The card is opened again: who set the roles and who the owners are may have changed, and a
    * read that failed is asked again.
@@ -33,6 +41,7 @@ const NO_OWNERS: TenantOwners = { owners: [], more: 0 };
 export function useRoleCard(): RoleCardRead {
   const { user, ended } = useSession();
   const repositories = useRepositories();
+  const carry = useDataLayer().session.firstRunCarry();
   const tenantId = user?.tenant?.id ?? '';
   const roles = user?.tenant?.roles;
   const card = useMemo(() => roleCard(roles ?? []), [roles]);
@@ -66,21 +75,33 @@ export function useRoleCard(): RoleCardRead {
   }, [companyFailed, refetchCompany, refetchMembership, refetchOwners, ownerNote]);
 
   const failed = companyFailed || membership.isError || (ownerNote && owners.isError);
+  const namesPending = reading && carry === null && (company.isPending || membership.isPending);
   const ownersData = owners.data;
   return useMemo(
     () => ({
       card,
       facts: {
-        companyName: company.data?.companyName ?? null,
-        setterName: membership.data?.rolesSetBy?.name ?? null,
+        companyName: company.data?.companyName ?? carry?.companyName ?? null,
+        setterName: membership.data?.rolesSetBy?.name ?? carry?.inviterName ?? null,
         owners: ownersData
           ? { names: ownersData.owners.map((owner) => owner.name), more: ownersData.more }
           : null,
       },
       surface: failed ? 'error' : ownerNote && ownersData === undefined ? 'loading' : 'ready',
+      namesPending,
       refresh,
       retry: refresh,
     }),
-    [card, company.data, membership.data, ownersData, failed, ownerNote, refresh],
+    [
+      card,
+      company.data,
+      membership.data,
+      carry,
+      ownersData,
+      failed,
+      ownerNote,
+      namesPending,
+      refresh,
+    ],
   );
 }

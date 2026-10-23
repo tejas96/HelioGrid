@@ -104,6 +104,7 @@ export * from './components/RangeField';
 export * from './components/ReorderList';
 export * from './components/RichText';
 export * from './components/RoleCard';
+export * from './components/RoleExplainer';
 export * from './components/ScopeNote';
 export * from './components/SearchField';
 export * from './components/SegmentedControl';

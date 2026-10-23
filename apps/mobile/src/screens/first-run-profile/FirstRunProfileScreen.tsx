@@ -3,28 +3,29 @@ import { PROFILE_PHOTO_MAX_SIDE_PX } from '@heliogrid/domain';
 import { firstRunProfileWords } from '@heliogrid/i18n';
 import { useLanguageChoice, useTranslate } from '@heliogrid/i18n/react';
 import { DoorLanguage, FirstRunProfile } from '@heliogrid/ui';
-import { CommonActions, useNavigation } from '@react-navigation/native';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { pickImage } from '../../files/pick-image';
-import { APP_ENTRY_ROUTES } from '../../navigation/guards';
+import { roleExplainerRoute } from '../../navigation/guards';
 import { InsetDoor } from '../shared/InsetDoor';
+import { useGoInside } from '../shared/use-go-inside';
 
 /**
  * First-Run Profile on the phone (`SCR-M01-09`, `M01-14`): the step the invite landing hands a newly
  * named account to after the join, owed only for this visit (ruling 17). The act opens the photo
- * library, shrunk on the device (ruling 19); once the step ends, or when nothing is owed, the
- * person goes on to the App group's first screen. The flow is `useFirstRunProfile`'s.
+ * library, shrunk on the device (ruling 19); once the step ends the role card follows
+ * (`SCR-M01-10`), and when nothing is owed the person goes on to the App group's first screen. The
+ * flow is `useFirstRunProfile`'s.
  */
 export function FirstRunProfileScreen() {
   const t = useTranslate();
   const language = useLanguageChoice();
-  const goOn = useGoOn();
-  const profile = useFirstRunProfile(goOn);
+  const goInside = useGoInside();
+  const profile = useFirstRunProfile(() => goInside(roleExplainerRoute));
   const owed = profile !== null;
 
   useEffect(() => {
-    if (!owed) goOn();
-  }, [owed, goOn]);
+    if (!owed) goInside();
+  }, [owed, goInside]);
 
   if (profile === null) return null;
   const { carry, state, frame } = profile;
@@ -52,16 +53,4 @@ export function FirstRunProfileScreen() {
       />
     </InsetDoor>
   );
-}
-
-/** On to the App group's first screen, which the session decides (`landingFor`). */
-function useGoOn(): () => void {
-  const navigation = useNavigation();
-  return useCallback(() => {
-    const names: readonly string[] = navigation.getState()?.routeNames ?? [];
-    const entry = APP_ENTRY_ROUTES.find((route) => names.includes(route));
-    if (entry !== undefined) {
-      navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: entry }] }));
-    }
-  }, [navigation]);
 }

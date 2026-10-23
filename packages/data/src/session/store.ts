@@ -18,7 +18,7 @@ import { isUnanswered, UnauthorizedError } from '../errors/errors';
 import type { InvitationRepository } from '../invitation/repository';
 import type { TenantRepository } from '../tenant/repository';
 import type { UserRepository } from '../user/repository';
-import { createFirstRunHold } from './first-run';
+import { createFirstRunHold, firstRunCalls } from './first-run';
 import type { HeldWork } from './held-work';
 import { type CodeCheck, createInviteJoin } from './invite-join';
 import { createRenewal } from './renewal';
@@ -218,8 +218,7 @@ export function createSessionStore(config: {
     },
     joinWithInvite: inviteJoin.joinWithInvite,
     retryJoin: inviteJoin.retryJoin,
-    firstRunOwed: () => firstRun.owedTo(snapshot.user),
-    endFirstRun: firstRun.end,
+    ...firstRunCalls(firstRun, () => snapshot.user),
     retryBoot: checkSession,
     rereadUser: renewal.rereadUser,
     async signInWithGoogle(token, code): Promise<GoogleResult> {

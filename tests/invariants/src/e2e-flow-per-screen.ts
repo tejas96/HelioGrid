@@ -81,6 +81,11 @@ const PHONE_SCREENS_HELD: ReadonlyMap<string, string> = new Map([
       'read: its flows are the web suite and the phone QA rows of its task (T-M01-009b)',
   ],
   [
+    'role-explainer',
+    'reached only right after an invite join, as first-run-profile is: its flows are the web suite ' +
+      'and the phone QA rows of its task (T-M01-010c)',
+  ],
+  [
     'team',
     'reached only by a member with a company, through More in settings, behind the press no ' +
       'Maestro flow lands on iOS (the shell above): its flows are the web suite and the phone QA ' +

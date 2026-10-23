@@ -32,6 +32,7 @@ export function DoorFrame({
   onFooterHeight,
   taskMeasure = 'field',
   column,
+  bounded = false,
   children,
   className,
   style,
@@ -44,6 +45,7 @@ export function DoorFrame({
       data-panes={panes}
       data-measure={taskMeasure}
       data-column={column}
+      data-bounded={bounded ? '' : undefined}
       style={style}
     >
       <BrandBloom placement="top" className="hg-door-bloom-phone" />
