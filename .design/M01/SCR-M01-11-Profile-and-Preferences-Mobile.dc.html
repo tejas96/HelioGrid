@@ -28,7 +28,7 @@ a{color:var(--link);text-decoration:none}
 a:hover{color:var(--link-hover)}
 </style>
 </helmet>
-<div style="width:1700px;height:2152px;box-sizing:border-box;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:var(--sp-10);row-gap:var(--sp-12);align-items:start;padding:var(--sp-10);background:var(--canvas);overflow:hidden">
+<div style="width:1700px;height:3922px;box-sizing:border-box;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:var(--sp-10);row-gap:var(--sp-12);align-items:start;padding:var(--sp-10);background:var(--canvas);overflow:hidden">
 <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
     <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:375px">
       <span style="display:block;margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · default</span>
@@ -272,30 +272,340 @@ a:hover{color:var(--link-hover)}
         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ navMulti }}" hint-size="100%,66px"></x-import>
       </div>
     </div>
+    <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:375px">
+      <span style="display:block;margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · edit-open</span>
+      <div data-screen-label="Profile and preferences — edit name, open" data-frame="m-edit-open" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+        <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+        <div data-scroll style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile-fn) var(--sp-6)">
+          <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2>
+            <div style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-1) 0">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.nameRow }}" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.roleRow }}" hint-size="100%,64px"></x-import>
+            </div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-4)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Language and units</h2>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ languagePicker }}" hint-size="100%,190px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ languageSource }}" hint-size="100%,18px"></x-import>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SegmentedControl" dc-props="{{ units }}" hint-size="100%,66px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ unitSource }}" hint-size="100%,18px"></x-import>
+            </div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ pushAsk }}" hint-size="44px,44px"></x-import></div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
+              <sc-for list="{{ pushGroups }}" as="g" hint-placeholder-count="4">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ g }}" hint-size="100%,44px"></x-import>
+              </sc-for>
+            </div>
+          </section>
+        </div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ navSales }}" hint-size="100%,66px"></x-import>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ editorSave }}" hint-size="100%,420px">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Your name" value="Anjali Kulkarni" hint-size="100%,80px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhotoField" label="Profile photo, optional" name="Anjali Kulkarni" size="{{ photoPhone }}" choose-label="Add a photo" on-choose="{{ noop }}" hint-size="100%,72px"></x-import>
+          </div>
+        </x-import>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:375px">
+      <span style="display:block;margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · edit-photo-added</span>
+      <div data-screen-label="Profile and preferences — edit name, photo added" data-frame="m-edit-photo-added" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+        <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+        <div data-scroll style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile-fn) var(--sp-6)">
+          <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2>
+            <div style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-1) 0">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.nameRow }}" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.roleRow }}" hint-size="100%,64px"></x-import>
+            </div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-4)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Language and units</h2>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ languagePicker }}" hint-size="100%,190px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ languageSource }}" hint-size="100%,18px"></x-import>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SegmentedControl" dc-props="{{ units }}" hint-size="100%,66px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ unitSource }}" hint-size="100%,18px"></x-import>
+            </div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ pushAsk }}" hint-size="44px,44px"></x-import></div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
+              <sc-for list="{{ pushGroups }}" as="g" hint-placeholder-count="4">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ g }}" hint-size="100%,44px"></x-import>
+              </sc-for>
+            </div>
+          </section>
+        </div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ navSales }}" hint-size="100%,66px"></x-import>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ editorSave }}" hint-size="100%,420px">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Your name" value="Anjali Kulkarni" hint-size="100%,80px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhotoField" label="Profile photo, optional" name="Anjali Kulkarni" size="{{ photoPhone }}" choose-label="Add a photo" on-choose="{{ noop }}" src="{{ photoSample }}" replace-label="Replace" remove-label="Remove" on-remove="{{ noop }}" hint-size="100%,72px"></x-import>
+          </div>
+        </x-import>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:375px">
+      <span style="display:block;margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · edit-saving</span>
+      <div data-screen-label="Profile and preferences — edit name, saving" data-frame="m-edit-saving" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+        <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+        <div data-scroll style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile-fn) var(--sp-6)">
+          <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2>
+            <div style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-1) 0">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.nameRow }}" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.roleRow }}" hint-size="100%,64px"></x-import>
+            </div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-4)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Language and units</h2>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ languagePicker }}" hint-size="100%,190px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ languageSource }}" hint-size="100%,18px"></x-import>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SegmentedControl" dc-props="{{ units }}" hint-size="100%,66px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ unitSource }}" hint-size="100%,18px"></x-import>
+            </div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ pushAsk }}" hint-size="44px,44px"></x-import></div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
+              <sc-for list="{{ pushGroups }}" as="g" hint-placeholder-count="4">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ g }}" hint-size="100%,44px"></x-import>
+              </sc-for>
+            </div>
+          </section>
+        </div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ navSales }}" hint-size="100%,66px"></x-import>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ editorSaving }}" hint-size="100%,420px">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Your name" value="Anjali Joshi" hint-size="100%,80px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhotoField" label="Profile photo, optional" name="Anjali Joshi" size="{{ photoPhone }}" choose-label="Add a photo" on-choose="{{ noop }}" src="{{ photoSample }}" replace-label="Replace" remove-label="Remove" on-remove="{{ noop }}" hint-size="100%,72px"></x-import>
+          </div>
+        </x-import>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:375px">
+      <span style="display:block;margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · edit-empty</span>
+      <div data-screen-label="Profile and preferences — edit name, name empty" data-frame="m-edit-empty" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+        <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+        <div data-scroll style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile-fn) var(--sp-6)">
+          <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2>
+            <div style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-1) 0">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.nameRow }}" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.roleRow }}" hint-size="100%,64px"></x-import>
+            </div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-4)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Language and units</h2>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ languagePicker }}" hint-size="100%,190px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ languageSource }}" hint-size="100%,18px"></x-import>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SegmentedControl" dc-props="{{ units }}" hint-size="100%,66px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ unitSource }}" hint-size="100%,18px"></x-import>
+            </div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ pushAsk }}" hint-size="44px,44px"></x-import></div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
+              <sc-for list="{{ pushGroups }}" as="g" hint-placeholder-count="4">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ g }}" hint-size="100%,44px"></x-import>
+              </sc-for>
+            </div>
+          </section>
+        </div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ navSales }}" hint-size="100%,66px"></x-import>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ editorSave }}" hint-size="100%,420px">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Your name" value="" error="Your name is empty — type the name your team should call you." hint-size="100%,80px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhotoField" label="Profile photo, optional" name="" size="{{ photoPhone }}" choose-label="Add a photo" on-choose="{{ noop }}" hint-size="100%,72px"></x-import>
+          </div>
+        </x-import>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:375px">
+      <span style="display:block;margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · edit-refused</span>
+      <div data-screen-label="Profile and preferences — edit name, save refused" data-frame="m-edit-refused" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+        <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+        <div data-scroll style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile-fn) var(--sp-6)">
+          <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2>
+            <div style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-1) 0">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.nameRow }}" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ me.roleRow }}" hint-size="100%,64px"></x-import>
+            </div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-4)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Language and units</h2>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ languagePicker }}" hint-size="100%,190px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ languageSource }}" hint-size="100%,18px"></x-import>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SegmentedControl" dc-props="{{ units }}" hint-size="100%,66px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ unitSource }}" hint-size="100%,18px"></x-import>
+            </div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ pushAsk }}" hint-size="44px,44px"></x-import></div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
+              <sc-for list="{{ pushGroups }}" as="g" hint-placeholder-count="4">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ g }}" hint-size="100%,44px"></x-import>
+              </sc-for>
+            </div>
+          </section>
+        </div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ navSales }}" hint-size="100%,66px"></x-import>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ editorSave }}" hint-size="100%,420px">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" kind="validation" title="Your name did not save" hint-size="100%,72px">Press Save to try again.</x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Your name" value="Anjali Joshi" hint-size="100%,80px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhotoField" label="Profile photo, optional" name="Anjali Joshi" size="{{ photoPhone }}" choose-label="Add a photo" on-choose="{{ noop }}" hint-size="100%,72px"></x-import>
+          </div>
+        </x-import>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:375px">
+      <span style="display:block;margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · edit-photo-failed</span>
+      <div data-screen-label="Profile and preferences — edit name, photo failed" data-frame="m-edit-photo-failed" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+        <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+        <div data-scroll style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile-fn) var(--sp-6)">
+          <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2>
+            <div style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-1) 0">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ joshi.nameRow }}" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ joshi.roleRow }}" hint-size="100%,64px"></x-import>
+            </div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-4)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Language and units</h2>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ languagePicker }}" hint-size="100%,190px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ languageSource }}" hint-size="100%,18px"></x-import>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SegmentedControl" dc-props="{{ units }}" hint-size="100%,66px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ unitSource }}" hint-size="100%,18px"></x-import>
+            </div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ pushAsk }}" hint-size="44px,44px"></x-import></div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
+              <sc-for list="{{ pushGroups }}" as="g" hint-placeholder-count="4">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ g }}" hint-size="100%,44px"></x-import>
+              </sc-for>
+            </div>
+          </section>
+        </div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ navSales }}" hint-size="100%,66px"></x-import>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ editorDone }}" hint-size="100%,420px">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Input" label="Your name" value="Anjali Joshi" success="Saved. Your team sees this name now." hint-size="100%,80px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhotoField" label="Profile photo, optional" name="Anjali Joshi" size="{{ photoPhone }}" act-icon="retry" choose-label="Try the photo again" on-choose="{{ noop }}" error-title="That photo did not upload" error="Try again, or add one later." hint-size="100%,170px"></x-import>
+          </div>
+        </x-import>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:var(--sp-2);width:375px">
+      <span style="display:block;margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">375 · edit-saved</span>
+      <div data-screen-label="Profile and preferences — edit name, saved" data-frame="m-edit-saved" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+        <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+        <div data-scroll style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-4) var(--screen-pad-mobile-fn) var(--sp-6)">
+          <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Your account</h2>
+            <div style="background:var(--surface);border-radius:var(--r-tile);box-shadow:var(--e2);padding:var(--sp-1) 0">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ saved.nameRow }}" hint-size="100%,64px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ saved.roleRow }}" hint-size="100%,64px"></x-import>
+            </div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-4)">
+            <h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Language and units</h2>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ languagePicker }}" hint-size="100%,190px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ languageSource }}" hint-size="100%,18px"></x-import>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.SegmentedControl" dc-props="{{ units }}" hint-size="100%,66px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ValueSource" dc-props="{{ unitSource }}" hint-size="100%,18px"></x-import>
+            </div>
+          </section>
+          <section style="display:flex;flex-direction:column;gap:var(--sp-2)">
+            <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Push notifications</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ pushAsk }}" hint-size="44px,44px"></x-import></div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-1)">
+              <sc-for list="{{ pushGroups }}" as="g" hint-placeholder-count="4">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Switch" dc-props="{{ g }}" hint-size="100%,44px"></x-import>
+              </sc-for>
+            </div>
+          </section>
+        </div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ navSales }}" hint-size="100%,66px"></x-import>
+      </div>
+    </div>
 </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1700,"height":2152}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1700,"height":3922}}'>
 class Component extends DCLogic {
   /* Static spec frames: every control is drawn at a literal value with a noop handler. The page
      shows no number, money, quantity or date, so nothing carries a provenance tier. */
   state = { ready: !!window.HelioGridDesignSystem_c8aa43 };
 
   componentDidMount() {
-    if (this.state.ready) return;
-    this._poll = setInterval(() => {
-      if (window.HelioGridDesignSystem_c8aa43) { clearInterval(this._poll); this.setState({ ready: true }); }
-    }, 30);
+    if (!this.state.ready) {
+      this._poll = setInterval(() => {
+        if (window.HelioGridDesignSystem_c8aa43) { clearInterval(this._poll); this.setState({ ready: true }); }
+      }, 30);
+    }
+    if (!this.photoSample()) {
+      this._photoPoll = setInterval(() => { if (this.photoSample()) { clearInterval(this._photoPoll); this.forceUpdate(); } }, 100);
+    }
   }
 
-  componentWillUnmount() { clearInterval(this._poll); }
+  componentWillUnmount() { clearInterval(this._poll); clearInterval(this._photoPoll); }
+
+  /* The chosen photo on the edit-photo-added and edit-saving frames, as SCR-M01-09 draws it: neither
+     the canvas nor the design system holds a portrait, so it is built from the system's own colour
+     tokens and resolves once they have loaded. */
+  photoSample() {
+    const css = getComputedStyle(document.documentElement);
+    const sky = css.getPropertyValue("--iris-blue").trim();
+    const dusk = css.getPropertyValue("--iris-violet").trim();
+    const figure = css.getPropertyValue("--surface").trim();
+    if (!sky || !dusk || !figure) return undefined;
+    const art = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">'
+      + '<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + sky + '"/><stop offset="1" stop-color="' + dusk + '"/></linearGradient></defs>'
+      + '<rect width="72" height="72" fill="url(#g)"/>'
+      + '<circle cx="36" cy="29" r="13" fill="' + figure + '"/>'
+      + '<path d="M12 72c2-15 12-23 24-23s22 8 24 23Z" fill="' + figure + '"/></svg>';
+    return "data:image/svg+xml," + encodeURIComponent(art);
+  }
 
   noop = () => {};
 
   renderVals() {
     const NS = window.HelioGridDesignSystem_c8aa43;
     if (!NS) return { ready: false };
-    if (this._vals) return this._vals;
+    if (this._vals) return this.withPhoto();
     const h = React.createElement;
     const noop = this.noop;
     const glyph = (name, more) => h(NS.ShellGlyph, Object.assign({ name: name }, more || {}));
@@ -328,11 +638,11 @@ class Component extends DCLogic {
       "Survey Engineer": "blue", "Design Engineer": "blue", "Project Manager": "blue", "Operations": "blue",
       "Finance": "blue", "HR/Admin": "blue", "Field Technician": "magenta", "Installation Team Member": "magenta",
     };
-    const person = (name, roles) => ({
+    const person = (name, roles, photo) => ({
       name: name,
-      avatar: { name: name, size: 48 },
+      avatar: { name: name, size: 48, src: photo },
       nameRow: {
-        avatar: h(NS.Avatar, { name: name, size: 48 }), title: name, density: "expressive",
+        avatar: h(NS.Avatar, { name: name, size: 48, src: photo }), title: name, density: "expressive",
         trailing: h(NS.Button, { variant: "secondary", size: "sm", onClick: noop }, "Edit name"),
         style: rowFrame(false),
       },
@@ -356,8 +666,23 @@ class Component extends DCLogic {
       label: "Language", value: value, columns: 1, density: "functional", onChange: noop, options: options,
     });
 
+    /* The Edit name editor (ruling 1 at T-M01-011), holding only the name and the photo (M01-14).
+       Every editor mounts EditorSurface: below its panelAbove width it is the bottom sheet, with its
+       handle and no close (F7-21); the same props give the 480-wide right panel at 1536. Its one act
+       is Save; leaving without Save keeps the old name. After a photo refusal the name is already
+       saved, so the act reads Done. */
+    const editor = (label, more) => ({
+      open: true, inset: true, title: "Your name and photo", width: 480, onClose: noop, zIndex: 900,
+      footer: h(NS.Button, Object.assign({ variant: "primary", size: "lg", fullWidth: true, onClick: noop }, more || {}), label),
+    });
+
     this._vals = {
       ready: true,
+      noop: noop,
+      photoPhone: 72,
+      editorSave: editor("Save"),
+      editorSaving: editor("Save", { loading: true }),
+      editorDone: editor("Done"),
       phoneChrome: { style: { background: "transparent" } },
       topBar: {
         leading: h(NS.ShellAction, { round: true, label: "Back to settings", onClick: noop,
@@ -370,6 +695,7 @@ class Component extends DCLogic {
       navMulti: bar(["home", "leads", "proposals", "more"], null),
 
       me: person("Anjali Kulkarni", ["Sales Executive"]),
+      joshi: person("Anjali Joshi", ["Sales Executive"]),
       owner: person("Rajesh Kulkarni", ["EPC Owner"]),
       multi: person("Vikram Deshpande", ["Survey Engineer", "Design Engineer", "Installation Team Member"]),
 
@@ -403,7 +729,15 @@ class Component extends DCLogic {
         action: h(NS.BannerAction, { onClick: noop }, "Try again"),
       },
     };
-    return this._vals;
+    /* edit-saved: the page after a save — the new name typed in edit-saving, with the photo chosen
+       in edit-photo-added. The photo resolves after the tokens load, so it is built per render. */
+    this._savedPerson = (photo) => person("Anjali Joshi", ["Sales Executive"], photo);
+    return this.withPhoto();
+  }
+
+  withPhoto() {
+    const photo = this.photoSample();
+    return Object.assign({}, this._vals, { photoSample: photo, saved: this._savedPerson(photo) });
   }
 }
 </script>
