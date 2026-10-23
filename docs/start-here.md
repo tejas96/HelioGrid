@@ -76,7 +76,7 @@ unchanged; the whole brief the screens register names; then this, its paths fill
 > given with this prompt wins. Never publish:
 > Main does. Your report is the text this prompt asks you to print, plus each board's file name,
 > width and height, and every decision the brief should now carry — each state you do not draw at
-> 1536 among them.
+> 1536 among them, and the screen's motion moments (the context file's §3).
 >
 > **Pass 1 — the 375px mobile layout, default state.**
 >

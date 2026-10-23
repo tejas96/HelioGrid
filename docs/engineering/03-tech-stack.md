@@ -177,6 +177,18 @@ file it in week 1 or OTP SMS is blocked at launch.**
 | Secrets | **react-native-keychain** 10.x | Secure enclave/Keystore-backed | AsyncStorage (plaintext) |
 | Ship | TestFlight + Play internal → stores; store-review lead time on the roadmap critical path; public store listing may trail the review clock — TestFlight/Play-internal distribution is the Day-20 reality (lockstep directive — mobile is never a follow-up) | — | — |
 
+### Motion (`F7-51`; how to build it fast: `.claude/rules/ui-adherence.md`, *Motion*)
+
+A library here is added with `pnpm add`, pinned then, by the first task whose approved RFC needs it —
+never ahead of that task.
+
+| Job | Choice | Why | Rejected (reason) |
+|---|---|---|---|
+| Web UI motion | **CSS transitions and keyframes on the motion tokens** first; **Motion** (`motion`, motion.dev) only for what CSS cannot do — a shared-element or layout move, a gesture-driven spring | CSS `transform`/`opacity` runs on the compositor and costs no bundle; Motion is the smallest React library that does layout moves well | GSAP (a second animation model beside CSS) · Lottie (a second vector format beside the drawn glyphs) |
+| Phone UI motion | **`Animated` with `useNativeDriver: true`** for fades and moves; **react-native-reanimated** 4.x (with react-native-worklets, New Architecture only) when a motion follows a gesture or a layout change | Both run every frame on the UI thread, so a busy JS thread never drops one; Reanimated adds what `Animated` cannot — gesture-driven and layout motion | JS-driven `Animated` (drops frames under load) · Moti (a wrapper over Reanimated, one more layer) |
+| Shaders, web | **One WebGL2 fragment shader on one `<canvas>`** | A full-screen quad needs no engine | three.js outside the studio (an engine shipped for one quad) |
+| Shaders, phone | **@shopify/react-native-skia** (`RuntimeEffect`) | The one GPU shader path in React Native | Its native code adds several MB to the app, so the RFC that adds it states the size it adds |
+| Rendered video | **Remotion** — only for a video FILE the product plays (an explainer), rendered ahead of time | It renders React to a video file | Live UI (it is not a runtime animation library and has no React Native renderer) · its company licence is paid above a small team, so first use waits for the owner (`CLAUDE.md` §4) |
 
 ## 12. 3D studio (the flagship — nothing is compromised against it)
 

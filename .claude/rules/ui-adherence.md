@@ -59,6 +59,36 @@ how untranslated copy ships.
 - **A component never states a value it was not told** — a default that invents a limit, a size or
   a ceiling promises one thing while the caller refuses another.
 
+## Motion — calm, and never a dropped frame
+
+What motion is for and its four floors are `F7-51`; which tool does which job is
+`docs/engineering/03-tech-stack.md` §11, *Motion*. Motion lives in a `packages/ui` component: a
+screen turns it on by a prop and never animates by hand, a move between screens is the
+navigator's, and the studio's 3D scene animates in its own code under the same floors. Build it so:
+
+- **Durations and easings come from `theme.motion`** (web: `var(--dur-*)`, `var(--ease-*)`) — never a
+  typed `ms` or a bezier.
+- **Animate only `transform` and `opacity`** (and a shader's uniforms). A width, height, top, left,
+  margin or padding that animates lays the page out again on every frame. A colour may fade once,
+  over one token's duration — on the phone on the JS driver, which alone can carry it — never in a
+  loop.
+- **On the phone all other motion runs on the UI thread** — `useNativeDriver: true`, or a Reanimated
+  worklet. No `setState` per frame.
+- **Reduced motion is read through one shared hook** in `packages/ui`, with a web and a phone half —
+  never a new `AccessibilityInfo` or `matchMedia` call. The first task that needs it and finds it
+  missing builds it, joining `docs/tasks/deferred.md` D205. A one-shot CSS motion needs no hook: its
+  duration tokens fall to `1ms` on their own. A CSS loop does — at `1ms` it spins a thousand times a
+  second — unless the design system's `keyframes.css` gives it a reduced keyframe, as `hg-spin` has.
+  With it on, the end state shows at once.
+- **A loop stops** when its state ends, when its view leaves the screen and when the app or tab goes
+  to the background (web: `IntersectionObserver`, `visibilitychange`; phone: screen blur, `AppState`).
+  A loop that never stops also keeps Android from going idle, and every `qa-android` dump then fails.
+- **Nothing waits on an animation.** Content renders at once; motion runs over what is already there.
+  No `onAnimationEnd` gates a control or the data, and the rows of a list never arrive one by one.
+- **Heavy motion loads late.** A shader or a motion library loads lazily (`import()` /
+  `next/dynamic`), never in a screen's first-load bundle; one live shader canvas per screen at most,
+  with its still frame as the fallback when the GPU path is missing.
+
 ## Screens
 
 Hindi and Marathi words are written once, in the catalog, when a screen's words are built. A word
