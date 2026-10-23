@@ -17,7 +17,8 @@ prompt, the fix prompt and the checklist a drawn screen is judged by are written
 Contains: who uses the screen and where; **the screen's one job and its order of attention**;
 **the words on the screen** — every fact it carries, its kind and its form; the verbatim requirement
 rows it must satisfy; the states it needs; entry and exit points; realistic
-data volume; which numbers carry provenance tiers. Never contains: colours, spacing, typography,
+data volume; which numbers carry provenance tiers; its motion moments, as a `## Motion` section, once
+its boards are drawn (`F7-51`). Never contains: colours, spacing, typography,
 component styling — the design system owns all of that.
 
 **One job · Order of attention.** Two lines under the header, and the reason they exist is

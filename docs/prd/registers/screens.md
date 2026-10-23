@@ -906,6 +906,7 @@ Nothing below is renumbered.*
 | F7-48 | P0 | policy | policy | LAW |
 | F7-49 | P0 | engine | engine | T-FPLAT-075 |
 | F7-50 | P0 | engine | engine | T-FPLAT-075 |
+| F7-51 | P0 | policy | policy | LAW |
 
 ### docs/prd/foundations/F8-data-honesty.md
 

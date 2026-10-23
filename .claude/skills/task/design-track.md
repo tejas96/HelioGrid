@@ -57,7 +57,7 @@ second refusal goes to the owner.
    `<scratchpad>/canvas-ref/` paths, the working folder's `project/` to write its boards into, and
    the boards of any screen its brief says it reuses, read from that screen's canvas into that
    module's own working folder, never this one. A drawing agent never publishes. Main reads each
-   report, writes the decisions it names into the brief, places the new boards and their pages in
+   report, writes the decisions and motion moments it names into the brief, places the new boards and their pages in
    `project/canvas.json` as *The canvases* lays them out, and publishes them in one call.
 2. **Read, then check in parallel.** Read every board in scope into the working folder. Then start
    one `general-purpose` agent per screen, on Opus, in the foreground, all in one message. Each

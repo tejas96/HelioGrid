@@ -15,7 +15,10 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
    (performance, accessibility, security), or `none stated`.
 5. **Proposal** — the flow end to end (request, user or event); key decisions, one reason each; a
    real alternative, only when one exists, with its trade-off; what is reused, by path; the twin
-   screen on the other platform and which parts are shared (`.claude/rules/screen-parts.md`).
+   screen on the other platform and which parts are shared (`.claude/rules/screen-parts.md`); on a
+   screen task, its motion moments (`F7-51`) — `moment | what moves | the design system's motion |
+   the component that owns it` — from the brief's `## Motion` section, or chosen here when the
+   brief has none, each one earning its place by the continuity it shows; or `None — <reason>`.
 6. **Frame map** (screen task) — one row per board frame: `frame | state that shows it | element →
    component + props + copy key + the tokens, size and gaps the board gives it`, read from the board's code in
    `.design/<module>/`, under the module's lock. `qa-web` compares the app with these values. A
@@ -81,3 +84,4 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
 | jobs | a workflow or job retried · run twice · failing half way |
 | billing | a lapsed tenant still reads and exports (`CLAUDE.md` §9) |
 | release | an old app version reads the new shape, and new code reads the old |
+| motion | reduced motion on shows the end state at once — a component spec on the web (`page.emulateMedia({ reducedMotion: 'reduce' })`), a live row on each phone, where Main turns the setting on before the row and off after it (Android: `adb shell settings put global transition_animation_scale 0`, back to `1`; iOS: the simulator's Settings → Accessibility → Motion → Reduce Motion) · nothing waits on an animation: a tap during it lands · a loop stops when its state ends, off screen and in the background · no dropped frames: Android `adb shell dumpsys gfxinfo <package>` janky frames no higher with motion on than with it off — the emulator is a proxy, and the mid-range phone of `F7-51` is the owner's check — and on the `web-built` server in Chromium no long animation frame while it runs |
