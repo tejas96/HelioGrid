@@ -1,8 +1,8 @@
 import type { NotificationPreference } from '@heliogrid/contracts';
 import {
   mayMute,
-  NOTIFICATION_TYPE_GROUPS,
   type NotificationTypeGroup,
+  pushGroupsShownTo,
   type RolePreset,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
@@ -11,11 +11,12 @@ import { NotificationPreferencesRepository } from './notification.preferences.re
 /**
  * A person's push mutes, read and written (`F6-15`).
  *
- * Every group is answered, every time — a person who has stored nothing still sees five rows,
- * because the preferences surface asks what is possible and not what happens to be on disk. The
- * rule about which groups may be muted is `packages/domain`'s and is applied on BOTH sides here:
- * the write refuses what the read would disregard, so a row that outlives a preset change can
- * never quietly silence something it may not.
+ * Every group the person is shown is answered, every time — a person who has stored nothing still
+ * sees a row per group, because the preferences surface asks what is possible and not what happens
+ * to be on disk. Which groups are shown and which may be muted are `packages/domain`'s rules, and
+ * both are applied on BOTH sides here: the write refuses a group the read does not show and a mute
+ * the read would disregard, so a row that outlives a preset change can never quietly silence
+ * something it may not.
  */
 @Injectable()
 export class NotificationPreferencesService {
@@ -32,12 +33,13 @@ export class NotificationPreferencesService {
   ): Promise<NotificationPreference[]> {
     const rows = await this.stored.mutedGroups(tenantId, userRef);
     const muted = new Set(rows.filter((row) => row.pushMuted).map((row) => row.group));
-    return NOTIFICATION_TYPE_GROUPS.map((group) => this.answer(group, muted.has(group), presets));
+    return pushGroupsShownTo(presets).map((group) => this.answer(group, muted.has(group), presets));
   }
 
   /**
-   * Null where the rule refuses the change — the route answers 403 with it, and the row is never
-   * written, so a refusal leaves no trace to disregard later.
+   * Null where a rule refuses the change — a group the person is not shown, or a mute they may not
+   * make. The route answers 403 with it, and the row is never written, so a refusal leaves no trace
+   * to disregard later.
    */
   async write(
     tenantId: string,
@@ -46,6 +48,7 @@ export class NotificationPreferencesService {
     group: NotificationTypeGroup,
     pushMuted: boolean,
   ): Promise<NotificationPreference | null> {
+    if (!pushGroupsShownTo(presets).includes(group)) return null;
     if (pushMuted && !mayMute(group, presets)) return null;
     await this.stored.setMuted(tenantId, userRef, group, pushMuted);
     return this.answer(group, pushMuted, presets);

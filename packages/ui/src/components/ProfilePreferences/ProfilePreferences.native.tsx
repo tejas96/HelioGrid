@@ -1,32 +1,87 @@
 import { theme } from '@heliogrid/theme';
-import { StyleSheet, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { AccessibilityInfo, findNodeHandle, StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Avatar } from '../Avatar/Avatar.native';
+import { Banner } from '../Banner/Banner.native';
+import { BannerAction } from '../Banner/BannerAction.native';
 import { Badge } from '../Chip/Chip.native';
 import { ChipGroup } from '../ChipGroup/ChipGroup.native';
+import { Explainer } from '../Explainer/Explainer.native';
 import { ListRow } from '../ListRow/ListRow.native';
+import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup.native';
 import { SegmentedControl } from '../SegmentedControl/SegmentedControl.native';
 import { SettingsCard } from '../SettingsSection/SettingsSection.native';
+import { Switch } from '../Switch/Switch.native';
 import { ValueSource } from '../ValueSource/ValueSource.native';
-import { languageOf, roleBadges, unitOptions, unitsOf } from './ProfilePreferences.logic';
+import {
+  languageOf,
+  PROFILE_PREFERENCES_LOADING,
+  pushSwitchWords,
+  roleBadges,
+  unitOptions,
+  unitsOf,
+} from './ProfilePreferences.logic';
 import type { ProfilePreferencesProps } from './ProfilePreferences.types';
 
 /**
- * The phone's page (`m-default`): the account tile, then the language and the units, each with the
- * line that says where its value comes from. The title is the settings page bar's, not the page's.
+ * The phone's page (`m-default`): the account tile, the language and the units, each with the line
+ * that says where its value comes from, then a push switch per group. Until the push read answers
+ * the page is its loading bars (`m-loading`) or its banner (`m-error`). The title is the settings
+ * page bar's, not the page's.
  */
-export function ProfilePreferences({
+export function ProfilePreferences(props: ProfilePreferencesProps) {
+  const { words, push, onRetry } = props;
+  /* *Try again* leaves with its banner; the page that follows takes the screen reader's focus. */
+  const [retried, setRetried] = useState(false);
+  if (push.surface === 'loading') {
+    return <LoadingBars label={words.loading} bars={PROFILE_PREFERENCES_LOADING} />;
+  }
+  if (push.surface === 'error') {
+    return (
+      <Banner
+        kind="state"
+        tone="danger"
+        title={words.loadFailed.title}
+        action={
+          <BannerAction
+            onClick={() => {
+              setRetried(true);
+              onRetry();
+            }}
+          >
+            {words.loadFailed.retry}
+          </BannerAction>
+        }
+      >
+        {words.loadFailed.body}
+      </Banner>
+    );
+  }
+  return <Page {...props} takeFocus={retried} />;
+}
+
+function Page({
   words,
   view,
   name,
   onLanguage,
   onUnits,
-}: ProfilePreferencesProps) {
+  push,
+  onPush,
+  takeFocus,
+}: ProfilePreferencesProps & { takeFocus: boolean }) {
+  const firstHeading = useRef<View>(null);
+  useEffect(() => {
+    if (!takeFocus) return;
+    const tag = findNodeHandle(firstHeading.current);
+    if (tag !== null) AccessibilityInfo.setAccessibilityFocus(tag);
+  }, [takeFocus]);
   return (
     <View style={styles.page}>
       <View style={styles.section}>
-        <Overline>{words.account}</Overline>
+        <Overline headingRef={firstHeading}>{words.account}</Overline>
         <SettingsCard style={styles.tile}>
           <ListRow
             style={styles.row}
@@ -86,13 +141,56 @@ export function ProfilePreferences({
           <ValueSource level={view.units.source} layerName={words.units.source} />
         </View>
       </View>
+      <View style={styles.section}>
+        <View style={styles.heading}>
+          <Overline>{words.push.title}</Overline>
+          <Explainer
+            label={words.push.about.label}
+            pages={words.push.about.line}
+            density="functional"
+          />
+        </View>
+        <View style={styles.switches}>
+          {push.switches.map((one) => {
+            const { label, error } = pushSwitchWords(words, push, one);
+            if (!one.locked) {
+              return (
+                <Switch
+                  key={one.group}
+                  label={label}
+                  checked={one.on}
+                  onChange={() => onPush(one.group)}
+                  error={error}
+                />
+              );
+            }
+            /* The name sits outside the switch, in primary text with its Explainer beside it; the
+               switch carries it as its spoken name, so the words are not read twice. */
+            return (
+              <View key={one.group} style={styles.locked}>
+                <Switch checked={one.on} disabled ariaLabel={label} />
+                <View style={styles.lockedName}>
+                  <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+                    <Text variant="body">{label}</Text>
+                  </View>
+                  <Explainer
+                    label={words.push.whyBilling.label}
+                    pages={words.push.whyBilling.line}
+                    density="functional"
+                  />
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      </View>
     </View>
   );
 }
 
-function Overline({ children }: { children: string }) {
+function Overline({ children, headingRef }: { children: string; headingRef?: React.Ref<View> }) {
   return (
-    <View accessibilityRole="header">
+    <View ref={headingRef} accessibilityRole="header">
       <Text variant="overline" color="secondary">
         {children}
       </Text>
@@ -118,4 +216,16 @@ const styles = StyleSheet.create({
   },
   hairline: { height: 1, backgroundColor: theme.colors['line-soft'] },
   control: { gap: theme.spacing['sp-2'] },
+  heading: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-1'] },
+  switches: { gap: theme.spacing['sp-1'] },
+  locked: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'] },
+  /* The board's `minmax(0, 1fr)` column: a long translated name wraps inside the screen. */
+  lockedName: {
+    flex: 1,
+    minWidth: 0,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: theme.spacing['sp-1'],
+  },
 });

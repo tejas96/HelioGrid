@@ -1,5 +1,6 @@
 import type {
   Notification,
+  NotificationPreference,
   NotificationReadFilter,
   NotificationTypeGroup,
   Paginated,
@@ -43,6 +44,10 @@ export interface NotificationRepository {
   registerDevice(device: RegisterDevice, signal?: AbortSignal): Promise<void>;
   /** On sign-out, or when the person turns push off at the platform. Idempotent. */
   forgetDevice(token: string, signal?: AbortSignal): Promise<void>;
+  /** The reader's push switches: one row per group they are shown, and which may change (`F6-15`). */
+  preferences(signal?: AbortSignal): Promise<readonly NotificationPreference[]>;
+  /** Push on or off for one group — never the record, which always lands. Answers the stored row. */
+  setPreference(group: NotificationTypeGroup, pushMuted: boolean): Promise<NotificationPreference>;
 }
 
 /** The types are INFERRED from the contract, never a hand-written copy of the response. */
@@ -113,6 +118,27 @@ export function createNotificationRepository(api: ApiClient): NotificationReposi
           fetchOptions: { signal },
         });
         if (res.status !== 200) throw toApiError(res);
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async preferences(signal) {
+      try {
+        const res = await api.notification.preferences({ fetchOptions: { signal } });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body.preferences;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async setPreference(group, pushMuted) {
+      try {
+        const res = await api.notification.setPreference({
+          params: { group },
+          body: { pushMuted },
+        });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body;
       } catch (error) {
         throw normalizeClientError(error);
       }

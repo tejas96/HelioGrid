@@ -4,6 +4,7 @@ import {
   PROFILE_PREFERENCES,
   presetName,
   settingsRowName,
+  TYPE_GROUP_NAME,
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
@@ -15,7 +16,9 @@ import { passTheOwnersMark } from '../support/shell';
 /**
  * `/more/profile` (`SCR-M01-11`): the person's own page — their name and role, then the languages
  * in their own scripts and the measurements, each applied as it is touched and kept by the server
- * across a reload, with no Save; a language redraws the page in place (`F3-03`, `F3-04`, `F3-23`).
+ * across a reload, with no Save; a language redraws the page in place (`F3-03`, `F3-04`, `F3-23`);
+ * a push group switched off stays off across a reload and a language change, and the Owner's
+ * Billing stays on, locked (`F6-15`).
  */
 const en = await createTranslator('en');
 const hi = await createTranslator('hi');
@@ -64,4 +67,29 @@ test('a person changes language and units in place, and a reload keeps both', as
   await expect(page).toHaveURL(/\/more\/profile$/);
   await page.reload();
   await expect(hindiTitle).toBeVisible();
+});
+
+test('the Owner turns a push group off, and it stays off; Billing stays on', async ({ page }) => {
+  await createCompany(page, en, freshMobile());
+  await passTheOwnersMark(page, en);
+  await page.goto('/more/profile');
+
+  const billing = page.getByRole('switch', { name: en.t(TYPE_GROUP_NAME.billing) });
+  await expect(billing).toBeChecked();
+  await expect(billing).toBeDisabled();
+  const payments = page.getByRole('switch', { name: en.t(TYPE_GROUP_NAME.payments) });
+  await expect(payments).toBeChecked();
+  await page.getByText(en.t(TYPE_GROUP_NAME.payments), { exact: true }).click();
+  await expect(payments).not.toBeChecked();
+
+  await page.reload();
+  await expect(payments).not.toBeChecked();
+  await page
+    .getByRole('radiogroup', { name: W('language') })
+    .getByRole('radio', { name: LANGUAGE_META.hi.endonym })
+    .click();
+  await expect(
+    page.getByRole('switch', { name: hi.t(TYPE_GROUP_NAME.payments) }),
+  ).not.toBeChecked();
+  await expect(page.getByRole('switch', { name: hi.t(TYPE_GROUP_NAME.billing) })).toBeChecked();
 });

@@ -6,6 +6,7 @@
 
 import {
   type FormatPack,
+  type NotificationTypeGroup,
   type PreferenceSource,
   type ProfilePreference,
   type ProfilePreferencesView,
@@ -15,8 +16,10 @@ import {
 } from '@heliogrid/domain';
 import { languageOptions } from '../languages';
 import type { Translator } from '../runtime';
+import { TYPE_GROUP_NAME } from './notifications';
 import { settingsRowName } from './settings';
 import { presetName } from './shell';
+import { SIGN_IN } from './sign-in';
 
 export const PROFILE_PREFERENCES = {
   account: /*i18n*/ { id: 'Your account' },
@@ -31,6 +34,18 @@ export const PROFILE_PREFERENCES = {
   marketDefault: /*i18n*/ { id: 'Default for {market}' },
   yourChoice: /*i18n*/ { id: 'Your choice' },
   notSaved: /*i18n*/ { id: 'Not saved. Try again.' },
+  push: /*i18n*/ { id: 'Push notifications' },
+  aboutPush: /*i18n*/ { id: 'About push' },
+  aboutPushLine: /*i18n*/ {
+    id: 'Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way.',
+  },
+  whyBilling: /*i18n*/ { id: 'Why Billing stays on' },
+  whyBillingLine: /*i18n*/ {
+    id: 'Always sent, and it cannot be muted: billing events are audit-relevant for the owner account.',
+  },
+  loading: /*i18n*/ { id: 'Loading your preferences' },
+  loadFailed: /*i18n*/ { id: "Your preferences didn't load" },
+  nothingChanged: /*i18n*/ { id: 'Nothing you saved has changed.' },
 };
 
 /** What the words are about, beside the view: the reader's language, the market, a refused save. */
@@ -69,6 +84,17 @@ export interface ProfilePreferencesWords {
     readonly source: string;
     readonly error: string | null;
   };
+  readonly push: {
+    readonly title: string;
+    readonly about: { readonly label: string; readonly line: string };
+    readonly whyBilling: { readonly label: string; readonly line: string };
+    readonly groups: Readonly<Record<NotificationTypeGroup, string>>;
+    /** Under a switch whose last write was refused (D219). */
+    readonly notSaved: string;
+  };
+  /** The push read's frames: its loading bars' name, and its error banner. */
+  readonly loading: string;
+  readonly loadFailed: { readonly title: string; readonly body: string; readonly retry: string };
 }
 
 export function profilePreferencesWords(
@@ -107,6 +133,31 @@ export function profilePreferencesWords(
         }),
       ),
       error: facts.refused.includes('units') ? notSaved : null,
+    },
+    push: {
+      title: translate(PROFILE_PREFERENCES.push),
+      about: {
+        label: translate(PROFILE_PREFERENCES.aboutPush),
+        line: translate(PROFILE_PREFERENCES.aboutPushLine),
+      },
+      whyBilling: {
+        label: translate(PROFILE_PREFERENCES.whyBilling),
+        line: translate(PROFILE_PREFERENCES.whyBillingLine),
+      },
+      groups: {
+        sales: translate(TYPE_GROUP_NAME.sales),
+        delivery: translate(TYPE_GROUP_NAME.delivery),
+        payments: translate(TYPE_GROUP_NAME.payments),
+        team: translate(TYPE_GROUP_NAME.team),
+        billing: translate(TYPE_GROUP_NAME.billing),
+      },
+      notSaved,
+    },
+    loading: translate(PROFILE_PREFERENCES.loading),
+    loadFailed: {
+      title: translate(PROFILE_PREFERENCES.loadFailed),
+      body: translate(PROFILE_PREFERENCES.nothingChanged),
+      retry: translate(SIGN_IN.tryAgain),
     },
   };
 }

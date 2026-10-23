@@ -398,6 +398,11 @@ msgid "About one account per number"
 msgstr "एक नंबर, एक खाते के बारे में"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:38
+msgid "About push"
+msgstr "पुश के बारे में"
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:36
 msgid "About roles"
 msgstr "भूमिकाओं के बारे में"
@@ -521,6 +526,11 @@ msgstr "सभी"
 #: src/copy/company-signup.ts:22
 msgid "Already on HelioGrid?"
 msgstr "पहले से HelioGrid पर हैं?"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:43
+msgid "Always sent, and it cannot be muted: billing events are audit-relevant for the owner account."
+msgstr "हमेशा भेजा जाता है, और इसे बंद नहीं किया जा सकता: बिलिंग की घटनाएँ मालिक के खाते के ऑडिट के लिए ज़रूरी हैं।"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:59
@@ -976,7 +986,7 @@ msgid "Decline this invite?"
 msgstr "यह आमंत्रण अस्वीकार करें?"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:31
+#: src/copy/profile-preferences.ts:34
 msgid "Default for {market}"
 msgstr "{market} के लिए डिफ़ॉल्ट"
 
@@ -1091,7 +1101,7 @@ msgid "Factories, warehouses and offices — bigger rooftops, sold to a business
 msgstr "कारखाने, गोदाम और दफ़्तर — बड़ी छतें, किसी व्यवसाय को बेची जाती हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:29
+#: src/copy/profile-preferences.ts:32
 msgid "Feet"
 msgstr "फ़ुट"
 
@@ -1386,13 +1396,13 @@ msgid "Keep the invite"
 msgstr "आमंत्रण रखें"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:26
+#: src/copy/profile-preferences.ts:29
 #: src/copy/setup-language.ts:21
 msgid "Language"
 msgstr "भाषा"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:23
+#: src/copy/profile-preferences.ts:26
 msgid "Language and units"
 msgstr "भाषा और इकाइयाँ"
 
@@ -1425,6 +1435,11 @@ msgstr "आपकी कंपनी प्रोफ़ाइल लोड ह�
 #: src/copy/first-run-profile.ts:29
 msgid "Loading your name"
 msgstr "आपका नाम लोड हो रहा है"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:46
+msgid "Loading your preferences"
+msgstr "आपकी पसंद लोड हो रही है"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:13
@@ -1472,12 +1487,12 @@ msgid "Measured"
 msgstr "मापा गया"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:27
+#: src/copy/profile-preferences.ts:30
 msgid "Measurements"
 msgstr "माप"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:28
+#: src/copy/profile-preferences.ts:31
 msgid "Metres"
 msgstr "मीटर"
 
@@ -1625,7 +1640,7 @@ msgid "Not saved · our end · nothing typed is lost"
 msgstr "सहेजा नहीं गया · गड़बड़ी हमारी ओर से · लिखा हुआ कुछ भी खोया नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:33
+#: src/copy/profile-preferences.ts:36
 msgid "Not saved. Try again."
 msgstr "सेव नहीं हुआ। फिर से कोशिश करें।"
 
@@ -1698,6 +1713,11 @@ msgstr "कुछ नहीं खोया — फिर से कोशिश
 #: src/copy/shell.ts:56
 msgid "Nothing you captured on this device is lost. Ask your admin to restore your access, or sign in with another account."
 msgstr "इस डिवाइस पर आपने जो कुछ दर्ज किया है, वह खोया नहीं है। अपनी पहुँच वापस पाने के लिए अपने एडमिन से कहें, या दूसरे खाते से साइन इन करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:48
+msgid "Nothing you saved has changed."
+msgstr "आपने जो सेव किया था, उसमें कुछ नहीं बदला।"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:26
@@ -1924,6 +1944,11 @@ msgstr "अस्थायी"
 #: src/copy/company-signup.ts:45
 msgid "Pune"
 msgstr "पुणे"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:37
+msgid "Push notifications"
+msgstr "पुश सूचनाएँ"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:42
@@ -2739,6 +2764,11 @@ msgid "Try the photo again"
 msgstr "फ़ोटो फिर से भेजें"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:39
+msgid "Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way."
+msgstr "किसी समूह का पुश रोकने के लिए उसे बंद करें। हर सूचना फिर भी HelioGrid में आती है — सूचनाएँ में उसका रिकॉर्ड हर हाल में रहता है।"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:123
 msgid "Two presets, one home"
 msgstr "दो प्रीसेट, एक होम"
@@ -3011,6 +3041,11 @@ msgid "Who you sell to"
 msgstr "आप किसे बेचते हैं"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:42
+msgid "Why Billing stays on"
+msgstr "बिलिंग चालू क्यों रहता है"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:20
 msgid "Why we ask"
 msgstr "हम क्यों पूछते हैं"
@@ -3119,7 +3154,7 @@ msgstr "आपकी पहुँच हटा दी गई है"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:37
-#: src/copy/profile-preferences.ts:22
+#: src/copy/profile-preferences.ts:25
 msgid "Your account"
 msgstr "आपका खाता"
 
@@ -3139,7 +3174,7 @@ msgid "Your answers set the starting point for every proposal HelioGrid builds."
 msgstr "आपके जवाब HelioGrid के बनाए हर प्रस्ताव का शुरुआती बिंदु तय करते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:32
+#: src/copy/profile-preferences.ts:35
 msgid "Your choice"
 msgstr "आपकी पसंद"
 
@@ -3186,7 +3221,7 @@ msgid "Your current plan doesn't include this."
 msgstr "आपके मौजूदा प्लान में यह शामिल नहीं है।"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:30
+#: src/copy/profile-preferences.ts:33
 msgid "Your device's language"
 msgstr "आपके डिवाइस की भाषा"
 
@@ -3287,6 +3322,11 @@ msgid "Your number"
 msgstr "आपका नंबर"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:47
+msgid "Your preferences didn't load"
+msgstr "आपकी पसंद लोड नहीं हुई"
+
+#. js-lingui-explicit-id
 #: src/copy/first-run-profile.ts:50
 msgid "Your profile did not save"
 msgstr "आपकी प्रोफ़ाइल सहेजी नहीं गई"
@@ -3307,12 +3347,12 @@ msgid "Your request may already be with the owner."
 msgstr "आपका अनुरोध शायद मालिक तक पहुँच चुका हो।"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:24
+#: src/copy/profile-preferences.ts:27
 msgid "Your role"
 msgstr "आपकी भूमिका"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:25
+#: src/copy/profile-preferences.ts:28
 msgid "Your roles"
 msgstr "आपकी भूमिकाएँ"
 

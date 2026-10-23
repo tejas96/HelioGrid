@@ -1,6 +1,11 @@
 import { FOUNDER_ROLE, type RolePreset } from '../authz/roles';
 import { NOTIFICATION_REGISTRY, typeGroupOf } from './registry';
-import type { NotificationChannel, NotificationType, NotificationTypeGroup } from './types';
+import {
+  NOTIFICATION_TYPE_GROUPS,
+  type NotificationChannel,
+  type NotificationType,
+  type NotificationTypeGroup,
+} from './types';
 
 /**
  * Whether a push is owed (`F6-15`).
@@ -21,6 +26,19 @@ import type { NotificationChannel, NotificationType, NotificationTypeGroup } fro
  */
 export function mayMute(group: NotificationTypeGroup, presets: readonly RolePreset[]): boolean {
   return !(group === 'billing' && presets.includes(FOUNDER_ROLE));
+}
+
+/**
+ * The groups a person is offered a switch for, in the registry's order (`F6-15`; `SCR-M01-11`
+ * ruling 3). Every billing type addresses only the EPC Owner, so billing is offered to the Owner
+ * alone — locked, by `mayMute` — and a person without the preset never sees it.
+ */
+export function pushGroupsShownTo(
+  presets: readonly RolePreset[],
+): readonly NotificationTypeGroup[] {
+  return NOTIFICATION_TYPE_GROUPS.filter(
+    (group) => group !== 'billing' || presets.includes(FOUNDER_ROLE),
+  );
 }
 
 /**

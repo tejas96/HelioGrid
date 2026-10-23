@@ -398,6 +398,11 @@ msgid "About one account per number"
 msgstr "About one account per number"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:38
+msgid "About push"
+msgstr "About push"
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:36
 msgid "About roles"
 msgstr "About roles"
@@ -521,6 +526,11 @@ msgstr "All"
 #: src/copy/company-signup.ts:22
 msgid "Already on HelioGrid?"
 msgstr "Already on HelioGrid?"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:43
+msgid "Always sent, and it cannot be muted: billing events are audit-relevant for the owner account."
+msgstr "Always sent, and it cannot be muted: billing events are audit-relevant for the owner account."
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:59
@@ -976,7 +986,7 @@ msgid "Decline this invite?"
 msgstr "Decline this invite?"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:31
+#: src/copy/profile-preferences.ts:34
 msgid "Default for {market}"
 msgstr "Default for {market}"
 
@@ -1091,7 +1101,7 @@ msgid "Factories, warehouses and offices — bigger rooftops, sold to a business
 msgstr "Factories, warehouses and offices — bigger rooftops, sold to a business."
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:29
+#: src/copy/profile-preferences.ts:32
 msgid "Feet"
 msgstr "Feet"
 
@@ -1386,13 +1396,13 @@ msgid "Keep the invite"
 msgstr "Keep the invite"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:26
+#: src/copy/profile-preferences.ts:29
 #: src/copy/setup-language.ts:21
 msgid "Language"
 msgstr "Language"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:23
+#: src/copy/profile-preferences.ts:26
 msgid "Language and units"
 msgstr "Language and units"
 
@@ -1425,6 +1435,11 @@ msgstr "Loading your company profile"
 #: src/copy/first-run-profile.ts:29
 msgid "Loading your name"
 msgstr "Loading your name"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:46
+msgid "Loading your preferences"
+msgstr "Loading your preferences"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:13
@@ -1472,12 +1487,12 @@ msgid "Measured"
 msgstr "Measured"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:27
+#: src/copy/profile-preferences.ts:30
 msgid "Measurements"
 msgstr "Measurements"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:28
+#: src/copy/profile-preferences.ts:31
 msgid "Metres"
 msgstr "Metres"
 
@@ -1625,7 +1640,7 @@ msgid "Not saved · our end · nothing typed is lost"
 msgstr "Not saved · our end · nothing typed is lost"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:33
+#: src/copy/profile-preferences.ts:36
 msgid "Not saved. Try again."
 msgstr "Not saved. Try again."
 
@@ -1698,6 +1713,11 @@ msgstr "Nothing was lost — press Save and continue to try again."
 #: src/copy/shell.ts:56
 msgid "Nothing you captured on this device is lost. Ask your admin to restore your access, or sign in with another account."
 msgstr "Nothing you captured on this device is lost. Ask your admin to restore your access, or sign in with another account."
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:48
+msgid "Nothing you saved has changed."
+msgstr "Nothing you saved has changed."
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:26
@@ -1924,6 +1944,11 @@ msgstr "Provisional"
 #: src/copy/company-signup.ts:45
 msgid "Pune"
 msgstr "Pune"
+
+#. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:37
+msgid "Push notifications"
+msgstr "Push notifications"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:42
@@ -2739,6 +2764,11 @@ msgid "Try the photo again"
 msgstr "Try the photo again"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:39
+msgid "Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way."
+msgstr "Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way."
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:123
 msgid "Two presets, one home"
 msgstr "Two presets, one home"
@@ -3011,6 +3041,11 @@ msgid "Who you sell to"
 msgstr "Who you sell to"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:42
+msgid "Why Billing stays on"
+msgstr "Why Billing stays on"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:20
 msgid "Why we ask"
 msgstr "Why we ask"
@@ -3119,7 +3154,7 @@ msgstr "Your access was removed"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:37
-#: src/copy/profile-preferences.ts:22
+#: src/copy/profile-preferences.ts:25
 msgid "Your account"
 msgstr "Your account"
 
@@ -3139,7 +3174,7 @@ msgid "Your answers set the starting point for every proposal HelioGrid builds."
 msgstr "Your answers set the starting point for every proposal HelioGrid builds."
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:32
+#: src/copy/profile-preferences.ts:35
 msgid "Your choice"
 msgstr "Your choice"
 
@@ -3186,7 +3221,7 @@ msgid "Your current plan doesn't include this."
 msgstr "Your current plan doesn't include this."
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:30
+#: src/copy/profile-preferences.ts:33
 msgid "Your device's language"
 msgstr "Your device's language"
 
@@ -3287,6 +3322,11 @@ msgid "Your number"
 msgstr "Your number"
 
 #. js-lingui-explicit-id
+#: src/copy/profile-preferences.ts:47
+msgid "Your preferences didn't load"
+msgstr "Your preferences didn't load"
+
+#. js-lingui-explicit-id
 #: src/copy/first-run-profile.ts:50
 msgid "Your profile did not save"
 msgstr "Your profile did not save"
@@ -3307,12 +3347,12 @@ msgid "Your request may already be with the owner."
 msgstr "Your request may already be with the owner."
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:24
+#: src/copy/profile-preferences.ts:27
 msgid "Your role"
 msgstr "Your role"
 
 #. js-lingui-explicit-id
-#: src/copy/profile-preferences.ts:25
+#: src/copy/profile-preferences.ts:28
 msgid "Your roles"
 msgstr "Your roles"
 

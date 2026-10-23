@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { channelsOwed, mayMute, pushMuted } from '../../src/notifications/mutes';
+import { channelsOwed, mayMute, pushGroupsShownTo, pushMuted } from '../../src/notifications/mutes';
 import { typeGroupOf } from '../../src/notifications/registry';
 import { NOTIFICATION_TYPE_GROUPS, NOTIFICATION_TYPES } from '../../src/notifications/types';
 
@@ -23,6 +23,19 @@ describe('mayMute — which groups a person may switch off (F6-15)', () => {
     expect(mayMute('billing', REP)).toBe(true);
     expect(mayMute('billing', ['sales_manager', 'epc_owner'])).toBe(false);
     expect(mayMute('billing', [])).toBe(true);
+  });
+});
+
+describe('pushGroupsShownTo — the groups a person is offered (F6-15, brief ruling 3)', () => {
+  const FOUR = ['sales', 'delivery', 'payments', 'team'];
+
+  it.each([
+    ['a Sales Executive', REP, FOUR],
+    ['a person with no preset', [], FOUR],
+    ['an EPC Owner', OWNER, [...FOUR, 'billing']],
+    ['a Sales Manager who is also the Owner', ['sales_manager', 'epc_owner'], [...FOUR, 'billing']],
+  ] as const)('offers %s exactly these groups, in the registry order', (_, presets, shown) => {
+    expect(pushGroupsShownTo(presets)).toEqual(shown);
   });
 });
 

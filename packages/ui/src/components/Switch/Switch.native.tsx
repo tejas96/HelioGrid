@@ -28,6 +28,7 @@ export function Switch({
   checked = false,
   onChange,
   label,
+  ariaLabel,
   error,
   disabled = false,
   style,
@@ -48,7 +49,7 @@ export function Switch({
 
   const control = (
     <Pressable
-      accessibilityLabel={label}
+      accessibilityLabel={ariaLabel ?? label}
       /* A SWITCH SAYS IT IS A SWITCH, AND SAYS WHICH WAY IT IS SET. The web half is
          `role="switch" aria-checked={checked}` on the hidden input; on touch the only other
          channel is the track fill and the thumb's position — status by colour alone (F7-12) —

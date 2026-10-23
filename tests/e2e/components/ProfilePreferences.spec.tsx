@@ -27,7 +27,7 @@ const MARKET_DEFAULT = en.t(PROFILE_PREFERENCES.marketDefault, { market: IN_FORM
 const ROLE = (preset: Parameters<typeof presetName>[1]) => presetName(en.t, preset);
 /** Every box that holds words — the boxes a clipped line would show in. */
 const TEXT =
-  '.hg-profile-preferences-title, .hg-profile-preferences-overline, .hg-list-row-title, .hg-chip, .hg-option-card-titles, .hg-segmented-control-segment, .hg-value-source, .hg-settings-section-title, .hg-settings-section-label, .hg-settings-section-caption, .hg-profile-preferences-name-words';
+  '.hg-profile-preferences-title, .hg-profile-preferences-overline, .hg-list-row-title, .hg-chip, .hg-option-card-titles, .hg-segmented-control-segment, .hg-value-source, .hg-settings-section-title, .hg-settings-section-label, .hg-settings-section-caption, .hg-profile-preferences-name-words, .hg-switch-label';
 const PICTURES = join(import.meta.dirname, '../../../.qa/components/profile-preferences');
 
 test.describe('at 375', () => {
@@ -155,7 +155,7 @@ test.describe('at 1536', () => {
     const card = await mount(<ProfilePreferencesAsHeld reader="en" />);
     await expect(card.getByRole('heading', { level: 1, name: TITLE })).toBeVisible();
     const sections = card.locator('.hg-settings-section');
-    await expect(sections).toHaveCount(2);
+    await expect(sections).toHaveCount(3);
     await expect(sections.first()).toHaveCSS('box-shadow', await resolvedShadow(page, '--e2'));
     await expect(sections.first()).toHaveCSS(
       'border-top-left-radius',
@@ -164,7 +164,8 @@ test.describe('at 1536', () => {
     const page760 = await card.locator('.hg-profile-preferences').boundingBox();
     expect(page760?.width).toBeLessThanOrEqual(760);
     await expect(card.getByRole('heading', { level: 2, name: W('account') })).toBeVisible();
-    await expect(card.locator('.hg-settings-section-row')).toHaveCount(2);
+    // Language, units, and the four push groups a Sales Executive is shown.
+    await expect(card.locator('.hg-settings-section-row')).toHaveCount(6);
     for (const row of await card.locator('.hg-settings-section-row').all()) {
       expect((await row.boundingBox())?.height).toBeGreaterThanOrEqual(64);
     }

@@ -599,9 +599,12 @@ Refusal (D219, no frame): the failing control's own `error` prop — `notSaved` 
 | a | add | `tests/e2e/components/ProfilePreferences.{story,spec}.tsx` (covers `SettingsSection` too) · `tests/e2e/web/more-profile.spec.ts` · modify `tests/invariants/src/e2e-flow-per-screen.ts` (the phone screen `profile` held, as every inside screen is: no Maestro flow lands Create company on iOS, D5) | proof; `more-[row].spec.ts` and `more.spec.ts` assert only the address and the side list, and hold unchanged |
 | a | modify | `docs/tasks/MS-studio-c.md` (`T-MS-302`) · `docs/tasks/deferred.md` · `docs/ux/briefs/SCR-M01-11-profile-preferences.md` | AC-2's live half moves; the deferred rows of §14; the owner's rulings |
 | b | modify | `packages/domain/src/notifications/mutes.ts` · `index.ts` · `packages/domain/tests/notifications/mutes.test.ts` | `pushGroupsShownTo` and its export |
-| b | modify | `apps/api/src/modules/notification/notification.preferences.service.ts` · `notification.controller.ts` (its "five rows" comment) · `apps/api/tests/notifications/preferences.test.ts` | list (and, per Decision 3, write) only shown groups |
+| b | modify | `apps/api/src/modules/notification/notification.preferences.service.ts` · `notification.controller.ts` (its "five rows" comment) · `packages/contracts/src/notification.ts` (the 403's comment) | list (and, per Decision 3, write) only shown groups |
 | b | modify | `packages/data/src/notification/repository.ts` · `cache/keys.ts` · `src/react/index.ts` · add `src/react/use-push-preferences.ts` | the client, a group's writes in order |
 | b | modify | `ProfilePreferences`, the copy, the view-model, both screens, the specs and flow above | push section, loading, error, locked, muted, refusals |
+| b | add | `apps/api/tests/notifications/preferences-shown.test.ts` | the non-Owner's four groups and refused Billing write, apart because `preferences.test.ts` would pass 300 lines |
+| b | add | `tests/e2e/components/ProfilePreferences.push.spec.tsx` | the push frames, apart because the page's spec would pass 300 lines |
+| b | modify | `packages/ui/src/components/Switch/{types,tsx,native.tsx}` | `ariaLabel`: the locked Billing switch's name sits outside it in primary text beside *Why Billing stays on* (`m-locked`), where a disabled switch's own label turns secondary |
 | c | — | per Decision 1 — at least `GET` of the person's own photo, the name and photo editor, `FirstRunProfile`'s parts reused | Edit name and photo |
 
 **8. Diagram**
@@ -692,10 +695,10 @@ Accounts: `…901` (web), `…902` (iOS), `…903` (Android) are Owners; Sales E
 | P6u | AC-6u | main-dev | unit | `packages/domain/tests/shell/profile-preferences.test.ts` "a language that %s reads %s" and "a unit that is %s reads %s" | — |
 | P7w | AC-7w | qa-web | web | *Payments* off, pick मराठी → Marathi, *Payments* still off (part b) | `…906` |
 | P7i / P7a | AC-7i / AC-7a | qa-ios / qa-android | phone | as P7w | `…907` / `…908` |
-| P8u | AC-8u | main-dev | api test | `preferences.test.ts` "a non-Owner is not offered Billing", seen red once | test db |
+| P8u | AC-8u | main-dev | api test | `apps/api/tests/notifications/preferences-shown.test.ts` "a non-Owner is not offered Billing — four groups, every one mutable" and "refuses a non-Owner any Billing write", seen red once | test db |
 | P8 | AC-8api | qa-api | api | `…910`: `GET /notifications/preferences` → 200, four rows, no `billing`; `PUT …/billing {pushMuted:true}` → 403 `FORBIDDEN`; `…905`: five rows, billing `mutable:false`; `PUT …/billing {pushMuted:true}` → 403 `FORBIDDEN` | `…910`, `…905` |
 | P8w / P8i / P8a | AC-8w / AC-8i / AC-8a | qa-web / qa-ios / qa-android | all | Owner: Billing on and disabled; *Why Billing stays on* opens its line; a Sales Executive sees four rows | `…901`/`…906`, `…902`/`…907`, `…903`/`…908` |
-| P9 | AC-9 | qa-api | api | `POST /notifications/devices` a test token for `…905`; outside quiet hours, `PUT …/team {pushMuted:true}`; `…911` declines an invite from `…905` → a `notification` row for `…905`, `push_sent_at` null, no `Push for` line under `DevelopmentPushDelivery` in the api log (`apps/api/src/modules/notification/internal/push-delivery.development.ts:31-39`); unmute, invite and decline again → `push_sent_at` set and the log line present | `…905`, `…911` |
+| P9 | AC-9 | qa-api | api | `POST /notifications/devices` a test token for `…905`; outside quiet hours, `PUT …/team {pushMuted:true}`; `…911` declines an invite from `…905` → a `notification` row for `…905`, `push_sent_at` null; unmute, invite and decline again → `push_sent_at` set. `push_sent_at` is the marker: `notification.push.service.ts` sets it only after the transport's send resolves, whichever adapter `notification.module.ts` wires (a local `.env.local` with an FCM key wires FCM, which logs nothing on success) | `…905`, `…911` |
 | P10a-w / -i / -a | AC-10w / AC-10i / AC-10a (part a) | qa-web / qa-ios / qa-android | all | `api stopped`, last, the page opened by in-app navigation before the api stops: tap हिन्दी, then Feet → each shows *Not saved. Try again.* on its control alone | `…906`/`…907`/`…908` |
 | P10b-w / -i / -a | AC-10w / AC-10i / AC-10a (part b) | qa-web / qa-ios / qa-android | all | `api stopped`, last, the page opened before the api stops: tap *Sales* → its switch alone shows the refusal and returns on | the same |
 | P12 | AC-12w | qa-web | web | tap *Team* off and on within half a second → on; reload → on | `…906` |
@@ -720,7 +723,7 @@ Accounts: `…901` (web), `…902` (iOS), `…903` (Android) are Owners; Sales E
 | part | what | AC | depends on | status |
 |---|---|---|---|---|
 | a | The page on web and phone: name and roles, language and units applied as touched and refused on their control, the unit on the session, `SettingsSection` | AC-1, AC-2, AC-4 (a's frames), AC-5, AC-6, AC-10 (language, unit) | — | shipped |
-| b | Push notifications: the groups each person is shown, the switches, About push, locked Billing, muted, loading, error, refusals | AC-3, AC-4 (b's frames), AC-7, AC-8, AC-9, AC-10 (switches), AC-12 | a | planned |
+| b | Push notifications: the groups each person is shown, the switches, About push, locked Billing, muted, loading, error, refusals | AC-3, AC-4 (b's frames), AC-7, AC-8, AC-9, AC-10 (switches), AC-12 | a | shipped |
 | c | Edit name and photo from the page, and the person's own photo on it — drawn on the M01 canvas first (Decision 1A) | AC-11 | b | planned |
 
 **Native review owed:** the drafted Hindi and Marathi lines of every id in `PROFILE_PREFERENCES` (`packages/i18n/src/copy/profile-preferences.ts`) and the pack's market name (`IN_FORMATS.name`).

@@ -89,3 +89,34 @@
   color: var(--text-primary);
   overflow-wrap: anywhere;
 }
+
+/* An overline with its `Explainer` beside it (*Push notifications*, *About push*). */
+.hg-profile-preferences-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.hg-profile-preferences-switches {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+/* The Owner's Billing row (`m-locked`): the locked switch, then its name in primary text with
+   *Why Billing stays on* beside it — a label inside a disabled switch would turn secondary. */
+.hg-profile-preferences-locked {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--sp-3);
+  align-items: center;
+}
+
+.hg-profile-preferences-locked-name {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+}
