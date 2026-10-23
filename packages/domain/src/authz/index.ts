@@ -22,6 +22,13 @@ export type {
 } from './cells';
 export { VISIBILITY_DOMAINS } from './cells';
 export { can, grantedCapabilities, limitsOn, visibilityIn } from './policy';
+export type { RoleCard, RoleCardDecider, RoleCardLineKey } from './role-card';
+export {
+  ROLE_CARD_LIMITS,
+  ROLE_CARD_LINES,
+  ROLE_CARD_OWNERS_SHOWN,
+  roleCard,
+} from './role-card';
 export type { RoleKind } from './role-kinds';
 export { ROLE_KINDS, roleKind } from './role-kinds';
 export type { RolePreset } from './roles';

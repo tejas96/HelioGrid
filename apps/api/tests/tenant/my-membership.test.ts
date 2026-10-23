@@ -1,10 +1,8 @@
-import type { SessionClaims } from '@heliogrid/contracts';
 import { tenantMembership } from '@heliogrid/db';
 import { FIRST_RUN_COACH_MARKS, FOUNDER_ROLE, ROLE_PRESETS } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
 import { eq, sql } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { TokenService } from '../../src/modules/auth/internal/token.service';
 import { TenantService } from '../../src/modules/tenant/tenant.service';
 import {
   aCompany,
@@ -20,7 +18,7 @@ import {
   unseed,
 } from '../support/fixture';
 import { holdLock } from '../support/held-lock';
-import { bootHttp, type Http } from '../support/http';
+import { bearerFor, bootHttp, type Http } from '../support/http';
 
 /**
  * The caller's own membership on the WIRE (`M01-16`): the first-run coach marks a person has
@@ -81,27 +79,16 @@ describe.skipIf(skip)('my own membership, over HTTP against a migrated database'
   let pools: ReturnType<typeof openPools>;
   let http: Http;
 
-  /** A bearer for the membership's own device; `null` mints the same session with no company. */
-  const bearerOf = async (membership: Membership, company: 'held' | 'none' = 'held') => {
-    const device = devices.get(membership) as Device;
-    const claims: SessionClaims = {
-      sub: membership.held.userId,
-      sid: device.sessionId,
-      membership:
-        company === 'none'
-          ? null
-          : {
-              tenantId: membership.of.tenantId,
-              roles: [...membership.roles],
-              authorizationVersion: 0,
-            },
-    };
-    const { token } = await http.app.get(TokenService).mint(claims, Date.now());
-    return { authorization: `Bearer ${token}` };
-  };
+  const bearerOf = (membership: Membership, company: 'held' | 'none' = 'held') =>
+    bearerFor(http, membership, devices.get(membership) as Device, company);
 
   const read = async (as: Membership) =>
-    http.call<{ coachMarksDismissed: number }>('GET', PATH, undefined, await bearerOf(as));
+    http.call<{ coachMarksDismissed: number; rolesSetBy: unknown }>(
+      'GET',
+      PATH,
+      undefined,
+      await bearerOf(as),
+    );
   const write = async (as: Membership, coachMarksDismissed: unknown) =>
     http.call<{ coachMarksDismissed: number; error?: { code: string } }>(
       'PATCH',
@@ -132,7 +119,7 @@ describe.skipIf(skip)('my own membership, over HTTP against a migrated database'
   it("reads a fresh member's count as 0, equal to the row", async () => {
     const reply = await read(counterHere);
     expect(reply.status).toBe(HttpStatus.OK);
-    expect(reply.body).toEqual({ coachMarksDismissed: 0 });
+    expect(reply.body).toEqual({ coachMarksDismissed: 0, rolesSetBy: null });
     expect(await stored(counterHere)).toBe(0);
   });
 
@@ -188,11 +175,12 @@ describe.skipIf(skip)('my own membership, over HTTP against a migrated database'
     expect((await write(strangerElsewhere, FIRST_RUN_COACH_MARKS)).status).toBe(HttpStatus.OK);
     expect((await write(leaverHere, 2)).status).toBe(HttpStatus.OK);
 
-    expect((await read(ownerHere)).body).toEqual({ coachMarksDismissed: 1 });
+    expect((await read(ownerHere)).body).toEqual({ coachMarksDismissed: 1, rolesSetBy: null });
     expect((await read(strangerElsewhere)).body).toEqual({
       coachMarksDismissed: FIRST_RUN_COACH_MARKS,
+      rolesSetBy: null,
     });
-    expect((await read(leaverHere)).body).toEqual({ coachMarksDismissed: 2 });
+    expect((await read(leaverHere)).body).toEqual({ coachMarksDismissed: 2, rolesSetBy: null });
     expect(await stored(ownerHere)).toBe(1);
     expect(await stored(strangerElsewhere)).toBe(FIRST_RUN_COACH_MARKS);
     expect(await stored(leaverHere)).toBe(2);

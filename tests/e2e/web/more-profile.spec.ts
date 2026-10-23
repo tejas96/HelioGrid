@@ -109,11 +109,15 @@ test('a person changes their name from Edit name, and the page and the account m
   await expect(panel).toBeVisible();
   await expectNoSeriousViolations(page);
   const renamed = 'Anjali Joshi';
+  // The phone page names the person in its first row's title; the wide page in its own words.
+  const nameShown = page.locator(
+    '.hg-profile-preferences-name-words, .hg-profile-preferences-row:first-child .hg-list-row-title',
+  );
   await panel.getByLabel(en.t(FIRST_RUN_PROFILE.nameLabel)).fill(renamed);
   await panel.getByRole('button', { name: en.t(NAME_AND_PHOTO_EDITOR.save) }).click();
   await expect(panel).toBeHidden();
-  await expect(page.locator('.hg-profile-preferences-name-words')).toHaveText(renamed);
+  await expect(nameShown).toHaveText(renamed);
   await expect(page.getByRole('button', { name: new RegExp(`^${renamed}`) })).toBeVisible();
   await page.reload();
-  await expect(page.locator('.hg-profile-preferences-name-words')).toHaveText(renamed);
+  await expect(nameShown).toHaveText(renamed);
 });

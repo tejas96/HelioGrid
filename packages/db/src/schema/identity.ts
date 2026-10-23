@@ -164,6 +164,11 @@ export const tenantMembership = pgTable(
     coachMarksDismissed: smallint('coach_marks_dismissed').notNull(),
     authorizationVersion: integer('authorization_version').notNull(),
     createdAt: instant('created_at').notNull(),
+    /**
+     * Who last wrote this person's roles — the inviter at the join, the owner at a role change —
+     * written in the same transaction as the roles (`SCR-M01-10` ruling 15). Null for the founder.
+     */
+    rolesSetByUserId: uuid('roles_set_by_user_id').references(() => userAccount.id),
   },
   (table) => [
     uniqueIndex('tenant_membership_tenant_user_key').on(table.tenantId, table.userAccountId),

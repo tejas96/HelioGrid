@@ -72,6 +72,13 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `error
     *Your designs are one switch away.* for stacked presets.
 14. **At 1536 first run is the onboarding two-pane** (owner ruling 2026-10-17, M01 design): the title in the brand
     pane, the card and the act in the task pane.
+15. **Both names are the server's** (owner ruling D1 A at `T-M01-010`). The credit line names whoever last
+    wrote the person's roles — the inviter at the join, the owner at a role change — and the founder's card has
+    none. The owner note names the company's EPC Owners by name: one *Rajesh Kulkarni (owner)*, two
+    *Rajesh Kulkarni or Meera Shah (owners)*, more *Rajesh Kulkarni, Meera Shah or 1 more (owners)*. Names only,
+    never a phone.
+16. **The owner note says *Ask them when you need one.*** (owner ruling D2 A at `T-M01-010`): the product stores
+    no gender, and the words hold for one owner or several.
 
 **THE PRESET IS NAMED `Sales Executive`.** `M01-15`'s example sentence quotes prototype vocabulary;
 `F2`'s preset table is canon — row 3 is **Sales Executive**, with `Sales rep` recorded as its *v1*

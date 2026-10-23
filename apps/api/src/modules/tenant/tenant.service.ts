@@ -1,5 +1,6 @@
 import {
   type AssignRoles,
+  type CoachMarks,
   type CreateHeaders,
   type CreateTenant,
   type Member,
@@ -8,9 +9,10 @@ import {
   type PaginationQuery,
   type SessionProjection,
   type Tenant,
+  type TenantOwners,
   tenantContract,
 } from '@heliogrid/contracts';
-import { marketOfPhone, UI_SOURCE_LOCALE } from '@heliogrid/domain';
+import { marketOfPhone, ROLE_CARD_OWNERS_SHOWN, UI_SOURCE_LOCALE } from '@heliogrid/domain';
 import {
   ConflictException,
   HttpStatus,
@@ -25,6 +27,7 @@ import { AuthService } from '../auth/auth.public';
 import { MarketPackService } from '../market/market.public';
 import { TenantAdminRepository, type TenantRow } from './tenant.admin.repository';
 import { MyMembershipRepository } from './tenant.my-membership.repository';
+import { TenantOwnersRepository } from './tenant.owners.repository';
 import { type MemberRow, TenantRepository, type TransitionOutcome } from './tenant.repository';
 
 /**
@@ -39,6 +42,7 @@ export class TenantService {
     @Inject(TenantAdminRepository) private readonly crossTenant: TenantAdminRepository,
     @Inject(TenantRepository) private readonly scoped: TenantRepository,
     @Inject(MyMembershipRepository) private readonly mine: MyMembershipRepository,
+    @Inject(TenantOwnersRepository) private readonly ownersRead: TenantOwnersRepository,
     @Inject(MarketPackService) private readonly markets: MarketPackService,
     @Inject(AuthService) private readonly auth: AuthService,
     @Inject(CreationReplies) private readonly replies: CreationReplies,
@@ -83,19 +87,28 @@ export class TenantService {
     return row === null ? null : toTenant(row);
   }
 
-  /** My own membership's first-run count (`M01-16`). */
+  /** My own membership's first-run count (`M01-16`) and who last set my roles (`SCR-M01-10`). */
   async myMembership(tenantId: string, userId: string): Promise<MyMembership> {
-    const count = await this.mine.coachMarksPassed(tenantId, userId);
-    if (count === null) throw new NotFoundException('You are not on this team.');
-    return { coachMarksDismissed: count };
+    const row = await this.mine.read(tenantId, userId);
+    if (row === null) throw new NotFoundException('You are not on this team.');
+    return {
+      coachMarksDismissed: row.coachMarksDismissed,
+      rolesSetBy: row.rolesSetByName === null ? null : { name: row.rolesSetByName },
+    };
+  }
+
+  /** The company's EPC Owners by name, the first two and a count (`SCR-M01-10` ruling 15). */
+  async owners(tenantId: string): Promise<TenantOwners> {
+    const { names, total } = await this.ownersRead.owners(tenantId, ROLE_CARD_OWNERS_SHOWN);
+    return { owners: names.map((name) => ({ name })), more: total - names.length };
   }
 
   /** Raises my first-run count; a count below the stored one is refused, never applied. */
   async updateMyMembership(
     tenantId: string,
     userId: string,
-    body: MyMembership,
-  ): Promise<MyMembership> {
+    body: CoachMarks,
+  ): Promise<CoachMarks> {
     const written = await this.mine.passCoachMarks(tenantId, userId, body.coachMarksDismissed);
     switch (written.outcome) {
       case 'done':

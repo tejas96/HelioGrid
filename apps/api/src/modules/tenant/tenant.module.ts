@@ -8,6 +8,7 @@ import { TenantController } from './tenant.controller';
 import { JoinRequestRepository } from './tenant.join-request.repository';
 import { JoinRequestService } from './tenant.join-request.service';
 import { MyMembershipRepository } from './tenant.my-membership.repository';
+import { TenantOwnersRepository } from './tenant.owners.repository';
 import { TenantRepository } from './tenant.repository';
 import { TenantService } from './tenant.service';
 
@@ -20,6 +21,7 @@ import { TenantService } from './tenant.service';
     TenantAdminRepository,
     TenantRepository,
     MyMembershipRepository,
+    TenantOwnersRepository,
     JoinRequestRepository,
   ],
   exports: [TenantService],
