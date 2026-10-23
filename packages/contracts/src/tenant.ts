@@ -115,10 +115,12 @@ export type AssignRoles = z.infer<typeof assignRolesSchema>;
 /**
  * The refusals only the tenant's guarded transitions raise (F2-19). `LAST_OWNER`: the change
  * would leave the company without an EPC Owner — and so without anyone who can manage the team,
- * which in this matrix is the same person. A route code, so the wire carries the reason and the
- * screen the words (`packages/i18n` keeps copy as a `Record` over this enum).
+ * which in this matrix is the same person. `OWN_ADMIN`: an owner would take away their own admin
+ * rights, which only another owner may do — a role write only, so deactivation declares
+ * `LAST_OWNER` alone. A route code, so the wire carries the reason and the screen the words
+ * (`packages/i18n` keeps copy as a `Record` over this enum).
  */
-export const tenantErrorCodes = ['LAST_OWNER'] as const;
+export const tenantErrorCodes = ['LAST_OWNER', 'OWN_ADMIN'] as const;
 export const tenantErrorCodeSchema = z.enum(tenantErrorCodes);
 export type TenantErrorCode = z.infer<typeof tenantErrorCodeSchema>;
 
@@ -221,7 +223,7 @@ export const tenantContract = c.router({
     path: '/tenants/me/members',
     query: paginationQuerySchema,
     summary:
-      'The roster: presets held, status and last-active, for the Team screen and every picker',
+      'The roster: presets held, status and last-active, for the Team screen — read by whoever manages the team',
     responses: {
       200: paginated(memberSchema),
       401: unauthenticated,
@@ -234,7 +236,7 @@ export const tenantContract = c.router({
     pathParams: memberParamsSchema,
     body: assignRolesSchema,
     summary:
-      'Replace the presets a person holds, old → new — refused when it would remove the last EPC Owner',
+      'Replace the presets a person holds, old → new — refused when it would remove the last EPC Owner, or the caller’s own',
     responses: {
       200: memberSchema,
       401: unauthenticated,
@@ -256,7 +258,7 @@ export const tenantContract = c.router({
       401: unauthenticated,
       404: notFound,
       409: errorEnvelope(baseError('CONFLICT')),
-      422: errorEnvelope(tenantErrorCodeSchema),
+      422: errorEnvelope(tenantErrorCodeSchema.extract(['LAST_OWNER'])),
     },
   },
   similar: {

@@ -45,7 +45,17 @@ function stringsIn(children: ReactNode): string[] {
  * anything. Only a line the scale would clip is raised.
  */
 export function lineHeightFor(variant: TextVariant, children: ReactNode): number | undefined {
-  const role = roleOf(variant);
+  const floor = scriptFloorFor(variant, children);
+  const drawn = roleOf(variant).lineHeight ?? 0;
+  return floor > drawn ? floor : undefined;
+}
+
+/**
+ * The least line box this text's tallest face needs at the variant's size, in px; 0 for Latin. A
+ * caller that draws a tighter line than the role's own takes the larger of the two, so a Hindi or
+ * Marathi mark is never clipped (`F3-17`).
+ */
+export function scriptFloorFor(variant: TextVariant, children: ReactNode): number {
   /* Mono sets the never-translated set (`F3-08`) — figures, identifiers and units, Latin in
      every language — in a family the stack does not name, so no script floor reaches it. */
   const floorEm = isMono(variant)
@@ -53,9 +63,7 @@ export function lineHeightFor(variant: TextVariant, children: ReactNode): number
     : stringsIn(children)
         .flatMap((text) => runsOfString(text))
         .reduce((tallest, run) => Math.max(tallest, LINE_FLOOR_EM.get(run.family) ?? 0), 0);
-  const floor = Math.ceil(floorEm * role.fontSize);
-  const drawn = role.lineHeight ?? 0;
-  return floor > drawn ? floor : undefined;
+  return Math.ceil(floorEm * roleOf(variant).fontSize);
 }
 
 /**

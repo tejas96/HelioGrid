@@ -1,6 +1,18 @@
-import { grantLine, ROLE_PRESETS, type RolePreset, type UiLanguage } from '@heliogrid/domain';
+import {
+  type AssignRolesRefusal,
+  grantLine,
+  ROLE_PRESETS,
+  type RolePreset,
+  type UiLanguage,
+} from '@heliogrid/domain';
 import { describe, expect, it } from 'vitest';
-import { assignRolesShown, assignRolesWords, grantLineWords } from '../src/copy/assign-roles';
+import { apiErrorMessageId } from '../src/copy/api-error';
+import {
+  assignRolesRefusalWords,
+  assignRolesShown,
+  assignRolesWords,
+  grantLineWords,
+} from '../src/copy/assign-roles';
 import type { TextPart } from '../src/copy/list-join';
 import { createTranslator } from '../src/runtime';
 
@@ -98,6 +110,9 @@ describe('assignRolesWords — the rows and their locks', () => {
     expect(words.rows.slice(1).every((row) => row.lockReason === null)).toBe(true);
     expect(words.saveOff('unchanged')).toBe('Tick or clear a preset first.');
     expect(words.saveOff('empty')).toBe('Tick at least one preset.');
+    expect(words.saveOff('gone')).toBe(
+      'Rajesh is no longer active on this team, so nothing changed.',
+    );
     expect(words.saveOff(null)).toBeNull();
     expect(words.loading).toBe("Loading Rajesh's presets");
   });
@@ -142,10 +157,87 @@ describe('assignRolesShown — one person, as both screens hand it on', () => {
       picked: [SURVEY, DESIGN, INSTALL],
       locks: {},
       saveOff: 'unchanged',
+      refusal: null,
     });
     expect(shown.status).toBe('Active');
     expect(text(shown.grant.parts)).toBe('Vikram can survey, design and install.');
     expect(shown.grant.speakers).toEqual([SURVEY, DESIGN, INSTALL]);
     expect(shown.saveOffReason).toBe('Tick or clear a preset first.');
+    expect(shown.refusal).toBeNull();
+  });
+
+  it('Vikram, the save failed (m-error)', async () => {
+    const { t } = await createTranslator('en');
+    const shown = assignRolesShown(t, {
+      name: 'Vikram Deshpande',
+      status: 'active',
+      companyName: 'Suryodaya Solar',
+      picked: [SURVEY, DESIGN, INSTALL, FINANCE],
+      locks: {},
+      saveOff: null,
+      refusal: { kind: 'failed' },
+    });
+    expect(shown.refusal).toEqual({
+      title: "Vikram's roles weren't saved",
+      body: 'Nothing changed for Vikram — try Save again.',
+    });
+  });
+});
+
+describe('assignRolesRefusalWords — why a save did not land', () => {
+  const facts = { firstName: 'Vikram', companyName: 'Suryodaya Solar' };
+
+  it.each<[AssignRolesRefusal, string | null, string]>([
+    [
+      { kind: 'failed' },
+      "Vikram's roles weren't saved",
+      'Nothing changed for Vikram — try Save again.',
+    ],
+    [
+      { kind: 'gone' },
+      "Vikram's roles weren't saved",
+      'Vikram is no longer active on this team, so nothing changed.',
+    ],
+    [
+      { kind: 'last-owner' },
+      "Vikram's roles weren't saved",
+      'Suryodaya Solar must keep one EPC Owner, so make someone else one first.',
+    ],
+    [
+      { kind: 'own-admin' },
+      "Vikram's roles weren't saved",
+      "You can't remove your own EPC Owner — another EPC Owner can.",
+    ],
+    [
+      { kind: 'unconfirmed', failure: 'no_connection' },
+      null,
+      'HelioGrid could not be reached, from your side or ours. If you were saving, check whether it saved before trying again.',
+    ],
+    [
+      { kind: 'unconfirmed', failure: 'no_answer' },
+      null,
+      'HelioGrid did not answer in time. If you were saving, check whether it saved before trying again.',
+    ],
+  ])('%o', async (refusal, title, body) => {
+    const { t } = await createTranslator('en');
+    expect(assignRolesRefusalWords(t, refusal, facts)).toEqual({ title, body });
+  });
+
+  it('the api refuses your own EPC Owner in the lock’s own words — one catalog entry', () => {
+    expect(apiErrorMessageId('OWN_ADMIN')).toBe(
+      "You can't remove your own EPC Owner — another EPC Owner can.",
+    );
+  });
+
+  it.each<UiLanguage>(['hi', 'mr'])('%s has every word', async (reader) => {
+    const en = (await createTranslator('en')).t;
+    const { t } = await createTranslator(reader);
+    for (const kind of ['failed', 'gone'] as const) {
+      const ours = assignRolesRefusalWords(t, { kind }, facts);
+      const english = assignRolesRefusalWords(en, { kind }, facts);
+      expect(ours.title).not.toBe(english.title);
+      expect(ours.body).not.toBe(english.body);
+      expect(ours.body).toContain('Vikram');
+    }
   });
 });

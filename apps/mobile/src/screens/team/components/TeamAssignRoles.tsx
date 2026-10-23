@@ -36,6 +36,7 @@ export function TeamAssignRoles({
       saveOffReason={shown.saveOffReason}
       saving={editor.saving}
       onSave={editor.save}
+      refusal={shown.refusal}
     />
   );
 }

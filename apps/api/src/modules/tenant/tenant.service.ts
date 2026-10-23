@@ -26,9 +26,10 @@ import { ContractException } from '../../common/errors/contract-exception';
 import { AuthService } from '../auth/auth.public';
 import { MarketPackService } from '../market/market.public';
 import { TenantAdminRepository, type TenantRow } from './tenant.admin.repository';
+import type { MemberRow } from './tenant.members.repository';
 import { MyMembershipRepository } from './tenant.my-membership.repository';
 import { TenantOwnersRepository } from './tenant.owners.repository';
-import { type MemberRow, TenantRepository, type TransitionOutcome } from './tenant.repository';
+import { TenantRepository, type TransitionOutcome } from './tenant.repository';
 
 /**
  * Company signup, the tenant reads and role administration (`M01-01`, `M01-19`, `M01-20`). The
@@ -172,6 +173,12 @@ function admitted(result: TransitionOutcome): MemberRow {
       throw new ContractException(
         'LAST_OWNER',
         'This person is the only EPC Owner. A company always keeps at least one EPC Owner and one person who can manage the team.',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    case 'own-admin':
+      throw new ContractException(
+        'OWN_ADMIN',
+        "You can't remove your own EPC Owner — another EPC Owner can.",
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
   }

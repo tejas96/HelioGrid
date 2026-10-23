@@ -30376,7 +30376,7 @@
     },
     "/tenants/me/members": {
       "get": {
-        "summary": "The roster: presets held, status and last-active, for the Team screen and every picker",
+        "summary": "The roster: presets held, status and last-active, for the Team screen — read by whoever manages the team",
         "tags": [
           "tenant"
         ],
@@ -30778,7 +30778,7 @@
     },
     "/tenants/me/members/{membershipId}/roles": {
       "put": {
-        "summary": "Replace the presets a person holds, old → new — refused when it would remove the last EPC Owner",
+        "summary": "Replace the presets a person holds, old → new — refused when it would remove the last EPC Owner, or the caller’s own",
         "tags": [
           "tenant"
         ],
@@ -31188,7 +31188,8 @@
                         "code": {
                           "type": "string",
                           "enum": [
-                            "LAST_OWNER"
+                            "LAST_OWNER",
+                            "OWN_ADMIN"
                           ]
                         },
                         "message": {

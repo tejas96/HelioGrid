@@ -5,9 +5,16 @@
  * clause; the respectful plural of the verb marks no gender.
  */
 
-import type { PresetLock, RolePreset, SaveRolesOff, TeamRowStatus } from '@heliogrid/domain';
+import type {
+  AssignRolesRefusal,
+  PresetLock,
+  RolePreset,
+  SaveRolesOff,
+  TeamRowStatus,
+} from '@heliogrid/domain';
 import { firstNameOf, grantLine, ROLE_PRESETS } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
+import { OWN_ADMIN_REASON, transportFailureMessageId } from './api-error';
 import { fillSlots, joinParts, slotMark, type TextPart } from './list-join';
 import { presetAbility } from './role-presets';
 import { presetName, SHELL } from './shell';
@@ -26,8 +33,11 @@ export const ASSIGN_ROLES = {
   soleOwner: /*i18n*/ {
     id: '{company} must keep one EPC Owner, so make someone else one first.',
   },
-  ownAdmin: /*i18n*/ { id: "You can't remove your own EPC Owner — another EPC Owner can." },
+  ownAdmin: OWN_ADMIN_REASON,
   loading: /*i18n*/ { id: "Loading {name}'s presets" },
+  notSaved: /*i18n*/ { id: "{name}'s roles weren't saved" },
+  tryAgain: /*i18n*/ { id: 'Nothing changed for {name} — try Save again.' },
+  gone: /*i18n*/ { id: '{name} is no longer active on this team, so nothing changed.' },
 };
 
 /** What each preset lets a person do, as the clause the grant line joins (the board's verbs). */
@@ -47,6 +57,7 @@ const PRESET_CLAUSE: Record<RolePreset, { id: string }> = {
 };
 
 const SAVE_OFF: Record<SaveRolesOff, { id: string }> = {
+  gone: ASSIGN_ROLES.gone,
   unchanged: ASSIGN_ROLES.unchanged,
   empty: ASSIGN_ROLES.empty,
 };
@@ -131,7 +142,7 @@ export function assignRolesWords(
     recorded: translate(ASSIGN_ROLES.recorded),
     gives: translate(ASSIGN_ROLES.gives),
     save: translate(ASSIGN_ROLES.save),
-    saveOff: (off) => (off === null ? null : translate(SAVE_OFF[off])),
+    saveOff: (off) => (off === null ? null : translate(SAVE_OFF[off], { name: facts.firstName })),
     close: translate(SHELL.close),
     loading: translate(ASSIGN_ROLES.loading, { name: facts.firstName }),
     rows: ROLE_PRESETS.map((preset) => ({
@@ -143,12 +154,43 @@ export function assignRolesWords(
   };
 }
 
+/** The words of a save that did not land, keyed by why (`AssignRolesRefusal`). */
+const REFUSAL_BODY: Record<Exclude<AssignRolesRefusal['kind'], 'unconfirmed'>, { id: string }> = {
+  failed: ASSIGN_ROLES.tryAgain,
+  gone: ASSIGN_ROLES.gone,
+  'last-owner': ASSIGN_ROLES.soleOwner,
+  'own-admin': ASSIGN_ROLES.ownAdmin,
+};
+
+/** The banner over the grant card (`m-error`). */
+export interface AssignRolesRefusalWords {
+  /** Null when no one can say the save failed — it may have landed (F8-36). */
+  readonly title: string | null;
+  readonly body: string;
+}
+
+export function assignRolesRefusalWords(
+  translate: Translator['t'],
+  refusal: AssignRolesRefusal,
+  facts: { readonly firstName: string; readonly companyName: string },
+): AssignRolesRefusalWords {
+  if (refusal.kind === 'unconfirmed') {
+    return { title: null, body: translate({ id: transportFailureMessageId(refusal.failure) }) };
+  }
+  const values = { name: facts.firstName, company: facts.companyName };
+  return {
+    title: translate(ASSIGN_ROLES.notSaved, values),
+    body: translate(REFUSAL_BODY[refusal.kind], values),
+  };
+}
+
 /** What the open editor shows, as both screens hand it to `AssignRoles`. */
 export interface AssignRolesShown {
   readonly words: AssignRolesWords;
   readonly status: string;
   readonly grant: { readonly speakers: readonly RolePreset[]; readonly parts: readonly TextPart[] };
   readonly saveOffReason: string | null;
+  readonly refusal: AssignRolesRefusalWords | null;
 }
 
 export interface AssignRolesOpen {
@@ -158,6 +200,7 @@ export interface AssignRolesOpen {
   readonly picked: readonly RolePreset[];
   readonly locks: Partial<Record<RolePreset, PresetLock>>;
   readonly saveOff: SaveRolesOff | null;
+  readonly refusal: AssignRolesRefusal | null;
 }
 
 /** The editor's words for one person and their ticks: the rows, the status, the grant line, Save's reason. */
@@ -177,5 +220,12 @@ export function assignRolesShown(
     status: teamStatusWord(translate, open.status),
     grant: { speakers, parts: grantLineWords(translate, firstName, speakers).parts },
     saveOffReason: words.saveOff(open.saveOff),
+    refusal:
+      open.refusal === null
+        ? null
+        : assignRolesRefusalWords(translate, open.refusal, {
+            firstName,
+            companyName: open.companyName,
+          }),
   };
 }

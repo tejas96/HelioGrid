@@ -19,6 +19,14 @@ export function keepsControl(heldByActiveMembers: readonly RolePreset[]): boolea
 }
 
 /**
+ * F2-19 — an owner cannot take away their own admin rights; another owner can. `isSelf` says the
+ * set being judged is the actor's own; `roles` is that set as it would stand after the change.
+ */
+export function keepsOwnAdmin(isSelf: boolean, roles: readonly RolePreset[]): boolean {
+  return !isSelf || can(roles, 'onboarding.manage_team');
+}
+
+/**
  * Role administration acts on an ACTIVE membership only (F2-20): a deactivated person keeps
  * their presets as history, and an invited one has not joined yet.
  */

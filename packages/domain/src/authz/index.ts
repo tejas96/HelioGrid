@@ -7,7 +7,7 @@
  * repo-wide sweep of `if role === …`.
  */
 
-export { acceptsAdministration, keepsControl } from './administration';
+export { acceptsAdministration, keepsControl, keepsOwnAdmin } from './administration';
 export type { Capability } from './capabilities';
 export { CAPABILITY_MATRIX } from './capabilities';
 export type {

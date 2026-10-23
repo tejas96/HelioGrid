@@ -43,7 +43,7 @@ msgid "{company} is set up."
 msgstr "{company} तयार आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:26
+#: src/copy/assign-roles.ts:33
 msgid "{company} must keep one EPC Owner, so make someone else one first."
 msgstr "{company} मध्ये एक EPC Owner असणे आवश्यक आहे, म्हणून आधी दुसऱ्या कोणाला बनवा."
 
@@ -263,7 +263,7 @@ msgid "{name} asks to join"
 msgstr "{name} सामील होऊ इच्छितात"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:21
+#: src/copy/assign-roles.ts:28
 msgid "{name} can {list}."
 msgstr "{name} {list} यांचे काम करू शकतात."
 
@@ -278,14 +278,24 @@ msgid "{name} declined the invite"
 msgstr "{name} यांनी आमंत्रण नाकारले"
 
 #. js-lingui-explicit-id
+#: src/copy/assign-roles.ts:40
+msgid "{name} is no longer active on this team, so nothing changed."
+msgstr "{name} आता या टीममध्ये सक्रिय नाहीत, त्यामुळे काहीही बदलले नाही."
+
+#. js-lingui-explicit-id
 #: src/copy/team-acts.ts:32
 msgid "{name} stopped being an EPC Owner on another device."
 msgstr "{name} दुसऱ्या डिव्हाइसवर EPC मालक राहिले नाहीत."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:22
+#: src/copy/assign-roles.ts:29
 msgid "{name} would hold no presets."
 msgstr "{name} यांच्याकडे एकही प्रीसेट राहणार नाही."
+
+#. js-lingui-explicit-id
+#: src/copy/assign-roles.ts:38
+msgid "{name}'s roles weren't saved"
+msgstr "{name} यांच्या भूमिका सेव्ह झाल्या नाहीत"
 
 #. js-lingui-explicit-id
 #: src/copy/explainer.ts:8
@@ -408,7 +418,7 @@ msgid "A photo helps teammates recognise you."
 msgstr "फोटोमुळे सहकारी तुम्हाला ओळखतात."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:72
+#: src/copy/api-error.ts:74
 msgid "A release already has this name. Choose another name."
 msgstr "या नावाची रिलीज आधीच आहे. दुसरे नाव निवडा."
 
@@ -578,7 +588,7 @@ msgid "Always sent, and it cannot be muted: billing events are audit-relevant fo
 msgstr "नेहमी पाठवले जाते, आणि ते बंद करता येत नाही: बिलिंगच्या घटना मालकाच्या खात्याच्या ऑडिटसाठी महत्त्वाच्या आहेत."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:59
+#: src/copy/api-error.ts:61
 msgid "An invite already went to this number and is still open."
 msgstr "या नंबरवर आधीच एक आमंत्रण पाठवले आहे आणि ते अजून खुले आहे."
 
@@ -633,7 +643,7 @@ msgid "Assign leads to others"
 msgstr "इतरांना लीड सोपवा"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:17
+#: src/copy/assign-roles.ts:24
 msgid "Assign roles"
 msgstr "भूमिका द्या"
 
@@ -1106,7 +1116,7 @@ msgid "Derived"
 msgstr "गणनेतून काढलेले"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:39
+#: src/copy/assign-roles.ts:49
 #: src/copy/freshness.ts:24
 msgid "design"
 msgstr "डिझाइन"
@@ -1172,7 +1182,7 @@ msgid "Estimated"
 msgstr "अंदाजित"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:19
+#: src/copy/assign-roles.ts:26
 msgid "Every change is recorded under your name — roles before and after."
 msgstr "प्रत्येक बदल तुमच्या नावाने नोंदवला जातो — आधीच्या आणि नंतरच्या भूमिका."
 
@@ -1369,12 +1379,12 @@ msgid "Grievance officer"
 msgstr "तक्रार अधिकारी"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:44
+#: src/copy/assign-roles.ts:54
 msgid "handle money"
 msgstr "पैसे"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:43
+#: src/copy/assign-roles.ts:53
 msgid "handle people and admin"
 msgstr "लोक आणि प्रशासन"
 
@@ -1404,12 +1414,12 @@ msgid "HelioGrid could not be reached, from your side or ours."
 msgstr "HelioGrid शी संपर्क होऊ शकला नाही, तुमच्या बाजूने किंवा आमच्या."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:86
+#: src/copy/api-error.ts:88
 msgid "HelioGrid could not be reached, from your side or ours. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid पर्यंत पोहोचता आले नाही — तुमच्या बाजूने किंवा आमच्या. तुम्ही काही सेव्ह करत असाल, तर पुन्हा प्रयत्न करण्यापूर्वी ते सेव्ह झाले का ते तपासा."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:89
+#: src/copy/api-error.ts:91
 msgid "HelioGrid did not answer in time. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid ने वेळेत उत्तर दिले नाही. तुम्ही काही सेव्ह करत असाल, तर पुन्हा प्रयत्न करण्यापूर्वी ते सेव्ह झाले का ते तपासा."
 
@@ -1424,7 +1434,7 @@ msgid "HelioGrid sends the message to this number — it does not come from your
 msgstr "HelioGrid या नंबरवर संदेश पाठवते — तो तुमच्या फोनवरून जात नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:92
+#: src/copy/api-error.ts:94
 msgid "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid चे उत्तर वाचता आले नाही. तुम्ही काही सेव्ह करत असाल, तर पुन्हा प्रयत्न करण्यापूर्वी ते सेव्ह झाले का ते तपासा."
 
@@ -1494,7 +1504,7 @@ msgid "Indicative proposal. Generation and savings are estimated from system siz
 msgstr "सूचक प्रस्ताव. वीजनिर्मिती आणि बचतीचा अंदाज सिस्टमच्या आकारावरून आणि ठिकाणावरून केला आहे. साइट सर्व्हे आणि सावली विश्लेषणातून अंतिम आकडे निश्चित होतील."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:42
+#: src/copy/assign-roles.ts:52
 msgid "install"
 msgstr "इन्स्टॉलेशन"
 
@@ -1610,7 +1620,7 @@ msgid "Links {email}"
 msgstr "{email} जोडते"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:30
+#: src/copy/assign-roles.ts:37
 msgid "Loading {name}'s presets"
 msgstr "{name} यांचे प्रीसेट लोड होत आहेत"
 
@@ -1868,6 +1878,11 @@ msgid "Nothing assigned to you yet"
 msgstr "तुम्हाला अजून काहीही सोपवलेले नाही"
 
 #. js-lingui-explicit-id
+#: src/copy/assign-roles.ts:39
+msgid "Nothing changed for {name} — try Save again."
+msgstr "{name} यांच्यासाठी काहीही बदलले नाही — पुन्हा सेव्ह करा."
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:44
 msgid "Nothing changed. Try again in a moment."
 msgstr "काहीही बदलले नाही. थोड्या वेळाने पुन्हा प्रयत्न करा."
@@ -1883,7 +1898,7 @@ msgid "Nothing has reached you yet"
 msgstr "अजून तुमच्याकडे काहीही आलेले नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:75
+#: src/copy/api-error.ts:77
 msgid "Nothing in the catalog changed since the last release, so there is nothing to publish."
 msgstr "मागील रिलीजनंतर कॅटलॉगमध्ये काहीही बदलले नाही, त्यामुळे प्रकाशित करण्यासारखे काही नाही."
 
@@ -2033,7 +2048,7 @@ msgid "Out of date: {changes} changed"
 msgstr "कालबाह्य: {changes} बदलले"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:36
+#: src/copy/assign-roles.ts:46
 msgid "oversee sales"
 msgstr "विक्रीवरील देखरेख"
 
@@ -2099,7 +2114,7 @@ msgid "PNG or JPG, up to {maxMegabytes} MB, at least {minWidth} px wide"
 msgstr "PNG किंवा JPG, कमाल {maxMegabytes} MB, किमान {minWidth} px रुंद"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:18
+#: src/copy/assign-roles.ts:25
 msgid "Presets"
 msgstr "प्रीसेट"
 
@@ -2290,17 +2305,17 @@ msgid "Roof measured from satellite imagery. A site visit will confirm dimension
 msgstr "छताचे मोजमाप उपग्रह प्रतिमांवरून घेतले आहे. साइट भेटीत मापे, सावली आणि वीज जोडणीची सोय निश्चित होईल."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:46
+#: src/copy/assign-roles.ts:56
 msgid "run marketing"
 msgstr "मार्केटिंग"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:45
+#: src/copy/assign-roles.ts:55
 msgid "run operations"
 msgstr "ऑपरेशन्स"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:40
+#: src/copy/assign-roles.ts:50
 msgid "run projects"
 msgstr "प्रोजेक्ट"
 
@@ -2310,7 +2325,7 @@ msgid "Run the installation checklist"
 msgstr "इन्स्टॉलेशन चेकलिस्ट चालवा"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:35
+#: src/copy/assign-roles.ts:45
 msgid "run the whole business"
 msgstr "संपूर्ण व्यवसाय"
 
@@ -2351,7 +2366,7 @@ msgid "Save changes to your business profile"
 msgstr "तुमच्या व्यवसाय प्रोफाइलमधील बदल जतन करा"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:23
+#: src/copy/assign-roles.ts:30
 msgid "Save roles"
 msgstr "भूमिका सेव्ह करा"
 
@@ -2411,7 +2426,7 @@ msgid "See your team's leads and follow-ups"
 msgstr "तुमच्या टीमच्या लीड आणि फॉलो-अप पाहा"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:37
+#: src/copy/assign-roles.ts:47
 msgid "sell"
 msgstr "विक्री"
 
@@ -2661,7 +2676,7 @@ msgid "subsidy rules"
 msgstr "अनुदान नियम"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:38
+#: src/copy/assign-roles.ts:48
 msgid "survey"
 msgstr "सर्व्हे"
 
@@ -2742,7 +2757,7 @@ msgid "That code is used up"
 msgstr "तो कोड संपला आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:69
+#: src/copy/api-error.ts:71
 msgid "That does not read as a registration of this type. Check it against the format shown."
 msgstr "हे या प्रकारच्या नोंदणीसारखे दिसत नाही. दाखवलेल्या स्वरूपाशी जुळवून तपासा."
 
@@ -2872,7 +2887,7 @@ msgid "The team’s leads and proposals, project stages, payments and team repor
 msgstr "टीमचे लीड आणि प्रस्ताव, प्रोजेक्टचे टप्पे, पेमेंट आणि टीम रिपोर्ट"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:66
+#: src/copy/api-error.ts:68
 msgid "The tranches must add up to exactly 100%. Place the remainder before saving."
 msgstr "हप्त्यांची बेरीज नेमकी 100% असली पाहिजे. सेव्ह करण्यापूर्वी उरलेली रक्कम ठेवा."
 
@@ -2937,7 +2952,7 @@ msgid "This invite has expired"
 msgstr "या आमंत्रणाची मुदत संपली आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:65
+#: src/copy/api-error.ts:67
 msgid "This invite has run out. Ask to be invited again."
 msgstr "या आमंत्रणाची मुदत संपली आहे. पुन्हा आमंत्रित करण्यास सांगा."
 
@@ -2977,7 +2992,7 @@ msgid "This number is already on your team"
 msgstr "हा नंबर आधीच तुमच्या टीममध्ये आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:58
+#: src/copy/api-error.ts:60
 msgid "This number is already on your team."
 msgstr "हा नंबर आधीच तुमच्या टीममध्ये आहे."
 
@@ -3007,7 +3022,7 @@ msgid "This screen arrives in a later update."
 msgstr "ही स्क्रीन पुढच्या एखाद्या अपडेटमध्ये येईल."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:95
+#: src/copy/api-error.ts:97
 msgid "This stopped before HelioGrid answered. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid ने उत्तर देण्यापूर्वी हे थांबले. तुम्ही काही सेव्ह करत असाल, तर पुन्हा प्रयत्न करण्यापूर्वी ते सेव्ह झाले का ते तपासा."
 
@@ -3027,7 +3042,7 @@ msgid "Three details, and you're in."
 msgstr "तीन तपशील, आणि तुम्ही आत आहात."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:25
+#: src/copy/assign-roles.ts:32
 msgid "Tick at least one preset."
 msgstr "किमान एक प्रीसेट निवडा."
 
@@ -3037,7 +3052,7 @@ msgid "Tick at least one role before sending — an invite with none would open 
 msgstr "पाठवण्यापूर्वी किमान एक भूमिका निवडा — भूमिकेशिवायचे आमंत्रण रिकामे ॲप उघडेल."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:24
+#: src/copy/assign-roles.ts:31
 msgid "Tick or clear a preset first."
 msgstr "आधी एखादा प्रीसेट निवडा किंवा काढा."
 
@@ -3369,7 +3384,7 @@ msgid "What the code does"
 msgstr "कोड काय करतो"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:20
+#: src/copy/assign-roles.ts:27
 msgid "What this gives them"
 msgstr "यातून त्यांना काय मिळते"
 
@@ -3435,7 +3450,7 @@ msgid "Why we ask"
 msgstr "आम्ही का विचारतो"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:41
+#: src/copy/assign-roles.ts:51
 msgid "work assigned stops"
 msgstr "नेमलेले स्टॉप"
 
@@ -3511,7 +3526,7 @@ msgid "You can paste the whole code."
 msgstr "तुम्ही पूर्ण कोड पेस्ट करू शकता."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:29
+#: src/copy/api-error.ts:59
 msgid "You can't remove your own EPC Owner — another EPC Owner can."
 msgstr "तुम्ही स्वतःचा EPC Owner काढू शकत नाही — दुसरा EPC Owner काढू शकतो."
 
@@ -3600,7 +3615,7 @@ msgid "Your company has not published its grievance officer yet. Ask your admin 
 msgstr "तुमच्या कंपनीने अजून तिचा तक्रार अधिकारी प्रकाशित केलेला नाही. तुमच्या डेटाविषयीचे प्रश्न कोण पाहते ते तुमच्या अ‍ॅडमिनला विचारा."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:62
+#: src/copy/api-error.ts:64
 msgid "Your company has reached its invite limit for the last 24 hours."
 msgstr "तुमची कंपनी गेल्या 24 तासांतील आमंत्रणांच्या मर्यादेपर्यंत पोहोचली आहे."
 

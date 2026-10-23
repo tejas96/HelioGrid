@@ -30,8 +30,11 @@ export interface Team {
   filter(status: TeamStatusFilter): void;
   /** The whole list, before any search or Status chip — what a row's act is judged against. */
   readonly roster: readonly TeamRow[];
-  /** Reads every list again and answers with the whole list as it now stands. */
-  reread(): Promise<readonly TeamRow[]>;
+  /**
+   * Reads every list again and answers with the whole list as it now stands — null when a read got
+   * no answer, so a caller never judges a write against the list it had before (`F8-36`).
+   */
+  reread(): Promise<readonly TeamRow[] | null>;
   /** Asks again for every read: a list missing half its people is not shown. */
   retry(): void;
 }
@@ -87,7 +90,7 @@ export function useTeam(language: UiLanguage): Team {
   );
   const reread = async () => {
     const [held, sent] = await Promise.all([members.refetch(), invites.refetch()]);
-    return rosterOf(held.data, sent.data);
+    return held.isError || sent.isError ? null : rosterOf(held.data, sent.data);
   };
   const view = useMemo(() => teamRosterView(roster, query, status), [roster, query, status]);
 

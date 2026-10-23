@@ -18,12 +18,14 @@ export type {
   AssignRolesFacts,
   AssignRolesOpen,
   AssignRolesPresetWords,
+  AssignRolesRefusalWords,
   AssignRolesShown,
   AssignRolesWords,
   GrantLineWords,
 } from './copy/assign-roles';
 export {
   ASSIGN_ROLES,
+  assignRolesRefusalWords,
   assignRolesShown,
   assignRolesWords,
   grantLineWords,

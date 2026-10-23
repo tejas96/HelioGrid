@@ -2,7 +2,7 @@ import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
 import { LoadingBars } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { bottomOf } from '../support/layout';
-import { resolvedLength, resolvedShadow } from '../support/token';
+import { resolvedColour, resolvedLength, resolvedShadow } from '../support/token';
 
 /**
  * The bars a list shows while its record loads (`SCR-M01-05`'s `m-loading`): one bar per part, an
@@ -81,4 +81,40 @@ test('inside a busy region the caller named, the bars are decoration and announc
   await mount(<LoadingBars inBusyRegion bars={['line']} />);
   await expect(page.getByRole('status')).toHaveCount(0);
   await expect(page.locator('.hg-loading-bars')).toHaveAttribute('aria-hidden', 'true');
+});
+
+test('an option is the card it stands for: the grey, the tile radius, a 20 mark, a title and two description lines, 8 apart', async ({
+  mount,
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  const region = await mount(<LoadingBars label={label} bars={['option', 'option']} />);
+  const options = region.locator('.hg-loading-option');
+  const gap = await resolvedLength(page, '--sp-2');
+
+  await expect(page.getByRole('status', { name: label })).toHaveAttribute('aria-busy', 'true');
+  await expect(options).toHaveCount(2);
+  await expect(options.first()).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
+  await expect(options.first()).toHaveCSS(
+    'border-radius',
+    `${await resolvedLength(page, '--r-tile')}px`,
+  );
+  const mark = await options.first().locator('.hg-loading-option-mark').boundingBox();
+  const glyph = await resolvedLength(page, '--sp-5');
+  expect(mark).toMatchObject({ width: glyph, height: glyph });
+  await expect(options.first().locator('.hg-loading-option-line:visible')).toHaveCount(2);
+  expect((await options.nth(1).boundingBox())?.y).toBe((await bottomOf(options.first())) + gap);
+  await expect(options.first().locator('.hg-loading-option-mark')).toHaveCSS(
+    'animation-name',
+    'hg-sheet-shimmer',
+  );
+});
+
+test('in a wide room an option keeps one description line, as the panel draws it', async ({
+  mount,
+  page,
+}) => {
+  await page.setViewportSize({ width: 1536, height: 960 });
+  const region = await mount(<LoadingBars label={label} bars={['option']} />);
+  await expect(region.locator('.hg-loading-option-line:visible')).toHaveCount(1);
 });

@@ -5,7 +5,6 @@ import {
   type TenantScopedDb,
   tenant,
   tenantMembership,
-  userAccount,
 } from '@heliogrid/db';
 import {
   type AuditChangePayload,
@@ -13,41 +12,36 @@ import {
   acceptsAdministration,
   inMatrixOrder,
   keepsControl,
+  keepsOwnAdmin,
   type MembershipStatus,
   type RolePreset,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, count, desc, eq, inArray, sql } from 'drizzle-orm';
+import { and, count, desc, eq, sql } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { recordAuditEntry } from '../audit/audit.public';
 import { type TenantRow, tenantColumns } from './tenant.admin.repository';
-
-export interface MemberRow {
-  readonly membershipId: string;
-  readonly userId: string;
-  readonly name: string | null;
-  readonly phoneE164: string;
-  readonly roles: readonly RolePreset[];
-  readonly status: MembershipStatus;
-  readonly lastActiveAt: Date | null;
-}
+import { type MemberRow, memberQuery, withRoles } from './tenant.members.repository';
 
 /**
  * How a guarded transition ended (`F2-19`, `F2-20`): the row as it now stands, or the one reason
- * it was refused — no such person in this company, a person who is not active, or a change that
- * would leave the company without its last EPC Owner.
+ * it was refused — no such person in this company, a person who is not active, a change that
+ * would leave the company without its last EPC Owner, or an owner taking away their own admin rights.
  */
 export type TransitionOutcome =
   | { readonly outcome: 'done'; readonly member: MemberRow }
-  | { readonly outcome: 'not-found' | 'not-active' | 'last-owner' };
+  | { readonly outcome: 'not-found' | 'not-active' | Refusal };
+
+/** The F2-19 guards a change can meet; each is recorded as a blocked attempt (`F2-22`). */
+type Refusal = 'last-owner' | 'own-admin';
 
 /**
  * What the change did, and the old → new the log records for it — written whether it landed or was
  * refused. A change to what is already held changed nothing, and nothing records it (`F4-07`).
  */
 type ChangeOutcome =
-  | { readonly outcome: 'done' | 'last-owner'; readonly changePayload: AuditChangePayload | null }
+  | { readonly outcome: 'done' | Refusal; readonly changePayload: AuditChangePayload | null }
   | { readonly outcome: 'unchanged' };
 
 /**
@@ -105,7 +99,7 @@ export class TenantRepository {
       'team.roles_changed',
       act,
       null,
-      async (tx, othersHold, subjectHolds) => {
+      async (tx, othersHold, subjectHolds, isSelf) => {
         // The wire carries a list; the table holds a SET (one row per preset), so a repeated
         // preset is written once rather than tripping the unique key. Both sides of the record
         // are put in matrix order, so two entries for the same set read as the same set.
@@ -117,6 +111,7 @@ export class TenantRepository {
         const changePayload = { from, to };
         if (!keepsControl([...othersHold, ...roles]))
           return { outcome: 'last-owner', changePayload };
+        if (!keepsOwnAdmin(isSelf, roles)) return { outcome: 'own-admin', changePayload };
         await tx
           .delete(membershipRole)
           .where(
@@ -187,6 +182,8 @@ export class TenantRepository {
       tx: TenantScopedDb,
       othersHold: readonly RolePreset[],
       subjectHolds: readonly RolePreset[],
+      /** The subject is the actor: their own admin rights are guarded too (`F2-19`). */
+      isSelf: boolean,
     ) => Promise<ChangeOutcome>,
   ): Promise<TransitionOutcome> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
@@ -201,7 +198,7 @@ export class TenantRepository {
         return member;
       };
       const [subject] = await tx
-        .select({ status: tenantMembership.status })
+        .select({ status: tenantMembership.status, userId: tenantMembership.userAccountId })
         .from(tenantMembership)
         .where(subjectWhere)
         .limit(1);
@@ -220,7 +217,12 @@ export class TenantRepository {
         .where(and(eq(membershipRole.tenantId, tenantId), eq(tenantMembership.status, 'active')));
       const presetsOf = (mine: boolean) =>
         held.filter((row) => (row.membershipId === membershipId) === mine).map((r) => r.rolePreset);
-      const result = await change(tx, presetsOf(false), presetsOf(true));
+      const result = await change(
+        tx,
+        presetsOf(false),
+        presetsOf(true),
+        subject.userId === act.actorUserId,
+      );
       if (result.outcome === 'unchanged') return { outcome: 'done', member: await memberAt() };
       // Written with the change that caused it and inside the same transaction (`F2-22`): they
       // commit together, and a refusal — which wrote nothing else — still commits its record.
@@ -230,57 +232,15 @@ export class TenantRepository {
         actorKind: 'tenant_user',
         actorRef: act.actorUserId,
         occurredAt: new Date(act.now),
-        blocked: result.outcome === 'last-owner',
+        blocked: result.outcome !== 'done',
         subjectKind: 'tenant_membership',
         subjectRef: membershipId,
         changePayload: result.changePayload,
       });
-      if (result.outcome === 'last-owner') return { outcome: 'last-owner' };
+      if (result.outcome !== 'done') return { outcome: result.outcome };
       return { outcome: 'done', member: await memberAt() };
     });
   }
-}
-
-/** The roster's columns, joined to the account under its own policy. */
-function memberQuery(tx: TenantScopedDb) {
-  return tx
-    .select({
-      membershipId: tenantMembership.id,
-      userId: userAccount.id,
-      name: userAccount.name,
-      phoneE164: userAccount.phoneE164,
-      status: tenantMembership.status,
-      lastActiveAt: tenantMembership.lastActiveAt,
-    })
-    .from(tenantMembership)
-    .innerJoin(userAccount, eq(userAccount.id, tenantMembership.userAccountId));
-}
-
-/** Every preset each row's membership holds, in one read over the membership index. */
-async function withRoles(
-  tx: TenantScopedDb,
-  tenantId: string,
-  rows: readonly Omit<MemberRow, 'roles'>[],
-): Promise<MemberRow[]> {
-  const ids = rows.map((row) => row.membershipId);
-  const held =
-    ids.length === 0
-      ? []
-      : await tx
-          .select({
-            membershipId: membershipRole.membershipId,
-            rolePreset: membershipRole.rolePreset,
-          })
-          .from(membershipRole)
-          .where(
-            and(eq(membershipRole.tenantId, tenantId), inArray(membershipRole.membershipId, ids)),
-          )
-          // The enum's declaration order IS the matrix order (`F2-25`), so chips render as F2 lists them.
-          .orderBy(membershipRole.rolePreset);
-  return rows.map((row) => ({
-    ...row,
-    roles: held.filter((r) => r.membershipId === row.membershipId).map((r) => r.rolePreset),
-  }));
 }
 
 /**

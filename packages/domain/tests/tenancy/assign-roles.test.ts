@@ -1,11 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import type { RolePreset } from '../../src/authz/roles';
 import {
+  type AssignRolesOutcome,
+  type AssignRolesRefusal,
+  assignRolesOutcome,
   lockedPresets,
   opensAssignRoles,
+  refusalAfterReread,
   roleChange,
+  savedAsPicked,
   saveRolesOff,
 } from '../../src/tenancy/assign-roles';
+import type { TeamActAnswer } from '../../src/tenancy/team-acts';
 import type { TeamRow, TeamRowStatus } from '../../src/tenancy/team-roster';
 
 function row(id: string, roles: readonly RolePreset[], over: Partial<TeamRow> = {}): TeamRow {
@@ -114,6 +120,103 @@ describe('why Save roles is off', () => {
     ['one added', ['finance'], ['finance', 'operations'], null],
     ['one removed, one left', ['finance', 'operations'], ['operations'], null],
   ])('%s', (_, before, after, off) => {
-    expect(saveRolesOff(before, after)).toBe(off);
+    expect(saveRolesOff(row('vikram', before), after)).toBe(off);
+  });
+
+  it.each<TeamRowStatus>(['deactivated', 'invited', 'expired'])(
+    'a person no longer active is gone, whatever is ticked (%s)',
+    (status) => {
+      expect(saveRolesOff(row('vikram', ['finance'], { status }), ['operations'])).toBe('gone');
+      expect(saveRolesOff(row('vikram', ['finance'], { status }), [])).toBe('gone');
+    },
+  );
+});
+
+describe('a gone refusal keeps Save off even while the list still reads them active', () => {
+  it.each<[string, AssignRolesRefusal | null, string | null]>([
+    ['gone', { kind: 'gone' }, 'gone'],
+    ['failed', { kind: 'failed' }, null],
+    ['none', null, null],
+  ])('%s', (_, refusal, off) => {
+    expect(saveRolesOff(row('vikram', ['finance']), ['operations'], refusal)).toBe(off);
+  });
+});
+
+describe('F8-36 — a save with no answer is read back before it is called failed', () => {
+  it('the fresh roles equal the ticks, in any order: it landed', () => {
+    expect(
+      savedAsPicked(row('vikram', ['finance', 'survey_engineer']), ['survey_engineer', 'finance']),
+    ).toBe(true);
+  });
+
+  it('the fresh roles differ: it did not', () => {
+    expect(savedAsPicked(row('vikram', ['finance']), ['finance', 'operations'])).toBe(false);
+  });
+
+  it('a person no longer active never reads as saved', () => {
+    expect(savedAsPicked(row('vikram', ['finance'], { status: 'deactivated' }), ['finance'])).toBe(
+      false,
+    );
+  });
+});
+
+describe('every answer to a save has one outcome', () => {
+  it.each<[string, TeamActAnswer, AssignRolesOutcome]>([
+    ['200', { status: 200, code: '' }, 'done'],
+    ['204', { status: 204, code: '' }, 'done'],
+    ['401 after a refused refresh', { status: 401, code: 'UNAUTHENTICATED' }, 'failed'],
+    ['403', { status: 403, code: 'FORBIDDEN' }, 'forbidden'],
+    ['404', { status: 404, code: 'NOT_FOUND' }, 'gone'],
+    ['409', { status: 409, code: 'CONFLICT' }, 'gone'],
+    ['422 LAST_OWNER', { status: 422, code: 'LAST_OWNER' }, 'last-owner'],
+    ['422 OWN_ADMIN', { status: 422, code: 'OWN_ADMIN' }, 'own-admin'],
+    ['422 any other code', { status: 422, code: 'VALIDATION_FAILED' }, 'failed'],
+    ['500', { status: 500, code: 'INTERNAL' }, 'failed'],
+    ['no answer', null, 'unknown'],
+  ])('%s', (_, answer, outcome) => {
+    expect(assignRolesOutcome(answer)).toBe(outcome);
+  });
+});
+
+describe('what the sheet says once a save that did not land is read back', () => {
+  const ticks: readonly RolePreset[] = ['finance', 'operations'];
+  const sent = { id: 'vikram', ticks };
+  const landed = [row('vikram', ticks)];
+  const notLanded = [row('vikram', ['finance'])];
+  const deactivated = [row('vikram', ['finance'], { status: 'deactivated' })];
+  const elsewhere = [row('anjali', ['epc_owner'])];
+
+  it.each<[string, Parameters<typeof refusalAfterReread>, ReturnType<typeof refusalAfterReread>]>([
+    ['no answer, and it landed: close as on a 200', ['unknown', landed, sent, null], null],
+    [
+      'no answer, and it did not land: nothing changed',
+      ['unknown', notLanded, sent, null],
+      { kind: 'failed' },
+    ],
+    [
+      'no answer, and the list did not answer either: ask to check, by the first failure',
+      ['unknown', null, sent, 'no_connection'],
+      { kind: 'unconfirmed', failure: 'no_connection' },
+    ],
+    [
+      'no answer of a kind the client did not name: no answer',
+      ['unknown', null, sent, null],
+      { kind: 'unconfirmed', failure: 'no_answer' },
+    ],
+    [
+      'no answer, and the person was deactivated meanwhile: gone',
+      ['unknown', deactivated, sent, null],
+      { kind: 'gone' },
+    ],
+    [
+      'no answer, and the person is off the list: gone',
+      ['unknown', elsewhere, sent, null],
+      { kind: 'gone' },
+    ],
+    ['409, read back or not', ['gone', null, sent, null], { kind: 'gone' }],
+    ['LAST_OWNER', ['last-owner', notLanded, sent, null], { kind: 'last-owner' }],
+    ['OWN_ADMIN', ['own-admin', notLanded, sent, null], { kind: 'own-admin' }],
+  ])('%s', (_, args, refusal) => {
+    expect(refusalAfterReread(...args)).toEqual(refusal);
   });
 });
