@@ -13,6 +13,7 @@ import {
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { homeTitle } from './homes';
+import { joinAnd } from './list-join';
 import { PROFILE_PREFERENCES } from './profile-preferences';
 import { presetName, SHELL } from './shell';
 
@@ -24,8 +25,6 @@ export const ROLE_CARD = {
   cannotDo: /*i18n*/ { id: 'What you cannot do' },
   region: /*i18n*/ { id: 'What you can and cannot do' },
   loading: /*i18n*/ { id: 'Loading what your role can and cannot do' },
-  twoAnd: /*i18n*/ { id: '{first} and {second}' },
-  listAnd: /*i18n*/ { id: '{list} and {last}' },
   ownerOne: /*i18n*/ { id: '{name} (owner)' },
   ownersTwo: /*i18n*/ { id: '{first} or {second} (owners)' },
   ownersMore: /*i18n*/ { id: '{first}, {second} or {more} more (owners)' },
@@ -173,13 +172,6 @@ export function roleCardWords(
       retry: translate(ROLE_CARD.retry),
     },
   };
-}
-
-function joinAnd(translate: Translator['t'], names: readonly string[]): string {
-  if (names.length <= 1) return names[0] ?? '';
-  const last = names[names.length - 1] ?? '';
-  if (names.length === 2) return translate(ROLE_CARD.twoAnd, { first: names[0], second: last });
-  return translate(ROLE_CARD.listAnd, { list: names.slice(0, -1).join(', '), last });
 }
 
 function ownersHolder(

@@ -172,6 +172,11 @@
   color: var(--text-secondary);
 }
 
+/* A number under the title — a phone — is set in the mono face (`F7-09`). */
+.hg-sheet-subtitle[data-face="mono"] {
+  font-family: var(--font-mono);
+}
+
 /* ── the meta row: in view while the body scrolls ──────────────────────────── */
 
 .hg-sheet-meta {

@@ -1,6 +1,13 @@
-import { IN_FORMATS, type TeamStatusFilter, type TeamSurface, teamRoster } from '@heliogrid/domain';
+import {
+  IN_FORMATS,
+  opensAssignRoles,
+  type TeamStatusFilter,
+  type TeamSurface,
+  teamRoster,
+} from '@heliogrid/domain';
 import { createTranslator, teamActWords, teamListWords } from '@heliogrid/i18n';
 import { MemberAct, MemberList, memberActOf } from '@heliogrid/ui';
+import { useState } from 'react';
 
 const en = await createTranslator('en');
 
@@ -18,6 +25,15 @@ const ROWS = teamRoster(
       roles: ['epc_owner'],
       status: 'active',
       lastActiveAt: '2026-08-31T03:00:00Z',
+    },
+    {
+      membershipId: 'm-2',
+      userId: 'u-vikram',
+      name: 'Vikram Deshpande',
+      phoneE164: '+919800000002',
+      roles: ['survey_engineer', 'design_engineer'],
+      status: 'active',
+      lastActiveAt: '2026-08-30T10:00:00Z',
     },
   ],
   [
@@ -50,6 +66,7 @@ export function TeamListStory({
   onClearSearch = () => undefined,
   onShowAll = () => undefined,
   withActs = false,
+  withOpen = false,
 }: {
   surface: TeamSurface;
   company: string;
@@ -60,7 +77,11 @@ export function TeamListStory({
   onShowAll?: () => void;
   /** Each card's act, as both screens draw it. */
   withActs?: boolean;
+  /** Each card opens the person when Assign Roles may: the frame reports it as `data-opened`. */
+  withOpen?: boolean;
 }) {
+  const [opened, setOpened] = useState('');
+  const [acted, setActed] = useState('');
   const words = teamListWords(en.t, {
     pack: IN_FORMATS,
     language: 'en',
@@ -77,23 +98,30 @@ export function TeamListStory({
         : ROWS;
   const acts = teamActWords(en.t, company);
   return (
-    <MemberList
-      {...(withActs
-        ? {
-            actOf: (row) => {
-              const act = memberActOf(row, ROWS, acts, null);
-              return act === null ? null : (
-                <MemberAct {...act} size="md" fullWidth onPress={() => undefined} />
-              );
-            },
-          }
-        : {})}
-      surface={surface}
-      rows={rows}
-      words={words}
-      onRetry={onRetry}
-      onClearSearch={onClearSearch}
-      onShowAll={onShowAll}
-    />
+    <div data-opened={opened} data-acted={acted}>
+      <MemberList
+        {...(withActs
+          ? {
+              actOf: (row) => {
+                const act = memberActOf(row, ROWS, acts, null);
+                return act === null ? null : (
+                  <MemberAct {...act} size="md" fullWidth onPress={() => setActed(row.name)} />
+                );
+              },
+            }
+          : {})}
+        surface={surface}
+        rows={rows}
+        words={words}
+        onRetry={onRetry}
+        onClearSearch={onClearSearch}
+        onShowAll={onShowAll}
+        openOf={
+          withOpen
+            ? (row) => (opensAssignRoles(row) ? () => setOpened(row.name) : undefined)
+            : undefined
+        }
+      />
+    </div>
   );
 }

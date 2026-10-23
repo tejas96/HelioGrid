@@ -32,6 +32,7 @@
 @import "./components/AppShell/AppShell.css";
 @import "./components/AppShell/MobileTopBar.css";
 @import "./components/AppShell/ShellGlyph.css";
+@import "./components/AssignRoles/AssignRoles.css";
 @import "./components/AudioPlayer/AudioPlayer.css";
 @import "./components/AudioPlayer/AudioTransport.css";
 @import "./components/Avatar/Avatar.css";

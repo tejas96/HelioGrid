@@ -125,3 +125,12 @@
 .hg-overlay-state[data-variant="panel"] .hg-overlay-state-message {
   max-width: 300px;
 }
+
+/* A status beside the title, on its line (`SCR-M01-13`'s *Active*) — outside the heading, so the
+   dialog's name stays the title alone. */
+.hg-overlay-title-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}

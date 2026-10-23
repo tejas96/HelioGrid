@@ -70,6 +70,11 @@ interface DataTableBaseProps<Row> {
   onSortChange?: (sort: DataTableSort) => void;
   onRowClick?: (row: Row) => void;
   /**
+   * Which rows `onRowClick` opens — the Team table opens an active person only. Every row when
+   * absent; a row it refuses draws no press target and takes no click.
+   */
+  rowOpens?: (row: Row) => boolean;
+  /**
    * The stacked card's whole-card target is a real button, so it needs an accessible name.
    * Defaults to the primary column's raw value; pass this when that column renders a node.
    */

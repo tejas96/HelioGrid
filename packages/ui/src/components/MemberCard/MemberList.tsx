@@ -19,6 +19,7 @@ export function MemberList({
   records,
   waiting,
   actOf,
+  openOf,
   teachingAction,
 }: MemberListProps) {
   if (surface === 'loading') {
@@ -60,6 +61,7 @@ export function MemberList({
           key={row.id}
           {...memberCardOf(row, words.row(row), words.role, words.you)}
           action={actOf?.(row)}
+          onOpen={openOf?.(row)}
         />
       ))}
     </section>

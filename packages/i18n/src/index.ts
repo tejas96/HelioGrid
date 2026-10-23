@@ -11,8 +11,23 @@
  * (`UI_LANGUAGES` / `UiLanguage`), and restating it here would be the second list this
  * package exists to prevent.
  */
+
 export type { ApiErrorLike, AttemptFailureLike } from './copy/api-error';
 export { apiErrorMessageId, apiErrorRef, attemptFailureMessageId } from './copy/api-error';
+export type {
+  AssignRolesFacts,
+  AssignRolesOpen,
+  AssignRolesPresetWords,
+  AssignRolesShown,
+  AssignRolesWords,
+  GrantLineWords,
+} from './copy/assign-roles';
+export {
+  ASSIGN_ROLES,
+  assignRolesShown,
+  assignRolesWords,
+  grantLineWords,
+} from './copy/assign-roles';
 export { shownInNote } from './copy/authored-content';
 export type { CompanyLogoWordFacts, CompanyLogoWords } from './copy/company-logo';
 export { COMPANY_LOGO, companyLogoWords } from './copy/company-logo';
@@ -69,6 +84,8 @@ export type { InviteLandingFacts, InviteLandingWords } from './copy/invite-landi
 export { INVITE_LANDING, inviteLandingWords } from './copy/invite-landing';
 export type { JoinRequestAsker } from './copy/join-request';
 export { joinRequestNotice } from './copy/join-request';
+export type { TextPart } from './copy/list-join';
+export { joinAnd, joinParts } from './copy/list-join';
 export type { NameAndPhotoEditorWords } from './copy/name-and-photo-editor';
 export { NAME_AND_PHOTO_EDITOR, nameAndPhotoEditorWords } from './copy/name-and-photo-editor';
 export { centreActToast, centreFilterWords, centreHeadWords } from './copy/notification-head';

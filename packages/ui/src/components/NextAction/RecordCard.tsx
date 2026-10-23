@@ -108,7 +108,8 @@ function RecordSlots({
  *
  * **The row is a sibling button, not a wrapper.** With `onClick`, an absolutely-positioned button
  * sits under the content and the content is `pointer-events: none` except in the slots that can
- * hold controls (`chip`, `marks`, `pending`, `action`, `actions`). That is what lets the `action`
+ * hold controls (`chip`, `pending`, `action`, `actions`, and a control inside `marks`). That is
+ * what lets the `action`
  * slot carry a real button: as a `role="button"` wrapper it was invalid nesting, and a tap fired
  * both.
  *

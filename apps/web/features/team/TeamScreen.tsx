@@ -1,5 +1,5 @@
 'use client';
-import { useSession, useShell, useTeam, useTeamActs } from '@heliogrid/data/react';
+import { useAssignRoles, useSession, useShell, useTeam, useTeamActs } from '@heliogrid/data/react';
 import { noteLeavesRow, opensSettingsRow, showsListHead, type TeamRow } from '@heliogrid/domain';
 import { settingsRowName, TEAM, teamActWords, teamListWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
@@ -22,6 +22,7 @@ import {
 } from '@heliogrid/ui';
 import { notFound } from 'next/navigation';
 import { useCallback, useRef } from 'react';
+import { TeamAssignRoles } from './components/TeamAssignRoles';
 import { useTeamInvite } from './components/TeamInvite';
 import { TeamTable } from './components/TeamTable';
 
@@ -33,7 +34,8 @@ import './team.css';
  * at it, the quiet table with the head count. Only a person whose presets open the Team row reaches
  * it (`F7-48`). What is read is `useTeam`'s, what each act does `useTeamActs`', and every word
  * `teamListWords`' and `teamActWords`'; this composes. *Invite teammate* opens Invite Teammate as
- * an editor over the page (`SCR-M01-07`, `T-M01-007`); a row's open lands with `T-M01-013`.
+ * an editor over the page (`SCR-M01-07`, `T-M01-007`); an active person's row opens Assign Roles
+ * (`SCR-M01-13`), `useAssignRoles`' editor.
  */
 export function TeamScreen() {
   const { user } = useSession();
@@ -86,6 +88,9 @@ function TeamIn() {
     allChip.current?.focus();
   };
   const invite = useTeamInvite(() => team.reread(), toasts.push);
+  const roles = useAssignRoles(team);
+  /* The sole-owner reason names the company, so no row opens before its name has arrived. */
+  const openOf = shell.companyName === null ? undefined : roles.openerOf;
   const inviteAct = (
     <Button
       ref={invite.act}
@@ -162,6 +167,7 @@ function TeamIn() {
         onClearSearch={clearSearch}
         onShowAll={showAll}
         actOf={(row) => actOf(row, 'md')}
+        openOf={openOf}
         records={
           wide ? (
             <TeamTable
@@ -169,6 +175,7 @@ function TeamIn() {
               words={words}
               actions={actWords.actions}
               actOf={(row) => actOf(row, 'sm')}
+              openOf={openOf}
             />
           ) : undefined
         }
@@ -191,6 +198,7 @@ function TeamIn() {
         onLeave={leave}
       />
       <InviteEditor {...invite.editor} />
+      <TeamAssignRoles editor={roles} companyName={shell.companyName ?? ''} />
       <ToastHost toasts={toasts.toasts} onDismiss={toasts.dismiss} />
     </div>
   );

@@ -1,3 +1,5 @@
+export type { PresetLock, RoleChange, SaveRolesOff } from './assign-roles';
+export { lockedPresets, opensAssignRoles, roleChange, saveRolesOff } from './assign-roles';
 export type {
   ChosenImage,
   CompanyLogoCaptureFacts,

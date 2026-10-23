@@ -1,7 +1,7 @@
 /* RecordCard — the phone form of a table row. THE ROW TARGET IS A SIBLING, NOT AN ANCESTOR: an
    absolutely-positioned button sits UNDER the content, the content sits above it with
-   pointer-events:none, re-enabled on the slots that can hold controls (chip, marks, pending,
-   action, actions). As a role="button" wrapper a real "Call" button there was invalid nesting,
+   pointer-events:none, re-enabled on the slots that can hold controls (chip, pending, action,
+   actions) and on a control inside marks — never on the marks row itself, which is words. As a role="button" wrapper a real "Call" button there was invalid nesting,
    unreachable as a separate control, and one tap fired both.
 
    A record card is a tile (F7-49): its fill, no shadow and its ground are drawn by the tiles' list
@@ -123,11 +123,12 @@
   color: var(--text-secondary);
 }
 
-/* The slots that can hold controls take their events back. */
+/* The slots that can hold controls take their events back. The marks row is mostly words — a
+   person's role badges — so only a control inside it does: a tap on a badge opens the card. */
 .hg-record-card-chip,
-.hg-record-card-marks,
 .hg-record-card-pending,
-.hg-record-card-action {
+.hg-record-card-action,
+.hg-record-card-marks :is(a, button, input, select, textarea, [role="button"], [tabindex]) {
   pointer-events: auto;
 }
 
@@ -212,6 +213,7 @@
 .hg-record-card[data-layout="stacked"][data-clickable="true"] > .hg-record-card-lead,
 .hg-record-card[data-layout="stacked"][data-clickable="true"] > .hg-record-card-meta,
 .hg-record-card[data-layout="stacked"][data-clickable="true"] > .hg-record-card-provenance,
-.hg-record-card[data-layout="stacked"][data-clickable="true"] > .hg-record-card-detail {
+.hg-record-card[data-layout="stacked"][data-clickable="true"] > .hg-record-card-detail,
+.hg-record-card[data-layout="stacked"][data-clickable="true"] > .hg-record-card-marks {
   pointer-events: none;
 }

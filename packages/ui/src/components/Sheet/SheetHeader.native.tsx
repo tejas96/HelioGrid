@@ -2,8 +2,9 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { StatusChip } from '../StatusChip/StatusChip.native';
 import { OverlayClose } from './OverlayClose.native';
-import type { SheetDensity } from './Sheet.types';
+import type { OverlayStatus, OverlaySubtitleFace, SheetDensity } from './Sheet.types';
 
 interface SheetHeaderProps {
   density: SheetDensity;
@@ -15,7 +16,9 @@ interface SheetHeaderProps {
   /** The scroll shadow — luminance, never a divider line. */
   scrolled: boolean;
   showClose: boolean;
+  status?: OverlayStatus;
   subtitle?: string;
+  subtitleFace: OverlaySubtitleFace;
   title?: string;
   style?: StyleProp<ViewStyle>;
 }
@@ -40,7 +43,9 @@ export function SheetHeader({
   overline,
   scrolled,
   showClose,
+  status,
   subtitle,
+  subtitleFace,
   title,
   style,
 }: SheetHeaderProps) {
@@ -61,12 +66,26 @@ export function SheetHeader({
           </Text>
         )}
         {title === undefined ? null : (
-          <Text variant={density === 'functional' ? 'h4' : 'h3'} style={TITLE[density]} fixedSize>
-            {title}
-          </Text>
+          <View style={styles.titleLine}>
+            <Text variant={density === 'functional' ? 'h4' : 'h3'} style={TITLE[density]} fixedSize>
+              {title}
+            </Text>
+            {status === undefined ? null : (
+              <StatusChip
+                status={status.label}
+                label={status.label}
+                tone={status.tone}
+                density="functional"
+              />
+            )}
+          </View>
         )}
         {subtitle === undefined ? null : (
-          <Text variant="body-sm" color="secondary" style={styles.subtitle}>
+          <Text
+            variant={subtitleFace === 'mono' ? 'mono' : 'body-sm'}
+            color="secondary"
+            style={styles.subtitle}
+          >
             {subtitle}
           </Text>
         )}
@@ -98,6 +117,12 @@ const styles = StyleSheet.create({
      the next elevation step up from flat — carries the same "content has moved under me". */
   scrolled: theme.elevation.e2,
   heading: { flexShrink: 1, minWidth: 0 },
+  titleLine: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: theme.spacing['sp-2'],
+  },
   overline: { marginBottom: 6 },
   subtitle: { marginTop: theme.spacing['sp-0-5'] },
 });

@@ -39,7 +39,9 @@ export function Sheet({
   onClose,
   closeLabel,
   title,
+  status,
   subtitle,
+  subtitleFace = 'sans',
   overline,
   children,
   meta,
@@ -118,7 +120,9 @@ export function Sheet({
             overline={overline}
             scrolled={scrolled}
             showClose={showClose}
+            status={status}
             subtitle={subtitle}
+            subtitleFace={subtitleFace}
             title={title}
             titleId={titleId}
           />

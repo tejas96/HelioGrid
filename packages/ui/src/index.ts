@@ -18,6 +18,7 @@ export * from './components/ActorClass';
 export * from './components/AllocationMeter';
 export * from './components/AppRail';
 export * from './components/AppShell';
+export * from './components/AssignRoles';
 export * from './components/AudioPlayer';
 export * from './components/Avatar';
 // Named as well as starred, for the component tests — see `contrast` below.

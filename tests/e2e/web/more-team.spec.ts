@@ -1,5 +1,8 @@
+import { firstNameOf, grantLine, ROLE_PRESETS } from '@heliogrid/domain';
 import {
+  assignRolesWords,
   createTranslator,
+  grantLineWords,
   inviteWords,
   settingsWords,
   TEAM,
@@ -8,7 +11,7 @@ import {
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
-import { createCompany } from '../support/door';
+import { createCompany, OWNER_NAME } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
 import { freshMobile } from '../support/phone';
 import { passTheOwnersMark } from '../support/shell';
@@ -21,7 +24,8 @@ import { passTheOwnersMark } from '../support/shell';
  * company has no team, so a search, the chips, the other rows and their acts are the qa-web rows of
  * the task. The teaching state's *Invite your first teammate*, and at the desktop width the page
  * head's *Invite teammate*, open Invite Teammate over the page (`SCR-M01-07`, `T-M01-007`); a send
- * is the task's qa-web rows.
+ * is the task's qa-web rows. The owner's own row opens Assign Roles (`SCR-M01-13`, `T-M01-013`): as
+ * the only EPC Owner they cannot clear it, and the grant line says what the one preset gives.
  */
 const en = await createTranslator('en');
 const WORDS = settingsWords(en.t);
@@ -56,6 +60,34 @@ test('the Team row opens the team; a new owner is alone, and the page teaches', 
   await expect(page.getByRole('dialog', { name: invite.title })).toBeVisible();
   await page.getByRole('button', { name: invite.cancel }).click();
   await expect(page.getByRole('dialog', { name: invite.title })).toHaveCount(0);
+  // The owner's own row opens Assign Roles; the only EPC Owner's preset is held and off (F2-19).
+  const [OWNER] = ROLE_PRESETS;
+  const roles = assignRolesWords(en.t, {
+    firstName: firstNameOf(OWNER_NAME),
+    companyName: company,
+    locks: { epc_owner: 'sole-owner' },
+  });
+  await page
+    .getByRole('button', { name: OWNER_NAME })
+    .or(page.getByRole('row', { name: OWNER_NAME }))
+    .first()
+    .click();
+  const editor = page.getByRole('dialog', { name: new RegExp(OWNER_NAME, 'u') });
+  await expect(editor).toBeVisible();
+  const owner = editor.getByRole('checkbox', { name: roles.rows[0]?.title ?? '' });
+  await expect(owner).toHaveAttribute('aria-checked', 'true');
+  await expect(owner).toHaveAttribute('aria-disabled', 'true');
+  await expect(owner).toContainText(roles.rows[0]?.lockReason ?? '');
+  const sentence = grantLineWords(en.t, firstNameOf(OWNER_NAME), grantLine([OWNER]).speakers)
+    .parts.map((part) => part.text)
+    .join('');
+  await expect(editor.getByText(sentence)).toBeVisible();
+  await expect(editor.getByRole('button', { name: roles.save })).toHaveAttribute(
+    'aria-disabled',
+    'true',
+  );
+  await editor.getByRole('button', { name: roles.close }).click();
+  await expect(editor).toHaveCount(0);
   if (testInfo.project.name === 'desktop') {
     await expect(page.getByText(en.t(TEAM.headCount, { people: 1, invites: 0 }))).toBeVisible();
     await expect(page.getByRole('table', { name: en.t(TEAM.everyone, { company }) })).toBeVisible();

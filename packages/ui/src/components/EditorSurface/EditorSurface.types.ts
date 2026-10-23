@@ -2,7 +2,12 @@ import type { ReactNode } from 'react';
 import type { DetailPanelProps, DetailPanelSide } from '../DetailPanel/DetailPanel.types';
 import type { ModalProps } from '../Modal/Modal.types';
 import type { OverlayCloseWords } from '../Sheet/OverlayClose.types';
-import type { SheetProps, SheetSize } from '../Sheet/Sheet.types';
+import type {
+  OverlayStatus,
+  OverlaySubtitleFace,
+  SheetProps,
+  SheetSize,
+} from '../Sheet/Sheet.types';
 import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 
 /**
@@ -48,7 +53,11 @@ export interface EditorSurfaceProps extends OverlayCloseWords {
    */
   panelAbove?: number;
   title?: string;
+  /** Drawn beside the title, on its line — sheet and panel; a decision's modal draws none. */
+  status?: OverlayStatus;
   subtitle?: string;
+  /** The sheet's subtitle face; the panel always sets its subtitle in mono. */
+  subtitleFace?: OverlaySubtitleFace;
   overline?: string;
   /**
    * The editor's content. A function child receives `{panel, layerWidth}` for content that has to
@@ -98,9 +107,13 @@ export interface EditorSurfaceProps extends OverlayCloseWords {
   unavailableAction?: ReactNode;
   showClose?: boolean;
   dismissible?: boolean;
-  /** Panel-only header extras (a panel has room for them; a sheet header does not). */
+  /** Panel-only header extra (a panel has room for it; a sheet header does not). */
   leading?: ReactNode;
-  meta?: ReactNode;
+  /**
+   * A row under the head that stays in view while the body scrolls — sheet and panel. A function
+   * gets the same `{panel, layerWidth}` the body does, for a row the two forms space differently.
+   */
+  meta?: ReactNode | ((context: EditorFormContext) => ReactNode);
   /** Position inside the nearest positioned ancestor — device frames, specimen cards. The probe follows. */
   inset?: boolean;
   zIndex?: number;

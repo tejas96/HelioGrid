@@ -16,7 +16,7 @@ import { CellShell } from './DataTableCellShell.native';
 import { tickPullback } from './DataTableChrome.native';
 import { RowNote } from './DataTableFeedback.native';
 import type { RowState } from './DataTableRow.logic';
-import { needsRoom, resolveRow } from './DataTableRow.logic';
+import { needsRoom, resolveRow, rowOpenOf } from './DataTableRow.logic';
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
@@ -189,7 +189,7 @@ export function DataTableBodyRow<Row>({
   spec,
   table,
 }: NativeBodyRowProps<Row>) {
-  const { onRowClick } = table;
+  const open = rowOpenOf(table, row);
   const { ground } = useGround();
   const state = resolveRow(table, rowKey, row, index, selected);
   const pending = renderPending(state.pending);
@@ -228,12 +228,12 @@ export function DataTableBodyRow<Row>({
       accessibilityState={{ busy: state.waiting }}
       style={rowTintStyle(state, ground, table.head === 'quiet', index)}
     >
-      {onRowClick === undefined ? (
+      {open === undefined ? (
         cells
       ) : (
         <Pressable
           accessibilityState={{ busy: state.waiting }}
-          onPress={() => onRowClick(row)}
+          onPress={open}
           style={styles.pressRow}
         >
           {cells}
