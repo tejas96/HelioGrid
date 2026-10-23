@@ -10,7 +10,7 @@ import {
   modalChrome,
   PANEL_ABOVE,
   panelChrome,
-  resolveEditorBody,
+  resolveForForm,
   sheetChrome,
 } from './editor-form-props';
 import { editorStateProps } from './editor-state-props';
@@ -40,7 +40,9 @@ export function EditorSurface(props: WebEditorSurfaceProps) {
     onClose,
     panelAbove = PANEL_ABOVE,
     title,
+    status,
     subtitle,
+    subtitleFace,
     overline,
     children,
     footer,
@@ -62,7 +64,8 @@ export function EditorSurface(props: WebEditorSurfaceProps) {
   const [probeRef, layerWidth] = useLayerWidth();
   const probe = <div aria-hidden="true" ref={probeRef} style={probeStyleFor(inset)} />;
   const panel = isPanel(layerWidth, panelAbove);
-  const body: ReactNode = resolveEditorBody(children, panel, layerWidth);
+  const body: ReactNode = resolveForForm(children, panel, layerWidth);
+  const metaRow: ReactNode = resolveForForm(meta, panel, layerWidth);
 
   if (!open || panel === null) {
     return probe;
@@ -106,12 +109,13 @@ export function EditorSurface(props: WebEditorSurfaceProps) {
           footer={footer}
           inset={inset}
           leading={leading}
-          meta={meta}
+          meta={metaRow}
           modal={modal}
           onClose={onClose}
           open
           overline={overline}
           side={side}
+          status={status}
           style={style}
           subtitle={subtitle}
           title={title}
@@ -137,9 +141,12 @@ export function EditorSurface(props: WebEditorSurfaceProps) {
         modal={modal}
         onClose={onClose}
         open
+        meta={metaRow}
         overline={overline}
+        status={status}
         style={style}
         subtitle={subtitle}
+        subtitleFace={subtitleFace}
         title={title}
         zIndex={zIndex}
         {...sheetProps}

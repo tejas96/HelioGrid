@@ -90,6 +90,12 @@ export function RecordCard({
       {chip}
     </View>
   );
+  const lead = (
+    <View style={styles.lead}>
+      {face}
+      <View style={styles.leadHead}>{head}</View>
+    </View>
+  );
   const slots = (
     <RecordSlots
       marks={marks}
@@ -107,10 +113,7 @@ export function RecordCard({
     <GroundProvider ground="tile">
       {stacked ? (
         <>
-          <View style={styles.lead}>
-            {face}
-            <View style={styles.leadHead}>{head}</View>
-          </View>
+          {lead}
           {slots}
         </>
       ) : (
@@ -139,6 +142,29 @@ export function RecordCard({
     style,
   ];
   if (!onClick) return <View style={frame}>{body}</View>;
+  if (stacked && (action || actions)) {
+    return (
+      <StackedWithAct
+        frame={frame}
+        onClick={onClick}
+        ariaLabel={ariaLabel}
+        busy={isPendingInFlight(pending)}
+        lead={lead}
+        words={
+          <RecordSlots
+            marks={marks}
+            meta={meta}
+            provenance={provenance}
+            detail={detail}
+            pending={pend}
+            stacked
+          />
+        }
+        action={action}
+        actions={actions}
+      />
+    );
+  }
   return (
     /* AN ACT IN FLIGHT IS SAID, NOT ONLY DRAWN (F7-12). The web half puts `aria-busy` on the card;
        here the card IS the target, so `busy` rides the primitive's `accessibilityState` and is
@@ -154,6 +180,50 @@ export function RecordCard({
     >
       {body}
     </Pressable>
+  );
+}
+
+/**
+ * A CONTROL NEVER SITS INSIDE THE PRESS TARGET. RN touchables are accessibility elements, so a
+ * card-wide target folded *Deactivate* and its reason into the card's name for VoiceOver. The target
+ * holds the words, named by them unless the caller names it — a label would replace all of them —
+ * and the act stands beside it, reachable and announced on its own.
+ */
+function StackedWithAct({
+  frame,
+  onClick,
+  ariaLabel,
+  busy,
+  lead,
+  words,
+  action,
+  actions,
+}: {
+  frame: StyleProp<ViewStyle>;
+  onClick: () => void;
+  ariaLabel: string | undefined;
+  busy: boolean;
+  lead: ReactNode;
+  words: ReactNode;
+  action: ReactNode;
+  actions: ReactNode;
+}) {
+  return (
+    <View style={frame}>
+      <GroundProvider ground="tile">
+        <Pressable
+          onPress={onClick}
+          {...(ariaLabel ? { accessibilityLabel: ariaLabel } : {})}
+          accessibilityState={{ busy }}
+          style={styles.stackedTarget}
+        >
+          {lead}
+          {words}
+        </Pressable>
+        <RecordSlots meta={[]} pending={null} action={action} stacked />
+        {actions ? <TileActions>{actions}</TileActions> : null}
+      </GroundProvider>
+    </View>
   );
 }
 
@@ -188,6 +258,7 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   leadHead: { flex: 1, minWidth: 0 },
+  stackedTarget: { gap: theme.spacing['sp-3'] },
   head: {
     flexDirection: 'row',
     alignItems: 'flex-start',

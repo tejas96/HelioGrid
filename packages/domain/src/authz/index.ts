@@ -21,6 +21,8 @@ export type {
   VisibilityScope,
 } from './cells';
 export { VISIBILITY_DOMAINS } from './cells';
+export type { GrantLine } from './grant-line';
+export { grantLine, isCovered } from './grant-line';
 export { can, grantedCapabilities, limitsOn, visibilityIn } from './policy';
 export type { RoleCard, RoleCardDecider, RoleCardLineKey, RoleCardNames } from './role-card';
 export {

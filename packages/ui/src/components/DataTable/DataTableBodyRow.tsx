@@ -9,7 +9,8 @@ import { DataTableCell } from './DataTableCell';
 import { CellShell } from './DataTableCellShell';
 import { RowNote } from './DataTableChrome';
 import type { RowState } from './DataTableRow.logic';
-import { needsRoom, resolveRow } from './DataTableRow.logic';
+import { needsRoom, resolveRow, rowOpenOf } from './DataTableRow.logic';
+import { rowNameOf } from './DataTableStacked.logic';
 
 /**
  * **The row's ground**, on the cells and again on the line beneath them so the two read as one
@@ -106,8 +107,9 @@ export function DataTableBodyRow<Row>({
   spanAll,
   table,
 }: BodyRowProps<Row>) {
-  const { onRowClick, rowActions } = table;
+  const { rowActions } = table;
   const state = resolveRow(table, rowKey, row, index, selected);
+  const open = rowOpenOf(table, row);
   const pending = renderPending(state.pending);
   /* The record's own standing, resolved from the caller's spec. The SLOT is gated on the rendered
      node, not on the prop: a table with a `rowProvenance` that returns null for this record must
@@ -120,14 +122,14 @@ export function DataTableBodyRow<Row>({
         className="hg-dt-row"
         data-flow-row=""
         {...rowTintAttrs(state)}
-        {...rowSignalAttrs(state, onRowClick !== undefined)}
+        {...rowSignalAttrs(state, open !== undefined)}
         /* WHAT THE ROW ANNOUNCES ABOUT ITSELF, written here rather than folded into the spread
            above. `aria-busy` is the act in flight and `aria-invalid` the broken row — never the
            two confused: a pending row is still correct, and still operable. The native half
            spells the first as `accessibilityState.busy` on its `role="row"` View. */
         aria-invalid={state.issue === null ? undefined : true}
         aria-busy={state.waiting ? true : undefined}
-        onClick={onRowClick === undefined ? undefined : () => onRowClick(row)}
+        onClick={open}
       >
         {selectable ? (
           // biome-ignore lint/a11y/useKeyWithClickEvents: this only stops the row's click reaching the tick; the control inside carries every interaction, and a key handler here would fire the row from the checkbox.
@@ -157,6 +159,19 @@ export function DataTableBodyRow<Row>({
               roomy={needsRoom(column, table, standingHere)}
               live={isLiveCell(column, table.onCellCommit, table.cellIssue)}
             >
+              {/* AN OPEN ROW IS A REAL BUTTON for the keyboard and a screen reader — named by the
+                  record, in the primary cell — while a pointer may press the whole row. */}
+              {open !== undefined && column.primary === true ? (
+                <button
+                  type="button"
+                  className="hg-dt-row-open hg-spoken-only"
+                  aria-label={rowNameOf(row, column, table.rowLabel)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    open();
+                  }}
+                />
+              ) : null}
               <DataTableCell
                 row={row}
                 column={column}

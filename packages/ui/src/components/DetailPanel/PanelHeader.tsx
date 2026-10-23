@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { OverlayClose } from '../Sheet/OverlayClose';
+import type { OverlayStatus } from '../Sheet/Sheet.types';
+import { StatusChip } from '../StatusChip/StatusChip';
 
 interface PanelHeaderProps {
   /** Leading node, usually an IconCircle or Avatar. */
@@ -10,6 +12,7 @@ interface PanelHeaderProps {
   /** The scroll shadow — luminance, never a divider line. */
   scrolled: boolean;
   showClose: boolean;
+  status?: OverlayStatus;
   /** Rendered in Geist Mono — job IDs, coordinates, invoice numbers. */
   subtitle?: string;
   title?: string;
@@ -24,6 +27,7 @@ export function PanelHeader({
   overline,
   scrolled,
   showClose,
+  status,
   subtitle,
   title,
   titleId,
@@ -37,9 +41,19 @@ export function PanelHeader({
             <div className="hg-detail-panel-overline">{overline}</div>
           )}
           {title === undefined ? null : (
-            <h2 className="hg-detail-panel-title" id={titleId}>
-              {title}
-            </h2>
+            <div className="hg-overlay-title-line">
+              <h2 className="hg-detail-panel-title" id={titleId}>
+                {title}
+              </h2>
+              {status === undefined ? null : (
+                <StatusChip
+                  status={status.label}
+                  label={status.label}
+                  tone={status.tone}
+                  density="functional"
+                />
+              )}
+            </div>
           )}
           {subtitle === undefined ? null : (
             <div className="hg-detail-panel-subtitle">{subtitle}</div>

@@ -1,4 +1,4 @@
-import { useShell, useTeam, useTeamActs } from '@heliogrid/data/react';
+import { useAssignRoles, useShell, useTeam, useTeamActs } from '@heliogrid/data/react';
 import { noteLeavesRow, showsListHead } from '@heliogrid/domain';
 import { teamActWords, teamListWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
@@ -20,6 +20,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSettingsDrillDown } from '../settings/hooks/use-settings-drill-down';
 import { ShellPage } from '../shell/components/ShellPage';
 import { underPill } from '../shell/styles';
+import { TeamAssignRoles } from './components/TeamAssignRoles';
 import { InviteTeammate, useTeamInvite } from './components/TeamInvite';
 
 /**
@@ -28,7 +29,8 @@ import { InviteTeammate, useTeamInvite } from './components/TeamInvite';
  * person and open or run-out invite. The settings row opens it once its presets allow (`F7-48`).
  * What is read is `useTeam`'s, what each act does `useTeamActs`', and every word `teamListWords`'
  * and `teamActWords`'; this composes. *Invite teammate* opens Invite Teammate as a sheet over the
- * page (`SCR-M01-07`, `T-M01-007`); a row's open lands with `T-M01-013`.
+ * page (`SCR-M01-07`, `T-M01-007`); an active person's card opens Assign Roles (`SCR-M01-13`),
+ * `useAssignRoles`' editor.
  */
 export function TeamScreen() {
   const drillDown = useSettingsDrillDown('team');
@@ -58,6 +60,9 @@ export function TeamScreen() {
   });
 
   const invite = useTeamInvite(() => team.reread(), toasts.push);
+  const roles = useAssignRoles(team);
+  /* The sole-owner reason names the company, so no row opens before its name has arrived. */
+  const openOf = shell.companyName === null ? undefined : roles.openerOf;
 
   return (
     <ShellPage
@@ -93,6 +98,7 @@ export function TeamScreen() {
           team.filter('all');
           allChip.current?.focus();
         }}
+        openOf={openOf}
         actOf={(row) => {
           const act = memberActOf(row, team.roster, actWords, acts.sending);
           return act === null ? null : (
@@ -116,6 +122,7 @@ export function TeamScreen() {
         }}
       />
       <InviteEditor {...invite.editor} />
+      <TeamAssignRoles editor={roles} companyName={shell.companyName ?? ''} />
       {/* Above the pill, which stands on the device's home-bar inset — the package reads no inset. */}
       <ToastHost
         toasts={toasts.toasts}

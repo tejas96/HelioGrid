@@ -1,5 +1,7 @@
 import type { PointerEvent as ReactPointerEvent } from 'react';
+import { StatusChip } from '../StatusChip/StatusChip';
 import { OverlayClose } from './OverlayClose';
+import type { OverlayStatus, OverlaySubtitleFace } from './Sheet.types';
 
 interface SheetHeaderProps {
   /** With a handle above it the header loses its own top padding. */
@@ -12,7 +14,9 @@ interface SheetHeaderProps {
   /** The scroll shadow — luminance, never a divider line. */
   scrolled: boolean;
   showClose: boolean;
+  status?: OverlayStatus;
   subtitle?: string;
+  subtitleFace: OverlaySubtitleFace;
   title?: string;
   titleId: string;
 }
@@ -26,7 +30,9 @@ export function SheetHeader({
   overline,
   scrolled,
   showClose,
+  status,
   subtitle,
+  subtitleFace,
   title,
   titleId,
 }: SheetHeaderProps) {
@@ -42,11 +48,25 @@ export function SheetHeader({
       <div className="hg-sheet-heading">
         {overline === undefined ? null : <div className="hg-sheet-overline">{overline}</div>}
         {title === undefined ? null : (
-          <h2 className="hg-sheet-title" id={titleId}>
-            {title}
-          </h2>
+          <div className="hg-overlay-title-line">
+            <h2 className="hg-sheet-title" id={titleId}>
+              {title}
+            </h2>
+            {status === undefined ? null : (
+              <StatusChip
+                status={status.label}
+                label={status.label}
+                tone={status.tone}
+                density="functional"
+              />
+            )}
+          </div>
         )}
-        {subtitle === undefined ? null : <div className="hg-sheet-subtitle">{subtitle}</div>}
+        {subtitle === undefined ? null : (
+          <div className="hg-sheet-subtitle" data-face={subtitleFace}>
+            {subtitle}
+          </div>
+        )}
       </div>
       {showClose ? (
         <OverlayClose label={closeLabel} offset={handle ? 'handle' : 'sheet'} onClick={onClose} />

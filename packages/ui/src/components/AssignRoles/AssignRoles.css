@@ -1,0 +1,74 @@
+/* Assign Roles (`SCR-M01-13`): the head's *Presets* line, the rows, and the pinned grant card. */
+
+.hg-assign-roles-heading {
+  display: block;
+  margin-top: var(--sp-3);
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--line-soft);
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* In the side panel the line sits closer to the head (`SCR-M01-13` d-default draws `--sp-1`). */
+.hg-assign-roles-heading[data-form="panel"] {
+  margin-top: var(--sp-1);
+}
+
+.hg-assign-roles-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding-top: var(--sp-3);
+}
+
+.hg-assign-roles-foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* The grant card: a light accent ground, and nothing that looks like a control — no pill, no chip,
+   no lift. */
+.hg-grant-card {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--accent-subtle);
+  border-radius: var(--r-tile);
+}
+
+.hg-grant-card-cluster {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.hg-grant-card-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-grant-card-overline {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.hg-grant-card-sentence {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+}
+
+.hg-grant-card-sentence strong {
+  font-weight: var(--fw-bold);
+}

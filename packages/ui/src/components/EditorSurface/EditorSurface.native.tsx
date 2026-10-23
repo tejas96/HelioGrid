@@ -12,7 +12,7 @@ import {
   modalChrome,
   PANEL_ABOVE,
   panelChrome,
-  resolveEditorBody,
+  resolveForForm,
   sheetChrome,
 } from './editor-form-props';
 import { editorStateProps } from './editor-state-props';
@@ -40,7 +40,9 @@ export function EditorSurface(props: NativeEditorSurfaceProps) {
     onClose,
     panelAbove = PANEL_ABOVE,
     title,
+    status,
     subtitle,
+    subtitleFace,
     overline,
     children,
     footer,
@@ -64,7 +66,8 @@ export function EditorSurface(props: NativeEditorSurfaceProps) {
      window's. Rendering the probe unconditionally would add a zero-height View to every screen. */
   const probe = inset ? <View onLayout={onLayout} style={PROBE_STYLE} /> : null;
   const panel = isPanel(layerWidth, panelAbove);
-  const body: ReactNode = resolveEditorBody(children, panel, layerWidth);
+  const body: ReactNode = resolveForForm(children, panel, layerWidth);
+  const metaRow: ReactNode = resolveForForm(meta, panel, layerWidth);
 
   if (!open || panel === null) {
     return probe;
@@ -105,12 +108,13 @@ export function EditorSurface(props: NativeEditorSurfaceProps) {
           dismissible={dismissible}
           footer={footer}
           leading={leading}
-          meta={meta}
+          meta={metaRow}
           modal={modal}
           onClose={onClose}
           open
           overline={overline}
           side={side}
+          status={status}
           style={style}
           subtitle={subtitle}
           title={title}
@@ -135,9 +139,12 @@ export function EditorSurface(props: NativeEditorSurfaceProps) {
         modal={modal}
         onClose={onClose}
         open
+        meta={metaRow}
         overline={overline}
+        status={status}
         style={style}
         subtitle={subtitle}
+        subtitleFace={subtitleFace}
         title={title}
         zIndex={zIndex}
         {...sheetProps}

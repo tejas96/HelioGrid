@@ -33,6 +33,7 @@ export function DetailPanel({
   side = 'right',
   width = 480,
   title,
+  status,
   subtitle,
   overline,
   leading = null,
@@ -108,6 +109,7 @@ export function DetailPanel({
             pad={pad}
             scrolled={scrolled}
             showClose={showClose}
+            status={status}
             subtitle={subtitle}
             title={title}
           />

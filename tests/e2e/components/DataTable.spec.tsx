@@ -2,7 +2,7 @@ import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { Card, DataTable } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour } from '../support/token';
-import { FlaggedStackedTable } from './DataTable.story';
+import { FlaggedStackedTable, OpeningTable } from './DataTable.story';
 
 const en = await createTranslator('en');
 const label = en.t(SIGN_IN.mobileNumber);
@@ -253,4 +253,42 @@ test('a table without the quiet head draws no card wrapper', async ({ mount }) =
     <DataTable columns={[{ key: 'name', label }]} rows={rows} stackBelow={WIDE} />,
   );
   await expect(table.locator('.hg-dt-quiet')).toHaveCount(0);
+});
+
+test.describe('rowOpens: only the rows it allows open (D242)', () => {
+  const label = en.t(SIGN_IN.mobileNumber);
+  const act = en.t(SIGN_IN.changeNumber);
+
+  test('in the grid: a click or the row button opens an allowed row, an act stays its own', async ({
+    mount,
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1536, height: 800 });
+    const frame = await mount(<OpeningTable label={label} act={act} />);
+    const rows = page.locator('tr.hg-dt-row');
+    const open = page.getByRole('button', { name: 'Vikram Deshpande' });
+    await expect(open).toHaveCount(1);
+    await expect(page.getByRole('button', { name: 'Deepak Jadhav' })).toHaveCount(0);
+    await rows.nth(1).click();
+    await expect(frame).toHaveAttribute('data-opened', '');
+    await rows.nth(0).getByRole('button', { name: act }).click();
+    await expect(frame).toHaveAttribute('data-acted', 'Vikram Deshpande');
+    await expect(frame).toHaveAttribute('data-opened', '');
+    await rows.nth(0).getByRole('button', { name: act }).focus();
+    await page.keyboard.press('Enter');
+    await expect(frame).toHaveAttribute('data-opened', '');
+    await open.focus();
+    await expect(rows.nth(0)).toHaveCSS('outline-style', 'solid');
+    await page.keyboard.press('Space');
+    await expect(frame).toHaveAttribute('data-opened', 'Vikram Deshpande');
+  });
+
+  test('in the cards: only an allowed card has a press target', async ({ mount, page }) => {
+    await page.setViewportSize({ width: 375, height: 800 });
+    const frame = await mount(<OpeningTable label={label} act={act} stacked />);
+    const targets = page.locator('.hg-dt-card-target');
+    await expect(targets).toHaveCount(1);
+    await targets.click({ position: { x: 12, y: 12 } });
+    await expect(frame).toHaveAttribute('data-opened', 'Vikram Deshpande');
+  });
 });

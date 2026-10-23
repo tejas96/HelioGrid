@@ -70,11 +70,12 @@ export function isDecision(panel: boolean, desktop: EditorDesktopForm): boolean 
 }
 
 /**
- * A function child receives the answer — for content that arranges itself around it (two columns
- * in a panel, one in a sheet). It never redraws the frame; that is the component's own job.
+ * A function body or meta row receives the answer — for content that arranges itself around it (two
+ * columns in a panel, one in a sheet; a line spaced closer in a panel). It never redraws the frame;
+ * that is the component's own job.
  */
-export function resolveEditorBody(
-  children: EditorSurfaceProps['children'],
+export function resolveForForm(
+  children: EditorSurfaceProps['children'] | EditorSurfaceProps['meta'],
   panel: boolean | null,
   layerWidth: number | null,
 ): ReactNode {

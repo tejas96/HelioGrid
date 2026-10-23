@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { StatusTone } from '../../primitives/StatusMark';
 import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 import type { OverlayCloseWords } from './OverlayClose.types';
 
@@ -8,12 +9,25 @@ export type SheetSize = 'auto' | 'half' | 'full';
 /** Expressive = the 32px sheet radius and roomy padding; functional = 16px and tighter. */
 export type SheetDensity = 'expressive' | 'functional';
 
+/** A status beside an overlay's title — the person's *Active* on Assign Roles (`SCR-M01-13`). */
+export interface OverlayStatus {
+  readonly label: string;
+  readonly tone: StatusTone;
+}
+
+/** The face of the line under the title: `mono` when it carries a number (`F7-09`). */
+export type OverlaySubtitleFace = 'sans' | 'mono';
+
 export interface SheetProps extends OverlayCloseWords {
   open?: boolean;
   /** Called on backdrop click, Esc, close button and drag-past-threshold. */
   onClose?: () => void;
   title?: string;
+  /** Drawn beside the title, on its line. */
+  status?: OverlayStatus;
   subtitle?: string;
+  /** `sans` by default; `mono` for a number such as a phone (`F7-09`). */
+  subtitleFace?: OverlaySubtitleFace;
   /** Uppercase micro-label above the title ("SITE SURVEY"). */
   overline?: string;
   children?: ReactNode;

@@ -95,3 +95,13 @@ export function needsRoom<Row>(
     standingHere
   );
 }
+
+/** The row's open, when the table opens rows and `rowOpens` lets this one open; else undefined. */
+export function rowOpenOf<Row>(
+  table: Pick<DataTableProps<Row>, 'onRowClick' | 'rowOpens'>,
+  row: Row,
+): (() => void) | undefined {
+  const { onRowClick, rowOpens } = table;
+  if (onRowClick === undefined || rowOpens?.(row) === false) return undefined;
+  return () => onRowClick(row);
+}

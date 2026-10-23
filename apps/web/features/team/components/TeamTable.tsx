@@ -19,6 +19,8 @@ interface TeamTableProps {
   actions: string;
   /** A row's act, small and right-aligned, or nothing for a row with none. */
   actOf: (row: TeamRow) => ReactNode;
+  /** A row's open — Assign Roles for an active person; undefined for a row that opens nothing. */
+  openOf?: (row: TeamRow) => (() => void) | undefined;
   loading?: boolean;
 }
 
@@ -27,7 +29,14 @@ interface TeamTableProps {
  * the status), Roles and Last active, in the owner's 2.2 : 2.4 : 1.2, on `DataTable`'s quiet head
  * (design-system change 20), and each row's act in a column of its own.
  */
-export function TeamTable({ rows, words, actions, actOf, loading = false }: TeamTableProps) {
+export function TeamTable({
+  rows,
+  words,
+  actions,
+  actOf,
+  openOf,
+  loading = false,
+}: TeamTableProps) {
   const t = useTranslate();
   const columns: DataTableColumn<TeamRow>[] = [
     {
@@ -74,7 +83,14 @@ export function TeamTable({ rows, words, actions, actOf, loading = false }: Team
       columns={columns}
       rows={[...rows]}
       rowKey="id"
+      rowLabel={(row) => row.name}
       rowActions={(row) => actOf(row)}
+      {...(openOf === undefined
+        ? {}
+        : {
+            onRowClick: (row: TeamRow) => openOf(row)?.(),
+            rowOpens: (row: TeamRow) => openOf(row) !== undefined,
+          })}
       actionsLabel={actions}
       state={loading ? 'loading' : 'ready'}
       stackBelow={0}

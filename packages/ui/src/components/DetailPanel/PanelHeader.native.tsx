@@ -4,6 +4,8 @@ import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { OverlayClose } from '../Sheet/OverlayClose.native';
+import type { OverlayStatus } from '../Sheet/Sheet.types';
+import { StatusChip } from '../StatusChip/StatusChip.native';
 
 interface PanelHeaderProps {
   /** Leading node, usually an IconCircle or Avatar. */
@@ -16,6 +18,7 @@ interface PanelHeaderProps {
   /** The scroll shadow — luminance, never a divider line. */
   scrolled: boolean;
   showClose: boolean;
+  status?: OverlayStatus;
   /** Rendered in Geist Mono — job IDs, coordinates, invoice numbers. */
   subtitle?: string;
   title?: string;
@@ -30,6 +33,7 @@ export function PanelHeader({
   pad,
   scrolled,
   showClose,
+  status,
   subtitle,
   title,
 }: PanelHeaderProps) {
@@ -50,9 +54,19 @@ export function PanelHeader({
             </Text>
           )}
           {title === undefined ? null : (
-            <Text variant="h2" style={titleStyle}>
-              {title}
-            </Text>
+            <View style={styles.titleLine}>
+              <Text variant="h2" style={titleStyle}>
+                {title}
+              </Text>
+              {status === undefined ? null : (
+                <StatusChip
+                  status={status.label}
+                  label={status.label}
+                  tone={status.tone}
+                  density="functional"
+                />
+              )}
+            </View>
           )}
           {subtitle === undefined ? null : (
             <Text variant="mono" color="secondary">
@@ -86,5 +100,11 @@ const styles = StyleSheet.create({
   scrolled: theme.elevation.e2,
   lead: { flexDirection: 'row', gap: 14, alignItems: 'center', flexShrink: 1, minWidth: 0 },
   heading: { flexShrink: 1, minWidth: 0 },
+  titleLine: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: theme.spacing['sp-2'],
+  },
   overline: { marginBottom: 6 },
 });

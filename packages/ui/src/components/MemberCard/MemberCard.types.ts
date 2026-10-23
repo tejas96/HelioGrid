@@ -104,6 +104,8 @@ export interface MemberListProps {
   waiting?: ReactNode;
   /** A card's one act at its foot — the caller's `MemberAct`, or nothing for a row with none. */
   actOf?: (row: TeamRow) => ReactNode;
+  /** A card's open — the whole card; undefined for a row that opens nothing (Assign Roles opens an active person only). */
+  openOf?: (row: TeamRow) => (() => void) | undefined;
   /** The teaching state's act under its words — *Invite your first teammate* (`SCR-M01-12` m-teaching). */
   teachingAction?: ReactNode;
 }

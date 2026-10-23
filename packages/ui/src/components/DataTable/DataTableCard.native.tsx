@@ -17,7 +17,7 @@ import { DataTableCell } from './DataTableCell.native';
 import { tickPullback } from './DataTableChrome.native';
 import { RowNote } from './DataTableFeedback.native';
 import type { RowState } from './DataTableRow.logic';
-import { resolveRow } from './DataTableRow.logic';
+import { resolveRow, rowOpenOf } from './DataTableRow.logic';
 import type { StackedColumns } from './DataTableStacked.logic';
 import { holdsEditor, rowNameOf } from './DataTableStacked.logic';
 
@@ -202,7 +202,7 @@ export function DataTableCard<Row>({
   table,
   tableSpec,
 }: NativeCardProps<Row>) {
-  const { onRowClick } = table;
+  const open = rowOpenOf(table, row);
   const state = resolveRow(table, rowKey, row, index, selected);
   const name = rowNameOf(row, slots.primary, table.rowLabel);
   const editable = holdsEditor(slots, table);
@@ -226,13 +226,13 @@ export function DataTableCard<Row>({
   );
 
   const content =
-    onRowClick === undefined ? (
+    open === undefined ? (
       <View style={styles.pad}>{body}</View>
     ) : (
       <RNPressable
         accessibilityRole="button"
         accessibilityLabel={name}
-        onPress={() => onRowClick(row)}
+        onPress={open}
         style={styles.pad}
       >
         {body}

@@ -40,6 +40,7 @@ export function DetailPanel({
   width = 480,
   top = '0px',
   title,
+  status,
   subtitle,
   overline,
   leading = null,
@@ -106,6 +107,7 @@ export function DetailPanel({
           overline={overline}
           scrolled={scrolled}
           showClose={showClose}
+          status={status}
           subtitle={subtitle}
           title={title}
           titleId={titleId}

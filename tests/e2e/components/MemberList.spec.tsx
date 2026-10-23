@@ -103,7 +103,32 @@ test('each card carries its one act, and the only EPC Owner’s own Deactivate i
   await mount(<TeamListStory company={COMPANY} surface="ready" withActs />);
 
   await expect(page.getByRole('button', { name: acts.act('revoke') })).toBeEnabled();
-  const own = page.getByRole('button', { name: acts.act('deactivate') });
+  const own = page
+    .locator('.hg-record-card', { hasText: 'Rajesh Patil' })
+    .getByRole('button', { name: acts.act('deactivate') });
   await expect(own).toHaveAttribute('aria-disabled', 'true');
   await expect(own).toHaveAccessibleDescription(acts.onlyOwner);
+});
+
+test('an active card opens the person; an invite does not, and a card act runs its act (D242)', async ({
+  mount,
+  page,
+}) => {
+  const frame = await mount(<TeamListStory surface="ready" company={COMPANY} withActs withOpen />);
+  const targets = page.locator('.hg-record-card-target');
+  await expect(targets).toHaveCount(2);
+  await expect(targets.nth(0)).toHaveAccessibleName('Rajesh Patil');
+  await expect(targets.nth(1)).toHaveAccessibleName('Vikram Deshpande');
+  // Vikram's own Deactivate, on a card that opens, runs its act and opens nothing.
+  const vikram = page.locator('.hg-record-card', { hasText: 'Vikram Deshpande' });
+  await vikram.getByRole('button', { name: teamActWords(en.t, COMPANY).act('deactivate') }).click();
+  await expect(frame).toHaveAttribute('data-acted', 'Vikram Deshpande');
+  await expect(frame).toHaveAttribute('data-opened', '');
+  /* A tap on the role badges opens the person: the row of words lets it through to the card. */
+  const badges = await page
+    .locator('.hg-record-card', { hasText: 'Rajesh Patil' })
+    .locator('.hg-record-card-marks')
+    .boundingBox();
+  await page.mouse.click((badges?.x ?? 0) + 8, (badges?.y ?? 0) + 8);
+  await expect(frame).toHaveAttribute('data-opened', 'Rajesh Patil');
 });

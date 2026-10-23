@@ -8,7 +8,7 @@ import { CardDetails } from './DataTableCardDetails';
 import { DataTableCell } from './DataTableCell';
 import { RowNote } from './DataTableChrome';
 import type { RowState } from './DataTableRow.logic';
-import { resolveRow } from './DataTableRow.logic';
+import { resolveRow, rowOpenOf } from './DataTableRow.logic';
 import type { StackedColumns } from './DataTableStacked.logic';
 import { holdsEditor, isTappable, rowNameOf } from './DataTableStacked.logic';
 
@@ -99,7 +99,7 @@ export function DataTableCard<Row>({
   table,
   tableSpec,
 }: CardProps<Row>) {
-  const { onRowClick } = table;
+  const open = rowOpenOf(table, row);
   const { primary, secondary, trailing, rest } = slots;
   const state = resolveRow(table, rowKey, row, index, selected);
   const name = rowNameOf(row, primary, table.rowLabel);
@@ -121,15 +121,10 @@ export function DataTableCard<Row>({
         aria-invalid={state.issue === null ? undefined : true}
         aria-busy={state.waiting ? true : undefined}
       >
-        {onRowClick === undefined ? null : (
-          <button
-            type="button"
-            className="hg-dt-card-target"
-            aria-label={name}
-            onClick={() => onRowClick(row)}
-          />
+        {open === undefined ? null : (
+          <button type="button" className="hg-dt-card-target" aria-label={name} onClick={open} />
         )}
-        <div className="hg-dt-card-body" data-inert={onRowClick === undefined ? undefined : 'true'}>
+        <div className="hg-dt-card-body" data-inert={open === undefined ? undefined : 'true'}>
           {selectable ? (
             <span className="hg-dt-card-select hg-dt-tappable">
               <Checkbox

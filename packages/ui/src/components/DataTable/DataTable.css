@@ -185,6 +185,13 @@
   cursor: pointer;
 }
 
+/* An open row's button is out of sight; while it holds the keyboard the whole row shows the ring,
+   inside the row, as the sortable head's does. */
+.hg-dt-row[data-clickable="true"]:has(.hg-dt-row-open:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
 .hg-dt-row[data-clickable="true"]:hover:not([data-selected="true"]):not([data-issue="true"]):not(
   [data-fixed="true"]
 ) {

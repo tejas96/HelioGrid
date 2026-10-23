@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { OverlayCloseWords } from '../Sheet/OverlayClose.types';
+import type { OverlayStatus } from '../Sheet/Sheet.types';
 import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 
 export type DetailPanelSide = 'right' | 'left';
@@ -18,6 +19,8 @@ export interface DetailPanelProps extends OverlayCloseWords {
    */
   top?: string;
   title?: string;
+  /** Drawn beside the title, on its line. */
+  status?: OverlayStatus;
   /** Rendered in Geist Mono — job IDs, coordinates, invoice numbers. */
   subtitle?: string;
   overline?: string;

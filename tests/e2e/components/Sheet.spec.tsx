@@ -70,3 +70,44 @@ test("the close is named in the reader's language", async ({ mount, page }) => {
     page.getByRole('dialog').getByRole('button', { name: hi.t(SHELL.close), exact: true }),
   ).toBeVisible();
 });
+
+test('a status sits on the title line and a number under it is set in mono; without them the head is as before', async ({
+  mount,
+  page,
+}) => {
+  const component = await mount(
+    <Sheet
+      open
+      showClose
+      closeLabel={en.t(SHELL.close)}
+      title={en.t(NOTIFICATION_CENTRE.title)}
+      status={{ label: en.t(SHELL.close), tone: 'success' }}
+      subtitle="+91 98765 43210"
+      subtitleFace="mono"
+      meta={<span data-testid="meta">{en.t(NOTIFICATION_CENTRE.title)}</span>}
+    >
+      <p>{en.t(NOTIFICATION_CENTRE.emptyMessage)}</p>
+    </Sheet>,
+  );
+  const line = page.locator('.hg-overlay-title-line');
+  await expect(line.locator('.hg-status-chip')).toContainText(en.t(SHELL.close));
+  // The status is beside the heading, not in it: the dialog is named by the title alone.
+  await expect(
+    page.getByRole('dialog', { name: en.t(NOTIFICATION_CENTRE.title), exact: true }),
+  ).toBeVisible();
+  await expect(page.locator('.hg-sheet-subtitle')).toHaveCSS('font-family', /Geist Mono/u);
+  await expect(page.getByTestId('meta')).toBeVisible();
+  await component.update(
+    <Sheet
+      open
+      showClose
+      closeLabel={en.t(SHELL.close)}
+      title={en.t(NOTIFICATION_CENTRE.title)}
+      subtitle="x"
+    >
+      <p>{en.t(NOTIFICATION_CENTRE.emptyMessage)}</p>
+    </Sheet>,
+  );
+  await expect(page.locator('.hg-status-chip')).toHaveCount(0);
+  await expect(page.locator('.hg-sheet-subtitle')).not.toHaveCSS('font-family', /Geist Mono/u);
+});
