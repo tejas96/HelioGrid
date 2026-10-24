@@ -99,6 +99,10 @@ Write it under the task's header lines as `#### RFC` (a part: `#### Part <x> · 
 of `rfc-template.md`. It is the one plan every agent works from: nobody downstream invents a
 requirement it does not hold.
 
+Before the review, walk `rfc-template.md` against the RFC line by line — its rule for reading code,
+its Proof rules and its edge-case table: a plan written from a types file is the first review's most
+common blocker.
+
 **A task is one PR.** Split only when the RFC plans more than 30 changed files, into at most three
 parts. Each part is end to end and holds the web and phone halves of its flow together; the task
 gets a `#### Parts` table (`part | what | AC | depends on | status`).
@@ -128,7 +132,7 @@ the current `rfc-template.md`, which may have changed since the task RFC was app
 the task RFC lacks for a change those screens' frames show is filled (§5), `rfc-reviewer` reads it
 (check 9), and the part shows its `Motion:` line; a moment that moves what a built screen did not
 move before is an open decision, so the part asks. A change request is answered with one line per
-changed section, then the same three lines.
+changed section, then the same four lines.
 
 ## 5. Build
 
@@ -147,10 +151,13 @@ slice Main builds:
    An `apps/api/tests` file runs with the test-database prefix: `pnpm db:migrate && pnpm exec vitest run <file>`.
    A component spec runs with `pnpm --filter @heliogrid/e2e test:ct <spec>`.
 3. The smallest code that meets the line. Reuse what step 2 found.
-4. `pnpm check` after each slice.
+4. `pnpm check` after each slice, and again after every later edit — a review fix, a QA fix, a
+   word changed — so the gate meets no lint, catalog or coverage failure the fast check could have
+   shown. Biome on the one file (`pnpm exec biome check --error-on-warnings <file>`) right after an edit catches a
+   complexity or role-literal error before the slice ends.
 5. One step gets two attempts. After both fail, stop with the evidence and at most two ways forward.
 
-A new route, table, contract, package or behaviour voids the approval: update the RFC, show what
+A new route, table, contract, package, affected package or behaviour voids the approval: update the RFC, show what
 changed, and wait for a yes again. One asked for after QA is offered as its own PR first: added here,
 it costs another round of review, QA and the gate. A file outside the RFC's file table is added to it with its
 reason as it lands.
@@ -205,15 +212,13 @@ through the review and its fixes.
    `.qa/metro.log`; Fast Refresh can drop silently), then start the agents in the next message.
 
 **Run.** Start every QA agent in one message. Each gets what its own file lists under "Your prompt
-gives you"; `qa-web` and `qa-ios` also get the RFC's frame map and every open
-`docs/tasks/deferred.md` row that names a frame they compare — a known difference, noted and not
-failed. An agent that returns `NEEDS MAIN: <action>`
+gives you", the RFC's frame map and the known differences included. An agent that returns `NEEDS MAIN: <action>`
 (kill, restart or open the app by a link) gets that action done by you and is continued. Standing
 accounts: `…901` web, `…902` iOS, `…903` Android, `…904` and `…905` for the api's two tenants; all
 are in `DEV_OTP_PHONES`. A missing one is created once through the app. A row that must walk
-setup as a new company takes an unused `DEV_OTP_PHONES` number (`…906` up), one company per agent,
-so no two agents share a one-time step and all start together; when none is left, the owner decides
-how `heliogrid_test` is reset. A row that needs the api
+setup as a new company, or join as a person with no account, takes a number of its own, one per
+agent, so no two agents share a one-time step and all start together: an unused `DEV_OTP_PHONES`
+number, or a fresh one, whose code is the newest `Message for <number> via` line in `.qa/api.log`. A row that needs the api
 stopped runs last, after every agent has returned: stop the api once, continue each agent that has
 such rows, start the api once.
 
@@ -254,7 +259,9 @@ return; any file an agent changed stops the task.
    Read the failures, not the exit code; a `SKIP ` line or the warning `apps/api/tests are skipped`
    fails the gate. A fix goes back through `pnpm check`, the reviewer on
    the fixed files and the QA rows it touched, then one more gate run. A second failure that is
-   not environmental stops for the owner. A stale `dist/` after a delete: `CLAUDE.md` §3. Once it
+   not environmental stops for the owner — except a failure the check repairs itself (stale
+   catalogs or OpenAPI, whose check has just rewritten them): read the rewritten files, then run
+   once more without asking. A stale `dist/` after a delete: `CLAUDE.md` §3. Once it
    passes, run `pnpm infra:down` only when the stack was down at step 1.
 
 ## 9. Commit and PR
@@ -267,14 +274,18 @@ into the PR body — a part's RFC goes; the task RFC stays until the last part s
 - Commit message: `feat: <id> — <what the user gets>`, then a short body.
 - Show the owner the changed files and the exact message, then stop. Commit only on the owner's
   yes to that list and message (`CLAUDE.md` §4); every later commit — a CI fix, a review fix, a
-  merge of `origin/main` — is shown and waits the same way.
+  merge of `origin/main` — is shown and waits the same way. Ask once for what follows from one
+  yes: when the push needs the merge of `origin/main` below and its squash check (the empty
+  `git diff`) already holds before the ask, show the change commit, the merge commit's message, the
+  push and the PR together, and one yes covers all four; a merge that conflicts beyond keeping this
+  branch's side is shown and asked on its own.
 - A branch cut from another unmerged branch (an earlier part's) whose PR has since merged opens with
   conflicts, so before the push: `git merge --no-commit origin/main` (never a rebase). When `main`'s squash
   commit holds exactly that branch's last commit (`git diff <its last commit> <the squash commit>`
   is empty), keep this branch's side of every conflict: the merged tree equals the one the gate
   passed (`git write-tree` equals `HEAD^{tree}`), so the gate stands. Otherwise resolve, regenerate
-  `pnpm check:catalogs` and `pnpm check:openapi` outputs and rerun the gate. Show the merge commit;
-  commit on the owner's yes.
+  `pnpm check:catalogs` and `pnpm check:openapi` outputs, rerun the gate, and show the merge commit
+  on its own for the owner's yes.
 - `git push -u origin feat/<id>`, then `gh pr create --base main --draft`, the body filled in as
   `.github/pull_request_template.md` lays it out. Bind it to the session (the `ccd_pr` tools).
 - Mark it ready (`gh pr ready`) only when every job of the head's latest run passed — `success`, or

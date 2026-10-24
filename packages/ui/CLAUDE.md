@@ -42,7 +42,12 @@ src/components/<Name>/
   <Name>.css          web styles
   <Name>.logic.ts     anything that is not markup — shared by both halves, or handed to the app
                       through the index
+  <Part>.tsx · <Part>.native.tsx    a sub-part of <Name>, kept beside it
+  <Name>.<concern>.ts a pure helper split from .logic.ts (.words.ts, .shapes.ts …)
+  use-<thing>.ts      a hook only this component uses
   index.ts            the only thing outside imports
+src/primitives/       the atoms every component is built from
+src/utils/            binds a pack or the system's inks to domain's maths (format.ts …)
 ```
 
 **The web file is `<Name>.tsx`, never `<Name>.web.tsx`.** Metro resolves `.native.tsx` ahead of

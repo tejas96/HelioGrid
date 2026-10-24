@@ -17,13 +17,14 @@ features/<capability>/ <Name>Screen.tsx composes · components/ one per componen
                        hooks/use-<thing>.ts the platform adapter only (DOM, router, clipboard) ·
                        <screen>.css token var() only · constants.ts · types.ts ·
                        shared/ when two SCREENS here share · index.ts the barrel
-lib/                   app infrastructure (env.ts)
+lib/                   app infrastructure (env.ts) and a web-only platform hook two features
+                       share (use-image-file.ts)
 ```
 
-A feature is named for the CAPABILITY it owns, matching the API module that serves it, so one
-name spans both sides. `app/` imports a feature ONLY through its barrel or a screen barrel one
-level down — nothing deeper. Two FEATURES sharing something means it is not feature-local: it
-belongs in a package (`architecture.md` §4).
+A feature is named for the CAPABILITY it owns. `app/` imports a feature ONLY through its barrel or
+a screen barrel one level down — nothing deeper. Two FEATURES sharing a part means it is not
+feature-local: it belongs in a package (`architecture.md` §4); only a web-only platform hook sits
+in `lib/`.
 
 ## Commands
 
@@ -53,8 +54,7 @@ pnpm --filter @heliogrid/web dev | build | typecheck      # dev = localhost:3002
   `schema.options` for a contract enum, the exported tuple for a domain one. What matters is that
   the list is not authored in the screen.
 - Forms branch `VALIDATION_FAILED` through `applyServerErrors` first; any other API failure takes
-  its words from `@heliogrid/i18n`, never a hand-written string. The first screen that renders one
-  builds `ApiErrorText` in `packages/ui`.
+  its words from `@heliogrid/i18n`, never a hand-written string.
 
 ## Done means
 
@@ -64,7 +64,7 @@ running browser — a task is done only when it has been driven, not read.
 ## Traps
 
 - A feature barrel that re-exports both a Server Component and a `'use client'` screen attaches the client chunk to EVERY page reaching the barrel, and tree-shaking cannot remove it; two routes reporting the same First Load JS is the sign → give the client screen its own barrel.
-- `turbo build`, `pnpm check:all` or `rm -rf */dist` while `next dev` runs makes every chunk 404: unstyled HTML and `undefined (reading 'call')`, which looks like a code bug → stop the web server by its own preview server id, never by `clean-dev-ports`, which stops the api, Metro and the component tests too; then `rm -rf apps/web/.next`, and start it again only when a row still needs it (`/task` step 8). A web server that was running before the task: `/task` step 8.
+- `turbo build`, `pnpm check:all` or `rm -rf */dist` while `next dev` runs makes every chunk 404: unstyled HTML and `undefined (reading 'call')`, which looks like a code bug → `/task` step 8's clean-up.
 - `"sideEffects": ["**/*.css"]` in `package.json` is load-bearing: without it webpack keeps every module a barrel names, and it holds only while every side-effect import here is CSS → keep it, and recheck it when a non-CSS side-effect import lands.
 - `lib/env.ts` must write each `process.env.NEXT_PUBLIC_*` out literally: Next substitutes text, so `process.env[key]` or a spread reads `undefined` in the browser and falls back to the schema default with nothing failing → literal reads only.
 - The stylesheet import order in `app/layout.tsx` is load-bearing → `@heliogrid/theme/tokens.css`, then `base.css`, then `@heliogrid/ui/styles.css`, then `globals.css`; keep it.

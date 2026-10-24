@@ -30,7 +30,7 @@ pnpm db:migration:new                # DRAFT into drizzle-draft/ — review, the
 
 `pnpm db:migrate` migrates the database `$DATABASE_ADMIN_URL` (else `$DATABASE_URL`) names in the
 SHELL, so load it in the same command: `set -a; . ./.env.local; set +a; pnpm db:migrate`. For
-`heliogrid_test`, use the export line of `/task` step 8 instead.
+`heliogrid_test`, use `/task`'s test-database prefix (`.claude/skills/task/SKILL.md`, top) instead.
 It prints the database it migrates before it applies anything, and refuses a URL typed after it.
 
 ## Rules

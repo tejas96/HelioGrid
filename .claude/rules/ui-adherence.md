@@ -75,9 +75,9 @@ navigator's, and the studio's 3D scene animates in its own code under the same f
 - **On the phone all other motion runs on the UI thread** — `useNativeDriver: true`, or a Reanimated
   worklet. No `setState` per frame.
 - **Reduced motion is read through one shared hook** in `packages/ui`, with a web and a phone half —
-  never a new `AccessibilityInfo` or `matchMedia` call. The first task that needs it and finds it
-  missing builds it, joining `docs/tasks/deferred.md` D205. A one-shot CSS motion needs no hook: its
-  duration tokens fall to `1ms` on their own. A CSS loop does — at `1ms` it spins a thousand times a
+  never a new `AccessibilityInfo` or `matchMedia` call: it is `useReducedMotion`
+  (`packages/ui/src/primitives/use-reduced-motion{,.native}.ts`). A one-shot CSS motion needs no
+  hook: its duration tokens fall to `1ms` on their own. A CSS loop does — at `1ms` it spins a thousand times a
   second — unless the design system's `keyframes.css` gives it a reduced keyframe, as `hg-spin` has.
   With it on, the end state shows at once.
 - **A loop stops** when its state ends, when its view leaves the screen and when the app or tab goes
@@ -100,7 +100,9 @@ in hooks and handlers. No check finds a bare English literal in JSX.
 
 ## Presentation and logic live in different files
 
-**Style never lives in the component file** — `<Name>.css` on web, `styles.ts` on RN. Three roles:
+**Style never lives in a web component file** — it is `<Name>.css`; a phone screen's layout is its
+`styles.ts` (`apps/mobile/CLAUDE.md`), and a `packages/ui` native half keeps its `StyleSheet` below
+its markup. Three roles:
 a **container** (`<Name>Screen.tsx`) holds data, state, handlers and navigation and little markup;
 a **presentational** component takes props and returns markup, with no data access and no
 navigation; **logic** sits in a `use-<thing>.ts` hook beside them, or in a shared package when

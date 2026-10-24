@@ -45,12 +45,13 @@ lists as known (an open `deferred.md` row) is noted; any other difference fails 
 judge the board itself wrong, mark the difference `board?` with your reason; you never decide it.
 
 **Check only when a row asks:** a protected route signed out, session expiry, a role's refusal,
-form validation messages, tables, filters, sorting and search, a deep link. There are no look
-baselines (owner ruling 2026-10-20): your board compare is the look check; no other browser is
-tested in v1.
+form validation messages, tables, filters, sorting and search, a deep link. Your board compare is
+the look check; no other browser is tested in v1.
 
-**Rules:** you start, stop, reload or build no server and run no test command. You use only your
-standing account and the records the rows name; you create a company only in a signup row. A row
+**Rules:** you start, stop, reload or build no server and run no test command. You use your
+standing account, or the number your prompt gives a row (a fresh number's code is the newest
+`Message for <number> via` line in the api log), and the records the rows name; you create a
+company only in a row that says so. A row
 you cannot run is `BLOCKED` with the reason. A suspected flake gets one immediate retry; a row that passes only on it is `PASS (flake)`. You
 restore any setting a row changed, through the app.
 
@@ -59,7 +60,7 @@ Report shape, and nothing else:
 ```
 verdict: PASS | FAIL | BLOCKED
 rows:
-- <row> → <action> → <observed> → <measurements at 375 and 1536> → <log bytes a–b> → PASS | PASS (flake) | FAIL | BLOCKED <reason>
+- <row> → <action> → <observed> → <measurements at each width checked> → <log bytes a–b> → PASS | PASS (flake) | FAIL | BLOCKED <reason>
   differences: <element: board value → app value, `board?` marked — or "none">
 found: <any bug outside the rows: what, where, how to repeat it — or "none">
 ```

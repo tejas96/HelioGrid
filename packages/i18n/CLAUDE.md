@@ -16,7 +16,8 @@ Deps: `architecture.md` §2 i18n. `packages/ui` takes its copy as props.
 ```
 src/copy/<area>.ts            copy BOTH platforms need — pure data, no React, no JSX
 src/locales/<lang>/           messages.po (source of truth) + messages.ts (compiled by `build`, committed, never hand-edited)
-src/index.ts                  REACT-FREE root — createI18nRuntime, createTranslator, metadata
+src/index.ts                  REACT-FREE root — re-exports the runtime, metadata and copy
+src/runtime.ts                createI18nRuntime, createTranslator
 src/languages.ts              LANGUAGE_META + the statically-imported source catalog
 src/catalog-loader.ts         web: one import() chunk per language
 src/catalog-loader.native.ts  RN: static imports — Metro substitutes it, because `import()`
@@ -40,7 +41,7 @@ bundle must never take.
 pnpm --filter @heliogrid/i18n extract | build | typecheck   # extract sweeps web, mobile and ui
 ```
 
-Run `extract` after any copy change.
+`pnpm check` re-extracts the catalogs whenever copy, ui or app files change (`check:catalogs`).
 
 ## Local conventions
 

@@ -26,9 +26,8 @@ paths:
   then restore it. A crash or a compile error is not red. A test of a race FORCES its overlap — it holds
   a lock both sides need until both are seen waiting (`apps/api/tests/support/held-lock.ts`) —
   because two requests merely fired together mostly run one after the other.
-- **Coverage is 100%** in `packages/domain/src/` `money`, `tax`, `subsidy`, `pricing`, `authz` and
-  `commerce/tranche-allocation.ts` (vitest thresholds); elsewhere read `pnpm test:coverage` for
-  missed edges.
+- **Coverage is 100%** on the paths `vitest.config.mts`'s `thresholds` names; elsewhere read
+  `pnpm test:coverage` for missed edges.
 - **`apps/api/tests/` run only against a database that is theirs** — `heliogrid_ci` in CI,
   `heliogrid_test` locally (`infra/README.md`): off CI `vitest.config.mts` collects them only when
   both `DATABASE_URL` and `DATABASE_ADMIN_URL` name `heliogrid_test` and skips them with a warning

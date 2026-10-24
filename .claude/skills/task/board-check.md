@@ -41,7 +41,10 @@ Check, citing the frame and element for each finding:
    (`packages/ui/src/components/`), with props its contract declares
    (`packages/theme/src/_generated/contracts/`); every colour, size and space is a token of
    `packages/theme/src/_generated/tokens/`. An element no component draws is a finding; so is a
-   look-alike drawn in markup where the design system has the component. A component or prop that
+   look-alike drawn in markup where the design system has the component. Every record value a frame
+   shows — a name, a phone, an email, a status — is a field the contract carries
+   (`packages/contracts/src/`) or one the frame's task adds; a value no contract holds (an email
+   for a phone-keyed person) is a finding. A component or prop that
    an open deferred row given to you names as a design system change not yet in the repo is a
    known difference (item 5), not a finding.
 4. **Product rules on the frame.** English only (Hindi and Marathi come from the catalog); a

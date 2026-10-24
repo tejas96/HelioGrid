@@ -2,7 +2,8 @@
 
 Every section is present, in this order. A section that does not apply says `None — <reason>`.
 Short bullets and tables; cite a law, PRD row or file by its id or path, never copy it. A claim
-about the code cites `file:line`; anything not checked is marked `assumed`. A part's RFC writes
+about the code cites `file:line`, read in its implementation, never only its types — what it draws,
+which props each half passes on, what each answer maps to; anything not checked is marked `assumed`. A part's RFC writes
 only what differs from the task RFC and says `The task RFC's, unchanged` for the rest.
 
 1. **Title** — `<task id> — <what the user gets>`.
@@ -28,7 +29,8 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
    is a decision for the owner.
 6. **Frame map** (screen task) — one row per board frame: `frame | state that shows it | element →
    component + props + copy key + the tokens, size and gaps the board gives it`, read from the board's code in
-   `.design/<module>/`, under the module's lock. `qa-web` compares the app with these values. A
+   `.design/<module>/`, under the module's lock. `qa-web`, `qa-ios` and `qa-android` compare the app
+   with these values. A
    frame the running app cannot reach with data QA can make through the app says how it is proven
    instead (its component spec, or `not reachable — <why>`).
 7. **Changes**
@@ -55,7 +57,8 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
     line in Given / When / Then, covering every edge case below that applies — happy path,
     alternate paths and refusals.
 13. **Proof** — one row per check:
-    `row | AC | owner | surface | action → expected | test data, setup and cleanup`.
+    `row | AC | owner | surface | action → expected | test data, setup and cleanup` — test data
+    names the account each row signs in with.
     Owners: `main-dev` (a unit, contract or component test, by file and test name — automated),
     `qa-api`, `qa-web`, `qa-ios`, `qa-android` (live, on the running app), `ci` (a lane that must
     run). Every AC has exactly one owner. An expected result says the status code and body fields,
@@ -71,7 +74,8 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
     Each surface `/task` step 7's table picks gets a live row; every `qa-ios` row has its
     `qa-android` twin; a surface left out names the table's reason.
 14. **Deferred rows** — each `docs/tasks/deferred.md` row this task meets: joins (and is deleted
-    in this commit) or stays (with its new `reopens when`). `None` when none.
+    in this commit) or stays (with its new `reopens when`); a row this task meets only in part
+    stays. `None` when none.
 15. **Size** — changed files, code lines, test lines; one PR, or the parts (`/task` step 3).
 16. **Decisions for the owner** — each open decision with at most two options, recommended first;
     or `none`.
