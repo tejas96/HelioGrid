@@ -1,5 +1,10 @@
 import { existsSync, readFileSync } from 'node:fs';
-import type { Member, OnboardingProgress, SessionProjection } from '@heliogrid/contracts';
+import type {
+  Invitation,
+  Member,
+  OnboardingProgress,
+  SessionProjection,
+} from '@heliogrid/contracts';
 import { ONBOARDING_STEPS } from '@heliogrid/domain';
 import { type APIRequestContext, expect, test } from '@playwright/test';
 import { API_LOG } from '../support/api-log';
@@ -37,10 +42,13 @@ for (const qa of QA_COMPANIES) {
     for (const member of qa.members) {
       const row = roster.get(member.phoneE164);
       if (row?.status === 'active') continue;
-      expect(row, `${member.name} was deactivated by a QA row: seed a new number`).toBeUndefined();
+      expect(
+        row,
+        `${member.name} was deactivated, which /task step 7 forbids; the api cannot switch them back on: ask the owner`,
+      ).toBeUndefined();
       const since = Date.now();
-      const pending = await invite(owner.context, member);
-      const token = await linkSentTo(member.phoneE164, pending ? 0 : since);
+      await invite(owner.context, member);
+      const token = await linkSentTo(member.phoneE164, since);
       const joining = await as(member);
       const accepted = await joining.context.post(`/invitations/landing/${token}/accept`);
       expect(accepted.status(), `${member.name} accepts`).toBe(200);
@@ -98,15 +106,31 @@ async function rosterOf(context: APIRequestContext): Promise<Map<string, Member>
   return new Map(items.map((member) => [member.phoneE164, member]));
 }
 
-/** Sent now (false) or already pending from an earlier run (true): either way its link is logged. */
-async function invite(context: APIRequestContext, member: QaPerson): Promise<boolean> {
-  const sent = await context.post('/invitations', {
-    data: { inviteeName: member.name, phoneE164: member.phoneE164, roles: member.roles },
-  });
-  if (sent.status() === 201) return false;
+/**
+ * A new invite, sent now. One still open from an earlier run is withdrawn first: its link was
+ * written to `.qa/api.log` then, and that log may be gone.
+ */
+async function invite(context: APIRequestContext, member: QaPerson): Promise<void> {
+  const send = () =>
+    context.post('/invitations', {
+      data: { inviteeName: member.name, phoneE164: member.phoneE164, roles: member.roles },
+    });
+  const sent = await send();
+  if (sent.status() === 201) return;
   const code = ((await sent.json()) as { error?: { code?: string } }).error?.code;
   expect(code, `${member.name} is invited`).toBe('ALREADY_INVITED');
-  return true;
+  await withdrawOpenInvite(context, member);
+  expect((await send()).status(), `${member.name} is invited again`).toBe(201);
+}
+
+async function withdrawOpenInvite(context: APIRequestContext, member: QaPerson): Promise<void> {
+  const read = await context.get('/invitations?status=pending&page=1&limit=100');
+  expect(read.status(), 'the owner reads the open invites').toBe(200);
+  const { items } = (await read.json()) as { items: Invitation[] };
+  const open = items.find((invitation) => invitation.phoneE164 === member.phoneE164);
+  expect(open, `${member.name}'s open invite is listed`).toBeDefined();
+  const revoked = await context.post(`/invitations/${open?.id}/revoke`);
+  expect(revoked.status(), `${member.name}'s open invite is withdrawn`).toBe(200);
 }
 
 /**
