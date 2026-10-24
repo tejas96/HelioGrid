@@ -23,7 +23,7 @@ export class TenantController {
     myMembership: 'member',
     updateMyMembership: 'member',
     owners: 'member',
-    members: 'member',
+    members: { capability: 'onboarding.manage_team' },
     similar: 'session',
     joinRequest: 'session',
     assignRoles: { capability: 'onboarding.manage_team' },

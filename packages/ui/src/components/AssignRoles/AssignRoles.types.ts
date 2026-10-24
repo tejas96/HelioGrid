@@ -25,6 +25,19 @@ export interface AssignRolesProps {
   saveOffReason: string | null;
   saving: boolean;
   onSave: () => void;
+  /**
+   * `loading` draws the rows' own skeleton under the head the tapped row carried, with no grant
+   * card and no Save (`m-loading`, `d-loading`). Default `ready`.
+   */
+  state?: 'ready' | 'loading';
+  /** Why the last save did not land, over the grant card (`m-error`); null when it did. */
+  refusal?: AssignRolesRefusalProp | null;
+}
+
+export interface AssignRolesRefusalProp {
+  /** Null when no one can say the save failed — it may have landed (F8-36). */
+  readonly title: string | null;
+  readonly body: string;
 }
 
 export interface AssignRolesRow {
@@ -51,4 +64,6 @@ export interface AssignRolesWordsProp {
   readonly gives: string;
   readonly save: string;
   readonly close: string;
+  /** The skeleton's spoken name — *Loading Vikram's presets*. */
+  readonly loading: string;
 }

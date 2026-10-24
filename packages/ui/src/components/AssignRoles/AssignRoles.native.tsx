@@ -1,10 +1,12 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { Banner } from '../Banner/Banner.native';
 import { Button } from '../Button/Button.native';
 import { EditorSurface } from '../EditorSurface/EditorSurface.native';
+import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup.native';
-import { ASSIGN_ROLES_PANEL_WIDTH } from './AssignRoles.logic';
+import { ASSIGN_ROLES_PANEL_WIDTH, OPTION_BARS } from './AssignRoles.logic';
 import type { AssignRolesProps } from './AssignRoles.types';
 import { GrantCard } from './GrantCard.native';
 
@@ -24,7 +26,10 @@ export function AssignRoles({
   saveOffReason,
   saving,
   onSave,
+  state = 'ready',
+  refusal = null,
 }: AssignRolesProps) {
+  const loading = state === 'loading';
   return (
     <EditorSurface
       open={open}
@@ -47,43 +52,56 @@ export function AssignRoles({
         </View>
       )}
       footer={
-        <View style={styles.foot}>
-          <GrantCard grant={grant} label={words.gives} />
-          <Button
-            variant="primary"
-            size="lg"
-            fullWidth
-            loading={saving}
-            disabled={saveOffReason !== null}
-            disabledReason={saveOffReason ?? undefined}
-            onClick={onSave}
-          >
-            {words.save}
-          </Button>
-        </View>
+        loading ? undefined : (
+          <View style={styles.foot}>
+            {refusal === null ? null : (
+              <Banner kind="validation" title={refusal.title ?? undefined}>
+                {refusal.body}
+              </Banner>
+            )}
+            <GrantCard grant={grant} label={words.gives} />
+            <Button
+              variant="primary"
+              size="lg"
+              fullWidth
+              loading={saving}
+              disabled={saveOffReason !== null}
+              disabledReason={saveOffReason ?? undefined}
+              onClick={onSave}
+            >
+              {words.save}
+            </Button>
+          </View>
+        )
       }
     >
-      <View style={styles.body}>
-        <OptionCardGroup
-          mode="multiple"
-          ariaLabel={words.presets}
-          density="functional"
-          options={rows.map((row) => ({
-            value: row.value,
-            title: row.title,
-            description: row.description,
-            disabled: row.lockReason !== null,
-            disabledReason: row.lockReason ?? undefined,
-          }))}
-          value={picked}
-          onChange={(next) =>
-            onPick(rows.filter((row) => next.includes(row.value)).map((row) => row.value))
-          }
-        />
-        <Text variant="caption" color="secondary">
-          {words.recorded}
-        </Text>
-      </View>
+      {loading ? (
+        <View style={styles.body}>
+          <LoadingBars label={words.loading} bars={OPTION_BARS} />
+        </View>
+      ) : (
+        <View style={styles.body}>
+          <OptionCardGroup
+            mode="multiple"
+            ariaLabel={words.presets}
+            density="functional"
+            options={rows.map((row) => ({
+              value: row.value,
+              title: row.title,
+              description: row.description,
+              disabled: row.lockReason !== null,
+              disabledReason: row.lockReason ?? undefined,
+            }))}
+            value={picked}
+            onChange={(next) =>
+              onPick(rows.filter((row) => next.includes(row.value)).map((row) => row.value))
+            }
+          />
+          <Text variant="caption" color="secondary">
+            {words.recorded}
+          </Text>
+        </View>
+      )}
     </EditorSurface>
   );
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { acceptsAdministration, keepsControl } from '../../src/authz/administration';
+import { acceptsAdministration, keepsControl, keepsOwnAdmin } from '../../src/authz/administration';
 import { can } from '../../src/authz/policy';
 import { ROLE_PRESETS, type RolePreset } from '../../src/authz/roles';
 import type { MembershipStatus } from '../../src/tenancy/membership';
@@ -46,5 +46,19 @@ describe('F2-20 — acceptsAdministration: roles change and access ends on an ac
     },
   ])('$why', ({ status, accepts }) => {
     expect(acceptsAdministration(status)).toBe(accepts);
+  });
+});
+
+describe('F2-19 — keepsOwnAdmin: an owner cannot take away their own admin rights; another owner can', () => {
+  it('your own set without Manage team is refused', () => {
+    expect(keepsOwnAdmin(true, ['sales_manager'])).toBe(false);
+  });
+
+  it('your own set that keeps Manage team passes', () => {
+    expect(keepsOwnAdmin(true, ['epc_owner', 'finance'])).toBe(true);
+  });
+
+  it("another person's set is not this rule's to judge", () => {
+    expect(keepsOwnAdmin(false, ['sales_manager'])).toBe(true);
   });
 });

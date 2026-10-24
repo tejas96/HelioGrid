@@ -1,5 +1,6 @@
 import { firstNameOf, grantLine, ROLE_PRESETS } from '@heliogrid/domain';
 import {
+  assignRolesRefusalWords,
   assignRolesWords,
   createTranslator,
   grantLineWords,
@@ -25,7 +26,9 @@ import { passTheOwnersMark } from '../support/shell';
  * the task. The teaching state's *Invite your first teammate*, and at the desktop width the page
  * head's *Invite teammate*, open Invite Teammate over the page (`SCR-M01-07`, `T-M01-007`); a send
  * is the task's qa-web rows. The owner's own row opens Assign Roles (`SCR-M01-13`, `T-M01-013`): as
- * the only EPC Owner they cannot clear it, and the grant line says what the one preset gives.
+ * the only EPC Owner they cannot clear it, and the grant line says what the one preset gives. A
+ * save whose request is cut off is read back before anything is said (`F8-36`), keeps the ticks
+ * and says nothing changed; *Save roles* then retries.
  */
 const en = await createTranslator('en');
 const WORDS = settingsWords(en.t);
@@ -100,5 +103,43 @@ test('the Team row opens the team; a new owner is alone, and the page teaches', 
   }
   await expectNoSidewaysScroll(page);
   await expect(page).toHaveTitle(/\S/);
+  await expectNoSeriousViolations(page);
+});
+
+test('a save cut off on the way keeps the ticks, says nothing changed, and Save retries', async ({
+  page,
+}) => {
+  const company = await createCompany(page, en, freshMobile());
+  await passTheOwnersMark(page, en);
+  await page.goto('/more/team');
+  const [, , , , , , , , , FINANCE] = ROLE_PRESETS;
+  const firstName = firstNameOf(OWNER_NAME);
+  const roles = assignRolesWords(en.t, {
+    firstName,
+    companyName: company,
+    locks: { epc_owner: 'sole-owner' },
+  });
+  // As the first flow opens it: the shell's account button carries the name too, and the wide
+  // table's open is the row's spoken-only button.
+  await page.getByRole('main').getByRole('button', { name: OWNER_NAME, exact: true }).focus();
+  await page.keyboard.press('Enter');
+  const editor = page.getByRole('dialog', { name: new RegExp(OWNER_NAME, 'u') });
+  const finance = editor.getByRole('checkbox', {
+    name: roles.rows[ROLE_PRESETS.indexOf(FINANCE ?? 'finance')]?.title ?? '',
+  });
+  await finance.click();
+  await page.route('**/tenants/me/members/*/roles', (route) => route.abort());
+  await editor.getByRole('button', { name: roles.save }).click();
+  const words = assignRolesRefusalWords(
+    en.t,
+    { kind: 'failed' },
+    { firstName, companyName: company },
+  );
+  await expect(editor.getByRole('alert')).toContainText(words.title ?? '');
+  await expect(editor.getByRole('alert')).toContainText(words.body);
+  await expect(finance).toHaveAttribute('aria-checked', 'true');
+  await page.unroute('**/tenants/me/members/*/roles');
+  await editor.getByRole('button', { name: roles.save }).click();
+  await expect(editor).toHaveCount(0);
   await expectNoSeriousViolations(page);
 });

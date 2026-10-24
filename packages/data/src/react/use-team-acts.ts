@@ -71,7 +71,8 @@ export function useTeamActs(team: Team, onNote: (note: TeamActNote) => void): Te
       return;
     }
     if (outcome === 'refused') {
-      const lostOwner = ownerLostBetween(team.roster, await team.reread());
+      /* With no fresh list the form names no one: it cannot say who left. */
+      const lostOwner = ownerLostBetween(team.roster, (await team.reread()) ?? team.roster);
       /* Only over the confirm still asking: one the person cancelled meanwhile stays shut. */
       setConfirm((now) => (now.kind === 'asking' ? { kind: 'refused', row, lostOwner } : now));
       return;

@@ -55,6 +55,8 @@ const ROUTE_COPY: Record<
   LAST_OWNER: /*i18n*/ {
     id: 'This person is the only EPC Owner. A company always keeps at least one EPC Owner and one person who can manage the team.',
   },
+  /* Assign Roles' lock says the same sentence (`OWN_ADMIN_REASON`): one catalog entry. */
+  OWN_ADMIN: /*i18n*/ { id: "You can't remove your own EPC Owner — another EPC Owner can." },
   ALREADY_MEMBER: /*i18n*/ { id: 'This number is already on your team.' },
   ALREADY_INVITED: /*i18n*/ {
     id: 'An invite already went to this number and is still open.',
@@ -103,6 +105,9 @@ export interface ApiErrorLike {
   requestId?: string;
 }
 
+/** Why your own EPC Owner cannot be cleared — the api's refusal and the sheet's lock alike. */
+export const OWN_ADMIN_REASON = ROUTE_COPY.OWN_ADMIN;
+
 /** The words for a failure nothing names: an unknown code, or no answer at all. */
 export const INTERNAL_ERROR = COPY.INTERNAL;
 
@@ -129,6 +134,11 @@ export interface AttemptFailureLike {
   code?: string;
 }
 
+/** `F8-36` — the catalog id for an attempt that got no readable answer, by why. */
+export function transportFailureMessageId(failure: TransportFailure): string {
+  return TRANSPORT_COPY[failure].id;
+}
+
 /**
  * `F8-36` — the catalog id for any failed attempt: the failure's words when the server gave no
  * readable answer, else the server code's. Choosing by `failure` rather than by `code` is what keeps
@@ -136,6 +146,6 @@ export interface AttemptFailureLike {
  * Undefined → render `error.message`, as for `apiErrorMessageId`.
  */
 export function attemptFailureMessageId(error: AttemptFailureLike): string | undefined {
-  if (error.failure !== null) return TRANSPORT_COPY[error.failure].id;
+  if (error.failure !== null) return transportFailureMessageId(error.failure);
   return error.code === undefined ? undefined : apiErrorMessageId(error.code);
 }

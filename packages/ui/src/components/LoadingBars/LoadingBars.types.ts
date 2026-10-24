@@ -1,10 +1,12 @@
 /**
  * What one bar stands for while a list's record loads: `row` a closed section's header, `panel` a
  * section that will open with its fields, `line` one line of a list of phrases — a mark and the
- * phrase beside it (`SCR-M01-10`, `m-loading`). A size is a name, never a number from the caller,
- * so two screens cannot draw the same wait at two heights.
+ * phrase beside it (`SCR-M01-10`, `m-loading`), `option` one option card — its mark, its title and
+ * its description (`SCR-M01-13`, `m-loading`; two description lines in a narrow room, one in a
+ * wide one). A size is a name, never a number from the caller, so two screens cannot draw the same
+ * wait at two heights.
  */
-export type LoadingBarSize = 'row' | 'panel' | 'line';
+export type LoadingBarSize = 'row' | 'panel' | 'line' | 'option';
 
 interface LoadingBarsBase {
   /** One bar per part of the list, in the list's order. */

@@ -43,7 +43,7 @@ msgid "{company} is set up."
 msgstr "{company} is set up."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:26
+#: src/copy/assign-roles.ts:33
 msgid "{company} must keep one EPC Owner, so make someone else one first."
 msgstr "{company} must keep one EPC Owner, so make someone else one first."
 
@@ -263,7 +263,7 @@ msgid "{name} asks to join"
 msgstr "{name} asks to join"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:21
+#: src/copy/assign-roles.ts:28
 msgid "{name} can {list}."
 msgstr "{name} can {list}."
 
@@ -278,14 +278,24 @@ msgid "{name} declined the invite"
 msgstr "{name} declined the invite"
 
 #. js-lingui-explicit-id
+#: src/copy/assign-roles.ts:40
+msgid "{name} is no longer active on this team, so nothing changed."
+msgstr "{name} is no longer active on this team, so nothing changed."
+
+#. js-lingui-explicit-id
 #: src/copy/team-acts.ts:32
 msgid "{name} stopped being an EPC Owner on another device."
 msgstr "{name} stopped being an EPC Owner on another device."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:22
+#: src/copy/assign-roles.ts:29
 msgid "{name} would hold no presets."
 msgstr "{name} would hold no presets."
+
+#. js-lingui-explicit-id
+#: src/copy/assign-roles.ts:38
+msgid "{name}'s roles weren't saved"
+msgstr "{name}'s roles weren't saved"
 
 #. js-lingui-explicit-id
 #: src/copy/explainer.ts:8
@@ -408,7 +418,7 @@ msgid "A photo helps teammates recognise you."
 msgstr "A photo helps teammates recognise you."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:72
+#: src/copy/api-error.ts:74
 msgid "A release already has this name. Choose another name."
 msgstr "A release already has this name. Choose another name."
 
@@ -578,7 +588,7 @@ msgid "Always sent, and it cannot be muted: billing events are audit-relevant fo
 msgstr "Always sent, and it cannot be muted: billing events are audit-relevant for the owner account."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:59
+#: src/copy/api-error.ts:61
 msgid "An invite already went to this number and is still open."
 msgstr "An invite already went to this number and is still open."
 
@@ -633,7 +643,7 @@ msgid "Assign leads to others"
 msgstr "Assign leads to others"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:17
+#: src/copy/assign-roles.ts:24
 msgid "Assign roles"
 msgstr "Assign roles"
 
@@ -1106,7 +1116,7 @@ msgid "Derived"
 msgstr "Derived"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:39
+#: src/copy/assign-roles.ts:49
 #: src/copy/freshness.ts:24
 msgid "design"
 msgstr "design"
@@ -1172,7 +1182,7 @@ msgid "Estimated"
 msgstr "Estimated"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:19
+#: src/copy/assign-roles.ts:26
 msgid "Every change is recorded under your name — roles before and after."
 msgstr "Every change is recorded under your name — roles before and after."
 
@@ -1369,12 +1379,12 @@ msgid "Grievance officer"
 msgstr "Grievance officer"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:44
+#: src/copy/assign-roles.ts:54
 msgid "handle money"
 msgstr "handle money"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:43
+#: src/copy/assign-roles.ts:53
 msgid "handle people and admin"
 msgstr "handle people and admin"
 
@@ -1404,12 +1414,12 @@ msgid "HelioGrid could not be reached, from your side or ours."
 msgstr "HelioGrid could not be reached, from your side or ours."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:86
+#: src/copy/api-error.ts:88
 msgid "HelioGrid could not be reached, from your side or ours. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid could not be reached, from your side or ours. If you were saving, check whether it saved before trying again."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:89
+#: src/copy/api-error.ts:91
 msgid "HelioGrid did not answer in time. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid did not answer in time. If you were saving, check whether it saved before trying again."
 
@@ -1424,7 +1434,7 @@ msgid "HelioGrid sends the message to this number — it does not come from your
 msgstr "HelioGrid sends the message to this number — it does not come from your phone."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:92
+#: src/copy/api-error.ts:94
 msgid "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
 
@@ -1494,7 +1504,7 @@ msgid "Indicative proposal. Generation and savings are estimated from system siz
 msgstr "Indicative proposal. Generation and savings are estimated from system size and location. A site survey and shadow analysis will confirm the final figures."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:42
+#: src/copy/assign-roles.ts:52
 msgid "install"
 msgstr "install"
 
@@ -1610,7 +1620,7 @@ msgid "Links {email}"
 msgstr "Links {email}"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:30
+#: src/copy/assign-roles.ts:37
 msgid "Loading {name}'s presets"
 msgstr "Loading {name}'s presets"
 
@@ -1868,6 +1878,11 @@ msgid "Nothing assigned to you yet"
 msgstr "Nothing assigned to you yet"
 
 #. js-lingui-explicit-id
+#: src/copy/assign-roles.ts:39
+msgid "Nothing changed for {name} — try Save again."
+msgstr "Nothing changed for {name} — try Save again."
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:44
 msgid "Nothing changed. Try again in a moment."
 msgstr "Nothing changed. Try again in a moment."
@@ -1883,7 +1898,7 @@ msgid "Nothing has reached you yet"
 msgstr "Nothing has reached you yet"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:75
+#: src/copy/api-error.ts:77
 msgid "Nothing in the catalog changed since the last release, so there is nothing to publish."
 msgstr "Nothing in the catalog changed since the last release, so there is nothing to publish."
 
@@ -2033,7 +2048,7 @@ msgid "Out of date: {changes} changed"
 msgstr "Out of date: {changes} changed"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:36
+#: src/copy/assign-roles.ts:46
 msgid "oversee sales"
 msgstr "oversee sales"
 
@@ -2099,7 +2114,7 @@ msgid "PNG or JPG, up to {maxMegabytes} MB, at least {minWidth} px wide"
 msgstr "PNG or JPG, up to {maxMegabytes} MB, at least {minWidth} px wide"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:18
+#: src/copy/assign-roles.ts:25
 msgid "Presets"
 msgstr "Presets"
 
@@ -2290,17 +2305,17 @@ msgid "Roof measured from satellite imagery. A site visit will confirm dimension
 msgstr "Roof measured from satellite imagery. A site visit will confirm dimensions, shading and electrical access."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:46
+#: src/copy/assign-roles.ts:56
 msgid "run marketing"
 msgstr "run marketing"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:45
+#: src/copy/assign-roles.ts:55
 msgid "run operations"
 msgstr "run operations"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:40
+#: src/copy/assign-roles.ts:50
 msgid "run projects"
 msgstr "run projects"
 
@@ -2310,7 +2325,7 @@ msgid "Run the installation checklist"
 msgstr "Run the installation checklist"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:35
+#: src/copy/assign-roles.ts:45
 msgid "run the whole business"
 msgstr "run the whole business"
 
@@ -2351,7 +2366,7 @@ msgid "Save changes to your business profile"
 msgstr "Save changes to your business profile"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:23
+#: src/copy/assign-roles.ts:30
 msgid "Save roles"
 msgstr "Save roles"
 
@@ -2411,7 +2426,7 @@ msgid "See your team's leads and follow-ups"
 msgstr "See your team's leads and follow-ups"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:37
+#: src/copy/assign-roles.ts:47
 msgid "sell"
 msgstr "sell"
 
@@ -2661,7 +2676,7 @@ msgid "subsidy rules"
 msgstr "subsidy rules"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:38
+#: src/copy/assign-roles.ts:48
 msgid "survey"
 msgstr "survey"
 
@@ -2742,7 +2757,7 @@ msgid "That code is used up"
 msgstr "That code is used up"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:69
+#: src/copy/api-error.ts:71
 msgid "That does not read as a registration of this type. Check it against the format shown."
 msgstr "That does not read as a registration of this type. Check it against the format shown."
 
@@ -2872,7 +2887,7 @@ msgid "The team’s leads and proposals, project stages, payments and team repor
 msgstr "The team’s leads and proposals, project stages, payments and team reports"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:66
+#: src/copy/api-error.ts:68
 msgid "The tranches must add up to exactly 100%. Place the remainder before saving."
 msgstr "The tranches must add up to exactly 100%. Place the remainder before saving."
 
@@ -2937,7 +2952,7 @@ msgid "This invite has expired"
 msgstr "This invite has expired"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:65
+#: src/copy/api-error.ts:67
 msgid "This invite has run out. Ask to be invited again."
 msgstr "This invite has run out. Ask to be invited again."
 
@@ -2977,7 +2992,7 @@ msgid "This number is already on your team"
 msgstr "This number is already on your team"
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:58
+#: src/copy/api-error.ts:60
 msgid "This number is already on your team."
 msgstr "This number is already on your team."
 
@@ -3007,7 +3022,7 @@ msgid "This screen arrives in a later update."
 msgstr "This screen arrives in a later update."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:95
+#: src/copy/api-error.ts:97
 msgid "This stopped before HelioGrid answered. If you were saving, check whether it saved before trying again."
 msgstr "This stopped before HelioGrid answered. If you were saving, check whether it saved before trying again."
 
@@ -3027,7 +3042,7 @@ msgid "Three details, and you're in."
 msgstr "Three details, and you're in."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:25
+#: src/copy/assign-roles.ts:32
 msgid "Tick at least one preset."
 msgstr "Tick at least one preset."
 
@@ -3037,7 +3052,7 @@ msgid "Tick at least one role before sending — an invite with none would open 
 msgstr "Tick at least one role before sending — an invite with none would open an empty app."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:24
+#: src/copy/assign-roles.ts:31
 msgid "Tick or clear a preset first."
 msgstr "Tick or clear a preset first."
 
@@ -3369,7 +3384,7 @@ msgid "What the code does"
 msgstr "What the code does"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:20
+#: src/copy/assign-roles.ts:27
 msgid "What this gives them"
 msgstr "What this gives them"
 
@@ -3435,7 +3450,7 @@ msgid "Why we ask"
 msgstr "Why we ask"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:41
+#: src/copy/assign-roles.ts:51
 msgid "work assigned stops"
 msgstr "work assigned stops"
 
@@ -3511,7 +3526,7 @@ msgid "You can paste the whole code."
 msgstr "You can paste the whole code."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:29
+#: src/copy/api-error.ts:59
 msgid "You can't remove your own EPC Owner — another EPC Owner can."
 msgstr "You can't remove your own EPC Owner — another EPC Owner can."
 
@@ -3600,7 +3615,7 @@ msgid "Your company has not published its grievance officer yet. Ask your admin 
 msgstr "Your company has not published its grievance officer yet. Ask your admin who handles questions about your data."
 
 #. js-lingui-explicit-id
-#: src/copy/api-error.ts:62
+#: src/copy/api-error.ts:64
 msgid "Your company has reached its invite limit for the last 24 hours."
 msgstr "Your company has reached its invite limit for the last 24 hours."
 

@@ -9,7 +9,7 @@ type NativeLoadingBarsProps = LoadingBarsProps & {
   style?: StyleProp<ViewStyle>;
 };
 
-type BlockSize = Exclude<LoadingBarSize, 'line'>;
+type BlockSize = Exclude<LoadingBarSize, 'line' | 'option'>;
 
 /** The web half's two heights: a closed section's header, and a section open with its fields. */
 const BAR_HEIGHT: Record<BlockSize, number> = { row: 56, panel: 188 };
@@ -44,7 +44,41 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['rf-md'],
     backgroundColor: theme.colors.canvas,
   },
+  /* The phone opens option cards in a sheet only, so its bar is the sheet's: three lines. */
+  option: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: theme.spacing['sp-3'],
+    paddingVertical: theme.spacing['sp-3'],
+    paddingHorizontal: theme.spacing['sp-4'],
+    backgroundColor: theme.colors.fill,
+    borderRadius: theme.radius['r-tile'],
+  },
+  optionMark: {
+    width: theme.spacing['sp-5'],
+    height: theme.spacing['sp-5'],
+    marginTop: theme.spacing['sp-0-5'],
+    borderRadius: theme.radius['r-xs'],
+    backgroundColor: theme.colors.canvas,
+  },
+  optionText: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
+  optionTitle: { height: theme.type.roles.body.lineHeight, justifyContent: 'center' },
+  optionLine: { height: theme.type.roles.caption.lineHeight, justifyContent: 'center' },
+  optionTitleBar: {
+    width: '45%',
+    height: theme.type.roles['body-sm'].fontSize,
+    borderRadius: theme.radius['r-xs'],
+    backgroundColor: theme.colors.canvas,
+  },
+  optionLineBar: {
+    height: theme.type.roles.caption.fontSize,
+    borderRadius: theme.radius['r-xs'],
+    backgroundColor: theme.colors.canvas,
+  },
 });
+
+/** The board's two description lengths, a wrapped sentence's (`SCR-M01-13`, `m-loading`). */
+const OPTION_LINE_LENGTHS: readonly DimensionValue[] = ['85%', '55%'];
 
 /**
  * The web half sweeps a gradient; React Native has no gradient loop, so the bars pulse opacity —
@@ -87,6 +121,25 @@ function Bar({
   index: number;
   opacity: Animated.AnimatedInterpolation<number>;
 }) {
+  if (size === 'option') {
+    return (
+      <Animated.View style={[styles.option, { opacity }]}>
+        <View style={styles.optionMark} />
+        <View style={styles.optionText}>
+          <View style={styles.optionTitle}>
+            <View style={styles.optionTitleBar} />
+          </View>
+          <View>
+            {OPTION_LINE_LENGTHS.map((width) => (
+              <View key={String(width)} style={styles.optionLine}>
+                <View style={[styles.optionLineBar, { width }]} />
+              </View>
+            ))}
+          </View>
+        </View>
+      </Animated.View>
+    );
+  }
   if (size === 'line') {
     return (
       <Animated.View style={[styles.line, { opacity }]}>

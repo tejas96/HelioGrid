@@ -1,4 +1,5 @@
 import {
+  type AssignRolesRefusal,
   firstNameOf,
   formatPhone,
   grantLine,
@@ -7,9 +8,11 @@ import {
   type PresetLock,
   type RolePreset,
   saveRolesOff,
+  type TeamRow,
   type UiLanguage,
 } from '@heliogrid/domain';
 import {
+  assignRolesRefusalWords,
   assignRolesWords,
   createTranslator,
   grantLineWords,
@@ -27,18 +30,23 @@ const READERS = {
 /**
  * Assign Roles as the Team screen holds it: the person's held presets, ticks kept in F2 order, the
  * grant line and Save's reason from domain, every word in `reader`'s language. The frame reports a
- * save as `data-saved` (the set sent) and a close as `data-closed`.
+ * save as `data-saved` (the set sent) and a close as `data-closed`. `refusal` draws a save that did
+ * not land; `state` the skeleton.
  */
 export function AssignRolesAsHeld({
   reader,
   name = 'Vikram Deshpande',
   held,
   locks = {},
+  state = 'ready',
+  refusal = null,
 }: {
   reader: UiLanguage;
   name?: string;
   held: readonly RolePreset[];
   locks?: Partial<Record<RolePreset, PresetLock>>;
+  state?: 'ready' | 'loading';
+  refusal?: AssignRolesRefusal | null;
 }) {
   const { t } = READERS[reader];
   const [open, setOpen] = useState(true);
@@ -47,6 +55,17 @@ export function AssignRolesAsHeld({
   const firstName = firstNameOf(name);
   const words = assignRolesWords(t, { firstName, companyName: 'Suryodaya Solar', locks });
   const { speakers } = grantLine(picked);
+  const person: TeamRow = {
+    id: 'vikram',
+    name,
+    phoneE164: '+919876543210',
+    roles: held,
+    status: 'active',
+    isViewer: false,
+    lastActiveAt: null,
+    expiresAt: null,
+    inviteDay: null,
+  };
   return (
     <div
       lang={reader}
@@ -67,9 +86,15 @@ export function AssignRolesAsHeld({
         picked={picked}
         onPick={(next) => setPicked(inMatrixOrder(next))}
         grant={{ speakers, parts: grantLineWords(t, firstName, speakers).parts }}
-        saveOffReason={words.saveOff(saveRolesOff(held, picked))}
+        saveOffReason={words.saveOff(saveRolesOff(person, picked))}
         saving={false}
         onSave={() => setSaved(picked.join(','))}
+        state={state}
+        refusal={
+          refusal === null
+            ? null
+            : assignRolesRefusalWords(t, refusal, { firstName, companyName: 'Suryodaya Solar' })
+        }
       />
     </div>
   );

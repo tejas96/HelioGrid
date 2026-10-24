@@ -91,3 +91,100 @@
 .hg-loading-line:nth-child(6n) .hg-loading-line-bar {
   width: 50%;
 }
+
+/* A list of option cards waits as their own shape: the mark, the title and the description, on
+   the card's grey (`SCR-M01-13`, `m-loading`). The description wraps to two lines in a sheet and
+   fits one in a wide panel (`d-loading`), so the room it sits in decides, never the window. */
+.hg-loading-bars[data-sizes="option"] {
+  container-type: inline-size;
+}
+
+.hg-loading-option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--fill);
+  border-radius: var(--r-tile);
+}
+
+.hg-loading-option-mark,
+.hg-loading-option-title > span,
+.hg-loading-option-line > span {
+  display: block;
+  border-radius: var(--r-xs);
+  background: linear-gradient(
+    90deg,
+    var(--canvas) 25%,
+    var(--canvas-sunken) 50%,
+    var(--canvas) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}
+
+.hg-loading-option-mark {
+  flex-shrink: 0;
+  width: var(--sp-5);
+  height: var(--sp-5);
+  margin-top: var(--sp-0-5);
+}
+
+.hg-loading-option-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.hg-loading-option-title,
+.hg-loading-option-line {
+  display: flex;
+  align-items: center;
+}
+
+.hg-loading-option-title {
+  height: calc(var(--fs-body) * var(--lh-body));
+}
+
+.hg-loading-option-title > span {
+  width: 45%;
+  height: var(--fs-body-sm);
+}
+
+.hg-loading-option-line {
+  height: calc(var(--fs-caption) * var(--lh-caption));
+}
+
+/* The description's lines sit flush, as one wrapped sentence does. */
+.hg-loading-option-description {
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-loading-option-line > span {
+  width: 85%;
+  height: var(--fs-caption);
+}
+
+.hg-loading-option-line:last-child > span {
+  width: 55%;
+}
+
+/* 480 sits between the widest sheet's text column (a 430 phone, less the card's padding) and the
+   560 side panel's: below it the description wraps as `m-loading` draws it, above it fits one
+   line as `d-loading` does. Written raw: `@container` cannot read a custom property. */
+@container (min-width: 480px) {
+  .hg-loading-option-title > span {
+    width: 35%;
+  }
+
+  .hg-loading-option-line > span {
+    width: 80%;
+  }
+
+  .hg-loading-option-line + .hg-loading-option-line {
+    display: none;
+  }
+}

@@ -6,7 +6,7 @@ Stack F2 presets per person with a live plain-English grant line.
 
 ## Entry & exit
 
-Reached from: the PRD groups this screen in the Team / Assign roles / Roles reference / Invite family that renders F2's semantics (M01 §1, §M01.2), and M01-20 assigns presets "to a person" — the per-person entry from the Team screen (SCR-M01-12) is the natural path but is not explicitly pinned by the PRD — designer decides, note the decision. Only an active member's row opens this screen; an invite or a deactivated person has nothing to assign (owner ruling 2026-10-16). Leads to: back to Team (SCR-M01-12) — dismiss leaves the set unsaved, **Save roles** writes it — and to the Roles Reference (SCR-M01-14) through the round *Roles reference* info button at the right of the *Presets* heading, at both widths; all role changes write old → new audit entries (M01 §M01.2 behavior detail, F2-22). Permission: requires `F2.M01.manage-team` (EPC Owner-only; M01 §M01.2 permissions).
+Reached from: the PRD groups this screen in the Team / Assign roles / Roles reference / Invite family that renders F2's semantics (M01 §1, §M01.2), and M01-20 assigns presets "to a person" — the per-person entry from the Team screen (SCR-M01-12) is the natural path but is not explicitly pinned by the PRD — designer decides, note the decision. Only an active member's row opens this screen; an invite or a deactivated person has nothing to assign (owner ruling 2026-10-16). Leads to: back to Team (SCR-M01-12) — dismiss leaves the set unsaved, **Save roles** writes it — and, once `T-M01-014` builds the Roles Reference (SCR-M01-14), to it through a round *Roles reference* info button at the right of the *Presets* heading that opens over the editor and keeps the ticks — not drawn before then (owner ruling 2026-10-23, `T-M01-013` Decision 4); all role changes write old → new audit entries (M01 §M01.2 behavior detail, F2-22). Permission: requires `F2.M01.manage-team` (EPC Owner-only; M01 §M01.2 permissions).
 
 ## Requirements (verbatim)
 
@@ -18,12 +18,12 @@ Reached from: the PRD groups this screen in the Team / Assign roles / Roles refe
 
 - **Loading** — the person's current presets and the preset list are being fetched.
 - **Empty** — a mid-edit state, never a saved one: no person holds zero presets (F2-21; `roleSetSchema` in `packages/contracts/src/common.ts`, `.min(1)`). It appears when the owner clears every preset on someone's sheet. The grant line says they would hold nothing, and Save stays off until one preset is ticked, its `disabledReason` *Tick at least one preset.*, which opens in a bubble on a tap, click, focus or hover — no line is drawn under the button (owner ruling 2026-10-17, design-system change 5).
-- **Error** — an assignment save fails; what happened and what to do next, per F7's contract.
+- **Error** — an assignment save fails; what happened and what to do next, per F7's contract. A `validation` banner over the grant card, titled *{name}'s roles weren't saved*, says why: nothing changed — try Save again (a failure); the person is no longer active on this team (Save then off with the same words); the company's last EPC Owner, or your own EPC Owner, which only another owner can remove. A save that got no answer is read back first: landed, the editor closes as on a save; not readable, the banner has no title and asks to check whether it saved (`F8-36`). A reader who lost Manage team leaves Team.
 - **grant-line-updating-live** — as presets are toggled on/off, the plain-English grant line updates live to describe exactly the resulting grants (M01-20 acceptance).
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `empty`, `error`, `grant-line-updating-live`, the sole-EPC-Owner guard, the after-remove undo toast.
 
-- **Loading** keeps the header — name, status and email came off the tapped row. The body is row-sized skeleton rows (decision 2); the grant line and Save are absent (owner ruling 2026-10-16).
+- **Loading** keeps the header — name, status and phone came off the tapped row. The body is row-sized skeleton rows (decision 2); the grant line and Save are absent (owner ruling 2026-10-16).
 - In **Error** the ticks stay as composed and Save is the retry; no second button.
 - Only a save that REMOVES a preset is confirmed, and the confirm names what is leaving. One confirm, one audit entry and one undo cover the whole diff. A save that only adds goes straight through.
 
@@ -52,8 +52,7 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `empty`, `error`,
 
 **The editor.** A `Sheet` over the Team list at 375. At 1536 a modal side panel over the Team table —
 backdrop, focus trap and scroll lock — so a second row cannot open while a set is uncommitted. The
-head — the name and its status chip on one line, the email under it, then *Presets* and the *Roles
-reference* button on a thin line — stays fixed while the rows scroll, at both widths. The
+head — the name and its status chip on one line, the person's phone under it, in mono (`F7-09`; there is no email — owner ruling 2026-10-23, `T-M01-013` Decision 1), then *Presets* on a thin line — stays fixed while the rows scroll, at both widths. The
 whole row is the control, and the list never re-sorts by what is held. One **Save roles** commits the
 whole set; it is off while nothing has changed, its `disabledReason` *Tick or clear a preset first.* in the same bubble. The grant line is pinned above Save
 at both widths, in a summary card on a light accent ground (owner pick "G2 · Icons lead, the
@@ -76,7 +75,7 @@ shared with SCR-M01-07.
 `name + "can" + phrases`. Each language supplies its own template and its own list joiner, so word
 order belongs to the translator rather than to the code — Hindi and Marathi put the verb after the
 list, which is what a concatenation cannot express. **A preset supplies a full CLAUSE, not a
-fragment**: `Viewer` reads *"can look but change nothing"* and joins cleanly. **The line drops a held
+fragment**: `Field Technician` reads *"can work assigned stops"* and joins cleanly. **The line drops a held
 preset whose grants another held preset already covers**, so EPC Owner speaks alone. Each
 combination still yields exactly the grants the F2 matrix ORs together.
 

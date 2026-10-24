@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
+import { scriptFloorFor } from '../../primitives/Text/Text.logic';
 import { Text } from '../../primitives/Text/Text.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
@@ -21,6 +22,13 @@ interface OptionCardProps {
   onSelect: () => void;
   currentLabel: string;
 }
+
+/**
+ * The title's line box: the web half sets it at the face's own `normal` line (19 at 15 px), not the
+ * body role's 23.3, so a one-line card is the board's 70 tall (`SCR-M01-13` m-default, D214). The
+ * nearest token line is the small body's; a script that needs more takes its floor.
+ */
+const TITLE_LINE = theme.type.roles['body-sm'].lineHeight;
 
 /** The functional card's padding, and the selection ring's width the picked card takes out of it. */
 const FUNCTIONAL_PAD = 14;
@@ -190,7 +198,15 @@ export function OptionCard({
         <View style={styles.body}>
           <View style={styles.head}>
             <View style={styles.titles}>
-              <Text variant="body" color={ink} lang={option.lang} style={styles.title}>
+              <Text
+                variant="body"
+                color={ink}
+                lang={option.lang}
+                style={[
+                  styles.title,
+                  { lineHeight: Math.max(TITLE_LINE, scriptFloorFor('body', option.title)) },
+                ]}
+              >
                 {option.title}
               </Text>
               {/* A word in its own neutral pill — never the accent, which selection owns. */}
