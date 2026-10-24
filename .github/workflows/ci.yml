@@ -132,8 +132,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # Full history: gitleaks scans every commit, and the openapi breaking-change compare
-          # and the migration guard both read origin/<base>.
+          # Full history: gitleaks scans every commit, check:openapi's breaking-change compare
+          # reads origin/main, and the migration guard reads origin/<base>.
           fetch-depth: 0
       - name: Secret scan
         uses: gitleaks/gitleaks-action@v2
@@ -183,25 +183,12 @@ jobs:
       - name: Apply migrations (CI database)
         # Must run before pnpm check:all so the invariants have tables to inspect.
         run: pnpm --filter @heliogrid/db migrate
-      - name: Quality gate
-        # pnpm check:all = build → lint (Biome and its plugins, dependency-cruiser, sherif, turbo
-        # boundaries) → typecheck → check:dupes → check:openapi (spec freshness) → check:catalogs
-        # → test:unit → test (invariants, with this job's database).
-        # BUILD FIRST: dependency-cruiser resolves a workspace import through the target's
-        # `main`/`types`, which point at dist/ — so before anything is built the edge does not
-        # exist and every rule aimed at a dist-shipping package reports clean.
-        # test:unit runs vitest WITH COVERAGE: the per-slice 100% thresholds in vitest.config.mts
-        # are what stop an edge case being deleted with its test.
-        run: pnpm check:all
-      - name: No breaking API change against the base (oasdiff 1.31.0)
-        # Judged on the pull request only: a push to main has no base to compare. The build is
-        # pinned by version and sha256, so every run grades a change the same way. A response
-        # enum that grows by design is declared x-extensible-enum; any other ERR-level finding
-        # needs the owner's ruling, stated in the change, before it merges.
-        if: github.event_name == 'pull_request'
+      - name: Install oasdiff 1.31.0
+        # check:openapi judges every change against origin/main with this exact build, and refuses
+        # any other version, so a change graded here is graded the same on a developer's machine.
+        # Pinned by version and sha256. A response enum that grows by design is x-extensible-enum;
+        # any other ERR-level finding needs the owner's ruling, stated in the change, before it merges.
         shell: bash
-        env:
-          BASE_REF: ${{ github.base_ref }}
         run: |
           set -euo pipefail
           tool="$RUNNER_TEMP/oasdiff"; mkdir -p "$tool"
@@ -211,15 +198,18 @@ jobs:
           tar -xzf "$tool/oasdiff.tar.gz" -C "$tool"
           bin="$(find "$tool" -type f -name oasdiff | head -1)"
           [ -n "$bin" ] || { echo "::error::no oasdiff binary in the release archive"; exit 1; }
-          # A base that cannot be read is a failure; only a spec the base does not have yet passes.
-          git rev-parse --verify --quiet "origin/$BASE_REF^{commit}" >/dev/null \
-            || { echo "::error::origin/$BASE_REF is not fetched, so nothing can be compared"; exit 1; }
-          spec=packages/contracts/openapi/openapi.json
-          if ! git cat-file -e "origin/$BASE_REF:$spec" 2>/dev/null; then
-            echo "no spec on $BASE_REF yet: nothing to break"; exit 0
-          fi
-          git show "origin/$BASE_REF:$spec" > "$tool/base.json"
-          "$bin" breaking "$tool/base.json" "$spec" --fail-on ERR
+          dirname "$bin" >> "$GITHUB_PATH"
+      - name: Quality gate
+        # pnpm check:all = build → lint (Biome and its plugins, dependency-cruiser, sherif, turbo
+        # boundaries) → typecheck → check:dupes → check:openapi (spec freshness, then no breaking
+        # change against origin/main) → check:catalogs
+        # → test:unit → test (invariants, with this job's database).
+        # BUILD FIRST: dependency-cruiser resolves a workspace import through the target's
+        # `main`/`types`, which point at dist/ — so before anything is built the edge does not
+        # exist and every rule aimed at a dist-shipping package reports clean.
+        # test:unit runs vitest WITH COVERAGE: the per-slice 100% thresholds in vitest.config.mts
+        # are what stop an edge case being deleted with its test.
+        run: pnpm check:all
       # No native splash-colour freshness gate: the splash artifacts are FROZEN (see the $comment
       # in SplashCanvas.colorset/Contents.json) and the gate returns when packages/theme re-emits
       # them. Never gate on `pnpm --filter <pkg> build` for a package that can be deleted: pnpm
@@ -301,9 +291,6 @@ jobs:
         run: pnpm --filter @heliogrid/e2e exec playwright install --with-deps chromium
       - name: Web flows (tests/e2e/web)
         run: pnpm --filter @heliogrid/e2e test:web
-      - name: Component tests (tests/e2e/components)
-        if: success() || failure()
-        run: pnpm --filter @heliogrid/e2e test:ct
       - name: Keep the traces, the api's log and the failure screenshots
         if: failure()
         uses: actions/upload-artifact@v4
@@ -312,10 +299,46 @@ jobs:
           path: |
             tests/e2e/test-results/
             tests/e2e/playwright-report/
-            tests/e2e/test-results-ct/
-            tests/e2e/playwright-report-ct/
             .qa/api.log
           include-hidden-files: true
+          retention-days: 14
+
+  # The component tests mount the real ui halves in Chromium and need no database or api, so they
+  # run beside the web flows instead of after them: the two together were the critical path, near
+  # e2e-web's 20-minute cap. Same switch as e2e-web.
+  e2e-components:
+    name: e2e-components
+    needs: changes
+    if: needs.changes.outputs.e2e_web == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.job }}-${{ github.sha }}
+          restore-keys: turbo-${{ runner.os }}-${{ github.job }}-
+      - run: pnpm install --frozen-lockfile
+      - name: Build what the component tests import
+        run: pnpm turbo build --filter='@heliogrid/e2e^...'
+      - name: Install Chromium
+        run: pnpm --filter @heliogrid/e2e exec playwright install --with-deps chromium
+      - name: Component tests (tests/e2e/components)
+        run: pnpm --filter @heliogrid/e2e test:ct
+      - name: Keep the traces and the failure screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-components-traces
+          path: |
+            tests/e2e/test-results-ct/
+            tests/e2e/playwright-report-ct/
           retention-days: 14
 
   mobile-js:

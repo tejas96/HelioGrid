@@ -81,7 +81,7 @@ export function readTaskLedger(repo: string): TaskLedger {
   return { tasks, problems };
 }
 
-function taskFiles(repo: string): string[] {
+export function taskFiles(repo: string): string[] {
   return gitFiles(repo, [TASKS]).filter(
     (file) => file.endsWith('.md') && !NOT_TASK_FILES.has(file),
   );

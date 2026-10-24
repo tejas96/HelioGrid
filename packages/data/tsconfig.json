@@ -7,7 +7,10 @@
     // both of which provide fetch/Headers. Without it `Headers` is unknown AND ts-rest's
     // FetchOptions (derived from globalThis.Request) collapses to never, which silently
     // types every fetch option as `undefined`.
-    "lib": ["ES2023", "DOM"]
+    "lib": ["ES2023", "DOM"],
+    // No ambient Node globals in a package both platforms bundle: `@types/node` is here for the
+    // tests alone, and `tests/tsconfig.json` takes it back.
+    "types": []
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

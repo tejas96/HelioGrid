@@ -59,7 +59,9 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
 13. **Proof** — one row per check:
     `row | AC | owner | surface | action → expected | test data, setup and cleanup` — test data
     names the account each row signs in with.
-    Owners: `main-dev` (a unit, contract or component test, by file and test name — automated),
+    Owners: `main-dev` (a unit, contract or component test, named `` `<file>` › *<title>* `` — the
+    file by its path, or a name only one test file has, and each title as the test file writes it,
+    cut short at a `${…}` or `%s`; invariant `rfc-proofs-hold` reads them),
     `qa-api`, `qa-web`, `qa-ios`, `qa-android` (live, on the running app), `ci` (a lane that must
     run). Every AC has exactly one owner. An expected result says the status code and body fields,
     the words or state on screen, and the side effect read back. An expected result that code
@@ -67,16 +69,19 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
     stopped says `api stopped`. A wrong-code step names a code other than `DEV_OTP_CODE`
     (`.env.local`): the api accepts that code for every dev number, so it joins instead. A PRD
     performance target from *Scope* is written into its row's expected result as a time limit.
-    A behaviour of a `data` hook or of an app's glue (a toast, a navigation) has a live row, never a
-    `main-dev` spec: those layers have no unit tests (`.claude/rules/testing.md`).
+    A behaviour of a `data` hook — each answer a write meets, a late answer, a second tap — is a
+    `main-dev` test in `packages/data/tests/`; an app's glue (a toast, a navigation) has a live row,
+    never a `main-dev` spec: that layer has no unit tests (`.claude/rules/testing.md`).
     A screen task has one Hindi and one Marathi layout row on the phone, and its shared
     component's spec covers both languages at 375 and 1536.
     Each surface `/task` step 7's table picks gets a live row; every `qa-ios` row has its
     `qa-android` twin; a surface left out names the table's reason.
-14. **Deferred rows** — each `docs/tasks/deferred.md` row this task meets: joins (and is deleted
-    in this commit) or stays (with its new `reopens when`); a row this task meets only in part
-    stays. `None` when none.
-15. **Size** — changed files, code lines, test lines; one PR, or the parts (`/task` step 3).
+14. **Deferred rows** — each `docs/tasks/deferred.md` row this task meets: joins (deleted when the
+    build ends, `/task` step 5) or stays (with its new `reopens when`); a row this task meets only
+    in part stays. The rows that join are listed on one line, `**Deleted:** D…, D…`, which invariant
+    `rfc-proofs-hold` holds against `deferred.md`. `None` when none.
+15. **Size** — changed files, code lines, test lines (one PR; parts only on the owner's word,
+    `/task` step 3).
 16. **Decisions for the owner** — each open decision with at most two options, recommended first;
     or `none`.
 

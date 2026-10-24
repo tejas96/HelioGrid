@@ -16,6 +16,7 @@ import { runLightOnlyPlatformFiles } from './light-only-platform-files';
 import { runMatrixMirrorsF2 } from './matrix-mirrors-f2';
 import { runPrdRowsCited } from './prd-rows-cited';
 import { REPO_ROOT } from './repo-root';
+import { runRfcProofsHold } from './rfc-proofs-hold';
 import { runSchemaParity } from './schema-parity';
 import { runScreensRegisterWhole } from './screens-register-whole';
 import { runTableTenancyScan } from './table-tenancy-scan';
@@ -34,7 +35,7 @@ import { runVocabularyCopies } from './vocabulary-copies';
  * checks: vocabulary-copies, dockerfile-unprivileged, light-only-platform-files,
  * banned-word-other-files, env-example-complete, language-fonts, e2e-flow-per-screen,
  * design-system-props, design-system-snapshot, biome-plugin-scopes, build-order-holds,
- * prd-rows-cited, capability-ids-cited, screens-register-whole, ui-colour-pairs.
+ * prd-rows-cited, capability-ids-cited, screens-register-whole, ui-colour-pairs, rfc-proofs-hold.
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
@@ -61,6 +62,7 @@ async function main() {
   runCapabilityIdsCited(REPO_ROOT); // static — every capability a task or brief names is in the matrix
   runScreensRegisterWhole(REPO_ROOT); // static — every screen briefed and designed, every row landed once
   runUiColourPairs(REPO_ROOT); // static — every colour ui sets on a background is a declared pair
+  runRfcProofsHold(REPO_ROOT); // static — a changed RFC's named tests exist, its deleted rows are gone
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;
   if (!url) {
     // Fail CLOSED in CI: a skipped invariant that reports success is worse than no

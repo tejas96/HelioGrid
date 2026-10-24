@@ -6,6 +6,8 @@ Deps: `architecture.md` §2 tests/e2e.
 
 - `web/<route>.spec.ts` — one per web route, named as `e2e-flow-per-screen` names it (`/login` →
   `login.spec.ts`, `/` → `root.spec.ts`, a `(group)` folder dropped).
+- `web/qa-seed.setup.ts` is no flow: the seed of the QA companies `/task` step 7 drives
+  (`support/qa-accounts.ts`), run only as project `qa-seed`, never in CI.
 - No screenshot baselines: a flow asserts words, roles, states and measured values, never a
   whole-page picture. A look is proven by the component specs (each part's
   CSS against its tokens) and by `qa-web`'s board compare on every screen a change reaches.
@@ -36,12 +38,13 @@ Deps: `architecture.md` §2 tests/e2e.
 ## Commands
 
 ```
-pnpm --filter @heliogrid/e2e test:web                 # the web flows — CI's e2e-web lane only, never run locally (.claude/rules/testing.md)
+pnpm --filter @heliogrid/e2e test:web [<spec files>]  # the web flows — locally only on heliogrid_test, after the gate (/task step 8); all of them in CI
 pnpm --filter @heliogrid/e2e test:ct [<spec files>]   # the component tests (port 3100)
+pnpm --filter @heliogrid/e2e test:web --project qa-seed  # the QA companies (support/qa-accounts.ts), off CI, with the worker and Temporal up
 pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows by hand, one device per call
 ```
 
-The web and component suites run in CI (`e2e-web`); the phone flows run in CI on Android
+The web suite runs in CI's `e2e-web` and the component suite beside it in `e2e-components`; the phone flows run in CI on Android
 (`android`; `.github/workflows/ci.yml` says how, and how the repository variable `PHONE_E2E=off`
 switches them off) and on iOS by hand, never in CI — a macOS runner spends 20 minutes on the Xcode
 build alone; the `qa-ios` helper drives a task's iOS rows, not these flows. `test:mobile` runs the
@@ -62,8 +65,8 @@ same keys sent to all three surfaces in one instant, with no key lost or crossed
   editing the file, or touch it before the next run.
 - A new number's code is read from the api's log, `.qa/api.log`, which the `api`
   launch configurations, `playwright.config.ts` and CI's `android` job write
-  (`support/api-log.ts`). A running api is reused as it is, so it must be one of those: an api
-  started any other way writes no log here.
+  (`support/api-log.ts`). On CI a running api is reused as it is, so it must be one of those; off CI
+  none is (`playwright.config.ts`), and the api it starts appends to that log.
 - Maestro types faster than the phone's fields take keys: a flow waits for the tap to settle before
   typing, gives each code box its own digit, and presses Return to close the keyboard before the
   next tap — while it is up, the form spends a tap on closing it.
