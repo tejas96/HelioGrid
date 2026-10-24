@@ -3,7 +3,7 @@ import type { FieldOverrideSpec } from '../FieldOverride/FieldOverride.types';
 import type { NamedGapSpec } from '../NamedGap';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { ValueSourceSpec } from '../ValueSource';
-import type { DataTableProps, DataTableSort } from './DataTable.types';
+import type { DataTableProps, DataTableSort, PageRange, PaginationProps } from './DataTable.types';
 import type { DataTableColumn } from './DataTableColumn.types';
 
 /* Rows are COMFORTABLE by default: 64px rows, 14px cells, 20px gutters, 24px edges. Functional
@@ -59,10 +59,45 @@ export const DATA_TABLE_STACK_BELOW = 640;
  */
 export const QUIET_HEAD = { headH: 34, headGap: 16, cellPadY: 14, rowH: 82 } as const;
 
+/**
+ * **The kind tile's side** (`D268`, `SCR-M01-15`'s catalogue rows): between the scale's 32 and 40,
+ * so it is named. The web half names the same number in `DataTableCell.css`.
+ */
+export const LEAD_TILE = 34;
+
 /** The density spec a quiet table's wide form draws with. */
 export function quietSpec(spec: DensitySpec): DensitySpec {
   return { ...spec, edge: spec.gutter, headH: QUIET_HEAD.headH, rowH: QUIET_HEAD.rowH };
 }
+
+/** The span a page shows and the last page there is, for both halves of `Pagination`. */
+export function pageWindow(
+  page: number,
+  pageSize: number,
+  rowCount: number,
+): { range: PageRange; last: number } {
+  return {
+    range: {
+      from: rowCount === 0 ? 0 : page * pageSize + 1,
+      to: Math.min(rowCount, (page + 1) * pageSize),
+      count: rowCount,
+    },
+    last: Math.max(0, Math.ceil(rowCount / pageSize) - 1),
+  };
+}
+
+type PagerWords = Pick<PaginationProps, 'previousLabel' | 'nextLabel' | 'readout'>;
+
+/**
+ * The words the table's own pager has always said — English in `packages/ui`, the debt
+ * `.claude/rules/ui-adherence.md` names. A list that needs them translated draws `Pagination`,
+ * whose words are required props.
+ */
+export const TABLE_PAGER_WORDS: PagerWords = {
+  previousLabel: 'Previous page',
+  nextLabel: 'Next page',
+  readout: ({ from, to, count }) => `${from}–${to} of ${count}`,
+};
 
 /** Reads a row property by column key without widening the row type to `any`. */
 export function readField(row: unknown, key: string): unknown {

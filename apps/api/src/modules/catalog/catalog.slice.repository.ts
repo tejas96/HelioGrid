@@ -7,6 +7,7 @@ import {
 import type {
   CatalogAvailability,
   CatalogProvenanceLabel,
+  CatalogSort,
   Certification,
   ImportProductName,
   ResolvedCatalogItem,
@@ -14,10 +15,16 @@ import type {
 import { Inject, Injectable } from '@nestjs/common';
 import { asc, eq, inArray, type SQL, sql } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
-import { itemRatesInForce, type StoredRate } from './catalog.rates.repository';
+import {
+  itemRatesInForce,
+  lastRateRecordedAt,
+  rateAmountInForce,
+  type StoredRate,
+} from './catalog.rates.repository';
 import {
   listConditions,
   namedConditions,
+  overrideSetsSomething,
   type SliceFilter,
   textOf,
 } from './catalog.slice-conditions.repository';
@@ -82,7 +89,7 @@ export class CatalogSliceRepository {
     });
   }
 
-  /** A page of the list: hidden rows left out, preferred first, then text rank, then the name. */
+  /** A page of the list in the filter's order; hidden rows left out unless the filter keeps them. */
   async page(
     tenantId: string,
     marketCode: string,
@@ -90,12 +97,12 @@ export class CatalogSliceRepository {
     page: { readonly limit: number; readonly offset: number; readonly pricedOn: string },
   ): Promise<{ readonly rows: readonly SliceRow[]; readonly totalCount: number }> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
-      const slice = unionOf(tenantId, marketCode, { filter });
+      const slice = unionOf(tenantId, marketCode, { filter, pricedOn: page.pricedOn });
       const rows = await tx.execute<UnionRow>(sql`
         select source, id, brand, model, spec, provenance, availability, archived, hidden,
           preferred, "overrideId", "taxPct", certifications
         from (${slice}) as slice
-        order by preferred desc, rank desc, brand, model, id
+        order by ${ORDER[filter.sort ?? 'preferred']}
         limit ${page.limit} offset ${page.offset}`);
       const [total] = await tx.execute<{ value: number }>(
         sql`select count(*)::int as value from (${slice}) as slice`,
@@ -199,7 +206,7 @@ function unionOf(
   tenantId: string,
   marketCode: string,
   read:
-    | { readonly filter: SliceFilter }
+    | { readonly filter: SliceFilter; readonly pricedOn: string }
     | { readonly id: string }
     | { readonly names: readonly ImportProductName[] },
 ): SQL {
@@ -215,16 +222,20 @@ function unionOf(
   if (filter !== null) {
     platform.push(...listConditions(filter, 'platform'));
     own.push(...listConditions(filter, 'own'));
+    if (filter.changed === true && 'pricedOn' in read) {
+      platform.push(overrideSetsSomething(tenantId, read.pricedOn, filter.moneyVisible === true));
+    }
   }
   const terms = filter?.terms ?? null;
   const rank = (alias: SQL) =>
     terms === null ? sql`0::real` : sql`ts_rank(${textOf(alias)}, to_tsquery('simple', ${terms}))`;
+  const keys = sortKeys(tenantId, 'pricedOn' in read ? read : null);
   const platformSelect = sql`
     select 'platform_item' as source, ci.id, ci.brand, ci.model, ci.spec,
       ci.provenance_label::text as provenance, ci.availability::text as availability, ci.archived,
       coalesce(o.hidden, false) as hidden, coalesce(o.preferred, false) as preferred,
       o.id as "overrideId", o.tax_pct::text as "taxPct", null::jsonb as certifications,
-      ${rank(sql`ci`)} as rank
+      ${rank(sql`ci`)} as rank, ${keys.platform}
     from catalog_item ci
     join catalog_item_market_availability m
       on m.catalog_item_id = ci.id and m.market_code = ${marketCode}
@@ -235,10 +246,42 @@ function unionOf(
     select 'own_item' as source, t.id, t.brand, t.model, t.spec,
       'tenant_provided' as provenance, null as availability, t.archived,
       false as hidden, t.preferred, null::uuid as "overrideId", null as "taxPct", t.certifications,
-      ${rank(sql`t`)} as rank
+      ${rank(sql`t`)} as rank, ${keys.own}
     from tenant_catalog_item t
     where ${sql.join(own, sql` and `)}`;
   if (filter?.source === 'platform_item') return platformSelect;
   if (filter?.source === 'own_item') return ownSelect;
   return sql`${platformSelect} union all ${ownSelect}`;
+}
+
+/** Each order ends in `id`, in its own direction, so a page boundary never repeats or drops a row. */
+const ORDER: Record<CatalogSort, SQL> = {
+  preferred: sql`preferred desc, rank desc, brand, model, id`,
+  name: sql`brand, model, id`,
+  price: sql`"priceKey" asc nulls last, brand, model, id`,
+  recent: sql`"changedKey" desc nulls last, id desc`,
+};
+
+/**
+ * The columns the price and recent orders read, computed only for the order that reads them: a
+ * row's rate in force, and the last time the tenant changed it — the item, its override or its
+ * ledger.
+ */
+function sortKeys(
+  tenantId: string,
+  read: { readonly filter: SliceFilter; readonly pricedOn: string } | null,
+): { readonly platform: SQL; readonly own: SQL } {
+  const sort = read?.filter.sort;
+  const price = (on: 'own_item' | 'override', id: SQL) =>
+    sort === 'price' && read !== null
+      ? rateAmountInForce(tenantId, on, id, read.pricedOn)
+      : sql`null::numeric`;
+  const changed = (on: 'own_item' | 'override', id: SQL, ...stamps: SQL[]) =>
+    sort === 'recent'
+      ? sql`greatest(${sql.join(stamps, sql`, `)}, ${lastRateRecordedAt(tenantId, on, id)})`
+      : sql`null::timestamptz`;
+  return {
+    platform: sql`${price('override', sql`o.id`)} as "priceKey", ${changed('override', sql`o.id`, sql`ci.updated_at`, sql`o.updated_at`)} as "changedKey"`,
+    own: sql`${price('own_item', sql`t.id`)} as "priceKey", ${changed('own_item', sql`t.id`, sql`t.updated_at`)} as "changedKey"`,
+  };
 }

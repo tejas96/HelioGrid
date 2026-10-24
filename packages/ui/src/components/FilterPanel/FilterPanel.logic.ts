@@ -1,10 +1,15 @@
-import { optionValue } from '../FilterBar/FilterBar.types';
-import { rangeIsAny } from '../RangeField/RangeField.logic';
+import type { FilterOption } from '../FilterBar/FilterBar.types';
+import { optionLabel, optionValue } from '../FilterBar/FilterBar.types';
+import { rangeIsAny, rangeReadout } from '../RangeField/RangeField.logic';
 import type { RangeValue } from '../RangeField/RangeField.types';
 import type {
+  FacetDimension,
   FilterDimension,
+  FilterDimensionUnder,
   FilterDimensionValue,
+  FilterSetWords,
   FilterValue,
+  FlagDimension,
   OneOfDimension,
 } from './FilterPanel.types';
 
@@ -71,7 +76,154 @@ export function clearedFilterValue(dimensions: FilterDimension[] = []): FilterVa
   return out;
 }
 
-/** The header's own sentence, so both platform halves count and word it identically. */
-export function filterHeaderLine(active: number, total: number): string {
-  return active === 0 ? 'No filters on' : `${active} of ${total} filters on`;
+/** Whether the value a folded dimension belongs to is chosen now. */
+export function underIsChosen(under: FilterDimensionUnder, value: FilterValue): boolean {
+  const held = value[under.key];
+  return Array.isArray(held) ? held.some((v) => v === under.value) : held === under.value;
+}
+
+/**
+ * One dimension changed, and every dimension that belonged to a value no longer chosen is cleared
+ * with it: a folded filter that is hidden but still on would narrow the list for a reason nobody
+ * can see. Runs until nothing more clears, so a chain of folds clears all the way down.
+ */
+export function withDimension(
+  dimensions: FilterDimension[],
+  value: FilterValue,
+  key: string,
+  next: FilterDimensionValue,
+): FilterValue {
+  let out: FilterValue = { ...value, [key]: next };
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const d of dimensions) {
+      if (d.under === undefined || underIsChosen(d.under, out)) continue;
+      if (!isFilterActive(d, out[d.key])) continue;
+      out = { ...out, ...clearedFilterValue([d]) };
+      changed = true;
+    }
+  }
+  return out;
+}
+
+/** The dimensions folded under one value of a section's dimension, as one `Accordion` line. */
+export interface FilterFold {
+  key: string;
+  title: string;
+  dimensions: FilterDimension[];
+}
+
+/** One section of the body: a dimension and the folds that show under it now. */
+export interface FilterSection {
+  dim: FilterDimension;
+  folds: FilterFold[];
+}
+
+/**
+ * THE BODY'S ORDER, decided once for both halves: every top-level dimension that is not a flag
+ * gets a section in the caller's order, with the folds whose value is chosen; every top-level flag
+ * goes to the last *Show* section.
+ */
+export function filterLayout(
+  dimensions: FilterDimension[],
+  value: FilterValue,
+): { sections: FilterSection[]; flags: FlagDimension[] } {
+  const top = dimensions.filter((d) => d.under === undefined);
+  return {
+    sections: top
+      .filter((d) => d.kind !== 'flag')
+      .map((dim) => ({ dim, folds: foldsUnder(dim.key, dimensions, value) })),
+    flags: top.filter((d): d is FlagDimension => d.kind === 'flag'),
+  };
+}
+
+function foldsUnder(key: string, dimensions: FilterDimension[], value: FilterValue): FilterFold[] {
+  const folds = new Map<string, FilterFold>();
+  for (const d of dimensions) {
+    const under = d.under;
+    if (under === undefined || under.key !== key || !underIsChosen(under, value)) continue;
+    const id = `${under.key}:${under.value}:${under.group}`;
+    const fold = folds.get(id) ?? { key: id, title: under.group, dimensions: [] };
+    fold.dimensions.push(d);
+    folds.set(id, fold);
+  }
+  return [...folds.values()];
+}
+
+/** The chips a chip dimension shows as chosen: a facet's set, or a one-of's one value (its "all" while unset). */
+export function chosenChips(
+  dim: FacetDimension | OneOfDimension,
+  value: FilterDimensionValue,
+): string[] {
+  if (dim.kind === 'facet') return facetDimensionValues(value);
+  const one = typeof value === 'string' ? value : oneOfAllValue(dim);
+  return one === undefined ? [] : [one];
+}
+
+/** A chip list shows this many before *Show all* — design-system change 8. */
+export const CHIP_LIST_CAP = 6;
+
+/**
+ * The chips a list shows: all of them when it is short or opened, else the first six and any
+ * chosen one beyond them — a chosen value is never hidden behind *Show all*.
+ */
+export function shownChipOptions(
+  options: FilterOption[],
+  chosen: readonly string[],
+  showAll: boolean,
+): { shown: FilterOption[]; capped: boolean } {
+  if (showAll || options.length <= CHIP_LIST_CAP) return { shown: options, capped: false };
+  return {
+    shown: options.filter((o, i) => i < CHIP_LIST_CAP || chosen.includes(optionValue(o))),
+    capped: true,
+  };
+}
+
+function labelOf(options: FilterOption[], value: string): string {
+  const option = options.find((o) => optionValue(o) === value);
+  return option === undefined ? value : optionLabel(option);
+}
+
+/** What is on, at a section's right — `null` while the dimension does nothing. */
+export function dimensionSummary(
+  dim: FilterDimension,
+  value: FilterDimensionValue,
+  words: FilterSetWords,
+): string | null {
+  if (!isFilterActive(dim, value)) return null;
+  switch (dim.kind) {
+    case 'facet': {
+      const chosen = facetDimensionValues(value);
+      const only = chosen.length === 1 ? chosen[0] : undefined;
+      return only === undefined ? words.selected(chosen.length) : labelOf(dim.options, only);
+    }
+    case 'one-of':
+      return typeof value === 'string' ? labelOf(dim.options, value) : null;
+    case 'range': {
+      const range = asRange(value);
+      if (range === null) return null;
+      return rangeReadout({
+        lo: range[0],
+        hi: range[1],
+        min: dim.min,
+        max: dim.max,
+        anyLabel: dim.anyLabel ?? '',
+        unit: dim.unit,
+        format: dim.format,
+      });
+    }
+    case 'flag':
+      return null;
+  }
+}
+
+/** What is on inside a fold, at its line's right — `undefined` while nothing is. */
+export function foldSummary(
+  fold: FilterFold,
+  value: FilterValue,
+  words: FilterSetWords,
+): string | undefined {
+  const on = countActiveFilters(fold.dimensions, value);
+  return on === 0 ? undefined : words.groupOn(on);
 }

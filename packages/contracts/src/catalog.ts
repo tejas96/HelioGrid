@@ -1,14 +1,20 @@
 import {
   CATALOG_AVAILABILITY,
   CATALOG_PROVENANCE_LABELS,
-  CATALOG_SOURCES,
-  COMPONENT_KINDS,
   catalogSpecSchema,
-  PANEL_TECHNOLOGIES,
   RELEASE_CHANGE_KINDS,
 } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
+import {
+  type CatalogItemsQuery,
+  type ComponentKind,
+  catalogItemSourceSchema,
+  catalogItemsQuerySchema,
+  catalogSortSchema,
+  catalogSourceSchema,
+  componentKindSchema,
+} from './catalog-query';
 import {
   amountSchema,
   createHeadersSchema,
@@ -21,6 +27,15 @@ import {
 import { baseError, errorEnvelope, IDEMPOTENCY_KEY_REUSED } from './error';
 import { calendarDateSchema } from './tenant-settings';
 
+export {
+  type CatalogItemsQuery,
+  type ComponentKind,
+  catalogItemSourceSchema,
+  catalogItemsQuerySchema,
+  catalogSortSchema,
+  componentKindSchema,
+};
+
 const c = initContract();
 
 /**
@@ -29,10 +44,6 @@ const c = initContract();
  * tenant's writes — own SKUs, the sparse override, the dated rate ledger. The releases are
  * `catalog-releases.ts`.
  */
-
-/** What a catalog item is (`M01-45`). */
-export const componentKindSchema = z.enum(COMPONENT_KINDS);
-export type ComponentKind = z.infer<typeof componentKindSchema>;
 
 /** Where an item's specs came from (`M01-35`) — never a statement about a price. */
 export const catalogProvenanceSchema = z.enum(CATALOG_PROVENANCE_LABELS);
@@ -45,10 +56,6 @@ export type CatalogAvailability = z.infer<typeof catalogAvailabilitySchema>;
 /** What one release line says about one item (`M01-43`). */
 export const releaseChangeKindSchema = z.enum(RELEASE_CHANGE_KINDS);
 export type ReleaseChangeKind = z.infer<typeof releaseChangeKindSchema>;
-
-/** Which tier supplied a resolved value (`MS4-07`'s second axis). */
-const catalogSourceSchema = z.enum(CATALOG_SOURCES);
-export const catalogItemSourceSchema = catalogSourceSchema.extract(['platform_item', 'own_item']);
 
 /** One scheme-keyed claim (`M01-34`): a `list_reference` scheme carries its reference, a flag none. */
 export const catalogCertificationSchema = z.object({
@@ -100,30 +107,6 @@ export const catalogItemSchema = resolvedCatalogItemSchema.extend({
   openDraftCount: z.number().int().nonnegative(),
 });
 export type CatalogItemWire = z.infer<typeof catalogItemSchema>;
-
-const flagSchema = z.enum(['true', 'false']).transform((flag) => flag === 'true');
-
-/**
- * The picker's and Catalog settings' list (`MS4-10`, `M01-38`): `schemes` is a comma list and
- * keeps items holding every one; a watt or technology filter keeps panels only; `archived`
- * lists the archived alone.
- */
-export const catalogItemsQuerySchema = paginationQuerySchema.extend({
-  q: z.string().trim().max(100).optional(),
-  source: catalogItemSourceSchema.optional(),
-  kind: componentKindSchema.optional(),
-  wattMin: z.coerce.number().positive().optional(),
-  wattMax: z.coerce.number().positive().optional(),
-  technology: z.enum(PANEL_TECHNOLOGIES).optional(),
-  schemes: z
-    .string()
-    .regex(/^[A-Za-z0-9_-]{1,40}(,[A-Za-z0-9_-]{1,40}){0,9}$/)
-    .transform((list) => [...new Set(list.split(','))])
-    .optional(),
-  preferred: flagSchema.optional(),
-  archived: flagSchema.optional(),
-});
-export type CatalogItemsQuery = z.infer<typeof catalogItemsQuerySchema>;
 
 /** A price of one unit in the tenant's currency; zero is a price, a negative one is not. */
 export const priceSchema = amountSchema.refine(

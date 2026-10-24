@@ -1,0 +1,105 @@
+/* CatalogRelease — the publish summary and a release's before-and-after (`SCR-M01-15`,
+   `s-publish`, `d-publish`, `s-contents`). Tiles take their fill from `Ground`, through `Card`. */
+
+.hg-cat-release {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.hg-cat-release-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-cat-release-head > :first-child,
+.hg-cat-release-head > :last-child {
+  flex-shrink: 0;
+}
+
+.hg-cat-release-head-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.hg-cat-release-counts {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.hg-cat-release-counts > * {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-cat-release-count {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.hg-cat-release-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-cat-release-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-cat-release-field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-cat-release-field-name {
+  flex: 0 0 auto;
+  min-width: var(--sp-20);
+}
+
+.hg-cat-release-from {
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-cat-release-from[data-figure="true"] {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-cat-release-earlier {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hg-cat-release-earlier-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hg-pressable.hg-cat-release-earlier-row {
+  /* The board's earlier-release row height, off the spacing scale. */
+  --hg-cat-release-row: 56px;
+  width: 100%;
+  min-height: var(--hg-cat-release-row);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  border-top: 1px solid var(--line-soft);
+  text-align: left;
+  background: transparent;
+}

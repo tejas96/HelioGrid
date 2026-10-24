@@ -6,6 +6,7 @@ export interface NumberDraftOptions {
   /** None: the field is unset and edits as an empty draft. */
   value: number | undefined;
   onCommit?: (value: number) => void;
+  onClear?: () => void;
   min?: number;
   max?: number;
   step: number;
@@ -15,6 +16,9 @@ export interface NumberDraftOptions {
   outOfRange: OutOfRangeMode;
   correctionMessage?: string;
   commits: NumberFieldCommits;
+  /** How a figure reads while the field is not being edited — a money field, in the market's
+   *  money format. Editing always shows the plain figure, which is what is parsed back. */
+  idle?: (value: number) => string;
 }
 
 export interface NumberDraftState {
@@ -45,14 +49,17 @@ export interface NumberDraftState {
  */
 export function useNumberFieldDraft(opts: NumberDraftOptions): NumberDraftState {
   const { value, onCommit } = opts;
-  const [draft, setDraft] = useState(() => displayNumber(value));
+  const resting = (figure: number | undefined) =>
+    figure === undefined || opts.idle === undefined ? displayNumber(figure) : opts.idle(figure);
+  const [draft, setDraft] = useState(() => resting(value));
   const [correction, setCorrection] = useState<string | null>(null);
   const [refusal, setRefusal] = useState<string | null>(null);
   const [focus, setFocus] = useState(false);
 
+  const restingText = resting(value);
   useEffect(() => {
-    if (!focus) setDraft(displayNumber(value));
-  }, [value, focus]);
+    if (!focus) setDraft(restingText);
+  }, [restingText, focus]);
 
   const clearNotes = () => {
     setCorrection(null);
@@ -65,6 +72,11 @@ export function useNumberFieldDraft(opts: NumberDraftOptions): NumberDraftState 
   };
 
   const commit = () => {
+    if (draft.trim() === '' && value !== undefined && opts.onClear !== undefined) {
+      clearNotes();
+      opts.onClear();
+      return;
+    }
     const outcome = commitDraft({ ...opts, draft });
     if (outcome.kind === 'restore') {
       restore();
@@ -85,6 +97,12 @@ export function useNumberFieldDraft(opts: NumberDraftOptions): NumberDraftState 
   const type = (next: string) => {
     setDraft(next);
     if (opts.commits !== 'as-typed') return;
+    /* An emptied box is reported too: on touch *Save* does not leave the field, and the last digit
+       must never stand in for a figure taken away. */
+    if (next.trim() === '' && value !== undefined && opts.onClear !== undefined) {
+      opts.onClear();
+      return;
+    }
     const outcome = commitDraft({ ...opts, draft: next });
     if (outcome.kind === 'accept' && outcome.value !== value) onCommit?.(outcome.value);
   };

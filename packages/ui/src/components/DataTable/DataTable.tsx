@@ -3,7 +3,12 @@ import { useEffect, useId, useMemo, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { useOwnWidth } from '../../primitives/use-own-width';
 import { renderProvenance } from '../Provenance';
-import { DATA_TABLE_STACK_BELOW, showsMessage, sortRows } from './DataTable.logic';
+import {
+  DATA_TABLE_STACK_BELOW,
+  showsMessage,
+  sortRows,
+  TABLE_PAGER_WORDS,
+} from './DataTable.logic';
 import type { DataTableProps } from './DataTable.types';
 import { Pagination, SelectionBar } from './DataTableChrome';
 import { DataTableGrid } from './DataTableGrid';
@@ -173,6 +178,7 @@ export function DataTable<Row = Record<string, unknown>>(props: WebDataTableProp
           pageSize={pageSize}
           rowCount={rowCount ?? rows.length}
           onPageChange={onPageChange}
+          {...TABLE_PAGER_WORDS}
         />
       ) : null}
     </div>

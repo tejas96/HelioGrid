@@ -10,7 +10,7 @@ import { RowNote } from './DataTableChrome';
 import type { RowState } from './DataTableRow.logic';
 import { resolveRow, rowOpenOf } from './DataTableRow.logic';
 import type { StackedColumns } from './DataTableStacked.logic';
-import { holdsEditor, isTappable, rowNameOf } from './DataTableStacked.logic';
+import { hasLead, holdsEditor, isTappable, rowNameOf } from './DataTableStacked.logic';
 
 /**
  * **How the card is drawn** — the same ground the grid row carries, as the stylesheet's own
@@ -136,7 +136,7 @@ export function DataTableCard<Row>({
             </span>
           ) : null}
           <div className="hg-dt-card-main">
-            <div className="hg-dt-card-title-row">
+            <div className="hg-dt-card-title-row" data-lead={hasLead(primary) ? 'true' : undefined}>
               <span
                 className="hg-dt-card-title"
                 data-tappable={isTappable(primary, table, true) ? 'true' : undefined}

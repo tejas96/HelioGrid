@@ -103,6 +103,10 @@
   color: var(--text-secondary);
 }
 
+.hg-detail-panel-subtitle[data-face="sans"] {
+  font-family: var(--font-sans);
+}
+
 /* ── meta, body, footer ────────────────────────────────────────────────────── */
 
 .hg-detail-panel-meta {

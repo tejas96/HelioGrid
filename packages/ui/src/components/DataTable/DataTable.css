@@ -16,8 +16,14 @@
    The density numbers are the design system's own grid and are not on the 4px scale, so they are
    named here and switched by [data-density]. */
 
-.hg-dt {
+/* The pager is a table's part and a part on its own (`Pagination`), so its target is named where
+   both find it. */
+.hg-dt,
+.hg-dt-pagination {
   --hg-dt-touch: 44px;
+}
+
+.hg-dt {
   --hg-dt-row-h: 64px;
   --hg-dt-cell-font: var(--fs-body);
   --hg-dt-gutter: 20px;

@@ -10,6 +10,33 @@ export { followHostLifecycle } from './host-lifecycle';
 export { DataProvider } from './provider';
 export type { AssignRolesEditor, RolesRemoval, RolesRemovalNotes } from './use-assign-roles';
 export { useAssignRoles } from './use-assign-roles';
+export type {
+  CatalogAct,
+  CatalogActNote,
+  CatalogActs,
+  CatalogPrice,
+  CatalogRowState,
+  CatalogSaveOutcome,
+} from './use-catalog-acts';
+export { useCatalogActs } from './use-catalog-acts';
+export type { CatalogFacts, CatalogView } from './use-catalog-items';
+export {
+  useCatalogChanged,
+  useCatalogFacts,
+  useCatalogPage,
+  useCatalogScroll,
+} from './use-catalog-items';
+export type { CatalogOverlays } from './use-catalog-overlays';
+export { useCatalogOverlays } from './use-catalog-overlays';
+export type { CatalogPriceDraft, CatalogPriceProblem } from './use-catalog-price-draft';
+export { useCatalogPriceDraft } from './use-catalog-price-draft';
+export type { PublishRefusal, PublishRelease } from './use-catalog-releases';
+export {
+  useCatalogRelease,
+  useCatalogReleases,
+  usePublishRelease,
+  useReleasePreview,
+} from './use-catalog-releases';
 export type { ChosenPicture } from './use-company-logo';
 export type { CompanyProfileStep } from './use-company-profile';
 export { useCompanyProfile } from './use-company-profile';
@@ -31,6 +58,16 @@ export type { NotificationCentre } from './use-notification-centre';
 export { useNotificationCentre, useUnreadCount } from './use-notification-centre';
 export { usePagedList } from './use-paged-list';
 export { usePaginatedList } from './use-paginated-list';
+export type { PublishPriceBook } from './use-price-book';
+export {
+  usePriceBook,
+  usePriceBookBrowse,
+  usePriceBookVersion,
+  usePriceBookVersions,
+  usePublishPriceBookVersion,
+} from './use-price-book';
+export type { DraftRate, PriceBookDraft } from './use-price-book-draft';
+export { usePriceBookDraft } from './use-price-book-draft';
 export type { PushPreferences } from './use-push-preferences';
 export { usePushPreferences } from './use-push-preferences';
 export type { RoleCardRead } from './use-role-card';

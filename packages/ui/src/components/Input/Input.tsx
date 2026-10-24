@@ -28,6 +28,7 @@ interface WebInputProps extends InputProps {
  */
 export function Input({
   label,
+  labelSpokenOnly = false,
   value,
   onChange,
   placeholder,
@@ -91,7 +92,10 @@ export function Input({
   return (
     <div className={classNames('hg-input', className)} style={style}>
       {label === undefined ? null : (
-        <label className="hg-input-label" htmlFor={fieldId}>
+        <label
+          className={classNames('hg-input-label', labelSpokenOnly ? 'hg-spoken-only' : undefined)}
+          htmlFor={fieldId}
+        >
           {label}
         </label>
       )}

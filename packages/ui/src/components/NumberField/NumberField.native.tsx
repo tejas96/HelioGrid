@@ -3,8 +3,10 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderOverride } from '../FieldOverride/FieldOverride.native';
+import { useFormat } from '../MarketProvider/market-context';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import { renderAttribution } from '../ValueSource/ValueSource.native';
+import { restingMoney } from './NumberField.logic';
 import { useNumberFieldDraft } from './NumberField.state';
 import type { NumberFieldProps } from './NumberField.types';
 import { NumberFieldBox } from './NumberFieldBox.native';
@@ -32,11 +34,13 @@ const styles = StyleSheet.create({
 export function NumberField({
   value,
   onCommit,
+  onClear,
   min,
   max,
   step = 1,
   precision,
   label,
+  labelSpokenOnly = false,
   unit,
   hint,
   disabled = false,
@@ -55,14 +59,17 @@ export function NumberField({
   style,
 }: NativeNumberFieldProps) {
   const showSteppers = steppers ?? !currency;
+  const format = useFormat();
   const draft = useNumberFieldDraft({
     value,
     onCommit,
+    onClear,
     min,
     max,
     step,
     precision,
     currency,
+    ...(currency ? { idle: (figure: number) => restingMoney(format, figure) } : {}),
     unit,
     outOfRange,
     correctionMessage,
@@ -82,7 +89,7 @@ export function NumberField({
 
   return (
     <View style={style}>
-      {label !== undefined ? (
+      {label !== undefined && !labelSpokenOnly ? (
         <Text variant="field-label" color="secondary" style={styles.label}>
           {label}
         </Text>

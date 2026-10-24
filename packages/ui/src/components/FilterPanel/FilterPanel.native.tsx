@@ -6,12 +6,14 @@ import { StyleSheet, View } from 'react-native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { EditorSurface } from '../EditorSurface/EditorSurface.native';
-import { FilterDimensionBlock } from './FilterDimension.native';
+import { FilterSection } from './FilterDimension.native';
+import { FilterDimensionControl } from './FilterDimensionControl.native';
 import {
   clearedFilterValue,
   countActiveFilters,
-  filterHeaderLine,
+  filterLayout,
   isFilterActive,
+  withDimension,
 } from './FilterPanel.logic';
 import type { FilterDimensionValue, FilterPanelProps, FilterSetProps } from './FilterPanel.types';
 
@@ -24,62 +26,60 @@ interface NativeFilterPanelProps extends FilterPanelProps {
 }
 
 /**
- * **The one filter body, and it renders no chrome.** Nothing is staged: a change writes through
- * `onChange` immediately and the list behind updates.
- *
- * Platform mapping: the web half lays two columns out on a CSS grid; RN has none, so the
- * two-column form is a wrapping row of half-width blocks — the same two columns, same order.
+ * **The one filter body, and it renders no chrome.** One column of sections at every width, a
+ * hairline between; every flag a `Switch` row in a last *Show* section. Nothing is staged: a
+ * change writes through `onChange` immediately — with every folded dimension whose value is no
+ * longer chosen cleared in the same write.
  */
 export function FilterSet({
   dimensions = [],
   value = {},
   onChange,
-  columns = 1,
-  onClear,
-  showClear = true,
-  header = true,
+  words,
   style,
 }: NativeFilterSetProps) {
-  const n = countActiveFilters(dimensions, value);
-  const setOne = (key: string, v: FilterDimensionValue) => onChange?.({ ...value, [key]: v });
-  const clear = () => (onClear ? onClear() : onChange?.(clearedFilterValue(dimensions)));
-  const two = columns > 1;
+  const setOne = (key: string, v: FilterDimensionValue) =>
+    onChange?.(withDimension(dimensions, value, key, v));
+  const { sections, flags } = filterLayout(dimensions, value);
+  const parted = (index: number) => (index === 0 ? styles.first : styles.parted);
   return (
     <View style={[styles.set, style]}>
-      {header ? (
-        <View style={styles.header}>
-          <Text variant="body-sm" color="secondary">
-            {filterHeaderLine(n, dimensions.length)}
-          </Text>
-          {showClear && n > 0 ? (
-            <Pressable onPress={clear} style={styles.clear}>
-              <Text variant="body-sm" color="accent" style={styles.clearWords}>
-                Clear all
-              </Text>
-            </Pressable>
-          ) : null}
+      {sections.map(({ dim, folds }, index) => (
+        <View key={dim.key} style={[styles.section, parted(index)]}>
+          <FilterSection dim={dim} folds={folds} value={value} onChange={setOne} words={words} />
         </View>
-      ) : null}
-      <View style={two ? styles.gridTwo : styles.gridOne}>
-        {dimensions.map((d) => (
-          <View key={d.key} style={two ? styles.cellTwo : styles.cellOne}>
-            <FilterDimensionBlock
-              dim={d}
-              value={value[d.key]}
-              onChange={setOne}
-              active={isFilterActive(d, value[d.key])}
-            />
-          </View>
-        ))}
-      </View>
+      ))}
+      {flags.length === 0 ? null : (
+        <View style={[styles.section, styles.flags, parted(sections.length)]}>
+          <Text variant="overline" color="tertiary">
+            {words.show}
+          </Text>
+          {flags.map((dim) => (
+            <View key={dim.key}>
+              <FilterDimensionControl
+                dim={dim}
+                value={value[dim.key]}
+                onChange={setOne}
+                words={words}
+              />
+              {dim.hint ? (
+                <Text variant="caption" color="tertiary">
+                  {dim.hint}
+                </Text>
+              ) : null}
+            </View>
+          ))}
+        </View>
+      )}
     </View>
   );
 }
 
 /**
  * `FilterSet` inside an `EditorSurface`: a sheet below `panelAbove` of the layer's own width, a
- * side panel at or above it. The footer's primary action is a **labelled dismiss**, never an
- * apply — the filters are already on.
+ * side panel at or above it — the same one column in both. *Clear all* shows once, here in the
+ * footer. The footer's primary action is a **labelled dismiss**, never an apply — the filters are
+ * already on.
  */
 export function FilterPanel({
   open = false,
@@ -89,9 +89,10 @@ export function FilterPanel({
   value = {},
   onChange,
   onClear,
-  title = 'Filters',
+  words,
+  showClear = true,
   resultCount,
-  resultNoun = 'results',
+  resultNoun,
   panelAbove = 720,
   width = 460,
   inset = false,
@@ -103,14 +104,18 @@ export function FilterPanel({
   const clear = () => (onClear ? onClear() : onChange?.(clearedFilterValue(dimensions)));
   const footer = (
     <View style={styles.footer}>
-      <Pressable onPress={clear} disabled={n === 0} style={styles.footerClear}>
-        <Text variant="body" color={n === 0 ? 'disabled' : 'primary'} style={styles.clearWords}>
-          Clear all
-        </Text>
-      </Pressable>
+      {showClear ? (
+        <Pressable onPress={clear} disabled={n === 0} style={styles.footerClear}>
+          <Text variant="body" color={n === 0 ? 'disabled' : 'primary'} style={styles.clearWords}>
+            {words.clearAll}
+          </Text>
+        </Pressable>
+      ) : null}
       <Pressable onPress={onClose} style={styles.done}>
         <Text variant="body" color="inverse" style={styles.doneWords}>
-          {typeof resultCount === 'number' ? `Show ${resultCount} ${resultNoun}` : 'Done'}
+          {typeof resultCount === 'number'
+            ? words.showResults(resultCount, resultNoun)
+            : words.done}
         </Text>
       </Pressable>
     </View>
@@ -120,7 +125,7 @@ export function FilterPanel({
       open={open}
       onClose={onClose}
       closeLabel={closeLabel}
-      title={title}
+      title={words.title}
       panelAbove={panelAbove}
       width={width}
       footer={footer}
@@ -130,15 +135,7 @@ export function FilterPanel({
       showClose
       style={style}
     >
-      {({ panel }: { panel: boolean }) => (
-        <FilterSet
-          dimensions={dimensions}
-          value={value}
-          onChange={onChange}
-          onClear={onClear}
-          columns={panel ? 2 : 1}
-        />
-      )}
+      <FilterSet dimensions={dimensions} value={value} onChange={onChange} words={words} />
     </EditorSurface>
   );
 }
@@ -150,25 +147,13 @@ FilterPanel.Set = FilterSet;
 FilterPanel.countActive = countActiveFilters;
 
 const styles = StyleSheet.create({
-  set: { flexDirection: 'column', gap: theme.spacing['sp-5'], minWidth: 0 },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: theme.spacing['sp-3'],
-    minHeight: theme.spacing['sp-6'],
-  },
-  clear: { paddingHorizontal: 14, marginRight: -14 },
+  set: { flexDirection: 'column', minWidth: 0 },
+  section: { paddingVertical: theme.spacing['sp-5'], minWidth: 0 },
+  first: { paddingTop: 0 },
+  /* A hairline between sections, never a box around one — a section is a heading, not a tile. */
+  parted: { borderTopWidth: 1, borderTopColor: theme.colors['line-soft'] },
+  flags: { flexDirection: 'column', gap: theme.spacing['sp-3'] },
   clearWords: { fontWeight: '500' },
-  gridOne: { flexDirection: 'column', gap: theme.spacing['sp-5'] },
-  gridTwo: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    columnGap: 28,
-    rowGap: theme.spacing['sp-6'],
-  },
-  cellOne: { minWidth: 0 },
-  cellTwo: { flexBasis: '48%', flexGrow: 1, minWidth: 0 },
   footer: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'] },
   footerClear: { paddingHorizontal: theme.spacing['sp-4'], borderRadius: theme.radius['r-pill'] },
   /* A LABELLED DISMISS, never an apply. Primary actions are near-black — accent is never a fill. */

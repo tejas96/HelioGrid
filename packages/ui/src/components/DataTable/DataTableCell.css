@@ -15,6 +15,50 @@
   align-items: flex-end;
 }
 
+/* ── the kind tile before the value and the quiet line under it (D268) ──────── */
+
+/* Tile, then the value over its line: one row of the table, the tile never above the name. */
+.hg-dt-lead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+/* The kind's tile: the iris wash and ink are `.hg-iris`'s (`Avatar.css`), the rule a kind Badge
+   takes. The board's 34px sits between the scale's 32 and 40, so it is named here. */
+.hg-dt-lead-tile {
+  --hg-dt-lead-tile: 34px;
+  width: var(--hg-dt-lead-tile);
+  height: var(--hg-dt-lead-tile);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-sm);
+}
+
+.hg-dt-lead-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Quiet under a bold name: the strong cell's weight and tracking are put back to the caption's. */
+.hg-dt-sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--sp-6);
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  font-weight: var(--fw-regular);
+  letter-spacing: normal;
+  color: var(--text-secondary);
+}
+
 /* A named absence is `NamedGap`'s own treatment — the ring, the sentence and the act that fills it
    — rendered by `renderGap` at the `cell` scale. It was a tertiary-grey span here: the colour of a
    gap and none of its behaviour. */

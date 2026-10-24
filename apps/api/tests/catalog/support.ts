@@ -26,6 +26,7 @@ import { CatalogImportRowsRepository } from '../../src/modules/catalog/catalog.i
 import { CatalogPlatformService } from '../../src/modules/catalog/catalog.platform.service';
 import { CatalogPricesRepository } from '../../src/modules/catalog/catalog.prices.repository';
 import { CatalogRatesRepository } from '../../src/modules/catalog/catalog.rates.repository';
+import { CatalogReleasePreviewRepository } from '../../src/modules/catalog/catalog.release-preview.repository';
 import { CatalogReleaseReadsRepository } from '../../src/modules/catalog/catalog.release-reads.repository';
 import { CatalogReleasesRepository } from '../../src/modules/catalog/catalog.releases.repository';
 import { CatalogReleasesService } from '../../src/modules/catalog/catalog.releases.service';
@@ -64,6 +65,7 @@ export function catalogReleasesServiceOf(pools: Pools): CatalogReleasesService {
   return new CatalogReleasesService(
     new CatalogReleasesRepository(pools.tenants),
     new CatalogReleaseReadsRepository(pools.tenants),
+    new CatalogReleasePreviewRepository(pools.tenants),
     catalogServiceOf(pools),
     new CreationReplies(new PinoLogger({ pinoHttp: { level: 'silent' } })),
   );

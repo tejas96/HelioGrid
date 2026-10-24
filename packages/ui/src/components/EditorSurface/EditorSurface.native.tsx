@@ -117,6 +117,7 @@ export function EditorSurface(props: NativeEditorSurfaceProps) {
           status={status}
           style={style}
           subtitle={subtitle}
+          subtitleFace={subtitleFace}
           title={title}
           width={width}
           zIndex={zIndex}

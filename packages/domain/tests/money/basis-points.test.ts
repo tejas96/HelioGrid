@@ -4,6 +4,7 @@ import {
   basisPoints,
   basisPointsToPercent,
   percentToBasisPoints,
+  percentWireOf,
 } from '../../src/money/basis-points';
 import { minorUnits } from '../../src/money/minor-units';
 
@@ -61,6 +62,27 @@ describe('percentToBasisPoints / basisPointsToPercent — the wire’s two-decim
     'refuses %o',
     (percent) => {
       expect(() => percentToBasisPoints(percent)).toThrow(RangeError);
+    },
+  );
+});
+
+describe("percentWireOf — a typed percent as the wire's two decimals", () => {
+  it.each([
+    ['5', '5.00'],
+    ['5.5', '5.50'],
+    ['5.25', '5.25'],
+    [' 18 ', '18.00'],
+    ['0', '0.00'],
+    ['100', '100.00'],
+    ['18.', '18.00'],
+  ])('writes %j as %j', (typed, wire) => {
+    expect(percentWireOf(typed)).toBe(wire);
+  });
+
+  it.each([['5.255'], ['-1'], ['1000'], ['abc'], ['']])(
+    'leaves %j as typed, for the server to refuse',
+    (typed) => {
+      expect(percentWireOf(typed)).toBe(typed.trim());
     },
   );
 });

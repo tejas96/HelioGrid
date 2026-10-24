@@ -100,6 +100,7 @@ export function NumberFieldBox({
         id={id}
         className="hg-number-field-input"
         data-steppers={steppers}
+        data-currency={currency}
         inputMode="decimal"
         value={draft.draft}
         disabled={disabled}

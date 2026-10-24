@@ -42,6 +42,7 @@ export function DetailPanel({
   title,
   status,
   subtitle,
+  subtitleFace = 'mono',
   overline,
   leading = null,
   meta = null,
@@ -109,6 +110,7 @@ export function DetailPanel({
           showClose={showClose}
           status={status}
           subtitle={subtitle}
+          subtitleFace={subtitleFace}
           title={title}
           titleId={titleId}
         />

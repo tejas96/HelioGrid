@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { OverlayClose } from '../Sheet/OverlayClose';
-import type { OverlayStatus } from '../Sheet/Sheet.types';
+import type { OverlayStatus, OverlaySubtitleFace } from '../Sheet/Sheet.types';
 import { StatusChip } from '../StatusChip/StatusChip';
 
 interface PanelHeaderProps {
@@ -15,6 +15,7 @@ interface PanelHeaderProps {
   status?: OverlayStatus;
   /** Rendered in Geist Mono — job IDs, coordinates, invoice numbers. */
   subtitle?: string;
+  subtitleFace: OverlaySubtitleFace;
   title?: string;
   titleId: string;
 }
@@ -29,6 +30,7 @@ export function PanelHeader({
   showClose,
   status,
   subtitle,
+  subtitleFace,
   title,
   titleId,
 }: PanelHeaderProps) {
@@ -56,7 +58,9 @@ export function PanelHeader({
             </div>
           )}
           {subtitle === undefined ? null : (
-            <div className="hg-detail-panel-subtitle">{subtitle}</div>
+            <div className="hg-detail-panel-subtitle" data-face={subtitleFace}>
+              {subtitle}
+            </div>
           )}
         </div>
       </div>

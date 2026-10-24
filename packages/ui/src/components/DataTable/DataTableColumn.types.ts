@@ -1,8 +1,20 @@
 import type { ReactNode } from 'react';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
+import type { IrisHue } from '../Avatar/Avatar.types';
 import type { FieldOverrideSpec } from '../FieldOverride/FieldOverride.types';
 import type { NamedGapSpec } from '../NamedGap';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { ValueSourceSpec } from '../ValueSource';
+
+/**
+ * **The record's kind, as a tile before its name** (`SCR-M01-15`'s catalogue rows, `D268`): the
+ * glyph on the hue's iris wash, the rule `Avatar` and `Badge` already draw a kind with. The table
+ * draws the tile — its size, radius and tint — so a caller names the kind and never a colour.
+ */
+export interface DataTableLeading {
+  glyph: ShellGlyphName;
+  iris: IrisHue;
+}
 
 export interface DataTableColumn<Row = Record<string, unknown>> {
   key: string;
@@ -24,6 +36,19 @@ export interface DataTableColumn<Row = Record<string, unknown>> {
   sortable?: boolean;
   sortValue?: (row: Row) => string | number;
   render?: (row: Row) => ReactNode;
+  /**
+   * **A tile before the value** — the record's kind (`D268`). The row stays one line: the tile
+   * sits beside the value and its `sub` line, never above them. Return null for a record with no
+   * kind, and no empty box is drawn. It travels with the cell, so the card shows it beside the
+   * title as the row shows it beside the name (`F7-31`).
+   */
+  leading?: (row: Row) => DataTableLeading | null;
+  /**
+   * **A quiet line under the value** — the catalogue's "Panel · 545 Wp" with its datasheet mark
+   * (`D268`): caption face, secondary ink, regular weight under a bold name, its parts in one row
+   * that wraps. A null or absent answer draws nothing.
+   */
+  sub?: (row: Row) => ReactNode;
   /**
    * Provenance for this column's numbers — rendered as a **visible word** in the header and in the
    * stacked card (`F8-07`), with the dot as a second channel only. Takes a bare tier or a full

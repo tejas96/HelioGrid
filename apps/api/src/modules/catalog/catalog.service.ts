@@ -12,7 +12,13 @@ import {
   type ResolvedCatalogItemWire,
   type RoleSet,
 } from '@heliogrid/contracts';
-import { badgedSchemes, can, certificationVerdict, localDate } from '@heliogrid/domain';
+import {
+  badgedSchemes,
+  type CatalogSort,
+  can,
+  certificationVerdict,
+  localDate,
+} from '@heliogrid/domain';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
 import { CreationReplies, creationKeyOf } from '../../common/creation-key';
@@ -62,14 +68,21 @@ export class CatalogService {
     now: number,
   ): Promise<Paginated<ResolvedCatalogItemWire>> {
     const scope = await this.scopeOf(tenantId, now);
-    const { limit, page, q, preferred, archived, ...narrowing } = query;
+    const money = moneyFor(roles, scope);
+    const { limit, page, q, preferred, archived, sort, ...narrowing } = query;
     const { rows, totalCount } = await this.slice.page(
       tenantId,
       scope.marketCode,
-      { ...narrowing, terms: prefixTermsOf(q), preferred, archived: archived ?? false },
+      {
+        ...narrowing,
+        terms: prefixTermsOf(q),
+        preferred,
+        archived: archived ?? false,
+        sort: orderSeenBy(sort, money),
+        moneyVisible: money.visible,
+      },
       { limit, offset: (page - 1) * limit, pricedOn: scope.resolve.pricedOn },
     );
-    const money = moneyFor(roles, scope);
     return {
       items: rows.map((row) => resolvedWire(resolvedOf(row, scope.resolve), money)),
       totalCount,
@@ -242,6 +255,14 @@ export class CatalogService {
       },
     };
   }
+}
+
+/**
+ * An order by price, or by when a price last moved, tells a reader the figures the wire hides
+ * from them (ruling 1A): such a reader gets the preferred order instead.
+ */
+function orderSeenBy(sort: CatalogSort | undefined, money: MoneyView): CatalogSort | undefined {
+  return money.visible || (sort !== 'price' && sort !== 'recent') ? sort : 'preferred';
 }
 
 function moneyFor(roles: RoleSet, scope: Scope): MoneyView {

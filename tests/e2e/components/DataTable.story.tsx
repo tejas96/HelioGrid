@@ -1,4 +1,4 @@
-import { Button, DataTable } from '@heliogrid/ui';
+import { Button, DataTable, Pagination } from '@heliogrid/ui';
 import { useState } from 'react';
 
 /**
@@ -62,6 +62,65 @@ export function OpeningTable({
           </Button>
         )}
         stackBelow={stacked ? Number.MAX_SAFE_INTEGER : 0}
+      />
+    </div>
+  );
+}
+
+/**
+ * A one-record table whose name column has a kind tile before it and a quiet line under it
+ * (`D268`). Both are read while the table renders, so they are bound here, in the browser.
+ */
+export function KindTable({
+  label,
+  value,
+  sub,
+  stacked = false,
+}: {
+  label: string;
+  value: string;
+  sub: string;
+  stacked?: boolean;
+}) {
+  return (
+    <DataTable
+      columns={[
+        {
+          key: 'name',
+          label,
+          primary: true,
+          leading: () => ({ glyph: 'layers', iris: 'violet' }),
+          sub: () => sub,
+        },
+      ]}
+      rows={[{ id: 1, name: value }]}
+      stackBelow={stacked ? Number.MAX_SAFE_INTEGER : 0}
+    />
+  );
+}
+
+/**
+ * `Pagination` on its own, over 45 records in pages of 20; the frame reports the page it is on as
+ * `data-page`. The readout is read while the pager renders, so it is bound here — figures only.
+ */
+export function PagedList({
+  previousLabel,
+  nextLabel,
+}: {
+  previousLabel: string;
+  nextLabel: string;
+}) {
+  const [page, setPage] = useState(0);
+  return (
+    <div data-page={page}>
+      <Pagination
+        page={page}
+        pageSize={20}
+        rowCount={45}
+        onPageChange={setPage}
+        previousLabel={previousLabel}
+        nextLabel={nextLabel}
+        readout={({ from, to, count }) => `${from}–${to} / ${count}`}
       />
     </div>
   );

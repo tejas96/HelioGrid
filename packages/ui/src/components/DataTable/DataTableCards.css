@@ -98,6 +98,11 @@
   gap: var(--sp-3);
 }
 
+/* A title with a kind tile or a quiet line is a block: the figure beside it centres on it. */
+.hg-dt-card-title-row[data-lead="true"] {
+  align-items: center;
+}
+
 .hg-dt-card-title {
   flex: 1;
   min-width: 0;

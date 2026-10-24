@@ -1,0 +1,231 @@
+/* CatalogRates — the price book's panel and one version's body (`SCR-M01-15`, `m15-d`, `d-rates`,
+   `s-versions`, `s-version-open`, `s-version-new`). Tiles take their fill from `Ground`, through
+   `Card`; the panel sizes itself from its own room. */
+
+.hg-cat-rates {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-cat-rates[data-wide="true"] {
+  gap: var(--sp-4);
+}
+
+/* ── the 1536 table's controls ─────────────────────────────────────────────── */
+
+.hg-cat-rates-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+}
+
+.hg-cat-rates-search {
+  flex: 1 1 var(--sp-24);
+  min-width: 0;
+}
+
+.hg-cat-rates-bases {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+/* ── rates grouped by basis ────────────────────────────────────────────────── */
+
+.hg-cat-rate-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-cat-rate-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-cat-rate-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+
+.hg-cat-rate-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-cat-rate-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.hg-cat-rate-row > :first-child {
+  min-width: 0;
+}
+
+.hg-cat-rate-row > :last-child {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── one version ───────────────────────────────────────────────────────────── */
+
+.hg-cat-version {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.hg-cat-version-year {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-cat-version-tile {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-cat-version-number {
+  /* The board's number circle, off the spacing scale. */
+  --hg-cat-version-circle: 36px;
+  flex-shrink: 0;
+  width: var(--hg-cat-version-circle);
+  height: var(--hg-cat-version-circle);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-pill);
+  background: var(--hg-control-fill);
+}
+
+.hg-cat-version-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.hg-cat-version-tile > :last-child {
+  flex-shrink: 0;
+}
+
+.hg-cat-version-more {
+  min-height: var(--sp-1);
+}
+
+.hg-cat-version-stats {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.hg-cat-version-stats > * {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-cat-version-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.hg-cat-version-figure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-cat-version-add {
+  display: flex;
+}
+
+/* A rate of the new version, as s-version-new lists it: the name — the way into the rate sheet —
+   with its *was* under it, and one small money box. The rows sit on the sheet, not in a tile: a
+   tile never holds a field (F7-49). */
+.hg-cat-edit-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hg-cat-edit-row {
+  display: flex;
+  align-items: center;
+  gap: var(--tile-gap);
+}
+
+.hg-cat-edit-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.hg-pressable.hg-cat-edit-name {
+  justify-content: flex-start;
+  text-align: left;
+  background: transparent;
+}
+
+/* Room for *₹18,000* at the field's own size; the board's 92 is drawn at the caption size. */
+.hg-cat-edit-amount {
+  flex-shrink: 0;
+  width: calc(var(--sp-24) + var(--sp-8));
+}
+
+/* The rate sheet's body: three names, the basis, *Remove*. */
+.hg-cat-rate-edit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-cat-rate-edit-remove {
+  display: flex;
+}
+
+.hg-cat-version-was {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-cat-version-struck {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* ── the attribution table (m15-d, 375 only) ──────────────────────────────── */
+
+.hg-cat-attrib {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}

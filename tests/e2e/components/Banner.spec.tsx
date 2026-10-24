@@ -1,8 +1,9 @@
 import { createTranslator, SHELL } from '@heliogrid/i18n';
 import type { BannerForm } from '@heliogrid/ui';
-import { Banner, BannerAction } from '@heliogrid/ui';
+import { Banner, BannerAction, ShellGlyph } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator } from '@playwright/test';
+import { resolvedColour } from '../support/token';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 
 /**
@@ -109,4 +110,23 @@ test('a pill has no action row and reports no form', async ({ mount }) => {
   await screen.getByRole('button', { name: actionWords }).waitFor();
   await widen(screen, 343);
   expect(forms).toEqual([]);
+});
+
+test('the info kind draws the i glyph and no dismiss', async ({ mount, page }) => {
+  const screen = await mount(
+    <div>
+      <Banner kind="info" density="functional" title={title} dismissible onDismiss={() => {}} />
+      <ShellGlyph name="info-circle" />
+    </div>,
+  );
+  const info = screen.getByRole('status');
+  const drawn = await info.locator('svg').first().innerHTML();
+  const glyph = await screen.locator('.hg-shell-glyph').innerHTML();
+
+  /* The design system's own "i" — never the "!" a state banner on the info tone draws (D267). */
+  expect(drawn).toBe(glyph);
+  await expect(info).toHaveCSS('background-color', await resolvedColour(page, '--info-bg'));
+  await expect(info).toHaveCSS('color', await resolvedColour(page, '--info-text'));
+  /* Asked to be dismissible, it still draws no cross: a true fact is not tapped away. */
+  await expect(info.getByRole('button')).toHaveCount(0);
 });

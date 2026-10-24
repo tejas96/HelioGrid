@@ -63,6 +63,16 @@ msgid "{count, plural, =0 {Notifications} one {Notifications, # unread} other {N
 msgstr "{count, plural, =0 {Notifications} one {Notifications, # unread} other {Notifications, # unread}}"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:62
+msgid "{count, plural, one {# archived item} other {# archived items}} · absent from every picker until restored"
+msgstr "{count, plural, one {# archived item} other {# archived items}} · absent from every picker until restored"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:69
+msgid "{count, plural, one {# archived item} other {# archived items}} · in the Archived filter"
+msgstr "{count, plural, one {# archived item} other {# archived items}} · in the Archived filter"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:108
 msgid "{count, plural, one {# ask for a new invite} other {# asks for a new invite}}"
 msgstr "{count, plural, one {# ask for a new invite} other {# asks for a new invite}}"
@@ -88,6 +98,16 @@ msgid "{count, plural, one {# invite declined} other {# invites declined}}"
 msgstr "{count, plural, one {# invite declined} other {# invites declined}}"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:57
+msgid "{count, plural, one {# item} other {# items}} · every kind"
+msgstr "{count, plural, one {# item} other {# items}} · every kind"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:53
+msgid "{count, plural, one {# item} other {# items}} · every kind · preferred first"
+msgstr "{count, plural, one {# item} other {# items}} · every kind · preferred first"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:99
 msgid "{count, plural, one {# lead unassigned for a day} other {# leads unassigned for a day}}"
 msgstr "{count, plural, one {# lead unassigned for a day} other {# leads unassigned for a day}}"
@@ -96,6 +116,11 @@ msgstr "{count, plural, one {# lead unassigned for a day} other {# leads unassig
 #: src/copy/notifications.ts:116
 msgid "{count, plural, one {# notification} other {# notifications}}"
 msgstr "{count, plural, one {# notification} other {# notifications}}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:35
+msgid "{count, plural, one {# open draft keeps it and its price; it leaves every picker until restored.} other {# open drafts keep it and its price; it leaves every picker until restored.}}"
+msgstr "{count, plural, one {# open draft keeps it and its price; it leaves every picker until restored.} other {# open drafts keep it and its price; it leaves every picker until restored.}}"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:98
@@ -108,6 +133,16 @@ msgid "{count, plural, one {# person} other {# people}}"
 msgstr "{count, plural, one {# person} other {# people}}"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:164
+msgid "{count, plural, one {# phase} other {# phases}}"
+msgstr "{count, plural, one {# phase} other {# phases}}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:59
+msgid "{count, plural, one {# platform item} other {# platform items}} · nothing of your own yet"
+msgstr "{count, plural, one {# platform item} other {# platform items}} · nothing of your own yet"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:111
 msgid "{count, plural, one {# product update} other {# product updates}}"
 msgstr "{count, plural, one {# product update} other {# product updates}}"
@@ -116,6 +151,11 @@ msgstr "{count, plural, one {# product update} other {# product updates}}"
 #: src/copy/notifications.ts:80
 msgid "{count, plural, one {# proposal opened} other {# proposals opened}}"
 msgstr "{count, plural, one {# proposal opened} other {# proposals opened}}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:61
+msgid "{count, plural, one {# release} other {# releases}} · newest first"
+msgstr "{count, plural, one {# release} other {# releases}} · newest first"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:102
@@ -138,14 +178,54 @@ msgid "{count, plural, one {Mark the # unread notification read} other {Mark all
 msgstr "{count, plural, one {Mark the # unread notification read} other {Mark all # unread notifications read}}"
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:39
+msgid "{count, plural, one {Price book · # version} other {Price book · # versions}}"
+msgstr "{count, plural, one {Price book · # version} other {Price book · # versions}}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-words.ts:57
+msgid "{count, plural, one {Show # item} other {Show # items}}"
+msgstr "{count, plural, one {Show # item} other {Show # items}}"
+
+#. js-lingui-explicit-id
+#: src/copy/filter-panel.ts:18
+msgid "{count, plural, one {Show # result} other {Show # results}}"
+msgstr "{count, plural, one {Show # result} other {Show # results}}"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:31
+msgid "{count}"
+msgstr "{count}"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:41
 msgid "{count} marked read"
 msgstr "{count} marked read"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:163
+msgid "{count} MPPT"
+msgstr "{count} MPPT"
+
+#. js-lingui-explicit-id
+#: src/copy/filter-panel.ts:14
+msgid "{count} on"
+msgstr "{count} on"
+
+#. js-lingui-explicit-id
+#: src/copy/filter-panel.ts:13
+msgid "{count} selected"
+msgstr "{count} selected"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:32
 msgid "{count} unread"
 msgstr "{count} unread"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:43
+msgid "{date} · {name}"
+msgstr "{date} · {name}"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:55
@@ -178,6 +258,11 @@ msgid "{first} loses access to {company}. Everything {first} did stays in {first
 msgstr "{first} loses access to {company}. Everything {first} did stays in {first}’s name."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:49
+msgid "{first} or {second}"
+msgstr "{first} or {second}"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:29
 msgid "{first} or {second} (owners)"
 msgstr "{first} or {second} (owners)"
@@ -196,6 +281,11 @@ msgstr "{first} typed this when inviting you — change it if you like."
 #: src/copy/role-card.ts:30
 msgid "{first}, {second} or {more} more (owners)"
 msgstr "{first}, {second} or {more} more (owners)"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:72
+msgid "{from}–{to} of {count}"
+msgstr "{from}–{to} of {count}"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:36
@@ -283,6 +373,11 @@ msgid "{name} can {list}."
 msgstr "{name} can {list}."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:43
+msgid "{name} couldn't be restored. It is still archived — restore it from the Archived filter."
+msgstr "{name} couldn't be restored. It is still archived — restore it from the Archived filter."
+
+#. js-lingui-explicit-id
 #: src/copy/team-acts.ts:34
 msgid "{name} deactivated"
 msgstr "{name} deactivated"
@@ -306,6 +401,16 @@ msgstr "{name} stopped being an EPC Owner on another device."
 #: src/copy/assign-roles.ts:30
 msgid "{name} would hold no presets."
 msgstr "{name} would hold no presets."
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:52
+msgid "{name}, {price}"
+msgstr "{name}, {price}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:51
+msgid "{name}, no price set"
+msgstr "{name}, no price set"
 
 #. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:39
@@ -353,6 +458,16 @@ msgid "{role} · {company}"
 msgstr "{role} · {company}"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:58
+msgid "{shown} of {count} items match"
+msgstr "{shown} of {count} items match"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:56
+msgid "{shown} of {count} items match · preferred first"
+msgstr "{shown} of {count} items match · preferred first"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:53
 msgid "{step} of {total}"
 msgstr "{step} of {total}"
@@ -398,6 +513,11 @@ msgid "{width} px wide · needs at least {minWidth} px"
 msgstr "{width} px wide · needs at least {minWidth} px"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:165
+msgid "1 panel"
+msgstr "1 panel"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:150
 msgid "A city is needed — it is where your company is based."
 msgstr "A city is needed — it is where your company is based."
@@ -411,6 +531,11 @@ msgstr "A code lasts {codeMinutes} minutes"
 #: src/copy/company-signup.ts:146
 msgid "A company name is needed — it goes on every proposal you send."
 msgstr "A company name is needed — it goes on every proposal you send."
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:15
+msgid "A field you leave unset falls through: tax to the market rate, pickers and ranking to their defaults."
+msgstr "A field you leave unset falls through: tax to the market rate, pickers and ranking to their defaults."
 
 #. js-lingui-explicit-id
 #: src/copy/setup-ready.ts:12
@@ -433,7 +558,13 @@ msgid "A photo helps teammates recognise you."
 msgstr "A photo helps teammates recognise you."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:12
+msgid "A platform item's price comes from your override and nowhere else; the platform list carries none."
+msgstr "A platform item's price comes from your override and nowhere else; the platform list carries none."
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:74
+#: src/copy/catalog-editor.ts:55
 msgid "A release already has this name. Choose another name."
 msgstr "A release already has this name. Choose another name."
 
@@ -519,6 +650,7 @@ msgid "Account number"
 msgstr "Account number"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:91
 #: src/copy/team-acts.ts:19
 msgid "Actions"
 msgstr "Actions"
@@ -549,6 +681,11 @@ msgid "Add a photo"
 msgstr "Add a photo"
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:54
+msgid "Add a rate"
+msgstr "Add a rate"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:47
 #: src/copy/role-matrix.ts:16
 msgid "Add and edit leads"
@@ -570,11 +707,17 @@ msgid "Add the size you sell most often."
 msgstr "Add the size you sell most often."
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:36
+msgid "Add your first rate"
+msgstr "Add your first rate"
+
+#. js-lingui-explicit-id
 #: src/copy/company-logo.ts:17
 msgid "Add your logo"
 msgstr "Add your logo"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:81
 #: src/copy/company-profile.ts:81
 msgid "Added"
 msgstr "Added"
@@ -595,6 +738,8 @@ msgid "Agent & voice"
 msgstr "Agent & voice"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:27
+#: src/copy/price-book.ts:26
 #: src/copy/role-matrix.ts:100
 #: src/copy/team.ts:11
 msgid "All"
@@ -621,6 +766,16 @@ msgid "Always sent, and it cannot be muted: billing events are audit-relevant fo
 msgstr "Always sent, and it cannot be muted: billing events are audit-relevant for the owner account."
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:29
+msgid "Amount"
+msgstr "Amount"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:59
+msgid "Amount, {name}"
+msgstr "Amount, {name}"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:61
 msgid "An invite already went to this number and is still open."
 msgstr "An invite already went to this number and is still open."
@@ -639,6 +794,11 @@ msgstr "Anjali Kulkarni"
 #: src/copy/company-profile.ts:82
 msgid "Answered"
 msgstr "Answered"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-words.ts:48
+msgid "Any"
+msgstr "Any"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:48
@@ -669,6 +829,43 @@ msgstr "Approve or decline a leave request"
 #: src/copy/role-matrix.ts:39
 msgid "Approve spend-adjacent campaign settings"
 msgstr "Approve spend-adjacent campaign settings"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:40
+#: src/copy/catalog-views.ts:136
+msgid "Archive"
+msgstr "Archive"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:46
+msgid "Archive {name}"
+msgstr "Archive {name}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:34
+msgid "Archive {name}?"
+msgstr "Archive {name}?"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:38
+msgid "Archive it"
+msgstr "Archive it"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:83
+#: src/copy/catalog-views.ts:83
+msgid "Archived"
+msgstr "Archived"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:40
+msgid "Archived {name}"
+msgstr "Archived {name}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-words.ts:52
+msgid "Archived items instead"
+msgstr "Archived items instead"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:48
@@ -727,6 +924,7 @@ msgid "Back to assign roles"
 msgstr "Back to assign roles"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:15
 #: src/copy/settings.ts:20
 msgid "Back to settings"
 msgstr "Back to settings"
@@ -735,6 +933,11 @@ msgstr "Back to settings"
 #: src/copy/notifications.ts:59
 msgid "Back to the list"
 msgstr "Back to the list"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:46
+msgid "Back to versions"
+msgstr "Back to versions"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:60
@@ -750,6 +953,21 @@ msgstr "Bank details"
 #: src/copy/company-profile.ts:28
 msgid "Bank name"
 msgstr "Bank name"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:135
+msgid "Batteries"
+msgstr "Batteries"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:127
+msgid "Battery"
+msgstr "Battery"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:143
+msgid "Bifacial"
+msgstr "Bifacial"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:71
@@ -854,7 +1072,9 @@ msgid "Can’t · {count}"
 msgstr "Can’t · {count}"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:29
 #: src/copy/invite.ts:46
+#: src/copy/price-book.ts:73
 #: src/copy/team-acts.ts:21
 msgid "Cancel"
 msgstr "Cancel"
@@ -880,9 +1100,35 @@ msgid "catalog"
 msgstr "catalog"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:14
 #: src/copy/settings.ts:40
 msgid "Catalog"
 msgstr "Catalog"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:65
+msgid "Catalog — archived hidden"
+msgstr "Catalog — archived hidden"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:67
+msgid "Catalog — archived only"
+msgstr "Catalog — archived only"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:68
+msgid "Catalog — filtered"
+msgstr "Catalog — filtered"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:66
+msgid "Catalog — the platform market slice"
+msgstr "Catalog — the platform market slice"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-words.ts:50
+msgid "Certification scheme"
+msgstr "Certification scheme"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:35
@@ -915,9 +1161,20 @@ msgid "Change the price list"
 msgstr "Change the price list"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:82
+#: src/copy/price-book.ts:67
+msgid "Changed"
+msgstr "Changed"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:86
 msgid "Changed your mind, or it is not the same company?"
 msgstr "Changed your mind, or it is not the same company?"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:28
+msgid "Charged"
+msgstr "Charged"
 
 #. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:63
@@ -960,15 +1217,32 @@ msgid "City"
 msgstr "City"
 
 #. js-lingui-explicit-id
+#: src/copy/filter-panel.ts:15
+msgid "Clear all"
+msgstr "Clear all"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:20
+msgid "Clear it and this item has no price."
+msgstr "Clear it and this item has no price."
+
+#. js-lingui-explicit-id
 #: src/copy/team.ts:17
 msgid "Clear search"
 msgstr "Clear search"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:33
+#: src/copy/price-book.ts:74
 #: src/copy/roles-reference.ts:40
 #: src/copy/shell.ts:51
 msgid "Close"
 msgstr "Close"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:90
+msgid "Close filters"
+msgstr "Close filters"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:26
@@ -1009,6 +1283,16 @@ msgstr "Company name"
 #: src/copy/sign-in.ts:71
 msgid "company setup"
 msgstr "company setup"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:32
+msgid "Compliance"
+msgstr "Compliance"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:26
+msgid "Component kind"
+msgstr "Component kind"
 
 #. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:11
@@ -1262,9 +1546,19 @@ msgid "Decline this invite?"
 msgstr "Decline this invite?"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:25
+msgid "Default"
+msgstr "Default"
+
+#. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:35
 msgid "Default for {market}"
 msgstr "Default for {market}"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:47
+msgid "Default margin"
+msgstr "Default margin"
 
 #. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:69
@@ -1314,11 +1608,22 @@ msgid "Designs and proposals for the leads assigned to them, and design sign-off
 msgstr "Designs and proposals for the leads assigned to them, and design sign-off"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:52
+msgid "Designs pinned to {label} will show as out of date. Their count is not available yet."
+msgstr "Designs pinned to {label} will show as out of date. Their count is not available yet."
+
+#. js-lingui-explicit-id
 #: src/copy/role-presets.ts:54
 msgid "Designs, proposals and design sign-off"
 msgstr "Designs, proposals and design sign-off"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:89
+msgid "Dismiss"
+msgstr "Dismiss"
+
+#. js-lingui-explicit-id
+#: src/copy/filter-panel.ts:16
 #: src/copy/name-and-photo-editor.ts:15
 msgid "Done"
 msgstr "Done"
@@ -1329,9 +1634,24 @@ msgid "Each invite counts for 24 hours from when it was sent."
 msgstr "Each invite counts for 24 hours from when it was sent."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:66
+msgid "Earlier releases"
+msgstr "Earlier releases"
+
+#. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:26
 msgid "Edit name"
 msgstr "Edit name"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-words.ts:233
+msgid "Edited"
+msgstr "Edited"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:33
+msgid "Effective price"
+msgstr "Effective price"
 
 #. js-lingui-explicit-id
 #: src/copy/role-presets.ts:58
@@ -1442,6 +1762,12 @@ msgstr "Filled from the SMS — check it, or type over it."
 #: src/copy/notifications.ts:27
 msgid "Filter notifications"
 msgstr "Filter notifications"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:25
+#: src/copy/filter-panel.ts:9
+msgid "Filters"
+msgstr "Filters"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:78
@@ -1641,9 +1967,40 @@ msgid "HelioGrid's answer could not be read. If you were saving, check whether i
 msgstr "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:72
+#: src/copy/catalog-settings.ts:38
+msgid "Hidden"
+msgstr "Hidden"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:47
+msgid "Hidden from pickers"
+msgstr "Hidden from pickers"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:39
+msgid "Hide"
+msgstr "Hide"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:44
+msgid "Hide {name} from pickers"
+msgstr "Hide {name} from pickers"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:27
+msgid "Hide from pickers"
+msgstr "Hide from pickers"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:34
 msgid "Hide these {count}"
 msgstr "Hide these {count}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:145
+msgid "HJT"
+msgstr "HJT"
 
 #. js-lingui-explicit-id
 #: src/copy/roles-reference.ts:32
@@ -1666,9 +2023,24 @@ msgid "Homes and individual rooftops, sold to the owner living under the system.
 msgstr "Homes and individual rooftops, sold to the owner living under the system."
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:60
+msgid "How {name} is charged"
+msgstr "How {name} is charged"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:90
 msgid "How linking works"
 msgstr "How linking works"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:25
+msgid "How the rate is charged"
+msgstr "How the rate is charged"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:11
+msgid "How these fields resolve"
+msgstr "How these fields resolve"
 
 #. js-lingui-explicit-id
 #: src/copy/first-run-profile.ts:21
@@ -1701,6 +2073,22 @@ msgid "If you've signed in with Google before, it still works."
 msgstr "If you've signed in with Google before, it still works."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:64
+#: src/copy/price-book.ts:44
+msgid "In force"
+msgstr "In force"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:65
+msgid "In force since {date}"
+msgstr "In force since {date}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:26
+msgid "In search and pickers"
+msgstr "In search and pickers"
+
+#. js-lingui-explicit-id
 #: src/copy/disclosure.ts:26
 msgid "Indicative"
 msgstr "Indicative"
@@ -1724,6 +2112,16 @@ msgstr "Installation Team Member"
 #: src/copy/homes.ts:22
 msgid "Installer Job Home"
 msgstr "Installer Job Home"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:126
+msgid "Inverter"
+msgstr "Inverter"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:134
+msgid "Inverters"
+msgstr "Inverters"
 
 #. js-lingui-explicit-id
 #: src/copy/team-acts.ts:15
@@ -1776,6 +2174,11 @@ msgid "Inviting {first} again sends a new link."
 msgstr "Inviting {first} again sends a new link."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:41
+msgid "It has left every picker."
+msgstr "It has left every picker."
+
+#. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:51
 msgid "It may already have been used, or taken back by the person who sent it."
 msgstr "It may already have been used, or taken back by the person who sent it."
@@ -1791,14 +2194,44 @@ msgid "It’s just you so far"
 msgstr "It’s just you so far"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:30
+msgid "Item"
+msgstr "Item"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-words.ts:53
+msgid "items"
+msgstr "items"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:16
+msgid "Items"
+msgstr "Items"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:102
+msgid "Its price is unchanged."
+msgstr "Its price is unchanged."
+
+#. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:42
 msgid "Join {company}"
 msgstr "Join {company}"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:39
+msgid "Keep it"
+msgstr "Keep it"
+
+#. js-lingui-explicit-id
 #: src/copy/invite-decline.ts:17
 msgid "Keep the invite"
 msgstr "Keep the invite"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-words.ts:44
+msgid "kinds"
+msgstr "kinds"
 
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:30
@@ -1822,9 +2255,19 @@ msgid "Last set by {name}"
 msgstr "Last set by {name}"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:50
+msgid "Layer, spec data and compliance"
+msgstr "Layer, spec data and compliance"
+
+#. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:15
 msgid "Lead visibility scope"
 msgstr "Lead visibility scope"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:151
+msgid "lead-acid"
+msgstr "lead-acid"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:90
@@ -1832,9 +2275,19 @@ msgid "Leads"
 msgstr "Leads"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:149
+msgid "LFP"
+msgstr "LFP"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:103
 msgid "Links {email}"
 msgstr "Links {email}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:19
+msgid "Live since {date}"
+msgstr "Live since {date}"
 
 #. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:38
@@ -1847,9 +2300,29 @@ msgid "Loading how many people hold {role}"
 msgstr "Loading how many people hold {role}"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:83
+msgid "Loading the catalog"
+msgstr "Loading the catalog"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:81
+msgid "Loading the catalog release"
+msgstr "Loading the catalog release"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:82
+msgid "Loading the component kinds"
+msgstr "Loading the component kinds"
+
+#. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:28
 msgid "Loading the invite"
 msgstr "Loading the invite"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:137
+msgid "Loading the price book"
+msgstr "Loading the price book"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:27
@@ -1892,6 +2365,11 @@ msgid "Main"
 msgstr "Main"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:75
+msgid "Make it yours"
+msgstr "Make it yours"
+
+#. js-lingui-explicit-id
 #: src/copy/team-acts.ts:33
 msgid "Make someone else an EPC Owner first"
 msgstr "Make someone else an EPC Owner first"
@@ -1915,6 +2393,11 @@ msgstr "Manage the company’s platform billing"
 #: src/copy/role-card.ts:67
 msgid "Manage the plan and billing"
 msgstr "Manage the plan and billing"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:20
+msgid "Margin {margin} · since {date}"
+msgstr "Margin {margin} · since {date}"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:51
@@ -1963,6 +2446,16 @@ msgid "Metres"
 msgstr "Metres"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:128
+msgid "Micro-inverter"
+msgstr "Micro-inverter"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:136
+msgid "Micro-inverters"
+msgstr "Micro-inverters"
+
+#. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:90
 msgid "Mint, label and re-mint a customer link for a named contact"
 msgstr "Mint, label and re-mint a customer link for a named contact"
@@ -1977,6 +2470,11 @@ msgstr "Mobile number"
 #: src/copy/settings.ts:29
 msgid "Money"
 msgstr "Money"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:141
+msgid "Mono PERC"
+msgstr "Mono PERC"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:95
@@ -2005,6 +2503,11 @@ msgid "My Visits Today"
 msgstr "My Visits Today"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:156
+msgid "Name"
+msgstr "Name"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:78
 msgid "Name only"
 msgstr "Name only"
@@ -2020,15 +2523,50 @@ msgid "Needs a PNG or JPG"
 msgstr "Needs a PNG or JPG"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:67
+msgid "New"
+msgstr "New"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:15
 msgid "New company on HelioGrid?"
 msgstr "New company on HelioGrid?"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:65
+msgid "New rate"
+msgstr "New rate"
 
 #. js-lingui-explicit-id
 #: src/copy/explainer.ts:6
 #: src/copy/shell.ts:52
 msgid "Next"
 msgstr "Next"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:74
+msgid "Next page"
+msgstr "Next page"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:150
+msgid "NMC"
+msgstr "NMC"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:70
+msgid "No"
+msgstr "No"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:58
+msgid "No {language} name yet — English shows in its place."
+msgstr "No {language} name yet — English shows in its place."
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:48
+msgid "No {schemes} flag recorded"
+msgstr "No {schemes} flag recorded"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:70
@@ -2039,6 +2577,16 @@ msgstr "No company was made yet — carry on from here."
 #: src/copy/team.ts:41
 msgid "No expired invites"
 msgstr "No expired invites"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:22
+msgid "No market rate yet"
+msgstr "No market rate yet"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:23
+msgid "No market rate yet. Your {rate} stays until one is set."
+msgstr "No market rate yet. Your {rate} stays until one is set."
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:58
@@ -2066,9 +2614,39 @@ msgid "No open invites"
 msgstr "No open invites"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:35
+msgid "No price set"
+msgstr "No price set"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:37
+msgid "No rate matches."
+msgstr "No rate matches."
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:32
+msgid "No rates yet"
+msgstr "No rates yet"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:21
+msgid "No release published yet"
+msgstr "No release published yet"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:22
+msgid "No version yet"
+msgstr "No version yet"
+
+#. js-lingui-explicit-id
 #: src/copy/roles-reference.ts:34
 msgid "Nobody holds this yet"
 msgstr "Nobody holds this yet"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:68
+msgid "None"
+msgstr "None"
 
 #. js-lingui-explicit-id
 #: src/copy/disclosure.ts:28
@@ -2154,6 +2732,16 @@ msgstr "Nothing changed. Try again in a moment."
 #: src/copy/company-signup.ts:19
 msgid "Nothing else is asked for here — no tax registration, logo, price book, team or card. Those come later, inside the product."
 msgstr "Nothing else is asked for here — no tax registration, logo, price book, team or card. Those come later, inside the product."
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:85
+msgid "Nothing has changed — your items, your overrides and the price book are exactly as you left them, and nothing has been published or archived."
+msgstr "Nothing has changed — your items, your overrides and the price book are exactly as you left them, and nothing has been published or archived."
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:56
+msgid "Nothing has changed since the last release, so there is nothing to publish."
+msgstr "Nothing has changed since the last release, so there is nothing to publish."
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:47
@@ -2296,6 +2884,16 @@ msgid "Operations Home"
 msgstr "Operations Home"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:129
+msgid "Optimiser"
+msgstr "Optimiser"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:137
+msgid "Optimisers"
+msgstr "Optimisers"
+
+#. js-lingui-explicit-id
 #: src/copy/first-run-profile.ts:42
 msgid "Optional — without one, your initials show."
 msgstr "Optional — without one, your initials show."
@@ -2319,6 +2917,11 @@ msgstr "Our end, not yours · nothing is lost"
 #: src/copy/freshness.ts:14
 msgid "Out of date: {changes} changed"
 msgstr "Out of date: {changes} changed"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:108
+msgid "Overridden"
+msgstr "Overridden"
 
 #. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:47
@@ -2377,6 +2980,31 @@ msgid "Owner Dashboard"
 msgstr "Owner Dashboard"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:125
+msgid "Panel"
+msgstr "Panel"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-words.ts:49
+msgid "Panel specs"
+msgstr "Panel specs"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:133
+msgid "Panels"
+msgstr "Panels"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:20
+msgid "past releases"
+msgstr "past releases"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:21
+msgid "past versions"
+msgstr "past versions"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:27
 msgid "Paused for"
 msgstr "Paused for"
@@ -2412,6 +3040,26 @@ msgid "People Today"
 msgstr "People Today"
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:83
+msgid "Per job"
+msgstr "Per job"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:84
+msgid "Per kW"
+msgstr "Per kW"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:86
+msgid "Per metre"
+msgstr "Per metre"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:85
+msgid "Per visit"
+msgstr "Per visit"
+
+#. js-lingui-explicit-id
 #: src/copy/team.ts:25
 msgid "Person"
 msgstr "Person"
@@ -2427,14 +3075,36 @@ msgid "Pick the one that describes your work."
 msgstr "Pick the one that describes your work."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:73
+msgid "Pickers"
+msgstr "Pickers"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:20
 msgid "PIN code"
 msgstr "PIN code"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:106
+#: src/copy/catalog-settings.ts:113
+#: src/copy/catalog-words.ts:42
+msgid "Platform"
+msgstr "Platform"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:9
+msgid "Platform item"
+msgstr "Platform item"
+
+#. js-lingui-explicit-id
 #: src/copy/company-logo.ts:22
 msgid "PNG or JPG, up to {maxMegabytes} MB, at least {minWidth} px wide"
 msgstr "PNG or JPG, up to {maxMegabytes} MB, at least {minWidth} px wide"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:144
+msgid "Poly"
+msgstr "Poly"
 
 #. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:104
@@ -2447,6 +3117,37 @@ msgid "Portfolio deals (read)"
 msgstr "Portfolio deals (read)"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:37
+msgid "Prefer"
+msgstr "Prefer"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:42
+msgid "Prefer {name}"
+msgstr "Prefer {name}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:74
+#: src/copy/catalog-settings.ts:36
+msgid "Preferred"
+msgstr "Preferred"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:155
+msgid "Preferred first"
+msgstr "Preferred first"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:28
+msgid "Preferred in search and pickers"
+msgstr "Preferred in search and pickers"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-words.ts:51
+msgid "Preferred items only"
+msgstr "Preferred items only"
+
+#. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:25
 msgid "Presets"
 msgstr "Presets"
@@ -2457,9 +3158,30 @@ msgid "Press Save to try again."
 msgstr "Press Save to try again."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:73
+msgid "Previous page"
+msgstr "Previous page"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:19
+#: src/copy/catalog-settings.ts:157
+msgid "Price"
+msgstr "Price"
+
+#. js-lingui-explicit-id
 #: src/copy/freshness.ts:26
 msgid "price book"
 msgstr "price book"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:16
+msgid "Price book"
+msgstr "Price book"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:34
+msgid "Price comes from"
+msgstr "Price comes from"
 
 #. js-lingui-explicit-id
 #: src/copy/disclosure.ts:29
@@ -2517,9 +3239,24 @@ msgid "Proposals"
 msgstr "Proposals"
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:33
+msgid "Proposals price only hardware until you add rates. Your first set becomes version 1."
+msgstr "Proposals price only hardware until you add rates. Your first set becomes version 1."
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:25
 msgid "Provisional"
 msgstr "Provisional"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:22
+msgid "Publish"
+msgstr "Publish"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:47
+msgid "Publish a new release"
+msgstr "Publish a new release"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:45
@@ -2537,6 +3274,32 @@ msgid "Rajesh Kulkarni"
 msgstr "Rajesh Kulkarni"
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:27
+msgid "Rate"
+msgstr "Rate"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:56
+msgid "Rate name"
+msgstr "Rate name"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:57
+msgid "Rate name in {language}"
+msgstr "Rate name in {language}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:17
+#: src/copy/price-book.ts:48
+msgid "Rates"
+msgstr "Rates"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:30
+msgid "Rates in force"
+msgstr "Rates in force"
+
+#. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:116
 msgid "Read (results)"
 msgstr "Read (results)"
@@ -2552,6 +3315,11 @@ msgid "Read others’ attendance records"
 msgstr "Read others’ attendance records"
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:45
+msgid "Read-only"
+msgstr "Read-only"
+
+#. js-lingui-explicit-id
 #: src/copy/energy-source.ts:10
 msgid "Real · PVGIS ({database})"
 msgstr "Real · PVGIS ({database})"
@@ -2560,6 +3328,11 @@ msgstr "Real · PVGIS ({database})"
 #: src/copy/freshness.ts:15
 msgid "Recalculating"
 msgstr "Recalculating"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:158
+msgid "Recently changed"
+msgstr "Recently changed"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:60
@@ -2577,6 +3350,21 @@ msgid "Record payments, attach receipts, read any project’s money, and see cat
 msgstr "Record payments, attach receipts, read any project’s money, and see catalog prices and margins"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:18
+msgid "Release"
+msgstr "Release"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:50
+msgid "Release name"
+msgstr "Release name"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:60
+msgid "Releases"
+msgstr "Releases"
+
+#. js-lingui-explicit-id
 #: src/copy/first-run-profile.ts:41
 msgid "Remove"
 msgstr "Remove"
@@ -2585,6 +3373,11 @@ msgstr "Remove"
 #: src/copy/remove-roles.ts:21
 msgid "Remove {list} from {first}?"
 msgstr "Remove {list} from {first}?"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:61
+msgid "Remove {name}"
+msgstr "Remove {name}"
 
 #. js-lingui-explicit-id
 #: src/copy/first-run-profile.ts:44
@@ -2617,9 +3410,19 @@ msgid "Replace"
 msgstr "Replace"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:48
+msgid "Replaces {label} for every new proposal."
+msgstr "Replaces {label} for every new proposal."
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:26
 msgid "Reported"
 msgstr "Reported"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:121
+msgid "Representative data"
+msgstr "Representative data"
 
 #. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:76
@@ -2660,6 +3463,17 @@ msgstr "Residential"
 #: src/copy/role-matrix.ts:45
 msgid "Resolve or waive a remote-survey gap"
 msgstr "Resolve or waive a remote-survey gap"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:41
+#: src/copy/catalog-views.ts:137
+msgid "Restore"
+msgstr "Restore"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:46
+msgid "Restored {name}"
+msgstr "Restored {name}"
 
 #. js-lingui-explicit-id
 #: src/copy/team-acts.ts:27
@@ -2771,6 +3585,11 @@ msgid "Save and continue"
 msgstr "Save and continue"
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:72
+msgid "Save as version {number}"
+msgstr "Save as version {number}"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:41
 msgid "Save changes"
 msgstr "Save changes"
@@ -2779,6 +3598,16 @@ msgstr "Save changes"
 #: src/copy/company-profile.ts:42
 msgid "Save changes to your business profile"
 msgstr "Save changes to your business profile"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:30
+msgid "Save override"
+msgstr "Save override"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:31
+msgid "Save price"
+msgstr "Save price"
 
 #. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:31
@@ -2801,6 +3630,11 @@ msgid "Saves both; you can change them in your company profile."
 msgstr "Saves both; you can change them in your company profile."
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:53
+msgid "Say what changed to save this version."
+msgstr "Say what changed to save this version."
+
+#. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:42
 msgid "Schedule, reassign and cancel site-survey visits"
 msgstr "Schedule, reassign and cancel site-survey visits"
@@ -2809,6 +3643,21 @@ msgstr "Schedule, reassign and cancel site-survey visits"
 #: src/copy/shell.ts:21
 msgid "Search"
 msgstr "Search"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:23
+msgid "Search brand, model or SKU"
+msgstr "Search brand, model or SKU"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:24
+msgid "Search rates"
+msgstr "Search rates"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:24
+msgid "Search the catalog"
+msgstr "Search the catalog"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-ready.ts:14
@@ -2947,14 +3796,50 @@ msgid "Settings"
 msgstr "Settings"
 
 #. js-lingui-explicit-id
+#: src/copy/filter-panel.ts:10
 #: src/copy/roles-reference.ts:35
 msgid "Show"
 msgstr "Show"
 
 #. js-lingui-explicit-id
+#: src/copy/filter-panel.ts:17
+msgid "Show {count} {noun}"
+msgstr "Show {count} {noun}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:45
+msgid "Show {name} in pickers"
+msgstr "Show {name} in pickers"
+
+#. js-lingui-explicit-id
 #: src/copy/team.ts:18
 msgid "Show all"
 msgstr "Show all"
+
+#. js-lingui-explicit-id
+#: src/copy/filter-panel.ts:12
+msgid "Show all {count}"
+msgstr "Show all {count}"
+
+#. js-lingui-explicit-id
+#: src/copy/filter-panel.ts:11
+msgid "Show all {count} {noun}"
+msgstr "Show all {count} {noun}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:51
+msgid "Show more changes"
+msgstr "Show more changes"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:92
+msgid "Show more items"
+msgstr "Show more items"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:55
+msgid "Show more versions"
+msgstr "Show more versions"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:36
@@ -2970,6 +3855,11 @@ msgstr "Show older matches"
 #: src/copy/notifications.ts:33
 msgid "Show these {count}"
 msgstr "Show these {count}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:71
+msgid "Shown"
+msgstr "Shown"
 
 #. js-lingui-explicit-id
 #: src/copy/authored-content.ts:13
@@ -3092,6 +3982,21 @@ msgid "Something went wrong on our side. Try again."
 msgstr "Something went wrong on our side. Try again."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:28
+msgid "Sort"
+msgstr "Sort"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:29
+msgid "Sort: {order}"
+msgstr "Sort: {order}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-words.ts:41
+msgid "Source"
+msgstr "Source"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:117
 msgid "Start a survey from your home"
 msgstr "Start a survey from your home"
@@ -3102,9 +4007,19 @@ msgid "Start survey"
 msgstr "Start survey"
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:23
+msgid "Start version {number}"
+msgstr "Start version {number}"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-ready.ts:11
 msgid "Start with a real lead"
 msgstr "Start with a real lead"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:49
+msgid "Starts from version {number}"
+msgstr "Starts from version {number}"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:10
@@ -3122,9 +4037,19 @@ msgid "Still no answer from HelioGrid."
 msgstr "Still no answer from HelioGrid."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:43
+msgid "Stop preferring {name}"
+msgstr "Stop preferring {name}"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:18
 msgid "Street address"
 msgstr "Street address"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:162
+msgid "string"
+msgstr "string"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:32
@@ -3182,6 +4107,11 @@ msgid "Tap to choose a file"
 msgstr "Tap to choose a file"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:21
+msgid "Tax rate"
+msgstr "Tax rate"
+
+#. js-lingui-explicit-id
 #: src/copy/freshness.ts:31
 msgid "tax rates"
 msgstr "tax rates"
@@ -3204,6 +4134,16 @@ msgid "Team-scoped"
 msgstr "Team-scoped"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-words.ts:47
+msgid "technologies"
+msgstr "technologies"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-words.ts:46
+msgid "Technology"
+msgstr "Technology"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:38
 msgid "That change isn't allowed here."
 msgstr "That change isn't allowed here."
@@ -3222,6 +4162,16 @@ msgstr "That code has expired"
 #: src/copy/sign-in.ts:48
 msgid "That code is used up"
 msgstr "That code is used up"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:93
+msgid "That didn't save — the catalog service didn't answer. {still}"
+msgstr "That didn't save — the catalog service didn't answer. {still}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:32
+msgid "That didn't save. Nothing changed — try again."
+msgstr "That didn't save. Nothing changed — try again."
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:71
@@ -3279,6 +4229,11 @@ msgid "The call did not go through"
 msgstr "The call did not go through"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:84
+msgid "The catalog didn't load"
+msgstr "The catalog didn't load"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:38
 msgid "The centre keeps the last {days} days. It is an inbox, not an archive — each of these facts also lives on its own record’s timeline, for good."
 msgstr "The centre keeps the last {days} days. It is an inbox, not an archive — each of these facts also lives on its own record’s timeline, for good."
@@ -3329,14 +4284,59 @@ msgid "The invite works for {days, plural, one {# day} other {# days}}"
 msgstr "The invite works for {days, plural, one {# day} other {# days}}"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:101
+msgid "The item is still archived."
+msgstr "The item is still archived."
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:97
+msgid "The item is still hidden from pickers."
+msgstr "The item is still hidden from pickers."
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:96
+msgid "The item is still in every picker."
+msgstr "The item is still in every picker."
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:100
+msgid "The item is still in the list."
+msgstr "The item is still in the list."
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:99
+msgid "The item is still not preferred."
+msgstr "The item is still not preferred."
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:98
+msgid "The item is still preferred."
+msgstr "The item is still preferred."
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:63
+msgid "the new rate"
+msgstr "the new rate"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:53
 msgid "The phone network turned it away"
 msgstr "The phone network turned it away"
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:77
+msgid "The price book didn't load."
+msgstr "The price book didn't load."
+
+#. js-lingui-explicit-id
 #: src/copy/disclosure.ts:10
 msgid "The prices and the subsidy in this document were current on the issue date. Both change, so confirm them before you pay."
 msgstr "The prices and the subsidy in this document were current on the issue date. Both change, so confirm them before you pay."
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:59
+msgid "The release wasn't published. Nothing changed — try again."
+msgstr "The release wasn't published. Nothing changed — try again."
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:36
@@ -3367,6 +4367,11 @@ msgstr "The team’s leads, proposals and payments"
 #: src/copy/api-error.ts:68
 msgid "The tranches must add up to exactly 100%. Place the remainder before saving."
 msgstr "The tranches must add up to exactly 100%. Place the remainder before saving."
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:76
+msgid "The version wasn't saved. Nothing changed — try again."
+msgstr "The version wasn't saved. Nothing changed — try again."
 
 #. js-lingui-explicit-id
 #: src/copy/invite-answer.ts:15
@@ -3509,6 +4514,11 @@ msgid "This record is no longer in your scope, or was removed. The notification 
 msgstr "This record is no longer in your scope, or was removed. The notification stays here because it reached you."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:75
+msgid "This release didn't load."
+msgstr "This release didn't load."
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:60
 msgid "This screen arrives in a later update."
 msgstr "This screen arrives in a later update."
@@ -3579,6 +4589,14 @@ msgid "Too many attempts. Wait a moment and retry."
 msgstr "Too many attempts. Wait a moment and retry."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:142
+msgid "TOPCon"
+msgstr "TOPCon"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:76
+#: src/copy/catalog-settings.ts:88
+#: src/copy/price-book.ts:78
 #: src/copy/role-card.ts:38
 #: src/copy/roles-reference.ts:33
 #: src/copy/sign-in.ts:40
@@ -3656,6 +4674,7 @@ msgid "Typical system size"
 msgstr "Typical system size"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:42
 #: src/copy/remove-roles.ts:31
 msgid "Undo"
 msgstr "Undo"
@@ -3758,9 +4777,24 @@ msgid "Use this button to start a survey."
 msgstr "Use this button to start a survey."
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:19
+msgid "v{number}"
+msgstr "v{number}"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:17
+msgid "V{number}"
+msgstr "V{number}"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:38
 msgid "Verified"
 msgstr "Verified"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:119
+msgid "Verified datasheet"
+msgstr "Verified datasheet"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:28
@@ -3788,6 +4822,41 @@ msgid "Verifying the code creates your account. Your company is created at the n
 msgstr "Verifying the code creates your account. Your company is created at the next step."
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:68
+msgid "Version {next} goes in force at once. Version {current} stays readable."
+msgstr "Version {next} goes in force at once. Version {current} stays readable."
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:42
+msgid "Version {number}"
+msgstr "Version {number}"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:75
+msgid "Version {number} is in force"
+msgstr "Version {number} is in force"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:71
+msgid "Version 1 goes in force at once."
+msgstr "Version 1 goes in force at once."
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:38
+msgid "Versions"
+msgstr "Versions"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:79
+msgid "View only — {owners} or Operations edit."
+msgstr "View only — {owners} or Operations edit."
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:80
+msgid "View only — an owner or Operations edits."
+msgstr "View only — an owner or Operations edits."
+
+#. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:117
 msgid "View prices & margins"
 msgstr "View prices & margins"
@@ -3801,6 +4870,16 @@ msgstr "Waive a payment stage"
 #: src/copy/role-matrix.ts:84
 msgid "Waive a tranche"
 msgstr "Waive a tranche"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:66
+msgid "was {amount}"
+msgstr "was {amount}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-words.ts:45
+msgid "Wattage"
+msgstr "Wattage"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:25
@@ -3918,9 +4997,19 @@ msgid "What can they do?"
 msgstr "What can they do?"
 
 #. js-lingui-explicit-id
+#: src/copy/price-book.ts:51
+msgid "What changed"
+msgstr "What changed"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:18
 msgid "What do you sell?"
 msgstr "What do you sell?"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:31
+msgid "What it is"
+msgstr "What it is"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:17
@@ -3989,6 +5078,11 @@ msgid "Who you sell to"
 msgstr "Who you sell to"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-attribution.ts:16
+msgid "Why a price is what it is — the {count} of {total} items you have changed"
+msgstr "Why a price is what it is — the {count} of {total} items you have changed"
+
+#. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:43
 msgid "Why Billing stays on"
 msgstr "Why Billing stays on"
@@ -4017,6 +5111,11 @@ msgstr "Work the installation checklist"
 #: src/copy/company-signup.ts:49
 msgid "Writing these three details now."
 msgstr "Writing these three details now."
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:69
+msgid "Yes"
+msgstr "Yes"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:29
@@ -4162,6 +5261,11 @@ msgid "Your campaigns are one switch away."
 msgstr "Your campaigns are one switch away."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:76
+msgid "Your catalog starts with {count} platform items and no prices. Add your own SKUs, or set a platform item's price from the item."
+msgstr "Your catalog starts with {count} platform items and no prices. Add your own SKUs, or set a platform item's price from the item."
+
+#. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:36
 msgid "Your choice"
 msgstr "Your choice"
@@ -4239,6 +5343,16 @@ msgstr "Your device’s language"
 #: src/copy/setup-language.ts:24
 msgid "Your device’s language isn’t in HelioGrid yet, so the app started in English."
 msgstr "Your device’s language isn’t in HelioGrid yet, so the app started in English."
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:50
+msgid "Your first price book"
+msgstr "Your first price book"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:49
+msgid "Your first release. Every new proposal will use it."
+msgstr "Your first release. Every new proposal will use it."
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:124
@@ -4347,6 +5461,17 @@ msgid "Your operations view is one switch away."
 msgstr "Your operations view is one switch away."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:24
+#: src/copy/catalog-settings.ts:115
+msgid "Your override"
+msgstr "Your override"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:120
+msgid "Your own"
+msgstr "Your own"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:94
 msgid "Your people view is one switch away."
 msgstr "Your people view is one switch away."
@@ -4360,6 +5485,11 @@ msgstr "Your photo was not removed"
 #: src/copy/profile-preferences.ts:48
 msgid "Your preferences didn't load"
 msgstr "Your preferences didn't load"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:18
+msgid "Your price"
+msgstr "Your price"
 
 #. js-lingui-explicit-id
 #: src/copy/first-run-profile.ts:51
@@ -4410,6 +5540,18 @@ msgstr "Your roles"
 #: src/copy/role-card.ts:22
 msgid "Your roles at {company}"
 msgstr "Your roles at {company}"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:10
+#: src/copy/catalog-settings.ts:107
+#: src/copy/catalog-settings.ts:114
+msgid "Your SKU"
+msgstr "Your SKU"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-words.ts:43
+msgid "Your SKUs"
+msgstr "Your SKUs"
 
 #. js-lingui-explicit-id
 #: src/copy/settings.ts:25

@@ -1,5 +1,6 @@
 import type { Capability } from '../authz/capabilities';
-import { can, limitsOn } from '../authz/policy';
+import { holdsOutright } from '../authz/outright';
+import { can } from '../authz/policy';
 import type { RolePreset } from '../authz/roles';
 import type { SubjectKind } from '../subject/kinds';
 import type { FileContentType } from './vocabulary';
@@ -104,7 +105,7 @@ export function mayUploadFile(
   subjectIsCaller: boolean,
 ): boolean {
   if (rule.upload === 'self') return subjectIsCaller;
-  return can(roles, rule.upload) && limitsOn(roles, rule.upload).length === 0;
+  return holdsOutright(roles, rule.upload);
 }
 
 /** `member` reads for anyone the session guard already admitted into the company. */

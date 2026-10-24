@@ -125,3 +125,27 @@ export function normalizeClientError(error: unknown): DataError {
 export function answerOf(error: unknown): { status: number; code: string } | null {
   return error instanceof ApiError ? { status: error.status, code: error.code } : null;
 }
+
+/**
+ * One call's body at its expected status; every other answer, and every client fault, leaves as
+ * a `DataError`. The status narrows the body, so the repository's type stays the contract's.
+ */
+export async function bodyAt<R extends { status: number; body: unknown }, S extends R['status']>(
+  send: () => Promise<R>,
+  expected: S,
+): Promise<Extract<R, { status: S }>['body']> {
+  try {
+    const res = await send();
+    if (!answeredAt(res, expected)) throw toApiError(res);
+    return res.body;
+  } catch (error) {
+    throw normalizeClientError(error);
+  }
+}
+
+function answeredAt<R extends { status: number }, S extends R['status']>(
+  res: R,
+  expected: S,
+): res is Extract<R, { status: S }> {
+  return res.status === expected;
+}

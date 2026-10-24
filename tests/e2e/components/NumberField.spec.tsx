@@ -1,6 +1,6 @@
 import { createTranslator, SETUP_LANGUAGE } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedColour } from '../support/token';
+import { resolvedColour, resolvedFont } from '../support/token';
 import { HeldNumberField } from './NumberField.story';
 
 /**
@@ -76,6 +76,44 @@ test('a field that commits as typed reports each figure before it is left, leave
   await expect(field.getByTestId('commits')).toHaveText('2');
 });
 
+test('a field that commits as typed and may be cleared reports the empty box before it is left', async ({
+  mount,
+}) => {
+  /* On touch a tap on *Save* does not leave the field: the last digit must never stand in for an
+     emptied box. */
+  const field = await mount(
+    <HeldNumberField label={LABEL} unit={UNIT} initial={14} asTyped clears />,
+  );
+  const input = field.getByRole('textbox', { name: LABEL });
+
+  await input.focus();
+  await input.press('End');
+  await input.press('Backspace');
+  await expect(field.getByTestId('held')).toHaveText('1');
+  await input.press('Backspace');
+  await expect(input).toHaveValue('');
+  await expect(field.getByTestId('held')).toHaveText('');
+});
+
+test("a money field at rest reads in the market's money format, and editing shows the plain figure", async ({
+  mount,
+}) => {
+  const field = await mount(<HeldNumberField label={LABEL} unit={UNIT} initial={18000} currency />);
+  const input = field.getByRole('textbox', { name: LABEL });
+  await expect(input).toHaveValue(/^₹18,000$/u);
+  await input.focus();
+  await expect(input).toHaveValue('18000');
+  await input.fill('7000');
+  await input.blur();
+  await expect(field.getByTestId('held')).toHaveText('7000');
+  await expect(input).toHaveValue(/^₹7,000$/u);
+});
+
+test('a money field at rest keeps its paise', async ({ mount }) => {
+  const field = await mount(<HeldNumberField label={LABEL} unit={UNIT} initial={95.5} currency />);
+  await expect(field.getByRole('textbox', { name: LABEL })).toHaveValue(/^₹95\.50$/u);
+});
+
 test('from an unset field a step lands on the floor where there is one, and one step from 0 where there is none', async ({
   mount,
 }) => {
@@ -108,4 +146,44 @@ test('the tier line is quiet by default and takes the secondary role when load-b
   const line = loadBearing.locator('.hg-provenance');
   await expect(line).toHaveCSS('color', await resolvedColour(page, '--text-secondary'));
   await expect(loadBearing.locator('.hg-provenance-dot')).toHaveCSS('background-color', quietDot);
+});
+
+test('the value starts at the left in the sans face', async ({ mount, page }) => {
+  const field = await mount(<HeldNumberField label={LABEL} unit={UNIT} initial={5} />);
+  const input = field.getByRole('textbox', { name: LABEL });
+
+  await expect(input).toHaveCSS(
+    'font-family',
+    await resolvedFont(page, 'fontFamily', '--font-sans'),
+  );
+  await expect(input).toHaveCSS(
+    'font-weight',
+    await resolvedFont(page, 'fontWeight', '--fw-regular'),
+  );
+  await expect(input).toHaveCSS('font-variant-numeric', 'tabular-nums');
+  await expect(input).toHaveCSS('text-align', 'start');
+  const unit = field.getByText(UNIT, { exact: true });
+  await expect(unit).toHaveCSS('color', await resolvedColour(page, '--text-secondary'));
+  const inputBox = await input.boundingBox();
+  const unitBox = await unit.boundingBox();
+  expect(unitBox?.x).toBeGreaterThanOrEqual((inputBox?.x ?? 0) + (inputBox?.width ?? 0));
+  await field.unmount();
+
+  const stepped = await mount(<HeldNumberField label={LABEL} unit={UNIT} initial={5} steppers />);
+  await expect(stepped.getByRole('textbox', { name: LABEL })).toHaveCSS('text-align', 'center');
+});
+
+test('an amount keeps the mono face', async ({ mount, page }) => {
+  const field = await mount(<HeldNumberField label={LABEL} unit={UNIT} initial={5} currency />);
+  const input = field.getByRole('textbox', { name: LABEL });
+
+  await expect(input).toHaveCSS(
+    'font-family',
+    await resolvedFont(page, 'fontFamily', '--font-mono'),
+  );
+  await expect(input).toHaveCSS(
+    'font-weight',
+    await resolvedFont(page, 'fontWeight', '--fw-regular'),
+  );
+  await expect(input).toHaveCSS('text-align', 'start');
 });
