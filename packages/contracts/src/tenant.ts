@@ -243,7 +243,9 @@ export const tenantContract = c.router({
       404: notFound,
       /** Not active: a deactivated person keeps their presets as history, an invited one has not joined. */
       409: errorEnvelope(baseError('CONFLICT')),
-      422: errorEnvelope(tenantErrorCodeSchema),
+      /** Open-ended: the guard rails grow (`OWN_ADMIN` joined later), and an app built before a
+          code reads it as any other refusal. */
+      422: errorEnvelope(extensibleEnum(tenantErrorCodes)),
     },
   },
   deactivateMember: {

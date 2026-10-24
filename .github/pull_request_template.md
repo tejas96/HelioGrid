@@ -33,7 +33,8 @@
 ## Gate
 
 <!-- `pnpm check:all` on the test database: the result, and the first failing line if it failed
-     once. -->
+     once. Then the task's own `tests/e2e/web` specs run locally (`/task` step 8 item 4), or "none
+     changed". -->
 
 ## Red proofs
 

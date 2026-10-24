@@ -83,7 +83,11 @@ authoritative doc for that layer; this table is only the index.
   without it; they never silently pass.
 - **openssl** — `pnpm infra:up` mints the development PKI with it.
 - **gitleaks** — installed in the cold start below; the pre-commit secret scan fails closed without
-  it. The breaking-change judge, a pinned `oasdiff`, runs only in CI.
+  it.
+- **oasdiff 1.31.0, exactly** — the breaking-change judge in `pnpm check:openapi`, the build CI
+  pins; any other version is refused, and Homebrew ships a newer one. Install the release tarball
+  `oasdiff_1.31.0_darwin_all.tar.gz` from github.com/oasdiff/oasdiff/releases (check it against that
+  release's `checksums.txt`) and put the `oasdiff` binary on your `PATH`.
 - **Xcode + Android Studio** — only if you're running `apps/mobile` on a simulator/emulator. iOS
   also needs Ruby 3.1 with Bundler and CocoaPods: `bundle install` in `apps/mobile`, then
   `bundle exec pod install` in `apps/mobile/ios`, with a git-ignored `apps/mobile/.bundle/config`
@@ -115,7 +119,7 @@ pnpm --filter @heliogrid/db migrate       # schema: 0001 is the market pack
 pnpm --filter @heliogrid/api pack:publish # seeds the India pack as revision 1 and the India platform catalog
 brew install gitleaks                      # the pre-commit secret scan needs it; the hook refuses to run without it
 # Sign in locally with any +91 number: the code is in the api log (`Message for +91…`), no SMS.
-pnpm check:all                            # build · lint · typecheck · duplication · freshness · unit tests · invariants
+pnpm check:all                            # build · lint · typecheck · duplication · freshness · unit tests · invariants (needs oasdiff, Prerequisites)
 ```
 
 This block is the full cold start; the header of `.env.example` is its short form.
@@ -223,19 +227,19 @@ All run from the repo root unless noted. Per-package equivalents: `pnpm --filter
 | `pnpm test:coverage` | the same with a coverage report — read it to find the edge cases you missed |
 | `pnpm lint` | Biome with its plugins (zero warnings, zero errors), dependency-cruiser, sherif and `turbo boundaries` (the package-tag dependency allowlists) |
 | `pnpm lint:fix` | `biome check --write .` — formats and auto-fixes what Biome can fix |
-| `pnpm check` | **While building**, after each change: Biome on what differs from `origin/main`, the typecheck of the changed packages, and the related unit tests. Fast, and never the proof |
+| `pnpm check` | **While building**, after each change — what it runs is `CLAUDE.md` §5. Fast, and never the proof |
 | `pnpm check:all` | **Once, when the build is done:** build → lint → typecheck → `check:dupes` → `check:openapi` → `check:catalogs` → `test:unit` → `test` (the invariants; the database ones skip loudly without `DATABASE_URL`). Build runs first — dependency-cruiser resolves workspace edges through `dist/`, so linting an unbuilt checkout is partially blind. This is what "green" means before you call something done |
 | `pnpm precommit` | What the git hook runs automatically: Biome on the staged files (zero warnings), gitleaks on the staged change (fails closed without gitleaks), and a typecheck of the packages the commit changes |
-| `pnpm check:openapi` | Re-emits `packages/contracts/openapi/openapi.json` and fails when it changed — run after any contract change, then commit the fresh spec |
+| `pnpm check:openapi` | Re-emits `packages/contracts/openapi/openapi.json` and fails when it changed, then judges it with oasdiff (the version CI pins) against the branch's base on `origin/main` and fails on a breaking change — commit the fresh spec |
 | `pnpm check:catalogs` | Re-extracts the i18n catalogs and fails when they changed — commit the fresh catalogs |
 | `pnpm check:dupes` | `jscpd` — the duplicate-code ratchet (part of `pnpm check:all`) |
 
 CI (`.github/workflows/ci.yml`) has one job that always runs, `quality`: a Gitleaks secret
 scan, the append-only migration guard, the cluster roles and migrations applied to a real CI
-Postgres, then `pnpm check:all`, and on a pull request the OpenAPI breaking-change judge
-(`oasdiff`, pinned by version and sha256). A `changes` job switches the other lanes on by path:
-`e2e-web` (the web flows and component tests, whenever the web, the api, a package or the suite
-changes), `mobile-js` (the Metro bundle, whenever `apps/mobile` or a package mobile bundles
+Postgres, the pinned `oasdiff` (by version and sha256), then `pnpm check:all`, whose
+`check:openapi` runs the breaking-change judge. A `changes` job switches the other lanes on by path:
+`e2e-web` (the web flows) and `e2e-components` (the component tests), side by side, whenever the
+web, the api, a package or the suite changes, `mobile-js` (the Metro bundle, whenever `apps/mobile` or a package mobile bundles
 changes), `android` (the native build and the phone flows on an emulator, whenever native files, the
 api, a package, `infra/postgres` or the phone flows change) and `ios` (the native build on pull
 requests, only when native files, the mobile `package.json` or the lockfile change). Markdown never counts. A skipped lane reports success, so

@@ -25,7 +25,7 @@ owner-approved operation.
 | Dev Postgres (Fly) | ⏳ blocked on card — use local Docker meanwhile (below) |
 | Upstash Redis | ⏳ blocked on card (plan selection requires billing; no free path pre-card) |
 | Tigris bucket | ⏳ blocked on card (`createAddOn` refuses without payment info) |
-| GitHub CI | ✅ green (changes, quality, e2e-web, mobile-js, android, iOS); every lane but `changes` and `quality` runs only when its own paths change |
+| GitHub CI | ✅ green (changes, quality, e2e-web, e2e-components, mobile-js, android, iOS); every lane but `changes` and `quality` runs only when its own paths change |
 
 ## Local dev
 
@@ -38,7 +38,8 @@ pnpm infra:reset   # down -v — destroys the volume
 
 **One Postgres container, four databases** (owner ruling 2026-08-27; the fourth 2026-10-05).
 `heliogrid-pg-local` on port `5544` holds `heliogrid_dev` (the owner's development data) and
-`heliogrid_test` (`/task` QA, the local api tests and the invariants — disposable), both on the
+`heliogrid_test` (`/task` QA with its seeded QA companies, the local api tests, the local web flows
+and the invariants — disposable, but reseed the QA companies after a reset), both on the
 Drizzle migrations, plus `temporal` and `temporal_visibility` (owned by `temporal-sql-tool`). Two
 migration tools, separate databases, so neither can reach the other's tables — and the tenancy
 invariant scans the one database its URL names, because `pg_class` is per-database.
