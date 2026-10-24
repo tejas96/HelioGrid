@@ -119,11 +119,10 @@ test('a save cut off on the way keeps the ticks, says nothing changed, and Save 
     companyName: company,
     locks: { epc_owner: 'sole-owner' },
   });
-  await page
-    .getByRole('button', { name: OWNER_NAME })
-    .or(page.getByRole('row', { name: OWNER_NAME }))
-    .first()
-    .click();
+  // As the first flow opens it: the shell's account button carries the name too, and the wide
+  // table's open is the row's spoken-only button.
+  await page.getByRole('main').getByRole('button', { name: OWNER_NAME, exact: true }).focus();
+  await page.keyboard.press('Enter');
   const editor = page.getByRole('dialog', { name: new RegExp(OWNER_NAME, 'u') });
   const finance = editor.getByRole('checkbox', {
     name: roles.rows[ROLE_PRESETS.indexOf(FINANCE ?? 'finance')]?.title ?? '',
