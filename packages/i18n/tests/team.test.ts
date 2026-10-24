@@ -1,4 +1,10 @@
-import { IN_FORMATS, INVITATION_EXPIRY_DAYS, type TeamRow } from '@heliogrid/domain';
+import {
+  IN_FORMATS,
+  INVITATION_EXPIRY_DAYS,
+  type TeamAct,
+  type TeamRow,
+  type UiLanguage,
+} from '@heliogrid/domain';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { TEAM, type TeamClock, teamRowWords } from '../src/copy/team';
 import { teamActWords } from '../src/copy/team-acts';
@@ -220,4 +226,26 @@ describe('teamActWords — the row acts’ confirms, refusal and toasts', () => 
   ])('a settled act %o raises %o', (note, toast) => {
     expect(words().toast(note)).toEqual(toast);
   });
+});
+
+describe('teamActWords.spoken — a row act heard with its person (D291)', () => {
+  it.each([
+    ['deactivate', 'Deactivate Anjali Kulkarni'],
+    ['revoke', 'Revoke invite for Anjali Kulkarni'],
+    ['invite-again', 'Invite again: Anjali Kulkarni'],
+  ] as const)('%s → %s', (act, said) => {
+    expect(teamActWords(t, 'Suryodaya Solar').spoken(act, 'Anjali Kulkarni')).toBe(said);
+  });
+
+  it.each<UiLanguage>(['en', 'hi', 'mr'])(
+    '%s opens with the act’s own visible words, so speech control finds it',
+    async (reader) => {
+      const words = teamActWords((await createTranslator(reader)).t, 'Suryodaya Solar');
+      for (const act of ['deactivate', 'revoke', 'invite-again'] satisfies TeamAct[]) {
+        const said = words.spoken(act, 'Anjali Kulkarni');
+        expect(said.startsWith(words.act(act))).toBe(true);
+        expect(said).toContain('Anjali Kulkarni');
+      }
+    },
+  );
 });

@@ -1,4 +1,5 @@
 import type { RolePreset } from '@heliogrid/domain';
+import type { TeamConfirmWords } from '../MemberCard/MemberCard.types';
 import type { OverlayStatus } from '../Sheet/Sheet.types';
 
 /**
@@ -10,6 +11,12 @@ import type { OverlayStatus } from '../Sheet/Sheet.types';
 export interface AssignRolesProps {
   open: boolean;
   onClose: () => void;
+  /**
+   * A save that takes presets away, asking first (`m-confirm`, `d-confirm`): the confirm stands
+   * over the editor, which Escape, the backdrop, the drag and Back leave alone until it is answered.
+   * Null while none asks.
+   */
+  removal?: AssignRolesRemoval | null;
   /** The person, as the tapped row carries them; `phone` is already formatted for the market. */
   person: { readonly name: string; readonly status: OverlayStatus; readonly phone: string };
   words: AssignRolesWordsProp;
@@ -66,4 +73,11 @@ export interface AssignRolesWordsProp {
   readonly close: string;
   /** The skeleton's spoken name — *Loading Vikram's presets*. */
   readonly loading: string;
+}
+
+/** The removal's confirm: its words, *Remove role* and *Cancel*. */
+export interface AssignRolesRemoval {
+  words: TeamConfirmWords;
+  onGo: () => void;
+  onLeave: () => void;
 }

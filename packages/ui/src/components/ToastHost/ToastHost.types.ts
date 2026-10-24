@@ -8,6 +8,12 @@ export interface ToastItem {
   description?: string;
   icon?: ReactNode;
   action?: ReactNode;
+  /**
+   * The toast's own way back — *Undo*, drawn as a quiet small button, only on a host given
+   * `onDismiss`: a press closes the toast first, so it runs once, then calls `onUndo`, which also
+   * says where the keyboard goes next — the pressed button is gone. Takes the place of `action`.
+   */
+  undo?: { label: string; onUndo: () => void };
   /** Overrides the host duration for this one toast. */
   duration?: number;
 }

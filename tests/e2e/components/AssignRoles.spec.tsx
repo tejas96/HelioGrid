@@ -4,12 +4,14 @@ import {
   IN_PACK,
   ROLE_PRESETS,
   type RolePreset,
+  roleChange,
   type UiLanguage,
 } from '@heliogrid/domain';
 import {
   assignRolesWords,
   createTranslator,
   grantLineWords,
+  removeRolesWords,
   SHELL,
   teamStatusWord,
 } from '@heliogrid/i18n';
@@ -226,3 +228,34 @@ for (const [width, height, form] of [
     });
   });
 }
+
+test('a removal asks over the editor, which Escape and the backdrop leave alone (AC-28)', async ({
+  mount,
+  page,
+}) => {
+  await page.setViewportSize({ width: 1536, height: 960 });
+  const frame = await mount(
+    <AssignRolesAsHeld reader="en" held={VIKRAM} removing={[SURVEY, INSTALL]} />,
+  );
+  const editor = page.getByRole('dialog', { name: 'Vikram Deshpande', exact: true });
+  const asked = removeRolesWords(READERS.en.t, {
+    name: 'Vikram Deshpande',
+    change: roleChange(VIKRAM, [SURVEY, INSTALL]),
+  });
+  const confirm = page.getByRole('dialog', { name: asked.title });
+  await expect(confirm).toBeVisible();
+  await page.keyboard.press('Escape');
+  await page.mouse.click(8, 8);
+  await expect(confirm).toBeVisible();
+  await expect(editor).toBeAttached();
+  await expect(frame).toHaveAttribute('data-closed', 'false');
+  await confirm.getByRole('button', { name: asked.leave }).click();
+  await expect(frame).toHaveAttribute('data-saved', 'kept');
+});
+
+test('with no confirm over it, Escape closes it as before', async ({ mount, page }) => {
+  const frame = await mount(<AssignRolesAsHeld reader="en" held={VIKRAM} />);
+  await expect(page.getByRole('dialog', { name: 'Vikram Deshpande', exact: true })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(frame).toHaveAttribute('data-closed', 'true');
+});

@@ -1,4 +1,4 @@
-import { useAssignRoles, useShell, useTeam, useTeamActs } from '@heliogrid/data/react';
+import { useShell, useTeam, useTeamActs } from '@heliogrid/data/react';
 import { noteLeavesRow, showsListHead } from '@heliogrid/domain';
 import { teamActWords, teamListWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
@@ -20,7 +20,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSettingsDrillDown } from '../settings/hooks/use-settings-drill-down';
 import { ShellPage } from '../shell/components/ShellPage';
 import { underPill } from '../shell/styles';
-import { TeamAssignRoles } from './components/TeamAssignRoles';
+import { TeamAssignRoles, useTeamRoles } from './components/TeamAssignRoles';
 import { InviteTeammate, useTeamInvite } from './components/TeamInvite';
 
 /**
@@ -38,15 +38,16 @@ export function TeamScreen() {
   const { pack } = useFormat();
   const shell = useShell();
   const team = useTeam(locale);
+  const company = shell.companyName ?? '';
   const words = teamListWords(t, {
     pack,
     language: locale,
     now: Date.now(),
-    company: shell.companyName ?? '',
+    company,
     query: team.query,
     status: team.status,
   });
-  const actWords = teamActWords(t, shell.companyName ?? '');
+  const actWords = teamActWords(t, company);
   const toasts = useToasts();
   const insets = useSafeAreaInsets();
   const search = useRef<FocusHandle>(null);
@@ -60,7 +61,8 @@ export function TeamScreen() {
   });
 
   const invite = useTeamInvite(() => team.reread(), toasts.push);
-  const roles = useAssignRoles(team);
+  /* As a row act that leaves the row, an undo gives the keyboard to the search. */
+  const roles = useTeamRoles(team, toasts, company, () => search.current?.focus());
   /* The sole-owner reason names the company, so no row opens before its name has arrived. */
   const openOf = shell.companyName === null ? undefined : roles.openerOf;
 
@@ -122,7 +124,7 @@ export function TeamScreen() {
         }}
       />
       <InviteEditor {...invite.editor} />
-      <TeamAssignRoles editor={roles} companyName={shell.companyName ?? ''} />
+      <TeamAssignRoles editor={roles} companyName={company} />
       {/* Above the pill, which stands on the device's home-bar inset — the package reads no inset. */}
       <ToastHost
         toasts={toasts.toasts}

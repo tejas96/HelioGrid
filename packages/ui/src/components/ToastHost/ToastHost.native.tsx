@@ -6,6 +6,7 @@ import Svg from 'react-native-svg';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { Button } from '../Button/Button.native';
 import { Toast } from '../Toast/Toast.native';
 import type { ToastHostProps, ToastItem, ToastPosition } from './ToastHost.types';
 
@@ -110,6 +111,18 @@ export function ToastHost({
               description={toast.description}
               icon={toast.icon}
               action={
+                (toast.undo === undefined || onDismiss === undefined ? undefined : (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      onDismiss(toast.id);
+                      toast.undo?.onUndo();
+                    }}
+                  >
+                    {toast.undo.label}
+                  </Button>
+                )) ??
                 toast.action ??
                 (onDismiss === undefined ? undefined : (
                   <Pressable

@@ -1,8 +1,9 @@
 import type { CSSProperties } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { Button } from '../Button/Button';
 import { Toast } from '../Toast/Toast';
 import type { ToastHostProps, ToastItem } from './ToastHost.types';
 
@@ -48,17 +49,34 @@ export function ToastHost({
   style,
 }: WebToastHostProps) {
   const shown = useMemo(() => toasts.slice(-max), [toasts, max]);
-  const [paused, setPaused] = useState(false);
+  /* The pointer and the keyboard pause the queue apart: one leaving never restarts the clock while
+     the other still holds a toast. */
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const paused = hovered || focused;
+  const host = useRef<HTMLDivElement>(null);
   const oldest: ToastItem | undefined = shown[0];
+  /* A pressed Undo or dismiss leaves with its toast, and a removed element fires no blur: the press
+     itself lets the queue run again. */
+  const leave = (id: ToastItem['id']) => {
+    setFocused(false);
+    onDismiss?.(id);
+  };
 
   useEffect(() => {
+    /* A toast dropped from the stack under the keyboard fires no blur: the stack no longer holding
+       the focus lets the queue run again. */
+    if (focused && !host.current?.contains(document.activeElement)) {
+      setFocused(false);
+      return;
+    }
     if (paused || onDismiss === undefined || oldest === undefined) {
       return;
     }
     const id = oldest.id;
     const timer = setTimeout(() => onDismiss(id), oldest.duration ?? duration);
     return () => clearTimeout(timer);
-  }, [oldest, paused, onDismiss, duration]);
+  }, [oldest, paused, focused, onDismiss, duration]);
 
   if (shown.length === 0) {
     return null;
@@ -69,15 +87,18 @@ export function ToastHost({
   const vars: HostVars | undefined =
     offset === undefined ? undefined : { '--hg-toast-host-offset': `${offset}px` };
   return (
-    // biome-ignore lint/a11y/noStaticElementInteractions: the DS pauses the queue under the pointer; the stack is not a control and every toast keeps its own semantics.
+    // biome-ignore lint/a11y/noStaticElementInteractions: the DS pauses the queue under the pointer, and while the keyboard is on a toast's act (an Undo must outlive the time it takes to Tab there); the stack is not a control and every toast keeps its own semantics.
     <div
       aria-live="polite"
       aria-atomic="false"
       data-position={position}
       className={classNames('hg-toast-host', className)}
       style={{ ...vars, ...style }}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      ref={host}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
     >
       {shown.map((toast) => (
         <div key={toast.id} className="hg-toast-host-item">
@@ -88,12 +109,24 @@ export function ToastHost({
             description={toast.description}
             icon={toast.icon}
             action={
+              (toast.undo === undefined || onDismiss === undefined ? undefined : (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    leave(toast.id);
+                    toast.undo?.onUndo();
+                  }}
+                >
+                  {toast.undo.label}
+                </Button>
+              )) ??
               toast.action ??
               (onDismiss === undefined ? undefined : (
                 <Pressable
                   className="hg-toast-host-dismiss"
                   accessibilityLabel="Dismiss"
-                  onPress={() => onDismiss(toast.id)}
+                  onPress={() => leave(toast.id)}
                 >
                   <DismissGlyph />
                 </Pressable>

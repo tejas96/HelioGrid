@@ -1,6 +1,7 @@
 'use client';
 import { type Invitation, MAX_PAGE_LIMIT, type Member, type Paginated } from '@heliogrid/contracts';
 import {
+  type RolePreset,
   type TeamLoad,
   type TeamRosterView,
   type TeamRow,
@@ -11,7 +12,7 @@ import {
   teamSurface,
   type UiLanguage,
 } from '@heliogrid/domain';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { useRepositories } from './context';
@@ -35,6 +36,12 @@ export interface Team {
    * no answer, so a caller never judges a write against the list it had before (`F8-36`).
    */
   reread(): Promise<readonly TeamRow[] | null>;
+  /**
+   * A write the server answered 200: the person's row holds `roles` at once, so the list is right
+   * while its re-read is out. A re-read that gets no answer still shows the list's load failure
+   * (`F8-36`): a list that could not be read is never drawn as if it were.
+   */
+  holds(membershipId: string, roles: readonly RolePreset[]): void;
   /** Asks again for every read: a list missing half its people is not shown. */
   retry(): void;
 }
@@ -56,6 +63,7 @@ async function everyPage<T>(read: (page: number) => Promise<Paginated<T>>): Prom
 export function useTeam(language: UiLanguage): Team {
   const { user } = useSession();
   const repositories = useRepositories();
+  const queryClient = useQueryClient();
   const tenantId = user?.tenant?.id ?? '';
   const viewerUserId = user?.id ?? '';
   const [query, find] = useState('');
@@ -92,6 +100,16 @@ export function useTeam(language: UiLanguage): Team {
     const [held, sent] = await Promise.all([members.refetch(), invites.refetch()]);
     return held.isError || sent.isError ? null : rosterOf(held.data, sent.data);
   };
+  const holds = (membershipId: string, roles: readonly RolePreset[]) => {
+    const key = queryKeys.team.members(tenantId);
+    /* A read already out began before the write; landing after it, it would draw the old set. */
+    void queryClient.cancelQueries({ queryKey: key });
+    queryClient.setQueryData<Member[]>(key, (held) =>
+      held?.map((member) =>
+        member.membershipId === membershipId ? { ...member, roles: [...roles] } : member,
+      ),
+    );
+  };
   const view = useMemo(() => teamRosterView(roster, query, status), [roster, query, status]);
 
   return {
@@ -104,6 +122,7 @@ export function useTeam(language: UiLanguage): Team {
     filter,
     roster,
     reread,
+    holds,
     retry: () => void reread(),
   };
 }

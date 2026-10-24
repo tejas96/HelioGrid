@@ -1,13 +1,16 @@
 'use client';
 import {
+  type AssignRolesOutcome,
   type AssignRolesRefusal,
   assignRolesOutcome,
   inMatrixOrder,
   lockedPresets,
   opensAssignRoles,
   type PresetLock,
+  type RoleChange,
   type RolePreset,
   refusalAfterReread,
+  roleChange,
   type SaveRolesOff,
   saveRolesOff,
   type TeamActAnswer,
@@ -37,11 +40,34 @@ export interface AssignRolesEditor {
   readonly saving: boolean;
   /** Why the last save did not land (`m-error`); null while none has failed. */
   readonly refusal: AssignRolesRefusal | null;
+  /** A save that takes presets away, waiting on its confirm (`m-confirm`); null while none asks. */
+  readonly confirm: RoleChange | null;
   /** A row's open; undefined for a row Assign Roles does not open. */
   openerOf(row: TeamRow): (() => void) | undefined;
   pick(next: readonly RolePreset[]): void;
+  /** Saves the ticks — or, when they take a preset away, asks first. */
   save(): void;
+  /** The confirm's *Remove role*: the asked save goes. */
+  removeConfirmed(): void;
+  /** The confirm's *Cancel*: back to the editor, the ticks kept. */
+  cancelRemove(): void;
   close(): void;
+}
+
+/** What a removal tells the screen, which words it and raises its toasts. */
+export interface RolesRemovalNotes {
+  /** A save that took presets away landed; `undo` writes the old set back, once. */
+  onRemoved(removal: RolesRemoval, undo: () => void): void;
+  /** An undo did not land, and why (`m-error`'s words). */
+  onUndoFailed(refusal: AssignRolesRefusal, removal: RolesRemoval): void;
+}
+
+/** A save that took presets away and landed — what its toast names and its *Undo* writes back. */
+export interface RolesRemoval {
+  readonly name: string;
+  readonly id: string;
+  readonly before: readonly RolePreset[];
+  readonly removed: readonly RolePreset[];
 }
 
 /** What a write came back with: the server's answer, or why none came (`F8-36`). */
@@ -55,17 +81,22 @@ interface Sent {
  * once per tap; the server decides it (`T-FPLAT-003`) and `assignRolesOutcome` says what its answer
  * means. Every answer lands only on the sheet it was sent from.
  */
-export function useAssignRoles(team: Team): AssignRolesEditor {
+export function useAssignRoles(team: Team, notes: RolesRemovalNotes): AssignRolesEditor {
   const repositories = useRepositories();
   const { rereadUser } = useSession();
   const [person, setPerson] = useState<TeamRow | null>(null);
   const [open, setOpen] = useState(false);
   const [picked, setPicked] = useState<readonly RolePreset[]>([]);
   const [refusal, setRefusal] = useState<AssignRolesRefusal | null>(null);
+  const [confirm, setConfirm] = useState<RoleChange | null>(null);
+  /* One undo per removal: a second tap, or the toast and a retry racing, writes nothing more. */
+  const undone = useRef(new WeakSet<RolesRemoval>());
   /* Each open is a sheet of its own, numbered, so an answer sent from one sheet changes nothing on
      another — even the same person's, closed and opened again while the answer was out. */
   const [sheet, setSheet] = useState(0);
   const sheets = useRef(0);
+  /* The person whose sheet is open now, so an undo that lands can bring it level with the server. */
+  const openPerson = useRef<string | null>(null);
   /* The sheet open now, null while none is. */
   const openSheet = useRef<number | null>(null);
   /* The sheet whose save is out: one write per tap on that sheet, and its button alone shows it. */
@@ -75,6 +106,7 @@ export function useAssignRoles(team: Team): AssignRolesEditor {
   /* Stable: the overlay re-runs its focus effect whenever its close handler changes. */
   const close = useCallback(() => {
     openSheet.current = null;
+    openPerson.current = null;
     setOpen(false);
   }, []);
 
@@ -90,46 +122,132 @@ export function useAssignRoles(team: Team): AssignRolesEditor {
     }
   };
 
-  /* The sheet closes as the answer leaves it: saved, or the reader no longer manages the team. */
-  const leave = async (from: number, outcome: 'done' | 'forbidden') => {
-    if (openSheet.current === from) close();
-    if (outcome === 'done') await team.reread();
-    else await rereadUser();
+  /* A landed save that took presets away hands its removal on, for the toast and its undo. */
+  const announce = (removal: RolesRemoval) => {
+    if (removal.removed.length > 0) notes.onRemoved(removal, () => void undo(removal));
   };
 
-  const settle = async (from: number, id: string, ticks: readonly RolePreset[], sent: Sent) => {
-    const outcome = assignRolesOutcome(sent.answer);
-    if (outcome === 'done' || outcome === 'forbidden') return leave(from, outcome);
-    if (outcome === 'failed') {
-      if (openSheet.current === from) setRefusal({ kind: 'failed' });
-      return;
-    }
+  /* The sheet closes as the answer leaves it: saved, or the reader no longer manages the team. */
+  const leave = async (
+    from: number,
+    outcome: 'done' | 'forbidden',
+    removal: RolesRemoval,
+    ticks: readonly RolePreset[],
+  ) => {
+    if (openSheet.current === from) close();
+    if (outcome === 'forbidden') return rereadUser();
+    team.holds(removal.id, ticks);
+    announce(removal);
+    await team.reread();
+  };
+
+  /* An answer that says nothing for certain: read the person again before the sheet says a word. */
+  const readBack = async (
+    from: number,
+    removal: RolesRemoval,
+    ticks: readonly RolePreset[],
+    outcome: Exclude<AssignRolesOutcome, 'done' | 'forbidden' | 'failed'>,
+    failure: TransportFailure | null,
+  ) => {
     const roster = await team.reread();
+    const refused = refusalAfterReread(outcome, roster, { id: removal.id, ticks }, failure);
+    /* A save that landed keeps its way back, even when its sheet was closed while it was out. */
+    if (refused === null) announce(removal);
     if (openSheet.current !== from) return;
-    const fresh = roster?.find((row) => row.id === id);
+    const fresh = roster?.find((row) => row.id === removal.id);
     if (fresh !== undefined) setPerson(fresh);
-    const refused = refusalAfterReread(outcome, roster, { id, ticks }, sent.failure);
     if (refused === null) close();
     else setRefusal(refused);
   };
 
-  const save = () => {
+  const settle = async (
+    from: number,
+    removal: RolesRemoval,
+    ticks: readonly RolePreset[],
+    sent: Sent,
+  ) => {
+    const outcome = assignRolesOutcome(sent.answer);
+    if (outcome === 'done' || outcome === 'forbidden') return leave(from, outcome, removal, ticks);
+    if (outcome !== 'failed') return readBack(from, removal, ticks, outcome, sent.failure);
+    if (openSheet.current === from) setRefusal({ kind: 'failed' });
+  };
+
+  const send = (asked: RoleChange | null) => {
     /* A tap while the editor closes saves nothing: it is still drawn, but it was dismissed. */
     const from = openSheet.current;
     if (person === null || from === null || inFlight.current === from) return;
     if (saveRolesOff(person, picked, refusal) !== null) return;
-    const id = person.id;
+    const change = asked ?? roleChange(person.roles, picked);
+    if (asked === null && change.removed.length > 0) {
+      setConfirm(change);
+      return;
+    }
     const ticks = picked;
+    const removal = {
+      name: person.name,
+      id: person.id,
+      before: person.roles,
+      removed: change.removed,
+    };
     inFlight.current = from;
     setSavingOn(from);
     setRefusal(null);
-    void write(id, ticks)
-      .then((sent) => settle(from, id, ticks, sent))
+    void write(removal.id, ticks)
+      .then((sent) => settle(from, removal, ticks, sent))
       .finally(() => {
         if (inFlight.current === from) inFlight.current = null;
         setSavingOn((now) => (now === from ? null : now));
       });
   };
+
+  const removeConfirmed = () => {
+    const asked = confirm;
+    setConfirm(null);
+    if (asked !== null) send(asked);
+  };
+
+  /* Why the undo did not land, or null when it did — or when the reader no longer manages the team
+     and the screen leaves. */
+  const writeBack = async (removal: RolesRemoval): Promise<AssignRolesRefusal | null> => {
+    const sent = await write(removal.id, removal.before);
+    const outcome = assignRolesOutcome(sent.answer);
+    if (outcome === 'done') {
+      team.holds(removal.id, removal.before);
+      catchUp(removal.id, await team.reread());
+      return null;
+    }
+    if (outcome === 'forbidden') {
+      await rereadUser();
+      return null;
+    }
+    if (outcome === 'failed') return { kind: 'failed' };
+    const roster = await team.reread();
+    const refused = refusalAfterReread(
+      outcome,
+      roster,
+      { id: removal.id, ticks: removal.before },
+      sent.failure,
+    );
+    if (refused === null) catchUp(removal.id, roster);
+    return refused;
+  };
+
+  /* The person's sheet, open while an undo landed, takes the server's set: a save from stale ticks
+     would quietly take the restored presets away again. */
+  const catchUp = (id: string, roster: readonly TeamRow[] | null) => {
+    const fresh = roster?.find((row) => row.id === id);
+    if (fresh === undefined || openPerson.current !== id) return;
+    setPerson(fresh);
+    setPicked(fresh.roles);
+    setConfirm(null);
+  };
+
+  async function undo(removal: RolesRemoval) {
+    if (undone.current.has(removal)) return;
+    undone.current.add(removal);
+    const refused = await writeBack(removal);
+    if (refused !== null) notes.onUndoFailed(refused, removal);
+  }
 
   return {
     open,
@@ -139,20 +257,25 @@ export function useAssignRoles(team: Team): AssignRolesEditor {
     saveOff: person === null ? null : saveRolesOff(person, picked, refusal),
     saving: savingOn !== null && savingOn === sheet,
     refusal,
+    confirm,
     openerOf: (row) =>
       opensAssignRoles(row)
         ? () => {
             sheets.current += 1;
             openSheet.current = sheets.current;
+            openPerson.current = row.id;
             setSheet(sheets.current);
             setPerson(row);
             setPicked(row.roles);
             setRefusal(null);
+            setConfirm(null);
             setOpen(true);
           }
         : undefined,
     pick: (next) => setPicked(inMatrixOrder(next)),
-    save,
+    save: () => send(null),
+    removeConfirmed,
+    cancelRemove: () => setConfirm(null),
     close,
   };
 }

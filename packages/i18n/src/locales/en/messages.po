@@ -18,6 +18,11 @@ msgid "411038"
 msgstr "411038"
 
 #. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:27
+msgid " — tick {list} on {first}'s row again."
+msgstr " — tick {list} on {first}'s row again."
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:61
 msgid "{bankName} · account ending {ending}"
 msgstr "{bankName} · account ending {ending}"
@@ -216,6 +221,11 @@ msgstr "{left, plural, one {# try left} other {# tries left}} on this code."
 #: src/copy/list-join.ts:11
 msgid "{list} and {last}"
 msgstr "{list} and {last}"
+
+#. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:28
+msgid "{list} removed from {name}"
+msgstr "{list} removed from {name}"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:20
@@ -1056,6 +1066,11 @@ msgid "Deactivate {first}"
 msgstr "Deactivate {first}"
 
 #. js-lingui-explicit-id
+#: src/copy/team-acts.ts:41
+msgid "Deactivate {name}"
+msgstr "Deactivate {name}"
+
+#. js-lingui-explicit-id
 #: src/copy/team-acts.ts:22
 msgid "Deactivate {name}?"
 msgstr "Deactivate {name}?"
@@ -1524,6 +1539,11 @@ msgid "Invite again"
 msgstr "Invite again"
 
 #. js-lingui-explicit-id
+#: src/copy/team-acts.ts:43
+msgid "Invite again: {name}"
+msgstr "Invite again: {name}"
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:51
 msgid "Invite lasts {days, plural, one {# day} other {# days}} · cancel it from Team"
 msgstr "Invite lasts {days, plural, one {# day} other {# days}} · cancel it from Team"
@@ -1968,6 +1988,11 @@ msgid "On your invoices · never used to move your money"
 msgstr "On your invoices · never used to move your money"
 
 #. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:24
+msgid "Once saved, {first} can no longer {list}."
+msgstr "Once saved, {first} can no longer {list}."
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:62
 msgid "One mobile number is one HelioGrid account, whichever way you come in."
 msgstr "One mobile number is one HelioGrid account, whichever way you come in."
@@ -2224,9 +2249,24 @@ msgid "Remove"
 msgstr "Remove"
 
 #. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:21
+msgid "Remove {list} from {first}?"
+msgstr "Remove {list} from {first}?"
+
+#. js-lingui-explicit-id
 #: src/copy/first-run-profile.ts:44
 msgid "Remove it and your initials come back."
 msgstr "Remove it and your initials come back."
+
+#. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:22
+msgid "Remove role"
+msgstr "Remove role"
+
+#. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:23
+msgid "Remove roles"
+msgstr "Remove roles"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:33
@@ -2282,6 +2322,11 @@ msgstr "Revoke {name}’s invite?"
 #: src/copy/team-acts.ts:14
 msgid "Revoke invite"
 msgstr "Revoke invite"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:42
+msgid "Revoke invite for {name}"
+msgstr "Revoke invite for {name}"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:37
@@ -3052,9 +3097,19 @@ msgid "Tick at least one role before sending — an invite with none would open 
 msgstr "Tick at least one role before sending — an invite with none would open an empty app."
 
 #. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:29
+msgid "Tick it again on {first}'s row whenever you like."
+msgstr "Tick it again on {first}'s row whenever you like."
+
+#. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:31
 msgid "Tick or clear a preset first."
 msgstr "Tick or clear a preset first."
+
+#. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:30
+msgid "Tick them again on {first}'s row whenever you like."
+msgstr "Tick them again on {first}'s row whenever you like."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:66
@@ -3136,6 +3191,11 @@ msgstr "Two presets, one home"
 #: src/copy/setup-what-you-sell.ts:30
 msgid "Typical system size"
 msgstr "Typical system size"
+
+#. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:31
+msgid "Undo"
+msgstr "Undo"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:25
@@ -3514,6 +3574,16 @@ msgstr "You can change both later in Profile & preferences."
 #: src/copy/setup-what-you-sell.ts:24
 msgid "You can change both later in your company profile, the next step. Proposals you have already sent never change."
 msgstr "You can change both later in your company profile, the next step. Proposals you have already sent never change."
+
+#. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:25
+msgid "You can give it back at any time"
+msgstr "You can give it back at any time"
+
+#. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:26
+msgid "You can give them back at any time"
+msgstr "You can give them back at any time"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:72

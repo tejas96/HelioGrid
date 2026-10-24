@@ -136,6 +136,8 @@ export interface MemberActProps {
   offReason?: string;
   /** The act's write is out. */
   busy?: boolean;
+  /** What a screen reader hears — the act's words, then the person (D291). */
+  spokenName: string;
   onPress: () => void;
   /** Lets the caller send focus back to this act when a confirm it opened closes. */
   ref?: Ref<FocusHandle>;
@@ -144,11 +146,15 @@ export interface MemberActProps {
 /**
  * **The confirm a Team act opens** (`SCR-M01-12`, m-deactivate, m-revoke, m-refused): a sheet at
  * 375 and a centred modal at 1536, a decision — not dismissible, no close button. On the refused
- * form the banner says what stopped it and the go button is off with its reason.
+ * form the banner says what stopped it and the go button is off with its reason. The `roles` look
+ * is Assign Roles' removal (`SCR-M01-13` m-confirm, d-confirm): a handle on the sheet, a `md`
+ * modal with no tone, and the way back as a second line under the body.
  */
 export interface TeamConfirmProps {
   /** What the open confirm says; null while it is shut. The last words stay while it closes. */
   words: TeamConfirmWords | null;
+  /** `act` — a Team row act, as `SCR-M01-12` draws it (the default) · `roles` — a roles removal. */
+  look?: 'act' | 'roles';
   busy: boolean;
   onGo: () => void;
   /** *Cancel*, or *Close* on the refused form. */
@@ -168,6 +174,8 @@ export interface TeamConfirmWords {
   refusal?: { title: string; body: string | null };
   /** The go button is off, and why — the refused form's route out. */
   goOffReason?: string;
+  /** The way back, under the body: a bold lead, then the rest of the sentence. */
+  note?: { lead: string; rest: string };
 }
 
 /**

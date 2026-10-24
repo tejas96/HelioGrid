@@ -169,3 +169,10 @@
   flex: 0 1 var(--form-max);
   min-width: 0;
 }
+
+/* A confirm's body and its way back (`SCR-M01-13` m-confirm): --sp-3 apart. */
+.hg-team-confirm-lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
