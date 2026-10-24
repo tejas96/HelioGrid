@@ -1,7 +1,10 @@
 /* Assign Roles (`SCR-M01-13`): the head's *Presets* line, the rows, and the pinned grant card. */
 
 .hg-assign-roles-heading {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
   margin-top: var(--sp-3);
   padding-bottom: var(--sp-2);
   border-bottom: 1px solid var(--line-soft);

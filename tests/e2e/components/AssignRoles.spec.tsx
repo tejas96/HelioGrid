@@ -72,7 +72,7 @@ for (const [width, height, form] of [
       );
       await expect(editor.getByText(en.presets, { exact: true })).toBeVisible();
       // The board draws the line `--sp-3` under the sheet's head and `--sp-1` under the panel's.
-      await expect(editor.getByText(en.presets, { exact: true })).toHaveCSS(
+      await expect(editor.locator('.hg-assign-roles-heading')).toHaveCSS(
         'margin-top',
         `${await resolvedLength(page, form === 'panel' ? '--sp-1' : '--sp-3')}px`,
       );
@@ -216,6 +216,23 @@ for (const [width, height, form] of [
       await mount(<AssignRolesAsHeld reader="en" held={VIKRAM} />);
       await animationsSettled(page);
       await expect(page.getByRole('dialog')).toBeInViewport();
+    });
+
+    test('the round Roles reference sits at the right of Presets and opens the reference', async ({
+      mount,
+      page,
+    }) => {
+      const frame = await mount(<AssignRolesAsHeld reader="en" held={VIKRAM} />);
+      const heading = page.locator('.hg-assign-roles-heading');
+      const reference = heading.getByRole('button', { name: en.reference });
+      await expect(reference).toBeVisible();
+      const [row, button] = await Promise.all([heading.boundingBox(), reference.boundingBox()]);
+      expect((button?.x ?? 0) + (button?.width ?? 0)).toBeCloseTo(
+        (row?.x ?? 0) + (row?.width ?? 0),
+        0,
+      );
+      await reference.click();
+      await expect(frame).toHaveAttribute('data-referenced', 'true');
     });
 
     test('close dismisses the editor', async ({ mount, page }) => {

@@ -1,6 +1,7 @@
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { AvatarGroup } from '../Avatar/Avatar';
-import { GRANT_DISC_SIZE, GRANT_DISCS_SHOWN, PRESET_GLYPH } from './AssignRoles.logic';
+import { PRESET_GLYPH } from '../SettingsList/SettingsList.logic';
+import { GRANT_DISC_SIZE, GRANT_DISCS_SHOWN } from './AssignRoles.logic';
 import type { AssignRolesGrant } from './AssignRoles.types';
 
 /**

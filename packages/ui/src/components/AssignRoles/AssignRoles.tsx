@@ -1,7 +1,10 @@
+import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import { Text } from '../../primitives/Text/Text';
+import { ShellAction } from '../AppShell/ShellAction';
 import { Banner } from '../Banner/Banner';
 import { Button } from '../Button/Button';
 import { EditorSurface } from '../EditorSurface/EditorSurface';
+import { InfoGlyph } from '../Explainer/ExplainerParts';
 import { LoadingBars } from '../LoadingBars/LoadingBars';
 import { TeamConfirm } from '../MemberCard/TeamConfirm';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup';
@@ -26,6 +29,7 @@ export function AssignRoles({
   saveOffReason,
   saving,
   onSave,
+  onReference,
   state = 'ready',
   refusal = null,
 }: AssignRolesProps) {
@@ -47,9 +51,15 @@ export function AssignRoles({
         width={ASSIGN_ROLES_PANEL_WIDTH}
         sheetProps={{ size: 'full' }}
         meta={({ panel }) => (
-          <span className="hg-assign-roles-heading" data-form={panel ? 'panel' : 'sheet'}>
-            {words.presets}
-          </span>
+          <div className="hg-assign-roles-heading" data-form={panel ? 'panel' : 'sheet'}>
+            <span>{words.presets}</span>
+            <ShellAction
+              round
+              label={words.reference}
+              onClick={onReference}
+              icon={<InfoGlyph size={ICON_SIZE.md} />}
+            />
+          </div>
         )}
         footer={
           loading ? undefined : (

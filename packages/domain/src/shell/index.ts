@@ -46,6 +46,7 @@ export type {
 } from './settings-rows';
 export {
   firstSettingsPageBeside,
+  OPENED_FROM_ASSIGN_ROLES,
   opensSettingsRow,
   SETTINGS_GROUPS,
   SETTINGS_ROWS,

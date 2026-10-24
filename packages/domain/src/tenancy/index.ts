@@ -87,6 +87,8 @@ export {
   resumeStep,
   STEP_STATES,
 } from './onboarding-steps';
+export type { RoleHolding, UncountedHolder } from './role-holders';
+export { roleHolders } from './role-holders';
 export type { DealSegment, TenantSegment } from './segment';
 export { DEAL_SEGMENTS, TENANT_SEGMENTS } from './segment';
 export type {

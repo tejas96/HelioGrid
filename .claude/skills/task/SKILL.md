@@ -223,15 +223,18 @@ through the review and its fixes.
 **Run.** Start every QA agent in one message. Each gets what its own file lists under "Your prompt
 gives you", the RFC's frame map and the known differences included. An agent that returns `NEEDS MAIN: <action>`
 (kill, restart or open the app by a link) gets that action done by you and is continued. Each
-agent signs in as its surface's QA company (`tests/e2e/support/qa-accounts.ts` holds who is in it);
+agent signs in as its surface's QA company (`tests/e2e/support/qa-accounts.ts` holds who is in it),
+signing out first when the app holds anyone else — a phone keeps an earlier task's sign-in;
 a second owner's act during a row is yours to make, through the api, signed in as that person. A
 QA company keeps what every earlier task's rows made, so a row that needs an empty list or counts
 rows uses a new company. A row that must walk setup as a new company, or join as a person with no
 account, takes a fresh number of its own, one per agent, so no two agents share a one-time step and
 all start together; its code is the newest `Message for <number> via` line in `.qa/api.log`, and
 it never joins `DEV_OTP_PHONES`. A row that needs the api
-stopped runs last, after every agent has returned: stop the api once, continue each agent that has
-such rows, start the api once.
+stopped runs last, after every agent has returned: cold-start each phone that has such a row and
+leave it short of the row's screen — an app that already read that screen's data shows its cache
+instead of the failure — then stop the api once, continue each agent that has such rows, start the
+api once.
 
 A row that names a frame is a pass only with its board compare: a report that skipped it, or names a movement or overlap it did not judge, is sent back to the same agent, never read as a pass.
 
@@ -284,7 +287,10 @@ return; any file an agent changed stops the task.
    <the test-database prefix> pnpm --filter @heliogrid/e2e test:web <spec files>
    ```
 
-   A failure goes back as a gate failure does; a task that changed no web spec has no run here.
+   Playwright reads each path as a pattern, so a route's brackets (`more-[row].spec.ts`) match one
+   letter and that spec silently does not run: escape them (`'web/more-\[row\]'`), and check the
+   output names every spec. A failure goes back as a gate failure does; a task that changed no web
+   spec has no run here.
 
    Then start again what item 2 stopped from step 1, and run `pnpm infra:down` only when the stack
    was down at step 1.

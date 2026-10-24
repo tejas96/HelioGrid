@@ -106,6 +106,7 @@ export * from './components/ReorderList';
 export * from './components/RichText';
 export * from './components/RoleCard';
 export * from './components/RoleExplainer';
+export * from './components/RolesReference';
 export * from './components/ScopeNote';
 export * from './components/SearchField';
 export * from './components/SegmentedControl';

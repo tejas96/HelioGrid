@@ -7,18 +7,21 @@ import type { StaticScreenProps } from '@react-navigation/native';
 import type { ComponentType } from 'react';
 import { CompanyProfileSettingsScreen } from '../company-profile';
 import { ProfileScreen } from '../profile';
+import { RolesReferenceScreen } from '../roles-reference';
 import { ShellNotFoundState } from '../shell/components/ShellNotFoundState';
 import { ShellPage } from '../shell/components/ShellPage';
 import { TeamScreen } from '../team';
 import { useSettingsDrillDown } from './hooks/use-settings-drill-down';
 
-type Props = StaticScreenProps<{ segment: string }>;
+/** `from` names the page that opened this one, when its way back returns there (`?from=` in a link). */
+type Props = StaticScreenProps<{ segment: string; from?: string }>;
 
 /** The settings screens that have landed; every other row still opens the placeholder below. */
-const BUILT_ROW: Partial<Record<SettingsRow, ComponentType>> = {
+const BUILT_ROW: Partial<Record<SettingsRow, ComponentType<{ from: string | null }>>> = {
   profile: ProfileScreen,
   company_profile: CompanyProfileSettingsScreen,
   team: TeamScreen,
+  roles: RolesReferenceScreen,
 };
 
 /**
@@ -41,7 +44,11 @@ export function SettingsRowScreen({ route }: Props) {
     );
   }
   const Built = BUILT_ROW[row];
-  return Built === undefined ? <ComingLater row={row} /> : <Built />;
+  return Built === undefined ? (
+    <ComingLater row={row} />
+  ) : (
+    <Built from={route.params.from ?? null} />
+  );
 }
 
 /** A row whose screen has not landed: the bar names the page, so the body says only that it is coming. */

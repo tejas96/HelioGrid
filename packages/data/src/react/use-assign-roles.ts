@@ -19,6 +19,7 @@ import {
 } from '@heliogrid/domain';
 import { useCallback, useRef, useState } from 'react';
 import { answerOf, DataError } from '../errors/errors';
+import { useAssignRolesDraft } from './assign-roles-draft';
 import { useRepositories } from './context';
 import { useSession } from './use-session';
 import type { Team } from './use-team';
@@ -52,6 +53,17 @@ export interface AssignRolesEditor {
   /** The confirm's *Cancel*: back to the editor, the ticks kept. */
   cancelRemove(): void;
   close(): void;
+  /**
+   * Closes the editor and keeps who it was open for and the ticks, so the screen can leave for the
+   * Roles reference (`SCR-M01-14`) — a page of its own — and come back to them. Nothing to keep
+   * while it is closed.
+   */
+  stepAside(): void;
+  /**
+   * Opens the editor again from the ticks `stepAside` kept, once the list is read, for a person it
+   * still opens — and forgets them either way. Each screen calls it when Team shows again.
+   */
+  resume(): void;
 }
 
 /** What a removal tells the screen, which words it and raises its toasts. */
@@ -242,6 +254,24 @@ export function useAssignRoles(team: Team, notes: RolesRemovalNotes): AssignRole
     setConfirm(null);
   };
 
+  const draft = useAssignRolesDraft(
+    team,
+    { open, person, picked, saving: savingOn !== null && savingOn === sheet },
+    { close, openOn },
+  );
+
+  function openOn(row: TeamRow, ticks: readonly RolePreset[]) {
+    sheets.current += 1;
+    openSheet.current = sheets.current;
+    openPerson.current = row.id;
+    setSheet(sheets.current);
+    setPerson(row);
+    setPicked(ticks);
+    setRefusal(null);
+    setConfirm(null);
+    setOpen(true);
+  }
+
   async function undo(removal: RolesRemoval) {
     if (undone.current.has(removal)) return;
     undone.current.add(removal);
@@ -258,24 +288,12 @@ export function useAssignRoles(team: Team, notes: RolesRemovalNotes): AssignRole
     saving: savingOn !== null && savingOn === sheet,
     refusal,
     confirm,
-    openerOf: (row) =>
-      opensAssignRoles(row)
-        ? () => {
-            sheets.current += 1;
-            openSheet.current = sheets.current;
-            openPerson.current = row.id;
-            setSheet(sheets.current);
-            setPerson(row);
-            setPicked(row.roles);
-            setRefusal(null);
-            setConfirm(null);
-            setOpen(true);
-          }
-        : undefined,
+    openerOf: (row) => (opensAssignRoles(row) ? () => openOn(row, row.roles) : undefined),
     pick: (next) => setPicked(inMatrixOrder(next)),
     save: () => send(null),
     removeConfirmed,
     cancelRemove: () => setConfirm(null),
     close,
+    ...draft,
   };
 }

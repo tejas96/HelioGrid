@@ -451,17 +451,17 @@ class Component extends DCLogic {
      `glyph` is the ShellGlyph its disc carries in the grant line's cluster — decoration, the word is the meaning. */
   presetSpec() {
     return [
-      { id: "owner", name: "EPC Owner", verb: "run the whole business", glyph: "building", desc: "Everything, including team and roles, the agent, billing and company settings", held: false },
-      { id: "sales-manager", name: "Sales Manager", verb: "oversee sales", glyph: "gauge", desc: "The team's leads and proposals, project stages, payments and team reports", held: false },
-      { id: "sales-exec", name: "Sales Executive", verb: "sell", glyph: "document", desc: "Their own leads, surveys and proposals, including discounts, sending and marking won or lost", held: false },
-      { id: "survey", name: "Survey Engineer", verb: "survey", glyph: "search", desc: "Capture and submit surveys for the leads assigned to them", held: true },
-      { id: "design", name: "Design Engineer", verb: "design", glyph: "palette", desc: "Designs and proposals for the leads assigned to them, and design sign-off", held: true },
+      { id: "owner", name: "EPC Owner", verb: "run the whole business", glyph: "shield", desc: "Everything, including team and roles, the agent, billing and company settings", held: false },
+      { id: "sales-manager", name: "Sales Manager", verb: "oversee sales", glyph: "people", desc: "The team's leads and proposals, project stages, payments and team reports", held: false },
+      { id: "sales-exec", name: "Sales Executive", verb: "sell", glyph: "people", desc: "Their own leads, surveys and proposals, including discounts, sending and marking won or lost", held: false },
+      { id: "survey", name: "Survey Engineer", verb: "survey", glyph: "calendar-clock", desc: "Capture and submit surveys for the leads assigned to them", held: true },
+      { id: "design", name: "Design Engineer", verb: "design", glyph: "board", desc: "Designs and proposals for the leads assigned to them, and design sign-off", held: true },
       { id: "project", name: "Project Manager", verb: "run projects", glyph: "board", desc: "Their own projects' stages, documents, payments and installation checklist", held: false },
-      { id: "field-tech", name: "Field Technician", verb: "work assigned stops", glyph: "calendar-clock", desc: "Their own stops, check-ins, timeline and attendance", held: false },
-      { id: "install", name: "Installation Team Member", verb: "install", glyph: "house", desc: "The installation job assigned to them, its checklist and photos", held: true },
+      { id: "field-tech", name: "Field Technician", verb: "work assigned stops", glyph: "building", desc: "Their own stops, check-ins, timeline and attendance", held: false },
+      { id: "install", name: "Installation Team Member", verb: "install", glyph: "package", desc: "The installation job assigned to them, its checklist and photos", held: true },
       { id: "hr-admin", name: "HR/Admin", verb: "handle people and admin", glyph: "pair", desc: "Employee records, documents, attendance and leave", held: false },
       { id: "finance", name: "Finance", verb: "handle money", glyph: "wallet", desc: "Record payments, attach receipts, read any project's money, and see catalog prices and margins", held: false },
-      { id: "operations", name: "Operations", verb: "run operations", glyph: "package", desc: "Project stages, documents and blockers across all projects, plus the catalog and price book", held: false },
+      { id: "operations", name: "Operations", verb: "run operations", glyph: "gauge", desc: "Project stages, documents and blockers across all projects, plus the catalog and price book", held: false },
       { id: "marketing", name: "Marketing", verb: "run marketing", glyph: "megaphone", desc: "Create and run campaigns, see what they captured, and pass enquiries into the lead queue", held: false },
     ];
   }

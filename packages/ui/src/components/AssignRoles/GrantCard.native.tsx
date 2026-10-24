@@ -4,7 +4,8 @@ import { AccessibilityInfo, Platform, StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { AvatarGroup } from '../Avatar/Avatar.native';
-import { GRANT_DISC_SIZE, GRANT_DISCS_SHOWN, PRESET_GLYPH } from './AssignRoles.logic';
+import { PRESET_GLYPH } from '../SettingsList/SettingsList.logic';
+import { GRANT_DISC_SIZE, GRANT_DISCS_SHOWN } from './AssignRoles.logic';
 import type { AssignRolesGrant } from './AssignRoles.types';
 
 /** The grant line's card, as the web half draws it: the cluster is decoration, the sentence the meaning. */

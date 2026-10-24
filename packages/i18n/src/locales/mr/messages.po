@@ -48,7 +48,7 @@ msgid "{company} is set up."
 msgstr "{company} तयार आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:33
+#: src/copy/assign-roles.ts:34
 msgid "{company} must keep one EPC Owner, so make someone else one first."
 msgstr "{company} मध्ये एक EPC Owner असणे आवश्यक आहे, म्हणून आधी दुसऱ्या कोणाला बनवा."
 
@@ -101,6 +101,11 @@ msgstr "{count, plural, one {# सूचना} other {# सूचना}}"
 #: src/copy/notifications.ts:98
 msgid "{count, plural, one {# payment due} other {# payments due}}"
 msgstr "{count, plural, one {# पेमेंट बाकी} other {# पेमेंट बाकी}}"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:29
+msgid "{count, plural, one {# person} other {# people}}"
+msgstr "{count, plural, one {# व्यक्ती} other {# व्यक्ती}}"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:111
@@ -273,7 +278,7 @@ msgid "{name} asks to join"
 msgstr "{name} सामील होऊ इच्छितात"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:28
+#: src/copy/assign-roles.ts:29
 msgid "{name} can {list}."
 msgstr "{name} {list} यांचे काम करू शकतात."
 
@@ -288,7 +293,7 @@ msgid "{name} declined the invite"
 msgstr "{name} यांनी आमंत्रण नाकारले"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:40
+#: src/copy/assign-roles.ts:41
 msgid "{name} is no longer active on this team, so nothing changed."
 msgstr "{name} आता या टीममध्ये सक्रिय नाहीत, त्यामुळे काहीही बदलले नाही."
 
@@ -298,12 +303,12 @@ msgid "{name} stopped being an EPC Owner on another device."
 msgstr "{name} दुसऱ्या डिव्हाइसवर EPC मालक राहिले नाहीत."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:29
+#: src/copy/assign-roles.ts:30
 msgid "{name} would hold no presets."
 msgstr "{name} यांच्याकडे एकही प्रीसेट राहणार नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:38
+#: src/copy/assign-roles.ts:39
 msgid "{name}'s roles weren't saved"
 msgstr "{name} यांच्या भूमिका सेव्ह झाल्या नाहीत"
 
@@ -464,6 +469,7 @@ msgstr "पुशबद्दल"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:36
+#: src/copy/roles-reference.ts:21
 msgid "About roles"
 msgstr "भूमिकांबद्दल"
 
@@ -544,8 +550,14 @@ msgstr "फोटो जोडा"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:47
+#: src/copy/role-matrix.ts:16
 msgid "Add and edit leads"
 msgstr "लीड जोडा आणि बदला"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:12
+msgid "Add company catalog products inline while designing or writing a proposal"
+msgstr "डिझाइन किंवा प्रस्ताव करताना कंपनी कॅटलॉगमध्ये प्रॉडक्ट जोडा"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:106
@@ -583,9 +595,20 @@ msgid "Agent & voice"
 msgstr "एजंट आणि आवाज"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:100
 #: src/copy/team.ts:11
 msgid "All"
 msgstr "सर्व"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:115
+msgid "All (money scope)"
+msgstr "सर्व (पैशांपुरते)"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:60
+msgid "All projects, the catalog and price book"
+msgstr "सर्व प्रोजेक्ट, कॅटलॉग आणि प्राइस बुक"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:22
@@ -623,6 +646,11 @@ msgid "Anything that needs you, or changes on work you hold, lands here — newe
 msgstr "ज्या कामात तुमची गरज आहे, किंवा तुमच्या कामात जे बदलते, ते इथे येते — सर्वात नवे आधी, आणि सोबत तुम्ही करू शकता ते एक काम."
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:47
+msgid "Approve designs"
+msgstr "डिझाइन मंजूर करा"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:53
 msgid "Approve designs or send them back"
 msgstr "डिझाइन मंजूर करा किंवा परत पाठवा"
@@ -631,6 +659,16 @@ msgstr "डिझाइन मंजूर करा किंवा परत �
 #: src/copy/role-card.ts:62
 msgid "Approve leave"
 msgstr "रजा मंजूर करा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:77
+msgid "Approve or decline a leave request"
+msgstr "रजेची विनंती मंजूर किंवा नाकारा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:39
+msgid "Approve spend-adjacent campaign settings"
+msgstr "खर्चाशी संबंधित कॅम्पेन सेटिंग मंजूर करा"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:48
@@ -649,6 +687,7 @@ msgstr "सामील होण्याची विनंती केल्
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:55
+#: src/copy/role-matrix.ts:17
 msgid "Assign leads to others"
 msgstr "इतरांना लीड सोपवा"
 
@@ -658,14 +697,34 @@ msgid "Assign roles"
 msgstr "भूमिका द्या"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:103
+msgid "Assigned"
+msgstr "सोपवलेले"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:114
+msgid "Assigned job only"
+msgstr "फक्त सोपवलेले काम"
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:16
 msgid "Assumed"
 msgstr "गृहीत धरलेले"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:33
+msgid "Author campaign content and per-language campaign templates, and submit them for channel registration"
+msgstr "कॅम्पेनचा मजकूर आणि प्रत्येक भाषेचे टेम्पलेट लिहा, आणि ते चॅनल नोंदणीसाठी पाठवा"
+
+#. js-lingui-explicit-id
 #: src/copy/explainer.ts:7
 msgid "Back"
 msgstr "मागे"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:41
+msgid "Back to assign roles"
+msgstr "भूमिका देण्याकडे परत"
 
 #. js-lingui-explicit-id
 #: src/copy/settings.ts:20
@@ -699,6 +758,11 @@ msgid "Billing"
 msgstr "बिलिंग"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:24
+msgid "Book a site visit from a lead"
+msgstr "लीडवरून साइट भेट बुक करा"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:56
 msgid "Both"
 msgstr "दोन्ही"
@@ -707,6 +771,11 @@ msgstr "दोन्ही"
 #: src/copy/settings.ts:37
 msgid "Branding"
 msgstr "ब्रँडिंग"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:30
+msgid "Build a campaign audience from CRM segments"
+msgstr "CRM सेगमेंटमधून कॅम्पेन ऑडियन्स तयार करा"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:49
@@ -722,6 +791,11 @@ msgstr "इमारत, रस्ता, परिसर"
 #: src/copy/energy-source.ts:11
 msgid "Built-in estimate ±{tolerance}%"
 msgstr "अंगभूत अंदाज ±{tolerance}%"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:20
+msgid "Bulk-import leads from a file"
+msgstr "फाइलमधून एकाच वेळी लीड इम्पोर्ट करा"
 
 #. js-lingui-explicit-id
 #: src/copy/settings.ts:36
@@ -754,10 +828,30 @@ msgid "calling rules"
 msgstr "कॉलिंग नियम"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:26
+msgid "Campaign visibility scope"
+msgstr "कॅम्पेन किती दिसतात"
+
+#. js-lingui-explicit-id
 #: src/copy/homes.ts:15
 #: src/copy/shell.ts:94
 msgid "Campaigns"
 msgstr "कॅम्पेन"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:61
+msgid "Campaigns and the enquiries they capture"
+msgstr "कॅम्पेन आणि त्यातून आलेल्या चौकशी"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:36
+msgid "Can do · {count}"
+msgstr "करू शकतात · {count}"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:37
+msgid "Can’t · {count}"
+msgstr "करू शकत नाहीत · {count}"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:46
@@ -774,6 +868,11 @@ msgstr "ते टीमवर रद्द करा"
 #: src/copy/role-presets.ts:18
 msgid "Capture and submit surveys for the leads assigned to them"
 msgstr "त्यांना दिलेल्या लीडचे सर्वे नोंदवा आणि सादर करा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:40
+msgid "Capture site surveys"
+msgstr "साइट सर्व्हे करा"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:25
@@ -821,6 +920,11 @@ msgid "Changed your mind, or it is not the same company?"
 msgstr "विचार बदलला, किंवा ही तीच कंपनी नाही?"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:63
+msgid "Check in and out of a site, and log a visit and its outcome"
+msgstr "साइटवर चेक-इन आणि चेक-आउट करा, आणि भेट व तिचा निकाल नोंदवा"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:84
 msgid "Check the format"
 msgstr "स्वरूप तपासा"
@@ -861,6 +965,7 @@ msgid "Clear search"
 msgstr "शोध साफ करा"
 
 #. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:40
 #: src/copy/shell.ts:51
 msgid "Close"
 msgstr "बंद करा"
@@ -906,6 +1011,16 @@ msgid "company setup"
 msgstr "कंपनी सेटअप"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:11
+msgid "Configure company settings"
+msgstr "कंपनी सेटिंग बदला"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:9
+msgid "Configure the agent and its knowledge"
+msgstr "एजंट आणि त्याची माहिती सेट करा"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:87
 msgid "Confirm your mobile number"
 msgstr "तुमचा मोबाइल नंबर निश्चित करा"
@@ -914,6 +1029,16 @@ msgstr "तुमचा मोबाइल नंबर निश्चित �
 #: src/copy/provenance.ts:24
 msgid "Confirmed"
 msgstr "पुष्टी झालेले"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:36
+msgid "Connect, reconnect and disconnect a channel identity"
+msgstr "चॅनल ओळख जोडा, पुन्हा जोडा आणि काढा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:80
+msgid "Connect, rotate and disconnect the company’s own collections account"
+msgstr "कंपनीचे स्वतःचे कलेक्शन खाते जोडा, बदला आणि काढा"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-language.ts:27
@@ -961,6 +1086,11 @@ msgid "Continue without it"
 msgstr "याशिवाय पुढे जा"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:119
+msgid "Coordinator"
+msgstr "कोऑर्डिनेटर"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:45
 msgid "Couldn’t load older notifications. Try again."
 msgstr "जुन्या सूचना लोड होऊ शकल्या नाहीत. पुन्हा प्रयत्न करा."
@@ -986,6 +1116,16 @@ msgid "Couldn’t mark them read"
 msgstr "या वाचलेल्या म्हणून खूण करता आल्या नाहीत"
 
 #. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:31
+msgid "Count unavailable"
+msgstr "संख्या उपलब्ध नाही"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:25
+msgid "Counts include active members only. Someone whose invite is still open, or who was deactivated, is named under the role but not counted."
+msgstr "संख्येत फक्त सक्रिय सदस्य आहेत. ज्यांचे आमंत्रण अजून खुले आहे, किंवा ज्यांना निष्क्रिय केले, त्यांचे नाव भूमिकेखाली आहे पण ते मोजले जात नाहीत."
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:24
 msgid "Create a company"
 msgstr "कंपनी तयार करा"
@@ -996,14 +1136,25 @@ msgid "Create a company account"
 msgstr "कंपनीचे खाते तयार करा"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:19
+msgid "Create a lead despite a detected duplicate"
+msgstr "डुप्लिकेट सापडला तरी लीड तयार करा"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:76
 msgid "Create a new company anyway"
 msgstr "तरीही नवी कंपनी तयार करा"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:52
+#: src/copy/role-matrix.ts:46
 msgid "Create and edit designs"
 msgstr "डिझाइन तयार करा आणि बदला"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:51
+msgid "Create and edit proposals"
+msgstr "प्रस्ताव तयार करा आणि बदला"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:54
@@ -1034,6 +1185,11 @@ msgstr "तुमची पहिली लीड तयार करा"
 #: src/copy/company-signup.ts:87
 msgid "Create your own company instead"
 msgstr "त्याऐवजी तुमची स्वतःची कंपनी तयार करा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:27
+msgid "Create, schedule, run, pause and cancel campaigns"
+msgstr "कॅम्पेन तयार करा, शेड्यूल करा, चालवा, थांबवा आणि रद्द करा"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:48
@@ -1111,7 +1267,13 @@ msgid "Default for {market}"
 msgstr "{market} साठी डीफॉल्ट"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:69
+msgid "Define a site’s geofence and adjust its radius"
+msgstr "साइटचे जिओफेन्स ठरवा आणि त्याची त्रिज्या बदला"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:56
+#: src/copy/role-matrix.ts:18
 msgid "Delete leads"
 msgstr "लीड हटवा"
 
@@ -1131,7 +1293,7 @@ msgid "Derived"
 msgstr "गणनेतून काढलेले"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:49
+#: src/copy/assign-roles.ts:50
 #: src/copy/freshness.ts:24
 msgid "design"
 msgstr "डिझाइन"
@@ -1152,6 +1314,11 @@ msgid "Designs and proposals for the leads assigned to them, and design sign-off
 msgstr "त्यांना दिलेल्या लीडचे डिझाइन आणि प्रस्ताव, आणि डिझाइनची मंजुरी"
 
 #. js-lingui-explicit-id
+#: src/copy/role-presets.ts:54
+msgid "Designs, proposals and design sign-off"
+msgstr "डिझाइन, प्रस्ताव आणि डिझाइनची मंजुरी"
+
+#. js-lingui-explicit-id
 #: src/copy/name-and-photo-editor.ts:15
 msgid "Done"
 msgstr "झाले"
@@ -1165,6 +1332,11 @@ msgstr "प्रत्येक आमंत्रण पाठवल्या�
 #: src/copy/profile-preferences.ts:26
 msgid "Edit name"
 msgstr "नाव बदला"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:58
+msgid "Employee records, attendance and leave"
+msgstr "कर्मचारी नोंदी, हजेरी आणि रजा"
 
 #. js-lingui-explicit-id
 #: src/copy/role-presets.ts:29
@@ -1197,7 +1369,7 @@ msgid "Estimated"
 msgstr "अंदाजित"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:26
+#: src/copy/assign-roles.ts:27
 msgid "Every change is recorded under your name — roles before and after."
 msgstr "प्रत्येक बदल तुमच्या नावाने नोंदवला जातो — आधीच्या आणि नंतरच्या भूमिका."
 
@@ -1210,6 +1382,11 @@ msgstr "{company} मधील सर्वजण"
 #: src/copy/team.ts:21
 msgid "Everyone at {company} matching {query}"
 msgstr "{company} मधील {query} शी जुळणारे सर्वजण"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:50
+msgid "Everything, always"
+msgstr "सर्व काही, नेहमी"
 
 #. js-lingui-explicit-id
 #: src/copy/role-presets.ts:9
@@ -1250,6 +1427,11 @@ msgstr "फूट"
 #: src/copy/shell.ts:83
 msgid "Field Technician"
 msgstr "फील्ड तंत्रज्ञ"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:62
+msgid "Field-work visibility scope"
+msgstr "फील्डचे काम किती दिसते"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:38
@@ -1394,12 +1576,17 @@ msgid "Grievance officer"
 msgstr "तक्रार अधिकारी"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:54
+#: src/copy/role-matrix.ts:54
+msgid "Hand a lead to the voice agent on demand"
+msgstr "गरजेनुसार लीड व्हॉइस एजंटकडे सोपवा"
+
+#. js-lingui-explicit-id
+#: src/copy/assign-roles.ts:55
 msgid "handle money"
 msgstr "पैसे"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:53
+#: src/copy/assign-roles.ts:54
 msgid "handle people and admin"
 msgstr "लोक आणि प्रशासन"
 
@@ -1457,6 +1644,11 @@ msgstr "HelioGrid चे उत्तर वाचता आले नाही.
 #: src/copy/notifications.ts:34
 msgid "Hide these {count}"
 msgstr "या {count} लपवा"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:32
+msgid "Holder counts didn’t load"
+msgstr "संख्या लोड झाली नाही"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:89
@@ -1519,7 +1711,7 @@ msgid "Indicative proposal. Generation and savings are estimated from system siz
 msgstr "सूचक प्रस्ताव. वीजनिर्मिती आणि बचतीचा अंदाज सिस्टमच्या आकारावरून आणि ठिकाणावरून केला आहे. साइट सर्व्हे आणि सावली विश्लेषणातून अंतिम आकडे निश्चित होतील."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:52
+#: src/copy/assign-roles.ts:53
 msgid "install"
 msgstr "इन्स्टॉलेशन"
 
@@ -1630,6 +1822,11 @@ msgid "Last set by {name}"
 msgstr "{name} यांनी शेवटची ठरवली"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:15
+msgid "Lead visibility scope"
+msgstr "लीड किती दिसतात"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:90
 msgid "Leads"
 msgstr "लीड्स"
@@ -1640,9 +1837,14 @@ msgid "Links {email}"
 msgstr "{email} जोडते"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:37
+#: src/copy/assign-roles.ts:38
 msgid "Loading {name}'s presets"
 msgstr "{name} यांचे प्रीसेट लोड होत आहेत"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:30
+msgid "Loading how many people hold {role}"
+msgstr "{role} किती जणांकडे आहे, लोड होत आहे"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:28
@@ -1695,14 +1897,35 @@ msgid "Make someone else an EPC Owner first"
 msgstr "आधी दुसऱ्या कोणाला EPC मालक करा"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:10
+msgid "Manage catalog and price book"
+msgstr "कॅटलॉग आणि प्राइस बुक सांभाळा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:8
+msgid "Manage team and roles"
+msgstr "टीम आणि भूमिका सांभाळा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:85
+msgid "Manage the company’s platform billing"
+msgstr "कंपनीचे प्लॅटफॉर्म बिलिंग सांभाळा"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:67
 msgid "Manage the plan and billing"
 msgstr "प्लॅन आणि बिलिंग सांभाळा"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:51
+#: src/copy/role-matrix.ts:57
 msgid "Mark a lead won or lost"
 msgstr "लीड जिंकली किंवा गमावली असे चिन्हांकित करा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:66
+msgid "Mark one’s own day start and day end"
+msgstr "स्वतःच्या दिवसाची सुरुवात आणि शेवट नोंदवा"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:38
@@ -1730,9 +1953,19 @@ msgid "Measurements"
 msgstr "मापे"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:25
+msgid "Merge two customer records onto a survivor"
+msgstr "दोन ग्राहक नोंदी एकात विलीन करा"
+
+#. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:32
 msgid "Metres"
 msgstr "मीटर"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:90
+msgid "Mint, label and re-mint a customer link for a named contact"
+msgstr "एखाद्या संपर्कासाठी ग्राहक लिंक तयार करा, नाव द्या आणि पुन्हा तयार करा"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:33
@@ -1754,6 +1987,11 @@ msgstr "आणखी"
 #: src/copy/invite.ts:41
 msgid "More than one is fine, and roles can change later on Team."
 msgstr "एकापेक्षा जास्तही चालेल, आणि भूमिका नंतर टीमवर बदलता येतात."
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:21
+msgid "Move a lead into and out of the parking/terminal states"
+msgstr "लीडला थांबवलेल्या किंवा बंद स्थितीत टाका आणि तिथून काढा"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:18
@@ -1828,6 +2066,11 @@ msgid "No open invites"
 msgstr "खुले आमंत्रण नाही"
 
 #. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:34
+msgid "Nobody holds this yet"
+msgstr "अजून हे कोणाकडेही नाही"
+
+#. js-lingui-explicit-id
 #: src/copy/disclosure.ts:28
 msgid "Not a structural certification"
 msgstr "संरचनात्मक प्रमाणपत्र नाही"
@@ -1898,7 +2141,7 @@ msgid "Nothing assigned to you yet"
 msgstr "तुम्हाला अजून काहीही सोपवलेले नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:39
+#: src/copy/assign-roles.ts:40
 msgid "Nothing changed for {name} — try Save again."
 msgstr "{name} यांच्यासाठी काहीही बदलले नाही — पुन्हा सेव्ह करा."
 
@@ -2033,6 +2276,11 @@ msgid "Open the demo project"
 msgstr "डेमो प्रोजेक्ट उघडा"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:86
+msgid "Open the usage screen and the subscription invoice list"
+msgstr "वापर स्क्रीन आणि सबस्क्रिप्शन बिलांची यादी उघडा"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:84
 msgid "Opening Google sign-in"
 msgstr "Google साइन इन उघडत आहोत"
@@ -2073,9 +2321,54 @@ msgid "Out of date: {changes} changed"
 msgstr "कालबाह्य: {changes} बदलले"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:46
+#: src/copy/assign-roles.ts:47
 msgid "oversee sales"
 msgstr "विक्रीवरील देखरेख"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:102
+msgid "Own"
+msgstr "स्वतःचे"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:113
+msgid "Own (read-only)"
+msgstr "स्वतःचे (फक्त वाचणे)"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:112
+msgid "Own captures until triage"
+msgstr "स्वतः आणलेल्या लीड, छाननीपर्यंत"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:107
+msgid "Own projects"
+msgstr "स्वतःचे प्रोजेक्ट"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:110
+msgid "Own projects’ deals (read)"
+msgstr "स्वतःच्या प्रोजेक्टच्या डील (वाचणे)"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:108
+msgid "Own projects’ field work"
+msgstr "स्वतःच्या प्रोजेक्टचे फील्ड काम"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:109
+msgid "Own projects’ field workers"
+msgstr "स्वतःच्या प्रोजेक्टचे फील्ड कर्मचारी"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:105
+msgid "Own queued"
+msgstr "स्वतः रांगेत लावलेले"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:106
+msgid "Own visits"
+msgstr "स्वतःच्या भेटी"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:11
@@ -2102,6 +2395,11 @@ msgstr "पेमेंटच्या अटी"
 #: src/copy/notifications.ts:69
 msgid "Payments"
 msgstr "पेमेंट"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:59
+msgid "Payments, receipts and project money"
+msgstr "पेमेंट, पावत्या आणि प्रोजेक्टचे पैसे"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:93
@@ -2137,6 +2435,16 @@ msgstr "पिन कोड"
 #: src/copy/company-logo.ts:22
 msgid "PNG or JPG, up to {maxMegabytes} MB, at least {minWidth} px wide"
 msgstr "PNG किंवा JPG, कमाल {maxMegabytes} MB, किमान {minWidth} px रुंद"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:104
+msgid "Portfolio"
+msgstr "पोर्टफोलिओ"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:111
+msgid "Portfolio deals (read)"
+msgstr "पोर्टफोलिओच्या डील (वाचणे)"
 
 #. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:25
@@ -2189,6 +2497,11 @@ msgid "Project stages, documents and blockers across all projects, plus the cata
 msgstr "सर्व प्रोजेक्टचे टप्पे, कागदपत्रे आणि अडथळे, तसेच कॅटलॉग आणि प्राइस बुक"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:61
+msgid "Project visibility scope"
+msgstr "प्रोजेक्ट किती दिसतात"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:92
 msgid "Projects"
 msgstr "प्रोजेक्ट्स"
@@ -2224,6 +2537,21 @@ msgid "Rajesh Kulkarni"
 msgstr "राजेश कुलकर्णी"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:116
+msgid "Read (results)"
+msgstr "वाचणे (निकाल)"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:73
+msgid "Read and edit employee records; upload and manage employee documents"
+msgstr "कर्मचारी नोंदी वाचा आणि बदला; कर्मचारी कागदपत्रे अपलोड करा आणि सांभाळा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:67
+msgid "Read others’ attendance records"
+msgstr "इतरांची हजेरी वाचा"
+
+#. js-lingui-explicit-id
 #: src/copy/energy-source.ts:10
 msgid "Real · PVGIS ({database})"
 msgstr "वास्तविक · PVGIS ({database})"
@@ -2237,6 +2565,11 @@ msgstr "पुन्हा गणना होत आहे"
 #: src/copy/role-card.ts:60
 msgid "Record payments"
 msgstr "पेमेंट नोंदवा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:79
+msgid "Record payments against tranches"
+msgstr "हप्त्यांवर पेमेंट नोंदवा"
 
 #. js-lingui-explicit-id
 #: src/copy/role-presets.ts:30
@@ -2257,6 +2590,11 @@ msgstr "{first} यांच्याकडून {list} काढायचे?"
 #: src/copy/first-run-profile.ts:44
 msgid "Remove it and your initials come back."
 msgstr "तो काढला की तुमची आद्याक्षरे परत येतात."
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:56
+msgid "Remove or cancel queued agent calls"
+msgstr "रांगेतील एजंट कॉल काढा किंवा रद्द करा"
 
 #. js-lingui-explicit-id
 #: src/copy/remove-roles.ts:22
@@ -2282,6 +2620,11 @@ msgstr "बदला"
 #: src/copy/provenance.ts:26
 msgid "Reported"
 msgstr "कळवलेले"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:76
+msgid "Request one’s own leave"
+msgstr "स्वतःची रजा मागा"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:74
@@ -2314,9 +2657,19 @@ msgid "Residential"
 msgstr "निवासी"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:45
+msgid "Resolve or waive a remote-survey gap"
+msgstr "रिमोट सर्व्हेमधील कमतरता पूर्ण करा किंवा सोडा"
+
+#. js-lingui-explicit-id
 #: src/copy/team-acts.ts:27
 msgid "Revoke {name}’s invite?"
 msgstr "{name} यांचे आमंत्रण मागे घ्यायचे?"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:93
+msgid "Revoke a customer link, including regenerate-with-revoke"
+msgstr "ग्राहक लिंक रद्द करा, नवीन तयार करून रद्द करणेही"
 
 #. js-lingui-explicit-id
 #: src/copy/team-acts.ts:14
@@ -2330,9 +2683,15 @@ msgstr "आमंत्रण मागे घ्या: {name}"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:37
+#: src/copy/roles-reference.ts:28
 #: src/copy/team.ts:26
 msgid "Roles"
 msgstr "भूमिका"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:22
+msgid "Roles can’t be created, renamed or deleted, so a role means the same for everyone. You give someone a role from their row in Team."
+msgstr "भूमिका तयार, नाव बदलणे किंवा काढणे शक्य नाही, म्हणून प्रत्येकासाठी एका भूमिकेचा अर्थ एकच असतो. एखाद्याला भूमिका टीममधील त्याच्या ओळीतून दिली जाते."
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:35
@@ -2340,6 +2699,7 @@ msgid "Roles for this invite"
 msgstr "या आमंत्रणाच्या भूमिका"
 
 #. js-lingui-explicit-id
+#: src/copy/assign-roles.ts:26
 #: src/copy/settings.ts:35
 msgid "Roles reference"
 msgstr "भूमिकांची माहिती"
@@ -2350,17 +2710,27 @@ msgid "Roof measured from satellite imagery. A site visit will confirm dimension
 msgstr "छताचे मोजमाप उपग्रह प्रतिमांवरून घेतले आहे. साइट भेटीत मापे, सावली आणि वीज जोडणीची सोय निश्चित होईल."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:56
+#: src/copy/role-matrix.ts:41
+msgid "Run a remote survey"
+msgstr "रिमोट सर्व्हे करा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:48
+msgid "Run in-canvas AI roof detection on the studio canvas"
+msgstr "स्टुडिओ कॅनव्हासवर AI ने छत ओळखा"
+
+#. js-lingui-explicit-id
+#: src/copy/assign-roles.ts:57
 msgid "run marketing"
 msgstr "मार्केटिंग"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:55
+#: src/copy/assign-roles.ts:56
 msgid "run operations"
 msgstr "ऑपरेशन्स"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:50
+#: src/copy/assign-roles.ts:51
 msgid "run projects"
 msgstr "प्रोजेक्ट"
 
@@ -2370,7 +2740,7 @@ msgid "Run the installation checklist"
 msgstr "इन्स्टॉलेशन चेकलिस्ट चालवा"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:45
+#: src/copy/assign-roles.ts:46
 msgid "run the whole business"
 msgstr "संपूर्ण व्यवसाय"
 
@@ -2411,7 +2781,7 @@ msgid "Save changes to your business profile"
 msgstr "तुमच्या व्यवसाय प्रोफाइलमधील बदल जतन करा"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:30
+#: src/copy/assign-roles.ts:31
 msgid "Save roles"
 msgstr "भूमिका सेव्ह करा"
 
@@ -2431,6 +2801,11 @@ msgid "Saves both; you can change them in your company profile."
 msgstr "दोन्ही साठवते; तुम्ही ती तुमच्या कंपनी प्रोफाइलमध्ये बदलू शकता."
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:42
+msgid "Schedule, reassign and cancel site-survey visits"
+msgstr "साइट सर्व्हे भेटी शेड्यूल करा, पुन्हा सोपवा आणि रद्द करा"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:21
 msgid "Search"
 msgstr "शोधा"
@@ -2441,6 +2816,21 @@ msgid "See a finished job"
 msgstr "पूर्ण झालेले काम पाहा"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:53
+msgid "See agent performance"
+msgstr "एजंटची कामगिरी पाहा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:70
+msgid "See another person’s live position, route timeline, movement history and day playback"
+msgstr "दुसऱ्याचे लाइव्ह ठिकाण, मार्गाची टाइमलाइन, हालचालींचा इतिहास आणि दिवसाचा रिप्ले पाहा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:89
+msgid "See company reports"
+msgstr "कंपनी रिपोर्ट पाहा"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:45
 msgid "See every lead and follow-up"
 msgstr "प्रत्येक लीड आणि फॉलो-अप पाहा"
@@ -2449,6 +2839,11 @@ msgstr "प्रत्येक लीड आणि फॉलो-अप पा�
 #: src/copy/role-card.ts:63
 msgid "See reports beyond your own"
 msgstr "स्वतःपलीकडील रिपोर्ट पाहा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:55
+msgid "See the agent call queue"
+msgstr "एजंट कॉलची रांग पाहा"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:43
@@ -2471,7 +2866,7 @@ msgid "See your team's leads and follow-ups"
 msgstr "तुमच्या टीमच्या लीड आणि फॉलो-अप पाहा"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:47
+#: src/copy/assign-roles.ts:48
 msgid "sell"
 msgstr "विक्री"
 
@@ -2497,6 +2892,7 @@ msgstr "पुन्हा पाठवा"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:50
+#: src/copy/role-matrix.ts:52
 msgid "Send proposals to customers"
 msgstr "ग्राहकांना प्रस्ताव पाठवा"
 
@@ -2504,6 +2900,11 @@ msgstr "ग्राहकांना प्रस्ताव पाठवा"
 #: src/copy/sign-in.ts:102
 msgid "Send the code by SMS and link this Google login"
 msgstr "SMS ने कोड पाठवा आणि हे Google लॉगिन जोडा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:83
+msgid "Send the plain payment-request message"
+msgstr "साधा पेमेंट-विनंती संदेश पाठवा"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:80
@@ -2531,6 +2932,11 @@ msgid "Sent by SMS to"
 msgstr "SMS ने या नंबरवर पाठवला"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:78
+msgid "Set or change an employee’s manager mapping"
+msgstr "कर्मचाऱ्याचा मॅनेजर ठरवा किंवा बदला"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:65
 msgid "Set up the calling agent"
 msgstr "कॉलिंग एजंट सेट करा"
@@ -2539,6 +2945,11 @@ msgstr "कॉलिंग एजंट सेट करा"
 #: src/copy/settings.ts:18
 msgid "Settings"
 msgstr "सेटिंग्ज"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:35
+msgid "Show"
+msgstr "दाखवा"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:18
@@ -2721,7 +3132,7 @@ msgid "subsidy rules"
 msgstr "अनुदान नियम"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:48
+#: src/copy/assign-roles.ts:49
 msgid "survey"
 msgstr "सर्व्हे"
 
@@ -2739,6 +3150,11 @@ msgstr "सर्व्हे इंजिनिअर"
 #: src/copy/disclosure.ts:27
 msgid "Surveyed remotely"
 msgstr "दूरून सर्व्हे केलेले"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:53
+msgid "Surveys for the leads assigned to them"
+msgstr "त्यांना सोपवलेल्या लीडचे सर्व्हे"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:40
@@ -2777,9 +3193,15 @@ msgstr "कर नोंदणी"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:70
+#: src/copy/role-matrix.ts:101
 #: src/copy/settings.ts:34
 msgid "Team"
 msgstr "टीम"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:118
+msgid "Team-scoped"
+msgstr "टीमपुरते"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:38
@@ -2882,6 +3304,11 @@ msgid "The code went to the number {first} entered; if it is wrong, decline."
 msgstr "कोड {first} यांनी टाकलेल्या नंबरवर गेला आहे; तो चुकीचा असल्यास नाकारा."
 
 #. js-lingui-explicit-id
+#: src/copy/role-presets.ts:57
+msgid "The installation job assigned to them"
+msgstr "त्यांना सोपवलेले इन्स्टॉलेशनचे काम"
+
+#. js-lingui-explicit-id
 #: src/copy/role-presets.ts:26
 msgid "The installation job assigned to them, its checklist and photos"
 msgstr "त्यांना दिलेले इंस्टॉलेशनचे काम, त्याची चेकलिस्ट आणि फोटो"
@@ -2932,6 +3359,11 @@ msgid "The team’s leads and proposals, project stages, payments and team repor
 msgstr "टीमचे लीड आणि प्रस्ताव, प्रोजेक्टचे टप्पे, पेमेंट आणि टीम रिपोर्ट"
 
 #. js-lingui-explicit-id
+#: src/copy/role-presets.ts:51
+msgid "The team’s leads, proposals and payments"
+msgstr "टीमच्या लीड, प्रस्ताव आणि पेमेंट"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:68
 msgid "The tranches must add up to exactly 100%. Place the remainder before saving."
 msgstr "हप्त्यांची बेरीज नेमकी 100% असली पाहिजे. सेव्ह करण्यापूर्वी उरलेली रक्कम ठेवा."
@@ -2947,14 +3379,29 @@ msgid "Their name"
 msgstr "त्यांचे नाव"
 
 #. js-lingui-explicit-id
+#: src/copy/role-presets.ts:52
+msgid "Their own leads, surveys and proposals"
+msgstr "स्वतःच्या लीड, सर्व्हे आणि प्रस्ताव"
+
+#. js-lingui-explicit-id
 #: src/copy/role-presets.ts:15
 msgid "Their own leads, surveys and proposals, including discounts, sending and marking won or lost"
 msgstr "स्वतःचे लीड, सर्वे आणि प्रस्ताव, सवलत, पाठवणे आणि जिंकले किंवा हरले नोंदवणे यांसह"
 
 #. js-lingui-explicit-id
+#: src/copy/role-presets.ts:55
+msgid "Their own projects and payments"
+msgstr "स्वतःचे प्रोजेक्ट आणि पेमेंट"
+
+#. js-lingui-explicit-id
 #: src/copy/role-presets.ts:22
 msgid "Their own projects’ stages, documents, payments and installation checklist"
 msgstr "स्वतःच्या प्रोजेक्टचे टप्पे, कागदपत्रे, पेमेंट आणि इंस्टॉलेशन चेकलिस्ट"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:56
+msgid "Their own stops, check-ins and attendance"
+msgstr "स्वतःचे थांबे, चेक-इन आणि हजेरी"
 
 #. js-lingui-explicit-id
 #: src/copy/role-presets.ts:25
@@ -3087,7 +3534,7 @@ msgid "Three details, and you're in."
 msgstr "तीन तपशील, आणि तुम्ही आत आहात."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:32
+#: src/copy/assign-roles.ts:33
 msgid "Tick at least one preset."
 msgstr "किमान एक प्रीसेट निवडा."
 
@@ -3102,7 +3549,7 @@ msgid "Tick it again on {first}'s row whenever you like."
 msgstr "हवे तेव्हा {first} यांच्या ओळीवर ती पुन्हा टिक करा."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:31
+#: src/copy/assign-roles.ts:32
 msgid "Tick or clear a preset first."
 msgstr "आधी एखादा प्रीसेट निवडा किंवा काढा."
 
@@ -3133,6 +3580,7 @@ msgstr "खूप प्रयत्न झाले. थोडा वेळ थ
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:38
+#: src/copy/roles-reference.ts:33
 #: src/copy/sign-in.ts:40
 msgid "Try again"
 msgstr "पुन्हा प्रयत्न करा"
@@ -3181,6 +3629,21 @@ msgstr "फोटो पुन्हा पाठवा"
 #: src/copy/profile-preferences.ts:40
 msgid "Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way."
 msgstr "एखाद्या गटाचा पुश थांबवण्यासाठी तो बंद करा. प्रत्येक सूचना तरीही HelioGrid मध्ये येते — सूचना मध्ये तिची नोंद कायम राहते."
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:68
+msgid "Turn per-employee field tracking on or off"
+msgstr "प्रत्येक कर्मचाऱ्याचे फील्ड ट्रॅकिंग चालू किंवा बंद करा"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:20
+msgid "Twelve fixed roles. Choose one to see what it can do."
+msgstr "बारा ठरलेल्या भूमिका. एक निवडा आणि ती काय करू शकते ते पाहा."
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:19
+msgid "Twelve fixed roles. Tap one to see what it can do."
+msgstr "बारा ठरलेल्या भूमिका. एकावर टॅप करा आणि ती काय करू शकते ते पाहा."
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:123
@@ -3234,6 +3697,7 @@ msgstr "App Store वर अपडेट करा"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:57
+#: src/copy/role-matrix.ts:58
 msgid "Update project stages"
 msgstr "प्रोजेक्टचे टप्पे अपडेट करा"
 
@@ -3241,6 +3705,11 @@ msgstr "प्रोजेक्टचे टप्पे अपडेट कर
 #: src/copy/role-card.ts:58
 msgid "Upload and check project documents"
 msgstr "प्रोजेक्ट कागदपत्रे अपलोड करा आणि तपासा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:59
+msgid "Upload and verify project documents"
+msgstr "प्रोजेक्टची कागदपत्रे अपलोड करा आणि तपासा"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:74
@@ -3319,9 +3788,19 @@ msgid "Verifying the code creates your account. Your company is created at the n
 msgstr "कोड तपासल्याने तुमचे खाते तयार होते. तुमची कंपनी पुढच्या पायरीत तयार होते."
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:117
+msgid "View prices & margins"
+msgstr "किंमती आणि मार्जिन पाहा"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:61
 msgid "Waive a payment stage"
 msgstr "पेमेंटचा एक टप्पा माफ करा"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:84
+msgid "Waive a tranche"
+msgstr "हप्ता माफ करा"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:25
@@ -3424,6 +3903,16 @@ msgid "Welcome back — carry on"
 msgstr "पुन्हा स्वागत आहे — पुढे चला"
 
 #. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:38
+msgid "What {role} can do"
+msgstr "{role} काय करू शकतात"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:39
+msgid "What {role} can’t do"
+msgstr "{role} काय करू शकत नाहीत"
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:34
 msgid "What can they do?"
 msgstr "ते काय करू शकतात?"
@@ -3444,7 +3933,7 @@ msgid "What the code does"
 msgstr "कोड काय करतो"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:27
+#: src/copy/assign-roles.ts:28
 msgid "What this gives them"
 msgstr "यातून त्यांना काय मिळते"
 
@@ -3510,7 +3999,7 @@ msgid "Why we ask"
 msgstr "आम्ही का विचारतो"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:51
+#: src/copy/assign-roles.ts:52
 msgid "work assigned stops"
 msgstr "नेमलेले स्टॉप"
 
@@ -3518,6 +4007,11 @@ msgstr "नेमलेले स्टॉप"
 #: src/copy/shell.ts:41
 msgid "Work assigned to you shows here. Ask your manager for your first one."
 msgstr "तुम्हाला सोपवलेले काम इथे दिसते. तुमचे पहिले काम तुमच्या मॅनेजरकडे मागा."
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:60
+msgid "Work the installation checklist"
+msgstr "इन्स्टॉलेशन चेकलिस्ट पूर्ण करा"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:49

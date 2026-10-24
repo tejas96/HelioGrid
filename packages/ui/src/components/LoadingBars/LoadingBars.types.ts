@@ -3,10 +3,11 @@
  * section that will open with its fields, `line` one line of a list of phrases — a mark and the
  * phrase beside it (`SCR-M01-10`, `m-loading`), `option` one option card — its mark, its title and
  * its description (`SCR-M01-13`, `m-loading`; two description lines in a narrow room, one in a
- * wide one). A size is a name, never a number from the caller, so two screens cannot draw the same
+ * wide one), `count` one count in a tile, a caption-high box holding a short pill (`SCR-M01-14`,
+ * `m-loading`). A size is a name, never a number from the caller, so two screens cannot draw the same
  * wait at two heights.
  */
-export type LoadingBarSize = 'row' | 'panel' | 'line' | 'option';
+export type LoadingBarSize = 'row' | 'panel' | 'line' | 'option' | 'count';
 
 interface LoadingBarsBase {
   /** One bar per part of the list, in the list's order. */
