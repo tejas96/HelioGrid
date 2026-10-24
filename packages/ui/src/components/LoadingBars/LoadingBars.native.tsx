@@ -9,7 +9,7 @@ type NativeLoadingBarsProps = LoadingBarsProps & {
   style?: StyleProp<ViewStyle>;
 };
 
-type BlockSize = Exclude<LoadingBarSize, 'line' | 'option'>;
+type BlockSize = Exclude<LoadingBarSize, 'line' | 'option' | 'count'>;
 
 /** The web half's two heights: a closed section's header, and a section open with its fields. */
 const BAR_HEIGHT: Record<BlockSize, number> = { row: 56, panel: 188 };
@@ -70,6 +70,17 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-xs'],
     backgroundColor: theme.colors.canvas,
   },
+  count: {
+    height: theme.type.roles.caption.lineHeight,
+    justifyContent: 'center',
+  },
+  countBar: {
+    width: theme.spacing['sp-16'],
+    height: theme.spacing['sp-3'],
+    borderRadius: theme.radius['r-pill'],
+    // biome-ignore lint/plugin/raw-white: shimmer — a loading bar's shimmer
+    backgroundColor: theme.colors.surface,
+  },
   optionLineBar: {
     height: theme.type.roles.caption.fontSize,
     borderRadius: theme.radius['r-xs'],
@@ -121,6 +132,13 @@ function Bar({
   index: number;
   opacity: Animated.AnimatedInterpolation<number>;
 }) {
+  if (size === 'count') {
+    return (
+      <Animated.View style={[styles.count, { opacity }]}>
+        <View style={styles.countBar} />
+      </Animated.View>
+    );
+  }
   if (size === 'option') {
     return (
       <Animated.View style={[styles.option, { opacity }]}>

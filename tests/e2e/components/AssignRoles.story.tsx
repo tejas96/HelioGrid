@@ -32,7 +32,8 @@ const READERS = {
 /**
  * Assign Roles as the Team screen holds it: the person's held presets, ticks kept in F2 order, the
  * grant line and Save's reason from domain, every word in `reader`'s language. The frame reports a
- * save as `data-saved` (the set sent) and a close as `data-closed`. `refusal` draws a save that did
+ * save as `data-saved` (the set sent), a close as `data-closed` and the round *Roles reference* as
+ * `data-referenced`. `refusal` draws a save that did
  * not land; `state` the skeleton; `removing` the removal's confirm standing over it.
  */
 export function AssignRolesAsHeld({
@@ -57,6 +58,7 @@ export function AssignRolesAsHeld({
   const [open, setOpen] = useState(true);
   const [picked, setPicked] = useState<readonly RolePreset[]>(held);
   const [saved, setSaved] = useState('');
+  const [referenced, setReferenced] = useState(false);
   const firstName = firstNameOf(name);
   const words = assignRolesWords(t, { firstName, companyName: 'Suryodaya Solar', locks });
   const { speakers } = grantLine(picked);
@@ -76,6 +78,7 @@ export function AssignRolesAsHeld({
       lang={reader}
       data-saved={saved}
       data-closed={!open}
+      data-referenced={referenced}
       style={{ position: 'relative', minHeight: '100dvh' }}
     >
       <AssignRoles
@@ -94,6 +97,7 @@ export function AssignRolesAsHeld({
         saveOffReason={words.saveOff(saveRolesOff(person, picked))}
         saving={false}
         onSave={() => setSaved(picked.join(','))}
+        onReference={() => setReferenced(true)}
         state={state}
         removal={
           removing === null

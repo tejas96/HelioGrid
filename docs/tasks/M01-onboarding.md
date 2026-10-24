@@ -579,13 +579,13 @@ Reviewer findings rejected: none.
 
 ### T-M01-014 · Roles Reference
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped
 **Why:** Before inviting, the owner reads what each of the twelve presets grants and how many people hold each — including none — and finds no way to edit a role, because none exists; without it every invite is composed from memory.
 **PRD rows:** M01-21 (P0)
 **DESIGN:** SCR-M01-14 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-14-roles-reference.md`; they are the specification.
 **Data model:** none — reads holder counts over `membership_role` authored by `T-M01-025` (migration 0002, the `(tenant_id, role_preset)` index); descriptions and matrices are `CAPABILITY_MATRIX` and `packages/i18n` copy, never tables.
-**Contract:** **Gap recorded, not filled:** the per-preset holder count has no route in any engine ticket — owed to `T-M01-025` (`tenant.ts`, the read its `membership_role` index exists for); settled before the build. Everything else on the screen is static: `ROLE_PRESETS`, `CAPABILITY_MATRIX`, `packages/i18n` descriptions.
+**Contract:** none new — the holders and their counts are read from the Team roster the api already serves (`GET /tenants/me/members` and `GET /invitations`, both behind `onboarding.manage_team`, read whole by `useTeam`), because the details name each holder and their status, which a count route would not carry (RFC, Analysis 1). Everything else on the screen is static: `ROLE_PRESETS`, `CAPABILITY_MATRIX`, `packages/i18n` descriptions.
 **Depends on:** `T-M01-025` (migration 0002; the holder-count read, the guard for `onboarding.manage_team`) · `T-FPLAT-001` (the matrix — landed) · `T-M01-012` (the Team family it sits beside).
 **Out of scope:** role editing — does not exist (F2-02, F2-16); the assignment surface — `T-M01-013`; the matrix's content — `T-FPLAT-001`, extended only by a product release.
 **Opens from Assign Roles too:** the round *Roles reference* button at the right of the *Presets* heading (`SCR-M01-13`, both widths) is drawn by this task, and opens this screen over the editor without losing its unsaved ticks (`T-M01-013` Decision 4, ruled 2026-10-23).

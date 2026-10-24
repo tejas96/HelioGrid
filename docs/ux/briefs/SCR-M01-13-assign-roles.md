@@ -59,8 +59,10 @@ at both widths, in a summary card on a light accent ground (owner pick "G2 · Ic
 sentence is plain"; references: Dribbble *User role management* by Eugen Eşanu, *Share modal —
 Untitled UI* by Jordan Hughes): at its left the held capabilities' icons as one `AvatarGroup` of
 glyph discs (design-system change 18 — `Avatar` `glyph`, `AvatarGroup` `ring` in the card's ground;
-at most four, then its own *+N*) — building, gauge, document, search, palette, board,
-calendar-clock, house, pair, wallet, package, megaphone; decoration, hidden from a screen reader; beside it the overline
+at most four, then its own *+N*) — each disc the role's own glyph, the one the Roles reference
+(SCR-M01-14) draws for it, so a role looks the same on every screen (owner ruling 2026-10-24,
+`T-M01-014` Decision 1): shield, people, people, calendar-clock, board, board, building, package,
+pair, wallet, gauge, megaphone, in F2's order; decoration, hidden from a screen reader; beside it the overline
 *What this gives them* and one plain sentence in body type, each capability in bold — *Vikram can
 **survey**, **design** and **install**.* Nothing in the card looks like a control: no pill, no
 chip, no shadow. Above it, one sentence says every change is recorded, old → new; it is not a control. The build mounts `EditorSurface`, which is the sheet at 375 and the side panel at 1536; the board mounts `Sheet` and `DetailPanel` directly only because a board has no width probe (owner ruling 2026-10-16; `D234`).

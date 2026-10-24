@@ -139,6 +139,7 @@ export function EditorSurface(props: NativeEditorSurfaceProps) {
         modal={modal}
         onClose={onClose}
         open
+        leading={leading}
         meta={metaRow}
         overline={overline}
         status={status}

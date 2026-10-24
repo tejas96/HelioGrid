@@ -23,6 +23,7 @@ import { teamStatusWord } from './team';
 export const ASSIGN_ROLES = {
   overline: /*i18n*/ { id: 'Assign roles' },
   presets: /*i18n*/ { id: 'Presets' },
+  reference: /*i18n*/ { id: 'Roles reference' },
   recorded: /*i18n*/ { id: 'Every change is recorded under your name — roles before and after.' },
   gives: /*i18n*/ { id: 'What this gives them' },
   sentence: /*i18n*/ { id: '{name} can {list}.' },
@@ -116,6 +117,8 @@ export interface AssignRolesPresetWords {
 export interface AssignRolesWords {
   readonly overline: string;
   readonly presets: string;
+  /** The round button beside *Presets* that opens the Roles reference (`SCR-M01-14`). */
+  readonly reference: string;
   readonly recorded: string;
   readonly gives: string;
   readonly save: string;
@@ -144,6 +147,7 @@ export function assignRolesWords(
   return {
     overline: translate(ASSIGN_ROLES.overline),
     presets: translate(ASSIGN_ROLES.presets),
+    reference: translate(ASSIGN_ROLES.reference),
     recorded: translate(ASSIGN_ROLES.recorded),
     gives: translate(ASSIGN_ROLES.gives),
     save: translate(ASSIGN_ROLES.save),

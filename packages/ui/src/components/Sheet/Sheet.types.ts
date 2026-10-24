@@ -28,6 +28,11 @@ export interface SheetProps extends OverlayCloseWords {
   subtitle?: string;
   /** `sans` by default; `mono` for a number such as a phone (`F7-09`). */
   subtitleFace?: OverlaySubtitleFace;
+  /**
+   * Drawn before the heading block, the title's own mark — a role's disc (`SCR-M01-14`). The same
+   * slot as `DetailPanel`'s `leading`.
+   */
+  leading?: ReactNode;
   /** Uppercase micro-label above the title ("SITE SURVEY"). */
   overline?: string;
   children?: ReactNode;

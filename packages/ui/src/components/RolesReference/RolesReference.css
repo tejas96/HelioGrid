@@ -1,0 +1,163 @@
+/* RolesReference — the twelve role tiles and one role's details (`SCR-M01-14`). The page sizes its
+   grid from its own room: two across at 375, four at 1536, three while the side panel is open. */
+
+.hg-roles-reference {
+  container-type: inline-size;
+}
+
+.hg-roles-reference-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-roles-reference-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-roles-reference-title,
+.hg-roles-reference-lede-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-roles-reference-lede-row > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-roles-reference-lede-wide {
+  display: none;
+}
+
+.hg-roles-reference-tiles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--tile-gap);
+}
+
+/* The room decides, the open panel's reserve taken out: three across from 560, four from 880 —
+   at 1536 four closed and three open, as the boards draw. */
+@container (min-width: 560px) {
+  .hg-roles-reference-tiles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 880px) {
+  .hg-roles-reference-tiles {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.hg-roles-reference-tile {
+  display: flex;
+}
+
+/* A tile's fill is `Ground`'s; it keeps its radius, padding and its open state. */
+.hg-pressable.hg-role-tile {
+  box-sizing: border-box;
+  width: 100%;
+  /* The board's tile height, so a two-line name and a one-line name stand level. */
+  min-height: 104px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: var(--tile-pad);
+  border-radius: var(--r-tile);
+  text-align: left;
+}
+
+.hg-pressable.hg-role-tile[aria-expanded="true"] {
+  background: var(--accent-subtle);
+}
+
+.hg-role-details-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding-bottom: var(--sp-2);
+}
+
+.hg-role-details-holders {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 32px;
+}
+
+.hg-role-details-other {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.hg-role-details-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  border-top: 1px solid transparent;
+}
+
+.hg-role-details-scroll[data-cut="true"] {
+  border-top-color: var(--line-soft);
+}
+
+.hg-role-details-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-role-details-line {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: 36px;
+}
+
+.hg-role-details-line > svg,
+.hg-role-details-line > :first-child {
+  flex-shrink: 0;
+}
+
+.hg-role-details-text {
+  min-width: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+}
+
+.hg-role-details-line[data-side="cant"] .hg-role-details-text,
+.hg-role-details-scope {
+  color: var(--text-secondary);
+}
+
+/* From 720 wide a pointer chooses, so the lede says *Choose*; the details become the side panel
+   only from 1180 (`ROLES_PANEL_ABOVE`). */
+@media (min-width: 720px) {
+  .hg-roles-reference-lede {
+    display: none;
+  }
+  .hg-roles-reference-lede-wide {
+    display: block;
+  }
+}
+
+/* The details are the side panel from 1180 (`ROLES_PANEL_ABOVE`), where two tiles still fit beside
+   it; the tiles keep clear of it there. Narrower, the details are the sheet. */
+@media (min-width: 1180px) {
+  .hg-roles-reference[data-open="true"] {
+    padding-inline-end: calc(var(--hg-roles-panel) + var(--sp-8));
+  }
+}

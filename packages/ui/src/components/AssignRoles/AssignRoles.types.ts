@@ -33,6 +33,11 @@ export interface AssignRolesProps {
   saving: boolean;
   onSave: () => void;
   /**
+   * The round *Roles reference* button at the right of *Presets* (`SCR-M01-14`): the screen steps
+   * the editor aside, keeping the ticks, and opens the reference.
+   */
+  onReference: () => void;
+  /**
    * `loading` draws the rows' own skeleton under the head the tapped row carried, with no grant
    * card and no Save (`m-loading`, `d-loading`). Default `ready`.
    */
@@ -65,6 +70,8 @@ export interface AssignRolesWordsProp {
   readonly overline: string;
   /** The list's heading, in the head, and the group's spoken name. */
   readonly presets: string;
+  /** The round button's name, *Roles reference*. */
+  readonly reference: string;
   /** *Every change is recorded under your name — roles before and after.* */
   readonly recorded: string;
   /** The grant card's overline and its region's name. */

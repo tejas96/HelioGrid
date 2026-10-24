@@ -53,9 +53,12 @@ export function useTeamRoles(
 export function TeamAssignRoles({
   editor,
   companyName,
+  onReference,
 }: {
   editor: AssignRolesEditor;
   companyName: string;
+  /** The round *Roles reference*: the editor steps aside, keeping its ticks, and the page opens. */
+  onReference: () => void;
 }) {
   const t = useTranslate();
   const format = useFormat();
@@ -79,6 +82,7 @@ export function TeamAssignRoles({
       saveOffReason={shown.saveOffReason}
       saving={editor.saving}
       onSave={editor.save}
+      onReference={onReference}
       refusal={shown.refusal}
       removal={
         confirm === null

@@ -46,6 +46,7 @@ export function Sheet({
   subtitle,
   subtitleFace = 'sans',
   overline,
+  leading,
   children,
   meta,
   size = 'auto',
@@ -184,6 +185,7 @@ export function Sheet({
             <View {...(handle ? {} : pan.panHandlers)}>
               <SheetHeader
                 density={density}
+                leading={leading}
                 handle={handle}
                 closeLabel={closeLabel}
                 onClose={onClose}

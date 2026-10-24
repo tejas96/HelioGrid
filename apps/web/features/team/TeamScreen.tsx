@@ -1,6 +1,13 @@
 'use client';
 import { useSession, useShell, useTeam, useTeamActs } from '@heliogrid/data/react';
-import { noteLeavesRow, opensSettingsRow, showsListHead, type TeamRow } from '@heliogrid/domain';
+import {
+  noteLeavesRow,
+  OPENED_FROM_ASSIGN_ROLES,
+  opensSettingsRow,
+  SETTINGS_SEGMENT,
+  showsListHead,
+  type TeamRow,
+} from '@heliogrid/domain';
 import { settingsRowName, TEAM, teamActWords, teamListWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
@@ -20,8 +27,9 @@ import {
   useOwnWidth,
   useToasts,
 } from '@heliogrid/ui';
-import { notFound } from 'next/navigation';
-import { useCallback, useRef } from 'react';
+import { notFound, useRouter } from 'next/navigation';
+import { useCallback, useEffect, useRef } from 'react';
+import { settingsRowPath } from '../settings';
 import { TeamAssignRoles, useTeamRoles } from './components/TeamAssignRoles';
 import { useTeamInvite } from './components/TeamInvite';
 import { TeamTable } from './components/TeamTable';
@@ -93,6 +101,14 @@ function TeamIn() {
   const roles = useTeamRoles(team, toasts, company, () => search.current?.focus());
   /* The sole-owner reason names the company, so no row opens before its name has arrived. */
   const openOf = shell.companyName === null ? undefined : roles.openerOf;
+  const router = useRouter();
+  /* Back from the Roles reference, Assign Roles opens again with the ticks it kept. */
+  const { resume, stepAside } = roles;
+  useEffect(() => resume(), [resume]);
+  const openReference = () => {
+    stepAside();
+    router.push(`${settingsRowPath(SETTINGS_SEGMENT.roles)}?from=${OPENED_FROM_ASSIGN_ROLES}`);
+  };
   const inviteAct = (
     <Button
       ref={invite.act}
@@ -200,7 +216,7 @@ function TeamIn() {
         onLeave={leave}
       />
       <InviteEditor {...invite.editor} />
-      <TeamAssignRoles editor={roles} companyName={company} />
+      <TeamAssignRoles editor={roles} companyName={company} onReference={openReference} />
       <ToastHost toasts={toasts.toasts} onDismiss={toasts.dismiss} />
     </div>
   );

@@ -6,6 +6,8 @@ import { BASIS_LINE_WORD } from './document-basis';
 import { ENERGY_SOURCE_WORD } from './energy-source';
 import { FRESHNESS_WORD, PACK_KEY_WORD, PINNED_INPUT_WORD } from './freshness';
 import { PROVENANCE_STANDING_WORD, PROVENANCE_TIER_WORD } from './provenance';
+import { REFERENCE_ROW, REFERENCE_SCOPE } from './role-matrix';
+import { PRESET_SUMMARY } from './role-presets';
 import { TENANT_SEGMENT_WORD } from './setup-what-you-sell';
 import { TEAM, TEAM_EMPTY_CHIP, TEAM_STATUS_WORD } from './team';
 
@@ -34,6 +36,10 @@ export const CLOSED_VOCABULARY_GROUPS: readonly ClosedVocabularyGroup[] = [
       movedInput: PINNED_INPUT_WORD,
       movedPackKey: PACK_KEY_WORD,
     },
+  },
+  {
+    surface: 'roles reference',
+    vocabularies: { row: REFERENCE_ROW, scope: REFERENCE_SCOPE, summary: PRESET_SUMMARY },
   },
   {
     surface: 'disclosure set',

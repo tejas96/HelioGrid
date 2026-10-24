@@ -66,6 +66,12 @@ export const SETTINGS_SEGMENT: Record<SettingsRow, string> = {
   usage: 'usage',
 };
 
+/**
+ * The Roles reference opened from Assign Roles (`SCR-M01-14`, `d-from-assign`): one word on both apps
+ * — the web's `?from=` and the phone's route param — so its way back names Assign Roles.
+ */
+export const OPENED_FROM_ASSIGN_ROLES = 'assign-roles';
+
 /** One group of the list as a person sees it: its rows, in order, never empty. */
 export interface SettingsGroupRows {
   readonly group: SettingsGroup;

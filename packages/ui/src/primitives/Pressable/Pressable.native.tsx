@@ -71,7 +71,8 @@ export function Pressable({
       accessibilityState={{
         selected: accessibilityState?.selected ?? accessibilityState?.current,
         checked: accessibilityState?.checked,
-        busy: accessibilityState?.busy,
+        /* Only a true busy is stated: TalkBack speaks a stated `false` as the word "busy". */
+        busy: accessibilityState?.busy === true ? true : undefined,
         expanded: accessibilityState?.expanded,
         disabled: accessibilityState?.disabled ?? disabled,
       }}

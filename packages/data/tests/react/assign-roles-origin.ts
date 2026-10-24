@@ -50,11 +50,20 @@ interface Origin {
   saves: Answer[];
   /** Read the roster with no answer, as a network that is down does. */
   dropReads: boolean;
+  /** Answer each roster read this much later, as a slow network does. */
+  readDelayMs: number;
   sessionReads: number;
   puts: number;
 }
 
-export const origin: Origin = { roster: [], saves: [], dropReads: false, sessionReads: 0, puts: 0 };
+export const origin: Origin = {
+  roster: [],
+  saves: [],
+  dropReads: false,
+  readDelayMs: 0,
+  sessionReads: 0,
+  puts: 0,
+};
 let server: Server;
 let baseUrl = '';
 
@@ -115,15 +124,17 @@ function answer(req: IncomingMessage, res: ServerResponse) {
     return send(res, req, 200, projection());
   }
   if (url.pathname === '/tenants/me/members' || url.pathname === '/invitations') {
-    return answerRead(req, res, url.pathname === '/invitations' ? [] : origin.roster);
+    return void answerRead(req, res, url.pathname === '/invitations' ? [] : origin.roster);
   }
   const save = /^\/tenants\/me\/members\/([^/]+)\/roles$/.exec(url.pathname);
   if (save && req.method === 'PUT') return void answerSave(req, res, save[1] ?? '');
   send(res, req, 404, refusal('NOT_FOUND'));
 }
 
-function answerRead(req: IncomingMessage, res: ServerResponse, items: readonly Member[]) {
+async function answerRead(req: IncomingMessage, res: ServerResponse, items: readonly Member[]) {
   if (origin.dropReads) return void req.socket.destroy();
+  if (origin.readDelayMs > 0)
+    await new Promise((resolve) => setTimeout(resolve, origin.readDelayMs));
   send(res, req, 200, { items, totalCount: items.length });
 }
 
@@ -137,8 +148,11 @@ afterAll(() => new Promise<void>((resolve) => server.close(() => resolve())));
 
 afterEach(() => {
   cleanup();
-  Object.assign(origin, { saves: [], dropReads: false, sessionReads: 0, puts: 0 });
+  Object.assign(origin, { saves: [], dropReads: false, readDelayMs: 0, sessionReads: 0, puts: 0 });
 });
+
+/** The origin's address, for a test that mounts its own provider. */
+export const baseUrlOf = () => baseUrl;
 
 /** What the editor told the screen: each landed removal with its undo, and each undo that failed. */
 export interface Told {
