@@ -209,7 +209,8 @@ through the review and its fixes.
    running api restarts only when this task switched the database, added a migration or changed api
    code it does not hot-reload.
 3. **The data** each row needs beyond the QA companies, through the api, before any phone boots.
-   A row that deactivates a person invites one of its own first: a QA company's people are kept.
+   A row that deactivates a person invites one of its own first: a QA company's people are kept,
+   and the api cannot switch a person back on.
 4. **Together, in one message:** the other servers the rows need (web, Metro), and the phones the
    rows need, booted in the background (a phone already running is used as it is) — the simulator that holds the newest `com.heliogrid.app`,
    and the emulator with quick boot (`emulator -avd Pixel_8_API_36 -cores 4 -memory 4096`, never
@@ -224,10 +225,11 @@ gives you", the RFC's frame map and the known differences included. An agent tha
 (kill, restart or open the app by a link) gets that action done by you and is continued. Each
 agent signs in as its surface's QA company (`tests/e2e/support/qa-accounts.ts` holds who is in it);
 a second owner's act during a row is yours to make, through the api, signed in as that person. A
-row that must walk
-setup as a new company, or join as a person with no account, takes a number of its own, one per
-agent, so no two agents share a one-time step and all start together: an unused `DEV_OTP_PHONES`
-number, or a fresh one, whose code is the newest `Message for <number> via` line in `.qa/api.log`. A row that needs the api
+QA company keeps what every earlier task's rows made, so a row that needs an empty list or counts
+rows uses a new company. A row that must walk setup as a new company, or join as a person with no
+account, takes a fresh number of its own, one per agent, so no two agents share a one-time step and
+all start together; its code is the newest `Message for <number> via` line in `.qa/api.log`, and
+it never joins `DEV_OTP_PHONES`. A row that needs the api
 stopped runs last, after every agent has returned: stop the api once, continue each agent that has
 such rows, start the api once.
 
