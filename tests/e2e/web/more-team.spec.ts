@@ -69,7 +69,9 @@ test('the Team row opens the team; a new owner is alone, and the page teaches', 
   });
   // Inside the page body and by its exact name: the shell's account button also carries the
   // owner's name ("… — account, grievance contact and sign out") and comes first in the page.
-  await page.getByRole('main').getByRole('button', { name: OWNER_NAME, exact: true }).click();
+  // By keyboard: on the wide table this is the row's spoken-only open, under the row's person.
+  await page.getByRole('main').getByRole('button', { name: OWNER_NAME, exact: true }).focus();
+  await page.keyboard.press('Enter');
   const editor = page.getByRole('dialog', { name: new RegExp(OWNER_NAME, 'u') });
   await expect(editor).toBeVisible();
   const owner = editor.getByRole('checkbox', { name: roles.rows[0]?.title ?? '' });
