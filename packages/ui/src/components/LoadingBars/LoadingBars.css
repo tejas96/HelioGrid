@@ -188,3 +188,28 @@
     display: none;
   }
 }
+
+/* A count waits in its own place: a caption-high box holding a short pill, on the tile's grey
+   (`SCR-M01-14`, `m-loading`), so the tile does not move when the figure lands. */
+.hg-loading-count {
+  display: flex;
+  align-items: center;
+  height: calc(var(--fs-caption) * var(--lh-caption));
+}
+
+.hg-loading-count > span {
+  display: block;
+  flex-shrink: 0;
+  width: var(--sp-16);
+  height: var(--sp-3);
+  border-radius: var(--r-pill);
+  /* biome-ignore lint/plugin/raw-white-css: shimmer — a loading bar's shimmer */
+  background: linear-gradient(
+    90deg,
+    var(--surface) 25%,
+    var(--canvas-sunken) 50%,
+    var(--surface) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+}

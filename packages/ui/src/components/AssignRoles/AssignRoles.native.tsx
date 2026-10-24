@@ -1,10 +1,13 @@
 import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellAction } from '../AppShell/ShellAction.native';
 import { Banner } from '../Banner/Banner.native';
 import { Button } from '../Button/Button.native';
 import { EditorSurface } from '../EditorSurface/EditorSurface.native';
+import { InfoGlyph } from '../Explainer/ExplainerParts.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { TeamConfirm } from '../MemberCard/TeamConfirm.native';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup.native';
@@ -30,6 +33,7 @@ export function AssignRoles({
   saveOffReason,
   saving,
   onSave,
+  onReference,
   state = 'ready',
   refusal = null,
 }: AssignRolesProps) {
@@ -57,6 +61,12 @@ export function AssignRoles({
             <Text variant="overline" color="tertiary">
               {words.presets}
             </Text>
+            <ShellAction
+              round
+              label={words.reference}
+              onClick={onReference}
+              icon={<InfoGlyph size={ICON_SIZE.md} color={theme.colors['text-primary']} />}
+            />
           </View>
         )}
         footer={
@@ -128,6 +138,10 @@ export function AssignRoles({
 
 const styles = StyleSheet.create({
   heading: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: theme.spacing['sp-3'],
     marginTop: theme.spacing['sp-3'],
     paddingBottom: theme.spacing['sp-2'],
     borderBottomWidth: StyleSheet.hairlineWidth,

@@ -8,6 +8,7 @@ import {
 import { useTranslate } from '@heliogrid/i18n/react';
 import { AssignRoles, TEAM_STATUS_TONE, type ToastQueue, useFormat } from '@heliogrid/ui';
 import { useRef } from 'react';
+import { useRolesReferenceDoor } from '../hooks/use-roles-reference-door';
 
 /**
  * `useAssignRoles` for the Team page: a landed removal raises its toast and *Undo* (`m-after`).
@@ -57,6 +58,8 @@ export function TeamAssignRoles({
   companyName: string;
 }) {
   const t = useTranslate();
+  /* The round *Roles reference*: the editor steps aside, keeping its ticks, and the page opens. */
+  const openReference = useRolesReferenceDoor(editor);
   const format = useFormat();
   const { person, confirm } = editor;
   if (person === null) return null;
@@ -78,6 +81,7 @@ export function TeamAssignRoles({
       saveOffReason={shown.saveOffReason}
       saving={editor.saving}
       onSave={editor.save}
+      onReference={openReference}
       refusal={shown.refusal}
       removal={
         confirm === null

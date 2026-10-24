@@ -41,3 +41,26 @@ const PRESET_LINE: Record<RolePreset, { id: string }> = {
 export function presetAbility(translate: Translator['t'], preset: RolePreset): string {
   return translate(PRESET_LINE[preset]);
 }
+
+/**
+ * Each preset in a few words, under its name on the Roles reference's tile head (`SCR-M01-14`,
+ * F2 §F2.1); the details list carries the whole grant. `PRESET_LINE` is the option row's sentence.
+ */
+export const PRESET_SUMMARY: Record<RolePreset, { id: string }> = {
+  epc_owner: /*i18n*/ { id: 'Everything, always' },
+  sales_manager: /*i18n*/ { id: 'The team’s leads, proposals and payments' },
+  sales_executive: /*i18n*/ { id: 'Their own leads, surveys and proposals' },
+  survey_engineer: /*i18n*/ { id: 'Surveys for the leads assigned to them' },
+  design_engineer: /*i18n*/ { id: 'Designs, proposals and design sign-off' },
+  project_manager: /*i18n*/ { id: 'Their own projects and payments' },
+  field_technician: /*i18n*/ { id: 'Their own stops, check-ins and attendance' },
+  installation_team_member: /*i18n*/ { id: 'The installation job assigned to them' },
+  hr_admin: /*i18n*/ { id: 'Employee records, attendance and leave' },
+  finance: /*i18n*/ { id: 'Payments, receipts and project money' },
+  operations: /*i18n*/ { id: 'All projects, the catalog and price book' },
+  marketing: /*i18n*/ { id: 'Campaigns and the enquiries they capture' },
+};
+
+export function presetSummary(translate: Translator['t'], preset: RolePreset): string {
+  return translate(PRESET_SUMMARY[preset]);
+}

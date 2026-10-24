@@ -27,6 +27,11 @@ export const queryKeys = {
     /** The company's owners by name, for the role card's note: a role change refreshes it too. */
     owners: (tenantId: string) => ['team', tenantId, 'owners'] as const,
   },
+  /**
+   * The Assign Roles ticks kept while the Roles reference is open (`useAssignRoles`' `stepAside`).
+   * Outside `team` on purpose: a write that refreshes the team list must never drop them.
+   */
+  assignDraft: (tenantId: string) => ['assign-draft', tenantId] as const,
   /** My photo in one company: a photo write of mine refreshes it. */
   myPhoto: (tenantId: string) => ['my-photo', tenantId] as const,
   /** A stored file's link. It dies in minutes, so a screen asks again when it next opens. */

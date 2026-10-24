@@ -48,7 +48,7 @@ msgid "{company} is set up."
 msgstr "{company} is set up."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:33
+#: src/copy/assign-roles.ts:34
 msgid "{company} must keep one EPC Owner, so make someone else one first."
 msgstr "{company} must keep one EPC Owner, so make someone else one first."
 
@@ -101,6 +101,11 @@ msgstr "{count, plural, one {# notification} other {# notifications}}"
 #: src/copy/notifications.ts:98
 msgid "{count, plural, one {# payment due} other {# payments due}}"
 msgstr "{count, plural, one {# payment due} other {# payments due}}"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:29
+msgid "{count, plural, one {# person} other {# people}}"
+msgstr "{count, plural, one {# person} other {# people}}"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:111
@@ -273,7 +278,7 @@ msgid "{name} asks to join"
 msgstr "{name} asks to join"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:28
+#: src/copy/assign-roles.ts:29
 msgid "{name} can {list}."
 msgstr "{name} can {list}."
 
@@ -288,7 +293,7 @@ msgid "{name} declined the invite"
 msgstr "{name} declined the invite"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:40
+#: src/copy/assign-roles.ts:41
 msgid "{name} is no longer active on this team, so nothing changed."
 msgstr "{name} is no longer active on this team, so nothing changed."
 
@@ -298,12 +303,12 @@ msgid "{name} stopped being an EPC Owner on another device."
 msgstr "{name} stopped being an EPC Owner on another device."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:29
+#: src/copy/assign-roles.ts:30
 msgid "{name} would hold no presets."
 msgstr "{name} would hold no presets."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:38
+#: src/copy/assign-roles.ts:39
 msgid "{name}'s roles weren't saved"
 msgstr "{name}'s roles weren't saved"
 
@@ -464,6 +469,7 @@ msgstr "About push"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:36
+#: src/copy/roles-reference.ts:21
 msgid "About roles"
 msgstr "About roles"
 
@@ -544,8 +550,14 @@ msgstr "Add a photo"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:47
+#: src/copy/role-matrix.ts:16
 msgid "Add and edit leads"
 msgstr "Add and edit leads"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:12
+msgid "Add company catalog products inline while designing or writing a proposal"
+msgstr "Add company catalog products inline while designing or writing a proposal"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:106
@@ -583,9 +595,20 @@ msgid "Agent & voice"
 msgstr "Agent & voice"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:100
 #: src/copy/team.ts:11
 msgid "All"
 msgstr "All"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:115
+msgid "All (money scope)"
+msgstr "All (money scope)"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:60
+msgid "All projects, the catalog and price book"
+msgstr "All projects, the catalog and price book"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:22
@@ -623,6 +646,11 @@ msgid "Anything that needs you, or changes on work you hold, lands here — newe
 msgstr "Anything that needs you, or changes on work you hold, lands here — newest first, with the one thing you can do about it."
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:47
+msgid "Approve designs"
+msgstr "Approve designs"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:53
 msgid "Approve designs or send them back"
 msgstr "Approve designs or send them back"
@@ -631,6 +659,16 @@ msgstr "Approve designs or send them back"
 #: src/copy/role-card.ts:62
 msgid "Approve leave"
 msgstr "Approve leave"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:77
+msgid "Approve or decline a leave request"
+msgstr "Approve or decline a leave request"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:39
+msgid "Approve spend-adjacent campaign settings"
+msgstr "Approve spend-adjacent campaign settings"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:48
@@ -649,6 +687,7 @@ msgstr "Asking to join sends its owner a request to add {phone}."
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:55
+#: src/copy/role-matrix.ts:17
 msgid "Assign leads to others"
 msgstr "Assign leads to others"
 
@@ -658,14 +697,34 @@ msgid "Assign roles"
 msgstr "Assign roles"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:103
+msgid "Assigned"
+msgstr "Assigned"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:114
+msgid "Assigned job only"
+msgstr "Assigned job only"
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:16
 msgid "Assumed"
 msgstr "Assumed"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:33
+msgid "Author campaign content and per-language campaign templates, and submit them for channel registration"
+msgstr "Author campaign content and per-language campaign templates, and submit them for channel registration"
+
+#. js-lingui-explicit-id
 #: src/copy/explainer.ts:7
 msgid "Back"
 msgstr "Back"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:41
+msgid "Back to assign roles"
+msgstr "Back to assign roles"
 
 #. js-lingui-explicit-id
 #: src/copy/settings.ts:20
@@ -699,6 +758,11 @@ msgid "Billing"
 msgstr "Billing"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:24
+msgid "Book a site visit from a lead"
+msgstr "Book a site visit from a lead"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:56
 msgid "Both"
 msgstr "Both"
@@ -707,6 +771,11 @@ msgstr "Both"
 #: src/copy/settings.ts:37
 msgid "Branding"
 msgstr "Branding"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:30
+msgid "Build a campaign audience from CRM segments"
+msgstr "Build a campaign audience from CRM segments"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:49
@@ -722,6 +791,11 @@ msgstr "Building, street, area"
 #: src/copy/energy-source.ts:11
 msgid "Built-in estimate ±{tolerance}%"
 msgstr "Built-in estimate ±{tolerance}%"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:20
+msgid "Bulk-import leads from a file"
+msgstr "Bulk-import leads from a file"
 
 #. js-lingui-explicit-id
 #: src/copy/settings.ts:36
@@ -754,10 +828,30 @@ msgid "calling rules"
 msgstr "calling rules"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:26
+msgid "Campaign visibility scope"
+msgstr "Campaign visibility scope"
+
+#. js-lingui-explicit-id
 #: src/copy/homes.ts:15
 #: src/copy/shell.ts:94
 msgid "Campaigns"
 msgstr "Campaigns"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:61
+msgid "Campaigns and the enquiries they capture"
+msgstr "Campaigns and the enquiries they capture"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:36
+msgid "Can do · {count}"
+msgstr "Can do · {count}"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:37
+msgid "Can’t · {count}"
+msgstr "Can’t · {count}"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:46
@@ -774,6 +868,11 @@ msgstr "Cancel it on Team"
 #: src/copy/role-presets.ts:18
 msgid "Capture and submit surveys for the leads assigned to them"
 msgstr "Capture and submit surveys for the leads assigned to them"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:40
+msgid "Capture site surveys"
+msgstr "Capture site surveys"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:25
@@ -821,6 +920,11 @@ msgid "Changed your mind, or it is not the same company?"
 msgstr "Changed your mind, or it is not the same company?"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:63
+msgid "Check in and out of a site, and log a visit and its outcome"
+msgstr "Check in and out of a site, and log a visit and its outcome"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:84
 msgid "Check the format"
 msgstr "Check the format"
@@ -861,6 +965,7 @@ msgid "Clear search"
 msgstr "Clear search"
 
 #. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:40
 #: src/copy/shell.ts:51
 msgid "Close"
 msgstr "Close"
@@ -906,6 +1011,16 @@ msgid "company setup"
 msgstr "company setup"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:11
+msgid "Configure company settings"
+msgstr "Configure company settings"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:9
+msgid "Configure the agent and its knowledge"
+msgstr "Configure the agent and its knowledge"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:87
 msgid "Confirm your mobile number"
 msgstr "Confirm your mobile number"
@@ -914,6 +1029,16 @@ msgstr "Confirm your mobile number"
 #: src/copy/provenance.ts:24
 msgid "Confirmed"
 msgstr "Confirmed"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:36
+msgid "Connect, reconnect and disconnect a channel identity"
+msgstr "Connect, reconnect and disconnect a channel identity"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:80
+msgid "Connect, rotate and disconnect the company’s own collections account"
+msgstr "Connect, rotate and disconnect the company’s own collections account"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-language.ts:27
@@ -961,6 +1086,11 @@ msgid "Continue without it"
 msgstr "Continue without it"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:119
+msgid "Coordinator"
+msgstr "Coordinator"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:45
 msgid "Couldn’t load older notifications. Try again."
 msgstr "Couldn’t load older notifications. Try again."
@@ -986,6 +1116,16 @@ msgid "Couldn’t mark them read"
 msgstr "Couldn’t mark them read"
 
 #. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:31
+msgid "Count unavailable"
+msgstr "Count unavailable"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:25
+msgid "Counts include active members only. Someone whose invite is still open, or who was deactivated, is named under the role but not counted."
+msgstr "Counts include active members only. Someone whose invite is still open, or who was deactivated, is named under the role but not counted."
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:24
 msgid "Create a company"
 msgstr "Create a company"
@@ -996,14 +1136,25 @@ msgid "Create a company account"
 msgstr "Create a company account"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:19
+msgid "Create a lead despite a detected duplicate"
+msgstr "Create a lead despite a detected duplicate"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:76
 msgid "Create a new company anyway"
 msgstr "Create a new company anyway"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:52
+#: src/copy/role-matrix.ts:46
 msgid "Create and edit designs"
 msgstr "Create and edit designs"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:51
+msgid "Create and edit proposals"
+msgstr "Create and edit proposals"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:54
@@ -1034,6 +1185,11 @@ msgstr "Create your first lead"
 #: src/copy/company-signup.ts:87
 msgid "Create your own company instead"
 msgstr "Create your own company instead"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:27
+msgid "Create, schedule, run, pause and cancel campaigns"
+msgstr "Create, schedule, run, pause and cancel campaigns"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:48
@@ -1111,7 +1267,13 @@ msgid "Default for {market}"
 msgstr "Default for {market}"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:69
+msgid "Define a site’s geofence and adjust its radius"
+msgstr "Define a site’s geofence and adjust its radius"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:56
+#: src/copy/role-matrix.ts:18
 msgid "Delete leads"
 msgstr "Delete leads"
 
@@ -1131,7 +1293,7 @@ msgid "Derived"
 msgstr "Derived"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:49
+#: src/copy/assign-roles.ts:50
 #: src/copy/freshness.ts:24
 msgid "design"
 msgstr "design"
@@ -1152,6 +1314,11 @@ msgid "Designs and proposals for the leads assigned to them, and design sign-off
 msgstr "Designs and proposals for the leads assigned to them, and design sign-off"
 
 #. js-lingui-explicit-id
+#: src/copy/role-presets.ts:54
+msgid "Designs, proposals and design sign-off"
+msgstr "Designs, proposals and design sign-off"
+
+#. js-lingui-explicit-id
 #: src/copy/name-and-photo-editor.ts:15
 msgid "Done"
 msgstr "Done"
@@ -1165,6 +1332,11 @@ msgstr "Each invite counts for 24 hours from when it was sent."
 #: src/copy/profile-preferences.ts:26
 msgid "Edit name"
 msgstr "Edit name"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:58
+msgid "Employee records, attendance and leave"
+msgstr "Employee records, attendance and leave"
 
 #. js-lingui-explicit-id
 #: src/copy/role-presets.ts:29
@@ -1197,7 +1369,7 @@ msgid "Estimated"
 msgstr "Estimated"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:26
+#: src/copy/assign-roles.ts:27
 msgid "Every change is recorded under your name — roles before and after."
 msgstr "Every change is recorded under your name — roles before and after."
 
@@ -1210,6 +1382,11 @@ msgstr "Everyone at {company}"
 #: src/copy/team.ts:21
 msgid "Everyone at {company} matching {query}"
 msgstr "Everyone at {company} matching {query}"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:50
+msgid "Everything, always"
+msgstr "Everything, always"
 
 #. js-lingui-explicit-id
 #: src/copy/role-presets.ts:9
@@ -1250,6 +1427,11 @@ msgstr "Feet"
 #: src/copy/shell.ts:83
 msgid "Field Technician"
 msgstr "Field Technician"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:62
+msgid "Field-work visibility scope"
+msgstr "Field-work visibility scope"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:38
@@ -1394,12 +1576,17 @@ msgid "Grievance officer"
 msgstr "Grievance officer"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:54
+#: src/copy/role-matrix.ts:54
+msgid "Hand a lead to the voice agent on demand"
+msgstr "Hand a lead to the voice agent on demand"
+
+#. js-lingui-explicit-id
+#: src/copy/assign-roles.ts:55
 msgid "handle money"
 msgstr "handle money"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:53
+#: src/copy/assign-roles.ts:54
 msgid "handle people and admin"
 msgstr "handle people and admin"
 
@@ -1457,6 +1644,11 @@ msgstr "HelioGrid's answer could not be read. If you were saving, check whether 
 #: src/copy/notifications.ts:34
 msgid "Hide these {count}"
 msgstr "Hide these {count}"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:32
+msgid "Holder counts didn’t load"
+msgstr "Holder counts didn’t load"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:89
@@ -1519,7 +1711,7 @@ msgid "Indicative proposal. Generation and savings are estimated from system siz
 msgstr "Indicative proposal. Generation and savings are estimated from system size and location. A site survey and shadow analysis will confirm the final figures."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:52
+#: src/copy/assign-roles.ts:53
 msgid "install"
 msgstr "install"
 
@@ -1630,6 +1822,11 @@ msgid "Last set by {name}"
 msgstr "Last set by {name}"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:15
+msgid "Lead visibility scope"
+msgstr "Lead visibility scope"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:90
 msgid "Leads"
 msgstr "Leads"
@@ -1640,9 +1837,14 @@ msgid "Links {email}"
 msgstr "Links {email}"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:37
+#: src/copy/assign-roles.ts:38
 msgid "Loading {name}'s presets"
 msgstr "Loading {name}'s presets"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:30
+msgid "Loading how many people hold {role}"
+msgstr "Loading how many people hold {role}"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:28
@@ -1695,14 +1897,35 @@ msgid "Make someone else an EPC Owner first"
 msgstr "Make someone else an EPC Owner first"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:10
+msgid "Manage catalog and price book"
+msgstr "Manage catalog and price book"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:8
+msgid "Manage team and roles"
+msgstr "Manage team and roles"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:85
+msgid "Manage the company’s platform billing"
+msgstr "Manage the company’s platform billing"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:67
 msgid "Manage the plan and billing"
 msgstr "Manage the plan and billing"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:51
+#: src/copy/role-matrix.ts:57
 msgid "Mark a lead won or lost"
 msgstr "Mark a lead won or lost"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:66
+msgid "Mark one’s own day start and day end"
+msgstr "Mark one’s own day start and day end"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:38
@@ -1730,9 +1953,19 @@ msgid "Measurements"
 msgstr "Measurements"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:25
+msgid "Merge two customer records onto a survivor"
+msgstr "Merge two customer records onto a survivor"
+
+#. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:32
 msgid "Metres"
 msgstr "Metres"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:90
+msgid "Mint, label and re-mint a customer link for a named contact"
+msgstr "Mint, label and re-mint a customer link for a named contact"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:33
@@ -1754,6 +1987,11 @@ msgstr "More"
 #: src/copy/invite.ts:41
 msgid "More than one is fine, and roles can change later on Team."
 msgstr "More than one is fine, and roles can change later on Team."
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:21
+msgid "Move a lead into and out of the parking/terminal states"
+msgstr "Move a lead into and out of the parking/terminal states"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:18
@@ -1828,6 +2066,11 @@ msgid "No open invites"
 msgstr "No open invites"
 
 #. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:34
+msgid "Nobody holds this yet"
+msgstr "Nobody holds this yet"
+
+#. js-lingui-explicit-id
 #: src/copy/disclosure.ts:28
 msgid "Not a structural certification"
 msgstr "Not a structural certification"
@@ -1898,7 +2141,7 @@ msgid "Nothing assigned to you yet"
 msgstr "Nothing assigned to you yet"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:39
+#: src/copy/assign-roles.ts:40
 msgid "Nothing changed for {name} — try Save again."
 msgstr "Nothing changed for {name} — try Save again."
 
@@ -2033,6 +2276,11 @@ msgid "Open the demo project"
 msgstr "Open the demo project"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:86
+msgid "Open the usage screen and the subscription invoice list"
+msgstr "Open the usage screen and the subscription invoice list"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:84
 msgid "Opening Google sign-in"
 msgstr "Opening Google sign-in"
@@ -2073,9 +2321,54 @@ msgid "Out of date: {changes} changed"
 msgstr "Out of date: {changes} changed"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:46
+#: src/copy/assign-roles.ts:47
 msgid "oversee sales"
 msgstr "oversee sales"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:102
+msgid "Own"
+msgstr "Own"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:113
+msgid "Own (read-only)"
+msgstr "Own (read-only)"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:112
+msgid "Own captures until triage"
+msgstr "Own captures until triage"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:107
+msgid "Own projects"
+msgstr "Own projects"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:110
+msgid "Own projects’ deals (read)"
+msgstr "Own projects’ deals (read)"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:108
+msgid "Own projects’ field work"
+msgstr "Own projects’ field work"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:109
+msgid "Own projects’ field workers"
+msgstr "Own projects’ field workers"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:105
+msgid "Own queued"
+msgstr "Own queued"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:106
+msgid "Own visits"
+msgstr "Own visits"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:11
@@ -2102,6 +2395,11 @@ msgstr "Payment terms"
 #: src/copy/notifications.ts:69
 msgid "Payments"
 msgstr "Payments"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:59
+msgid "Payments, receipts and project money"
+msgstr "Payments, receipts and project money"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:93
@@ -2137,6 +2435,16 @@ msgstr "PIN code"
 #: src/copy/company-logo.ts:22
 msgid "PNG or JPG, up to {maxMegabytes} MB, at least {minWidth} px wide"
 msgstr "PNG or JPG, up to {maxMegabytes} MB, at least {minWidth} px wide"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:104
+msgid "Portfolio"
+msgstr "Portfolio"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:111
+msgid "Portfolio deals (read)"
+msgstr "Portfolio deals (read)"
 
 #. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:25
@@ -2189,6 +2497,11 @@ msgid "Project stages, documents and blockers across all projects, plus the cata
 msgstr "Project stages, documents and blockers across all projects, plus the catalog and price book"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:61
+msgid "Project visibility scope"
+msgstr "Project visibility scope"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:92
 msgid "Projects"
 msgstr "Projects"
@@ -2224,6 +2537,21 @@ msgid "Rajesh Kulkarni"
 msgstr "Rajesh Kulkarni"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:116
+msgid "Read (results)"
+msgstr "Read (results)"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:73
+msgid "Read and edit employee records; upload and manage employee documents"
+msgstr "Read and edit employee records; upload and manage employee documents"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:67
+msgid "Read others’ attendance records"
+msgstr "Read others’ attendance records"
+
+#. js-lingui-explicit-id
 #: src/copy/energy-source.ts:10
 msgid "Real · PVGIS ({database})"
 msgstr "Real · PVGIS ({database})"
@@ -2237,6 +2565,11 @@ msgstr "Recalculating"
 #: src/copy/role-card.ts:60
 msgid "Record payments"
 msgstr "Record payments"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:79
+msgid "Record payments against tranches"
+msgstr "Record payments against tranches"
 
 #. js-lingui-explicit-id
 #: src/copy/role-presets.ts:30
@@ -2257,6 +2590,11 @@ msgstr "Remove {list} from {first}?"
 #: src/copy/first-run-profile.ts:44
 msgid "Remove it and your initials come back."
 msgstr "Remove it and your initials come back."
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:56
+msgid "Remove or cancel queued agent calls"
+msgstr "Remove or cancel queued agent calls"
 
 #. js-lingui-explicit-id
 #: src/copy/remove-roles.ts:22
@@ -2282,6 +2620,11 @@ msgstr "Replace"
 #: src/copy/provenance.ts:26
 msgid "Reported"
 msgstr "Reported"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:76
+msgid "Request one’s own leave"
+msgstr "Request one’s own leave"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:74
@@ -2314,9 +2657,19 @@ msgid "Residential"
 msgstr "Residential"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:45
+msgid "Resolve or waive a remote-survey gap"
+msgstr "Resolve or waive a remote-survey gap"
+
+#. js-lingui-explicit-id
 #: src/copy/team-acts.ts:27
 msgid "Revoke {name}’s invite?"
 msgstr "Revoke {name}’s invite?"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:93
+msgid "Revoke a customer link, including regenerate-with-revoke"
+msgstr "Revoke a customer link, including regenerate-with-revoke"
 
 #. js-lingui-explicit-id
 #: src/copy/team-acts.ts:14
@@ -2330,9 +2683,15 @@ msgstr "Revoke invite for {name}"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:37
+#: src/copy/roles-reference.ts:28
 #: src/copy/team.ts:26
 msgid "Roles"
 msgstr "Roles"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:22
+msgid "Roles can’t be created, renamed or deleted, so a role means the same for everyone. You give someone a role from their row in Team."
+msgstr "Roles can’t be created, renamed or deleted, so a role means the same for everyone. You give someone a role from their row in Team."
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:35
@@ -2340,6 +2699,7 @@ msgid "Roles for this invite"
 msgstr "Roles for this invite"
 
 #. js-lingui-explicit-id
+#: src/copy/assign-roles.ts:26
 #: src/copy/settings.ts:35
 msgid "Roles reference"
 msgstr "Roles reference"
@@ -2350,17 +2710,27 @@ msgid "Roof measured from satellite imagery. A site visit will confirm dimension
 msgstr "Roof measured from satellite imagery. A site visit will confirm dimensions, shading and electrical access."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:56
+#: src/copy/role-matrix.ts:41
+msgid "Run a remote survey"
+msgstr "Run a remote survey"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:48
+msgid "Run in-canvas AI roof detection on the studio canvas"
+msgstr "Run in-canvas AI roof detection on the studio canvas"
+
+#. js-lingui-explicit-id
+#: src/copy/assign-roles.ts:57
 msgid "run marketing"
 msgstr "run marketing"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:55
+#: src/copy/assign-roles.ts:56
 msgid "run operations"
 msgstr "run operations"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:50
+#: src/copy/assign-roles.ts:51
 msgid "run projects"
 msgstr "run projects"
 
@@ -2370,7 +2740,7 @@ msgid "Run the installation checklist"
 msgstr "Run the installation checklist"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:45
+#: src/copy/assign-roles.ts:46
 msgid "run the whole business"
 msgstr "run the whole business"
 
@@ -2411,7 +2781,7 @@ msgid "Save changes to your business profile"
 msgstr "Save changes to your business profile"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:30
+#: src/copy/assign-roles.ts:31
 msgid "Save roles"
 msgstr "Save roles"
 
@@ -2431,6 +2801,11 @@ msgid "Saves both; you can change them in your company profile."
 msgstr "Saves both; you can change them in your company profile."
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:42
+msgid "Schedule, reassign and cancel site-survey visits"
+msgstr "Schedule, reassign and cancel site-survey visits"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:21
 msgid "Search"
 msgstr "Search"
@@ -2441,6 +2816,21 @@ msgid "See a finished job"
 msgstr "See a finished job"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:53
+msgid "See agent performance"
+msgstr "See agent performance"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:70
+msgid "See another person’s live position, route timeline, movement history and day playback"
+msgstr "See another person’s live position, route timeline, movement history and day playback"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:89
+msgid "See company reports"
+msgstr "See company reports"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:45
 msgid "See every lead and follow-up"
 msgstr "See every lead and follow-up"
@@ -2449,6 +2839,11 @@ msgstr "See every lead and follow-up"
 #: src/copy/role-card.ts:63
 msgid "See reports beyond your own"
 msgstr "See reports beyond your own"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:55
+msgid "See the agent call queue"
+msgstr "See the agent call queue"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:43
@@ -2471,7 +2866,7 @@ msgid "See your team's leads and follow-ups"
 msgstr "See your team's leads and follow-ups"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:47
+#: src/copy/assign-roles.ts:48
 msgid "sell"
 msgstr "sell"
 
@@ -2497,6 +2892,7 @@ msgstr "Send it again"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:50
+#: src/copy/role-matrix.ts:52
 msgid "Send proposals to customers"
 msgstr "Send proposals to customers"
 
@@ -2504,6 +2900,11 @@ msgstr "Send proposals to customers"
 #: src/copy/sign-in.ts:102
 msgid "Send the code by SMS and link this Google login"
 msgstr "Send the code by SMS and link this Google login"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:83
+msgid "Send the plain payment-request message"
+msgstr "Send the plain payment-request message"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:80
@@ -2531,6 +2932,11 @@ msgid "Sent by SMS to"
 msgstr "Sent by SMS to"
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:78
+msgid "Set or change an employee’s manager mapping"
+msgstr "Set or change an employee’s manager mapping"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:65
 msgid "Set up the calling agent"
 msgstr "Set up the calling agent"
@@ -2539,6 +2945,11 @@ msgstr "Set up the calling agent"
 #: src/copy/settings.ts:18
 msgid "Settings"
 msgstr "Settings"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:35
+msgid "Show"
+msgstr "Show"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:18
@@ -2721,7 +3132,7 @@ msgid "subsidy rules"
 msgstr "subsidy rules"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:48
+#: src/copy/assign-roles.ts:49
 msgid "survey"
 msgstr "survey"
 
@@ -2739,6 +3150,11 @@ msgstr "Survey Engineer"
 #: src/copy/disclosure.ts:27
 msgid "Surveyed remotely"
 msgstr "Surveyed remotely"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:53
+msgid "Surveys for the leads assigned to them"
+msgstr "Surveys for the leads assigned to them"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:40
@@ -2777,9 +3193,15 @@ msgstr "Tax registration"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:70
+#: src/copy/role-matrix.ts:101
 #: src/copy/settings.ts:34
 msgid "Team"
 msgstr "Team"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:118
+msgid "Team-scoped"
+msgstr "Team-scoped"
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:38
@@ -2882,6 +3304,11 @@ msgid "The code went to the number {first} entered; if it is wrong, decline."
 msgstr "The code went to the number {first} entered; if it is wrong, decline."
 
 #. js-lingui-explicit-id
+#: src/copy/role-presets.ts:57
+msgid "The installation job assigned to them"
+msgstr "The installation job assigned to them"
+
+#. js-lingui-explicit-id
 #: src/copy/role-presets.ts:26
 msgid "The installation job assigned to them, its checklist and photos"
 msgstr "The installation job assigned to them, its checklist and photos"
@@ -2932,6 +3359,11 @@ msgid "The team’s leads and proposals, project stages, payments and team repor
 msgstr "The team’s leads and proposals, project stages, payments and team reports"
 
 #. js-lingui-explicit-id
+#: src/copy/role-presets.ts:51
+msgid "The team’s leads, proposals and payments"
+msgstr "The team’s leads, proposals and payments"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:68
 msgid "The tranches must add up to exactly 100%. Place the remainder before saving."
 msgstr "The tranches must add up to exactly 100%. Place the remainder before saving."
@@ -2947,14 +3379,29 @@ msgid "Their name"
 msgstr "Their name"
 
 #. js-lingui-explicit-id
+#: src/copy/role-presets.ts:52
+msgid "Their own leads, surveys and proposals"
+msgstr "Their own leads, surveys and proposals"
+
+#. js-lingui-explicit-id
 #: src/copy/role-presets.ts:15
 msgid "Their own leads, surveys and proposals, including discounts, sending and marking won or lost"
 msgstr "Their own leads, surveys and proposals, including discounts, sending and marking won or lost"
 
 #. js-lingui-explicit-id
+#: src/copy/role-presets.ts:55
+msgid "Their own projects and payments"
+msgstr "Their own projects and payments"
+
+#. js-lingui-explicit-id
 #: src/copy/role-presets.ts:22
 msgid "Their own projects’ stages, documents, payments and installation checklist"
 msgstr "Their own projects’ stages, documents, payments and installation checklist"
+
+#. js-lingui-explicit-id
+#: src/copy/role-presets.ts:56
+msgid "Their own stops, check-ins and attendance"
+msgstr "Their own stops, check-ins and attendance"
 
 #. js-lingui-explicit-id
 #: src/copy/role-presets.ts:25
@@ -3087,7 +3534,7 @@ msgid "Three details, and you're in."
 msgstr "Three details, and you're in."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:32
+#: src/copy/assign-roles.ts:33
 msgid "Tick at least one preset."
 msgstr "Tick at least one preset."
 
@@ -3102,7 +3549,7 @@ msgid "Tick it again on {first}'s row whenever you like."
 msgstr "Tick it again on {first}'s row whenever you like."
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:31
+#: src/copy/assign-roles.ts:32
 msgid "Tick or clear a preset first."
 msgstr "Tick or clear a preset first."
 
@@ -3133,6 +3580,7 @@ msgstr "Too many attempts. Wait a moment and retry."
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:38
+#: src/copy/roles-reference.ts:33
 #: src/copy/sign-in.ts:40
 msgid "Try again"
 msgstr "Try again"
@@ -3181,6 +3629,21 @@ msgstr "Try the photo again"
 #: src/copy/profile-preferences.ts:40
 msgid "Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way."
 msgstr "Turn a group off to stop its push. Every notification still arrives in HelioGrid — Notifications keeps the record either way."
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:68
+msgid "Turn per-employee field tracking on or off"
+msgstr "Turn per-employee field tracking on or off"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:20
+msgid "Twelve fixed roles. Choose one to see what it can do."
+msgstr "Twelve fixed roles. Choose one to see what it can do."
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:19
+msgid "Twelve fixed roles. Tap one to see what it can do."
+msgstr "Twelve fixed roles. Tap one to see what it can do."
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:123
@@ -3234,6 +3697,7 @@ msgstr "Update on the App Store"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:57
+#: src/copy/role-matrix.ts:58
 msgid "Update project stages"
 msgstr "Update project stages"
 
@@ -3241,6 +3705,11 @@ msgstr "Update project stages"
 #: src/copy/role-card.ts:58
 msgid "Upload and check project documents"
 msgstr "Upload and check project documents"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:59
+msgid "Upload and verify project documents"
+msgstr "Upload and verify project documents"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:74
@@ -3319,9 +3788,19 @@ msgid "Verifying the code creates your account. Your company is created at the n
 msgstr "Verifying the code creates your account. Your company is created at the next step."
 
 #. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:117
+msgid "View prices & margins"
+msgstr "View prices & margins"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:61
 msgid "Waive a payment stage"
 msgstr "Waive a payment stage"
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:84
+msgid "Waive a tranche"
+msgstr "Waive a tranche"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:25
@@ -3424,6 +3903,16 @@ msgid "Welcome back — carry on"
 msgstr "Welcome back — carry on"
 
 #. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:38
+msgid "What {role} can do"
+msgstr "What {role} can do"
+
+#. js-lingui-explicit-id
+#: src/copy/roles-reference.ts:39
+msgid "What {role} can’t do"
+msgstr "What {role} can’t do"
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:34
 msgid "What can they do?"
 msgstr "What can they do?"
@@ -3444,7 +3933,7 @@ msgid "What the code does"
 msgstr "What the code does"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:27
+#: src/copy/assign-roles.ts:28
 msgid "What this gives them"
 msgstr "What this gives them"
 
@@ -3510,7 +3999,7 @@ msgid "Why we ask"
 msgstr "Why we ask"
 
 #. js-lingui-explicit-id
-#: src/copy/assign-roles.ts:51
+#: src/copy/assign-roles.ts:52
 msgid "work assigned stops"
 msgstr "work assigned stops"
 
@@ -3518,6 +4007,11 @@ msgstr "work assigned stops"
 #: src/copy/shell.ts:41
 msgid "Work assigned to you shows here. Ask your manager for your first one."
 msgstr "Work assigned to you shows here. Ask your manager for your first one."
+
+#. js-lingui-explicit-id
+#: src/copy/role-matrix.ts:60
+msgid "Work the installation checklist"
+msgstr "Work the installation checklist"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:49

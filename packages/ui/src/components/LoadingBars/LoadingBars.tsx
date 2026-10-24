@@ -39,6 +39,13 @@ function sizesOf(bars: readonly LoadingBarSize[]): 'line' | 'option' | undefined
 }
 
 function Bar({ size }: { size: LoadingBarSize }) {
+  if (size === 'count') {
+    return (
+      <span aria-hidden="true" className="hg-loading-count">
+        <span />
+      </span>
+    );
+  }
   if (size === 'line') {
     return (
       <span aria-hidden="true" className="hg-loading-line">

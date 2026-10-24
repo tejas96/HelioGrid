@@ -2,6 +2,8 @@
  * @heliogrid/data/react — the React Query adapter. Swapping the query library touches this
  * directory and nothing else: repositories and screens are unaffected.
  */
+
+export { useAssignRolesDraftHeld } from './assign-roles-draft';
 export { useRepositories } from './context';
 export type { HostLifecycle } from './host-lifecycle';
 export { followHostLifecycle } from './host-lifecycle';
@@ -33,6 +35,8 @@ export type { PushPreferences } from './use-push-preferences';
 export { usePushPreferences } from './use-push-preferences';
 export type { RoleCardRead } from './use-role-card';
 export { useRoleCard } from './use-role-card';
+export type { RolesReference } from './use-roles-reference';
+export { useRolesReference } from './use-roles-reference';
 export { useSession } from './use-session';
 export { useSessionPhase } from './use-session-phase';
 export type { SetupInvite } from './use-setup-invite';

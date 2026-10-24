@@ -107,7 +107,7 @@ export interface EditorSurfaceProps extends OverlayCloseWords {
   unavailableAction?: ReactNode;
   showClose?: boolean;
   dismissible?: boolean;
-  /** Panel-only header extra (a panel has room for it; a sheet header does not). */
+  /** The title's own mark, before the heading block — both forms (`SCR-M01-14`'s role disc). */
   leading?: ReactNode;
   /**
    * A row under the head that stays in view while the body scrolls — sheet and panel. A function

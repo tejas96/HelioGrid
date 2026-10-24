@@ -113,6 +113,14 @@ export type { RemoveRolesWords, RolesRemovedToast } from './copy/remove-roles';
 export { removeRolesWords, rolesRemovedToast, rolesUndoFailedToast } from './copy/remove-roles';
 export type { RoleCardLineWords, RoleCardWords } from './copy/role-card';
 export { ROLE_CARD, roleCardWords } from './copy/role-card';
+export { REFERENCE_ROW, REFERENCE_SCOPE } from './copy/role-matrix';
+export type {
+  ReferenceLineWords,
+  RoleReferenceWords,
+  RolesReferenceWords,
+  UncountedHolderWords,
+} from './copy/roles-reference';
+export { ROLES_REFERENCE, rolesReferenceWords } from './copy/roles-reference';
 export type { SettingsWords } from './copy/settings';
 export { backToSettings, settingsListFor, settingsRowName, settingsWords } from './copy/settings';
 export type { SetupLanguageOption, SetupLanguageWords } from './copy/setup-language';

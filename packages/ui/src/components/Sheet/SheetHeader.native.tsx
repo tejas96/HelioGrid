@@ -1,4 +1,5 @@
 import { theme } from '@heliogrid/theme';
+import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -8,6 +9,8 @@ import type { OverlayStatus, OverlaySubtitleFace, SheetDensity } from './Sheet.t
 
 interface SheetHeaderProps {
   density: SheetDensity;
+  /** The title's own mark, before the heading block; nothing is drawn for it when absent. */
+  leading?: ReactNode;
   /** With a handle above it the header loses its own top padding, as on web. */
   handle: boolean;
   closeLabel: string;
@@ -37,6 +40,7 @@ const TITLE: Record<SheetDensity, TextStyle> = {
  */
 export function SheetHeader({
   density,
+  leading,
   handle,
   closeLabel,
   onClose,
@@ -59,40 +63,57 @@ export function SheetHeader({
         style,
       ]}
     >
-      <View style={styles.heading}>
-        {overline === undefined ? null : (
-          <Text variant="overline" color="tertiary" style={styles.overline}>
-            {overline}
-          </Text>
-        )}
-        {title === undefined ? null : (
-          <View style={styles.titleLine}>
-            <Text variant={density === 'functional' ? 'h4' : 'h3'} style={TITLE[density]} fixedSize>
-              {title}
+      <Lead leading={leading}>
+        <View style={styles.heading}>
+          {overline === undefined ? null : (
+            <Text variant="overline" color="tertiary" style={styles.overline}>
+              {overline}
             </Text>
-            {status === undefined ? null : (
-              <StatusChip
-                status={status.label}
-                label={status.label}
-                tone={status.tone}
-                density="functional"
-              />
-            )}
-          </View>
-        )}
-        {subtitle === undefined ? null : (
-          <Text
-            variant={subtitleFace === 'mono' ? 'mono' : 'body-sm'}
-            color="secondary"
-            style={styles.subtitle}
-          >
-            {subtitle}
-          </Text>
-        )}
-      </View>
+          )}
+          {title === undefined ? null : (
+            <View style={styles.titleLine}>
+              <Text
+                variant={density === 'functional' ? 'h4' : 'h3'}
+                style={TITLE[density]}
+                fixedSize
+              >
+                {title}
+              </Text>
+              {status === undefined ? null : (
+                <StatusChip
+                  status={status.label}
+                  label={status.label}
+                  tone={status.tone}
+                  density="functional"
+                />
+              )}
+            </View>
+          )}
+          {subtitle === undefined ? null : (
+            <Text
+              variant={subtitleFace === 'mono' ? 'mono' : 'body-sm'}
+              color="secondary"
+              style={styles.subtitle}
+            >
+              {subtitle}
+            </Text>
+          )}
+        </View>
+      </Lead>
       {showClose ? (
         <OverlayClose label={closeLabel} offset={handle ? 'handle' : 'sheet'} onClick={onClose} />
       ) : null}
+    </View>
+  );
+}
+
+/** The mark and the heading side by side — only when there is a mark, so no empty box is drawn. */
+function Lead({ leading, children }: { leading: ReactNode; children: ReactNode }) {
+  if (leading === undefined || leading === null) return children;
+  return (
+    <View style={styles.lead}>
+      {leading}
+      {children}
     </View>
   );
 }
@@ -117,6 +138,13 @@ const styles = StyleSheet.create({
      the next elevation step up from flat — carries the same "content has moved under me". */
   scrolled: theme.elevation.e2,
   heading: { flexShrink: 1, minWidth: 0 },
+  lead: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing['sp-3'],
+    flexShrink: 1,
+    minWidth: 0,
+  },
   titleLine: {
     flexDirection: 'row',
     flexWrap: 'wrap',

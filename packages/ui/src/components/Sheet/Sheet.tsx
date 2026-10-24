@@ -43,6 +43,7 @@ export function Sheet({
   subtitle,
   subtitleFace = 'sans',
   overline,
+  leading,
   children,
   meta,
   size = 'auto',
@@ -113,6 +114,7 @@ export function Sheet({
 
         {hasHeader ? (
           <SheetHeader
+            leading={leading}
             handle={handle}
             closeLabel={closeLabel}
             onClose={onClose}

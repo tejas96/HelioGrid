@@ -86,6 +86,12 @@ const PHONE_SCREENS_HELD: ReadonlyMap<string, string> = new Map([
       'and the phone QA rows of its task (T-M01-010c)',
   ],
   [
+    'roles-reference',
+    'reached only by a member with a company, through More in settings or Assign Roles, behind ' +
+      'the press no Maestro flow lands on iOS (the shell above): its flows are the web suite and ' +
+      'the phone QA rows of its task (T-M01-014)',
+  ],
+  [
     'team',
     'reached only by a member with a company, through More in settings, behind the press no ' +
       'Maestro flow lands on iOS (the shell above): its flows are the web suite and the phone QA ' +
