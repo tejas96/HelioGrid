@@ -7,6 +7,7 @@ import {
   inMatrixOrder,
   type PresetLock,
   type RolePreset,
+  roleChange,
   saveRolesOff,
   type TeamRow,
   type UiLanguage,
@@ -16,6 +17,7 @@ import {
   assignRolesWords,
   createTranslator,
   grantLineWords,
+  removeRolesWords,
   teamStatusWord,
 } from '@heliogrid/i18n';
 import { AssignRoles } from '@heliogrid/ui';
@@ -31,7 +33,7 @@ const READERS = {
  * Assign Roles as the Team screen holds it: the person's held presets, ticks kept in F2 order, the
  * grant line and Save's reason from domain, every word in `reader`'s language. The frame reports a
  * save as `data-saved` (the set sent) and a close as `data-closed`. `refusal` draws a save that did
- * not land; `state` the skeleton.
+ * not land; `state` the skeleton; `removing` the removal's confirm standing over it.
  */
 export function AssignRolesAsHeld({
   reader,
@@ -40,6 +42,7 @@ export function AssignRolesAsHeld({
   locks = {},
   state = 'ready',
   refusal = null,
+  removing = null,
 }: {
   reader: UiLanguage;
   name?: string;
@@ -47,6 +50,8 @@ export function AssignRolesAsHeld({
   locks?: Partial<Record<RolePreset, PresetLock>>;
   state?: 'ready' | 'loading';
   refusal?: AssignRolesRefusal | null;
+  /** The ticks a save would leave, asking first — the removal's confirm over the editor. */
+  removing?: readonly RolePreset[] | null;
 }) {
   const { t } = READERS[reader];
   const [open, setOpen] = useState(true);
@@ -90,6 +95,15 @@ export function AssignRolesAsHeld({
         saving={false}
         onSave={() => setSaved(picked.join(','))}
         state={state}
+        removal={
+          removing === null
+            ? null
+            : {
+                words: removeRolesWords(t, { name, change: roleChange(held, removing) }),
+                onGo: () => setSaved(removing.join(',')),
+                onLeave: () => setSaved('kept'),
+              }
+        }
         refusal={
           refusal === null
             ? null

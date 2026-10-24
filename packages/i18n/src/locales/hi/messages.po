@@ -18,6 +18,11 @@ msgid "411038"
 msgstr "411038"
 
 #. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:27
+msgid " — tick {list} on {first}'s row again."
+msgstr " — {first} की पंक्ति पर {list} फिर से टिक करें।"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:61
 msgid "{bankName} · account ending {ending}"
 msgstr "{bankName} · खाते के अंतिम अंक {ending}"
@@ -216,6 +221,11 @@ msgstr "इस कोड पर {left, plural, one {# कोशिश बची 
 #: src/copy/list-join.ts:11
 msgid "{list} and {last}"
 msgstr "{list} और {last}"
+
+#. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:28
+msgid "{list} removed from {name}"
+msgstr "{name} से हटाया गया: {list}"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:20
@@ -1056,6 +1066,11 @@ msgid "Deactivate {first}"
 msgstr "{first} को निष्क्रिय करें"
 
 #. js-lingui-explicit-id
+#: src/copy/team-acts.ts:41
+msgid "Deactivate {name}"
+msgstr "निष्क्रिय करें: {name}"
+
+#. js-lingui-explicit-id
 #: src/copy/team-acts.ts:22
 msgid "Deactivate {name}?"
 msgstr "{name} को निष्क्रिय करें?"
@@ -1524,6 +1539,11 @@ msgid "Invite again"
 msgstr "फिर से आमंत्रित करें"
 
 #. js-lingui-explicit-id
+#: src/copy/team-acts.ts:43
+msgid "Invite again: {name}"
+msgstr "फिर से आमंत्रित करें: {name}"
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:51
 msgid "Invite lasts {days, plural, one {# day} other {# days}} · cancel it from Team"
 msgstr "आमंत्रण {days, plural, one {# दिन} other {# दिन}} चलता है · इसे टीम से रद्द करें"
@@ -1968,6 +1988,11 @@ msgid "On your invoices · never used to move your money"
 msgstr "आपके बिलों पर · आपके पैसे के लेन-देन के लिए कभी नहीं"
 
 #. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:24
+msgid "Once saved, {first} can no longer {list}."
+msgstr "सेव होने के बाद {first} {list} का काम नहीं कर पाएँगे।"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:62
 msgid "One mobile number is one HelioGrid account, whichever way you come in."
 msgstr "एक मोबाइल नंबर एक HelioGrid खाता है, आप किसी भी रास्ते से आएँ।"
@@ -2224,9 +2249,24 @@ msgid "Remove"
 msgstr "हटाएँ"
 
 #. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:21
+msgid "Remove {list} from {first}?"
+msgstr "{first} से {list} हटाएँ?"
+
+#. js-lingui-explicit-id
 #: src/copy/first-run-profile.ts:44
 msgid "Remove it and your initials come back."
 msgstr "इसे हटाएँ तो आपके शुरुआती अक्षर वापस आ जाते हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:22
+msgid "Remove role"
+msgstr "भूमिका हटाएँ"
+
+#. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:23
+msgid "Remove roles"
+msgstr "भूमिकाएँ हटाएँ"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:33
@@ -2282,6 +2322,11 @@ msgstr "{name} का आमंत्रण वापस लें?"
 #: src/copy/team-acts.ts:14
 msgid "Revoke invite"
 msgstr "आमंत्रण वापस लें"
+
+#. js-lingui-explicit-id
+#: src/copy/team-acts.ts:42
+msgid "Revoke invite for {name}"
+msgstr "आमंत्रण वापस लें: {name}"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:37
@@ -3052,9 +3097,19 @@ msgid "Tick at least one role before sending — an invite with none would open 
 msgstr "भेजने से पहले कम से कम एक भूमिका चुनें — बिना भूमिका का आमंत्रण खाली ऐप खोलेगा।"
 
 #. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:29
+msgid "Tick it again on {first}'s row whenever you like."
+msgstr "जब चाहें, {first} की पंक्ति पर इसे फिर से टिक करें।"
+
+#. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:31
 msgid "Tick or clear a preset first."
 msgstr "पहले कोई प्रीसेट चुनें या हटाएँ।"
+
+#. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:30
+msgid "Tick them again on {first}'s row whenever you like."
+msgstr "जब चाहें, {first} की पंक्ति पर इन्हें फिर से टिक करें।"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:66
@@ -3136,6 +3191,11 @@ msgstr "दो प्रीसेट, एक होम"
 #: src/copy/setup-what-you-sell.ts:30
 msgid "Typical system size"
 msgstr "सामान्य सिस्टम आकार"
+
+#. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:31
+msgid "Undo"
+msgstr "पहले जैसा करें"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:25
@@ -3514,6 +3574,16 @@ msgstr "आप दोनों को बाद में प्रोफ़ा�
 #: src/copy/setup-what-you-sell.ts:24
 msgid "You can change both later in your company profile, the next step. Proposals you have already sent never change."
 msgstr "दोनों को आप बाद में अगले चरण, कंपनी प्रोफ़ाइल में बदल सकते हैं। जो प्रस्ताव आप भेज चुके हैं, वे कभी नहीं बदलते।"
+
+#. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:25
+msgid "You can give it back at any time"
+msgstr "आप इसे कभी भी वापस दे सकते हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:26
+msgid "You can give them back at any time"
+msgstr "आप इन्हें कभी भी वापस दे सकते हैं"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:72

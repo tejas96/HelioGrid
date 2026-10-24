@@ -1,11 +1,14 @@
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Banner } from '../Banner/Banner.native';
 import { Button } from '../Button/Button.native';
 import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
+import { TeamConfirm } from '../MemberCard/TeamConfirm.native';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup.native';
+import type { FocusHandle } from '../SearchField/SearchField.types';
 import { ASSIGN_ROLES_PANEL_WIDTH, OPTION_BARS } from './AssignRoles.logic';
 import type { AssignRolesProps } from './AssignRoles.types';
 import { GrantCard } from './GrantCard.native';
@@ -17,6 +20,7 @@ import { GrantCard } from './GrantCard.native';
 export function AssignRoles({
   open,
   onClose,
+  removal = null,
   person,
   words,
   rows,
@@ -30,79 +34,95 @@ export function AssignRoles({
   refusal = null,
 }: AssignRolesProps) {
   const loading = state === 'loading';
+  /* The screen reader's place after the confirm's Cancel: the web's overlay returns it on its own. */
+  const save = useRef<FocusHandle>(null);
   return (
-    <EditorSurface
-      open={open}
-      onClose={onClose}
-      closeLabel={words.close}
-      overline={words.overline}
-      title={person.name}
-      status={person.status}
-      subtitle={person.phone}
-      subtitleFace="mono"
-      showClose
-      density="functional"
-      width={ASSIGN_ROLES_PANEL_WIDTH}
-      sheetProps={{ size: 'full' }}
-      meta={({ panel }) => (
-        <View style={[styles.heading, panel ? styles.headingInPanel : undefined]}>
-          <Text variant="overline" color="tertiary">
-            {words.presets}
-          </Text>
-        </View>
-      )}
-      footer={
-        loading ? undefined : (
-          <View style={styles.foot}>
-            {refusal === null ? null : (
-              <Banner kind="validation" title={refusal.title ?? undefined}>
-                {refusal.body}
-              </Banner>
-            )}
-            <GrantCard grant={grant} label={words.gives} />
-            <Button
-              variant="primary"
-              size="lg"
-              fullWidth
-              loading={saving}
-              disabled={saveOffReason !== null}
-              disabledReason={saveOffReason ?? undefined}
-              onClick={onSave}
-            >
-              {words.save}
-            </Button>
+    <>
+      <EditorSurface
+        open={open}
+        onClose={onClose}
+        dismissible={removal === null}
+        closeLabel={words.close}
+        overline={words.overline}
+        title={person.name}
+        status={person.status}
+        subtitle={person.phone}
+        subtitleFace="mono"
+        showClose
+        density="functional"
+        width={ASSIGN_ROLES_PANEL_WIDTH}
+        sheetProps={{ size: 'full' }}
+        meta={({ panel }) => (
+          <View style={[styles.heading, panel ? styles.headingInPanel : undefined]}>
+            <Text variant="overline" color="tertiary">
+              {words.presets}
+            </Text>
           </View>
-        )
-      }
-    >
-      {loading ? (
-        <View style={styles.body}>
-          <LoadingBars label={words.loading} bars={OPTION_BARS} />
-        </View>
-      ) : (
-        <View style={styles.body}>
-          <OptionCardGroup
-            mode="multiple"
-            ariaLabel={words.presets}
-            density="functional"
-            options={rows.map((row) => ({
-              value: row.value,
-              title: row.title,
-              description: row.description,
-              disabled: row.lockReason !== null,
-              disabledReason: row.lockReason ?? undefined,
-            }))}
-            value={picked}
-            onChange={(next) =>
-              onPick(rows.filter((row) => next.includes(row.value)).map((row) => row.value))
-            }
-          />
-          <Text variant="caption" color="secondary">
-            {words.recorded}
-          </Text>
-        </View>
-      )}
-    </EditorSurface>
+        )}
+        footer={
+          loading ? undefined : (
+            <View style={styles.foot}>
+              {refusal === null ? null : (
+                <Banner kind="validation" title={refusal.title ?? undefined}>
+                  {refusal.body}
+                </Banner>
+              )}
+              <GrantCard grant={grant} label={words.gives} />
+              <Button
+                ref={save}
+                variant="primary"
+                size="lg"
+                fullWidth
+                loading={saving}
+                disabled={saveOffReason !== null}
+                disabledReason={saveOffReason ?? undefined}
+                onClick={onSave}
+              >
+                {words.save}
+              </Button>
+            </View>
+          )
+        }
+      >
+        {loading ? (
+          <View style={styles.body}>
+            <LoadingBars label={words.loading} bars={OPTION_BARS} />
+          </View>
+        ) : (
+          <View style={styles.body}>
+            <OptionCardGroup
+              mode="multiple"
+              ariaLabel={words.presets}
+              density="functional"
+              options={rows.map((row) => ({
+                value: row.value,
+                title: row.title,
+                description: row.description,
+                disabled: row.lockReason !== null,
+                disabledReason: row.lockReason ?? undefined,
+              }))}
+              value={picked}
+              onChange={(next) =>
+                onPick(rows.filter((row) => next.includes(row.value)).map((row) => row.value))
+              }
+            />
+            <Text variant="caption" color="secondary">
+              {words.recorded}
+            </Text>
+          </View>
+        )}
+      </EditorSurface>
+      <TeamConfirm
+        look="roles"
+        words={removal?.words ?? null}
+        busy={false}
+        onGo={() => removal?.onGo()}
+        onLeave={() => {
+          removal?.onLeave();
+          save.current?.focus();
+        }}
+      />
+    </>
   );
 }
 

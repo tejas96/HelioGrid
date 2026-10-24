@@ -1,10 +1,12 @@
-import { firstNameOf, grantLine, ROLE_PRESETS } from '@heliogrid/domain';
+import { firstNameOf, grantLine, ROLE_PRESETS, roleChange } from '@heliogrid/domain';
 import {
   assignRolesRefusalWords,
   assignRolesWords,
   createTranslator,
   grantLineWords,
   inviteWords,
+  removeRolesWords,
+  rolesRemovedToast,
   settingsWords,
   TEAM,
   teamActWords,
@@ -28,7 +30,8 @@ import { passTheOwnersMark } from '../support/shell';
  * is the task's qa-web rows. The owner's own row opens Assign Roles (`SCR-M01-13`, `T-M01-013`): as
  * the only EPC Owner they cannot clear it, and the grant line says what the one preset gives. A
  * save whose request is cut off is read back before anything is said (`F8-36`), keeps the ticks
- * and says nothing changed; *Save roles* then retries.
+ * and says nothing changed; *Save roles* then retries. A save that takes a preset away asks first,
+ * holds the editor under its confirm, and its toast's *Undo* writes the old set back once.
  */
 const en = await createTranslator('en');
 const WORDS = settingsWords(en.t);
@@ -141,5 +144,63 @@ test('a save cut off on the way keeps the ticks, says nothing changed, and Save 
   await page.unroute('**/tenants/me/members/*/roles');
   await editor.getByRole('button', { name: roles.save }).click();
   await expect(editor).toHaveCount(0);
+  await expectNoSeriousViolations(page);
+});
+
+test('a removal asks first, Cancel keeps the ticks, and Undo gives the preset back', async ({
+  page,
+}) => {
+  const company = await createCompany(page, en, freshMobile());
+  await passTheOwnersMark(page, en);
+  await page.goto('/more/team');
+  const [OWNER, , , , , , , , , FINANCE] = ROLE_PRESETS;
+  const held = [OWNER ?? 'epc_owner'];
+  const added = [...held, FINANCE ?? 'finance'];
+  const roles = assignRolesWords(en.t, {
+    firstName: firstNameOf(OWNER_NAME),
+    companyName: company,
+    locks: { epc_owner: 'sole-owner' },
+  });
+  const ownRow = page.getByRole('main').getByRole('button', { name: OWNER_NAME, exact: true });
+  const editor = page.getByRole('dialog', { name: new RegExp(OWNER_NAME, 'u') });
+  const finance = editor.getByRole('checkbox', {
+    name: roles.rows[ROLE_PRESETS.indexOf(FINANCE ?? 'finance')]?.title ?? '',
+  });
+  const open = async () => {
+    await ownRow.focus();
+    await page.keyboard.press('Enter');
+    await expect(editor).toBeVisible();
+  };
+  // An add goes straight through: no confirm, no toast.
+  await open();
+  await finance.click();
+  await editor.getByRole('button', { name: roles.save }).click();
+  await expect(editor).toHaveCount(0);
+  // Clearing it asks first; the editor stays under the confirm, Escape included.
+  await open();
+  await expect(finance).toHaveAttribute('aria-checked', 'true');
+  await finance.click();
+  await editor.getByRole('button', { name: roles.save }).click();
+  const asked = removeRolesWords(en.t, { name: OWNER_NAME, change: roleChange(added, held) });
+  const confirm = page.getByRole('dialog', { name: asked.title });
+  await expect(confirm.getByText(asked.note.lead)).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(confirm).toBeVisible();
+  await confirm.getByRole('button', { name: asked.leave }).click();
+  await expect(confirm).toHaveCount(0);
+  await expect(finance).toHaveAttribute('aria-checked', 'false');
+  // Remove: the editor closes and the toast offers Undo, which leaves with its toast.
+  await editor.getByRole('button', { name: roles.save }).click();
+  await confirm.getByRole('button', { name: asked.go }).click();
+  await expect(editor).toHaveCount(0);
+  const toast = rolesRemovedToast(en.t, { name: OWNER_NAME, removed: [FINANCE ?? 'finance'] });
+  await expect(page.getByText(toast.title)).toBeVisible();
+  await page.getByRole('button', { name: toast.undoLabel }).click();
+  await expect(page.getByRole('button', { name: toast.undoLabel })).toHaveCount(0);
+  // The old set is back.
+  await expect(async () => {
+    await open();
+    await expect(finance).toHaveAttribute('aria-checked', 'true', { timeout: 1000 });
+  }).toPass();
   await expectNoSeriousViolations(page);
 });

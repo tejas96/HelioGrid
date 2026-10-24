@@ -13,6 +13,7 @@ import type {
   MemberCardProps,
   MemberListProps,
   MemberRowWords,
+  TeamConfirmProps,
 } from './MemberCard.types';
 
 /**
@@ -99,15 +100,36 @@ export const MEMBER_ACT_LOOK: Record<
 export function memberActOf(
   row: TeamRow,
   roster: readonly TeamRow[],
-  words: { act(act: TeamAct): string; onlyOwner: string },
+  words: {
+    act(act: TeamAct): string;
+    spoken(act: TeamAct, name: string): string;
+    onlyOwner: string;
+  },
   sending: string | null,
-): Pick<MemberActProps, 'act' | 'label' | 'offReason' | 'busy'> | null {
+): Pick<MemberActProps, 'act' | 'label' | 'spokenName' | 'offReason' | 'busy'> | null {
   const offered = teamRowAct(row, roster);
   if (offered === null) return null;
   return {
     act: offered.act,
     label: words.act(offered.act),
+    spokenName: words.spoken(offered.act, row.name),
     ...(offered.off ? { offReason: words.onlyOwner } : {}),
     busy: sending === row.id,
   };
 }
+
+/**
+ * How each confirm look sits on its surfaces: a Team act's (`SCR-M01-12`) as a danger `sm` modal
+ * with no handle; a roles removal's (`SCR-M01-13` m-confirm, d-confirm) with a handle and a `md`
+ * modal of no tone — the boards draw it so.
+ */
+export const CONFIRM_LOOK = {
+  act: { sheet: { handle: false }, modal: { tone: 'danger', size: 'sm' } },
+  roles: { sheet: { handle: true }, modal: { size: 'md' } },
+} as const satisfies Record<
+  NonNullable<TeamConfirmProps['look']>,
+  {
+    sheet: { handle: boolean };
+    modal: { tone?: 'danger'; size: 'sm' | 'md' };
+  }
+>;

@@ -56,6 +56,11 @@ const PRESET_CLAUSE: Record<RolePreset, { id: string }> = {
   marketing: /*i18n*/ { id: 'run marketing' },
 };
 
+/** A preset's clause, as the grant line says it — the removal confirm negates the same words. */
+export function presetClause(translate: Translator['t'], preset: RolePreset): string {
+  return translate(PRESET_CLAUSE[preset]);
+}
+
 const SAVE_OFF: Record<SaveRolesOff, { id: string }> = {
   gone: ASSIGN_ROLES.gone,
   unchanged: ASSIGN_ROLES.unchanged,
@@ -86,7 +91,7 @@ export function grantLineWords(
     };
   }
   const clauses = speakers.map((preset) => ({
-    text: translate(PRESET_CLAUSE[preset]),
+    text: presetClause(translate, preset),
     strong: true,
   }));
   /* The name is a slot too, so nothing a person is called can be read as one. */

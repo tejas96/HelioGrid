@@ -109,6 +109,8 @@ export type {
 } from './copy/profile-preferences';
 export { PROFILE_PREFERENCES, profilePreferencesWords } from './copy/profile-preferences';
 export { provenanceWords, standingLabel, tierLabel } from './copy/provenance';
+export type { RemoveRolesWords, RolesRemovedToast } from './copy/remove-roles';
+export { removeRolesWords, rolesRemovedToast, rolesUndoFailedToast } from './copy/remove-roles';
 export type { RoleCardLineWords, RoleCardWords } from './copy/role-card';
 export { ROLE_CARD, roleCardWords } from './copy/role-card';
 export type { SettingsWords } from './copy/settings';

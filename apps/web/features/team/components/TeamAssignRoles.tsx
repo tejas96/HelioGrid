@@ -1,12 +1,54 @@
 'use client';
-import type { AssignRolesEditor } from '@heliogrid/data/react';
-import { assignRolesShown } from '@heliogrid/i18n';
+import { type AssignRolesEditor, type Team, useAssignRoles } from '@heliogrid/data/react';
+import {
+  assignRolesShown,
+  removeRolesWords,
+  rolesRemovedToast,
+  rolesUndoFailedToast,
+} from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { AssignRoles, TEAM_STATUS_TONE, useFormat } from '@heliogrid/ui';
+import { AssignRoles, TEAM_STATUS_TONE, type ToastQueue, useFormat } from '@heliogrid/ui';
+import { useRef } from 'react';
 
 /**
- * Assign Roles over the Team page (`SCR-M01-13`): the person the row opened, their ticks and the
- * grant line, in the reader's words. `useAssignRoles` holds the state and the save; this composes.
+ * `useAssignRoles` for the Team page: a landed removal raises its toast and *Undo* (`m-after`).
+ * `onUndone` gives the keyboard a place once *Undo* has left with its toast — unless the editor is
+ * open, whose trapped panel keeps it.
+ */
+export function useTeamRoles(
+  team: Team,
+  toasts: ToastQueue,
+  companyName: string,
+  onUndone: () => void,
+) {
+  const t = useTranslate();
+  const open = useRef(false);
+  const roles = useAssignRoles(team, {
+    onRemoved: (removal, undo) => {
+      const { undoLabel, ...toast } = rolesRemovedToast(t, removal);
+      toasts.push({
+        ...toast,
+        undo: {
+          label: undoLabel,
+          onUndo: () => {
+            undo();
+            if (!open.current) onUndone();
+          },
+        },
+      });
+    },
+    onUndoFailed: (refusal, removal) => {
+      toasts.push(rolesUndoFailedToast(t, refusal, { ...removal, companyName }));
+    },
+  });
+  open.current = roles.open;
+  return roles;
+}
+
+/**
+ * Assign Roles over the Team page (`SCR-M01-13`): the person the row opened, their ticks, the grant
+ * line and the removal's confirm, in the reader's words. `useAssignRoles` holds the state and the
+ * save; this composes.
  */
 export function TeamAssignRoles({
   editor,
@@ -17,7 +59,7 @@ export function TeamAssignRoles({
 }) {
   const t = useTranslate();
   const format = useFormat();
-  const { person } = editor;
+  const { person, confirm } = editor;
   if (person === null) return null;
   const shown = assignRolesShown(t, { ...editor, ...person, companyName });
   return (
@@ -38,6 +80,15 @@ export function TeamAssignRoles({
       saving={editor.saving}
       onSave={editor.save}
       refusal={shown.refusal}
+      removal={
+        confirm === null
+          ? null
+          : {
+              words: removeRolesWords(t, { name: person.name, change: confirm }),
+              onGo: editor.removeConfirmed,
+              onLeave: editor.cancelRemove,
+            }
+      }
     />
   );
 }

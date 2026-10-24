@@ -11,6 +11,7 @@ export function MemberAct({
   fullWidth = false,
   offReason,
   busy = false,
+  spokenName,
   onPress,
   ref,
 }: MemberActProps) {
@@ -32,6 +33,7 @@ export function MemberAct({
       disabled={offReason !== undefined}
       disabledReason={offReason}
       loading={busy}
+      spokenName={spokenName}
       onClick={onPress}
     >
       {label}

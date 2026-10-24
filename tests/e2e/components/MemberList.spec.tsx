@@ -132,3 +132,20 @@ test('an active card opens the person; an invite does not, and a card act runs i
   await page.mouse.click((badges?.x ?? 0) + 8, (badges?.y ?? 0) + 8);
   await expect(frame).toHaveAttribute('data-opened', 'Rajesh Patil');
 });
+
+test('each act is heard with its person, and still found by its visible words (D291, AC-28)', async ({
+  mount,
+  page,
+}) => {
+  const acts = teamActWords(en.t, COMPANY);
+  await mount(<TeamListStory company={COMPANY} surface="ready" withActs />);
+  const vikram = page.locator('.hg-record-card', { hasText: 'Vikram Deshpande' });
+  await expect(vikram.getByRole('button', { name: acts.act('deactivate') })).toHaveAccessibleName(
+    acts.spoken('deactivate', 'Vikram Deshpande'),
+  );
+  const invite = page.getByRole('button', { name: acts.act('revoke') }).first();
+  await expect(invite).toHaveAccessibleName(/.+/u);
+  const said = await invite.evaluate((node) => node.getAttribute('aria-label') ?? '');
+  expect(said.startsWith(acts.act('revoke'))).toBe(true);
+  expect(said.length).toBeGreaterThan(acts.act('revoke').length);
+});

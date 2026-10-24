@@ -15,7 +15,7 @@ const ACT: Record<TeamAct, { id: string }> = {
   'invite-again': /*i18n*/ { id: 'Invite again' },
 };
 
-const ACTS = {
+export const TEAM_ACTS = {
   actions: /*i18n*/ { id: 'Actions' },
   onlyOwner: /*i18n*/ { id: 'Only EPC Owner' },
   cancel: /*i18n*/ { id: 'Cancel' },
@@ -36,6 +36,13 @@ const ACTS = {
   revokedLine: /*i18n*/ { id: 'Inviting {first} again sends a new link.' },
 } as const;
 
+/** A row act as a screen reader hears it: the act's own visible words first, then the person (D291). */
+const SPOKEN: Record<TeamAct, { id: string }> = {
+  deactivate: /*i18n*/ { id: 'Deactivate {name}' },
+  revoke: /*i18n*/ { id: 'Revoke invite for {name}' },
+  'invite-again': /*i18n*/ { id: 'Invite again: {name}' },
+};
+
 /** A confirm's title, go button and sentence. */
 export interface TeamAskWords {
   readonly title: string;
@@ -45,6 +52,8 @@ export interface TeamAskWords {
 
 export interface TeamActWords {
   act(act: TeamAct): string;
+  /** The act's accessible name, with the person in it — `Button`'s `spokenName`. */
+  spoken(act: TeamAct, name: string): string;
   /** The table's act column, named for a screen reader only. */
   readonly actions: string;
   readonly onlyOwner: string;
@@ -81,20 +90,21 @@ export function teamActWords(translate: Translator['t'], company: string): TeamA
   const deactivate = (name: string): TeamAskWords => {
     const first = firstNameOf(name);
     return {
-      title: translate(ACTS.deactivateTitle, { name }),
-      go: translate(ACTS.deactivateGo, { first }),
-      body: translate(ACTS.deactivateBody, { first, company }),
+      title: translate(TEAM_ACTS.deactivateTitle, { name }),
+      go: translate(TEAM_ACTS.deactivateGo, { first }),
+      body: translate(TEAM_ACTS.deactivateBody, { first, company }),
     };
   };
   const revoke = (name: string): TeamAskWords => ({
-    title: translate(ACTS.revokeTitle, { name }),
+    title: translate(TEAM_ACTS.revokeTitle, { name }),
     go: translate(ACT.revoke),
-    body: translate(ACTS.revokeBody, { first: firstNameOf(name) }),
+    body: translate(TEAM_ACTS.revokeBody, { first: firstNameOf(name) }),
   });
   return {
     act: (act) => translate(ACT[act]),
-    actions: translate(ACTS.actions),
-    onlyOwner: translate(ACTS.onlyOwner),
+    spoken: (act, name) => translate(SPOKEN[act], { name }),
+    actions: translate(TEAM_ACTS.actions),
+    onlyOwner: translate(TEAM_ACTS.onlyOwner),
     deactivate,
     revoke,
     turnedDown,
@@ -104,31 +114,31 @@ export function teamActWords(translate: Translator['t'], company: string): TeamA
       if (state.kind === 'refused') {
         const { go } = deactivate(name);
         return {
-          title: translate(ACTS.deactivateTitle, { name }),
+          title: translate(TEAM_ACTS.deactivateTitle, { name }),
           go,
           leave: translate(SHELL.close),
           refusal: {
-            title: translate(ACTS.refusedTitle, { company }),
+            title: translate(TEAM_ACTS.refusedTitle, { company }),
             body:
               state.lostOwner === null
                 ? null
-                : translate(ACTS.refusedBody, { name: state.lostOwner }),
+                : translate(TEAM_ACTS.refusedBody, { name: state.lostOwner }),
           },
-          goOffReason: translate(ACTS.refusedReason),
+          goOffReason: translate(TEAM_ACTS.refusedReason),
         };
       }
       const asked = state.act === 'deactivate' ? deactivate(name) : revoke(name);
-      return { ...asked, leave: translate(ACTS.cancel) };
+      return { ...asked, leave: translate(TEAM_ACTS.cancel) };
     },
     toast: (note) => {
       switch (note.kind) {
         case 'deactivated':
-          return { tone: 'neutral', title: translate(ACTS.deactivated, { name: note.name }) };
+          return { tone: 'neutral', title: translate(TEAM_ACTS.deactivated, { name: note.name }) };
         case 'revoked':
           return {
             tone: 'neutral',
-            title: translate(ACTS.revoked, { name: note.name }),
-            description: translate(ACTS.revokedLine, { first: firstNameOf(note.name) }),
+            title: translate(TEAM_ACTS.revoked, { name: note.name }),
+            description: translate(TEAM_ACTS.revokedLine, { first: firstNameOf(note.name) }),
           };
         case 'turned-down':
           return { tone: 'danger', title: turnedDown(note.code) };

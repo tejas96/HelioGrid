@@ -1,5 +1,5 @@
 'use client';
-import { useAssignRoles, useSession, useShell, useTeam, useTeamActs } from '@heliogrid/data/react';
+import { useSession, useShell, useTeam, useTeamActs } from '@heliogrid/data/react';
 import { noteLeavesRow, opensSettingsRow, showsListHead, type TeamRow } from '@heliogrid/domain';
 import { settingsRowName, TEAM, teamActWords, teamListWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
@@ -22,7 +22,7 @@ import {
 } from '@heliogrid/ui';
 import { notFound } from 'next/navigation';
 import { useCallback, useRef } from 'react';
-import { TeamAssignRoles } from './components/TeamAssignRoles';
+import { TeamAssignRoles, useTeamRoles } from './components/TeamAssignRoles';
 import { useTeamInvite } from './components/TeamInvite';
 import { TeamTable } from './components/TeamTable';
 
@@ -50,16 +50,17 @@ function TeamIn() {
   const team = useTeam(locale);
   const [room, width] = useOwnWidth<HTMLDivElement>();
   const wide = width !== null && width >= DATA_TABLE_STACK_BELOW;
+  const company = shell.companyName ?? '';
   const words = teamListWords(t, {
     pack,
     language: locale,
     now: Date.now(),
-    company: shell.companyName ?? '',
+    company,
     query: team.query,
     status: team.status,
   });
   const ready = team.load === 'ready';
-  const actWords = teamActWords(t, shell.companyName ?? '');
+  const actWords = teamActWords(t, company);
   const toasts = useToasts();
   const search = useRef<FocusHandle>(null);
   const allChip = useRef<FocusHandle>(null);
@@ -88,7 +89,8 @@ function TeamIn() {
     allChip.current?.focus();
   };
   const invite = useTeamInvite(() => team.reread(), toasts.push);
-  const roles = useAssignRoles(team);
+  /* As a row act that leaves the row, an undo gives the keyboard to the search. */
+  const roles = useTeamRoles(team, toasts, company, () => search.current?.focus());
   /* The sole-owner reason names the company, so no row opens before its name has arrived. */
   const openOf = shell.companyName === null ? undefined : roles.openerOf;
   const inviteAct = (
@@ -198,7 +200,7 @@ function TeamIn() {
         onLeave={leave}
       />
       <InviteEditor {...invite.editor} />
-      <TeamAssignRoles editor={roles} companyName={shell.companyName ?? ''} />
+      <TeamAssignRoles editor={roles} companyName={company} />
       <ToastHost toasts={toasts.toasts} onDismiss={toasts.dismiss} />
     </div>
   );
