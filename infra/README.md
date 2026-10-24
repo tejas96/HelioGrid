@@ -38,7 +38,8 @@ pnpm infra:reset   # down -v — destroys the volume
 
 **One Postgres container, four databases** (owner ruling 2026-08-27; the fourth 2026-10-05).
 `heliogrid-pg-local` on port `5544` holds `heliogrid_dev` (the owner's development data) and
-`heliogrid_test` (`/task` QA, the local api tests and the invariants — disposable), both on the
+`heliogrid_test` (`/task` QA with its seeded QA companies, the local api tests, the local web flows
+and the invariants — disposable, but reseed the QA companies after a reset), both on the
 Drizzle migrations, plus `temporal` and `temporal_visibility` (owned by `temporal-sql-tool`). Two
 migration tools, separate databases, so neither can reach the other's tables — and the tenancy
 invariant scans the one database its URL names, because `pg_class` is per-database.

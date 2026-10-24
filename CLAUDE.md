@@ -93,8 +93,8 @@ its edge-case list are `.claude/skills/task/rfc-template.md`.
 | | |
 |---|---|
 | `pnpm infra:up` · `pnpm infra:down` | Before infra-dependent work. The read-only build-order walk and RFC need no stack. |
-| `pnpm check` | **While building** (`/task` step 5). Biome on files that differ from `origin/main`, the workspace typecheck (cached), dependency-cruiser, sherif, turbo boundaries, duplication, `vitest related` on changed .ts files, the domain's 100% coverage bars when a barred domain source changed, catalog freshness when copy, ui or app files changed, and OpenAPI freshness and oasdiff when a contract changed. Fast; never the proof. |
-| `pnpm check:all` | **Normally once, after review and live QA.** Build, lint (Biome, dependency-cruiser, sherif, turbo boundaries), typecheck, duplication, OpenAPI freshness and oasdiff 1.31.0 against `origin/main`, catalog freshness, unit tests, invariants. Run it on the test database; how often, and when a failure stops for the owner: `/task` step 8. |
+| `pnpm check` | **While building** (`/task` step 5). Biome on files that differ from `origin/main`, the workspace typecheck (cached), dependency-cruiser, sherif, turbo boundaries, duplication, `vitest related` on changed .ts files, the domain's 100% coverage bars when a barred domain source changed, catalog freshness when copy, ui or app files changed, and OpenAPI freshness and oasdiff when a contract or domain source changed. Fast; never the proof. |
+| `pnpm check:all` | **Normally once, after review and live QA.** Build, lint (Biome, dependency-cruiser, sherif, turbo boundaries), typecheck, duplication, OpenAPI freshness and the oasdiff breaking-change judge (the build CI pins) against the branch's base on `origin/main`, catalog freshness, unit tests, invariants. Run it on the test database; how often, and when a failure stops for the owner: `/task` step 8. |
 | `pnpm lint:fix` | Format and auto-fix. |
 | `pnpm test:watch` · `pnpm test:coverage` | Tests while writing · the edge cases you missed (read it, not the pass count). |
 | `pnpm db:migration:new` · `pnpm db:migrate` | Where a migration starts; never hand-author one. |

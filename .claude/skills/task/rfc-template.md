@@ -59,7 +59,8 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
 13. **Proof** — one row per check:
     `row | AC | owner | surface | action → expected | test data, setup and cleanup` — test data
     names the account each row signs in with.
-    Owners: `main-dev` (a unit, contract or component test, named `` `<file>` › *<title>* `` — the
+    Owners: `main-dev` (a unit, contract or component test, or a `tests/e2e/web` spec run at
+    `/task` step 8 item 4, named `` `<file>` › *<title>* `` — the
     file by its path, or a name only one test file has, and each title as the test file writes it,
     cut short at a `${…}` or `%s`; invariant `rfc-proofs-hold` reads them),
     `qa-api`, `qa-web`, `qa-ios`, `qa-android` (live, on the running app), `ci` (a lane that must

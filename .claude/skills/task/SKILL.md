@@ -221,11 +221,10 @@ through the review and its fixes.
 
 **Run.** Start every QA agent in one message. Each gets what its own file lists under "Your prompt
 gives you", the RFC's frame map and the known differences included. An agent that returns `NEEDS MAIN: <action>`
-(kill, restart or open the app by a link) gets that action done by you and is continued. QA
-companies: `tests/e2e/support/qa-accounts.ts`, one per surface — web, iOS, Android, and two for the
-api — each with its owner, a second EPC Owner, a three-preset member and a Sales Executive, every
-number in `DEV_OTP_PHONES`, every name unique; a second owner's act during a row is yours to make,
-through the api, signed in as that person. A row that must walk
+(kill, restart or open the app by a link) gets that action done by you and is continued. Each
+agent signs in as its surface's QA company (`tests/e2e/support/qa-accounts.ts` holds who is in it);
+a second owner's act during a row is yours to make, through the api, signed in as that person. A
+row that must walk
 setup as a new company, or join as a person with no account, takes a number of its own, one per
 agent, so no two agents share a one-time step and all start together: an unused `DEV_OTP_PHONES`
 number, or a fresh one, whose code is the newest `Message for <number> via` line in `.qa/api.log`. A row that needs the api
@@ -244,7 +243,9 @@ return; any file an agent changed stops the task.
 1. **Proof.** Continue `code-reviewer` for its proof pass with the RFC's Proof table, every QA
    report, the output of Main's own test runs and the planted red lines. The stack stays up for it,
    so a row it finds unproven runs at once. An AC that is not `PASS` or `pending CI` stops here. An
-   AC added after this pass gets its own proof pass before the gate runs again.
+   AC added after this pass gets its own proof pass before the gate runs again. A row proven by a
+   `tests/e2e/web` spec, and its planted red, are judged after item 4, by continuing the same reviewer
+   with that run's output.
 2. **Clean up,** once the proof pass holds — before the gate and before the commit is shown: the
    gate needs only the local stack, no server and no phone, and nothing may idle through it and the
    owner's answer. Switch `.env.local` back if step 7 switched it; an api running at step 1 is

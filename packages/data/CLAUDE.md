@@ -37,7 +37,8 @@ Consumed by both platforms; transport, error and retry behaviour proven by drivi
 against a controllable origin (malformed body, unknown status, non-envelope, timeout, cancellation,
 refused connection). A hook's answers are tested the same way, in `tests/react/<hook>.test.ts`:
 `renderHook` inside the real `DataProvider` over `createDataLayer`, an origin (`node:http`) that
-answers each case in the contract's shapes, and `// @vitest-environment happy-dom` at the top
+answers each case in the contract's shapes (no mock: `.claude/rules/testing.md`), and
+`// @vitest-environment happy-dom` at the top
 (`tests/react/use-assign-roles.test.ts` is the pattern).
 
 ## Traps

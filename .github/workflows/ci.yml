@@ -218,7 +218,7 @@ jobs:
       # gate: it reports success forever.
 
   # The regression suite's web half (tests/e2e): every shipped route driven in a real browser
-  # against the BUILT api and web, then the component suite. Playwright's webServer starts both
+  # against the BUILT api and web; the component suite runs beside it in e2e-components. Playwright's webServer starts both
   # servers and this job starts none, so one api holds 8084. The phone half runs in the android
   # and ios jobs. retries: 0; a failure uploads its traces and the api's log to replay it.
   e2e-web:

@@ -90,7 +90,7 @@ gets written), and
 Temporal workflow messages (`workflows/`, published as the `./workflows` subpath — a
 process-to-process contract that must never reach the OpenAPI artifact or a frontend
 bundle). Emits the committed
-openapi/openapi.json, kept fresh and judged for breaking changes (oasdiff 1.31.0) by
+openapi/openapi.json, kept fresh and judged for breaking changes (oasdiff) by
 `pnpm check:openapi`. Also owns the HelioGrid
 SESSION PROJECTION (session.ts — actor, membership with its held roles and authorization
 version, expiry) so replacing the identity provider changes no guard, repository, screen or
@@ -309,8 +309,7 @@ the simulator and the emulator). Allowed deps: contracts, domain, i18n, theme, u
 spec expects come from `i18n` and the colours from `theme`, never typed. Platform scope: a Node runner
 and the devices. Belongs: one flow per web route and per phone screen (invariant `e2e-flow-per-screen`). Never: a unit test, a
 mock of anything this repo owns, a server or a device started by a spec itself outside the runner's
-own `webServer`. `web/qa-seed.setup.ts` with `support/qa-accounts.ts` is no flow: it seeds the QA
-companies `/task` step 7 drives, as project `qa-seed`, off CI. Extension point: a spec or a flow per
+own `webServer` (the QA seed is no flow: `tests/e2e/CLAUDE.md`). Extension point: a spec or a flow per
 new route or screen, named for it.
 
 ### `<package>/tests/` — unit tests, beside the package they prove
@@ -321,8 +320,8 @@ by RELATIVE path — `@heliogrid/<pkg>` resolves to built `dist/` and would test
 Platform scope: shared. Belongs: the boundary value, the one either side of it, the empty, the
 negative. A seed two suites share is `tests/support/<what>.ts`: it asserts nothing, so proofs of
 one real state cannot drift. Never: a frontend package (proven by running it), or a mock of
-something this repo owns — `packages/data`'s tests drive its real client against an origin that
-answers in the contract's shapes, which stands for the contract, not for the api. Extension point: a
+something this repo owns (`.claude/rules/testing.md` says what an origin for `packages/data` is).
+Extension point: a
 per-glob coverage threshold in `vitest.config.mts`, landing with the slice it covers.
 
 ## §3 Platform rules — React Native · Next.js · shared

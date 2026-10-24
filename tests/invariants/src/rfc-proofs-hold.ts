@@ -7,8 +7,8 @@ import { TASKS, taskFiles } from './task-ledger';
 /**
  * An RFC's proofs and its deferred rows hold before its commit (`/task` steps 5 and 8): every test a
  * `main-dev` proof row names exists in the file it names, and every row its item 14 lists as
- * `Deleted:` is gone from `docs/tasks/deferred.md`. Only an RFC section that differs from
- * `origin/main` is read — the one being built; an RFC already on main is a part in flight whose
+ * `Deleted:` is gone from `docs/tasks/deferred.md`. Only an RFC section that differs from the
+ * branch's base on `origin/main` is read — the one being built; an RFC already on main is a part in flight whose
  * later tests do not exist yet, and an RFC that left for its PR body is no longer here.
  */
 const RFC_HEADING = /^#### (?:Part [a-z] · )?RFC\s*$/;

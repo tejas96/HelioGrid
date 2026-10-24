@@ -119,7 +119,7 @@ pnpm --filter @heliogrid/db migrate       # schema: 0001 is the market pack
 pnpm --filter @heliogrid/api pack:publish # seeds the India pack as revision 1 and the India platform catalog
 brew install gitleaks                      # the pre-commit secret scan needs it; the hook refuses to run without it
 # Sign in locally with any +91 number: the code is in the api log (`Message for +91…`), no SMS.
-pnpm check:all                            # build · lint · typecheck · duplication · freshness · unit tests · invariants
+pnpm check:all                            # build · lint · typecheck · duplication · freshness · unit tests · invariants (needs oasdiff, Prerequisites)
 ```
 
 This block is the full cold start; the header of `.env.example` is its short form.
@@ -227,10 +227,10 @@ All run from the repo root unless noted. Per-package equivalents: `pnpm --filter
 | `pnpm test:coverage` | the same with a coverage report — read it to find the edge cases you missed |
 | `pnpm lint` | Biome with its plugins (zero warnings, zero errors), dependency-cruiser, sherif and `turbo boundaries` (the package-tag dependency allowlists) |
 | `pnpm lint:fix` | `biome check --write .` — formats and auto-fixes what Biome can fix |
-| `pnpm check` | **While building**, after each change: Biome on what differs from `origin/main`, the typecheck, dependency-cruiser, sherif, `turbo boundaries`, the duplicate check, the related unit tests, and catalog and OpenAPI checks when their sources changed. Fast, and never the proof |
+| `pnpm check` | **While building**, after each change — what it runs is `CLAUDE.md` §5. Fast, and never the proof |
 | `pnpm check:all` | **Once, when the build is done:** build → lint → typecheck → `check:dupes` → `check:openapi` → `check:catalogs` → `test:unit` → `test` (the invariants; the database ones skip loudly without `DATABASE_URL`). Build runs first — dependency-cruiser resolves workspace edges through `dist/`, so linting an unbuilt checkout is partially blind. This is what "green" means before you call something done |
 | `pnpm precommit` | What the git hook runs automatically: Biome on the staged files (zero warnings), gitleaks on the staged change (fails closed without gitleaks), and a typecheck of the packages the commit changes |
-| `pnpm check:openapi` | Re-emits `packages/contracts/openapi/openapi.json` and fails when it changed, then judges it with oasdiff 1.31.0 against the branch's base on `origin/main` and fails on a breaking change — commit the fresh spec |
+| `pnpm check:openapi` | Re-emits `packages/contracts/openapi/openapi.json` and fails when it changed, then judges it with oasdiff (the version CI pins) against the branch's base on `origin/main` and fails on a breaking change — commit the fresh spec |
 | `pnpm check:catalogs` | Re-extracts the i18n catalogs and fails when they changed — commit the fresh catalogs |
 | `pnpm check:dupes` | `jscpd` — the duplicate-code ratchet (part of `pnpm check:all`) |
 

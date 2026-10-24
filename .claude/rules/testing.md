@@ -9,9 +9,8 @@ paths:
 # Testing law — which layers, one place, what a test proves
 
 - **Unit tests cover the LOGIC layers** — `domain`, `contracts`, `forms`, `api`, `worker`, `data`
-  (its hooks and transport, through the real client against an origin that answers in the
-  contract's shapes — `packages/data/CLAUDE.md`), and `i18n`'s `runtime.ts` and its `copy/`
-  functions. Not the frontend: `ui`, `web` and `mobile` are proven by running them, `db` by
+  (its hooks, through the real client — `packages/data/CLAUDE.md` says how), and `i18n`'s
+  `runtime.ts` and its `copy/` functions. Not the frontend: `ui`, `web` and `mobile` are proven by running them, `db` by
   migrations and `tests/invariants/`. The set is written once, in `packages/config/unit-test-packages.json`, which
   the runner and the dependency-cruiser rule both read; changing the set changes this line and that
   file together.

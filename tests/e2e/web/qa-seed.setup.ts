@@ -27,6 +27,9 @@ for (const qa of QA_COMPANIES) {
       });
       return { context, session: await signIn(context, person.phoneE164, code) };
     };
+    // A roles change ends that person's sessions, so the owner signs in after theirs is put back.
+    const second = await as(qa.members[0] ?? qa.owner);
+    await putBack(second, qa.owner, qa);
     const owner = await as(qa.owner);
     if (owner.session.membership === null) await signUp(owner.context, qa);
     await answerSetup(owner.context);
@@ -43,8 +46,8 @@ for (const qa of QA_COMPANIES) {
       expect(accepted.status(), `${member.name} accepts`).toBe(200);
       await joining.context.dispose();
     }
-    await putRolesBack(owner.context, qa, await as(qa.members[0] ?? qa.owner));
-    await owner.context.dispose();
+    for (const member of qa.members) await putBack(owner, member, qa);
+    await Promise.all([owner.context.dispose(), second.context.dispose()]);
   });
 }
 
@@ -107,28 +110,24 @@ async function invite(context: APIRequestContext, member: QaPerson): Promise<boo
 }
 
 /**
- * Each seeded person's roles as `qa-accounts.ts` gives them: the owner puts back the members' first
- * (the second owner's EPC Owner included), then the second owner the owner's — an owner never edits
- * their own EPC Owner (`OWN_ADMIN`).
+ * A seeded person's roles as `qa-accounts.ts` gives them, put back by `by`. The owner's own come
+ * first, from the second owner, since an owner never edits their own EPC Owner (`OWN_ADMIN`) and an
+ * owner who lost it can read and change nothing else. A second owner who has not joined yet (a
+ * company's first run) has nothing to put back.
  */
-async function putRolesBack(
-  owner: APIRequestContext,
+async function putBack(
+  by: { context: APIRequestContext; session: SessionProjection },
+  person: QaPerson,
   qa: QaCompany,
-  second: { context: APIRequestContext },
 ): Promise<void> {
-  const roster = await rosterOf(second.context);
-  const fix = async (by: APIRequestContext, person: QaPerson) => {
-    const row = roster.get(person.phoneE164);
-    expect(row?.status, `${person.name} is active in ${qa.companyName}`).toBe('active');
-    if (row === undefined || sameSet(row.roles, person.roles)) return;
-    const put = await by.put(`/tenants/me/members/${row.membershipId}/roles`, {
-      data: { roles: person.roles },
-    });
-    expect(put.status(), `${person.name}'s roles put back`).toBe(200);
-  };
-  for (const member of qa.members) await fix(owner, member);
-  await fix(second.context, qa.owner);
-  await second.context.dispose();
+  if (by.session.membership === null) return;
+  const row = (await rosterOf(by.context)).get(person.phoneE164);
+  expect(row?.status, `${person.name} is active in ${qa.companyName}`).toBe('active');
+  if (row === undefined || sameSet(row.roles, person.roles)) return;
+  const put = await by.context.put(`/tenants/me/members/${row.membershipId}/roles`, {
+    data: { roles: person.roles },
+  });
+  expect(put.status(), `${person.name}'s roles put back`).toBe(200);
 }
 
 const sameSet = (a: readonly string[], b: readonly string[]) =>

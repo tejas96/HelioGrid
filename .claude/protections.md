@@ -6,7 +6,7 @@ A change that adds, moves or removes a holder updates its row here in the same c
 
 Where each tool runs: `pnpm lint` runs Biome with its plugins, dependency-cruiser, sherif and turbo
 `boundaries`. `pnpm check:all` adds the build, the typecheck, the duplication check, the OpenAPI and
-catalog freshness checks, the unit tests and the invariants. CI job `quality` runs `pnpm check:all`.
+catalog freshness checks with the oasdiff breaking-change judge, the unit tests and the invariants. CI job `quality` runs `pnpm check:all`.
 
 ## Tenancy and permissions
 
@@ -115,7 +115,7 @@ catalog freshness checks, the unit tests and the invariants. CI job `quality` ru
 | what is protected | what holds it |
 |---|---|
 | The committed OpenAPI equals what the contract emits | `pnpm check:openapi` |
-| A breaking change to the API's shape is refused; a set that grows by design is `x-extensible-enum`; the client-upgrade 426 is on every operation and judged too | `pnpm check:openapi` — oasdiff 1.31.0 against `origin/main`, the same build CI installs by version and sha256, and refused at any other version |
+| A breaking change to the API's shape is refused; a set that grows by design is `x-extensible-enum`; the client-upgrade 426 is on every operation and judged too | `pnpm check:openapi` — oasdiff against the branch's base on `origin/main`, the build CI installs by version and sha256, refused at any other version |
 | Every non-2xx response is the canonical envelope, and a response that breaks its contract answers `INTERNAL` | `apps/api/src/common/filters/envelope-exception.filter.ts` · `validateResponses: true` (`apps/api/src/app.module.ts`) |
 | A status a route throws is one its contract declares, or it answers `INTERNAL` and the log names the route and the status | `apps/api/src/common/filters/declared-statuses.ts` · unit test `apps/api/tests/common/undeclared-status.test.ts` |
 | A framework exception's generic code is chosen explicitly | typecheck (the unexported status map; `httpStatusFor` and `genericErrorCodeByStatus` in `packages/contracts/src/error.ts`) |
@@ -151,7 +151,7 @@ catalog freshness checks, the unit tests and the invariants. CI job `quality` ru
 | An agent never pushes to `main`, never force-pushes, never skips git's pre-commit hook, and never merges or approves a pull request | `.claude/settings.json` denies in Claude Code `git push --force`, `-f`, a `+` refspec and a push naming `main`; `git commit --no-verify`, `-n` and `SKIP_SIMPLE_GIT_HOOKS`; `gh pr merge`, `gh pr review` and a merge through `gh api` (a commit message carrying ` -n ` is denied too, and is reworded) · a spelling the list misses: review. GitHub does not hold it: `main` requires the checks `changes`, `quality`, `e2e-web`, `mobile-js`, `android` and `ios` but no review, and an admin — the agent works with the owner's admin token — bypasses them |
 | An agent never wipes a product volume or kills by port/process name; a foreign dev listener is freed only through `clean-dev-ports` | CLAUDE.md §5 (the ports and `clean-dev-ports`; no instruction in this repo names the product volumes) · `.claude/settings.json` denies its listed destructive command forms in Claude Code as defense in depth, not every shell spelling · another client: review |
 | A helper agent edits no repository file and starts, stops or builds nothing | `/task` step 7's `git status --porcelain` before and after the agents · the contract of each `.claude/agents/*.md` · review |
-| Every server, phone and browser tab a task started is stopped, and every temporary file it made is deleted, once QA and its proof pass are done — before the gate runs and the commit is shown; one found running at step 1 is left alone, unless it stops and the task boots it again — an api or web server from step 1 is stopped through step 8's web run and started again after it | review — `/task` step 8.2 |
+| Every server, phone and browser tab a task started is stopped, and every temporary file it made is deleted, once QA and its proof pass are done — before the gate runs and the commit is shown; one found running at step 1 is left alone, unless it stops and the task boots it again — an api or web server from step 1 is stopped for the seed (step 7) and the web run (step 8), and started again after each | review — `/task` step 8.2 |
 | An agent's network writes | nothing |
 
 ## Process
@@ -171,6 +171,6 @@ catalog freshness checks, the unit tests and the invariants. CI job `quality` ru
 | The RFC is checked against the codebase before the owner sees it, and the code is reviewed before QA runs | the `rfc-reviewer` and `code-reviewer` agents — `/task` steps 4 and 6 |
 | Every acceptance line has its owner and a passed proof before the commit, and a PR is marked ready only when every CI job it needs ran and passed | the `code-reviewer` proof pass (`/task` step 8.1) · the draft PR marked ready by `/task` step 9 · review |
 | A doc the change made wrong is fixed in the same change | review |
-| Every `docs/tasks/deferred.md` row a task meets is shown in its RFC as join or stays | review — `/task` step 2 |
+| Every `docs/tasks/deferred.md` row a task meets is shown in its RFC as join or stays, and a row it joins is gone before its commit | review — `/task` step 2 · invariant `rfc-proofs-hold` (the `**Deleted:**` half) |
 | A board is checked against its brief, PRD rows, laws and components, and locked, before the first task that builds or serves it; a board or a support file it loads changed, added or removed on the canvas after the lock, or a new design system version installed on it, sends it back to the check | the board check (`.claude/skills/task/design-track.md`, `board-check.md`, one agent per screen) and the owner's review on the canvas · the committed copy in `.design/<module>/` and its `design-system.version`, compared by `/task` step 1 with a fresh read |
 | A screen task's build matches its board | review — the RFC's frame map, read from the locked board's code (`/task` step 3) and checked by `rfc-reviewer`, and the QA agents' compare of the app with the frame map's values |

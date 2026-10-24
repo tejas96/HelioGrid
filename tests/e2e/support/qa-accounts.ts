@@ -3,7 +3,7 @@ import { ROLE_PRESETS, type RolePreset } from '@heliogrid/domain';
 /**
  * The QA companies `/task` step 7 drives, one per surface: each owner owns exactly one company, so a
  * sign-in always lands in it, and every name is unique, so no two people read alike. Every number
- * is in `DEV_OTP_PHONES` (`.env.example`), so its code is `DEV_OTP_CODE`. `web/qa-seed.setup.ts`
+ * is in `DEV_OTP_PHONES` (`.env.example`), so its code is `DEV_OTP_CODE`; a number left out fails the seed's sign-in. `web/qa-seed.setup.ts`
  * makes them through the api — sign-up, invite, accept — and is safe to run again.
  */
 /* By place in F2's order, never by spelling: a role name is the permission model's to write. */
