@@ -29,7 +29,7 @@ export type PublishOutcome =
   | { readonly outcome: 'label-taken' | 'nothing-changed' };
 
 /** Which item a line is about: exactly one of the two references is set. */
-interface LineItem {
+export interface LineItem {
   readonly catalogItemId: string | null;
   readonly tenantCatalogItemId: string | null;
 }
@@ -39,7 +39,7 @@ interface Snapshotted {
   readonly snapshot: CatalogReleaseSnapshot;
 }
 
-const keyOf = (item: LineItem): string =>
+export const keyOf = (item: LineItem): string =>
   item.catalogItemId === null
     ? `own:${item.tenantCatalogItemId}`
     : `platform:${item.catalogItemId}`;
@@ -82,17 +82,7 @@ export class CatalogReleasesRepository {
         .where(and(eq(catalogRelease.tenantId, tenantId), eq(catalogRelease.label, label)))
         .limit(1);
       if (taken) return { outcome: 'label-taken' };
-      const snapshots = await snapshotsOn(tx, tenantId, day);
-      const earlier = await lastLinesOf(
-        tx,
-        tenantId,
-        snapshots.map(({ item }) => item),
-      );
-      const changed = snapshots.flatMap(({ item, snapshot }) => {
-        const before = earlier.get(keyOf(item)) ?? null;
-        const changeKind = changeKindOf(before, snapshot);
-        return changeKind === null ? [] : [{ ...item, changeKind, before, after: snapshot }];
-      });
+      const changed = await changedLinesOn(tx, tenantId, day);
       if (changed.length === 0) return { outcome: 'nothing-changed' };
       const publishedAt = await nextPublishedAt(tx, tenantId, act.now);
       const [release] = await tx
@@ -122,6 +112,36 @@ export class CatalogReleasesRepository {
       return { outcome: 'created', row: release.id };
     });
   }
+}
+
+/** A line a publish on `day` would write: the item, how it changed, and its two sides. */
+export interface ChangedLine extends LineItem {
+  readonly changeKind: NonNullable<ReturnType<typeof changeKindOf>>;
+  readonly before: CatalogReleaseSnapshot | null;
+  readonly after: CatalogReleaseSnapshot;
+}
+
+/**
+ * Every own SKU and override that changed since its last line, as a publish on `day` would write
+ * them — the publish's compare, read alike by the preview, so the two can never disagree. The
+ * caller holds the catalog lock.
+ */
+export async function changedLinesOn(
+  tx: TenantScopedDb,
+  tenantId: string,
+  day: PublishDay,
+): Promise<readonly ChangedLine[]> {
+  const snapshots = await snapshotsOn(tx, tenantId, day);
+  const earlier = await lastLinesOf(
+    tx,
+    tenantId,
+    snapshots.map(({ item }) => item),
+  );
+  return snapshots.flatMap(({ item, snapshot }) => {
+    const before = earlier.get(keyOf(item)) ?? null;
+    const changeKind = changeKindOf(before, snapshot);
+    return changeKind === null ? [] : [{ ...item, changeKind, before, after: snapshot }];
+  });
 }
 
 /** Every own SKU and override as stored, its rate the one in force on the publish day (c2). */

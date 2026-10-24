@@ -91,6 +91,17 @@ export const catalogReleaseDetailSchema = z.object({
 });
 export type CatalogReleaseDetailWire = z.infer<typeof catalogReleaseDetailSchema>;
 
+/**
+ * What a publish now would carry (`SCR-M01-15` s-publish, d-publish): its lines counted by kind
+ * over the whole changed set, and a page of them in the detail's shape. Nothing changed is zero
+ * counts and no lines, never a refusal.
+ */
+export const catalogReleasePreviewSchema = z.object({
+  counts: catalogReleaseSchema.shape.counts,
+  lines: paginated(catalogReleaseLineSchema),
+});
+export type CatalogReleasePreviewWire = z.infer<typeof catalogReleasePreviewSchema>;
+
 export const catalogReleaseWriteSchema = z.object({ label: z.string().trim().min(1).max(80) });
 export type CatalogReleaseWrite = z.infer<typeof catalogReleaseWriteSchema>;
 
@@ -117,6 +128,14 @@ export const catalogReleasesContract = c.router({
       ...guarded,
       404: errorEnvelope(baseError('NOT_FOUND')),
     },
+  },
+  preview: {
+    method: 'GET',
+    path: '/catalog/release-preview',
+    query: paginationQuerySchema,
+    summary:
+      'What a publish now would carry — the changed own SKUs and overrides counted by kind, and a page of their before-and-after lines; nothing is written',
+    responses: { 200: catalogReleasePreviewSchema, ...guarded },
   },
   publish: {
     method: 'POST',

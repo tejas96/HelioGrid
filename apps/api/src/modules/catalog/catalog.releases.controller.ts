@@ -16,7 +16,12 @@ export class CatalogReleasesController {
   @TsRestHandler(catalogReleasesContract)
   // Every door is the manage grant's (§M01.4): Finance's limited cell passes it to read the
   // prices a line carries, and the service refuses its publish (c6).
-  @RouteAccessMap(catalogReleasesContract, { releases: MANAGE, release: MANAGE, publish: MANAGE })
+  @RouteAccessMap(catalogReleasesContract, {
+    releases: MANAGE,
+    release: MANAGE,
+    preview: MANAGE,
+    publish: MANAGE,
+  })
   handler(@Req() req: Request) {
     const tenantId = () => tenantIdOf(req);
     return tsRestHandler(catalogReleasesContract, {
@@ -27,6 +32,10 @@ export class CatalogReleasesController {
       release: async ({ params, query }) => ({
         status: 200,
         body: await this.releases.release(tenantId(), params.id, query, Date.now()),
+      }),
+      preview: async ({ query }) => ({
+        status: 200,
+        body: await this.releases.preview(tenantId(), query, Date.now()),
       }),
       publish: async ({ body, headers }) => ({
         status: 201,

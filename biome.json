@@ -431,7 +431,7 @@
       "path": "./packages/config/biome/inline-glyph.grit",
       "includes": [
         "**/packages/ui/src/**/*.{ts,tsx}",
-        "!**/packages/ui/src/components/AppShell/ShellGlyph.shapes.ts"
+        "!**/packages/ui/src/components/AppShell/ShellGlyph*.shapes.ts"
       ]
     },
     {

@@ -8,52 +8,56 @@
    NOTHING IS STAGED: a change writes through immediately, and the footer's "Show 24 results" is a
    labelled DISMISS, not an apply.
 
-   The 10/14/28px values below have no step on the 4px scale — they are the DS's own filter-body
+   The 10px values below have no step on the 4px scale — they are the DS's own filter-body
    rhythm; 44px is MIN_TOUCH_TARGET, which no CSS token carries. */
 
 .hg-filter-set {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-5);
   min-width: 0;
 }
 
-.hg-filter-set-header {
+/* ONE COLUMN OF SECTIONS AT EVERY WIDTH (design-system change 8): a hairline between, never a
+   box around — a section is a heading on the body, not a tile. */
+.hg-filter-section {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   gap: var(--sp-3);
-  min-height: var(--sp-6);
+  min-width: 0;
+  padding: var(--sp-5) 0;
 }
 
-.hg-filter-set-count {
-  font-size: var(--fs-body-sm);
-  color: var(--text-secondary);
-  font-variant-numeric: tabular-nums;
+.hg-filter-section:first-child {
+  padding-top: 0;
 }
 
-.hg-filter-set-clear {
-  min-height: 44px;
-  padding: 0 14px;
-  margin-right: -14px;
-  border: none;
-  background: transparent;
-  font-family: var(--font-sans);
-  font-size: var(--fs-body-sm);
-  font-weight: var(--fw-medium);
-  color: var(--accent);
-  cursor: pointer;
+.hg-filter-section + .hg-filter-section {
+  border-top: 1px solid var(--line-soft);
 }
 
-.hg-filter-set-grid {
-  display: grid;
-  grid-template-columns: 1fr;
+/* A capped chip list: the chips, then *Show all N* under them at its own width. */
+.hg-filter-chip-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.hg-filter-flags {
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-filter-flag-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-filter-fold {
+  display: flex;
+  flex-direction: column;
   gap: var(--sp-5);
-}
-
-.hg-filter-set-grid[data-columns="2"] {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--sp-6) 28px;
 }
 
 /* ── one dimension ────────────────────────────────────────────────────────── */
@@ -82,13 +86,15 @@
 }
 
 .hg-filter-dimension-summary {
+  min-width: 0;
+  text-align: right;
   font-size: var(--fs-caption);
   color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
 }
 
 /* The label row is the target, and it is 44px tall: a filter body is touched on a roof. */
-.hg-filter-dimension-flag {
+.hg-filter-flag {
   display: flex;
   align-items: center;
   min-height: 44px;

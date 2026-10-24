@@ -13,6 +13,7 @@ import { renderAttribution } from '../ValueSource/ValueSource.native';
 import type { CellParts } from './DataTable.logic';
 import { readField, resolveCell } from './DataTable.logic';
 import type { DataTableProps } from './DataTable.types';
+import { CellLead } from './DataTableCellLead.native';
 import type { DataTableColumn } from './DataTableColumn.types';
 
 const styles = StyleSheet.create({
@@ -159,6 +160,14 @@ function CellValue<Row>({
   return plainValue(row, column);
 }
 
+interface CellProps<Row> {
+  row: Row;
+  column: DataTableColumn<Row>;
+  align: 'left' | 'right' | 'center';
+  cellIssue: DataTableProps<Row>['cellIssue'];
+  onCellCommit: DataTableProps<Row>['onCellCommit'];
+}
+
 /**
  * A cell's value, plus — when the column asks for them — its editor, its message, its override or
  * its attribution. **Override and attribution are mutually exclusive:** one number, one marker.
@@ -167,19 +176,7 @@ function CellValue<Row>({
  * the attribution and the per-figure standing (there is no figure to qualify) but not the editor:
  * on an editable column the editor is how the gap gets filled.
  */
-export function DataTableCell<Row>({
-  row,
-  column,
-  align,
-  cellIssue,
-  onCellCommit,
-}: {
-  row: Row;
-  column: DataTableColumn<Row>;
-  align: 'left' | 'right' | 'center';
-  cellIssue: DataTableProps<Row>['cellIssue'];
-  onCellCommit: DataTableProps<Row>['onCellCommit'];
-}) {
+function CellBody<Row>({ row, column, align, cellIssue, onCellCommit }: CellProps<Row>) {
   const parts = resolveCell(row, column, cellIssue, onCellCommit, renderGap);
   if (parts.bare) return plainValue(row, column);
 
@@ -199,5 +196,14 @@ export function DataTableCell<Row>({
           it, so only the table can bind it. */}
       {renderAttribution(parts.attribution, { fieldName: column.label })}
     </View>
+  );
+}
+
+/** The cell, with the column's kind tile before it and its quiet line under it when it has them. */
+export function DataTableCell<Row>(props: CellProps<Row>) {
+  return (
+    <CellLead row={props.row} column={props.column}>
+      <CellBody {...props} />
+    </CellLead>
   );
 }

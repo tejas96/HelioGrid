@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import type { OverlayCloseWords } from '../Sheet/OverlayClose.types';
-import type { OverlayStatus } from '../Sheet/Sheet.types';
+import type { OverlayStatus, OverlaySubtitleFace } from '../Sheet/Sheet.types';
 import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 
 export type DetailPanelSide = 'right' | 'left';
@@ -21,8 +21,10 @@ export interface DetailPanelProps extends OverlayCloseWords {
   title?: string;
   /** Drawn beside the title, on its line. */
   status?: OverlayStatus;
-  /** Rendered in Geist Mono — job IDs, coordinates, invoice numbers. */
+  /** Rendered in Geist Mono — job IDs, coordinates, invoice numbers — unless `subtitleFace` is `sans`. */
   subtitle?: string;
+  /** `sans` for a subtitle of words (*Starts from version 7*), as `Sheet` takes it. Default `mono`. */
+  subtitleFace?: OverlaySubtitleFace;
   overline?: string;
   /** Leading node in the header, usually an IconCircle or Avatar. */
   leading?: ReactNode;

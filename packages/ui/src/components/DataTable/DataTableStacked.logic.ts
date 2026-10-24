@@ -49,6 +49,11 @@ export function holdsEditor<Row>(slots: StackedColumns<Row>, table: DataTablePro
   );
 }
 
+/** Whether the card's title holds a kind tile or a quiet line, so the figure beside it centres. */
+export function hasLead<Row>(column: DataTableColumn<Row>): boolean {
+  return column.leading !== undefined || column.sub !== undefined;
+}
+
 /**
  * **Which parts of the card take taps back.** The whole-card target is a sibling under the content
  * and the content itself is inert, so a slot re-enables taps only when what sits in it is operable

@@ -37,6 +37,7 @@ export const BANNER_KINDS: Record<BannerKind, BannerKindMeta> = {
   'below-cost': { tone: 'danger', rank: 50, role: 'status', icon: 'rupee', label: 'Below cost' },
   preliminary: { tone: 'info', rank: 55, role: 'status', icon: 'info', label: 'Preliminary' },
   suggestion: { tone: 'accent', rank: 70, role: 'status', icon: 'spark', label: 'Suggestion' },
+  info: { tone: 'info', rank: 60, role: 'status', icon: 'info', label: 'Information' },
   disclaimer: { tone: 'neutral', rank: 80, role: 'status', icon: 'info', label: 'Note' },
 };
 
@@ -53,6 +54,9 @@ export const BANNER_KINDS: Record<BannerKind, BannerKindMeta> = {
  * block who taps the cross has dismissed the only control that ends the block. So `state`,
  * `dunning` and `cap` join the list.
  *
+ * `info` joins it: a plain statement of what is on screen — "view only" — stays as long as it is
+ * true (`D267`).
+ *
  * `disclaimer` joins it too, and separately moves out of this component altogether — see
  * `Disclosure`. It stays never-dismissible so an un-migrated caller still renders a true statement.
  *
@@ -66,6 +70,7 @@ export const NEVER_DISMISSIBLE: readonly BannerKind[] = [
   'state',
   'dunning',
   'cap',
+  'info',
   'disclaimer',
 ];
 

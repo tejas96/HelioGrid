@@ -1,5 +1,6 @@
 import {
   type CatalogReleaseDetailWire,
+  type CatalogReleasePreviewWire,
   type CatalogReleaseWire,
   type CatalogReleaseWrite,
   type CreateHeaders,
@@ -12,6 +13,7 @@ import { HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/commo
 import type { Act } from '../../common/auth/session-context';
 import { CreationReplies, creationKeyOf } from '../../common/creation-key';
 import { ContractException } from '../../common/errors/contract-exception';
+import { CatalogReleasePreviewRepository } from './catalog.release-preview.repository';
 import { CatalogReleaseReadsRepository } from './catalog.release-reads.repository';
 import { CatalogReleasesRepository } from './catalog.releases.repository';
 import { CatalogService } from './catalog.service';
@@ -28,6 +30,8 @@ export class CatalogReleasesService {
   constructor(
     @Inject(CatalogReleasesRepository) private readonly publishes: CatalogReleasesRepository,
     @Inject(CatalogReleaseReadsRepository) private readonly reads: CatalogReleaseReadsRepository,
+    @Inject(CatalogReleasePreviewRepository)
+    private readonly previews: CatalogReleasePreviewRepository,
     @Inject(CatalogService) private readonly catalog: CatalogService,
     @Inject(CreationReplies) private readonly replies: CreationReplies,
   ) {}
@@ -64,6 +68,23 @@ export class CatalogReleasesService {
         return releaseWire(head);
       }
     }
+  }
+
+  /** What a publish now would carry; nothing is written (`SCR-M01-15` s-publish). */
+  async preview(
+    tenantId: string,
+    page: PaginationQuery,
+    now: number,
+  ): Promise<CatalogReleasePreviewWire> {
+    const { resolve } = await this.catalog.scopeOf(tenantId, now);
+    const found = await this.previews.preview(tenantId, resolve, offsetOf(page));
+    return {
+      counts: found.counts,
+      lines: {
+        items: found.lines.map((line) => releaseLineWire(line, resolve.minorUnitDigits)),
+        totalCount: found.totalCount,
+      },
+    };
   }
 
   async releases(tenantId: string, page: PaginationQuery): Promise<Paginated<CatalogReleaseWire>> {

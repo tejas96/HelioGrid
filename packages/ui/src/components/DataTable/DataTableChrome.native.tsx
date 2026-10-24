@@ -8,6 +8,8 @@ import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { pageWindow } from './DataTable.logic';
+import type { PaginationProps } from './DataTable.types';
 
 /* THE TICK IS THE SYSTEM `Checkbox` (see `DataTableHead`, `DataTableBodyRow`, `DataTableCard`).
    A private `SelectBox` lived here — its own 20px box, its own `rf-xs` radius, its own 1.5px
@@ -108,21 +110,18 @@ export function SelectionBar({
   );
 }
 
+/** The pager: the span shown, then a step back and a step forward, each disabled at its end. */
 export function Pagination({
   page,
   pageSize,
   rowCount,
   onPageChange,
-}: {
-  page: number;
-  pageSize: number;
-  rowCount: number;
-  onPageChange?: (page: number) => void;
-}) {
+  previousLabel,
+  nextLabel,
+  readout,
+}: PaginationProps) {
   const { ground } = useGround();
-  const from = rowCount === 0 ? 0 : page * pageSize + 1;
-  const to = Math.min(rowCount, (page + 1) * pageSize);
-  const last = Math.max(0, Math.ceil(rowCount / pageSize) - 1);
+  const { range, last } = pageWindow(page, pageSize, rowCount);
   const step = (direction: number, label: string, disabled: boolean) => (
     <Pressable
       accessibilityLabel={label}
@@ -149,11 +148,11 @@ export function Pagination({
   return (
     <View style={[styles.pager, { backgroundColor: ground }]}>
       <Text variant="body-sm" color="secondary">
-        {`${from}–${to} of ${rowCount}`}
+        {readout(range)}
       </Text>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        {step(-1, 'Previous page', page <= 0)}
-        {step(1, 'Next page', page >= last)}
+        {step(-1, previousLabel, page <= 0)}
+        {step(1, nextLabel, page >= last)}
       </View>
     </View>
   );

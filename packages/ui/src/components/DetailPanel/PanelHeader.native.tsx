@@ -4,7 +4,7 @@ import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { OverlayClose } from '../Sheet/OverlayClose.native';
-import type { OverlayStatus } from '../Sheet/Sheet.types';
+import type { OverlayStatus, OverlaySubtitleFace } from '../Sheet/Sheet.types';
 import { StatusChip } from '../StatusChip/StatusChip.native';
 
 interface PanelHeaderProps {
@@ -21,6 +21,7 @@ interface PanelHeaderProps {
   status?: OverlayStatus;
   /** Rendered in Geist Mono — job IDs, coordinates, invoice numbers. */
   subtitle?: string;
+  subtitleFace: OverlaySubtitleFace;
   title?: string;
 }
 
@@ -35,6 +36,7 @@ export function PanelHeader({
   showClose,
   status,
   subtitle,
+  subtitleFace,
   title,
 }: PanelHeaderProps) {
   return (
@@ -69,7 +71,7 @@ export function PanelHeader({
             </View>
           )}
           {subtitle === undefined ? null : (
-            <Text variant="mono" color="secondary">
+            <Text variant={subtitleFace === 'mono' ? 'mono' : 'body-sm'} color="secondary">
               {subtitle}
             </Text>
           )}

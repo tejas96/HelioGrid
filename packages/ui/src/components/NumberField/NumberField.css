@@ -40,18 +40,25 @@
   border: none;
   outline: none;
   background: transparent;
-  text-align: right;
-  font-family: var(--font-mono);
+  /* `Input`'s face: a typed figure reads as what was typed, from where the caret starts, and its
+     unit closes the field at the end. */
+  text-align: start;
+  font-family: var(--font-sans);
   font-size: var(--fs-field-value);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-regular);
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
   padding: 0;
 }
 
-/* With steppers the figure sits between them; without, it right-aligns like every other figure. */
+/* With steppers the figure sits between them. */
 .hg-number-field-input[data-steppers="true"] {
   text-align: center;
+}
+
+/* An amount is money, and money is mono wherever it is read (`F7-09`). */
+.hg-number-field-input[data-currency="true"] {
+  font-family: var(--font-mono);
 }
 
 .hg-number-field-step.hg-pressable {

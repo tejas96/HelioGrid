@@ -5,6 +5,7 @@ import { useTranslate } from '@heliogrid/i18n/react';
 import { EmptyState } from '@heliogrid/ui';
 import type { StaticScreenProps } from '@react-navigation/native';
 import type { ComponentType } from 'react';
+import { CatalogSettingsScreen } from '../catalog-settings';
 import { CompanyProfileSettingsScreen } from '../company-profile';
 import { ProfileScreen } from '../profile';
 import { RolesReferenceScreen } from '../roles-reference';
@@ -22,6 +23,7 @@ const BUILT_ROW: Partial<Record<SettingsRow, ComponentType<{ from: string | null
   company_profile: CompanyProfileSettingsScreen,
   team: TeamScreen,
   roles: RolesReferenceScreen,
+  catalog: CatalogSettingsScreen,
 };
 
 /**

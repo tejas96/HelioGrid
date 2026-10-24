@@ -28,6 +28,11 @@ export interface NumberFieldProps {
   /** Fires once, on blur or Enter. Never per keystroke, unless `commits` is `as-typed`. */
   onCommit?: (value: number) => void;
   /**
+   * The person emptied a field that held a figure — a price taken away (`M01-37`). Without it an
+   * empty draft restores the last figure, as before.
+   */
+  onClear?: () => void;
+  /**
    * When a figure reaches `onCommit`. `on-leave` (default): once the field is left. `as-typed`:
    * also each figure the draft would commit, while it is typed; the draft stays as typed. For a
    * screen whose way on cannot wait for the field to be left: on touch a tap on a button does not
@@ -43,6 +48,11 @@ export interface NumberFieldProps {
   /** Decimal places applied on commit. */
   precision?: number;
   label?: string;
+  /**
+   * The label is spoken and not shown — a row of fields whose column already names them
+   * (`SCR-M01-15`'s version rows). The field keeps its accessible name.
+   */
+  labelSpokenOnly?: boolean;
   unit?: string;
   hint?: string;
   disabled?: boolean;
@@ -94,7 +104,8 @@ export interface NumberFieldProps {
   /**
    * The +/− buttons and the ArrowUp/ArrowDown nudge. Defaults to `!currency`: **`step` and stepper
    * buttons are a dimension's grammar**, and nobody arrives at a received payment by pressing + eleven
-   * times. With them off the amount right-aligns, like every other figure in the product.
+   * times. With them the figure sits centred between them; without, it starts at the left in
+   * `Input`'s sans face, an amount in the mono face (`F7-09`), and the unit closes the field.
    */
   steppers?: boolean;
   /**

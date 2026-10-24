@@ -19,7 +19,7 @@ import { RowNote } from './DataTableFeedback.native';
 import type { RowState } from './DataTableRow.logic';
 import { resolveRow, rowOpenOf } from './DataTableRow.logic';
 import type { StackedColumns } from './DataTableStacked.logic';
-import { holdsEditor, rowNameOf } from './DataTableStacked.logic';
+import { hasLead, holdsEditor, rowNameOf } from './DataTableStacked.logic';
 
 const styles = StyleSheet.create({
   card: { borderRadius: theme.radius['r-md'] },
@@ -43,6 +43,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: theme.spacing['sp-3'],
   },
+  /* A title with a kind tile or a quiet line is a block: the figure beside it centres on it. */
+  titleRowLead: { alignItems: 'center' },
   title: { flex: 1, minWidth: 0 },
   standing: { marginTop: 6 },
   after: { marginTop: theme.spacing['sp-3'] },
@@ -156,7 +158,7 @@ function CardBody<Row>({
         </View>
       ) : null}
       <View style={styles.main}>
-        <View style={styles.titleRow}>
+        <View style={[styles.titleRow, hasLead(primary) ? styles.titleRowLead : null]}>
           <View style={styles.title}>{cell(primary)}</View>
           {trailing === undefined ? null : <View>{cell(trailing)}</View>}
         </View>

@@ -39,6 +39,27 @@ export const queryKeys = {
     downloadUrl: (tenantId: string, fileId: string) =>
       ['files', tenantId, fileId, 'download-url'] as const,
   },
+  /**
+   * A company's catalog. Every act refreshes the whole prefix: an override moves a row's price,
+   * its layer, the release a publish would make and the counts the page shows.
+   */
+  catalog: {
+    all: (tenantId: string) => ['catalog', tenantId] as const,
+    items: (tenantId: string, ask: unknown) => ['catalog', tenantId, 'items', ask] as const,
+    count: (tenantId: string, of: 'all' | 'archived' | 'changed') =>
+      ['catalog', tenantId, 'count', of] as const,
+    releases: (tenantId: string) => ['catalog', tenantId, 'releases'] as const,
+    release: (tenantId: string, id: string) => ['catalog', tenantId, 'release', id] as const,
+    /** What a publish now would carry: under the prefix, so every act and the publish refresh it. */
+    preview: (tenantId: string) => ['catalog', tenantId, 'preview'] as const,
+  },
+  /** A company's price book; a new version refreshes the whole prefix. */
+  priceBook: {
+    all: (tenantId: string) => ['price-book', tenantId] as const,
+    active: (tenantId: string) => ['price-book', tenantId, 'active'] as const,
+    versions: (tenantId: string) => ['price-book', tenantId, 'versions'] as const,
+    version: (tenantId: string, id: string) => ['price-book', tenantId, 'version', id] as const,
+  },
   /** A market's published pack: reference data with no company's fact in it, so keyed by market alone. */
   market: {
     pack: (marketCode: string) => ['market', marketCode, 'pack'] as const,

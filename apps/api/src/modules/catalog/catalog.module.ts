@@ -18,6 +18,7 @@ import { CatalogPriceBookRepository } from './catalog.price-book.repository';
 import { CatalogPriceBookService } from './catalog.price-book.service';
 import { CatalogPricesRepository } from './catalog.prices.repository';
 import { CatalogRatesRepository } from './catalog.rates.repository';
+import { CatalogReleasePreviewRepository } from './catalog.release-preview.repository';
 import { CatalogReleaseReadsRepository } from './catalog.release-reads.repository';
 import { CatalogReleasesController } from './catalog.releases.controller';
 import { CatalogReleasesRepository } from './catalog.releases.repository';
@@ -50,6 +51,7 @@ import { CatalogSliceRepository } from './catalog.slice.repository';
     CatalogRatesRepository,
     CatalogReleasesService,
     CatalogReleasesRepository,
+    CatalogReleasePreviewRepository,
     CatalogReleaseReadsRepository,
     CatalogPriceBookService,
     CatalogPriceBookRepository,

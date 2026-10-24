@@ -1,0 +1,1 @@
+export { CatalogSettingsScreen } from './CatalogSettingsScreen';

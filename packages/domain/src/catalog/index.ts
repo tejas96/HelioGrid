@@ -110,6 +110,27 @@ export type {
   ResolvedCatalogItem,
 } from './resolve';
 export type {
+  CatalogFilter,
+  CatalogItemSource,
+  CatalogLayer,
+  CatalogSort,
+  ReleaseFieldChange,
+  ReleaseSide,
+  ResolvedFields,
+  TierRow,
+} from './settings-view';
+export {
+  CATALOG_SORTS,
+  catalogFiltersOn,
+  catalogLayerOf,
+  catalogTeaches,
+  NO_CATALOG_FILTER,
+  PANEL_WATT_RANGE,
+  releaseFieldChanges,
+  tierRowsOf,
+  withKinds,
+} from './settings-view';
+export type {
   BatterySpec,
   CatalogSpec,
   InverterSpec,

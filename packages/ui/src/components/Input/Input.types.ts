@@ -8,6 +8,11 @@ export type InputDensity = 'expressive' | 'functional';
 
 export interface InputProps {
   label?: string;
+  /**
+   * The label is spoken and not shown — a row of fields whose column already names them
+   * (`SCR-M01-15`'s version rows). The field keeps its accessible name.
+   */
+  labelSpokenOnly?: boolean;
   value?: string;
   /**
    * The DS declares this as a DOM change event; the shared contract hands back the value instead,

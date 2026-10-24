@@ -18,6 +18,8 @@ export function HeldNumberField({
   tier = false,
   emphasis,
   asTyped = false,
+  clears = false,
+  currency = false,
 }: {
   label: string;
   unit: string;
@@ -31,6 +33,10 @@ export function HeldNumberField({
   emphasis?: ProvenanceEmphasis;
   /** The field reports each figure while it is typed, not only once it is left. */
   asTyped?: boolean;
+  /** The person may take the figure away: emptying the box unsets it. */
+  clears?: boolean;
+  /** The field holds an amount. */
+  currency?: boolean;
 }) {
   const [value, setValue] = useState<number | undefined>(initial);
   const [commits, setCommits] = useState(0);
@@ -42,11 +48,13 @@ export function HeldNumberField({
         value={value}
         min={min}
         steppers={steppers}
+        currency={currency}
         commits={asTyped ? 'as-typed' : 'on-leave'}
         onCommit={(next) => {
           setValue(next);
           setCommits((count) => count + 1);
         }}
+        {...(clears ? { onClear: () => setValue(undefined) } : {})}
         provenance={
           tier ? { tier: 'estimated', ...(emphasis === undefined ? {} : { emphasis }) } : undefined
         }

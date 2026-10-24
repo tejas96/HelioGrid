@@ -2,8 +2,10 @@ import type { CSSProperties } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { renderOverride } from '../FieldOverride';
+import { useFormat } from '../MarketProvider/market-context';
 import { renderProvenance } from '../Provenance';
 import { renderAttribution } from '../ValueSource';
+import { restingMoney } from './NumberField.logic';
 import { useNumberFieldDraft } from './NumberField.state';
 import type { NumberFieldProps } from './NumberField.types';
 import { NumberFieldBox } from './NumberFieldBox';
@@ -25,11 +27,13 @@ interface WebNumberFieldProps extends NumberFieldProps {
 export function NumberField({
   value,
   onCommit,
+  onClear,
   min,
   max,
   step = 1,
   precision,
   label,
+  labelSpokenOnly = false,
   unit,
   hint,
   disabled = false,
@@ -52,14 +56,17 @@ export function NumberField({
   /* A payment is not stepped. An unset `steppers` follows `currency` — the only case where the
      grammar is knowable from the props the caller already passed. */
   const showSteppers = steppers ?? !currency;
+  const format = useFormat();
   const draft = useNumberFieldDraft({
     value,
     onCommit,
+    onClear,
     min,
     max,
     step,
     precision,
     currency,
+    ...(currency ? { idle: (figure: number) => restingMoney(format, figure) } : {}),
     unit,
     outOfRange,
     correctionMessage,
@@ -82,7 +89,13 @@ export function NumberField({
   return (
     <div className={classNames('hg-number-field', className)} style={style}>
       {label !== undefined ? (
-        <label htmlFor={autoId} className="hg-number-field-label">
+        <label
+          htmlFor={autoId}
+          className={classNames(
+            'hg-number-field-label',
+            labelSpokenOnly ? 'hg-spoken-only' : undefined,
+          )}
+        >
           {label}
         </label>
       ) : null}

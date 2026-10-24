@@ -1,0 +1,36 @@
+/* Catalog settings' page (`SCR-M01-15`): its head — the title, and at 1536 the panel tabs beside
+   it. Everything else is the shared panels' own. */
+
+.hg-catalog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+}
+
+/* An overlay's foot: *Cancel* and the act side by side, the act the wider (`SCR-M01-15` sheet
+   and panel feet); the publish foot stacks its consequence line above them. */
+.hg-catalog-foot {
+  display: flex;
+  gap: var(--sp-3);
+}
+
+.hg-catalog-foot > :last-child {
+  flex: 1.6;
+}
+
+.hg-catalog-foot > :first-child {
+  flex: 1;
+}
+
+.hg-catalog-foot-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-catalog-foot-stack > .hg-catalog-foot {
+  align-self: stretch;
+}
