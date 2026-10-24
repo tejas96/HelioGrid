@@ -23,6 +23,14 @@ paths:
 - **Text is never smaller than 12px**; the 11px uppercase overline is the one exception.
 - **An icon-only control is an `IconButton`**; a `Button` always has words.
 
+## A screen is its locked board
+
+A screen with locked boards (`.design/<module>/<screen id>-*.dc.html`) is built frame by frame
+(`data-frame="…"`) from the components the frame names — `component-from-global-scope="…<Name>"`,
+`h(NS.<Name>` — in its order, with its props. The app shell draws the top bar, nav and rail, and the
+words come from the catalog, never from the board. A component the frame does not name, or a
+different structure, is a defect even when every test passes.
+
 ## Compose from the primitives, don't re-answer them
 
 Every component is built from `packages/ui/src/primitives/`. Two of them hold product law, not

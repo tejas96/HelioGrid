@@ -139,7 +139,8 @@ changed section, then the same four lines.
 Inside the approved RFC only, slice by slice in the order of its *Build steps*. Contracts and
 shared types land first (Law 3). After that, the slices the RFC marks parallel — disjoint files —
 may go to `general-purpose` agents on Opus at once, each with its slice, the RFC and the `CLAUDE.md` of
-its package. They edit only their slice's files and run nothing — no `pnpm`, no test, no
+its package — a screen slice also with its locked board files (`.claude/rules/ui-adherence.md`,
+*A screen is its locked board*). They edit only their slice's files and run nothing — no `pnpm`, no test, no
 formatter. A slice that holds a money, tenancy or permission rule is never parallel. Main reads
 every diff they made, runs their tests on the test database, then `pnpm check` once. For each
 slice Main builds:
@@ -172,7 +173,8 @@ invariant `rfc-proofs-hold` holds the list.
 ## 6. Code review
 
 Give `code-reviewer` the RFC, the changed-file list — `git diff --name-only origin/main` and the new
-files of `git ls-files -o --exclude-standard` — and `git diff origin/main`. Fix every confirmed
+files of `git ls-files -o --exclude-standard` — `git diff origin/main` and, for a screen task, every
+locked board path of each screen it builds. Fix every confirmed
 Critical, High and Medium finding. A Low finding is fixed when it sits in a file the diff already
 changes, else listed in the PR body. Continue the same reviewer with only the fixed files; it reads
 at most twice more. A finding still open after that stops for the owner.
@@ -221,8 +223,10 @@ through the review and its fixes.
    `.qa/metro.log`; Fast Refresh can drop silently), then start the agents in the next message.
 
 **Run.** Start every QA agent in one message. Each gets what its own file lists under "Your prompt
-gives you", the RFC's frame map and the known differences included. An agent that returns `NEEDS MAIN: <action>`
-(kill, restart or open the app by a link) gets that action done by you and is continued. Each
+gives you", the RFC's frame map and the known differences included. A phone agent restarts its own
+app, opens a link in it and switches reduced motion (animations on Android) itself; an agent that returns
+`NEEDS MAIN: <action>` (what every agent shares: the api, Metro, a build, an install, a boot) gets
+that action done by you and is continued. Each
 agent signs in as its surface's QA company (`tests/e2e/support/qa-accounts.ts` holds who is in it),
 signing out first when the app holds anyone else — a phone keeps an earlier task's sign-in;
 a second owner's act during a row is yours to make, through the api, signed in as that person. A
@@ -231,10 +235,8 @@ rows uses a new company. A row that must walk setup as a new company, or join as
 account, takes a fresh number of its own, one per agent, so no two agents share a one-time step and
 all start together; its code is the newest `Message for <number> via` line in `.qa/api.log`, and
 it never joins `DEV_OTP_PHONES`. A row that needs the api
-stopped runs last, after every agent has returned: cold-start each phone that has such a row and
-leave it short of the row's screen — an app that already read that screen's data shows its cache
-instead of the failure — then stop the api once, continue each agent that has such rows, start the
-api once.
+stopped runs last, readied by its agent (its file says how). Once every agent has returned, you
+stop the api once, continue each agent that has such rows, and start the api once.
 
 A row that names a frame is a pass only with its board compare: a report that skipped it, or names a movement or overlap it did not judge, is sent back to the same agent, never read as a pass.
 
