@@ -103,9 +103,9 @@ Before the review, walk `rfc-template.md` against the RFC line by line — its r
 its Proof rules and its edge-case table: a plan written from a types file is the first review's most
 common blocker.
 
-**A task is one PR.** Split only when the RFC plans more than 30 changed files, into at most three
-parts. Each part is end to end and holds the web and phone halves of its flow together; the task
-gets a `#### Parts` table (`part | what | AC | depends on | status`).
+**A task is one PR, whatever its size.** It splits into parts only when the owner asks for it: each
+part is then end to end and holds the web and phone halves of its flow together, and the task gets a
+`#### Parts` table (`part | what | AC | depends on | status`).
 
 ## 4. Review the RFC, then ask once
 
@@ -149,7 +149,9 @@ slice Main builds:
    permission test, and a check you add or change, is seen red once, as `.claude/rules/testing.md`
    says; note each for the PR body.
    An `apps/api/tests` file runs with the test-database prefix: `pnpm db:migrate && pnpm exec vitest run <file>`.
-   A component spec runs with `pnpm --filter @heliogrid/e2e test:ct <spec>`.
+   A component spec runs with `pnpm --filter @heliogrid/e2e test:ct <spec>`. A `tests/e2e/web` spec
+   runs as step 8 item 4 runs it — the test-database prefix, after `pnpm turbo build`, with nothing
+   listening on 3002 or 8084 — and its red is seen there.
 3. The smallest code that meets the line. Reuse what step 2 found.
 4. `pnpm check` after each slice, and again after every later edit — a review fix, a QA fix, a
    word changed — so the gate meets no lint, catalog or coverage failure the fast check could have
@@ -163,7 +165,9 @@ it costs another round of review, QA and the gate. A file outside the RFC's file
 reason as it lands.
 
 When the build is done, one tidy pass over the whole diff: reuse, names, dead code, files over 300
-lines, comments that explain code instead of a constraint.
+lines, comments that explain code instead of a constraint. Then delete each `deferred.md` row the
+RFC lists as `**Deleted:**`, and give a `starts` row that stays its new `reopens when` — the gate's
+invariant `rfc-proofs-hold` holds the list.
 
 ## 6. Code review
 
@@ -196,12 +200,16 @@ through the review and its fixes.
    `heliogrid_dev`, switch both database lines (`sed -i '' 's/heliogrid_dev/heliogrid_test/' .env.local`)
    and switch them back at step 8's clean-up. Migrate it before the api starts (the test-database
    prefix, then `pnpm db:migrate`), then run `pnpm --filter @heliogrid/api pack:publish`, which
-   changes nothing when the pack is there.
+   changes nothing when the pack is there. Then seed the QA companies of *Run*; the seed adds what
+   is missing and puts back roles a QA row changed. It needs port 8084 free (an api from step 1 is
+   stopped by its preview id now and starts again at item 2) and the worker up (the `worker` launch
+   configuration, after the `.env.local` switch above): `pnpm turbo build --filter=@heliogrid/api`,
+   then `<the test-database prefix> pnpm --filter @heliogrid/e2e test:web --project qa-seed`.
 2. **The api,** through `.claude/launch.json` with `preview_start`; reuse a healthy HelioGrid one. A
    running api restarts only when this task switched the database, added a migration or changed api
    code it does not hot-reload.
-3. **The data** the rows need — the accounts of *Run* and their records — through the api, before
-   any phone boots.
+3. **The data** each row needs beyond the QA companies, through the api, before any phone boots.
+   A row that deactivates a person invites one of its own first: a QA company's people are kept.
 4. **Together, in one message:** the other servers the rows need (web, Metro), and the phones the
    rows need, booted in the background (a phone already running is used as it is) — the simulator that holds the newest `com.heliogrid.app`,
    and the emulator with quick boot (`emulator -avd Pixel_8_API_36 -cores 4 -memory 4096`, never
@@ -213,9 +221,10 @@ through the review and its fixes.
 
 **Run.** Start every QA agent in one message. Each gets what its own file lists under "Your prompt
 gives you", the RFC's frame map and the known differences included. An agent that returns `NEEDS MAIN: <action>`
-(kill, restart or open the app by a link) gets that action done by you and is continued. Standing
-accounts: `…901` web, `…902` iOS, `…903` Android, `…904` and `…905` for the api's two tenants; all
-are in `DEV_OTP_PHONES`. A missing one is created once through the app. A row that must walk
+(kill, restart or open the app by a link) gets that action done by you and is continued. Each
+agent signs in as its surface's QA company (`tests/e2e/support/qa-accounts.ts` holds who is in it);
+a second owner's act during a row is yours to make, through the api, signed in as that person. A
+row that must walk
 setup as a new company, or join as a person with no account, takes a number of its own, one per
 agent, so no two agents share a one-time step and all start together: an unused `DEV_OTP_PHONES`
 number, or a fresh one, whose code is the newest `Message for <number> via` line in `.qa/api.log`. A row that needs the api
@@ -234,15 +243,18 @@ return; any file an agent changed stops the task.
 1. **Proof.** Continue `code-reviewer` for its proof pass with the RFC's Proof table, every QA
    report, the output of Main's own test runs and the planted red lines. The stack stays up for it,
    so a row it finds unproven runs at once. An AC that is not `PASS` or `pending CI` stops here. An
-   AC added after this pass gets its own proof pass before the gate runs again.
+   AC added after this pass gets its own proof pass before the gate runs again. A row proven by a
+   `tests/e2e/web` spec, and its planted red, are judged after item 4, by continuing the same reviewer
+   with that run's output.
 2. **Clean up,** once the proof pass holds — before the gate and before the commit is shown: the
    gate needs only the local stack, no server and no phone, and nothing may idle through it and the
-   owner's answer. Switch `.env.local` back if step 7 switched it; an api running at step 1 restarts
-   now, so it reads `heliogrid_dev` again. Stop every server this task started — web, api, Metro,
+   owner's answer. Switch `.env.local` back if step 7 switched it; an api running at step 1 is
+   stopped now and started again after item 4, so it reads `heliogrid_dev` again. Stop every server this task started — web, api, Metro,
    worker — every phone it booted or booted again (`xcrun simctl shutdown <udid>`,
    `adb -s <serial> emu kill`) and every browser tab it opened. Leave alone what was running at
-   step 1, except a web dev server: `next dev` breaks while the build runs, so one running then is
-   stopped by its preview id and started again after the gate (after `rm -rf apps/web/.next`), and
+   step 1, except an api (above) and a web dev server: `next dev` breaks while the build runs, so one
+   running then is stopped by its preview id and started again after item 4 (after
+   `rm -rf apps/web/.next`), and
    one the owner started outside the preview tool is the owner's to stop — ask. Never quit Docker.
    Delete the screenshots and temporary files this task made in `.qa/` and the scratchpad; keep the
    logs. A watcher that survives (`tsx … watch`) is named to the owner with its pid. A fault the owner reports before the
@@ -261,15 +273,26 @@ return; any file an agent changed stops the task.
    the fixed files and the QA rows it touched, then one more gate run. A second failure that is
    not environmental stops for the owner — except a failure the check repairs itself (stale
    catalogs or OpenAPI, whose check has just rewritten them): read the rewritten files, then run
-   once more without asking. A stale `dist/` after a delete: `CLAUDE.md` §3. Once it
-   passes, run `pnpm infra:down` only when the stack was down at step 1.
+   once more without asking. A stale `dist/` after a delete: `CLAUDE.md` §3.
+4. Once the gate passes, run every `tests/e2e/web` spec the task added or changed — the gate has
+   built the api and web, and the clean-up freed ports 3002 and 8084, so Playwright starts both on the
+   test database itself and stops them after:
+
+   ```bash
+   <the test-database prefix> pnpm --filter @heliogrid/e2e test:web <spec files>
+   ```
+
+   A failure goes back as a gate failure does; a task that changed no web spec has no run here.
+
+   Then start again what item 2 stopped from step 1, and run `pnpm infra:down` only when the stack
+   was down at step 1.
 
 ## 9. Commit and PR
 
 One commit holds the change and the task's `Status:` turned `shipped` (a part: its Parts row; the
 task turns `shipped` with its last part). The same commit moves the task's RFC out of the task file
-into the PR body — a part's RFC goes; the task RFC stays until the last part ships. Each
-`deferred.md` row the task joined is deleted; a `starts` row that stays gets a new `reopens when`.
+into the PR body — a part's RFC goes; the task RFC stays until the last part ships. The rows it
+joined left `deferred.md` at the end of the build (step 5).
 
 - Commit message: `feat: <id> — <what the user gets>`, then a short body.
 - Show the owner the changed files and the exact message, then stop. Commit only on the owner's
