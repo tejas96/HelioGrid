@@ -28,6 +28,9 @@ checklist* or its package's `CLAUDE.md` Traps — never a new rule file or a new
 **No new script.** A code fact goes into a type, Biome, dependency-cruiser or a test. Ask the owner
 before adding a script or a command.
 
+**A rule is written once, plainly, with no date** — cite it elsewhere, never restate it; when and
+why it changed is the commit's job.
+
 ## 2. The Laws
 
 Law ids are stable — never reuse or renumber one.
@@ -53,27 +56,22 @@ Law ids are stable — never reuse or renumber one.
 ## 3. Workflow
 
 The work follows ONE order, `docs/build-order.md`, and `/task` (`.claude/skills/task/SKILL.md`)
-runs it: one task per session, one PR per task. Design is checked and locked a module ahead of the
-build (`.claude/skills/task/design-track.md`), so the build waits only when that track falls behind.
-
-| step | what | stops for the owner |
-|---|---|---|
-| pick · analyse · RFC | the next task; its gaps; its RFC, checked by `rfc-reviewer` | yes — approve the RFC, once; a part inside the approved task RFC with no open decision needs none |
-| build | inside the approved RFC | when scope voids the approval |
-| verify | `code-reviewer`, then QA on the changed surfaces in parallel, then clean up, then `pnpm check:all` | when a finding or a failing row survives its fixes |
-| ship | commit, push, open the PR, CI | yes — every commit, then the owner merges the PR |
+runs it: one task, three sessions — RFC, build, verify and ship — and one PR per task. Design is
+checked and locked a module ahead of the build (`.claude/skills/task/design-track.md`), so the
+build waits only when that track falls behind. The owner stops the work twice: the yes to the RFC
+(once; a part inside the approved task RFC with no open decision needs none) and the yes to every
+commit; then the owner merges the PR.
 
 **One turn, many calls.** Batch every read, search and check that does not wait on another's result
-into one turn.
-
-**Build:** `/task` step 5 — tests first, inside the RFC's scope, two attempts per step, then one
-tidy pass, review, local QA and the gate. After a source file is deleted or a branch switches, a
-stale `dist/` can keep a check red on code that is gone. `tsc -p` never removes old output, so
-delete the app's git-ignored `dist/` (`rm -r apps/api/dist`), then `pnpm turbo build --force`.
+into one turn. Long output goes to `.qa/<name>.log` and the chat reads its failures
+(`.claude/skills/task/SKILL.md`, *What keeps a session small*).
 
 **A PR is one complete task:** every acceptance line is met and proven before it opens, or by its
 CI lane. A task splits into parts only on the owner's word (`/task` step 3). The RFC's shape and
-its edge-case list are `.claude/skills/task/rfc-template.md`.
+its edge-case list are `.claude/skills/task/rfc-template.md`. After a source file is deleted or a
+branch switches, a stale `dist/` can keep a check red on code that is gone: `tsc -p` never removes
+old output, so delete the app's git-ignored `dist/` (`rm -r apps/api/dist`), then
+`pnpm turbo build --force`.
 
 ## 4. Stop and ask the owner before
 
@@ -115,8 +113,8 @@ allowed imports; §4 decides where a new file goes. Run §4 before creating one.
 |---|---|
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
 | `docs/engineering/` | how this repo is built. |
-| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers), `skills/task/` (the one step runner, its RFC template, the design track and the board check), `agents/` (its read-only helpers), `settings.json` (hard-safety denies and the plugins switched off here because `skills/task/` is the one step runner). |
-| `.qa/` | git-ignored: `api.log`, `web.log`, `metro.log` — the development logs the launch configurations append to and the e2e suite reads — and `components/<name>/`, the pictures a component spec saves. A task deletes the screenshots it made before its PR opens. |
+| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers), `skills/task/` (the one step runner: its three phase files, the RFC template, the design track and the board check), `agents/` (its read-only helpers), `hooks/` (the two checks on tool calls: no screenshot, long output to a file), `settings.json` (hard-safety denies, the hooks, and the plugins switched off here because `skills/task/` is the one step runner). |
+| `.qa/` | git-ignored: `api.log`, `web.log`, `metro.log` — the development logs the launch configurations append to and the e2e suite reads — `components/<name>/`, the pictures a component spec saves, and the `<name>.log` files a task's checks write. A task deletes the trees and temporary files it made before its PR opens, and keeps the logs. |
 | `.design/` | committed, written only by the Design track's lock: `<module>/`, that module's locked boards and the support files they load — each one exactly as the Design track checked it, read from the module's canvas — and `design-system.version`, the canvas's design system version at the lock; a read-only copy. A screen is built only while its boards here equal a fresh read (`/task` step 1). |
 | `.ops/` | the owner's private infra record, git-ignored: every external account, project and client id, what is still owed, and each environment's values (`env/dev.env`, `env/prod.env`). A console change updates it in the same sitting. |
 | `infra/` | deployment and local-stack material that is NOT application code. |

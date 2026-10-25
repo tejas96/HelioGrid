@@ -55,7 +55,7 @@ function edgeOf(box: { x: number; y: number; width: number; height: number }, ed
 }
 
 /**
- * Siblings the brief or the RFC's frame map aligns share the edge it names — measured, never judged by eye. Every
+ * Siblings the brief aligns share the edge it names — measured, never judged by eye. Every
  * box is compared to the first's; an element with no box fails rather than passing vacuously, and
  * a lone locator is a mistake, since one edge agrees with itself.
  */

@@ -397,7 +397,7 @@ Walk top-down; first match wins. The RFC's file table records the answer for eac
 10. Is it environment/config? → a schema in packages/env + .env.example. A raw process.env
     read anywhere else needs an entry in biome.json's `noProcessEnv` override (§2 env).
 11. Is it the agent's own instruction or a check — a rule, a lint plugin, an invariant, a CI
-    lane? → `.claude/rules/`,
+    lane, a check on a tool call? → `.claude/rules/`, `.claude/hooks/`,
     `packages/config/biome/`, `tests/invariants/`, `.github/workflows/`. Closed sets, and a new
     holder gets its row in `.claude/protections.md`. There is no `scripts/`: a new script or
     command waits for the owner's yes (CLAUDE.md §1).

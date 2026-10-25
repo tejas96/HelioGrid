@@ -32,7 +32,7 @@ paths:
   both `DATABASE_URL` and `DATABASE_ADMIN_URL` name `heliogrid_test` and skips them with a warning
   otherwise; whenever they are collected (as with `CI` set) a URL naming `heliogrid_dev` throws
   before collection. One file runs locally on the test database with the line in `/task` step
-  5 (`.claude/skills/task/SKILL.md`); `CI=1` is never the way in.
+  5 (`.claude/skills/task/build.md`); `CI=1` is never the way in.
 - **`tests/e2e/` is the regression suite** (`tests/e2e/CLAUDE.md`); it never replaces checking the
   running app.
 - **Unit tests do not replace `tests/invariants/`.** An invariant proves a property of the SYSTEM
