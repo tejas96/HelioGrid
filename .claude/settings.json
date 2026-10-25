@@ -44,5 +44,27 @@
       "Bash(rm -rf $HOME*)"
     ],
     "ask": []
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -I \"$CLAUDE_PROJECT_DIR/.claude/hooks/long-output.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|Read|mcp__Claude_Browser__computer|mcp__Claude_Browser__browser_batch|mcp__Claude_Code_iOS_Simulator__control",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -I \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-screenshot.py\""
+          }
+        ]
+      }
+    ]
   }
 }

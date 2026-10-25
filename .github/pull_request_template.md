@@ -49,6 +49,11 @@
 <!-- One line per mistake found in this work — by the author, the review, QA or a check — named by
      its kind, with where it is now prevented. Say "none" when there were none. -->
 
+## Cost
+
+<!-- The meter's one line for this task, every session summed: effective tokens, main turns,
+     agents, images, hours (`/task` step 9). -->
+
 ## Deferred
 
 <!-- The docs/tasks/deferred.md rows this task met — joined (deleted here) or stays (its new

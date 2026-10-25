@@ -10,7 +10,8 @@ Deps: `architecture.md` §2 tests/e2e.
   (`support/qa-accounts.ts`), run only as project `qa-seed`, never in CI.
 - No screenshot baselines: a flow asserts words, roles, states and measured values, never a
   whole-page picture. A look is proven by the component specs (each part's
-  CSS against its tokens) and by `qa-web`'s board compare on every screen a change reaches.
+  CSS against its tokens), by the code reviewer's compare of the locked board's code with the
+  screen's, and by `qa-web`'s measured checks on every screen a change reaches.
 - `components/<Name>.spec.tsx` — the real `@heliogrid/ui` web halves, mounted with the app's
   stylesheets (`playwright/index.tsx`). A mounted component is imported from the `@heliogrid/ui`
   index; a plain value from `@heliogrid/ui` is read through `support/`, since the component

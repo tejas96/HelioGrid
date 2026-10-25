@@ -50,7 +50,7 @@ The step is the first open part of a split task, else the first open V1 task on 
 lives in its task's `#### Parts` table; this file never lists parts.
 
 What the step is for each task — build, design <module>, owner merges, owner clears —
-is `/task` step 1's table (`.claude/skills/task/SKILL.md`). A backend task waits for the lock of
+is `/task` step 1's table (`.claude/skills/task/rfc.md`). A backend task waits for the lock of
 the screens it serves in its block: a checked drawing states the facts the backend serves. A `**Parked:**` task is stepped over and pulls nothing ahead.
 
 A screen that is not drawn is never skipped for one that is. Design runs one module ahead: while

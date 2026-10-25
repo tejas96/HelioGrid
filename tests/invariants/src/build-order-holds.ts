@@ -9,7 +9,7 @@ import { designLinks, readTaskLedger, SCREEN_ID, TASK_ID, type TaskEntry } from 
  * other in a loop or on a struck task, a V1 task waits on no V2 one, a V1 task that waits on a later
  * block is recorded and its ruling is owed before its block opens, every V1 screen task names the
  * screen it builds, and every task id is defined once, with one status line. `/task`
- * (`.claude/skills/task/SKILL.md`) picks the next step; this keeps what it reads true.
+ * (`.claude/skills/task/rfc.md`) picks the next step; this keeps what it reads true.
  */
 const ORDER = 'docs/build-order.md';
 const BLOCK_ROW = /^\| \*\*(\d+)\*\* \|/;

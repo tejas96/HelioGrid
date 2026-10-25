@@ -36,21 +36,21 @@ A row whose expected result states a time limit reports each call's time
 
 **Check only when a row asks:** validation at each boundary, role and permission refusals, the same
 idempotency key sent twice, pagination, sorting, filters and search, concurrent writes, a timeout,
-persistence by a read-back, a background job's or webhook's effect, behaviour with the api stopped.
-A row that needs the api stopped runs after all your other rows: return `NEEDS MAIN: stop the api`,
-then send the row's calls once continued.
+persistence by a read-back, a background job's or webhook's effect.
 
 **Rules:** you start, stop, build or migrate nothing — no `pnpm`, no `docker`, no `psql`. You create
-no company: a missing tenant is `BLOCKED` with the reason. A row you cannot run is `BLOCKED`; you
-never substitute another route. A suspected flake gets one immediate retry; a row that passes only on it is `PASS (flake)`. You restore any
-setting a row changed, through the api. Your report holds no cookie, code or token, and no number
-beyond its last three digits.
+no company: a missing tenant is `BLOCKED` with the reason. A row you cannot run is `BLOCKED` with
+what you need, and you never wait for it; you never substitute another route. A suspected flake
+gets one immediate retry; a row that passes only on it is `PASS (flake)`. You restore any setting
+a row changed, through the api. Your report holds no cookie, code or token, and no number beyond
+its last three digits. You return once: one or two
+lines per row, no narrative.
 
 Report shape, and nothing else:
 
 ```
-verdict: PASS | FAIL | BLOCKED | NEEDS MAIN <action>
+verdict: PASS | FAIL | BLOCKED
 rows:
-- <row> → <method path, each> → <status and fields checked> → <request id · log bytes a–b> → PASS | PASS (flake) | FAIL | BLOCKED <reason>
+- <row> → <method path, each> → <status and fields checked> → <request id · log bytes a–b> → PASS | PASS (flake) | FAIL | BLOCKED <need>
 found: <any bug outside the rows: what, where, how to repeat it — or "none">
 ```

@@ -3,7 +3,7 @@
 A module's boards are drawn, checked, fixed and locked once, before the first task that builds or
 serves them, so the build waits only when this track falls behind. Run it when the owner asks —
 between two build tasks, after the current task's PR is open — or when `/task` step 1 answers
-`design <module>` (`SKILL.md`).
+`design <module>` (`rfc.md`).
 
 `<module>` is a screen id's module (`SCR-SHELL-06` → `SHELL`). The screens in scope are the V1
 screens of `<module>` whose tasks are not `shipped` — or, when `/task` step 1 sent the run here,
@@ -66,8 +66,8 @@ second refusal goes to the owner.
    every screen that breaks it.
 3. **Fix.** Show the owner every `decision` first — two options each. A ruling to build the better
    way goes into the brief and into a `docs/tasks/deferred.md` row that names the frame, its
-   `reopens when` the screen's task starting (`T-<id> starts`), so the check and `qa-web` read it as
-   a known difference. Then start one `general-purpose` agent per screen to fix, each with *The fix
+   `reopens when` the screen's task starting (`T-<id> starts`), so the board check and the code
+   reviewer read it as a known difference. Then start one `general-purpose` agent per screen to fix, each with *The fix
    prompt* of `docs/start-here.md` and its boards in the working folder; publish them, read them
    again and continue only those screens' check agents. Two fix rounds at most: a board still
    failing after the second goes to the owner, who rules each difference a fix or a `deferred.md`
@@ -100,8 +100,9 @@ second refusal goes to the owner.
 A board or support file changed on the canvas after the lock differs from `/task` step 1's fresh
 read, and only the screens whose boards, or the support files they load, differ come back here. No board is drawn in Hindi or Marathi: those words come
 from the catalog. The repo already holds the design system (`packages/theme/src/_generated/`,
-`packages/ui`), so no board is ever opened in a browser: QA compares the app with the board's code
-through the RFC's frame map.
+`packages/ui`), so no board is ever opened in a browser: the build reads the board's code
+(`.claude/rules/ui-adherence.md`, *A screen is its locked board*) and the code reviewer compares
+it with the screen's.
 
 **Samples.** When the owner asks for design samples, first find the top 5 Dribbble shots of the
 same kind of screen, most-liked first. The sample message opens with those 5 links, one line each
