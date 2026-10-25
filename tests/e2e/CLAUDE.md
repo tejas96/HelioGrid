@@ -70,3 +70,7 @@ same keys sent to all three surfaces in one instant, with no key lost or crossed
 - Maestro types faster than the phone's fields take keys: a flow waits for the tap to settle before
   typing, gives each code box its own digit, and presses Return to close the keyboard before the
   next tap — while it is up, the form spends a tap on closing it.
+
+## Traps
+
+- A list row's open button is a 1×1 px button for screen readers under the visible row, so a `click()` on it is caught by the row's cover and opens nothing at 1536 → focus that named button and press Enter, as a keyboard user does (`web/more-roles.spec.ts`).

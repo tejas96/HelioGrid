@@ -1,12 +1,10 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import type { AddressInfo } from 'node:net';
-import {
-  type CatalogItemWire,
-  catalogOverrideWriteSchema,
-  type PriceBookActiveWire,
-  type PriceBookPublish,
-  priceBookPublishSchema,
-  type SessionProjection,
+import type {
+  CatalogItemWire,
+  PriceBookActiveWire,
+  PriceBookPublish,
+  SessionProjection,
 } from '@heliogrid/contracts';
 import { ROLE_PRESETS } from '@heliogrid/domain';
 import { cleanup, renderHook } from '@testing-library/react';
@@ -14,6 +12,9 @@ import { createElement, type ReactNode } from 'react';
 import { afterAll, afterEach, beforeAll } from 'vitest';
 import { createDataLayer } from '../../src/data-layer';
 import { DataProvider } from '../../src/react/provider';
+import { refusal, send, writeBodyOf } from './origin-wire';
+
+export { refusal } from './origin-wire';
 
 /**
  * Catalog settings' hooks end to end through the real client (`packages/data/CLAUDE.md`, Done
@@ -88,19 +89,6 @@ export const origin: Origin = {
 let server: Server;
 let baseUrl = '';
 
-export const refusal = (code: string) => ({ error: { code, message: code, requestId: 'test' } });
-
-function send(res: ServerResponse, req: IncomingMessage, status: number, body?: unknown) {
-  res.writeHead(status, {
-    'content-type': 'application/json',
-    'access-control-allow-origin': req.headers.origin ?? '*',
-    'access-control-allow-credentials': 'true',
-    'access-control-allow-headers': req.headers['access-control-request-headers'] ?? '*',
-    'access-control-allow-methods': 'GET, PUT, POST, DELETE, OPTIONS',
-  });
-  res.end(body === undefined ? undefined : JSON.stringify(body));
-}
-
 function projection(): SessionProjection {
   return {
     actor: {
@@ -115,26 +103,12 @@ function projection(): SessionProjection {
   } as SessionProjection;
 }
 
-async function bodyOf(req: IncomingMessage): Promise<unknown> {
-  const chunks: Buffer[] = [];
-  for await (const chunk of req) chunks.push(chunk as Buffer);
-  const text = Buffer.concat(chunks).toString();
-  return text === '' ? undefined : JSON.parse(text);
-}
-
-/** The contract's own body check, as the api runs it: a body it refuses is the api's 400. */
-const BODY_OF: Record<string, { safeParse(body: unknown): { success: boolean } }> = {
-  override: catalogOverrideWriteSchema,
-};
-
 /** A catalog write: the next queued answer, else the act applied to the one item. */
 async function answerWrite(req: IncomingMessage, res: ServerResponse, act: string) {
   origin.sent.push(`${req.method} ${act}`);
-  const body = await bodyOf(req);
-  origin.bodies.push(body);
-  if (req.method === 'PUT' && BODY_OF[act]?.safeParse(body).success === false) {
-    return send(res, req, 400, refusal('VALIDATION_FAILED'));
-  }
+  const write = await writeBodyOf(req, res);
+  if (write === null) return;
+  origin.bodies.push(write.body);
   const answer = origin.writes.shift() ?? { status: act === 'rate-entries' ? 201 : 200 };
   if (answer === 'drop') return void req.socket.destroy();
   if (answer.status < 300) {
@@ -145,12 +119,10 @@ async function answerWrite(req: IncomingMessage, res: ServerResponse, act: strin
 }
 
 async function answerPublish(req: IncomingMessage, res: ServerResponse) {
-  const sent = await bodyOf(req);
-  origin.bodies.push(sent);
-  if (!priceBookPublishSchema.safeParse(sent).success) {
-    return send(res, req, 400, refusal('VALIDATION_FAILED'));
-  }
-  const body = sent as PriceBookPublish;
+  const write = await writeBodyOf(req, res);
+  if (write === null) return;
+  origin.bodies.push(write.body);
+  const body = write.body as PriceBookPublish;
   const number = (origin.book.version?.number ?? 0) + 1;
   const version = {
     id: `01a20000-0000-7000-8000-00000000020${number}`,
