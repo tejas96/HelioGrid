@@ -8,7 +8,7 @@ import {
   useCatalogPage,
 } from '@heliogrid/data/react';
 import { catalogFiltersOn, NO_CATALOG_FILTER } from '@heliogrid/domain';
-import { catalogActToast, catalogItemsViewOf } from '@heliogrid/i18n';
+import { catalogActToast, catalogItemAddedToast, catalogItemsViewOf } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
   CatalogItems,
@@ -18,6 +18,7 @@ import {
   type useToasts,
 } from '@heliogrid/ui';
 import { useMemo, useState } from 'react';
+import { AddItemPanel } from './AddItemPanel';
 import { ImportPanel } from './ImportPanel';
 import { ItemsOverlays } from './ItemsOverlays';
 
@@ -42,7 +43,10 @@ export function ItemsPanel({
   });
   const [page, setPage] = useState(1);
   const [importing, setImporting] = useState(false);
-  const list = useCatalogPage(view, page);
+  const [adding, setAdding] = useState(false);
+  /** The item just added stands first, tinted, until the view or the page changes. */
+  const [added, setAdded] = useState<ResolvedCatalogItemWire | null>(null);
+  const list = useCatalogPage(view, page, added);
   const acts = useCatalogActs((note) => toasts.push(catalogActToast(t, note)));
   const overlays = useCatalogOverlays(acts);
   const { status, totalCount } = list;
@@ -74,6 +78,12 @@ export function ItemsPanel({
   const change = (next: Partial<CatalogView>) => {
     setView((now) => ({ ...now, ...next }));
     setPage(1);
+    setAdded(null);
+  };
+  const onAdded = (item: ResolvedCatalogItemWire) => {
+    setAdding(false);
+    setAdded(item);
+    toasts.push(catalogItemAddedToast(t, `${item.brand} ${item.model}`));
   };
 
   return (
@@ -91,7 +101,13 @@ export function ItemsPanel({
           void list.refetch();
           facts.retry();
         }}
-        strip={{ ...shown.strip, onLink: overlays.openReleases, onAction: overlays.openPublish }}
+        strip={{
+          ...shown.strip,
+          /* *Publish* is hidden while the add panel lies over the list (`SCR-M01-16`). */
+          action: adding ? null : shown.strip.action,
+          onLink: overlays.openReleases,
+          onAction: overlays.openPublish,
+        }}
         viewOnly={shown.viewOnly}
         teaching={shown.teaching}
         query={view.q}
@@ -108,11 +124,16 @@ export function ItemsPanel({
           page: page - 1,
           pageSize: DEFAULT_PAGE_LIMIT,
           rowCount: totalCount,
-          onPage: (next) => setPage(next + 1),
+          onPage: (next) => {
+            setPage(next + 1);
+            setAdded(null);
+          },
         }}
         archivedCaption={shown.archivedCaption}
         administers={facts.administers}
         onImport={facts.administers ? () => setImporting(true) : null}
+        onAdd={facts.administers ? () => setAdding(true) : null}
+        addedId={added?.id ?? null}
         onOpen={onItem(overlays.openEditor)}
         onPrefer={onItem(acts.togglePreferred)}
         onHide={onItem(acts.toggleHidden)}
@@ -121,6 +142,17 @@ export function ItemsPanel({
       />
       <ItemsOverlays overlays={overlays} schemes={facts.schemes} release={facts.release} />
       {importing ? <ImportPanel onClose={() => setImporting(false)} /> : null}
+      {adding ? (
+        <AddItemPanel
+          priced={facts.administers}
+          onClose={() => setAdding(false)}
+          onAdded={onAdded}
+          onSpreadsheet={() => {
+            setAdding(false);
+            setImporting(true);
+          }}
+        />
+      ) : null}
     </>
   );
 }

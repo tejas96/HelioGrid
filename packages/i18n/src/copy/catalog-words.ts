@@ -95,6 +95,7 @@ const byKey = <K extends string>(keys: readonly K[], word: (key: K) => string) =
 export function catalogItemsWords(t: T, schemes: readonly string[], list: CatalogListFacts) {
   return {
     importFile: t(CATALOG_SETTINGS.importFile),
+    addItem: t(CATALOG_SETTINGS.addItem),
     item: t(CATALOG_SETTINGS.item),
     whatItIs: t(CATALOG_SETTINGS.whatItIs),
     compliance: t(CATALOG_SETTINGS.compliance),

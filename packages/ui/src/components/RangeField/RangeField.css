@@ -223,8 +223,13 @@
   white-space: nowrap;
 }
 
-.hg-range-hint {
+.hg-range-hint,
+.hg-range-error {
   margin: var(--sp-2) 2px 0;
   font-size: var(--fs-caption);
   color: var(--text-tertiary);
+}
+
+.hg-range-error {
+  color: var(--danger-text);
 }

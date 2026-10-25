@@ -22,6 +22,7 @@ function rowTintAttrs(state: RowState) {
     'data-issue': state.issue === null ? undefined : 'true',
     'data-fixed': state.issue === null && state.flagged ? 'true' : undefined,
     'data-zebra': state.zebra ? 'true' : undefined,
+    'data-highlighted': state.highlighted ? 'true' : undefined,
   };
 }
 

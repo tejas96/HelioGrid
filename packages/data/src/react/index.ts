@@ -8,6 +8,8 @@ export { useRepositories } from './context';
 export type { HostLifecycle } from './host-lifecycle';
 export { followHostLifecycle } from './host-lifecycle';
 export { DataProvider } from './provider';
+export type { AddCatalogItemOptions } from './use-add-catalog-item';
+export { useAddCatalogItem } from './use-add-catalog-item';
 export type { AssignRolesEditor, RolesRemoval, RolesRemovalNotes } from './use-assign-roles';
 export { useAssignRoles } from './use-assign-roles';
 export type {

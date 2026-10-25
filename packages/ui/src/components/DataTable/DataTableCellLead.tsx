@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
-import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { IrisTile } from '../IrisTile/IrisTile';
 import type { DataTableColumn } from './DataTableColumn.types';
 
 /**
@@ -26,21 +25,7 @@ export function CellLead<Row>({
     <span className="hg-dt-lead">
       {leading === null ? null : (
         /* The kind is said in the words beside it; the tile is its second channel. */
-        <span className="hg-dt-lead-tile hg-iris" data-iris={leading.iris} aria-hidden="true">
-          <svg
-            aria-hidden="true"
-            width={ICON_SIZE.md}
-            height={ICON_SIZE.md}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <ShellGlyphMarks name={leading.glyph} />
-          </svg>
-        </span>
+        <IrisTile glyph={leading.glyph} iris={leading.iris} size={34} stroke={1.5} />
       )}
       <span className="hg-dt-lead-text">
         <span className="hg-dt-lead-value">{children}</span>

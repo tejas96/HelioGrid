@@ -34,6 +34,7 @@ export function RangeField({
   label,
   unit,
   hint,
+  error,
   format,
   boxes = true,
   boxLabels = ['From', 'To'],
@@ -84,7 +85,7 @@ export function RangeField({
           step={step}
           value={lo}
           disabled={disabled}
-          aria-label={`${label ?? 'Range'} — lower end`}
+          aria-label={`${label ?? 'Range'} — ${boxLabels[0]}`}
           aria-valuetext={formatEnd(lo, format, unit)}
           onChange={(e) => dragLo(Number(e.target.value), true)}
           onPointerUp={(e) => dragLo(Number(e.currentTarget.value), false)}
@@ -99,7 +100,7 @@ export function RangeField({
           step={step}
           value={hi}
           disabled={disabled}
-          aria-label={`${label ?? 'Range'} — upper end`}
+          aria-label={`${label ?? 'Range'} — ${boxLabels[1]}`}
           aria-valuetext={formatEnd(hi, format, unit)}
           onChange={(e) => dragHi(Number(e.target.value), true)}
           onPointerUp={(e) => dragHi(Number(e.currentTarget.value), false)}
@@ -134,7 +135,13 @@ export function RangeField({
           />
         </div>
       ) : null}
-      {hint !== undefined ? <p className="hg-range-hint">{hint}</p> : null}
+      {error !== undefined ? (
+        <p className="hg-range-error" role="alert">
+          {error}
+        </p>
+      ) : hint !== undefined ? (
+        <p className="hg-range-hint">{hint}</p>
+      ) : null}
     </div>
   );
 }

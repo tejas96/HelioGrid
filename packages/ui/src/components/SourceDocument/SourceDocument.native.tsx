@@ -66,7 +66,7 @@ export function SourceDocument({
        here: the header holds the two paging buttons, the two fit toggles and the link to the real
        file, and folding would put all five behind one element nobody could reach. The name is not
        a duplicate of the file name below it either — it is the caller's `label`, or the file name
-       said as what it is ("datasheet.pdf — source document"), which is the whole point of naming
+       said as what it is ("contract.pdf — source document"), which is the whole point of naming
        a region on a screen that also shows a form. */
     <View
       role="region"

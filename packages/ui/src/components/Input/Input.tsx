@@ -1,8 +1,9 @@
 import type { CSSProperties, KeyboardEvent } from 'react';
-import { useId } from 'react';
+import { useId, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
 import { StatusMark } from '../../primitives/StatusMark';
+import { useFocusRequest } from '../../primitives/use-focus-request';
 import { renderOverride } from '../FieldOverride';
 import { renderAttribution } from '../ValueSource';
 import { useCommitDraft } from './commit-draft';
@@ -43,6 +44,7 @@ export function Input({
   trailing = null,
   commitOnBlur = false,
   onCommit,
+  focusRequest,
   override,
   attribution,
   id,
@@ -51,6 +53,8 @@ export function Input({
 }: WebInputProps) {
   const autoId = useId();
   const fieldId = id ?? autoId;
+  const control = useRef<HTMLInputElement>(null);
+  useFocusRequest(control, focusRequest);
   const { draft, setDraft, focus, setFocus, commit, cancel } = useCommitDraft(
     value,
     commitOnBlur,
@@ -106,6 +110,7 @@ export function Input({
       >
         {leading}
         <input
+          ref={control}
           className="hg-input-control"
           data-mono={mono ? 'true' : undefined}
           id={fieldId}

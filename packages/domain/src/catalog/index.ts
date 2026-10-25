@@ -119,6 +119,26 @@ export {
   importWizardViewAfter,
   mappingForHeader,
 } from './import-wizard';
+export type {
+  ItemDraft,
+  ItemDraftEvent,
+  ItemDraftJudgement,
+  ItemFieldFailure,
+  ItemFieldIssue,
+  ItemSpecValue,
+  OwnItemCreateBody,
+  SchemeDraft,
+} from './item-draft';
+export {
+  blankItemDraft,
+  draftIsBlank,
+  draftIsDirty,
+  itemDraftAfter,
+  itemDraftFrom,
+  judgeItemDraft,
+  optionalFolded,
+  optionalPathsOf,
+} from './item-draft';
 export type { PriceBookRateBasis } from './price-book';
 export { MAX_MARGIN, PLATFORM_DEFAULT_MARGIN, PRICE_BOOK_RATE_BASES } from './price-book';
 export type {
@@ -167,9 +187,10 @@ export type {
   MpptWindow,
   OptimiserSpec,
   PanelSpec,
+  SpecField,
   SpecParse,
 } from './specs';
-export { catalogSpecSchema, parseCatalogSpec } from './specs';
+export { catalogSpecSchema, parseCatalogSpec, SPEC_FIELDS } from './specs';
 export type {
   BatteryChemistry,
   CatalogAvailability,

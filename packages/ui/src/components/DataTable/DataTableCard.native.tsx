@@ -14,7 +14,7 @@ import { alignOf } from './DataTable.logic';
 import type { DataTableProps } from './DataTable.types';
 import { CardDetails } from './DataTableCardDetails.native';
 import { DataTableCell } from './DataTableCell.native';
-import { tickPullback } from './DataTableChrome.native';
+import { ROW_HIGHLIGHT, tickPullback } from './DataTableChrome.native';
 import { RowNote } from './DataTableFeedback.native';
 import type { RowState } from './DataTableRow.logic';
 import { resolveRow, rowOpenOf } from './DataTableRow.logic';
@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
   fixed: { backgroundColor: theme.colors['success-bg'] },
   selected: { backgroundColor: theme.colors['accent-subtle'] },
   muted: { opacity: 0.55 },
+  highlighted: { backgroundColor: ROW_HIGHLIGHT },
   body: {
     flexDirection: 'row',
     gap: theme.spacing['sp-3'],
@@ -68,6 +69,7 @@ function cardTintStyle(state: RowState, editable: boolean): StyleProp<ViewStyle>
   return [
     editable ? null : tileSurface,
     styles.card,
+    state.highlighted ? styles.highlighted : null,
     state.issue !== null ? styles.issue : state.flagged ? styles.fixed : null,
     state.isSelected ? styles.selected : null,
     state.muted ? styles.muted : null,

@@ -12,6 +12,13 @@
    `pointer-events: auto` on the interactive wrappers is doing real work — remove it and the
    editors inside a flagged import row, and a ChipGroup's "+N" in a wrap cell, stop taking taps. */
 
+/* The row or card just added (`isRowHighlighted`), for every form of the table; each rule loads
+   before selection and the issue tint, which win. */
+.hg-dt {
+  /* biome-ignore lint/plugin/raw-white-css: iris — the wash is the hue over the page's own white */
+  --hg-dt-highlight: color-mix(in srgb, var(--iris-violet) 8%, var(--surface));
+}
+
 .hg-dt-cards {
   list-style: none;
   margin: 0;
@@ -28,6 +35,11 @@
   position: relative;
   padding: var(--sp-4);
   border-radius: var(--r-md);
+}
+
+/* The card just added: the same violet iris wash, before selection. */
+.hg-dt-card[data-highlighted="true"] {
+  background: var(--hg-dt-highlight);
 }
 
 .hg-dt-card[data-issue="true"] {

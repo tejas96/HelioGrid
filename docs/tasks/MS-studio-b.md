@@ -14,7 +14,7 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step4Components.tsx` · `3d_design_studio/src/features/solar-studio/data/catalog.ts` · `3d_design_studio/src/features/solar-studio/data/panels.ts` · `3d_design_studio/src/features/solar-studio/data/inverters.ts` · `3d_design_studio/src/features/solar-studio/lib/__tests__/catalog.test.ts`
 **DEFECTS:**
 - `CODE.step4-components.20` — panel swap silently resizes placed modules (S4-2: guard dialog both paths → MS4-12).
-- `CODE.step4-components.23/.24` — datasheet + manual entry paths are dead captions (S4-1: all three paths real + Excel → MS4-06).
+- `CODE.step4-components.23/.24` — datasheet + manual entry paths are dead captions (S4-1: browse and manual real + Excel; the datasheet path struck → MS4-06).
 - `CODE.step4-components.37` — no-fit inverter state renders nothing (S4-3: explain + nearest fits → MS4-19).
 - `CODE.step4-components.5/.13/.21/.22/.26/.28/.39` — input & state hygiene (7) (S4-4 batch → MS4-02/10/11/14/15/21).
 - `CODE.step4-components.29/.32/.42 + availability` — polish (4) (S4-5 batch → MS4-17/16/20/08).
@@ -26,7 +26,7 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 - Given a new design, Then the accordion shows PANEL → CAPACITY → INVERTER → BATTERY, opening at the first incomplete section with summaries on completed headers (MS4-01)
 - tapping an open header collapses it (MS4-02)
 - Next states the blocking reason in order (MS4-03)
-- Given a missing product, Then browse/datasheet-upload/manual all work in-flow, with datasheet extraction reviewed before commit; given a selected component, Then Enter specs manually opens pre-filled with its specs and blank certifications and price, and the save is a new own SKU (MS4-06)
+- Given a missing product, Then browse and manual both work in-flow; given a selected component, Then Enter specs manually opens pre-filled with its specs and blank certifications and price, and the save is a new own SKU (MS4-06)
 - Given a person with `F2.M01.add-own-catalog-items` (the holders of `onboarding.add_own_catalog_items` in `packages/domain/src/authz/onboarding.ts`) or `F2.M01.manage-catalog`, Then the picker shows inline add; given neither grant, Then inline add is absent (permissions; moved from `T-M01-015`)
 - Given a tenant-entered SKU, Then its provenance shows on the row and travels to compare and BOM (MS4-07)
 - Given an on-order unit, Then the availability badge shows in the picker, not only in compare (MS4-08)

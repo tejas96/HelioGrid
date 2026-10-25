@@ -12,6 +12,8 @@ export interface RangeTrackProps {
   step: number;
   disabled: boolean;
   label?: string;
+  /** The two ends' own words — the field's box labels — so each thumb is named in the person's language. */
+  endLabels: readonly [string, string];
   unit?: string;
   format?: (value: number) => string;
   /** `live` true while the finger is down, false on release — the same split as the web half. */
@@ -61,6 +63,7 @@ export function RangeTrack({
   step,
   disabled,
   label,
+  endLabels,
   unit,
   format,
   onDrag,
@@ -112,8 +115,8 @@ export function RangeTrack({
   };
 
   const thumbs = [
-    { key: 'lo' as const, value: lo, name: `${label ?? 'Range'} — lower end` },
-    { key: 'hi' as const, value: hi, name: `${label ?? 'Range'} — upper end` },
+    { key: 'lo' as const, value: lo, name: `${label ?? 'Range'} — ${endLabels[0]}` },
+    { key: 'hi' as const, value: hi, name: `${label ?? 'Range'} — ${endLabels[1]}` },
   ];
 
   return (

@@ -1,0 +1,19 @@
+/* CatalogItemForm — the add sheet (`SCR-M01-16`). One markup, two widths: `data-wide` is
+   `EditorSurface`'s answer — `true` in the 900px side panel (the 1536 frames), `false` in the full
+   sheet (the 375 frames). Its parts' rules sit beside them: ItemCard, SheetAccelerator,
+   SchemeSwitchRow, SpecFields, ItemFormFoot. */
+
+.hg-item-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+/* At 1536 Certification and Price stand side by side, each the height of the taller. */
+.hg-item-form-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-4);
+  align-items: stretch;
+}

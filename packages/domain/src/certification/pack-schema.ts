@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { CERTIFICATION_EVIDENCE, type CertificationSchemesPack } from './pack';
+import {
+  CERTIFICATION_EVIDENCE,
+  type CertificationScheme,
+  type CertificationSchemesPack,
+} from './pack';
 import { badgedSchemes } from './schemes';
 
 /** `pack.certification-schemes` as a row stores it, validated whole (`T-FCORE-017`). */
@@ -19,4 +23,10 @@ export const CERTIFICATION_SCHEMES_PACK_SCHEMA: z.ZodType<
 export function badgedSchemesOf(value: unknown): readonly string[] | null {
   const read = CERTIFICATION_SCHEMES_PACK_SCHEMA.safeParse(value);
   return read.success ? badgedSchemes(read.data) : null;
+}
+
+/** The schemes a market declares, each with the evidence its form collects; `null` while unread. */
+export function declaredSchemesOf(value: unknown): readonly CertificationScheme[] | null {
+  const read = CERTIFICATION_SCHEMES_PACK_SCHEMA.safeParse(value);
+  return read.success ? read.data.schemes : null;
 }

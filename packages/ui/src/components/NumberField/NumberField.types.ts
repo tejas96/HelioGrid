@@ -19,6 +19,11 @@ export type NumberFieldCommits = 'on-leave' | 'as-typed';
  */
 export interface NumberFieldProps {
   /**
+   * Each new number moves focus into the field — the caller's way to land a person on the first
+   * field a refused form names. Leave it unset and the field never takes focus on its own.
+   */
+  focusRequest?: number;
+  /**
    * The figure, or none: with no `value` the field is UNSET — an empty box beside its unit, never
    * `0`. A figure nobody declared has no tier that could qualify it (`F8-01`), which is why this
    * port does not take the design system's `0` default. An empty draft committed on an unset field

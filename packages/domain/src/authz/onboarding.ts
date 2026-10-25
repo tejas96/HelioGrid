@@ -78,7 +78,7 @@ export const ONBOARDING_ROWS = {
       marketing: DENIED,
     },
   },
-  // Add tenant catalog products inline while designing or quoting (single product · datasheet PDF · spreadsheet im
+  // Add tenant catalog products inline while designing or quoting (single product · spreadsheet im
   'onboarding.add_own_catalog_items': {
     rowKey: 'F2.M01.add-own-catalog-items',
     grants: {

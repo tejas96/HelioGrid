@@ -33,7 +33,7 @@ A screen splitting or merging during design updates THIS register first (see `do
 
 | Screens | Requirement rows | P0 | P1 | P2 | screen | mixed | engine | policy | integration | context |
 |---|---|---|---|---|---|---|---|---|---|---|
-| **150** | **1659** | 1505 | 137 | 17 | 393 | 390 | 147 | 652 | 22 | 55 |
+| **150** | **1658** | 1504 | 137 | 17 | 393 | 389 | 147 | 652 | 22 | 55 |
 
 *Recomputed 2026-08-15, **corrected the same day**, then **recomputed again the same day** for the
 three restored rows (was `150 · 1656 · 1502 · 137 · 17 · 393 · 387 · 147 · 652 · 22 · 55`
@@ -62,6 +62,7 @@ present, so it is dispositioned in §3, but it carries no tier and is a live req
 The 43 rows struck in §3 below — `F7-36` and 42 ids deleted from their documents outright — are
 dispositioned but are not live requirements and are not counted here. Tier columns come from the
 live rows' own tier cells; type columns from §3's Type column; both sum to 1,659.*
+*Owner ruling 2026-10-25 deleted `M01-40` (datasheet-PDF extraction, P0 `mixed`): **1659 → 1658**, **P0 1505 → 1504**, **mixed 390 → 389**, and §3's struck total is 45.*
 
 ## 2. Screen index
 
@@ -180,7 +181,7 @@ holds the link once the screen is drawn, and `PENDING` until then.
 | SCR-M01-13 | **Assign Roles** | P0 | 1 | `docs/ux/briefs/SCR-M01-13-assign-roles.md` | V1 | — |
 | SCR-M01-14 | **Roles Reference** | P0 | 1 | `docs/ux/briefs/SCR-M01-14-roles-reference.md` | V1 | — |
 | SCR-M01-15 | **Catalog Settings** | P0 | 7 | `docs/ux/briefs/SCR-M01-15-catalog-settings.md` | V1 | — |
-| SCR-M01-16 | **Add Catalog Item** | P0 | 3 | `docs/ux/briefs/SCR-M01-16-add-catalog-item.md` | V1 | — |
+| SCR-M01-16 | **Add Catalog Item** | P0 | 2 | `docs/ux/briefs/SCR-M01-16-add-catalog-item.md` | V1 | — |
 | SCR-M01-17 | **Catalog Import Wizard** | P0 | 1 | `docs/ux/briefs/SCR-M01-17-catalog-import-wizard.md` | V1 | — |
 | SCR-M01-18 | **Branding Settings** | P0 | 2 | `docs/ux/briefs/SCR-M01-18-branding-settings.md` | V1 | `F7-design-language:shell-tenant-branding-settings` |
 | SCR-M01-19 | **Proposal Template Settings** | P0 | 2 | `docs/ux/briefs/SCR-M01-19-proposal-template-settings.md` | V1 | — |
@@ -390,7 +391,7 @@ task id(s) in `docs/tasks/` (backfilled by the generator once tasks exist).
 
 **Struck rows.** A requirement deleted from the PRD is **marked, never removed** — this register's
 value is that every row is accounted for exactly once, forever, so a row for something that no
-longer exists still has to be findable. The convention, applied to all 44 struck rows (18 marked in
+longer exists still has to be findable. The convention, applied to all 45 struck rows (`M01-40` struck 2026-10-25 by owner ruling) (18 marked in
 the 2026-08-07 sweep, 25 restored 2026-08-15 under `foundations/F4-data-integrity.md` after they had
 been dropped from this register outright, and `F7-16` struck in place 2026-09-28): the id in
 `~~strikethrough~~`, Tier `—`, Type `**excluded**`, the Where cell replaced by a dated note saying
@@ -992,7 +993,7 @@ Nothing below is renumbered.*
 | M01-37 | P0 | mixed | SCR-M01-15 · +non-UI: sparse override: unset fields fall through; one override per platform  | T-M01-015 |
 | M01-38 | P0 | mixed | SCR-M01-15 · +non-UI: one search over both tiers, preferred-first ranking, shared with the… | T-M01-015 |
 | M01-39 | P0 | screen | SCR-M01-16 | T-M01-016 |
-| M01-40 | P0 | mixed | SCR-M01-16 · +non-UI: PDF spec-extraction engine; output never committed without review… | T-M01-016 |
+| ~~M01-40~~ | — | **excluded** | *Row deleted 2026-10-25 by owner ruling: catalog files are Excel or CSV only, so there is no datasheet-PDF add path. The add paths are `M01-39`'s single form and `M01-41`'s spreadsheet import.* | — |
 | M01-41 | P0 | mixed | SCR-M01-17 · +non-UI: smart matching engine: platform matches become price overrides… | T-M01-017, T-M01-030 |
 | M01-42 | P0 | policy | policy | T-M01-027 |
 | M01-43 | P0 | mixed | SCR-M01-15 · +non-UI: append-only labelled releases; designs and proposals pin release… | T-M01-015 |
@@ -1460,7 +1461,7 @@ Nothing below is renumbered.*
 | MS4-03 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | MS4-04 | P0 | policy | policy | LAW |
 | MS4-05 | P0 | policy | policy | T-MS-202 |
-| MS4-06 | P0 | mixed | SCR-MS-07 · +non-UI: PDF datasheet extraction with review-before-commit; Excel import | T-MS-201 |
+| MS4-06 | P0 | mixed | SCR-MS-07 · +non-UI: Excel import | T-MS-201 |
 | MS4-07 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | MS4-08 | P0 | screen | SCR-MS-07 | T-MS-201 |
 | MS4-09 | P0 | mixed | SCR-MS-07 · +non-UI: certification schemes are pack-driven market data, never hard-coded | T-MS-201 |

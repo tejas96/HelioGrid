@@ -49,6 +49,7 @@ export function RangeField({
   label,
   unit,
   hint,
+  error,
   format,
   boxes = true,
   boxLabels = ['From', 'To'],
@@ -99,6 +100,7 @@ export function RangeField({
         step={step}
         disabled={disabled}
         label={label}
+        endLabels={boxLabels}
         unit={unit}
         format={format}
         onDrag={onDrag}
@@ -132,7 +134,18 @@ export function RangeField({
           />
         </View>
       ) : null}
-      {hint !== undefined ? (
+      {error !== undefined ? (
+        <View
+          style={styles.hint}
+          accessibilityRole="alert"
+          accessibilityLiveRegion="assertive"
+          accessible
+        >
+          <Text variant="caption" color="danger">
+            {error}
+          </Text>
+        </View>
+      ) : hint !== undefined ? (
         <Text variant="caption" color="tertiary" style={styles.hint}>
           {hint}
         </Text>

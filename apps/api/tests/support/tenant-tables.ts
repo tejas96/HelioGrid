@@ -39,7 +39,7 @@ export const TENANT_SETTING_TABLES = [
 /**
  * The import's rows, then its jobs — a row points at its job and at the item it matched, a job at
  * its price list's file; the price book's rates before their versions; then lines, releases, the
- * ledger, the overrides and the own SKUs — an own SKU points at its datasheet file.
+ * ledger, the overrides and the own SKUs.
  */
 export const TENANT_CATALOG_TABLES = [
   catalogImportRow,

@@ -4,6 +4,7 @@ import type {
   CatalogReleaseDetailWire,
   CatalogReleasePreviewWire,
   CatalogReleaseWire,
+  OwnCatalogItemCreate,
   OwnCatalogItemWrite,
   Paginated,
   PaginationQuery,
@@ -26,6 +27,11 @@ export type CatalogItemsAsk = NonNullable<
 export interface CatalogRepository {
   items(query: CatalogItemsAsk, signal?: AbortSignal): Promise<Paginated<ResolvedCatalogItemWire>>;
   item(id: string, signal?: AbortSignal): Promise<CatalogItemWire>;
+  /**
+   * An own SKU from one form (`M01-36`). One key per body: a retried send makes one item, and a
+   * changed body is a new create.
+   */
+  createItem(body: OwnCatalogItemCreate): Promise<CatalogItemWire>;
   /** Replaces an own SKU whole: send what was read, changed where the person answered. */
   saveItem(id: string, body: OwnCatalogItemWrite): Promise<CatalogItemWire>;
   archive(id: string): Promise<CatalogItemWire>;
@@ -49,6 +55,7 @@ export interface CatalogRepository {
 
 /** The types are INFERRED from the contract, never a hand-written copy of the response. */
 export function createCatalogRepository(api: ApiClient): CatalogRepository {
+  const itemKeys = createCreationKeys();
   const overrideKeys = createCreationKeys();
   const rateKeys = createCreationKeys();
   const releaseKeys = createCreationKeys();
@@ -57,6 +64,12 @@ export function createCatalogRepository(api: ApiClient): CatalogRepository {
       bodyAt(() => api.catalog.items({ query, fetchOptions: { signal } }), 200),
     item: (id, signal) =>
       bodyAt(() => api.catalog.item({ params: { id }, fetchOptions: { signal } }), 200),
+    async createItem(body) {
+      const headers = itemKeys.headersFor(body);
+      const created = await bodyAt(() => api.catalog.createItem({ body, headers }), 201);
+      itemKeys.settle();
+      return created;
+    },
     saveItem: (id, body) => bodyAt(() => api.catalog.saveItem({ params: { id }, body }), 200),
     archive: (id) => bodyAt(() => api.catalog.archiveItem({ params: { id } }), 200),
     unarchive: (id) => bodyAt(() => api.catalog.unarchiveItem({ params: { id } }), 200),

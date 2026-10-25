@@ -1,39 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
-import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import { irisTintOf } from '../Avatar/Avatar.logic';
-import { LEAD_TILE } from './DataTable.logic';
-import type { DataTableColumn, DataTableLeading } from './DataTableColumn.types';
-
-/** The kind's tile: the iris wash and ink are `irisTintOf`'s, the rule a kind Badge takes. */
-function LeadTile({ leading }: { leading: DataTableLeading }) {
-  const tint = irisTintOf(leading.iris);
-  return (
-    /* The kind is said in the words beside it; the tile is its second channel. */
-    <View
-      accessibilityElementsHidden
-      importantForAccessibility="no-hide-descendants"
-      style={[styles.tile, { backgroundColor: tint.bg }]}
-    >
-      <Svg
-        width={ICON_SIZE.md}
-        height={ICON_SIZE.md}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={tint.fg}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <ShellGlyphMarks name={leading.glyph} />
-      </Svg>
-    </View>
-  );
-}
+import { IrisTile } from '../IrisTile/IrisTile.native';
+import type { DataTableColumn } from './DataTableColumn.types';
 
 /** Quiet under a bold name. Bare words take the caption face; nodes bring their own. */
 function SubLine({ sub }: { sub: ReactNode }) {
@@ -71,7 +41,9 @@ export function CellLead<Row>({
 
   return (
     <View style={styles.lead}>
-      {leading === null ? null : <LeadTile leading={leading} />}
+      {leading === null ? null : (
+        <IrisTile glyph={leading.glyph} iris={leading.iris} size={34} stroke={1.5} />
+      )}
       <View style={styles.text}>
         {children}
         {sub === null ? null : <SubLine sub={sub} />}
@@ -87,14 +59,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing['sp-3'],
     minWidth: 0,
-  },
-  tile: {
-    width: LEAD_TILE,
-    height: LEAD_TILE,
-    flexShrink: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: theme.radius['r-sm'],
   },
   text: {
     flexShrink: 1,

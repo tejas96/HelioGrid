@@ -85,6 +85,12 @@ interface DataTableBaseProps<Row> {
    */
   isRowMuted?: (row: Row) => boolean;
   /**
+   * **The row just added** (`SCR-M01-16` decision 1): its ground takes the violet iris wash so the
+   * reader finds what they made, until the caller clears it. Not a selection — no tick, no
+   * `aria-selected` — and selection and the issue tint still win over it. Reaches the card too.
+   */
+  isRowHighlighted?: (row: Row) => boolean;
+  /**
    * **This row's act has left the device and the server has not confirmed it** — the third thing a
    * row can say, after "done" and "not done" (`F8-36`). The `PendingAction` line renders on **the
    * row's own line under the cells**, in both forms.

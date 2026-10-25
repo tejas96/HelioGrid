@@ -27,6 +27,11 @@ export interface InputProps {
   type?: InputType;
   /** expressive = 54px, functional = 40px — size only, never the ground */
   density?: InputDensity;
+  /**
+   * Each new number moves focus into the field — the caller's way to land a person on the first
+   * field a refused form names. Leave it unset and the field never takes focus on its own.
+   */
+  focusRequest?: number;
   /** error message — inset 1.5px danger ring + text below */
   error?: string;
   /**

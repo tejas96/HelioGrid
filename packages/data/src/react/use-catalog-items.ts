@@ -1,5 +1,5 @@
 'use client';
-import { DEFAULT_PAGE_LIMIT } from '@heliogrid/contracts';
+import { DEFAULT_PAGE_LIMIT, type ResolvedCatalogItemWire } from '@heliogrid/contracts';
 import {
   badgedSchemesOf,
   type CatalogFilter,
@@ -50,28 +50,50 @@ export function catalogAskOf(view: CatalogView, page: number, limit: number): Ca
   };
 }
 
-/** One numbered page of the list — the 1536 table and its pager. */
-export function useCatalogPage(view: CatalogView, page: number) {
+/**
+ * The item just added stands first, once (`SCR-M01-16` decision 1): a page that brings it back
+ * after the catalog refreshes drops its own copy, so the list never names it twice.
+ */
+function pinnedFirst<Item extends { readonly id: string }>(
+  items: readonly Item[],
+  added: Item | null,
+): readonly Item[] {
+  if (added === null) return items;
+  /* Once the page reads it back, the fresh copy stands first: a star or a price set on it shows. */
+  const shown = items.find((item) => item.id === added.id) ?? added;
+  return [shown, ...items.filter((item) => item.id !== added.id)];
+}
+
+/** One numbered page of the list — the 1536 table and its pager — with the added item first. */
+export function useCatalogPage(
+  view: CatalogView,
+  page: number,
+  added: ResolvedCatalogItemWire | null = null,
+) {
   const repositories = useRepositories();
   const tenantId = useTenantId();
-  return usePagedList({
+  const list = usePagedList({
     queryKey: queryKeys.catalog.items(tenantId, { ...view, mode: 'page' }),
     fetchPage: (n) => repositories.catalog.items(catalogAskOf(view, n, DEFAULT_PAGE_LIMIT)),
     page,
     enabled: tenantId !== '',
   });
+  const items = useMemo(() => pinnedFirst(list.items, added), [list.items, added]);
+  return { ...list, items };
 }
 
-/** The list growing as the person scrolls — the phone's cards. */
-export function useCatalogScroll(view: CatalogView) {
+/** The list growing as the person scrolls — the phone's cards — with the added item first. */
+export function useCatalogScroll(view: CatalogView, added: ResolvedCatalogItemWire | null = null) {
   const repositories = useRepositories();
   const tenantId = useTenantId();
-  return usePaginatedList({
+  const list = usePaginatedList({
     queryKey: queryKeys.catalog.items(tenantId, { ...view, mode: 'scroll' }),
     fetchPage: (n) => repositories.catalog.items(catalogAskOf(view, n, DEFAULT_PAGE_LIMIT)),
     enabled: tenantId !== '',
     keepPreviousWhileLoading: true,
   });
+  const items = useMemo(() => pinnedFirst(list.items, added), [list.items, added]);
+  return { ...list, items };
 }
 
 /**

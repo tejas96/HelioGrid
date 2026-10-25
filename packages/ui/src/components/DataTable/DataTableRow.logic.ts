@@ -39,6 +39,8 @@ export interface RowState {
   standing: DataTableProvenanceSpec | null;
   /** Done-and-inactive. Never a problem marker. */
   muted: boolean;
+  /** The row just added: the iris wash, under selection and the issue tint. */
+  highlighted: boolean;
   /** Odd rows take the alternate ground. */
   zebra: boolean;
 }
@@ -64,6 +66,7 @@ export function resolveRow<Row>(
     waiting: pending !== null && pending.state !== 'returned',
     standing: table.rowProvenance?.(row) ?? null,
     muted: table.isRowMuted?.(row) === true,
+    highlighted: table.isRowHighlighted?.(row) === true,
     zebra: index % 2 === 1,
   };
 }

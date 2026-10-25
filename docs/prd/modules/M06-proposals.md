@@ -337,7 +337,7 @@ part of the builder's dense-surface language check (`F3-18`).
 
 ### §M06.5 — Components & battery
 
-The component picker — accordion, three entry paths, scheme-keyed badges — is defined **once**,
+The component picker — accordion, two entry paths, scheme-keyed badges — is defined **once**,
 in `modules/M05-design-studio.md` §M05.6 (DD12). This section cites it and specifies only what
 is proposal-specific: the mandatory-components step, its counter and gate, the edit sheets, and
 the battery blocks.
@@ -345,7 +345,7 @@ the battery blocks.
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
 | M06-27 | **Components are mandatory on every proposal — no lump-sum quotes.** Step 8 carries sections **Panel · Inverter · Cable · Electrical · Structure** (＋ **Battery** when added), each showing **Selected / Empty** status, ＋ add, brand rows (✎ edit / ✕ remove), and count fields for Panel and Inverter. The footer counter — **"Components Selected X/5 ✓"** — *"is the gate, not a status"*: all categories must be selected before Generate (`M06-23`(a)). Path A fills all five from the BOM automatically; a duplicated proposal brings its components; otherwise the rep picks five. | `SRC` — `D22` (docs/15: HONORED — enforced at Generate per R12); `S6B.step.8` (verbatim); `S6B.wrong.4`; `DOC04.components-gate` (docs/04 — its "BOS" naming for the fifth category is carried as the source's synonym for the step's Electrical/Structure split, recorded not normalised) | P0 |
-| M06-28 | **Picking uses the one shared picker — cited, never restated.** Browsing, datasheet-PDF extraction, manual specs, resolved-catalog search and scheme-keyed certification badges are `modules/M05` §M05.6's pattern (`M05-37`–`M05-43`, consumed). Inline add is never a dead end: a missing product is added in-flow by single form, datasheet PDF, or **spreadsheet import available at proposal time** (`M01-39`, `M01-40`, `M01-41`, consumed — DD9/DD10), and the new SKU is picked without leaving the builder. | `SRC` — DD12 (design spec §2/§10 — one picker pattern serves studio and proposal); `M05-37` (consumed); `M01-39`/`M01-40`/`M01-41` (consumed) | P0 |
+| M06-28 | **Picking uses the one shared picker — cited, never restated.** Browsing, manual specs, resolved-catalog search and scheme-keyed certification badges are `modules/M05` §M05.6's pattern (`M05-37`–`M05-43`, consumed). Inline add is never a dead end: a missing product is added in-flow by single form or **spreadsheet import available at proposal time** (`M01-39`, `M01-41`, consumed — DD9/DD10), and the new SKU is picked without leaving the builder. | `SRC` — DD12 (design spec §2/§10 — one picker pattern serves studio and proposal); `M05-37` (consumed); `M01-39`/`M01-41` (consumed) | P0 |
 | M06-29 | **The Component Edit sheet (bottom sheet, per type; Brand Name locked):** Panel — Watt Peak Range · Panel Type (Mono PERC / TOPCon / Bifacial / Mono / Poly / HJT / Thin-film) · Product & Performance Warranty. Inverter — Capacity kW · Inverter Type (On / Off / Hybrid) · Warranty. Cable — Cable Type · Specification · Warranty. Electrical — Includes · Standard. Structure — Warranty · Weight per kW · Standard. Battery — Capacity kWh · Chemistry · Warranty. Plus Description (**max 110 chars**). Cancel · Done. | `SRC` — `S6B.step.8` (the edit-sheet spec, verbatim) | P0 |
 | M06-30 | **The battery blocks, across the builder.** Step 3 carries the **Battery storage card** ("Add battery backup"; **OFFGRID/HYBRID force a ⚠ "Battery required" notice**; added state = summary with Edit / Remove) opening the **Battery modal** (bottom sheet): Battery capacity kWh (**1–100**) · Cost excl./incl. tax and battery tax % per the pack's tax scheme (`F1-13`) · Cell chemistry — **Lithium LFP / Lithium NMC / Lead-acid / Custom** (Custom reveals free text) · Cancel · Save. When a battery is added, step 8 gains the **Battery** component section (capacity kWh · chemistry · warranty in the edit sheet) and the payable formula includes battery cost (`M06-35`). **OFFGRID with no battery is a hard block — "the system cannot work."** Enforcement point, read from the rulings and stated as the adopted reading: the ⚠ notice renders at step 3 immediately (a notice, not a navigation block — `R12` leaves the builder no earlier blocking point), and the hard block lands at Generate in the failure list (`M06-23`(b)); the source does not state an earlier block and none is invented. | `SRC` — `S6B.rule.battery` (verbatim); `S6B.wrong.6` (its ledger note records the enforcement-point gap; the adopted reading is recorded here and in traceability, consistent with R12's validation-at-Generate-only law); `DOC04.components-gate` ("battery mandatory for offgrid/hybrid — no-battery hard block") | P0 |
 | M06-31 | **Component lines are honest about their resolution and frozen with their version.** Each selected line carries its catalog-resolution provenance (tenant override / tenant item / platform item / custom) and its provenance tier (`F8-02`); component rows are **immutable with their proposal version** — an archived or repriced product never changes an existing version's lines (`M01-42`/`M01-43`, consumed). | `SRC` — `DOC04.components-gate` (docs/04 — resolution provenance + immutability); `R13` via `M01-43` (consumed) | P0 |
@@ -369,8 +369,8 @@ studio step does — the picker offers the add path only to holders.
   missing categories highlighted; the counter is the gate (M06-27, M06-23).
 - *OFFGRID, no battery* (`S6B.wrong.6`) → ⚠ at step 3, hard block at Generate — "the system
   cannot work" (M06-30).
-- *Needed product missing mid-proposal* → inline add by any of the three paths without leaving
-  the builder; extraction is review-before-commit (`M01-39`/`M01-40`, consumed) (M06-28).
+- *Needed product missing mid-proposal* → inline add by either path without leaving
+  the builder (`M01-39`, consumed) (M06-28).
 - *Product archived while a draft references it* → the draft keeps its components; archive
   affects pickers, never history (`M01-42` consumed; `TC.wrong.4` cited) (M06-31).
 - *HYBRID switched back to ONGRID after a battery was added* → the battery card stays (a battery
@@ -381,7 +381,7 @@ studio step does — the picker offers the add path only to holders.
 - Given a Path B proposal with no components, when step 8 renders, then all five sections show
   Empty, the counter reads "0/5", and Generate blocks jumping here (M06-27).
 - Given a product missing from the resolved catalog mid-pick, when the rep invokes add-in-flow,
-  then single form, datasheet-PDF and spreadsheet-import paths are offered inside the builder,
+  then the single-form and spreadsheet-import paths are offered inside the builder,
   the created SKU is picked in place, and the flow never leaves step 8 (M06-28).
 - Given a battery added at step 3, when step 8 renders, then a Battery section exists, the
   counter's denominator includes it, and the payable includes battery cost (M06-30, M06-27).

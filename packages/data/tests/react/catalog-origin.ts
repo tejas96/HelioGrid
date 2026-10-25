@@ -6,7 +6,7 @@ import type {
   PriceBookPublish,
   SessionProjection,
 } from '@heliogrid/contracts';
-import { ROLE_PRESETS } from '@heliogrid/domain';
+import { IN_CERTIFICATION_SCHEMES, ROLE_PRESETS } from '@heliogrid/domain';
 import { cleanup, renderHook } from '@testing-library/react';
 import { createElement, type ReactNode } from 'react';
 import { afterAll, afterEach, beforeAll } from 'vitest';
@@ -58,6 +58,27 @@ export const OWN_SKU: CatalogItemWire = {
   openDraftCount: 0,
 };
 
+const TENANT_READ = {
+  id: TENANT,
+  companyName: 'Suryodaya Solar',
+  city: 'Pune',
+  marketCode: 'IN',
+  currencyCode: 'INR',
+  defaultLanguage: 'en',
+  timezone: 'Asia/Kolkata',
+  segment: null,
+  typicalSystemKwp: null,
+};
+
+/** The market pack as a tenant reads it: the envelope and its certification schemes. */
+const PACK_READ = {
+  market: 'IN',
+  revision: 1,
+  publishedAt: '2026-10-01T00:00:00.000Z',
+  version: 'IN@1',
+  certificationSchemes: IN_CERTIFICATION_SCHEMES,
+};
+
 /** What the origin answers a write with: a status and body, or no answer at all. */
 export type Answer = { status: number; body?: unknown } | 'drop';
 
@@ -69,6 +90,8 @@ interface Origin {
   sent: string[];
   /** Every write's body, in order. */
   bodies: unknown[];
+  /** Every write's retry key, in order (`''` for none). */
+  keys: string[];
   book: PriceBookActiveWire;
 }
 
@@ -84,6 +107,7 @@ export const origin: Origin = {
   writes: [],
   sent: [],
   bodies: [],
+  keys: [],
   book: structuredClone(EMPTY_BOOK),
 };
 let server: Server;
@@ -109,7 +133,9 @@ async function answerWrite(req: IncomingMessage, res: ServerResponse, act: strin
   const write = await writeBodyOf(req, res);
   if (write === null) return;
   origin.bodies.push(write.body);
-  const answer = origin.writes.shift() ?? { status: act === 'rate-entries' ? 201 : 200 };
+  origin.keys.push(String(req.headers['idempotency-key'] ?? ''));
+  const created = act === 'rate-entries' || act === 'create';
+  const answer = origin.writes.shift() ?? { status: created ? 201 : 200 };
   if (answer === 'drop') return void req.socket.destroy();
   if (answer.status < 300) {
     if (act === 'archive') origin.item.archived = true;
@@ -135,11 +161,24 @@ async function answerPublish(req: IncomingMessage, res: ServerResponse) {
   send(res, req, 201, version);
 }
 
+/** The add sheet's own reads and its create: the company, its market's pack and the list. */
+function answerAddSheet(path: string, req: IncomingMessage, res: ServerResponse): boolean {
+  if (path === '/tenants/me') send(res, req, 200, TENANT_READ);
+  else if (path === '/market-packs/IN') send(res, req, 200, PACK_READ);
+  else if (path === '/catalog/items' && req.method === 'POST') void answerWrite(req, res, 'create');
+  else if (path === '/catalog/items') {
+    const { openDraftCount: _drafts, ...listed } = origin.item;
+    send(res, req, 200, { items: [listed], totalCount: 1 });
+  } else return false;
+  return true;
+}
+
 function answer(req: IncomingMessage, res: ServerResponse) {
   const url = new URL(req.url ?? '/', 'http://origin');
   if (req.method === 'OPTIONS') return send(res, req, 204);
   if (url.pathname === '/auth/session') return send(res, req, 200, projection());
   if (url.pathname === '/price-book/active') return send(res, req, 200, origin.book);
+  if (answerAddSheet(url.pathname, req, res)) return;
   if (url.pathname === '/price-book/versions' && req.method === 'POST') {
     return void answerPublish(req, res);
   }
@@ -169,6 +208,7 @@ afterEach(() => {
     writes: [],
     sent: [],
     bodies: [],
+    keys: [],
     book: structuredClone(EMPTY_BOOK),
   });
 });

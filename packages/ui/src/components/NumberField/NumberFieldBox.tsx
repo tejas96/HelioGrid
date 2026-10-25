@@ -1,7 +1,8 @@
-import type { KeyboardEvent } from 'react';
+import { type KeyboardEvent, useRef } from 'react';
 import { fieldBox } from '../../primitives/FieldBox';
 import { Icon } from '../../primitives/Icon';
 import { Pressable } from '../../primitives/Pressable';
+import { useFocusRequest } from '../../primitives/use-focus-request';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { NumberDraftState } from './NumberField.state';
@@ -58,6 +59,8 @@ export interface NumberFieldBoxProps {
   unit?: string;
   currency: boolean;
   describedBy?: string;
+  /** `NumberFieldProps.focusRequest`. */
+  focusRequest?: number;
 }
 
 /** The control itself: the two nudge targets, the figure, and the unit suffix. */
@@ -72,7 +75,10 @@ export function NumberFieldBox({
   unit,
   currency,
   describedBy,
+  focusRequest,
 }: NumberFieldBoxProps) {
+  const control = useRef<HTMLInputElement>(null);
+  useFocusRequest(control, focusRequest);
   const name = label ?? 'value';
   return (
     <div
@@ -97,6 +103,7 @@ export function NumberFieldBox({
         </Pressable>
       ) : null}
       <input
+        ref={control}
         id={id}
         className="hg-number-field-input"
         data-steppers={steppers}

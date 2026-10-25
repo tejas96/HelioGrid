@@ -529,8 +529,8 @@ the finding, because a budget quietly restated upward is worse than one missed o
 its effect is substantive: a carried pattern must appear in a PRD with the sentence explaining why
 it beat the alternative. The worked example is the component picker, and its justification is
 unusually strong — it matches the binding studio census, it matches owner-supplied screenshots of
-the working v1 flow, and competitive research found that no rival offers the self-serve datasheet
-path at all, routing missing components through support queues instead. That is what
+the working v1 flow, and competitive research found that rivals route missing components through support
+queues instead of a self-serve add. That is what
 *carried-because-better* is supposed to look like; inheritance without that paragraph is not.
 
 **Permissions.** No capability row. None of these principles is scoped by role. Two touch role

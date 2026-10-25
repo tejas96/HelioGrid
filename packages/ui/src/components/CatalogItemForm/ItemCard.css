@@ -1,0 +1,43 @@
+/* ItemCard — a raised card of the add sheet (`SCR-M01-16`); see CatalogItemForm.css. White at e2
+   over the sheet, its corner the board's 20; a page ground (Ground.css), so it paints its ground. */
+
+.hg-item-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+  padding: var(--sp-4);
+  border-radius: 20px;
+  background: var(--hg-ground);
+  box-shadow: var(--e2);
+}
+
+.hg-item-card[data-wide="true"] {
+  padding: var(--sp-5);
+}
+
+.hg-item-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-item-card-title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+/* A card's closing line — the scheme note, the price note. */
+.hg-item-card-note {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}

@@ -1,4 +1,5 @@
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import type { KeyboardTypeOptions, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
 import {
@@ -9,6 +10,7 @@ import {
 } from '../../primitives/FieldBox/FieldBox.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { useFocusRequest } from '../../primitives/use-focus-request';
 import { renderOverride } from '../FieldOverride/FieldOverride.native';
 import { renderAttribution } from '../ValueSource/ValueSource.native';
 import { useCommitDraft } from './commit-draft';
@@ -50,6 +52,9 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     alignSelf: 'stretch',
+    /* The text field reaches over the well's 1px edge, so the part a finger lands on is the
+       whole 44 the well is, not 42 inside its border (Android measures the field, not the well). */
+    marginVertical: -FIELD_BOX_EDGE,
     padding: 0,
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.field.value,
@@ -80,10 +85,13 @@ export function Input({
   trailing = null,
   commitOnBlur = false,
   onCommit,
+  focusRequest,
   override,
   attribution,
   style,
 }: NativeInputProps) {
+  const control = useRef<TextInput>(null);
+  useFocusRequest(control, focusRequest);
   const { draft, setDraft, focus, setFocus, commit } = useCommitDraft(
     value,
     commitOnBlur,
@@ -133,6 +141,7 @@ export function Input({
       >
         {leading}
         <TextInput
+          ref={control}
           accessibilityLabel={label}
           editable={!disabled}
           keyboardType={KEYBOARD[type]}

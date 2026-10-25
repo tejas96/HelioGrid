@@ -29,6 +29,8 @@ export interface RangeFieldProps {
   label?: string;
   unit?: string;
   hint?: string;
+  /** What is wrong with the pair, in words: drawn under the field in the danger ink, announced, and in place of the hint. */
+  error?: string;
   /** Formats the readout and the accessible value text — `v => money(v)`, `v => v + " W"`. */
   format?: (value: number) => string;
   /** The two typed boxes under the track. Keep them: a gloved thumb drags, a keyboard types. */
