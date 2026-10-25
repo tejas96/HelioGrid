@@ -38848,7 +38848,7 @@
     },
     "/settings/proposal-template": {
       "get": {
-        "summary": "The document defaults as stored — cover, sections, terms",
+        "summary": "The document defaults as stored — cover, sections, terms — and who saved them last",
         "tags": [
           "tenantSettings"
         ],
@@ -39199,6 +39199,38 @@
                           }
                         }
                       ]
+                    },
+                    "changed": {
+                      "type": "object",
+                      "properties": {
+                        "at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "by": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "name": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name"
+                          ],
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "at",
+                        "by"
+                      ],
+                      "nullable": true
                     }
                   },
                   "required": [
@@ -40150,6 +40182,38 @@
                           }
                         }
                       ]
+                    },
+                    "changed": {
+                      "type": "object",
+                      "properties": {
+                        "at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "by": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "name": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name"
+                          ],
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "at",
+                        "by"
+                      ],
+                      "nullable": true
                     }
                   },
                   "required": [
@@ -40396,7 +40460,7 @@
     },
     "/settings/timeline-template": {
       "get": {
-        "summary": "The project-timeline template as stored",
+        "summary": "The project-timeline template as stored, and who saved it last",
         "tags": [
           "tenantSettings"
         ],
@@ -40472,6 +40536,38 @@
                       },
                       "minItems": 1,
                       "maxItems": 20
+                    },
+                    "changed": {
+                      "type": "object",
+                      "properties": {
+                        "at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "by": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "name": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name"
+                          ],
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "at",
+                        "by"
+                      ],
+                      "nullable": true
                     }
                   },
                   "required": [
@@ -40869,6 +40965,38 @@
                       },
                       "minItems": 1,
                       "maxItems": 20
+                    },
+                    "changed": {
+                      "type": "object",
+                      "properties": {
+                        "at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "by": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "name": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name"
+                          ],
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "at",
+                        "by"
+                      ],
+                      "nullable": true
                     }
                   },
                   "required": [

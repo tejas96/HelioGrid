@@ -42,9 +42,9 @@ export const DEFAULT_SECTIONS_INCLUDED: readonly ProposalSection[] = PROPOSAL_SE
 
 /**
  * The cover's achievements block (`M06-08`): what the tenant says about itself, and three counts
- * the cover prints with their units added. Each count is the tenant's own declaration — its tier
- * is `estimated · declared by you` wherever it renders — and absent by default: a cover with no
- * achievements shows identity alone, never a sample figure.
+ * the cover prints with their units added. Each is the tenant's own declaration, absent by
+ * default: a cover with no achievements shows identity alone, never a sample figure. Only the kW
+ * figure carries a tier, `estimated · declared by you`; the two counts carry none (`F8-01`).
  */
 export interface ProposalCover {
   readonly aboutCompany: PackLabel | null;

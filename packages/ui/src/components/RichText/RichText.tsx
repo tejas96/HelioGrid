@@ -4,7 +4,7 @@ import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
 import type { ToolCommand } from './RichText.commands';
 import { EMPTY_RICH_TEXT, measure, richTextRows } from './RichText.model';
-import { LOGO_HTML, serialise, toHtml } from './RichText.serialise';
+import { logoHtml, serialise, toHtml } from './RichText.serialise';
 import type { RichTextProps, RichTextValue } from './RichText.types';
 import { RichTextToolbar } from './RichTextToolbar';
 import { RichTextView, renderRichTextRows } from './RichTextView';
@@ -27,12 +27,13 @@ type MarkState = Partial<Record<ToolCommand['key'], boolean>>;
  * document.
  */
 export function RichText({
+  words,
   value = EMPTY_RICH_TEXT,
   onChange,
   onCommit,
   label,
   helper,
-  placeholder = 'Type the terms your customer will read.',
+  placeholder,
   minHeight = 260,
   maxLength,
   disabled = false,
@@ -40,7 +41,7 @@ export function RichText({
   templates,
   onLoadTemplate,
   onSaveAsTemplate,
-  saveTemplateLabel = 'Save as template',
+  saveTemplateLabel,
   pageEstimate,
   onMeasure,
   className,
@@ -60,11 +61,11 @@ export function RichText({
   useEffect(() => {
     const el = ref.current;
     if (el === null) return;
-    const html = toHtml(value);
+    const html = toHtml(value, words.logoPrintsHere);
     if (html === lastHtml.current) return;
     lastHtml.current = html;
     el.innerHTML = html;
-  }, [value]);
+  }, [value, words.logoPrintsHere]);
 
   /* Without this a paragraph is a <div> on some engines. The serialiser treats an unknown block
      as a paragraph anyway, so this only keeps the editor's own HTML honest. */
@@ -89,7 +90,7 @@ export function RichText({
     const el = ref.current;
     if (el === null) return undefined;
     const next = serialise(el);
-    lastHtml.current = toHtml(next);
+    lastHtml.current = toHtml(next, words.logoPrintsHere);
     onChange?.(next);
     onMeasure?.(measure(next));
     return next;
@@ -110,7 +111,7 @@ export function RichText({
     const el = ref.current;
     if (el === null || disabled) return;
     if (hasLogo) el.querySelector('[data-rt-logo]')?.remove();
-    else el.insertAdjacentHTML('afterbegin', LOGO_HTML);
+    else el.insertAdjacentHTML('afterbegin', logoHtml(words.logoPrintsHere));
     const next = push();
     if (next !== undefined) onLogoChange?.(!hasLogo, next);
   };
@@ -132,6 +133,7 @@ export function RichText({
         {...fieldBox({ focused: focus, disabled, density: 'expressive' })}
       >
         <RichTextToolbar
+          words={words}
           marks={marks}
           disabled={disabled}
           hasLogo={hasLogo}
@@ -154,16 +156,16 @@ export function RichText({
               className="hg-rich-text-href"
               value={href}
               onChange={(e) => setHref(e.target.value)}
-              aria-label="Link address"
+              aria-label={words.linkAddress}
               placeholder="https://"
             />
             <button type="button" className="hg-rich-text-apply" onClick={applyLink}>
-              Add link
+              {words.addLink}
             </button>
           </div>
         ) : null}
         <div className="hg-rich-text-body">
-          {m.chars === 0 && !hasLogo ? (
+          {m.chars === 0 && !hasLogo && placeholder !== undefined ? (
             <span className="hg-rich-text-placeholder" aria-hidden="true">
               {placeholder}
             </span>
@@ -179,7 +181,7 @@ export function RichText({
             role="textbox"
             tabIndex={0}
             aria-multiline="true"
-            aria-label={label ?? 'Terms and conditions'}
+            aria-label={label ?? words.editorName}
             onInput={() => push()}
             onFocus={() => {
               setFocus(true);
@@ -201,11 +203,7 @@ export function RichText({
         <span className="hg-rich-text-helper">{helper}</span>
         <span className="hg-rich-text-count" data-over={over}>
           {pageEstimate}
-          <span>
-            {maxLength !== undefined
-              ? `${m.chars}/${maxLength} characters`
-              : `${m.chars} characters`}
-          </span>
+          <span>{words.characters(m.chars, maxLength)}</span>
         </span>
       </div>
     </div>

@@ -23,12 +23,15 @@ interface WebLanguageSwitcherProps extends LanguageSwitcherProps {
  * highlight IS choosing. Each 44px target wraps a 34px pill.
  */
 export function LanguageSwitcher({
+  words,
   languages = [],
   value,
   onChange,
   sections,
-  sectionNoun = 'sections',
-  label = 'Agent language',
+  sectionNoun,
+  languageNoun,
+  label,
+  labelHidden = false,
   summary,
   showCounts = true,
   density = 'expressive',
@@ -43,6 +46,7 @@ export function LanguageSwitcher({
   );
   const total = totalOf(languages, sections);
   const fallbackName = primary?.label ?? '';
+  const headline = summary ?? summaryLine(languages, total, words, { sectionNoun, languageNoun });
 
   const onKey = (i: number, event: KeyboardEvent<HTMLButtonElement>) => {
     const go = (n: number) => {
@@ -67,12 +71,13 @@ export function LanguageSwitcher({
 
   return (
     <div className={classNames('hg-language-switcher', className)} style={style}>
-      <div className="hg-language-switcher-head">
-        {label === undefined ? null : <p className="hg-language-switcher-overline">{label}</p>}
-        <p className="hg-language-switcher-summary">
-          {summary ?? summaryLine(languages, total, sectionNoun)}
-        </p>
-      </div>
+      {/* No head row around absent content: a hidden label with an empty summary draws none. */}
+      {labelHidden && headline === '' ? null : (
+        <div className="hg-language-switcher-head">
+          {labelHidden ? null : <p className="hg-language-switcher-overline">{label}</p>}
+          {headline === '' ? null : <p className="hg-language-switcher-summary">{headline}</p>}
+        </div>
+      )}
 
       <div
         className="hg-language-switcher-strip"
@@ -87,8 +92,8 @@ export function LanguageSwitcher({
             lang={lang}
             active={lang.code === value}
             total={total}
-            sectionNoun={sectionNoun}
-            fallbackName={fallbackName}
+            words={words}
+            nouns={{ sectionNoun, languageNoun, fallbackName }}
             showCounts={showCounts}
             tabIndex={i === idx ? 0 : -1}
             pillRef={(el) => {
@@ -101,7 +106,11 @@ export function LanguageSwitcher({
       </div>
 
       <p className="hg-language-switcher-sentence" aria-live="polite">
-        {selectedSentence(languages[idx], total, sectionNoun, fallbackName)}
+        {selectedSentence(languages[idx], total, words, {
+          sectionNoun,
+          languageNoun,
+          fallbackName,
+        })}
       </p>
     </div>
   );

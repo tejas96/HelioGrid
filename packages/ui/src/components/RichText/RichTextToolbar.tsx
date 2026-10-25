@@ -3,7 +3,7 @@ import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ToolCommand } from './RichText.commands';
 import { CMD, LINK_GLYPH } from './RichText.commands';
-import type { RichTextTemplate } from './RichText.types';
+import type { RichTextTemplate, RichTextWords } from './RichText.types';
 
 interface ToolButtonProps {
   active?: boolean;
@@ -55,12 +55,13 @@ export function ToolButton({
 }
 
 interface RichTextToolbarProps {
+  words: RichTextWords;
   marks: Partial<Record<ToolCommand['key'], boolean>>;
   disabled: boolean;
   hasLogo: boolean;
   linking: boolean;
   templates?: RichTextTemplate[];
-  saveTemplateLabel: string;
+  saveTemplateLabel: string | undefined;
   onRun: (e: MouseEvent<HTMLButtonElement>, c: ToolCommand) => void;
   onToggleLink: () => void;
   onToggleLogo: () => void;
@@ -70,6 +71,7 @@ interface RichTextToolbarProps {
 
 /** Every button is 44px, and every mark it can produce is in `RichTextView`. */
 export function RichTextToolbar({
+  words,
   marks,
   disabled,
   hasLogo,
@@ -83,18 +85,18 @@ export function RichTextToolbar({
   onSaveAsTemplate,
 }: RichTextToolbarProps) {
   return (
-    <div className="hg-rich-text-toolbar" role="toolbar" aria-label="Formatting">
+    <div className="hg-rich-text-toolbar" role="toolbar" aria-label={words.formatting}>
       {CMD.map((c) => (
         <ToolButton
           key={c.key}
-          label={c.label}
+          label={words[c.word]}
           glyph={c.glyph}
           active={marks[c.key] === true}
           onMouseDown={(e) => onRun(e, c)}
         />
       ))}
       <ToolButton
-        label="Link"
+        label={words.link}
         glyph={LINK_GLYPH}
         active={linking}
         onMouseDown={(e) => {
@@ -104,20 +106,20 @@ export function RichTextToolbar({
       />
       <span className="hg-rich-text-divider" aria-hidden="true" />
       <ToolButton
-        label={hasLogo ? 'Remove the logo' : 'Add the logo'}
+        label={hasLogo ? words.removeTheLogo : words.addTheLogo}
         active={hasLogo}
         onMouseDown={(e) => {
           e.preventDefault();
           onToggleLogo();
         }}
       >
-        {hasLogo ? 'Logo on' : 'Add logo'}
+        {hasLogo ? words.logoOn : words.addLogo}
       </ToolButton>
       <span className="hg-rich-text-spacer" />
       {templates !== undefined && templates.length > 0 ? (
         <select
           className="hg-rich-text-templates"
-          aria-label="Load a saved template"
+          aria-label={words.loadSavedTemplate}
           disabled={disabled}
           defaultValue=""
           onChange={(e) => {
@@ -125,7 +127,7 @@ export function RichTextToolbar({
             e.target.value = '';
           }}
         >
-          <option value="">Load template…</option>
+          <option value="">{words.loadTemplate}</option>
           {templates.map((t) => (
             <option key={t.id} value={t.id}>
               {t.name}
@@ -133,7 +135,7 @@ export function RichTextToolbar({
           ))}
         </select>
       ) : null}
-      {onSaveAsTemplate !== undefined ? (
+      {onSaveAsTemplate !== undefined && saveTemplateLabel !== undefined ? (
         <ToolButton
           label={saveTemplateLabel}
           onMouseDown={(e) => {

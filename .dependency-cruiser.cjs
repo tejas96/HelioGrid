@@ -480,7 +480,7 @@ module.exports = {
       name: 'mobile-shared-parts-are-screens-only',
       severity: 'error',
       comment:
-        "apps/mobile/src/screens/shared/ holds the door's inset wrapper two phone screens share, and the boot screen's placeholder scaffold. A part both platforms draw is a packages/ui component (.claude/rules/screen-parts.md). Only a screen may reach the folder — navigation, auth and the app entry must not, or it becomes the app's second component tree.",
+        "apps/mobile/src/screens/shared/ holds the door's inset wrapper two phone screens share, the leave ask Branding and Proposal template share, and the boot screen's placeholder scaffold. A part both platforms draw is a packages/ui component (.claude/rules/screen-parts.md). Only a screen may reach the folder — navigation, auth and the app entry must not, or it becomes the app's second component tree.",
       from: { path: '^apps/mobile/src/', pathNot: '^apps/mobile/src/screens/' },
       to: { path: '^apps/mobile/src/screens/shared/' },
     },

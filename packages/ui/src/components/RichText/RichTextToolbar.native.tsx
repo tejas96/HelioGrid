@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
+import { FIELD_BOX_EDGE } from '../../primitives/FieldBox/FieldBox.native';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -8,7 +9,7 @@ import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ToolCommand } from './RichText.commands';
 import { CMD, LINK_GLYPH } from './RichText.commands';
-import type { RichTextTemplate } from './RichText.types';
+import type { RichTextTemplate, RichTextWords } from './RichText.types';
 
 const styles = StyleSheet.create({
   bar: {
@@ -16,8 +17,11 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
     gap: 2,
-    paddingVertical: 6,
-    paddingHorizontal: theme.spacing['sp-2'],
+    /* The bar's top and sides meet the well's always-drawn edge (FIELD_BOX_EDGE), so they give
+       up its width and the buttons sit where the web's do. */
+    paddingTop: 6 - FIELD_BOX_EDGE,
+    paddingBottom: 6,
+    paddingHorizontal: theme.spacing['sp-2'] - FIELD_BOX_EDGE,
   },
   tool: { minWidth: 44, height: 44, borderRadius: theme.radius['r-pill'] },
   toolWide: { paddingHorizontal: theme.spacing['sp-3'] },
@@ -79,12 +83,13 @@ function ToolButton({ active = false, label, glyph, word, onPress }: ToolButtonP
 }
 
 interface RichTextToolbarProps {
+  words: RichTextWords;
   marks: Partial<Record<ToolCommand['key'], boolean>>;
   disabled: boolean;
   hasLogo: boolean;
   linking: boolean;
   templates?: RichTextTemplate[];
-  saveTemplateLabel: string;
+  saveTemplateLabel: string | undefined;
   onRun: (c: ToolCommand) => void;
   onToggleLink: () => void;
   onToggleLogo: () => void;
@@ -99,6 +104,7 @@ interface RichTextToolbarProps {
  * the templates are a row of named Pressables — the same round trip, one tap instead of two.
  */
 export function RichTextToolbar({
+  words,
   marks,
   disabled,
   hasLogo,
@@ -112,21 +118,21 @@ export function RichTextToolbar({
   onSaveAsTemplate,
 }: RichTextToolbarProps) {
   return (
-    <View style={styles.bar} accessibilityRole="toolbar" accessibilityLabel="Formatting">
+    <View style={styles.bar} accessibilityRole="toolbar" accessibilityLabel={words.formatting}>
       {CMD.map((c) => (
         <ToolButton
           key={c.key}
-          label={c.label}
+          label={words[c.word]}
           glyph={c.glyph}
           active={marks[c.key] === true}
           onPress={() => onRun(c)}
         />
       ))}
-      <ToolButton label="Link" glyph={LINK_GLYPH} active={linking} onPress={onToggleLink} />
+      <ToolButton label={words.link} glyph={LINK_GLYPH} active={linking} onPress={onToggleLink} />
       <View style={styles.divider} />
       <ToolButton
-        label={hasLogo ? 'Remove the logo' : 'Add the logo'}
-        word={hasLogo ? 'Logo on' : 'Add logo'}
+        label={hasLogo ? words.removeTheLogo : words.addTheLogo}
+        word={hasLogo ? words.logoOn : words.addLogo}
         active={hasLogo}
         onPress={onToggleLogo}
       />
@@ -135,7 +141,7 @@ export function RichTextToolbar({
           {templates.map((t) => (
             <ToolButton
               key={t.id}
-              label={`Load template: ${t.name}`}
+              label={words.loadTemplateNamed(t.name)}
               word={t.name}
               onPress={() => {
                 if (!disabled) onLoadTemplate?.(t.id);
@@ -144,7 +150,7 @@ export function RichTextToolbar({
           ))}
         </View>
       ) : null}
-      {onSaveAsTemplate !== undefined ? (
+      {onSaveAsTemplate !== undefined && saveTemplateLabel !== undefined ? (
         <ToolButton label={saveTemplateLabel} word={saveTemplateLabel} onPress={onSaveAsTemplate} />
       ) : null}
     </View>

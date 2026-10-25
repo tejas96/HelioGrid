@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { ComplianceFloorSpec } from '../ComplianceFloor';
 
-export type ReorderListControls = 'stack' | 'row';
+export type ReorderListControls = 'stack' | 'row' | 'foot';
 export type ReorderListDensity = 'expressive' | 'functional';
 
 export interface ReorderListProps<T = unknown> {
@@ -33,7 +33,18 @@ export interface ReorderListProps<T = unknown> {
   /** Plural noun for announcements — "phases", "tranches", "brands". */
   itemNoun?: string;
   emptyMessage?: string;
-  /** Where the ⌃ ⌄ 🗑 targets sit. Defaults: `stack` (expressive/phone), `row` (functional). */
+  /**
+   * Where the ⌃ ⌄ 🗑 targets sit. Defaults: `stack` (expressive/phone), `row` (functional). `foot` sets
+   * them in one line under the row's body, at its end, so the body takes the row's full width — for a
+   * narrow editor where beside-the-text controls wrap every title (`SCR-M01-19`). Same targets, order,
+   * announcements and focus rules in every placement.
+   */
   controls?: ReorderListControls;
+  /**
+   * With `controls="foot"`: the row's own act — an edit pencil — placed at the **start** of the foot
+   * row, with ⌃ ⌄ 🗑 at its end, so a row's icons are one line (`SCR-M01-19`). The caller's node, named
+   * by the caller ("Edit <phase>"); it comes before ⌃ in the tab order. Ignored in `stack` and `row`.
+   */
+  actionOf?: (item: T, index: number) => ReactNode;
   density?: ReorderListDensity;
 }

@@ -3,7 +3,11 @@ import type {
   BrandingSave,
   BusinessProfileRead,
   BusinessProfileWrite,
+  ProposalTemplate,
+  ProposalTemplateRead,
   TaxRegistrations,
+  TimelineTemplate,
+  TimelineTemplateRead,
 } from '@heliogrid/contracts';
 import type { ApiClient } from '../client/client';
 import { normalizeClientError, toApiError } from '../errors/errors';
@@ -20,6 +24,14 @@ export interface SettingsRepository {
   branding(signal?: AbortSignal): Promise<BrandingRead>;
   /** The colour, the letterhead and the logo as one write; the colour is never refused (`F7-07`). */
   saveBranding(branding: BrandingSave): Promise<BrandingRead>;
+  /** The document defaults and who saved them last (`SCR-M01-19`); the platform's where unset. */
+  proposalTemplate(signal?: AbortSignal): Promise<ProposalTemplateRead>;
+  /** Replaces the document defaults whole; the terms always stay in the section set. */
+  saveProposalTemplate(template: ProposalTemplate): Promise<ProposalTemplateRead>;
+  /** The project phases in order and who saved them last; the platform's where unset. */
+  timelineTemplate(signal?: AbortSignal): Promise<TimelineTemplateRead>;
+  /** Replaces the phases whole, in the order sent. */
+  saveTimelineTemplate(timeline: TimelineTemplate): Promise<TimelineTemplateRead>;
 }
 
 /** The types are INFERRED from the contract, never a hand-written copy of the response. */
@@ -73,6 +85,42 @@ export function createSettingsRepository(api: ApiClient): SettingsRepository {
     async saveBranding(branding) {
       try {
         const res = await api.tenantSettings.saveBranding({ body: branding });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async proposalTemplate(signal) {
+      try {
+        const res = await api.tenantSettings.proposalTemplate({ fetchOptions: { signal } });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async saveProposalTemplate(template) {
+      try {
+        const res = await api.tenantSettings.saveProposalTemplate({ body: template });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async timelineTemplate(signal) {
+      try {
+        const res = await api.tenantSettings.timelineTemplate({ fetchOptions: { signal } });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async saveTimelineTemplate(timeline) {
+      try {
+        const res = await api.tenantSettings.saveTimelineTemplate({ body: timeline });
         if (res.status !== 200) throw toApiError(res);
         return res.body;
       } catch (error) {

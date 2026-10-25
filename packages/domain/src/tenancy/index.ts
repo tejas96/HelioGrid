@@ -91,6 +91,8 @@ export type { RoleHolding, UncountedHolder } from './role-holders';
 export { roleHolders } from './role-holders';
 export type { DealSegment, TenantSegment } from './segment';
 export { DEAL_SEGMENTS, TENANT_SEGMENTS } from './segment';
+export type { SettingsLastSave, SettingsStanding } from './settings-page';
+export { sameContent, standingOf } from './settings-page';
 export type {
   TeamAct,
   TeamActAnswer,

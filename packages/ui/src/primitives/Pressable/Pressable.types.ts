@@ -64,6 +64,8 @@ export interface PressableProps {
   disabled?: boolean;
   /** Accessible name — required whenever the children are not text (icon-only targets). */
   accessibilityLabel?: string;
+  /** What the target does or holds beyond its name — said after it (`aria-description` on the web). */
+  accessibilityHint?: string;
   /**
    * WHAT THIS TARGET IS. Omitted means `button` — a bare `<button>` on web, `accessibilityRole
    * ="button"` on native, exactly what every caller got before this prop existed.

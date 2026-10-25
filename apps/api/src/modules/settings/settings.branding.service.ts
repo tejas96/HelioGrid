@@ -4,6 +4,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
 import { FileService } from '../file/file.public';
 import { refuseUnlessOwnLogo } from './internal/own-logo';
+import { lastSaveWire } from './internal/wire';
 import { SettingsBrandingRepository } from './settings.branding.repository';
 import { SettingsService } from './settings.service';
 
@@ -30,7 +31,7 @@ export class SettingsBrandingService {
     return {
       ...branding.value,
       logoFileId,
-      changed: changed === null ? null : { at: changed.at.toISOString(), by: changed.by },
+      changed: lastSaveWire(changed),
     };
   }
 

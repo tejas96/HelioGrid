@@ -140,3 +140,64 @@ test('the tax line and the footer phone are mono', async ({ mount, page }) => {
     await expect(figure).toHaveCSS('font-variant-numeric', 'tabular-nums');
   }
 });
+
+/* A template's sections and terms, as a company writes them — long enough that a cut shows. */
+const SECTIONS = ['Site survey', 'System design', 'Bill of materials', 'Warranty', 'Timeline'];
+const TERMS = {
+  version: 1 as const,
+  blocks: [
+    { type: 'h' as const, spans: [{ text: 'Payment' }] },
+    { type: 'p' as const, spans: [{ text: 'Forty per cent on order, the rest on handover.' }] },
+    {
+      type: 'ul' as const,
+      items: [
+        [{ text: 'Net metering is applied for by us.' }],
+        [{ text: 'Panels carry the maker’s warranty.' }],
+        [{ text: 'Structure work is signed off by an engineer.' }],
+      ],
+    },
+    { type: 'h' as const, spans: [{ text: 'Handover' }] },
+    { type: 'p' as const, spans: [{ text: 'The last block of the terms.' }] },
+  ],
+};
+
+test('a content fit is whole at any width', async ({ mount }) => {
+  const heights: number[] = [];
+  for (const width of [343, 480, 560]) {
+    const sheet = await mount(
+      <DocumentPreview
+        sample={false}
+        parts={['cover', 'sections', 'terms']}
+        brandColor={DARK_BRAND}
+        companyName={COMPANY}
+        docTitle={words.proposal}
+        sections={SECTIONS}
+        terms={TERMS}
+        fit="content"
+        width={width}
+        caption=""
+      />,
+    );
+    const frame = sheet.locator('.hg-doc-window');
+    const drawn = sheet.locator('.hg-doc-sheet');
+    /* The window is the scaled sheet: no cut below it, and no blank under a narrower one. Polled,
+       since a face that loads late grows the sheet and the window follows a frame later. */
+    await expect
+      .poll(async () => {
+        const [outer, inner] = [await frame.boundingBox(), await drawn.boundingBox()];
+        return outer === null || inner === null
+          ? Number.POSITIVE_INFINITY
+          : Math.abs(outer.height - inner.height);
+      })
+      .toBeLessThanOrEqual(1);
+    const box = await frame.boundingBox();
+    const last = await sheet.locator('.hg-doc-terms [data-flow-row]').last().boundingBox();
+    if (box === null || last === null) throw new Error(`nothing drawn at ${width}`);
+    expect(last.y).toBeGreaterThanOrEqual(box.y);
+    expect(last.y + last.height).toBeLessThanOrEqual(box.y + box.height + 0.5);
+    heights.push(box.height);
+    await sheet.unmount();
+  }
+  expect(heights[0]).toBeLessThan(heights[1] ?? 0);
+  expect(heights[1]).toBeLessThan(heights[2] ?? 0);
+});

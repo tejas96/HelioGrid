@@ -9,11 +9,6 @@ import type { RichTextBlock, RichTextSpan, RichTextValue } from './RichText.type
  * in `RichTextView`.
  */
 
-/** The logo block's editor rendering — `contenteditable="false"`, so it is placed, not typed. */
-export const LOGO_HTML =
-  '<figure data-rt-logo="1" contenteditable="false" class="hg-rich-text-logo">' +
-  '<span class="hg-rich-text-logo-chip"></span>Logo prints here</figure>';
-
 type Marks = Omit<RichTextSpan, 'text'>;
 
 const HEADINGS = ['H1', 'H2', 'H3', 'H4'];
@@ -79,6 +74,14 @@ export function serialise(root: HTMLElement): RichTextValue {
 const esc = (s: string): string =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
+/** The logo block's editor rendering — `contenteditable="false"`, so it is placed, not typed. */
+export function logoHtml(logoPrintsHere: string): string {
+  return (
+    '<figure data-rt-logo="1" contenteditable="false" class="hg-rich-text-logo">' +
+    `<span class="hg-rich-text-logo-chip"></span>${esc(logoPrintsHere)}</figure>`
+  );
+}
+
 function spansToHtml(spans: RichTextSpan[] = []): string {
   if (spans.length === 0) return '<br>';
   return spans
@@ -93,12 +96,12 @@ function spansToHtml(spans: RichTextSpan[] = []): string {
 }
 
 /** The value as editor HTML — the only writer of the contenteditable's innerHTML. */
-export function toHtml(value?: RichTextValue): string {
+export function toHtml(value: RichTextValue | undefined, logoPrintsHere: string): string {
   const blocks = value?.blocks ?? [];
   if (blocks.length === 0) return '<p><br></p>';
   return blocks
     .map((b) => {
-      if (b.type === 'logo') return LOGO_HTML;
+      if (b.type === 'logo') return logoHtml(logoPrintsHere);
       if (isListBlock(b)) {
         return `<${b.type}>${b.items.map((it) => `<li>${spansToHtml(it)}</li>`).join('')}</${b.type}>`;
       }

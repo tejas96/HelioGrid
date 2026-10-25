@@ -40,6 +40,8 @@
 .hg-form-action-bar,
 /* Branding's editor card at width (`BrandingSettings`, `EDITOR-1536`): a page ground over the page. */
 .hg-branding-card,
+/* The Proposal template's editor card at width (`ProposalTemplateSettings`, `Editor 1536`). */
+.hg-template-card,
 /* The add sheet's raised cards, its spreadsheet tile and a scheme row switched off
    (`CatalogItemForm`): white over the sheet, each painting its ground. */
 .hg-item-card,
@@ -90,6 +92,8 @@
 /* A grey `Surface` is a tile ground but draws its own fill. */
 /* Branding's stage (`BrandingSettings`): the sunken desk its preview and switch sit on. */
 .hg-branding-stage,
+/* The Proposal template's stage (`ProposalTemplateSettings`): the same desk. */
+.hg-template-stage,
 .hg-surface[data-background="canvas"],
 .hg-surface[data-background="canvas-sunken"],
 /* A tinted panel holds its controls as a tile does: the well on a tint is about 1.01:1 on the

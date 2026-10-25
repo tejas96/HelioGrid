@@ -12,32 +12,18 @@ export interface ToolCommand {
   /** The `document.execCommand` name — the web half's mechanism, ignored on touch. */
   cmd: string;
   arg?: string;
-  label: string;
+  /** Which of `RichTextWords` names the button. */
+  word: 'bold' | 'italic' | 'heading' | 'bulletedList' | 'numberedList';
   /** The icon, shared so the two platforms cannot draw different toolbars. */
   glyph: ShellGlyphName;
 }
 
 export const CMD: ToolCommand[] = [
-  {
-    key: 'bold',
-    cmd: 'bold',
-    label: 'Bold',
-    glyph: 'bold',
-  },
-  { key: 'italic', cmd: 'italic', label: 'Italic', glyph: 'italic' },
-  { key: 'h', cmd: 'formatBlock', arg: 'h3', label: 'Heading', glyph: 'heading' },
-  {
-    key: 'ul',
-    cmd: 'insertUnorderedList',
-    label: 'Bulleted list',
-    glyph: 'list-bullet',
-  },
-  {
-    key: 'ol',
-    cmd: 'insertOrderedList',
-    label: 'Numbered list',
-    glyph: 'list-number',
-  },
+  { key: 'bold', cmd: 'bold', word: 'bold', glyph: 'bold' },
+  { key: 'italic', cmd: 'italic', word: 'italic', glyph: 'italic' },
+  { key: 'h', cmd: 'formatBlock', arg: 'h3', word: 'heading', glyph: 'heading' },
+  { key: 'ul', cmd: 'insertUnorderedList', word: 'bulletedList', glyph: 'list-bullet' },
+  { key: 'ol', cmd: 'insertOrderedList', word: 'numberedList', glyph: 'list-number' },
 ];
 
 export const LINK_GLYPH: ShellGlyphName = 'link-wide';

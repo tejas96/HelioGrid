@@ -4,7 +4,7 @@ import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { LanguageStateGlyph } from './LanguageStateGlyph.native';
-import type { AgentLanguage } from './LanguageSwitcher.types';
+import type { AgentLanguage, LanguageSwitcherWords } from './LanguageSwitcher.types';
 import { spokenName, stateOf } from './language-state';
 
 const PILL = 34;
@@ -39,8 +39,8 @@ export interface LanguagePillProps {
   lang: AgentLanguage;
   active: boolean;
   total: number | null;
-  sectionNoun: string;
-  fallbackName: string;
+  words: LanguageSwitcherWords;
+  nouns: { sectionNoun: string; languageNoun: string; fallbackName: string };
   showCounts: boolean;
   onPress: (code: string) => void;
 }
@@ -50,8 +50,8 @@ export function LanguagePill({
   lang,
   active,
   total,
-  sectionNoun,
-  fallbackName,
+  words,
+  nouns,
   showCounts,
   onPress,
 }: LanguagePillProps) {
@@ -61,7 +61,7 @@ export function LanguagePill({
     showCounts && total !== null && lang.written !== undefined ? `${lang.written}/${total}` : null;
   return (
     <Pressable
-      accessibilityLabel={spokenName(lang, total, sectionNoun, fallbackName, fraction !== null)}
+      accessibilityLabel={spokenName(lang, total, words, nouns, fraction !== null)}
       /* ONE-OF-N BY CONSTRUCTION, so each language is a `tab` inside the strip's `tablist` — the
          same two roles the web half spells. */
       accessibilityRole="tab"
@@ -83,7 +83,7 @@ export function LanguagePill({
         {lang.primary === true ? (
           /* Text inside a well is secondary or stronger (`F7-15`) — see the web half. */
           <Text variant="caption" color={active ? 'inverse' : 'secondary'}>
-            primary
+            {words.primaryMark}
           </Text>
         ) : null}
         {fraction === null ? null : (

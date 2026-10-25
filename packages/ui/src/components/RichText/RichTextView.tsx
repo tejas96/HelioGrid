@@ -116,7 +116,7 @@ function rowAttr(prev: RichTextBlock | undefined, b: RichTextBlock) {
 export function RichTextView({
   value,
   logoSrc,
-  logoLabel = 'tenant logo',
+  logoLabel,
   fontSize = 14,
   color,
   muted,
@@ -186,7 +186,7 @@ export function RichTextView({
 /** Renders a chunk of rows — adjacent list rows fold back into one list with numbering intact. */
 export function renderRichTextRows(
   rows: RichTextRow[],
-  props?: Omit<RichTextViewProps, 'value'>,
+  props: Omit<RichTextViewProps, 'value'>,
 ): ReactNode {
   return <RichTextView value={{ version: 1, blocks: foldRows(rows) }} {...props} />;
 }

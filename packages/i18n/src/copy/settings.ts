@@ -3,6 +3,7 @@ import {
   type SettingsGroup,
   type SettingsListView,
   type SettingsRow,
+  type SettingsStanding,
   settingsRowsFor,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
@@ -18,6 +19,10 @@ const SETTINGS = {
   title: /*i18n*/ { id: 'Settings' },
   /** A settings screen's way back to the list, on the phone's bar (`SCR-M01-05`, `m-settings`). */
   back: /*i18n*/ { id: 'Back to settings' },
+  /** The standing line under a settings page's title (`SCR-M01-18`, `SCR-M01-19`). */
+  savedBy: /*i18n*/ { id: 'Saved and in force · {name}, {date}' },
+  savedOn: /*i18n*/ { id: 'Saved and in force · {date}' },
+  saved: /*i18n*/ { id: 'Saved and in force' },
 } as const;
 
 const GROUP_NAME: Record<SettingsGroup, { id: string }> = {
@@ -35,7 +40,7 @@ const ROW_NAME: Record<SettingsRow, { id: string }> = {
   roles: /*i18n*/ { id: 'Roles reference' },
   company_profile: /*i18n*/ { id: 'Business profile' },
   branding: /*i18n*/ { id: 'Branding' },
-  proposal_templates: /*i18n*/ { id: 'Proposal templates' },
+  proposal_templates: /*i18n*/ { id: 'Proposal template' },
   payment_terms: /*i18n*/ { id: 'Payment terms' },
   catalog: /*i18n*/ { id: 'Catalog' },
   agent: /*i18n*/ { id: 'Agent & voice' },
@@ -107,4 +112,21 @@ export function settingsListFor(
       rows: group.rows.map((row) => ({ key: row, name: words.rows[row] })),
     })),
   };
+}
+
+/**
+ * The standing line for a save the page knows of; `null` while nothing was ever saved, which each
+ * page words its own way (Branding names the platform's defaults, the Proposal template draws none).
+ */
+export function settingsSavedLine(
+  translate: Translator['t'],
+  standing: SettingsStanding,
+  formats: { readonly date: (epochMs: number) => string },
+): string | null {
+  if (standing.kind === 'never-set') return null;
+  if (standing.kind === 'saved-unknown') return translate(SETTINGS.saved);
+  const date = formats.date(standing.at);
+  return standing.name === null || standing.name === ''
+    ? translate(SETTINGS.savedOn, { date })
+    : translate(SETTINGS.savedBy, { name: standing.name, date });
 }

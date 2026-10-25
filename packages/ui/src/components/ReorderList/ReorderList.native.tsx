@@ -20,6 +20,7 @@ import { Text } from '../../primitives/Text/Text.native';
 import type { MoveDirection } from './ReorderList.defaults';
 import {
   atEndSentence,
+  controlsPlacement,
   defaultKeyOf,
   defaultLabelOf,
   deletedSentence,
@@ -57,11 +58,12 @@ export function ReorderList<T>({
   itemNoun = 'rows',
   emptyMessage = 'No rows yet.',
   controls,
+  actionOf,
   density = 'expressive',
   style,
 }: NativeReorderListProps<T>) {
   const D = REORDER_PADS[density];
-  const stack = (controls ?? (density === 'functional' ? 'row' : 'stack')) === 'stack';
+  const placement = controlsPlacement(controls, density);
   const [flash, setFlash] = useState<string | number | null>(null);
   const refs = useRef<Record<string, ControlRef>>({});
   const listRef = useRef<View | null>(null);
@@ -180,7 +182,8 @@ export function ReorderList<T>({
             body={renderItem ? renderItem(it, i) : <Text variant="body">{name}</Text>}
             lock={lockFor(it, i)}
             deletable={deletable(it, i)}
-            stack={stack}
+            placement={placement}
+            action={placement === 'foot' && actionOf ? actionOf(it, i) : null}
             density={density}
             flashing={flash === key}
             onFlashEnd={clearFlash}

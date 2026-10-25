@@ -72,6 +72,37 @@ export {
   SECTION_FLOOR,
   sectionsIncluded,
 } from './proposal-template-defaults';
+export type {
+  CoverCount,
+  DraftPhase,
+  TemplateDraft,
+  TemplateEdit,
+  TemplatePart,
+  TemplateRefusal,
+  TemplateSaved,
+} from './proposal-template-draft';
+export {
+  EMPTY_PHASE,
+  hasWords,
+  phaseWithText,
+  TEMPLATE_PARTS,
+  templateDraftOf,
+  templateEdit,
+} from './proposal-template-draft';
+export type { PhaseRefusals } from './proposal-template-page';
+export {
+  aboutRefusal,
+  onPlatformTemplate,
+  optionalSectionsShown,
+  phaseRefusals,
+  templateChanged,
+  templatePartOrigin,
+  templateRefusedPart,
+  templateSendable,
+  templateStanding,
+  templateWritesOf,
+  termsRefusal,
+} from './proposal-template-page';
 export type { RichTextBlock, RichTextSpan, RichTextValue } from './rich-text';
 export { richTextParagraphs } from './rich-text';
 export type { BillingCapability, BillingPhase, CapabilityStanding } from './soft-block';
@@ -87,7 +118,11 @@ export { BILLING_STATES } from './states';
 export type { CountedCreation, Tier, TierCapacity, TierLimit } from './tiers';
 export { COUNTED_CREATIONS, TIERS, tierBand } from './tiers';
 export type { TimelinePhase } from './timeline-template-defaults';
-export { DEFAULT_TIMELINE_PHASES } from './timeline-template-defaults';
+export {
+  DEFAULT_TIMELINE_PHASES,
+  PHASE_NAME_LIMIT,
+  TIMELINE_PHASE_LIMIT,
+} from './timeline-template-defaults';
 export type { AllocationVerdict } from './tranche-allocation';
 export { allocationVerdict, WHOLE_ALLOCATION } from './tranche-allocation';
 export type { TrancheLineDefault, TrancheTemplateDefault } from './tranche-template-defaults';

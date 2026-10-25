@@ -8,8 +8,18 @@
    cannot see which row moved. */
 
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
+import type { ReorderListControls, ReorderListDensity } from './ReorderList.types';
 
 export type MoveDirection = 'up' | 'down';
+
+/** Where the targets sit when the caller names no placement: a column on the phone's expressive
+ *  rows, a line beside the body at functional density. */
+export function controlsPlacement(
+  controls: ReorderListControls | undefined,
+  density: ReorderListDensity,
+): ReorderListControls {
+  return controls ?? (density === 'functional' ? 'row' : 'stack');
+}
 
 /** `it.id ?? it.key`, else the index. The move affordance is keyed by this. */
 export function defaultKeyOf(item: unknown, index: number): string | number {

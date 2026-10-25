@@ -1,7 +1,9 @@
 import {
   type CreateHeaders,
   type ProposalTemplate,
+  type ProposalTemplateRead,
   type TimelineTemplate,
+  type TimelineTemplateRead,
   type TrancheTemplate as TrancheTemplateWire,
   type TrancheTemplateWrite,
   tenantSettingsContract,
@@ -23,6 +25,7 @@ import type { Act } from '../../common/auth/session-context';
 import { CreationReplies, creationKeyOf } from '../../common/creation-key';
 import { ContractException } from '../../common/errors/contract-exception';
 import {
+  lastSaveWire,
   perLanguageWire,
   richTextWire,
   timelineWire,
@@ -48,8 +51,12 @@ export class SettingsTemplatesService {
     @Inject(CreationReplies) private readonly replies: CreationReplies,
   ) {}
 
-  async proposalTemplate(tenantId: string): Promise<ProposalTemplate> {
-    return (await this.settings.effective(tenantId)).proposalTemplate.value;
+  async proposalTemplate(tenantId: string): Promise<ProposalTemplateRead> {
+    const [effective, last] = await Promise.all([
+      this.settings.effective(tenantId),
+      this.scoped.proposalTemplateLastSave(tenantId),
+    ]);
+    return { ...effective.proposalTemplate.value, changed: lastSaveWire(last) };
   }
 
   /** The terms stay in whatever the list said (`SCR-M01-19`): the set is made whole in domain before it lands. */
@@ -57,7 +64,7 @@ export class SettingsTemplatesService {
     tenantId: string,
     body: ProposalTemplate,
     act: Act,
-  ): Promise<ProposalTemplate> {
+  ): Promise<ProposalTemplateRead> {
     const saved = await this.scoped.saveProposalTemplate(
       tenantId,
       { ...body, sectionsIncluded: sectionsIncluded(body.sectionsIncluded) },
@@ -67,21 +74,28 @@ export class SettingsTemplatesService {
       cover: saved.cover,
       sectionsIncluded: [...saved.sectionsIncluded],
       defaultTerms: perLanguageWire(saved.defaultTerms, richTextWire),
+      changed: lastSaveWire(await this.scoped.proposalTemplateLastSave(tenantId)),
     };
   }
 
-  async timelineTemplate(tenantId: string): Promise<TimelineTemplate> {
-    return (await this.settings.effective(tenantId)).timelineTemplate.value;
+  async timelineTemplate(tenantId: string): Promise<TimelineTemplateRead> {
+    const [effective, last] = await Promise.all([
+      this.settings.effective(tenantId),
+      this.scoped.timelineTemplateLastSave(tenantId),
+    ]);
+    return { ...effective.timelineTemplate.value, changed: lastSaveWire(last) };
   }
 
   async saveTimelineTemplate(
     tenantId: string,
     body: TimelineTemplate,
     act: Act,
-  ): Promise<TimelineTemplate> {
-    return timelineWire(
-      (await this.scoped.saveTimelineTemplate(tenantId, body.phases, act)).phases,
-    );
+  ): Promise<TimelineTemplateRead> {
+    const saved = await this.scoped.saveTimelineTemplate(tenantId, body.phases, act);
+    return {
+      ...timelineWire(saved.phases),
+      changed: lastSaveWire(await this.scoped.timelineTemplateLastSave(tenantId)),
+    };
   }
 
   async trancheTemplates(tenantId: string): Promise<{ items: TrancheTemplateWire[] }> {

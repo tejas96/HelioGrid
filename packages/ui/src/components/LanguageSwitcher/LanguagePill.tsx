@@ -1,14 +1,14 @@
 import type { KeyboardEvent, Ref } from 'react';
 import { LanguageStateGlyph } from './LanguageStateGlyph';
-import type { AgentLanguage } from './LanguageSwitcher.types';
+import type { AgentLanguage, LanguageSwitcherWords } from './LanguageSwitcher.types';
 import { spokenName, stateOf } from './language-state';
 
 export interface LanguagePillProps {
   lang: AgentLanguage;
   active: boolean;
   total: number | null;
-  sectionNoun: string;
-  fallbackName: string;
+  words: LanguageSwitcherWords;
+  nouns: { sectionNoun: string; languageNoun: string; fallbackName: string };
   showCounts: boolean;
   /** The strip's roving tabindex — one stop for the whole one-of-N set. Web only; touch has none. */
   tabIndex: number;
@@ -28,8 +28,8 @@ export function LanguagePill({
   lang,
   active,
   total,
-  sectionNoun,
-  fallbackName,
+  words,
+  nouns,
   showCounts,
   tabIndex,
   pillRef,
@@ -49,7 +49,7 @@ export function LanguagePill({
       /* WHICH LANGUAGE IS CHOSEN, said rather than tinted (F7-12): the accent pill is the sighted
          channel and this is the spoken one. `accessibilityState.selected` on native. */
       aria-selected={active}
-      aria-label={spokenName(lang, total, sectionNoun, fallbackName, fraction !== null)}
+      aria-label={spokenName(lang, total, words, nouns, fraction !== null)}
       tabIndex={tabIndex}
       className="hg-language-switcher-target"
       onKeyDown={onKeyDown}
@@ -59,7 +59,7 @@ export function LanguagePill({
         <LanguageStateGlyph state={state} active={active} />
         {lang.label}
         {lang.primary === true ? (
-          <span className="hg-language-switcher-primary">primary</span>
+          <span className="hg-language-switcher-primary">{words.primaryMark}</span>
         ) : null}
         {fraction === null ? null : (
           <span className="hg-language-switcher-fraction" data-state={state}>

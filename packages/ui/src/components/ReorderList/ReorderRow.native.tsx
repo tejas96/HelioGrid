@@ -1,5 +1,7 @@
 /* One row of an authored order (native) — its position, the caller's body over the compliance floor
-   that qualifies the WHOLE row, and the three targets that change the order. */
+   that qualifies the WHOLE row, and the three targets that change the order. With the targets at
+   the row's foot, the position and body make the first line and the caller's act opens the second,
+   ahead of ⌃ in the reading order, with ⌃ ⌄ 🗑 at its end. */
 
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
@@ -13,7 +15,7 @@ import { ReorderControl } from './ReorderControls.native';
 import type { MoveDirection } from './ReorderList.defaults';
 import { deleteLabel, moveLabel, positionLabel } from './ReorderList.defaults';
 import type { ControlSuffix } from './ReorderList.focus';
-import type { ReorderListDensity } from './ReorderList.types';
+import type { ReorderListControls, ReorderListDensity } from './ReorderList.types';
 
 const styles = StyleSheet.create({
   row: {
@@ -29,6 +31,10 @@ const styles = StyleSheet.create({
   body: { flex: 1, minWidth: 0, gap: theme.spacing['sp-2'] },
   controls: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-0-5'] },
   controlsStack: { flexDirection: 'column' },
+  rowFoot: { flexDirection: 'column', alignItems: 'stretch', gap: theme.spacing['sp-1'] },
+  head: { alignItems: 'flex-start' },
+  controlsFoot: { justifyContent: 'flex-end' },
+  action: { marginRight: 'auto' },
 });
 
 /** The row's own density scale. The list reads `gap` off it so the rhythm between rows matches the
@@ -52,7 +58,9 @@ interface ReorderRowProps {
   /** A row protected by law renders its floor here and has no delete button. */
   lock: ComplianceFloorSpec | ReactNode | null;
   deletable: boolean;
-  stack: boolean;
+  placement: ReorderListControls;
+  /** The caller's act for this row — drawn only at the foot, at the start of its line. */
+  action: ReactNode;
   density: ReorderListDensity;
   flashing: boolean;
   /** Fired when the flash has finished, so the list can put the row back to the tile's grey. */
@@ -102,7 +110,8 @@ export function ReorderRow({
   body,
   lock,
   deletable,
-  stack,
+  placement,
+  action,
   density,
   flashing,
   onFlashEnd,
@@ -111,7 +120,66 @@ export function ReorderRow({
   registerControl,
 }: ReorderRowProps) {
   const pads = REORDER_PADS[density];
+  const stack = placement === 'stack';
+  const foot = placement === 'foot';
   const backgroundColor = useFlashFade(flashing, onFlashEnd);
+  /* The position is a fact a sighted reader gets from the order and a screen-reader user does not,
+     so it is stated once per row rather than only on move — AND IT CARRIES ITS DENOMINATOR. "1"
+     alone is not the fact; "1 of 5" is. RN has no visually-hidden node, so the digit is drawn and
+     the whole sentence is this node's accessible name, which is the same split the web half makes
+     with `spokenOnly`. */
+  const lead = (
+    <>
+      <View
+        accessible
+        accessibilityLabel={positionLabel(index, total)}
+        style={[styles.position, stack ? styles.positionStack : null]}
+      >
+        <Text variant="caption" color="tertiary" style={styles.positionDigit}>
+          {`${index + 1}`}
+        </Text>
+      </View>
+      <View style={styles.body}>
+        {body}
+        {/* The floor's declared slot: its own line under the row's body. */}
+        {renderComplianceFloor(lock)}
+      </View>
+    </>
+  );
+  const controls = (
+    <View
+      style={[
+        styles.controls,
+        stack ? styles.controlsStack : null,
+        foot ? styles.controlsFoot : null,
+      ]}
+    >
+      {action ? <View style={styles.action}>{action}</View> : null}
+      <ReorderControl
+        kind="up"
+        disabled={index === 0}
+        onPress={() => onMove('up')}
+        controlRef={(node) => registerControl('up', node, index !== 0)}
+        label={moveLabel(name, 'up', index, total)}
+      />
+      <ReorderControl
+        kind="down"
+        disabled={index === total - 1}
+        onPress={() => onMove('down')}
+        controlRef={(node) => registerControl('down', node, index !== total - 1)}
+        label={moveLabel(name, 'down', index, total)}
+      />
+      {deletable ? (
+        <ReorderControl
+          kind="delete"
+          tone="danger"
+          onPress={onDelete}
+          controlRef={(node) => registerControl('delete', node, true)}
+          label={deleteLabel(name, index, total)}
+        />
+      ) : null}
+    </View>
+  );
   return (
     /* A row is one tile (`F7-49`): `tileSurface` draws its flat rest, and the flash animates its
        fill from the tile's grey — the web half's `.hg-reorder-row` on `Ground.css`'s tiles list. */
@@ -121,53 +189,12 @@ export function ReorderRow({
         styles.row,
         { padding: pads.padding, borderRadius: pads.radius, backgroundColor },
         stack ? styles.rowStack : null,
+        foot ? styles.rowFoot : null,
       ]}
     >
       <GroundProvider ground="tile">
-        {/* The position is a fact a sighted reader gets from the order and a screen-reader user
-            does not, so it is stated once per row rather than only on move — AND IT CARRIES ITS
-            DENOMINATOR. "1" alone is not the fact; "1 of 5" is. RN has no visually-hidden node, so
-            the digit is drawn and the whole sentence is this node's accessible name, which is the
-            same split the web half makes with `spokenOnly`. */}
-        <View
-          accessible
-          accessibilityLabel={positionLabel(index, total)}
-          style={[styles.position, stack ? styles.positionStack : null]}
-        >
-          <Text variant="caption" color="tertiary" style={styles.positionDigit}>
-            {`${index + 1}`}
-          </Text>
-        </View>
-        <View style={styles.body}>
-          {body}
-          {/* The floor's declared slot: its own line under the row's body. */}
-          {renderComplianceFloor(lock)}
-        </View>
-        <View style={[styles.controls, stack ? styles.controlsStack : null]}>
-          <ReorderControl
-            kind="up"
-            disabled={index === 0}
-            onPress={() => onMove('up')}
-            controlRef={(node) => registerControl('up', node, index !== 0)}
-            label={moveLabel(name, 'up', index, total)}
-          />
-          <ReorderControl
-            kind="down"
-            disabled={index === total - 1}
-            onPress={() => onMove('down')}
-            controlRef={(node) => registerControl('down', node, index !== total - 1)}
-            label={moveLabel(name, 'down', index, total)}
-          />
-          {deletable ? (
-            <ReorderControl
-              kind="delete"
-              tone="danger"
-              onPress={onDelete}
-              controlRef={(node) => registerControl('delete', node, true)}
-              label={deleteLabel(name, index, total)}
-            />
-          ) : null}
-        </View>
+        {foot ? <View style={[styles.row, styles.head]}>{lead}</View> : lead}
+        {controls}
       </GroundProvider>
     </Animated.View>
   );

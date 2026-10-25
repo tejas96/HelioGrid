@@ -1,4 +1,9 @@
-import type { AgentLanguage, LanguageContentState } from './LanguageSwitcher.types';
+import type {
+  AgentLanguage,
+  LanguageContentState,
+  LanguageSentenceFacts,
+  LanguageSwitcherWords,
+} from './LanguageSwitcher.types';
 
 /** The state of one language, from its own counts. `state` on the item always wins. */
 export function stateOf(item: AgentLanguage, total: number | null): LanguageContentState {
@@ -27,50 +32,57 @@ export function totalOf(languages: AgentLanguage[], sections: number | undefined
   return widest === 0 ? null : widest;
 }
 
-/** The summary is about the WORK, not the switcher: how many of the six are written at all. */
+/** The nouns every sentence names, as the caller words them. */
+interface Nouns {
+  readonly sectionNoun: string;
+  readonly languageNoun: string;
+  readonly fallbackName: string;
+}
+
+function factsOf(item: AgentLanguage, total: number | null, nouns: Nouns): LanguageSentenceFacts {
+  return {
+    language: item.label,
+    written: item.written ?? null,
+    total,
+    sectionNoun: nouns.sectionNoun,
+    languageNoun: nouns.languageNoun,
+    fallback: nouns.fallbackName,
+  };
+}
+
+/** The summary is about the WORK, not the switcher: how many of the languages are written at all. */
 export function summaryLine(
   languages: AgentLanguage[],
   total: number | null,
-  sectionNoun: string,
+  words: LanguageSwitcherWords,
+  nouns: Omit<Nouns, 'fallbackName'>,
 ): string {
-  const writtenLangs = languages.filter((l) => stateOf(l, total) !== 'empty').length;
-  const plural = languages.length === 1 ? '' : 's';
-  const each = total === null ? '' : ` · ${total} ${sectionNoun} each`;
-  return `Written in ${writtenLangs} of ${languages.length} agent language${plural}${each}`;
+  const written = languages.filter((l) => stateOf(l, total) !== 'empty').length;
+  return words.summary({ written, of: languages.length, each: total, ...nouns });
 }
 
 /**
- * The selected language's sentence — a fraction says how much, only words say what.
- * "Marathi · 5 of 8 sections written here · 3 fall back to Hindi".
+ * The selected language's sentence — a fraction says how much, only words say what
+ * ("Marathi · 5 of 8 sections written here · 3 fall back to Hindi"), in the caller's words.
  */
 export function selectedSentence(
   cur: AgentLanguage | undefined,
   total: number | null,
-  sectionNoun: string,
-  fallbackName: string,
+  words: LanguageSwitcherWords,
+  nouns: Nouns,
 ): string {
   if (cur === undefined) {
     return '';
   }
-  const written = cur.written;
+  const facts = factsOf(cur, total, nouns);
   if (cur.primary === true) {
-    return total !== null && written !== undefined
-      ? `${cur.label} is the primary agent language · ${written} of ${total} ${sectionNoun} written · nothing falls back`
-      : `${cur.label} is the primary agent language · everything else falls back to it`;
+    return words.primary(facts);
   }
   const state = stateOf(cur, total);
   if (state === 'empty') {
-    return `Nothing written in ${cur.label} yet · all ${total ?? ''} ${sectionNoun} fall back to ${fallbackName}`.replace(
-      '  ',
-      ' ',
-    );
+    return words.nothingWritten(facts);
   }
-  if (state === 'inherited' && total !== null && written !== undefined) {
-    return `${cur.label} · ${written} of ${total} ${sectionNoun} written here · ${total - written} fall back to ${fallbackName}`;
-  }
-  return total !== null && written !== undefined
-    ? `${cur.label} · ${written} of ${total} ${sectionNoun} written here · nothing falls back`
-    : `${cur.label} · written here`;
+  return state === 'inherited' ? words.inherited(facts) : words.writtenHere(facts);
 }
 
 /**
@@ -80,24 +92,19 @@ export function selectedSentence(
 export function spokenName(
   item: AgentLanguage,
   total: number | null,
-  sectionNoun: string,
-  fallbackName: string,
+  words: LanguageSwitcherWords,
+  nouns: Nouns,
   showFraction: boolean,
 ): string {
-  const written = item.written;
-  const fraction =
-    showFraction && total !== null && written !== undefined
-      ? `, ${written} of ${total} ${sectionNoun}`
-      : '';
+  const facts = factsOf(item, showFraction ? total : null, nouns);
   if (item.primary === true) {
-    return `${item.label}, primary agent language${fraction === '' ? '' : `${fraction} written`}`;
+    return words.spokenPrimary(facts);
   }
   const state = stateOf(item, total);
   if (state === 'empty') {
-    return `${item.label}, nothing written, falls back to ${fallbackName}`;
+    return words.spokenEmpty(facts);
   }
-  if (state === 'inherited' && total !== null && written !== undefined) {
-    return `${item.label}, ${written} of ${total} ${sectionNoun} written here, ${total - written} fall back to ${fallbackName}`;
-  }
-  return `${item.label}, written here${fraction}`;
+  return state === 'inherited'
+    ? words.spokenInherited({ ...facts, total })
+    : words.spokenWritten(facts);
 }

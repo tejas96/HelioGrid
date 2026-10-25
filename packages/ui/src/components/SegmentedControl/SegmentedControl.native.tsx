@@ -223,7 +223,10 @@ const styles = StyleSheet.create({
     height: MIN_TOUCH_TARGET,
     marginVertical: -6,
     borderRadius: theme.radius['r-pill'],
-    paddingHorizontal: 18,
+    /* The phone's segments share the width equally, so a word gets only what the segment leaves:
+       at the web's 18 a four-part switch broke *Sections* in two at 402 (`SCR-M01-19`). A phone
+       label wraps where the web's stays on one line, and caller text is never cut. */
+    paddingHorizontal: theme.spacing['sp-2'],
   },
   word: {
     fontWeight: '500',

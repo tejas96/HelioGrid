@@ -12,18 +12,13 @@ import { eq } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { memberAct, recordAuditEntry } from '../audit/audit.public';
+import type { LastSave } from './internal/wire';
 import { brandingOf, ensureProfile } from './settings.repository';
-
-/** When branding was saved last and by whom; `by` is null on a row saved before it was kept. */
-export interface BrandingChanged {
-  readonly at: Date;
-  readonly by: { readonly id: string; readonly name: string | null } | null;
-}
 
 /** What the Branding page reads beside the branding in force: the profile's logo and the last save. */
 export interface BrandingFacts {
   readonly logoFileId: string | null;
-  readonly changed: BrandingChanged | null;
+  readonly changed: LastSave | null;
 }
 
 /** The page's one save: the branding row, and the logo when the page named it (`undefined` keeps it). */

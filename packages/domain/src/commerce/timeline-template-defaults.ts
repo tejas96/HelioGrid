@@ -1,5 +1,11 @@
 import type { PackLabel } from '../format/languages';
 
+/** The most phases a timeline holds (`M01-52`); the wire refuses more. */
+export const TIMELINE_PHASE_LIMIT = 20;
+
+/** The longest a phase's name may be, in any language — the wire's label bound. */
+export const PHASE_NAME_LIMIT = 120;
+
 /** One phase of the customer-facing project timeline (`M01-52`): a name and one sentence. */
 export interface TimelinePhase {
   readonly name: PackLabel;

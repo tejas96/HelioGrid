@@ -14,7 +14,9 @@ import {
   brandingReadSchema,
   brandingSaveSchema,
   brandingSchema,
+  proposalTemplateReadSchema,
   proposalTemplateSchema,
+  timelineTemplateReadSchema,
   timelineTemplateSchema,
   trancheTemplateSchema,
   trancheTemplateWriteSchema,
@@ -208,8 +210,8 @@ export const tenantSettingsContract = c.router({
   proposalTemplate: {
     method: 'GET',
     path: '/settings/proposal-template',
-    summary: 'The document defaults as stored — cover, sections, terms',
-    responses: { 200: proposalTemplateSchema, ...guarded },
+    summary: 'The document defaults as stored — cover, sections, terms — and who saved them last',
+    responses: { 200: proposalTemplateReadSchema, ...guarded },
   },
   saveProposalTemplate: {
     method: 'PUT',
@@ -217,20 +219,20 @@ export const tenantSettingsContract = c.router({
     body: proposalTemplateSchema,
     summary:
       'Replace the document defaults; sent documents are unchanged, new generations use these',
-    responses: { 200: proposalTemplateSchema, ...guarded },
+    responses: { 200: proposalTemplateReadSchema, ...guarded },
   },
   timelineTemplate: {
     method: 'GET',
     path: '/settings/timeline-template',
-    summary: 'The project-timeline template as stored',
-    responses: { 200: timelineTemplateSchema, ...guarded },
+    summary: 'The project-timeline template as stored, and who saved it last',
+    responses: { 200: timelineTemplateReadSchema, ...guarded },
   },
   saveTimelineTemplate: {
     method: 'PUT',
     path: '/settings/timeline-template',
     body: timelineTemplateSchema,
     summary: 'Replace the timeline phases, in the order sent',
-    responses: { 200: timelineTemplateSchema, ...guarded },
+    responses: { 200: timelineTemplateReadSchema, ...guarded },
   },
   trancheTemplates: {
     method: 'GET',

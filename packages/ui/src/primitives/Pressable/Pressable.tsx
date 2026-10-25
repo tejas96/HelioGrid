@@ -68,6 +68,7 @@ export function Pressable({
   onPress,
   disabled = false,
   accessibilityLabel,
+  accessibilityHint,
   accessibilityRole = 'button',
   accessibilityState,
   className,
@@ -82,6 +83,7 @@ export function Pressable({
       style={style}
       disabled={disabled}
       aria-label={accessibilityLabel}
+      aria-description={accessibilityHint}
       {...ariaState(accessibilityRole, disabled, accessibilityState)}
       onClick={onPress}
     >

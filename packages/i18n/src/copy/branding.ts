@@ -5,7 +5,6 @@
  * The tax number's name is the market pack's (`taxIdLabel`), never typed here.
  */
 import {
-  type BrandingStanding,
   type CompanyLogoLimits,
   type CompanyLogoMiss,
   type CompanyLogoRefusal,
@@ -14,18 +13,17 @@ import {
   letterheadFieldRefusal,
   letterheadLinesRefusal,
   megabytesShown,
+  type SettingsStanding,
 } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { type AttemptFailureLike, attemptFailureMessageId, INTERNAL_ERROR } from './api-error';
 import { brandColourFieldWords } from './brand-colour-field';
 import { COMPANY_LOGO } from './company-logo';
+import { settingsSavedLine } from './settings';
 
 type T = Translator['t'];
 
 const BRANDING = {
-  savedBy: /*i18n*/ { id: 'Saved and in force · {name}, {date}' },
-  savedOn: /*i18n*/ { id: 'Saved and in force · {date}' },
-  saved: /*i18n*/ { id: 'Saved and in force' },
   neverSet: /*i18n*/ { id: 'Nothing set yet · platform defaults in force' },
   preview: /*i18n*/ { id: 'Preview' },
   proposal: /*i18n*/ { id: 'Proposal' },
@@ -104,15 +102,10 @@ export interface BrandingFormats {
 /** What the standing line under the title says. */
 export function brandingStandingLine(
   t: T,
-  standing: BrandingStanding,
+  standing: SettingsStanding,
   formats: BrandingFormats,
 ): string {
-  if (standing.kind === 'never-set') return t(BRANDING.neverSet);
-  if (standing.kind === 'saved-unknown') return t(BRANDING.saved);
-  const date = formats.date(standing.at);
-  return standing.name === null || standing.name === ''
-    ? t(BRANDING.savedOn, { date })
-    : t(BRANDING.savedBy, { name: standing.name, date });
+  return settingsSavedLine(t, standing, formats) ?? t(BRANDING.neverSet);
 }
 
 /**
@@ -216,7 +209,7 @@ export type BrandingWords = ReturnType<typeof brandingWords>;
 /** What the page holds that chooses its words — `@heliogrid/data`'s `useBranding()` as it answers. */
 export interface BrandingPageFacts {
   readonly status: 'loading' | 'ready' | 'unread' | 'save-failed';
-  readonly standing: BrandingStanding | null;
+  readonly standing: SettingsStanding | null;
   readonly logo: { readonly refusal: CompanyLogoRefusal | null };
   readonly chosenName: string | null;
   readonly draft: {

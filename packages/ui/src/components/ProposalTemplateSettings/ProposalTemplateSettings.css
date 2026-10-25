@@ -1,0 +1,300 @@
+/* The Proposal template page body (`SCR-M01-19`). `data-layout` is the room the shell gives it,
+   measured by the component: `narrow` is the 375 column, `wide` the 1536 pair. The page's side
+   padding is the shell's. Every value is a token but the board's own sizes: the 420 editor card
+   and the 480 sheet. The stage's ground and the card's are `Ground.css`'s lists. */
+
+.hg-template {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.hg-template-pretty {
+  text-wrap: pretty;
+}
+
+.hg-template-medium {
+  font-weight: var(--fw-medium);
+}
+
+/* The title over the standing and Quick lines (`Intro 375`): the two lines `sp-0-5` apart under
+   the phone bar's title, past its back control; under a drawn title `sp-1` apart. */
+.hg-template-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-template-head[data-titled] {
+  gap: var(--sp-1);
+}
+
+.hg-template[data-layout="narrow"] .hg-template-head:not([data-titled]) {
+  margin-left: calc(var(--sp-10) + var(--sp-4));
+}
+
+/* The stage: the sunken desk the window and its caption row sit on (`Stage 375`). */
+.hg-template-stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+  padding: var(--sp-3);
+  background: var(--canvas-sunken);
+  border-radius: var(--r-lg);
+}
+
+.hg-template-caption-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-template-caption {
+  flex: 1;
+  min-width: 0;
+  text-wrap: pretty;
+}
+
+.hg-template-caption-row .hg-icon-button,
+.hg-template-caption-row .hg-button,
+.hg-template-add .hg-button {
+  flex-shrink: 0;
+}
+
+/* The editor (`Editor 375`): the part's switch, the part and the two rows, `sp-4` apart. */
+.hg-template-editor,
+.hg-template-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.hg-template-part-switch {
+  align-self: stretch;
+}
+
+.hg-template-part-switch .hg-segmented-control-pill {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Beside the web's rail at 375 the column is 263 wide: 18 px sides left *Sections* no room and
+   the page scrolled sideways, so the segments shrink to their share. A word is never cut. */
+.hg-template[data-layout="narrow"] .hg-template-part-switch .hg-segmented-control-segment {
+  min-width: 0;
+  padding-inline: var(--sp-0-5);
+}
+
+/* A part's blocks, `sp-4` apart (`Cover part`, `Terms part`, `Timeline part`). */
+.hg-template-part {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+/* The kW figure across, the two counts under it side by side, `sp-3` apart. */
+.hg-template-counts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-template-count-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+  align-items: start;
+}
+
+/* The sections (`Sections part`): the count line over the nine rows, `sp-2` apart. */
+.hg-template-sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.hg-template-section-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-template-section {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: calc(var(--sp-1) + var(--sp-0-5)) 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+.hg-template-section > .hg-switch,
+.hg-template-section > .hg-switch-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-template-section[data-floor] {
+  min-height: var(--sp-12);
+}
+
+.hg-template-section-words {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-template-always {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.hg-template-terms,
+.hg-template-phase {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+/* *Add a phase* at its own width at 375; across the card at width. */
+.hg-template-add {
+  display: flex;
+}
+
+.hg-template-links,
+.hg-template-link-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-template-hairline {
+  height: 1px;
+  background: var(--line-soft);
+}
+
+.hg-list-row.hg-template-link {
+  padding-left: 0;
+  padding-right: 0;
+  box-shadow: none;
+}
+
+.hg-list-row.hg-template-link:not(:hover) {
+  background: transparent;
+}
+
+.hg-template-end {
+  margin: 0;
+}
+
+/* The phone's sticky foot (m19-n4): the failed save on the page's ground over the act bar. */
+.hg-template-foot {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-template-foot .hg-template-failure {
+  padding: var(--sp-3) var(--screen-pad-mobile);
+  background: var(--hg-ground);
+}
+
+/* The 1536 pair (`Chrome 1536`): the heading row over the stage, the teaching banner across both
+   columns, the editor card 420 wide and `sp-8` from the stage. */
+.hg-template[data-layout="wide"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  column-gap: var(--sp-8);
+  row-gap: var(--sp-4);
+  align-items: start;
+}
+
+.hg-template[data-layout="wide"] .hg-template-head,
+.hg-template[data-layout="wide"] .hg-template-stage {
+  grid-column: 1;
+}
+
+.hg-template[data-layout="wide"] .hg-template-teaching {
+  grid-column: 1 / -1;
+}
+
+/* The stage at width (`Stage 1536`): the caption row across its top, the whole sheet at its 480. */
+.hg-template[data-layout="wide"] .hg-template-stage {
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-5) var(--sp-8) 0;
+  overflow: hidden;
+  border-radius: var(--r-xl);
+}
+
+.hg-template[data-layout="wide"] .hg-template-caption-row {
+  align-self: stretch;
+}
+
+/* The frame's note under the sheet (*Not saved yet*) keeps the stage's own side room below it. */
+.hg-template[data-layout="wide"] .hg-template-stage .hg-preview-frame-caption {
+  padding-bottom: var(--sp-5);
+}
+
+.hg-template-sheet {
+  flex: 0 0 auto;
+  width: 480px;
+}
+
+/* The editor card (`Editor 1536`): level with the stage, its foot the act bar or the page end. */
+.hg-template-card {
+  grid-column: 2;
+  align-self: start;
+  padding: var(--sp-5);
+  background: var(--hg-ground);
+  border-radius: var(--r-tile);
+  box-shadow: var(--e2);
+}
+
+/* At width the hairline runs to the card's edges, `sp-4` above the rows, which sit `sp-1` apart. */
+.hg-template[data-layout="wide"] .hg-template-links {
+  gap: var(--sp-4);
+}
+
+.hg-template[data-layout="wide"] .hg-template-link-rows {
+  gap: var(--sp-1);
+}
+
+.hg-template[data-layout="wide"] .hg-template-hairline {
+  margin: 0 calc(-1 * var(--sp-5));
+}
+
+.hg-template[data-layout="wide"] .hg-template-counts {
+  gap: var(--sp-4);
+}
+
+.hg-template[data-layout="wide"] .hg-template-section {
+  gap: var(--sp-2);
+  padding: var(--sp-1) 0;
+}
+
+.hg-template[data-layout="wide"] .hg-template-timeline {
+  gap: var(--sp-3);
+}
+
+.hg-template[data-layout="wide"] .hg-template-add {
+  flex-direction: column;
+}
+
+/* The phase editor's body (m19-g): the strip and the two fields, `sp-4` apart. */
+.hg-template-phase-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
