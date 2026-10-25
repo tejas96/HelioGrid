@@ -220,7 +220,11 @@ through the review and its fixes.
    agents' prompts and the frame map. Rebuild native code only when native files changed or the
    app is missing.
 5. **Cold-start each app** once its phone has booted and Metro serves (a new `BUNDLE` line in
-   `.qa/metro.log`; Fast Refresh can drop silently). When an Android row uploads a file, run
+   `.qa/metro.log`; Fast Refresh can drop silently). Before the Android app, turn Gboard's stylus
+   handwriting off and restart it — `adb -s <serial> shell settings put secure
+   stylus_handwriting_enabled 0`, then `adb -s <serial> shell am force-stop
+   com.google.android.inputmethod.latin`: the emulator's touch screens report a stylus, so with it
+   on every tap opens the pen toolbar, a keyboard with no height, and no keyboard row can run. When an Android row uploads a file, run
    `adb -s <serial> reverse tcp:9000 tcp:9000` first: the api hands out upload addresses on
    `localhost:9000`, which inside the emulator is the emulator itself. Then start the agents in the
    next message.

@@ -36,7 +36,9 @@ polling command with a timeout. Then check the expected result and report.
 - every control the row uses is at least 44 dp on both axes (bounds ÷ density);
 - no button label wraps (its text node is under 30 dp tall);
 - with the keyboard open, the focused field's bottom sits above the keyboard's top (screen height
-  minus the ime inset in `dumpsys window`);
+  minus the ime inset in `dumpsys window`). The ime inset must have a height: one of zero height
+  while `dumpsys input_method` reads `mInputShown=true` is Gboard's pen toolbar, not a keyboard —
+  return `NEEDS MAIN: stylus handwriting is on`, never a pass or a blocked row;
 - the system back button goes where the row expects;
 - every control the row uses has a `content-desc` or text a screen reader speaks;
 - no crash, ANR or error line in logcat since the row began.
