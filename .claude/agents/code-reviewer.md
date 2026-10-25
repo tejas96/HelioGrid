@@ -75,7 +75,9 @@ and the findings they answer.
 When you are continued for the proof pass, you are given the RFC's Proof table, every QA report,
 the output of Main's own test runs and the planted red lines. For each AC, read its owner and find
 its evidence in what you were given: a test by file and name in a passing run, a QA row reported
-`PASS` or `PASS (flake)`, a planted red seen failing by name. A row owned by `ci` is `pending CI`. A row with no
+`PASS`, a planted red seen failing by name; a `PASS (flake)` is proof only beside an open
+`harness` row in `deferred.md` whose symptom it matches, or, on a row outside the diff, the new row
+`/task` step 7 *Fix* asks for; otherwise it is `FAIL`. A row owned by `ci` is `pending CI`. A row with no
 evidence, or with failing evidence, is `FAIL`. Report, and nothing else:
 
 ```

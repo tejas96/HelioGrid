@@ -148,31 +148,29 @@ const PHONE = (Object.keys(FRAMES) as ImportBoardFrame[]).filter((name) => !FRAM
 const PANEL = (Object.keys(FRAMES) as ImportBoardFrame[]).filter((name) => FRAMES[name].wide);
 const WIDTHS = [[375, PHONE] as const, [1536, PANEL] as const];
 
-test('every frame at 375 and 1536', async ({ mount, page }) => {
-  for (const [width, names] of WIDTHS) {
-    await at(page, width);
-    for (const name of names) {
-      await test.step(`${name} at ${width}`, async () => {
-        const { frame, act } = FRAMES[name];
-        const step = importWizardStepIndex(frame);
-        const root = await mount(<CatalogImportAsRead reader="en" frame={name} />);
-        await expect(page.getByText(en.title, { exact: true }).first(), name).toBeVisible();
-        /* The sheet and the panel rise in: measure the box they settle at. */
-        await entrySettled(page);
-        await expectHead(page, width, step, FRAMES[name].lead);
-        const columns = frame === 'columns' ? await guessedColumns(root) : [];
-        if (act !== null) await expectAct(page, act, gateOf(frame, columns));
-        else await expect(page.locator('.hg-import-foot button'), name).toHaveCount(0);
-        await expectFrameWords(page, name, root);
-        await pressAsDrawn(page, name, step);
-        await expectNoSidewaysScroll(page);
-        await expectTouchFloor(await controls(page));
-        await expectNoSeriousViolations(page);
-        await root.unmount();
-      });
-    }
+/* One test per frame and width: every frame in one test runs past Playwright's 30 s budget on CI. */
+for (const [width, names] of WIDTHS) {
+  for (const name of names) {
+    test(`frame ${name} at ${width}`, async ({ mount, page }) => {
+      await at(page, width);
+      const { frame, act } = FRAMES[name];
+      const step = importWizardStepIndex(frame);
+      const root = await mount(<CatalogImportAsRead reader="en" frame={name} />);
+      await expect(page.getByText(en.title, { exact: true }).first(), name).toBeVisible();
+      /* The sheet and the panel rise in: measure the box they settle at. */
+      await entrySettled(page);
+      await expectHead(page, width, step, FRAMES[name].lead);
+      const columns = frame === 'columns' ? await guessedColumns(root) : [];
+      if (act !== null) await expectAct(page, act, gateOf(frame, columns));
+      else await expect(page.locator('.hg-import-foot button'), name).toHaveCount(0);
+      await expectFrameWords(page, name, root);
+      await pressAsDrawn(page, name, step);
+      await expectNoSidewaysScroll(page);
+      await expectTouchFloor(await controls(page));
+      await expectNoSeriousViolations(page);
+    });
   }
-});
+}
 
 /** Waits out the surface's entry: every finite animation — the two waits spin while they wait. */
 function entrySettled(page: Page) {

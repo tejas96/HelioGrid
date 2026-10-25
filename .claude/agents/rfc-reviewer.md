@@ -31,8 +31,9 @@ Check, citing `file:line` for each finding:
    change names its readers both ways; a tenant read carries its tenant; a new brand, enum, route,
    table or error code names its guard (Law 12).
 6. **Proof.** Every AC has exactly one owner; each QA row says the action, the expected result and
-   the test data and the account it signs in with; every `qa-ios` row has its `qa-android` twin;
-   the surfaces match what changes (`/task` step 7). A money, tenancy or permission
+   the test data and the account it signs in with; each phone row is twinned or on one phone as
+   `/task` step 7's *Which phone runs a row* says, and a one-phone row shows only what a twinned
+   row showed; the surfaces match what changes (`/task` step 7). A money, tenancy or permission
    rule has a test that will be seen red.
 7. **Build steps and regression.** Contracts and shared types come first; a slice marked
    `parallel` shares no file with another and needs nothing another open slice adds; every

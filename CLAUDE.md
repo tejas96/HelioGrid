@@ -84,7 +84,7 @@ its edge-case list are `.claude/skills/task/rfc-template.md`.
   write it into that module's task in `docs/tasks/`, and carry on.
 - **Building before the RFC is approved.** Nothing is built before the owner's yes to the RFC.
 - **Committing.** Each commit waits for the owner's yes to the shown file list and message — a go,
-  a green check, an approved RFC or an earlier yes never counts; one yes covers a change commit and
+  a green check, an approved RFC, an earlier yes or the Claude app's Auto-fix never counts; one yes covers a change commit and
   its clean merge of `origin/main` when they are shown together. Then push and open the PR (`/task`
   step 9). The owner merges. Never `--no-verify`, never force-push, never push to `main`.
 

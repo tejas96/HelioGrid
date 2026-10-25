@@ -75,8 +75,8 @@ only what differs from the task RFC and says `The task RFC's, unchanged` for the
     never a `main-dev` spec: that layer has no unit tests (`.claude/rules/testing.md`).
     A screen task has one Hindi and one Marathi layout row on the phone, and its shared
     component's spec covers both languages at 375 and 1536.
-    Each surface `/task` step 7's table picks gets a live row; every `qa-ios` row has its
-    `qa-android` twin; a surface left out names the table's reason.
+    Each surface `/task` step 7's table picks gets a live row; a phone row is twinned or given to
+    one phone as step 7's *Which phone runs a row* says; a surface left out names the table's reason.
 14. **Deferred rows** — each `docs/tasks/deferred.md` row this task meets: joins (deleted when the
     build ends, `/task` step 5) or stays (with its new `reopens when`); a row this task meets only
     in part stays. The rows that join are listed on one line, `**Deleted:** D…, D…`, which invariant
