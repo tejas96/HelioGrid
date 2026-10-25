@@ -1,0 +1,89 @@
+/* ImportColumns — a part of the catalog import wizard (`SCR-M01-17`); see CatalogImport.css. */
+
+/* ── step 2: the columns ──────────────────────────────────────────────────── */
+
+.hg-import-intro {
+  padding: 0 var(--sp-1);
+}
+
+.hg-import-maps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.hg-import-maps[data-wide="true"] {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+}
+
+.hg-import-matched {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-import-matched-head {
+  padding: 6px var(--sp-1) 0;
+}
+
+.hg-import[data-wide="true"] .hg-import-matched {
+  gap: 10px;
+}
+
+.hg-import[data-wide="true"] .hg-import-matched-head {
+  padding: 0;
+}
+
+.hg-import-map {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px var(--sp-2) 10px var(--sp-3);
+  background: var(--hg-ground);
+  border-radius: var(--r-md);
+  box-shadow: var(--e2);
+  min-width: 0;
+}
+
+.hg-import-map-header {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-primary);
+}
+
+.hg-import-map-arrow {
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+}
+
+.hg-import-map-field {
+  flex: 0 0 216px;
+  min-width: 0;
+}
+
+.hg-import[data-wide="true"] .hg-import-map {
+  gap: var(--sp-3);
+  padding: 10px var(--sp-3) 10px var(--sp-4);
+  border-radius: 18px;
+}
+
+.hg-import[data-wide="true"] .hg-import-map-header {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-import[data-wide="true"] .hg-import-map-arrow {
+  color: var(--text-secondary);
+}
+
+.hg-import[data-wide="true"] .hg-import-map-field {
+  flex-basis: 240px;
+}

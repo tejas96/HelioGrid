@@ -1,4 +1,10 @@
-import type { DeclareFile, FileDownload, FileUpload, StoredFile } from '@heliogrid/contracts';
+import type {
+  DeclareFile,
+  FileDownload,
+  FileErrorCode,
+  FileUpload,
+  StoredFile,
+} from '@heliogrid/contracts';
 import { checksumSha256Of, FILE_UPLOAD_LINK_SECONDS } from '@heliogrid/domain';
 import type { ApiClient } from '../client/client';
 import { createCreationKeys } from '../client/creation-key';
@@ -9,6 +15,12 @@ import {
   RequestTimeoutError,
   toApiError,
 } from '../errors/errors';
+
+/** The store's answers that mean a file's bytes are not the type the device named. */
+export const REFUSED_AS_ANOTHER_TYPE: readonly string[] = [
+  'FILE_CONTENT_MISMATCH',
+  'FILE_TYPE_NOT_TAKEN',
+] satisfies readonly FileErrorCode[];
 
 /** A file as a device holds it before it is stored. */
 export interface FileToStore

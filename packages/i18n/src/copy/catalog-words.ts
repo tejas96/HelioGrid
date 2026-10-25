@@ -94,6 +94,7 @@ const byKey = <K extends string>(keys: readonly K[], word: (key: K) => string) =
 /** Every fixed word of the Items panel, in the reader's language. */
 export function catalogItemsWords(t: T, schemes: readonly string[], list: CatalogListFacts) {
   return {
+    importFile: t(CATALOG_SETTINGS.importFile),
     item: t(CATALOG_SETTINGS.item),
     whatItIs: t(CATALOG_SETTINGS.whatItIs),
     compliance: t(CATALOG_SETTINGS.compliance),

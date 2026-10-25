@@ -1,0 +1,138 @@
+/* ImportFixCard — a part of the catalog import wizard (`SCR-M01-17`); see CatalogImport.css. */
+
+/* ── sections, cards ──────────────────────────────────────────────────────── */
+
+.hg-import-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-import-section-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+  padding: var(--sp-1) var(--sp-1) 0;
+}
+
+.hg-import-section-title {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.hg-import-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-import-cards[data-wide="true"] {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+
+/* The amber edge marks a row that asks: the board's one drawn edge, beside the words that say so. */
+.hg-import-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px;
+  background: var(--hg-ground);
+  border-radius: 18px;
+  box-shadow: var(--e2);
+  border-left: var(--sp-1) solid var(--warning);
+}
+
+.hg-import-card-words {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-import-line {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+
+.hg-import-line[data-weight="bold"] {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.hg-import-question {
+  text-wrap: pretty;
+}
+
+.hg-import-fix,
+.hg-import-fix-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.hg-import-fix[data-act="price"] {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.hg-import-fix[data-act="kind"] {
+  flex-wrap: nowrap;
+}
+
+.hg-import-fix-select {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-import[data-wide="true"] .hg-import-fix,
+.hg-import[data-wide="true"] .hg-import-fix[data-act="price"] {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.hg-import[data-wide="true"] .hg-import-fix-price {
+  flex: 1 1 120px;
+  min-width: 120px;
+  max-width: 220px;
+}
+
+.hg-import[data-wide="true"] .hg-import-fix-select {
+  flex: 1 1 160px;
+  min-width: 160px;
+  max-width: 240px;
+}
+
+.hg-import-fixed {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: var(--sp-3) 14px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--success) 10%, var(--hg-ground));
+}
+
+.hg-import-fixed-mark {
+  flex-shrink: 0;
+  color: var(--success-text);
+}

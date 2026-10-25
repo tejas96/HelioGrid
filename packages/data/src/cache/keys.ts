@@ -52,6 +52,16 @@ export const queryKeys = {
     release: (tenantId: string, id: string) => ['catalog', tenantId, 'release', id] as const,
     /** What a publish now would carry: under the prefix, so every act and the publish refresh it. */
     preview: (tenantId: string) => ['catalog', tenantId, 'preview'] as const,
+    /**
+     * The company's imports, under the prefix: a run writes prices, so the whole catalog refreshes
+     * when one completes, and a fix refreshes its job's rows.
+     */
+    imports: (tenantId: string) => ['catalog', tenantId, 'imports'] as const,
+    import: (tenantId: string, id: string) => ['catalog', tenantId, 'import', id] as const,
+    importRows: (tenantId: string, id: string, ask?: unknown) =>
+      ask === undefined
+        ? (['catalog', tenantId, 'import', id, 'rows'] as const)
+        : (['catalog', tenantId, 'import', id, 'rows', ask] as const),
   },
   /** A company's price book; a new version refreshes the whole prefix. */
   priceBook: {

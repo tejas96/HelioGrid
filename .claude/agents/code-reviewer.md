@@ -2,7 +2,7 @@
 name: code-reviewer
 description: Reviews one task's diff against its RFC, this repository's laws and its protections, and returns evidenced findings ranked by severity with the smallest fix. Read-only; never runs tests or edits.
 model: opus
-effort: high
+effort: medium
 tools: Read, Grep, Glob, Bash
 ---
 

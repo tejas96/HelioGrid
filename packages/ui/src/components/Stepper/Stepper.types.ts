@@ -39,9 +39,20 @@ export type StepReachability = 'free' | 'entered';
 /**
  * progress = overline + track (sheets, phone wizards) · numbered = horizontal with connectors ·
  * dots = minimal (onboarding) · **rail** = the M05-03 desktop step rail · **indicator** = the
- * M05-03 compact mobile bar ("3 / 9 · Panel layout ‹ ›") that opens a step-list sheet.
+ * M05-03 compact mobile bar ("3 / 9 · Panel layout ‹ ›") that opens a step-list sheet ·
+ * **bars** = one thin bar per step, those done and current filled, under a sheet's head — the
+ * location only, read by no screen reader (the head names the step) · **numbered-bars** = the same
+ * bars with each step's number and name under its bar, the current one marked, a panel's step
+ * location (`SCR-M01-17`).
  */
-export type StepperVariant = 'progress' | 'numbered' | 'dots' | 'rail' | 'indicator';
+export type StepperVariant =
+  | 'progress'
+  | 'numbered'
+  | 'dots'
+  | 'rail'
+  | 'indicator'
+  | 'bars'
+  | 'numbered-bars';
 
 /** Density mode — expressive is the brand's roomy default, functional the dense working set. */
 export type StepperDensity = 'expressive' | 'functional';

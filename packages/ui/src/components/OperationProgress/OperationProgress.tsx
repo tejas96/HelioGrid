@@ -5,6 +5,7 @@ import { OperationActions } from './OperationActions';
 import { OperationHead } from './OperationHead';
 import { OperationMessage } from './OperationMessage';
 import type { OperationProgressProps } from './OperationProgress.types';
+import { OperationRing } from './OperationRing';
 import { OperationStages } from './OperationStages';
 import { countWords, resolveCancel, resolvePercent, stepWords } from './operation-progress-model';
 
@@ -42,6 +43,7 @@ export function OperationProgress({
   destination,
   gradient = false,
   size = 'block',
+  countCaption,
   className,
   style,
 }: WebOperationProgressProps) {
@@ -55,6 +57,18 @@ export function OperationProgress({
     cancel !== null ||
     destination !== undefined ||
     (state === 'failed' && onRetry !== undefined && retryLabel !== undefined);
+
+  if (size === 'ring') {
+    return (
+      <OperationRing
+        label={label}
+        count={count}
+        countCaption={countCaption}
+        className={className}
+        style={style}
+      />
+    );
+  }
 
   return (
     <div data-size={size} className={classNames('hg-operation-progress', className)} style={style}>

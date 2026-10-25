@@ -1,0 +1,107 @@
+/* ImportSkeleton — a part of the catalog import wizard (`SCR-M01-17`); see CatalogImport.css. */
+
+/* ── a kept report opening ────────────────────────────────────────────────── */
+
+.hg-import-block {
+  display: block;
+  flex-shrink: 0;
+  border-radius: var(--rf-sm);
+  background: var(--canvas-sunken);
+}
+
+.hg-import-block[data-shape="heading"] {
+  width: 72px;
+  height: 14px;
+  margin-right: auto;
+}
+
+.hg-import-block[data-shape="line"] {
+  width: 62%;
+  height: 10px;
+}
+
+.hg-import-block[data-shape="label"] {
+  width: 64px;
+  height: 10px;
+}
+
+.hg-import-block[data-shape="head"] {
+  width: 104px;
+  height: var(--sp-3);
+}
+
+.hg-import-block[data-shape="head-long"] {
+  width: 120px;
+  height: var(--sp-3);
+}
+
+.hg-import-block[data-shape="name"] {
+  width: 70%;
+  height: var(--sp-3);
+}
+
+.hg-import-block[data-shape="sub"] {
+  width: 50%;
+  height: 10px;
+}
+
+.hg-import-block[data-shape="reason"] {
+  width: 88%;
+  height: 10px;
+}
+
+.hg-import-block[data-shape="chip"] {
+  width: 64px;
+  height: 18px;
+}
+
+.hg-import-block[data-shape="price"] {
+  width: 120px;
+  height: var(--sp-3);
+}
+
+.hg-import-skeleton-rings {
+  display: flex;
+  gap: var(--sp-1);
+}
+
+.hg-import-skeleton-ring {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-1);
+}
+
+.hg-import-skeleton-track {
+  box-sizing: border-box;
+  width: var(--sp-16);
+  height: var(--sp-16);
+  border-radius: var(--r-pill);
+  border: 6px solid var(--canvas-sunken);
+}
+
+.hg-import-skeleton-lists {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-import-skeleton-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: 14px;
+}
+
+.hg-import-skeleton-row + .hg-import-skeleton-row {
+  box-shadow: inset 0 1px 0 var(--line-soft);
+}
+
+.hg-import-skeleton-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}

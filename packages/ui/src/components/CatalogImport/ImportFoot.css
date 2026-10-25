@@ -1,0 +1,41 @@
+/* ImportFoot — a part of the catalog import wizard (`SCR-M01-17`); see CatalogImport.css. */
+
+/* ── the step list, the foot ──────────────────────────────────────────────── */
+
+.hg-import-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-import-foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-import-foot-line {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.hg-import-foot[data-wide="true"] {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.hg-import-foot[data-wide="true"] .hg-import-foot-line {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-import-foot-act {
+  flex-shrink: 0;
+  min-width: 260px;
+  display: flex;
+}

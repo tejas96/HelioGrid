@@ -1,5 +1,9 @@
 import { type AuditRepository, createAuditRepository } from './audit/repository';
 import { type AuthRepository, createAuthRepository } from './auth/repository';
+import {
+  type CatalogImportRepository,
+  createCatalogImportRepository,
+} from './catalog/import-repository';
 import { type CatalogRepository, createCatalogRepository } from './catalog/repository';
 import { createApiClient } from './client/client';
 import { createFileRepository, type FileRepository } from './file/repository';
@@ -30,6 +34,7 @@ export interface Repositories {
   notification: NotificationRepository;
   auth: AuthRepository;
   catalog: CatalogRepository;
+  catalogImport: CatalogImportRepository;
   file: FileRepository;
   health: HealthRepository;
   invitation: InvitationRepository;
@@ -86,6 +91,7 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
     notification: createNotificationRepository(api),
     auth: createAuthRepository(api),
     catalog: createCatalogRepository(api),
+    catalogImport: createCatalogImportRepository(api),
     file: createFileRepository(api),
     health: createHealthRepository(api),
     invitation: createInvitationRepository(api),

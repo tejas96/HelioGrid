@@ -3,9 +3,19 @@ import type {
   RateEntryWire,
   ResolvedCatalogItemWire,
 } from '@heliogrid/contracts';
-import { basisPointsToPercent, type ResolvedCatalogItem } from '@heliogrid/domain';
-import { minorUnitsOfDecimal, minorUnitsToDecimal } from '@heliogrid/domain/server';
-import type { PreviewRow } from '../catalog.import-rows.repository';
+import {
+  basisPointsToPercent,
+  catalogSpecSchema,
+  effectiveImportCells,
+  type ImportCurrency,
+  type ResolvedCatalogItem,
+} from '@heliogrid/domain';
+import {
+  minorUnitsOfDecimal,
+  minorUnitsToDecimal,
+  readImportPrice,
+} from '@heliogrid/domain/server';
+import type { PreviewRow, StoredRow } from '../catalog.import-rows.repository';
 import type { ItemRate, RecordedRate } from '../catalog.rates.repository';
 
 /** Whether this reader sees money, and how many digits the tenant's currency carries. */
@@ -81,4 +91,49 @@ export function reportPricesWire(
     return { priceBefore: priced(row.written.before), priceApplied: priced(row.written.applied) };
   }
   return { priceBefore: row.result === null ? null : priced(row.rate), priceApplied: null };
+}
+
+/** A cell's price as the file or the typed fix gives it, or null where it reads none. */
+function filePriceOf(row: Pick<StoredRow, 'cells' | 'fix'>, currency: ImportCurrency) {
+  const price = readImportPrice(effectiveImportCells(row).rate, currency);
+  return price.ok ? price.amount : null;
+}
+
+export function rowWire(row: PreviewRow, currency: ImportCurrency): CatalogImportRowWire {
+  const match =
+    row.catalogItemId !== null
+      ? { source: 'platform_item' as const, id: row.catalogItemId }
+      : row.tenantCatalogItemId !== null
+        ? { source: 'own_item' as const, id: row.tenantCatalogItemId }
+        : null;
+  return {
+    rowNumber: row.rowNumber,
+    cells: { ...row.cells },
+    fix: { ...row.fix },
+    leftOut: row.leftOut,
+    answer: row.answer,
+    outcome: row.outcome,
+    attention: row.attention.map((item) => ({ reason: item.reason, fields: [...item.fields] })),
+    match,
+    named: row.named.map((item) => {
+      const spec = catalogSpecSchema.parse(item.spec);
+      return {
+        source: item.source,
+        id: item.id,
+        brand: item.brand,
+        model: item.model,
+        kind: spec.kind,
+        spec,
+      };
+    }),
+    repeats:
+      row.repeats === null
+        ? null
+        : { rowNumber: row.repeats.rowNumber, filePrice: filePriceOf(row.repeats, currency) },
+    filePrice: filePriceOf(row, currency),
+    catalogPrice: row.rate === null ? null : storedRateWire(row.rate, currency.minorUnitDigits),
+    result: row.result,
+    failure: row.failure,
+    ...reportPricesWire(row, currency.minorUnitDigits),
+  };
 }

@@ -69,6 +69,8 @@ export {
   importFixProblem,
   takesImportAnswer,
 } from './import-fix';
+export type { ImportFixChoice, ImportFixRequest, ImportFixRow } from './import-fix-request';
+export { importFixRequest } from './import-fix-request';
 export type {
   CatalogImportColumnsProblem,
   CatalogImportMappedRow,
@@ -87,9 +89,36 @@ export type {
   ImportAttention,
   ImportCatalog,
   ImportCatalogEntry,
+  ImportNamedItem,
 } from './import-matching';
 export type { ImportProductName } from './import-text';
 export { importProductNames, namesOneOf } from './import-text';
+export type {
+  ImportContinueGate,
+  ImportFixAct,
+  ImportWizardEvent,
+  ImportWizardFrame,
+  ImportWizardStep,
+  ImportWizardView,
+} from './import-wizard';
+export {
+  firstAttentionReason,
+  guessImportMapping,
+  IMPORT_POLL_SECONDS,
+  IMPORT_PREVIEW_GROUPS,
+  IMPORT_READY_OUTCOMES,
+  IMPORT_REPORT_GROUPS,
+  IMPORT_WIZARD_START,
+  IMPORT_WIZARD_STEPS,
+  importContinueGate,
+  importFixAct,
+  importListStep,
+  importReadyCount,
+  importWizardFrame,
+  importWizardStepIndex,
+  importWizardViewAfter,
+  mappingForHeader,
+} from './import-wizard';
 export type { PriceBookRateBasis } from './price-book';
 export { MAX_MARGIN, PLATFORM_DEFAULT_MARGIN, PRICE_BOOK_RATE_BASES } from './price-book';
 export type {

@@ -19,6 +19,21 @@ export type {
   CatalogSaveOutcome,
 } from './use-catalog-acts';
 export { useCatalogActs } from './use-catalog-acts';
+export type {
+  CatalogImport,
+  ChosenSpreadsheet,
+  ImportActFailure,
+  ImportUpload,
+} from './use-catalog-import';
+export { useCatalogImport } from './use-catalog-import';
+export type { ImportListRead } from './use-catalog-import-lists';
+export { useCatalogImportLists } from './use-catalog-import-lists';
+export type { FixAnswer, FixedRow, ImportRow } from './use-catalog-import-rows';
+export {
+  useCatalogImportFixes,
+  useCatalogImportRows,
+  useCatalogImports,
+} from './use-catalog-import-rows';
 export type { CatalogFacts, CatalogView } from './use-catalog-items';
 export {
   useCatalogChanged,

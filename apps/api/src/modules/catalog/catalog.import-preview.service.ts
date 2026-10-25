@@ -18,7 +18,6 @@ import {
   fixedImportRow,
   fixesImportRow,
   hasImportPreview,
-  type ImportCurrency,
   type ImportProductName,
   importFixProblem,
   importProductNames,
@@ -27,7 +26,7 @@ import {
   takesImportFix,
   wroteImportRow,
 } from '@heliogrid/domain';
-import { matchImportRows, readImportPrice } from '@heliogrid/domain/server';
+import { matchImportRows } from '@heliogrid/domain/server';
 import {
   ConflictException,
   HttpStatus,
@@ -43,16 +42,20 @@ import { CatalogImportFixRepository } from './catalog.import-fix.repository';
 import {
   CatalogImportRowsRepository,
   type JudgedRow,
-  type PreviewRow,
-  type RowVerdict,
   type StoredRow,
 } from './catalog.import-rows.repository';
 import { CatalogService } from './catalog.service';
 import { CatalogSliceRepository } from './catalog.slice.repository';
 import { importJobOf, importNotFound, PRICE_LIST } from './internal/import-job';
-import { catalogOf, matchInput, namingCells, verdictOf } from './internal/import-judging';
+import {
+  catalogOf,
+  matchInput,
+  namingCells,
+  verdictMoved,
+  verdictOf,
+} from './internal/import-judging';
 import { readSheetRows } from './internal/spreadsheet';
-import { reportPricesWire, storedRateWire } from './internal/wire';
+import { rowWire } from './internal/wire';
 import { admitWrite } from './internal/write-checks';
 
 /**
@@ -95,7 +98,7 @@ export class CatalogImportPreviewService {
       rows.map((row) => ({ cells: row.cells, leftOut: false, answer: null })),
       catalogOf(named, scope.formats),
     );
-    const judged = rows.map((row, index) => judgedRow(row, verdicts[index]));
+    const judged = rows.map((row, index) => judgedRow(row, verdicts[index], rows));
     const status = await this.rows.replace(tenantId, jobId, job.mappingRevision, judged, now);
     if (status === null) throw stepCannotSucceed(`import ${jobId} is not in company ${tenantId}`);
     return { status };
@@ -126,11 +129,12 @@ export class CatalogImportPreviewService {
     }
     const scope = await this.catalog.scopeOf(tenantId, now);
     const { rows, totalCount } = await this.rows.page(tenantId, id, {
-      outcome: query.outcome,
-      result: query.result,
+      outcomes: query.outcomes ?? (query.outcome === undefined ? undefined : [query.outcome]),
+      results: query.results ?? (query.result === undefined ? undefined : [query.result]),
+      search: query.q,
       limit: query.limit,
       offset: (query.page - 1) * query.limit,
-      pricedOn: scope.resolve.pricedOn,
+      shownOn: { pricedOn: scope.resolve.pricedOn, marketCode: scope.marketCode },
     });
     return { items: rows.map((row) => rowWire(row, scope.formats)), totalCount };
   }
@@ -176,14 +180,14 @@ export class CatalogImportPreviewService {
       const named = await job.named(scope.marketCode, names);
       const verdicts = matchImportRows(group.map(matchInput), catalogOf(named, scope.formats));
       const moved = group.flatMap((member, index) => {
-        const judged = { ...member, ...verdictOf(member, verdicts[index]) };
+        const judged = { ...member, ...verdictOf(member, verdicts[index], group) };
         if (wroteImportRow(member.result)) return [];
         return member.rowNumber === rowNumber || verdictMoved(member, judged) ? [judged] : [];
       });
       await job.write(moved, now);
       const rows = await job.rows(
         moved.map((member) => member.rowNumber),
-        scope.resolve.pricedOn,
+        { pricedOn: scope.resolve.pricedOn, marketCode: scope.marketCode },
       );
       return { rows, counts: await job.counts() };
     });
@@ -219,59 +223,7 @@ function productGroup(
 function judgedRow(
   row: CatalogImportMappedRow,
   match: CatalogImportRowMatch | undefined,
+  judged: readonly CatalogImportMappedRow[],
 ): JudgedRow {
-  return { rowNumber: row.rowNumber, cells: row.cells, ...verdictOf(row, match) };
-}
-
-function verdictMoved(before: RowVerdict, after: RowVerdict): boolean {
-  return (
-    before.outcome !== after.outcome ||
-    before.catalogItemId !== after.catalogItemId ||
-    before.tenantCatalogItemId !== after.tenantCatalogItemId ||
-    !sameAttention(before.attention, after.attention)
-  );
-}
-
-/**
- * Compared field by field, never as JSON text: a stored attention comes back from `jsonb` with its
- * keys reordered, so equal attention would read as changed.
- */
-function sameAttention(one: RowVerdict['attention'], other: RowVerdict['attention']): boolean {
-  return (
-    one.length === other.length &&
-    one.every((item, index) => {
-      const twin = other[index];
-      return (
-        twin !== undefined &&
-        item.reason === twin.reason &&
-        item.fields.length === twin.fields.length &&
-        item.fields.every((field, at) => field === twin.fields[at])
-      );
-    })
-  );
-}
-
-function rowWire(row: PreviewRow, currency: ImportCurrency): CatalogImportRowWire {
-  const filePrice = readImportPrice(effectiveImportCells(row).rate, currency);
-  const match =
-    row.catalogItemId !== null
-      ? { source: 'platform_item' as const, id: row.catalogItemId }
-      : row.tenantCatalogItemId !== null
-        ? { source: 'own_item' as const, id: row.tenantCatalogItemId }
-        : null;
-  return {
-    rowNumber: row.rowNumber,
-    cells: { ...row.cells },
-    fix: { ...row.fix },
-    leftOut: row.leftOut,
-    answer: row.answer,
-    outcome: row.outcome,
-    attention: row.attention.map((item) => ({ reason: item.reason, fields: [...item.fields] })),
-    match,
-    filePrice: filePrice.ok ? filePrice.amount : null,
-    catalogPrice: row.rate === null ? null : storedRateWire(row.rate, currency.minorUnitDigits),
-    result: row.result,
-    failure: row.failure,
-    ...reportPricesWire(row, currency.minorUnitDigits),
-  };
+  return { rowNumber: row.rowNumber, cells: row.cells, ...verdictOf(row, match, judged) };
 }

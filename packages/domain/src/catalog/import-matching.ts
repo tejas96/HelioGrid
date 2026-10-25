@@ -9,6 +9,7 @@ import {
 } from './import-cells';
 import type { CatalogImportCells, CatalogImportField } from './import-columns';
 import { identityOf, isBlank, productNameOf } from './import-text';
+import type { CatalogItemSource } from './settings-view';
 import { type CatalogSpec, SPEC_FIELDS } from './specs';
 import { COMPONENT_KINDS } from './vocabulary';
 
@@ -48,6 +49,12 @@ export interface ImportAttention {
   readonly fields: readonly string[];
 }
 
+/** An item a row's brand and model named: the one it matched, or the candidates it asks between. */
+export interface ImportNamedItem {
+  readonly source: CatalogItemSource;
+  readonly id: string;
+}
+
 export type CatalogImportRowMatch =
   | { readonly outcome: 'price_override'; readonly platformItemId: string; readonly rate: string }
   | { readonly outcome: 'own_item_price'; readonly ownItemId: string; readonly rate: string }
@@ -58,8 +65,15 @@ export type CatalogImportRowMatch =
       readonly spec: CatalogSpec;
       readonly rate: string;
     }
-  | { readonly outcome: 'needs_attention'; readonly attention: readonly ImportAttention[] }
-  | { readonly outcome: 'left_out' };
+  | {
+      readonly outcome: 'needs_attention';
+      readonly attention: readonly ImportAttention[];
+      /** What the row's name matched, so its question can name it and a report can price it. */
+      readonly named: readonly ImportNamedItem[];
+      /** The index of the earlier row naming the same product, on a `repeated_in_file` row. */
+      readonly repeats: number | null;
+    }
+  | { readonly outcome: 'left_out'; readonly named: readonly ImportNamedItem[] };
 
 type Target =
   | { readonly on: 'platform'; readonly entry: ImportCatalogEntry }
@@ -121,6 +135,28 @@ type Resolution =
   | { readonly is: 'new'; readonly spec: CatalogSpec };
 
 /**
+ * Several candidates — one brand and model sold as more than one kind — are narrowed to the kind
+ * the row names. A single candidate is never narrowed: a kind that differs from it is a spec
+ * conflict to ask about, and dropping it would make a second SKU of one product.
+ */
+function narrowedByKind(
+  row: CatalogImportRowInput,
+  candidates: readonly Target[],
+): readonly Target[] {
+  if (candidates.length < 2) return candidates;
+  const kind = readComponentKind(row.cells.kind, COMPONENT_KINDS);
+  const ofKind = candidates.filter((target) => target.entry.spec.kind === kind);
+  return ofKind.length > 0 ? ofKind : candidates;
+}
+
+function namedOf(candidates: readonly Target[]): readonly ImportNamedItem[] {
+  return candidates.map((target) => ({
+    source: target.on === 'platform' ? 'platform_item' : 'own_item',
+    id: target.entry.id,
+  }));
+}
+
+/**
  * One candidate is a match unless its spec disagrees and nobody has answered; a platform match the
  * person chose to import as their own, or no candidate at all, is a new item held to its envelope.
  */
@@ -141,31 +177,46 @@ function resolve(row: CatalogImportRowInput, candidates: readonly Target[]): Res
   return made.ok ? { is: 'new', spec: made.spec } : { is: 'attention', attention: made.attention };
 }
 
+/** The first row naming each product, by its index — the row a later repeat points back to. */
+type FirstRows = Map<string, number>;
+
 function matchRow(
   row: CatalogImportRowInput,
+  at: number,
   catalog: ImportCatalog,
   index: MatchIndex,
-  seen: Set<string>,
+  firstRows: FirstRows,
 ): CatalogImportRowMatch {
-  if (row.leftOut) return { outcome: 'left_out' };
-  const attention: ImportAttention[] = [];
   const name = productNameOf(row.cells);
+  const identity = name === null ? null : identityOf(name.brand, name.model);
+  const candidates = identity === null ? [] : narrowedByKind(row, candidatesFor(identity, index));
+  const named = namedOf(candidates);
+  if (row.leftOut) return { outcome: 'left_out', named };
+
+  const attention: ImportAttention[] = [];
   if (name === null) attention.push({ reason: 'brand_or_model_missing', fields: [] });
   const price = readImportPrice(row.cells.rate, catalog.currency);
   if (!price.ok) attention.push({ reason: price.reason, fields: [] });
-  if (name === null) return { outcome: 'needs_attention', attention };
+  if (name === null || identity === null) {
+    return { outcome: 'needs_attention', attention, named, repeats: null };
+  }
 
-  const { brand, model } = name;
-  const identity = identityOf(brand, model);
-  if (seen.has(identity)) attention.push({ reason: 'repeated_in_file', fields: [] });
-  seen.add(identity);
-  const resolved = resolve(row, candidatesFor(identity, index));
+  const first = firstRows.get(identity);
+  if (first === undefined) firstRows.set(identity, at);
+  else attention.push({ reason: 'repeated_in_file', fields: [] });
+  const resolved = resolve(row, candidates);
   if (resolved.is === 'attention') attention.push(...resolved.attention);
   if (!price.ok || resolved.is === 'attention' || attention.length > 0) {
-    return { outcome: 'needs_attention', attention };
+    return { outcome: 'needs_attention', attention, named, repeats: first ?? null };
   }
   if (resolved.is === 'new') {
-    return { outcome: 'new_item', brand, model, spec: resolved.spec, rate: price.amount };
+    return {
+      outcome: 'new_item',
+      brand: name.brand,
+      model: name.model,
+      spec: resolved.spec,
+      rate: price.amount,
+    };
   }
   const { target } = resolved;
   return target.on === 'platform'
@@ -175,8 +226,8 @@ function matchRow(
 
 /**
  * Every row of one sheet, in order. A brand and model the sheet repeats is matched once — its
- * first row that is not left out — and every later row asks which one is meant, so one import never
- * writes two SKUs for one product.
+ * first row that is not left out — and every later row asks which one is meant, naming that first
+ * row, so one import never writes two SKUs for one product.
  */
 export function matchImportRows(
   rows: readonly CatalogImportRowInput[],
@@ -186,6 +237,6 @@ export function matchImportRows(
     own: byIdentity(catalog.ownItems),
     platform: byIdentity(catalog.platformItems),
   };
-  const seen = new Set<string>();
-  return rows.map((row) => matchRow(row, catalog, index, seen));
+  const firstRows: FirstRows = new Map();
+  return rows.map((row, at) => matchRow(row, at, catalog, index, firstRows));
 }

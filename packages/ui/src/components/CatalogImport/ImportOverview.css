@@ -1,0 +1,85 @@
+/* ImportOverview — a part of the catalog import wizard (`SCR-M01-17`); see CatalogImport.css. */
+
+/* ── the run ──────────────────────────────────────────────────────────────── */
+
+.hg-import-ring {
+  display: flex;
+  justify-content: center;
+}
+
+/* ── the overview ─────────────────────────────────────────────────────────── */
+
+.hg-import-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px var(--sp-3);
+  background: var(--hg-ground);
+  border-radius: var(--r-tile);
+  box-shadow: var(--e2);
+}
+
+.hg-import-overview[data-wide="true"] {
+  gap: var(--sp-3);
+  padding: 18px;
+}
+
+.hg-import-overview-top {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-import-overview[data-wide="true"] .hg-import-overview-top {
+  gap: var(--sp-4);
+}
+
+.hg-import-overview-heading,
+.hg-import-overview-words {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-import-overview-words {
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-import-overview-ready {
+  max-width: 60%;
+  text-align: right;
+}
+
+.hg-import-overview-report {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  padding: 0 var(--sp-1);
+}
+
+.hg-import-overview-stamped {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+/* A date and a time: one token each, never broken. */
+.hg-import-stamp {
+  white-space: nowrap;
+}
+
+.hg-import-find {
+  padding-top: 6px;
+}
+
+.hg-import-find[data-wide="true"] {
+  flex: 0 0 320px;
+  padding-top: 0;
+}
+
+.hg-import-note {
+  padding: 0 var(--sp-1);
+  text-wrap: pretty;
+}

@@ -220,7 +220,10 @@ through the review and its fixes.
    agents' prompts and the frame map. Rebuild native code only when native files changed or the
    app is missing.
 5. **Cold-start each app** once its phone has booted and Metro serves (a new `BUNDLE` line in
-   `.qa/metro.log`; Fast Refresh can drop silently), then start the agents in the next message.
+   `.qa/metro.log`; Fast Refresh can drop silently). When an Android row uploads a file, run
+   `adb -s <serial> reverse tcp:9000 tcp:9000` first: the api hands out upload addresses on
+   `localhost:9000`, which inside the emulator is the emulator itself. Then start the agents in the
+   next message.
 
 **Run.** Start every QA agent in one message. Each gets what its own file lists under "Your prompt
 gives you", the RFC's frame map and the known differences included. A phone agent restarts its own

@@ -14341,6 +14341,11 @@
             }
           },
           {
+            "name": "outcomes",
+            "in": "query",
+            "schema": {}
+          },
+          {
             "name": "result",
             "in": "query",
             "schema": {
@@ -14351,6 +14356,20 @@
                 "left_out",
                 "failed"
               ]
+            }
+          },
+          {
+            "name": "results",
+            "in": "query",
+            "schema": {}
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
             }
           }
         ],
@@ -14457,6 +14476,381 @@
                             "required": [
                               "source",
                               "id"
+                            ],
+                            "nullable": true
+                          },
+                          "named": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "source": {
+                                  "type": "string",
+                                  "enum": [
+                                    "platform_item",
+                                    "own_item"
+                                  ]
+                                },
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "brand": {
+                                  "type": "string"
+                                },
+                                "model": {
+                                  "type": "string"
+                                },
+                                "kind": {
+                                  "type": "string",
+                                  "enum": [
+                                    "panel",
+                                    "inverter",
+                                    "battery",
+                                    "micro_inverter",
+                                    "optimiser"
+                                  ]
+                                },
+                                "spec": {
+                                  "discriminator": {
+                                    "propertyName": "kind"
+                                  },
+                                  "oneOf": [
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "kind": {
+                                          "type": "string",
+                                          "enum": [
+                                            "panel"
+                                          ]
+                                        },
+                                        "watt": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "technology": {
+                                          "type": "string",
+                                          "enum": [
+                                            "mono_perc",
+                                            "topcon",
+                                            "bifacial",
+                                            "poly",
+                                            "hjt"
+                                          ]
+                                        },
+                                        "lengthMm": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "widthMm": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "vocV": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "vmpV": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "iscA": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "impA": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "tempCoeffVocPct": {
+                                          "type": "number",
+                                          "maximum": 0,
+                                          "exclusiveMaximum": 0
+                                        },
+                                        "tempCoeffPmaxPct": {
+                                          "type": "number",
+                                          "maximum": 0,
+                                          "exclusiveMaximum": 0
+                                        },
+                                        "bifacialityPct": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0,
+                                          "maximum": 100
+                                        },
+                                        "warrantyYears": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "weightKg": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        }
+                                      },
+                                      "required": [
+                                        "kind",
+                                        "watt",
+                                        "technology",
+                                        "lengthMm",
+                                        "widthMm",
+                                        "vocV",
+                                        "vmpV",
+                                        "iscA",
+                                        "impA",
+                                        "tempCoeffVocPct"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "kind": {
+                                          "type": "string",
+                                          "enum": [
+                                            "inverter"
+                                          ]
+                                        },
+                                        "acKw": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "phases": {
+                                          "type": "number",
+                                          "enum": [
+                                            1,
+                                            3
+                                          ]
+                                        },
+                                        "mppt": {
+                                          "type": "object",
+                                          "properties": {
+                                            "count": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "exclusiveMinimum": 0
+                                            },
+                                            "minV": {
+                                              "type": "number",
+                                              "minimum": 0,
+                                              "exclusiveMinimum": 0
+                                            },
+                                            "maxV": {
+                                              "type": "number",
+                                              "minimum": 0,
+                                              "exclusiveMinimum": 0
+                                            },
+                                            "maxCurrentA": {
+                                              "type": "number",
+                                              "minimum": 0,
+                                              "exclusiveMinimum": 0
+                                            },
+                                            "stringsPerMppt": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "exclusiveMinimum": 0
+                                            }
+                                          },
+                                          "required": [
+                                            "count",
+                                            "minV",
+                                            "maxV",
+                                            "maxCurrentA",
+                                            "stringsPerMppt"
+                                          ]
+                                        },
+                                        "maxDcV": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "efficiencyPct": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0,
+                                          "maximum": 100,
+                                          "exclusiveMaximum": 100
+                                        },
+                                        "warrantyYears": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        }
+                                      },
+                                      "required": [
+                                        "kind",
+                                        "acKw",
+                                        "phases",
+                                        "mppt",
+                                        "maxDcV",
+                                        "efficiencyPct"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "kind": {
+                                          "type": "string",
+                                          "enum": [
+                                            "battery"
+                                          ]
+                                        },
+                                        "usableKwh": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "nominalV": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "chemistry": {
+                                          "type": "string",
+                                          "enum": [
+                                            "lfp",
+                                            "nmc",
+                                            "lead_acid"
+                                          ]
+                                        },
+                                        "powerKw": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "cycleLife": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "warrantyYears": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "widthMm": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "depthMm": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "heightMm": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "weightKg": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        }
+                                      },
+                                      "required": [
+                                        "kind",
+                                        "usableKwh",
+                                        "nominalV",
+                                        "chemistry",
+                                        "powerKw",
+                                        "cycleLife",
+                                        "widthMm",
+                                        "depthMm",
+                                        "heightMm",
+                                        "weightKg"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "kind": {
+                                          "type": "string",
+                                          "enum": [
+                                            "micro_inverter"
+                                          ]
+                                        },
+                                        "ratedAcW": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "warrantyYears": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        }
+                                      },
+                                      "required": [
+                                        "kind",
+                                        "ratedAcW"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "kind": {
+                                          "type": "string",
+                                          "enum": [
+                                            "optimiser"
+                                          ]
+                                        },
+                                        "ratedInputW": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "warrantyYears": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        }
+                                      },
+                                      "required": [
+                                        "kind",
+                                        "ratedInputW"
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "source",
+                                "id",
+                                "brand",
+                                "model",
+                                "kind",
+                                "spec"
+                              ]
+                            }
+                          },
+                          "repeats": {
+                            "type": "object",
+                            "properties": {
+                              "rowNumber": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "exclusiveMinimum": 0
+                              },
+                              "filePrice": {
+                                "type": "string",
+                                "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$",
+                                "nullable": true
+                              }
+                            },
+                            "required": [
+                              "rowNumber",
+                              "filePrice"
                             ],
                             "nullable": true
                           },
@@ -14589,6 +14983,8 @@
                           "outcome",
                           "attention",
                           "match",
+                          "named",
+                          "repeats",
                           "filePrice",
                           "catalogPrice",
                           "result",
@@ -15004,7 +15400,8 @@
                     "enum": [
                       "keep_catalog_spec",
                       "import_as_own_item"
-                    ]
+                    ],
+                    "nullable": true
                   }
                 },
                 "additionalProperties": false
@@ -15115,6 +15512,381 @@
                             "required": [
                               "source",
                               "id"
+                            ],
+                            "nullable": true
+                          },
+                          "named": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "source": {
+                                  "type": "string",
+                                  "enum": [
+                                    "platform_item",
+                                    "own_item"
+                                  ]
+                                },
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "brand": {
+                                  "type": "string"
+                                },
+                                "model": {
+                                  "type": "string"
+                                },
+                                "kind": {
+                                  "type": "string",
+                                  "enum": [
+                                    "panel",
+                                    "inverter",
+                                    "battery",
+                                    "micro_inverter",
+                                    "optimiser"
+                                  ]
+                                },
+                                "spec": {
+                                  "discriminator": {
+                                    "propertyName": "kind"
+                                  },
+                                  "oneOf": [
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "kind": {
+                                          "type": "string",
+                                          "enum": [
+                                            "panel"
+                                          ]
+                                        },
+                                        "watt": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "technology": {
+                                          "type": "string",
+                                          "enum": [
+                                            "mono_perc",
+                                            "topcon",
+                                            "bifacial",
+                                            "poly",
+                                            "hjt"
+                                          ]
+                                        },
+                                        "lengthMm": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "widthMm": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "vocV": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "vmpV": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "iscA": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "impA": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "tempCoeffVocPct": {
+                                          "type": "number",
+                                          "maximum": 0,
+                                          "exclusiveMaximum": 0
+                                        },
+                                        "tempCoeffPmaxPct": {
+                                          "type": "number",
+                                          "maximum": 0,
+                                          "exclusiveMaximum": 0
+                                        },
+                                        "bifacialityPct": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0,
+                                          "maximum": 100
+                                        },
+                                        "warrantyYears": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "weightKg": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        }
+                                      },
+                                      "required": [
+                                        "kind",
+                                        "watt",
+                                        "technology",
+                                        "lengthMm",
+                                        "widthMm",
+                                        "vocV",
+                                        "vmpV",
+                                        "iscA",
+                                        "impA",
+                                        "tempCoeffVocPct"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "kind": {
+                                          "type": "string",
+                                          "enum": [
+                                            "inverter"
+                                          ]
+                                        },
+                                        "acKw": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "phases": {
+                                          "type": "number",
+                                          "enum": [
+                                            1,
+                                            3
+                                          ]
+                                        },
+                                        "mppt": {
+                                          "type": "object",
+                                          "properties": {
+                                            "count": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "exclusiveMinimum": 0
+                                            },
+                                            "minV": {
+                                              "type": "number",
+                                              "minimum": 0,
+                                              "exclusiveMinimum": 0
+                                            },
+                                            "maxV": {
+                                              "type": "number",
+                                              "minimum": 0,
+                                              "exclusiveMinimum": 0
+                                            },
+                                            "maxCurrentA": {
+                                              "type": "number",
+                                              "minimum": 0,
+                                              "exclusiveMinimum": 0
+                                            },
+                                            "stringsPerMppt": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "exclusiveMinimum": 0
+                                            }
+                                          },
+                                          "required": [
+                                            "count",
+                                            "minV",
+                                            "maxV",
+                                            "maxCurrentA",
+                                            "stringsPerMppt"
+                                          ]
+                                        },
+                                        "maxDcV": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "efficiencyPct": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0,
+                                          "maximum": 100,
+                                          "exclusiveMaximum": 100
+                                        },
+                                        "warrantyYears": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        }
+                                      },
+                                      "required": [
+                                        "kind",
+                                        "acKw",
+                                        "phases",
+                                        "mppt",
+                                        "maxDcV",
+                                        "efficiencyPct"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "kind": {
+                                          "type": "string",
+                                          "enum": [
+                                            "battery"
+                                          ]
+                                        },
+                                        "usableKwh": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "nominalV": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "chemistry": {
+                                          "type": "string",
+                                          "enum": [
+                                            "lfp",
+                                            "nmc",
+                                            "lead_acid"
+                                          ]
+                                        },
+                                        "powerKw": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "cycleLife": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "warrantyYears": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "widthMm": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "depthMm": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "heightMm": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "weightKg": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        }
+                                      },
+                                      "required": [
+                                        "kind",
+                                        "usableKwh",
+                                        "nominalV",
+                                        "chemistry",
+                                        "powerKw",
+                                        "cycleLife",
+                                        "widthMm",
+                                        "depthMm",
+                                        "heightMm",
+                                        "weightKg"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "kind": {
+                                          "type": "string",
+                                          "enum": [
+                                            "micro_inverter"
+                                          ]
+                                        },
+                                        "ratedAcW": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "warrantyYears": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        }
+                                      },
+                                      "required": [
+                                        "kind",
+                                        "ratedAcW"
+                                      ]
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "kind": {
+                                          "type": "string",
+                                          "enum": [
+                                            "optimiser"
+                                          ]
+                                        },
+                                        "ratedInputW": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        },
+                                        "warrantyYears": {
+                                          "type": "number",
+                                          "minimum": 0,
+                                          "exclusiveMinimum": 0
+                                        }
+                                      },
+                                      "required": [
+                                        "kind",
+                                        "ratedInputW"
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "source",
+                                "id",
+                                "brand",
+                                "model",
+                                "kind",
+                                "spec"
+                              ]
+                            }
+                          },
+                          "repeats": {
+                            "type": "object",
+                            "properties": {
+                              "rowNumber": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "exclusiveMinimum": 0
+                              },
+                              "filePrice": {
+                                "type": "string",
+                                "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$",
+                                "nullable": true
+                              }
+                            },
+                            "required": [
+                              "rowNumber",
+                              "filePrice"
                             ],
                             "nullable": true
                           },
@@ -15247,6 +16019,8 @@
                           "outcome",
                           "attention",
                           "match",
+                          "named",
+                          "repeats",
                           "filePrice",
                           "catalogPrice",
                           "result",

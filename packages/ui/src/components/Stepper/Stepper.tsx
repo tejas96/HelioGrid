@@ -2,9 +2,11 @@ import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { resolveSteps, stepLabel } from './resolve-steps';
 import type { StepperProps } from './Stepper.types';
+import { StepperBars } from './StepperBars';
 import { StepperIndicator } from './StepperIndicator';
 import { StepperNumbered } from './StepperNumbered';
 import { StepperRow } from './StepperRow';
+import { isBarsVariant } from './stepper-bars';
 
 interface WebStepperProps extends StepperProps {
   className?: string;
@@ -32,6 +34,19 @@ export function Stepper({
   const percent = total > 1 ? ((index + 1) / total) * 100 : 100;
   const at = steps[index];
   const stepName = at === undefined ? '' : stepLabel(at);
+
+  if (isBarsVariant(variant)) {
+    return (
+      <StepperBars
+        className={className}
+        index={index}
+        label={label}
+        steps={steps}
+        style={style}
+        variant={variant}
+      />
+    );
+  }
 
   if (variant === 'rail') {
     const resolved = resolveSteps(steps, current, reachability);

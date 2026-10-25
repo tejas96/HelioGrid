@@ -33,6 +33,10 @@ export {
 export { shownInNote } from './copy/authored-content';
 export { catalogAttributionRowOf, catalogAttributionWords } from './copy/catalog-attribution';
 export { CATALOG_EDITOR, releaseChangeWord } from './copy/catalog-editor';
+export { catalogImportFields } from './copy/catalog-import-fields';
+export { catalogImportNotes } from './copy/catalog-import-notes';
+export type { ImportRowSubKind, ImportRowWordsFacts } from './copy/catalog-import-rows';
+export { catalogImportRowWords, catalogImportWords } from './copy/catalog-import-rows';
 export type { CatalogStill } from './copy/catalog-settings';
 export {
   CATALOG_SETTINGS,

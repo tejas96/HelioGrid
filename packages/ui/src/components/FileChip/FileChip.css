@@ -1,0 +1,58 @@
+/* FileChip — one chosen file, named (SCR-M01-17 step 1). A soft iris-blue wash over what holds it;
+   the glyph in the iris ink, and on `wide` in its own 36px tile. `FileChip.native.tsx` works the
+   same three mixes out for the phone: a share changed here is changed there in the same commit.
+   14px is the board's chip radius, which the radius scale does not carry. */
+
+.hg-file-chip {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+  padding: var(--sp-3) var(--sp-3) var(--sp-3) 14px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--iris-blue) 8%, var(--hg-ground));
+  font-family: var(--font-sans);
+}
+.hg-file-chip[data-layout="wide"] {
+  padding: var(--sp-3) 14px;
+}
+.hg-file-chip-glyph {
+  flex-shrink: 0;
+  display: inline-flex;
+  color: color-mix(in srgb, var(--iris-blue) 72%, var(--text-primary));
+}
+.hg-file-chip[data-layout="wide"] .hg-file-chip-glyph {
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--iris-blue) 16%, var(--hg-ground));
+}
+.hg-file-chip-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+/* The file's own name is data, not translated copy: one line, cut with an ellipsis. */
+.hg-file-chip-name {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+.hg-file-chip-meta {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+.hg-file-chip-meta[data-tone="problem"] {
+  color: var(--danger-text);
+}

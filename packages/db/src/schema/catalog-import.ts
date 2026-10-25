@@ -11,6 +11,7 @@ import {
   type CatalogImportMapping,
   type CatalogImportSheet,
   type ImportAttention,
+  type ImportNamedItem,
 } from '@heliogrid/domain';
 import { sql } from 'drizzle-orm';
 import {
@@ -162,6 +163,14 @@ export const catalogImportRow = pgTable(
     attention: jsonb('attention').$type<readonly ImportAttention[]>().notNull(),
     catalogItemId: uuid('catalog_item_id').references(() => catalogItem.id),
     tenantCatalogItemId: uuid('tenant_catalog_item_id').references(() => tenantCatalogItem.id),
+    /**
+     * The items the row's brand and model named, whatever its outcome: the one it matched, the one
+     * a question is about, or the candidates it asks between. What a question names and what a
+     * left-out row's *Price before* reads (D129); empty on a row judged before this was kept.
+     */
+    namedItems: jsonb('named_items').$type<readonly ImportNamedItem[]>().notNull().default([]),
+    /** On a `repeated_in_file` row, the sheet row number of the earlier row naming its product. */
+    repeatsRow: integer('repeats_row'),
     /** What the run did with the row; null until it has. */
     result: catalogImportRowResult('result'),
     failure: catalogImportRowFailure('failure'),
@@ -192,6 +201,7 @@ export const catalogImportRow = pgTable(
       table.rowNumber,
     ),
     check('catalog_import_row_number_positive', sql`${table.rowNumber} >= 1`),
+    check('catalog_import_row_repeats_row_positive', sql`${table.repeatsRow} >= 1`),
     // The item a match names is the one its outcome writes to; any other outcome names none.
     check(
       'catalog_import_row_match_names_its_item',

@@ -172,6 +172,8 @@ describe.skipIf(skip)('mapping an import, against a migrated database', () => {
           attention: [],
           catalogItemId: null,
           tenantCatalogItemId: null,
+          namedItems: [],
+          repeatsRow: null,
         },
       ],
       Date.now(),

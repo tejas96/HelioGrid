@@ -160,7 +160,7 @@ export class CatalogImportRunRepository {
       if (rows.length > 0) {
         const writes = await decide({
           rows,
-          named: (names) => namedIn(tx, tenantId, marketCode, names),
+          named: (names) => namedIn(tx, tenantId, marketCode, { names }),
         });
         const results: RowResult[] = [];
         for (const write of writes) results.push(await written(tx, tenantId, write, act));
@@ -245,7 +245,9 @@ async function recordResults(
       ${row.failure}::catalog_import_row_failure, ${row.rateEntryId}::uuid, ${row.createdItemId}::uuid,
       ${verdict?.outcome ?? null}::catalog_import_row_outcome,
       ${verdict === null ? null : JSON.stringify(verdict.attention)}::jsonb,
-      ${verdict?.catalogItemId ?? null}::uuid, ${verdict?.tenantCatalogItemId ?? null}::uuid)`,
+      ${verdict?.catalogItemId ?? null}::uuid, ${verdict?.tenantCatalogItemId ?? null}::uuid,
+      ${verdict === null ? null : JSON.stringify(verdict.namedItems)}::jsonb,
+      ${verdict?.repeatsRow ?? null}::int)`,
   );
   await tx.execute(sql`
     update catalog_import_row r set
@@ -255,10 +257,12 @@ async function recordResults(
       catalog_item_id = case when v.outcome is null then r.catalog_item_id else v.catalog_item_id end,
       tenant_catalog_item_id =
         case when v.outcome is null then r.tenant_catalog_item_id else v.tenant_catalog_item_id end,
+      named_items = coalesce(v.named_items, r.named_items),
+      repeats_row = case when v.outcome is null then r.repeats_row else v.repeats_row end,
       updated_at = ${new Date(now).toISOString()}::timestamptz
     from (values ${sql.join(values, sql`, `)}) as v(
       row_number, result, failure, rate_entry_id, created_item_id, outcome, attention,
-      catalog_item_id, tenant_catalog_item_id)
+      catalog_item_id, tenant_catalog_item_id, named_items, repeats_row)
     where r.tenant_id = ${tenantId} and r.job_id = ${jobId} and r.row_number = v.row_number`);
 }
 

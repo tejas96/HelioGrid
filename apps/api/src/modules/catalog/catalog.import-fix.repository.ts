@@ -8,13 +8,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { and, asc, eq, inArray, or, sql } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import {
+  asShown,
   countsIn,
   inBatches,
   lockedJob,
   type PreviewRow,
   previewColumns,
+  type ShownOn,
   type StoredRow,
-  withRates,
 } from './catalog.import-rows.repository';
 import { type NamedItem, namedIn } from './catalog.slice.repository';
 
@@ -41,8 +42,8 @@ export interface LockedImport {
   named(marketCode: string, names: readonly ImportProductName[]): Promise<readonly NamedItem[]>;
   /** The rows' fixes and verdicts, one statement per batch. */
   write(rows: readonly StoredRow[], now: number): Promise<void>;
-  /** These rows by row number, each with the rate its matched item holds on `pricedOn`. */
-  rows(rowNumbers: readonly number[], pricedOn: string): Promise<PreviewRow[]>;
+  /** These rows by row number, each as the grid shows it. */
+  rows(rowNumbers: readonly number[], shownOn: ShownOn): Promise<PreviewRow[]>;
   counts(): Promise<CatalogImportOutcomeCounts>;
 }
 
@@ -96,18 +97,18 @@ function lockedImport(
         .where(and(ofJob, or(...named)))
         .orderBy(asc(catalogImportRow.rowNumber));
     },
-    named: (marketCode, names) => namedIn(tx, tenantId, marketCode, names),
+    named: (marketCode, names) => namedIn(tx, tenantId, marketCode, { names }),
     async write(rows, now) {
       await inBatches(rows, (batch) => writeVerdicts(tx, tenantId, jobId, batch, now));
     },
-    async rows(rowNumbers, pricedOn) {
+    async rows(rowNumbers, shownOn) {
       if (rowNumbers.length === 0) return [];
       const rows = await tx
         .select(previewColumns)
         .from(catalogImportRow)
         .where(and(ofJob, inArray(catalogImportRow.rowNumber, [...rowNumbers])))
         .orderBy(asc(catalogImportRow.rowNumber));
-      return withRates(tx, tenantId, rows, pricedOn);
+      return asShown(tx, tenantId, jobId, rows, shownOn);
     },
     counts: () => countsIn(tx, tenantId, jobId),
   };
@@ -126,16 +127,18 @@ async function writeVerdicts(
       ${row.rowNumber}::int, ${JSON.stringify(row.fix)}::jsonb, ${row.leftOut}::boolean,
       ${row.answer}::catalog_import_conflict_answer, ${row.outcome}::catalog_import_row_outcome,
       ${JSON.stringify(row.attention)}::jsonb, ${row.catalogItemId}::uuid,
-      ${row.tenantCatalogItemId}::uuid)`,
+      ${row.tenantCatalogItemId}::uuid, ${JSON.stringify(row.namedItems)}::jsonb,
+      ${row.repeatsRow}::int)`,
   );
   await tx.execute(sql`
     update catalog_import_row r set
       fix = v.fix, left_out = v.left_out, answer = v.answer, outcome = v.outcome,
       attention = v.attention, catalog_item_id = v.catalog_item_id,
-      tenant_catalog_item_id = v.tenant_catalog_item_id,
+      tenant_catalog_item_id = v.tenant_catalog_item_id, named_items = v.named_items,
+      repeats_row = v.repeats_row,
       updated_at = ${new Date(now).toISOString()}::timestamptz
     from (values ${sql.join(values, sql`, `)}) as v(
       row_number, fix, left_out, answer, outcome, attention, catalog_item_id,
-      tenant_catalog_item_id)
+      tenant_catalog_item_id, named_items, repeats_row)
     where r.tenant_id = ${tenantId} and r.job_id = ${jobId} and r.row_number = v.row_number`);
 }

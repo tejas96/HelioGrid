@@ -184,3 +184,56 @@
   gap: var(--sp-2);
   min-height: 44px;
 }
+
+/* ── the ring (`size="ring"`) ──────────────────────────────────────────────────
+   `ProgressRing` draws the track and the arc; the arc takes `--hg-ring-ink` from what holds it,
+   the accent when nothing does (`ShareFilter` sets a part's hue). The arc never animates: a stroke
+   offset is not a transform (ui-adherence, Motion). 132px is the board's ring. */
+
+.hg-progress-ring {
+  display: block;
+  flex-shrink: 0;
+}
+
+.hg-progress-ring-track {
+  stroke: var(--canvas-sunken);
+}
+
+.hg-progress-ring-arc {
+  stroke: var(--hg-ring-ink, var(--accent));
+}
+
+.hg-operation-ring {
+  position: relative;
+  align-self: center;
+  flex-shrink: 0;
+  width: 132px;
+  height: 132px;
+  font-family: var(--font-sans);
+}
+
+.hg-operation-ring-centre {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-0-5);
+  text-align: center;
+}
+
+.hg-operation-ring-figure {
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.hg-operation-ring-caption {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}

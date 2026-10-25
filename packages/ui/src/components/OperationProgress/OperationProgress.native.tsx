@@ -8,6 +8,7 @@ import { OperationActions } from './OperationActions.native';
 import { OperationHead } from './OperationHead.native';
 import { OperationMessage } from './OperationMessage.native';
 import type { OperationProgressProps } from './OperationProgress.types';
+import { OperationRing } from './OperationRing.native';
 import { OperationStages } from './OperationStages.native';
 import { countWords, resolveCancel, resolvePercent, stepWords } from './operation-progress-model';
 
@@ -55,6 +56,7 @@ export function OperationProgress({
   destination,
   gradient = false,
   size = 'block',
+  countCaption,
   style,
 }: NativeOperationProgressProps) {
   const running = state === 'running';
@@ -67,6 +69,10 @@ export function OperationProgress({
     cancel !== null ||
     destination !== undefined ||
     (state === 'failed' && onRetry !== undefined && retryLabel !== undefined);
+
+  if (size === 'ring') {
+    return <OperationRing label={label} count={count} countCaption={countCaption} style={style} />;
+  }
 
   return (
     <View style={[styles.shell, style]}>

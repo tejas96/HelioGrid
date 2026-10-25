@@ -1,0 +1,73 @@
+/* ImportFileStep — a part of the catalog import wizard (`SCR-M01-17`); see CatalogImport.css. */
+
+/* ── step 1: the file ─────────────────────────────────────────────────────── */
+
+.hg-import-selects {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-6);
+}
+
+.hg-import-reads {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.hg-import-cells {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The file's own header text: data, in mono, never translated (brief decision 4). */
+.hg-import-cell {
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--rf-md);
+  background: var(--fill);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-primary);
+}
+
+.hg-import-cells[data-wide="true"] .hg-import-cell {
+  padding: var(--sp-1) 10px;
+  border-radius: var(--r-pill);
+  white-space: nowrap;
+}
+
+/* ── kept reports ─────────────────────────────────────────────────────────── */
+
+.hg-import-kept {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-import-kept-head {
+  padding: 0 var(--sp-1);
+}
+
+.hg-import-kept-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--hg-ground);
+  border-radius: 18px;
+  box-shadow: var(--e2);
+}
+
+.hg-list-row.hg-import-kept-row {
+  padding: 10px 14px;
+  border-radius: 0;
+}
+
+.hg-list-row.hg-import-kept-row + .hg-list-row.hg-import-kept-row {
+  box-shadow: inset 0 1px 0 var(--line-soft);
+}

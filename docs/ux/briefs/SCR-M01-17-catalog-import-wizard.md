@@ -68,7 +68,7 @@ Decided: leaving is a dismissal, never a navigation — the head's close and Esc
   The drop surface fills the step, with no template download (owner ruling 2026-10-16). Under it, *Kept reports* lists each kept report by file name and saved date, no counts; a row opens that report (`GET /catalog/imports`). No file chip shows yet; the step's caption keeps the promise that
   nothing changes in the catalog until the import.
 - **Error** — an unreadable file; what happened and what to do next.
-  It is the `Empty` step plus the file, named — the drop area still fills the rest of the step — and a banner that cannot be dismissed, stating the
+  It is the `Empty` step plus the file, named, without *Kept reports* — the drop area still fills the rest of the step — and a banner that cannot be dismissed, stating the
   problem and the fix; the file chip shows the problem in place of its counts and carries no tier; the
   step's caption says the catalog is untouched, *Nothing changes in your catalog until you import.*
   (decision 27), and *Continue*'s `disabledReason` is *No readable file*, in its bubble (G9). A run that fails partway is not this state:
@@ -92,7 +92,7 @@ Decided: leaving is a dismissal, never a navigation — the head's close and Esc
   come first (see needs-attention); the rest fold by outcome, each one raised line with a sample, and open
   to the full list. Each row shows the item, what it matched, its outcome as a word plus a dot (*Price
   override*, *New price on your item*, *New product*), and the price change in mono — the catalog's now,
-  then the file's (*No price* where a platform item has none; a new product shows the file's alone). A row
+  then the file's (*No price* where the catalog holds none, a new product included). A row
   that matches one of the company's own SKUs gives that SKU a new dated rate (`own_item_price`) and is
   counted with the matches (owner ruling 2026-10-16). No second confirm on the act: the
   preview is the confirmation, and the footer states the recovery route in words.

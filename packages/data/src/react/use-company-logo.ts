@@ -1,5 +1,4 @@
 'use client';
-import type { FileErrorCode } from '@heliogrid/contracts';
 import {
   type ChosenImage,
   COMPANY_LOGO_LIMITS,
@@ -10,6 +9,7 @@ import {
 } from '@heliogrid/domain';
 import { useRef, useState } from 'react';
 import { ApiError } from '../errors/errors';
+import { REFUSED_AS_ANOTHER_TYPE } from '../file/repository';
 import { useRepositories } from './context';
 import { useFileLink } from './use-file-link';
 
@@ -19,12 +19,6 @@ export interface ChosenPicture extends ChosenImage {
   /** Something the device can draw before anything is stored; `null` where it has none. */
   readonly picture: string | null;
 }
-
-/** The api's answers that mean the bytes are not the type the device declared. */
-const ANOTHER_TYPE: readonly string[] = [
-  'FILE_CONTENT_MISMATCH',
-  'FILE_TYPE_NOT_TAKEN',
-] satisfies readonly FileErrorCode[];
 
 export interface CompanyLogo {
   readonly facts: CompanyLogoCaptureFacts;
@@ -87,7 +81,7 @@ export function useCompanyLogo(
         storedNow.current = { image, fileId: file.id };
         return file.id;
       } catch (error) {
-        if (error instanceof ApiError && ANOTHER_TYPE.includes(error.code)) return null;
+        if (error instanceof ApiError && REFUSED_AS_ANOTHER_TYPE.includes(error.code)) return null;
         throw error;
       }
     },

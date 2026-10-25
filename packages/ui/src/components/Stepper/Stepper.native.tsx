@@ -5,9 +5,11 @@ import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { resolveSteps, stepLabel } from './resolve-steps';
 import type { StepperProps } from './Stepper.types';
+import { StepperBars } from './StepperBars.native';
 import { StepperIndicator } from './StepperIndicator.native';
 import { StepperNumbered } from './StepperNumbered.native';
 import { StepperRow } from './StepperRow.native';
+import { isBarsVariant } from './stepper-bars';
 
 interface NativeStepperProps extends StepperProps {
   style?: StyleProp<ViewStyle>;
@@ -35,6 +37,12 @@ export function Stepper({
   const percent = total > 1 ? ((index + 1) / total) * 100 : 100;
   const at = steps[index];
   const stepName = at === undefined ? '' : stepLabel(at);
+
+  if (isBarsVariant(variant)) {
+    return (
+      <StepperBars index={index} label={label} steps={steps} style={style} variant={variant} />
+    );
+  }
 
   if (variant === 'rail') {
     const resolved = resolveSteps(steps, current, reachability);
