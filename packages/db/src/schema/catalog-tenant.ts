@@ -19,7 +19,6 @@ import {
 import { uuidv7 } from '../uuid';
 import { catalogItem, componentKind } from './catalog-platform';
 import { creationKeyColumns } from './creation-key';
-import { file } from './file';
 import { userAccount } from './identity';
 import { tenant } from './tenant';
 
@@ -61,8 +60,6 @@ export const tenantCatalogItem = pgTable(
     model: text('model').notNull(),
     spec: jsonb('spec').$type<CatalogSpec>().notNull(),
     certifications: jsonb('certifications').$type<readonly Certification[]>().notNull(),
-    /** The datasheet the SKU was read from (`M01-40`), one `file` row; null for a typed SKU. */
-    sourceDatasheetId: uuid('source_datasheet_id').references(() => file.id),
     preferred: boolean('preferred').notNull(),
     archived: boolean('archived').notNull(),
     createdAt: instant('created_at').notNull(),

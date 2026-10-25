@@ -21,6 +21,7 @@ export const CATALOG_SETTINGS = {
   noRelease: /*i18n*/ { id: 'No release published yet' },
   publish: /*i18n*/ { id: 'Publish' },
   importFile: /*i18n*/ { id: 'Import a file' },
+  addItem: /*i18n*/ { id: 'Add an item' },
   search: /*i18n*/ { id: 'Search brand, model or SKU' },
   searchLabel: /*i18n*/ { id: 'Search the catalog' },
   filters: /*i18n*/ { id: 'Filters' },
@@ -152,6 +153,13 @@ const CHEMISTRY: Record<BatteryChemistry, { id: string }> = {
   lead_acid: /*i18n*/ { id: 'lead-acid' },
 };
 
+/** A chemistry as a choice in a list, in sentence case; `CHEMISTRY` reads inside a spec line. */
+const CHEMISTRY_OPTION: Record<BatteryChemistry, { id: string }> = {
+  lfp: CHEMISTRY.lfp,
+  nmc: CHEMISTRY.nmc,
+  lead_acid: /*i18n*/ { id: 'Lead-acid' },
+};
+
 const SORT: Record<CatalogSort, { id: string }> = {
   preferred: /*i18n*/ { id: 'Preferred first' },
   name: /*i18n*/ { id: 'Name' },
@@ -195,6 +203,8 @@ export const catalogKinds = (t: Translator['t'], kind: ComponentKind) => t(KINDS
 export const catalogTechnology = (t: Translator['t'], technology: PanelTechnology) =>
   t(TECHNOLOGY[technology]);
 export const catalogSort = (t: Translator['t'], sort: CatalogSort) => t(SORT[sort]);
+export const catalogChemistryOption = (t: Translator['t'], chemistry: BatteryChemistry) =>
+  t(CHEMISTRY_OPTION[chemistry]);
 
 /** A failed row's line: what did not save, and what is therefore still true. */
 export const catalogEditFailed = (t: Translator['t'], still: CatalogStill) =>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { IN_CERTIFICATION_SCHEMES } from '../../src/certification/pack';
-import { badgedSchemesOf } from '../../src/certification/pack-schema';
+import { badgedSchemesOf, declaredSchemesOf } from '../../src/certification/pack-schema';
 import { badgedSchemes, undeclaredSchemes } from '../../src/certification/schemes';
 import { IN_PACK } from '../../src/market/pack';
 import { requiredSubsidySchemes } from '../../src/subsidy/path';
@@ -52,5 +52,15 @@ describe('badgedSchemesOf — the schemes a list badges, off the wire', () => {
     ['nothing', undefined, null],
   ])('reads %s', (_case, value, schemes) => {
     expect(badgedSchemesOf(value)).toEqual(schemes);
+  });
+});
+
+describe('declaredSchemesOf — the schemes a form collects, with their evidence', () => {
+  it.each<[string, unknown, unknown]>([
+    ['the IN pack', IN_CERTIFICATION_SCHEMES, IN_CERTIFICATION_SCHEMES.schemes],
+    ['a pack declaring none', { ...IN_CERTIFICATION_SCHEMES, schemes: [] }, []],
+    ['a value that is not the key', { schemes: 'ALMM' }, null],
+  ])('reads %s', (_case, value, schemes) => {
+    expect(declaredSchemesOf(value)).toEqual(schemes);
   });
 });

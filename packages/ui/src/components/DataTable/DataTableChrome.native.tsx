@@ -8,8 +8,17 @@ import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { inkOver } from '../ShareFilter/ShareFilter.inks';
 import { pageWindow } from './DataTable.logic';
 import type { PaginationProps } from './DataTable.types';
+
+/** The row just added (`isRowHighlighted`): the violet iris wash over the page, as the web's 8%. */
+export const ROW_HIGHLIGHT = inkOver(
+  theme.colors['iris-violet'],
+  // biome-ignore lint/plugin/raw-white: iris — the wash is the hue over the page's own white
+  theme.colors.surface,
+  0.08,
+);
 
 /* THE TICK IS THE SYSTEM `Checkbox` (see `DataTableHead`, `DataTableBodyRow`, `DataTableCard`).
    A private `SelectBox` lived here — its own 20px box, its own `rf-xs` radius, its own 1.5px

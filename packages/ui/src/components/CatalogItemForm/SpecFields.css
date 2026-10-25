@@ -1,0 +1,60 @@
+/* SpecFields — the add sheet's spec block (`SCR-M01-16`); see CatalogItemForm.css. Each row is a
+   grid of equal columns, 12 apart, its fields top-aligned; rows lie 16 apart, as the card's own
+   parts do. A row may leave a column empty: a lone field keeps its column's width. */
+
+.hg-item-spec {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.hg-item-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-3);
+  align-items: start;
+  min-width: 0;
+}
+
+.hg-item-grid[data-columns="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.hg-item-grid[data-columns="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.hg-item-grid[data-columns="4"] {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* *Add optional values* or *Optional*, with the panel's ask beside it. */
+.hg-item-optional-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.hg-item-optional-head > .hg-button {
+  flex-shrink: 0;
+}
+
+.hg-item-optional-title {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  font-weight: var(--fw-bold);
+  color: var(--text-secondary);
+}
+
+/* The pre-fill's wait: nine bars of a field's height on the spec grid, the last across both. */
+.hg-loading-bars.hg-item-spec-loading {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--sp-3);
+  row-gap: var(--sp-4);
+}
+
+.hg-loading-bars.hg-item-spec-loading > :last-child {
+  grid-column: 1 / -1;
+}

@@ -1,0 +1,23 @@
+/* IrisTile — a glyph on its iris. The wash and ink are `Avatar.css`'s `hg-iris` rule; the side is
+   the board's for the part that holds it, and the corner the system's small radius. */
+.hg-iris-tile {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--hg-iris-tile);
+  height: var(--hg-iris-tile);
+  border-radius: var(--r-sm);
+}
+.hg-iris-tile[data-size="32"] {
+  --hg-iris-tile: 32px;
+}
+.hg-iris-tile[data-size="34"] {
+  --hg-iris-tile: 34px;
+}
+.hg-iris-tile[data-size="36"] {
+  --hg-iris-tile: 36px;
+}
+.hg-iris-tile[data-size="40"] {
+  --hg-iris-tile: 40px;
+}

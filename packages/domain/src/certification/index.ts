@@ -15,7 +15,7 @@ export type {
   StandardsLabels,
 } from './pack';
 export { CERTIFICATION_EVIDENCE, IN_CERTIFICATION_SCHEMES } from './pack';
-export { badgedSchemesOf } from './pack-schema';
+export { badgedSchemesOf, declaredSchemesOf } from './pack-schema';
 export type { CertificationVerdict } from './schemes';
 export {
   badgedSchemes,

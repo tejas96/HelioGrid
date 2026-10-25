@@ -616,12 +616,12 @@ Reviewer findings rejected: none.
 
 ### T-M01-016 · Add Catalog Item
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped
 **Why:** A rep mid-proposal adds the panel the supplier just quoted — by typing it or through the spreadsheet path — and it is selected in place before the customer notices a pause; without it a missing product means leaving the builder for settings, or waiting on the platform.
 **PRD rows:** M01-36 (P0), M01-39 (P0)
 **DESIGN:** SCR-M01-16 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-16-add-catalog-item.md`; they are the specification.
-**Data model:** none — reads `tenant_catalog_item`, `catalog_item` and `catalog_rate_entry` authored by `T-M01-027` (migration 0015).
+**Data model:** reads `tenant_catalog_item`, `catalog_item` and `catalog_rate_entry` authored by `T-M01-027` (migration 0015); migration 0030 drops `tenant_catalog_item.source_datasheet_id`, which nothing reads or writes (owner ruling 2026-10-25: catalog files are Excel or CSV only).
 **Contract:** `packages/contracts/src/catalog.ts` — POST /catalog/items (the single form; a picker pre-fill carries brand, model and specs only — the server copies no certification and no price) · GET /catalog/items/{id} (the selected item the pre-filled sheet reads) · POST /catalog/items/{id}/rate-entries (the rate entered afresh) · `packages/contracts/src/market.ts` — GET /market-packs/{marketCode} (the scheme flags the tenant enters). Domain read: the per-kind spec envelopes and gates in `packages/domain/src/catalog/specs.ts` (field-addressable `details[]` on a gate failure).
 **Depends on:** `T-M01-027` (migration 0015; the routes and spec gates) · `T-M01-025` (the guard for `onboarding.add_own_catalog_items` and `onboarding.manage_catalog`) · `T-FCORE-016` (the pack read) · `T-M01-015` (the Catalog settings screen this sheet adds its entry to, and the return landing) · `T-M01-017` (the spreadsheet path it hands to).
 **Out of scope:** the tables, the resolver and the gates — `T-M01-027`; the spreadsheet import — `T-M01-017`, `T-M01-030`; the pickers themselves — `T-M06-010`, `T-MS-201`, `T-MS-202`; a platform request queue — does not exist (M01-46).

@@ -27,17 +27,6 @@
 
 /* The kind's tile: the iris wash and ink are `.hg-iris`'s (`Avatar.css`), the rule a kind Badge
    takes. The board's 34px sits between the scale's 32 and 40, so it is named here. */
-.hg-dt-lead-tile {
-  --hg-dt-lead-tile: 34px;
-  width: var(--hg-dt-lead-tile);
-  height: var(--hg-dt-lead-tile);
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--r-sm);
-}
-
 .hg-dt-lead-text {
   display: flex;
   flex-direction: column;

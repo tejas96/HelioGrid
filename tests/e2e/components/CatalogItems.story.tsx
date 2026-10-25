@@ -121,7 +121,8 @@ export type ItemsFrame =
   | 'loading'
   | 'error'
   | 'edit-failed'
-  | 'no-schemes';
+  | 'no-schemes'
+  | 'added';
 
 /**
  * The Items panel as the page holds it, in `reader`'s language, for one board frame. A row asked
@@ -237,6 +238,8 @@ export function CatalogItemsAsRead({ reader, frame }: { reader: UiLanguage; fram
         }
         administers={administers}
         onImport={administers ? () => undefined : null}
+        onAdd={administers ? () => setActed('add') : null}
+        addedId={frame === 'added' ? 'rayzon' : null}
         onOpen={(row) => setOpened(row.id)}
         onPrefer={act('prefer')}
         onHide={act('hide')}

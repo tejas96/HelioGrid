@@ -7,7 +7,7 @@ import {
   useCatalogScroll,
 } from '@heliogrid/data/react';
 import { catalogFiltersOn, NO_CATALOG_FILTER } from '@heliogrid/domain';
-import { catalogActToast, catalogItemsViewOf } from '@heliogrid/i18n';
+import { catalogActToast, catalogItemAddedToast, catalogItemsViewOf } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
   CatalogItems,
@@ -17,6 +17,7 @@ import {
   type useToasts,
 } from '@heliogrid/ui';
 import { useMemo, useState } from 'react';
+import { AddItemSheet } from './AddItemSheet';
 import { ImportSheet } from './ImportSheet';
 import { ItemsSheets } from './ItemsSheets';
 
@@ -40,10 +41,22 @@ export function ItemsPanel({
     filter: NO_CATALOG_FILTER,
     sort: 'preferred',
   });
-  const list = useCatalogScroll(view);
+  /** The item just added stands first, tinted, until the view changes. */
+  const [added, setAdded] = useState<ResolvedCatalogItemWire | null>(null);
+  const list = useCatalogScroll(view, added);
   const acts = useCatalogActs((note) => toasts.push(catalogActToast(t, note)));
   const sheets = useCatalogOverlays(acts);
   const [importing, setImporting] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const viewed = (next: Partial<CatalogView>) => {
+    setView((now) => ({ ...now, ...next }));
+    setAdded(null);
+  };
+  const onAdded = (item: ResolvedCatalogItemWire) => {
+    setAdding(false);
+    setAdded(item);
+    toasts.push(catalogItemAddedToast(t, `${item.brand} ${item.model}`));
+  };
   const byId = useMemo(() => new Map(list.items.map((item) => [item.id, item])), [list.items]);
   const input = {
     items: list.items,
@@ -77,15 +90,20 @@ export function ItemsPanel({
           void list.refetch();
           facts.retry();
         }}
-        strip={{ ...shown.strip, onLink: sheets.openReleases, onAction: sheets.openPublish }}
+        strip={{
+          ...shown.strip,
+          action: adding ? null : shown.strip.action,
+          onLink: sheets.openReleases,
+          onAction: sheets.openPublish,
+        }}
         viewOnly={shown.viewOnly}
         teaching={shown.teaching}
         query={view.q}
-        onQuery={(q) => setView((now) => ({ ...now, q }))}
+        onQuery={(q) => viewed({ q })}
         filter={view.filter}
-        onFilter={(filter) => setView((now) => ({ ...now, filter }))}
+        onFilter={(filter) => viewed({ filter })}
         sort={view.sort}
-        onSort={(sort) => setView((now) => ({ ...now, sort }))}
+        onSort={(sort) => viewed({ sort })}
         schemes={facts.schemes}
         rows={shown.rows}
         rowStates={catalogRowStatesOf(shown.statuses, acts.rows)}
@@ -99,6 +117,8 @@ export function ItemsPanel({
         archivedCaption={shown.archivedCaption}
         administers={facts.administers}
         onImport={facts.administers ? () => setImporting(true) : null}
+        onAdd={facts.administers ? () => setAdding(true) : null}
+        addedId={added?.id ?? null}
         onOpen={onItem(sheets.openEditor)}
         onPrefer={onItem(acts.togglePreferred)}
         onHide={onItem(acts.toggleHidden)}
@@ -107,6 +127,17 @@ export function ItemsPanel({
       />
       <ItemsSheets sheets={sheets} schemes={facts.schemes} release={facts.release} />
       {importing ? <ImportSheet onClose={() => setImporting(false)} /> : null}
+      {adding ? (
+        <AddItemSheet
+          priced={facts.administers}
+          onClose={() => setAdding(false)}
+          onAdded={onAdded}
+          onSpreadsheet={() => {
+            setAdding(false);
+            setImporting(true);
+          }}
+        />
+      ) : null}
     </>
   );
 }

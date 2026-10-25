@@ -31,6 +31,10 @@ export {
   grantLineWords,
 } from './copy/assign-roles';
 export { shownInNote } from './copy/authored-content';
+export type { AddItemCaller, AddItemFacts, CatalogAddItemWords } from './copy/catalog-add-item';
+export { catalogAddItemWords, catalogItemAddedToast } from './copy/catalog-add-item';
+export type { AddItemFieldWords } from './copy/catalog-add-item-fields';
+export { catalogItemFailuresOf, catalogItemFailureWords } from './copy/catalog-add-item-fields';
 export { catalogAttributionRowOf, catalogAttributionWords } from './copy/catalog-attribution';
 export { CATALOG_EDITOR, releaseChangeWord } from './copy/catalog-editor';
 export { catalogImportFields } from './copy/catalog-import-fields';
@@ -40,6 +44,7 @@ export { catalogImportRowWords, catalogImportWords } from './copy/catalog-import
 export type { CatalogStill } from './copy/catalog-settings';
 export {
   CATALOG_SETTINGS,
+  catalogChemistryOption,
   catalogEditFailed,
   catalogKind,
   catalogKinds,

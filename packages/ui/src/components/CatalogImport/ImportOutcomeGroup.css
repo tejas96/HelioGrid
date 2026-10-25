@@ -19,16 +19,6 @@
   box-shadow: var(--e2);
 }
 
-.hg-import-group-tile {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--r-sm);
-}
-
 .hg-import-group-words {
   flex: 1;
   min-width: 0;

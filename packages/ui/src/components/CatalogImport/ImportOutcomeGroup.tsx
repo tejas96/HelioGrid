@@ -3,6 +3,7 @@ import { Fragment } from 'react';
 import { Pressable } from '../../primitives/Pressable';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Button } from '../Button';
+import { IrisTile } from '../IrisTile/IrisTile';
 import { StatusChip } from '../StatusChip';
 import { type ImportFormats, type ImportListRowView, listRowOf } from './CatalogImport.logic';
 import type { CatalogImportWords, ImportGroupId, ImportRowList } from './CatalogImport.types';
@@ -52,10 +53,7 @@ export function ImportOutcomeGroup(props: ImportOutcomeGroupProps) {
         accessibilityState={{ expanded: open }}
         onPress={props.onToggle}
       >
-        {/* The brand iris rule (`Avatar.css`): one wash and one ink, held at 4.5:1 by Badge.spec. */}
-        <span className="hg-import-group-tile hg-iris" data-iris={tile.hue}>
-          <ImportGlyph name={tile.glyph} size="md" stroke={1.7} />
-        </span>
+        <IrisTile glyph={tile.glyph} iris={tile.hue} size={36} stroke={1.7} />
         <span className="hg-import-group-words">
           <span className="hg-import-group-title">
             {words.groupTitle(words.groups[group.id], group.total)}

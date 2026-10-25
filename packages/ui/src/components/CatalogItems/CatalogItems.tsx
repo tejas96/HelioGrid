@@ -74,7 +74,7 @@ export function CatalogItems(props: CatalogItemsProps) {
           </Text>
         </Block>
       )}
-      {wide ? <ImportEntry onImport={props.onImport} label={words.importFile} wide /> : null}
+      {wide ? <ListEntries props={props} wide /> : null}
       <CatalogItemsControls
         words={words}
         query={props.query}
@@ -98,36 +98,54 @@ export function CatalogItems(props: CatalogItemsProps) {
       ) : (
         <CatalogList {...props} wide={wide} />
       )}
-      {wide || loading ? null : <ImportEntry onImport={props.onImport} label={words.importFile} />}
+      {wide || loading ? null : <ListEntries props={props} wide={false} />}
     </div>
   );
 }
 
 /**
- * *Import a file*: at 1536 it heads the list's controls, right-aligned, raised; at 375 it closes
- * the list, centred, quiet — where an owner concludes an item is missing (`SCR-M01-15`).
+ * *Add an item* and *Import a file*: at 1536 they head the list's controls, right-aligned, the
+ * import raised and the add the act; at 375 they close the list, centred, the add raised and the
+ * import quiet — where an owner concludes an item is missing (`SCR-M01-15`, `SCR-M01-16`).
  */
-function ImportEntry({
-  onImport,
-  label,
-  wide = false,
-}: {
-  onImport: (() => void) | null;
-  label: string;
-  wide?: boolean;
-}) {
-  if (onImport === null) return null;
+function ListEntries({ props, wide }: { props: CatalogItemsProps; wide: boolean }) {
+  const { onAdd, onImport, words } = props;
+  if (onAdd === null && onImport === null) return null;
+  const add = onAdd === null ? null : <AddEntry onAdd={onAdd} label={words.addItem} wide={wide} />;
+  const importing =
+    onImport === null ? null : (
+      <ImportEntry onImport={onImport} label={words.importFile} wide={wide} />
+    );
   return (
     <div className="hg-cat-entry" data-wide={wide ? 'true' : undefined}>
-      <Button
-        variant={wide ? 'secondary' : 'ghost'}
-        size="sm"
-        onClick={onImport}
-        icon={<ShellGlyph name="upload" size={wide ? 'sm' : 'md'} tone="primary" />}
-      >
-        {label}
-      </Button>
+      {wide ? importing : add}
+      {wide ? add : importing}
     </div>
+  );
+}
+
+interface EntryProps {
+  label: string;
+  wide: boolean;
+}
+
+function AddEntry({ onAdd, label, wide }: EntryProps & { onAdd: () => void }) {
+  const glyph = (
+    <ShellGlyph name="plus" size={wide ? 'sm' : 'md'} tone={wide ? 'inverse' : 'primary'} />
+  );
+  return (
+    <Button variant={wide ? 'primary' : 'secondary'} size="sm" onClick={onAdd} icon={glyph}>
+      {label}
+    </Button>
+  );
+}
+
+function ImportEntry({ onImport, label, wide }: EntryProps & { onImport: () => void }) {
+  const glyph = <ShellGlyph name="upload" size={wide ? 'sm' : 'md'} tone="primary" />;
+  return (
+    <Button variant={wide ? 'secondary' : 'ghost'} size="sm" onClick={onImport} icon={glyph}>
+      {label}
+    </Button>
   );
 }
 
@@ -155,6 +173,7 @@ function CatalogList(props: CatalogItemsProps & { wide: boolean }) {
     stackBelow: CATALOG_WIDE_FROM,
     rowLabel: (row: CatalogRow) => row.labels.row,
     isRowMuted: (row: CatalogRow) => row.archived,
+    isRowHighlighted: (row: CatalogRow) => row.id === props.addedId,
     rowPending: (row: CatalogRow) => catalogRowPending(props.rowStates[row.id], words),
     onRowClick: administers ? props.onOpen : undefined,
     rowOpens: (row: CatalogRow) => !row.archived,

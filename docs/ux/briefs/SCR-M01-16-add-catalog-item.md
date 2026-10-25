@@ -106,9 +106,9 @@ No value carries an F8 tier (decision 4); each carries `M01-35`'s provenance lab
 - **Manually entered spec and rate values** on the single form — tenant-provided provenance (M01-36, M01-35 enum).
 - **Pre-filled spec values** from a picker's selected item — tenant-provided provenance once saved as the new SKU's own values (M01-39, M01-35 enum); the **scheme-certification flags and the rate** are never copied from the selected item and open blank (M01-39).
 
-## Redesign owed
+## Building from the boards
 
-- Every frame drops the datasheet path: the datasheet accelerator tile and its reading and refused states, the datasheet-review frames and the extraction-failed frame. The spreadsheet tile is the one accelerator, full width at 1536 and 375.
+The locked boards are built as drawn, with one difference (owner ruling 2026-10-25, no redraw): no datasheet path is built. The datasheet tile is left out, and the spreadsheet tile fills its row alone at 1536 and 375. The datasheet-only frames are not built: `375 · loading · reading the datasheet`, `375 · error · the upload was refused`, both `375 · pdf-extraction-review` frames, `375 · extraction-failed-prefilled-manual` and `1536 · pdf-extraction-review`.
 
 ---
 

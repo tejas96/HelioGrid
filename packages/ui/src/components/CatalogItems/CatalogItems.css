@@ -166,10 +166,14 @@
 /* *Import a file*: centred under the list at 375, right-aligned over the controls at 1536. */
 .hg-cat-entry {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
   gap: var(--sp-2);
 }
 
+/* The board's 1536 toolbar: the import, then the add, right-aligned, 10 apart. */
 .hg-cat-entry[data-wide] {
   justify-content: flex-end;
+  gap: 10px;
 }

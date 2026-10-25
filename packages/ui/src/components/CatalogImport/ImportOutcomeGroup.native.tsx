@@ -5,8 +5,8 @@ import { StyleSheet, View } from 'react-native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
-import { irisTintOf } from '../Avatar/Avatar.logic';
 import { Button } from '../Button/Button.native';
+import { IrisTile } from '../IrisTile/IrisTile.native';
 import { StatusChip } from '../StatusChip/StatusChip.native';
 import { type ImportFormats, type ImportListRowView, listRowOf } from './CatalogImport.logic';
 import { CARD_RADIUS, raisedCard, rowDivider } from './CatalogImport.surfaces.native';
@@ -43,8 +43,6 @@ interface ImportOutcomeGroupProps {
 export function ImportOutcomeGroup(props: ImportOutcomeGroupProps) {
   const { group, open, words } = props;
   const tile = GROUP_TILE[group.id] ?? { glyph: 'lines', hue: 'blue' };
-  // The brand iris rule, as the web's `.hg-iris` mixes it: one wash and one ink for every face.
-  const tint = irisTintOf(tile.hue);
   const sample = groupSampleOf(group.rows, words, props.formats, props.phase);
   return (
     <View style={styles.group}>
@@ -53,9 +51,7 @@ export function ImportOutcomeGroup(props: ImportOutcomeGroupProps) {
         onPress={props.onToggle}
         style={styles.line}
       >
-        <View style={[styles.tile, { backgroundColor: tint.bg }]}>
-          <ImportGlyph name={tile.glyph} size="md" stroke={1.7} color={tint.fg} />
-        </View>
+        <IrisTile glyph={tile.glyph} iris={tile.hue} size={36} stroke={1.7} />
         <View style={styles.words}>
           <Text variant="body-sm" bold>
             {words.groupTitle(words.groups[group.id], group.total)}
@@ -224,10 +220,8 @@ function PricePair({ view, words }: { view: ImportListRowView; words: CatalogImp
   );
 }
 
-/* The board's 375 group: the line radius 18 at 12 by 14, 12 between its parts, a 36 tile radius
-   12; the list's rows 12 by 14, 4 between their lines, the chip and the pair 2 under them. */
-const TILE = 36;
-
+/* The board's 375 group: the line radius 18 at 12 by 14, 12 between its parts, a 36 tile; the
+   list's rows 12 by 14, 4 between their lines, the chip and the pair 2 under them. */
 const styles = StyleSheet.create({
   group: { gap: theme.spacing['sp-3'] },
   line: {
@@ -239,14 +233,6 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing['sp-3'],
     paddingHorizontal: 14,
     borderRadius: CARD_RADIUS,
-  },
-  tile: {
-    width: TILE,
-    height: TILE,
-    flexShrink: 0,
-    borderRadius: theme.radius['r-sm'],
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   words: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
   sampleMoney: { fontSize: theme.type.roles.caption.fontSize },

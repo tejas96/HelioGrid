@@ -35,7 +35,12 @@
 .hg-paged-document-card,
 .hg-paged-document-unavailable,
 /* A settings page's raised card (`SettingsCard`): a page ground over the page. */
-.hg-settings-card {
+.hg-settings-card,
+/* The add sheet's raised cards, its spreadsheet tile and a scheme row switched off
+   (`CatalogItemForm`): white over the sheet, each painting its ground. */
+.hg-item-card,
+.hg-item-accelerator,
+.hg-item-scheme[data-on="false"] {
   /* biome-ignore lint/plugin/raw-white-css: ground — the ground itself, and Surface, which sets it */
   --hg-ground: var(--surface);
   --hg-control-fill: var(--fill);
@@ -90,6 +95,9 @@
 .hg-transcript-error,
 .hg-compare-option-head[data-selected="true"],
 .hg-compare-cell[data-selected="true"],
+/* The add sheet's scheme row switched on (`CatalogItemForm`): the success wash holds its switch
+   and its reference field as any tint does. */
+.hg-item-scheme[data-on="true"],
 /* A stacked record that holds an editor lies on the page (F7-49), but its flag, resolved or selected
    tint holds its buttons as any tint does; the editor keeps `FieldBox`'s well. */
 .hg-dt-card[data-issue="true"],

@@ -24,6 +24,7 @@ function cardStateAttrs(state: RowState) {
     'data-issue': state.issue === null ? undefined : 'true',
     'data-fixed': state.issue === null && state.flagged ? 'true' : undefined,
     'data-muted': state.muted ? 'true' : undefined,
+    'data-highlighted': state.highlighted ? 'true' : undefined,
   };
 }
 

@@ -1,0 +1,41 @@
+/* ItemFormFoot — the add sheet's foot (`SCR-M01-16`); see CatalogItemForm.css. The line over the
+   acts, centred; the two acts share the row equally, 12 apart. The board spaces the line from the
+   acts 10 at 1536 and 8 at 375. */
+
+.hg-item-foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-item-foot[data-wide="true"] {
+  gap: 10px;
+}
+
+.hg-item-foot-line {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.hg-pending-action.hg-item-foot-returned {
+  justify-content: center;
+  text-align: center;
+}
+
+.hg-item-foot-returned .hg-pending-action-words {
+  flex: 0 1 auto;
+}
+
+.hg-item-foot-acts {
+  display: flex;
+  gap: var(--sp-3);
+}
+
+.hg-button.hg-item-foot-act {
+  flex: 1;
+  min-width: 0;
+}

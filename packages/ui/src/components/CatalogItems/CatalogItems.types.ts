@@ -44,6 +44,10 @@ export interface CatalogItemsProps {
   administers: boolean;
   /** *Import a file* (`SCR-M01-17`): `null` draws none — absent without the outright grant, never disabled. */
   onImport: (() => void) | null;
+  /** *Add an item* (`SCR-M01-16`): `null` draws none — absent without the outright grant. */
+  onAdd: (() => void) | null;
+  /** The item just added: its row is tinted until the app clears it (`SCR-M01-16` decision 1). */
+  addedId: string | null;
   /** The row was asked for: the app opens its price editor. Absent without the grant. */
   onOpen: (row: CatalogRow) => void;
   onPrefer: (row: CatalogRow) => void;
@@ -135,6 +139,7 @@ export type CatalogPaging =
 /** Every fixed word of the panel: `@heliogrid/i18n`'s `catalogItemsWords`. */
 export interface CatalogItemsWords {
   readonly importFile: string;
+  readonly addItem: string;
   readonly item: string;
   readonly whatItIs: string;
   readonly compliance: string;

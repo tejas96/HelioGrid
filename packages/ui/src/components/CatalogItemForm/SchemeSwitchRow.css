@@ -1,0 +1,35 @@
+/* SchemeSwitchRow — one certification scheme of the add sheet (`SCR-M01-16`). On: the success
+   wash, a tinted ground; off: white on the card inside a thin edge, a page ground (Ground.css).
+   The board's corner 16, 14 at each side, 14 under a reference field, 10 between. */
+
+.hg-item-scheme {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 14px;
+  border-radius: var(--r-md);
+}
+
+.hg-item-scheme[data-on="true"] {
+  background: var(--success-bg);
+}
+
+.hg-item-scheme[data-on="false"] {
+  background: var(--hg-ground);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
+}
+
+.hg-item-scheme[data-reference="true"] {
+  padding-bottom: 14px;
+}
+
+/* The words at the start, the switch at the end, across the whole row. */
+.hg-switch.hg-item-scheme-switch {
+  width: 100%;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+.hg-item-scheme-switch .hg-switch-label {
+  font-size: var(--fs-body);
+}

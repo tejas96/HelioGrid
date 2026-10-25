@@ -1,8 +1,10 @@
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { FIELD_BOX_EDGE, fieldBox, fieldBoxText } from '../../primitives/FieldBox/FieldBox.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { useFocusRequest } from '../../primitives/use-focus-request';
 import type { NumberDraftState } from './NumberField.state';
 
 const styles = StyleSheet.create({
@@ -23,6 +25,8 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     alignSelf: 'stretch',
+    /* Over the well's 1px edge, as `Input`'s field: the target is the well's whole 44. */
+    marginVertical: -FIELD_BOX_EDGE,
     textAlign: 'left',
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.field.value,
@@ -48,6 +52,8 @@ export interface NumberFieldBoxProps {
   label?: string;
   unit?: string;
   currency: boolean;
+  /** `NumberFieldProps.focusRequest`. */
+  focusRequest?: number;
 }
 
 /** The control itself: the two nudge targets (each a Pressable, so each is 44px), and the figure. */
@@ -60,7 +66,10 @@ export function NumberFieldBox({
   label,
   unit,
   currency,
+  focusRequest,
 }: NumberFieldBoxProps) {
+  const control = useRef<TextInput>(null);
+  useFocusRequest(control, focusRequest);
   const name = label ?? 'value';
   const ink = disabled ? 'disabled' : 'secondary';
   return (
@@ -85,6 +94,7 @@ export function NumberFieldBox({
         </Pressable>
       ) : null}
       <TextInput
+        ref={control}
         style={[
           styles.input,
           steppers ? styles.inputSteppers : null,

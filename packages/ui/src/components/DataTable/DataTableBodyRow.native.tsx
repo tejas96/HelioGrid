@@ -13,7 +13,7 @@ import { alignOf, type DensitySpec } from './DataTable.logic';
 import type { DataTableProps } from './DataTable.types';
 import { DataTableCell } from './DataTableCell.native';
 import { CellShell } from './DataTableCellShell.native';
-import { tickPullback } from './DataTableChrome.native';
+import { ROW_HIGHLIGHT, tickPullback } from './DataTableChrome.native';
 import { RowNote } from './DataTableFeedback.native';
 import type { RowState } from './DataTableRow.logic';
 import { needsRoom, resolveRow, rowOpenOf } from './DataTableRow.logic';
@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
   fixed: { backgroundColor: theme.colors['success-bg'] },
   selected: { backgroundColor: theme.colors['accent-subtle'] },
   muted: { opacity: 0.55 },
+  highlighted: { backgroundColor: ROW_HIGHLIGHT },
   actions: { flexDirection: 'row', gap: 6, justifyContent: 'flex-end' },
   standing: { marginTop: theme.spacing['sp-1'] },
   spaced: { marginBottom: 10 },
@@ -50,6 +51,7 @@ function rowTintStyle(
   return [
     state.zebra && !quiet ? styles.zebra : { backgroundColor: quiet ? 'transparent' : ground },
     quiet && index > 0 ? styles.hairline : null,
+    state.highlighted ? styles.highlighted : null,
     state.issue !== null ? styles.issue : state.flagged ? styles.fixed : null,
     state.isSelected ? styles.selected : null,
   ];

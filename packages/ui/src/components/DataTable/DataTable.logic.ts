@@ -59,12 +59,6 @@ export const DATA_TABLE_STACK_BELOW = 640;
  */
 export const QUIET_HEAD = { headH: 34, headGap: 16, cellPadY: 14, rowH: 82 } as const;
 
-/**
- * **The kind tile's side** (`D268`, `SCR-M01-15`'s catalogue rows): between the scale's 32 and 40,
- * so it is named. The web half names the same number in `DataTableCell.css`.
- */
-export const LEAD_TILE = 34;
-
 /** The density spec a quiet table's wide form draws with. */
 export function quietSpec(spec: DensitySpec): DensitySpec {
   return { ...spec, edge: spec.gutter, headH: QUIET_HEAD.headH, rowH: QUIET_HEAD.rowH };

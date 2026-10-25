@@ -31,6 +31,8 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     alignSelf: 'stretch',
+    /* Over the well's 1px edge, as `Input`'s field: the target is the box's whole 44. */
+    marginVertical: -FIELD_BOX_EDGE,
     // `Input`'s face, as `NumberField`'s: a typed end reads as what was typed.
     fontFamily: theme.type.families.sans,
     fontSize: 14,

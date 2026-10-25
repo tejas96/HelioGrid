@@ -35,6 +35,7 @@ export function NumberField({
   value,
   onCommit,
   onClear,
+  focusRequest,
   min,
   max,
   step = 1,
@@ -103,6 +104,7 @@ export function NumberField({
         label={label}
         unit={unit}
         currency={currency}
+        focusRequest={focusRequest}
       />
       <NumberFieldSlots
         override={override}

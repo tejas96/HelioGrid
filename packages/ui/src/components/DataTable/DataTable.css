@@ -206,6 +206,11 @@
 
 /* `rowIssue` says BROKEN; `rowResolved` says the caller accepted the fix. Selection wins over
    both, and a MUTED row is dimmed — done-and-inactive, which is not a problem marker. */
+.hg-dt-row[data-highlighted="true"],
+.hg-dt-row-line[data-highlighted="true"] {
+  background: var(--hg-dt-highlight);
+}
+
 .hg-dt-row[data-issue="true"],
 .hg-dt-row-line[data-issue="true"] {
   background: var(--warning-bg);

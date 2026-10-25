@@ -190,6 +190,48 @@ test('reduced motion shows the end state', async ({ mount, page }) => {
   }
 });
 
+test('draws Add an item only when it is offered', async ({ mount, page }) => {
+  for (const { width, wide } of WIDTHS) {
+    await at(page, width);
+    let frame = await mount(<CatalogItemsAsRead reader="en" frame="normal" />);
+    const add = page.getByRole('button', { name: en.addItem });
+    const importing = page.getByRole('button', { name: en.importFile });
+    await expect(add).toBeVisible();
+    const [addBox, importBox] = [await add.boundingBox(), await importing.boundingBox()];
+    /* 1536 heads the controls: the import, then the add; 375 closes the list: the add first. */
+    if (wide) expect(addBox?.x ?? 0).toBeGreaterThan(importBox?.x ?? 0);
+    else expect(addBox?.x ?? 0).toBeLessThan(importBox?.x ?? 0);
+    expect(addBox?.height ?? 0).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
+    await add.click();
+    await expect(page.locator('[data-acted="add"]')).toHaveCount(1);
+    await frame.unmount();
+    frame = await mount(<CatalogItemsAsRead reader="en" frame="view-only" />);
+    await expect(page.getByText(ADANI, { exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: en.addItem })).toHaveCount(0);
+    await frame.unmount();
+  }
+});
+
+test('tints the added row at both widths', async ({ mount, page }) => {
+  for (const { width } of WIDTHS) {
+    await at(page, width);
+    const frame = await mount(<CatalogItemsAsRead reader="en" frame="added" />);
+    const tinted = page.locator('[data-highlighted="true"]');
+    await expect(tinted.first()).toContainText('Rayzon Solar RS-550');
+    await expect(tinted.filter({ hasText: ADANI })).toHaveCount(0);
+    const [added, other] = await Promise.all([
+      tinted.first().evaluate((node) => getComputedStyle(node).backgroundColor),
+      page
+        .locator('.hg-dt-row, .hg-dt-card')
+        .filter({ hasText: GROWATT })
+        .first()
+        .evaluate((node) => getComputedStyle(node).backgroundColor),
+    ]);
+    expect(added).not.toBe(other);
+    await frame.unmount();
+  }
+});
+
 test('a pack with no schemes draws no compliance column', async ({ mount, page }) => {
   for (const { width } of WIDTHS) {
     await at(page, width);

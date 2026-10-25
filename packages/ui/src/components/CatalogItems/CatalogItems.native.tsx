@@ -8,7 +8,6 @@ import { theme } from '@heliogrid/theme';
 import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Banner } from '../Banner/Banner.native';
 import { Block } from '../Block/Block.native';
 import { Button } from '../Button/Button.native';
@@ -27,6 +26,7 @@ import { SearchField } from '../SearchField/SearchField.native';
 import { catalogFilterDimensions, catalogFilterOf, catalogFilterValue } from './CatalogItems.logic';
 import { catalogRowPending } from './CatalogItems.rows';
 import type { CatalogItemsProps, CatalogPaging, CatalogRow } from './CatalogItems.types';
+import { ListEntries } from './CatalogItemsFoot.native';
 import { CatalogRowActs } from './CatalogRowActs';
 import { CatalogStripBar } from './CatalogStrip';
 import { useRetryFocus } from './use-retry-focus';
@@ -142,6 +142,7 @@ function ItemList({ props }: { props: CatalogItemsProps }) {
     summary: words.summary,
     rowLabel: (row: CatalogRow) => row.labels.row,
     isRowMuted: (row: CatalogRow) => row.archived,
+    isRowHighlighted: (row: CatalogRow) => row.id === props.addedId,
     rowPending: (row: CatalogRow) => catalogRowPending(rowStates[row.id], words),
     onRowClick: administers ? props.onOpen : undefined,
   };
@@ -162,19 +163,7 @@ function ItemList({ props }: { props: CatalogItemsProps }) {
           {props.archivedCaption}
         </Text>
       )}
-      {props.onImport === null ? null : (
-        /* *Import a file* closes the list, where an owner concludes an item is missing. */
-        <View style={styles.entry}>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={props.onImport}
-            icon={<ShellGlyph name="upload" size="md" tone="primary" />}
-          >
-            {words.importFile}
-          </Button>
-        </View>
-      )}
+      <ListEntries onAdd={props.onAdd} onImport={props.onImport} words={words} />
     </View>
   );
 }
@@ -294,5 +283,4 @@ const styles = StyleSheet.create({
   region: { paddingTop: theme.spacing['sp-3'], paddingHorizontal: theme.spacing['sp-4'] },
   spec: { gap: theme.spacing['sp-2'], marginTop: theme.spacing['sp-1'] },
   more: { alignItems: 'center' },
-  entry: { flexDirection: 'row', justifyContent: 'center', gap: theme.spacing['sp-2'] },
 });

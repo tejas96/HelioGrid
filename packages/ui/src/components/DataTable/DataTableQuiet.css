@@ -50,6 +50,11 @@
   background: transparent;
 }
 
+/* The row just added keeps its wash on the quiet table's card (`isRowHighlighted`). */
+.hg-dt[data-head="quiet"] .hg-dt-row[data-highlighted="true"] {
+  background: var(--hg-dt-highlight);
+}
+
 .hg-dt[data-head="quiet"] .hg-dt-row:not(:first-child) {
   border-top: 1px solid var(--line-soft);
 }
