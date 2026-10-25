@@ -4,7 +4,7 @@ import { fieldBoxPlaceholder } from '../../primitives/FieldBox/FieldBox.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { RichTextAt } from './RichText.edit';
 import { isListBlock, keyed, textOf } from './RichText.model';
-import type { RichTextSpan, RichTextValue } from './RichText.types';
+import type { RichTextSpan, RichTextValue, RichTextWords } from './RichText.types';
 
 const styles = StyleSheet.create({
   input: {
@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
 });
 
 export interface RichTextBlocksProps {
+  words: RichTextWords;
   value: RichTextValue;
   disabled: boolean;
   /** Shown only while the body is empty, the same rule the web half's overlay follows. */
@@ -56,6 +57,7 @@ export interface RichTextBlocksProps {
  * The logo is placed, never typed, exactly as `contenteditable="false"` makes it on the web.
  */
 export function RichTextBlocks({
+  words,
   value,
   disabled,
   placeholder,
@@ -78,7 +80,7 @@ export function RichTextBlocks({
       value={textOf(spans)}
       placeholder={showPlaceholder ? placeholder : undefined}
       placeholderTextColor={fieldBoxPlaceholder(disabled)}
-      accessibilityLabel={label ?? 'Terms and conditions'}
+      accessibilityLabel={label ?? words.editorName}
       onFocus={() => onCaret(at)}
       onBlur={onBlur}
       onChangeText={(text) => onText(at, text)}
@@ -94,7 +96,7 @@ export function RichTextBlocks({
             <View key={key} style={styles.logo}>
               <View style={styles.logoChip} />
               <Text variant="caption" color="secondary">
-                Logo prints here
+                {words.logoPrintsHere}
               </Text>
             </View>
           );

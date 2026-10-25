@@ -16,6 +16,7 @@ import { classNames } from '../../primitives/class-names';
 import type { MoveDirection } from './ReorderList.defaults';
 import {
   atEndSentence,
+  controlsPlacement,
   defaultKeyOf,
   defaultLabelOf,
   deletedSentence,
@@ -49,11 +50,12 @@ export function ReorderList<T>({
   itemNoun = 'rows',
   emptyMessage = 'No rows yet.',
   controls,
+  actionOf,
   density = 'expressive',
   className,
   style,
 }: WebReorderListProps<T>) {
-  const stack = (controls ?? (density === 'functional' ? 'row' : 'stack')) === 'stack';
+  const placement = controlsPlacement(controls, density);
   const [say, setSay] = useState('');
   const [flash, setFlash] = useState<string | number | null>(null);
   const btns = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -174,7 +176,8 @@ export function ReorderList<T>({
                 body={renderItem ? renderItem(it, i) : name}
                 lock={lockFor(it, i)}
                 deletable={deletable(it, i)}
-                stack={stack}
+                placement={placement}
+                action={placement === 'foot' && actionOf ? actionOf(it, i) : null}
                 density={density}
                 flashing={flash === key}
                 onFlashEnd={() => setFlash(null)}

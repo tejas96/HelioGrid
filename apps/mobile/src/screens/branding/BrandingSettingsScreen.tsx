@@ -10,12 +10,12 @@ import {
 } from '@heliogrid/ui';
 import { useState } from 'react';
 import { useSettingsDrillDown } from '../settings/hooks/use-settings-drill-down';
+import { useLeaveAsk } from '../shared/use-leave-ask';
 import { ShellPage } from '../shell/components/ShellPage';
 import { BrandingActBar, BrandingUnread } from './components/BrandingActBar';
-import { LeaveAsk, RemoveLogoAsk } from './components/BrandingAsks';
+import { BrandingLeaveAsk, RemoveLogoAsk } from './components/BrandingAsks';
 import { BrandingFullSize } from './components/BrandingFullSize';
 import { useBrandingActs } from './hooks/use-branding-acts';
-import { useLeaveAsk } from './hooks/use-leave-ask';
 
 /**
  * Branding behind `More` on the phone (`SCR-M01-18`, the 375 frames): the settings page's bar holds
@@ -110,12 +110,7 @@ export function BrandingSettingsScreen() {
         onKeep={() => setRemoveAsked(false)}
         onRemove={removeLogo}
       />
-      <LeaveAsk
-        open={leave.asking}
-        words={words}
-        onStay={leave.stay}
-        onLeave={() => leave.leave(page.discard)}
-      />
+      <BrandingLeaveAsk words={words} leave={leave} onDiscard={page.discard} />
     </ShellPage>
   );
 }

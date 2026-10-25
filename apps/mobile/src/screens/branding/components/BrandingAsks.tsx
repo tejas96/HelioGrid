@@ -1,5 +1,5 @@
 import type { BrandingWords } from '@heliogrid/i18n';
-import { Button, Modal, ModalActions, Text } from '@heliogrid/ui';
+import { Button, LeaveConfirm, Modal, ModalActions, Text } from '@heliogrid/ui';
 
 /**
  * *Remove your logo?* (`SCR-M01-18` s18-q): a danger ask the person may close or dismiss; nothing
@@ -48,43 +48,25 @@ export function RemoveLogoAsk({
   );
 }
 
-/**
- * *Leave without saving?* (`SCR-M01-18` s18-w): a warning answered only by its two buttons, since
- * a change dropped here has no undo.
- */
-export function LeaveAsk({
-  open,
+/** *Leave without saving?* (s18-w): the shared confirm with Branding's words, the ask `useLeaveAsk` holds. */
+export function BrandingLeaveAsk({
   words,
-  onStay,
-  onLeave,
+  leave,
+  onDiscard,
 }: {
-  open: boolean;
   words: BrandingWords;
-  onStay: () => void;
-  onLeave: () => void;
+  leave: { asking: boolean; stay: () => void; leave: (discard: () => void) => void };
+  onDiscard: () => void;
 }) {
   return (
-    <Modal
-      open={open}
-      onClose={onStay}
-      closeLabel={words.keepEditing}
-      tone="warning"
-      size="sm"
-      density="functional"
-      showClose={false}
-      dismissible={false}
+    <LeaveConfirm
+      open={leave.asking}
       title={words.leaveTitle}
-      description={words.leaveBody}
-      footer={
-        <ModalActions stackBelow={Number.POSITIVE_INFINITY}>
-          <Button variant="destructive" size="lg" onClick={onLeave}>
-            {words.leaveConfirm}
-          </Button>
-          <Button variant="ghost" size="lg" onClick={onStay}>
-            {words.keepEditing}
-          </Button>
-        </ModalActions>
-      }
+      body={words.leaveBody}
+      discard={words.leaveConfirm}
+      keep={words.keepEditing}
+      onKeep={leave.stay}
+      onLeave={() => leave.leave(onDiscard)}
     />
   );
 }

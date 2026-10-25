@@ -109,6 +109,10 @@ type ReviewedComputesNothing =
   | 'catalogSpecSchema'
   /* decodes a file's bytes; a `Uint8Array` outruns the depth the check walks, and it holds no figure */
   | 'bytesOfBase64'
+  /* the Proposal template page's draft and its writes: rich-text terms outrun the depth the check walks, and they hold no figure */
+  | 'templateDraftOf'
+  | 'templateEdit'
+  | 'templateWritesOf'
   /* label a figure they are handed (`F8`) */
   | 'qualifyMoney'
   | 'qualifyMinorUnits'

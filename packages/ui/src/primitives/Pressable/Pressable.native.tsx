@@ -57,6 +57,7 @@ export function Pressable({
   onPress,
   disabled = false,
   accessibilityLabel,
+  accessibilityHint,
   accessibilityRole = 'button',
   accessibilityState,
   style,
@@ -77,6 +78,7 @@ export function Pressable({
         disabled: accessibilityState?.disabled ?? disabled,
       }}
       accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
       disabled={disabled}
       onPress={onPress}
       style={(state: PressableStateCallbackType) => [

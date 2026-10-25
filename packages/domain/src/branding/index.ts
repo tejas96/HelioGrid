@@ -7,9 +7,7 @@ export type {
   BrandingDraft,
   BrandingDraftWrite,
   BrandingEdit,
-  BrandingLastSave,
   BrandingSaved,
-  BrandingStanding,
   LetterheadRefusal,
 } from './branding-draft';
 export {

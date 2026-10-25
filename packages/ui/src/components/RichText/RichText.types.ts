@@ -53,7 +53,50 @@ export interface RichTextTemplate {
   name: string;
 }
 
+/**
+ * Every word the editor itself says — seen or spoken. **Required, with no English default**: the
+ * caller's catalog fills it, so a Hindi screen-reader user never hears an English toolbar.
+ */
+export interface RichTextWords {
+  /** The toolbar's spoken name — "Formatting". */
+  formatting: string;
+  /** The five mark buttons' spoken names. */
+  bold: string;
+  italic: string;
+  heading: string;
+  bulletedList: string;
+  numberedList: string;
+  /** The link button's spoken name — "Link". */
+  link: string;
+  /** The link field's spoken name — "Link address". */
+  linkAddress: string;
+  /** The button that applies the link — "Add link". */
+  addLink: string;
+  /** The logo button's word while the logo is off — "Add logo". */
+  addLogo: string;
+  /** Its word while the logo is on — "Logo on". */
+  logoOn: string;
+  /** Its spoken name while off — "Add the logo". */
+  addTheLogo: string;
+  /** Its spoken name while on — "Remove the logo". */
+  removeTheLogo: string;
+  /** The placed logo's stand-in inside the editor — "Logo prints here". */
+  logoPrintsHere: string;
+  /** The web template select's empty choice — "Load template…". */
+  loadTemplate: string;
+  /** The web template select's spoken name — "Load a saved template". */
+  loadSavedTemplate: string;
+  /** The phone's spoken name of one saved template's button — "Load template: {name}". */
+  loadTemplateNamed: (name: string) => string;
+  /** The text box's spoken name when no `label` is shown — "Terms and conditions". */
+  editorName: string;
+  /** The footer count — "{count}/{max} characters", or "{count} characters" with no `max`. */
+  characters: (count: number, max?: number) => string;
+}
+
 export interface RichTextProps {
+  /** Every word the editor says — see `RichTextWords`. */
+  words: RichTextWords;
   value?: RichTextValue;
   /** Live — fires per edit, which is what makes the character count real. */
   onChange?: (value: RichTextValue) => void;
@@ -61,7 +104,7 @@ export interface RichTextProps {
   onCommit?: (value: RichTextValue) => void;
   label?: string;
   helper?: string;
-  /** Default "Type the terms your customer will read." */
+  /** The hint while the body is empty. Omit and no hint shows. */
   placeholder?: string;
   /** Editor height floor. Design at the cap: `M06-15` allows three pages, not a two-line box. */
   minHeight?: number;
@@ -79,7 +122,7 @@ export interface RichTextProps {
   templates?: RichTextTemplate[];
   onLoadTemplate?: (id: string) => void;
   onSaveAsTemplate?: (value: RichTextValue, metrics: RichTextMetrics) => void;
-  /** Default "Save as template". */
+  /** The save button's words. The button shows only with both this and `onSaveAsTemplate`. */
   saveTemplateLabel?: string;
   /**
    * **The seam left for `M06-15`'s "≈ PDF page estimate".** Supplied by the caller, rendered in the
@@ -97,8 +140,8 @@ export interface RichTextViewProps {
   value?: RichTextValue;
   /** Fills a `logo` block. Without it, the block draws a labelled placeholder slot. */
   logoSrc?: string;
-  /** Default "tenant logo". */
-  logoLabel?: string;
+  /** The placeholder slot's words while `logoSrc` is absent — the caller's, never a default. */
+  logoLabel: string;
   /** Base size. 14 on screen, 11 inside a `DocumentPreview` sheet. Never below 12 on screen. */
   fontSize?: number;
   /** The ink — inside a `CustomerSurface` this is the tenant's contrast-gated colour. */

@@ -4,6 +4,7 @@ import {
   type TenantPool,
   type TenantScopedDb,
   timelineTemplate,
+  userAccount,
 } from '@heliogrid/db';
 import type {
   ProposalTemplateSettings,
@@ -15,6 +16,7 @@ import { eq } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { memberAct, recordAuditEntry } from '../audit/audit.public';
+import type { LastSave } from './internal/wire';
 
 /**
  * The proposal and timeline templates on the runtime pool (`M01-51`, `M01-52`): one row each,
@@ -44,6 +46,7 @@ export class SettingsTemplatesRepository {
         sectionsIncluded: [...settings.sectionsIncluded],
         defaultTerms: settings.defaultTerms,
         updatedAt: now,
+        updatedBy: act.actorUserId,
       };
       const [row] = await tx
         .insert(proposalTemplateSettings)
@@ -65,6 +68,40 @@ export class SettingsTemplatesRepository {
     });
   }
 
+  /** Who saved the proposal template last, read apart from the template so the unchanged-save check and the effective read never see it. */
+  async proposalTemplateLastSave(tenantId: string): Promise<LastSave | null> {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const [last] = await tx
+        .select({
+          at: proposalTemplateSettings.updatedAt,
+          byId: proposalTemplateSettings.updatedBy,
+          byName: userAccount.name,
+        })
+        .from(proposalTemplateSettings)
+        .leftJoin(userAccount, eq(userAccount.id, proposalTemplateSettings.updatedBy))
+        .where(eq(proposalTemplateSettings.tenantId, tenantId))
+        .limit(1);
+      return last === undefined ? null : lastSaveOf(last);
+    });
+  }
+
+  /** Who saved the timeline last, read apart from the phases for the same reason. */
+  async timelineTemplateLastSave(tenantId: string): Promise<LastSave | null> {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const [last] = await tx
+        .select({
+          at: timelineTemplate.updatedAt,
+          byId: timelineTemplate.updatedBy,
+          byName: userAccount.name,
+        })
+        .from(timelineTemplate)
+        .leftJoin(userAccount, eq(userAccount.id, timelineTemplate.updatedBy))
+        .where(eq(timelineTemplate.tenantId, tenantId))
+        .limit(1);
+      return last === undefined ? null : lastSaveOf(last);
+    });
+  }
+
   async timelineTemplate(tenantId: string): Promise<TimelineTemplateSettings | null> {
     return this.db.withTenantTransaction(tenantId, (tx) => storedTimelineTemplate(tx, tenantId));
   }
@@ -80,10 +117,10 @@ export class SettingsTemplatesRepository {
       const now = new Date(act.now);
       const [row] = await tx
         .insert(timelineTemplate)
-        .values({ tenantId, phases: [...phases], updatedAt: now })
+        .values({ tenantId, phases: [...phases], updatedAt: now, updatedBy: act.actorUserId })
         .onConflictDoUpdate({
           target: timelineTemplate.tenantId,
-          set: { phases: [...phases], updatedAt: now },
+          set: { phases: [...phases], updatedAt: now, updatedBy: act.actorUserId },
         })
         .returning({ id: timelineTemplate.id, phases: timelineTemplate.phases });
       if (!row) throw new Error('timeline_template upsert returned no row');
@@ -131,4 +168,8 @@ function proposalColumns() {
     sectionsIncluded: proposalTemplateSettings.sectionsIncluded,
     defaultTerms: proposalTemplateSettings.defaultTerms,
   };
+}
+
+function lastSaveOf(row: { at: Date; byId: string | null; byName: string | null }): LastSave {
+  return { at: row.at, by: row.byId === null ? null : { id: row.byId, name: row.byName ?? null } };
 }

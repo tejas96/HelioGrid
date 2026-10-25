@@ -144,20 +144,46 @@ async function answerComplete(req: IncomingMessage, res: ServerResponse) {
   send(res, req, answer.status, answer.body ?? storedFile(NEW_LOGO));
 }
 
+/**
+ * The reads every settings page with the cover shares — the session, the company, its pack, its
+ * profile, its registrations and its branding; `false` when the request is none of them.
+ */
+export function answeredCompanyFacts(
+  req: IncomingMessage,
+  res: ServerResponse,
+  bankName: string | null = null,
+): boolean {
+  const path = new URL(req.url ?? '/', 'http://origin').pathname;
+  const bankDetails =
+    bankName === null
+      ? null
+      : {
+          bankName,
+          accountName: 'Suryodaya Solar Pvt Ltd',
+          accountNumber: '50100234567812',
+          bankRoutingIdentifier: 'HDFC0001234',
+        };
+  const reads: Record<string, unknown> = {
+    '/auth/session': projection(),
+    '/tenants/me': TENANT_READ,
+    '/market-packs/IN': PACK_READ,
+    '/settings/business-profile': { ...profileRead(), bankDetails },
+    '/settings/tax-registrations': {
+      registrations: [{ registrationType: 'IN_GST', value: '27AABCS1429P1ZQ' }],
+    },
+  };
+  if (req.method === 'OPTIONS') send(res, req, 204);
+  else if (path in reads) send(res, req, 200, reads[path]);
+  else if (path === '/settings/branding' && req.method === 'GET')
+    send(res, req, 200, origin.branding);
+  else return false;
+  return true;
+}
+
 function answer(req: IncomingMessage, res: ServerResponse) {
   const path = new URL(req.url ?? '/', 'http://origin').pathname;
-  if (req.method === 'OPTIONS') return send(res, req, 204);
-  if (path === '/auth/session') return send(res, req, 200, projection());
-  if (path === '/tenants/me') return send(res, req, 200, TENANT_READ);
-  if (path === '/market-packs/IN') return send(res, req, 200, PACK_READ);
-  if (path === '/settings/business-profile') return send(res, req, 200, profileRead());
-  if (path === '/settings/tax-registrations') {
-    return send(res, req, 200, {
-      registrations: [{ registrationType: 'IN_GST', value: '27AABCS1429P1ZQ' }],
-    });
-  }
   if (path === '/settings/branding' && req.method === 'PUT') return void answerSave(req, res);
-  if (path === '/settings/branding') return send(res, req, 200, origin.branding);
+  if (answeredCompanyFacts(req, res)) return;
   if (path === '/files' && req.method === 'POST') {
     origin.declares += 1;
     return void writeBodyOf(req, res).then((write) => {

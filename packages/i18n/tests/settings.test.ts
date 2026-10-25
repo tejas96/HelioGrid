@@ -25,7 +25,7 @@ const WORDS = {
       roles: 'Roles reference',
       company_profile: 'Business profile',
       branding: 'Branding',
-      proposal_templates: 'Proposal templates',
+      proposal_templates: 'Proposal template',
       payment_terms: 'Payment terms',
       catalog: 'Catalog',
       agent: 'Agent & voice',

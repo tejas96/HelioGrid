@@ -1,7 +1,9 @@
 /* One row of an authored order (web) — its position, the caller's body over the compliance floor
    that qualifies the WHOLE row, and the three targets that change the order.
 
-   Every target is 44×44 and nothing is hover-only: this list's stated home is 375px. */
+   Every target is 44×44 and nothing is hover-only: this list's stated home is 375px. With the
+   targets at the row's foot, the caller's own act opens that line, ahead of ⌃ in the tab order —
+   which is why it is the first child of the same group rather than a sibling drawn beside it. */
 
 import type { ReactNode } from 'react';
 import { Text } from '../../primitives/Text';
@@ -11,7 +13,7 @@ import { ReorderControl } from './ReorderControls';
 import type { MoveDirection } from './ReorderList.defaults';
 import { deleteLabel, moveLabel } from './ReorderList.defaults';
 import type { ControlSuffix } from './ReorderList.focus';
-import type { ReorderListDensity } from './ReorderList.types';
+import type { ReorderListControls, ReorderListDensity } from './ReorderList.types';
 
 interface ReorderRowProps {
   index: number;
@@ -23,7 +25,9 @@ interface ReorderRowProps {
   /** A row protected by law renders its floor here and has no delete button. */
   lock: ComplianceFloorSpec | ReactNode | null;
   deletable: boolean;
-  stack: boolean;
+  placement: ReorderListControls;
+  /** The caller's act for this row — drawn only at the foot, at the start of its line. */
+  action: ReactNode;
   density: ReorderListDensity;
   flashing: boolean;
   onFlashEnd: () => void;
@@ -39,7 +43,8 @@ export function ReorderRow({
   body,
   lock,
   deletable,
-  stack,
+  placement,
+  action,
   density,
   flashing,
   onFlashEnd,
@@ -47,12 +52,13 @@ export function ReorderRow({
   onDelete,
   registerControl,
 }: ReorderRowProps) {
-  const stacked = stack ? 'true' : undefined;
+  const stacked = placement === 'stack' ? 'true' : undefined;
   return (
     <li
       className="hg-reorder-row"
       data-density={density}
       data-stack={stacked}
+      data-controls={placement}
       data-flash={flashing ? 'true' : undefined}
       onTransitionEnd={() => {
         if (flashing) {
@@ -78,7 +84,8 @@ export function ReorderRow({
             caller's fields — it qualifies the ROW, not any one of them. */}
         {renderComplianceFloor(lock)}
       </div>
-      <div className="hg-reorder-controls" data-stack={stacked}>
+      <div className="hg-reorder-controls" data-stack={stacked} data-controls={placement}>
+        {action ? <div className="hg-reorder-action">{action}</div> : null}
         <ReorderControl
           kind="up"
           disabled={index === 0}

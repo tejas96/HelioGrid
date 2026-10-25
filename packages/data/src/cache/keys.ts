@@ -20,6 +20,8 @@ export const queryKeys = {
     businessProfile: (tenantId: string) => ['settings', tenantId, 'business-profile'] as const,
     taxRegistrations: (tenantId: string) => ['settings', tenantId, 'tax-registrations'] as const,
     branding: (tenantId: string) => ['settings', tenantId, 'branding'] as const,
+    proposalTemplate: (tenantId: string) => ['settings', tenantId, 'proposal-template'] as const,
+    timelineTemplate: (tenantId: string) => ['settings', tenantId, 'timeline-template'] as const,
   },
   /** A company's people and its invites; a write to either refreshes the whole list under the prefix. */
   team: {

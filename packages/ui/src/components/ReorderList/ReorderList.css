@@ -119,6 +119,30 @@
   flex-direction: column;
 }
 
+/* ── controls at the row's foot ─────────────────────────────────────────────── */
+
+/* The position and the body share the first line and the body keeps every column but the digit's;
+   the targets take a line of their own across the whole row, ending at its end. A grid rather than a
+   wrapper, so the DOM order — position, body, then the act and ⌃ ⌄ 🗑 — stays the tab order. */
+.hg-reorder-row[data-controls="foot"] {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  row-gap: var(--sp-1);
+}
+
+.hg-reorder-controls[data-controls="foot"] {
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+}
+
+/* The caller's act opens the line; the arrows keep the end. */
+.hg-reorder-action {
+  display: flex;
+  align-items: center;
+  margin-inline-end: auto;
+}
+
 /* ── the control ───────────────────────────────────────────────────────────── */
 
 .hg-reorder-control {

@@ -7,6 +7,7 @@ import type { DocumentPart, DocumentPreviewProps } from './DocumentPreview.types
 import { DOCUMENT_DESIGN_WIDTH } from './DocumentPreview.types';
 import { DocumentTermsBand } from './DocumentTerms';
 import { bandFails, resolveDocument } from './document-model';
+import { useSheetHeight } from './use-sheet-height';
 
 /** Per-instance geometry and the gated brand colours ride into DocumentPreview.css. */
 type CssVars = CSSProperties & Record<`--${string}`, string>;
@@ -16,8 +17,25 @@ type WebDocumentPreviewProps = DocumentPreviewProps & {
   style?: CSSProperties;
 };
 
+/** A content fit's window takes the MEASURED sheet times the scale: CSS scaling leaves layout unscaled. */
+function windowVars(
+  doc: ReturnType<typeof resolveDocument>,
+  contentHeight: number | undefined,
+): CssVars {
+  if (doc.sheetHeight !== undefined) {
+    return {
+      '--hg-doc-sheet-height': `${doc.sheetHeight}px`,
+      '--hg-doc-window-height': `${doc.sheetHeight * doc.scale}px`,
+    };
+  }
+  return contentHeight === undefined
+    ? {}
+    : { '--hg-doc-window-height': `${contentHeight * doc.scale}px` };
+}
+
 function sheetVars(
   doc: ReturnType<typeof resolveDocument>,
+  contentHeight: number | undefined,
   style: CSSProperties | undefined,
 ): CssVars {
   return {
@@ -28,12 +46,7 @@ function sheetVars(
     '--hg-doc-band-text': doc.bandTextColor,
     '--hg-doc-ink': doc.ink,
     '--hg-doc-rule-opacity': doc.ruleOpaque ? '1' : '0.55',
-    ...(doc.sheetHeight === undefined
-      ? {}
-      : {
-          '--hg-doc-sheet-height': `${doc.sheetHeight}px`,
-          '--hg-doc-window-height': `${doc.sheetHeight * doc.scale}px`,
-        }),
+    ...windowVars(doc, contentHeight),
     ...style,
   };
 }
@@ -56,11 +69,15 @@ function sheetVars(
 export function DocumentPreview({ className, style, ...props }: WebDocumentPreviewProps) {
   const doc = resolveDocument(props, useFormat());
   const has = (part: DocumentPart) => doc.parts.includes(part);
+  const [sheetRef, contentHeight] = useSheetHeight(doc.sheetHeight === undefined);
 
   return (
-    <figure className={classNames('hg-doc', className)} style={sheetVars(doc, style)}>
+    <figure
+      className={classNames('hg-doc', className)}
+      style={sheetVars(doc, contentHeight, style)}
+    >
       <div className="hg-doc-window">
-        <div className="hg-doc-sheet">
+        <div ref={sheetRef} className="hg-doc-sheet">
           <DocumentBandHeader doc={doc} />
           {has('cover') ? <DocumentCover doc={doc} /> : null}
           <div className="hg-doc-body">

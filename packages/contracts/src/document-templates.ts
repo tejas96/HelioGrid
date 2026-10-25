@@ -3,6 +3,7 @@ import {
   LETTERHEAD_LIMITS,
   PROJECT_STAGE_CHAIN,
   PROPOSAL_SECTIONS,
+  TIMELINE_PHASE_LIMIT,
 } from '@heliogrid/domain';
 import { z } from 'zod';
 import { percentSchema, uuidSchema } from './common';
@@ -61,8 +62,8 @@ export const brandingSaveSchema = brandingWriteSchema.extend({
 });
 export type BrandingSave = z.infer<typeof brandingSaveSchema>;
 
-/** When branding was saved last and by whom: `by` is null on a save made before it was kept, and an account may hold no name. */
-const brandingChangedSchema = z.object({
+/** When a setting was saved last and by whom: `by` is null on a save made before it was kept, and an account may hold no name. */
+export const settingsChangedSchema = z.object({
   at: z.string().datetime(),
   by: z.object({ id: uuidSchema, name: z.string().nullable() }).nullable(),
 });
@@ -74,14 +75,14 @@ const brandingChangedSchema = z.object({
  */
 export const brandingReadSchema = brandingSchema.extend({
   logoFileId: uuidSchema.nullable().optional(),
-  changed: brandingChangedSchema.nullable().optional(),
+  changed: settingsChangedSchema.nullable().optional(),
 });
 export type BrandingRead = z.infer<typeof brandingReadSchema>;
 
 export const proposalSectionSchema = z.enum(PROPOSAL_SECTIONS);
 export type ProposalSection = z.infer<typeof proposalSectionSchema>;
 
-/** The cover's achievements block (`M06-08`); each count is the tenant's own declaration, `estimated · declared by you`. */
+/** The cover's achievements block (`M06-08`): the tenant's own declarations. Only the kW figure carries a tier, `estimated · declared by you`; the two counts carry none (`F8-01`). */
 export const proposalCoverSchema = z.object({
   aboutCompany: perLanguage(paragraphSchema).nullable(),
   totalCapacityInstalledKw: z.number().nonnegative().nullable(),
@@ -97,6 +98,16 @@ export const proposalTemplateSchema = z.object({
 });
 export type ProposalTemplate = z.infer<typeof proposalTemplateSchema>;
 
+/**
+ * The template as its own page reads it, with who saved it last — `null` until the first save.
+ * Optional, because an api built before the field answers without it; kept off
+ * `proposalTemplateSchema`, which every member reads inside the effective settings.
+ */
+export const proposalTemplateReadSchema = proposalTemplateSchema.extend({
+  changed: settingsChangedSchema.nullable().optional(),
+});
+export type ProposalTemplateRead = z.infer<typeof proposalTemplateReadSchema>;
+
 export const timelinePhaseSchema = z.object({
   name: packLabelSchema,
   description: perLanguage(paragraphSchema),
@@ -104,9 +115,15 @@ export const timelinePhaseSchema = z.object({
 
 /** The project-timeline template (`M01-52`): ordered phases, the order as sent. */
 export const timelineTemplateSchema = z.object({
-  phases: z.array(timelinePhaseSchema).min(1).max(20),
+  phases: z.array(timelinePhaseSchema).min(1).max(TIMELINE_PHASE_LIMIT),
 });
 export type TimelineTemplate = z.infer<typeof timelineTemplateSchema>;
+
+/** The timeline as its own page reads it, with who saved it last (as `proposalTemplateReadSchema`). */
+export const timelineTemplateReadSchema = timelineTemplateSchema.extend({
+  changed: settingsChangedSchema.nullable().optional(),
+});
+export type TimelineTemplateRead = z.infer<typeof timelineTemplateReadSchema>;
 
 /** The stage a tranche falls due on (`M01-54`): `M08-08`'s chain, never the terminal. */
 export const projectChainStageSchema = z.enum(PROJECT_STAGE_CHAIN);

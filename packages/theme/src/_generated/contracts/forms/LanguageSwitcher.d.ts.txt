@@ -29,8 +29,17 @@ export interface LanguageSwitcherProps {
   sections?: number;
   /** The noun in every sentence — "sections" (default), "rules", "templates". */
   sectionNoun?: string;
-  /** Overline above the strip. */
+  /** What kind of language — "agent language" (default: the voice agent, `SCR-M07-09`) or "language"
+      (message templates, `SCR-M01-21`). Names the kind in the summary line, the primary sentence and
+      every item's accessible name; the plural adds "s". */
+  languageNoun?: string;
+  /** Overline above the strip. Defaults to `languageNoun` in sentence case — "Agent language". */
   label?: string;
+  /**
+   * `true` drops the drawn overline and keeps `label` as the tablist's accessible name — for an editor
+   * that already says what is written (`SCR-M01-19`). With `summary=""` too, no head row is drawn.
+   */
+  labelHidden?: boolean;
   /** Replaces the composed summary line. */
   summary?: string;
   /** Drop the fractions where the caller has no per-language counts; the sentence stays. */

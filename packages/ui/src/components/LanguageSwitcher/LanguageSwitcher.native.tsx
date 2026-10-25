@@ -36,12 +36,15 @@ const styles = StyleSheet.create({
  * than shrinking any target.
  */
 export function LanguageSwitcher({
+  words,
   languages = [],
   value,
   onChange,
   sections,
-  sectionNoun = 'sections',
-  label = 'Agent language',
+  sectionNoun,
+  languageNoun,
+  label,
+  labelHidden = false,
   summary,
   showCounts = true,
   density = 'expressive',
@@ -54,6 +57,7 @@ export function LanguageSwitcher({
   );
   const total = totalOf(languages, sections);
   const fallbackName = primary?.label ?? '';
+  const headline = summary ?? summaryLine(languages, total, words, { sectionNoun, languageNoun });
 
   const pill = (lang: AgentLanguage) => (
     <LanguagePill
@@ -61,8 +65,8 @@ export function LanguageSwitcher({
       lang={lang}
       active={lang.code === value}
       total={total}
-      sectionNoun={sectionNoun}
-      fallbackName={fallbackName}
+      words={words}
+      nouns={{ sectionNoun, languageNoun, fallbackName }}
       showCounts={showCounts}
       onPress={(code) => onChange?.(code)}
     />
@@ -70,16 +74,21 @@ export function LanguageSwitcher({
 
   return (
     <View style={[styles.wrap, style]}>
-      <View style={styles.head}>
-        {label === undefined ? null : (
-          <Text variant="overline" color="tertiary">
-            {label}
-          </Text>
-        )}
-        <Text variant="caption" color="tertiary">
-          {summary ?? summaryLine(languages, total, sectionNoun)}
-        </Text>
-      </View>
+      {/* No head row around absent content: a hidden label with an empty summary draws none. */}
+      {labelHidden && headline === '' ? null : (
+        <View style={styles.head}>
+          {labelHidden ? null : (
+            <Text variant="overline" color="tertiary">
+              {label}
+            </Text>
+          )}
+          {headline === '' ? null : (
+            <Text variant="caption" color="tertiary">
+              {headline}
+            </Text>
+          )}
+        </View>
+      )}
 
       {/* THE STRIP IS A TABLIST, on both halves. A role — not `accessible`, which would fold the six
           pills into one element and put every language out of reach. The pills stay their own
@@ -103,7 +112,11 @@ export function LanguageSwitcher({
 
       <View accessibilityLiveRegion="polite" style={styles.sentence}>
         <Text variant="caption" color="secondary">
-          {selectedSentence(languages[idx], total, sectionNoun, fallbackName)}
+          {selectedSentence(languages[idx], total, words, {
+            sectionNoun,
+            languageNoun,
+            fallbackName,
+          })}
         </Text>
       </View>
     </View>

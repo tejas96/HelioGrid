@@ -143,6 +143,7 @@ export type { InviteLandingFacts, InviteLandingWords } from './copy/invite-landi
 export { INVITE_LANDING, inviteLandingWords } from './copy/invite-landing';
 export type { JoinRequestAsker } from './copy/join-request';
 export { joinRequestNotice } from './copy/join-request';
+export { languageSwitcherWords } from './copy/language-switcher';
 export type { TextPart } from './copy/list-join';
 export { joinAnd, joinParts } from './copy/list-join';
 export type { NameAndPhotoEditorWords } from './copy/name-and-photo-editor';
@@ -176,9 +177,23 @@ export type {
   ProfileRoleWords,
 } from './copy/profile-preferences';
 export { PROFILE_PREFERENCES, profilePreferencesWords } from './copy/profile-preferences';
+export type { ProposalTemplateWords } from './copy/proposal-template';
+export {
+  languageName,
+  proposalTemplatePageWords,
+  proposalTemplateWords,
+  sectionWords,
+  templateLanguages,
+} from './copy/proposal-template';
+export {
+  phaseEditorWords,
+  templateFieldRefusals,
+  templateRefusalWords,
+} from './copy/proposal-template-phase';
 export { provenanceWords, standingLabel, tierLabel } from './copy/provenance';
 export type { RemoveRolesWords, RolesRemovedToast } from './copy/remove-roles';
 export { removeRolesWords, rolesRemovedToast, rolesUndoFailedToast } from './copy/remove-roles';
+export { richTextWords } from './copy/rich-text';
 export type { RoleCardLineWords, RoleCardWords } from './copy/role-card';
 export { ROLE_CARD, roleCardWords } from './copy/role-card';
 export { REFERENCE_ROW, REFERENCE_SCOPE } from './copy/role-matrix';
@@ -190,7 +205,13 @@ export type {
 } from './copy/roles-reference';
 export { ROLES_REFERENCE, rolesReferenceWords } from './copy/roles-reference';
 export type { SettingsWords } from './copy/settings';
-export { backToSettings, settingsListFor, settingsRowName, settingsWords } from './copy/settings';
+export {
+  backToSettings,
+  settingsListFor,
+  settingsRowName,
+  settingsSavedLine,
+  settingsWords,
+} from './copy/settings';
 export type { SetupLanguageOption, SetupLanguageWords } from './copy/setup-language';
 export { SETUP_LANGUAGE, setupLanguageWords } from './copy/setup-language';
 export type { SetupReadyDoorWords, SetupReadyWords } from './copy/setup-ready';

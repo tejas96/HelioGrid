@@ -1,5 +1,11 @@
 import type { BrandingSettings, Letterhead } from '../commerce/effective-settings';
 import type { PackLabel } from '../format/languages';
+import {
+  type SettingsLastSave,
+  type SettingsStanding,
+  sameContent,
+  standingOf,
+} from '../tenancy/settings-page';
 import { isHexColour, normaliseHexColour } from './hex-colour';
 
 /**
@@ -143,31 +149,9 @@ export function brandingChanged(saved: BrandingSaved, draft: BrandingDraft): boo
   const write = brandingWriteOf(saved, draft);
   if ('logoFileId' in write) return true;
   return (
-    write.brandColour !== saved.brandColour ||
-    canonical(write.letterhead) !== canonical(saved.letterhead)
+    write.brandColour !== saved.brandColour || !sameContent(write.letterhead, saved.letterhead)
   );
 }
-
-/** A value as text with its keys in one order, so two equal letterheads compare equal however they were built. */
-function canonical(value: unknown): string {
-  return JSON.stringify(value, (_key, held: unknown) =>
-    held !== null && typeof held === 'object' && !Array.isArray(held)
-      ? Object.fromEntries(Object.entries(held).sort(([a], [b]) => a.localeCompare(b)))
-      : held,
-  );
-}
-
-/** Who saved last, as the page's read carries it: absent from an api built before it was kept. */
-export interface BrandingLastSave {
-  readonly at: string;
-  readonly by: { readonly name: string | null } | null;
-}
-
-/** What the standing line under the title says. */
-export type BrandingStanding =
-  | { readonly kind: 'saved'; readonly at: number; readonly name: string | null }
-  | { readonly kind: 'saved-unknown' }
-  | { readonly kind: 'never-set' };
 
 /**
  * The standing line's state: who and when once a save is known; an api that does not say (`changed`
@@ -176,11 +160,10 @@ export type BrandingStanding =
  */
 export function brandingStanding(
   saved: BrandingSaved,
-  changed: BrandingLastSave | null | undefined,
-): BrandingStanding {
-  if (changed !== undefined && changed !== null) {
-    return { kind: 'saved', at: Date.parse(changed.at), name: changed.by?.name ?? null };
-  }
+  changed: SettingsLastSave | null | undefined,
+): SettingsStanding {
+  const known = standingOf(changed);
+  if (known !== null) return known;
   /* `null` is an api that keeps the last save and has none: only a logo from the profile's door is held. */
   const holdsSomething =
     changed === null

@@ -8,6 +8,7 @@ import {
   type BrandingPreview,
   BrandingSettings,
   brandingDocumentOf,
+  LeaveConfirm,
   useFormat,
 } from '@heliogrid/ui';
 import { notFound, useRouter } from 'next/navigation';
@@ -17,7 +18,6 @@ import { useImageFile } from '../../lib/use-image-file';
 import { settingsRowPath } from '../settings';
 import { BrandingFullSize } from './components/BrandingFullSize';
 import { BrandingUnread } from './components/BrandingUnread';
-import { LeaveConfirm } from './components/LeaveConfirm';
 import { RemoveLogoConfirm } from './components/RemoveLogoConfirm';
 
 /**
@@ -119,10 +119,12 @@ function BrandingIn() {
       />
       <LeaveConfirm
         open={leaveAsked !== null}
-        words={words}
-        closeLabel={closeLabel}
+        title={words.leaveTitle}
+        body={words.leaveBody}
+        discard={words.leaveConfirm}
+        keep={words.keepEditing}
         onLeave={leave}
-        onStay={() => setLeaveAsked(null)}
+        onKeep={() => setLeaveAsked(null)}
       />
     </div>
   );

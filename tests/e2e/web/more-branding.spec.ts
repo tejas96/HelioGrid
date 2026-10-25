@@ -12,6 +12,7 @@ import { expectNoSeriousViolations } from '../support/axe';
 import { createCompany, OWNER_NAME } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
 import { freshMobile } from '../support/phone';
+import { wordsBeforeDate } from '../support/saved-line';
 import { passTheOwnersMark } from '../support/shell';
 
 /**
@@ -25,13 +26,9 @@ const WORDS = brandingWords(en.t, { limits: COMPANY_LOGO_LIMITS, companyName: ''
 const HEX = brandColourFieldWords(en.t).hexLabel;
 const COLOUR = '#0D7A4F';
 
-/** Stands where the date goes, so the words before it come from the one whole message. */
-const DATE_SLOT = '\u0000';
-const [SAVED_BY_OWNER = ''] = brandingStandingLine(
-  en.t,
-  { kind: 'saved', at: 0, name: OWNER_NAME },
-  { date: () => DATE_SLOT },
-).split(DATE_SLOT);
+const SAVED_BY_OWNER = wordsBeforeDate((date) =>
+  brandingStandingLine(en.t, { kind: 'saved', at: 0, name: OWNER_NAME }, { date }),
+);
 
 test('an owner saves a colour and reads it back', async ({ page }) => {
   await createCompany(page, en, freshMobile());

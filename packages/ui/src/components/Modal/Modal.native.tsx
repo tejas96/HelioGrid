@@ -4,6 +4,7 @@ import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Animated, Easing, ScrollView, StyleSheet, View } from 'react-native';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { useReducedMotion } from '../../primitives/use-reduced-motion';
 import { OverlayClose } from '../Sheet/OverlayClose.native';
 import { SheetBackdrop } from '../Sheet/SheetBackdrop.native';
 import type { ModalDensity, ModalProps, ModalSize } from './Modal.types';
@@ -51,9 +52,15 @@ export function Modal({
   style,
 }: NativeModalProps) {
   const enter = useRef(new Animated.Value(0)).current;
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     if (!open) {
+      return;
+    }
+    // Reduced motion shows the dialog at its end state at once (`F7-51` floor 3).
+    if (reduced) {
+      enter.setValue(1);
       return;
     }
     enter.setValue(0);
@@ -65,7 +72,7 @@ export function Modal({
     });
     animation.start();
     return () => animation.stop();
-  }, [open, enter]);
+  }, [open, enter, reduced]);
 
   if (!open) {
     return null;

@@ -1,9 +1,9 @@
 import {
-  type BrandingStanding,
   COMPANY_LOGO_LIMITS,
   companyLogoRefusal,
   formatDate,
   IN_PACK,
+  type SettingsStanding,
   type UiLanguage,
 } from '@heliogrid/domain';
 import {
@@ -111,7 +111,7 @@ export function BrandingAsHeld({
     companyName,
     taxLabel,
   });
-  const standingFact: BrandingStanding =
+  const standingFact: SettingsStanding =
     standing === 'never-set'
       ? { kind: 'never-set' }
       : { kind: 'saved', at: Date.parse(SAMPLE.changedOn), name: SAMPLE.changer };

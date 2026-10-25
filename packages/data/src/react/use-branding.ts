@@ -5,7 +5,6 @@ import {
   type BrandingDraftWrite,
   type BrandingEdit,
   type BrandingSaved,
-  type BrandingStanding,
   brandingChanged,
   brandingDraftOf,
   brandingEdit,
@@ -16,6 +15,7 @@ import {
   type CompanyLogoCaptureFacts,
   companyProfileValuesAtRead,
   companyProfileView,
+  type SettingsStanding,
   taxPackOf,
 } from '@heliogrid/domain';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -34,7 +34,7 @@ export interface BrandingPage {
   /** Why the last save did not land; the banner says it in the shared failure words. */
   readonly saveFailure: DataError | null;
   readonly draft: BrandingDraft | null;
-  readonly standing: BrandingStanding | null;
+  readonly standing: SettingsStanding | null;
   /** Something differs from what customers receive now — what raises the act bar. */
   readonly changed: boolean;
   readonly saving: boolean;

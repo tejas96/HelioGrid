@@ -146,6 +146,8 @@ export const proposalTemplateSettings = pgTable(
     sectionsIncluded: text('sections_included').array().$type<ProposalSection[]>().notNull(),
     defaultTerms: jsonb('default_terms').$type<PerLanguage<RichTextValue>>().notNull(),
     updatedAt: instant('updated_at').notNull(),
+    /** Who saved it last; null on a row written before the column. */
+    updatedBy: uuid('updated_by').references(() => userAccount.id),
   },
   (table) => [uniqueIndex('proposal_template_settings_tenant_key').on(table.tenantId)],
 );
@@ -158,6 +160,8 @@ export const timelineTemplate = pgTable(
     tenantId: tenantId(),
     phases: jsonb('phases').$type<TimelinePhase[]>().notNull(),
     updatedAt: instant('updated_at').notNull(),
+    /** Who saved it last; null on a row written before the column. */
+    updatedBy: uuid('updated_by').references(() => userAccount.id),
   },
   (table) => [uniqueIndex('timeline_template_tenant_key').on(table.tenantId)],
 );

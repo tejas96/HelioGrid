@@ -136,3 +136,17 @@ export function effectiveWire(effective: EffectiveSettings): EffectiveSettingsWi
     pendingPromptPoints: [...effective.pendingPromptPoints],
   };
 }
+
+/** When a setting was saved last and by whom; `by` is null on a row saved before it was kept. */
+export interface LastSave {
+  readonly at: Date;
+  readonly by: { readonly id: string; readonly name: string | null } | null;
+}
+
+/** The page's `changed` on the wire: `null` until the first save. */
+export function lastSaveWire(last: LastSave | null): {
+  at: string;
+  by: { id: string; name: string | null } | null;
+} | null {
+  return last === null ? null : { at: last.at.toISOString(), by: last.by };
+}

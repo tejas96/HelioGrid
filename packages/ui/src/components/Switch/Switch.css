@@ -106,6 +106,46 @@
   color: var(--text-secondary);
 }
 
+/* A DESCRIBED SWITCH IS A TITLE OVER ITS DESCRIPTION — `SCR-M01-19`'s section rows. Both lines
+   sit inside the <label>, so a click on either throws the switch; the words wrap, because they are
+   the caller's and a translation is longer than the English. */
+.hg-switch-words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+  text-align: start;
+}
+
+.hg-switch[data-described="true"] .hg-switch-label {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
+}
+
+.hg-switch-description {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+/* THE TRACK AT THE ROW'S END: the words lead and take the rest of the width. The track keeps its
+   52px (`flex-shrink: 0` above), so a long translation wraps the words and never squeezes it. */
+.hg-switch[data-toggle-at="end"] {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.hg-switch[data-toggle-at="end"] > .hg-switch-words,
+.hg-switch[data-toggle-at="end"] > .hg-switch-label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 /* With an error the whole thing becomes a column: the sentence sits UNDER the label, never inside
    the <label>, because a sentence inside it would toggle the switch when tapped. */
 .hg-switch-wrap {
@@ -120,4 +160,11 @@
   line-height: var(--lh-caption);
   color: var(--danger-text);
   text-wrap: pretty;
+}
+
+/* An errored end-placed switch keeps the full width its row gave it. */
+.hg-switch-wrap[data-toggle-at="end"] {
+  align-items: stretch;
+  flex: 1 1 auto;
+  min-width: 0;
 }

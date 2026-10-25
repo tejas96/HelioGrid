@@ -2,7 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { fieldBox } from '../../primitives/FieldBox/FieldBox.native';
+import { FIELD_BOX_EDGE, fieldBox } from '../../primitives/FieldBox/FieldBox.native';
 import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -31,11 +31,13 @@ interface NativeRichTextProps extends RichTextProps {
 const styles = StyleSheet.create({
   label: { marginBottom: 6 },
   frame: { overflow: 'hidden' },
+  /* The well's edge is always drawn on the phone (FIELD_BOX_EDGE) and inside the frame, so every
+     inset gives up its width and the link row and body sit where the web's do. */
   linkRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing['sp-2'],
-    paddingHorizontal: 10,
+    paddingHorizontal: 10 - FIELD_BOX_EDGE,
     paddingBottom: theme.spacing['sp-2'],
   },
   href: {
@@ -54,7 +56,11 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     backgroundColor: theme.colors['action-primary'],
   },
-  body: { paddingHorizontal: 18, paddingBottom: 18, paddingTop: theme.spacing['sp-1'] },
+  body: {
+    paddingHorizontal: 18 - FIELD_BOX_EDGE,
+    paddingBottom: 18 - FIELD_BOX_EDGE,
+    paddingTop: theme.spacing['sp-1'],
+  },
   footer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -68,13 +74,21 @@ const styles = StyleSheet.create({
 });
 
 /** The link address, raised on the frame's control fill, as the design system draws it. */
-function LinkAddress({ value, onChange }: { value: string; onChange: (href: string) => void }) {
+function LinkAddress({
+  name,
+  value,
+  onChange,
+}: {
+  name: string;
+  value: string;
+  onChange: (href: string) => void;
+}) {
   const { controlFill } = useGround();
   return (
     <TextInput
       style={[styles.href, { backgroundColor: controlFill }]}
       value={value}
-      accessibilityLabel="Link address"
+      accessibilityLabel={name}
       placeholder="https://"
       placeholderTextColor={theme.colors['text-tertiary']}
       autoCapitalize="none"
@@ -94,12 +108,13 @@ const BLANK: RichTextValue = { version: 1, blocks: [{ type: 'p', spans: [{ text:
  * block. Everything this produces is inside the same whitelist and renders in `RichTextView`.
  */
 export function RichText({
+  words,
   value = EMPTY_RICH_TEXT,
   onChange,
   onCommit,
   label,
   helper,
-  placeholder = 'Type the terms your customer will read.',
+  placeholder,
   minHeight = 260,
   maxLength,
   disabled = false,
@@ -107,7 +122,7 @@ export function RichText({
   templates,
   onLoadTemplate,
   onSaveAsTemplate,
-  saveTemplateLabel = 'Save as template',
+  saveTemplateLabel,
   pageEstimate,
   onMeasure,
   style,
@@ -152,6 +167,7 @@ export function RichText({
         {/* The frame is a field's well holding its own controls, so it is their ground: white, as in a tile. */}
         <GroundProvider ground="tile">
           <RichTextToolbar
+            words={words}
             marks={marksAt(working, at)}
             disabled={disabled}
             hasLogo={m.hasLogo}
@@ -170,17 +186,17 @@ export function RichText({
           />
           {linking ? (
             <View style={styles.linkRow}>
-              <LinkAddress value={href} onChange={setHref} />
+              <LinkAddress name={words.linkAddress} value={href} onChange={setHref} />
               <Pressable
                 style={styles.apply}
-                accessibilityLabel="Add link"
+                accessibilityLabel={words.addLink}
                 onPress={() => {
                   emit(setHrefAt(working, at, href));
                   setLinking(false);
                 }}
               >
                 <Text variant="body-sm" color="inverse">
-                  Add link
+                  {words.addLink}
                 </Text>
               </Pressable>
             </View>
@@ -189,6 +205,7 @@ export function RichText({
             <RichTextBlocks
               value={working}
               disabled={disabled}
+              words={words}
               placeholder={placeholder}
               showPlaceholder={m.chars === 0 && !m.hasLogo}
               label={label}
@@ -216,9 +233,7 @@ export function RichText({
           {pageEstimate}
           {/* Secondary, not tertiary: a count and its limit are information (see RichText.css). */}
           <Text variant="caption" color={over ? 'danger' : 'secondary'}>
-            {maxLength !== undefined
-              ? `${m.chars}/${maxLength} characters`
-              : `${m.chars} characters`}
+            {words.characters(m.chars, maxLength)}
           </Text>
         </View>
       </View>
