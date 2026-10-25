@@ -13,6 +13,9 @@ import {
   useAssignRoles,
 } from '../../src/react/use-assign-roles';
 import { useTeam } from '../../src/react/use-team';
+import { refusal, send, writeBodyOf } from './origin-wire';
+
+export { refusal } from './origin-wire';
 
 /**
  * Assign Roles end to end through the real client (`packages/data/CLAUDE.md`, Done means): the hook,
@@ -67,19 +70,6 @@ export const origin: Origin = {
 let server: Server;
 let baseUrl = '';
 
-function send(res: ServerResponse, req: IncomingMessage, status: number, body?: unknown) {
-  res.writeHead(status, {
-    'content-type': 'application/json',
-    'access-control-allow-origin': req.headers.origin ?? '*',
-    'access-control-allow-credentials': 'true',
-    'access-control-allow-headers': req.headers['access-control-request-headers'] ?? '*',
-    'access-control-allow-methods': 'GET, PUT, POST, OPTIONS',
-  });
-  res.end(body === undefined ? undefined : JSON.stringify(body));
-}
-
-export const refusal = (code: string) => ({ error: { code, message: code, requestId: 'test' } });
-
 function projection(): SessionProjection {
   const roles = origin.roster.find((row) => row.userId === OWNER_USER)?.roles ?? [OWNER_ROLE];
   return {
@@ -101,9 +91,9 @@ function projection(): SessionProjection {
 
 async function answerSave(req: IncomingMessage, res: ServerResponse, id: string) {
   origin.puts += 1;
-  const chunks: Buffer[] = [];
-  for await (const chunk of req) chunks.push(chunk as Buffer);
-  const { roles } = JSON.parse(Buffer.concat(chunks).toString()) as { roles: RolePreset[] };
+  const write = await writeBodyOf(req, res);
+  if (write === null) return;
+  const { roles } = write.body as { roles: RolePreset[] };
   const answer = origin.saves.shift() ?? { status: 200 };
   if (answer === 'drop') {
     req.socket.destroy();
