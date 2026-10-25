@@ -17,7 +17,7 @@ Seeded empty at Task 0. Each sitting's authoring appends its rows.
 | CODE.step3-obstructions.17 | Label numbering collides after deletion | roof-factory.ts:213 | S3-5.1: next-free-number (2026-08-05) → MS3-14 |
 | CODE.step4-components.8 | pickers bypass resolved catalog envelope | Step4Components.tsx:18-19 | S4-1: DD12 alignment (2026-08-05) → MS4-05 |
 | CODE.step4-components.20 | panel swap silently resizes placed modules | Step4Components.tsx:135-141 | S4-2: guard dialog both paths (2026-08-05) → MS4-12 |
-| CODE.step4-components.23/.24 | datasheet + manual entry paths are dead captions | Step4Components.tsx:765-779 | S4-1: all three paths real + Excel (2026-08-05) → MS4-06 |
+| CODE.step4-components.23/.24 | datasheet + manual entry paths are dead captions | Step4Components.tsx:765-779 | S4-1: browse and manual real + Excel (2026-08-05; the datasheet path struck by owner ruling 2026-10-25) → MS4-06 |
 | CODE.step4-components.37 | no-fit inverter state renders nothing | Step4Components.tsx (absence) | S4-3: explain + nearest fits (2026-08-05) → MS4-19 |
 | CODE.step4-components.5/.13/.21/.22/.26/.28/.39 | input & state hygiene (7) | Step4Components.tsx various | S4-4 batch (2026-08-05) → MS4-02/10/11/14/15/21 |
 | CODE.step4-components.29/.32/.42 + availability | polish (4) | Step4Components.tsx various | S4-5 batch (2026-08-05) → MS4-17/16/20/08 |

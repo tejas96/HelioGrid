@@ -811,7 +811,7 @@ The rest of the ticket is written at the task's start.
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#67)
 **Why:** Every workflow the platform runs is authorised by a signed token and a client certificate, and both the API and the worker must present theirs the same way; when each process reads its own credential its own way, a rotation fixed in one is not fixed in the other, and the failure reads as a permissions problem rather than an expired token — at which point the instinct is to widen permissions.
-**PRD rows:** none of its own — it serves every row whose work runs on the worker (the notification deliveries of `F6`, the catalog import of `M01-40`), by making the identity both processes present one thing.
+**PRD rows:** none of its own — it serves every row whose work runs on the worker (the notification deliveries of `F6`, the catalog import of `M01-41`), by making the identity both processes present one thing.
 **Depends on:** nothing — ADR-0025 named the two halves of identity; this is where they are read.
 **DONE WHEN:**
 - Given the API and the worker, when each connects to Temporal, then both read the token and the certificates through one reader in `@heliogrid/env/server` and neither imports a file API of its own. → proof: gate `M116` goes red on an injected credential read in either service · qa-api both processes boot and the worker's log names its queue
@@ -1237,8 +1237,8 @@ The rest of the ticket is written at the task's start.
 ### T-FPLAT-035 · The one `file` table and direct-to-storage transfer
 **Type:** engine · **Tier:** P0
 **Status:** shipped (#186)
-**Why:** Every photograph, datasheet, logo and document an installer stores is bytes somewhere; one table that knows where, how big and whose keeps storage measurable per tenant and keeps file bytes out of the API.
-**PRD rows:** none of its own — it serves the rows that store a file (`M01-40` datasheets, `M01-50` logo and letterhead, M04 photographs, M08 documents, M10 employee documents, `M12-23` the storage gauge); each stays dispositioned on its own task.
+**Why:** Every photograph, spreadsheet, logo and document an installer stores is bytes somewhere; one table that knows where, how big and whose keeps storage measurable per tenant and keeps file bytes out of the API.
+**PRD rows:** none of its own — it serves the rows that store a file (`M01-41` catalog spreadsheets, `M01-50` logo and letterhead, M04 photographs, M08 documents, M10 employee documents, `M12-23` the storage gauge); each stays dispositioned on its own task.
 
 **Depends on:** `T-FCORE-016` (0001) · `T-M01-025` (0002, `tenant`, the tenant-scoped pattern) · `T-FPLAT-059` (0007, `subject_kind`) · the creation keys (0012, `F4-07`).
 **DONE WHEN:**

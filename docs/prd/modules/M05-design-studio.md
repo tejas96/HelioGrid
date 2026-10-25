@@ -398,7 +398,7 @@ component step; it does not restate it.
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M05-37 | **The shared component-picker pattern (defined once, here):** an accordion of sections — **Panel → Capacity → Inverter → Battery** — each showing its done-state and current choice, reopenable in any order after first completion. Every component section offers **three entry paths: Browse database · Upload datasheet (PDF extraction) · Enter specs manually.** Browsing searches the tenant's resolved catalog (`M01-32`/`M01-33`/`M01-38`, consumed); pickers badge **scheme-keyed certification compliance** per the tenant market's declared schemes (`M01-34`/`F1-19`, consumed — the IN pack's two schemes are `F1-44`'s data); a missing product is added in-flow by `M01-39`'s **three add paths — single-product form · datasheet PDF extraction · spreadsheet upload** (`M01-39`/`M01-40`/`M01-41`, consumed), with extraction always reviewed before commit. With a component already selected, **Enter specs manually** opens `M01-39`'s form pre-filled from that item — the pre-fill and the never-copied rules are `M01-39`'s (owner ruling 2026-09-07). *(Final review: the entry triad and the add triad are distinct — browsing finds a product, it never adds one; `M01-39` is the authority and `M06-28` carries the same reading.)* The census marked the manual and datasheet routes "available-later"; DD12 rules all three paths present — the tension with the no-later-buckets scope law is recorded, not resolved (traceability). The **Battery** section appears in DD12's owner-supplied v1 screenshots and not in the census — recorded here, not resolved; the census gains nothing and loses nothing by it. | `SRC` — `SC.10-5.01` (Panel → Capacity → Inverter, done-states, reopenable), `SC.10-5.03`, `SC.10-5.10`, `SC.10-5.11` (the three entry paths); design spec §2 **DD12** ("v1's Step-4 pattern is carried forward as source-derived P0" — accordion **Panel → Capacity → Inverter → Battery**, three entry paths, scheme-keyed badges; owner-supplied screenshots, competitively validated 2026-08-03) | P0 |
+| M05-37 | **The shared component-picker pattern (defined once, here):** an accordion of sections — **Panel → Capacity → Inverter → Battery** — each showing its done-state and current choice, reopenable in any order after first completion. Every component section offers **two entry paths: Browse database · Enter specs manually.** Browsing searches the tenant's resolved catalog (`M01-32`/`M01-33`/`M01-38`, consumed); pickers badge **scheme-keyed certification compliance** per the tenant market's declared schemes (`M01-34`/`F1-19`, consumed — the IN pack's two schemes are `F1-44`'s data); a missing product is added in-flow by `M01-39`'s **two add paths — single-product form · spreadsheet upload** (`M01-39`/`M01-41`, consumed). With a component already selected, **Enter specs manually** opens `M01-39`'s form pre-filled from that item — the pre-fill and the never-copied rules are `M01-39`'s (owner ruling 2026-09-07). *(Final review: the entry paths and the add paths are distinct — browsing finds a product, it never adds one; `M01-39` is the authority and `M06-28` carries the same reading.)* The census marked the manual and datasheet routes "available-later"; the manual route is present, and the datasheet route is struck (owner ruling 2026-10-25: catalog files are Excel or CSV only). The **Battery** section appears in DD12's owner-supplied v1 screenshots and not in the census — recorded here, not resolved; the census gains nothing and loses nothing by it. | `SRC` — `SC.10-5.01` (Panel → Capacity → Inverter, done-states, reopenable), `SC.10-5.03`, `SC.10-5.10`, `SC.10-5.11` (the entry paths); design spec §2 **DD12** ("v1's Step-4 pattern is carried forward as source-derived P0" — accordion **Panel → Capacity → Inverter → Battery**, the entry paths, scheme-keyed badges; owner-supplied screenshots, competitively validated 2026-08-03) | P0 |
 | M05-38 | **Panel section carries the census surface:** selected-panel summary (brand, model, dimensions, Voc/Vmp/Isc, wattage large); search with result count; filters — min/max watt; technology (All Types · Mono PERC · TOPCon · Bifacial · Poly · HJT); per-scheme certification on/off filters as declared by the market pack; list rows with brand mark, brand + model, "watt · technology · dimensions" and scheme badges. | `SRC` — `SC.10-5.02`–`SC.10-5.09` (the census's two named scheme filters are the IN pack's entries per `R13` amendment; module body stays scheme-keyed) | P0 |
 | M05-39 | **Capacity section:** target capacity in kWp (0.1 steps); **Auto** = maximum fit after setbacks and obstructions (unavailable until a panel is chosen and a roof exists, reason shown); site-intelligence cross-check line (info only, never a dependency); **bill-based suggestion** ("From your {bill}/month we recommend ~Y kWp", tap applies — bill from Step 1); Continue unavailable while capacity is 0. | `SRC` — `SC.10-5.12`–`SC.10-5.16`; `R5` (cross-check only) | P0 |
 | M05-40 | **Inverter section — one inverter model per design; count 1–10:** recommended line ("{brand} {model} ({kW}×{count}, {phase}) → DC/AC ratio X", tap applies); selected summary (brand, model, #MPPTs, voltage range, phases, efficiency, kW large); count 1–10 of that one selected unit — every inverter placement references it, and mixed models in one design are the recorded Later line of `M05-studio/04-step4-components.md` §5 (owner ruling 2026-09-07); **live DC/AC ratio health — >1.35 high (clipping risk), <0.90 low (oversized), 0.90–1.35 healthy**; search + count + list (kW · phase · MPPT count · voltage range, recommended badge). After choice: **DC collection topology** (String inverters / Central + combiners) and **MLPE** (None / DC optimisers) — MLPE components come from the catalog (`M01-45`); the absence of an MLPE electrical model is this module's recorded non-goal (§5). | `SRC` — `SC.10-5.17`–`SC.10-5.23`; `CG-15` (M05 half — "◐ (catalog, no MLPE electrical model)" is deliberate) | P0 |
@@ -407,14 +407,13 @@ component step; it does not restate it.
 | M05-43 | **Catalog state is honest in the picker: out-of-stock or discontinued items are flagged, and existing outputs keep their original pricing.** A panel that goes unavailable after selection flags in the design; sent proposals keep the rate version they were built with (`M01-43`/`M01-44`, consumed; the proposal-side guarantee is `modules/M06`'s). Archived items never break existing references (`M01-42`, consumed). | `SRC` — `S5.wrong.4` ("catalog flags it; existing quotes keep their original pricing" — "quote" wording superseded as UI copy per `R1`); `R13` (pinning, via M01) | P0 |
 
 **Behavior detail.** The accordion enforces the census order on first pass (a section opens when
-its predecessor is done) and free reopening afterwards (`SC.10-5.01`). The three **entry** paths
+its predecessor is done) and free reopening afterwards (`SC.10-5.01`). The two **entry** paths
 are one pattern everywhere the product picks components: this studio step and the proposal
 builder's component step (M06 cites this section). **Adding** a missing product is a different
-triad — `M01-39`'s single-product form · datasheet PDF extraction · spreadsheet upload — offered
+pair — `M01-39`'s single-product form · spreadsheet upload — offered
 in-flow from either picker and from Catalog settings' inline add; browsing searches the catalog
 and never creates a SKU *(Final review: aligned with `M01-39`; `M06-28` states the same)*.
-Datasheet extraction is always review-before-commit (`M01-40`, consumed) — extraction output is
-never silently committed. Scheme badges are data-driven from the market pack; a market with no
+Scheme badges are data-driven from the market pack; a market with no
 declared schemes shows no badges and no empty chrome (`F1-19`). The compare table renders as
 horizontally scrollable cards on mobile (dual-breakpoint contract, `F7-30` cited).
 
@@ -427,13 +426,11 @@ catalog grant (`F2`'s M01 matrix, cited) — the picker offers the add path only
 - Panel discontinued mid-design → flagged in picker and design; nothing silently swaps
   (M05-43).
 - Replace-panel with panels placed → confirmation before anything moves (M05-41).
-- Datasheet extraction fails or is partial → review form shows what extracted and what did
-  not; manual completion; never silent commit (M05-37, via `M01-40`).
 - Capacity 0 → Continue unavailable with reason (M05-39).
 
 **Acceptance criteria.**
 - Given the component step, when it renders, then the accordion is Panel → Capacity → Inverter
-  → Battery, each section shows done-state + current choice, and all three entry paths are
+  → Battery, each section shows done-state + current choice, and both entry paths are
   offered per section (M05-37).
 - Given a market pack declaring schemes, when the panel list renders, then each row badges
   compliance per declared scheme; given a pack declaring none, then no scheme chrome renders
@@ -456,7 +453,7 @@ toggle; money in tenant currency (`F1-07` cited); the assumptions footnote rende
 scheme names verbatim.
 
 **Analytics events.** `picker.opened` (host: studio|proposal|catalog), `picker.path_used`
-(browse|datasheet|manual), `picker.scheme_filter_used`, `picker.compare_opened`,
+(browse|manual), `picker.scheme_filter_used`, `picker.compare_opened`,
 `picker.compare_applied`, `picker.item_flagged_unavailable`.
 
 ### §M05.7 — Steps 5–6 · Panel layout & electrical design
@@ -1177,7 +1174,7 @@ Total: **401 entries** — the count itself is a conformance check.
 | `SC.10-5.08` | Panel search: result count. | §M05.6 | — |
 | `SC.10-5.09` | Panel list rows: brand mark, brand + model, "watt · technology · dimensions", ALMM/DCR badges. | §M05.6 | — |
 | `SC.10-5.10` | Available-later route 1: enter panel specs manually. | §M05.6 | note |
-| `SC.10-5.11` | Available-later route 2: upload datasheet (PDF extraction). | §M05.6 | note |
+| `SC.10-5.11` | Available-later route 2: upload datasheet (PDF extraction). | not carried | note — struck (owner ruling 2026-10-25: catalog files are Excel or CSV only) |
 | `SC.10-5.12` | Capacity: target capacity kWp (0.1 steps). | §M05.6 | — |
 | `SC.10-5.13` | Capacity: Auto = maximum fit after setbacks + obstructions (unavailable until a panel is chosen and… | §M05.6 | — |
 | `SC.10-5.14` | Capacity: Google Solar cross-check line ("estimates max N panels ~X kWp", info only). | §M05.6 | note |

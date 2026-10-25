@@ -1,4 +1,4 @@
-/* SourceDocument (web) — A FILE THE USER HANDED THE PRODUCT, RENDERED FOR READING (M01-40 P0).
+/* SourceDocument (web) — A FILE THE USER HANDED THE PRODUCT, RENDERED FOR READING.
 
    It USES ImageFrame per page, inheriting the loading / present / permanently-missing footprint law
    rather than restating it, and adds what a photograph never has: a page count, a page you can move

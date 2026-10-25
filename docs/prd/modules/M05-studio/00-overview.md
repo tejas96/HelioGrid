@@ -64,7 +64,7 @@ These bind every studio document; they are stated here once so no screen re-liti
 | **Honesty survives printing** | S8-3 | Staleness, provenance, confidence, eligibility and disclaimers appear on paper, not only on screen. |
 | **No studio-side capacity caps** | S5-2, M05-12 | Entitlements are checked at Save/Generate, never mid-design. |
 | **Market data is pack data** | S1-6, S6-4, S9-1 | Prices, tax, subsidy, escalation, climate bands, standards, compliance checklists and wind tables are market-pack configuration — India ships today's values. |
-| **The catalog is the tenant's** | S4-1 (DD12) | Every picker reads the resolved catalog (platform slice + own SKUs + overrides) with all three entry paths real, plus Battery as a first-class component. |
+| **The catalog is the tenant's** | S4-1 (DD12) | Every picker reads the resolved catalog (platform slice + own SKUs + overrides) with both entry paths real, plus Battery as a first-class component. |
 | **One hard gate** | MS8-33, MS6-28 | Error-level electrical issues block progress; warnings never do. |
 | **Nothing unapproved or unready reaches a customer** | S8-2, S10-1 | Readiness review gates issuance; sign-off gates the customer surfaces; sent proposals are pinned. |
 
