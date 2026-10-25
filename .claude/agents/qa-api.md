@@ -37,6 +37,8 @@ A row whose expected result states a time limit reports each call's time
 **Check only when a row asks:** validation at each boundary, role and permission refusals, the same
 idempotency key sent twice, pagination, sorting, filters and search, concurrent writes, a timeout,
 persistence by a read-back, a background job's or webhook's effect, behaviour with the api stopped.
+A row that needs the api stopped runs after all your other rows: return `NEEDS MAIN: stop the api`,
+then send the row's calls once continued.
 
 **Rules:** you start, stop, build or migrate nothing — no `pnpm`, no `docker`, no `psql`. You create
 no company: a missing tenant is `BLOCKED` with the reason. A row you cannot run is `BLOCKED`; you
@@ -47,7 +49,7 @@ beyond its last three digits.
 Report shape, and nothing else:
 
 ```
-verdict: PASS | FAIL | BLOCKED
+verdict: PASS | FAIL | BLOCKED | NEEDS MAIN <action>
 rows:
 - <row> → <method path, each> → <status and fields checked> → <request id · log bytes a–b> → PASS | PASS (flake) | FAIL | BLOCKED <reason>
 found: <any bug outside the rows: what, where, how to repeat it — or "none">

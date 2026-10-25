@@ -188,7 +188,21 @@ Pick the surfaces from what changed, never more:
 | `qa-api` | `apps/api`, `apps/worker`, `packages/contracts`, `packages/db`, `packages/env`, `infra/postgres`, or a `packages/domain` file the api uses, changed |
 | `qa-web` | `apps/web`, or a `packages/ui`, `theme`, `forms`, `i18n`, `data` or `domain` file a web screen draws, changed — or an api route a built web screen calls changed, or the screen is the twin of a changed phone screen (then one live row on that screen) |
 | `qa-ios` | `apps/mobile`, or a shared file a phone screen draws, changed — or an api route a built phone screen calls changed, or the screen is the twin of a changed web screen (then one live row on that screen) |
-| `qa-android` | whenever `qa-ios` runs — the same phone rows on the emulator, started in the same message as the other surfaces — and also when `apps/mobile/android/**`, a `.android.*` file, a native module or the app config changed. CI's `android` lane still drives each screen's flow under `tests/e2e/mobile/`; a new phone screen adds one. |
+| `qa-android` | whenever `qa-ios` runs — its share of the phone rows (below), on the emulator, started in the same message as the other surfaces — and also when `apps/mobile/android/**`, a `.android.*` file, a native module or the app config changed. CI's `android` lane still drives each screen's flow under `tests/e2e/mobile/`; a new phone screen adds one. |
+
+**Which phone runs a row.** A phone row runs on both phones — a `qa-ios` row and its `qa-android`
+twin — when it is the first visit to a screen state the diff draws or changes (its board compare,
+or the agent's every-screen checks where no frame names it, its scroll to the end included), or
+when it covers the keyboard, Back, a deep link, a restart, a system change (text size, dark mode,
+reduced motion), a permission, or native code (the camera, files, notifications, a native module, the app config); a row for a
+`.ios.*` or `.android.*` file runs on its own phone. A row that first brings up a refusal, an error,
+a loading or empty state, or changes a choice already made, runs on both too, as does a twin
+screen's one live row (the table above). Any other phone row
+shows only what a twinned row already showed — the same controls, banners and messages, with other
+values (a role, a count, another list item) — and runs on one phone: the RFC gives them out in turn, iOS first, and puts the Hindi layout row on iOS
+and the Marathi one on Android, so each phone lays out the Devanagari script once. The same code still
+acts differently on each phone, so a row in doubt runs on both. When only `qa-android` runs, every
+phone row is its own.
 
 No surface changed (a pure domain or docs task): no server starts and no phone boots; the unit
 tests, the review and the gate are the proof.
@@ -220,8 +234,9 @@ through the review and its fixes.
    agents' prompts and the frame map. Rebuild native code only when native files changed or the
    app is missing.
 5. **Cold-start each app** once its phone has booted and Metro serves (a new `BUNDLE` line in
-   `.qa/metro.log`; Fast Refresh can drop silently). Before the Android app, turn Gboard's stylus
-   handwriting off and restart it — `adb -s <serial> shell settings put secure
+   `.qa/metro.log`; Fast Refresh can drop silently). Before the Android app, read Gboard's stylus
+   handwriting once a task (`adb -s <serial> shell settings get secure stylus_handwriting_enabled`), then turn it
+   off and restart it — `adb -s <serial> shell settings put secure
    stylus_handwriting_enabled 0`, then `adb -s <serial> shell am force-stop
    com.google.android.inputmethod.latin`: the emulator's touch screens report a stylus, so with it
    on every tap opens the pen toolbar, a keyboard with no height, and no keyboard row can run. When an Android row uploads a file, run
@@ -232,7 +247,8 @@ through the review and its fixes.
 **Run.** Start every QA agent in one message. Each gets what its own file lists under "Your prompt
 gives you", the RFC's frame map and the known differences included. A phone agent restarts its own
 app, opens a link in it and switches reduced motion (animations on Android) itself; an agent that returns
-`NEEDS MAIN: <action>` (what every agent shares: the api, Metro, a build, an install, a boot) gets
+`NEEDS MAIN: <action>` (what every agent shares: the api, Metro, a build, an install, a boot,
+or Gboard's stylus handwriting on the emulator) gets
 that action done by you and is continued. Each
 agent signs in as its surface's QA company (`tests/e2e/support/qa-accounts.ts` holds who is in it),
 signing out first when the app holds anyone else — a phone keeps an earlier task's sign-in;
@@ -248,8 +264,16 @@ stop the api once, continue each agent that has such rows, and start the api onc
 A row that names a frame is a pass only with its board compare: a report that skipped it, or names a movement or overlap it did not judge, is sent back to the same agent, never read as a pass.
 
 **Fix.** Fix only evidenced failures. Continue the same `code-reviewer` on the fixed files — one read
-per fix; a finding still open after it stops for the owner — then continue the same QA agent with only the rows the fix touched. A row gets one retry after a fix; a
-second failure stops for the owner. A row an agent reports `PASS (flake)` gets a `deferred.md` row. `git status --porcelain` is the same before the agents start and after they
+per fix; a finding still open after it stops for the owner — then continue the same QA agent with only the rows the fix touched. Before you continue it, build
+each workspace package the fix changed that ships from `dist/` with `pnpm --filter <package> build`
+— both apps read `data`, `domain`, `i18n` and `contracts` from it (their `package.json` `exports`;
+`apps/web/CLAUDE.md`), and never `turbo build` while `next dev` runs — then have `qa-web` reload its page,
+and cold-start, as Prepare item 5 does, each phone app that has rows to re-run when the fix changed
+a file its bundle holds (a native file first needs Prepare item 4's rebuild): an agent restarts its app only when a row asks, so a re-test otherwise
+runs on the old bundle. A row gets one retry after a fix; a second failure stops for the owner. A
+`PASS (flake)` on a row this diff touches is a `FAIL`, unless you match its symptom to an open
+`harness` row in `deferred.md` (D278's short swipe): that row is then the proof beside it. A flake on a row outside the diff — on a screen or route the diff does
+not change, such as a twin-screen row — gets a `deferred.md` row. `git status --porcelain` is the same before the agents start and after they
 return; any file an agent changed stops the task.
 
 ## 8. Proof, clean up, gate
@@ -265,7 +289,10 @@ return; any file an agent changed stops the task.
    owner's answer. Switch `.env.local` back if step 7 switched it; an api running at step 1 is
    stopped now and started again after item 4, so it reads `heliogrid_dev` again. Stop every server this task started — web, api, Metro,
    worker — every phone it booted or booted again (`xcrun simctl shutdown <udid>`,
-   `adb -s <serial> emu kill`) and every browser tab it opened. Leave alone what was running at
+   `adb -s <serial> emu kill`) and every browser tab it opened. Before an emulator stops, and on one
+   left running, put Gboard's stylus handwriting back to the value Prepare item 5 read
+   (`adb -s <serial> shell settings put secure stylus_handwriting_enabled <value>`, or `settings delete
+   secure stylus_handwriting_enabled` when it read `null`). Leave alone what was running at
    step 1, except an api (above) and a web dev server: `next dev` breaks while the build runs, so one
    running then is stopped by its preview id and started again after item 4 (after
    `rm -rf apps/web/.next`), and

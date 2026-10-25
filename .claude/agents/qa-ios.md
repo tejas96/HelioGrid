@@ -62,7 +62,7 @@ failure — and return `NEEDS MAIN: stop the api`.
 
 **Rules:** you boot, shut down, install or reset nothing — no
 `xcrun simctl boot|shutdown|install|uninstall|erase`, no Metro command, no build — and you terminate
-and launch only `com.heliogrid.app`. You use
+and launch only `com.heliogrid.app`, and open Settings only to switch a setting a row names. You use
 your QA company's accounts, or the number your prompt gives a row (a fresh number's code is the newest
 `Message for <number> via` line in the api log); you create a company only in a row that says so. A row you cannot run is
 `BLOCKED` with the reason. A suspected flake gets one immediate retry; a row that passes only on it is `PASS (flake)`. You set back any setting a row changed.

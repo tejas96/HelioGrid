@@ -46,7 +46,9 @@ judge the board itself wrong, mark the difference `board?` with your reason; you
 
 **Check only when a row asks:** a protected route signed out, session expiry, a role's refusal,
 form validation messages, tables, filters, sorting and search, a deep link. Your board compare is
-the look check; no other browser is tested in v1.
+the look check; no other browser is tested in v1. A row that needs the api stopped runs after all
+your other rows: open the page in a new tab (`tabs_create`), stop short of the row's screen — a page that already read that
+screen's data shows its cache instead of the failure — and return `NEEDS MAIN: stop the api`.
 
 **Rules:** you start, stop, reload or build no server and run no test command. You use your
 QA company's accounts, or the number your prompt gives a row (a fresh number's code is the newest
@@ -58,7 +60,7 @@ restore any setting a row changed, through the app.
 Report shape, and nothing else:
 
 ```
-verdict: PASS | FAIL | BLOCKED
+verdict: PASS | FAIL | BLOCKED | NEEDS MAIN <action>
 rows:
 - <row> → <action> → <observed> → <measurements at each width checked> → <log bytes a–b> → PASS | PASS (flake) | FAIL | BLOCKED <reason>
   differences: <element: board value → app value, `board?` marked — or "none">
