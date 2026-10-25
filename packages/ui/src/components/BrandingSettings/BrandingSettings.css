@@ -1,0 +1,263 @@
+/* The Branding page body (`SCR-M01-18`). `data-layout` is the room the shell gives it, measured
+   by the component: `narrow` is the 375 column, `wide` the 1536 pair. Every value is a token but
+   the board's own sizes: the 380 editor card, the 480 sheet, the logo's paper heights and the link
+   page's 360 floor. The stage's ground and the card's are `Ground.css`'s lists. */
+
+.hg-branding {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+/* The title and the standing line, `sp-1` apart. */
+.hg-branding-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.hg-branding-standing {
+  text-wrap: pretty;
+}
+
+/* With the title in the bar above, the line sits under the bar's title (`STAND-375`). */
+.hg-branding[data-layout="narrow"] .hg-branding-head:not([data-titled]) .hg-branding-standing {
+  margin-left: calc(var(--sp-10) + var(--sp-4));
+}
+
+/* The stage: the sunken desk the preview and its switch sit on (`STAGE-375`). */
+.hg-branding-stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+  padding: var(--sp-3);
+  background: var(--canvas-sunken);
+  border-radius: var(--r-lg);
+}
+
+.hg-branding-switch-row {
+  display: flex;
+  /* A column narrower than the board's (a rail beside it, a long language) moves *Open full size*
+     under the switch rather than past the stage's edge. */
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-branding-spacer {
+  flex: 1;
+}
+
+.hg-branding-switch-row .hg-icon-button,
+.hg-branding-switch-row .hg-button {
+  flex-shrink: 0;
+}
+
+/* The preview's switch adds no second grey on the desk: its track is the stage's own ground, and
+   its pressed pill the white a control takes there. */
+.hg-branding-preview-switch {
+  --hg-ground: var(--hg-control-fill);
+}
+
+.hg-branding-preview-switch .hg-segmented-control-pill {
+  background: transparent;
+}
+
+/* The part's switch across the editor's width. */
+.hg-branding-part-switch {
+  align-self: stretch;
+}
+
+.hg-branding-part-switch .hg-segmented-control-pill {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* The link page in its frame: header, state and acts, `sp-4` apart. */
+.hg-customer-surface.hg-branding-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
+  box-sizing: border-box;
+}
+
+.hg-branding[data-layout="narrow"] .hg-customer-surface.hg-branding-link {
+  min-height: 360px;
+}
+
+.hg-branding-link-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+/* The editor: the part's switch, the part and the profile row, `sp-4` apart. */
+.hg-branding-editor,
+.hg-branding-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+/* The logo part, `sp-3` apart: a refusal, the mark on its paper, the acts and the limits. */
+.hg-branding-logo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-branding-logo-paper {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 108px;
+  padding: var(--sp-4);
+  /* biome-ignore lint/plugin/raw-white-css: paper — the mark shown on the white it prints on, never a control */
+  background: var(--surface);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-md);
+}
+
+/* At 375 the acts and the limits are centred under the mark. */
+.hg-branding-logo-acts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-branding-logo-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+
+.hg-branding-logo-buttons .hg-button {
+  flex-shrink: 0;
+}
+
+.hg-branding-limits {
+  text-align: center;
+  text-wrap: pretty;
+}
+
+/* The letterhead's fields, label over field, `sp-4` apart. */
+.hg-branding-letterhead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+/* The hairline straight over the profile row at 375. */
+.hg-branding-profile {
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-branding-hairline {
+  height: 1px;
+  background: var(--line-soft);
+}
+
+/* The row lies flush on the page: no fill or edge at rest, no side inset. */
+.hg-list-row.hg-branding-profile-row {
+  padding-left: 0;
+  padding-right: 0;
+  box-shadow: none;
+}
+
+.hg-list-row.hg-branding-profile-row:not(:hover) {
+  background: transparent;
+}
+
+.hg-branding-closing {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* The 1536 pair (`d18-g`): the heading row over the stage, a failed save across both columns, the
+   editor card 380 wide and `sp-8` from the stage. */
+.hg-branding[data-layout="wide"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  column-gap: var(--sp-8);
+  row-gap: var(--sp-4);
+  align-items: start;
+}
+
+.hg-branding[data-layout="wide"] .hg-branding-head,
+.hg-branding[data-layout="wide"] .hg-branding-stage {
+  grid-column: 1;
+}
+
+.hg-branding[data-layout="wide"] .hg-branding-failure {
+  grid-column: 1 / -1;
+}
+
+/* The stage holds the whole sheet at its 480, the switch row across its top (`STAGE-1536`). The
+   frame's note under the sheet (*Not saved yet*) keeps the stage's own side room below it. */
+.hg-branding[data-layout="wide"] .hg-branding-stage .hg-preview-frame-caption {
+  padding-bottom: var(--sp-5);
+}
+
+.hg-branding[data-layout="wide"] .hg-branding-stage {
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-5) var(--sp-8) 0;
+  overflow: hidden;
+  border-radius: var(--r-xl);
+}
+
+.hg-branding[data-layout="wide"] .hg-branding-switch-row {
+  align-self: stretch;
+}
+
+.hg-branding-sheet {
+  flex: 0 0 auto;
+  width: 480px;
+}
+
+/* The editor card (`EDITOR-1536`): level with the switch row, and it stays while the stage scrolls. */
+.hg-branding-card {
+  grid-column: 2;
+  position: sticky;
+  top: var(--sp-6);
+  align-self: start;
+  padding: var(--sp-5);
+  background: var(--hg-ground);
+  border-radius: var(--r-tile);
+  box-shadow: var(--e2);
+}
+
+/* At width the hairline runs to the card's edges, `sp-4` above the row. */
+.hg-branding[data-layout="wide"] .hg-branding-profile {
+  gap: var(--sp-4);
+}
+
+.hg-branding[data-layout="wide"] .hg-branding-hairline {
+  margin: 0 calc(-1 * var(--sp-5));
+}
+
+.hg-branding[data-layout="wide"] .hg-branding-logo-paper {
+  height: 120px;
+}
+
+/* At width the acts sit in one row, the limits at its right. */
+.hg-branding[data-layout="wide"] .hg-branding-logo-acts {
+  flex-direction: row;
+  align-items: center;
+}
+
+.hg-branding[data-layout="wide"] .hg-branding-limits {
+  flex: 1;
+  min-width: 0;
+  text-align: end;
+}

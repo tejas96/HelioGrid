@@ -1,14 +1,14 @@
 import { RichTextView } from '../RichText/RichTextView';
+import { BandTitle } from './DocumentBands';
 import type { DocumentRichTextValue } from './DocumentPreview.types';
 import { TERMS_FONT_SIZE } from './DocumentTerms.logic';
-
-const EMPTY_TEXT = 'No terms are attached to this template yet.';
 
 interface DocumentTermsBandProps {
   title: string;
   value: DocumentRichTextValue | undefined;
   logoSrc: string | undefined;
   logoLabel: string;
+  emptyText: string | undefined;
 }
 
 /**
@@ -20,20 +20,24 @@ interface DocumentTermsBandProps {
  * the block list is delegated. The ink comes from the sheet's own CSS (`.hg-doc-terms`), so a
  * link still takes `--hg-doc-ink` rather than the app's link colour.
  */
-export function DocumentTermsBand({ title, value, logoSrc, logoLabel }: DocumentTermsBandProps) {
+export function DocumentTermsBand({
+  title,
+  value,
+  logoSrc,
+  logoLabel,
+  emptyText,
+}: DocumentTermsBandProps) {
   return (
     <div>
       <div className="hg-doc-rule" />
-      <p className="hg-doc-overline" data-spaced="true">
-        {title}
-      </p>
+      <BandTitle title={title} />
       <RichTextView
         className="hg-doc-terms"
         value={value}
         logoSrc={logoSrc}
         logoLabel={logoLabel}
         fontSize={TERMS_FONT_SIZE}
-        emptyText={EMPTY_TEXT}
+        emptyText={emptyText}
       />
     </div>
   );

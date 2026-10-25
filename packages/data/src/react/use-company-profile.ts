@@ -174,6 +174,8 @@ export function useCompanyProfile(
       const writes = companyProfileSaveOf(sent.values, sent.stored, sent.tax, logoStoredNow);
       const saved = await repositories.settings.saveBusinessProfile(writes.profile);
       queryClient.setQueryData(profileKey, saved);
+      // Branding reads the same logo (`D237`): its page asks again rather than show the old one.
+      void queryClient.invalidateQueries({ queryKey: queryKeys.settings.branding(tenantId) });
       // The shell's company, which the home and *You're ready* name, takes the saved name at once.
       queryClient.setQueryData<Tenant>(queryKeys.shell.tenant(tenantId), (held) =>
         held === undefined ? held : { ...held, companyName: saved.companyName },

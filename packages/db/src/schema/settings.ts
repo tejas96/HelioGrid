@@ -27,6 +27,7 @@ import {
 import { uuidv7 } from '../uuid';
 import { creationKeyColumns } from './creation-key';
 import { file } from './file';
+import { userAccount } from './identity';
 import { tenant } from './tenant';
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
@@ -125,6 +126,8 @@ export const brandingSettings = pgTable(
     brandColour: text('brand_colour'),
     letterhead: jsonb('letterhead').$type<Letterhead>(),
     updatedAt: instant('updated_at').notNull(),
+    /** Who saved it last; null on a row written before the column. */
+    updatedBy: uuid('updated_by').references(() => userAccount.id),
   },
   (table) => [uniqueIndex('branding_settings_tenant_key').on(table.tenantId)],
 );

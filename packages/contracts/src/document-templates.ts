@@ -1,8 +1,12 @@
-import { HEX_COLOUR, PROJECT_STAGE_CHAIN, PROPOSAL_SECTIONS } from '@heliogrid/domain';
+import {
+  HEX_COLOUR,
+  LETTERHEAD_LIMITS,
+  PROJECT_STAGE_CHAIN,
+  PROPOSAL_SECTIONS,
+} from '@heliogrid/domain';
 import { z } from 'zod';
 import { percentSchema, uuidSchema } from './common';
 import {
-  lineSchema,
   packLabelSchema,
   paragraphSchema,
   perLanguage,
@@ -20,9 +24,11 @@ export const hexColourSchema = z.string().regex(HEX_COLOUR, 'a colour is #RRGGBB
 
 /** The band's extra lines and the note along every page's foot — the design system's `DocumentLetterhead`. */
 export const letterheadSchema = z.object({
-  tagline: packLabelSchema.nullable(),
-  lines: z.array(perLanguage(lineSchema)).max(6),
-  footerNote: perLanguage(lineSchema).nullable(),
+  tagline: perLanguage(z.string().trim().min(1).max(LETTERHEAD_LIMITS.tagline)).nullable(),
+  lines: z
+    .array(perLanguage(z.string().trim().min(1).max(LETTERHEAD_LIMITS.line)))
+    .max(LETTERHEAD_LIMITS.lines),
+  footerNote: perLanguage(z.string().trim().min(1).max(LETTERHEAD_LIMITS.line)).nullable(),
 });
 export type Letterhead = z.infer<typeof letterheadSchema>;
 
@@ -44,6 +50,33 @@ export const brandingSchema = brandingWriteSchema.extend({
   shades: compliantShadesSchema.nullable(),
 });
 export type Branding = z.infer<typeof brandingSchema>;
+
+/**
+ * The Branding page's save (`SCR-M01-18`): the colour, the letterhead and the logo commit as one.
+ * The logo is the business profile's one stored value (`D237`) — absent keeps it, `null` clears
+ * it — so the profile's own page and this one never disagree.
+ */
+export const brandingSaveSchema = brandingWriteSchema.extend({
+  logoFileId: uuidSchema.nullable().optional(),
+});
+export type BrandingSave = z.infer<typeof brandingSaveSchema>;
+
+/** When branding was saved last and by whom: `by` is null on a save made before it was kept, and an account may hold no name. */
+const brandingChangedSchema = z.object({
+  at: z.string().datetime(),
+  by: z.object({ id: uuidSchema, name: z.string().nullable() }).nullable(),
+});
+
+/**
+ * Branding as its own page reads it: the logo beside it and who saved it last, `null` until the
+ * first save. Optional, because an api built before the fields answers without them. Kept off
+ * `brandingSchema`, which every member reads inside the effective settings.
+ */
+export const brandingReadSchema = brandingSchema.extend({
+  logoFileId: uuidSchema.nullable().optional(),
+  changed: brandingChangedSchema.nullable().optional(),
+});
+export type BrandingRead = z.infer<typeof brandingReadSchema>;
 
 export const proposalSectionSchema = z.enum(PROPOSAL_SECTIONS);
 export type ProposalSection = z.infer<typeof proposalSectionSchema>;

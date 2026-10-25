@@ -85,15 +85,11 @@
   box-shadow: var(--e1);
 }
 
-.hg-brand-color-specimen-band,
-.hg-brand-color-specimen-body {
+.hg-brand-color-specimen-band {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: var(--sp-3);
-}
-
-.hg-brand-color-specimen-band {
   padding: var(--sp-3) 14px;
   font-family: var(--font-sans);
 }
@@ -111,22 +107,16 @@
 }
 
 .hg-brand-color-specimen-body {
-  padding: var(--sp-2) 14px;
+  padding: 10px 14px;
   /* biome-ignore lint/plugin/raw-white-css: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen */
   background: var(--surface);
 }
 
-.hg-brand-color-specimen-line {
+/* The colour as a WORD on paper — itself when it clears the floor, else its derived ink. No figure. */
+.hg-brand-color-specimen-word {
   font-family: var(--font-sans);
   font-size: var(--fs-caption);
-  color: var(--text-secondary);
-}
-
-.hg-brand-color-specimen-figure {
-  font-family: var(--font-mono);
-  font-size: var(--fs-caption);
-  font-variant-numeric: tabular-nums;
-  color: var(--text-primary);
+  font-weight: var(--fw-bold);
 }
 
 .hg-brand-color-verdicts {
@@ -171,28 +161,98 @@
   margin-top: var(--sp-0-5);
 }
 
-.hg-brand-color-fix-button {
-  min-height: 44px;
-  padding: 0 var(--sp-4);
-  border: none;
-  border-radius: var(--r-pill);
-  background: var(--action-primary);
-  color: var(--text-inverse);
-  font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: var(--fw-medium);
-  cursor: pointer;
-}
-
-.hg-brand-color-fix-button:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
-}
-
 .hg-brand-color-fix-note {
   font-family: var(--font-sans);
   font-size: var(--fs-caption);
   color: var(--text-tertiary);
+}
+
+/* verdict="short" — one line beside a glyph disc, and the derived ink as a quiet row. */
+.hg-brand-color-short {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hg-brand-color-short-line {
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-primary);
+  text-wrap: pretty;
+}
+
+/* The disc carries the glyph — the mark, not the tint, is the message (F7-12). */
+.hg-brand-color-short-disc {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hg-brand-color-short-line[data-kind="pass"] > .hg-brand-color-short-disc {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.hg-brand-color-short-line[data-kind="warn"] > .hg-brand-color-short-disc {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.hg-brand-color-short-line[data-kind="info"] > .hg-brand-color-short-disc {
+  background: var(--fill);
+  color: var(--text-secondary);
+}
+
+/* A tile: its fill and ground are Ground.css's (F7-49); it keeps only its radius and padding. */
+.hg-brand-color-ink {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border-radius: var(--r-lg);
+}
+
+.hg-brand-color-ink-swatch {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.hg-brand-color-ink-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-sans);
+}
+
+.hg-brand-color-ink-title {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.hg-brand-color-ink-hex {
+  font-family: var(--font-mono);
+}
+
+.hg-brand-color-ink-caption {
+  font-size: var(--fs-caption);
+  color: var(--text-secondary);
+}
+
+.hg-brand-color-ink > .hg-button {
+  flex-shrink: 0;
 }
 
 .hg-brand-color-helper {

@@ -32,6 +32,7 @@ export function useImageFile(choose: (image: ChosenPicture) => void): (picked: P
         widthPx,
         bytes: new Uint8Array(buffer),
         picture,
+        name: file.name,
       });
     });
   };

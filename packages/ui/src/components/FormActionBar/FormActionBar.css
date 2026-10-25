@@ -1,0 +1,55 @@
+/* FormActionBar — the act bar a settings form raises with a change (SCR-M01-18 s18-m, s18-r).
+   One order at both placements: the consequence, then Save, then Discard. No motion: the bar shows
+   and hides at once. */
+
+.hg-form-action-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  background: var(--hg-ground);
+}
+
+/* The phone: a band pinned to the bottom of its scroller, in the place of the bottom nav, painted
+   under the device's own bottom inset so its acts stand clear of the home indicator (F7-50). */
+.hg-form-action-bar[data-placement="sticky"] {
+  position: sticky;
+  bottom: 0;
+  /* Above the screen's scrolling content, below every sheet — the bottom nav's own layer. */
+  z-index: 1;
+  padding: var(--sp-4) var(--screen-pad-mobile);
+  padding-bottom: calc(var(--sp-4) + env(safe-area-inset-bottom));
+  box-shadow: var(--e4);
+}
+
+/* At width: the foot of the settings editor card (s18-r) — its hairline above, its corners below.
+   It reaches through the card's --sp-5 padding to the card's edges; a card with another padding
+   is a new frame, not a new value here. */
+.hg-form-action-bar[data-placement="footer"] {
+  flex: 0 0 auto;
+  margin: 0 calc(-1 * var(--sp-5)) calc(-1 * var(--sp-5));
+  padding: var(--sp-4);
+  border-top: 1px solid var(--line-soft);
+  border-radius: 0 0 var(--r-tile) var(--r-tile);
+  box-shadow: none;
+}
+
+.hg-form-action-bar-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+/* The consequence centred over the acts it qualifies (SCR-M01-18, G1). */
+.hg-form-action-bar[data-align="center"] {
+  align-items: center;
+}
+
+.hg-form-action-bar[data-align="center"] .hg-form-action-bar-acts {
+  justify-content: center;
+}
+
+.hg-form-action-bar-consequence {
+  margin: 0;
+  text-wrap: pretty;
+}

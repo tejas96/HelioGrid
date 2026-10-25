@@ -21,6 +21,7 @@ import {
 } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
 import { type ReactNode, useState } from 'react';
+import { LeaveGuardProvider, useGuardedMove } from '../../lib/leave-guard';
 import { NotificationCentre } from '../notifications';
 import { GrievanceNote } from './components/GrievanceNote';
 import { ShellHeader } from './components/ShellHeader';
@@ -38,6 +39,14 @@ import './shell.css';
  * screen instead of blocks that would wait forever (`F8-36`).
  */
 export function ShellScreen({ children }: { children: ReactNode }) {
+  return (
+    <LeaveGuardProvider>
+      <ShellIn>{children}</ShellIn>
+    </LeaveGuardProvider>
+  );
+}
+
+function ShellIn({ children }: { children: ReactNode }) {
   const t = useTranslate();
   const session = useSession();
   const shell = useShell();
@@ -45,14 +54,18 @@ export function ShellScreen({ children }: { children: ReactNode }) {
   const unread = useUnreadCount();
   const [grievance, setGrievance] = useState(false);
   const [centreOpen, setCentreOpen] = useState(false);
-  /* Leaving the page the centre stands beside closes it — an item's subject, or a rail press. */
-  const goTo = (path: string) => {
-    setCentreOpen(false);
-    router.push(path);
-  };
+  const guarded = useGuardedMove();
+  /* Leaving the page the centre stands beside closes it — an item's subject, or a rail press. A
+     page holding a change asks first (`useLeaveGuard`). */
+  const goTo = (path: string) =>
+    guarded(() => {
+      setCentreOpen(false);
+      router.push(path);
+    });
   const rail = useRailItems(shell, goTo);
   const showGrievance = () => setGrievance(true);
-  const signOut = () => void session.signOut();
+  // A page holding a change asks first, as every in-app move does (D1 A).
+  const signOut = () => guarded(() => void session.signOut());
   const note = <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />;
   const connection = useConnection();
 
@@ -107,7 +120,7 @@ export function ShellScreen({ children }: { children: ReactNode }) {
       header={
         <ShellHeader
           companyName={shell.companyName}
-          onSearch={() => router.push(DOOR_PATH.search)}
+          onSearch={() => guarded(() => router.push(DOOR_PATH.search))}
         />
       }
     >

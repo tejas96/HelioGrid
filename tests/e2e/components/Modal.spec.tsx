@@ -50,3 +50,21 @@ test("the close is named in the reader's language", async ({ mount, page }) => {
     page.getByRole('dialog').getByRole('button', { name: hi.t(SHELL.close), exact: true }),
   ).toBeVisible();
 });
+
+test('a dialog opens at its end state with reduced motion', async ({ mount, page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await mount(
+    <Modal open closeLabel={en.t(SHELL.close)} title={en.t(SHELL.grievanceOfficer)} size="sm">
+      <p>{en.t(SHELL.grievanceNotPublished)}</p>
+    </Modal>,
+  );
+  /* The motion tokens fall to 1ms: nothing the dialog runs lasts longer, so its first frame is its last. */
+  const longest = await page.evaluate(() =>
+    Math.max(
+      0,
+      ...document.getAnimations().map((motion) => Number(motion.effect?.getTiming().duration ?? 0)),
+    ),
+  );
+  expect(longest).toBeLessThanOrEqual(1);
+  await expect(page.getByRole('dialog')).toHaveCSS('opacity', '1');
+});

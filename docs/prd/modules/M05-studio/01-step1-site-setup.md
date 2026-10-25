@@ -48,7 +48,7 @@ Edge cases: switching site type after manual tariff edit re-derives and OVERWRIT
 | ID | Requirement | Tag | Tier |
 |---|---|---|---|
 | MS1-11 | The proposal logo comes AUTOMATICALLY from tenant branding (M01); Step 1 shows it read-only with "change for this project" as an optional override for co-branded work. No per-project upload prompt in the default flow. | `BRIEF` S1-2 (retires the default-flow half of `CODE.step1-setup.18–.20`) | P0 |
-| MS1-12 | The override upload enforces the stated limits for real: 5 MB max and PNG/JPG validated on selection, clear error on violation; preview at the shipped constraints (max 70×200 px) (`CODE.step1-setup.19–.21`). | `BRIEF` S1-2 (fixes POC-DEFECT `CODE.step1-setup.21`) | P0 |
+| MS1-12 | The override upload enforces the stated limits for real: 2 MB max and PNG/JPG validated on selection, clear error on violation; preview at the shipped constraints (max 70×200 px) (`CODE.step1-setup.19–.21`). | `BRIEF` S1-2 (fixes POC-DEFECT `CODE.step1-setup.21`) | P0 |
 
 Acceptance: Given tenant branding exists, When a design is created, Then its proposal logo is the tenant's with zero designer action (MS1-11); Given a 12 MB file, When picked as override, Then a clear size error and no write (MS1-12).
 

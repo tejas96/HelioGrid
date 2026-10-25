@@ -41,13 +41,14 @@ describe.skipIf(skip)('the settings writes, against a migrated database', () => 
   let pools: ReturnType<typeof openPools>;
   let settings: ReturnType<typeof settingsServicesOf>['settings'];
   let templates: ReturnType<typeof settingsServicesOf>['templates'];
+  let branding: ReturnType<typeof settingsServicesOf>['branding'];
   const by = (): Act => ({ actorUserId: owner.userId, now: Date.now() });
 
   beforeAll(async () => {
     pools = openPools();
     await seed(pools.admin.db, fixture);
     await publishIndiaPack(pools);
-    ({ settings, templates } = settingsServicesOf(pools));
+    ({ settings, templates, branding } = settingsServicesOf(pools));
   });
 
   afterAll(async () => {
@@ -107,14 +108,14 @@ describe.skipIf(skip)('the settings writes, against a migrated database', () => 
   });
 
   it('never refuses a brand colour: the answer rides back with the save, derived, not stored', async () => {
-    const saved = await settings.saveBranding(
+    const saved = await branding.save(
       here.tenantId,
       { brandColour: '#006fff', letterhead: null },
       by(),
     );
     expect(saved.shades).toMatchObject({ brand: '#006FFF', whiteOnBrand: false });
     expect(saved.shades?.ink).not.toBe('#006FFF');
-    const cleared = await settings.saveBranding(
+    const cleared = await branding.save(
       here.tenantId,
       {
         brandColour: null,
@@ -123,7 +124,7 @@ describe.skipIf(skip)('the settings writes, against a migrated database', () => 
       by(),
     );
     expect(cleared).toMatchObject({ brandColour: null, shades: null });
-    expect((await settings.branding(here.tenantId)).letterhead?.tagline).toEqual({
+    expect((await branding.read(here.tenantId)).letterhead?.tagline).toEqual({
       en: 'Solar since 2011',
     });
     expect(await entriesOf(pools, here.tenantId, 'settings.branding_changed')).toHaveLength(2);

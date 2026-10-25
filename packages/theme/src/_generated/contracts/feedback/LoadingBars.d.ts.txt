@@ -1,0 +1,23 @@
+import React from "react";
+
+/**
+ * What one bar stands for while a list's record loads: `row` a closed section's header (56px),
+ * `panel` a section that will open with its fields (188px), `control` a switch or one control row (40px). A size is a name, never a number from
+ * the caller, so two screens cannot draw the same wait at two heights.
+ */
+export type LoadingBarSize = "row" | "panel" | "control";
+
+export interface LoadingBarsProps {
+  /** Required words — what is loading. A busy region with no name tells a screen reader nothing. */
+  label: string;
+  /** One bar per part of the list, in the list's order. */
+  bars: LoadingBarSize[];
+  style?: React.CSSProperties;
+}
+
+/**
+ * The bars a list shows in its own place while its record loads. The region is `role="status"`,
+ * `aria-busy`, and named by `label`; the bars themselves are decoration. The sweep is the theme's
+ * `hg-sheet-shimmer`, which reduced motion stills.
+ */
+export function LoadingBars(props: LoadingBarsProps): JSX.Element;

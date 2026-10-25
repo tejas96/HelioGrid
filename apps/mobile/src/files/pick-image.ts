@@ -30,5 +30,6 @@ export async function pickImage(maxSidePx?: number): Promise<ChosenPicture | nul
     widthPx: asset.width ?? null,
     bytes,
     picture: asset.uri ?? null,
+    ...(asset.fileName === undefined ? {} : { name: asset.fileName }),
   };
 }

@@ -145,7 +145,7 @@ const REPLACES: readonly Replace[] = [
     route: 'PUT /settings/branding',
     event: 'settings.branding_changed',
     save: (send) =>
-      services.settings.saveBranding(
+      services.branding.save(
         here.tenantId,
         {
           brandColour: send === 'changed' ? null : '#006fff',

@@ -3,6 +3,7 @@ import { firstSettingsPageBeside, SETTINGS_SEGMENT, type SettingsRow } from '@he
 import { settingsListFor } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { useRouter } from 'next/navigation';
+import { useGuardedMove } from '../../../lib/leave-guard';
 import { settingsRowPath } from '../constants';
 
 /**
@@ -15,8 +16,11 @@ export function useSettingsList() {
   const t = useTranslate();
   const { user } = useSession();
   const router = useRouter();
+  const guarded = useGuardedMove();
   const roles = user?.tenant?.roles ?? [];
-  const open = (row: SettingsRow) => router.push(settingsRowPath(SETTINGS_SEGMENT[row]));
+  // A page holding a change asks first (`useLeaveGuard`).
+  const open = (row: SettingsRow) =>
+    guarded(() => router.push(settingsRowPath(SETTINGS_SEGMENT[row])));
   return {
     list: settingsListFor(t, roles),
     person: { name: user?.name ?? '' },

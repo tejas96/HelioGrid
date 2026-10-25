@@ -137,43 +137,6 @@ export class SettingsRepository {
     });
   }
 
-  async saveBranding(
-    tenantId: string,
-    branding: BrandingSettings,
-    act: Act,
-  ): Promise<BrandingSettings> {
-    return this.db.withTenantTransaction(tenantId, async (tx) => {
-      const stored = await brandingOf(tx, tenantId);
-      if (stored !== null && isDeepStrictEqual(stored, branding)) return stored;
-      const now = new Date(act.now);
-      const values = {
-        brandColour: branding.brandColour,
-        letterhead: branding.letterhead,
-        updatedAt: now,
-      };
-      const [row] = await tx
-        .insert(brandingSettings)
-        .values({ tenantId, ...values })
-        .onConflictDoUpdate({ target: brandingSettings.tenantId, set: values })
-        .returning({
-          id: brandingSettings.id,
-          brandColour: brandingSettings.brandColour,
-          letterhead: brandingSettings.letterhead,
-        });
-      if (!row) throw new Error('branding_settings upsert returned no row');
-      await recordAuditEntry(
-        tx,
-        memberAct(
-          'settings.branding_changed',
-          tenantId,
-          { kind: 'branding_settings', ref: row.id },
-          act,
-        ),
-      );
-      return { brandColour: row.brandColour, letterhead: row.letterhead };
-    });
-  }
-
   /** The tenant's additions replaced whole; the pack's own days are never here to remove (`F1-17`). */
   async replaceHolidays(
     tenantId: string,
@@ -236,7 +199,10 @@ export function withKwp<T extends { typicalSystemKwp: string | null }>(
   };
 }
 
-async function brandingOf(tx: TenantScopedDb, tenantId: string): Promise<BrandingSettings | null> {
+export async function brandingOf(
+  tx: TenantScopedDb,
+  tenantId: string,
+): Promise<BrandingSettings | null> {
   const [row] = await tx
     .select({ brandColour: brandingSettings.brandColour, letterhead: brandingSettings.letterhead })
     .from(brandingSettings)
@@ -278,7 +244,11 @@ async function holidaysOf(tx: TenantScopedDb, tenantId: string): Promise<readonl
  * The profile row a registration change is recorded against. Seeded at creation; a company
  * older than the seed gets its empty row here, on the same transaction as the change.
  */
-async function ensureProfile(tx: TenantScopedDb, tenantId: string, now: number): Promise<string> {
+export async function ensureProfile(
+  tx: TenantScopedDb,
+  tenantId: string,
+  now: number,
+): Promise<string> {
   const [existing] = await tx
     .select({ id: businessProfile.id })
     .from(businessProfile)

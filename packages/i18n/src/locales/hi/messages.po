@@ -53,6 +53,11 @@ msgid "{company} is set up."
 msgstr "{company} तैयार है।"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:42
+msgid "{company} logo"
+msgstr "{company} का लोगो"
+
+#. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:34
 msgid "{company} must keep one EPC Owner, so make someone else one first."
 msgstr "{company} में एक EPC Owner रहना ज़रूरी है, इसलिए पहले किसी और को बनाइए।"
@@ -271,6 +276,21 @@ msgstr "{file} · {rows, plural, one {# पंक्ति} other {# पंक�
 #: src/copy/catalog-import.ts:32
 msgid "{file} · {rows, plural, one {# row} other {# rows}} · imported {date}, {time}"
 msgstr "{file} · {rows, plural, one {# पंक्ति} other {# पंक्तियाँ}} · {date}, {time} को इम्पोर्ट किया गया"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:90
+msgid "{file} is not a PNG or JPG."
+msgstr "{file} PNG या JPG नहीं है।"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:89
+msgid "{file} is too large."
+msgstr "{file} बहुत बड़ी है।"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:91
+msgid "{file} is too narrow."
+msgstr "{file} बहुत कम चौड़ी है।"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:56
@@ -766,6 +786,11 @@ msgid "AC power"
 msgstr "AC पावर"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:83
+msgid "Accept proposal"
+msgstr "प्रस्ताव स्वीकार करें"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:27
 msgid "Account"
 msgstr "खाता"
@@ -1074,6 +1099,21 @@ msgid "Archived items instead"
 msgstr "इसके बजाय आर्काइव किए गए आइटम"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:31
+msgid "As a word on white paper it is {ratio}:1 — headings and totals can be set in it."
+msgstr "सफ़ेद कागज़ पर शब्द के रूप में यह {ratio}:1 है — शीर्षक और योग इसमें लिखे जा सकते हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:37
+msgid "As a word on white paper it is only {ratio}:1, so the proposal sets its headings and totals in {ink}, the same hue darkened to {inkRatio}:1, and uses this colour as a fill — below even the {markFloor}:1 mark floor, so hairlines in it will not read either."
+msgstr "सफ़ेद कागज़ पर शब्द के रूप में यह केवल {ratio}:1 है, इसलिए प्रस्ताव अपने शीर्षक और योग {ink} में लिखता है — वही रंग, {inkRatio}:1 तक गहरा — और इस रंग को केवल भराव के लिए रखता है। यह {markFloor}:1 की निशान-सीमा से भी नीचे है, इसलिए इसकी पतली रेखाएँ भी नहीं दिखेंगी।"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:34
+msgid "As a word on white paper it is only {ratio}:1, so the proposal sets its headings and totals in {ink}, the same hue darkened to {inkRatio}:1, and uses this colour as a fill and rules — above the {markFloor}:1 mark floor."
+msgstr "सफ़ेद कागज़ पर शब्द के रूप में यह केवल {ratio}:1 है, इसलिए प्रस्ताव अपने शीर्षक और योग {ink} में लिखता है — वही रंग, {inkRatio}:1 तक गहरा — और इस रंग को भराव और रेखाओं के लिए रखता है। यह {markFloor}:1 की निशान-सीमा से ऊपर है।"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:37
 #: src/copy/catalog-add-item.ts:38
 msgid "As printed"
@@ -1083,6 +1123,11 @@ msgstr "जैसा छपा"
 #: src/copy/invite-landing.ts:48
 msgid "Ask {first} to invite you again"
 msgstr "{first} से फिर से आमंत्रित करने को कहें"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:84
+msgid "Ask a question"
+msgstr "सवाल पूछें"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:32
@@ -1124,6 +1169,11 @@ msgstr "मान लिया गया"
 #: src/copy/role-matrix.ts:33
 msgid "Author campaign content and per-language campaign templates, and submit them for channel registration"
 msgstr "कैंपेन की सामग्री और हर भाषा के टेम्पलेट लिखें, और उन्हें चैनल रजिस्ट्रेशन के लिए भेजें"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:82
+msgid "Awaiting your decision"
+msgstr "आपके फ़ैसले का इंतज़ार"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:12
@@ -1568,6 +1618,11 @@ msgid "Collections"
 msgstr "वसूली"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:35
+msgid "Colour"
+msgstr "रंग"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:14
 msgid "Columns"
 msgstr "कॉलम"
@@ -1988,6 +2043,16 @@ msgid "Discard"
 msgstr "छोड़ दें"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:72
+msgid "Discard and leave"
+msgstr "हटाएँ और जाएँ"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:60
+msgid "Discard changes"
+msgstr "बदलाव हटाएँ"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:98
 msgid "Discard this battery?"
 msgstr "यह बैटरी छोड़ दें?"
@@ -2040,9 +2105,19 @@ msgid "Earlier releases"
 msgstr "पिछली रिलीज़"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:33
+msgid "Edit"
+msgstr "बदलें"
+
+#. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:26
 msgid "Edit name"
 msgstr "नाम बदलें"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:39
+msgid "Edit your branding"
+msgstr "अपनी ब्रांडिंग बदलें"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-words.ts:235
@@ -2073,6 +2148,11 @@ msgstr "कर्मचारी रिकॉर्ड, हाज़िरी �
 #: src/copy/role-presets.ts:29
 msgid "Employee records, documents, attendance and leave"
 msgstr "कर्मचारी रिकॉर्ड, दस्तावेज़, हाज़िरी और छुट्टी"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:17
+msgid "Enter a 6-digit hex colour, like #1F5FA9"
+msgstr "6 अंकों का hex रंग लिखें, जैसे #1F5FA9"
 
 #. js-lingui-explicit-id
 #: src/copy/validation.ts:10
@@ -2253,6 +2333,11 @@ msgid "From HelioGrid · product news"
 msgstr "HelioGrid की ओर से · प्रोडक्ट समाचार"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:45
+msgid "From your Business profile"
+msgstr "आपकी व्यवसाय प्रोफ़ाइल से"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:17
 msgid "From your signup"
 msgstr "आपके साइनअप से"
@@ -2428,6 +2513,11 @@ msgstr "HelioGrid इस नंबर पर संदेश भेजता ह
 #: src/copy/api-error.ts:94
 msgid "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid का जवाब पढ़ा नहीं जा सका। अगर आप कुछ सेव कर रहे थे, तो दोबारा कोशिश करने से पहले देख लें कि वह सेव हुआ या नहीं।"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:16
+msgid "Hex"
+msgstr "हेक्स कोड"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:72
@@ -2757,11 +2847,17 @@ msgid "Join {company}"
 msgstr "{company} से जुड़ें"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:73
+msgid "Keep editing"
+msgstr "बदलते रहें"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:81
 msgid "Keep filling it in"
 msgstr "भरना जारी रखें"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:69
 #: src/copy/catalog-editor.ts:39
 msgid "Keep it"
 msgstr "रहने दें"
@@ -2864,6 +2960,11 @@ msgid "Leave this column out"
 msgstr "यह कॉलम छोड़ दें"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:70
+msgid "Leave without saving?"
+msgstr "बिना सहेजे जाएँ?"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:116
 #: src/copy/catalog-import.ts:124
 msgid "Left out"
@@ -2885,9 +2986,24 @@ msgid "Length (mm)"
 msgstr "लंबाई (mm)"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:36
+msgid "Letterhead"
+msgstr "लेटरहेड"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:151
 msgid "LFP"
 msgstr "LFP"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:48
+msgid "Lines under your address"
+msgstr "आपके पते के नीचे की पंक्तियाँ"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:32
+msgid "Link page"
+msgstr "लिंक पेज"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:103
@@ -2940,9 +3056,19 @@ msgid "Loading the price book"
 msgstr "प्राइस बुक लोड हो रही है"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:54
+msgid "Loading the proposal cover"
+msgstr "प्रस्ताव का कवर लोड हो रहा है"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:27
 msgid "Loading what your role can and cannot do"
 msgstr "आपकी भूमिका क्या कर सकती है और क्या नहीं, लोड हो रहा है"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:55
+msgid "Loading your branding"
+msgstr "आपकी ब्रांडिंग लोड हो रही है"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:45
@@ -2965,6 +3091,7 @@ msgid "Loading your team"
 msgstr "आपकी टीम लोड हो रही है"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:34
 #: src/copy/company-profile.ts:59
 msgid "Logo"
 msgstr "लोगो"
@@ -3228,9 +3355,29 @@ msgid "Name only"
 msgstr "केवल नाम"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:44
+msgid "Name, address and {taxLabel}"
+msgstr "नाम, पता और {taxLabel}"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:23
 msgid "Name, phone or city"
 msgstr "नाम, फ़ोन या शहर"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:67
+msgid "Near-black text on this colour is {ratio}:1 — clears the {floor}:1 floor, so the proposal header uses near-black."
+msgstr "इस रंग पर गहरा काला लिखा {ratio}:1 है — {floor}:1 की सीमा पार करता है, इसलिए प्रस्ताव का हेडर गहरा काला इस्तेमाल करता है।"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:59
+msgid "Near-black text reads on it. Headings and lines use a darker shade; this colour stays for fills only."
+msgstr "इस पर गहरा काला लिखा पढ़ा जाता है। शीर्षक और रेखाएँ गहरा रंग लेती हैं; यह रंग केवल भराव के लिए रहता है।"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:51
+msgid "Near-black text reads on it. Headings use a darker shade; this colour stays for fills and lines."
+msgstr "इस पर गहरा काला लिखा पढ़ा जाता है। शीर्षक गहरा रंग लेते हैं; यह रंग भराव और रेखाओं के लिए रहता है।"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:78
@@ -3277,6 +3424,11 @@ msgstr "नया प्रोडक्ट"
 #: src/copy/catalog-import.ts:111
 msgid "New products"
 msgstr "नए प्रोडक्ट"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:65
+msgid "New proposals and link pages will show your company name in its place. You can add a logo again here at any time."
+msgstr "नए प्रस्तावों और लिंक पेजों पर इसकी जगह आपकी कंपनी का नाम दिखेगा। आप कभी भी यहाँ फिर से लोगो जोड़ सकते हैं।"
 
 #. js-lingui-explicit-id
 #: src/copy/price-book.ts:65
@@ -3410,6 +3562,11 @@ msgid "No row is ready to import yet."
 msgstr "अभी कोई पंक्ति इम्पोर्ट के लिए तैयार नहीं है।"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:28
+msgid "No text colour clears {floor}:1 on this — white reaches {white}:1 and near-black {black}:1. A header band in it would be unreadable on a printed proposal."
+msgstr "इस पर कोई भी लिखावट का रंग {floor}:1 पार नहीं करता — सफ़ेद {white}:1 और गहरा काला {black}:1 तक पहुँचता है। इसकी हेडर पट्टी छपे प्रस्ताव पर पढ़ी नहीं जाएगी।"
+
+#. js-lingui-explicit-id
 #: src/copy/price-book.ts:22
 msgid "No version yet"
 msgstr "अभी कोई वर्शन नहीं"
@@ -3495,6 +3652,11 @@ msgid "Not saved · our end · nothing typed is lost"
 msgstr "सहेजा नहीं गया · गड़बड़ी हमारी ओर से · लिखा हुआ कुछ भी खोया नहीं"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:58
+msgid "Not saved yet"
+msgstr "अभी सहेजा नहीं गया"
+
+#. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:37
 msgid "Not saved. Try again."
 msgstr "सेव नहीं हुआ। फिर से कोशिश करें।"
@@ -3508,6 +3670,11 @@ msgstr "अभी गणना नहीं हुई"
 #: src/copy/sign-in.ts:98
 msgid "Not you? Use a different Google account"
 msgstr "आप नहीं हैं? दूसरा Google खाता इस्तेमाल करें"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:51
+msgid "Note along the foot of every page"
+msgstr "हर पेज के नीचे की टिप्पणी"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:40
@@ -3568,6 +3735,11 @@ msgstr "इसका कुछ भी आपके कैटलॉग में 
 #: src/copy/api-error.ts:77
 msgid "Nothing in the catalog changed since the last release, so there is nothing to publish."
 msgstr "पिछली रिलीज़ के बाद कैटलॉग में कुछ नहीं बदला, इसलिए प्रकाशित करने को कुछ नहीं है।"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:29
+msgid "Nothing set yet · platform defaults in force"
+msgstr "अभी कुछ तय नहीं · प्लैटफ़ॉर्म की डिफ़ॉल्ट सेटिंग लागू"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:64
@@ -3635,6 +3807,11 @@ msgid "On every proposal, invoice and customer link · change it here"
 msgstr "हर प्रस्ताव, बिल और ग्राहक लिंक पर · यहाँ बदलें"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:19
+msgid "On the proposal"
+msgstr "प्रस्ताव पर"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:34
 msgid "On your invoices · never used to move your money"
 msgstr "आपके बिलों पर · आपके पैसे के लेन-देन के लिए कभी नहीं"
@@ -3655,6 +3832,11 @@ msgid "One number, one account"
 msgstr "एक नंबर, एक खाता"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:50
+msgid "One per line · up to {count}"
+msgstr "हर पंक्ति में एक · अधिकतम {count}"
+
+#. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:49
 msgid "One tap tells {first} you are still waiting."
 msgstr "एक टैप से {first} को पता चलेगा कि आप अभी भी इंतज़ार कर रहे हैं।"
@@ -3673,6 +3855,11 @@ msgstr "अकेले EPC मालिक"
 #: src/copy/company-profile.ts:37
 msgid "Only new proposals reprice · sent ones keep theirs"
 msgstr "सिर्फ़ नए प्रस्तावों की क़ीमत बदलेगी · भेजे गए वैसे ही रहेंगे"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:37
+msgid "Open full size"
+msgstr "पूरे आकार में खोलें"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:49
@@ -3917,6 +4104,11 @@ msgid "Phases"
 msgstr "फ़ेज़"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:49
+msgid "Phone, email or website"
+msgstr "फ़ोन, ईमेल या वेबसाइट"
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:38
 msgid "Pick at least one role. Someone invited with no role would sign in to an empty app."
 msgstr "कम से कम एक भूमिका चुनें। बिना भूमिका के आमंत्रित व्यक्ति खाली ऐप में साइन इन करेगा।"
@@ -4030,6 +4222,7 @@ msgid "Press Save to try again."
 msgstr "फिर से कोशिश करने के लिए सहेजें दबाएँ।"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:30
 #: src/copy/catalog-import.ts:15
 msgid "Preview"
 msgstr "प्रीव्यू"
@@ -4092,6 +4285,11 @@ msgid "Prices applied"
 msgstr "लागू की गई कीमतें"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:12
+msgid "Primary brand colour"
+msgstr "मुख्य ब्रांड रंग"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:115
 msgid "Products created"
 msgstr "बनाए गए प्रोडक्ट"
@@ -4135,6 +4333,17 @@ msgstr "प्रोजेक्ट कितने दिखते हैं"
 #: src/copy/shell.ts:92
 msgid "Projects"
 msgstr "प्रोजेक्ट्स"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:21
+#: src/copy/branding.ts:31
+msgid "Proposal"
+msgstr "प्रस्ताव"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:63
+msgid "Proposal cover"
+msgstr "प्रस्ताव का कवर"
 
 #. js-lingui-explicit-id
 #: src/copy/settings.ts:38
@@ -4253,6 +4462,16 @@ msgid "Read-only"
 msgstr "सिर्फ़ पढ़ने के लिए"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:45
+msgid "Reads well — near-black text on it, headings in it."
+msgstr "अच्छा पढ़ा जाता है — इस पर गहरा काला लिखा, शीर्षक इसी रंग में।"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:44
+msgid "Reads well — white text on it, headings in it."
+msgstr "अच्छा पढ़ा जाता है — इस पर सफ़ेद लिखा, शीर्षक इसी रंग में।"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:79
 msgid "Ready to import"
 msgstr "इम्पोर्ट के लिए तैयार"
@@ -4303,6 +4522,7 @@ msgid "Releases"
 msgstr "रिलीज़"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:41
 #: src/copy/first-run-profile.ts:41
 msgid "Remove"
 msgstr "हटाएँ"
@@ -4323,6 +4543,11 @@ msgid "Remove it and your initials come back."
 msgstr "इसे हटाएँ तो आपके शुरुआती अक्षर वापस आ जाते हैं।"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:68
+msgid "Remove logo"
+msgstr "लोगो हटाएँ"
+
+#. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:56
 msgid "Remove or cancel queued agent calls"
 msgstr "कतार में लगी एजेंट कॉल हटाएँ या रद्द करें"
@@ -4338,11 +4563,17 @@ msgid "Remove roles"
 msgstr "भूमिकाएँ हटाएँ"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:64
+msgid "Remove your logo?"
+msgstr "अपना लोगो हटाएँ?"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:33
 msgid "Reopen anytime from Profile & preferences."
 msgstr "प्रोफ़ाइल और पसंद से कभी भी फिर खोलें।"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:40
 #: src/copy/catalog-import.ts:26
 #: src/copy/first-run-profile.ts:40
 msgid "Replace"
@@ -4413,6 +4644,11 @@ msgstr "वापस लाएँ"
 #: src/copy/catalog-editor.ts:46
 msgid "Restored {name}"
 msgstr "{name} वापस लाया गया"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:62
+msgid "Retry"
+msgstr "फिर से कोशिश करें"
 
 #. js-lingui-explicit-id
 #: src/copy/team-acts.ts:27
@@ -4574,6 +4810,11 @@ msgid "Sales Manager"
 msgstr "सेल्स मैनेजर"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:40
+msgid "Same hue, darkened to {ratio}:1."
+msgstr "वही रंग, {ratio}:1 तक गहरा।"
+
+#. js-lingui-explicit-id
 #: src/copy/name-and-photo-editor.ts:14
 msgid "Save"
 msgstr "सहेजें"
@@ -4588,6 +4829,11 @@ msgstr "सहेजें और आगे बढ़ें"
 #: src/copy/price-book.ts:72
 msgid "Save as version {number}"
 msgstr "वर्शन {number} के रूप में सहेजें"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:59
+msgid "Save branding"
+msgstr "ब्रांडिंग सहेजें"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:41
@@ -4623,6 +4869,21 @@ msgstr "अपनी कंपनी प्रोफ़ाइल सहेजे
 #: src/copy/catalog-import.ts:46
 msgid "saved {date}"
 msgstr "{date} को सहेजी गई"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:28
+msgid "Saved and in force"
+msgstr "सहेजा गया और लागू"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:27
+msgid "Saved and in force · {date}"
+msgstr "सहेजा गया और लागू · {date}"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:26
+msgid "Saved and in force · {name}, {date}"
+msgstr "सहेजा गया और लागू · {name}, {date}"
 
 #. js-lingui-explicit-id
 #: src/copy/first-run-profile.ts:35
@@ -4784,6 +5045,11 @@ msgstr "इस नाम से भेजा"
 #: src/copy/sign-in.ts:21
 msgid "Sent by SMS to"
 msgstr "SMS से इस नंबर पर भेजा"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:46
+msgid "Sent proposals keep their branding."
+msgstr "भेजे गए प्रस्ताव अपनी ब्रांडिंग रखते हैं।"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:70
@@ -5002,6 +5268,11 @@ msgid "SMS codes paused for {lockMinutes} minutes"
 msgstr "SMS कोड {lockMinutes} मिनट के लिए रुके हैं"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:20
+msgid "Solar proposal"
+msgstr "सोलर प्रस्ताव"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:21
 msgid "Some fields need attention. Check the form and retry."
 msgstr "कुछ फ़ील्ड्स पर ध्यान देना ज़रूरी है। फ़ॉर्म जाँचकर फिर से कोशिश करें।"
@@ -5188,6 +5459,11 @@ msgid "Switch home"
 msgstr "होम बदलें"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:47
+msgid "Tagline"
+msgstr "टैगलाइन"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:73
 msgid "Taken on {date} and not uploaded. This cannot be undone."
 msgstr "{date} को लिए गए और अपलोड नहीं हुए। इसे पलटा नहीं जा सकता।"
@@ -5240,6 +5516,11 @@ msgid "Technology"
 msgstr "तकनीक"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:22
+msgid "Text can't sit on this colour, so the cover keeps a white header and its headings use a darker shade."
+msgstr "इस रंग पर लिखावट नहीं टिकती, इसलिए कवर सफ़ेद हेडर रखता है और उसके शीर्षक गहरा रंग लेते हैं।"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:38
 msgid "That change isn't allowed here."
 msgstr "यह बदलाव यहाँ मान्य नहीं है।"
@@ -5280,6 +5561,21 @@ msgid "That does not read as a registration of this type. Check it against the f
 msgstr "यह इस प्रकार के पंजीकरण जैसा नहीं दिखता। इसे दिखाए गए प्रारूप से मिलाकर जाँचें।"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:95
+msgid "That file is not a PNG or JPG."
+msgstr "यह फ़ाइल PNG या JPG नहीं है।"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:94
+msgid "That file is too large."
+msgstr "यह फ़ाइल बहुत बड़ी है।"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:96
+msgid "That file is too narrow."
+msgstr "यह फ़ाइल बहुत कम चौड़ी है।"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:12
 msgid "That is {typed} digits. A mobile number here has {needed}."
 msgstr "यह {typed} अंक हैं। यहाँ मोबाइल नंबर में {needed} अंक होते हैं।"
@@ -5293,6 +5589,11 @@ msgstr "यह वह कोड नहीं है जो हमने भे�
 #: src/copy/connection.ts:13
 msgid "That is taking too long to answer."
 msgstr "जवाब आने में बहुत देर हो रही है।"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:18
+msgid "That isn't a hex colour."
+msgstr "यह hex रंग नहीं है।"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:58
@@ -5528,6 +5829,11 @@ msgstr "इम्पोर्ट चलने के बाद रिपोर�
 #: src/copy/catalog-import-rows.ts:70
 msgid "The row named no brand or model. Nothing was created."
 msgstr "पंक्ति में कोई ब्रांड या मॉडल नहीं था। कुछ नहीं बनाया गया।"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:26
+msgid "The same hue, a shade darker."
+msgstr "वही रंग, थोड़ा गहरा।"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:36
@@ -5815,6 +6121,7 @@ msgid "TOPCon"
 msgstr "TOPCon"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:57
 #: src/copy/catalog-add-item.ts:74
 #: src/copy/catalog-editor.ts:76
 #: src/copy/catalog-import.ts:48
@@ -5934,6 +6241,16 @@ msgid "Until you finish, proposals start without your answers."
 msgstr "पूरा करने तक प्रस्ताव आपके जवाबों के बिना शुरू होंगे।"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:53
+msgid "Up to {count} characters on a line"
+msgstr "एक पंक्ति में अधिकतम {count} अक्षर"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:52
+msgid "Up to {count} lines"
+msgstr "अधिकतम {count} पंक्तियाँ"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item-fields.ts:54
 msgid "Up to 120 characters."
 msgstr "अधिकतम 120 अक्षर।"
@@ -5995,6 +6312,11 @@ msgid "Usage"
 msgstr "उपयोग"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:25
+msgid "Use {hex}"
+msgstr "{hex} इस्तेमाल करें"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:99
 msgid "Use a different Google account"
 msgstr "दूसरा Google खाता इस्तेमाल करें"
@@ -6004,6 +6326,11 @@ msgstr "दूसरा Google खाता इस्तेमाल करे�
 #: src/copy/invite.ts:50
 msgid "Use a different number"
 msgstr "दूसरा नंबर इस्तेमाल करें"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:27
+msgid "Use it"
+msgstr "इस्तेमाल करें"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:100
@@ -6029,6 +6356,11 @@ msgstr "सर्वे शुरू करने के लिए यह बट
 #: src/copy/catalog-import.ts:86
 msgid "Use this row’s price"
 msgstr "इस पंक्ति की कीमत लें"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:13
+msgid "Used on the proposal PDF and the customer link page. The HelioGrid app itself is never restyled."
+msgstr "प्रस्ताव की PDF और ग्राहक के लिंक पेज पर इस्तेमाल होता है। HelioGrid ऐप का रूप कभी नहीं बदलता।"
 
 #. js-lingui-explicit-id
 #: src/copy/price-book.ts:19
@@ -6428,6 +6760,11 @@ msgid "What you typed has no undo."
 msgstr "आपने जो लिखा उसे वापस नहीं लाया जा सकेगा।"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:38
+msgid "What your customers get"
+msgstr "आपके ग्राहकों को क्या मिलता है"
+
+#. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:56
 msgid "When {first} sends it, a new link reaches this phone."
 msgstr "जब {first} इसे भेजेंगे, तो इस फ़ोन पर एक नया लिंक आएगा।"
@@ -6451,6 +6788,21 @@ msgstr "आप कहाँ स्थित हैं।"
 #: src/copy/catalog-import.ts:87
 msgid "Which product is it?"
 msgstr "यह कौन-सा प्रोडक्ट है?"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:64
+msgid "White text on this colour is {ratio}:1 — clears the {floor}:1 floor, so the proposal header uses white."
+msgstr "इस रंग पर सफ़ेद लिखा {ratio}:1 है — {floor}:1 की सीमा पार करता है, इसलिए प्रस्ताव का हेडर सफ़ेद इस्तेमाल करता है।"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:56
+msgid "White text reads on it. Headings and lines use a darker shade; this colour stays for fills only."
+msgstr "इस पर सफ़ेद लिखा पढ़ा जाता है। शीर्षक और रेखाएँ गहरा रंग लेती हैं; यह रंग केवल भराव के लिए रहता है।"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:48
+msgid "White text reads on it. Headings use a darker shade; this colour stays for fills and lines."
+msgstr "इस पर सफ़ेद लिखा पढ़ा जाता है। शीर्षक गहरा रंग लेते हैं; यह रंग भराव और रेखाओं के लिए रहता है।"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:35
@@ -6661,6 +7013,16 @@ msgid "Your answers set the starting point for every proposal HelioGrid builds."
 msgstr "आपके जवाब HelioGrid के बनाए हर प्रस्ताव का शुरुआती बिंदु तय करते हैं।"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:56
+msgid "Your branding didn't load"
+msgstr "आपकी ब्रांडिंग लोड नहीं हुई"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:61
+msgid "Your branding didn't save"
+msgstr "आपकी ब्रांडिंग सहेजी नहीं गई"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:92
 msgid "Your campaigns are one switch away."
 msgstr "आपके कैंपेन बस एक स्विच दूर हैं।"
@@ -6674,6 +7036,11 @@ msgstr "आपके कैटलॉग तक नहीं पहुँच स�
 #: src/copy/catalog-settings.ts:78
 msgid "Your catalog starts with {count} platform items and no prices. Add your own SKUs, or set a platform item's price from the item."
 msgstr "आपका कैटलॉग {count} प्लेटफ़ॉर्म आइटम से शुरू होता है, बिना कीमत के। अपने SKU जोड़ें, या किसी प्लेटफ़ॉर्म आइटम की कीमत उसी आइटम से तय करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:71
+msgid "Your changes to branding will be lost."
+msgstr "ब्रांडिंग में आपके बदलाव खो जाएँगे।"
 
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:36
@@ -6820,6 +7187,11 @@ msgid "Your logo"
 msgstr "आपका लोगो"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:43
+msgid "Your logo didn't load"
+msgstr "आपका लोगो लोड नहीं हुआ"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:18
 msgid "Your mobile number becomes your HelioGrid account."
 msgstr "आपका मोबाइल नंबर आपका HelioGrid खाता बन जाता है।"
@@ -6927,6 +7299,11 @@ msgstr "आपकी प्रोफ़ाइल सहेजी नहीं �
 #: src/copy/role-card.ts:91
 msgid "Your projects are one switch away."
 msgstr "आपके प्रोजेक्ट बस एक स्विच दूर हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:81
+msgid "Your proposal is ready."
+msgstr "आपका प्रस्ताव तैयार है।"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:77

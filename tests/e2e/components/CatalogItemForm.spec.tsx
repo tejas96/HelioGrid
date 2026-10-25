@@ -189,21 +189,18 @@ function entrySettled(page: Page) {
 
 const FRAME_NAMES = Object.keys(FRAMES) as FrameName[];
 
-test('every built frame at 375 and 1536', async ({ mount, page }) => {
-  for (const width of [375, 1536]) {
-    await at(page, width);
-    for (const name of FRAME_NAMES) {
-      await test.step(`${name} at ${width}`, async () => {
-        const setup: ItemFormSetup = FRAMES[name];
-        const root = await mount(<CatalogItemFormAsRead reader="en" setup={setup} />);
-        await expectFrame(page, name, width === 1536);
-        await expectNoSidewaysScroll(page);
-        await expectNoSeriousViolations(page);
-        await root.unmount();
-      });
-    }
+/* One test per frame and width: all 24 in one test overran its 30 s budget on CI. */
+for (const width of [375, 1536]) {
+  for (const name of FRAME_NAMES) {
+    test(`built frame ${name} at ${width}`, async ({ mount, page }) => {
+      await at(page, width);
+      await mount(<CatalogItemFormAsRead reader="en" setup={FRAMES[name]} />);
+      await expectFrame(page, name, width === 1536);
+      await expectNoSidewaysScroll(page);
+      await expectNoSeriousViolations(page);
+    });
   }
-});
+}
 
 /** The boxes that hold the product's own words, which must never clip in any language. */
 const WORDS_BOXES = '.hg-button, .hg-text, .hg-select-label, .hg-select-value, .hg-switch-label'

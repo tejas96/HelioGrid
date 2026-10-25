@@ -64,7 +64,7 @@ export function DocumentPreview({ className, style, ...props }: WebDocumentPrevi
           <DocumentBandHeader doc={doc} />
           {has('cover') ? <DocumentCover doc={doc} /> : null}
           <div className="hg-doc-body">
-            {has('items') ? <DocumentItemsBand doc={doc} /> : null}
+            {has('items') && doc.lineItems.length > 0 ? <DocumentItemsBand doc={doc} /> : null}
             {has('sections') ? <DocumentSectionsBand doc={doc} /> : null}
             {has('tranches') ? <DocumentTranchesBand doc={doc} /> : null}
             {has('terms') ? (
@@ -73,6 +73,7 @@ export function DocumentPreview({ className, style, ...props }: WebDocumentPrevi
                 value={props.terms}
                 logoSrc={doc.logoSrc}
                 logoLabel={doc.logoLabel}
+                emptyText={doc.termsEmptyText}
               />
             ) : null}
           </div>
@@ -82,11 +83,8 @@ export function DocumentPreview({ className, style, ...props }: WebDocumentPrevi
       {doc.caption === '' ? null : (
         <figcaption className="hg-doc-caption">
           {doc.caption}
-          {doc.bandOk ? null : (
-            <span className="hg-doc-caption-note">
-              This colour can't carry header text, so the document keeps a white header and uses it
-              as a rule.
-            </span>
+          {doc.bandOk || doc.bandFailsNote === '' ? null : (
+            <span className="hg-doc-caption-note">{doc.bandFailsNote}</span>
           )}
         </figcaption>
       )}

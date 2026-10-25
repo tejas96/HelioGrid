@@ -648,7 +648,7 @@ Reviewer findings rejected: none.
 
 ### T-M01-018 · Branding Settings
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped
 **Why:** The owner uploads a logo and picks the brand colour, sees the proposal cover and the customer-link header exactly as the customer will — a too-pale colour darkened rather than refused — and the app they work in stays unbranded; without it a customer document goes out unreadable or unbranded.
 **PRD rows:** M01-50 (P0), F7-07 (P0)
 **DESIGN:** SCR-M01-18 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN

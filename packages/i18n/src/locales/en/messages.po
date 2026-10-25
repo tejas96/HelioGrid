@@ -53,6 +53,11 @@ msgid "{company} is set up."
 msgstr "{company} is set up."
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:42
+msgid "{company} logo"
+msgstr "{company} logo"
+
+#. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:34
 msgid "{company} must keep one EPC Owner, so make someone else one first."
 msgstr "{company} must keep one EPC Owner, so make someone else one first."
@@ -271,6 +276,21 @@ msgstr "{file} · {rows, plural, one {# row} other {# rows}}"
 #: src/copy/catalog-import.ts:32
 msgid "{file} · {rows, plural, one {# row} other {# rows}} · imported {date}, {time}"
 msgstr "{file} · {rows, plural, one {# row} other {# rows}} · imported {date}, {time}"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:90
+msgid "{file} is not a PNG or JPG."
+msgstr "{file} is not a PNG or JPG."
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:89
+msgid "{file} is too large."
+msgstr "{file} is too large."
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:91
+msgid "{file} is too narrow."
+msgstr "{file} is too narrow."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:56
@@ -766,6 +786,11 @@ msgid "AC power"
 msgstr "AC power"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:83
+msgid "Accept proposal"
+msgstr "Accept proposal"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:27
 msgid "Account"
 msgstr "Account"
@@ -1074,6 +1099,21 @@ msgid "Archived items instead"
 msgstr "Archived items instead"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:31
+msgid "As a word on white paper it is {ratio}:1 — headings and totals can be set in it."
+msgstr "As a word on white paper it is {ratio}:1 — headings and totals can be set in it."
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:37
+msgid "As a word on white paper it is only {ratio}:1, so the proposal sets its headings and totals in {ink}, the same hue darkened to {inkRatio}:1, and uses this colour as a fill — below even the {markFloor}:1 mark floor, so hairlines in it will not read either."
+msgstr "As a word on white paper it is only {ratio}:1, so the proposal sets its headings and totals in {ink}, the same hue darkened to {inkRatio}:1, and uses this colour as a fill — below even the {markFloor}:1 mark floor, so hairlines in it will not read either."
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:34
+msgid "As a word on white paper it is only {ratio}:1, so the proposal sets its headings and totals in {ink}, the same hue darkened to {inkRatio}:1, and uses this colour as a fill and rules — above the {markFloor}:1 mark floor."
+msgstr "As a word on white paper it is only {ratio}:1, so the proposal sets its headings and totals in {ink}, the same hue darkened to {inkRatio}:1, and uses this colour as a fill and rules — above the {markFloor}:1 mark floor."
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:37
 #: src/copy/catalog-add-item.ts:38
 msgid "As printed"
@@ -1083,6 +1123,11 @@ msgstr "As printed"
 #: src/copy/invite-landing.ts:48
 msgid "Ask {first} to invite you again"
 msgstr "Ask {first} to invite you again"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:84
+msgid "Ask a question"
+msgstr "Ask a question"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:32
@@ -1124,6 +1169,11 @@ msgstr "Assumed"
 #: src/copy/role-matrix.ts:33
 msgid "Author campaign content and per-language campaign templates, and submit them for channel registration"
 msgstr "Author campaign content and per-language campaign templates, and submit them for channel registration"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:82
+msgid "Awaiting your decision"
+msgstr "Awaiting your decision"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:12
@@ -1568,6 +1618,11 @@ msgid "Collections"
 msgstr "Collections"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:35
+msgid "Colour"
+msgstr "Colour"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:14
 msgid "Columns"
 msgstr "Columns"
@@ -1988,6 +2043,16 @@ msgid "Discard"
 msgstr "Discard"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:72
+msgid "Discard and leave"
+msgstr "Discard and leave"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:60
+msgid "Discard changes"
+msgstr "Discard changes"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:98
 msgid "Discard this battery?"
 msgstr "Discard this battery?"
@@ -2040,9 +2105,19 @@ msgid "Earlier releases"
 msgstr "Earlier releases"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:33
+msgid "Edit"
+msgstr "Edit"
+
+#. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:26
 msgid "Edit name"
 msgstr "Edit name"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:39
+msgid "Edit your branding"
+msgstr "Edit your branding"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-words.ts:235
@@ -2073,6 +2148,11 @@ msgstr "Employee records, attendance and leave"
 #: src/copy/role-presets.ts:29
 msgid "Employee records, documents, attendance and leave"
 msgstr "Employee records, documents, attendance and leave"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:17
+msgid "Enter a 6-digit hex colour, like #1F5FA9"
+msgstr "Enter a 6-digit hex colour, like #1F5FA9"
 
 #. js-lingui-explicit-id
 #: src/copy/validation.ts:10
@@ -2253,6 +2333,11 @@ msgid "From HelioGrid · product news"
 msgstr "From HelioGrid · product news"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:45
+msgid "From your Business profile"
+msgstr "From your Business profile"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:17
 msgid "From your signup"
 msgstr "From your signup"
@@ -2428,6 +2513,11 @@ msgstr "HelioGrid sends the message to this number — it does not come from you
 #: src/copy/api-error.ts:94
 msgid "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
 msgstr "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:16
+msgid "Hex"
+msgstr "Hex"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:72
@@ -2757,11 +2847,17 @@ msgid "Join {company}"
 msgstr "Join {company}"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:73
+msgid "Keep editing"
+msgstr "Keep editing"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:81
 msgid "Keep filling it in"
 msgstr "Keep filling it in"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:69
 #: src/copy/catalog-editor.ts:39
 msgid "Keep it"
 msgstr "Keep it"
@@ -2864,6 +2960,11 @@ msgid "Leave this column out"
 msgstr "Leave this column out"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:70
+msgid "Leave without saving?"
+msgstr "Leave without saving?"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:116
 #: src/copy/catalog-import.ts:124
 msgid "Left out"
@@ -2885,9 +2986,24 @@ msgid "Length (mm)"
 msgstr "Length (mm)"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:36
+msgid "Letterhead"
+msgstr "Letterhead"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:151
 msgid "LFP"
 msgstr "LFP"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:48
+msgid "Lines under your address"
+msgstr "Lines under your address"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:32
+msgid "Link page"
+msgstr "Link page"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:103
@@ -2940,9 +3056,19 @@ msgid "Loading the price book"
 msgstr "Loading the price book"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:54
+msgid "Loading the proposal cover"
+msgstr "Loading the proposal cover"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:27
 msgid "Loading what your role can and cannot do"
 msgstr "Loading what your role can and cannot do"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:55
+msgid "Loading your branding"
+msgstr "Loading your branding"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:45
@@ -2965,6 +3091,7 @@ msgid "Loading your team"
 msgstr "Loading your team"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:34
 #: src/copy/company-profile.ts:59
 msgid "Logo"
 msgstr "Logo"
@@ -3228,9 +3355,29 @@ msgid "Name only"
 msgstr "Name only"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:44
+msgid "Name, address and {taxLabel}"
+msgstr "Name, address and {taxLabel}"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:23
 msgid "Name, phone or city"
 msgstr "Name, phone or city"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:67
+msgid "Near-black text on this colour is {ratio}:1 — clears the {floor}:1 floor, so the proposal header uses near-black."
+msgstr "Near-black text on this colour is {ratio}:1 — clears the {floor}:1 floor, so the proposal header uses near-black."
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:59
+msgid "Near-black text reads on it. Headings and lines use a darker shade; this colour stays for fills only."
+msgstr "Near-black text reads on it. Headings and lines use a darker shade; this colour stays for fills only."
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:51
+msgid "Near-black text reads on it. Headings use a darker shade; this colour stays for fills and lines."
+msgstr "Near-black text reads on it. Headings use a darker shade; this colour stays for fills and lines."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:78
@@ -3277,6 +3424,11 @@ msgstr "New product"
 #: src/copy/catalog-import.ts:111
 msgid "New products"
 msgstr "New products"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:65
+msgid "New proposals and link pages will show your company name in its place. You can add a logo again here at any time."
+msgstr "New proposals and link pages will show your company name in its place. You can add a logo again here at any time."
 
 #. js-lingui-explicit-id
 #: src/copy/price-book.ts:65
@@ -3410,6 +3562,11 @@ msgid "No row is ready to import yet."
 msgstr "No row is ready to import yet."
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:28
+msgid "No text colour clears {floor}:1 on this — white reaches {white}:1 and near-black {black}:1. A header band in it would be unreadable on a printed proposal."
+msgstr "No text colour clears {floor}:1 on this — white reaches {white}:1 and near-black {black}:1. A header band in it would be unreadable on a printed proposal."
+
+#. js-lingui-explicit-id
 #: src/copy/price-book.ts:22
 msgid "No version yet"
 msgstr "No version yet"
@@ -3495,6 +3652,11 @@ msgid "Not saved · our end · nothing typed is lost"
 msgstr "Not saved · our end · nothing typed is lost"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:58
+msgid "Not saved yet"
+msgstr "Not saved yet"
+
+#. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:37
 msgid "Not saved. Try again."
 msgstr "Not saved. Try again."
@@ -3508,6 +3670,11 @@ msgstr "Not yet calculated"
 #: src/copy/sign-in.ts:98
 msgid "Not you? Use a different Google account"
 msgstr "Not you? Use a different Google account"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:51
+msgid "Note along the foot of every page"
+msgstr "Note along the foot of every page"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:40
@@ -3568,6 +3735,11 @@ msgstr "Nothing in it reaches your catalog."
 #: src/copy/api-error.ts:77
 msgid "Nothing in the catalog changed since the last release, so there is nothing to publish."
 msgstr "Nothing in the catalog changed since the last release, so there is nothing to publish."
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:29
+msgid "Nothing set yet · platform defaults in force"
+msgstr "Nothing set yet · platform defaults in force"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:64
@@ -3635,6 +3807,11 @@ msgid "On every proposal, invoice and customer link · change it here"
 msgstr "On every proposal, invoice and customer link · change it here"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:19
+msgid "On the proposal"
+msgstr "On the proposal"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:34
 msgid "On your invoices · never used to move your money"
 msgstr "On your invoices · never used to move your money"
@@ -3655,6 +3832,11 @@ msgid "One number, one account"
 msgstr "One number, one account"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:50
+msgid "One per line · up to {count}"
+msgstr "One per line · up to {count}"
+
+#. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:49
 msgid "One tap tells {first} you are still waiting."
 msgstr "One tap tells {first} you are still waiting."
@@ -3673,6 +3855,11 @@ msgstr "Only EPC Owner"
 #: src/copy/company-profile.ts:37
 msgid "Only new proposals reprice · sent ones keep theirs"
 msgstr "Only new proposals reprice · sent ones keep theirs"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:37
+msgid "Open full size"
+msgstr "Open full size"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:49
@@ -3917,6 +4104,11 @@ msgid "Phases"
 msgstr "Phases"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:49
+msgid "Phone, email or website"
+msgstr "Phone, email or website"
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:38
 msgid "Pick at least one role. Someone invited with no role would sign in to an empty app."
 msgstr "Pick at least one role. Someone invited with no role would sign in to an empty app."
@@ -4030,6 +4222,7 @@ msgid "Press Save to try again."
 msgstr "Press Save to try again."
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:30
 #: src/copy/catalog-import.ts:15
 msgid "Preview"
 msgstr "Preview"
@@ -4092,6 +4285,11 @@ msgid "Prices applied"
 msgstr "Prices applied"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:12
+msgid "Primary brand colour"
+msgstr "Primary brand colour"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:115
 msgid "Products created"
 msgstr "Products created"
@@ -4135,6 +4333,17 @@ msgstr "Project visibility scope"
 #: src/copy/shell.ts:92
 msgid "Projects"
 msgstr "Projects"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:21
+#: src/copy/branding.ts:31
+msgid "Proposal"
+msgstr "Proposal"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:63
+msgid "Proposal cover"
+msgstr "Proposal cover"
 
 #. js-lingui-explicit-id
 #: src/copy/settings.ts:38
@@ -4253,6 +4462,16 @@ msgid "Read-only"
 msgstr "Read-only"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:45
+msgid "Reads well — near-black text on it, headings in it."
+msgstr "Reads well — near-black text on it, headings in it."
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:44
+msgid "Reads well — white text on it, headings in it."
+msgstr "Reads well — white text on it, headings in it."
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:79
 msgid "Ready to import"
 msgstr "Ready to import"
@@ -4303,6 +4522,7 @@ msgid "Releases"
 msgstr "Releases"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:41
 #: src/copy/first-run-profile.ts:41
 msgid "Remove"
 msgstr "Remove"
@@ -4323,6 +4543,11 @@ msgid "Remove it and your initials come back."
 msgstr "Remove it and your initials come back."
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:68
+msgid "Remove logo"
+msgstr "Remove logo"
+
+#. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:56
 msgid "Remove or cancel queued agent calls"
 msgstr "Remove or cancel queued agent calls"
@@ -4338,11 +4563,17 @@ msgid "Remove roles"
 msgstr "Remove roles"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:64
+msgid "Remove your logo?"
+msgstr "Remove your logo?"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:33
 msgid "Reopen anytime from Profile & preferences."
 msgstr "Reopen anytime from Profile & preferences."
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:40
 #: src/copy/catalog-import.ts:26
 #: src/copy/first-run-profile.ts:40
 msgid "Replace"
@@ -4413,6 +4644,11 @@ msgstr "Restore"
 #: src/copy/catalog-editor.ts:46
 msgid "Restored {name}"
 msgstr "Restored {name}"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:62
+msgid "Retry"
+msgstr "Retry"
 
 #. js-lingui-explicit-id
 #: src/copy/team-acts.ts:27
@@ -4574,6 +4810,11 @@ msgid "Sales Manager"
 msgstr "Sales Manager"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:40
+msgid "Same hue, darkened to {ratio}:1."
+msgstr "Same hue, darkened to {ratio}:1."
+
+#. js-lingui-explicit-id
 #: src/copy/name-and-photo-editor.ts:14
 msgid "Save"
 msgstr "Save"
@@ -4588,6 +4829,11 @@ msgstr "Save and continue"
 #: src/copy/price-book.ts:72
 msgid "Save as version {number}"
 msgstr "Save as version {number}"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:59
+msgid "Save branding"
+msgstr "Save branding"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:41
@@ -4623,6 +4869,21 @@ msgstr "Save your company profile and continue setting up HelioGrid"
 #: src/copy/catalog-import.ts:46
 msgid "saved {date}"
 msgstr "saved {date}"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:28
+msgid "Saved and in force"
+msgstr "Saved and in force"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:27
+msgid "Saved and in force · {date}"
+msgstr "Saved and in force · {date}"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:26
+msgid "Saved and in force · {name}, {date}"
+msgstr "Saved and in force · {name}, {date}"
 
 #. js-lingui-explicit-id
 #: src/copy/first-run-profile.ts:35
@@ -4784,6 +5045,11 @@ msgstr "Sent as"
 #: src/copy/sign-in.ts:21
 msgid "Sent by SMS to"
 msgstr "Sent by SMS to"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:46
+msgid "Sent proposals keep their branding."
+msgstr "Sent proposals keep their branding."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:70
@@ -5002,6 +5268,11 @@ msgid "SMS codes paused for {lockMinutes} minutes"
 msgstr "SMS codes paused for {lockMinutes} minutes"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:20
+msgid "Solar proposal"
+msgstr "Solar proposal"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:21
 msgid "Some fields need attention. Check the form and retry."
 msgstr "Some fields need attention. Check the form and retry."
@@ -5188,6 +5459,11 @@ msgid "Switch home"
 msgstr "Switch home"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:47
+msgid "Tagline"
+msgstr "Tagline"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:73
 msgid "Taken on {date} and not uploaded. This cannot be undone."
 msgstr "Taken on {date} and not uploaded. This cannot be undone."
@@ -5240,6 +5516,11 @@ msgid "Technology"
 msgstr "Technology"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:22
+msgid "Text can't sit on this colour, so the cover keeps a white header and its headings use a darker shade."
+msgstr "Text can't sit on this colour, so the cover keeps a white header and its headings use a darker shade."
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:38
 msgid "That change isn't allowed here."
 msgstr "That change isn't allowed here."
@@ -5280,6 +5561,21 @@ msgid "That does not read as a registration of this type. Check it against the f
 msgstr "That does not read as a registration of this type. Check it against the format shown."
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:95
+msgid "That file is not a PNG or JPG."
+msgstr "That file is not a PNG or JPG."
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:94
+msgid "That file is too large."
+msgstr "That file is too large."
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:96
+msgid "That file is too narrow."
+msgstr "That file is too narrow."
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:12
 msgid "That is {typed} digits. A mobile number here has {needed}."
 msgstr "That is {typed} digits. A mobile number here has {needed}."
@@ -5293,6 +5589,11 @@ msgstr "That is not the code we sent. {tries, plural, one {# wrong try} other {#
 #: src/copy/connection.ts:13
 msgid "That is taking too long to answer."
 msgstr "That is taking too long to answer."
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:18
+msgid "That isn't a hex colour."
+msgstr "That isn't a hex colour."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:58
@@ -5528,6 +5829,11 @@ msgstr "The report opens after the import runs."
 #: src/copy/catalog-import-rows.ts:70
 msgid "The row named no brand or model. Nothing was created."
 msgstr "The row named no brand or model. Nothing was created."
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:26
+msgid "The same hue, a shade darker."
+msgstr "The same hue, a shade darker."
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:36
@@ -5815,6 +6121,7 @@ msgid "TOPCon"
 msgstr "TOPCon"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:57
 #: src/copy/catalog-add-item.ts:74
 #: src/copy/catalog-editor.ts:76
 #: src/copy/catalog-import.ts:48
@@ -5934,6 +6241,16 @@ msgid "Until you finish, proposals start without your answers."
 msgstr "Until you finish, proposals start without your answers."
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:53
+msgid "Up to {count} characters on a line"
+msgstr "Up to {count} characters on a line"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:52
+msgid "Up to {count} lines"
+msgstr "Up to {count} lines"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item-fields.ts:54
 msgid "Up to 120 characters."
 msgstr "Up to 120 characters."
@@ -5995,6 +6312,11 @@ msgid "Usage"
 msgstr "Usage"
 
 #. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:25
+msgid "Use {hex}"
+msgstr "Use {hex}"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:99
 msgid "Use a different Google account"
 msgstr "Use a different Google account"
@@ -6004,6 +6326,11 @@ msgstr "Use a different Google account"
 #: src/copy/invite.ts:50
 msgid "Use a different number"
 msgstr "Use a different number"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:27
+msgid "Use it"
+msgstr "Use it"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:100
@@ -6029,6 +6356,11 @@ msgstr "Use this button to start a survey."
 #: src/copy/catalog-import.ts:86
 msgid "Use this row’s price"
 msgstr "Use this row’s price"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:13
+msgid "Used on the proposal PDF and the customer link page. The HelioGrid app itself is never restyled."
+msgstr "Used on the proposal PDF and the customer link page. The HelioGrid app itself is never restyled."
 
 #. js-lingui-explicit-id
 #: src/copy/price-book.ts:19
@@ -6428,6 +6760,11 @@ msgid "What you typed has no undo."
 msgstr "What you typed has no undo."
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:38
+msgid "What your customers get"
+msgstr "What your customers get"
+
+#. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:56
 msgid "When {first} sends it, a new link reaches this phone."
 msgstr "When {first} sends it, a new link reaches this phone."
@@ -6451,6 +6788,21 @@ msgstr "Where you're based."
 #: src/copy/catalog-import.ts:87
 msgid "Which product is it?"
 msgstr "Which product is it?"
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:64
+msgid "White text on this colour is {ratio}:1 — clears the {floor}:1 floor, so the proposal header uses white."
+msgstr "White text on this colour is {ratio}:1 — clears the {floor}:1 floor, so the proposal header uses white."
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:56
+msgid "White text reads on it. Headings and lines use a darker shade; this colour stays for fills only."
+msgstr "White text reads on it. Headings and lines use a darker shade; this colour stays for fills only."
+
+#. js-lingui-explicit-id
+#: src/copy/brand-colour-field.ts:48
+msgid "White text reads on it. Headings use a darker shade; this colour stays for fills and lines."
+msgstr "White text reads on it. Headings use a darker shade; this colour stays for fills and lines."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:35
@@ -6661,6 +7013,16 @@ msgid "Your answers set the starting point for every proposal HelioGrid builds."
 msgstr "Your answers set the starting point for every proposal HelioGrid builds."
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:56
+msgid "Your branding didn't load"
+msgstr "Your branding didn't load"
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:61
+msgid "Your branding didn't save"
+msgstr "Your branding didn't save"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:92
 msgid "Your campaigns are one switch away."
 msgstr "Your campaigns are one switch away."
@@ -6674,6 +7036,11 @@ msgstr "Your catalog could not be reached, so the row was not written."
 #: src/copy/catalog-settings.ts:78
 msgid "Your catalog starts with {count} platform items and no prices. Add your own SKUs, or set a platform item's price from the item."
 msgstr "Your catalog starts with {count} platform items and no prices. Add your own SKUs, or set a platform item's price from the item."
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:71
+msgid "Your changes to branding will be lost."
+msgstr "Your changes to branding will be lost."
 
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:36
@@ -6820,6 +7187,11 @@ msgid "Your logo"
 msgstr "Your logo"
 
 #. js-lingui-explicit-id
+#: src/copy/branding.ts:43
+msgid "Your logo didn't load"
+msgstr "Your logo didn't load"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:18
 msgid "Your mobile number becomes your HelioGrid account."
 msgstr "Your mobile number becomes your HelioGrid account."
@@ -6927,6 +7299,11 @@ msgstr "Your profile did not save"
 #: src/copy/role-card.ts:91
 msgid "Your projects are one switch away."
 msgstr "Your projects are one switch away."
+
+#. js-lingui-explicit-id
+#: src/copy/branding.ts:81
+msgid "Your proposal is ready."
+msgstr "Your proposal is ready."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:77

@@ -24,7 +24,7 @@ export function DocumentItemsBand({ doc }: { doc: ResolvedDocument }) {
         ))}
       </View>
       <View style={docStyles.totalRow}>
-        <Text style={docStyles.totalLabel}>Total</Text>
+        <Text style={docStyles.totalLabel}>{doc.totalLabel}</Text>
         <Text style={[docStyles.totalValue, { color: doc.ink }]}>{doc.totalText}</Text>
       </View>
       {doc.subsidyLine === null ? null : <Text style={docStyles.subsidy}>{doc.subsidyLine}</Text>}

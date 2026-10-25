@@ -49,8 +49,8 @@ export function contrast(a: string, b: string): number | null {
 export interface TextOnFill {
   /** The winning text colour, "#RRGGBB". */
   color: string;
-  /** Its name, for the sentence — "White" or "Near-black". */
-  name: string;
+  /** Which ink it is — the caller's words name it. */
+  ink: 'white' | 'near-black';
   /** The winner's ratio. */
   ratio: number;
   /** Whether the better of the two clears the text floor. */
@@ -69,7 +69,7 @@ export function bestTextOn(fill: string): TextOnFill | null {
   const whiteWins = onWhite >= onBlack;
   return {
     color: whiteWins ? WHITE : NEAR_BLACK,
-    name: whiteWins ? 'White' : 'Near-black',
+    ink: whiteWins ? 'white' : 'near-black',
     ratio: whiteWins ? onWhite : onBlack,
     passes: Math.max(onWhite, onBlack) >= TEXT_CONTRAST_FLOOR,
     white: onWhite,

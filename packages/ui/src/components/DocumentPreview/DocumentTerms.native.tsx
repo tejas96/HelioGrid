@@ -4,13 +4,12 @@ import type { DocumentRichTextValue } from './DocumentPreview.types';
 import { DocumentOverline, DocumentRule, docStyles } from './DocumentSheet.native';
 import { TERMS_FONT_SIZE } from './DocumentTerms.logic';
 
-const EMPTY_TEXT = 'No terms are attached to this template yet.';
-
 interface DocumentTermsBandProps {
   title: string;
   value: DocumentRichTextValue | undefined;
   logoSrc: string | undefined;
   logoLabel: string;
+  emptyText: string | undefined;
   brandColour: string;
   ruleOpaque: boolean;
 }
@@ -27,6 +26,7 @@ export function DocumentTermsBand({
   value,
   logoSrc,
   logoLabel,
+  emptyText,
   brandColour,
   ruleOpaque,
 }: DocumentTermsBandProps) {
@@ -40,7 +40,7 @@ export function DocumentTermsBand({
         logoSrc={logoSrc}
         logoLabel={logoLabel}
         fontSize={TERMS_FONT_SIZE}
-        emptyText={EMPTY_TEXT}
+        emptyText={emptyText}
       />
     </View>
   );

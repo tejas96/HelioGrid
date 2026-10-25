@@ -83,8 +83,8 @@
   flex-shrink: 0;
 }
 
-/* The logo is a labelled placeholder slot until logoSrc arrives — a missing asset is shown as
-   a missing asset, never as an empty gap the tenant reads as "nothing to configure". */
+/* The specimen's logo is a labelled placeholder slot until logoSrc arrives. A real cover with no
+   logo prints its name alone: an empty slot on a real cover reads as a missing value. */
 .hg-doc-slot {
   width: 90px;
   height: 34px;
@@ -175,8 +175,11 @@
   color: var(--text-tertiary);
 }
 
-.hg-doc-tax {
+/* F7-09: an identifier or a phone prints in the mono face with tabular figures — on paper as on
+   screen. Only the figure takes it; its label ("GSTIN") stays in the document's face. */
+.hg-doc-figure {
   font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 .hg-doc-footer-note {

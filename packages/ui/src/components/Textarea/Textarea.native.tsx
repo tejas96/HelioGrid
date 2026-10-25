@@ -87,7 +87,7 @@ export function Textarea({
       {attributionNode === null ? null : <View style={styles.attribution}>{attributionNode}</View>}
       {helper !== undefined || error !== undefined || hasCounter ? (
         <View style={styles.foot}>
-          <Text variant="field-helper" color={error !== undefined ? 'danger' : 'tertiary'}>
+          <Text variant="field-helper" color={error !== undefined ? 'danger' : 'secondary'}>
             {error ?? helper ?? ''}
           </Text>
           {maxLength !== undefined ? (

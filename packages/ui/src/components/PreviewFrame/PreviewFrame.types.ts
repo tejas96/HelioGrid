@@ -14,13 +14,19 @@ export const DEFAULT_MIN_SCALE = 0.82;
 /** The subject's natural width when the caller states none. */
 export const DEFAULT_DESIGN_WIDTH = 480;
 
-export interface PreviewFrameProps {
+interface PreviewFrameBase {
   /** Overline above the frame — "PROPOSAL COVER", "CUSTOMER LINK PAGE". */
   label?: string;
   /** The line under it. Naming the surface as customer-facing is the caption's job — keep it. */
   caption?: string;
   /** An extra line for an honest consequence the subject reported (a colour that can't carry text). */
   note?: string;
+  /**
+   * The line said when the subject is cropped to its readable size (*Showing the top left, at a size
+   * you can read.*), from `packages/i18n`. Not in the design system's contract: its English sat in
+   * the component; without it no line is drawn.
+   */
+  croppedLabel?: string;
   /** The subject's natural width in px. The frame scales from this. Default 480. */
   designWidth?: number;
   /** The subject's natural height, where it has one (an A4 sheet). Live pages leave it unset. */
@@ -39,6 +45,23 @@ export interface PreviewFrameProps {
   /** The subject: the real component that draws the customer-facing output. */
   children?: ReactNode;
 }
+
+/**
+ * Either the subject is drawn, or its values are still loading (`SCR-M01-18`'s *Loading*): the
+ * frame keeps its footprint at its own scale — the subject lays out hidden, out of the reader's
+ * reach — and draws a `--canvas-sunken` placeholder with the theme's shimmer there, a busy region
+ * named by `loadingLabel`. **Never a white rectangle**: on paper that reads as an empty
+ * letterhead. A busy region with no name tells a screen reader nothing, so loading carries one.
+ */
+export type PreviewFrameLoading =
+  | { loading?: false; loadingLabel?: string }
+  | {
+      loading: true;
+      /** The busy region's words while `loading` ("Loading the proposal cover"). */
+      loadingLabel: string;
+    };
+
+export type PreviewFrameProps = PreviewFrameBase & PreviewFrameLoading;
 
 export interface PreviewFrameGroupProps {
   children?: ReactNode;

@@ -19,7 +19,11 @@ export const A4_RATIO = 1.414;
 export interface DocumentLetterhead {
   /** One line under the company name — "Rooftop solar since 2011". */
   tagline?: string;
-  /** Registration numbers, email, website. Printed as a single dot-separated line in the band. */
+  /**
+   * What the company writes under its address — phone, email, website — printed as written, after
+   * the tax number, as one dot-separated line in the band. **Not the tax number:** the band prints
+   * `taxId` itself, its number in the mono face (`F7-09`); a tax line passed here would print twice.
+   */
   lines?: string[];
   /** The line that runs along the bottom of every page. */
   footerNote?: string;
@@ -72,17 +76,35 @@ export type DocumentRichTextValue = RichTextValue;
 export type DocumentFit = 'a4' | 'content';
 
 export interface DocumentPreviewBase {
+  /**
+   * **`false` prints only what the caller passes** — the preview of a REAL tenant (`SCR-M01-18`'s
+   * cover; `T-M01-029`: no sample value can print on a real document). Every sample default drops
+   * at once: no sample company, tax number, address or phone, no sample customer (the *Prepared
+   * for* block is drawn only for a customer the caller names), no sample number or date, no sample
+   * lines or subsidy (the money band is drawn only for `lineItems` the caller passes), and no word
+   * of the component's own — every word printed is a prop. Default `true`: a specimen draws the
+   * full sample document.
+   */
+  sample?: boolean;
   /** The tenant's primary brand colour, "#RRGGBB". */
   brandColor?: string;
   companyName?: string;
-  /** Tenant logo. Without it, a labelled placeholder slot is drawn. */
+  /**
+   * Tenant logo. Without it, the sample specimen draws a labelled placeholder slot; with
+   * `sample={false}` the band carries the company name alone — no slot on a real cover.
+   */
   logoSrc?: string;
   logoLabel?: string;
-  /** The tenant's tax number. */
+  /**
+   * The tenant's tax number. Printed in the band under the address and along the foot of every
+   * page, its label in the document's face and its number in the mono face with tabular figures
+   * (`F7-09`).
+   */
   taxId?: string;
   /** What that number is called — defaults to the market pack ("GSTIN" here, "VAT number" elsewhere). */
   taxIdLabel?: string;
   address?: string;
+  /** Printed along the foot of every page in the mono face with tabular figures (`F7-09`). */
   phone?: string;
   /**
    * **The letterhead** (`M01-50`) — a spec object, or a node for a caller that owns the markup.
@@ -107,7 +129,10 @@ export interface DocumentPreviewBase {
    */
   parts?: DocumentPart[];
   subsidyLabel?: string;
-  /** Overrides the whole generated subsidy sentence — including the payable it states. */
+  /**
+   * Overrides the whole generated subsidy sentence — including the payable it states. With
+   * `sample={false}` no sentence is composed here: this is the one the sheet prints.
+   */
   subsidyNote?: string;
   /** `SCR-M01-19`'s included-sections list. `included: false` entries are left out. */
   sections?: DocumentSectionInput[];
@@ -125,6 +150,18 @@ export interface DocumentPreviewBase {
   width?: number;
   /** Set to "" to drop the caption — do that inside a `PreviewFrame`, which carries its own. */
   caption?: string;
+  /*
+   * The sheet's own words. The sample specimen prints its English ones when these are absent;
+   * with `sample={false}` a word that is not passed is not printed.
+   */
+  /** The overline over a named customer — "Prepared for". */
+  preparedForLabel?: string;
+  /** The word beside the total — "Total". */
+  totalLabel?: string;
+  /** The caption's line when the colour forces a white header — `DocumentPreview.bandFails`. */
+  bandFailsNote?: string;
+  /** The terms band's words when no terms are attached. */
+  termsEmptyText?: string;
 }
 
 /**
