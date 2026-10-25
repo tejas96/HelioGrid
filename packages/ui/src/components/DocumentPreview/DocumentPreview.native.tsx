@@ -62,7 +62,7 @@ export function DocumentPreview({ style, ...props }: NativeDocumentPreviewProps)
           <DocumentBandHeader doc={doc} />
           {has('cover') ? <DocumentCover doc={doc} /> : null}
           <View style={docStyles.body}>
-            {has('items') ? <DocumentItemsBand doc={doc} /> : null}
+            {has('items') && doc.lineItems.length > 0 ? <DocumentItemsBand doc={doc} /> : null}
             {has('sections') ? <DocumentSectionsBand doc={doc} /> : null}
             {has('tranches') ? <DocumentTranchesBand doc={doc} /> : null}
             {has('terms') ? (
@@ -71,6 +71,7 @@ export function DocumentPreview({ style, ...props }: NativeDocumentPreviewProps)
                 value={props.terms}
                 logoSrc={doc.logoSrc}
                 logoLabel={doc.logoLabel}
+                emptyText={doc.termsEmptyText}
                 brandColour={doc.brandHex}
                 ruleOpaque={doc.ruleOpaque}
               />
@@ -84,10 +85,9 @@ export function DocumentPreview({ style, ...props }: NativeDocumentPreviewProps)
           <Text variant="caption" color="tertiary">
             {doc.caption}
           </Text>
-          {doc.bandOk ? null : (
+          {doc.bandOk || doc.bandFailsNote === '' ? null : (
             <Text variant="caption" style={docStyles.captionNote}>
-              This colour can't carry header text, so the document keeps a white header and uses it
-              as a rule.
+              {doc.bandFailsNote}
             </Text>
           )}
         </View>

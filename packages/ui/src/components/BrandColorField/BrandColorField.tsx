@@ -1,11 +1,19 @@
 import { normaliseHexColour } from '@heliogrid/domain';
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { asWordOnPaper, bestTextOn, readableInk } from '../../utils/color-contrast';
+import { Button } from '../Button';
 import { Input } from '../Input';
+import { ProvenanceTier } from '../Provenance/Provenance';
 import type { BrandColorFieldProps } from './BrandColorField.types';
-import { textOnFillVerdict, wordOnPaperVerdict } from './BrandColorField.verdicts';
+import {
+  fieldWordsOf,
+  fullVerdicts,
+  readBrandColour,
+  shortVerdict,
+  specimenWordColour,
+} from './BrandColorField.verdicts';
 import { BrandColorSpecimen } from './BrandColorSpecimen';
+import { BrandShortVerdict } from './BrandShortVerdict';
 import { BrandVerdictLine } from './BrandVerdictLine';
 import { BRAND_SWATCH_PRESETS, DEFAULT_BRAND_COLOUR } from './brand-swatches';
 
@@ -20,29 +28,32 @@ interface WebBrandColorFieldProps extends BrandColorFieldProps {
  * 1. F7-07 — the colour rides the generated proposal and the customer link page. THE OPERATOR
  *    APPLICATION IS NEVER RESTYLED PER TENANT, so this control writes no token, sets no ancestor
  *    style, and previews the colour only inside a document specimen.
- * 2. N4 / F7-11 — contrast is measured, not eyeballed, at entry, and stated in words with the ratio.
+ * 2. N4 / F7-11 — contrast is measured, not eyeballed, at entry, and stated in words.
  * 3. F7-12 — every verdict is a WORD plus a glyph; the swatch is never the message.
  *
- * It does not refuse a colour. It says what is wrong and offers a darker shade that passes.
+ * It does not refuse a colour. It says what is wrong and offers the derived ink that passes.
  */
 export function BrandColorField({
+  words,
   value = DEFAULT_BRAND_COLOUR,
   onChange,
-  label = 'Primary brand colour',
-  helper = 'Used on the proposal PDF and the customer link page. The HelioGrid app itself is never restyled.',
+  label,
+  helper,
   presets = BRAND_SWATCH_PRESETS,
-  specimenLabel = 'On the proposal',
-  companyName = 'Suryodaya Solar Pvt Ltd',
+  specimenLabel,
+  companyName,
+  specimenWord,
   showSuggestion = true,
+  specimen = true,
+  verdict = 'full',
   disabled = false,
   density = 'expressive',
   className,
   style,
 }: WebBrandColorFieldProps) {
+  const shown = fieldWordsOf(words, { label, helper, specimenLabel, specimenWord });
   const hex = normaliseHexColour(value);
-  const on = hex === null ? null : bestTextOn(hex);
-  const word = hex === null ? null : asWordOnPaper(hex);
-  const fix = hex !== null && on !== null && !on.passes && showSuggestion ? readableInk(hex) : null;
+  const reading = hex === null ? null : readBrandColour(hex, showSuggestion);
 
   const set = (next: string) => {
     const normalised = normaliseHexColour(next);
@@ -51,12 +62,16 @@ export function BrandColorField({
     }
   };
 
+  const takeInk = () => {
+    if (reading !== null && reading.fix !== null) set(reading.fix.hex);
+  };
+
   return (
     <div className={classNames('hg-brand-color', className)} style={style}>
       <div>
-        <span className="hg-brand-color-title">{label}</span>
+        <span className="hg-brand-color-title">{shown.label}</span>
         {/* Curated swatches are the thumb path; the hex field is the precise one. Both ≥44. */}
-        <div className="hg-brand-color-swatches" role="radiogroup" aria-label={label}>
+        <div className="hg-brand-color-swatches" role="radiogroup" aria-label={shown.label}>
           {presets.map((preset) => (
             // biome-ignore lint/a11y/useSemanticElements: an <input type="radio"> cannot BE the 44px colour circle it selects — the swatch's fill IS the option, so the DS draws a button in the radio role inside a radiogroup.
             <button
@@ -76,15 +91,15 @@ export function BrandColorField({
       </div>
 
       <Input
-        label="Hex"
+        label={words.hexLabel}
         value={hex ?? value}
         mono
         commitOnBlur
         onCommit={set}
         disabled={disabled}
         density={density}
-        helper={hex === null ? 'Enter a 6-digit hex colour, e.g. #1F5FA9' : undefined}
-        error={hex === null ? "That isn't a hex colour." : undefined}
+        helper={hex === null ? words.hexHelper : undefined}
+        error={hex === null ? words.hexError : undefined}
         leading={
           <span
             aria-hidden="true"
@@ -95,41 +110,52 @@ export function BrandColorField({
       />
 
       {/* Document context only — this specimen is the ONLY thing the tenant colour paints. */}
-      {hex !== null && on !== null && word !== null ? (
+      {reading !== null && specimen ? (
         <div>
-          <span className="hg-brand-color-overline">{specimenLabel}</span>
+          <span className="hg-brand-color-overline">{shown.specimenLabel}</span>
           <BrandColorSpecimen
-            hex={hex}
-            textOn={on.color}
+            hex={reading.hex}
+            textOn={reading.on.color}
             companyName={companyName}
-            figureInBrand={word.passesText}
+            kindWord={words.specimenKind}
+            word={shown.specimenWord}
+            wordColour={specimenWordColour(reading)}
           />
         </div>
       ) : null}
 
-      {hex !== null && on !== null && word !== null ? (
+      {reading !== null && verdict === 'short' ? (
+        <BrandShortVerdict
+          verdict={shortVerdict(reading, words.short)}
+          fixHex={reading.fix?.hex ?? null}
+          words={words.ink}
+          onUse={takeInk}
+          disabled={disabled}
+        />
+      ) : null}
+
+      {reading !== null && verdict === 'full' ? (
         <div className="hg-brand-color-verdicts">
-          {[textOnFillVerdict(on), wordOnPaperVerdict(word)].map((verdict) => (
-            <BrandVerdictLine key={verdict.kind + verdict.sentence} kind={verdict.kind}>
-              {verdict.sentence}
+          {fullVerdicts(reading, words.full).map((line) => (
+            <BrandVerdictLine key={line.kind + line.sentence} kind={line.kind}>
+              {line.sentence}
             </BrandVerdictLine>
           ))}
-          {fix === null ? null : (
+          {reading.fix === null ? null : (
             <div className="hg-brand-color-fix">
-              <button
-                type="button"
-                className="hg-brand-color-fix-button"
-                onClick={() => set(fix.hex)}
-              >
-                Use {fix.hex}
-              </button>
-              <span className="hg-brand-color-fix-note">Same hue, darkened to {fix.ratio}:1.</span>
+              <Button variant="primary" size="sm" disabled={disabled} onClick={takeInk}>
+                {words.full.takeHexWords(reading.fix.hex)}
+              </Button>
+              <span className="hg-brand-color-fix-note">
+                {words.full.inkNote({ ratio: String(reading.fix.ratio) })}{' '}
+                <ProvenanceTier tier="derived" />
+              </span>
             </div>
           )}
         </div>
       ) : null}
 
-      {helper === undefined ? null : <p className="hg-brand-color-helper">{helper}</p>}
+      {shown.helper === '' ? null : <p className="hg-brand-color-helper">{shown.helper}</p>}
     </div>
   );
 }

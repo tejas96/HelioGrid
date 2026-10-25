@@ -10,10 +10,10 @@ import { useDetunedSubject, useOwnWidth } from './preview-hooks';
 /** Per-instance geometry rides into PreviewFrame.css as custom properties. */
 type CssVars = CSSProperties & Record<`--${string}`, string>;
 
-interface WebPreviewFrameProps extends PreviewFrameProps {
+type WebPreviewFrameProps = PreviewFrameProps & {
   className?: string;
   style?: CSSProperties;
-}
+};
 
 interface WebPreviewFrameGroupProps extends PreviewFrameGroupProps {
   className?: string;
@@ -42,6 +42,9 @@ export function PreviewFrame({
   maxHeight,
   surface = 'sheet',
   action,
+  croppedLabel,
+  loading = false,
+  loadingLabel,
   children,
   className,
   style,
@@ -73,30 +76,72 @@ export function PreviewFrame({
           {label}
         </Text>
       )}
-      <div className="hg-preview-frame-window" data-surface={surface}>
+      {/* Loading keeps the footprint: the subject still lays out, hidden and out of the reader's
+          reach, so the box is the size it will be, and the box is the sunken shimmer — a wait,
+          never a blank sheet of the subject's paper. */}
+      <div
+        className="hg-preview-frame-window"
+        data-surface={surface}
+        {...waitOf(loading, loadingLabel)}
+      >
         {/* aria-live="off": the subject redraws as the settings change; announcing every
             redraw would flood a screen reader that is reading the preview on purpose. */}
-        <div ref={inner} aria-live="off" className="hg-preview-frame-subject">
+        <div
+          ref={inner}
+          aria-live="off"
+          aria-hidden={loading || undefined}
+          className="hg-preview-frame-subject"
+        >
           {children}
         </div>
       </div>
-      {caption === undefined && note === undefined && !cropped && !action ? null : (
-        <figcaption className="hg-preview-frame-caption">
-          <span className="hg-preview-frame-words">
-            {caption}
-            {cropped ? (
-              <span className="hg-preview-frame-line">
-                Showing the top left, at a size you can read.
-              </span>
-            ) : null}
-            {note === undefined ? null : (
-              <span className="hg-preview-frame-line hg-preview-frame-note">{note}</span>
-            )}
-          </span>
-          {action ? <span className="hg-preview-frame-action">{action}</span> : null}
-        </figcaption>
-      )}
+      <FrameCaption
+        caption={caption}
+        note={note}
+        cropped={cropped}
+        croppedLabel={croppedLabel}
+        action={action}
+      />
     </figure>
+  );
+}
+
+/** While the subject loads, the window is a named wait; otherwise it carries nothing of its own. */
+function waitOf(loading: boolean, label: string | undefined) {
+  return loading
+    ? { 'data-loading': 'true', role: 'status', 'aria-busy': true, 'aria-label': label }
+    : {};
+}
+
+/** The words under the window: the caller's caption, the cropped line, the note and an act. */
+function FrameCaption({
+  caption,
+  note,
+  cropped,
+  croppedLabel,
+  action,
+}: {
+  caption: WebPreviewFrameProps['caption'];
+  note: WebPreviewFrameProps['note'];
+  cropped: boolean;
+  croppedLabel: string | undefined;
+  action: WebPreviewFrameProps['action'];
+}) {
+  const croppedShown = cropped && croppedLabel !== undefined;
+  if (caption === undefined && note === undefined && !croppedShown && !action) return null;
+  return (
+    <figcaption className="hg-preview-frame-caption">
+      <span className="hg-preview-frame-words">
+        {caption}
+        {cropped && croppedLabel !== undefined ? (
+          <span className="hg-preview-frame-line">{croppedLabel}</span>
+        ) : null}
+        {note === undefined ? null : (
+          <span className="hg-preview-frame-line hg-preview-frame-note">{note}</span>
+        )}
+      </span>
+      {action ? <span className="hg-preview-frame-action">{action}</span> : null}
+    </figcaption>
   );
 }
 

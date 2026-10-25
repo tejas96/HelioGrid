@@ -19,8 +19,31 @@ export interface BrandColorFieldProps {
   specimenLabel?: string;
   /** Name drawn in the document specimen. */
   companyName?: string;
-  /** Offer a darkened shade when no text colour clears the floor. Default true. */
+  /**
+   * The word the specimen sets on paper in the colour — or, when the colour cannot be a word, in its
+   * derived ink. A heading ("Solar proposal"), never a figure: the specimen prints no amount.
+   */
+  specimenWord?: string;
+  /**
+   * Offer the derived ink — the same hue darkened until it clears 4.5:1 on paper, the walk
+   * `compliantShades` runs on save — whenever the colour fails **either** question: no text can sit
+   * on it, or it cannot be a word on paper. Default true.
+   */
   showSuggestion?: boolean;
+  /**
+   * `false` drops the document specimen. Use it on a screen that shows the live `DocumentPreview`
+   * beside the field (`SCR-M01-18`), where the specimen would repeat the document. Default true.
+   */
+  specimen?: boolean;
+  /**
+   * `"short"` says the outcome in one line with no ratio — *Reads well — white text on it, headings
+   * in it.* — naming the three ways a colour can fall short (no text can sit on it; it cannot be a word
+   * but carries lines; it carries fills only) — and offers a failing colour's derived ink as a quiet row
+   * with *Use it*. A ratio is
+   * neither money nor energy, so it carries no tier (`F8-01`). `"full"` (default) answers both
+   * questions with their ratios.
+   */
+  verdict?: "full" | "short";
   disabled?: boolean;
   density?: "expressive" | "functional";
   style?: React.CSSProperties;
@@ -36,10 +59,16 @@ export interface BrandColorFieldProps {
  *
  * **It measures contrast and says what is wrong** (N4 / F7-11), answering two separate questions:
  * whether text can sit *on* the colour (and which of white / near-black the document will use),
- * and whether the colour can *be* text on white paper. A colour that fails is not refused — the
- * control names the failure and offers the same hue darkened until it passes.
+ * and whether the colour can *be* text on white paper. A colour that fails either is not refused —
+ * the control names the failure and offers its **derived ink** (`compliantShades`: the same hue
+ * darkened until it passes on paper), the shade the server derives on save.
+ *
+ * **The specimen prints no figure** — the band under the company name and one word on paper. An
+ * untiered amount has no place on the screen that shows a tenant only their own values (`F8-01`).
  *
  * **Every verdict is a word plus a glyph, never a colour** (F7-12), because this is the control
- * other screens are most likely to copy.
+ * other screens are most likely to copy. **Every ratio it computed prints with its tier** — *Derived*
+ * (`F8-01`); the 4.5:1 and 3:1 floors are rules the product states and carry none. A colour that
+ * cannot be a word on paper is told the ink its headings and totals will take, by hex and ratio.
  */
 export function BrandColorField(props: BrandColorFieldProps): JSX.Element;

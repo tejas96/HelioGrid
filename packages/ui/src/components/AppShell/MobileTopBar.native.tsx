@@ -100,12 +100,13 @@ const styles = StyleSheet.create({
     minHeight: theme.layout['topbar-h-mobile'],
     paddingVertical: theme.spacing['sp-2'],
     paddingHorizontal: theme.layout['screen-pad-mobile'],
-  },
-  /* Content under the bar lifts it, so the two never read as overlapped. */
-  lifted: {
-    ...theme.elevation.e2,
+    /* Always over the page, so its lifted shadow falls on the content. Held, never toggled: on
+       Fabric a zIndex change re-orders the bar's native siblings, and a field in the page loses
+       its focus and the keyboard on Android. */
     zIndex: 1,
   },
+  /* Content under the bar lifts it, so the two never read as overlapped. */
+  lifted: theme.elevation.e2,
   /* The name gives way first, so Search, the bell and the avatar keep their 44. */
   identity: {
     flex: 1,

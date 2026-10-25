@@ -43,6 +43,21 @@
   border-radius: var(--r-md);
 }
 
+/* Still loading: the theme's sweep over the sunken ground, never the subject's white paper. The
+   sweep is a CSS loop the theme's keyframes still under reduced motion, and it ends with the
+   attribute. Drawn after the surfaces, so it replaces their fill and shadow and keeps their radius. */
+.hg-preview-frame-window[data-loading="true"] {
+  background: linear-gradient(
+    90deg,
+    var(--canvas-sunken) 25%,
+    var(--fill) 50%,
+    var(--canvas-sunken) 75%
+  );
+  background-size: 320px 100%;
+  animation: hg-sheet-shimmer 1.4s linear infinite;
+  box-shadow: none;
+}
+
 .hg-preview-frame-subject {
   width: var(--hg-preview-design-width);
   height: var(--hg-preview-design-height, auto);
@@ -85,4 +100,9 @@
   gap: var(--hg-preview-group-gap);
   grid-template-columns: repeat(var(--hg-preview-group-columns), minmax(0, 1fr));
   align-items: start;
+}
+
+/* Loading keeps the subject's footprint and hides it: after the subject's own rule, which it narrows. */
+.hg-preview-frame-window[data-loading="true"] .hg-preview-frame-subject {
+  visibility: hidden;
 }

@@ -3,6 +3,8 @@ import { sql } from 'drizzle-orm';
 import { PinoLogger } from 'nestjs-pino';
 import { CreationReplies } from '../../src/common/creation-key';
 import { SettingsAdminRepository } from '../../src/modules/settings/settings.admin.repository';
+import { SettingsBrandingRepository } from '../../src/modules/settings/settings.branding.repository';
+import { SettingsBrandingService } from '../../src/modules/settings/settings.branding.service';
 import { QuietHoursRepository } from '../../src/modules/settings/settings.quiet-hours.repository';
 import { SettingsRepository } from '../../src/modules/settings/settings.repository';
 import { SettingsService } from '../../src/modules/settings/settings.service';
@@ -29,12 +31,13 @@ export function entriesOf(pools: Pools, tenantId: string, eventType: string) {
 }
 
 /**
- * The two services as `settings.module.ts` composes them, over the real repositories on both pools,
+ * The three services as `settings.module.ts` composes them, over the real repositories on both pools,
  * and the file service the settings read a logo through, with the memory store a test fills.
  */
 export function settingsServicesOf(pools: Pools): {
   settings: SettingsService;
   templates: SettingsTemplatesService;
+  branding: SettingsBrandingService;
   files: ReturnType<typeof fileServiceOf>;
 } {
   const files = fileServiceOf(pools);
@@ -51,5 +54,10 @@ export function settingsServicesOf(pools: Pools): {
     settings,
     new CreationReplies(new PinoLogger({ pinoHttp: { level: 'silent' } })),
   );
-  return { settings, templates, files };
+  const branding = new SettingsBrandingService(
+    new SettingsBrandingRepository(pools.tenants),
+    settings,
+    files.service,
+  );
+  return { settings, templates, branding, files };
 }

@@ -5,6 +5,7 @@ import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
 import { actOf, sessionOf, tenantIdOf } from '../../common/auth/session-context';
+import { SettingsBrandingService } from './settings.branding.service';
 import { SettingsService } from './settings.service';
 import { SettingsTemplatesService } from './settings.templates.service';
 
@@ -16,6 +17,7 @@ export class SettingsController {
   constructor(
     @Inject(SettingsService) private readonly settings: SettingsService,
     @Inject(SettingsTemplatesService) private readonly templates: SettingsTemplatesService,
+    @Inject(SettingsBrandingService) private readonly branding: SettingsBrandingService,
   ) {}
 
   @TsRestHandler(tenantSettingsContract)
@@ -76,10 +78,10 @@ export class SettingsController {
         status: 200 as const,
         body: await this.settings.saveQuietHours(tenantIdOf(req), body),
       }),
-      branding: async () => ({ status: 200, body: await this.settings.branding(tenantId()) }),
+      branding: async () => ({ status: 200, body: await this.branding.read(tenantId()) }),
       saveBranding: async ({ body }) => ({
         status: 200,
-        body: await this.settings.saveBranding(tenantId(), body, actOf(req)),
+        body: await this.branding.save(tenantId(), body, actOf(req)),
       }),
       proposalTemplate: async () => ({
         status: 200,

@@ -1,5 +1,7 @@
-import type { IncomingMessage, ServerResponse } from 'node:http';
+import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
+import type { AddressInfo } from 'node:net';
 import { apiContract } from '@heliogrid/contracts';
+import { afterAll, beforeAll } from 'vitest';
 
 /**
  * The wire every test origin speaks (`packages/data/CLAUDE.md`, Done means). A write body is read
@@ -67,4 +69,19 @@ export async function writeBodyOf(
     return null;
   }
   return { body };
+}
+
+/**
+ * An origin listening on a free local port for the tests of the file that calls this: started
+ * before them, closed after. Answers `url()` once it listens.
+ */
+export function listeningOrigin(answer: (req: IncomingMessage, res: ServerResponse) => void) {
+  const server = createServer(answer);
+  let url = '';
+  beforeAll(async () => {
+    await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+    url = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+  });
+  afterAll(() => new Promise<void>((resolve) => server.close(() => resolve())));
+  return { url: () => url };
 }

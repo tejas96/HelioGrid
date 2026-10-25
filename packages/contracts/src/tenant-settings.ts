@@ -11,8 +11,9 @@ import {
 import { createHeadersSchema, extensibleEnum, uuidSchema } from './common';
 import { labelSchema } from './document-content';
 import {
+  brandingReadSchema,
+  brandingSaveSchema,
   brandingSchema,
-  brandingWriteSchema,
   proposalTemplateSchema,
   timelineTemplateSchema,
   trancheTemplateSchema,
@@ -193,16 +194,16 @@ export const tenantSettingsContract = c.router({
     method: 'GET',
     path: '/settings/branding',
     summary:
-      'Branding as read, with the compliant shades derived on this read for the live preview',
-    responses: { 200: brandingSchema, ...guarded },
+      'Branding as read, with the compliant shades derived on this read for the live preview, the logo and who saved it last',
+    responses: { 200: brandingReadSchema, ...guarded },
   },
   saveBranding: {
     method: 'PUT',
     path: '/settings/branding',
-    body: brandingWriteSchema,
+    body: brandingSaveSchema,
     summary:
-      'Save the brand colour and letterhead — never refused; the response carries the derived shades',
-    responses: { 200: brandingSchema, ...guarded },
+      'Save the brand colour, letterhead and logo as one — never refused for the colour; a logo that is not this company’s stored image is refused on its field',
+    responses: { 200: brandingReadSchema, ...guarded },
   },
   proposalTemplate: {
     method: 'GET',

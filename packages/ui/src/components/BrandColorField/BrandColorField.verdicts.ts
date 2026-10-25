@@ -1,42 +1,120 @@
-import type { TextOnFill, WordOnPaper } from '../../utils/color-contrast';
-import { MARK_CONTRAST_FLOOR, TEXT_CONTRAST_FLOOR } from '../../utils/color-contrast';
-import type { BrandVerdict } from './BrandColorField.types';
+import type { ReadableInk, TextOnFill, WordOnPaper } from '../../utils/color-contrast';
+import {
+  asWordOnPaper,
+  bestTextOn,
+  MARK_CONTRAST_FLOOR,
+  readableInk,
+  TEXT_CONTRAST_FLOOR,
+} from '../../utils/color-contrast';
+import type {
+  BrandColorFieldWords,
+  BrandFullVerdictWords,
+  BrandShortVerdictWords,
+  BrandTextInk,
+  BrandVerdict,
+} from './BrandColorField.types';
 
 /**
- * The two questions, answered in words with the ratio — shared by both platform halves so the
- * measurement and its sentence cannot drift apart.
+ * The two questions, answered once for both platform halves so the measurement and its sentence
+ * cannot drift apart:
  *
  *   1. Can text sit ON this colour? White vs near-black, whichever wins, and whether it clears the
  *      floor. This decides what the proposal header uses.
  *   2. Can this colour BE text? The colour as a word on white paper. Most mid-tone brand colours
- *      fail this and that is fine — they stay fills. The control says so plainly.
+ *      fail this and that is fine — they stay fills, and words take the derived ink.
  */
-export function textOnFillVerdict(on: TextOnFill): BrandVerdict {
-  if (on.passes) {
-    return {
-      kind: 'pass',
-      sentence: `${on.name} text on this colour is ${on.ratio}:1 — clears the ${TEXT_CONTRAST_FLOOR}:1 floor, so the proposal header uses ${on.name.toLowerCase()}.`,
-    };
-  }
+export interface BrandColourReading {
+  hex: string;
+  on: TextOnFill;
+  word: WordOnPaper;
+  /** Which ink the words name — the field never spells it. */
+  text: BrandTextInk;
+  /**
+   * The derived ink offered — `compliantShades(hex).ink`, the shade the server saves — when the
+   * colour fails EITHER question; null when it passes both, or the offer is switched off.
+   */
+  fix: ReadableInk | null;
+}
+
+export function readBrandColour(hex: string, showSuggestion: boolean): BrandColourReading | null {
+  const on = bestTextOn(hex);
+  const word = asWordOnPaper(hex);
+  if (on === null || word === null) return null;
+  const fails = !on.passes || !word.passesText;
+  const ink = fails && showSuggestion ? readableInk(hex) : null;
   return {
-    kind: 'warn',
-    sentence: `No text colour clears ${TEXT_CONTRAST_FLOOR}:1 on this — white reaches ${on.white}:1 and near-black ${on.black}:1. A header band in it would be unreadable on a printed proposal.`,
+    hex,
+    on,
+    word,
+    text: on.ink,
+    fix: ink === null || ink.hex === hex ? null : ink,
   };
 }
 
-export function wordOnPaperVerdict(word: WordOnPaper): BrandVerdict {
-  if (word.passesText) {
-    return {
-      kind: 'pass',
-      sentence: `As a word on white paper it is ${word.ratio}:1 — headings and totals can be set in it.`,
-    };
-  }
-  const alsoRules = word.passesMark ? ' and rules' : '';
-  const floorClause = word.passesMark
-    ? `above the ${MARK_CONTRAST_FLOOR}:1 mark floor`
-    : `below even the ${MARK_CONTRAST_FLOOR}:1 mark floor, so hairlines in it will not read either`;
+/** The colour the specimen sets its word in on paper: the colour itself, or its derived ink. */
+export function specimenWordColour(reading: BrandColourReading): string {
+  return reading.word.passesText ? reading.hex : (readableInk(reading.hex)?.hex ?? reading.hex);
+}
+
+/** `verdict="short"` — one line, no ratio. */
+export function shortVerdict(
+  reading: BrandColourReading,
+  words: BrandShortVerdictWords,
+): BrandVerdict {
+  if (!reading.on.passes) return { kind: 'warn', sentence: words.noTextOnIt };
+  if (reading.word.passesText) return { kind: 'pass', sentence: words.readsWell(reading.text) };
   return {
     kind: 'info',
-    sentence: `As a word on white paper it is only ${word.ratio}:1, so the proposal keeps text near-black and uses this colour as a fill${alsoRules} — ${floorClause}.`,
+    sentence: reading.word.passesMark
+      ? words.fillsAndLines(reading.text)
+      : words.fillsOnly(reading.text),
+  };
+}
+
+/** `verdict="full"` — both questions with the ratios this field computed. */
+export function fullVerdicts(
+  reading: BrandColourReading,
+  words: BrandFullVerdictWords,
+): BrandVerdict[] {
+  const { on, word } = reading;
+  const floor = String(TEXT_CONTRAST_FLOOR);
+  const textOn: BrandVerdict = on.passes
+    ? {
+        kind: 'pass',
+        sentence: words.textOnPasses({ text: reading.text, ratio: String(on.ratio), floor }),
+      }
+    : {
+        kind: 'warn',
+        sentence: words.textOnFails({ white: String(on.white), black: String(on.black), floor }),
+      };
+  if (word.passesText) {
+    return [textOn, { kind: 'pass', sentence: words.wordPasses({ ratio: String(word.ratio) }) }];
+  }
+  const ink = readableInk(reading.hex);
+  const sentence = {
+    ratio: String(word.ratio),
+    ink: ink?.hex ?? reading.hex,
+    inkRatio: String(ink?.ratio ?? word.ratio),
+    markFloor: String(MARK_CONTRAST_FLOOR),
+  };
+  return [
+    textOn,
+    {
+      kind: 'info',
+      sentence: word.passesMark ? words.wordFillsAndRules(sentence) : words.wordFillsOnly(sentence),
+    },
+  ];
+}
+
+/** A caller's override, else the words' own — no English default exists anywhere. */
+export function fieldWordsOf(
+  words: BrandColorFieldWords,
+  overrides: { label?: string; helper?: string; specimenLabel?: string; specimenWord?: string },
+) {
+  return {
+    label: overrides.label ?? words.label,
+    helper: overrides.helper ?? words.helper,
+    specimenLabel: overrides.specimenLabel ?? words.specimenLabel,
+    specimenWord: overrides.specimenWord ?? words.specimenWord,
   };
 }

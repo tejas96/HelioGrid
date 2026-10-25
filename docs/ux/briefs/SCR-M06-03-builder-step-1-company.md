@@ -13,7 +13,7 @@ Reached from: the builder shell — first step in the default reading order, but
 ### docs/prd/modules/M06-proposals.md
 
 - **M06-06** (P0) — **Proposal type: CAPEX or OPEX/PPA — a document type only.** The Proposal Type modal (bottom sheet after step 1: drag handle, "Choose proposal type", two radio cards — **CAPEX**, purchase outright / **OPEX / PPA**, per-unit billing to the customer; Back · Continue) sets the proposal `type`. Per ruling `R17`, **nothing downstream branches on it except the rendered document and the honesty label on financial projections** (`F8-23`, consumed): the document renders per-unit terms; the project after Won tracks the same stages and checklist (`modules/M08`); no recurring invoicing, no meter ingestion (§5). **The type is UNGATED on every tier — final (owner ruling 2026-08-04)**; no proposal-type entitlement key exists (`M12-20`). _(non-UI half, build-side: R17: type branches nothing downstream except document and projection label; ungated on every tier — for awareness, not for drawing)_
-- **M06-07** (P0) — **Step 1 · Company:** Phone number \* (locked, linked to the account) · Company name \* · Email address \* (locked, linked) · Website · Company address · Company logo — swatch + Change logo (**max 5 MB · 12×6 cm · PNG/JPG**, validated on upload with the actual limits stated). Values come from the business profile (`M01-31`, consumed — asked once, never re-asked here); the locked fields are edited in tenant settings, not in the builder. After step 1 the Proposal Type modal fires (`M06-06`).
+- **M06-07** (P0) — **Step 1 · Company:** Phone number \* (locked, linked to the account) · Company name \* · Email address \* (locked, linked) · Website · Company address · Company logo — swatch + Change logo (**max 2 MB · 12×6 cm · PNG/JPG**, validated on upload with the actual limits stated). Values come from the business profile (`M01-31`, consumed — asked once, never re-asked here); the locked fields are edited in tenant settings, not in the builder. After step 1 the Proposal Type modal fires (`M06-06`).
 
 ## States
 
@@ -21,7 +21,7 @@ Reached from: the builder shell — first step in the default reading order, but
 - **Empty** (base) — required (\*) fields unfilled render as the chip rail's incomplete dot and the Generate gate's completeness check — never a disabled Next (M06-22, §M06.2 behavior detail).
 - **Error** (base) — a failed logo upload or field commit is acknowledged honestly; the rest of the step is preserved.
 - **locked-account-fields** — Phone number and Email address locked, linked to the account; editable only in tenant settings (M06-07).
-- **logo-upload-invalid** — logo too large / wrong format: validated on upload with the actual limits stated (max 5 MB · 12×6 cm · PNG/JPG) — never a silent failure (M06-07, `S6B.wrong.5`).
+- **logo-upload-invalid** — logo too large / wrong format: validated on upload with the actual limits stated (max 2 MB · 12×6 cm · PNG/JPG) — never a silent failure (M06-07, `S6B.wrong.5`).
 - **proposal-type-sheet** — the bottom sheet after step 1: drag handle, "Choose proposal type", two radio cards (CAPEX / OPEX / PPA), Back · Continue (M06-06). Ungated on every tier — no tier chrome, no upsell.
 
 ## Data volume
@@ -31,5 +31,5 @@ One company form: six fields plus the logo swatch. One bottom sheet with two rad
 ## Numbers carrying provenance
 
 - No provenance-tiered figures render on this step — no money, no generation values.
-- The logo limits (**max 5 MB · 12×6 cm**) are validation constants stated in the upload copy — fixed product facts, not tiered data (M06-07).
+- The logo limits (**max 2 MB · 12×6 cm**) are validation constants stated in the upload copy — fixed product facts, not tiered data (M06-07).
 - The choice made in the proposal-type sheet later drives the projection honesty label on financial figures (`F8-23` via M06-06) — that label renders on steps 5/3 and the document, not here.

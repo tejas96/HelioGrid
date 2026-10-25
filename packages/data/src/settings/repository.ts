@@ -1,4 +1,6 @@
 import type {
+  BrandingRead,
+  BrandingSave,
   BusinessProfileRead,
   BusinessProfileWrite,
   TaxRegistrations,
@@ -14,6 +16,10 @@ export interface SettingsRepository {
   taxRegistrations(signal?: AbortSignal): Promise<TaxRegistrations>;
   /** Replaces the list whole; the api refuses it whole when one entry is malformed (`M01-25`). */
   saveTaxRegistrations(registrations: TaxRegistrations): Promise<TaxRegistrations>;
+  /** Branding as its page reads it: the logo beside it and who saved it last (`SCR-M01-18`). */
+  branding(signal?: AbortSignal): Promise<BrandingRead>;
+  /** The colour, the letterhead and the logo as one write; the colour is never refused (`F7-07`). */
+  saveBranding(branding: BrandingSave): Promise<BrandingRead>;
 }
 
 /** The types are INFERRED from the contract, never a hand-written copy of the response. */
@@ -49,6 +55,24 @@ export function createSettingsRepository(api: ApiClient): SettingsRepository {
     async saveTaxRegistrations(registrations) {
       try {
         const res = await api.tenantSettings.saveTaxRegistrations({ body: registrations });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async branding(signal) {
+      try {
+        const res = await api.tenantSettings.branding({ fetchOptions: { signal } });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async saveBranding(branding) {
+      try {
+        const res = await api.tenantSettings.saveBranding({ body: branding });
         if (res.status !== 200) throw toApiError(res);
         return res.body;
       } catch (error) {

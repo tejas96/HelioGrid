@@ -22,6 +22,14 @@ export interface PreviewFrameProps {
   surface?: "sheet" | "page" | "band";
   /** A control beside the caption — "Open full preview". Sits **outside** the non-interactive subject. */
   action?: React.ReactNode;
+  /**
+   * The subject's values are still loading (`SCR-M01-18`'s *Loading*). The frame keeps its footprint
+   * at its own scale — the subject lays out hidden — and draws a `--canvas-sunken` placeholder with the
+   * theme's shimmer there. **Never a white rectangle**: on paper that reads as an empty letterhead.
+   */
+  loading?: boolean;
+  /** The busy region's words while `loading` ("Loading the proposal cover"). */
+  loadingLabel?: string;
   /** The subject: the real component that draws the customer-facing output. */
   children?: React.ReactNode;
   style?: React.CSSProperties;

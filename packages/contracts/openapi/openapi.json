@@ -37904,7 +37904,7 @@
     },
     "/settings/branding": {
       "get": {
-        "summary": "Branding as read, with the compliant shades derived on this read for the live preview",
+        "summary": "Branding as read, with the compliant shades derived on this read for the live preview, the logo and who saved it last",
         "tags": [
           "tenantSettings"
         ],
@@ -38033,6 +38033,43 @@
                         "brand",
                         "ink",
                         "whiteOnBrand"
+                      ],
+                      "nullable": true
+                    },
+                    "logoFileId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "nullable": true
+                    },
+                    "changed": {
+                      "type": "object",
+                      "properties": {
+                        "at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "by": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "name": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name"
+                          ],
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "at",
+                        "by"
                       ],
                       "nullable": true
                     }
@@ -38279,7 +38316,7 @@
         }
       },
       "put": {
-        "summary": "Save the brand colour and letterhead — never refused; the response carries the derived shades",
+        "summary": "Save the brand colour, letterhead and logo as one — never refused for the colour; a logo that is not this company’s stored image is refused on its field",
         "tags": [
           "tenantSettings"
         ],
@@ -38386,6 +38423,11 @@
                       "lines",
                       "footerNote"
                     ],
+                    "nullable": true
+                  },
+                  "logoFileId": {
+                    "type": "string",
+                    "format": "uuid",
                     "nullable": true
                   }
                 },
@@ -38521,6 +38563,43 @@
                         "brand",
                         "ink",
                         "whiteOnBrand"
+                      ],
+                      "nullable": true
+                    },
+                    "logoFileId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "nullable": true
+                    },
+                    "changed": {
+                      "type": "object",
+                      "properties": {
+                        "at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "by": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "name": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name"
+                          ],
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "at",
+                        "by"
                       ],
                       "nullable": true
                     }

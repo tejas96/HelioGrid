@@ -1,0 +1,31 @@
+import React from "react";
+
+export interface FormActionBarProps {
+  /**
+   * What a save does — shown above the acts. A settings screen that writes customer-facing output
+   * says that what was already sent keeps what it was made with (`F8-15`).
+   */
+  consequence?: React.ReactNode;
+  /** The primary's words ("Save branding"). Required. */
+  saveLabel: string;
+  onSave?: () => void;
+  /** The way back to what is in force ("Discard changes"). Required. */
+  discardLabel: string;
+  onDiscard?: () => void;
+  /** A save is under way: Save shows its spinner and keeps its name; Discard waits. */
+  saving?: boolean;
+  /**
+   * `sticky` (default) — the phone: a `--surface` band at `--e4` pinned to the bottom of its scroller.
+   * `footer` — the form column's footer at 1536: a `--surface` card at `--e4`. **One order at both:**
+   * the consequence above, then Save, then Discard — only the container differs.
+   */
+  placement?: "sticky" | "footer";
+  style?: React.CSSProperties;
+}
+
+/**
+ * The act bar a settings form raises **with a change** — never at rest, and never a disabled Save
+ * waiting for one. Save is primary, Discard ghost, both `md`. A failed save keeps the edit and the
+ * bar; the screen's banner states why and this bar's Save is the retry.
+ */
+export function FormActionBar(props: FormActionBarProps): JSX.Element;

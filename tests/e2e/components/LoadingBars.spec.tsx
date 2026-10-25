@@ -12,9 +12,10 @@ import { resolvedColour, resolvedLength, resolvedShadow } from '../support/token
 const en = await createTranslator('en');
 const label = en.t(COMPANY_SIGNUP.yourCompany);
 
-/** The board's two heights: an open part, and a closed section's header. */
+/** The boards' heights: an open part, a closed section's header, and one control row. */
 const PANEL = 188;
 const ROW = 56;
+const CONTROL = 40;
 
 test('one bar per part, at its size, the list wide and 8 apart, in a busy region that carries its name', async ({
   mount,
@@ -117,4 +118,21 @@ test('in a wide room an option keeps one description line, as the panel draws it
   await page.setViewportSize({ width: 1536, height: 960 });
   const region = await mount(<LoadingBars label={label} bars={['option']} />);
   await expect(region.locator('.hg-loading-option-line:visible')).toHaveCount(1);
+});
+
+test("a control is one control row's height, before the parts it stands over", async ({
+  mount,
+  page,
+}) => {
+  const region = await mount(<LoadingBars label={label} bars={['control', 'panel', 'row']} />);
+  const bars = region.locator('.hg-loading-bar');
+  const gap = await resolvedLength(page, '--sp-2');
+
+  await expect(page.getByRole('status', { name: label })).toHaveAttribute('aria-busy', 'true');
+  await expect(bars).toHaveCount(3);
+  for (const [index, height] of [CONTROL, PANEL, ROW].entries()) {
+    expect((await bars.nth(index).boundingBox())?.height).toBe(height);
+  }
+  expect((await bars.nth(1).boundingBox())?.y).toBe((await bottomOf(bars.first())) + gap);
+  await expect(bars.first()).toHaveCSS('animation-name', 'hg-sheet-shimmer');
 });

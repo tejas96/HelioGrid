@@ -267,6 +267,7 @@ export const SHELL_GLYPHS = {
     path('M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8Z'),
   ],
   'fit-width': [path('M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4')],
+  expand: [path('M14 4h6v6'), path('M10 20H4v-6'), path('M20 4l-7 7'), path('M4 20l7-7')],
   'fit-page': [path('M5 4h14v16H5zM9 9h6v6H9z')],
   'trend-up': [path('M7 17 17 7M17 7H9m8 0v8')],
   'trend-down': [path('M7 7l10 10M17 17H9m8 0V9')],

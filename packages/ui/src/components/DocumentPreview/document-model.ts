@@ -1,10 +1,18 @@
-import { type MinorUnits, minorUnits, normaliseHexColour } from '@heliogrid/domain';
+import { compliantShades, type MinorUnits, normaliseHexColour } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { isValidElement } from 'react';
-import { asWordOnPaper, bestTextOn, NEAR_BLACK } from '../../utils/color-contrast';
+import { asWordOnPaper, bestTextOn, NEAR_BLACK, WHITE } from '../../utils/color-contrast';
 import type { MarketFormat } from '../../utils/format';
 import { IN_FORMAT } from '../../utils/format';
+import {
+  NO_IDENTITY,
+  NO_MONEY,
+  NO_WORDS,
+  SAMPLE_IDENTITY,
+  SAMPLE_MONEY,
+  SAMPLE_WORDS,
+} from './DocumentPreview.sample';
 import type {
   DocumentFigures,
   DocumentLetterhead,
@@ -21,6 +29,8 @@ import { A4_RATIO, DOCUMENT_DESIGN_WIDTH } from './DocumentPreview.types';
 const FALLBACK_BRAND: string = theme.colors.accent;
 
 export interface ResolvedDocument {
+  /** The specimen draws a labelled logo slot; a real cover (`sample={false}`) never does. */
+  sample: boolean;
   companyName: string;
   address: string;
   phone: string;
@@ -36,6 +46,10 @@ export interface ResolvedDocument {
   parts: DocumentPart[];
   lineItems: { description: string; amountText: string }[];
   totalText: string;
+  preparedForLabel: string;
+  totalLabel: string;
+  bandFailsNote: string;
+  termsEmptyText: string | undefined;
   subsidyLine: string | null;
   sections: DocumentSection[];
   sectionsTitle: string;
@@ -51,7 +65,7 @@ export interface ResolvedDocument {
   bandOk: boolean;
   /** The text colour that sits on the band — only meaningful when `bandOk`. */
   bandTextColor: string;
-  /** The brand colour where it may carry words, near-black where it may not. */
+  /** The derived ink — the brand, or its darkened shade, wherever it is a word (`compliantShades`). */
   ink: string;
   /** Whether the brand rule clears the non-text mark floor at full opacity. */
   ruleOpaque: boolean;
@@ -79,69 +93,30 @@ function letterheadSpec(value: DocumentLetterhead | ReactNode): DocumentLetterhe
   return value as DocumentLetterhead;
 }
 
-/* The sample a settings screen previews its letterhead on. Its total and payable are STATED
-   beside its lines, like any server's figures — the part sums nothing (`F4-04`). */
-const SAMPLE_MONEY: DocumentFigures & DocumentSubsidy = {
-  lineItems: [
-    ['Mono PERC modules 545 W × 16', minorUnits(26_160_000)],
-    ['String inverter 8 kW', minorUnits(6_840_000)],
-    ['Mounting structure & BOS', minorUnits(7_420_000)],
-    ['Installation & commissioning', minorUnits(4_827_100)],
-  ],
-  total: minorUnits(45_247_100),
-  subsidyAmount: minorUnits(7_800_000),
-  payable: minorUnits(37_447_100),
-};
-
-/* The sample's identity travels with the sample's figures and never beside real ones: a real
-   document missing a tax number prints none rather than a made-up one (`F4-04` — no device assigns
-   a business identifier). */
-interface DocumentIdentity {
-  companyName: string;
-  taxId: string;
-  address: string;
-  phone: string;
-  customerName: string;
-  customerMeta: string;
-  docNumber: string;
-  docDate: string | undefined;
-}
-const SAMPLE_IDENTITY: DocumentIdentity = {
-  companyName: 'Suryodaya Solar Pvt Ltd',
-  taxId: '27AABCS1429P1ZQ',
-  address: 'Shop 14, Laxmi Complex, Baner Road, Pune 411045',
-  phone: '+91 98200 41123',
-  customerName: 'Rajesh Kumar',
-  customerMeta: 'Kothrud, Pune · 8.4 kWp rooftop',
-  docNumber: 'PRO-2026-0418',
-  docDate: '2026-08-16',
-};
-const NO_IDENTITY: DocumentIdentity = {
-  companyName: '',
-  taxId: '',
-  address: '',
-  phone: '',
-  customerName: '',
-  customerMeta: '',
-  docNumber: '',
-  docDate: undefined,
-};
-
-/** The caller's figures, or — when it passed none — the whole sample, never a part of it. */
-function moneyOf(money: DocumentMoney): DocumentFigures & Partial<DocumentSubsidy> {
-  return money.lineItems === undefined ? SAMPLE_MONEY : money;
+/**
+ * The caller's figures, or — when it passed none — the whole sample, never a part of it. A real
+ * cover with no figures draws no money band.
+ */
+function moneyOf(
+  money: DocumentMoney,
+  sample: boolean,
+): DocumentFigures & Partial<DocumentSubsidy> {
+  if (money.lineItems !== undefined) return money;
+  return sample ? SAMPLE_MONEY : NO_MONEY;
 }
 
+/* The composed sentence is the specimen's English; a real cover prints only its caller's note. */
 function subsidySentence(
   subsidyNote: string | undefined,
   money: Partial<DocumentSubsidy>,
+  sample: boolean,
   subsidyLabel: string,
   format: MarketFormat['amount'],
 ): string | null {
   if (subsidyNote !== undefined) {
     return subsidyNote;
   }
-  if (money.subsidyAmount === undefined || money.payable === undefined) {
+  if (!sample || money.subsidyAmount === undefined || money.payable === undefined) {
     return null;
   }
   return `Less ${subsidyLabel} ${format(money.subsidyAmount)} · payable ${format(money.payable)}`;
@@ -160,12 +135,14 @@ export function resolveDocument(
   props: DocumentPreviewProps,
   format: MarketFormat = IN_FORMAT,
 ): ResolvedDocument {
-  const sample = props.lineItems === undefined ? SAMPLE_IDENTITY : NO_IDENTITY;
+  const isSample = props.sample ?? true;
+  const sample = isSample && props.lineItems === undefined ? SAMPLE_IDENTITY : NO_IDENTITY;
+  const words = isSample ? SAMPLE_WORDS : NO_WORDS;
   const {
     brandColor = FALLBACK_BRAND,
     companyName = sample.companyName,
     logoSrc,
-    logoLabel = 'tenant logo',
+    logoLabel = words.logoLabel,
     taxId = sample.taxId,
     taxIdLabel,
     address = sample.address,
@@ -173,20 +150,24 @@ export function resolveDocument(
     letterhead,
     customerName = sample.customerName,
     customerMeta = sample.customerMeta,
-    docTitle = 'Solar proposal',
+    docTitle = words.docTitle,
     docNumber = sample.docNumber,
     docDate = sample.docDate,
     parts = ['cover', 'items'],
-    subsidyLabel = 'PM Surya Ghar subsidy',
+    subsidyLabel = words.subsidyLabel,
     subsidyNote,
     sections = [],
-    sectionsTitle = 'What this proposal covers',
+    sectionsTitle = words.sectionsTitle,
     tranches = [],
-    tranchesTitle = 'Payment schedule',
-    termsTitle = 'Terms & conditions',
+    tranchesTitle = words.tranchesTitle,
+    termsTitle = words.termsTitle,
     fit = 'a4',
     width = 420,
-    caption = 'Preview · customer proposal',
+    caption = words.caption,
+    preparedForLabel = words.preparedForLabel,
+    totalLabel = words.totalLabel,
+    bandFailsNote = words.bandFailsNote,
+    termsEmptyText = words.termsEmptyText,
   } = props;
 
   /* A line amount may legitimately be a WORD — "Included", "At cost" — so the string spelling
@@ -194,14 +175,16 @@ export function resolveDocument(
   const amountText = (value: MinorUnits | string): string =>
     typeof value === 'string' ? value : format.amount(value);
 
-  const money = moneyOf(props);
+  const money = moneyOf(props, isSample);
 
   const hex = normaliseHexColour(brandColor) ?? FALLBACK_BRAND;
-  const onBand = bestTextOn(hex);
-  const word = asWordOnPaper(hex);
-  const bandOk = onBand?.passes === true;
+  /* One answer for every word the brand colours — the walk the server runs on save and
+     `CustomerSurface` reads — so the preview and the saved document cannot differ (D250). */
+  const shades = compliantShades(hex);
+  const bandOk = bestTextOn(hex)?.passes === true;
 
   return {
+    sample: isSample,
     companyName,
     address,
     phone,
@@ -220,7 +203,11 @@ export function resolveDocument(
       amountText: amountText(amount),
     })),
     totalText: amountText(money.total),
-    subsidyLine: subsidySentence(subsidyNote, money, subsidyLabel, format.amount),
+    preparedForLabel,
+    totalLabel,
+    bandFailsNote,
+    termsEmptyText,
+    subsidyLine: subsidySentence(subsidyNote, money, isSample, subsidyLabel, format.amount),
     sections: normaliseSections(sections),
     sectionsTitle,
     tranches: tranches.map((tranche) => ({
@@ -235,9 +222,9 @@ export function resolveDocument(
     letterheadNode: isValidElement(letterhead) ? letterhead : null,
     brandHex: hex,
     bandOk,
-    bandTextColor: onBand === null ? NEAR_BLACK : onBand.color,
-    ink: word?.passesText === true ? hex : NEAR_BLACK,
-    ruleOpaque: word?.passesMark === true,
+    bandTextColor: shades.whiteOnBrand ? WHITE : NEAR_BLACK,
+    ink: shades.ink,
+    ruleOpaque: asWordOnPaper(hex)?.passesMark === true,
     width,
     scale: width / DOCUMENT_DESIGN_WIDTH,
     sheetHeight: fit === 'a4' ? DOCUMENT_DESIGN_WIDTH * A4_RATIO : undefined,

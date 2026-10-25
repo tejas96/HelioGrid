@@ -5,6 +5,15 @@ import type { ResolvedDocument } from './document-model';
  * is the schedule, never `[description, amount]` line items pretending to be one.
  */
 
+/** A band's micro-label — drawn only when the caller has a word for it. */
+export function BandTitle({ title }: { title: string }) {
+  return title === '' ? null : (
+    <p className="hg-doc-overline" data-spaced="true">
+      {title}
+    </p>
+  );
+}
+
 export function DocumentItemsBand({ doc }: { doc: ResolvedDocument }) {
   return (
     <div>
@@ -20,7 +29,7 @@ export function DocumentItemsBand({ doc }: { doc: ResolvedDocument }) {
         </tbody>
       </table>
       <div className="hg-doc-total-row">
-        <span className="hg-doc-total-label">Total</span>
+        <span className="hg-doc-total-label">{doc.totalLabel}</span>
         <span className="hg-doc-total-value">{doc.totalText}</span>
       </div>
       {doc.subsidyLine === null ? null : <p className="hg-doc-subsidy">{doc.subsidyLine}</p>}
@@ -33,9 +42,7 @@ export function DocumentSectionsBand({ doc }: { doc: ResolvedDocument }) {
   return (
     <div>
       <div className="hg-doc-rule" />
-      <p className="hg-doc-overline" data-spaced="true">
-        {doc.sectionsTitle}
-      </p>
+      <BandTitle title={doc.sectionsTitle} />
       <ol className="hg-doc-section-list">
         {doc.sections.map((section, index) => (
           <li className="hg-doc-section-item" key={section.label}>
@@ -56,9 +63,7 @@ export function DocumentTranchesBand({ doc }: { doc: ResolvedDocument }) {
   return (
     <div>
       <div className="hg-doc-rule" />
-      <p className="hg-doc-overline" data-spaced="true">
-        {doc.tranchesTitle}
-      </p>
+      <BandTitle title={doc.tranchesTitle} />
       <table className="hg-doc-table" data-tight="true">
         <tbody>
           {doc.tranches.map((tranche, index) => (

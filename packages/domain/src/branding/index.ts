@@ -3,6 +3,27 @@
  * the WCAG maths and its two floors, and the contrast re-verification that makes a palette
  * measurable rather than refusable.
  */
+export type {
+  BrandingDraft,
+  BrandingDraftWrite,
+  BrandingEdit,
+  BrandingLastSave,
+  BrandingSaved,
+  BrandingStanding,
+  LetterheadRefusal,
+} from './branding-draft';
+export {
+  brandingChanged,
+  brandingDraftOf,
+  brandingEdit,
+  brandingSendable,
+  brandingStanding,
+  brandingWriteOf,
+  LETTERHEAD_LIMITS,
+  letterheadFieldRefusal,
+  letterheadLinesOf,
+  letterheadLinesRefusal,
+} from './branding-draft';
 export type { CompliantShades } from './compliant-shades';
 export { compliantShades } from './compliant-shades';
 export { contrastRatio, MARK_CONTRAST_FLOOR, TEXT_CONTRAST_FLOOR } from './contrast';

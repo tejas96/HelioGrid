@@ -1,8 +1,9 @@
 import { BottomNav, type BottomNavItem } from '@heliogrid/ui';
-import type { ReactNode } from 'react';
+import { type ReactNode, useRef } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles, underPill } from '../styles';
+import { useFocusedFieldInView } from '../use-focused-field-in-view';
 import { useKeyboardUp } from '../use-keyboard-up';
 
 export interface ShellFrameProps {
@@ -25,6 +26,11 @@ export interface ShellFrameProps {
    * dense rows draws (`SCR-M01-11`, `--screen-pad-mobile-fn`).
    */
   pad?: 'expressive' | 'functional';
+  /**
+   * An act bar raised in the pill's place (`SCR-M01-18` s18-m: a settings form with an unsaved
+   * change). It sits under the content and above the keyboard; the pill is hidden while it shows.
+   */
+  foot?: ReactNode;
   children: ReactNode;
 }
 
@@ -42,11 +48,14 @@ export function ShellFrame({
   stickyHead,
   lead,
   pad = 'expressive',
+  foot,
   children,
 }: ShellFrameProps) {
   const insets = useSafeAreaInsets();
-  const pill = items.length > 0;
+  const pill = items.length > 0 && foot === undefined;
   const keyboardUp = useKeyboardUp();
+  const scroll = useRef<ScrollView>(null);
+  const fieldInView = useFocusedFieldInView(scroll);
   return (
     <SafeAreaView style={styles.page} edges={['top']}>
       {topBar}
@@ -57,22 +66,22 @@ export function ShellFrame({
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScrollView
+          ref={scroll}
           keyboardShouldPersistTaps="handled"
           scrollEventThrottle={16}
+          onLayout={fieldInView.onLayout}
           /* The held head is the first child, or the second under a lead that scrolls away. */
           stickyHeaderIndices={stickyHead === undefined ? undefined : [lead === undefined ? 0 : 1]}
-          onScroll={
-            onScrolledChange === undefined
-              ? undefined
-              : (event) => onScrolledChange(event.nativeEvent.contentOffset.y > 0)
-          }
+          onScroll={(event) => {
+            const offset = event.nativeEvent.contentOffset.y;
+            fieldInView.onScroll(offset);
+            onScrolledChange?.(offset > 0);
+          }}
           contentContainerStyle={[
             styles.scroll,
             // With no pill the page is Frame 8, centred in the whole region: the home's top gap
             // would push it 16 below the middle (`D77`).
-            pill
-              ? { paddingBottom: underPill(insets.bottom) }
-              : { paddingTop: 0, paddingBottom: insets.bottom },
+            footPadding(pill, foot !== undefined, insets.bottom),
             stickyHead === undefined && lead === undefined ? null : styles.listRhythm,
             pad === 'functional' ? styles.functionalPad : null,
           ]}
@@ -89,6 +98,7 @@ export function ShellFrame({
           )}
           {children}
         </ScrollView>
+        {foot}
       </KeyboardAvoidingView>
       {pill && !keyboardUp ? (
         <View pointerEvents="box-none" style={[styles.pillFrame, { bottom: insets.bottom }]}>
@@ -97,4 +107,10 @@ export function ShellFrame({
       ) : null}
     </SafeAreaView>
   );
+}
+
+/** The scroll's foot: room for the pill, none above an act bar (it holds the inset), or Frame 8's. */
+function footPadding(pill: boolean, foot: boolean, inset: number) {
+  if (pill) return { paddingBottom: underPill(inset) };
+  return foot ? { paddingBottom: 0 } : { paddingTop: 0, paddingBottom: inset };
 }

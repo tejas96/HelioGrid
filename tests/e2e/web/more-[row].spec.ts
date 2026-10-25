@@ -24,10 +24,10 @@ test('a row opens its screen’s address inside the shell, More in view; Back re
   await page.goto('/more');
   const rail = page.getByRole('navigation', { name: en.t(SHELL.mainNavigation) });
 
-  await page.getByRole('button', { name: WORDS.rows.branding }).click();
+  await page.getByRole('button', { name: WORDS.rows.agent }).click();
 
-  await expect(page).toHaveURL(/\/more\/branding$/);
-  await expect(page.getByRole('heading', { level: 1, name: WORDS.rows.branding })).toBeAttached();
+  await expect(page).toHaveURL(/\/more\/agent$/);
+  await expect(page.getByRole('heading', { level: 1, name: WORDS.rows.agent })).toBeAttached();
   await expect(page.getByText(en.t(SHELL.comingLater))).toBeVisible();
   await expect(rail.getByRole('button', { name: destinationLabel(en.t, 'more') })).toHaveAttribute(
     'aria-current',

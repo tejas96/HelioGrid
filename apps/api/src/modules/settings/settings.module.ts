@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { FileModule } from '../file/file.public';
 import { MarketModule } from '../market/market.public';
 import { SettingsAdminRepository } from './settings.admin.repository';
+import { SettingsBrandingRepository } from './settings.branding.repository';
+import { SettingsBrandingService } from './settings.branding.service';
 import { SettingsController } from './settings.controller';
 import { SettingsOnboardingController } from './settings.onboarding.controller';
 import { SettingsOnboardingRepository } from './settings.onboarding.repository';
@@ -26,8 +28,10 @@ import { SettingsTranchesRepository } from './settings.tranches.repository';
   providers: [
     SettingsService,
     SettingsTemplatesService,
+    SettingsBrandingService,
     SettingsOnboardingService,
     SettingsRepository,
+    SettingsBrandingRepository,
     SettingsTemplatesRepository,
     SettingsTranchesRepository,
     SettingsOnboardingRepository,

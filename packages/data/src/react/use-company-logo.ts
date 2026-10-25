@@ -18,6 +18,8 @@ export interface ChosenPicture extends ChosenImage {
   readonly bytes: Uint8Array;
   /** Something the device can draw before anything is stored; `null` where it has none. */
   readonly picture: string | null;
+  /** The file's own name, which a refusal names it by; absent where the device gives none. */
+  readonly name?: string;
 }
 
 export interface CompanyLogo {
@@ -36,6 +38,8 @@ export interface CompanyLogo {
   refuse(image: ChosenPicture): void;
   /** The save that sent the image landed: the profile holds it now. */
   saved(image: ChosenPicture): void;
+  /** The last refusal is no longer the page's news: the logo was removed, saved or discarded. */
+  dismiss(): void;
 }
 
 /**
@@ -90,5 +94,6 @@ export function useCompanyLogo(
       letGo(image);
     },
     saved: letGo,
+    dismiss: () => setRefusal(null),
   };
 }

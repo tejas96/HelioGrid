@@ -42,6 +42,7 @@
 @import "./components/BrandBloom/BrandBloom.css";
 @import "./components/Block/Block.css";
 @import "./components/BrandColorField/BrandColorField.css";
+@import "./components/BrandingSettings/BrandingSettings.css";
 @import "./components/Breadcrumb/Breadcrumb.css";
 @import "./components/Button/Button.css";
 @import "./components/Card/Card.css";
@@ -91,6 +92,7 @@
 @import "./components/FilterPanel/FilterPanel.css";
 @import "./components/FindingList/FindingList.css";
 @import "./components/FirstRunProfile/FirstRunProfile.css";
+@import "./components/FormActionBar/FormActionBar.css";
 @import "./components/HomeBlocks/HomeBlocks.css";
 @import "./components/HomeHead/HomeHead.css";
 @import "./components/IconButton/IconButton.css";

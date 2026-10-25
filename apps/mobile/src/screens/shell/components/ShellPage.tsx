@@ -32,6 +32,7 @@ export function ShellPage({
   stickyHead,
   lead,
   pad,
+  foot,
   children,
 }: {
   inView?: string;
@@ -42,6 +43,8 @@ export function ShellPage({
   lead?: ReactNode;
   /** The page's side padding (`ShellFrame`). */
   pad?: ShellFrameProps['pad'];
+  /** An act bar in the pill's place while it shows (`ShellFrame`). */
+  foot?: ReactNode;
   children: ReactNode;
 }) {
   const t = useTranslate();
@@ -89,6 +92,7 @@ export function ShellPage({
       stickyHead={stickyHead}
       lead={lead}
       pad={pad}
+      foot={foot}
     >
       {children}
       <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />

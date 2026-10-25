@@ -1,9 +1,8 @@
 import { theme } from '@heliogrid/theme';
-import { useEffect, useRef } from 'react';
 import type { DimensionValue, StyleProp, ViewStyle } from 'react-native';
-import { Animated, AppState, StyleSheet, View } from 'react-native';
-import { useReducedMotion } from '../../primitives/use-reduced-motion.native';
+import { Animated, StyleSheet, View } from 'react-native';
 import type { LoadingBarSize, LoadingBarsProps } from './LoadingBars.types';
+import { useLoadingPulse } from './use-loading-pulse.native';
 
 type NativeLoadingBarsProps = LoadingBarsProps & {
   style?: StyleProp<ViewStyle>;
@@ -11,12 +10,10 @@ type NativeLoadingBarsProps = LoadingBarsProps & {
 
 type BlockSize = Exclude<LoadingBarSize, 'line' | 'option' | 'count'>;
 
-/** The web half's two heights: a closed section's header, and a section open with its fields. */
-const BAR_HEIGHT: Record<BlockSize, number> = { row: 56, panel: 188 };
+/** The web half's heights: a closed section's header, an open section, one control row. */
+const BAR_HEIGHT: Record<BlockSize, number> = { row: 56, panel: 188, control: 40 };
 /** The web half's six line lengths, taken in turn. */
 const LINE_LENGTHS: readonly DimensionValue[] = ['64%', '38%', '30%', '86%', '62%', '50%'];
-/** Half of the web sweep's 1.4 s: the pulse dims, then returns. */
-const HALF_PULSE_MS = 700;
 
 const styles = StyleSheet.create({
   bars: { gap: theme.spacing['sp-2'] },
@@ -91,38 +88,6 @@ const styles = StyleSheet.create({
 /** The board's two description lengths, a wrapped sentence's (`SCR-M01-13`, `m-loading`). */
 const OPTION_LINE_LENGTHS: readonly DimensionValue[] = ['85%', '55%'];
 
-/**
- * The web half sweeps a gradient; React Native has no gradient loop, so the bars pulse opacity —
- * one loop for the whole list, on the UI thread. Reduced motion holds them still at full ink; the
- * loop stops while the app is in the background and starts again when it comes back.
- */
-function usePulse() {
-  const reduced = useReducedMotion();
-  const value = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    if (reduced) {
-      value.setValue(0);
-      return;
-    }
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(value, { toValue: 1, duration: HALF_PULSE_MS, useNativeDriver: true }),
-        Animated.timing(value, { toValue: 0, duration: HALF_PULSE_MS, useNativeDriver: true }),
-      ]),
-    );
-    loop.start();
-    const app = AppState.addEventListener('change', (state) => {
-      if (state === 'active') loop.start();
-      else loop.stop();
-    });
-    return () => {
-      app.remove();
-      loop.stop();
-    };
-  }, [reduced, value]);
-  return value.interpolate({ inputRange: [0, 1], outputRange: [1, 0.45] });
-}
-
 function Bar({
   size,
   index,
@@ -176,7 +141,7 @@ function Bar({
  * already made busy, the bars are hidden from the reader.
  */
 export function LoadingBars({ label, bars, style, inBusyRegion }: NativeLoadingBarsProps) {
-  const opacity = usePulse();
+  const opacity = useLoadingPulse();
   const lines = bars.every((size) => size === 'line');
   const frame = [lines ? styles.lines : styles.bars, style];
   const drawn = bars.map((size, index) => (

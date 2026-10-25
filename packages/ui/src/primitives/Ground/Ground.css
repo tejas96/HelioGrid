@@ -36,6 +36,10 @@
 .hg-paged-document-unavailable,
 /* A settings page's raised card (`SettingsCard`): a page ground over the page. */
 .hg-settings-card,
+/* The act bar a settings form raises (`FormActionBar`): white over the page it stands on. */
+.hg-form-action-bar,
+/* Branding's editor card at width (`BrandingSettings`, `EDITOR-1536`): a page ground over the page. */
+.hg-branding-card,
 /* The add sheet's raised cards, its spreadsheet tile and a scheme row switched off
    (`CatalogItemForm`): white over the sheet, each painting its ground. */
 .hg-item-card,
@@ -51,6 +55,8 @@
    tile's fill and its ground cannot part. Loaded before every component, so a tile's own state rule — an off
    option, a played turn — still wins over this fill at rest. */
 .hg-card,
+/* The brand colour field's offered ink (`BrandColorField`, the short verdict). */
+.hg-brand-color-ink,
 .hg-account-tile,
 .hg-stat-card,
 /* A tappable tile is a `Pressable`, whose reset loads later and clears a one-class fill. */
@@ -82,6 +88,8 @@
 
 /* The tile grounds that are not tiles: each draws its own fill. */
 /* A grey `Surface` is a tile ground but draws its own fill. */
+/* Branding's stage (`BrandingSettings`): the sunken desk its preview and switch sit on. */
+.hg-branding-stage,
 .hg-surface[data-background="canvas"],
 .hg-surface[data-background="canvas-sunken"],
 /* A tinted panel holds its controls as a tile does: the well on a tint is about 1.01:1 on the

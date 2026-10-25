@@ -42,9 +42,11 @@
   margin: 6px 2px 0;
 }
 
+/* The hint is secondary text, as Input's is: a field hint is load-bearing, and tertiary is the
+   quiet role (F7-11). */
 .hg-textarea-message {
   font-size: var(--fs-field-helper);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .hg-textarea-message[data-error="true"] {

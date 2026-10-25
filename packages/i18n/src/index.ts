@@ -31,6 +31,16 @@ export {
   grantLineWords,
 } from './copy/assign-roles';
 export { shownInNote } from './copy/authored-content';
+export type { BrandColourFieldWords } from './copy/brand-colour-field';
+export { brandColourFieldWords } from './copy/brand-colour-field';
+export type { BrandingFormats, BrandingPageFacts, BrandingWords } from './copy/branding';
+export {
+  brandingLogoRefusal,
+  brandingPageWords,
+  brandingStandingLine,
+  brandingWords,
+  letterheadRefusalWords,
+} from './copy/branding';
 export type { AddItemCaller, AddItemFacts, CatalogAddItemWords } from './copy/catalog-add-item';
 export { catalogAddItemWords, catalogItemAddedToast } from './copy/catalog-add-item';
 export type { AddItemFieldWords } from './copy/catalog-add-item-fields';

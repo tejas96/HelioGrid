@@ -149,8 +149,10 @@ export const docStyles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 16,
   },
-  footerText: { fontFamily: sans, fontSize: 9, color: faint },
-  footerTax: { fontFamily: mono, fontSize: 9, color: faint },
+  /* A stated line, so the mono run nested in it cannot raise the line to its own variant's. */
+  footerText: { fontFamily: sans, fontSize: 9, lineHeight: 13, color: faint },
+  /* F7-09: an identifier or a phone takes the mono face with tabular figures; its label does not. */
+  figure: { fontFamily: mono, fontVariant: ['tabular-nums'] },
   footerNote: { fontFamily: sans, fontSize: 9, color: faint, textAlign: 'center', flexShrink: 1 },
   caption: { marginTop: theme.spacing['sp-2'] },
   captionNote: { color: theme.colors['warning-text'] },
@@ -161,8 +163,14 @@ export function DocumentRule({ colour, opaque }: { colour: string; opaque: boole
   return <View style={[docStyles.rule, { backgroundColor: colour, opacity: opaque ? 1 : 0.55 }]} />;
 }
 
-/** The band's micro-label. 9dp is design-space type inside a scaled sheet, not app type. */
+/**
+ * The band's micro-label — drawn only when the caller has a word for it. 9dp is design-space type
+ * inside a scaled sheet, not app type.
+ */
 export function DocumentOverline({ children, spaced }: { children: string; spaced?: boolean }) {
+  if (children === '') {
+    return null;
+  }
   return (
     <Text style={[docStyles.overline, spaced === true ? docStyles.overlineSpaced : undefined]}>
       {children}
@@ -170,7 +178,7 @@ export function DocumentOverline({ children, spaced }: { children: string; space
   );
 }
 
-/** The labelled placeholder slot that stands in until a logo arrives. */
+/** The labelled placeholder slot that stands in until a logo arrives — the specimen's only. */
 export function DocumentSlot({ label }: { label: string }) {
   return (
     <View style={docStyles.slot}>
